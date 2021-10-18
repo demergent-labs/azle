@@ -6,6 +6,12 @@
             "build": "cargo build --target wasm32-unknown-unknown --package azle --release",
             "candid": "canisters/azle/src/lib.did",
             "wasm": "target/wasm32-unknown-unknown/release/azle-optimized.wasm"
+        },
+        "dapp": {
+            "type": "custom",
+            "build": "cargo build --target wasm32-unknown-unknown --package azle --release",
+            "candid": "canisters/azle/src/lib.did",
+            "wasm": "target/wasm32-unknown-unknown/release/azle-optimized.wasm"
         }
     }
 }

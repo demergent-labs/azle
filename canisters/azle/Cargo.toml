@@ -10,5 +10,8 @@ crate-type = ["cdylib"]
 [dependencies]
 ic-cdk = "0.3.2"
 ic-cdk-macros = "0.3.2"
-# Boa = "0.13.0"
-Boa = { path = "../../../boa/boa", default-features = false }
+# Boa = { version = "0.13.0", features = [] }
+# Boa = { path = "../../../boa/boa", default-features = false }
+# Boa = { path = "../../../boa/boa", features = [] }
+Boa = { path = "../../../boa/boa" }
+getrandom = { version = "0.2.3", features = ["custom"] }

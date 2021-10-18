@@ -1,8 +1,8 @@
 {
     "scripts": {
         "build": "",
-        "dfx-deploy": "npm run dfx-build-azle && npm run dfx-optimize-azle && dfx deploy",
-        "dfx-build-azle": "cargo build --target wasm32-unknown-unknown --package azle --release",
-        "dfx-optimize-azle": "./target/bin/ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/azle.wasm -o ./target/wasm32-unknown-unknown/release/azle-optimized.wasm"
+        "dfx-deploy": "npm run dfx-build-dapp && npm run dfx-optimize-dapp && dfx deploy",
+        "dfx-build-dapp": "./generate.sh && cargo build --target wasm32-unknown-unknown --package azle --release",
+        "dfx-optimize-dapp": "./target/bin/ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/azle.wasm -o ./target/wasm32-unknown-unknown/release/azle-optimized.wasm"
     }
 }

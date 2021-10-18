@@ -1,13 +1,1 @@
-use boa::Context;
-// use wasm_bindgen::prelude::*;
-
-// #[wasm_bindgen]
-// #[ic_cdk_macros::query]
-pub fn hello() -> String {
-
-    let mut context = Context::new();
-
-    let value = context.eval("5+4").unwrap();
-
-    value.as_string().unwrap().to_string()
-}
+fn custom_getrandom(_buf: &mut [u8]) -> Result<(), getrandom::Error> { Ok(()) } getrandom::register_custom_getrandom!(custom_getrandom); #[ic_cdk_macros::query] fn execute_js() { let mut context = boa::Context::new(); let value = context.eval(" function hello() { return 'world!'; } hello(); ").unwrap(); ic_cdk::println!("value: {:#?}", value); }
