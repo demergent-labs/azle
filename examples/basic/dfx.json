@@ -1,17 +1,13 @@
 
 {
     "canisters": {
-        "azle": {
+        "basic": {
             "type": "custom",
-            "build": "cargo build --target wasm32-unknown-unknown --package azle --release",
-            "candid": "canisters/azle/src/lib.did",
-            "wasm": "target/wasm32-unknown-unknown/release/azle-optimized.wasm"
-        },
-        "dapp": {
-            "type": "custom",
-            "build": "cargo build --target wasm32-unknown-unknown --package azle --release",
-            "candid": "canisters/azle/src/lib.did",
-            "wasm": "target/wasm32-unknown-unknown/release/azle-optimized.wasm"
+            "build": "azle basic",
+            "root": "canisters/basic",
+            "js": "canisters/basic/app.js",
+            "candid": "canisters/basic/app.did",
+            "wasm": "target/wasm32-unknown-unknown/release/basic-optimized.wasm"
         }
     }
 }
