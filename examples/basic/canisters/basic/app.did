@@ -1,0 +1,3 @@
+service : {
+    "echo": (text) -> (text) query;
+}
