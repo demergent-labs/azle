@@ -16,12 +16,16 @@
 
                     echo(\"{message}\");
                 ",
-                compiled_js = "function echo(message) {
+                compiled_js = r#""use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.echo = void 0;
+function echo(message) {
     return message;
 }
-",
+exports.echo = echo;
+"#,
                 message = message
-            )).unwrap();
+            ).replace("Object.defineProperty", "let exports = {}; Object.defineProperty")).unwrap();
         
             ic_cdk::println!("return_value: {:#?}", return_value);
 

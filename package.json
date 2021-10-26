@@ -8,6 +8,7 @@
   "bin": {
     "azle": "./bin.js"
   },
+  "main": "./src/types.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lastmjs/azle.git"
