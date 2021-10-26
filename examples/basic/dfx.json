@@ -5,7 +5,7 @@
             "type": "custom",
             "build": "azle basic",
             "root": "canisters/basic",
-            "js": "canisters/basic/app.js",
+            "js": "canisters/basic/app.ts",
             "candid": "canisters/basic/app.did",
             "wasm": "target/wasm32-unknown-unknown/release/basic-optimized.wasm"
         }

@@ -8,6 +8,7 @@
   "bin": {
     "azle": "./bin.js"
   },
+  "main": "./src/types.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lastmjs/azle.git"
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/lastmjs/azle#readme",
   "dependencies": {
-    "ts-node": "10.3.1"
+    "ts-node": "10.3.1",
+    "typescript": "4.4.4"
   }
 }

@@ -5,16 +5,31 @@
 
         getrandom::register_custom_getrandom!(custom_getrandom);
         
+        
         #[ic_cdk_macros::query]
-        fn execute_js() {
+        fn echo(message: String) -> String {
             let mut context = boa::Context::new();
         
-            let value = context.eval("function hello() {
-    return 'world!';
-}
+            let return_value = context.eval(format!(
+                "
+                    {compiled_js}
 
-hello();").unwrap();
+                    echo(\"{message}\");
+                ",
+                compiled_js = r#""use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.echo = void 0;
+function echo(message) {
+    return message;
+}
+exports.echo = echo;
+"#,
+                message = message
+            ).replace("Object.defineProperty", "let exports = {}; Object.defineProperty")).unwrap();
         
-            ic_cdk::println!("value: {:#?}", value);
+            ic_cdk::println!("return_value: {:#?}", return_value);
+
+            return_value.as_string().unwrap().to_string()
         }
+    
     

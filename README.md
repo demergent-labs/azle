@@ -2,6 +2,10 @@
 
 JavaScript/TypeScript CDK for the Internet Computer.
 
+## Contributing
+
+Not currently taking contributions. Please allow time for initial code architecture and governance/legal/token work to be put in place. Expect the ability to contribute to slowly pick up in the next month or so.
+
 ## Installation
 
 npm install azle
