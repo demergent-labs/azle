@@ -1,3 +1,8 @@
 service : {
-    "echo": (text) -> (text) query;
+    "initializeSupply": (text, text, int32, text) -> (bool);
+    "transfer": (text, text, int32) -> (bool);
+    "balance": (text) -> (int32) query;
+    "ticker": () -> (text) query;
+    "name": () -> (text) query;
+    "totalSupply": () -> (int32) query;
 }
