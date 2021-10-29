@@ -12,9 +12,11 @@
         [dependencies]
         ic-cdk = "0.3.2"
         ic-cdk-macros = "0.3.2"
+        candid = "0.7.8"
         # Boa = { version = "0.13.0", features = [] }
         # Boa = { path = "../../../boa/boa", default-features = false }
         # Boa = { path = "../../../boa/boa", features = [] }
-        Boa = { path = "../../../../../boa/boa" }
+        # Boa = { path = "../../../../../boa/boa" }
+        Boa = { git = "https://github.com/lastmjs/boa-azle" }
         getrandom = { version = "0.2.3", features = ["custom"] }
     

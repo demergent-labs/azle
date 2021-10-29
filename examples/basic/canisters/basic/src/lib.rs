@@ -78,13 +78,6 @@ function totalSupply() {
     return ic.ERC20.totalSupply;
 }
 exports.totalSupply = totalSupply;
-// export function set(key: string, value: string): Update<boolean> {
-//     ic[key] = value;
-//     return true;
-// }
-// export function get(key: string): Query<string> {
-//     return ic[key];
-// }
 "#,
                     address = address
                 ).replace("Object.defineProperty", "let exports = {}; Object.defineProperty")).unwrap();
@@ -164,13 +157,6 @@ function totalSupply() {
     return ic.ERC20.totalSupply;
 }
 exports.totalSupply = totalSupply;
-// export function set(key: string, value: string): Update<boolean> {
-//     ic[key] = value;
-//     return true;
-// }
-// export function get(key: string): Query<string> {
-//     return ic[key];
-// }
 "#,
                     
                 ).replace("Object.defineProperty", "let exports = {}; Object.defineProperty")).unwrap();
@@ -250,13 +236,6 @@ function totalSupply() {
     return ic.ERC20.totalSupply;
 }
 exports.totalSupply = totalSupply;
-// export function set(key: string, value: string): Update<boolean> {
-//     ic[key] = value;
-//     return true;
-// }
-// export function get(key: string): Query<string> {
-//     return ic[key];
-// }
 "#,
                     
                 ).replace("Object.defineProperty", "let exports = {}; Object.defineProperty")).unwrap();
@@ -336,13 +315,6 @@ function totalSupply() {
     return ic.ERC20.totalSupply;
 }
 exports.totalSupply = totalSupply;
-// export function set(key: string, value: string): Update<boolean> {
-//     ic[key] = value;
-//     return true;
-// }
-// export function get(key: string): Query<string> {
-//     return ic[key];
-// }
 "#,
                     
                 ).replace("Object.defineProperty", "let exports = {}; Object.defineProperty")).unwrap();
@@ -421,13 +393,6 @@ function totalSupply() {
     return ic.ERC20.totalSupply;
 }
 exports.totalSupply = totalSupply;
-// export function set(key: string, value: string): Update<boolean> {
-//     ic[key] = value;
-//     return true;
-// }
-// export function get(key: string): Query<string> {
-//     return ic[key];
-// }
 "#,
                     ticker = ticker,name = name,totalSupply = totalSupply,originalAddress = originalAddress
                 ).replace("Object.defineProperty", "let exports = {}; Object.defineProperty")).unwrap();
@@ -518,13 +483,6 @@ function totalSupply() {
     return ic.ERC20.totalSupply;
 }
 exports.totalSupply = totalSupply;
-// export function set(key: string, value: string): Update<boolean> {
-//     ic[key] = value;
-//     return true;
-// }
-// export function get(key: string): Query<string> {
-//     return ic[key];
-// }
 "#,
                     from = from,to = to,amount = amount
                 ).replace("Object.defineProperty", "let exports = {}; Object.defineProperty")).unwrap();

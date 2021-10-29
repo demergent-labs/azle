@@ -70,6 +70,11 @@ function createCargoTomls(
         [profile.release]
         lto = true
         opt-level = 'z'
+
+        # TODO remove this once https://github.com/dfinity/candid/pull/290 is merged and released
+        [patch.crates-io.candid]
+        git = "https://github.com/dfinity/candid.git"
+        branch = "nat-visitor"
     `);
 
     fs.writeFileSync(`${rootPath}/Cargo.toml`, `
@@ -86,11 +91,12 @@ function createCargoTomls(
         [dependencies]
         ic-cdk = "0.3.2"
         ic-cdk-macros = "0.3.2"
-        # Boa = { version = "0.13.0", features = [] }
-        # Boa = { path = "../../../boa/boa", default-features = false }
-        # Boa = { path = "../../../boa/boa", features = [] }
-        Boa = { path = "../../../../../boa/boa" }
+        # candid = "0.7.8"
+        # candid = { git = "https://github.com/dfinity/candid", branch = "nat-visitor" }
+        Boa = { git = "https://github.com/lastmjs/boa-azle" }
         getrandom = { version = "0.2.3", features = ["custom"] }
+        serde = "1.0.130"
+        serde_json = "1.0.68"
     `);
 }
 

@@ -5,6 +5,7 @@ version = 3
 [[package]]
 name = "Boa"
 version = "0.13.0"
+source = "git+https://github.com/lastmjs/boa-azle#fa8c080f622e98aa911ba2d94f2230c99ddcc480"
 dependencies = [
  "bitflags",
  "boa_unicode",
@@ -85,6 +86,7 @@ name = "basic"
 version = "0.0.0"
 dependencies = [
  "Boa",
+ "candid",
  "getrandom",
  "ic-cdk",
  "ic-cdk-macros",
@@ -152,6 +154,7 @@ dependencies = [
 [[package]]
 name = "boa_unicode"
 version = "0.13.0"
+source = "git+https://github.com/lastmjs/boa-azle#fa8c080f622e98aa911ba2d94f2230c99ddcc480"
 dependencies = [
  "unicode-general-category",
 ]
