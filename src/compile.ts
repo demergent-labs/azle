@@ -209,10 +209,24 @@ function generateRustCandidTypeFromNode(node: tsc.Node): string | null {
                             return `
                                 #[derive(serde::Deserialize, ic_cdk::export::candid::CandidType)]
                                 enum ${typeAliasName} {
-                                    ${rustTypes.map((rustType) => `${rustType.name}(${rustType.type})`).join(',')}
+                                    ${rustTypes.map((rustType) => {
+                                        if (rustType.type === 'None') {
+                                            return rustType.name;
+                                        }
+                                        else {
+                                            return `${rustType.name}(${rustType.type})`;
+                                        }
+                                    }).join(',')}
                                 }
                             `;
                         }
+                    }
+                }
+                else if (typeNode.typeName.escapedText === 'Result') {
+                    if (typeNode.typeArguments?.length === 2) {
+                        return `
+                            type ${typeAliasName} = Result<${typeNode.typeArguments[0].typeName.escapedText}, ${typeNode.typeArguments[1].typeName.escapedText}>;
+                        `;
                     }
                 }
                 else {
@@ -638,6 +652,13 @@ function transformTypeNodeToRustType(typeNode: tsc.TypeNode): RustType {
 
     if (typeNode.kind === tsc.SyntaxKind.BooleanKeyword) {
         return 'bool';
+    }
+
+    if (
+        tsc.isLiteralTypeNode(typeNode) &&
+        typeNode.literal.kind === tsc.SyntaxKind.NullKeyword
+    ) {
+        return 'None';
     }
 
     if (

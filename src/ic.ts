@@ -4,6 +4,10 @@ export type Candid<T> = T;
 export type Enum<T> = T;
 export type Principal = string;
 export type ICBlob = [];
+export type Result<T, V> = {
+    Ok?: T;
+    Err?: V;
+};
 export type i64 = number;
 export type i32 = number;
 export type i16 = number;
