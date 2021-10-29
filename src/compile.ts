@@ -11,11 +11,12 @@ type RustType =
     'i32' |
     'i16' |
     'i8' |
+    'u128' |
     'u64' |
     'u32' |
     'u16' |
     'u8' |
-    'ic_cdk::export::candid::Nat' |
+    // 'ic_cdk::export::candid::Nat' | // TODO replaced with u128 for now
     'Vec<u8>' |
     'ic_cdk::export::candid::Principal';
 
@@ -37,7 +38,8 @@ const rustTypes: {
     'u32': 'u32',
     'u16': 'u16',
     'u8': 'u8',
-    'Nat': 'ic_cdk::export::candid::Nat',
+    // 'Nat': 'ic_cdk::export::candid::Nat', // TODO replaced with u128 for now
+    'Nat': 'u128', // TODO replaced with u128 for now
     'ICBlob': 'Vec<u8>',
     'Principal': 'ic_cdk::export::candid::Principal'
 };
@@ -96,17 +98,6 @@ export function compileJSToRust(
         fn custom_getrandom(_buf: &mut [u8]) -> Result<(), getrandom::Error> { Ok(()) }
 
         getrandom::register_custom_getrandom!(custom_getrandom);
-
-        #[derive(serde::Deserialize, ic_cdk::export::candid::CandidType)]
-        enum Monkey {
-            One(String),
-            Two(i32)
-        }
-
-        #[derive(serde::Deserialize, ic_cdk::export::candid::CandidType)]
-        struct Test {
-            monkey: Monkey
-        }
 
         ${rustCandidTypes.join('\n')}
 
@@ -173,7 +164,7 @@ function generateRustCandidTypeFromNode(node: tsc.Node): string | null {
                 const rustCandidStructFieldsString = stringifyRustCandidStructFields(rustCandidStructFields);
             
                 return `
-                    #[derive(serde::Deserialize, ic_cdk::export::candid::CandidType)]
+                    #[derive(serde::Serialize, serde::Deserialize, ic_cdk::export::candid::CandidType)]
                     struct ${typeAliasName} {
                         ${rustCandidStructFieldsString}
                     }
@@ -207,7 +198,7 @@ function generateRustCandidTypeFromNode(node: tsc.Node): string | null {
                             });
 
                             return `
-                                #[derive(serde::Deserialize, ic_cdk::export::candid::CandidType)]
+                                #[derive(serde::Serialize, serde::Deserialize, ic_cdk::export::candid::CandidType)]
                                 enum ${typeAliasName} {
                                     ${rustTypes.map((rustType) => {
                                         if (rustType.type === 'None') {
@@ -320,17 +311,18 @@ function generateRustFunctionFromNode(
 
     // TODO these number conversions are horrendous
     const returnValueConversionCode = {
-        'bool': 'return_value.parse::<bool>.unwrap()',
+        'bool': 'serde_json::from_str(&return_value).unwrap()',
         'String': 'return_value',
         'i64': 'return_value.parse::<i64>().unwrap()',
         'i32': 'return_value.parse::<i32>().unwrap()',
         'i16': 'return_value.parse::<i16>().unwrap()',
         'i8': 'return_value.parse::<i8>().unwrap()',
+        'u128': 'return_value.parse::<u128>().unwrap()',
         'u64': 'return_value.parse::<u64>().unwrap()',
         'u32': 'return_value.parse::<u32>().unwrap()',
         'u16': 'return_value.parse::<u16>().unwrap()',
         'u8': 'return_value.parse::<u8>().unwrap()',
-        'ic_cdk::export::candid::Nat': 'return_value.parse::<ic_cdk::export::candid::Nat>().unwrap()',
+        // 'ic_cdk::export::candid::Nat': 'return_value.parse::<ic_cdk::export::candid::Nat>().unwrap()',
         'Vec<u8>': 'return_value.parse::<Vec<u8>>.unwrap()', // TODO have not tested this
         'ic_cdk::export::candid::Principal': 'return_value.parse::<ic_cdk::export::candid::Principal>().unwrap()'
     }[functionReturnType] ?? `serde_json::from_str::<${functionReturnType}>(&return_value).unwrap()`;
@@ -399,7 +391,7 @@ function generateRustQueryFunction(
                     ",
                     compiled_js = r#"${compiledJs}"#,
                     ${functionParameters.map((functionParameter) => {
-                        return `${functionParameter.name} = ${functionParameter.name}`;
+                        return `${functionParameter.name} = serde_json::to_string(&${functionParameter.name}).unwrap()`;
                     }).join(',')}
                 ).replace("Object.defineProperty", "let exports = {}; Object.defineProperty")).unwrap().as_string().unwrap().to_string();
                                 
