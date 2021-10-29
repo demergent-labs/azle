@@ -93,6 +93,7 @@ export function compileJSToRust(
 
         #![allow(dead_code)]
         #![allow(non_camel_case_types)]
+        #![allow(non_snake_case)]
 
         thread_local! {
             static IC_MEMORY: std::cell::RefCell<boa::object::JsObject> = std::cell::RefCell::new(boa::object::JsObject::default());
@@ -117,6 +118,22 @@ export function compileJSToRust(
         
             return Ok(boa::JsValue::Undefined);
         }
+
+        // fn sha224(
+        //     _this: &boa::JsValue,
+        //     _aargs: &[boa::JsValue],
+        //     _context: &mut boa::Context
+        // ) -> boa::JsResult<boa::JsValue> {
+        //     let mut hasher = sha2::Sha224::new();
+
+        //     hasher.update(b"hello");
+
+        //     let result = hasher.finalize();
+
+        //     ic_cdk::println!("{:#?}", _aargs);
+
+        //     return Ok(boa::JsValue::Undefined);
+        // }
     `;
 }
 
@@ -229,7 +246,13 @@ function generateRustCandidTypeFromNode(node: tsc.Node): string | null {
                 else if (typeNode.typeName.escapedText === 'Result') {
                     if (typeNode.typeArguments?.length === 2) {
                         return `
-                            type ${typeAliasName} = Result<${typeNode.typeArguments[0].typeName.escapedText}, ${typeNode.typeArguments[1].typeName.escapedText}>;
+                            // type ${typeAliasName} = Result<${typeNode.typeArguments[0].typeName.escapedText}, ${typeNode.typeArguments[1].typeName.escapedText}>;
+                        
+                            #[derive(serde::Serialize, serde::Deserialize, ic_cdk::export::candid::CandidType)]
+                            enum ${typeAliasName} {
+                                ok(${typeNode.typeArguments[0].typeName.escapedText}),
+                                err(${typeNode.typeArguments[1].typeName.escapedText})
+                            }
                         `;
                     }
                 }
@@ -243,6 +266,19 @@ function generateRustCandidTypeFromNode(node: tsc.Node): string | null {
                     //     // TODO figure this out better
                     //     return typeNode.typeName.escapedText;
                     // }
+                }
+            }
+
+            if (tsc.isArrayTypeNode(typeNode)) {
+                if (typeNode.elementType.kind === tsc.SyntaxKind.StringKeyword) {
+                    return `Vec<String>`;
+                }
+        
+                if (
+                    tsc.isTypeReferenceNode(typeNode.elementType) &&
+                    tsc.isIdentifier(typeNode.elementType.typeName)
+                ) {
+                    return `type ${typeAliasName} = Vec<${typeNode.elementType.typeName.escapedText}>;`;
                 }
             }
         }
@@ -407,6 +443,12 @@ function generateRustQueryFunction(
                     ic,
                     boa::property::Attribute::all()
                 );
+
+                // context.register_global_function(
+                //     "sha224",
+                //     0,
+                //     sha224
+                // ).unwrap();
             
                 let return_value = context.eval(format!(
                     "
@@ -644,10 +686,18 @@ function getRustCandidStructFields(typeAliasDeclaration: tsc.TypeAliasDeclaratio
 
             return typeLiteralNode.members.map((member) => {
                 if (tsc.isPropertySignature(member)) {
-                    return {
-                        name: member.name.escapedText,
-                        type: transformTypeNodeToRustType(member.type) // TODO combine this function code with the get function return type code I think
-                    };
+                    if (member.questionToken === undefined) {
+                        return {
+                            name: member.name.escapedText,
+                            type: transformTypeNodeToRustType(member.type) // TODO combine this function code with the get function return type code I think
+                        };
+                    }
+                    else {
+                        return {
+                            name: member.name.escapedText,
+                            type: `Option<${transformTypeNodeToRustType(member.type)}>` // TODO combine this function code with the get function return type code I think
+                        };
+                    }
                 }
 
                 throw new Error('wrong');
@@ -720,6 +770,19 @@ function transformTypeNodeToRustType(typeNode: tsc.TypeNode): RustType {
         }
         else {
             return typeNode.typeName.escapedText;
+        }
+    }
+
+    if (tsc.isArrayTypeNode(typeNode)) {
+        if (typeNode.elementType.kind === tsc.SyntaxKind.StringKeyword) {
+            return `Vec<String>`;
+        }
+
+        if (
+            tsc.isTypeReferenceNode(typeNode.elementType) &&
+            tsc.isIdentifier(typeNode.elementType.typeName)
+        ) {
+            return `Vec<${typeNode.elementType.typeName.escapedText}>`;
         }
     }
 
