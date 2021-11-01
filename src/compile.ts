@@ -66,9 +66,11 @@ export function compileJSToRust(
     const compiledJs = tsc.transpileModule(
         js,
         {
-            // compilerOptions: {
-            //     module: tsc.ModuleKind.AMD
-            // }
+            compilerOptions: {
+                // module: tsc.ModuleKind.AMD
+                target: tsc.ScriptTarget.ES5, // TODO figure out what the default is
+                noImplicitUseStrict: true
+            }
         }
     ).outputText;
 
@@ -444,21 +446,17 @@ function generateRustQueryFunction(
                     boa::property::Attribute::all()
                 );
 
-                // context.register_global_function(
-                //     "sha224",
-                //     0,
-                //     sha224
-                // ).unwrap();
+                context.register_global_function(
+                    "icPrint",
+                    0,
+                    ic_print
+                ).unwrap();
             
                 let return_value = context.eval(format!(
                     "
                         {compiled_js}
     
                         JSON.stringify(${functionName}(${functionParameters.map((functionParameter) => {
-                            if (functionParameter.type === 'String') {
-                                return `\\"{${functionParameter.name}}\\"`;
-                            }
-    
                             return `{${functionParameter.name}}`;
                         }).join(',')}));
                     ",
@@ -515,15 +513,17 @@ function generateRustUpdateFunction(
                     boa::property::Attribute::all()
                 );
 
+                context.register_global_function(
+                    "icPrint",
+                    0,
+                    ic_print
+                ).unwrap();
+
                 let return_value = context.eval(format!(
                     "
                         {compiled_js}
     
                         JSON.stringify(${functionName}(${functionParameters.map((functionParameter) => {
-                            if (functionParameter.type === 'String') {
-                                return `\\"{${functionParameter.name}}\\"`;
-                            }
-    
                             return `{${functionParameter.name}}`;
                         }).join(',')}));
                     ",
