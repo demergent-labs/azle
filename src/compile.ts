@@ -207,6 +207,13 @@ function generateRustCandidTypeFromNode(node: tsc.Node): string | null {
                 return `type ${typeAliasName} = String;`;
             }
 
+            if (tsc.isTupleTypeNode(typeNode)) {
+                return `
+                    #[derive(serde::Serialize, serde::Deserialize, ic_cdk::export::candid::CandidType)]
+                    struct ${typeAliasName}(${typeNode.elements.map((element) => element.typeName.escapedText).join(',')});
+                `;
+            }
+
             if (
                 tsc.isTypeReferenceNode(typeNode) &&
                 tsc.isIdentifier(typeNode.typeName)
