@@ -2,7 +2,7 @@ DO NOT USE YET. INTERNAL DEVELOPMENT AND TESTING ONGOING. RELEASE IMMINENT.
 
 # Azle
 
-TypeScript CDK for the Internet Computer.
+TypeScript/JavaScript CDK for the Internet Computer.
 
 ## Contributing
 

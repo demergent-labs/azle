@@ -98,12 +98,35 @@ export function compileJSToRust(
         #![allow(non_snake_case)]
 
         thread_local! {
-            static IC_MEMORY: std::cell::RefCell<boa::object::JsObject> = std::cell::RefCell::new(boa::object::JsObject::default());
+            static BOA_CONTEXT: std::cell::RefCell<boa::Context> = std::cell::RefCell::new(boa::Context::new());
         }
 
         fn custom_getrandom(_buf: &mut [u8]) -> Result<(), getrandom::Error> { Ok(()) }
 
         getrandom::register_custom_getrandom!(custom_getrandom);
+
+        #[ic_cdk_macros::init]
+        fn init() {
+            BOA_CONTEXT.with(|boa_context_ref_cell| {
+                let mut boa_context = boa_context_ref_cell.borrow_mut();
+
+                boa_context.register_global_function(
+                    "icPrint",
+                    0,
+                    ic_print
+                ).unwrap();
+
+                boa_context.eval(format!(
+                    "let exports = {{}}; {compiled_js}",
+                    compiled_js = r#"${compiledJs}"#
+                )).unwrap();
+            });
+        }
+
+        #[ic_cdk_macros::post_upgrade]
+        fn post_upgrade() {
+            init();
+        }
 
         ${rustCandidTypes.join('\n')}
 
@@ -388,7 +411,8 @@ function generateRustFunctionFromNode(
     // TODO serde_json::from_str(boa::builtins::json::stringify(return_value)) as TransferRequest
 
     if (icFunctionType === 'Query') {
-        return generateRustQueryFunction(
+        return generateRustFunction(
+            'QUERY',
             functionName,
             functionParametersString,
             functionReturnType,
@@ -399,7 +423,8 @@ function generateRustFunctionFromNode(
     }
     
     if (icFunctionType === 'Update') {
-        return generateRustUpdateFunction(
+        return generateRustFunction(
+            'UPDATE',
             functionName,
             functionParametersString,
             functionReturnType,
@@ -412,7 +437,9 @@ function generateRustFunctionFromNode(
     return null;
 }
 
-function generateRustQueryFunction(
+// TODO ensure values are cleanly sanitized
+function generateRustFunction(
+    queryOrUpdate: 'QUERY' | 'UPDATE',
     functionName: string,
     functionParametersString: string,
     functionReturnType: RustType,
@@ -420,21 +447,14 @@ function generateRustQueryFunction(
     compiledJs: string,
     returnValueConversionCode: string
 ): string {
-// TODO Figure out a more elegant way to define the exports object than the string replace below
     return `
-        #[ic_cdk_macros::query]
+        #[ic_cdk_macros::${queryOrUpdate === 'QUERY' ? 'query' : 'update'}]
         fn ${functionName}(${functionParametersString}) -> ${functionReturnType} {
-            IC_MEMORY.with(|ic_memory_ref_cell| {
-                let ic_memory = ic_memory_ref_cell.borrow().clone();
-                
-                let mut context = boa::Context::new();
+            BOA_CONTEXT.with(|boa_context_ref_cell| {
+                let mut boa_context = boa_context_ref_cell.borrow_mut();
 
-                let ic = boa::object::ObjectInitializer::new(&mut context)
-                    .property(
-                        "memory",
-                        ic_memory,
-                        boa::property::Attribute::all()
-                    )
+                // TODO figure out the best way to set the caller and other values each time
+                let ic = boa::object::ObjectInitializer::new(&mut boa_context)
                     .property(
                         "caller",
                         ic_cdk::api::caller().to_text(),
@@ -447,119 +467,28 @@ function generateRustQueryFunction(
                     // )
                     .build();
 
-                context.register_global_property(
+                boa_context.register_global_property(
                     "ic",
                     ic,
                     boa::property::Attribute::all()
                 );
 
-                context.register_global_function(
-                    "icPrint",
-                    0,
-                    ic_print
-                ).unwrap();
-            
-                let return_value = context.eval(format!(
+                // TODO grab the error message from the return value and panic on it if possible, the errors are almost unreadable
+                let return_value = boa_context.eval(format!(
                     "
-                        {compiled_js}
-    
                         JSON.stringify(${functionName}(${functionParameters.map((functionParameter) => {
                             return `{${functionParameter.name}}`;
                         }).join(',')}));
                     ",
-                    compiled_js = r#"${compiledJs}"#,
                     ${functionParameters.map((functionParameter) => {
                         return `${functionParameter.name} = serde_json::to_string(&${functionParameter.name}).unwrap()`;
                     }).join(',')}
-                ).replace("Object.defineProperty", "let exports = {}; Object.defineProperty")).unwrap().as_string().unwrap().to_string();
-                                
-                ${returnValueConversionCode}
-            })
-        }
-    `;
-}
+                ))
+                .unwrap()
+                .as_string()
+                .unwrap()
+                .to_string();
 
-function generateRustUpdateFunction(
-    functionName: string,
-    functionParametersString: string,
-    functionReturnType: RustType,
-    functionParameters: ReadonlyArray<RustProperty>,
-    compiledJs: string,
-    returnValueConversionCode: string
-): string {
-// TODO Figure out a more elegant way to define the exports object than the string replace below
-    return `
-        #[ic_cdk_macros::update]
-        fn ${functionName}(${functionParametersString}) -> ${functionReturnType} {
-            IC_MEMORY.with(|ic_memory_ref_cell| {
-                let ic_memory = ic_memory_ref_cell.borrow().clone();
-
-                let mut context = boa::Context::new();
-            
-                let ic = boa::object::ObjectInitializer::new(&mut context)
-                    .property(
-                        "memory",
-                        ic_memory,
-                        boa::property::Attribute::all()
-                    )
-                    .property(
-                        "caller",
-                        ic_cdk::api::caller().to_text(),
-                        boa::property::Attribute::all()
-                    )
-                    // .property(
-                    //     "print",
-                    //     ic_print,
-                    //     boa::property::Attribute::all()
-                    // )
-                    .build();
-
-                context.register_global_property(
-                    "ic",
-                    ic,
-                    boa::property::Attribute::all()
-                );
-
-                context.register_global_function(
-                    "icPrint",
-                    0,
-                    ic_print
-                ).unwrap();
-
-                let return_value = context.eval(format!(
-                    "
-                        {compiled_js}
-    
-                        JSON.stringify(${functionName}(${functionParameters.map((functionParameter) => {
-                            return `{${functionParameter.name}}`;
-                        }).join(',')}));
-                    ",
-                    compiled_js = r#"${compiledJs}"#,
-                    ${functionParameters.map((functionParameter) => {
-                        return `${functionParameter.name} = serde_json::to_string(&${functionParameter.name}).unwrap()`;
-                    }).join(',')}
-                ).replace("Object.defineProperty", "let exports = {}; Object.defineProperty")).unwrap().as_string().unwrap().to_string();
-            
-                let ic_memory = context
-                    .global_object()
-                    .get(
-                        "ic",
-                        &mut context
-                    )
-                    .unwrap()
-                    .as_object()
-                    .unwrap()
-                    .get(
-                        "memory",
-                        &mut context
-                    )
-                    .unwrap()
-                    .as_object()
-                    .unwrap()
-                    .clone();
-        
-                ic_memory_ref_cell.replace(ic_memory);
-    
                 ${returnValueConversionCode}
             })
         }
