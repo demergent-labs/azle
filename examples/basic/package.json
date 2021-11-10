@@ -3,6 +3,6 @@
         "build": ""
     },
     "dependencies": {
-        "azle": "0.0.0"
+        "azle": "0.0.3"
     }
 }
