@@ -14,7 +14,7 @@ type JSCanisterConfig = Readonly<{
     type: 'custom';
     build: string;
     root: string;
-    js: string;
+    ts: string;
     candid: string;
     wasm: string;
 }>;
@@ -25,13 +25,13 @@ function app() {
     const canisterConfig = dfxJson.canisters[canisterName];
 
     const rootPath = canisterConfig.root;
-    const jsPath = canisterConfig.js;
+    const tsPath = canisterConfig.ts;
     const candidPath = canisterConfig.candid;
 
     createRustCode(
         canisterName,
         rootPath,
-        jsPath,
+        tsPath,
         candidPath
     );
 
@@ -41,7 +41,7 @@ function app() {
 function createRustCode(
     canisterName: string,
     rootPath: string,
-    jsPath: string,
+    tsPath: string,
     candidPath: string
 ) {
     createCargoTomls(
@@ -51,7 +51,7 @@ function createRustCode(
 
     createLibRs(
         rootPath,
-        jsPath
+        tsPath
     );
 }
 
@@ -70,11 +70,6 @@ function createCargoTomls(
         [profile.release]
         lto = true
         opt-level = 'z'
-
-        # TODO remove this once https://github.com/dfinity/candid/pull/290 is merged and released
-        # [patch.crates-io.candid]
-        # git = "https://github.com/dfinity/candid.git"
-        # branch = "nat-visitor"
     `);
 
     fs.writeFileSync(`${rootPath}/Cargo.toml`, `
@@ -91,8 +86,6 @@ function createCargoTomls(
         [dependencies]
         ic-cdk = "0.3.2"
         ic-cdk-macros = "0.3.2"
-        # candid = "0.7.8"
-        # candid = { git = "https://github.com/dfinity/candid", branch = "nat-visitor" }
         Boa = { git = "https://github.com/lastmjs/boa-azle" }
         getrandom = { version = "0.2.3", features = ["custom"] }
         serde = "1.0.130"
@@ -102,17 +95,17 @@ function createCargoTomls(
 
 function createLibRs(
     rootPath: string,
-    jsPath: string
+    tsPath: string
 ) {
     if (!fs.existsSync(`${rootPath}/src`)) {
         fs.mkdirSync(`${rootPath}/src`);
     }
 
     // TODO probably  get rid of this read file sync
-    const js = fs.readFileSync(jsPath).toString();
+    const js = fs.readFileSync(tsPath).toString();
 
     const rust = compileJSToRust(
-        jsPath,
+        tsPath,
         js
     );
 
