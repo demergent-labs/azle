@@ -72,9 +72,9 @@ function createCargoTomls(
         opt-level = 'z'
 
         # TODO remove this once https://github.com/dfinity/candid/pull/290 is merged and released
-        [patch.crates-io.candid]
-        git = "https://github.com/dfinity/candid.git"
-        branch = "nat-visitor"
+        # [patch.crates-io.candid]
+        # git = "https://github.com/dfinity/candid.git"
+        # branch = "nat-visitor"
     `);
 
     fs.writeFileSync(`${rootPath}/Cargo.toml`, `
@@ -131,7 +131,7 @@ function compileRustCode(canisterName: string) {
         { stdio: 'inherit' }
     );
     execSync(
-        `./target/bin/ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/${canisterName}.wasm -o ./target/wasm32-unknown-unknown/release/${canisterName}-optimized.wasm`,
+        `./target/bin/ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/${canisterName}.wasm -o ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
         { stdio: 'inherit' }
     );
 }
