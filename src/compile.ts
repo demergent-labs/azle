@@ -111,9 +111,9 @@ export function compileJSToRust(
                 let mut boa_context = boa_context_ref_cell.borrow_mut();
 
                 boa_context.register_global_function(
-                    "print",
+                    "icPrint",
                     0,
-                    print
+                    ic_print
                 ).unwrap();
 
                 boa_context.eval(format!(
@@ -134,7 +134,7 @@ export function compileJSToRust(
 
         ${rustUpdateFunctions.join('\n')}
 
-        fn print(
+        fn ic_print(
             _this: &boa::JsValue,
             _aargs: &[boa::JsValue],
             _context: &mut boa::Context
@@ -473,6 +473,7 @@ function generateRustFunction(
                     boa::property::Attribute::all()
                 );
 
+                // TODO grab the error message from the return value and panic on it if possible, the errors are almost unreadable
                 let return_value = boa_context.eval(format!(
                     "
                         JSON.stringify(${functionName}(${functionParameters.map((functionParameter) => {
