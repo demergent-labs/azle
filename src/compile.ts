@@ -151,6 +151,16 @@ export function compileJSToRust(
                         "trap",
                         0
                     )
+                    .function(
+                        ic_raw_rand,
+                        "rawRand",
+                        0
+                    )
+                    .function(
+                        ic_test_cross_canister,
+                        "testCrossCanister",
+                        0
+                    )
                     .build();
 
                 boa_context.register_global_property(
@@ -251,6 +261,78 @@ export function compileJSToRust(
             _context: &mut boa::Context
         ) -> boa::JsResult<boa::JsValue> {
             ic_cdk::api::trap(_aargs.get(0).unwrap().as_string().unwrap());
+        }
+
+        fn ic_raw_rand(
+            _this: &boa::JsValue,
+            _aargs: &[boa::JsValue],
+            _context: &mut boa::Context
+        ) -> boa::JsResult<boa::JsValue> {
+            let mut context = boa::Context::new();
+
+            let raw_rand = futures::executor::block_on(async {
+                let call_result: Result<(Vec<u8>,), _> = ic_cdk::api::call::call(
+                    ic_cdk::export::Principal::management_canister(),
+                    "raw_rand",
+                    ()
+                ).await;
+
+                return call_result.unwrap().0;
+            });
+
+            let value = context
+                .eval(
+                    format!(
+                        "Uint8Array.from({raw_rand})",
+                        raw_rand = serde_json::to_string(&raw_rand).unwrap()
+                    )
+                )
+                .unwrap();
+
+            return Ok(value);
+        }
+
+        fn ic_test_cross_canister(
+            _this: &boa::JsValue,
+            _aargs: &[boa::JsValue],
+            _context: &mut boa::Context
+        ) -> boa::JsResult<boa::JsValue> {
+            let mut context = boa::Context::new();
+
+            let string = futures::executor::block_on(async {
+                let call_result: Result<(String,), _> = ic_cdk::api::call::call(
+                    ic_cdk::export::Principal::from_text("ryjl3-tyaaa-aaaaa-aaaba-cai").unwrap(),
+                    "testString",
+                    ()
+                ).await;
+
+                return call_result.unwrap().0;
+            });
+
+            let value = context
+                .eval(
+                    format!(
+                        "{string}",
+                        string = serde_json::to_string(&string).unwrap()
+                    )
+                )
+                .unwrap();
+
+            return Ok(value);
+
+            // ic_cdk::block_on(async {
+            //     let call_result: Result<(String,), _> = ic_cdk::api::call::call(
+            //         ic_cdk::export::Principal::from_text("ryjl3-tyaaa-aaaaa-aaaba-cai").unwrap(),
+            //         "testString",
+            //         ()
+            //     ).await;
+
+            //     let string = call_result.unwrap().0;
+
+            //     ic_cdk::println!("string: {}", string);
+            // });
+
+            // return Ok(boa::JsValue::Undefined);
         }
     `;
 }
@@ -542,7 +624,31 @@ function generateRustFunction(
 ): string {
     return `
         #[ic_cdk_macros::${queryOrUpdate === 'QUERY' ? 'query' : 'update'}]
-        fn ${functionName}(${functionParametersString}) -> ${functionReturnType} {
+        async fn ${functionName}(${functionParametersString}) -> ${functionReturnType} {
+            // let string = futures::executor::block_on(async {
+            //     let call_result: Result<(String,), _> = ic_cdk::api::call::call(
+            //         ic_cdk::export::Principal::from_text("ryjl3-tyaaa-aaaaa-aaaba-cai").unwrap(),
+            //         "testString",
+            //         ()
+            //     ).await;
+
+            //     return call_result.unwrap().0;
+            // });
+
+            // ic_cdk::println!("string: {}", string);
+
+            // ic_cdk::block_on(async {
+            //     let call_result: Result<(String,), _> = ic_cdk::api::call::call(
+            //         ic_cdk::export::Principal::from_text("ryjl3-tyaaa-aaaaa-aaaba-cai").unwrap(),
+            //         "testString",
+            //         ()
+            //     ).await;
+
+            //     let string = call_result.unwrap().0;
+
+            //     ic_cdk::println!("string: {}", string);
+            // });
+
             BOA_CONTEXT.with(|boa_context_ref_cell| {
                 let mut boa_context = boa_context_ref_cell.borrow_mut();
 
