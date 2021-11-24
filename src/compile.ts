@@ -110,11 +110,60 @@ export function compileJSToRust(
             BOA_CONTEXT.with(|boa_context_ref_cell| {
                 let mut boa_context = boa_context_ref_cell.borrow_mut();
 
-                boa_context.register_global_function(
-                    "icPrint",
-                    0,
-                    ic_print
-                ).unwrap();
+                let ic = boa::object::ObjectInitializer::new(&mut boa_context)
+                    // .property(
+                    //     "caller",
+                    //     ic_cdk::api::caller().to_text(),
+                    //     boa::property::Attribute::all()
+                    // )
+                    // .property(
+                    //     "print",
+                    //     ic_print,
+                    //     boa::property::Attribute::all()
+                    // )
+                    .function(
+                        ic_caller,
+                        "caller",
+                        0
+                    )
+                    .function(
+                        ic_print,
+                        "print",
+                        0
+                    )
+                    .function(
+                        ic_id,
+                        "id",
+                        0
+                    )
+                    .function(
+                        ic_canister_balance,
+                        "canisterBalance",
+                        0
+                    )
+                    .function(
+                        ic_time,
+                        "time",
+                        0
+                    )
+                    .function(
+                        ic_trap,
+                        "trap",
+                        0
+                    )
+                    .build();
+
+                boa_context.register_global_property(
+                    "ic",
+                    ic,
+                    boa::property::Attribute::all()
+                );
+
+                // boa_context.register_global_function(
+                //     "icPrint",
+                //     0,
+                //     ic_print
+                // ).unwrap();
 
                 boa_context.eval(format!(
                     "let exports = {{}}; {compiled_js}",
@@ -144,21 +193,65 @@ export function compileJSToRust(
             return Ok(boa::JsValue::Undefined);
         }
 
-        // fn sha224(
-        //     _this: &boa::JsValue,
-        //     _aargs: &[boa::JsValue],
-        //     _context: &mut boa::Context
-        // ) -> boa::JsResult<boa::JsValue> {
-        //     let mut hasher = sha2::Sha224::new();
+        fn ic_caller(
+            _this: &boa::JsValue,
+            _aargs: &[boa::JsValue],
+            _context: &mut boa::Context
+        ) -> boa::JsResult<boa::JsValue> {
+            return Ok(
+                boa::JsValue::String(
+                    boa::JsString::new(
+                        ic_cdk::api::caller().to_text()
+                    )
+                )
+            );
+        }
 
-        //     hasher.update(b"hello");
+        fn ic_id(
+            _this: &boa::JsValue,
+            _aargs: &[boa::JsValue],
+            _context: &mut boa::Context
+        ) -> boa::JsResult<boa::JsValue> {
+            return Ok(
+                boa::JsValue::String(
+                    boa::JsString::new(
+                        ic_cdk::api::id().to_text()
+                    )
+                )
+            );
+        }
 
-        //     let result = hasher.finalize();
+        fn ic_canister_balance(
+            _this: &boa::JsValue,
+            _aargs: &[boa::JsValue],
+            _context: &mut boa::Context
+        ) -> boa::JsResult<boa::JsValue> {
+            return Ok(
+                boa::JsValue::Rational(
+                    ic_cdk::api::canister_balance() as f64 // TODO this conversion is probably not safe
+                )
+            );
+        }
 
-        //     ic_cdk::println!("{:#?}", _aargs);
+        fn ic_time(
+            _this: &boa::JsValue,
+            _aargs: &[boa::JsValue],
+            _context: &mut boa::Context
+        ) -> boa::JsResult<boa::JsValue> {
+            return Ok(
+                boa::JsValue::Rational(
+                    ic_cdk::api::time() as f64 // TODO this conversion is probably not safe
+                )
+            );
+        }
 
-        //     return Ok(boa::JsValue::Undefined);
-        // }
+        fn ic_trap(
+            _this: &boa::JsValue,
+            _aargs: &[boa::JsValue],
+            _context: &mut boa::Context
+        ) -> boa::JsResult<boa::JsValue> {
+            ic_cdk::api::trap(_aargs.get(0).unwrap().as_string().unwrap());
+        }
     `;
 }
 
@@ -452,26 +545,6 @@ function generateRustFunction(
         fn ${functionName}(${functionParametersString}) -> ${functionReturnType} {
             BOA_CONTEXT.with(|boa_context_ref_cell| {
                 let mut boa_context = boa_context_ref_cell.borrow_mut();
-
-                // TODO figure out the best way to set the caller and other values each time
-                let ic = boa::object::ObjectInitializer::new(&mut boa_context)
-                    .property(
-                        "caller",
-                        ic_cdk::api::caller().to_text(),
-                        boa::property::Attribute::all()
-                    )
-                    // .property(
-                    //     "print",
-                    //     ic_print,
-                    //     boa::property::Attribute::all()
-                    // )
-                    .build();
-
-                boa_context.register_global_property(
-                    "ic",
-                    ic,
-                    boa::property::Attribute::all()
-                );
 
                 // TODO grab the error message from the return value and panic on it if possible, the errors are almost unreadable
                 let return_value = boa_context.eval(format!(
