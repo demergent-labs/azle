@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "api": {
+            "type": "custom",
+            "build": "azle api",
+            "root": "canisters/api",
+            "ts": "canisters/api/api.ts",
+            "candid": "canisters/api/api.did",
+            "wasm": "target/wasm32-unknown-unknown/release/api.wasm"
+        }
+    }
+}
