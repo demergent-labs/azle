@@ -9,6 +9,9 @@ import {
     u8
 } from 'azle';
 
+// TODO we need to provide this type to the user
+// TODO doing it through an import would probably be best
+// TODO so we need to get imports to work
 declare const ic: {
     caller: () => string;
     canisterBalance: () => u64;
@@ -17,6 +20,11 @@ declare const ic: {
     time: () => u64;
     trap: (message: string) => never;
     rawRand: () => Uint8Array;
+
+    // TODO figure out these functions
+    // call: (...args: any) => any;
+    // call_raw
+    // call_with_payment
 
     testCrossCanister: () => string;
 };
@@ -31,6 +39,8 @@ declare const ic: {
 // }
 
 export function test(): Update<boolean> {
+    // ic.print('ic.rejectMessage()', ic.rejectMessage());
+
     ic.print('ic.testCrossCanister()', ic.testCrossCanister());
 
     // const rawRand = ic.rawRand();

@@ -94,7 +94,6 @@ function createCargoTomls(
         [dependencies]
         ic-cdk = "0.3.2"
         ic-cdk-macros = "0.3.2"
-        futures = "0.3.18" # TODO remove this dependency once this issue is resolved: https://github.com/dfinity/cdk-rs/issues/7
         Boa = { git = "https://github.com/lastmjs/boa-azle" }
         getrandom = { version = "0.2.3", features = ["custom"] }
         serde = "1.0.130"
