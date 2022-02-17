@@ -1,16 +1,10 @@
 import {
     Query,
-    u64
+    u64,
+    ic
 } from 'azle';
 
-declare const ic: {
-    caller: () => string;
-    canisterBalance: () => u64;
-    id: () => string;
-    print: (...args: any) => void;
-    time: () => u64;
-    trap: (message: string) => never;
-};
+declare const ic: ic;
 
 export function caller(): Query<string> {
     return ic.caller();
@@ -26,6 +20,7 @@ export function id(): Query<string> {
 
 export function print(message: string): Query<boolean> {
     ic.print(message);
+
     return true;
 }
 

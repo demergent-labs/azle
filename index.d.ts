@@ -1,3 +1,14 @@
+// declare const ic: ic;
+
+export type ic = {
+    caller: () => string;
+    canisterBalance: () => u64;
+    id: () => string;
+    print: (...args: any) => void;
+    time: () => u64;
+    trap: (message: string) => never;
+};
+
 export type Query<T> = T;
 export type Update<T> = T;
 export type Candid<T> = T;
@@ -18,6 +29,9 @@ export type u16 = number;
 export type u8 = number;
 export type Nat = number;
 export type Vec<T> = T[];
+
+// export ic;
+
 // declare var ic: any;
 // export const ic = (globalThis as any).ic;
 
