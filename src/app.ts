@@ -1,5 +1,8 @@
 import * as fs from 'fs';
-import { execSync } from 'child_process';
+import {
+    execSync,
+    spawn
+} from 'child_process';
 import { compileJSToRust } from './compile';
 
 app();
@@ -36,6 +39,11 @@ function app() {
     );
 
     compileRustCode(canisterName);
+
+    generateCandid(
+        canisterName,
+        candidPath
+    );
 }
 
 function createRustCode(
@@ -135,4 +143,61 @@ function compileRustCode(canisterName: string) {
         `./target/bin/ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/${canisterName}.wasm -o ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
         { stdio: 'inherit' }
     );
+}
+
+function generateCandid(
+    canisterName: string,
+    candidPath: string
+) {
+    execSync(
+        `touch ${candidPath}`,
+        { stdio: 'inherit' }
+    );
+
+    // TODO I should probably just write this in JS so it can be cross-platform and less hacky than bash
+    const child = spawn(`
+        INDEX=0
+
+        # Get the sha256 sum of the compiled wasm binary
+        local_sha_sum_text=$(sha256sum ./target/wasm32-unknown-unknown/release/${canisterName}.wasm)
+
+        # remove the file path from the output of sha256sum
+        local_sha_sum=\${local_sha_sum_text//"  ./target/wasm32-unknown-unknown/release/${canisterName}.wasm"/}
+        
+        # get the currently installed wasm hash from the canister
+        canister_sha_sum_text=$(dfx canister info ${canisterName})
+        
+        # make sure we have not done 10 iterations and that the wasm binary hashes do not match
+        while [ $INDEX -lt 10 ] && [[ $canister_sha_sum_text != *"$local_sha_sum"* ]]
+        do
+            sleep 1
+            canister_sha_sum_text=$(dfx canister info ${canisterName})
+        done
+        
+        # once the hashes match, we request the Candid from the canister
+        canister_candid_unedited=$(dfx canister call ${canisterName} __get_candid_interface_tmp_hack --query)
+
+        # remove the surrounding parentheses and quotes
+        canister_candid_edited_0=\${canister_candid_unedited/"("/}
+        canister_candid_edited_1=\${canister_candid_edited_0/\\"/}
+
+        # reverse the string
+        canister_candid_edited_2=$(echo "$canister_candid_edited_1" | tac | rev)
+
+        # remove the other surrounding parentheses and quotes
+        canister_candid_edited_3=\${canister_candid_edited_2/")"/}
+        canister_candid_edited_4=\${canister_candid_edited_3/","/}
+        canister_candid_edited_5=\${canister_candid_edited_4/\\"/}
+
+        # reverse the string again to return it to its original form
+        canister_candid_edited_6=$(echo "$canister_candid_edited_5" | tac | rev)
+
+        echo "$canister_candid_edited_6" > ${candidPath}
+    `, {
+        detached: true,
+        stdio: 'ignore',
+        shell: '/bin/bash'
+    });
+
+    child.unref();
 }

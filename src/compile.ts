@@ -268,28 +268,31 @@ export function compileJSToRust(
             _aargs: &[boa::JsValue],
             _context: &mut boa::Context
         ) -> boa::JsResult<boa::JsValue> {
-            let mut context = boa::Context::new();
+            // let mut context = boa::Context::new();
 
-            let raw_rand = futures::executor::block_on(async {
-                let call_result: Result<(Vec<u8>,), _> = ic_cdk::api::call::call(
-                    ic_cdk::export::Principal::management_canister(),
-                    "raw_rand",
-                    ()
-                ).await;
+            // let raw_rand = futures::executor::block_on(async {
+            //     let call_result: Result<(Vec<u8>,), _> = ic_cdk::api::call::call(
+            //         ic_cdk::export::Principal::management_canister(),
+            //         "raw_rand",
+            //         ()
+            //     ).await;
 
-                return call_result.unwrap().0;
-            });
+            //     return call_result.unwrap().0;
+            // });
 
-            let value = context
-                .eval(
-                    format!(
-                        "Uint8Array.from({raw_rand})",
-                        raw_rand = serde_json::to_string(&raw_rand).unwrap()
-                    )
-                )
-                .unwrap();
+            // let value = context
+            //     .eval(
+            //         format!(
+            //             "Uint8Array.from({raw_rand})",
+            //             raw_rand = serde_json::to_string(&raw_rand).unwrap()
+            //         )
+            //     )
+            //     .unwrap();
 
-            return Ok(value);
+            // return Ok(value);
+
+            // TODO we should be able to provide randomness without cross-canister calls
+            Ok(boa::JsValue::Undefined)
         }
 
         fn ic_test_cross_canister(
@@ -409,6 +412,13 @@ export function compileJSToRust(
             // ic_cdk::println!("result: {:#?}", result);
 
             return Ok(boa::JsValue::Undefined);
+        }
+
+        ic_cdk::export::candid::export_service!();
+
+        #[ic_cdk_macros::query]
+        fn __get_candid_interface_tmp_hack() -> String {
+            __export_service()
         }
     `;
 }
@@ -700,6 +710,7 @@ function generateRustFunction(
 ): string {
     return `
         #[ic_cdk_macros::${queryOrUpdate === 'QUERY' ? 'query' : 'update'}]
+        #[ic_cdk::export::candid::candid_method(${queryOrUpdate === 'QUERY' ? 'query' : 'update'})]
         async fn ${functionName}(${functionParametersString}) -> ${functionReturnType} {
             // let string = futures::executor::block_on(async {
             //     let call_result: Result<(String,), _> = ic_cdk::api::call::call(
