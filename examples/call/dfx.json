@@ -1,0 +1,20 @@
+{
+    "canisters": {
+        "call": {
+            "type": "custom",
+            "build": "azle call",
+            "root": "canisters/call",
+            "ts": "canisters/call/call.ts",
+            "candid": "canisters/call/call.did",
+            "wasm": "target/wasm32-unknown-unknown/release/call.wasm"
+        },
+        "canister": {
+            "type": "custom",
+            "build": "azle canister",
+            "root": "canisters/canister",
+            "ts": "canisters/canister/canister.ts",
+            "candid": "canisters/canister/canister.did",
+            "wasm": "target/wasm32-unknown-unknown/release/canister.wasm"
+        }
+    }
+}

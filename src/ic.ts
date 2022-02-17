@@ -17,6 +17,7 @@ export type u32 = number;
 export type u16 = number;
 export type u8 = number;
 export type Nat = number;
+export type Vec<T> = T[];
 // declare var ic: any;
 // export const ic = (globalThis as any).ic;
 

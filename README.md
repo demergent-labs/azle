@@ -1,14 +1,10 @@
-THIS REPOSITORY IS DEPRECATED. AZLE IS NOW MAINTAINED HERE: https://github.com/demergent-labs/azle
-
-DO NOT USE YET. INTERNAL DEVELOPMENT AND TESTING ONGOING. RELEASE IMMINENT.
-
 # Azle
 
 TypeScript/JavaScript CDK for the Internet Computer.
 
 ## Contributing
 
-Not currently taking contributions. Please allow time for initial code architecture and governance/legal/token work to be put in place. Expect the ability to contribute to slowly pick up in the next month or so.
+Not currently taking contributions. Please allow time for initial code architecture and governance/legal/token work to be put in place.
 
 ## Installation
 
