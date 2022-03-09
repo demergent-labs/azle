@@ -27,7 +27,7 @@ If you had one canister named `basic`, your `dfx.json` would look like this:
             "root": "canisters/basic",
             "js": "canisters/basic/app.js",
             "candid": "canisters/basic/app.did",
-            "wasm": "target/wasm32-unknown-unknown/release/basic-optimized.wasm"
+            "wasm": "target/wasm32-unknown-unknown/release/basic.wasm"
         }
     }
 }
