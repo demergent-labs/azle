@@ -4,8 +4,6 @@ import {
     ic
 } from 'azle';
 
-declare const ic: ic;
-
 export function caller(): Query<string> {
     return ic.caller();
 }

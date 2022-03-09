@@ -1,6 +1,8 @@
-// declare const ic: ic;
+declare var globalThis: any;
 
-export type ic = {
+export const ic: ic = globalThis.ic;
+
+type ic = {
     caller: () => string;
     canisterBalance: () => u64;
     id: () => string;
@@ -29,28 +31,3 @@ export type u16 = number;
 export type u8 = number;
 export type Nat = number;
 export type Vec<T> = T[];
-
-// export ic;
-
-// declare var ic: any;
-// export const ic = (globalThis as any).ic;
-
-// import {
-//     Query,
-//     Update
-// } from 'azle';
-// declare var ic: any;
-
-// export function echo(message: string): Query<string> {
-//     return message;
-// }
-
-// export function set(key: string, value: string): Update<boolean> {
-//     ic[key] = value;
-
-//     return true;
-// }
-
-// export function get(key: string): Query<string> {
-//     return ic[key];
-// }
