@@ -141,7 +141,14 @@ async function compileTSToJS(tsPath: string): Promise<string> {
             name: '',
             path: ''
         },
-        module: {}
+        module: {},
+        options: {
+            jsc: {
+                experimental: {
+                    cacheRoot: '/dev/null' // TODO I am taking the easy way out to just get rid of the cache for now. This was creating a .swc directory in the users' cwd
+                }
+            }
+        }
     });
 
     const bundledJS = bundleResult.bundle.code;
@@ -157,7 +164,8 @@ async function compileTSToJS(tsPath: string): Promise<string> {
                 syntax: 'ecmascript'
             },
             target: 'es3'
-        }
+        },
+        minify: false // TODO keeping this off for now, enable once the project is more stable
     }).code;
 }
 
