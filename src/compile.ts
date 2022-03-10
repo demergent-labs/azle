@@ -88,7 +88,7 @@ export function compileJSToRust(
         #![allow(non_snake_case)]
 
         thread_local! {
-            static BOA_CONTEXT: std::cell::RefCell<boa::Context> = std::cell::RefCell::new(boa::Context::new());
+            static BOA_CONTEXT: std::cell::RefCell<boa_engine::Context> = std::cell::RefCell::new(boa_engine::Context::default());
         }
 
         fn custom_getrandom(_buf: &mut [u8]) -> Result<(), getrandom::Error> { Ok(()) }
@@ -100,16 +100,16 @@ export function compileJSToRust(
             BOA_CONTEXT.with(|boa_context_ref_cell| {
                 let mut boa_context = boa_context_ref_cell.borrow_mut();
 
-                let ic = boa::object::ObjectInitializer::new(&mut boa_context)
+                let ic = boa_engine::object::ObjectInitializer::new(&mut boa_context)
                     // .property(
                     //     "caller",
                     //     ic_cdk::api::caller().to_text(),
-                    //     boa::property::Attribute::all()
+                    //     boa_engine::property::Attribute::all()
                     // )
                     // .property(
                     //     "print",
                     //     ic_print,
-                    //     boa::property::Attribute::all()
+                    //     boa_engine::property::Attribute::all()
                     // )
                     .function(
                         ic_caller,
@@ -156,7 +156,7 @@ export function compileJSToRust(
                 boa_context.register_global_property(
                     "ic",
                     ic,
-                    boa::property::Attribute::all()
+                    boa_engine::property::Attribute::all()
                 );
 
                 // boa_context.register_global_function(
@@ -184,23 +184,23 @@ export function compileJSToRust(
         ${rustUpdateFunctions.join('\n')}
 
         fn ic_print(
-            _this: &boa::JsValue,
-            _aargs: &[boa::JsValue],
-            _context: &mut boa::Context
-        ) -> boa::JsResult<boa::JsValue> {
+            _this: &boa_engine::JsValue,
+            _aargs: &[boa_engine::JsValue],
+            _context: &mut boa_engine::Context
+        ) -> boa_engine::JsResult<boa_engine::JsValue> {
             ic_cdk::println!("{:#?}", _aargs);
         
-            return Ok(boa::JsValue::Undefined);
+            return Ok(boa_engine::JsValue::Undefined);
         }
 
         fn ic_caller(
-            _this: &boa::JsValue,
-            _aargs: &[boa::JsValue],
-            _context: &mut boa::Context
-        ) -> boa::JsResult<boa::JsValue> {
+            _this: &boa_engine::JsValue,
+            _aargs: &[boa_engine::JsValue],
+            _context: &mut boa_engine::Context
+        ) -> boa_engine::JsResult<boa_engine::JsValue> {
             return Ok(
-                boa::JsValue::String(
-                    boa::JsString::new(
+                boa_engine::JsValue::String(
+                    boa_engine::JsString::new(
                         ic_cdk::api::caller().to_text()
                     )
                 )
@@ -208,13 +208,13 @@ export function compileJSToRust(
         }
 
         fn ic_id(
-            _this: &boa::JsValue,
-            _aargs: &[boa::JsValue],
-            _context: &mut boa::Context
-        ) -> boa::JsResult<boa::JsValue> {
+            _this: &boa_engine::JsValue,
+            _aargs: &[boa_engine::JsValue],
+            _context: &mut boa_engine::Context
+        ) -> boa_engine::JsResult<boa_engine::JsValue> {
             return Ok(
-                boa::JsValue::String(
-                    boa::JsString::new(
+                boa_engine::JsValue::String(
+                    boa_engine::JsString::new(
                         ic_cdk::api::id().to_text()
                     )
                 )
@@ -222,43 +222,43 @@ export function compileJSToRust(
         }
 
         fn ic_canister_balance(
-            _this: &boa::JsValue,
-            _aargs: &[boa::JsValue],
-            _context: &mut boa::Context
-        ) -> boa::JsResult<boa::JsValue> {
+            _this: &boa_engine::JsValue,
+            _aargs: &[boa_engine::JsValue],
+            _context: &mut boa_engine::Context
+        ) -> boa_engine::JsResult<boa_engine::JsValue> {
             return Ok(
-                boa::JsValue::Rational(
+                boa_engine::JsValue::Rational(
                     ic_cdk::api::canister_balance() as f64 // TODO this conversion is probably not safe
                 )
             );
         }
 
         fn ic_time(
-            _this: &boa::JsValue,
-            _aargs: &[boa::JsValue],
-            _context: &mut boa::Context
-        ) -> boa::JsResult<boa::JsValue> {
+            _this: &boa_engine::JsValue,
+            _aargs: &[boa_engine::JsValue],
+            _context: &mut boa_engine::Context
+        ) -> boa_engine::JsResult<boa_engine::JsValue> {
             return Ok(
-                boa::JsValue::Rational(
+                boa_engine::JsValue::Rational(
                     ic_cdk::api::time() as f64 // TODO this conversion is probably not safe
                 )
             );
         }
 
         fn ic_trap(
-            _this: &boa::JsValue,
-            _aargs: &[boa::JsValue],
-            _context: &mut boa::Context
-        ) -> boa::JsResult<boa::JsValue> {
+            _this: &boa_engine::JsValue,
+            _aargs: &[boa_engine::JsValue],
+            _context: &mut boa_engine::Context
+        ) -> boa_engine::JsResult<boa_engine::JsValue> {
             ic_cdk::api::trap(_aargs.get(0).unwrap().as_string().unwrap());
         }
 
         fn ic_raw_rand(
-            _this: &boa::JsValue,
-            _aargs: &[boa::JsValue],
-            _context: &mut boa::Context
-        ) -> boa::JsResult<boa::JsValue> {
-            // let mut context = boa::Context::new();
+            _this: &boa_engine::JsValue,
+            _aargs: &[boa_engine::JsValue],
+            _context: &mut boa_engine::Context
+        ) -> boa_engine::JsResult<boa_engine::JsValue> {
+            // let mut context = boa_engine::Context::new();
 
             // let raw_rand = futures::executor::block_on(async {
             //     let call_result: Result<(Vec<u8>,), _> = ic_cdk::api::call::call(
@@ -282,20 +282,20 @@ export function compileJSToRust(
             // return Ok(value);
 
             // TODO we should be able to provide randomness without cross-canister calls
-            Ok(boa::JsValue::Undefined)
+            Ok(boa_engine::JsValue::Undefined)
         }
 
         fn ic_test_cross_canister(
-            _this: &boa::JsValue,
-            _aargs: &[boa::JsValue],
-            _context: &mut boa::Context
-        ) -> boa::JsResult<boa::JsValue> {
+            _this: &boa_engine::JsValue,
+            _aargs: &[boa_engine::JsValue],
+            _context: &mut boa_engine::Context
+        ) -> boa_engine::JsResult<boa_engine::JsValue> {
             // std::thread::sleep(std::time::Duration::new(5,0 ));
 
             // TODO what I am considering next is using LocalPool from futures
             // TODO maybe I can just manually create a local executor and get this all to work
 
-            // let mut context = boa::Context::new();
+            // let mut context = boa_engine::Context::new();
 
             // let string = futures::executor::block_on(async {
             //     let call_result: Result<(String,), _> = ic_cdk::api::call::call(
@@ -401,7 +401,7 @@ export function compileJSToRust(
 
             // ic_cdk::println!("result: {:#?}", result);
 
-            return Ok(boa::JsValue::Undefined);
+            return Ok(boa_engine::JsValue::Undefined);
         }
 
         ic_cdk::export::candid::export_service!();
@@ -659,7 +659,7 @@ function generateRustFunctionFromNode(
         'ic_cdk::export::candid::Principal': 'return_value.parse::<ic_cdk::export::candid::Principal>().unwrap()'
     }[functionReturnType] ?? `serde_json::from_str::<${functionReturnType}>(&return_value).unwrap()`;
 
-    // TODO serde_json::from_str(boa::builtins::json::stringify(return_value)) as TransferRequest
+    // TODO serde_json::from_str(boa_engine::builtins::json::stringify(return_value)) as TransferRequest
 
     if (icFunctionType === 'Query') {
         return generateRustFunction(
