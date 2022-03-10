@@ -10,7 +10,7 @@ Not currently taking contributions. Please allow time for initial code architect
 
 ## Installation
 
-npm install azle
+npm install azle (currently broken)
 
 ## Use
 
@@ -18,18 +18,18 @@ See the examples in this respository.
 
 Basically just update your `dfx.json` and use the normal commands like `dfx build`, `dfx deploy`, etc.
 
-If you had one canister named `basic`, your `dfx.json` would look like this:
+If you had one canister named `erc20`, your `dfx.json` would look like this:
 
 ```json
 {
     "canisters": {
-        "basic": {
+        "erc20": {
             "type": "custom",
-            "build": "azle basic",
-            "root": "canisters/basic",
-            "js": "canisters/basic/app.js",
-            "candid": "canisters/basic/app.did",
-            "wasm": "target/wasm32-unknown-unknown/release/basic.wasm"
+            "build": "azle erc20",
+            "root": "src",
+            "ts": "src/erc20.ts",
+            "candid": "src/erc20.did",
+            "wasm": "target/wasm32-unknown-unknown/release/erc20.wasm"
         }
     }
 }
