@@ -1,8 +1,0 @@
-{
-    "scripts": {
-        "build": ""
-    },
-    "dependencies": {
-        "azle": "0.0.3"
-    }
-}

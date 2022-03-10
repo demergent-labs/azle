@@ -3,23 +3,27 @@ import {
     Update,
     i32
 } from 'azle';
-declare var ic: {
-    ERC20: ERC20
-}; // TODO this is just temporary
 
 type Account = {
-    readonly address: string;
+    address: string;
     balance: number;
 };
 
-type ERC20 = Readonly<{
+type State = {
     accounts: {
         [key: string]: Account;
     };
     totalSupply: number;
     ticker: string;
     name: string;
-}>;
+};
+
+let state: State = {
+    accounts: {},
+    totalSupply: 0,
+    ticker: '',
+    name: ''
+};
 
 export function initializeSupply(
     ticker: string,
@@ -27,7 +31,8 @@ export function initializeSupply(
     totalSupply: i32,
     originalAddress: string
 ): Update<boolean> {
-    ic.ERC20 = {
+    state = {
+        ...state,
         accounts: {
             [originalAddress]: {
                 address: originalAddress,
@@ -47,31 +52,31 @@ export function transfer(
     to: string,
     amount: i32
 ): Update<boolean> {
-    if (ic.ERC20.accounts[to] === undefined) {
-        ic.ERC20.accounts[to] = {
+    if (state.accounts[to] === undefined) {
+        state.accounts[to] = {
             address: to,
             balance: 0
         };
     }
 
-    ic.ERC20.accounts[from].balance -= amount;
-    ic.ERC20.accounts[to].balance += amount;
+    state.accounts[from].balance -= amount;
+    state.accounts[to].balance += amount;
 
     return true;
 }
 
 export function balance(address: string): Query<i32> {
-    return ic.ERC20.accounts[address].balance;
+    return state.accounts[address]?.balance ?? 0;
 }
 
 export function ticker(): Query<string> {
-    return ic.ERC20.ticker;
+    return state.ticker;
 }
 
 export function name(): Query<string> {
-    return ic.ERC20.name;
+    return state.name;
 }
 
 export function totalSupply(): Query<i32> {
-    return ic.ERC20.totalSupply;
+    return state.totalSupply;
 }
