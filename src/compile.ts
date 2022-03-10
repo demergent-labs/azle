@@ -63,28 +63,18 @@ export function compileJSToRust(
     // TODO we might want to minify as well to save space
 
     // TODO we might need to use transpile to get all imports
-    const compiledJs = tsc.transpileModule(
-        js,
-        {
-            compilerOptions: {
-                // module: tsc.ModuleKind.AMD
-                target: tsc.ScriptTarget.ES5, // TODO figure out what the default is
-                noImplicitUseStrict: true
-            }
-        }
-    ).outputText;
 
     const rustCandidTypes = generateRustCandidTypesFromSourceFiles(sourceFiles);
 
     const rustQueryFunctions = generateRustFunctionsFromSourceFiles(
         sourceFiles,
-        compiledJs,
+        js,
         'Query'
     );
 
     const rustUpdateFunctions = generateRustFunctionsFromSourceFiles(
         sourceFiles,
-        compiledJs,
+        js,
         'Update'
     );
 
@@ -177,7 +167,7 @@ export function compileJSToRust(
 
                 boa_context.eval(format!(
                     "let exports = {{}}; {compiled_js}",
-                    compiled_js = r#"${compiledJs}"#
+                    compiled_js = r#"${js}"#
                 )).unwrap();
             });
         }

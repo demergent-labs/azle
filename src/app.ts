@@ -4,6 +4,7 @@ import {
     spawn
 } from 'child_process';
 import { compileJSToRust } from './compile';
+import * as swc from '@swc/core';
 
 app();
 
@@ -22,7 +23,7 @@ type JSCanisterConfig = Readonly<{
     wasm: string;
 }>;
 
-function app() {
+async function app() {
     const canisterName = process.argv[2];
     const dfxJson: DfxJson = JSON.parse(fs.readFileSync('dfx.json').toString());
     const canisterConfig = dfxJson.canisters[canisterName];
@@ -31,7 +32,7 @@ function app() {
     const tsPath = canisterConfig.ts;
     const candidPath = canisterConfig.candid;
 
-    createRustCode(
+    await createRustCode(
         canisterName,
         rootPath,
         tsPath,
@@ -46,7 +47,7 @@ function app() {
     );
 }
 
-function createRustCode(
+async function createRustCode(
     canisterName: string,
     rootPath: string,
     tsPath: string,
@@ -57,7 +58,7 @@ function createRustCode(
         rootPath
     );
 
-    createLibRs(
+    await createLibRs(
         rootPath,
         tsPath
     );
@@ -109,7 +110,7 @@ function createCargoTomls(
     `);
 }
 
-function createLibRs(
+async function createLibRs(
     rootPath: string,
     tsPath: string
 ) {
@@ -118,7 +119,9 @@ function createLibRs(
     }
 
     // TODO probably  get rid of this read file sync
-    const js = fs.readFileSync(tsPath).toString();
+    const ts = fs.readFileSync(tsPath).toString();
+
+    const js = await compileTSToJS(tsPath);
 
     const rust = compileJSToRust(
         tsPath,
@@ -126,6 +129,44 @@ function createLibRs(
     );
 
     fs.writeFileSync(`./target/azle/${rootPath}/src/lib.rs`, rust);
+}
+
+async function compileTSToJS(tsPath: string): Promise<string> {
+    // First we bundle, which transpiles the TS into JS and creates one giant string with all modules concatenated
+    const bundleResult = await swc.bundle({
+        entry: {
+            bundle: tsPath
+        },
+        output: {
+            name: '',
+            path: ''
+        },
+        module: {},
+        options: {
+            jsc: {
+                experimental: {
+                    cacheRoot: '/dev/null' // TODO I am taking the easy way out to just get rid of the cache for now. This was creating a .swc directory in the users' cwd
+                }
+            }
+        }
+    });
+
+    const bundledJS = bundleResult.bundle.code;
+
+    // Then we convert the remaining ES modules syntax to CommonJS which is easier to deal with in boa
+    // and we transpile to es3 to hopefully get good compatibility with boa
+    return swc.transformSync(bundledJS, {
+        module: {
+            type: 'commonjs'
+        },
+        jsc: {
+            parser: {
+                syntax: 'ecmascript'
+            },
+            target: 'es3'
+        },
+        minify: false // TODO keeping this off for now, enable once the project is more stable
+    }).code;
 }
 
 function compileRustCode(canisterName: string) {
