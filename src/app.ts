@@ -132,6 +132,7 @@ async function createLibRs(
     fs.writeFileSync(`./target/azle/${rootPath}/src/lib.rs`, rust);
 }
 
+// TODO it would be nice if the bundle and transform steps could be combined into one
 async function compileTSToJS(tsPath: string): Promise<string> {
     // First we bundle, which transpiles the TS into JS and creates one giant string with all modules concatenated
     const bundleResult = await swc.bundle({
@@ -145,6 +146,9 @@ async function compileTSToJS(tsPath: string): Promise<string> {
         module: {},
         options: {
             jsc: {
+                parser: {
+                    syntax: 'typescript'
+                },
                 experimental: {
                     cacheRoot: '/dev/null' // TODO I am taking the easy way out to just get rid of the cache for now. This was creating a .swc directory in the users' cwd
                 }
