@@ -2,4 +2,5 @@
   getOne : () -> (text) query;
   getThree : () -> (text) query;
   getTwo : () -> (text) query;
+  sha224Hash : (text) -> (text) query;
 }

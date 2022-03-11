@@ -5,6 +5,7 @@ import {
 } from 'child_process';
 import { compileJSToRust } from './compile';
 import * as swc from '@swc/core';
+import { buildSync } from 'esbuild';
 
 app();
 
@@ -134,33 +135,36 @@ async function createLibRs(
 
 // TODO it would be nice if the bundle and transform steps could be combined into one
 async function compileTSToJS(tsPath: string): Promise<string> {
-    // First we bundle, which transpiles the TS into JS and creates one giant string with all modules concatenated
-    const bundleResult = await swc.bundle({
-        entry: {
-            bundle: tsPath
-        },
-        output: {
-            name: '',
-            path: ''
-        },
-        module: {},
-        options: {
-            jsc: {
-                parser: {
-                    syntax: 'typescript'
-                },
-                experimental: {
-                    cacheRoot: '/dev/null' // TODO I am taking the easy way out to just get rid of the cache for now. This was creating a .swc directory in the users' cwd
-                }
-            }
-        }
+    const bundledJS = bundle(tsPath);
+    const transpiledJS = transpile(bundledJS);
+    // TODO enabling strict mode is causing lots of issues
+    // TODO it would be nice if I could remove strict mode code in esbuild or swc
+    // TODO look into the implications of this, but since we are trying to transpile to es3 to cope with missing features in boa, I do not think we need strict mode
+    const strictModeRemovedJS = transpiledJS.replace(/"use strict";/g, '');
+
+    return strictModeRemovedJS;
+}
+
+// TODO there is a lot of minification/transpiling etc we could do with esbuild or with swc
+// TODO we need to decide which to use for what
+function bundle(tsPath: string): string {
+    const buildResult = buildSync({
+        entryPoints: [tsPath],
+        format: 'esm',
+        bundle: true,
+        write: false
     });
 
-    const bundledJS = bundleResult.bundle.code;
+    const bundleArray = buildResult.outputFiles[0].contents;
+    const bundleString = Buffer.from(bundleArray).toString('utf-8');
 
-    // Then we convert the remaining ES modules syntax to CommonJS which is easier to deal with in boa
-    // and we transpile to es3 to hopefully get good compatibility with boa
-    return swc.transformSync(bundledJS, {
+    return bundleString;
+}
+
+// TODO there is a lot of minification/transpiling etc we could do with esbuild or with swc
+// TODO we need to decide which to use for what
+function transpile(js: string): string {
+    return swc.transformSync(js, {
         module: {
             type: 'commonjs'
         },
@@ -168,7 +172,11 @@ async function compileTSToJS(tsPath: string): Promise<string> {
             parser: {
                 syntax: 'ecmascript'
             },
-            target: 'es3'
+            target: 'es3',
+            experimental: {
+                cacheRoot: '/dev/null'
+            },
+            loose: true
         },
         minify: false // TODO keeping this off for now, enable once the project is more stable
     }).code;
