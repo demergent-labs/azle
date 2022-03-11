@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "query": {
+            "type": "custom",
+            "build": "azle query",
+            "root": "src",
+            "ts": "src/query.ts",
+            "candid": "src/query.did",
+            "wasm": "target/wasm32-unknown-unknown/release/query.wasm"
+        }
+    }
+}

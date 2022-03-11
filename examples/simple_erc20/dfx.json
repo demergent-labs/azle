@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "simple_erc20": {
+            "type": "custom",
+            "build": "azle simple_erc20",
+            "root": "src",
+            "ts": "src/simple_erc20.ts",
+            "candid": "src/simple_erc20.did",
+            "wasm": "target/wasm32-unknown-unknown/release/simple_erc20.wasm"
+        }
+    }
+}

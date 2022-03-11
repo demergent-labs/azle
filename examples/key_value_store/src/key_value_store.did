@@ -1,0 +1,1 @@
+service : { get : (text) -> (text) query; set : (text text) -> (bool) }

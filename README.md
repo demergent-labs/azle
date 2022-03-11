@@ -1,42 +1,42 @@
-EXTREMELY EXPERIMENTAL
+EXPERIMENTAL
 
 # Azle
 
 TypeScript/JavaScript CDK for the Internet Computer.
 
-## Contributing
-
-Not currently taking contributions. Please allow time for initial code architecture and governance/legal/token work to be put in place.
-
 ## Installation
 
-npm install azle (currently broken)
+npm install azle
 
 ## Use
 
-See the examples in this respository.
+See the [examples in this respository](/examples).
 
-Basically just update your `dfx.json` and use the normal commands like `dfx build`, `dfx deploy`, etc.
+## Roadmap
 
-If you had one canister named `erc20`, your `dfx.json` would look like this:
+1. Synchronous IC APIs
+2. TypeScript -> Candid compiler
+3. Asynchronous IC APIs
+4. Robust automated tests
+5. Comprehensive benchmarks
 
-```json
-{
-    "canisters": {
-        "erc20": {
-            "type": "custom",
-            "build": "azle erc20",
-            "root": "src",
-            "ts": "src/erc20.ts",
-            "candid": "src/erc20.did",
-            "wasm": "target/wasm32-unknown-unknown/release/erc20.wasm"
-        }
-    }
-}
-```
+## Limitations
+
+* No asynchronous IC APIs (such as cross-canister calls)
+* No asynchronous TypeScript/JavaScript at all (async/await, promises, etc)
+* Third-party npm packages that you import may use unsupported syntax or APIs
+* TypeScript -> Candid compiler is very primitive (your `.did` files may be generated incorrectly)
+* Various TypeScript types aren't supported as parameters or return types to `Query` or `Update` functions
+* Potentially many obvious security vulnerabilities
+* Unknown cycle efficiency relative to canisters written in Rust or Motoko
+* And much much [more](https://github.com/demergent-labs/azle/issues)
+
+## Contributing
+
+All contributors must agree to and sign the [Azle License Extension](/LICENSE_EXTENSION.md).
+
+Before beginning work on a contribution, please create or comment on the issue you want to work on and wait for clearance from Demergent Labs.
 
 ## License
 
-Azle is licensed under the MIT license found in the LICENSE file. The copyright is intended to be assigned to the holders of the AZLE token found at canister id nlhft-2iaaa-aaaae-qaaua-cai on the Internet Computer. Full copyright assignment may require written and signed agreements which have not yet been implemented.
-
-The AZLE token code and supply is currently controlled entirely by Jordan Last (lastmjs). The tentative plan is to decentralize the AZLE ownership, the AZLE canister, and the Azle repository over time. The repository for the AZLE token can be found here: https://github.com/lastmjs/extendable-token-azle
+Azle's copyright is governed by the [LICENSE](/LICENSE) and [LICENSE_EXTENSION](/LICENSE_EXTENSION.md).

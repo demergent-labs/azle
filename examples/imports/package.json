@@ -1,6 +1,6 @@
 {
     "dependencies": {
-        "azle": "0.0.8",
+        "azle": "0.0.9",
         "hash.js": "1.1.7"
     }
 }

@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "complex_types": {
+            "type": "custom",
+            "build": "azle complex_types",
+            "root": "src",
+            "ts": "src/complex_types.ts",
+            "candid": "src/complex_types.did",
+            "wasm": "target/wasm32-unknown-unknown/release/complex_types.wasm"
+        }
+    }
+}

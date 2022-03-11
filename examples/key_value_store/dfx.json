@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "key_value_store": {
+            "type": "custom",
+            "build": "azle key_value_store",
+            "root": "src",
+            "ts": "src/key_value_store.ts",
+            "candid": "src/key_value_store.did",
+            "wasm": "target/wasm32-unknown-unknown/release/key_value_store.wasm"
+        }
+    }
+}

@@ -1,6 +1,0 @@
-node_modules
-.dfx
-target
-Cargo.toml
-Cargo.lock
-canisters/**/src
