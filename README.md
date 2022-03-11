@@ -19,6 +19,7 @@ See the [examples in this respository](/examples).
 3. Asynchronous IC APIs
 4. Robust automated tests
 5. Comprehensive benchmarks
+6. Security audits
 
 ## Limitations
 
