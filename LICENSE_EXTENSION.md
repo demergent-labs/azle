@@ -27,4 +27,4 @@ To show your acceptance of this agreement, create a git commit adding yourself t
 
 | Legal Name | GitHub Username | Country of Residence | Date |
 | ---------- | --------------- | -------------------- | ---- |
-| Jordan Last | lastmjs | United States | March 11 2022 |
+| Jordan Last | lastmjs | United States | March 11, 2022 |
