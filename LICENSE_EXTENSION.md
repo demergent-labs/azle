@@ -8,7 +8,7 @@ The AZLE token currently exists at canister id nlhft-2iaaa-aaaae-qaaua-cai on th
 
 In addition to the terms of Azle's license, contributors to Azle agree to the following:
 
-1. You have all of the necesary legal rights, including any required permission from your employer, to include your contributions in the Azle project
+1. You have all of the necessary legal rights, including any required permission from your employer, to include your contributions in the Azle project
 2. You transfer all copyright ownership in your contributions to the AZLE token holders
 3. You may or may not receive an AZLE token allocation based on your contributions
 4. AZLE token allocations are subject to the discretion of the AZLE token holders
@@ -16,7 +16,7 @@ In addition to the terms of Azle's license, contributors to Azle agree to the fo
 6. By receiving AZLE tokens you agree to the following:
     1. There is no guarantee that AZLE tokens will be transferrable or obtain a market price
     2. AZLE token holder decisions will be made through majority (more than half) voting where one AZLE token equals one vote
-    3. AZLE token holder votes control at least the following non-exhaustive items:
+    3. AZLE token holder votes control at least the following items:
         1. AZLE token holders' copyrights
         2. AZLE token allocations
         3. Amendments to this agreement
