@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "calc": {
+            "type": "custom",
+            "build": "azle calc",
+            "root": "src",
+            "ts": "src/calc.ts",
+            "candid": "src/calc.did",
+            "wasm": "target/wasm32-unknown-unknown/release/calc.wasm"
+        }
+    }
+}
