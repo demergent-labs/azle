@@ -8,7 +8,7 @@ The AZLE token currently exists at canister id nlhft-2iaaa-aaaae-qaaua-cai on th
 
 ## Contributor Agreement
 
-In addition to the terms of Azle's license, contributors to Azle agree to the following:
+Contributors to Azle agree to the following:
 
 1. You have all of the necessary legal rights, including any required permission from your employer, to include your contributions in the Azle project
 2. You transfer all copyright ownership in your contributions to the AZLE token holders
