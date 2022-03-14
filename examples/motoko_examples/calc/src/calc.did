@@ -1,0 +1,7 @@
+  service : {
+  add : (int64) -> (int64);
+  clearall : () -> (bool);
+  div : (int64) -> (int64);
+  mul : (int64) -> (int64);
+  sub : (int64) -> (int64);
+}
