@@ -52,6 +52,4 @@ Azle's tentative path towards decentralization is currently focused on tradition
 
 Azle's OS token is called AZLE. Currently it only controls Azle's copyright and not the Azle repository. Demergent Labs controls [its own Azle repository](https://github.com/demergent-labs/azle). Once a decentralized git repository is implemented on the Internet Computer, the plan is to move [Demergent Labs' Azle repository](https://github.com/demergent-labs/azle) there and give full control of that repository to the AZLE token holders.
 
-Demergent Labs currently owns the majority of AZLE tokens, and thus has ultimate control over Azle's copyright and AZLE token allocations. Demergent Labs will use its own discretion to distribute AZLE tokens over time to contributors and other parties. If all goes well, Demergent Labs will eventually own much less than 50% of the tokens, with a large group of individuals and other entities controlling the vast majority of the supply.
-
-The hope is that this will all end in a sustainable model for Azle's continued development, maintenance, and success. Another hope is that OS tokens become a pattern that many other open source projects can adopt to effectively govern and sustain themselves.
+Demergent Labs currently owns the majority of AZLE tokens, and thus has ultimate control over Azle's copyright and AZLE token allocations. Demergent Labs will use its own discretion to distribute AZLE tokens over time to contributors and other parties, eventually owning much less than 50% of the tokens.
