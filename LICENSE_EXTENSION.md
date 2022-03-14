@@ -17,7 +17,7 @@ Contributors to Azle agree to the following:
 5. Regulatory compliance may prevent an allocation of AZLE tokens to any contributor
 6. Demergent Labs currently owns the majority of AZLE tokens
 7. By receiving AZLE tokens you agree to the following:
-    1. AZLE tokens are not transferrable
+    1. AZLE tokens are not transferable
     2. AZLE token holder decisions will be made through majority (more than half) voting where one AZLE token equals one vote
     3. AZLE token holder votes control at least the following items:
         1. AZLE token holders' copyrights
