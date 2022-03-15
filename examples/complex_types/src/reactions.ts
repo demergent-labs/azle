@@ -11,7 +11,9 @@ import {
 import { getPostFromStatePost } from './posts';
 import {
     state,
-    StateReaction
+    StatePost,
+    StateReaction,
+    StateUser
 } from './state';
 import { getUserFromStateUser } from './users';
 
@@ -29,8 +31,12 @@ export function createReaction(
         postId,
         reactionType
     };
+    const updatedStateAuthor = getUpdatedStateAuthor(authorId, stateReaction.id);
+    const updatedStatePost = getUpdatedStatePost(postId, stateReaction.id);
 
     state.reactions[id] = stateReaction;
+    state.users[authorId] = updatedStateAuthor;
+    state.posts[postId] = updatedStatePost;
 
     const reaction = getReactionFromStateReaction(stateReaction, joinDepth);
 
@@ -59,4 +65,24 @@ export function getReactionFromStateReaction(
         post,
         reactionType: stateReaction.reactionType
     };
+}
+
+function getUpdatedStateAuthor(authorId: string, reactionId: string): StateUser {
+    const stateAuthor = state.users[authorId];
+    const updatedStateAuthor = {
+        ...stateAuthor,
+        reactionIds: [...stateAuthor.reactionIds, reactionId]
+    };
+
+    return updatedStateAuthor;
+}
+
+function getUpdatedStatePost(postId: string, reactionId: string): StatePost {
+    const statePost = state.posts[postId];
+    const updatedStatePost = {
+        ...statePost,
+        reactionIds: [...statePost.reactionIds, reactionId]
+    };
+
+    return updatedStatePost;
 }

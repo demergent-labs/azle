@@ -10,7 +10,8 @@ import {
 import { getPostFromStatePost } from './posts';
 import {
     state,
-    StateThread
+    StateThread,
+    StateUser
 } from './state';
 import { getUserFromStateUser } from './users';
 
@@ -27,15 +28,9 @@ export function createThread(
         postIds: [],
         title
     };
+    const updatedStateAuthor = getUpdatedStateAuthor(authorId, stateThread.id);
 
     state.threads[id] = stateThread;
-
-    const stateAuthor = state.users[authorId];
-    const updatedStateAuthor = {
-        ...stateAuthor,
-        threadIds: [...stateAuthor.threadIds, stateThread.id]
-    };
-
     state.users[authorId] = updatedStateAuthor;
     
     const thread = getThreadFromStateThread(stateThread, joinDepth);
@@ -44,7 +39,9 @@ export function createThread(
 }
 
 export function getAllThreads(joinDepth: u32): Query<Threads> {
-    return Object.values(state.threads).map((stateThread) => getThreadFromStateThread(stateThread, joinDepth));
+    return Object
+        .values(state.threads)
+        .map((stateThread) => getThreadFromStateThread(stateThread, joinDepth));
 }
 
 export function getThreadFromStateThread(
@@ -75,4 +72,14 @@ export function getThreadFromStateThread(
             title: stateThread.title
         };
     }
+}
+
+function getUpdatedStateAuthor(authorId: string, threadId: string): StateUser {
+    const stateAuthor = state.users[authorId];
+    const updatedStateAuthor = {
+        ...stateAuthor,
+        threadIds: [...stateAuthor.threadIds, threadId]
+    };
+
+    return updatedStateAuthor;
 }

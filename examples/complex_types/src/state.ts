@@ -25,6 +25,7 @@ export type State = {
 export type StatePost = {
     id: string;
     authorId: string;
+    reactionIds: string[];
     text: string;
     threadId: string;
 };

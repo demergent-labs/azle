@@ -19,6 +19,12 @@
     };
   };
   thread : record { id : text; title : text; author : User; posts : vec Post };
+  reactions : vec record {
+    id : text;
+    post : Post;
+    author : User;
+    reactionType : variant { thumbsDown; fire; thumbsUp };
+  };
 };
 type Reaction = record {
   id : text;

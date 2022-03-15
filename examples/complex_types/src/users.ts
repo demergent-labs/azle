@@ -37,7 +37,9 @@ export function createUser(
 }
 
 export function getAllUsers(joinDepth: u32): Query<Users> {
-    return Object.values(state.users).map((stateUser) => getUserFromStateUser(stateUser, joinDepth));
+    return Object
+        .values(state.users)
+        .map((stateUser) => getUserFromStateUser(stateUser, joinDepth));
 }
 
 export function getUserFromStateUser(

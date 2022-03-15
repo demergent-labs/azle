@@ -1,6 +1,5 @@
 // TODO get rid of the need for the Candid type
 // TODO get rid of the need for explicit array type aliases
-
 // TODO it would be cool to add timestamps
 
 import {
@@ -11,6 +10,7 @@ import {
 export type Post = Candid<{
     id: string;
     author: User;
+    reactions: Reactions;
     text: string;
     thread: Thread;
 }>;
