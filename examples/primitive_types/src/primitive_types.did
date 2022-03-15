@@ -1,0 +1,11 @@
+  service : {
+  getNat : () -> (nat) query;
+  geti16 : () -> (int16) query;
+  geti32 : () -> (int32) query;
+  geti64 : () -> (int64) query;
+  geti8 : () -> (int8) query;
+  getu16 : () -> (nat16) query;
+  getu32 : () -> (nat32) query;
+  getu64 : () -> (nat64) query;
+  getu8 : () -> (nat8) query;
+}
