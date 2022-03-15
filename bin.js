@@ -8,4 +8,4 @@ require('ts-node').register({
         allowJs: true
     }
 });
-require('./src/app.ts');
+require('./src/azle.ts');

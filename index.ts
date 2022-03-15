@@ -11,6 +11,8 @@ type ic = {
     trap: (message: string) => never;
 };
 
+// TODO let's add heartbeat, init, pre_upgrade, post_upgrade
+
 export type Query<T> = T;
 export type Update<T> = T;
 export type Candid<T> = T;
