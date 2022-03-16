@@ -20,7 +20,7 @@ export async function compileTypeScriptToRust(
     const js: JavaScript = await compileTypeScriptToJavaScript(tsPath);
     const rustTypes: Rust = compileCandidToRustTypes(candidPath);
 
-    console.log('candid', candid);
+    console.log(candid);
 
     // TODO then we have to generate the function bodies
     return '';

@@ -1,5 +1,7 @@
 import * as tsc from 'typescript';
 import { Candid } from '../../types';
+import { getCanisterMethodFunctionDeclarationsFromSourceFiles } from './ast_utilities/canister_methods';
+import { generateCandidService } from './generators/service';
 
 // TODO seems like what I need to do
 // TODO get all Query functions
@@ -13,36 +15,28 @@ export function compileTypeScriptToCandid(tsPath: string): Candid {
     );
     const sourceFiles = program.getSourceFiles();
 
-    const candid = generateCandidFromSourceFiles(sourceFiles);
+    const queryMethodFunctionDeclarations = getCanisterMethodFunctionDeclarationsFromSourceFiles(
+        sourceFiles,
+        'Query'
+    );
 
-    return candid;
-}
+    const updateMethodFunctionDeclarations = getCanisterMethodFunctionDeclarationsFromSourceFiles(
+        sourceFiles,
+        'Update'
+    );
 
-function generateCandidFromSourceFiles(sourceFiles: readonly tsc.SourceFile[]): Candid {
-    const candids = sourceFiles.reduce((result: readonly string[], sourceFile) => {
-        return [
-            ...result,
-            generateCandidFromNodes(
-                sourceFile,
-                sourceFile.getChildren()
-            )
-        ];
-    }, []);
+    // TODO once we have the query and update function nodes, pass them into a function that terms them into a Candid service
+    // TODO then pass them into a function that generates all of the Candid types from the params and return values
+    // TODO then concatenate the result together
 
-    return candids.join('\n');
-}
+    // const candid = generateCandidFromSourceFiles(sourceFiles);
 
-function generateCandidFromNodes(
-    sourceFile: tsc.SourceFile,
-    nodes: readonly tsc.Node[]
-): Candid {
-    if (nodes.length === 0) {
-        return '';
-    }
+    // return candid;
 
-    return '';
-}
+    const candidService = generateCandidService(
+        queryMethodFunctionDeclarations,
+        updateMethodFunctionDeclarations
+    );
 
-function generateCandidFromNode(node: tsc.Node): Candid {
-    return '';
+    return candidService;
 }
