@@ -45,14 +45,14 @@ const rustTypes: {
 };
 
 export function compileJSToRust(
-    jsPath: string,
+    tsPath: string,
     js: string
 ): string {
     // TODO for now I am going to use JavaScript/TypeScript to do all of this...consider if it would
     // TODO be more appropriate to use a Rust macro
 
     const program = tsc.createProgram(
-        [jsPath],
+        [tsPath],
         {}
     );
     const sourceFiles = program.getSourceFiles();

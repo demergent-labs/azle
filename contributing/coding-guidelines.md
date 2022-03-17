@@ -23,6 +23,9 @@ The intended meaning of favor is to use wherever practical. Always consider usin
 ## TypeScript
 
 1. No classes
+2. Declare named functions at the top level using the `function` keyword syntax
+3. Never declare named functions within functions, always declare them at the top level
+4. All anonymous functions should use the arrow syntax
 
 ## Rust
 
