@@ -1,7 +1,6 @@
 import {
     Query,
     Update,
-    Candid,
     ic
 } from 'azle';
 
@@ -11,12 +10,12 @@ type DB = {
     };
 };
 
-type User = Candid<{
+type User = {
     id: string;
     username: string;
-}>;
+};
 
-type Users = Candid<User[]>;
+type Users = User[];
 
 let db: DB = {
     users: {}

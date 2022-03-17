@@ -1,7 +1,7 @@
 import {
     Query,
     Update,
-    i32
+    nat32
 } from 'azle';
 
 type Account = {
@@ -28,7 +28,7 @@ let state: State = {
 export function initializeSupply(
     ticker: string,
     name: string,
-    totalSupply: i32,
+    totalSupply: nat32,
     originalAddress: string
 ): Update<boolean> {
     state = {
@@ -50,7 +50,7 @@ export function initializeSupply(
 export function transfer(
     from: string,
     to: string,
-    amount: i32
+    amount: nat32
 ): Update<boolean> {
     if (state.accounts[to] === undefined) {
         state.accounts[to] = {
@@ -65,7 +65,7 @@ export function transfer(
     return true;
 }
 
-export function balance(address: string): Query<i32> {
+export function balance(address: string): Query<nat32> {
     return state.accounts[address]?.balance ?? 0;
 }
 
@@ -77,6 +77,6 @@ export function name(): Query<string> {
     return state.name;
 }
 
-export function totalSupply(): Query<i32> {
+export function totalSupply(): Query<nat32> {
     return state.totalSupply;
 }

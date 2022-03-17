@@ -1,16 +1,16 @@
 import {
     Query,
     Update,
-    u64
+    nat64
 } from 'azle';
 
-let count: u64 = 0;
+let count: nat64 = 0;
 
-export function readCount(): Query<u64> {
+export function readCount(): Query<nat64> {
     return count;
 }
 
-export function incrementCount(): Update<u64> {
+export function incrementCount(): Update<nat64> {
     count = count + 1;
 
     return count;

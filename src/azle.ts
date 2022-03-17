@@ -43,10 +43,10 @@ async function app() {
     compileRustCode(canisterName);
 
     // TODO remove this once the TypeScript -> Candid compiler is done
-    generateCandid(
-        canisterName,
-        candidPath
-    );
+    // generateCandid(
+    //     canisterName,
+    //     candidPath
+    // );
 }
 
 async function createRustCode(

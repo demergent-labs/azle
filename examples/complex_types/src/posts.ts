@@ -1,12 +1,9 @@
 import {
     Query,
     Update,
-    u32
+    nat32
 } from 'azle';
-import {
-    Post,
-    Posts
-} from './candid_types';
+import { Post } from './candid_types';
 import { getReactionFromStateReaction } from './reactions';
 import {
     state,
@@ -21,7 +18,7 @@ export function createPost(
     authorId: string,
     text: string,
     threadId: string,
-    joinDepth: u32
+    joinDepth: nat32
 ): Update<Post> {
     const id = Object.keys(state.posts).length.toString();
 
@@ -44,7 +41,7 @@ export function createPost(
     return post;
 }
 
-export function getAllPosts(joinDepth: u32): Query<Posts> {
+export function getAllPosts(joinDepth: nat32): Query<Post[]> {
     return Object
         .values(state.posts)
         .map((statePost) => getPostFromStatePost(statePost, joinDepth));
@@ -52,7 +49,7 @@ export function getAllPosts(joinDepth: u32): Query<Posts> {
 
 export function getPostFromStatePost(
     statePost: StatePost,
-    joinDepth: u32
+    joinDepth: nat32
 ): Post {
     const stateAuthor = state.users[statePost.authorId];
     const author = getUserFromStateUser(stateAuthor, joinDepth);

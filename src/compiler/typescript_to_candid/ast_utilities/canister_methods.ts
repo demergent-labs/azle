@@ -1,3 +1,5 @@
+import { generateCandidTypeName } from '../generators/type_name';
+import { RecordOrVariant } from '../../../types';
 import * as tsc from 'typescript';
 
 type CanisterMethodTypeName = 'Query' | 'Update'; // TODO we will also have Heartbeat, Init, PreUpgrade, PostUpgrade, Canister, etc
@@ -87,13 +89,114 @@ function nodeIsCanisterMethodFunctionDeclaration(
     return identifier.escapedText === icFunctionTypeName;
 }
 
-export function getFunctionName(functionDeclaration: tsc.FunctionDeclaration): string {
-    if (
-        functionDeclaration.name === undefined ||
-        functionDeclaration.name === null
-    ) {
-        throw new Error(`Could not determine name for function declaration: ${functionDeclaration}`);
+// TODO we also need to recursively search through the fields of records and variants
+// TODO if those fields have records and variants then we must find them
+export function getCanisterMethodRecordNames(
+    sourceFiles: readonly tsc.SourceFile[],
+    canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[]
+): string[] {
+    return getCanisterMethodNames(
+        sourceFiles,
+        canisterMethodFunctionDeclarations,
+        'record'
+    );
+}
+
+export function getCanisterMethodVariantNames(
+    sourceFiles: readonly tsc.SourceFile[],
+    canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[]
+): string[] {
+    return getCanisterMethodNames(
+        sourceFiles,
+        canisterMethodFunctionDeclarations,
+        'variant'
+    );
+}
+
+function getCanisterMethodNames(
+    sourceFiles: readonly tsc.SourceFile[],
+    canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
+    recordOrVariant: RecordOrVariant
+): string[] {
+    return canisterMethodFunctionDeclarations.reduce((result: string[], functionDeclaration) => {
+        const parameterRecordNames = getCanisterMethodParameterNames(
+            sourceFiles,
+            functionDeclaration,
+            recordOrVariant
+        );
+        const returnTypeRecordNames = getCanisterMethodReturnTypeNames(
+            sourceFiles,
+            functionDeclaration,
+            recordOrVariant
+        );
+
+        return [
+            ...result,
+            ...parameterRecordNames,
+            ...returnTypeRecordNames
+        ];
+    }, []);
+}
+
+function getCanisterMethodParameterNames(
+    sourceFiles: readonly tsc.SourceFile[],
+    functionDeclaration: tsc.FunctionDeclaration,
+    recordOrVariant: RecordOrVariant
+): string[] {
+    return functionDeclaration.parameters.reduce((result: string[], parameter) => {
+        if (parameter.type === undefined) {
+            throw new Error('parameter must have a type');
+        }
+
+        const candidTypeName = generateCandidTypeName(
+            sourceFiles,
+            parameter.type
+        );
+
+        if (candidTypeName.typeClass === recordOrVariant) {
+            return [
+                ...result,
+                candidTypeName.typeName
+            ];
+        }
+        else {
+            return result;
+        }
+    }, []);
+}
+
+function getCanisterMethodReturnTypeNames(
+    sourceFiles: readonly tsc.SourceFile[],
+    functionDeclaration: tsc.FunctionDeclaration,
+    recordOrVariant: RecordOrVariant
+): string[] {
+    const candidTypeName = generateCandidTypeName(
+        sourceFiles,
+        getCanisterMethodReturnTypeNode(functionDeclaration)
+    );
+
+    if (candidTypeName.typeClass === recordOrVariant) {
+        return [candidTypeName.typeName];
+    }
+    else {
+        return [];
+    }
+}
+
+function getCanisterMethodReturnTypeNode(functionDeclaration: tsc.FunctionDeclaration): tsc.TypeNode {
+    if (functionDeclaration.type === undefined) {
+        throw new Error('Function must have a return type');
     }
 
-    return functionDeclaration.name.escapedText.toString();
+    if (functionDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
+        const typeReferenceNode = functionDeclaration.type as tsc.TypeReferenceNode;
+
+        if (typeReferenceNode.typeArguments === undefined) {
+            throw new Error('Function must have a return type');
+        }
+
+        return typeReferenceNode.typeArguments[0];
+    }
+
+    throw new Error('Function must have a return type');
 }
