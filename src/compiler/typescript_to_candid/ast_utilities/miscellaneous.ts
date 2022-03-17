@@ -14,11 +14,13 @@ export function isTypeReferenceNodeAVariant(
         return false;
     }
 
-    if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeLiteral) {
-        return false;
+    if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
+        const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+
+        return getTypeReferenceNodeTypeName(typeReferenceNode) === 'variant';
     }
 
-    return (typeAliasDeclaration.type as any).typeName.escapedText.toString() === 'variant';
+    return false;
 }
 
 export function getPropertyNameText(propertyName: tsc.PropertyName): string {

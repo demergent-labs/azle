@@ -1,1 +1,4 @@
-service : { "query" : () -> (text) query; update : (text) -> (text) }
+service: {
+    "query": () -> (text) query;
+    "update": (text) -> (text);
+}
