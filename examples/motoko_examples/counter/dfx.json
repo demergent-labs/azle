@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "counter": {
+            "type": "custom",
+            "build": "npx azle counter",
+            "root": "src",
+            "ts": "src/counter.ts",
+            "candid": "src/counter.did",
+            "wasm": "target/wasm32-unknown-unknown/release/counter.wasm"
+        }
+    }
+}
