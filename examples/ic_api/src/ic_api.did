@@ -1,8 +1,8 @@
-  service : {
-  caller : () -> (text) query;
-  canisterBalance : () -> (nat64) query;
-  id : () -> (text) query;
-  print : (text) -> (bool) query;
-  time : () -> (nat64) query;
-  trap : (text) -> (bool) query;
+service: {
+    "caller": () -> (text) query;
+    "canisterBalance": () -> (nat64) query;
+    "id": () -> (text) query;
+    "print": (text) -> (bool) query;
+    "time": () -> (nat64) query;
+    "trap": (text) -> (bool) query;
 }
