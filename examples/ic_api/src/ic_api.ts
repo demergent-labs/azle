@@ -1,6 +1,6 @@
 import {
     Query,
-    u64,
+    nat64,
     ic
 } from 'azle';
 
@@ -8,7 +8,7 @@ export function caller(): Query<string> {
     return ic.caller();
 }
 
-export function canisterBalance(): Query<u64> {
+export function canisterBalance(): Query<nat64> {
     return ic.canisterBalance();
 }
 
@@ -22,7 +22,7 @@ export function print(message: string): Query<boolean> {
     return true;
 }
 
-export function time(): Query<u64> {
+export function time(): Query<nat64> {
     return ic.time();
 }
 

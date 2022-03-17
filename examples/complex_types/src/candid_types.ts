@@ -1,47 +1,41 @@
-// TODO get rid of the need for the Candid type
-// TODO get rid of the need for explicit array type aliases
 // TODO it would be cool to add timestamps
 
 import {
-    Candid,
-    Enum // TODO variant might be nicer here
+    variant
 } from 'azle';
 
-export type Post = Candid<{
+export type Post = {
     id: string;
     author: User;
-    reactions: Reactions;
+    reactions: Reaction[];
     text: string;
     thread: Thread;
-}>;
-export type Posts = Candid<Post[]>;
+};
 
-export type Reaction = Candid<{
+export type Reaction = {
     id: string;
     author: User;
     post: Post;
     reactionType: ReactionType;
-}>;
-export type Reactions = Candid<Reaction[]>;
-export type ReactionType = Candid<Enum<{
+};
+
+export type ReactionType = variant<{
     fire?: null,
     thumbsUp?: null,
     thumbsDown?: null
-}>>;
+}>;
 
-export type Thread = Candid<{
+export type Thread = {
     id: string;
     author: User;
-    posts: Posts;
+    posts: Post[];
     title: string;
-}>;
-export type Threads = Candid<Thread[]>;
+};
 
-export type User = Candid<{
+export type User = {
     id: string;
-    posts: Posts;
-    reactions: Reactions;
-    threads: Threads;
+    posts: Post[];
+    reactions: Reaction[];
+    threads: Thread[];
     username: string;
-}>;
-export type Users = Candid<User[]>;
+};

@@ -19,6 +19,8 @@ The intended meaning of favor is to use wherever practical. Always consider usin
 3. Favor descriptive directory, file, function, and variable names
 4. Functions should never have more than one level of branching
 5. Functions should be composed of multiple one-line statements
+6. Prefer recursion over iteration
+7. Prefer higher-order array operations (map, filter, reduce, etc) versus loops with mutations (for, while, etc)
 
 ## TypeScript
 
@@ -30,3 +32,17 @@ The intended meaning of favor is to use wherever practical. Always consider usin
 ## Rust
 
 1. Be prepared to defend every use of `mut`
+
+## Code review checklist
+
+### TypeScript
+
+We'll see how many of these we can fix with prettier and a linter
+
+1. No TypeScript errors
+2. Imports in alphabetic order
+3. Directories, files, modules, and functions appropriately declarative
+    1. No more than one level of branching within a function
+    2. Functions should be a series of single statements
+    3. They should read like a simple sentence
+    4. Repeated code is sufficiently generalized
