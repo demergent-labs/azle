@@ -1,18 +1,27 @@
-import * as fs from 'fs';
-import { compileTypeScriptToCandid } from '../typescript_to_candid';
-import { compileTypeScriptToJavaScript } from '../typescript_to_javascript';
 import { compileCandidToRustTypes } from '../candid_to_rust_types';
+import * as fs from 'fs';
+import { generateLibFile } from './generators/lib_file';
 import {
     Candid,
     JavaScript,
     Rust
 } from '../../types';
+import * as tsc from 'typescript';
+import { compileTypeScriptToCandid } from '../typescript_to_candid';
+import { compileTypeScriptToJavaScript } from '../typescript_to_javascript';
 
 export async function compileTypeScriptToRust(
     tsPath: string,
     candidPath: string
 ): Promise<Rust> {
-    const candid: Candid = compileTypeScriptToCandid(tsPath);
+    const program = tsc.createProgram(
+        [tsPath],
+        {}
+    );
+    
+    const sourceFiles = program.getSourceFiles();
+
+    const candid: Candid = compileTypeScriptToCandid(sourceFiles);
 
     // TODO it would be nice to have the option of doing this
     // TODO it would also be nice if we could pass in the candid to the Rust types generation process
@@ -20,10 +29,12 @@ export async function compileTypeScriptToRust(
     fs.writeFileSync(candidPath, candid);
 
     const js: JavaScript = await compileTypeScriptToJavaScript(tsPath);
-    const rustTypes: Rust = compileCandidToRustTypes(candidPath);
+    const rustCandidTypes: Rust = compileCandidToRustTypes(candidPath);
+    const libFile: Rust = generateLibFile(
+        sourceFiles,
+        js,
+        rustCandidTypes
+    );
 
-    console.log(rustTypes);
-
-    // TODO then we have to generate the function bodies
-    return '';
+    return libFile;
 }
