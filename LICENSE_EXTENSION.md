@@ -34,3 +34,4 @@ Your electronic signature will be considered final once the commit is included i
 | Legal Name | GitHub Username | Country of Residence | Date |
 | ---------- | --------------- | -------------------- | ---- |
 | Jordan Last | lastmjs | United States | March 14, 2022 |
+| Dan Steren | dansteren | United States | March 14, 2022 |
