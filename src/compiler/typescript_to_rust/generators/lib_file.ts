@@ -15,18 +15,23 @@ import {
 } from '../../../types';
 import * as tsc from 'typescript';
 
-export function generateLibFile(
-    sourceFiles: readonly tsc.SourceFile[],
+export async function generateLibFile(
     js: JavaScript,
-    rustCandidTypes: Rust
-): Rust {
+    rustCandidTypes: Rust,
+    queryMethodFunctionNames: string[],
+    updateMethodFunctionNames: string[]
+): Promise<Rust> {
+    // TODO we need to do a temporary hack on rustCandidTypes to fix this: https://github.com/demergent-labs/azle/issues/93
+    // TODO just add serde::Serialize to the derive attribute on all structs and enums
+
     const head: Rust = generateHead();
 
     const canisterMethodInit = generateCanisterMethodInit(js);
     const canisterMethodPostUpgrade = generateCanisterMethodPostUpgrade();
-    const canisterMethodsDeveloperDefined = generateCanisterMethodsDeveloperDefined(
-        sourceFiles,
-        js
+    const canisterMethodsDeveloperDefined = await generateCanisterMethodsDeveloperDefined(
+        rustCandidTypes,
+        queryMethodFunctionNames,
+        updateMethodFunctionNames
     );
 
     const icObjectFunctionCaller = generateIcObjectFunctionCaller();
