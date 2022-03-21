@@ -15,8 +15,6 @@ type User = {
     username: string;
 };
 
-type Users = User[];
-
 let db: DB = {
     users: {}
 };
@@ -31,7 +29,7 @@ export function getUserById(id: string): Query<User> {
     return user;
 }
 
-export function getAllUsers(): Query<Users> {
+export function getAllUsers(): Query<User[]> {
     return Object.values(db.users);
 }
 

@@ -3,10 +3,8 @@ type User = record {
     "username": text;
 };
 
-type Users = vec User;
-
 service: {
     "getUserById": (text) -> (User) query;
-    "getAllUsers": () -> (Users) query;
+    "getAllUsers": () -> (vec User) query;
     "createUser": (text) -> (User);
 }

@@ -21,6 +21,9 @@ See the [examples in this respository](/examples).
 
 ## Limitations
 
+* No void type
+* No optional types (Candid opt)
+* No inline or anonymous types (use type aliases for most types)
 * No asynchronous IC APIs (such as cross-canister calls)
 * No asynchronous TypeScript/JavaScript (async/await, promises, etc)
 * Third-party npm packages that you import may use unsupported syntax or APIs

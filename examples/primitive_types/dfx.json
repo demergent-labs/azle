@@ -2,7 +2,7 @@
     "canisters": {
         "primitive_types": {
             "type": "custom",
-            "build": "azle primitive_types",
+            "build": "npx azle primitive_types",
             "root": "src",
             "ts": "src/primitive_types.ts",
             "candid": "src/primitive_types.did",

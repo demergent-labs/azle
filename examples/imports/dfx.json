@@ -2,7 +2,7 @@
     "canisters": {
         "imports": {
             "type": "custom",
-            "build": "azle imports",
+            "build": "npx azle imports",
             "root": "src",
             "ts": "src/imports.ts",
             "candid": "src/imports.did",

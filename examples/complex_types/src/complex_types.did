@@ -28,7 +28,7 @@ type Post = record {
     "thread": Thread;
 };
 
-type ReactionType = variant { fire; thumbsUp; thumbsDown };
+type ReactionType = variant { fire: null; thumbsUp: null; thumbsDown: null };
 
 service: {
     "getAllThreads": (nat32) -> (vec Thread) query;
