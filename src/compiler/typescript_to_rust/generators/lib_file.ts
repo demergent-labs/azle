@@ -9,11 +9,11 @@ import { generateIcObjectFunctionPrint } from './ic_object/functions/print';
 import { generateIcObjectFunctionRawRand } from './ic_object/functions/raw_rand';
 import { generateIcObjectFunctionTime } from './ic_object/functions/time';
 import { generateIcObjectFunctionTrap } from './ic_object/functions/trap';
+import { modifyRustCandidTypes } from './modified_rust_candid_types';
 import {
     JavaScript,
     Rust
 } from '../../../types';
-import * as tsc from 'typescript';
 
 export async function generateLibFile(
     js: JavaScript,
@@ -21,15 +21,14 @@ export async function generateLibFile(
     queryMethodFunctionNames: string[],
     updateMethodFunctionNames: string[]
 ): Promise<Rust> {
-    // TODO we need to do a temporary hack on rustCandidTypes to fix this: https://github.com/demergent-labs/azle/issues/93
-    // TODO just add serde::Serialize to the derive attribute on all structs and enums
+    const modifiedRustCandidTypes: Rust = await modifyRustCandidTypes(rustCandidTypes);
 
     const head: Rust = generateHead();
 
     const canisterMethodInit = generateCanisterMethodInit(js);
     const canisterMethodPostUpgrade = generateCanisterMethodPostUpgrade();
     const canisterMethodsDeveloperDefined = await generateCanisterMethodsDeveloperDefined(
-        rustCandidTypes,
+        rustCandidTypes, // TODO you might think that we should pass in modifiedRustCandidTypes here, but the printAst function seems to have a bug that removes the , from the CallResult tuple which causes problems later in the process
         queryMethodFunctionNames,
         updateMethodFunctionNames
     );
@@ -45,7 +44,7 @@ export async function generateLibFile(
     return `
         ${head}
 
-        ${rustCandidTypes}
+        ${modifiedRustCandidTypes}
 
         ${canisterMethodInit}
         ${canisterMethodPostUpgrade}

@@ -2,10 +2,11 @@ export type AST = {
     items: Item[];
 };
 
-type Item = {
+export type Item = {
     impl?: Impl;
     fn?: Fn;
-    // [key in 'impl']: Impl;
+    struct?: Struct;
+    enum?: Enum;
 };
 
 export type Impl = {
@@ -21,7 +22,7 @@ export type ImplItemMethod = {
     async: boolean;
     ident: string;
     inputs: any[];
-    output?: {};
+    output?: any;
     stmts: any[];
 };
 
@@ -29,6 +30,16 @@ export type Fn = {
     async: boolean;
     ident: string;
     inputs: any[];
-    output?: {};
+    output?: any;
     stmts: any[];
+    attrs?: any[];
+};
+
+export type Struct = {
+    ident: string;
+    attrs?: any[];
+};
+
+export type Enum = {
+
 };
