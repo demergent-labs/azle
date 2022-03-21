@@ -1,8 +1,9 @@
 import { generateCandidTypeName } from '../generators/type_name';
-import { RecordOrVariant } from '../../../types';
+import {
+    CanisterMethodTypeName,
+    RecordOrVariant
+} from '../../../types';
 import * as tsc from 'typescript';
-
-type CanisterMethodTypeName = 'Query' | 'Update'; // TODO we will also have Heartbeat, Init, PreUpgrade, PostUpgrade, Canister, etc
 
 export function getCanisterMethodFunctionDeclarationsFromSourceFiles(
     sourceFiles: readonly tsc.SourceFile[],
@@ -60,7 +61,7 @@ function getCanisterMethodFunctionDeclarationsFromNode(
 }
 
 // TODO it would be nice to get rid of all the type casting and have the types guarded/inferred
-function nodeIsCanisterMethodFunctionDeclaration(
+export function nodeIsCanisterMethodFunctionDeclaration(
     node: tsc.Node,
     icFunctionTypeName: CanisterMethodTypeName
 ): boolean {

@@ -5,14 +5,7 @@ import { generateCandidVariants } from './generators/variant';
 import { Candid } from '../../types';
 import * as tsc from 'typescript';
 
-export function compileTypeScriptToCandid(tsPath: string): Candid {
-    const program = tsc.createProgram(
-        [tsPath],
-        {}
-    );
-    
-    const sourceFiles = program.getSourceFiles();
-
+export function compileTypeScriptToCandid(sourceFiles: readonly tsc.SourceFile[]): Candid {
     const queryMethodFunctionDeclarations = getCanisterMethodFunctionDeclarationsFromSourceFiles(
         sourceFiles,
         'Query'
