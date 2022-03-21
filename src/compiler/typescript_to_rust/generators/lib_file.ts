@@ -9,24 +9,28 @@ import { generateIcObjectFunctionPrint } from './ic_object/functions/print';
 import { generateIcObjectFunctionRawRand } from './ic_object/functions/raw_rand';
 import { generateIcObjectFunctionTime } from './ic_object/functions/time';
 import { generateIcObjectFunctionTrap } from './ic_object/functions/trap';
+import { modifyRustCandidTypes } from './modified_rust_candid_types';
 import {
     JavaScript,
     Rust
 } from '../../../types';
-import * as tsc from 'typescript';
 
-export function generateLibFile(
-    sourceFiles: readonly tsc.SourceFile[],
+export async function generateLibFile(
     js: JavaScript,
-    rustCandidTypes: Rust
-): Rust {
+    rustCandidTypes: Rust,
+    queryMethodFunctionNames: string[],
+    updateMethodFunctionNames: string[]
+): Promise<Rust> {
+    const modifiedRustCandidTypes: Rust = await modifyRustCandidTypes(rustCandidTypes);
+
     const head: Rust = generateHead();
 
     const canisterMethodInit = generateCanisterMethodInit(js);
     const canisterMethodPostUpgrade = generateCanisterMethodPostUpgrade();
-    const canisterMethodsDeveloperDefined = generateCanisterMethodsDeveloperDefined(
-        sourceFiles,
-        js
+    const canisterMethodsDeveloperDefined = await generateCanisterMethodsDeveloperDefined(
+        rustCandidTypes, // TODO you might think that we should pass in modifiedRustCandidTypes here, but the printAst function seems to have a bug that removes the , from the CallResult tuple which causes problems later in the process
+        queryMethodFunctionNames,
+        updateMethodFunctionNames
     );
 
     const icObjectFunctionCaller = generateIcObjectFunctionCaller();
@@ -40,7 +44,7 @@ export function generateLibFile(
     return `
         ${head}
 
-        ${rustCandidTypes}
+        ${modifiedRustCandidTypes}
 
         ${canisterMethodInit}
         ${canisterMethodPostUpgrade}

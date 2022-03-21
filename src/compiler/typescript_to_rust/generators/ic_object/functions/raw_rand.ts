@@ -2,7 +2,7 @@ import { Rust } from '../../../../../types';
 
 export function generateIcObjectFunctionRawRand(): Rust {
     return `
-        fn ic_raw_rand(
+        fn azle_ic_raw_rand(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context

@@ -2,7 +2,7 @@ import { Rust } from '../../../../../types';
 
 export function generateIcObjectFunctionTime(): Rust {
     return `
-        fn ic_time(
+        fn azle_ic_time(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
