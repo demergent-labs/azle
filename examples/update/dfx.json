@@ -2,7 +2,7 @@
     "canisters": {
         "update": {
             "type": "custom",
-            "build": "azle update",
+            "build": "npx azle update",
             "root": "src",
             "ts": "src/update.ts",
             "candid": "src/update.did",

@@ -2,7 +2,7 @@
     "canisters": {
         "simple_user_accounts": {
             "type": "custom",
-            "build": "azle simple_user_accounts",
+            "build": "npx azle simple_user_accounts",
             "root": "src",
             "ts": "src/simple_user_accounts.ts",
             "candid": "src/simple_user_accounts.did",

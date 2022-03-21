@@ -1,6 +1,6 @@
 import {
     Query,
-    nat64,
+    float64,
     ic
 } from 'azle';
 
@@ -8,7 +8,8 @@ export function caller(): Query<string> {
     return ic.caller();
 }
 
-export function canisterBalance(): Query<nat64> {
+// TODO This function should return a nat64: https://github.com/demergent-labs/azle/issues/98
+export function canisterBalance(): Query<float64> {
     return ic.canisterBalance();
 }
 
@@ -22,7 +23,8 @@ export function print(message: string): Query<boolean> {
     return true;
 }
 
-export function time(): Query<nat64> {
+// TODO This function should return a nat64: https://github.com/demergent-labs/azle/issues/98
+export function time(): Query<float64> {
     return ic.time();
 }
 

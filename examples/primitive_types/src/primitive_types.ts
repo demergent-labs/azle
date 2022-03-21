@@ -1,3 +1,7 @@
+// TODO float64/32 are basically required until this is resolved: https://github.com/demergent-labs/azle/issues/99
+
+// TODO we need to see the principal type used
+
 import {
     Query,
     int,
@@ -9,7 +13,9 @@ import {
     nat64,
     nat32,
     nat16,
-    nat8
+    nat8,
+    float64,
+    float32
 } from 'azle';
 
 // TODO not fully representable with native JS numbers
@@ -44,9 +50,10 @@ export function getInt8(): Query<int8> {
 //     return 18446744073709551615;
 // }
 
-export function getNat32(): Query<nat32> {
-    return 4294967295;
-}
+// TODO This function is currently broken: https://github.com/demergent-labs/azle/issues/98
+// export function getNat32(): Query<nat32> {
+//     return 4294967295;
+// }
 
 export function getNat16(): Query<nat16> {
     return 65535;
@@ -54,4 +61,12 @@ export function getNat16(): Query<nat16> {
 
 export function getNat8(): Query<nat8> {
     return 255;
+}
+
+export function getFloat64(): Query<float64> {
+    return Math.E;
+}
+
+export function getFloat32(): Query<float32> {
+    return Math.PI;
 }

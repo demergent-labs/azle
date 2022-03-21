@@ -2,7 +2,7 @@
     "canisters": {
         "query": {
             "type": "custom",
-            "build": "azle query",
+            "build": "npx azle query",
             "root": "src",
             "ts": "src/query.ts",
             "candid": "src/query.did",

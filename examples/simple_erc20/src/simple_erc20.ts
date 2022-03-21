@@ -1,7 +1,9 @@
+// TODO float64/32 is required until this is resolved: https://github.com/demergent-labs/azle/issues/99
+
 import {
     Query,
     Update,
-    nat32
+    float64
 } from 'azle';
 
 type Account = {
@@ -28,7 +30,7 @@ let state: State = {
 export function initializeSupply(
     ticker: string,
     name: string,
-    totalSupply: nat32,
+    totalSupply: float64,
     originalAddress: string
 ): Update<boolean> {
     state = {
@@ -50,7 +52,7 @@ export function initializeSupply(
 export function transfer(
     from: string,
     to: string,
-    amount: nat32
+    amount: float64
 ): Update<boolean> {
     if (state.accounts[to] === undefined) {
         state.accounts[to] = {
@@ -65,7 +67,7 @@ export function transfer(
     return true;
 }
 
-export function balance(address: string): Query<nat32> {
+export function balance(address: string): Query<float64> {
     return state.accounts[address]?.balance ?? 0;
 }
 
@@ -77,6 +79,6 @@ export function name(): Query<string> {
     return state.name;
 }
 
-export function totalSupply(): Query<nat32> {
+export function totalSupply(): Query<float64> {
     return state.totalSupply;
 }

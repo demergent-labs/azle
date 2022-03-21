@@ -2,7 +2,7 @@
     "canisters": {
         "ic_api": {
             "type": "custom",
-            "build": "azle ic_api",
+            "build": "npx azle ic_api",
             "root": "src",
             "ts": "src/ic_api.ts",
             "candid": "src/ic_api.did",
