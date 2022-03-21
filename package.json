@@ -3,8 +3,7 @@
   "version": "0.0.9",
   "description": "TypeScript/JavaScript CDK for the Internet Computer",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "compile-candid-to-rust": "ts-node --transpile-only src/compiler/candid_to_rust/index.ts"
+    "typecheck": "tsc --noEmit"
   },
   "bin": {
     "azle": "./bin.js"
@@ -23,6 +22,7 @@
   "homepage": "https://github.com/lastmjs/azle#readme",
   "dependencies": {
     "@swc/core": "1.2.151",
+    "azle-syn": "0.0.0",
     "esbuild": "0.14.25",
     "ts-node": "10.3.1",
     "typescript": "4.4.4"

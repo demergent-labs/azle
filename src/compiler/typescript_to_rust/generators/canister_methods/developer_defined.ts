@@ -1,8 +1,7 @@
-// TODO we need to wrap this up into an npm package
-import initSyn, {
+import {
     parseFile,
     printAst
-} from '../../../../../../astexplorer-syn/typescript/astexplorer_syn';
+} from 'azle-syn';
 import {
     getImplItemMethods,
     getImpls
@@ -19,8 +18,6 @@ export async function generateCanisterMethodsDeveloperDefined(
     queryMethodFunctionNames: string[],
     updateMethodFunctionNames: string[]
 ): Promise<Rust> {
-    await initSyn('../../../astexplorer-syn/typescript/astexplorer_syn_bg.wasm');
-
     const rustCandidTypesAstString = parseFile(rustCandidTypes);
     const rustCandidTypesAst: AST = JSON.parse(rustCandidTypesAstString);
 

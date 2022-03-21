@@ -1,7 +1,7 @@
-import initSyn, {
+import {
     parseFile,
     printAst
-} from '../../../../../astexplorer-syn/typescript/astexplorer_syn';
+} from 'azle-syn';
 import {
     AST,
     Enum,
@@ -12,8 +12,6 @@ import { Rust } from '../../../types';
 
 // TODO remove this once this issue is resolved: https://github.com/demergent-labs/azle/issues/93
 export async function modifyRustCandidTypes(rustCandidTypes: Rust): Promise<Rust> {
-    await initSyn('../../../astexplorer-syn/typescript/astexplorer_syn_bg.wasm');
-
     const attrsWithSerialize = getAttrsWithSerialize();
 
     const ast: AST = JSON.parse(parseFile(rustCandidTypes));
