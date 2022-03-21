@@ -2,7 +2,7 @@
     "canisters": {
         "calc": {
             "type": "custom",
-            "build": "azle calc",
+            "build": "npx azle calc",
             "root": "src",
             "ts": "src/calc.ts",
             "candid": "src/calc.did",

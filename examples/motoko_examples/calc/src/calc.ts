@@ -1,28 +1,29 @@
 import {
     ic,
     Update,
-    i64 // TODO we need to implement Int or i128
+    float64
 } from 'azle';
 
-let cell: i64 = 0;
+// TODO cell should be a nat64: https://github.com/demergent-labs/azle/issues/98
+let cell: float64 = 0;
 
-export function add(n: i64): Update<i64> {
+export function add(n: float64): Update<float64> {
     cell += n;
     return cell;
 }
 
-export function sub(n: i64): Update<i64> {
+export function sub(n: float64): Update<float64> {
     cell -= n;
     return cell;
 }
 
-export function mul(n: i64): Update<i64> {
+export function mul(n: float64): Update<float64> {
     cell *= n;
     return cell;
 }
 
 // TODO we do not have a maybe type
-export function div(n: i64): Update<i64> {
+export function div(n: float64): Update<float64> {
     if (n == 0) {
         ic.trap('cannot divide by 0');
     }
