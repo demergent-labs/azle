@@ -1,54 +1,61 @@
-// TODO make this code much more declarative, give each type its own file if necessary
-
-import * as tsc from 'typescript';
-import { CandidTypeName } from '../../../types';
 import { isTypeReferenceNodeAVariant } from '../ast_utilities/miscellaneous';
+import { CandidTypeInfo } from '../../../types';
+import * as tsc from 'typescript';
+import { generateCandidRecordForTypeLiteral } from './record';
+import { generateCandidVariantForTypeLiteral } from './variant';
 
-export function generateCandidTypeName(
+export function generateCandidTypeInfo(
     sourceFiles: readonly tsc.SourceFile[],
     typeNode: tsc.TypeNode
-): CandidTypeName {
+): CandidTypeInfo {
     if (typeNode.kind === tsc.SyntaxKind.StringKeyword) {
-        return generateCandidTypeNameForStringKeyword();
+        return generateCandidTypeInfoForStringKeyword();
     }
 
     if (typeNode.kind === tsc.SyntaxKind.BooleanKeyword) {
-        return generateCandidTypeNameForBooleanKeyword();
+        return generateCandidTypeInfoForBooleanKeyword();
     }
 
     if (typeNode.kind === tsc.SyntaxKind.UndefinedKeyword) {
-        return generateCandidTypeNameForUndefinedKeyword();
+        return generateCandidTypeInfoForUndefinedKeyword();
     }
 
     if (
         typeNode.kind === tsc.SyntaxKind.LiteralType &&
         (typeNode as tsc.LiteralTypeNode).literal.kind === tsc.SyntaxKind.NullKeyword
     ) {
-        return generateCandidTypeNameForNullKeyword();
+        return generateCandidTypeInfoForNullKeyword();
     }
 
     if (typeNode.kind === tsc.SyntaxKind.VoidKeyword) {
-        return generateCandidTypeNameForVoidKeyword();
+        return generateCandidTypeInfoForVoidKeyword();
     }
 
     if (typeNode.kind === tsc.SyntaxKind.ArrayType) {
-        return generateCandidTypeNameForArrayType(
+        return generateCandidTypeInfoForArrayType(
             sourceFiles,
             typeNode as tsc.ArrayTypeNode
         );
     }
 
     if (typeNode.kind === tsc.SyntaxKind.TypeReference) {
-        return generateCandidTypeNameForTypeReference(
+        return generateCandidTypeInfoForTypeReference(
             sourceFiles,
             typeNode as tsc.TypeReferenceNode
         );
     }
 
-    throw new Error(`Could not generate Candid type name for TypeScript typeNode: ${JSON.stringify(typeNode, null, 2)}`);
+    if (typeNode.kind === tsc.SyntaxKind.TypeLiteral) {
+        return generateCandidTypeInfoForRecordTypeLiteral(
+            sourceFiles,
+            typeNode as tsc.TypeLiteralNode
+        );
+    }
+
+    throw new Error(`Could not generate Candid type name for TypeScript typeNode: ${typeNode.kind}`);
 }
 
-function generateCandidTypeNameForStringKeyword(): CandidTypeName {
+function generateCandidTypeInfoForStringKeyword(): CandidTypeInfo {
     return {
         text: 'text',
         typeName: 'text',
@@ -56,7 +63,7 @@ function generateCandidTypeNameForStringKeyword(): CandidTypeName {
     };
 }
 
-function generateCandidTypeNameForBooleanKeyword(): CandidTypeName {
+function generateCandidTypeInfoForBooleanKeyword(): CandidTypeInfo {
     return {
         text: 'bool',
         typeName: 'bool',
@@ -64,7 +71,7 @@ function generateCandidTypeNameForBooleanKeyword(): CandidTypeName {
     };
 }
 
-function generateCandidTypeNameForUndefinedKeyword(): CandidTypeName {
+function generateCandidTypeInfoForUndefinedKeyword(): CandidTypeInfo {
     return {
         text: 'null',
         typeName: 'null',
@@ -72,7 +79,7 @@ function generateCandidTypeNameForUndefinedKeyword(): CandidTypeName {
     };
 }
 
-function generateCandidTypeNameForNullKeyword(): CandidTypeName {
+function generateCandidTypeInfoForNullKeyword(): CandidTypeInfo {
     return {
         text: 'null',
         typeName: 'null',
@@ -80,7 +87,7 @@ function generateCandidTypeNameForNullKeyword(): CandidTypeName {
     };
 }
 
-function generateCandidTypeNameForVoidKeyword(): CandidTypeName {
+function generateCandidTypeInfoForVoidKeyword(): CandidTypeInfo {
     return {
         text: '',
         typeName: 'void',
@@ -88,11 +95,11 @@ function generateCandidTypeNameForVoidKeyword(): CandidTypeName {
     };
 }
 
-function generateCandidTypeNameForArrayType(
+function generateCandidTypeInfoForArrayType(
     sourceFiles: readonly tsc.SourceFile[],
     arrayTypeNode: tsc.ArrayTypeNode
-): CandidTypeName {
-    const candidElementTypeName = generateCandidTypeName(
+): CandidTypeInfo {
+    const candidElementTypeName = generateCandidTypeInfo(
         sourceFiles,
         arrayTypeNode.elementType
     );
@@ -104,10 +111,10 @@ function generateCandidTypeNameForArrayType(
     };
 }
 
-function generateCandidTypeNameForTypeReference(
+function generateCandidTypeInfoForTypeReference(
     sourceFiles: readonly tsc.SourceFile[],
     typeReferenceNode: tsc.TypeReferenceNode
-): CandidTypeName {
+): CandidTypeInfo {
     if (typeReferenceNode.typeName.kind === tsc.SyntaxKind.Identifier) {
         const typeName = typeReferenceNode.typeName.escapedText.toString();
 
@@ -215,33 +222,36 @@ function generateCandidTypeNameForTypeReference(
             };
         }
 
-        if (typeName === 'opt') {
+        if (typeName === 'Opt') {
             if (typeReferenceNode.typeArguments !== undefined) {
-                const candidArgumentTypeName = generateCandidTypeName(
+                const candidArgumentTypeInfo = generateCandidTypeInfo(
                     sourceFiles,
                     typeReferenceNode.typeArguments[0]
                 );
 
                 return {
-                    text: `opt ${candidArgumentTypeName.text}`,
-                    typeName: candidArgumentTypeName.typeName,
-                    typeClass: candidArgumentTypeName.typeClass
+                    text: `opt ${candidArgumentTypeInfo.text}`,
+                    typeName: candidArgumentTypeInfo.typeName,
+                    typeClass: candidArgumentTypeInfo.typeClass
                 };
             }
         }
 
-        // TODO right now you can't inline declare anonymous variants or records
+        if (typeName === 'Variant') {
+            if (typeReferenceNode.typeArguments === undefined) {
+                throw new Error('This cannot happen');
+            }
 
-        // TODO implement this
-        // if (typeName === 'variant') {
-        //     // TODO use the code from variant.ts
-
-        //     return {
-        //         text: `variant ${text}`,
-        //         typeName: `variant ${text}`,
-        //         typeClass: 'variant'
-        //     };
-        // }
+            if (typeReferenceNode.typeArguments[0].kind !== tsc.SyntaxKind.TypeLiteral) {
+                throw new Error('This is not supported');
+            }
+            
+            // TODO Do we want to allow arrays on inline types? probably?? This might work automatically
+            return generateCandidTypeInfoForVariantTypeLiteral(
+                sourceFiles,
+                typeReferenceNode.typeArguments[0] as tsc.TypeLiteralNode
+            );
+        }
 
         if (
             isTypeReferenceNodeAVariant(
@@ -264,4 +274,34 @@ function generateCandidTypeNameForTypeReference(
     }
 
     throw new Error(`Could not generate Candid type name for TypeScript type reference node`);
+}
+
+function generateCandidTypeInfoForRecordTypeLiteral(
+    sourceFiles: readonly tsc.SourceFile[],
+    typeLiteralNode: tsc.TypeLiteralNode
+): CandidTypeInfo {
+    return {
+        text: generateCandidRecordForTypeLiteral(
+            sourceFiles,
+            null,
+            typeLiteralNode
+        ),
+        typeName: '', // TODO what do we do with this?
+        typeClass: 'inline_record'
+    };
+}
+
+function generateCandidTypeInfoForVariantTypeLiteral(
+    sourceFiles: readonly tsc.SourceFile[],
+    typeLiteralNode: tsc.TypeLiteralNode
+): CandidTypeInfo {
+    return {
+        text: generateCandidVariantForTypeLiteral(
+            sourceFiles,
+            null,
+            typeLiteralNode
+        ),
+        typeName: '', // TODO what do we do with this?
+        typeClass: 'inline_variant'
+    };
 }

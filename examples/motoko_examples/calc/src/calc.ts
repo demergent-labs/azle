@@ -1,6 +1,6 @@
 import {
     Update,
-    opt,
+    Opt,
     float64
 } from 'azle';
 
@@ -22,7 +22,7 @@ export function mul(n: float64): Update<float64> {
     return cell;
 }
 
-export function div(n: float64): Update<opt<float64>> {
+export function div(n: float64): Update<Opt<float64>> {
     if (n == 0) {
         return null;
     }
