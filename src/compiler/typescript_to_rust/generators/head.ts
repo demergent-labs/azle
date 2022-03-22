@@ -8,6 +8,7 @@ export function generateHead(): Rust {
         #![allow(non_camel_case_types)]
         #![allow(non_snake_case)]
         #![allow(unused_imports)]
+        #![allow(unused_variables)]
 
         thread_local! {
             static BOA_CONTEXT: std::cell::RefCell<boa_engine::Context> = std::cell::RefCell::new(boa_engine::Context::default());

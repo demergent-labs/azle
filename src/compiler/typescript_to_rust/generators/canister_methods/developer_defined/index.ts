@@ -5,13 +5,14 @@ import {
 import {
     getImplItemMethods,
     getImpls
-} from '../../ast_utilities/miscellaneous';
+} from '../../../ast_utilities/miscellaneous';
 import {
     AST,
     Fn,
     ImplItemMethod
-} from '../../ast_utilities/types';
-import { Rust } from '../../../../types';
+} from '../../../ast_utilities/types';
+import { generateReturnValueConversion } from './return_value_conversion';
+import { Rust } from '../../../../../types';
 
 export async function generateCanisterMethodsDeveloperDefined(
     rustCandidTypes: Rust,
@@ -93,6 +94,8 @@ function getBody(
     implItemMethod: ImplItemMethod,
     inputs: any[]
 ): Rust {
+    const returnValueConversion: Rust = generateReturnValueConversion(implItemMethod);
+
     return `
         fn dummy() {
             BOA_CONTEXT.with(|boa_context_ref_cell| {
@@ -109,7 +112,7 @@ function getBody(
                     }).join(',')}
                 )).unwrap();
             
-                serde_json::from_value(return_value.to_json(&mut boa_context).unwrap()).unwrap()
+                ${returnValueConversion}
             })
         }
     `;

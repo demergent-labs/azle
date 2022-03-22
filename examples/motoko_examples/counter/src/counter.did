@@ -1,5 +1,5 @@
 service: {
     "get": () -> (float64) query;
-    "set": (float64) -> (float64);
-    "inc": () -> (float64);
+    "set": (float64) -> ();
+    "inc": () -> ();
 }
