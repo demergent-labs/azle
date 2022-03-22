@@ -43,6 +43,12 @@ Run the following command to install dfx 0.8.4:
 DFX_VERSION=0.8.4 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 ```
 
+### Common Installation Issues
+
+* Ubuntu
+  * error: linker cc not found (sudo apt install build-essential)
+  * is cmake not installed? (sudo apt install cmake)
+
 ### Azle
 
 In many ways developing with Azle is similar to any other TypeScript/JavaScript project. Imagine you have a project called `backend`:
@@ -84,7 +90,7 @@ Your `dfx.json` should look like this:
 }
 ```
 
-## Local deployment
+## Local Deployment
 
 Start up an IC replica and deploy:
 
@@ -102,7 +108,7 @@ dfx deploy
 
 You can then interact with your canister like any other canister written in Motoko or Rust. To get started with calling your canister using `dfx`, see [here](https://smartcontracts.org/docs/developers-guide/cli-reference/dfx-canister.html#_dfx_canister_call).
 
-## Writing canisters in TypeScript/JavaScript
+## Writing Canisters in TypeScript/JavaScript
 
 See the [examples in this respository](/examples).
 
@@ -135,12 +141,13 @@ If you want to ensure running the examples with a fresh clone works, run `npm li
   - [x] Many examples
   - [ ] Excellent documentation
   - [ ] Video series
+  - [ ] Simple example-based unit tests
 
 - [ ] 1.0
     - [ ] Asynchronous IC APIs
     - [ ] Feature parity with Rust and Motoko CDKs
     - [ ] Live robust examples
-    - [ ] Robust automated tests
+    - [ ] Robust property-based tests
     - [ ] Comprehensive benchmarks
     - [ ] Security audits
 

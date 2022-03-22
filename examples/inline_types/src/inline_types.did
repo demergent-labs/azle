@@ -1,0 +1,45 @@
+type User1 = record {
+    "id": text;
+    "job": record { "id": text; "title": text; };
+};
+
+type Thing = record {
+    "id": text;
+};
+
+type Bling = record {
+    "id": text;
+};
+
+type Test = record {
+    "id": text;
+};
+
+type Test1 = record {
+    "id": text;
+};
+
+type User = record {
+    "id": text;
+};
+
+type Reaction = variant { "one": null; "two": null; "three": record { "id": text; } };
+
+type TestVariant = variant { "prop1": text; "prop2": Test1 };
+
+type UserVariant = variant { "prop1": null };
+
+service: {
+    "inlineRecordReturnType": () -> (record { "prop1": text; "prop2": text; }) query;
+    "inlineRecordParam": (record { "prop1": text; }) -> (text) query;
+    "inlineVariantReturnType": () -> (variant { "var1": null; "var2": null; "var3": null }) query;
+    "inlineVariantParam": (variant { "var1": null; "var2": null }) -> (variant { "var1": null; "var2": null }) query;
+    "recordWithInlineFields": () -> (User1) query;
+    "variantWithInlineFields": () -> (Reaction) query;
+    "recordReferencingOtherTypesFromReturnType": () -> (record { "prop1": text; "prop2": Thing; }) query;
+    "variantReferencingOtherTypesFromReturnType": () -> (variant { "prop1": text; "prop2": Bling }) query;
+    "recordReferencingRecordFromParam": (record { "test": Test; }) -> (text) query;
+    "recordReferencingVariantFromParam": (record { "testVariant": TestVariant; }) -> (opt text) query;
+    "variantReferencingRecordFromParam": (variant { "prop1": User }) -> () query;
+    "variantReferencingVariantFromParam": (variant { "prop1": UserVariant }) -> () query;
+}

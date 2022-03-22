@@ -3,7 +3,7 @@
 import { getCanisterMethodRecordNames, getCanisterMethodVariantNames } from '../ast_utilities/canister_methods';
 import { getPropertyNameText } from '../ast_utilities/miscellaneous';
 import { getTypeAliasDeclaration } from '../ast_utilities/type_aliases';
-import { generateCandidTypeName } from './type_name';
+import { generateCandidTypeInfo } from './type_info';
 import { Candid } from '../../../types';
 import * as tsc from 'typescript';
 
@@ -101,69 +101,18 @@ function getCandidRecordNamesFromRecordFields(
     );
 
     if (typeAliasDeclaration === undefined) {
-        throw new Error(`Could not generate Candid record for type alias declaration: ${JSON.stringify(typeAliasDeclaration, null, 2)}`);
+        throw new Error(`Could not generate Candid record for type alias declaration: ${typeAliasDeclaration}`);
     }
 
     if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TypeLiteral) {
         return [];
     }
 
-    const typeLiteralNode = typeAliasDeclaration.type as tsc.TypeLiteralNode;
-
-    const candidRecordNames = typeLiteralNode.members.reduce((result: string[], member) => {
-        if (member.kind === tsc.SyntaxKind.PropertySignature) {
-            const propertySignature = member as tsc.PropertySignature;
-
-            if (propertySignature.type === undefined) {
-                throw new Error(`Could not generate Candid record for type alias declaration: ${JSON.stringify(typeAliasDeclaration, null, 2)}`);
-            }
-
-            // TODO change this to CandidTypeInfo
-            const candidTypeInfo = generateCandidTypeName(
-                sourceFiles,
-                propertySignature.type
-            );
-
-            if (recordNamesAlreadyFound.includes(candidTypeInfo.typeName)) {
-                return result;
-            }
-
-            if (candidTypeInfo.typeClass === 'record') {
-                const recursedRecordNames = getCandidRecordNamesFromRecordFields(
-                    sourceFiles,
-                    candidTypeInfo.typeName,
-                    [
-                        ...recordNamesAlreadyFound,
-                        candidTypeInfo.typeName
-                    ]
-                );
-
-                return [
-                    ...result,
-                    candidTypeInfo.typeName,
-                    ...recursedRecordNames
-                ];
-            }
-
-            if (candidTypeInfo.typeClass === 'variant') {
-                const recursedRecordNames = getCandidRecordNamesFromVariantFields(
-                    sourceFiles,
-                    candidTypeInfo.typeName,
-                    recordNamesAlreadyFound
-                );
-
-                return [
-                    ...result,
-                    ...recursedRecordNames
-                ];
-            }
-
-            return result;
-        }
-        else {
-            return result;    
-        }
-    }, []);
+    const candidRecordNames = getCandidRecordNamesFromTypeLiteralNode(
+        sourceFiles,
+        typeAliasDeclaration.type as tsc.TypeLiteralNode,
+        recordNamesAlreadyFound
+    );
 
     return candidRecordNames;
 }
@@ -199,18 +148,29 @@ function getCandidRecordNamesFromVariantFields(
         throw new Error(`Could not generate Candid record for type alias declaration: ${JSON.stringify(typeAliasDeclaration, null, 2)}`);
     }
 
-    const typeLiteralNode = firstTypeArgument as tsc.TypeLiteralNode;
+    const candidRecordNames = getCandidRecordNamesFromTypeLiteralNode(
+        sourceFiles,
+        firstTypeArgument as tsc.TypeLiteralNode,
+        recordNamesAlreadyFound
+    );
 
+    return candidRecordNames;
+}
+
+export function getCandidRecordNamesFromTypeLiteralNode(
+    sourceFiles: readonly tsc.SourceFile[],
+    typeLiteralNode: tsc.TypeLiteralNode,
+    recordNamesAlreadyFound: string[]
+): string[] {
     const candidRecordNames = typeLiteralNode.members.reduce((result: string[], member) => {
         if (member.kind === tsc.SyntaxKind.PropertySignature) {
             const propertySignature = member as tsc.PropertySignature;
 
             if (propertySignature.type === undefined) {
-                throw new Error(`Could not generate Candid record for type alias declaration: ${JSON.stringify(typeAliasDeclaration, null, 2)}`);
+                throw new Error(`Could not generate Candid record for type literal node: ${typeLiteralNode}`);
             }
 
-            // TODO change this to CandidTypeInfo
-            const candidTypeInfo = generateCandidTypeName(
+            const candidTypeInfo = generateCandidTypeInfo(
                 sourceFiles,
                 propertySignature.type
             );
@@ -269,14 +229,14 @@ function generateCandidRecord(
     );
 
     if (typeAliasDeclaration === undefined) {
-        throw new Error(`Could not generate Candid record for type alias declaration: ${JSON.stringify(typeAliasDeclaration, null, 2)}`);
+        throw new Error(`Could not generate Candid record for type alias declaration: ${typeAliasDeclaration}`);
     }
 
     if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeLiteral) {
         return generateCandidRecordForTypeLiteral(
             sourceFiles,
             candidRecordName,
-            typeAliasDeclaration
+            typeAliasDeclaration.type as tsc.TypeLiteralNode
         );
     }
 
@@ -288,16 +248,14 @@ function generateCandidRecord(
         );
     }
 
-    throw new Error(`Could not generate Candid record for type alias declaration: ${JSON.stringify(typeAliasDeclaration, null, 2)}`);
+    throw new Error(`Could not generate Candid record for type alias declaration: ${typeAliasDeclaration}`);
 }
 
-function generateCandidRecordForTypeLiteral(
+export function generateCandidRecordForTypeLiteral(
     sourceFiles: readonly tsc.SourceFile[],
-    candidRecordName: string,
-    typeAliasDeclaration: tsc.TypeAliasDeclaration
+    candidRecordName: string | null,
+    typeLiteralNode: tsc.TypeLiteralNode
 ): Candid {
-    const typeLiteralNode = typeAliasDeclaration.type as tsc.TypeLiteralNode;
-
     const candidRecordFields = typeLiteralNode.members.map((member) => {
         if (member.kind === tsc.SyntaxKind.PropertySignature) {
             const propertySignature = member as tsc.PropertySignature;
@@ -305,22 +263,26 @@ function generateCandidRecordForTypeLiteral(
             const candidFieldName = getPropertyNameText(propertySignature.name);
 
             if (propertySignature.type === undefined) {
-                throw new Error(`Could not generate Candid record for type alias declaration: ${JSON.stringify(typeAliasDeclaration, null, 2)}`);
+                throw new Error(`Could not generate Candid record for type literal node: ${typeLiteralNode}`);
             }
 
-            // TODO change this to CandidTypeInfo
-            const candidTypeInfo = generateCandidTypeName(
+            const candidTypeInfo = generateCandidTypeInfo(
                 sourceFiles,
                 propertySignature.type
             );
 
-            return `\n    "${candidFieldName}": ${candidTypeInfo.text};`;
+            return `"${candidFieldName}": ${candidTypeInfo.text};`;
         }
 
-        throw new Error(`Could not generate Candid record for type alias declaration: ${JSON.stringify(typeAliasDeclaration, null, 2)}`);
+        throw new Error(`Could not generate Candid record for type literal node: ${typeLiteralNode}`);
     });
 
-    return `type ${candidRecordName} = record {${candidRecordFields.join('')}\n};`;
+    if (candidRecordName === null) {
+        return `record { ${candidRecordFields.join(' ')} }`;
+    }
+    else {
+        return `type ${candidRecordName} = record {\n    ${candidRecordFields.join('\n    ')}\n};`;
+    }
 }
 
 function generateCandidRecordForArrayType(
@@ -328,7 +290,7 @@ function generateCandidRecordForArrayType(
     candidRecordName: string,
     typeAliasDeclaration: tsc.TypeAliasDeclaration
 ) {
-    const candidTypeName = generateCandidTypeName(
+    const candidTypeName = generateCandidTypeInfo(
         sourceFiles,
         typeAliasDeclaration.type
     );

@@ -1,10 +1,12 @@
 export type Candid = string;
 
-export type CandidTypeName = {
+export type CandidTypeInfo = {
     text: string;
     typeName: string;
-    typeClass: 'primitive' | 'vec' | 'opt' | 'record' | 'variant';
+    typeClass: CandidTypeClass;
 };
+
+export type CandidTypeClass = 'primitive' | 'vec' | 'opt' | 'record' | 'inline_record' | 'variant' | 'inline_variant';
 
 export type CanisterMethodTypeName = 'Query' | 'Update'; // TODO we will also have Heartbeat, Init, PreUpgrade, PostUpgrade, Canister, etc
 
@@ -24,8 +26,6 @@ type JSCanisterConfig = Readonly<{
     candid: string;
     wasm: string;
 }>;
-
-export type RecordOrVariant = 'record' | 'variant';
 
 export type Rust = string;
 

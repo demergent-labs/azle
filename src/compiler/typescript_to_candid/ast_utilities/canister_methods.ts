@@ -1,9 +1,11 @@
-import { generateCandidTypeName } from '../generators/type_name';
+import { generateCandidTypeInfo } from '../generators/type_info';
 import {
-    CanisterMethodTypeName,
-    RecordOrVariant
+    CandidTypeClass,
+    CanisterMethodTypeName
 } from '../../../types';
 import * as tsc from 'typescript';
+import { getCandidRecordNamesFromTypeLiteralNode } from '../generators/record';
+import { getCandidVariantNamesFromTypeLiteralNode } from '../generators/variant';
 
 export function getCanisterMethodFunctionDeclarationsFromSourceFiles(
     sourceFiles: readonly tsc.SourceFile[],
@@ -90,8 +92,6 @@ export function nodeIsCanisterMethodFunctionDeclaration(
     return identifier.escapedText === icFunctionTypeName;
 }
 
-// TODO we also need to recursively search through the fields of records and variants
-// TODO if those fields have records and variants then we must find them
 export function getCanisterMethodRecordNames(
     sourceFiles: readonly tsc.SourceFile[],
     canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[]
@@ -117,18 +117,18 @@ export function getCanisterMethodVariantNames(
 function getCanisterMethodNames(
     sourceFiles: readonly tsc.SourceFile[],
     canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
-    recordOrVariant: RecordOrVariant
+    candidTypeClass: CandidTypeClass
 ): string[] {
     return canisterMethodFunctionDeclarations.reduce((result: string[], functionDeclaration) => {
         const parameterRecordNames = getCanisterMethodParameterNames(
             sourceFiles,
             functionDeclaration,
-            recordOrVariant
+            candidTypeClass
         );
         const returnTypeRecordNames = getCanisterMethodReturnTypeNames(
             sourceFiles,
             functionDeclaration,
-            recordOrVariant
+            candidTypeClass
         );
 
         return [
@@ -142,46 +142,195 @@ function getCanisterMethodNames(
 function getCanisterMethodParameterNames(
     sourceFiles: readonly tsc.SourceFile[],
     functionDeclaration: tsc.FunctionDeclaration,
-    recordOrVariant: RecordOrVariant
+    candidTypeClass: CandidTypeClass
 ): string[] {
     return functionDeclaration.parameters.reduce((result: string[], parameter) => {
         if (parameter.type === undefined) {
             throw new Error('parameter must have a type');
         }
 
-        const candidTypeName = generateCandidTypeName(
+        const candidTypeInfo = generateCandidTypeInfo(
             sourceFiles,
             parameter.type
         );
 
-        if (candidTypeName.typeClass === recordOrVariant) {
-            return [
-                ...result,
-                candidTypeName.typeName
-            ];
+        if (candidTypeClass === 'record') {
+            if (candidTypeInfo.typeClass === 'record') {
+                return [
+                    ...result,
+                    candidTypeInfo.typeName
+                ];
+            }
+    
+            if (candidTypeInfo.typeClass === 'inline_record') {
+                const recordNames = getCandidRecordNamesFromTypeLiteralNode(
+                    sourceFiles,
+                    parameter.type as tsc.TypeLiteralNode,
+                    []
+                );
+
+                return [
+                    ...result,
+                    ...recordNames
+                ];
+            }
+    
+            if (candidTypeInfo.typeClass === 'inline_variant') {
+                const typeArguments = (parameter.type as tsc.TypeReferenceNode).typeArguments;
+
+                if (typeArguments === undefined) {
+                    throw new Error('This cannot happen');
+                }
+
+                const recordNames = getCandidRecordNamesFromTypeLiteralNode(
+                    sourceFiles,
+                    typeArguments[0] as tsc.TypeLiteralNode,
+                    []
+                );
+
+                return [
+                    ...result,
+                    ...recordNames
+                ];
+            }
         }
-        else {
-            return result;
+
+        if (candidTypeClass === 'variant') {
+            if (candidTypeInfo.typeClass === 'variant') {
+                return [
+                    ...result,
+                    candidTypeInfo.typeName
+                ];
+            }
+    
+            if (candidTypeInfo.typeClass === 'inline_variant') {
+                const typeArguments = (parameter.type as tsc.TypeReferenceNode).typeArguments;
+
+                if (typeArguments === undefined) {
+                    throw new Error('This cannot happen');
+                }
+
+                const variantNames = getCandidVariantNamesFromTypeLiteralNode(
+                    sourceFiles,
+                    typeArguments[0] as tsc.TypeLiteralNode,
+                    []
+                );
+
+                return [
+                    ...result,
+                    ...variantNames
+                ];
+            }
+    
+            if (candidTypeInfo.typeClass === 'inline_record') {
+                const variantNames = getCandidVariantNamesFromTypeLiteralNode(
+                    sourceFiles,
+                    parameter.type as tsc.TypeLiteralNode,
+                    []
+                );
+
+                return [
+                    ...result,
+                    ...variantNames
+                ];
+            }
         }
+
+        return result;
     }, []);
 }
 
 function getCanisterMethodReturnTypeNames(
     sourceFiles: readonly tsc.SourceFile[],
     functionDeclaration: tsc.FunctionDeclaration,
-    recordOrVariant: RecordOrVariant
+    candidTypeClass: CandidTypeClass
 ): string[] {
-    const candidTypeName = generateCandidTypeName(
+    const candidTypeInfo = generateCandidTypeInfo(
         sourceFiles,
         getCanisterMethodReturnTypeNode(functionDeclaration)
     );
 
-    if (candidTypeName.typeClass === recordOrVariant) {
-        return [candidTypeName.typeName];
+    if (candidTypeClass === 'record') {
+        if (candidTypeInfo.typeClass === 'record') {
+            return [candidTypeInfo.typeName];
+        }
+
+        if (candidTypeInfo.typeClass === 'inline_record') {
+            const typeArguments = (functionDeclaration.type as tsc.TypeReferenceNode).typeArguments;
+
+            if (typeArguments === undefined) {
+                throw new Error('This cannot happen');
+            }
+
+            return getCandidRecordNamesFromTypeLiteralNode(
+                sourceFiles,
+                typeArguments[0] as tsc.TypeLiteralNode,
+                []
+            );
+        }
+
+        if (candidTypeInfo.typeClass === 'inline_variant') {
+            const outerTypeArguments = (functionDeclaration.type as tsc.TypeReferenceNode).typeArguments;
+
+            if (outerTypeArguments === undefined) {
+                throw new Error('This cannot happen');
+            }
+
+            const innerTypeArguments = (outerTypeArguments[0] as tsc.TypeReferenceNode).typeArguments;
+
+            if (innerTypeArguments === undefined) {
+                throw new Error('This cannot happen');
+            }
+
+            return getCandidRecordNamesFromTypeLiteralNode(
+                sourceFiles,
+                innerTypeArguments[0] as tsc.TypeLiteralNode,
+                []
+            );
+        }
     }
-    else {
-        return [];
+
+    if (candidTypeClass === 'variant') {
+        if (candidTypeInfo.typeClass === 'variant') {
+            return [candidTypeInfo.typeName];
+        }
+
+        if (candidTypeInfo.typeClass === 'inline_variant') {
+            const outerTypeArguments = (functionDeclaration.type as tsc.TypeReferenceNode).typeArguments;
+
+            if (outerTypeArguments === undefined) {
+                throw new Error('This cannot happen');
+            }
+
+            const innerTypeArguments = (outerTypeArguments[0] as tsc.TypeReferenceNode).typeArguments;
+
+            if (innerTypeArguments === undefined) {
+                throw new Error('This cannot happen');
+            }
+
+            return getCandidVariantNamesFromTypeLiteralNode(
+                sourceFiles,
+                innerTypeArguments[0] as tsc.TypeLiteralNode,
+                []
+            );
+        }
+
+        if (candidTypeInfo.typeClass === 'inline_record') {
+            const typeArguments = (functionDeclaration.type as tsc.TypeReferenceNode).typeArguments;
+
+            if (typeArguments === undefined) {
+                throw new Error('This cannot happen');
+            }
+
+            return getCandidVariantNamesFromTypeLiteralNode(
+                sourceFiles,
+                typeArguments[0] as tsc.TypeLiteralNode,
+                []
+            );
+        }
     }
+
+    return [];
 }
 
 function getCanisterMethodReturnTypeNode(functionDeclaration: tsc.FunctionDeclaration): tsc.TypeNode {

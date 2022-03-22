@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // TODO start figuring out the cross canister call API...I need the types in Rust I think
 // TODO so I might need to create a typed function in TypeScript
 
