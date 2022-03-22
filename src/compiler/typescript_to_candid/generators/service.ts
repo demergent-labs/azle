@@ -1,8 +1,8 @@
 import { getFunctionName } from '../ast_utilities/miscellaneous';
-import { generateCandidTypeName } from './type_name';
+import { generateCandidTypeInfo } from './type_info';
 import {
     Candid,
-    CandidTypeName
+    CandidTypeInfo
 } from '../../../types';
 import * as tsc from 'typescript';
 
@@ -49,7 +49,7 @@ function generateCandidServiceMethodDefinitions(
 function generateCandidServiceMethodParameterTypeNames(
     sourceFiles: readonly tsc.SourceFile[],
     functionDeclaration: tsc.FunctionDeclaration
-): CandidTypeName[] {
+): CandidTypeInfo[] {
     return functionDeclaration
         .parameters
         .map((parameter) => {
@@ -57,7 +57,7 @@ function generateCandidServiceMethodParameterTypeNames(
                 throw new Error(`There must be a static type for parameter: ${parameter}`);
             }
 
-            return generateCandidTypeName(
+            return generateCandidTypeInfo(
                 sourceFiles,
                 parameter.type
             );
@@ -67,7 +67,7 @@ function generateCandidServiceMethodParameterTypeNames(
 function generateCandidServiceMethodReturnTypeName(
     sourceFiles: readonly tsc.SourceFile[],
     functionDeclaration: tsc.FunctionDeclaration
-): CandidTypeName {
+): CandidTypeInfo {
     if (functionDeclaration.type === undefined) {
         throw new Error(`There must be a return type for function declaration: ${JSON.stringify(functionDeclaration, null, 2)}`);
     }
@@ -79,7 +79,7 @@ function generateCandidServiceMethodReturnTypeName(
             throw new Error(`There must be a return type argument for type reference node: ${JSON.stringify(typeReferenceNode, null, 2)}`);
         }
 
-        return generateCandidTypeName(
+        return generateCandidTypeInfo(
             sourceFiles,
             typeReferenceNode.typeArguments[0]
         );

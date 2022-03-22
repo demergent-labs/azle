@@ -1,7 +1,7 @@
 // TODO it would be cool to add timestamps
 
 import {
-    variant
+    Variant
 } from 'azle';
 
 export type Post = {
@@ -19,7 +19,7 @@ export type Reaction = {
     reactionType: ReactionType;
 };
 
-export type ReactionType = variant<{
+export type ReactionType = Variant<{
     fire?: null,
     thumbsUp?: null,
     thumbsDown?: null

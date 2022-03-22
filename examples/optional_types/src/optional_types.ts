@@ -1,10 +1,10 @@
 import {
     Query,
-    opt
+    Opt
 } from 'azle';
 
 type HTML = {
-    head: opt<Head>;
+    head: Opt<Head>;
 };
 
 type Head = {
@@ -21,12 +21,12 @@ export function getHTML(): Query<HTML> {
     };
 }
 
-export function getHead(): Query<opt<Head>> {
+export function getHead(): Query<Opt<Head>> {
     return {
         elements: []
     };
 }
 
-export function getElement(element: opt<opt<Element>>): Query<opt<opt<Element>>> {
+export function getElement(element: Opt<Opt<Element>>): Query<Opt<Opt<Element>>> {
     return element;
 }

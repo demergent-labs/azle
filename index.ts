@@ -15,9 +15,9 @@ type ic = {
 
 export type Query<T> = T;
 export type Update<T> = T;
-export type variant<T> = T;
-export type principal = string;
-export type opt<T> = T | null;
+export type Variant<T> = T;
+export type Principal = string;
+export type Opt<T> = T | null;
 export type Result<T, V> = {
     ok?: T;
     err?: V;

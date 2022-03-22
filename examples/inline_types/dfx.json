@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "inline_types": {
+            "type": "custom",
+            "build": "npx azle inline_types",
+            "root": "src",
+            "ts": "src/inline_types.ts",
+            "candid": "src/inline_types.did",
+            "wasm": "target/wasm32-unknown-unknown/release/inline_types.wasm"
+        }
+    }
+}

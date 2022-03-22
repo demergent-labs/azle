@@ -4,7 +4,7 @@ import * as tsc from 'typescript';
 import { Candid } from '../../../types';
 import { getCanisterMethodRecordNames, getCanisterMethodVariantNames } from '../ast_utilities/canister_methods';
 import { getTypeAliasDeclaration } from '../ast_utilities/type_aliases';
-import { generateCandidTypeName } from './type_name';
+import { generateCandidTypeInfo } from './type_info';
 
 export function generateCandidVariants(
     sourceFiles: readonly tsc.SourceFile[],
@@ -119,62 +119,11 @@ function getCandidVariantNamesFromVariantFields(
         throw new Error(`Could not generate Candid record for type alias declaration: ${JSON.stringify(typeAliasDeclaration, null, 2)}`);
     }
 
-    const typeLiteralNode = firstTypeArgument as tsc.TypeLiteralNode;
-
-    const candidVariantNames = typeLiteralNode.members.reduce((result: string[], member) => {
-        if (member.kind === tsc.SyntaxKind.PropertySignature) {
-            const propertySignature = member as tsc.PropertySignature;
-
-            if (propertySignature.type === undefined) {
-                throw new Error(`Could not generate Candid record for type alias declaration: ${JSON.stringify(typeAliasDeclaration, null, 2)}`);
-            }
-
-            // TODO change this to CandidTypeInfo
-            const candidTypeInfo = generateCandidTypeName(
-                sourceFiles,
-                propertySignature.type
-            );
-
-            if (variantNamesAlreadyFound.includes(candidTypeInfo.typeName)) {
-                return result;
-            }
-
-            if (candidTypeInfo.typeClass === 'variant') {
-                const recursedVariantNames = getCandidVariantNamesFromVariantFields(
-                    sourceFiles,
-                    candidTypeInfo.typeName,
-                    variantNamesAlreadyFound
-                );
-
-                return [
-                    ...result,
-                    candidTypeInfo.typeName,
-                    ...recursedVariantNames
-                ];
-            }
-
-            if (candidTypeInfo.typeClass === 'record') {
-                const recursedVariantNames = getCandidVariantNamesFromRecordFields(
-                    sourceFiles,
-                    candidTypeInfo.typeName,
-                    [
-                        ...variantNamesAlreadyFound,
-                        candidTypeInfo.typeName
-                    ]
-                );
-
-                return [
-                    ...result,
-                    ...recursedVariantNames
-                ];
-            }
-
-            return result;
-        }
-        else {
-            return result;    
-        }
-    }, []);
+    const candidVariantNames = getCandidVariantNamesFromTypeLiteralNode(
+        sourceFiles,
+        firstTypeArgument as tsc.TypeLiteralNode,
+        variantNamesAlreadyFound
+    );
 
     return candidVariantNames;
 }
@@ -191,25 +140,36 @@ function getCandidVariantNamesFromRecordFields(
     );
 
     if (typeAliasDeclaration === undefined) {
-        throw new Error(`Could not generate Candid record for type alias declaration: ${JSON.stringify(typeAliasDeclaration, null, 2)}`);
+        throw new Error(`Could not generate Candid record for type alias declaration: ${typeAliasDeclaration}`);
     }
 
     if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TypeLiteral) {
         return [];
     }
 
-    const typeLiteralNode = typeAliasDeclaration.type as tsc.TypeLiteralNode;
+    const candidVariantNames = getCandidVariantNamesFromTypeLiteralNode(
+        sourceFiles,
+        typeAliasDeclaration.type as tsc.TypeLiteralNode,
+        variantNamesAlreadyFound
+    );
 
+    return candidVariantNames;
+}
+
+export function getCandidVariantNamesFromTypeLiteralNode(
+    sourceFiles: readonly tsc.SourceFile[],
+    typeLiteralNode: tsc.TypeLiteralNode,
+    variantNamesAlreadyFound: string[]
+): string[] {
     const candidVariantNames = typeLiteralNode.members.reduce((result: string[], member) => {
         if (member.kind === tsc.SyntaxKind.PropertySignature) {
             const propertySignature = member as tsc.PropertySignature;
 
             if (propertySignature.type === undefined) {
-                throw new Error(`Could not generate Candid record for type alias declaration: ${JSON.stringify(typeAliasDeclaration, null, 2)}`);
+                throw new Error(`Could not generate Candid record for type literal node: ${typeLiteralNode}`);
             }
 
-            // TODO change this to CandidTypeInfo
-            const candidTypeInfo = generateCandidTypeName(
+            const candidTypeInfo = generateCandidTypeInfo(
                 sourceFiles,
                 propertySignature.type
             );
@@ -283,41 +243,55 @@ function generateCandidVariant(
         const typeNode = typeReferenceNode.typeArguments[0];
     
         if (typeNode.kind === tsc.SyntaxKind.TypeLiteral) {
-            const typeLiteralNode = typeNode as tsc.TypeLiteralNode;
-
-            const variantFields: {
-                name: string;
-                type: string;
-            }[] = typeLiteralNode.members.map((member) => {
-                if (member.kind === tsc.SyntaxKind.PropertySignature) {
-                    const propertySignature = member as tsc.PropertySignature;
-
-                    if (propertySignature.name.kind === tsc.SyntaxKind.Identifier) {
-                        const name = propertySignature.name.escapedText.toString();
-
-                        if (propertySignature.type === undefined) {
-                            throw new Error('must not happen');
-                        }
-
-                        const candidTypeInfo = generateCandidTypeName(
-                            sourceFiles,
-                            propertySignature.type
-                        );
-
-
-                        return {
-                            name,
-                            type: candidTypeInfo.typeName
-                        };
-                    }
-                }
-
-                throw new Error('must not happen');
-            });
-
-            return `type ${candidVariantName} = variant { ${variantFields.map((variantField) => `${variantField.name}: ${variantField.type}`).join('; ')} };`;
+            return generateCandidVariantForTypeLiteral(
+                sourceFiles,
+                candidVariantName,
+                typeNode as tsc.TypeLiteralNode
+            );
         }
     }
 
     throw new Error('this should not happen');
+}
+
+export function generateCandidVariantForTypeLiteral(
+    sourceFiles: readonly tsc.SourceFile[],
+    candidVariantName: string | null,
+    typeLiteralNode: tsc.TypeLiteralNode
+): Candid {
+    const variantFields: {
+        name: string;
+        text: string;
+    }[] = typeLiteralNode.members.map((member) => {
+        if (member.kind === tsc.SyntaxKind.PropertySignature) {
+            const propertySignature = member as tsc.PropertySignature;
+
+            if (propertySignature.name.kind === tsc.SyntaxKind.Identifier) {
+                const name = propertySignature.name.escapedText.toString();
+
+                if (propertySignature.type === undefined) {
+                    throw new Error('must not happen');
+                }
+
+                const candidTypeInfo = generateCandidTypeInfo(
+                    sourceFiles,
+                    propertySignature.type
+                );
+
+                return {
+                    name,
+                    text: candidTypeInfo.text
+                };
+            }
+        }
+
+        throw new Error('must not happen');
+    });
+
+    if (candidVariantName === null) {
+        return `variant { ${variantFields.map((variantField) => `"${variantField.name}": ${variantField.text}`).join('; ')} }`;
+    }
+    else {
+        return `type ${candidVariantName} = variant { ${variantFields.map((variantField) => `"${variantField.name}": ${variantField.text}`).join('; ')} };`;
+    }
 }

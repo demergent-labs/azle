@@ -17,7 +17,7 @@ export function isTypeReferenceNodeAVariant(
     if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
         const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
-        return getTypeReferenceNodeTypeName(typeReferenceNode) === 'variant';
+        return getTypeReferenceNodeTypeName(typeReferenceNode) === 'Variant';
     }
 
     return false;
