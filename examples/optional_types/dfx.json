@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "optional_types": {
+            "type": "custom",
+            "build": "npx azle optional_types",
+            "root": "src",
+            "ts": "src/optional_types.ts",
+            "candid": "src/optional_types.did",
+            "wasm": "target/wasm32-unknown-unknown/release/optional_types.wasm"
+        }
+    }
+}
