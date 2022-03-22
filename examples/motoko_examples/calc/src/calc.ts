@@ -1,6 +1,6 @@
 import {
-    ic,
     Update,
+    opt,
     float64
 } from 'azle';
 
@@ -22,10 +22,9 @@ export function mul(n: float64): Update<float64> {
     return cell;
 }
 
-// TODO we do not have a maybe type
-export function div(n: float64): Update<float64> {
+export function div(n: float64): Update<opt<float64>> {
     if (n == 0) {
-        ic.trap('cannot divide by 0');
+        return null;
     }
     else {
         cell /= n;
@@ -33,8 +32,6 @@ export function div(n: float64): Update<float64> {
     }
 }
 
-// TODO we do not have a void type
-export function clearall(): Update<boolean> {
+export function clearall(): Update<void> {
     cell = 0;
-    return true;
 }

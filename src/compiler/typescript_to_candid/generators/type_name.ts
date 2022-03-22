@@ -27,6 +27,10 @@ export function generateCandidTypeName(
         return generateCandidTypeNameForNullKeyword();
     }
 
+    if (typeNode.kind === tsc.SyntaxKind.VoidKeyword) {
+        return generateCandidTypeNameForVoidKeyword();
+    }
+
     if (typeNode.kind === tsc.SyntaxKind.ArrayType) {
         return generateCandidTypeNameForArrayType(
             sourceFiles,
@@ -72,6 +76,14 @@ function generateCandidTypeNameForNullKeyword(): CandidTypeName {
     return {
         text: 'null',
         typeName: 'null',
+        typeClass: 'primitive'
+    };
+}
+
+function generateCandidTypeNameForVoidKeyword(): CandidTypeName {
+    return {
+        text: '',
+        typeName: 'void',
         typeClass: 'primitive'
     };
 }
