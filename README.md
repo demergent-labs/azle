@@ -118,46 +118,43 @@ If you want to ensure running the examples with a fresh clone works, run `npm li
 
 - [ ] Beta
   - [x] TypeScript -> Candid compiler
-  - [ ] Synchronous IC APIs
+  - [x] Synchronous IC APIs
     - [x] caller
-    - [ ] canisterBalance
+    - [x] canisterBalance
     - [x] id
     - [x] print
-    - [ ] time
+    - [x] time
     - [x] trap
   - [ ] All primitive data types
     - [ ] int
     - [ ] int64
-    - [ ] int32
-    - [ ] int16
-    - [ ] int8
+    - [x] int32
+    - [x] int16
+    - [x] int8
     - [ ] nat
     - [ ] nat64
     - [ ] nat32
-    - [ ] nat16
-    - [ ] nat8
+    - [x] nat16
+    - [x] nat8
     - [x] float64
     - [x] float32
   - [x] Many examples
+  - [ ] Simple example-based unit tests
   - [ ] Excellent documentation
   - [ ] Video series
-  - [ ] Simple example-based unit tests
 
 - [ ] 1.0
-    - [ ] Asynchronous IC APIs
+    - [x] Asynchronous IC APIs
     - [ ] Feature parity with Rust and Motoko CDKs
     - [ ] Live robust examples
     - [ ] Robust property-based tests
     - [ ] Comprehensive benchmarks
     - [ ] Security audits
 
-
 ## Limitations
 
 * Only `float64` and `float32` types are supported
-* No inline or anonymous types (use type aliases for most types)
-* No asynchronous IC APIs (such as cross-canister calls)
-* No asynchronous TypeScript/JavaScript (async/await, promises, etc)
+* Limited asynchronous TypeScript/JavaScript (generators only for now, no promises or async/await)
 * Third-party npm packages that you import may use unsupported syntax or APIs
 * Unknown security vulnerabilities
 * Unknown cycle efficiency relative to canisters written in Rust or Motoko
