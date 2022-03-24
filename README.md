@@ -2,6 +2,10 @@
 
 TypeScript/JavaScript CDK for the Internet Computer.
 
+## Discussion
+
+Feel free to open issues or join us in the [DFINITY DEV TypeScript Discord channel](https://discord.com/channels/748416164832608337/956466775380336680).
+
 ## Installation
 
 You should have the following installed on your system:
@@ -144,21 +148,31 @@ If you want to ensure running the examples with a fresh clone works, run `npm li
   - [ ] Video series
 
 - [ ] 1.0
-    - [x] Asynchronous IC APIs
+    - [ ] Asynchronous IC APIs
+      - [ ] call
+      - [x] rawRand
+    - [ ] Flexible stable memory access
     - [ ] Feature parity with Rust and Motoko CDKs
+    - [ ] [Inter-Canister Query Calls](https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754)
     - [ ] Live robust examples
     - [ ] Robust property-based tests
     - [ ] Comprehensive benchmarks
     - [ ] Security audits
+    - [ ] Optimized compilation
 
 ## Limitations
 
-* Only `float64` and `float32` types are supported
+* No stable memory access, all state is wiped after upgrades
 * Limited asynchronous TypeScript/JavaScript (generators only for now, no promises or async/await)
 * Third-party npm packages that you import may use unsupported syntax or APIs
 * Unknown security vulnerabilities
 * Unknown cycle efficiency relative to canisters written in Rust or Motoko
 * And much much [more](https://github.com/demergent-labs/azle/issues)
+
+## Tips and Best Practices
+
+* Because Azle is built on Rust, to ensure the best compatibility use underscores to separate words in directory, file, and canister names
+* If you need 64-bit numbers of any kind, currently use float64
 
 ## Contributing
 

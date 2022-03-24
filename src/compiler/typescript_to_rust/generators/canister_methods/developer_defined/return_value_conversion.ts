@@ -8,8 +8,8 @@ import { Rust } from '../../../../../types';
 // TODO I need that control to possibly convert from a BigInt
 // TODO get this to work for Option...if necessary...probably is necessary to do some kind of recursion
 export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust {
-    // TODO handle void/undefined
-    
+    const returnTypeName = getImplItemMethodReturnTypeName(implItemMethod);
+
     return `
         #[derive(Debug, serde::Serialize, serde::Deserialize)]
         struct IcApiInfo {
@@ -20,7 +20,7 @@ export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust
             return_value.is_object() == false ||
             return_value.as_object().unwrap().is_generator() == false
         {
-            return serde_json::from_value(return_value.to_json(&mut boa_context).unwrap()).unwrap();
+            ${returnTypeName === '' ? `return;` : `return serde_json::from_value(return_value.to_json(&mut boa_context).unwrap()).unwrap();`}
         }
 
         let generator_object = return_value.as_object().unwrap();
@@ -82,7 +82,14 @@ export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust
             };
         }
 
-        serde_json::from_value(final_js_value.to_json(&mut boa_context).unwrap()).unwrap()
+        ${returnTypeName === '' ? '' : `
+            // if final_js_value.is_undefined() {
+
+            // }
+            // else {
+                serde_json::from_value(final_js_value.to_json(&mut boa_context).unwrap()).unwrap()
+            // }
+        `}
     `;
 
     // return `
