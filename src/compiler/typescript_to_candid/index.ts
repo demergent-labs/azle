@@ -14,7 +14,7 @@ export function compileTypeScriptToCandid(sourceFiles: readonly tsc.SourceFile[]
         sourceFiles,
         [
             'Query',
-            'QueryAsync'
+            // 'QueryAsync' // TODO enable once this is resolved: https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754
         ]
     );
 

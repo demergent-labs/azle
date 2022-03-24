@@ -1,17 +1,17 @@
 import {
     Query,
     Update,
-    float64
+    int32
 } from 'azle';
 
-// TODO counter should be a nat64: https://github.com/demergent-labs/azle/issues/98
-let counter: float64 = 0;
+// TODO counter should be a nat64: https://github.com/demergent-labs/azle/issues/20
+let counter: int32 = 0;
 
-export function get(): Query<float64> {
+export function get(): Query<int32> {
     return counter;
 }
 
-export function set(n: float64): Update<void> {
+export function set(n: int32): Update<void> {
     counter = n;
 }
 

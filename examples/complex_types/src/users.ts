@@ -1,7 +1,7 @@
 import {
     Query,
     Update,
-    float32
+    int32
 } from 'azle';
 import { User } from './candid_types';
 import { getPostFromStatePost } from './posts';
@@ -14,7 +14,7 @@ import { getThreadFromStateThread } from './threads';
 
 export function createUser(
     username: string,
-    joinDepth: float32 // TODO change back to nat32 when supported
+    joinDepth: int32 // TODO change back to nat32 when supported
 ): Update<User> {
     const id = Object.keys(state.users).length.toString();
 
@@ -33,7 +33,7 @@ export function createUser(
     return user;
 }
 
-export function getAllUsers(joinDepth: float32): Query<User[]> {
+export function getAllUsers(joinDepth: int32): Query<User[]> {
     return Object
         .values(state.users)
         .map((stateUser) => getUserFromStateUser(stateUser, joinDepth));
@@ -41,7 +41,7 @@ export function getAllUsers(joinDepth: float32): Query<User[]> {
 
 export function getUserFromStateUser(
     stateUser: StateUser,
-    joinDepth: float32
+    joinDepth: int32
 ): User {
     if (joinDepth === 0) {
         return {

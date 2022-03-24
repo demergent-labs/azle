@@ -1,7 +1,7 @@
 import {
     Query,
     Update,
-    ic
+    Opt
 } from 'azle';
 
 type DB = {
@@ -19,12 +19,8 @@ let db: DB = {
     users: {}
 };
 
-export function getUserById(id: string): Query<User> {
-    const user = db.users[id] as User | undefined;
-
-    if (user === undefined) {
-        ic.trap('user not found');
-    }
+export function getUserById(id: string): Query<Opt<User>> {
+    const user = db.users[id] ?? null;
 
     return user;
 }

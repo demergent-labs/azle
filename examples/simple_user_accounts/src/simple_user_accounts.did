@@ -4,7 +4,7 @@ type User = record {
 };
 
 service: {
-    "getUserById": (text) -> (User) query;
+    "getUserById": (text) -> (opt User) query;
     "getAllUsers": () -> (vec User) query;
     "createUser": (text) -> (User);
 }

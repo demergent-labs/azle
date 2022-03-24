@@ -1,4 +1,4 @@
 service: {
-    "readCount": () -> (float64) query;
-    "incrementCount": () -> (float64);
+    "readCount": () -> (int32) query;
+    "incrementCount": () -> (int32);
 }

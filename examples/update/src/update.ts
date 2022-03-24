@@ -9,7 +9,6 @@ export function query(): Query<string> {
     return currentMessage;
 }
 
-export function update(message: string): Update<string> {
+export function update(message: string): Update<void> {
     currentMessage = message;
-    return message;
 }
