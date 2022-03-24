@@ -11,7 +11,7 @@ import {
     Fn,
     ImplItemMethod
 } from '../../../ast_utilities/types';
-import { generateReturnValueConversion } from './return_value_conversion';
+import { generateReturnValueHandler } from './return_value_conversion';
 import { Rust } from '../../../../../types';
 
 export async function generateCanisterMethodsDeveloperDefined(
@@ -94,13 +94,13 @@ function getBody(
     implItemMethod: ImplItemMethod,
     inputs: any[]
 ): Rust {
-    const returnValueConversion: Rust = generateReturnValueConversion(implItemMethod);
+    const returnValueHandler: Rust = generateReturnValueHandler(implItemMethod);
 
     return `
         fn dummy() {
-            BOA_CONTEXT.with(|boa_context_ref_cell| {
-                let mut boa_context = boa_context_ref_cell.borrow_mut();
-
+            unsafe {
+                let mut boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+    
                 let return_value = boa_context.eval(format!(
                     "
                         ${implItemMethod.ident}(${inputs.map((input) => {
@@ -112,11 +112,67 @@ function getBody(
                     }).join(',')}
                 )).unwrap();
             
-                ${returnValueConversion}
-            })
+                ${returnValueHandler}
+
+            }
         }
     `;
 }
+
+// fn dummy() {
+//     BOA_CONTEXT.with(|boa_context_ref_cell| {
+//         let mut boa_context = boa_context_ref_cell.borrow_mut();
+    
+//         let return_value = boa_context.eval(format!(
+//             "
+//                 ${implItemMethod.ident}(${inputs.map((input) => {
+//                     return `{${input.typed.pat.ident.ident}}`;
+//                 }).join(',')});
+//             ",
+//             ${inputs.map((input) => {
+//                 return `${input.typed.pat.ident.ident} = serde_json::to_string(&${input.typed.pat.ident.ident}).unwrap()`;
+//             }).join(',')}
+//         )).unwrap();
+    
+//         ${returnValueHandler}
+//     })
+// }
+
+// fn dummy() {
+//     // let mut boa_context = BOA_CONTEXT.with(|boa_context_ref_cell| boa_context_ref_cell.borrow());
+
+//     let mut boa_context = boa_engine::Context::default();
+
+//     let return_value = boa_context.eval(format!(
+//         "
+//             ${implItemMethod.ident}(${inputs.map((input) => {
+//                 return `{${input.typed.pat.ident.ident}}`;
+//             }).join(',')});
+//         ",
+//         ${inputs.map((input) => {
+//             return `${input.typed.pat.ident.ident} = serde_json::to_string(&${input.typed.pat.ident.ident}).unwrap()`;
+//         }).join(',')}
+//     )).unwrap();
+
+//     ${returnValueHandler}
+// }
+
+// BOA_CONTEXT.with(|boa_context_ref_cell| {
+//     let mut boa_context = boa_context_ref_cell.borrow_mut();
+
+//     let return_value = boa_context.eval(format!(
+//         "
+//             ${implItemMethod.ident}(${inputs.map((input) => {
+//                 return `{${input.typed.pat.ident.ident}}`;
+//             }).join(',')});
+//         ",
+//         ${inputs.map((input) => {
+//             return `${input.typed.pat.ident.ident} = serde_json::to_string(&${input.typed.pat.ident.ident}).unwrap()`;
+//         }).join(',')}
+//     )).unwrap();
+
+//     ${returnValueHandler}
+// })
 
 function getAttrs(
     implItemMethod: ImplItemMethod,

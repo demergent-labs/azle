@@ -12,12 +12,18 @@ export function compileTypeScriptToCandid(sourceFiles: readonly tsc.SourceFile[]
 } {
     const queryMethodFunctionDeclarations = getCanisterMethodFunctionDeclarationsFromSourceFiles(
         sourceFiles,
-        'Query'
+        [
+            'Query',
+            'QueryAsync'
+        ]
     );
 
     const updateMethodFunctionDeclarations = getCanisterMethodFunctionDeclarationsFromSourceFiles(
         sourceFiles,
-        'Update'
+        [
+            'Update',
+            'UpdateAsync'
+        ]
     );
 
     const candidRecords: Candid = generateCandidRecords(

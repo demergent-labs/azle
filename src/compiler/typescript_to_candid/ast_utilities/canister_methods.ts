@@ -9,7 +9,7 @@ import { getCandidVariantNamesFromTypeLiteralNode } from '../generators/variant'
 
 export function getCanisterMethodFunctionDeclarationsFromSourceFiles(
     sourceFiles: readonly tsc.SourceFile[],
-    canisterMethodTypeName: CanisterMethodTypeName
+    canisterMethodTypeNames: CanisterMethodTypeName[]
 ): tsc.FunctionDeclaration[] {
     return sourceFiles.reduce((result: tsc.FunctionDeclaration[], sourceFile) => {
         return [
@@ -17,7 +17,7 @@ export function getCanisterMethodFunctionDeclarationsFromSourceFiles(
             ...getCanisterMethodFunctionDeclarationsFromNodes(
                 sourceFile,
                 sourceFile.getChildren(),
-                canisterMethodTypeName
+                canisterMethodTypeNames
             )
         ];
     }, []);
@@ -26,12 +26,12 @@ export function getCanisterMethodFunctionDeclarationsFromSourceFiles(
 function getCanisterMethodFunctionDeclarationsFromNodes(
     sourceFile: tsc.SourceFile,
     nodes: tsc.Node[],
-    canisterMethodTypeName: CanisterMethodTypeName
+    canisterMethodTypeNames: CanisterMethodTypeName[]
 ): tsc.FunctionDeclaration[] {
     return nodes.reduce((result: tsc.FunctionDeclaration[], node) => {
         const canisterMethodFunctionDeclarations = getCanisterMethodFunctionDeclarationsFromNode(
             node,
-            canisterMethodTypeName
+            canisterMethodTypeNames
         );
 
         return [
@@ -40,7 +40,7 @@ function getCanisterMethodFunctionDeclarationsFromNodes(
             ...getCanisterMethodFunctionDeclarationsFromNodes(
                 sourceFile,
                 node.getChildren(sourceFile),
-                canisterMethodTypeName
+                canisterMethodTypeNames
             )
         ];
     }, []);
@@ -48,11 +48,11 @@ function getCanisterMethodFunctionDeclarationsFromNodes(
 
 function getCanisterMethodFunctionDeclarationsFromNode(
     node: tsc.Node,
-    canisterMethodTypeName: CanisterMethodTypeName
+    canisterMethodTypeNames: CanisterMethodTypeName[]
 ): tsc.FunctionDeclaration[] {
     if (nodeIsCanisterMethodFunctionDeclaration(
         node,
-        canisterMethodTypeName
+        canisterMethodTypeNames
     ) === true) {
         const functionDeclaration = node as tsc.FunctionDeclaration;
         return [functionDeclaration];
@@ -65,7 +65,7 @@ function getCanisterMethodFunctionDeclarationsFromNode(
 // TODO it would be nice to get rid of all the type casting and have the types guarded/inferred
 export function nodeIsCanisterMethodFunctionDeclaration(
     node: tsc.Node,
-    icFunctionTypeName: CanisterMethodTypeName
+    canisterMethodTypeNames: CanisterMethodTypeName[]
 ): boolean {
     if (tsc.isFunctionDeclaration(node) === false) {
         return false;
@@ -89,7 +89,7 @@ export function nodeIsCanisterMethodFunctionDeclaration(
 
     const identifier = typeReferenceNode.typeName as tsc.Identifier;
 
-    return identifier.escapedText === icFunctionTypeName;
+    return canisterMethodTypeNames.includes(identifier.escapedText.toString() as CanisterMethodTypeName);
 }
 
 export function getCanisterMethodRecordNames(
