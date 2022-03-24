@@ -21,7 +21,7 @@ type ic = {
 // TODO let's add heartbeat, init, pre_upgrade, post_upgrade
 
 export type Query<T> = T;
-export type QueryAsync<T> = Generator<T>;
+// export type QueryAsync<T> = Generator<T>; // TODO enable once this is resolved: https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754
 export type Update<T> = T;
 export type UpdateAsync<T> = Generator<T>;
 export type Variant<T> = T;

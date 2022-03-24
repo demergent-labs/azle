@@ -1,6 +1,7 @@
 import {
     Query,
-    Update
+    Update,
+    Opt
 } from 'azle';
 
 type Store = {
@@ -9,12 +10,10 @@ type Store = {
 
 let store: Store = {};
 
-export function get(key: string): Query<string> {
-    return store[key] ?? 'NOT_FOUND';
+export function get(key: string): Query<Opt<string>> {
+    return store[key] ?? null;
 }
 
-export function set(key: string, value: string): Update<boolean> {
+export function set(key: string, value: string): Update<void> {
     store[key] = value;
-    
-    return true;
 }

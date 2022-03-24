@@ -2,6 +2,7 @@ import {
     Query,
     UpdateAsync,
     float64,
+    nat8,
     ic
 } from 'azle';
 
@@ -25,8 +26,7 @@ export function print(message: string): Query<boolean> {
 }
 
 // TODO see if we can simplify the generators even more, we might be able to just return a generator directly without yielding
-// TODO change return type to nat8[]
-export function* rawRand(): UpdateAsync<float64[]> {
+export function* rawRand(): UpdateAsync<nat8[]> {
     return yield ic.rawRand().next().value;
 }
 

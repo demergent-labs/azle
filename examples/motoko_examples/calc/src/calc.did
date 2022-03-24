@@ -1,7 +1,7 @@
 service: {
-    "add": (float64) -> (float64);
-    "sub": (float64) -> (float64);
-    "mul": (float64) -> (float64);
-    "div": (float64) -> (opt float64);
+    "add": (int32) -> (int32);
+    "sub": (int32) -> (int32);
+    "mul": (int32) -> (int32);
+    "div": (int32) -> (opt int32);
     "clearall": () -> ();
 }
