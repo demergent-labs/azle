@@ -37,6 +37,7 @@
     "prettier": "2.6.0"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
+    
+    "*.{js,ts,md}": "prettier --write"
   }
 }
