@@ -5,4 +5,5 @@ service: {
     "print": (text) -> (bool) query;
     "time": () -> (float64) query;
     "trap": (text) -> (bool) query;
+    "rawRand": () -> (vec float64);
 }

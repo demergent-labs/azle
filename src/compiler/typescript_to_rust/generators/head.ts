@@ -10,9 +10,15 @@ export function generateHead(): Rust {
         #![allow(unused_imports)]
         #![allow(unused_variables)]
 
-        thread_local! {
-            static BOA_CONTEXT: std::cell::RefCell<boa_engine::Context> = std::cell::RefCell::new(boa_engine::Context::default());
-        }
+        // TODO I want to make sure I am doing this safely, but I can't do async code from within a with block
+        // thread_local! {
+        //     static BOA_CONTEXT: std::cell::RefCell<boa_engine::Context> = std::cell::RefCell::new(boa_engine::Context::default());
+        // }
+
+        // TODO we are treading in dangerous territory now
+        // TODO study this: https://mmapped.blog/posts/01-effective-rust-canisters.html
+        // TODO try to get help from those on the forum
+        static mut BOA_CONTEXT_OPTION: Option<boa_engine::Context> = None;
 
         fn custom_getrandom(_buf: &mut [u8]) -> Result<(), getrandom::Error> { Ok(()) }
 

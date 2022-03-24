@@ -2,19 +2,28 @@ declare var globalThis: any;
 
 export const ic: ic = globalThis.ic;
 
+ic.rawRand = function* () {
+    yield {
+        name: 'rawRand'
+    } as any;
+};
+
 type ic = {
     caller: () => string;
-    // canisterBalance: () => nat64;
+    canisterBalance: () => float64; // TODO should be a nat64
     id: () => string;
     print: (...args: any) => void;
-    // time: () => nat64;
+    rawRand: () => Generator<float64[]>; // TODO should be a nat8[]
+    time: () => float64; // TODO should be a nat64
     trap: (message: string) => never;
 };
 
 // TODO let's add heartbeat, init, pre_upgrade, post_upgrade
 
 export type Query<T> = T;
+export type QueryAsync<T> = Generator<T>;
 export type Update<T> = T;
+export type UpdateAsync<T> = Generator<T>;
 export type Variant<T> = T;
 export type Principal = string;
 export type Opt<T> = T | null;

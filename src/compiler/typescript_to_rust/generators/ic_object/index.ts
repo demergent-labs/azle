@@ -24,11 +24,6 @@ export function generateIcObject(): Rust {
                 0
             )
             .function(
-                azle_ic_raw_rand,
-                "rawRand",
-                0
-            )
-            .function(
                 azle_ic_time,
                 "time",
                 0
