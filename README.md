@@ -14,6 +14,7 @@ You should have the following installed on your system:
 * npm
 * Rust
 * wasm32-unknown-unknown Rust compilation target
+* didc
 * dfx 0.8.4
 
 ### Node.js
@@ -36,6 +37,14 @@ Run the following command to install Rust and the wasm32-unknown-unknown target:
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 rustup target add wasm32-unknown-unknown
+```
+
+### didc
+
+Run the following command to install didc:
+
+```bash
+cargo install --git https://github.com/dfinity/candid didc
 ```
 
 ### dfx
