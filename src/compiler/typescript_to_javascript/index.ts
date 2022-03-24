@@ -41,7 +41,7 @@ function transpile(js: JavaScript): JavaScript {
             parser: {
                 syntax: 'ecmascript'
             },
-            target: 'es3',
+            target: 'es2015', // TODO had to change this to get generator objects natively...not sure what else will break now
             experimental: {
                 cacheRoot: '/dev/null'
             },
