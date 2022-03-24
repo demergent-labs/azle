@@ -1,8 +1,8 @@
 service: {
-    "balance": (text) -> (float64) query;
+    "balance": (text) -> (int32) query;
     "ticker": () -> (text) query;
     "name": () -> (text) query;
-    "totalSupply": () -> (float64) query;
-    "initializeSupply": (text, text, float64, text) -> (bool);
-    "transfer": (text, text, float64) -> (bool);
+    "totalSupply": () -> (int32) query;
+    "initializeSupply": (text, text, int32, text) -> (bool);
+    "transfer": (text, text, int32) -> (bool);
 }

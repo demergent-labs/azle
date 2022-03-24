@@ -13,7 +13,7 @@ type ic = {
     canisterBalance: () => float64; // TODO should be a nat64
     id: () => string;
     print: (...args: any) => void;
-    rawRand: () => Generator<float64[]>; // TODO should be a nat8[]
+    rawRand: () => Generator<nat8[]>;
     time: () => float64; // TODO should be a nat64
     trap: (message: string) => never;
 };
@@ -32,17 +32,19 @@ export type Result<T, V> = {
     err?: V;
 };
 
-// export type int = number;
-// export type int64 = number;
-// export type int32 = number;
-// export type int16 = number;
-// export type int8 = number;
+// TODO for int and int64 I think bigint will work
+// export type int = bigint;
+// export type int64 = bigint;
+export type int32 = number;
+export type int16 = number;
+export type int8 = number;
 
-// export type nat = number;
-// export type nat64 = number;
+// TODO for nat and nat64 I think bigint will work
+// export type nat = bigint;
+// export type nat64 = bigint;
 // export type nat32 = number;
-// export type nat16 = number;
-// export type nat8 = number;
+export type nat16 = number;
+export type nat8 = number;
 
 export type float32 = number;
 export type float64 = number;

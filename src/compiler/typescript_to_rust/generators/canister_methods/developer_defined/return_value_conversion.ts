@@ -16,6 +16,13 @@ export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust
             name: String // TODO make this an enum probably
         }
 
+        if
+            return_value.is_object() == false ||
+            return_value.as_object().unwrap().is_generator() == false
+        {
+            return serde_json::from_value(return_value.to_json(&mut boa_context).unwrap()).unwrap();
+        }
+
         let generator_object = return_value.as_object().unwrap();
 
         let next_js_value = generator_object.get("next", &mut boa_context).unwrap();
