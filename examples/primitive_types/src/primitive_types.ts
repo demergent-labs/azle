@@ -1,29 +1,27 @@
-// TODO float64/32 are basically required until this is resolved: https://github.com/demergent-labs/azle/issues/99
-
 // TODO we need to see the principal type used
 
 import {
     Query,
-    int,
-    int64,
+    // int,
+    // int64,
     int32,
     int16,
     int8,
-    nat,
-    nat64,
-    nat32,
+    // nat,
+    // nat64,
+    // nat32,
     nat16,
     nat8,
     float64,
     float32
 } from 'azle';
 
-// TODO not fully representable with native JS numbers
+// TODO not fully representable with native JS numbers, bigint required
 // export function getInt(): Query<int> {
 //     return 170141183460469231731687303715884105727;
 // }
 
-// TODO not fully representable with native JS numbers
+// TODO not fully representable with native JS numbers, bigint required
 // export function getInt64(): Query<int64> {
 //     return 9223372036854775807;
 // }
@@ -40,12 +38,12 @@ export function getInt8(): Query<int8> {
     return 127;
 }
 
-// TODO not fully representable with native JS numbers
+// TODO not fully representable with native JS numbers, bigint required
 // export function getNat(): Query<nat> {
 //     return 340282366920938463463374607431768211455;
 // }
 
-// TODO not fully representable with native JS numbers
+// TODO not fully representable with native JS numbers, bigint required
 // export function getNat64(): Query<nat64> {
 //     return 18446744073709551615;
 // }
