@@ -119,6 +119,28 @@ function getBody(
     `;
 }
 
+// TODO current deployed unsafe version
+// fn dummy() {
+//     unsafe {
+//         let mut boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+
+//         let return_value = boa_context.eval(format!(
+//             "
+//                 ${implItemMethod.ident}(${inputs.map((input) => {
+//                     return `{${input.typed.pat.ident.ident}}`;
+//                 }).join(',')});
+//             ",
+//             ${inputs.map((input) => {
+//                 return `${input.typed.pat.ident.ident} = serde_json::to_string(&${input.typed.pat.ident.ident}).unwrap()`;
+//             }).join(',')}
+//         )).unwrap();
+    
+//         ${returnValueHandler}
+
+//     }
+// }
+
+// TODO old safe working version
 // fn dummy() {
 //     BOA_CONTEXT.with(|boa_context_ref_cell| {
 //         let mut boa_context = boa_context_ref_cell.borrow_mut();
@@ -137,42 +159,6 @@ function getBody(
 //         ${returnValueHandler}
 //     })
 // }
-
-// fn dummy() {
-//     // let mut boa_context = BOA_CONTEXT.with(|boa_context_ref_cell| boa_context_ref_cell.borrow());
-
-//     let mut boa_context = boa_engine::Context::default();
-
-//     let return_value = boa_context.eval(format!(
-//         "
-//             ${implItemMethod.ident}(${inputs.map((input) => {
-//                 return `{${input.typed.pat.ident.ident}}`;
-//             }).join(',')});
-//         ",
-//         ${inputs.map((input) => {
-//             return `${input.typed.pat.ident.ident} = serde_json::to_string(&${input.typed.pat.ident.ident}).unwrap()`;
-//         }).join(',')}
-//     )).unwrap();
-
-//     ${returnValueHandler}
-// }
-
-// BOA_CONTEXT.with(|boa_context_ref_cell| {
-//     let mut boa_context = boa_context_ref_cell.borrow_mut();
-
-//     let return_value = boa_context.eval(format!(
-//         "
-//             ${implItemMethod.ident}(${inputs.map((input) => {
-//                 return `{${input.typed.pat.ident.ident}}`;
-//             }).join(',')});
-//         ",
-//         ${inputs.map((input) => {
-//             return `${input.typed.pat.ident.ident} = serde_json::to_string(&${input.typed.pat.ident.ident}).unwrap()`;
-//         }).join(',')}
-//     )).unwrap();
-
-//     ${returnValueHandler}
-// })
 
 function getAttrs(
     implItemMethod: ImplItemMethod,
