@@ -2,8 +2,8 @@ declare var globalThis: any;
 
 export const ic: ic = globalThis.ic;
 
-ic.rawRand = function* () {
-    return yield {
+ic.rawRand = function() {
+    return {
         name: 'rawRand'
     } as any;
 };
@@ -22,13 +22,12 @@ ic.call = function* (...args) {
 ic.canisters = {
     'Canister2': (canisterId: Principal): any => {
         return {
-            transfer: function* (...args: any[]): any {
-                return yield {
+            transfer: function (...args: any[]): any {
+                return {
                     name: 'call',
                     args: [
                         '_azle_Canister2_transfer', // TODO generate this
                         canisterId,
-                        'transfer', // TODO generate this
                         ...args
                     ]
                 } as any;
@@ -50,7 +49,7 @@ type ic = {
     canisterBalance: () => float64; // TODO should be a nat64
     id: () => string;
     print: (...args: any) => void;
-    rawRand: () => Async<nat8[]>; // TODO I think we want this to really be a JS Uint8Array
+    rawRand: () => nat8[]; // TODO I think we want this to really be a JS Uint8Array
     time: () => float64; // TODO should be a nat64
     trap: (message: string) => never;
 };
@@ -61,9 +60,9 @@ export type Query<T> = T;
 // export type QueryAsync<T> = Generator<T>; // TODO enable once this is resolved: https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754
 export type Update<T> = T;
 // TODO we should change the type of UpdateAsync to force the dev to yield if possible
-export type UpdateAsync<T> = Generator<T, T, T>; // TODO we want to force the dev to yield here
+export type UpdateAsync<T> = Generator<any, T, any>; // TODO to be stricter we may want the last parameter to be unknown: https://github.com/demergent-labs/azle/issues/138
 // TODO the generator types are not exactly correct...but at least I've given the user the Async type
-export type Async<T> = Generator<T, T, T>;
+export type Async<T> = Generator<any, T, any>; // TODO to be stricter we may want the last parameter to be unknown: https://github.com/demergent-labs/azle/issues/138
 export type Canister<T> = T;
 export type Variant<T> = T;
 export type Principal = string;

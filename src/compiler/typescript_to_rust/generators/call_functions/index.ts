@@ -1,4 +1,4 @@
-import { Rust } from '../../../../types';
+import { CallFunctionInfo } from '../../../../types';
 import * as tsc from 'typescript';
 import { getTypeAliasDeclarationsFromSourceFiles } from '../../../typescript_to_candid/ast_utilities/type_aliases';
 import { generateCallFunctionName } from './call_function_name';
@@ -6,14 +6,14 @@ import { generateCallFunctionParams } from './call_function_params';
 import { generateCallFunctionReturnType } from './call_function_return_type';
 import { generateCallFunctionBody } from './call_function_body';
 
-export function generateCallFunctions(sourceFiles: readonly tsc.SourceFile[]): Rust {
+export function generateCallFunctions(sourceFiles: readonly tsc.SourceFile[]): CallFunctionInfo[] {
     const typeAliasDeclarations = getCanisterTypeAliasDeclarations(sourceFiles);
 
-    return generateCallFunctionsFromTypeAliasDeclarations(typeAliasDeclarations).join('\n');
+    return generateCallFunctionsFromTypeAliasDeclarations(typeAliasDeclarations);
 }
 
-function generateCallFunctionsFromTypeAliasDeclarations(typeAliasDeclarations: tsc.TypeAliasDeclaration[]): Rust[] {
-    return typeAliasDeclarations.reduce((result: Rust[], typeAliasDeclaration) => {
+function generateCallFunctionsFromTypeAliasDeclarations(typeAliasDeclarations: tsc.TypeAliasDeclaration[]): CallFunctionInfo[] {
+    return typeAliasDeclarations.reduce((result: CallFunctionInfo[], typeAliasDeclaration) => {
         return [
             ...result,
             ...generateCallFunctionsFromTypeAliasDeclaration(typeAliasDeclaration)
@@ -21,7 +21,7 @@ function generateCallFunctionsFromTypeAliasDeclarations(typeAliasDeclarations: t
     }, []);
 }
 
-function generateCallFunctionsFromTypeAliasDeclaration(typeAliasDeclaration: tsc.TypeAliasDeclaration): Rust[] {
+function generateCallFunctionsFromTypeAliasDeclaration(typeAliasDeclaration: tsc.TypeAliasDeclaration): CallFunctionInfo[] {
     if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TypeReference) {
         throw new Error('This cannot happen');
     }
@@ -49,7 +49,7 @@ function generateCallFunctionsFromTypeAliasDeclaration(typeAliasDeclaration: tsc
 function generateCallFunctionsFromTypeLiteralNode(
     typeLiteralNode: tsc.TypeLiteralNode,
     typeAliasName: string
-): Rust[] {
+): CallFunctionInfo[] {
     return typeLiteralNode.members.map((member) => {
         return generateCallFunctionFromTypeElement(
             member,
@@ -61,7 +61,7 @@ function generateCallFunctionsFromTypeLiteralNode(
 function generateCallFunctionFromTypeElement(
     typeElement: tsc.TypeElement,
     typeAliasName: string
-): Rust {
+): CallFunctionInfo {
     if (typeElement.kind !== tsc.SyntaxKind.MethodSignature) {
         throw new Error('Must use method signature syntax');
     }
@@ -83,11 +83,15 @@ function generateCallFunctionFromTypeElement(
         functionParams.map((param) => param.paramName)
     );
 
-    return `
-        async fn ${callFunctionName}(canisterId: String, ${functionParams.map((param) => `${param.paramName}: ${param.paramType}`).join(', ')})${functionReturnType === '' ? '' : ` -> ${functionReturnType}`} {
-            ${functionBody}
-        }
-    `;
+    return {
+        functionName: callFunctionName,
+        params: functionParams,
+        text: `
+            async fn ${callFunctionName}(canisterId: String, ${functionParams.map((param) => `${param.paramName}: ${param.paramType}`).join(', ')})${functionReturnType === '' ? '' : ` -> ${functionReturnType}`} {
+                ${functionBody}
+            }
+        `
+    };
 }
 
 // TODO put this somewhere, like an AST utilities file. Also generalize it

@@ -36,3 +36,12 @@ export type Rust = string;
 export type Toml = string;
 
 export type TypeScript = string;
+
+export type CallFunctionInfo = {
+    functionName: string;
+    params: {
+        paramName: string;
+        paramType: string;
+    }[];
+    text: Rust;
+};

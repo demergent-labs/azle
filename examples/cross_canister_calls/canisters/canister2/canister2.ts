@@ -1,7 +1,8 @@
 import {
     Query,
     Update,
-    int32
+    int32,
+    ic
 } from 'azle';
 
 // TODO start using principals instead of strings for ids
@@ -26,6 +27,12 @@ export function transfer(
 
     if (fromBalance < amount) {
         return 0;
+    }
+
+    const toBalance: int32 | undefined = state.balances[to];
+
+    if (toBalance === undefined) {
+        state.balances[to] = 0;
     }
 
     state.balances[from] -= amount;

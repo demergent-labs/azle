@@ -1,5 +1,8 @@
 import { ImplItemMethod } from '../../../ast_utilities/types';
-import { Rust } from '../../../../../types';
+import {
+    CallFunctionInfo,
+    Rust
+} from '../../../../../types';
 
 // TODO I think I should hold off on anything crazy for now, just tell people to use float64 until further notice
 // TODO follow this issue https://github.com/boa-dev/boa/issues/1961 and this issue https://github.com/boa-dev/boa/issues/1962
@@ -7,7 +10,10 @@ import { Rust } from '../../../../../types';
 // TODO this would give me complete control over every conversion, and number conversions are what I require complete control of
 // TODO I need that control to possibly convert from a BigInt
 // TODO get this to work for Option...if necessary...probably is necessary to do some kind of recursion
-export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust {
+export function generateReturnValueHandler(
+    implItemMethod: ImplItemMethod,
+    callFunctionInfos: CallFunctionInfo[]
+): Rust {
     const returnTypeName = getImplItemMethodReturnTypeName(implItemMethod);
 
     return `
@@ -31,55 +37,96 @@ export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust
         let mut continue_running = true;
         let mut args: Vec<boa_engine::JsValue> = vec![];
 
-        let mut final_js_value = boa_engine::JsValue::Undefined; // TODO this will probably break down below
+        // let mut final_js_value = boa_engine::JsValue::Undefined; // TODO this will probably break down below
+        let mut final_js_value = boa_engine::JsValue::from("hello"); // TODO this will probably break down below
 
-        while continue_running {
+        while continue_running == true {
             let yield_result_js_value = next_js_object.call(&return_value, &args[..], &mut boa_context).unwrap();
             let yield_result_js_object = yield_result_js_value.as_object().unwrap();
-        
+            
+            let yield_result_done_js_value = yield_result_js_object.get("done", &mut boa_context).unwrap();
+            let yield_result_done_bool = yield_result_done_js_value.as_boolean().unwrap();
+            
             let yield_result_value_js_value = yield_result_js_object.get("value", &mut boa_context).unwrap();
-        
-            let ic_api_info_result: Result<IcApiInfo, _> = serde_json::from_value(yield_result_value_js_value.to_json(&mut boa_context).unwrap());
-        
-            match ic_api_info_result {
-                Ok(ic_api_info) => {
-                    if ic_api_info.name == "rawRand" {
-                        // let arg = boa_engine::JsValue::from("hello");
 
-                        // TODO we will want to call a special function here
-                        let call_result: Result<(Vec<u8>,()), _> = ic_cdk::api::call::call(
-                            ic_cdk::export::Principal::management_canister(),
-                            "raw_rand",
-                            ()
-                        ).await;
-        
-                        let result = call_result.unwrap().0;
-
-                        let mut context = boa_engine::Context::default();
-
-                        // TODO this was Uint8Array.from
-                        // TODO this is a hacky conversion but I do not think there is a better way without boa exposing the functionality
-                        let value = context
-                            .eval(
-                                format!(
-                                    "{rand_bytes}",
-                                    rand_bytes = serde_json::to_string(&result).unwrap()
-                                )
+            if yield_result_done_bool == false {
+                let yield_result_value_js_object = yield_result_value_js_value.as_object().unwrap();
+                
+                let name_js_value = yield_result_value_js_object.get("name", &mut boa_context).unwrap();
+                let name_string = name_js_value.as_string().unwrap();
+    
+                if name_string == "rawRand" {
+                    // let arg = boa_engine::JsValue::from("hello");
+    
+                    // TODO we will want to call a special function here
+                    let call_result: Result<(Vec<u8>,()), _> = ic_cdk::api::call::call(
+                        ic_cdk::export::Principal::management_canister(),
+                        "raw_rand",
+                        ()
+                    ).await;
+    
+                    let result = call_result.unwrap().0;
+    
+                    let mut context = boa_engine::Context::default();
+    
+                    // TODO this was Uint8Array.from
+                    // TODO this is a hacky conversion but I do not think there is a better way without boa exposing the functionality
+                    let value = context
+                        .eval(
+                            format!(
+                                "{rand_bytes}",
+                                rand_bytes = serde_json::to_string(&result).unwrap()
                             )
-                            .unwrap();
-
-                        let arg = value;
-
-                        args = vec![arg];
-                    }
-                    else {
-                    }
-                },
-                Err(_) => {
-                    final_js_value = yield_result_value_js_value;
-                    continue_running = false;
+                        )
+                        .unwrap();
+    
+                    let arg = value;
+    
+                    args = vec![arg];
                 }
-            };
+
+                if name_string == "call" {
+                    let call_args_js_value = yield_result_value_js_object.get("args", &mut boa_context).unwrap();
+                    let call_args_js_object = call_args_js_value.as_object().unwrap();
+
+                    let call_function_name_js_value = call_args_js_object.get("0", &mut boa_context).unwrap(); // TODO get the first call arg
+                    let call_function_name_string = call_function_name_js_value.as_string().unwrap().to_string();
+
+                    match &call_function_name_string[..] {
+                        ${callFunctionInfos.map((callFunctionInfo) => {
+                            return `
+                                "${callFunctionInfo.functionName}" => {
+                                    let canister_id_js_value = call_args_js_object.get("1", &mut boa_context).unwrap();
+                                    let canister_id_string = canister_id_js_value.as_string().unwrap().to_string();
+
+                                    ${callFunctionInfo.params.map((param, index) => {
+                                        return `
+                                            let ${param.paramName}_js_value = call_args_js_object.get("${index + 2}", &mut boa_context).unwrap();
+                                            let ${param.paramName}: ${param.paramType} = serde_json::from_value(${param.paramName}_js_value.to_json(&mut boa_context).unwrap()).unwrap();
+                                        `;
+                                    }).join('\n')}
+
+                                    let result = boa_engine::JsValue::from(
+                                        _azle_Canister2_transfer(
+                                            canister_id_string,
+                                            ${callFunctionInfo.params.map((param) => {
+                                                return param.paramName;
+                                            }).join(',\n')}
+                                        ).await
+                                    );
+
+                                    args = vec![result];
+                                },
+                            `;
+                        }).join('\n')}
+                        _ => ()
+                    };
+                }
+            }
+            else {
+                final_js_value = yield_result_value_js_value;
+                continue_running = false;
+            }
         }
 
         ${returnTypeName === '' ? '' : `

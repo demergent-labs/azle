@@ -10,6 +10,7 @@ import { generateIcObjectFunctionTime } from './ic_object/functions/time';
 import { generateIcObjectFunctionTrap } from './ic_object/functions/trap';
 import { modifyRustCandidTypes } from './modified_rust_candid_types';
 import {
+    CallFunctionInfo,
     JavaScript,
     Rust
 } from '../../../types';
@@ -29,10 +30,14 @@ export async function generateLibFile(
 
     const canisterMethodInit: Rust = generateCanisterMethodInit(js);
     const canisterMethodPostUpgrade: Rust = generateCanisterMethodPostUpgrade();
+
+    const callFunctionInfos: CallFunctionInfo[] = generateCallFunctions(sourceFiles);
+
     const canisterMethodsDeveloperDefined: Rust = await generateCanisterMethodsDeveloperDefined(
         rustCandidTypes, // TODO you might think that we should pass in modifiedRustCandidTypes here, but the printAst function seems to have a bug that removes the , from the CallResult tuple which causes problems later in the process
         queryMethodFunctionNames,
-        updateMethodFunctionNames
+        updateMethodFunctionNames,
+        callFunctionInfos
     );
 
     const icObjectFunctionCaller: Rust = generateIcObjectFunctionCaller();
@@ -41,8 +46,6 @@ export async function generateLibFile(
     const icObjectFunctionPrint: Rust = generateIcObjectFunctionPrint();
     const icObjectFunctionTime: Rust = generateIcObjectFunctionTime();
     const icObjectFunctionTrap: Rust = generateIcObjectFunctionTrap();
-
-    const callFunctions: Rust = generateCallFunctions(sourceFiles);
 
     return `
         ${head}
@@ -60,6 +63,6 @@ export async function generateLibFile(
         ${icObjectFunctionTime}
         ${icObjectFunctionTrap}
 
-        ${callFunctions}
+        ${callFunctionInfos.map((callFunctionInfo) => callFunctionInfo.text).join('\n')}
     `;
 }
