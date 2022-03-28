@@ -13,31 +13,36 @@ import {
     JavaScript,
     Rust
 } from '../../../types';
+import { generateCallFunctions } from './call_functions';
+import * as tsc from 'typescript';
 
 export async function generateLibFile(
     js: JavaScript,
     rustCandidTypes: Rust,
     queryMethodFunctionNames: string[],
-    updateMethodFunctionNames: string[]
+    updateMethodFunctionNames: string[],
+    sourceFiles: readonly tsc.SourceFile[]
 ): Promise<Rust> {
     const modifiedRustCandidTypes: Rust = await modifyRustCandidTypes(rustCandidTypes);
 
     const head: Rust = generateHead();
 
-    const canisterMethodInit = generateCanisterMethodInit(js);
-    const canisterMethodPostUpgrade = generateCanisterMethodPostUpgrade();
-    const canisterMethodsDeveloperDefined = await generateCanisterMethodsDeveloperDefined(
+    const canisterMethodInit: Rust = generateCanisterMethodInit(js);
+    const canisterMethodPostUpgrade: Rust = generateCanisterMethodPostUpgrade();
+    const canisterMethodsDeveloperDefined: Rust = await generateCanisterMethodsDeveloperDefined(
         rustCandidTypes, // TODO you might think that we should pass in modifiedRustCandidTypes here, but the printAst function seems to have a bug that removes the , from the CallResult tuple which causes problems later in the process
         queryMethodFunctionNames,
         updateMethodFunctionNames
     );
 
-    const icObjectFunctionCaller = generateIcObjectFunctionCaller();
-    const icObjectFunctionCanisterBalance = generateIcObjectFunctionCanisterBalance();
-    const icObjectFunctionId = generateIcObjectFunctionId();
-    const icObjectFunctionPrint = generateIcObjectFunctionPrint();
-    const icObjectFunctionTime = generateIcObjectFunctionTime();
-    const icObjectFunctionTrap = generateIcObjectFunctionTrap();
+    const icObjectFunctionCaller: Rust = generateIcObjectFunctionCaller();
+    const icObjectFunctionCanisterBalance: Rust = generateIcObjectFunctionCanisterBalance();
+    const icObjectFunctionId: Rust = generateIcObjectFunctionId();
+    const icObjectFunctionPrint: Rust = generateIcObjectFunctionPrint();
+    const icObjectFunctionTime: Rust = generateIcObjectFunctionTime();
+    const icObjectFunctionTrap: Rust = generateIcObjectFunctionTrap();
+
+    const callFunctions: Rust = generateCallFunctions(sourceFiles);
 
     return `
         ${head}
@@ -54,5 +59,7 @@ export async function generateLibFile(
         ${icObjectFunctionPrint}
         ${icObjectFunctionTime}
         ${icObjectFunctionTrap}
+
+        ${callFunctions}
     `;
 }

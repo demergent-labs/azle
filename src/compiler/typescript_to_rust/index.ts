@@ -2,7 +2,6 @@ import { compileCandidToRustTypes } from '../candid_to_rust_types';
 import * as fs from 'fs';
 import { generateLibFile } from './generators/lib_file';
 import {
-    Candid,
     JavaScript,
     Rust
 } from '../../types';
@@ -38,7 +37,8 @@ export async function compileTypeScriptToRust(
         js,
         rustCandidTypes,
         queryMethodFunctionNames,
-        updateMethodFunctionNames
+        updateMethodFunctionNames,
+        sourceFiles
     );
 
     return libFile;

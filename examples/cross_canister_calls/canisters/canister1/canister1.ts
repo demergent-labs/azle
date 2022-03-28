@@ -1,21 +1,24 @@
 import {
-    Query,
-    Update,
     UpdateAsync,
-    nat8,
-    ic
+    ic,
+    int32,
+    Canister
 } from 'azle';
 
-let message: string = '';
+type Canister2 = Canister<{
+    transfer(
+        from: string,
+        to: string,
+        amount: int32
+    ): UpdateAsync<string>;
+}>;
 
-export function read(): Query<string> {
-    return message;
+let canister2 = ic.canisters.Canister2<Canister2>('ryjl3-tyaaa-aaaaa-aaaba-cai');
+
+export function* initiateTransfer(): UpdateAsync<string> {
+    return yield canister2.transfer(
+        '0',
+        '1',
+        50
+    ).next().value;
 }
-
-// export function write(data: string): Update<void> {
-//     message = data;
-// }
-
-// export function* randomness(): UpdateAsync<nat8[]> {
-//     return yield ic.rawRand().next().value;
-// }
