@@ -2,8 +2,7 @@ import {
     UpdateAsync,
     ic,
     int32,
-    Canister,
-    nat8
+    Canister
 } from 'azle';
 
 type Canister2 = Canister<{
@@ -23,18 +22,3 @@ export function* initiateTransfer(): UpdateAsync<int32> {
         50
     );
 }
-
-// type Test = {
-//     rand1: nat8[];
-//     rand2: nat8[];
-// };
-
-// export function* test(): UpdateAsync<Test> {
-//     const rand1 = yield ic.rawRand();
-//     const rand2 = yield ic.rawRand();
-
-//     return {
-//         rand1,
-//         rand2
-//     };
-// }

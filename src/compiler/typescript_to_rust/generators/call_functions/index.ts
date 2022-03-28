@@ -95,7 +95,7 @@ function generateCallFunctionFromTypeElement(
 }
 
 // TODO put this somewhere, like an AST utilities file. Also generalize it
-function getCanisterTypeAliasDeclarations(sourceFiles: readonly tsc.SourceFile[]): tsc.TypeAliasDeclaration[] {
+export function getCanisterTypeAliasDeclarations(sourceFiles: readonly tsc.SourceFile[]): tsc.TypeAliasDeclaration[] {
     const typeAliasDeclarations = getTypeAliasDeclarationsFromSourceFiles(sourceFiles);
 
     return typeAliasDeclarations.filter((typeAliasDeclaration) => {

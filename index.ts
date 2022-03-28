@@ -2,46 +2,30 @@ declare var globalThis: any;
 
 export const ic: ic = globalThis.ic;
 
+// TODO perhaps this should just be provided through calling
+// TODO the management canister
 ic.rawRand = function() {
     return {
         name: 'rawRand'
     } as any;
 };
 
-ic.call = function* (...args) {
-    return yield {
-        name: 'call',
-        args: [
-            arguments.callee.name,
-            ...args
-        ]
-    } as any;
-};
-
-// TODO we need to generate this during the TS -> JS compilation process
-ic.canisters = {
-    'Canister2': (canisterId: Principal): any => {
-        return {
-            transfer: function (...args: any[]): any {
-                return {
-                    name: 'call',
-                    args: [
-                        '_azle_Canister2_transfer', // TODO generate this
-                        canisterId,
-                        ...args
-                    ]
-                } as any;
-            }
-        };
-    }
-};
+// ic.call = function* (...args) {
+//     return yield {
+//         name: 'call',
+//         args: [
+//             arguments.callee.name,
+//             ...args
+//         ]
+//     } as any;
+// };
 
 type ic = {
-    call: (
-        canisterId: Principal,
-        methodName: string,
-        ...args: any[]
-    ) => Generator; // TODO improve type inference here, try to get rid of the type parameters
+    // call: (
+    //     canisterId: Principal,
+    //     methodName: string,
+    //     ...args: any[]
+    // ) => Generator; // TODO improve type inference here, try to get rid of the type parameters
     caller: () => string;
     canisters: {
         [canisterName: string]: <T>(canisterId: Principal) => T;
