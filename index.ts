@@ -56,18 +56,14 @@ export type Result<T, V> = {
     err?: V;
 };
 
-// TODO warn against incorrect number representations!!!
-
-// TODO for int and int64 I think bigint will work
-export type int = number; // TODO should be bigint
-export type int64 = number; // TODO should be bigint
+export type int = bigint;
+export type int64 = bigint;
 export type int32 = number;
 export type int16 = number;
 export type int8 = number;
 
-// TODO for nat and nat64 I think bigint will work
-export type nat = number; // TODO should be bigint
-export type nat64 = number; // TODO should be bigint
+export type nat = bigint;
+export type nat64 = bigint;
 export type nat32 = number;
 export type nat16 = number;
 export type nat8 = number;

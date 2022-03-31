@@ -132,7 +132,7 @@ If you want to ensure running the examples with a fresh clone works, run `npm li
 - [ ] Beta
   - [x] TypeScript -> Candid compiler
   - [x] Basic IC APIs
-    - [ ] call
+    - [x] call
     - [x] caller
     - [x] canisterBalance
     - [x] id
@@ -154,12 +154,13 @@ If you want to ensure running the examples with a fresh clone works, run `npm li
   - [ ] Video series
 
 - [ ] 1.0
-    - [ ] Advanced primitive data types
-      - [ ] int
-      - [ ] int64
-      - [ ] nat
-      - [ ] nat64
-      - [ ] nat32
+    - [x] Advanced primitive data types
+      - [x] int
+      - [x] int64
+      - [x] nat
+      - [x] nat64
+      - [x] nat32
+      - [x] Principal
     - [ ] Advanced IC APIs
       - [ ] Stable memory
       - [ ] Certified data

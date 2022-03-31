@@ -1,9 +1,15 @@
 service: {
+    "getInt": () -> (int) query;
+    "getInt64": () -> (int64) query;
     "getInt32": () -> (int32) query;
     "getInt16": () -> (int16) query;
     "getInt8": () -> (int8) query;
+    "getNat": () -> (nat) query;
+    "getNat64": () -> (nat64) query;
+    "getNat32": () -> (nat32) query;
     "getNat16": () -> (nat16) query;
     "getNat8": () -> (nat8) query;
     "getFloat64": () -> (float64) query;
     "getFloat32": () -> (float32) query;
+    "getPrincipal": () -> (principal) query;
 }

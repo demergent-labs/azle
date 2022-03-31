@@ -26,7 +26,7 @@ export function generateReturnValueHandler(
             return_value.is_object() == false ||
             return_value.as_object().unwrap().is_generator() == false
         {
-            ${returnTypeName === '' ? `return;` : `return serde_json::from_value(return_value.to_json(&mut boa_context).unwrap()).unwrap();`}
+            ${returnTypeName === '' ? `return;` : `${generateReturnValueConversion('return_value', returnTypeName)}`}
         }
 
         let generator_object = return_value.as_object().unwrap();
@@ -67,22 +67,24 @@ export function generateReturnValueHandler(
     
                     let result = call_result.unwrap().0;
     
-                    let mut context = boa_engine::Context::default();
+                    // let mut context = boa_engine::Context::default();
     
-                    // TODO this was Uint8Array.from
-                    // TODO this is a hacky conversion but I do not think there is a better way without boa exposing the functionality
-                    let value = context
-                        .eval(
-                            format!(
-                                "{rand_bytes}",
-                                rand_bytes = serde_json::to_string(&result).unwrap()
-                            )
-                        )
-                        .unwrap();
+                    // // TODO this was Uint8Array.from
+                    // // TODO this is a hacky conversion but I do not think there is a better way without boa exposing the functionality
+                    // let value = context
+                    //     .eval(
+                    //         format!(
+                    //             "{rand_bytes}",
+                    //             rand_bytes = serde_json::to_string(&result).unwrap()
+                    //         )
+                    //     )
+                    //     .unwrap();
     
-                    let arg = value;
+                    // let arg = value;
     
-                    args = vec![arg];
+                    let js_value = result.into_js_value(&mut boa_context);
+
+                    args = vec![js_value];
                 }
 
                 if name_string == "call" {
@@ -126,7 +128,11 @@ export function generateReturnValueHandler(
                                     //     )
                                     //     .unwrap();
 
-                                    let result_js_value = boa_engine::JsValue::from_json(&serde_json::json!(result), &mut boa_context).unwrap();
+                                    // let result_js_value = boa_engine::JsValue::from_json(&serde_json::json!(result), &mut boa_context).unwrap();
+                                    // TODO this will not work if the return value is a candid::Principal, candid::Nat, or candid::Int
+                                    // TODO so we would need to create custom code for into_js_value for those types as well
+                                    // TODO perhaps we should really just create our own custom traits that do what IntoJsValue and FromJsValue do
+                                    let result_js_value = result.into_js_value(&mut boa_context).unwrap();
 
                                     args = vec![result_js_value];
                                 },
@@ -147,7 +153,8 @@ export function generateReturnValueHandler(
 
             // }
             // else {
-                serde_json::from_value(final_js_value.to_json(&mut boa_context).unwrap()).unwrap()
+                // serde_json::from_value(final_js_value.to_json(&mut boa_context).unwrap()).unwrap()
+                ${generateReturnValueConversion('final_js_value', returnTypeName)}
             // }
         `}
     `;
@@ -223,6 +230,31 @@ function getImplItemMethodReturnTypeName(implItemMethod: ImplItemMethod): string
         return '';
     }
     else {
-        return returnTypeAst.path.segments[0].ident;
+        console.log(returnTypeAst.path);
+        return returnTypeAst.path.segments.map((segment: any) => segment.ident).join('::');
+        // return returnTypeAst.path.segments[0].ident;
+    }
+}
+
+// TODO it is a b it messy but it works
+// TODO we can create custom types and code for any types that we need to
+// TODO if the IntoJsValue and FromJsValue traits aren't accepted into Boa,
+// TODO I might want to create my own...wait, maybe I should just create my own anyway...
+// TODO if I do that then I wouldnt' need to create the custom type here...oooooh
+// TODO consider if we should use candid::Nat and candid::Int or if we should just use u128 and i128 directly (I almost think it would be simpler to just do the latter)
+function generateReturnValueConversion(
+    jsValueName: string,
+    returnTypeName: string
+): string {
+    if (returnTypeName === 'candid::Principal') {
+        return `
+            let azle_principal: AzlePrincipal = ${jsValueName}.try_from_js_value(&mut boa_context).unwrap();
+            return azle_principal.principal;
+        `;
+    }
+    else {
+        return `
+            return ${jsValueName}.try_from_js_value(&mut boa_context).unwrap();
+        `;
     }
 }
