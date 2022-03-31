@@ -11,7 +11,7 @@ import {
     Fn,
     ImplItemMethod
 } from '../../../ast_utilities/types';
-import { generateReturnValueHandler } from './return_value_conversion';
+import { generateReturnValueHandler } from './return_value_handler';
 import {
     CallFunctionInfo,
     Rust

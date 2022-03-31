@@ -15,11 +15,17 @@ import {
     nat8,
     float64,
     float32,
-    Principal
+    Principal,
+    ic
 } from 'azle';
 
 export function getInt(): Query<int> {
     return 170141183460469231731687303715884105727n;
+}
+
+export function printInt(int: int): Query<int> {
+    ic.print(typeof int);
+    return int;
 }
 
 export function getInt64(): Query<int64> {

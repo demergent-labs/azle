@@ -1,5 +1,6 @@
 service: {
     "getInt": () -> (int) query;
+    "printInt": (int) -> (int) query;
     "getInt64": () -> (int64) query;
     "getInt32": () -> (int32) query;
     "getInt16": () -> (int16) query;
