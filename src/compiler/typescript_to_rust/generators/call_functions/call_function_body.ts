@@ -10,7 +10,7 @@ export function generateCallFunctionBody(
         let call_result: Result<(${functionReturnType}, ()), _> = ic_cdk::api::call::call(
             ic_cdk::export::Principal::from_text(canisterId).unwrap(),
             "${methodName}",
-            (${paramNames.join(', ')})
+            (${paramNames.join(', ')}${paramNames.length === 1 ? ',' : ''})
         ).await;
 
         call_result.unwrap().0

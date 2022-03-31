@@ -214,10 +214,10 @@ function generateCandidTypeInfoForTypeReference(
             };
         }
 
-        if (typeName === 'principal') {
+        if (typeName === 'Principal') {
             return {
                 text: 'principal',
-                typeName: 'principal',
+                typeName: 'Principal',
                 typeClass: 'primitive'
             };
         }

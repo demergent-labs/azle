@@ -18,7 +18,7 @@ export function getImplItemMethods(impl: Impl): ImplItemMethod[] {
     return impl
         .items
         .map((implItem) => implItem.method)
-        .filter((implItemMethod) => implItemMethod !== undefined) as ImplItemMethod[];
+        .filter((implItemMethod) => implItemMethod !== undefined && implItemMethod.ident !== '_azle_dummy_method') as ImplItemMethod[]; // TODO remove _azle_dummy_method check once https://github.com/dfinity/candid/issues/330
 }
 
 export function getParamName(parameterDeclaration: tsc.ParameterDeclaration): string {
@@ -46,8 +46,14 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
         return `bool`;
     }
 
-    // TODO handle array types and all other types of course
-    // TODO option types, array types, etc
+    // TODO option types and possibly type literals?
+
+    if (typeNode.kind === tsc.SyntaxKind.ArrayType) {
+        const arrayTypeNode = typeNode as tsc.ArrayTypeNode;
+        const elementRustType = getRustTypeNameFromTypeNode(arrayTypeNode.elementType);
+
+        return `Vec<${elementRustType}>`;
+    }
 
     if (typeNode.kind === tsc.SyntaxKind.TypeReference) {
         const typeReferenceNode = typeNode as tsc.TypeReferenceNode;

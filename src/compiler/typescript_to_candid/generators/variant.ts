@@ -3,18 +3,24 @@
 import * as tsc from 'typescript';
 import { Candid } from '../../../types';
 import { getCanisterMethodRecordNames, getCanisterMethodVariantNames } from '../ast_utilities/canister_methods';
+import {
+    getCanisterTypeAliasRecordNames,
+    getCanisterTypeAliasVariantNames
+} from '../ast_utilities/canister_type_aliases';
 import { getTypeAliasDeclaration } from '../ast_utilities/type_aliases';
 import { generateCandidTypeInfo } from './type_info';
 
 export function generateCandidVariants(
     sourceFiles: readonly tsc.SourceFile[],
     queryMethodFunctionDeclarations: tsc.FunctionDeclaration[],
-    updateMethodFunctionDeclarations: tsc.FunctionDeclaration[]
+    updateMethodFunctionDeclarations: tsc.FunctionDeclaration[],
+    canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): Candid {
     const candidVariantNames = getCandidVariantNames(
         sourceFiles,
         queryMethodFunctionDeclarations,
-        updateMethodFunctionDeclarations
+        updateMethodFunctionDeclarations,
+        canisterTypeAliasDeclarations
     );
 
     const candidVariants = candidVariantNames.map((candidVariantName) => {
@@ -30,7 +36,8 @@ export function generateCandidVariants(
 function getCandidVariantNames(
     sourceFiles: readonly tsc.SourceFile[],
     queryMethodFunctionDeclarations: tsc.FunctionDeclaration[],
-    updateMethodFunctionDeclarations: tsc.FunctionDeclaration[]
+    updateMethodFunctionDeclarations: tsc.FunctionDeclaration[],
+    canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): string[] {
     const canisterMethodVariantNames = Array.from(
         new Set(
@@ -41,9 +48,21 @@ function getCandidVariantNames(
         )
     );
 
+    const canisterTypeAliasVariantNames = Array.from(
+        new Set(
+            getCanisterTypeAliasVariantNames(
+                sourceFiles,
+                canisterTypeAliasDeclarations
+            )
+        )
+    );
+
     const variantFieldsVariantNames = Array.from(
         new Set(
-            canisterMethodVariantNames.reduce((result: string[], variantName) => {
+            [
+                ...canisterMethodVariantNames,
+                ...canisterTypeAliasVariantNames
+            ].reduce((result: string[], variantName) => {
                 return [
                     ...result,
                     ...getCandidVariantNamesFromVariantFields(
@@ -65,9 +84,21 @@ function getCandidVariantNames(
         )
     );
 
+    const canisterTypeAliasRecordNames = Array.from(
+        new Set(
+            getCanisterTypeAliasRecordNames(
+                sourceFiles,
+                canisterTypeAliasDeclarations
+            )
+        )
+    );
+
     const recordFieldsVariantNames = Array.from(
         new Set(
-            canisterMethodRecordNames.reduce((result: string[], recordName) => {
+            [
+                ...canisterMethodRecordNames,
+                ...canisterTypeAliasRecordNames
+            ].reduce((result: string[], recordName) => {
                 return [
                     ...result,
                     ...getCandidVariantNamesFromRecordFields(
@@ -83,6 +114,7 @@ function getCandidVariantNames(
     // TODO we probably do not need so many Array.form(new Set())
     return Array.from(new Set([
         ...canisterMethodVariantNames,
+        ...canisterTypeAliasVariantNames,
         ...variantFieldsVariantNames,
         ...recordFieldsVariantNames
     ]));

@@ -106,16 +106,29 @@ export function generateReturnValueHandler(
                                         `;
                                     }).join('\n')}
 
-                                    let result = boa_engine::JsValue::from(
-                                        _azle_Canister2_transfer(
-                                            canister_id_string,
-                                            ${callFunctionInfo.params.map((param) => {
-                                                return param.paramName;
-                                            }).join(',\n')}
-                                        ).await
-                                    );
+                                    let result = ${callFunctionInfo.functionName}(
+                                        canister_id_string,
+                                        ${callFunctionInfo.params.map((param) => {
+                                            return param.paramName;
+                                        }).join(',\n')}
+                                    ).await;
 
-                                    args = vec![result];
+                                    // let mut context = boa_engine::Context::default();
+
+                                    // TODO we really need JsValue::from to work well for all types (Vec<u8> breaks specifically)
+                                    // TODO let's abstract away all of the JsValue conversions so they are easy to replace in the future
+                                    // let result_js_value = context
+                                    //     .eval(
+                                    //         format!(
+                                    //             "JSON.parse(\\"{result}\\")",
+                                    //             result = serde_json::to_string(&result).unwrap()
+                                    //         )
+                                    //     )
+                                    //     .unwrap();
+
+                                    let result_js_value = boa_engine::JsValue::from_json(&serde_json::json!(result), &mut boa_context).unwrap();
+
+                                    args = vec![result_js_value];
                                 },
                             `;
                         }).join('\n')}
