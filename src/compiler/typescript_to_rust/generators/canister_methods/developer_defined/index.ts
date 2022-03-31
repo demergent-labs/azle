@@ -109,22 +109,29 @@ function getBody(
         callFunctionInfos
     );
 
+    const functionName = implItemMethod.ident;
+
     return `
         fn dummy() {
             unsafe {
                 let mut boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
-    
-                let return_value = boa_context.eval(format!(
-                    "
-                        ${implItemMethod.ident}(${inputs.map((input) => {
-                            return `{${input.typed.pat.ident.ident}}`;
-                        }).join(',')});
-                    ",
-                    ${inputs.map((input) => {
-                        return `${input.typed.pat.ident.ident} = serde_json::to_string(&${input.typed.pat.ident.ident}).unwrap()`;
-                    }).join(',')}
-                )).unwrap();
+
+                let exports_js_value = boa_context.eval("exports").unwrap();
+                let exports_js_object = exports_js_value.as_object().unwrap();
+
+                let ${functionName}_js_value = exports_js_object.get("${functionName}", &mut boa_context).unwrap();
+                let ${functionName}_js_object = ${functionName}_js_value.as_object().unwrap();
             
+                let return_value = ${functionName}_js_object.call(
+                    &boa_engine::JsValue::Null,
+                    &[
+                        ${inputs.map((input) => {
+                            return `${input.typed.pat.ident.ident}.into_js_value(&mut boa_context)`;
+                        }).join(',')}
+                    ],
+                    &mut boa_context
+                ).unwrap();
+
                 ${returnValueHandler}
 
             }
