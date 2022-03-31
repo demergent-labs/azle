@@ -1,0 +1,28 @@
+import { Query, Update, int32 } from 'azle';
+import { ToDo } from './types';
+
+import * as Utils from './utils';
+
+let todos: ToDo[] = [];
+let nextId: int32 = 1;
+
+export function getTodos(): Query<ToDo[]> {
+  return todos;
+}
+
+export function addTodo(description: string): Update<void> {
+  todos = Utils.add(todos, description, nextId);
+  nextId += 1;
+}
+
+export function completeTodo(id: int32): Update<void> {
+  todos = Utils.complete(todos, id);
+}
+
+export function showTodos(): Query<string> {
+  return Utils.show(todos);
+}
+
+export function clearCompleted(): Update<void> {
+  todos = Utils.clear(todos);
+}

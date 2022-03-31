@@ -1,0 +1,13 @@
+type ToDo = record {
+    "id": int32;
+    "description": text;
+    "completed": bool;
+};
+
+service: {
+    "getTodos": () -> (vec ToDo) query;
+    "showTodos": () -> (text) query;
+    "addTodo": (text) -> ();
+    "completeTodo": (int32) -> ();
+    "clearCompleted": () -> ();
+}
