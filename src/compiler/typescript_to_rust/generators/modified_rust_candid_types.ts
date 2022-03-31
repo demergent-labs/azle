@@ -29,8 +29,9 @@ export async function modifyRustCandidTypes(rustCandidTypes: Rust): Promise<Rust
 }
 
 function getAttrsWithSerialize(): any[] | undefined {
+    // TODO I will probably be adding my own attributes for the custom JsValue traits here
     const structMacroString = `
-        #[derive(CandidType, Deserialize, serde::Serialize)]
+        #[derive(CandidType, Deserialize)]
         struct Dummy {}
     `;
     const structMacroAst: AST = JSON.parse(parseFile(structMacroString));

@@ -17,11 +17,6 @@ export function generateReturnValueHandler(
     const returnTypeName = getImplItemMethodReturnTypeName(implItemMethod);
 
     return `
-        #[derive(Debug, serde::Serialize, serde::Deserialize)]
-        struct IcApiInfo {
-            name: String // TODO make this an enum probably
-        }
-
         if
             return_value.is_object() == false ||
             return_value.as_object().unwrap().is_generator() == false
