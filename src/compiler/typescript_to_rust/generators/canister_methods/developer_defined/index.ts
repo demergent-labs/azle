@@ -126,7 +126,7 @@ function getBody(
                     &boa_engine::JsValue::Null,
                     &[
                         ${inputs.map((input) => {
-                            return `${input.typed.pat.ident.ident}.into_js_value(&mut boa_context)`;
+                            return `${input.typed.pat.ident.ident}.azle_into_js_value(&mut boa_context)`;
                         }).join(',')}
                     ],
                     &mut boa_context

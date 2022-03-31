@@ -77,7 +77,7 @@ export function generateReturnValueHandler(
     
                     // let arg = value;
     
-                    let js_value = result.into_js_value(&mut boa_context);
+                    let js_value = result.azle_into_js_value(&mut boa_context);
 
                     args = vec![js_value];
                 }
@@ -127,7 +127,7 @@ export function generateReturnValueHandler(
                                     // TODO this will not work if the return value is a candid::Principal, candid::Nat, or candid::Int
                                     // TODO so we would need to create custom code for into_js_value for those types as well
                                     // TODO perhaps we should really just create our own custom traits that do what IntoJsValue and FromJsValue do
-                                    let result_js_value = result.into_js_value(&mut boa_context).unwrap();
+                                    let result_js_value = result.azle_into_js_value(&mut boa_context).unwrap();
 
                                     args = vec![result_js_value];
                                 },
@@ -240,15 +240,5 @@ function generateReturnValueConversion(
     jsValueName: string,
     returnTypeName: string
 ): string {
-    if (returnTypeName === 'candid::Principal') {
-        return `
-            let azle_principal: AzlePrincipal = ${jsValueName}.try_from_js_value(&mut boa_context).unwrap();
-            return azle_principal.principal;
-        `;
-    }
-    else {
-        return `
-            return ${jsValueName}.try_from_js_value(&mut boa_context).unwrap();
-        `;
-    }
+    return `return ${jsValueName}.azle_try_from_js_value(&mut boa_context).unwrap();`;
 }

@@ -8,6 +8,8 @@ import { generateIcObjectFunctionId } from './ic_object/functions/id';
 import { generateIcObjectFunctionPrint } from './ic_object/functions/print';
 import { generateIcObjectFunctionTime } from './ic_object/functions/time';
 import { generateIcObjectFunctionTrap } from './ic_object/functions/trap';
+import { generateAzleTryFromJsValueTrait } from './azle_try_from_js_value_trait';
+import { generateAzleIntoJsValueTrait } from './azle_into_js_value_trait';
 import { modifyRustCandidTypes } from './modified_rust_candid_types';
 import {
     CallFunctionInfo,
@@ -51,10 +53,16 @@ export async function generateLibFile(
     const icObjectFunctionTime: Rust = generateIcObjectFunctionTime();
     const icObjectFunctionTrap: Rust = generateIcObjectFunctionTrap();
 
+    const azleIntoJsValueTrait: Rust = generateAzleIntoJsValueTrait();
+    const azleTryFromJsValueTrait: Rust = generateAzleTryFromJsValueTrait();
+
     return `
         ${head}
 
         ${modifiedRustCandidTypes}
+
+        ${azleIntoJsValueTrait}
+        ${azleTryFromJsValueTrait}
 
         ${canisterMethodInit}
         ${canisterMethodPostUpgrade}

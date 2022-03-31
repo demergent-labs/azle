@@ -24,5 +24,5 @@ service: {
     "getFloat32": () -> (float32) query;
     "printFloat32": (float32) -> (float32) query;
     "getPrincipal": () -> (principal) query;
-    "randomness": () -> (vec nat8);
+    "printPrincipal": (principal) -> (principal) query;
 }
