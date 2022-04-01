@@ -1,29 +1,28 @@
 import {
     Update,
     Opt,
-    int32
+    nat64
 } from 'azle';
 
-// TODO cell should be a nat64: https://github.com/demergent-labs/azle/issues/20
-let cell: int32 = 0;
+let cell: nat64 = 0n;
 
-export function add(n: int32): Update<int32> {
+export function add(n: nat64): Update<nat64> {
     cell += n;
     return cell;
 }
 
-export function sub(n: int32): Update<int32> {
+export function sub(n: nat64): Update<nat64> {
     cell -= n;
     return cell;
 }
 
-export function mul(n: int32): Update<int32> {
+export function mul(n: nat64): Update<nat64> {
     cell *= n;
     return cell;
 }
 
-export function div(n: int32): Update<Opt<int32>> {
-    if (n == 0) {
+export function div(n: nat64): Update<Opt<nat64>> {
+    if (n == 0n) {
         return null;
     }
     else {
@@ -33,5 +32,5 @@ export function div(n: int32): Update<Opt<int32>> {
 }
 
 export function clearall(): Update<void> {
-    cell = 0;
+    cell = 0n;
 }

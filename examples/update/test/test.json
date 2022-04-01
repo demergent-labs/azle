@@ -1,0 +1,16 @@
+{
+    "tests": [
+        {
+            "canisterName": "update",
+            "canisterMethod": "update",
+            "methodArgs": "(\"Why hello there\")",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "update",
+            "canisterMethod": "query",
+            "methodArgs": "()",
+            "expectedOutput": "(\"Why hello there\")"
+        }
+    ]
+}

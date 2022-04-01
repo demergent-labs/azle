@@ -30,11 +30,11 @@ type ic = {
     canisters: {
         [canisterName: string]: <T>(canisterId: Principal) => T;
     };
-    canisterBalance: () => float64; // TODO should be a nat64
-    id: () => string;
+    canisterBalance: () => nat64;
+    id: () => Principal;
     print: (...args: any) => void;
     rawRand: () => nat8[]; // TODO I think we want this to really be a JS Uint8Array
-    time: () => float64; // TODO should be a nat64
+    time: () => nat64;
     trap: (message: string) => never;
 };
 

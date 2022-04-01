@@ -1,20 +1,19 @@
 import {
     Query,
     Update,
-    int32
+    nat64
 } from 'azle';
 
-// TODO counter should be a nat64: https://github.com/demergent-labs/azle/issues/20
-let counter: int32 = 0;
+let counter: nat64 = 0n;
 
-export function get(): Query<int32> {
+export function get(): Query<nat64> {
     return counter;
 }
 
-export function set(n: int32): Update<void> {
+export function set(n: nat64): Update<void> {
     counter = n;
 }
 
 export function inc(): Update<void> {
-    counter += 1;
+    counter += 1n;
 }

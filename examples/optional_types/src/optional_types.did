@@ -13,5 +13,6 @@ type Element = record {
 service: {
     "getHTML": () -> (HTML) query;
     "getHead": () -> (opt Head) query;
+    "getHeadWithElements": () -> (opt Head) query;
     "getElement": (opt opt Element) -> (opt opt Element) query;
 }

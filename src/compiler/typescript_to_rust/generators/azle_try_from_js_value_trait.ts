@@ -2,6 +2,7 @@ import { Rust } from '../../../types';
 
 export function generateAzleTryFromJsValueTrait(): Rust {
     return `
+        // TODO I feel like we should make AzleTryFromJsValueError
         pub trait AzleTryFromJsValue<T> {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<T, TryFromJsValueError>;
         }
@@ -54,9 +55,17 @@ export function generateAzleTryFromJsValueTrait(): Rust {
             }
         }
         
-        impl<T> AzleTryFromJsValue<Option<T>> for boa_engine::JsValue where boa_engine::JsValue: TryFromJsValue<Option<T>> {
+        impl<T> AzleTryFromJsValue<Option<T>> for boa_engine::JsValue where boa_engine::JsValue: AzleTryFromJsValue<T> {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Option<T>, TryFromJsValueError> {
-                self.try_from_js_value(context)
+                if self.is_null() {
+                    Ok(None)
+                }
+                else {
+                    match self.azle_try_from_js_value(context) {
+                        Ok(value) => Ok(Some(value)),
+                        Err(err) => Err(err)
+                    }
+                }
             }
         }
         
@@ -95,12 +104,52 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 self.try_from_js_value(context)
             }
         }
-        
+
+        // TODO this seems like such a messy way to do it
         // TODO consider that each type might need its own explicit impl for Vec
         // TODO the derive attribute might need to be used in that case
-        impl<T> AzleTryFromJsValue<Vec<T>> for boa_engine::JsValue where boa_engine::JsValue: TryFromJsValue<Vec<T>> {
+        impl<T> AzleTryFromJsValue<Vec<T>> for boa_engine::JsValue where boa_engine::JsValue: AzleTryFromJsValue<T> {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Vec<T>, TryFromJsValueError> {
-                self.try_from_js_value(context)
+                match self.as_object() {
+                    Some(js_object) => {
+                        if js_object.is_array() {
+                            let mut processing: bool = true;
+                            let mut index: usize = 0;
+                
+                            let mut result = vec![];
+                
+                            while processing == true {
+                                match js_object.get(index, context) {
+                                    Ok(js_value) => {
+                                        if js_value.is_undefined() {
+                                            processing = false;
+                                        }
+                                        else {
+                                            match js_value.azle_try_from_js_value(context) {
+                                                Ok(value) => {
+                                                    result.push(value);
+                                                    index += 1;
+                                                }
+                                                Err(err) => {
+                                                    return Err(err);
+                                                }
+                                            }
+                                        }
+                                    },
+                                    Err(_) => {
+                                        return Err(TryFromJsValueError("Item at array index does not exist".to_string()))
+                                    }
+                                }
+                            }
+                
+                            Ok(result)
+                        }
+                        else {
+                            Err(TryFromJsValueError("JsObject is not an array".to_string()))
+                        }
+                    },
+                    None => Err(TryFromJsValueError("JsValue is not an object".to_string()))
+                }
             }
         }
         

@@ -20,6 +20,7 @@ export function getThree(): Query<string> {
     return three();
 }
 
+// TODO this is probably broken because of the number things I changed in boa
 export function sha224Hash(message: string): Query<string> {
     return sha224().update(message).digest('hex');
 }

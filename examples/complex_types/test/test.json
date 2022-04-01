@@ -1,0 +1,28 @@
+{
+    "tests": [
+        {
+            "canisterName": "complex_types",
+            "canisterMethod": "getAllThreads",
+            "methodArgs": "(0)",
+            "expectedOutput": "(vec {})"
+        },
+        {
+            "canisterName": "complex_types",
+            "canisterMethod": "getAllUsers",
+            "methodArgs": "(0)",
+            "expectedOutput": "(vec {})"
+        },
+        {
+            "canisterName": "complex_types",
+            "canisterMethod": "getAllReactions",
+            "methodArgs": "(0)",
+            "expectedOutput": "(vec {})"
+        },
+        {
+            "canisterName": "complex_types",
+            "canisterMethod": "getAllPosts",
+            "methodArgs": "(0)",
+            "expectedOutput": "(vec {})"
+        }
+    ]
+}

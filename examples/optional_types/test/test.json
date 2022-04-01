@@ -1,0 +1,40 @@
+{
+    "tests": [
+        {
+            "canisterName": "optional_types",
+            "canisterMethod": "getHTML",
+            "methodArgs": "()",
+            "expectedOutput": "(record { head = null })"
+        },
+        {
+            "canisterName": "optional_types",
+            "canisterMethod": "getHead",
+            "methodArgs": "()",
+            "expectedOutput": "(opt record { elements = vec {} })"
+        },
+        {
+            "canisterName": "optional_types",
+            "canisterMethod": "getHeadWithElements",
+            "methodArgs": "()",
+            "expectedOutput": "(opt record { elements = vec { record { id = \"0\" } } })"
+        },
+        {
+            "canisterName": "optional_types",
+            "canisterMethod": "getElement",
+            "methodArgs": "(null)",
+            "expectedOutput": "(null)"
+        },
+        {
+            "canisterName": "optional_types",
+            "canisterMethod": "getElement",
+            "methodArgs": "(opt null)",
+            "expectedOutput": "(null)"
+        },
+        {
+            "canisterName": "optional_types",
+            "canisterMethod": "getElement",
+            "methodArgs": "(opt opt record { id = \"0\" })",
+            "expectedOutput": "(opt opt record { id = \"0\" })"
+        }
+    ]
+}

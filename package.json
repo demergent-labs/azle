@@ -4,7 +4,8 @@
   "description": "TypeScript CDK for the Internet Computer",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "test/test.sh"
   },
   "bin": {
     "azle": "./bin.js"
