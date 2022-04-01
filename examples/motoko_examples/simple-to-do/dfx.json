@@ -1,0 +1,12 @@
+{
+  "canisters": {
+    "simple_to_do": {
+      "type": "custom",
+      "build": "npx azle simple_to_do",
+      "root": "src",
+      "ts": "src/simple_to_do.ts",
+      "candid": "src/simple_to_do.did",
+      "wasm": "target/wasm32-unknown-unknown/release/simple_to_do.wasm"
+    }
+  }
+}
