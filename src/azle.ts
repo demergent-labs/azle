@@ -68,7 +68,7 @@ function writeCodeToFileSystem(
         fs.mkdirSync(`./target/azle/azle_js_value_derive`);
     }
 
-    fsExtra.copySync(`${__dirname}/azle_js_value_derive`, `./target/azle/azle_js_value_derive`);
+    fsExtra.copySync(`${__dirname}/compiler/typescript_to_rust/azle_js_value_derive`, `./target/azle/azle_js_value_derive`);
 }
 
 function compileRustCode(canisterName: string) {
