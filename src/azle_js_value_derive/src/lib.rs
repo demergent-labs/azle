@@ -51,12 +51,12 @@ pub fn derive_azle_try_from_js_value(tokens: TokenStream) -> TokenStream {
 
     let generated_code = match input.data {
         Data::Enum(data_enum) => derive_azle_try_from_js_value_enum(
-            name,
-            data_enum
+            &name,
+            &data_enum
         ),
         Data::Struct(data_struct) => derive_azle_try_from_js_value_struct(
-            name,
-            data_struct
+            &name,
+            &data_struct
         ),
         _ => panic!("Can only derive from Structs or Enums")
     };

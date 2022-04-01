@@ -1,7 +1,7 @@
 {
   "name": "azle",
   "version": "0.0.14",
-  "description": "TypeScript/JavaScript CDK for the Internet Computer",
+  "description": "TypeScript CDK for the Internet Computer",
   "scripts": {
     "typecheck": "tsc --noEmit",
     "prepare": "husky install"

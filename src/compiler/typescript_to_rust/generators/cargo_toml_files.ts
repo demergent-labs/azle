@@ -33,5 +33,7 @@ export function generateLibCargoToml(canisterName: string): Toml {
         # boa_engine = { git = "https://github.com/boa-dev/boa", rev = "e2630faf82a27e958d0ca6c9b1c81554bcc07ff3" }
         boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "into-and-from-js-value" }
         getrandom = { version = "0.2.3", features = ["custom"] }
+        serde = "1.0.136"
+        azle-js-value-derive = { path = "../azle_js_value_derive" }
     `;
 }
