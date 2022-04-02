@@ -1,0 +1,9 @@
+type Entry = record {
+    "desc": text;
+    "phone": text;
+};
+
+service: {
+    "lookup": (text) -> (opt Entry) query;
+    "insert": (text, Entry) -> ();
+}
