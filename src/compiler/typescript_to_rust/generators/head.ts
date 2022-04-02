@@ -16,6 +16,10 @@ export function generateHead(): Rust {
             TryFromJsValueError
         };
         use std::str::FromStr;
+        use azle_js_value_derive::{
+            AzleIntoJsValue,
+            AzleTryFromJsValue
+        };
 
         // TODO old safe working way
         // TODO I want to make sure I am doing this safely, but I can't do async code from within a with block

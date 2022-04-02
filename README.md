@@ -1,6 +1,6 @@
-# Azle (Alpha)
+# Azle (Beta)
 
-TypeScript/JavaScript CDK for the Internet Computer.
+TypeScript CDK for the Internet Computer.
 
 ## Discussion
 

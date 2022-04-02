@@ -5,6 +5,7 @@ import {
     generateWorkspaceCargoToml
 } from './compiler/typescript_to_rust/generators/cargo_toml_files';
 import * as fs from 'fs';
+import * as fsExtra from 'fs-extra';
 import {
     DfxJson,
     Rust,
@@ -62,6 +63,12 @@ function writeCodeToFileSystem(
     }
 
     fs.writeFileSync(`./target/azle/${rootPath}/src/lib.rs`, libFile);
+
+    if (!fs.existsSync(`./target/azle/azle_js_value_derive`)) {
+        fs.mkdirSync(`./target/azle/azle_js_value_derive`);
+    }
+
+    fsExtra.copySync(`${__dirname}/compiler/typescript_to_rust/azle_js_value_derive`, `./target/azle/azle_js_value_derive`);
 }
 
 function compileRustCode(canisterName: string) {
