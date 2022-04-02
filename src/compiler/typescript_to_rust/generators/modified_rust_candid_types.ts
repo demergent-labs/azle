@@ -29,6 +29,7 @@ export async function modifyRustCandidTypes(rustCandidTypes: Rust): Promise<Rust
 }
 
 function getAttrsWithSerialize(): any[] | undefined {
+    // TODO I will probably be adding my own attributes for the custom JsValue traits here
     const structMacroString = `
         #[derive(CandidType, Deserialize, AzleIntoJsValue, AzleTryFromJsValue)]
         struct Dummy {}
