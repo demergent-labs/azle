@@ -10,6 +10,29 @@ export function generateHead(): Rust {
         #![allow(unused_imports)]
         #![allow(unused_variables)]
 
+        // TODO we might implement our own AzleIntoJsValue and AzleTryFromJsValue
+        // TODO this would allow us to get rid of the weird custom code for AzlePrincipal and candid::Nat, and candid::Principal
+        use boa_engine::value::into_js_value::IntoJsValue;
+        use boa_engine::value::try_from_js_value::{
+            TryFromJsValue,
+            TryFromJsValueError
+        };
+
+        struct AzlePrincipal {
+            principal: ic_cdk::export::Principal
+        }
+        
+        impl TryFromJsValue<AzlePrincipal> for boa_engine::JsValue {
+            fn try_from_js_value(self, _: &mut boa_engine::Context) -> Result<AzlePrincipal, TryFromJsValueError> {
+                match self.as_string() {
+                    Some(value) => Ok(AzlePrincipal {
+                        principal: ic_cdk::export::Principal::from_text(value.to_string()).unwrap()
+                    }),
+                    None => Err(TryFromJsValueError("JsValue is not a string".to_string()))
+                }
+            }
+        }
+
         // TODO old safe working way
         // TODO I want to make sure I am doing this safely, but I can't do async code from within a with block
         // thread_local! {

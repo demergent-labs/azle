@@ -25,15 +25,13 @@ export async function modifyRustCandidTypes(rustCandidTypes: Rust): Promise<Rust
 
     const printedAST = printAst(JSON.stringify(modifiedAst));
 
-    // TODO Remove this once these issues are resolved: https://forum.dfinity.org/t/deserialize-to-candid-nat/8192/16, https://github.com/dfinity/candid/issues/331
-    const printedASTNatReplacedWithU128 = printedAST.replace(/candid :: Nat/g, 'u128');
-
-    return printedASTNatReplacedWithU128;
+    return printedAST;
 }
 
 function getAttrsWithSerialize(): any[] | undefined {
+    // TODO I will probably be adding my own attributes for the custom JsValue traits here
     const structMacroString = `
-        #[derive(CandidType, Deserialize, serde::Serialize)]
+        #[derive(CandidType, Deserialize)]
         struct Dummy {}
     `;
     const structMacroAst: AST = JSON.parse(parseFile(structMacroString));
