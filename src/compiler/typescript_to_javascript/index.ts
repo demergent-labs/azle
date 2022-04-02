@@ -1,6 +1,9 @@
 import * as swc from '@swc/core';
+import * as tsc from 'typescript';
 import { buildSync } from 'esbuild';
 import { JavaScript } from '../../types';
+import { getCanisterTypeAliasDeclarations } from '../typescript_to_rust/generators/call_functions';
+import { generateCallFunctionName } from '../typescript_to_rust/generators/call_functions/call_function_name';
 
 // TODO it would be nice if the bundle and transform steps could be combined into one
 export async function compileTypeScriptToJavaScript(tsPath: string): Promise<JavaScript> {
@@ -11,7 +14,9 @@ export async function compileTypeScriptToJavaScript(tsPath: string): Promise<Jav
     // TODO look into the implications of this, but since we are trying to transpile to es3 to cope with missing features in boa, I do not think we need strict mode
     const strictModeRemovedJS = transpiledJS.replace(/"use strict";/g, '');
 
-    return strictModeRemovedJS;
+    const icCanisters = generateICCanisters(tsPath);
+
+    return `${icCanisters}\n${strictModeRemovedJS}`;
 }
 
 // TODO there is a lot of minification/transpiling etc we could do with esbuild or with swc
@@ -49,4 +54,107 @@ function transpile(js: JavaScript): JavaScript {
         },
         minify: false // TODO keeping this off for now, enable once the project is more stable
     }).code;
+}
+
+// TODO we might want to put this in a better place, and only call program and sourceFiles once
+function generateICCanisters(tsPath: string): JavaScript {
+    const program = tsc.createProgram(
+        [tsPath],
+        {}
+    );
+    
+    const sourceFiles = program.getSourceFiles();
+
+    const canisterTypeAliasDeclarations = getCanisterTypeAliasDeclarations(sourceFiles);
+
+    const icCanisters = generateICCanistersFromTypeAliasDeclarations(canisterTypeAliasDeclarations);
+
+    return `
+        ic.canisters = {
+            ${icCanisters.join(',\n')}
+        };
+    `;
+}
+
+function generateICCanistersFromTypeAliasDeclarations(typeAliasDeclarations: tsc.TypeAliasDeclaration[]): JavaScript[] {
+    return typeAliasDeclarations.map((typeAliasDeclaration) => {
+        return generateICCanisterFromTypeAliasDeclaration(typeAliasDeclaration);
+    });
+}
+
+function generateICCanisterFromTypeAliasDeclaration(typeAliasDeclaration: tsc.TypeAliasDeclaration): JavaScript {
+    if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TypeReference) {
+        throw new Error('This cannot happen');
+    }
+
+    const typeRefenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+
+    if (typeRefenceNode.typeArguments === undefined) {
+        throw new Error('This cannot happen');
+    }
+
+    const firstTypeArgument = typeRefenceNode.typeArguments[0];
+
+    if (firstTypeArgument.kind !== tsc.SyntaxKind.TypeLiteral) {
+        throw new Error('This cannot happen');
+    }
+
+    const typeLiteralNode = firstTypeArgument as tsc.TypeLiteralNode;
+
+    return generateICCanisterFromTypeLiteralNode(
+        typeLiteralNode,
+        typeAliasDeclaration.name.escapedText.toString()
+    );
+}
+
+function generateICCanisterFromTypeLiteralNode(
+    typeLiteralNode: tsc.TypeLiteralNode,
+    typeAliasName: string
+): JavaScript {
+    const canisterMethods = typeLiteralNode.members.map((member) => {
+        return generateCanisterMethodFromTypeElement(
+            member,
+            typeAliasName
+        );
+    });
+
+    return `
+        '${typeAliasName}': (canisterId) => {
+            return {
+                ${canisterMethods.join(',\n')}
+            };
+        }
+    `;
+}
+
+function generateCanisterMethodFromTypeElement(
+    typeElement: tsc.TypeElement,
+    typeAliasName: string
+): JavaScript {
+    if (typeElement.kind !== tsc.SyntaxKind.MethodSignature) {
+        throw new Error('Must use method signature syntax');
+    }
+
+    const methodSignature = typeElement as tsc.MethodSignature;
+
+    const {
+        methodName,
+        callFunctionName
+    } = generateCallFunctionName(
+        methodSignature,
+        typeAliasName
+    );
+
+    return `
+        ${methodName}: (...args) => {
+            return {
+                name: 'call',
+                args: [
+                    '${callFunctionName}',
+                    canisterId,
+                    ...args
+                ]
+            };
+        }
+    `;
 }

@@ -4,9 +4,11 @@ import { generateCandidService } from './generators/service';
 import { generateCandidVariants } from './generators/variant';
 import { Candid } from '../../types';
 import * as tsc from 'typescript';
+import { getCanisterTypeAliasDeclarations } from '../typescript_to_rust/generators/call_functions';
 
 export function compileTypeScriptToCandid(sourceFiles: readonly tsc.SourceFile[]): {
     candid: Candid;
+    candidWithDummyMethod: Candid;
     queryMethodFunctionNames: string[];
     updateMethodFunctionNames: string[];
 } {
@@ -26,28 +28,45 @@ export function compileTypeScriptToCandid(sourceFiles: readonly tsc.SourceFile[]
         ]
     );
 
-    const candidRecords: Candid = generateCandidRecords(
+    const canisterTypeAliasDeclarations = getCanisterTypeAliasDeclarations(sourceFiles);
+
+    const {
+        candidRecords,
+        candidRecordNames
+    } = generateCandidRecords(
         sourceFiles,
         queryMethodFunctionDeclarations,
-        updateMethodFunctionDeclarations
+        updateMethodFunctionDeclarations,
+        canisterTypeAliasDeclarations
     );
 
     const candidVariants: Candid = generateCandidVariants(
         sourceFiles,
         queryMethodFunctionDeclarations,
-        updateMethodFunctionDeclarations
+        updateMethodFunctionDeclarations,
+        canisterTypeAliasDeclarations
     );
 
-    const candidService: Candid = generateCandidService(
+    const {
+        service,
+        serviceWithDummyMethod
+    } = generateCandidService(
         sourceFiles,
         queryMethodFunctionDeclarations,
-        updateMethodFunctionDeclarations
+        updateMethodFunctionDeclarations,
+        candidRecordNames
     );
 
     const candid = generateCandid(
         candidRecords,
         candidVariants,
-        candidService
+        service
+    );
+
+    const candidWithDummyMethod = generateCandid(
+        candidRecords,
+        candidVariants,
+        serviceWithDummyMethod
     );
 
     const queryMethodFunctionNames = getCanisterMethodFunctionNames(queryMethodFunctionDeclarations);
@@ -55,6 +74,7 @@ export function compileTypeScriptToCandid(sourceFiles: readonly tsc.SourceFile[]
 
     return {
         candid,
+        candidWithDummyMethod,
         queryMethodFunctionNames,
         updateMethodFunctionNames
     };

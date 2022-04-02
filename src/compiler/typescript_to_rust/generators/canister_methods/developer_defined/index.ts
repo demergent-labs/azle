@@ -12,12 +12,16 @@ import {
     ImplItemMethod
 } from '../../../ast_utilities/types';
 import { generateReturnValueHandler } from './return_value_conversion';
-import { Rust } from '../../../../../types';
+import {
+    CallFunctionInfo,
+    Rust
+} from '../../../../../types';
 
 export async function generateCanisterMethodsDeveloperDefined(
     rustCandidTypes: Rust,
     queryMethodFunctionNames: string[],
-    updateMethodFunctionNames: string[]
+    updateMethodFunctionNames: string[],
+    callFunctionInfos: CallFunctionInfo[]
 ): Promise<Rust> {
     const rustCandidTypesAstString = parseFile(rustCandidTypes);
     const rustCandidTypesAst: AST = JSON.parse(rustCandidTypesAstString);
@@ -29,7 +33,8 @@ export async function generateCanisterMethodsDeveloperDefined(
     const fns = generateItemFnsFromImplItemMethods(
         implItemMethods,
         queryMethodFunctionNames,
-        updateMethodFunctionNames
+        updateMethodFunctionNames,
+        callFunctionInfos
     );
 
     const fnsAst = {
@@ -48,13 +53,15 @@ export async function generateCanisterMethodsDeveloperDefined(
 function generateItemFnsFromImplItemMethods(
     implItemMethods: ImplItemMethod[],
     queryMethodFunctionNames: string[],
-    updateMethodFunctionNames: string[]
+    updateMethodFunctionNames: string[],
+    callFunctionInfos: CallFunctionInfo[]
 ): Fn[] {
     return implItemMethods.map((implItemMethod) => {
         return generateItemFnFromImplItemMethod(
             implItemMethod,
             queryMethodFunctionNames,
-            updateMethodFunctionNames
+            updateMethodFunctionNames,
+            callFunctionInfos
         );
     });
 }
@@ -62,13 +69,15 @@ function generateItemFnsFromImplItemMethods(
 function generateItemFnFromImplItemMethod(
     implItemMethod: ImplItemMethod,
     queryMethodFunctionNames: string[],
-    updateMethodFunctionNames: string[]
+    updateMethodFunctionNames: string[],
+    callFunctionInfos: CallFunctionInfo[]
 ): Fn {
     const inputsWithoutSelfParam = implItemMethod.inputs.slice(1);
 
     const body: Rust = getBody(
         implItemMethod,
-        inputsWithoutSelfParam
+        inputsWithoutSelfParam,
+        callFunctionInfos
     );
     const bodyAst: AST = JSON.parse(parseFile(body));
 
@@ -92,9 +101,13 @@ function generateItemFnFromImplItemMethod(
 
 function getBody(
     implItemMethod: ImplItemMethod,
-    inputs: any[]
+    inputs: any[],
+    callFunctionInfos: CallFunctionInfo[]
 ): Rust {
-    const returnValueHandler: Rust = generateReturnValueHandler(implItemMethod);
+    const returnValueHandler: Rust = generateReturnValueHandler(
+        implItemMethod,
+        callFunctionInfos
+    );
 
     return `
         fn dummy() {
@@ -119,6 +132,28 @@ function getBody(
     `;
 }
 
+// TODO current deployed unsafe version
+// fn dummy() {
+//     unsafe {
+//         let mut boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+
+//         let return_value = boa_context.eval(format!(
+//             "
+//                 ${implItemMethod.ident}(${inputs.map((input) => {
+//                     return `{${input.typed.pat.ident.ident}}`;
+//                 }).join(',')});
+//             ",
+//             ${inputs.map((input) => {
+//                 return `${input.typed.pat.ident.ident} = serde_json::to_string(&${input.typed.pat.ident.ident}).unwrap()`;
+//             }).join(',')}
+//         )).unwrap();
+    
+//         ${returnValueHandler}
+
+//     }
+// }
+
+// TODO old safe working version
 // fn dummy() {
 //     BOA_CONTEXT.with(|boa_context_ref_cell| {
 //         let mut boa_context = boa_context_ref_cell.borrow_mut();
@@ -137,42 +172,6 @@ function getBody(
 //         ${returnValueHandler}
 //     })
 // }
-
-// fn dummy() {
-//     // let mut boa_context = BOA_CONTEXT.with(|boa_context_ref_cell| boa_context_ref_cell.borrow());
-
-//     let mut boa_context = boa_engine::Context::default();
-
-//     let return_value = boa_context.eval(format!(
-//         "
-//             ${implItemMethod.ident}(${inputs.map((input) => {
-//                 return `{${input.typed.pat.ident.ident}}`;
-//             }).join(',')});
-//         ",
-//         ${inputs.map((input) => {
-//             return `${input.typed.pat.ident.ident} = serde_json::to_string(&${input.typed.pat.ident.ident}).unwrap()`;
-//         }).join(',')}
-//     )).unwrap();
-
-//     ${returnValueHandler}
-// }
-
-// BOA_CONTEXT.with(|boa_context_ref_cell| {
-//     let mut boa_context = boa_context_ref_cell.borrow_mut();
-
-//     let return_value = boa_context.eval(format!(
-//         "
-//             ${implItemMethod.ident}(${inputs.map((input) => {
-//                 return `{${input.typed.pat.ident.ident}}`;
-//             }).join(',')});
-//         ",
-//         ${inputs.map((input) => {
-//             return `${input.typed.pat.ident.ident} = serde_json::to_string(&${input.typed.pat.ident.ident}).unwrap()`;
-//         }).join(',')}
-//     )).unwrap();
-
-//     ${returnValueHandler}
-// })
 
 function getAttrs(
     implItemMethod: ImplItemMethod,

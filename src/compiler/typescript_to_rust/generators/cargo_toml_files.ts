@@ -34,6 +34,6 @@ export function generateLibCargoToml(canisterName: string): Toml {
         boa_engine = { git = "https://github.com/boa-dev/boa", rev = "e2630faf82a27e958d0ca6c9b1c81554bcc07ff3" }
         getrandom = { version = "0.2.3", features = ["custom"] }
         serde = "1.0.130"
-        serde_json = "1.0.68"
+        serde_json =  { version = "1.0.68", features = ["arbitrary_precision"] }
     `;
 }

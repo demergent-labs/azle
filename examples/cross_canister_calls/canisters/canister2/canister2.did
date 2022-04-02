@@ -1,0 +1,4 @@
+service: {
+    "balance": (text) -> (int32) query;
+    "transfer": (text, text, int32) -> (int32);
+}

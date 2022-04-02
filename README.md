@@ -108,7 +108,7 @@ Your `dfx.json` should look like this:
 Start up an IC replica and deploy:
 
 ```bash
-# Open a terminal and run the following command to start a local IC replica
+# Open a terminal and navigate to your project's root directory, then run the following command to start a local IC replica
 dfx start
 
 # Alternatively to the above command, you can run the replica in the background
@@ -131,22 +131,19 @@ If you want to ensure running the examples with a fresh clone works, run `npm li
 
 - [ ] Beta
   - [x] TypeScript -> Candid compiler
-  - [x] Synchronous IC APIs
+  - [x] Basic IC APIs
+    - [ ] call
     - [x] caller
     - [x] canisterBalance
     - [x] id
     - [x] print
+    - [x] rawRand
     - [x] time
     - [x] trap
-  - [ ] All primitive data types
-    - [ ] int
-    - [ ] int64
+  - [x] Basic primitive data types
     - [x] int32
     - [x] int16
     - [x] int8
-    - [ ] nat
-    - [ ] nat64
-    - [ ] nat32
     - [x] nat16
     - [x] nat8
     - [x] float64
@@ -157,9 +154,16 @@ If you want to ensure running the examples with a fresh clone works, run `npm li
   - [ ] Video series
 
 - [ ] 1.0
-    - [ ] Asynchronous IC APIs
-      - [ ] call
-      - [x] rawRand
+    - [ ] Advanced primitive data types
+      - [ ] int
+      - [ ] int64
+      - [ ] nat
+      - [ ] nat64
+      - [ ] nat32
+    - [ ] Advanced IC APIs
+      - [ ] Stable memory
+      - [ ] Certified data
+      - [ ] Cycles management
     - [ ] Flexible stable memory access
     - [ ] Feature parity with Rust and Motoko CDKs
     - [ ] [Inter-Canister Query Calls](https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754)

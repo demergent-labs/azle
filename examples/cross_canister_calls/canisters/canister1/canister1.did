@@ -1,0 +1,13 @@
+type CanisterStatusArgs = record {
+    "canister_id": principal;
+};
+
+type CanisterStatusResult = record {
+    "cycles": nat;
+};
+
+service: {
+    "initiateTransfer": () -> (int32);
+    "randomness": () -> (vec nat8);
+    "status": () -> (nat);
+}

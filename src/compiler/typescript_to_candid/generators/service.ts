@@ -9,8 +9,12 @@ import * as tsc from 'typescript';
 export function generateCandidService(
     sourceFiles: readonly tsc.SourceFile[],
     queryMethodFunctionDeclarations: tsc.FunctionDeclaration[],
-    updateMethodFunctionDeclarations: tsc.FunctionDeclaration[]
-): Candid {
+    updateMethodFunctionDeclarations: tsc.FunctionDeclaration[],
+    candidRecordNames: string[]
+): {
+    serviceWithDummyMethod: Candid,
+    service: Candid
+} {
     const queryServiceMethodDefinitions = generateCandidServiceMethodDefinitions(
         sourceFiles,
         queryMethodFunctionDeclarations,
@@ -23,7 +27,12 @@ export function generateCandidService(
         false
     ).join('');
 
-    return `service: {${queryServiceMethodDefinitions}${updateServiceMethodDefinitions}\n}`;
+    const dummyMethodDefinition = generateDummyMethodDefinition(candidRecordNames);
+
+    return {
+        serviceWithDummyMethod: `service: {${queryServiceMethodDefinitions}${updateServiceMethodDefinitions}    \n${dummyMethodDefinition}\n}`,
+        service: `service: {${queryServiceMethodDefinitions}${updateServiceMethodDefinitions}\n}`
+    };
 }
 
 function generateCandidServiceMethodDefinitions(
@@ -86,4 +95,9 @@ function generateCandidServiceMethodReturnTypeName(
     }
 
     throw new Error(`Return type must be Query or Update for function declaration: ${JSON.stringify(functionDeclaration, null, 2)}`);
+}
+
+// TODO this is here to fix this bug: https://github.com/dfinity/candid/issues/330
+function generateDummyMethodDefinition(candidRecordNames: string[]): Candid {
+    return `"_azle_dummy_method": (${candidRecordNames.join(', ')}) -> ();`;
 }
