@@ -1,5 +1,5 @@
 service: {
-    "get": () -> (int32) query;
-    "set": (int32) -> ();
+    "get": () -> (nat64) query;
+    "set": (nat64) -> ();
     "inc": () -> ();
 }

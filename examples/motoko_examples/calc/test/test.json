@@ -1,40 +1,40 @@
 {
     "tests": [
         {
-            "canisterName": "key_value_store",
-            "canisterMethod": "get",
-            "methodArgs": "(\"0\")",
-            "expectedOutput": "(null)"
+            "canisterName": "calc",
+            "canisterMethod": "add",
+            "methodArgs": "(5)",
+            "expectedOutput": "(5 : int)"
         },
         {
-            "canisterName": "key_value_store",
-            "canisterMethod": "get",
-            "methodArgs": "(\"1\")",
-            "expectedOutput": "(null)"
+            "canisterName": "calc",
+            "canisterMethod": "sub",
+            "methodArgs": "(2)",
+            "expectedOutput": "(3 : int)"
         },
         {
-            "canisterName": "key_value_store",
-            "canisterMethod": "set",
-            "methodArgs": "(\"0\", \"zero\")",
+            "canisterName": "calc",
+            "canisterMethod": "mul",
+            "methodArgs": "(6)",
+            "expectedOutput": "(18 : int)"
+        },
+        {
+            "canisterName": "calc",
+            "canisterMethod": "div",
+            "methodArgs": "(2)",
+            "expectedOutput": "(opt (9 : int))"
+        },
+        {
+            "canisterName": "calc",
+            "canisterMethod": "clearall",
+            "methodArgs": "()",
             "expectedOutput": "()"
         },
         {
-            "canisterName": "key_value_store",
-            "canisterMethod": "set",
-            "methodArgs": "(\"1\", \"one\")",
-            "expectedOutput": "()"
-        },
-        {
-            "canisterName": "key_value_store",
-            "canisterMethod": "get",
-            "methodArgs": "(\"0\")",
-            "expectedOutput": "(opt \"zero\")"
-        },
-        {
-            "canisterName": "key_value_store",
-            "canisterMethod": "get",
-            "methodArgs": "(\"1\")",
-            "expectedOutput": "(opt \"one\")"
+            "canisterName": "calc",
+            "canisterMethod": "add",
+            "methodArgs": "(0)",
+            "expectedOutput": "(0 : int)"
         }
     ]
 }

@@ -1,27 +1,27 @@
 import {
     Update,
     Opt,
-    nat64
+    int
 } from 'azle';
 
-let cell: nat64 = 0n;
+let cell: int = 0n;
 
-export function add(n: nat64): Update<nat64> {
+export function add(n: int): Update<int> {
     cell += n;
     return cell;
 }
 
-export function sub(n: nat64): Update<nat64> {
+export function sub(n: int): Update<int> {
     cell -= n;
     return cell;
 }
 
-export function mul(n: nat64): Update<nat64> {
+export function mul(n: int): Update<int> {
     cell *= n;
     return cell;
 }
 
-export function div(n: nat64): Update<Opt<nat64>> {
+export function div(n: int): Update<Opt<int>> {
     if (n == 0n) {
         return null;
     }

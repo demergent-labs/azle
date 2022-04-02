@@ -1,40 +1,34 @@
 {
     "tests": [
         {
-            "canisterName": "key_value_store",
+            "canisterName": "counter",
             "canisterMethod": "get",
-            "methodArgs": "(\"0\")",
-            "expectedOutput": "(null)"
+            "methodArgs": "()",
+            "expectedOutput": "(0 : nat64)"
         },
         {
-            "canisterName": "key_value_store",
-            "canisterMethod": "get",
-            "methodArgs": "(\"1\")",
-            "expectedOutput": "(null)"
-        },
-        {
-            "canisterName": "key_value_store",
+            "canisterName": "counter",
             "canisterMethod": "set",
-            "methodArgs": "(\"0\", \"zero\")",
+            "methodArgs": "(10)",
             "expectedOutput": "()"
         },
         {
-            "canisterName": "key_value_store",
-            "canisterMethod": "set",
-            "methodArgs": "(\"1\", \"one\")",
+            "canisterName": "counter",
+            "canisterMethod": "inc",
+            "methodArgs": "()",
             "expectedOutput": "()"
         },
         {
-            "canisterName": "key_value_store",
-            "canisterMethod": "get",
-            "methodArgs": "(\"0\")",
-            "expectedOutput": "(opt \"zero\")"
+            "canisterName": "counter",
+            "canisterMethod": "inc",
+            "methodArgs": "()",
+            "expectedOutput": "()"
         },
         {
-            "canisterName": "key_value_store",
+            "canisterName": "counter",
             "canisterMethod": "get",
-            "methodArgs": "(\"1\")",
-            "expectedOutput": "(opt \"one\")"
+            "methodArgs": "()",
+            "expectedOutput": "(12 : nat64)"
         }
     ]
 }
