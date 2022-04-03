@@ -22,7 +22,7 @@
             "canisterName": "imports",
             "canisterMethod": "sha224Hash",
             "methodArgs": "(\"hello\")",
-            "expectedOutput": "()"
+            "expectedOutput": "(\"ea09ae9cc6768c50fcee903ed054556e5bfc8347907f12598aa24193\")"
         }
     ]
 }

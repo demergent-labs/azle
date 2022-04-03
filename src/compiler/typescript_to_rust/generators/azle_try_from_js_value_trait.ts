@@ -31,6 +31,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
             }
         }
         
+        // TODO probably need to implement my own conversion here until try_from_js_value is fixed
         impl AzleTryFromJsValue<i64> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<i64, TryFromJsValueError> {
                 self.try_from_js_value(context)
@@ -81,6 +82,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
             }
         }
         
+        // TODO probably need to implement my own conversion here until try_from_js_value is fixed
         impl AzleTryFromJsValue<u64> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<u64, TryFromJsValueError> {
                 self.try_from_js_value(context)
