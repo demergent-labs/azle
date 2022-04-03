@@ -18,8 +18,8 @@ class App extends React.Component {
           </a>{' '}
           application on the <a href="https://dfinity.org">Internet Computer</a>{' '}
           using{' '}
-          <a href="https://sdk.dfinity.org/docs/language-guide/motoko.html">
-            Motoko
+          <a href="https://github.com/demergent-labs/azle">
+            Typescript
           </a>{' '}
           and <a href="https://reactjs.org">React</a>.
         </p>
