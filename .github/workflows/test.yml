@@ -73,9 +73,9 @@ jobs:
         run: rustup target add wasm32-unknown-unknown
       - name: Install didc
         run: cargo install --git https://github.com/dfinity/candid --rev e7abc462fd54e72e3449999169c12e9f5209d091 didc
-      - name: Run tests
-        shell: bash -l {0}
-        run: nvm use 14 && npm test
+      # - name: Run tests
+      #   shell: bash -l {0}
+        # run: nvm use 14 && npm test
       - name: Print sccache stats
         run: sccache --show-stats
       - name: Stop sccache server
