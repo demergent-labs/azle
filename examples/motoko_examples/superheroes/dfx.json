@@ -1,0 +1,20 @@
+{
+  "canisters": {
+    "superheroes": {
+      "type": "custom",
+      "build": "npx azle superheroes",
+      "root": "src",
+      "ts": "src/superheroes/superheroes.ts",
+      "candid": "src/superheroes/superheroes.did",
+      "wasm": "target/wasm32-unknown-unknown/release/superheroes.wasm"
+    },
+    "www": {
+      "dependencies": ["superheroes"],
+      "frontend": {
+        "entrypoint": "src/www/index.html"
+      },
+      "source": ["src/www/components", "dist/www/"],
+      "type": "assets"
+    }
+  }
+}
