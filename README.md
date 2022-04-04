@@ -1,3 +1,5 @@
+![example workflow](https://github.com/<OWNER>/<REPOSITORY>/actions/workflows/test/badge.svg)
+
 # Azle (Beta)
 
 TypeScript CDK for the Internet Computer.

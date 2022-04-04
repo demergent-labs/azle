@@ -1,6 +1,6 @@
-// Some of this file was taken from this Fluvio blogpost and has been changed by Demergent Labs - https://www.infinyon.com/blog/2021/04/github-actions-best-practices/
-// I am not sure on the exact license, but seems likely it will be Apache, which is included below
-// Came from this repo at one time most likely - https://github.com/infinyon/fluvio
+# Some of this file was taken from this Fluvio blogpost and has been changed by Demergent Labs - https://www.infinyon.com/blog/2021/04/github-actions-best-practices/
+# I am not sure on the exact license, but seems likely it will be Apache, which is included below
+# Came from this repo at one time most likely - https://github.com/infinyon/fluvio
 
 # TODO I think we can use the build matrix to easily run each test as a separate job
 
