@@ -65,11 +65,12 @@ jobs:
           key: ${{ runner.os }}-sccache-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-sccache-
-      - name: Start sccache server
-        run: sccache --start-server
-      # - run: curl -y --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-      # - run: rustup target add wasm32-unknown-unknown
-      # - run: cargo install --git https://github.com/dfinity/candid didc # TODO probably tag a version
+      # - name: Start sccache server
+      #   run: sccache --start-server
+      - name: Install wasm32-unknown-unknown
+        run: rustup target add wasm32-unknown-unknown
+      - name: Install didc
+        run: cargo install --git https://github.com/dfinity/candid didc # TODO probably tag a version
       - name: Run tests
         shell: bash -l {0}
         run: nvm use 14 && npm test
