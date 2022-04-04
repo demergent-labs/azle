@@ -65,8 +65,8 @@ jobs:
           key: ${{ runner.os }}-sccache-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-sccache-
-      # - name: Start sccache server
-      #   run: sccache --start-server
+      - name: Start sccache server
+        run: sccache --start-server
       - name: Install wasm32-unknown-unknown
         run: rustup target add wasm32-unknown-unknown
       - name: Install didc
@@ -74,10 +74,10 @@ jobs:
       - name: Run tests
         shell: bash -l {0}
         run: nvm use 14 && npm test
-      - name: Print sccache stats
-        run: sccache --show-stats
-      - name: Stop sccache server
-        run: sccache --stop-server || true
+      # - name: Print sccache stats
+      #   run: sccache --show-stats
+      # - name: Stop sccache server
+      #   run: sccache --stop-server || true
 
 #                               Apache License
 #                         Version 2.0, January 2004
