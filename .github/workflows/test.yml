@@ -17,8 +17,7 @@ jobs:
       - run: cargo install --git https://github.com/dfinity/candid didc # TODO probably tag a version
       - run: DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - shell: bash -l {0}
-        run: nvm use 14
-        run: npm test
+        run: nvm use 14 && npm test
 
 
 # - run: export NVM_DIR="$HOME/.nvm"
