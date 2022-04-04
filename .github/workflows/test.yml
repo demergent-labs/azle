@@ -8,12 +8,14 @@ jobs:
       - run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
       - shell: bash -l {0}
         run: nvm install 14
-      - shell: bash -l {0}
-        run: nvm use 14
-      - shell: bash -l {0}
-        run: node --version
-      # - run: npm --version
-      # - run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+      # - shell: bash -l {0}
+        # run: nvm use 14
+      # - shell: bash -l {0}
+        # run: node --version
+      - run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+      - run: rustup target add wasm32-unknown-unknown
+      - run: cargo install --git https://github.com/dfinity/candid didc # TODO probably tag a version
+      - run: DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
 
 # - run: export NVM_DIR="$HOME/.nvm"
