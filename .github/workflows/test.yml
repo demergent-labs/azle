@@ -73,6 +73,13 @@ jobs:
           key: ${{ runner.os }}-sccache-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-sccache-
+      - name: Examples query cache
+        uses: actions/cache@v2
+        continue-on-error: false
+        with:
+          path: examples/query/target
+          key: examples-query-cache
+          restore-keys: examples-query-cache
       - name: Start sccache server
         run: sccache --start-server
       # - uses: actions-rs/install@v0.1
