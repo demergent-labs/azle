@@ -14,9 +14,19 @@ jobs:
       matrix:
         rust: [stable]
         example_directories:
-          # TODO I want to get one job to run per example here...that would be excellent
-          # TODO this should be very similar to the global test.sh file, we can probably get rid of it
+          - examples/complex_types
+          - examples/counter
+          - examples/ic_api
+          - examples/imports
+          - examples/inline_types
+          - examples/key_value_store
+          - examples/motoko_examples/calc
+          - examples/motoko_examples/counter
+          - examples/optional_types
+          - examples/primitive_types
           - examples/query
+          - examples/simple_erc20
+          - examples/simple_user_accounts
           - examples/update
     steps:
       - uses: actions/checkout@v2

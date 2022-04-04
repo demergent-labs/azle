@@ -6,20 +6,20 @@
 # TODO these tests will probably take like 30 minutes to run though
 
 directories=(
-    # "examples/complex_types"
-    # "examples/counter"
-    # "examples/ic_api"
-    # "examples/imports"
-    # "examples/inline_types"
-    # "examples/key_value_store"
-    # "examples/motoko_examples/calc"
-    # "examples/motoko_examples/counter"
-    # "examples/optional_types"
-    # "examples/primitive_types"
+    "examples/complex_types"
+    "examples/counter"
+    "examples/ic_api"
+    "examples/imports"
+    "examples/inline_types"
+    "examples/key_value_store"
+    "examples/motoko_examples/calc"
+    "examples/motoko_examples/counter"
+    "examples/optional_types"
+    "examples/primitive_types"
     "examples/query"
-    # "examples/simple_erc20"
-    # "examples/simple_user_accounts"
-    # "examples/update"
+    "examples/simple_erc20"
+    "examples/simple_user_accounts"
+    "examples/update"
 )
 
 root_dir=$PWD
