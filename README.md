@@ -46,7 +46,7 @@ rustup target add wasm32-unknown-unknown
 Run the following command to install didc:
 
 ```bash
-cargo install --git https://github.com/dfinity/candid didc
+cargo install --git https://github.com/dfinity/candid --rev e7abc462fd54e72e3449999169c12e9f5209d091 didc
 ```
 
 ### dfx

@@ -71,6 +71,8 @@ function writeCodeToFileSystem(
     fsExtra.copySync(`${__dirname}/compiler/typescript_to_rust/azle_js_value_derive`, `./target/azle/azle_js_value_derive`);
 }
 
+// TODO should we also do a local install of didc here?
+// TODO that might be nice for the user, and we should tag versions if possible
 function compileRustCode(canisterName: string) {
     execSync(
         `cd target/azle && CARGO_TARGET_DIR=.. cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
