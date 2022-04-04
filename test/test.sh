@@ -43,3 +43,5 @@ do
 
     cd $root_dir
 done
+
+echo "All tests passed!"
