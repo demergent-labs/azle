@@ -9,8 +9,8 @@ jobs:
       # - run: source /home/runner/.bashrc
       # - run: source /home/runner/.bash_profile
       - run: export NVM_DIR="$HOME/.nvm"
-      - run: [ -s "$NVM_DIR/nvm.sh" ]
-      - run: [\. "$NVM_DIR/nvm.sh"]
+      - run: -s "$NVM_DIR/nvm.sh"
+      - run: \. "$NVM_DIR/nvm.sh"
       - run: nvm install 14
       - run: nvm use 14
       - run: node --version
