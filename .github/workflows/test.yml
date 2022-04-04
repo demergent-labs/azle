@@ -39,7 +39,17 @@ jobs:
           restore-keys: ${{ matrix.example_directories }}-cache
       - name: Run tests
         shell: bash -l {0}
-        run: nvm use 14 && npm test
+        run: nvm use 14
+      - run: cd ${{ matrix.example_directories }}
+      - run: dfx stop
+      - run: dfx start --clean --background
+      - shell: bash -l {0}
+        run: npm install
+      - shell: bash -l {0}
+        run: npm link azle
+      - run: dfx deploy
+      - run: npm test || { dfx stop; exit 1; } # TODO probably do not need end piece
+      - run: dfx stop # TODO probably do not need
 
 # - name: Cache cargo registry
 #   uses: actions/cache@v2
