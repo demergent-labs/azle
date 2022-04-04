@@ -18,6 +18,7 @@ jobs:
       # - run: export NVM_DIR="$HOME/.nvm"
       # - run: \[ -s "$NVM_DIR/nvm.sh" \] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
       - run: source /home/runner/.nvm/nvm.sh
+      - run: chmod +x /home/runner/.nvm/nvm.sh
       - run: /home/runner/.nvm/nvm.sh
       - run: nvm install 14
       - run: nvm use 14
