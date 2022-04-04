@@ -1,3 +1,7 @@
+# TODO a lot of this file will come from here: https://www.infinyon.com/blog/2021/04/github-actions-best-practices/
+# TODO not sure the license, but I believe the repo this might come from is Apache, so figure that out
+# TODO I think we can use the build matrix to easily run each test as a separate job
+
 name: Azle Tests
 on: [push]
 jobs:
@@ -8,18 +12,9 @@ jobs:
       - run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
       - shell: bash -l {0}
         run: nvm install 14
-      # - shell: bash -l {0}
-        # run: nvm use 14
-      # - shell: bash -l {0}
-        # run: node --version
       - run: curl -y --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
       - run: rustup target add wasm32-unknown-unknown
       - run: cargo install --git https://github.com/dfinity/candid didc # TODO probably tag a version
       - run: DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - shell: bash -l {0}
         run: nvm use 14 && npm test
-
-
-# - run: export NVM_DIR="$HOME/.nvm"
-# - run: [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-# - run: [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
