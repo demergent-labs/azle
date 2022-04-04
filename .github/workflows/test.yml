@@ -39,6 +39,12 @@ jobs:
       #     curl -L "$LINK/$SCCACHE_VERSION/$SCCACHE_FILE.tar.gz" | tar xz
       #     mv -f $SCCACHE_FILE/sccache $HOME/.local/bin/sccache
       #     echo "$HOME/.local/bin" >> $GITHUB_PATH
+      # - name: Cache cargo plugins
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: ~/.cargo/bin/
+      #     key: ${{ runner.os }}-cargo-plugins
+      # - uses: Swatinem/rust-cache@v1
       - name: Install Rust ${{ matrix.rust }}
         uses: actions-rs/toolchain@v1
         with:
@@ -69,7 +75,13 @@ jobs:
           #   ${{ runner.os }}-sccache-
       # - name: Start sccache server
       #   run: sccache --start-server
-      - uses: Swatinem/rust-cache@v1
+      # - uses: actions-rs/install@v0.1
+      #   with:
+      #     crate: cargo-audit
+      uses: actions/cache@v1
+        with:
+          path: ~/.cargo/bin/
+          key: ${{ runner.os }}-cargo-plugins
       - name: Install wasm32-unknown-unknown
         run: rustup target add wasm32-unknown-unknown
       - name: Install didc
