@@ -186,7 +186,6 @@ If you want to ensure running the examples with a fresh clone works, run `npm li
 ## Tips and Best Practices
 
 * Because Azle is built on Rust, to ensure the best compatibility use underscores to separate words in directory, file, and canister names
-* If you need 64-bit numbers of any kind, currently use float64
 
 ## Contributing
 
