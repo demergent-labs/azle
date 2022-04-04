@@ -9,11 +9,12 @@ jobs:
       # - run: source /home/runner/.bashrc
       # - run: source /home/runner/.bash_profile
       # - run: export NVM_DIR="/home/runner/.nvm"
-      - run: source /home/runner/.nvm/nvm.sh
+      # - run: source /home/runner/.nvm/nvm.sh
       # - run: \[ -s "$NVM_DIR/nvm.sh" \] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
       # - run: \. "$NVM_DIR/nvm.sh"
       # - run: \[ -s "$NVM_DIR/bash_completion" \] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-      - run: nvm install 14
+      # - run: /home/runner/.nvm/nvm install 14
+      - run: source ~/.nvm/nvm.sh
       - run: nvm use 14
       - run: node --version
       # - run: npm --version
