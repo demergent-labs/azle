@@ -30,13 +30,13 @@ jobs:
           toolchain: ${{ matrix.rust }}
           profile: minimal
           override: true
-      - name: Examples query cache
+      - name: Rust cache
         uses: actions/cache@v2
         continue-on-error: false
         with:
           path: ${{ matrix.example_directories }}/target
           key: ${{ matrix.example_directories }}-cache
-          restore-keys: ${{ matrix.example_directories }}-cache
+          restore-keys: ${{ matrix.example_directories }}-cache # TODO might need to be more intelligent and hash files here
       - shell: bash -l {0}
         working-directory: ${{ matrix.example_directories }}
         run: nvm use 14
@@ -47,12 +47,12 @@ jobs:
         run: npm install
       - shell: bash -l {0}
         working-directory: ${{ matrix.example_directories }}
-        run: npm link azle
-      - working-directory: ${{ matrix.example_directories }}
-        run: dfx deploy
-      - shell: bash -l {0}
-        working-directory: ${{ matrix.example_directories }}
-        run: npm test || { dfx stop; exit 1; } # TODO probably do not need end piece
+        run: npm link azle && dfx deploy && npm test || { dfx stop; exit 1; } # TODO probably do not need end piece
+      # - working-directory: ${{ matrix.example_directories }}
+      #   run: dfx deploy
+      # - shell: bash -l {0}
+      #   working-directory: ${{ matrix.example_directories }}
+      #   run: npm test || { dfx stop; exit 1; } # TODO probably do not need end piece
 
 # - name: Cache cargo registry
 #   uses: actions/cache@v2
