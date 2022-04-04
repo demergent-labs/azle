@@ -8,4 +8,5 @@ jobs:
       - run: nvm install 14
       - run: nvm use 14
       - run: node --version
+      - run: npm --version
       # - run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
