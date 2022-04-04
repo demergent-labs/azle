@@ -33,29 +33,19 @@ nvm install 14
 
 ### Rust
 
-Run the following command to install Rust and the wasm32-unknown-unknown target:
+Run the following command to install Rust:
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-
-rustup target add wasm32-unknown-unknown
-```
-
-### didc
-
-Run the following command to install didc:
-
-```bash
-cargo install --git https://github.com/dfinity/candid --rev e7abc462fd54e72e3449999169c12e9f5209d091 didc
 ```
 
 ### dfx
 
-Run the following command to install dfx 0.8.4:
+Run the following command to install dfx 0.9.3:
 
 ```bash
 # Azle has been tested against version 0.8.4, so it is safest to install that specific version for now
-DFX_VERSION=0.8.4 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 ```
 
 ### Common Installation Issues

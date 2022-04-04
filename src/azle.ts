@@ -23,6 +23,8 @@ async function azle() {
     const tsPath = canisterConfig.ts;
     const candidPath = canisterConfig.candid;
 
+    installRustDependencies();
+
     const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
     const libCargoToml: Toml = generateLibCargoToml(canisterName);
     const libFile: Rust = await compileTypeScriptToRust(
@@ -38,6 +40,27 @@ async function azle() {
     );
 
     compileRustCode(canisterName);
+}
+
+function installRustDependencies() {
+    if (!fs.existsSync(`./target/azle`)) {
+        fs.mkdirSync(`target/azle`, { recursive: true });
+    }
+
+    execSync(
+        `rustup target add wasm32-unknown-unknown`,
+        { stdio: 'inherit' }
+    );
+
+    execSync(
+        `cd target/azle && cargo install --git https://github.com/dfinity/candid --rev e7abc462fd54e72e3449999169c12e9f5209d091 didc --root ..`,
+        { stdio: 'inherit' }
+    );
+
+    execSync(
+        `cd target/azle && cargo install ic-cdk-optimizer --root ..`,
+        { stdio: 'inherit' }
+    );
 }
 
 function writeCodeToFileSystem(
@@ -64,15 +87,13 @@ function writeCodeToFileSystem(
 
     fs.writeFileSync(`./target/azle/${rootPath}/src/lib.rs`, libFile);
 
-    if (!fs.existsSync(`./target/azle/azle_js_value_derive`)) {
-        fs.mkdirSync(`./target/azle/azle_js_value_derive`);
+    if (!fs.existsSync(`./target/azle/${rootPath}/azle_js_value_derive`)) {
+        fs.mkdirSync(`./target/azle/${rootPath}/azle_js_value_derive`);
     }
 
-    fsExtra.copySync(`${__dirname}/compiler/typescript_to_rust/azle_js_value_derive`, `./target/azle/azle_js_value_derive`);
+    fsExtra.copySync(`${__dirname}/compiler/typescript_to_rust/azle_js_value_derive`, `./target/azle/${rootPath}/azle_js_value_derive`);
 }
 
-// TODO should we also do a local install of didc here?
-// TODO that might be nice for the user, and we should tag versions if possible
 function compileRustCode(canisterName: string) {
     execSync(
         `cd target/azle && CARGO_TARGET_DIR=.. cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
@@ -80,10 +101,6 @@ function compileRustCode(canisterName: string) {
     );
 
     // optimization, binary is too big to deploy without this
-    execSync(
-        `cd target/azle && cargo install ic-cdk-optimizer --root ..`,
-        { stdio: 'inherit' }
-    );
     execSync(
         `./target/bin/ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/${canisterName}.wasm -o ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
         { stdio: 'inherit' }
