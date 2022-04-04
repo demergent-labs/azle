@@ -52,8 +52,8 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-          key: test-key
-          restore-keys: test-key
+          key: cargo-cache-test-key
+          restore-keys: cargo-cache-test-key
           # key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           # restore-keys: |
           #   ${{ runner.os }}-cargo-
@@ -62,9 +62,11 @@ jobs:
         continue-on-error: false
         with:
           path: ${{ matrix.sccache-path }}
-          key: ${{ runner.os }}-sccache-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-sccache-
+          key: sccache-test-key
+          restore-keys: sccache-test-key
+          # key: ${{ runner.os }}-sccache-${{ hashFiles('**/Cargo.lock') }}
+          # restore-keys: |
+          #   ${{ runner.os }}-sccache-
       - name: Start sccache server
         run: sccache --start-server
       - name: Install wasm32-unknown-unknown
