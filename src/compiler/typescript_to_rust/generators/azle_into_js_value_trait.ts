@@ -56,16 +56,6 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
-        // TODO I wonder if we will have some problems with Option because of the type bound??
-        impl<T: AzleIntoJsValue> AzleIntoJsValue for Option<T> {
-            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                match self {
-                    Some(value) => value.azle_into_js_value(context),
-                    None => boa_engine::JsValue::Null
-                }
-            }
-        }
-
         impl AzleIntoJsValue for String {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 self.into_js_value(context)
@@ -101,6 +91,22 @@ export function generateAzleIntoJsValueTrait(): Rust {
         impl AzleIntoJsValue for u8 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 self.into_js_value(context)
+            }
+        }
+
+        impl<T: AzleIntoJsValue> AzleIntoJsValue for Box<T> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                (*self).azle_into_js_value(context)
+            }
+        }
+
+        // TODO I wonder if we will have some problems with Option because of the type bound??
+        impl<T: AzleIntoJsValue> AzleIntoJsValue for Option<T> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                match self {
+                    Some(value) => value.azle_into_js_value(context),
+                    None => boa_engine::JsValue::Null
+                }
             }
         }
 

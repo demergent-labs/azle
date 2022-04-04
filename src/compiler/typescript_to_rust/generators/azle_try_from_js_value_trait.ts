@@ -56,20 +56,6 @@ export function generateAzleTryFromJsValueTrait(): Rust {
             }
         }
         
-        impl<T> AzleTryFromJsValue<Option<T>> for boa_engine::JsValue where boa_engine::JsValue: AzleTryFromJsValue<T> {
-            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Option<T>, TryFromJsValueError> {
-                if self.is_null() {
-                    Ok(None)
-                }
-                else {
-                    match self.azle_try_from_js_value(context) {
-                        Ok(value) => Ok(Some(value)),
-                        Err(err) => Err(err)
-                    }
-                }
-            }
-        }
-        
         impl AzleTryFromJsValue<String> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<String, TryFromJsValueError> {
                 self.try_from_js_value(context)
@@ -104,6 +90,29 @@ export function generateAzleTryFromJsValueTrait(): Rust {
         impl AzleTryFromJsValue<u8> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<u8, TryFromJsValueError> {
                 self.try_from_js_value(context)
+            }
+        }
+
+        impl<T> AzleTryFromJsValue<Box<T>> for boa_engine::JsValue where boa_engine::JsValue: AzleTryFromJsValue<T> {
+            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Box<T>, TryFromJsValueError> {
+                match self.azle_try_from_js_value(context) {
+                    Ok(value) => Ok(Box::new(value)),
+                    Err(err) => Err(err)
+                }
+            }
+        }
+
+        impl<T> AzleTryFromJsValue<Option<T>> for boa_engine::JsValue where boa_engine::JsValue: AzleTryFromJsValue<T> {
+            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Option<T>, TryFromJsValueError> {
+                if self.is_null() {
+                    Ok(None)
+                }
+                else {
+                    match self.azle_try_from_js_value(context) {
+                        Ok(value) => Ok(Some(value)),
+                        Err(err) => Err(err)
+                    }
+                }
             }
         }
 

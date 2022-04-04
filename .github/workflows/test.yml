@@ -1,0 +1,11 @@
+name: Azle Tests
+on: [push]
+jobs:
+  basic-integration-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: nvm install 14
+      - run: nvm use 14
+      - run: node --version
+      # - run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh

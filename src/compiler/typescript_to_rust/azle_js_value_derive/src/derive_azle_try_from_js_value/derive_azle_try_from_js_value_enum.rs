@@ -221,7 +221,3 @@ fn derive_property_for_unnamed_fields(
         }
     }
 }
-
-fn derive_property_for_unit_field() -> proc_macro2::TokenStream {
-    quote! {}
-}

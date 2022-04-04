@@ -31,12 +31,12 @@ type Post = record {
 type ReactionType = variant { "fire": null; "thumbsUp": null; "thumbsDown": null };
 
 service: {
-    "getAllThreads": (int32) -> (vec Thread) query;
-    "getAllUsers": (int32) -> (vec User) query;
-    "getAllReactions": (int32) -> (vec Reaction) query;
-    "getAllPosts": (int32) -> (vec Post) query;
-    "createThread": (text, text, int32) -> (Thread);
-    "createUser": (text, int32) -> (User);
-    "createReaction": (text, text, ReactionType, int32) -> (Reaction);
-    "createPost": (text, text, text, int32) -> (Post);
+    "getAllThreads": (nat32) -> (vec Thread) query;
+    "getAllUsers": (nat32) -> (vec User) query;
+    "getAllReactions": (nat32) -> (vec Reaction) query;
+    "getAllPosts": (nat32) -> (vec Post) query;
+    "createThread": (text, text, nat32) -> (Thread);
+    "createUser": (text, nat32) -> (User);
+    "createReaction": (text, text, ReactionType, nat32) -> (Reaction);
+    "createPost": (text, text, text, nat32) -> (Post);
 }

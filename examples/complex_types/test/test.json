@@ -2,27 +2,21 @@
     "tests": [
         {
             "canisterName": "complex_types",
-            "canisterMethod": "getAllThreads",
-            "methodArgs": "(0)",
-            "expectedOutput": "(vec {})"
-        },
-        {
-            "canisterName": "complex_types",
             "canisterMethod": "getAllUsers",
             "methodArgs": "(0)",
             "expectedOutput": "(vec {})"
         },
         {
             "canisterName": "complex_types",
-            "canisterMethod": "getAllReactions",
-            "methodArgs": "(0)",
-            "expectedOutput": "(vec {})"
+            "canisterMethod": "createUser",
+            "methodArgs": "(\"user1\", 0)",
+            "expectedOutput": "(\n  record {\n    id = \"0\";\n    username = \"user1\";\n    threads = vec {};\n    posts = vec {};\n    reactions = vec {};\n  },\n)"
         },
         {
             "canisterName": "complex_types",
-            "canisterMethod": "getAllPosts",
+            "canisterMethod": "getAllUsers",
             "methodArgs": "(0)",
-            "expectedOutput": "(vec {})"
+            "expectedOutput": "(\n  vec {\n    record {\n      id = \"0\";\n      username = \"user1\";\n      threads = vec {};\n      posts = vec {};\n      reactions = vec {};\n    };\n  },\n)"
         }
     ]
 }
