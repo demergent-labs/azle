@@ -1,7 +1,11 @@
 use proc_macro2::Ident;
-use quote::quote;
+use quote::{
+    format_ident,
+    quote
+};
 use syn::{
     DataEnum,
+    Field,
     Fields
 };
 
@@ -32,45 +36,115 @@ fn derive_variant_branches(
     data_enum.variants.iter().map(|variant| {
         let variant_name = &variant.ident;
 
-        let fields = match &variant.fields {
-            Fields::Unnamed(fields_unnamed) => {
-                fields_unnamed.unnamed.iter().collect()
+        match &variant.fields {
+            Fields::Named(fields_named) => {
+                derive_variant_branches_named_fields(
+                    enum_name,
+                    variant_name,
+                    fields_named.named.iter().collect()
+                )
             },
-            Fields::Unit => vec![],
-            _ => panic!("Only unnamed or unit fields supported for Enums")
-        };
-
-        if fields.len() == 0 {
-            quote! {
-                #enum_name::#variant_name => {
-                    let object = boa_engine::object::ObjectInitializer::new(context)
-                        .property(
-                            stringify!(#variant_name),
-                            boa_engine::JsValue::Null,
-                            boa_engine::property::Attribute::all()
-                        )
-                        .build();
-    
-                    object.into()
-                }
-            }
-        }
-        else {
-            quote! {
-                #enum_name::#variant_name(value) => {
-                    let js_value = value.azle_into_js_value(context);
-
-                    let object = boa_engine::object::ObjectInitializer::new(context)
-                        .property(
-                            stringify!(#variant_name),
-                            js_value,
-                            boa_engine::property::Attribute::all()
-                        )
-                        .build();
-    
-                    object.into()
-                }
+            Fields::Unnamed(fields_unnamed) => {
+                derive_variant_branches_unnamed_fields(
+                    enum_name,
+                    variant_name,
+                    fields_unnamed.unnamed.iter().collect()
+                )
+            },
+            Fields::Unit => {
+                derive_variant_branches_unnamed_fields(
+                    enum_name,
+                    variant_name,
+                    vec![]
+                )
             }
         }
     }).collect()
+}
+
+fn derive_variant_branches_named_fields(
+    enum_name: &Ident,
+    variant_name: &Ident,
+    named_fields: Vec<&Field>
+) -> proc_macro2::TokenStream {
+    let field_names = named_fields.iter().map(|named_field| {
+        let field_name = &named_field.ident.as_ref().unwrap();
+
+        quote! {
+            #field_name
+        }
+    });
+
+    let named_field_variable_declarations = named_fields.iter().map(|named_field| {
+        let field_name = &named_field.ident.as_ref().unwrap();
+        let variable_name = format_ident!("{}_js_value", field_name);
+
+        quote! {
+            let #variable_name = #field_name.azle_into_js_value(context);
+        }
+    });
+
+    let named_field_property_definitions = named_fields.iter().map(|named_field| {
+        let field_name = &named_field.ident.as_ref().unwrap();
+        let variable_name = format_ident!("{}_js_value", field_name);
+
+        quote! {
+            .property(
+                stringify!(#variant_name),
+                #variable_name,
+                boa_engine::property::Attribute::all()
+            )
+        }
+    });
+
+    quote! {
+        #enum_name::#variant_name { #(#field_names),* } => {
+            #(#named_field_variable_declarations)*
+
+            let object = boa_engine::object::ObjectInitializer::new(context)
+                #(#named_field_property_definitions)*
+                .build();
+
+            object.into()
+        }
+    }
+}
+
+fn derive_variant_branches_unnamed_fields(
+    enum_name: &Ident,
+    variant_name: &Ident,
+    unnamed_fields: Vec<&Field>
+) -> proc_macro2::TokenStream {
+    if unnamed_fields.len() == 0 {
+        quote! {
+            #enum_name::#variant_name => {
+                let object = boa_engine::object::ObjectInitializer::new(context)
+                    .property(
+                        stringify!(#variant_name),
+                        boa_engine::JsValue::Null,
+                        boa_engine::property::Attribute::all()
+                    )
+                    .build();
+
+                object.into()
+            }
+        }
+    }
+    else {
+        quote! {
+            #enum_name::#variant_name(value) => {
+                let js_value = value.azle_into_js_value(context);
+
+                let object = boa_engine::object::ObjectInitializer::new(context)
+                    .property(
+                        stringify!(#variant_name),
+                        js_value,
+                        boa_engine::property::Attribute::all()
+                    )
+                    .build();
+
+                object.into()
+            }
+        }
+    }
 }

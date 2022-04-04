@@ -4,72 +4,84 @@
             "canisterName": "inline_types",
             "canisterMethod": "inlineRecordReturnType",
             "methodArgs": "()",
-            "expectedOutput": "()"
+            "expectedOutput": "(record { prop1 = \"prop1\"; prop2 = \"prop2\" })"
         },
         {
             "canisterName": "inline_types",
             "canisterMethod": "inlineRecordParam",
-            "methodArgs": "()",
-            "expectedOutput": "()"
+            "methodArgs": "(record { prop1 = \"prop1\" })",
+            "expectedOutput": "(\"prop1\")"
         },
         {
             "canisterName": "inline_types",
             "canisterMethod": "inlineVariantReturnType",
             "methodArgs": "()",
-            "expectedOutput": "()"
+            "expectedOutput": "(variant { var1 })"
         },
         {
             "canisterName": "inline_types",
             "canisterMethod": "inlineVariantParam",
-            "methodArgs": "()",
-            "expectedOutput": "()"
+            "methodArgs": "(variant { var1 })",
+            "expectedOutput": "(variant { var1 })"
+        },
+        {
+            "canisterName": "inline_types",
+            "canisterMethod": "inlineVariantParam",
+            "methodArgs": "(variant { var2 })",
+            "expectedOutput": "(variant { var2 })"
         },
         {
             "canisterName": "inline_types",
             "canisterMethod": "recordWithInlineFields",
             "methodArgs": "()",
-            "expectedOutput": "()"
+            "expectedOutput": "(record { id = \"0\"; job = record { id = \"0\"; title = \"Software Developer\" } })"
         },
         {
             "canisterName": "inline_types",
             "canisterMethod": "variantWithInlineFields",
             "methodArgs": "()",
-            "expectedOutput": "()"
+            "expectedOutput": "(variant { three = record { id = \"0\" } })"
         },
         {
             "canisterName": "inline_types",
             "canisterMethod": "recordReferencingOtherTypesFromReturnType",
             "methodArgs": "()",
-            "expectedOutput": "()"
+            "expectedOutput": "(record { prop1 = \"prop1\"; prop2 = record { id = \"0\" } })"
         },
         {
             "canisterName": "inline_types",
             "canisterMethod": "variantReferencingOtherTypesFromReturnType",
             "methodArgs": "()",
-            "expectedOutput": "()"
+            "expectedOutput": "(variant { prop2 = record { id = \"0\" } })"
         },
         {
             "canisterName": "inline_types",
             "canisterMethod": "recordReferencingRecordFromParam",
-            "methodArgs": "()",
-            "expectedOutput": "()"
+            "methodArgs": "(record { test = record { id = \"0\" }; })",
+            "expectedOutput": "(\"0\")"
         },
         {
             "canisterName": "inline_types",
             "canisterMethod": "recordReferencingVariantFromParam",
-            "methodArgs": "()",
-            "expectedOutput": "()"
+            "methodArgs": "(record { testVariant = variant { prop1 = \"0\" } })",
+            "expectedOutput": "(opt \"0\")"
+        },
+        {
+            "canisterName": "inline_types",
+            "canisterMethod": "recordReferencingVariantFromParam",
+            "methodArgs": "(record { testVariant = variant { prop2 = record { id = \"0\" } } })",
+            "expectedOutput": "(null)"
         },
         {
             "canisterName": "inline_types",
             "canisterMethod": "variantReferencingRecordFromParam",
-            "methodArgs": "()",
+            "methodArgs": "(variant { prop1 = record { id = \"0\" } })",
             "expectedOutput": "()"
         },
         {
             "canisterName": "inline_types",
             "canisterMethod": "variantReferencingVariantFromParam",
-            "methodArgs": "()",
+            "methodArgs": "(variant { prop1 = variant { prop1 } })",
             "expectedOutput": "()"
         }
     ]
