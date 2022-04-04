@@ -40,6 +40,8 @@ jobs:
       - shell: bash -l {0}
         run: nvm use 14
       - shell: bash -l {0}
+        run: npm install
+      - shell: bash -l {0}
         run: npm link
       - working-directory: ${{ matrix.example_directories }}
         run: dfx start --clean --background
