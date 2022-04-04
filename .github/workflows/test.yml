@@ -78,7 +78,7 @@ jobs:
       # - uses: actions-rs/install@v0.1
       #   with:
       #     crate: cargo-audit
-      uses: actions/cache@v1
+      - uses: actions/cache@v1
         with:
           path: ~/.cargo/bin/
           key: ${{ runner.os }}-cargo-plugins
