@@ -7,11 +7,7 @@ export function generateIcObjectFunctionCanisterBalance(): Rust {
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            return Ok(
-                boa_engine::JsValue::Rational(
-                    ic_cdk::api::canister_balance() as f64 // TODO this conversion is probably not safe
-                )
-            );
+            Ok(ic_cdk::api::canister_balance().into())
         }
     `;
 }

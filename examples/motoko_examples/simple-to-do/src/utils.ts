@@ -1,8 +1,8 @@
 import { ToDo } from './types';
-import { int32 } from 'azle';
+import { nat } from 'azle';
 
 // Add to-do item utility
-export function add(todos: ToDo[], desc: string, nextId: int32): ToDo[] {
+export function add(todos: ToDo[], desc: string, nextId: nat): ToDo[] {
   let todo: ToDo = {
     id: nextId,
     description: desc,
@@ -12,7 +12,7 @@ export function add(todos: ToDo[], desc: string, nextId: int32): ToDo[] {
 }
 
 // Complete to-do item utility
-export function complete(todos: ToDo[], id: int32): ToDo[] {
+export function complete(todos: ToDo[], id: nat): ToDo[] {
   return todos.map((todo) => {
     if (todo.id == id) {
       return {

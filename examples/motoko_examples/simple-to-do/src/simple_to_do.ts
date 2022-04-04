@@ -1,10 +1,14 @@
-import { Query, Update, int32 } from 'azle';
+import {
+  Query,
+  Update,
+  nat
+} from 'azle';
 import { ToDo } from './types';
 
 import * as Utils from './utils';
 
 let todos: ToDo[] = [];
-let nextId: int32 = 1;
+let nextId: nat = 1n;
 
 export function getTodos(): Query<ToDo[]> {
   return todos;
@@ -12,10 +16,10 @@ export function getTodos(): Query<ToDo[]> {
 
 export function addTodo(description: string): Update<void> {
   todos = Utils.add(todos, description, nextId);
-  nextId += 1;
+  nextId += 1n;
 }
 
-export function completeTodo(id: int32): Update<void> {
+export function completeTodo(id: nat): Update<void> {
   todos = Utils.complete(todos, id);
 }
 

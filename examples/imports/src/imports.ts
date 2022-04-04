@@ -1,6 +1,4 @@
-import {
-    Query
-} from 'azle';
+import { Query } from 'azle';
 import {
     one,
     two,

@@ -1,3 +1,5 @@
+// TODO let's add more examples here, really test it out
+
 import {
     Query,
     Opt
@@ -24,6 +26,16 @@ export function getHTML(): Query<HTML> {
 export function getHead(): Query<Opt<Head>> {
     return {
         elements: []
+    };
+}
+
+export function getHeadWithElements(): Query<Opt<Head>> {
+    return {
+        elements: [
+            {
+                id: '0'
+            }
+        ]
     };
 }
 

@@ -1,0 +1,34 @@
+{
+    "tests": [
+        {
+            "canisterName": "counter",
+            "canisterMethod": "readCount",
+            "methodArgs": "()",
+            "expectedOutput": "(0 : nat64)"
+        },
+        {
+            "canisterName": "counter",
+            "canisterMethod": "incrementCount",
+            "methodArgs": "()",
+            "expectedOutput": "(1 : nat64)"
+        },
+        {
+            "canisterName": "counter",
+            "canisterMethod": "incrementCount",
+            "methodArgs": "()",
+            "expectedOutput": "(2 : nat64)"
+        },
+        {
+            "canisterName": "counter",
+            "canisterMethod": "incrementCount",
+            "methodArgs": "()",
+            "expectedOutput": "(3 : nat64)"
+        },
+        {
+            "canisterName": "counter",
+            "canisterMethod": "readCount",
+            "methodArgs": "()",
+            "expectedOutput": "(3 : nat64)"
+        }
+    ]
+}

@@ -30,9 +30,11 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        // TODO I think I need to force this to a bigint always
         impl AzleIntoJsValue for i64 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                // self.into_js_value(context)
+                boa_engine::JsValue::BigInt(self.into())
             }
         }
 
@@ -55,9 +57,12 @@ export function generateAzleIntoJsValueTrait(): Rust {
         }
 
         // TODO I wonder if we will have some problems with Option because of the type bound??
-        impl<T: IntoJsValue> AzleIntoJsValue for Option<T> {
+        impl<T: AzleIntoJsValue> AzleIntoJsValue for Option<T> {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                match self {
+                    Some(value) => value.azle_into_js_value(context),
+                    None => boa_engine::JsValue::Null
+                }
             }
         }
 
@@ -73,9 +78,11 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        // TODO I think I need to force this to a bigint always
         impl AzleIntoJsValue for u64 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                // self.into_js_value(context)
+                boa_engine::JsValue::BigInt(self.into())
             }
         }
 
@@ -100,9 +107,11 @@ export function generateAzleIntoJsValueTrait(): Rust {
         // TODO consider that each type might need its own explicit impl for Vec
         // TODO the derive attribute might need to be used in that case
         // TODO I wonder if we will have some problems with Vec because of the type bound??
-        impl<T: IntoJsValue> AzleIntoJsValue for Vec<T> {
+        impl<T: AzleIntoJsValue> AzleIntoJsValue for Vec<T> {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                let js_values = self.into_iter().map(|item| item.azle_into_js_value(context)).collect::<Vec<boa_engine::JsValue>>();
+
+                boa_engine::object::JsArray::from_iter(js_values, context).into()
             }
         }
 

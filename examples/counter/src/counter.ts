@@ -1,18 +1,17 @@
 import {
     Query,
     Update,
-    int32
+    nat64
 } from 'azle';
 
-// TODO count should be a nat64: https://github.com/demergent-labs/azle/issues/20
-let count: int32 = 0;
+let count: nat64 = 0n;
 
-export function readCount(): Query<int32> {
+export function readCount(): Query<nat64> {
     return count;
 }
 
-export function incrementCount(): Update<int32> {
-    count = count + 1;
+export function incrementCount(): Update<nat64> {
+    count = count + 1n;
 
     return count;
 }

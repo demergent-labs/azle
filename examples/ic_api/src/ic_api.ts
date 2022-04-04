@@ -1,40 +1,42 @@
 import {
     Query,
     UpdateAsync,
-    float64,
+    nat64,
     nat8,
-    ic
+    ic,
+    Principal
 } from 'azle';
 
 export function caller(): Query<string> {
     return ic.caller();
 }
 
-// TODO This function should return a nat64: https://github.com/demergent-labs/azle/issues/98
-export function canisterBalance(): Query<float64> {
+export function canisterBalance(): Query<nat64> {
     return ic.canisterBalance();
 }
 
-export function id(): Query<string> {
+export function id(): Query<Principal> {
     return ic.id();
 }
 
+// TODO consider how we can do a simple unit test for this
 export function print(message: string): Query<boolean> {
     ic.print(message);
 
     return true;
 }
 
-// TODO see if we can simplify the generators even more, we might be able to just return a generator directly without yielding
+// TODO consider how we can do a simple unit test for this
 export function* rawRand(): UpdateAsync<nat8[]> {
-    return yield ic.rawRand().next().value;
+    return yield ic.rawRand();
 }
 
-// TODO This function should return a nat64: https://github.com/demergent-labs/azle/issues/98
-export function time(): Query<float64> {
+// TODO consider how we can do a simple unit test for this
+export function time(): Query<nat64> {
     return ic.time();
 }
 
+// TODO consider how we can do a simple unit test for this
 export function trap(message: string): Query<boolean> {
     ic.trap(message);
 

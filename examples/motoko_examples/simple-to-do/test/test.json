@@ -1,0 +1,10 @@
+{
+    "tests": [
+        {
+            "canisterName": "simple_to_do",
+            "canisterMethod": "getTodos",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        }
+    ]
+}

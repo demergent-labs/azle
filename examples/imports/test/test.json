@@ -1,0 +1,28 @@
+{
+    "tests": [
+        {
+            "canisterName": "imports",
+            "canisterMethod": "getOne",
+            "methodArgs": "()",
+            "expectedOutput": "(\"one\")"
+        },
+        {
+            "canisterName": "imports",
+            "canisterMethod": "getTwo",
+            "methodArgs": "()",
+            "expectedOutput": "(\"two\")"
+        },
+        {
+            "canisterName": "imports",
+            "canisterMethod": "getThree",
+            "methodArgs": "()",
+            "expectedOutput": "(\"three\")"
+        },
+        {
+            "canisterName": "imports",
+            "canisterMethod": "sha224Hash",
+            "methodArgs": "(\"hello\")",
+            "expectedOutput": "(\"ea09ae9cc6768c50fcee903ed054556e5bfc8347907f12598aa24193\")"
+        }
+    ]
+}

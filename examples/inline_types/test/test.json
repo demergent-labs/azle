@@ -1,0 +1,76 @@
+{
+    "tests": [
+        {
+            "canisterName": "inline_types",
+            "canisterMethod": "inlineRecordReturnType",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "inline_types",
+            "canisterMethod": "inlineRecordParam",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "inline_types",
+            "canisterMethod": "inlineVariantReturnType",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "inline_types",
+            "canisterMethod": "inlineVariantParam",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "inline_types",
+            "canisterMethod": "recordWithInlineFields",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "inline_types",
+            "canisterMethod": "variantWithInlineFields",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "inline_types",
+            "canisterMethod": "recordReferencingOtherTypesFromReturnType",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "inline_types",
+            "canisterMethod": "variantReferencingOtherTypesFromReturnType",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "inline_types",
+            "canisterMethod": "recordReferencingRecordFromParam",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "inline_types",
+            "canisterMethod": "recordReferencingVariantFromParam",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "inline_types",
+            "canisterMethod": "variantReferencingRecordFromParam",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "inline_types",
+            "canisterMethod": "variantReferencingVariantFromParam",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        }
+    ]
+}

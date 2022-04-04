@@ -1,28 +1,26 @@
-// TODO nat or nat64 is probably the best type to use instead of int32
-
 import {
     Query,
     Update,
-    int32
+    nat64
 } from 'azle';
 
 type Account = {
     address: string;
-    balance: number;
+    balance: nat64;
 };
 
 type State = {
     accounts: {
         [key: string]: Account;
     };
-    totalSupply: number;
+    totalSupply: nat64;
     ticker: string;
     name: string;
 };
 
 let state: State = {
     accounts: {},
-    totalSupply: 0,
+    totalSupply: 0n,
     ticker: '',
     name: ''
 };
@@ -30,7 +28,7 @@ let state: State = {
 export function initializeSupply(
     ticker: string,
     name: string,
-    totalSupply: int32,
+    totalSupply: nat64,
     originalAddress: string
 ): Update<boolean> {
     state = {
@@ -52,12 +50,12 @@ export function initializeSupply(
 export function transfer(
     from: string,
     to: string,
-    amount: int32
+    amount: nat64
 ): Update<boolean> {
     if (state.accounts[to] === undefined) {
         state.accounts[to] = {
             address: to,
-            balance: 0
+            balance: 0n
         };
     }
 
@@ -67,8 +65,8 @@ export function transfer(
     return true;
 }
 
-export function balance(address: string): Query<int32> {
-    return state.accounts[address]?.balance ?? 0;
+export function balance(address: string): Query<nat64> {
+    return state.accounts[address]?.balance ?? 0n;
 }
 
 export function ticker(): Query<string> {
@@ -79,6 +77,6 @@ export function name(): Query<string> {
     return state.name;
 }
 
-export function totalSupply(): Query<int32> {
+export function totalSupply(): Query<nat64> {
     return state.totalSupply;
 }

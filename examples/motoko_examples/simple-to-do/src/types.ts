@@ -1,7 +1,7 @@
-import { int32 } from 'azle';
+import { nat } from 'azle';
 
 export type ToDo = {
-  id: int32;
+  id: nat;
   description: string;
   completed: boolean;
 };

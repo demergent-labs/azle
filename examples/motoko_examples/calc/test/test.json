@@ -1,0 +1,40 @@
+{
+    "tests": [
+        {
+            "canisterName": "calc",
+            "canisterMethod": "add",
+            "methodArgs": "(5)",
+            "expectedOutput": "(5 : int)"
+        },
+        {
+            "canisterName": "calc",
+            "canisterMethod": "sub",
+            "methodArgs": "(2)",
+            "expectedOutput": "(3 : int)"
+        },
+        {
+            "canisterName": "calc",
+            "canisterMethod": "mul",
+            "methodArgs": "(6)",
+            "expectedOutput": "(18 : int)"
+        },
+        {
+            "canisterName": "calc",
+            "canisterMethod": "div",
+            "methodArgs": "(2)",
+            "expectedOutput": "(opt (9 : int))"
+        },
+        {
+            "canisterName": "calc",
+            "canisterMethod": "clearall",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "calc",
+            "canisterMethod": "add",
+            "methodArgs": "(0)",
+            "expectedOutput": "(0 : int)"
+        }
+    ]
+}
