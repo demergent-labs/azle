@@ -29,16 +29,16 @@ jobs:
       - shell: bash -l {0}
         run: nvm install 14
       - run: DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-      - name: Install sccache (ubuntu-latest)
-        env:
-          LINK: https://github.com/mozilla/sccache/releases/download
-          SCCACHE_VERSION: 0.2.14
-        run: |
-          SCCACHE_FILE=sccache-$SCCACHE_VERSION-x86_64-unknown-linux-musl
-          mkdir -p $HOME/.local/bin
-          curl -L "$LINK/$SCCACHE_VERSION/$SCCACHE_FILE.tar.gz" | tar xz
-          mv -f $SCCACHE_FILE/sccache $HOME/.local/bin/sccache
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      # - name: Install sccache (ubuntu-latest)
+      #   env:
+      #     LINK: https://github.com/mozilla/sccache/releases/download
+      #     SCCACHE_VERSION: 0.2.14
+      #   run: |
+      #     SCCACHE_FILE=sccache-$SCCACHE_VERSION-x86_64-unknown-linux-musl
+      #     mkdir -p $HOME/.local/bin
+      #     curl -L "$LINK/$SCCACHE_VERSION/$SCCACHE_FILE.tar.gz" | tar xz
+      #     mv -f $SCCACHE_FILE/sccache $HOME/.local/bin/sccache
+      #     echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Install Rust ${{ matrix.rust }}
         uses: actions-rs/toolchain@v1
         with:
@@ -52,19 +52,21 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
-      - name: Save sccache
-        uses: actions/cache@v2
-        continue-on-error: false
-        with:
-          path: ${{ matrix.sccache-path }}
-          key: ${{ runner.os }}-sccache-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-sccache-
-      - name: Start sccache server
-        run: sccache --start-server
+          key: test-key
+          restore-keys: test-key
+          # key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          # restore-keys: |
+          #   ${{ runner.os }}-cargo-
+      # - name: Save sccache
+      #   uses: actions/cache@v2
+      #   continue-on-error: false
+      #   with:
+      #     path: ${{ matrix.sccache-path }}
+      #     key: ${{ runner.os }}-sccache-${{ hashFiles('**/Cargo.lock') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-sccache-
+      # - name: Start sccache server
+      #   run: sccache --start-server
       - name: Install wasm32-unknown-unknown
         run: rustup target add wasm32-unknown-unknown
       - name: Install didc
@@ -72,10 +74,10 @@ jobs:
       # - name: Run tests
       #   shell: bash -l {0}
       #   run: nvm use 14 && npm test
-      - name: Print sccache stats
-        run: sccache --show-stats
-      - name: Stop sccache server
-        run: sccache --stop-server || true
+      # - name: Print sccache stats
+      #   run: sccache --show-stats
+      # - name: Stop sccache server
+      #   run: sccache --stop-server || true
 
 #                               Apache License
 #                         Version 2.0, January 2004
