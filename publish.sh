@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# TODO can GitHub actions do any of this for us?
+# TODO document the release process:
+# TODO on the release branch, run this and choose a x.y.z-rc.a version
+# TODO all tests should pass
+# TODO if they do, you can merge release into main
+# TODO clone main locally, and run this again choosing the correct version
+
 set -e
 
 directories=(
@@ -50,10 +57,13 @@ do
 done
 
 git commit -am "release $VERSION"
-git push origin release
 
-# git tag $VERSION
-# git push origin $VERSION
-
-# cd generator-sudograph
-# sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
+if [[ "$VERSION" == *"-rc."* ]];
+then
+    git push origin release
+else
+    git push origin main
+    
+    git tag $VERSION
+    git push origin $VERSION
+fi
