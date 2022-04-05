@@ -7,7 +7,10 @@ jobs:
       fail-fast: false
       matrix:
         rust: [stable]
-        azle_source: [repo, npm]
+        azle_source:
+          - repo
+          if: github.ref == 'refs/heads/release'
+          - npm
         example_directories:
           - examples/complex_types
           - examples/counter
