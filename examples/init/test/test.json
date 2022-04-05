@@ -1,0 +1,20 @@
+{
+    "tests": [
+        {
+            "canisterName": "init",
+            "deployArgument": "(record { id = \"0\" }, variant { Fire })"
+        },
+        {
+            "canisterName": "init",
+            "canisterMethod": "getUser",
+            "methodArgs": "()",
+            "expectedOutput": "(opt record { id = \"0\" })"
+        },
+        {
+            "canisterName": "init",
+            "canisterMethod": "getReaction",
+            "methodArgs": "()",
+            "expectedOutput": "(opt variant { Fire })"
+        }
+    ]
+}

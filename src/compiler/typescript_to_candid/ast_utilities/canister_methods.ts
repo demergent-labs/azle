@@ -245,9 +245,15 @@ function getCanisterMethodReturnTypeNames(
     functionDeclaration: tsc.FunctionDeclaration,
     candidTypeClass: CandidTypeClass
 ): string[] {
+    const canisterMethodReturnTypeNode = getCanisterMethodReturnTypeNode(functionDeclaration);
+
+    if (canisterMethodReturnTypeNode === undefined) {
+        return [];
+    }
+
     const candidTypeInfo = generateCandidTypeInfo(
         sourceFiles,
-        getCanisterMethodReturnTypeNode(functionDeclaration)
+        canisterMethodReturnTypeNode
     );
 
     if (candidTypeClass === 'record') {
@@ -333,20 +339,18 @@ function getCanisterMethodReturnTypeNames(
     return [];
 }
 
-function getCanisterMethodReturnTypeNode(functionDeclaration: tsc.FunctionDeclaration): tsc.TypeNode {
+function getCanisterMethodReturnTypeNode(functionDeclaration: tsc.FunctionDeclaration): tsc.TypeNode | undefined {
     if (functionDeclaration.type === undefined) {
-        throw new Error('Function must have a return type');
+        return undefined;
     }
 
     if (functionDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
         const typeReferenceNode = functionDeclaration.type as tsc.TypeReferenceNode;
 
         if (typeReferenceNode.typeArguments === undefined) {
-            throw new Error('Function must have a return type');
+            return undefined;
         }
 
         return typeReferenceNode.typeArguments[0];
     }
-
-    throw new Error('Function must have a return type');
 }

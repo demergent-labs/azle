@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "init": {
+            "type": "custom",
+            "build": "npx azle init",
+            "root": "src",
+            "ts": "src/init.ts",
+            "candid": "src/init.did",
+            "wasm": "target/wasm32-unknown-unknown/release/init.wasm"
+        }
+    }
+}

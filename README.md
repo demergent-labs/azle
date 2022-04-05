@@ -1,4 +1,4 @@
-![example workflow](https://github.com/demergent-labs/azle/actions/workflows/test/badge.svg)
+![example workflow](https://github.com/demergent-labs/azle/actions/workflows/test.yml/badge.svg)
 
 # Azle (Beta)
 

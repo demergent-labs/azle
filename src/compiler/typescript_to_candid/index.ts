@@ -28,6 +28,11 @@ export function compileTypeScriptToCandid(sourceFiles: readonly tsc.SourceFile[]
         ]
     );
 
+    const initMethodFunctionDeclarations = getCanisterMethodFunctionDeclarationsFromSourceFiles(
+        sourceFiles,
+        ['Init']
+    );
+
     const canisterTypeAliasDeclarations = getCanisterTypeAliasDeclarations(sourceFiles);
 
     const {
@@ -35,15 +40,21 @@ export function compileTypeScriptToCandid(sourceFiles: readonly tsc.SourceFile[]
         candidRecordNames
     } = generateCandidRecords(
         sourceFiles,
-        queryMethodFunctionDeclarations,
-        updateMethodFunctionDeclarations,
+        [
+            ...queryMethodFunctionDeclarations,
+            ...updateMethodFunctionDeclarations,
+            ...initMethodFunctionDeclarations,
+        ],
         canisterTypeAliasDeclarations
     );
 
     const candidVariants: Candid = generateCandidVariants(
         sourceFiles,
-        queryMethodFunctionDeclarations,
-        updateMethodFunctionDeclarations,
+        [
+            ...queryMethodFunctionDeclarations,
+            ...updateMethodFunctionDeclarations,
+            ...initMethodFunctionDeclarations,
+        ],
         canisterTypeAliasDeclarations
     );
 

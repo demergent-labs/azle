@@ -16,8 +16,7 @@ import {
 
 export function generateCandidRecords(
     sourceFiles: readonly tsc.SourceFile[],
-    queryMethodFunctionDeclarations: tsc.FunctionDeclaration[],
-    updateMethodFunctionDeclarations: tsc.FunctionDeclaration[],
+    canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
     canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): {
     candidRecords: Candid;
@@ -25,8 +24,7 @@ export function generateCandidRecords(
 } {
     const candidRecordNames = getCandidRecordNames(
         sourceFiles,
-        queryMethodFunctionDeclarations,
-        updateMethodFunctionDeclarations,
+        canisterMethodFunctionDeclarations,
         canisterTypeAliasDeclarations
     );
 
@@ -45,16 +43,15 @@ export function generateCandidRecords(
 
 function getCandidRecordNames(
     sourceFiles: readonly tsc.SourceFile[],
-    queryMethodFunctionDeclarations: tsc.FunctionDeclaration[],
-    updateMethodFunctionDeclarations: tsc.FunctionDeclaration[],
+    canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
     canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): string[] {
     const canisterMethodRecordNames = Array.from(
         new Set(
-            getCanisterMethodRecordNames(sourceFiles, [
-                ...queryMethodFunctionDeclarations,
-                ...updateMethodFunctionDeclarations
-            ])
+            getCanisterMethodRecordNames(
+                sourceFiles,
+                canisterMethodFunctionDeclarations
+            )
         )
     );
 
@@ -87,10 +84,10 @@ function getCandidRecordNames(
 
     const canisterMethodVariantNames = Array.from(
         new Set(
-            getCanisterMethodVariantNames(sourceFiles, [
-                ...queryMethodFunctionDeclarations,
-                ...updateMethodFunctionDeclarations
-            ])
+            getCanisterMethodVariantNames(
+                sourceFiles,
+                canisterMethodFunctionDeclarations
+            )
         )
     );
 

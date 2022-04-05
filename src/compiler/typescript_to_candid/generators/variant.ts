@@ -12,14 +12,12 @@ import { generateCandidTypeInfo } from './type_info';
 
 export function generateCandidVariants(
     sourceFiles: readonly tsc.SourceFile[],
-    queryMethodFunctionDeclarations: tsc.FunctionDeclaration[],
-    updateMethodFunctionDeclarations: tsc.FunctionDeclaration[],
+    canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
     canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): Candid {
     const candidVariantNames = getCandidVariantNames(
         sourceFiles,
-        queryMethodFunctionDeclarations,
-        updateMethodFunctionDeclarations,
+        canisterMethodFunctionDeclarations,
         canisterTypeAliasDeclarations
     );
 
@@ -35,16 +33,15 @@ export function generateCandidVariants(
 
 function getCandidVariantNames(
     sourceFiles: readonly tsc.SourceFile[],
-    queryMethodFunctionDeclarations: tsc.FunctionDeclaration[],
-    updateMethodFunctionDeclarations: tsc.FunctionDeclaration[],
+    canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
     canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): string[] {
     const canisterMethodVariantNames = Array.from(
         new Set(
-            getCanisterMethodVariantNames(sourceFiles, [
-                ...queryMethodFunctionDeclarations,
-                ...updateMethodFunctionDeclarations
-            ])
+            getCanisterMethodVariantNames(
+                sourceFiles,
+                canisterMethodFunctionDeclarations
+            )
         )
     );
 
@@ -77,10 +74,10 @@ function getCandidVariantNames(
 
     const canisterMethodRecordNames = Array.from(
         new Set(
-            getCanisterMethodRecordNames(sourceFiles, [
-                ...queryMethodFunctionDeclarations,
-                ...updateMethodFunctionDeclarations
-            ])
+            getCanisterMethodRecordNames(
+                sourceFiles,
+                canisterMethodFunctionDeclarations
+            )
         )
     );
 
