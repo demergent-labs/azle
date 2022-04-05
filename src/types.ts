@@ -12,7 +12,11 @@ export type CanisterMethodTypeName =
     'Query' |
     // 'QueryAsync' | // TODO enable once this is resolved: https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754
     'Update' |
-    'UpdateAsync'; // TODO we will also have Heartbeat, Init, PreUpgrade, PostUpgrade, etc
+    'UpdateAsync' |
+    'Init' |
+    'Heartbeat' |
+    'PreUpgrade' |
+    'PostUpgrade';
 
 export type DfxJson = Readonly<{
     canisters: Readonly<{

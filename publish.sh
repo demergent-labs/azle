@@ -15,6 +15,7 @@ directories=(
     "examples/cross_canister_calls"
     "examples/ic_api"
     "examples/imports"
+    "examples/init"
     "examples/inline_types"
     "examples/key_value_store"
     "examples/motoko_examples/calc"

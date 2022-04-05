@@ -133,7 +133,6 @@ function getBody(
                 ).unwrap();
 
                 ${returnValueHandler}
-
             }
         }
     `;

@@ -14,6 +14,7 @@ jobs:
           - examples/cross_canister_calls
           - examples/ic_api
           - examples/imports
+          - examples/init
           - examples/inline_types
           - examples/key_value_store
           - examples/motoko_examples/calc
@@ -59,8 +60,6 @@ jobs:
         shell: bash -l {0}
         working-directory: ${{ matrix.example_directories }}
         run: npm link azle
-      - working-directory: ${{ matrix.example_directories }}
-        run: dfx deploy
       - shell: bash -l {0}
         working-directory: ${{ matrix.example_directories }}
         run: npm test

@@ -5,6 +5,7 @@ import {
     CandidTypeInfo
 } from '../../../types';
 import * as tsc from 'typescript';
+import { getCanisterMethodFunctionDeclarationsFromSourceFiles } from '../ast_utilities/canister_methods';
 
 export function generateCandidService(
     sourceFiles: readonly tsc.SourceFile[],
@@ -27,12 +28,44 @@ export function generateCandidService(
         false
     ).join('');
 
+    const initMethodFunctionDeclarations = getCanisterMethodFunctionDeclarationsFromSourceFiles(
+        sourceFiles,
+        ['Init']
+    );
+
+    const serviceParameters = generateServiceParameters(
+        sourceFiles,
+        initMethodFunctionDeclarations
+    );
+
     const dummyMethodDefinition = generateDummyMethodDefinition(candidRecordNames);
 
     return {
-        serviceWithDummyMethod: `service: {${queryServiceMethodDefinitions}${updateServiceMethodDefinitions}    \n${dummyMethodDefinition}\n}`,
-        service: `service: {${queryServiceMethodDefinitions}${updateServiceMethodDefinitions}\n}`
+        serviceWithDummyMethod: `service: ${serviceParameters}{${queryServiceMethodDefinitions}${updateServiceMethodDefinitions}    \n${dummyMethodDefinition}\n}`,
+        service: `service: ${serviceParameters}{${queryServiceMethodDefinitions}${updateServiceMethodDefinitions}\n}`
     };
+}
+
+function generateServiceParameters(
+    sourceFiles: readonly tsc.SourceFile[],
+    initFunctionDeclarations: tsc.FunctionDeclaration[]
+): Candid {
+    if (initFunctionDeclarations.length > 1) {
+        throw new Error('Only one init method can be defined');
+    }
+
+    const initFunctionDeclaration = initFunctionDeclarations[0];
+
+    if (initFunctionDeclaration === undefined) {
+        return '';
+    }
+
+    const functionParameterTypeNames = generateCandidServiceMethodParameterTypeNames(
+        sourceFiles,
+        initFunctionDeclaration
+    );
+
+    return `(${functionParameterTypeNames.map((candidTypeName) => candidTypeName.text).join(', ')}) -> `;
 }
 
 function generateCandidServiceMethodDefinitions(
