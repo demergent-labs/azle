@@ -1,16 +1,70 @@
 {
     "tests": [
         {
-            "canisterName": "update",
-            "canisterMethod": "update",
-            "methodArgs": "(\"Why hello there\")",
-            "expectedOutput": "(\"Why hello there\")"
+            "canisterName": "canister1",
+            "canisterMethod": "balance",
+            "methodArgs": "(\"0\")",
+            "expectedOutput": "(100 : nat64)"
         },
         {
-            "canisterName": "update",
-            "canisterMethod": "query",
+            "canisterName": "canister1",
+            "canisterMethod": "account",
+            "methodArgs": "(record { id = \"0\" })",
+            "expectedOutput": "(opt record { id = \"0\"; balance = 100 : nat64 })"
+        },
+        {
+            "canisterName": "canister1",
+            "canisterMethod": "balance",
+            "methodArgs": "(\"1\")",
+            "expectedOutput": "(0 : nat64)"
+        },
+        {
+            "canisterName": "canister1",
+            "canisterMethod": "account",
+            "methodArgs": "(record { id = \"1\" })",
+            "expectedOutput": "(null)"
+        },
+        {
+            "canisterName": "canister1",
+            "canisterMethod": "accounts",
             "methodArgs": "()",
-            "expectedOutput": "(\"Why hello there\")"
+            "expectedOutput": "(vec { record { id = \"0\"; balance = 100 : nat64 } })"
+        },
+        {
+            "canisterName": "canister1",
+            "canisterMethod": "transfer",
+            "methodArgs": "(\"0\", \"1\", 34)",
+            "expectedOutput": "(34 : nat64)"
+        },
+        {
+            "canisterName": "canister1",
+            "canisterMethod": "balance",
+            "methodArgs": "(\"0\")",
+            "expectedOutput": "(66 : nat64)"
+        },
+        {
+            "canisterName": "canister1",
+            "canisterMethod": "account",
+            "methodArgs": "(record { id = \"0\" })",
+            "expectedOutput": "(opt record { id = \"0\"; balance = 66 : nat64 })"
+        },
+        {
+            "canisterName": "canister1",
+            "canisterMethod": "balance",
+            "methodArgs": "(\"1\")",
+            "expectedOutput": "(34 : nat64)"
+        },
+        {
+            "canisterName": "canister1",
+            "canisterMethod": "account",
+            "methodArgs": "(record { id = \"1\" })",
+            "expectedOutput": "(opt record { id = \"1\"; balance = 34 : nat64 })"
+        },
+        {
+            "canisterName": "canister1",
+            "canisterMethod": "accounts",
+            "methodArgs": "()",
+            "expectedOutput": "(\n  vec {\n    record { id = \"0\"; balance = 66 : nat64 };\n    record { id = \"1\"; balance = 34 : nat64 };\n  },\n)"
         }
     ]
 }

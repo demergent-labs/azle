@@ -99,7 +99,7 @@ export function generateReturnValueHandler(
                                     ${callFunctionInfo.params.map((param, index) => {
                                         return `
                                             let ${param.paramName}_js_value = call_args_js_object.get("${index + 2}", &mut boa_context).unwrap();
-                                            let ${param.paramName}: ${param.paramType} = serde_json::from_value(${param.paramName}_js_value.to_json(&mut boa_context).unwrap()).unwrap();
+                                            let ${param.paramName}: ${param.paramType} = ${param.paramName}_js_value.azle_try_from_js_value(&mut boa_context).unwrap();
                                         `;
                                     }).join('\n')}
 
@@ -127,7 +127,7 @@ export function generateReturnValueHandler(
                                     // TODO this will not work if the return value is a candid::Principal, candid::Nat, or candid::Int
                                     // TODO so we would need to create custom code for into_js_value for those types as well
                                     // TODO perhaps we should really just create our own custom traits that do what IntoJsValue and FromJsValue do
-                                    let result_js_value = result.azle_into_js_value(&mut boa_context).unwrap();
+                                    let result_js_value = result.azle_into_js_value(&mut boa_context);
 
                                     args = vec![result_js_value];
                                 },

@@ -26,6 +26,7 @@ function bundle(tsPath: string): JavaScript {
         entryPoints: [tsPath],
         format: 'esm',
         bundle: true,
+        treeShaking: true,
         write: false
     });
 

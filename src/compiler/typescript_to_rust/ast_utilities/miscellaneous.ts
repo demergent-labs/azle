@@ -46,7 +46,7 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
         return `bool`;
     }
 
-    // TODO option types and possibly type literals?
+    // TODO possibly type literals?
 
     if (typeNode.kind === tsc.SyntaxKind.ArrayType) {
         const arrayTypeNode = typeNode as tsc.ArrayTypeNode;
@@ -99,6 +99,18 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
 
             if (typeName === 'nat8') {
                 return 'u8';
+            }
+
+            if (typeName === 'Opt') {
+                if (typeReferenceNode.typeArguments === undefined) {
+                    throw new Error('UpdateAsync must have an enclosed type');
+                }
+                
+                const firstTypeArgument = typeReferenceNode.typeArguments[0];
+
+                const typeName = getRustTypeNameFromTypeNode(firstTypeArgument);
+            
+                return `Option<${typeName}>`;
             }
 
             if (typeName === 'Query') {

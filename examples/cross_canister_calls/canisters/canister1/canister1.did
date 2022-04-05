@@ -1,13 +1,15 @@
-type CanisterStatusArgs = record {
-    "canister_id": principal;
+type AccountArgs = record {
+    "id": text;
 };
 
-type CanisterStatusResult = record {
-    "cycles": nat;
+type Account = record {
+    "id": text;
+    "balance": nat64;
 };
 
 service: {
-    "initiateTransfer": () -> (int32);
-    "randomness": () -> (vec nat8);
-    "status": () -> (nat);
+    "transfer": (text, text, nat64) -> (nat64);
+    "balance": (text) -> (nat64);
+    "account": (AccountArgs) -> (opt Account);
+    "accounts": () -> (vec Account);
 }
