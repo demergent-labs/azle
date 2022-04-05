@@ -1,5 +1,5 @@
-import { Query, int32 } from 'azle';
+import { Query } from 'azle';
 
-export function query(): Query<int32> {
+export function query(): Query<string> {
     return 'This is a query function';
 }
