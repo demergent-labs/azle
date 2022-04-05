@@ -29,15 +29,15 @@ npm install
 git commit -am "release $VERSION"
 git push origin release
 
-git tag $VERSION
-git push origin $VERSION
+# git tag $VERSION
+# git push origin $VERSION
 
-# if [[ "$VERSION" == *"-rc."* ]];
-# then
-#     npm publish --tag next
-# else
-#     npm publish
-# fi
+if [[ "$VERSION" == *"-rc."* ]];
+then
+    npm publish --tag next
+else
+    npm publish
+fi
 
 # for directory in "${directories[@]}"
 # do
