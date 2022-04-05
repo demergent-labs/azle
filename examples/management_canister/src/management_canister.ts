@@ -7,22 +7,25 @@ import {
     Principal,
     Variant,
     Opt,
-    nat,
-    Management,
-    CanisterStatusResult
+    nat
 } from 'azle';
+import {
+    Management,
+    CanisterStatusArgs,
+    CanisterStatusResult
+} from 'azle/canisters/management';
 
-export function* randomness(): UpdateAsync<nat8[]> {
+export function* raw_rand(): UpdateAsync<nat8[]> {
     const managementCanister = ic.canisters.Management<Management>('aaaaa-aa');
 
     return yield managementCanister.raw_rand();
 }
 
-export function* status(): UpdateAsync<CanisterStatusResult> {
+export function* canister_status(args: CanisterStatusArgs): UpdateAsync<CanisterStatusResult> {
     const management_canister = ic.canisters.Management<Management>('aaaaa-aa');
 
     const canisterStatusResult: CanisterStatusResult = yield management_canister.canister_status({
-        canister_id: ic.id()
+        canister_id: args.canister_id
     });
 
     return canisterStatusResult;
