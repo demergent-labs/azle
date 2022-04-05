@@ -29,8 +29,8 @@ npm install
 git commit -am "release $VERSION"
 git push origin release
 
-# git tag $VERSION
-# git push origin $VERSION
+git tag $VERSION
+git push origin $VERSION
 
 # if [[ "$VERSION" == *"-rc."* ]];
 # then
