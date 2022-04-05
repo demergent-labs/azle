@@ -7,10 +7,13 @@ jobs:
       fail-fast: false
       matrix:
         rust: [stable]
+        if: github.ref == 'refs/heads/release' # TODO still a little unsure of when to test what
         azle_source:
           - repo
-          if: github.ref == 'refs/heads/release' # TODO still a little unsure of when to test what
           - npm
+        if: github.ref != 'refs/heads/release' # TODO still a little unsure of when to test what
+        azle_source:
+          - repo
         example_directories:
           - examples/complex_types
           - examples/counter
