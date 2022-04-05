@@ -39,15 +39,15 @@ else
     npm publish
 fi
 
-# for directory in "${directories[@]}"
-# do
-#     cd $directory
+for directory in "${directories[@]}"
+do
+    cd $directory
 
-#     sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
-#     npm install
+    sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
+    npm install
 
-#     cd $root_dir
-# done
+    cd $root_dir
+done
 
 # cd generator-sudograph
 # sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
