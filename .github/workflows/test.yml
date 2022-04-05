@@ -13,6 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         rust: [stable]
+        azle_source: [repo, npm]
         example_directories:
           - examples/complex_types
           - examples/counter
@@ -51,21 +52,23 @@ jobs:
         run: nvm use 14
       - shell: bash -l {0}
         run: npm install
-      - shell: bash -l {0}
+      - if: matrix.azle_source == 'repo'
+        shell: bash -l {0}
         run: npm link
       - working-directory: ${{ matrix.example_directories }}
         run: dfx start --clean --background
       - shell: bash -l {0}
         working-directory: ${{ matrix.example_directories }}
         run: npm install
-      - shell: bash -l {0}
+      - if: matrix.azle_source == 'repo'
+        shell: bash -l {0}
         working-directory: ${{ matrix.example_directories }}
         run: npm link azle
       - working-directory: ${{ matrix.example_directories }}
         run: dfx deploy
       - shell: bash -l {0}
         working-directory: ${{ matrix.example_directories }}
-        run: npm test || { dfx stop; exit 1; } # TODO probably do not need end piece
+        run: npm test
 
 # - name: Cache cargo registry
 #   uses: actions/cache@v2
