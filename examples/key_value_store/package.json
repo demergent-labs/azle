@@ -3,6 +3,6 @@
         "test": "node test/test.js"
     },
     "dependencies": {
-        "azle": "0.1.0-rc.7"
+        "azle": "0.1.0-rc.8"
     }
 }
