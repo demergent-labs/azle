@@ -1,46 +1,58 @@
 import {
     Query,
     Update,
-    int32,
-    ic
+    nat64,
+    Opt
 } from 'azle';
-
-// TODO start using principals instead of strings for ids
-type State = {
-    balances: {
-        [id: string]: int32
-    }
-};
+import {
+    State,
+    Account,
+    AccountArgs
+} from './types';
 
 let state: State = {
-    balances: {
-        '0': 100
+    accounts: {
+        '0': {
+            id: '0',
+            balance: 100n
+        }
     }
 };
 
 export function transfer(
     from: string,
     to: string,
-    amount: int32
-): Update<int32> {
-    const fromBalance: int32 = state.balances[from] ?? 0;
+    amount: nat64
+): Update<nat64> {
+    const fromBalance: nat64 = state.accounts[from]?.balance ?? 0n;
 
     if (fromBalance < amount) {
-        return 0;
+        return 0n;
     }
 
-    const toBalance: int32 | undefined = state.balances[to];
+    const toBalance: nat64 | undefined = state.accounts[to]?.balance;
 
     if (toBalance === undefined) {
-        state.balances[to] = 0;
+        state.accounts[to] = {
+            id: to,
+            balance: 0n
+        };
     }
 
-    state.balances[from] -= amount;
-    state.balances[to] += amount;
+    state.accounts[from].balance -= amount;
+    state.accounts[to].balance += amount;
 
     return amount;
 }
 
-export function balance(id: string): Query<int32> {
-    return state.balances[id] ?? 0;
+export function balance(id: string): Query<nat64> {
+    return state.accounts[id]?.balance ?? 0n;
+}
+
+export function account(accountArgs: AccountArgs): Query<Opt<Account>> {
+    return state.accounts[accountArgs.id] ?? null;
+}
+
+export function accounts(): Query<Account[]> {
+    return Object.values(state.accounts);
 }

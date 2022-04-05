@@ -1,76 +1,48 @@
 import {
     UpdateAsync,
     ic,
-    int32,
+    nat64,
     Canister,
-    nat8,
-    Principal,
-    Variant,
-    Opt,
-    nat
+    Opt
 } from 'azle';
-
-type CanisterStatus = Variant<{
-    running?: null;
-    stopping?: null;
-    stopped?: null;
-}>
-
-type CanisterStatusArgs = {
-    // canister_id: string;
-    canister_id: Principal; // TODO Principal is broken when creating candid Records
-};
-
-type DefiniteCanisterSettings = {
-    controllers: Principal[];
-    compute_allocation: nat;
-    memory_allocation: nat;
-    freezing_threshold: nat;
-};
-
-type CanisterStatusResult = {
-    // status: CanisterStatus;
-    // settings: DefiniteCanisterSettings;
-    // module_hash: Opt<nat8[]>;
-    // memory_size: nat;
-    cycles: nat;
-};
-
-type Management = Canister<{
-    raw_rand(): UpdateAsync<nat8[]>;
-    canister_status(canisterStatusArgs: CanisterStatusArgs): UpdateAsync<CanisterStatusResult>;
-}>;
+import {
+    Account,
+    AccountArgs
+} from '../canister2/types';
 
 type Canister2 = Canister<{
     transfer(
         from: string,
         to: string,
-        amount: int32
-    ): UpdateAsync<int32>;
+        amount: nat64
+    ): UpdateAsync<nat64>;
+    balance(id: string): UpdateAsync<nat64>;
+    account(accountArgs: AccountArgs): UpdateAsync<Opt<Account>>;
+    accounts(): UpdateAsync<Account[]>
 }>;
 
 let canister2 = ic.canisters.Canister2<Canister2>('ryjl3-tyaaa-aaaaa-aaaba-cai');
 
-export function* initiateTransfer(): UpdateAsync<int32> {
+export function* transfer(
+    from: string,
+    to: string,
+    amount: nat64
+): UpdateAsync<nat64> {
     return yield canister2.transfer(
-        '0',
-        '1',
-        50
+        from,
+        to,
+        amount
     );
 }
 
-export function* randomness(): UpdateAsync<nat8[]> {
-    const managementCanister = ic.canisters.Management<Management>('aaaaa-aa');
-
-    return yield managementCanister.raw_rand();
+export function* balance(id: string): UpdateAsync<nat64> {
+    return yield canister2.balance(id);
 }
 
-export function* status(): UpdateAsync<nat> {
-    const management_canister = ic.canisters.Management<Management>('aaaaa-aa');
+export function* account(args: AccountArgs): UpdateAsync<Opt<Account>> {
+    return yield canister2.account(args);
+}
 
-    const canisterStatusResult: CanisterStatusResult = yield management_canister.canister_status({
-        canister_id: ic.id()
-    });
-
-    return canisterStatusResult.cycles;
+export function* accounts(): UpdateAsync<Account[]> {
+    return yield canister2.accounts();
 }
