@@ -91,14 +91,22 @@ function generateDeveloperDefinedInitFunctionCall(
         paramType: string;
     }[]
 ): Rust {
+    if (userDefinedInitFunctionName === '') {
+        return '';
+    }
+
     return `_azle_${userDefinedInitFunctionName}(${userDefinedInitFunctionParams.map((param) => param.paramName).join(', ')});`;
 }
 
 // TODO this is almost copied verbatim from call_functions/call_function_params.ts
-export function getUserDefinedInitFunctionParams(functionDeclaration: tsc.FunctionDeclaration): {
+export function getUserDefinedInitFunctionParams(functionDeclaration: tsc.FunctionDeclaration | undefined): {
     paramName: string;
     paramType: string;
 }[] {
+    if (functionDeclaration === undefined) {
+        return [];
+    }
+
     return functionDeclaration.parameters.map((parameterDeclaration) => {
         const paramName = getParamName(parameterDeclaration);
 
