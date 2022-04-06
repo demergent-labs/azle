@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "heartbeat": {
+            "type": "custom",
+            "build": "npx azle heartbeat",
+            "root": "src",
+            "ts": "src/heartbeat.ts",
+            "candid": "src/heartbeat.did",
+            "wasm": "target/wasm32-unknown-unknown/release/heartbeat.wasm"
+        }
+    }
+}

@@ -17,6 +17,8 @@ import {
 } from '../../../types';
 import { generateCallFunctions } from './call_functions';
 import * as tsc from 'typescript';
+import { generateCanisterMethodHeartbeat } from './canister_methods/heartbeat';
+import { generateHandleGeneratorResultFunction } from './canister_methods/developer_defined/return_value_handler';
 
 export async function generateLibFile(
     js: JavaScript,
@@ -38,14 +40,17 @@ export async function generateLibFile(
         sourceFiles
     );
 
+    const canisterMethodHeartbeat: Rust = generateCanisterMethodHeartbeat(sourceFiles);
+
     const callFunctionInfos: CallFunctionInfo[] = generateCallFunctions(sourceFiles);
 
     const canisterMethodsDeveloperDefined: Rust = await generateCanisterMethodsDeveloperDefined(
         rustCandidTypesNatAndIntReplaced, // TODO you might think that we should pass in modifiedRustCandidTypes here, but the printAst function seems to have a bug that removes the , from the CallResult tuple which causes problems later in the process
         queryMethodFunctionNames,
-        updateMethodFunctionNames,
-        callFunctionInfos
+        updateMethodFunctionNames
     );
+
+    const handleGeneratorResultFunction = generateHandleGeneratorResultFunction(callFunctionInfos);
 
     const icObjectFunctionCaller: Rust = generateIcObjectFunctionCaller();
     const icObjectFunctionCanisterBalance: Rust = generateIcObjectFunctionCanisterBalance();
@@ -66,7 +71,10 @@ export async function generateLibFile(
         ${azleTryFromJsValueTrait}
 
         ${canisterMethodInit}
+        ${canisterMethodHeartbeat}
         ${canisterMethodsDeveloperDefined}
+
+        ${handleGeneratorResultFunction}
 
         ${icObjectFunctionCaller}
         ${icObjectFunctionCanisterBalance}

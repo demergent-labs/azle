@@ -20,8 +20,7 @@ import {
 export async function generateCanisterMethodsDeveloperDefined(
     rustCandidTypes: Rust,
     queryMethodFunctionNames: string[],
-    updateMethodFunctionNames: string[],
-    callFunctionInfos: CallFunctionInfo[]
+    updateMethodFunctionNames: string[]
 ): Promise<Rust> {
     const rustCandidTypesAstString = parseFile(rustCandidTypes);
     const rustCandidTypesAst: AST = JSON.parse(rustCandidTypesAstString);
@@ -33,8 +32,7 @@ export async function generateCanisterMethodsDeveloperDefined(
     const fns = generateItemFnsFromImplItemMethods(
         implItemMethods,
         queryMethodFunctionNames,
-        updateMethodFunctionNames,
-        callFunctionInfos
+        updateMethodFunctionNames
     );
 
     const fnsAst = {
@@ -53,15 +51,13 @@ export async function generateCanisterMethodsDeveloperDefined(
 function generateItemFnsFromImplItemMethods(
     implItemMethods: ImplItemMethod[],
     queryMethodFunctionNames: string[],
-    updateMethodFunctionNames: string[],
-    callFunctionInfos: CallFunctionInfo[]
+    updateMethodFunctionNames: string[]
 ): Fn[] {
     return implItemMethods.map((implItemMethod) => {
         return generateItemFnFromImplItemMethod(
             implItemMethod,
             queryMethodFunctionNames,
-            updateMethodFunctionNames,
-            callFunctionInfos
+            updateMethodFunctionNames
         );
     });
 }
@@ -69,15 +65,13 @@ function generateItemFnsFromImplItemMethods(
 function generateItemFnFromImplItemMethod(
     implItemMethod: ImplItemMethod,
     queryMethodFunctionNames: string[],
-    updateMethodFunctionNames: string[],
-    callFunctionInfos: CallFunctionInfo[]
+    updateMethodFunctionNames: string[]
 ): Fn {
     const inputsWithoutSelfParam = implItemMethod.inputs.slice(1);
 
     const body: Rust = getBody(
         implItemMethod,
-        inputsWithoutSelfParam,
-        callFunctionInfos
+        inputsWithoutSelfParam
     );
     const bodyAst: AST = JSON.parse(parseFile(body));
 
@@ -99,15 +93,8 @@ function generateItemFnFromImplItemMethod(
     };
 }
 
-function getBody(
-    implItemMethod: ImplItemMethod,
-    inputs: any[],
-    callFunctionInfos: CallFunctionInfo[]
-): Rust {
-    const returnValueHandler: Rust = generateReturnValueHandler(
-        implItemMethod,
-        callFunctionInfos
-    );
+function getBody(implItemMethod: ImplItemMethod, inputs: any[]): Rust {
+    const returnValueHandler: Rust = generateReturnValueHandler(implItemMethod);
 
     const functionName = implItemMethod.ident;
 
