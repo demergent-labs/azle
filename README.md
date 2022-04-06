@@ -17,7 +17,7 @@ You should have the following installed on your system:
 * Rust
 * wasm32-unknown-unknown Rust compilation target
 * didc
-* dfx 0.8.4
+* dfx 0.9.3
 
 ### Node.js
 
