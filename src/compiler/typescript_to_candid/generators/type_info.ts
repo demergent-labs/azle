@@ -253,6 +253,18 @@ function generateCandidTypeInfoForTypeReference(
             );
         }
 
+        // TODO I do not think we need this here
+        // if (typeName === 'CanisterResult') {
+        //     if (typeReferenceNode.typeArguments === undefined) {
+        //         throw new Error('This cannot happen');
+        //     }
+
+        //     return generateCandidTypeInfo(
+        //         sourceFiles,
+        //         typeReferenceNode.typeArguments[0] as tsc.TypeLiteralNode
+        //     );
+        // }
+
         if (
             isTypeReferenceNodeAVariant(
                 sourceFiles,

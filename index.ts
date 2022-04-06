@@ -53,10 +53,26 @@ export type Canister<T> = T;
 export type Variant<T> = T;
 export type Principal = string;
 export type Opt<T> = T | null;
-export type Result<T, V> = {
+// export type Result<T, V> = {
+//     ok?: T;
+//     err?: V;
+// };
+// export type CallResult<T> = Generator<
+//     any,
+//     Variant<{
+//         ok?: T;
+//         err?: string;
+//     }>,
+//     any
+// >;
+// export type CallResult<T> = Variant<{
+//     ok?: T;
+//     err?: string;
+// }>;
+export type CanisterResult<T> = Variant<{
     ok?: T;
-    err?: V;
-};
+    err?: string;
+}>;
 
 export type int = bigint;
 export type int64 = bigint;

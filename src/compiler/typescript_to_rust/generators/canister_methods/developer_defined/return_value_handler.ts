@@ -168,16 +168,45 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                                             `;
                                         }).join('\n')}
 
-                                        let result = ${callFunctionInfo.functionName}(
+                                        let call_result = ${callFunctionInfo.functionName}(
                                             canister_id_string,
                                             ${callFunctionInfo.params.map((param) => {
                                                 return param.paramName;
                                             }).join(',\n')}
                                         ).await;
 
-                                        let result_js_value = result.azle_into_js_value(boa_context);
+                                        match call_result {
+                                            Ok(value) => {
+                                                let js_value = value.0.azle_into_js_value(boa_context);
 
-                                        args = vec![result_js_value];
+                                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(boa_context)
+                                                    .property(
+                                                        "ok",
+                                                        js_value,
+                                                        boa_engine::property::Attribute::all()
+                                                    )
+                                                    .build();
+
+                                                let canister_result_js_value = canister_result_js_object.into();
+
+                                                args = vec![canister_result_js_value];
+                                            },
+                                            Err(err) => {
+                                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).into_js_value(boa_context);
+
+                                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(boa_context)
+                                                    .property(
+                                                        "err",
+                                                        js_value,
+                                                        boa_engine::property::Attribute::all()
+                                                    )
+                                                    .build();
+
+                                                let canister_result_js_value = canister_result_js_object.into();
+
+                                                args = vec![canister_result_js_value];
+                                            }
+                                        };
                                     },
                                 `;
                             }).join('\n')}

@@ -143,6 +143,16 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
                 return getRustTypeNameFromTypeNode(firstTypeArgument);
             }
 
+            if (typeName === 'CanisterResult') {
+                if (typeReferenceNode.typeArguments === undefined) {
+                    throw new Error('CanisterResult must have an enclosed type');
+                }
+                
+                const firstTypeArgument = typeReferenceNode.typeArguments[0];
+
+                return getRustTypeNameFromTypeNode(firstTypeArgument);
+            }
+
             return typeReferenceNode.typeName.escapedText.toString();
         }
     }
