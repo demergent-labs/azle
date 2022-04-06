@@ -12,13 +12,26 @@ async function runTests() {
         let result = '';
 
         try {
+            console.log(`Running test ${test.canisterName} ${test.canisterMethod ? test.canisterMethod : ''}`);
+
             const deployCommand = getDeployCommand(
                 test,
                 i
             );
 
             if (deployCommand !== '') {
-                execSync(deployCommand);
+                execSync(
+                    deployCommand,
+                    { stdio: 'inherit' }
+                );
+            }
+
+            if (
+                test.delay !== '' &&
+                test.delay !== undefined
+            ) {
+                console.log(`waiting ${test.delay} milliseconds`);
+                await new Promise((resolve) => setTimeout(resolve, test.delay));
             }
 
             const canisterCommand = getCanisterCommand(test);

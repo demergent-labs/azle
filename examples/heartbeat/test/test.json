@@ -1,0 +1,11 @@
+{
+    "tests": [
+        {
+            "canisterName": "heartbeat",
+            "canisterMethod": "getInitialized",
+            "delay": "5000",
+            "methodArgs": "()",
+            "expectedOutput": "(true)"
+        }
+    ]
+}

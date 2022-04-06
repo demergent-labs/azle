@@ -2,7 +2,8 @@ import {
     Query,
     Update,
     nat64,
-    Opt
+    Opt,
+    ic
 } from 'azle';
 import {
     State,
@@ -55,4 +56,9 @@ export function account(accountArgs: AccountArgs): Query<Opt<Account>> {
 
 export function accounts(): Query<Account[]> {
     return Object.values(state.accounts);
+}
+
+export function trap(): Query<string> {
+    ic.trap('hahahaha');
+    return 'You will never get here';
 }
