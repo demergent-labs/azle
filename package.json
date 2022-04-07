@@ -1,6 +1,6 @@
 {
   "name": "azle",
-  "version": "0.1.0-rc.13",
+  "version": "0.1.0-rc.14",
   "description": "TypeScript CDK for the Internet Computer",
   "scripts": {
     "typecheck": "tsc --noEmit",
