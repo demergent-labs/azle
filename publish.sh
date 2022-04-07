@@ -22,6 +22,7 @@ directories=(
     "examples/motoko_examples/calc"
     "examples/motoko_examples/counter"
     "examples/optional_types"
+    "examples/pre_and_post_upgrade"
     "examples/primitive_types"
     "examples/query"
     "examples/simple_erc20"

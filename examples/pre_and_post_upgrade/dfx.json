@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "pre_and_post_upgrade": {
+            "type": "custom",
+            "build": "npx azle pre_and_post_upgrade",
+            "root": "src",
+            "ts": "src/pre_and_post_upgrade.ts",
+            "candid": "src/pre_and_post_upgrade.did",
+            "wasm": "target/wasm32-unknown-unknown/release/pre_and_post_upgrade.wasm"
+        }
+    }
+}

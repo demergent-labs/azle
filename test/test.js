@@ -20,10 +20,10 @@ async function runTests() {
             );
 
             if (deployCommand !== '') {
-                // execSync(
-                //     deployCommand,
-                //     { stdio: 'inherit' }
-                // );
+                execSync(
+                    deployCommand,
+                    { stdio: 'inherit' }
+                );
             }
 
             if (
