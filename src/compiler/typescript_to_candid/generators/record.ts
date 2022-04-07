@@ -13,11 +13,16 @@ import {
     getCanisterTypeAliasRecordNames,
     getCanisterTypeAliasVariantNames
 } from '../ast_utilities/canister_type_aliases';
+import {
+    getStableTypeAliasRecordNames,
+    getStableTypeAliasVariantNames
+} from '../ast_utilities/stable_type_aliases';
 
 export function generateCandidRecords(
     sourceFiles: readonly tsc.SourceFile[],
     canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
-    canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
+    canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[],
+    stableTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): {
     candidRecords: Candid;
     candidRecordNames: string[]
@@ -25,7 +30,8 @@ export function generateCandidRecords(
     const candidRecordNames = getCandidRecordNames(
         sourceFiles,
         canisterMethodFunctionDeclarations,
-        canisterTypeAliasDeclarations
+        canisterTypeAliasDeclarations,
+        stableTypeAliasDeclarations
     );
 
     const candidRecords = candidRecordNames.map((candidRecordName) => {
@@ -44,7 +50,8 @@ export function generateCandidRecords(
 function getCandidRecordNames(
     sourceFiles: readonly tsc.SourceFile[],
     canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
-    canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
+    canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[],
+    stableTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): string[] {
     const canisterMethodRecordNames = Array.from(
         new Set(
@@ -64,11 +71,21 @@ function getCandidRecordNames(
         )
     );
 
+    const stableTypeAliasRecordNames = Array.from(
+        new Set(
+            getStableTypeAliasRecordNames(
+                sourceFiles,
+                stableTypeAliasDeclarations
+            )
+        )
+    );
+
     const recordFieldsRecordNames = Array.from(
         new Set(
             [
                 ...canisterMethodRecordNames,
-                ...canisterTypeAliasRecordNames
+                ...canisterTypeAliasRecordNames,
+                ...stableTypeAliasRecordNames
             ].reduce((result: string[], recordName) => {
                 return [
                     ...result,
@@ -100,11 +117,21 @@ function getCandidRecordNames(
         )
     );
 
+    const stableTypeAliasVariantNames = Array.from(
+        new Set(
+            getStableTypeAliasVariantNames(
+                sourceFiles,
+                stableTypeAliasDeclarations
+            )
+        )
+    );
+
     const variantFieldsRecordNames = Array.from(
         new Set(
             [
                 ...canisterMethodVariantNames,
-                ...canisterTypeAliasVariantNames
+                ...canisterTypeAliasVariantNames,
+                ...stableTypeAliasVariantNames
             ].reduce((result: string[], variantName) => {
                 return [
                     ...result,
@@ -122,6 +149,7 @@ function getCandidRecordNames(
     return Array.from(new Set([
         ...canisterMethodRecordNames,
         ...canisterTypeAliasRecordNames,
+        ...stableTypeAliasRecordNames,
         ...recordFieldsRecordNames,
         ...variantFieldsRecordNames
     ]));

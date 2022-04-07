@@ -22,6 +22,7 @@ directories=(
     "examples/query"
     "examples/simple_erc20"
     "examples/simple_user_accounts"
+    "examples/stable_storage"
     "examples/update"
 )
 
