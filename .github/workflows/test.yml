@@ -1,5 +1,9 @@
 name: Azle Tests
-on: [pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 jobs:
   basic-integration-tests:
     runs-on: ubuntu-latest
