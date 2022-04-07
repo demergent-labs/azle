@@ -851,7 +851,7 @@ Examples:
 * [simple_user_accounts](/examples/simple_user_accounts)
 
 DFINITY documentation:
-* 
+* https://smartcontracts.org/docs/introduction/welcome.html
 
 Query methods expose public callable functions that are read-only. All state changes will be discarded after the function call completes.
 
@@ -864,7 +864,7 @@ Examples:
 * [key_value_store](/examples/key_value_store)
 
 DFINITY documentation:
-* 
+* https://smartcontracts.org/docs/introduction/welcome.html
 
 Update methods expose public callable functions that are writable. All state changes will be persisted after the function call completes.
 
@@ -876,7 +876,7 @@ Examples:
 * [ic_api](/examples/ic_api)
 
 DFINITY documentation:
-* 
+* https://smartcontracts.org/docs/introduction/welcome.html
 
 Azle exports the `ic` object which contains access to the IC APIs.
 
@@ -929,7 +929,7 @@ Examples:
 * [cross_canister_calls](/examples/cross_canister_calls)
 
 DFINITY documentation:
-* 
+* https://smartcontracts.org/docs/introduction/welcome.html
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
 
@@ -940,7 +940,7 @@ Examples:
 * [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
 
 DFINITY documentation:
-* 
+* https://smartcontracts.org/docs/introduction/welcome.html
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
 
@@ -950,7 +950,7 @@ Examples:
 * [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
 
 DFINITY documentation:
-* 
+* https://smartcontracts.org/docs/introduction/welcome.html
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
 
@@ -960,7 +960,7 @@ Examples:
 * [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
 
 DFINITY documentation:
-* 
+* https://smartcontracts.org/docs/introduction/welcome.html
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
 
@@ -970,7 +970,7 @@ Examples:
 * [stable_storage](/examples/stable_storage)
 
 DFINITY documentation:
-* 
+* https://smartcontracts.org/docs/introduction/welcome.html
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
 
@@ -980,7 +980,7 @@ Examples:
 * [heartbeat](/examples/heartbeat)
 
 DFINITY documentation:
-* 
+* https://smartcontracts.org/docs/introduction/welcome.html
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
 
