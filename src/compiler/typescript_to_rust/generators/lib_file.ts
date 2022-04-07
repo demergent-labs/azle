@@ -19,6 +19,8 @@ import { generateCallFunctions } from './call_functions';
 import * as tsc from 'typescript';
 import { generateCanisterMethodHeartbeat } from './canister_methods/heartbeat';
 import { generateHandleGeneratorResultFunction } from './canister_methods/developer_defined/return_value_handler';
+import { generateCanisterMethodPreUpgrade } from './canister_methods/pre_upgrade';
+import { generateCanisterMethodPostUpgrade } from './canister_methods/post_upgrade';
 
 export async function generateLibFile(
     js: JavaScript,
@@ -39,7 +41,11 @@ export async function generateLibFile(
         js,
         sourceFiles
     );
-
+    const canisterMethodPreUpgrade: Rust = generateCanisterMethodPreUpgrade(sourceFiles);
+    const canisterMethodPostUpgrade: Rust = generateCanisterMethodPostUpgrade(
+        sourceFiles,
+        js
+    );
     const canisterMethodHeartbeat: Rust = generateCanisterMethodHeartbeat(sourceFiles);
 
     const callFunctionInfos: CallFunctionInfo[] = generateCallFunctions(sourceFiles);
@@ -71,6 +77,8 @@ export async function generateLibFile(
         ${azleTryFromJsValueTrait}
 
         ${canisterMethodInit}
+        ${canisterMethodPreUpgrade}
+        ${canisterMethodPostUpgrade}
         ${canisterMethodHeartbeat}
         ${canisterMethodsDeveloperDefined}
 

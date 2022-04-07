@@ -1,0 +1,128 @@
+{
+    "tests": [
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt",
+            "methodArgs": "()",
+            "expectedOutput": "(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt64",
+            "methodArgs": "()",
+            "expectedOutput": "(9_223_372_036_854_775_807 : int64)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt32",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt16",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt8",
+            "methodArgs": "()",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableInt",
+            "methodArgs": "(0)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableInt64",
+            "methodArgs": "(0)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableIn32",
+            "methodArgs": "(0)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableInt16",
+            "methodArgs": "(0)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableInt8",
+            "methodArgs": "(0)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt",
+            "methodArgs": "()",
+            "expectedOutput": "(0 : int)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt64",
+            "methodArgs": "()",
+            "expectedOutput": "(0 : int)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt32",
+            "methodArgs": "()",
+            "expectedOutput": "(0 : int)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt16",
+            "methodArgs": "()",
+            "expectedOutput": "(0 : int)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt8",
+            "methodArgs": "()",
+            "expectedOutput": "(0 : int)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "deploy": true
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt",
+            "methodArgs": "()",
+            "expectedOutput": "(0 : int)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt64",
+            "methodArgs": "()",
+            "expectedOutput": "(0 : int)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt32",
+            "methodArgs": "()",
+            "expectedOutput": "(0 : int)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt16",
+            "methodArgs": "()",
+            "expectedOutput": "(0 : int)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt8",
+            "methodArgs": "()",
+            "expectedOutput": "(0 : int)"
+        }
+    ]
+}

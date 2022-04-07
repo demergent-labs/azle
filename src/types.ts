@@ -49,3 +49,9 @@ export type CallFunctionInfo = {
     }[];
     text: Rust;
 };
+
+export type StableStorageVariableInfo = {
+    name: string;
+    rustType: string;
+    migrate: boolean;
+};

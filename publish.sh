@@ -26,6 +26,7 @@ directories=(
     "examples/query"
     "examples/simple_erc20"
     "examples/simple_user_accounts"
+    "examples/stable_storage"
     "examples/update"
 )
 
@@ -64,8 +65,8 @@ if [[ "$VERSION" == *"-rc."* ]];
 then
     git push origin release
 else
-    git push origin main
-    
-    git tag $VERSION
-    git push origin $VERSION
+    git push origin main    
 fi
+
+git tag $VERSION
+git push origin $VERSION

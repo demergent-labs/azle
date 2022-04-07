@@ -10,6 +10,10 @@ ic.rawRand = function() {
     } as any;
 };
 
+ic.stableStorage = function() {
+    return (ic as any)._azleStableStorage;
+};
+
 // ic.call = function* (...args) {
 //     return yield {
 //         name: 'call',
@@ -34,12 +38,15 @@ type ic = {
     id: () => Principal;
     print: (...args: any) => void;
     rawRand: () => nat8[]; // TODO I think we want this to really be a JS Uint8Array
+    stableStorage: <T>() => T;
     time: () => nat64;
     trap: (message: string) => never;
 };
 
-// TODO let's add heartbeat, init, pre_upgrade, post_upgrade
 
+export type Migrate<T> = T;
+export type PreUpgrade = void;
+export type PostUpgrade = void;
 export type Heartbeat = void | Generator;
 export type Init = void;
 export type Query<T> = T;
@@ -73,6 +80,7 @@ export type CanisterResult<T> = Variant<{
     ok?: T;
     err?: string;
 }>;
+export type Stable<T> = T;
 
 export type int = bigint;
 export type int64 = bigint;

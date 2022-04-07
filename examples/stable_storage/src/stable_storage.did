@@ -1,0 +1,4 @@
+service: () -> {
+    "readStableInt": () -> (int) query;
+    "writeStableInt": (int) -> ();
+}
