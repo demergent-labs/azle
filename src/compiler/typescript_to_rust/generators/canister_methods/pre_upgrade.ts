@@ -70,6 +70,10 @@ export function generateCanisterMethodPreUpgrade(sourceFiles: readonly tsc.Sourc
 export function getStableStorageVariableInfos(sourceFiles: readonly tsc.SourceFile[]): StableStorageVariableInfo[] {
     const stableTypeAliasDeclaration = getStableTypeAliasDeclaration(sourceFiles);
 
+    if (stableTypeAliasDeclaration === null) {
+        return [];
+    }
+
     if (stableTypeAliasDeclaration.type.kind !== tsc.SyntaxKind.TypeReference) {
         throw new Error('This cannot happen');
     }
@@ -132,7 +136,7 @@ export function getStableStorageVariableInfos(sourceFiles: readonly tsc.SourceFi
 }
 
 // TODO put this somewhere, like an AST utilities file. Also generalize it...there is another function very similar to this elsewhere
-function getStableTypeAliasDeclaration(sourceFiles: readonly tsc.SourceFile[]): tsc.TypeAliasDeclaration {
+function getStableTypeAliasDeclaration(sourceFiles: readonly tsc.SourceFile[]): tsc.TypeAliasDeclaration | null {
     const typeAliasDeclarations = getTypeAliasDeclarationsFromSourceFiles(sourceFiles);
 
     const typeAliasDeclaration = typeAliasDeclarations.find((typeAliasDeclaration) => {
@@ -149,12 +153,7 @@ function getStableTypeAliasDeclaration(sourceFiles: readonly tsc.SourceFile[]): 
         return false;
     });
 
-    if (typeAliasDeclaration === undefined) {
-        // TODO I don't think we need to enforce this necessarily, but for now it might keep things simple
-        throw new Error(`Only on Stable type can be defined`);
-    }
-
-    return typeAliasDeclaration;
+    return typeAliasDeclaration ?? null;
 }
 
 function getDeveloperDefinedPreUpgradeFunctionName(initFunctionDeclaration: tsc.FunctionDeclaration | undefined): string {
