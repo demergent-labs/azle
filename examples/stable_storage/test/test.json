@@ -1,0 +1,256 @@
+{
+    "tests": [
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt",
+            "methodArgs": "()",
+            "expectedOutput": "(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt64",
+            "methodArgs": "()",
+            "expectedOutput": "(9_223_372_036_854_775_807 : int64)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt32",
+            "methodArgs": "()",
+            "expectedOutput": "(2_147_483_647 : int32)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt16",
+            "methodArgs": "()",
+            "expectedOutput": "(32_767 : int16)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt8",
+            "methodArgs": "()",
+            "expectedOutput": "(127 : int8)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableNat",
+            "methodArgs": "()",
+            "expectedOutput": "(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableNat64",
+            "methodArgs": "()",
+            "expectedOutput": "(18_446_744_073_709_551_615 : nat64)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableNat32",
+            "methodArgs": "()",
+            "expectedOutput": "(4_294_967_295 : nat32)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableNat16",
+            "methodArgs": "()",
+            "expectedOutput": "(65_535 : nat16)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableNat8",
+            "methodArgs": "()",
+            "expectedOutput": "(255 : nat8)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableString",
+            "methodArgs": "()",
+            "expectedOutput": "(\"Hello there\")"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStablePrincipal",
+            "methodArgs": "()",
+            "expectedOutput": "(principal \"rrkah-fqaaa-aaaaa-aaaaq-cai\")"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableUser",
+            "methodArgs": "()",
+            "expectedOutput": "(\n  record {\n    id = \"0\";\n    country = variant { CANADA };\n    children = vec { record { id = \"1\" } };\n  },\n)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableReaction",
+            "methodArgs": "()",
+            "expectedOutput": "(variant { Emotion = variant { Happy } })"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableInt",
+            "methodArgs": "(0)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableInt64",
+            "methodArgs": "(1)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableInt32",
+            "methodArgs": "(2)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableInt16",
+            "methodArgs": "(3)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableInt8",
+            "methodArgs": "(4)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableNat",
+            "methodArgs": "(5)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableNat64",
+            "methodArgs": "(6)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableNat32",
+            "methodArgs": "(7)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableNat16",
+            "methodArgs": "(8)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableNat8",
+            "methodArgs": "(9)",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableString",
+            "methodArgs": "(\"Yes sir!\")",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStablePrincipal",
+            "methodArgs": "(principal \"ryjl3-tyaaa-aaaaa-aaaba-cai\")",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableUser",
+            "methodArgs": "(record { id = \"2\"; country = variant { UK }; children = vec { record { id = \"3\" } }; })",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "writeStableReaction",
+            "methodArgs": "(variant { Fireworks = record { id = \"0\"; name = \"Mega Firework\" } })",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt",
+            "methodArgs": "()",
+            "expectedOutput": "(0 : int)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt64",
+            "methodArgs": "()",
+            "expectedOutput": "(1 : int64)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt32",
+            "methodArgs": "()",
+            "expectedOutput": "(2 : int32)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt16",
+            "methodArgs": "()",
+            "expectedOutput": "(3 : int16)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableInt8",
+            "methodArgs": "()",
+            "expectedOutput": "(4 : int8)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableNat",
+            "methodArgs": "()",
+            "expectedOutput": "(5 : nat)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableNat64",
+            "methodArgs": "()",
+            "expectedOutput": "(6 : nat64)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableNat32",
+            "methodArgs": "()",
+            "expectedOutput": "(7 : nat32)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableNat16",
+            "methodArgs": "()",
+            "expectedOutput": "(8 : nat16)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableNat8",
+            "methodArgs": "()",
+            "expectedOutput": "(9 : nat8)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableString",
+            "methodArgs": "()",
+            "expectedOutput": "(\"Yes sir!\")"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStablePrincipal",
+            "methodArgs": "()",
+            "expectedOutput": "(principal \"ryjl3-tyaaa-aaaaa-aaaba-cai\")"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableUser",
+            "methodArgs": "()",
+            "expectedOutput": "(\n  record {\n    id = \"2\";\n    country = variant { UK };\n    children = vec { record { id = \"3\" } };\n  },\n)"
+        },
+        {
+            "canisterName": "stable_storage",
+            "canisterMethod": "readStableReaction",
+            "methodArgs": "()",
+            "expectedOutput": "(variant { Fireworks = record { id = \"0\"; name = \"Mega Firework\" } })"
+        }
+    ]
+}

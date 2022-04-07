@@ -101,6 +101,18 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
                 return 'u8';
             }
 
+            if (typeName === 'float64') {
+                return 'f64';
+            }
+
+            if (typeName === 'float32') {
+                return 'f32';
+            }
+
+            if (typeName === 'Principal') {
+                return `ic_cdk::export::Principal`;
+            }
+
             if (typeName === 'Opt') {
                 if (typeReferenceNode.typeArguments === undefined) {
                     throw new Error('UpdateAsync must have an enclosed type');

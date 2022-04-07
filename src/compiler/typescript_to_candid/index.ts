@@ -4,7 +4,10 @@ import { generateCandidService } from './generators/service';
 import { generateCandidVariants } from './generators/variant';
 import { Candid } from '../../types';
 import * as tsc from 'typescript';
-import { getCanisterTypeAliasDeclarations } from '../typescript_to_rust/generators/call_functions';
+import {
+    getCanisterTypeAliasDeclarations,
+    getStableTypeAliasDeclarations
+} from '../typescript_to_rust/generators/call_functions';
 
 export function compileTypeScriptToCandid(sourceFiles: readonly tsc.SourceFile[]): {
     candid: Candid;
@@ -35,6 +38,8 @@ export function compileTypeScriptToCandid(sourceFiles: readonly tsc.SourceFile[]
 
     const canisterTypeAliasDeclarations = getCanisterTypeAliasDeclarations(sourceFiles);
 
+    const stableTypeAliasDeclarations = getStableTypeAliasDeclarations(sourceFiles);
+
     const {
         candidRecords,
         candidRecordNames
@@ -45,17 +50,22 @@ export function compileTypeScriptToCandid(sourceFiles: readonly tsc.SourceFile[]
             ...updateMethodFunctionDeclarations,
             ...initMethodFunctionDeclarations,
         ],
-        canisterTypeAliasDeclarations
+        canisterTypeAliasDeclarations,
+        stableTypeAliasDeclarations
     );
 
-    const candidVariants: Candid = generateCandidVariants(
+    const {
+        candidVariants,
+        candidVariantNames
+    } = generateCandidVariants(
         sourceFiles,
         [
             ...queryMethodFunctionDeclarations,
             ...updateMethodFunctionDeclarations,
             ...initMethodFunctionDeclarations,
         ],
-        canisterTypeAliasDeclarations
+        canisterTypeAliasDeclarations,
+        stableTypeAliasDeclarations
     );
 
     const {
@@ -65,7 +75,8 @@ export function compileTypeScriptToCandid(sourceFiles: readonly tsc.SourceFile[]
         sourceFiles,
         queryMethodFunctionDeclarations,
         updateMethodFunctionDeclarations,
-        candidRecordNames
+        candidRecordNames,
+        candidVariantNames
     );
 
     const candid = generateCandid(

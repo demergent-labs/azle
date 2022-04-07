@@ -112,3 +112,22 @@ export function getCanisterTypeAliasDeclarations(sourceFiles: readonly tsc.Sourc
         return false;
     });
 }
+
+// TODO put this somewhere, like an AST utilities file. Also generalize it
+export function getStableTypeAliasDeclarations(sourceFiles: readonly tsc.SourceFile[]): tsc.TypeAliasDeclaration[] {
+    const typeAliasDeclarations = getTypeAliasDeclarationsFromSourceFiles(sourceFiles);
+
+    return typeAliasDeclarations.filter((typeAliasDeclaration) => {
+        if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
+            const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+
+            if (typeReferenceNode.typeName.kind === tsc.SyntaxKind.Identifier) {
+                return typeReferenceNode.typeName.escapedText.toString() === 'Stable';
+            }
+
+            return false;
+        }
+
+        return false;
+    });
+}

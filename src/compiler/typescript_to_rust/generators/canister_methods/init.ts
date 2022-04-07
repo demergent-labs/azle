@@ -15,8 +15,9 @@ export function generateCanisterMethodInit(
     js: JavaScript,
     sourceFiles: readonly tsc.SourceFile[]
 ): Rust {
-    const icObject: Rust = generateIcObject();
+    const icObject: Rust = generateIcObject([]);
 
+    // TODO this code is now copied in post_upgrade
     const initFunctionDeclarations = getCanisterMethodFunctionDeclarationsFromSourceFiles(
         sourceFiles,
         ['Init']
@@ -28,7 +29,7 @@ export function generateCanisterMethodInit(
 
     const initFunctionDeclaration: tsc.FunctionDeclaration | undefined = initFunctionDeclarations[0];
 
-    const userDefinedInitFunctionName = getUserDefinedInitFunctionName(initFunctionDeclaration);
+    const userDefinedInitFunctionName = getDeveloperDefinedInitFunctionName(initFunctionDeclaration);
     const userDefinedInitFunctionParams = [
         { paramName: 'boa_context', paramType: '&mut boa_engine::Context' },
         ...getUserDefinedInitFunctionParams(initFunctionDeclaration)
@@ -38,7 +39,7 @@ export function generateCanisterMethodInit(
         userDefinedInitFunctionName,
         userDefinedInitFunctionParams
     );
-    const developerDefinedInitFunction: Rust = generateUserDefinedInitFunction(
+    const developerDefinedInitFunction: Rust = generateDeveloperDefinedInitFunction(
         userDefinedInitFunctionName,
         userDefinedInitFunctionParams
     );
@@ -67,16 +68,11 @@ export function generateCanisterMethodInit(
             }
         }
 
-        #[ic_cdk_macros::post_upgrade]
-        fn post_upgrade(${userDefinedInitFunctionParams.filter((param) => param.paramName !== 'boa_context').map((param) => `${param.paramName}: ${param.paramType}`).join(', ')}) {
-            init(${userDefinedInitFunctionParams.filter((param) => param.paramName !== 'boa_context').map((param) => param.paramName).join(', ')});
-        }
-
         ${developerDefinedInitFunction}
     `;
 }
 
-function getUserDefinedInitFunctionName(initFunctionDeclaration: tsc.FunctionDeclaration | undefined): string {
+export function getDeveloperDefinedInitFunctionName(initFunctionDeclaration: tsc.FunctionDeclaration | undefined): string {
     if (initFunctionDeclaration === undefined) {
         return '';
     }
@@ -84,7 +80,7 @@ function getUserDefinedInitFunctionName(initFunctionDeclaration: tsc.FunctionDec
     return getFunctionName(initFunctionDeclaration);
 }
 
-function generateDeveloperDefinedInitFunctionCall(
+export function generateDeveloperDefinedInitFunctionCall(
     userDefinedInitFunctionName: string,
     userDefinedInitFunctionParams: {
         paramName: string;
@@ -123,7 +119,8 @@ export function getUserDefinedInitFunctionParams(functionDeclaration: tsc.Functi
     });
 }
 
-function generateUserDefinedInitFunction(
+// TODO I am not sure why I am making this an entirely separate function, could probably just put it in the init function
+function generateDeveloperDefinedInitFunction(
     userDefinedInitFunctionName: string,
     userDefinedInitFunctionParams: {
         paramName: string;

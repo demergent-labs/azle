@@ -2,23 +2,35 @@
 
 import * as tsc from 'typescript';
 import { Candid } from '../../../types';
-import { getCanisterMethodRecordNames, getCanisterMethodVariantNames } from '../ast_utilities/canister_methods';
+import {
+    getCanisterMethodRecordNames,
+    getCanisterMethodVariantNames
+} from '../ast_utilities/canister_methods';
 import {
     getCanisterTypeAliasRecordNames,
     getCanisterTypeAliasVariantNames
 } from '../ast_utilities/canister_type_aliases';
+import {
+    getStableTypeAliasRecordNames,
+    getStableTypeAliasVariantNames
+} from '../ast_utilities/stable_type_aliases';
 import { getTypeAliasDeclaration } from '../ast_utilities/type_aliases';
 import { generateCandidTypeInfo } from './type_info';
 
 export function generateCandidVariants(
     sourceFiles: readonly tsc.SourceFile[],
     canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
-    canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
-): Candid {
+    canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[],
+    stableTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
+): {
+    candidVariants: Candid;
+    candidVariantNames: string[]
+} {
     const candidVariantNames = getCandidVariantNames(
         sourceFiles,
         canisterMethodFunctionDeclarations,
-        canisterTypeAliasDeclarations
+        canisterTypeAliasDeclarations,
+        stableTypeAliasDeclarations
     );
 
     const candidVariants = candidVariantNames.map((candidVariantName) => {
@@ -28,13 +40,17 @@ export function generateCandidVariants(
         );
     });
 
-    return candidVariants.join('\n\n');
+    return {
+        candidVariants: candidVariants.join('\n\n'),
+        candidVariantNames
+    };
 }
 
 function getCandidVariantNames(
     sourceFiles: readonly tsc.SourceFile[],
     canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
-    canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
+    canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[],
+    stableTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): string[] {
     const canisterMethodVariantNames = Array.from(
         new Set(
@@ -54,11 +70,21 @@ function getCandidVariantNames(
         )
     );
 
+    const stableTypeAliasVariantNames = Array.from(
+        new Set(
+            getStableTypeAliasVariantNames(
+                sourceFiles,
+                stableTypeAliasDeclarations
+            )
+        )
+    );
+
     const variantFieldsVariantNames = Array.from(
         new Set(
             [
                 ...canisterMethodVariantNames,
-                ...canisterTypeAliasVariantNames
+                ...canisterTypeAliasVariantNames,
+                ...stableTypeAliasVariantNames
             ].reduce((result: string[], variantName) => {
                 return [
                     ...result,
@@ -90,11 +116,21 @@ function getCandidVariantNames(
         )
     );
 
+    const stableTypeAliasRecordNames = Array.from(
+        new Set(
+            getStableTypeAliasRecordNames(
+                sourceFiles,
+                stableTypeAliasDeclarations
+            )
+        )
+    );
+
     const recordFieldsVariantNames = Array.from(
         new Set(
             [
                 ...canisterMethodRecordNames,
-                ...canisterTypeAliasRecordNames
+                ...canisterTypeAliasRecordNames,
+                ...stableTypeAliasRecordNames
             ].reduce((result: string[], recordName) => {
                 return [
                     ...result,
@@ -112,6 +148,7 @@ function getCandidVariantNames(
     return Array.from(new Set([
         ...canisterMethodVariantNames,
         ...canisterTypeAliasVariantNames,
+        ...stableTypeAliasVariantNames,
         ...variantFieldsVariantNames,
         ...recordFieldsVariantNames
     ]));

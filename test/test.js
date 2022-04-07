@@ -20,10 +20,10 @@ async function runTests() {
             );
 
             if (deployCommand !== '') {
-                execSync(
-                    deployCommand,
-                    { stdio: 'inherit' }
-                );
+                // execSync(
+                //     deployCommand,
+                //     { stdio: 'inherit' }
+                // );
             }
 
             if (
@@ -64,7 +64,10 @@ function getDeployCommand(
     test,
     index
 ) {
-    if (index === 0) {
+    if (
+        index === 0 ||
+        test.deploy === true
+    ) {
         const deployArgument = getDeployArgument(test);
         
         return `dfx deploy${deployArgument}`;

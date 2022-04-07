@@ -11,7 +11,8 @@ export function generateCandidService(
     sourceFiles: readonly tsc.SourceFile[],
     queryMethodFunctionDeclarations: tsc.FunctionDeclaration[],
     updateMethodFunctionDeclarations: tsc.FunctionDeclaration[],
-    candidRecordNames: string[]
+    candidRecordNames: string[],
+    candidVariantNames: string[]
 ): {
     serviceWithDummyMethod: Candid,
     service: Candid
@@ -38,7 +39,10 @@ export function generateCandidService(
         initMethodFunctionDeclarations
     );
 
-    const dummyMethodDefinition = generateDummyMethodDefinition(candidRecordNames);
+    const dummyMethodDefinition = generateDummyMethodDefinition(
+        candidRecordNames,
+        candidVariantNames
+    );
 
     return {
         serviceWithDummyMethod: `service: ${serviceParameters}{${queryServiceMethodDefinitions}${updateServiceMethodDefinitions}    \n${dummyMethodDefinition}\n}`,
@@ -131,6 +135,12 @@ function generateCandidServiceMethodReturnTypeName(
 }
 
 // TODO this is here to fix this bug: https://github.com/dfinity/candid/issues/330
-function generateDummyMethodDefinition(candidRecordNames: string[]): Candid {
-    return `"_azle_dummy_method": (${candidRecordNames.join(', ')}) -> ();`;
+function generateDummyMethodDefinition(
+    candidRecordNames: string[],
+    candidVariantNames: string[]
+): Candid {
+    return `"_azle_dummy_method": (${[
+        ...candidRecordNames,
+        ...candidVariantNames
+    ].join(', ')}) -> ();`;
 }
