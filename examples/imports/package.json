@@ -3,7 +3,7 @@
         "test": "node test/test.js"
     },
     "dependencies": {
-        "azle": "0.1.0-rc.12",
+        "azle": "0.1.0-rc.16",
         "hash.js": "1.1.7"
     }
 }

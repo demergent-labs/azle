@@ -60,6 +60,7 @@ do
     cd $root_dir
 done
 
+git add --all
 git commit -am "release $VERSION"
 
 if [[ "$VERSION" == *"-rc."* ]];
