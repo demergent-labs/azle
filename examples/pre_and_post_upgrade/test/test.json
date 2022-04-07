@@ -1,0 +1,22 @@
+{
+    "tests": [
+        {
+            "canisterName": "pre_and_post_upgrade",
+            "canisterMethod": "getEntries",
+            "methodArgs": "()",
+            "expectedOutput": "(vec {})"
+        },
+        {
+            "canisterName": "pre_and_post_upgrade",
+            "canisterMethod": "setEntry",
+            "methodArgs": "(record { key = \"0\"; value = 0 })",
+            "expectedOutput": "()"
+        },
+        {
+            "canisterName": "pre_and_post_upgrade",
+            "canisterMethod": "getEntries",
+            "methodArgs": "()",
+            "expectedOutput": "(vec { record { key = \"0\"; value = 0 : nat64 } })"
+        }
+    ]
+}
