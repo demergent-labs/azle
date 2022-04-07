@@ -102,14 +102,14 @@ dfx deploy
 
 You can then interact with your canister like any other canister written in Motoko or Rust. For more information about calling your canister using `dfx`, see [here](https://smartcontracts.org/docs/developers-guide/cli-reference/dfx-canister.html#_dfx_canister_call).
 
-dfx commands from the [query example](/examples/query):
+dfx commands for the [query example](/examples/query):
 
 ```bash
 dfx canister call query query
 # The result is: ("This is a query function")
 ```
 
-dfx commands from the [update example](/examples/update):
+dfx commands for the [update example](/examples/update):
 
 ```bash
 dfx canister call update update '("Why hello there")'
@@ -119,7 +119,7 @@ dfx canister call update query
 # The result is: ("Why hello there")
 ```
 
-dfx commands from the [simple_erc20 example](/examples/simple_erc20):
+dfx commands for the [simple_erc20 example](/examples/simple_erc20):
 
 ```bash
 dfx canister call simple_erc20 initializeSupply '("TOKEN", "Token", 1_000_000, "0")'
@@ -146,8 +146,6 @@ dfx canister call simple_erc20 transfer '("0", "1", 100)'
 Deploying to the live Internet Computer generally only requires adding the `--network ic` option to the deploy command: `dfx deploy --network ic`. This assumes you already have converted ICP into cycles appropriately. See [here](https://smartcontracts.org/docs/quickstart/4-quickstart.html) for more information on getting ready to deploy to production.
 
 ### Canisters
-
-
 
 In many ways developing with Azle is similar to any other TypeScript/JavaScript project. Imagine you have a project called `backend`:
 
@@ -193,17 +191,22 @@ Your `dfx.json` should look like this:
 - [ ] 1.0
     - [ ] [Feature parity with Rust and Motoko CDKs](https://github.com/demergent-labs/azle/issues/134)
     - [ ] Core set of Azle-specific npm packages
+    - [ ] Sudograph integration
+    - [ ] Official dfx integration with `"type": "typescript"` or `"type": "azle"`
     - [ ] Live robust examples
     - [ ] Video series
-    - [ ] [Inter-Canister Query Calls](https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754)
     - [ ] Comprehensive benchmarks
     - [ ] Robust property-based tests
     - [ ] Optimized compilation
     - [ ] Security audits
+- [ ] 2.0
+  - [ ] Azle VS Code plugin
+  - [ ] [Inter-Canister Query Calls](https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754)
 
 ### Limitations
 
 * Varied missing TypeScript syntax or JavaScript features
+* Really bad compiler errors (you will probably not enjoy them)
 * Limited asynchronous TypeScript/JavaScript (generators only for now, no promises or async/await)
 * Imported npm packages may use unsupported syntax or APIs
 * Unknown security vulnerabilities

@@ -1,5 +1,7 @@
 {
     "compilerOptions": {
-        "strict": true
+        "strict": true,
+        "target": "ES2020",
+        "moduleResolution": "node"
     }
 }

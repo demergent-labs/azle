@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // TODO I just want to test every way to reference variants and records
 
 type User = {
