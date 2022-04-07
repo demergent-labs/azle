@@ -4,22 +4,50 @@
 
 TypeScript CDK for the Internet Computer.
 
+## Disclaimer
+
+Azle is beta software. It has not been thoroughly tested by Demergent Labs or the community. There have been no extensive security reviews. There are very few live applications built with Azle.
+
+The safest way to use Azle is to assume that your canister could get hacked, frozen, broken, or erased at any moment. Remember that you use Azle at your own risk and according to the terms of the MIT license found [here](/LICENSE).
+
 ## Discussion
 
 Feel free to open issues or join us in the [DFINITY DEV TypeScript Discord channel](https://discord.com/channels/748416164832608337/956466775380336680).
 
-## Installation
+## Documentation
+
+Most of Azle's documentation is currently found in this README. A more detailed [mdBook-style](https://rust-lang.github.io/mdBook/) book similar to [Sudograph's](https://i67uk-hiaaa-aaaae-qaaka-cai.raw.ic0.app/) will later be hosted on the Internet Computer.
+
+* [Examples](/examples)
+* [Installation](#installation)
+* [Deployment](#deployment)
+* [Canisters](#canisters)
+* Candid (data types)
+* Query methods
+* Update methods
+* IC API
+* Cross-canister calls
+* Init
+* PreUpgrade
+* PostUpgrade
+* Stable storage
+* Heartbeat
+* [Roadmap](#roadmap)
+* [Gotchas and caveats](#gotchas-and-caveats)
+* [Limitations](#limitations)
+* [Decentralization](#decentralization)
+* [Contributing](#contributing)
+* [License](#license)
+
+### Installation
 
 You should have the following installed on your system:
 
-* Node.js
-* npm
-* Rust
-* wasm32-unknown-unknown Rust compilation target
-* didc
-* dfx 0.8.4
+* [Node.js](#nodejs)
+* [Rust](#rust)
+* [dfx](#dfx)
 
-### Node.js
+#### Node.js
 
 Run the following commands to install Node.js and npm. [nvm](https://github.com/nvm-sh/nvm) is highly recommended and its use is shown below:
 
@@ -31,7 +59,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 nvm install 14
 ```
 
-### Rust
+#### Rust
 
 Run the following command to install Rust:
 
@@ -39,22 +67,87 @@ Run the following command to install Rust:
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-### dfx
+#### dfx
 
 Run the following command to install dfx 0.9.3:
 
 ```bash
-# Azle has been tested against version 0.8.4, so it is safest to install that specific version for now
+# Azle has been tested against version 0.9.3, so it is safest to install that specific version for now
 DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 ```
 
-### Common Installation Issues
+#### Common Installation Issues
 
 * Ubuntu
   * error: linker cc not found (sudo apt install build-essential)
   * is cmake not installed? (sudo apt install cmake)
 
-### Azle
+### Deployment
+
+#### Local deployment
+
+Start up an IC replica and deploy:
+
+```bash
+# Open a terminal and navigate to your project's root directory, then run the following command to start a local IC replica
+dfx start
+
+# Alternatively to the above command, you can run the replica in the background
+dfx start --background
+
+# If you are running the replica in the background, you can run this command within the same terminal as the dfx start --background command
+# If you are not running the replica in the background, then open another terminal and run this command from the root directory of your project
+dfx deploy
+```
+
+You can then interact with your canister like any other canister written in Motoko or Rust. For more information about calling your canister using `dfx`, see [here](https://smartcontracts.org/docs/developers-guide/cli-reference/dfx-canister.html#_dfx_canister_call).
+
+dfx commands from the [query example](/examples/query):
+
+```bash
+dfx canister call query query
+# The result is: ("This is a query function")
+```
+
+dfx commands from the [update example](/examples/update):
+
+```bash
+dfx canister call update update '("Why hello there")'
+# The result is: ()
+
+dfx canister call update query
+# The result is: ("Why hello there")
+```
+
+dfx commands from the [simple_erc20 example](/examples/simple_erc20):
+
+```bash
+dfx canister call simple_erc20 initializeSupply '("TOKEN", "Token", 1_000_000, "0")'
+# The result is: (true)
+
+dfx canister call simple_erc20 name
+# The result is: ("Token")
+
+dfx canister call simple_erc20 ticker
+# The result is: ("TOKEN")
+
+dfx canister call simple_erc20 totalSupply
+# The result is: (1_000_000 : nat64)
+
+dfx canister call simple_erc20 balance '("0")'
+# The result is: (1_000_000 : nat64)
+
+dfx canister call simple_erc20 transfer '("0", "1", 100)'
+# The result is: (true)
+```
+
+#### Live deployment
+
+Deploying to the live Internet Computer generally only requires adding the `--network ic` option to the deploy command: `dfx deploy --network ic`. This assumes you already have converted ICP into cycles appropriately. See [here](https://smartcontracts.org/docs/quickstart/4-quickstart.html) for more information on getting ready to deploy to production.
+
+### Canisters
+
+
 
 In many ways developing with Azle is similar to any other TypeScript/JavaScript project. Imagine you have a project called `backend`:
 
@@ -95,91 +188,44 @@ Your `dfx.json` should look like this:
 }
 ```
 
-## Local Deployment
-
-Start up an IC replica and deploy:
-
-```bash
-# Open a terminal and navigate to your project's root directory, then run the following command to start a local IC replica
-dfx start
-
-# Alternatively to the above command, you can run the replica in the background
-dfx start --background
-
-# If you are running the replica in the background, you can run this command within the same terminal as the dfx start --background command
-# If you are not running the replica in the background, then open another terminal and run this command from the root directory of your project
-dfx deploy
-```
-
-You can then interact with your canister like any other canister written in Motoko or Rust. To get started with calling your canister using `dfx`, see [here](https://smartcontracts.org/docs/developers-guide/cli-reference/dfx-canister.html#_dfx_canister_call).
-
-## Writing Canisters in TypeScript/JavaScript
-
-See the [examples in this respository](/examples).
-
-If you want to ensure running the examples with a fresh clone works, run `npm link` from the Azle root directory and then `npm link azle` inside of the example's root directory. Not all of the examples are currently kept up-to-date with the correct Azle npm package.
-
-## Roadmap
-
-- [ ] Beta
-  - [x] TypeScript -> Candid compiler
-  - [x] Basic IC APIs
-    - [x] call
-    - [x] caller
-    - [x] canisterBalance
-    - [x] id
-    - [x] print
-    - [x] rawRand
-    - [x] time
-    - [x] trap
-  - [x] Basic primitive data types
-    - [x] int32
-    - [x] int16
-    - [x] int8
-    - [x] nat16
-    - [x] nat8
-    - [x] float64
-    - [x] float32
-  - [x] Many examples
-  - [ ] Simple example-based unit tests
-  - [ ] Excellent documentation
-  - [ ] Video series
+### Roadmap
 
 - [ ] 1.0
-    - [x] Advanced primitive data types
-      - [x] int
-      - [x] int64
-      - [x] nat
-      - [x] nat64
-      - [x] nat32
-      - [x] Principal
-    - [ ] Advanced IC APIs
-      - [ ] Stable memory
-      - [ ] Certified data
-      - [ ] Cycles management
-    - [ ] Flexible stable memory access
-    - [ ] Feature parity with Rust and Motoko CDKs
-    - [ ] [Inter-Canister Query Calls](https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754)
+    - [ ] [Feature parity with Rust and Motoko CDKs](https://github.com/demergent-labs/azle/issues/134)
+    - [ ] Core set of Azle-specific npm packages
     - [ ] Live robust examples
-    - [ ] Robust property-based tests
+    - [ ] Video series
+    - [ ] [Inter-Canister Query Calls](https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754)
     - [ ] Comprehensive benchmarks
-    - [ ] Security audits
+    - [ ] Robust property-based tests
     - [ ] Optimized compilation
+    - [ ] Security audits
 
-## Limitations
+### Limitations
 
-* No stable memory access, all state is wiped after upgrades
+* Varied missing TypeScript syntax or JavaScript features
 * Limited asynchronous TypeScript/JavaScript (generators only for now, no promises or async/await)
-* Third-party npm packages that you import may use unsupported syntax or APIs
+* Imported npm packages may use unsupported syntax or APIs
 * Unknown security vulnerabilities
 * Unknown cycle efficiency relative to canisters written in Rust or Motoko
 * And much much [more](https://github.com/demergent-labs/azle/issues)
 
-## Tips and Best Practices
+### Gotchas and caveats
 
 * Because Azle is built on Rust, to ensure the best compatibility use underscores to separate words in directory, file, and canister names
+* You must use type names directly when importing them (TODO do an example)
 
-## Contributing
+### Decentralization
+
+Please note that the following plan is very subject to change, especially in response to compliance with government regulations. Please carefully read the [Azle License Extension](/LICENSE_EXTENSION.md) to understand Azle's copyright and the AZLE token in more detail.
+
+Azle's tentative path towards decentralization is focused on traditional open source governance paired with a new token concept known as Open Source tokens (aka OS tokens or OSTs). The goal for OS tokens is to legally control the copyright and to fully control the repository for open source projects. In other words, OS tokens are governance tokens for open source projects.
+
+Azle's OS token is called AZLE. Currently it only controls Azle's copyright and not the Azle repository. Demergent Labs controls [its own Azle repository](https://github.com/demergent-labs/azle). Once a decentralized git repository is implemented on the Internet Computer, the plan is to move [Demergent Labs' Azle repository](https://github.com/demergent-labs/azle) there and give full control of that repository to the AZLE token holders.
+
+Demergent Labs currently owns the majority of AZLE tokens, and thus has ultimate control over Azle's copyright and AZLE token allocations. Demergent Labs will use its own discretion to distribute AZLE tokens over time to contributors and other parties, eventually owning much less than 50% of the tokens.
+
+### Contributing
 
 All contributors must agree to and sign the [Azle License Extension](/LICENSE_EXTENSION.md).
 
@@ -189,16 +235,10 @@ Before beginning work on a contribution, please create or comment on the issue y
 
 See [Demergent Labs' Coding Guidelines](/contributing/coding-guidelines.md) for what to expect during code reviews.
 
-## License
+#### Local testing
+
+If you want to ensure running the examples with a fresh clone works, run `npm link` from the Azle root directory and then `npm link azle` inside of the example's root directory. Not all of the examples are currently kept up-to-date with the correct Azle npm package.
+
+### License
 
 Azle's copyright is governed by the [LICENSE](/LICENSE) and [LICENSE_EXTENSION](/LICENSE_EXTENSION.md).
-
-## Decentralization
-
-Please note that the following plan is very subject to change, especially in response to compliance with government regulations. Please carefully read the [Azle License Extension](/LICENSE_EXTENSION.md) to understand Azle's copyright and the AZLE token in more detail.
-
-Azle's tentative path towards decentralization is currently focused on traditional open source governance paired with a new token concept known as Open Source tokens (aka OS tokens or OSTs). The goal for OS tokens is to legally control the copyright and to fully control the repository for open source projects. In other words, OS tokens are governance tokens for open source projects.
-
-Azle's OS token is called AZLE. Currently it only controls Azle's copyright and not the Azle repository. Demergent Labs controls [its own Azle repository](https://github.com/demergent-labs/azle). Once a decentralized git repository is implemented on the Internet Computer, the plan is to move [Demergent Labs' Azle repository](https://github.com/demergent-labs/azle) there and give full control of that repository to the AZLE token holders.
-
-Demergent Labs currently owns the majority of AZLE tokens, and thus has ultimate control over Azle's copyright and AZLE token allocations. Demergent Labs will use its own discretion to distribute AZLE tokens over time to contributors and other parties, eventually owning much less than 50% of the tokens.
