@@ -75,6 +75,12 @@ type StableStorage = Stable<{
     stablePrincipal: Principal;
     stableUser: User;
     stableReaction: Reaction;
+    // stableBoolean: Migrate<boolean>;
+    // To add a stable variable after a canister is deployed
+    // you must wrap the variable's type in the Migrate type.
+    // Then you must set its initial value in the PostUpgrade method and deploy/upgrade once.
+    // After the first deploy/upgrade you should remove the Migrate type and the PostUpgrade
+    // method initialization of the variable then deploy again.
 }>;
 
 export function init(): Init {

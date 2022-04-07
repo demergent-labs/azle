@@ -4,11 +4,11 @@ export const ic: ic = globalThis.ic;
 
 // TODO perhaps this should just be provided through calling
 // TODO the management canister
-ic.rawRand = function() {
-    return {
-        name: 'rawRand'
-    } as any;
-};
+// ic.rawRand = function() {
+//     return {
+//         name: 'rawRand'
+//     } as any;
+// };
 
 ic.stableStorage = function() {
     return (ic as any)._azleStableStorage;
@@ -37,7 +37,7 @@ type ic = {
     canisterBalance: () => nat64;
     id: () => Principal;
     print: (...args: any) => void;
-    rawRand: () => nat8[]; // TODO I think we want this to really be a JS Uint8Array
+    // rawRand: () => nat8[]; // TODO I think we want this to really be a JS Uint8Array
     stableStorage: <T>() => T;
     time: () => nat64;
     trap: (message: string) => never;

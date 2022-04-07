@@ -20,9 +20,9 @@ export type Reaction = {
 };
 
 export type ReactionType = Variant<{
-    fire?: null,
-    thumbsUp?: null,
-    thumbsDown?: null
+    fire?: null;
+    thumbsUp?: null;
+    thumbsDown?: null;
 }>;
 
 export type Thread = {

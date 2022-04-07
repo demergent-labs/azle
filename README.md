@@ -22,16 +22,16 @@ Most of Azle's documentation is currently found in this README. A more detailed 
 * [Installation](#installation)
 * [Deployment](#deployment)
 * [Canisters](#canisters)
-* Candid (data types)
-* Query methods
-* Update methods
-* IC API
-* Cross-canister calls
-* Init
-* PreUpgrade
-* PostUpgrade
-* Stable storage
-* Heartbeat
+* [Candid data types](#candid-data-types)
+* [Query methods](#query-methods)
+* [Update methods](#update-methods)
+* [IC API](#ic-api)
+* [Cross-canister calls](#cross-canister-calls)
+* [Init method](#init-method)
+* [PreUpgrade method](#preupgrade-method)
+* [PostUpgrade method](#postupgrade-method)
+* [Stable storage](#stable-storage)
+* [Heartbeat method](#heartbeat-method)
 * [Roadmap](#roadmap)
 * [Gotchas and caveats](#gotchas-and-caveats)
 * [Limitations](#limitations)
@@ -46,6 +46,8 @@ You should have the following installed on your system:
 * [Node.js](#nodejs)
 * [Rust](#rust)
 * [dfx](#dfx)
+
+After installing the prerequisites, you can [make a project and install Azle](#azle).
 
 #### Node.js
 
@@ -74,6 +76,47 @@ Run the following command to install dfx 0.9.3:
 ```bash
 # Azle has been tested against version 0.9.3, so it is safest to install that specific version for now
 DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+```
+
+#### Azle
+
+Follow these steps to create an Azle project:
+
+1. Create a directory for your project
+2. Create a `package.json` file
+3. Install Azle
+4. Create a `dfx.json` file
+5. Create a directory and entry TypeScript file for your canister
+6. Fill out your `dfx.json` file
+
+Here are the commands you might run from a terminal to setup your project:
+
+```bash
+mkdir backend
+cd backend
+npm init -y
+npm install azle
+touch dfx.json
+mkdir src
+cd src
+touch backend.ts
+```
+
+Your `dfx.json` should look like this:
+
+```json
+{
+    "canisters": {
+        "backend": {
+            "type": "custom",
+            "build": "npx azle backend",
+            "root": "src",
+            "ts": "src/backend.ts",
+            "candid": "src/backend.did",
+            "wasm": "target/wasm32-unknown-unknown/release/backend.wasm"
+        }
+    }
+}
 ```
 
 #### Common Installation Issues
@@ -147,44 +190,799 @@ Deploying to the live Internet Computer generally only requires adding the `--ne
 
 ### Canisters
 
-In many ways developing with Azle is similar to any other TypeScript/JavaScript project. Imagine you have a project called `backend`:
+In many ways developing canisters with Azle is similar to any other TypeScript/JavaScript project. To see what canister source code looks like, see the [examples](/examples).
 
-1. Create a directory for your project
-2. Create a `package.json` file
-3. Install Azle
-4. Create a `dfx.json` file
-5. Create a directory and entry TypeScript file for your canister
-6. Fill out your `dfx.json` file
+A canister is the fundamental application unit on the Internet Computer. It contains the code and state of your application. When deployed to the Internet Computer, your canister becomes an everlasting process. Its global variables automatically persist.
 
-Here are the commands you might run from a terminal to setup your project:
+Users of your canister interact with it through RPC calls performed using HTTP requests. These calls will hit your canister's `Query` and `Update` methods. These methods, with their parameter and return types, are the interface to your canister.
 
-```bash
-mkdir backend
-cd backend
-npm init -y
-npm install azle
-touch dfx.json
-mkdir src
-cd src
-touch backend.ts
-```
+Azle allows you to write canisters while embracing much of what that the TypeScript and JavaScript ecosystems have to offer.
 
-Your `dfx.json` should look like this:
+### Candid data types
 
-```json
-{
-    "canisters": {
-        "backend": {
-            "type": "custom",
-            "build": "npx azle backend",
-            "root": "src",
-            "ts": "src/backend.ts",
-            "candid": "src/backend.did",
-            "wasm": "target/wasm32-unknown-unknown/release/backend.wasm"
-        }
-    }
+Examples:
+* [primitive_types](/examples/primitive_types)
+* [complex_types](/examples/complex_types)
+
+[Candid](https://smartcontracts.org/docs/candid-guide/candid-intro.html) is an interface description language created by DFINITY. It defines interfaces between services (in our context canisters), allowing canisters and clients written in various languages to easily interact with each other.
+
+Much of what Azle is doing under-the-hood is translating TypeScript code into various formats that Candid understands. To do this your TypeScript code must use various Azle-provided types.
+
+Please note that these types are only needed in the following locations in your code:
+
+* `Query`, `Update`, `Init`, and `PostUpgrade` method parameters and return types
+* `Canister` method declaration parameters and return types
+* `Stable` variable declaration types
+
+You do not need to use these types, and you do not need to use TypeScript, anywhere else. You could write the rest of your application in JavaScript if that's what makes you happy.
+
+Data types:
+
+* [int](#int)
+* [int64](#int64)
+* [int32](#int32)
+* [int16](#int16)
+* [int8](#int8)
+* [nat](#nat)
+* [nat64](#nat64)
+* [nat32](#nat32)
+* [nat16](#nat16)
+* [nat8](#nat8)
+* [float64](#float64)
+* [float32](#float32)
+* [Principal](#principal)
+* [string](#string)
+* [boolean](#boolean)
+* [Record](#record)
+* [Variant](#variant)
+* [Array](#array)
+* [Opt](#opt)
+
+##### int
+
+The Azle type `int` corresponds to the [Candid type int](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-int) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
+
+TypeScript:
+
+```typescript
+import { int, Query, ic } from 'azle';
+
+export function getInt(): Query<int> {
+    return 170141183460469231731687303715884105727n;
+}
+
+export function printInt(int: int): Query<int> {
+    ic.print(typeof int);
+    return int;
 }
 ```
+
+Candid:
+
+```typescript
+service: {
+    "getInt": () -> (int) query;
+    "printInt": (int) -> (int) query;
+}
+```
+
+##### int64
+
+The Azle type `int64` corresponds to the [Candid type int64](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
+
+TypeScript:
+
+```typescript
+import { int64, Query, ic } from 'azle';
+
+export function getInt64(): Query<int64> {
+    return 9223372036854775807n;
+}
+
+export function printInt64(int64: int64): Query<int64> {
+    ic.print(typeof int64);
+    return int64;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getInt64": () -> (int64) query;
+    "printInt64": (int64) -> (int64) query;
+}
+```
+
+##### int32
+
+The Azle type `int32` corresponds to the [Candid type int32](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { int32, Query, ic } from 'azle';
+
+export function getInt32(): Query<int32> {
+    return 2147483647;
+}
+
+export function printInt32(int32: int32): Query<int32> {
+    ic.print(typeof int32);
+    return int32;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getInt32": () -> (int32) query;
+    "printInt32": (int32) -> (int32) query;
+}
+```
+
+##### int16
+
+The Azle type `int16` corresponds to the [Candid type int16](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { int16, Query, ic } from 'azle';
+
+export function getInt16(): Query<int16> {
+    return 32767;
+}
+
+export function printInt16(int16: int16): Query<int16> {
+    ic.print(typeof int16);
+    return int16;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getInt16": () -> (int16) query;
+    "printInt16": (int16) -> (int16) query;
+}
+```
+
+##### int8
+
+The Azle type `int8` corresponds to the [Candid type int8](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { int8, Query, ic } from 'azle';
+
+export function getInt8(): Query<int8> {
+    return 127;
+}
+
+export function printInt8(int8: int8): Query<int8> {
+    ic.print(typeof int8);
+    return int8;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getInt8": () -> (int8) query;
+    "printInt8": (int8) -> (int8) query;
+}
+```
+
+##### nat
+
+The Azle type `nat` corresponds to the [Candid type nat](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-nat) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
+
+TypeScript:
+
+```typescript
+import { nat, Query, ic } from 'azle';
+
+export function getNat(): Query<nat> {
+    return 340282366920938463463374607431768211455n;
+}
+
+export function printNat(nat: nat): Query<nat> {
+    ic.print(typeof nat);
+    return nat;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getNat": () -> (nat) query;
+    "printNat": (nat) -> (nat) query;
+}
+```
+
+##### nat64
+
+The Azle type `nat64` corresponds to the [Candid type nat64](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
+
+TypeScript:
+
+```typescript
+import { nat64, Query, ic } from 'azle';
+
+export function getNat64(): Query<nat64> {
+    return 18446744073709551615n;
+}
+
+export function printNat64(nat64: nat64): Query<nat64> {
+    ic.print(typeof nat64);
+    return nat64;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getNat64": () -> (nat64) query;
+    "printNat64": (nat64) -> (nat64) query;
+}
+```
+
+##### nat32
+
+The Azle type `nat32` corresponds to the [Candid type nat32](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { nat32, Query, ic } from 'azle';
+
+export function getNat32(): Query<nat32> {
+    return 4294967295;
+}
+
+export function printNat32(nat32: nat32): Query<nat32> {
+    ic.print(typeof nat32);
+    return nat32;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getNat32": () -> (nat32) query;
+    "printNat32": (nat32) -> (nat32) query;
+}
+```
+
+##### nat16
+
+The Azle type `nat16` corresponds to the [Candid type nat16](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { nat16, Query, ic } from 'azle';
+
+export function getNat16(): Query<nat16> {
+    return 65535;
+}
+
+export function printNat16(nat16: nat16): Query<nat16> {
+    ic.print(typeof nat16);
+    return nat16;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getNat16": () -> (nat16) query;
+    "printNat16": (nat16) -> (nat16) query;
+}
+```
+
+##### nat8
+
+The Azle type `nat8` corresponds to the [Candid type nat8](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { nat8, Query, ic } from 'azle';
+
+export function getNat8(): Query<nat8> {
+    return 255;
+}
+
+export function printNat8(nat8: nat8): Query<nat8> {
+    ic.print(typeof nat8);
+    return nat8;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getNat8": () -> (nat8) query;
+    "printNat8": (nat8) -> (nat8) query;
+}
+```
+
+##### float64
+
+The Azle type `float64` corresponds to the [Candid type float64](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-floatN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { float64, Query, ic } from 'azle';
+
+export function getFloat64(): Query<float64> {
+    return Math.E;
+}
+
+export function printFloat64(float64: float64): Query<float64> {
+    ic.print(typeof float64);
+    return float64;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getFloat64": () -> (float64) query;
+    "printFloat64": (float64) -> (float64) query;
+}
+```
+
+##### float32
+
+The Azle type `float32` corresponds to the [Candid type float32](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-floatN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { float32, Query, ic } from 'azle';
+
+export function getFloat32(): Query<float32> {
+    return Math.PI;
+}
+
+export function printFloat32(float32: float32): Query<float32> {
+    ic.print(typeof float32);
+    return float32;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getFloat32": () -> (float32) query;
+    "printFloat32": (float32) -> (float32) query;
+}
+```
+
+##### Principal
+
+The Azle type `Principal` corresponds to the [Candid type principal](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-principal) and will become a [JavaScript String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) at runtime.
+
+TypeScript:
+
+```typescript
+import { Principal, Query, ic } from 'azle';
+
+export function getPrincipal(): Query<Principal> {
+    return 'rrkah-fqaaa-aaaaa-aaaaq-cai';
+}
+
+export function printPrincipal(principal: Principal): Query<Principal> {
+    ic.print(typeof principal);
+    return principal;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getPrincipal": () -> (principal) query;
+    "printPrincipal": (principal) -> (principal) query;
+}
+```
+
+##### string
+
+The TypeScript type `string` corresponds to the [Candid type text](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-text) and will become a [JavaScript String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) at runtime.
+
+TypeScript:
+
+```typescript
+import { Query, ic } from 'azle';
+
+export function getString(): Query<string> {
+    return 'Hello world!';
+}
+
+export function printString(string: string): Query<string> {
+    ic.print(typeof string);
+    return string;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getString": () -> (text) query;
+    "printString": (text) -> (text) query;
+}
+```
+
+##### boolean
+
+The TypeScript type `boolean` corresponds to the [Candid type bool](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-bool) and will become a [JavaScript Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) at runtime.
+
+TypeScript:
+
+```typescript
+import { Query, ic } from 'azle';
+
+export function getBoolean(): Query<boolean> {
+    return true;
+}
+
+export function printBoolean(boolean: boolean): Query<boolean> {
+    ic.print(typeof boolean);
+    return boolean;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getBoolean": () -> (bool) query;
+    "printBoolean": (bool) -> (bool) query;
+}
+```
+
+#### Record
+
+TypeScript type aliases referring to object literals correspond to the [Candid record type](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-record) and will become [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
+
+TypeScript:
+
+```typescript
+import { Variant } from 'azle';
+
+type Post = {
+    id: string;
+    author: User;
+    reactions: Reaction[];
+    text: string;
+    thread: Thread;
+};
+
+type Reaction = {
+    id: string;
+    author: User;
+    post: Post;
+    reactionType: ReactionType;
+};
+
+type ReactionType = Variant<{
+    fire?: null;
+    thumbsUp?: null;
+    thumbsDown?: null;
+}>;
+
+type Thread = {
+    id: string;
+    author: User;
+    posts: Post[];
+    title: string;
+};
+
+type User = {
+    id: string;
+    posts: Post[];
+    reactions: Reaction[];
+    threads: Thread[];
+    username: string;
+};
+```
+
+Candid:
+
+```typescript
+type Thread = record {
+    "id": text;
+    "author": User;
+    "posts": vec Post;
+    "title": text;
+};
+
+type User = record {
+    "id": text;
+    "posts": vec Post;
+    "reactions": vec Reaction;
+    "threads": vec Thread;
+    "username": text;
+};
+
+type Reaction = record {
+    "id": text;
+    "author": User;
+    "post": Post;
+    "reactionType": ReactionType;
+};
+
+type Post = record {
+    "id": text;
+    "author": User;
+    "reactions": vec Reaction;
+    "text": text;
+    "thread": Thread;
+};
+
+type ReactionType = variant {
+    "fire": null;
+    "thumbsUp": null;
+    "thumbsDown": null
+};
+```
+
+#### Variant
+
+TypeScript type aliases referring to object literals wrapped in the `Variant` Azle type correspond to the [Candid variant type](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-variant) and will become [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
+
+TypeScript:
+
+```typescript
+import { Variant, nat32 } from 'azle';
+
+type ReactionType = Variant<{
+    fire?: null;
+    thumbsUp?: null;
+    thumbsDown?: null;
+    emotion?: Emotion;
+    firework?: Firework;
+}>;
+
+type Emotion = Variant<{
+    happy?: null;
+    sad?: null;
+}>
+
+type Firework = {
+    color: string;
+    numStreaks: nat32;
+};
+```
+
+Candid:
+
+```typescript
+type ReactionType = variant {
+    "fire": null;
+    "thumbsUp": null;
+    "thumbsDown": null;
+    "emotion": Emotion;
+    "firework": Firework
+};
+
+type Emotion = variant {
+    "happy": null;
+    "sad": null
+};
+
+type Firework = record {
+    "color": text;
+    "numStreaks": nat32;
+};
+```
+
+#### Array
+
+TypeScript `[]` array syntax corresponds to the [Candid type vec](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-vec) and will become an array of the enclosed type at runtime. Only the `[]` array syntax is supported at this time (i.e. not `Array` or `ReadonlyArray` etc).
+
+TypeScript:
+
+```typescript
+import { Query, int32 } from 'azle';
+
+export function getNumbers(): Query<int32[]> {
+    return [0, 1, 2, 3];
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getNumbers": () -> (vec int32) query;
+}
+```
+
+#### Opt
+
+The Azle type `Opt` corresponds to the [Candid type opt](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-opt) and will become the enclosed JavaScript type or null at runtime.
+
+TypeScript:
+
+```typescript
+import { Opt, Query } from 'azle';
+
+export function getOptSome(): Query<Opt<boolean>> {
+    return true;
+}
+
+export function getOptNone(): Query<Opt<boolean>> {
+    return null;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "getOptSome": () -> (opt bool) query;
+    "getOptNone": () -> (opt bool) query;
+}
+```
+
+### Query methods
+
+Examples:
+* [query](/examples/query)
+* [update](/examples/update)
+* [simple_user_accounts](/examples/simple_user_accounts)
+
+DFINITY documentation:
+* 
+
+Query methods expose public callable functions that are read-only. All state changes will be discarded after the function call completes.
+
+More documentation to come, see the examples and the DFINITY documentation for the time being.
+
+### Update methods
+
+Examples:
+* [update](/examples/update)
+* [key_value_store](/examples/key_value_store)
+
+DFINITY documentation:
+* 
+
+Update methods expose public callable functions that are writable. All state changes will be persisted after the function call completes.
+
+More documentation to come, see the examples and the DFINITY documentation for the time being.
+
+### IC API
+
+Examples:
+* [ic_api](/examples/ic_api)
+
+DFINITY documentation:
+* 
+
+Azle exports the `ic` object which contains access to the IC APIs.
+
+```typescript
+import {
+    Query,
+    nat64,
+    ic,
+    Principal
+} from 'azle';
+
+// returns the principal of the identity that called this function
+export function caller(): Query<string> {
+    return ic.caller();
+}
+
+// returns the amount of cycles available in the canister
+export function canisterBalance(): Query<nat64> {
+    return ic.canisterBalance();
+}
+
+// returns this canister's id
+export function id(): Query<Principal> {
+    return ic.id();
+}
+
+// prints a message through the local replica's output
+export function print(message: string): Query<boolean> {
+    ic.print(message);
+
+    return true;
+}
+
+// returns the current timestamp
+export function time(): Query<nat64> {
+    return ic.time();
+}
+
+// traps with a message, stopping execution and discarding all state within the call
+export function trap(message: string): Query<boolean> {
+    ic.trap(message);
+
+    return true;
+}
+```
+
+### Cross-canister calls
+
+Examples:
+* [cross_canister_calls](/examples/cross_canister_calls)
+
+DFINITY documentation:
+* 
+
+More documentation to come, see the examples and the DFINITY documentation for the time being.
+
+### Init method
+
+Examples:
+* [init](/examples/init)
+* [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
+
+DFINITY documentation:
+* 
+
+More documentation to come, see the examples and the DFINITY documentation for the time being.
+
+### PreUpgrade method
+
+Examples:
+* [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
+
+DFINITY documentation:
+* 
+
+More documentation to come, see the examples and the DFINITY documentation for the time being.
+
+### PostUpgrade method
+
+Examples:
+* [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
+
+DFINITY documentation:
+* 
+
+More documentation to come, see the examples and the DFINITY documentation for the time being.
+
+### Stable storage
+
+Examples:
+* [stable_storage](/examples/stable_storage)
+
+DFINITY documentation:
+* 
+
+More documentation to come, see the examples and the DFINITY documentation for the time being.
+
+### Heartbeat method
+
+Examples:
+* [heartbeat](/examples/heartbeat)
+
+DFINITY documentation:
+* 
+
+More documentation to come, see the examples and the DFINITY documentation for the time being.
 
 ### Roadmap
 
