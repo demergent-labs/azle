@@ -2,7 +2,8 @@ import {
     Init,
     Opt,
     Query,
-    Variant
+    Variant,
+    Principal
 } from 'azle';
 
 type User = {
@@ -16,13 +17,16 @@ type Reaction = Variant<{
 
 let user: Opt<User> = null;
 let reaction: Opt<Reaction> = null;
+let owner: Opt<Principal> = null;
 
 export function init(
     initUser: User,
-    initReaction: Reaction
+    initReaction: Reaction,
+    initOwner: Principal
 ): Init {
     user = initUser;
     reaction = initReaction;
+    owner = initOwner;
 }
 
 export function getUser(): Query<Opt<User>> {
@@ -31,4 +35,8 @@ export function getUser(): Query<Opt<User>> {
 
 export function getReaction(): Query<Opt<Reaction>> {
     return reaction;
+}
+
+export function getOwner(): Query<Opt<Principal>> {
+    return owner;
 }
