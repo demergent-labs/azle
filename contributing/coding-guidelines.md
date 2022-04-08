@@ -1,5 +1,7 @@
 # Demergent Labs Coding Guidelines (WIP)
 
+WORK IN PROGRESS (Basically we favor functional programming)
+
 This document seeks to codify the opinion of Demergent Labs as it pertains to the source code of its umbrella projects. Code reviews will be subject to these guidelines. The document may change over time.
 
 ## Definitions
