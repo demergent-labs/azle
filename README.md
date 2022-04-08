@@ -206,7 +206,7 @@ Examples:
 
 [Candid](https://smartcontracts.org/docs/candid-guide/candid-intro.html) is an interface description language created by DFINITY. It defines interfaces between services (in our context canisters), allowing canisters and clients written in various languages to easily interact with each other.
 
-Much of what Azle is doing under-the-hood is translating TypeScript code into various formats that Candid understands. To do this your TypeScript code must use various Azle-provided types.
+Much of what Azle is doing under-the-hood is translating TypeScript code into various formats that Candid understands (for example Azle will generate a Candid `.did` file from your TypeScript code). To do this your TypeScript code must use various Azle-provided types.
 
 Please note that these types are only needed in the following locations in your code:
 
