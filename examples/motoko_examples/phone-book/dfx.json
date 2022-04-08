@@ -1,0 +1,21 @@
+{
+  "canisters": {
+    "phone_book": {
+      "type": "custom",
+      "build": "npx azle phone_book",
+      "root": "src",
+      "ts": "src/phone_book/phone_book.ts",
+      "candid": "src/phone_book/phone_book.did",
+      "wasm": "target/wasm32-unknown-unknown/release/phone_book.wasm"
+    },
+    "www": {
+      "frontend": {
+        "entrypoint": "src/www/public/index.html"
+      },
+      "source": ["src/www/assets", "dist/www/"],
+      "dependencies": ["phone_book"],
+      "type": "assets"
+    }
+  },
+  "dfx": "0.9.2"
+}
