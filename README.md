@@ -190,6 +190,11 @@ Deploying to the live Internet Computer generally only requires adding the `--ne
 
 ### Canisters
 
+More information:
+* https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html
+* https://wiki.internetcomputer.org/wiki/Canisters_(dapps/smart_contracts)
+* https://smartcontracts.org/docs/developers-guide/design-apps.html#_single_or_multiple_canister_architecture
+
 In many ways developing canisters with Azle is similar to any other TypeScript/JavaScript project. To see what canister source code looks like, see the [examples](/examples).
 
 A canister is the fundamental application unit on the Internet Computer. It contains the code and state of your application. When deployed to the Internet Computer, your canister becomes an everlasting process. Its global variables automatically persist.
@@ -850,12 +855,23 @@ Examples:
 * [update](/examples/update)
 * [simple_user_accounts](/examples/simple_user_accounts)
 
-DFINITY documentation:
-* https://smartcontracts.org/docs/introduction/welcome.html
+More information:
+* https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html#query-update
+* https://smartcontracts.org/docs/developers-guide/design-apps.html#_using_query_calls
 
 Query methods expose public callable functions that are read-only. All state changes will be discarded after the function call completes.
 
-More documentation to come, see the examples and the DFINITY documentation for the time being.
+Query calls do not go through consensus and thus return very quickly relative to update calls. This also means they are less secure than update calls unless [certified data](https://smartcontracts.org/docs/base-libraries/certifieddata) is used in conjunction with the query call.
+
+To create a query method, simply wrap the return type of your function in the Azle `Query` type.
+
+```typescript
+import { Query } from 'azle';
+
+export function query(): Query<string> {
+    return 'This is a query function';
+}
+```
 
 ### Update methods
 
@@ -863,22 +879,38 @@ Examples:
 * [update](/examples/update)
 * [key_value_store](/examples/key_value_store)
 
-DFINITY documentation:
-* https://smartcontracts.org/docs/introduction/welcome.html
+More information:
+* https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html#query-update
 
 Update methods expose public callable functions that are writable. All state changes will be persisted after the function call completes.
 
-More documentation to come, see the examples and the DFINITY documentation for the time being.
+Update calls go through consensus and thus return very slowly (a few seconds) relative to query calls. This also means they are more secure than query calls unless [certified data](https://smartcontracts.org/docs/base-libraries/certifieddata) is used in conjunction with the query call.
+
+To create an update method, simply wrap the return type of your function in the azle `Update` type.
+
+```typescript
+import {
+    Query,
+    Update
+} from 'azle';
+
+let currentMessage: string = '';
+
+export function query(): Query<string> {
+    return currentMessage;
+}
+
+export function update(message: string): Update<void> {
+    currentMessage = message;
+}
+```
 
 ### IC API
 
 Examples:
 * [ic_api](/examples/ic_api)
 
-DFINITY documentation:
-* https://smartcontracts.org/docs/introduction/welcome.html
-
-Azle exports the `ic` object which contains access to the IC APIs.
+Azle exports the `ic` object which contains access to certain IC APIs.
 
 ```typescript
 import {
@@ -969,8 +1001,8 @@ More documentation to come, see the examples and the DFINITY documentation for t
 Examples:
 * [stable_storage](/examples/stable_storage)
 
-DFINITY documentation:
-* https://smartcontracts.org/docs/introduction/welcome.html
+More information:
+* https://smartcontracts.org/docs/developers-guide/design-apps.html#_data_storage_and_retrieval
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
 

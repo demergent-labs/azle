@@ -4,7 +4,8 @@ type User = record {
 
 type Reaction = variant { "Fire": null; "Wave": null };
 
-service: (User, Reaction) -> {
+service: (User, Reaction, principal) -> {
     "getUser": () -> (opt User) query;
     "getReaction": () -> (opt Reaction) query;
+    "getOwner": () -> (opt principal) query;
 }
