@@ -12,7 +12,7 @@ export const ic: ic = globalThis.ic;
 // };
 
 ic.stableStorage = function () {
-  return (ic as any)._azleStableStorage;
+    return (ic as any)._azleStableStorage;
 };
 
 // ic.call = function* (...args) {
@@ -26,22 +26,22 @@ ic.stableStorage = function () {
 // };
 
 type ic = {
-  // call: (
-  //     canisterId: Principal,
-  //     methodName: string,
-  //     ...args: any[]
-  // ) => Generator; // TODO improve type inference here, try to get rid of the type parameters
-  caller: () => string;
-  canisters: {
-    [canisterName: string]: <T>(canisterId: Principal) => T;
-  };
-  canisterBalance: () => nat64;
-  id: () => Principal;
-  print: (...args: any) => void;
-  // rawRand: () => nat8[]; // TODO I think we want this to really be a JS Uint8Array
-  stableStorage: <T>() => T;
-  time: () => nat64;
-  trap: (message: string) => never;
+    // call: (
+    //     canisterId: Principal,
+    //     methodName: string,
+    //     ...args: any[]
+    // ) => Generator; // TODO improve type inference here, try to get rid of the type parameters
+    caller: () => string;
+    canisters: {
+        [canisterName: string]: <T>(canisterId: Principal) => T;
+    };
+    canisterBalance: () => nat64;
+    id: () => Principal;
+    print: (...args: any) => void;
+    // rawRand: () => nat8[]; // TODO I think we want this to really be a JS Uint8Array
+    stableStorage: <T>() => T;
+    time: () => nat64;
+    trap: (message: string) => never;
 };
 
 export type Migrate<T> = T;
@@ -77,8 +77,8 @@ export type Opt<T> = T | null;
 //     err?: string;
 // }>;
 export type CanisterResult<T> = Variant<{
-  ok?: T;
-  err?: string;
+    ok?: T;
+    err?: string;
 }>;
 export type Stable<T> = T;
 

@@ -1,4 +1,5 @@
 {
 	"singleQuote": true,
-	"quoteProps": "consistent"
+	"quoteProps": "consistent",
+	"tabWidth": 4
 }
