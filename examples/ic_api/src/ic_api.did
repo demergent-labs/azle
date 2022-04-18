@@ -5,5 +5,4 @@ service: {
     "print": (text) -> (bool) query;
     "time": () -> (nat64) query;
     "trap": (text) -> (bool) query;
-    "rawRand": () -> (vec nat8);
 }
