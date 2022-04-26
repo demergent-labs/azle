@@ -1,34 +1,57 @@
-// @ts-nocheck
+// TODO we want to test all of the management canister functions, only two are shown here
 
 import {
     UpdateAsync,
-    ic,
-    int32,
-    Canister,
     nat8,
-    Principal,
     Variant,
-    Opt,
-    nat
+    CanisterResult
 } from 'azle';
 import {
-    Management,
+    ManagementCanister,
     CanisterStatusArgs,
     CanisterStatusResult
 } from 'azle/canisters/management';
 
-export function* raw_rand(): UpdateAsync<nat8[]> {
-    const managementCanister = ic.canisters.Management<Management>('aaaaa-aa');
+type RawRandResult = Variant<{
+    ok?: nat8[];
+    err?: string;
+}>;
 
-    return yield managementCanister.raw_rand();
+export function* raw_rand(): UpdateAsync<RawRandResult> {
+    const raw_rand_canister_result: CanisterResult<nat8[]> = yield ManagementCanister.raw_rand();
+
+    if (raw_rand_canister_result.ok === undefined) {
+        return {
+            err: raw_rand_canister_result.err
+        };
+    }
+
+    const randomness = raw_rand_canister_result.ok;
+
+    return {
+        ok: randomness
+    };
 }
 
-export function* canister_status(args: CanisterStatusArgs): UpdateAsync<CanisterStatusResult> {
-    const management_canister = ic.canisters.Management<Management>('aaaaa-aa');
+type GetCanisterStatusResult = Variant<{
+    ok?: CanisterStatusResult;
+    err?: string;
+}>;
 
-    const canisterStatusResult: CanisterStatusResult = yield management_canister.canister_status({
+export function* canister_status(args: CanisterStatusArgs): UpdateAsync<GetCanisterStatusResult> {
+    const canister_status_result_canister_result: CanisterResult<CanisterStatusResult> = yield ManagementCanister.canister_status({
         canister_id: args.canister_id
     });
 
-    return canisterStatusResult;
+    if (canister_status_result_canister_result.ok === undefined) {
+        return {
+            err: canister_status_result_canister_result.err
+        };
+    }
+
+    const canister_status_result = canister_status_result_canister_result.ok;
+
+    return {
+        ok: canister_status_result
+    };
 }

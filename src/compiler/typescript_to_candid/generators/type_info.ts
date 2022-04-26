@@ -1,8 +1,13 @@
-import { isTypeReferenceNodeAVariant } from '../ast_utilities/miscellaneous';
+import {
+    getTypeReferenceNodeTypeName,
+    isTypeReferenceNodeARecord,
+    isTypeReferenceNodeAVariant
+} from '../ast_utilities/miscellaneous';
 import { CandidTypeInfo } from '../../../types';
 import * as tsc from 'typescript';
 import { generateCandidRecordForTypeLiteral } from './record';
 import { generateCandidVariantForTypeLiteral } from './variant';
+import { getTypeAliasDeclaration } from '../ast_utilities/type_aliases';
 
 export function generateCandidTypeInfo(
     sourceFiles: readonly tsc.SourceFile[],
@@ -265,6 +270,7 @@ function generateCandidTypeInfoForTypeReference(
         //     );
         // }
 
+        // TODO do we need this one anymore if Variant is being found above?
         if (
             isTypeReferenceNodeAVariant(
                 sourceFiles,
@@ -278,11 +284,34 @@ function generateCandidTypeInfoForTypeReference(
             };
         }
 
-        return {
-            text: typeName,
-            typeName,
-            typeClass: 'record'
-        };
+        if (
+            isTypeReferenceNodeARecord(
+                sourceFiles,
+                typeReferenceNode
+            ) == true
+        ) {
+            return {
+                text: typeName,
+                typeName,
+                typeClass: 'record'
+            };
+        }
+
+        const typeAliasDeclaration = getTypeAliasDeclaration(
+            sourceFiles,
+            getTypeReferenceNodeTypeName(typeReferenceNode)
+        );
+
+        if (typeAliasDeclaration === undefined) {
+            throw new Error(`Could not generate Candid type name for TypeScript type reference node`);
+        }
+
+        const candidTypeInfo = generateCandidTypeInfo(
+            sourceFiles,
+            typeAliasDeclaration.type
+        );
+
+        return candidTypeInfo;
     }
 
     throw new Error(`Could not generate Candid type name for TypeScript type reference node`);

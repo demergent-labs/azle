@@ -6,6 +6,12 @@ export function generateAzleIntoJsValueTrait(): Rust {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue;
         }
 
+        impl AzleIntoJsValue for () {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                boa_engine::JsValue::Undefined
+            }
+        }
+
         impl AzleIntoJsValue for bool {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 self.into_js_value(context)

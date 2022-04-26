@@ -47,6 +47,7 @@ export function generateCandidRecords(
     };
 }
 
+// TODO we need to filter out type aliases that aren't records
 function getCandidRecordNames(
     sourceFiles: readonly tsc.SourceFile[],
     canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
@@ -285,6 +286,9 @@ export function getCandidRecordNamesFromTypeLiteralNode(
     return candidRecordNames;
 }
 
+// TODO we need to handle all possible types here, not just TypeLiteral and Array
+// TODO actually these shouldn't even be records, so we need to filter out all type alias declarations
+// TODO that are not should not be here...like nat64 etc
 function generateCandidRecord(
     sourceFiles: readonly tsc.SourceFile[],
     candidRecordName: string

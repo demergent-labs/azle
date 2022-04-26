@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "ledger_canister": {
+            "type": "custom",
+            "build": "npx azle ledger_canister",
+            "root": "src",
+            "ts": "src/ledger_canister.ts",
+            "candid": "src/ledger_canister.did",
+            "wasm": "target/wasm32-unknown-unknown/release/ledger_canister.wasm"
+        }
+    }
+}

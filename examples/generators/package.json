@@ -1,0 +1,8 @@
+{
+    "scripts": {
+        "test": "node test/test.js"
+    },
+    "dependencies": {
+        "azle": "0.1.0"
+    }
+}

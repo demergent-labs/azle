@@ -78,31 +78,23 @@ Run the following command to install dfx 0.9.3:
 DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 ```
 
+#### Common Installation Issues
+
+* Ubuntu
+  * error: linker cc not found (sudo apt install build-essential)
+  * is cmake not installed? (sudo apt install cmake)
+
 #### Azle
 
-Follow these steps to create an Azle project:
+Follow these steps to create an Azle project. The steps below assume a project called `backend`:
 
-1. Create a directory for your project
-2. Create a `package.json` file
-3. Install Azle
-4. Create a `dfx.json` file
-5. Create a directory and entry TypeScript file for your canister
-6. Fill out your `dfx.json` file
+1. Create a directory for your project (`mkdir backend && cd backend`)
+2. Create a `package.json` file (`npm init -y`)
+3. Install Azle (`npm install azle`)
+4. Create a `dfx.json` file (`touch dfx.json`)
+5. Create a directory and entry TypeScript file for your canister (`mkdir src && cd src && touch backend.ts`)
 
-Here are the commands you might run from a terminal to setup your project:
-
-```bash
-mkdir backend
-cd backend
-npm init -y
-npm install azle
-touch dfx.json
-mkdir src
-cd src
-touch backend.ts
-```
-
-Your `dfx.json` should look like this:
+Your `dfx.json` file should look like this:
 
 ```json
 {
@@ -119,17 +111,22 @@ Your `dfx.json` should look like this:
 }
 ```
 
-#### Common Installation Issues
+Your `backend.ts` file should look like this:
 
-* Ubuntu
-  * error: linker cc not found (sudo apt install build-essential)
-  * is cmake not installed? (sudo apt install cmake)
+```typescript
+import { Query } from 'azle';
+
+export function helloWorld(): Query<string> {
+    return 'Hello world!';
+}
+```
+
 
 ### Deployment
 
 #### Local deployment
 
-Start up an IC replica and deploy:
+Start up an IC replica and deploy. The first deploy will likely take multiple minutes as it downloads and compiles many Rust dependencies. Subsequent deploys should be much quicker:
 
 ```bash
 # Open a terminal and navigate to your project's root directory, then run the following command to start a local IC replica
@@ -1062,9 +1059,7 @@ Demergent Labs currently owns the majority of AZLE tokens, and thus has ultimate
 
 All contributors must agree to and sign the [Azle License Extension](/LICENSE_EXTENSION.md).
 
-Please consider working on the [good first issues](https://github.com/demergent-labs/azle/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) and [help wanted issues](https://github.com/demergent-labs/azle/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22) before suggesting other work to be done.
-
-Before beginning work on a contribution, please create or comment on the issue you want to work on and wait for clearance from Demergent Labs.
+Please reach out before working on anything that is not in the [good first issues](https://github.com/demergent-labs/azle/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) or [help wanted issues](https://github.com/demergent-labs/azle/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22). Before beginning work on a contribution, please create or comment on the issue you want to work on and wait for clearance from Demergent Labs.
 
 See [Demergent Labs' Coding Guidelines](/contributing/coding-guidelines.md) for what to expect during code reviews.
 

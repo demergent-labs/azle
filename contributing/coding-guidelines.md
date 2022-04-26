@@ -30,10 +30,17 @@ The intended meaning of favor is to use wherever practical. Always consider usin
 2. Declare named functions at the top level using the `function` keyword syntax
 3. Never declare named functions within functions, always declare them at the top level
 4. All anonymous functions should use the arrow syntax
+5. Use const for variables and values intended to be immutable
+6. Use let for variables and values intended to be mutable
+7. Never use var
+8. Don't throw errors, always return a value
 
 ## Rust
 
 1. Be prepared to defend every use of `mut`
+
+## Canisters
+1. All mutations should be performed in the top-level canister method
 
 ## Code review checklist
 

@@ -105,4 +105,9 @@ function compileRustCode(canisterName: string) {
         `./target/bin/ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/${canisterName}.wasm -o ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
         { stdio: 'inherit' }
     );
+
+    execSync(
+        `gzip -f -k ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
+        { stdio: 'inherit' }
+    );
 }
