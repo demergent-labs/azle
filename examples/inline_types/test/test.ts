@@ -4,9 +4,9 @@ import {
 } from 'azle/test';
 
 const tests: Test[] = [
-    // {
-    //     bash: 'dfx deploy'
-    // },
+    {
+        bash: 'dfx deploy'
+    },
     {
         bash: `dfx canister call inline_types inlineRecordReturnType`,
         expectedOutputBash: `echo "(record { prop1 = \\"prop1\\"; prop2 = \\"prop2\\" })"`

@@ -62,7 +62,7 @@ const initial_reads: Test[] = [
     }
 ];
 
-const initial_writes: Test[] = [
+const writes: Test[] = [
     {
         bash: `dfx canister call stable_storage writeStableInt '(0)'`,
         expectedOutputBash: `echo "()"`
@@ -121,7 +121,7 @@ const initial_writes: Test[] = [
     }
 ];
 
-const check_initial_writes: Test[] = [
+const check_writes: Test[] = [
     {
         bash: `dfx canister call stable_storage readStableInt`,
         expectedOutputBash: `echo "(0 : int)"`
@@ -180,13 +180,6 @@ const check_initial_writes: Test[] = [
     }
 ];
 
-// TODO the tests should perform multiple deploys
-// TODO That will be a bit hard to do until this: https://forum.dfinity.org/t/upgrade-a-canister-even-if-the-wasm-module-hash-has-not-changed/11989
-// TODO with the new test infrastructure it should not be too hard to test this now, but it requires writing bash to change a file
-// TODO that is undesirable because if the tests fail that file could have changes picked up by version control
-// TODO then we deploy and check that all of the values remain
-// TODO I will need to actually change the stable_storage file to redeploy and perform an upgrade
-
 const tests: Test[] = [
     {
         bash: 'dfx canister uninstall-code stable_storage || true'
@@ -195,8 +188,16 @@ const tests: Test[] = [
         bash: 'dfx deploy'
     },
     ...initial_reads,
-    ...initial_writes,
-    ...check_initial_writes
+    ...writes,
+    ...check_writes,
+    {
+        // TODO Get rid of this once https://forum.dfinity.org/t/upgrade-a-canister-even-if-the-wasm-module-hash-has-not-changed/11989
+        bash: 'echo "\\n\\nexport function hack(): Query<void> {}" >> src/stable_storage.ts'
+    },
+    {
+        bash: 'dfx deploy'
+    },
+    ...check_writes
 ];
 
 run_tests(tests);
