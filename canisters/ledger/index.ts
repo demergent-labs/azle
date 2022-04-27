@@ -1,5 +1,4 @@
 // TODO we need tests for every success and error case
-// TODO add proper licensing for these canisters
 
 import {
     Canister,

@@ -72,11 +72,19 @@ type Archive = record {
     "canister_id": principal;
 };
 
+type ExecuteTransferResult = variant { "ok": bool; "err": text };
+
+type GetAccountBalanceResult = variant { "ok": Tokens; "err": text };
+
+type GetTransferFeeResult = variant { "ok": TransferFee; "err": text };
+
 type GetSymbolResult = variant { "ok": text; "err": text };
 
 type GetNameResult = variant { "ok": text; "err": text };
 
 type GetDecimalsResult = variant { "ok": nat32; "err": text };
+
+type GetArchivesResult = variant { "ok": Archives; "err": text };
 
 type TransferResult = variant { "Ok": nat64; "Err": TransferError };
 
@@ -85,7 +93,11 @@ type TransferError = variant { "BadFee": record { "expected_fee": Tokens; }; "In
 type Operation = variant { "Mint": record { "to": vec nat8; } };
 
 service: {
+    "execute_transfer": (text, nat64) -> (ExecuteTransferResult);
+    "get_account_balance": (text) -> (GetAccountBalanceResult);
+    "get_transfer_fee": () -> (GetTransferFeeResult);
     "get_symbol": () -> (GetSymbolResult);
     "get_name": () -> (GetNameResult);
     "get_decimals": () -> (GetDecimalsResult);
+    "get_archives": () -> (GetArchivesResult);
 }
