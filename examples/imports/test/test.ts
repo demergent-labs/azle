@@ -1,0 +1,28 @@
+import {
+    run_tests,
+    Test
+} from 'azle/test';
+
+const tests: Test[] = [
+    {
+        bash: 'dfx deploy'
+    },
+    {
+        bash: `dfx canister call imports getOne`,
+        expectedOutputBash: `echo "(\\"one\\")"`
+    },
+    {
+        bash: `dfx canister call imports getTwo`,
+        expectedOutputBash: `echo "(\\"two\\")"`
+    },
+    {
+        bash: `dfx canister call imports getThree`,
+        expectedOutputBash: `echo "(\\"three\\")"`
+    },
+    {
+        bash: `dfx canister call imports sha224Hash '("hello")'`,
+        expectedOutputBash: `echo "(\\"ea09ae9cc6768c50fcee903ed054556e5bfc8347907f12598aa24193\\")"`
+    }
+];
+
+run_tests(tests);

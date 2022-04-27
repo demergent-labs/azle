@@ -1,7 +1,7 @@
 import {
     run_tests,
     Test
-} from 'azle/test/new-test';
+} from 'azle/test';
 
 const tests: Test[] = [
     {

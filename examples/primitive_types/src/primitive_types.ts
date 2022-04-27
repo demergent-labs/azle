@@ -124,6 +124,7 @@ export function printFloat32(float32: float32): Query<float32> {
     return float32;
 }
 
+// TODO make sure that the principal tests break when we upgrade to @dfinity/principal
 export function getPrincipal(): Query<Principal> {
     return 'rrkah-fqaaa-aaaaa-aaaaq-cai';
 }
