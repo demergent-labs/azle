@@ -121,7 +121,12 @@ export function generateAzleIntoJsValueTrait(): Rust {
         // TODO I wonder if we will have some problems with Vec because of the type bound??
         impl<T: AzleIntoJsValue> AzleIntoJsValue for Vec<T> {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                // TODO this is extremely unoptimized I think
+                // TODO I think I can get rid of the collect here which might help
+                // TODO I just need to not pass the context into azle_into_js_value, I don't think it's necessary
+                // TODO once we stop relying on into_js_value in boa
                 let js_values = self.into_iter().map(|item| item.azle_into_js_value(context)).collect::<Vec<boa_engine::JsValue>>();
+                // let js_values = self.into_iter().map(|item| item.azle_into_js_value(context));
 
                 boa_engine::object::JsArray::from_iter(js_values, context).into()
             }

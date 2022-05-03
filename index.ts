@@ -1,3 +1,6 @@
+// TODO it would be great if we could allow importing this file (azle bare specifier) into frontends or Node.js
+// TODO but it isn't quite set up to do that right now
+
 declare var globalThis: any;
 
 export const ic: ic = globalThis.ic;
@@ -9,6 +12,13 @@ export const ic: ic = globalThis.ic;
 //         name: 'rawRand'
 //     } as any;
 // };
+
+globalThis.console = {
+    ...globalThis.console,
+    log: (...args: any[]) => {
+        ic.print(...args);
+    }
+};
 
 ic.stableStorage = function() {
     return (ic as any)._azleStableStorage;
@@ -57,7 +67,7 @@ export type UpdateAsync<T> = Generator<any, T, any>; // TODO to be stricter we m
 // TODO the generator types are not exactly correct...but at least I've given the user the Async type
 export type Async<T> = Generator<any, T, any>; // TODO to be stricter we may want the last parameter to be unknown: https://github.com/demergent-labs/azle/issues/138
 export type Canister<T> = T;
-export type Variant<T> = T;
+export type Variant<T> = Partial<T>;
 export type Principal = string;
 export type Opt<T> = T | null;
 // export type Result<T, V> = {
@@ -96,3 +106,21 @@ export type nat8 = number;
 
 export type float32 = number;
 export type float64 = number;
+
+type AzleResult<T> = Variant<{
+    ok: T;
+    err: string;
+}>;
+
+type Ok<T> = {
+    ok: NonNullable<T>;
+};
+
+export function ok<T>(azle_result: AzleResult<T>): azle_result is Ok<T> {
+    if (azle_result.err === undefined) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}

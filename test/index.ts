@@ -3,8 +3,10 @@ import { execSync } from 'child_process';
 export type Test = {
     skip?: boolean;
     delay?: number;
-    bash: string;
-    expectedOutputBash?: string;
+    bash?: string; // TODO perhaps we can just get rid of this
+    expectedOutputBash?: string; // TODO perhaps we can just get rid of this
+    prep?: () => Promise<any>;
+    test?: (result: string) => Promise<boolean>;
 };
 
 // TODO should this just return a boolean?
@@ -29,22 +31,33 @@ export async function run_tests(tests: Test[]) {
                 await new Promise((resolve) => setTimeout(resolve, test.delay));
             }
         
-            console.log(`${test.bash}\n`);
+            if (test.bash !== undefined) {
+                console.log(`${test.bash}\n`);
+            }
 
-            const result = execSync(
+            const result = test.bash !== undefined ? execSync(
                 test.bash,
                 {
-                    stdio: test.expectedOutputBash === undefined ? 'inherit' : undefined
+                    stdio: test.expectedOutputBash === undefined && test.test === undefined ? 'inherit' : undefined
                 }
-            );
+            ) : test.prep !== undefined ? await test.prep() : 'NO_RESULT';
     
-            if (test.expectedOutputBash === undefined) {
+            if (
+                test.expectedOutputBash === undefined &&
+                test.test === undefined
+            ) {
                 continue;
             }
-    
-            const expected_output = execSync(test.expectedOutputBash).toString().trim();
-        
-            if (result.toString().trim() === expected_output) {
+
+            const {
+                correct,
+                expected_output
+            } = await perform_check(
+                test,
+                result.toString().trim()
+            );
+
+            if (correct === true) {
                 console.log('\x1b[32m', `test ${test_number} passed`);
                 console.log('\x1b[0m');
             }
@@ -64,4 +77,30 @@ export async function run_tests(tests: Test[]) {
             process.exit(1);
         }
     }
+}
+
+async function perform_check(
+    test: Test,
+    result: string
+): Promise<{
+    correct: boolean;
+    expected_output: string;
+}> {
+    if (test.expectedOutputBash !== undefined) {
+        const expected_output = execSync(test.expectedOutputBash).toString().trim();
+
+        return {
+            correct: expected_output === result,
+            expected_output
+        };
+    }
+
+    if (test.test !== undefined) {
+        return {
+            correct: await test.test(result),
+            expected_output: 'N/A'
+        };
+    }
+
+    throw new Error('This should never happen');
 }

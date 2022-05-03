@@ -685,9 +685,9 @@ type Reaction = {
 };
 
 type ReactionType = Variant<{
-    fire?: null;
-    thumbsUp?: null;
-    thumbsDown?: null;
+    fire: null;
+    thumbsUp: null;
+    thumbsDown: null;
 }>;
 
 type Thread = {
@@ -756,16 +756,16 @@ TypeScript:
 import { Variant, nat32 } from 'azle';
 
 type ReactionType = Variant<{
-    fire?: null;
-    thumbsUp?: null;
-    thumbsDown?: null;
-    emotion?: Emotion;
-    firework?: Firework;
+    fire: null;
+    thumbsUp: null;
+    thumbsDown: null;
+    emotion: Emotion;
+    firework: Firework;
 }>;
 
 type Emotion = Variant<{
-    happy?: null;
-    sad?: null;
+    happy: null;
+    sad: null;
 }>
 
 type Firework = {

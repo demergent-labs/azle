@@ -93,14 +93,17 @@ type CanisterStatus = variant { "running": null; "stopping": null; "stopped": nu
 type InstallCodeMode = variant { "install": null; "reinstall": null; "upgrade": null };
 
 service: {
+    "health_check": () -> (bool) query;
     "get_created_canister_id": () -> (principal) query;
     "execute_create_canister": () -> (ExecuteCreateCanisterResult);
     "execute_update_settings": (principal) -> (DefaultResult);
+    "execute_install_code": (principal, vec nat8) -> (DefaultResult);
     "execute_uninstall_code": (principal) -> (DefaultResult);
     "execute_start_canister": (principal) -> (DefaultResult);
     "execute_stop_canister": (principal) -> (DefaultResult);
     "get_canister_status": (CanisterStatusArgs) -> (GetCanisterStatusResult);
     "execute_delete_canister": (principal) -> (DefaultResult);
+    "execute_deposit_cycles": (principal) -> (DefaultResult);
     "get_raw_rand": () -> (RawRandResult);
     "provisional_create_canister_with_cycles": () -> (ExecuteProvisionalCreateCanisterWithCyclesResult);
     "provisional_top_up_canister": (principal, nat) -> (DefaultResult);

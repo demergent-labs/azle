@@ -67,9 +67,9 @@ export type InstallCodeArgs = {
 };
 
 export type InstallCodeMode = Variant<{
-    install?: null;
-    reinstall?: null;
-    upgrade?: null;
+    install: null;
+    reinstall: null;
+    upgrade: null;
 }>;
 
 export type UninstallCodeArgs = {
