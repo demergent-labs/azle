@@ -1,7 +1,7 @@
 import {
     run_tests,
     Test
-} from 'azle/test/new-test';
+} from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/imports';
 
@@ -15,23 +15,65 @@ const imports_canister = createActor(
 
 const tests: Test[] = [
     {
-        bash: 'dfx deploy'
+        name: 'clear canister memory',
+        prep: async () => {
+            execSync(`dfx canister uninstall-code imports || true`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: `dfx canister call imports getOne`,
-        expectedOutputBash: `echo "(\\"one\\")"`
+        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
+        name: 'waiting for createActor fetchRootKey',
+        wait: 5000
     },
     {
-        bash: `dfx canister call imports getTwo`,
-        expectedOutputBash: `echo "(\\"two\\")"`
+        name: 'deploy',
+        prep: async () => {
+            execSync(`dfx deploy`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: `dfx canister call imports getThree`,
-        expectedOutputBash: `echo "(\\"three\\")"`
+        name: 'getOne',
+        test: async () => {
+            const result = await imports_canister.getOne();
+
+            return {
+                ok: result === 'one'
+            };
+        }
     },
     {
-        bash: `dfx canister call imports sha224Hash '("hello")'`,
-        expectedOutputBash: `echo "(\\"ea09ae9cc6768c50fcee903ed054556e5bfc8347907f12598aa24193\\")"`
+        name: 'getTwo',
+        test: async () => {
+            const result = await imports_canister.getTwo();
+
+            return {
+                ok: result === 'two'
+            };
+        }
+    },
+    {
+        name: 'getThree',
+        test: async () => {
+            const result = await imports_canister.getThree();
+
+            return {
+                ok: result === 'three'
+            };
+        }
+    },
+    {
+        name: 'sha224Hash',
+        test: async () => {
+            const result = await imports_canister.sha224Hash('hello');
+
+            return {
+                ok: result === 'ea09ae9cc6768c50fcee903ed054556e5bfc8347907f12598aa24193'
+            };
+        }
     }
 ];
 

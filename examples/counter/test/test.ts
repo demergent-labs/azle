@@ -1,9 +1,9 @@
-import { execSync } from 'child_process';
 import {
     run_tests,
     Test
-} from 'azle/test/new-test';
-import { createActor } from '../src/dfx_generated/counter';
+} from 'azle/test';
+import { execSync } from 'child_process';
+import { createActor } from '../test/dfx_generated/counter';
 
 const counter_canister = createActor(
     'rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -15,30 +15,75 @@ const counter_canister = createActor(
 
 const tests: Test[] = [
     {
-        bash: 'dfx canister uninstall-code counter || true'
+        name: 'clear canister memory',
+        prep: async () => {
+            execSync(`dfx canister uninstall-code counter || true`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: 'dfx deploy'
+        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
+        name: 'waiting for createActor fetchRootKey',
+        wait: 5000
     },
     {
-        bash: `dfx canister call counter readCount`,
-        expectedOutputBash: `echo "(0 : nat64)"`
+        name: 'deploy',
+        prep: async () => {
+            execSync(`dfx deploy`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: `dfx canister call counter incrementCount`,
-        expectedOutputBash: `echo "(1 : nat64)"`
+        name: 'readCount',
+        test: async () => {
+            const result = await counter_canister.readCount();
+
+            return {
+                ok: result === 0n
+            };
+        }
     },
     {
-        bash: `dfx canister call counter incrementCount`,
-        expectedOutputBash: `echo "(2 : nat64)"`
+        name: 'readCount',
+        test: async () => {
+            const result = await counter_canister.incrementCount();
+
+            return {
+                ok: result === 1n
+            };
+        }
     },
     {
-        bash: `dfx canister call counter incrementCount`,
-        expectedOutputBash: `echo "(3 : nat64)"`
+        name: 'readCount',
+        test: async () => {
+            const result = await counter_canister.incrementCount();
+
+            return {
+                ok: result === 2n
+            };
+        }
     },
     {
-        bash: `dfx canister call counter readCount`,
-        expectedOutputBash: `echo "(3 : nat64)"`
+        name: 'readCount',
+        test: async () => {
+            const result = await counter_canister.incrementCount();
+
+            return {
+                ok: result === 3n
+            };
+        }
+    },
+    {
+        name: 'readCount',
+        test: async () => {
+            const result = await counter_canister.readCount();
+
+            return {
+                ok: result === 3n
+            };
+        }
     }
 ];
 

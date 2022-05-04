@@ -1,7 +1,7 @@
 import {
     run_tests,
     Test
-} from 'azle/test/new-test';
+} from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/pre_and_post_upgrade';
 

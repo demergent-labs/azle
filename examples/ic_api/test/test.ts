@@ -1,9 +1,9 @@
-import { execSync } from 'child_process';
 import {
     run_tests,
     Test
-} from 'azle/test/new-test';
-import { createActor } from '../src/dfx_generated/ic_api';
+} from 'azle/test';
+import { execSync } from 'child_process';
+import { createActor } from '../test/dfx_generated/ic_api';
 
 const ic_api_canister = createActor(
     'rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -15,19 +15,57 @@ const ic_api_canister = createActor(
 
 const tests: Test[] = [
     {
-        bash: 'dfx deploy'
+        name: 'clear canister memory',
+        prep: async () => {
+            execSync(`dfx canister uninstall-code ic_api || true`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: `dfx canister call ic_api canisterBalance`,
-        expectedOutputBash: `echo "(4_000_000_000_000 : nat64)"`
+        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
+        name: 'waiting for createActor fetchRootKey',
+        wait: 5000
     },
     {
-        bash: `dfx canister call ic_api id`,
-        expectedOutputBash: `echo "(principal \\"$(dfx canister id ic_api)\\")"`
+        name: 'deploy',
+        prep: async () => {
+            execSync(`dfx deploy`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: `dfx canister call ic_api print '("Hello World!")'`,
-        expectedOutputBash: `echo "(true)"`
+        name: 'canisterBalance',
+        test: async () => {
+            const result = await ic_api_canister.canisterBalance();
+
+            return {
+                ok: result === 4_000_000_000_000n
+            };
+        }
+    },
+    {
+        name: 'id',
+        test: async () => {
+            const ic_api_canister_id = execSync(`dfx canister id ic_api`).toString().trim();
+
+            const result = await ic_api_canister.id();
+
+            return {
+                ok: result.toText() === ic_api_canister_id
+            };
+        }
+    },
+    {
+        name: 'print',
+        test: async () => {
+            const result = await ic_api_canister.print('Hello World!');
+
+            return {
+                ok: result === true
+            };
+        }
     }
 ];
 

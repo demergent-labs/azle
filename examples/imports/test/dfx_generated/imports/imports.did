@@ -1,0 +1,6 @@
+service: {
+    "getOne": () -> (text) query;
+    "getTwo": () -> (text) query;
+    "getThree": () -> (text) query;
+    "sha224Hash": (text) -> (text) query;
+}

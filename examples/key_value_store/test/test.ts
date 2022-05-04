@@ -1,7 +1,7 @@
 import {
     run_tests,
     Test
-} from 'azle/test/new-test';
+} from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/key_value_store';
 
@@ -15,34 +15,91 @@ const key_value_store_canister = createActor(
 
 const tests: Test[] = [
     {
-        bash: 'dfx canister uninstall-code key_value_store || true'
+        name: 'clear canister memory',
+        prep: async () => {
+            execSync(`dfx canister uninstall-code key_value_store || true`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: 'dfx deploy'
+        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
+        name: 'waiting for createActor fetchRootKey',
+        wait: 5000
     },
     {
-        bash: `dfx canister call key_value_store get '("0")'`,
-        expectedOutputBash: `echo "(null)"`
+        name: 'deploy',
+        prep: async () => {
+            execSync(`dfx deploy`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: `dfx canister call key_value_store get '("1")'`,
-        expectedOutputBash: `echo "(null)"`
+        name: 'get 0',
+        test: async () => {
+            const result = await key_value_store_canister.get('0');
+
+            return {
+                ok: result.length === 0
+            };
+        }
     },
     {
-        bash: `dfx canister call key_value_store set '("0", "zero")'`,
-        expectedOutputBash: `echo "()"`
+        name: 'get 1',
+        test: async () => {
+            const result = await key_value_store_canister.get('1');
+
+            return {
+                ok: result.length === 0
+            };
+        }
     },
     {
-        bash: `dfx canister call key_value_store set '("1", "one")'`,
-        expectedOutputBash: `echo "()"`
+        name: 'set 0',
+        test: async () => {
+            const result = await key_value_store_canister.set('0', 'zero');
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call key_value_store get '("0")'`,
-        expectedOutputBash: `echo "(opt \\"zero\\")"`
+        name: 'set 1',
+        test: async () => {
+            const result = await key_value_store_canister.set('1', 'one');
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call key_value_store get '("1")'`,
-        expectedOutputBash: `echo "(opt \\"one\\")"`
+        name: 'get 0',
+        test: async () => {
+            const result = await key_value_store_canister.get('0');
+
+            return {
+                ok: (
+                    result.length === 1 &&
+                    result[0] === 'zero'
+                )
+            };
+        }
+    },
+    {
+        name: 'get 1',
+        test: async () => {
+            const result = await key_value_store_canister.get('1');
+
+            return {
+                ok: (
+                    result.length === 1 &&
+                    result[0] === 'one'
+                )
+            };
+        }
     }
 ];
 

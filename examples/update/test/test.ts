@@ -1,7 +1,7 @@
 import {
     run_tests,
     Test
-} from 'azle/test/new-test';
+} from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from './dfx_generated/update';
 

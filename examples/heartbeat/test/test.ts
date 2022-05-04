@@ -1,9 +1,9 @@
-import { execSync } from 'child_process';
 import {
     run_tests,
     Test
-} from 'azle/test/new-test';
-import { createActor } from '../src/dfx_generated/heartbeat';
+} from 'azle/test';
+import { execSync } from 'child_process';
+import { createActor } from '../test/dfx_generated/heartbeat';
 
 const heartbeat_canister = createActor(
     'rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -15,15 +15,39 @@ const heartbeat_canister = createActor(
 
 const tests: Test[] = [
     {
-        bash: 'dfx canister uninstall-code heartbeat || true'
+        name: 'clear canister memory',
+        prep: async () => {
+            execSync(`dfx canister uninstall-code heartbeat || true`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: 'dfx deploy'
+        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
+        name: 'waiting for createActor fetchRootKey',
+        wait: 5000
     },
     {
-        bash: `dfx canister call heartbeat getInitialized`,
-        expectedOutputBash: `echo "(true)"`,
-        delay: 5000
+        name: 'deploy',
+        prep: async () => {
+            execSync(`dfx deploy`, {
+                stdio: 'inherit'
+            });
+        }
+    },
+    {
+        name: 'Wait for first heartbeat to be called',
+        wait: 5000
+    },
+    {
+        name: 'getInitialized',
+        test: async () => {
+            const result = await heartbeat_canister.getInitialized();
+
+            return {
+                ok: result
+            };
+        }
     }
 ];
 

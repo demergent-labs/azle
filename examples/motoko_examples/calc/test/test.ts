@@ -2,37 +2,101 @@ import {
     run_tests,
     Test
 } from 'azle/test';
+import { execSync } from 'child_process';
+import { createActor } from '../test/dfx_generated/calc';
+
+const calc_canister = createActor(
+    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
+        agentOptions: {
+            host: 'http://localhost:8000'
+        }
+    }
+);
 
 const tests: Test[] = [
     {
-        bash: 'dfx canister uninstall-code calc || true'
+        name: 'clear canister memory',
+        prep: async () => {
+            execSync(`dfx canister uninstall-code calc || true`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: 'dfx deploy'
+        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
+        name: 'waiting for createActor fetchRootKey',
+        wait: 5000
     },
     {
-        bash: `dfx canister call calc add '(5)'`,
-        expectedOutputBash: `echo "(5 : int)"`
+        name: 'deploy',
+        prep: async () => {
+            execSync(`dfx deploy`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: `dfx canister call calc sub '(2)'`,
-        expectedOutputBash: `echo "(3 : int)"`
+        name: 'add 5',
+        test: async () => {
+            const result = await calc_canister.add(5n);
+
+            return {
+                ok: result === 5n
+            };
+        }
     },
     {
-        bash: `dfx canister call calc mul '(6)'`,
-        expectedOutputBash: `echo "(18 : int)"`
+        name: 'sub 2',
+        test: async () => {
+            const result = await calc_canister.sub(2n);
+
+            return {
+                ok: result === 3n
+            };
+        }
     },
     {
-        bash: `dfx canister call calc div '(2)'`,
-        expectedOutputBash: `echo "(opt (9 : int))"`
+        name: 'mul 6',
+        test: async () => {
+            const result = await calc_canister.mul(6n);
+
+            return {
+                ok: result === 18n
+            };
+        }
     },
     {
-        bash: `dfx canister call calc clearall`,
-        expectedOutputBash: `echo "()"`
+        name: 'div 2',
+        test: async () => {
+            const result = await calc_canister.div(2n);
+
+            return {
+                ok: (
+                    result.length === 1 &&
+                    result[0] === 9n
+                )
+            };
+        }
     },
     {
-        bash: `dfx canister call calc add '(0)'`,
-        expectedOutputBash: `echo "(0 : int)"`
+        name: 'clearall',
+        test: async () => {
+            const result = await calc_canister.clearall();
+
+            return {
+                ok: result === undefined
+            };
+        }
+    },
+    {
+        name: 'add 0',
+        test: async () => {
+            const result = await calc_canister.add(0n);
+
+            return {
+                ok: result === 0n
+            };
+        }
     }
 ];
 

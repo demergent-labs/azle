@@ -6,7 +6,10 @@
             "root": "src",
             "ts": "src/counter.ts",
             "candid": "src/counter.did",
-            "wasm": "target/wasm32-unknown-unknown/release/counter.wasm"
+            "wasm": "target/wasm32-unknown-unknown/release/counter.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/counter"
+            }
         }
     }
 }
