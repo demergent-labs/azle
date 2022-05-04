@@ -1,201 +1,521 @@
 import {
     run_tests,
     Test
-} from 'azle/test';
+} from 'azle/test/new-test';
+import { execSync } from 'child_process';
+import { createActor } from '../test/dfx_generated/stable_storage';
+import { Principal } from '@dfinity/principal';
+
+const stable_storage_canister = createActor(
+    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
+        agentOptions: {
+            host: 'http://localhost:8000'
+        }
+    }
+);
 
 const initial_reads: Test[] = [
     {
-        bash: `dfx canister call stable_storage readStableInt`,
-        expectedOutputBash: `echo "(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)"`
+        name: 'initial read of readStableInt',
+        test: async () => {
+            const result = await stable_storage_canister.readStableInt();
+
+            return {
+                ok: result === 170_141_183_460_469_231_731_687_303_715_884_105_727n
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableInt64`,
-        expectedOutputBash: `echo "(9_223_372_036_854_775_807 : int64)"`
+        name: 'initial read of readStableInt64',
+        test: async () => {
+            const result = await stable_storage_canister.readStableInt64();
+
+            return {
+                ok: result === 9_223_372_036_854_775_807n
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableInt32`,
-        expectedOutputBash: `echo "(2_147_483_647 : int32)"`
+        name: 'initial read of readStableInt32',
+        test: async () => {
+            const result = await stable_storage_canister.readStableInt32();
+
+            return {
+                ok: result === 2_147_483_647
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableInt16`,
-        expectedOutputBash: `echo "(32_767 : int16)"`
+        name: 'initial read of readStableInt16',
+        test: async () => {
+            const result = await stable_storage_canister.readStableInt16();
+
+            return {
+                ok: result === 32_767
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableInt8`,
-        expectedOutputBash: `echo "(127 : int8)"`
+        name: 'initial read of readStableInt8',
+        test: async () => {
+            const result = await stable_storage_canister.readStableInt8();
+
+            return {
+                ok: result === 127
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableNat`,
-        expectedOutputBash: `echo "(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)"`
+        name: 'initial read of readStableNat',
+        test: async () => {
+            const result = await stable_storage_canister.readStableNat();
+
+            return {
+                ok: result === 340_282_366_920_938_463_463_374_607_431_768_211_455n
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableNat64`,
-        expectedOutputBash: `echo "(18_446_744_073_709_551_615 : nat64)"`
+        name: 'initial read of readStableNat64',
+        test: async () => {
+            const result = await stable_storage_canister.readStableNat64();
+
+            return {
+                ok: result === 18_446_744_073_709_551_615n
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableNat32`,
-        expectedOutputBash: `echo "(4_294_967_295 : nat32)"`
+        name: 'initial read of readStableNat32',
+        test: async () => {
+            const result = await stable_storage_canister.readStableNat32();
+
+            return {
+                ok: result === 4_294_967_295
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableNat16`,
-        expectedOutputBash: `echo "(65_535 : nat16)"`
+        name: 'initial read of readStableNat16',
+        test: async () => {
+            const result = await stable_storage_canister.readStableNat16();
+
+            return {
+                ok: result === 65_535
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableNat8`,
-        expectedOutputBash: `echo "(255 : nat8)"`
+        name: 'initial read of readStableNat8',
+        test: async () => {
+            const result = await stable_storage_canister.readStableNat8();
+
+            return {
+                ok: result === 255
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableString`,
-        expectedOutputBash: `echo "(\\"Hello there\\")"`
+        name: 'initial read of readStableString',
+        test: async () => {
+            const result = await stable_storage_canister.readStableString();
+
+            return {
+                ok: result === 'Hello there'
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStablePrincipal`,
-        expectedOutputBash: `echo "(principal \\"rrkah-fqaaa-aaaaa-aaaaq-cai\\")"`
+        name: 'initial read of readStablePrincipal',
+        test: async () => {
+            const result = await stable_storage_canister.readStablePrincipal();
+
+            return {
+                ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableUser`,
-        expectedOutputBash: `echo "(\\n  record {\\n    id = \\"0\\";\\n    country = variant { CANADA };\\n    children = vec { record { id = \\"1\\" } };\\n  },\\n)"`
+        name: 'initial read of readStableUser',
+        test: async () => {
+            const result = await stable_storage_canister.readStableUser();
+
+            return {
+                ok: (
+                    result.id === '0' &&
+                    'CANADA' in result.country &&
+                    result.children.length === 1 &&
+                    result.children[0].id === '1'
+                )
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableReaction`,
-        expectedOutputBash: `echo "(variant { Emotion = variant { Happy } })"`
+        name: 'initial read of readStableReaction',
+        test: async () => {
+            const result = await stable_storage_canister.readStableReaction();
+
+            return {
+                ok: (
+                    'Emotion' in result &&
+                    'Happy' in result.Emotion
+                )
+            };
+        }
     }
 ];
 
 const writes: Test[] = [
     {
-        bash: `dfx canister call stable_storage writeStableInt '(0)'`,
-        expectedOutputBash: `echo "()"`
+        name: 'writeStableInt',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableInt(0n);
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage writeStableInt64 '(1)'`,
-        expectedOutputBash: `echo "()"`
+        name: 'writeStableInt64',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableInt64(1n);
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage writeStableInt32 '(2)'`,
-        expectedOutputBash: `echo "()"`
+        name: 'writeStableInt32',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableInt32(2);
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage writeStableInt16 '(3)'`,
-        expectedOutputBash: `echo "()"`
+        name: 'writeStableInt16',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableInt16(3);
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage writeStableInt8 '(4)'`,
-        expectedOutputBash: `echo "()"`
+        name: 'writeStableInt8',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableInt8(4);
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage writeStableNat '(5)'`,
-        expectedOutputBash: `echo "()"`
+        name: 'writeStableNat',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableNat(5n);
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage writeStableNat64 '(6)'`,
-        expectedOutputBash: `echo "()"`
+        name: 'writeStableNat64',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableNat64(6n);
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage writeStableNat32 '(7)'`,
-        expectedOutputBash: `echo "()"`
+        name: 'writeStableNat32',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableNat32(7);
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage writeStableNat16 '(8)'`,
-        expectedOutputBash: `echo "()"`
+        name: 'writeStableNat16',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableNat16(8);
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage writeStableNat8 '(9)'`,
-        expectedOutputBash: `echo "()"`
+        name: 'writeStableNat8',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableNat8(9);
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage writeStableString '("Yes sir!")'`,
-        expectedOutputBash: `echo "()"`
+        name: 'writeStableString',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableString('Yes sir!');
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage writeStablePrincipal '(principal "ryjl3-tyaaa-aaaaa-aaaba-cai")'`,
-        expectedOutputBash: `echo "()"`
+        name: 'writeStablePrincipal',
+        test: async () => {
+            const result = await stable_storage_canister.writeStablePrincipal(Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'));
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage writeStableUser '(record { id = "2"; country = variant { UK }; children = vec { record { id = "3" } }; })'`,
-        expectedOutputBash: `echo "()"`
+        name: 'writeStableUser',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableUser({
+                id: '2',
+                country: {
+                    UK: null
+                },
+                children: [
+                    {
+                        id: '3'
+                    }
+                ]
+            });
+
+            return {
+                ok: result === undefined
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage writeStableReaction '(variant { Fireworks = record { id = "0"; name = "Mega Firework" } })'`,
-        expectedOutputBash: `echo "()"`
+        name: 'writeStableReaction',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableReaction({
+                Fireworks: {
+                    id: '0',
+                    name: 'Mega Firework'
+                }
+            });
+
+            return {
+                ok: result === undefined
+            };
+        }
     }
 ];
 
 const check_writes: Test[] = [
     {
-        bash: `dfx canister call stable_storage readStableInt`,
-        expectedOutputBash: `echo "(0 : int)"`
+        name: 'check writeStableInt',
+        test: async () => {
+            const result = await stable_storage_canister.readStableInt();
+
+            return {
+                ok: result === 0n
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableInt64`,
-        expectedOutputBash: `echo "(1 : int64)"`
+        name: 'check writeStableInt64',
+        test: async () => {
+            const result = await stable_storage_canister.readStableInt64();
+
+            return {
+                ok: result === 1n
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableInt32`,
-        expectedOutputBash: `echo "(2 : int32)"`
+        name: 'check writeStableInt32',
+        test: async () => {
+            const result = await stable_storage_canister.readStableInt32();
+
+            return {
+                ok: result === 2
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableInt16`,
-        expectedOutputBash: `echo "(3 : int16)"`
+        name: 'check writeStableInt16',
+        test: async () => {
+            const result = await stable_storage_canister.readStableInt16();
+
+            return {
+                ok: result === 3
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableInt8`,
-        expectedOutputBash: `echo "(4 : int8)"`
+        name: 'check writeStableInt8',
+        test: async () => {
+            const result = await stable_storage_canister.readStableInt8();
+
+            return {
+                ok: result === 4
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableNat`,
-        expectedOutputBash: `echo "(5 : nat)"`
+        name: 'check writeStableNat',
+        test: async () => {
+            const result = await stable_storage_canister.readStableNat();
+
+            return {
+                ok: result === 5n
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableNat64`,
-        expectedOutputBash: `echo "(6 : nat64)"`
+        name: 'check writeStableNat64',
+        test: async () => {
+            const result = await stable_storage_canister.readStableNat64();
+
+            return {
+                ok: result === 6n
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableNat32`,
-        expectedOutputBash: `echo "(7 : nat32)"`
+        name: 'check writeStableNat32',
+        test: async () => {
+            const result = await stable_storage_canister.readStableNat32();
+
+            return {
+                ok: result === 7
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableNat16`,
-        expectedOutputBash: `echo "(8 : nat16)"`
+        name: 'check writeStableNat16',
+        test: async () => {
+            const result = await stable_storage_canister.readStableNat16();
+
+            return {
+                ok: result === 8
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableNat8`,
-        expectedOutputBash: `echo "(9 : nat8)"`
+        name: 'check writeStableNat8',
+        test: async () => {
+            const result = await stable_storage_canister.readStableNat8();
+
+            return {
+                ok: result === 9
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableString`,
-        expectedOutputBash: `echo "(\\"Yes sir!\\")"`
+        name: 'check writeStableString',
+        test: async () => {
+            const result = await stable_storage_canister.readStableString();
+
+            return {
+                ok: result === 'Yes sir!'
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStablePrincipal`,
-        expectedOutputBash: `echo "(principal \\"ryjl3-tyaaa-aaaaa-aaaba-cai\\")"`
+        name: 'check writeStablePrincipal',
+        test: async () => {
+            const result = await stable_storage_canister.readStablePrincipal();
+
+            return {
+                ok: result.toText() === 'ryjl3-tyaaa-aaaaa-aaaba-cai'
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableUser`,
-        expectedOutputBash: `echo "(\\n  record {\\n    id = \\"2\\";\\n    country = variant { UK };\\n    children = vec { record { id = \\"3\\" } };\\n  },\\n)"`
+        name: 'check writeStableUser',
+        test: async () => {
+            const result = await stable_storage_canister.readStableUser();
+
+            return {
+                ok: (
+                    result.id === '2' &&
+                    'UK' in result.country &&
+                    result.children.length === 1 &&
+                    result.children[0].id === '3'
+                )
+            };
+        }
     },
     {
-        bash: `dfx canister call stable_storage readStableReaction`,
-        expectedOutputBash: `echo "(variant { Fireworks = record { id = \\"0\\"; name = \\"Mega Firework\\" } })"`
+        name: 'check writeStableReaction',
+        test: async () => {
+            const result = await stable_storage_canister.readStableReaction();
+
+            return {
+                ok: (
+                    'Fireworks' in result &&
+                    result.Fireworks.id === '0' &&
+                    result.Fireworks.name === 'Mega Firework'
+                )
+            };
+        }
     }
 ];
 
 const tests: Test[] = [
     {
-        bash: 'dfx canister uninstall-code stable_storage || true'
+        name: 'clear canister memory',
+        prep: async () => {
+            execSync(`dfx canister uninstall-code stable_storage || true`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: 'dfx deploy'
+        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
+        name: 'waiting for createActor fetchRootKey',
+        wait: 5000
+    },
+    {
+        name: 'deploy',
+        prep: async () => {
+            execSync(`dfx deploy`, {
+                stdio: 'inherit'
+            });
+        }
     },
     ...initial_reads,
     ...writes,
     ...check_writes,
     {
         // TODO Get rid of this once https://forum.dfinity.org/t/upgrade-a-canister-even-if-the-wasm-module-hash-has-not-changed/11989
-        bash: 'echo "\\n\\nexport function hack(): Query<void> {}" >> src/stable_storage.ts'
+        name: 'function hack to allow a redeploy',
+        prep: async () => {
+            execSync(`echo "\\n\\nexport function hack(): Query<void> {}" >> src/stable_storage.ts`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: 'dfx deploy'
+        name: 'deploy',
+        prep: async () => {
+            execSync(`dfx deploy`, {
+                stdio: 'inherit'
+            });
+        }
     },
     ...check_writes
 ];

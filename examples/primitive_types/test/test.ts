@@ -1,115 +1,302 @@
+import { Principal } from '@dfinity/principal';
 import {
     run_tests,
     Test
-} from 'azle/test';
+} from 'azle/test/new-test';
+import { execSync } from 'child_process';
+import { createActor } from '../test/dfx_generated/primitive_types';
+
+const primitive_types_canister = createActor(
+    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
+        agentOptions: {
+            host: 'http://localhost:8000'
+        }
+    }
+);
 
 const tests: Test[] = [
     {
-        bash: 'dfx deploy'
+        name: 'clear canister memory',
+        prep: async () => {
+            execSync(`dfx canister uninstall-code primitive_types || true`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: `dfx canister call primitive_types getInt`,
-        expectedOutputBash: `echo "(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)"`
+        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
+        name: 'waiting for createActor fetchRootKey',
+        wait: 5000
     },
     {
-        bash: `dfx canister call primitive_types printInt '(170_141_183_460_469_231_731_687_303_715_884_105_727)'`,
-        expectedOutputBash: `echo "(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)"`
+        name: 'deploy',
+        prep: async () => {
+            execSync(`dfx deploy`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: `dfx canister call primitive_types getInt64`,
-        expectedOutputBash: `echo "(9_223_372_036_854_775_807 : int64)"`
+        name: 'getInt',
+        test: async () => {
+            const result = await primitive_types_canister.getInt();
+
+            return {
+                ok: result === 170_141_183_460_469_231_731_687_303_715_884_105_727n
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types printInt64 '(9_223_372_036_854_775_807)'`,
-        expectedOutputBash: `echo "(9_223_372_036_854_775_807 : int64)"`
+        name: 'printInt',
+        test: async () => {
+            const result = await primitive_types_canister.printInt(170_141_183_460_469_231_731_687_303_715_884_105_727n);
+
+            return {
+                ok: result === 170_141_183_460_469_231_731_687_303_715_884_105_727n
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types getInt32`,
-        expectedOutputBash: `echo "(2_147_483_647 : int32)"`
+        name: 'getInt64',
+        test: async () => {
+            const result = await primitive_types_canister.getInt64();
+
+            return {
+                ok: result === 9_223_372_036_854_775_807n
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types printInt32 '(2_147_483_647)'`,
-        expectedOutputBash: `echo "(2_147_483_647 : int32)"`
+        name: 'printInt64',
+        test: async () => {
+            const result = await primitive_types_canister.printInt(9_223_372_036_854_775_807n);
+
+            return {
+                ok: result === 9_223_372_036_854_775_807n
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types getInt16`,
-        expectedOutputBash: `echo "(32_767 : int16)"`
+        name: 'getInt32',
+        test: async () => {
+            const result = await primitive_types_canister.getInt32();
+
+            return {
+                ok: result === 2_147_483_647
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types printInt16 '(32_767)'`,
-        expectedOutputBash: `echo "(32_767 : int16)"`
+        name: 'printInt32',
+        test: async () => {
+            const result = await primitive_types_canister.printInt32(2_147_483_647);
+
+            return {
+                ok: result === 2_147_483_647
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types getInt8`,
-        expectedOutputBash: `echo "(127 : int8)"`
+        name: 'getInt16',
+        test: async () => {
+            const result = await primitive_types_canister.getInt16();
+
+            return {
+                ok: result === 32_767
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types printInt8 '(127)'`,
-        expectedOutputBash: `echo "(127 : int8)"`
+        name: 'printInt16',
+        test: async () => {
+            const result = await primitive_types_canister.printInt16(32_767);
+
+            return {
+                ok: result === 32_767
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types getNat`,
-        expectedOutputBash: `echo "(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)"`
+        name: 'getInt8',
+        test: async () => {
+            const result = await primitive_types_canister.getInt8();
+
+            return {
+                ok: result === 127
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types printNat '(340_282_366_920_938_463_463_374_607_431_768_211_455)'`,
-        expectedOutputBash: `echo "(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)"`
+        name: 'printInt8',
+        test: async () => {
+            const result = await primitive_types_canister.printInt8(127);
+
+            return {
+                ok: result === 127
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types getNat64`,
-        expectedOutputBash: `echo "(18_446_744_073_709_551_615 : nat64)"`
+        name: 'getNat',
+        test: async () => {
+            const result = await primitive_types_canister.getNat();
+
+            return {
+                ok: result === 340_282_366_920_938_463_463_374_607_431_768_211_455n
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types printNat64 '(18_446_744_073_709_551_615)'`,
-        expectedOutputBash: `echo "(18_446_744_073_709_551_615 : nat64)"`
+        name: 'printNat',
+        test: async () => {
+            const result = await primitive_types_canister.printNat(340_282_366_920_938_463_463_374_607_431_768_211_455n);
+
+            return {
+                ok: result === 340_282_366_920_938_463_463_374_607_431_768_211_455n
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types getNat32`,
-        expectedOutputBash: `echo "(4_294_967_295 : nat32)"`
+        name: 'getNat64',
+        test: async () => {
+            const result = await primitive_types_canister.getNat64();
+
+            return {
+                ok: result === 18_446_744_073_709_551_615n
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types printNat32 '(4_294_967_295)'`,
-        expectedOutputBash: `echo "(4_294_967_295 : nat32)"`
+        name: 'printNat64',
+        test: async () => {
+            const result = await primitive_types_canister.printNat64(18_446_744_073_709_551_615n);
+
+            return {
+                ok: result === 18_446_744_073_709_551_615n
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types getNat16`,
-        expectedOutputBash: `echo "(65_535 : nat16)"`
+        name: 'getNat32',
+        test: async () => {
+            const result = await primitive_types_canister.getNat32();
+
+            return {
+                ok: result === 4_294_967_295
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types printNat16 '(65_535)'`,
-        expectedOutputBash: `echo "(65_535 : nat16)"`
+        name: 'printNat32',
+        test: async () => {
+            const result = await primitive_types_canister.printNat32(4_294_967_295);
+
+            return {
+                ok: result === 4_294_967_295
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types getNat8`,
-        expectedOutputBash: `echo "(255 : nat8)"`
+        name: 'getNat16',
+        test: async () => {
+            const result = await primitive_types_canister.getNat16();
+
+            return {
+                ok: result === 65_535
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types printNat8 '(255)'`,
-        expectedOutputBash: `echo "(255 : nat8)"`
+        name: 'printNat16',
+        test: async () => {
+            const result = await primitive_types_canister.printNat16(65_535);
+
+            return {
+                ok: result === 65_535
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types getFloat64`,
-        expectedOutputBash: `echo "(2.718281828459045 : float64)"`
+        name: 'getNat8',
+        test: async () => {
+            const result = await primitive_types_canister.getNat8();
+
+            return {
+                ok: result === 255
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types printFloat64 '(2.718281828459045)'`,
-        expectedOutputBash: `echo "(2.718281828459045 : float64)"`
+        name: 'printNat8',
+        test: async () => {
+            const result = await primitive_types_canister.printNat8(255);
+
+            return {
+                ok: result === 255
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types getFloat32`,
-        expectedOutputBash: `echo "(3.1415927 : float32)"`
+        name: 'getFloat64',
+        test: async () => {
+            const result = await primitive_types_canister.getFloat64();
+
+            return {
+                ok: result.toString() === '2.718281828459045'
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types printFloat32 '(3.1415927)'`,
-        expectedOutputBash: `echo "(3.1415927 : float32)"`
+        name: 'printFloat64',
+        test: async () => {
+            const result = await primitive_types_canister.printFloat64(2.718281828459045);
+
+            return {
+                ok: result.toString() === '2.718281828459045'
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types getPrincipal`,
-        expectedOutputBash: `echo "(principal \\"rrkah-fqaaa-aaaaa-aaaaq-cai\\")"`
+        name: 'getFloat32',
+        test: async () => {
+            const result = await primitive_types_canister.getFloat32();
+
+            return {
+                // ok: result.toString() === '3.1415927' // TODO on the command line this is returned
+                ok: result.toString() === '3.1415927410125732'
+            };
+        }
     },
     {
-        bash: `dfx canister call primitive_types printPrincipal '(principal "rrkah-fqaaa-aaaaa-aaaaq-cai")'`,
-        expectedOutputBash: `echo "(principal \\"rrkah-fqaaa-aaaaa-aaaaq-cai\\")"`
+        name: 'printFloat32',
+        test: async () => {
+            const result = await primitive_types_canister.printFloat32(3.1415927);
+
+            return {
+                // ok: result.toString() === '3.1415927' // TODO on the command line this is returned
+                ok: result.toString() === '3.1415927410125732'
+            };
+        }
+    },
+    {
+        name: 'getPrincipal',
+        test: async () => {
+            const result = await primitive_types_canister.getPrincipal();
+
+            return {
+                ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
+            };
+        }
+    },
+    {
+        name: 'printPrincipal',
+        test: async () => {
+            const result = await primitive_types_canister.printPrincipal(Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'));
+
+            return {
+                ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
+            };
+        }
     }
 ];
 

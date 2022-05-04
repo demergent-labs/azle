@@ -1,31 +1,100 @@
 import {
     run_tests,
     Test
-} from 'azle/test';
+} from 'azle/test/new-test';
+import { execSync } from 'child_process';
+import { createActor } from '../test/dfx_generated/simple_user_accounts';
+
+const simple_user_accounts_canister = createActor(
+    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
+        agentOptions: {
+            host: 'http://localhost:8000'
+        }
+    }
+);
 
 const tests: Test[] = [
     {
-        bash: 'dfx deploy'
+        name: 'clear canister memory',
+        prep: async () => {
+            execSync(`dfx canister uninstall-code simple_user_accounts || true`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: `dfx canister call simple_user_accounts getUserById '("0")'`,
-        expectedOutputBash: `echo "(null)"`
+        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
+        name: 'waiting for createActor fetchRootKey',
+        wait: 5000
     },
     {
-        bash: `dfx canister call simple_user_accounts getAllUsers`,
-        expectedOutputBash: `echo "(vec {})"`
+        name: 'deploy',
+        prep: async () => {
+            execSync(`dfx deploy`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: `dfx canister call simple_user_accounts createUser '("lastmjs")'`,
-        expectedOutputBash: `echo "(record { id = \\"0\\"; username = \\"lastmjs\\" })"`
+        name: 'getUserById',
+        test: async () => {
+            const result = await simple_user_accounts_canister.getUserById('0');
+
+            return {
+                ok: result.length === 0
+            };
+        }
     },
     {
-        bash: `dfx canister call simple_user_accounts getUserById '("0")'`,
-        expectedOutputBash: `echo "(opt record { id = \\"0\\"; username = \\"lastmjs\\" })"`
+        name: 'getAllUsers',
+        test: async () => {
+            const result = await simple_user_accounts_canister.getAllUsers();
+
+            return {
+                ok: result.length === 0
+            };
+        }
     },
     {
-        bash: `dfx canister call simple_user_accounts getAllUsers`,
-        expectedOutputBash: `echo "(vec { record { id = \\"0\\"; username = \\"lastmjs\\" } })"`
+        name: 'createUser',
+        test: async () => {
+            const result = await simple_user_accounts_canister.createUser('lastmjs');
+
+            return {
+                ok: (
+                    result.id === '0' &&
+                    result.username === 'lastmjs'
+                )
+            };
+        }
+    },
+    {
+        name: 'getUserById',
+        test: async () => {
+            const result = await simple_user_accounts_canister.getUserById('0');
+
+            return {
+                ok: (
+                    result.length !== 0 &&
+                    result[0].id === '0' &&
+                    result[0].username === 'lastmjs'
+                )
+            };
+        }
+    },
+    {
+        name: 'getAllUsers',
+        test: async () => {
+            const result = await simple_user_accounts_canister.getAllUsers();
+
+            return {
+                ok: (
+                    result.length === 1 &&
+                    result[0].id === '0' &&
+                    result[0].username === 'lastmjs'
+                )
+            };
+        }
     }
 ];
 

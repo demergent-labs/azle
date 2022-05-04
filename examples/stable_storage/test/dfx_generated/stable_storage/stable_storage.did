@@ -1,0 +1,55 @@
+type User = record {
+    "id": text;
+    "children": vec Child;
+    "country": Country;
+};
+
+type Child = record {
+    "id": text;
+};
+
+type Fireworks = record {
+    "id": text;
+    "name": text;
+};
+
+type Reaction = variant { "Fire": null; "Great": null; "Fireworks": Fireworks; "Emotion": Emotion };
+
+type Emotion = variant { "Happy": null; "Sad": null };
+
+type Country = variant { "USA": null; "UK": null; "CANADA": null };
+
+service: () -> {
+    "readStableInt": () -> (int) query;
+    "readStableInt64": () -> (int64) query;
+    "readStableInt32": () -> (int32) query;
+    "readStableInt16": () -> (int16) query;
+    "readStableInt8": () -> (int8) query;
+    "readStableNat": () -> (nat) query;
+    "readStableNat64": () -> (nat64) query;
+    "readStableNat32": () -> (nat32) query;
+    "readStableNat16": () -> (nat16) query;
+    "readStableNat8": () -> (nat8) query;
+    "readStableFloat64": () -> (float64) query;
+    "readStableFloat32": () -> (float32) query;
+    "readStableString": () -> (text) query;
+    "readStablePrincipal": () -> (principal) query;
+    "readStableUser": () -> (User) query;
+    "readStableReaction": () -> (Reaction) query;
+    "writeStableInt": (int) -> ();
+    "writeStableInt64": (int64) -> ();
+    "writeStableInt32": (int32) -> ();
+    "writeStableInt16": (int16) -> ();
+    "writeStableInt8": (int8) -> ();
+    "writeStableNat": (nat) -> ();
+    "writeStableNat64": (nat64) -> ();
+    "writeStableNat32": (nat32) -> ();
+    "writeStableNat16": (nat16) -> ();
+    "writeStableNat8": (nat8) -> ();
+    "writeStableFloat64": (float64) -> ();
+    "writeStableFloat32": (float32) -> ();
+    "writeStableString": (text) -> ();
+    "writeStablePrincipal": (principal) -> ();
+    "writeStableUser": (User) -> ();
+    "writeStableReaction": (Reaction) -> ();
+}

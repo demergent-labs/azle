@@ -1,62 +1,168 @@
 import {
     run_tests,
     Test
-} from 'azle/test';
+} from 'azle/test/new-test';
+import { execSync } from 'child_process';
+import { createActor } from '../test/dfx_generated/simple_erc20';
+
+const simple_erc20_canister = createActor(
+    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
+        agentOptions: {
+            host: 'http://localhost:8000'
+        }
+    }
+);
 
 const tests: Test[] = [
     {
-        bash: 'dfx canister uninstall-code simple_erc20 || true'
+        name: 'clear canister memory',
+        prep: async () => {
+            execSync(`dfx canister uninstall-code simple_erc20 || true`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: 'dfx deploy'
+        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
+        name: 'waiting for createActor fetchRootKey',
+        wait: 5000
     },
     {
-        bash: `dfx canister call simple_erc20 name`,
-        expectedOutputBash: `echo "(\\"\\")"`
+        name: 'deploy',
+        prep: async () => {
+            execSync(`dfx deploy`, {
+                stdio: 'inherit'
+            });
+        }
     },
     {
-        bash: `dfx canister call simple_erc20 ticker`,
-        expectedOutputBash: `echo "(\\"\\")"`
+        name: 'empty name',
+        test: async () => {
+            const result = await simple_erc20_canister.name();
+
+            return {
+                ok: result === ''
+            };
+        }
     },
     {
-        bash: `dfx canister call simple_erc20 totalSupply`,
-        expectedOutputBash: `echo "(0 : nat64)"`
+        name: 'empty ticker',
+        test: async () => {
+            const result = await simple_erc20_canister.ticker();
+
+            return {
+                ok: result === ''
+            };
+        }
     },
     {
-        bash: `dfx canister call simple_erc20 balance '("0")'`,
-        expectedOutputBash: `echo "(0 : nat64)"`
+        name: 'empty totalSupply',
+        test: async () => {
+            const result = await simple_erc20_canister.totalSupply();
+
+            return {
+                ok: result === 0n
+            };
+        }
     },
     {
-        bash: `dfx canister call simple_erc20 initializeSupply '("TOKEN", "Token", 1_000_000, "0")'`,
-        expectedOutputBash: `echo "(true)"`
+        name: 'empty balance of id 0',
+        test: async () => {
+            const result = await simple_erc20_canister.balance('0');
+
+            return {
+                ok: result === 0n
+            };
+        }
     },
     {
-        bash: `dfx canister call simple_erc20 name`,
-        expectedOutputBash: `echo "(\\"Token\\")"`
+        name: 'initializeSupply',
+        test: async () => {
+            const result = await simple_erc20_canister.initializeSupply(
+                'TOKEN',
+                'Token',
+                1_000_000n,
+                '0'
+            );
+
+            return {
+                ok: result === true
+            };
+        }
     },
     {
-        bash: `dfx canister call simple_erc20 ticker`,
-        expectedOutputBash: `echo "(\\"TOKEN\\")"`
+        name: 'initialized name',
+        test: async () => {
+            const result = await simple_erc20_canister.name();
+
+            return {
+                ok: result === 'Token'
+            };
+        }
     },
     {
-        bash: `dfx canister call simple_erc20 totalSupply`,
-        expectedOutputBash: `echo "(1_000_000 : nat64)"`
+        name: 'initialized ticker',
+        test: async () => {
+            const result = await simple_erc20_canister.ticker();
+
+            return {
+                ok: result === 'TOKEN'
+            };
+        }
     },
     {
-        bash: `dfx canister call simple_erc20 balance '("0")'`,
-        expectedOutputBash: `echo "(1_000_000 : nat64)"`
+        name: 'initialized totalSupply',
+        test: async () => {
+            const result = await simple_erc20_canister.totalSupply();
+
+            return {
+                ok: result === 1_000_000n
+            };
+        }
     },
     {
-        bash: `dfx canister call simple_erc20 transfer '("0", "1", 100)'`,
-        expectedOutputBash: `echo "(true)"`
+        name: 'initialized balance of id 0',
+        test: async () => {
+            const result = await simple_erc20_canister.balance('0');
+
+            return {
+                ok: result === 1_000_000n
+            };
+        }
     },
     {
-        bash: `dfx canister call simple_erc20 balance '("0")'`,
-        expectedOutputBash: `echo "(999_900 : nat64)"`
+        name: 'transfer',
+        test: async () => {
+            const result = await simple_erc20_canister.transfer(
+                '0',
+                '1',
+                100n
+            );
+
+            return {
+                ok: result === true
+            };
+        }
     },
     {
-        bash: `dfx canister call simple_erc20 balance '("1")'`,
-        expectedOutputBash: `echo "(100 : nat64)"`
+        name: 'balance of id 0 after transfer',
+        test: async () => {
+            const result = await simple_erc20_canister.balance('0');
+
+            return {
+                ok: result === 999_900n
+            };
+        }
+    },
+    {
+        name: 'balance of id 1 after transfer',
+        test: async () => {
+            const result = await simple_erc20_canister.balance('1');
+
+            return {
+                ok: result === 100n
+            };
+        }
     }
 ];
 

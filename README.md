@@ -58,7 +58,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 
 # restart your terminal
 
-nvm install 14
+nvm install 18
 ```
 
 #### Rust

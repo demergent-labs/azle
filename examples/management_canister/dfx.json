@@ -8,7 +8,7 @@
             "candid": "src/management_canister.did",
             "wasm": "target/wasm32-unknown-unknown/release/management_canister.wasm",
             "declarations": {
-                "output": "src/dfx_generated/management_canister"
+                "output": "test/dfx_generated/management_canister"
             }
         }
     }

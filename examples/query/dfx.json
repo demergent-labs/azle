@@ -6,7 +6,10 @@
             "root": "src",
             "ts": "src/query.ts",
             "candid": "src/query.did",
-            "wasm": "target/wasm32-unknown-unknown/release/query.wasm"
+            "wasm": "target/wasm32-unknown-unknown/release/query.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/query"
+            }
         }
     }
 }

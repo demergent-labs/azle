@@ -6,7 +6,10 @@
             "root": "canisters/ledger_canister",
             "ts": "canisters/ledger_canister/ledger_canister.ts",
             "candid": "canisters/ledger_canister/ledger_canister.did",
-            "wasm": "target/wasm32-unknown-unknown/release/ledger_canister.wasm"
+            "wasm": "target/wasm32-unknown-unknown/release/ledger_canister.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/ledger_canister"
+            }
         },
         "icp_ledger": {
             "type": "custom",

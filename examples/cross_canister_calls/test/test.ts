@@ -1,7 +1,17 @@
+import { execSync } from 'child_process';
 import {
     run_tests,
     Test
-} from 'azle/test';
+} from 'azle/test/new-test';
+import { createActor } from '../src/dfx_generated/cross_canister_calls';
+
+const canister_1 = createActor(
+    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
+        agentOptions: {
+            host: 'http://localhost:8000'
+        }
+    }
+);
 
 const tests: Test[] = [
     {

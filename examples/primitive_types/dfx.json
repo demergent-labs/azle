@@ -6,7 +6,10 @@
             "root": "src",
             "ts": "src/primitive_types.ts",
             "candid": "src/primitive_types.did",
-            "wasm": "target/wasm32-unknown-unknown/release/primitive_types.wasm"
+            "wasm": "target/wasm32-unknown-unknown/release/primitive_types.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/primitive_types"
+            }
         }
     }
 }

@@ -1,7 +1,3 @@
-// TODO the tests should perform multiple deploys
-// TODO That will be a bit hard to do until this: https://forum.dfinity.org/t/upgrade-a-canister-even-if-the-wasm-module-hash-has-not-changed/11989
-// TODO should be relatively simple now
-
 import {
     Query,
     Update,

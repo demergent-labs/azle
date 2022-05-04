@@ -6,7 +6,10 @@
             "root": "src",
             "ts": "src/stable_storage.ts",
             "candid": "src/stable_storage.did",
-            "wasm": "target/wasm32-unknown-unknown/release/stable_storage.wasm"
+            "wasm": "target/wasm32-unknown-unknown/release/stable_storage.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/stable_storage"
+            }
         }
     }
 }

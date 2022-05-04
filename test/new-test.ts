@@ -1,7 +1,7 @@
 export type Test = {
     name: string;
     skip?: boolean;
-    delay?: number;
+    wait?: number;
     prep?: () => Promise<any>;
     test?: () => Promise<AzleResult<boolean>>;
 };
@@ -41,16 +41,21 @@ export async function run_tests(tests: Test[]) {
 
             console.log();
     
-            if (test.prep !== undefined) {
+            if (
+                test.prep !== undefined ||
+                test.wait !== undefined
+            ) {
                 console.log(`\n${test.name}\n`);
             }
             else {
                 console.log(`\nRunning test: ${test.name}\n`);
             }
 
-            if (test.delay !== undefined) {
-                console.log(`waiting ${test.delay} milliseconds`);
-                await new Promise((resolve) => setTimeout(resolve, test.delay));
+            if (test.wait !== undefined) {
+                console.log(`waiting ${test.wait} milliseconds`);
+                await new Promise((resolve) => setTimeout(resolve, test.wait));
+                console.log('done waiting');
+                continue;
             }
 
             if (test.prep !== undefined) {

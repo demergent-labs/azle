@@ -6,7 +6,10 @@
             "root": "src",
             "ts": "src/heartbeat.ts",
             "candid": "src/heartbeat.did",
-            "wasm": "target/wasm32-unknown-unknown/release/heartbeat.wasm"
+            "wasm": "target/wasm32-unknown-unknown/release/heartbeat.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/heartbeat"
+            }
         }
     }
 }

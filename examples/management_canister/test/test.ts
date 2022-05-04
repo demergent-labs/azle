@@ -1,8 +1,3 @@
-// import fetch from 'node-fetch';
-const fetch = require('node-fetch');
-
-global.fetch = fetch;
-
 import {
     ok,
     run_tests,
@@ -10,9 +5,7 @@ import {
 } from 'azle/test/new-test';
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
-import { createActor } from '../src/dfx_generated/management_canister';
-import { _SERVICE } from '../src/dfx_generated/management_canister/management_canister.did';
-
+import { createActor } from '../test/dfx_generated/management_canister';
 
 const management_canister = createActor(
     'rrkah-fqaaa-aaaaa-aaaaq-cai', {
