@@ -20,7 +20,6 @@ export function id(): Query<Principal> {
     return ic.id();
 }
 
-// TODO consider how we can do a simple unit test for this
 // prints a message through the local replica's output
 export function print(message: string): Query<boolean> {
     ic.print(message);

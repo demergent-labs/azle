@@ -36,6 +36,18 @@ const tests: Test[] = [
         }
     },
     {
+        name: 'caller',
+        test: async () => {
+            const caller_principal = execSync(`dfx identity get-principal`).toString().trim();
+
+            const result = await ic_api_canister.caller();
+
+            return {
+                ok: result === caller_principal
+            };
+        }
+    },
+    {
         name: 'canisterBalance',
         test: async () => {
             const result = await ic_api_canister.canisterBalance();
@@ -64,6 +76,18 @@ const tests: Test[] = [
 
             return {
                 ok: result === true
+            };
+        }
+    },
+    {
+        name: 'time',
+        test: async () => {
+            const result = await ic_api_canister.time();
+
+            console.log('result', result);
+
+            return {
+                ok: false
             };
         }
     }
