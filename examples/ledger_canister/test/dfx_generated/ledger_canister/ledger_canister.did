@@ -72,7 +72,7 @@ type Archive = record {
     "canister_id": principal;
 };
 
-type ExecuteTransferResult = variant { "ok": bool; "err": text };
+type ExecuteTransferResult = variant { "ok": TransferResult; "err": text };
 
 type GetAccountBalanceResult = variant { "ok": Tokens; "err": text };
 

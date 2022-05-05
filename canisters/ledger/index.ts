@@ -1,5 +1,3 @@
-// TODO we need tests for every success and error case
-
 import {
     Canister,
     CanisterResult,
@@ -62,32 +60,32 @@ export type TransferArgs = {
 export type TransferError = Variant<{
     // The fee that the caller specified in the transfer request was not the one that ledger expects.
     // The caller can change the transfer fee to the `expected_fee` and retry the request.
-    BadFee?: {
+    BadFee: {
         expected_fee: Tokens;
     };
     // The account specified by the caller doesn't have enough funds.
-    InsufficientFunds?: {
-        balance: Tokens; // TODO this is currently broken in Azle
+    InsufficientFunds: {
+        balance: Tokens;
     };
     // The request is too old.
     // The ledger only accepts requests created within 24 hours window.
     // This is a non-recoverable error.
-    TxTooOld?: {
+    TxTooOld: {
         allowed_window_nanos: nat64;
     };
     // The caller specified `created_at_time` that is too far in future.
     // The caller can retry the request later.
-    TxCreatedInFuture?: null;
+    TxCreatedInFuture: null;
     // The ledger has already executed the request.
     // `duplicate_of` field is equal to the index of the block containing the original transaction.
-    TxDuplicate?: {
+    TxDuplicate: {
         duplicate_of: BlockIndex;
     };
 }>;
 
 export type TransferResult = Variant<{
-    Ok?: nat64;
-    Err?: TransferError
+    Ok: nat64;
+    Err: TransferError
 }>;
 
 // Arguments for the `account_balance` call.
@@ -109,22 +107,21 @@ export type GetBlocksArgs = {
     length: nat64;
 };
 
-// TODO this is broken currently, the azle derives are breaking
 export type Operation = Variant<{
-    Mint?: {
+    Mint: {
         to: AccountIdentifier;
-        // amount: Tokens;
+        amount: Tokens;
     };
-    // Burn?: {
-    //     from: AccountIdentifier;
-    //     amount: Tokens;
-    // };
-    // Transfer?: {
-    //     from: AccountIdentifier;
-    //     to: AccountIdentifier;
-    //     amount: Tokens;
-    //     fee: Tokens;
-    // };
+    Burn: {
+        from: AccountIdentifier;
+        amount: Tokens;
+    };
+    Transfer: {
+        from: AccountIdentifier;
+        to: AccountIdentifier;
+        amount: Tokens;
+        fee: Tokens;
+    };
 }>;
 
 export type Transaction = {
@@ -157,17 +154,18 @@ export type BlockRange = {
     blocks: Block[];
 };
 
+// TODO we need tests for every error case here
 // An error indicating that the arguments passed to [QueryArchiveFn] were invalid.
 export type QueryArchiveError = Variant<{
     // [GetBlocksArgs.from] argument was smaller than the first block
     // served by the canister that received the request.
-    BadFirstBlockIndex?: {
+    BadFirstBlockIndex: {
         requested_index: BlockIndex;
         first_valid_index: BlockIndex;
     };
 
     // Reserved for future use.
-    Other?: {
+    Other: {
         error_code: nat64;
         error_message: string;
     };
@@ -175,9 +173,9 @@ export type QueryArchiveError = Variant<{
 
 export type QueryArchiveResult = Variant<{
     // Successfully fetched zero or more blocks.
-    Ok?: BlockRange;
+    Ok: BlockRange;
     // The [GetBlocksArgs] request was invalid.
-    Err?: QueryArchiveError;
+    Err: QueryArchiveError;
 }>;
 
 // TODO we do not have any support for this yet

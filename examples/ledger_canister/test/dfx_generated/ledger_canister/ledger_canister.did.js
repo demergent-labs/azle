@@ -1,9 +1,20 @@
 export const idlFactory = ({ IDL }) => {
+  const Tokens = IDL.Record({ 'e8s' : IDL.Nat64 });
+  const TransferError = IDL.Variant({
+    'TxTooOld' : IDL.Record({ 'allowed_window_nanos' : IDL.Nat64 }),
+    'BadFee' : IDL.Record({ 'expected_fee' : Tokens }),
+    'TxDuplicate' : IDL.Record({ 'duplicate_of' : IDL.Nat64 }),
+    'TxCreatedInFuture' : IDL.Null,
+    'InsufficientFunds' : IDL.Record({ 'balance' : Tokens }),
+  });
+  const TransferResult = IDL.Variant({
+    'Ok' : IDL.Nat64,
+    'Err' : TransferError,
+  });
   const ExecuteTransferResult = IDL.Variant({
-    'ok' : IDL.Bool,
+    'ok' : TransferResult,
     'err' : IDL.Text,
   });
-  const Tokens = IDL.Record({ 'e8s' : IDL.Nat64 });
   const GetAccountBalanceResult = IDL.Variant({
     'ok' : Tokens,
     'err' : IDL.Text,

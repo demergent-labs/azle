@@ -8,7 +8,7 @@ export interface Block {
   'parent_hash' : [] | [Array<number>],
 }
 export interface DecimalsResult { 'decimals' : number }
-export type ExecuteTransferResult = { 'ok' : boolean } |
+export type ExecuteTransferResult = { 'ok' : TransferResult } |
   { 'err' : string };
 export type GetAccountBalanceResult = { 'ok' : Tokens } |
   { 'err' : string };

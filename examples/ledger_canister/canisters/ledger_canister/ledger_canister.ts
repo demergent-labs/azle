@@ -1,13 +1,13 @@
 // TODO query_blocks is the only thing without basic tests
 // TODO I don't think query_blocks will work right now, some changes are needed in Azle (we need to support Candid functions)
-
-// TODO we should test all possible errors that can be returned
+// TODO test all errors for query blocks
 
 import {
     CanisterResult,
     ic,
     nat32,
     nat64,
+    ok,
     Opt,
     UpdateAsync,
     Variant
@@ -28,8 +28,8 @@ import {
 const ICPCanister = ic.canisters.Ledger<Ledger>('r7inp-6aaaa-aaaaa-aaabq-cai');
 
 type ExecuteTransferResult = Variant<{
-    ok?: boolean;
-    err?: string;
+    ok: TransferResult;
+    err: string;
 }>;
 
 export function* execute_transfer(
@@ -53,20 +53,22 @@ export function* execute_transfer(
         }
     });
 
-    if (transfer_result_canister_result.ok === undefined) {
+    if (!ok(transfer_result_canister_result)) {
         return {
             err: transfer_result_canister_result.err
         };
     }
 
+    const transfer_result = transfer_result_canister_result.ok;
+
     return {
-        ok: true
+        ok: transfer_result
     };
 }
 
 type GetAccountBalanceResult = Variant<{
-    ok?: Tokens;
-    err?: string;
+    ok: Tokens;
+    err: string;
 }>;
 
 export function* get_account_balance(address: Address): UpdateAsync<GetAccountBalanceResult> {
@@ -74,7 +76,7 @@ export function* get_account_balance(address: Address): UpdateAsync<GetAccountBa
         account: binary_address_from_address(address)
     });
 
-    if (tokens_canister_result.ok === undefined) {
+    if (!ok(tokens_canister_result)) {
         return {
             err: tokens_canister_result.err
         };
@@ -88,14 +90,14 @@ export function* get_account_balance(address: Address): UpdateAsync<GetAccountBa
 }
 
 type GetTransferFeeResult = Variant<{
-    ok?: TransferFee;
-    err?: string;
+    ok: TransferFee;
+    err: string;
 }>;
 
 export function* get_transfer_fee(): UpdateAsync<GetTransferFeeResult> {
     const transfer_fee_canister_result: CanisterResult<TransferFee> = yield ICPCanister.transfer_fee({});
 
-    if (transfer_fee_canister_result.ok === undefined) {
+    if (!ok(transfer_fee_canister_result)) {
         return {
             err: transfer_fee_canister_result.err
         };
@@ -109,14 +111,14 @@ export function* get_transfer_fee(): UpdateAsync<GetTransferFeeResult> {
 }
 
 type GetSymbolResult = Variant<{
-    ok?: string;
-    err?: string;
+    ok: string;
+    err: string;
 }>;
 
 export function* get_symbol(): UpdateAsync<GetSymbolResult> {
     const symbol_result_canister_result: CanisterResult<SymbolResult> = yield ICPCanister.symbol();
 
-    if (symbol_result_canister_result.ok === undefined) {
+    if (!ok(symbol_result_canister_result)) {
         return {
             err: symbol_result_canister_result.err
         };
@@ -130,14 +132,14 @@ export function* get_symbol(): UpdateAsync<GetSymbolResult> {
 }
 
 type GetNameResult = Variant<{
-    ok?: string;
-    err?: string;
+    ok: string;
+    err: string;
 }>;
 
 export function* get_name(): UpdateAsync<GetNameResult> {
     const name_result_canister_result: CanisterResult<NameResult> = yield ICPCanister.name();
 
-    if (name_result_canister_result.ok === undefined) {
+    if (!ok(name_result_canister_result)) {
         return {
             err: name_result_canister_result.err
         };
@@ -151,14 +153,14 @@ export function* get_name(): UpdateAsync<GetNameResult> {
 }
 
 type GetDecimalsResult = Variant<{
-    ok?: nat32;
-    err?: string;
+    ok: nat32;
+    err: string;
 }>;
 
 export function* get_decimals(): UpdateAsync<GetDecimalsResult> {
     const decimals_result_canister_result: CanisterResult<DecimalsResult> = yield ICPCanister.decimals();
 
-    if (decimals_result_canister_result.ok === undefined) {
+    if (!ok(decimals_result_canister_result)) {
         return {
             err: decimals_result_canister_result.err
         };
@@ -172,14 +174,14 @@ export function* get_decimals(): UpdateAsync<GetDecimalsResult> {
 }
 
 type GetArchivesResult = Variant<{
-    ok?: Archives;
-    err?: string;
+    ok: Archives;
+    err: string;
 }>;
 
 export function* get_archives(): UpdateAsync<GetArchivesResult> {
     const archives_canister_result: CanisterResult<Archives> = yield ICPCanister.archives();
 
-    if (archives_canister_result.ok === undefined) {
+    if (!ok(archives_canister_result)) {
         return {
             err: archives_canister_result.err
         };
