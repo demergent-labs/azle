@@ -1,6 +1,8 @@
 // TODO query_blocks is the only thing without basic tests
 // TODO I don't think query_blocks will work right now, some changes are needed in Azle (we need to support Candid functions)
 
+// TODO we should test all possible errors that can be returned
+
 import {
     CanisterResult,
     nat32,

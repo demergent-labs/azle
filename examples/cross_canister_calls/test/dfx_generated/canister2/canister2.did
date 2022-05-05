@@ -1,0 +1,16 @@
+type AccountArgs = record {
+    "id": text;
+};
+
+type Account = record {
+    "id": text;
+    "balance": nat64;
+};
+
+service: {
+    "balance": (text) -> (nat64) query;
+    "account": (AccountArgs) -> (opt Account) query;
+    "accounts": () -> (vec Account) query;
+    "trap": () -> (text) query;
+    "transfer": (text, text, nat64) -> (nat64);
+}
