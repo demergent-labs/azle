@@ -27,13 +27,11 @@ export function print(message: string): Query<boolean> {
     return true;
 }
 
-// TODO consider how we can do a simple unit test for this
 // returns the current timestamp
 export function time(): Query<nat64> {
     return ic.time();
 }
 
-// TODO consider how we can do a simple unit test for this
 // traps with a message, stopping execution and discarding all state within the call
 export function trap(message: string): Query<boolean> {
     ic.trap(message);

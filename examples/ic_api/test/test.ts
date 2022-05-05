@@ -38,12 +38,10 @@ const tests: Test[] = [
     {
         name: 'caller',
         test: async () => {
-            const caller_principal = execSync(`dfx identity get-principal`).toString().trim();
-
             const result = await ic_api_canister.caller();
 
             return {
-                ok: result === caller_principal
+                ok: result === '2vxsx-fae'
             };
         }
     },
@@ -82,13 +80,33 @@ const tests: Test[] = [
     {
         name: 'time',
         test: async () => {
-            const result = await ic_api_canister.time();
+            const node_time_in_nanoseconds = BigInt(new Date().getTime()) * 1000000n;
+            const canister_time = await ic_api_canister.time();
 
-            console.log('result', result);
+            const difference = canister_time - node_time_in_nanoseconds;
+            const positive_difference = difference < 0 ? difference * -1n : difference;
 
+            // The idea is to just check that the two times are within 5 seconds of each other
             return {
-                ok: false
+                ok: positive_difference < 5 * 1_000_000_000
             };
+        }
+    },
+    {
+        name: 'trap',
+        test: async () => {
+            try {
+                const result = await ic_api_canister.trap('here is the message');
+    
+                return {
+                    ok: result
+                };
+            }
+            catch(error) {
+                return {
+                    ok: (error as any).props.Message === 'IC0503: Canister rrkah-fqaaa-aaaaa-aaaaq-cai trapped explicitly: here is the message'
+                };
+            }
         }
     }
 ];

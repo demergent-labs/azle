@@ -59,7 +59,7 @@ jobs:
       - shell: bash -l {0}
         run: nvm use 18
       - shell: bash -l {0}
-        run: node --version
+        run: node --version # TODO trying to get nvm to work with node v18
       - shell: bash -l {0}
         run: npm install
       - if: matrix.azle_source == 'repo'
