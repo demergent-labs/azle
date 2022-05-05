@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
       - shell: bash -l {0}
-        run: nvm install 14
+        run: nvm install 18
       - run: DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Install Rust ${{ matrix.rust }}
         uses: actions-rs/toolchain@v1
