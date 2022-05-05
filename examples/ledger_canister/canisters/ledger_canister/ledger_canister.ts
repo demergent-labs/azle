@@ -5,9 +5,10 @@
 
 import {
     CanisterResult,
+    ic,
     nat32,
     nat64,
-    ic,
+    Opt,
     UpdateAsync,
     Variant
 } from 'azle';
@@ -31,7 +32,12 @@ type ExecuteTransferResult = Variant<{
     err?: string;
 }>;
 
-export function* execute_transfer(to: Address, amount: nat64): UpdateAsync<ExecuteTransferResult> {
+export function* execute_transfer(
+    to: Address,
+    amount: nat64,
+    fee: nat64,
+    create_at_time: Opt<nat64>
+): UpdateAsync<ExecuteTransferResult> {
     const transfer_result_canister_result: CanisterResult<TransferResult> = yield ICPCanister.transfer({
         memo: 0n,
         amount: {
