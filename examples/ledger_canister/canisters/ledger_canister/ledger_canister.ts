@@ -36,7 +36,7 @@ export function* execute_transfer(
     to: Address,
     amount: nat64,
     fee: nat64,
-    create_at_time: Opt<nat64>
+    created_at_time: Opt<nat64>
 ): UpdateAsync<ExecuteTransferResult> {
     const transfer_result_canister_result: CanisterResult<TransferResult> = yield ICPCanister.transfer({
         memo: 0n,
@@ -44,11 +44,13 @@ export function* execute_transfer(
             e8s: amount,
         },
         fee: {
-            e8s: 10_000n
+            e8s: fee
         },
         from_subaccount: null,
         to: binary_address_from_address(to),
-        created_at_time: null
+        created_at_time: created_at_time === null ? null : {
+            timestamp_nanos: created_at_time
+        }
     });
 
     if (transfer_result_canister_result.ok === undefined) {

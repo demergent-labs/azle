@@ -93,7 +93,7 @@ type TransferError = variant { "BadFee": record { "expected_fee": Tokens; }; "In
 type Operation = variant { "Mint": record { "to": vec nat8; } };
 
 service: {
-    "execute_transfer": (text, nat64) -> (ExecuteTransferResult);
+    "execute_transfer": (text, nat64, nat64, opt nat64) -> (ExecuteTransferResult);
     "get_account_balance": (text) -> (GetAccountBalanceResult);
     "get_transfer_fee": () -> (GetTransferFeeResult);
     "get_symbol": () -> (GetSymbolResult);

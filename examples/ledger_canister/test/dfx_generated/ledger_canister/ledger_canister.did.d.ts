@@ -60,9 +60,12 @@ export type TransferFeeArg = {};
 export type TransferResult = { 'Ok' : bigint } |
   { 'Err' : TransferError };
 export interface _SERVICE {
-  'execute_transfer' : (arg_0: string, arg_1: bigint) => Promise<
-      ExecuteTransferResult
-    >,
+  'execute_transfer' : (
+      arg_0: string,
+      arg_1: bigint,
+      arg_2: bigint,
+      arg_3: [] | [bigint],
+    ) => Promise<ExecuteTransferResult>,
   'get_account_balance' : (arg_0: string) => Promise<GetAccountBalanceResult>,
   'get_archives' : () => Promise<GetArchivesResult>,
   'get_decimals' : () => Promise<GetDecimalsResult>,

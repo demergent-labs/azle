@@ -21,7 +21,7 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     'execute_transfer' : IDL.Func(
-        [IDL.Text, IDL.Nat64],
+        [IDL.Text, IDL.Nat64, IDL.Nat64, IDL.Opt(IDL.Nat64)],
         [ExecuteTransferResult],
         [],
       ),

@@ -15,36 +15,33 @@ jobs:
           - npm
           - repo
         example_directories:
-          - examples/complex_types
-          - examples/counter
-          - examples/cross_canister_calls
-          - examples/generators
-          - examples/heartbeat
-          - examples/ic_api
-          - examples/imports
-          - examples/init
-          - examples/inline_types
-          - examples/key_value_store
-          - examples/ledger_canister
-          - examples/management_canister
-          - examples/motoko_examples/calc
-          - examples/motoko_examples/counter
-          - examples/optional_types
-          - examples/pre_and_post_upgrade
-          - examples/primitive_types
+          # - examples/complex_types
+          # - examples/counter
+          # - examples/cross_canister_calls
+          # - examples/generators
+          # - examples/heartbeat
+          # - examples/ic_api
+          # - examples/imports
+          # - examples/init
+          # - examples/inline_types
+          # - examples/key_value_store
+          # - examples/ledger_canister
+          # - examples/management_canister
+          # - examples/motoko_examples/calc
+          # - examples/motoko_examples/counter
+          # - examples/optional_types
+          # - examples/pre_and_post_upgrade
+          # - examples/primitive_types
           - examples/query
-          - examples/simple_erc20
-          - examples/simple_user_accounts
-          - examples/stable_storage
-          - examples/update
+          # - examples/simple_erc20
+          # - examples/simple_user_accounts
+          # - examples/stable_storage
+          # - examples/update
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      # - run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-      # - shell: bash -l {0}
-        # run: nvm install 18
       - run: DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Install Rust ${{ matrix.rust }}
         uses: actions-rs/toolchain@v1
@@ -59,10 +56,6 @@ jobs:
           path: ${{ matrix.example_directories }}/target
           key: ${{ matrix.example_directories }}-cache
           restore-keys: ${{ matrix.example_directories }}-cache # TODO might need to be more intelligent and hash files here
-      # - shell: bash -l {0}
-      #   run: nvm use 18
-      # - shell: bash -l {0}
-      #   run: node --version # TODO trying to get nvm to work with node v18
       - shell: bash -l {0}
         run: npm install
       - if: matrix.azle_source == 'repo'

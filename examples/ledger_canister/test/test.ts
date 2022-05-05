@@ -177,7 +177,9 @@ const tests: Test[] = [
 
             const result = await ledger_canister.execute_transfer(
                 ledger_canister_address,
-                1_000_000n
+                1_000_000n,
+                10_000n,
+                []
             );
 
             if (!ok(result)) {
