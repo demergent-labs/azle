@@ -125,3 +125,5 @@ export function ok<T>(azle_result: AzleResult<T>): azle_result is Ok<T> {
         return false;
     }
 }
+
+export type Func<T> = T;
