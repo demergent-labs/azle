@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "generators": {
+            "type": "custom",
+            "build": "npx azle generators",
+            "root": "src",
+            "ts": "src/generators.ts",
+            "candid": "src/generators.did",
+            "wasm": "target/wasm32-unknown-unknown/release/generators.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/generators"
+            }
+        }
+    }
+}

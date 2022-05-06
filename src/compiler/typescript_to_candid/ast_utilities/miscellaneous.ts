@@ -17,7 +17,48 @@ export function isTypeReferenceNodeAVariant(
     if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
         const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
-        return getTypeReferenceNodeTypeName(typeReferenceNode) === 'Variant';
+        if (getTypeReferenceNodeTypeName(typeReferenceNode) === 'Variant') {
+            return true;
+        }
+        else {
+            return isTypeReferenceNodeARecord(
+                sourceFiles,
+                typeReferenceNode
+            );
+        }
+    }
+
+    return false;
+}
+
+export function isTypeReferenceNodeARecord(
+    sourceFiles: readonly tsc.SourceFile[],
+    typeReferenceNode: tsc.TypeReferenceNode
+): boolean {
+    const typeAliasDeclaration = getTypeAliasDeclaration(
+        sourceFiles,
+        getTypeReferenceNodeTypeName(typeReferenceNode)
+    );
+
+    if (typeAliasDeclaration === undefined) {
+        return false;
+    }
+
+    if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeLiteral) {
+        return true;
+    }
+
+    if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
+        const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+
+        return isTypeReferenceNodeARecord(
+            sourceFiles,
+            typeReferenceNode
+        );
+    }
+
+    if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TupleType) {
+        return true;
     }
 
     return false;
@@ -31,7 +72,7 @@ export function getPropertyNameText(propertyName: tsc.PropertyName): string {
     throw new Error(`Cannot get name for property name: ${JSON.stringify(propertyName, null, 2)}`);
 }
 
-function getTypeReferenceNodeTypeName(typeReferenceNode: tsc.TypeReferenceNode): string {
+export function getTypeReferenceNodeTypeName(typeReferenceNode: tsc.TypeReferenceNode): string {
     if (typeReferenceNode.typeName.kind === tsc.SyntaxKind.Identifier) {
         return typeReferenceNode.typeName.escapedText.toString();
     }

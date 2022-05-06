@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "management_canister": {
+            "type": "custom",
+            "build": "npx azle management_canister",
+            "root": "src",
+            "ts": "src/management_canister.ts",
+            "candid": "src/management_canister.did",
+            "wasm": "target/wasm32-unknown-unknown/release/management_canister.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/management_canister"
+            }
+        }
+    }
+}

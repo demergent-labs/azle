@@ -153,7 +153,7 @@ fn derive_property_for_named_fields(
 
         if let Ok(#object_variant_js_value_var_name) = #object_variant_js_value_result_var_name {
             if #object_variant_js_value_var_name.is_undefined() == false {
-                #(#named_field_js_value_result_variable_declarations),*
+                #(#named_field_js_value_result_variable_declarations)*
 
                 match (#(#named_field_js_value_result_variable_names),*) {
                     (#(#named_field_js_value_oks),*) => {

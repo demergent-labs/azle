@@ -1,0 +1,103 @@
+type TransferArgs = record {
+    "memo": nat64;
+    "amount": Tokens;
+    "fee": Tokens;
+    "from_subaccount": opt vec nat8;
+    "to": vec nat8;
+    "created_at_time": opt TimeStamp;
+};
+
+type AccountBalanceArgs = record {
+    "account": vec nat8;
+};
+
+type TransferFeeArg = record {
+    
+};
+
+type GetBlocksArgs = record {
+    "start": nat64;
+    "length": nat64;
+};
+
+type Tokens = record {
+    "e8s": nat64;
+};
+
+type TransferFee = record {
+    "transfer_fee": Tokens;
+};
+
+type QueryBlocksResponse = record {
+    "chain_length": nat64;
+    "certificate": opt vec nat8;
+    "blocks": vec Block;
+    "first_block_index": nat64;
+    "archived_blocks": vec record { "start": nat64; "length": nat64; };
+};
+
+type SymbolResult = record {
+    "symbol": text;
+};
+
+type NameResult = record {
+    "name": text;
+};
+
+type DecimalsResult = record {
+    "decimals": nat32;
+};
+
+type Archives = record {
+    "archives": vec Archive;
+};
+
+type TimeStamp = record {
+    "timestamp_nanos": nat64;
+};
+
+type Block = record {
+    "parent_hash": opt vec nat8;
+    "transaction": Transaction;
+    "timestamp": TimeStamp;
+};
+
+type Transaction = record {
+    "memo": nat64;
+    "operation": opt Operation;
+    "created_at_time": TimeStamp;
+};
+
+type Archive = record {
+    "canister_id": principal;
+};
+
+type ExecuteTransferResult = variant { "ok": TransferResult; "err": text };
+
+type GetAccountBalanceResult = variant { "ok": Tokens; "err": text };
+
+type GetTransferFeeResult = variant { "ok": TransferFee; "err": text };
+
+type GetSymbolResult = variant { "ok": text; "err": text };
+
+type GetNameResult = variant { "ok": text; "err": text };
+
+type GetDecimalsResult = variant { "ok": nat32; "err": text };
+
+type GetArchivesResult = variant { "ok": Archives; "err": text };
+
+type TransferResult = variant { "Ok": nat64; "Err": TransferError };
+
+type TransferError = variant { "BadFee": record { "expected_fee": Tokens; }; "InsufficientFunds": record { "balance": Tokens; }; "TxTooOld": record { "allowed_window_nanos": nat64; }; "TxCreatedInFuture": null; "TxDuplicate": record { "duplicate_of": nat64; } };
+
+type Operation = variant { "Mint": record { "to": vec nat8; "amount": Tokens; }; "Burn": record { "from": vec nat8; "amount": Tokens; }; "Transfer": record { "from": vec nat8; "to": vec nat8; "amount": Tokens; "fee": Tokens; } };
+
+service: {
+    "execute_transfer": (text, nat64, nat64, opt nat64) -> (ExecuteTransferResult);
+    "get_account_balance": (text) -> (GetAccountBalanceResult);
+    "get_transfer_fee": () -> (GetTransferFeeResult);
+    "get_symbol": () -> (GetSymbolResult);
+    "get_name": () -> (GetNameResult);
+    "get_decimals": () -> (GetDecimalsResult);
+    "get_archives": () -> (GetArchivesResult);
+}

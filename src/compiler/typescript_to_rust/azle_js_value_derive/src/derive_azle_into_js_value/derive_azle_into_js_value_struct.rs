@@ -1,8 +1,12 @@
 use proc_macro2::Ident;
-use quote::quote;
+use quote::{
+    format_ident,
+    quote
+};
 use syn::{
     DataStruct,
-    Fields
+    Fields,
+    Index
 };
 
 pub fn derive_azle_into_js_value_struct(
@@ -38,7 +42,17 @@ fn derive_struct_fields_variable_definitions(data_struct: &DataStruct) -> Vec<pr
                 }
             }).collect()
         },
-        _ => panic!("Only named fields supported for Structs")
+        Fields::Unnamed(fields_unnamed) => {
+            fields_unnamed.unnamed.iter().enumerate().map(|(index, _)| {
+                let field_name = format_ident!("field_{}", index);
+                let syn_index = Index::from(index);
+
+                quote! {
+                    let #field_name = self.#syn_index.azle_into_js_value(context);
+                }
+            }).collect()
+        },
+        _ => panic!("Only named and unnamed fields supported for Structs")
     }
 }
 
@@ -57,6 +71,20 @@ fn derive_struct_fields_property_definitions(data_struct: &DataStruct) -> Vec<pr
                 }
             }).collect()
         },
-        _ => panic!("Only named fields supported for Structs")
+        Fields::Unnamed(fields_unnamed) => {
+            fields_unnamed.unnamed.iter().enumerate().map(|(index, _)| {
+                let field_name = format_ident!("field_{}", index);
+                let syn_index = Index::from(index);
+
+                quote! {
+                    .property(
+                        stringify!(#syn_index),
+                        #field_name,
+                        boa_engine::property::Attribute::all()
+                    )
+                }
+            }).collect()
+        },
+        _ => panic!("Only named and unnamed fields supported for Structs")
     }
 }

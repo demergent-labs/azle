@@ -6,7 +6,10 @@
             "root": "src",
             "ts": "src/calc.ts",
             "candid": "src/calc.did",
-            "wasm": "target/wasm32-unknown-unknown/release/calc.wasm"
+            "wasm": "target/wasm32-unknown-unknown/release/calc.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/calc"
+            }
         }
     }
 }

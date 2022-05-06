@@ -29,14 +29,13 @@ export function getParamName(parameterDeclaration: tsc.ParameterDeclaration): st
     return parameterDeclaration.name.escapedText.toString();
 }
 
-// TODO what about optional types and all of that craziness?
 // TODO perhaps we just want to use the candid generation somehow?
 // TODO or we will have to do this all ourselves...maybe that's fine for now
 // TODO but perhaps in the future we could have candid generate this Rust info for us
 // TODO should we support inline types? I don't think so since they are impossible to represent in Rust
 // TODO basically we would need to create special types that represent those inline types, which we could consider
 // TODO for now just document that you need to use explicit type names or array types, no inline types for cross-canister calls
-// TODO I would hope most canisters do not actually use inline types, if they do we will run into problems
+// TODO I would hope most canisters do not actually use inline types, if they do we will run into problems (turns out they do, but you can just give the types a name)
 export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
     if (typeNode.kind === tsc.SyntaxKind.StringKeyword) {
         return `String`;
@@ -44,6 +43,10 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
 
     if (typeNode.kind === tsc.SyntaxKind.BooleanKeyword) {
         return `bool`;
+    }
+
+    if (typeNode.kind === tsc.SyntaxKind.VoidKeyword) {
+        return `()`;
     }
 
     // TODO possibly type literals?

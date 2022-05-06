@@ -6,7 +6,10 @@
             "root": "src",
             "ts": "src/imports.ts",
             "candid": "src/imports.did",
-            "wasm": "target/wasm32-unknown-unknown/release/imports.wasm"
+            "wasm": "target/wasm32-unknown-unknown/release/imports.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/imports"
+            }
         }
     }
 }

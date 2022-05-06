@@ -5,5 +5,6 @@ type Entry = record {
 
 service: () -> {
     "getEntries": () -> (vec Entry) query;
+    "hack": () -> () query;
     "setEntry": (Entry) -> ();
 }

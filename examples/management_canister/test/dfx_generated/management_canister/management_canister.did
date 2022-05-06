@@ -1,0 +1,107 @@
+type CanisterStatusArgs = record {
+    "canister_id": principal;
+};
+
+type CreateCanisterArgs = record {
+    "settings": opt CanisterSettings;
+};
+
+type UpdateSettingsArgs = record {
+    "canister_id": principal;
+    "settings": CanisterSettings;
+};
+
+type InstallCodeArgs = record {
+    "mode": InstallCodeMode;
+    "canister_id": principal;
+    "wasm_module": vec nat8;
+    "arg": vec nat8;
+};
+
+type UninstallCodeArgs = record {
+    "canister_id": principal;
+};
+
+type StartCanisterArgs = record {
+    "canister_id": principal;
+};
+
+type StopCanisterArgs = record {
+    "canister_id": principal;
+};
+
+type DeleteCanisterArgs = record {
+    "canister_id": principal;
+};
+
+type DepositCyclesArgs = record {
+    "canister_id": principal;
+};
+
+type ProvisionalCreateCanisterWithCyclesArgs = record {
+    "amount": opt nat;
+    "settings": opt CanisterSettings;
+};
+
+type ProvisionalTopUpCanisterArgs = record {
+    "canister_id": principal;
+    "amount": nat;
+};
+
+type CreateCanisterResult = record {
+    "canister_id": principal;
+};
+
+type CanisterStatusResult = record {
+    "status": CanisterStatus;
+    "settings": DefiniteCanisterSettings;
+    "module_hash": opt vec nat8;
+    "memory_size": nat;
+    "cycles": nat;
+};
+
+type ProvisionalCreateCanisterWithCyclesResult = record {
+    "canister_id": principal;
+};
+
+type CanisterSettings = record {
+    "controllers": opt vec principal;
+    "compute_allocation": opt nat;
+    "memory_allocation": opt nat;
+    "freezing_threshold": opt nat;
+};
+
+type DefiniteCanisterSettings = record {
+    "controllers": vec principal;
+    "compute_allocation": nat;
+    "memory_allocation": nat;
+    "freezing_threshold": nat;
+};
+
+type ExecuteCreateCanisterResult = variant { "ok": CreateCanisterResult; "err": text };
+
+type DefaultResult = variant { "ok": bool; "err": text };
+
+type GetCanisterStatusResult = variant { "ok": CanisterStatusResult; "err": text };
+
+type RawRandResult = variant { "ok": vec nat8; "err": text };
+
+type ExecuteProvisionalCreateCanisterWithCyclesResult = variant { "ok": CreateCanisterResult; "err": text };
+
+type CanisterStatus = variant { "running": null; "stopping": null; "stopped": null };
+
+type InstallCodeMode = variant { "install": null; "reinstall": null; "upgrade": null };
+
+service: {
+    "get_created_canister_id": () -> (principal) query;
+    "execute_create_canister": () -> (ExecuteCreateCanisterResult);
+    "execute_update_settings": (principal) -> (DefaultResult);
+    "execute_uninstall_code": (principal) -> (DefaultResult);
+    "execute_start_canister": (principal) -> (DefaultResult);
+    "execute_stop_canister": (principal) -> (DefaultResult);
+    "get_canister_status": (CanisterStatusArgs) -> (GetCanisterStatusResult);
+    "execute_delete_canister": (principal) -> (DefaultResult);
+    "get_raw_rand": () -> (RawRandResult);
+    "provisional_create_canister_with_cycles": () -> (ExecuteProvisionalCreateCanisterWithCyclesResult);
+    "provisional_top_up_canister": (principal, nat) -> (DefaultResult);
+}

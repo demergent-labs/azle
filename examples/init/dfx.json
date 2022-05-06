@@ -6,7 +6,10 @@
             "root": "src",
             "ts": "src/init.ts",
             "candid": "src/init.did",
-            "wasm": "target/wasm32-unknown-unknown/release/init.wasm"
+            "wasm": "target/wasm32-unknown-unknown/release/init.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/init"
+            }
         }
     }
 }

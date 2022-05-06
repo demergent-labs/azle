@@ -15,49 +15,49 @@ export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust
 
     return `
         if
-            return_value.is_object() == false ||
-            return_value.as_object().unwrap().is_generator() == false
+            _azle_return_value.is_object() == false ||
+            _azle_return_value.as_object().unwrap().is_generator() == false
         {
-            ${returnTypeName === '' ? `return;` : `${generateReturnValueConversion('return_value', returnTypeName)}`}
+            ${returnTypeName === '' ? `return;` : `${generateReturnValueConversion('_azle_return_value', returnTypeName)}`}
         }
 
-        let final_js_value = handle_generator_result(
+        let _azle_final_js_value = handle_generator_result(
             &mut boa_context,
-            &return_value
+            &_azle_return_value
         ).await;        
 
         ${returnTypeName === '' ? '' : `
-            // if final_js_value.is_undefined() {
+            // if _azle_final_js_value.is_undefined() {
 
             // }
             // else {
-                // serde_json::from_value(final_js_value.to_json(&mut boa_context).unwrap()).unwrap()
-                ${generateReturnValueConversion('final_js_value', returnTypeName)}
+                // serde_json::from_value(_azle_final_js_value.to_json(&mut boa_context).unwrap()).unwrap()
+                ${generateReturnValueConversion('_azle_final_js_value', returnTypeName)}
             // }
         `}
     `;
 
     // return `
     //     if
-    //         return_value.is_object() &&
-    //         return_value.as_object().unwrap().is_generator()
+    //         _azle_return_value.is_object() &&
+    //         _azle_return_value.as_object().unwrap().is_generator()
     //     {
-    //         let generator_object = return_value.as_object().unwrap();
+    //         let _azle_generator_object = _azle_return_value.as_object().unwrap();
     
-    //         let next_js_value = generator_object.get("next", &mut boa_context).unwrap();
-    //         let next_js_object = next_js_value.as_object().unwrap();
+    //         let _azle_next_js_value = _azle_generator_object.get("next", &mut boa_context).unwrap();
+    //         let _azle_next_js_object = _azle_next_js_value.as_object().unwrap();
     
-    //         let final_js_value = azle_run_generator(
+    //         let _azle_final_js_value = azle_run_generator(
     //             &[],
-    //             next_js_object,
+    //             _azle_next_js_object,
     //             &mut boa_context,
-    //             &return_value
+    //             &_azle_return_value
     //         ).await;
 
-    //         return serde_json::from_value(final_js_value.to_json(&mut boa_context).unwrap()).unwrap();
+    //         return serde_json::from_value(_azle_final_js_value.to_json(&mut boa_context).unwrap()).unwrap();
     //     }
 
-    //     serde_json::from_value(return_value.to_json(&mut boa_context).unwrap()).unwrap()
+    //     serde_json::from_value(_azle_return_value.to_json(&mut boa_context).unwrap()).unwrap()
     // `;
     
     // const returnTypeName = getImplItemMethodReturnTypeName(implItemMethod);
@@ -98,39 +98,44 @@ export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust
 
     // }
 
-    // return `serde_json::from_value(return_value.to_json(&mut boa_context).unwrap()).unwrap()`;
+    // return `serde_json::from_value(_azle_return_value.to_json(&mut boa_context).unwrap()).unwrap()`;
 }
 
+// TODO the generator implementation is not sufficient
+// TODO I am afraid we might have to do something recursively...well we can just mutate things I guess
+// TODO but if we return a generator as the call to next, we need to deal with that as well it seems
 export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFunctionInfo[]): Rust {
     return `
         async fn handle_generator_result(
-            boa_context: &mut boa_engine::Context,
-            return_value: &boa_engine::JsValue
+            _azle_boa_context: &mut boa_engine::Context,
+            _azle_return_value: &boa_engine::JsValue
         ) -> boa_engine::JsValue {
-            let generator_object = return_value.as_object().unwrap();
+            let _azle_generator_object = _azle_return_value.as_object().unwrap();
 
-            let next_js_value = generator_object.get("next", boa_context).unwrap();
-            let next_js_object = next_js_value.as_object().unwrap();
+            let _azle_next_js_value = _azle_generator_object.get("next", _azle_boa_context).unwrap();
+            let _azle_next_js_object = _azle_next_js_value.as_object().unwrap();
 
-            let mut continue_running = true;
-            let mut args: Vec<boa_engine::JsValue> = vec![];
+            let mut _azle_continue_running = true;
+            let mut _azle_args: Vec<boa_engine::JsValue> = vec![];
 
-            // let mut final_js_value = boa_engine::JsValue::Undefined; // TODO this will probably break down below
-            let mut final_js_value = boa_engine::JsValue::from("hello"); // TODO this will probably break down below
+            // let mut _azle_final_js_value = boa_engine::JsValue::Undefined; // TODO this will probably break down below
+            let mut _azle_final_js_value = boa_engine::JsValue::from("hello"); // TODO this will probably break down below
 
-            while continue_running == true {
-                let yield_result_js_value = next_js_object.call(&return_value, &args[..], boa_context).unwrap();
+            while _azle_continue_running == true {
+                let yield_result_js_value = _azle_next_js_object.call(&_azle_return_value, &_azle_args[..], _azle_boa_context).unwrap();
                 let yield_result_js_object = yield_result_js_value.as_object().unwrap();
                 
-                let yield_result_done_js_value = yield_result_js_object.get("done", boa_context).unwrap();
+                let yield_result_done_js_value = yield_result_js_object.get("done", _azle_boa_context).unwrap();
                 let yield_result_done_bool = yield_result_done_js_value.as_boolean().unwrap();
                 
-                let yield_result_value_js_value = yield_result_js_object.get("value", boa_context).unwrap();
+                // TODO we need to handle this return value being a generator
+                // TODO we will have to emulate recursion with mutations
+                let yield_result_value_js_value = yield_result_js_object.get("value", _azle_boa_context).unwrap();
 
                 if yield_result_done_bool == false {
                     let yield_result_value_js_object = yield_result_value_js_value.as_object().unwrap();
                     
-                    let name_js_value = yield_result_value_js_object.get("name", boa_context).unwrap();
+                    let name_js_value = yield_result_value_js_object.get("name", _azle_boa_context).unwrap();
                     let name_string = name_js_value.as_string().unwrap();
 
                     if name_string == "rawRand" {
@@ -140,31 +145,58 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                             ()
                         ).await;
 
-                        let result = call_result.unwrap().0;
+                        match call_result {
+                            Ok(value) => {
+                                let js_value = value.0.azle_into_js_value(_azle_boa_context);
 
-                        let js_value = result.azle_into_js_value(boa_context);
+                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                                    .property(
+                                        "ok",
+                                        js_value,
+                                        boa_engine::property::Attribute::all()
+                                    )
+                                    .build();
 
-                        args = vec![js_value];
+                                let canister_result_js_value = canister_result_js_object.into();
+
+                                _azle_args = vec![canister_result_js_value];
+                            },
+                            Err(err) => {
+                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).into_js_value(_azle_boa_context);
+
+                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                                    .property(
+                                        "err",
+                                        js_value,
+                                        boa_engine::property::Attribute::all()
+                                    )
+                                    .build();
+
+                                let canister_result_js_value = canister_result_js_object.into();
+
+                                _azle_args = vec![canister_result_js_value];
+                            }
+                        };
                     }
 
                     if name_string == "call" {
-                        let call_args_js_value = yield_result_value_js_object.get("args", boa_context).unwrap();
+                        let call_args_js_value = yield_result_value_js_object.get("args", _azle_boa_context).unwrap();
                         let call_args_js_object = call_args_js_value.as_object().unwrap();
 
-                        let call_function_name_js_value = call_args_js_object.get("0", boa_context).unwrap(); // TODO get the first call arg
+                        let call_function_name_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap(); // TODO get the first call arg
                         let call_function_name_string = call_function_name_js_value.as_string().unwrap().to_string();
 
                         match &call_function_name_string[..] {
                             ${callFunctionInfos.map((callFunctionInfo) => {
                                 return `
                                     "${callFunctionInfo.functionName}" => {
-                                        let canister_id_js_value = call_args_js_object.get("1", boa_context).unwrap();
+                                        let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
                                         let canister_id_string = canister_id_js_value.as_string().unwrap().to_string();
 
                                         ${callFunctionInfo.params.map((param, index) => {
                                             return `
-                                                let ${param.paramName}_js_value = call_args_js_object.get("${index + 2}", boa_context).unwrap();
-                                                let ${param.paramName}: ${param.paramType} = ${param.paramName}_js_value.azle_try_from_js_value(boa_context).unwrap();
+                                                let ${param.paramName}_js_value = call_args_js_object.get("${index + 2}", _azle_boa_context).unwrap();
+                                                let ${param.paramName}: ${param.paramType} = ${param.paramName}_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
                                             `;
                                         }).join('\n')}
 
@@ -177,9 +209,9 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
 
                                         match call_result {
                                             Ok(value) => {
-                                                let js_value = value.0.azle_into_js_value(boa_context);
+                                                let js_value = value.0.azle_into_js_value(_azle_boa_context);
 
-                                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(boa_context)
+                                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
                                                     .property(
                                                         "ok",
                                                         js_value,
@@ -189,12 +221,12 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
 
                                                 let canister_result_js_value = canister_result_js_object.into();
 
-                                                args = vec![canister_result_js_value];
+                                                _azle_args = vec![canister_result_js_value];
                                             },
                                             Err(err) => {
-                                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).into_js_value(boa_context);
+                                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).into_js_value(_azle_boa_context);
 
-                                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(boa_context)
+                                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
                                                     .property(
                                                         "err",
                                                         js_value,
@@ -204,7 +236,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
 
                                                 let canister_result_js_value = canister_result_js_object.into();
 
-                                                args = vec![canister_result_js_value];
+                                                _azle_args = vec![canister_result_js_value];
                                             }
                                         };
                                     },
@@ -215,12 +247,12 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                     }
                 }
                 else {
-                    final_js_value = yield_result_value_js_value;
-                    continue_running = false;
+                    _azle_final_js_value = yield_result_value_js_value;
+                    _azle_continue_running = false;
                 }
             }
 
-            final_js_value
+            _azle_final_js_value
         }
     `;
 }

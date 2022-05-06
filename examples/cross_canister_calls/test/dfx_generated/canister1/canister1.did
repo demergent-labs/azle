@@ -1,0 +1,26 @@
+type AccountArgs = record {
+    "id": text;
+};
+
+type Account = record {
+    "id": text;
+    "balance": nat64;
+};
+
+type TransferResult = variant { "ok": nat64; "err": text };
+
+type BalanceResult = variant { "ok": nat64; "err": text };
+
+type AccountResult = variant { "ok": opt Account; "err": text };
+
+type AccountsResult = variant { "ok": vec Account; "err": text };
+
+type TrapResult = variant { "ok": text; "err": text };
+
+service: {
+    "transfer": (text, text, nat64) -> (TransferResult);
+    "balance": (text) -> (BalanceResult);
+    "account": (AccountArgs) -> (AccountResult);
+    "accounts": () -> (AccountsResult);
+    "trap": () -> (TrapResult);
+}

@@ -9,12 +9,15 @@ directories=(
     "examples/complex_types"
     "examples/counter"
     "examples/cross_canister_calls"
+    "examples/generators"
     "examples/heartbeat"
     "examples/ic_api"
     "examples/imports"
     "examples/init"
     "examples/inline_types"
     "examples/key_value_store"
+    "examples/ledger_canister"
+    "examples/management_canister"
     "examples/motoko_examples/calc"
     "examples/motoko_examples/counter"
     "examples/optional_types"
@@ -24,6 +27,7 @@ directories=(
     "examples/simple_erc20"
     "examples/simple_user_accounts"
     "examples/stable_storage"
+    "examples/tuple_types"
     "examples/update"
 )
 

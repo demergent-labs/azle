@@ -47,6 +47,7 @@ export function generateCandidRecords(
     };
 }
 
+// TODO we need to filter out type aliases that aren't records
 function getCandidRecordNames(
     sourceFiles: readonly tsc.SourceFile[],
     canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
@@ -90,6 +91,26 @@ function getCandidRecordNames(
                 return [
                     ...result,
                     ...getCandidRecordNamesFromRecordFields(
+                        sourceFiles,
+                        recordName,
+                        []
+                    )
+                ];
+            }, [])
+        )
+    );
+
+    const tupleRecordFieldsRecordNames = Array.from(
+        new Set(
+            [
+                ...canisterMethodRecordNames,
+                ...canisterTypeAliasRecordNames,
+                ...stableTypeAliasRecordNames,
+                ...recordFieldsRecordNames
+            ].reduce((result: string[], recordName) => {
+                return [
+                    ...result,
+                    ...getCandidRecordNamesFromTupleRecordFields(
                         sourceFiles,
                         recordName,
                         []
@@ -151,6 +172,7 @@ function getCandidRecordNames(
         ...canisterTypeAliasRecordNames,
         ...stableTypeAliasRecordNames,
         ...recordFieldsRecordNames,
+        ...tupleRecordFieldsRecordNames,
         ...variantFieldsRecordNames
     ]));
 }
@@ -177,6 +199,33 @@ function getCandidRecordNamesFromRecordFields(
     const candidRecordNames = getCandidRecordNamesFromTypeLiteralNode(
         sourceFiles,
         typeAliasDeclaration.type as tsc.TypeLiteralNode,
+        recordNamesAlreadyFound
+    );
+
+    return candidRecordNames;
+}
+
+function getCandidRecordNamesFromTupleRecordFields(
+    sourceFiles: readonly tsc.SourceFile[],
+    recordName: string,
+    recordNamesAlreadyFound: string[]
+): string[] {
+    const typeAliasDeclaration = getTypeAliasDeclaration(
+        sourceFiles,
+        recordName
+    );
+
+    if (typeAliasDeclaration === undefined) {
+        throw new Error(`Could not generate Candid record for type alias declaration: ${typeAliasDeclaration}`);
+    }
+
+    if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TupleType) {
+        return [];
+    }
+
+    const candidRecordNames = getCandidRecordNamesFromTupleTypeNode(
+        sourceFiles,
+        typeAliasDeclaration.type as tsc.TupleTypeNode,
         recordNamesAlreadyFound
     );
 
@@ -285,6 +334,58 @@ export function getCandidRecordNamesFromTypeLiteralNode(
     return candidRecordNames;
 }
 
+export function getCandidRecordNamesFromTupleTypeNode(
+    sourceFiles: readonly tsc.SourceFile[],
+    tupleTypeNode: tsc.TupleTypeNode,
+    recordNamesAlreadyFound: string[]
+): string[] {
+    return tupleTypeNode.elements.reduce((result: string[], element) => {
+        const candidTypeInfo = generateCandidTypeInfo(
+            sourceFiles,
+            element
+        );
+
+        if (recordNamesAlreadyFound.includes(candidTypeInfo.typeName)) {
+            return result;
+        }
+
+        if (candidTypeInfo.typeClass === 'record') {
+            const recursedRecordNames = getCandidRecordNamesFromRecordFields(
+                sourceFiles,
+                candidTypeInfo.typeName,
+                [
+                    ...recordNamesAlreadyFound,
+                    candidTypeInfo.typeName
+                ]
+            );
+
+            return [
+                ...result,
+                candidTypeInfo.typeName,
+                ...recursedRecordNames
+            ];
+        }
+
+        if (candidTypeInfo.typeClass === 'variant') {
+            const recursedRecordNames = getCandidRecordNamesFromVariantFields(
+                sourceFiles,
+                candidTypeInfo.typeName,
+                recordNamesAlreadyFound
+            );
+
+            return [
+                ...result,
+                ...recursedRecordNames
+            ];
+        }
+
+        return result;
+    }, []);
+}
+
+// TODO we need to handle all possible types here, not just TypeLiteral and Array
+// TODO actually these shouldn't even be records, so we need to filter out all type alias declarations
+// TODO that are not should not be here...like nat64 etc
 function generateCandidRecord(
     sourceFiles: readonly tsc.SourceFile[],
     candidRecordName: string
@@ -311,6 +412,14 @@ function generateCandidRecord(
             sourceFiles,
             candidRecordName,
             typeAliasDeclaration
+        );
+    }
+
+    if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TupleType) {
+        return generateCandidRecordForTupleType(
+            sourceFiles,
+            candidRecordName,
+            typeAliasDeclaration.type as tsc.TupleTypeNode
         );
     }
 
@@ -362,4 +471,26 @@ function generateCandidRecordForArrayType(
     );
 
     return `type ${candidRecordName} = ${candidTypeName.text};`;
+}
+
+export function generateCandidRecordForTupleType(
+    sourceFiles: readonly tsc.SourceFile[],
+    candidRecordName: string | null,
+    tupleTypeNode: tsc.TupleTypeNode
+) {
+    const candid_type_infos = tupleTypeNode.elements.map((element) => {
+        return generateCandidTypeInfo(
+            sourceFiles,
+            element
+        );
+    });
+
+    const right_hand_side = `record { ${candid_type_infos.map((candid_type_info) => candid_type_info.text).join('; ')} }`;
+
+    if (candidRecordName === null) {
+        return right_hand_side;
+    }
+    else {
+        return `type ${candidRecordName} = ${right_hand_side};`;
+    }
 }

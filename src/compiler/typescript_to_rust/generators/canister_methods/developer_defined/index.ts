@@ -109,7 +109,7 @@ function getBody(implItemMethod: ImplItemMethod, inputs: any[]): Rust {
                 let ${functionName}_js_value = exports_js_object.get("${functionName}", &mut boa_context).unwrap();
                 let ${functionName}_js_object = ${functionName}_js_value.as_object().unwrap();
             
-                let return_value = ${functionName}_js_object.call(
+                let _azle_return_value = ${functionName}_js_object.call(
                     &boa_engine::JsValue::Null,
                     &[
                         ${inputs.map((input) => {

@@ -144,13 +144,34 @@ function getCandidVariantNames(
         )
     );
 
+    const tupleRecordFieldsVariantNames = Array.from(
+        new Set(
+            [
+                ...canisterMethodRecordNames,
+                ...canisterTypeAliasRecordNames,
+                ...stableTypeAliasRecordNames,
+                ...recordFieldsVariantNames
+            ].reduce((result: string[], recordName) => {
+                return [
+                    ...result,
+                    ...getCandidVariantNamesFromTupleRecordFields(
+                        sourceFiles,
+                        recordName,
+                        []
+                    )
+                ];
+            }, [])
+        )
+    );
+
     // TODO we probably do not need so many Array.form(new Set())
     return Array.from(new Set([
         ...canisterMethodVariantNames,
         ...canisterTypeAliasVariantNames,
         ...stableTypeAliasVariantNames,
         ...variantFieldsVariantNames,
-        ...recordFieldsVariantNames
+        ...recordFieldsVariantNames,
+        ...tupleRecordFieldsVariantNames
     ]));
 }
 
@@ -222,6 +243,33 @@ function getCandidVariantNamesFromRecordFields(
     return candidVariantNames;
 }
 
+function getCandidVariantNamesFromTupleRecordFields(
+    sourceFiles: readonly tsc.SourceFile[],
+    variantName: string,
+    variantNamesAlreadyFound: string[]
+): string[] {
+    const typeAliasDeclaration = getTypeAliasDeclaration(
+        sourceFiles,
+        variantName
+    );
+
+    if (typeAliasDeclaration === undefined) {
+        throw new Error(`Could not generate Candid record for type alias declaration: ${typeAliasDeclaration}`);
+    }
+
+    if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TupleType) {
+        return [];
+    }
+
+    const candidVariantNames = getCandidVariantNamesFromTupleTypeNode(
+        sourceFiles,
+        typeAliasDeclaration.type as tsc.TupleTypeNode,
+        variantNamesAlreadyFound
+    );
+
+    return candidVariantNames;
+}
+
 export function getCandidVariantNamesFromTypeLiteralNode(
     sourceFiles: readonly tsc.SourceFile[],
     typeLiteralNode: tsc.TypeLiteralNode,
@@ -282,6 +330,55 @@ export function getCandidVariantNamesFromTypeLiteralNode(
     }, []);
 
     return candidVariantNames;
+}
+
+export function getCandidVariantNamesFromTupleTypeNode(
+    sourceFiles: readonly tsc.SourceFile[],
+    tupleTypeNode: tsc.TupleTypeNode,
+    variantNamesAlreadyFound: string[]
+): string[] {
+    return tupleTypeNode.elements.reduce((result: string[], element) => {
+        const candidTypeInfo = generateCandidTypeInfo(
+            sourceFiles,
+            element
+        );
+
+        if (variantNamesAlreadyFound.includes(candidTypeInfo.typeName)) {
+            return result;
+        }
+
+        if (candidTypeInfo.typeClass === 'variant') {
+            const recursedRecordNames = getCandidVariantNamesFromVariantFields(
+                sourceFiles,
+                candidTypeInfo.typeName,
+                variantNamesAlreadyFound
+            );
+
+            return [
+                ...result,
+                candidTypeInfo.typeName,
+                ...recursedRecordNames
+            ];
+        }
+
+        if (candidTypeInfo.typeClass === 'record') {
+            const recursedRecordNames = getCandidVariantNamesFromRecordFields(
+                sourceFiles,
+                candidTypeInfo.typeName,
+                [
+                    ...variantNamesAlreadyFound,
+                    candidTypeInfo.typeName
+                ]
+            );
+
+            return [
+                ...result,
+                ...recursedRecordNames
+            ];
+        }
+
+        return result;
+    }, []);
 }
 
 // TODO there must be a better way than to use all of this nesting

@@ -6,7 +6,10 @@
             "root": "src",
             "ts": "src/simple_user_accounts.ts",
             "candid": "src/simple_user_accounts.did",
-            "wasm": "target/wasm32-unknown-unknown/release/simple_user_accounts.wasm"
+            "wasm": "target/wasm32-unknown-unknown/release/simple_user_accounts.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/simple_user_accounts"
+            }
         }
     }
 }

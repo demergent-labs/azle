@@ -6,6 +6,13 @@ export function generateAzleTryFromJsValueTrait(): Rust {
         pub trait AzleTryFromJsValue<T> {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<T, TryFromJsValueError>;
         }
+
+        // TODO not sure but I think this is correct
+        impl AzleTryFromJsValue<()> for boa_engine::JsValue {
+            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<(), TryFromJsValueError> {
+                Ok(())
+            }
+        }
         
         impl AzleTryFromJsValue<bool> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<bool, TryFromJsValueError> {

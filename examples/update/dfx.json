@@ -6,7 +6,10 @@
             "root": "src",
             "ts": "src/update.ts",
             "candid": "src/update.did",
-            "wasm": "target/wasm32-unknown-unknown/release/update.wasm"
+            "wasm": "target/wasm32-unknown-unknown/release/update.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/update"
+            }
         }
     }
 }

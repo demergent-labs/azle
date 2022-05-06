@@ -90,19 +90,29 @@ fn derive_variant_branches_named_fields(
 
         quote! {
             .property(
-                stringify!(#variant_name),
+                stringify!(#field_name),
                 #variable_name,
                 boa_engine::property::Attribute::all()
             )
         }
     });
 
+    let variant_object_variable_name = format_ident!("{}_js_object", variant_name);
+
     quote! {
         #enum_name::#variant_name { #(#field_names),* } => {
             #(#named_field_variable_declarations)*
 
-            let object = boa_engine::object::ObjectInitializer::new(context)
+            let #variant_object_variable_name = boa_engine::object::ObjectInitializer::new(context)
                 #(#named_field_property_definitions)*
+                .build();
+
+            let object = boa_engine::object::ObjectInitializer::new(context)
+                .property(
+                    stringify!(#variant_name),
+                    #variant_object_variable_name,
+                    boa_engine::property::Attribute::all()
+                )
                 .build();
 
             object.into()

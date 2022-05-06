@@ -1,0 +1,20 @@
+{
+    "canisters": {
+        "ledger_canister": {
+            "type": "custom",
+            "build": "npx azle ledger_canister",
+            "root": "canisters/ledger_canister",
+            "ts": "canisters/ledger_canister/ledger_canister.ts",
+            "candid": "canisters/ledger_canister/ledger_canister.did",
+            "wasm": "target/wasm32-unknown-unknown/release/ledger_canister.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/ledger_canister"
+            }
+        },
+        "icp_ledger": {
+            "type": "custom",
+            "candid": "canisters/icp_ledger/ledger.private.did",
+            "wasm": "canisters/icp_ledger/ledger.wasm"
+        }
+    }
+}

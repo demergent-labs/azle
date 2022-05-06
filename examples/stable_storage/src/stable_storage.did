@@ -36,6 +36,7 @@ service: () -> {
     "readStablePrincipal": () -> (principal) query;
     "readStableUser": () -> (User) query;
     "readStableReaction": () -> (Reaction) query;
+    "hack": () -> () query;
     "writeStableInt": (int) -> ();
     "writeStableInt64": (int64) -> ();
     "writeStableInt32": (int32) -> ();

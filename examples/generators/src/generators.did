@@ -1,0 +1,88 @@
+type CreateCanisterArgs = record {
+    "settings": opt CanisterSettings;
+};
+
+type UpdateSettingsArgs = record {
+    "canister_id": principal;
+    "settings": CanisterSettings;
+};
+
+type InstallCodeArgs = record {
+    "mode": InstallCodeMode;
+    "canister_id": principal;
+    "wasm_module": vec nat8;
+    "arg": vec nat8;
+};
+
+type UninstallCodeArgs = record {
+    "canister_id": principal;
+};
+
+type StartCanisterArgs = record {
+    "canister_id": principal;
+};
+
+type StopCanisterArgs = record {
+    "canister_id": principal;
+};
+
+type CanisterStatusArgs = record {
+    "canister_id": principal;
+};
+
+type DeleteCanisterArgs = record {
+    "canister_id": principal;
+};
+
+type DepositCyclesArgs = record {
+    "canister_id": principal;
+};
+
+type ProvisionalCreateCanisterWithCyclesArgs = record {
+    "amount": opt nat;
+    "settings": opt CanisterSettings;
+};
+
+type ProvisionalTopUpCanisterArgs = record {
+    "canister_id": principal;
+    "amount": nat;
+};
+
+type CreateCanisterResult = record {
+    "canister_id": principal;
+};
+
+type CanisterStatusResult = record {
+    "status": CanisterStatus;
+    "settings": DefiniteCanisterSettings;
+    "module_hash": opt vec nat8;
+    "memory_size": nat;
+    "cycles": nat;
+};
+
+type ProvisionalCreateCanisterWithCyclesResult = record {
+    "canister_id": principal;
+};
+
+type CanisterSettings = record {
+    "controllers": opt vec principal;
+    "compute_allocation": opt nat;
+    "memory_allocation": opt nat;
+    "freezing_threshold": opt nat;
+};
+
+type DefiniteCanisterSettings = record {
+    "controllers": vec principal;
+    "compute_allocation": nat;
+    "memory_allocation": nat;
+    "freezing_threshold": nat;
+};
+
+type InstallCodeMode = variant { "install": null; "reinstall": null; "upgrade": null };
+
+type CanisterStatus = variant { "running": null; "stopping": null; "stopped": null };
+
+service: {
+    "get_randomness_directly": () -> (vec nat8);
+    "get_randomness_indirectly": () -> (vec nat8);
+}
