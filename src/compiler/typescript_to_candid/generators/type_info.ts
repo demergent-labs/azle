@@ -5,7 +5,10 @@ import {
 } from '../ast_utilities/miscellaneous';
 import { CandidTypeInfo } from '../../../types';
 import * as tsc from 'typescript';
-import { generateCandidRecordForTypeLiteral } from './record';
+import {
+    generateCandidRecordForTupleType,
+    generateCandidRecordForTypeLiteral
+} from './record';
 import { generateCandidVariantForTypeLiteral } from './variant';
 import { getTypeAliasDeclaration } from '../ast_utilities/type_aliases';
 
@@ -54,6 +57,13 @@ export function generateCandidTypeInfo(
         return generateCandidTypeInfoForRecordTypeLiteral(
             sourceFiles,
             typeNode as tsc.TypeLiteralNode
+        );
+    }
+
+    if (typeNode.kind === tsc.SyntaxKind.TupleType) {
+        return generateCandidTypeInfoForTupleType(
+            sourceFiles,
+            typeNode as tsc.TupleTypeNode
         );
     }
 
@@ -344,5 +354,20 @@ function generateCandidTypeInfoForVariantTypeLiteral(
         ),
         typeName: '', // TODO what do we do with this?
         typeClass: 'inline_variant'
+    };
+}
+
+function generateCandidTypeInfoForTupleType(
+    sourceFiles: readonly tsc.SourceFile[],
+    tupleTypeNode: tsc.TupleTypeNode
+): CandidTypeInfo {
+    return {
+        text: generateCandidRecordForTupleType(
+            sourceFiles,
+            null,
+            tupleTypeNode
+        ),
+        typeName: '', // TODO what do we do with this?
+        typeClass: 'inline_tuple_record'
     };
 }

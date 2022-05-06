@@ -1,8 +1,14 @@
 import * as tsc from 'typescript';
 import { CandidTypeClass } from '../../../types';
-import { getCandidRecordNamesFromTypeLiteralNode } from '../generators/record';
+import {
+    getCandidRecordNamesFromTupleTypeNode,
+    getCandidRecordNamesFromTypeLiteralNode
+} from '../generators/record';
 import { generateCandidTypeInfo } from '../generators/type_info';
-import { getCandidVariantNamesFromTypeLiteralNode } from '../generators/variant';
+import {
+    getCandidVariantNamesFromTupleTypeNode,
+    getCandidVariantNamesFromTypeLiteralNode
+} from '../generators/variant';
 
 export function getCanisterTypeAliasRecordNames(
     sourceFiles: readonly tsc.SourceFile[],
@@ -112,6 +118,19 @@ function getCanisterTypeAliasParameterNames(
                         ...recordNames
                     ];
                 }
+
+                if (candidTypeInfo.typeClass === 'inline_tuple_record') {
+                    const recordNames = getCandidRecordNamesFromTupleTypeNode(
+                        sourceFiles,
+                        parameter.type as tsc.TupleTypeNode,
+                        []
+                    );
+    
+                    return [
+                        ...result,
+                        ...recordNames
+                    ];
+                }
         
                 if (candidTypeInfo.typeClass === 'inline_variant') {
                     const typeArguments = (parameter.type as tsc.TypeReferenceNode).typeArguments;
@@ -164,6 +183,19 @@ function getCanisterTypeAliasParameterNames(
                     const variantNames = getCandidVariantNamesFromTypeLiteralNode(
                         sourceFiles,
                         parameter.type as tsc.TypeLiteralNode,
+                        []
+                    );
+    
+                    return [
+                        ...result,
+                        ...variantNames
+                    ];
+                }
+
+                if (candidTypeInfo.typeClass === 'inline_tuple_record') {
+                    const variantNames = getCandidVariantNamesFromTupleTypeNode(
+                        sourceFiles,
+                        parameter.type as tsc.TupleTypeNode,
                         []
                     );
     
@@ -245,6 +277,25 @@ function getCanisterTypeAliasReturnTypeNames(
                     ...recordNames
                 ];
             }
+
+            if (candidTypeInfo.typeClass === 'inline_tuple_record') {
+                const typeArguments = (methodSignature.type as tsc.TypeReferenceNode).typeArguments;
+    
+                if (typeArguments === undefined) {
+                    throw new Error('This cannot happen');
+                }
+    
+                const recordNames = getCandidRecordNamesFromTupleTypeNode(
+                    sourceFiles,
+                    typeArguments[0] as tsc.TupleTypeNode,
+                    []
+                );
+
+                return [
+                    ...result,
+                    ...recordNames
+                ];
+            }
     
             if (candidTypeInfo.typeClass === 'inline_variant') {
                 const outerTypeArguments = (methodSignature.type as tsc.TypeReferenceNode).typeArguments;
@@ -315,6 +366,25 @@ function getCanisterTypeAliasReturnTypeNames(
                 const variantNames = getCandidVariantNamesFromTypeLiteralNode(
                     sourceFiles,
                     typeArguments[0] as tsc.TypeLiteralNode,
+                    []
+                );
+
+                return [
+                    ...result,
+                    ...variantNames
+                ];
+            }
+
+            if (candidTypeInfo.typeClass === 'inline_tuple_record') {
+                const typeArguments = (methodSignature.type as tsc.TypeReferenceNode).typeArguments;
+    
+                if (typeArguments === undefined) {
+                    throw new Error('This cannot happen');
+                }
+    
+                const variantNames = getCandidVariantNamesFromTupleTypeNode(
+                    sourceFiles,
+                    typeArguments[0] as tsc.TupleTypeNode,
                     []
                 );
 

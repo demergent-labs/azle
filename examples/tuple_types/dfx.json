@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "tuple_types": {
+            "type": "custom",
+            "build": "npx azle tuple_types",
+            "root": "src",
+            "ts": "src/tuple_types.ts",
+            "candid": "src/tuple_types.did",
+            "wasm": "target/wasm32-unknown-unknown/release/tuple_types.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/tuple_types"
+            }
+        }
+    }
+}

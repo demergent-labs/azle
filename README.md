@@ -1039,6 +1039,8 @@ More documentation to come, see the examples and the DFINITY documentation for t
 * Unknown security vulnerabilities
 * Unknown cycle efficiency relative to canisters written in Rust or Motoko
 * Working with nat8[]/blobs greater than a few thousand kb in size is impractical
+* No support for inline tuple types, create a named type alias instead
+* No 1-tuple support
 * And much much [more](https://github.com/demergent-labs/azle/issues)
 
 ### Gotchas and caveats

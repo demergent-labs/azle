@@ -13,12 +13,13 @@ export const ic: ic = globalThis.ic;
 //     } as any;
 // };
 
-globalThis.console = {
-    ...globalThis.console,
-    log: (...args: any[]) => {
-        ic.print(...args);
-    }
-};
+// TODO this needs to be included in all code even if the user has not imported anything concrete from azle
+// globalThis.console = {
+//     ...globalThis.console,
+//     log: (...args: any[]) => {
+//         ic.print(...args);
+//     }
+// };
 
 ic.stableStorage = function() {
     return (ic as any)._azleStableStorage;

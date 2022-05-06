@@ -3,7 +3,7 @@ import {
     Test
 } from 'azle/test';
 import { execSync } from 'child_process';
-import { createActor } from '../test/dfx_generated/stable_storage';
+import { createActor } from './dfx_generated/stable_storage';
 import { Principal } from '@dfinity/principal';
 
 const stable_storage_canister = createActor(

@@ -4,8 +4,14 @@ import {
     CanisterMethodTypeName
 } from '../../../types';
 import * as tsc from 'typescript';
-import { getCandidRecordNamesFromTypeLiteralNode } from '../generators/record';
-import { getCandidVariantNamesFromTypeLiteralNode } from '../generators/variant';
+import {
+    getCandidRecordNamesFromTupleTypeNode,
+    getCandidRecordNamesFromTypeLiteralNode
+} from '../generators/record';
+import {
+    getCandidVariantNamesFromTupleTypeNode,
+    getCandidVariantNamesFromTypeLiteralNode
+} from '../generators/variant';
 
 export function getCanisterMethodFunctionDeclarationsFromSourceFiles(
     sourceFiles: readonly tsc.SourceFile[],
@@ -174,6 +180,19 @@ function getCanisterMethodParameterNames(
                     ...recordNames
                 ];
             }
+
+            if (candidTypeInfo.typeClass === 'inline_tuple_record') {
+                const recordNames = getCandidRecordNamesFromTupleTypeNode(
+                    sourceFiles,
+                    parameter.type as tsc.TupleTypeNode,
+                    []
+                );
+
+                return [
+                    ...result,
+                    ...recordNames
+                ];
+            }
     
             if (candidTypeInfo.typeClass === 'inline_variant') {
                 const typeArguments = (parameter.type as tsc.TypeReferenceNode).typeArguments;
@@ -234,6 +253,19 @@ function getCanisterMethodParameterNames(
                     ...variantNames
                 ];
             }
+
+            if (candidTypeInfo.typeClass === 'inline_tuple_record') {
+                const variantNames = getCandidVariantNamesFromTupleTypeNode(
+                    sourceFiles,
+                    parameter.type as tsc.TupleTypeNode,
+                    []
+                );
+
+                return [
+                    ...result,
+                    ...variantNames
+                ];
+            }
         }
 
         return result;
@@ -274,6 +306,21 @@ function getCanisterMethodReturnTypeNames(
                 []
             );
         }
+
+        if (candidTypeInfo.typeClass === 'inline_tuple_record') {
+            const typeArguments = (functionDeclaration.type as tsc.TypeReferenceNode).typeArguments;
+
+            if (typeArguments === undefined) {
+                throw new Error('This cannot happen');
+            }
+
+            return getCandidRecordNamesFromTupleTypeNode(
+                sourceFiles,
+                typeArguments[0] as tsc.TupleTypeNode,
+                []
+            );
+        }
+
 
         if (candidTypeInfo.typeClass === 'inline_variant') {
             const outerTypeArguments = (functionDeclaration.type as tsc.TypeReferenceNode).typeArguments;
@@ -331,6 +378,20 @@ function getCanisterMethodReturnTypeNames(
             return getCandidVariantNamesFromTypeLiteralNode(
                 sourceFiles,
                 typeArguments[0] as tsc.TypeLiteralNode,
+                []
+            );
+        }
+
+        if (candidTypeInfo.typeClass === 'inline_tuple_record') {
+            const typeArguments = (functionDeclaration.type as tsc.TypeReferenceNode).typeArguments;
+
+            if (typeArguments === undefined) {
+                throw new Error('This cannot happen');
+            }
+
+            return getCandidVariantNamesFromTupleTypeNode(
+                sourceFiles,
+                typeArguments[0] as tsc.TupleTypeNode,
                 []
             );
         }

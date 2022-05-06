@@ -16,7 +16,17 @@ export async function compileTypeScriptToJavaScript(tsPath: string): Promise<Jav
 
     const icCanisters = generateICCanisters(tsPath);
 
-    return `${icCanisters}\n${strictModeRemovedJS}`;
+    // TODO we should centralize/standardize where we add global variables to the JS, we are doing this in multiple places
+    return `
+        globalThis.console = {
+            ...globalThis.console,
+            log: (...args) => {
+                ic.print(...args);
+            }
+        };
+
+        ${icCanisters}\n${strictModeRemovedJS}
+    `;
 }
 
 // TODO there is a lot of minification/transpiling etc we could do with esbuild or with swc

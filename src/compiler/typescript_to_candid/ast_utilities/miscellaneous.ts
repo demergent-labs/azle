@@ -57,6 +57,10 @@ export function isTypeReferenceNodeARecord(
         );
     }
 
+    if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TupleType) {
+        return true;
+    }
+
     return false;
 }
 
