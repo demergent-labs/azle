@@ -45,6 +45,17 @@ type PrimitiveThreeTuple = [string, nat64, Principal];
 type ComplexTwoTuple = [PrimitiveTwoTuple, User];
 type ComplexThreeTuple = [PrimitiveTwoTuple, User, Reaction];
 
+type Header = [string, string];
+
+type HttpResponse = {
+    headers: Header[];
+};
+
+type StreamingCallbackType = Variant<{
+    with_headers: Header[];
+    without_headers: null;
+}>;
+
 // TODO https://github.com/demergent-labs/azle/issues/254
 // export function primitive_one_tuple_return_type(): Query<PrimitiveOneTuple> {
 //     return ['Hello'];
@@ -151,3 +162,25 @@ export function complex_three_tuple_param(header: ComplexThreeTuple): Query<Comp
 // TODO wait for https://github.com/demergent-labs/azle/issues/253
 // TODO complex_three_tuple_inline_param
 // TODO complex_three_tuple_inline_return_type
+
+export function tuple_array_params_and_return_type(headers: Header[]): Query<Header[]> {
+    return headers;
+}
+
+export function tuple_array_record_field(): Query<HttpResponse> {
+    return {
+        headers: [
+            ['Content-Type', 'application/json'],
+            ['Accept-Ranges', 'bytes']
+        ]
+    };
+}
+
+export function tuple_array_variant_field(): Query<StreamingCallbackType> {
+    return {
+        with_headers: [
+            ['Content-Type', 'application/json'],
+            ['Accept-Ranges', 'bytes']
+        ]
+    };
+}
