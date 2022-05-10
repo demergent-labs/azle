@@ -1,5 +1,6 @@
 import {
     getTypeReferenceNodeTypeName,
+    isTypeReferenceNodeAFunc,
     isTypeReferenceNodeARecord,
     isTypeReferenceNodeAVariant
 } from '../ast_utilities/miscellaneous';
@@ -285,7 +286,7 @@ function generateCandidTypeInfoForTypeReference(
             isTypeReferenceNodeAVariant(
                 sourceFiles,
                 typeReferenceNode
-            ) == true
+            ) === true
         ) {
             return {
                 text: typeName,
@@ -298,12 +299,25 @@ function generateCandidTypeInfoForTypeReference(
             isTypeReferenceNodeARecord(
                 sourceFiles,
                 typeReferenceNode
-            ) == true
+            ) === true
         ) {
             return {
                 text: typeName,
                 typeName,
                 typeClass: 'record'
+            };
+        }
+
+        if (
+            isTypeReferenceNodeAFunc(
+                sourceFiles,
+                typeReferenceNode
+            ) === true
+        ) {
+            return {
+                text: typeName,
+                typeName,
+                typeClass: 'func'
             };
         }
 

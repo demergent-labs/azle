@@ -1,9 +1,12 @@
+// TODO these tests need to be improved
+
+import { Principal } from '@dfinity/principal';
 import {
     run_tests,
     Test
 } from 'azle/test';
 import { execSync } from 'child_process';
-import { createActor } from './dfx_generated/counter';
+import { createActor } from './dfx_generated/func_types';
 
 const func_types_canister = createActor(
     'rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -17,7 +20,7 @@ const tests: Test[] = [
     {
         name: 'clear canister memory',
         prep: async () => {
-            execSync(`dfx canister uninstall-code counter || true`, {
+            execSync(`dfx canister uninstall-code func_types || true`, {
                 stdio: 'inherit'
             });
         }
@@ -35,11 +38,61 @@ const tests: Test[] = [
             });
         }
     },
+    // {
+    //     name: 'basic_func_param',
+    //     test: async () => {
+    //         const result = await func_types_canister.basic_func_param([
+    //             Principal.fromText('aaaaa-aa'),
+    //             'create_canister'
+    //         ]);
+
+    //         return {
+    //             ok: (
+    //                 result[0].toText() === 'aaaaa-aa' &&
+    //                 result[1] === 'create_canister'
+    //             )
+    //         };
+    //     }
+    // },
     {
-        name: 'should fail',
+        name: 'basic_func_return_type',
         test: async () => {
+            const result = await func_types_canister.basic_func_return_type();
+
             return {
-                ok: false
+                ok: (
+                    result[0].toText() === 'aaaaa-aa' &&
+                    result[1] === 'create_canister'
+                )
+            };
+        }
+    },
+    // {
+    //     name: 'complex_func_param',
+    //     test: async () => {
+    //         const result = await func_types_canister.complex_func_param([
+    //             Principal.fromText('aaaaa-aa'),
+    //             'stop_canister'
+    //         ]);
+
+    //         return {
+    //             ok: (
+    //                 result[0].toText() === 'aaaaa-aa' &&
+    //                 result[1] === 'stop_canister'
+    //             )
+    //         };
+    //     }
+    // },
+    {
+        name: 'complex_func_return_type',
+        test: async () => {
+            const result = await func_types_canister.complex_func_return_type();
+
+            return {
+                ok: (
+                    result[0].toText() === 'aaaaa-aa' &&
+                    result[1] === 'stop_canister'
+                )
             };
         }
     }
