@@ -11,9 +11,14 @@ jobs:
       fail-fast: false
       matrix:
         rust: [stable]
+        include_npm:
+          - ${{ contains(github.ref, 'main') || contains(github.ref, 'release') }}
         azle_source:
-          - npm
+          - npm # TODO I only want this to run on master and release
           - repo
+        exclude:
+          - include_npm: false
+            azle_source: npm
         example_directories:
           - examples/complex_types
           - examples/counter
