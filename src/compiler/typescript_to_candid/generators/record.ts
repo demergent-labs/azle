@@ -17,7 +17,10 @@ import {
     getStableTypeAliasRecordNames,
     getStableTypeAliasVariantNames
 } from '../ast_utilities/stable_type_aliases';
-import { getFuncTypeAliasRecordNames } from '../ast_utilities/func_type_aliases';
+import {
+    getFuncTypeAliasRecordNames,
+    getFuncTypeAliasVariantNames
+} from '../ast_utilities/func_type_aliases';
 
 export function generateCandidRecords(
     sourceFiles: readonly tsc.SourceFile[],
@@ -162,12 +165,22 @@ function getCandidRecordNames(
         )
     );
 
+    const funcTypeAliasVariantNames = Array.from(
+        new Set(
+            getFuncTypeAliasVariantNames(
+                sourceFiles,
+                funcTypeAliasDeclarations
+            )
+        )
+    );
+
     const variantFieldsRecordNames = Array.from(
         new Set(
             [
                 ...canisterMethodVariantNames,
                 ...canisterTypeAliasVariantNames,
-                ...stableTypeAliasVariantNames
+                ...stableTypeAliasVariantNames,
+                ...funcTypeAliasVariantNames
             ].reduce((result: string[], variantName) => {
                 return [
                     ...result,

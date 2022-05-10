@@ -127,5 +127,15 @@ export function ok<T>(azle_result: AzleResult<T>): azle_result is Ok<T> {
     }
 }
 
+// TODO working on turning the ok function into an assertion
+export function attempt<T>(callback: () => AzleResult<T>): AzleResult<T> {
+    try {
+        return callback();
+    }
+    catch(error) {
+        return error as AzleResult<T>;
+    }
+}
+
 // TODO type this more strictly
 export type Func<T extends (...args: any[]) => Query<any> | Update<any> | Oneway<any>> = [Principal, string];

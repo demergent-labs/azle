@@ -10,7 +10,10 @@ import {
     getCanisterTypeAliasRecordNames,
     getCanisterTypeAliasVariantNames
 } from '../ast_utilities/canister_type_aliases';
-import { getFuncTypeAliasVariantNames } from '../ast_utilities/func_type_aliases';
+import {
+    getFuncTypeAliasRecordNames,
+    getFuncTypeAliasVariantNames
+} from '../ast_utilities/func_type_aliases';
 import {
     getStableTypeAliasRecordNames,
     getStableTypeAliasVariantNames
@@ -139,12 +142,22 @@ function getCandidVariantNames(
         )
     );
 
+    const funcTypeAliasRecordNames = Array.from(
+        new Set(
+            getFuncTypeAliasRecordNames(
+                sourceFiles,
+                funcTypeAliasDeclarations
+            )
+        )
+    );
+
     const recordFieldsVariantNames = Array.from(
         new Set(
             [
                 ...canisterMethodRecordNames,
                 ...canisterTypeAliasRecordNames,
-                ...stableTypeAliasRecordNames
+                ...stableTypeAliasRecordNames,
+                ...funcTypeAliasRecordNames
             ].reduce((result: string[], recordName) => {
                 return [
                     ...result,
