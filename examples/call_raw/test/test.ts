@@ -40,7 +40,7 @@ const tests: Test[] = [
     {
         name: 'execute_call_raw raw_rand',
         test: async () => {
-            const candid_encoded_arguments_hex_string = execSync(`didc encode '()'`).toString().trim();
+            const candid_encoded_arguments_hex_string = execSync(`./target/bin/didc encode '()'`).toString().trim();
             const candid_encoded_arguments_byte_array = candid_encoded_arguments_hex_string.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? [];
 
             const result = await call_raw_canister.execute_call_raw(
@@ -71,7 +71,7 @@ const tests: Test[] = [
     {
         name: 'execute_call_raw create_canister',
         test: async () => {
-            const candid_encoded_arguments_hex_string = execSync(`didc encode '(record { settings = null })'`).toString().trim();
+            const candid_encoded_arguments_hex_string = execSync(`./target/bin/didc encode '(record { settings = null })'`).toString().trim();
             const candid_encoded_arguments_byte_array = candid_encoded_arguments_hex_string.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? [];
 
             const result = await call_raw_canister.execute_call_raw(
@@ -89,7 +89,7 @@ const tests: Test[] = [
 
             const result_hex_string = result.ok.map((uint) => uint.toString(16).padStart(2, '0')).join('');
 
-            const candid_decoded_result = execSync(`didc decode ${result_hex_string}`).toString().trim();
+            const candid_decoded_result = execSync(`./target/bin/didc decode ${result_hex_string}`).toString().trim();
 
             return {
                 ok: (
@@ -102,7 +102,7 @@ const tests: Test[] = [
     {
         name: 'execute_call_raw128 raw_rand',
         test: async () => {
-            const candid_encoded_arguments_hex_string = execSync(`didc encode '()'`).toString().trim();
+            const candid_encoded_arguments_hex_string = execSync(`./target/bin/didc encode '()'`).toString().trim();
             const candid_encoded_arguments_byte_array = candid_encoded_arguments_hex_string.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? [];
 
             const result = await call_raw_canister.execute_call_raw128(
@@ -133,7 +133,7 @@ const tests: Test[] = [
     {
         name: 'execute_call_raw128 create_canister',
         test: async () => {
-            const candid_encoded_arguments_hex_string = execSync(`didc encode '(record { settings = null })'`).toString().trim();
+            const candid_encoded_arguments_hex_string = execSync(`./target/bin/didc encode '(record { settings = null })'`).toString().trim();
             const candid_encoded_arguments_byte_array = candid_encoded_arguments_hex_string.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? [];
 
             const result = await call_raw_canister.execute_call_raw128(
@@ -151,7 +151,7 @@ const tests: Test[] = [
 
             const result_hex_string = result.ok.map((uint) => uint.toString(16).padStart(2, '0')).join('');
 
-            const candid_decoded_result = execSync(`didc decode ${result_hex_string}`).toString().trim();
+            const candid_decoded_result = execSync(`./target/bin/didc decode ${result_hex_string}`).toString().trim();
 
             return {
                 ok: (
