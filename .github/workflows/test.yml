@@ -21,6 +21,7 @@ jobs:
           - include_npm: false
             azle_source: npm
         example_directories:
+          - examples/call_raw
           - examples/complex_types
           - examples/counter
           - examples/cross_canister_calls

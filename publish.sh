@@ -10,6 +10,7 @@
 set -e
 
 directories=(
+    "examples/call_raw"
     "examples/complex_types"
     "examples/counter"
     "examples/cross_canister_calls"
