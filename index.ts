@@ -35,12 +35,39 @@ ic.stableStorage = function() {
 //     } as any;
 // };
 
+ic.call_raw = function(...args) {
+    return {
+        name: 'call_raw',
+        args
+    } as any;
+};
+
+ic.call_raw128 = function(...args) {
+    return {
+        name: 'call_raw128',
+        args
+    } as any;
+};
+
 type ic = {
     // call: (
     //     canisterId: Principal,
     //     methodName: string,
     //     ...args: any[]
     // ) => Generator; // TODO improve type inference here, try to get rid of the type parameters
+    call_raw: (
+        canister_id: Principal,
+        method: string,
+        args_raw: nat8[],
+        payment: nat64
+    ) => CanisterResult<nat8[]>;
+    call_raw128: (
+        canister_id: Principal,
+        method: string,
+        args_raw: nat8[],
+        payment: nat
+    ) => CanisterResult<nat8[]>;
+    // TODO also create call_raw_128
     caller: () => string;
     canisters: {
         [canisterName: string]: <T>(canisterId: Principal) => T;
