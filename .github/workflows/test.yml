@@ -1,3 +1,7 @@
+# TODO let's try to get rid of the release/release-candidate branch
+# TODO perhaps we can automate deploys somehow...we do not want to trigger
+# TODO deploys on main though when just merging in, we want to run our release process manually
+
 name: Azle Tests
 on:
   push:
@@ -13,7 +17,7 @@ jobs:
         rust: [stable]
         # TODO perhaps we should start testing on different versions of dfx as well
         include_npm:
-          - ${{ contains(github.ref, 'main') || contains(github.ref, 'release-candidate') }}
+          - ${{ contains(github.ref, 'main') || contains(github.ref, 'release') }} # TODO this does not seem to be working?
         azle_source:
           - npm # TODO I only want this to run on master and release
           - repo

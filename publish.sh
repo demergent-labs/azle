@@ -71,7 +71,7 @@ git commit -am "release $VERSION"
 
 if [[ "$VERSION" == *"-rc."* ]];
 then
-    git push origin release-candidate
+    git push origin release
 else
     git push origin main
 fi
