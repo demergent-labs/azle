@@ -1,0 +1,18 @@
+type User = record {
+    "id": text;
+    "basic_func": BasicFunc;
+};
+
+type Reaction = variant { "Good": null; "Bad": null; "BasicFunc": BasicFunc };
+
+type BasicFunc = func (text) -> (text) query;
+type ComplexFunc = func (User, Reaction) -> (nat64);
+type OnewayFunc = func (nat64) -> () oneway;
+type StableFunc = func (nat64, text) -> () query;
+
+service: {
+    "basic_func_param": (BasicFunc) -> (BasicFunc) query;
+    "basic_func_return_type": () -> (BasicFunc) query;
+    "complex_func_param": (ComplexFunc) -> (ComplexFunc) query;
+    "complex_func_return_type": () -> (ComplexFunc) query;
+}

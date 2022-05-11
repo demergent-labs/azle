@@ -1,11 +1,13 @@
 import {
     Canister,
     CanisterResult,
+    Func,
     nat8,
     nat32,
     nat64,
     Opt,
     Principal,
+    Query,
     Variant
 } from '../../index';
 
@@ -178,9 +180,9 @@ export type QueryArchiveResult = Variant<{
     Err: QueryArchiveError;
 }>;
 
-// TODO we do not have any support for this yet
+// TODO Candid serialization/deserialization breaking
 // A function that is used for fetching archived ledger blocks.
-// type QueryArchiveFn = func (GetBlocksArgs) -> (QueryArchiveResult) query;
+type QueryArchiveFn = Func<(get_blocks_args: GetBlocksArgs) => Query<QueryArchiveResult>>;
 
 // The result of a "query_blocks" call.
 //
@@ -227,8 +229,8 @@ export type QueryBlocksResponse = {
         // The function that should be called to fetch the archived blocks.
         // The range of the blocks accessible using this function is given by [from]
         // and [len] fields above.
-        // callback : QueryArchiveFn; TODO this is not supported yet
-    }[]; // TODO this syntax might not work either
+        callback: QueryArchiveFn;
+    }[];
 };
 
 export type Archive = {
@@ -266,7 +268,7 @@ export type Ledger = Canister<{
     transfer_fee(transfer_fee_arg: TransferFeeArg): CanisterResult<TransferFee>;
     
     // Queries blocks in the specified range.
-    // TODO this probably doesn't work
+    // TODO doesn't work yet
     query_blocks(get_blocks_args: GetBlocksArgs): CanisterResult<QueryBlocksResponse>;
     
     // Returns token symbol.

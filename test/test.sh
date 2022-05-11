@@ -9,6 +9,7 @@ directories=(
     "examples/complex_types"
     "examples/counter"
     "examples/cross_canister_calls"
+    "examples/func_types"
     "examples/generators"
     "examples/heartbeat"
     "examples/ic_api"
