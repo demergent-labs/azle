@@ -1,0 +1,8 @@
+type ExecuteCallRawResult = variant { "ok": vec nat8; "err": text };
+
+type ExecuteCallRaw128Result = variant { "ok": vec nat8; "err": text };
+
+service: {
+    "execute_call_raw": (principal, text, vec nat8, nat64) -> (ExecuteCallRawResult);
+    "execute_call_raw128": (principal, text, vec nat8, nat) -> (ExecuteCallRaw128Result);
+}

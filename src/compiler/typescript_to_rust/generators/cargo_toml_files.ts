@@ -28,8 +28,9 @@ export function generateLibCargoToml(canisterName: string): Toml {
         crate-type = ["cdylib"]
 
         [dependencies]
-        ic-cdk = "0.3.2"
-        ic-cdk-macros = "0.3.2"
+        ic-cdk = "0.5.0"
+        ic-cdk-macros = "0.5.0"
+        candid = "0.7.14"
         # boa_engine = { git = "https://github.com/boa-dev/boa", rev = "6baf4550880a5c7a202c51c9b8314ff977afade1" }
         boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "into-and-from-js-value" }
         getrandom = { version = "0.2.3", features = ["custom"] }

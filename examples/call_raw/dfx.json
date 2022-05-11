@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "call_raw": {
+            "type": "custom",
+            "build": "npx azle call_raw",
+            "root": "src",
+            "ts": "src/call_raw.ts",
+            "candid": "src/call_raw.did",
+            "wasm": "target/wasm32-unknown-unknown/release/call_raw.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/call_raw"
+            }
+        }
+    }
+}
