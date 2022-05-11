@@ -1,5 +1,6 @@
 import { Principal } from '@dfinity/principal';
 import {
+    ok,
     run_tests,
     Test
 } from 'azle/test';
@@ -37,12 +38,15 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'execute_call_raw',
+        name: 'execute_call_raw raw_rand',
         test: async () => {
+            const candid_encoded_arguments_hex_string = execSync(`didc encode '()'`).toString().trim();
+            const candid_encoded_arguments_byte_array = candid_encoded_arguments_hex_string.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? [];
+
             const result = await call_raw_canister.execute_call_raw(
                 Principal.fromText('aaaaa-aa'),
                 'raw_rand',
-                [68, 73, 68, 76, 0, 0], // Candid serialization of zero values
+                candid_encoded_arguments_byte_array,
                 0n
             );
 
@@ -65,12 +69,46 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'execute_call_raw128',
+        name: 'execute_call_raw create_canister',
         test: async () => {
+            const candid_encoded_arguments_hex_string = execSync(`didc encode '(record { settings = null })'`).toString().trim();
+            const candid_encoded_arguments_byte_array = candid_encoded_arguments_hex_string.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? [];
+
+            const result = await call_raw_canister.execute_call_raw(
+                Principal.fromText('aaaaa-aa'),
+                'create_canister',
+                candid_encoded_arguments_byte_array,
+                0n
+            );
+    
+            if (!ok(result)) {
+                return {
+                    err: result.err
+                };
+            }
+
+            const result_hex_string = result.ok.map((uint) => uint.toString(16).padStart(2, '0')).join('');
+
+            const candid_decoded_result = execSync(`didc decode ${result_hex_string}`).toString().trim();
+
+            return {
+                ok: (
+                    candid_decoded_result.includes('record') &&
+                    candid_decoded_result.includes('principal')
+                )
+            };
+        }
+    },
+    {
+        name: 'execute_call_raw128 raw_rand',
+        test: async () => {
+            const candid_encoded_arguments_hex_string = execSync(`didc encode '()'`).toString().trim();
+            const candid_encoded_arguments_byte_array = candid_encoded_arguments_hex_string.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? [];
+
             const result = await call_raw_canister.execute_call_raw128(
                 Principal.fromText('aaaaa-aa'),
                 'raw_rand',
-                [68, 73, 68, 76, 0, 0], // Candid serialization of zero values
+                candid_encoded_arguments_byte_array,
                 0n
             );
 
@@ -91,9 +129,38 @@ const tests: Test[] = [
                 )
             };
         }
+    },
+    {
+        name: 'execute_call_raw128 create_canister',
+        test: async () => {
+            const candid_encoded_arguments_hex_string = execSync(`didc encode '(record { settings = null })'`).toString().trim();
+            const candid_encoded_arguments_byte_array = candid_encoded_arguments_hex_string.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? [];
+
+            const result = await call_raw_canister.execute_call_raw128(
+                Principal.fromText('aaaaa-aa'),
+                'create_canister',
+                candid_encoded_arguments_byte_array,
+                0n
+            );
+    
+            if (!ok(result)) {
+                return {
+                    err: result.err
+                };
+            }
+
+            const result_hex_string = result.ok.map((uint) => uint.toString(16).padStart(2, '0')).join('');
+
+            const candid_decoded_result = execSync(`didc decode ${result_hex_string}`).toString().trim();
+
+            return {
+                ok: (
+                    candid_decoded_result.includes('record') &&
+                    candid_decoded_result.includes('principal')
+                )
+            };
+        }
     }
-    // TODO let's call a non-trivial function with args and a return value
-    // TODO use didc encode and decode to get binary to send into call raw
 ];
 
 run_tests(tests);
