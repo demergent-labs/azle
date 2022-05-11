@@ -63,6 +63,34 @@ const tests: Test[] = [
                 )
             };
         }
+    },
+    {
+        name: 'execute_call_raw128',
+        test: async () => {
+            const result = await call_raw_canister.execute_call_raw128(
+                Principal.fromText('aaaaa-aa'),
+                'raw_rand',
+                [68, 73, 68, 76, 0, 0], // Candid serialization of zero values
+                0n
+            );
+
+            return {
+                ok: (
+                    'ok' in result &&
+                    result.ok.length === 42 &&
+                    result.ok[0] === 68 &&
+                    result.ok[1] === 73 &&
+                    result.ok[2] === 68 &&
+                    result.ok[3] === 76 &&
+                    result.ok[4] === 1 &&
+                    result.ok[5] === 109 &&
+                    result.ok[6] === 123 &&
+                    result.ok[7] === 1 &&
+                    result.ok[8] === 0 &&
+                    result.ok[9] === 32
+                )
+            };
+        }
     }
     // TODO let's call a non-trivial function with args and a return value
     // TODO use didc encode and decode to get binary to send into call raw

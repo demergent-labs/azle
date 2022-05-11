@@ -179,6 +179,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                         };
                     }
 
+                    // TODO call_raw and call_raw128 code are nearly identical
                     if name_string == "call_raw" {
                         let call_args_js_value = yield_result_value_js_object.get("args", _azle_boa_context).unwrap();
                         let call_args_js_object = call_args_js_value.as_object().unwrap();
@@ -199,7 +200,66 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                         let call_result: Result<Vec<u8>, _> = ic_cdk::api::call::call_raw(
                             ic_cdk::export::Principal::from_text(canister_id_string).unwrap(),
                             &method_string,
-                            args_raw_vec,
+                            &args_raw_vec,
+                            payment
+                        ).await;
+
+                        match call_result {
+                            Ok(value) => {
+                                let js_value = value.azle_into_js_value(_azle_boa_context);
+
+                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                                    .property(
+                                        "ok",
+                                        js_value,
+                                        boa_engine::property::Attribute::all()
+                                    )
+                                    .build();
+
+                                let canister_result_js_value = canister_result_js_object.into();
+
+                                _azle_args = vec![canister_result_js_value];
+                            },
+                            Err(err) => {
+                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).into_js_value(_azle_boa_context);
+
+                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                                    .property(
+                                        "err",
+                                        js_value,
+                                        boa_engine::property::Attribute::all()
+                                    )
+                                    .build();
+
+                                let canister_result_js_value = canister_result_js_object.into();
+
+                                _azle_args = vec![canister_result_js_value];
+                            }
+                        };
+                    }
+
+                    // TODO call_raw and call_raw128 code are nearly identical
+                    if name_string == "call_raw128" {
+                        let call_args_js_value = yield_result_value_js_object.get("args", _azle_boa_context).unwrap();
+                        let call_args_js_object = call_args_js_value.as_object().unwrap();
+
+                        let canister_id_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap();
+                        let canister_id_string = canister_id_js_value.as_string().unwrap().to_string();
+
+                        let method_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
+                        let method_string = method_js_value.as_string().unwrap().to_string();
+
+                        // TODO use azle_try_from_js_value more often
+                        let args_raw_js_value = call_args_js_object.get("2", _azle_boa_context).unwrap();
+                        let args_raw_vec: Vec<u8> = args_raw_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+
+                        let payment_js_value = call_args_js_object.get("3", _azle_boa_context).unwrap();
+                        let payment: u128 = payment_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+
+                        let call_result: Result<Vec<u8>, _> = ic_cdk::api::call::call_raw128(
+                            ic_cdk::export::Principal::from_text(canister_id_string).unwrap(),
+                            &method_string,
+                            &args_raw_vec,
                             payment
                         ).await;
 

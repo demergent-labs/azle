@@ -28,10 +28,9 @@ export function generateLibCargoToml(canisterName: string): Toml {
         crate-type = ["cdylib"]
 
         [dependencies]
-        # TODO didc seems to generate code incompatible with ic-cdk 0.4.0 or 0.5.0
-        # TODO wait for this to be resolved: https://github.com/dfinity/candid/issues/349
-        ic-cdk = "0.3.3"
-        ic-cdk-macros = "0.3.3"
+        ic-cdk = "0.5.0"
+        ic-cdk-macros = "0.5.0"
+        candid = "0.7.14"
         # boa_engine = { git = "https://github.com/boa-dev/boa", rev = "6baf4550880a5c7a202c51c9b8314ff977afade1" }
         boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "into-and-from-js-value" }
         getrandom = { version = "0.2.3", features = ["custom"] }
