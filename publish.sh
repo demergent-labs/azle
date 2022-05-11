@@ -71,10 +71,12 @@ git commit -am "release $VERSION"
 
 if [[ "$VERSION" == *"-rc."* ]];
 then
-    git push origin release
+    git push origin release-candidate
 else
-    git push origin main    
+    git push origin main
 fi
+
+git push origin main
 
 git tag $VERSION
 git push origin $VERSION

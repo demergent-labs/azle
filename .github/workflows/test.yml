@@ -13,7 +13,7 @@ jobs:
         rust: [stable]
         # TODO perhaps we should start testing on different versions of dfx as well
         include_npm:
-          - ${{ contains(github.ref, 'main') || contains(github.ref, 'release') }}
+          - ${{ contains(github.ref, 'main') || contains(github.ref, 'release-candidate') }}
         azle_source:
           - npm # TODO I only want this to run on master and release
           - repo
