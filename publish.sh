@@ -76,7 +76,5 @@ else
     git push origin main
 fi
 
-git push origin main
-
 git tag $VERSION
 git push origin $VERSION
