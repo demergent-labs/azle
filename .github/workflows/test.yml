@@ -106,9 +106,9 @@ jobs:
     # - name: basic-integration-tests failed
     #   if: failure()
     #   run: exit 1
-    # if: success()
-    # steps:
-    # - run: exit 1
+    if: success()
+    steps:
+    - run: exit 0
     if: failure()
     steps:
     - run: exit 1
