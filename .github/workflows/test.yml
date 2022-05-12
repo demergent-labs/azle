@@ -99,9 +99,9 @@ jobs:
   after-basic-integration-tests:
     needs: basic-integration-tests
     runs-on: ubuntu-latest
-    if: success()
-    steps:
-    - run: exit 1
-    # if: failure()
+    # if: success()
     # steps:
     # - run: exit 1
+    if: failure()
+    steps:
+    - run: exit 1
