@@ -1,4 +1,8 @@
-import { Int, OrderType, Order } from './motoko_base'
+import {
+    Int,
+    Order,
+    OrderType
+} from './comparison';
 
 export function sortBy<X>(xs: X[], f: (a: X, b: X) => OrderType): X[] {
     const n = xs.length;
