@@ -69,12 +69,14 @@ done
 git add --all
 git commit -am "release $VERSION"
 
-if [[ "$VERSION" == *"-rc."* ]];
-then
-    git push origin release
-else
-    git push origin main
-fi
+# if [[ "$VERSION" == *"-rc."* ]];
+# then
+#     git push origin release
+# else
+#     git push origin main
+# fi
+
+git push origin HEAD
 
 git tag $VERSION
 git push origin $VERSION
