@@ -88,7 +88,14 @@ jobs:
         run: npm link azle
       - shell: bash -l {0}
         working-directory: ${{ matrix.example_directories }}
-        run: npm test
+        run: exit 1
+        # run: npm test
+
+  # TODO in this needs job we should be able to publish the real version automatically if all previous tests pass??
+  # TODO so if basic-integration-tests all pass, then we can take the rc.x version and cut that part off and release the true version
+  # TODO we would want to run the release code and everything, and have that trigger another test
+  # TODO then once that passes, we're code and can manually merge the branch
+  # TODO we probably want the entire release process automated based just off of the branch naming convention
   after-basic-integration-tests:
     needs: basic-integration-tests
     runs-on: ubuntu-latest
