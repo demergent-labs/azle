@@ -20,7 +20,7 @@ jobs:
         rust: [stable]
         # TODO perhaps we should start testing on different versions of dfx as well
         include_npm:
-          - ${{ github.head_ref }}
+          - ${{ github.head_ref == 'release' }}
           # - ${{ contains(github.ref, 'release') }} # TODO this does not seem to be working?
           # - false
         azle_source:
