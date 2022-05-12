@@ -2,11 +2,14 @@
 # TODO perhaps we can automate deploys somehow...we do not want to trigger
 # TODO deploys on main though when just merging in, we want to run our release process manually
 
+# TODO think up a new simpler way to do this, we want to run our tests against npm and the repo but do it all from main if possible
+
+# TODO figure out how the  badge should work now
 name: Azle Tests
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   pull_request:
 jobs:
   basic-integration-tests:
@@ -17,10 +20,10 @@ jobs:
         rust: [stable]
         # TODO perhaps we should start testing on different versions of dfx as well
         include_npm:
-          - ${{ contains(github.ref, 'main') || contains(github.ref, 'release') }} # TODO this does not seem to be working?
+          - ${{ contains(github.ref, 'release') }} # TODO this does not seem to be working?
         azle_source:
           - npm # TODO I only want this to run on master and release
-          - repo
+          - repo # TODO it actually is not working
         exclude:
           - include_npm: false
             azle_source: npm
