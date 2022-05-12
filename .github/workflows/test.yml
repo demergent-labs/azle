@@ -72,7 +72,7 @@ jobs:
           path: ${{ matrix.example_directories }}/target
           key: ${{ matrix.example_directories }}-cache
           restore-keys: ${{ matrix.example_directories }}-cache # TODO might need to be more intelligent and hash files here
-      - run: exit 0
+      - run: exit 1
       # - shell: bash -l {0}
       #   run: npm install
       # - if: matrix.azle_source == 'repo'
