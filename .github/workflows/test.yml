@@ -91,6 +91,7 @@ jobs:
         run: npm test
   after-basic-integration-tests:
     needs: basic-integration-tests
+    runs-on: ubuntu-latest
     if: success()
     steps:
     - run: exit 0
