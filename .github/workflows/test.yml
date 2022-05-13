@@ -53,6 +53,8 @@ jobs:
           # - examples/stable_storage
           # - examples/tuple_types
           # - examples/update
+    outputs:
+      success: ${{ steps.success.outputs.success }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
@@ -73,6 +75,8 @@ jobs:
           key: ${{ matrix.example_directories }}-cache
           restore-keys: ${{ matrix.example_directories }}-cache # TODO might need to be more intelligent and hash files here
       - run: exit 1
+      - id: success
+        run: echo "::set-output name=success::true"
       # - shell: bash -l {0}
       #   run: npm install
       # - if: matrix.azle_source == 'repo'
@@ -99,6 +103,11 @@ jobs:
   after-basic-integration-tests:
     needs: basic-integration-tests
     runs-on: ubuntu-latest
+    if: always()
+    steps:
+    if: ${{ needs.basic-integration-tests.outputs.success == true }}
+    - run: exit 0
+    - run: exit 1
     # steps:
     # - name: basic-integration-tests succeeded
     #   if: success()
@@ -109,8 +118,8 @@ jobs:
     # if: success()
     # steps:
     # - run: exit 0
-    if: failure() # TODO this statement alone works, but I want the success case to not get skipped but to actually succeed
-    steps: 
-    - run: exit 1
-    steps:
-    - run: exit 0
+    # if: failure() # TODO this statement alone works, but I want the success case to not get skipped but to actually succeed
+    # steps: 
+    # - run: exit 1
+    # steps:
+    # - run: exit 0
