@@ -107,8 +107,8 @@ jobs:
       - run: git config --global user.name 'Jordan Last'
       - run: git config --global user.email 'jordan.michael.last@gmail.com'
       - run: git remote -v
-      - run: echo "$GITHUB_BASE_REF"
-      - run: git push origin $GITHUB_BASE_REF
+      - run: echo "$GITHUB_HEAD_REF"
+      - run: git push origin $GITHUB_HEAD_REF
       # - run: BRANCH_NAME="${{ github.head_ref }}" && ./publish-github-action.sh "${BRANCH_NAME:9}" # TODO grab the version out of here, we can do it based on the branch name
   # TODO if this check passes then have another job to do the full release
 
