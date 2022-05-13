@@ -1,15 +1,6 @@
-# TODO let's try to get rid of the release/release-candidate branch
-# TODO perhaps we can automate deploys somehow...we do not want to trigger
-# TODO deploys on main though when just merging in, we want to run our release process manually
-
-# TODO think up a new simpler way to do this, we want to run our tests against npm and the repo but do it all from main if possible
-
 # TODO figure out how the  badge should work now
 name: Azle Tests
 on:
-  # push:
-  #   branches:
-  #     - main
   pull_request:
 jobs:
   basic-integration-tests:
@@ -28,34 +19,35 @@ jobs:
           - include_npm: false
             azle_source: npm
         example_directories:
-          # - examples/call_raw
-          # - examples/complex_types
-          # - examples/counter
-          # - examples/cross_canister_calls
-          # - examples/func_types
-          # - examples/generators
-          # - examples/heartbeat
-          # - examples/ic_api
-          # - examples/imports
-          # - examples/init
-          # - examples/inline_types
-          # - examples/key_value_store
-          # - examples/ledger_canister
-          # - examples/management_canister
-          # - examples/motoko_examples/calc
-          # - examples/motoko_examples/counter
-          # - examples/optional_types
-          # - examples/pre_and_post_upgrade
-          # - examples/primitive_types
+          - examples/call_raw
+          - examples/complex_types
+          - examples/counter
+          - examples/cross_canister_calls
+          - examples/func_types
+          - examples/generators
+          - examples/heartbeat
+          - examples/ic_api
+          - examples/imports
+          - examples/init
+          - examples/inline_types
+          - examples/key_value_store
+          - examples/ledger_canister
+          - examples/management_canister
+          - examples/motoko_examples/calc
+          - examples/motoko_examples/counter
+          - examples/optional_types
+          - examples/pre_and_post_upgrade
+          - examples/primitive_types
           - examples/query
-          # - examples/simple_erc20
-          # - examples/simple_user_accounts
-          # - examples/stable_storage
-          # - examples/tuple_types
-          # - examples/update
+          - examples/simple_erc20
+          - examples/simple_user_accounts
+          - examples/stable_storage
+          - examples/tuple_types
+          - examples/update
     outputs:
       success: ${{ steps.success.outputs.success }}
     steps:
+      - run: echo "::set-output name=success::false"
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
         with:
@@ -93,34 +85,14 @@ jobs:
         run: npm test
       - id: success
         run: echo "::set-output name=success::true"
-
   # TODO in this needs job we should be able to publish the real version automatically if all previous tests pass??
   # TODO so if basic-integration-tests all pass, then we can take the rc.x version and cut that part off and release the true version
   # TODO we would want to run the release code and everything, and have that trigger another test
   # TODO then once that passes, we're code and can manually merge the branch
   # TODO we probably want the entire release process automated based just off of the branch naming convention
-  after-basic-integration-tests:
+  check-basic-integration-tests:
     needs: basic-integration-tests
     runs-on: ubuntu-latest
     if: always()
     steps:
       - run: if [[ "${{needs.basic-integration-tests.outputs.success}}" == "true" ]]; then exit 0; else exit 1; fi
-    #   - run: exit 1
-    # if: ${{ needs.basic-integration-tests.outputs.success == true }}
-    # - run: exit 0
-    # - run: exit 1
-    # steps:
-    # - name: basic-integration-tests succeeded
-    #   if: success()
-    #   run: exit 0
-    # - name: basic-integration-tests failed
-    #   if: failure()
-    #   run: exit 1
-    # if: success()
-    # steps:
-    # - run: exit 0
-    # if: failure() # TODO this statement alone works, but I want the success case to not get skipped but to actually succeed
-    # steps: 
-    # - run: exit 1
-    # steps:
-    # - run: exit 0
