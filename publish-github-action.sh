@@ -43,27 +43,27 @@ VERSION=$1
 
 echo "version: $VERSION"
 
-sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
-npm install
+# sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
+# npm install
 
-if [[ "$VERSION" == *"-rc."* ]];
-then
-    npm publish --tag next
-else
-    npm publish
-fi
+# if [[ "$VERSION" == *"-rc."* ]];
+# then
+#     npm publish --tag next
+# else
+#     npm publish
+# fi
 
 # TODO loop through checking for the status instead of sleeping
-echo -e "sleeping for 30 seconds to ensure azle@$VERSION is fully registered on npm"
+# echo -e "sleeping for 30 seconds to ensure azle@$VERSION is fully registered on npm"
 
-sleep 30
+# sleep 30
 
 for directory in "${directories[@]}"
 do
     cd $directory
 
     sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
-    npm install
+    # npm install
 
     cd $root_dir
 done
@@ -74,6 +74,7 @@ git commit -am "release $VERSION [skip ci]"
 
 # git push origin HEAD
 # git push origin $(git rev-parse --abbrev-ref HEAD)
+echo $GITHUB_BASE_REF
 git push origin $GITHUB_BASE_REF
 
 git tag $VERSION
