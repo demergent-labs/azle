@@ -13,6 +13,15 @@ const generators_canister = createActor(
     }
 );
 
-const tests: Test[] = [];
+const tests: Test[] = [
+    {
+        name: 'test',
+        test: async () => {
+            return {
+                ok: false
+            };
+        }
+    }
+];
 
 run_tests(tests);
