@@ -77,6 +77,7 @@ git commit -am "release $VERSION"
 # git push origin $(git rev-parse --abbrev-ref HEAD)
 # echo $GITHUB_HEAD_REF
 # git push origin $GITHUB_HEAD_REF
+# testing
 git push origin HEAD:$GITHUB_HEAD_REF
 
 git tag $VERSION
