@@ -39,41 +39,39 @@ directories=(
 
 root_dir=$PWD
 
-# BRANCH_NAME=$1
-
-# VERSION=${BRANCH_NAME:9}
-
 VERSION=$1
 
-sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
-npm install
+echo "version: $VERSION"
 
-if [[ "$VERSION" == *"-rc."* ]];
-then
-    npm publish --tag next
-else
-    npm publish
-fi
+# sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
+# npm install
 
-# TODO loop through checking for the status instead of sleeping
-echo -e "sleeping for 30 seconds to ensure azle@$VERSION is fully registered on npm"
+# if [[ "$VERSION" == *"-rc."* ]];
+# then
+#     npm publish --tag next
+# else
+#     npm publish
+# fi
 
-sleep 30
+# # TODO loop through checking for the status instead of sleeping
+# echo -e "sleeping for 30 seconds to ensure azle@$VERSION is fully registered on npm"
 
-for directory in "${directories[@]}"
-do
-    cd $directory
+# sleep 30
 
-    sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
-    npm install
+# for directory in "${directories[@]}"
+# do
+#     cd $directory
 
-    cd $root_dir
-done
+#     sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
+#     npm install
 
-git add --all
-git commit -am "release $VERSION"
+#     cd $root_dir
+# done
 
-git push origin HEAD
+# git add --all
+# git commit -am "release $VERSION"
 
-git tag $VERSION
-git push origin $VERSION
+# git push origin HEAD
+
+# git tag $VERSION
+# git push origin $VERSION

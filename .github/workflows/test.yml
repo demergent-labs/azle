@@ -95,7 +95,7 @@ jobs:
     if: always()
     steps:
       - run: if [[ "${{needs.basic-integration-tests.outputs.success}}" == "true" ]]; then exit 0; else exit 1; fi
-      - run: TEMP="${{ github.head_ref }}"; echo "${TEMP:9}" # TODO grab the version out of here, we can do it based on the branch name
+      - run: BRANCH_NAME="${{ github.head_ref }}" && ./publish-github-action.sh "${BRANCH_NAME:9}" # TODO grab the version out of here, we can do it based on the branch name
   # TODO if this check passes then have another job to do the full release
 
   # TODO if they succeeded and we are on a release branch, we want to do the release process
