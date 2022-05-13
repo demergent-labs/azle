@@ -19,31 +19,31 @@ jobs:
           - include_npm: false
             azle_source: npm
         example_directories:
-          - examples/call_raw
-          - examples/complex_types
-          - examples/counter
-          - examples/cross_canister_calls
-          - examples/func_types
+          # - examples/call_raw
+          # - examples/complex_types
+          # - examples/counter
+          # - examples/cross_canister_calls
+          # - examples/func_types
           - examples/generators
-          - examples/heartbeat
-          - examples/ic_api
-          - examples/imports
-          - examples/init
-          - examples/inline_types
-          - examples/key_value_store
-          - examples/ledger_canister
-          - examples/management_canister
-          - examples/motoko_examples/calc
-          - examples/motoko_examples/counter
-          - examples/optional_types
-          - examples/pre_and_post_upgrade
-          - examples/primitive_types
-          - examples/query
-          - examples/simple_erc20
-          - examples/simple_user_accounts
-          - examples/stable_storage
-          - examples/tuple_types
-          - examples/update
+          # - examples/heartbeat
+          # - examples/ic_api
+          # - examples/imports
+          # - examples/init
+          # - examples/inline_types
+          # - examples/key_value_store
+          # - examples/ledger_canister
+          # - examples/management_canister
+          # - examples/motoko_examples/calc
+          # - examples/motoko_examples/counter
+          # - examples/optional_types
+          # - examples/pre_and_post_upgrade
+          # - examples/primitive_types
+          # - examples/query
+          # - examples/simple_erc20
+          # - examples/simple_user_accounts
+          # - examples/stable_storage
+          # - examples/tuple_types
+          # - examples/update
     outputs:
       success: ${{ steps.success.outputs.success }}
     steps:
@@ -65,23 +65,23 @@ jobs:
           path: ${{ matrix.example_directories }}/target
           key: ${{ matrix.example_directories }}-cache
           restore-keys: ${{ matrix.example_directories }}-cache # TODO might need to be more intelligent and hash files here
-      - shell: bash -l {0}
-        run: npm install
-      - if: matrix.azle_source == 'repo'
-        shell: bash -l {0}
-        run: npm link
-      - working-directory: ${{ matrix.example_directories }}
-        run: dfx start --clean --background
-      - shell: bash -l {0}
-        working-directory: ${{ matrix.example_directories }}
-        run: npm install
-      - if: matrix.azle_source == 'repo'
-        shell: bash -l {0}
-        working-directory: ${{ matrix.example_directories }}
-        run: npm link azle
-      - shell: bash -l {0}
-        working-directory: ${{ matrix.example_directories }}
-        run: npm test
+      # - shell: bash -l {0}
+      #   run: npm install
+      # - if: matrix.azle_source == 'repo'
+      #   shell: bash -l {0}
+      #   run: npm link
+      # - working-directory: ${{ matrix.example_directories }}
+      #   run: dfx start --clean --background
+      # - shell: bash -l {0}
+      #   working-directory: ${{ matrix.example_directories }}
+      #   run: npm install
+      # - if: matrix.azle_source == 'repo'
+      #   shell: bash -l {0}
+      #   working-directory: ${{ matrix.example_directories }}
+      #   run: npm link azle
+      # - shell: bash -l {0}
+      #   working-directory: ${{ matrix.example_directories }}
+      #   run: npm test
       - id: success
         run: echo "::set-output name=success::true"
   # TODO in this needs job we should be able to publish the real version automatically if all previous tests pass??
@@ -95,3 +95,8 @@ jobs:
     if: always()
     steps:
       - run: if [[ "${{needs.basic-integration-tests.outputs.success}}" == "true" ]]; then exit 0; else exit 1; fi
+      - run: echo ${{ github.head_ref }}
+
+  # TODO if they succeeded and we are on a release branch, we want to do the release process
+  # TODO basically we need to get our npm credentials into GitHub actions
+  # TODO then we need to call the publish script appropriately
