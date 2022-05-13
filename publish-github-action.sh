@@ -74,8 +74,8 @@ git commit -am "release $VERSION [skip ci]"
 
 # git push origin HEAD
 # git push origin $(git rev-parse --abbrev-ref HEAD)
-echo $GITHUB_BASE_REF
-git push origin $GITHUB_BASE_REF
+echo $GITHUB_HEAD_REF
+git push origin $GITHUB_HEAD_REF
 
 git tag $VERSION
 git push origin $VERSION
