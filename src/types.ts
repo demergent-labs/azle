@@ -6,7 +6,7 @@ export type CandidTypeInfo = {
     typeClass: CandidTypeClass;
 };
 
-export type CandidTypeClass = 'primitive' | 'vec' | 'opt' | 'record' | 'inline_record' | 'inline_tuple_record' | 'variant' | 'inline_variant';
+export type CandidTypeClass = 'primitive' | 'vec' | 'opt' | 'func' | 'record' | 'inline_record' | 'inline_tuple_record' | 'variant' | 'inline_variant';
 
 export type CanisterMethodTypeName =
     'Query' |

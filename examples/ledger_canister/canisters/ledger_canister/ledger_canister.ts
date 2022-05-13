@@ -1,5 +1,3 @@
-// TODO query_blocks is the only thing without basic tests
-// TODO I don't think query_blocks will work right now, some changes are needed in Azle (we need to support Candid functions)
 // TODO test all errors for query blocks
 
 import {
@@ -17,8 +15,10 @@ import {
     Archives,
     binary_address_from_address,
     DecimalsResult,
+    GetBlocksArgs,
     Ledger,
     NameResult,
+    QueryBlocksResponse,
     SymbolResult,
     Tokens,
     TransferFee,
@@ -109,6 +109,28 @@ export function* get_transfer_fee(): UpdateAsync<GetTransferFeeResult> {
         ok: transfer_fee
     };
 }
+
+// TODO continue once https://github.com/dfinity/candid/issues/348
+// type GetBlocksResult = Variant<{
+//     ok: QueryBlocksResponse;
+//     err: string;
+// }>;
+
+// export function* get_blocks(get_blocks_args: GetBlocksArgs): UpdateAsync<GetBlocksResult> {
+//     const canister_result: CanisterResult<QueryBlocksResponse> = yield ICPCanister.query_blocks(get_blocks_args);
+
+//     if (!ok(canister_result)) {
+//         return {
+//             err: canister_result.err
+//         };
+//     }
+
+//     const get_blocks_result = canister_result.ok;
+
+//     return {
+//         ok: get_blocks_result
+//     };
+// }
 
 type GetSymbolResult = Variant<{
     ok: string;

@@ -6,6 +6,12 @@ type ComplexTwoTuple = record { PrimitiveTwoTuple; User };
 
 type ComplexThreeTuple = record { PrimitiveTwoTuple; User; Reaction };
 
+type Header = record { text; text };
+
+type HttpResponse = record {
+    "headers": vec Header;
+};
+
 type CanisterTuple1 = record { text; nat64 };
 
 type CanisterTuple2 = record { text; CanisterTuple1 };
@@ -19,6 +25,8 @@ type User = record {
     "primitive_two_tuple": PrimitiveTwoTuple;
 };
 
+type StreamingCallbackType = variant { "with_headers": vec Header; "without_headers": null };
+
 type Reaction = variant { "Good": null; "Bad": ComplexThreeTuple };
 
 service: {
@@ -30,4 +38,7 @@ service: {
     "complex_two_tuple_param": (ComplexTwoTuple) -> (ComplexTwoTuple) query;
     "complex_three_tuple_return_type": () -> (ComplexThreeTuple) query;
     "complex_three_tuple_param": (ComplexThreeTuple) -> (ComplexThreeTuple) query;
+    "tuple_array_params_and_return_type": (vec Header) -> (vec Header) query;
+    "tuple_array_record_field": () -> (HttpResponse) query;
+    "tuple_array_variant_field": () -> (StreamingCallbackType) query;
 }

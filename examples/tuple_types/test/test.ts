@@ -212,6 +212,55 @@ const tests: Test[] = [
                 )
             };
         }
+    },
+    {
+        name: 'tuple_array_params_and_return_type',
+        test: async () => {
+            const result = await tuple_types_canister.tuple_array_params_and_return_type([
+                ['Content-Type', 'application/json'],
+                ['Accept-Ranges', 'bytes']
+            ]);
+
+            return {
+                ok: (
+                    result[0][0] === 'Content-Type' &&
+                    result[0][1] === 'application/json' &&
+                    result[1][0] === 'Accept-Ranges' &&
+                    result[1][1] === 'bytes'
+                )
+            };
+        }
+    },
+    {
+        name: 'tuple_array_record_field',
+        test: async () => {
+            const result = await tuple_types_canister.tuple_array_record_field();
+
+            return {
+                ok: (
+                    result.headers[0][0] === 'Content-Type' &&
+                    result.headers[0][1] === 'application/json' &&
+                    result.headers[1][0] === 'Accept-Ranges' &&
+                    result.headers[1][1] === 'bytes'
+                )
+            };
+        }
+    },
+    {
+        name: 'tuple_array_variant_field',
+        test: async () => {
+            const result = await tuple_types_canister.tuple_array_variant_field();
+
+            return {
+                ok: (
+                    'with_headers' in result &&
+                    result.with_headers[0][0] === 'Content-Type' &&
+                    result.with_headers[0][1] === 'application/json' &&
+                    result.with_headers[1][0] === 'Accept-Ranges' &&
+                    result.with_headers[1][1] === 'bytes'
+                )
+            };
+        }
     }
 ];
 

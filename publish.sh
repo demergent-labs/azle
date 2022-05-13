@@ -2,17 +2,19 @@
 
 # TODO can GitHub actions do any of this for us?
 # TODO document the release process:
-# TODO on the release branch, run this and choose a x.y.z-rc.a version
-# TODO all tests should pass
-# TODO if they do, you can merge release into main
-# TODO clone main locally, and run this again choosing the correct version
+
+# Run this on a branch with the following naming convention: release--0.3.0-rc.5
+# Pull request that branch into main
+# If all tests pass, then create the real release by running this script on the same branch but entering in the real version
 
 set -e
 
 directories=(
+    "examples/call_raw"
     "examples/complex_types"
     "examples/counter"
     "examples/cross_canister_calls"
+    "examples/func_types"
     "examples/generators"
     "examples/heartbeat"
     "examples/ic_api"
@@ -67,12 +69,7 @@ done
 git add --all
 git commit -am "release $VERSION"
 
-if [[ "$VERSION" == *"-rc."* ]];
-then
-    git push origin release
-else
-    git push origin main    
-fi
+git push origin HEAD
 
 git tag $VERSION
 git push origin $VERSION

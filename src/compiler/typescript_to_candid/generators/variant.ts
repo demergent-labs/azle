@@ -11,6 +11,10 @@ import {
     getCanisterTypeAliasVariantNames
 } from '../ast_utilities/canister_type_aliases';
 import {
+    getFuncTypeAliasRecordNames,
+    getFuncTypeAliasVariantNames
+} from '../ast_utilities/func_type_aliases';
+import {
     getStableTypeAliasRecordNames,
     getStableTypeAliasVariantNames
 } from '../ast_utilities/stable_type_aliases';
@@ -21,7 +25,8 @@ export function generateCandidVariants(
     sourceFiles: readonly tsc.SourceFile[],
     canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
     canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[],
-    stableTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
+    stableTypeAliasDeclarations: tsc.TypeAliasDeclaration[],
+    funcTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): {
     candidVariants: Candid;
     candidVariantNames: string[]
@@ -30,7 +35,8 @@ export function generateCandidVariants(
         sourceFiles,
         canisterMethodFunctionDeclarations,
         canisterTypeAliasDeclarations,
-        stableTypeAliasDeclarations
+        stableTypeAliasDeclarations,
+        funcTypeAliasDeclarations
     );
 
     const candidVariants = candidVariantNames.map((candidVariantName) => {
@@ -50,7 +56,8 @@ function getCandidVariantNames(
     sourceFiles: readonly tsc.SourceFile[],
     canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
     canisterTypeAliasDeclarations: tsc.TypeAliasDeclaration[],
-    stableTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
+    stableTypeAliasDeclarations: tsc.TypeAliasDeclaration[],
+    funcTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): string[] {
     const canisterMethodVariantNames = Array.from(
         new Set(
@@ -79,12 +86,22 @@ function getCandidVariantNames(
         )
     );
 
+    const funcTypeAliasVariantNames = Array.from(
+        new Set(
+            getFuncTypeAliasVariantNames(
+                sourceFiles,
+                funcTypeAliasDeclarations
+            )
+        )
+    );
+
     const variantFieldsVariantNames = Array.from(
         new Set(
             [
                 ...canisterMethodVariantNames,
                 ...canisterTypeAliasVariantNames,
-                ...stableTypeAliasVariantNames
+                ...stableTypeAliasVariantNames,
+                ...funcTypeAliasVariantNames
             ].reduce((result: string[], variantName) => {
                 return [
                     ...result,
@@ -125,12 +142,22 @@ function getCandidVariantNames(
         )
     );
 
+    const funcTypeAliasRecordNames = Array.from(
+        new Set(
+            getFuncTypeAliasRecordNames(
+                sourceFiles,
+                funcTypeAliasDeclarations
+            )
+        )
+    );
+
     const recordFieldsVariantNames = Array.from(
         new Set(
             [
                 ...canisterMethodRecordNames,
                 ...canisterTypeAliasRecordNames,
-                ...stableTypeAliasRecordNames
+                ...stableTypeAliasRecordNames,
+                ...funcTypeAliasRecordNames
             ].reduce((result: string[], recordName) => {
                 return [
                     ...result,
@@ -169,6 +196,7 @@ function getCandidVariantNames(
         ...canisterMethodVariantNames,
         ...canisterTypeAliasVariantNames,
         ...stableTypeAliasVariantNames,
+        ...funcTypeAliasVariantNames,
         ...variantFieldsVariantNames,
         ...recordFieldsVariantNames,
         ...tupleRecordFieldsVariantNames
@@ -202,8 +230,12 @@ function getCandidVariantNamesFromVariantFields(
 
     const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
+    if (firstTypeArgument.kind === tsc.SyntaxKind.FunctionType) {
+        return [];
+    }
+
     if (firstTypeArgument.kind !== tsc.SyntaxKind.TypeLiteral) {
-        throw new Error(`Could not generate Candid record for type alias declaration: ${JSON.stringify(typeAliasDeclaration, null, 2)}`);
+        throw new Error(`Could not generate Candid record for type alias declaration: ${typeAliasDeclaration.name.escapedText.toString()}`);
     }
 
     const candidVariantNames = getCandidVariantNamesFromTypeLiteralNode(
