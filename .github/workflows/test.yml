@@ -105,10 +105,11 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
+      - run: if [[ "${{needs.basic-integration-tests.outputs.success}}" == "true" ]]; then exit 1; else exit 0; fi
     #   - run: exit 1
-      if: ${{ needs.basic-integration-tests.outputs.success == true }}
-      - run: exit 0
-    - run: exit 1
+    # if: ${{ needs.basic-integration-tests.outputs.success == true }}
+    # - run: exit 0
+    # - run: exit 1
     # steps:
     # - name: basic-integration-tests succeeded
     #   if: success()
