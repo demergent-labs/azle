@@ -22,6 +22,7 @@ directories=(
     "examples/management_canister"
     "examples/motoko_examples/calc"
     "examples/motoko_examples/counter"
+    "examples/motoko_examples/quicksort"
     "examples/optional_types"
     "examples/pre_and_post_upgrade"
     "examples/primitive_types"
