@@ -109,7 +109,8 @@ jobs:
     # if: success()
     # steps:
     # - run: exit 0
-    steps:
     if: failure() # TODO this statement alone works, but I want the success case to not get skipped but to actually succeed
+    steps: 
     - run: exit 1
+    steps:
     - run: exit 0
