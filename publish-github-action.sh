@@ -39,6 +39,10 @@ directories=(
 
 root_dir=$PWD
 
+# BRANCH_NAME=$1
+
+# VERSION=${BRANCH_NAME:9}
+
 VERSION=$1
 
 sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
