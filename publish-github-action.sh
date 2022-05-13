@@ -70,7 +70,8 @@ done
 
 # TODO everything working in action up until here
 git add --all
-git commit -am "release $VERSION [skip ci]"
+git commit -am "release $VERSION"
+# git commit -am "release $VERSION [skip ci]"
 
 # git push origin HEAD
 # git push origin $(git rev-parse --abbrev-ref HEAD)
