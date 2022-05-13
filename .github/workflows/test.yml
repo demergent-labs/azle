@@ -106,9 +106,10 @@ jobs:
     # - name: basic-integration-tests failed
     #   if: failure()
     #   run: exit 1
-    if: success()
+    # if: success()
+    # steps:
+    # - run: exit 0
     steps:
-    - run: exit 0
-    if: failure()
-    steps:
+    if: failure() # TODO this statement alone works, but I want the success case to not get skipped but to actually succeed
     - run: exit 1
+    - run: exit 0
