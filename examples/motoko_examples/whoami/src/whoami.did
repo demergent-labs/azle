@@ -1,0 +1,6 @@
+service: (principal) -> {
+    "argument": () -> (principal) query;
+    "whoami": () -> (principal) query;
+    "idQuick": () -> (principal) query;
+    "id": () -> (principal);
+}
