@@ -78,6 +78,7 @@ git commit -am "release $VERSION"
 # echo $GITHUB_HEAD_REF
 # git push origin $GITHUB_HEAD_REF
 # testing
+git pull # TODO why is this necessary?
 git push origin HEAD:$GITHUB_HEAD_REF
 
 git tag $VERSION
