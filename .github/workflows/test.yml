@@ -97,6 +97,8 @@ jobs:
     if: always()
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
       - uses: actions/setup-node@v3
         with:
           node-version: 18

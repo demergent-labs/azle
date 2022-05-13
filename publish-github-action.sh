@@ -58,8 +58,8 @@ echo "version: $VERSION"
 
 # sleep 30
 
-git pull
-git checkout $GITHUB_HEAD_REF
+# git pull
+# git checkout $GITHUB_HEAD_REF
 
 for directory in "${directories[@]}"
 do
