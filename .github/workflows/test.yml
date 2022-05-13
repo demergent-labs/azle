@@ -47,7 +47,6 @@ jobs:
     outputs:
       success: ${{ steps.success.outputs.success }}
     steps:
-      - run: echo "::set-output name=success::false"
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
         with:
