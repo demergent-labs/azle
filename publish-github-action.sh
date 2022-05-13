@@ -58,6 +58,8 @@ echo "version: $VERSION"
 
 # sleep 30
 
+git checkout $GITHUB_HEAD_REF
+
 for directory in "${directories[@]}"
 do
     cd $directory
@@ -71,15 +73,15 @@ done
 # TODO everything working in action up until here
 git add --all
 git commit -am "release $VERSION"
+git push origin $GITHUB_HEAD_REF
 # git commit -am "release $VERSION [skip ci]"
 
 # git push origin HEAD
 # git push origin $(git rev-parse --abbrev-ref HEAD)
 # echo $GITHUB_HEAD_REF
-# git push origin $GITHUB_HEAD_REF
 # testing
-git pull # TODO why is this necessary?
-git push origin HEAD:$GITHUB_HEAD_REF
+# git pull # TODO why is this necessary?
+# git push origin HEAD:$GITHUB_HEAD_REF
 
 git tag $VERSION
 git push origin $VERSION
