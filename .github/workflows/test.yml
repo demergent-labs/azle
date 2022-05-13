@@ -74,7 +74,7 @@ jobs:
           path: ${{ matrix.example_directories }}/target
           key: ${{ matrix.example_directories }}-cache
           restore-keys: ${{ matrix.example_directories }}-cache # TODO might need to be more intelligent and hash files here
-      - run: exit 1
+      # - run: exit 1
       - id: success
         run: echo "::set-output name=success::true"
       # - shell: bash -l {0}
