@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "quicksort": {
+            "type": "custom",
+            "build": "npx azle quicksort",
+            "root": "src",
+            "ts": "src/main.ts",
+            "candid": "src/quicksort.did",
+            "wasm": "target/wasm32-unknown-unknown/release/quicksort.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/quicksort"
+            }
+        }
+    }
+}
