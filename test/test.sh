@@ -6,9 +6,11 @@
 # TODO these tests will probably take like 30 minutes to run though
 
 directories=(
+    "examples/call_raw"
     "examples/complex_types"
     "examples/counter"
     "examples/cross_canister_calls"
+    "examples/func_types"
     "examples/generators"
     "examples/heartbeat"
     "examples/ic_api"
@@ -20,6 +22,7 @@ directories=(
     "examples/management_canister"
     "examples/motoko_examples/calc"
     "examples/motoko_examples/counter"
+    "examples/motoko_examples/quicksort"
     "examples/optional_types"
     "examples/pre_and_post_upgrade"
     "examples/primitive_types"

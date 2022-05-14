@@ -124,6 +124,30 @@ function get_simple_tests(): Test[] {
                 };
             }
         },
+        // TODO continue once https://github.com/dfinity/candid/issues/348
+        // TODO do some transactions to actually test against some blocks
+        // TODO make sure the callback actually works
+        // {
+        //     name: 'get_blocks',
+        //     test: async () => {
+        //         const result = await ledger_canister.get_blocks({
+        //             start: 0n,
+        //             length: 100n
+        //         });
+
+        //         if (!ok(result)) {
+        //             return {
+        //                 err: result.err
+        //             };
+        //         }
+
+        //         console.log('result', JSON.stringify(result, null, 2));
+
+        //         return {
+        //             ok: false
+        //         };
+        //     }
+        // },
         {
             name: 'get_symbol',
             test: async () => {

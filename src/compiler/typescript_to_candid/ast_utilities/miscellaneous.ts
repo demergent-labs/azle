@@ -21,7 +21,7 @@ export function isTypeReferenceNodeAVariant(
             return true;
         }
         else {
-            return isTypeReferenceNodeARecord(
+            return isTypeReferenceNodeAVariant(
                 sourceFiles,
                 typeReferenceNode
             );
@@ -48,8 +48,25 @@ export function isTypeReferenceNodeARecord(
         return true;
     }
 
+    if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TupleType) {
+        return true;
+    }
+
     if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
         const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+
+        if (
+            (
+                typeReferenceNode.typeName.kind === tsc.SyntaxKind.Identifier &&
+                typeReferenceNode.typeName.escapedText.toString() === 'Func'
+            ) ||
+            (
+                typeReferenceNode.typeName.kind === tsc.SyntaxKind.Identifier &&
+                typeReferenceNode.typeName.escapedText.toString() === 'Canister'
+            )
+        ) {
+            return false;
+        }
 
         return isTypeReferenceNodeARecord(
             sourceFiles,
@@ -57,8 +74,34 @@ export function isTypeReferenceNodeARecord(
         );
     }
 
-    if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TupleType) {
-        return true;
+    return false;
+}
+
+export function isTypeReferenceNodeAFunc(
+    sourceFiles: readonly tsc.SourceFile[],
+    typeReferenceNode: tsc.TypeReferenceNode
+): boolean {
+    const typeAliasDeclaration = getTypeAliasDeclaration(
+        sourceFiles,
+        getTypeReferenceNodeTypeName(typeReferenceNode)
+    );
+
+    if (typeAliasDeclaration === undefined) {
+        return false;
+    }
+
+    if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
+        const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+
+        if (getTypeReferenceNodeTypeName(typeReferenceNode) === 'Func') {
+            return true;
+        }
+        else {
+            return isTypeReferenceNodeAFunc(
+                sourceFiles,
+                typeReferenceNode
+            );
+        }
     }
 
     return false;

@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "func_types": {
+            "type": "custom",
+            "build": "npx azle func_types",
+            "root": "src",
+            "ts": "src/func_types.ts",
+            "candid": "src/func_types.did",
+            "wasm": "target/wasm32-unknown-unknown/release/func_types.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/func_types"
+            }
+        }
+    }
+}

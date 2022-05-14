@@ -15,6 +15,8 @@ export type GetAccountBalanceResult = { 'ok' : Tokens } |
 export type GetArchivesResult = { 'ok' : Archives } |
   { 'err' : string };
 export interface GetBlocksArgs { 'start' : bigint, 'length' : bigint }
+export type GetBlocksResult = { 'ok' : QueryBlocksResponse } |
+  { 'err' : string };
 export type GetDecimalsResult = { 'ok' : number } |
   { 'err' : string };
 export type GetNameResult = { 'ok' : string } |
@@ -24,7 +26,18 @@ export type GetSymbolResult = { 'ok' : string } |
 export type GetTransferFeeResult = { 'ok' : TransferFee } |
   { 'err' : string };
 export interface NameResult { 'name' : string }
-export type Operation = { 'Mint' : { 'to' : Array<number> } };
+export type Operation = {
+    'Burn' : { 'from' : Array<number>, 'amount' : Tokens }
+  } |
+  { 'Mint' : { 'to' : Array<number>, 'amount' : Tokens } } |
+  {
+    'Transfer' : {
+      'to' : Array<number>,
+      'fee' : Tokens,
+      'from' : Array<number>,
+      'amount' : Tokens,
+    }
+  };
 export interface QueryBlocksResponse {
   'certificate' : [] | [Array<number>],
   'blocks' : Array<Block>,
@@ -68,6 +81,7 @@ export interface _SERVICE {
     ) => Promise<ExecuteTransferResult>,
   'get_account_balance' : (arg_0: string) => Promise<GetAccountBalanceResult>,
   'get_archives' : () => Promise<GetArchivesResult>,
+  'get_blocks' : (arg_0: GetBlocksArgs) => Promise<GetBlocksResult>,
   'get_decimals' : () => Promise<GetDecimalsResult>,
   'get_name' : () => Promise<GetNameResult>,
   'get_symbol' : () => Promise<GetSymbolResult>,
