@@ -1,6 +1,10 @@
 dfx start --background --clean --host 127.0.0.1:8000
 
 
+### === DEPLOY AZLE DEFI =====
+dfx deploy defi
+export DEFI_ID=$(dfx canister id defi)
+
 ### === DEPLOY LOCAL LEDGER =====
 dfx identity new minter
 dfx identity use minter
