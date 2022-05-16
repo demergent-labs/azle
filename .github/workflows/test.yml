@@ -94,6 +94,8 @@ jobs:
   check-basic-integration-tests:
     needs: basic-integration-tests
     runs-on: ubuntu-latest
+    env:
+      GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
     if: always()
     steps:
       - uses: actions/checkout@v2
