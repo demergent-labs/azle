@@ -42,6 +42,8 @@ jobs:
         exclude:
           - include_npm: false
             azle_source: npm
+
+        # TODO we can probably put all of the directories in one place and pass them into the script
         example_directories:
           # - examples/call_raw
           # - examples/complex_types
@@ -112,6 +114,8 @@ jobs:
   check-basic-integration-tests:
     needs: basic-integration-tests
     runs-on: ubuntu-latest
+    env:
+      GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
     if: always()
     steps:
-      - run: if [[ "${{ needs.basic-integration-tests.outputs.success }}" == "true" ]]; then exit 0; else exit 1; fi
+      - run: if [[ "${{ needs.basic-integration-tests.outputs.success }}" == "true" ]]; then git push origin $GITHUB_HEAD_REF; else exit 1; fi
