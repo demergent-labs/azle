@@ -118,4 +118,7 @@ jobs:
       GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
     if: always()
     steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
       - run: if [[ "${{ needs.basic-integration-tests.outputs.success }}" == "true" ]]; then git push origin $GITHUB_HEAD_REF; else exit 1; fi
