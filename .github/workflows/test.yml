@@ -1,4 +1,4 @@
-# TODO figure out how the  badge should work now
+# TODO figure out how the badge should work now
 
 name: Azle Tests
 on:
@@ -24,7 +24,6 @@ jobs:
       - run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
       - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
       - run: if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" ]]; then BRANCH_NAME="${{ github.head_ref }}" && ./publish-github-action.sh "${BRANCH_NAME:9}"; else exit 0; fi
-      # - run: BRANCH_NAME="${{ github.head_ref }}" && ./publish-github-action.sh "${BRANCH_NAME:9}"
   basic-integration-tests:
     needs: release-candidate-deploy
     runs-on: ubuntu-latest
@@ -118,27 +117,9 @@ jobs:
   check-basic-integration-tests:
     needs: basic-integration-tests
     runs-on: ubuntu-latest
-    env:
-      GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
     if: always()
     steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          registry-url: https://registry.npmjs.org
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: if [[ "${{ needs.basic-integration-tests.outputs.success }}" == "true" ]]; then exit 0; else exit 1; fi
-      # - run: git config --global user.name 'Jordan Last'
-      # - run: git config --global user.email 'jordan.michael.last@gmail.com'
-      # - run: git config --global commit.gpgsign true
-      # - run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
-      # - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
-      # - run: BRANCH_NAME="${{ github.head_ref }}" && ./publish-github-action.sh "${BRANCH_NAME:9}"
-  # TODO if this check passes then have another job to do the full release
 
   # TODO if they succeeded and we are on a release branch, we want to do the release process
   # TODO basically we need to get our npm credentials into GitHub actions
