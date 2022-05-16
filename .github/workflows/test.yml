@@ -8,11 +8,11 @@ on:
 jobs:
   release-candidate-deploy:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
-      GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
     steps:
       - uses: actions/checkout@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+          GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
         with:
           ref: ${{ github.event.pull_request.head.ref }}
       - uses: actions/setup-node@v3
