@@ -2,17 +2,21 @@
 
 # TODO the check integration tests job is not finishing for some reason on the release branches
 
+# TODO to get the tests to only run once on a release branch, we can just store an output
+# TODO on the release-candidate-deploy that controls whether basic-integration-tests runs the tests
+
 name: Azle Tests
 on:
   pull_request:
 jobs:
   release-candidate-deploy:
     runs-on: ubuntu-latest
+    env:
+      GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
     steps:
       - uses: actions/checkout@v2
         env:
           GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
-          GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
         with:
           ref: ${{ github.event.pull_request.head.ref }}
       - uses: actions/setup-node@v3
