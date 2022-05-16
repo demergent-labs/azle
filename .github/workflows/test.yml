@@ -18,8 +18,6 @@ jobs:
           registry-url: https://registry.npmjs.org
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
-      - run: if [[ "${{needs.basic-integration-tests.outputs.success}}" == "true" ]]; then exit 0; else exit 1; fi
       - run: git config --global user.name 'Jordan Last'
       - run: git config --global user.email 'jordan.michael.last@gmail.com'
       - run: git config --global commit.gpgsign true
@@ -27,6 +25,7 @@ jobs:
       - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
       - run: BRANCH_NAME="${{ github.head_ref }}" && ./publish-github-action.sh "${BRANCH_NAME:9}"
   basic-integration-tests:
+    needs: release-candidate-deploy
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -131,7 +130,6 @@ jobs:
           registry-url: https://registry.npmjs.org
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
       - run: if [[ "${{needs.basic-integration-tests.outputs.success}}" == "true" ]]; then exit 0; else exit 1; fi
       # - run: git config --global user.name 'Jordan Last'
       # - run: git config --global user.email 'jordan.michael.last@gmail.com'
