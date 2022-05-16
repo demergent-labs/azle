@@ -62,9 +62,9 @@ do
     cd $root_dir
 done
 
-# git add --all
-# git commit -am "release $VERSION"
-# git push origin $GITHUB_HEAD_REF
+git add --all
+git commit -am "release $VERSION"
+git push origin $GITHUB_HEAD_REF
 
 # git tag $VERSION
 # git push origin $VERSION
