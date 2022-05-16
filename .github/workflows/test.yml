@@ -105,13 +105,13 @@ jobs:
           registry-url: https://registry.npmjs.org
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
       - run: if [[ "${{needs.basic-integration-tests.outputs.success}}" == "true" ]]; then exit 0; else exit 1; fi
       - run: git config --global user.name 'Jordan Last'
       - run: git config --global user.email 'jordan.michael.last@gmail.com'
-      - run: git remote -v
-      # - run: echo "$GITHUB_HEAD_REF"
-      # - run: git push origin $GITHUB_HEAD_REF
-      # - run: git push origin HEAD
+      - run: git config --global commit.gpgsign true
+      - run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
+      - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
       - run: BRANCH_NAME="${{ github.head_ref }}" && ./publish-github-action.sh "${BRANCH_NAME:9}" # TODO grab the version out of here, we can do it based on the branch name
   # TODO if this check passes then have another job to do the full release
 
