@@ -12,13 +12,13 @@ jobs:
   release-candidate-deploy:
     runs-on: ubuntu-latest
     env:
+      GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
       GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
     steps:
       - uses: actions/checkout@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
         with:
           ref: ${{ github.event.pull_request.head.ref }}
+          persist-credentials: false
       - uses: actions/setup-node@v3
         with:
           node-version: 18
