@@ -1,12 +1,5 @@
 #!/bin/bash
 
-# TODO can GitHub actions do any of this for us?
-# TODO document the release process:
-
-# Run this on a branch with the following naming convention: release--0.3.0-rc.5
-# Pull request that branch into main
-# If all tests pass, then create the real release by running this script on the same branch but entering in the real version
-
 set -e
 
 directories=(
@@ -43,46 +36,34 @@ VERSION=$1
 
 echo "version: $VERSION"
 
-# sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
-# npm install
+sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
+npm install
 
-# if [[ "$VERSION" == *"-rc."* ]];
-# then
-#     npm publish --tag next
-# else
-#     npm publish
-# fi
+if [[ "$VERSION" == *"-rc."* ]];
+then
+    npm publish --tag next
+else
+    npm publish
+fi
 
 # TODO loop through checking for the status instead of sleeping
-# echo -e "sleeping for 30 seconds to ensure azle@$VERSION is fully registered on npm"
+echo -e "sleeping for 30 seconds to ensure azle@$VERSION is fully registered on npm"
 
-# sleep 30
-
-# git pull
-# git checkout $GITHUB_HEAD_REF
+sleep 30
 
 for directory in "${directories[@]}"
 do
     cd $directory
 
     sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
-    # npm install
+    npm install
 
     cd $root_dir
 done
 
-# TODO everything working in action up until here
 git add --all
 git commit -am "release $VERSION"
 git push origin $GITHUB_HEAD_REF
-# git commit -am "release $VERSION [skip ci]"
-
-# git push origin HEAD
-# git push origin $(git rev-parse --abbrev-ref HEAD)
-# echo $GITHUB_HEAD_REF
-# testing
-# git pull # TODO why is this necessary?
-# git push origin HEAD:$GITHUB_HEAD_REF
 
 git tag $VERSION
 git push origin $VERSION

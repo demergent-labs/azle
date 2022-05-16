@@ -1,5 +1,7 @@
 # TODO figure out how the badge should work now
 
+# TODO the check integration tests job is not finishing for some reason on the release branches
+
 name: Azle Tests
 on:
   pull_request:
