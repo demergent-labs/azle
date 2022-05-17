@@ -28,7 +28,9 @@ jobs:
       - run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
       - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
       - id: example_directories
-        run: echo '::set-output name=example_directories::["examples/generators", "examples/heartbeat"]'
+        run: echo '::set-output name=example_directories::["examples/generators", "examples/heartbeat"]' # TODO make this multiline
+      - run: echo ${{ steps.example_directories.outputs.example_directories }}
+        # TODO now we need to pass this into the script somehow...hopefully we can access the outputs
       # - run: echo ${{ toJSON(jobs.basic-integration-tests.strategy.matrix.example_directories) }}
       # - id: should_run_tests
         # run: BRANCH_NAME="${{ github.head_ref }}" && RELEASE_VERSION="${BRANCH_NAME:9}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]; then ./publish-github-action.sh $RELEASE_VERSION; else echo "::set-output name=should_run_tests::true"; fi
