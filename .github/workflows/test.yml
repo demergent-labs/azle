@@ -29,10 +29,10 @@ jobs:
       - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
       - id: example_directories
         run: >
-          EXAMPLE_DIRECTORIES=[
-            "examples/generators",
-            "examples/heartbeat"
-          ]
+          EXAMPLE_DIRECTORIES="[
+            \"examples/generators\",
+            \"examples/heartbeat\"
+          ]"
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//'%'/'%25'}"
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\n'/'%0A'}"
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\r'/'%0D'}"
