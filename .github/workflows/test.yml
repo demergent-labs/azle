@@ -30,11 +30,11 @@ jobs:
       - id: example_directories
         run: |
           EXAMPLE_DIRECTORIES=$(cat << END
-            [
-              "examples/generators",
-              "examples/heartbeat"
-            ]
-            END
+          [
+            "examples/generators",
+            "examples/heartbeat"
+          ]
+          END
           )
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//'%'/'%25'}"
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\n'/'%0A'}"
