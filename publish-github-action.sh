@@ -2,7 +2,10 @@
 
 echo $1
 
-directories=$(echo "$1" | jq -c -r '.[]')
+TEMP=$1
+TEMP1="${TEMP//$'\n'/'%0A'}"
+
+directories=$(echo "$TEMP1" | jq -c -r '.[]')
 
 for directory in "${directories[@]}"
 do
