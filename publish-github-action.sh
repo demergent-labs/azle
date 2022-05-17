@@ -2,7 +2,7 @@
 
 echo $1
 
-directories=$1
+directories=$(echo "$1" | jq -c -r '.[]')
 
 for directory in "${directories[@]}"
 do
