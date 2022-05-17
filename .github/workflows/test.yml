@@ -26,7 +26,7 @@ jobs:
       - run: git config --global commit.gpgsign true
       - run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
       - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
-      - run: echo ${{ toJSON(jobs.basic-integration-tests.strategy.matrix.example_directories) }}
+      # - run: echo ${{ toJSON(jobs.basic-integration-tests.strategy.matrix.example_directories) }}
       # - id: should_run_tests
         # run: BRANCH_NAME="${{ github.head_ref }}" && RELEASE_VERSION="${BRANCH_NAME:9}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]; then ./publish-github-action.sh $RELEASE_VERSION; else echo "::set-output name=should_run_tests::true"; fi
   basic-integration-tests:
@@ -77,6 +77,7 @@ jobs:
     outputs:
       success: ${{ steps.success.outputs.success }}
     steps:
+      - run: echo ${{ toJSON(matrix.example_directories) }}
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
         uses: actions/checkout@v2
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
