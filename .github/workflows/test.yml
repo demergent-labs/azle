@@ -10,6 +10,7 @@ jobs:
       GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
     outputs:
       should_run_tests: ${{ steps.should_run_tests.outputs.should_run_tests }}
+      example_directories: ${{ steps.example_directories.outputs.example_directories }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -26,6 +27,8 @@ jobs:
       - run: git config --global commit.gpgsign true
       - run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
       - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
+      - id: example_directories
+        run: echo '::set-output name=example_directories::["examples/generators"]'
       # - run: echo ${{ toJSON(jobs.basic-integration-tests.strategy.matrix.example_directories) }}
       # - id: should_run_tests
         # run: BRANCH_NAME="${{ github.head_ref }}" && RELEASE_VERSION="${BRANCH_NAME:9}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]; then ./publish-github-action.sh $RELEASE_VERSION; else echo "::set-output name=should_run_tests::true"; fi
@@ -47,14 +50,14 @@ jobs:
             azle_source: npm
 
         # TODO we can probably put all of the directories in one place and pass them into the script
-        example_directories:
+        example_directories: ${{ fromJson(needs.release-candidate-deploy.outputs.example_directories) }}
           # - examples/call_raw
           # - examples/complex_types
           # - examples/counter
           # - examples/cross_canister_calls
           # - examples/func_types
-          - examples/generators
-          - examples/heartbeat
+          # - examples/generators
+          # - examples/heartbeat
           # - examples/ic_api
           # - examples/imports
           # - examples/init
