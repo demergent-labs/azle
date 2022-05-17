@@ -109,7 +109,7 @@ jobs:
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
         shell: bash -l {0}
         run: npm install
-      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }} && matrix.azle_source == 'repo'
+      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
         shell: bash -l {0}
         run: npm link
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
@@ -119,7 +119,7 @@ jobs:
         shell: bash -l {0}
         working-directory: ${{ matrix.example_directories }}
         run: npm install
-      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }} && matrix.azle_source == 'repo'
+      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
         shell: bash -l {0}
         working-directory: ${{ matrix.example_directories }}
         run: npm link azle
