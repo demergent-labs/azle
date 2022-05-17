@@ -2,6 +2,13 @@
 
 echo $1
 
+directories=$1
+
+for directory in "${directories[@]}"
+do
+    echo $directory
+done
+
 # set -e
 
 # # TODO let's pass these directories in from the github actions yaml
