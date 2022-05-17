@@ -132,11 +132,11 @@ jobs:
   check-basic-integration-tests:
     needs: basic-integration-tests
     runs-on: ubuntu-latest
-    env:
-      GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+    # env:
+    #   GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
     if: always()
     steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
+      # - uses: actions/checkout@v2
+      #   with:
+      #     ref: ${{ github.event.pull_request.head.ref }}
       - run: if [[ "${{ needs.basic-integration-tests.outputs.success }}" == "true" ]]; then exit 0; else exit 1; fi
