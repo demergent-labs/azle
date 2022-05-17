@@ -1,11 +1,10 @@
 #!/bin/bash
 
-echo $1
+# echo $1
 
-TEMP=$1
-TEMP1="${TEMP//$'\\n'/''}"
-
-directories=$(echo "$TEMP1" | jq -c -r '.[]')
+# TEMP=$1
+directories_json="${$1//$'\\n'/''}"
+directories=$(echo "$directories_json" | jq -c -r '.[]')
 
 for directory in "${directories[@]}"
 do
