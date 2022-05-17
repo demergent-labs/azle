@@ -126,7 +126,10 @@ const tests: Test[] = [
                 ok: result.toString() === callingPrincipal
             };
         }
-    },
+    }
+    // TODO: To make this test really robust, we would use a different identity
+    // when re-deploying the canister. Then we would assert that
+    // `whoami_canister.installer()` returns the new installer's principal.
 ];
 
 run_tests(tests);
