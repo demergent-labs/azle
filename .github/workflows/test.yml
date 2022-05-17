@@ -5,9 +5,6 @@
 # TODO to get the tests to only run once on a release branch, we can just store an output
 # TODO on the release-candidate-deploy that controls whether basic-integration-tests runs the tests
 
-# TODO I need the status checks to be kicked off when committing from this action
-# TODO I am using a personal github token but the status kicks still aren't kicked off
-
 name: Azle Tests
 on:
   pull_request:
@@ -16,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+    outputs:
+      should_run_tests: ${{ steps.should_run_tests.outputs.should_run_tests }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -33,9 +32,8 @@ jobs:
       - run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
       - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
       - run: BRANCH_NAME="${{ github.head_ref }}" && RELEASE_VERSION="${BRANCH_NAME:9}" && echo "$RELEASE_VERSION"
-      - run: BRANCH_NAME="${{ github.head_ref }}" && RELEASE_VERSION="${BRANCH_NAME:9}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]; then ./publish-github-action.sh $RELEASE_VERSION; else exit 0; fi
-      # - yes sir
-      # - run: BRANCH_NAME="${{ github.head_ref }}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != *"release--"* ]]; then ./publish-github-action.sh "${BRANCH_NAME:9}"; else exit 0; fi
+      - id: should_run_tests
+        run: BRANCH_NAME="${{ github.head_ref }}" && RELEASE_VERSION="${BRANCH_NAME:9}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]; then ./publish-github-action.sh $RELEASE_VERSION; else echo "::set-output name=should_run_tests::true"; fi
   # TODO perhaps we want to stop the tests from running twice?
   basic-integration-tests:
     needs: release-candidate-deploy
@@ -84,6 +82,7 @@ jobs:
           # - examples/update
     outputs:
       success: ${{ steps.success.outputs.success }}
+    if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
