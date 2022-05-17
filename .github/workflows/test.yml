@@ -15,7 +15,7 @@ jobs:
   release-candidate-deploy:
     runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+      # GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
       GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
     steps:
       - uses: actions/checkout@v2
@@ -33,11 +33,11 @@ jobs:
       - run: git config --global commit.gpgsign true
       - run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
       - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
-      - name: Test
-        env:
-          GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
-        run: BRANCH_NAME="${{ github.head_ref }}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" ]]; then ./publish-github-action.sh "${BRANCH_NAME:9}"; else exit 0; fi
-      # - run: BRANCH_NAME="${{ github.head_ref }}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != *"release--"* ]]; then ./publish-github-action.sh "${BRANCH_NAME:9}"; else exit 0; fi
+      - run: BRANCH_NAME="${{ github.head_ref }}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != *"release--"* ]]; then ./publish-github-action.sh "${BRANCH_NAME:9}"; else exit 0; fi
+      # - name: Test
+        # env:
+          # GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+        # run: BRANCH_NAME="${{ github.head_ref }}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" ]]; then ./publish-github-action.sh "${BRANCH_NAME:9}"; else exit 0; fi
   # TODO perhaps we want to stop the tests from running twice?
   basic-integration-tests:
     needs: release-candidate-deploy
