@@ -3,7 +3,7 @@
 echo $1
 
 TEMP=$1
-TEMP1="${TEMP//$'\n'/'%0A'}"
+TEMP1="${TEMP//$'\\n'/''}"
 
 directories=$(echo "$TEMP1" | jq -c -r '.[]')
 
