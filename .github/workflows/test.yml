@@ -8,11 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
-      EXAMPLE_DIRECTORIES: >
-        [
-          "examples/generators",
-          "examples/heartbeat"
-        ]
     outputs:
       should_run_tests: ${{ steps.should_run_tests.outputs.should_run_tests }}
       example_directories: ${{ steps.example_directories.outputs.example_directories }}
@@ -34,7 +29,13 @@ jobs:
       - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
       - id: example_directories
         run: >
-          EXAMPLE_DIRECTORIES=${{ env.EXAMPLE_DIRECTORIES }}
+          EXAMPLE_DIRECTORIES=$(cat << EOF
+            [
+              "examples/generators",
+              "examples/heartbeat"
+            ]
+          EOF
+          )
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//'%'/'%25'}"
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\n'/'%0A'}"
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\r'/'%0D'}"
