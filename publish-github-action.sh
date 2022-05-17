@@ -6,7 +6,7 @@ directories=$1
 
 for directory in "${directories[@]}"
 do
-    echo $directory
+    echo "$directory"
 done
 
 # set -e
