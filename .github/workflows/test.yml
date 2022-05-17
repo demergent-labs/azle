@@ -34,7 +34,7 @@ jobs:
               "examples/generators",
               "examples/heartbeat"
             ]
-          EOF
+            EOF
           )
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//'%'/'%25'}"
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\n'/'%0A'}"
