@@ -82,43 +82,51 @@ jobs:
           # - examples/update
     outputs:
       success: ${{ steps.success.outputs.success }}
-    if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
+      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+        uses: actions/checkout@v2
+      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+        uses: actions/setup-node@v3
         with:
           node-version: 18
-      - run: DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-      - name: Install Rust ${{ matrix.rust }}
+      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+        run: DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+        name: Install Rust ${{ matrix.rust }}
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
           profile: minimal
           override: true
-      - name: Rust cache
+      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+        name: Rust cache
         uses: actions/cache@v2
         continue-on-error: false
         with:
           path: ${{ matrix.example_directories }}/target
           key: ${{ matrix.example_directories }}-cache
           restore-keys: ${{ matrix.example_directories }}-cache # TODO might need to be more intelligent and hash files here
-      # - shell: bash -l {0}
-      #   run: npm install
-      # - if: matrix.azle_source == 'repo'
-      #   shell: bash -l {0}
-      #   run: npm link
-      # - working-directory: ${{ matrix.example_directories }}
-      #   run: dfx start --clean --background
-      # - shell: bash -l {0}
-      #   working-directory: ${{ matrix.example_directories }}
-      #   run: npm install
-      # - if: matrix.azle_source == 'repo'
-      #   shell: bash -l {0}
-      #   working-directory: ${{ matrix.example_directories }}
-      #   run: npm link azle
-      # - shell: bash -l {0}
-      #   working-directory: ${{ matrix.example_directories }}
-      #   run: npm test
+      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+        shell: bash -l {0}
+        run: npm install
+      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }} && matrix.azle_source == 'repo'
+        shell: bash -l {0}
+        run: npm link
+      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+        working-directory: ${{ matrix.example_directories }}
+        run: dfx start --clean --background
+      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+        shell: bash -l {0}
+        working-directory: ${{ matrix.example_directories }}
+        run: npm install
+      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }} && matrix.azle_source == 'repo'
+        shell: bash -l {0}
+        working-directory: ${{ matrix.example_directories }}
+        run: npm link azle
+      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+        shell: bash -l {0}
+        working-directory: ${{ matrix.example_directories }}
+        run: npm test
       - id: success
         run: echo "::set-output name=success::true"
   check-basic-integration-tests:
