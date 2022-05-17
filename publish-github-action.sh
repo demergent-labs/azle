@@ -2,6 +2,7 @@
 
 set -e
 
+# TODO let's pass these directories in from the github actions yaml
 directories=(
     "examples/call_raw"
     "examples/complex_types"
@@ -35,29 +36,27 @@ root_dir=$PWD
 
 VERSION=$1
 
-echo "version: $VERSION"
-
 sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
-# npm install
+npm install
 
-# if [[ "$VERSION" == *"-rc."* ]];
-# then
-#     npm publish --tag next
-# else
-#     npm publish
-# fi
+if [[ "$VERSION" == *"-rc."* ]];
+then
+    npm publish --tag next
+else
+    npm publish
+fi
 
 # TODO loop through checking for the status instead of sleeping
-# echo -e "sleeping for 30 seconds to ensure azle@$VERSION is fully registered on npm"
+echo -e "sleeping for 30 seconds to ensure azle@$VERSION is fully registered on npm"
 
-# sleep 30
+sleep 30
 
 for directory in "${directories[@]}"
 do
     cd $directory
 
     sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
-    # npm install
+    npm install
 
     cd $root_dir
 done
@@ -66,5 +65,5 @@ git add --all
 git commit -am "azle-bot automated release $VERSION"
 git push origin $GITHUB_HEAD_REF
 
-# git tag $VERSION
-# git push origin $VERSION
+git tag $VERSION
+git push origin $VERSION
