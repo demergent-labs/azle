@@ -30,6 +30,7 @@ jobs:
       - id: example_directories
         run: echo '::set-output name=example_directories::["examples/generators", "examples/heartbeat"]' # TODO make this multiline
       - run: echo ${{ steps.example_directories.outputs.example_directories }}
+      - run: ./publish-github-action.sh ${{ steps.example_directories.outputs.example_directories }}
         # TODO now we need to pass this into the script somehow...hopefully we can access the outputs
       # - run: echo ${{ toJSON(jobs.basic-integration-tests.strategy.matrix.example_directories) }}
       # - id: should_run_tests
