@@ -8,13 +8,14 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { SignIdentity } from '@dfinity/agent';
 
 function createIdentity(seed: number): SignIdentity {
-    const seed1 = new Array(32).fill(0);
-    seed1[0] = seed;
-    return Ed25519KeyIdentity.generate(new Uint8Array(seed1));
+    const seed1 = [seed, ...new Array(31).fill(0)];
+    return Ed25519KeyIdentity.generate(Uint8Array.from(seed1));
 }
 
+const installationPrincipal = execSync(`dfx identity get-principal`).toString().trim();
+
 const identity = createIdentity(1);
-const principal = identity.getPrincipal().toString();
+const callingPrincipal = identity.getPrincipal().toString();
 
 const canisterId = 'rrkah-fqaaa-aaaaa-aaaaq-cai'
 
@@ -44,28 +45,28 @@ const tests: Test[] = [
     {
         name: 'deploy',
         prep: async () => {
-            execSync(`dfx deploy --argument '(principal "${principal}")'`, {
+            execSync(`dfx deploy --argument '(principal "${installationPrincipal}")'`, {
                 stdio: 'inherit'
             });
         }
     },
-    // {
-    //     name: 'installer',
-    //     test: async () => {
-    //         const result = await whoami_canister.installer();
+    {
+        name: 'installer',
+        test: async () => {
+            const result = await whoami_canister.installer();
 
-    //         return {
-    //             ok: result === 'TODO: See https://github.com/demergent-labs/azle/issues/271'
-    //         };
-    //     }
-    // },
+            return {
+                ok: result.toString() === installationPrincipal
+            };
+        }
+    },
     {
         name: 'argument',
         test: async () => {
             const result = await whoami_canister.argument();
 
             return {
-                ok: result.toString() === principal
+                ok: result.toString() === installationPrincipal
             };
         }
     },
@@ -75,7 +76,7 @@ const tests: Test[] = [
             const result = await whoami_canister.whoami();
 
             return {
-                ok: result.toString() === principal
+                ok: result.toString() === callingPrincipal
             };
         }
     },
@@ -98,7 +99,34 @@ const tests: Test[] = [
                 ok: result.toString() === canisterId
             };
         }
-    }
+    },
+    {
+        // TODO Get rid of this once https://forum.dfinity.org/t/upgrade-a-canister-even-if-the-wasm-module-hash-has-not-changed/11989
+        name: 'function hack to allow a redeploy',
+        prep: async () => {
+            execSync(`echo "\\n\\nexport function hack(): Query<void> {}" >> src/whoami.ts`, {
+                stdio: 'inherit'
+            });
+        }
+    },
+    {
+        name: 'redeploy',
+        prep: async () => {
+            execSync(`dfx deploy --argument '(principal "${callingPrincipal}")'`, {
+                stdio: 'inherit'
+            });
+        }
+    },
+    {
+        name: 'updated argument',
+        test: async () => {
+            const result = await whoami_canister.argument();
+
+            return {
+                ok: result.toString() === callingPrincipal
+            };
+        }
+    },
 ];
 
 run_tests(tests);

@@ -3,15 +3,15 @@ import {
     CanisterResult,
     ic,
     Init,
+    PostUpgrade,
     Principal,
     Query,
-    Stable,
     UpdateAsync,
     Variant
 } from 'azle';
 
 type WhoAmICanister = Canister<{
-    // installer(): CanisterResult<Principal>;
+    installer(): CanisterResult<Principal>;
     argument(): CanisterResult<Principal>;
     whoami(): CanisterResult<Principal>;
     id(): CanisterResult<Principal>;
@@ -23,26 +23,31 @@ type WhoAmIResult = Variant<{
     err: string;
 }>;
 
-type StableStorage = Stable<{
-    someone: Principal,
-}>
+let install: Principal;
+let someone: Principal;
 
-// Save the principal to stable storage for later access
-export function initialize(someone: Principal): Init {
-    ic.stableStorage<StableStorage>().someone = someone;
+// Manually save the calling principal and argument for later access.
+export function init(somebody: Principal): Init {
+    install = ic.caller();
+    someone = somebody;
+}
+
+// Manually re-save these variables after new deploys.
+export function postUpgrade(somebody: Principal): PostUpgrade {
+    install = ic.caller();
+    someone = somebody;
 }
 
 // Return the principal identifier of the wallet canister that installed this
 // canister.
-// export function installer(): Query<Principal> {
-//     return ic.installer();
-//     // TODO: See https://github.com/demergent-labs/azle/issues/271
-// }
+export function installer(): Query<Principal> {
+    return install;
+}
 
 // Return the principal identifier that was provided as an installation
 // argument to this canister.
 export function argument(): Query<Principal> {
-    return ic.stableStorage<StableStorage>().someone;
+    return someone;
 }
 
 // Return the principal identifier of the caller of this method.
@@ -56,7 +61,7 @@ export function* id(): UpdateAsync<Principal> {
 
     const result: WhoAmIResult = yield thisCanister.whoami();
 
-    return result.ok || ""
+    return result.ok ?? '';
 }
 
 // Return the principal identifier of this canister via the global `ic` object.
