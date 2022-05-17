@@ -2,8 +2,8 @@
 
 # echo $1
 
-# TEMP=$1
-directories_json="${$1//$'\\n'/''}"
+directories_string=$1
+directories_json="${$directories_string//$'\\n'/''}"
 directories=$(echo "$directories_json" | jq -c -r '.[]')
 
 for directory in "${directories[@]}"
