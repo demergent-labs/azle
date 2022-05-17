@@ -40,7 +40,7 @@ jobs:
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\n'/'%0A'}"
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\r'/'%0D'}"
           echo "::set-output name=example_directories::$EXAMPLE_DIRECTORIES"
-      - run: ./publish-github-action.sh ${{ toJSON(steps.example_directories.outputs.example_directories) }}
+      - run: ./publish-github-action.sh ${{ steps.example_directories.outputs.example_directories }}
         # TODO now we need to pass this into the script somehow...hopefully we can access the outputs
       # - run: echo ${{ toJSON(jobs.basic-integration-tests.strategy.matrix.example_directories) }}
       # - id: should_run_tests
