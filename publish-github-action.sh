@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# echo $1
+echo $1
 
-directories_string=$1
-directories_json="${$directories_string//$'\\n'/''}"
-directories=$(echo "$directories_json" | jq -c -r '.[]')
+directories_json_string_with_linebreaks=$1
+directories_json_string="${directories_json_string_with_linebreaks//$'\\n'/''}"
+
+directories=$(echo "$directories_json_string" | jq -c -r '.[]')
 
 for directory in "${directories[@]}"
 do
