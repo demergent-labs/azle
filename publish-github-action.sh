@@ -63,7 +63,7 @@ do
 done
 
 git add --all
-git commit -am "release $VERSION"
+git commit -am "azle-bot automated release $VERSION"
 git push origin $GITHUB_HEAD_REF
 
 # git tag $VERSION
