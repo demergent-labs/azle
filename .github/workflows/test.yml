@@ -37,7 +37,7 @@ jobs:
           END
           )
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//'%'/'%25'}"
-          EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\n'/'%0A'}"
+          # EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\n'/'%0A'}"
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\r'/'%0D'}"
           echo "::set-output name=example_directories::$EXAMPLE_DIRECTORIES"
       - run: ./publish-github-action.sh ${{ toJSON(steps.example_directories.outputs.example_directories) }}
