@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "echo": {
+            "type": "custom",
+            "build": "npx azle echo",
+            "root": "src",
+            "ts": "src/echo.ts",
+            "candid": "src/echo.did",
+            "wasm": "target/wasm32-unknown-unknown/release/echo.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/echo"
+            }
+        }
+    }
+}
