@@ -92,7 +92,7 @@ jobs:
         # TODO we might be able to dynamically change the example_directories array depending on if the tests should run or not...
         # TODO an empty array might make all of the if statements unnecessary
         # if: ${{ needs.release-candidate-deploy.outputs.should_run_tests == true }}
-        example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == "true" && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
+        example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
         # if: ${{ needs.release-candidate-deploy.outputs.should_run_tests == false }}
         # example_directories: ["dummy"]
     outputs:
