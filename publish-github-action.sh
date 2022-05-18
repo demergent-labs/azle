@@ -2,15 +2,15 @@
 
 set -e
 
-directories_json_string_with_linebreaks=$2
-directories_json_string="${directories_json_string_with_linebreaks//$'\\n'/''}"
-directories=$(echo "$directories_json_string" | jq -c -r '.[]')
-
 root_dir=$PWD
 
 VERSION=$1
 
-sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
+directories_json_string_with_linebreaks=$2
+directories_json_string="${directories_json_string_with_linebreaks//$'\\n'/''}"
+directories=$(echo "$directories_json_string" | jq -c -r '.[]')
+
+# sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
 # npm install
 
 # if [[ "$VERSION" == *"-rc."* ]];
@@ -27,7 +27,7 @@ sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
 
 for directory in ${directories[@]}
 do
-    echo $directory
+    # echo $directory
     cd $directory
 
     # sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
