@@ -11,6 +11,11 @@ directories_json_string_with_linebreaks=$2
 directories_json_string="${directories_json_string_with_linebreaks//$'\\n'/''}"
 directories=$(echo "$directories_json_string" | jq -c -r '.[]')
 
+for directory in "${directories[@]}"
+do
+    echo $directory
+done
+
 # sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
 # npm install
 
@@ -26,16 +31,16 @@ directories=$(echo "$directories_json_string" | jq -c -r '.[]')
 
 # sleep 30
 
-for directory in "${directories[@]}"
-do
-    echo $directory
-    cd $directory # TODO running into issue here for some reason
+# for directory in "${directories[@]}"
+# do
+#     echo $directory
+    # cd $directory # TODO running into issue here for some reason
 
     # sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
     # npm install
 
     # cd $root_dir
-done
+# done
 
 # git add --all
 # git commit -am "azle-bot automated release $VERSION"
