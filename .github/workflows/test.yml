@@ -88,7 +88,7 @@ jobs:
         # TODO perhaps we should start testing on different versions of dfx as well
         rust: [stable]
         include_npm:
-          - ${{ (github.head_ref == 'main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
+          - ${{ (github.ref == 'main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
         azle_source:
           - npm
           - repo
@@ -99,7 +99,7 @@ jobs:
     outputs:
       success: ${{ steps.success.outputs.success }}
     steps:
-      - run: echo "${{ github.head_ref }}"
+      - run: echo "${{ github.ref }}"
       - run: echo "${{ contains(github.event.head_commit.message, 'Merge pull request') }}"
       - run: echo "${{ contains(github.event.head_commit.message, 'demergent-labs/release--') }}"
       - run: echo "${{ github.event.commits[0].message }}" # TODO remove this
