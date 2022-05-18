@@ -44,7 +44,7 @@ jobs:
         # TODO now we need to pass this into the script somehow...hopefully we can access the outputs
       # - run: echo ${{ toJSON(jobs.basic-integration-tests.strategy.matrix.example_directories) }}
       - id: should_run_tests
-        run: BRANCH_NAME="${{ github.head_ref }}" && RELEASE_VERSION="${BRANCH_NAME:9}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]; then ./publish-github-action.sh ${{ toJSON(steps.example_directories.outputs.example_directories) }}; else echo "::set-output name=should_run_tests::true"; fi
+        run: BRANCH_NAME="${{ github.head_ref }}" && RELEASE_VERSION="${BRANCH_NAME:9}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]; then ./publish-github-action.sh $RELEASE_VERSION ${{ toJSON(steps.example_directories.outputs.example_directories) }}; else echo "::set-output name=should_run_tests::true"; fi
   basic-integration-tests:
     needs: release-candidate-deploy
     runs-on: ubuntu-latest

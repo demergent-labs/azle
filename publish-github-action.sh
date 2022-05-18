@@ -1,6 +1,6 @@
 #!/bin/bash
 
-directories_json_string_with_linebreaks=$1
+directories_json_string_with_linebreaks=$2
 directories_json_string="${directories_json_string_with_linebreaks//$'\\n'/''}"
 directories=$(echo "$directories_json_string" | jq -c -r '.[]')
 
