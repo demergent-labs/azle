@@ -1,7 +1,13 @@
-# TODO figure out how the badge should work now
+# TODO figure out how the badge should work now, we want it to display the status for main
+
+# TODO the next great simplification might be deploying multiple examples to one dfx replica instance: https://forum.dfinity.org/t/use-the-same-local-replica-for-multiple-projects/11900
+# TODO this might allow us to avoid spinning up so many jobs in the matrix
 
 name: Azle Tests
 on:
+  push:
+    branches:
+    - main
   pull_request:
 jobs:
   release-candidate-deploy:
@@ -77,7 +83,7 @@ jobs:
         # TODO perhaps we should start testing on different versions of dfx as well
         rust: [stable]
         include_npm:
-          - ${{ contains(github.head_ref, 'release--') }}
+          - ${{ (github.head_ref == 'main' && contains(github.event.commits[0].message, 'azle-bot automated release')) || contains(github.head_ref, 'release--') }}
         azle_source:
           - npm
           - repo
@@ -88,6 +94,7 @@ jobs:
     outputs:
       success: ${{ steps.success.outputs.success }}
     steps:
+      - run: echo ${{ github.event.commits[0].message }} # TODO remove this
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
         uses: actions/checkout@v2
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
