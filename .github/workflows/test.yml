@@ -88,7 +88,7 @@ jobs:
         # TODO perhaps we should start testing on different versions of dfx as well
         rust: [stable]
         include_npm:
-          - ${{ (github.ref == 'refs/head/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
+          - ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
         azle_source:
           - npm
           - repo
@@ -100,8 +100,10 @@ jobs:
       success: ${{ steps.success.outputs.success }}
     steps:
       - run: echo "${{ github.ref }}"
+      - run: echo "${{ github.ref == 'refs/heads/main' }}"
       - run: echo "${{ contains(github.event.head_commit.message, 'Merge pull request') }}"
       - run: echo "${{ contains(github.event.head_commit.message, 'demergent-labs/release--') }}"
+      - run: echo "${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}"
       - run: echo "${{ github.event.commits[0].message }}" # TODO remove this
       - run: echo "${{ github.event.head_commit.message }}" # TODO remove this
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
