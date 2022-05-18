@@ -157,11 +157,15 @@ jobs:
         shell: bash -l {0}
         working-directory: ${{ matrix.example_directories }}
         run: npm test
-      - id: success
-        run: echo "::set-output name=success::true"
+      - if: failure()
+        run: echo "::set-output name=success::false"
+      # - id: success
+        # run: echo "::set-output name=success::true"
+
+  # TODO this is actually completely broken, it will pass if at least one matrix job passes
   check-basic-integration-tests: # TODO make sure that this doesn't just grab one of the test success outputs, basically make one test fail and check
     needs: basic-integration-tests
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - run: if [[ "${{ needs.basic-integration-tests.outputs.success }}" == "true" ]]; then exit 0; else exit 1; fi
+      - run: if [[ "${{ needs.basic-integration-tests.outputs.success }}" == "false" ]]; then exit 1; else exit 0; fi
