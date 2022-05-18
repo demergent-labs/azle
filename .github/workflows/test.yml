@@ -3,6 +3,36 @@
 # TODO the next great simplification might be deploying multiple examples to one dfx replica instance: https://forum.dfinity.org/t/use-the-same-local-replica-for-multiple-projects/11900
 # TODO this might allow us to avoid spinning up so many jobs in the matrix
 
+# EXAMPLE_DIRECTORIES=$(cat << END
+# [
+#   "examples/call_raw",
+#   "examples/complex_types",
+#   "examples/counter",
+#   "examples/cross_canister_calls",
+#   "examples/func_types",
+#   "examples/generators",
+#   "examples/heartbeat",
+#   "examples/ic_api",
+#   "examples/imports",
+#   "examples/init",
+#   "examples/inline_types",
+#   "examples/key_value_store",
+#   "examples/ledger_canister",
+#   "examples/management_canister",
+#   "examples/motoko_examples/calc",
+#   "examples/motoko_examples/counter",
+#   "examples/motoko_examples/quicksort",
+#   "examples/optional_types",
+#   "examples/pre_and_post_upgrade",
+#   "examples/primitive_types",
+#   "examples/query",
+#   "examples/simple_erc20",
+#   "examples/simple_user_accounts",
+#   "examples/stable_storage",
+#   "examples/tuple_types",
+#   "examples/update"
+# ]
+
 name: Azle Tests
 on:
   push:
@@ -39,32 +69,7 @@ jobs:
         run: |
           EXAMPLE_DIRECTORIES=$(cat << END
           [
-            "examples/call_raw",
-            "examples/complex_types",
-            "examples/counter",
-            "examples/cross_canister_calls",
-            "examples/func_types",
-            "examples/generators",
-            "examples/heartbeat",
-            "examples/ic_api",
-            "examples/imports",
-            "examples/init",
-            "examples/inline_types",
-            "examples/key_value_store",
-            "examples/ledger_canister",
-            "examples/management_canister",
-            "examples/motoko_examples/calc",
-            "examples/motoko_examples/counter",
-            "examples/motoko_examples/quicksort",
-            "examples/optional_types",
-            "examples/pre_and_post_upgrade",
-            "examples/primitive_types",
-            "examples/query",
-            "examples/simple_erc20",
-            "examples/simple_user_accounts",
-            "examples/stable_storage",
-            "examples/tuple_types",
-            "examples/update"
+            "examples/generators"
           ]
           END
           )
@@ -94,7 +99,8 @@ jobs:
     outputs:
       success: ${{ steps.success.outputs.success }}
     steps:
-      - run: echo ${{ github.event.commits[0].message }} # TODO remove this
+      - run: echo "${{ github.event.commits[0].message }}" # TODO remove this
+      - run: echo "${{ github.event.head_commit.message }}" # TODO remove this
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
         uses: actions/checkout@v2
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
