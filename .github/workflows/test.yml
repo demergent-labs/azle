@@ -1,39 +1,7 @@
-# TODO figure out how the badge should work now, we want it to display the status for main
-
 # TODO the next great simplification might be deploying multiple examples to one dfx replica instance: https://forum.dfinity.org/t/use-the-same-local-replica-for-multiple-projects/11900
 # TODO this might allow us to avoid spinning up so many jobs in the matrix
 
 # TODO comment this whole thing up so that we can always understand what's going on
-
-# EXAMPLE_DIRECTORIES=$(cat << END
-# [
-#   "examples/call_raw",
-#   "examples/complex_types",
-#   "examples/counter",
-#   "examples/cross_canister_calls",
-#   "examples/func_types",
-#   "examples/generators",
-#   "examples/heartbeat",
-#   "examples/ic_api",
-#   "examples/imports",
-#   "examples/init",
-#   "examples/inline_types",
-#   "examples/key_value_store",
-#   "examples/ledger_canister",
-#   "examples/management_canister",
-#   "examples/motoko_examples/calc",
-#   "examples/motoko_examples/counter",
-#   "examples/motoko_examples/quicksort",
-#   "examples/optional_types",
-#   "examples/pre_and_post_upgrade",
-#   "examples/primitive_types",
-#   "examples/query",
-#   "examples/simple_erc20",
-#   "examples/simple_user_accounts",
-#   "examples/stable_storage",
-#   "examples/tuple_types",
-#   "examples/update"
-# ]
 
 name: Azle Tests
 on:
@@ -71,7 +39,32 @@ jobs:
         run: |
           EXAMPLE_DIRECTORIES=$(cat << END
           [
-            "examples/generators"
+            "examples/call_raw",
+            "examples/complex_types",
+            "examples/counter",
+            "examples/cross_canister_calls",
+            "examples/func_types",
+            "examples/generators",
+            "examples/heartbeat",
+            "examples/ic_api",
+            "examples/imports",
+            "examples/init",
+            "examples/inline_types",
+            "examples/key_value_store",
+            "examples/ledger_canister",
+            "examples/management_canister",
+            "examples/motoko_examples/calc",
+            "examples/motoko_examples/counter",
+            "examples/motoko_examples/quicksort",
+            "examples/optional_types",
+            "examples/pre_and_post_upgrade",
+            "examples/primitive_types",
+            "examples/query",
+            "examples/simple_erc20",
+            "examples/simple_user_accounts",
+            "examples/stable_storage",
+            "examples/tuple_types",
+            "examples/update"
           ]
           END
           )
@@ -101,13 +94,6 @@ jobs:
     outputs:
       success: ${{ steps.success.outputs.success }}
     steps:
-      - run: echo "${{ github.ref }}"
-      - run: echo "${{ github.ref == 'refs/heads/main' }}"
-      - run: echo "${{ contains(github.event.head_commit.message, 'Merge pull request') }}"
-      - run: echo "${{ contains(github.event.head_commit.message, 'demergent-labs/release--') }}"
-      - run: echo "${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}"
-      - run: echo "${{ github.event.commits[0].message }}" # TODO remove this
-      - run: echo "${{ github.event.head_commit.message }}" # TODO remove this
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
         uses: actions/checkout@v2
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
