@@ -9,8 +9,8 @@ directories=$(echo "$directories_json_string" | jq -c -r '.[]')
 for directory in "${directories[@]}"
 do
     echo "$directory"
+    cd $directory
 done
-
 
 # # TODO let's pass these directories in from the github actions yaml
 # directories=(
