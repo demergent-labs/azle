@@ -28,11 +28,39 @@ jobs:
       - run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
       - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
       - id: example_directories
+        # TODO to improve this further we might be able to create an environment variable that grabs the directories with a glob
+        # TODO right now it is nice to be able to easily include and exclude packages though
+
+        # TODO make sure we can easily include and exclude examples from the list
         run: |
           EXAMPLE_DIRECTORIES=$(cat << END
           [
+            # "examples/call_raw",
+            # "examples/complex_types",
+            # "examples/counter",
+            # "examples/cross_canister_calls",
+            # "examples/func_types",
             "examples/generators",
-            "examples/heartbeat"
+            # "examples/heartbeat",
+            # "examples/ic_api",
+            # "examples/imports",
+            # "examples/init",
+            # "examples/inline_types",
+            # "examples/key_value_store",
+            # "examples/ledger_canister",
+            # "examples/management_canister",
+            # "examples/motoko_examples/calc",
+            # "examples/motoko_examples/counter",
+            # "examples/motoko_examples/quicksort",
+            # "examples/optional_types",
+            # "examples/pre_and_post_upgrade",
+            # "examples/primitive_types",
+            # "examples/query",
+            # "examples/simple_erc20",
+            # "examples/simple_user_accounts",
+            # "examples/stable_storage",
+            # "examples/tuple_types",
+            # "examples/update"
           ]
           END
           )
@@ -40,9 +68,6 @@ jobs:
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\n'/'%0A'}"
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\r'/'%0D'}"
           echo "::set-output name=example_directories::$EXAMPLE_DIRECTORIES"
-      # - run: ./publish-github-action.sh ${{ toJSON(steps.example_directories.outputs.example_directories) }}
-        # TODO now we need to pass this into the script somehow...hopefully we can access the outputs
-      # - run: echo ${{ toJSON(jobs.basic-integration-tests.strategy.matrix.example_directories) }}
       - id: should_run_tests
         run: BRANCH_NAME="${{ github.head_ref }}" && RELEASE_VERSION="${BRANCH_NAME:9}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]; then ./publish-github-action.sh $RELEASE_VERSION ${{ toJSON(steps.example_directories.outputs.example_directories) }}; else echo "::set-output name=should_run_tests::true"; fi
   basic-integration-tests:
@@ -61,35 +86,7 @@ jobs:
         exclude:
           - include_npm: false
             azle_source: npm
-
-        # TODO we can probably put all of the directories in one place and pass them into the script
         example_directories: ${{ fromJson(needs.release-candidate-deploy.outputs.example_directories) }}
-          # - examples/call_raw
-          # - examples/complex_types
-          # - examples/counter
-          # - examples/cross_canister_calls
-          # - examples/func_types
-          # - examples/generators
-          # - examples/heartbeat
-          # - examples/ic_api
-          # - examples/imports
-          # - examples/init
-          # - examples/inline_types
-          # - examples/key_value_store
-          # - examples/ledger_canister
-          # - examples/management_canister
-          # - examples/motoko_examples/calc
-          # - examples/motoko_examples/counter
-          # - examples/motoko_examples/quicksort
-          # - examples/optional_types
-          # - examples/pre_and_post_upgrade
-          # - examples/primitive_types
-          # - examples/query
-          # - examples/simple_erc20
-          # - examples/simple_user_accounts
-          # - examples/stable_storage
-          # - examples/tuple_types
-          # - examples/update
     outputs:
       success: ${{ steps.success.outputs.success }}
     steps:
