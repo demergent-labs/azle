@@ -67,7 +67,7 @@ jobs:
           EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\r'/'%0D'}"
           echo "::set-output name=example_directories::$EXAMPLE_DIRECTORIES"
       - id: should_run_tests
-        run: BRANCH_NAME="${{ github.head_ref }}" && RELEASE_VERSION="${BRANCH_NAME:9}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]; then ./publish-github-action.sh $RELEASE_VERSION ${{ toJSON(steps.example_directories.outputs.example_directories) }}; else echo "::set-output name=should_run_tests::true"; fi
+        run: BRANCH_NAME="${{ github.head_ref }}" && RELEASE_VERSION="${BRANCH_NAME:9}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]; then ./publish-github-action.sh $RELEASE_VERSION ${{ toJSON(steps.example_directories.outputs.example_directories) }} && echo "::set-output name=examples_directories::[]"; else echo "::set-output name=should_run_tests::true"; fi
   basic-integration-tests:
     needs: release-candidate-deploy
     runs-on: ubuntu-latest
@@ -84,6 +84,9 @@ jobs:
         exclude:
           - include_npm: false
             azle_source: npm
+        # TODO it would also be nice on the release branch to not spin up all of the jobs even though they don't do much
+        # TODO we might be able to dynamically change the example_directories array depending on if the tests should run or not...
+        # TODO an empty array might make all of the if statements unnecessary
         example_directories: ${{ fromJson(needs.release-candidate-deploy.outputs.example_directories) }}
     outputs:
       success: ${{ steps.success.outputs.success }}
