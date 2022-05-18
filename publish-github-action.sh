@@ -25,7 +25,7 @@ directories=$(echo "$directories_json_string" | jq -c -r '.[]')
 
 # sleep 30
 
-ls
+ls examples
 
 echo $root_dir
 
