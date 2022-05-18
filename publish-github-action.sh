@@ -25,21 +25,23 @@ directories=$(echo "$directories_json_string" | jq -c -r '.[]')
 
 # sleep 30
 
-ls examples
+cd examples/heartbeat
 
-echo $root_dir
+ls
 
-for directory in ${directories[@]}
-do
-    # echo $directory
-    # cd $directory
-    cd examples/heartbeat
+# echo $root_dir
 
-    # sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
-    # npm install
+# for directory in ${directories[@]}
+# do
+#     # echo $directory
+#     # cd $directory
+#     cd examples/heartbeat
 
-    # cd $root_dir
-done
+#     # sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
+#     # npm install
+
+#     # cd $root_dir
+# done
 
 # git add --all
 # git commit -am "azle-bot automated release $VERSION"
