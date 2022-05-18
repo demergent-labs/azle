@@ -25,6 +25,10 @@ directories=$(echo "$directories_json_string" | jq -c -r '.[]')
 
 # sleep 30
 
+ls
+
+echo $root_dir
+
 for directory in ${directories[@]}
 do
     # echo $directory
