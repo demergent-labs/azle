@@ -6,10 +6,10 @@ directories_json_string_with_linebreaks=$2
 directories_json_string="${directories_json_string_with_linebreaks//$'\\n'/''}"
 directories=$(echo "$directories_json_string" | jq -c -r '.[]')
 
-for directory in "${directories[@]}"
+for directory in ${directories[@]}
 do
-    echo "$directory"
-    cd "$directory"
+    echo $directory
+    cd $directory
 done
 
 # # TODO let's pass these directories in from the github actions yaml
