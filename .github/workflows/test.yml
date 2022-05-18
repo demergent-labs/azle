@@ -88,7 +88,7 @@ jobs:
         # TODO perhaps we should start testing on different versions of dfx as well
         rust: [stable]
         include_npm:
-          - ${{ (github.head_ref == 'main' && contains(github.event.head_commit.message, 'azle-bot automated release')) || contains(github.head_ref, 'release--') }}
+          - ${{ (github.head_ref == 'main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'release--')) || contains(github.head_ref, 'release--') }}
         azle_source:
           - npm
           - repo
