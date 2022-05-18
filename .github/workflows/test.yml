@@ -1,33 +1,74 @@
 # TODO the next great simplification might be deploying multiple examples to one dfx replica instance: https://forum.dfinity.org/t/use-the-same-local-replica-for-multiple-projects/11900
 # TODO this might allow us to avoid spinning up so many jobs in the matrix
 
-# TODO comment this whole thing up so that we can always understand what's going on
+# This GitHub Action flow works as follows:
+# The tests are currently simple example-based integration tests.
+# Each directory in the examples directory represents an example project and is intended to have tests that ensure the canisters contained in that example function properly.
+# These tests are currently written in TypeScript and are intended to be run in a Node.js environment.
+# This GitHub Action takes care of deploying to npm and GitHub.
+# Tests can either run against the current code of Azle found in the repository, or the code deployed by the GitHub Action to npm.
+# Feature branch pull requests (pull requests without release-- in the base branch name) will run all tests against the code found in the repository.
+# Release branch pull requests (pull requests with release-- in the base branch name) will run all tests against the code found in the repository and the code deployed by the GitHub Action to npm.
+# Pushes to main will run all tests against the code in the repository if the latest commit was not a merge of a release branch, and will run tests against the code in the repository and the code deployed by the GitHub Action to npm otherwise.
+# The basic-integration-tests matrix spins up one job per combination of example directory and code source (repo or npm).
+# The check-basic-integration-tests job is designed to ensure that all jobs spun up from the matrix in the basic-integration-tests have succeeded
+
+# [
+#   "examples/call_raw",
+#   "examples/complex_types",
+#   "examples/counter",
+#   "examples/cross_canister_calls",
+#   "examples/func_types",
+#   "examples/generators",
+#   "examples/heartbeat",
+#   "examples/ic_api",
+#   "examples/imports",
+#   "examples/init",
+#   "examples/inline_types",
+#   "examples/key_value_store",
+#   "examples/ledger_canister",
+#   "examples/management_canister",
+#   "examples/motoko_examples/calc",
+#   "examples/motoko_examples/counter",
+#   "examples/motoko_examples/quicksort",
+#   "examples/optional_types",
+#   "examples/pre_and_post_upgrade",
+#   "examples/primitive_types",
+#   "examples/query",
+#   "examples/simple_erc20",
+#   "examples/simple_user_accounts",
+#   "examples/stable_storage",
+#   "examples/tuple_types",
+#   "examples/update"
+# ]
 
 name: Azle Tests
 on:
   push:
     branches:
     - main
-  pull_request:
+  pull_request: # Runs on pull requests to any branch
 jobs:
   release-candidate-deploy:
     runs-on: ubuntu-latest
     env:
-      GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+      GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
     outputs:
-      should_run_tests: ${{ steps.should_run_tests.outputs.should_run_tests }}
+      # These outputs are used to pass information along to the next job
+      should_run_tests: ${{ steps.should_run_tests.outputs.should_run_tests }} # We only want the next job to run the tests once we have finished deploying to npm and GitHub
       example_directories: ${{ steps.example_directories.outputs.example_directories }}
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref }} # This is necessary for this job to be able to commit and push to the origin remote properly
+          token: ${{ secrets.LASTMJS_GITHUB_TOKEN }} # A personal GitHub token is setup as a secret so that committing and pushing to GitHub from the Action will trigger another workflow
       - uses: actions/setup-node@v3
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # TODO we should use some Action-specific bot account
       - run: git config --global user.name 'Jordan Last'
       - run: git config --global user.email 'jordan.michael.last@gmail.com'
       - run: git config --global commit.gpgsign true
@@ -39,32 +80,8 @@ jobs:
         run: |
           EXAMPLE_DIRECTORIES=$(cat << END
           [
-            "examples/call_raw",
-            "examples/complex_types",
-            "examples/counter",
-            "examples/cross_canister_calls",
-            "examples/func_types",
             "examples/generators",
-            "examples/heartbeat",
-            "examples/ic_api",
-            "examples/imports",
-            "examples/init",
-            "examples/inline_types",
-            "examples/key_value_store",
-            "examples/ledger_canister",
-            "examples/management_canister",
-            "examples/motoko_examples/calc",
-            "examples/motoko_examples/counter",
-            "examples/motoko_examples/quicksort",
-            "examples/optional_types",
-            "examples/pre_and_post_upgrade",
-            "examples/primitive_types",
-            "examples/query",
-            "examples/simple_erc20",
-            "examples/simple_user_accounts",
-            "examples/stable_storage",
-            "examples/tuple_types",
-            "examples/update"
+            "examples/heartbeat"
           ]
           END
           )
@@ -78,11 +95,12 @@ jobs:
     needs: release-candidate-deploy
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
       matrix:
         # TODO perhaps we should start testing on different versions of dfx as well
         rust: [stable]
         include_npm:
+          # Only include npm in the matrix if you've pushed to main and the last commit was a merge of a release branch, or the base branch of the pull request is a release branch
           - ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
         azle_source:
           - npm
@@ -90,9 +108,10 @@ jobs:
         exclude:
           - include_npm: false
             azle_source: npm
+        # If should_run_tests is false, we still need the steps of this job to execute so that the success output is set to true. We do this by creating an array with one dummy element
         example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
     outputs:
-      success: ${{ steps.success.outputs.success }}
+      success: ${{ steps.success.outputs.success }} # TODO We might be able to set the output here based on needs.release-candidate-deploy.outputs.should_run_tests
     steps:
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
         uses: actions/checkout@v2
@@ -118,7 +137,7 @@ jobs:
           key: ${{ matrix.example_directories }}-cache
           restore-keys: ${{ matrix.example_directories }}-cache # TODO might need to be more intelligent and hash files here
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-        shell: bash -l {0}
+        shell: bash -l {0} # TODO figure out why this is here and comment about it
         run: npm install
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
         shell: bash -l {0}
@@ -140,7 +159,7 @@ jobs:
         run: npm test
       - id: success
         run: echo "::set-output name=success::true"
-  check-basic-integration-tests:
+  check-basic-integration-tests: # TODO make sure that this doesn't just grab one of the test success outputs, basically make one test fail and check
     needs: basic-integration-tests
     runs-on: ubuntu-latest
     if: always()
