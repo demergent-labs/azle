@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 directories_json_string_with_linebreaks=$2
 directories_json_string="${directories_json_string_with_linebreaks//$'\\n'/''}"
 directories=$(echo "$directories_json_string" | jq -c -r '.[]')
@@ -9,7 +11,6 @@ do
     echo "$directory"
 done
 
-# set -e
 
 # # TODO let's pass these directories in from the github actions yaml
 # directories=(
