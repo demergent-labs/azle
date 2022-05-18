@@ -28,7 +28,8 @@ directories=$(echo "$directories_json_string" | jq -c -r '.[]')
 for directory in ${directories[@]}
 do
     # echo $directory
-    cd $directory
+    # cd $directory
+    cd examples/heartbeat
 
     # sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
     # npm install
