@@ -1,3 +1,9 @@
+<p align="center">
+    <a href="https://github.com/demergent-labs/azle" target="_blank" rel="noopener noreferrer">
+        <img height="150" src="logo/logo.svg" alt="Azle logo">
+    </a>
+</p>
+
 ![example workflow](https://github.com/demergent-labs/azle/actions/workflows/test.yml/badge.svg)
 
 # Azle (Beta)
