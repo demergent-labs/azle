@@ -1,3 +1,5 @@
 {
-  "extends": ["prettier"]
+    "extends": [
+        "prettier"
+    ]
 }
