@@ -14,8 +14,11 @@ function createIdentity(seed: number): SignIdentity {
 
 const installationPrincipal = execSync(`dfx identity get-principal`).toString().trim();
 
-const identity = createIdentity(1);
-const callingPrincipal = identity.getPrincipal().toString();
+const callingIdentity = createIdentity(1);
+const callingPrincipal = callingIdentity.getPrincipal().toString();
+
+const someoneIdentity = createIdentity(2);
+const someonePrincipal = someoneIdentity.getPrincipal().toString();
 
 const canisterId = 'rrkah-fqaaa-aaaaa-aaaaq-cai'
 
@@ -23,7 +26,7 @@ const whoami_canister = createActor(
     canisterId, {
         agentOptions: {
             host: 'http://127.0.0.1:8000',
-            identity
+            identity: callingIdentity
         }
     }
 );
@@ -45,7 +48,7 @@ const tests: Test[] = [
     {
         name: 'deploy',
         prep: async () => {
-            execSync(`dfx deploy --argument '(principal "${installationPrincipal}")'`, {
+            execSync(`dfx deploy --argument '(principal "${someonePrincipal}")'`, {
                 stdio: 'inherit'
             });
         }
@@ -66,7 +69,7 @@ const tests: Test[] = [
             const result = await whoami_canister.argument();
 
             return {
-                ok: result.toString() === installationPrincipal
+                ok: result.toString() === someonePrincipal
             };
         }
     },
