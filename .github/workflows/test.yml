@@ -17,7 +17,7 @@ name: Azle Tests
 on:
   push:
     branches:
-    - main
+      - main
   pull_request: # Runs on pull requests to any branch
 jobs:
   release-candidate-deploy:
@@ -67,6 +67,7 @@ jobs:
             "examples/management_canister",
             "examples/motoko_examples/calc",
             "examples/motoko_examples/counter",
+            "examples/motoko_examples/factorial",
             "examples/motoko_examples/quicksort",
             "examples/optional_types",
             "examples/pre_and_post_upgrade",
