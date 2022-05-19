@@ -1,17 +1,12 @@
-import {
-    run_tests,
-    Test
-} from 'azle/test';
+import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/echo';
 
-const echo_canister = createActor(
-    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const echo_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
 const tests: Test[] = [
     {
@@ -38,7 +33,7 @@ const tests: Test[] = [
     {
         name: 'say',
         test: async () => {
-            const phrase = "This is a test."
+            const phrase = 'This is a test.';
             const result = await echo_canister.say(phrase);
 
             return {
@@ -49,7 +44,7 @@ const tests: Test[] = [
     {
         name: 'say nothing',
         test: async () => {
-            const phrase = ""
+            const phrase = '';
             const result = await echo_canister.say(phrase);
 
             return {
@@ -68,7 +63,7 @@ const tests: Test[] = [
                 in reprehenderit in voluptate velit esse cillum dolore eu fugiat
                 nulla pariatur. Excepteur sint occaecat cupidatat non proident,
                 sunt in culpa qui officia deserunt mollit anim id est laborum.
-            `
+            `;
             const result = await echo_canister.say(phrase);
 
             return {
