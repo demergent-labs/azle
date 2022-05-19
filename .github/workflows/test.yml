@@ -91,6 +91,7 @@ jobs:
           echo "::set-output name=example_directories::$EXAMPLE_DIRECTORIES"
       - id: should_run_tests
         run: BRANCH_NAME="${{ github.head_ref }}" && RELEASE_VERSION="${BRANCH_NAME:9}" && COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s") && if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]; then ./publish-github-action.sh $RELEASE_VERSION ${{ toJSON(steps.example_directories.outputs.example_directories) }}; else echo "::set-output name=should_run_tests::true"; fi
+  
   basic-integration-tests:
     needs: release-candidate-deploy
     runs-on: ubuntu-latest
@@ -108,10 +109,9 @@ jobs:
         exclude:
           - include_npm: false
             azle_source: npm
-        # If should_run_tests is false, we still need the steps of this job to execute so that the success output is set to true. We do this by creating an array with one dummy element
+        # If should_run_tests is false, we still want the steps of this job to execute so that the success output is set to true. We do this by creating an array with one dummy element
+        # TODO I might be able to get rid of the dummy
         example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
-    outputs:
-      success: ${{ steps.success.outputs.success }} # TODO We might be able to set the output here based on needs.release-candidate-deploy.outputs.should_run_tests
     steps:
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
         uses: actions/checkout@v2
@@ -157,19 +157,6 @@ jobs:
         shell: bash -l {0}
         working-directory: ${{ matrix.example_directories }}
         run: npm test
-      - if: failure()
-        run: echo "::set-output name=success::false"
-      # - id: success
-        # run: echo "::set-output name=success::true"
-
-  # TODO I am not sure how to overcome this
-  # TODO this is actually completely broken, it will pass if at least one matrix job passes
-  # check-basic-integration-tests: # TODO make sure that this doesn't just grab one of the test success outputs, basically make one test fail and check
-  #   needs: basic-integration-tests
-  #   runs-on: ubuntu-latest
-  #   if: always()
-  #   steps:
-  #     - run: if [[ "${{ needs.basic-integration-tests.outputs.success }}" == "false" ]]; then exit 1; else exit 0; fi
 
   check-basic-integration-tests-success:
     needs: basic-integration-tests
