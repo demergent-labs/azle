@@ -11,36 +11,7 @@
 # Release branch pull requests (pull requests with release-- in the base branch name) will run all tests against the code found in the repository and the code deployed by the GitHub Action to npm.
 # Pushes to main will run all tests against the code in the repository if the latest commit was not a merge of a release branch, and will run tests against the code in the repository and the code deployed by the GitHub Action to npm otherwise.
 # The basic-integration-tests matrix spins up one job per combination of example directory and code source (repo or npm).
-# The check-basic-integration-tests job is designed to ensure that all jobs spun up from the matrix in the basic-integration-tests have succeeded
-
-# [
-#   "examples/call_raw",
-#   "examples/complex_types",
-#   "examples/counter",
-#   "examples/cross_canister_calls",
-#   "examples/func_types",
-#   "examples/generators",
-#   "examples/heartbeat",
-#   "examples/ic_api",
-#   "examples/imports",
-#   "examples/init",
-#   "examples/inline_types",
-#   "examples/key_value_store",
-#   "examples/ledger_canister",
-#   "examples/management_canister",
-#   "examples/motoko_examples/calc",
-#   "examples/motoko_examples/counter",
-#   "examples/motoko_examples/quicksort",
-#   "examples/optional_types",
-#   "examples/pre_and_post_upgrade",
-#   "examples/primitive_types",
-#   "examples/query",
-#   "examples/simple_erc20",
-#   "examples/simple_user_accounts",
-#   "examples/stable_storage",
-#   "examples/tuple_types",
-#   "examples/update"
-# ]
+# The check-basic-integration-tests-success job is designed to ensure that all jobs spun up from the matrix in the basic-integration-tests have succeeded
 
 name: Azle Tests
 on:
@@ -80,8 +51,32 @@ jobs:
         run: |
           EXAMPLE_DIRECTORIES=$(cat << END
           [
+            "examples/call_raw",
+            "examples/complex_types",
+            "examples/counter",
+            "examples/cross_canister_calls",
+            "examples/func_types",
             "examples/generators",
-            "examples/heartbeat"
+            "examples/heartbeat",
+            "examples/ic_api",
+            "examples/imports",
+            "examples/init",
+            "examples/inline_types",
+            "examples/key_value_store",
+            "examples/ledger_canister",
+            "examples/management_canister",
+            "examples/motoko_examples/calc",
+            "examples/motoko_examples/counter",
+            "examples/motoko_examples/quicksort",
+            "examples/optional_types",
+            "examples/pre_and_post_upgrade",
+            "examples/primitive_types",
+            "examples/query",
+            "examples/simple_erc20",
+            "examples/simple_user_accounts",
+            "examples/stable_storage",
+            "examples/tuple_types",
+            "examples/update"
           ]
           END
           )
