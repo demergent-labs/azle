@@ -162,10 +162,25 @@ jobs:
       # - id: success
         # run: echo "::set-output name=success::true"
 
+  # TODO I am not sure how to overcome this
   # TODO this is actually completely broken, it will pass if at least one matrix job passes
-  check-basic-integration-tests: # TODO make sure that this doesn't just grab one of the test success outputs, basically make one test fail and check
+  # check-basic-integration-tests: # TODO make sure that this doesn't just grab one of the test success outputs, basically make one test fail and check
+  #   needs: basic-integration-tests
+  #   runs-on: ubuntu-latest
+  #   if: always()
+  #   steps:
+  #     - run: if [[ "${{ needs.basic-integration-tests.outputs.success }}" == "false" ]]; then exit 1; else exit 0; fi
+
+  check-basic-integration-tests-success:
     needs: basic-integration-tests
     runs-on: ubuntu-latest
-    if: always()
+    if: sucess()
     steps:
-      - run: if [[ "${{ needs.basic-integration-tests.outputs.success }}" == "false" ]]; then exit 1; else exit 0; fi
+      - run: exit 0
+
+  check-basic-integration-tests-failure:
+    needs: basic-integration-tests
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - run: exit 1
