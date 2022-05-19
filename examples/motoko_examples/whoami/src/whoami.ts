@@ -23,8 +23,10 @@ type WhoAmIResult = Variant<{
     err: string;
 }>;
 
-let install: Principal;
-let someone: Principal;
+// Initialize the variables to ensure that they aren't `undefined`.
+// We use the zero address but any principal could be used.
+let install: Principal = 'aaaaa-aa';
+let someone: Principal = 'aaaaa-aa';
 
 // Manually save the calling principal and argument for later access.
 export function init(somebody: Principal): Init {
