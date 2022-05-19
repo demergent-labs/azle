@@ -174,7 +174,7 @@ jobs:
   check-basic-integration-tests-success:
     needs: basic-integration-tests
     runs-on: ubuntu-latest
-    if: sucess()
+    if: success()
     steps:
       - run: exit 0
 
