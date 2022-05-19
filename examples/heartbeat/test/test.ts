@@ -15,48 +15,40 @@ const heartbeat_canister = createActor(
 
 const tests: Test[] = [
     {
-        name: 'fail',
+        name: 'clear canister memory',
+        prep: async () => {
+            execSync(`dfx canister uninstall-code heartbeat || true`, {
+                stdio: 'inherit'
+            });
+        }
+    },
+    {
+        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
+        name: 'waiting for createActor fetchRootKey',
+        wait: 5000
+    },
+    {
+        name: 'deploy',
+        prep: async () => {
+            execSync(`dfx deploy`, {
+                stdio: 'inherit'
+            });
+        }
+    },
+    {
+        name: 'Wait for first heartbeat to be called',
+        wait: 5000
+    },
+    {
+        name: 'getInitialized',
         test: async () => {
+            const result = await heartbeat_canister.getInitialized();
+
             return {
-                ok: false
+                ok: result
             };
         }
     }
-    // {
-    //     name: 'clear canister memory',
-    //     prep: async () => {
-    //         execSync(`dfx canister uninstall-code heartbeat || true`, {
-    //             stdio: 'inherit'
-    //         });
-    //     }
-    // },
-    // {
-    //     // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-    //     name: 'waiting for createActor fetchRootKey',
-    //     wait: 5000
-    // },
-    // {
-    //     name: 'deploy',
-    //     prep: async () => {
-    //         execSync(`dfx deploy`, {
-    //             stdio: 'inherit'
-    //         });
-    //     }
-    // },
-    // {
-    //     name: 'Wait for first heartbeat to be called',
-    //     wait: 5000
-    // },
-    // {
-    //     name: 'getInitialized',
-    //     test: async () => {
-    //         const result = await heartbeat_canister.getInitialized();
-
-    //         return {
-    //             ok: result
-    //         };
-    //     }
-    // }
 ];
 
 run_tests(tests);
