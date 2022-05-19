@@ -111,7 +111,8 @@ jobs:
             azle_source: npm
         # If should_run_tests is false, we still want the steps of this job to execute so that the success output is set to true. We do this by creating an array with one dummy element
         # TODO I might be able to get rid of the dummy
-        example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
+        # example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
+        example_directories: ${{ fromJSON(needs.release-candidate-deploy.outputs.example_directories) }}
     steps:
       - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
         uses: actions/checkout@v2
