@@ -30,7 +30,7 @@ pub fn derive_azle_try_from_js_value_struct(
 
     quote! {
         impl AzleTryFromJsValue<#struct_name> for boa_engine::JsValue {
-            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<#struct_name, TryFromJsValueError> {
+            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<#struct_name, AzleTryFromJsValue> {
                 let object_option = self.as_object();
 
                 if let Some(object) = object_option {
@@ -45,17 +45,17 @@ pub fn derive_azle_try_from_js_value_struct(
                                     return Ok(#struct_instantiation);
                                 },
                                 _ => {
-                                    return Err(TryFromJsValueError("Could not convert JsValue to Rust type".to_string()));
+                                    return Err(AzleTryFromJsValue("Could not convert JsValue to Rust type".to_string()));
                                 }
                             };
                         },
                         _ => {
-                            return Err(TryFromJsValueError("Struct field does not exist".to_string()));
+                            return Err(AzleTryFromJsValue("Struct field does not exist".to_string()));
                         }
                     };
                 }
                 else {
-                    return Err(TryFromJsValueError("JsValue is not an object".to_string()));
+                    return Err(AzleTryFromJsValue("JsValue is not an object".to_string()));
                 }
             }
         }
