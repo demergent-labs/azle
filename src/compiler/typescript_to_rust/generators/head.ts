@@ -12,11 +12,6 @@ export function generateHead(): Rust {
 
         #![allow(warnings, unused)]
 
-        use boa_engine::value::into_js_value::IntoJsValue;
-        use boa_engine::value::try_from_js_value::{
-            TryFromJsValue,
-            TryFromJsValueError
-        };
         use std::str::FromStr;
         use azle_js_value_derive::{
             AzleIntoJsValue,
