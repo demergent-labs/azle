@@ -24,7 +24,7 @@ type WhoAmIResult = Variant<{
 }>;
 
 // Initialize the variables to ensure that they aren't `undefined`.
-// We use the zero address but any principal could be used.
+// We use the zero principal but any principal could be used.
 let install: Principal = 'aaaaa-aa';
 let someone: Principal = 'aaaaa-aa';
 
