@@ -69,6 +69,7 @@ jobs:
             "examples/motoko_examples/counter",
             "examples/motoko_examples/echo",
             "examples/motoko_examples/factorial",
+            "examples/motoko_examples/hello",
             "examples/motoko_examples/hello-world",
             "examples/motoko_examples/quicksort",
             "examples/motoko_examples/whoami",
