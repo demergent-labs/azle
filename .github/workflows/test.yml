@@ -17,7 +17,7 @@ name: Azle Tests
 on:
   push:
     branches:
-    - main
+      - main
   pull_request: # Runs on pull requests to any branch
 jobs:
   release-candidate-deploy:
@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.ref }} # This is necessary for this job to be able to commit and push to the origin remote properly
-          token: ${{ secrets.LASTMJS_GITHUB_TOKEN }} # A personal GitHub token is setup as a secret so that committing and pushing to GitHub from the Action will trigger another workflow
+          token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }} # A personal GitHub token is setup as a secret so that committing and pushing to GitHub from the Action will trigger another workflow
       - uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -67,8 +67,12 @@ jobs:
             "examples/management_canister",
             "examples/motoko_examples/calc",
             "examples/motoko_examples/counter",
+            "examples/motoko_examples/echo",
+            "examples/motoko_examples/factorial",
             "examples/motoko_examples/hello",
+            "examples/motoko_examples/hello-world",
             "examples/motoko_examples/quicksort",
+            "examples/motoko_examples/whoami",
             "examples/optional_types",
             "examples/pre_and_post_upgrade",
             "examples/primitive_types",

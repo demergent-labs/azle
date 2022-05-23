@@ -14,89 +14,85 @@ export function generateAzleIntoJsValueTrait(): Rust {
 
         impl AzleIntoJsValue for bool {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                self.into()
             }
         }
 
         impl AzleIntoJsValue for f64 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                self.into()
             }
         }
 
         impl AzleIntoJsValue for f32 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                self.into()
             }
         }
 
         impl AzleIntoJsValue for i128 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                boa_engine::bigint::JsBigInt::new(self).into()
             }
         }
 
-        // TODO I think I need to force this to a bigint always
         impl AzleIntoJsValue for i64 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                // self.into_js_value(context)
                 boa_engine::JsValue::BigInt(self.into())
             }
         }
 
         impl AzleIntoJsValue for i32 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                self.into()
             }
         }
 
         impl AzleIntoJsValue for i16 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                self.into()
             }
         }
 
         impl AzleIntoJsValue for i8 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                self.into()
             }
         }
 
         impl AzleIntoJsValue for String {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                self.into()
             }
         }
 
         impl AzleIntoJsValue for u128 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                boa_engine::bigint::JsBigInt::new(self).into()
             }
         }
 
-        // TODO I think I need to force this to a bigint always
         impl AzleIntoJsValue for u64 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                // self.into_js_value(context)
                 boa_engine::JsValue::BigInt(self.into())
             }
         }
 
         impl AzleIntoJsValue for u32 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                self.into()
             }
         }
 
         impl AzleIntoJsValue for u16 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                self.into()
             }
         }
 
         impl AzleIntoJsValue for u8 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into_js_value(context)
+                self.into()
             }
         }
 
@@ -155,7 +151,7 @@ export function generateAzleIntoJsValueTrait(): Rust {
 
         impl AzleIntoJsValue for ic_cdk::export::Principal {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.to_text().into_js_value(context)
+                self.to_text().into()
             }
         }
 
