@@ -151,7 +151,18 @@ export function generateAzleIntoJsValueTrait(): Rust {
 
         impl AzleIntoJsValue for ic_cdk::export::Principal {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.to_text().into()
+                let exports_js_value = context.eval("exports").unwrap();
+                let exports_js_object = exports_js_value.as_object().unwrap();
+
+                let principal_class_js_value = exports_js_object.get("Principal", context).unwrap();
+                let principal_class_js_object = principal_class_js_value.as_object().unwrap();
+
+                let from_text_js_value = principal_class_js_object.get("fromText", context).unwrap();
+                let from_text_js_object = from_text_js_value.as_object().unwrap();
+
+                let principal_js_value = from_text_js_object.call(&principal_class_js_value, &[self.to_text().into()], context).unwrap();
+
+                principal_js_value
             }
         }
 

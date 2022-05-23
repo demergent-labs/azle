@@ -276,10 +276,35 @@ export function generateAzleTryFromJsValueTrait(): Rust {
         }
         
         impl AzleTryFromJsValue<ic_cdk::export::Principal> for boa_engine::JsValue {
-            fn azle_try_from_js_value(self, _: &mut boa_engine::Context) -> Result<ic_cdk::export::Principal, AzleTryFromJsValueError> {
-                match self.as_string() {
-                    Some(value) => Ok(ic_cdk::export::Principal::from_text(value.to_string()).unwrap()),
-                    None => Err(AzleTryFromJsValueError("JsValue is not a string".to_string()))
+            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::export::Principal, AzleTryFromJsValueError> {
+                match self.as_object() {
+                    Some(principal_js_object) => {
+                        match principal_js_object.get("toText", context) {
+                            Ok(principal_to_text_function_js_value) => {
+                                match principal_to_text_function_js_value.as_object() {
+                                    Some(principal_to_text_function_js_object) => {
+                                        match principal_to_text_function_js_object.call(&self, &[], context) {
+                                            Ok(principal_string_js_value) => {                        
+                                                match principal_string_js_value.as_string() {
+                                                    Some(principal_js_string) => {
+                                                        match ic_cdk::export::Principal::from_text(principal_js_string.to_string()) {
+                                                            Ok(principal) => Ok(principal),
+                                                            Err(err) => Err(AzleTryFromJsValueError(err.to_string()))
+                                                        }
+                                                    },
+                                                    None => Err(AzleTryFromJsValueError("JsValue is not a string".to_string()))
+                                                }
+                                            },
+                                            Err(err) => Err(AzleTryFromJsValueError("principal_to_text_function_js_object.call failed".to_string()))
+                                        }
+                                    },
+                                    None => Err(AzleTryFromJsValueError("JsValue is not an object".to_string()))
+                                }
+                            },
+                            Err(err) => Err(AzleTryFromJsValueError("principal_js_object.get(\\"toText\\", context) failed".to_string()))
+                        }
+                    },
+                    None => Err(AzleTryFromJsValueError("JsValue is not an object".to_string()))
                 }
             }
         }
