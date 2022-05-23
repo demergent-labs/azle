@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "hello_world": {
+            "type": "custom",
+            "build": "npx azle hello_world",
+            "root": "src",
+            "ts": "src/hello_world.ts",
+            "candid": "src/hello_world.did",
+            "wasm": "target/wasm32-unknown-unknown/release/hello_world.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/hello_world"
+            }
+        }
+    }
+}
