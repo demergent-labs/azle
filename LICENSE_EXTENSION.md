@@ -37,3 +37,4 @@ Your electronic signature will be considered final once the commit is included i
 | Dan Steren | dansteren | United States | March 14, 2022 |
 | Radu Cazacu | Raduc4 | Moldova | March 24, 2022 |
 | Tarek Mouawad | tarek-eg | Germany | March 31, 2022 |
+| Quint Daenen | di-wu | Belgium | May 21, 2022 |
