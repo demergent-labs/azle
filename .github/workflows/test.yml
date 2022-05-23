@@ -67,7 +67,7 @@ jobs:
             "examples/management_canister",
             "examples/motoko_examples/calc",
             "examples/motoko_examples/counter",
-            "examples/motoko_examples/echo"
+            "examples/motoko_examples/echo",
             "examples/motoko_examples/quicksort",
             "examples/motoko_examples/whoami",
             "examples/optional_types",
