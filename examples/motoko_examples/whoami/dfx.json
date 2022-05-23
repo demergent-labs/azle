@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "whoami": {
+            "type": "custom",
+            "build": "npx azle whoami",
+            "root": "src",
+            "ts": "src/whoami.ts",
+            "candid": "src/whoami.did",
+            "wasm": "target/wasm32-unknown-unknown/release/whoami.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/whoami"
+            }
+        }
+    }
+}
