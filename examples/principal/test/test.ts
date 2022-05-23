@@ -63,6 +63,29 @@ const tests: Test[] = [
             };
         }
     },
+    {
+        name: 'principal_in_record',
+        test: async () => {
+            const result = await principal_canister.principal_in_record();
+
+            return {
+                ok: result.id.toText() === 'aaaaa-aa'
+            };
+        }
+    },
+    {
+        name: 'principal_in_variant',
+        test: async () => {
+            const result = await principal_canister.principal_in_variant();
+
+            return {
+                ok: (
+                    'WaitingOn' in result &&
+                    result.WaitingOn.toText() === 'aaaaa-aa'
+                )
+            };
+        }
+    },
     ...from_hex_tests,
     ...from_text_tests,
     ...from_uint8array_tests,
@@ -74,21 +97,240 @@ const tests: Test[] = [
 run_tests(tests);
 
 function get_from_hex_tests(): Test[] {
-    return [];
+    return [
+        {
+            name: 'principal_from_hex aaaaa-aa',
+            test: async () => {
+                const principal = Principal.fromText('aaaaa-aa');
+    
+                const result = await principal_canister.principal_from_hex(principal.toHex());
+    
+                return {
+                    ok: result.toHex() === principal.toHex()
+                };
+            }
+        },
+        {
+            name: 'principal_from_hex rrkah-fqaaa-aaaaa-aaaaq-cai',
+            test: async () => {
+                const principal = Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
+    
+                const result = await principal_canister.principal_from_hex(principal.toHex());
+    
+                return {
+                    ok: result.toHex() === principal.toHex()
+                };
+            }
+        },
+        {
+            name: 'principal_from_hex ryjl3-tyaaa-aaaaa-aaaba-cai',
+            test: async () => {
+                const principal = Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai');
+    
+                const result = await principal_canister.principal_from_hex(principal.toHex());
+    
+                return {
+                    ok: result.toHex() === principal.toHex()
+                };
+            }
+        },
+        {
+            name: 'principal_from_hex jiyou-fiaaa-aaaam-aad6q-cai',
+            test: async () => {
+                const principal = Principal.fromText('jiyou-fiaaa-aaaam-aad6q-cai');
+    
+                const result = await principal_canister.principal_from_hex(principal.toHex());
+    
+                return {
+                    ok: result.toHex() === principal.toHex()
+                };
+            }
+        },
+        {
+            name: 'principal_from_hex jqklt-hiaaa-aaaam-aaeba-cai',
+            test: async () => {
+                const principal = Principal.fromText('jqklt-hiaaa-aaaam-aaeba-cai');
+    
+                const result = await principal_canister.principal_from_hex(principal.toHex());
+    
+                return {
+                    ok: result.toHex() === principal.toHex()
+                };
+            }
+        },
+        {
+            name: 'principal_from_hex qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            test: async () => {
+                const principal = Principal.fromText('qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe');
+    
+                const result = await principal_canister.principal_from_hex(principal.toHex());
+    
+                return {
+                    ok: result.toHex() === principal.toHex()
+                };
+            }
+        }
+    ];
 }
 
 function get_from_text_tests(): Test[] {
-    return [];
+    return [
+        {
+            name: 'principal_from_text aaaaa-aa',
+            test: async () => {
+                const principal = Principal.fromText('aaaaa-aa');
+    
+                const result = await principal_canister.principal_from_text(principal.toText());
+    
+                return {
+                    ok: result.toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_from_text rrkah-fqaaa-aaaaa-aaaaq-cai',
+            test: async () => {
+                const principal = Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
+    
+                const result = await principal_canister.principal_from_text(principal.toText());
+    
+                return {
+                    ok: result.toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_from_text ryjl3-tyaaa-aaaaa-aaaba-cai',
+            test: async () => {
+                const principal = Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai');
+    
+                const result = await principal_canister.principal_from_text(principal.toText());
+    
+                return {
+                    ok: result.toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_from_text jiyou-fiaaa-aaaam-aad6q-cai',
+            test: async () => {
+                const principal = Principal.fromText('jiyou-fiaaa-aaaam-aad6q-cai');
+    
+                const result = await principal_canister.principal_from_text(principal.toText());
+    
+                return {
+                    ok: result.toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_from_text jqklt-hiaaa-aaaam-aaeba-cai',
+            test: async () => {
+                const principal = Principal.fromText('jqklt-hiaaa-aaaam-aaeba-cai');
+    
+                const result = await principal_canister.principal_from_text(principal.toText());
+    
+                return {
+                    ok: result.toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_from_text qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            test: async () => {
+                const principal = Principal.fromText('qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe');
+    
+                const result = await principal_canister.principal_from_text(principal.toText());
+    
+                return {
+                    ok: result.toText() === principal.toText()
+                };
+            }
+        }
+    ];
 }
 
 function get_from_uint8array_tests(): Test[] {
-    return [];
+    return [
+        {
+            name: 'principal_from_uint8array aaaaa-aa',
+            test: async () => {
+                const principal = Principal.fromText('aaaaa-aa');
+    
+                const result = await principal_canister.principal_from_uint8array(Array.from(principal.toUint8Array()));
+    
+                return {
+                    ok: result.toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_from_uint8array rrkah-fqaaa-aaaaa-aaaaq-cai',
+            test: async () => {
+                const principal = Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
+    
+                const result = await principal_canister.principal_from_uint8array(Array.from(principal.toUint8Array()));
+    
+                return {
+                    ok: result.toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_from_uint8array ryjl3-tyaaa-aaaaa-aaaba-cai',
+            test: async () => {
+                const principal = Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai');
+    
+                const result = await principal_canister.principal_from_uint8array(Array.from(principal.toUint8Array()));
+    
+                return {
+                    ok: result.toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_from_uint8array jiyou-fiaaa-aaaam-aad6q-cai',
+            test: async () => {
+                const principal = Principal.fromText('jiyou-fiaaa-aaaam-aad6q-cai');
+    
+                const result = await principal_canister.principal_from_uint8array(Array.from(principal.toUint8Array()));
+    
+                return {
+                    ok: result.toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_from_uint8array jqklt-hiaaa-aaaam-aaeba-cai',
+            test: async () => {
+                const principal = Principal.fromText('jqklt-hiaaa-aaaam-aaeba-cai');
+    
+                const result = await principal_canister.principal_from_uint8array(Array.from(principal.toUint8Array()));
+    
+                return {
+                    ok: result.toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_from_uint8array qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            test: async () => {
+                const principal = Principal.fromText('qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe');
+    
+                const result = await principal_canister.principal_from_uint8array(Array.from(principal.toUint8Array()));
+    
+                return {
+                    ok: result.toText() === principal.toText()
+                };
+            }
+        }
+    ];
 }
 
 function get_to_hex_tests(): Test[] {
     return [
         {
-            name: 'to_hex aaaaa-aa',
+            name: 'principal_to_hex aaaaa-aa',
             test: async () => {
                 const principal = Principal.fromText('aaaaa-aa');
     
@@ -100,7 +342,7 @@ function get_to_hex_tests(): Test[] {
             }
         },
         {
-            name: 'to_hex rrkah-fqaaa-aaaaa-aaaaq-cai',
+            name: 'principal_to_hex rrkah-fqaaa-aaaaa-aaaaq-cai',
             test: async () => {
                 const principal = Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
     
@@ -112,7 +354,7 @@ function get_to_hex_tests(): Test[] {
             }
         },
         {
-            name: 'to_hex ryjl3-tyaaa-aaaaa-aaaba-cai',
+            name: 'principal_to_hex ryjl3-tyaaa-aaaaa-aaaba-cai',
             test: async () => {
                 const principal = Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai');
     
@@ -124,7 +366,7 @@ function get_to_hex_tests(): Test[] {
             }
         },
         {
-            name: 'to_hex jiyou-fiaaa-aaaam-aad6q-cai',
+            name: 'principal_to_hex jiyou-fiaaa-aaaam-aad6q-cai',
             test: async () => {
                 const principal = Principal.fromText('jiyou-fiaaa-aaaam-aad6q-cai');
     
@@ -136,7 +378,7 @@ function get_to_hex_tests(): Test[] {
             }
         },
         {
-            name: 'to_hex jqklt-hiaaa-aaaam-aaeba-cai',
+            name: 'principal_to_hex jqklt-hiaaa-aaaam-aaeba-cai',
             test: async () => {
                 const principal = Principal.fromText('jqklt-hiaaa-aaaam-aaeba-cai');
     
@@ -148,7 +390,7 @@ function get_to_hex_tests(): Test[] {
             }
         },
         {
-            name: 'to_hex qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            name: 'principal_to_hex qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
             test: async () => {
                 const principal = Principal.fromText('qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe');
     
@@ -163,9 +405,155 @@ function get_to_hex_tests(): Test[] {
 }
 
 function get_to_text_tests(): Test[] {
-    return [];
+    return [
+        {
+            name: 'principal_to_text aaaaa-aa',
+            test: async () => {
+                const principal = Principal.fromText('aaaaa-aa');
+    
+                const result = await principal_canister.principal_to_text(principal);
+    
+                return {
+                    ok: result === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_to_text rrkah-fqaaa-aaaaa-aaaaq-cai',
+            test: async () => {
+                const principal = Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
+    
+                const result = await principal_canister.principal_to_text(principal);
+    
+                return {
+                    ok: result === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_to_text ryjl3-tyaaa-aaaaa-aaaba-cai',
+            test: async () => {
+                const principal = Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai');
+    
+                const result = await principal_canister.principal_to_text(principal);
+    
+                return {
+                    ok: result === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_to_text jiyou-fiaaa-aaaam-aad6q-cai',
+            test: async () => {
+                const principal = Principal.fromText('jiyou-fiaaa-aaaam-aad6q-cai');
+    
+                const result = await principal_canister.principal_to_text(principal);
+    
+                return {
+                    ok: result === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_to_text jqklt-hiaaa-aaaam-aaeba-cai',
+            test: async () => {
+                const principal = Principal.fromText('jqklt-hiaaa-aaaam-aaeba-cai');
+    
+                const result = await principal_canister.principal_to_text(principal);
+    
+                return {
+                    ok: result === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_to_text qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            test: async () => {
+                const principal = Principal.fromText('qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe');
+    
+                const result = await principal_canister.principal_to_text(principal);
+    
+                return {
+                    ok: result === principal.toText()
+                };
+            }
+        }
+    ];
 }
 
 function get_to_uint8array_tests(): Test[] {
-    return [];
+    return [
+        {
+            name: 'principal_to_uint8array aaaaa-aa',
+            test: async () => {
+                const principal = Principal.fromText('aaaaa-aa');
+    
+                const result = await principal_canister.principal_to_uint8array(principal);
+    
+                return {
+                    ok: Principal.fromUint8Array(Uint8Array.from(result)).toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_to_uint8array rrkah-fqaaa-aaaaa-aaaaq-cai',
+            test: async () => {
+                const principal = Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
+    
+                const result = await principal_canister.principal_to_uint8array(principal);
+    
+                return {
+                    ok: Principal.fromUint8Array(Uint8Array.from(result)).toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_to_uint8array ryjl3-tyaaa-aaaaa-aaaba-cai',
+            test: async () => {
+                const principal = Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai');
+    
+                const result = await principal_canister.principal_to_uint8array(principal);
+    
+                return {
+                    ok: Principal.fromUint8Array(Uint8Array.from(result)).toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_to_uint8array jiyou-fiaaa-aaaam-aad6q-cai',
+            test: async () => {
+                const principal = Principal.fromText('jiyou-fiaaa-aaaam-aad6q-cai');
+    
+                const result = await principal_canister.principal_to_uint8array(principal);
+    
+                return {
+                    ok: Principal.fromUint8Array(Uint8Array.from(result)).toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_to_uint8array jqklt-hiaaa-aaaam-aaeba-cai',
+            test: async () => {
+                const principal = Principal.fromText('jqklt-hiaaa-aaaam-aaeba-cai');
+    
+                const result = await principal_canister.principal_to_uint8array(principal);
+    
+                return {
+                    ok: Principal.fromUint8Array(Uint8Array.from(result)).toText() === principal.toText()
+                };
+            }
+        },
+        {
+            name: 'principal_to_uint8array qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            test: async () => {
+                const principal = Principal.fromText('qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe');
+    
+                const result = await principal_canister.principal_to_uint8array(principal);
+    
+                return {
+                    ok: Principal.fromUint8Array(Uint8Array.from(result)).toText() === principal.toText()
+                };
+            }
+        }
+    ];
 }
