@@ -30,8 +30,8 @@ jobs:
       example_directories: ${{ steps.example_directories.outputs.example_directories }}
     steps:
       - uses: actions/checkout@v2
+        if: contains(github.head_ref, 'release--')
         with:
-          if: contains(github.head_ref, 'release--')
           ref: ${{ github.event.pull_request.head.ref }} # This is necessary for this job to be able to commit and push to the origin remote properly
           token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }} # A personal GitHub token is setup as a secret so that committing and pushing to GitHub from the Action will trigger another workflow
       - uses: actions/setup-node@v3
