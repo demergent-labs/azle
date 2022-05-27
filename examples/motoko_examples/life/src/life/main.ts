@@ -8,8 +8,8 @@ const state = (() => {
     return State.create(64, () => rand.next() % 2 === 1);
 })();
 
-let cur = new Grid.Grid(state);
-let nxt = new Grid.Grid(State.create(cur.size(), () => false));
+let cur = Grid.grid(state);
+let nxt = Grid.grid(State.create(cur.size(), () => false));
 
 export function next(): Update<string> {
     cur.next(nxt);
