@@ -5,7 +5,7 @@
       "build": "npx azle life",
       "root": "src/life",
       "ts": "src/life/main.ts",
-      "candid": "src/life/life.did",
+      "candid": "src/declarations/life.did",
       "wasm": "target/wasm32-unknown-unknown/release/life.wasm",
       "declarations": {
         "output": "src/declarations"

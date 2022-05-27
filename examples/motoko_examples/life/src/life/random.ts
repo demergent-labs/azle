@@ -7,7 +7,7 @@ export type RandomNumberGenerator = {
 export function create(): RandomNumberGenerator {
     return (() => {
         const modulus: nat = 0x7fffffffn;
-        let state = 1;
+        let state: nat32 = 1;
         return {
             next() {
                 state = Number((BigInt(state) * 48271n) % modulus);
