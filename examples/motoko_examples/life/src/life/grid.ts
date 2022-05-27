@@ -52,7 +52,7 @@ export function grid(state: State.State) {
             nextCell(i: number, j: number): State.Cell {
                 const l: number = this.living(i, j);
                 if (this.get(i, j)) {
-                    return l === 2 ?? l === 3;
+                    return l === 2 || l === 3;
                 } else {
                     return l === 3;
                 }
