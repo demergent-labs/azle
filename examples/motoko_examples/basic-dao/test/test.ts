@@ -174,7 +174,7 @@ const tests: Test[] = [
     prep: async () => {
       // @TODO remove the --mode=reinstall
       execSync(
-        `dfx deploy basic_dao --argument '(
+        `dfx deploy basic_dao --upgrade-unchanged --argument '(
           vec {
               record {
                   owner = principal \"${alice.getPrincipal().toString()}\";
@@ -252,7 +252,7 @@ const tests: Test[] = [
     name: 're deploy a new cansiter',
     prep: async () => {
       execSync(
-        `dfx deploy basic_dao --argument '(
+        `dfx deploy basic_dao --upgrade-unchanged --argument '(
           vec {
               record {
                   owner = principal \"${genesis.getPrincipal().toString()}\";
@@ -588,7 +588,7 @@ const tests: Test[] = [
     name: 'upgrade preserves states',
     prep: async () => {
       execSync(
-        `dfx deploy basic_dao --argument '(
+        `dfx deploy basic_dao --upgrade-unchanged --argument '(
           vec {
               record {
                   owner = principal \"${alice.getPrincipal().toString()}\";
