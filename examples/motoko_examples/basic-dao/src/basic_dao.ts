@@ -9,6 +9,10 @@ import {
   Heartbeat,
   PreUpgrade,
   PostUpgrade,
+  Stable,
+  CanisterResult,
+  Variant,
+  ok,
 } from 'azle';
 
 import {
@@ -26,7 +30,6 @@ import {
   TransferResult,
   SubmitProposalResult,
   DeductProposalSubmissionDepositResult,
-  ExecuteProposalResult,
   TransferArgs,
   VoteResult,
 } from './types';
@@ -41,13 +44,18 @@ let systemParams: SystemParams = {
   proposal_submission_deposit: { amount_e8s: 0n },
 };
 
-type StableStorage = {
+type ProposalStable = {
+  key: string;
+  value: Proposal;
+};
+
+type StableStorage = Stable<{
   installer: Principal;
-  accounts: { [key: string]: { amount_e8s: nat } };
-  proposals: { [key: string]: Proposal };
+  accounts: Account[];
+  proposals: ProposalStable[];
   nextProposalId: nat;
   systemParams: SystemParams;
-};
+}>;
 
 export function init(
   initAccounts: Account[],
@@ -61,6 +69,8 @@ export function init(
   systemParams = initSystemParams;
 }
 
+// @TODO fix this after this issue is resolved
+// https://github.com/demergent-labs/azle/issues/203
 export function* heartbeat(): Heartbeat {
   // We have to inline executeAcceptedProposals function here because of a limitaion of azle for now
   const allProposals = Object.keys(proposals).map((id) => proposals[id]);
@@ -77,14 +87,15 @@ export function* heartbeat(): Heartbeat {
     try {
       const payload = proposal.payload;
 
-      let res = yield ic.call_raw(
-        payload.canister_id,
-        payload.method,
-        payload.message,
-        0n
-      );
+      const res: CanisterResult<Variant<{ ok: null; err: null }>> =
+        yield ic.call_raw(
+          payload.canister_id,
+          payload.method,
+          payload.message,
+          0n
+        );
 
-      if ('ok' in res) {
+      if (ok(res)) {
         updateProposalState(proposal, { succeeded: null });
       } else {
         updateProposalState(proposal, { failed: res.err });
@@ -166,7 +177,7 @@ export function submitProposal(
 ): Update<SubmitProposalResult> {
   const caller = ic.caller();
   const result = deductProposalSubmissionDeposit(caller);
-  if ('ok' in result) {
+  if (ok(result)) {
     const proposal_id: nat = nextProposalId;
     nextProposalId += 1n;
 
@@ -370,16 +381,44 @@ function updateProposalState(proposal: Proposal, state: ProposalState) {
 
 export function preUpgrade(): PreUpgrade {
   ic.stableStorage<StableStorage>().installer = installer;
-  ic.stableStorage<StableStorage>().accounts = accounts;
-  ic.stableStorage<StableStorage>().proposals = proposals;
+  ic.stableStorage<StableStorage>().accounts = Object.entries(accounts).map(
+    (entry) => {
+      return {
+        owner: entry[0],
+        tokens: entry[1],
+      };
+    }
+  );
+  ic.stableStorage<StableStorage>().proposals = Object.entries(proposals).map(
+    (entry) => {
+      return {
+        key: entry[0],
+        value: entry[1],
+      };
+    }
+  );
   ic.stableStorage<StableStorage>().nextProposalId = nextProposalId;
   ic.stableStorage<StableStorage>().systemParams = systemParams;
 }
 
 export function postUpgrade(): PostUpgrade {
   installer = ic.stableStorage<StableStorage>().installer;
-  accounts = ic.stableStorage<StableStorage>().accounts;
-  proposals = ic.stableStorage<StableStorage>().proposals;
+  accounts = ic
+    .stableStorage<StableStorage>()
+    .accounts.reduce((result, entry) => {
+      return {
+        ...result,
+        [entry.owner]: entry.tokens,
+      };
+    }, {});
+  proposals = ic
+    .stableStorage<StableStorage>()
+    .proposals.reduce((result, entry) => {
+      return {
+        ...result,
+        [entry.key]: entry.value,
+      };
+    }, {});
   nextProposalId = ic.stableStorage<StableStorage>().nextProposalId;
   systemParams = ic.stableStorage<StableStorage>().systemParams;
 }

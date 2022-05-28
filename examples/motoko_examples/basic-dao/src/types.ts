@@ -19,30 +19,30 @@ export type ProposalPayload = {
 
 export type ProposalState = Variant<{
   // A failure occurred while executing the proposal
-  failed?: string;
+  failed: string;
   // The proposal is open for voting
-  open?: null;
+  open: null;
   // The proposal is currently being executed
-  executing?: null;
+  executing: null;
   // Enough "no" votes have been cast to reject the proposal, and it will not be executed
-  rejected?: null;
+  rejected: null;
   // The proposal has been successfully executed
-  succeeded?: null;
+  succeeded: null;
   // Enough "yes" votes have been cast to accept the proposal, and it will soon be executed
-  accepted?: null;
+  accepted: null;
 }>;
 export type Tokens = {
   amount_e8s: nat;
 };
 // export type TransferArgs = { to: Principal; amount: Tokens };
 export type UpdateSystemParamsPayload = {
-  transfer_fee?: Opt<Tokens>;
-  proposal_vote_threshold?: Opt<Tokens>;
-  proposal_submission_deposit?: Opt<Tokens>;
+  transfer_fee: Opt<Tokens>;
+  proposal_vote_threshold: Opt<Tokens>;
+  proposal_submission_deposit: Opt<Tokens>;
 };
 export type Vote = Variant<{
-  no?: null;
-  yes?: null;
+  no: null;
+  yes: null;
 }>;
 export type VoteArgs = {
   vote: Vote;
@@ -66,25 +66,25 @@ export type BasicDaoStableStorage = {
 };
 
 export type TransferResult = Variant<{
-  ok?: nat;
-  err?: string;
+  ok: nat;
+  err: string;
 }>;
 export type SubmitProposalResult = Variant<{
-  ok?: nat;
-  err?: string;
+  ok: nat;
+  err: string;
 }>;
 export type DeductProposalSubmissionDepositResult = Variant<{
-  ok?: null;
-  err?: string;
+  ok: null;
+  err: string;
 }>;
 export type ExecuteProposalResult = Variant<{
-  ok?: null;
-  err?: string;
+  ok: null;
+  err: string;
 }>;
 
 export type VoteResult = Variant<{
-  ok?: ProposalState;
-  err?: string;
+  ok: ProposalState;
+  err: string;
 }>;
 export type TransferArgs = {
   to: Principal;
@@ -94,7 +94,7 @@ export type TransferArgs = {
 };
 
 export function accounts_fromArray(arr: Account[]): { [key: string]: Tokens } {
-  const s: { [key: string]: Tokens } = {};
+  let s: { [key: string]: Tokens } = {};
 
   arr.forEach((account) => {
     s[account.owner] = account.tokens;
@@ -116,5 +116,5 @@ export function proposals_fromArray(arr: Proposal[]): {
   return s;
 }
 
-export const oneToken: Tokens = { amount_e8s: BigInt(10_000_000) };
-export const zeroToken: Tokens = { amount_e8s: BigInt(0) };
+export const oneToken: Tokens = { amount_e8s: 10_000_000n };
+export const zeroToken: Tokens = { amount_e8s: 0n };

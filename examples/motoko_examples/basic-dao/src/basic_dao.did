@@ -46,6 +46,11 @@ type UpdateSystemParamsPayload = record {
     "proposal_submission_deposit": opt Tokens;
 };
 
+type ProposalStable = record {
+    "key": text;
+    "value": Proposal;
+};
+
 type TransferResult = variant { "ok": nat; "err": text };
 
 type SubmitProposalResult = variant { "ok": nat; "err": text };
