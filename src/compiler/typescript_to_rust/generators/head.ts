@@ -42,6 +42,6 @@ export function generateHead(
 
         static MAIN_JS: &'static str = r#"${main_js}"#;
 
-        static PRINCIPAL_JS: &'static str = r#"${principal_js.replace(/"use strict";/g, '')}"#;
+        static PRINCIPAL_JS: &'static str = r#"${principal_js}"#;
     `;
 }

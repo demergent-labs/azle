@@ -9,6 +9,8 @@ import { getCanisterTypeAliasDeclarations } from '../typescript_to_rust/generato
 import { generateCallFunctionName } from '../typescript_to_rust/generators/call_functions/call_function_name';
 
 export async function compileTypeScriptToJavaScript(ts_path: string): Promise<JavaScript> {
+    const icCanisters: JavaScript = generateICCanisters(ts_path);
+
     const js_bundled_and_transpiled = bundle_and_transpile_ts(`
         export { Principal } from '@dfinity/principal';
 
@@ -20,13 +22,12 @@ export async function compileTypeScriptToJavaScript(ts_path: string): Promise<Ja
             }
         };
 
+        ${icCanisters}
+
         export * from './${ts_path}';
     `);
 
-    // TODO we should probably move this to bundle, that's where I think we should centralize all of the code
-    const icCanisters: JavaScript = generateICCanisters(ts_path);
-
-    return `${icCanisters}\n${js_bundled_and_transpiled}`;
+    return js_bundled_and_transpiled;
 }
 
 export function bundle_and_transpile_ts(ts: TypeScript): JavaScript {
@@ -90,7 +91,7 @@ export function bundle_from_string(ts: TypeScript): JavaScript {
 
 // TODO there is a lot of minification/transpiling etc we could do with esbuild or with swc
 // TODO we need to decide which to use for what
-export function transpile(js: JavaScript): JavaScript {
+function transpile(js: JavaScript): JavaScript {
     return swc.transformSync(js, {
         module: {
             type: 'commonjs'
