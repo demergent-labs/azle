@@ -1,19 +1,20 @@
 import * as Grid from './grid';
 import * as Random from './random';
-import * as State from './state';
+import { create, State } from './state';
 import { ic, PostUpgrade, PreUpgrade, Query, Stable, Update } from 'azle';
 
 type StableStorage = Stable<{
-    // state: State.State; // TODO: See https://github.com/demergent-labs/azle/issues/366
-    state: boolean[][];
+    state: State;
 }>;
 
 let stableStorage = ic.stableStorage<StableStorage>();
 
-stableStorage.state ??= (() => {
+stableStorage.state ??= createRandomState();
+
+function createRandomState() {
     const rand = Random.create();
-    return State.create(64, () => rand.next() % 2 === 1);
-})();
+    return create(64, () => rand.next() % 2 === 1);
+}
 
 export function preUpgrade(): PreUpgrade {
     stableStorage.state = cur.toState();
@@ -28,7 +29,7 @@ export function stableState(): Query<string> {
 }
 
 let cur = Grid.grid(stableStorage.state);
-let nxt = Grid.grid(State.create(cur.size(), () => false));
+let nxt = Grid.grid(create(cur.size(), () => false));
 
 export function next(): Update<string> {
     cur.next(nxt);
