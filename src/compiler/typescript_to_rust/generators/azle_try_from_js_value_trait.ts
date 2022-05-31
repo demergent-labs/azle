@@ -295,7 +295,18 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                                                     None => Err(AzleTryFromJsValueError("JsValue is not a string".to_string()))
                                                 }
                                             },
-                                            Err(err) => Err(AzleTryFromJsValueError("principal_to_text_function_js_object.call failed".to_string()))
+                                            Err(err_js_value) => {
+                                                let err_js_object = err_js_value.as_object().unwrap();
+
+                                                let err_name_js_value = err_js_object.get("name", context).unwrap();
+                                                let err_message_js_value = err_js_object.get("message", context).unwrap();
+
+                                                Err(AzleTryFromJsValueError(format!(
+                                                    "{name}: {message}",
+                                                    name = err_name_js_value.as_string().unwrap().to_string(),
+                                                    message = err_message_js_value.as_string().unwrap().to_string()
+                                                )))
+                                            }
                                         }
                                     },
                                     None => Err(AzleTryFromJsValueError("JsValue is not an object".to_string()))

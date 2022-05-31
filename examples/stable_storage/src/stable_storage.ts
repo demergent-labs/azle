@@ -33,16 +33,16 @@ type Child = {
 };
 
 type Country = Variant<{
-    USA?: null;
-    UK?: null;
-    CANADA?: null
+    USA: null;
+    UK: null;
+    CANADA: null
 }>;
 
 type Reaction = Variant<{
-    Fire?: null;
-    Great?: null;
-    Fireworks?: Fireworks;
-    Emotion?: Emotion;
+    Fire: null;
+    Great: null;
+    Fireworks: Fireworks;
+    Emotion: Emotion;
 }>;
 
 type Fireworks = {
@@ -51,8 +51,8 @@ type Fireworks = {
 };
 
 type Emotion = Variant<{
-    Happy?: null;
-    Sad?: null;
+    Happy: null;
+    Sad: null;
 }>;
 
 type StableStorage = Stable<{
@@ -96,7 +96,7 @@ export function init(): Init {
     ic.stableStorage<StableStorage>().stableFloat64 = Math.E;
     ic.stableStorage<StableStorage>().stableFloat32 = Math.PI;
     ic.stableStorage<StableStorage>().stableString = 'Hello there';
-    ic.stableStorage<StableStorage>().stablePrincipal = 'rrkah-fqaaa-aaaaa-aaaaq-cai';
+    ic.stableStorage<StableStorage>().stablePrincipal = Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
     ic.stableStorage<StableStorage>().stableUser = {
         id: '0',
         children: [

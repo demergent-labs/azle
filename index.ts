@@ -70,7 +70,7 @@ type ic = {
         payment: nat
     ) => CanisterResult<nat8[]>;
     // TODO also create call_raw_128
-    caller: () => string;
+    caller: () => Principal;
     canisters: {
         [canisterName: string]: <T>(canisterId: Principal) => T;
     };
@@ -167,7 +167,5 @@ export function attempt<T>(callback: () => AzleResult<T>): AzleResult<T> {
 
 // TODO type this more strictly
 export type Func<T extends (...args: any[]) => Query<any> | Update<any> | Oneway<any>> = [Principal, string];
-
-exports.Principal = Principal;
 
 export { Principal } from '@dfinity/principal';

@@ -309,7 +309,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                                 return `
                                     "${callFunctionInfo.functionName}" => {
                                         let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
-                                        let canister_id_string = canister_id_js_value.as_string().unwrap().to_string();
+                                        let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
 
                                         ${callFunctionInfo.params.map((param, index) => {
                                             return `
@@ -319,7 +319,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                                         }).join('\n')}
 
                                         let call_result = ${callFunctionInfo.functionName}(
-                                            canister_id_string,
+                                            canister_id_principal,
                                             ${callFunctionInfo.params.map((param) => {
                                                 return param.paramName;
                                             }).join(',\n')}

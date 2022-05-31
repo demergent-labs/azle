@@ -5,7 +5,6 @@ import {
     Variant
 } from 'azle';
 
-// TODO test sha224? js-sha256 is supposedly broken
 // TODO go remove all of the custom code that we don't need anymore
 
 type User = {

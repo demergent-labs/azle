@@ -7,7 +7,7 @@ export function generateIcObjectFunctionId(): Rust {
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            Ok(ic_cdk::api::id().into_js_value())
+            Ok(ic_cdk::api::id().azle_into_js_value(_context))
         }
     `;
 }
