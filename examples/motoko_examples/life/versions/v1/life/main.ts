@@ -4,7 +4,8 @@ import * as State from './state';
 import { ic, PostUpgrade, PreUpgrade, Query, Stable, Update } from 'azle';
 
 type StableStorage = Stable<{
-    state: State.State;
+    // state: State.State; // TODO: See https://github.com/demergent-labs/azle/issues/366
+    state: boolean[][];
 }>;
 
 let stableStorage = ic.stableStorage<StableStorage>();
