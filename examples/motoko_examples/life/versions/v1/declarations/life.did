@@ -1,0 +1,7 @@
+type State = variant { "v1": vec vec bool };
+
+service: {
+    "stableState": () -> (text) query;
+    "current": () -> (text) query;
+    "next": () -> (text);
+}
