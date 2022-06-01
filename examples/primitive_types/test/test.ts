@@ -297,6 +297,26 @@ const tests: Test[] = [
                 ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
             };
         }
+    },
+    {
+        name: 'getNull',
+        test: async () => {
+            const result = await primitive_types_canister.getNull();
+
+            return {
+                ok: result === null
+            };
+        }
+    },
+    {
+        name: 'printNull',
+        test: async () => {
+            const result = await primitive_types_canister.printNull(null);
+
+            return {
+                ok: result === null
+            };
+        }
     }
 ];
 

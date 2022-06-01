@@ -382,6 +382,10 @@ function getImplItemMethodReturnTypeName(implItemMethod: ImplItemMethod): string
         return '';
     }
     else {
+        if (returnTypeAst.path === undefined) {
+            return '';
+        }
+
         return returnTypeAst.path.segments.map((segment: any) => segment.ident).join('::');
         // return returnTypeAst.path.segments[0].ident;
     }

@@ -12,7 +12,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
         // TODO not sure but I think this is correct
         impl AzleTryFromJsValue<()> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<(), AzleTryFromJsValueError> {
-                Ok(())
+                Ok(()) // TODO should we do an as_null or similar?
             }
         }
         
