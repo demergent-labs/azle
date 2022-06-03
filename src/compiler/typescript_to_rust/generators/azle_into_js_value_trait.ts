@@ -167,5 +167,11 @@ export function generateAzleIntoJsValueTrait(): Rust {
                 boa_engine::JsValue::BigInt(boa_engine::bigint::JsBigInt::from_string(&self.0.to_string()).unwrap())
             }
         }
+
+        impl AzleIntoJsValue for ic_cdk::export::candid::Reserved {
+            fn azle_into_js_value(self, _: &mut boa_engine::Context) -> boa_engine::JsValue {
+                boa_engine::JsValue::Undefined
+            }
+        }
     `;
 }

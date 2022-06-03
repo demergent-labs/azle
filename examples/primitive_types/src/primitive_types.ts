@@ -13,6 +13,7 @@ import {
     float64,
     float32,
     Principal,
+    reserved,
     ic
 } from 'azle';
 
@@ -132,4 +133,17 @@ export function getPrincipal(): Query<Principal> {
 export function printPrincipal(principal: Principal): Query<Principal> {
     ic.print(typeof principal);
     return principal;
+}
+
+export function getReserved(reserved: reserved): Query<reserved> {
+    return reserved;
+}
+
+export function printReserved(reserved: reserved): Query<reserved> {
+    console.log(typeof reserved);
+    return reserved;
+}
+
+export function skipReserved(_: reserved, message: string): Query<string> {
+    return message;
 }
