@@ -139,6 +139,5 @@ export function getNull(): Query<null> {
 
 export function printNull(_null: null): Query<null> {
     console.log(typeof _null);
-    console.log(_null === null)
     return _null;
 }
