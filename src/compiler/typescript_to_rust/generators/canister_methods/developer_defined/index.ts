@@ -1,21 +1,11 @@
-import {
-    parseFile,
-    printAst
-} from 'azle-syn';
+import { parseFile, printAst } from 'azle-syn';
 import {
     getImplItemMethods,
     getImpls
 } from '../../../ast_utilities/miscellaneous';
-import {
-    AST,
-    Fn,
-    ImplItemMethod
-} from '../../../ast_utilities/types';
+import { AST, Fn, ImplItemMethod } from '../../../ast_utilities/types';
 import { generateReturnValueHandler } from './return_value_handler';
-import {
-    CallFunctionInfo,
-    Rust
-} from '../../../../../types';
+import { Rust } from '../../../../../types';
 
 export async function generateCanisterMethodsDeveloperDefined(
     rustCandidTypes: Rust,
@@ -69,10 +59,7 @@ function generateItemFnFromImplItemMethod(
 ): Fn {
     const inputsWithoutSelfParam = implItemMethod.inputs.slice(1);
 
-    const body: Rust = getBody(
-        implItemMethod,
-        inputsWithoutSelfParam
-    );
+    const body: Rust = getBody(implItemMethod, inputsWithoutSelfParam);
     const bodyAst: AST = JSON.parse(parseFile(body));
 
     if (bodyAst.items[0]?.fn === undefined) {
@@ -108,13 +95,15 @@ function getBody(implItemMethod: ImplItemMethod, inputs: any[]): Rust {
 
                 let ${functionName}_js_value = exports_js_object.get("${functionName}", &mut boa_context).unwrap();
                 let ${functionName}_js_object = ${functionName}_js_value.as_object().unwrap();
-            
+
                 let _azle_return_value = ${functionName}_js_object.call(
                     &boa_engine::JsValue::Null,
                     &[
-                        ${inputs.map((input) => {
-                            return `${input.typed.pat.ident.ident}.azle_into_js_value(&mut boa_context)`;
-                        }).join(',')}
+                        ${inputs
+                            .map((input) => {
+                                return `${input.typed.pat.ident.ident}.azle_into_js_value(&mut boa_context)`;
+                            })
+                            .join(',')}
                     ],
                     &mut boa_context
                 ).unwrap();
@@ -140,7 +129,7 @@ function getBody(implItemMethod: ImplItemMethod, inputs: any[]): Rust {
 //                 return `${input.typed.pat.ident.ident} = serde_json::to_string(&${input.typed.pat.ident.ident}).unwrap()`;
 //             }).join(',')}
 //         )).unwrap();
-    
+
 //         ${returnValueHandler}
 
 //     }
@@ -150,7 +139,7 @@ function getBody(implItemMethod: ImplItemMethod, inputs: any[]): Rust {
 // fn dummy() {
 //     BOA_CONTEXT.with(|boa_context_ref_cell| {
 //         let mut boa_context = boa_context_ref_cell.borrow_mut();
-    
+
 //         let return_value = boa_context.eval(format!(
 //             "
 //                 ${implItemMethod.ident}(${inputs.map((input) => {
@@ -161,7 +150,7 @@ function getBody(implItemMethod: ImplItemMethod, inputs: any[]): Rust {
 //                 return `${input.typed.pat.ident.ident} = serde_json::to_string(&${input.typed.pat.ident.ident}).unwrap()`;
 //             }).join(',')}
 //         )).unwrap();
-    
+
 //         ${returnValueHandler}
 //     })
 // }
@@ -172,13 +161,13 @@ function getAttrs(
     updateMethodFunctionNames: string[]
 ): any[] {
     const queryMacroString = `
-        #[ic_cdk_macros::query]    
+        #[ic_cdk_macros::query]
         fn dummy() {}
     `;
     const queryMacroAst: AST = JSON.parse(parseFile(queryMacroString));
 
     const updateMacroString = `
-        #[ic_cdk_macros::update]    
+        #[ic_cdk_macros::update]
         fn dummy() {}
     `;
     const updateMacroAst: AST = JSON.parse(parseFile(updateMacroString));
@@ -195,7 +184,9 @@ function getAttrs(
         implItemMethod.ident,
         queryMethodFunctionNames,
         updateMethodFunctionNames
-    ) === 'query' ? queryMacroAst.items[0].fn.attrs : updateMacroAst.items[0].fn.attrs;
+    ) === 'query'
+        ? queryMacroAst.items[0].fn.attrs
+        : updateMacroAst.items[0].fn.attrs;
 }
 
 function queryOrUpdate(
@@ -211,7 +202,9 @@ function queryOrUpdate(
         return 'update';
     }
 
-    throw new Error(`Function ${functionName} is neither a query nor update function`);
+    throw new Error(
+        `Function ${functionName} is neither a query nor update function`
+    );
 }
 
 function getOutput(implItemMethod: ImplItemMethod): any | undefined {
