@@ -215,5 +215,28 @@ function queryOrUpdate(
 }
 
 function getOutput(implItemMethod: ImplItemMethod): any | undefined {
-    return implItemMethod.output?.path.segments[0].arguments.angle_bracketed.args[0].type.tuple.elems[0];
+    // TODO make more declarative
+    const returnType = implItemMethod.output?.path.segments[0].arguments.angle_bracketed.args[0].type.tuple.elems[0];
+
+    if (
+        returnType !== undefined &&
+        returnType.tuple !== undefined &&
+        returnType.tuple.elems.length === 0
+    ) {
+        return {
+            ...returnType,
+            tuple: {
+                elems: [
+                    {
+                        tuple: {
+                            elems: []
+                        }
+                    }
+                ]
+            }
+        };
+    }
+    else {
+        return returnType;
+    }
 }
