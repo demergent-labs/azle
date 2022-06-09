@@ -67,14 +67,6 @@ export function generateCandidTypeInfo(
             typeNode as tsc.TupleTypeNode
         );
     }
-    
-    if (typeNode.kind === tsc.SyntaxKind.AnyKeyword) {
-        return {
-            text: 'reserved',
-            typeName: 'reserved',
-            typeClass: 'primitive'
-        };
-    }
 
     throw new Error(`Could not generate Candid type name for TypeScript typeNode: ${typeNode.kind}`);
 }
@@ -242,6 +234,14 @@ function generateCandidTypeInfoForTypeReference(
             return {
                 text: 'principal',
                 typeName: 'Principal',
+                typeClass: 'primitive'
+            };
+        }
+                
+        if (typeName === 'reserved') {
+            return {
+                text: 'reserved',
+                typeName: 'reserved',
                 typeClass: 'primitive'
             };
         }

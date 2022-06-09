@@ -135,8 +135,8 @@ export function printPrincipal(principal: Principal): Query<Principal> {
     return principal;
 }
 
-export function getReserved(reserved: reserved): Query<reserved> {
-    return reserved;
+export function getReserved(): Query<reserved> {
+    return 'anything';
 }
 
 export function printReserved(reserved: reserved): Query<reserved> {

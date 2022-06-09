@@ -13,6 +13,7 @@ export interface _SERVICE {
   'getNat64' : () => Promise<bigint>,
   'getNat8' : () => Promise<number>,
   'getPrincipal' : () => Promise<Principal>,
+  'getReserved' : () => Promise<any>,
   'printFloat32' : (arg_0: number) => Promise<number>,
   'printFloat64' : (arg_0: number) => Promise<number>,
   'printInt' : (arg_0: bigint) => Promise<bigint>,
@@ -26,4 +27,6 @@ export interface _SERVICE {
   'printNat64' : (arg_0: bigint) => Promise<bigint>,
   'printNat8' : (arg_0: number) => Promise<number>,
   'printPrincipal' : (arg_0: Principal) => Promise<Principal>,
+  'printReserved' : (arg_0: any) => Promise<any>,
+  'skipReserved' : (arg_0: any, arg_1: string) => Promise<string>,
 }

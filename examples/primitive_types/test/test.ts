@@ -297,6 +297,42 @@ const tests: Test[] = [
                 ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
             };
         }
+    },
+    {
+        name: 'getReserved',
+        test: async () => {
+            const result = await primitive_types_canister.getReserved();
+
+            return {
+                ok: result === null
+            };
+        }
+    },
+    {
+        name: 'printReserved',
+        test: async () => {
+            const result = await primitive_types_canister.printReserved(
+                Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
+            );
+
+            return {
+                ok: result === null
+            };
+        }
+    },
+    {
+        name: 'skipReserved',
+        test: async () => {
+            const message = 'Anything';
+            const result = await primitive_types_canister.skipReserved(
+                0,
+                message
+            );
+
+            return {
+                ok: result === message
+            };
+        }
     }
 ];
 

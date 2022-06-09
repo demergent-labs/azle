@@ -13,6 +13,7 @@ export const idlFactory = ({ IDL }) => {
     'getNat64' : IDL.Func([], [IDL.Nat64], ['query']),
     'getNat8' : IDL.Func([], [IDL.Nat8], ['query']),
     'getPrincipal' : IDL.Func([], [IDL.Principal], ['query']),
+    'getReserved' : IDL.Func([], [IDL.Reserved], ['query']),
     'printFloat32' : IDL.Func([IDL.Float32], [IDL.Float32], ['query']),
     'printFloat64' : IDL.Func([IDL.Float64], [IDL.Float64], ['query']),
     'printInt' : IDL.Func([IDL.Int], [IDL.Int], ['query']),
@@ -26,6 +27,8 @@ export const idlFactory = ({ IDL }) => {
     'printNat64' : IDL.Func([IDL.Nat64], [IDL.Nat64], ['query']),
     'printNat8' : IDL.Func([IDL.Nat8], [IDL.Nat8], ['query']),
     'printPrincipal' : IDL.Func([IDL.Principal], [IDL.Principal], ['query']),
+    'printReserved' : IDL.Func([IDL.Reserved], [IDL.Reserved], ['query']),
+    'skipReserved' : IDL.Func([IDL.Reserved, IDL.Text], [IDL.Text], ['query']),
   });
 };
 export const init = ({ IDL }) => { return []; };
