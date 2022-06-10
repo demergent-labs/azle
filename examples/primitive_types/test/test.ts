@@ -319,20 +319,6 @@ const tests: Test[] = [
                 ok: result === null
             };
         }
-    },
-    {
-        name: 'skipReserved',
-        test: async () => {
-            const message = 'Anything';
-            const result = await primitive_types_canister.skipReserved(
-                0,
-                message
-            );
-
-            return {
-                ok: result === message
-            };
-        }
     }
 ];
 

@@ -143,7 +143,3 @@ export function printReserved(reserved: reserved): Query<reserved> {
     console.log(typeof reserved);
     return reserved;
 }
-
-export function skipReserved(_: reserved, message: string): Query<string> {
-    return message;
-}

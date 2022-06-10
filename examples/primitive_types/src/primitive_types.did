@@ -27,5 +27,4 @@ service: {
     "printPrincipal": (principal) -> (principal) query;
     "getReserved": () -> (reserved) query;
     "printReserved": (reserved) -> (reserved) query;
-    "skipReserved": (reserved, text) -> (text) query;
 }

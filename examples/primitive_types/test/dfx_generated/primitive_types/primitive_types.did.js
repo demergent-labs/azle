@@ -28,7 +28,6 @@ export const idlFactory = ({ IDL }) => {
     'printNat8' : IDL.Func([IDL.Nat8], [IDL.Nat8], ['query']),
     'printPrincipal' : IDL.Func([IDL.Principal], [IDL.Principal], ['query']),
     'printReserved' : IDL.Func([IDL.Reserved], [IDL.Reserved], ['query']),
-    'skipReserved' : IDL.Func([IDL.Reserved, IDL.Text], [IDL.Text], ['query']),
   });
 };
 export const init = ({ IDL }) => { return []; };

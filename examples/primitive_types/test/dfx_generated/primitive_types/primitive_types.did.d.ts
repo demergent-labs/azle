@@ -28,5 +28,4 @@ export interface _SERVICE {
   'printNat8' : (arg_0: number) => Promise<number>,
   'printPrincipal' : (arg_0: Principal) => Promise<Principal>,
   'printReserved' : (arg_0: any) => Promise<any>,
-  'skipReserved' : (arg_0: any, arg_1: string) => Promise<string>,
 }
