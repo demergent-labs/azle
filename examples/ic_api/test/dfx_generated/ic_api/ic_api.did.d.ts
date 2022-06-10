@@ -4,6 +4,7 @@ export interface _SERVICE {
   'canister_balance' : () => Promise<bigint>,
   'canister_balance128' : () => Promise<bigint>,
   'id' : () => Promise<Principal>,
+  'method_name' : () => Promise<string>,
   'print' : (arg_0: string) => Promise<boolean>,
   'time' : () => Promise<bigint>,
   'trap' : (arg_0: string) => Promise<boolean>,

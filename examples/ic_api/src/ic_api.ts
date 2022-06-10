@@ -3,7 +3,8 @@ import {
     nat,
     nat64,
     Principal,
-    Query
+    Query,
+    Update
 } from 'azle';
 
 // returns the principal of the identity that called this function
@@ -24,6 +25,11 @@ export function canister_balance128(): Query<nat> {
 // returns this canister's id
 export function id(): Query<Principal> {
     return ic.id();
+}
+
+// TODO under what conditions can this method be called?
+export function method_name(): Update<string> {
+    return ic.method_name();
 }
 
 // prints a message through the local replica's output

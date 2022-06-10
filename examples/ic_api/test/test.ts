@@ -78,6 +78,16 @@ const tests: Test[] = [
         }
     },
     {
+        name: 'method_name',
+        test: async () => {
+            const result = await ic_api_canister.method_name();
+    
+            return {
+                ok: result === 'method_name'
+            };
+        }
+    },
+    {
         name: 'print',
         test: async () => {
             const result = await ic_api_canister.print('Hello World!');

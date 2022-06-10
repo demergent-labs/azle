@@ -6,4 +6,5 @@ service: {
     "print": (text) -> (bool) query;
     "time": () -> (nat64) query;
     "trap": (text) -> (bool) query;
+    "method_name": () -> (text);
 }
