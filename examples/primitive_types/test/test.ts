@@ -317,6 +317,28 @@ const tests: Test[] = [
                 ok: result === null
             };
         }
+    },
+    {
+        name: 'getReserved',
+        test: async () => {
+            const result = await primitive_types_canister.getReserved();
+            
+            return {
+                ok: result === null
+            };
+        }
+    },
+    {
+        name: 'printReserved',
+        test: async () => {
+            const result = await primitive_types_canister.printReserved(
+                Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
+            );
+            
+            return {
+                ok: result === null
+            };
+        }
     }
 ];
 

@@ -137,6 +137,8 @@ export type nat8 = number;
 export type float32 = number;
 export type float64 = number;
 
+export type reserved = any;
+
 type AzleResult<T> = Variant<{
     ok: T;
     err: string;

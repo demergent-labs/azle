@@ -13,6 +13,7 @@ import {
     float64,
     float32,
     Principal,
+    reserved,
     ic
 } from 'azle';
 
@@ -140,4 +141,13 @@ export function getNull(): Query<null> {
 export function printNull(_null: null): Query<null> {
     console.log(typeof _null);
     return _null;
+}
+
+export function getReserved(): Query<reserved> {
+    return 'anything';
+}
+
+export function printReserved(reserved: reserved): Query<reserved> {
+    console.log(typeof reserved);
+    return reserved;
 }

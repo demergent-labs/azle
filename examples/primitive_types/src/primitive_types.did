@@ -27,4 +27,6 @@ service: {
     "printPrincipal": (principal) -> (principal) query;
     "getNull": () -> (null) query;
     "printNull": (null) -> (null) query;
+    "getReserved": () -> (reserved) query;
+    "printReserved": (reserved) -> (reserved) query;
 }

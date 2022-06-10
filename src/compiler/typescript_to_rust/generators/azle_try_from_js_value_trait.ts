@@ -19,7 +19,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<bool> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<bool, AzleTryFromJsValueError> {
                 match self.as_boolean() {
@@ -28,7 +28,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<f64> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<f64, AzleTryFromJsValueError> {
                 match self.as_number() {
@@ -37,7 +37,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<f32> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<f32, AzleTryFromJsValueError> {
                 match self.as_number() {
@@ -46,13 +46,13 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<i128> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<i128, AzleTryFromJsValueError> {
                 match self.as_bigint() {
                     Some(value) => {
                         let value_i128_result = value.to_string().parse::<i128>();
-        
+
                         match value_i128_result {
                             Ok(value_i128) => Ok(value_i128),
                             Err(_) => Err(AzleTryFromJsValueError("Could not parse bigint to i128".to_string()))
@@ -62,7 +62,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         // TODO this might break since i64 may (will) not be a bigint
         // TODO probably need to implement my own conversion here until try_from_js_value is fixed
         impl AzleTryFromJsValue<i64> for boa_engine::JsValue {
@@ -70,7 +70,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 match self.as_bigint() {
                     Some(value) => {
                         let value_i64_result = value.to_string().parse::<i64>();
-        
+
                         match value_i64_result {
                             Ok(value_i64) => Ok(value_i64),
                             Err(_) => Err(AzleTryFromJsValueError("Could not parse bigint to i64".to_string()))
@@ -80,7 +80,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<i32> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<i32, AzleTryFromJsValueError> {
                 match self.as_number() {
@@ -89,7 +89,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<i16> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<i16, AzleTryFromJsValueError> {
                 match self.as_number() {
@@ -98,7 +98,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<i8> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<i8, AzleTryFromJsValueError> {
                 match self.as_number() {
@@ -107,7 +107,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<String> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<String, AzleTryFromJsValueError> {
                 match self.as_string() {
@@ -116,13 +116,13 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<u128> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<u128, AzleTryFromJsValueError> {
                 match self.as_bigint() {
                     Some(value) => {
                         let value_u128_result = value.to_string().parse::<u128>();
-        
+
                         match value_u128_result {
                             Ok(value_u128) => Ok(value_u128),
                             Err(_) => Err(AzleTryFromJsValueError("Could not parse bigint to u128".to_string()))
@@ -132,7 +132,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         // TODO this might break since i64 may (will) not be a bigint
         // TODO probably need to implement my own conversion here until try_from_js_value is fixed
         impl AzleTryFromJsValue<u64> for boa_engine::JsValue {
@@ -140,7 +140,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 match self.as_bigint() {
                     Some(value) => {
                         let value_u64_result = value.to_string().parse::<u64>();
-        
+
                         match value_u64_result {
                             Ok(value_u64) => Ok(value_u64),
                             Err(_) => Err(AzleTryFromJsValueError("Could not parse bigint to u64".to_string()))
@@ -150,7 +150,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<u32> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<u32, AzleTryFromJsValueError> {
                 match self.as_number() {
@@ -159,7 +159,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<u16> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<u16, AzleTryFromJsValueError> {
                 match self.as_number() {
@@ -168,7 +168,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<u8> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<u8, AzleTryFromJsValueError> {
                 match self.as_number() {
@@ -241,9 +241,9 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                         if js_object.is_array() {
                             let mut processing: bool = true;
                             let mut index: usize = 0;
-                
+
                             let mut result = vec![];
-                
+
                             while processing == true {
                                 match js_object.get(index, context) {
                                     Ok(js_value) => {
@@ -267,7 +267,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                                     }
                                 }
                             }
-                
+
                             Ok(result)
                         }
                         else {
@@ -278,7 +278,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<ic_cdk::export::Principal> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::export::Principal, AzleTryFromJsValueError> {
                 match self.as_object() {
@@ -323,7 +323,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         // TODO it would probably be better to get the BigInt out of the JsValue and convert it more directly
         // TODO but we might run into problems with Nat and BigUint, thus I am doing a string conversion for now
         impl AzleTryFromJsValue<ic_cdk::export::candid::Int> for boa_engine::JsValue {
@@ -334,13 +334,19 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<ic_cdk::export::candid::Nat> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, _: &mut boa_engine::Context) -> Result<ic_cdk::export::candid::Nat, AzleTryFromJsValueError> {
                 match self.as_bigint() {
                     Some(value) => Ok(ic_cdk::export::candid::Nat::from_str(&value.to_string()).unwrap()), // TODO probably not the best conversion
                     None => Err(AzleTryFromJsValueError("JsValue is not a bigint".to_string()))
                 }
+            }
+        }
+
+        impl AzleTryFromJsValue<ic_cdk::export::candid::Reserved> for boa_engine::JsValue {
+            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::export::candid::Reserved, AzleTryFromJsValueError> {
+                Ok(ic_cdk::export::candid::Reserved)
             }
         }
     `;
