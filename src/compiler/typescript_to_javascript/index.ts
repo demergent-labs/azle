@@ -13,7 +13,10 @@ export async function compileTypeScriptToJavaScript(ts_path: string): Promise<Ja
 
     const js_bundled_and_transpiled = bundle_and_transpile_ts(`
         export { Principal } from '@dfinity/principal';
+        export * from './${ts_path}';
+    `);
 
+    return `
         // TODO we should centralize/standardize where we add global variables to the JS, we are doing this in multiple places (i.e. the exports variable is not here, found in init/post_upgrade)
         globalThis.console = {
             ...globalThis.console,
@@ -24,10 +27,20 @@ export async function compileTypeScriptToJavaScript(ts_path: string): Promise<Ja
 
         ${icCanisters}
 
-        export * from './${ts_path}';
-    `);
+        ${js_bundled_and_transpiled}
+    `;
+}
 
-    return js_bundled_and_transpiled;
+export function bundle_and_transpile_ts(ts: TypeScript): JavaScript {
+    const js_bundled: JavaScript = bundle_from_string(ts);
+    const js_transpiled: JavaScript = transpile(js_bundled);
+
+    // TODO enabling strict mode is causing lots of issues
+    // TODO it would be nice if I could remove strict mode code in esbuild or swc
+    // TODO look into the implications of this, but since we are trying to transpile to es3 to cope with missing features in boa, I do not think we need strict mode
+    const js_strict_mode_removed: JavaScript = js_transpiled.replace(/"use strict";/g, '');
+
+    return js_strict_mode_removed;
 }
 
 export function bundle_and_transpile_ts(ts: TypeScript): JavaScript {
@@ -124,7 +137,7 @@ function generateICCanisters(tsPath: string): JavaScript {
     const icCanisters = generateICCanistersFromTypeAliasDeclarations(canisterTypeAliasDeclarations);
 
     return `
-        ic.canisters = {
+        globalThis.ic.canisters = {
             ${icCanisters.join(',\n')}
         };
     `;
