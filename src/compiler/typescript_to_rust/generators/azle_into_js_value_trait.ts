@@ -8,7 +8,7 @@ export function generateAzleIntoJsValueTrait(): Rust {
 
         impl AzleIntoJsValue for () {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                boa_engine::JsValue::Undefined
+                boa_engine::JsValue::Null
             }
         }
 

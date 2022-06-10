@@ -132,3 +132,12 @@ export function printPrincipal(principal: Principal): Query<Principal> {
     ic.print(typeof principal);
     return principal;
 }
+
+export function getNull(): Query<null> {
+    return null;
+}
+
+export function printNull(_null: null): Query<null> {
+    console.log(typeof _null);
+    return _null;
+}
