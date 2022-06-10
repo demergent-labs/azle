@@ -43,18 +43,6 @@ export function bundle_and_transpile_ts(ts: TypeScript): JavaScript {
     return js_strict_mode_removed;
 }
 
-export function bundle_and_transpile_ts(ts: TypeScript): JavaScript {
-    const js_bundled: JavaScript = bundle_from_string(ts);
-    const js_transpiled: JavaScript = transpile(js_bundled);
-
-    // TODO enabling strict mode is causing lots of issues
-    // TODO it would be nice if I could remove strict mode code in esbuild or swc
-    // TODO look into the implications of this, but since we are trying to transpile to es3 to cope with missing features in boa, I do not think we need strict mode
-    const js_strict_mode_removed: JavaScript = js_transpiled.replace(/"use strict";/g, '');
-
-    return js_strict_mode_removed;
-}
-
 // TODO there is a lot of minification/transpiling etc we could do with esbuild or with swc
 // TODO we need to decide which to use for what
 export function bundle_from_string(ts: TypeScript): JavaScript {
