@@ -170,7 +170,7 @@ export function generateAzleIntoJsValueTrait(): Rust {
 
         impl AzleIntoJsValue for ic_cdk::export::candid::Reserved {
             fn azle_into_js_value(self, _: &mut boa_engine::Context) -> boa_engine::JsValue {
-                boa_engine::JsValue::Undefined
+                boa_engine::JsValue::Null
             }
         }
     `;
