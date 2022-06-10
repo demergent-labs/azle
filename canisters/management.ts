@@ -139,4 +139,4 @@ export type Management = Canister<{
     provisional_top_up_canister(args: ProvisionalTopUpCanisterArgs): CanisterResult<void>;
 }>;
 
-export const ManagementCanister = ic.canisters.Management<Management>('aaaaa-aa');
+export const ManagementCanister = ic.canisters.Management<Management>(Principal.fromText('aaaaa-aa'));

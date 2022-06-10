@@ -12,6 +12,7 @@ export const idlFactory = ({ IDL }) => {
     'getNat32' : IDL.Func([], [IDL.Nat32], ['query']),
     'getNat64' : IDL.Func([], [IDL.Nat64], ['query']),
     'getNat8' : IDL.Func([], [IDL.Nat8], ['query']),
+    'getNull' : IDL.Func([], [IDL.Null], ['query']),
     'getPrincipal' : IDL.Func([], [IDL.Principal], ['query']),
     'getReserved' : IDL.Func([], [IDL.Reserved], ['query']),
     'printFloat32' : IDL.Func([IDL.Float32], [IDL.Float32], ['query']),
@@ -26,6 +27,7 @@ export const idlFactory = ({ IDL }) => {
     'printNat32' : IDL.Func([IDL.Nat32], [IDL.Nat32], ['query']),
     'printNat64' : IDL.Func([IDL.Nat64], [IDL.Nat64], ['query']),
     'printNat8' : IDL.Func([IDL.Nat8], [IDL.Nat8], ['query']),
+    'printNull' : IDL.Func([IDL.Null], [IDL.Null], ['query']),
     'printPrincipal' : IDL.Func([IDL.Principal], [IDL.Principal], ['query']),
     'printReserved' : IDL.Func([IDL.Reserved], [IDL.Reserved], ['query']),
   });

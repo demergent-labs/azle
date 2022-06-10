@@ -1,5 +1,5 @@
 service: {
-    "caller": () -> (text) query;
+    "caller": () -> (principal) query;
     "canisterBalance": () -> (nat64) query;
     "id": () -> (principal) query;
     "print": (text) -> (bool) query;

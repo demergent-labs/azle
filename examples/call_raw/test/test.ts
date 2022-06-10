@@ -19,7 +19,7 @@ const tests: Test[] = [
     {
         name: 'clear canister memory',
         prep: async () => {
-            execSync(`dfx canister uninstall-code call_raw_canister || true`, {
+            execSync(`dfx canister uninstall-code call_raw || true`, {
                 stdio: 'inherit'
             });
         }

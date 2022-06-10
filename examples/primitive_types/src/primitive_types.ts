@@ -125,14 +125,22 @@ export function printFloat32(float32: float32): Query<float32> {
     return float32;
 }
 
-// TODO make sure that the principal tests break when we upgrade to @dfinity/principal
 export function getPrincipal(): Query<Principal> {
-    return 'rrkah-fqaaa-aaaaa-aaaaq-cai';
+    return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
 }
 
 export function printPrincipal(principal: Principal): Query<Principal> {
     ic.print(typeof principal);
     return principal;
+}
+
+export function getNull(): Query<null> {
+    return null;
+}
+
+export function printNull(_null: null): Query<null> {
+    console.log(typeof _null);
+    return _null;
 }
 
 export function getReserved(): Query<reserved> {

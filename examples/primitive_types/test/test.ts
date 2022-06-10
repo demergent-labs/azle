@@ -302,6 +302,16 @@ const tests: Test[] = [
         name: 'getReserved',
         test: async () => {
             const result = await primitive_types_canister.getReserved();
+            
+            return {
+                ok: result === null
+            };
+        }
+    },
+    {
+        name: 'getNull',
+        test: async () => {
+            const result = await primitive_types_canister.getNull();
 
             return {
                 ok: result === null
@@ -314,6 +324,16 @@ const tests: Test[] = [
             const result = await primitive_types_canister.printReserved(
                 Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
             );
+            
+            return {
+                ok: result === null
+            };
+        }
+    },
+    {
+        name: 'printNull',
+        test: async () => {
+            const result = await primitive_types_canister.printNull(null);
 
             return {
                 ok: result === null

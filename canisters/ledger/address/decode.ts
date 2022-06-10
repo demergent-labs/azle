@@ -1,3 +1,5 @@
+// TODO after testing just delete this file
+
 // https://github.com/dfinity/agent-js/blob/90b073dc735bfae9f3b1c7fc537bd97347c5cc68/packages/principal/src/utils/base32.ts
 // Licensed under Apache license found below
 // The file has been modified slightly as only the encode function is included below

@@ -29,7 +29,7 @@ type State = {
 };
 
 let state: State = {
-    created_canister_id: ''
+    created_canister_id: Principal.fromText('aaaaa-aa')
 };
 
 export function* execute_create_canister(): UpdateAsync<ExecuteCreateCanisterResult> {

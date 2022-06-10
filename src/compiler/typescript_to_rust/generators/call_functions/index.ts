@@ -87,7 +87,7 @@ function generateCallFunctionFromTypeElement(
         functionName: callFunctionName,
         params: functionParams,
         text: `
-            async fn ${callFunctionName}(canisterId: String${functionParams.length === 0 ? '' : ', '}${functionParams.map((param) => `${param.paramName}: ${param.paramType}`).join(', ')})${functionReturnType === '' ? '' : ` -> CallResult<(${functionReturnType},)>`} {
+            async fn ${callFunctionName}(canister_id_principal: ic_cdk::export::Principal${functionParams.length === 0 ? '' : ', '}${functionParams.map((param) => `${param.paramName}: ${param.paramType}`).join(', ')})${functionReturnType === '' ? '' : ` -> CallResult<(${functionReturnType},)>`} {
                 ${functionBody}
             }
         `
