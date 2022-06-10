@@ -1,6 +1,7 @@
 service: {
     "caller": () -> (principal) query;
-    "canisterBalance": () -> (nat64) query;
+    "canister_balance": () -> (nat64) query;
+    "canister_balance128": () -> (nat) query;
     "id": () -> (principal) query;
     "print": (text) -> (bool) query;
     "time": () -> (nat64) query;

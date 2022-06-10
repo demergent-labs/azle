@@ -74,7 +74,8 @@ type ic = {
     canisters: {
         [canisterName: string]: <T>(canisterId: Principal) => T;
     };
-    canisterBalance: () => nat64;
+    canister_balance: () => nat64;
+    canister_balance128: () => nat;
     id: () => Principal;
     print: (...args: any) => void;
     // rawRand: () => nat8[]; // TODO I think we want this to really be a JS Uint8Array
