@@ -1,5 +1,6 @@
 import {
     Query,
+    empty,
     int,
     int64,
     int32,
@@ -13,6 +14,7 @@ import {
     float64,
     float32,
     Principal,
+    reserved,
     ic
 } from 'azle';
 
@@ -124,12 +126,40 @@ export function printFloat32(float32: float32): Query<float32> {
     return float32;
 }
 
-// TODO make sure that the principal tests break when we upgrade to @dfinity/principal
 export function getPrincipal(): Query<Principal> {
-    return 'rrkah-fqaaa-aaaaa-aaaaq-cai';
+    return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
 }
 
 export function printPrincipal(principal: Principal): Query<Principal> {
     ic.print(typeof principal);
     return principal;
+}
+
+export function getNull(): Query<null> {
+    return null;
+}
+
+export function printNull(_null: null): Query<null> {
+    console.log(typeof _null);
+    return _null;
+}
+
+export function getReserved(): Query<reserved> {
+    return 'anything';
+}
+
+export function printReserved(reserved: reserved): Query<reserved> {
+    console.log(typeof reserved);
+    return reserved;
+}
+
+export function getEmpty(): Query<empty> {
+    throw 'Anything you want';
+}
+
+// Note: It is impossible to call this function because it requires an argument
+// but there is no way to pass an "empty" value as an argument.
+export function printEmpty(empty: empty): Query<empty> {
+    console.log(typeof empty);
+    throw 'Anything you want';
 }

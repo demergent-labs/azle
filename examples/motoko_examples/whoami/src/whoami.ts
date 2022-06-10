@@ -25,8 +25,8 @@ type WhoAmIResult = Variant<{
 
 // Initialize the variables to ensure that they aren't `undefined`.
 // We use the zero principal but any principal could be used.
-let install: Principal = 'aaaaa-aa';
-let someone: Principal = 'aaaaa-aa';
+let install: Principal = Principal.fromText('aaaaa-aa');
+let someone: Principal = Principal.fromText('aaaaa-aa');
 
 // Manually save the calling principal and argument for later access.
 export function init(somebody: Principal): Init {
@@ -63,7 +63,7 @@ export function* id(): UpdateAsync<Principal> {
 
     const result: WhoAmIResult = yield thisCanister.whoami();
 
-    return result.ok ?? '';
+    return result.ok ?? Principal.fromText('aaaaa-aa');
 }
 
 // Return the principal identifier of this canister via the global `ic` object.

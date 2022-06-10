@@ -8,7 +8,7 @@ export function generateCallFunctionBody(
 ): Rust {
     return `
         ic_cdk::api::call::call(
-            ic_cdk::export::Principal::from_text(canisterId).unwrap(),
+            canister_id_principal,
             "${methodName}",
             (${paramNames.join(', ')}${paramNames.length === 1 ? ',' : ''})
         ).await

@@ -25,4 +25,10 @@ service: {
     "printFloat32": (float32) -> (float32) query;
     "getPrincipal": () -> (principal) query;
     "printPrincipal": (principal) -> (principal) query;
+    "getNull": () -> (null) query;
+    "printNull": (null) -> (null) query;
+    "getReserved": () -> (reserved) query;
+    "printReserved": (reserved) -> (reserved) query;
+    "getEmpty": () -> (empty) query;
+    "printEmpty": (empty) -> (empty) query;
 }

@@ -58,10 +58,10 @@ export function generateCanisterMethodInit(
                     ic,
                     boa_engine::property::Attribute::all()
                 );
-        
+
                 boa_context.eval(format!(
                     "let exports = {{}}; {compiled_js}",
-                    compiled_js = r#"${js}"#
+                    compiled_js = MAIN_JS
                 )).unwrap();
 
                 ${developerDefinedInitFunctionCall}

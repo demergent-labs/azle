@@ -7,6 +7,7 @@ import {
     nat64,
     ok,
     Opt,
+    Principal,
     UpdateAsync,
     Variant
 } from 'azle';
@@ -25,7 +26,7 @@ import {
     TransferResult
 } from 'azle/canisters/ledger';
 
-const ICPCanister = ic.canisters.Ledger<Ledger>('r7inp-6aaaa-aaaaa-aaabq-cai');
+const ICPCanister = ic.canisters.Ledger<Ledger>(Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai'));
 
 type ExecuteTransferResult = Variant<{
     ok: TransferResult;

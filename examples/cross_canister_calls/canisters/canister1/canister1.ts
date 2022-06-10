@@ -5,6 +5,7 @@ import {
     Canister,
     Opt,
     CanisterResult,
+    Principal,
     Variant
 } from 'azle';
 import {
@@ -49,7 +50,7 @@ type Canister2 = Canister<{
     trap(): CanisterResult<string>;
 }>;
 
-let canister2 = ic.canisters.Canister2<Canister2>('ryjl3-tyaaa-aaaaa-aaaba-cai');
+let canister2 = ic.canisters.Canister2<Canister2>(Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'));
 
 export function* transfer(
     from: string,
