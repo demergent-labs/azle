@@ -299,20 +299,30 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'getReserved',
+        name: 'getNull',
         test: async () => {
-            const result = await primitive_types_canister.getReserved();
-            
+            const result = await primitive_types_canister.getNull();
+
             return {
                 ok: result === null
             };
         }
     },
     {
-        name: 'getNull',
+        name: 'printNull',
         test: async () => {
-            const result = await primitive_types_canister.getNull();
+            const result = await primitive_types_canister.printNull(null);
 
+            return {
+                ok: result === null
+            };
+        }
+    },
+    {
+        name: 'getReserved',
+        test: async () => {
+            const result = await primitive_types_canister.getReserved();
+            
             return {
                 ok: result === null
             };
@@ -325,16 +335,6 @@ const tests: Test[] = [
                 Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
             );
             
-            return {
-                ok: result === null
-            };
-        }
-    },
-    {
-        name: 'printNull',
-        test: async () => {
-            const result = await primitive_types_canister.printNull(null);
-
             return {
                 ok: result === null
             };
