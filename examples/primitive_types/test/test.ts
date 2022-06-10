@@ -339,6 +339,40 @@ const tests: Test[] = [
                 ok: result === null
             };
         }
+    },
+    {
+        name: 'getEmpty',
+        test: async () => {
+            try {
+                const result = await primitive_types_canister.getEmpty();
+            } catch (error) {
+                return {
+                    ok: error.message.startsWith('Call failed')
+                };
+            }
+
+            return {
+                ok: false
+            };
+        }
+    },
+    {
+        name: 'printEmpty',
+        test: async () => {
+            try {
+                const result = await primitive_types_canister.printEmpty(
+                    undefined
+                );
+            } catch (error) {
+                return {
+                    ok: error.message === 'Invalid empty argument: undefined'
+                };
+            }
+
+            return {
+                ok: false
+            };
+        }
     }
 ];
 

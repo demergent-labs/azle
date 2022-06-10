@@ -1,5 +1,6 @@
 import type { Principal } from '@dfinity/principal';
 export interface _SERVICE {
+  'getEmpty' : () => Promise<never>,
   'getFloat32' : () => Promise<number>,
   'getFloat64' : () => Promise<number>,
   'getInt' : () => Promise<bigint>,
@@ -15,6 +16,7 @@ export interface _SERVICE {
   'getNull' : () => Promise<null>,
   'getPrincipal' : () => Promise<Principal>,
   'getReserved' : () => Promise<any>,
+  'printEmpty' : (arg_0: never) => Promise<never>,
   'printFloat32' : (arg_0: number) => Promise<number>,
   'printFloat64' : (arg_0: number) => Promise<number>,
   'printInt' : (arg_0: bigint) => Promise<bigint>,

@@ -28,7 +28,13 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-
+        
+        impl AzleTryFromJsValue<ic_cdk::export::candid::Empty> for boa_engine::JsValue {
+            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::export::candid::Empty, AzleTryFromJsValueError> {
+                panic!("JsValue cannot be converted into Empty");
+            }
+        }
+        
         impl AzleTryFromJsValue<f64> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<f64, AzleTryFromJsValueError> {
                 match self.as_number() {
