@@ -18,6 +18,12 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        impl AzleIntoJsValue for ic_cdk::export::candid::Empty {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                panic!("Empty cannot be converted into JsValue");
+            }
+        }
+
         impl AzleIntoJsValue for f64 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 self.into()

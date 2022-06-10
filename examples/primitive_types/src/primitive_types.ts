@@ -1,5 +1,6 @@
 import {
     Query,
+    empty,
     int,
     int64,
     int32,
@@ -150,4 +151,15 @@ export function getReserved(): Query<reserved> {
 export function printReserved(reserved: reserved): Query<reserved> {
     console.log(typeof reserved);
     return reserved;
+}
+
+export function getEmpty(): Query<empty> {
+    throw 'Anything you want';
+}
+
+// Note: It is impossible to call this function because it requires an argument
+// but there is no way to pass an "empty" value as an argument.
+export function printEmpty(empty: empty): Query<empty> {
+    console.log(typeof empty);
+    throw 'Anything you want';
 }

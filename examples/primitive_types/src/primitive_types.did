@@ -29,4 +29,6 @@ service: {
     "printNull": (null) -> (null) query;
     "getReserved": () -> (reserved) query;
     "printReserved": (reserved) -> (reserved) query;
+    "getEmpty": () -> (empty) query;
+    "printEmpty": (empty) -> (empty) query;
 }
