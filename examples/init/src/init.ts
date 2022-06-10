@@ -11,8 +11,8 @@ type User = {
 };
 
 type Reaction = Variant<{
-    Fire?: null;
-    Wave?: null
+    Fire: null;
+    Wave: null
 }>;
 
 let user: Opt<User> = null;

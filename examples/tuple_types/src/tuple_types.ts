@@ -89,7 +89,7 @@ export function primitive_two_tuple_param(header: PrimitiveTwoTuple): Query<Prim
 // }
 
 export function primitive_three_tuple_return_type(): Query<PrimitiveThreeTuple> {
-    return ['Good', 454n, 'rrkah-fqaaa-aaaaa-aaaaq-cai'];
+    return ['Good', 454n, Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')];
 }
 
 export function primitive_three_tuple_param(header: PrimitiveThreeTuple): Query<PrimitiveThreeTuple> {

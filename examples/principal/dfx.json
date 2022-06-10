@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "principal": {
+            "type": "custom",
+            "build": "npx azle principal",
+            "root": "src",
+            "ts": "src/principal.ts",
+            "candid": "src/principal.did",
+            "wasm": "target/wasm32-unknown-unknown/release/principal.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/principal"
+            }
+        }
+    }
+}

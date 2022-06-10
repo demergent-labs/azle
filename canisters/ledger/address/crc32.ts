@@ -1,3 +1,5 @@
+// TODO after testing just delete this file
+
 // https://github.com/dfinity/agent-js/blob/90b073dc735bfae9f3b1c7fc537bd97347c5cc68/packages/principal/src/utils/getCrc.ts
 // This file is translated to JavaScript from
 // https://lxp32.github.io/docs/a-simple-example-crc32-calculation/

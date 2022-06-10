@@ -1,6 +1,6 @@
 export const idlFactory = ({ IDL }) => {
   return IDL.Service({
-    'caller' : IDL.Func([], [IDL.Text], ['query']),
+    'caller' : IDL.Func([], [IDL.Principal], ['query']),
     'canisterBalance' : IDL.Func([], [IDL.Nat64], ['query']),
     'id' : IDL.Func([], [IDL.Principal], ['query']),
     'print' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),

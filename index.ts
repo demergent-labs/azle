@@ -1,3 +1,5 @@
+import { Principal } from '@dfinity/principal';
+
 // TODO it would be great if we could allow importing this file (azle bare specifier) into frontends or Node.js
 // TODO but it isn't quite set up to do that right now
 
@@ -68,7 +70,7 @@ type ic = {
         payment: nat
     ) => CanisterResult<nat8[]>;
     // TODO also create call_raw_128
-    caller: () => string;
+    caller: () => Principal;
     canisters: {
         [canisterName: string]: <T>(canisterId: Principal) => T;
     };
@@ -97,7 +99,6 @@ export type UpdateAsync<T> = Generator<any, T, any>; // TODO to be stricter we m
 export type Async<T> = Generator<any, T, any>; // TODO to be stricter we may want the last parameter to be unknown: https://github.com/demergent-labs/azle/issues/138
 export type Canister<T> = T;
 export type Variant<T> = Partial<T>;
-export type Principal = string;
 export type Opt<T> = T | null;
 // export type Result<T, V> = {
 //     ok?: T;
@@ -166,3 +167,5 @@ export function attempt<T>(callback: () => AzleResult<T>): AzleResult<T> {
 
 // TODO type this more strictly
 export type Func<T extends (...args: any[]) => Query<any> | Update<any> | Oneway<any>> = [Principal, string];
+
+export { Principal } from '@dfinity/principal';
