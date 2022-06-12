@@ -297,6 +297,82 @@ const tests: Test[] = [
                 ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
             };
         }
+    },
+    {
+        name: 'getNull',
+        test: async () => {
+            const result = await primitive_types_canister.getNull();
+
+            return {
+                ok: result === null
+            };
+        }
+    },
+    {
+        name: 'printNull',
+        test: async () => {
+            const result = await primitive_types_canister.printNull(null);
+
+            return {
+                ok: result === null
+            };
+        }
+    },
+    {
+        name: 'getReserved',
+        test: async () => {
+            const result = await primitive_types_canister.getReserved();
+            
+            return {
+                ok: result === null
+            };
+        }
+    },
+    {
+        name: 'printReserved',
+        test: async () => {
+            const result = await primitive_types_canister.printReserved(
+                Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
+            );
+            
+            return {
+                ok: result === null
+            };
+        }
+    },
+    {
+        name: 'getEmpty',
+        test: async () => {
+            try {
+                const result = await primitive_types_canister.getEmpty();
+            } catch (error) {
+                return {
+                    ok: error.message.startsWith('Call failed')
+                };
+            }
+
+            return {
+                ok: false
+            };
+        }
+    },
+    {
+        name: 'printEmpty',
+        test: async () => {
+            try {
+                const result = await primitive_types_canister.printEmpty(
+                    undefined
+                );
+            } catch (error) {
+                return {
+                    ok: error.message === 'Invalid empty argument: undefined'
+                };
+            }
+
+            return {
+                ok: false
+            };
+        }
     }
 ];
 

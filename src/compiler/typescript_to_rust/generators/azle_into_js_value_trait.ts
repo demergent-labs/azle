@@ -8,13 +8,19 @@ export function generateAzleIntoJsValueTrait(): Rust {
 
         impl AzleIntoJsValue for () {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                boa_engine::JsValue::Undefined
+                boa_engine::JsValue::Null
             }
         }
 
         impl AzleIntoJsValue for bool {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 self.into()
+            }
+        }
+
+        impl AzleIntoJsValue for ic_cdk::export::candid::Empty {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                panic!("Empty cannot be converted into JsValue");
             }
         }
 
@@ -151,7 +157,18 @@ export function generateAzleIntoJsValueTrait(): Rust {
 
         impl AzleIntoJsValue for ic_cdk::export::Principal {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.to_text().into()
+                let exports_js_value = context.eval("exports").unwrap();
+                let exports_js_object = exports_js_value.as_object().unwrap();
+
+                let principal_class_js_value = exports_js_object.get("Principal", context).unwrap();
+                let principal_class_js_object = principal_class_js_value.as_object().unwrap();
+
+                let from_text_js_value = principal_class_js_object.get("fromText", context).unwrap();
+                let from_text_js_object = from_text_js_value.as_object().unwrap();
+
+                let principal_js_value = from_text_js_object.call(&principal_class_js_value, &[self.to_text().into()], context).unwrap();
+
+                principal_js_value
             }
         }
 
@@ -165,6 +182,12 @@ export function generateAzleIntoJsValueTrait(): Rust {
         impl AzleIntoJsValue for ic_cdk::export::candid::Nat {
             fn azle_into_js_value(self, _: &mut boa_engine::Context) -> boa_engine::JsValue {
                 boa_engine::JsValue::BigInt(boa_engine::bigint::JsBigInt::from_string(&self.0.to_string()).unwrap())
+            }
+        }
+
+        impl AzleIntoJsValue for ic_cdk::export::candid::Reserved {
+            fn azle_into_js_value(self, _: &mut boa_engine::Context) -> boa_engine::JsValue {
+                boa_engine::JsValue::Null
             }
         }
     `;

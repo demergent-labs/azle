@@ -6,7 +6,7 @@ import {
 } from 'azle';
 
 // returns the principal of the identity that called this function
-export function caller(): Query<string> {
+export function caller(): Query<Principal> {
     return ic.caller();
 }
 

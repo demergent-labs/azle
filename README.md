@@ -591,7 +591,7 @@ service: {
 
 ##### Principal
 
-The Azle type `Principal` corresponds to the [Candid type principal](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-principal) and will become a [JavaScript String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) at runtime.
+The Azle type `Principal` corresponds to the [Candid type principal](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-principal) and will become an [@dfinity/principal](https://www.npmjs.com/package/@dfinity/principal) at runtime.
 
 TypeScript:
 
@@ -599,7 +599,7 @@ TypeScript:
 import { Principal, Query, ic } from 'azle';
 
 export function getPrincipal(): Query<Principal> {
-    return 'rrkah-fqaaa-aaaaa-aaaaq-cai';
+    return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
 }
 
 export function printPrincipal(principal: Principal): Query<Principal> {
@@ -616,6 +616,8 @@ service: {
     "printPrincipal": (principal) -> (principal) query;
 }
 ```
+
+* Note that `Principal.selfAuthenticating` will not function properly until [this issue is resolved](https://github.com/boa-dev/boa/issues/1917)
 
 ##### string
 

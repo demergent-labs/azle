@@ -41,7 +41,7 @@ const tests: Test[] = [
             const result = await ic_api_canister.caller();
 
             return {
-                ok: result === '2vxsx-fae'
+                ok: result.toText() === '2vxsx-fae'
             };
         }
     },

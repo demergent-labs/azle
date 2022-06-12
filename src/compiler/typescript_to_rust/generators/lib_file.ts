@@ -21,6 +21,7 @@ import { generateCanisterMethodHeartbeat } from './canister_methods/heartbeat';
 import { generateHandleGeneratorResultFunction } from './canister_methods/developer_defined/return_value_handler';
 import { generateCanisterMethodPreUpgrade } from './canister_methods/pre_upgrade';
 import { generateCanisterMethodPostUpgrade } from './canister_methods/post_upgrade';
+import { bundle_and_transpile_ts } from '../../typescript_to_javascript';
 
 export async function generateLibFile(
     js: JavaScript,
@@ -33,22 +34,23 @@ export async function generateLibFile(
     // TODO we also might want to just use candid::Nat, candid::Int, candid::Principal and just do the work of implementing the traits locally
     const rustCandidTypesNatAndIntReplaced: Rust = rustCandidTypes.replace(/candid::Nat/g, 'u128').replace(/candid::Int/g, 'i128');
     
-    // TODO remove this once this issue is resolved: https://github.com/demergent-labs/azle/issues/93
+    // TODO remove this once this issue is resolved: https://github.com/dfinity/candid/issues/345
     const rust_candid_types_semicolon_syntax_fix = rustCandidTypesNatAndIntReplaced.replace(/#\[derive\(CandidType, Deserialize\)\]\nstruct .*? \(.*?\)/g, match => `${match};`);
 
     const modifiedRustCandidTypes: Rust = await modifyRustCandidTypes(rust_candid_types_semicolon_syntax_fix);
 
-    const head: Rust = generateHead();
+    const principal_js: JavaScript = bundle_and_transpile_ts(`export { Principal } from '@dfinity/principal';`);
+    const head: Rust = generateHead(
+        js,
+        principal_js
+    );
 
     const canisterMethodInit: Rust = generateCanisterMethodInit(
         js,
         sourceFiles
     );
     const canisterMethodPreUpgrade: Rust = generateCanisterMethodPreUpgrade(sourceFiles);
-    const canisterMethodPostUpgrade: Rust = generateCanisterMethodPostUpgrade(
-        sourceFiles,
-        js
-    );
+    const canisterMethodPostUpgrade: Rust = generateCanisterMethodPostUpgrade(sourceFiles);
     const canisterMethodHeartbeat: Rust = generateCanisterMethodHeartbeat(sourceFiles);
 
     const callFunctionInfos: CallFunctionInfo[] = generateCallFunctions(sourceFiles);
