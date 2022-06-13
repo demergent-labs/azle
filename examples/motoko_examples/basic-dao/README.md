@@ -2,7 +2,7 @@
 
 https://github.com/dfinity/examples/tree/master/motoko/basic_dao
 
-deploy command
+Deploy command
 
 ```bash
 dfx deploy basic_dao --argument "(
