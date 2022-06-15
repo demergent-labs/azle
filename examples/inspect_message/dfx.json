@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "inspect_message": {
+            "type": "custom",
+            "build": "npx azle inspect_message",
+            "root": "src",
+            "ts": "src/inspect_message.ts",
+            "candid": "src/inspect_message.did",
+            "wasm": "target/wasm32-unknown-unknown/release/inspect_message.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/inspect_message"
+            }
+        }
+    }
+}

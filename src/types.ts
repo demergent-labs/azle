@@ -14,6 +14,7 @@ export type CanisterMethodTypeName =
     'Update' |
     'UpdateAsync' |
     'Init' |
+    'InspectMessage' |
     'Heartbeat' |
     'PreUpgrade' |
     'PostUpgrade';
