@@ -71,7 +71,6 @@ jobs:
             "examples/key_value_store",
             "examples/ledger_canister",
             "examples/management_canister",
-            "examples/motoko_examples/basic-dao",
             "examples/motoko_examples/calc",
             "examples/motoko_examples/counter",
             "examples/motoko_examples/echo",
