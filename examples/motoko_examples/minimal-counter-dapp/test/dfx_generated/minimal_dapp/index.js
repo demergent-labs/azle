@@ -35,4 +35,4 @@ export const canisterId = process.env.MINIMAL_DAPP_CANISTER_ID;
  * A ready-to-use agent for the minimal_dapp canister
  * @type {import("@dfinity/agent").ActorSubclass<import("./minimal_dapp.did.js")._SERVICE>}
  */
- export const minimal_dapp = createActor(canisterId);
+//  export const minimal_dapp = createActor(canisterId);
