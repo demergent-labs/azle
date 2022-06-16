@@ -237,6 +237,22 @@ function generateCandidTypeInfoForTypeReference(
                 typeClass: 'primitive'
             };
         }
+                
+        if (typeName === 'reserved') {
+            return {
+                text: 'reserved',
+                typeName: 'reserved',
+                typeClass: 'primitive'
+            };
+        }
+        
+        if (typeName === 'empty') {
+            return {
+                text: 'empty',
+                typeName: 'empty',
+                typeClass: 'primitive'
+            };
+        }
 
         if (typeName === 'Opt') {
             if (typeReferenceNode.typeArguments !== undefined) {

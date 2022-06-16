@@ -20,16 +20,16 @@ pub fn derive_azle_try_from_js_value_enum(
 
     quote! {
         impl AzleTryFromJsValue<#enum_name> for boa_engine::JsValue {
-            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<#enum_name, TryFromJsValueError> {
+            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<#enum_name, AzleTryFromJsValueError> {
                 let object_option = self.as_object();
 
                 if let Some(object) = object_option {
                     #(#properties)*
 
-                    return Err(TryFromJsValueError("Enum variant does not exist".to_string()));
+                    return Err(AzleTryFromJsValueError("Enum variant does not exist".to_string()));
                 }
                 else {
-                    return Err(TryFromJsValueError("JsValue is not an object".to_string()));
+                    return Err(AzleTryFromJsValueError("JsValue is not an object".to_string()));
                 }
             }
         }
@@ -166,12 +166,12 @@ fn derive_property_for_named_fields(
                                 });
                             },
                             _ => {
-                                return Err(TryFromJsValueError("Could not convert JsValue to Rust type".to_string()));
+                                return Err(AzleTryFromJsValueError("Could not convert JsValue to Rust type".to_string()));
                             }
                         };
                     },
                     _ => {
-                        return Err(TryFromJsValueError("Could not convert JsValue to Rust type".to_string()));
+                        return Err(AzleTryFromJsValueError("Could not convert JsValue to Rust type".to_string()));
                     }
                 };
             }

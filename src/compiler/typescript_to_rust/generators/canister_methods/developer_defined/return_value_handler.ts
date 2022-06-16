@@ -162,7 +162,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                                 _azle_args = vec![canister_result_js_value];
                             },
                             Err(err) => {
-                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).into_js_value(_azle_boa_context);
+                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).azle_into_js_value(_azle_boa_context);
 
                                 let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
                                     .property(
@@ -185,7 +185,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                         let call_args_js_object = call_args_js_value.as_object().unwrap();
 
                         let canister_id_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap();
-                        let canister_id_string = canister_id_js_value.as_string().unwrap().to_string();
+                        let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
 
                         let method_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
                         let method_string = method_js_value.as_string().unwrap().to_string();
@@ -198,7 +198,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                         let payment: u64 = payment_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
 
                         let call_result: Result<Vec<u8>, _> = ic_cdk::api::call::call_raw(
-                            ic_cdk::export::Principal::from_text(canister_id_string).unwrap(),
+                            canister_id_principal,
                             &method_string,
                             &args_raw_vec,
                             payment
@@ -221,7 +221,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                                 _azle_args = vec![canister_result_js_value];
                             },
                             Err(err) => {
-                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).into_js_value(_azle_boa_context);
+                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).azle_into_js_value(_azle_boa_context);
 
                                 let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
                                     .property(
@@ -244,7 +244,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                         let call_args_js_object = call_args_js_value.as_object().unwrap();
 
                         let canister_id_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap();
-                        let canister_id_string = canister_id_js_value.as_string().unwrap().to_string();
+                        let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
 
                         let method_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
                         let method_string = method_js_value.as_string().unwrap().to_string();
@@ -257,7 +257,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                         let payment: u128 = payment_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
 
                         let call_result: Result<Vec<u8>, _> = ic_cdk::api::call::call_raw128(
-                            ic_cdk::export::Principal::from_text(canister_id_string).unwrap(),
+                            canister_id_principal,
                             &method_string,
                             &args_raw_vec,
                             payment
@@ -280,7 +280,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                                 _azle_args = vec![canister_result_js_value];
                             },
                             Err(err) => {
-                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).into_js_value(_azle_boa_context);
+                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).azle_into_js_value(_azle_boa_context);
 
                                 let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
                                     .property(
@@ -309,7 +309,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                                 return `
                                     "${callFunctionInfo.functionName}" => {
                                         let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
-                                        let canister_id_string = canister_id_js_value.as_string().unwrap().to_string();
+                                        let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
 
                                         ${callFunctionInfo.params.map((param, index) => {
                                             return `
@@ -319,7 +319,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                                         }).join('\n')}
 
                                         let call_result = ${callFunctionInfo.functionName}(
-                                            canister_id_string,
+                                            canister_id_principal,
                                             ${callFunctionInfo.params.map((param) => {
                                                 return param.paramName;
                                             }).join(',\n')}
@@ -342,7 +342,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                                                 _azle_args = vec![canister_result_js_value];
                                             },
                                             Err(err) => {
-                                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).into_js_value(_azle_boa_context);
+                                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).azle_into_js_value(_azle_boa_context);
 
                                                 let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
                                                     .property(
@@ -382,6 +382,10 @@ function getImplItemMethodReturnTypeName(implItemMethod: ImplItemMethod): string
         return '';
     }
     else {
+        if (returnTypeAst.path === undefined) {
+            return '';
+        }
+
         return returnTypeAst.path.segments.map((segment: any) => segment.ident).join('::');
         // return returnTypeAst.path.segments[0].ident;
     }

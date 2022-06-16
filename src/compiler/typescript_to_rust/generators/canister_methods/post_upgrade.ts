@@ -9,10 +9,7 @@ import { generateIcObject } from '../ic_object';
 import { getStableStorageVariableInfos } from './pre_upgrade';
 import { getFunctionName } from '../../../typescript_to_candid/ast_utilities/miscellaneous';
 
-export function generateCanisterMethodPostUpgrade(
-    sourceFiles: readonly tsc.SourceFile[],
-    js: JavaScript,
-): Rust {
+export function generateCanisterMethodPostUpgrade(sourceFiles: readonly tsc.SourceFile[]): Rust {
     const stableStorageVariableInfos = getStableStorageVariableInfos(sourceFiles);
 
     const icObject: Rust = generateIcObject(stableStorageVariableInfos);
@@ -53,6 +50,11 @@ export function generateCanisterMethodPostUpgrade(
                 BOA_CONTEXT_OPTION = Some(boa_engine::Context::default());
                 let mut boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
         
+                boa_context.eval(format!(
+                    "let exports = {{}}; {compiled_js}",
+                    compiled_js = PRINCIPAL_JS
+                )).unwrap();
+
                 ${icObject}
         
                 boa_context.register_global_property(
@@ -60,10 +62,10 @@ export function generateCanisterMethodPostUpgrade(
                     ic,
                     boa_engine::property::Attribute::all()
                 );
-        
+
                 boa_context.eval(format!(
-                    "let exports = {{}}; {compiled_js}",
-                    compiled_js = r#"${js}"#
+                    "{compiled_js}",
+                    compiled_js = MAIN_JS
                 )).unwrap();
 
                 ${postUpgradeFunctionDeclaration === undefined ? '' : `
