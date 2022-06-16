@@ -4,10 +4,14 @@
   "description": "Reimplementation of the [Motoko Http Counter example](https://github.com/dfinity/examples/tree/master/motoko/http_counter)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ts-node --transpile-only --ignore=false test/test.ts"
   },
   "dependencies": {
     "azle": "^0.4.0",
     "encode-utf8": "^2.0.0"
+  },
+  "devDependencies": {
+    "@dfinity/agent": "^0.11.3",
+    "ts-node": "^10.8.1"
   }
 }

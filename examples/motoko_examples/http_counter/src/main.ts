@@ -51,6 +51,10 @@ function encode(string: string): nat8[] {
     return Array.from(new Uint8Array(encodeUtf8(string)))
 }
 
+function gzipencode(string: string): nat8[] {
+    return string.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? [];
+}
+
 export function http_request(req: HttpRequest) : Query<HttpResponse> {
     if (req.method === 'GET') {
         if (req.headers.find(isGzip) === undefined) {
@@ -105,7 +109,7 @@ export function http_request(req: HttpRequest) : Query<HttpResponse> {
         return {
             status_code: 200,
             headers: [ ['content-type', 'text/plain'], ['content-encoding', 'gzip'] ],
-            body: encode('\\1f\\8b\\08\\00\\98\\02\\1b\\62\\00\\03\\2b\\2c\\4d\\2d\\aa\\e4\\02\\00\\d6\\80\\2b\\05\\06\\00\\00\\00'),
+            body: gzipencode('\\1f\\8b\\08\\00\\98\\02\\1b\\62\\00\\03\\2b\\2c\\4d\\2d\\aa\\e4\\02\\00\\d6\\80\\2b\\05\\06\\00\\00\\00'),
             streaming_strategy: null,
             upgrade: null
         }
@@ -145,7 +149,7 @@ export function http_request_update(req: HttpRequest): Update<HttpResponse> {
         return {
             status_code: 201,
             headers: [ ['content-type', 'text/plain'], ['content-encoding', 'gzip'] ],
-            body: encode('\\1f\\8b\\08\\00\\98\\02\\1b\\62\\00\\03\\2b\\2c\\4d\\2d\\aa\\e4\\02\\00\\d6\\80\\2b\\05\\06\\00\\00\\00'),
+            body: gzipencode('\\1f\\8b\\08\\00\\37\\02\\1b\\62\\00\\03\\2b\\2d\\48\\49\\2c\\49\\e5\\02\\00\\a8\\da\\91\\6c\\07\\00\\00\\00'),
             streaming_strategy: null,
             upgrade: null
         }
@@ -185,4 +189,3 @@ export function http_streaming(token: Token): Query<StreamingCallbackHttpRespons
         }
     }
 }
-
