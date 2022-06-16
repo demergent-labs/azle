@@ -8,6 +8,11 @@ export function generateIcObject(stableStorageVariableInfos: StableStorageVariab
 
         let ic = boa_engine::object::ObjectInitializer::new(&mut boa_context)
             .function(
+                _azle_ic_accept_message,
+                "accept_message",
+                0
+            )
+            .function(
                 azle_ic_caller,
                 "caller",
                 0

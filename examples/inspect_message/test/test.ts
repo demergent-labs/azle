@@ -31,16 +31,16 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'getInitialized',
+        name: 'acceptMessage',
         test: async () => {
             try {
-                const result = await inspect_message_canister.getInitialized();
+                const result = await inspect_message_canister.acceptMessage();
                 return {
-                    ok: false
+                    ok: result === true
                 };
             } catch (error) {
                 return {
-                    ok: ((error as any).message as string).includes('Code: 403')
+                    ok: false
                 };
             }
         }

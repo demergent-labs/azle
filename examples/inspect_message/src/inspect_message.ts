@@ -1,10 +1,10 @@
-import { InspectMessage, Update } from 'azle';
+import { ic, InspectMessage, Update } from 'azle';
 
 export function inspectMessage(): InspectMessage {
-    console.log('inspect_message initialized');
+    console.log('inspectMessage called');
+    ic.accept_message();
 }
 
-// This method will always return a 403
-export function getInitialized(): Update<boolean> {
+export function acceptMessage(): Update<boolean> {
     return true;
 }
