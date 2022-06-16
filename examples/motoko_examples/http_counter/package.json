@@ -1,0 +1,13 @@
+{
+  "name": "http_counter",
+  "version": "0.1.0",
+  "description": "Reimplementation of the [Motoko Http Counter example](https://github.com/dfinity/examples/tree/master/motoko/http_counter)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "azle": "^0.4.0",
+    "encode-utf8": "^2.0.0"
+  }
+}
