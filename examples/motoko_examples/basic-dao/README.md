@@ -23,4 +23,5 @@ dfx deploy basic_dao --argument "(
         proposal_submission_deposit = record { amount_e8s = 10_000 };
     }
 )"
+
 ```
