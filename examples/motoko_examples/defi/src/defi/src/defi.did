@@ -1,0 +1,18 @@
+type TradingPair = record { principal; principal };
+
+type Metadata = record {
+    "logo": text;
+    "name": text;
+    "symbol": text;
+    "decimals": nat8;
+    "totalSupply": nat;
+    "owner": principal;
+    "fee": nat;
+};
+
+type TxReceipt = variant { "Ok": nat; "Err": variant { "InsufficientAllowance": null; "InsufficientBalance": null; "ErrorOperationStyle": null; "Unauthorized": null; "LedgerTrap": null; "ErrorTo": null; "Other": null; "BlockUsed": null; "AmountTooSmall": null } };
+
+service: {
+    "whoami": () -> (text) query;
+    "getOrders": () -> (TradingPair) query;
+}

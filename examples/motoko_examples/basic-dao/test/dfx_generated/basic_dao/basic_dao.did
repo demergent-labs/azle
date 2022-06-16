@@ -1,0 +1,71 @@
+type Tokens = record {
+    "amount_e8s": nat;
+};
+
+type Account = record {
+    "owner": principal;
+    "tokens": Tokens;
+};
+
+type Proposal = record {
+    "id": nat;
+    "votes_no": Tokens;
+    "voters": vec principal;
+    "state": ProposalState;
+    "timestamp": nat;
+    "proposer": principal;
+    "votes_yes": Tokens;
+    "payload": ProposalPayload;
+};
+
+type SystemParams = record {
+    "transfer_fee": Tokens;
+    "proposal_vote_threshold": Tokens;
+    "proposal_submission_deposit": Tokens;
+};
+
+type TransferArgs = record {
+    "to": principal;
+    "amount": record { "amount_e8s": nat; };
+};
+
+type ProposalPayload = record {
+    "method": text;
+    "canister_id": principal;
+    "message": vec nat8;
+};
+
+type VoteArgs = record {
+    "vote": Vote;
+    "proposal_id": nat;
+};
+
+type UpdateSystemParamsPayload = record {
+    "transfer_fee": opt Tokens;
+    "proposal_vote_threshold": opt Tokens;
+    "proposal_submission_deposit": opt Tokens;
+};
+
+type TransferResult = variant { "ok": nat; "err": text };
+
+type SubmitProposalResult = variant { "ok": nat; "err": text };
+
+type VoteResult = variant { "ok": ProposalState; "err": text };
+
+type ProposalState = variant { "failed": text; "open": null; "executing": null; "rejected": null; "succeeded": null; "accepted": null };
+
+type Vote = variant { "no": null; "yes": null };
+
+service: (vec Account, vec Proposal, SystemParams) -> {
+    "accountBalance": () -> (Tokens) query;
+    "listAccounts": () -> (vec Account) query;
+    "getProposal": (nat) -> (opt Proposal) query;
+    "listProposals": () -> (vec Proposal) query;
+    "getSystemParams": () -> (SystemParams) query;
+    "whoami": () -> (principal) query;
+    "getInstaller": () -> (principal) query;
+    "transfer": (TransferArgs) -> (TransferResult);
+    "submitProposal": (ProposalPayload) -> (SubmitProposalResult);
+    "vote": (VoteArgs) -> (VoteResult);
+    "updateSystemParams": (UpdateSystemParamsPayload) -> ();
+}

@@ -1,0 +1,16 @@
+{
+  "canisters": {
+    "basic_dao": {
+      "type": "custom",
+      "build": "npx azle basic_dao",
+      "root": "src",
+      "ts": "src/basic_dao.ts",
+      "candid": "src/basic_dao.did",
+      "wasm": "target/wasm32-unknown-unknown/release/basic_dao.wasm",
+      "declarations": {
+        "output": "test/dfx_generated/basic_dao"
+      }
+    }
+  },
+  "dfx": "0.9.3"
+}
