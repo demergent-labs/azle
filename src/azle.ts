@@ -58,7 +58,7 @@ function installRustDependencies() {
     );
 
     execSync(
-        `cd target/azle && cargo install ic-cdk-optimizer --root ..`,
+        `cargo install ic-cdk-optimizer`,
         { stdio: 'inherit' }
     );
 }
@@ -102,7 +102,7 @@ function compileRustCode(canisterName: string) {
 
     // optimization, binary is too big to deploy without this
     execSync(
-        `./target/bin/ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/${canisterName}.wasm -o ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
+        `~/.cargo/bin/ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/${canisterName}.wasm -o ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
         { stdio: 'inherit' }
     );
 
