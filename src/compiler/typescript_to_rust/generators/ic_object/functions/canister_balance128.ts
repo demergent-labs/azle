@@ -1,7 +1,7 @@
 import { Rust } from '../../../../../types';
 
 export function generateIcObjectFunctionCanisterBalance128(): Rust {
-    return `
+    return /* rust */ `
         fn _azle_ic_canister_balance128(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
