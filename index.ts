@@ -52,6 +52,7 @@ ic.call_raw128 = function(...args) {
 };
 
 type ic = {
+    accept_message: () => void;
     // call: (
     //     canisterId: Principal,
     //     methodName: string,

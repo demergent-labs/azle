@@ -1,2 +1,2 @@
 import type { Principal } from '@dfinity/principal';
-export interface _SERVICE { 'getInitialized' : () => Promise<boolean> }
+export interface _SERVICE { 'acceptMessage' : () => Promise<boolean> }
