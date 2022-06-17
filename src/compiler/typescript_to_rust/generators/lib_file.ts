@@ -1,5 +1,6 @@
 import { generateCanisterMethodsDeveloperDefined } from './canister_methods/developer_defined';
 import { generateCanisterMethodInit } from './canister_methods/init';
+import { generateCanisterMethodInspectMessage } from './canister_methods/inspect_message';
 import { generateHead } from './head';
 import { generateIcObjectFunctionCaller } from './ic_object/functions/caller';
 import { generateIcObjectFunctionCanisterBalance } from './ic_object/functions/canister_balance';
@@ -50,6 +51,7 @@ export async function generateLibFile(
         js,
         sourceFiles
     );
+    const canisterMethodInspectMessage: Rust = generateCanisterMethodInspectMessage(sourceFiles);
     const canisterMethodPreUpgrade: Rust = generateCanisterMethodPreUpgrade(sourceFiles);
     const canisterMethodPostUpgrade: Rust = generateCanisterMethodPostUpgrade(sourceFiles);
     const canisterMethodHeartbeat: Rust = generateCanisterMethodHeartbeat(sourceFiles);
@@ -84,6 +86,7 @@ export async function generateLibFile(
         ${azleTryFromJsValueTrait}
 
         ${canisterMethodInit}
+        ${canisterMethodInspectMessage}
         ${canisterMethodPreUpgrade}
         ${canisterMethodPostUpgrade}
         ${canisterMethodHeartbeat}

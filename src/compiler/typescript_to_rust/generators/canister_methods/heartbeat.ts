@@ -32,7 +32,7 @@ export function generateCanisterMethodHeartbeat(sourceFiles: readonly tsc.Source
         #[ic_cdk_macros::heartbeat]
         fn _azle_${heartbeatFunctionName}() {
             unsafe {
-                ic_cdk::block_on(async {
+                ic_cdk::spawn(async {
                     let boa_context_option = BOA_CONTEXT_OPTION.as_mut();
 
                     if let Some(boa_context) = boa_context_option {
