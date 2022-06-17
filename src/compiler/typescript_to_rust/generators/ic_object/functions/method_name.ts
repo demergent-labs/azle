@@ -1,7 +1,7 @@
 import { Rust } from '../../../../../types';
 
 export function generateIcObjectFunctionMethodName(): Rust {
-    return `
+    return /* rust */ `
         fn _azle_method_name(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
