@@ -46,9 +46,19 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'canisterBalance',
+        name: 'canister_balance',
         test: async () => {
-            const result = await ic_api_canister.canisterBalance();
+            const result = await ic_api_canister.canister_balance();
+
+            return {
+                ok: result === 4_000_000_000_000n
+            };
+        }
+    },
+    {
+        name: 'canister_balance128',
+        test: async () => {
+            const result = await ic_api_canister.canister_balance128();
 
             return {
                 ok: result === 4_000_000_000_000n

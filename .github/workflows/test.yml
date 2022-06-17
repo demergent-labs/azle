@@ -41,11 +41,16 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       # TODO we should use some Action-specific bot account
-      - run: git config --global user.name 'Jordan Last'
-      - run: git config --global user.email 'jordan.michael.last@gmail.com'
-      - run: git config --global commit.gpgsign true
-      - run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
-      - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
+      - if: contains(github.head_ref, 'release--')
+        run: git config --global user.name 'Jordan Last'
+      - if: contains(github.head_ref, 'release--')
+        run: git config --global user.email 'jordan.michael.last@gmail.com'
+      - if: contains(github.head_ref, 'release--')
+        run: git config --global commit.gpgsign true
+      - if: contains(github.head_ref, 'release--')
+        run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
+      - if: contains(github.head_ref, 'release--')
+        run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
       - id: example_directories
         # TODO to improve this further we might be able to create an environment variable that grabs the example directories with a glob
         # TODO we want to be able to easily include and exclude examples though

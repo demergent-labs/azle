@@ -13,8 +13,13 @@ export function generateIcObject(stableStorageVariableInfos: StableStorageVariab
                 0
             )
             .function(
-                azle_ic_canister_balance,
-                "canisterBalance",
+                _azle_ic_canister_balance,
+                "canister_balance",
+                0
+            )
+            .function(
+                _azle_ic_canister_balance128,
+                "canister_balance128",
                 0
             )
             .function(

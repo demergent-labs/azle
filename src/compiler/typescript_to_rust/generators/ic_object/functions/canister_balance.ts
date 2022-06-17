@@ -2,7 +2,7 @@ import { Rust } from '../../../../../types';
 
 export function generateIcObjectFunctionCanisterBalance(): Rust {
     return `
-        fn azle_ic_canister_balance(
+        fn _azle_ic_canister_balance(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
