@@ -28,10 +28,6 @@ export function generateCanisterMethodInspectMessage(
         inspectMessageFunctionDeclaration
     );
 
-    // TODO study deeply what is going on here...I wonder if init and inspectMessage might be writing over each other
-    // TODO I probably did not need to do all of the weird pyramid stuff, unless the shared mutable state is actually an issue
-    // TODO I am hoping that it isn't though, as I hope that each update call is executed independently
-    // TODO we will have to see though
     return /* rust */ `
         #[ic_cdk_macros::inspect_message]
         fn _azle_${inspectMessageFunctionName}() {
