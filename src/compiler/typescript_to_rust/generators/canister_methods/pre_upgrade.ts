@@ -24,13 +24,13 @@ export function generateCanisterMethodPreUpgrade(sourceFiles: readonly tsc.Sourc
 
     const developerDefinedPreUpgradeFunctionName = getDeveloperDefinedPreUpgradeFunctionName(preUpgradeFunctionDeclaration);
 
-    return `
+    return /* rust */ `
         #[ic_cdk_macros::pre_upgrade]
         fn pre_upgrade() {
             unsafe {
                 let mut boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
 
-                ${preUpgradeFunctionDeclaration === undefined ? '' : `
+                ${preUpgradeFunctionDeclaration === undefined ? '' : /* rust */ `
                     let exports_js_value = boa_context.eval("exports").unwrap();
                     let exports_js_object = exports_js_value.as_object().unwrap();
         
@@ -52,14 +52,14 @@ export function generateCanisterMethodPreUpgrade(sourceFiles: readonly tsc.Sourc
                 let _azle_stable_storage_js_object = _azle_stable_storage_js_value.as_object().unwrap();
     
                 ${stableStorageVariableInfos.map((stableStorageVariableInfo) => {
-                    return `
+                    return /* rust */ `
                         let ${stableStorageVariableInfo.name}_js_value = _azle_stable_storage_js_object.get("${stableStorageVariableInfo.name}", &mut boa_context).unwrap();
                         let ${stableStorageVariableInfo.name}: ${stableStorageVariableInfo.rustType} = ${stableStorageVariableInfo.name}_js_value.azle_try_from_js_value(&mut boa_context).unwrap();
                     `;
                 }).join('')}
     
                 // TODO should we panic ever in the pre_upgrade?? If so we should unwrap the stable_save
-                ${stableStorageVariableInfos.length === 0 ? '' : `
+                ${stableStorageVariableInfos.length === 0 ? '' : /* rust */ `
                     ic_cdk::storage::stable_save((${stableStorageVariableInfos.map((stableStorageVariableInfo) => `${stableStorageVariableInfo.name}`).join(',')}${stableStorageVariableInfos.length === 1 ? ',' : ''}));
                 `}
             }
