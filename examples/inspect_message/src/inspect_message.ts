@@ -1,12 +1,10 @@
 import { InspectMessage, Update } from 'azle';
 
-let initialized = false;
-
 export function inspectMessage(): InspectMessage {
-    initialized = true;
-    console.log('inspect_message initialized', initialized);
+    console.log('inspect_message initialized');
 }
 
+// This method will always return a 403
 export function getInitialized(): Update<boolean> {
-    return initialized;
+    return true;
 }

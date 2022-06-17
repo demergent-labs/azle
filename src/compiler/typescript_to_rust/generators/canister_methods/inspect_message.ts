@@ -36,44 +36,34 @@ export function generateCanisterMethodInspectMessage(
         #[ic_cdk_macros::inspect_message]
         fn _azle_${inspectMessageFunctionName}() {
             unsafe {
-                ic_cdk::spawn(async {
-                    let boa_context_option = BOA_CONTEXT_OPTION.as_mut();
+                let boa_context_option = BOA_CONTEXT_OPTION.as_mut();
 
-                    if let Some(boa_context) = boa_context_option {
-                        let exports_js_value_result = boa_context.eval("exports");
+                if let Some(boa_context) = boa_context_option {
+                    let exports_js_value_result = boa_context.eval("exports");
 
-                        if let Ok(exports_js_value) = exports_js_value_result {
-                            let exports_js_object_option = exports_js_value.as_object();
+                    if let Ok(exports_js_value) = exports_js_value_result {
+                        let exports_js_object_option = exports_js_value.as_object();
 
-                            if let Some(exports_js_object) = exports_js_object_option {
-                                let ${inspectMessageFunctionName}_js_value_result =
-                                    exports_js_object.get("${inspectMessageFunctionName}", boa_context);
+                        if let Some(exports_js_object) = exports_js_object_option {
+                            let ${inspectMessageFunctionName}_js_value_result =
+                                exports_js_object.get("${inspectMessageFunctionName}", boa_context);
 
-                                if let Ok(${inspectMessageFunctionName}_js_value) =
-                                    ${inspectMessageFunctionName}_js_value_result
+                            if let Ok(${inspectMessageFunctionName}_js_value) =
+                                ${inspectMessageFunctionName}_js_value_result
+                            {
+                                let ${inspectMessageFunctionName}_js_object_option =
+                                    ${inspectMessageFunctionName}_js_value.as_object();
+
+                                if let Some(${inspectMessageFunctionName}_js_object) =
+                                    ${inspectMessageFunctionName}_js_object_option
                                 {
-                                    let ${inspectMessageFunctionName}_js_object_option =
-                                        ${inspectMessageFunctionName}_js_value.as_object();
-
-                                    if let Some(${inspectMessageFunctionName}_js_object) =
-                                        ${inspectMessageFunctionName}_js_object_option
-                                    {
-                                        let return_value_result = ${inspectMessageFunctionName}_js_object
-                                            .call(&boa_engine::JsValue::Null, &[], boa_context);
-
-                                        if let Ok(return_value) = return_value_result {
-                                            if return_value.is_object() == true
-                                                && return_value.as_object().unwrap().is_generator() == true
-                                            {
-                                                handle_generator_result(boa_context, &return_value).await;
-                                            }
-                                        }
-                                    }
+                                    let return_value = ${inspectMessageFunctionName}_js_object
+                                        .call(&boa_engine::JsValue::Null, &[], boa_context).unwrap();
                                 }
                             }
                         }
                     }
-                });
+                }
             }
         }
     `;
