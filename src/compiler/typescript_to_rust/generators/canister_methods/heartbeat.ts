@@ -28,7 +28,7 @@ export function generateCanisterMethodHeartbeat(sourceFiles: readonly tsc.Source
     // TODO I probably did not need to do all of the weird pyramid stuff, unless the shared mutable state is actually an issue
     // TODO I am hoping that it isn't though, as I hope that each update call is executed independently
     // TODO we will have to see though
-    return `
+    return /* rust */ `
         #[ic_cdk_macros::heartbeat]
         fn _azle_${heartbeatFunctionName}() {
             unsafe {
@@ -40,13 +40,13 @@ export function generateCanisterMethodHeartbeat(sourceFiles: readonly tsc.Source
 
                         if let Ok(exports_js_value) = exports_js_value_result {
                             let exports_js_object_option = exports_js_value.as_object();
-        
+
                             if let Some(exports_js_object) = exports_js_object_option {
                                 let ${heartbeatFunctionName}_js_value_result = exports_js_object.get("${heartbeatFunctionName}", boa_context);
-                                
+
                                 if let Ok(${heartbeatFunctionName}_js_value) = ${heartbeatFunctionName}_js_value_result {
                                     let ${heartbeatFunctionName}_js_object_option = ${heartbeatFunctionName}_js_value.as_object();
-                            
+
                                     if let Some(${heartbeatFunctionName}_js_object) = ${heartbeatFunctionName}_js_object_option {
                                         let return_value_result = ${heartbeatFunctionName}_js_object.call(
                                             &boa_engine::JsValue::Null,

@@ -1,7 +1,4 @@
-import {
-    JavaScript,
-    Rust
-} from '../../../../types';
+import { Rust } from '../../../../types';
 import * as tsc from 'typescript';
 import { getCanisterMethodFunctionDeclarationsFromSourceFiles } from '../../../typescript_to_candid/ast_utilities/canister_methods';
 import { getUserDefinedInitFunctionParams } from './init';
@@ -43,7 +40,7 @@ export function generateCanisterMethodPostUpgrade(sourceFiles: readonly tsc.Sour
 
     const developerDefinedPostUpgradeFunctionName = getDeveloperDefinedPostUpgradeFunctionName(postUpgradeFunctionDeclaration);
 
-    return `
+    return /* rust */ `
         #[ic_cdk_macros::post_upgrade]
         fn post_upgrade(${userDefinedInitFunctionParams.filter((param) => param.paramName !== 'boa_context').map((param) => `${param.paramName}: ${param.paramType}`).join(', ')}) {
             unsafe {
@@ -68,7 +65,7 @@ export function generateCanisterMethodPostUpgrade(sourceFiles: readonly tsc.Sour
                     compiled_js = MAIN_JS
                 )).unwrap();
 
-                ${postUpgradeFunctionDeclaration === undefined ? '' : `
+                ${postUpgradeFunctionDeclaration === undefined ? '' : /* rust */ `
                     let exports_js_value = boa_context.eval("exports").unwrap();
                     let exports_js_object = exports_js_value.as_object().unwrap();
         
