@@ -25,8 +25,8 @@ export function* get_randomness_indirectly(): UpdateAsync<nat8[]> {
 
 export function* get_randomness_super_indirectly(): UpdateAsync<nat8[]> {
     const randomness0: nat8[] = yield get_randomness_level0();
-    const randomness1: nat8[] = yield get_randomness_level0();
-    const randomness2: nat8[] = yield get_randomness_level0();
+    const randomness1: nat8[] = yield get_randomness_level1();
+    const randomness2: nat8[] = yield get_randomness_level2();
 
     return [
         ...randomness0,
