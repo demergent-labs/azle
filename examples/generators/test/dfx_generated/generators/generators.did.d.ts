@@ -56,4 +56,5 @@ export interface UpdateSettingsArgs {
 export interface _SERVICE {
   'get_randomness_directly' : () => Promise<Array<number>>,
   'get_randomness_indirectly' : () => Promise<Array<number>>,
+  'get_randomness_super_indirectly' : () => Promise<Array<number>>,
 }
