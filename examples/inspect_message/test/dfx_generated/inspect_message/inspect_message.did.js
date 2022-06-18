@@ -1,4 +1,8 @@
 export const idlFactory = ({ IDL }) => {
-  return IDL.Service({ 'getInitialized' : IDL.Func([], [IDL.Bool], []) });
+  return IDL.Service({
+    'accessible' : IDL.Func([], [IDL.Bool], []),
+    'alsoInaccessible' : IDL.Func([], [IDL.Bool], []),
+    'inaccessible' : IDL.Func([], [IDL.Bool], []),
+  });
 };
 export const init = ({ IDL }) => { return []; };

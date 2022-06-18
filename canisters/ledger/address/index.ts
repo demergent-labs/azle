@@ -1,11 +1,4 @@
-// TODO I think this should be part of the ICP canister
-// TODO add proper licensing and create proper npm package so we do not have to reimplement this all of the time
-// TODO also once Azle is on the version of boa with class support, we should be able to use @dfinity/principal I would hope
-// TODO maybe just make an azle-principal package
-
 import { Principal } from '../../../index';
-// import { getCrc32 } from './crc32'; // TODO after testing remove this
-// import { decode } from './decode'; // TODO after testing remove this
 import { getCrc32 } from '@dfinity/principal/lib/esm/utils/getCrc';
 import { sha224 } from 'hash.js';
 import { Address } from '../index';
@@ -38,7 +31,6 @@ export function binary_address_from_address(address: Address): number[] {
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 function address_from_principal(principal: Principal, subaccount: number): Address {
     const prefixBytes = new Uint8Array([10, 97, 99, 99, 111, 117, 110, 116, 45, 105, 100]); // \0xAaccount-id
-    // const principalBytes = decodePrincipalFromText(principal.toText()); // TODO I think we can change this up a lot now    
     const principalBytes = principal.toUint8Array();
     const subaccountBytes = getSubAccountArray(subaccount);
 
@@ -56,15 +48,6 @@ function address_from_principal(principal: Principal, subaccount: number): Addre
         ...hash
     ]));
 }
-
-// function decodePrincipalFromText(text: string): Uint8Array {
-//     const canisterIdNoDash = text.toLowerCase().replace(/-/g, '');
-
-//     let arr = decode(canisterIdNoDash);
-//     arr = arr.slice(4, arr.length);
-
-//     return arr;
-// }
 
 function getSubAccountArray(subaccount: number): number[] {
     return Array(28).fill(0).concat(to32Bits(subaccount ? subaccount : 0));

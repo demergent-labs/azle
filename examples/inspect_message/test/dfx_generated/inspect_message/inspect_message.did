@@ -1,3 +1,5 @@
 service: {
-    "getInitialized": () -> (bool);
+    "accessible": () -> (bool);
+    "inaccessible": () -> (bool);
+    "alsoInaccessible": () -> (bool);
 }

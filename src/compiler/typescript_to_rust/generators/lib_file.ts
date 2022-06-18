@@ -2,10 +2,12 @@ import { generateCanisterMethodsDeveloperDefined } from './canister_methods/deve
 import { generateCanisterMethodInit } from './canister_methods/init';
 import { generateCanisterMethodInspectMessage } from './canister_methods/inspect_message';
 import { generateHead } from './head';
+import { generateIcObjectFunctionAcceptMessage } from './ic_object/functions/accept_message';
 import { generateIcObjectFunctionCaller } from './ic_object/functions/caller';
 import { generateIcObjectFunctionCanisterBalance } from './ic_object/functions/canister_balance';
 import { generateIcObjectFunctionCanisterBalance128 } from './ic_object/functions/canister_balance128';
 import { generateIcObjectFunctionId } from './ic_object/functions/id';
+import { generateIcObjectFunctionMethodName } from './ic_object/functions/method_name';
 import { generateIcObjectFunctionPrint } from './ic_object/functions/print';
 import { generateIcObjectFunctionTime } from './ic_object/functions/time';
 import { generateIcObjectFunctionTrap } from './ic_object/functions/trap';
@@ -66,10 +68,12 @@ export async function generateLibFile(
 
     const handleGeneratorResultFunction = generateHandleGeneratorResultFunction(callFunctionInfos);
 
+    const icObjectFunctionAcceptMessage: Rust = generateIcObjectFunctionAcceptMessage();
     const icObjectFunctionCaller: Rust = generateIcObjectFunctionCaller();
     const icObjectFunctionCanisterBalance: Rust = generateIcObjectFunctionCanisterBalance();
     const icObjectFunctionCanisterBalance128: Rust = generateIcObjectFunctionCanisterBalance128();
     const icObjectFunctionId: Rust = generateIcObjectFunctionId();
+    const icObjectFunctionMethodName: Rust = generateIcObjectFunctionMethodName();
     const icObjectFunctionPrint: Rust = generateIcObjectFunctionPrint();
     const icObjectFunctionTime: Rust = generateIcObjectFunctionTime();
     const icObjectFunctionTrap: Rust = generateIcObjectFunctionTrap();
@@ -94,10 +98,12 @@ export async function generateLibFile(
 
         ${handleGeneratorResultFunction}
 
+        ${icObjectFunctionAcceptMessage}
         ${icObjectFunctionCaller}
         ${icObjectFunctionCanisterBalance}
         ${icObjectFunctionCanisterBalance128}
         ${icObjectFunctionId}
+        ${icObjectFunctionMethodName}
         ${icObjectFunctionPrint}
         ${icObjectFunctionTime}
         ${icObjectFunctionTrap}

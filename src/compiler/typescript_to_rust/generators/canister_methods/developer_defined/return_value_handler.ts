@@ -101,11 +101,10 @@ export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust
     // return `serde_json::from_value(_azle_return_value.to_json(&mut boa_context).unwrap()).unwrap()`;
 }
 
-// TODO the generator implementation is not sufficient
-// TODO I am afraid we might have to do something recursively...well we can just mutate things I guess
-// TODO but if we return a generator as the call to next, we need to deal with that as well it seems
+// TODO Now that we are using the async_recursion crate we can probably rewrite this entirely recursively (get rid of the mutations)
 export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFunctionInfo[]): Rust {
-    return `
+    return /* rust */ `
+        #[async_recursion::async_recursion(?Send)]
         async fn handle_generator_result(
             _azle_boa_context: &mut boa_engine::Context,
             _azle_return_value: &boa_engine::JsValue
@@ -128,12 +127,21 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                 let yield_result_done_js_value = yield_result_js_object.get("done", _azle_boa_context).unwrap();
                 let yield_result_done_bool = yield_result_done_js_value.as_boolean().unwrap();
                 
-                // TODO we need to handle this return value being a generator
-                // TODO we will have to emulate recursion with mutations
                 let yield_result_value_js_value = yield_result_js_object.get("value", _azle_boa_context).unwrap();
 
                 if yield_result_done_bool == false {
                     let yield_result_value_js_object = yield_result_value_js_value.as_object().unwrap();
+
+                    if yield_result_value_js_object.is_generator() {
+                        let recursed_generator_js_value = handle_generator_result(
+                            _azle_boa_context,
+                            &yield_result_value_js_value
+                        ).await;
+
+                        _azle_args = vec![recursed_generator_js_value];
+
+                        continue;
+                    }
                     
                     let name_js_value = yield_result_value_js_object.get("name", _azle_boa_context).unwrap();
                     let name_string = name_js_value.as_string().unwrap();
@@ -306,7 +314,7 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
 
                         match &call_function_name_string[..] {
                             ${callFunctionInfos.map((callFunctionInfo) => {
-                                return `
+                                return /* rust */`
                                     "${callFunctionInfo.functionName}" => {
                                         let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
                                         let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();

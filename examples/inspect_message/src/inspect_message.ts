@@ -1,10 +1,28 @@
-import { InspectMessage, Update } from 'azle';
+import { ic, InspectMessage, Update } from 'azle';
 
 export function inspectMessage(): InspectMessage {
-    console.log('inspect_message initialized');
+    console.log('inspect_message called');
+
+    if (ic.method_name() === 'accessible') {
+        ic.accept_message();
+        return;
+    }
+
+    if (ic.method_name() === 'inaccessible') {
+        return;
+    }
+
+    throw `Method "${ic.method_name()}" not allowed`;
 }
 
-// This method will always return a 403
-export function getInitialized(): Update<boolean> {
+export function accessible(): Update<boolean> {
     return true;
+}
+
+export function inaccessible(): Update<boolean> {
+    return false;
+}
+
+export function alsoInaccessible(): Update<boolean> {
+    return false;
 }
