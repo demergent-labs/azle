@@ -1,8 +1,5 @@
 import { generateIcObject } from '../ic_object';
-import {
-    JavaScript,
-    Rust
-} from '../../../../types';
+import { Rust } from '../../../../types';
 import * as tsc from 'typescript';
 import { getCanisterMethodFunctionDeclarationsFromSourceFiles } from '../../../typescript_to_candid/ast_utilities/canister_methods';
 import { getFunctionName } from '../../../typescript_to_candid/ast_utilities/miscellaneous';
@@ -12,7 +9,6 @@ import {
 } from '../../ast_utilities/miscellaneous';
 
 export function generateCanisterMethodInit(
-    js: JavaScript,
     sourceFiles: readonly tsc.SourceFile[]
 ): Rust {
     const icObject: Rust = generateIcObject([]);
@@ -44,15 +40,15 @@ export function generateCanisterMethodInit(
         userDefinedInitFunctionParams
     );
 
-    return `
+    return /* rust */ `
         #[ic_cdk_macros::init]
         fn init(${userDefinedInitFunctionParams.filter((param) => param.paramName !== 'boa_context').map((param) => `${param.paramName}: ${param.paramType}`).join(', ')}) {
             unsafe {
                 BOA_CONTEXT_OPTION = Some(boa_engine::Context::default());
                 let mut boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
-        
+
                 ${icObject}
-        
+
                 boa_context.register_global_property(
                     "ic",
                     ic,
@@ -127,14 +123,14 @@ function generateDeveloperDefinedInitFunction(
         paramType: string;
     }[]
 ): Rust {
-    return `
+    return /* rust */ `
         fn _azle_${userDefinedInitFunctionName}(${userDefinedInitFunctionParams.map((param) => `${param.paramName}: ${param.paramType}`).join(', ')}) {
             let exports_js_value = boa_context.eval("exports").unwrap();
             let exports_js_object = exports_js_value.as_object().unwrap();
 
             let ${userDefinedInitFunctionName}_js_value = exports_js_object.get("${userDefinedInitFunctionName}", boa_context).unwrap();
             let ${userDefinedInitFunctionName}_js_object = ${userDefinedInitFunctionName}_js_value.as_object().unwrap();
-        
+
             let return_value = ${userDefinedInitFunctionName}_js_object.call(
                 &boa_engine::JsValue::Null,
                 &[

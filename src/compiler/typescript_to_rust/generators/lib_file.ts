@@ -1,31 +1,15 @@
-import { generateCanisterMethodsDeveloperDefined } from './canister_methods/developer_defined';
-import { generateCanisterMethodInit } from './canister_methods/init';
-import { generateCanisterMethodInspectMessage } from './canister_methods/inspect_message';
-import { generateHead } from './head';
-import { generateIcObjectFunctionAcceptMessage } from './ic_object/functions/accept_message';
-import { generateIcObjectFunctionCaller } from './ic_object/functions/caller';
-import { generateIcObjectFunctionCanisterBalance } from './ic_object/functions/canister_balance';
-import { generateIcObjectFunctionCanisterBalance128 } from './ic_object/functions/canister_balance128';
-import { generateIcObjectFunctionId } from './ic_object/functions/id';
-import { generateIcObjectFunctionMethodName } from './ic_object/functions/method_name';
-import { generateIcObjectFunctionPrint } from './ic_object/functions/print';
-import { generateIcObjectFunctionTime } from './ic_object/functions/time';
-import { generateIcObjectFunctionTrap } from './ic_object/functions/trap';
-import { generateAzleTryFromJsValueTrait } from './azle_try_from_js_value_trait';
 import { generateAzleIntoJsValueTrait } from './azle_into_js_value_trait';
-import { modifyRustCandidTypes } from './modified_rust_candid_types';
-import {
-    CallFunctionInfo,
-    JavaScript,
-    Rust
-} from '../../../types';
+import { generateAzleTryFromJsValueTrait } from './azle_try_from_js_value_trait';
 import { generateCallFunctions } from './call_functions';
-import * as tsc from 'typescript';
-import { generateCanisterMethodHeartbeat } from './canister_methods/heartbeat';
+import { generateSystemCanisterMethods } from './canister_methods';
+import { generateCanisterMethodsDeveloperDefined } from './canister_methods/developer_defined';
 import { generateHandleGeneratorResultFunction } from './canister_methods/developer_defined/return_value_handler';
-import { generateCanisterMethodPreUpgrade } from './canister_methods/pre_upgrade';
-import { generateCanisterMethodPostUpgrade } from './canister_methods/post_upgrade';
+import { generateHead } from './head';
+import { generateIcObjectFunctions } from './ic_object/functions';
+import { modifyRustCandidTypes } from './modified_rust_candid_types';
 import { bundle_and_transpile_ts } from '../../typescript_to_javascript';
+import { CallFunctionInfo, JavaScript, Rust } from '../../../types';
+import * as tsc from 'typescript';
 
 export async function generateLibFile(
     js: JavaScript,
@@ -49,14 +33,8 @@ export async function generateLibFile(
         principal_js
     );
 
-    const canisterMethodInit: Rust = generateCanisterMethodInit(
-        js,
-        sourceFiles
-    );
-    const canisterMethodInspectMessage: Rust = generateCanisterMethodInspectMessage(sourceFiles);
-    const canisterMethodPreUpgrade: Rust = generateCanisterMethodPreUpgrade(sourceFiles);
-    const canisterMethodPostUpgrade: Rust = generateCanisterMethodPostUpgrade(sourceFiles);
-    const canisterMethodHeartbeat: Rust = generateCanisterMethodHeartbeat(sourceFiles);
+    const systemCanisterMethods: Rust =
+        generateSystemCanisterMethods(sourceFiles);
 
     const callFunctionInfos: CallFunctionInfo[] = generateCallFunctions(sourceFiles);
 
@@ -68,15 +46,7 @@ export async function generateLibFile(
 
     const handleGeneratorResultFunction = generateHandleGeneratorResultFunction(callFunctionInfos);
 
-    const icObjectFunctionAcceptMessage: Rust = generateIcObjectFunctionAcceptMessage();
-    const icObjectFunctionCaller: Rust = generateIcObjectFunctionCaller();
-    const icObjectFunctionCanisterBalance: Rust = generateIcObjectFunctionCanisterBalance();
-    const icObjectFunctionCanisterBalance128: Rust = generateIcObjectFunctionCanisterBalance128();
-    const icObjectFunctionId: Rust = generateIcObjectFunctionId();
-    const icObjectFunctionMethodName: Rust = generateIcObjectFunctionMethodName();
-    const icObjectFunctionPrint: Rust = generateIcObjectFunctionPrint();
-    const icObjectFunctionTime: Rust = generateIcObjectFunctionTime();
-    const icObjectFunctionTrap: Rust = generateIcObjectFunctionTrap();
+    const icObjectFunctions: Rust = generateIcObjectFunctions();
 
     const azleIntoJsValueTrait: Rust = generateAzleIntoJsValueTrait();
     const azleTryFromJsValueTrait: Rust = generateAzleTryFromJsValueTrait();
@@ -89,24 +59,13 @@ export async function generateLibFile(
         ${azleIntoJsValueTrait}
         ${azleTryFromJsValueTrait}
 
-        ${canisterMethodInit}
-        ${canisterMethodInspectMessage}
-        ${canisterMethodPreUpgrade}
-        ${canisterMethodPostUpgrade}
-        ${canisterMethodHeartbeat}
+        ${systemCanisterMethods}
+
         ${canisterMethodsDeveloperDefined}
 
         ${handleGeneratorResultFunction}
 
-        ${icObjectFunctionAcceptMessage}
-        ${icObjectFunctionCaller}
-        ${icObjectFunctionCanisterBalance}
-        ${icObjectFunctionCanisterBalance128}
-        ${icObjectFunctionId}
-        ${icObjectFunctionMethodName}
-        ${icObjectFunctionPrint}
-        ${icObjectFunctionTime}
-        ${icObjectFunctionTrap}
+        ${icObjectFunctions}
 
         ${callFunctionInfos.map((callFunctionInfo) => callFunctionInfo.text).join('\n')}
     `;
