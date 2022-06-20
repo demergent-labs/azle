@@ -31,7 +31,8 @@ export function generateCandidTypeInfo(
 
     if (
         typeNode.kind === tsc.SyntaxKind.LiteralType &&
-        (typeNode as tsc.LiteralTypeNode).literal.kind === tsc.SyntaxKind.NullKeyword
+        (typeNode as tsc.LiteralTypeNode).literal.kind ===
+            tsc.SyntaxKind.NullKeyword
     ) {
         return generateCandidTypeInfoForNullKeyword();
     }
@@ -68,7 +69,9 @@ export function generateCandidTypeInfo(
         );
     }
 
-    throw new Error(`Could not generate Candid type name for TypeScript typeNode: ${typeNode.kind}`);
+    throw new Error(
+        `Could not generate Candid type name for TypeScript typeNode: ${typeNode.kind}`
+    );
 }
 
 function generateCandidTypeInfoForStringKeyword(): CandidTypeInfo {
@@ -237,7 +240,7 @@ function generateCandidTypeInfoForTypeReference(
                 typeClass: 'primitive'
             };
         }
-                
+
         if (typeName === 'reserved') {
             return {
                 text: 'reserved',
@@ -245,7 +248,7 @@ function generateCandidTypeInfoForTypeReference(
                 typeClass: 'primitive'
             };
         }
-        
+
         if (typeName === 'empty') {
             return {
                 text: 'empty',
@@ -274,10 +277,13 @@ function generateCandidTypeInfoForTypeReference(
                 throw new Error('This cannot happen');
             }
 
-            if (typeReferenceNode.typeArguments[0].kind !== tsc.SyntaxKind.TypeLiteral) {
+            if (
+                typeReferenceNode.typeArguments[0].kind !==
+                tsc.SyntaxKind.TypeLiteral
+            ) {
                 throw new Error('This is not supported');
             }
-            
+
             // TODO Do we want to allow arrays on inline types? probably?? This might work automatically
             return generateCandidTypeInfoForVariantTypeLiteral(
                 sourceFiles,
@@ -299,10 +305,7 @@ function generateCandidTypeInfoForTypeReference(
 
         // TODO do we need this one anymore if Variant is being found above?
         if (
-            isTypeReferenceNodeAVariant(
-                sourceFiles,
-                typeReferenceNode
-            ) === true
+            isTypeReferenceNodeAVariant(sourceFiles, typeReferenceNode) === true
         ) {
             return {
                 text: typeName,
@@ -312,10 +315,7 @@ function generateCandidTypeInfoForTypeReference(
         }
 
         if (
-            isTypeReferenceNodeARecord(
-                sourceFiles,
-                typeReferenceNode
-            ) === true
+            isTypeReferenceNodeARecord(sourceFiles, typeReferenceNode) === true
         ) {
             return {
                 text: typeName,
@@ -324,12 +324,7 @@ function generateCandidTypeInfoForTypeReference(
             };
         }
 
-        if (
-            isTypeReferenceNodeAFunc(
-                sourceFiles,
-                typeReferenceNode
-            ) === true
-        ) {
+        if (isTypeReferenceNodeAFunc(sourceFiles, typeReferenceNode) === true) {
             return {
                 text: typeName,
                 typeName,
@@ -343,7 +338,9 @@ function generateCandidTypeInfoForTypeReference(
         );
 
         if (typeAliasDeclaration === undefined) {
-            throw new Error(`Could not generate Candid type name for TypeScript type reference node`);
+            throw new Error(
+                `Could not generate Candid type name for TypeScript type reference node`
+            );
         }
 
         const candidTypeInfo = generateCandidTypeInfo(
@@ -354,7 +351,9 @@ function generateCandidTypeInfoForTypeReference(
         return candidTypeInfo;
     }
 
-    throw new Error(`Could not generate Candid type name for TypeScript type reference node`);
+    throw new Error(
+        `Could not generate Candid type name for TypeScript type reference node`
+    );
 }
 
 function generateCandidTypeInfoForRecordTypeLiteral(

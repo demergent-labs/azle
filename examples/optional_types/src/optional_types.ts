@@ -1,9 +1,6 @@
 // TODO let's add more examples here, really test it out
 
-import {
-    Query,
-    Opt
-} from 'azle';
+import { Query, Opt } from 'azle';
 
 type HTML = {
     head: Opt<Head>;
@@ -39,6 +36,8 @@ export function getHeadWithElements(): Query<Opt<Head>> {
     };
 }
 
-export function getElement(element: Opt<Opt<Element>>): Query<Opt<Opt<Element>>> {
+export function getElement(
+    element: Opt<Opt<Element>>
+): Query<Opt<Opt<Element>>> {
     return element;
 }

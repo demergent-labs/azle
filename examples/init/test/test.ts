@@ -1,17 +1,12 @@
-import {
-    run_tests,
-    Test
-} from 'azle/test';
+import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/init';
 
-const init_canister = createActor(
-    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const init_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
 const tests: Test[] = [
     {
@@ -30,9 +25,12 @@ const tests: Test[] = [
     {
         name: 'deploy',
         prep: async () => {
-            execSync(`dfx deploy --argument '(record { id = "0" }, variant { Fire }, principal "rrkah-fqaaa-aaaaa-aaaaq-cai")'`, {
-                stdio: 'inherit'
-            });
+            execSync(
+                `dfx deploy --argument '(record { id = "0" }, variant { Fire }, principal "rrkah-fqaaa-aaaaa-aaaaq-cai")'`,
+                {
+                    stdio: 'inherit'
+                }
+            );
         }
     },
     {
@@ -41,10 +39,7 @@ const tests: Test[] = [
             const result = await init_canister.getUser();
 
             return {
-                ok: (
-                    result.length === 1 &&
-                    result[0].id === '0'
-                )
+                ok: result.length === 1 && result[0].id === '0'
             };
         }
     },
@@ -54,10 +49,7 @@ const tests: Test[] = [
             const result = await init_canister.getReaction();
 
             return {
-                ok: (
-                    result.length === 1 &&
-                    'Fire' in result[0]
-                )
+                ok: result.length === 1 && 'Fire' in result[0]
             };
         }
     },
@@ -67,10 +59,9 @@ const tests: Test[] = [
             const result = await init_canister.getOwner();
 
             return {
-                ok: (
+                ok:
                     result.length === 1 &&
                     result[0].toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
-                )
             };
         }
     }

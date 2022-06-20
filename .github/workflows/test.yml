@@ -15,173 +15,173 @@
 
 name: Azle Tests
 on:
-  push:
-    branches:
-      - main
-  pull_request: # Runs on pull requests to any branch
+    push:
+        branches:
+            - main
+    pull_request: # Runs on pull requests to any branch
 jobs:
-  release-candidate-deploy:
-    runs-on: ubuntu-latest
-    env:
-      GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
-    outputs:
-      # These outputs are used to pass information along to the next job
-      should_run_tests: ${{ steps.should_run_tests.outputs.should_run_tests }} # We only want the next job to run the tests once we have finished deploying to npm and GitHub
-      example_directories: ${{ steps.example_directories.outputs.example_directories }}
-    steps:
-      - uses: actions/checkout@v2
-        # if: contains(github.head_ref, 'release--')
-        with:
-          ref: ${{ contains(github.head_ref, 'release--') && github.event.pull_request.head.ref || github.ref }} # This is necessary for this job to be able to commit and push to the origin remote properly
-          token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }} # A personal GitHub token is setup as a secret so that committing and pushing to GitHub from the Action will trigger another workflow
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          registry-url: https://registry.npmjs.org
+    release-candidate-deploy:
+        runs-on: ubuntu-latest
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      # TODO we should use some Action-specific bot account
-      - if: contains(github.head_ref, 'release--')
-        run: git config --global user.name 'Jordan Last'
-      - if: contains(github.head_ref, 'release--')
-        run: git config --global user.email 'jordan.michael.last@gmail.com'
-      - if: contains(github.head_ref, 'release--')
-        run: git config --global commit.gpgsign true
-      - if: contains(github.head_ref, 'release--')
-        run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
-      - if: contains(github.head_ref, 'release--')
-        run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
-      - id: example_directories
-        # TODO to improve this further we might be able to create an environment variable that grabs the example directories with a glob
-        # TODO we want to be able to easily include and exclude examples though
-        run: |
-          EXAMPLE_DIRECTORIES=$(cat << END
-          [
-            "examples/call_raw",
-            "examples/complex_types",
-            "examples/counter",
-            "examples/cross_canister_calls",
-            "examples/func_types",
-            "examples/generators",
-            "examples/heartbeat",
-            "examples/ic_api",
-            "examples/imports",
-            "examples/init",
-            "examples/inline_types",
-            "examples/key_value_store",
-            "examples/ledger_canister",
-            "examples/management_canister",
-            "examples/motoko_examples/calc",
-            "examples/motoko_examples/counter",
-            "examples/motoko_examples/echo",
-            "examples/motoko_examples/factorial",
-            "examples/motoko_examples/hello",
-            "examples/motoko_examples/hello-world",
-            "examples/motoko_examples/minimal-counter-dapp",
-            "examples/motoko_examples/quicksort",
-            "examples/motoko_examples/whoami",
-            "examples/optional_types",
-            "examples/pre_and_post_upgrade",
-            "examples/primitive_types",
-            "examples/query",
-            "examples/simple_erc20",
-            "examples/simple_user_accounts",
-            "examples/stable_storage",
-            "examples/tuple_types",
-            "examples/update"
-          ]
-          END
-          )
-          EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//'%'/'%25'}"
-          EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\n'/'%0A'}"
-          EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\r'/'%0D'}"
-          echo "::set-output name=example_directories::$EXAMPLE_DIRECTORIES"
-      - id: should_run_tests
-        run: |
-          BRANCH_NAME="${{ github.head_ref }}"
-          RELEASE_VERSION="${BRANCH_NAME:9}"
-          COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
-          if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]
-          then
-            ./publish-github-action.sh $RELEASE_VERSION ${{ toJSON(steps.example_directories.outputs.example_directories) }}
-          else
-            echo "::set-output name=should_run_tests::true"
-          fi
-  basic-integration-tests:
-    needs: release-candidate-deploy
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
-      matrix:
-        # TODO perhaps we should start testing on different versions of dfx as well
-        rust: [stable]
-        include_npm:
-          # Only include npm in the matrix if you've pushed to main and the last commit was a merge of a release branch, or the base branch of the pull request is a release branch
-          - ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
-        azle_source:
-          - npm
-          - repo
-        exclude:
-          - include_npm: false
-            azle_source: npm
-        # If should_run_tests is false, we still want the steps of this job to execute so that check-basic-integration-tests-success will run. We do this by creating an array with one dummy element
-        example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
-    steps:
-      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-        uses: actions/checkout@v2
-      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-        run: DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-        name: Install Rust ${{ matrix.rust }}
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.rust }}
-          profile: minimal
-          override: true
-      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-        name: Rust cache
-        uses: actions/cache@v2
-        continue-on-error: false
-        with:
-          path: ${{ matrix.example_directories }}/target
-          key: ${{ matrix.example_directories }}-cache
-          restore-keys: ${{ matrix.example_directories }}-cache # TODO might need to be more intelligent and hash files here
-      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-        shell: bash -l {0} # TODO figure out why this is here and comment about it
-        run: npm install
-      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
-        shell: bash -l {0}
-        run: npm link
-      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-        working-directory: ${{ matrix.example_directories }}
-        run: dfx start --clean --background
-      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-        shell: bash -l {0}
-        working-directory: ${{ matrix.example_directories }}
-        run: npm install
-      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
-        shell: bash -l {0}
-        working-directory: ${{ matrix.example_directories }}
-        run: npm link azle
-      - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-        shell: bash -l {0}
-        working-directory: ${{ matrix.example_directories }}
-        run: npm test
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
+        outputs:
+            # These outputs are used to pass information along to the next job
+            should_run_tests: ${{ steps.should_run_tests.outputs.should_run_tests }} # We only want the next job to run the tests once we have finished deploying to npm and GitHub
+            example_directories: ${{ steps.example_directories.outputs.example_directories }}
+        steps:
+            - uses: actions/checkout@v2
+              # if: contains(github.head_ref, 'release--')
+              with:
+                  ref: ${{ contains(github.head_ref, 'release--') && github.event.pull_request.head.ref || github.ref }} # This is necessary for this job to be able to commit and push to the origin remote properly
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }} # A personal GitHub token is setup as a secret so that committing and pushing to GitHub from the Action will trigger another workflow
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+                  registry-url: https://registry.npmjs.org
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+            # TODO we should use some Action-specific bot account
+            - if: contains(github.head_ref, 'release--')
+              run: git config --global user.name 'Jordan Last'
+            - if: contains(github.head_ref, 'release--')
+              run: git config --global user.email 'jordan.michael.last@gmail.com'
+            - if: contains(github.head_ref, 'release--')
+              run: git config --global commit.gpgsign true
+            - if: contains(github.head_ref, 'release--')
+              run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
+            - if: contains(github.head_ref, 'release--')
+              run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
+            - id: example_directories
+              # TODO to improve this further we might be able to create an environment variable that grabs the example directories with a glob
+              # TODO we want to be able to easily include and exclude examples though
+              run: |
+                  EXAMPLE_DIRECTORIES=$(cat << END
+                  [
+                    "examples/call_raw",
+                    "examples/complex_types",
+                    "examples/counter",
+                    "examples/cross_canister_calls",
+                    "examples/func_types",
+                    "examples/generators",
+                    "examples/heartbeat",
+                    "examples/ic_api",
+                    "examples/imports",
+                    "examples/init",
+                    "examples/inline_types",
+                    "examples/key_value_store",
+                    "examples/ledger_canister",
+                    "examples/management_canister",
+                    "examples/motoko_examples/calc",
+                    "examples/motoko_examples/counter",
+                    "examples/motoko_examples/echo",
+                    "examples/motoko_examples/factorial",
+                    "examples/motoko_examples/hello",
+                    "examples/motoko_examples/hello-world",
+                    "examples/motoko_examples/minimal-counter-dapp",
+                    "examples/motoko_examples/quicksort",
+                    "examples/motoko_examples/whoami",
+                    "examples/optional_types",
+                    "examples/pre_and_post_upgrade",
+                    "examples/primitive_types",
+                    "examples/query",
+                    "examples/simple_erc20",
+                    "examples/simple_user_accounts",
+                    "examples/stable_storage",
+                    "examples/tuple_types",
+                    "examples/update"
+                  ]
+                  END
+                  )
+                  EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//'%'/'%25'}"
+                  EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\n'/'%0A'}"
+                  EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\r'/'%0D'}"
+                  echo "::set-output name=example_directories::$EXAMPLE_DIRECTORIES"
+            - id: should_run_tests
+              run: |
+                  BRANCH_NAME="${{ github.head_ref }}"
+                  RELEASE_VERSION="${BRANCH_NAME:9}"
+                  COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
+                  if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]
+                  then
+                    ./publish-github-action.sh $RELEASE_VERSION ${{ toJSON(steps.example_directories.outputs.example_directories) }}
+                  else
+                    echo "::set-output name=should_run_tests::true"
+                  fi
+    basic-integration-tests:
+        needs: release-candidate-deploy
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
+            matrix:
+                # TODO perhaps we should start testing on different versions of dfx as well
+                rust: [stable]
+                include_npm:
+                    # Only include npm in the matrix if you've pushed to main and the last commit was a merge of a release branch, or the base branch of the pull request is a release branch
+                    - ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
+                azle_source:
+                    - npm
+                    - repo
+                exclude:
+                    - include_npm: false
+                      azle_source: npm
+                # If should_run_tests is false, we still want the steps of this job to execute so that check-basic-integration-tests-success will run. We do this by creating an array with one dummy element
+                example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
+        steps:
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              uses: actions/checkout@v2
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              run: DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              name: Install Rust ${{ matrix.rust }}
+              uses: actions-rs/toolchain@v1
+              with:
+                  toolchain: ${{ matrix.rust }}
+                  profile: minimal
+                  override: true
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              name: Rust cache
+              uses: actions/cache@v2
+              continue-on-error: false
+              with:
+                  path: ${{ matrix.example_directories }}/target
+                  key: ${{ matrix.example_directories }}-cache
+                  restore-keys: ${{ matrix.example_directories }}-cache # TODO might need to be more intelligent and hash files here
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              shell: bash -l {0} # TODO figure out why this is here and comment about it
+              run: npm install
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
+              shell: bash -l {0}
+              run: npm link
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              working-directory: ${{ matrix.example_directories }}
+              run: dfx start --clean --background
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              shell: bash -l {0}
+              working-directory: ${{ matrix.example_directories }}
+              run: npm install
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
+              shell: bash -l {0}
+              working-directory: ${{ matrix.example_directories }}
+              run: npm link azle
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              shell: bash -l {0}
+              working-directory: ${{ matrix.example_directories }}
+              run: npm test
 
-  check-basic-integration-tests-success:
-    needs: basic-integration-tests
-    runs-on: ubuntu-latest
-    if: success()
-    steps:
-      - run: exit 0
+    check-basic-integration-tests-success:
+        needs: basic-integration-tests
+        runs-on: ubuntu-latest
+        if: success()
+        steps:
+            - run: exit 0
 
-  check-basic-integration-tests-failure:
-    needs: basic-integration-tests
-    runs-on: ubuntu-latest
-    if: failure()
-    steps:
-      - run: exit 1
+    check-basic-integration-tests-failure:
+        needs: basic-integration-tests
+        runs-on: ubuntu-latest
+        if: failure()
+        steps:
+            - run: exit 1

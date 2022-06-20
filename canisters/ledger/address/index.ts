@@ -4,13 +4,19 @@ import { sha224 } from 'hash.js';
 import { Address } from '../index';
 
 // TODO we need to review these heavily
-export function hex_address_from_principal(principal: Principal, subaccount: number): Address {
+export function hex_address_from_principal(
+    principal: Principal,
+    subaccount: number
+): Address {
     return address_from_principal(principal, subaccount);
 }
 
-export function binary_address_from_principal(principal: Principal, subaccount: number): number[] {
-  const address = address_from_principal(principal, subaccount);
-  return address.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? [];
+export function binary_address_from_principal(
+    principal: Principal,
+    subaccount: number
+): number[] {
+    const address = address_from_principal(principal, subaccount);
+    return address.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? [];
 }
 
 export function binary_address_from_address(address: Address): number[] {
@@ -29,28 +35,30 @@ export function binary_address_from_address(address: Address): number[] {
 // The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-function address_from_principal(principal: Principal, subaccount: number): Address {
-    const prefixBytes = new Uint8Array([10, 97, 99, 99, 111, 117, 110, 116, 45, 105, 100]); // \0xAaccount-id
+function address_from_principal(
+    principal: Principal,
+    subaccount: number
+): Address {
+    const prefixBytes = new Uint8Array([
+        10, 97, 99, 99, 111, 117, 110, 116, 45, 105, 100
+    ]); // \0xAaccount-id
     const principalBytes = principal.toUint8Array();
     const subaccountBytes = getSubAccountArray(subaccount);
 
     const hash = new Uint8Array(
-        sha224().update([
-            ...prefixBytes,
-            ...principalBytes,
-            ...subaccountBytes
-        ]).digest()
+        sha224()
+            .update([...prefixBytes, ...principalBytes, ...subaccountBytes])
+            .digest()
     );
     const checksum = to32Bits(getCrc32(hash));
 
-    return toHexString(new Uint8Array([
-        ...checksum,
-        ...hash
-    ]));
+    return toHexString(new Uint8Array([...checksum, ...hash]));
 }
 
 function getSubAccountArray(subaccount: number): number[] {
-    return Array(28).fill(0).concat(to32Bits(subaccount ? subaccount : 0));
+    return Array(28)
+        .fill(0)
+        .concat(to32Bits(subaccount ? subaccount : 0));
 }
 
 function to32Bits(number: number): number[] {
@@ -61,6 +69,6 @@ function to32Bits(number: number): number[] {
 
 function toHexString(byteArray: Uint8Array): string {
     return Array.from(byteArray, (byte) => {
-        return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+        return ('0' + (byte & 0xff).toString(16)).slice(-2);
     }).join('');
 }

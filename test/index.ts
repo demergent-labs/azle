@@ -20,8 +20,7 @@ export type Ok<T> = {
 export function ok<T>(azle_result: AzleResult<T>): azle_result is Ok<T> {
     if (azle_result.err === undefined) {
         return true;
-    }
-    else {
+    } else {
         return false;
     }
 }
@@ -29,25 +28,21 @@ export function ok<T>(azle_result: AzleResult<T>): azle_result is Ok<T> {
 // TODO should this just return a boolean?
 // TODO then the function calling can decide to throw or not
 export async function run_tests(tests: Test[]) {
-    for (let i=0; i < tests.length; i++) {
+    for (let i = 0; i < tests.length; i++) {
         const test = tests[i];
 
         try {
             if (test.skip === true) {
                 console.log(`Skipping: ${test.name}`);
-                
+
                 continue;
             }
 
             console.log();
-    
-            if (
-                test.prep !== undefined ||
-                test.wait !== undefined
-            ) {
+
+            if (test.prep !== undefined || test.wait !== undefined) {
                 console.log(`\n${test.name}\n`);
-            }
-            else {
+            } else {
                 console.log(`\nRunning test: ${test.name}\n`);
             }
 
@@ -63,30 +58,36 @@ export async function run_tests(tests: Test[]) {
                 continue;
             }
 
-            const result = test.test !== undefined ? await test.test() : {
-                err: 'test is not defined'
-            };
+            const result =
+                test.test !== undefined
+                    ? await test.test()
+                    : {
+                          err: 'test is not defined'
+                      };
 
             if (!ok(result)) {
                 console.log('\x1b[31m', `test: ${test.name} failed`);
                 console.log('\x1b[31m', `${result.err}`);
                 console.log('\x1b[0m');
-                
+
                 process.exit(1);
             }
 
             if (result.ok === false) {
                 console.log('\x1b[31m', `test: ${test.name} failed`);
                 console.log('\x1b[0m');
-                
+
                 process.exit(1);
             }
 
             console.log('\x1b[32m', `test: ${test.name} passed`);
             console.log('\x1b[0m');
-        }
-        catch(error) {
-            console.log('\x1b[31m', `test ${test.name} failed`, (error as any).toString());
+        } catch (error) {
+            console.log(
+                '\x1b[31m',
+                `test ${test.name} failed`,
+                (error as any).toString()
+            );
             console.log('\x1b[0m');
             process.exit(1);
         }

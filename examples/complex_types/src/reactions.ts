@@ -1,19 +1,7 @@
-import {
-    Query,
-    Update,
-    nat32
-} from 'azle';
-import {
-    Reaction,
-    ReactionType
-} from './candid_types';
+import { Query, Update, nat32 } from 'azle';
+import { Reaction, ReactionType } from './candid_types';
 import { getPostFromStatePost } from './posts';
-import {
-    state,
-    StatePost,
-    StateReaction,
-    StateUser
-} from './state';
+import { state, StatePost, StateReaction, StateUser } from './state';
 import { getUserFromStateUser } from './users';
 
 export function createReaction(
@@ -30,7 +18,10 @@ export function createReaction(
         postId,
         reactionType
     };
-    const updatedStateAuthor = getUpdatedStateAuthor(authorId, stateReaction.id);
+    const updatedStateAuthor = getUpdatedStateAuthor(
+        authorId,
+        stateReaction.id
+    );
     const updatedStatePost = getUpdatedStatePost(postId, stateReaction.id);
 
     state.reactions[id] = stateReaction;
@@ -43,9 +34,9 @@ export function createReaction(
 }
 
 export function getAllReactions(joinDepth: nat32): Query<Reaction[]> {
-    return Object
-        .values(state.reactions)
-        .map((stateReaction) => getReactionFromStateReaction(stateReaction, joinDepth));
+    return Object.values(state.reactions).map((stateReaction) =>
+        getReactionFromStateReaction(stateReaction, joinDepth)
+    );
 }
 
 export function getReactionFromStateReaction(
@@ -66,7 +57,10 @@ export function getReactionFromStateReaction(
     };
 }
 
-function getUpdatedStateAuthor(authorId: string, reactionId: string): StateUser {
+function getUpdatedStateAuthor(
+    authorId: string,
+    reactionId: string
+): StateUser {
     const stateAuthor = state.users[authorId];
     const updatedStateAuthor = {
         ...stateAuthor,

@@ -1,27 +1,26 @@
-import {
-    AST,
-    Impl,
-    ImplItem,
-    ImplItemMethod
-} from './types';
+import { AST, Impl, ImplItem, ImplItemMethod } from './types';
 import * as tsc from 'typescript';
 import { Rust } from '../../../types';
 
 export function getImpls(ast: AST): Impl[] {
-    return ast
-        .items
+    return ast.items
         .map((item) => item.impl)
         .filter((impl) => impl !== undefined) as Impl[];
 }
 
 export function getImplItemMethods(impl: Impl): ImplItemMethod[] {
-    return impl
-        .items
+    return impl.items
         .map((implItem) => implItem.method)
-        .filter((implItemMethod) => implItemMethod !== undefined && implItemMethod.ident !== '_azle_dummy_method') as ImplItemMethod[]; // TODO remove _azle_dummy_method check once https://github.com/dfinity/candid/issues/330
+        .filter(
+            (implItemMethod) =>
+                implItemMethod !== undefined &&
+                implItemMethod.ident !== '_azle_dummy_method'
+        ) as ImplItemMethod[]; // TODO remove _azle_dummy_method check once https://github.com/dfinity/candid/issues/330
 }
 
-export function getParamName(parameterDeclaration: tsc.ParameterDeclaration): string {
+export function getParamName(
+    parameterDeclaration: tsc.ParameterDeclaration
+): string {
     if (parameterDeclaration.name.kind !== tsc.SyntaxKind.Identifier) {
         throw new Error('Parameter name must be an identifier');
     }
@@ -53,7 +52,9 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
 
     if (typeNode.kind === tsc.SyntaxKind.ArrayType) {
         const arrayTypeNode = typeNode as tsc.ArrayTypeNode;
-        const elementRustType = getRustTypeNameFromTypeNode(arrayTypeNode.elementType);
+        const elementRustType = getRustTypeNameFromTypeNode(
+            arrayTypeNode.elementType
+        );
 
         return `Vec<${elementRustType}>`;
     }
@@ -95,7 +96,7 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
             if (typeName === 'nat32') {
                 return 'u32';
             }
-            
+
             if (typeName === 'nat16') {
                 return 'u16';
             }
@@ -120,11 +121,11 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
                 if (typeReferenceNode.typeArguments === undefined) {
                     throw new Error('UpdateAsync must have an enclosed type');
                 }
-                
+
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
                 const typeName = getRustTypeNameFromTypeNode(firstTypeArgument);
-            
+
                 return `Option<${typeName}>`;
             }
 
@@ -132,7 +133,7 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
                 if (typeReferenceNode.typeArguments === undefined) {
                     throw new Error('Query must have an enclosed type');
                 }
-                
+
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
                 return getRustTypeNameFromTypeNode(firstTypeArgument);
@@ -142,7 +143,7 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
                 if (typeReferenceNode.typeArguments === undefined) {
                     throw new Error('Update must have an enclosed type');
                 }
-                
+
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
                 return getRustTypeNameFromTypeNode(firstTypeArgument);
@@ -152,7 +153,7 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
                 if (typeReferenceNode.typeArguments === undefined) {
                     throw new Error('UpdateAsync must have an enclosed type');
                 }
-                
+
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
                 return getRustTypeNameFromTypeNode(firstTypeArgument);
@@ -160,9 +161,11 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
 
             if (typeName === 'CanisterResult') {
                 if (typeReferenceNode.typeArguments === undefined) {
-                    throw new Error('CanisterResult must have an enclosed type');
+                    throw new Error(
+                        'CanisterResult must have an enclosed type'
+                    );
                 }
-                
+
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
                 return getRustTypeNameFromTypeNode(firstTypeArgument);

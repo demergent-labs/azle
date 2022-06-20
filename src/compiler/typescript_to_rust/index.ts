@@ -1,10 +1,7 @@
 import { compileCandidToRustTypes } from '../candid_to_rust_types';
 import * as fs from 'fs';
 import { generateLibFile } from './generators/lib_file';
-import {
-    JavaScript,
-    Rust
-} from '../../types';
+import { JavaScript, Rust } from '../../types';
 import * as tsc from 'typescript';
 import { compileTypeScriptToCandid } from '../typescript_to_candid';
 import { compileTypeScriptToJavaScript } from '../typescript_to_javascript';
@@ -13,11 +10,8 @@ export async function compileTypeScriptToRust(
     tsPath: string,
     candidPath: string
 ): Promise<Rust> {
-    const program = tsc.createProgram(
-        [tsPath],
-        {}
-    );
-    
+    const program = tsc.createProgram([tsPath], {});
+
     const sourceFiles = program.getSourceFiles();
 
     const {

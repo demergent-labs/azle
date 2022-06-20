@@ -6,11 +6,7 @@ import {
 } from './compiler/typescript_to_rust/generators/cargo_toml_files';
 import * as fs from 'fs';
 import * as fsExtra from 'fs-extra';
-import {
-    DfxJson,
-    Rust,
-    Toml
-} from './types';
+import { DfxJson, Rust, Toml } from './types';
 
 azle();
 
@@ -27,17 +23,9 @@ async function azle() {
 
     const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
     const libCargoToml: Toml = generateLibCargoToml(canisterName);
-    const libFile: Rust = await compileTypeScriptToRust(
-        tsPath,
-        candidPath
-    );
+    const libFile: Rust = await compileTypeScriptToRust(tsPath, candidPath);
 
-    writeCodeToFileSystem(
-        rootPath,
-        workspaceCargoToml,
-        libCargoToml,
-        libFile
-    );
+    writeCodeToFileSystem(rootPath, workspaceCargoToml, libCargoToml, libFile);
 
     compileRustCode(canisterName);
 }
@@ -47,20 +35,14 @@ function installRustDependencies() {
         fs.mkdirSync(`target/azle`, { recursive: true });
     }
 
-    execSync(
-        `rustup target add wasm32-unknown-unknown`,
-        { stdio: 'inherit' }
-    );
+    execSync(`rustup target add wasm32-unknown-unknown`, { stdio: 'inherit' });
 
     execSync(
         `cd target/azle && cargo install --git https://github.com/dfinity/candid --rev e7abc462fd54e72e3449999169c12e9f5209d091 didc --root ..`,
         { stdio: 'inherit' }
     );
 
-    execSync(
-        `cargo install ic-cdk-optimizer`,
-        { stdio: 'inherit' }
-    );
+    execSync(`cargo install ic-cdk-optimizer`, { stdio: 'inherit' });
 }
 
 function writeCodeToFileSystem(
@@ -91,7 +73,10 @@ function writeCodeToFileSystem(
         fs.mkdirSync(`./target/azle/${rootPath}/azle_js_value_derive`);
     }
 
-    fsExtra.copySync(`${__dirname}/compiler/typescript_to_rust/azle_js_value_derive`, `./target/azle/${rootPath}/azle_js_value_derive`);
+    fsExtra.copySync(
+        `${__dirname}/compiler/typescript_to_rust/azle_js_value_derive`,
+        `./target/azle/${rootPath}/azle_js_value_derive`
+    );
 }
 
 function compileRustCode(canisterName: string) {
@@ -100,7 +85,10 @@ function compileRustCode(canisterName: string) {
         { stdio: 'inherit' }
     );
 
-    const cargo_bin_root = process.env.CARGO_INSTALL_ROOT ?? process.env.CARGO_HOME ?? `$HOME/.cargo`;
+    const cargo_bin_root =
+        process.env.CARGO_INSTALL_ROOT ??
+        process.env.CARGO_HOME ??
+        `$HOME/.cargo`;
 
     // optimization, binary is too big to deploy without this
     execSync(

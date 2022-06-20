@@ -1,7 +1,4 @@
-import {
-    nat8,
-    Variant
-} from 'azle';
+import { nat8, Variant } from 'azle';
 import {
     CreateCanisterResult,
     CanisterStatusResult

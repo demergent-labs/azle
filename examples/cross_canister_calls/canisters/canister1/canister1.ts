@@ -8,10 +8,7 @@ import {
     Principal,
     Variant
 } from 'azle';
-import {
-    Account,
-    AccountArgs
-} from '../canister2/types';
+import { Account, AccountArgs } from '../canister2/types';
 
 type TransferResult = Variant<{
     ok?: nat64;
@@ -39,29 +36,23 @@ type TrapResult = Variant<{
 }>;
 
 type Canister2 = Canister<{
-    transfer(
-        from: string,
-        to: string,
-        amount: nat64
-    ): CanisterResult<nat64>;
+    transfer(from: string, to: string, amount: nat64): CanisterResult<nat64>;
     balance(id: string): CanisterResult<nat64>;
     account(accountArgs: AccountArgs): CanisterResult<Opt<Account>>;
     accounts(): CanisterResult<Account[]>;
     trap(): CanisterResult<string>;
 }>;
 
-let canister2 = ic.canisters.Canister2<Canister2>(Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'));
+let canister2 = ic.canisters.Canister2<Canister2>(
+    Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
+);
 
 export function* transfer(
     from: string,
     to: string,
     amount: nat64
 ): UpdateAsync<TransferResult> {
-    return yield canister2.transfer(
-        from,
-        to,
-        amount
-    );
+    return yield canister2.transfer(from, to, amount);
 }
 
 export function* balance(id: string): UpdateAsync<BalanceResult> {

@@ -1,17 +1,12 @@
-import {
-    run_tests,
-    Test
-} from 'azle/test';
+import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/calc';
 
-const calc_canister = createActor(
-    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const calc_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
 const tests: Test[] = [
     {
@@ -71,10 +66,7 @@ const tests: Test[] = [
             const result = await calc_canister.div(2n);
 
             return {
-                ok: (
-                    result.length === 1 &&
-                    result[0] === 9n
-                )
+                ok: result.length === 1 && result[0] === 9n
             };
         }
     },

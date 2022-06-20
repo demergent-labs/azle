@@ -31,23 +31,27 @@ export function init(): Init {
 export function preUpgrade(): PreUpgrade {
     ic.print('preUpgrade');
 
-    ic.stableStorage<StableStorage>().entries = Object.entries(entries).map((entry) => {
-        return {
-            key: entry[0],
-            value: entry[1]
-        };
-    });
+    ic.stableStorage<StableStorage>().entries = Object.entries(entries).map(
+        (entry) => {
+            return {
+                key: entry[0],
+                value: entry[1]
+            };
+        }
+    );
 }
 
 export function postUpgrade(): PostUpgrade {
     ic.print('preUpgrade');
 
-    entries = ic.stableStorage<StableStorage>().entries.reduce((result, entry) => {
-        return {
-            ...result,
-            [entry.key]: entry.value
-        };
-    }, {});
+    entries = ic
+        .stableStorage<StableStorage>()
+        .entries.reduce((result, entry) => {
+            return {
+                ...result,
+                [entry.key]: entry.value
+            };
+        }, {});
 }
 
 export function setEntry(entry: Entry): Update<void> {

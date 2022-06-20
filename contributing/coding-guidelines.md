@@ -40,6 +40,7 @@ The intended meaning of favor is to use wherever practical. Always consider usin
 1. Be prepared to defend every use of `mut`
 
 ## Canisters
+
 1. All mutations should be performed in the top-level canister method
 
 ## Code review checklist

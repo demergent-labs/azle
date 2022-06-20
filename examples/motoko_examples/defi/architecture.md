@@ -13,27 +13,38 @@ The design of the IC allows for more complex on-chain computation. In combinatio
 
 ### Interface
 
-Request user-specific ledger account identifier from the exchange. This unique account identifier represents a user-specific subaccount in the exchange's ledger account, allowing it to differentiate between user deposits. 
+Request user-specific ledger account identifier from the exchange. This unique account identifier represents a user-specific subaccount in the exchange's ledger account, allowing it to differentiate between user deposits.
+
 ```
 getDepositAddress: () -> (blob);
 ```
+
 Initate user deposit to exchange. If the user wants to deposit ICP, the exchange moves the funds from the user-specific deposit address to its default subaddress and adjusts the user's ICP balance on the DEX. If the user wants to deposit a DIP token, the exchange tries to move the approved funds to its token account and adjusts the user's balance.
+
 ```
 deposit: (Token) -> (DepositReceipt);
 ```
+
 Withdraw request to the exchange. The exchange will send funds back to the user if the user has a sufficient balance.
+
 ```
 withdraw: (Token, nat, principal) -> (WithdrawReceipt);
 ```
-Place new order to exchange. If the order matches an existing order, it will get executed. 
+
+Place new order to exchange. If the order matches an existing order, it will get executed.
+
 ```
 placeOrder: (Token, nat, Token, nat) -> (OrderPlacementReceipt);
 ```
+
 Allows the user to cancel submitted orders.
+
 ```
 cancelOrder: (OrderId) -> (CancelOrderReceipt);
 ```
+
 Request user's balance on exchange for a specific token.
+
 ```
 getBalance: (Token) -> (nat) query;
 ```
@@ -71,6 +82,6 @@ Compared to depositing funds, withdrawing funds is simpler. Since the exchange h
 
 ## Common mistakes
 
-- **Concurrent execution**: If canister functions have `await` statements, it is possible that execution is interleaved. To avoid bugs, it is necessary to carefully consider the placement of data structure updates to prevent double-spend attacks.
-- **Floating Points**: More advanced exchanges should take care of floating points and make sure to limit decimals. 
-- **No panics after await**: When a panic happens, the state gets rolled back. This can cause issues with the correctness of the exchange.
+-   **Concurrent execution**: If canister functions have `await` statements, it is possible that execution is interleaved. To avoid bugs, it is necessary to carefully consider the placement of data structure updates to prevent double-spend attacks.
+-   **Floating Points**: More advanced exchanges should take care of floating points and make sure to limit decimals.
+-   **No panics after await**: When a panic happens, the state gets rolled back. This can cause issues with the correctness of the exchange.

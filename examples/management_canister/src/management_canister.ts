@@ -33,9 +33,10 @@ let state: State = {
 };
 
 export function* execute_create_canister(): UpdateAsync<ExecuteCreateCanisterResult> {
-    const create_canister_result_canister_result: CanisterResult<CreateCanisterResult> = yield ManagementCanister.create_canister({
-        settings: null
-    });
+    const create_canister_result_canister_result: CanisterResult<CreateCanisterResult> =
+        yield ManagementCanister.create_canister({
+            settings: null
+        });
 
     if (!ok(create_canister_result_canister_result)) {
         return {
@@ -52,16 +53,19 @@ export function* execute_create_canister(): UpdateAsync<ExecuteCreateCanisterRes
     };
 }
 
-export function* execute_update_settings(canister_id: Principal): UpdateAsync<DefaultResult> {
-    const canister_result: CanisterResult<void> = yield ManagementCanister.update_settings({
-        canister_id,
-        settings: {
-            controllers: null,
-            compute_allocation: 1n,
-            memory_allocation: 4014733n,
-            freezing_threshold: 153n
-        }
-    });
+export function* execute_update_settings(
+    canister_id: Principal
+): UpdateAsync<DefaultResult> {
+    const canister_result: CanisterResult<void> =
+        yield ManagementCanister.update_settings({
+            canister_id,
+            settings: {
+                controllers: null,
+                compute_allocation: 1n,
+                memory_allocation: 4014733n,
+                freezing_threshold: 153n
+            }
+        });
 
     if (!ok(canister_result)) {
         return {
@@ -97,10 +101,13 @@ export function* execute_update_settings(canister_id: Principal): UpdateAsync<De
 //     };
 // }
 
-export function* execute_uninstall_code(canister_id: Principal): UpdateAsync<DefaultResult> {
-    const canister_result: CanisterResult<void> = yield ManagementCanister.uninstall_code({
-        canister_id
-    });
+export function* execute_uninstall_code(
+    canister_id: Principal
+): UpdateAsync<DefaultResult> {
+    const canister_result: CanisterResult<void> =
+        yield ManagementCanister.uninstall_code({
+            canister_id
+        });
 
     if (!ok(canister_result)) {
         return {
@@ -113,10 +120,13 @@ export function* execute_uninstall_code(canister_id: Principal): UpdateAsync<Def
     };
 }
 
-export function* execute_start_canister(canister_id: Principal): UpdateAsync<DefaultResult> {
-    const canister_result: CanisterResult<void> = yield ManagementCanister.start_canister({
-        canister_id
-    });
+export function* execute_start_canister(
+    canister_id: Principal
+): UpdateAsync<DefaultResult> {
+    const canister_result: CanisterResult<void> =
+        yield ManagementCanister.start_canister({
+            canister_id
+        });
 
     if (!ok(canister_result)) {
         return {
@@ -129,10 +139,13 @@ export function* execute_start_canister(canister_id: Principal): UpdateAsync<Def
     };
 }
 
-export function* execute_stop_canister(canister_id: Principal): UpdateAsync<DefaultResult> {
-    const canister_result: CanisterResult<void> = yield ManagementCanister.stop_canister({
-        canister_id
-    });
+export function* execute_stop_canister(
+    canister_id: Principal
+): UpdateAsync<DefaultResult> {
+    const canister_result: CanisterResult<void> =
+        yield ManagementCanister.stop_canister({
+            canister_id
+        });
 
     if (!ok(canister_result)) {
         return {
@@ -145,10 +158,13 @@ export function* execute_stop_canister(canister_id: Principal): UpdateAsync<Defa
     };
 }
 
-export function* get_canister_status(args: CanisterStatusArgs): UpdateAsync<GetCanisterStatusResult> {
-    const canister_status_result_canister_result: CanisterResult<CanisterStatusResult> = yield ManagementCanister.canister_status({
-        canister_id: args.canister_id
-    });
+export function* get_canister_status(
+    args: CanisterStatusArgs
+): UpdateAsync<GetCanisterStatusResult> {
+    const canister_status_result_canister_result: CanisterResult<CanisterStatusResult> =
+        yield ManagementCanister.canister_status({
+            canister_id: args.canister_id
+        });
 
     if (canister_status_result_canister_result.ok === undefined) {
         return {
@@ -163,10 +179,13 @@ export function* get_canister_status(args: CanisterStatusArgs): UpdateAsync<GetC
     };
 }
 
-export function* execute_delete_canister(canister_id: Principal): UpdateAsync<DefaultResult> {
-    const canister_result: CanisterResult<void> = yield ManagementCanister.delete_canister({
-        canister_id
-    });
+export function* execute_delete_canister(
+    canister_id: Principal
+): UpdateAsync<DefaultResult> {
+    const canister_result: CanisterResult<void> =
+        yield ManagementCanister.delete_canister({
+            canister_id
+        });
 
     if (!ok(canister_result)) {
         return {
@@ -199,7 +218,8 @@ export function* execute_delete_canister(canister_id: Principal): UpdateAsync<De
 // }
 
 export function* get_raw_rand(): UpdateAsync<RawRandResult> {
-    const raw_rand_canister_result: CanisterResult<nat8[]> = yield ManagementCanister.raw_rand();
+    const raw_rand_canister_result: CanisterResult<nat8[]> =
+        yield ManagementCanister.raw_rand();
 
     if (!ok(raw_rand_canister_result)) {
         return {
@@ -216,10 +236,11 @@ export function* get_raw_rand(): UpdateAsync<RawRandResult> {
 
 // TODO we will test these once we can measure cycles better locally
 export function* provisional_create_canister_with_cycles(): UpdateAsync<ExecuteProvisionalCreateCanisterWithCyclesResult> {
-    const canister_result: CanisterResult<ProvisionalCreateCanisterWithCyclesResult> = yield ManagementCanister.provisional_create_canister_with_cycles({
-        amount: null,
-        settings: null
-    });
+    const canister_result: CanisterResult<ProvisionalCreateCanisterWithCyclesResult> =
+        yield ManagementCanister.provisional_create_canister_with_cycles({
+            amount: null,
+            settings: null
+        });
 
     if (!ok(canister_result)) {
         return {
@@ -235,11 +256,15 @@ export function* provisional_create_canister_with_cycles(): UpdateAsync<ExecuteP
 }
 
 // TODO we will test these once we can measure cycles better locally
-export function* provisional_top_up_canister(canister_id: Principal, amount: nat): UpdateAsync<DefaultResult> {
-    const canister_result: CanisterResult<void> = yield ManagementCanister.provisional_top_up_canister({
-        canister_id,
-        amount
-    });
+export function* provisional_top_up_canister(
+    canister_id: Principal,
+    amount: nat
+): UpdateAsync<DefaultResult> {
+    const canister_result: CanisterResult<void> =
+        yield ManagementCanister.provisional_top_up_canister({
+            canister_id,
+            amount
+        });
 
     if (!ok(canister_result)) {
         return {
@@ -253,5 +278,5 @@ export function* provisional_top_up_canister(canister_id: Principal, amount: nat
 }
 
 export function get_created_canister_id(): Query<Principal> {
-    return state.created_canister_id
+    return state.created_canister_id;
 }

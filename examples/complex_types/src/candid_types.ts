@@ -1,8 +1,6 @@
 // TODO it would be cool to add timestamps
 
-import {
-    Variant
-} from 'azle';
+import { Variant } from 'azle';
 
 export type Post = {
     id: string;

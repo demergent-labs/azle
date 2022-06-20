@@ -125,18 +125,28 @@ export type ProvisionalTopUpCanisterArgs = {
 };
 
 export type Management = Canister<{
-    create_canister(args: CreateCanisterArgs): CanisterResult<CreateCanisterResult>;
+    create_canister(
+        args: CreateCanisterArgs
+    ): CanisterResult<CreateCanisterResult>;
     update_settings(args: UpdateSettingsArgs): CanisterResult<void>;
     install_code(args: InstallCodeArgs): CanisterResult<void>;
     uninstall_code(args: UninstallCodeArgs): CanisterResult<void>;
     start_canister(args: StartCanisterArgs): CanisterResult<void>;
     stop_canister(args: StopCanisterArgs): CanisterResult<void>;
-    canister_status(args: CanisterStatusArgs): CanisterResult<CanisterStatusResult>;
+    canister_status(
+        args: CanisterStatusArgs
+    ): CanisterResult<CanisterStatusResult>;
     delete_canister(args: DeleteCanisterArgs): CanisterResult<void>;
     deposit_cycles(args: DepositCyclesArgs): CanisterResult<void>;
     raw_rand(): CanisterResult<nat8[]>;
-    provisional_create_canister_with_cycles(args: ProvisionalCreateCanisterWithCyclesArgs): CanisterResult<ProvisionalCreateCanisterWithCyclesResult>;
-    provisional_top_up_canister(args: ProvisionalTopUpCanisterArgs): CanisterResult<void>;
+    provisional_create_canister_with_cycles(
+        args: ProvisionalCreateCanisterWithCyclesArgs
+    ): CanisterResult<ProvisionalCreateCanisterWithCyclesResult>;
+    provisional_top_up_canister(
+        args: ProvisionalTopUpCanisterArgs
+    ): CanisterResult<void>;
 }>;
 
-export const ManagementCanister = ic.canisters.Management<Management>(Principal.fromText('aaaaa-aa'));
+export const ManagementCanister = ic.canisters.Management<Management>(
+    Principal.fromText('aaaaa-aa')
+);

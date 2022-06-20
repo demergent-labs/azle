@@ -15,7 +15,7 @@ type Child = {
 type Yes = Variant<{
     One?: null;
     Two?: null;
-    Three?: null
+    Three?: null;
 }>;
 
 type Reaction = Variant<{

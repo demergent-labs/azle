@@ -1,8 +1,4 @@
-import {
-    Query,
-    Update,
-    nat64
-} from 'azle';
+import { Query, Update, nat64 } from 'azle';
 
 type Account = {
     address: string;

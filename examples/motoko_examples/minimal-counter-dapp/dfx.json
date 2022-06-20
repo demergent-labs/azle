@@ -12,9 +12,7 @@
             }
         },
         "minimal_dapp_assets": {
-            "dependencies": [
-                "minimal_dapp"
-            ],
+            "dependencies": ["minimal_dapp"],
             "frontend": {
                 "entrypoint": "src/minimal_dapp_assets/src/index.html"
             },

@@ -11,12 +11,16 @@ import { generateIcObjectFunctionTime } from './time';
 import { generateIcObjectFunctionTrap } from './trap';
 
 export function generateIcObjectFunctions(): Rust {
-    const icObjectFunctionAcceptMessage: Rust = generateIcObjectFunctionAcceptMessage();
+    const icObjectFunctionAcceptMessage: Rust =
+        generateIcObjectFunctionAcceptMessage();
     const icObjectFunctionCaller: Rust = generateIcObjectFunctionCaller();
-    const icObjectFunctionCanisterBalance: Rust = generateIcObjectFunctionCanisterBalance();
-    const icObjectFunctionCanisterBalance128: Rust = generateIcObjectFunctionCanisterBalance128();
+    const icObjectFunctionCanisterBalance: Rust =
+        generateIcObjectFunctionCanisterBalance();
+    const icObjectFunctionCanisterBalance128: Rust =
+        generateIcObjectFunctionCanisterBalance128();
     const icObjectFunctionId: Rust = generateIcObjectFunctionId();
-    const icObjectFunctionMethodName: Rust = generateIcObjectFunctionMethodName();
+    const icObjectFunctionMethodName: Rust =
+        generateIcObjectFunctionMethodName();
     const icObjectFunctionPrint: Rust = generateIcObjectFunctionPrint();
     const icObjectFunctionTime: Rust = generateIcObjectFunctionTime();
     const icObjectFunctionTrap: Rust = generateIcObjectFunctionTrap();

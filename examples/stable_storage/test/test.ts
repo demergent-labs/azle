@@ -1,18 +1,13 @@
-import {
-    run_tests,
-    Test
-} from 'azle/test';
+import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from './dfx_generated/stable_storage';
 import { Principal } from '@dfinity/principal';
 
-const stable_storage_canister = createActor(
-    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const stable_storage_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
 const initial_reads: Test[] = [
     {
@@ -21,7 +16,9 @@ const initial_reads: Test[] = [
             const result = await stable_storage_canister.readStableInt();
 
             return {
-                ok: result === 170_141_183_460_469_231_731_687_303_715_884_105_727n
+                ok:
+                    result ===
+                    170_141_183_460_469_231_731_687_303_715_884_105_727n
             };
         }
     },
@@ -71,7 +68,9 @@ const initial_reads: Test[] = [
             const result = await stable_storage_canister.readStableNat();
 
             return {
-                ok: result === 340_282_366_920_938_463_463_374_607_431_768_211_455n
+                ok:
+                    result ===
+                    340_282_366_920_938_463_463_374_607_431_768_211_455n
             };
         }
     },
@@ -141,12 +140,11 @@ const initial_reads: Test[] = [
             const result = await stable_storage_canister.readStableUser();
 
             return {
-                ok: (
+                ok:
                     result.id === '0' &&
                     'CANADA' in result.country &&
                     result.children.length === 1 &&
                     result.children[0].id === '1'
-                )
             };
         }
     },
@@ -156,10 +154,7 @@ const initial_reads: Test[] = [
             const result = await stable_storage_canister.readStableReaction();
 
             return {
-                ok: (
-                    'Emotion' in result &&
-                    'Happy' in result.Emotion
-                )
+                ok: 'Emotion' in result && 'Happy' in result.Emotion
             };
         }
     }
@@ -269,7 +264,9 @@ const writes: Test[] = [
     {
         name: 'writeStableString',
         test: async () => {
-            const result = await stable_storage_canister.writeStableString('Yes sir!');
+            const result = await stable_storage_canister.writeStableString(
+                'Yes sir!'
+            );
 
             return {
                 ok: result === undefined
@@ -279,7 +276,9 @@ const writes: Test[] = [
     {
         name: 'writeStablePrincipal',
         test: async () => {
-            const result = await stable_storage_canister.writeStablePrincipal(Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'));
+            const result = await stable_storage_canister.writeStablePrincipal(
+                Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
+            );
 
             return {
                 ok: result === undefined
@@ -450,12 +449,11 @@ const check_writes: Test[] = [
             const result = await stable_storage_canister.readStableUser();
 
             return {
-                ok: (
+                ok:
                     result.id === '2' &&
                     'UK' in result.country &&
                     result.children.length === 1 &&
                     result.children[0].id === '3'
-                )
             };
         }
     },
@@ -465,11 +463,10 @@ const check_writes: Test[] = [
             const result = await stable_storage_canister.readStableReaction();
 
             return {
-                ok: (
+                ok:
                     'Fireworks' in result &&
                     result.Fireworks.id === '0' &&
                     result.Fireworks.name === 'Mega Firework'
-                )
             };
         }
     }
@@ -504,9 +501,12 @@ const tests: Test[] = [
         // TODO Get rid of this once https://forum.dfinity.org/t/upgrade-a-canister-even-if-the-wasm-module-hash-has-not-changed/11989
         name: 'function hack to allow a redeploy',
         prep: async () => {
-            execSync(`echo "\\n\\nexport function hack(): Query<void> {}" >> src/stable_storage.ts`, {
-                stdio: 'inherit'
-            });
+            execSync(
+                `echo "\\n\\nexport function hack(): Query<void> {}" >> src/stable_storage.ts`,
+                {
+                    stdio: 'inherit'
+                }
+            );
         }
     },
     {

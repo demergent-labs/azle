@@ -34,7 +34,7 @@ export type StateReaction = {
     id: string;
     authorId: string;
     postId: string;
-    reactionType: ReactionType
+    reactionType: ReactionType;
 };
 
 export type StateThread = {

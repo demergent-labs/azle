@@ -1,8 +1,4 @@
-import {
-    Update,
-    Opt,
-    int
-} from 'azle';
+import { Update, Opt, int } from 'azle';
 
 let cell: int = 0n;
 
@@ -24,8 +20,7 @@ export function mul(n: int): Update<int> {
 export function div(n: int): Update<Opt<int>> {
     if (n == 0n) {
         return null;
-    }
-    else {
+    } else {
         cell /= n;
         return cell;
     }

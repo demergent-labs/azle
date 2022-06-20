@@ -1,8 +1,4 @@
-import {
-    Query,
-    Variant,
-    Opt
-} from 'azle';
+import { Query, Variant, Opt } from 'azle';
 
 type User1 = {
     id: string;
@@ -63,23 +59,26 @@ export function inlineRecordParam(param: { prop1: string }): Query<string> {
     return param.prop1;
 }
 
-export function inlineVariantReturnType(): Query<Variant<{
-    var1?: null;
-    var2?: null;
-    var3?: null
-}>> {
+export function inlineVariantReturnType(): Query<
+    Variant<{
+        var1?: null;
+        var2?: null;
+        var3?: null;
+    }>
+> {
     return {
         var1: null
     };
 }
 
-export function inlineVariantParam(param: Variant<{ var1?: null; var2?: null }>): Query<Variant<{ var1?: null; var2?: null }>> {
+export function inlineVariantParam(
+    param: Variant<{ var1?: null; var2?: null }>
+): Query<Variant<{ var1?: null; var2?: null }>> {
     if (param.var1 === null) {
         return {
             var1: null
         };
-    }
-    else {
+    } else {
         return {
             var2: null
         };
@@ -116,10 +115,12 @@ export function recordReferencingOtherTypesFromReturnType(): Query<{
     };
 }
 
-export function variantReferencingOtherTypesFromReturnType(): Query<Variant<{
-    prop1?: string;
-    prop2?: Bling;
-}>> {
+export function variantReferencingOtherTypesFromReturnType(): Query<
+    Variant<{
+        prop1?: string;
+        prop2?: Bling;
+    }>
+> {
     return {
         prop2: {
             id: '0'
@@ -127,11 +128,15 @@ export function variantReferencingOtherTypesFromReturnType(): Query<Variant<{
     };
 }
 
-export function recordReferencingRecordFromParam(param1: { test: Test }): Query<string> {
+export function recordReferencingRecordFromParam(param1: {
+    test: Test;
+}): Query<string> {
     return param1.test.id;
 }
 
-export function recordReferencingVariantFromParam(param1: { testVariant: TestVariant }): Query<Opt<string>> {
+export function recordReferencingVariantFromParam(param1: {
+    testVariant: TestVariant;
+}): Query<Opt<string>> {
     if (param1.testVariant.prop1 !== undefined) {
         return param1.testVariant.prop1;
     }
@@ -139,10 +144,10 @@ export function recordReferencingVariantFromParam(param1: { testVariant: TestVar
     return null;
 }
 
-export function variantReferencingRecordFromParam(param1: Variant<{ prop1?: User }>): Query<void> {
+export function variantReferencingRecordFromParam(
+    param1: Variant<{ prop1?: User }>
+): Query<void> {}
 
-}
-
-export function variantReferencingVariantFromParam(param1: Variant<{ prop1?: UserVariant }>): Query<void> {
-
-}
+export function variantReferencingVariantFromParam(
+    param1: Variant<{ prop1?: UserVariant }>
+): Query<void> {}
