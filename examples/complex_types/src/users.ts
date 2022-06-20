@@ -1,21 +1,11 @@
-import {
-    Query,
-    Update,
-    nat32
-} from 'azle';
+import { Query, Update, nat32 } from 'azle';
 import { User } from './candid_types';
 import { getPostFromStatePost } from './posts';
 import { getReactionFromStateReaction } from './reactions';
-import {
-    state,
-    StateUser
-} from './state';
+import { state, StateUser } from './state';
 import { getThreadFromStateThread } from './threads';
 
-export function createUser(
-    username: string,
-    joinDepth: nat32
-): Update<User> {
+export function createUser(username: string, joinDepth: nat32): Update<User> {
     const id = Object.keys(state.users).length.toString();
 
     const stateUser = {
@@ -34,9 +24,9 @@ export function createUser(
 }
 
 export function getAllUsers(joinDepth: nat32): Query<User[]> {
-    return Object
-        .values(state.users)
-        .map((stateUser) => getUserFromStateUser(stateUser, joinDepth));
+    return Object.values(state.users).map((stateUser) =>
+        getUserFromStateUser(stateUser, joinDepth)
+    );
 }
 
 export function getUserFromStateUser(
@@ -51,23 +41,23 @@ export function getUserFromStateUser(
             threads: [],
             username: stateUser.username
         };
-    }
-    else {
-        const posts = stateUser
-            .postIds
+    } else {
+        const posts = stateUser.postIds
             .map((postId) => state.posts[postId])
             .map((statePost) => getPostFromStatePost(statePost, joinDepth - 1));
-    
-        const reactions = stateUser
-            .reactionIds
+
+        const reactions = stateUser.reactionIds
             .map((reactionId) => state.reactions[reactionId])
-            .map((stateReaction) => getReactionFromStateReaction(stateReaction, joinDepth - 1));
-    
-        const threads = stateUser
-            .threadIds
+            .map((stateReaction) =>
+                getReactionFromStateReaction(stateReaction, joinDepth - 1)
+            );
+
+        const threads = stateUser.threadIds
             .map((threadId) => state.threads[threadId])
-            .map((stateThread) => getThreadFromStateThread(stateThread, joinDepth - 1));
-    
+            .map((stateThread) =>
+                getThreadFromStateThread(stateThread, joinDepth - 1)
+            );
+
         return {
             id: stateUser.id,
             posts,

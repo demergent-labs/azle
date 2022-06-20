@@ -50,19 +50,15 @@ export function basic_func_param(basic_func: BasicFunc): Query<BasicFunc> {
 }
 
 export function basic_func_return_type(): Query<BasicFunc> {
-    return [
-        'aaaaa-aa',
-        'create_canister'
-    ];
+    return ['aaaaa-aa', 'create_canister'];
 }
 
-export function complex_func_param(complex_func: ComplexFunc): Query<ComplexFunc> {
-    return complex_func
+export function complex_func_param(
+    complex_func: ComplexFunc
+): Query<ComplexFunc> {
+    return complex_func;
 }
 
 export function complex_func_return_type(): Query<ComplexFunc> {
-    return [
-        'aaaaa-aa',
-        'stop_canister'
-    ];
+    return ['aaaaa-aa', 'stop_canister'];
 }

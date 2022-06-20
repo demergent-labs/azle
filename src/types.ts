@@ -6,18 +6,27 @@ export type CandidTypeInfo = {
     typeClass: CandidTypeClass;
 };
 
-export type CandidTypeClass = 'primitive' | 'vec' | 'opt' | 'func' | 'record' | 'inline_record' | 'inline_tuple_record' | 'variant' | 'inline_variant';
+export type CandidTypeClass =
+    | 'primitive'
+    | 'vec'
+    | 'opt'
+    | 'func'
+    | 'record'
+    | 'inline_record'
+    | 'inline_tuple_record'
+    | 'variant'
+    | 'inline_variant';
 
 export type CanisterMethodTypeName =
-    'Query' |
+    | 'Query'
     // 'QueryAsync' | // TODO enable once this is resolved: https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754
-    'Update' |
-    'UpdateAsync' |
-    'Init' |
-    'InspectMessage' |
-    'Heartbeat' |
-    'PreUpgrade' |
-    'PostUpgrade';
+    | 'Update'
+    | 'UpdateAsync'
+    | 'Init'
+    | 'InspectMessage'
+    | 'Heartbeat'
+    | 'PreUpgrade'
+    | 'PostUpgrade';
 
 export type DfxJson = Readonly<{
     canisters: Readonly<{

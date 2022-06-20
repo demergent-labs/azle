@@ -20,31 +20,41 @@ export async function generateLibFile(
 ): Promise<Rust> {
     // TODO Remove this once these issues are resolved: https://forum.dfinity.org/t/deserialize-to-candid-nat/8192/16, https://github.com/dfinity/candid/issues/331
     // TODO we also might want to just use candid::Nat, candid::Int, candid::Principal and just do the work of implementing the traits locally
-    const rustCandidTypesNatAndIntReplaced: Rust = rustCandidTypes.replace(/candid::Nat/g, 'u128').replace(/candid::Int/g, 'i128');
-    
+    const rustCandidTypesNatAndIntReplaced: Rust = rustCandidTypes
+        .replace(/candid::Nat/g, 'u128')
+        .replace(/candid::Int/g, 'i128');
+
     // TODO remove this once this issue is resolved: https://github.com/dfinity/candid/issues/345
-    const rust_candid_types_semicolon_syntax_fix = rustCandidTypesNatAndIntReplaced.replace(/#\[derive\(CandidType, Deserialize\)\]\nstruct .*? \(.*?\)/g, match => `${match};`);
+    const rust_candid_types_semicolon_syntax_fix =
+        rustCandidTypesNatAndIntReplaced.replace(
+            /#\[derive\(CandidType, Deserialize\)\]\nstruct .*? \(.*?\)/g,
+            (match) => `${match};`
+        );
 
-    const modifiedRustCandidTypes: Rust = await modifyRustCandidTypes(rust_candid_types_semicolon_syntax_fix);
-
-    const principal_js: JavaScript = bundle_and_transpile_ts(`export { Principal } from '@dfinity/principal';`);
-    const head: Rust = generateHead(
-        js,
-        principal_js
+    const modifiedRustCandidTypes: Rust = await modifyRustCandidTypes(
+        rust_candid_types_semicolon_syntax_fix
     );
+
+    const principal_js: JavaScript = bundle_and_transpile_ts(
+        `export { Principal } from '@dfinity/principal';`
+    );
+    const head: Rust = generateHead(js, principal_js);
 
     const systemCanisterMethods: Rust =
         generateSystemCanisterMethods(sourceFiles);
 
-    const callFunctionInfos: CallFunctionInfo[] = generateCallFunctions(sourceFiles);
+    const callFunctionInfos: CallFunctionInfo[] =
+        generateCallFunctions(sourceFiles);
 
-    const canisterMethodsDeveloperDefined: Rust = await generateCanisterMethodsDeveloperDefined(
-        rust_candid_types_semicolon_syntax_fix, // TODO you might think that we should pass in modifiedRustCandidTypes here, but the printAst function seems to have a bug that removes the , from the CallResult tuple which causes problems later in the process
-        queryMethodFunctionNames,
-        updateMethodFunctionNames
-    );
+    const canisterMethodsDeveloperDefined: Rust =
+        await generateCanisterMethodsDeveloperDefined(
+            rust_candid_types_semicolon_syntax_fix, // TODO you might think that we should pass in modifiedRustCandidTypes here, but the printAst function seems to have a bug that removes the , from the CallResult tuple which causes problems later in the process
+            queryMethodFunctionNames,
+            updateMethodFunctionNames
+        );
 
-    const handleGeneratorResultFunction = generateHandleGeneratorResultFunction(callFunctionInfos);
+    const handleGeneratorResultFunction =
+        generateHandleGeneratorResultFunction(callFunctionInfos);
 
     const icObjectFunctions: Rust = generateIcObjectFunctions();
 
@@ -67,6 +77,8 @@ export async function generateLibFile(
 
         ${icObjectFunctions}
 
-        ${callFunctionInfos.map((callFunctionInfo) => callFunctionInfo.text).join('\n')}
+        ${callFunctionInfos
+            .map((callFunctionInfo) => callFunctionInfo.text)
+            .join('\n')}
     `;
 }

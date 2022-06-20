@@ -10,7 +10,7 @@ export function getStableTypeAliasRecordNames(
         sourceFiles,
         stableTypeAliasDeclarations,
         'record'
-    );   
+    );
 }
 
 export function getStableTypeAliasVariantNames(
@@ -29,18 +29,18 @@ function getStableTypeAliasNames(
     stableTypeAliasDeclarations: tsc.TypeAliasDeclaration[],
     candidTypeClass: CandidTypeClass
 ): string[] {
-    return stableTypeAliasDeclarations.reduce((result: string[], typeAliasDeclaration) => {
-        const stableTypeAliasName = getStableTypeAliasName(
-            sourceFiles,
-            typeAliasDeclaration,
-            candidTypeClass
-        );
+    return stableTypeAliasDeclarations.reduce(
+        (result: string[], typeAliasDeclaration) => {
+            const stableTypeAliasName = getStableTypeAliasName(
+                sourceFiles,
+                typeAliasDeclaration,
+                candidTypeClass
+            );
 
-        return [
-            ...result,
-            ...stableTypeAliasName
-        ];
-    }, []);
+            return [...result, ...stableTypeAliasName];
+        },
+        []
+    );
 }
 
 function getStableTypeAliasName(
@@ -52,7 +52,8 @@ function getStableTypeAliasName(
         throw new Error(`Stable type must be a type reference`);
     }
 
-    const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+    const typeReferenceNode =
+        typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
     if (typeReferenceNode.typeArguments === undefined) {
         throw new Error(`Stable type must have type arguments`);
@@ -81,22 +82,16 @@ function getStableTypeAliasName(
             sourceFiles,
             propertySignature.type
         );
-    
+
         if (candidTypeClass === 'record') {
             if (candidTypeInfo.typeClass === 'record') {
-                return [
-                    ...result,
-                    candidTypeInfo.typeName
-                ];
+                return [...result, candidTypeInfo.typeName];
             }
         }
-    
+
         if (candidTypeClass === 'variant') {
             if (candidTypeInfo.typeClass === 'variant') {
-                return [
-                    ...result,
-                    candidTypeInfo.typeName
-                ];
+                return [...result, candidTypeInfo.typeName];
             }
         }
 

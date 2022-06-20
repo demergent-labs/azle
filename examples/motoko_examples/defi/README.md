@@ -3,21 +3,23 @@
 This repo contains a simple defi exchange that demonstrates the interaction with ICP and tokens on the IC. For a more detailed explanation check out the [architecture.md](architecture.md) file or visit the official [documentation](https://smartcontracts.org/docs/examples/defi.html)
 
 This example can be seen running, here:
-- frontend: https://gzz56-daaaa-aaaal-qai2a-cai.ic0.app/
-- AkitaDIP20: `gl7kh-pqaaa-aaaal-qaiza-cai`
-- GoldenDIP20: `gm6mt-ciaaa-aaaal-qaizq-cai`
+
+-   frontend: https://gzz56-daaaa-aaaal-qai2a-cai.ic0.app/
+-   AkitaDIP20: `gl7kh-pqaaa-aaaal-qaiza-cai`
+-   GoldenDIP20: `gm6mt-ciaaa-aaaal-qaizq-cai`
 
 ## Dependencies
 
-- [dfx](https://smartcontracts.org/docs/developers-guide/install-upgrade-remove.html)
-- [cmake](https://cmake.org/)
-- [npm](https://nodejs.org/en/download/)
+-   [dfx](https://smartcontracts.org/docs/developers-guide/install-upgrade-remove.html)
+-   [cmake](https://cmake.org/)
+-   [npm](https://nodejs.org/en/download/)
 
 If you want to deploy the rust version, make sure you add wasm as a target:
 
 ```
 rustup target add wasm32-unknown-unknown
 ```
+
 ## Quickstart
 
 This deploys a local ledger, two DIP20 Tokens, II, and our project.
@@ -29,7 +31,7 @@ cd examples/motoko/defi
 make install
 ```
 
-The install scripts output the URL to visit the exchange frontend, or you can regenerate the URL `"http://localhost:8000?canisterId=$(dfx canister id frontend)"`. To interact with the exchange, you can create a local internet identity by clicking the login button. 
+The install scripts output the URL to visit the exchange frontend, or you can regenerate the URL `"http://localhost:8000?canisterId=$(dfx canister id frontend)"`. To interact with the exchange, you can create a local internet identity by clicking the login button.
 
 You can give yourself some tokens and ICP by running an initialization script with your II Principal that you can copy from the frontend. After adding balanced reload the frontend.
 
@@ -37,7 +39,7 @@ You can give yourself some tokens and ICP by running an initialization script wi
 make init-local II_PRINCIPAL=<YOUR II PRINCIPAL>
 ```
 
-To trade with yourself, you can open a second incognito browser window. 
+To trade with yourself, you can open a second incognito browser window.
 
 ## Development
 
@@ -61,7 +63,6 @@ Run from home directory
 make test
 ```
 
-
 ## Examples
 
 ### Demo
@@ -81,8 +82,9 @@ See [transfer.sh](test/transfer.sh).
 See [deploy_dip20.sh](scripts/deploy_dip20.sh).
 
 ## Roadmap
-- Improve Plug wallet support
-- Make exchange more predictable
+
+-   Improve Plug wallet support
+-   Make exchange more predictable
 
 ## Troubleshooting
 
@@ -94,7 +96,7 @@ Clear `.dfx` directories
 make clean
 ```
 
-### Deposit address not loading 
+### Deposit address not loading
 
 Make sure you are logged out with II and refresh the page.
 
@@ -151,6 +153,7 @@ Caused by:
   build failed
 
 ```
+
 Need to install cmake in your environment
 
 MacOS: `brew install cmake`
@@ -170,4 +173,3 @@ git submodule update --init --recursive
 cd motoko/defi
 make install
 ```
-

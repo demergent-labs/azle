@@ -1,17 +1,12 @@
-import {
-    run_tests,
-    Test
-} from 'azle/test';
+import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/key_value_store';
 
-const key_value_store_canister = createActor(
-    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const key_value_store_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
 const tests: Test[] = [
     {
@@ -81,10 +76,7 @@ const tests: Test[] = [
             const result = await key_value_store_canister.get('0');
 
             return {
-                ok: (
-                    result.length === 1 &&
-                    result[0] === 'zero'
-                )
+                ok: result.length === 1 && result[0] === 'zero'
             };
         }
     },
@@ -94,10 +86,7 @@ const tests: Test[] = [
             const result = await key_value_store_canister.get('1');
 
             return {
-                ok: (
-                    result.length === 1 &&
-                    result[0] === 'one'
-                )
+                ok: result.length === 1 && result[0] === 'one'
             };
         }
     }

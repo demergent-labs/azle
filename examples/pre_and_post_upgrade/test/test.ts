@@ -1,12 +1,10 @@
-import {
-    run_tests,
-    Test
-} from 'azle/test';
+import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/pre_and_post_upgrade';
 
 const pre_and_post_upgrade_canister = createActor(
-    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
+    'rrkah-fqaaa-aaaaa-aaaaq-cai',
+    {
         agentOptions: {
             host: 'http://127.0.0.1:8000'
         }
@@ -17,9 +15,12 @@ const tests: Test[] = [
     {
         name: 'clear canister memory',
         prep: async () => {
-            execSync(`dfx canister uninstall-code pre_and_post_upgrade || true`, {
-                stdio: 'inherit'
-            });
+            execSync(
+                `dfx canister uninstall-code pre_and_post_upgrade || true`,
+                {
+                    stdio: 'inherit'
+                }
+            );
         }
     },
     {
@@ -64,11 +65,10 @@ const tests: Test[] = [
             const result = await pre_and_post_upgrade_canister.getEntries();
 
             return {
-                ok: (
+                ok:
                     result.length === 1 &&
                     result[0].key === '0' &&
                     result[0].value === 0n
-                )
             };
         }
     },
@@ -76,9 +76,12 @@ const tests: Test[] = [
         // TODO Get rid of this once https://forum.dfinity.org/t/upgrade-a-canister-even-if-the-wasm-module-hash-has-not-changed/11989
         name: 'function hack to allow a redeploy',
         prep: async () => {
-            execSync(`echo "\\n\\nexport function hack(): Query<void> {}" >> src/pre_and_post_upgrade.ts`, {
-                stdio: 'inherit'
-            });
+            execSync(
+                `echo "\\n\\nexport function hack(): Query<void> {}" >> src/pre_and_post_upgrade.ts`,
+                {
+                    stdio: 'inherit'
+                }
+            );
         }
     },
     {
@@ -95,14 +98,13 @@ const tests: Test[] = [
             const result = await pre_and_post_upgrade_canister.getEntries();
 
             return {
-                ok: (
+                ok:
                     result.length === 1 &&
                     result[0].key === '0' &&
                     result[0].value === 0n
-                )
             };
         }
-    },
+    }
 ];
 
 run_tests(tests);

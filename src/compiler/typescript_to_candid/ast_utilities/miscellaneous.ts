@@ -15,16 +15,13 @@ export function isTypeReferenceNodeAVariant(
     }
 
     if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
-        const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+        const typeReferenceNode =
+            typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
         if (getTypeReferenceNodeTypeName(typeReferenceNode) === 'Variant') {
             return true;
-        }
-        else {
-            return isTypeReferenceNodeAVariant(
-                sourceFiles,
-                typeReferenceNode
-            );
+        } else {
+            return isTypeReferenceNodeAVariant(sourceFiles, typeReferenceNode);
         }
     }
 
@@ -53,25 +50,20 @@ export function isTypeReferenceNodeARecord(
     }
 
     if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
-        const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+        const typeReferenceNode =
+            typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
         if (
-            (
-                typeReferenceNode.typeName.kind === tsc.SyntaxKind.Identifier &&
-                typeReferenceNode.typeName.escapedText.toString() === 'Func'
-            ) ||
-            (
-                typeReferenceNode.typeName.kind === tsc.SyntaxKind.Identifier &&
-                typeReferenceNode.typeName.escapedText.toString() === 'Canister'
-            )
+            (typeReferenceNode.typeName.kind === tsc.SyntaxKind.Identifier &&
+                typeReferenceNode.typeName.escapedText.toString() === 'Func') ||
+            (typeReferenceNode.typeName.kind === tsc.SyntaxKind.Identifier &&
+                typeReferenceNode.typeName.escapedText.toString() ===
+                    'Canister')
         ) {
             return false;
         }
 
-        return isTypeReferenceNodeARecord(
-            sourceFiles,
-            typeReferenceNode
-        );
+        return isTypeReferenceNodeARecord(sourceFiles, typeReferenceNode);
     }
 
     return false;
@@ -91,16 +83,13 @@ export function isTypeReferenceNodeAFunc(
     }
 
     if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
-        const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+        const typeReferenceNode =
+            typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
         if (getTypeReferenceNodeTypeName(typeReferenceNode) === 'Func') {
             return true;
-        }
-        else {
-            return isTypeReferenceNodeAFunc(
-                sourceFiles,
-                typeReferenceNode
-            );
+        } else {
+            return isTypeReferenceNodeAFunc(sourceFiles, typeReferenceNode);
         }
     }
 
@@ -112,10 +101,18 @@ export function getPropertyNameText(propertyName: tsc.PropertyName): string {
         return propertyName.escapedText.toString();
     }
 
-    throw new Error(`Cannot get name for property name: ${JSON.stringify(propertyName, null, 2)}`);
+    throw new Error(
+        `Cannot get name for property name: ${JSON.stringify(
+            propertyName,
+            null,
+            2
+        )}`
+    );
 }
 
-export function getTypeReferenceNodeTypeName(typeReferenceNode: tsc.TypeReferenceNode): string {
+export function getTypeReferenceNodeTypeName(
+    typeReferenceNode: tsc.TypeReferenceNode
+): string {
     if (typeReferenceNode.typeName.kind === tsc.SyntaxKind.Identifier) {
         return typeReferenceNode.typeName.escapedText.toString();
     }
@@ -123,12 +120,16 @@ export function getTypeReferenceNodeTypeName(typeReferenceNode: tsc.TypeReferenc
     throw new Error('not implemented');
 }
 
-export function getFunctionName(functionDeclaration: tsc.FunctionDeclaration): string {
+export function getFunctionName(
+    functionDeclaration: tsc.FunctionDeclaration
+): string {
     if (
         functionDeclaration.name === undefined ||
         functionDeclaration.name === null
     ) {
-        throw new Error(`Could not determine name for function declaration: ${functionDeclaration}`);
+        throw new Error(
+            `Could not determine name for function declaration: ${functionDeclaration}`
+        );
     }
 
     return functionDeclaration.name.escapedText.toString();

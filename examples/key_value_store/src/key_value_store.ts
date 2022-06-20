@@ -1,8 +1,4 @@
-import {
-    Query,
-    Update,
-    Opt
-} from 'azle';
+import { Query, Update, Opt } from 'azle';
 
 type Store = {
     [key: string]: string;

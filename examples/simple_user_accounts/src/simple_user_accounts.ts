@@ -1,8 +1,4 @@
-import {
-    Query,
-    Update,
-    Opt
-} from 'azle';
+import { Query, Update, Opt } from 'azle';
 
 type DB = {
     users: {
@@ -31,7 +27,7 @@ export function getAllUsers(): Query<User[]> {
 
 export function createUser(username: string): Update<User> {
     const id = Object.keys(db.users).length.toString();
-    
+
     const user = {
         id,
         username

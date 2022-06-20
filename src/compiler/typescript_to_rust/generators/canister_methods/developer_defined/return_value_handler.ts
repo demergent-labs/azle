@@ -1,8 +1,5 @@
 import { ImplItemMethod } from '../../../ast_utilities/types';
-import {
-    CallFunctionInfo,
-    Rust
-} from '../../../../../types';
+import { CallFunctionInfo, Rust } from '../../../../../types';
 
 // TODO I think I should hold off on anything crazy for now, just tell people to use float64 until further notice
 // TODO follow this issue https://github.com/boa-dev/boa/issues/1961 and this issue https://github.com/boa-dev/boa/issues/1962
@@ -10,7 +7,9 @@ import {
 // TODO this would give me complete control over every conversion, and number conversions are what I require complete control of
 // TODO I need that control to possibly convert from a BigInt
 // TODO get this to work for Option...if necessary...probably is necessary to do some kind of recursion
-export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust {
+export function generateReturnValueHandler(
+    implItemMethod: ImplItemMethod
+): Rust {
     const returnTypeName = getImplItemMethodReturnTypeName(implItemMethod);
 
     return `
@@ -18,7 +17,14 @@ export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust
             _azle_return_value.is_object() == false ||
             _azle_return_value.as_object().unwrap().is_generator() == false
         {
-            ${returnTypeName === '' ? `return;` : `${generateReturnValueConversion('_azle_return_value', returnTypeName)}`}
+            ${
+                returnTypeName === ''
+                    ? `return;`
+                    : `${generateReturnValueConversion(
+                          '_azle_return_value',
+                          returnTypeName
+                      )}`
+            }
         }
 
         let _azle_final_js_value = handle_generator_result(
@@ -26,15 +32,22 @@ export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust
             &_azle_return_value
         ).await;        
 
-        ${returnTypeName === '' ? '' : `
+        ${
+            returnTypeName === ''
+                ? ''
+                : `
             // if _azle_final_js_value.is_undefined() {
 
             // }
             // else {
                 // serde_json::from_value(_azle_final_js_value.to_json(&mut boa_context).unwrap()).unwrap()
-                ${generateReturnValueConversion('_azle_final_js_value', returnTypeName)}
+                ${generateReturnValueConversion(
+                    '_azle_final_js_value',
+                    returnTypeName
+                )}
             // }
-        `}
+        `
+        }
     `;
 
     // return `
@@ -43,10 +56,10 @@ export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust
     //         _azle_return_value.as_object().unwrap().is_generator()
     //     {
     //         let _azle_generator_object = _azle_return_value.as_object().unwrap();
-    
+
     //         let _azle_next_js_value = _azle_generator_object.get("next", &mut boa_context).unwrap();
     //         let _azle_next_js_object = _azle_next_js_value.as_object().unwrap();
-    
+
     //         let _azle_final_js_value = azle_run_generator(
     //             &[],
     //             _azle_next_js_object,
@@ -59,7 +72,7 @@ export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust
 
     //     serde_json::from_value(_azle_return_value.to_json(&mut boa_context).unwrap()).unwrap()
     // `;
-    
+
     // const returnTypeName = getImplItemMethodReturnTypeName(implItemMethod);
 
     // if (returnTypeName === '') {
@@ -79,15 +92,15 @@ export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust
     // }
 
     // if (returnTypeName === 'int32') {
-        
+
     // }
 
     // if (returnTypeName === 'int16') {
-        
+
     // }
 
     // if (returnTypeName === 'int8') {
-        
+
     // }
 
     // if (returnTypeName === 'nat') {
@@ -101,11 +114,12 @@ export function generateReturnValueHandler(implItemMethod: ImplItemMethod): Rust
     // return `serde_json::from_value(_azle_return_value.to_json(&mut boa_context).unwrap()).unwrap()`;
 }
 
-// TODO the generator implementation is not sufficient
-// TODO I am afraid we might have to do something recursively...well we can just mutate things I guess
-// TODO but if we return a generator as the call to next, we need to deal with that as well it seems
-export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFunctionInfo[]): Rust {
-    return `
+// TODO Now that we are using the async_recursion crate we can probably rewrite this entirely recursively (get rid of the mutations)
+export function generateHandleGeneratorResultFunction(
+    callFunctionInfos: CallFunctionInfo[]
+): Rust {
+    return /* rust */ `
+        #[async_recursion::async_recursion(?Send)]
         async fn handle_generator_result(
             _azle_boa_context: &mut boa_engine::Context,
             _azle_return_value: &boa_engine::JsValue
@@ -128,12 +142,21 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                 let yield_result_done_js_value = yield_result_js_object.get("done", _azle_boa_context).unwrap();
                 let yield_result_done_bool = yield_result_done_js_value.as_boolean().unwrap();
                 
-                // TODO we need to handle this return value being a generator
-                // TODO we will have to emulate recursion with mutations
                 let yield_result_value_js_value = yield_result_js_object.get("value", _azle_boa_context).unwrap();
 
                 if yield_result_done_bool == false {
                     let yield_result_value_js_object = yield_result_value_js_value.as_object().unwrap();
+
+                    if yield_result_value_js_object.is_generator() {
+                        let recursed_generator_js_value = handle_generator_result(
+                            _azle_boa_context,
+                            &yield_result_value_js_value
+                        ).await;
+
+                        _azle_args = vec![recursed_generator_js_value];
+
+                        continue;
+                    }
                     
                     let name_js_value = yield_result_value_js_object.get("name", _azle_boa_context).unwrap();
                     let name_string = name_js_value.as_string().unwrap();
@@ -305,24 +328,39 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                         let call_function_name_string = call_function_name_js_value.as_string().unwrap().to_string();
 
                         match &call_function_name_string[..] {
-                            ${callFunctionInfos.map((callFunctionInfo) => {
-                                return `
+                            ${callFunctionInfos
+                                .map((callFunctionInfo) => {
+                                    return /* rust */ `
                                     "${callFunctionInfo.functionName}" => {
                                         let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
                                         let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
 
-                                        ${callFunctionInfo.params.map((param, index) => {
-                                            return `
-                                                let ${param.paramName}_js_value = call_args_js_object.get("${index + 2}", _azle_boa_context).unwrap();
-                                                let ${param.paramName}: ${param.paramType} = ${param.paramName}_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+                                        ${callFunctionInfo.params
+                                            .map((param, index) => {
+                                                return `
+                                                let ${
+                                                    param.paramName
+                                                }_js_value = call_args_js_object.get("${
+                                                    index + 2
+                                                }", _azle_boa_context).unwrap();
+                                                let ${param.paramName}: ${
+                                                    param.paramType
+                                                } = ${
+                                                    param.paramName
+                                                }_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
                                             `;
-                                        }).join('\n')}
+                                            })
+                                            .join('\n')}
 
-                                        let call_result = ${callFunctionInfo.functionName}(
+                                        let call_result = ${
+                                            callFunctionInfo.functionName
+                                        }(
                                             canister_id_principal,
-                                            ${callFunctionInfo.params.map((param) => {
-                                                return param.paramName;
-                                            }).join(',\n')}
+                                            ${callFunctionInfo.params
+                                                .map((param) => {
+                                                    return param.paramName;
+                                                })
+                                                .join(',\n')}
                                         ).await;
 
                                         match call_result {
@@ -359,7 +397,8 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
                                         };
                                     },
                                 `;
-                            }).join('\n')}
+                                })
+                                .join('\n')}
                             _ => ()
                         };
                     }
@@ -375,18 +414,23 @@ export function generateHandleGeneratorResultFunction(callFunctionInfos: CallFun
     `;
 }
 
-function getImplItemMethodReturnTypeName(implItemMethod: ImplItemMethod): string {
-    const returnTypeAst = implItemMethod.output?.path.segments[0].arguments.angle_bracketed.args[0].type.tuple.elems[0];
+function getImplItemMethodReturnTypeName(
+    implItemMethod: ImplItemMethod
+): string {
+    const returnTypeAst =
+        implItemMethod.output?.path.segments[0].arguments.angle_bracketed
+            .args[0].type.tuple.elems[0];
 
     if (returnTypeAst === undefined) {
         return '';
-    }
-    else {
+    } else {
         if (returnTypeAst.path === undefined) {
             return '';
         }
 
-        return returnTypeAst.path.segments.map((segment: any) => segment.ident).join('::');
+        return returnTypeAst.path.segments
+            .map((segment: any) => segment.ident)
+            .join('::');
         // return returnTypeAst.path.segments[0].ident;
     }
 }

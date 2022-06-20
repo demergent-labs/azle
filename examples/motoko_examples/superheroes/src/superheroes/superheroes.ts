@@ -4,8 +4,8 @@ import { Query, Update, int32, Opt } from 'azle';
 
 // The type of a superhero.
 export type Superhero = {
-  name: string;
-  superpowers: string[];
+    name: string;
+    superpowers: string[];
 };
 
 /**
@@ -24,36 +24,36 @@ let superheroes: Map<int32, Superhero> = new Map();
 
 // Create a superhero.
 export function create(superhero: Superhero): Update<int32> {
-  let superheroId = next;
-  next += 1;
-  superheroes.set(superheroId, superhero);
-  return superheroId;
+    let superheroId = next;
+    next += 1;
+    superheroes.set(superheroId, superhero);
+    return superheroId;
 }
 
 // Read a superhero.
 export function read(superheroId: int32): Query<Opt<Superhero>> {
-  let result = superheroes.get(superheroId) ?? null;
+    let result = superheroes.get(superheroId) ?? null;
 
-  return result;
+    return result;
 }
 
 // Update a superhero.
 export function update(
-  superheroId: int32,
-  superhero: Superhero
+    superheroId: int32,
+    superhero: Superhero
 ): Update<boolean> {
-  let result = superheroes.get(superheroId);
-  if (result) {
-    superheroes.set(superheroId, superhero);
-  }
-  return !!result;
+    let result = superheroes.get(superheroId);
+    if (result) {
+        superheroes.set(superheroId, superhero);
+    }
+    return !!result;
 }
 
 // Delete a superhero.
 export function deleteHero(superheroId: int32): Update<boolean> {
-  let result = superheroes.get(superheroId);
-  if (result) {
-    superheroes.delete(superheroId);
-  }
-  return !!result;
+    let result = superheroes.get(superheroId);
+    if (result) {
+        superheroes.delete(superheroId);
+    }
+    return !!result;
 }

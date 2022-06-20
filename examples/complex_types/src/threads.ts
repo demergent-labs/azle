@@ -1,15 +1,7 @@
-import {
-    Query,
-    Update,
-    nat32
-} from 'azle';
+import { Query, Update, nat32 } from 'azle';
 import { Thread } from './candid_types';
 import { getPostFromStatePost } from './posts';
-import {
-    state,
-    StateThread,
-    StateUser
-} from './state';
+import { state, StateThread, StateUser } from './state';
 import { getUserFromStateUser } from './users';
 
 export function createThread(
@@ -29,16 +21,16 @@ export function createThread(
 
     state.threads[id] = stateThread;
     state.users[authorId] = updatedStateAuthor;
-    
+
     const thread = getThreadFromStateThread(stateThread, joinDepth);
 
     return thread;
 }
 
 export function getAllThreads(joinDepth: nat32): Query<Thread[]> {
-    return Object
-        .values(state.threads)
-        .map((stateThread) => getThreadFromStateThread(stateThread, joinDepth));
+    return Object.values(state.threads).map((stateThread) =>
+        getThreadFromStateThread(stateThread, joinDepth)
+    );
 }
 
 export function getThreadFromStateThread(
@@ -55,10 +47,8 @@ export function getThreadFromStateThread(
             posts: [],
             title: stateThread.title
         };
-    }
-    else {
-        const posts = stateThread
-            .postIds
+    } else {
+        const posts = stateThread.postIds
             .map((postId) => state.posts[postId])
             .map((statePost) => getPostFromStatePost(statePost, joinDepth - 1));
 

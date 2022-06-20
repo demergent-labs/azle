@@ -1,13 +1,11 @@
-import {
-    int
-} from 'azle';
+import { int } from 'azle';
 
 export const Int = {
     abs: Math.abs,
     compare
 };
 
-function compare (a: int, b: int): OrderType {
+function compare(a: int, b: int): OrderType {
     if (a > b) {
         return OrderType.Greater;
     }
@@ -21,7 +19,7 @@ export enum OrderType {
     Less = -1,
     Equal = 0,
     Greater = 1
-};
+}
 
 export const Order = {
     isLess,
@@ -30,18 +28,18 @@ export const Order = {
     equal
 };
 
-function isLess (order: OrderType): boolean {
+function isLess(order: OrderType): boolean {
     return order === OrderType.Less;
 }
 
-function isEqual (order: OrderType): boolean {
+function isEqual(order: OrderType): boolean {
     return order === OrderType.Equal;
 }
 
-function isGreater (order: OrderType): boolean {
+function isGreater(order: OrderType): boolean {
     return order === OrderType.Greater;
 }
 
-function equal (o1: OrderType, o2: OrderType): boolean {
+function equal(o1: OrderType, o2: OrderType): boolean {
     return o1 === OrderType.Less && o2 === OrderType.Less;
 }

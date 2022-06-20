@@ -3,16 +3,21 @@
 
 import * as tsc from 'typescript';
 
-export function getTypeAliasDeclarationsFromSourceFiles(sourceFiles: readonly tsc.SourceFile[]): tsc.TypeAliasDeclaration[] {
-    return sourceFiles.reduce((result: tsc.TypeAliasDeclaration[], sourceFile) => {
-        return [
-            ...result,
-            ...getTypeAliasDeclarationsFromNodes(
-                sourceFile,
-                sourceFile.getChildren()
-            )
-        ];
-    }, []);
+export function getTypeAliasDeclarationsFromSourceFiles(
+    sourceFiles: readonly tsc.SourceFile[]
+): tsc.TypeAliasDeclaration[] {
+    return sourceFiles.reduce(
+        (result: tsc.TypeAliasDeclaration[], sourceFile) => {
+            return [
+                ...result,
+                ...getTypeAliasDeclarationsFromNodes(
+                    sourceFile,
+                    sourceFile.getChildren()
+                )
+            ];
+        },
+        []
+    );
 }
 
 function getTypeAliasDeclarationsFromNodes(
@@ -33,12 +38,13 @@ function getTypeAliasDeclarationsFromNodes(
     }, []);
 }
 
-function getTypeAliasDeclarationsFromNode(node: tsc.Node): tsc.TypeAliasDeclaration[] {
+function getTypeAliasDeclarationsFromNode(
+    node: tsc.Node
+): tsc.TypeAliasDeclaration[] {
     if (node.kind === tsc.SyntaxKind.TypeAliasDeclaration) {
         const typeAliasDeclaration = node as tsc.TypeAliasDeclaration;
         return [typeAliasDeclaration];
-    }
-    else {
+    } else {
         return [];
     }
 }
@@ -47,9 +53,12 @@ export function getTypeAliasDeclaration(
     sourceFiles: readonly tsc.SourceFile[],
     typeAliasName: string
 ): tsc.TypeAliasDeclaration | undefined {
-    const typeAliasDeclarations = getTypeAliasDeclarationsFromSourceFiles(sourceFiles);
+    const typeAliasDeclarations =
+        getTypeAliasDeclarationsFromSourceFiles(sourceFiles);
 
     return typeAliasDeclarations.find((typeAliasDeclaration) => {
-        return typeAliasDeclaration.name.escapedText.toString() === typeAliasName;
+        return (
+            typeAliasDeclaration.name.escapedText.toString() === typeAliasName
+        );
     });
 }

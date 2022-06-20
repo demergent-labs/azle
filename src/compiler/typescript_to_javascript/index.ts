@@ -1,14 +1,13 @@
 import * as swc from '@swc/core';
 import * as tsc from 'typescript';
 import { buildSync } from 'esbuild';
-import {
-    JavaScript,
-    TypeScript
-} from '../../types';
+import { JavaScript, TypeScript } from '../../types';
 import { getCanisterTypeAliasDeclarations } from '../typescript_to_rust/generators/call_functions';
 import { generateCallFunctionName } from '../typescript_to_rust/generators/call_functions/call_function_name';
 
-export async function compileTypeScriptToJavaScript(ts_path: string): Promise<JavaScript> {
+export async function compileTypeScriptToJavaScript(
+    ts_path: string
+): Promise<JavaScript> {
     const icCanisters: JavaScript = generateICCanisters(ts_path);
 
     const js_bundled_and_transpiled = bundle_and_transpile_ts(`
@@ -38,7 +37,10 @@ export function bundle_and_transpile_ts(ts: TypeScript): JavaScript {
     // TODO enabling strict mode is causing lots of issues
     // TODO it would be nice if I could remove strict mode code in esbuild or swc
     // TODO look into the implications of this, but since we are trying to transpile to es3 to cope with missing features in boa, I do not think we need strict mode
-    const js_strict_mode_removed: JavaScript = js_transpiled.replace(/"use strict";/g, '');
+    const js_strict_mode_removed: JavaScript = js_transpiled.replace(
+        /"use strict";/g,
+        ''
+    );
 
     return js_strict_mode_removed;
 }
@@ -56,7 +58,7 @@ export function bundle_from_string(ts: TypeScript): JavaScript {
         bundle: true,
         treeShaking: true,
         write: false,
-        logLevel: 'silent',
+        logLevel: 'silent'
         // TODO tsconfig was here to attempt to set importsNotUsedAsValues to true to force Principal to always be bundled
         // TODO now we always bundle Principal for all code, but I am keeping this here in case we run into the problem elsewhere
         // tsconfig: path.join( __dirname, './esbuild-tsconfig.json') // TODO this path resolution may cause problems on non-Linux systems, beware...might not be necessary now that we are using stdin
@@ -113,16 +115,16 @@ function transpile(js: JavaScript): JavaScript {
 
 // TODO we might want to put this in a better place, and only call program and sourceFiles once
 function generateICCanisters(tsPath: string): JavaScript {
-    const program = tsc.createProgram(
-        [tsPath],
-        {}
-    );
-    
+    const program = tsc.createProgram([tsPath], {});
+
     const sourceFiles = program.getSourceFiles();
 
-    const canisterTypeAliasDeclarations = getCanisterTypeAliasDeclarations(sourceFiles);
+    const canisterTypeAliasDeclarations =
+        getCanisterTypeAliasDeclarations(sourceFiles);
 
-    const icCanisters = generateICCanistersFromTypeAliasDeclarations(canisterTypeAliasDeclarations);
+    const icCanisters = generateICCanistersFromTypeAliasDeclarations(
+        canisterTypeAliasDeclarations
+    );
 
     return `
         globalThis.ic.canisters = {
@@ -131,13 +133,17 @@ function generateICCanisters(tsPath: string): JavaScript {
     `;
 }
 
-function generateICCanistersFromTypeAliasDeclarations(typeAliasDeclarations: tsc.TypeAliasDeclaration[]): JavaScript[] {
+function generateICCanistersFromTypeAliasDeclarations(
+    typeAliasDeclarations: tsc.TypeAliasDeclaration[]
+): JavaScript[] {
     return typeAliasDeclarations.map((typeAliasDeclaration) => {
         return generateICCanisterFromTypeAliasDeclaration(typeAliasDeclaration);
     });
 }
 
-function generateICCanisterFromTypeAliasDeclaration(typeAliasDeclaration: tsc.TypeAliasDeclaration): JavaScript {
+function generateICCanisterFromTypeAliasDeclaration(
+    typeAliasDeclaration: tsc.TypeAliasDeclaration
+): JavaScript {
     if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TypeReference) {
         throw new Error('This cannot happen');
     }
@@ -167,10 +173,7 @@ function generateICCanisterFromTypeLiteralNode(
     typeAliasName: string
 ): JavaScript {
     const canisterMethods = typeLiteralNode.members.map((member) => {
-        return generateCanisterMethodFromTypeElement(
-            member,
-            typeAliasName
-        );
+        return generateCanisterMethodFromTypeElement(member, typeAliasName);
     });
 
     return `
@@ -192,10 +195,7 @@ function generateCanisterMethodFromTypeElement(
 
     const methodSignature = typeElement as tsc.MethodSignature;
 
-    const {
-        methodName,
-        callFunctionName
-    } = generateCallFunctionName(
+    const { methodName, callFunctionName } = generateCallFunctionName(
         methodSignature,
         typeAliasName
     );

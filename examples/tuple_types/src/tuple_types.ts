@@ -73,7 +73,9 @@ export function primitive_two_tuple_return_type(): Query<PrimitiveTwoTuple> {
     return ['Content-Type', 64n];
 }
 
-export function primitive_two_tuple_param(header: PrimitiveTwoTuple): Query<PrimitiveTwoTuple> {
+export function primitive_two_tuple_param(
+    header: PrimitiveTwoTuple
+): Query<PrimitiveTwoTuple> {
     return header;
 }
 
@@ -81,7 +83,6 @@ export function primitive_two_tuple_param(header: PrimitiveTwoTuple): Query<Prim
 // export function primitive_two_tuple_inline_return_type(): Query<[string, string]> {
 //     return ['Fun', 'Times'];
 // }
-
 
 // TODO wait for https://github.com/demergent-labs/azle/issues/253
 // export function primitive_two_tuple_inline_param(header: [string, string]): Query<Header> {
@@ -92,7 +93,9 @@ export function primitive_three_tuple_return_type(): Query<PrimitiveThreeTuple> 
     return ['Good', 454n, Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')];
 }
 
-export function primitive_three_tuple_param(header: PrimitiveThreeTuple): Query<PrimitiveThreeTuple> {
+export function primitive_three_tuple_param(
+    header: PrimitiveThreeTuple
+): Query<PrimitiveThreeTuple> {
     return header;
 }
 
@@ -125,7 +128,9 @@ export function complex_two_tuple_return_type(): Query<ComplexTwoTuple> {
     ];
 }
 
-export function complex_two_tuple_param(header: ComplexTwoTuple): Query<ComplexTwoTuple> {
+export function complex_two_tuple_param(
+    header: ComplexTwoTuple
+): Query<ComplexTwoTuple> {
     return header;
 }
 
@@ -155,7 +160,9 @@ export function complex_three_tuple_return_type(): Query<ComplexThreeTuple> {
     ];
 }
 
-export function complex_three_tuple_param(header: ComplexThreeTuple): Query<ComplexThreeTuple> {
+export function complex_three_tuple_param(
+    header: ComplexThreeTuple
+): Query<ComplexThreeTuple> {
     return header;
 }
 
@@ -163,7 +170,9 @@ export function complex_three_tuple_param(header: ComplexThreeTuple): Query<Comp
 // TODO complex_three_tuple_inline_param
 // TODO complex_three_tuple_inline_return_type
 
-export function tuple_array_params_and_return_type(headers: Header[]): Query<Header[]> {
+export function tuple_array_params_and_return_type(
+    headers: Header[]
+): Query<Header[]> {
     return headers;
 }
 

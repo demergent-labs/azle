@@ -10,7 +10,6 @@ You can find the interface descriptions in the [specification file](./spec.md).
 
 [This branch](https://github.com/dfinance-tech/ic-token/tree/templates) contains code of several other token canister templates.
 
-
 ## Development
 
 You need the latest DFINITY Canister SDK to be able to build and deploy a token canister:
@@ -44,9 +43,6 @@ dfx canister install token --argument="(\"data:image/jpeg;base64,...\", \"DFinan
 
 Refer to `demo.sh` in the corresponding sub directory for more details.
 
-
-
 ## Contributing
 
 We'd like to collaborate with the community to provide better token standard implementation for the developers on the IC, if you have some ideas you'd like to discuss, submit an issue, if you want to improve the code or you made a different implementation, make a pull request!
-

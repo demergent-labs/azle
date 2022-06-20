@@ -1,17 +1,12 @@
-import {
-    run_tests,
-    Test
-} from 'azle/test';
+import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/simple_erc20';
 
-const simple_erc20_canister = createActor(
-    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const simple_erc20_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
 const tests: Test[] = [
     {
@@ -133,11 +128,7 @@ const tests: Test[] = [
     {
         name: 'transfer',
         test: async () => {
-            const result = await simple_erc20_canister.transfer(
-                '0',
-                '1',
-                100n
-            );
+            const result = await simple_erc20_canister.transfer('0', '1', 100n);
 
             return {
                 ok: result === true

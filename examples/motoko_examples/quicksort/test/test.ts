@@ -1,26 +1,21 @@
-import {
-    run_tests,
-    Ok,
-    Test
-} from 'azle/test';
-import {
-    int
-} from 'azle';
+import { run_tests, Ok, Test } from 'azle/test';
+import { int } from 'azle';
 import { execSync } from 'child_process';
 import { createActor } from './dfx_generated/quicksort';
 
-const quicksort_canister = createActor(
-    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const quicksort_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
-async function arrayIsSorted(input: int[], expectedValues: int[]): Promise<Ok<boolean>> {
+async function arrayIsSorted(
+    input: int[],
+    expectedValues: int[]
+): Promise<Ok<boolean>> {
     const result = await quicksort_canister.sort(input);
     const elementIsOrderedCorrectly = (element: int, index: number) => {
-        return element === expectedValues[index]
+        return element === expectedValues[index];
     };
 
     return {

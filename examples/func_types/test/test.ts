@@ -1,20 +1,15 @@
 // TODO these tests need to be improved
 
 import { Principal } from '@dfinity/principal';
-import {
-    run_tests,
-    Test
-} from 'azle/test';
+import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from './dfx_generated/func_types';
 
-const func_types_canister = createActor(
-    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const func_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
 const tests: Test[] = [
     {
@@ -60,10 +55,9 @@ const tests: Test[] = [
             const result = await func_types_canister.basic_func_return_type();
 
             return {
-                ok: (
+                ok:
                     result[0].toText() === 'aaaaa-aa' &&
                     result[1] === 'create_canister'
-                )
             };
         }
     },
@@ -89,10 +83,9 @@ const tests: Test[] = [
             const result = await func_types_canister.complex_func_return_type();
 
             return {
-                ok: (
+                ok:
                     result[0].toText() === 'aaaaa-aa' &&
                     result[1] === 'stop_canister'
-                )
             };
         }
     }

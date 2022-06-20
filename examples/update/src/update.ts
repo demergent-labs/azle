@@ -1,7 +1,4 @@
-import {
-    Query,
-    Update
-} from 'azle';
+import { Query, Update } from 'azle';
 
 let currentMessage: string = '';
 

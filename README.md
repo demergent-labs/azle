@@ -31,34 +31,34 @@ Feel free to open issues or join us in the [DFINITY DEV TypeScript Discord chann
 
 Most of Azle's documentation is currently found in this README. A more detailed [mdBook-style](https://rust-lang.github.io/mdBook/) book similar to [Sudograph's](https://i67uk-hiaaa-aaaae-qaaka-cai.raw.ic0.app/) will later be hosted on the Internet Computer.
 
-* [Examples](/examples)
-* [Installation](#installation)
-* [Deployment](#deployment)
-* [Canisters](#canisters)
-* [Candid data types](#candid-data-types)
-* [Query methods](#query-methods)
-* [Update methods](#update-methods)
-* [IC API](#ic-api)
-* [Cross-canister calls](#cross-canister-calls)
-* [Init method](#init-method)
-* [PreUpgrade method](#preupgrade-method)
-* [PostUpgrade method](#postupgrade-method)
-* [Stable storage](#stable-storage)
-* [Heartbeat method](#heartbeat-method)
-* [Roadmap](#roadmap)
-* [Gotchas and caveats](#gotchas-and-caveats)
-* [Limitations](#limitations)
-* [Decentralization](#decentralization)
-* [Contributing](#contributing)
-* [License](#license)
+-   [Examples](/examples)
+-   [Installation](#installation)
+-   [Deployment](#deployment)
+-   [Canisters](#canisters)
+-   [Candid data types](#candid-data-types)
+-   [Query methods](#query-methods)
+-   [Update methods](#update-methods)
+-   [IC API](#ic-api)
+-   [Cross-canister calls](#cross-canister-calls)
+-   [Init method](#init-method)
+-   [PreUpgrade method](#preupgrade-method)
+-   [PostUpgrade method](#postupgrade-method)
+-   [Stable storage](#stable-storage)
+-   [Heartbeat method](#heartbeat-method)
+-   [Roadmap](#roadmap)
+-   [Gotchas and caveats](#gotchas-and-caveats)
+-   [Limitations](#limitations)
+-   [Decentralization](#decentralization)
+-   [Contributing](#contributing)
+-   [License](#license)
 
 ### Installation
 
 You should have the following installed on your system:
 
-* [Node.js](#nodejs)
-* [Rust](#rust)
-* [dfx](#dfx)
+-   [Node.js](#nodejs)
+-   [Rust](#rust)
+-   [dfx](#dfx)
 
 After installing the prerequisites, you can [make a project and install Azle](#azle).
 
@@ -93,9 +93,9 @@ DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
 #### Common Installation Issues
 
-* Ubuntu
-  * error: linker cc not found (sudo apt install build-essential)
-  * is cmake not installed? (sudo apt install cmake)
+-   Ubuntu
+    -   error: linker cc not found (sudo apt install build-essential)
+    -   is cmake not installed? (sudo apt install cmake)
 
 #### Azle
 
@@ -133,7 +133,6 @@ export function helloWorld(): Query<string> {
     return 'Hello world!';
 }
 ```
-
 
 ### Deployment
 
@@ -201,9 +200,10 @@ Deploying to the live Internet Computer generally only requires adding the `--ne
 ### Canisters
 
 More information:
-* https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html
-* https://wiki.internetcomputer.org/wiki/Canisters_(dapps/smart_contracts)
-* https://smartcontracts.org/docs/developers-guide/design-apps.html#_single_or_multiple_canister_architecture
+
+-   https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html
+-   https://wiki.internetcomputer.org/wiki/Canisters_(dapps/smart_contracts)
+-   https://smartcontracts.org/docs/developers-guide/design-apps.html#_single_or_multiple_canister_architecture
 
 In many ways developing canisters with Azle is similar to any other TypeScript/JavaScript project. To see what canister source code looks like, see the [examples](/examples).
 
@@ -216,8 +216,9 @@ Azle allows you to write canisters while embracing much of what that the TypeScr
 ### Candid data types
 
 Examples:
-* [primitive_types](/examples/primitive_types)
-* [complex_types](/examples/complex_types)
+
+-   [primitive_types](/examples/primitive_types)
+-   [complex_types](/examples/complex_types)
 
 [Candid](https://smartcontracts.org/docs/candid-guide/candid-intro.html) is an interface description language created by DFINITY. It defines interfaces between services (in our context canisters), allowing canisters and clients written in various languages to easily interact with each other.
 
@@ -225,33 +226,33 @@ Much of what Azle is doing under-the-hood is translating TypeScript code into va
 
 Please note that these types are only needed in the following locations in your code:
 
-* `Query`, `Update`, `Init`, and `PostUpgrade` method parameters and return types
-* `Canister` method declaration parameters and return types
-* `Stable` variable declaration types
+-   `Query`, `Update`, `Init`, and `PostUpgrade` method parameters and return types
+-   `Canister` method declaration parameters and return types
+-   `Stable` variable declaration types
 
 You do not need to use these types, and you do not need to use TypeScript, anywhere else. You could write the rest of your application in JavaScript if that's what makes you happy.
 
 Data types:
 
-* [int](#int)
-* [int64](#int64)
-* [int32](#int32)
-* [int16](#int16)
-* [int8](#int8)
-* [nat](#nat)
-* [nat64](#nat64)
-* [nat32](#nat32)
-* [nat16](#nat16)
-* [nat8](#nat8)
-* [float64](#float64)
-* [float32](#float32)
-* [Principal](#principal)
-* [string](#string)
-* [boolean](#boolean)
-* [Record](#record)
-* [Variant](#variant)
-* [Array](#array)
-* [Opt](#opt)
+-   [int](#int)
+-   [int64](#int64)
+-   [int32](#int32)
+-   [int16](#int16)
+-   [int8](#int8)
+-   [nat](#nat)
+-   [nat64](#nat64)
+-   [nat32](#nat32)
+-   [nat16](#nat16)
+-   [nat8](#nat8)
+-   [float64](#float64)
+-   [float32](#float32)
+-   [Principal](#principal)
+-   [string](#string)
+-   [boolean](#boolean)
+-   [Record](#record)
+-   [Variant](#variant)
+-   [Array](#array)
+-   [Opt](#opt)
 
 ##### int
 
@@ -617,7 +618,7 @@ service: {
 }
 ```
 
-* Note that `Principal.selfAuthenticating` will not function properly until [this issue is resolved](https://github.com/boa-dev/boa/issues/1917)
+-   Note that `Principal.selfAuthenticating` will not function properly until [this issue is resolved](https://github.com/boa-dev/boa/issues/1917)
 
 ##### string
 
@@ -781,7 +782,7 @@ type ReactionType = Variant<{
 type Emotion = Variant<{
     happy: null;
     sad: null;
-}>
+}>;
 
 type Firework = {
     color: string;
@@ -863,13 +864,15 @@ service: {
 ### Query methods
 
 Examples:
-* [query](/examples/query)
-* [update](/examples/update)
-* [simple_user_accounts](/examples/simple_user_accounts)
+
+-   [query](/examples/query)
+-   [update](/examples/update)
+-   [simple_user_accounts](/examples/simple_user_accounts)
 
 More information:
-* https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html#query-update
-* https://smartcontracts.org/docs/developers-guide/design-apps.html#_using_query_calls
+
+-   https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html#query-update
+-   https://smartcontracts.org/docs/developers-guide/design-apps.html#_using_query_calls
 
 Query methods expose public callable functions that are read-only. All state changes will be discarded after the function call completes.
 
@@ -888,11 +891,13 @@ export function query(): Query<string> {
 ### Update methods
 
 Examples:
-* [update](/examples/update)
-* [key_value_store](/examples/key_value_store)
+
+-   [update](/examples/update)
+-   [key_value_store](/examples/key_value_store)
 
 More information:
-* https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html#query-update
+
+-   https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html#query-update
 
 Update methods expose public callable functions that are writable. All state changes will be persisted after the function call completes.
 
@@ -901,10 +906,7 @@ Update calls go through consensus and thus return very slowly (a few seconds) re
 To create an update method, simply wrap the return type of your function in the azle `Update` type.
 
 ```typescript
-import {
-    Query,
-    Update
-} from 'azle';
+import { Query, Update } from 'azle';
 
 let currentMessage: string = '';
 
@@ -920,17 +922,13 @@ export function update(message: string): Update<void> {
 ### IC API
 
 Examples:
-* [ic_api](/examples/ic_api)
+
+-   [ic_api](/examples/ic_api)
 
 Azle exports the `ic` object which contains access to certain IC APIs.
 
 ```typescript
-import {
-    Query,
-    nat64,
-    ic,
-    Principal
-} from 'azle';
+import { Query, nat64, ic, Principal } from 'azle';
 
 // returns the principal of the identity that called this function
 export function caller(): Query<string> {
@@ -970,98 +968,110 @@ export function trap(message: string): Query<boolean> {
 ### Cross-canister calls
 
 Examples:
-* [cross_canister_calls](/examples/cross_canister_calls)
+
+-   [cross_canister_calls](/examples/cross_canister_calls)
 
 DFINITY documentation:
-* https://smartcontracts.org/docs/introduction/welcome.html
+
+-   https://smartcontracts.org/docs/introduction/welcome.html
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
 
 ### Init method
 
 Examples:
-* [init](/examples/init)
-* [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
+
+-   [init](/examples/init)
+-   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
 
 DFINITY documentation:
-* https://smartcontracts.org/docs/introduction/welcome.html
+
+-   https://smartcontracts.org/docs/introduction/welcome.html
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
 
 ### PreUpgrade method
 
 Examples:
-* [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
+
+-   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
 
 DFINITY documentation:
-* https://smartcontracts.org/docs/introduction/welcome.html
+
+-   https://smartcontracts.org/docs/introduction/welcome.html
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
 
 ### PostUpgrade method
 
 Examples:
-* [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
+
+-   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
 
 DFINITY documentation:
-* https://smartcontracts.org/docs/introduction/welcome.html
+
+-   https://smartcontracts.org/docs/introduction/welcome.html
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
 
 ### Stable storage
 
 Examples:
-* [stable_storage](/examples/stable_storage)
+
+-   [stable_storage](/examples/stable_storage)
 
 More information:
-* https://smartcontracts.org/docs/developers-guide/design-apps.html#_data_storage_and_retrieval
+
+-   https://smartcontracts.org/docs/developers-guide/design-apps.html#_data_storage_and_retrieval
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
 
 ### Heartbeat method
 
 Examples:
-* [heartbeat](/examples/heartbeat)
+
+-   [heartbeat](/examples/heartbeat)
 
 DFINITY documentation:
-* https://smartcontracts.org/docs/introduction/welcome.html
+
+-   https://smartcontracts.org/docs/introduction/welcome.html
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
 
 ### Roadmap
 
-- [ ] 1.0
-    - [ ] [Feature parity with Rust and Motoko CDKs](https://github.com/demergent-labs/azle/issues/134)
-    - [ ] Core set of Azle-specific npm packages
-    - [ ] Sudograph integration
-    - [ ] Official dfx integration with `"type": "typescript"` or `"type": "azle"`
-    - [ ] Live robust examples
-    - [ ] Video series
-    - [ ] Comprehensive benchmarks
-    - [ ] Robust property-based tests
-    - [ ] Optimized compilation
-    - [ ] Security audits
-- [ ] 2.0
-  - [ ] Azle VS Code plugin
-  - [ ] [Inter-Canister Query Calls](https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754)
+-   [ ] 1.0
+    -   [ ] [Feature parity with Rust and Motoko CDKs](https://github.com/demergent-labs/azle/issues/134)
+    -   [ ] Core set of Azle-specific npm packages
+    -   [ ] Sudograph integration
+    -   [ ] Official dfx integration with `"type": "typescript"` or `"type": "azle"`
+    -   [ ] Live robust examples
+    -   [ ] Video series
+    -   [ ] Comprehensive benchmarks
+    -   [ ] Robust property-based tests
+    -   [ ] Optimized compilation
+    -   [ ] Security audits
+-   [ ] 2.0
+    -   [ ] Azle VS Code plugin
+    -   [ ] [Inter-Canister Query Calls](https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754)
 
 ### Limitations
 
-* Varied missing TypeScript syntax or JavaScript features
-* Really bad compiler errors (you will probably not enjoy them)
-* Limited asynchronous TypeScript/JavaScript (generators only for now, no promises or async/await)
-* Imported npm packages may use unsupported syntax or APIs
-* Unknown security vulnerabilities
-* Unknown cycle efficiency relative to canisters written in Rust or Motoko
-* Working with nat8[]/blobs greater than a few thousand kb in size is impractical
-* No support for inline tuple types, create a named type alias instead
-* No 1-tuple support
-* And much much [more](https://github.com/demergent-labs/azle/issues)
+-   Varied missing TypeScript syntax or JavaScript features
+-   Really bad compiler errors (you will probably not enjoy them)
+-   Limited asynchronous TypeScript/JavaScript (generators only for now, no promises or async/await)
+-   Imported npm packages may use unsupported syntax or APIs
+-   Unknown security vulnerabilities
+-   Unknown cycle efficiency relative to canisters written in Rust or Motoko
+-   Working with nat8[]/blobs greater than a few thousand kb in size is impractical
+-   No support for inline tuple types, create a named type alias instead
+-   No 1-tuple support
+-   And much much [more](https://github.com/demergent-labs/azle/issues)
 
 ### Gotchas and caveats
 
-* Because Azle is built on Rust, to ensure the best compatibility use underscores to separate words in directory, file, and canister names
-* You must use type names directly when importing them (TODO do an example)
+-   Because Azle is built on Rust, to ensure the best compatibility use underscores to separate words in directory, file, and canister names
+-   You must use type names directly when importing them (TODO do an example)
 
 ### Decentralization
 

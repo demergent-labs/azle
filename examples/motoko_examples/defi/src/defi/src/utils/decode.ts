@@ -7,7 +7,7 @@ const alphabet = 'abcdefghijklmnopqrstuvwxyz234567';
 // Build a lookup table for decoding.
 const lookupTable: Record<string, number> = Object.create(null);
 for (let i = 0; i < alphabet.length; i++) {
-  lookupTable[alphabet[i]] = i;
+    lookupTable[alphabet[i]] = i;
 }
 
 // Add aliases for rfc4648.
@@ -17,47 +17,47 @@ lookupTable['1'] = lookupTable.i;
 /**
  * @param input The base32 encoded string to decode.
  */
- export function decode(input: string): Uint8Array {
-  // how many bits we have from the previous character.
-  let skip = 0;
-  // current byte we're producing.
-  let byte = 0;
+export function decode(input: string): Uint8Array {
+    // how many bits we have from the previous character.
+    let skip = 0;
+    // current byte we're producing.
+    let byte = 0;
 
-  const output = new Uint8Array(((input.length * 4) / 3) | 0);
-  let o = 0;
+    const output = new Uint8Array(((input.length * 4) / 3) | 0);
+    let o = 0;
 
-  function decodeChar(char: string) {
-    // Consume a character from the stream, store
-    // the output in this.output. As before, better
-    // to use update().
-    let val = lookupTable[char.toLowerCase()];
-    if (val === undefined) {
-      throw new Error(`Invalid character: ${JSON.stringify(char)}`);
+    function decodeChar(char: string) {
+        // Consume a character from the stream, store
+        // the output in this.output. As before, better
+        // to use update().
+        let val = lookupTable[char.toLowerCase()];
+        if (val === undefined) {
+            throw new Error(`Invalid character: ${JSON.stringify(char)}`);
+        }
+
+        // move to the high bits
+        val <<= 3;
+        byte |= val >>> skip;
+        skip += 5;
+
+        if (skip >= 8) {
+            // We have enough bytes to produce an output
+            output[o++] = byte;
+            skip -= 8;
+
+            if (skip > 0) {
+                byte = (val << (5 - skip)) & 255;
+            } else {
+                byte = 0;
+            }
+        }
     }
 
-    // move to the high bits
-    val <<= 3;
-    byte |= val >>> skip;
-    skip += 5;
-
-    if (skip >= 8) {
-      // We have enough bytes to produce an output
-      output[o++] = byte;
-      skip -= 8;
-
-      if (skip > 0) {
-        byte = (val << (5 - skip)) & 255;
-      } else {
-        byte = 0;
-      }
+    for (const c of input) {
+        decodeChar(c);
     }
-  }
 
-  for (const c of input) {
-    decodeChar(c);
-  }
-
-  return output.slice(0, o);
+    return output.slice(0, o);
 }
 
 // Apache License
