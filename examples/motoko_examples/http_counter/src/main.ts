@@ -51,10 +51,6 @@ function encode(string: string): nat8[] {
     return Array.from(new Uint8Array(encodeUtf8(string)))
 }
 
-function gzipencode(string: string): nat8[] {
-    return string.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? [];
-}
-
 export function http_request(req: HttpRequest) : Query<HttpResponse> {
     if (req.method === 'GET') {
         if (req.headers.find(isGzip) === undefined) {
@@ -63,38 +59,8 @@ export function http_request(req: HttpRequest) : Query<HttpResponse> {
                     status_code: 200,
                     headers: [ ['content-type', 'text/plain'] ],
                     body: encode('Counter'),
-                    streaming_strategy: {
-                        Callback: {
-                            callback: (token: Token): Query<StreamingCallbackHttpResponse> => {
-                                switch (token.arbitrary_data) {
-                                    case 'start': {
-                                        return {
-                                            body: encode(" is "),
-                                            token: {arbitrary_data: 'next'}
-                                        }
-                                    }
-                                    case 'next': {
-                                        return {
-                                            body: encode(`${counter}`),
-                                            token: {arbitrary_data: 'next'}
-                                        }
-                                    }
-                                    case 'last': {
-                                        return {
-                                            body: encode(' streaming\n'),
-                                            token: null
-                                        }
-                                    }
-                                    default: {
-                                        return ic.trap('unreachable');
-                                    }
-                                }
-                            },
-                            token: {
-                                arbitrary_data: "start"
-                            }
-                        }
-                    },
+                    // TODO implement streaming_strategy when azle can handle callbacks correctly.
+                    streaming_strategy: {},
                     upgrade: null
                 }
             }
@@ -109,7 +75,10 @@ export function http_request(req: HttpRequest) : Query<HttpResponse> {
         return {
             status_code: 200,
             headers: [ ['content-type', 'text/plain'], ['content-encoding', 'gzip'] ],
-            body: gzipencode('\\1f\\8b\\08\\00\\98\\02\\1b\\62\\00\\03\\2b\\2c\\4d\\2d\\aa\\e4\\02\\00\\d6\\80\\2b\\05\\06\\00\\00\\00'),
+            // body: '\1f\8b\08\00\98\02\1b\62\00\03\2b\2c\4d\2d\aa\e4\02\00\d6\80\2b\05\06\00\00\00',
+            // Currently there is an issue with azle being able to process the above string from the motoko example.
+            // The work around is to convert the above hex values to nat8 values manually and the result is the array bellow. (for example 0x1f is 31, 0x8b is 139, etc)
+            body: [31, 139, 8, 0, 152, 2, 27, 98, 0, 3, 43, 44, 77, 45, 170, 228, 2, 0, 214, 128, 43, 5, 6, 0, 0, 0],
             streaming_strategy: null,
             upgrade: null
         }
@@ -136,8 +105,9 @@ export function http_request(req: HttpRequest) : Query<HttpResponse> {
 
 export function http_request_update(req: HttpRequest): Update<HttpResponse> {
     if (req.method === 'POST') {
+        counter += 1;
+
         if (req.headers.find(isGzip) === undefined) {
-            counter += 1;
             return {
                 status_code: 201,
                 headers: [ ['content-type', 'text/plain'] ],
@@ -149,7 +119,10 @@ export function http_request_update(req: HttpRequest): Update<HttpResponse> {
         return {
             status_code: 201,
             headers: [ ['content-type', 'text/plain'], ['content-encoding', 'gzip'] ],
-            body: gzipencode('\\1f\\8b\\08\\00\\37\\02\\1b\\62\\00\\03\\2b\\2d\\48\\49\\2c\\49\\e5\\02\\00\\a8\\da\\91\\6c\\07\\00\\00\\00'),
+            // body: '\1f\8b\08\00\37\02\1b\62\00\03\2b\2d\48\49\2c\49\e5\02\00\a8\da\91\6c\07\00\00\00'),
+            // Currently there is an issue with azle being able to process the above string from the motoko example.
+            // The work around is to convert the above hex values to nat8 values manually and the result is the array bellow. (for example 0x1f is 31, 0x8b is 139, etc)
+            body: [31, 139, 8, 0, 55, 2, 27, 98, 0, 3, 43, 45, 72, 73, 44, 73, 229, 2, 0, 168, 218, 145, 108, 7, 0, 0, 0],
             streaming_strategy: null,
             upgrade: null
         }

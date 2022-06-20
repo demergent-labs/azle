@@ -58,6 +58,30 @@ const tests: Test[] = [
             };
         }
     },
+    {
+        name: 'gzipped increment',
+        test: async () => {
+            return {
+                ok: countGzip() === 'update'
+            };
+        }
+    },
+    {
+        name: 'get gzipped count',
+        test: async () => {
+            return {
+                ok: getCountGzip() === 'query'
+            };
+        }
+    },
+    {
+        name: 'final get count',
+        test: async () => {
+            return {
+                ok: getCount() === getExpectedGetCountResult(3)
+            };
+        }
+    },
 ];
 
 run_tests(tests);
@@ -73,12 +97,17 @@ function count(): string {
 
 function countGzip(): string {
     const canister_id = getCanisterID();
-    return execSync(`curl --silent -X POST "${canister_id}.localhost:8000/" --resolve "${canister_id}.localhost:8000:127.0.0.1"`).toString().trim();
+    return execSync(`curl --compressed --silent -X POST "${canister_id}.localhost:8000/" --resolve "${canister_id}.localhost:8000:127.0.0.1"`).toString().trim();
 }
 
 function getCount(): string {
     const canister_id = getCanisterID();
     return execSync(`curl --silent "${canister_id}.localhost:8000/" --resolve "${canister_id}.localhost:8000:127.0.0.1"`).toString().trim();
+}
+
+function getCountGzip(): string {
+    const canister_id = getCanisterID();
+    return execSync(`curl --compressed --silent "${canister_id}.localhost:8000/" --resolve "${canister_id}.localhost:8000:127.0.0.1"`).toString().trim();
 }
 
 function getExpectedGetCountResult(expectedCount: number): string {
