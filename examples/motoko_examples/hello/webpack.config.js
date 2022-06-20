@@ -50,12 +50,12 @@ module.exports = {
     entry: {
         // The frontend.entrypoint points to the HTML file for this build, so we need
         // to replace the extension to `.js`.
-        index: path.join(__dirname, asset_entry).replace(/\.html$/, '.js'),
+        index: path.join(__dirname, asset_entry).replace(/\.html$/, '.js')
     },
     devtool: isDevelopment ? 'source-map' : false,
     optimization: {
         minimize: !isDevelopment,
-        minimizer: [new TerserPlugin()],
+        minimizer: [new TerserPlugin()]
     },
     resolve: {
         extensions: ['.js', '.ts', '.jsx', '.tsx'],
@@ -64,12 +64,12 @@ module.exports = {
             buffer: require.resolve('buffer/'),
             events: require.resolve('events/'),
             stream: require.resolve('stream-browserify/'),
-            util: require.resolve('util/'),
-        },
+            util: require.resolve('util/')
+        }
     },
     output: {
         filename: 'index.js',
-        path: path.join(__dirname, 'dist', frontendDirectory),
+        path: path.join(__dirname, 'dist', frontendDirectory)
     },
 
     // Depending in the language or framework you are using for
@@ -86,7 +86,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.join(__dirname, asset_entry),
-            cache: false,
+            cache: false
         }),
         new CopyPlugin({
             patterns: [
@@ -97,18 +97,18 @@ module.exports = {
                         frontendDirectory,
                         'assets'
                     ),
-                    to: path.join(__dirname, 'dist', frontendDirectory),
-                },
-            ],
+                    to: path.join(__dirname, 'dist', frontendDirectory)
+                }
+            ]
         }),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'development',
-            ...canisterEnvVariables,
+            ...canisterEnvVariables
         }),
         new webpack.ProvidePlugin({
             Buffer: [require.resolve('buffer/'), 'Buffer'],
-            process: require.resolve('process/browser'),
-        }),
+            process: require.resolve('process/browser')
+        })
     ],
     // proxy /api to port 8000 during development
     devServer: {
@@ -117,12 +117,12 @@ module.exports = {
                 target: 'http://localhost:8000',
                 changeOrigin: true,
                 pathRewrite: {
-                    '^/api': '/api',
-                },
-            },
+                    '^/api': '/api'
+                }
+            }
         },
         hot: true,
         watchFiles: [path.resolve(__dirname, 'src', frontendDirectory)],
-        liveReload: true,
-    },
+        liveReload: true
+    }
 };

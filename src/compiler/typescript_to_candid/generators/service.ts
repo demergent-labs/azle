@@ -1,9 +1,6 @@
 import { getFunctionName } from '../ast_utilities/miscellaneous';
 import { generateCandidTypeInfo } from './type_info';
-import {
-    Candid,
-    CandidTypeInfo
-} from '../../../types';
+import { Candid, CandidTypeInfo } from '../../../types';
 import * as tsc from 'typescript';
 import { getCanisterMethodFunctionDeclarationsFromSourceFiles } from '../ast_utilities/canister_methods';
 
@@ -15,25 +12,27 @@ export function generateCandidService(
     candidVariantNames: string[],
     candidFuncNames: string[]
 ): {
-    serviceWithDummyMethod: Candid,
-    service: Candid
+    serviceWithDummyMethod: Candid;
+    service: Candid;
 } {
-    const queryServiceMethodDefinitions = generateCandidServiceMethodDefinitions(
-        sourceFiles,
-        queryMethodFunctionDeclarations,
-        true
-    ).join('');
+    const queryServiceMethodDefinitions =
+        generateCandidServiceMethodDefinitions(
+            sourceFiles,
+            queryMethodFunctionDeclarations,
+            true
+        ).join('');
 
-    const updateServiceMethodDefinitions = generateCandidServiceMethodDefinitions(
-        sourceFiles,
-        updateMethodFunctionDeclarations,
-        false
-    ).join('');
+    const updateServiceMethodDefinitions =
+        generateCandidServiceMethodDefinitions(
+            sourceFiles,
+            updateMethodFunctionDeclarations,
+            false
+        ).join('');
 
-    const initMethodFunctionDeclarations = getCanisterMethodFunctionDeclarationsFromSourceFiles(
-        sourceFiles,
-        ['Init']
-    );
+    const initMethodFunctionDeclarations =
+        getCanisterMethodFunctionDeclarationsFromSourceFiles(sourceFiles, [
+            'Init'
+        ]);
 
     const serviceParameters = generateServiceParameters(
         sourceFiles,
@@ -66,12 +65,15 @@ function generateServiceParameters(
         return '';
     }
 
-    const functionParameterTypeNames = generateCandidServiceMethodParameterTypeNames(
-        sourceFiles,
-        initFunctionDeclaration
-    );
+    const functionParameterTypeNames =
+        generateCandidServiceMethodParameterTypeNames(
+            sourceFiles,
+            initFunctionDeclaration
+        );
 
-    return `(${functionParameterTypeNames.map((candidTypeName) => candidTypeName.text).join(', ')}) -> `;
+    return `(${functionParameterTypeNames
+        .map((candidTypeName) => candidTypeName.text)
+        .join(', ')}) -> `;
 }
 
 function generateCandidServiceMethodDefinitions(
@@ -81,16 +83,21 @@ function generateCandidServiceMethodDefinitions(
 ): Candid[] {
     return functionDeclarations.map((functionDeclaration) => {
         const functionName = getFunctionName(functionDeclaration);
-        const functionParameterTypeNames = generateCandidServiceMethodParameterTypeNames(
-            sourceFiles,
-            functionDeclaration
-        );
+        const functionParameterTypeNames =
+            generateCandidServiceMethodParameterTypeNames(
+                sourceFiles,
+                functionDeclaration
+            );
         const returnTypeName = generateCandidServiceMethodReturnTypeName(
             sourceFiles,
             functionDeclaration
         );
 
-        return `\n    "${functionName}": (${functionParameterTypeNames.map((candidTypeName) => candidTypeName.text).join(', ')}) -> (${returnTypeName.text})${query === true ? ' query' : ''};`;
+        return `\n    "${functionName}": (${functionParameterTypeNames
+            .map((candidTypeName) => candidTypeName.text)
+            .join(', ')}) -> (${returnTypeName.text})${
+            query === true ? ' query' : ''
+        };`;
     });
 }
 
@@ -98,18 +105,15 @@ function generateCandidServiceMethodParameterTypeNames(
     sourceFiles: readonly tsc.SourceFile[],
     functionDeclaration: tsc.FunctionDeclaration
 ): CandidTypeInfo[] {
-    return functionDeclaration
-        .parameters
-        .map((parameter) => {
-            if (parameter.type === null || parameter.type === undefined) {
-                throw new Error(`There must be a static type for parameter: ${parameter}`);
-            }
-
-            return generateCandidTypeInfo(
-                sourceFiles,
-                parameter.type
+    return functionDeclaration.parameters.map((parameter) => {
+        if (parameter.type === null || parameter.type === undefined) {
+            throw new Error(
+                `There must be a static type for parameter: ${parameter}`
             );
-        });
+        }
+
+        return generateCandidTypeInfo(sourceFiles, parameter.type);
+    });
 }
 
 function generateCandidServiceMethodReturnTypeName(
@@ -117,14 +121,27 @@ function generateCandidServiceMethodReturnTypeName(
     functionDeclaration: tsc.FunctionDeclaration
 ): CandidTypeInfo {
     if (functionDeclaration.type === undefined) {
-        throw new Error(`There must be a return type for function declaration: ${JSON.stringify(functionDeclaration, null, 2)}`);
+        throw new Error(
+            `There must be a return type for function declaration: ${JSON.stringify(
+                functionDeclaration,
+                null,
+                2
+            )}`
+        );
     }
 
     if (functionDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
-        const typeReferenceNode = functionDeclaration.type as tsc.TypeReferenceNode;
+        const typeReferenceNode =
+            functionDeclaration.type as tsc.TypeReferenceNode;
 
         if (typeReferenceNode.typeArguments === undefined) {
-            throw new Error(`There must be a return type argument for type reference node: ${JSON.stringify(typeReferenceNode, null, 2)}`);
+            throw new Error(
+                `There must be a return type argument for type reference node: ${JSON.stringify(
+                    typeReferenceNode,
+                    null,
+                    2
+                )}`
+            );
         }
 
         return generateCandidTypeInfo(
@@ -133,7 +150,13 @@ function generateCandidServiceMethodReturnTypeName(
         );
     }
 
-    throw new Error(`Return type must be Query or Update for function declaration: ${JSON.stringify(functionDeclaration, null, 2)}`);
+    throw new Error(
+        `Return type must be Query or Update for function declaration: ${JSON.stringify(
+            functionDeclaration,
+            null,
+            2
+        )}`
+    );
 }
 
 // TODO this is here to fix this bug: https://github.com/dfinity/candid/issues/330

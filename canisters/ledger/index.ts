@@ -87,12 +87,12 @@ export type TransferError = Variant<{
 
 export type TransferResult = Variant<{
     Ok: nat64;
-    Err: TransferError
+    Err: TransferError;
 }>;
 
 // Arguments for the `account_balance` call.
 export type AccountBalanceArgs = {
-    account: AccountIdentifier
+    account: AccountIdentifier;
 };
 
 export type TransferFeeArg = {};
@@ -182,7 +182,9 @@ export type QueryArchiveResult = Variant<{
 
 // TODO Candid serialization/deserialization breaking
 // A function that is used for fetching archived ledger blocks.
-type QueryArchiveFn = Func<(get_blocks_args: GetBlocksArgs) => Query<QueryArchiveResult>>;
+type QueryArchiveFn = Func<
+    (get_blocks_args: GetBlocksArgs) => Query<QueryArchiveResult>
+>;
 
 // The result of a "query_blocks" call.
 //
@@ -190,12 +192,12 @@ type QueryArchiveFn = Func<(get_blocks_args: GetBlocksArgs) => Query<QueryArchiv
 // not have all the blocks that the caller requested: One or more "archive" canisters might
 // store some of the requested blocks.
 //
-// Note: as of Q4 2021 when this interface is authored, the IC doesn't support making nested 
+// Note: as of Q4 2021 when this interface is authored, the IC doesn't support making nested
 // query calls within a query call.
 export type QueryBlocksResponse = {
     // The total number of blocks in the chain.
     // If the chain length is positive, the index of the last block is `chain_len - 1`.
-    chain_length : nat64;
+    chain_length: nat64;
 
     // System certificate for the hash of the latest block in the chain.
     // Only present if `query_blocks` is called in a non-replicated query context.
@@ -214,7 +216,7 @@ export type QueryBlocksResponse = {
     // If the blocks vector is empty, the exact value of this field is not specified.
     first_block_index: BlockIndex;
 
-        // Encoding of instructions for fetching archived blocks whose indices fall into the
+    // Encoding of instructions for fetching archived blocks whose indices fall into the
     // requested range.
     //
     // For each entry `e` in [archived_blocks], `[e.from, e.from + len)` is a sub-range
@@ -260,17 +262,21 @@ export type Ledger = Canister<{
     // The source address is computed from the principal of the caller and the specified subaccount.
     // When successful, returns the index of the block containing the transaction.
     transfer(transfer_args: TransferArgs): CanisterResult<TransferResult>;
-    
+
     // Returns the amount of Tokens on the specified account.
-    account_balance(accountBalanceArgs: AccountBalanceArgs): CanisterResult<Tokens>;
-    
+    account_balance(
+        accountBalanceArgs: AccountBalanceArgs
+    ): CanisterResult<Tokens>;
+
     // Returns the current transfer_fee.
     transfer_fee(transfer_fee_arg: TransferFeeArg): CanisterResult<TransferFee>;
-    
+
     // Queries blocks in the specified range.
     // TODO doesn't work yet
-    query_blocks(get_blocks_args: GetBlocksArgs): CanisterResult<QueryBlocksResponse>;
-    
+    query_blocks(
+        get_blocks_args: GetBlocksArgs
+    ): CanisterResult<QueryBlocksResponse>;
+
     // Returns token symbol.
     symbol(): CanisterResult<SymbolResult>;
 

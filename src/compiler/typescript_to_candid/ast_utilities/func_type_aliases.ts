@@ -18,7 +18,7 @@ export function getFuncTypeAliasRecordNames(
         sourceFiles,
         funcTypeAliasDeclarations,
         'record'
-    );   
+    );
 }
 
 export function getFuncTypeAliasVariantNames(
@@ -37,24 +37,27 @@ function getFuncTypeAliasNames(
     funcTypeAliasDeclarations: tsc.TypeAliasDeclaration[],
     candidTypeClass: CandidTypeClass
 ): string[] {
-    return funcTypeAliasDeclarations.reduce((result: string[], typeAliasDeclaration) => {
-        const parameterRecordNames = getFuncTypeAliasParameterNames(
-            sourceFiles,
-            typeAliasDeclaration,
-            candidTypeClass
-        );
-        const returnTypeRecordNames = getFuncTypeAliasReturnTypeNames(
-            sourceFiles,
-            typeAliasDeclaration,
-            candidTypeClass
-        );
+    return funcTypeAliasDeclarations.reduce(
+        (result: string[], typeAliasDeclaration) => {
+            const parameterRecordNames = getFuncTypeAliasParameterNames(
+                sourceFiles,
+                typeAliasDeclaration,
+                candidTypeClass
+            );
+            const returnTypeRecordNames = getFuncTypeAliasReturnTypeNames(
+                sourceFiles,
+                typeAliasDeclaration,
+                candidTypeClass
+            );
 
-        return [
-            ...result,
-            ...parameterRecordNames,
-            ...returnTypeRecordNames
-        ];
-    }, []);
+            return [
+                ...result,
+                ...parameterRecordNames,
+                ...returnTypeRecordNames
+            ];
+        },
+        []
+    );
 }
 
 // TODO there is a lot of repeated code now in canister_methods.ts and canister_type_aliases.ts
@@ -67,7 +70,8 @@ function getFuncTypeAliasParameterNames(
         throw new Error(`Func type must be a type reference`);
     }
 
-    const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+    const typeReferenceNode =
+        typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
     if (typeReferenceNode.typeArguments === undefined) {
         throw new Error(`Func type must have type arguments`);
@@ -81,126 +85,111 @@ function getFuncTypeAliasParameterNames(
 
     const function_type_node = firstTypeArgument as tsc.FunctionTypeNode;
 
-    const function_type_record_names = function_type_node.parameters.reduce((result: string[], parameter) => {
-        if (parameter.type === undefined) {
-            throw new Error('parameter must have a type');
-        }
-
-        const candidTypeInfo = generateCandidTypeInfo(
-            sourceFiles,
-            parameter.type
-        );
-
-        if (candidTypeClass === 'record') {
-            if (candidTypeInfo.typeClass === 'record') {
-                return [
-                    ...result,
-                    candidTypeInfo.typeName
-                ];
-            }
-    
-            if (candidTypeInfo.typeClass === 'inline_record') {
-                const recordNames = getCandidRecordNamesFromTypeLiteralNode(
-                    sourceFiles,
-                    parameter.type as tsc.TypeLiteralNode,
-                    []
-                );
-
-                return [
-                    ...result,
-                    ...recordNames
-                ];
+    const function_type_record_names = function_type_node.parameters.reduce(
+        (result: string[], parameter) => {
+            if (parameter.type === undefined) {
+                throw new Error('parameter must have a type');
             }
 
-            if (candidTypeInfo.typeClass === 'inline_tuple_record') {
-                const recordNames = getCandidRecordNamesFromTupleTypeNode(
-                    sourceFiles,
-                    parameter.type as tsc.TupleTypeNode,
-                    []
-                );
+            const candidTypeInfo = generateCandidTypeInfo(
+                sourceFiles,
+                parameter.type
+            );
 
-                return [
-                    ...result,
-                    ...recordNames
-                ];
-            }
-    
-            if (candidTypeInfo.typeClass === 'inline_variant') {
-                const typeArguments = (parameter.type as tsc.TypeReferenceNode).typeArguments;
-
-                if (typeArguments === undefined) {
-                    throw new Error('This cannot happen');
+            if (candidTypeClass === 'record') {
+                if (candidTypeInfo.typeClass === 'record') {
+                    return [...result, candidTypeInfo.typeName];
                 }
 
-                const recordNames = getCandidRecordNamesFromTypeLiteralNode(
-                    sourceFiles,
-                    typeArguments[0] as tsc.TypeLiteralNode,
-                    []
-                );
+                if (candidTypeInfo.typeClass === 'inline_record') {
+                    const recordNames = getCandidRecordNamesFromTypeLiteralNode(
+                        sourceFiles,
+                        parameter.type as tsc.TypeLiteralNode,
+                        []
+                    );
 
-                return [
-                    ...result,
-                    ...recordNames
-                ];
-            }
-        }
-
-        if (candidTypeClass === 'variant') {
-            if (candidTypeInfo.typeClass === 'variant') {
-                return [
-                    ...result,
-                    candidTypeInfo.typeName
-                ];
-            }
-    
-            if (candidTypeInfo.typeClass === 'inline_variant') {
-                const typeArguments = (parameter.type as tsc.TypeReferenceNode).typeArguments;
-
-                if (typeArguments === undefined) {
-                    throw new Error('This cannot happen');
+                    return [...result, ...recordNames];
                 }
 
-                const variantNames = getCandidVariantNamesFromTypeLiteralNode(
-                    sourceFiles,
-                    typeArguments[0] as tsc.TypeLiteralNode,
-                    []
-                );
+                if (candidTypeInfo.typeClass === 'inline_tuple_record') {
+                    const recordNames = getCandidRecordNamesFromTupleTypeNode(
+                        sourceFiles,
+                        parameter.type as tsc.TupleTypeNode,
+                        []
+                    );
 
-                return [
-                    ...result,
-                    ...variantNames
-                ];
+                    return [...result, ...recordNames];
+                }
+
+                if (candidTypeInfo.typeClass === 'inline_variant') {
+                    const typeArguments = (
+                        parameter.type as tsc.TypeReferenceNode
+                    ).typeArguments;
+
+                    if (typeArguments === undefined) {
+                        throw new Error('This cannot happen');
+                    }
+
+                    const recordNames = getCandidRecordNamesFromTypeLiteralNode(
+                        sourceFiles,
+                        typeArguments[0] as tsc.TypeLiteralNode,
+                        []
+                    );
+
+                    return [...result, ...recordNames];
+                }
             }
-    
-            if (candidTypeInfo.typeClass === 'inline_record') {
-                const variantNames = getCandidVariantNamesFromTypeLiteralNode(
-                    sourceFiles,
-                    parameter.type as tsc.TypeLiteralNode,
-                    []
-                );
 
-                return [
-                    ...result,
-                    ...variantNames
-                ];
+            if (candidTypeClass === 'variant') {
+                if (candidTypeInfo.typeClass === 'variant') {
+                    return [...result, candidTypeInfo.typeName];
+                }
+
+                if (candidTypeInfo.typeClass === 'inline_variant') {
+                    const typeArguments = (
+                        parameter.type as tsc.TypeReferenceNode
+                    ).typeArguments;
+
+                    if (typeArguments === undefined) {
+                        throw new Error('This cannot happen');
+                    }
+
+                    const variantNames =
+                        getCandidVariantNamesFromTypeLiteralNode(
+                            sourceFiles,
+                            typeArguments[0] as tsc.TypeLiteralNode,
+                            []
+                        );
+
+                    return [...result, ...variantNames];
+                }
+
+                if (candidTypeInfo.typeClass === 'inline_record') {
+                    const variantNames =
+                        getCandidVariantNamesFromTypeLiteralNode(
+                            sourceFiles,
+                            parameter.type as tsc.TypeLiteralNode,
+                            []
+                        );
+
+                    return [...result, ...variantNames];
+                }
+
+                if (candidTypeInfo.typeClass === 'inline_tuple_record') {
+                    const variantNames = getCandidVariantNamesFromTupleTypeNode(
+                        sourceFiles,
+                        parameter.type as tsc.TupleTypeNode,
+                        []
+                    );
+
+                    return [...result, ...variantNames];
+                }
             }
 
-            if (candidTypeInfo.typeClass === 'inline_tuple_record') {
-                const variantNames = getCandidVariantNamesFromTupleTypeNode(
-                    sourceFiles,
-                    parameter.type as tsc.TupleTypeNode,
-                    []
-                );
-
-                return [
-                    ...result,
-                    ...variantNames
-                ];
-            }
-        }
-
-        return result;
-    }, []);
+            return result;
+        },
+        []
+    );
 
     return function_type_record_names;
 }
@@ -214,7 +203,8 @@ function getFuncTypeAliasReturnTypeNames(
         throw new Error(`Func type must be a type reference`);
     }
 
-    const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+    const typeReferenceNode =
+        typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
     if (typeReferenceNode.typeArguments === undefined) {
         throw new Error(`Func type must have type arguments`);
@@ -239,7 +229,9 @@ function getFuncTypeAliasReturnTypeNames(
         }
 
         if (candidTypeInfo.typeClass === 'inline_record') {
-            const typeArguments = (function_type_node.type as tsc.TypeReferenceNode).typeArguments;
+            const typeArguments = (
+                function_type_node.type as tsc.TypeReferenceNode
+            ).typeArguments;
 
             if (typeArguments === undefined) {
                 throw new Error('This cannot happen');
@@ -255,7 +247,9 @@ function getFuncTypeAliasReturnTypeNames(
         }
 
         if (candidTypeInfo.typeClass === 'inline_tuple_record') {
-            const typeArguments = (function_type_node.type as tsc.TypeReferenceNode).typeArguments;
+            const typeArguments = (
+                function_type_node.type as tsc.TypeReferenceNode
+            ).typeArguments;
 
             if (typeArguments === undefined) {
                 throw new Error('This cannot happen');
@@ -271,13 +265,17 @@ function getFuncTypeAliasReturnTypeNames(
         }
 
         if (candidTypeInfo.typeClass === 'inline_variant') {
-            const outerTypeArguments = (function_type_node.type as tsc.TypeReferenceNode).typeArguments;
+            const outerTypeArguments = (
+                function_type_node.type as tsc.TypeReferenceNode
+            ).typeArguments;
 
             if (outerTypeArguments === undefined) {
                 throw new Error('This cannot happen');
             }
 
-            const innerTypeArguments = (outerTypeArguments[0] as tsc.TypeReferenceNode).typeArguments;
+            const innerTypeArguments = (
+                outerTypeArguments[0] as tsc.TypeReferenceNode
+            ).typeArguments;
 
             if (innerTypeArguments === undefined) {
                 throw new Error('This cannot happen');
@@ -299,13 +297,17 @@ function getFuncTypeAliasReturnTypeNames(
         }
 
         if (candidTypeInfo.typeClass === 'inline_variant') {
-            const outerTypeArguments = (function_type_node.type as tsc.TypeReferenceNode).typeArguments;
+            const outerTypeArguments = (
+                function_type_node.type as tsc.TypeReferenceNode
+            ).typeArguments;
 
             if (outerTypeArguments === undefined) {
                 throw new Error('This cannot happen');
             }
 
-            const innerTypeArguments = (outerTypeArguments[0] as tsc.TypeReferenceNode).typeArguments;
+            const innerTypeArguments = (
+                outerTypeArguments[0] as tsc.TypeReferenceNode
+            ).typeArguments;
 
             if (innerTypeArguments === undefined) {
                 throw new Error('This cannot happen');
@@ -321,7 +323,9 @@ function getFuncTypeAliasReturnTypeNames(
         }
 
         if (candidTypeInfo.typeClass === 'inline_record') {
-            const typeArguments = (function_type_node.type as tsc.TypeReferenceNode).typeArguments;
+            const typeArguments = (
+                function_type_node.type as tsc.TypeReferenceNode
+            ).typeArguments;
 
             if (typeArguments === undefined) {
                 throw new Error('This cannot happen');
@@ -337,7 +341,9 @@ function getFuncTypeAliasReturnTypeNames(
         }
 
         if (candidTypeInfo.typeClass === 'inline_tuple_record') {
-            const typeArguments = (function_type_node.type as tsc.TypeReferenceNode).typeArguments;
+            const typeArguments = (
+                function_type_node.type as tsc.TypeReferenceNode
+            ).typeArguments;
 
             if (typeArguments === undefined) {
                 throw new Error('This cannot happen');
@@ -356,7 +362,9 @@ function getFuncTypeAliasReturnTypeNames(
     return [];
 }
 
-function getFunctionTypeReturnTypeNode(methodSignature: tsc.FunctionTypeNode): tsc.TypeNode {
+function getFunctionTypeReturnTypeNode(
+    methodSignature: tsc.FunctionTypeNode
+): tsc.TypeNode {
     if (methodSignature.type === undefined) {
         throw new Error('Method signature must have a return type');
     }

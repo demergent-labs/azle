@@ -6,17 +6,20 @@ import { getFunctionName } from '../../../typescript_to_candid/ast_utilities/mis
 // TODO heartbeat might be fundamentally unsafe
 // TODO because it can be called at any time...
 // TODO this might cause some big problems for people
-export function generateCanisterMethodHeartbeat(sourceFiles: readonly tsc.SourceFile[]): Rust {
-    const heartbeatFunctionDeclarations = getCanisterMethodFunctionDeclarationsFromSourceFiles(
-        sourceFiles,
-        ['Heartbeat']
-    );
+export function generateCanisterMethodHeartbeat(
+    sourceFiles: readonly tsc.SourceFile[]
+): Rust {
+    const heartbeatFunctionDeclarations =
+        getCanisterMethodFunctionDeclarationsFromSourceFiles(sourceFiles, [
+            'Heartbeat'
+        ]);
 
     if (heartbeatFunctionDeclarations.length > 1) {
         throw new Error(`Only one heartbeat function can be defined`);
     }
 
-    const heartbeatFunctionDeclaration: tsc.FunctionDeclaration | undefined = heartbeatFunctionDeclarations[0];
+    const heartbeatFunctionDeclaration: tsc.FunctionDeclaration | undefined =
+        heartbeatFunctionDeclarations[0];
 
     if (heartbeatFunctionDeclaration === undefined) {
         return '';

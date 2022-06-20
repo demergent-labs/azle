@@ -26,7 +26,9 @@ import {
     TransferResult
 } from 'azle/canisters/ledger';
 
-const ICPCanister = ic.canisters.Ledger<Ledger>(Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai'));
+const ICPCanister = ic.canisters.Ledger<Ledger>(
+    Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
+);
 
 type ExecuteTransferResult = Variant<{
     ok: TransferResult;
@@ -39,20 +41,24 @@ export function* execute_transfer(
     fee: nat64,
     created_at_time: Opt<nat64>
 ): UpdateAsync<ExecuteTransferResult> {
-    const transfer_result_canister_result: CanisterResult<TransferResult> = yield ICPCanister.transfer({
-        memo: 0n,
-        amount: {
-            e8s: amount,
-        },
-        fee: {
-            e8s: fee
-        },
-        from_subaccount: null,
-        to: binary_address_from_address(to),
-        created_at_time: created_at_time === null ? null : {
-            timestamp_nanos: created_at_time
-        }
-    });
+    const transfer_result_canister_result: CanisterResult<TransferResult> =
+        yield ICPCanister.transfer({
+            memo: 0n,
+            amount: {
+                e8s: amount
+            },
+            fee: {
+                e8s: fee
+            },
+            from_subaccount: null,
+            to: binary_address_from_address(to),
+            created_at_time:
+                created_at_time === null
+                    ? null
+                    : {
+                          timestamp_nanos: created_at_time
+                      }
+        });
 
     if (!ok(transfer_result_canister_result)) {
         return {
@@ -72,10 +78,13 @@ type GetAccountBalanceResult = Variant<{
     err: string;
 }>;
 
-export function* get_account_balance(address: Address): UpdateAsync<GetAccountBalanceResult> {
-    const tokens_canister_result: CanisterResult<Tokens> = yield ICPCanister.account_balance({
-        account: binary_address_from_address(address)
-    });
+export function* get_account_balance(
+    address: Address
+): UpdateAsync<GetAccountBalanceResult> {
+    const tokens_canister_result: CanisterResult<Tokens> =
+        yield ICPCanister.account_balance({
+            account: binary_address_from_address(address)
+        });
 
     if (!ok(tokens_canister_result)) {
         return {
@@ -96,7 +105,8 @@ type GetTransferFeeResult = Variant<{
 }>;
 
 export function* get_transfer_fee(): UpdateAsync<GetTransferFeeResult> {
-    const transfer_fee_canister_result: CanisterResult<TransferFee> = yield ICPCanister.transfer_fee({});
+    const transfer_fee_canister_result: CanisterResult<TransferFee> =
+        yield ICPCanister.transfer_fee({});
 
     if (!ok(transfer_fee_canister_result)) {
         return {
@@ -139,7 +149,8 @@ type GetSymbolResult = Variant<{
 }>;
 
 export function* get_symbol(): UpdateAsync<GetSymbolResult> {
-    const symbol_result_canister_result: CanisterResult<SymbolResult> = yield ICPCanister.symbol();
+    const symbol_result_canister_result: CanisterResult<SymbolResult> =
+        yield ICPCanister.symbol();
 
     if (!ok(symbol_result_canister_result)) {
         return {
@@ -160,7 +171,8 @@ type GetNameResult = Variant<{
 }>;
 
 export function* get_name(): UpdateAsync<GetNameResult> {
-    const name_result_canister_result: CanisterResult<NameResult> = yield ICPCanister.name();
+    const name_result_canister_result: CanisterResult<NameResult> =
+        yield ICPCanister.name();
 
     if (!ok(name_result_canister_result)) {
         return {
@@ -181,7 +193,8 @@ type GetDecimalsResult = Variant<{
 }>;
 
 export function* get_decimals(): UpdateAsync<GetDecimalsResult> {
-    const decimals_result_canister_result: CanisterResult<DecimalsResult> = yield ICPCanister.decimals();
+    const decimals_result_canister_result: CanisterResult<DecimalsResult> =
+        yield ICPCanister.decimals();
 
     if (!ok(decimals_result_canister_result)) {
         return {
@@ -202,7 +215,8 @@ type GetArchivesResult = Variant<{
 }>;
 
 export function* get_archives(): UpdateAsync<GetArchivesResult> {
-    const archives_canister_result: CanisterResult<Archives> = yield ICPCanister.archives();
+    const archives_canister_result: CanisterResult<Archives> =
+        yield ICPCanister.archives();
 
     if (!ok(archives_canister_result)) {
         return {

@@ -9,37 +9,45 @@ export function generate_candid_funcs(
     candid_funcs: Candid;
     candid_func_names: string[];
 } {
-    const candid_funcs = funcTypeAliasDeclarations.map((typeAliasDeclaration) => {
-        const func_name = typeAliasDeclaration.name.escapedText.toString();
+    const candid_funcs = funcTypeAliasDeclarations
+        .map((typeAliasDeclaration) => {
+            const func_name = typeAliasDeclaration.name.escapedText.toString();
 
-        const type_reference_node = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+            const type_reference_node =
+                typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
-        if (type_reference_node.typeArguments === undefined) {
-            throw new Error('This cannot happen');
-        }
+            if (type_reference_node.typeArguments === undefined) {
+                throw new Error('This cannot happen');
+            }
 
-        const first_argument = type_reference_node.typeArguments[0];
+            const first_argument = type_reference_node.typeArguments[0];
 
-        if (first_argument.kind !== tsc.SyntaxKind.FunctionType) {
-            throw new Error('This cannot happen');
-        }
+            if (first_argument.kind !== tsc.SyntaxKind.FunctionType) {
+                throw new Error('This cannot happen');
+            }
 
-        const function_type_node = first_argument as tsc.FunctionTypeNode;
+            const function_type_node = first_argument as tsc.FunctionTypeNode;
 
-        const candid_func_params = generate_candid_func_params(
-            sourceFiles,
-            function_type_node
-        );
+            const candid_func_params = generate_candid_func_params(
+                sourceFiles,
+                function_type_node
+            );
 
-        const candid_func_return_type = generate_candid_func_return_type(
-            sourceFiles,
-            function_type_node
-        );
+            const candid_func_return_type = generate_candid_func_return_type(
+                sourceFiles,
+                function_type_node
+            );
 
-        return `type ${func_name} = func (${candid_func_params.join(', ')}) -> ${candid_func_return_type};`;
-    }).join('\n');
+            return `type ${func_name} = func (${candid_func_params.join(
+                ', '
+            )}) -> ${candid_func_return_type};`;
+        })
+        .join('\n');
 
-    const candid_func_names = funcTypeAliasDeclarations.map((typeAliasDeclaration) => typeAliasDeclaration.name.escapedText.toString());
+    const candid_func_names = funcTypeAliasDeclarations.map(
+        (typeAliasDeclaration) =>
+            typeAliasDeclaration.name.escapedText.toString()
+    );
 
     return {
         candid_funcs,
@@ -73,7 +81,8 @@ function generate_candid_func_return_type(
         throw new Error(`Func return type must be Query, Update, or Oneway`);
     }
 
-    const type_reference_node = function_type_node.type as tsc.TypeReferenceNode;
+    const type_reference_node =
+        function_type_node.type as tsc.TypeReferenceNode;
 
     if (type_reference_node.typeArguments === undefined) {
         throw new Error('This cannot happen');
@@ -90,9 +99,16 @@ function generate_candid_func_return_type(
         throw new Error(`This cannot happen`);
     }
 
-    const type_name = (type_reference_node.typeName as tsc.Identifier).escapedText.toString();
+    const type_name = (
+        type_reference_node.typeName as tsc.Identifier
+    ).escapedText.toString();
 
-    const suffix = type_name === 'Query' ? ' query' : type_name === 'Oneway' ? ' oneway' : '';
+    const suffix =
+        type_name === 'Query'
+            ? ' query'
+            : type_name === 'Oneway'
+            ? ' oneway'
+            : '';
 
     return `(${candid_type_info.text})${suffix}`;
 }

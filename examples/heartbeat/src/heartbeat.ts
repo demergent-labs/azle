@@ -1,8 +1,4 @@
-import {
-    Query,
-    Heartbeat,
-    ic
-} from 'azle';
+import { Query, Heartbeat, ic } from 'azle';
 
 let inititalized = false;
 

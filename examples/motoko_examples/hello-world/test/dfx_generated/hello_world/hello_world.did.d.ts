@@ -1,2 +1,4 @@
 import type { Principal } from '@dfinity/principal';
-export interface _SERVICE { 'main' : () => Promise<undefined> }
+export interface _SERVICE {
+    main: () => Promise<undefined>;
+}

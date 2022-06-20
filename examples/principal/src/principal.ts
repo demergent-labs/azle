@@ -1,9 +1,4 @@
-import {
-    nat8,
-    Principal,
-    Query,
-    Variant
-} from 'azle';
+import { nat8, Principal, Query, Variant } from 'azle';
 
 // TODO go remove all of the custom code that we don't need anymore
 
@@ -47,7 +42,9 @@ export function principal_from_text(principal_text: string): Query<Principal> {
     return Principal.fromText(principal_text);
 }
 
-export function principal_from_uint8array(principal_bytes: nat8[]): Query<Principal> {
+export function principal_from_uint8array(
+    principal_bytes: nat8[]
+): Query<Principal> {
     return Principal.fromUint8Array(Uint8Array.from(principal_bytes));
 }
 

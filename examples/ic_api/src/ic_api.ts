@@ -1,10 +1,4 @@
-import {
-    ic,
-    nat,
-    nat64,
-    Principal,
-    Query
-} from 'azle';
+import { ic, nat, nat64, Principal, Query } from 'azle';
 
 // returns the principal of the identity that called this function
 export function caller(): Query<Principal> {

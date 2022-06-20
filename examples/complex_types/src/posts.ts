@@ -1,16 +1,7 @@
-import {
-    Query,
-    Update,
-    nat32
-} from 'azle';
+import { Query, Update, nat32 } from 'azle';
 import { Post } from './candid_types';
 import { getReactionFromStateReaction } from './reactions';
-import {
-    state,
-    StatePost,
-    StateThread,
-    StateUser
-} from './state';
+import { state, StatePost, StateThread, StateUser } from './state';
 import { getThreadFromStateThread } from './threads';
 import { getUserFromStateUser } from './users';
 
@@ -42,9 +33,9 @@ export function createPost(
 }
 
 export function getAllPosts(joinDepth: nat32): Query<Post[]> {
-    return Object
-        .values(state.posts)
-        .map((statePost) => getPostFromStatePost(statePost, joinDepth));
+    return Object.values(state.posts).map((statePost) =>
+        getPostFromStatePost(statePost, joinDepth)
+    );
 }
 
 export function getPostFromStatePost(
@@ -65,12 +56,12 @@ export function getPostFromStatePost(
             text: statePost.text,
             thread
         };
-    }
-    else {
-        const reactions = statePost
-            .reactionIds
+    } else {
+        const reactions = statePost.reactionIds
             .map((reactionId) => state.reactions[reactionId])
-            .map((stateReaction) => getReactionFromStateReaction(stateReaction, joinDepth - 1));
+            .map((stateReaction) =>
+                getReactionFromStateReaction(stateReaction, joinDepth - 1)
+            );
 
         return {
             id: statePost.id,

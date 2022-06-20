@@ -1,7 +1,4 @@
-import {
-    Query,
-    int
-} from 'azle';
+import { Query, int } from 'azle';
 import { Int } from './comparison';
 import * as Quicksort from './quicksort';
 

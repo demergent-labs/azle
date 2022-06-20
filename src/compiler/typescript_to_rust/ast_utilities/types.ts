@@ -10,7 +10,7 @@ export type Item = {
 };
 
 export type Impl = {
-    items: ImplItem[]
+    items: ImplItem[];
 };
 
 export type ImplItem = {
@@ -40,6 +40,4 @@ export type Struct = {
     attrs?: any[];
 };
 
-export type Enum = {
-
-};
+export type Enum = {};

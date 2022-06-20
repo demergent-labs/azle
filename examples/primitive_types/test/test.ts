@@ -1,18 +1,13 @@
 import { Principal } from '@dfinity/principal';
-import {
-    run_tests,
-    Test
-} from 'azle/test';
+import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/primitive_types';
 
-const primitive_types_canister = createActor(
-    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const primitive_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
 const tests: Test[] = [
     {
@@ -42,17 +37,23 @@ const tests: Test[] = [
             const result = await primitive_types_canister.getInt();
 
             return {
-                ok: result === 170_141_183_460_469_231_731_687_303_715_884_105_727n
+                ok:
+                    result ===
+                    170_141_183_460_469_231_731_687_303_715_884_105_727n
             };
         }
     },
     {
         name: 'printInt',
         test: async () => {
-            const result = await primitive_types_canister.printInt(170_141_183_460_469_231_731_687_303_715_884_105_727n);
+            const result = await primitive_types_canister.printInt(
+                170_141_183_460_469_231_731_687_303_715_884_105_727n
+            );
 
             return {
-                ok: result === 170_141_183_460_469_231_731_687_303_715_884_105_727n
+                ok:
+                    result ===
+                    170_141_183_460_469_231_731_687_303_715_884_105_727n
             };
         }
     },
@@ -69,7 +70,9 @@ const tests: Test[] = [
     {
         name: 'printInt64',
         test: async () => {
-            const result = await primitive_types_canister.printInt(9_223_372_036_854_775_807n);
+            const result = await primitive_types_canister.printInt(
+                9_223_372_036_854_775_807n
+            );
 
             return {
                 ok: result === 9_223_372_036_854_775_807n
@@ -89,7 +92,9 @@ const tests: Test[] = [
     {
         name: 'printInt32',
         test: async () => {
-            const result = await primitive_types_canister.printInt32(2_147_483_647);
+            const result = await primitive_types_canister.printInt32(
+                2_147_483_647
+            );
 
             return {
                 ok: result === 2_147_483_647
@@ -142,17 +147,23 @@ const tests: Test[] = [
             const result = await primitive_types_canister.getNat();
 
             return {
-                ok: result === 340_282_366_920_938_463_463_374_607_431_768_211_455n
+                ok:
+                    result ===
+                    340_282_366_920_938_463_463_374_607_431_768_211_455n
             };
         }
     },
     {
         name: 'printNat',
         test: async () => {
-            const result = await primitive_types_canister.printNat(340_282_366_920_938_463_463_374_607_431_768_211_455n);
+            const result = await primitive_types_canister.printNat(
+                340_282_366_920_938_463_463_374_607_431_768_211_455n
+            );
 
             return {
-                ok: result === 340_282_366_920_938_463_463_374_607_431_768_211_455n
+                ok:
+                    result ===
+                    340_282_366_920_938_463_463_374_607_431_768_211_455n
             };
         }
     },
@@ -169,7 +180,9 @@ const tests: Test[] = [
     {
         name: 'printNat64',
         test: async () => {
-            const result = await primitive_types_canister.printNat64(18_446_744_073_709_551_615n);
+            const result = await primitive_types_canister.printNat64(
+                18_446_744_073_709_551_615n
+            );
 
             return {
                 ok: result === 18_446_744_073_709_551_615n
@@ -189,7 +202,9 @@ const tests: Test[] = [
     {
         name: 'printNat32',
         test: async () => {
-            const result = await primitive_types_canister.printNat32(4_294_967_295);
+            const result = await primitive_types_canister.printNat32(
+                4_294_967_295
+            );
 
             return {
                 ok: result === 4_294_967_295
@@ -249,7 +264,9 @@ const tests: Test[] = [
     {
         name: 'printFloat64',
         test: async () => {
-            const result = await primitive_types_canister.printFloat64(2.718281828459045);
+            const result = await primitive_types_canister.printFloat64(
+                2.718281828459045
+            );
 
             return {
                 ok: result.toString() === '2.718281828459045'
@@ -270,7 +287,9 @@ const tests: Test[] = [
     {
         name: 'printFloat32',
         test: async () => {
-            const result = await primitive_types_canister.printFloat32(3.1415927);
+            const result = await primitive_types_canister.printFloat32(
+                3.1415927
+            );
 
             return {
                 // ok: result.toString() === '3.1415927' // TODO on the command line this is returned
@@ -291,7 +310,9 @@ const tests: Test[] = [
     {
         name: 'printPrincipal',
         test: async () => {
-            const result = await primitive_types_canister.printPrincipal(Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'));
+            const result = await primitive_types_canister.printPrincipal(
+                Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
+            );
 
             return {
                 ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
@@ -322,7 +343,7 @@ const tests: Test[] = [
         name: 'getReserved',
         test: async () => {
             const result = await primitive_types_canister.getReserved();
-            
+
             return {
                 ok: result === null
             };
@@ -334,7 +355,7 @@ const tests: Test[] = [
             const result = await primitive_types_canister.printReserved(
                 Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
             );
-            
+
             return {
                 ok: result === null
             };

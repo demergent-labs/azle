@@ -1,15 +1,5 @@
-import {
-    Query,
-    Update,
-    nat64,
-    Opt,
-    ic
-} from 'azle';
-import {
-    State,
-    Account,
-    AccountArgs
-} from './types';
+import { Query, Update, nat64, Opt, ic } from 'azle';
+import { State, Account, AccountArgs } from './types';
 
 let state: State = {
     accounts: {

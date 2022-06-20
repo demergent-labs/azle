@@ -6,22 +6,35 @@ import { generateCallFunctionParams } from './call_function_params';
 import { generateCallFunctionReturnType } from './call_function_return_type';
 import { generateCallFunctionBody } from './call_function_body';
 
-export function generateCallFunctions(sourceFiles: readonly tsc.SourceFile[]): CallFunctionInfo[] {
+export function generateCallFunctions(
+    sourceFiles: readonly tsc.SourceFile[]
+): CallFunctionInfo[] {
     const typeAliasDeclarations = getCanisterTypeAliasDeclarations(sourceFiles);
 
-    return generateCallFunctionsFromTypeAliasDeclarations(typeAliasDeclarations);
+    return generateCallFunctionsFromTypeAliasDeclarations(
+        typeAliasDeclarations
+    );
 }
 
-function generateCallFunctionsFromTypeAliasDeclarations(typeAliasDeclarations: tsc.TypeAliasDeclaration[]): CallFunctionInfo[] {
-    return typeAliasDeclarations.reduce((result: CallFunctionInfo[], typeAliasDeclaration) => {
-        return [
-            ...result,
-            ...generateCallFunctionsFromTypeAliasDeclaration(typeAliasDeclaration)
-        ];
-    }, []);
+function generateCallFunctionsFromTypeAliasDeclarations(
+    typeAliasDeclarations: tsc.TypeAliasDeclaration[]
+): CallFunctionInfo[] {
+    return typeAliasDeclarations.reduce(
+        (result: CallFunctionInfo[], typeAliasDeclaration) => {
+            return [
+                ...result,
+                ...generateCallFunctionsFromTypeAliasDeclaration(
+                    typeAliasDeclaration
+                )
+            ];
+        },
+        []
+    );
 }
 
-function generateCallFunctionsFromTypeAliasDeclaration(typeAliasDeclaration: tsc.TypeAliasDeclaration): CallFunctionInfo[] {
+function generateCallFunctionsFromTypeAliasDeclaration(
+    typeAliasDeclaration: tsc.TypeAliasDeclaration
+): CallFunctionInfo[] {
     if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TypeReference) {
         throw new Error('This cannot happen');
     }
@@ -51,10 +64,7 @@ function generateCallFunctionsFromTypeLiteralNode(
     typeAliasName: string
 ): CallFunctionInfo[] {
     return typeLiteralNode.members.map((member) => {
-        return generateCallFunctionFromTypeElement(
-            member,
-            typeAliasName
-        );
+        return generateCallFunctionFromTypeElement(member, typeAliasName);
     });
 }
 
@@ -68,10 +78,7 @@ function generateCallFunctionFromTypeElement(
 
     const methodSignature = typeElement as tsc.MethodSignature;
 
-    const {
-        methodName,
-        callFunctionName
-    } = generateCallFunctionName(
+    const { methodName, callFunctionName } = generateCallFunctionName(
         methodSignature,
         typeAliasName
     );
@@ -87,7 +94,15 @@ function generateCallFunctionFromTypeElement(
         functionName: callFunctionName,
         params: functionParams,
         text: `
-            async fn ${callFunctionName}(canister_id_principal: ic_cdk::export::Principal${functionParams.length === 0 ? '' : ', '}${functionParams.map((param) => `${param.paramName}: ${param.paramType}`).join(', ')})${functionReturnType === '' ? '' : ` -> CallResult<(${functionReturnType},)>`} {
+            async fn ${callFunctionName}(canister_id_principal: ic_cdk::export::Principal${
+            functionParams.length === 0 ? '' : ', '
+        }${functionParams
+            .map((param) => `${param.paramName}: ${param.paramType}`)
+            .join(', ')})${
+            functionReturnType === ''
+                ? ''
+                : ` -> CallResult<(${functionReturnType},)>`
+        } {
                 ${functionBody}
             }
         `
@@ -95,15 +110,22 @@ function generateCallFunctionFromTypeElement(
 }
 
 // TODO put this somewhere, like an AST utilities file. Also generalize it
-export function getCanisterTypeAliasDeclarations(sourceFiles: readonly tsc.SourceFile[]): tsc.TypeAliasDeclaration[] {
-    const typeAliasDeclarations = getTypeAliasDeclarationsFromSourceFiles(sourceFiles);
+export function getCanisterTypeAliasDeclarations(
+    sourceFiles: readonly tsc.SourceFile[]
+): tsc.TypeAliasDeclaration[] {
+    const typeAliasDeclarations =
+        getTypeAliasDeclarationsFromSourceFiles(sourceFiles);
 
     return typeAliasDeclarations.filter((typeAliasDeclaration) => {
         if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
-            const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+            const typeReferenceNode =
+                typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
             if (typeReferenceNode.typeName.kind === tsc.SyntaxKind.Identifier) {
-                return typeReferenceNode.typeName.escapedText.toString() === 'Canister';
+                return (
+                    typeReferenceNode.typeName.escapedText.toString() ===
+                    'Canister'
+                );
             }
 
             return false;
@@ -114,15 +136,22 @@ export function getCanisterTypeAliasDeclarations(sourceFiles: readonly tsc.Sourc
 }
 
 // TODO put this somewhere, like an AST utilities file. Also generalize it
-export function getStableTypeAliasDeclarations(sourceFiles: readonly tsc.SourceFile[]): tsc.TypeAliasDeclaration[] {
-    const typeAliasDeclarations = getTypeAliasDeclarationsFromSourceFiles(sourceFiles);
+export function getStableTypeAliasDeclarations(
+    sourceFiles: readonly tsc.SourceFile[]
+): tsc.TypeAliasDeclaration[] {
+    const typeAliasDeclarations =
+        getTypeAliasDeclarationsFromSourceFiles(sourceFiles);
 
     return typeAliasDeclarations.filter((typeAliasDeclaration) => {
         if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
-            const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+            const typeReferenceNode =
+                typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
             if (typeReferenceNode.typeName.kind === tsc.SyntaxKind.Identifier) {
-                return typeReferenceNode.typeName.escapedText.toString() === 'Stable';
+                return (
+                    typeReferenceNode.typeName.escapedText.toString() ===
+                    'Stable'
+                );
             }
 
             return false;
@@ -133,15 +162,21 @@ export function getStableTypeAliasDeclarations(sourceFiles: readonly tsc.SourceF
 }
 
 // TODO put this somewhere, like an AST utilities file. Also generalize it
-export function getFuncTypeAliasDeclarations(sourceFiles: readonly tsc.SourceFile[]): tsc.TypeAliasDeclaration[] {
-    const typeAliasDeclarations = getTypeAliasDeclarationsFromSourceFiles(sourceFiles);
+export function getFuncTypeAliasDeclarations(
+    sourceFiles: readonly tsc.SourceFile[]
+): tsc.TypeAliasDeclaration[] {
+    const typeAliasDeclarations =
+        getTypeAliasDeclarationsFromSourceFiles(sourceFiles);
 
     return typeAliasDeclarations.filter((typeAliasDeclaration) => {
         if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
-            const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+            const typeReferenceNode =
+                typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
             if (typeReferenceNode.typeName.kind === tsc.SyntaxKind.Identifier) {
-                return typeReferenceNode.typeName.escapedText.toString() === 'Func';
+                return (
+                    typeReferenceNode.typeName.escapedText.toString() === 'Func'
+                );
             }
 
             return false;

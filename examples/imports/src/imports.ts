@@ -1,9 +1,5 @@
 import { Query } from 'azle';
-import {
-    one,
-    two,
-    three
-} from './library';
+import { one, two, three } from './library';
 import { sha224 } from 'hash.js';
 
 export function getOne(): Query<string> {

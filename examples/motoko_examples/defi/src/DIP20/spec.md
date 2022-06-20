@@ -1,7 +1,5 @@
 # Token Standard Spec
 
-
-
 A fungible token standard for the DFINITY Internet Computer.
 
 ## Abstract
@@ -14,68 +12,68 @@ A standard token interface is a basic building block for many applications on th
 
 1. Metadata: basic token information
 
-   ```js
-   type Metadata = {
-       logo : Text; // base64 encoded logo or logo url
-       name : Text; // token name
-       symbol : Text; // token symbol
-       decimals : Nat8; // token decimal
-       totalSupply : Nat; // token total supply
-       owner : Principal; // token owner
-       fee : Nat; // fee for update calls
-   }
-   ```
+    ```js
+    type Metadata = {
+        logo: Text, // base64 encoded logo or logo url
+        name: Text, // token name
+        symbol: Text, // token symbol
+        decimals: Nat8, // token decimal
+        totalSupply: Nat, // token total supply
+        owner: Principal, // token owner
+        fee: Nat // fee for update calls
+    };
+    ```
 
 2. TxReceipt: receipt for update calls, contains the transaction index or an error message
 
-   ```js
+    ```js
 
-   public type TxReceipt = {
-       #Ok: Nat;
-       #Err: {
-            #InsufficientAllowance;
-            #InsufficientBalance;
-            #ErrorOperationStyle;
-            #Unauthorized;
-            #LedgerTrap;
-            #ErrorTo;
-            #Other;
-            #BlockUsed;
-            #AmountTooSmall;
-       };
-   };
+    public type TxReceipt = {
+        #Ok: Nat;
+        #Err: {
+             #InsufficientAllowance;
+             #InsufficientBalance;
+             #ErrorOperationStyle;
+             #Unauthorized;
+             #LedgerTrap;
+             #ErrorTo;
+             #Other;
+             #BlockUsed;
+             #AmountTooSmall;
+        };
+    };
 
-   when the Transaction status is #failed, an error should be returned instead of a transaction id
+    when the Transaction status is #failed, an error should be returned instead of a transaction id
 
-   ```
+    ```
 
 3. TxRecord: history transaction record
 
-   ```js
-   public type Operation = {
-       #approve;
-       #mint;
-       #transfer;
-       #transferFrom;
-   };
-   public type TransactionStatus = {
-       #succeeded;
-       #failed;
-   };
-   public type TxRecord = {
-       caller: ?Principal;
-       op: Operation; // operation type
-       index: Nat; // transaction index
-       from: Principal;
-       to: Principal;
-       amount: Nat;
-       fee: Nat;
-       timestamp: Time.Time;
-       status: TransactionStatus;
-   };
-   ```
+    ```js
+    public type Operation = {
+        #approve;
+        #mint;
+        #transfer;
+        #transferFrom;
+    };
+    public type TransactionStatus = {
+        #succeeded;
+        #failed;
+    };
+    public type TxRecord = {
+        caller: ?Principal;
+        op: Operation; // operation type
+        index: Nat; // transaction index
+        from: Principal;
+        to: Principal;
+        amount: Nat;
+        fee: Nat;
+        timestamp: Time.Time;
+        status: TransactionStatus;
+    };
+    ```
 
-   `caller` in TxRecord is optional and only need to be non-empty for `transferFrom` calls
+    `caller` in TxRecord is optional and only need to be non-empty for `transferFrom` calls
 
 ### 2. Basic Interfaces
 
@@ -199,7 +197,6 @@ Returns the history size.
 ```js
 public query func historySize() : async Nat
 ```
-
 
 ### 3. Optional interfaces
 

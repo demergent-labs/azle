@@ -1,8 +1,4 @@
-import {
-    Query,
-    Update,
-    nat64
-} from 'azle';
+import { Query, Update, nat64 } from 'azle';
 
 let counter: nat64 = 0n;
 

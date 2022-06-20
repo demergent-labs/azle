@@ -14,35 +14,43 @@ export function generateCanisterMethodInit(
     const icObject: Rust = generateIcObject([]);
 
     // TODO this code is now copied in post_upgrade
-    const initFunctionDeclarations = getCanisterMethodFunctionDeclarationsFromSourceFiles(
-        sourceFiles,
-        ['Init']
-    );
+    const initFunctionDeclarations =
+        getCanisterMethodFunctionDeclarationsFromSourceFiles(sourceFiles, [
+            'Init'
+        ]);
 
     if (initFunctionDeclarations.length > 1) {
         throw new Error(`Only one init function can be defined`);
     }
 
-    const initFunctionDeclaration: tsc.FunctionDeclaration | undefined = initFunctionDeclarations[0];
+    const initFunctionDeclaration: tsc.FunctionDeclaration | undefined =
+        initFunctionDeclarations[0];
 
-    const userDefinedInitFunctionName = getDeveloperDefinedInitFunctionName(initFunctionDeclaration);
+    const userDefinedInitFunctionName = getDeveloperDefinedInitFunctionName(
+        initFunctionDeclaration
+    );
     const userDefinedInitFunctionParams = [
         { paramName: 'boa_context', paramType: '&mut boa_engine::Context' },
         ...getUserDefinedInitFunctionParams(initFunctionDeclaration)
     ];
 
-    const developerDefinedInitFunctionCall: Rust = generateDeveloperDefinedInitFunctionCall(
-        userDefinedInitFunctionName,
-        userDefinedInitFunctionParams
-    );
-    const developerDefinedInitFunction: Rust = generateDeveloperDefinedInitFunction(
-        userDefinedInitFunctionName,
-        userDefinedInitFunctionParams
-    );
+    const developerDefinedInitFunctionCall: Rust =
+        generateDeveloperDefinedInitFunctionCall(
+            userDefinedInitFunctionName,
+            userDefinedInitFunctionParams
+        );
+    const developerDefinedInitFunction: Rust =
+        generateDeveloperDefinedInitFunction(
+            userDefinedInitFunctionName,
+            userDefinedInitFunctionParams
+        );
 
     return /* rust */ `
         #[ic_cdk_macros::init]
-        fn init(${userDefinedInitFunctionParams.filter((param) => param.paramName !== 'boa_context').map((param) => `${param.paramName}: ${param.paramType}`).join(', ')}) {
+        fn init(${userDefinedInitFunctionParams
+            .filter((param) => param.paramName !== 'boa_context')
+            .map((param) => `${param.paramName}: ${param.paramType}`)
+            .join(', ')}) {
             unsafe {
                 BOA_CONTEXT_OPTION = Some(boa_engine::Context::default());
                 let mut boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
@@ -68,7 +76,9 @@ export function generateCanisterMethodInit(
     `;
 }
 
-export function getDeveloperDefinedInitFunctionName(initFunctionDeclaration: tsc.FunctionDeclaration | undefined): string {
+export function getDeveloperDefinedInitFunctionName(
+    initFunctionDeclaration: tsc.FunctionDeclaration | undefined
+): string {
     if (initFunctionDeclaration === undefined) {
         return '';
     }
@@ -87,11 +97,15 @@ export function generateDeveloperDefinedInitFunctionCall(
         return '';
     }
 
-    return `_azle_${userDefinedInitFunctionName}(${userDefinedInitFunctionParams.map((param) => param.paramName).join(', ')});`;
+    return `_azle_${userDefinedInitFunctionName}(${userDefinedInitFunctionParams
+        .map((param) => param.paramName)
+        .join(', ')});`;
 }
 
 // TODO this is almost copied verbatim from call_functions/call_function_params.ts
-export function getUserDefinedInitFunctionParams(functionDeclaration: tsc.FunctionDeclaration | undefined): {
+export function getUserDefinedInitFunctionParams(
+    functionDeclaration: tsc.FunctionDeclaration | undefined
+): {
     paramName: string;
     paramType: string;
 }[] {
@@ -106,7 +120,9 @@ export function getUserDefinedInitFunctionParams(functionDeclaration: tsc.Functi
             throw new Error(`Parameter must have a type`);
         }
 
-        const paramType = getRustTypeNameFromTypeNode(parameterDeclaration.type);
+        const paramType = getRustTypeNameFromTypeNode(
+            parameterDeclaration.type
+        );
 
         return {
             paramName,
@@ -124,7 +140,9 @@ function generateDeveloperDefinedInitFunction(
     }[]
 ): Rust {
     return /* rust */ `
-        fn _azle_${userDefinedInitFunctionName}(${userDefinedInitFunctionParams.map((param) => `${param.paramName}: ${param.paramType}`).join(', ')}) {
+        fn _azle_${userDefinedInitFunctionName}(${userDefinedInitFunctionParams
+        .map((param) => `${param.paramName}: ${param.paramType}`)
+        .join(', ')}) {
             let exports_js_value = boa_context.eval("exports").unwrap();
             let exports_js_object = exports_js_value.as_object().unwrap();
 
@@ -134,9 +152,12 @@ function generateDeveloperDefinedInitFunction(
             let return_value = ${userDefinedInitFunctionName}_js_object.call(
                 &boa_engine::JsValue::Null,
                 &[
-                    ${userDefinedInitFunctionParams.filter((param) => param.paramName !== 'boa_context').map((param) => {
-                        return `${param.paramName}.azle_into_js_value(boa_context)`;
-                    }).join(',')}
+                    ${userDefinedInitFunctionParams
+                        .filter((param) => param.paramName !== 'boa_context')
+                        .map((param) => {
+                            return `${param.paramName}.azle_into_js_value(boa_context)`;
+                        })
+                        .join(',')}
                 ],
                 boa_context
             ).unwrap();

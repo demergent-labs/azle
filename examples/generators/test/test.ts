@@ -1,17 +1,12 @@
-import {
-    run_tests,
-    Test
-} from 'azle/test';
+import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/generators';
 
-const generators_canister = createActor(
-    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const generators_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
 const tests: Test[] = [
     {
@@ -48,7 +43,8 @@ const tests: Test[] = [
     {
         name: 'get_randomness_indirectly',
         test: async () => {
-            const result = await generators_canister.get_randomness_indirectly();
+            const result =
+                await generators_canister.get_randomness_indirectly();
 
             return {
                 ok: result.length === 32
@@ -58,7 +54,8 @@ const tests: Test[] = [
     {
         name: 'get_randomness_super_indirectly',
         test: async () => {
-            const result = await generators_canister.get_randomness_super_indirectly();
+            const result =
+                await generators_canister.get_randomness_super_indirectly();
 
             return {
                 ok: result.length === 96

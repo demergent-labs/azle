@@ -29,7 +29,7 @@ export function generateCandidVariants(
     funcTypeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): {
     candidVariants: Candid;
-    candidVariantNames: string[]
+    candidVariantNames: string[];
 } {
     const candidVariantNames = getCandidVariantNames(
         sourceFiles,
@@ -40,10 +40,7 @@ export function generateCandidVariants(
     );
 
     const candidVariants = candidVariantNames.map((candidVariantName) => {
-        return generateCandidVariant(
-            sourceFiles,
-            candidVariantName
-        );
+        return generateCandidVariant(sourceFiles, candidVariantName);
     });
 
     return {
@@ -88,10 +85,7 @@ function getCandidVariantNames(
 
     const funcTypeAliasVariantNames = Array.from(
         new Set(
-            getFuncTypeAliasVariantNames(
-                sourceFiles,
-                funcTypeAliasDeclarations
-            )
+            getFuncTypeAliasVariantNames(sourceFiles, funcTypeAliasDeclarations)
         )
     );
 
@@ -144,10 +138,7 @@ function getCandidVariantNames(
 
     const funcTypeAliasRecordNames = Array.from(
         new Set(
-            getFuncTypeAliasRecordNames(
-                sourceFiles,
-                funcTypeAliasDeclarations
-            )
+            getFuncTypeAliasRecordNames(sourceFiles, funcTypeAliasDeclarations)
         )
     );
 
@@ -192,15 +183,17 @@ function getCandidVariantNames(
     );
 
     // TODO we probably do not need so many Array.form(new Set())
-    return Array.from(new Set([
-        ...canisterMethodVariantNames,
-        ...canisterTypeAliasVariantNames,
-        ...stableTypeAliasVariantNames,
-        ...funcTypeAliasVariantNames,
-        ...variantFieldsVariantNames,
-        ...recordFieldsVariantNames,
-        ...tupleRecordFieldsVariantNames
-    ]));
+    return Array.from(
+        new Set([
+            ...canisterMethodVariantNames,
+            ...canisterTypeAliasVariantNames,
+            ...stableTypeAliasVariantNames,
+            ...funcTypeAliasVariantNames,
+            ...variantFieldsVariantNames,
+            ...recordFieldsVariantNames,
+            ...tupleRecordFieldsVariantNames
+        ])
+    );
 }
 
 // TODO getCandidRecordNamesFromRecordFields, getCandidRecordNamesFromVariantFields, getCandidVariantNamesFromVariantFields, getCandidVariantNamesFromRecordFields are nearly identical
@@ -215,14 +208,21 @@ function getCandidVariantNamesFromVariantFields(
     );
 
     if (typeAliasDeclaration === undefined) {
-        throw new Error(`Could not generate Candid record for type alias declaration: ${JSON.stringify(typeAliasDeclaration, null, 2)}`);
+        throw new Error(
+            `Could not generate Candid record for type alias declaration: ${JSON.stringify(
+                typeAliasDeclaration,
+                null,
+                2
+            )}`
+        );
     }
 
     if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TypeReference) {
         return [];
     }
 
-    const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+    const typeReferenceNode =
+        typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
     if (typeReferenceNode.typeArguments === undefined) {
         throw new Error('Variant must have type arguments');
@@ -235,7 +235,9 @@ function getCandidVariantNamesFromVariantFields(
     }
 
     if (firstTypeArgument.kind !== tsc.SyntaxKind.TypeLiteral) {
-        throw new Error(`Could not generate Candid record for type alias declaration: ${typeAliasDeclaration.name.escapedText.toString()}`);
+        throw new Error(
+            `Could not generate Candid record for type alias declaration: ${typeAliasDeclaration.name.escapedText.toString()}`
+        );
     }
 
     const candidVariantNames = getCandidVariantNamesFromTypeLiteralNode(
@@ -259,7 +261,9 @@ function getCandidVariantNamesFromRecordFields(
     );
 
     if (typeAliasDeclaration === undefined) {
-        throw new Error(`Could not generate Candid record for type alias declaration: ${typeAliasDeclaration}`);
+        throw new Error(
+            `Could not generate Candid record for type alias declaration: ${typeAliasDeclaration}`
+        );
     }
 
     if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TypeLiteral) {
@@ -286,7 +290,9 @@ function getCandidVariantNamesFromTupleRecordFields(
     );
 
     if (typeAliasDeclaration === undefined) {
-        throw new Error(`Could not generate Candid record for type alias declaration: ${typeAliasDeclaration}`);
+        throw new Error(
+            `Could not generate Candid record for type alias declaration: ${typeAliasDeclaration}`
+        );
     }
 
     if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TupleType) {
@@ -307,59 +313,64 @@ export function getCandidVariantNamesFromTypeLiteralNode(
     typeLiteralNode: tsc.TypeLiteralNode,
     variantNamesAlreadyFound: string[]
 ): string[] {
-    const candidVariantNames = typeLiteralNode.members.reduce((result: string[], member) => {
-        if (member.kind === tsc.SyntaxKind.PropertySignature) {
-            const propertySignature = member as tsc.PropertySignature;
+    const candidVariantNames = typeLiteralNode.members.reduce(
+        (result: string[], member) => {
+            if (member.kind === tsc.SyntaxKind.PropertySignature) {
+                const propertySignature = member as tsc.PropertySignature;
 
-            if (propertySignature.type === undefined) {
-                throw new Error(`Could not generate Candid record for type literal node: ${typeLiteralNode}`);
-            }
+                if (propertySignature.type === undefined) {
+                    throw new Error(
+                        `Could not generate Candid record for type literal node: ${typeLiteralNode}`
+                    );
+                }
 
-            const candidTypeInfo = generateCandidTypeInfo(
-                sourceFiles,
-                propertySignature.type
-            );
+                const candidTypeInfo = generateCandidTypeInfo(
+                    sourceFiles,
+                    propertySignature.type
+                );
 
-            if (variantNamesAlreadyFound.includes(candidTypeInfo.typeName)) {
+                if (
+                    variantNamesAlreadyFound.includes(candidTypeInfo.typeName)
+                ) {
+                    return result;
+                }
+
+                if (candidTypeInfo.typeClass === 'variant') {
+                    const recursedRecordNames =
+                        getCandidVariantNamesFromVariantFields(
+                            sourceFiles,
+                            candidTypeInfo.typeName,
+                            variantNamesAlreadyFound
+                        );
+
+                    return [
+                        ...result,
+                        candidTypeInfo.typeName,
+                        ...recursedRecordNames
+                    ];
+                }
+
+                if (candidTypeInfo.typeClass === 'record') {
+                    const recursedRecordNames =
+                        getCandidVariantNamesFromRecordFields(
+                            sourceFiles,
+                            candidTypeInfo.typeName,
+                            [
+                                ...variantNamesAlreadyFound,
+                                candidTypeInfo.typeName
+                            ]
+                        );
+
+                    return [...result, ...recursedRecordNames];
+                }
+
+                return result;
+            } else {
                 return result;
             }
-
-            if (candidTypeInfo.typeClass === 'variant') {
-                const recursedRecordNames = getCandidVariantNamesFromVariantFields(
-                    sourceFiles,
-                    candidTypeInfo.typeName,
-                    variantNamesAlreadyFound
-                );
-
-                return [
-                    ...result,
-                    candidTypeInfo.typeName,
-                    ...recursedRecordNames
-                ];
-            }
-
-            if (candidTypeInfo.typeClass === 'record') {
-                const recursedRecordNames = getCandidVariantNamesFromRecordFields(
-                    sourceFiles,
-                    candidTypeInfo.typeName,
-                    [
-                        ...variantNamesAlreadyFound,
-                        candidTypeInfo.typeName
-                    ]
-                );
-
-                return [
-                    ...result,
-                    ...recursedRecordNames
-                ];
-            }
-
-            return result;
-        }
-        else {
-            return result;    
-        }
-    }, []);
+        },
+        []
+    );
 
     return candidVariantNames;
 }
@@ -370,10 +381,7 @@ export function getCandidVariantNamesFromTupleTypeNode(
     variantNamesAlreadyFound: string[]
 ): string[] {
     return tupleTypeNode.elements.reduce((result: string[], element) => {
-        const candidTypeInfo = generateCandidTypeInfo(
-            sourceFiles,
-            element
-        );
+        const candidTypeInfo = generateCandidTypeInfo(sourceFiles, element);
 
         if (variantNamesAlreadyFound.includes(candidTypeInfo.typeName)) {
             return result;
@@ -386,27 +394,17 @@ export function getCandidVariantNamesFromTupleTypeNode(
                 variantNamesAlreadyFound
             );
 
-            return [
-                ...result,
-                candidTypeInfo.typeName,
-                ...recursedRecordNames
-            ];
+            return [...result, candidTypeInfo.typeName, ...recursedRecordNames];
         }
 
         if (candidTypeInfo.typeClass === 'record') {
             const recursedRecordNames = getCandidVariantNamesFromRecordFields(
                 sourceFiles,
                 candidTypeInfo.typeName,
-                [
-                    ...variantNamesAlreadyFound,
-                    candidTypeInfo.typeName
-                ]
+                [...variantNamesAlreadyFound, candidTypeInfo.typeName]
             );
 
-            return [
-                ...result,
-                ...recursedRecordNames
-            ];
+            return [...result, ...recursedRecordNames];
         }
 
         return result;
@@ -429,14 +427,15 @@ function generateCandidVariant(
     }
 
     if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
-        const typeReferenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+        const typeReferenceNode =
+            typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
         if (typeReferenceNode.typeArguments === undefined) {
             throw new Error('this cannot happen');
         }
 
         const typeNode = typeReferenceNode.typeArguments[0];
-    
+
         if (typeNode.kind === tsc.SyntaxKind.TypeLiteral) {
             return generateCandidVariantForTypeLiteral(
                 sourceFiles,
@@ -484,9 +483,16 @@ export function generateCandidVariantForTypeLiteral(
     });
 
     if (candidVariantName === null) {
-        return `variant { ${variantFields.map((variantField) => `"${variantField.name}": ${variantField.text}`).join('; ')} }`;
-    }
-    else {
-        return `type ${candidVariantName} = variant { ${variantFields.map((variantField) => `"${variantField.name}": ${variantField.text}`).join('; ')} };`;
+        return `variant { ${variantFields
+            .map(
+                (variantField) => `"${variantField.name}": ${variantField.text}`
+            )
+            .join('; ')} }`;
+    } else {
+        return `type ${candidVariantName} = variant { ${variantFields
+            .map(
+                (variantField) => `"${variantField.name}": ${variantField.text}`
+            )
+            .join('; ')} };`;
     }
 }

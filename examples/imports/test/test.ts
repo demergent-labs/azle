@@ -1,17 +1,12 @@
-import {
-    run_tests,
-    Test
-} from 'azle/test';
+import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/imports';
 
-const imports_canister = createActor(
-    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const imports_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
 const tests: Test[] = [
     {
@@ -71,7 +66,9 @@ const tests: Test[] = [
             const result = await imports_canister.sha224Hash('hello');
 
             return {
-                ok: result === 'ea09ae9cc6768c50fcee903ed054556e5bfc8347907f12598aa24193'
+                ok:
+                    result ===
+                    'ea09ae9cc6768c50fcee903ed054556e5bfc8347907f12598aa24193'
             };
         }
     }

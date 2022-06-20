@@ -23,7 +23,7 @@ export const ic: ic = globalThis.ic;
 //     }
 // };
 
-ic.stableStorage = function() {
+ic.stableStorage = function () {
     return (ic as any)._azleStableStorage;
 };
 
@@ -37,14 +37,14 @@ ic.stableStorage = function() {
 //     } as any;
 // };
 
-ic.call_raw = function(...args) {
+ic.call_raw = function (...args) {
     return {
         name: 'call_raw',
         args
     } as any;
 };
 
-ic.call_raw128 = function(...args) {
+ic.call_raw128 = function (...args) {
     return {
         name: 'call_raw128',
         args
@@ -85,7 +85,6 @@ type ic = {
     time: () => nat64;
     trap: (message: string) => never;
 };
-
 
 export type Migrate<T> = T;
 export type PreUpgrade = void;
@@ -156,8 +155,7 @@ type Ok<T> = {
 export function ok<T>(azle_result: AzleResult<T>): azle_result is Ok<T> {
     if (azle_result.err === undefined) {
         return true;
-    }
-    else {
+    } else {
         return false;
     }
 }
@@ -166,13 +164,14 @@ export function ok<T>(azle_result: AzleResult<T>): azle_result is Ok<T> {
 export function attempt<T>(callback: () => AzleResult<T>): AzleResult<T> {
     try {
         return callback();
-    }
-    catch(error) {
+    } catch (error) {
         return error as AzleResult<T>;
     }
 }
 
 // TODO type this more strictly
-export type Func<T extends (...args: any[]) => Query<any> | Update<any> | Oneway<any>> = [Principal, string];
+export type Func<
+    T extends (...args: any[]) => Query<any> | Update<any> | Oneway<any>
+> = [Principal, string];
 
 export { Principal } from '@dfinity/principal';

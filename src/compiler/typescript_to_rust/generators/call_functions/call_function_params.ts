@@ -5,7 +5,9 @@ import {
     getRustTypeNameFromTypeNode
 } from '../../ast_utilities/miscellaneous';
 
-export function generateCallFunctionParams(methodSignature: tsc.MethodSignature): {
+export function generateCallFunctionParams(
+    methodSignature: tsc.MethodSignature
+): {
     paramName: string;
     paramType: string;
 }[] {
@@ -16,7 +18,9 @@ export function generateCallFunctionParams(methodSignature: tsc.MethodSignature)
             throw new Error(`Parameter must have a type`);
         }
 
-        const paramType = getRustTypeNameFromTypeNode(parameterDeclaration.type);
+        const paramType = getRustTypeNameFromTypeNode(
+            parameterDeclaration.type
+        );
 
         return {
             paramName,
