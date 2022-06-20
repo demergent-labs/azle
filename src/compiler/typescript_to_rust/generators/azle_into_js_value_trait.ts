@@ -108,6 +108,12 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        // impl<T: AzleIntoJsValue> AzleIntoJsValue for Vec<Box<T>> {
+        //     fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+        //         (*self).azle_into_js_value(context)
+        //     }
+        // }
+
         impl AzleIntoJsValue for ic_cdk::export::candid::Func {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 boa_engine::object::JsArray::from_iter([
@@ -149,11 +155,6 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
-        // TODO this should let me easily use the below generic Vec for everything but the ones I explicitly list: https://users.rust-lang.org/t/how-to-exclude-a-type-from-generic-trait-implementation/26156
-
-        // TODO consider that each type might need its own explicit impl for Vec
-        // TODO the derive attribute might need to be used in that case
-        // TODO I wonder if we will have some problems with Vec because of the type bound??
         // impl<T: AzleIntoJsValue> AzleIntoJsValue for Vec<T> {
         //     fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
         //         // TODO this is extremely unoptimized I think
