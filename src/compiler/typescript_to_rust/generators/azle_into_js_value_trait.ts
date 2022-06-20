@@ -127,21 +127,45 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        impl AzleIntoJsValue for Vec<u8> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                let self_len = self.len();
+
+                let array_buffer = boa_engine::builtins::array_buffer::ArrayBuffer {
+                    array_buffer_data: Some(self),
+                    array_buffer_byte_length: self_len,
+                    array_buffer_detach_key: boa_engine::JsValue::undefined()
+                };            
+
+                let array_buffer_js_object = boa_engine::object::JsObject::from_proto_and_data(
+                    context.intrinsics().constructors().array_buffer().prototype(),
+                    boa_engine::object::ObjectData {
+                        kind: boa_engine::object::ObjectKind::ArrayBuffer(array_buffer),
+                        internal_methods: &boa_engine::object::internal_methods::ORDINARY_INTERNAL_METHODS
+                    }
+                );
+
+                array_buffer_js_object.into()
+            }
+        }
+
+        // TODO this should let me easily use the below generic Vec for everything but the ones I explicitly list: https://users.rust-lang.org/t/how-to-exclude-a-type-from-generic-trait-implementation/26156
+
         // TODO consider that each type might need its own explicit impl for Vec
         // TODO the derive attribute might need to be used in that case
         // TODO I wonder if we will have some problems with Vec because of the type bound??
-        impl<T: AzleIntoJsValue> AzleIntoJsValue for Vec<T> {
-            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                // TODO this is extremely unoptimized I think
-                // TODO I think I can get rid of the collect here which might help
-                // TODO I just need to not pass the context into azle_into_js_value, I don't think it's necessary
-                // TODO once we stop relying on into_js_value in boa
-                let js_values = self.into_iter().map(|item| item.azle_into_js_value(context)).collect::<Vec<boa_engine::JsValue>>();
-                // let js_values = self.into_iter().map(|item| item.azle_into_js_value(context));
+        // impl<T: AzleIntoJsValue> AzleIntoJsValue for Vec<T> {
+        //     fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+        //         // TODO this is extremely unoptimized I think
+        //         // TODO I think I can get rid of the collect here which might help
+        //         // TODO I just need to not pass the context into azle_into_js_value, I don't think it's necessary
+        //         // TODO once we stop relying on into_js_value in boa
+        //         let js_values = self.into_iter().map(|item| item.azle_into_js_value(context)).collect::<Vec<boa_engine::JsValue>>();
+        //         // let js_values = self.into_iter().map(|item| item.azle_into_js_value(context));
 
-                boa_engine::object::JsArray::from_iter(js_values, context).into()
-            }
-        }
+        //         boa_engine::object::JsArray::from_iter(js_values, context).into()
+        //     }
+        // }
 
         // TODO I would like to create typed arrays for u8 etc in addition to the impl for Vec<T>
         // impl IntoJsValue for Vec<u8> {
