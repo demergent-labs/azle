@@ -1,4 +1,6 @@
 {
+    "bracketSameLine": false,
+    "singleAttributePerLine": true,
     "singleQuote": true,
     "tabWidth": 4,
     "trailingComma": "none"
