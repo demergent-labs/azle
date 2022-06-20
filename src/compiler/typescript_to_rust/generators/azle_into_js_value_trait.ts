@@ -1,10 +1,12 @@
 import { Rust } from '../../../types';
 
 export function generateAzleIntoJsValueTrait(): Rust {
-    return `
+    return /* rust */ `
         pub trait AzleIntoJsValue {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue;
         }
+
+        // Basic types
 
         impl AzleIntoJsValue for () {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
@@ -18,11 +20,51 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        impl AzleIntoJsValue for String {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                self.into()
+            }
+        }
+
         impl AzleIntoJsValue for ic_cdk::export::candid::Empty {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 panic!("Empty cannot be converted into JsValue");
             }
         }
+
+        impl AzleIntoJsValue for ic_cdk::export::candid::Reserved {
+            fn azle_into_js_value(self, _: &mut boa_engine::Context) -> boa_engine::JsValue {
+                boa_engine::JsValue::Null
+            }
+        }
+
+        impl AzleIntoJsValue for ic_cdk::export::candid::Func {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                boa_engine::object::JsArray::from_iter([
+                    self.principal.to_text().into(),
+                    self.method.into()
+                ], context).into()
+            }
+        }
+
+        impl AzleIntoJsValue for ic_cdk::export::Principal {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                let exports_js_value = context.eval("exports").unwrap();
+                let exports_js_object = exports_js_value.as_object().unwrap();
+
+                let principal_class_js_value = exports_js_object.get("Principal", context).unwrap();
+                let principal_class_js_object = principal_class_js_value.as_object().unwrap();
+
+                let from_text_js_value = principal_class_js_object.get("fromText", context).unwrap();
+                let from_text_js_object = from_text_js_value.as_object().unwrap();
+
+                let principal_js_value = from_text_js_object.call(&principal_class_js_value, &[self.to_text().into()], context).unwrap();
+
+                principal_js_value
+            }
+        }
+
+        // Number types
 
         impl AzleIntoJsValue for f64 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
@@ -33,6 +75,12 @@ export function generateAzleIntoJsValueTrait(): Rust {
         impl AzleIntoJsValue for f32 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 self.into()
+            }
+        }
+
+        impl AzleIntoJsValue for ic_cdk::export::candid::Int {
+            fn azle_into_js_value(self, _: &mut boa_engine::Context) -> boa_engine::JsValue {
+                boa_engine::JsValue::BigInt(boa_engine::bigint::JsBigInt::new(self.0))
             }
         }
 
@@ -66,9 +114,10 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
-        impl AzleIntoJsValue for String {
-            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.into()
+        // TODO a non-string conversion might be better
+        impl AzleIntoJsValue for ic_cdk::export::candid::Nat {
+            fn azle_into_js_value(self, _: &mut boa_engine::Context) -> boa_engine::JsValue {
+                boa_engine::JsValue::BigInt(boa_engine::bigint::JsBigInt::from_string(&self.0.to_string()).unwrap())
             }
         }
 
@@ -102,24 +151,11 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        // Generic types
+
         impl<T: AzleIntoJsValue> AzleIntoJsValue for Box<T> {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 (*self).azle_into_js_value(context)
-            }
-        }
-
-        // impl<T: AzleIntoJsValue> AzleIntoJsValue for Vec<Box<T>> {
-        //     fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-        //         (*self).azle_into_js_value(context)
-        //     }
-        // }
-
-        impl AzleIntoJsValue for ic_cdk::export::candid::Func {
-            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                boa_engine::object::JsArray::from_iter([
-                    self.principal.to_text().into(),
-                    self.method.into()
-                ], context).into()
             }
         }
 
@@ -133,6 +169,133 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        // Vec types
+
+        impl AzleIntoJsValue for Vec<()> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<bool> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<String> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<ic_cdk::export::candid::Empty> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<ic_cdk::export::candid::Reserved> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<ic_cdk::export::candid::Func> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<ic_cdk::export::Principal> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        // TODO add all number types
+        // TODO need to figure out how to convert number Vecs to Vec<u8>
+        // TODO need to abstract the number vecs out
+
+        impl AzleIntoJsValue for Vec<f64> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<f32> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<ic_cdk::export::candid::Int> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<i128> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<i64> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<i32> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<i16> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<i8> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<ic_cdk::export::candid::Nat> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<u128> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<u64> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<u32> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<u16> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        // TODO we want to see if the other number types can also be optimized like this
         impl AzleIntoJsValue for Vec<u8> {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 let self_len = self.len();
@@ -143,6 +306,7 @@ export function generateAzleIntoJsValueTrait(): Rust {
                     array_buffer_detach_key: boa_engine::JsValue::undefined()
                 };            
 
+                // TODO let's try to get this to a Uint8Array instead of just an ArrayBuffer
                 let array_buffer_js_object = boa_engine::object::JsObject::from_proto_and_data(
                     context.intrinsics().constructors().array_buffer().prototype(),
                     boa_engine::object::ObjectData {
@@ -155,65 +319,25 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
-        // impl<T: AzleIntoJsValue> AzleIntoJsValue for Vec<T> {
-        //     fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-        //         // TODO this is extremely unoptimized I think
-        //         // TODO I think I can get rid of the collect here which might help
-        //         // TODO I just need to not pass the context into azle_into_js_value, I don't think it's necessary
-        //         // TODO once we stop relying on into_js_value in boa
-        //         let js_values = self.into_iter().map(|item| item.azle_into_js_value(context)).collect::<Vec<boa_engine::JsValue>>();
-        //         // let js_values = self.into_iter().map(|item| item.azle_into_js_value(context));
-
-        //         boa_engine::object::JsArray::from_iter(js_values, context).into()
-        //     }
-        // }
-
-        // TODO I would like to create typed arrays for u8 etc in addition to the impl for Vec<T>
-        // impl IntoJsValue for Vec<u8> {
-        //     fn into_js_value(self, context: &mut Context) -> JsValue {
-        //         let js_values = self.into_iter().map(|item| item.into_js_value(context)).collect::<Vec<JsValue>>();
-
-        //         Array::create_array_from_list(
-        //             js_values,
-        //             context
-        //         ).into()
-        //     }
-        // }
-
-        impl AzleIntoJsValue for ic_cdk::export::Principal {
+        impl<T: AzleIntoJsValue> AzleIntoJsValue for Vec<Box<T>> {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                let exports_js_value = context.eval("exports").unwrap();
-                let exports_js_object = exports_js_value.as_object().unwrap();
-
-                let principal_class_js_value = exports_js_object.get("Principal", context).unwrap();
-                let principal_class_js_object = principal_class_js_value.as_object().unwrap();
-
-                let from_text_js_value = principal_class_js_object.get("fromText", context).unwrap();
-                let from_text_js_object = from_text_js_value.as_object().unwrap();
-
-                let principal_js_value = from_text_js_object.call(&principal_class_js_value, &[self.to_text().into()], context).unwrap();
-
-                principal_js_value
+                azle_into_js_value_generic_array(self, context)
             }
         }
 
-        impl AzleIntoJsValue for ic_cdk::export::candid::Int {
-            fn azle_into_js_value(self, _: &mut boa_engine::Context) -> boa_engine::JsValue {
-                boa_engine::JsValue::BigInt(boa_engine::bigint::JsBigInt::new(self.0))
+        impl<T: AzleIntoJsValue> AzleIntoJsValue for Vec<Option<T>> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
             }
         }
 
-        // TODO a non-string conversion might be better
-        impl AzleIntoJsValue for ic_cdk::export::candid::Nat {
-            fn azle_into_js_value(self, _: &mut boa_engine::Context) -> boa_engine::JsValue {
-                boa_engine::JsValue::BigInt(boa_engine::bigint::JsBigInt::from_string(&self.0.to_string()).unwrap())
-            }
+
+        fn azle_into_js_value_generic_array<T: AzleIntoJsValue>(generic_array: Vec<T>, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+            let js_values = generic_array.into_iter().map(|item| item.azle_into_js_value(context)).collect::<Vec<boa_engine::JsValue>>();    
+            boa_engine::object::JsArray::from_iter(js_values, context).into()
         }
 
-        impl AzleIntoJsValue for ic_cdk::export::candid::Reserved {
-            fn azle_into_js_value(self, _: &mut boa_engine::Context) -> boa_engine::JsValue {
-                boa_engine::JsValue::Null
-            }
-        }
+        // TODO figure out how to make this generic enough for all numbers
+        // fn azle_into_js_value_number_array(number_array)
     `;
 }
