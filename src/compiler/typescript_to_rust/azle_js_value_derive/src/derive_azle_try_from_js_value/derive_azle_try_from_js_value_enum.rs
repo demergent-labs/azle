@@ -33,6 +33,51 @@ pub fn derive_azle_try_from_js_value_enum(
                 }
             }
         }
+
+        impl AzleTryFromJsValue<Vec<#enum_name>> for boa_engine::JsValue {
+            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Vec<#enum_name>, AzleTryFromJsValueError> {
+                match self.as_object() {
+                    Some(js_object) => {
+                        if js_object.is_array() {
+                            let mut processing: bool = true;
+                            let mut index: usize = 0;
+
+                            let mut result = vec![];
+
+                            while processing == true {
+                                match js_object.get(index, context) {
+                                    Ok(js_value) => {
+                                        if js_value.is_undefined() {
+                                            processing = false;
+                                        }
+                                        else {
+                                            match js_value.azle_try_from_js_value(context) {
+                                                Ok(value) => {
+                                                    result.push(value);
+                                                    index += 1;
+                                                }
+                                                Err(err) => {
+                                                    return Err(err);
+                                                }
+                                            }
+                                        }
+                                    },
+                                    Err(_) => {
+                                        return Err(AzleTryFromJsValueError("Item at array index does not exist".to_string()))
+                                    }
+                                }
+                            }
+
+                            Ok(result)
+                        }
+                        else {
+                            Err(AzleTryFromJsValueError("JsObject is not an array".to_string()))
+                        }
+                    },
+                    None => Err(AzleTryFromJsValueError("JsValue is not an object".to_string()))
+                }
+            }
+        }
     }
 }
 
