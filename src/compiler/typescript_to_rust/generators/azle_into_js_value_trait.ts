@@ -306,16 +306,25 @@ export function generateAzleIntoJsValueTrait(): Rust {
                     array_buffer_detach_key: boa_engine::JsValue::undefined()
                 };            
 
-                // TODO let's try to get this to a Uint8Array instead of just an ArrayBuffer
-                let array_buffer_js_object = boa_engine::object::JsObject::from_proto_and_data(
-                    context.intrinsics().constructors().array_buffer().prototype(),
+                let uint8_array_js_object = boa_engine::object::JsObject::from_proto_and_data(
+                    context.intrinsics().constructors().typed_uint8_array().prototype(),
                     boa_engine::object::ObjectData {
                         kind: boa_engine::object::ObjectKind::ArrayBuffer(array_buffer),
                         internal_methods: &boa_engine::object::internal_methods::ORDINARY_INTERNAL_METHODS
                     }
                 );
 
-                array_buffer_js_object.into()
+                // TODO this is how a I get an array_buffer, and then I think I can do similarly for all other TypedArrays I might need
+                // TODO leaving this here in case we decide to do TypedArrays for any other Vec number types
+                // let array_buffer_js_object = boa_engine::object::JsObject::from_proto_and_data(
+                //     context.intrinsics().constructors().array_buffer().prototype(),
+                //     boa_engine::object::ObjectData {
+                //         kind: boa_engine::object::ObjectKind::ArrayBuffer(array_buffer),
+                //         internal_methods: &boa_engine::object::internal_methods::ORDINARY_INTERNAL_METHODS
+                //     }
+                // );
+
+                uint8_array_js_object.into()
             }
         }
 
@@ -336,8 +345,5 @@ export function generateAzleIntoJsValueTrait(): Rust {
             let js_values = generic_array.into_iter().map(|item| item.azle_into_js_value(context)).collect::<Vec<boa_engine::JsValue>>();    
             boa_engine::object::JsArray::from_iter(js_values, context).into()
         }
-
-        // TODO figure out how to make this generic enough for all numbers
-        // fn azle_into_js_value_number_array(number_array)
     `;
 }

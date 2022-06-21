@@ -241,6 +241,14 @@ function generateCandidTypeInfoForTypeReference(
             };
         }
 
+        if (typeName === 'blob') {
+            return {
+                text: 'blob',
+                typeName: 'blob',
+                typeClass: 'primitive'
+            };
+        };
+
         if (typeName === 'reserved') {
             return {
                 text: 'reserved',

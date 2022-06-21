@@ -1,5 +1,5 @@
-import { Query, nat8 } from 'azle';
+import { Query, blob } from 'azle';
 
-export function get_bytes(bytes: nat8[]): Query<nat8[]> {
+export function get_bytes(bytes: blob): Query<blob> {
     return bytes;
 }
