@@ -140,6 +140,8 @@ export type nat8 = number;
 export type float32 = number;
 export type float64 = number;
 
+export type blob = Uint8Array;
+
 export type reserved = any;
 export type empty = never;
 
