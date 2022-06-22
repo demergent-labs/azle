@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "cycles": {
+            "type": "custom",
+            "build": "npx azle cycles",
+            "root": "src",
+            "ts": "src/cycles.ts",
+            "candid": "src/cycles.did",
+            "wasm": "target/wasm32-unknown-unknown/release/cycles.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/cycles"
+            }
+        }
+    }
+}
