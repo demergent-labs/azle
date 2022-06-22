@@ -57,6 +57,11 @@ export function generateIcObject(
                 0
             )
             .function(
+                _azle_msg_cycles_available128,
+                "msg_cycles_available128",
+                0
+            )
+            .function(
                 azle_ic_print,
                 "print",
                 0

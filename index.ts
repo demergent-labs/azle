@@ -81,6 +81,7 @@ type ic = {
     msg_cycles_accept: (max_amount: nat64) => nat64;
     msg_cycles_accept128: (max_amount: nat) => nat;
     msg_cycles_available: () => nat64;
+    msg_cycles_available128: () => nat;
     print: (...args: any) => void;
     stableStorage: <T>() => T;
     time: () => nat64;

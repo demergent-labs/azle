@@ -1,7 +1,7 @@
 export const idlFactory = ({ IDL }) => {
   return IDL.Service({
-    'msgCyclesAccept128' : IDL.Func([IDL.Nat], [IDL.Nat], []),
     'sendCycles' : IDL.Func([], [IDL.Nat64], []),
+    'sendCycles128' : IDL.Func([], [IDL.Nat], []),
   });
 };
 export const init = ({ IDL }) => { return []; };

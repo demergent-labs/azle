@@ -22,11 +22,9 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'msg_cycles_accept128',
+        name: 'msg_cycles_available128 and msg_cycles_accept128',
         test: async () => {
-            const result = await cycles_canister.msgCyclesAccept128(
-                340_282_366_920_938_463_463_374_607_431_768_211_455n
-            );
+            const result = await cycles_canister.sendCycles128();
             // TODO: DFX 0.9.3 doesn't have full cycle support so for now this
             // will always return `0n`.
             // See https://github.com/demergent-labs/azle/issues/433
