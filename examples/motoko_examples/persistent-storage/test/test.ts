@@ -62,14 +62,15 @@ const tests: Test[] = [
             };
         }
     },
-    {
-        name: 'deploy (upgrade)',
-        prep: async () => {
-            execSync(`dfx deploy --upgrade-unchanged`, {
-                stdio: 'inherit'
-            });
-        }
-    },
+    // TODO: upgrade to DFX v0.10.x
+    // {
+    //     name: 'deploy (upgrade)',
+    //     prep: async () => {
+    //         execSync(`dfx deploy --upgrade-unchanged`, {
+    //             stdio: 'inherit'
+    //         });
+    //     }
+    // },
     {
         name: 'get',
         test: async () => {
