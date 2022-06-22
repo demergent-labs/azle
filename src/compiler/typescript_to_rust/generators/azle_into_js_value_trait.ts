@@ -295,36 +295,10 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
-        // TODO we want to see if the other number types can also be optimized like this
+        // TODO in the future maybe the other number types can be optimized like this (optimization implementation is currently in boa From trait impl)
         impl AzleIntoJsValue for Vec<u8> {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                let self_len = self.len();
-
-                let array_buffer = boa_engine::builtins::array_buffer::ArrayBuffer {
-                    array_buffer_data: Some(self),
-                    array_buffer_byte_length: self_len,
-                    array_buffer_detach_key: boa_engine::JsValue::undefined()
-                };            
-
-                let uint8_array_js_object = boa_engine::object::JsObject::from_proto_and_data(
-                    context.intrinsics().constructors().typed_uint8_array().prototype(),
-                    boa_engine::object::ObjectData {
-                        kind: boa_engine::object::ObjectKind::ArrayBuffer(array_buffer),
-                        internal_methods: &boa_engine::object::internal_methods::ORDINARY_INTERNAL_METHODS
-                    }
-                );
-
-                // TODO this is how a I get an array_buffer, and then I think I can do similarly for all other TypedArrays I might need
-                // TODO leaving this here in case we decide to do TypedArrays for any other Vec number types
-                // let array_buffer_js_object = boa_engine::object::JsObject::from_proto_and_data(
-                //     context.intrinsics().constructors().array_buffer().prototype(),
-                //     boa_engine::object::ObjectData {
-                //         kind: boa_engine::object::ObjectKind::ArrayBuffer(array_buffer),
-                //         internal_methods: &boa_engine::object::internal_methods::ORDINARY_INTERNAL_METHODS
-                //     }
-                // );
-
-                uint8_array_js_object.into()
+                self.into()
             }
         }
 

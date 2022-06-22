@@ -61,16 +61,15 @@ type ic = {
     call_raw: (
         canister_id: Principal,
         method: string,
-        args_raw: nat8[],
+        args_raw: blob,
         payment: nat64
-    ) => CanisterResult<nat8[]>;
+    ) => CanisterResult<blob>;
     call_raw128: (
         canister_id: Principal,
         method: string,
-        args_raw: nat8[],
+        args_raw: blob,
         payment: nat
-    ) => CanisterResult<nat8[]>;
-    // TODO also create call_raw_128
+    ) => CanisterResult<blob>;
     caller: () => Principal;
     canisters: {
         [canisterName: string]: <T>(canisterId: Principal) => T;
@@ -80,7 +79,6 @@ type ic = {
     id: () => Principal;
     method_name: () => string;
     print: (...args: any) => void;
-    // rawRand: () => nat8[]; // TODO I think we want this to really be a JS Uint8Array
     stableStorage: <T>() => T;
     time: () => nat64;
     trap: (message: string) => never;

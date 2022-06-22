@@ -1,4 +1,4 @@
-import { Principal } from '../../../index';
+import { blob, Principal } from '../../../index';
 import { getCrc32 } from '@dfinity/principal/lib/esm/utils/getCrc';
 import { sha224 } from 'hash.js';
 import { Address } from '../index';
@@ -14,13 +14,17 @@ export function hex_address_from_principal(
 export function binary_address_from_principal(
     principal: Principal,
     subaccount: number
-): number[] {
+): blob {
     const address = address_from_principal(principal, subaccount);
-    return address.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? [];
+    return Uint8Array.from(
+        address.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? []
+    );
 }
 
-export function binary_address_from_address(address: Address): number[] {
-    return address.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? [];
+export function binary_address_from_address(address: Address): blob {
+    return Uint8Array.from(
+        address.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? []
+    );
 }
 
 // https://github.com/Toniq-Labs/extendable-token/blob/86eabb7336ea259876be9be830fb69b03046ea14/motoko/util/AccountIdentifier.mo

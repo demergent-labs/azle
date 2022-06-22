@@ -12,8 +12,8 @@ service: {
     "principal_in_variant": () -> (Status) query;
     "principal_from_hex": (text) -> (principal) query;
     "principal_from_text": (text) -> (principal) query;
-    "principal_from_uint8array": (vec nat8) -> (principal) query;
+    "principal_from_uint8array": (blob) -> (principal) query;
     "principal_to_hex": (principal) -> (text) query;
     "principal_to_text": (principal) -> (text) query;
-    "principal_to_uint8array": (principal) -> (vec nat8) query;
+    "principal_to_uint8array": (principal) -> (blob) query;
 }

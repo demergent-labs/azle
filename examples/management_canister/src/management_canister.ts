@@ -1,9 +1,9 @@
 // TODO once the Bitcoin integration is live, add the methods and tests
 
 import {
+    blob,
     CanisterResult,
     nat,
-    nat8,
     ok,
     Principal,
     Query,
@@ -78,28 +78,30 @@ export function* execute_update_settings(
     };
 }
 
-// TODO revisit while addressing https://github.com/demergent-labs/azle/issues/249
-// TODO any nat8[] of significant size will use up all of the canister's cycles
-// export function* execute_install_code(canister_id: Principal, wasm_module: nat8[]): UpdateAsync<DefaultResult> {
-//     const canister_result: CanisterResult<void> = yield ManagementCanister.install_code({
-//         mode: {
-//             install: null
-//         },
-//         canister_id,
-//         wasm_module,
-//         arg: []
-//     });
+export function* execute_install_code(
+    canister_id: Principal,
+    wasm_module: blob
+): UpdateAsync<DefaultResult> {
+    const canister_result: CanisterResult<void> =
+        yield ManagementCanister.install_code({
+            mode: {
+                install: null
+            },
+            canister_id,
+            wasm_module,
+            arg: Uint8Array.from([])
+        });
 
-//     if (!ok(canister_result)) {
-//         return {
-//             err: canister_result.err
-//         };
-//     }
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
+    }
 
-//     return {
-//         ok: true
-//     };
-// }
+    return {
+        ok: true
+    };
+}
 
 export function* execute_uninstall_code(
     canister_id: Principal
@@ -218,7 +220,7 @@ export function* execute_delete_canister(
 // }
 
 export function* get_raw_rand(): UpdateAsync<RawRandResult> {
-    const raw_rand_canister_result: CanisterResult<nat8[]> =
+    const raw_rand_canister_result: CanisterResult<blob> =
         yield ManagementCanister.raw_rand();
 
     if (!ok(raw_rand_canister_result)) {

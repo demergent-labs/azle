@@ -1,18 +1,13 @@
-import {
-    run_tests,
-    Test
-} from 'azle/test';
+import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 import { createActor } from '../test/dfx_generated/bytes';
 
-const bytes_canister = createActor(
-    'rrkah-fqaaa-aaaaa-aaaaq-cai', {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const bytes_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
 const tests: Test[] = [
     {
@@ -39,7 +34,9 @@ const tests: Test[] = [
     {
         name: 'get_bytes 1 kb',
         test: async () => {
-            const file = Array.from(readFileSync('./test/example_files/example_1_kb.txt'));
+            const file = Array.from(
+                readFileSync('./test/example_files/example_1_kb.txt')
+            );
 
             const result = await bytes_canister.get_bytes(file);
 
@@ -51,7 +48,9 @@ const tests: Test[] = [
     {
         name: 'get_bytes 10 kb',
         test: async () => {
-            const file = Array.from(readFileSync('./test/example_files/example_10_kb.txt'));
+            const file = Array.from(
+                readFileSync('./test/example_files/example_10_kb.txt')
+            );
 
             const result = await bytes_canister.get_bytes(file);
 
@@ -63,7 +62,9 @@ const tests: Test[] = [
     {
         name: 'get_bytes 100 kb',
         test: async () => {
-            const file = Array.from(readFileSync('./test/example_files/example_100_kb.txt'));
+            const file = Array.from(
+                readFileSync('./test/example_files/example_100_kb.txt')
+            );
 
             const result = await bytes_canister.get_bytes(file);
 
@@ -75,7 +76,9 @@ const tests: Test[] = [
     {
         name: 'get_bytes 1000 kb',
         test: async () => {
-            const file = Array.from(readFileSync('./test/example_files/example_1000_kb.txt'));
+            const file = Array.from(
+                readFileSync('./test/example_files/example_1000_kb.txt')
+            );
 
             const result = await bytes_canister.get_bytes(file);
 
@@ -87,7 +90,9 @@ const tests: Test[] = [
     {
         name: 'get_bytes 2000 kb',
         test: async () => {
-            const file = Array.from(readFileSync('./test/example_files/example_2000_kb.txt'));
+            const file = Array.from(
+                readFileSync('./test/example_files/example_2000_kb.txt')
+            );
 
             const result = await bytes_canister.get_bytes(file);
 
@@ -99,7 +104,9 @@ const tests: Test[] = [
     {
         name: 'get_bytes 3000 kb',
         test: async () => {
-            const file = Array.from(readFileSync('./test/example_files/example_3000_kb.txt'));
+            const file = Array.from(
+                readFileSync('./test/example_files/example_3000_kb.txt')
+            );
 
             const result = await bytes_canister.get_bytes(file);
 

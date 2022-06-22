@@ -18,11 +18,11 @@
 // TODO I would like to find the canonical did file in the ic repository
 
 import {
+    blob,
     Canister,
     CanisterResult,
     ic,
     nat,
-    nat8,
     Opt,
     Principal,
     Variant
@@ -30,7 +30,7 @@ import {
 
 export type CanisterId = Principal;
 export type UserId = Principal;
-export type WasmModule = nat8[];
+export type WasmModule = blob;
 
 export type CanisterSettings = {
     controllers: Opt<Principal[]>;
@@ -63,7 +63,7 @@ export type InstallCodeArgs = {
     mode: InstallCodeMode;
     canister_id: CanisterId;
     wasm_module: WasmModule;
-    arg: nat8[];
+    arg: blob;
 };
 
 export type InstallCodeMode = Variant<{
@@ -91,7 +91,7 @@ export type CanisterStatusArgs = {
 export type CanisterStatusResult = {
     status: CanisterStatus;
     settings: DefiniteCanisterSettings;
-    module_hash: Opt<nat8[]>;
+    module_hash: Opt<blob>;
     memory_size: nat;
     cycles: nat;
 };
@@ -138,7 +138,7 @@ export type Management = Canister<{
     ): CanisterResult<CanisterStatusResult>;
     delete_canister(args: DeleteCanisterArgs): CanisterResult<void>;
     deposit_cycles(args: DepositCyclesArgs): CanisterResult<void>;
-    raw_rand(): CanisterResult<nat8[]>;
+    raw_rand(): CanisterResult<blob>;
     provisional_create_canister_with_cycles(
         args: ProvisionalCreateCanisterWithCyclesArgs
     ): CanisterResult<ProvisionalCreateCanisterWithCyclesResult>;

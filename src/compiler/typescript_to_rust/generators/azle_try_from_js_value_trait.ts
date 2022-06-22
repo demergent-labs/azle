@@ -443,6 +443,11 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                         .as_object()
                         .unwrap()
                         .borrow()
+                        .as_typed_array()
+                        .unwrap()
+                        .viewed_array_buffer()
+                        .unwrap()
+                        .borrow()
                         .as_array_buffer()
                         .unwrap()
                         .array_buffer_data

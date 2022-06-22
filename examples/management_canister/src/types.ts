@@ -1,4 +1,4 @@
-import { nat8, Variant } from 'azle';
+import { blob, Variant } from 'azle';
 import {
     CreateCanisterResult,
     CanisterStatusResult
@@ -25,6 +25,6 @@ export type GetCanisterStatusResult = Variant<{
 }>;
 
 export type RawRandResult = Variant<{
-    ok: nat8[];
+    ok: blob;
     err: string;
 }>;

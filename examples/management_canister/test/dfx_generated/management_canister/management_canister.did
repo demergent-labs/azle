@@ -14,8 +14,8 @@ type UpdateSettingsArgs = record {
 type InstallCodeArgs = record {
     "mode": InstallCodeMode;
     "canister_id": principal;
-    "wasm_module": vec nat8;
-    "arg": vec nat8;
+    "wasm_module": blob;
+    "arg": blob;
 };
 
 type UninstallCodeArgs = record {
@@ -55,7 +55,7 @@ type CreateCanisterResult = record {
 type CanisterStatusResult = record {
     "status": CanisterStatus;
     "settings": DefiniteCanisterSettings;
-    "module_hash": opt vec nat8;
+    "module_hash": opt blob;
     "memory_size": nat;
     "cycles": nat;
 };
@@ -84,7 +84,7 @@ type DefaultResult = variant { "ok": bool; "err": text };
 
 type GetCanisterStatusResult = variant { "ok": CanisterStatusResult; "err": text };
 
-type RawRandResult = variant { "ok": vec nat8; "err": text };
+type RawRandResult = variant { "ok": blob; "err": text };
 
 type ExecuteProvisionalCreateCanisterWithCyclesResult = variant { "ok": CreateCanisterResult; "err": text };
 
@@ -96,6 +96,7 @@ service: {
     "get_created_canister_id": () -> (principal) query;
     "execute_create_canister": () -> (ExecuteCreateCanisterResult);
     "execute_update_settings": (principal) -> (DefaultResult);
+    "execute_install_code": (principal, blob) -> (DefaultResult);
     "execute_uninstall_code": (principal) -> (DefaultResult);
     "execute_start_canister": (principal) -> (DefaultResult);
     "execute_stop_canister": (principal) -> (DefaultResult);

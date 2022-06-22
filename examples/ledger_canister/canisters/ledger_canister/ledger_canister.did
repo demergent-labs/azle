@@ -2,13 +2,13 @@ type TransferArgs = record {
     "memo": nat64;
     "amount": Tokens;
     "fee": Tokens;
-    "from_subaccount": opt vec nat8;
-    "to": vec nat8;
+    "from_subaccount": opt blob;
+    "to": blob;
     "created_at_time": opt TimeStamp;
 };
 
 type AccountBalanceArgs = record {
-    "account": vec nat8;
+    "account": blob;
 };
 
 type TransferFeeArg = record {
@@ -30,7 +30,7 @@ type TransferFee = record {
 
 type QueryBlocksResponse = record {
     "chain_length": nat64;
-    "certificate": opt vec nat8;
+    "certificate": opt blob;
     "blocks": vec Block;
     "first_block_index": nat64;
     "archived_blocks": vec record { "start": nat64; "length": nat64; "callback": QueryArchiveFn; };
@@ -57,7 +57,7 @@ type TimeStamp = record {
 };
 
 type Block = record {
-    "parent_hash": opt vec nat8;
+    "parent_hash": opt blob;
     "transaction": Transaction;
     "timestamp": TimeStamp;
 };
@@ -96,7 +96,7 @@ type QueryArchiveResult = variant { "Ok": BlockRange; "Err": QueryArchiveError }
 
 type TransferError = variant { "BadFee": record { "expected_fee": Tokens; }; "InsufficientFunds": record { "balance": Tokens; }; "TxTooOld": record { "allowed_window_nanos": nat64; }; "TxCreatedInFuture": null; "TxDuplicate": record { "duplicate_of": nat64; } };
 
-type Operation = variant { "Mint": record { "to": vec nat8; "amount": Tokens; }; "Burn": record { "from": vec nat8; "amount": Tokens; }; "Transfer": record { "from": vec nat8; "to": vec nat8; "amount": Tokens; "fee": Tokens; } };
+type Operation = variant { "Mint": record { "to": blob; "amount": Tokens; }; "Burn": record { "from": blob; "amount": Tokens; }; "Transfer": record { "from": blob; "to": blob; "amount": Tokens; "fee": Tokens; } };
 
 type QueryArchiveError = variant { "BadFirstBlockIndex": record { "requested_index": nat64; "first_valid_index": nat64; }; "Other": record { "error_code": nat64; "error_message": text; } };
 

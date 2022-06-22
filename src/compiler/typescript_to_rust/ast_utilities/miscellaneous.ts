@@ -117,6 +117,10 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
                 return `ic_cdk::export::Principal`;
             }
 
+            if (typeName === 'blob') {
+                return 'Vec<u8>';
+            }
+
             if (typeName === 'Opt') {
                 if (typeReferenceNode.typeArguments === undefined) {
                     throw new Error('UpdateAsync must have an enclosed type');
