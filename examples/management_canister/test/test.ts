@@ -88,29 +88,31 @@ const tests: Test[] = [
             };
         }
     },
-    // {
-    //     // TODO revisit while addressing https://github.com/demergent-labs/azle/issues/249
-    //     name: 'execute_install_code',
-    //     test: async () => {
-    //         const canister_id = await management_canister.get_created_canister_id();
+    {
+        name: 'execute_install_code',
+        test: async () => {
+            const canister_id =
+                await management_canister.get_created_canister_id();
 
-    //         // this Wasm module is for a simple canister written in Motoko that has one query method called hello that returns a string
-    //         const wasm_module = new Uint8Array(readFileSync('src/test.wasm'));
+            // this Wasm module is for a simple canister written in Motoko that has one query method called hello that returns a string
+            const wasm_module = Array.from(readFileSync('src/test.wasm'));
 
-    //         // TODO you can't pass a Uint8Array in?
-    //         const result = await management_canister.execute_install_code(canister_id, Array.from(wasm_module));
+            const result = await management_canister.execute_install_code(
+                canister_id,
+                wasm_module
+            );
 
-    //         if (!ok(result)) {
-    //             return {
-    //                 err: result.err
-    //             };
-    //         }
+            if (!ok(result)) {
+                return {
+                    err: result.err
+                };
+            }
 
-    //         return {
-    //             ok: true
-    //         };
-    //     }
-    // }
+            return {
+                ok: true
+            };
+        }
+    },
     {
         name: 'execute_uninstall_code',
         test: async () => {

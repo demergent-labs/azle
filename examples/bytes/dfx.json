@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "bytes": {
+            "type": "custom",
+            "build": "npx azle bytes",
+            "root": "src",
+            "ts": "src/bytes.ts",
+            "candid": "src/bytes.did",
+            "wasm": "target/wasm32-unknown-unknown/release/bytes.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/bytes"
+            }
+        }
+    }
+}

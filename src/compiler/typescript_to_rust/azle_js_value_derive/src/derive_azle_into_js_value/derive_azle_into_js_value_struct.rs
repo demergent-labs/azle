@@ -28,6 +28,14 @@ pub fn derive_azle_into_js_value_struct(
                 object.into()
             }
         }
+
+        // TODO the body of this function is repeated in azle_into_js_value_trait.ts
+        impl AzleIntoJsValue for Vec<#struct_name> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                let js_values = self.into_iter().map(|item| item.azle_into_js_value(context)).collect::<Vec<boa_engine::JsValue>>();
+                boa_engine::object::JsArray::from_iter(js_values, context).into()
+            }
+        }
     }
 }
 

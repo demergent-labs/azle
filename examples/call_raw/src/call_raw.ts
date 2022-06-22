@@ -1,8 +1,8 @@
 import {
+    blob,
     CanisterResult,
     ic,
     nat,
-    nat8,
     nat64,
     ok,
     Principal,
@@ -11,17 +11,17 @@ import {
 } from 'azle';
 
 type ExecuteCallRawResult = Variant<{
-    ok: nat8[];
+    ok: blob;
     err: string;
 }>;
 
 export function* execute_call_raw(
     canister_id: Principal,
     method: string,
-    args_raw: nat8[],
+    args_raw: blob,
     payment: nat64
 ): UpdateAsync<ExecuteCallRawResult> {
-    const canister_result: CanisterResult<nat8[]> = yield ic.call_raw(
+    const canister_result: CanisterResult<blob> = yield ic.call_raw(
         canister_id,
         method,
         args_raw,
@@ -40,17 +40,17 @@ export function* execute_call_raw(
 }
 
 type ExecuteCallRaw128Result = Variant<{
-    ok: nat8[];
+    ok: blob;
     err: string;
 }>;
 
 export function* execute_call_raw128(
     canister_id: Principal,
     method: string,
-    args_raw: nat8[],
+    args_raw: blob,
     payment: nat
 ): UpdateAsync<ExecuteCallRaw128Result> {
-    const canister_result: CanisterResult<nat8[]> = yield ic.call_raw128(
+    const canister_result: CanisterResult<blob> = yield ic.call_raw128(
         canister_id,
         method,
         args_raw,

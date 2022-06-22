@@ -43,6 +43,11 @@ export const idlFactory = ({ IDL }) => {
             []
         ),
         execute_delete_canister: IDL.Func([IDL.Principal], [DefaultResult], []),
+        execute_install_code: IDL.Func(
+            [IDL.Principal, IDL.Vec(IDL.Nat8)],
+            [DefaultResult],
+            []
+        ),
         execute_start_canister: IDL.Func([IDL.Principal], [DefaultResult], []),
         execute_stop_canister: IDL.Func([IDL.Principal], [DefaultResult], []),
         execute_uninstall_code: IDL.Func([IDL.Principal], [DefaultResult], []),
