@@ -80,6 +80,7 @@ type ic = {
     id: () => Principal;
     method_name: () => string;
     msg_cycles_accept: (max_amount: nat64) => nat64;
+    msg_cycles_accept128: (max_amount: nat) => nat;
     print: (...args: any) => void;
     // rawRand: () => nat8[]; // TODO I think we want this to really be a JS Uint8Array
     stableStorage: <T>() => T;

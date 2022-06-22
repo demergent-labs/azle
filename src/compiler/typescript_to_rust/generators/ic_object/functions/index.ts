@@ -6,6 +6,7 @@ import { generateIcObjectFunctionCanisterBalance } from './canister_balance';
 import { generateIcObjectFunctionCanisterBalance128 } from './canister_balance128';
 import { generateIcObjectFunctionId } from './id';
 import { generateIcObjectFunctionMsgCyclesAccept } from './msg_cycles_accept';
+import { generateIcObjectFunctionMsgCyclesAccept128 } from './msg_cycles_accept128';
 import { generateIcObjectFunctionMethodName } from './method_name';
 import { generateIcObjectFunctionPrint } from './print';
 import { generateIcObjectFunctionTime } from './time';
@@ -24,6 +25,8 @@ export function generateIcObjectFunctions(): Rust {
         generateIcObjectFunctionMethodName();
     const icObjectFunctionMsgCyclesAccept: Rust =
         generateIcObjectFunctionMsgCyclesAccept();
+    const icObjectFunctionMsgCyclesAccept128: Rust =
+        generateIcObjectFunctionMsgCyclesAccept128();
     const icObjectFunctionPrint: Rust = generateIcObjectFunctionPrint();
     const icObjectFunctionTime: Rust = generateIcObjectFunctionTime();
     const icObjectFunctionTrap: Rust = generateIcObjectFunctionTrap();
@@ -36,6 +39,7 @@ export function generateIcObjectFunctions(): Rust {
         ${icObjectFunctionId}
         ${icObjectFunctionMethodName}
         ${icObjectFunctionMsgCyclesAccept}
+        ${icObjectFunctionMsgCyclesAccept128}
         ${icObjectFunctionPrint}
         ${icObjectFunctionTime}
         ${icObjectFunctionTrap}

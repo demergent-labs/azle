@@ -12,7 +12,23 @@ const tests: Test[] = [
     {
         name: 'msg_cycles_accept',
         test: async () => {
-            const result = await cycles_canister.msgCyclesAccept(1000n);
+            const result = await cycles_canister.msgCyclesAccept(
+                18_446_744_073_709_551_615n
+            );
+            // TODO: DFX 0.9.3 doesn't have full cycle support so for now this
+            // will always return `0n`.
+            // See https://github.com/demergent-labs/azle/issues/433
+            return {
+                ok: result === 0n
+            };
+        }
+    },
+    {
+        name: 'msg_cycles_accept128',
+        test: async () => {
+            const result = await cycles_canister.msgCyclesAccept128(
+                340_282_366_920_938_463_463_374_607_431_768_211_455n
+            );
             // TODO: DFX 0.9.3 doesn't have full cycle support so for now this
             // will always return `0n`.
             // See https://github.com/demergent-labs/azle/issues/433
