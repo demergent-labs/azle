@@ -54,6 +54,18 @@ const tests: Test[] = [
                 ok: result === 0n
             };
         }
+    },
+    {
+        name: 'msg_cycles_refunded128',
+        test: async () => {
+            const result = await intermediary_canister.reportRefund128();
+            // TODO: DFX 0.9.3 doesn't have full cycle support so for now this
+            // will always return `0n`.
+            // See https://github.com/demergent-labs/azle/issues/433
+            return {
+                ok: result === 0n
+            };
+        }
     }
 ];
 

@@ -1,3 +1,4 @@
 service: {
     "reportRefund": () -> (nat64);
+    "reportRefund128": () -> (nat);
 }
