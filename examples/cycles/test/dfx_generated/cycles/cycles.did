@@ -1,0 +1,3 @@
+service: {
+    "msgCyclesAccept": (nat64) -> (nat64);
+}

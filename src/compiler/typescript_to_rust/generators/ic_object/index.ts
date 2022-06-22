@@ -7,7 +7,7 @@ export function generateIcObject(
         stableStorageVariableInfos
     );
 
-    return `
+    return /* rust */ `
         ${_azleStableStorage}
 
         let ic = boa_engine::object::ObjectInitializer::new(&mut boa_context)
@@ -39,6 +39,11 @@ export function generateIcObject(
             .function(
                 _azle_method_name,
                 "method_name",
+                0
+            )
+            .function(
+                _azle_msg_cycles_accept,
+                "msg_cycles_accept",
                 0
             )
             .function(
