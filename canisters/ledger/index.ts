@@ -1,8 +1,8 @@
 import {
+    blob,
     Canister,
     CanisterResult,
     Func,
-    nat8,
     nat32,
     nat64,
     Opt,
@@ -23,12 +23,12 @@ export type TimeStamp = {
 
 // AccountIdentifier is a 32-byte array.
 // The first 4 bytes is big-endian encoding of a CRC32 checksum of the last 28 bytes.
-export type AccountIdentifier = nat8[];
+export type AccountIdentifier = blob;
 
 // Subaccount is an arbitrary 32-byte byte array.
 // Ledger uses subaccounts to compute the source address, which enables one
 // principal to control multiple ledger accounts.
-export type SubAccount = nat8[];
+export type SubAccount = blob;
 
 // Sequence number of a block produced by the ledger.
 export type BlockIndex = nat64;
@@ -133,7 +133,7 @@ export type Transaction = {
 };
 
 export type Block = {
-    parent_hash: Opt<nat8[]>;
+    parent_hash: Opt<blob>;
     transaction: Transaction;
     timestamp: TimeStamp;
 };
@@ -201,7 +201,7 @@ export type QueryBlocksResponse = {
 
     // System certificate for the hash of the latest block in the chain.
     // Only present if `query_blocks` is called in a non-replicated query context.
-    certificate: Opt<nat8[]>;
+    certificate: Opt<blob>;
 
     // List of blocks that were available in the ledger when it processed the call.
     //

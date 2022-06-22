@@ -1,6 +1,4 @@
-import { nat8, Principal, Query, Variant } from 'azle';
-
-// TODO go remove all of the custom code that we don't need anymore
+import { blob, Principal, Query, Variant } from 'azle';
 
 type User = {
     id: Principal;
@@ -43,7 +41,7 @@ export function principal_from_text(principal_text: string): Query<Principal> {
 }
 
 export function principal_from_uint8array(
-    principal_bytes: nat8[]
+    principal_bytes: blob
 ): Query<Principal> {
     return Principal.fromUint8Array(Uint8Array.from(principal_bytes));
 }
@@ -56,6 +54,6 @@ export function principal_to_text(principal: Principal): Query<string> {
     return principal.toText();
 }
 
-export function principal_to_uint8array(principal: Principal): Query<nat8[]> {
-    return Array.from(principal.toUint8Array());
+export function principal_to_uint8array(principal: Principal): Query<blob> {
+    return principal.toUint8Array();
 }

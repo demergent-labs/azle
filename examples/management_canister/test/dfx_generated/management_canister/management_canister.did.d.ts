@@ -87,6 +87,10 @@ export interface UpdateSettingsArgs {
 export interface _SERVICE {
     execute_create_canister: () => Promise<ExecuteCreateCanisterResult>;
     execute_delete_canister: (arg_0: Principal) => Promise<DefaultResult>;
+    execute_install_code: (
+        arg_0: Principal,
+        arg_1: Array<number>
+    ) => Promise<DefaultResult>;
     execute_start_canister: (arg_0: Principal) => Promise<DefaultResult>;
     execute_stop_canister: (arg_0: Principal) => Promise<DefaultResult>;
     execute_uninstall_code: (arg_0: Principal) => Promise<DefaultResult>;

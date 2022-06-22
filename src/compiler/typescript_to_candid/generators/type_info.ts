@@ -247,7 +247,7 @@ function generateCandidTypeInfoForTypeReference(
                 typeName: 'blob',
                 typeClass: 'primitive'
             };
-        };
+        }
 
         if (typeName === 'reserved') {
             return {
