@@ -10,11 +10,9 @@ const cycles_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 const tests: Test[] = [
     ...cleanDeploy('cycles'),
     {
-        name: 'msg_cycles_accept',
+        name: 'msg_cycles_available and msg_cycles_accept',
         test: async () => {
-            const result = await cycles_canister.msgCyclesAccept(
-                18_446_744_073_709_551_615n
-            );
+            const result = await cycles_canister.sendCycles();
             // TODO: DFX 0.9.3 doesn't have full cycle support so for now this
             // will always return `0n`.
             // See https://github.com/demergent-labs/azle/issues/433
