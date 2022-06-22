@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "persistent": {
+            "type": "custom",
+            "build": "npx azle persistent",
+            "root": "src",
+            "ts": "src/persistent.ts",
+            "candid": "src/persistent.did",
+            "wasm": "target/wasm32-unknown-unknown/release/persistent.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/persistent"
+            }
+        }
+    }
+}
