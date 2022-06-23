@@ -41,7 +41,7 @@ export function generateAzleIntoJsValueTrait(): Rust {
         impl AzleIntoJsValue for ic_cdk::export::candid::Func {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 boa_engine::object::JsArray::from_iter([
-                    self.principal.to_text().into(),
+                    self.principal.azle_into_js_value(context),
                     self.method.into()
                 ], context).into()
             }

@@ -33,22 +33,22 @@ const tests: Test[] = [
             });
         }
     },
-    // {
-    //     name: 'basic_func_param',
-    //     test: async () => {
-    //         const result = await func_types_canister.basic_func_param([
-    //             Principal.fromText('aaaaa-aa'),
-    //             'create_canister'
-    //         ]);
+    {
+        name: 'basic_func_param',
+        test: async () => {
+            const result = await func_types_canister.basic_func_param([
+                Principal.fromText('aaaaa-aa'),
+                'create_canister'
+            ]);
 
-    //         return {
-    //             ok: (
-    //                 result[0].toText() === 'aaaaa-aa' &&
-    //                 result[1] === 'create_canister'
-    //             )
-    //         };
-    //     }
-    // },
+            return {
+                ok: (
+                    result[0].toText() === 'aaaaa-aa' &&
+                    result[1] === 'create_canister'
+                )
+            };
+        }
+    },
     {
         name: 'basic_func_return_type',
         test: async () => {
@@ -61,22 +61,22 @@ const tests: Test[] = [
             };
         }
     },
-    // {
-    //     name: 'complex_func_param',
-    //     test: async () => {
-    //         const result = await func_types_canister.complex_func_param([
-    //             Principal.fromText('aaaaa-aa'),
-    //             'stop_canister'
-    //         ]);
+    {
+        name: 'complex_func_param',
+        test: async () => {
+            const result = await func_types_canister.complex_func_param([
+                Principal.fromText('aaaaa-aa'),
+                'stop_canister'
+            ]);
 
-    //         return {
-    //             ok: (
-    //                 result[0].toText() === 'aaaaa-aa' &&
-    //                 result[1] === 'stop_canister'
-    //             )
-    //         };
-    //     }
-    // },
+            return {
+                ok: (
+                    result[0].toText() === 'aaaaa-aa' &&
+                    result[1] === 'stop_canister'
+                )
+            };
+        }
+    },
     {
         name: 'complex_func_return_type',
         test: async () => {

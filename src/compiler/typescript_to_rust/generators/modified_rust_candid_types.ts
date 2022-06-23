@@ -4,14 +4,16 @@ import { Rust } from '../../../types';
 
 // TODO remove this once this issue is resolved: https://github.com/demergent-labs/azle/issues/93
 export async function modifyRustCandidTypes(
-    rustCandidTypes: Rust
+    rustCandidTypes: Rust,
+    func_names: string[]
 ): Promise<Rust> {
     const attrsWithSerialize = getAttrsWithSerialize();
 
     const ast: AST = JSON.parse(parseFile(rustCandidTypes));
+
     const modifiedAst = {
         ...ast,
-        items: modifyItems(ast.items, attrsWithSerialize)
+        items: modifyItems(ast.items, attrsWithSerialize, func_names)
     };
 
     const printedAST = printAst(JSON.stringify(modifiedAst));
@@ -32,11 +34,21 @@ function getAttrsWithSerialize(): any[] | undefined {
 
 function modifyItems(
     items: Item[],
-    attrsWithSerialize: any[] | undefined
+    attrsWithSerialize: any[] | undefined,
+    func_names: string[]
 ): Item[] {
     // the printAst function seems to have a bug that removes the , from the CallResult tuple, thus I just filter out the impl with the generated methods (they are not needed)
     return items
-        .filter((item) => item.impl === undefined)
+        .filter((item) => {
+            // TODO also remove func unit structs
+            return (
+                item.impl === undefined &&
+                !(
+                    item.type !== undefined &&
+                    func_names.includes(item.type.ident)
+                )
+            );
+        })
         .map((item) => {
             if (
                 item.struct !== undefined &&

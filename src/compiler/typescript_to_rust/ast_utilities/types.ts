@@ -7,6 +7,7 @@ export type Item = {
     fn?: Fn;
     struct?: Struct;
     enum?: Enum;
+    type?: Type;
 };
 
 export type Impl = {
@@ -41,3 +42,7 @@ export type Struct = {
 };
 
 export type Enum = {};
+
+export type Type = {
+    ident: string;
+};
