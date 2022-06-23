@@ -1,4 +1,8 @@
+type ReportRefundResult = variant { "ok": nat64; "err": text };
+
+type ReportRefundResult128 = variant { "ok": nat; "err": text };
+
 service: {
-    "reportRefund": () -> (nat64);
-    "reportRefund128": () -> (nat);
+    "reportRefund": () -> (ReportRefundResult);
+    "reportRefund128": () -> (ReportRefundResult128);
 }

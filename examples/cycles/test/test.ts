@@ -1,4 +1,4 @@
-import { cleanDeploy, run_tests, Test } from 'azle/test';
+import { cleanDeploy, ok, run_tests, Test } from 'azle/test';
 import { createActor as createCyclesActor } from '../test/dfx_generated/cycles';
 import { createActor as createIntermediaryActor } from '../test/dfx_generated/intermediary';
 
@@ -47,11 +47,16 @@ const tests: Test[] = [
         name: 'msg_cycles_refunded',
         test: async () => {
             const result = await intermediary_canister.reportRefund();
+
+            if (!ok(result)) {
+                return { err: result.err };
+            }
+
             // TODO: DFX 0.9.3 doesn't have full cycle support so for now this
             // will always return `0n`.
             // See https://github.com/demergent-labs/azle/issues/433
             return {
-                ok: result === 0n
+                ok: result.ok === 0n
             };
         }
     },
@@ -59,11 +64,16 @@ const tests: Test[] = [
         name: 'msg_cycles_refunded128',
         test: async () => {
             const result = await intermediary_canister.reportRefund128();
+
+            if (!ok(result)) {
+                return { err: result.err };
+            }
+
             // TODO: DFX 0.9.3 doesn't have full cycle support so for now this
             // will always return `0n`.
             // See https://github.com/demergent-labs/azle/issues/433
             return {
-                ok: result === 0n
+                ok: result.ok === 0n
             };
         }
     }
