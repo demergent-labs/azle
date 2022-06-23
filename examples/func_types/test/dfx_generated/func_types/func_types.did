@@ -6,7 +6,7 @@ type User = record {
 
 type Reaction = variant { "Good": null; "Bad": null; "BasicFunc": BasicFunc; "ComplexFunc": ComplexFunc };
 
-type BasicFunc = func (text) -> (text);
+type BasicFunc = func (text) -> (text) query;
 type ComplexFunc = func (User, Reaction) -> (nat64);
 
 service: {

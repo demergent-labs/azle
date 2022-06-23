@@ -173,7 +173,7 @@ export function attempt<T>(callback: () => AzleResult<T>): AzleResult<T> {
 
 // TODO type this more strictly
 export type Func<
-    T extends (...args: any[]) => Query<any> | Update<any> | Oneway<any>
+    T extends (...args: any[]) => Query<any> | Update<any> | Oneway<void>
 > = [Principal, string];
 
 export { Principal } from '@dfinity/principal';

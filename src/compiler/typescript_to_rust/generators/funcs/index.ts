@@ -1,5 +1,6 @@
 import * as tsc from 'typescript';
 import { Rust } from '../../../../types';
+import { getRustTypeNameFromTypeNode } from '../../ast_utilities/miscellaneous';
 import { getFuncTypeAliasDeclarations } from '../call_functions';
 
 export function generate_func_structs_and_impls(
@@ -81,6 +82,10 @@ function generate_func_struct_and_impls_from_function_type_node(
     function_type_node: tsc.FunctionTypeNode,
     typeAliasName: string
 ): string {
+    const func_param_types = get_func_param_types(function_type_node);
+    const return_type_name = getRustTypeNameFromTypeNode(function_type_node.type);
+    const func_mode = get_func_mode(function_type_node);
+
     return /* rust */ `
         #[derive(Debug, Clone)]
         struct ${typeAliasName}<ArgToken = self::ArgToken>(
@@ -103,13 +108,10 @@ function generate_func_struct_and_impls_from_function_type_node(
 
         impl<ArgToken: CandidType> CandidType for ${typeAliasName}<ArgToken> {
             fn _ty() -> candid::types::Type {
-                // TODO this is the part that needs to be generated from the TypeScript type for type
-                // TODO basically go grab all of the Funcs, grab the query/update, and grab the args and return type
-                // TODO should not be too bad actually
                 candid::types::Type::Func(candid::types::Function {
-                    modes: vec![candid::parser::types::FuncMode::Query],
-                    args: vec![candid::types::Type::Text],
-                    rets: vec![candid::types::Type::Text]
+                    modes: vec![${func_mode === 'Query' ? /* rust */ `candid::parser::types::FuncMode::Query` : func_mode === 'Oneway' ? /* rust */ `candid::parser::types::FuncMode::Oneway` : ''}],
+                    args: vec![${func_param_types.map((func_param_type) => /* rust */ `${func_param_type}::_ty()`).join(', ')}],
+                    rets: vec![${return_type_name === '()' ? '' : /* rust */ `${return_type_name}::_ty()`}]
                 })
             }
 
@@ -149,4 +151,52 @@ function generate_func_struct_and_impls_from_function_type_node(
             }
         }
     `;
+}
+
+function get_func_param_types(
+    function_type_node: tsc.FunctionTypeNode
+): string[] {
+    return function_type_node.parameters.map((parameterDeclaration) => {
+        if (parameterDeclaration.type === undefined) {
+            throw new Error(`Parameter must have a type`);
+        }
+
+        const paramType = getRustTypeNameFromTypeNode(
+            parameterDeclaration.type
+        );
+
+        return paramType;
+    });
+}
+
+function get_func_mode(function_type_node: tsc.FunctionTypeNode): 'Query' | 'Update' | 'Oneway' {
+    if (function_type_node.type.kind !== tsc.SyntaxKind.TypeReference) {
+        throw new Error(`Func return type must be Query, Update, or Oneway`);
+    }
+
+    const type_reference_node =
+        function_type_node.type as tsc.TypeReferenceNode;
+
+    if (type_reference_node.typeArguments === undefined) {
+        throw new Error('This cannot happen');
+    }
+
+    if (type_reference_node.typeName.kind !== tsc.SyntaxKind.Identifier) {
+        throw new Error(`This cannot happen`);
+    }
+
+    const type_name = (
+        type_reference_node.typeName as tsc.Identifier
+    ).escapedText.toString();
+
+    if (
+        type_name !== 'Query' &&
+        type_name !== 'Update' &&
+        type_name !== 'Oneway'
+    ) {
+        throw new Error(`Func return type must be Query, Update, or Oneway`);
+
+    }
+
+    return type_name;
 }

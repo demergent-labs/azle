@@ -46,6 +46,10 @@ function modifyItems(
                 !(
                     item.type !== undefined &&
                     func_names.includes(item.type.ident)
+                ) &&
+                !(
+                    item.struct !== undefined &&
+                    func_names.includes(item.struct.ident)
                 )
             );
         })

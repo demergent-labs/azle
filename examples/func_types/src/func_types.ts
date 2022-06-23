@@ -23,27 +23,23 @@ import {
 //     callback: StableFunc;
 // }>;
 
-// type User = {
-//     id: string;
-//     basic_func: BasicFunc;
-//     // complex_func: ComplexFunc; // TODO https://github.com/dfinity/candid/issues/347
-// };
+type User = {
+    id: string;
+    basic_func: BasicFunc;
+    complex_func: ComplexFunc;
+};
 
-// type Reaction = Variant<{
-//     Good: null;
-//     Bad: null;
-//     BasicFunc: BasicFunc;
-//     // ComplexFunc: ComplexFunc; // TODO https://github.com/dfinity/candid/issues/347
-// }>;
+type Reaction = Variant<{
+    Good: null;
+    Bad: null;
+    BasicFunc: BasicFunc;
+    ComplexFunc: ComplexFunc;
+}>;
 
 type BasicFunc = Func<(param1: string) => Query<string>>;
-
-// TODO referencing yourself in a fun is difficult to deal with somewhat...wait for this: https://github.com/dfinity/candid/issues/347
-// type ComplexFunc = Func<(user: User, reaction: Reaction) => CanisterResult<nat64>>;
-// type ComplexFunc = Func<(user: User, reaction: Reaction) => Update<nat64>>;
+type ComplexFunc = Func<(user: User, reaction: Reaction) => Update<nat64>>;
 
 // type OnewayFunc = Func<(param1: nat64) => Oneway<void>>;
-
 // type StableFunc = Func<(param1: nat64, param2: string) => Query<void>>;
 
 export function basic_func_param(basic_func: BasicFunc): Query<BasicFunc> {
@@ -54,12 +50,12 @@ export function basic_func_return_type(): Query<BasicFunc> {
     return [Principal.fromText('aaaaa-aa'), 'create_canister'];
 }
 
-// export function complex_func_param(
-//     complex_func: ComplexFunc
-// ): Query<ComplexFunc> {
-//     return complex_func;
-// }
+export function complex_func_param(
+    complex_func: ComplexFunc
+): Query<ComplexFunc> {
+    return complex_func;
+}
 
-// export function complex_func_return_type(): Query<ComplexFunc> {
-//     return ['aaaaa-aa', 'stop_canister'];
-// }
+export function complex_func_return_type(): Query<ComplexFunc> {
+    return [Principal.fromText('aaaaa-aa'), 'stop_canister'];
+}
