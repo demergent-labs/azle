@@ -11,7 +11,9 @@ type ComplexFunc = func (User, Reaction) -> (nat64);
 
 service: {
     "basic_func_param": (BasicFunc) -> (BasicFunc) query;
+    "basic_func_param_array": (vec BasicFunc) -> (vec BasicFunc) query;
     "basic_func_return_type": () -> (BasicFunc) query;
+    "basic_func_return_type_array": () -> (vec BasicFunc) query;
     "complex_func_param": (ComplexFunc) -> (ComplexFunc) query;
     "complex_func_return_type": () -> (ComplexFunc) query;
 }

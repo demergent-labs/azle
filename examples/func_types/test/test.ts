@@ -49,6 +49,26 @@ const tests: Test[] = [
         }
     },
     {
+        name: 'basic_func_param_array',
+        test: async () => {
+            const result = await func_types_canister.basic_func_param_array([
+                [Principal.fromText('aaaaa-aa'), 'create_canister'],
+                [Principal.fromText('aaaaa-aa'), 'update_settings'],
+                [Principal.fromText('aaaaa-aa'), 'install_code']
+            ]);
+
+            return {
+                ok:
+                    result[0][0].toText() === 'aaaaa-aa' &&
+                    result[0][1] === 'create_canister' &&
+                    result[1][0].toText() === 'aaaaa-aa' &&
+                    result[1][1] === 'update_settings' &&
+                    result[2][0].toText() === 'aaaaa-aa' &&
+                    result[2][1] === 'install_code'
+            };
+        }
+    },
+    {
         name: 'basic_func_return_type',
         test: async () => {
             const result = await func_types_canister.basic_func_return_type();
@@ -57,6 +77,22 @@ const tests: Test[] = [
                 ok:
                     result[0].toText() === 'aaaaa-aa' &&
                     result[1] === 'create_canister'
+            };
+        }
+    },
+    {
+        name: 'basic_func_return_type_array',
+        test: async () => {
+            const result = await func_types_canister.basic_func_return_type_array();
+
+            return {
+                ok:
+                    result[0][0].toText() === 'aaaaa-aa' &&
+                    result[0][1] === 'create_canister' &&
+                    result[1][0].toText() === 'aaaaa-aa' &&
+                    result[1][1] === 'update_settings' &&
+                    result[2][0].toText() === 'aaaaa-aa' &&
+                    result[2][1] === 'install_code'
             };
         }
     },

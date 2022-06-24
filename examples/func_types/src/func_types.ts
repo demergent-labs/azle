@@ -1,5 +1,8 @@
-// TODO do we need inline funcs?
-// TODO make this example much more elaborate
+// TODO do we need inline funcs? Do we really need them? We probably need them but can live without them of the moment
+
+// TODO test cross canister funcs
+// TODO test stable funcs
+// TODO test oneway funcs
 
 import {
     Canister,
@@ -46,8 +49,20 @@ export function basic_func_param(basic_func: BasicFunc): Query<BasicFunc> {
     return basic_func;
 }
 
+export function basic_func_param_array(basic_func: BasicFunc[]): Query<BasicFunc[]> {
+    return basic_func;
+}
+
 export function basic_func_return_type(): Query<BasicFunc> {
     return [Principal.fromText('aaaaa-aa'), 'create_canister'];
+}
+
+export function basic_func_return_type_array(): Query<BasicFunc[]> {
+    return [
+        [Principal.fromText('aaaaa-aa'), 'create_canister'],
+        [Principal.fromText('aaaaa-aa'), 'update_settings'],
+        [Principal.fromText('aaaaa-aa'), 'install_code']
+    ];
 }
 
 export function complex_func_param(

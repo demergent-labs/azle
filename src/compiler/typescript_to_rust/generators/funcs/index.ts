@@ -1,3 +1,5 @@
+// TODO add proper licensing since a lot of this code is from agent-rs DFINITY pull request
+
 import * as tsc from 'typescript';
 import { Rust } from '../../../../types';
 import { getRustTypeNameFromTypeNode } from '../../ast_utilities/miscellaneous';
@@ -22,6 +24,7 @@ export function generate_func_structs_and_impls(
 
     return {
         func_structs_and_impls: /* rust */ `
+            // TODO I think it's debatable whether or not we even need ArgToken
             /// A marker type to match unconstrained callback arguments
             #[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
             pub struct ArgToken;
@@ -105,14 +108,26 @@ function generate_func_struct_and_impls_from_function_type_node(
             }
         }
 
-        impl AzleTryFromJsValue<${typeAliasName}<ArgToken>> for boa_engine::JsValue {
-            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<${typeAliasName}<ArgToken>, AzleTryFromJsValueError> {
+        impl AzleIntoJsValue for Vec<${typeAliasName}> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleTryFromJsValue<${typeAliasName}> for boa_engine::JsValue {
+            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<${typeAliasName}, AzleTryFromJsValueError> {
                 let candid_func: candid::Func = self.azle_try_from_js_value(context).unwrap();
                 Ok(candid_func.into())
             }
         }
 
-        impl<ArgToken: CandidType> CandidType for ${typeAliasName}<ArgToken> {
+        impl AzleTryFromJsValue<Vec<${typeAliasName}>> for boa_engine::JsValue {
+            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Vec<${typeAliasName}>, AzleTryFromJsValueError> {
+                azle_try_from_js_value_generic_array(self, context)
+            }
+        }
+
+        impl CandidType for ${typeAliasName} {
             fn _ty() -> candid::types::Type {
                 candid::types::Type::Func(candid::types::Function {
                     modes: vec![${
@@ -141,32 +156,32 @@ function generate_func_struct_and_impls_from_function_type_node(
             }
         }
 
-        impl<'de, ArgToken> Deserialize<'de> for ${typeAliasName}<ArgToken> {
+        impl<'de> Deserialize<'de> for ${typeAliasName} {
             fn deserialize<D: serde::de::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
                 candid::Func::deserialize(deserializer).map(Self::from)
             }
         }
         
-        impl<ArgToken> From<candid::Func> for ${typeAliasName}<ArgToken> {
+        impl From<candid::Func> for ${typeAliasName} {
             fn from(f: candid::Func) -> Self {
                 Self(f, std::marker::PhantomData)
             }
         }
         
-        impl<ArgToken> From<${typeAliasName}<ArgToken>> for candid::Func {
-            fn from(c: ${typeAliasName}<ArgToken>) -> Self {
+        impl From<${typeAliasName}> for candid::Func {
+            fn from(c: ${typeAliasName}) -> Self {
                 c.0
             }
         }
         
-        impl<ArgToken> std::ops::Deref for ${typeAliasName}<ArgToken> {
+        impl std::ops::Deref for ${typeAliasName} {
             type Target = candid::Func;
             fn deref(&self) -> &candid::Func {
                 &self.0
             }
         }
         
-        impl<ArgToken> std::ops::DerefMut for ${typeAliasName}<ArgToken> {
+        impl std::ops::DerefMut for ${typeAliasName} {
             fn deref_mut(&mut self) -> &mut candid::Func {
                 &mut self.0
             }
