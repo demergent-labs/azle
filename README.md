@@ -23,12 +23,12 @@ Please exercise caution when using Azle. It is beta software that you use at you
 
 Demergent Labs will officially recommend Azle for production use when at least the following have occurred:
 
-- [x] Many example-based unit/integration tests
-- [ ] Feature parity with the [Rust CDK](https://github.com/dfinity/cdk-rs) and [Motoko](https://github.com/dfinity/motoko)
+- [x] [Many example-based unit/integration tests](/examples)
+- [ ] [Feature parity with the Rust CDK and Motoko](#feature-parity)
 - [ ] Extensive automated benchmarking
 - [ ] Extensive automated property testing
 - [ ] Multiple independent security reviews/audits
-- [ ] [Boa](https://github.com/boa-dev/boa) is no longer experimental
+- [ ] [Boa is no longer experimental](https://github.com/boa-dev/boa)
 
 ## Discussion
 
