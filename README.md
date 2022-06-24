@@ -1052,7 +1052,40 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 
 | Feature    | Rust CDK | Motoko | Azle           |
 | ------------- | --------------- | -------------------- | -------------- |
-| - [ ] | - [ ] | - [ ] | - [ ] |
+| query calls | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| update calls | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| cross-canister calls | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| call raw | :heavy_check_mark: | :x: | :heavy_check_mark: |
+| init | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| pre upgrade | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| post upgrade | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| heartbeat | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| stable storage | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid text | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid blob | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid nat | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid nat64 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid nat32 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid nat16 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid nat8 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid int | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid int64 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid int32 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid int16 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid int8 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid float64 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid float32 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid bool | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid null | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid vec | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid opt | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid record | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid variant | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid func | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid service | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid principal | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid reserved | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Candid empty | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 
 ### Roadmap
 
