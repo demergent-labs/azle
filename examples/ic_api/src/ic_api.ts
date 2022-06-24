@@ -37,6 +37,13 @@ export function print(message: string): Query<boolean> {
     return true;
 }
 
+// TODO: This should reject with a message, stopping execution. Instead, it
+// rejects but continues execution which results in second invalid return
+// causing a reject code of 5 instead of 4.
+export function reject(message: string): Query<void> {
+    ic.reject(message);
+}
+
 // returns the current timestamp
 export function time(): Query<nat64> {
     return ic.time();

@@ -86,6 +86,7 @@ type ic = {
     msg_cycles_refunded: () => nat64;
     msg_cycles_refunded128: () => nat;
     print: (...args: any) => void;
+    reject: (message: string) => void;
     stableStorage: <T>() => T;
     time: () => nat64;
     trap: (message: string) => never;
