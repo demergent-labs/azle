@@ -1050,6 +1050,11 @@ More documentation to come, see the examples and the DFINITY documentation for t
 
 The following is a comparison of all of the major features of the [Rust CDK](https://github.com/dfinity/cdk-rs), [Motoko](https://github.com/dfinity/motoko), and Azle.
 
+- :heavy_check_mark: = supported
+- :x: = not supported
+- :grey_question: = unknown
+- :white_check_mark: = not applicable
+
 | Feature    | Rust CDK | Motoko | Azle           |
 | ------------- | --------------- | -------------------- | -------------- |
 | query calls | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
