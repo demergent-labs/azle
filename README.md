@@ -1057,18 +1057,14 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 
 | Feature    | Rust CDK | Motoko | Azle           |
 | ------------- | --------------- | -------------------- | -------------- |
-| query calls | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| update calls | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| call | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| call raw | :heavy_check_mark: | :x: | :heavy_check_mark: |
-| call raw 128 | :heavy_check_mark: | :x: | :grey_question: |
-| call with payment | :heavy_check_mark: | :grey_question: | :x: |
-| call with payment 128 | :heavy_check_mark: | :grey_question: | :x: |
-| init | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| pre upgrade | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| post upgrade | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| heartbeat | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| query methods | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| update methods | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | stable storage | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| init method | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| pre upgrade method | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| post upgrade method | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| heartbeat method | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| http request method | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Candid text | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Candid blob | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Candid nat | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -1107,6 +1103,11 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | arg data | :heavy_check_mark: | :grey_question: | :x: |
 | arg data raw | :heavy_check_mark: | :grey_question: | :x: |
 | arg data raw size | :heavy_check_mark: | :grey_question: | :x: |
+| call | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| call raw | :heavy_check_mark: | :x: | :heavy_check_mark: |
+| call raw 128 | :heavy_check_mark: | :x: | :grey_question: |
+| call with payment | :heavy_check_mark: | :grey_question: | :x: |
+| call with payment 128 | :heavy_check_mark: | :grey_question: | :x: |
 | method name | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | msg cycles accept | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
 | msg cycles accept 128 | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
