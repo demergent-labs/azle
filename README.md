@@ -1111,12 +1111,12 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | call with payment | :heavy_check_mark: | :grey_question: | :x: |
 | call with payment 128 | :heavy_check_mark: | :grey_question: | :x: |
 | method name | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| msg cycles accept | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
-| msg cycles accept 128 | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
-| msg cycles available | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
-| msg cycles available 128 | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
-| msg cycles refunded | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
-| msg cycles refunded 128 | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
+| msg cycles accept | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: |
+| msg cycles accept 128 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| msg cycles available | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: |
+| msg cycles available 128 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| msg cycles refunded | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: |
+| msg cycles refunded 128 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | notify | :heavy_check_mark: | :grey_question: | :x: |
 | notify raw | :heavy_check_mark: | :grey_question: | :x: |
 | notify with payment 128 | :heavy_check_mark: | :grey_question: | :x: |
