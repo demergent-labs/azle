@@ -81,7 +81,7 @@ type GetNotifierFromNotifiersCanisterResult = Variant<{
 }>;
 
 export function* get_notifier_from_notifiers_canister(): UpdateAsync<GetNotifierFromNotifiersCanisterResult> {
-    const notifiers_canister = ic.canisters.Notifier<Notifier>(Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai'));
+    const notifiers_canister = ic.canisters.Notifier<Notifier>(Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'));
 
     const result: CanisterResult<NotifierFunc> = yield notifiers_canister.get_notifier();
 
