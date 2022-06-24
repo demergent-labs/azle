@@ -3,12 +3,23 @@
         "cycles": {
             "type": "custom",
             "build": "npx azle cycles",
-            "root": "src",
-            "ts": "src/cycles.ts",
-            "candid": "src/cycles.did",
+            "root": "canisters/cycles",
+            "ts": "canisters/cycles/cycles.ts",
+            "candid": "canisters/cycles/cycles.did",
             "wasm": "target/wasm32-unknown-unknown/release/cycles.wasm",
             "declarations": {
                 "output": "test/dfx_generated/cycles"
+            }
+        },
+        "intermediary": {
+            "type": "custom",
+            "build": "npx azle intermediary",
+            "root": "canisters/intermediary",
+            "ts": "canisters/intermediary/intermediary.ts",
+            "candid": "canisters/intermediary/intermediary.did",
+            "wasm": "target/wasm32-unknown-unknown/release/intermediary.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/intermediary"
             }
         }
     }

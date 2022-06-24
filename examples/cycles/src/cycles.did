@@ -1,4 +1,0 @@
-service: {
-    "msgCyclesAccept": (nat64) -> (nat64);
-    "msgCyclesAccept128": (nat) -> (nat);
-}
