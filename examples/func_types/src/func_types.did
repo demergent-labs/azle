@@ -8,8 +8,10 @@ type Reaction = variant { "Good": null; "Bad": null; "BasicFunc": BasicFunc; "Co
 
 type BasicFunc = func (text) -> (text) query;
 type ComplexFunc = func (User, Reaction) -> (nat64);
+type StableFunc = func (nat64, text) -> () query;
 
-service: {
+service: () -> {
+    "get_stable_func": () -> (StableFunc) query;
     "basic_func_param": (BasicFunc) -> (BasicFunc) query;
     "basic_func_param_array": (vec BasicFunc) -> (vec BasicFunc) query;
     "basic_func_return_type": () -> (BasicFunc) query;

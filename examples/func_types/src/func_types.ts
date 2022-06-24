@@ -1,13 +1,12 @@
-// TODO do we need inline funcs? Do we really need them? We probably need them but can live without them of the moment
-
 // TODO test cross canister funcs
-// TODO test stable funcs
 // TODO test oneway funcs
 
 import {
     Canister,
     CanisterResult,
     Func,
+    ic,
+    Init,
     nat64,
     Oneway,
     Principal,
@@ -22,9 +21,11 @@ import {
 //     get_callback(): CanisterResult<OnewayFunc>; // TODO this func type needs to be found out...
 // }>;
 
-// type TestStable = Stable<{
-//     callback: StableFunc;
-// }>;
+type StableStorage = Stable<{
+    stable_func: StableFunc;
+}>;
+
+let stable_storage: StableStorage = ic.stableStorage();
 
 type User = {
     id: string;
@@ -41,9 +42,16 @@ type Reaction = Variant<{
 
 type BasicFunc = Func<(param1: string) => Query<string>>;
 type ComplexFunc = Func<(user: User, reaction: Reaction) => Update<nat64>>;
-
 // type OnewayFunc = Func<(param1: nat64) => Oneway<void>>;
-// type StableFunc = Func<(param1: nat64, param2: string) => Query<void>>;
+type StableFunc = Func<(param1: nat64, param2: string) => Query<void>>;
+
+export function init(): Init {
+    stable_storage.stable_func = [Principal.from('aaaaa-aa'), 'start_canister'];
+}
+
+export function get_stable_func(): Query<StableFunc> {
+    return stable_storage.stable_func;
+}
 
 export function basic_func_param(basic_func: BasicFunc): Query<BasicFunc> {
     return basic_func;

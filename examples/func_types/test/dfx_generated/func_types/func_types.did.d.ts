@@ -5,6 +5,7 @@ export type Reaction = { 'Bad' : null } |
   { 'ComplexFunc' : ComplexFunc } |
   { 'Good' : null } |
   { 'BasicFunc' : BasicFunc };
+export type StableFunc = (arg_0: bigint, arg_1: string) => Promise<undefined>;
 export interface User {
   'id' : string,
   'basic_func' : BasicFunc,
@@ -23,4 +24,5 @@ export interface _SERVICE {
       [Principal, string]
     >,
   'complex_func_return_type' : () => Promise<[Principal, string]>,
+  'get_stable_func' : () => Promise<[Principal, string]>,
 }

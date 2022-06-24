@@ -1,5 +1,3 @@
-// TODO these tests need to be improved
-
 import { Principal } from '@dfinity/principal';
 import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
@@ -31,6 +29,18 @@ const tests: Test[] = [
             execSync(`dfx deploy`, {
                 stdio: 'inherit'
             });
+        }
+    },
+    {
+        name: 'get_stable_func',
+        test: async () => {
+            const result = await func_types_canister.get_stable_func();
+
+            return {
+                ok:
+                    result[0].toText() === 'aaaaa-aa' &&
+                    result[1] === 'start_canister'
+            };
         }
     },
     {

@@ -13,6 +13,7 @@ export const idlFactory = ({ IDL }) => {
     'BasicFunc' : BasicFunc,
   });
   ComplexFunc.fill(IDL.Func([User, Reaction], [IDL.Nat64], []));
+  const StableFunc = IDL.Func([IDL.Nat64, IDL.Text], [], ['query']);
   return IDL.Service({
     'basic_func_param' : IDL.Func([BasicFunc], [BasicFunc], ['query']),
     'basic_func_param_array' : IDL.Func(
@@ -28,6 +29,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'complex_func_param' : IDL.Func([ComplexFunc], [ComplexFunc], ['query']),
     'complex_func_return_type' : IDL.Func([], [ComplexFunc], ['query']),
+    'get_stable_func' : IDL.Func([], [StableFunc], ['query']),
   });
 };
 export const init = ({ IDL }) => { return []; };
