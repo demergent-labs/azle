@@ -19,9 +19,16 @@ TypeScript CDK for the Internet Computer.
 
 ## Disclaimer
 
-Azle is beta software. It has not been thoroughly tested by Demergent Labs or the community. There have been no extensive security reviews. There are very few live applications built with Azle.
+Please exercise caution when using Azle. It is beta software that you use at your own risk and according to the terms of this [MIT license](/LICENSE).
 
-The safest way to use Azle is to assume that your canister could get hacked, frozen, broken, or erased at any moment. Remember that you use Azle at your own risk and according to the terms of the MIT license found [here](/LICENSE).
+Demergent Labs will officially recommend Azle for production use when at least the following have occurred:
+
+- [x] Many example-based unit/integration tests
+- [ ] Feature parity with the [Rust CDK](https://github.com/dfinity/cdk-rs) and [Motoko](https://github.com/dfinity/motoko)
+- [ ] Extensive automated benchmarking
+- [ ] Extensive automated property testing
+- [ ] Multiple independent security reviews/audits
+- [ ] [Boa](https://github.com/boa-dev/boa) is no longer experimental
 
 ## Discussion
 
@@ -45,6 +52,7 @@ Most of Azle's documentation is currently found in this README. A more detailed 
 -   [PostUpgrade method](#postupgrade-method)
 -   [Stable storage](#stable-storage)
 -   [Heartbeat method](#heartbeat-method)
+-   [Feature Parity](#feature-parity)
 -   [Roadmap](#roadmap)
 -   [Gotchas and caveats](#gotchas-and-caveats)
 -   [Limitations](#limitations)
@@ -1037,6 +1045,14 @@ DFINITY documentation:
 -   https://smartcontracts.org/docs/introduction/welcome.html
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
+
+### Feature Parity
+
+The following is a comparison of all of the major features of the [Rust CDK](https://github.com/dfinity/cdk-rs), [Motoko](https://github.com/dfinity/motoko), and Azle.
+
+| Feature    | Rust CDK | Motoko | Azle           |
+| ------------- | --------------- | -------------------- | -------------- |
+| - [ ] | - [ ] | - [ ] | - [ ] |
 
 ### Roadmap
 
