@@ -1054,8 +1054,11 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | ------------- | --------------- | -------------------- | -------------- |
 | query calls | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | update calls | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| cross-canister calls | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| call | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | call raw | :heavy_check_mark: | :x: | :heavy_check_mark: |
+| call raw 128 | :heavy_check_mark: | :x: | :grey_question: |
+| call with payment | :heavy_check_mark: | :grey_question: | :x: |
+| call with payment 128 | :heavy_check_mark: | :grey_question: | :x: |
 | init | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | pre upgrade | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | post upgrade | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -1086,6 +1089,45 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | Candid principal | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Candid reserved | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Candid empty | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| caller | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| canister balance | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| canister balance 128 | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
+| data certificate | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
+| canister id | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| print | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| set certified data | :heavy_check_mark: | :grey_question: | :x: |
+| time | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| trap | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| accept message | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
+| arg data | :heavy_check_mark: | :grey_question: | :x: |
+| arg data raw | :heavy_check_mark: | :grey_question: | :x: |
+| arg data raw size | :heavy_check_mark: | :grey_question: | :x: |
+| method name | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| msg cycles accept | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
+| msg cycles accept 128 | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
+| msg cycles available | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
+| msg cycles available 128 | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
+| msg cycles refunded | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
+| msg cycles refunded 128 | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
+| notify | :heavy_check_mark: | :grey_question: | :x: |
+| notify raw | :heavy_check_mark: | :grey_question: | :x: |
+| notify with payment 128 | :heavy_check_mark: | :grey_question: | :x: |
+| performance counter | :grey_question: | :grey_question: | :x: |
+| reject | :heavy_check_mark: | :grey_question: | :x: |
+| reject code | :heavy_check_mark: | :grey_question: | :x: |
+| reject message | :heavy_check_mark: | :grey_question: | :x: |
+| reply | :heavy_check_mark: | :grey_question: | :x: |
+| reply raw | :heavy_check_mark: | :grey_question: | :x: |
+| result | :heavy_check_mark: | :grey_question: | :x: |
+| stable64 grow | :heavy_check_mark: | :grey_question: | :x: |
+| stable64 read | :heavy_check_mark: | :grey_question: | :x: |
+| stable64 size | :heavy_check_mark: | :grey_question: | :x: |
+| stable64 write | :heavy_check_mark: | :grey_question: | :x: |
+| stable bytes | :heavy_check_mark: | :grey_question: | :x: |
+| stable grow | :heavy_check_mark: | :grey_question: | :x: |
+| stable read | :heavy_check_mark: | :grey_question: | :x: |
+| stable size | :heavy_check_mark: | :grey_question: | :x: |
+| stable write | :heavy_check_mark: | :grey_question: | :x: |
 
 ### Roadmap
 
