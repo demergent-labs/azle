@@ -175,6 +175,10 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
                 return getRustTypeNameFromTypeNode(firstTypeArgument);
             }
 
+            if (typeName === 'Oneway') {
+                return `()`;
+            }
+
             return typeReferenceNode.typeName.escapedText.toString();
         }
     }

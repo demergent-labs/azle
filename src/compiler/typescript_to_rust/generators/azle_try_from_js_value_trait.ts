@@ -57,20 +57,15 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 match self.as_object() {
                     Some(js_object) => {
                         match (js_object.get("0", context), js_object.get("1", context)) {
-                            (Ok(principal_text), Ok(canister_method_text)) => {
-                                match (principal_text.as_string(), canister_method_text.as_string()) {
-                                    (Some(principal_string), Some(canister_method_string)) => {
-                                        match ic_cdk::export::Principal::from_text(principal_string) {
-                                            Ok(principal) => {
-                                                Ok(ic_cdk::export::candid::Func {
-                                                    principal,
-                                                    method: canister_method_string.to_string()
-                                                })
-                                            },
-                                            _ => Err(AzleTryFromJsValueError("Could not convert to principal".to_string()))
-                                        }
+                            (Ok(principal_js_value), Ok(canister_method_text)) => {
+                                match (principal_js_value.azle_try_from_js_value(context), canister_method_text.as_string()) {
+                                    (Ok(principal), Some(canister_method_string)) => {
+                                        Ok(ic_cdk::export::candid::Func {
+                                            principal,
+                                            method: canister_method_string.to_string()
+                                        })
                                     },
-                                    _ => Err(AzleTryFromJsValueError("principal or canister method not strings".to_string()))
+                                    _ => Err(AzleTryFromJsValueError("principal could not be created or canister method not a string".to_string()))
                                 }
                             },
                             _ => Err(AzleTryFromJsValueError("Could not retrieve index 0 or 1".to_string()))

@@ -15,8 +15,16 @@ import { getTypeAliasDeclaration } from '../ast_utilities/type_aliases';
 
 export function generateCandidTypeInfo(
     sourceFiles: readonly tsc.SourceFile[],
-    typeNode: tsc.TypeNode
+    typeNode: tsc.TypeNode | null
 ): CandidTypeInfo {
+    if (typeNode === null) {
+        return {
+            text: '',
+            typeName: 'void',
+            typeClass: 'primitive'
+        };
+    }
+
     if (typeNode.kind === tsc.SyntaxKind.StringKeyword) {
         return generateCandidTypeInfoForStringKeyword();
     }

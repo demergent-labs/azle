@@ -1,14 +1,7 @@
-import {
-    ic,
-    Init,
-    nat,
-    Query,
-    Stable,
-    Update
-} from 'azle';
+import { ic, Init, nat, Query, Stable, Update } from 'azle';
 
 type StableStorage = Stable<{
-    counter: nat
+    counter: nat;
 }>;
 
 export function init(): Init {

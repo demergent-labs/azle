@@ -10,6 +10,7 @@ import { modifyRustCandidTypes } from './modified_rust_candid_types';
 import { bundle_and_transpile_ts } from '../../typescript_to_javascript';
 import { CallFunctionInfo, JavaScript, Rust } from '../../../types';
 import * as tsc from 'typescript';
+import { generate_func_structs_and_impls } from './funcs';
 
 export async function generateLibFile(
     js: JavaScript,
@@ -31,8 +32,13 @@ export async function generateLibFile(
             (match) => `${match};`
         );
 
+    const { func_structs_and_impls, func_names } =
+        generate_func_structs_and_impls(sourceFiles);
+
+    // TODO we need to remove the func types, remove the structs and type aliases
     const modifiedRustCandidTypes: Rust = await modifyRustCandidTypes(
-        rust_candid_types_semicolon_syntax_fix
+        rust_candid_types_semicolon_syntax_fix,
+        func_names
     );
 
     const principal_js: JavaScript = bundle_and_transpile_ts(
@@ -65,6 +71,8 @@ export async function generateLibFile(
         ${head}
 
         ${modifiedRustCandidTypes}
+
+        ${func_structs_and_impls}
 
         ${azleIntoJsValueTrait}
         ${azleTryFromJsValueTrait}

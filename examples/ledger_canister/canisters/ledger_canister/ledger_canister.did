@@ -1,3 +1,8 @@
+type GetBlocksArgs = record {
+    "start": nat64;
+    "length": nat64;
+};
+
 type TransferArgs = record {
     "memo": nat64;
     "amount": Tokens;
@@ -13,11 +18,6 @@ type AccountBalanceArgs = record {
 
 type TransferFeeArg = record {
     
-};
-
-type GetBlocksArgs = record {
-    "start": nat64;
-    "length": nat64;
 };
 
 type Tokens = record {
@@ -82,6 +82,8 @@ type GetAccountBalanceResult = variant { "ok": Tokens; "err": text };
 
 type GetTransferFeeResult = variant { "ok": TransferFee; "err": text };
 
+type GetBlocksResult = variant { "ok": QueryBlocksResponse; "err": text };
+
 type GetSymbolResult = variant { "ok": text; "err": text };
 
 type GetNameResult = variant { "ok": text; "err": text };
@@ -106,6 +108,7 @@ service: {
     "execute_transfer": (text, nat64, nat64, opt nat64) -> (ExecuteTransferResult);
     "get_account_balance": (text) -> (GetAccountBalanceResult);
     "get_transfer_fee": () -> (GetTransferFeeResult);
+    "get_blocks": (GetBlocksArgs) -> (GetBlocksResult);
     "get_symbol": () -> (GetSymbolResult);
     "get_name": () -> (GetNameResult);
     "get_decimals": () -> (GetDecimalsResult);

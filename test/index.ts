@@ -98,19 +98,19 @@ export async function run_tests(tests: Test[]) {
 
 export function cleanDeploy(...canisterNames: string[]): Test[] {
     return [
-        {
-            name: 'clear canister memory',
-            prep: async () => {
-                execSync(
-                    `dfx canister uninstall-code ${canisterNames.join(
-                        ' '
-                    )} || true`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-            }
-        },
+        ...canisterNames.map((canisterName) => {
+            return {
+                name: `clear canister memory for ${canisterName}`,
+                prep: async () => {
+                    execSync(
+                        `dfx canister uninstall-code ${canisterName} || true`,
+                        {
+                            stdio: 'inherit'
+                        }
+                    );
+                }
+            };
+        }),
         {
             // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
             name: 'waiting for createActor fetchRootKey',

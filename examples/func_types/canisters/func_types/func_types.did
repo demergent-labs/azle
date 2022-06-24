@@ -8,7 +8,7 @@ type GetNotifierFromNotifiersCanisterResult = variant { "ok": NotifierFunc; "err
 
 type Reaction = variant { "Good": null; "Bad": null; "BasicFunc": BasicFunc; "ComplexFunc": ComplexFunc };
 
-type NotifierFunc = func (blob) -> () query;
+type NotifierFunc = func (blob) -> () oneway;
 type BasicFunc = func (text) -> (text) query;
 type ComplexFunc = func (User, Reaction) -> (nat64);
 type StableFunc = func (nat64, text) -> () query;

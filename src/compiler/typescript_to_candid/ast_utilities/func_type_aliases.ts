@@ -364,7 +364,7 @@ function getFuncTypeAliasReturnTypeNames(
 
 function getFunctionTypeReturnTypeNode(
     methodSignature: tsc.FunctionTypeNode
-): tsc.TypeNode {
+): tsc.TypeNode | null {
     if (methodSignature.type === undefined) {
         throw new Error('Method signature must have a return type');
     }
@@ -373,7 +373,7 @@ function getFunctionTypeReturnTypeNode(
         const typeReferenceNode = methodSignature.type as tsc.TypeReferenceNode;
 
         if (typeReferenceNode.typeArguments === undefined) {
-            throw new Error('Method signature must have a return type');
+            return null;
         }
 
         return typeReferenceNode.typeArguments[0];

@@ -84,17 +84,6 @@ function generate_candid_func_return_type(
     const type_reference_node =
         function_type_node.type as tsc.TypeReferenceNode;
 
-    if (type_reference_node.typeArguments === undefined) {
-        throw new Error('This cannot happen');
-    }
-
-    const first_argument = type_reference_node.typeArguments[0];
-
-    const candid_type_info = generateCandidTypeInfo(
-        sourceFiles,
-        first_argument
-    );
-
     if (type_reference_node.typeName.kind !== tsc.SyntaxKind.Identifier) {
         throw new Error(`This cannot happen`);
     }
@@ -109,6 +98,17 @@ function generate_candid_func_return_type(
             : type_name === 'Oneway'
             ? ' oneway'
             : '';
+
+    if (type_reference_node.typeArguments === undefined) {
+        return `()${suffix}`;
+    }
+
+    const first_argument = type_reference_node.typeArguments[0];
+
+    const candid_type_info = generateCandidTypeInfo(
+        sourceFiles,
+        first_argument
+    );
 
     return `(${candid_type_info.text})${suffix}`;
 }
