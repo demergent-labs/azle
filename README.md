@@ -1060,37 +1060,38 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | [init method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.init.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | [pre upgrade method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.pre_upgrade.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | [post upgrade method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.post_upgrade.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| [inspect message method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.inspect_message.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [inspect message method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.inspect_message.html) | :heavy_check_mark: | [:grey_question:](https://github.com/dfinity/motoko/issues/2528) | :heavy_check_mark: |
 | [heartbeat method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.heartbeat.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | [update methods](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.update.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | [query methods](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.query.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| http request method | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| stable storage | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid text | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid blob | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid nat | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid nat64 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid nat32 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid nat16 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid nat8 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid int | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid int64 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid int32 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid int16 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid int8 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid float64 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid float32 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid bool | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid null | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid vec | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid opt | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid record | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid variant | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid func | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid service | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid principal | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid reserved | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Candid empty | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [http_request method](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-gateway) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [http_request_update method](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-gateway) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [stable storage](https://docs.rs/ic-cdk/latest/ic_cdk/storage/index.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid text](https://internetcomputer.org/docs/current/references/candid-ref/#type-text) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid blob](https://internetcomputer.org/docs/current/references/candid-ref/#type-blob) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid nat](https://internetcomputer.org/docs/current/references/candid-ref/#type-nat) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid nat64](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid nat32](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid nat16](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid nat8](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid int](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid int64](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid int32](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid int16](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid int8](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid float64](https://internetcomputer.org/docs/current/references/candid-ref/#type-float32-and-float64) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid float32](https://internetcomputer.org/docs/current/references/candid-ref/#type-float32-and-float64) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid bool](https://internetcomputer.org/docs/current/references/candid-ref/#type-bool) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid null](https://internetcomputer.org/docs/current/references/candid-ref/#type-null) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid vec](https://internetcomputer.org/docs/current/references/candid-ref/#type-vec-t) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid opt](https://internetcomputer.org/docs/current/references/candid-ref/#type-opt-t) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid record](https://internetcomputer.org/docs/current/references/candid-ref/#type-record--n--t--) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid variant](https://internetcomputer.org/docs/current/references/candid-ref/#type-variant--n--t--) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid func](https://internetcomputer.org/docs/current/references/candid-ref/#type-func---) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid service](https://internetcomputer.org/docs/current/references/candid-ref/#type-service-) | :heavy_check_mark: | :heavy_check_mark: | :x: |
+| [Candid principal](https://internetcomputer.org/docs/current/references/candid-ref/#type-principal) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid reserved](https://internetcomputer.org/docs/current/references/candid-ref/#type-reserved) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid empty](https://internetcomputer.org/docs/current/references/candid-ref/#type-empty) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | caller | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | canister balance | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | canister balance 128 | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
