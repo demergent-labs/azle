@@ -72,7 +72,8 @@ const tests: Test[] = [
     {
         name: 'basic_func_return_type_array',
         test: async () => {
-            const result = await func_types_canister.basic_func_return_type_array();
+            const result =
+                await func_types_canister.basic_func_return_type_array();
 
             return {
                 ok:
@@ -116,7 +117,8 @@ const tests: Test[] = [
         name: 'get_notifier_from_notifiers_canister',
         test: async () => {
             // TODO agent-js seems to be creating incorrect types here: https://github.com/dfinity/agent-js/issues/583
-            const result: any = await func_types_canister.get_notifier_from_notifiers_canister();
+            const result: any =
+                await func_types_canister.get_notifier_from_notifiers_canister();
 
             return {
                 ok:

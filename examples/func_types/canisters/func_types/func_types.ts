@@ -49,7 +49,9 @@ export function basic_func_param(basic_func: BasicFunc): Query<BasicFunc> {
     return basic_func;
 }
 
-export function basic_func_param_array(basic_func: BasicFunc[]): Query<BasicFunc[]> {
+export function basic_func_param_array(
+    basic_func: BasicFunc[]
+): Query<BasicFunc[]> {
     return basic_func;
 }
 
@@ -81,9 +83,12 @@ type GetNotifierFromNotifiersCanisterResult = Variant<{
 }>;
 
 export function* get_notifier_from_notifiers_canister(): UpdateAsync<GetNotifierFromNotifiersCanisterResult> {
-    const notifiers_canister = ic.canisters.Notifier<Notifier>(Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'));
+    const notifiers_canister = ic.canisters.Notifier<Notifier>(
+        Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
+    );
 
-    const result: CanisterResult<NotifierFunc> = yield notifiers_canister.get_notifier();
+    const result: CanisterResult<NotifierFunc> =
+        yield notifiers_canister.get_notifier();
 
     if (!ok(result)) {
         return {

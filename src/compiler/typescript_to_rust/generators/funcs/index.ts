@@ -204,8 +204,7 @@ function get_func_param_types(
         if (paramType.startsWith('Vec')) {
             // Rust requires the Vec::<>::_ty() syntax so we perform this transformation here
             return `Vec::<${paramType.replace('Vec<', '')}`;
-        }
-        else {
+        } else {
             return paramType;
         }
     });
@@ -220,7 +219,7 @@ function get_func_mode(
 
     const type_reference_node =
         function_type_node.type as tsc.TypeReferenceNode;
-        
+
     if (type_reference_node.typeName.kind !== tsc.SyntaxKind.Identifier) {
         throw new Error(`This cannot happen`);
     }
