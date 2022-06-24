@@ -115,7 +115,7 @@ const tests: Test[] = [
     {
         name: 'get_notifier_from_notifiers_canister',
         test: async () => {
-            // TODO agent-js seems to be creating incorrect types here
+            // TODO agent-js seems to be creating incorrect types here: https://github.com/dfinity/agent-js/issues/583
             const result: any = await func_types_canister.get_notifier_from_notifiers_canister();
 
             return {

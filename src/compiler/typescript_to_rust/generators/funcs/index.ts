@@ -220,11 +220,7 @@ function get_func_mode(
 
     const type_reference_node =
         function_type_node.type as tsc.TypeReferenceNode;
-
-    if (type_reference_node.typeArguments === undefined) {
-        throw new Error('This cannot happen');
-    }
-
+        
     if (type_reference_node.typeName.kind !== tsc.SyntaxKind.Identifier) {
         throw new Error(`This cannot happen`);
     }
