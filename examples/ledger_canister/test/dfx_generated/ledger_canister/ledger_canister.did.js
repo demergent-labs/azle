@@ -47,13 +47,37 @@ export const idlFactory = ({ IDL }) => {
         timestamp: TimeStamp,
         parent_hash: IDL.Opt(IDL.Vec(IDL.Nat8))
     });
+    const BlockRange = IDL.Record({ blocks: IDL.Vec(Block) });
+    const QueryArchiveError = IDL.Variant({
+        BadFirstBlockIndex: IDL.Record({
+            requested_index: IDL.Nat64,
+            first_valid_index: IDL.Nat64
+        }),
+        Other: IDL.Record({
+            error_message: IDL.Text,
+            error_code: IDL.Nat64
+        })
+    });
+    const QueryArchiveResult = IDL.Variant({
+        Ok: BlockRange,
+        Err: QueryArchiveError
+    });
+    const QueryArchiveFn = IDL.Func(
+        [GetBlocksArgs],
+        [QueryArchiveResult],
+        ['query']
+    );
     const QueryBlocksResponse = IDL.Record({
         certificate: IDL.Opt(IDL.Vec(IDL.Nat8)),
         blocks: IDL.Vec(Block),
         chain_length: IDL.Nat64,
         first_block_index: IDL.Nat64,
         archived_blocks: IDL.Vec(
-            IDL.Record({ start: IDL.Nat64, length: IDL.Nat64 })
+            IDL.Record({
+                callback: QueryArchiveFn,
+                start: IDL.Nat64,
+                length: IDL.Nat64
+            })
         )
     });
     const GetBlocksResult = IDL.Variant({

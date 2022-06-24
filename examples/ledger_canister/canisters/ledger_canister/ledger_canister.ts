@@ -121,27 +121,29 @@ export function* get_transfer_fee(): UpdateAsync<GetTransferFeeResult> {
     };
 }
 
-// TODO continue once https://github.com/dfinity/candid/issues/348
-// type GetBlocksResult = Variant<{
-//     ok: QueryBlocksResponse;
-//     err: string;
-// }>;
+type GetBlocksResult = Variant<{
+    ok: QueryBlocksResponse;
+    err: string;
+}>;
 
-// export function* get_blocks(get_blocks_args: GetBlocksArgs): UpdateAsync<GetBlocksResult> {
-//     const canister_result: CanisterResult<QueryBlocksResponse> = yield ICPCanister.query_blocks(get_blocks_args);
+export function* get_blocks(
+    get_blocks_args: GetBlocksArgs
+): UpdateAsync<GetBlocksResult> {
+    const canister_result: CanisterResult<QueryBlocksResponse> =
+        yield ICPCanister.query_blocks(get_blocks_args);
 
-//     if (!ok(canister_result)) {
-//         return {
-//             err: canister_result.err
-//         };
-//     }
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
+    }
 
-//     const get_blocks_result = canister_result.ok;
+    const get_blocks_result = canister_result.ok;
 
-//     return {
-//         ok: get_blocks_result
-//     };
-// }
+    return {
+        ok: get_blocks_result
+    };
+}
 
 type GetSymbolResult = Variant<{
     ok: string;

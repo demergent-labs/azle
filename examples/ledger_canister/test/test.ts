@@ -138,30 +138,58 @@ function get_simple_tests(): Test[] {
                 };
             }
         },
-        // TODO continue once https://github.com/dfinity/candid/issues/348
-        // TODO do some transactions to actually test against some blocks
-        // TODO make sure the callback actually works
-        // {
-        //     name: 'get_blocks',
-        //     test: async () => {
-        //         const result = await ledger_canister.get_blocks({
-        //             start: 0n,
-        //             length: 100n
-        //         });
+        {
+            name: 'get_blocks',
+            test: async () => {
+                const ledger_canister_address = execSync(
+                    `dfx ledger account-id --of-canister ledger_canister`
+                )
+                    .toString()
+                    .trim();
 
-        //         if (!ok(result)) {
-        //             return {
-        //                 err: result.err
-        //             };
-        //         }
+                await ledger_canister.execute_transfer(
+                    ledger_canister_address,
+                    2_000_000n,
+                    10_000n,
+                    []
+                );
 
-        //         console.log('result', JSON.stringify(result, null, 2));
+                await ledger_canister.execute_transfer(
+                    ledger_canister_address,
+                    3_000_000n,
+                    10_000n,
+                    []
+                );
 
-        //         return {
-        //             ok: false
-        //         };
-        //     }
-        // },
+                const result = await ledger_canister.get_blocks({
+                    start: 0n,
+                    length: 100n
+                });
+
+                if (!ok(result)) {
+                    return {
+                        err: result.err
+                    };
+                }
+
+                const transfer_1 = result.ok.blocks[0].transaction.operation[0];
+                const transfer_2 = result.ok.blocks[1].transaction.operation[0];
+                const transfer_3 = result.ok.blocks[2].transaction.operation[0];
+
+                return {
+                    ok:
+                        transfer_1 !== undefined &&
+                        'Mint' in transfer_1 &&
+                        transfer_1.Mint.amount.e8s === 100_000_000_000n &&
+                        transfer_2 !== undefined &&
+                        'Transfer' in transfer_2 &&
+                        transfer_2.Transfer.amount.e8s === 2_000_000n &&
+                        transfer_3 !== undefined &&
+                        'Transfer' in transfer_3 &&
+                        transfer_3.Transfer.amount.e8s === 3_000_000n
+                };
+            }
+        },
         {
             name: 'get_symbol',
             test: async () => {
@@ -237,7 +265,7 @@ function get_simple_tests(): Test[] {
 
                 const result = await ledger_canister.execute_transfer(
                     ledger_canister_address,
-                    1_000_000n,
+                    4_000_000n,
                     10_000n,
                     []
                 );
@@ -249,8 +277,7 @@ function get_simple_tests(): Test[] {
                 }
 
                 return {
-                    // TODO I am confused why this is 1n and not 1_000_000n...I guess it returns the ICP transferred?
-                    ok: 'Ok' in result.ok && result.ok.Ok === 1n
+                    ok: 'Ok' in result.ok && result.ok.Ok === 3n
                 };
             }
         },
@@ -274,7 +301,7 @@ function get_simple_tests(): Test[] {
                 }
 
                 return {
-                    ok: result.ok.e8s === 99_999_990_000n
+                    ok: result.ok.e8s === 99_999_970_000n
                 };
             }
         }

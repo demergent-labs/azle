@@ -32,10 +32,8 @@ export async function generateLibFile(
             (match) => `${match};`
         );
 
-    const {
-        func_structs_and_impls,
-        func_names
-    } = generate_func_structs_and_impls(sourceFiles);
+    const { func_structs_and_impls, func_names } =
+        generate_func_structs_and_impls(sourceFiles);
 
     // TODO we need to remove the func types, remove the structs and type aliases
     const modifiedRustCandidTypes: Rust = await modifyRustCandidTypes(

@@ -42,10 +42,9 @@ const tests: Test[] = [
             ]);
 
             return {
-                ok: (
+                ok:
                     result[0].toText() === 'aaaaa-aa' &&
                     result[1] === 'create_canister'
-                )
             };
         }
     },
@@ -70,10 +69,9 @@ const tests: Test[] = [
             ]);
 
             return {
-                ok: (
+                ok:
                     result[0].toText() === 'aaaaa-aa' &&
                     result[1] === 'stop_canister'
-                )
             };
         }
     },

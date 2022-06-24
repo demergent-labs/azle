@@ -156,7 +156,6 @@ export type BlockRange = {
     blocks: Block[];
 };
 
-// TODO we need tests for every error case here
 // An error indicating that the arguments passed to [QueryArchiveFn] were invalid.
 export type QueryArchiveError = Variant<{
     // [GetBlocksArgs.from] argument was smaller than the first block
@@ -180,7 +179,6 @@ export type QueryArchiveResult = Variant<{
     Err: QueryArchiveError;
 }>;
 
-// TODO Candid serialization/deserialization breaking
 // A function that is used for fetching archived ledger blocks.
 type QueryArchiveFn = Func<
     (get_blocks_args: GetBlocksArgs) => Query<QueryArchiveResult>
@@ -272,7 +270,6 @@ export type Ledger = Canister<{
     transfer_fee(transfer_fee_arg: TransferFeeArg): CanisterResult<TransferFee>;
 
     // Queries blocks in the specified range.
-    // TODO doesn't work yet
     query_blocks(
         get_blocks_args: GetBlocksArgs
     ): CanisterResult<QueryBlocksResponse>;

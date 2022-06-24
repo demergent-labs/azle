@@ -13,6 +13,9 @@ export interface Block {
     timestamp: TimeStamp;
     parent_hash: [] | [Array<number>];
 }
+export interface BlockRange {
+    blocks: Array<Block>;
+}
 export interface DecimalsResult {
     decimals: number;
 }
@@ -44,12 +47,30 @@ export type Operation =
               amount: Tokens;
           };
       };
+export type QueryArchiveError =
+    | {
+          BadFirstBlockIndex: {
+              requested_index: bigint;
+              first_valid_index: bigint;
+          };
+      }
+    | { Other: { error_message: string; error_code: bigint } };
+export type QueryArchiveFn = (
+    arg_0: GetBlocksArgs
+) => Promise<QueryArchiveResult>;
+export type QueryArchiveResult =
+    | { Ok: BlockRange }
+    | { Err: QueryArchiveError };
 export interface QueryBlocksResponse {
     certificate: [] | [Array<number>];
     blocks: Array<Block>;
     chain_length: bigint;
     first_block_index: bigint;
-    archived_blocks: Array<{ start: bigint; length: bigint }>;
+    archived_blocks: Array<{
+        callback: QueryArchiveFn;
+        start: bigint;
+        length: bigint;
+    }>;
 }
 export interface SymbolResult {
     symbol: string;

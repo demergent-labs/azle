@@ -7,11 +7,18 @@ export function generate_func_structs_and_impls(
     sourceFiles: readonly tsc.SourceFile[]
 ): {
     func_structs_and_impls: Rust;
-    func_names: string[]
+    func_names: string[];
 } {
-    const func_type_alias_declarations = getFuncTypeAliasDeclarations(sourceFiles);
-    const func_structs_and_impls = generate_func_structs_and_impls_from_type_alias_declarations(func_type_alias_declarations);
-    const func_names = func_type_alias_declarations.map((type_alias_declaration) => type_alias_declaration.name.escapedText.toString());
+    const func_type_alias_declarations =
+        getFuncTypeAliasDeclarations(sourceFiles);
+    const func_structs_and_impls =
+        generate_func_structs_and_impls_from_type_alias_declarations(
+            func_type_alias_declarations
+        );
+    const func_names = func_type_alias_declarations.map(
+        (type_alias_declaration) =>
+            type_alias_declaration.name.escapedText.toString()
+    );
 
     return {
         func_structs_and_impls: /* rust */ `
@@ -40,14 +47,11 @@ export function generate_func_structs_and_impls(
 function generate_func_structs_and_impls_from_type_alias_declarations(
     typeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): Rust[] {
-    return typeAliasDeclarations.map(
-        (typeAliasDeclaration) => {
-            return generate_func_struct_and_impls_from_type_alias_declaration(
-                typeAliasDeclaration
-            );
-        },
-        []
-    );
+    return typeAliasDeclarations.map((typeAliasDeclaration) => {
+        return generate_func_struct_and_impls_from_type_alias_declaration(
+            typeAliasDeclaration
+        );
+    }, []);
 }
 
 function generate_func_struct_and_impls_from_type_alias_declaration(
@@ -83,7 +87,9 @@ function generate_func_struct_and_impls_from_function_type_node(
     typeAliasName: string
 ): string {
     const func_param_types = get_func_param_types(function_type_node);
-    const return_type_name = getRustTypeNameFromTypeNode(function_type_node.type);
+    const return_type_name = getRustTypeNameFromTypeNode(
+        function_type_node.type
+    );
     const func_mode = get_func_mode(function_type_node);
 
     return /* rust */ `
@@ -109,9 +115,24 @@ function generate_func_struct_and_impls_from_function_type_node(
         impl<ArgToken: CandidType> CandidType for ${typeAliasName}<ArgToken> {
             fn _ty() -> candid::types::Type {
                 candid::types::Type::Func(candid::types::Function {
-                    modes: vec![${func_mode === 'Query' ? /* rust */ `candid::parser::types::FuncMode::Query` : func_mode === 'Oneway' ? /* rust */ `candid::parser::types::FuncMode::Oneway` : ''}],
-                    args: vec![${func_param_types.map((func_param_type) => /* rust */ `${func_param_type}::_ty()`).join(', ')}],
-                    rets: vec![${return_type_name === '()' ? '' : /* rust */ `${return_type_name}::_ty()`}]
+                    modes: vec![${
+                        func_mode === 'Query'
+                            ? /* rust */ `candid::parser::types::FuncMode::Query`
+                            : func_mode === 'Oneway'
+                            ? /* rust */ `candid::parser::types::FuncMode::Oneway`
+                            : ''
+                    }],
+                    args: vec![${func_param_types
+                        .map(
+                            (func_param_type) =>
+                                /* rust */ `${func_param_type}::_ty()`
+                        )
+                        .join(', ')}],
+                    rets: vec![${
+                        return_type_name === '()'
+                            ? ''
+                            : /* rust */ `${return_type_name}::_ty()`
+                    }]
                 })
             }
 
@@ -169,7 +190,9 @@ function get_func_param_types(
     });
 }
 
-function get_func_mode(function_type_node: tsc.FunctionTypeNode): 'Query' | 'Update' | 'Oneway' {
+function get_func_mode(
+    function_type_node: tsc.FunctionTypeNode
+): 'Query' | 'Update' | 'Oneway' {
     if (function_type_node.type.kind !== tsc.SyntaxKind.TypeReference) {
         throw new Error(`Func return type must be Query, Update, or Oneway`);
     }
@@ -195,7 +218,6 @@ function get_func_mode(function_type_node: tsc.FunctionTypeNode): 'Query' | 'Upd
         type_name !== 'Oneway'
     ) {
         throw new Error(`Func return type must be Query, Update, or Oneway`);
-
     }
 
     return type_name;
