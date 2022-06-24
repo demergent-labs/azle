@@ -1093,8 +1093,8 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | [Candid reserved](https://internetcomputer.org/docs/current/references/candid-ref/#type-reserved) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | [Candid empty](https://internetcomputer.org/docs/current/references/candid-ref/#type-empty) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | caller | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| canister balance | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| canister balance 128 | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
+| canister balance | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: |
+| canister balance 128 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | data certificate | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
 | canister id | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | print | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
