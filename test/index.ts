@@ -96,13 +96,15 @@ export async function run_tests(tests: Test[]) {
     }
 }
 
-export function cleanDeploy(canisterName: string): Test[] {
+export function cleanDeploy(...canisterNames: string[]): Test[] {
     return [
         {
             name: 'clear canister memory',
             prep: async () => {
                 execSync(
-                    `dfx canister uninstall-code ${canisterName} || true`,
+                    `dfx canister uninstall-code ${canisterNames.join(
+                        ' '
+                    )} || true`,
                     {
                         stdio: 'inherit'
                     }

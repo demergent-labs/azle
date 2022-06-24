@@ -9,6 +9,8 @@ import { generateIcObjectFunctionMsgCyclesAccept } from './msg_cycles_accept';
 import { generateIcObjectFunctionMsgCyclesAccept128 } from './msg_cycles_accept128';
 import { generateIcObjectFunctionMsgCyclesAvailable } from './msg_cycles_available';
 import { generateIcObjectFunctionMsgCyclesAvailable128 } from './msg_cycles_available128';
+import { generateIcObjectFunctionMsgCyclesRefunded } from './msg_cycles_refunded';
+import { generateIcObjectFunctionMsgCyclesRefunded128 } from './msg_cycles_refunded128';
 import { generateIcObjectFunctionMethodName } from './method_name';
 import { generateIcObjectFunctionPrint } from './print';
 import { generateIcObjectFunctionTime } from './time';
@@ -33,6 +35,10 @@ export function generateIcObjectFunctions(): Rust {
         generateIcObjectFunctionMsgCyclesAvailable();
     const icObjectFunctionMsgCyclesAvailable128: Rust =
         generateIcObjectFunctionMsgCyclesAvailable128();
+    const icObjectFunctionMsgCyclesRefunded: Rust =
+        generateIcObjectFunctionMsgCyclesRefunded();
+    const icObjectFunctionMsgCyclesRefunded128: Rust =
+        generateIcObjectFunctionMsgCyclesRefunded128();
     const icObjectFunctionPrint: Rust = generateIcObjectFunctionPrint();
     const icObjectFunctionTime: Rust = generateIcObjectFunctionTime();
     const icObjectFunctionTrap: Rust = generateIcObjectFunctionTrap();
@@ -48,6 +54,8 @@ export function generateIcObjectFunctions(): Rust {
         ${icObjectFunctionMsgCyclesAccept128}
         ${icObjectFunctionMsgCyclesAvailable}
         ${icObjectFunctionMsgCyclesAvailable128}
+        ${icObjectFunctionMsgCyclesRefunded}
+        ${icObjectFunctionMsgCyclesRefunded128}
         ${icObjectFunctionPrint}
         ${icObjectFunctionTime}
         ${icObjectFunctionTrap}
