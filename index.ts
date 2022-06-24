@@ -76,6 +76,7 @@ type ic = {
     };
     canister_balance: () => nat64;
     canister_balance128: () => nat;
+    data_certificate: () => Opt<blob>;
     id: () => Principal;
     method_name: () => string;
     msg_cycles_accept: (max_amount: nat64) => nat64;

@@ -1,4 +1,4 @@
-import { run_tests, Test } from 'azle/test';
+import { cleanDeploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/ic_api';
 
@@ -9,27 +9,7 @@ const ic_api_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    {
-        name: 'clear canister memory',
-        prep: async () => {
-            execSync(`dfx canister uninstall-code ic_api || true`, {
-                stdio: 'inherit'
-            });
-        }
-    },
-    {
-        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-        name: 'waiting for createActor fetchRootKey',
-        wait: 5000
-    },
-    {
-        name: 'deploy',
-        prep: async () => {
-            execSync(`dfx deploy`, {
-                stdio: 'inherit'
-            });
-        }
-    },
+    ...cleanDeploy('cycles'),
     {
         name: 'caller',
         test: async () => {
@@ -57,6 +37,29 @@ const tests: Test[] = [
 
             return {
                 ok: result === 4_000_000_000_000n
+            };
+        }
+    },
+    {
+        name: 'data_certificate from a query call',
+        test: async () => {
+            const result = await ic_api_canister.data_certificate();
+
+            return {
+                ok:
+                    is_some(result) &&
+                    Array.isArray(result[0]) &&
+                    result[0].length > 0
+            };
+        }
+    },
+    {
+        name: 'data_certificate from an update call',
+        test: async () => {
+            const result = await ic_api_canister.data_certificate_null();
+
+            return {
+                ok: is_none(result)
             };
         }
     },
@@ -124,3 +127,11 @@ const tests: Test[] = [
 ];
 
 run_tests(tests);
+
+function is_none<T>(option: [] | T[]): boolean {
+    return option.length === 0;
+}
+
+function is_some<T>(option: [] | T[]): boolean {
+    return !is_none(option);
+}

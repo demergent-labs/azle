@@ -32,6 +32,11 @@ export function generateIcObject(
                 0
             )
             .function(
+                _azle_ic_data_certificate,
+                "data_certificate",
+                0
+            )
+            .function(
                 azle_ic_id,
                 "id",
                 0
