@@ -1,25 +1,18 @@
-// TODO test cross canister funcs
-// TODO test oneway funcs
-
 import {
-    Canister,
     CanisterResult,
     Func,
     ic,
     Init,
     nat64,
-    Oneway,
+    ok,
     Principal,
     Query,
     Stable,
     Update,
+    UpdateAsync,
     Variant
 } from 'azle';
-
-// TODO we might want to do some cross-canister calls to test this
-// type TestCanister = Canister<{
-//     get_callback(): CanisterResult<OnewayFunc>; // TODO this func type needs to be found out...
-// }>;
+import { Notifier, NotifierFunc } from '../notifiers/types';
 
 type StableStorage = Stable<{
     stable_func: StableFunc;
@@ -42,7 +35,6 @@ type Reaction = Variant<{
 
 type BasicFunc = Func<(param1: string) => Query<string>>;
 type ComplexFunc = Func<(user: User, reaction: Reaction) => Update<nat64>>;
-// type OnewayFunc = Func<(param1: nat64) => Oneway<void>>;
 type StableFunc = Func<(param1: nat64, param2: string) => Query<void>>;
 
 export function init(): Init {
@@ -81,4 +73,25 @@ export function complex_func_param(
 
 export function complex_func_return_type(): Query<ComplexFunc> {
     return [Principal.fromText('aaaaa-aa'), 'stop_canister'];
+}
+
+type GetNotifierFromNotifiersCanisterResult = Variant<{
+    ok: NotifierFunc;
+    err: string;
+}>;
+
+export function* get_notifier_from_notifiers_canister(): UpdateAsync<GetNotifierFromNotifiersCanisterResult> {
+    const notifiers_canister = ic.canisters.Notifier<Notifier>(Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai'));
+
+    const result: CanisterResult<NotifierFunc> = yield notifiers_canister.get_notifier();
+
+    if (!ok(result)) {
+        return {
+            err: result.err
+        };
+    }
+
+    return {
+        ok: result.ok
+    };
 }

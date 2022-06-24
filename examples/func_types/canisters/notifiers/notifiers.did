@@ -1,0 +1,5 @@
+type NotifierFunc = func (blob) -> () oneway;
+
+service: {
+    "get_notifier": () -> (NotifierFunc) query;
+}

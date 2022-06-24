@@ -1,6 +1,9 @@
 import type { Principal } from '@dfinity/principal';
 export type BasicFunc = (arg_0: string) => Promise<string>;
 export type ComplexFunc = (arg_0: User, arg_1: Reaction) => Promise<bigint>;
+export type GetNotifierFromNotifiersCanisterResult = { 'ok' : NotifierFunc } |
+  { 'err' : string };
+export type NotifierFunc = (arg_0: Array<number>) => Promise<undefined>;
 export type Reaction = { 'Bad' : null } |
   { 'ComplexFunc' : ComplexFunc } |
   { 'Good' : null } |
@@ -24,5 +27,8 @@ export interface _SERVICE {
       [Principal, string]
     >,
   'complex_func_return_type' : () => Promise<[Principal, string]>,
+  'get_notifier_from_notifiers_canister' : () => Promise<
+      GetNotifierFromNotifiersCanisterResult
+    >,
   'get_stable_func' : () => Promise<[Principal, string]>,
 }

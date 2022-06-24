@@ -201,7 +201,13 @@ function get_func_param_types(
             parameterDeclaration.type
         );
 
-        return paramType;
+        if (paramType.startsWith('Vec')) {
+            // Rust requires the Vec::<>::_ty() syntax so we perform this transformation here
+            return `Vec::<${paramType.replace('Vec<', '')}`;
+        }
+        else {
+            return paramType;
+        }
     });
 }
 

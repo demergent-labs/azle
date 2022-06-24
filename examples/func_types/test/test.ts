@@ -1,6 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { run_tests, Test } from 'azle/test';
-import { execSync } from 'child_process';
+import { cleanDeploy, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/func_types';
 
 const func_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -10,27 +9,7 @@ const func_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    {
-        name: 'clear canister memory',
-        prep: async () => {
-            execSync(`dfx canister uninstall-code func_types || true`, {
-                stdio: 'inherit'
-            });
-        }
-    },
-    {
-        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-        name: 'waiting for createActor fetchRootKey',
-        wait: 5000
-    },
-    {
-        name: 'deploy',
-        prep: async () => {
-            execSync(`dfx deploy`, {
-                stdio: 'inherit'
-            });
-        }
-    },
+    ...cleanDeploy('func_types', 'notifiers'),
     {
         name: 'get_stable_func',
         test: async () => {
@@ -130,6 +109,20 @@ const tests: Test[] = [
                 ok:
                     result[0].toText() === 'aaaaa-aa' &&
                     result[1] === 'stop_canister'
+            };
+        }
+    },
+    {
+        name: 'get_notifier_from_notifiers_canister',
+        test: async () => {
+            // TODO agent-js seems to be creating incorrect types here
+            const result: any = await func_types_canister.get_notifier_from_notifiers_canister();
+
+            return {
+                ok:
+                    'ok' in result &&
+                    result.ok[0].toText() === 'ryjl3-tyaaa-aaaaa-aaaba-cai' &&
+                    result.ok[1] === 'notify'
             };
         }
     }
