@@ -1092,13 +1092,13 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | [Candid principal](https://internetcomputer.org/docs/current/references/candid-ref/#type-principal) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | [Candid reserved](https://internetcomputer.org/docs/current/references/candid-ref/#type-reserved) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | [Candid empty](https://internetcomputer.org/docs/current/references/candid-ref/#type-empty) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| caller | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| canister balance | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: |
-| canister balance 128 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| data certificate | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
-| canister id | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| print | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| set certified data | :heavy_check_mark: | :grey_question: | :x: |
+| [caller](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.caller.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [canister balance](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.canister_balance.html) | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: |
+| [canister balance 128](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.canister_balance128.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [data certificate](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.data_certificate.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [canister id](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.id.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [print](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.print.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [set certified data](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.set_certified_data.html) | :heavy_check_mark: | :heavy_check_mark: | :x: |
 | time | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | trap | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | accept message | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
