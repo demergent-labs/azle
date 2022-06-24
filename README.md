@@ -1060,7 +1060,7 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | [init method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.init.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | [pre upgrade method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.pre_upgrade.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | [post upgrade method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.post_upgrade.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| [inspect message method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.inspect_message.html) | :heavy_check_mark: | [:grey_question:](https://github.com/dfinity/motoko/issues/2528) | :heavy_check_mark: |
+| [inspect message method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.inspect_message.html) | :heavy_check_mark: | [:heavy_check_mark:](https://github.com/dfinity/motoko/issues/2528) | :heavy_check_mark: |
 | [heartbeat method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.heartbeat.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | [update methods](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.update.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | [query methods](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.query.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
