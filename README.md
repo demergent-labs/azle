@@ -1057,14 +1057,15 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 
 | Feature    | Rust CDK | Motoko | Azle           |
 | ------------- | --------------- | -------------------- | -------------- |
-| query methods | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| update methods | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| stable storage | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| init method | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| pre upgrade method | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| post upgrade method | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| heartbeat method | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [init method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.init.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [pre upgrade method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.pre_upgrade.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [post upgrade method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.post_upgrade.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [inspect message method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.inspect_message.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [heartbeat method](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.heartbeat.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [update methods](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.update.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| [query methods](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.query.html) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | http request method | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| stable storage | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Candid text | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Candid blob | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Candid nat | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
