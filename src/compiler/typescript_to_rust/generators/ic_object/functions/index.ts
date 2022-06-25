@@ -15,6 +15,7 @@ import { generateIcObjectFunctionMsgCyclesRefunded128 } from './msg_cycles_refun
 import { generateIcObjectFunctionMethodName } from './method_name';
 import { generateIcObjectFunctionPrint } from './print';
 import { generateIcObjectFunctionReject } from './reject';
+import { generateIcObjectFunctionRejectCode } from './reject_code';
 import { generateIcObjectFunctionTime } from './time';
 import { generateIcObjectFunctionTrap } from './trap';
 
@@ -45,6 +46,8 @@ export function generateIcObjectFunctions(): Rust {
         generateIcObjectFunctionMsgCyclesRefunded128();
     const icObjectFunctionPrint: Rust = generateIcObjectFunctionPrint();
     const icObjectFunctionReject: Rust = generateIcObjectFunctionReject();
+    const icObjectFunctionRejectCode: Rust =
+        generateIcObjectFunctionRejectCode();
     const icObjectFunctionTime: Rust = generateIcObjectFunctionTime();
     const icObjectFunctionTrap: Rust = generateIcObjectFunctionTrap();
 
@@ -64,6 +67,7 @@ export function generateIcObjectFunctions(): Rust {
         ${icObjectFunctionMsgCyclesRefunded128}
         ${icObjectFunctionPrint}
         ${icObjectFunctionReject}
+        ${icObjectFunctionRejectCode}
         ${icObjectFunctionTime}
         ${icObjectFunctionTrap}
   `;
