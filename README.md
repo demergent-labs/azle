@@ -1149,15 +1149,33 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | Feature    | Rust CDK | Motoko | Azle           |
 | ------------- | --------------- | -------------------- | -------------- |
 | stable storage | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/storage/index.html) | :heavy_check_mark: | :heavy_check_mark: |
-| stable64 grow | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_grow.html) | :grey_question: | :x: |
-| stable64 read | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_read.html) | :grey_question: | :x: |
-| stable64 size | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_size.html) | :grey_question: | :x: |
-| stable64 write | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_write.html) | :grey_question: | :x: |
-| stable bytes | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_bytes.html) | :grey_question: | :x: |
-| stable grow | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_grow.html) | :grey_question: | :x: |
-| stable read | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_read.html) | :grey_question: | :x: |
-| stable size | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_size.html) | :grey_question: | :x: |
-| stable write | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_write.html) | :grey_question: | :x: |
+| stable64 grow | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_grow.html) | [:heavy_check_mark:](https://internetcomputer.org/docs/current/references/motoko-ref/experimentalstablememory#grow) | :x: |
+| stable64 read | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_read.html) | [:heavy_check_mark:](https://internetcomputer.org/docs/current/references/motoko-ref/experimentalstablememory#loadblob) | :x: |
+| stable64 size | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_size.html) | [:heavy_check_mark:](https://internetcomputer.org/docs/current/references/motoko-ref/experimentalstablememory#size) | :x: |
+| stable64 write | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_write.html) | [:heavy_check_mark:](https://internetcomputer.org/docs/current/references/motoko-ref/experimentalstablememory#storeblob) | :x: |
+| stable bytes | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_bytes.html) | :x: | :x: |
+| stable grow | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_grow.html) | :white_check_mark: | :x: |
+| stable read | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_read.html) | :white_check_mark: | :x: |
+| stable size | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_size.html) | :white_check_mark: | :x: |
+| stable write | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_write.html) | :white_check_mark: | :x: |
+| stable read nat64 | :x: | :heavy_check_mark: | :x: |
+| stable write nat64 | :x: | :heavy_check_mark: | :x: |
+| stable read nat32 | :x: | :heavy_check_mark: | :x: |
+| stable write nat32 | :x: | :heavy_check_mark: | :x: |
+| stable read nat16 | :x: | :heavy_check_mark: | :x: |
+| stable write nat16 | :x: | :heavy_check_mark: | :x: |
+| stable read nat8 | :x: | :heavy_check_mark: | :x: |
+| stable write nat8 | :x: | :heavy_check_mark: | :x: |
+| stable read int64 | :x: | :heavy_check_mark: | :x: |
+| stable write int64 | :x: | :heavy_check_mark: | :x: |
+| stable read int32 | :x: | :heavy_check_mark: | :x: |
+| stable write int32 | :x: | :heavy_check_mark: | :x: |
+| stable read int16 | :x: | :heavy_check_mark: | :x: |
+| stable write int16 | :x: | :heavy_check_mark: | :x: |
+| stable read int8 | :x: | :heavy_check_mark: | :x: |
+| stable write int8 | :x: | :heavy_check_mark: | :x: |
+| stable read float64 | :x: | :heavy_check_mark: | :x: |
+| stable write float64 | :x: | :heavy_check_mark: | :x: |
 
 ### Roadmap
 
