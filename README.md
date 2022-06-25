@@ -1122,8 +1122,8 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | arg data raw | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data_raw.html) | :heavy_check_mark: | :x: |
 | arg data raw size | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data_raw_size.html) | :grey_question: | :x: |
 | call | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call.html) | :heavy_check_mark: | :heavy_check_mark: |
-| call raw | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_raw.html) | :x: | :heavy_check_mark: |
-| call raw 128 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_raw128.html) | :x: | :grey_question: |
+| call raw | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_raw.html) | :grey_question: | :heavy_check_mark: |
+| call raw 128 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_raw128.html) | :grey_question: | :heavy_check_mark: |
 | call with payment | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_with_payment.html) | :grey_question: | :x: |
 | call with payment 128 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_with_payment128.html) | :grey_question: | :x: |
 | method name | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.method_name.html) | :heavy_check_mark: | :heavy_check_mark: |
