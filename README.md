@@ -1117,9 +1117,9 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | Feature    | Rust CDK | Motoko | Azle           |
 | ------------- | --------------- | -------------------- | -------------- |
 | caller | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.caller.html) | :heavy_check_mark: | :heavy_check_mark: |
-| accept message | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.accept_message.html) | :grey_question: | :heavy_check_mark: |
+| accept message | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.accept_message.html) | :heavy_check_mark: | :heavy_check_mark: |
 | arg data | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data.html) | :grey_question: | :x: |
-| arg data raw | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data_raw.html) | :grey_question: | :x: |
+| arg data raw | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data_raw.html) | :heavy_check_mark: | :x: |
 | arg data raw size | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data_raw_size.html) | :grey_question: | :x: |
 | call | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call.html) | :heavy_check_mark: | :heavy_check_mark: |
 | call raw | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_raw.html) | :x: | :heavy_check_mark: |
@@ -1136,7 +1136,7 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | notify | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.notify.html) | :grey_question: | :x: |
 | notify raw | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.notify_raw.html) | :grey_question: | :x: |
 | notify with payment 128 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.notify_with_payment128.html) | :grey_question: | :x: |
-| performance counter | [:grey_question:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.performance_counter.html) | :grey_question: | :x: |
+| performance counter | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.performance_counter.html) | :heavy_check_mark: | :x: |
 | reject | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.reject.html) | :grey_question: | :x: |
 | reject code | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.reject_code.html) | :grey_question: | :x: |
 | reject message | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.reject_message.html) | :grey_question: | :x: |
