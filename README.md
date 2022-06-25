@@ -1101,6 +1101,8 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 
 #### Canister APIs
 
+| Feature    | Rust CDK | Motoko | Azle           |
+| ------------- | --------------- | -------------------- | -------------- |
 | canister balance | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.canister_balance.html) | :white_check_mark: | :heavy_check_mark: |
 | canister balance 128 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.canister_balance128.html) | :heavy_check_mark: | :heavy_check_mark: |
 | data certificate | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.data_certificate.html) | :heavy_check_mark: | :heavy_check_mark: |
