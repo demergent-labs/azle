@@ -1,12 +1,15 @@
 import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@dfinity/agent';
+
 export interface _SERVICE {
-    caller: () => Promise<Principal>;
-    canister_balance: () => Promise<bigint>;
-    canister_balance128: () => Promise<bigint>;
-    data_certificate: () => Promise<[] | [Array<number>]>;
-    data_certificate_null: () => Promise<[] | [Array<number>]>;
-    id: () => Promise<Principal>;
-    print: (arg_0: string) => Promise<boolean>;
-    time: () => Promise<bigint>;
-    trap: (arg_0: string) => Promise<boolean>;
+    caller: ActorMethod<[], Principal>;
+    canister_balance: ActorMethod<[], bigint>;
+    canister_balance128: ActorMethod<[], bigint>;
+    data_certificate: ActorMethod<[], [] | [Array<number>]>;
+    data_certificate_null: ActorMethod<[], [] | [Array<number>]>;
+    id: ActorMethod<[], Principal>;
+    performance_counter: ActorMethod<[], bigint>;
+    print: ActorMethod<[string], boolean>;
+    time: ActorMethod<[], bigint>;
+    trap: ActorMethod<[string], boolean>;
 }

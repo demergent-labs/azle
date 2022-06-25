@@ -28,8 +28,8 @@ export function generateLibCargoToml(canisterName: string): Toml {
         crate-type = ["cdylib"]
 
         [dependencies]
-        ic-cdk = "0.5.0"
-        ic-cdk-macros = "0.5.0"
+        ic-cdk = "0.5.2"
+        ic-cdk-macros = "0.5.2"
         candid = "0.7.14"
         boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "vec_u8_into_typed_array" } # This is a fork of js-bigint-128
         # boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "js-bigint-128" } # This has a small necessary change that another person has opened a pull request to fix

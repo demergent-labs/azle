@@ -77,6 +77,11 @@ export function generateIcObject(
                 0
             )
             .function(
+                _azle_performance_counter,
+                "performance_counter",
+                0
+            )
+            .function(
                 azle_ic_print,
                 "print",
                 0

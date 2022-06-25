@@ -6,6 +6,7 @@ export const idlFactory = ({ IDL }) => {
         data_certificate: IDL.Func([], [IDL.Opt(IDL.Vec(IDL.Nat8))], ['query']),
         data_certificate_null: IDL.Func([], [IDL.Opt(IDL.Vec(IDL.Nat8))], []),
         id: IDL.Func([], [IDL.Principal], ['query']),
+        performance_counter: IDL.Func([], [IDL.Nat64], ['query']),
         print: IDL.Func([IDL.Text], [IDL.Bool], ['query']),
         time: IDL.Func([], [IDL.Nat64], ['query']),
         trap: IDL.Func([IDL.Text], [IDL.Bool], ['query'])

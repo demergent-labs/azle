@@ -9,7 +9,39 @@ const ic_api_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('cycles'),
+    // ...cleanDeploy('cycles'), // TODO in dfx 10+ we now must use gzip to install Wasm binaries over 2mb locally
+    {
+        name: 'clear canister memory',
+        prep: async () => {
+            execSync(`dfx canister uninstall-code ic_api || true`, {
+                stdio: 'inherit'
+            });
+        }
+    },
+    {
+        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
+        name: 'waiting for createActor fetchRootKey',
+        wait: 5000
+    },
+    {
+        name: 'canister create',
+        prep: async () => {
+            execSync(`dfx canister create ic_api`, {
+                stdio: 'inherit'
+            });
+        }
+    },
+    {
+        name: 'canister install',
+        prep: async () => {
+            execSync(
+                `dfx canister install ic_api --wasm target/wasm32-unknown-unknown/release/ic_api.wasm.gz`,
+                {
+                    stdio: 'inherit'
+                }
+            );
+        }
+    },
     {
         name: 'caller',
         test: async () => {
@@ -26,7 +58,7 @@ const tests: Test[] = [
             const result = await ic_api_canister.canister_balance();
 
             return {
-                ok: result === 4_000_000_000_000n
+                ok: result > 3_000_000_000_000n && result < 4_000_000_000_000n
             };
         }
     },
@@ -36,7 +68,7 @@ const tests: Test[] = [
             const result = await ic_api_canister.canister_balance128();
 
             return {
-                ok: result === 4_000_000_000_000n
+                ok: result > 3_000_000_000_000n && result < 4_000_000_000_000n
             };
         }
     },
@@ -74,6 +106,18 @@ const tests: Test[] = [
 
             return {
                 ok: result.toText() === ic_api_canister_id
+            };
+        }
+    },
+    {
+        name: 'performance_counter',
+        test: async () => {
+            const result = await ic_api_canister.performance_counter();
+
+            console.log('performance_counter result', result);
+
+            return {
+                ok: result === 218_643n // TODO watch this, I am not sure how deterministic it is, it has changed on me once
             };
         }
     },
