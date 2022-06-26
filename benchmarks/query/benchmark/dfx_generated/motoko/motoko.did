@@ -1,0 +1,6 @@
+service : {
+  query_empty: () -> (nat64) query;
+  query_nat64_add_many: () -> (nat64) query;
+  query_nat64_add_one: () -> (nat64) query;
+  query_string_initialize: () -> (nat64) query;
+}

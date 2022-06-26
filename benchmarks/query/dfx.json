@@ -1,0 +1,30 @@
+{
+    "canisters": {
+        "azle": {
+            "type": "custom",
+            "build": "npx azle azle",
+            "root": "canisters/azle",
+            "ts": "canisters/azle/azle.ts",
+            "candid": "canisters/azle/azle.did",
+            "wasm": "target/wasm32-unknown-unknown/release/azle.wasm",
+            "declarations": {
+                "output": "benchmark/dfx_generated/azle"
+            }
+        },
+        "motoko": {
+            "type": "motoko",
+            "main": "canisters/motoko/main.mo",
+            "declarations": {
+                "output": "benchmark/dfx_generated/motoko"
+            }
+        },
+        "rust": {
+            "type": "rust",
+            "package": "rust",
+            "candid": "canisters/rust/src/lib.did",
+            "declarations": {
+                "output": "benchmark/dfx_generated/rust"
+            }
+        }
+    }
+}
