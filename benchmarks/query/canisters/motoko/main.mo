@@ -7,14 +7,6 @@ actor Motoko {
         EIC.countInstructions(func() {});
     };
 
-    public query func query_string_initialize(): async Nat64 {
-        EIC.countInstructions(func() {
-            let string: Text = "hello there sir";
-
-            Debug.print(string);
-        });
-    };
-
     public query func query_nat64_add_one(): async Nat64 {
         EIC.countInstructions(func() {
             var num: Nat64 = 0;
@@ -34,6 +26,14 @@ actor Motoko {
             };
 
             Debug.print(debug_show(num));
+        });
+    };
+
+    public query func query_string_init(): async Nat64 {
+        EIC.countInstructions(func() {
+            let string: Text = "hello there sir";
+
+            Debug.print(string);
         });
     };
 }

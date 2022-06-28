@@ -9,11 +9,11 @@ const azle_canister = createActorAzle('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-const motoko_canister = createActorMotoko('ryjl3-tyaaa-aaaaa-aaaba-cai', {
-    agentOptions: {
-        host: 'http://127.0.0.1:8000'
-    }
-});
+// const motoko_canister = createActorMotoko('ryjl3-tyaaa-aaaaa-aaaba-cai', {
+//     agentOptions: {
+//         host: 'http://127.0.0.1:8000'
+//     }
+// });
 
 const rust_canister = createActorRust('rkp4c-7iaaa-aaaaa-aaaca-cai', {
     agentOptions: {
@@ -25,14 +25,27 @@ run_benchmarks();
 
 async function run_benchmarks() {
     await setup();
-    const {
-        azle_wasm_instructions,
-        motoko_wasm_instructions,
-        rust_wasm_instructions
-    } = await query_benchmark('query_empty');
-    await query_benchmark('query_nat64_add_one', azle_wasm_instructions, motoko_wasm_instructions, rust_wasm_instructions);
-    await query_benchmark('query_nat64_add_many', azle_wasm_instructions, motoko_wasm_instructions, rust_wasm_instructions);
-    await query_benchmark('query_string_initialize', azle_wasm_instructions, motoko_wasm_instructions, rust_wasm_instructions);
+    // const {
+    //     azle_wasm_instructions,
+    //     motoko_wasm_instructions,
+    //     rust_wasm_instructions
+    // } = await query_benchmark('query_empty');
+    // await query_benchmark('query_nat64_add_one', azle_wasm_instructions, motoko_wasm_instructions, rust_wasm_instructions);
+    // await query_benchmark('query_nat64_add_many', azle_wasm_instructions, motoko_wasm_instructions, rust_wasm_instructions);
+    // await query_benchmark('query_string_initialize', azle_wasm_instructions, motoko_wasm_instructions, rust_wasm_instructions);
+
+    // await query_benchmark('query_empty');
+    // await query_benchmark('query_nat64_add_one');
+    // await query_benchmark('query_nat64_add_many');
+    // await query_benchmark('query_string_init');
+
+    await query_benchmark('query_bool_init_stack', 'query_bool_init_stack 0', [0]);
+    await query_benchmark('query_bool_init_stack', 'query_bool_init_stack 10', [10]);
+    await query_benchmark('query_bool_init_stack', 'query_bool_init_stack 100', [100]);
+
+    await query_benchmark('query_bool_init_heap', 'query_bool_init_heap 0', [0]);
+    await query_benchmark('query_bool_init_heap', 'query_bool_init_heap 10', [10]);
+    await query_benchmark('query_bool_init_heap', 'query_bool_init_heap 100', [100]);
 }
 
 async function setup() {
@@ -40,9 +53,9 @@ async function setup() {
         stdio: 'inherit'
     });
 
-    execSync(`dfx canister uninstall-code motoko || true`, {
-        stdio: 'inherit'
-    });
+    // execSync(`dfx canister uninstall-code motoko || true`, {
+    //     stdio: 'inherit'
+    // });
 
     execSync(`dfx canister uninstall-code rust || true`, {
         stdio: 'inherit'
@@ -65,9 +78,9 @@ async function setup() {
         }
     );
 
-    execSync(`dfx deploy motoko`, {
-        stdio: 'inherit'
-    });
+    // execSync(`dfx deploy motoko`, {
+    //     stdio: 'inherit'
+    // });
 
     execSync(`dfx deploy rust`, {
         stdio: 'inherit'
@@ -76,6 +89,8 @@ async function setup() {
 
 async function query_benchmark(
     canister_method: string,
+    benchmark_name: string = canister_method,
+    args: any[] = [],
     azle_baseline: number = 0,
     motoko_baseline: number = 0,
     rust_baseline: number = 0
@@ -84,15 +99,12 @@ async function query_benchmark(
     motoko_wasm_instructions: number;
     rust_wasm_instructions: number;
 }> {
-    console.log(`benchmark ${canister_method}\n`);
+    console.log(`benchmark ${benchmark_name}\n`);
 
-    const azle_wasm_instructions = Number(await azle_canister[canister_method]()) - azle_baseline;
-    const motoko_wasm_instructions = Number(await motoko_canister[canister_method]()) - motoko_baseline;
-    const rust_wasm_instructions = Number(await rust_canister[canister_method]()) - rust_baseline;
-
-    console.log('azle_wasm_instructions', azle_wasm_instructions);
-    console.log('motoko_wasm_instructions', motoko_wasm_instructions);
-    console.log('rust_wasm_instructions', rust_wasm_instructions, '\n');
+    const azle_wasm_instructions = Number((await (azle_canister as any)[canister_method](...args)).wasm_instructions) - azle_baseline;
+    // const motoko_wasm_instructions = Number(await motoko_canister[canister_method](...args)) - motoko_baseline;
+    const motoko_wasm_instructions = 0;
+    const rust_wasm_instructions = Number((await (rust_canister as any)[canister_method](...args)).wasm_instructions) - rust_baseline;
 
     const {
         motoko_percentage_change,
@@ -103,9 +115,6 @@ async function query_benchmark(
         rust_wasm_instructions
     );
 
-    console.log(`Azle/Motoko percentage change: ${motoko_percentage_change}%`);
-    console.log(`Azle/Motoko change multiplier: ${rust_percentage_change}x\n`);
-
     const {
         motoko_change_multiplier,
         rust_change_multiplier
@@ -115,7 +124,14 @@ async function query_benchmark(
         rust_wasm_instructions
     );
 
-    console.log(`Azle/Rust percentage change: ${motoko_change_multiplier}%`);
+    console.log('azle_wasm_instructions', azle_wasm_instructions);
+    // console.log('motoko_wasm_instructions', motoko_wasm_instructions);
+    console.log('rust_wasm_instructions', rust_wasm_instructions, '\n');
+
+    // console.log(`Azle/Motoko percentage change: ${motoko_percentage_change}%`);
+    // console.log(`Azle/Motoko change multiplier: ${motoko_change_multiplier}x\n`);
+
+    console.log(`Azle/Rust percentage change: ${rust_percentage_change}%`);
     console.log(`Azle/Rust change multiplier: ${rust_change_multiplier}x\n\n`);
 
     return {
