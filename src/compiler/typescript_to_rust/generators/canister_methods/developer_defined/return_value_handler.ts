@@ -1,5 +1,5 @@
 import { ImplItemMethod } from '../../../ast_utilities/types';
-import { CallFunctionInfo, Rust } from '../../../../../types';
+import { CallFunctionInfo, CanisterMethodFunctionInfo, Rust } from '../../../../../types';
 
 // TODO I think I should hold off on anything crazy for now, just tell people to use float64 until further notice
 // TODO follow this issue https://github.com/boa-dev/boa/issues/1961 and this issue https://github.com/boa-dev/boa/issues/1962
@@ -8,7 +8,8 @@ import { CallFunctionInfo, Rust } from '../../../../../types';
 // TODO I need that control to possibly convert from a BigInt
 // TODO get this to work for Option...if necessary...probably is necessary to do some kind of recursion
 export function generateReturnValueHandler(
-    implItemMethod: ImplItemMethod
+    implItemMethod: ImplItemMethod,
+    canisterMethodFunctionInfo: CanisterMethodFunctionInfo
 ): Rust {
     const returnTypeName = getImplItemMethodReturnTypeName(implItemMethod);
 
@@ -19,10 +20,11 @@ export function generateReturnValueHandler(
         {
             ${
                 returnTypeName === ''
-                    ? `return;`
+                    ? canisterMethodFunctionInfo.manual ? `return ic_cdk::api::call::ManualReply::empty();` : `return;`
                     : `${generateReturnValueConversion(
                           '_azle_return_value',
-                          returnTypeName
+                          returnTypeName,
+                          canisterMethodFunctionInfo
                       )}`
             }
         }
@@ -43,7 +45,8 @@ export function generateReturnValueHandler(
                 // serde_json::from_value(_azle_final_js_value.to_json(&mut boa_context).unwrap()).unwrap()
                 ${generateReturnValueConversion(
                     '_azle_final_js_value',
-                    returnTypeName
+                    returnTypeName,
+                    canisterMethodFunctionInfo
                 )}
             // }
         `
@@ -443,7 +446,13 @@ function getImplItemMethodReturnTypeName(
 // TODO consider if we should use candid::Nat and candid::Int or if we should just use u128 and i128 directly (I almost think it would be simpler to just do the latter)
 function generateReturnValueConversion(
     jsValueName: string,
-    returnTypeName: string
+    returnTypeName: string,
+    canisterMethodFunctionInfo: CanisterMethodFunctionInfo
 ): string {
-    return `return ${jsValueName}.azle_try_from_js_value(&mut boa_context).unwrap();`;
+    if (canisterMethodFunctionInfo.manual === true) {
+        return `return ic_cdk::api::call::ManualReply::empty();`;
+    }
+    else {
+        return `return ${jsValueName}.azle_try_from_js_value(&mut boa_context).unwrap();`;
+    }
 }

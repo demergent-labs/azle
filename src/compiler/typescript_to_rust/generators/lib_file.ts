@@ -8,15 +8,15 @@ import { generateHead } from './head';
 import { generateIcObjectFunctions } from './ic_object/functions';
 import { modifyRustCandidTypes } from './modified_rust_candid_types';
 import { bundle_and_transpile_ts } from '../../typescript_to_javascript';
-import { CallFunctionInfo, JavaScript, Rust } from '../../../types';
+import { CallFunctionInfo, CanisterMethodFunctionInfo, JavaScript, Rust } from '../../../types';
 import * as tsc from 'typescript';
 import { generate_func_structs_and_impls } from './funcs';
 
 export async function generateLibFile(
     js: JavaScript,
     rustCandidTypes: Rust,
-    queryMethodFunctionNames: string[],
-    updateMethodFunctionNames: string[],
+    queryMethodFunctionInfos: CanisterMethodFunctionInfo[],
+    updateMethodFunctionInfos: CanisterMethodFunctionInfo[],
     sourceFiles: readonly tsc.SourceFile[]
 ): Promise<Rust> {
     // TODO Remove this once these issues are resolved: https://forum.dfinity.org/t/deserialize-to-candid-nat/8192/16, https://github.com/dfinity/candid/issues/331
@@ -55,8 +55,8 @@ export async function generateLibFile(
     const canisterMethodsDeveloperDefined: Rust =
         await generateCanisterMethodsDeveloperDefined(
             rust_candid_types_semicolon_syntax_fix, // TODO you might think that we should pass in modifiedRustCandidTypes here, but the printAst function seems to have a bug that removes the , from the CallResult tuple which causes problems later in the process
-            queryMethodFunctionNames,
-            updateMethodFunctionNames
+            queryMethodFunctionInfos,
+            updateMethodFunctionInfos
         );
 
     const handleGeneratorResultFunction =

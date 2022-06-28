@@ -426,3 +426,21 @@ function getCanisterMethodReturnTypeNode(
         return typeReferenceNode.typeArguments[0];
     }
 }
+
+export function getCanisterMethodTypeName(functionDeclaration: tsc.FunctionDeclaration): string {
+    if (functionDeclaration.type === undefined) {
+        throw new Error(`Canister method must have an Azle type`);
+    }
+
+    if (functionDeclaration.type.kind !== tsc.SyntaxKind.TypeReference) {
+        throw new Error(`Canister method must have an Azle type`);
+    }
+
+    const typeReferenceNode = functionDeclaration.type as tsc.TypeReferenceNode;
+
+    if (typeReferenceNode.typeName.kind !== tsc.SyntaxKind.Identifier) {
+        throw new Error(`Canister method must have an Azle type`);
+    }
+
+    return typeReferenceNode.typeName.escapedText.toString();
+}

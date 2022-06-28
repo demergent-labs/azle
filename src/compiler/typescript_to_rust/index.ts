@@ -17,8 +17,8 @@ export async function compileTypeScriptToRust(
     const {
         candid,
         candidWithDummyMethod,
-        queryMethodFunctionNames,
-        updateMethodFunctionNames
+        queryMethodFunctionInfos,
+        updateMethodFunctionInfos
     } = compileTypeScriptToCandid(sourceFiles);
 
     // TODO it would be nice to have the option of doing this
@@ -34,8 +34,8 @@ export async function compileTypeScriptToRust(
     const libFile: Rust = await generateLibFile(
         js,
         rustCandidTypes,
-        queryMethodFunctionNames,
-        updateMethodFunctionNames,
+        queryMethodFunctionInfos,
+        updateMethodFunctionInfos,
         sourceFiles
     );
 

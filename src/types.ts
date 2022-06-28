@@ -20,6 +20,7 @@ export type CandidTypeClass =
 export type CanisterMethodTypeName =
     | 'Query'
     // 'QueryAsync' | // TODO enable once this is resolved: https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754
+    | 'QueryManual'
     | 'Update'
     | 'UpdateAsync'
     | 'Init'
@@ -64,4 +65,10 @@ export type StableStorageVariableInfo = {
     name: string;
     rustType: string;
     migrate: boolean;
+};
+
+export type CanisterMethodFunctionInfo = {
+    name: string;
+    queryOrUpdate: 'QUERY' | 'UPDATE';
+    manual: boolean;
 };

@@ -1,8 +1,8 @@
-import { getCanisterMethodFunctionDeclarationsFromSourceFiles } from './ast_utilities/canister_methods';
+import { getCanisterMethodFunctionDeclarationsFromSourceFiles, getCanisterMethodTypeName } from './ast_utilities/canister_methods';
 import { generateCandidRecords } from './generators/record';
 import { generateCandidService } from './generators/service';
 import { generateCandidVariants } from './generators/variant';
-import { Candid } from '../../types';
+import { Candid, CanisterMethodFunctionInfo } from '../../types';
 import * as tsc from 'typescript';
 import {
     getCanisterTypeAliasDeclarations,
@@ -16,12 +16,13 @@ export function compileTypeScriptToCandid(
 ): {
     candid: Candid;
     candidWithDummyMethod: Candid;
-    queryMethodFunctionNames: string[];
-    updateMethodFunctionNames: string[];
+    queryMethodFunctionInfos: CanisterMethodFunctionInfo[];
+    updateMethodFunctionInfos: CanisterMethodFunctionInfo[];
 } {
     const queryMethodFunctionDeclarations =
         getCanisterMethodFunctionDeclarationsFromSourceFiles(sourceFiles, [
-            'Query'
+            'Query',
+            'QueryManual'
             // 'QueryAsync' // TODO enable once this is resolved: https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754
         ]);
 
@@ -96,18 +97,21 @@ export function compileTypeScriptToCandid(
         serviceWithDummyMethod
     );
 
-    const queryMethodFunctionNames = getCanisterMethodFunctionNames(
-        queryMethodFunctionDeclarations
+    // TODO consider combining these
+    const queryMethodFunctionInfos = getCanisterMethodFunctionInfos(
+        queryMethodFunctionDeclarations,
+        'QUERY'
     );
-    const updateMethodFunctionNames = getCanisterMethodFunctionNames(
-        updateMethodFunctionDeclarations
+    const updateMethodFunctionInfos = getCanisterMethodFunctionInfos(
+        updateMethodFunctionDeclarations,
+        'UPDATE'
     );
 
     return {
         candid,
         candidWithDummyMethod,
-        queryMethodFunctionNames,
-        updateMethodFunctionNames
+        queryMethodFunctionInfos,
+        updateMethodFunctionInfos
     };
 }
 
@@ -122,14 +126,21 @@ function generateCandid(
     }${candid_funcs === '' ? '' : `${candid_funcs}\n\n`}${candidService}`;
 }
 
-function getCanisterMethodFunctionNames(
-    queryMethodFunctionDeclarations: tsc.FunctionDeclaration[]
-): string[] {
-    return queryMethodFunctionDeclarations.map((functionDeclaration) => {
+function getCanisterMethodFunctionInfos(
+    canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
+    queryOrUpdate: 'QUERY' | 'UPDATE'
+): CanisterMethodFunctionInfo[] {
+    return canisterMethodFunctionDeclarations.map((functionDeclaration) => {
         if (functionDeclaration.name === undefined) {
             throw new Error('Canister method must have a name');
         }
 
-        return functionDeclaration.name.escapedText.toString();
+        const canisterMethodTypeName = getCanisterMethodTypeName(functionDeclaration);
+
+        return {
+            name: functionDeclaration.name.escapedText.toString(),
+            queryOrUpdate,
+            manual: ['QueryManual'].includes(canisterMethodTypeName)
+        };
     });
 }
