@@ -59,16 +59,27 @@ function generateItemFnFromImplItemMethod(
 ): Fn {
     const inputsWithoutSelfParam = implItemMethod.inputs.slice(1);
 
-    const queryMethodFunctionInfo = queryMethodFunctionInfos.find((queryMethodFunctionInfo) => queryMethodFunctionInfo.name === implItemMethod.ident);
-    const updateMethodFunctionInfo = updateMethodFunctionInfos.find((updateMethodFunctionInfo) => updateMethodFunctionInfo.name === implItemMethod.ident);
+    const queryMethodFunctionInfo = queryMethodFunctionInfos.find(
+        (queryMethodFunctionInfo) =>
+            queryMethodFunctionInfo.name === implItemMethod.ident
+    );
+    const updateMethodFunctionInfo = updateMethodFunctionInfos.find(
+        (updateMethodFunctionInfo) =>
+            updateMethodFunctionInfo.name === implItemMethod.ident
+    );
 
-    const canisterMethodFunctionInfo = queryMethodFunctionInfo ?? updateMethodFunctionInfo;
+    const canisterMethodFunctionInfo =
+        queryMethodFunctionInfo ?? updateMethodFunctionInfo;
 
     if (canisterMethodFunctionInfo === undefined) {
         throw new Error('This cannot happen');
     }
 
-    const body: Rust = getBody(implItemMethod, inputsWithoutSelfParam, canisterMethodFunctionInfo);
+    const body: Rust = getBody(
+        implItemMethod,
+        inputsWithoutSelfParam,
+        canisterMethodFunctionInfo
+    );
 
     const bodyAst: AST = JSON.parse(parseFile(body));
 
@@ -77,9 +88,7 @@ function generateItemFnFromImplItemMethod(
     }
 
     return {
-        attrs: getAttrs(
-            canisterMethodFunctionInfo
-        ),
+        attrs: getAttrs(canisterMethodFunctionInfo),
         async: implItemMethod.async,
         ident: implItemMethod.ident,
         inputs: inputsWithoutSelfParam,
@@ -88,8 +97,15 @@ function generateItemFnFromImplItemMethod(
     };
 }
 
-function getBody(implItemMethod: ImplItemMethod, inputs: any[], canisterMethodFunctionInfo: CanisterMethodFunctionInfo): Rust {
-    const returnValueHandler: Rust = generateReturnValueHandler(implItemMethod, canisterMethodFunctionInfo);
+function getBody(
+    implItemMethod: ImplItemMethod,
+    inputs: any[],
+    canisterMethodFunctionInfo: CanisterMethodFunctionInfo
+): Rust {
+    const returnValueHandler: Rust = generateReturnValueHandler(
+        implItemMethod,
+        canisterMethodFunctionInfo
+    );
 
     const functionName = implItemMethod.ident;
 
@@ -166,28 +182,46 @@ function getBody(implItemMethod: ImplItemMethod, inputs: any[], canisterMethodFu
 function getAttrs(
     canisterMethodFunctionInfo: CanisterMethodFunctionInfo
 ): any[] {
-    const queryOrUpdateText = canisterMethodFunctionInfo.queryOrUpdate === 'QUERY' ? 'query' : 'update';
-    const manualReplyText = canisterMethodFunctionInfo.manual === true ? `(manual_reply = true)` : '';
+    const queryOrUpdateText =
+        canisterMethodFunctionInfo.queryOrUpdate === 'QUERY'
+            ? 'query'
+            : 'update';
+    const manualReplyText =
+        canisterMethodFunctionInfo.manual === true
+            ? `(manual_reply = true)`
+            : '';
 
     // #[ic_cdk_macros::${queryOrUpdateText}${manualReplyText}]
-    return JSON.parse(parseFile(`
+    return JSON.parse(
+        parseFile(`
         #[ic_cdk_macros::${queryOrUpdateText}${manualReplyText}]
-        fn dummy() {}       
-    `)).items[0].fn.attrs;
+        fn dummy() {}
+    `)
+    ).items[0].fn.attrs;
 }
 
-function getOutput(implItemMethod: ImplItemMethod, canisterMethodFunctionInfo: CanisterMethodFunctionInfo): any {
-    const nonManualReplyWrappedOutput = getNonManualReplyWrappedOutput(implItemMethod);
+function getOutput(
+    implItemMethod: ImplItemMethod,
+    canisterMethodFunctionInfo: CanisterMethodFunctionInfo
+): any {
+    const nonManualReplyWrappedOutput =
+        getNonManualReplyWrappedOutput(implItemMethod);
 
     if (canisterMethodFunctionInfo.manual === true) {
         // return `ic_cdk::api::call::ManualReply<String>`;
         // return `ic_cdk::api::call::ManualReply<${nonManualReplyWrappedOutput}>`;
         // TODO get the type argument to ManualReply
-        return JSON.parse(parseFile(`
+        let dummyFunctionOutput = JSON.parse(
+            parseFile(`
             fn dummy() -> ic_cdk::api::call::ManualReply<String> {}
-        `)).items[0].fn.output;
-    }
-    else {
+        `)
+        ).items[0].fn.output;
+
+        dummyFunctionOutput.path.segments[3].arguments.angle_bracketed.args[0].type =
+            nonManualReplyWrappedOutput;
+
+        return dummyFunctionOutput;
+    } else {
         return nonManualReplyWrappedOutput;
     }
 }

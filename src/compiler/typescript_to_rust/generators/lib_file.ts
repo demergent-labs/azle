@@ -8,7 +8,12 @@ import { generateHead } from './head';
 import { generateIcObjectFunctions } from './ic_object/functions';
 import { modifyRustCandidTypes } from './modified_rust_candid_types';
 import { bundle_and_transpile_ts } from '../../typescript_to_javascript';
-import { CallFunctionInfo, CanisterMethodFunctionInfo, JavaScript, Rust } from '../../../types';
+import {
+    CallFunctionInfo,
+    CanisterMethodFunctionInfo,
+    JavaScript,
+    Rust
+} from '../../../types';
 import * as tsc from 'typescript';
 import { generate_func_structs_and_impls } from './funcs';
 

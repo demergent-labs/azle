@@ -427,7 +427,9 @@ function getCanisterMethodReturnTypeNode(
     }
 }
 
-export function getCanisterMethodTypeName(functionDeclaration: tsc.FunctionDeclaration): string {
+export function getCanisterMethodTypeName(
+    functionDeclaration: tsc.FunctionDeclaration
+): string {
     if (functionDeclaration.type === undefined) {
         throw new Error(`Canister method must have an Azle type`);
     }

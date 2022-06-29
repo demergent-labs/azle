@@ -1,4 +1,14 @@
-import { blob, ic, nat, nat64, Opt, Principal, Query, QueryManual, Update } from 'azle';
+import {
+    blob,
+    ic,
+    nat,
+    nat64,
+    Opt,
+    Principal,
+    Query,
+    QueryManual,
+    Update
+} from 'azle';
 
 // returns the principal of the identity that called this function
 export function caller(): Query<Principal> {
@@ -37,11 +47,14 @@ export function print(message: string): Query<boolean> {
     return true;
 }
 
-// TODO: This should reject with a message, stopping execution. Instead, it
-// rejects but continues execution which results in second invalid return
-// causing a reject code of 5 instead of 4.
 export function reject(message: string): QueryManual<string> {
-    ic.reject(message);
+    if (message === 'reject') {
+        ic.reject(message);
+        return;
+    }
+
+    // TODO: implement this
+    // ic.reply('accepted');
 }
 
 // returns the current timestamp

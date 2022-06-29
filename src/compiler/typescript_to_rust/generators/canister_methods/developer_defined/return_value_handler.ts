@@ -1,5 +1,9 @@
 import { ImplItemMethod } from '../../../ast_utilities/types';
-import { CallFunctionInfo, CanisterMethodFunctionInfo, Rust } from '../../../../../types';
+import {
+    CallFunctionInfo,
+    CanisterMethodFunctionInfo,
+    Rust
+} from '../../../../../types';
 
 // TODO I think I should hold off on anything crazy for now, just tell people to use float64 until further notice
 // TODO follow this issue https://github.com/boa-dev/boa/issues/1961 and this issue https://github.com/boa-dev/boa/issues/1962
@@ -20,7 +24,9 @@ export function generateReturnValueHandler(
         {
             ${
                 returnTypeName === ''
-                    ? canisterMethodFunctionInfo.manual ? `return ic_cdk::api::call::ManualReply::empty();` : `return;`
+                    ? canisterMethodFunctionInfo.manual
+                        ? `return ic_cdk::api::call::ManualReply::empty();`
+                        : `return;`
                     : `${generateReturnValueConversion(
                           '_azle_return_value',
                           returnTypeName,
@@ -451,8 +457,7 @@ function generateReturnValueConversion(
 ): string {
     if (canisterMethodFunctionInfo.manual === true) {
         return `return ic_cdk::api::call::ManualReply::empty();`;
-    }
-    else {
+    } else {
         return `return ${jsValueName}.azle_try_from_js_value(&mut boa_context).unwrap();`;
     }
 }

@@ -1,4 +1,7 @@
-import { getCanisterMethodFunctionDeclarationsFromSourceFiles, getCanisterMethodTypeName } from './ast_utilities/canister_methods';
+import {
+    getCanisterMethodFunctionDeclarationsFromSourceFiles,
+    getCanisterMethodTypeName
+} from './ast_utilities/canister_methods';
 import { generateCandidRecords } from './generators/record';
 import { generateCandidService } from './generators/service';
 import { generateCandidVariants } from './generators/variant';
@@ -135,7 +138,8 @@ function getCanisterMethodFunctionInfos(
             throw new Error('Canister method must have a name');
         }
 
-        const canisterMethodTypeName = getCanisterMethodTypeName(functionDeclaration);
+        const canisterMethodTypeName =
+            getCanisterMethodTypeName(functionDeclaration);
 
         return {
             name: functionDeclaration.name.escapedText.toString(),
