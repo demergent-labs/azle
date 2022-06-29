@@ -85,9 +85,8 @@ function generateCallFunctionFromTypeElement(
     const functionParams = generateCallFunctionParams(methodSignature);
     const functionReturnType = generateCallFunctionReturnType(methodSignature);
     const functionBody = generateCallFunctionBody(
-        functionReturnType,
         methodName,
-        functionParams.map((param) => param.paramName)
+        functionParams
     );
 
     return {

@@ -13,9 +13,7 @@ type ReportRefundResult128 = Variant<{
 
 // Reports the number of cycles returned from the Cycles canister
 export function* reportRefund(): UpdateAsync<ReportRefundResult> {
-    // TODO: This doesn't actually send cycles right now.
-    // See https://github.com/demergent-labs/azle/issues/387
-    const result: CanisterResult<nat64> = yield cycles.sendCycles();
+    const result: CanisterResult<nat64> = yield cycles.sendCycles(1_000_000_000_000n);
 
     if (!ok(result)) {
         return { err: result.err };
@@ -28,10 +26,7 @@ export function* reportRefund(): UpdateAsync<ReportRefundResult> {
 
 // Reports the number of cycles returned from the Cycles canister
 export function* reportRefund128(): UpdateAsync<ReportRefundResult128> {
-    // TODO: This doesn't actually send cycles right now.
-    // See https://github.com/demergent-labs/azle/issues/387
-
-    const result: CanisterResult<nat> = yield cycles.sendCycles128();
+    const result: CanisterResult<nat> = yield cycles.sendCycles128(1_000_000_000_000n);
 
     if (!ok(result)) {
         return { err: result.err };

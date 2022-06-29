@@ -53,10 +53,7 @@ export type TypeScript = string;
 
 export type CallFunctionInfo = {
     functionName: string;
-    params: {
-        paramName: string;
-        paramType: string;
-    }[];
+    params: RustParam[];
     text: Rust;
 };
 
@@ -64,4 +61,9 @@ export type StableStorageVariableInfo = {
     name: string;
     rustType: string;
     migrate: boolean;
+};
+
+export type RustParam = {
+    paramName: string;
+    paramType: string;
 };
