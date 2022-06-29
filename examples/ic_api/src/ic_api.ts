@@ -1,5 +1,6 @@
 import {
     blob,
+    empty,
     ic,
     nat,
     nat64,
@@ -47,14 +48,8 @@ export function print(message: string): Query<boolean> {
     return true;
 }
 
-export function reject(message: string): QueryManual<string> {
-    if (message === 'reject') {
-        ic.reject(message);
-        return;
-    }
-
-    // TODO: implement this
-    // ic.reply('accepted');
+export function reject(message: string): QueryManual<empty> {
+    ic.reject(message);
 }
 
 // returns the current timestamp

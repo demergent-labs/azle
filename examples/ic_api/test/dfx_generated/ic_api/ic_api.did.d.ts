@@ -7,7 +7,7 @@ export interface _SERVICE {
     data_certificate_null: () => Promise<[] | [Array<number>]>;
     id: () => Promise<Principal>;
     print: (arg_0: string) => Promise<boolean>;
-    reject: (arg_0: string) => Promise<string>;
+    reject: (arg_0: string) => Promise<never>;
     time: () => Promise<bigint>;
     trap: (arg_0: string) => Promise<boolean>;
 }

@@ -90,18 +90,18 @@ const tests: Test[] = [
     {
         name: 'reject',
         test: async () => {
+            const rejectionMessage = 'Rejected!';
             try {
-                const result = await ic_api_canister.reject(
-                    'rejection message'
-                );
+                await ic_api_canister.reject(rejectionMessage);
 
                 return {
                     ok: false
                 };
             } catch (error) {
-                // TODO: The rejection code should be a 'CanisterReject'
                 return {
-                    ok: (error as any).props.Code === 'CanisterError'
+                    ok:
+                        (error as any).props.Code === 'CanisterReject' &&
+                        (error as any).props.Message === rejectionMessage
                 };
             }
         }
