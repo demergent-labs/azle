@@ -1,0 +1,3 @@
+service: {
+    "manual_query": (text) -> (text) query;
+}

@@ -102,6 +102,7 @@ export type Query<T> = T;
 export type QueryManual<T> = void;
 // export type QueryAsync<T> = Generator<T>; // TODO enable once this is resolved: https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754
 export type Update<T> = T;
+export type UpdateManual<T> = void;
 export type Oneway = void;
 // TODO we should change the type of UpdateAsync to force the dev to yield if possible
 export type UpdateAsync<T> = Generator<any, T, any>; // TODO to be stricter we may want the last parameter to be unknown: https://github.com/demergent-labs/azle/issues/138
