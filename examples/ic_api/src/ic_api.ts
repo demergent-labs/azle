@@ -52,6 +52,11 @@ export function reject(message: string): QueryManual<empty> {
     ic.reject(message);
 }
 
+// sets up to 32 bytes of certified data
+export function set_certified_data(data: blob): Update<void> {
+    ic.set_certified_data(data);
+}
+
 // returns the current timestamp
 export function time(): Query<nat64> {
     return ic.time();

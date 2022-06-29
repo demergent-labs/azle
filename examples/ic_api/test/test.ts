@@ -107,6 +107,17 @@ const tests: Test[] = [
         }
     },
     {
+        name: 'set_data_certificate',
+        test: async () => {
+            const result = await ic_api_canister.set_certified_data([
+                83, 117, 114, 112, 114, 105, 115, 101, 33
+            ]);
+            return {
+                ok: result === undefined
+            };
+        }
+    },
+    {
         name: 'time',
         test: async () => {
             const node_time_in_nanoseconds =
