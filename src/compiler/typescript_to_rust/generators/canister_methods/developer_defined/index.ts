@@ -9,8 +9,7 @@ import { CanisterMethodFunctionInfo, Rust } from '../../../../../types';
 
 export async function generateCanisterMethodsDeveloperDefined(
     rustCandidTypes: Rust,
-    queryMethodFunctionInfos: CanisterMethodFunctionInfo[],
-    updateMethodFunctionInfos: CanisterMethodFunctionInfo[]
+    canisterMethodFunctionInfos: CanisterMethodFunctionInfo[]
 ): Promise<Rust> {
     const rustCandidTypesAstString = parseFile(rustCandidTypes);
     const rustCandidTypesAst: AST = JSON.parse(rustCandidTypesAstString);
@@ -21,8 +20,7 @@ export async function generateCanisterMethodsDeveloperDefined(
     const implItemMethods = getImplItemMethods(impl);
     const fns = generateItemFnsFromImplItemMethods(
         implItemMethods,
-        queryMethodFunctionInfos,
-        updateMethodFunctionInfos
+        canisterMethodFunctionInfos
     );
 
     const fnsAst = {
@@ -40,36 +38,25 @@ export async function generateCanisterMethodsDeveloperDefined(
 
 function generateItemFnsFromImplItemMethods(
     implItemMethods: ImplItemMethod[],
-    queryMethodFunctionInfos: CanisterMethodFunctionInfo[],
-    updateMethodFunctionInfos: CanisterMethodFunctionInfo[]
+    canisterMethodFunctionInfos: CanisterMethodFunctionInfo[]
 ): Fn[] {
     return implItemMethods.map((implItemMethod) => {
         return generateItemFnFromImplItemMethod(
             implItemMethod,
-            queryMethodFunctionInfos,
-            updateMethodFunctionInfos
+            canisterMethodFunctionInfos
         );
     });
 }
 
 function generateItemFnFromImplItemMethod(
     implItemMethod: ImplItemMethod,
-    queryMethodFunctionInfos: CanisterMethodFunctionInfo[],
-    updateMethodFunctionInfos: CanisterMethodFunctionInfo[]
+    canisterMethodFunctionInfos: CanisterMethodFunctionInfo[]
 ): Fn {
     const inputsWithoutSelfParam = implItemMethod.inputs.slice(1);
 
-    const queryMethodFunctionInfo = queryMethodFunctionInfos.find(
-        (queryMethodFunctionInfo) =>
-            queryMethodFunctionInfo.name === implItemMethod.ident
+    const canisterMethodFunctionInfo = canisterMethodFunctionInfos.find(
+        (functionInfo) => functionInfo.name === implItemMethod.ident
     );
-    const updateMethodFunctionInfo = updateMethodFunctionInfos.find(
-        (updateMethodFunctionInfo) =>
-            updateMethodFunctionInfo.name === implItemMethod.ident
-    );
-
-    const canisterMethodFunctionInfo =
-        queryMethodFunctionInfo ?? updateMethodFunctionInfo;
 
     if (canisterMethodFunctionInfo === undefined) {
         throw new Error('This cannot happen');

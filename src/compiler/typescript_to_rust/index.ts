@@ -14,12 +14,8 @@ export async function compileTypeScriptToRust(
 
     const sourceFiles = program.getSourceFiles();
 
-    const {
-        candid,
-        candidWithDummyMethod,
-        queryMethodFunctionInfos,
-        updateMethodFunctionInfos
-    } = compileTypeScriptToCandid(sourceFiles);
+    const { candid, candidWithDummyMethod, canisterMethodFunctionInfos } =
+        compileTypeScriptToCandid(sourceFiles);
 
     // TODO it would be nice to have the option of doing this
     // TODO it would also be nice if we could pass in the candid to the Rust types generation process
@@ -34,8 +30,7 @@ export async function compileTypeScriptToRust(
     const libFile: Rust = await generateLibFile(
         js,
         rustCandidTypes,
-        queryMethodFunctionInfos,
-        updateMethodFunctionInfos,
+        canisterMethodFunctionInfos,
         sourceFiles
     );
 

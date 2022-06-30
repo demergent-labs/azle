@@ -19,8 +19,7 @@ export function compileTypeScriptToCandid(
 ): {
     candid: Candid;
     candidWithDummyMethod: Candid;
-    queryMethodFunctionInfos: CanisterMethodFunctionInfo[];
-    updateMethodFunctionInfos: CanisterMethodFunctionInfo[];
+    canisterMethodFunctionInfos: CanisterMethodFunctionInfo[];
 } {
     const queryMethodFunctionDeclarations =
         getCanisterMethodFunctionDeclarationsFromSourceFiles(sourceFiles, [
@@ -114,8 +113,10 @@ export function compileTypeScriptToCandid(
     return {
         candid,
         candidWithDummyMethod,
-        queryMethodFunctionInfos,
-        updateMethodFunctionInfos
+        canisterMethodFunctionInfos: [
+            ...queryMethodFunctionInfos,
+            ...updateMethodFunctionInfos
+        ]
     };
 }
 
