@@ -1,0 +1,4 @@
+service: {
+    "manual_query": (text) -> (empty) query;
+    "manual_update": (text) -> (empty);
+}

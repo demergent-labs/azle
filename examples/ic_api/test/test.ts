@@ -9,7 +9,7 @@ const ic_api_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('cycles'),
+    ...cleanDeploy('ic_api'),
     {
         name: 'caller',
         test: async () => {
@@ -85,6 +85,25 @@ const tests: Test[] = [
             return {
                 ok: result === true
             };
+        }
+    },
+    {
+        name: 'reject',
+        test: async () => {
+            const rejectionMessage = 'Rejected!';
+            try {
+                await ic_api_canister.reject(rejectionMessage);
+
+                return {
+                    ok: false
+                };
+            } catch (error) {
+                return {
+                    ok:
+                        (error as any).props.Code === 'CanisterReject' &&
+                        (error as any).props.Message === rejectionMessage
+                };
+            }
         }
     },
     {

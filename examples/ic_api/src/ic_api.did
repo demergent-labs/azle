@@ -5,6 +5,7 @@ service: {
     "data_certificate": () -> (opt blob) query;
     "id": () -> (principal) query;
     "print": (text) -> (bool) query;
+    "reject": (text) -> (empty) query;
     "time": () -> (nat64) query;
     "trap": (text) -> (bool) query;
     "data_certificate_null": () -> (opt blob);

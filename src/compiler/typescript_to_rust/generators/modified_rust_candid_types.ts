@@ -1,6 +1,7 @@
-import { parseFile, printAst } from 'azle-syn';
+import { printAst } from 'azle-syn';
 import { AST, Enum, Item, Struct } from '../ast_utilities/types';
 import { Rust } from '../../../types';
+import { parse, parseRustMacros } from '../ast_utilities/parsing';
 
 // TODO remove this once this issue is resolved: https://github.com/demergent-labs/azle/issues/93
 export async function modifyRustCandidTypes(
@@ -9,7 +10,7 @@ export async function modifyRustCandidTypes(
 ): Promise<Rust> {
     const attrsWithSerialize = getAttrsWithSerialize();
 
-    const ast: AST = JSON.parse(parseFile(rustCandidTypes));
+    const ast: AST = parse(rustCandidTypes);
 
     const modifiedAst = {
         ...ast,
@@ -21,15 +22,11 @@ export async function modifyRustCandidTypes(
     return printedAST;
 }
 
-function getAttrsWithSerialize(): any[] | undefined {
+function getAttrsWithSerialize(): any[] {
     // TODO I will probably be adding my own attributes for the custom JsValue traits here
-    const structMacroString = `
-        #[derive(CandidType, Deserialize, AzleIntoJsValue, AzleTryFromJsValue)]
-        struct Dummy {}
-    `;
-    const structMacroAst: AST = JSON.parse(parseFile(structMacroString));
+    const macro = `#[derive(CandidType, Deserialize, AzleIntoJsValue, AzleTryFromJsValue)]`;
 
-    return structMacroAst.items[0].struct?.attrs;
+    return parseRustMacros(macro);
 }
 
 function modifyItems(
