@@ -1,7 +1,8 @@
-import { Rust, StableStorageVariableInfo } from '../../../../types';
+import { CallFunctionInfo, Rust, StableStorageVariableInfo } from '../../../../types';
 
 export function generateIcObject(
-    stableStorageVariableInfos: StableStorageVariableInfo[]
+    stableStorageVariableInfos: StableStorageVariableInfo[],
+    callFunctionInfos: CallFunctionInfo[]
 ): Rust {
     const _azleStableStorage = generate_AzleStableStorage(
         stableStorageVariableInfos
@@ -91,6 +92,20 @@ export function generateIcObject(
                 "trap",
                 0
             )
+            ${callFunctionInfos.map((callFunctionInfo) => {
+                return /* rust */ `
+                    .function(
+                        ${callFunctionInfo.notify.functionName},
+                        "${callFunctionInfo.notify.functionName}",
+                        0
+                    )
+                    .function(
+                        ${callFunctionInfo.notify_with_payment128.functionName},
+                        "${callFunctionInfo.notify_with_payment128.functionName}",
+                        0
+                    )
+                `;
+            }).join('')}
             .property(
                 "_azleStableStorage",
                 _azleStableStorage,

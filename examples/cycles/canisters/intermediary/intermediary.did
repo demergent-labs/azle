@@ -1,8 +1,14 @@
-type ReportRefundResult = variant { "ok": nat64; "err": text };
+type SendCyclesResult = variant { "ok": nat64; "err": text };
 
-type ReportRefundResult128 = variant { "ok": nat; "err": text };
+type NotifyResult = variant { "ok": null; "err": text };
+
+type SendCyclesResult128 = variant { "ok": nat; "err": text };
 
 service: {
-    "reportRefund": () -> (ReportRefundResult);
-    "reportRefund128": () -> (ReportRefundResult128);
+    "getCanisterBalance": () -> (nat64) query;
+    "getCanisterBalance128": () -> (nat) query;
+    "sendCycles": () -> (SendCyclesResult);
+    "sendCyclesNotify": () -> (NotifyResult);
+    "sendCycles128": () -> (SendCyclesResult128);
+    "sendCycles128Notify": () -> (NotifyResult);
 }

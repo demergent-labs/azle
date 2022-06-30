@@ -1,4 +1,6 @@
 service: {
-    "sendCycles": () -> (nat64);
-    "sendCycles128": () -> (nat);
+    "getCanisterBalance": () -> (nat64) query;
+    "getCanisterBalance128": () -> (nat) query;
+    "receiveCycles": () -> (nat64);
+    "receiveCycles128": () -> (nat);
 }

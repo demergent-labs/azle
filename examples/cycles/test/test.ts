@@ -18,26 +18,36 @@ const intermediary_canister = createIntermediaryActor(
 );
 
 const tests: Test[] = [
-    ...cleanDeploy('cycles', 'intermediary'),
+    ...cleanDeploy('cycles', 'intermediary'), // TODO for now these tests need to be run on a fresh dfx start --clean, since cycles are not discarded on uninstall-code
     {
-        name: 'msg_cycles_available and msg_cycles_accept',
+        name: 'initial getCanisterBalance',
         test: async () => {
-            const result = await cycles_canister.sendCycles();
-            // TODO: DFX 0.9.3 doesn't have full cycle support so for now this
-            // will always return `0n`.
-            // See https://github.com/demergent-labs/azle/issues/433
+            const cycles_canister_result = await cycles_canister.getCanisterBalance();
+            const intermediary_canister_result = await cycles_canister.getCanisterBalance();
+
+            return {
+                ok: (
+                    cycles_canister_result === 4_000_000_000_000n &&
+                    intermediary_canister_result === 4_000_000_000_000n
+                )
+            };
+        }
+    },
+    {
+        name: 'msg_cycles_available and msg_cycles_accept with 0 cycles sent',
+        test: async () => {
+            const result = await cycles_canister.receiveCycles();
+
             return {
                 ok: result === 0n
             };
         }
     },
     {
-        name: 'msg_cycles_available128 and msg_cycles_accept128',
+        name: 'msg_cycles_available128 and msg_cycles_accept128 with 0 cycles sent',
         test: async () => {
-            const result = await cycles_canister.sendCycles128();
-            // TODO: DFX 0.9.3 doesn't have full cycle support so for now this
-            // will always return `0n`.
-            // See https://github.com/demergent-labs/azle/issues/433
+            const result = await cycles_canister.receiveCycles128();
+
             return {
                 ok: result === 0n
             };
@@ -46,34 +56,82 @@ const tests: Test[] = [
     {
         name: 'msg_cycles_refunded',
         test: async () => {
-            const result = await intermediary_canister.reportRefund();
+            const refund_result = await intermediary_canister.sendCycles();
 
-            if (!ok(result)) {
-                return { err: result.err };
+            if (!ok(refund_result)) {
+                return { err: refund_result.err };
             }
 
-            // TODO: DFX 0.9.3 doesn't have full cycle support so for now this
-            // will always return `0n`.
-            // See https://github.com/demergent-labs/azle/issues/433
+            const intermediary_canister_result = await intermediary_canister.getCanisterBalance();
+            const cycles_canister_result = await cycles_canister.getCanisterBalance();
+
             return {
-                ok: result.ok === 0n
+                ok: (
+                    refund_result.ok === 500_000n &&
+                    intermediary_canister_result === 3_999_999_500_000n &&
+                    cycles_canister_result === 4_000_000_500_000n
+                )
             };
         }
     },
     {
         name: 'msg_cycles_refunded128',
         test: async () => {
-            const result = await intermediary_canister.reportRefund128();
+            const refund_result = await intermediary_canister.sendCycles128();
 
-            if (!ok(result)) {
-                return { err: result.err };
+            if (!ok(refund_result)) {
+                return { err: refund_result.err };
             }
 
-            // TODO: DFX 0.9.3 doesn't have full cycle support so for now this
-            // will always return `0n`.
-            // See https://github.com/demergent-labs/azle/issues/433
+            const intermediary_canister_result = await intermediary_canister.getCanisterBalance();
+            const cycles_canister_result = await cycles_canister.getCanisterBalance();
+
             return {
-                ok: result.ok === 0n
+                ok: (
+                    refund_result.ok === 500_000n &&
+                    intermediary_canister_result === 3_999_999_000_000n &&
+                    cycles_canister_result === 4_000_001_000_000n
+                )
+            };
+        }
+    },
+    {
+        name: 'send cycles with notify',
+        test: async () => {
+            const sendCyclesNotifyResult = await intermediary_canister.sendCyclesNotify();
+
+            if (!ok(sendCyclesNotifyResult)) {
+                return { err: sendCyclesNotifyResult.err };
+            }
+
+            const intermediary_canister_result = await intermediary_canister.getCanisterBalance();
+            const cycles_canister_result = await cycles_canister.getCanisterBalance();
+
+            return {
+                ok: (
+                    intermediary_canister_result === 3_999_998_500_000n &&
+                    cycles_canister_result === 4_000_001_500_000n
+                )
+            };
+        }
+    },
+    {
+        name: 'send cycles128 with notify',
+        test: async () => {
+            const sendCycles128NotifyResult = await intermediary_canister.sendCycles128Notify();
+
+            if (!ok(sendCycles128NotifyResult)) {
+                return { err: sendCycles128NotifyResult.err };
+            }
+
+            const intermediary_canister_result = await intermediary_canister.getCanisterBalance();
+            const cycles_canister_result = await cycles_canister.getCanisterBalance();
+
+            return {
+                ok: (
+                    intermediary_canister_result === 3_999_998_000_000n &&
+                    cycles_canister_result === 4_000_002_000_000n
+                )
             };
         }
     }

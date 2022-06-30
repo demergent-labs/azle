@@ -1,5 +1,7 @@
 import type { Principal } from '@dfinity/principal';
 export interface _SERVICE {
-    sendCycles: () => Promise<bigint>;
-    sendCycles128: () => Promise<bigint>;
+  'getCanisterBalance' : () => Promise<bigint>,
+  'getCanisterBalance128' : () => Promise<bigint>,
+  'receiveCycles' : () => Promise<bigint>,
+  'receiveCycles128' : () => Promise<bigint>,
 }

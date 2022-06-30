@@ -52,9 +52,17 @@ export type Toml = string;
 export type TypeScript = string;
 
 export type CallFunctionInfo = {
+    call: RustFunctionInfo;
+    call_with_payment: RustFunctionInfo;
+    call_with_payment128: RustFunctionInfo;
+    notify: RustFunctionInfo;
+    notify_with_payment128: RustFunctionInfo;
+};
+
+type RustFunctionInfo = {
     functionName: string;
     params: RustParam[];
-    text: Rust;
+    rust: Rust;
 };
 
 export type StableStorageVariableInfo = {

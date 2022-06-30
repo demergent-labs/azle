@@ -195,7 +195,7 @@ function generateCanisterMethodFromTypeElement(
 
     const methodSignature = typeElement as tsc.MethodSignature;
 
-    const { methodName, callFunctionName } = generateCallFunctionName(
+    const { methodName, callFunctionName, callWithPaymentFunctionName, callWithPayment128FunctionName, notifyFunctionName, notifyWithPayment128FunctionName } = generateCallFunctionName(
         methodSignature,
         typeAliasName
     );
@@ -208,7 +208,50 @@ function generateCanisterMethodFromTypeElement(
                     '${callFunctionName}',
                     canisterId,
                     ...args
-                ]
+                ],
+                with_cycles: (cycles) => {
+                    return {
+                        name: 'call_with_payment',
+                        args: [
+                            '${callWithPaymentFunctionName}',
+                            canisterId,
+                            ...args,
+                            cycles
+                        ],
+                        notify: () => {
+                            // There is no notify_with_payment, there is only a notify_with_payment128
+                            return ic['${notifyWithPayment128FunctionName}'](
+                                canisterId,
+                                args,
+                                cycles
+                            );
+                        }
+                    };
+                },
+                with_cycles128: (cycles) => {
+                    return {
+                        name: 'call_with_payment128',
+                        args: [
+                            '${callWithPayment128FunctionName}',
+                            canisterId,
+                            ...args,
+                            cycles
+                        ],
+                        notify: () => {
+                            return ic['${notifyWithPayment128FunctionName}'](
+                                canisterId,
+                                args,
+                                cycles
+                            );
+                        }
+                    };
+                },
+                notify: () => {
+                    return ic['${notifyFunctionName}'](
+                        canisterId,
+                        args
+                    );
+                }
             };
         }
     `;

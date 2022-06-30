@@ -1,4 +1,4 @@
-import { Rust } from '../../../../types';
+import { CallFunctionInfo, Rust } from '../../../../types';
 import * as tsc from 'typescript';
 import { getCanisterMethodFunctionDeclarationsFromSourceFiles } from '../../../typescript_to_candid/ast_utilities/canister_methods';
 import { getUserDefinedInitFunctionParams } from './init';
@@ -7,12 +7,13 @@ import { getStableStorageVariableInfos } from './pre_upgrade';
 import { getFunctionName } from '../../../typescript_to_candid/ast_utilities/miscellaneous';
 
 export function generateCanisterMethodPostUpgrade(
-    sourceFiles: readonly tsc.SourceFile[]
+    sourceFiles: readonly tsc.SourceFile[],
+    callFunctionInfos: CallFunctionInfo[]
 ): Rust {
     const stableStorageVariableInfos =
         getStableStorageVariableInfos(sourceFiles);
 
-    const icObject: Rust = generateIcObject(stableStorageVariableInfos);
+    const icObject: Rust = generateIcObject(stableStorageVariableInfos, callFunctionInfos);
 
     const initFunctionDeclarations =
         getCanisterMethodFunctionDeclarationsFromSourceFiles(sourceFiles, [

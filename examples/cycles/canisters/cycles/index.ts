@@ -1,8 +1,8 @@
 import { Canister, CanisterResult, ic, nat, nat64, Principal } from 'azle';
 
 export type Cycles = Canister<{
-    sendCycles(cycles: nat64): CanisterResult<nat64>;
-    sendCycles128(cycles: nat): CanisterResult<nat>;
+    receiveCycles(): CanisterResult<nat64>;
+    receiveCycles128(): CanisterResult<nat>;
 }>;
 
 export const cycles = ic.canisters.Cycles<Cycles>(

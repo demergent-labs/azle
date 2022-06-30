@@ -324,18 +324,18 @@ export function generateHandleGeneratorResultFunction(
                         let call_args_js_value = yield_result_value_js_object.get("args", _azle_boa_context).unwrap();
                         let call_args_js_object = call_args_js_value.as_object().unwrap();
 
-                        let call_function_name_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap(); // TODO get the first call arg
+                        let call_function_name_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap();
                         let call_function_name_string = call_function_name_js_value.as_string().unwrap().to_string();
 
                         match &call_function_name_string[..] {
                             ${callFunctionInfos
                                 .map((callFunctionInfo) => {
                                     return /* rust */ `
-                                    "${callFunctionInfo.functionName}" => {
+                                    "${callFunctionInfo.call.functionName}" => {
                                         let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
                                         let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
 
-                                        ${callFunctionInfo.params
+                                        ${callFunctionInfo.call.params
                                             .map((param, index) => {
                                                 return `
                                                 let ${
@@ -353,14 +353,188 @@ export function generateHandleGeneratorResultFunction(
                                             .join('\n')}
 
                                         let call_result = ${
-                                            callFunctionInfo.functionName
+                                            callFunctionInfo.call.functionName
                                         }(
                                             canister_id_principal,
-                                            ${callFunctionInfo.params
+                                            ${callFunctionInfo.call.params
                                                 .map((param) => {
                                                     return param.paramName;
                                                 })
                                                 .join(',\n')}
+                                        ).await;
+
+                                        match call_result {
+                                            Ok(value) => {
+                                                let js_value = value.0.azle_into_js_value(_azle_boa_context);
+
+                                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                                                    .property(
+                                                        "ok",
+                                                        js_value,
+                                                        boa_engine::property::Attribute::all()
+                                                    )
+                                                    .build();
+
+                                                let canister_result_js_value = canister_result_js_object.into();
+
+                                                _azle_args = vec![canister_result_js_value];
+                                            },
+                                            Err(err) => {
+                                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).azle_into_js_value(_azle_boa_context);
+
+                                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                                                    .property(
+                                                        "err",
+                                                        js_value,
+                                                        boa_engine::property::Attribute::all()
+                                                    )
+                                                    .build();
+
+                                                let canister_result_js_value = canister_result_js_object.into();
+
+                                                _azle_args = vec![canister_result_js_value];
+                                            }
+                                        };
+                                    },
+                                `;
+                                })
+                                .join('\n')}
+                            _ => ()
+                        };
+                    }
+
+                    if name_string == "call_with_payment" {
+                        let call_args_js_value = yield_result_value_js_object.get("args", _azle_boa_context).unwrap();
+                        let call_args_js_object = call_args_js_value.as_object().unwrap();
+
+                        let call_function_name_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap();
+                        let call_function_name_string = call_function_name_js_value.as_string().unwrap().to_string();
+
+                        match &call_function_name_string[..] {
+                            ${callFunctionInfos
+                                .map((callFunctionInfo) => {
+                                    return /* rust */ `
+                                    "${callFunctionInfo.call_with_payment.functionName}" => {
+                                        let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
+                                        let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+
+                                        ${callFunctionInfo.call_with_payment.params
+                                            .map((param, index) => {
+                                                return `
+                                                let ${
+                                                    param.paramName
+                                                }_js_value = call_args_js_object.get("${
+                                                    index + 2
+                                                }", _azle_boa_context).unwrap();
+                                                let ${param.paramName}: ${
+                                                    param.paramType
+                                                } = ${
+                                                    param.paramName
+                                                }_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+                                            `;
+                                            })
+                                            .join('\n')}
+
+                                        let cycles_js_value = call_args_js_object.get("${callFunctionInfo.call_with_payment.params.length + 2}", _azle_boa_context).unwrap();
+                                        let cycles: u64 = cycles_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+
+                                        let call_result = ${
+                                            callFunctionInfo.call_with_payment.functionName
+                                        }(
+                                            canister_id_principal,
+                                            ${callFunctionInfo.call_with_payment.params
+                                                .map((param) => {
+                                                    return param.paramName;
+                                                })
+                                                .join(',\n')}${callFunctionInfo.call_with_payment.params.length > 0 ? ',' : ''}
+                                            cycles
+                                        ).await;
+
+                                        match call_result {
+                                            Ok(value) => {
+                                                let js_value = value.0.azle_into_js_value(_azle_boa_context);
+
+                                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                                                    .property(
+                                                        "ok",
+                                                        js_value,
+                                                        boa_engine::property::Attribute::all()
+                                                    )
+                                                    .build();
+
+                                                let canister_result_js_value = canister_result_js_object.into();
+
+                                                _azle_args = vec![canister_result_js_value];
+                                            },
+                                            Err(err) => {
+                                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).azle_into_js_value(_azle_boa_context);
+
+                                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                                                    .property(
+                                                        "err",
+                                                        js_value,
+                                                        boa_engine::property::Attribute::all()
+                                                    )
+                                                    .build();
+
+                                                let canister_result_js_value = canister_result_js_object.into();
+
+                                                _azle_args = vec![canister_result_js_value];
+                                            }
+                                        };
+                                    },
+                                `;
+                                })
+                                .join('\n')}
+                            _ => ()
+                        };
+                    }
+
+                    if name_string == "call_with_payment128" {
+                        let call_args_js_value = yield_result_value_js_object.get("args", _azle_boa_context).unwrap();
+                        let call_args_js_object = call_args_js_value.as_object().unwrap();
+
+                        let call_function_name_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap();
+                        let call_function_name_string = call_function_name_js_value.as_string().unwrap().to_string();
+
+                        match &call_function_name_string[..] {
+                            ${callFunctionInfos
+                                .map((callFunctionInfo) => {
+                                    return /* rust */ `
+                                    "${callFunctionInfo.call_with_payment128.functionName}" => {
+                                        let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
+                                        let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+
+                                        ${callFunctionInfo.call_with_payment128.params
+                                            .map((param, index) => {
+                                                return `
+                                                let ${
+                                                    param.paramName
+                                                }_js_value = call_args_js_object.get("${
+                                                    index + 2
+                                                }", _azle_boa_context).unwrap();
+                                                let ${param.paramName}: ${
+                                                    param.paramType
+                                                } = ${
+                                                    param.paramName
+                                                }_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+                                            `;
+                                            })
+                                            .join('\n')}
+
+                                        let cycles_js_value = call_args_js_object.get("${callFunctionInfo.call_with_payment128.params.length + 2}", _azle_boa_context).unwrap();
+                                        let cycles: u128 = cycles_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+
+                                        let call_result = ${
+                                            callFunctionInfo.call_with_payment128.functionName
+                                        }(
+                                            canister_id_principal,
+                                            ${callFunctionInfo.call_with_payment128.params
+                                                .map((param) => {
+                                                    return param.paramName;
+                                                })
+                                                .join(',\n')}${callFunctionInfo.call_with_payment128.params.length > 0 ? ',' : ''}
+                                                cycles
                                         ).await;
 
                                         match call_result {
