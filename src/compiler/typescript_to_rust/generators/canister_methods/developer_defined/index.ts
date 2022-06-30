@@ -1,8 +1,13 @@
-import { parseFile, printAst } from 'azle-syn';
+import { printAst } from 'azle-syn';
 import {
     getImplItemMethods,
     getImpls
 } from '../../../ast_utilities/miscellaneous';
+import {
+    parse,
+    parseRustFuncAttrs,
+    parseRustFuncOutput
+} from '../../../ast_utilities/parsing';
 import { AST, Fn, ImplItemMethod } from '../../../ast_utilities/types';
 import { generateReturnValueHandler } from './return_value_handler';
 import { CanisterMethodFunctionInfo, Rust } from '../../../../../types';
@@ -11,8 +16,7 @@ export async function generateCanisterMethodsDeveloperDefined(
     rustCandidTypes: Rust,
     canisterMethodFunctionInfos: CanisterMethodFunctionInfo[]
 ): Promise<Rust> {
-    const rustCandidTypesAstString = parseFile(rustCandidTypes);
-    const rustCandidTypesAst: AST = JSON.parse(rustCandidTypesAstString);
+    const rustCandidTypesAst: AST = parse(rustCandidTypes);
 
     const impls = getImpls(rustCandidTypesAst);
     const impl = impls[0];
@@ -68,7 +72,7 @@ function generateItemFnFromImplItemMethod(
         canisterMethodFunctionInfo
     );
 
-    const bodyAst: AST = JSON.parse(parseFile(body));
+    const bodyAst: AST = parse(body);
 
     if (bodyAst.items[0]?.fn === undefined) {
         throw new Error('This cannot happen');
@@ -178,38 +182,25 @@ function getAttrs(
             ? `(manual_reply = true)`
             : '';
 
-    return JSON.parse(
-        parseFile(`
-        #[ic_cdk_macros::${queryOrUpdateText}${manualReplyText}]
-        fn dummy() {}
-    `)
-    ).items[0].fn.attrs;
+    return parseRustFuncAttrs(
+        `#[ic_cdk_macros::${queryOrUpdateText}${manualReplyText}]`
+    );
 }
 
 function getOutput(
     implItemMethod: ImplItemMethod,
     canisterMethodFunctionInfo: CanisterMethodFunctionInfo
 ): any {
-    const nonManualReplyWrappedOutput =
-        getNonManualReplyWrappedOutput(implItemMethod);
+    const rawOutput = getRawOutput(implItemMethod);
 
     if (canisterMethodFunctionInfo.manual === true) {
-        let dummyFunctionOutput = JSON.parse(
-            parseFile(`
-            fn dummy() -> ic_cdk::api::call::ManualReply<String> {}
-        `)
-        ).items[0].fn.output;
-
-        dummyFunctionOutput.path.segments[3].arguments.angle_bracketed.args[0].type =
-            nonManualReplyWrappedOutput;
-
-        return dummyFunctionOutput;
+        return wrapOutputWithManualReply(rawOutput);
     } else {
-        return nonManualReplyWrappedOutput;
+        return rawOutput;
     }
 }
 
-function getNonManualReplyWrappedOutput(implItemMethod: ImplItemMethod): any {
+function getRawOutput(implItemMethod: ImplItemMethod): any {
     const output =
         implItemMethod.output?.path.segments[0].arguments.angle_bracketed
             .args[0].type.tuple.elems[0];
@@ -233,4 +224,15 @@ function createCandidNullOutput() {
             ]
         }
     };
+}
+
+function wrapOutputWithManualReply(output: any) {
+    let manualReplyWrappedOutput = parseRustFuncOutput(
+        `ic_cdk::api::call::ManualReply<PLACEHOLDER>`
+    );
+
+    manualReplyWrappedOutput.path.segments[3].arguments.angle_bracketed.args[0].type =
+        output;
+
+    return manualReplyWrappedOutput;
 }
