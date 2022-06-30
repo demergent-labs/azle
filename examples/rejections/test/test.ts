@@ -1,6 +1,5 @@
-import { cleanDeploy, Ok, ok, run_tests, Test } from 'azle/test';
+import { cleanDeploy, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/rejections';
-import { RejectCodeResult } from './dfx_generated/rejections/rejections.did';
 
 const rejections_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -14,7 +13,9 @@ const tests: Test[] = [
         name: 'reject code NO_ERROR',
         test: async () => {
             const result = await rejections_canister.getRejectionCodeNoError();
-            return matchesVariant('NoError', result);
+            return {
+                ok: 'NoError' in result
+            };
         }
     },
     {
@@ -22,17 +23,19 @@ const tests: Test[] = [
         test: async () => {
             const result =
                 await rejections_canister.getRejectionCodeDestinationInvalid();
-            return matchesVariant('DestinationInvalid', result);
+            return {
+                ok: 'DestinationInvalid' in result
+            };
         }
     },
     {
         name: 'reject code CANISTER_REJECT',
         test: async () => {
             const result =
-                await rejections_canister.getRejectionCodeCanisterReject(
-                    'custom rejection message'
-                );
-            return matchesVariant('CanisterReject', result);
+                await rejections_canister.getRejectionCodeCanisterReject();
+            return {
+                ok: 'CanisterReject' in result
+            };
         }
     },
     {
@@ -40,22 +43,11 @@ const tests: Test[] = [
         test: async () => {
             const result =
                 await rejections_canister.getRejectionCodeCanisterError();
-            return matchesVariant('CanisterError', result);
+            return {
+                ok: 'CanisterError' in result
+            };
         }
     }
 ];
 
 run_tests(tests);
-
-function matchesVariant(
-    variant: string,
-    result: RejectCodeResult
-): Ok<boolean> {
-    if (!ok(result)) {
-        return { ok: false };
-    }
-
-    return {
-        ok: variant in result.ok
-    };
-}

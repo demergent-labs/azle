@@ -8,23 +8,11 @@ export const idlFactory = ({ IDL }) => {
         SysFatal: IDL.Null,
         CanisterReject: IDL.Null
     });
-    const RejectCodeResult = IDL.Variant({
-        ok: RejectionCode,
-        err: IDL.Text
-    });
     return IDL.Service({
-        getRejectionCodeCanisterError: IDL.Func([], [RejectCodeResult], []),
-        getRejectionCodeCanisterReject: IDL.Func(
-            [IDL.Text],
-            [RejectCodeResult],
-            []
-        ),
-        getRejectionCodeDestinationInvalid: IDL.Func(
-            [],
-            [RejectCodeResult],
-            []
-        ),
-        getRejectionCodeNoError: IDL.Func([], [RejectCodeResult], [])
+        getRejectionCodeCanisterError: IDL.Func([], [RejectionCode], []),
+        getRejectionCodeCanisterReject: IDL.Func([], [RejectionCode], []),
+        getRejectionCodeDestinationInvalid: IDL.Func([], [RejectionCode], []),
+        getRejectionCodeNoError: IDL.Func([], [RejectionCode], [])
     });
 };
 export const init = ({ IDL }) => {
