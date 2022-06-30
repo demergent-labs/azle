@@ -1,12 +1,4 @@
-import {
-    Update,
-    UpdateAsync,
-    ic,
-    nat64,
-    Opt,
-    Principal,
-    Variant
-} from 'azle';
+import { Update, UpdateAsync, ic, nat64, Opt, Principal, Variant } from 'azle';
 import { Account, AccountArgs, Canister2 } from '../canister2/types';
 
 type TransferResult = Variant<{

@@ -22,14 +22,15 @@ const tests: Test[] = [
     {
         name: 'initial getCanisterBalance',
         test: async () => {
-            const cycles_canister_result = await cycles_canister.getCanisterBalance();
-            const intermediary_canister_result = await cycles_canister.getCanisterBalance();
+            const cycles_canister_result =
+                await cycles_canister.getCanisterBalance();
+            const intermediary_canister_result =
+                await cycles_canister.getCanisterBalance();
 
             return {
-                ok: (
+                ok:
                     cycles_canister_result === 4_000_000_000_000n &&
                     intermediary_canister_result === 4_000_000_000_000n
-                )
             };
         }
     },
@@ -62,15 +63,16 @@ const tests: Test[] = [
                 return { err: refund_result.err };
             }
 
-            const intermediary_canister_result = await intermediary_canister.getCanisterBalance();
-            const cycles_canister_result = await cycles_canister.getCanisterBalance();
+            const intermediary_canister_result =
+                await intermediary_canister.getCanisterBalance();
+            const cycles_canister_result =
+                await cycles_canister.getCanisterBalance();
 
             return {
-                ok: (
+                ok:
                     refund_result.ok === 500_000n &&
                     intermediary_canister_result === 3_999_999_500_000n &&
                     cycles_canister_result === 4_000_000_500_000n
-                )
             };
         }
     },
@@ -83,55 +85,60 @@ const tests: Test[] = [
                 return { err: refund_result.err };
             }
 
-            const intermediary_canister_result = await intermediary_canister.getCanisterBalance();
-            const cycles_canister_result = await cycles_canister.getCanisterBalance();
+            const intermediary_canister_result =
+                await intermediary_canister.getCanisterBalance();
+            const cycles_canister_result =
+                await cycles_canister.getCanisterBalance();
 
             return {
-                ok: (
+                ok:
                     refund_result.ok === 500_000n &&
                     intermediary_canister_result === 3_999_999_000_000n &&
                     cycles_canister_result === 4_000_001_000_000n
-                )
             };
         }
     },
     {
         name: 'send cycles with notify',
         test: async () => {
-            const sendCyclesNotifyResult = await intermediary_canister.sendCyclesNotify();
+            const sendCyclesNotifyResult =
+                await intermediary_canister.sendCyclesNotify();
 
             if (!ok(sendCyclesNotifyResult)) {
                 return { err: sendCyclesNotifyResult.err };
             }
 
-            const intermediary_canister_result = await intermediary_canister.getCanisterBalance();
-            const cycles_canister_result = await cycles_canister.getCanisterBalance();
+            const intermediary_canister_result =
+                await intermediary_canister.getCanisterBalance();
+            const cycles_canister_result =
+                await cycles_canister.getCanisterBalance();
 
             return {
-                ok: (
+                ok:
                     intermediary_canister_result === 3_999_998_500_000n &&
                     cycles_canister_result === 4_000_001_500_000n
-                )
             };
         }
     },
     {
         name: 'send cycles128 with notify',
         test: async () => {
-            const sendCycles128NotifyResult = await intermediary_canister.sendCycles128Notify();
+            const sendCycles128NotifyResult =
+                await intermediary_canister.sendCycles128Notify();
 
             if (!ok(sendCycles128NotifyResult)) {
                 return { err: sendCycles128NotifyResult.err };
             }
 
-            const intermediary_canister_result = await intermediary_canister.getCanisterBalance();
-            const cycles_canister_result = await cycles_canister.getCanisterBalance();
+            const intermediary_canister_result =
+                await intermediary_canister.getCanisterBalance();
+            const cycles_canister_result =
+                await cycles_canister.getCanisterBalance();
 
             return {
-                ok: (
+                ok:
                     intermediary_canister_result === 3_999_998_000_000n &&
                     cycles_canister_result === 4_000_002_000_000n
-                )
             };
         }
     }

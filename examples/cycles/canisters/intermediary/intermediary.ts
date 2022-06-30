@@ -1,5 +1,14 @@
 import { cycles } from '../cycles';
-import { CanisterResult, ic, nat, nat64, ok, Query, Update, Variant } from 'azle';
+import {
+    CanisterResult,
+    ic,
+    nat,
+    nat64,
+    ok,
+    Query,
+    Update,
+    Variant
+} from 'azle';
 
 type SendCyclesResult = Variant<{
     ok: nat64;
@@ -18,7 +27,9 @@ type NotifyResult = Variant<{
 
 // Reports the number of cycles returned from the Cycles canister
 export function* sendCycles(): Update<SendCyclesResult> {
-    const result: CanisterResult<nat64> = yield cycles.receiveCycles().with_cycles(1_000_000n);
+    const result: CanisterResult<nat64> = yield cycles
+        .receiveCycles()
+        .with_cycles(1_000_000n);
 
     if (!ok(result)) {
         return { err: result.err };
@@ -35,7 +46,9 @@ export function sendCyclesNotify(): Update<NotifyResult> {
 
 // Reports the number of cycles returned from the Cycles canister
 export function* sendCycles128(): Update<SendCyclesResult128> {
-    const result: CanisterResult<nat> = yield cycles.receiveCycles128().with_cycles128(1_000_000n);
+    const result: CanisterResult<nat> = yield cycles
+        .receiveCycles128()
+        .with_cycles128(1_000_000n);
 
     if (!ok(result)) {
         return { err: result.err };

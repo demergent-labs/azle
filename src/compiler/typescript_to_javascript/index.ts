@@ -195,10 +195,14 @@ function generateCanisterMethodFromTypeElement(
 
     const methodSignature = typeElement as tsc.MethodSignature;
 
-    const { methodName, callFunctionName, callWithPaymentFunctionName, callWithPayment128FunctionName, notifyFunctionName, notifyWithPayment128FunctionName } = generateCallFunctionName(
-        methodSignature,
-        typeAliasName
-    );
+    const {
+        methodName,
+        callFunctionName,
+        callWithPaymentFunctionName,
+        callWithPayment128FunctionName,
+        notifyFunctionName,
+        notifyWithPayment128FunctionName
+    } = generateCallFunctionName(methodSignature, typeAliasName);
 
     return `
         ${methodName}: (...args) => {

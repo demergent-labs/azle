@@ -1,4 +1,8 @@
-import { CallFunctionInfo, Rust, StableStorageVariableInfo } from '../../../../types';
+import {
+    CallFunctionInfo,
+    Rust,
+    StableStorageVariableInfo
+} from '../../../../types';
 
 export function generateIcObject(
     stableStorageVariableInfos: StableStorageVariableInfo[],
@@ -92,8 +96,9 @@ export function generateIcObject(
                 "trap",
                 0
             )
-            ${callFunctionInfos.map((callFunctionInfo) => {
-                return /* rust */ `
+            ${callFunctionInfos
+                .map((callFunctionInfo) => {
+                    return /* rust */ `
                     .function(
                         ${callFunctionInfo.notify.functionName},
                         "${callFunctionInfo.notify.functionName}",
@@ -105,7 +110,8 @@ export function generateIcObject(
                         0
                     )
                 `;
-            }).join('')}
+                })
+                .join('')}
             .property(
                 "_azleStableStorage",
                 _azleStableStorage,

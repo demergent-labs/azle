@@ -45,12 +45,14 @@ export async function generateLibFile(
         `export { Principal } from '@dfinity/principal';`
     );
     const head: Rust = generateHead(js, principal_js);
- 
+
     const callFunctionInfos: CallFunctionInfo[] =
         generateCallFunctions(sourceFiles);
 
-    const systemCanisterMethods: Rust =
-        generateSystemCanisterMethods(sourceFiles, callFunctionInfos);
+    const systemCanisterMethods: Rust = generateSystemCanisterMethods(
+        sourceFiles,
+        callFunctionInfos
+    );
 
     const canisterMethodsDeveloperDefined: Rust =
         await generateCanisterMethodsDeveloperDefined(
@@ -86,7 +88,8 @@ export async function generateLibFile(
         ${icObjectFunctions}
 
         ${callFunctionInfos
-            .map((callFunctionInfo) => `
+            .map(
+                (callFunctionInfo) => `
                 ${callFunctionInfo.call.rust}
 
                 ${callFunctionInfo.call_with_payment.rust}
@@ -96,7 +99,8 @@ export async function generateLibFile(
                 ${callFunctionInfo.notify.rust}
                 
                 ${callFunctionInfo.notify_with_payment128.rust}
-            `)
+            `
+            )
             .join('\n')}
     `;
 }

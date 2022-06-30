@@ -414,7 +414,10 @@ export function generateHandleGeneratorResultFunction(
                             ${callFunctionInfos
                                 .map((callFunctionInfo) => {
                                     return /* rust */ `
-                                    "${callFunctionInfo.call_with_payment.functionName}" => {
+                                    "${
+                                        callFunctionInfo.call_with_payment
+                                            .functionName
+                                    }" => {
                                         let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
                                         let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
 
@@ -435,18 +438,27 @@ export function generateHandleGeneratorResultFunction(
                                             })
                                             .join('\n')}
 
-                                        let cycles_js_value = call_args_js_object.get("${callFunctionInfo.call_with_payment.params.length + 2}", _azle_boa_context).unwrap();
+                                        let cycles_js_value = call_args_js_object.get("${
+                                            callFunctionInfo.call_with_payment
+                                                .params.length + 2
+                                        }", _azle_boa_context).unwrap();
                                         let cycles: u64 = cycles_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
 
                                         let call_result = ${
-                                            callFunctionInfo.call_with_payment.functionName
+                                            callFunctionInfo.call_with_payment
+                                                .functionName
                                         }(
                                             canister_id_principal,
                                             ${callFunctionInfo.call_with_payment.params
                                                 .map((param) => {
                                                     return param.paramName;
                                                 })
-                                                .join(',\n')}${callFunctionInfo.call_with_payment.params.length > 0 ? ',' : ''}
+                                                .join(',\n')}${
+                                        callFunctionInfo.call_with_payment
+                                            .params.length > 0
+                                            ? ','
+                                            : ''
+                                    }
                                             cycles
                                         ).await;
 
@@ -501,7 +513,10 @@ export function generateHandleGeneratorResultFunction(
                             ${callFunctionInfos
                                 .map((callFunctionInfo) => {
                                     return /* rust */ `
-                                    "${callFunctionInfo.call_with_payment128.functionName}" => {
+                                    "${
+                                        callFunctionInfo.call_with_payment128
+                                            .functionName
+                                    }" => {
                                         let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
                                         let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
 
@@ -522,18 +537,29 @@ export function generateHandleGeneratorResultFunction(
                                             })
                                             .join('\n')}
 
-                                        let cycles_js_value = call_args_js_object.get("${callFunctionInfo.call_with_payment128.params.length + 2}", _azle_boa_context).unwrap();
+                                        let cycles_js_value = call_args_js_object.get("${
+                                            callFunctionInfo
+                                                .call_with_payment128.params
+                                                .length + 2
+                                        }", _azle_boa_context).unwrap();
                                         let cycles: u128 = cycles_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
 
                                         let call_result = ${
-                                            callFunctionInfo.call_with_payment128.functionName
+                                            callFunctionInfo
+                                                .call_with_payment128
+                                                .functionName
                                         }(
                                             canister_id_principal,
                                             ${callFunctionInfo.call_with_payment128.params
                                                 .map((param) => {
                                                     return param.paramName;
                                                 })
-                                                .join(',\n')}${callFunctionInfo.call_with_payment128.params.length > 0 ? ',' : ''}
+                                                .join(',\n')}${
+                                        callFunctionInfo.call_with_payment128
+                                            .params.length > 0
+                                            ? ','
+                                            : ''
+                                    }
                                                 cycles
                                         ).await;
 

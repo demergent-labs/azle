@@ -10,13 +10,18 @@ export function generateSystemCanisterMethods(
     sourceFiles: readonly SourceFile[],
     callFunctionInfos: CallFunctionInfo[]
 ) {
-    const canisterMethodInit: Rust = generateCanisterMethodInit(sourceFiles, callFunctionInfos);
+    const canisterMethodInit: Rust = generateCanisterMethodInit(
+        sourceFiles,
+        callFunctionInfos
+    );
     const canisterMethodInspectMessage: Rust =
         generateCanisterMethodInspectMessage(sourceFiles);
     const canisterMethodPreUpgrade: Rust =
         generateCanisterMethodPreUpgrade(sourceFiles);
-    const canisterMethodPostUpgrade: Rust =
-        generateCanisterMethodPostUpgrade(sourceFiles, callFunctionInfos);
+    const canisterMethodPostUpgrade: Rust = generateCanisterMethodPostUpgrade(
+        sourceFiles,
+        callFunctionInfos
+    );
     const canisterMethodHeartbeat: Rust =
         generateCanisterMethodHeartbeat(sourceFiles);
 

@@ -13,7 +13,10 @@ export function generateCanisterMethodPostUpgrade(
     const stableStorageVariableInfos =
         getStableStorageVariableInfos(sourceFiles);
 
-    const icObject: Rust = generateIcObject(stableStorageVariableInfos, callFunctionInfos);
+    const icObject: Rust = generateIcObject(
+        stableStorageVariableInfos,
+        callFunctionInfos
+    );
 
     const initFunctionDeclarations =
         getCanisterMethodFunctionDeclarationsFromSourceFiles(sourceFiles, [

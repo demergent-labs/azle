@@ -84,13 +84,12 @@ function generateCallFunctionFromTypeElement(
         callWithPayment128FunctionName,
         notifyFunctionName,
         notifyWithPayment128FunctionName
-    } = generateCallFunctionName(
-        methodSignature,
-        typeAliasName
-    );
+    } = generateCallFunctionName(methodSignature, typeAliasName);
     const functionParams = generateCallFunctionParams(methodSignature);
     const functionReturnType = generateCallFunctionReturnType(methodSignature);
-    const param_names = functionParams.map((rust_param) => rust_param.paramName);
+    const param_names = functionParams.map(
+        (rust_param) => rust_param.paramName
+    );
 
     return {
         call: {
@@ -109,7 +108,9 @@ function generateCallFunctionFromTypeElement(
                 ic_cdk::api::call::call(
                     canister_id_principal,
                     "${methodName}",
-                    (${param_names.join(', ')}${param_names.length === 1 ? ',' : ''})
+                    (${param_names.join(', ')}${
+                param_names.length === 1 ? ',' : ''
+            })
                 ).await
             }
             `
@@ -119,18 +120,20 @@ function generateCallFunctionFromTypeElement(
             params: functionParams,
             rust: `
                 async fn ${callWithPaymentFunctionName}(canister_id_principal: ic_cdk::export::Principal${
-                    functionParams.length === 0 ? '' : ', '
-                }${functionParams
-                    .map((param) => `${param.paramName}: ${param.paramType}`)
-                    .join(', ')}, cycles: u64)${
-                    functionReturnType === ''
-                        ? ''
-                        : ` -> CallResult<(${functionReturnType},)>`
-                } {
+                functionParams.length === 0 ? '' : ', '
+            }${functionParams
+                .map((param) => `${param.paramName}: ${param.paramType}`)
+                .join(', ')}, cycles: u64)${
+                functionReturnType === ''
+                    ? ''
+                    : ` -> CallResult<(${functionReturnType},)>`
+            } {
                     ic_cdk::api::call::call_with_payment(
                         canister_id_principal,
                         "${methodName}",
-                        (${param_names.join(', ')}${param_names.length === 1 ? ',' : ''}),
+                        (${param_names.join(', ')}${
+                param_names.length === 1 ? ',' : ''
+            }),
                         cycles
                     ).await
                 }
@@ -141,18 +144,20 @@ function generateCallFunctionFromTypeElement(
             params: functionParams,
             rust: `
                 async fn ${callWithPayment128FunctionName}(canister_id_principal: ic_cdk::export::Principal${
-                    functionParams.length === 0 ? '' : ', '
-                }${functionParams
-                    .map((param) => `${param.paramName}: ${param.paramType}`)
-                    .join(', ')}, cycles: u128)${
-                    functionReturnType === ''
-                        ? ''
-                        : ` -> CallResult<(${functionReturnType},)>`
-                } {
+                functionParams.length === 0 ? '' : ', '
+            }${functionParams
+                .map((param) => `${param.paramName}: ${param.paramType}`)
+                .join(', ')}, cycles: u128)${
+                functionReturnType === ''
+                    ? ''
+                    : ` -> CallResult<(${functionReturnType},)>`
+            } {
                     ic_cdk::api::call::call_with_payment128(
                         canister_id_principal,
                         "${methodName}",
-                        (${param_names.join(', ')}${param_names.length === 1 ? ',' : ''}),
+                        (${param_names.join(', ')}${
+                param_names.length === 1 ? ',' : ''
+            }),
                         cycles
                     ).await
                 }
@@ -176,16 +181,8 @@ function generateCallFunctionFromTypeElement(
                     ${functionParams
                         .map((param, index) => {
                             return `
-                            let ${
-                                param.paramName
-                            }_js_value = args_js_object.get("${
-                                index
-                            }", _context).unwrap();
-                            let ${param.paramName}: ${
-                                param.paramType
-                            } = ${
-                                param.paramName
-                            }_js_value.azle_try_from_js_value(_context).unwrap();
+                            let ${param.paramName}_js_value = args_js_object.get("${index}", _context).unwrap();
+                            let ${param.paramName}: ${param.paramType} = ${param.paramName}_js_value.azle_try_from_js_value(_context).unwrap();
                         `;
                         })
                         .join('\n')}
@@ -193,7 +190,9 @@ function generateCallFunctionFromTypeElement(
                     let notify_result = ic_cdk::api::call::notify(
                         canister_id_principal,
                         "${methodName}",
-                        (${param_names.join(', ')}${param_names.length === 1 ? ',' : ''})
+                        (${param_names.join(', ')}${
+                param_names.length === 1 ? ',' : ''
+            })
                     );
 
                     Ok(notify_result.azle_into_js_value(_context))
@@ -218,16 +217,8 @@ function generateCallFunctionFromTypeElement(
                 ${functionParams
                     .map((param, index) => {
                         return `
-                        let ${
-                            param.paramName
-                        }_js_value = args_js_object.get("${
-                            index
-                        }", _context).unwrap();
-                        let ${param.paramName}: ${
-                            param.paramType
-                        } = ${
-                            param.paramName
-                        }_js_value.azle_try_from_js_value(_context).unwrap();
+                        let ${param.paramName}_js_value = args_js_object.get("${index}", _context).unwrap();
+                        let ${param.paramName}: ${param.paramType} = ${param.paramName}_js_value.azle_try_from_js_value(_context).unwrap();
                     `;
                     })
                     .join('\n')}
@@ -238,7 +229,9 @@ function generateCallFunctionFromTypeElement(
                 let notify_result = ic_cdk::api::call::notify_with_payment128(
                     canister_id_principal,
                     "${methodName}",
-                    (${param_names.join(', ')}${param_names.length === 1 ? ',' : ''}),
+                    (${param_names.join(', ')}${
+                param_names.length === 1 ? ',' : ''
+            }),
                     cycles
                 );
 
