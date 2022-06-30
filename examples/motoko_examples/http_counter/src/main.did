@@ -2,13 +2,13 @@ type HttpRequest = record {
     "method": text;
     "url": text;
     "headers": vec HeaderField;
-    "body": vec nat8;
+    "body": blob;
 };
 
 type HttpResponse = record {
     "status_code": nat16;
     "headers": vec HeaderField;
-    "body": vec nat8;
+    "body": blob;
     "streaming_strategy": opt StreamingStrategy;
     "upgrade": opt bool;
 };
@@ -18,7 +18,7 @@ type Token = record {
 };
 
 type StreamingCallbackHttpResponse = record {
-    "body": vec nat8;
+    "body": blob;
     "token": opt Token;
 };
 
