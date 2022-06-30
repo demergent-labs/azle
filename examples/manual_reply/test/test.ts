@@ -12,17 +12,18 @@ const tests: Test[] = [
     {
         name: 'manual_query when calling ic.reject',
         test: async () => {
+            const rejectionMessage = 'reject';
             try {
-                const result = await manual_reply_canister.manual_query(
-                    'reject'
-                );
+                await manual_reply_canister.manual_query(rejectionMessage);
 
                 return {
                     ok: false
                 };
             } catch (error) {
                 return {
-                    ok: (error as any).props.Code === 'CanisterReject'
+                    ok:
+                        (error as any).props.Code === 'CanisterReject' &&
+                        (error as any).props.Message === rejectionMessage
                 };
             }
         }
@@ -32,9 +33,7 @@ const tests: Test[] = [
         test: async () => {
             // TODO: Once ic.reply is implemented this shouldn't throw
             try {
-                const result = await manual_reply_canister.manual_query(
-                    'accept'
-                );
+                await manual_reply_canister.manual_query('accept');
 
                 return {
                     ok: false
@@ -42,6 +41,44 @@ const tests: Test[] = [
             } catch (error) {
                 return {
                     ok: (error as any).props.Code === 'CanisterError'
+                };
+            }
+        }
+    },
+    {
+        name: 'manual_update when calling ic.reject',
+        test: async () => {
+            const rejectionMessage = 'reject';
+            try {
+                await manual_reply_canister.manual_update(rejectionMessage);
+
+                return {
+                    ok: false
+                };
+            } catch (error) {
+                return {
+                    ok:
+                        (error as Error).message.includes('Reject code: 4') &&
+                        (error as Error).message.includes(
+                            `Reject text: ${rejectionMessage}`
+                        )
+                };
+            }
+        }
+    },
+    {
+        name: 'manual_update when calling ic.reply',
+        test: async () => {
+            // TODO: Once ic.reply is implemented this shouldn't throw
+            try {
+                await manual_reply_canister.manual_update('accept');
+
+                return {
+                    ok: false
+                };
+            } catch (error) {
+                return {
+                    ok: (error as Error).message.includes('Reject code: 5')
                 };
             }
         }

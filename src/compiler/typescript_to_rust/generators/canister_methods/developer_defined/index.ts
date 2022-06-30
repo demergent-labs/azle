@@ -191,7 +191,6 @@ function getAttrs(
             ? `(manual_reply = true)`
             : '';
 
-    // #[ic_cdk_macros::${queryOrUpdateText}${manualReplyText}]
     return JSON.parse(
         parseFile(`
         #[ic_cdk_macros::${queryOrUpdateText}${manualReplyText}]
@@ -208,9 +207,6 @@ function getOutput(
         getNonManualReplyWrappedOutput(implItemMethod);
 
     if (canisterMethodFunctionInfo.manual === true) {
-        // return `ic_cdk::api::call::ManualReply<String>`;
-        // return `ic_cdk::api::call::ManualReply<${nonManualReplyWrappedOutput}>`;
-        // TODO get the type argument to ManualReply
         let dummyFunctionOutput = JSON.parse(
             parseFile(`
             fn dummy() -> ic_cdk::api::call::ManualReply<String> {}

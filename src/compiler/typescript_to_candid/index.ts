@@ -32,7 +32,8 @@ export function compileTypeScriptToCandid(
     const updateMethodFunctionDeclarations =
         getCanisterMethodFunctionDeclarationsFromSourceFiles(sourceFiles, [
             'Update',
-            'UpdateAsync'
+            'UpdateAsync',
+            'UpdateManual'
         ]);
 
     const initMethodFunctionDeclarations =
@@ -144,7 +145,9 @@ function getCanisterMethodFunctionInfos(
         return {
             name: functionDeclaration.name.escapedText.toString(),
             queryOrUpdate,
-            manual: ['QueryManual'].includes(canisterMethodTypeName)
+            manual: ['QueryManual', 'UpdateManual'].includes(
+                canisterMethodTypeName
+            )
         };
     });
 }

@@ -23,6 +23,7 @@ export type CanisterMethodTypeName =
     | 'QueryManual'
     | 'Update'
     | 'UpdateAsync'
+    | 'UpdateManual'
     | 'Init'
     | 'InspectMessage'
     | 'Heartbeat'
