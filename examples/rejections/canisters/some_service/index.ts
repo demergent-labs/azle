@@ -1,9 +1,9 @@
-import { Canister, CanisterResult, ic, Principal } from 'azle';
+import { Canister, CanisterResult, empty, ic, Principal } from 'azle';
 
 export type SomeService = Canister<{
-    reject(message: string): CanisterResult<void>;
+    reject(message: string): CanisterResult<empty>;
     accept(): CanisterResult<boolean>;
-    error(): CanisterResult<void>;
+    error(): CanisterResult<empty>;
 }>;
 
 export const someService = ic.canisters.SomeService<SomeService>(
