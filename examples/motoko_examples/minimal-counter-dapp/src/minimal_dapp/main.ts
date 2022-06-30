@@ -1,4 +1,4 @@
-import { Update, nat } from 'azle';
+import { Query, Update, nat } from 'azle';
 
 let counter: nat = 0n;
 
@@ -7,7 +7,7 @@ export function count(): Update<nat> {
     return counter;
 }
 
-export function getCount(): Update<nat> {
+export function getCount(): Query<nat> {
     return counter;
 }
 
