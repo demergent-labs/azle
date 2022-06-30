@@ -12,7 +12,8 @@ export const idlFactory = ({ IDL }) => {
         getRejectionCodeCanisterError: IDL.Func([], [RejectionCode], []),
         getRejectionCodeCanisterReject: IDL.Func([], [RejectionCode], []),
         getRejectionCodeDestinationInvalid: IDL.Func([], [RejectionCode], []),
-        getRejectionCodeNoError: IDL.Func([], [RejectionCode], [])
+        getRejectionCodeNoError: IDL.Func([], [RejectionCode], []),
+        getRejectionMessage: IDL.Func([IDL.Text], [IDL.Text], [])
     });
 };
 export const init = ({ IDL }) => {

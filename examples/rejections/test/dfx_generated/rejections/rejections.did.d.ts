@@ -12,4 +12,5 @@ export interface _SERVICE {
     getRejectionCodeCanisterReject: () => Promise<RejectionCode>;
     getRejectionCodeDestinationInvalid: () => Promise<RejectionCode>;
     getRejectionCodeNoError: () => Promise<RejectionCode>;
+    getRejectionMessage: (arg_0: string) => Promise<string>;
 }

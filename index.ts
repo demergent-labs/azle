@@ -88,6 +88,7 @@ type ic = {
     print: (...args: any) => void;
     reject: (message: string) => void;
     reject_code: () => RejectionCode;
+    reject_message: () => string;
     stableStorage: <T>() => T;
     time: () => nat64;
     trap: (message: string) => never;

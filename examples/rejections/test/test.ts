@@ -47,6 +47,18 @@ const tests: Test[] = [
                 ok: 'CanisterError' in result
             };
         }
+    },
+    {
+        name: 'reject message',
+        test: async () => {
+            const rejectionMessage = 'custom rejection message';
+            const result = await rejections_canister.getRejectionMessage(
+                rejectionMessage
+            );
+            return {
+                ok: result === rejectionMessage
+            };
+        }
     }
 ];
 
