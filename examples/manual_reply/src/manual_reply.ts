@@ -1,6 +1,6 @@
-import { ic, QueryManual, UpdateManual } from 'azle';
+import { empty, ic, QueryManual, UpdateManual } from 'azle';
 
-export function manual_query(message: string): QueryManual<string> {
+export function manual_query(message: string): QueryManual<empty> {
     if (message === 'reject') {
         ic.reject(message);
         return;
@@ -10,7 +10,7 @@ export function manual_query(message: string): QueryManual<string> {
     // ic.reply('accepted');
 }
 
-export function manual_update(message: string): UpdateManual<string> {
+export function manual_update(message: string): UpdateManual<empty> {
     if (message === 'reject') {
         ic.reject(message);
         return;
