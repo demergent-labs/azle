@@ -1,3 +1,4 @@
 service: {
     "stable_size": () -> (nat32) query;
+    "stable64_size": () -> (nat64) query;
 }

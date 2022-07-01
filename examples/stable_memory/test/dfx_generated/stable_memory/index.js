@@ -37,4 +37,4 @@ export const createActor = (canisterId, options) => {
  * A ready-to-use agent for the stable_memory canister
  * @type {import("@dfinity/agent").ActorSubclass<import("./stable_memory.did.js")._SERVICE>}
  */
-// export const stable_memory = createActor(canisterId);
+//  export const stable_memory = createActor(canisterId);
