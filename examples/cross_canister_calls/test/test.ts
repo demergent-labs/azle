@@ -1,8 +1,15 @@
 import { ok, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
-import { createActor } from '../test/dfx_generated/canister1';
+import { createActor as createActorCanister1 } from '../test/dfx_generated/canister1';
+import { createActor as createActorCanister2 } from '../test/dfx_generated/canister2';
 
-const canister1 = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+const canister1 = createActorCanister1('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
+    }
+});
+
+const canister2 = createActorCanister2('ryjl3-tyaaa-aaaaa-aaaba-cai', {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
@@ -245,6 +252,36 @@ const tests: Test[] = [
                     'err' in result &&
                     result.err ===
                         'Rejection code 5, IC0503: Canister ryjl3-tyaaa-aaaaa-aaaba-cai trapped explicitly: hahahaha'
+            };
+        }
+    },
+    {
+        name: 'canister2 get_notification empty',
+        test: async () => {
+            const result = await canister2.get_notification();
+
+            return {
+                ok: result === ''
+            };
+        }
+    },
+    {
+        name: 'canister1 send_notification',
+        test: async () => {
+            const result = await canister1.send_notification();
+
+            return {
+                ok: 'ok' in result && result.ok === null
+            };
+        }
+    },
+    {
+        name: 'canister2 get_notification',
+        test: async () => {
+            const result = await canister2.get_notification();
+
+            return {
+                ok: result === 'This is the notification'
             };
         }
     }

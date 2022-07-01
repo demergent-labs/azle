@@ -246,6 +246,43 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        impl<T: AzleIntoJsValue, K: AzleIntoJsValue> AzleIntoJsValue for Result<T, K> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                match self {
+                    Ok(ok) => {
+                        let ok_js_value = ok.azle_into_js_value(context);
+
+                        let result_js_object = boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "ok",
+                                ok_js_value,
+                                boa_engine::property::Attribute::all()
+                            )
+                            .build();
+
+                        let result_js_value = result_js_object.into();
+
+                        result_js_value
+                    },
+                    Err(err) => {
+                        let err_js_value = err.azle_into_js_value(context);
+
+                        let result_js_object = boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "err",
+                                err_js_value,
+                                boa_engine::property::Attribute::all()
+                            )
+                            .build();
+
+                        let result_js_value = result_js_object.into();
+
+                        result_js_value
+                    }
+                }
+            }
+        }
+
         // Vec types
 
         impl AzleIntoJsValue for Vec<()> {

@@ -54,18 +54,28 @@ export type Toml = string;
 export type TypeScript = string;
 
 export type CallFunctionInfo = {
+    call: RustFunctionInfo;
+    call_with_payment: RustFunctionInfo;
+    call_with_payment128: RustFunctionInfo;
+    notify: RustFunctionInfo;
+    notify_with_payment128: RustFunctionInfo;
+};
+
+type RustFunctionInfo = {
     functionName: string;
-    params: {
-        paramName: string;
-        paramType: string;
-    }[];
-    text: Rust;
+    params: RustParam[];
+    rust: Rust;
 };
 
 export type StableStorageVariableInfo = {
     name: string;
     rustType: string;
     migrate: boolean;
+};
+
+export type RustParam = {
+    paramName: string;
+    paramType: string;
 };
 
 export type CanisterMethodFunctionInfo = {

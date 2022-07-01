@@ -7,7 +7,8 @@ let state: State = {
             id: '0',
             balance: 100n
         }
-    }
+    },
+    notification: ''
 };
 
 export function transfer(
@@ -51,4 +52,12 @@ export function accounts(): Query<Account[]> {
 export function trap(): Query<string> {
     ic.trap('hahahaha');
     return 'You will never get here';
+}
+
+export function receive_notification(message: string): Update<void> {
+    state.notification = message;
+}
+
+export function get_notification(): Query<string> {
+    return state.notification;
 }

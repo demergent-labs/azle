@@ -17,10 +17,13 @@ type AccountsResult = variant { "ok": vec Account; "err": text };
 
 type TrapResult = variant { "ok": text; "err": text };
 
+type NotifyResult = variant { "ok": null; "err": text };
+
 service: {
     "transfer": (text, text, nat64) -> (TransferResult);
     "balance": (text) -> (BalanceResult);
     "account": (AccountArgs) -> (AccountResult);
     "accounts": () -> (AccountsResult);
     "trap": () -> (TrapResult);
+    "send_notification": () -> (NotifyResult);
 }

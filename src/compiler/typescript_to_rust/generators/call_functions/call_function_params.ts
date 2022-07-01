@@ -1,4 +1,4 @@
-import { Rust } from '../../../../types';
+import { RustParam } from '../../../../types';
 import * as tsc from 'typescript';
 import {
     getParamName,
@@ -7,10 +7,7 @@ import {
 
 export function generateCallFunctionParams(
     methodSignature: tsc.MethodSignature
-): {
-    paramName: string;
-    paramType: string;
-}[] {
+): RustParam[] {
     return methodSignature.parameters.map((parameterDeclaration) => {
         const paramName = getParamName(parameterDeclaration);
 

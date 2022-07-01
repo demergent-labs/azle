@@ -1,5 +1,5 @@
 import { generateIcObject } from '../ic_object';
-import { Rust } from '../../../../types';
+import { CallFunctionInfo, Rust } from '../../../../types';
 import * as tsc from 'typescript';
 import { getCanisterMethodFunctionDeclarationsFromSourceFiles } from '../../../typescript_to_candid/ast_utilities/canister_methods';
 import { getFunctionName } from '../../../typescript_to_candid/ast_utilities/miscellaneous';
@@ -9,9 +9,10 @@ import {
 } from '../../ast_utilities/miscellaneous';
 
 export function generateCanisterMethodInit(
-    sourceFiles: readonly tsc.SourceFile[]
+    sourceFiles: readonly tsc.SourceFile[],
+    callFunctionInfos: CallFunctionInfo[]
 ): Rust {
-    const icObject: Rust = generateIcObject([]);
+    const icObject: Rust = generateIcObject([], callFunctionInfos);
 
     // TODO this code is now copied in post_upgrade
     const initFunctionDeclarations =
