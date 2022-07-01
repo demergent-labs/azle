@@ -16,6 +16,7 @@ import { generateIcObjectFunctionMethodName } from './method_name';
 import { generateIcObjectFunctionPrint } from './print';
 import { generateIcObjectFunctionReject } from './reject';
 import { generateIcObjectFunctionRejectCode } from './reject_code';
+import { generateIcObjectFunctionRejectMessage } from './reject_message';
 import { generateIcObjectFunctionTime } from './time';
 import { generateIcObjectFunctionTrap } from './trap';
 
@@ -48,6 +49,8 @@ export function generateIcObjectFunctions(): Rust {
     const icObjectFunctionReject: Rust = generateIcObjectFunctionReject();
     const icObjectFunctionRejectCode: Rust =
         generateIcObjectFunctionRejectCode();
+    const icObjectFunctionRejectMessage: Rust =
+        generateIcObjectFunctionRejectMessage();
     const icObjectFunctionTime: Rust = generateIcObjectFunctionTime();
     const icObjectFunctionTrap: Rust = generateIcObjectFunctionTrap();
 
@@ -68,6 +71,7 @@ export function generateIcObjectFunctions(): Rust {
         ${icObjectFunctionPrint}
         ${icObjectFunctionReject}
         ${icObjectFunctionRejectCode}
+        ${icObjectFunctionRejectMessage}
         ${icObjectFunctionTime}
         ${icObjectFunctionTrap}
   `;

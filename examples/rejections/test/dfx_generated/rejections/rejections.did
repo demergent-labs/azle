@@ -5,4 +5,5 @@ service: {
     "getRejectionCodeDestinationInvalid": () -> (RejectionCode);
     "getRejectionCodeCanisterReject": () -> (RejectionCode);
     "getRejectionCodeCanisterError": () -> (RejectionCode);
+    "getRejectionMessage": (text) -> (text);
 }

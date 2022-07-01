@@ -35,3 +35,8 @@ export function* getRejectionCodeCanisterError(): UpdateAsync<RejectionCode> {
     yield someService.error();
     return ic.reject_code();
 }
+
+export function* getRejectionMessage(message: string): UpdateAsync<string> {
+    yield someService.reject(message);
+    return ic.reject_message();
+}

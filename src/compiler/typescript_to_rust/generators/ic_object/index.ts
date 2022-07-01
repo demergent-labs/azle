@@ -92,6 +92,11 @@ export function generateIcObject(
                 0
             )
             .function(
+                _azle_ic_reject_message,
+                "reject_message",
+                0
+            )
+            .function(
                 azle_ic_time,
                 "time",
                 0
