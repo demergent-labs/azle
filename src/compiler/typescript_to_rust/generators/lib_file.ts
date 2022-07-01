@@ -67,7 +67,7 @@ export async function generateLibFile(
     const handleGeneratorResultFunction =
         generateHandleGeneratorResultFunction(callFunctionInfos);
 
-    const icObjectFunctions: Rust = generateIcObjectFunctions();
+    const icObjectFunctions: Rust = generateIcObjectFunctions(canisterMethodFunctionInfos);
 
     const azleIntoJsValueTrait: Rust = generateAzleIntoJsValueTrait();
     const azleTryFromJsValueTrait: Rust = generateAzleTryFromJsValueTrait();

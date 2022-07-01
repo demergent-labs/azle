@@ -1,5 +1,3 @@
-import { Rust } from '../../../../../types';
-
 import { generateIcObjectFunctionAcceptMessage } from './accept_message';
 import { generateIcObjectFunctionCaller } from './caller';
 import { generateIcObjectFunctionCanisterBalance } from './canister_balance';
@@ -17,6 +15,7 @@ import { generateIcObjectFunctionPrint } from './print';
 import { generateIcObjectFunctionReject } from './reject';
 import { generateIcObjectFunctionRejectCode } from './reject_code';
 import { generateIcObjectFunctionRejectMessage } from './reject_message';
+import { generateIcObjectFunctionReply } from './reply';
 import { generateIcObjectFunctionSetCertifiedData } from './set_certified_data';
 import { generateIcObjectFunctionStableBytes } from './stable_bytes';
 import { generateIcObjectFunctionStableGrow } from './stable_grow';
@@ -29,8 +28,9 @@ import { generateIcObjectFunctionStable64Size } from './stable64_size';
 import { generateIcObjectFunctionStable64Write } from './stable64_write';
 import { generateIcObjectFunctionTime } from './time';
 import { generateIcObjectFunctionTrap } from './trap';
+import { CanisterMethodFunctionInfo, Rust } from '../../../../../types';
 
-export function generateIcObjectFunctions(): Rust {
+export function generateIcObjectFunctions(canisterMethodFunctionInfos: CanisterMethodFunctionInfo[]): Rust {
     const icObjectFunctionAcceptMessage: Rust =
         generateIcObjectFunctionAcceptMessage();
     const icObjectFunctionCaller: Rust = generateIcObjectFunctionCaller();
@@ -61,6 +61,8 @@ export function generateIcObjectFunctions(): Rust {
         generateIcObjectFunctionRejectCode();
     const icObjectFunctionRejectMessage: Rust =
         generateIcObjectFunctionRejectMessage();
+    const icObjectFunctionReply: Rust =
+        generateIcObjectFunctionReply(canisterMethodFunctionInfos);
     const icObjectFunctionSetCertifiedData: Rust =
         generateIcObjectFunctionSetCertifiedData();
     const icObjectFunctionStableBytes: Rust =
@@ -102,6 +104,7 @@ export function generateIcObjectFunctions(): Rust {
         ${icObjectFunctionReject}
         ${icObjectFunctionRejectCode}
         ${icObjectFunctionRejectMessage}
+        ${icObjectFunctionReply}
         ${icObjectFunctionSetCertifiedData}
         ${icObjectFunctionStableBytes}
         ${icObjectFunctionStableGrow}

@@ -13,6 +13,7 @@ import {
     getStableTypeAliasDeclarations
 } from '../typescript_to_rust/generators/call_functions';
 import { generate_candid_funcs } from './generators/func';
+import { getRustTypeNameFromTypeNode } from '../typescript_to_rust/ast_utilities/miscellaneous';
 
 export function compileTypeScriptToCandid(
     sourceFiles: readonly tsc.SourceFile[]
@@ -143,12 +144,17 @@ function getCanisterMethodFunctionInfos(
         const canisterMethodTypeName =
             getCanisterMethodTypeName(functionDeclaration);
 
+        if (functionDeclaration.type === undefined) {
+            throw new Error(`${functionDeclaration.name.escapedText.toString()} must have a return type`);
+        }
+
         return {
             name: functionDeclaration.name.escapedText.toString(),
             queryOrUpdate,
             manual: ['QueryManual', 'UpdateManual'].includes(
                 canisterMethodTypeName
-            )
+            ),
+            rustReturnType: getRustTypeNameFromTypeNode(functionDeclaration.type)
         };
     });
 }

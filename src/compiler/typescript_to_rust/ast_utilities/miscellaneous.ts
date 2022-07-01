@@ -137,9 +137,9 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
                 return `Option<${typeName}>`;
             }
 
-            if (typeName === 'Query') {
+            if (typeName === 'Query' || typeName === 'QueryManual') {
                 if (typeReferenceNode.typeArguments === undefined) {
-                    throw new Error('Query must have an enclosed type');
+                    throw new Error('Query/QueryManual must have an enclosed type');
                 }
 
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
@@ -147,19 +147,9 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
                 return getRustTypeNameFromTypeNode(firstTypeArgument);
             }
 
-            if (typeName === 'Update') {
+            if (typeName === 'Update' || typeName === 'UpdateManual' || typeName === 'UpdateAsync') {
                 if (typeReferenceNode.typeArguments === undefined) {
-                    throw new Error('Update must have an enclosed type');
-                }
-
-                const firstTypeArgument = typeReferenceNode.typeArguments[0];
-
-                return getRustTypeNameFromTypeNode(firstTypeArgument);
-            }
-
-            if (typeName === 'UpdateAsync') {
-                if (typeReferenceNode.typeArguments === undefined) {
-                    throw new Error('UpdateAsync must have an enclosed type');
+                    throw new Error('Update/UpdateManual must have an enclosed type');
                 }
 
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];

@@ -1,3 +1,5 @@
+// TODO test records and variants and other types
+
 import { cleanDeploy, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/manual_reply';
 
@@ -31,18 +33,11 @@ const tests: Test[] = [
     {
         name: 'manual_query when calling ic.reply',
         test: async () => {
-            // TODO: Once ic.reply is implemented this shouldn't throw
-            try {
-                await manual_reply_canister.manual_query('accept');
+            const result = await manual_reply_canister.manual_query('accept');
 
-                return {
-                    ok: false
-                };
-            } catch (error) {
-                return {
-                    ok: (error as any).props.Code === 'CanisterError'
-                };
-            }
+            return {
+                ok: result === 'accept'
+            };
         }
     },
     {
@@ -69,18 +64,11 @@ const tests: Test[] = [
     {
         name: 'manual_update when calling ic.reply',
         test: async () => {
-            // TODO: Once ic.reply is implemented this shouldn't throw
-            try {
-                await manual_reply_canister.manual_update('accept');
+            const result = await manual_reply_canister.manual_update('accept');
 
-                return {
-                    ok: false
-                };
-            } catch (error) {
-                return {
-                    ok: (error as Error).message.includes('Reject code: 5')
-                };
-            }
+            return {
+                ok: result === 'accept'
+            };
         }
     }
 ];
