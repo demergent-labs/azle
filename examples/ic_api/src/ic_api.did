@@ -9,4 +9,5 @@ service: {
     "time": () -> (nat64) query;
     "trap": (text) -> (bool) query;
     "data_certificate_null": () -> (opt blob);
+    "set_certified_data": (blob) -> ();
 }

@@ -97,6 +97,11 @@ export function generateIcObject(
                 0
             )
             .function(
+                _azle_ic_set_certified_data,
+                "set_certified_data",
+                0
+            )
+            .function(
                 azle_ic_time,
                 "time",
                 0
