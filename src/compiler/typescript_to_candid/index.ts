@@ -129,7 +129,7 @@ function generateCandid(
 ): Candid {
     return `${candidRecords === '' ? '' : `${candidRecords}\n\n`}${
         candidVariants === '' ? '' : `${candidVariants}\n\n`
-    }${candid_funcs === '' ? '' : `${candid_funcs}\n\n`}${candidService}`;
+    }${candid_funcs === '' ? '' : `${candid_funcs}\n\n`}${candidService}\n`;
 }
 
 function getCanisterMethodFunctionInfos(
