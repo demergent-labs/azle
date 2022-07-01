@@ -1,4 +1,15 @@
-import { blob, ic, nat, nat64, Opt, Principal, Query, Update } from 'azle';
+import {
+    blob,
+    empty,
+    ic,
+    nat,
+    nat64,
+    Opt,
+    Principal,
+    Query,
+    QueryManual,
+    Update
+} from 'azle';
 
 // returns the principal of the identity that called this function
 export function caller(): Query<Principal> {
@@ -35,6 +46,15 @@ export function print(message: string): Query<boolean> {
     ic.print(message);
 
     return true;
+}
+
+export function reject(message: string): QueryManual<empty> {
+    ic.reject(message);
+}
+
+// sets up to 32 bytes of certified data
+export function set_certified_data(data: blob): Update<void> {
+    ic.set_certified_data(data);
 }
 
 // returns the current timestamp

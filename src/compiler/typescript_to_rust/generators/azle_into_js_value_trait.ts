@@ -327,6 +327,12 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        impl AzleIntoJsValue for Vec<ic_cdk::api::call::RejectionCode> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
         // TODO add all number types
         // TODO need to figure out how to convert number Vecs to Vec<u8>
         // TODO need to abstract the number vecs out
@@ -430,7 +436,7 @@ export function generateAzleIntoJsValueTrait(): Rust {
 
 
         fn azle_into_js_value_generic_array<T: AzleIntoJsValue>(generic_array: Vec<T>, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-            let js_values = generic_array.into_iter().map(|item| item.azle_into_js_value(context)).collect::<Vec<boa_engine::JsValue>>();    
+            let js_values = generic_array.into_iter().map(|item| item.azle_into_js_value(context)).collect::<Vec<boa_engine::JsValue>>();
             boa_engine::object::JsArray::from_iter(js_values, context).into()
         }
     `;

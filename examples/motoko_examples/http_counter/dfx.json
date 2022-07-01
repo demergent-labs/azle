@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "http_counter": {
+            "type": "custom",
+            "build": "npx azle http_counter",
+            "root": "src",
+            "ts": "src/main.ts",
+            "candid": "src/main.did",
+            "wasm": "target/wasm32-unknown-unknown/release/http_counter.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/http_counter"
+            }
+        }
+    }
+}
