@@ -87,6 +87,7 @@ type ic = {
     msg_cycles_refunded128: () => nat;
     print: (...args: any) => void;
     reject: (message: string) => void;
+    reject_code: () => RejectionCode;
     stableStorage: <T>() => T;
     time: () => nat64;
     trap: (message: string) => never;
@@ -185,3 +186,13 @@ export type Func<
 > = [Principal, string];
 
 export { Principal } from '@dfinity/principal';
+
+export type RejectionCode = Variant<{
+    NoError: null;
+    SysFatal: null;
+    SysTransient: null;
+    DestinationInvalid: null;
+    CanisterReject: null;
+    CanisterError: null;
+    Unknown: null;
+}>;

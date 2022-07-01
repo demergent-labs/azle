@@ -64,6 +64,83 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        impl AzleIntoJsValue for ic_cdk::api::call::RejectionCode {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                match self {
+                    ic_cdk::api::call::RejectionCode::NoError => {
+                        boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "NoError",
+                                boa_engine::JsValue::Null,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .build()
+                            .into()
+                    }
+                    ic_cdk::api::call::RejectionCode::SysFatal => {
+                        boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "SysFatal",
+                                boa_engine::JsValue::Null,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .build()
+                            .into()
+                    }
+                    ic_cdk::api::call::RejectionCode::SysTransient => {
+                        boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "SysTransient",
+                                boa_engine::JsValue::Null,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .build()
+                            .into()
+                    }
+                    ic_cdk::api::call::RejectionCode::DestinationInvalid => {
+                        boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "DestinationInvalid",
+                                boa_engine::JsValue::Null,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .build()
+                            .into()
+                    }
+                    ic_cdk::api::call::RejectionCode::CanisterReject => {
+                        boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "CanisterReject",
+                                boa_engine::JsValue::Null,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .build()
+                            .into()
+                    }
+                    ic_cdk::api::call::RejectionCode::CanisterError => {
+                        boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "CanisterError",
+                                boa_engine::JsValue::Null,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .build()
+                            .into()
+                    }
+                    ic_cdk::api::call::RejectionCode::Unknown => {
+                        boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "Unknown",
+                                boa_engine::JsValue::Null,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .build()
+                            .into()
+                    }
+                }
+            }
+        }
+
         // Number types
 
         impl AzleIntoJsValue for f64 {
@@ -213,6 +290,12 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        impl AzleIntoJsValue for Vec<ic_cdk::api::call::RejectionCode> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
         // TODO add all number types
         // TODO need to figure out how to convert number Vecs to Vec<u8>
         // TODO need to abstract the number vecs out
@@ -316,7 +399,7 @@ export function generateAzleIntoJsValueTrait(): Rust {
 
 
         fn azle_into_js_value_generic_array<T: AzleIntoJsValue>(generic_array: Vec<T>, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-            let js_values = generic_array.into_iter().map(|item| item.azle_into_js_value(context)).collect::<Vec<boa_engine::JsValue>>();    
+            let js_values = generic_array.into_iter().map(|item| item.azle_into_js_value(context)).collect::<Vec<boa_engine::JsValue>>();
             boa_engine::object::JsArray::from_iter(js_values, context).into()
         }
     `;
