@@ -2,6 +2,7 @@
 
 import { cleanDeploy, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/manual_reply';
+import { Element } from './dfx_generated/manual_reply/manual_reply.did';
 
 const manual_reply_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -68,6 +69,105 @@ const tests: Test[] = [
 
             return {
                 ok: result === 'accept'
+            };
+        }
+    },
+    {
+        name: 'reply with blob',
+        test: async () => {
+            const result = await manual_reply_canister.reply_blob();
+            const expectedResult = [83, 117, 114, 112, 114, 105, 115, 101, 33];
+
+            return {
+                ok:
+                    Array.isArray(result) &&
+                    result.every((byte, i) => byte === expectedResult[i])
+            };
+        }
+    },
+    {
+        name: 'reply with float32',
+        test: async () => {
+            const result = await manual_reply_canister.reply_float32();
+
+            return {
+                ok: result === 1245.677978515625 // TODO: This should not be changing
+            };
+        }
+    },
+    {
+        name: 'reply with int8',
+        test: async () => {
+            const result = await manual_reply_canister.reply_int8();
+
+            return {
+                ok: result === -100
+            };
+        }
+    },
+    {
+        name: 'reply with nat',
+        test: async () => {
+            const result = await manual_reply_canister.reply_nat();
+
+            return {
+                ok: result === 184467440737095516150n
+            };
+        }
+    },
+    {
+        name: 'reply with string',
+        test: async () => {
+            const result = await manual_reply_canister.reply_string();
+
+            return {
+                ok: result === 'hello'
+            };
+        }
+    },
+    {
+        name: 'reply with record',
+        test: async () => {
+            const result = await manual_reply_canister.reply_record();
+            const expectedResult: Element = {
+                id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
+                orbitals: [
+                    {
+                        electrons: 2,
+                        layer: 1
+                    },
+                    {
+                        electrons: 8,
+                        layer: 2
+                    }
+                ],
+                state: {
+                    Gas: { Elemental: null }
+                }
+            };
+
+            return {
+                ok: JSON.stringify(result) === JSON.stringify(expectedResult)
+            };
+        }
+    },
+    {
+        name: 'reply with reserved',
+        test: async () => {
+            const result = await manual_reply_canister.reply_reserved();
+
+            return {
+                ok: result === null
+            };
+        }
+    },
+    {
+        name: 'reply with variant',
+        test: async () => {
+            const result = await manual_reply_canister.reply_variant();
+
+            return {
+                ok: 'Toxic' in result
             };
         }
     }

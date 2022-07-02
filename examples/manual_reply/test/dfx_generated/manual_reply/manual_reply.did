@@ -1,4 +1,31 @@
+type Element = record {
+    "id": text;
+    "orbitals": vec Orbital;
+    "state": State;
+};
+
+type Orbital = record {
+    "layer": nat8;
+    "electrons": nat8;
+};
+
+type Solid = record {
+    "element": text;
+};
+
+type Gas = variant { "Elemental": null; "Mixed": null; "Toxic": null };
+
+type State = variant { "Gas": Gas; "Liquid": null; "Solid": Solid };
+
 service: {
     "manual_query": (text) -> (text) query;
     "manual_update": (text) -> (text);
+    "reply_blob": () -> (blob);
+    "reply_float32": () -> (float32);
+    "reply_int8": () -> (int8);
+    "reply_nat": () -> (nat);
+    "reply_string": () -> (text);
+    "reply_reserved": () -> (reserved);
+    "reply_record": () -> (Element);
+    "reply_variant": () -> (Gas);
 }
