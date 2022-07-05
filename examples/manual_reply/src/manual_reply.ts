@@ -1,6 +1,5 @@
 import {
     blob,
-    empty,
     float32,
     ic,
     int8,
@@ -71,6 +70,10 @@ export function reply_int8(): UpdateManual<int8> {
 
 export function reply_nat(): UpdateManual<nat> {
     ic.reply(184467440737095516150n);
+}
+
+export function reply_null(): UpdateManual<null> {
+    ic.reply(null);
 }
 
 export function reply_string(): UpdateManual<string> {

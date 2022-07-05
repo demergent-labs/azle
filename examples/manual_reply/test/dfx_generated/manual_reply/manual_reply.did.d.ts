@@ -20,6 +20,7 @@ export interface _SERVICE {
     reply_float32: () => Promise<number>;
     reply_int8: () => Promise<number>;
     reply_nat: () => Promise<bigint>;
+    reply_null: () => Promise<null>;
     reply_record: () => Promise<Element>;
     reply_reserved: () => Promise<any>;
     reply_string: () => Promise<string>;

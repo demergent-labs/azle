@@ -1,5 +1,3 @@
-// TODO test records and variants and other types
-
 import { cleanDeploy, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/manual_reply';
 import { Element } from './dfx_generated/manual_reply/manual_reply.did';
@@ -112,6 +110,16 @@ const tests: Test[] = [
 
             return {
                 ok: result === 184467440737095516150n
+            };
+        }
+    },
+    {
+        name: 'reply with null',
+        test: async () => {
+            const result = await manual_reply_canister.reply_null();
+
+            return {
+                ok: result === null
             };
         }
     },

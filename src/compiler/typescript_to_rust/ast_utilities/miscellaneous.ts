@@ -48,7 +48,14 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
         return `()`;
     }
 
-    // TODO possibly type literals?
+    if (typeNode.kind === tsc.SyntaxKind.LiteralType) {
+        const literalTypeNode = typeNode as tsc.LiteralTypeNode;
+
+        if (literalTypeNode.literal.kind === tsc.SyntaxKind.NullKeyword) {
+            return `()`;
+        }
+        // TODO possibly other type literals?
+    }
 
     if (typeNode.kind === tsc.SyntaxKind.ArrayType) {
         const arrayTypeNode = typeNode as tsc.ArrayTypeNode;

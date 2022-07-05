@@ -24,6 +24,7 @@ service: {
     "reply_float32": () -> (float32);
     "reply_int8": () -> (int8);
     "reply_nat": () -> (nat);
+    "reply_null": () -> (null);
     "reply_string": () -> (text);
     "reply_reserved": () -> (reserved);
     "reply_record": () -> (Element);

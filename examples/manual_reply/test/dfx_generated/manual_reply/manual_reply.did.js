@@ -23,6 +23,7 @@ export const idlFactory = ({ IDL }) => {
         reply_float32: IDL.Func([], [IDL.Float32], []),
         reply_int8: IDL.Func([], [IDL.Int8], []),
         reply_nat: IDL.Func([], [IDL.Nat], []),
+        reply_null: IDL.Func([], [IDL.Null], []),
         reply_record: IDL.Func([], [Element], []),
         reply_reserved: IDL.Func([], [IDL.Reserved], []),
         reply_string: IDL.Func([], [IDL.Text], []),

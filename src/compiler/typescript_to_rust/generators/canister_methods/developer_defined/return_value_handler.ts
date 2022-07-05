@@ -38,7 +38,7 @@ export function generateReturnValueHandler(
         let _azle_final_js_value = handle_generator_result(
             &mut boa_context,
             &_azle_return_value
-        ).await;        
+        ).await;
 
         ${
             returnTypeName === ''
@@ -147,10 +147,10 @@ export function generateHandleGeneratorResultFunction(
             while _azle_continue_running == true {
                 let yield_result_js_value = _azle_next_js_object.call(&_azle_return_value, &_azle_args[..], _azle_boa_context).unwrap();
                 let yield_result_js_object = yield_result_js_value.as_object().unwrap();
-                
+
                 let yield_result_done_js_value = yield_result_js_object.get("done", _azle_boa_context).unwrap();
                 let yield_result_done_bool = yield_result_done_js_value.as_boolean().unwrap();
-                
+
                 let yield_result_value_js_value = yield_result_js_object.get("value", _azle_boa_context).unwrap();
 
                 if yield_result_done_bool == false {
@@ -166,7 +166,7 @@ export function generateHandleGeneratorResultFunction(
 
                         continue;
                     }
-                    
+
                     let name_js_value = yield_result_value_js_object.get("name", _azle_boa_context).unwrap();
                     let name_string = name_js_value.as_string().unwrap();
 
@@ -633,6 +633,10 @@ function getImplItemMethodReturnTypeName(
     if (returnTypeAst === undefined) {
         return '';
     } else {
+        if (returnTypeAst.tuple?.elems?.length === 0) {
+            return '()';
+        }
+
         if (returnTypeAst.path === undefined) {
             return '';
         }
