@@ -1,0 +1,17 @@
+type BooleanResult = record {
+    "value": bool;
+    "wasm_instructions": nat64;
+};
+
+type NatResult = record {
+    "value": nat;
+    "wasm_instructions": nat64;
+};
+
+service: {
+    "boolean_init_stack": (nat32) -> (BooleanResult);
+    "boolean_init_heap": (nat32) -> (BooleanResult);
+    "nat_init_stack": (nat32) -> (NatResult);
+    "nat_init_heap": (nat32) -> (NatResult);
+    "empty": () -> (nat64);
+}

@@ -135,6 +135,7 @@ export function printPrincipal(principal: Principal): Query<Principal> {
     return principal;
 }
 
+// TODO It looks like we can't return null in a record
 export function getNull(): Query<null> {
     return null;
 }
@@ -142,6 +143,16 @@ export function getNull(): Query<null> {
 export function printNull(_null: null): Query<null> {
     console.log(typeof _null);
     return _null;
+}
+
+type NullRecord = {
+    prop: null;
+};
+
+export function getNullRecord(): Query<NullRecord> {
+    return {
+        prop: null
+    };
 }
 
 export function getReserved(): Query<reserved> {

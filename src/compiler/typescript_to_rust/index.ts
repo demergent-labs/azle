@@ -28,6 +28,8 @@ export async function compileTypeScriptToRust(
 
     const rustCandidTypes: Rust = compileCandidToRustTypes(candidPath);
 
+    console.log(rustCandidTypes);
+
     fs.writeFileSync(candidPath, candid);
 
     const js: JavaScript = await compileTypeScriptToJavaScript(tsPath);
