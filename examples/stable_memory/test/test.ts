@@ -54,6 +54,30 @@ const tests: Test[] = [
         }
     },
     {
+        name: 'stable64 grow',
+        test: async () => {
+            const old_size = await stable_memory_canister.stable64_size();
+            const new_pages = 5n;
+            const result = await stable_memory_canister.stable64_grow(
+                new_pages
+            );
+            const new_size = await stable_memory_canister.stable64_size();
+
+            if ('err' in result) {
+                return {
+                    err: JSON.stringify(result.err)
+                };
+            }
+
+            return {
+                ok:
+                    'ok' in result &&
+                    result.ok === old_size &&
+                    new_pages + old_size === new_size
+            };
+        }
+    },
+    {
         name: 'stable grow to max',
         test: async () => {
             const old_size = await stable_memory_canister.stable_size();
@@ -80,6 +104,19 @@ const tests: Test[] = [
         test: async () => {
             const new_pages = MAX_STABLE_MEM + 1;
             const result = await stable_memory_canister.stable_grow(new_pages);
+
+            return {
+                ok: 'err' in result && 'OutOfMemory' in result.err
+            };
+        }
+    },
+    {
+        name: 'stable64 grow out of memory',
+        test: async () => {
+            const new_pages = MAX_STABLE_MEM + 1;
+            const result = await stable_memory_canister.stable64_grow(
+                BigInt(new_pages)
+            );
 
             return {
                 ok: 'err' in result && 'OutOfMemory' in result.err
