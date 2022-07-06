@@ -13,6 +13,28 @@ pub struct BooleanResult {
     wasm_instructions: u64
 }
 
+#[derive(candid::CandidType)]
+pub struct BooleansResult {
+    value: Vec<bool>,
+    wasm_instructions: u64
+}
+
+#[ic_cdk_macros::update]
+pub fn boolean_candid_serde_one(boolean: bool) -> BooleanResult {
+    BooleanResult {
+        value: boolean,
+        wasm_instructions: ic_cdk::api::call::performance_counter(0)
+    }
+}
+
+#[ic_cdk_macros::update]
+pub fn boolean_candid_serde_many(booleans: Vec<bool>) -> BooleansResult {
+    BooleansResult {
+        value: booleans,
+        wasm_instructions: ic_cdk::api::call::performance_counter(0)
+    }
+}
+
 #[ic_cdk_macros::update]
 pub fn boolean_init_stack(num_inits: u32) -> BooleanResult {
     let mut i = 0;

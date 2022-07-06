@@ -7,6 +7,25 @@ type NatResult = {
     wasm_instructions: nat64;
 };
 
+type NatsResult = {
+    value: nat[];
+    wasm_instructions: nat64;
+};
+
+export function nat_candid_serde_one(nat: nat): Update<NatResult> {
+    return {
+        value: nat,
+        wasm_instructions: ic.performance_counter(0)
+    };
+}
+
+export function nat_candid_serde_many(nats: nat[]): Update<NatsResult> {
+    return {
+        value: nats,
+        wasm_instructions: ic.performance_counter(0)
+    };
+}
+
 export function nat_init_stack(num_inits: nat32): Update<NatResult> {
     let i = 0;
     let value = 0n;

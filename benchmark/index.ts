@@ -207,7 +207,7 @@ function create_markdown_report(benchmark_results: BenchmarkResult[]): string {
     const header_separator = `| ${header_names.map((_) => '---').join(' | ')} |`;
 
     const data_rows = benchmark_results.map((benchmark_result) => {
-        return `| ${benchmark_result.canister_method}: ${benchmark_result.benchmark_description} | ${format_number_to_rust(benchmark_result.azle_wasm_instructions.toFixed(0))} | ${format_number_to_rust(benchmark_result.rust_wasm_instructions.toFixed(0))} | ${format_number_to_rust(benchmark_result.rust_percentage_change.toFixed(0))}% | ${format_number_to_rust(benchmark_result.rust_change_multiplier.toFixed(0))}x |`;
+        return `| ${benchmark_result.canister_method}${benchmark_result.benchmark_description !== '' ? `: ${benchmark_result.benchmark_description}` : ''} | ${format_number_to_rust(benchmark_result.azle_wasm_instructions.toFixed(0))} | ${format_number_to_rust(benchmark_result.rust_wasm_instructions.toFixed(0))} | ${format_number_to_rust(benchmark_result.rust_percentage_change.toFixed(0))}% | ${format_number_to_rust(benchmark_result.rust_change_multiplier.toFixed(0))}x |`;
     });
 
     return `${title}\n${description}\n${header}\n${header_separator}\n${data_rows.join('\n')}`;

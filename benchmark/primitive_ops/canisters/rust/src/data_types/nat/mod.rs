@@ -13,6 +13,28 @@ pub struct NatResult {
     wasm_instructions: u64
 }
 
+#[derive(candid::CandidType)]
+pub struct NatsResult {
+    value: Vec<ic_cdk::export::candid::Nat>,
+    wasm_instructions: u64
+}
+
+#[ic_cdk_macros::update]
+pub fn nat_candid_serde_one(nat: ic_cdk::export::candid::Nat) -> NatResult {
+    NatResult {
+        value: nat,
+        wasm_instructions: ic_cdk::api::call::performance_counter(0)
+    }
+}
+
+#[ic_cdk_macros::update]
+pub fn nat_candid_serde_many(nats: Vec<ic_cdk::export::candid::Nat>) -> NatsResult {
+    NatsResult {
+        value: nats,
+        wasm_instructions: ic_cdk::api::call::performance_counter(0)
+    }
+}
+
 #[ic_cdk_macros::update]
 pub fn nat_init_stack(num_inits: u32) -> NatResult {
     let mut i = 0;
