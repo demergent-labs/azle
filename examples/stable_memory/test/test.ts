@@ -78,30 +78,38 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'stable write no offset',
+        name: 'stable read/write no offset',
         test: async () => {
-            // TODO test that the write was successfull as soon as read is implemented
             const offset = 0;
             const buffer = [0, 1, 2, 3, 4, 5];
 
             await stable_memory_canister.stable_write(offset, buffer);
 
+            const result = await stable_memory_canister.stable_read(
+                offset,
+                buffer.length
+            );
+
             return {
-                ok: true
+                ok: arrayEquals(buffer, result)
             };
         }
     },
     {
-        name: 'stable write',
+        name: 'stable read/write',
         test: async () => {
-            // TODO test that the write was successfull as soon as read is implemented
             const offset = 5;
             const buffer = [0, 1, 2, 3, 4, 5];
 
             await stable_memory_canister.stable_write(offset, buffer);
 
+            const result = await stable_memory_canister.stable_read(
+                offset,
+                buffer.length
+            );
+
             return {
-                ok: true
+                ok: arrayEquals(buffer, result)
             };
         }
     },
@@ -168,5 +176,9 @@ const tests: Test[] = [
         }
     }
 ];
+
+function arrayEquals(a: any[], b: any[]): boolean {
+    return a.length === b.length && a.every((item, index) => item === b[index]);
+}
 
 run_tests(tests);
