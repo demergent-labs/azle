@@ -90,6 +90,7 @@ type ic = {
     reject_code: () => RejectionCode;
     reject_message: () => string;
     set_certified_data: (data: blob) => void;
+    stable_grow: (new_pages: nat32) => StableGrowResult;
     stable_size: () => nat32;
     stable64_size: () => nat64;
     stableStorage: <T>() => T;
@@ -207,4 +208,14 @@ export type RejectionCode = Variant<{
     CanisterReject: null;
     CanisterError: null;
     Unknown: null;
+}>;
+
+export type StableMemoryError = Variant<{
+    OutOfMemory: null;
+    OutOfBounds: null;
+}>;
+
+export type StableGrowResult = Variant<{
+    ok: nat32;
+    err: StableMemoryError;
 }>;
