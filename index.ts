@@ -96,6 +96,7 @@ type ic = {
     stable_write: (offset: nat32, buf: blob) => void;
     stable64_grow: (new_pages: nat64) => Stable64GrowResult;
     stable64_size: () => nat64;
+    stable64_write: (offset: nat64, buffer: blob) => void;
     stableStorage: <T>() => T;
     time: () => nat64;
     trap: (message: string) => never;
