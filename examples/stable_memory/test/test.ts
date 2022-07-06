@@ -78,6 +78,50 @@ const tests: Test[] = [
         }
     },
     {
+        name: 'stable write no offset',
+        test: async () => {
+            // TODO test that the write was successfull as soon as read is implemented
+            const offset = 0;
+            const buffer = [0, 1, 2, 3, 4, 5];
+
+            await stable_memory_canister.stable_write(offset, buffer);
+
+            return {
+                ok: true
+            };
+        }
+    },
+    {
+        name: 'stable write',
+        test: async () => {
+            // TODO test that the write was successfull as soon as read is implemented
+            const offset = 5;
+            const buffer = [0, 1, 2, 3, 4, 5];
+
+            await stable_memory_canister.stable_write(offset, buffer);
+
+            return {
+                ok: true
+            };
+        }
+    },
+    // TODO ic_cdk::api::stable::stable_write doesn't panic when given an invalid offset.
+    // https://github.com/demergent-labs/azle/issues/481
+    // {
+    //     name: 'stable write out of bounds error',
+    //     test: async () => {
+    //         // TODO test that the write was successfull as soon as read is implemented
+    //         const offset = MAX_STABLE_MEM;
+    //         const buffer = [0, 1, 2, 3, 4, 5, 6];
+
+    //         await stable_memory_canister.stable_write(offset, buffer);
+
+    //         return {
+    //             ok: true
+    //         };
+    //     }
+    // },
+    {
         name: 'stable grow to max',
         test: async () => {
             const old_size = await stable_memory_canister.stable_size();

@@ -117,6 +117,11 @@ export function generateIcObject(
                 0
             )
             .function(
+                _azle_ic_stable_write,
+                "stable_write",
+                0
+            )
+            .function(
                 _azle_ic_stable64_grow,
                 "stable64_grow",
                 0
