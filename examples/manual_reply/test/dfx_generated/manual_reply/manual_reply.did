@@ -19,14 +19,23 @@ type State = variant { "Gas": Gas; "Liquid": null; "Solid": Solid };
 
 service: {
     "manual_query": (text) -> (text) query;
+    "query_blob": () -> (blob) query;
+    "query_float32": () -> (float32) query;
+    "query_int8": () -> (int8) query;
+    "query_nat": () -> (nat) query;
+    "query_null": () -> (null) query;
+    "query_record": () -> (Element) query;
+    "query_reserved": () -> (reserved) query;
+    "query_string": () -> (text) query;
+    "query_variant": () -> (Gas) query;
     "manual_update": (text) -> (text);
-    "reply_blob": () -> (blob);
-    "reply_float32": () -> (float32);
-    "reply_int8": () -> (int8);
-    "reply_nat": () -> (nat);
-    "reply_null": () -> (null);
-    "reply_string": () -> (text);
-    "reply_reserved": () -> (reserved);
-    "reply_record": () -> (Element);
-    "reply_variant": () -> (Gas);
+    "update_blob": () -> (blob);
+    "update_float32": () -> (float32);
+    "update_int8": () -> (int8);
+    "update_nat": () -> (nat);
+    "update_null": () -> (null);
+    "update_record": () -> (Element);
+    "update_reserved": () -> (reserved);
+    "update_string": () -> (text);
+    "update_variant": () -> (Gas);
 }

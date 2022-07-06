@@ -11,35 +11,6 @@ const manual_reply_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 const tests: Test[] = [
     ...cleanDeploy('manual_reply'),
     {
-        name: 'manual_query when calling ic.reject',
-        test: async () => {
-            const rejectionMessage = 'reject';
-            try {
-                await manual_reply_canister.manual_query(rejectionMessage);
-
-                return {
-                    ok: false
-                };
-            } catch (error) {
-                return {
-                    ok:
-                        (error as any).props.Code === 'CanisterReject' &&
-                        (error as any).props.Message === rejectionMessage
-                };
-            }
-        }
-    },
-    {
-        name: 'manual_query when calling ic.reply',
-        test: async () => {
-            const result = await manual_reply_canister.manual_query('accept');
-
-            return {
-                ok: result === 'accept'
-            };
-        }
-    },
-    {
         name: 'manual_update when calling ic.reject',
         test: async () => {
             const rejectionMessage = 'reject';
@@ -71,9 +42,9 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'reply with blob',
+        name: 'update reply with blob',
         test: async () => {
-            const result = await manual_reply_canister.reply_blob();
+            const result = await manual_reply_canister.update_blob();
             const expectedResult = [83, 117, 114, 112, 114, 105, 115, 101, 33];
 
             return {
@@ -84,9 +55,9 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'reply with float32',
+        name: 'update reply with float32',
         test: async () => {
-            const result = await manual_reply_canister.reply_float32();
+            const result = await manual_reply_canister.update_float32();
 
             return {
                 ok: result === 1245.677978515625 // TODO: This should not be changing
@@ -94,9 +65,9 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'reply with int8',
+        name: 'update reply with int8',
         test: async () => {
-            const result = await manual_reply_canister.reply_int8();
+            const result = await manual_reply_canister.update_int8();
 
             return {
                 ok: result === -100
@@ -104,9 +75,9 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'reply with nat',
+        name: 'update reply with nat',
         test: async () => {
-            const result = await manual_reply_canister.reply_nat();
+            const result = await manual_reply_canister.update_nat();
 
             return {
                 ok: result === 184467440737095516150n
@@ -114,9 +85,9 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'reply with null',
+        name: 'update reply with null',
         test: async () => {
-            const result = await manual_reply_canister.reply_null();
+            const result = await manual_reply_canister.update_null();
 
             return {
                 ok: result === null
@@ -124,19 +95,9 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'reply with string',
+        name: 'update reply with record',
         test: async () => {
-            const result = await manual_reply_canister.reply_string();
-
-            return {
-                ok: result === 'hello'
-            };
-        }
-    },
-    {
-        name: 'reply with record',
-        test: async () => {
-            const result = await manual_reply_canister.reply_record();
+            const result = await manual_reply_canister.update_record();
             const expectedResult: Element = {
                 id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
                 orbitals: [
@@ -160,9 +121,9 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'reply with reserved',
+        name: 'update reply with reserved',
         test: async () => {
-            const result = await manual_reply_canister.reply_reserved();
+            const result = await manual_reply_canister.update_reserved();
 
             return {
                 ok: result === null
@@ -170,9 +131,157 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'reply with variant',
+        name: 'update reply with string',
         test: async () => {
-            const result = await manual_reply_canister.reply_variant();
+            const result = await manual_reply_canister.update_string();
+
+            return {
+                ok: result === 'hello'
+            };
+        }
+    },
+    {
+        name: 'update reply with variant',
+        test: async () => {
+            const result = await manual_reply_canister.update_variant();
+
+            return {
+                ok: 'Toxic' in result
+            };
+        }
+    },
+    {
+        name: 'manual_query when calling ic.reject',
+        test: async () => {
+            const rejectionMessage = 'reject';
+            try {
+                await manual_reply_canister.manual_query(rejectionMessage);
+
+                return {
+                    ok: false
+                };
+            } catch (error) {
+                return {
+                    ok:
+                        (error as any).props.Code === 'CanisterReject' &&
+                        (error as any).props.Message === rejectionMessage
+                };
+            }
+        }
+    },
+    {
+        name: 'manual_query when calling ic.reply',
+        test: async () => {
+            const result = await manual_reply_canister.manual_query('accept');
+
+            return {
+                ok: result === 'accept'
+            };
+        }
+    },
+    {
+        name: 'query reply with blob',
+        test: async () => {
+            const result = await manual_reply_canister.query_blob();
+            const expectedResult = [83, 117, 114, 112, 114, 105, 115, 101, 33];
+
+            return {
+                ok:
+                    Array.isArray(result) &&
+                    result.every((byte, i) => byte === expectedResult[i])
+            };
+        }
+    },
+    {
+        name: 'query reply with float32',
+        test: async () => {
+            const result = await manual_reply_canister.query_float32();
+
+            return {
+                ok: result === 1245.677978515625 // TODO: This should not be changing
+            };
+        }
+    },
+    {
+        name: 'query reply with int8',
+        test: async () => {
+            const result = await manual_reply_canister.query_int8();
+
+            return {
+                ok: result === -100
+            };
+        }
+    },
+    {
+        name: 'query reply with nat',
+        test: async () => {
+            const result = await manual_reply_canister.query_nat();
+
+            return {
+                ok: result === 184467440737095516150n
+            };
+        }
+    },
+    {
+        name: 'query reply with null',
+        test: async () => {
+            const result = await manual_reply_canister.query_null();
+
+            return {
+                ok: result === null
+            };
+        }
+    },
+    {
+        name: 'query reply with record',
+        test: async () => {
+            const result = await manual_reply_canister.query_record();
+            const expectedResult: Element = {
+                id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
+                orbitals: [
+                    {
+                        electrons: 2,
+                        layer: 1
+                    },
+                    {
+                        electrons: 8,
+                        layer: 2
+                    }
+                ],
+                state: {
+                    Gas: { Elemental: null }
+                }
+            };
+
+            return {
+                ok: JSON.stringify(result) === JSON.stringify(expectedResult)
+            };
+        }
+    },
+    {
+        name: 'query reply with reserved',
+        test: async () => {
+            const result = await manual_reply_canister.query_reserved();
+
+            return {
+                ok: result === null
+            };
+        }
+    },
+    {
+        name: 'query reply with string',
+        test: async () => {
+            const result = await manual_reply_canister.query_string();
+
+            return {
+                ok: result === 'hello'
+            };
+        }
+    },
+    {
+        name: 'query reply with variant',
+        test: async () => {
+            const result = await manual_reply_canister.query_variant();
 
             return {
                 ok: 'Toxic' in result

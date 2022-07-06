@@ -19,15 +19,24 @@ export const idlFactory = ({ IDL }) => {
     return IDL.Service({
         manual_query: IDL.Func([IDL.Text], [IDL.Text], ['query']),
         manual_update: IDL.Func([IDL.Text], [IDL.Text], []),
-        reply_blob: IDL.Func([], [IDL.Vec(IDL.Nat8)], []),
-        reply_float32: IDL.Func([], [IDL.Float32], []),
-        reply_int8: IDL.Func([], [IDL.Int8], []),
-        reply_nat: IDL.Func([], [IDL.Nat], []),
-        reply_null: IDL.Func([], [IDL.Null], []),
-        reply_record: IDL.Func([], [Element], []),
-        reply_reserved: IDL.Func([], [IDL.Reserved], []),
-        reply_string: IDL.Func([], [IDL.Text], []),
-        reply_variant: IDL.Func([], [Gas], [])
+        query_blob: IDL.Func([], [IDL.Vec(IDL.Nat8)], ['query']),
+        query_float32: IDL.Func([], [IDL.Float32], ['query']),
+        query_int8: IDL.Func([], [IDL.Int8], ['query']),
+        query_nat: IDL.Func([], [IDL.Nat], ['query']),
+        query_null: IDL.Func([], [IDL.Null], ['query']),
+        query_record: IDL.Func([], [Element], ['query']),
+        query_reserved: IDL.Func([], [IDL.Reserved], ['query']),
+        query_string: IDL.Func([], [IDL.Text], ['query']),
+        query_variant: IDL.Func([], [Gas], ['query']),
+        update_blob: IDL.Func([], [IDL.Vec(IDL.Nat8)], []),
+        update_float32: IDL.Func([], [IDL.Float32], []),
+        update_int8: IDL.Func([], [IDL.Int8], []),
+        update_nat: IDL.Func([], [IDL.Nat], []),
+        update_null: IDL.Func([], [IDL.Null], []),
+        update_record: IDL.Func([], [Element], []),
+        update_reserved: IDL.Func([], [IDL.Reserved], []),
+        update_string: IDL.Func([], [IDL.Text], []),
+        update_variant: IDL.Func([], [Gas], [])
     });
 };
 export const init = ({ IDL }) => {

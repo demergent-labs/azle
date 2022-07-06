@@ -38,14 +38,7 @@ type Gas = Variant<{
     Toxic: null;
 }>;
 
-export function manual_query(message: string): QueryManual<string> {
-    if (message === 'reject') {
-        ic.reject(message);
-        return;
-    }
-
-    ic.reply(message);
-}
+// Updates
 
 export function manual_update(message: string): UpdateManual<string> {
     if (message === 'reject') {
@@ -56,35 +49,27 @@ export function manual_update(message: string): UpdateManual<string> {
     ic.reply(message);
 }
 
-export function reply_blob(): UpdateManual<blob> {
+export function update_blob(): UpdateManual<blob> {
     ic.reply(new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]));
 }
 
-export function reply_float32(): UpdateManual<float32> {
+export function update_float32(): UpdateManual<float32> {
     ic.reply(1245.678);
 }
 
-export function reply_int8(): UpdateManual<int8> {
+export function update_int8(): UpdateManual<int8> {
     ic.reply(-100);
 }
 
-export function reply_nat(): UpdateManual<nat> {
+export function update_nat(): UpdateManual<nat> {
     ic.reply(184467440737095516150n);
 }
 
-export function reply_null(): UpdateManual<null> {
+export function update_null(): UpdateManual<null> {
     ic.reply(null);
 }
 
-export function reply_string(): UpdateManual<string> {
-    ic.reply('hello');
-}
-
-export function reply_reserved(): UpdateManual<reserved> {
-    ic.reply(undefined);
-}
-
-export function reply_record(): UpdateManual<Element> {
+export function update_record(): UpdateManual<Element> {
     const element: Element = {
         id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
         orbitals: [
@@ -104,7 +89,79 @@ export function reply_record(): UpdateManual<Element> {
     ic.reply(element);
 }
 
-export function reply_variant(): UpdateManual<Gas> {
+export function update_reserved(): UpdateManual<reserved> {
+    ic.reply(undefined);
+}
+
+export function update_string(): UpdateManual<string> {
+    ic.reply('hello');
+}
+
+export function update_variant(): UpdateManual<Gas> {
+    const gas = { Toxic: null };
+    ic.reply(gas);
+}
+
+// Queries
+
+export function manual_query(message: string): QueryManual<string> {
+    if (message === 'reject') {
+        ic.reject(message);
+        return;
+    }
+
+    ic.reply(message);
+}
+
+export function query_blob(): QueryManual<blob> {
+    ic.reply(new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]));
+}
+
+export function query_float32(): QueryManual<float32> {
+    ic.reply(1245.678);
+}
+
+export function query_int8(): QueryManual<int8> {
+    ic.reply(-100);
+}
+
+export function query_nat(): QueryManual<nat> {
+    ic.reply(184467440737095516150n);
+}
+
+export function query_null(): QueryManual<null> {
+    ic.reply(null);
+}
+
+export function query_record(): QueryManual<Element> {
+    const element: Element = {
+        id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
+        orbitals: [
+            {
+                electrons: 2,
+                layer: 1
+            },
+            {
+                electrons: 8,
+                layer: 2
+            }
+        ],
+        state: {
+            Gas: { Elemental: null }
+        }
+    };
+    ic.reply(element);
+}
+
+export function query_reserved(): QueryManual<reserved> {
+    ic.reply(undefined);
+}
+
+export function query_string(): QueryManual<string> {
+    ic.reply('hello');
+}
+
+export function query_variant(): QueryManual<Gas> {
     const gas = { Toxic: null };
     ic.reply(gas);
 }
