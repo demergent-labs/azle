@@ -57,6 +57,12 @@ export function update_float32(): UpdateManual<float32> {
     ic.reply(1245.678);
 }
 
+// TODO: Inline Types not currently supported.
+// See https://github.com/demergent-labs/azle/issues/474
+// export function update_inline_type(): UpdateManual<{ prop: string }> {
+//     ic.reply({ prop: 'prop' });
+// }
+
 export function update_int8(): UpdateManual<int8> {
     ic.reply(-100);
 }
@@ -120,6 +126,12 @@ export function query_blob(): QueryManual<blob> {
 export function query_float32(): QueryManual<float32> {
     ic.reply(1245.678);
 }
+
+// TODO: Inline Types not currently supported.
+// See https://github.com/demergent-labs/azle/issues/474
+// export function query_inline_type(): QueryManual<{ prop: string }> {
+//     ic.reply({ prop: 'prop' });
+// }
 
 export function query_int8(): QueryManual<int8> {
     ic.reply(-100);
