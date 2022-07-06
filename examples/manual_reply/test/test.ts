@@ -1,6 +1,7 @@
 import { cleanDeploy, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/manual_reply';
 import { Element } from './dfx_generated/manual_reply/manual_reply.did';
+import { execSync } from 'child_process';
 
 const manual_reply_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -57,10 +58,17 @@ const tests: Test[] = [
     {
         name: 'update reply with float32',
         test: async () => {
-            const result = await manual_reply_canister.update_float32();
+            // const result = await manual_reply_canister.update_float32();
+            // Note: The JS agent doesn't handle floats correctly.
+            // See https://github.com/dfinity/agent-js/issues/589
+            const result = execSync(
+                'dfx canister call manual_reply query_float32'
+            )
+                .toString()
+                .trim();
 
             return {
-                ok: result === 1245.677978515625 // TODO: This should not be changing
+                ok: result === '(1245.678 : float32)'
             };
         }
     },
@@ -195,10 +203,17 @@ const tests: Test[] = [
     {
         name: 'query reply with float32',
         test: async () => {
-            const result = await manual_reply_canister.query_float32();
+            // const result = await manual_reply_canister.update_float32();
+            // Note: The JS agent doesn't handle floats correctly.
+            // See https://github.com/dfinity/agent-js/issues/589
+            const result = execSync(
+                'dfx canister call manual_reply query_float32'
+            )
+                .toString()
+                .trim();
 
             return {
-                ok: result === 1245.677978515625 // TODO: This should not be changing
+                ok: result === '(1245.678 : float32)'
             };
         }
     },
