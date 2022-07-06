@@ -13,6 +13,11 @@ export const idlFactory = ({ IDL }) => {
     });
     return IDL.Service({
         stable64_grow: IDL.Func([IDL.Nat64], [Stable64GrowResult], []),
+        stable64_read: IDL.Func(
+            [IDL.Nat64, IDL.Nat64],
+            [IDL.Vec(IDL.Nat8)],
+            ['query']
+        ),
         stable64_size: IDL.Func([], [IDL.Nat64], ['query']),
         stable64_write: IDL.Func([IDL.Nat64, IDL.Vec(IDL.Nat8)], [], []),
         stable_grow: IDL.Func([IDL.Nat32], [StableGrowResult], []),

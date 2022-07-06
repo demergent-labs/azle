@@ -136,11 +136,10 @@ const tests: Test[] = [
 
             await stable_memory_canister.stable64_write(offset, buffer);
 
-            const result = [0, 1, 2, 3, 4, 5];
-            // const result = await stable_memory_canister.stable64_read(
-            //     offset,
-            //     buffer.length
-            // );
+            const result = await stable_memory_canister.stable64_read(
+                offset,
+                BigInt(buffer.length)
+            );
 
             return {
                 ok: arrayEquals(buffer, result)
@@ -155,11 +154,10 @@ const tests: Test[] = [
 
             await stable_memory_canister.stable64_write(offset, buffer);
 
-            const result = [0, 1, 2, 3, 4, 5];
-            // const result = await stable_memory_canister.stable64_read(
-            //     offset,
-            //     buffer.length
-            // );
+            const result = await stable_memory_canister.stable64_read(
+                offset,
+                BigInt(buffer.length)
+            );
 
             return {
                 ok: arrayEquals(buffer, result)

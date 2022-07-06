@@ -23,6 +23,7 @@ import { generateIcObjectFunctionStableRead } from './stable_read';
 import { generateIcObjectFunctionStableSize } from './stable_size';
 import { generateIcObjectFunctionStableWrite } from './stable_write';
 import { generateIcObjectFunctionStable64Grow } from './stable64_grow';
+import { generateIcObjectFunctionStable64Read } from './stable64_read';
 import { generateIcObjectFunctionStable64Size } from './stable64_size';
 import { generateIcObjectFunctionStable64Write } from './stable64_write';
 import { generateIcObjectFunctionTime } from './time';
@@ -71,6 +72,8 @@ export function generateIcObjectFunctions(): Rust {
         generateIcObjectFunctionStableWrite();
     const icObjectFunctionStable64Grow: Rust =
         generateIcObjectFunctionStable64Grow();
+    const icObjectFunctionStable64Read: Rust =
+        generateIcObjectFunctionStable64Read();
     const icObjectFunctionStable64Size: Rust =
         generateIcObjectFunctionStable64Size();
     const icObjectFunctionStable64Write: Rust =
@@ -102,6 +105,7 @@ export function generateIcObjectFunctions(): Rust {
         ${icObjectFunctionStableSize}
         ${icObjectFunctionStableWrite}
         ${icObjectFunctionStable64Grow}
+        ${icObjectFunctionStable64Read}
         ${icObjectFunctionStable64Size}
         ${icObjectFunctionStable64Write}
         ${icObjectFunctionTime}

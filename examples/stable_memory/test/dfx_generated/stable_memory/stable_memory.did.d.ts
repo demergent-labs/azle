@@ -4,6 +4,7 @@ export type StableGrowResult = { ok: number } | { err: StableMemoryError };
 export type StableMemoryError = { OutOfBounds: null } | { OutOfMemory: null };
 export interface _SERVICE {
     stable64_grow: (arg_0: bigint) => Promise<Stable64GrowResult>;
+    stable64_read: (arg_0: bigint, arg_1: bigint) => Promise<Array<number>>;
     stable64_size: () => Promise<bigint>;
     stable64_write: (arg_0: bigint, arg_1: Array<number>) => Promise<undefined>;
     stable_grow: (arg_0: number) => Promise<StableGrowResult>;

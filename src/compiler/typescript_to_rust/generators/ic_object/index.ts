@@ -132,6 +132,11 @@ export function generateIcObject(
                 0
             )
             .function(
+                _azle_ic_stable64_read,
+                "stable64_read",
+                0
+            )
+            .function(
                 _azle_ic_stable64_size,
                 "stable64_size",
                 0
