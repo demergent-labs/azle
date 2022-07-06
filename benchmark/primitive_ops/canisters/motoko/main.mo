@@ -1,39 +1,101 @@
+// TODO Once Motoko can do something like EIC.performance_counter(0) we should do that: https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027/10?u=lastmjs
+
 import EIC "mo:base/ExperimentalInternetComputer";
-import Iter "mo:base/Iter";
 import Debug "mo:base/Debug";
+import HashMap "mo:base/HashMap";
+import Text "mo:base/Text";
+import Nat32 "mo:base/Nat32";
 
-actor Motoko {
-    public query func query_empty(): async Nat64 {
-        EIC.countInstructions(func() {});
-    };
+// TODO there is now way that I know of to nicely split up this code into modules, since in Motoko
+// TODO the actor's public methods are the only thing exposed as the canister API
+actor Motoko {    
+    // boolean
 
-    public query func query_nat64_add_one(): async Nat64 {
-        EIC.countInstructions(func() {
-            var num: Nat64 = 0;
+    type BooleanInitHeapStorage = HashMap.HashMap<Text, Bool>;
 
-            num += 1;
+    let boolean_init_heap_storage: BooleanInitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-            Debug.print(debug_show(num));
+    public func boolean_init_stack(num_inits: Nat32): async Nat64 {
+        return EIC.countInstructions(func() {
+            var i: Nat32 = 0;
+
+            while (i < num_inits) {
+                let value = if (i % 2 == 0) { true } else { false };
+                Debug.print(debug_show(value));
+                i += 1;
+            }
         });
     };
 
-    public query func query_nat64_add_many(): async Nat64 {
-        EIC.countInstructions(func() {
-            var num: Nat64 = 0;
+    public func boolean_init_heap(num_inits: Nat32): async Nat64 {
+        return EIC.countInstructions(func() {
+            var i: Nat32 = 0;
 
-            for (i in Iter.range(0, 10_000)) {
-                num += 1;
-            };
-
-            Debug.print(debug_show(num));
+            while (i < num_inits) {
+                let value = if (i % 2 == 0) { true } else { false };
+                boolean_init_heap_storage.put("bool" # Nat32.toText(i), value);
+                i += 1;
+            }
         });
     };
 
-    public query func query_string_init(): async Nat64 {
-        EIC.countInstructions(func() {
-            let string: Text = "hello there sir";
+    // nat
 
-            Debug.print(string);
+    type NatInitHeapStorage = HashMap.HashMap<Text, Nat>;
+
+    let nat_init_heap_storage: NatInitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
+
+    public func nat_init_stack(num_inits: Nat32): async Nat64 {
+        return EIC.countInstructions(func() {
+            var i: Nat32 = 0;
+
+            while (i < num_inits) {
+                let value: Nat = if (i % 2 == 0) { 340_282_366_920_938_463_463_374_607_431_768_211_455 } else { 0 };
+                Debug.print(debug_show(value));
+                i += 1;
+            }
+        });
+    };
+
+    public func nat_init_heap(num_inits: Nat32): async Nat64 {
+        return EIC.countInstructions(func() {
+            var i: Nat32 = 0;
+
+            while (i < num_inits) {
+                let value: Nat = if (i % 2 == 0) { 340_282_366_920_938_463_463_374_607_431_768_211_455 } else { 0 };
+                nat_init_heap_storage.put("nat" # Nat32.toText(i), value);
+                i += 1;
+            }
+        });
+    };
+
+    // int
+
+    type IntInitHeapStorage = HashMap.HashMap<Text, Int>;
+
+    let int_init_heap_storage: IntInitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
+
+    public func int_init_stack(num_inits: Nat32): async Nat64 {
+        return EIC.countInstructions(func() {
+            var i: Nat32 = 0;
+
+            while (i < num_inits) {
+                let value: Int = if (i % 2 == 0) { 170_141_183_460_469_231_731_687_303_715_884_105_727 } else { 0 };
+                Debug.print(debug_show(value));
+                i += 1;
+            }
+        });
+    };
+
+    public func int_init_heap(num_inits: Nat32): async Nat64 {
+        return EIC.countInstructions(func() {
+            var i: Nat32 = 0;
+
+            while (i < num_inits) {
+                let value: Int = if (i % 2 == 0) { 170_141_183_460_469_231_731_687_303_715_884_105_727 } else { 0 };
+                int_init_heap_storage.put("int" # Nat32.toText(i), value);
+                i += 1;
+            }
         });
     };
 }

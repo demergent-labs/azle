@@ -1,0 +1,8 @@
+service : {
+  boolean_init_heap: (nat32) -> (nat64);
+  boolean_init_stack: (nat32) -> (nat64);
+  int_init_heap: (nat32) -> (nat64);
+  int_init_stack: (nat32) -> (nat64);
+  nat_init_heap: (nat32) -> (nat64);
+  nat_init_stack: (nat32) -> (nat64);
+}

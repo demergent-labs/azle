@@ -1,31 +1,9 @@
-type BooleanResult = record {
-    "value": bool;
-    "wasm_instructions": nat64;
-};
-
-type BooleansResult = record {
-    "value": vec bool;
-    "wasm_instructions": nat64;
-};
-
-type NatResult = record {
-    "value": nat;
-    "wasm_instructions": nat64;
-};
-
-type NatsResult = record {
-    "value": vec nat;
-    "wasm_instructions": nat64;
-};
-
 service: {
-    "boolean_candid_serde_one": (bool) -> (BooleanResult);
-    "boolean_candid_serde_many": (vec bool) -> (BooleansResult);
-    "boolean_init_stack": (nat32) -> (BooleanResult);
-    "boolean_init_heap": (nat32) -> (BooleanResult);
-    "nat_candid_serde_one": (nat) -> (NatResult);
-    "nat_candid_serde_many": (vec nat) -> (NatsResult);
-    "nat_init_stack": (nat32) -> (NatResult);
-    "nat_init_heap": (nat32) -> (NatResult);
+    "boolean_init_stack": (nat32) -> (nat64);
+    "boolean_init_heap": (nat32) -> (nat64);
+    "int_init_stack": (nat32) -> (nat64);
+    "int_init_heap": (nat32) -> (nat64);
+    "nat_init_stack": (nat32) -> (nat64);
+    "nat_init_heap": (nat32) -> (nat64);
     "empty": () -> (nat64);
 }

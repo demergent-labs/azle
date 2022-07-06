@@ -1,5 +1,6 @@
 mod data_types {
     mod boolean;
+    mod int;
     mod nat;
     // mod null;
 }

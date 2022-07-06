@@ -5,15 +5,16 @@ export function empty(): Update<nat64> {
 }
 
 export {
-    boolean_candid_serde_one,
-    boolean_candid_serde_many,
     boolean_init_stack,
     boolean_init_heap
 } from './data_types/boolean';
 
 export {
-    nat_candid_serde_one,
-    nat_candid_serde_many,
+    int_init_stack,
+    int_init_heap
+} from './data_types/int';
+
+export {
     nat_init_stack,
     nat_init_heap
 } from './data_types/nat';

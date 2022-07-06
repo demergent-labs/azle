@@ -11,6 +11,13 @@
                 "output": "benchmark/dfx_generated/azle"
             }
         },
+        "motoko": {
+            "type": "motoko",
+            "main": "canisters/motoko/main.mo",
+            "declarations": {
+                "output": "benchmark/dfx_generated/motoko"
+            }
+        },
         "rust": {
             "type": "rust",
             "package": "rust",

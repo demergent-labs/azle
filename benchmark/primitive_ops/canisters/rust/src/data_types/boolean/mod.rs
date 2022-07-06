@@ -7,52 +7,27 @@ thread_local! {
 
 type BooleanInitHeapStorage = HashMap<String, bool>;
 
-#[derive(candid::CandidType)]
-pub struct BooleanResult {
-    value: bool,
-    wasm_instructions: u64
-}
-
-#[derive(candid::CandidType)]
-pub struct BooleansResult {
-    value: Vec<bool>,
-    wasm_instructions: u64
-}
-
 #[ic_cdk_macros::update]
-pub fn boolean_candid_serde_one(boolean: bool) -> BooleanResult {
-    BooleanResult {
-        value: boolean,
-        wasm_instructions: ic_cdk::api::call::performance_counter(0)
-    }
-}
+pub fn boolean_init_stack(num_inits: u32) -> u64 {
+    let performance_start = ic_cdk::api::call::performance_counter(0);
 
-#[ic_cdk_macros::update]
-pub fn boolean_candid_serde_many(booleans: Vec<bool>) -> BooleansResult {
-    BooleansResult {
-        value: booleans,
-        wasm_instructions: ic_cdk::api::call::performance_counter(0)
-    }
-}
-
-#[ic_cdk_macros::update]
-pub fn boolean_init_stack(num_inits: u32) -> BooleanResult {
     let mut i = 0;
-    let mut value = false;
 
     while i < num_inits {
-        value = if i % 2 == 0 { true } else { false };
+        let value = if i % 2 == 0 { true } else { false };
+        ic_cdk::println!("{}", value);
         i += 1;
     }
 
-    BooleanResult {
-        value,
-        wasm_instructions: ic_cdk::api::call::performance_counter(0)
-    }
+    let performance_end = ic_cdk::api::call::performance_counter(0);
+
+    performance_end - performance_start
 }
 
 #[ic_cdk_macros::update]
-pub fn boolean_init_heap(num_inits: u32) -> BooleanResult {
+pub fn boolean_init_heap(num_inits: u32) -> u64 {
+    let performance_start = ic_cdk::api::call::performance_counter(0);
+
     BOOLEAN_INIT_HEAP_STORAGE_REF_CELL.with(|boolean_init_heap_storage_ref_cell| {
         let mut i = 0;
         let mut boolean_init_heap_storage = boolean_init_heap_storage_ref_cell.borrow_mut();
@@ -65,10 +40,9 @@ pub fn boolean_init_heap(num_inits: u32) -> BooleanResult {
             
             i += 1;
         }
+    });
+
+    let performance_end = ic_cdk::api::call::performance_counter(0);
         
-        BooleanResult {
-            value: if let Some(value) = boolean_init_heap_storage.get("bool0") { value.clone() } else { true },
-            wasm_instructions: ic_cdk::api::call::performance_counter(0)
-        }
-    })
+    performance_end - performance_start
 }
