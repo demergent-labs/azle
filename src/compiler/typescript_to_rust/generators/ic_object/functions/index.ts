@@ -18,6 +18,7 @@ import { generateIcObjectFunctionReject } from './reject';
 import { generateIcObjectFunctionRejectCode } from './reject_code';
 import { generateIcObjectFunctionRejectMessage } from './reject_message';
 import { generateIcObjectFunctionSetCertifiedData } from './set_certified_data';
+import { generateIcObjectFunctionStableBytes } from './stable_bytes';
 import { generateIcObjectFunctionStableGrow } from './stable_grow';
 import { generateIcObjectFunctionStableRead } from './stable_read';
 import { generateIcObjectFunctionStableSize } from './stable_size';
@@ -62,6 +63,8 @@ export function generateIcObjectFunctions(): Rust {
         generateIcObjectFunctionRejectMessage();
     const icObjectFunctionSetCertifiedData: Rust =
         generateIcObjectFunctionSetCertifiedData();
+    const icObjectFunctionStableBytes: Rust =
+        generateIcObjectFunctionStableBytes();
     const icObjectFunctionStableGrow: Rust =
         generateIcObjectFunctionStableGrow();
     const icObjectFunctionStableRead: Rust =
@@ -100,6 +103,7 @@ export function generateIcObjectFunctions(): Rust {
         ${icObjectFunctionRejectCode}
         ${icObjectFunctionRejectMessage}
         ${icObjectFunctionSetCertifiedData}
+        ${icObjectFunctionStableBytes}
         ${icObjectFunctionStableGrow}
         ${icObjectFunctionStableRead}
         ${icObjectFunctionStableSize}

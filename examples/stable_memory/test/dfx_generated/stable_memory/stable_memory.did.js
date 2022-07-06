@@ -20,6 +20,7 @@ export const idlFactory = ({ IDL }) => {
         ),
         stable64_size: IDL.Func([], [IDL.Nat64], ['query']),
         stable64_write: IDL.Func([IDL.Nat64, IDL.Vec(IDL.Nat8)], [], []),
+        stable_bytes: IDL.Func([], [IDL.Vec(IDL.Nat8)], ['query']),
         stable_grow: IDL.Func([IDL.Nat32], [StableGrowResult], []),
         stable_read: IDL.Func(
             [IDL.Nat32, IDL.Nat32],

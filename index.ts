@@ -90,6 +90,7 @@ type ic = {
     reject_code: () => RejectionCode;
     reject_message: () => string;
     set_certified_data: (data: blob) => void;
+    stable_bytes: () => blob;
     stable_grow: (new_pages: nat32) => StableGrowResult;
     stable_read: (offset: nat32, length: nat32) => blob;
     stable_size: () => nat32;

@@ -40,3 +40,7 @@ export function stable_read(offset: nat32, length: nat32): Query<blob> {
 export function stable64_read(offset: nat64, length: nat64): Query<blob> {
     return ic.stable64_read(offset, length);
 }
+
+export function stable_bytes(): Query<blob> {
+    return ic.stable_bytes();
+}
