@@ -64,6 +64,33 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        impl AzleIntoJsValue for ic_cdk::api::stable::StableMemoryError {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                match self {
+                    ic_cdk::api::stable::StableMemoryError::OutOfMemory => {
+                        boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "OutOfMemory",
+                                boa_engine::JsValue::Null,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .build()
+                            .into()
+                    }
+                    ic_cdk::api::stable::StableMemoryError::OutOfBounds => {
+                        boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "OutOfBounds",
+                                boa_engine::JsValue::Null,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .build()
+                            .into()
+                    }
+                }
+            }
+        }
+
         impl AzleIntoJsValue for ic_cdk::api::call::RejectionCode {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 match self {
