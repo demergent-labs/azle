@@ -1,4 +1,5 @@
 import {
+    blob,
     ic,
     nat32,
     nat64,
@@ -22,4 +23,8 @@ export function stable_grow(new_pages: nat32): Update<StableGrowResult> {
 
 export function stable64_grow(new_pages: nat64): Update<Stable64GrowResult> {
     return ic.stable64_grow(new_pages);
+}
+
+export function stable_write(offset: nat32, buffer: blob): Update<void> {
+    ic.stable_write(offset, buffer);
 }

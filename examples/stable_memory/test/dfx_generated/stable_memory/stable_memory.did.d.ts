@@ -7,4 +7,5 @@ export interface _SERVICE {
     stable64_size: () => Promise<bigint>;
     stable_grow: (arg_0: number) => Promise<StableGrowResult>;
     stable_size: () => Promise<number>;
+    stable_write: (arg_0: number, arg_1: Array<number>) => Promise<undefined>;
 }

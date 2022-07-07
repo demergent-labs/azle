@@ -9,4 +9,5 @@ service: {
     "stable64_size": () -> (nat64) query;
     "stable_grow": (nat32) -> (StableGrowResult);
     "stable64_grow": (nat64) -> (Stable64GrowResult);
+    "stable_write": (nat32, blob) -> ();
 }
