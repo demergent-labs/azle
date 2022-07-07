@@ -5,9 +5,17 @@ export interface Element {
     state: State;
 }
 export type Gas = { Elemental: null } | { Mixed: null } | { Toxic: null };
+export type Options = { Large: null } | { Small: null } | { Medium: null };
 export interface Orbital {
     electrons: number;
     layer: number;
+}
+export interface RawReply {
+    int: bigint;
+    blob: Array<number>;
+    bool: boolean;
+    text: string;
+    variant: Options;
 }
 export interface Solid {
     element: string;
@@ -25,6 +33,7 @@ export interface _SERVICE {
     query_reserved: () => Promise<any>;
     query_string: () => Promise<string>;
     query_variant: () => Promise<Gas>;
+    reply_raw: () => Promise<RawReply>;
     update_blob: () => Promise<Array<number>>;
     update_float32: () => Promise<number>;
     update_int8: () => Promise<number>;

@@ -16,6 +16,18 @@ export const idlFactory = ({ IDL }) => {
         orbitals: IDL.Vec(Orbital),
         state: State
     });
+    const Options = IDL.Variant({
+        Large: IDL.Null,
+        Small: IDL.Null,
+        Medium: IDL.Null
+    });
+    const RawReply = IDL.Record({
+        int: IDL.Int,
+        blob: IDL.Vec(IDL.Nat8),
+        bool: IDL.Bool,
+        text: IDL.Text,
+        variant: Options
+    });
     return IDL.Service({
         manual_query: IDL.Func([IDL.Text], [IDL.Text], ['query']),
         manual_update: IDL.Func([IDL.Text], [IDL.Text], []),
@@ -28,6 +40,7 @@ export const idlFactory = ({ IDL }) => {
         query_reserved: IDL.Func([], [IDL.Reserved], ['query']),
         query_string: IDL.Func([], [IDL.Text], ['query']),
         query_variant: IDL.Func([], [Gas], ['query']),
+        reply_raw: IDL.Func([], [RawReply], []),
         update_blob: IDL.Func([], [IDL.Vec(IDL.Nat8)], []),
         update_float32: IDL.Func([], [IDL.Float32], []),
         update_int8: IDL.Func([], [IDL.Int8], []),

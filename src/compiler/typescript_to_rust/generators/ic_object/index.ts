@@ -107,6 +107,11 @@ export function generateIcObject(
                 0
             )
             .function(
+                _azle_ic_reply_raw,
+                "reply_raw",
+                0
+            )
+            .function(
                 _azle_ic_reject_message,
                 "reject_message",
                 0

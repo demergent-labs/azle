@@ -2,6 +2,7 @@ import {
     blob,
     float32,
     ic,
+    int,
     int8,
     nat,
     nat8,
@@ -10,6 +11,20 @@ import {
     UpdateManual,
     Variant
 } from 'azle';
+
+type Options = Variant<{
+    Small: null;
+    Medium: null;
+    Large: null;
+}>;
+
+type RawReply = {
+    int: int;
+    text: string;
+    bool: boolean;
+    blob: blob;
+    variant: Options;
+};
 
 type Element = {
     id: string;
@@ -176,4 +191,19 @@ export function query_string(): QueryManual<string> {
 export function query_variant(): QueryManual<Gas> {
     const gas = { Toxic: null };
     ic.reply(gas);
+}
+
+export function reply_raw(): UpdateManual<RawReply> {
+    // const response = '(record { "int" = 42; "text" = "text"; "bool" = true; "blob" = blob "Surprise!"; "variant" = variant {Medium} })';
+    // const hex = execSync(`didc encode '${response}'`).toString().trim();
+    // TODO expose candid encoding/decoding in azle.
+    // See https://github.com/demergent-labs/azle/issues/400
+
+    const candidEncodedArgumentsHexString =
+        '4449444c036c05ef99c0027cddfae4880401aa88ee88047ead99e7e70471858189e70d026d7b6b019591f39a037f01002a0953757270726973652101047465787400';
+    const candidEncodedArgumentsByteArray =
+        candidEncodedArgumentsHexString
+            .match(/.{1,2}/g)
+            ?.map((byte) => parseInt(byte, 16)) ?? [];
+    ic.reply_raw(new Uint8Array(candidEncodedArgumentsByteArray));
 }

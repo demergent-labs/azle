@@ -18,6 +18,7 @@ import { generateIcObjectFunctionReject } from './reject';
 import { generateIcObjectFunctionRejectCode } from './reject_code';
 import { generateIcObjectFunctionRejectMessage } from './reject_message';
 import { generateIcObjectFunctionReply } from './reply';
+import { generateIcObjectFunctionReplyRaw } from './reply_raw';
 import { generateIcObjectFunctionSetCertifiedData } from './set_certified_data';
 import { generateIcObjectFunctionStableBytes } from './stable_bytes';
 import { generateIcObjectFunctionStableGrow } from './stable_grow';
@@ -32,7 +33,9 @@ import { generateIcObjectFunctionTime } from './time';
 import { generateIcObjectFunctionTrap } from './trap';
 import { CanisterMethodFunctionInfo, Rust } from '../../../../../types';
 
-export function generateIcObjectFunctions(canisterMethodFunctionInfos: CanisterMethodFunctionInfo[]): Rust {
+export function generateIcObjectFunctions(
+    canisterMethodFunctionInfos: CanisterMethodFunctionInfo[]
+): Rust {
     const icObjectFunctionAcceptMessage: Rust =
         generateIcObjectFunctionAcceptMessage();
     const icObjectFunctionArgDataRaw: Rust =
@@ -67,8 +70,10 @@ export function generateIcObjectFunctions(canisterMethodFunctionInfos: CanisterM
         generateIcObjectFunctionRejectCode();
     const icObjectFunctionRejectMessage: Rust =
         generateIcObjectFunctionRejectMessage();
-    const icObjectFunctionReply: Rust =
-        generateIcObjectFunctionReply(canisterMethodFunctionInfos);
+    const icObjectFunctionReply: Rust = generateIcObjectFunctionReply(
+        canisterMethodFunctionInfos
+    );
+    const icObjectFunctionReplyRaw: Rust = generateIcObjectFunctionReplyRaw();
     const icObjectFunctionSetCertifiedData: Rust =
         generateIcObjectFunctionSetCertifiedData();
     const icObjectFunctionStableBytes: Rust =
@@ -113,6 +118,7 @@ export function generateIcObjectFunctions(canisterMethodFunctionInfos: CanisterM
         ${icObjectFunctionRejectCode}
         ${icObjectFunctionRejectMessage}
         ${icObjectFunctionReply}
+        ${icObjectFunctionReplyRaw}
         ${icObjectFunctionSetCertifiedData}
         ${icObjectFunctionStableBytes}
         ${icObjectFunctionStableGrow}

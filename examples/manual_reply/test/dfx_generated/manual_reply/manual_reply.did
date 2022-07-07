@@ -4,6 +4,14 @@ type Element = record {
     "state": State;
 };
 
+type RawReply = record {
+    "int": int;
+    "text": text;
+    "bool": bool;
+    "blob": blob;
+    "variant": Options;
+};
+
 type Orbital = record {
     "layer": nat8;
     "electrons": nat8;
@@ -16,6 +24,8 @@ type Solid = record {
 type Gas = variant { "Elemental": null; "Mixed": null; "Toxic": null };
 
 type State = variant { "Gas": Gas; "Liquid": null; "Solid": Solid };
+
+type Options = variant { "Small": null; "Medium": null; "Large": null };
 
 service: {
     "manual_query": (text) -> (text) query;
@@ -38,4 +48,5 @@ service: {
     "update_reserved": () -> (reserved);
     "update_string": () -> (text);
     "update_variant": () -> (Gas);
+    "reply_raw": () -> (RawReply);
 }
