@@ -90,6 +90,7 @@ jobs:
                     "examples/simple_erc20",
                     "examples/simple_user_accounts",
                     "examples/stable_storage",
+                    "examples/stable_memory",
                     "examples/tuple_types",
                     "examples/update"
                   ]

@@ -1,0 +1,3 @@
+service: {
+    "stable_size": () -> (nat32);
+}
