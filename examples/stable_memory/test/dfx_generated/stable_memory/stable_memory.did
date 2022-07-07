@@ -7,6 +7,7 @@ type StableMemoryError = variant { "OutOfMemory": null; "OutOfBounds": null };
 service: {
     "stable_size": () -> (nat32) query;
     "stable64_size": () -> (nat64) query;
+    "stable_read": (nat32, nat32) -> (blob) query;
     "stable_grow": (nat32) -> (StableGrowResult);
     "stable64_grow": (nat64) -> (Stable64GrowResult);
     "stable_write": (nat32, blob) -> ();

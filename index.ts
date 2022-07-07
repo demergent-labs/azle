@@ -91,6 +91,7 @@ type ic = {
     reject_message: () => string;
     set_certified_data: (data: blob) => void;
     stable_grow: (new_pages: nat32) => StableGrowResult;
+    stable_read: (offset: nat32, length: nat32) => blob;
     stable_size: () => nat32;
     stable_write: (offset: nat32, buf: blob) => void;
     stable64_grow: (new_pages: nat64) => Stable64GrowResult;
