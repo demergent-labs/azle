@@ -34,6 +34,35 @@ const tests: Test[] = [
         }
     },
     {
+        name: 'arg_data_raw_size',
+        test: async () => {
+            const blobString = 'Surprise!';
+            const blob = blobString.split('').map((char) => char.charCodeAt(0));
+            const int = 127;
+            const bool = true;
+            const string = 'test';
+
+            const resultArgDataRawSize =
+                await ic_api_canister.arg_data_raw_size(
+                    blob,
+                    int,
+                    bool,
+                    string
+                );
+
+            const resultArgDataRaw = await ic_api_canister.arg_data_raw(
+                blob,
+                int,
+                bool,
+                string
+            );
+
+            return {
+                ok: resultArgDataRawSize === resultArgDataRaw.length
+            };
+        }
+    },
+    {
         name: 'caller',
         test: async () => {
             const result = await ic_api_canister.caller();

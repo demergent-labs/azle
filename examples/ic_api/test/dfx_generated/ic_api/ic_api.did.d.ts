@@ -6,6 +6,12 @@ export interface _SERVICE {
         arg_2: boolean,
         arg_3: string
     ) => Promise<Array<number>>;
+    arg_data_raw_size: (
+        arg_0: Array<number>,
+        arg_1: number,
+        arg_2: boolean,
+        arg_3: string
+    ) => Promise<number>;
     caller: () => Promise<Principal>;
     canister_balance: () => Promise<bigint>;
     canister_balance128: () => Promise<bigint>;

@@ -4,7 +4,7 @@ import {
     ic,
     int8,
     nat,
-    nat64,
+    nat32,
     Opt,
     Principal,
     Query,
@@ -20,6 +20,16 @@ export function arg_data_raw(
     arg4: string
 ): Query<blob> {
     return ic.arg_data_raw();
+}
+
+// returns the length of the argument data in bytes
+export function arg_data_raw_size(
+    arg1: blob,
+    arg2: int8,
+    arg3: boolean,
+    arg4: string
+): Query<nat32> {
+    return ic.arg_data_raw_size();
 }
 
 // returns the principal of the identity that called this function
