@@ -92,6 +92,7 @@ type ic = {
     set_certified_data: (data: blob) => void;
     stable_grow: (new_pages: nat32) => StableGrowResult;
     stable_size: () => nat32;
+    stable64_grow: (new_pages: nat64) => Stable64GrowResult;
     stable64_size: () => nat64;
     stableStorage: <T>() => T;
     time: () => nat64;
@@ -217,5 +218,10 @@ export type StableMemoryError = Variant<{
 
 export type StableGrowResult = Variant<{
     ok: nat32;
+    err: StableMemoryError;
+}>;
+
+export type Stable64GrowResult = Variant<{
+    ok: nat64;
     err: StableMemoryError;
 }>;
