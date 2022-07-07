@@ -1,7 +1,9 @@
 import { cleanDeploy, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/stable_memory';
 
+// TODO Understand why these numbers are the way they are https://github.com/demergent-labs/azle/issues/485
 const MAX_STABLE_MEM = 65_536;
+const STABLE_BYTES_SIZE = 655_360;
 
 const stable_memory_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -74,6 +76,17 @@ const tests: Test[] = [
                     'ok' in result &&
                     result.ok === old_size &&
                     new_pages + old_size === new_size
+            };
+        }
+    },
+    {
+        name: 'stable bytes',
+        test: async () => {
+            const result = await stable_memory_canister.stable_bytes();
+            const expected_bytes = new Array(STABLE_BYTES_SIZE).fill(0);
+
+            return {
+                ok: arrayEquals(expected_bytes, result)
             };
         }
     },
