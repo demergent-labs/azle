@@ -22,6 +22,11 @@ export function generateIcObject(
                 0
             )
             .function(
+                _azle_ic_arg_data_raw,
+                "arg_data_raw",
+                0
+            )
+            .function(
                 azle_ic_caller,
                 "caller",
                 0

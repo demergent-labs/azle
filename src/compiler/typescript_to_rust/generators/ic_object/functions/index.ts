@@ -1,4 +1,5 @@
 import { generateIcObjectFunctionAcceptMessage } from './accept_message';
+import { generateIcObjectFunctionArgDataRaw } from './arg_data_raw';
 import { generateIcObjectFunctionCaller } from './caller';
 import { generateIcObjectFunctionCanisterBalance } from './canister_balance';
 import { generateIcObjectFunctionCanisterBalance128 } from './canister_balance128';
@@ -33,6 +34,8 @@ import { CanisterMethodFunctionInfo, Rust } from '../../../../../types';
 export function generateIcObjectFunctions(canisterMethodFunctionInfos: CanisterMethodFunctionInfo[]): Rust {
     const icObjectFunctionAcceptMessage: Rust =
         generateIcObjectFunctionAcceptMessage();
+    const icObjectFunctionArgDataRaw: Rust =
+        generateIcObjectFunctionArgDataRaw();
     const icObjectFunctionCaller: Rust = generateIcObjectFunctionCaller();
     const icObjectFunctionCanisterBalance: Rust =
         generateIcObjectFunctionCanisterBalance();
@@ -88,6 +91,7 @@ export function generateIcObjectFunctions(canisterMethodFunctionInfos: CanisterM
 
     return `
         ${icObjectFunctionAcceptMessage}
+        ${icObjectFunctionArgDataRaw}
         ${icObjectFunctionCaller}
         ${icObjectFunctionCanisterBalance}
         ${icObjectFunctionCanisterBalance128}
