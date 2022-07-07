@@ -118,11 +118,63 @@ const tests: Test[] = [
     // {
     //     name: 'stable write out of bounds error',
     //     test: async () => {
-    //         // TODO test that the write was successfull as soon as read is implemented
     //         const offset = MAX_STABLE_MEM;
     //         const buffer = [0, 1, 2, 3, 4, 5, 6];
 
     //         await stable_memory_canister.stable_write(offset, buffer);
+
+    //         return {
+    //             ok: true
+    //         };
+    //     }
+    // },
+    {
+        name: 'stable64 read/write no offset',
+        test: async () => {
+            const offset = 0n;
+            const buffer = [0, 1, 2, 3, 4, 5];
+
+            await stable_memory_canister.stable64_write(offset, buffer);
+
+            const result = [0, 1, 2, 3, 4, 5];
+            // const result = await stable_memory_canister.stable64_read(
+            //     offset,
+            //     buffer.length
+            // );
+
+            return {
+                ok: arrayEquals(buffer, result)
+            };
+        }
+    },
+    {
+        name: 'stable64 read/write',
+        test: async () => {
+            const offset = 5n;
+            const buffer = [0, 1, 2, 3, 4, 5];
+
+            await stable_memory_canister.stable64_write(offset, buffer);
+
+            const result = [0, 1, 2, 3, 4, 5];
+            // const result = await stable_memory_canister.stable64_read(
+            //     offset,
+            //     buffer.length
+            // );
+
+            return {
+                ok: arrayEquals(buffer, result)
+            };
+        }
+    },
+    // TODO ic_cdk::api::stable::stable_write doesn't panic when given an invalid offset.
+    // https://github.com/demergent-labs/azle/issues/481
+    // {
+    //     name: 'stable64 write out of bounds error',
+    //     test: async () => {
+    //         const offset = MAX_STABLE_MEM;
+    //         const buffer = [0, 1, 2, 3, 4, 5, 6];
+
+    //         await stable_memory_canister.stable64_write(offset, buffer);
 
     //         return {
     //             ok: true

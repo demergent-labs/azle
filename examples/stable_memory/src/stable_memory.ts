@@ -25,8 +25,12 @@ export function stable64_grow(new_pages: nat64): Update<Stable64GrowResult> {
     return ic.stable64_grow(new_pages);
 }
 
-export function stable_write(offset: nat32, buffer: blob): Update<void> {
-    ic.stable_write(offset, buffer);
+export function stable_write(offset: nat32, buf: blob): Update<void> {
+    ic.stable_write(offset, buf);
+}
+
+export function stable64_write(offset: nat64, buf: blob): Update<void> {
+    ic.stable64_write(offset, buf);
 }
 
 export function stable_read(offset: nat32, length: nat32): Query<blob> {
