@@ -36,3 +36,7 @@ export function stable64_write(offset: nat64, buf: blob): Update<void> {
 export function stable_read(offset: nat32, length: nat32): Query<blob> {
     return ic.stable_read(offset, length);
 }
+
+export function stable64_read(offset: nat64, length: nat64): Query<blob> {
+    return ic.stable64_read(offset, length);
+}
