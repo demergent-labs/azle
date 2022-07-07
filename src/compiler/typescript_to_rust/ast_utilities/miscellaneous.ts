@@ -54,8 +54,10 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
         if (literalTypeNode.literal.kind === tsc.SyntaxKind.NullKeyword) {
             return `()`;
         }
-        // TODO possibly other type literals?
+        // TODO possibly other literal types?
     }
+
+    // TODO handle type literals. See https://github.com/demergent-labs/azle/issues/474
 
     if (typeNode.kind === tsc.SyntaxKind.ArrayType) {
         const arrayTypeNode = typeNode as tsc.ArrayTypeNode;

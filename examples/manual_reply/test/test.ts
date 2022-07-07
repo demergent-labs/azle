@@ -62,7 +62,7 @@ const tests: Test[] = [
             // Note: The JS agent doesn't handle floats correctly.
             // See https://github.com/dfinity/agent-js/issues/589
             const result = execSync(
-                'dfx canister call manual_reply query_float32'
+                'dfx canister call manual_reply update_float32'
             )
                 .toString()
                 .trim();
