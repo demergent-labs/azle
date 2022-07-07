@@ -91,6 +91,7 @@ type ic = {
     reject_message: () => string;
     set_certified_data: (data: blob) => void;
     stable_size: () => nat32;
+    stable64_size: () => nat64;
     stableStorage: <T>() => T;
     time: () => nat64;
     trap: (message: string) => never;

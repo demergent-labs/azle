@@ -19,6 +19,7 @@ import { generateIcObjectFunctionRejectCode } from './reject_code';
 import { generateIcObjectFunctionRejectMessage } from './reject_message';
 import { generateIcObjectFunctionSetCertifiedData } from './set_certified_data';
 import { generateIcObjectFunctionStableSize } from './stable_size';
+import { generateIcObjectFunctionStable64Size } from './stable64_size';
 import { generateIcObjectFunctionTime } from './time';
 import { generateIcObjectFunctionTrap } from './trap';
 
@@ -57,6 +58,8 @@ export function generateIcObjectFunctions(): Rust {
         generateIcObjectFunctionSetCertifiedData();
     const icObjectFunctionStableSize: Rust =
         generateIcObjectFunctionStableSize();
+    const icObjectFunctionStable64Size: Rust =
+        generateIcObjectFunctionStable64Size();
     const icObjectFunctionTime: Rust = generateIcObjectFunctionTime();
     const icObjectFunctionTrap: Rust = generateIcObjectFunctionTrap();
 
@@ -80,6 +83,7 @@ export function generateIcObjectFunctions(): Rust {
         ${icObjectFunctionRejectMessage}
         ${icObjectFunctionSetCertifiedData}
         ${icObjectFunctionStableSize}
+        ${icObjectFunctionStable64Size}
         ${icObjectFunctionTime}
         ${icObjectFunctionTrap}
   `;
