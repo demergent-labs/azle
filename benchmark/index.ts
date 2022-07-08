@@ -203,7 +203,7 @@ function calculate_change_multiplier(
 function create_markdown_report(benchmark_results: BenchmarkResult[]): string {
     const title = `# Azle/Rust/Motoko Benchmarks`;
 
-    const description = `These benchmarks were run using the performance counter. The results are the average of ten executions.`;
+    const description = `These benchmarks were run using the performance counter. The results are the average of ten executions. For more details on exactly what these benchmarks are measuring: https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027`;
 
     const header_names = ['Description', 'Azle Wasm Instructions', 'Motoko Wasm Instructions', 'Rust Wasm Instructions', 'Azle/Motoko Percentage Change', 'Azle/Rust Percentage Change', 'Azle/Motoko Change Multiplier', 'Azle/Rust Change Multiplier'];
 

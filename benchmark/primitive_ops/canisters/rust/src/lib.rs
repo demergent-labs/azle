@@ -1,11 +1,29 @@
 mod data_types {
+    mod blob;
     mod boolean;
-    mod int;
-    mod nat;
-    // mod null;
-}
-
-#[ic_cdk_macros::update]
-fn empty() -> u64 {
-    ic_cdk::api::call::performance_counter(0)
+    mod float {
+        mod float32;
+        mod float64;
+    }
+    mod int {
+        mod int;
+        mod int8;
+        mod int16;
+        mod int32;
+        mod int64;
+    }
+    mod nat {
+        mod nat;
+        mod nat8;
+        mod nat16;
+        mod nat32;
+        mod nat64;
+    }
+    mod null;
+    mod opt;
+    mod principal;
+    mod record;
+    mod text;
+    mod variant;
+    mod vec;
 }

@@ -2,31 +2,31 @@
 These benchmarks were run using the performance counter. The results are the average of ten executions.
 | Description | Azle Wasm Instructions | Motoko Wasm Instructions | Rust Wasm Instructions | Azle/Motoko Percentage Change | Azle/Rust Percentage Change | Azle/Motoko Change Multiplier | Azle/Rust Change Multiplier |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| boolean_init_stack: 1 | 628_928 | 404 |1_211 | 155_575% | 51_835% | 1_557x | 519x |
-| boolean_init_stack: 10 | 5_260_459 | 2_047 |10_379 | 256_884% | 50_584% | 2_570x | 507x |
-| boolean_init_stack: 100 | 51_253_501 | 18_472 |101_954 | 277_366% | 50_171% | 2_775x | 503x |
-| boolean_init_heap: 1 | 410_761 | 2_771 |1_980 | 14_724% | 20_645% | 148x | 207x |
-| boolean_init_heap: 10 | 2_758_600 | 28_055 |17_865 | 9_733% | 15_341% | 98x | 154x |
-| boolean_init_heap: 100 | 26_477_895 | 1_608_994 |182_714 | 1_546% | 14_391% | 16x | 145x |
-| int_init_stack: 1 | 649_134 | 1_070_001 |22_689 | -39% | 2_761% | 1x | 29x |
-| int_init_stack: 10 | 5_358_612 | 5_350_047 |132_539 | 0% | 3_943% | 1x | 40x |
-| int_init_stack: 100 | 52_601_452 | 53_498_472 |1_323_555 | -2% | 3_874% | 1x | 40x |
-| int_init_heap: 1 | 409_406 | 16_557 |2_724 | 2_373% | 14_930% | 25x | 150x |
-| int_init_heap: 10 | 2_747_256 | 165_915 |21_804 | 1_556% | 12_500% | 17x | 126x |
-| int_init_heap: 100 | 26_512_263 | 472_862 |223_832 | 5_507% | 11_745% | 56x | 118x |
-| nat_init_stack: 1 | 643_769 | 1_071_416 |22_677 | -40% | 2_739% | 1x | 28x |
-| nat_init_stack: 10 | 5_369_367 | 5_357_192 |132_574 | 0% | 3_950% | 1x | 41x |
-| nat_init_stack: 100 | 52_340_549 | 53_569_922 |1_323_904 | -2% | 3_854% | 1x | 40x |
-| nat_init_heap: 1 | 410_871 | 16_557 |2_674 | 2_382% | 15_265% | 25x | 154x |
-| nat_init_heap: 10 | 2_753_648 | 165_695 |21_535 | 1_562% | 12_687% | 17x | 128x |
-| nat_init_heap: 100 | 26_480_557 | 472_642 |220_489 | 5_503% | 11_910% | 56x | 120x |
+| boolean_init_stack: 1 | 818_461 | 1_335 |36_534 | 61_208% | 2_142% | 613x | 22x |
+| boolean_init_stack: 10 | 5_661_633 | 2_978 |49_690 | 190_015% | 11_294% | 1_901x | 114x |
+| boolean_init_stack: 100 | 51_460_149 | 19_403 |183_925 | 265_117% | 27_879% | 2_652x | 280x |
+| boolean_init_heap: 1 | 590_944 | 3_764 |36_084 | 15_632% | 1_538% | 157x | 16x |
+| boolean_init_heap: 10 | 2_872_125 | 28_674 |57_699 | 9_928% | 4_882% | 100x | 50x |
+| boolean_init_heap: 100 | 26_690_478 | 1_731_004 |269_907 | 1_487% | 9_818% | 16x | 99x |
+| int_init_stack: 1 | 837_890 | 1_070_932 |57_332 | -22% | 1_361% | 1x | 15x |
+| int_init_stack: 10 | 5_549_617 | 5_350_979 |171_992 | 4% | 3_127% | 1x | 32x |
+| int_init_stack: 100 | 52_517_298 | 53_499_428 |1_406_297 | -2% | 3_634% | 1x | 37x |
+| int_init_heap: 1 | 598_474 | 17_389 |37_995 | 3_342% | 1_475% | 34x | 16x |
+| int_init_heap: 10 | 2_877_203 | 165_605 |58_036 | 1_637% | 4_878% | 17x | 50x |
+| int_init_heap: 100 | 26_613_648 | 515_495 |269_216 | 5_257% | 9_911% | 54x | 100x |
+| nat_init_stack: 1 | 839_895 | 1_072_347 |54_599 | -22% | 1_438% | 1x | 15x |
+| nat_init_stack: 10 | 5_551_451 | 5_358_123 |162_690 | 4% | 3_312% | 1x | 34x |
+| nat_init_stack: 100 | 52_761_457 | 53_570_853 |1_333_590 | -2% | 3_856% | 1x | 40x |
+| nat_init_heap: 1 | 589_380 | 17_497 |36_386 | 3_269% | 1_521% | 34x | 16x |
+| nat_init_heap: 10 | 2_856_394 | 165_829 |55_967 | 1_623% | 5_023% | 17x | 51x |
+| nat_init_heap: 100 | 26_640_752 | 515_279 |263_977 | 5_263% | 10_113% | 54x | 102x |
 
-Average Azle Wasm Instructions: 14_614_835
+Average Azle Wasm Instructions: 14_795_958
 
-Average Motoko Wasm Instructions: 6_827_112
+Average Motoko Wasm Instructions: 6_839_273
 
-Average Rust Wasm Instructions: 209_283
+Average Rust Wasm Instructions: 252_329
 
-Average Azle/Motoko Change Multiplier: 409x
+Average Azle/Motoko Change Multiplier: 314x
 
-Average Azle/Rust Change Multiplier: 169x
+Average Azle/Rust Change Multiplier: 61x
