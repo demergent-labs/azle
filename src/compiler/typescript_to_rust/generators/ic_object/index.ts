@@ -8,12 +8,12 @@ export function generateIcObject(
     stableStorageVariableInfos: StableStorageVariableInfo[],
     callFunctionInfos: CallFunctionInfo[]
 ): Rust {
-    const _azleStableStorage = generate_AzleStableStorage(
+    const _azle_stable_storage = generateAzleStableStorage(
         stableStorageVariableInfos
     );
 
     return /* rust */ `
-        ${_azleStableStorage}
+        ${_azle_stable_storage}
 
         let ic = boa_engine::object::ObjectInitializer::new(&mut boa_context)
             .function(
@@ -207,19 +207,19 @@ export function generateIcObject(
                 })
                 .join('')}
             .property(
-                "_azleStableStorage",
-                _azleStableStorage,
+                "_azle_stable_storage",
+                _azle_stable_storage,
                 boa_engine::property::Attribute::all()
             )
             .build();
     `;
 }
 
-function generate_AzleStableStorage(
+function generateAzleStableStorage(
     stableStorageVariableInfos: StableStorageVariableInfo[]
 ): Rust {
     if (stableStorageVariableInfos.length === 0) {
-        return `let _azleStableStorage = boa_engine::object::ObjectInitializer::new(&mut boa_context).build();`;
+        return `let _azle_stable_storage = boa_engine::object::ObjectInitializer::new(&mut boa_context).build();`;
     } else {
         return `
             let (${stableStorageVariableInfos
@@ -266,7 +266,7 @@ function generate_AzleStableStorage(
                 })
                 .join('\n')}
 
-            let _azleStableStorage = boa_engine::object::ObjectInitializer::new(&mut boa_context)
+            let _azle_stable_storage = boa_engine::object::ObjectInitializer::new(&mut boa_context)
                 ${stableStorageVariableInfos
                     .filter(
                         (stableStorageVariableInfo) =>

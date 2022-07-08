@@ -56,7 +56,7 @@ export function generateCanisterMethodPreUpgrade(
                 let ic_js_value = boa_context.eval("globalThis.ic").unwrap();
                 let ic_js_object = ic_js_value.as_object().unwrap();
 
-                let _azle_stable_storage_js_value = ic_js_object.get("_azleStableStorage", &mut boa_context).unwrap();
+                let _azle_stable_storage_js_value = ic_js_object.get("_azle_stable_storage", &mut boa_context).unwrap();
                 let _azle_stable_storage_js_object = _azle_stable_storage_js_value.as_object().unwrap();
 
                 ${stableStorageVariableInfos

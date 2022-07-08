@@ -25,13 +25,13 @@ let entries: {
 export function init(): Init {
     console.log('init');
 
-    ic.stableStorage<StableStorage>().entries = [];
+    ic.stable_storage<StableStorage>().entries = [];
 }
 
 export function preUpgrade(): PreUpgrade {
     console.log('preUpgrade');
 
-    ic.stableStorage<StableStorage>().entries = Object.entries(entries).map(
+    ic.stable_storage<StableStorage>().entries = Object.entries(entries).map(
         (entry) => {
             return {
                 key: entry[0],
@@ -45,7 +45,7 @@ export function postUpgrade(): PostUpgrade {
     console.log('preUpgrade');
 
     entries = ic
-        .stableStorage<StableStorage>()
+        .stable_storage<StableStorage>()
         .entries.reduce((result, entry) => {
             return {
                 ...result,

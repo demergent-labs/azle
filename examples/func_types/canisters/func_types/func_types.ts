@@ -18,7 +18,7 @@ type StableStorage = Stable<{
     stable_func: StableFunc;
 }>;
 
-let stable_storage: StableStorage = ic.stableStorage();
+let stable_storage: StableStorage = ic.stable_storage();
 
 type User = {
     id: string;
