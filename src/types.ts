@@ -1,3 +1,5 @@
+import { TypeNode } from 'typescript';
+
 export type Candid = string;
 
 export type CandidTypeInfo = {
@@ -78,9 +80,15 @@ export type RustParam = {
     paramType: string;
 };
 
+export type TypeScriptParam = {
+    name: string;
+    typeNode: TypeNode;
+};
+
 export type CanisterMethodFunctionInfo = {
     name: string;
     queryOrUpdate: 'QUERY' | 'UPDATE';
     manual: boolean;
     rustReturnType: Rust;
+    params: TypeScriptParam[];
 };

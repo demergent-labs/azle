@@ -1,4 +1,5 @@
 import { generateIcObjectFunctionAcceptMessage } from './accept_message';
+import { generateIcObjectFunctionArgData } from './arg_data';
 import { generateIcObjectFunctionArgDataRaw } from './arg_data_raw';
 import { generateIcObjectFunctionArgDataRawSize } from './arg_data_raw_size';
 import { generateIcObjectFunctionCaller } from './caller';
@@ -38,6 +39,9 @@ export function generateIcObjectFunctions(
 ): Rust {
     const icObjectFunctionAcceptMessage: Rust =
         generateIcObjectFunctionAcceptMessage();
+    const icObjectFunctionArgData: Rust = generateIcObjectFunctionArgData(
+        canisterMethodFunctionInfos
+    );
     const icObjectFunctionArgDataRaw: Rust =
         generateIcObjectFunctionArgDataRaw();
     const icObjectFunctionArgDataRawSize: Rust =
@@ -99,6 +103,7 @@ export function generateIcObjectFunctions(
 
     return `
         ${icObjectFunctionAcceptMessage}
+        ${icObjectFunctionArgData}
         ${icObjectFunctionArgDataRaw}
         ${icObjectFunctionArgDataRawSize}
         ${icObjectFunctionCaller}
