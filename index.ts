@@ -53,10 +53,6 @@ ic.call_raw128 = function (...args) {
 
 type ic = {
     accept_message: () => void;
-    /**
-     * Returns the argument data as bytes.
-     * @returns the argument data
-     */
     arg_data_raw: () => blob;
     // call: (
     //     canisterId: Principal,
