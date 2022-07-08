@@ -23,13 +23,13 @@ let entries: {
 } = {};
 
 export function init(): Init {
-    ic.print('init');
+    console.log('init');
 
     ic.stableStorage<StableStorage>().entries = [];
 }
 
 export function preUpgrade(): PreUpgrade {
-    ic.print('preUpgrade');
+    console.log('preUpgrade');
 
     ic.stableStorage<StableStorage>().entries = Object.entries(entries).map(
         (entry) => {
@@ -42,7 +42,7 @@ export function preUpgrade(): PreUpgrade {
 }
 
 export function postUpgrade(): PostUpgrade {
-    ic.print('preUpgrade');
+    console.log('preUpgrade');
 
     entries = ic
         .stableStorage<StableStorage>()

@@ -19,7 +19,7 @@ export const ic: ic = globalThis.ic;
 // globalThis.console = {
 //     ...globalThis.console,
 //     log: (...args: any[]) => {
-//         ic.print(...args);
+//         console.log(...args);
 //     }
 // };
 

@@ -81,7 +81,7 @@ type StableStorage = Stable<{
 }>;
 
 export function init(): Init {
-    ic.print('init');
+    console.log('init');
 
     ic.stableStorage<StableStorage>().stableInt =
         170141183460469231731687303715884105727n;
@@ -120,11 +120,11 @@ export function init(): Init {
 }
 
 export function preUpgrade(): PreUpgrade {
-    ic.print('preUpgrade');
+    console.log('preUpgrade');
 }
 
 export function postUpgrade(): PostUpgrade {
-    ic.print('postUpgrade');
+    console.log('postUpgrade');
 }
 
 export function readStableInt(): Query<int> {
