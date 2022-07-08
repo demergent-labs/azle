@@ -41,7 +41,7 @@ export function generateIcObject(
                 0
             )
             .function(
-                azle_ic_caller,
+                _azle_ic_caller,
                 "caller",
                 0
             )
@@ -61,47 +61,47 @@ export function generateIcObject(
                 0
             )
             .function(
-                azle_ic_id,
+                _azle_ic_id,
                 "id",
                 0
             )
             .function(
-                _azle_method_name,
+                _azle_ic_method_name,
                 "method_name",
                 0
             )
             .function(
-                _azle_msg_cycles_accept,
+                _azle_ic_msg_cycles_accept,
                 "msg_cycles_accept",
                 0
             )
             .function(
-                _azle_msg_cycles_accept128,
+                _azle_ic_msg_cycles_accept128,
                 "msg_cycles_accept128",
                 0
             )
             .function(
-                _azle_msg_cycles_available,
+                _azle_ic_msg_cycles_available,
                 "msg_cycles_available",
                 0
             )
             .function(
-                _azle_msg_cycles_available128,
+                _azle_ic_msg_cycles_available128,
                 "msg_cycles_available128",
                 0
             )
             .function(
-                _azle_msg_cycles_refunded,
+                _azle_ic_msg_cycles_refunded,
                 "msg_cycles_refunded",
                 0
             )
             .function(
-                _azle_msg_cycles_refunded128,
+                _azle_ic_msg_cycles_refunded128,
                 "msg_cycles_refunded128",
                 0
             )
             .function(
-                azle_ic_print,
+                _azle_ic_print,
                 "print",
                 0
             )
@@ -181,12 +181,12 @@ export function generateIcObject(
                 0
             )
             .function(
-                azle_ic_time,
+                _azle_ic_time,
                 "time",
                 0
             )
             .function(
-                azle_ic_trap,
+                _azle_ic_trap,
                 "trap",
                 0
             )
