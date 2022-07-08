@@ -2,6 +2,7 @@ import {
     blob,
     empty,
     ic,
+    int8,
     nat,
     nat64,
     Opt,
@@ -10,6 +11,16 @@ import {
     QueryManual,
     Update
 } from 'azle';
+
+// returns the argument data as bytes.
+export function arg_data_raw(
+    arg1: blob,
+    arg2: int8,
+    arg3: boolean,
+    arg4: string
+): Query<blob> {
+    return ic.arg_data_raw();
+}
 
 // returns the principal of the identity that called this function
 export function caller(): Query<Principal> {

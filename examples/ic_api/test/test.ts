@@ -11,6 +11,29 @@ const ic_api_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 const tests: Test[] = [
     ...cleanDeploy('ic_api'),
     {
+        name: 'arg_data_raw',
+        test: async () => {
+            const blobString = 'Surprise!';
+            const blob = blobString.split('').map((char) => char.charCodeAt(0));
+            const int = 127;
+            const bool = true;
+            const string = 'test';
+            const candidString = `(blob "${blobString}", ${int} : int8, ${bool}, "${string}")`;
+
+            const resultBytes = await ic_api_canister.arg_data_raw(
+                blob,
+                int,
+                bool,
+                string
+            );
+            const result = candidDecode(resultBytes);
+
+            return {
+                ok: result === candidString
+            };
+        }
+    },
+    {
         name: 'caller',
         test: async () => {
             const result = await ic_api_canister.caller();
@@ -164,4 +187,11 @@ function is_none<T>(option: [] | T[]): boolean {
 
 function is_some<T>(option: [] | T[]): boolean {
     return !is_none(option);
+}
+
+function candidDecode(bytes: number[]): string {
+    const hexString = bytes
+        .map((byte) => byte.toString(16).padStart(2, '0'))
+        .join('');
+    return execSync(`./target/bin/didc decode ${hexString}`).toString().trim();
 }

@@ -1,5 +1,10 @@
 export const idlFactory = ({ IDL }) => {
     return IDL.Service({
+        arg_data_raw: IDL.Func(
+            [IDL.Vec(IDL.Nat8), IDL.Int8, IDL.Bool, IDL.Text],
+            [IDL.Vec(IDL.Nat8)],
+            ['query']
+        ),
         caller: IDL.Func([], [IDL.Principal], ['query']),
         canister_balance: IDL.Func([], [IDL.Nat64], ['query']),
         canister_balance128: IDL.Func([], [IDL.Nat], ['query']),

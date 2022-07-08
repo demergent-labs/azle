@@ -1,5 +1,11 @@
 import type { Principal } from '@dfinity/principal';
 export interface _SERVICE {
+    arg_data_raw: (
+        arg_0: Array<number>,
+        arg_1: number,
+        arg_2: boolean,
+        arg_3: string
+    ) => Promise<Array<number>>;
     caller: () => Promise<Principal>;
     canister_balance: () => Promise<bigint>;
     canister_balance128: () => Promise<bigint>;
