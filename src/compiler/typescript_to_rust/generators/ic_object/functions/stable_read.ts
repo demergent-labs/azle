@@ -21,10 +21,9 @@ export function generateIcObjectFunctionStableRead(): Rust {
                 .azle_try_from_js_value(_context)
                 .unwrap();
 
-            let mut vec_buf: Vec<u8> = vec![0; length as usize];
-            let mut buf: &mut [u8] = &mut vec_buf[..];
-            ic_cdk::api::stable::stable_read(offset, buf);
-            Ok(buf.to_vec().azle_into_js_value(_context))
+            let mut buf: Vec<u8> = vec![0; length as usize];
+            ic_cdk::api::stable::stable_read(offset, &mut buf);
+            Ok(buf.azle_into_js_value(_context))
         }
     `;
 }
