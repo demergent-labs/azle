@@ -1,6 +1,8 @@
 import { CanisterMethodFunctionInfo, Rust } from '../../../../../types';
 
-export function generateIcObjectFunctionReply(canisterMethodFunctionInfos: CanisterMethodFunctionInfo[]): Rust {
+export function generateIcObjectFunctionReply(
+    canisterMethodFunctionInfos: CanisterMethodFunctionInfo[]
+): Rust {
     return /* rust */ `
         fn _azle_ic_reply(
             _this: &boa_engine::JsValue,
@@ -12,14 +14,20 @@ export function generateIcObjectFunctionReply(canisterMethodFunctionInfos: Canis
             let function_name = &_context.interner.resolve_expect(function_name_sym.clone());
 
             match &function_name[..] {
-                ${canisterMethodFunctionInfos.filter((canisterMethodFunctionInfo) => canisterMethodFunctionInfo.manual === true).map((canisterMethodFunctionInfo) => {
-                    return `
+                ${canisterMethodFunctionInfos
+                    .filter(
+                        (canisterMethodFunctionInfo) =>
+                            canisterMethodFunctionInfo.manual === true
+                    )
+                    .map((canisterMethodFunctionInfo) => {
+                        return `
                         "${canisterMethodFunctionInfo.name}" => {
                             let reply_value: ${canisterMethodFunctionInfo.rustReturnType} = _aargs.get(0).unwrap().clone().azle_try_from_js_value(_context).unwrap();
                             Ok(ic_cdk::api::call::reply((reply_value,)).azle_into_js_value(_context))
                         }
                     `;
-                }).join(',\n')}
+                    })
+                    .join(',\n')}
                 _ => panic!("This cannot happen")
             }
         }

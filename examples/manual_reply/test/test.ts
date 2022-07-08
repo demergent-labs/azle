@@ -302,6 +302,24 @@ const tests: Test[] = [
                 ok: 'Toxic' in result
             };
         }
+    },
+    {
+        name: 'reply_raw',
+        test: async () => {
+            const record = await manual_reply_canister.reply_raw();
+            const blob = 'Surprise!'
+                .split('')
+                .map((char) => char.charCodeAt(0));
+
+            return {
+                ok:
+                    record.int === 42n &&
+                    record.text === 'text' &&
+                    record.bool === true &&
+                    record.blob.every((byte, index) => blob[index] === byte) &&
+                    'Medium' in record.variant
+            };
+        }
     }
 ];
 

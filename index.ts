@@ -92,6 +92,7 @@ type ic = {
     reject_code: () => RejectionCode;
     reject_message: () => string;
     reply: (reply: any) => void;
+    reply_raw: (buf: blob) => void;
     set_certified_data: (data: blob) => void;
     stable_bytes: () => blob;
     stable_grow: (new_pages: nat32) => StableGrowResult;
