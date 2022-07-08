@@ -11,11 +11,13 @@ export function generateCallFunctions(
     const typeAliasDeclarations = getCanisterTypeAliasDeclarations(sourceFiles);
 
     return generateCallFunctionsFromTypeAliasDeclarations(
+        sourceFiles,
         typeAliasDeclarations
     );
 }
 
 function generateCallFunctionsFromTypeAliasDeclarations(
+    sourceFiles: readonly tsc.SourceFile[],
     typeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): CallFunctionInfo[] {
     return typeAliasDeclarations.reduce(
@@ -23,6 +25,7 @@ function generateCallFunctionsFromTypeAliasDeclarations(
             return [
                 ...result,
                 ...generateCallFunctionsFromTypeAliasDeclaration(
+                    sourceFiles,
                     typeAliasDeclaration
                 )
             ];
@@ -32,6 +35,7 @@ function generateCallFunctionsFromTypeAliasDeclarations(
 }
 
 function generateCallFunctionsFromTypeAliasDeclaration(
+    sourceFiles: readonly tsc.SourceFile[],
     typeAliasDeclaration: tsc.TypeAliasDeclaration
 ): CallFunctionInfo[] {
     if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TypeReference) {
@@ -53,21 +57,28 @@ function generateCallFunctionsFromTypeAliasDeclaration(
     const typeLiteralNode = firstTypeArgument as tsc.TypeLiteralNode;
 
     return generateCallFunctionsFromTypeLiteralNode(
+        sourceFiles,
         typeLiteralNode,
         typeAliasDeclaration.name.escapedText.toString()
     );
 }
 
 function generateCallFunctionsFromTypeLiteralNode(
+    sourceFiles: readonly tsc.SourceFile[],
     typeLiteralNode: tsc.TypeLiteralNode,
     typeAliasName: string
 ): CallFunctionInfo[] {
     return typeLiteralNode.members.map((member) => {
-        return generateCallFunctionFromTypeElement(member, typeAliasName);
+        return generateCallFunctionFromTypeElement(
+            sourceFiles,
+            member,
+            typeAliasName
+        );
     });
 }
 
 function generateCallFunctionFromTypeElement(
+    sourceFiles: readonly tsc.SourceFile[],
     typeElement: tsc.TypeElement,
     typeAliasName: string
 ): CallFunctionInfo {
@@ -85,8 +96,14 @@ function generateCallFunctionFromTypeElement(
         notifyFunctionName,
         notifyWithPayment128FunctionName
     } = generateCallFunctionName(methodSignature, typeAliasName);
-    const functionParams = generateCallFunctionParams(methodSignature);
-    const functionReturnType = generateCallFunctionReturnType(methodSignature);
+    const functionParams = generateCallFunctionParams(
+        sourceFiles,
+        methodSignature
+    );
+    const functionReturnType = generateCallFunctionReturnType(
+        sourceFiles,
+        methodSignature
+    );
     const param_names = functionParams.map(
         (rust_param) => rust_param.paramName
     );

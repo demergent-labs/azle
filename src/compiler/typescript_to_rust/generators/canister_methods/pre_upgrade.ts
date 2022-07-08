@@ -40,10 +40,10 @@ export function generateCanisterMethodPreUpgrade(
                         : /* rust */ `
                     let exports_js_value = boa_context.eval("exports").unwrap();
                     let exports_js_object = exports_js_value.as_object().unwrap();
-        
+
                     let ${developerDefinedPreUpgradeFunctionName}_js_value = exports_js_object.get("${developerDefinedPreUpgradeFunctionName}", boa_context).unwrap();
                     let ${developerDefinedPreUpgradeFunctionName}_js_object = ${developerDefinedPreUpgradeFunctionName}_js_value.as_object().unwrap();
-                    
+
                     let return_value = ${developerDefinedPreUpgradeFunctionName}_js_object.call(
                         &boa_engine::JsValue::Null,
                         &[],
@@ -51,14 +51,14 @@ export function generateCanisterMethodPreUpgrade(
                     ).unwrap();
                 `
                 }
-    
+
                 // TODO there must be a better way than this eval
                 let ic_js_value = boa_context.eval("globalThis.ic").unwrap();
                 let ic_js_object = ic_js_value.as_object().unwrap();
 
                 let _azle_stable_storage_js_value = ic_js_object.get("_azleStableStorage", &mut boa_context).unwrap();
                 let _azle_stable_storage_js_object = _azle_stable_storage_js_value.as_object().unwrap();
-    
+
                 ${stableStorageVariableInfos
                     .map((stableStorageVariableInfo) => {
                         return /* rust */ `
@@ -67,7 +67,7 @@ export function generateCanisterMethodPreUpgrade(
                     `;
                     })
                     .join('')}
-    
+
                 // TODO should we panic ever in the pre_upgrade?? If so we should unwrap the stable_save
                 ${
                     stableStorageVariableInfos.length === 0
@@ -149,8 +149,10 @@ export function getStableStorageVariableInfos(
 
                     return {
                         name: propertySignature.name.escapedText.toString(),
-                        rustType:
-                            getRustTypeNameFromTypeNode(firstTypeArgument),
+                        rustType: getRustTypeNameFromTypeNode(
+                            sourceFiles,
+                            firstTypeArgument
+                        ),
                         migrate: true
                     };
                 }
@@ -159,7 +161,10 @@ export function getStableStorageVariableInfos(
 
         return {
             name: propertySignature.name.escapedText.toString(),
-            rustType: getRustTypeNameFromTypeNode(propertySignature.type),
+            rustType: getRustTypeNameFromTypeNode(
+                sourceFiles,
+                propertySignature.type
+            ),
             migrate: false
         };
     });

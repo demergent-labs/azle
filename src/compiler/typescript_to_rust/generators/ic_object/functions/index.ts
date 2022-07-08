@@ -33,13 +33,16 @@ import { generateIcObjectFunctionStable64Write } from './stable64_write';
 import { generateIcObjectFunctionTime } from './time';
 import { generateIcObjectFunctionTrap } from './trap';
 import { CanisterMethodFunctionInfo, Rust } from '../../../../../types';
+import { SourceFile } from 'typescript';
 
 export function generateIcObjectFunctions(
+    sourceFiles: readonly SourceFile[],
     canisterMethodFunctionInfos: CanisterMethodFunctionInfo[]
 ): Rust {
     const icObjectFunctionAcceptMessage: Rust =
         generateIcObjectFunctionAcceptMessage();
     const icObjectFunctionArgData: Rust = generateIcObjectFunctionArgData(
+        sourceFiles,
         canisterMethodFunctionInfos
     );
     const icObjectFunctionArgDataRaw: Rust =

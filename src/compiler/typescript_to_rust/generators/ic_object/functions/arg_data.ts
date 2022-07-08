@@ -1,7 +1,9 @@
 import { CanisterMethodFunctionInfo, Rust } from '../../../../../types';
 import { getRustTypeNameFromTypeNode } from '../../../ast_utilities/miscellaneous';
+import { SourceFile } from 'typescript';
 
 export function generateIcObjectFunctionArgData(
+    sourceFiles: readonly SourceFile[],
     canisterMethodFunctionInfos: CanisterMethodFunctionInfo[]
 ): Rust {
     return /* rust */ `
@@ -21,7 +23,10 @@ export function generateIcObjectFunctionArgData(
                         "${info.name}" => {
                             let arg_data: (${info.params
                                 .map((param) =>
-                                    getRustTypeNameFromTypeNode(param.typeNode)
+                                    getRustTypeNameFromTypeNode(
+                                        sourceFiles,
+                                        param.typeNode
+                                    )
                                 )
                                 .join(', ')}${
                             info.params.length > 0 ? ',' : ''

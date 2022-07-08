@@ -106,10 +106,12 @@ export function compileTypeScriptToCandid(
 
     // TODO consider combining these
     const queryMethodFunctionInfos = getCanisterMethodFunctionInfos(
+        sourceFiles,
         queryMethodFunctionDeclarations,
         'QUERY'
     );
     const updateMethodFunctionInfos = getCanisterMethodFunctionInfos(
+        sourceFiles,
         updateMethodFunctionDeclarations,
         'UPDATE'
     );
@@ -136,6 +138,7 @@ function generateCandid(
 }
 
 function getCanisterMethodFunctionInfos(
+    sourceFiles: readonly tsc.SourceFile[],
     canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
     queryOrUpdate: 'QUERY' | 'UPDATE'
 ): CanisterMethodFunctionInfo[] {
@@ -158,7 +161,7 @@ function getCanisterMethodFunctionInfos(
         );
 
         const rustReturnType = manual
-            ? getRustTypeNameFromTypeNode(functionDeclaration.type)
+            ? getRustTypeNameFromTypeNode(sourceFiles, functionDeclaration.type)
             : '';
         // TODO: update getRustTypeNameFromTypeNode to handle inline types
         //

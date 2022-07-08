@@ -15,6 +15,7 @@ export function generate_func_structs_and_impls(
         getFuncTypeAliasDeclarations(sourceFiles);
     const func_structs_and_impls =
         generate_func_structs_and_impls_from_type_alias_declarations(
+            sourceFiles,
             func_type_alias_declarations
         );
     const func_names = func_type_alias_declarations.map(
@@ -48,16 +49,19 @@ export function generate_func_structs_and_impls(
 }
 
 function generate_func_structs_and_impls_from_type_alias_declarations(
+    sourceFiles: readonly tsc.SourceFile[],
     typeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): Rust[] {
     return typeAliasDeclarations.map((typeAliasDeclaration) => {
         return generate_func_struct_and_impls_from_type_alias_declaration(
+            sourceFiles,
             typeAliasDeclaration
         );
     }, []);
 }
 
 function generate_func_struct_and_impls_from_type_alias_declaration(
+    sourceFiles: readonly tsc.SourceFile[],
     typeAliasDeclaration: tsc.TypeAliasDeclaration
 ): string {
     if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TypeReference) {
@@ -79,6 +83,7 @@ function generate_func_struct_and_impls_from_type_alias_declaration(
     const function_type_node = firstTypeArgument as tsc.FunctionTypeNode;
 
     return generate_func_struct_and_impls_from_function_type_node(
+        sourceFiles,
         function_type_node,
         typeAliasDeclaration.name.escapedText.toString()
     );
@@ -86,11 +91,16 @@ function generate_func_struct_and_impls_from_type_alias_declaration(
 
 // TODO add proper licensing
 function generate_func_struct_and_impls_from_function_type_node(
+    sourceFiles: readonly tsc.SourceFile[],
     function_type_node: tsc.FunctionTypeNode,
     typeAliasName: string
 ): string {
-    const func_param_types = get_func_param_types(function_type_node);
+    const func_param_types = get_func_param_types(
+        sourceFiles,
+        function_type_node
+    );
     const return_type_name = getRustTypeNameFromTypeNode(
+        sourceFiles,
         function_type_node.type
     );
     const func_mode = get_func_mode(function_type_node);
@@ -161,26 +171,26 @@ function generate_func_struct_and_impls_from_function_type_node(
                 candid::Func::deserialize(deserializer).map(Self::from)
             }
         }
-        
+
         impl From<candid::Func> for ${typeAliasName} {
             fn from(f: candid::Func) -> Self {
                 Self(f, std::marker::PhantomData)
             }
         }
-        
+
         impl From<${typeAliasName}> for candid::Func {
             fn from(c: ${typeAliasName}) -> Self {
                 c.0
             }
         }
-        
+
         impl std::ops::Deref for ${typeAliasName} {
             type Target = candid::Func;
             fn deref(&self) -> &candid::Func {
                 &self.0
             }
         }
-        
+
         impl std::ops::DerefMut for ${typeAliasName} {
             fn deref_mut(&mut self) -> &mut candid::Func {
                 &mut self.0
@@ -190,6 +200,7 @@ function generate_func_struct_and_impls_from_function_type_node(
 }
 
 function get_func_param_types(
+    sourceFiles: readonly tsc.SourceFile[],
     function_type_node: tsc.FunctionTypeNode
 ): string[] {
     return function_type_node.parameters.map((parameterDeclaration) => {
@@ -198,6 +209,7 @@ function get_func_param_types(
         }
 
         const paramType = getRustTypeNameFromTypeNode(
+            sourceFiles,
             parameterDeclaration.type
         );
 

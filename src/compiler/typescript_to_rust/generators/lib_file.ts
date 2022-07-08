@@ -68,6 +68,7 @@ export async function generateLibFile(
         generateHandleGeneratorResultFunction(callFunctionInfos);
 
     const icObjectFunctions: Rust = generateIcObjectFunctions(
+        sourceFiles,
         canisterMethodFunctionInfos
     );
 

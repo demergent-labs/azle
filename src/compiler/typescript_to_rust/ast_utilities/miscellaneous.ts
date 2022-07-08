@@ -1,6 +1,7 @@
 import { AST, Impl, ImplItem, ImplItemMethod } from './types';
 import * as tsc from 'typescript';
 import { Rust } from '../../../types';
+import { getTypeAliasDeclaration } from '../../typescript_to_candid/ast_utilities/type_aliases';
 
 export function getImpls(ast: AST): Impl[] {
     return ast.items
@@ -35,7 +36,11 @@ export function getParamName(
 // TODO basically we would need to create special types that represent those inline types, which we could consider
 // TODO for now just document that you need to use explicit type names or array types, no inline types for cross-canister calls
 // TODO I would hope most canisters do not actually use inline types, if they do we will run into problems (turns out they do, but you can just give the types a name)
-export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
+export function getRustTypeNameFromTypeNode(
+    sourceFiles: readonly tsc.SourceFile[],
+    typeNode: tsc.TypeNode,
+    parentTypeName?: string
+): Rust {
     if (typeNode.kind === tsc.SyntaxKind.StringKeyword) {
         return `String`;
     }
@@ -48,6 +53,14 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
         return `()`;
     }
 
+    if (typeNode.kind === tsc.SyntaxKind.TypeLiteral) {
+        if (parentTypeName === undefined) {
+            throw new Error('The parentTypeName must be defined');
+        }
+
+        return parentTypeName;
+    }
+
     if (typeNode.kind === tsc.SyntaxKind.LiteralType) {
         const literalTypeNode = typeNode as tsc.LiteralTypeNode;
 
@@ -57,11 +70,10 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
         // TODO possibly other literal types?
     }
 
-    // TODO handle type literals. See https://github.com/demergent-labs/azle/issues/474
-
     if (typeNode.kind === tsc.SyntaxKind.ArrayType) {
         const arrayTypeNode = typeNode as tsc.ArrayTypeNode;
         const elementRustType = getRustTypeNameFromTypeNode(
+            sourceFiles,
             arrayTypeNode.elementType
         );
 
@@ -145,7 +157,10 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
 
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
-                const typeName = getRustTypeNameFromTypeNode(firstTypeArgument);
+                const typeName = getRustTypeNameFromTypeNode(
+                    sourceFiles,
+                    firstTypeArgument
+                );
 
                 return `Option<${typeName}>`;
             }
@@ -159,7 +174,10 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
 
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
-                return getRustTypeNameFromTypeNode(firstTypeArgument);
+                return getRustTypeNameFromTypeNode(
+                    sourceFiles,
+                    firstTypeArgument
+                );
             }
 
             if (
@@ -175,7 +193,10 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
 
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
-                return getRustTypeNameFromTypeNode(firstTypeArgument);
+                return getRustTypeNameFromTypeNode(
+                    sourceFiles,
+                    firstTypeArgument
+                );
             }
 
             if (typeName === 'CanisterResult') {
@@ -187,14 +208,40 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
 
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
-                return getRustTypeNameFromTypeNode(firstTypeArgument);
+                return getRustTypeNameFromTypeNode(
+                    sourceFiles,
+                    firstTypeArgument
+                );
             }
 
             if (typeName === 'Oneway') {
                 return `()`;
             }
 
-            return typeReferenceNode.typeName.escapedText.toString();
+            if (typeName === 'Variant') {
+                if (parentTypeName === undefined) {
+                    throw new Error('The parentTypeName must be defined');
+                }
+
+                return parentTypeName;
+            }
+
+            const typeAliasDeclaration = getTypeAliasDeclaration(
+                sourceFiles,
+                typeName
+            );
+
+            if (typeAliasDeclaration === undefined) {
+                throw new Error(
+                    `${typeName} must be defined in your TypeScript source file`
+                );
+            }
+
+            return getRustTypeNameFromTypeNode(
+                sourceFiles,
+                typeAliasDeclaration.type,
+                typeName
+            );
         }
     }
 

@@ -32,7 +32,10 @@ export function generateCanisterMethodInit(
     );
     const userDefinedInitFunctionParams = [
         { paramName: 'boa_context', paramType: '&mut boa_engine::Context' },
-        ...getUserDefinedInitFunctionParams(initFunctionDeclaration)
+        ...getUserDefinedInitFunctionParams(
+            sourceFiles,
+            initFunctionDeclaration
+        )
     ];
 
     const developerDefinedInitFunctionCall: Rust =
@@ -105,6 +108,7 @@ export function generateDeveloperDefinedInitFunctionCall(
 
 // TODO this is almost copied verbatim from call_functions/call_function_params.ts
 export function getUserDefinedInitFunctionParams(
+    sourceFiles: readonly tsc.SourceFile[],
     functionDeclaration: tsc.FunctionDeclaration | undefined
 ): {
     paramName: string;
@@ -122,6 +126,7 @@ export function getUserDefinedInitFunctionParams(
         }
 
         const paramType = getRustTypeNameFromTypeNode(
+            sourceFiles,
             parameterDeclaration.type
         );
 
