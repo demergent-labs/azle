@@ -237,6 +237,12 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        impl AzleIntoJsValue for usize {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                self.into()
+            }
+        }
+
         impl AzleIntoJsValue for u32 {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 self.into()
@@ -425,6 +431,12 @@ export function generateAzleIntoJsValueTrait(): Rust {
         }
 
         impl AzleIntoJsValue for Vec<u64> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleIntoJsValue for Vec<usize> {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 azle_into_js_value_generic_array(self, context)
             }

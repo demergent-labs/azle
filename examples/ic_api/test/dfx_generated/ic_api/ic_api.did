@@ -1,5 +1,6 @@
 service: {
     "arg_data_raw": (blob, int8, bool, text) -> (blob) query;
+    "arg_data_raw_size": (blob, int8, bool, text) -> (nat32) query;
     "caller": () -> (principal) query;
     "canister_balance": () -> (nat64) query;
     "canister_balance128": () -> (nat) query;
