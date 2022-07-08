@@ -82,4 +82,5 @@ export type CanisterMethodFunctionInfo = {
     name: string;
     queryOrUpdate: 'QUERY' | 'UPDATE';
     manual: boolean;
+    rustReturnType: Rust;
 };

@@ -48,7 +48,16 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
         return `()`;
     }
 
-    // TODO possibly type literals?
+    if (typeNode.kind === tsc.SyntaxKind.LiteralType) {
+        const literalTypeNode = typeNode as tsc.LiteralTypeNode;
+
+        if (literalTypeNode.literal.kind === tsc.SyntaxKind.NullKeyword) {
+            return `()`;
+        }
+        // TODO possibly other literal types?
+    }
+
+    // TODO handle type literals. See https://github.com/demergent-labs/azle/issues/474
 
     if (typeNode.kind === tsc.SyntaxKind.ArrayType) {
         const arrayTypeNode = typeNode as tsc.ArrayTypeNode;
@@ -125,6 +134,10 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
                 return 'ic_cdk::export::candid::Empty';
             }
 
+            if (typeName === 'reserved') {
+                return 'ic_cdk::export::candid::Reserved';
+            }
+
             if (typeName === 'Opt') {
                 if (typeReferenceNode.typeArguments === undefined) {
                     throw new Error('UpdateAsync must have an enclosed type');
@@ -137,9 +150,11 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
                 return `Option<${typeName}>`;
             }
 
-            if (typeName === 'Query') {
+            if (typeName === 'Query' || typeName === 'QueryManual') {
                 if (typeReferenceNode.typeArguments === undefined) {
-                    throw new Error('Query must have an enclosed type');
+                    throw new Error(
+                        'Query/QueryManual must have an enclosed type'
+                    );
                 }
 
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
@@ -147,19 +162,15 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
                 return getRustTypeNameFromTypeNode(firstTypeArgument);
             }
 
-            if (typeName === 'Update') {
+            if (
+                typeName === 'Update' ||
+                typeName === 'UpdateManual' ||
+                typeName === 'UpdateAsync'
+            ) {
                 if (typeReferenceNode.typeArguments === undefined) {
-                    throw new Error('Update must have an enclosed type');
-                }
-
-                const firstTypeArgument = typeReferenceNode.typeArguments[0];
-
-                return getRustTypeNameFromTypeNode(firstTypeArgument);
-            }
-
-            if (typeName === 'UpdateAsync') {
-                if (typeReferenceNode.typeArguments === undefined) {
-                    throw new Error('UpdateAsync must have an enclosed type');
+                    throw new Error(
+                        'Update/UpdateManual must have an enclosed type'
+                    );
                 }
 
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];

@@ -102,6 +102,11 @@ export function generateIcObject(
                 0
             )
             .function(
+                _azle_ic_reply,
+                "reply",
+                0
+            )
+            .function(
                 _azle_ic_set_certified_data,
                 "set_certified_data",
                 0

@@ -13,6 +13,7 @@ import {
     getStableTypeAliasDeclarations
 } from '../typescript_to_rust/generators/call_functions';
 import { generate_candid_funcs } from './generators/func';
+import { getRustTypeNameFromTypeNode } from '../typescript_to_rust/ast_utilities/miscellaneous';
 
 export function compileTypeScriptToCandid(
     sourceFiles: readonly tsc.SourceFile[]
@@ -143,12 +144,31 @@ function getCanisterMethodFunctionInfos(
         const canisterMethodTypeName =
             getCanisterMethodTypeName(functionDeclaration);
 
+        if (functionDeclaration.type === undefined) {
+            throw new Error(
+                `${functionDeclaration.name.escapedText.toString()} must have a return type`
+            );
+        }
+
+        const manual = ['QueryManual', 'UpdateManual'].includes(
+            canisterMethodTypeName
+        );
+
+        const rustReturnType = manual
+            ? getRustTypeNameFromTypeNode(functionDeclaration.type)
+            : '';
+        // TODO: update getRustTypeNameFromTypeNode to handle inline types
+        //
+        // Calling getRustTypeNameFromTypeNode here currently breaks inline
+        // types in non-manual calls. This band-aid solution keeps inline types
+        // working for non-manual calls until we can implement
+        // https://github.com/demergent-labs/azle/issues/474.
+
         return {
             name: functionDeclaration.name.escapedText.toString(),
             queryOrUpdate,
-            manual: ['QueryManual', 'UpdateManual'].includes(
-                canisterMethodTypeName
-            )
+            manual,
+            rustReturnType
         };
     });
 }
