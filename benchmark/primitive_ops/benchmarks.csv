@@ -1,0 +1,7 @@
+Description,Azle Wasm Instructions,Motoko Wasm Instructions,Rust Wasm Instructions,Azle/Motoko Change Multiplier,Azle/Rust Change Multiplier,Motoko/Azle Change Multiplier,Motoko/Rust Change Multiplier,Rust/Azle Change Multiplier,Rust/Motoko Change Multiplier
+blob_init_stack: 1,1571266,1583,32071,993,49,-993,-20,-49,20
+blob_init_stack: 10,8753778,3803,33620,2302,260,-2302,-9,-260,9
+blob_init_stack: 100,84458672,27653,50675,3054,1667,-3054,-2,-1667,2
+blob_init_heap: 1,1648215,4637,34036,355,48,-355,-7,-48,7
+blob_init_heap: 10,9640130,36836,52982,262,182,-262,-1,-182,1
+blob_init_heap: 100,92567307,1734848,251739,53,368,-53,7,-368,-7
