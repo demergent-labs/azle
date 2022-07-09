@@ -13,7 +13,7 @@ pub fn nat_init_stack(num_inits: u32) -> u64 {
 
     while i < num_inits {
         let value: ic_cdk::export::candid::Nat = if i % 2 == 0 { ic_cdk::export::candid::Nat(340_282_366_920_938_463_463_374_607_431_768_211_455u128.into()) } else { ic_cdk::export::candid::Nat(0u128.into()) };
-        ic_cdk::println!("{}", value);
+        std::convert::identity(value); // Trying to ensure that the value assignment above is not optimized away
         i += 1;
     }
 

@@ -13,7 +13,7 @@ pub fn int32_init_stack(num_inits: u32) -> u64 {
 
     while i < num_inits {
         let value: i32 = if i % 2 == 0 { 2_147_483_647 } else { 0 };
-        ic_cdk::println!("{}", value);
+        std::convert::identity(value); // Trying to ensure that the value assignment above is not optimized away
         i += 1;
     }
 

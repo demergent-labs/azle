@@ -37,7 +37,7 @@ pub fn record_init_stack(num_inits: u32) -> u64 {
             height: 5.45,
             username: "gramps".to_string()
         } };
-        ic_cdk::println!("{:#?}", value);
+        std::convert::identity(value); // Trying to ensure that the value assignment above is not optimized away
         i += 1;
     }
 

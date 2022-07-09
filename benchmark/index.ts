@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import { writeFileSync } from 'fs';
 
-const NUM_BENCHMARK_ITERATIONS = 10; // TODO change when appropriate
+const NUM_BENCHMARK_ITERATIONS = 10; // TODO change when appropriate, allow configuration
 
 export type Benchmark = {
     canister_method: string;

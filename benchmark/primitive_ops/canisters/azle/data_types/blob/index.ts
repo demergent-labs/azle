@@ -7,7 +7,7 @@ export function blob_init_stack(num_inits: nat32): Update<nat64> {
 
     while (i < num_inits) {
         let value: blob = i % 2 === 0 ? Uint8Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) : Uint8Array.from([]);
-        console.log(value);
+        // TODO std::convert::identity(value); consider something like Rust to ensure the value assignment above is never optimized away
         i += 1;
     }
 

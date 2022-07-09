@@ -18,7 +18,7 @@ export function variant_init_stack(num_inits: nat32): Update<nat64> {
         } : {
             Good: null
         };
-        console.log(value);
+        // TODO std::convert::identity(value); consider something like Rust to ensure the value assignment above is never optimized away
         i += 1;
     }
 

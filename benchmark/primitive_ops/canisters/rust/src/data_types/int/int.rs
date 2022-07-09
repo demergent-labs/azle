@@ -13,7 +13,7 @@ pub fn int_init_stack(num_inits: u32) -> u64 {
 
     while i < num_inits {
         let value: ic_cdk::export::candid::Int = if i % 2 == 0 { ic_cdk::export::candid::Int(170_141_183_460_469_231_731_687_303_715_884_105_727i128.into()) } else { ic_cdk::export::candid::Int(0i128.into()) };
-        ic_cdk::println!("{}", value);
+        std::convert::identity(value); // Trying to ensure that the value assignment above is not optimized away
         i += 1;
     }
 

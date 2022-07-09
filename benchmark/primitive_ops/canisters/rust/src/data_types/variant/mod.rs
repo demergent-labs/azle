@@ -21,7 +21,7 @@ pub fn variant_init_stack(num_inits: u32) -> u64 {
 
     while i < num_inits {
         let value: Reaction = if i % 2 == 0 { Reaction::ThumbsUp(2) } else { Reaction::Good };
-        ic_cdk::println!("{:#?}", value);
+        std::convert::identity(value); // Trying to ensure that the value assignment above is not optimized away
         i += 1;
     }
 

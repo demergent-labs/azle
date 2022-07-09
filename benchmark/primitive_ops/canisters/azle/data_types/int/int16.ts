@@ -7,7 +7,7 @@ export function int16_init_stack(num_inits: nat32): Update<nat64> {
 
     while (i < num_inits) {
         let value: int16 = i % 2 === 0 ? 32_767 : 0;
-        console.log(value);
+        // TODO std::convert::identity(value); consider something like Rust to ensure the value assignment above is never optimized away
         i += 1;
     }
 

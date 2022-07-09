@@ -13,7 +13,7 @@ pub fn boolean_init_stack(num_inits: u32) -> u64 {
 
     while i < num_inits {
         let value: bool = if i % 2 == 0 { true } else { false };
-        ic_cdk::println!("{}", value);
+        std::convert::identity(value); // Trying to ensure that the value assignment above is not optimized away
         i += 1;
     }
 

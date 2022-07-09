@@ -13,7 +13,7 @@ pub fn float32_init_stack(num_inits: u32) -> u64 {
 
     while i < num_inits {
         let value: f32 = if i % 2 == 0 { std::f32::consts::PI } else { std::f32::consts::E };
-        ic_cdk::println!("{}", value);
+        std::convert::identity(value); // Trying to ensure that the value assignment above is not optimized away
         i += 1;
     }
 

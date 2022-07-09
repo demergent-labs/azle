@@ -7,7 +7,7 @@ export function boolean_init_stack(num_inits: nat32): Update<nat64> {
 
     while (i < num_inits) {
         let value = i % 2 === 0 ? true : false;
-        console.log(value);
+        // TODO std::convert::identity(value); consider something like Rust to ensure the value assignment above is never optimized away
         i += 1;
     }
 

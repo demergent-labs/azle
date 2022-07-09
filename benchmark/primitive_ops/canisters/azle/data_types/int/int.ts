@@ -7,7 +7,7 @@ export function int_init_stack(num_inits: nat32): Update<nat64> {
 
     while (i < num_inits) {
         let value: int = i % 2 === 0 ? 170_141_183_460_469_231_731_687_303_715_884_105_727n : 0n;
-        console.log(value);
+        // TODO std::convert::identity(value); consider something like Rust to ensure the value assignment above is never optimized away
         i += 1;
     }
 

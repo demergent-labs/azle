@@ -30,7 +30,7 @@ export function record_init_stack(num_inits: nat32): Update<nat64> {
             height: 5.45,
             username: 'gramps'
         };
-        console.log(value);
+        // TODO std::convert::identity(value); consider something like Rust to ensure the value assignment above is never optimized away
         i += 1;
     }
 

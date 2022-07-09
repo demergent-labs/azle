@@ -7,7 +7,7 @@ export function int64_init_stack(num_inits: nat32): Update<nat64> {
 
     while (i < num_inits) {
         let value: int64 = i % 2 === 0 ? 9_223_372_036_854_775_807n : 0n;
-        console.log(value);
+        // TODO std::convert::identity(value); consider something like Rust to ensure the value assignment above is never optimized away
         i += 1;
     }
 
