@@ -80,6 +80,14 @@ export function getRustTypeNameFromTypeNode(
         return `Vec<${elementRustType}>`;
     }
 
+    if (typeNode.kind === tsc.SyntaxKind.TupleType) {
+        if (parentTypeName === undefined) {
+            throw new Error('The parentTypeName must be defined');
+        }
+
+        return parentTypeName;
+    }
+
     if (typeNode.kind === tsc.SyntaxKind.TypeReference) {
         const typeReferenceNode = typeNode as tsc.TypeReferenceNode;
 
@@ -223,6 +231,13 @@ export function getRustTypeNameFromTypeNode(
                     throw new Error('The parentTypeName must be defined');
                 }
 
+                return parentTypeName;
+            }
+
+            if (typeName === 'Func') {
+                if (parentTypeName === undefined) {
+                    throw new Error('The parentTypeName must be defined');
+                }
                 return parentTypeName;
             }
 
