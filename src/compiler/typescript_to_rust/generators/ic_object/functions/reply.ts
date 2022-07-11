@@ -31,14 +31,5 @@ export function generateIcObjectFunctionReply(
                 _ => panic!("This cannot happen")
             }
         }
-
-        fn get_top_level_call_frame(call_frame: &boa_engine::vm::call_frame::CallFrame) -> boa_engine::vm::call_frame::CallFrame {
-            if let Some(prev_call_frame) = &call_frame.prev {
-                return get_top_level_call_frame(&prev_call_frame);
-            }
-            else {
-                return call_frame.clone();
-            }
-        }
     `;
 }

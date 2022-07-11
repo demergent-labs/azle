@@ -13,7 +13,10 @@ import {
     getStableTypeAliasDeclarations
 } from '../typescript_to_rust/generators/call_functions';
 import { generate_candid_funcs } from './generators/func';
-import { getRustTypeNameFromTypeNode } from '../typescript_to_rust/ast_utilities/miscellaneous';
+import {
+    getParamName,
+    getRustTypeNameFromTypeNode
+} from '../typescript_to_rust/ast_utilities/miscellaneous';
 
 export function compileTypeScriptToCandid(
     sourceFiles: readonly tsc.SourceFile[]
@@ -103,10 +106,12 @@ export function compileTypeScriptToCandid(
 
     // TODO consider combining these
     const queryMethodFunctionInfos = getCanisterMethodFunctionInfos(
+        sourceFiles,
         queryMethodFunctionDeclarations,
         'QUERY'
     );
     const updateMethodFunctionInfos = getCanisterMethodFunctionInfos(
+        sourceFiles,
         updateMethodFunctionDeclarations,
         'UPDATE'
     );
@@ -133,6 +138,7 @@ function generateCandid(
 }
 
 function getCanisterMethodFunctionInfos(
+    sourceFiles: readonly tsc.SourceFile[],
     canisterMethodFunctionDeclarations: tsc.FunctionDeclaration[],
     queryOrUpdate: 'QUERY' | 'UPDATE'
 ): CanisterMethodFunctionInfo[] {
@@ -155,7 +161,7 @@ function getCanisterMethodFunctionInfos(
         );
 
         const rustReturnType = manual
-            ? getRustTypeNameFromTypeNode(functionDeclaration.type)
+            ? getRustTypeNameFromTypeNode(sourceFiles, functionDeclaration.type)
             : '';
         // TODO: update getRustTypeNameFromTypeNode to handle inline types
         //
@@ -164,10 +170,22 @@ function getCanisterMethodFunctionInfos(
         // working for non-manual calls until we can implement
         // https://github.com/demergent-labs/azle/issues/474.
 
+        const params = functionDeclaration.parameters.map((param) => {
+            if (param.type === undefined) {
+                throw new Error(`Parameter must have a type`);
+            }
+
+            return {
+                name: getParamName(param),
+                typeNode: param.type
+            };
+        });
+
         return {
-            name: functionDeclaration.name.escapedText.toString(),
-            queryOrUpdate,
             manual,
+            name: functionDeclaration.name.escapedText.toString(),
+            params,
+            queryOrUpdate,
             rustReturnType
         };
     });

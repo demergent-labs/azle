@@ -68,7 +68,6 @@ jobs:
                     "examples/ic_api",
                     "examples/imports",
                     "examples/init",
-                    "examples/inline_types",
                     "examples/key_value_store",
                     "examples/ledger_canister",
                     "examples/management_canister",

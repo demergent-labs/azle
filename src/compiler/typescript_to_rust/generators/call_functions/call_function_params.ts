@@ -6,6 +6,7 @@ import {
 } from '../../ast_utilities/miscellaneous';
 
 export function generateCallFunctionParams(
+    sourceFiles: readonly tsc.SourceFile[],
     methodSignature: tsc.MethodSignature
 ): RustParam[] {
     return methodSignature.parameters.map((parameterDeclaration) => {
@@ -16,6 +17,7 @@ export function generateCallFunctionParams(
         }
 
         const paramType = getRustTypeNameFromTypeNode(
+            sourceFiles,
             parameterDeclaration.type
         );
 

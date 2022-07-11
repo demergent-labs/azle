@@ -1,4 +1,5 @@
 import { generateIcObjectFunctionAcceptMessage } from './accept_message';
+import { generateIcObjectFunctionArgData } from './arg_data';
 import { generateIcObjectFunctionArgDataRaw } from './arg_data_raw';
 import { generateIcObjectFunctionArgDataRawSize } from './arg_data_raw_size';
 import { generateIcObjectFunctionCaller } from './caller';
@@ -32,12 +33,18 @@ import { generateIcObjectFunctionStable64Write } from './stable64_write';
 import { generateIcObjectFunctionTime } from './time';
 import { generateIcObjectFunctionTrap } from './trap';
 import { CanisterMethodFunctionInfo, Rust } from '../../../../../types';
+import { SourceFile } from 'typescript';
 
 export function generateIcObjectFunctions(
+    sourceFiles: readonly SourceFile[],
     canisterMethodFunctionInfos: CanisterMethodFunctionInfo[]
 ): Rust {
     const icObjectFunctionAcceptMessage: Rust =
         generateIcObjectFunctionAcceptMessage();
+    const icObjectFunctionArgData: Rust = generateIcObjectFunctionArgData(
+        sourceFiles,
+        canisterMethodFunctionInfos
+    );
     const icObjectFunctionArgDataRaw: Rust =
         generateIcObjectFunctionArgDataRaw();
     const icObjectFunctionArgDataRawSize: Rust =
@@ -99,6 +106,7 @@ export function generateIcObjectFunctions(
 
     return `
         ${icObjectFunctionAcceptMessage}
+        ${icObjectFunctionArgData}
         ${icObjectFunctionArgDataRaw}
         ${icObjectFunctionArgDataRawSize}
         ${icObjectFunctionCaller}

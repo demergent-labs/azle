@@ -68,13 +68,14 @@ export async function generateLibFile(
         generateHandleGeneratorResultFunction(callFunctionInfos);
 
     const icObjectFunctions: Rust = generateIcObjectFunctions(
+        sourceFiles,
         canisterMethodFunctionInfos
     );
 
     const azleIntoJsValueTrait: Rust = generateAzleIntoJsValueTrait();
     const azleTryFromJsValueTrait: Rust = generateAzleTryFromJsValueTrait();
 
-    return `
+    return /* rust */ `
         ${head}
 
         ${modifiedRustCandidTypes}
@@ -102,10 +103,19 @@ export async function generateLibFile(
                 ${callFunctionInfo.call_with_payment128.rust}
 
                 ${callFunctionInfo.notify.rust}
-                
+
                 ${callFunctionInfo.notify_with_payment128.rust}
             `
             )
             .join('\n')}
+
+        fn get_top_level_call_frame(call_frame: &boa_engine::vm::call_frame::CallFrame) -> boa_engine::vm::call_frame::CallFrame {
+            if let Some(prev_call_frame) = &call_frame.prev {
+                return get_top_level_call_frame(&prev_call_frame);
+            }
+            else {
+                return call_frame.clone();
+            }
+        }
     `;
 }
