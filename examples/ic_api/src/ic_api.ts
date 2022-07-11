@@ -19,32 +19,34 @@ type ArgDataMultipleParamsResult = {
     string: string;
 };
 
-// returns the argument data as an array.
-export function arg_data_zero_params(): Query<null[]> {
-    return ic.arg_data();
-}
-
-// returns the argument data as an array.
-export function arg_data_one_param(arg: boolean): Query<boolean> {
-    const arg_data = ic.arg_data();
-    return arg_data[0];
-}
-
-// returns the argument data as an array.
-export function arg_data_multiple_params(
-    arg1: blob,
-    arg2: int8,
-    arg3: boolean,
-    arg4: string
-): Query<ArgDataMultipleParamsResult> {
-    const arg_data = ic.arg_data();
-    return {
-        blob: Uint8Array.from(arg_data[0]),
-        int: arg_data[1],
-        boolean: arg_data[2],
-        string: arg_data[3]
-    };
-}
+// TODO: See https://github.com/demergent-labs/azle/issues/496
+//
+// // returns the argument data as an array.
+// export function arg_data_zero_params(): Query<null[]> {
+//     return ic.arg_data();
+// }
+//
+// // returns the argument data as an array.
+// export function arg_data_one_param(arg: boolean): Query<boolean> {
+//     const arg_data = ic.arg_data();
+//     return arg_data[0];
+// }
+//
+// // returns the argument data as an array.
+// export function arg_data_multiple_params(
+//     arg1: blob,
+//     arg2: int8,
+//     arg3: boolean,
+//     arg4: string
+// ): Query<ArgDataMultipleParamsResult> {
+//     const arg_data = ic.arg_data();
+//     return {
+//         blob: Uint8Array.from(arg_data[0]),
+//         int: arg_data[1],
+//         boolean: arg_data[2],
+//         string: arg_data[3]
+//     };
+// }
 
 // returns the argument data as bytes.
 export function arg_data_raw(

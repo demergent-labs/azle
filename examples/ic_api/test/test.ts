@@ -11,6 +11,7 @@ const ic_api_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 const tests: Test[] = [
     ...cleanDeploy('ic_api'),
     {
+        skip: true,
         name: 'arg_data with zero params',
         test: async () => {
             const result = await ic_api_canister.arg_data_zero_params();
@@ -21,6 +22,7 @@ const tests: Test[] = [
         }
     },
     {
+        skip: true,
         name: 'arg_data with a single param',
         test: async () => {
             const result = await ic_api_canister.arg_data_one_param(true);
@@ -31,6 +33,7 @@ const tests: Test[] = [
         }
     },
     {
+        skip: true,
         name: 'arg_data with multiple params',
         test: async () => {
             const blobString = 'Surprise!';

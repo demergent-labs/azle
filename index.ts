@@ -87,7 +87,7 @@ ic.call_raw128 = function (...args) {
 
 type ic = {
     accept_message: () => void;
-    arg_data: () => any[];
+    // arg_data: () => any[]; // TODO: See https://github.com/demergent-labs/azle/issues/496
     arg_data_raw: () => blob;
     arg_data_raw_size: () => nat32;
     // call: (

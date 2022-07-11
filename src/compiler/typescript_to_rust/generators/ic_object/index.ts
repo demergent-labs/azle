@@ -21,11 +21,15 @@ export function generateIcObject(
                 "accept_message",
                 0
             )
-            .function(
-                _azle_ic_arg_data,
-                "arg_data",
-                0
-            )
+            ${
+                ''
+                // TODO: See https://github.com/demergent-labs/azle/issues/496
+                // .function(
+                //     _azle_ic_arg_data,
+                //     "arg_data",
+                //     0
+                // )
+            }
             .function(
                 _azle_ic_arg_data_raw,
                 "arg_data_raw",

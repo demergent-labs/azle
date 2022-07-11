@@ -1,14 +1,4 @@
-type ArgDataMultipleParamsResult = record {
-    "blob": blob;
-    "int": int8;
-    "boolean": bool;
-    "string": text;
-};
-
 service: {
-    "arg_data_zero_params": () -> (vec null) query;
-    "arg_data_one_param": (bool) -> (bool) query;
-    "arg_data_multiple_params": (blob, int8, bool, text) -> (ArgDataMultipleParamsResult) query;
     "arg_data_raw": (blob, int8, bool, text) -> (blob) query;
     "arg_data_raw_size": (blob, int8, bool, text) -> (nat32) query;
     "caller": () -> (principal) query;

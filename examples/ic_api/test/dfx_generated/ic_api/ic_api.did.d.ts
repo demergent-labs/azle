@@ -1,18 +1,5 @@
 import type { Principal } from '@dfinity/principal';
-export interface ArgDataMultipleParamsResult {
-    int: number;
-    string: string;
-    blob: Array<number>;
-    boolean: boolean;
-}
 export interface _SERVICE {
-    arg_data_multiple_params: (
-        arg_0: Array<number>,
-        arg_1: number,
-        arg_2: boolean,
-        arg_3: string
-    ) => Promise<ArgDataMultipleParamsResult>;
-    arg_data_one_param: (arg_0: boolean) => Promise<boolean>;
     arg_data_raw: (
         arg_0: Array<number>,
         arg_1: number,
@@ -25,7 +12,6 @@ export interface _SERVICE {
         arg_2: boolean,
         arg_3: string
     ) => Promise<number>;
-    arg_data_zero_params: () => Promise<Array<null>>;
     caller: () => Promise<Principal>;
     canister_balance: () => Promise<bigint>;
     canister_balance128: () => Promise<bigint>;
