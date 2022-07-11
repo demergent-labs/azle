@@ -1,28 +1,26 @@
 import type { Principal } from '@dfinity/principal';
-export interface partially_null_object {
+export interface PartiallyNullRecord {
     first_item: bigint;
     third_item: bigint;
     second_item: null;
 }
-export interface three_null_object {
+export interface ThreeNullRecord {
     first_item: null;
     third_item: null;
     second_item: null;
 }
-export interface two_null_object {
+export interface TwoNullRecord {
     first_item: null;
     second_item: null;
 }
 export interface _SERVICE {
-    get_large_null_record: () => Promise<three_null_object>;
-    get_partial_null_record: () => Promise<partially_null_object>;
-    get_small_null_record: () => Promise<two_null_object>;
+    get_large_null_record: () => Promise<ThreeNullRecord>;
+    get_partially_null_record: () => Promise<PartiallyNullRecord>;
+    get_small_null_record: () => Promise<TwoNullRecord>;
     null_function: (arg_0: null) => Promise<null>;
-    set_large_null_record: (
-        arg_0: three_null_object
-    ) => Promise<three_null_object>;
-    set_partial_null_record: (
-        arg_0: partially_null_object
-    ) => Promise<partially_null_object>;
-    set_small_null_record: (arg_0: two_null_object) => Promise<two_null_object>;
+    set_large_null_record: (arg_0: ThreeNullRecord) => Promise<ThreeNullRecord>;
+    set_partially_null_record: (
+        arg_0: PartiallyNullRecord
+    ) => Promise<PartiallyNullRecord>;
+    set_small_null_record: (arg_0: TwoNullRecord) => Promise<TwoNullRecord>;
 }

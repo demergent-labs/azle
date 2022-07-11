@@ -1,42 +1,38 @@
 export const idlFactory = ({ IDL }) => {
-    const three_null_object = IDL.Record({
+    const ThreeNullRecord = IDL.Record({
         first_item: IDL.Null,
         third_item: IDL.Null,
         second_item: IDL.Null
     });
-    const partially_null_object = IDL.Record({
+    const PartiallyNullRecord = IDL.Record({
         first_item: IDL.Int,
         third_item: IDL.Int,
         second_item: IDL.Null
     });
-    const two_null_object = IDL.Record({
+    const TwoNullRecord = IDL.Record({
         first_item: IDL.Null,
         second_item: IDL.Null
     });
     return IDL.Service({
-        get_large_null_record: IDL.Func([], [three_null_object], ['query']),
-        get_partial_null_record: IDL.Func(
+        get_large_null_record: IDL.Func([], [ThreeNullRecord], ['query']),
+        get_partially_null_record: IDL.Func(
             [],
-            [partially_null_object],
+            [PartiallyNullRecord],
             ['query']
         ),
-        get_small_null_record: IDL.Func([], [two_null_object], ['query']),
+        get_small_null_record: IDL.Func([], [TwoNullRecord], ['query']),
         null_function: IDL.Func([IDL.Null], [IDL.Null], ['query']),
         set_large_null_record: IDL.Func(
-            [three_null_object],
-            [three_null_object],
+            [ThreeNullRecord],
+            [ThreeNullRecord],
             []
         ),
-        set_partial_null_record: IDL.Func(
-            [partially_null_object],
-            [partially_null_object],
+        set_partially_null_record: IDL.Func(
+            [PartiallyNullRecord],
+            [PartiallyNullRecord],
             []
         ),
-        set_small_null_record: IDL.Func(
-            [two_null_object],
-            [two_null_object],
-            []
-        )
+        set_small_null_record: IDL.Func([TwoNullRecord], [TwoNullRecord], [])
     });
 };
 export const init = ({ IDL }) => {
