@@ -38,7 +38,7 @@ function installRustDependencies() {
     execSync(`rustup target add wasm32-unknown-unknown`, { stdio: 'inherit' });
 
     execSync(
-        `cd target/azle && cargo install --git https://github.com/dfinity/candid --rev e7abc462fd54e72e3449999169c12e9f5209d091 didc --root ..`,
+        `cd target/azle && cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 didc --root ..`,
         { stdio: 'inherit' }
     );
 

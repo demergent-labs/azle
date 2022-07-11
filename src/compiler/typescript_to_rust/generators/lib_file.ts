@@ -29,19 +29,12 @@ export async function generateLibFile(
         .replace(/candid::Nat/g, 'u128')
         .replace(/candid::Int/g, 'i128');
 
-    // TODO remove this once this issue is resolved: https://github.com/dfinity/candid/issues/345
-    const rust_candid_types_semicolon_syntax_fix =
-        rustCandidTypesNatAndIntReplaced.replace(
-            /#\[derive\(CandidType, Deserialize\)\]\nstruct .*? \(.*?\)/g,
-            (match) => `${match};`
-        );
-
     const { func_structs_and_impls, func_names } =
         generate_func_structs_and_impls(sourceFiles);
 
     // TODO we need to remove the func types, remove the structs and type aliases
     const modifiedRustCandidTypes: Rust = await modifyRustCandidTypes(
-        rust_candid_types_semicolon_syntax_fix,
+        rustCandidTypesNatAndIntReplaced,
         func_names
     );
 
@@ -60,7 +53,7 @@ export async function generateLibFile(
 
     const canisterMethodsDeveloperDefined: Rust =
         await generateCanisterMethodsDeveloperDefined(
-            rust_candid_types_semicolon_syntax_fix, // TODO you might think that we should pass in modifiedRustCandidTypes here, but the printAst function seems to have a bug that removes the , from the CallResult tuple which causes problems later in the process
+            rustCandidTypesNatAndIntReplaced, // TODO you might think that we should pass in modifiedRustCandidTypes here, but the printAst function seems to have a bug that removes the , from the CallResult tuple which causes problems later in the process
             canisterMethodFunctionInfos
         );
 

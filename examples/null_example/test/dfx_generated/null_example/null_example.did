@@ -1,0 +1,26 @@
+type partially_null_object = record {
+    "first_item": int;
+    "second_item": null;
+    "third_item": int;
+};
+
+type two_null_object = record {
+    "first_item": null;
+    "second_item": null;
+};
+
+type three_null_object = record {
+    "first_item": null;
+    "second_item": null;
+    "third_item": null;
+};
+
+service: {
+    "null_function": (null) -> (null) query;
+    "get_partial_null_record": () -> (partially_null_object) query;
+    "get_small_null_record": () -> (two_null_object) query;
+    "get_large_null_record": () -> (three_null_object) query;
+    "set_partial_null_record": (partially_null_object) -> (partially_null_object);
+    "set_small_null_record": (two_null_object) -> (two_null_object);
+    "set_large_null_record": (three_null_object) -> (three_null_object);
+}
