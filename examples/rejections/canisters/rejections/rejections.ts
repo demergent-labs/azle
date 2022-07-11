@@ -1,27 +1,15 @@
-import { someService } from '../some_service';
+import { someService, Result } from '../some_service';
 import {
     Canister,
     CanisterResult,
     ic,
-    ok,
     Principal,
     RejectionCode,
-    UpdateAsync,
-    Variant
+    UpdateAsync
 } from 'azle';
 
 export type Nonexistent = Canister<{
     method(): CanisterResult<void>;
-}>;
-
-type GetResultResult = Variant<{
-    ok: null;
-    err: string;
-}>;
-
-type Outcome = Variant<{
-    Accept: null;
-    Reject: null;
 }>;
 
 export const nonexistentCanister = ic.canisters.Nonexistent<Nonexistent>(
@@ -53,56 +41,67 @@ export function* getRejectionMessage(message: string): UpdateAsync<string> {
     return ic.reject_message();
 }
 
-// function result() {
-//     if ('NoError' in ic.reject_code()) {
-//         console.log('Calling ic.arg_data...');
+// TODO: See https://github.com/demergent-labs/azle/issues/496
+
+// Used for `ic.result` below
+
+// type GetResultResult = Variant<{
+//     ok: boolean;
+//     err: string;
+// }>;
+
+// type Outcome = Variant<{
+//     Accept: null;
+//     Reject: null;
+// }>;
+
+// Working example of `ic.result`. Use in conjunction with function declaration
+// in index.ts that take a single parameter.
+// This is not the final API that we want, but it works.
+
+// export function* getResult(
+//     outcome: Outcome,
+//     message: string
+// ): UpdateAsync<GetResultResult> {
+//     const canisterResult: Result = yield 'Accept' in outcome
+//         ? someService.accept()
+//         : someService.reject(message);
+
+//     const safeResult = ic.result(canisterResult);
+
+//     if (!ok(safeResult)) {
 //         return {
-//             ok: ic.arg_data()
+//             err: safeResult.err
 //         };
 //     }
 
-//     console.log('Calling ic.reject_message...');
 //     return {
-//         err: ic.reject_message()
+//         ok: safeResult.ok
 //     };
 // }
 
-function result(canisterResult: any) {
-    if ('NoError' in ic.reject_code()) {
-        return {
-            ok: canisterResult.ok
-        };
-    }
-    return {
-        err: ic.reject_message()
-    };
-}
+/**
+ * Non-working example if `ic.result`. Use in conjunction with function
+ * declaration in index.ts that doesn't take any parameters.
+ * This is the final API that we want but might be very difficult to implement.
+ */
+// export function* getResult(
+//     outcome: Outcome,
+//     message: string
+// ): UpdateAsync<GetResultResult> {
+//     yield 'Accept' in outcome
+//         ? someService.accept()
+//         : someService.reject(message);
 
-export function* getResult(
-    outcome: Outcome,
-    message: string
-): UpdateAsync<GetResultResult> {
-    console.log('Started executing method body');
-    // yield 'Accept' in outcome
-    //     ? someService.accept()
-    //     : someService.reject(message);
-    const canisterResult = yield 'Accept' in outcome
-        ? someService.accept()
-        : someService.reject(message);
+//     const wrappedResult = ic.result<boolean>();
 
-    console.log('Completed cross-canister call');
-    // const safeResult = result();
-    const safeResult = result(canisterResult);
-    // ic.arg_data();
-    console.log('Printing out after calling result');
+//     if (!ok(wrappedResult)) {
+//         return {
+//             err: wrappedResult.err
+//         };
+//     }
 
-    if (!ok(safeResult)) {
-        return {
-            err: safeResult.err
-        };
-    }
-
-    return {
-        ok: safeResult.ok[0] ?? null
-    };
-}
+//     return {
+//         ok: wrappedResult.ok[0] ?? null
+//     };
+// }

@@ -61,6 +61,7 @@ const tests: Test[] = [
         }
     },
     {
+        skip: true,
         name: 'result with an accept',
         test: async () => {
             const rejectionMessage = 'custom rejection message';
@@ -80,6 +81,7 @@ const tests: Test[] = [
         }
     },
     {
+        skip: true,
         name: 'result with an accept',
         test: async () => {
             const rejectionMessage = 'custom rejection message';

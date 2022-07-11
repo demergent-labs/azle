@@ -1,6 +1,4 @@
 import type { Principal } from '@dfinity/principal';
-export type GetResultResult = { ok: null } | { err: string };
-export type Outcome = { Reject: null } | { Accept: null };
 export type RejectionCode =
     | { NoError: null }
     | { CanisterError: null }
@@ -15,5 +13,4 @@ export interface _SERVICE {
     getRejectionCodeDestinationInvalid: () => Promise<RejectionCode>;
     getRejectionCodeNoError: () => Promise<RejectionCode>;
     getRejectionMessage: (arg_0: string) => Promise<string>;
-    getResult: (arg_0: Outcome, arg_1: string) => Promise<GetResultResult>;
 }

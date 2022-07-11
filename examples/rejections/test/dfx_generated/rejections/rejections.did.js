@@ -8,15 +8,12 @@ export const idlFactory = ({ IDL }) => {
         SysFatal: IDL.Null,
         CanisterReject: IDL.Null
     });
-    const Outcome = IDL.Variant({ Reject: IDL.Null, Accept: IDL.Null });
-    const GetResultResult = IDL.Variant({ ok: IDL.Null, err: IDL.Text });
     return IDL.Service({
         getRejectionCodeCanisterError: IDL.Func([], [RejectionCode], []),
         getRejectionCodeCanisterReject: IDL.Func([], [RejectionCode], []),
         getRejectionCodeDestinationInvalid: IDL.Func([], [RejectionCode], []),
         getRejectionCodeNoError: IDL.Func([], [RejectionCode], []),
-        getRejectionMessage: IDL.Func([IDL.Text], [IDL.Text], []),
-        getResult: IDL.Func([Outcome, IDL.Text], [GetResultResult], [])
+        getRejectionMessage: IDL.Func([IDL.Text], [IDL.Text], [])
     });
 };
 export const init = ({ IDL }) => {

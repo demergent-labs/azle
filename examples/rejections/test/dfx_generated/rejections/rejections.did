@@ -1,14 +1,9 @@
 type RejectionCode = variant { "NoError": null; "SysFatal": null; "SysTransient": null; "DestinationInvalid": null; "CanisterReject": null; "CanisterError": null; "Unknown": null };
 
-type Outcome = variant { "Accept": null; "Reject": null };
-
-type GetResultResult = variant { "ok": null; "err": text };
-
 service: {
     "getRejectionCodeNoError": () -> (RejectionCode);
     "getRejectionCodeDestinationInvalid": () -> (RejectionCode);
     "getRejectionCodeCanisterReject": () -> (RejectionCode);
     "getRejectionCodeCanisterError": () -> (RejectionCode);
     "getRejectionMessage": (text) -> (text);
-    "getResult": (Outcome, text) -> (GetResultResult);
 }

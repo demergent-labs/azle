@@ -37,6 +37,40 @@ ic.stableStorage = function () {
 //     } as any;
 // };
 
+// TODO: See https://github.com/demergent-labs/azle/issues/496
+
+/**
+ * Working declaration for `ic.result`. This is NOT the API we want, but at
+ * least it works.'
+ * Note: make sure to use in conjunction with it's type on the IC type below
+ */
+// ic.result = function <T>(canisterResult: AzleResult<T>): AzleResult<T> {
+//     if ('NoError' in ic.reject_code()) {
+//         return {
+//             ok: canisterResult.ok
+//         };
+//     }
+//     return {
+//         err: ic.reject_message()
+//     };
+// };
+
+/**
+ * Non-working declaration for `ic.result`. This is the API we want, but it
+ * doesn't work.
+ * Note: make sure to use in conjunction with it's type on the IC type below
+ */
+// ic.result = function <T>(): AzleResult<Array<T>> {
+//     if ('NoError' in ic.reject_code()) {
+//         return {
+//             ok: ic.arg_data() // Currently errors out.
+//         };
+//     }
+//     return {
+//         err: ic.reject_message()
+//     };
+// };
+
 ic.call_raw = function (...args) {
     return {
         name: 'call_raw',
@@ -94,6 +128,10 @@ type ic = {
     reject_message: () => string;
     reply: (reply: any) => void;
     reply_raw: (buf: blob) => void;
+    /** Working type declaration. Not the API we want though */
+    // result: <T>(canisterResult: AzleResult<T>) => AzleResult<T>;
+    /** Non-working type declaration. But API we want */
+    // result: <T>() => AzleResult<Array<T>>;
     set_certified_data: (data: blob) => void;
     stable_bytes: () => blob;
     stable_grow: (new_pages: nat32) => StableGrowResult;
