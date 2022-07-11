@@ -1,17 +1,5 @@
 export const idlFactory = ({ IDL }) => {
-    const ArgDataMultipleParamsResult = IDL.Record({
-        int: IDL.Int8,
-        string: IDL.Text,
-        blob: IDL.Vec(IDL.Nat8),
-        boolean: IDL.Bool
-    });
     return IDL.Service({
-        arg_data_multiple_params: IDL.Func(
-            [IDL.Vec(IDL.Nat8), IDL.Int8, IDL.Bool, IDL.Text],
-            [ArgDataMultipleParamsResult],
-            ['query']
-        ),
-        arg_data_one_param: IDL.Func([IDL.Bool], [IDL.Bool], ['query']),
         arg_data_raw: IDL.Func(
             [IDL.Vec(IDL.Nat8), IDL.Int8, IDL.Bool, IDL.Text],
             [IDL.Vec(IDL.Nat8)],
@@ -22,7 +10,6 @@ export const idlFactory = ({ IDL }) => {
             [IDL.Nat32],
             ['query']
         ),
-        arg_data_zero_params: IDL.Func([], [IDL.Vec(IDL.Null)], ['query']),
         caller: IDL.Func([], [IDL.Principal], ['query']),
         canister_balance: IDL.Func([], [IDL.Nat64], ['query']),
         canister_balance128: IDL.Func([], [IDL.Nat], ['query']),

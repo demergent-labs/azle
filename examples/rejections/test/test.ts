@@ -1,4 +1,4 @@
-import { cleanDeploy, run_tests, Test } from 'azle/test';
+import { cleanDeploy, ok, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/rejections';
 
 const rejections_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -57,6 +57,48 @@ const tests: Test[] = [
             );
             return {
                 ok: result === rejectionMessage
+            };
+        }
+    },
+    {
+        skip: true,
+        name: 'result with an accept',
+        test: async () => {
+            const rejectionMessage = 'custom rejection message';
+            const result = await rejections_canister.getResult(
+                { Accept: null },
+                rejectionMessage
+            );
+            if (!ok(result)) {
+                return {
+                    err: result.err
+                };
+            }
+
+            return {
+                ok: result.ok === null
+            };
+        }
+    },
+    {
+        skip: true,
+        name: 'result with an accept',
+        test: async () => {
+            const rejectionMessage = 'custom rejection message';
+
+            const result = await rejections_canister.getResult(
+                { Reject: null },
+                rejectionMessage
+            );
+
+            if (ok(result)) {
+                return {
+                    ok: false
+                };
+            }
+
+            return {
+                ok: result.err === rejectionMessage
             };
         }
     }
