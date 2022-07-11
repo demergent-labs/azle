@@ -10,5 +10,4 @@ crate-type = ["cdylib"]
 ic-cdk = "0.5.2"
 ic-cdk-macros = "0.5.2"
 candid = "0.7.14"
-# boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "vec_u8_into_typed_array" } # This is a fork of js-bigint-128
-# getrandom = { version = "0.2.3", features = ["custom"] }
+bencher = "0.1.5"

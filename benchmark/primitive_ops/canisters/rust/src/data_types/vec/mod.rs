@@ -13,7 +13,7 @@ pub fn vec_init_stack(num_inits: u32) -> u64 {
 
     while i < num_inits {
         let value: Vec<u32> = if i % 2 == 0 { vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9] } else { vec![] };
-        std::convert::identity(value); // Trying to ensure that the value assignment above is not optimized away
+        bencher::black_box(&value); // Trying to ensure that the value assignment above is not optimized away
         i += 1;
     }
 

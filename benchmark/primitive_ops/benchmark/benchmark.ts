@@ -53,6 +53,7 @@ run_benchmarks(
     azle_canister,
     motoko_canister,
     rust_canister,
+    10,
     `benchmarks`,
     process.argv[2] !== 'no-setup'
 );

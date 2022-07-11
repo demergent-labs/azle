@@ -13,7 +13,7 @@ pub fn nat8_init_stack(num_inits: u32) -> u64 {
 
     while i < num_inits {
         let value: u8 = if i % 2 == 0 { 255 } else { 0 };
-        std::convert::identity(value); // Trying to ensure that the value assignment above is not optimized away
+        bencher::black_box(&value); // Trying to ensure that the value assignment above is not optimized away
         i += 1;
     }
 

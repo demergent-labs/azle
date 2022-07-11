@@ -13,7 +13,7 @@ pub fn principal_init_stack(num_inits: u32) -> u64 {
 
     while i < num_inits {
         let value: ic_cdk::export::Principal = if i % 2 == 0 { ic_cdk::export::Principal::from_text("rrkah-fqaaa-aaaaa-aaaaq-cai").unwrap() } else { ic_cdk::export::Principal::from_text("aaaaa-aa").unwrap() };
-        std::convert::identity(value); // Trying to ensure that the value assignment above is not optimized away
+        bencher::black_box(&value); // Trying to ensure that the value assignment above is not optimized away
         i += 1;
     }
 

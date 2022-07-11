@@ -13,7 +13,7 @@ pub fn float64_init_stack(num_inits: u32) -> u64 {
 
     while i < num_inits {
         let value: f64 = if i % 2 == 0 { std::f64::consts::PI } else { std::f64::consts::E };
-        std::convert::identity(value); // Trying to ensure that the value assignment above is not optimized away
+        bencher::black_box(&value); // Trying to ensure that the value assignment above is not optimized away
         i += 1;
     }
 

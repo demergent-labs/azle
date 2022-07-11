@@ -1,8 +1,6 @@
 import { execSync } from 'child_process';
 import { writeFileSync } from 'fs';
 
-const NUM_BENCHMARK_ITERATIONS = 10; // TODO change when appropriate, allow configuration
-
 export type Benchmark = {
     canister_method: string;
     benchmark_description: string;
@@ -71,6 +69,7 @@ export async function run_benchmarks(
     _azle_canister: any,
     _motoko_canister: any,
     _rust_canister: any,
+    num_benchmark_iterations: number = 10,
     output_file: string = 'benchmarks',
     setup: boolean = true
 ): Promise<BenchmarkResult[]> {
@@ -85,7 +84,7 @@ export async function run_benchmarks(
     const benchmark_promises: BenchmarkResult[] = await benchmarks.reduce(async (result: Promise<BenchmarkResult[]>, benchmark) => {
         const resolved_result = await result;
 
-        const benchmark_iteration_promises = new Array(NUM_BENCHMARK_ITERATIONS).fill(0).map((_) => {
+        const benchmark_iteration_promises = new Array(num_benchmark_iterations).fill(0).map((_) => {
             return run_benchmark(
                 benchmark.canister_method,
                 benchmark.benchmark_description,
@@ -207,10 +206,11 @@ function create_markdown_report(benchmark_results: BenchmarkResult[]): string {
     const title = `# Azle/Rust/Motoko Benchmarks`;
 
     const description = `
+- These benchmarks should be considered preliminary (especially the Motoko benchmarks, something seems off)
 - These benchmarks were implemented using the performance counter API
     - Performance counter information in [The Internet Computer Interface Spec](https://internetcomputer.org/docs/current/references/ic-interface-spec/#system-api-imports)
     - Performance counter information in [the forum](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027)
-- The results were obtained for each data type by performing a number of iterations of basic value initializations on the stack and heap in each language
+- The results were obtained for each data type by returning the performance counter value after performing n iterations of value initializations on the stack and heap in each language
 - Each benchmark description gives the benchmark function name followed by the number of value initializations performed by the benchmark function
 - All benchmark code can be found [here](https://github.com/demergent-labs/azle/tree/26_benchmarking/benchmark/primitive_ops)
 - The following may be missing from the benchmarks as described [here](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027):

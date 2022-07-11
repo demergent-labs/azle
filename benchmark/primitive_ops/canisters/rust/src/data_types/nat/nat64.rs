@@ -13,7 +13,7 @@ pub fn nat64_init_stack(num_inits: u32) -> u64 {
 
     while i < num_inits {
         let value: u64 = if i % 2 == 0 { 18_446_744_073_709_551_615 } else { 0 };
-        std::convert::identity(value); // Trying to ensure that the value assignment above is not optimized away
+        bencher::black_box(&value); // Trying to ensure that the value assignment above is not optimized away
         i += 1;
     }
 
