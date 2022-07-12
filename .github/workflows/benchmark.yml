@@ -19,10 +19,10 @@ jobs:
     #       - benchmark/primitive_ops
     steps:
       - uses: actions/checkout@v2
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 18
-      # - run: DFX_VERSION=0.10.2-btcbeta.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: DFX_VERSION=0.10.2-btcbeta.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       # - name: Install Rust ${{ matrix.rust }}
       #   uses: actions-rs/toolchain@v1
       #   with:
