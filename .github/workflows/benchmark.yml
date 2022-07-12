@@ -1,8 +1,8 @@
 name: Azle Benchmarks
 on:
     pull_request:
-        branches:
-            - '**--benchmarks**'
+        # branches:
+            # - '**--benchmarks**'
 jobs:
     benchmarks:
         runs-on: ubuntu-latest
@@ -14,6 +14,7 @@ jobs:
             rust: [stable]
             benchmark_directories:
               - benchmark/primitive_ops
+        if: ${{ contains(github.head_ref, '--benchmarks') }}
         steps:
             - uses: actions/checkout@v2
             - uses: actions/setup-node@v3
