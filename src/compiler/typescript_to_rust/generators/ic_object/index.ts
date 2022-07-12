@@ -8,12 +8,12 @@ export function generateIcObject(
     stableStorageVariableInfos: StableStorageVariableInfo[],
     callFunctionInfos: CallFunctionInfo[]
 ): Rust {
-    const _azleStableStorage = generate_AzleStableStorage(
+    const _azle_stable_storage = generateAzleStableStorage(
         stableStorageVariableInfos
     );
 
     return /* rust */ `
-        ${_azleStableStorage}
+        ${_azle_stable_storage}
 
         let ic = boa_engine::object::ObjectInitializer::new(&mut boa_context)
             .function(
@@ -41,7 +41,7 @@ export function generateIcObject(
                 0
             )
             .function(
-                azle_ic_caller,
+                _azle_ic_caller,
                 "caller",
                 0
             )
@@ -61,47 +61,47 @@ export function generateIcObject(
                 0
             )
             .function(
-                azle_ic_id,
+                _azle_ic_id,
                 "id",
                 0
             )
             .function(
-                _azle_method_name,
+                _azle_ic_method_name,
                 "method_name",
                 0
             )
             .function(
-                _azle_msg_cycles_accept,
+                _azle_ic_msg_cycles_accept,
                 "msg_cycles_accept",
                 0
             )
             .function(
-                _azle_msg_cycles_accept128,
+                _azle_ic_msg_cycles_accept128,
                 "msg_cycles_accept128",
                 0
             )
             .function(
-                _azle_msg_cycles_available,
+                _azle_ic_msg_cycles_available,
                 "msg_cycles_available",
                 0
             )
             .function(
-                _azle_msg_cycles_available128,
+                _azle_ic_msg_cycles_available128,
                 "msg_cycles_available128",
                 0
             )
             .function(
-                _azle_msg_cycles_refunded,
+                _azle_ic_msg_cycles_refunded,
                 "msg_cycles_refunded",
                 0
             )
             .function(
-                _azle_msg_cycles_refunded128,
+                _azle_ic_msg_cycles_refunded128,
                 "msg_cycles_refunded128",
                 0
             )
             .function(
-                azle_ic_print,
+                _azle_ic_print,
                 "print",
                 0
             )
@@ -181,12 +181,12 @@ export function generateIcObject(
                 0
             )
             .function(
-                azle_ic_time,
+                _azle_ic_time,
                 "time",
                 0
             )
             .function(
-                azle_ic_trap,
+                _azle_ic_trap,
                 "trap",
                 0
             )
@@ -207,19 +207,19 @@ export function generateIcObject(
                 })
                 .join('')}
             .property(
-                "_azleStableStorage",
-                _azleStableStorage,
+                "_azle_stable_storage",
+                _azle_stable_storage,
                 boa_engine::property::Attribute::all()
             )
             .build();
     `;
 }
 
-function generate_AzleStableStorage(
+function generateAzleStableStorage(
     stableStorageVariableInfos: StableStorageVariableInfo[]
 ): Rust {
     if (stableStorageVariableInfos.length === 0) {
-        return `let _azleStableStorage = boa_engine::object::ObjectInitializer::new(&mut boa_context).build();`;
+        return `let _azle_stable_storage = boa_engine::object::ObjectInitializer::new(&mut boa_context).build();`;
     } else {
         return `
             let (${stableStorageVariableInfos
@@ -266,7 +266,7 @@ function generate_AzleStableStorage(
                 })
                 .join('\n')}
 
-            let _azleStableStorage = boa_engine::object::ObjectInitializer::new(&mut boa_context)
+            let _azle_stable_storage = boa_engine::object::ObjectInitializer::new(&mut boa_context)
                 ${stableStorageVariableInfos
                     .filter(
                         (stableStorageVariableInfo) =>

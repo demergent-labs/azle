@@ -2,7 +2,7 @@ import { Rust } from '../../../../../types';
 
 export function generateIcObjectFunctionTrap(): Rust {
     return /* rust */ `
-        fn azle_ic_trap(
+        fn _azle_ic_trap(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context

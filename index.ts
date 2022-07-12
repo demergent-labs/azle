@@ -19,12 +19,12 @@ export const ic: ic = globalThis.ic;
 // globalThis.console = {
 //     ...globalThis.console,
 //     log: (...args: any[]) => {
-//         ic.print(...args);
+//         console.log(...args);
 //     }
 // };
 
-ic.stableStorage = function () {
-    return (ic as any)._azleStableStorage;
+ic.stable_storage = function () {
+    return (ic as any)._azle_stable_storage;
 };
 
 // ic.call = function* (...args) {
@@ -142,7 +142,7 @@ type ic = {
     stable64_read: (offset: nat64, length: nat64) => blob;
     stable64_size: () => nat64;
     stable64_write: (offset: nat64, buffer: blob) => void;
-    stableStorage: <T>() => T;
+    stable_storage: <T>() => T;
     time: () => nat64;
     trap: (message: string) => never;
 };

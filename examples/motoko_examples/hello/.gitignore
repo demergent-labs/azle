@@ -1,2 +1,5 @@
+.dfx
+node_modules
+target
 declarations
 dist
