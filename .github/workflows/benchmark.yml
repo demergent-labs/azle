@@ -17,8 +17,8 @@ jobs:
     #     rust: [stable]
     #     benchmark_directories:
     #       - benchmark/primitive_ops
-    # steps:
-    #   - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
       # - uses: actions/setup-node@v3
       #   with:
       #     node-version: 18
