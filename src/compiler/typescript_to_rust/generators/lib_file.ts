@@ -8,15 +8,19 @@ import { generateHead } from './head';
 import { generateIcObjectFunctions } from './ic_object/functions';
 import { modifyRustCandidTypes } from './modified_rust_candid_types';
 import { bundle_and_transpile_ts } from '../../typescript_to_javascript';
-import { CallFunctionInfo, JavaScript, Rust } from '../../../types';
+import {
+    CallFunctionInfo,
+    CanisterMethodFunctionInfo,
+    JavaScript,
+    Rust
+} from '../../../types';
 import * as tsc from 'typescript';
 import { generate_func_structs_and_impls } from './funcs';
 
 export async function generateLibFile(
     js: JavaScript,
     rustCandidTypes: Rust,
-    queryMethodFunctionNames: string[],
-    updateMethodFunctionNames: string[],
+    canisterMethodFunctionInfos: CanisterMethodFunctionInfo[],
     sourceFiles: readonly tsc.SourceFile[]
 ): Promise<Rust> {
     // TODO Remove this once these issues are resolved: https://forum.dfinity.org/t/deserialize-to-candid-nat/8192/16, https://github.com/dfinity/candid/issues/331
@@ -25,19 +29,12 @@ export async function generateLibFile(
         .replace(/candid::Nat/g, 'u128')
         .replace(/candid::Int/g, 'i128');
 
-    // TODO remove this once this issue is resolved: https://github.com/dfinity/candid/issues/345
-    const rust_candid_types_semicolon_syntax_fix =
-        rustCandidTypesNatAndIntReplaced.replace(
-            /#\[derive\(CandidType, Deserialize\)\]\nstruct .*? \(.*?\)/g,
-            (match) => `${match};`
-        );
-
     const { func_structs_and_impls, func_names } =
         generate_func_structs_and_impls(sourceFiles);
 
     // TODO we need to remove the func types, remove the structs and type aliases
     const modifiedRustCandidTypes: Rust = await modifyRustCandidTypes(
-        rust_candid_types_semicolon_syntax_fix,
+        rustCandidTypesNatAndIntReplaced,
         func_names
     );
 
@@ -46,28 +43,32 @@ export async function generateLibFile(
     );
     const head: Rust = generateHead(js, principal_js);
 
-    const systemCanisterMethods: Rust =
-        generateSystemCanisterMethods(sourceFiles);
-
     const callFunctionInfos: CallFunctionInfo[] =
         generateCallFunctions(sourceFiles);
 
+    const systemCanisterMethods: Rust = generateSystemCanisterMethods(
+        sourceFiles,
+        callFunctionInfos
+    );
+
     const canisterMethodsDeveloperDefined: Rust =
         await generateCanisterMethodsDeveloperDefined(
-            rust_candid_types_semicolon_syntax_fix, // TODO you might think that we should pass in modifiedRustCandidTypes here, but the printAst function seems to have a bug that removes the , from the CallResult tuple which causes problems later in the process
-            queryMethodFunctionNames,
-            updateMethodFunctionNames
+            rustCandidTypesNatAndIntReplaced, // TODO you might think that we should pass in modifiedRustCandidTypes here, but the printAst function seems to have a bug that removes the , from the CallResult tuple which causes problems later in the process
+            canisterMethodFunctionInfos
         );
 
     const handleGeneratorResultFunction =
         generateHandleGeneratorResultFunction(callFunctionInfos);
 
-    const icObjectFunctions: Rust = generateIcObjectFunctions();
+    const icObjectFunctions: Rust = generateIcObjectFunctions(
+        sourceFiles,
+        canisterMethodFunctionInfos
+    );
 
     const azleIntoJsValueTrait: Rust = generateAzleIntoJsValueTrait();
     const azleTryFromJsValueTrait: Rust = generateAzleTryFromJsValueTrait();
 
-    return `
+    return /* rust */ `
         ${head}
 
         ${modifiedRustCandidTypes}
@@ -86,7 +87,28 @@ export async function generateLibFile(
         ${icObjectFunctions}
 
         ${callFunctionInfos
-            .map((callFunctionInfo) => callFunctionInfo.text)
+            .map(
+                (callFunctionInfo) => `
+                ${callFunctionInfo.call.rust}
+
+                ${callFunctionInfo.call_with_payment.rust}
+
+                ${callFunctionInfo.call_with_payment128.rust}
+
+                ${callFunctionInfo.notify.rust}
+
+                ${callFunctionInfo.notify_with_payment128.rust}
+            `
+            )
             .join('\n')}
+
+        fn get_top_level_call_frame(call_frame: &boa_engine::vm::call_frame::CallFrame) -> boa_engine::vm::call_frame::CallFrame {
+            if let Some(prev_call_frame) = &call_frame.prev {
+                return get_top_level_call_frame(&prev_call_frame);
+            }
+            else {
+                return call_frame.clone();
+            }
+        }
     `;
 }

@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "manual_reply": {
+            "type": "custom",
+            "build": "npx azle manual_reply",
+            "root": "src",
+            "ts": "src/manual_reply.ts",
+            "candid": "src/manual_reply.did",
+            "wasm": "target/wasm32-unknown-unknown/release/manual_reply.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/manual_reply"
+            }
+        }
+    }
+}

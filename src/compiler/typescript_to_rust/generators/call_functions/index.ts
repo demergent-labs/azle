@@ -4,7 +4,6 @@ import { getTypeAliasDeclarationsFromSourceFiles } from '../../../typescript_to_
 import { generateCallFunctionName } from './call_function_name';
 import { generateCallFunctionParams } from './call_function_params';
 import { generateCallFunctionReturnType } from './call_function_return_type';
-import { generateCallFunctionBody } from './call_function_body';
 
 export function generateCallFunctions(
     sourceFiles: readonly tsc.SourceFile[]
@@ -12,11 +11,13 @@ export function generateCallFunctions(
     const typeAliasDeclarations = getCanisterTypeAliasDeclarations(sourceFiles);
 
     return generateCallFunctionsFromTypeAliasDeclarations(
+        sourceFiles,
         typeAliasDeclarations
     );
 }
 
 function generateCallFunctionsFromTypeAliasDeclarations(
+    sourceFiles: readonly tsc.SourceFile[],
     typeAliasDeclarations: tsc.TypeAliasDeclaration[]
 ): CallFunctionInfo[] {
     return typeAliasDeclarations.reduce(
@@ -24,6 +25,7 @@ function generateCallFunctionsFromTypeAliasDeclarations(
             return [
                 ...result,
                 ...generateCallFunctionsFromTypeAliasDeclaration(
+                    sourceFiles,
                     typeAliasDeclaration
                 )
             ];
@@ -33,6 +35,7 @@ function generateCallFunctionsFromTypeAliasDeclarations(
 }
 
 function generateCallFunctionsFromTypeAliasDeclaration(
+    sourceFiles: readonly tsc.SourceFile[],
     typeAliasDeclaration: tsc.TypeAliasDeclaration
 ): CallFunctionInfo[] {
     if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TypeReference) {
@@ -54,21 +57,28 @@ function generateCallFunctionsFromTypeAliasDeclaration(
     const typeLiteralNode = firstTypeArgument as tsc.TypeLiteralNode;
 
     return generateCallFunctionsFromTypeLiteralNode(
+        sourceFiles,
         typeLiteralNode,
         typeAliasDeclaration.name.escapedText.toString()
     );
 }
 
 function generateCallFunctionsFromTypeLiteralNode(
+    sourceFiles: readonly tsc.SourceFile[],
     typeLiteralNode: tsc.TypeLiteralNode,
     typeAliasName: string
 ): CallFunctionInfo[] {
     return typeLiteralNode.members.map((member) => {
-        return generateCallFunctionFromTypeElement(member, typeAliasName);
+        return generateCallFunctionFromTypeElement(
+            sourceFiles,
+            member,
+            typeAliasName
+        );
     });
 }
 
 function generateCallFunctionFromTypeElement(
+    sourceFiles: readonly tsc.SourceFile[],
     typeElement: tsc.TypeElement,
     typeAliasName: string
 ): CallFunctionInfo {
@@ -78,34 +88,174 @@ function generateCallFunctionFromTypeElement(
 
     const methodSignature = typeElement as tsc.MethodSignature;
 
-    const { methodName, callFunctionName } = generateCallFunctionName(
-        methodSignature,
-        typeAliasName
-    );
-    const functionParams = generateCallFunctionParams(methodSignature);
-    const functionReturnType = generateCallFunctionReturnType(methodSignature);
-    const functionBody = generateCallFunctionBody(
-        functionReturnType,
+    const {
         methodName,
-        functionParams.map((param) => param.paramName)
+        callFunctionName,
+        callWithPaymentFunctionName,
+        callWithPayment128FunctionName,
+        notifyFunctionName,
+        notifyWithPayment128FunctionName
+    } = generateCallFunctionName(methodSignature, typeAliasName);
+    const functionParams = generateCallFunctionParams(
+        sourceFiles,
+        methodSignature
+    );
+    const functionReturnType = generateCallFunctionReturnType(
+        sourceFiles,
+        methodSignature
+    );
+    const param_names = functionParams.map(
+        (rust_param) => rust_param.paramName
     );
 
     return {
-        functionName: callFunctionName,
-        params: functionParams,
-        text: `
-            async fn ${callFunctionName}(canister_id_principal: ic_cdk::export::Principal${
-            functionParams.length === 0 ? '' : ', '
-        }${functionParams
-            .map((param) => `${param.paramName}: ${param.paramType}`)
-            .join(', ')})${
-            functionReturnType === ''
-                ? ''
-                : ` -> CallResult<(${functionReturnType},)>`
-        } {
-                ${functionBody}
+        call: {
+            functionName: callFunctionName,
+            params: functionParams,
+            rust: `
+                async fn ${callFunctionName}(canister_id_principal: ic_cdk::export::Principal${
+                functionParams.length === 0 ? '' : ', '
+            }${functionParams
+                .map((param) => `${param.paramName}: ${param.paramType}`)
+                .join(', ')})${
+                functionReturnType === ''
+                    ? ''
+                    : ` -> CallResult<(${functionReturnType},)>`
+            } {
+                ic_cdk::api::call::call(
+                    canister_id_principal,
+                    "${methodName}",
+                    (${param_names.join(', ')}${
+                param_names.length === 1 ? ',' : ''
+            })
+                ).await
+            }
+            `
+        },
+        call_with_payment: {
+            functionName: callWithPaymentFunctionName,
+            params: functionParams,
+            rust: `
+                async fn ${callWithPaymentFunctionName}(canister_id_principal: ic_cdk::export::Principal${
+                functionParams.length === 0 ? '' : ', '
+            }${functionParams
+                .map((param) => `${param.paramName}: ${param.paramType}`)
+                .join(', ')}, cycles: u64)${
+                functionReturnType === ''
+                    ? ''
+                    : ` -> CallResult<(${functionReturnType},)>`
+            } {
+                    ic_cdk::api::call::call_with_payment(
+                        canister_id_principal,
+                        "${methodName}",
+                        (${param_names.join(', ')}${
+                param_names.length === 1 ? ',' : ''
+            }),
+                        cycles
+                    ).await
+                }
+            `
+        },
+        call_with_payment128: {
+            functionName: callWithPayment128FunctionName,
+            params: functionParams,
+            rust: `
+                async fn ${callWithPayment128FunctionName}(canister_id_principal: ic_cdk::export::Principal${
+                functionParams.length === 0 ? '' : ', '
+            }${functionParams
+                .map((param) => `${param.paramName}: ${param.paramType}`)
+                .join(', ')}, cycles: u128)${
+                functionReturnType === ''
+                    ? ''
+                    : ` -> CallResult<(${functionReturnType},)>`
+            } {
+                    ic_cdk::api::call::call_with_payment128(
+                        canister_id_principal,
+                        "${methodName}",
+                        (${param_names.join(', ')}${
+                param_names.length === 1 ? ',' : ''
+            }),
+                        cycles
+                    ).await
+                }
+            `
+        },
+        notify: {
+            functionName: notifyFunctionName,
+            params: functionParams,
+            rust: `
+                fn ${notifyFunctionName}(
+                    _this: &boa_engine::JsValue,
+                    _aargs: &[boa_engine::JsValue],
+                    _context: &mut boa_engine::Context
+                ) -> boa_engine::JsResult<boa_engine::JsValue> {
+                    let canister_id_js_value = _aargs.get(0).unwrap().clone();
+                    let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_context).unwrap();
+
+                    let args_js_value = _aargs.get(1).unwrap().clone();
+                    let args_js_object = args_js_value.as_object().unwrap();
+
+                    ${functionParams
+                        .map((param, index) => {
+                            return `
+                            let ${param.paramName}_js_value = args_js_object.get("${index}", _context).unwrap();
+                            let ${param.paramName}: ${param.paramType} = ${param.paramName}_js_value.azle_try_from_js_value(_context).unwrap();
+                        `;
+                        })
+                        .join('\n')}
+
+                    let notify_result = ic_cdk::api::call::notify(
+                        canister_id_principal,
+                        "${methodName}",
+                        (${param_names.join(', ')}${
+                param_names.length === 1 ? ',' : ''
+            })
+                    );
+
+                    Ok(notify_result.azle_into_js_value(_context))
+                }
+            `
+        },
+        notify_with_payment128: {
+            functionName: notifyWithPayment128FunctionName,
+            params: functionParams,
+            rust: `
+            fn ${notifyWithPayment128FunctionName}(
+                _this: &boa_engine::JsValue,
+                _aargs: &[boa_engine::JsValue],
+                _context: &mut boa_engine::Context
+            ) -> boa_engine::JsResult<boa_engine::JsValue> {
+                let canister_id_js_value = _aargs.get(0).unwrap().clone();
+                let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_context).unwrap();
+
+                let args_js_value = _aargs.get(1).unwrap().clone();
+                let args_js_object = args_js_value.as_object().unwrap();
+
+                ${functionParams
+                    .map((param, index) => {
+                        return `
+                        let ${param.paramName}_js_value = args_js_object.get("${index}", _context).unwrap();
+                        let ${param.paramName}: ${param.paramType} = ${param.paramName}_js_value.azle_try_from_js_value(_context).unwrap();
+                    `;
+                    })
+                    .join('\n')}
+
+                let cycles_js_value = _aargs.get(2).unwrap().clone();
+                let cycles: u128 = cycles_js_value.azle_try_from_js_value(_context).unwrap();
+
+                let notify_result = ic_cdk::api::call::notify_with_payment128(
+                    canister_id_principal,
+                    "${methodName}",
+                    (${param_names.join(', ')}${
+                param_names.length === 1 ? ',' : ''
+            }),
+                    cycles
+                );
+
+                Ok(notify_result.azle_into_js_value(_context))
             }
         `
+        }
     };
 }
 

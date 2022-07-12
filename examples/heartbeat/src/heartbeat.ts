@@ -1,10 +1,10 @@
-import { Query, Heartbeat, ic } from 'azle';
+import { Query, Heartbeat } from 'azle';
 
 let inititalized = false;
 
 export function heartbeat(): Heartbeat {
     inititalized = true;
-    ic.print('heartbeat initialized', inititalized);
+    console.log('heartbeat initialized', inititalized);
 }
 
 export function getInitialized(): Query<boolean> {

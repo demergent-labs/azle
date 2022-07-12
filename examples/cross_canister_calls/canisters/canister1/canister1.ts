@@ -1,46 +1,34 @@
-import {
-    UpdateAsync,
-    ic,
-    nat64,
-    Canister,
-    Opt,
-    CanisterResult,
-    Principal,
-    Variant
-} from 'azle';
-import { Account, AccountArgs } from '../canister2/types';
+import { Update, UpdateAsync, ic, nat64, Opt, Principal, Variant } from 'azle';
+import { Account, AccountArgs, Canister2 } from '../canister2/types';
 
 type TransferResult = Variant<{
-    ok?: nat64;
-    err?: string;
+    ok: nat64;
+    err: string;
 }>;
 
 type BalanceResult = Variant<{
-    ok?: nat64;
-    err?: string;
+    ok: nat64;
+    err: string;
 }>;
 
 type AccountResult = Variant<{
-    ok?: Opt<Account>;
-    err?: string;
+    ok: Opt<Account>;
+    err: string;
 }>;
 
 type AccountsResult = Variant<{
-    ok?: Account[];
-    err?: string;
+    ok: Account[];
+    err: string;
 }>;
 
 type TrapResult = Variant<{
-    ok?: string;
-    err?: string;
+    ok: string;
+    err: string;
 }>;
 
-type Canister2 = Canister<{
-    transfer(from: string, to: string, amount: nat64): CanisterResult<nat64>;
-    balance(id: string): CanisterResult<nat64>;
-    account(accountArgs: AccountArgs): CanisterResult<Opt<Account>>;
-    accounts(): CanisterResult<Account[]>;
-    trap(): CanisterResult<string>;
+type NotifyResult = Variant<{
+    ok: null;
+    err: string;
 }>;
 
 let canister2 = ic.canisters.Canister2<Canister2>(
@@ -69,4 +57,8 @@ export function* accounts(): UpdateAsync<AccountsResult> {
 
 export function* trap(): UpdateAsync<TrapResult> {
     return yield canister2.trap();
+}
+
+export function send_notification(): Update<NotifyResult> {
+    return canister2.receive_notification('This is the notification').notify();
 }

@@ -1,21 +1,35 @@
 import { cycles } from '../cycles';
-import { CanisterResult, ic, nat, nat64, ok, UpdateAsync, Variant } from 'azle';
+import {
+    CanisterResult,
+    ic,
+    nat,
+    nat64,
+    ok,
+    Query,
+    Update,
+    Variant
+} from 'azle';
 
-type ReportRefundResult = Variant<{
+type SendCyclesResult = Variant<{
     ok: nat64;
     err: string;
 }>;
 
-type ReportRefundResult128 = Variant<{
+type SendCyclesResult128 = Variant<{
     ok: nat;
     err: string;
 }>;
 
+type NotifyResult = Variant<{
+    ok: null;
+    err: string;
+}>;
+
 // Reports the number of cycles returned from the Cycles canister
-export function* reportRefund(): UpdateAsync<ReportRefundResult> {
-    // TODO: This doesn't actually send cycles right now.
-    // See https://github.com/demergent-labs/azle/issues/387
-    const result: CanisterResult<nat64> = yield cycles.sendCycles();
+export function* sendCycles(): Update<SendCyclesResult> {
+    const result: CanisterResult<nat64> = yield cycles
+        .receiveCycles()
+        .with_cycles(1_000_000n);
 
     if (!ok(result)) {
         return { err: result.err };
@@ -26,12 +40,15 @@ export function* reportRefund(): UpdateAsync<ReportRefundResult> {
     };
 }
 
-// Reports the number of cycles returned from the Cycles canister
-export function* reportRefund128(): UpdateAsync<ReportRefundResult128> {
-    // TODO: This doesn't actually send cycles right now.
-    // See https://github.com/demergent-labs/azle/issues/387
+export function sendCyclesNotify(): Update<NotifyResult> {
+    return cycles.receiveCycles().with_cycles(1_000_000n).notify();
+}
 
-    const result: CanisterResult<nat> = yield cycles.sendCycles128();
+// Reports the number of cycles returned from the Cycles canister
+export function* sendCycles128(): Update<SendCyclesResult128> {
+    const result: CanisterResult<nat> = yield cycles
+        .receiveCycles128()
+        .with_cycles128(1_000_000n);
 
     if (!ok(result)) {
         return { err: result.err };
@@ -40,4 +57,16 @@ export function* reportRefund128(): UpdateAsync<ReportRefundResult128> {
     return {
         ok: ic.msg_cycles_refunded128()
     };
+}
+
+export function sendCycles128Notify(): Update<NotifyResult> {
+    return cycles.receiveCycles128().with_cycles128(1_000_000n).notify();
+}
+
+export function getCanisterBalance(): Query<nat64> {
+    return ic.canister_balance();
+}
+
+export function getCanisterBalance128(): Query<nat> {
+    return ic.canister_balance128();
 }

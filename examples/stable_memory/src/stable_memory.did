@@ -1,0 +1,17 @@
+type StableGrowResult = variant { "ok": nat32; "err": StableMemoryError };
+
+type Stable64GrowResult = variant { "ok": nat64; "err": StableMemoryError };
+
+type StableMemoryError = variant { "OutOfMemory": null; "OutOfBounds": null };
+
+service: {
+    "stable_size": () -> (nat32) query;
+    "stable64_size": () -> (nat64) query;
+    "stable_read": (nat32, nat32) -> (blob) query;
+    "stable64_read": (nat64, nat64) -> (blob) query;
+    "stable_bytes": () -> (blob) query;
+    "stable_grow": (nat32) -> (StableGrowResult);
+    "stable64_grow": (nat64) -> (Stable64GrowResult);
+    "stable_write": (nat32, blob) -> ();
+    "stable64_write": (nat64, blob) -> ();
+}

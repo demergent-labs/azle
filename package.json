@@ -4,7 +4,7 @@
     "description": "TypeScript CDK for the Internet Computer",
     "scripts": {
         "typecheck": "tsc --noEmit",
-        "prepare": "true || husky install",
+        "prepare": "husky install",
         "test": "test/test.sh"
     },
     "bin": {
@@ -43,7 +43,6 @@
         "prettier": "2.6.1"
     },
     "lint-staged": {
-        "*.{js,ts}": "eslint --cache --fix",
         "*.{js,ts,md}": "prettier --write"
     }
 }

@@ -1,4 +1,4 @@
-import { ic, nat, Opt, Principal } from 'azle';
+import { nat, Opt, Principal } from 'azle';
 import { Token } from './types';
 
 export interface Book {
@@ -38,9 +38,9 @@ export function Book(): Book {
     // For development only.
     function printBalances() {
         entries().forEach(([user, balances]) => {
-            ic.print('PRINCIPAL: ', user);
+            console.log('PRINCIPAL: ', user);
             Object.keys(balances).forEach((token) => {
-                ic.print(
+                console.log(
                     `Balance: Token: ", ${token}, " amount: ${balances[token]}`
                 );
             });
@@ -85,10 +85,12 @@ export function Book(): Book {
                     return userBalances[token];
                 }
             }
-            ic.print(`User: ${user} has no balance of token ${token}`);
+            console.log(`User: ${user} has no balance of token ${token}`);
             return null;
         }
-        ic.print(`User ${user} doesn't exist in book, cannot remove tokens.`);
+        console.log(
+            `User ${user} doesn't exist in book, cannot remove tokens.`
+        );
         return null;
     }
 

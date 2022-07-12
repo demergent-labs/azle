@@ -2,7 +2,7 @@ import { Rust } from '../../../../../types';
 
 export function generateIcObjectFunctionPrint(): Rust {
     return /* rust */ `
-        fn azle_ic_print(
+        fn _azle_ic_print(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context

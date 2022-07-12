@@ -2,7 +2,7 @@ import { Rust } from '../../../../../types';
 
 export function generateIcObjectFunctionMsgCyclesAvailable(): Rust {
     return /* rust */ `
-        fn _azle_msg_cycles_available(
+        fn _azle_ic_msg_cycles_available(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context

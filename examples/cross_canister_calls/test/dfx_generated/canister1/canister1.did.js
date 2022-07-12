@@ -10,12 +10,14 @@ export const idlFactory = ({ IDL }) => {
         err: IDL.Text
     });
     const BalanceResult = IDL.Variant({ ok: IDL.Nat64, err: IDL.Text });
+    const NotifyResult = IDL.Variant({ ok: IDL.Null, err: IDL.Text });
     const TransferResult = IDL.Variant({ ok: IDL.Nat64, err: IDL.Text });
     const TrapResult = IDL.Variant({ ok: IDL.Text, err: IDL.Text });
     return IDL.Service({
         account: IDL.Func([AccountArgs], [AccountResult], []),
         accounts: IDL.Func([], [AccountsResult], []),
         balance: IDL.Func([IDL.Text], [BalanceResult], []),
+        send_notification: IDL.Func([], [NotifyResult], []),
         transfer: IDL.Func(
             [IDL.Text, IDL.Text, IDL.Nat64],
             [TransferResult],
