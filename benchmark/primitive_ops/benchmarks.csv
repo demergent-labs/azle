@@ -1,7 +1,2 @@
 Description,Azle Wasm Instructions (function body only),Azle Wasm Instructions (function prelude and body),Motoko Wasm Instructions (function body only),Motoko Wasm Instructions (function prelude and body),Rust Wasm Instructions (function body only),Rust Wasm Instructions (function prelude and body),Azle/Motoko Change Multiplier (function body only),Azle/Motoko Change Multiplier (function prelude and body),Azle/Rust Change Multiplier (function body only),Azle/Rust Change Multiplier (function prelude and body),Motoko/Azle Change Multiplier (function body only),Motoko/Azle Change Multiplier (function prelude and body),Motoko/Rust Change Multiplier (function body only),Motoko/Rust Change Multiplier (function prelude and body),Rust/Azle Change Multiplier (function body only),Rust/Azle Change Multiplier (function prelude and body),Rust/Motoko Change Multiplier (function body only),Rust/Motoko Change Multiplier (function prelude and body)
-blob_init_stack: 1,1380197,1790043,646,2029,566,32995,2137,882,2439,54,-2137,-882,1,-16,-2439,-54,-1,16
-blob_init_stack: 10,8564299,8972311,2866,4249,2209,34638,2988,2112,3877,259,-2988,-2112,1,-8,-3877,-259,-1,8
-blob_init_stack: 100,84247940,84658663,26716,28099,20254,52683,3153,3013,4160,1607,-3153,-3013,1,-2,-4160,-1607,-1,2
-blob_init_heap: 1,1460003,1868381,3700,5083,2504,34954,395,368,583,53,-395,-368,1,-7,-583,-53,-1,7
-blob_init_heap: 10,9450549,9858674,35899,37282,21490,53940,263,264,440,183,-263,-264,2,-1,-440,-183,-2,1
-blob_init_heap: 100,92373073,92779438,1733911,1735294,222040,254490,53,53,416,365,-53,-53,8,7,-416,-365,-8,-7
+empty,64603,439745,200,1264,200,19426,323,348,323,23,-323,-348,1,-15,-323,-23,1,15

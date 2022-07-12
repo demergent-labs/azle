@@ -8,6 +8,7 @@ export const idlFactory = ({ IDL }) => {
     'blob_init_stack' : IDL.Func([IDL.Nat32], [PerfResult], []),
     'boolean_init_heap' : IDL.Func([IDL.Nat32], [PerfResult], []),
     'boolean_init_stack' : IDL.Func([IDL.Nat32], [PerfResult], []),
+    'empty' : IDL.Func([], [PerfResult], []),
     'float32_init_heap' : IDL.Func([IDL.Nat32], [PerfResult], []),
     'float32_init_stack' : IDL.Func([IDL.Nat32], [PerfResult], []),
     'float64_init_heap' : IDL.Func([IDL.Nat32], [PerfResult], []),

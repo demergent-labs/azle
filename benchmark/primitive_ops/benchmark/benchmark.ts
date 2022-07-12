@@ -1,6 +1,4 @@
-// TODO it would be nice to split up the table into categories so it isn't just one huge list
-
-import { run_benchmarks, Benchmark } from 'azle/benchmark';
+import { Benchmark, run_benchmarks } from 'azle/benchmark';
 import { createActor as createActorAzle } from './dfx_generated/azle';
 import { createActor as createActorRust } from './dfx_generated/rust';
 
@@ -24,7 +22,12 @@ const rust_canister = createActorRust('rkp4c-7iaaa-aaaaa-aaaca-cai', {
 });
 
 const benchmarks: Benchmark[] = [
-    ...get_blob_benchmarks(),
+    {
+        canister_method: 'empty',
+        benchmark_description: '',
+        args: []
+    },
+    // ...get_blob_benchmarks(),
     // ...get_boolean_benchmarks(),
     // ...get_float32_benchmarks(),
     // ...get_float64_benchmarks(),

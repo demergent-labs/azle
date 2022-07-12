@@ -1,21 +1,15 @@
-import { nat64 } from 'azle';
+import { ic, Update } from 'azle';
+import { PerfResult } from 'azle/benchmark';
 
-// import { nat64 } from '../../../..';
+export function empty(): Update<PerfResult> {
+    const perf_start = ic.performance_counter(0);
+    const perf_end = ic.performance_counter(0);
 
-// type PerformanceStats = {
-//     [function_name: string]: nat64[];
-// };
-
-// export let performance_stats: PerformanceStats = {};
-
-// export function empty(): Update<nat64> {
-//     return perf_end - perf_start;
-// }
-
-export type PerfResult = {
-    wasm_body_only: nat64;
-    wasm_including_prelude: nat64;
-};
+    return {
+        wasm_body_only: perf_end - perf_start,
+        wasm_including_prelude: ic.performance_counter(0)
+    };
+}
 
 export {
     blob_init_stack,

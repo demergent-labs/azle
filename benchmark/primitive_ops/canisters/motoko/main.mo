@@ -1,18 +1,27 @@
-import EIC "mo:base/ExperimentalInternetComputer";
-import Debug "mo:base/Debug";
-import HashMap "mo:base/HashMap";
-import Text "mo:base/Text";
-import Nat32 "mo:base/Nat32";
-import Float "mo:base/Float";
-import Blob "mo:base/Blob";
-import Principal "mo:base/Principal";
 import Prim "mo:⛔";
+import Blob "mo:base/Blob";
+import EIC "mo:base/ExperimentalInternetComputer";
+import Float "mo:base/Float";
+import HashMap "mo:base/HashMap";
+import Nat32 "mo:base/Nat32";
+import Principal "mo:base/Principal";
+import Text "mo:base/Text";
 
 // TODO I was having trouble splitting this code into modules, mostly getting the modules access to the InitHeapStorage variables
 actor Motoko {
     type PerfResult = {
         wasm_body_only: Nat64;
         wasm_including_prelude: Nat64;
+    };
+
+    public func empty(): async PerfResult {
+        let perf_start =  Prim.performanceCounter(0);
+        let perf_end =  Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // blob

@@ -33,3 +33,14 @@ pub struct PerfResult {
     wasm_body_only: u64,
     wasm_including_prelude: u64
 }
+
+#[ic_cdk_macros::update]
+pub fn empty() -> PerfResult {
+    let perf_start = ic_cdk::api::call::performance_counter(0);
+    let perf_end = ic_cdk::api::call::performance_counter(0);
+        
+    PerfResult {
+        wasm_body_only: perf_end - perf_start,
+        wasm_including_prelude: ic_cdk::api::call::performance_counter(0)
+    }
+}

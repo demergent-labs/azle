@@ -10,6 +10,7 @@ export interface _SERVICE {
   'blob_init_stack' : ActorMethod<[number], PerfResult>,
   'boolean_init_heap' : ActorMethod<[number], PerfResult>,
   'boolean_init_stack' : ActorMethod<[number], PerfResult>,
+  'empty' : ActorMethod<[], PerfResult>,
   'float32_init_heap' : ActorMethod<[number], PerfResult>,
   'float32_init_stack' : ActorMethod<[number], PerfResult>,
   'float64_init_heap' : ActorMethod<[number], PerfResult>,

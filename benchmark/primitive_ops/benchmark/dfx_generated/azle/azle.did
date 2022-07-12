@@ -46,4 +46,5 @@ service: {
     "variant_init_heap": (nat32) -> (PerfResult);
     "vec_init_stack": (nat32) -> (PerfResult);
     "vec_init_heap": (nat32) -> (PerfResult);
+    "empty": () -> (PerfResult);
 }

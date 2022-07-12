@@ -1,6 +1,11 @@
+import { nat64 } from '../index';
 import { execSync } from 'child_process';
 import { writeFileSync } from 'fs';
-import { PerfResult } from './primitive_ops/canisters/azle/azle';
+
+export type PerfResult = {
+    wasm_body_only: nat64;
+    wasm_including_prelude: nat64;
+};
 
 export type Benchmark = {
     canister_method: string;
@@ -189,7 +194,7 @@ async function run_benchmark(
     benchmark_description: string = canister_method,
     args: any[] = []
 ): Promise<BenchmarkResult> {
-    console.log(`benchmark ${canister_method}: ${benchmark_description}\n`);
+    console.log(`benchmark ${canister_method}${benchmark_description !== '' ? `: ${benchmark_description}` : ''}\n`);
 
     const azle_perf_result: PerfResult = await (azle_canister as any)[canister_method](...args);
     const motoko_perf_result: PerfResult = await (motoko_canister as any)[canister_method](...args);

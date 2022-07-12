@@ -8,6 +8,7 @@ service : {
   blob_init_stack: (nat32) -> (PerfResult);
   boolean_init_heap: (nat32) -> (PerfResult);
   boolean_init_stack: (nat32) -> (PerfResult);
+  "empty": () -> (PerfResult);
   float32_init_heap: (nat32) -> (PerfResult);
   float32_init_stack: (nat32) -> (PerfResult);
   float64_init_heap: (nat32) -> (PerfResult);
