@@ -1,12 +1,12 @@
-import { Query, Update, nat64 } from 'azle';
+import { Query, Update, nat } from 'azle';
 
-let counter: nat64 = 0n;
+let counter: nat = 0n;
 
-export function get(): Query<nat64> {
+export function get(): Query<nat> {
     return counter;
 }
 
-export function set(n: nat64): Update<void> {
+export function set(n: nat): Update<void> {
     counter = n;
 }
 

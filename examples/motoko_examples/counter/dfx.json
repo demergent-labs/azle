@@ -1,14 +1,28 @@
 {
     "canisters": {
-        "counter": {
+        "azle": {
             "type": "custom",
-            "build": "npx azle counter",
-            "root": "src",
-            "ts": "src/counter.ts",
-            "candid": "src/counter.did",
-            "wasm": "target/wasm32-unknown-unknown/release/counter.wasm",
+            "build": "npx azle azle",
+            "root": "canisters/azle",
+            "ts": "canisters/azle/index.ts",
+            "candid": "canisters/azle/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/azle.wasm",
             "declarations": {
-                "output": "test/dfx_generated/counter"
+                "output": "test/dfx_generated/azle"
+            }
+        },
+        "motoko": {
+            "main": "canisters/motoko/Main.mo",
+            "declarations": {
+                "output": "test/dfx_generated/motoko"
+            }
+        },
+        "rust": {
+            "candid": "canisters/rust/src/lib.did",
+            "package": "rust",
+            "type": "rust",
+            "declarations": {
+                "output": "test/dfx_generated/rust"
             }
         }
     }
