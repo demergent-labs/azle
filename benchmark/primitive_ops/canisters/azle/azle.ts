@@ -1,4 +1,6 @@
-// import { ic, nat64, Update } from 'azle';
+import { nat64 } from 'azle';
+
+// import { nat64 } from '../../../..';
 
 // type PerformanceStats = {
 //     [function_name: string]: nat64[];
@@ -7,8 +9,13 @@
 // export let performance_stats: PerformanceStats = {};
 
 // export function empty(): Update<nat64> {
-//     return ic.performance_counter(0);
+//     return perf_end - perf_start;
 // }
+
+export type PerfResult = {
+    wasm_body_only: nat64;
+    wasm_including_prelude: nat64;
+};
 
 export {
     blob_init_stack,

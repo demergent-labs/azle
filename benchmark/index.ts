@@ -1,5 +1,6 @@
 import { execSync } from 'child_process';
 import { writeFileSync } from 'fs';
+import { PerfResult } from './primitive_ops/canisters/azle/azle';
 
 export type Benchmark = {
     canister_method: string;
@@ -10,15 +11,20 @@ export type Benchmark = {
 export type BenchmarkResult = {
     canister_method: string;
     benchmark_description: string;
-    azle_wasm_instructions: number;
-    motoko_wasm_instructions: number;
-    rust_wasm_instructions: number;
-    azle_motoko_change_multiplier: number;
-    azle_rust_change_multiplier: number;
-    motoko_azle_change_multiplier: number;
-    motoko_rust_change_multiplier: number;
-    rust_azle_change_multiplier: number;
-    rust_motoko_change_multiplier: number;
+    azle_wasm_instructions: WasmPerfType;
+    motoko_wasm_instructions: WasmPerfType;
+    rust_wasm_instructions: WasmPerfType;
+    azle_motoko_change_multiplier: WasmPerfType;
+    azle_rust_change_multiplier: WasmPerfType;
+    motoko_azle_change_multiplier: WasmPerfType;
+    motoko_rust_change_multiplier: WasmPerfType;
+    rust_azle_change_multiplier: WasmPerfType;
+    rust_motoko_change_multiplier: WasmPerfType;
+};
+
+type WasmPerfType = {
+    wasm_body_only: number;
+    wasm_including_prelude: number;
 };
 
 let azle_canister: any = undefined;
@@ -94,31 +100,74 @@ export async function run_benchmarks(
 
         const benchmark_iteration_results = await Promise.all(benchmark_iteration_promises);
 
-        const azle_wasm_instructions = benchmark_iteration_results.map((x) => x.azle_wasm_instructions);
-        const motoko_wasm_instructions = benchmark_iteration_results.map((x) => x.motoko_wasm_instructions);
-        const rust_wasm_instructions = benchmark_iteration_results.map((x) => x.rust_wasm_instructions);
+        const azle_wasm_instructions_body_only = benchmark_iteration_results.map((x) => x.azle_wasm_instructions.wasm_body_only);
+        const azle_wasm_instructions_including_prelude = benchmark_iteration_results.map((x) => x.azle_wasm_instructions.wasm_including_prelude);
+        
+        const motoko_wasm_instructions_body_only = benchmark_iteration_results.map((x) => x.motoko_wasm_instructions.wasm_body_only);
+        const motoko_wasm_instructions_including_prelude = benchmark_iteration_results.map((x) => x.motoko_wasm_instructions.wasm_including_prelude);
 
-        const azle_motoko_change_multipliers = benchmark_iteration_results.map((x) => x.azle_motoko_change_multiplier);
-        const azle_rust_change_multipliers = benchmark_iteration_results.map((x) => x.azle_rust_change_multiplier);
-        const motoko_azle_change_multipliers = benchmark_iteration_results.map((x) => x.motoko_azle_change_multiplier);
-        const motoko_rust_change_multipliers = benchmark_iteration_results.map((x) => x.motoko_rust_change_multiplier);
-        const rust_azle_change_multipliers = benchmark_iteration_results.map((x) => x.rust_azle_change_multiplier);
-        const rust_motoko_change_multipliers = benchmark_iteration_results.map((x) => x.rust_motoko_change_multiplier);
+        const rust_wasm_instructions_body_only = benchmark_iteration_results.map((x) => x.rust_wasm_instructions.wasm_body_only);
+        const rust_wasm_instructions_including_prelude = benchmark_iteration_results.map((x) => x.rust_wasm_instructions.wasm_including_prelude);
+
+        const azle_motoko_change_multipliers_body_only = benchmark_iteration_results.map((x) => x.azle_motoko_change_multiplier.wasm_body_only);
+        const azle_motoko_change_multipliers_including_prelude = benchmark_iteration_results.map((x) => x.azle_motoko_change_multiplier.wasm_including_prelude);
+        
+        const azle_rust_change_multipliers_body_only = benchmark_iteration_results.map((x) => x.azle_rust_change_multiplier.wasm_body_only);
+        const azle_rust_change_multipliers_including_prelude = benchmark_iteration_results.map((x) => x.azle_rust_change_multiplier.wasm_including_prelude);
+        
+        const motoko_azle_change_multipliers_body_only = benchmark_iteration_results.map((x) => x.motoko_azle_change_multiplier.wasm_body_only);
+        const motoko_azle_change_multipliers_including_prelude = benchmark_iteration_results.map((x) => x.motoko_azle_change_multiplier.wasm_including_prelude);
+        
+        const motoko_rust_change_multipliers_body_only = benchmark_iteration_results.map((x) => x.motoko_rust_change_multiplier.wasm_body_only);
+        const motoko_rust_change_multipliers_including_prelude = benchmark_iteration_results.map((x) => x.motoko_rust_change_multiplier.wasm_including_prelude);
+        
+        const rust_azle_change_multipliers_body_only = benchmark_iteration_results.map((x) => x.rust_azle_change_multiplier.wasm_body_only);
+        const rust_azle_change_multipliers_including_prelude = benchmark_iteration_results.map((x) => x.rust_azle_change_multiplier.wasm_including_prelude);
+        
+        const rust_motoko_change_multipliers_body_only = benchmark_iteration_results.map((x) => x.rust_motoko_change_multiplier.wasm_body_only);
+        const rust_motoko_change_multipliers_including_prelude = benchmark_iteration_results.map((x) => x.rust_motoko_change_multiplier.wasm_including_prelude);
 
         return [
             ...resolved_result,
             {
                 canister_method: benchmark.canister_method,
                 benchmark_description: benchmark.benchmark_description,
-                azle_wasm_instructions: calculate_average(azle_wasm_instructions),
-                motoko_wasm_instructions: calculate_average(motoko_wasm_instructions),
-                rust_wasm_instructions: calculate_average(rust_wasm_instructions),
-                azle_motoko_change_multiplier: calculate_average(azle_motoko_change_multipliers),
-                azle_rust_change_multiplier: calculate_average(azle_rust_change_multipliers),
-                motoko_azle_change_multiplier: calculate_average(motoko_azle_change_multipliers),
-                motoko_rust_change_multiplier: calculate_average(motoko_rust_change_multipliers),
-                rust_azle_change_multiplier: calculate_average(rust_azle_change_multipliers),
-                rust_motoko_change_multiplier: calculate_average(rust_motoko_change_multipliers)
+                azle_wasm_instructions: {
+                    wasm_body_only: calculate_average(azle_wasm_instructions_body_only),
+                    wasm_including_prelude: calculate_average(azle_wasm_instructions_including_prelude)
+                },
+                motoko_wasm_instructions: {
+                    wasm_body_only: calculate_average(motoko_wasm_instructions_body_only),
+                    wasm_including_prelude: calculate_average(motoko_wasm_instructions_including_prelude)
+                },
+                rust_wasm_instructions: {
+                    wasm_body_only: calculate_average(rust_wasm_instructions_body_only),
+                    wasm_including_prelude: calculate_average(rust_wasm_instructions_including_prelude)
+                },
+                azle_motoko_change_multiplier: {
+                    wasm_body_only: calculate_average(azle_motoko_change_multipliers_body_only),
+                    wasm_including_prelude: calculate_average(azle_motoko_change_multipliers_including_prelude)
+                },
+                azle_rust_change_multiplier: {
+                    wasm_body_only: calculate_average(azle_rust_change_multipliers_body_only),
+                    wasm_including_prelude: calculate_average(azle_rust_change_multipliers_including_prelude)
+                },
+                motoko_azle_change_multiplier: {
+                    wasm_body_only: calculate_average(motoko_azle_change_multipliers_body_only),
+                    wasm_including_prelude: calculate_average(motoko_azle_change_multipliers_including_prelude)
+                },
+                motoko_rust_change_multiplier: {
+                    wasm_body_only: calculate_average(motoko_rust_change_multipliers_body_only),
+                    wasm_including_prelude: calculate_average(motoko_rust_change_multipliers_including_prelude)
+                },
+                rust_azle_change_multiplier: {
+                    wasm_body_only: calculate_average(rust_azle_change_multipliers_body_only),
+                    wasm_including_prelude: calculate_average(rust_azle_change_multipliers_including_prelude)
+                },
+                rust_motoko_change_multiplier: {
+                    wasm_body_only: calculate_average(rust_motoko_change_multipliers_body_only),
+                    wasm_including_prelude: calculate_average(rust_motoko_change_multipliers_including_prelude)
+                }
             }
         ];
     }, Promise.resolve([]));
@@ -142,49 +191,112 @@ async function run_benchmark(
 ): Promise<BenchmarkResult> {
     console.log(`benchmark ${canister_method}: ${benchmark_description}\n`);
 
-    const azle_wasm_instructions = Number((await (azle_canister as any)[canister_method](...args)));
-    const motoko_wasm_instructions = Number((await (motoko_canister as any)[canister_method](...args)));
-    const rust_wasm_instructions = Number((await (rust_canister as any)[canister_method](...args)));
+    const azle_perf_result: PerfResult = await (azle_canister as any)[canister_method](...args);
+    const motoko_perf_result: PerfResult = await (motoko_canister as any)[canister_method](...args);
+    const rust_perf_result: PerfResult = await (rust_canister as any)[canister_method](...args);
+
+    const azle_wasm_instructions_body_only = Number(azle_perf_result.wasm_body_only);
+    const azle_wasm_instructions_including_prelude = Number(azle_perf_result.wasm_including_prelude);
+
+    const motoko_wasm_instructions_body_only = Number(motoko_perf_result.wasm_body_only);
+    const motoko_wasm_instructions_including_prelude = Number(motoko_perf_result.wasm_including_prelude);
+
+    const rust_wasm_instructions_body_only = Number(rust_perf_result.wasm_body_only);
+    const rust_wasm_instructions_including_prelude = Number(rust_perf_result.wasm_including_prelude);
 
     const {
-        language2_change_multiplier: azle_motoko_change_multiplier,
-        language3_change_multiplier: azle_rust_change_multiplier
+        language2_change_multiplier: azle_motoko_change_multiplier_body_only,
+        language3_change_multiplier: azle_rust_change_multiplier_body_only
     } = calculate_change_multiplier(
-        azle_wasm_instructions,
-        motoko_wasm_instructions,
-        rust_wasm_instructions
+        azle_wasm_instructions_body_only,
+        motoko_wasm_instructions_body_only,
+        rust_wasm_instructions_body_only
     );
 
     const {
-        language2_change_multiplier: motoko_azle_change_multiplier,
-        language3_change_multiplier: motoko_rust_change_multiplier
+        language2_change_multiplier: azle_motoko_change_multiplier_including_prelude,
+        language3_change_multiplier: azle_rust_change_multiplier_including_prelude
     } = calculate_change_multiplier(
-        motoko_wasm_instructions,
-        azle_wasm_instructions,
-        rust_wasm_instructions
+        azle_wasm_instructions_including_prelude,
+        motoko_wasm_instructions_including_prelude,
+        rust_wasm_instructions_including_prelude
     );
 
     const {
-        language2_change_multiplier: rust_azle_change_multiplier,
-        language3_change_multiplier: rust_motoko_change_multiplier
+        language2_change_multiplier: motoko_azle_change_multiplier_body_only,
+        language3_change_multiplier: motoko_rust_change_multiplier_body_only
     } = calculate_change_multiplier(
-        rust_wasm_instructions,
-        azle_wasm_instructions,
-        motoko_wasm_instructions
+        motoko_wasm_instructions_body_only,
+        azle_wasm_instructions_body_only,
+        rust_wasm_instructions_body_only
+    );
+
+    const {
+        language2_change_multiplier: motoko_azle_change_multiplier_including_prelude,
+        language3_change_multiplier: motoko_rust_change_multiplier_including_prelude
+    } = calculate_change_multiplier(
+        motoko_wasm_instructions_including_prelude,
+        azle_wasm_instructions_including_prelude,
+        rust_wasm_instructions_including_prelude
+    );
+
+    const {
+        language2_change_multiplier: rust_azle_change_multiplier_body_only,
+        language3_change_multiplier: rust_motoko_change_multiplier_body_only
+    } = calculate_change_multiplier(
+        rust_wasm_instructions_body_only,
+        azle_wasm_instructions_body_only,
+        motoko_wasm_instructions_body_only
+    );
+
+    const {
+        language2_change_multiplier: rust_azle_change_multiplier_including_prelude,
+        language3_change_multiplier: rust_motoko_change_multiplier_including_prelude
+    } = calculate_change_multiplier(
+        rust_wasm_instructions_including_prelude,
+        azle_wasm_instructions_including_prelude,
+        motoko_wasm_instructions_including_prelude
     );
 
     return {
         canister_method,
         benchmark_description,
-        azle_wasm_instructions,
-        motoko_wasm_instructions,
-        rust_wasm_instructions,
-        azle_motoko_change_multiplier,
-        azle_rust_change_multiplier,
-        motoko_azle_change_multiplier,
-        motoko_rust_change_multiplier,
-        rust_azle_change_multiplier,
-        rust_motoko_change_multiplier
+        azle_wasm_instructions: {
+            wasm_body_only: azle_wasm_instructions_body_only,
+            wasm_including_prelude: azle_wasm_instructions_including_prelude
+        },
+        motoko_wasm_instructions: {
+            wasm_body_only: motoko_wasm_instructions_body_only,
+            wasm_including_prelude: motoko_wasm_instructions_including_prelude
+        },
+        rust_wasm_instructions: {
+            wasm_body_only: rust_wasm_instructions_body_only,
+            wasm_including_prelude: rust_wasm_instructions_including_prelude
+        },
+        azle_motoko_change_multiplier: {
+            wasm_body_only: azle_motoko_change_multiplier_body_only,
+            wasm_including_prelude: azle_motoko_change_multiplier_including_prelude
+        },
+        azle_rust_change_multiplier: {
+            wasm_body_only: azle_rust_change_multiplier_body_only,
+            wasm_including_prelude: azle_rust_change_multiplier_including_prelude
+        },
+        motoko_azle_change_multiplier: {
+            wasm_body_only: motoko_azle_change_multiplier_body_only,
+            wasm_including_prelude: motoko_azle_change_multiplier_including_prelude
+        },
+        motoko_rust_change_multiplier: {
+            wasm_body_only: motoko_rust_change_multiplier_body_only,
+            wasm_including_prelude: motoko_rust_change_multiplier_including_prelude
+        },
+        rust_azle_change_multiplier: {
+            wasm_body_only: rust_azle_change_multiplier_body_only,
+            wasm_including_prelude: rust_azle_change_multiplier_including_prelude
+        },
+        rust_motoko_change_multiplier: {
+            wasm_body_only: rust_motoko_change_multiplier_body_only,
+            wasm_including_prelude: rust_motoko_change_multiplier_including_prelude
+        }
     };
 }
 
@@ -203,51 +315,149 @@ function calculate_change_multiplier(
 }
 
 function create_markdown_report(benchmark_results: BenchmarkResult[]): string {
-    const title = `# Azle/Rust/Motoko Benchmarks`;
+    const title = `# Azle/Motoko/Rust Benchmarks`;
 
     const description = `
-- These benchmarks should be considered preliminary (especially the Motoko benchmarks, something seems off)
+- These benchmarks should be considered preliminary (especially the Motoko benchmarks, something seems off with the function prelude)
 - These benchmarks were implemented using the performance counter API
     - Performance counter information in [The Internet Computer Interface Spec](https://internetcomputer.org/docs/current/references/ic-interface-spec/#system-api-imports)
     - Performance counter information in [the forum](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027)
-- The results were obtained for each data type by returning the performance counter value after performing n iterations of value initializations on the stack and heap in each language
+- The results were obtained for each data type by returning performance counter values after performing n iterations of value initializations on the stack and heap in each language
+- Each benchmark is the average of 10 runs
 - Each benchmark description gives the benchmark function name followed by the number of value initializations performed by the benchmark function
-- All benchmark code can be found [here](https://github.com/demergent-labs/azle/tree/26_benchmarking/benchmark/primitive_ops)
-- The following may be missing from the benchmarks as described [here](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027):
+- All benchmark code can be found [here](/benchmark/primitive_ops)
+- The following may be inaccurate or missing from the benchmarks as described [here](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027):
     - Candid serialization/deserialization of function parameters and return types
     - Canister method prologue/epilogue
     - Some Motoko runtime behavior (such as garbage collection)
+- You can find a raw CSV file with this data [here](/benchmark/primitive_ops/benchmarks.csv)
+- A rough USD cost model for various app scenarios can be found [here](https://docs.google.com/spreadsheets/d/1PQ53R9hYE1fuMB_z-Bl6dyymm7end7rVJ85TvGEh0BQ)
+
+The format for benchmark numbers is (x / y) where:
+  - x = Wasm instructions counted only in the function body
+  - y = Wasm instructions counted in the function body and the function prelude
     `;
 
-    const header_names = ['Description', 'Azle Wasm Instructions', 'Motoko Wasm Instructions', 'Rust Wasm Instructions', 'Azle/Motoko Change Multiplier', 'Azle/Rust Change Multiplier', 'Motoko/Azle Change Multiplier', 'Motoko/Rust Change Multiplier', 'Rust/Azle Change Multiplier', 'Rust/Motoko Change Multiplier'];
+    const header_names = [
+        'Description',
+        'Azle Wasm Instructions',
+        'Motoko Wasm Instructions',
+        'Rust Wasm Instructions',
+        'Azle/Motoko Change Multiplier',
+        'Azle/Rust Change Multiplier',
+        'Motoko/Azle Change Multiplier',
+        'Motoko/Rust Change Multiplier',
+        'Rust/Azle Change Multiplier',
+        'Rust/Motoko Change Multiplier'
+    ];
 
     const header = `| ${header_names.join(' | ')} |`;
 
     const header_separator = `| ${header_names.map((_) => '---').join(' | ')} |`;
 
     const data_rows = benchmark_results.map((benchmark_result) => {
-        return `| ${benchmark_result.canister_method}${benchmark_result.benchmark_description !== '' ? `: ${benchmark_result.benchmark_description}` : ''} | ${format_number_to_rust(benchmark_result.azle_wasm_instructions.toFixed(0))} | ${format_number_to_rust(benchmark_result.motoko_wasm_instructions.toFixed(0))} |${format_number_to_rust(benchmark_result.rust_wasm_instructions.toFixed(0))} | ${format_number_to_rust(benchmark_result.azle_motoko_change_multiplier.toFixed(0))}x | ${format_number_to_rust(benchmark_result.azle_rust_change_multiplier.toFixed(0))}x | ${format_number_to_rust(benchmark_result.motoko_azle_change_multiplier.toFixed(0))}x | ${format_number_to_rust(benchmark_result.motoko_rust_change_multiplier.toFixed(0))}x | ${format_number_to_rust(benchmark_result.rust_azle_change_multiplier.toFixed(0))}x | ${format_number_to_rust(benchmark_result.rust_motoko_change_multiplier.toFixed(0))}x |`;
+        const description = `${benchmark_result.canister_method}${benchmark_result.benchmark_description !== '' ? `: ${benchmark_result.benchmark_description}` : ''}`;
+
+        const azle_wasm_instructions = `(${format_number_to_rust(benchmark_result.azle_wasm_instructions.wasm_body_only.toFixed(0))} / ${format_number_to_rust(benchmark_result.azle_wasm_instructions.wasm_including_prelude.toFixed(0))})`;
+        const motoko_wasm_instructions = `(${format_number_to_rust(benchmark_result.motoko_wasm_instructions.wasm_body_only.toFixed(0))} / ${format_number_to_rust(benchmark_result.motoko_wasm_instructions.wasm_including_prelude.toFixed(0))})`;
+        const rust_wasm_instructions = `(${format_number_to_rust(benchmark_result.rust_wasm_instructions.wasm_body_only.toFixed(0))} / ${format_number_to_rust(benchmark_result.rust_wasm_instructions.wasm_including_prelude.toFixed(0))})`;
+
+        const azle_motoko_change_multiplier = `(${format_number_to_rust(benchmark_result.azle_motoko_change_multiplier.wasm_body_only.toFixed(0))}x / ${format_number_to_rust(benchmark_result.azle_motoko_change_multiplier.wasm_including_prelude.toFixed(0))}x)`;
+        const azle_rust_change_multiplier = `(${format_number_to_rust(benchmark_result.azle_rust_change_multiplier.wasm_body_only.toFixed(0))}x / ${format_number_to_rust(benchmark_result.azle_rust_change_multiplier.wasm_including_prelude.toFixed(0))}x)`;
+
+        const motoko_azle_change_multiplier = `(${format_number_to_rust(benchmark_result.motoko_azle_change_multiplier.wasm_body_only.toFixed(0))}x / ${format_number_to_rust(benchmark_result.motoko_azle_change_multiplier.wasm_including_prelude.toFixed(0))}x)`;
+        const motoko_rust_change_multiplier = `(${format_number_to_rust(benchmark_result.motoko_rust_change_multiplier.wasm_body_only.toFixed(0))}x / ${format_number_to_rust(benchmark_result.motoko_rust_change_multiplier.wasm_including_prelude.toFixed(0))}x)`;
+
+        const rust_azle_change_multiplier = `(${format_number_to_rust(benchmark_result.rust_azle_change_multiplier.wasm_body_only.toFixed(0))}x / ${format_number_to_rust(benchmark_result.rust_azle_change_multiplier.wasm_including_prelude.toFixed(0))}x)`;
+        const rust_motoko_change_multiplier = `(${format_number_to_rust(benchmark_result.rust_motoko_change_multiplier.wasm_body_only.toFixed(0))}x / ${format_number_to_rust(benchmark_result.rust_motoko_change_multiplier.wasm_including_prelude.toFixed(0))}x)`;
+
+        return `| ${description} | ${azle_wasm_instructions} | ${motoko_wasm_instructions} |${rust_wasm_instructions} | ${azle_motoko_change_multiplier} | ${azle_rust_change_multiplier} | ${motoko_azle_change_multiplier} | ${motoko_rust_change_multiplier} | ${rust_azle_change_multiplier} | ${rust_motoko_change_multiplier} |`;
     });
 
-    const average_azle_wasm_instructions = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.azle_wasm_instructions)).toFixed(0));
-    const average_motoko_wasm_instructions = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.motoko_wasm_instructions)).toFixed(0));
-    const average_rust_wasm_instructions = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.rust_wasm_instructions)).toFixed(0));
-    const average_azle_motoko_change_multiplier = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.azle_motoko_change_multiplier)).toFixed(0));
-    const average_azle_rust_change_multiplier = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.azle_rust_change_multiplier)).toFixed(0));
-    const average_motoko_azle_change_multiplier = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.motoko_azle_change_multiplier)).toFixed(0));
-    const average_motoko_rust_change_multiplier = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.motoko_rust_change_multiplier)).toFixed(0));
-    const average_rust_azle_change_multiplier = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.rust_azle_change_multiplier)).toFixed(0));
-    const average_rust_motoko_change_multiplier = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.rust_motoko_change_multiplier)).toFixed(0));
+    const average_azle_wasm_instructions_body_only = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.azle_wasm_instructions.wasm_body_only)).toFixed(0));
+    const average_azle_wasm_instructions_including_prelude = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.azle_wasm_instructions.wasm_including_prelude)).toFixed(0));
+    
+    const average_motoko_wasm_instructions_body_only = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.motoko_wasm_instructions.wasm_body_only)).toFixed(0));
+    const average_motoko_wasm_instructions_including_prelude = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.motoko_wasm_instructions.wasm_including_prelude)).toFixed(0));
+    
+    const average_rust_wasm_instructions_body_only = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.rust_wasm_instructions.wasm_body_only)).toFixed(0));
+    const average_rust_wasm_instructions_including_prelude = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.rust_wasm_instructions.wasm_including_prelude)).toFixed(0));
+    
+    const average_azle_motoko_change_multiplier_body_only = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.azle_motoko_change_multiplier.wasm_body_only)).toFixed(0));
+    const average_azle_motoko_change_multiplier_including_prelude = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.azle_motoko_change_multiplier.wasm_including_prelude)).toFixed(0));
+    
+    const average_azle_rust_change_multiplier_body_only  = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.azle_rust_change_multiplier.wasm_body_only)).toFixed(0));
+    const average_azle_rust_change_multiplier_including_prelude = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.azle_rust_change_multiplier.wasm_including_prelude)).toFixed(0));
+    
+    const average_motoko_azle_change_multiplier_body_only  = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.motoko_azle_change_multiplier.wasm_body_only)).toFixed(0));
+    const average_motoko_azle_change_multiplier_including_prelude = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.motoko_azle_change_multiplier.wasm_including_prelude)).toFixed(0));
+    
+    const average_motoko_rust_change_multiplier_body_only  = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.motoko_rust_change_multiplier.wasm_body_only)).toFixed(0));
+    const average_motoko_rust_change_multiplier_including_prelude = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.motoko_rust_change_multiplier.wasm_including_prelude)).toFixed(0));
+    
+    const average_rust_azle_change_multiplier_body_only  = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.rust_azle_change_multiplier.wasm_body_only)).toFixed(0));
+    const average_rust_azle_change_multiplier_including_prelude = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.rust_azle_change_multiplier.wasm_including_prelude)).toFixed(0));
+    
+    const average_rust_motoko_change_multiplier_body_only  = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.rust_motoko_change_multiplier.wasm_body_only)).toFixed(0));
+    const average_rust_motoko_change_multiplier_including_prelude = format_number_to_rust(calculate_average(benchmark_results.map((x) => x.rust_motoko_change_multiplier.wasm_including_prelude)).toFixed(0));
 
-
-    return `${title}\n${description}\n${header}\n${header_separator}\n${data_rows.join('\n')}\n\nAverage Azle Wasm Instructions: ${average_azle_wasm_instructions}\n\nAverage Motoko Wasm Instructions: ${average_motoko_wasm_instructions}\n\nAverage Rust Wasm Instructions: ${average_rust_wasm_instructions}\n\nAverage Azle/Motoko Change Multiplier: ${average_azle_motoko_change_multiplier}x\n\nAverage Azle/Rust Change Multiplier: ${average_azle_rust_change_multiplier}x\n\nAverage Motoko/Azle Change Multiplier: ${average_motoko_azle_change_multiplier}x\n\nAverage Motoko/Rust Change Multiplier: ${average_motoko_rust_change_multiplier}x\n\nAverage Rust/Azle Change Multiplier: ${average_rust_azle_change_multiplier}x\n\nAverage Rust/Motoko Change Multiplier: ${average_rust_motoko_change_multiplier}x`;
+    return `${title}\n${description}\n${header}\n${header_separator}\n${data_rows.join('\n')}\n\nAverage Azle Wasm Instructions: (${average_azle_wasm_instructions_body_only} / ${average_azle_wasm_instructions_including_prelude})\n\nAverage Motoko Wasm Instructions: (${average_motoko_wasm_instructions_body_only} / ${average_motoko_wasm_instructions_including_prelude})\n\nAverage Rust Wasm Instructions: (${average_rust_wasm_instructions_body_only} / ${average_rust_wasm_instructions_including_prelude})\n\nAverage Azle/Motoko Change Multiplier: (${average_azle_motoko_change_multiplier_body_only}x / ${average_azle_motoko_change_multiplier_including_prelude}x)\n\nAverage Azle/Rust Change Multiplier: (${average_azle_rust_change_multiplier_body_only}x / ${average_azle_rust_change_multiplier_including_prelude}x)\n\nAverage Motoko/Azle Change Multiplier: (${average_motoko_azle_change_multiplier_body_only}x / ${average_motoko_azle_change_multiplier_including_prelude}x)\n\nAverage Motoko/Rust Change Multiplier: (${average_motoko_rust_change_multiplier_body_only}x / ${average_motoko_rust_change_multiplier_including_prelude}x)\n\nAverage Rust/Azle Change Multiplier: (${average_rust_azle_change_multiplier_body_only}x / ${average_rust_azle_change_multiplier_including_prelude}x)\n\nAverage Rust/Motoko Change Multiplier: (${average_rust_motoko_change_multiplier_body_only}x / ${average_rust_motoko_change_multiplier_including_prelude}x)`;
 }
 
 function create_csv_report(benchmark_results: BenchmarkResult[]): string {
-    const header_names = ['Description', 'Azle Wasm Instructions', 'Motoko Wasm Instructions', 'Rust Wasm Instructions', 'Azle/Motoko Change Multiplier', 'Azle/Rust Change Multiplier', 'Motoko/Azle Change Multiplier', 'Motoko/Rust Change Multiplier', 'Rust/Azle Change Multiplier', 'Rust/Motoko Change Multiplier'].join(',');
+    const header_names = [
+        'Description',
+        'Azle Wasm Instructions (function body only)',
+        'Azle Wasm Instructions (function prelude and body)',
+        'Motoko Wasm Instructions (function body only)',
+        'Motoko Wasm Instructions (function prelude and body)',
+        'Rust Wasm Instructions (function body only)',
+        'Rust Wasm Instructions (function prelude and body)',
+        'Azle/Motoko Change Multiplier (function body only)',
+        'Azle/Motoko Change Multiplier (function prelude and body)',
+        'Azle/Rust Change Multiplier (function body only)',
+        'Azle/Rust Change Multiplier (function prelude and body)',
+        'Motoko/Azle Change Multiplier (function body only)',
+        'Motoko/Azle Change Multiplier (function prelude and body)',
+        'Motoko/Rust Change Multiplier (function body only)',
+        'Motoko/Rust Change Multiplier (function prelude and body)',
+        'Rust/Azle Change Multiplier (function body only)',
+        'Rust/Azle Change Multiplier (function prelude and body)',
+        'Rust/Motoko Change Multiplier (function body only)',
+        'Rust/Motoko Change Multiplier (function prelude and body)'
+    ].join(',');
 
     const data_rows = benchmark_results.map((benchmark_result) => {
-        return `${benchmark_result.canister_method}${benchmark_result.benchmark_description !== '' ? `: ${benchmark_result.benchmark_description}` : ''},${benchmark_result.azle_wasm_instructions.toFixed(0)},${benchmark_result.motoko_wasm_instructions.toFixed(0)},${benchmark_result.rust_wasm_instructions.toFixed(0)},${benchmark_result.azle_motoko_change_multiplier.toFixed(0)},${benchmark_result.azle_rust_change_multiplier.toFixed(0)},${benchmark_result.motoko_azle_change_multiplier.toFixed(0)},${benchmark_result.motoko_rust_change_multiplier.toFixed(0)},${benchmark_result.rust_azle_change_multiplier.toFixed(0)},${benchmark_result.rust_motoko_change_multiplier.toFixed(0)}`;
+        const description = `${benchmark_result.canister_method}${benchmark_result.benchmark_description !== '' ? `: ${benchmark_result.benchmark_description}` : ''}`;
+
+        const azle_wasm_instructions_body_only = benchmark_result.azle_wasm_instructions.wasm_body_only.toFixed(0);
+        const azle_wasm_instructions_including_prelude = benchmark_result.azle_wasm_instructions.wasm_including_prelude.toFixed(0);
+        
+        const motoko_wasm_instructions_body_only = benchmark_result.motoko_wasm_instructions.wasm_body_only.toFixed(0);
+        const motoko_wasm_instructions_including_prelude = benchmark_result.motoko_wasm_instructions.wasm_including_prelude.toFixed(0);
+        
+        const rust_wasm_instructions_body_only = benchmark_result.rust_wasm_instructions.wasm_body_only.toFixed(0);
+        const rust_wasm_instructions_including_prelude = benchmark_result.rust_wasm_instructions.wasm_including_prelude.toFixed(0);
+
+        const azle_motoko_change_multiplier_body_only = benchmark_result.azle_motoko_change_multiplier.wasm_body_only.toFixed(0);
+        const azle_motoko_change_multiplier_including_prelude = benchmark_result.azle_motoko_change_multiplier.wasm_including_prelude.toFixed(0);
+        
+        const azle_rust_change_multiplier_body_only = benchmark_result.azle_rust_change_multiplier.wasm_body_only.toFixed(0);
+        const azle_rust_change_multiplier_including_prelude = benchmark_result.azle_rust_change_multiplier.wasm_including_prelude.toFixed(0);
+
+        const motoko_azle_change_multiplier_body_only = benchmark_result.motoko_azle_change_multiplier.wasm_body_only.toFixed(0);
+        const motoko_azle_change_multiplier_including_prelude = benchmark_result.motoko_azle_change_multiplier.wasm_including_prelude.toFixed(0);
+        
+        const motoko_rust_change_multiplier_body_only = benchmark_result.motoko_rust_change_multiplier.wasm_body_only.toFixed(0);
+        const motoko_rust_change_multiplier_including_prelude = benchmark_result.motoko_rust_change_multiplier.wasm_including_prelude.toFixed(0);
+
+        const rust_azle_change_multiplier_body_only = benchmark_result.rust_azle_change_multiplier.wasm_body_only.toFixed(0);
+        const rust_azle_change_multiplier_including_prelude = benchmark_result.rust_azle_change_multiplier.wasm_including_prelude.toFixed(0);
+        
+        const rust_motoko_change_multiplier_body_only = benchmark_result.rust_motoko_change_multiplier.wasm_body_only.toFixed(0);
+        const rust_motoko_change_multiplier_including_prelude = benchmark_result.rust_motoko_change_multiplier.wasm_including_prelude.toFixed(0);
+
+        return `${description},${azle_wasm_instructions_body_only},${azle_wasm_instructions_including_prelude},${motoko_wasm_instructions_body_only},${motoko_wasm_instructions_including_prelude},${rust_wasm_instructions_body_only},${rust_wasm_instructions_including_prelude},${azle_motoko_change_multiplier_body_only},${azle_motoko_change_multiplier_including_prelude},${azle_rust_change_multiplier_body_only},${azle_rust_change_multiplier_including_prelude},${motoko_azle_change_multiplier_body_only},${motoko_azle_change_multiplier_including_prelude},${motoko_rust_change_multiplier_body_only},${motoko_rust_change_multiplier_including_prelude},${rust_azle_change_multiplier_body_only},${rust_azle_change_multiplier_including_prelude},${rust_motoko_change_multiplier_body_only},${rust_motoko_change_multiplier_including_prelude}`;
     }).join('\n');
 
     return `${header_names}\n${data_rows}`;

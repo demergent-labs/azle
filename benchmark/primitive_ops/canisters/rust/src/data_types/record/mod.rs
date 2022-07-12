@@ -1,3 +1,4 @@
+use crate::PerfResult;
 use std::collections::HashMap;
 use std::cell::RefCell;
 
@@ -18,7 +19,9 @@ struct User {
 type RecordInitHeapStorage = HashMap<String, User>;
 
 #[ic_cdk_macros::update]
-pub fn record_init_stack(num_inits: u32) -> u64 {
+pub fn record_init_stack(num_inits: u32) -> PerfResult {
+    let perf_start = ic_cdk::api::call::performance_counter(0);
+
     let mut i = 0;
 
     while i < num_inits {
@@ -41,11 +44,18 @@ pub fn record_init_stack(num_inits: u32) -> u64 {
         i += 1;
     }
 
-    ic_cdk::api::call::performance_counter(0)
+    let perf_end = ic_cdk::api::call::performance_counter(0);
+
+    PerfResult {
+        wasm_body_only: perf_end - perf_start,
+        wasm_including_prelude: ic_cdk::api::call::performance_counter(0)
+    }
 }
 
 #[ic_cdk_macros::update]
-pub fn record_init_heap(num_inits: u32) -> u64 {
+pub fn record_init_heap(num_inits: u32) -> PerfResult {
+    let perf_start = ic_cdk::api::call::performance_counter(0);
+
     RECORD_INIT_HEAP_STORAGE_REF_CELL.with(|record_init_heap_storage_ref_cell| {
         let mut i = 0;
         let mut record_init_heap_storage = record_init_heap_storage_ref_cell.borrow_mut();
@@ -74,5 +84,10 @@ pub fn record_init_heap(num_inits: u32) -> u64 {
         }
     });
 
-    ic_cdk::api::call::performance_counter(0)
+    let perf_end = ic_cdk::api::call::performance_counter(0);
+
+    PerfResult {
+        wasm_body_only: perf_end - perf_start,
+        wasm_including_prelude: ic_cdk::api::call::performance_counter(0)
+    }
 }

@@ -10,13 +10,20 @@ import Prim "mo:⛔";
 
 // TODO I was having trouble splitting this code into modules, mostly getting the modules access to the InitHeapStorage variables
 actor Motoko {
+    type PerfResult = {
+        wasm_body_only: Nat64;
+        wasm_including_prelude: Nat64;
+    };
+
     // blob
 
     type BlobInitHeapStorage = HashMap.HashMap<Text, Blob>;
 
     let blob_init_heap_storage: BlobInitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func blob_init_stack(num_inits: Nat32): async Nat64 {
+    public func blob_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -25,10 +32,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func blob_init_heap(num_inits: Nat32): async Nat64 {
+    public func blob_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -37,7 +51,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // boolean
@@ -46,7 +65,9 @@ actor Motoko {
 
     let boolean_init_heap_storage: BooleanInitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func boolean_init_stack(num_inits: Nat32): async Nat64 {
+    public func boolean_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -55,10 +76,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func boolean_init_heap(num_inits: Nat32): async Nat64 {
+    public func boolean_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -67,7 +95,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // float32
@@ -76,7 +109,9 @@ actor Motoko {
 
     let float32_init_heap_storage: Float32InitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func float32_init_stack(num_inits: Nat32): async Nat64 {
+    public func float32_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -85,10 +120,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func float32_init_heap(num_inits: Nat32): async Nat64 {
+    public func float32_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -97,7 +139,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // float64
@@ -106,7 +153,9 @@ actor Motoko {
 
     let float64_init_heap_storage: Float64InitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func float64_init_stack(num_inits: Nat32): async Nat64 {
+    public func float64_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -115,10 +164,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func float64_init_heap(num_inits: Nat32): async Nat64 {
+    public func float64_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -127,7 +183,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // int
@@ -136,7 +197,9 @@ actor Motoko {
 
     let int_init_heap_storage: IntInitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func int_init_stack(num_inits: Nat32): async Nat64 {
+    public func int_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -145,10 +208,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func int_init_heap(num_inits: Nat32): async Nat64 {
+    public func int_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -157,7 +227,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // int8
@@ -166,7 +241,9 @@ actor Motoko {
 
     let int8_init_heap_storage: Int8InitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func int8_init_stack(num_inits: Nat32): async Nat64 {
+    public func int8_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -175,10 +252,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func int8_init_heap(num_inits: Nat32): async Nat64 {
+    public func int8_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -187,7 +271,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // int16
@@ -196,7 +285,9 @@ actor Motoko {
 
     let int16_init_heap_storage: Int16InitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func int16_init_stack(num_inits: Nat32): async Nat64 {
+    public func int16_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -205,10 +296,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func int16_init_heap(num_inits: Nat32): async Nat64 {
+    public func int16_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -217,7 +315,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // int32
@@ -226,7 +329,9 @@ actor Motoko {
 
     let int32_init_heap_storage: Int32InitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func int32_init_stack(num_inits: Nat32): async Nat64 {
+    public func int32_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -235,10 +340,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func int32_init_heap(num_inits: Nat32): async Nat64 {
+    public func int32_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -247,7 +359,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // int64
@@ -256,7 +373,9 @@ actor Motoko {
 
     let int64_init_heap_storage: Int64InitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func int64_init_stack(num_inits: Nat32): async Nat64 {
+    public func int64_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -265,10 +384,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func int64_init_heap(num_inits: Nat32): async Nat64 {
+    public func int64_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -277,7 +403,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // nat
@@ -286,7 +417,9 @@ actor Motoko {
 
     let nat_init_heap_storage: NatInitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func nat_init_stack(num_inits: Nat32): async Nat64 {
+    public func nat_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -295,10 +428,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func nat_init_heap(num_inits: Nat32): async Nat64 {
+    public func nat_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -307,7 +447,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // nat8
@@ -316,7 +461,9 @@ actor Motoko {
 
     let nat8_init_heap_storage: Nat8InitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func nat8_init_stack(num_inits: Nat32): async Nat64 {
+    public func nat8_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -325,10 +472,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func nat8_init_heap(num_inits: Nat32): async Nat64 {
+    public func nat8_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -337,7 +491,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // nat16
@@ -346,7 +505,9 @@ actor Motoko {
 
     let nat16_init_heap_storage: Nat16InitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func nat16_init_stack(num_inits: Nat32): async Nat64 {
+    public func nat16_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -355,10 +516,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func nat16_init_heap(num_inits: Nat32): async Nat64 {
+    public func nat16_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -367,7 +535,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // nat32
@@ -376,7 +549,9 @@ actor Motoko {
 
     let nat32_init_heap_storage: Nat32InitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func nat32_init_stack(num_inits: Nat32): async Nat64 {
+    public func nat32_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -385,10 +560,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func nat32_init_heap(num_inits: Nat32): async Nat64 {
+    public func nat32_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -397,7 +579,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // nat64
@@ -406,7 +593,9 @@ actor Motoko {
 
     let nat64_init_heap_storage: Nat64InitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func nat64_init_stack(num_inits: Nat32): async Nat64 {
+    public func nat64_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -415,10 +604,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func nat64_init_heap(num_inits: Nat32): async Nat64 {
+    public func nat64_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -427,7 +623,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // null
@@ -436,7 +637,9 @@ actor Motoko {
 
     let null_init_heap_storage: NullInitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func null_init_stack(num_inits: Nat32): async Nat64 {
+    public func null_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -445,10 +648,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func null_init_heap(num_inits: Nat32): async Nat64 {
+    public func null_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -457,7 +667,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // opt
@@ -466,7 +681,9 @@ actor Motoko {
 
     let opt_init_heap_storage: OptInitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func opt_init_stack(num_inits: Nat32): async Nat64 {
+    public func opt_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -475,10 +692,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func opt_init_heap(num_inits: Nat32): async Nat64 {
+    public func opt_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -487,7 +711,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // principal
@@ -496,7 +725,9 @@ actor Motoko {
 
     let principal_init_heap_storage: PrincipalInitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func principal_init_stack(num_inits: Nat32): async Nat64 {
+    public func principal_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -505,10 +736,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func principal_init_heap(num_inits: Nat32): async Nat64 {
+    public func principal_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -517,7 +755,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // record
@@ -535,7 +778,9 @@ actor Motoko {
 
     let record_init_heap_storage: RecordInitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func record_init_stack(num_inits: Nat32): async Nat64 {
+    public func record_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -558,10 +803,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func record_init_heap(num_inits: Nat32): async Nat64 {
+    public func record_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -584,7 +836,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // text
@@ -593,7 +850,9 @@ actor Motoko {
 
     let text_init_heap_storage: TextInitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func text_init_stack(num_inits: Nat32): async Nat64 {
+    public func text_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -602,10 +861,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func text_init_heap(num_inits: Nat32): async Nat64 {
+    public func text_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -614,7 +880,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // variant
@@ -630,7 +901,9 @@ actor Motoko {
 
     let variant_init_heap_storage: VariantInitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func variant_init_stack(num_inits: Nat32): async Nat64 {
+    public func variant_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -639,10 +912,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func variant_init_heap(num_inits: Nat32): async Nat64 {
+    public func variant_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -651,7 +931,12 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
     // vec
@@ -660,7 +945,9 @@ actor Motoko {
 
     let vec_init_heap_storage: VecInitHeapStorage = HashMap.HashMap(32, Text.equal, Text.hash);
 
-    public func vec_init_stack(num_inits: Nat32): async Nat64 {
+    public func vec_init_stack(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -669,10 +956,17 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 
-    public func vec_init_heap(num_inits: Nat32): async Nat64 {
+    public func vec_init_heap(num_inits: Nat32): async PerfResult {
+        let perf_start = Prim.performanceCounter(0);
+
         var i: Nat32 = 0;
 
         while (i < num_inits) {
@@ -681,6 +975,11 @@ actor Motoko {
             i += 1;
         };
 
-        return Prim.performanceCounter(0);
+        let perf_end = Prim.performanceCounter(0);
+
+        return {
+            wasm_body_only = perf_end - perf_start;
+            wasm_including_prelude = Prim.performanceCounter(0);
+        };
     };
 }

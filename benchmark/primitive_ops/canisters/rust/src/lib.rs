@@ -27,3 +27,9 @@ mod data_types {
     mod variant;
     mod vec;
 }
+
+#[derive(candid::CandidType)]
+pub struct PerfResult {
+    wasm_body_only: u64,
+    wasm_including_prelude: u64
+}

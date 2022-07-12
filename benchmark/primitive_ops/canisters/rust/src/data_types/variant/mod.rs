@@ -1,3 +1,4 @@
+use crate::PerfResult;
 use std::collections::HashMap;
 use std::cell::RefCell;
 
@@ -16,7 +17,9 @@ enum Reaction {
 type VariantInitHeapStorage = HashMap<String, Reaction>;
 
 #[ic_cdk_macros::update]
-pub fn variant_init_stack(num_inits: u32) -> u64 {
+pub fn variant_init_stack(num_inits: u32) -> PerfResult {
+    let perf_start = ic_cdk::api::call::performance_counter(0);
+
     let mut i = 0;
 
     while i < num_inits {
@@ -25,11 +28,18 @@ pub fn variant_init_stack(num_inits: u32) -> u64 {
         i += 1;
     }
 
-    ic_cdk::api::call::performance_counter(0)
+    let perf_end = ic_cdk::api::call::performance_counter(0);
+
+    PerfResult {
+        wasm_body_only: perf_end - perf_start,
+        wasm_including_prelude: ic_cdk::api::call::performance_counter(0)
+    }
 }
 
 #[ic_cdk_macros::update]
-pub fn variant_init_heap(num_inits: u32) -> u64 {
+pub fn variant_init_heap(num_inits: u32) -> PerfResult {
+    let perf_start = ic_cdk::api::call::performance_counter(0);
+
     VARIANT_INIT_HEAP_STORAGE_REF_CELL.with(|variant_init_heap_storage_ref_cell| {
         let mut i = 0;
         let mut variant_init_heap_storage = variant_init_heap_storage_ref_cell.borrow_mut();
@@ -44,5 +54,10 @@ pub fn variant_init_heap(num_inits: u32) -> u64 {
         }
     });
 
-    ic_cdk::api::call::performance_counter(0)
+    let perf_end = ic_cdk::api::call::performance_counter(0);
+
+    PerfResult {
+        wasm_body_only: perf_end - perf_start,
+        wasm_including_prelude: ic_cdk::api::call::performance_counter(0)
+    }
 }

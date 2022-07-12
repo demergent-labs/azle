@@ -1,8 +1,11 @@
-import { ic, nat32, nat64, Principal, Update } from 'azle';
+import { ic, nat32, Principal, Update } from 'azle';
+import { PerfResult } from '../../azle';
 
 let principal_init_heap_storage: { [key: string]: Principal | undefined; } = {};
 
-export function principal_init_stack(num_inits: nat32): Update<nat64> {
+export function principal_init_stack(num_inits: nat32): Update<PerfResult> {
+    const perf_start = ic.performance_counter(0);
+
     let i = 0;
 
     while (i < num_inits) {
@@ -11,10 +14,17 @@ export function principal_init_stack(num_inits: nat32): Update<nat64> {
         i += 1;
     }
 
-    return ic.performance_counter(0);
+    const perf_end = ic.performance_counter(0);
+
+    return {
+        wasm_body_only: perf_end - perf_start,
+        wasm_including_prelude: ic.performance_counter(0)
+    };
 }
 
-export function principal_init_heap(num_inits: nat32): Update<nat64> {
+export function principal_init_heap(num_inits: nat32): Update<PerfResult> {
+    const perf_start = ic.performance_counter(0);
+
     let i = 0;
 
     while (i < num_inits) {
@@ -22,5 +32,10 @@ export function principal_init_heap(num_inits: nat32): Update<nat64> {
         i += 1;
     }
 
-    return ic.performance_counter(0);
+    const perf_end = ic.performance_counter(0);
+
+    return {
+        wasm_body_only: perf_end - perf_start,
+        wasm_including_prelude: ic.performance_counter(0)
+    };
 }

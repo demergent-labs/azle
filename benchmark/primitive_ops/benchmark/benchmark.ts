@@ -1,5 +1,4 @@
 // TODO it would be nice to split up the table into categories so it isn't just one huge list
-// TODO maybe we should also have a CSV output for people so they can run math and stuff
 
 import { run_benchmarks, Benchmark } from 'azle/benchmark';
 import { createActor as createActorAzle } from './dfx_generated/azle';
@@ -26,26 +25,26 @@ const rust_canister = createActorRust('rkp4c-7iaaa-aaaaa-aaaca-cai', {
 
 const benchmarks: Benchmark[] = [
     ...get_blob_benchmarks(),
-    ...get_boolean_benchmarks(),
-    ...get_float32_benchmarks(),
-    ...get_float64_benchmarks(),
-    ...get_int_benchmarks(),
-    ...get_int8_benchmarks(),
-    ...get_int16_benchmarks(),
-    ...get_int32_benchmarks(),
-    ...get_int64_benchmarks(),
-    ...get_nat_benchmarks(),
-    ...get_nat8_benchmarks(),
-    ...get_nat16_benchmarks(),
-    ...get_nat32_benchmarks(),
-    ...get_nat64_benchmarks(),
-    ...get_null_benchmarks(),
-    ...get_opt_benchmarks(),
-    ...get_principal_benchmarks(),
-    ...get_record_benchmarks(),
-    ...get_text_benchmarks(),
-    ...get_variant_benchmarks(),
-    ...get_vec_benchmarks()
+    // ...get_boolean_benchmarks(),
+    // ...get_float32_benchmarks(),
+    // ...get_float64_benchmarks(),
+    // ...get_int_benchmarks(),
+    // ...get_int8_benchmarks(),
+    // ...get_int16_benchmarks(),
+    // ...get_int32_benchmarks(),
+    // ...get_int64_benchmarks(),
+    // ...get_nat_benchmarks(),
+    // ...get_nat8_benchmarks(),
+    // ...get_nat16_benchmarks(),
+    // ...get_nat32_benchmarks(),
+    // ...get_nat64_benchmarks(),
+    // ...get_null_benchmarks(),
+    // ...get_opt_benchmarks(),
+    // ...get_principal_benchmarks(),
+    // ...get_record_benchmarks(),
+    // ...get_text_benchmarks(),
+    // ...get_variant_benchmarks(),
+    // ...get_vec_benchmarks()
 ];
 
 run_benchmarks(
