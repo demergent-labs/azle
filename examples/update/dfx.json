@@ -1,14 +1,14 @@
 {
     "canisters": {
-        "update": {
+        "azle": {
             "type": "custom",
-            "build": "npx azle update",
-            "root": "src",
-            "ts": "src/update.ts",
-            "candid": "src/update.did",
-            "wasm": "target/wasm32-unknown-unknown/release/update.wasm",
+            "build": "npx azle azle",
+            "root": "canisters/azle",
+            "ts": "canisters/azle/index.ts",
+            "candid": "canisters/azle/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/azle.wasm",
             "declarations": {
-                "output": "test/dfx_generated/update"
+                "output": "test/dfx_generated/azle"
             }
         }
     }
