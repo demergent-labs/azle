@@ -2,7 +2,7 @@ import { Rust } from '../../../../../types';
 
 export function generateIcObjectFunctionId(): Rust {
     return /* rust */ `
-        fn azle_ic_id(
+        fn _azle_ic_id(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
