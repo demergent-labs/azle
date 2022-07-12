@@ -1,7 +1,7 @@
 import { ic, float32, nat32, Update } from 'azle';
 import { PerfResult } from '../../azle';
 
-let float32_init_heap_storage: { [key: string]: float32 | undefined; } = {};
+let float32_init_heap_storage: { [key: string]: float32 | undefined } = {};
 
 export function float32_init_stack(num_inits: nat32): Update<PerfResult> {
     const perf_start = ic.performance_counter(0);

@@ -11,15 +11,9 @@ export function empty(): Update<PerfResult> {
     };
 }
 
-export {
-    blob_init_stack,
-    blob_init_heap
-} from './data_types/blob';
+export { blob_init_stack, blob_init_heap } from './data_types/blob';
 
-export {
-    boolean_init_stack,
-    boolean_init_heap
-} from './data_types/boolean';
+export { boolean_init_stack, boolean_init_heap } from './data_types/boolean';
 
 export {
     float32_init_stack,
@@ -31,87 +25,39 @@ export {
     float64_init_heap
 } from './data_types/float/float64';
 
-export {
-    int_init_stack,
-    int_init_heap
-} from './data_types/int/int';
+export { int_init_stack, int_init_heap } from './data_types/int/int';
 
-export {
-    int8_init_stack,
-    int8_init_heap
-} from './data_types/int/int8';
+export { int8_init_stack, int8_init_heap } from './data_types/int/int8';
 
-export {
-    int16_init_stack,
-    int16_init_heap
-} from './data_types/int/int16';
+export { int16_init_stack, int16_init_heap } from './data_types/int/int16';
 
-export {
-    int32_init_stack,
-    int32_init_heap
-} from './data_types/int/int32';
+export { int32_init_stack, int32_init_heap } from './data_types/int/int32';
 
-export {
-    int64_init_stack,
-    int64_init_heap
-} from './data_types/int/int64';
+export { int64_init_stack, int64_init_heap } from './data_types/int/int64';
 
-export {
-    nat_init_stack,
-    nat_init_heap
-} from './data_types/nat/nat';
+export { nat_init_stack, nat_init_heap } from './data_types/nat/nat';
 
-export {
-    nat8_init_stack,
-    nat8_init_heap
-} from './data_types/nat/nat8';
+export { nat8_init_stack, nat8_init_heap } from './data_types/nat/nat8';
 
-export {
-    nat16_init_stack,
-    nat16_init_heap
-} from './data_types/nat/nat16';
+export { nat16_init_stack, nat16_init_heap } from './data_types/nat/nat16';
 
-export {
-    nat32_init_stack,
-    nat32_init_heap
-} from './data_types/nat/nat32';
+export { nat32_init_stack, nat32_init_heap } from './data_types/nat/nat32';
 
-export {
-    nat64_init_stack,
-    nat64_init_heap
-} from './data_types/nat/nat64';
+export { nat64_init_stack, nat64_init_heap } from './data_types/nat/nat64';
 
-export {
-    null_init_stack,
-    null_init_heap
-} from './data_types/null';
+export { null_init_stack, null_init_heap } from './data_types/null';
 
-export {
-    opt_init_stack,
-    opt_init_heap
-} from './data_types/opt';
+export { opt_init_stack, opt_init_heap } from './data_types/opt';
 
 export {
     principal_init_stack,
     principal_init_heap
 } from './data_types/principal';
 
-export {
-    record_init_stack,
-    record_init_heap
-} from './data_types/record';
+export { record_init_stack, record_init_heap } from './data_types/record';
 
-export {
-    text_init_stack,
-    text_init_heap
-} from './data_types/text';
+export { text_init_stack, text_init_heap } from './data_types/text';
 
-export {
-    variant_init_stack,
-    variant_init_heap
-} from './data_types/variant';
+export { variant_init_stack, variant_init_heap } from './data_types/variant';
 
-export {
-    vec_init_stack,
-    vec_init_heap
-} from './data_types/vec';
+export { vec_init_stack, vec_init_heap } from './data_types/vec';

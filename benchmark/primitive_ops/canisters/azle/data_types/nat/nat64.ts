@@ -1,7 +1,7 @@
 import { ic, nat32, nat64, Update } from 'azle';
 import { PerfResult } from '../../azle';
 
-let nat64_init_heap_storage: { [key: string]: nat64 | undefined; } = {};
+let nat64_init_heap_storage: { [key: string]: nat64 | undefined } = {};
 
 export function nat64_init_stack(num_inits: nat32): Update<PerfResult> {
     const perf_start = ic.performance_counter(0);
@@ -28,7 +28,8 @@ export function nat64_init_heap(num_inits: nat32): Update<PerfResult> {
     let i = 0;
 
     while (i < num_inits) {
-        nat64_init_heap_storage[`element${i}`] = i % 2 === 0 ? 18_446_744_073_709_551_615n : 0n;
+        nat64_init_heap_storage[`element${i}`] =
+            i % 2 === 0 ? 18_446_744_073_709_551_615n : 0n;
         i += 1;
     }
 

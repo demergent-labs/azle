@@ -1,7 +1,7 @@
 import { ic, nat32, Opt, Update } from 'azle';
 import { PerfResult } from '../../azle';
 
-let opt_init_heap_storage: { [key: string]: Opt<boolean> | undefined; } = {};
+let opt_init_heap_storage: { [key: string]: Opt<boolean> | undefined } = {};
 
 export function opt_init_stack(num_inits: nat32): Update<PerfResult> {
     const perf_start = ic.performance_counter(0);

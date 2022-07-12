@@ -1,4 +1,5 @@
 # Azle/Rust/Motoko Benchmarks
+
 These benchmarks were run using the performance counter. The results are the average of ten executions.
 | Description | Azle Wasm Instructions | Motoko Wasm Instructions | Rust Wasm Instructions | Azle/Motoko Percentage Change | Azle/Rust Percentage Change | Azle/Motoko Change Multiplier | Azle/Rust Change Multiplier |
 | --- | --- | --- | --- | --- | --- | --- | --- |
