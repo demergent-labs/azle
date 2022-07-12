@@ -27,27 +27,27 @@ const benchmarks: Benchmark[] = [
         benchmark_description: '',
         args: []
     },
-    ...get_blob_benchmarks(),
-    ...get_boolean_benchmarks(),
-    ...get_float32_benchmarks(),
-    ...get_float64_benchmarks(),
-    ...get_int_benchmarks(),
-    ...get_int8_benchmarks(),
-    ...get_int16_benchmarks(),
-    ...get_int32_benchmarks(),
-    ...get_int64_benchmarks(),
-    ...get_nat_benchmarks(),
-    ...get_nat8_benchmarks(),
-    ...get_nat16_benchmarks(),
-    ...get_nat32_benchmarks(),
-    ...get_nat64_benchmarks(),
-    ...get_null_benchmarks(),
-    ...get_opt_benchmarks(),
-    ...get_principal_benchmarks(),
-    ...get_record_benchmarks(),
-    ...get_text_benchmarks(),
-    ...get_variant_benchmarks(),
-    ...get_vec_benchmarks()
+    ...get_blob_benchmarks()
+    // ...get_boolean_benchmarks(),
+    // ...get_float32_benchmarks(),
+    // ...get_float64_benchmarks(),
+    // ...get_int_benchmarks(),
+    // ...get_int8_benchmarks(),
+    // ...get_int16_benchmarks(),
+    // ...get_int32_benchmarks(),
+    // ...get_int64_benchmarks(),
+    // ...get_nat_benchmarks(),
+    // ...get_nat8_benchmarks(),
+    // ...get_nat16_benchmarks(),
+    // ...get_nat32_benchmarks(),
+    // ...get_nat64_benchmarks(),
+    // ...get_null_benchmarks(),
+    // ...get_opt_benchmarks(),
+    // ...get_principal_benchmarks(),
+    // ...get_record_benchmarks(),
+    // ...get_text_benchmarks(),
+    // ...get_variant_benchmarks(),
+    // ...get_vec_benchmarks()
 ];
 
 run_benchmarks(
@@ -66,32 +66,32 @@ function get_blob_benchmarks(): Benchmark[] {
             canister_method: 'blob_init_stack',
             benchmark_description: '1',
             args: [1]
-        },
-        {
-            canister_method: 'blob_init_stack',
-            benchmark_description: '10',
-            args: [10]
-        },
-        {
-            canister_method: 'blob_init_stack',
-            benchmark_description: '100',
-            args: [100]
-        },
-        {
-            canister_method: 'blob_init_heap',
-            benchmark_description: '1',
-            args: [1]
-        },
-        {
-            canister_method: 'blob_init_heap',
-            benchmark_description: '10',
-            args: [10]
-        },
-        {
-            canister_method: 'blob_init_heap',
-            benchmark_description: '100',
-            args: [100]
         }
+        // {
+        //     canister_method: 'blob_init_stack',
+        //     benchmark_description: '10',
+        //     args: [10]
+        // },
+        // {
+        //     canister_method: 'blob_init_stack',
+        //     benchmark_description: '100',
+        //     args: [100]
+        // },
+        // {
+        //     canister_method: 'blob_init_heap',
+        //     benchmark_description: '1',
+        //     args: [1]
+        // },
+        // {
+        //     canister_method: 'blob_init_heap',
+        //     benchmark_description: '10',
+        //     args: [10]
+        // },
+        // {
+        //     canister_method: 'blob_init_heap',
+        //     benchmark_description: '100',
+        //     args: [100]
+        // }
     ];
 }
 
