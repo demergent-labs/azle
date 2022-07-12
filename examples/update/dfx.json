@@ -10,6 +10,20 @@
             "declarations": {
                 "output": "test/dfx_generated/azle"
             }
+        },
+        "motoko": {
+            "main": "canisters/motoko/main.mo",
+            "declarations": {
+                "output": "test/dfx_generated/motoko"
+            }
+        },
+        "rust": {
+            "candid": "canisters/rust/src/lib.did",
+            "package": "rust",
+            "type": "rust",
+            "declarations": {
+                "output": "test/dfx_generated/rust"
+            }
         }
     }
 }
