@@ -29,7 +29,7 @@ export function get_partially_null_record(): Query<PartiallyNullRecord> {
     };
 }
 
-export function set_partial_null_record(
+export function set_partially_null_record(
     param: PartiallyNullRecord
 ): Update<PartiallyNullRecord> {
     return param;

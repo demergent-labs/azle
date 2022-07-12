@@ -23,7 +23,7 @@ const tests: Test[] = [
         name: 'get partially null record',
         test: async () => {
             const result =
-                await null_example_canister.get_partial_null_record();
+                await null_example_canister.get_partially_null_record();
 
             const record = {
                 first_item: 1n,
@@ -47,9 +47,8 @@ const tests: Test[] = [
                 second_item: null,
                 third_item: 15n
             };
-            const result = await null_example_canister.set_partial_null_record(
-                record
-            );
+            const result =
+                await null_example_canister.set_partially_null_record(record);
 
             return {
                 ok:
