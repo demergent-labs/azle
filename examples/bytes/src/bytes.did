@@ -1,3 +1,0 @@
-service: {
-    "get_bytes": (blob) -> (blob) query;
-}

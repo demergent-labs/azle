@@ -1,7 +1,9 @@
+// TODO we need to create the new deploy process since dfx deploy no longer works with .gz files
+
 import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
-import { createActor } from '../test/dfx_generated/bytes';
+import { createActor } from '../dfx_generated/azle';
 
 const bytes_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -26,7 +28,7 @@ const tests: Test[] = [
     {
         name: 'deploy',
         prep: async () => {
-            execSync(`dfx deploy`, {
+            execSync(`dfx deploy azle`, {
                 stdio: 'inherit'
             });
         }

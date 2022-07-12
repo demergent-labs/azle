@@ -1,0 +1,8 @@
+type PerformanceStats = record {
+    "get_bytes": vec nat64;
+};
+
+service: {
+    "get_bytes": (blob) -> (blob) query;
+    "get_performance_states": () -> (PerformanceStats) query;
+}

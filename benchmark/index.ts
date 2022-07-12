@@ -82,7 +82,7 @@ export async function run_benchmarks(
     _rust_canister: any,
     num_benchmark_iterations: number = 10,
     output_file: string = 'benchmarks',
-    setup: boolean = true
+    setup: boolean = process.argv[2] !== 'no-setup'
 ): Promise<BenchmarkResult[]> {
     azle_canister = _azle_canister;
     motoko_canister = _motoko_canister;

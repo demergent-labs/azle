@@ -1,5 +1,6 @@
 import { Benchmark, run_benchmarks } from 'azle/benchmark';
 import { createActor as createActorAzle } from './dfx_generated/azle';
+import { createActor as createActorMotoko } from './dfx_generated/motoko';
 import { createActor as createActorRust } from './dfx_generated/rust';
 
 // TODO a simple exec_sync could get us these ids in a less fragile way
@@ -9,7 +10,7 @@ const azle_canister = createActorAzle('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-const motoko_canister = createActorAzle('ryjl3-tyaaa-aaaaa-aaaba-cai', {
+const motoko_canister = createActorMotoko('ryjl3-tyaaa-aaaaa-aaaba-cai', {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }

@@ -54,4 +54,4 @@ jobs:
             - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
             - run: git add --all
             - run: git commit -am "benchmarks for ${{ matrix.benchmark_directories }}"
-            - run: git push origin $GITHUB_HEAD_REF
+            - run: git push origin ${{ github.event.pull_request.head.ref }}
