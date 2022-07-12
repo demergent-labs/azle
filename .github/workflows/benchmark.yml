@@ -9,16 +9,16 @@ on:
 jobs:
   benchmarks:
     runs-on: ubuntu-latest
-    env:
-      GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
-    strategy:
-      fail-fast: false # We want to see which benchmarks succeed and which ones fail, we don't want one benchmark to cancel the rest
-      matrix:
-        rust: [stable]
-        benchmark_directories:
-          - benchmark/primitive_ops
-    steps:
-      - uses: actions/checkout@v2
+    # env:
+    #   GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
+    # strategy:
+    #   fail-fast: false # We want to see which benchmarks succeed and which ones fail, we don't want one benchmark to cancel the rest
+    #   matrix:
+    #     rust: [stable]
+    #     benchmark_directories:
+    #       - benchmark/primitive_ops
+    # steps:
+    #   - uses: actions/checkout@v2
       # - uses: actions/setup-node@v3
       #   with:
       #     node-version: 18
