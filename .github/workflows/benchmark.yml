@@ -2,7 +2,7 @@ name: Azle Benchmarks
 on:
     pull_request:
         branches:
-            - '**--benchmarks'
+            - '**--benchmarks**'
 jobs:
     benchmarks:
         runs-on: ubuntu-latest
