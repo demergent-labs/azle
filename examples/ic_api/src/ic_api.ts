@@ -5,6 +5,7 @@ import {
     int8,
     nat,
     nat32,
+    nat64,
     Opt,
     Principal,
     Query,
@@ -12,15 +13,14 @@ import {
     Update
 } from 'azle';
 
-type ArgDataMultipleParamsResult = {
-    blob: blob;
-    int: int8;
-    boolean: boolean;
-    string: string;
-};
-
 // TODO: See https://github.com/demergent-labs/azle/issues/496
-//
+// type ArgDataMultipleParamsResult = {
+//     blob: blob;
+//     int: int8;
+//     boolean: boolean;
+//     string: string;
+// };
+
 // // returns the argument data as an array.
 // export function arg_data_zero_params(): Query<null[]> {
 //     return ic.arg_data();

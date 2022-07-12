@@ -101,16 +101,12 @@ export function generateIcObject(
                 0
             )
             .function(
-<<<<<<< HEAD
                 _azle_performance_counter,
                 "performance_counter",
                 0
             )
             .function(
-                azle_ic_print,
-=======
                 _azle_ic_print,
->>>>>>> 3bdea017e1402b418f4f19d5efd1dcda4ced6114
                 "print",
                 0
             )

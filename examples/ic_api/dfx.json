@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "src/ic_api.ts",
             "candid": "src/ic_api.did",
-            "wasm": "target/wasm32-unknown-unknown/release/ic_api.wasm.gz",
+            "wasm": "target/wasm32-unknown-unknown/release/ic_api.wasm",
             "declarations": {
                 "output": "test/dfx_generated/ic_api"
             }
