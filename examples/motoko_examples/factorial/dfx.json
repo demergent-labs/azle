@@ -10,6 +10,12 @@
             "declarations": {
                 "output": "test/dfx_generated/azle"
             }
+        },
+        "motoko": {
+            "main": "canisters/motoko/main.mo",
+            "declarations": {
+                "output": "test/dfx_generated/motoko"
+            }
         }
     }
 }
