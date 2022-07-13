@@ -11,7 +11,7 @@ jobs:
           matrix:
             rust: [stable]
             benchmark_directories:
-              - benchmark/primitive_ops
+              - examples/primitive_ops
         if: ${{ contains(github.head_ref, '--benchmarks') }}
         steps:
             - uses: actions/checkout@v2

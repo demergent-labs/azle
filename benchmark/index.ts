@@ -1,6 +1,6 @@
-import { nat64 } from '../index';
 import { execSync } from 'child_process';
 import { writeFileSync } from 'fs';
+import { nat64 } from '../index';
 
 export type PerfResult = {
     wasm_body_only: nat64;
@@ -9,13 +9,13 @@ export type PerfResult = {
 
 export type Benchmark = {
     canister_method: string;
-    benchmark_description: string;
+    benchmark_description?: string;
     args?: any[];
 };
 
 export type BenchmarkResult = {
     canister_method: string;
-    benchmark_description: string;
+    benchmark_description?: string;
     azle_wasm_instructions: WasmPerfType;
     motoko_wasm_instructions: WasmPerfType;
     rust_wasm_instructions: WasmPerfType;
@@ -31,10 +31,6 @@ type WasmPerfType = {
     wasm_body_only: number;
     wasm_including_prelude: number;
 };
-
-let azle_canister: any = undefined;
-let motoko_canister: any = undefined;
-let rust_canister: any = undefined;
 
 async function run_setup() {
     execSync(`dfx canister uninstall-code azle || true`, {
@@ -77,20 +73,43 @@ async function run_setup() {
 
 export async function run_benchmarks(
     benchmarks: Benchmark[],
-    _azle_canister: any,
-    _motoko_canister: any,
-    _rust_canister: any,
+    create_actor_azle: any,
+    create_actor_motoko: any,
+    create_actor_rust: any,
     num_benchmark_iterations: number = 10,
     output_file: string = 'benchmarks',
     setup: boolean = process.argv[2] !== 'no-setup'
 ): Promise<BenchmarkResult[]> {
-    azle_canister = _azle_canister;
-    motoko_canister = _motoko_canister;
-    rust_canister = _rust_canister;
-
     if (setup === true) {
         await run_setup();
     }
+
+    const azle_canister = create_actor_azle(
+        execSync('dfx canister id azle').toString().trim(),
+        {
+            agentOptions: {
+                host: 'http://127.0.0.1:8000'
+            }
+        }
+    );
+
+    const motoko_canister = create_actor_motoko(
+        execSync('dfx canister id motoko').toString().trim(),
+        {
+            agentOptions: {
+                host: 'http://127.0.0.1:8000'
+            }
+        }
+    );
+
+    const rust_canister = create_actor_rust(
+        execSync('dfx canister id rust').toString().trim(),
+        {
+            agentOptions: {
+                host: 'http://127.0.0.1:8000'
+            }
+        }
+    );
 
     const benchmark_promises: BenchmarkResult[] = await benchmarks.reduce(
         async (result: Promise<BenchmarkResult[]>, benchmark) => {
@@ -100,7 +119,7 @@ export async function run_benchmarks(
                 `Starting ${num_benchmark_iterations} run${
                     num_benchmark_iterations === 1 ? '' : 's'
                 } of benchmark ${benchmark.canister_method}${
-                    benchmark.benchmark_description !== ''
+                    benchmark.benchmark_description !== undefined
                         ? `: ${benchmark.benchmark_description}`
                         : ''
                 }\n`
@@ -113,6 +132,9 @@ export async function run_benchmarks(
                 .map((_) => {
                     return run_benchmark(
                         benchmark.canister_method,
+                        azle_canister,
+                        motoko_canister,
+                        rust_canister,
                         benchmark.benchmark_description,
                         benchmark.args
                     );
@@ -306,6 +328,9 @@ export async function run_benchmarks(
 
 async function run_benchmark(
     canister_method: string,
+    azle_canister: any,
+    motoko_canister: any,
+    rust_canister: any,
     benchmark_description: string = canister_method,
     args: any[] = []
 ): Promise<BenchmarkResult> {
@@ -698,7 +723,7 @@ The format for benchmark numbers is (x / y) where:
     const primitive_ops_data_rows = benchmark_results.map(
         (benchmark_result) => {
             const description = `${benchmark_result.canister_method}${
-                benchmark_result.benchmark_description !== ''
+                benchmark_result.benchmark_description !== undefined
                     ? `: ${benchmark_result.benchmark_description}`
                     : ''
             }`;
@@ -825,7 +850,7 @@ function create_csv_report(benchmark_results: BenchmarkResult[]): string {
     const data_rows = benchmark_results
         .map((benchmark_result) => {
             const description = `${benchmark_result.canister_method}${
-                benchmark_result.benchmark_description !== ''
+                benchmark_result.benchmark_description !== undefined
                     ? `: ${benchmark_result.benchmark_description}`
                     : ''
             }`;
