@@ -8,13 +8,13 @@
             "candid": "canisters/azle/index.did",
             "wasm": "target/wasm32-unknown-unknown/release/azle.wasm",
             "declarations": {
-                "output": "test/dfx_generated/azle"
+                "output": "dfx_generated/azle"
             }
         },
         "motoko": {
             "main": "canisters/motoko/Main.mo",
             "declarations": {
-                "output": "test/dfx_generated/motoko"
+                "output": "dfx_generated/motoko"
             }
         },
         "rust": {
@@ -22,7 +22,7 @@
             "package": "rust",
             "type": "rust",
             "declarations": {
-                "output": "test/dfx_generated/rust"
+                "output": "dfx_generated/rust"
             }
         }
     }

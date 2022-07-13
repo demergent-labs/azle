@@ -1,5 +1,5 @@
 import { deploy, run_tests, Test } from 'azle/test';
-import { createActor } from './dfx_generated/azle';
+import { createActor } from '../dfx_generated/azle';
 
 const counter_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
