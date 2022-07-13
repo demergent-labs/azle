@@ -1,16 +1,16 @@
 import { Actor, HttpAgent } from '@dfinity/agent';
 
 // Imports and re-exports candid interface
-import { idlFactory } from './factorial.did.js';
-export { idlFactory } from './factorial.did.js';
+import { idlFactory } from './azle.did.js';
+export { idlFactory } from './azle.did.js';
 // CANISTER_ID is replaced by webpack based on node environment
-export const canisterId = process.env.FACTORIAL_CANISTER_ID;
+export const canisterId = process.env.AZLE_CANISTER_ID;
 
 /**
  *
  * @param {string | import("@dfinity/principal").Principal} canisterId Canister ID of Agent
  * @param {{agentOptions?: import("@dfinity/agent").HttpAgentOptions; actorOptions?: import("@dfinity/agent").ActorConfig}} [options]
- * @return {import("@dfinity/agent").ActorSubclass<import("./factorial.did.js")._SERVICE>}
+ * @return {import("@dfinity/agent").ActorSubclass<import("./azle.did.js")._SERVICE>}
  */
 export const createActor = (canisterId, options) => {
     const agent = new HttpAgent({ ...options?.agentOptions });
@@ -34,7 +34,7 @@ export const createActor = (canisterId, options) => {
 };
 
 /**
- * A ready-to-use agent for the factorial canister
- * @type {import("@dfinity/agent").ActorSubclass<import("./factorial.did.js")._SERVICE>}
+ * A ready-to-use agent for the azle canister
+ * @type {import("@dfinity/agent").ActorSubclass<import("./azle.did.js")._SERVICE>}
  */
-//  export const factorial = createActor(canisterId);
+// export const azle = createActor(canisterId);
