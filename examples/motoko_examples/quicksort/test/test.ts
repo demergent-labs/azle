@@ -1,6 +1,6 @@
 import { deploy, run_tests, Ok, Test } from 'azle/test';
 import { int } from 'azle';
-import { createActor } from './dfx_generated/azle';
+import { createActor } from '../dfx_generated/azle';
 
 const quicksort_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
