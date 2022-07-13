@@ -1,6 +1,6 @@
 import { deploy, run_tests, Ok, Test } from 'azle/test';
 import { int } from 'azle';
-import { createActor } from './dfx_generated/quicksort';
+import { createActor } from './dfx_generated/azle';
 
 const quicksort_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -8,22 +8,8 @@ const quicksort_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-async function arrayIsSorted(
-    input: int[],
-    expectedValues: int[]
-): Promise<Ok<boolean>> {
-    const result = await quicksort_canister.sort(input);
-    const elementIsOrderedCorrectly = (element: int, index: number) => {
-        return element === expectedValues[index];
-    };
-
-    return {
-        ok: result.every(elementIsOrderedCorrectly)
-    };
-}
-
 const tests: Test[] = [
-    ...deploy('quicksort'),
+    ...deploy('azle'),
     {
         name: 'sort - with values from the motoko repo',
         test: async () => {
@@ -63,3 +49,17 @@ const tests: Test[] = [
 ];
 
 run_tests(tests);
+
+async function arrayIsSorted(
+    input: int[],
+    expectedValues: int[]
+): Promise<Ok<boolean>> {
+    const result = await quicksort_canister.sort(input);
+    const elementIsOrderedCorrectly = (element: int, index: number) => {
+        return element === expectedValues[index];
+    };
+
+    return {
+        ok: result.every(elementIsOrderedCorrectly)
+    };
+}
