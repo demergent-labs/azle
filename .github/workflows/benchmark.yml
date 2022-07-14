@@ -12,6 +12,7 @@ jobs:
                 rust: [stable]
                 benchmark_directories:
                     - examples/bytes
+                    - examples/key_value_store
                     - examples/motoko_examples/calc
                     - examples/motoko_examples/counter
                     - examples/motoko_examples/factorial
