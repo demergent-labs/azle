@@ -1,0 +1,11 @@
+type Superhero = record {
+    "name": text;
+    "superpowers": vec text;
+};
+
+service: {
+    "read": (int32) -> (opt Superhero) query;
+    "create": (Superhero) -> (int32);
+    "update": (int32, Superhero) -> (bool);
+    "deleteHero": (int32) -> (bool);
+}

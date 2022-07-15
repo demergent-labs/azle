@@ -1,19 +1,22 @@
 {
     "canisters": {
-        "superheroes": {
+        "azle": {
             "type": "custom",
-            "build": "npx azle superheroes",
-            "root": "src",
-            "ts": "src/superheroes/superheroes.ts",
-            "candid": "src/superheroes/superheroes.did",
-            "wasm": "target/wasm32-unknown-unknown/release/superheroes.wasm"
+            "build": "npx azle azle",
+            "root": "canisters/azle",
+            "ts": "canisters/azle/index.ts",
+            "candid": "canisters/azle/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/azle.wasm",
+            "declarations": {
+                "output": "dfx_generated/azle"
+            }
         },
         "www": {
-            "dependencies": ["superheroes"],
+            "dependencies": ["azle"],
             "frontend": {
-                "entrypoint": "src/www/index.html"
+                "entrypoint": "canisters/www/index.html"
             },
-            "source": ["src/www/components", "dist/www/"],
+            "source": ["canisters/www/components", "dist/www/"],
             "type": "assets"
         }
     }

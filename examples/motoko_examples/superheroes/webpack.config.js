@@ -39,7 +39,7 @@ function initCanisterIds() {
 initCanisterIds();
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const asset_entry = path.join('src', 'www', 'index.html');
+const asset_entry = path.join('canisters', 'www', 'index.html');
 
 module.exports = {
     target: 'web',
@@ -87,7 +87,7 @@ module.exports = {
         }),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'development',
-            SUPERHEROES_CANISTER_ID: canisters['superheroes']
+            AZLE_CANISTER_ID: canisters['azle']
         }),
         new webpack.ProvidePlugin({
             Buffer: [require.resolve('buffer/'), 'Buffer'],
@@ -107,7 +107,7 @@ module.exports = {
         },
         hot: 'only',
         static: {
-            directory: path.resolve(__dirname, './src/www')
+            directory: path.resolve(__dirname, './canisters/www')
         }
     }
 };
