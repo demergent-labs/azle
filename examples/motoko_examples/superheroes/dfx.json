@@ -17,6 +17,14 @@
                 "output": "dfx_generated/motoko"
             }
         },
+        "rust": {
+            "candid": "canisters/rust/src/lib.did",
+            "package": "rust",
+            "type": "rust",
+            "declarations": {
+                "output": "dfx_generated/rust"
+            }
+        },
         "www": {
             "dependencies": ["azle"],
             "frontend": {
