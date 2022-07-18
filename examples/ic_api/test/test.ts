@@ -127,7 +127,7 @@ const tests: Test[] = [
             const result = await ic_api_canister.canister_balance();
 
             return {
-                ok: result === 4_000_000_000_000n
+                ok: result > 3_000_000_000_000n && result < 4_000_000_000_000n
             };
         }
     },
@@ -137,7 +137,7 @@ const tests: Test[] = [
             const result = await ic_api_canister.canister_balance128();
 
             return {
-                ok: result === 4_000_000_000_000n
+                ok: result > 3_000_000_000_000n && result < 4_000_000_000_000n
             };
         }
     },

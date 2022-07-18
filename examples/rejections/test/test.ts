@@ -8,7 +8,7 @@ const rejections_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('some_service', 'rejections'),
+    ...cleanDeploy('rejections', 'some_service'),
     {
         name: 'reject code NO_ERROR',
         test: async () => {

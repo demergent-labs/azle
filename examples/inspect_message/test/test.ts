@@ -46,12 +46,13 @@ const tests: Test[] = [
             try {
                 const result =
                     await inspect_message_canister.alsoInaccessible();
+
                 return {
                     ok: false
                 };
             } catch (error) {
                 return {
-                    ok: ((error as any).message as string).includes('Code: 403')
+                    ok: ((error as any).message as string).includes('Code: 500')
                 };
             }
         }
