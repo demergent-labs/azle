@@ -22,10 +22,10 @@ The format for benchmark numbers is (x / y) where:
 
 | Azle Wasm Instructions | Motoko Wasm Instructions | Rust Wasm Instructions | Azle/Motoko Change Multiplier | Azle/Rust Change Multiplier | Motoko/Azle Change Multiplier | Motoko/Rust Change Multiplier | Average Rust/Azle Change Multiplier | Rust/Motoko Change Multiplier |
 | ---------------------- | ------------------------ | ---------------------- | ----------------------------- | --------------------------- | ----------------------------- | ----------------------------- | ----------------------------------- | ----------------------------- |
-| (64_538 / 28_480_267)  | (200 / 2_361)            | (200 / 65_009)         | (323x / 12_063x)              | (323x / 438x)               | (-323x / -12_063x)            | (1x / -28x)                   | (-323x / -438x)                     | (1x / 28x)                    |
+| (64_276 / 28_230_248)  | (200 / 2_361)            | (200 / 68_103)         | (321x / 11_957x)              | (321x / 418x)               | (-321x / -11_957x)            | (1x / -29x)                   | (-321x / -418x)                     | (1x / 29x)                    |
 
 ## Primitive Operations
 
 | Description  | Azle Wasm Instructions | Motoko Wasm Instructions | Rust Wasm Instructions | Azle/Motoko Change Multiplier | Azle/Rust Change Multiplier | Motoko/Azle Change Multiplier | Motoko/Rust Change Multiplier | Rust/Azle Change Multiplier | Rust/Motoko Change Multiplier |
 | ------------ | ---------------------- | ------------------------ | ---------------------- | ----------------------------- | --------------------------- | ----------------------------- | ----------------------------- | --------------------------- | ----------------------------- |
-| get_bytes: 0 | (64_538 / 28_480_267)  | (200 / 2_361)            | (200 / 65_009)         | (323x / 12_063x)              | (323x / 438x)               | (-323x / -12_063x)            | (1x / -28x)                   | (-323x / -438x)             | (1x / 28x)                    |
+| get_bytes: 0 | (64_276 / 28_230_248)  | (200 / 2_361)            | (200 / 68_103)         | (321x / 11_957x)              | (321x / 418x)               | (-321x / -11_957x)            | (1x / -29x)                   | (-321x / -418x)             | (1x / 29x)                    |
