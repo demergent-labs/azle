@@ -55,6 +55,7 @@ jobs:
             - run: git config --global commit.gpgsign true
             - run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
             - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
+            - run: git pull origin ${{ github.event.pull_request.head.ref }}
             - run: git add --all
             - run: git commit -am "benchmarks for ${{ matrix.benchmark_directories }}"
             - run: git push origin ${{ github.event.pull_request.head.ref }}
