@@ -1,5 +1,4 @@
 import { cleanDeploy, ok, run_tests, Test } from 'azle/test';
-import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 import { createActor } from '../test/dfx_generated/management_canister';
 
@@ -60,8 +59,8 @@ const tests: Test[] = [
             return {
                 ok:
                     canister_settings.compute_allocation === 1n &&
-                    canister_settings.memory_allocation === 4014733n &&
-                    canister_settings.freezing_threshold === 153n
+                    canister_settings.memory_allocation === 3_000_000n &&
+                    canister_settings.freezing_threshold === 2_000_000n
             };
         }
     },
@@ -231,10 +230,11 @@ const tests: Test[] = [
                 ok:
                     'running' in canister_status.status &&
                     canister_status.memory_size === 0n &&
-                    canister_status.cycles === 0n &&
-                    canister_status.settings.freezing_threshold === 153n &&
+                    canister_status.cycles >= 800_000_000_000n &&
+                    canister_status.settings.freezing_threshold ===
+                        2_000_000n &&
                     canister_status.settings.controllers.length === 1 &&
-                    canister_status.settings.memory_allocation === 4014733n &&
+                    canister_status.settings.memory_allocation === 3_000_000n &&
                     canister_status.settings.compute_allocation === 1n &&
                     canister_status.module_hash.length === 0
             };

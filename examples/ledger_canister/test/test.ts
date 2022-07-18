@@ -75,18 +75,37 @@ function get_test_setups(): Test[] {
             }
         },
         {
-            name: 'deploy ledger_canister',
+            name: `create canister ledger_canister`,
             prep: async () => {
-                execSync(`dfx deploy ledger_canister`, {
+                execSync(`dfx canister create ledger_canister`, {
                     stdio: 'inherit'
                 });
+            }
+        },
+        {
+            name: `build canister ledger_canister`,
+            prep: async () => {
+                execSync(`dfx build ledger_canister`, {
+                    stdio: 'inherit'
+                });
+            }
+        },
+        {
+            name: `install canister ledger_canister`,
+            prep: async () => {
+                execSync(
+                    `dfx canister install ledger_canister --wasm target/wasm32-unknown-unknown/release/ledger_canister.wasm.gz`,
+                    {
+                        stdio: 'inherit'
+                    }
+                );
             }
         },
         {
             name: 'deploy icp_ledger',
             prep: async () => {
                 execSync(
-                    `dfx deploy icp_ledger --argument=\'(record {minting_account = "\'$(dfx ledger account-id)\'"; initial_values = vec { record { "\'$(dfx ledger account-id --of-canister ledger_canister)\'"; record { e8s=100_000_000_000 } }; }; send_whitelist = vec {}})\'`,
+                    `dfx deploy icp_ledger --argument='(record {minting_account = "'$(dfx ledger account-id)'"; initial_values = vec { record { "'$(dfx ledger account-id --of-canister ledger_canister)'"; record { e8s=100_000_000_000 } }; }; send_whitelist = vec {}})'`,
                     {
                         stdio: 'inherit'
                     }
