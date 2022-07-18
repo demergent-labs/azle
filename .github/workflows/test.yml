@@ -57,6 +57,7 @@ jobs:
               run: |
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
+                    "examples/bytes",
                     "examples/call_raw",
                     "examples/complex_types",
                     "examples/counter",
@@ -68,6 +69,7 @@ jobs:
                     "examples/ic_api",
                     "examples/imports",
                     "examples/init",
+                    "examples/inspect_message",
                     "examples/key_value_store",
                     "examples/ledger_canister",
                     "examples/management_canister",
@@ -87,11 +89,13 @@ jobs:
                     "examples/optional_types",
                     "examples/pre_and_post_upgrade",
                     "examples/primitive_types",
+                    "examples/principal",
                     "examples/query",
+                    "examples/rejections",
                     "examples/simple_erc20",
                     "examples/simple_user_accounts",
-                    "examples/stable_storage",
                     "examples/stable_memory",
+                    "examples/stable_storage",
                     "examples/tuple_types",
                     "examples/update"
                   ]

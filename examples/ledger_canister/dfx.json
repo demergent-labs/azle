@@ -13,6 +13,7 @@
         },
         "icp_ledger": {
             "type": "custom",
+            "build": "",
             "candid": "canisters/icp_ledger/ledger.private.did",
             "wasm": "canisters/icp_ledger/ledger.wasm"
         }

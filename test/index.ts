@@ -116,13 +116,47 @@ export function cleanDeploy(...canisterNames: string[]): Test[] {
             name: 'waiting for createActor fetchRootKey',
             wait: 5000
         },
-        {
-            name: 'deploy',
-            prep: async () => {
-                execSync(`dfx deploy`, {
-                    stdio: 'inherit'
-                });
-            }
-        }
+        ...canisterNames.map((canisterName) => {
+            return {
+                name: `create canister ${canisterName}`,
+                prep: async () => {
+                    execSync(`dfx canister create ${canisterName}`, {
+                        stdio: 'inherit'
+                    });
+                }
+            };
+        }),
+        ...canisterNames.map((canisterName) => {
+            return {
+                name: `build canister ${canisterName}`,
+                prep: async () => {
+                    execSync(`dfx build ${canisterName}`, {
+                        stdio: 'inherit'
+                    });
+                }
+            };
+        }),
+        ...canisterNames.map((canisterName) => {
+            return {
+                name: `install canister ${canisterName}`,
+                prep: async () => {
+                    execSync(
+                        `dfx canister install ${canisterName} --wasm target/wasm32-unknown-unknown/release/${canisterName}.wasm.gz`,
+                        {
+                            stdio: 'inherit'
+                        }
+                    );
+                }
+            };
+        })
+        // TODO dfx deploy does not work with gzipped wasm binaries: https://forum.dfinity.org/t/new-and-improved-rust-cdk-first-class-support-for-rust-canister-development/10399/38?u=lastmjs
+        // {
+        //     name: 'deploy',
+        //     prep: async () => {
+        //         execSync(`dfx deploy`, {
+        //             stdio: 'inherit'
+        //         });
+        //     }
+        // }
     ];
 }
