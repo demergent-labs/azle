@@ -32,6 +32,8 @@ type WasmPerfType = {
     wasm_including_prelude: number;
 };
 
+export type BenchmarkType = 'RETURN_VALUE' | 'GLOBAL_VALUE';
+
 async function run_setup() {
     execSync(`dfx canister uninstall-code azle || true`, {
         stdio: 'inherit'
@@ -72,6 +74,7 @@ async function run_setup() {
 }
 
 export async function run_benchmarks(
+    benchmark_type: BenchmarkType,
     benchmarks: Benchmark[],
     create_actor_azle: any,
     create_actor_motoko: any,
@@ -125,24 +128,28 @@ export async function run_benchmarks(
                 }\n`
             );
 
-            const benchmark_iteration_promises = new Array(
+            // TODO I am doing this serially on purpose to overcome race conditions with GLOBAL_VALUE retrieval
+            // TODO Just leaving this here because if done concurrently we could speed things up
+            const benchmark_iteration_results = await new Array(
                 num_benchmark_iterations
             )
                 .fill(0)
-                .map((_) => {
-                    return run_benchmark(
-                        benchmark.canister_method,
-                        azle_canister,
-                        motoko_canister,
-                        rust_canister,
-                        benchmark.benchmark_description,
-                        benchmark.args
-                    );
-                });
+                .reduce(async (result: Promise<BenchmarkResult[]>) => {
+                    const resolved_result = await result;
 
-            const benchmark_iteration_results = await Promise.all(
-                benchmark_iteration_promises
-            );
+                    return [
+                        ...resolved_result,
+                        await run_benchmark(
+                            benchmark_type,
+                            benchmark.canister_method,
+                            azle_canister,
+                            motoko_canister,
+                            rust_canister,
+                            benchmark.benchmark_description,
+                            benchmark.args
+                        )
+                    ];
+                }, Promise.resolve([]));
 
             const azle_wasm_instructions_body_only =
                 benchmark_iteration_results.map(
@@ -317,7 +324,11 @@ export async function run_benchmarks(
     );
 
     if (output_file !== undefined) {
-        const markdown_report = create_markdown_report(benchmark_results);
+        const markdown_report = create_markdown_report(
+            benchmark_results,
+            num_benchmark_iterations,
+            output_file
+        );
         const csv_report = create_csv_report(benchmark_results);
         writeFileSync(`${output_file}.md`, markdown_report);
         writeFileSync(`${output_file}.csv`, csv_report);
@@ -327,6 +338,7 @@ export async function run_benchmarks(
 }
 
 async function run_benchmark(
+    benchmark_type: BenchmarkType,
     canister_method: string,
     azle_canister: any,
     motoko_canister: any,
@@ -334,15 +346,15 @@ async function run_benchmark(
     benchmark_description: string = canister_method,
     args: any[] = []
 ): Promise<BenchmarkResult> {
-    const azle_perf_result: PerfResult = await (azle_canister as any)[
-        canister_method
-    ](...args);
-    const motoko_perf_result: PerfResult = await (motoko_canister as any)[
-        canister_method
-    ](...args);
-    const rust_perf_result: PerfResult = await (rust_canister as any)[
-        canister_method
-    ](...args);
+    const results = await Promise.all([
+        get_perf_result(benchmark_type, azle_canister, canister_method, args),
+        get_perf_result(benchmark_type, motoko_canister, canister_method, args),
+        get_perf_result(benchmark_type, rust_canister, canister_method, args)
+    ]);
+
+    const azle_perf_result = results[0];
+    const motoko_perf_result = results[1];
+    const rust_perf_result = results[2];
 
     const azle_wasm_instructions_body_only = Number(
         azle_perf_result.wasm_body_only
@@ -473,7 +485,34 @@ async function run_benchmark(
     };
 }
 
-function calculate_change_multiplier(
+async function get_perf_result(
+    benchmark_type: BenchmarkType,
+    canister: any,
+    canister_method: string,
+    args: any[]
+): Promise<PerfResult> {
+    if (benchmark_type === 'RETURN_VALUE') {
+        const perf_result: PerfResult = await (canister as any)[
+            canister_method
+        ](...args);
+
+        return perf_result;
+    } else {
+        await (canister as any)[canister_method](...args);
+
+        const perf_result_opt: PerfResult[] = await (
+            canister as any
+        ).get_perf_result();
+
+        if (perf_result_opt.length === 0) {
+            throw new Error(`PerfResult was no set`);
+        }
+
+        return perf_result_opt[0];
+    }
+}
+
+export function calculate_change_multiplier(
     language1_wasm_instructions: number,
     language2_wasm_instructions: number,
     language3_wasm_instructions: number
@@ -495,7 +534,11 @@ function calculate_change_multiplier(
     };
 }
 
-function create_markdown_report(benchmark_results: BenchmarkResult[]): string {
+function create_markdown_report(
+    benchmark_results: BenchmarkResult[],
+    num_benchmark_iterations: number,
+    output_file: string
+): string {
     const title = `# Azle/Motoko/Rust Benchmarks`;
 
     const description = `
@@ -503,15 +546,15 @@ function create_markdown_report(benchmark_results: BenchmarkResult[]): string {
 - These benchmarks were implemented using the performance counter API
     - Performance counter information in [The Internet Computer Interface Spec](https://internetcomputer.org/docs/current/references/ic-interface-spec/#system-api-imports)
     - Performance counter information in [the forum](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027)
-- The results were obtained for each data type by returning performance counter values after performing n iterations of value initializations on the stack and heap in each language
-- Each benchmark is the average of 10 runs
+- Each benchmark is the average of ${num_benchmark_iterations} run${
+        num_benchmark_iterations === 1 ? '' : 's'
+    }
 - Each benchmark description gives the benchmark function name followed by the number of value initializations performed by the benchmark function
-- All benchmark code can be found [here](/benchmark/primitive_ops)
 - The following may be inaccurate or missing from the benchmarks as described [here](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027):
     - Candid serialization/deserialization of function parameters and return types
     - Canister method prologue/epilogue
     - Some Motoko runtime behavior (such as garbage collection)
-- You can find a raw CSV file with this data [here](/benchmark/primitive_ops/benchmarks.csv)
+- You can find a raw CSV file with this data [here](./${output_file}.csv)
 - A rough USD cost model for various app scenarios can be found [here](https://docs.google.com/spreadsheets/d/1PQ53R9hYE1fuMB_z-Bl6dyymm7end7rVJ85TvGEh0BQ)
 
 The format for benchmark numbers is (x / y) where:

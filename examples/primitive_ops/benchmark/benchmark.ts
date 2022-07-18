@@ -31,6 +31,7 @@ const benchmarks: Benchmark[] = [
 ];
 
 run_benchmarks(
+    'RETURN_VALUE',
     benchmarks,
     createActorAzle,
     createActorMotoko,
