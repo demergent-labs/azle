@@ -23,12 +23,12 @@ Please exercise caution when using Azle. It is beta software that you use at you
 
 Demergent Labs will officially recommend Azle for production use when at least the following have occurred:
 
-- [x] [Many example-based unit/integration tests](/examples)
-- [ ] [Feature parity with the Rust CDK and Motoko](#feature-parity)
-- [ ] Extensive automated benchmarking
-- [ ] Extensive automated property testing
-- [ ] Multiple independent security reviews/audits
-- [ ] [Boa is no longer experimental](https://github.com/boa-dev/boa)
+-   [x] [Many example-based unit/integration tests](/examples)
+-   [ ] [Feature parity with the Rust CDK and Motoko](#feature-parity)
+-   [ ] Extensive automated benchmarking
+-   [ ] Extensive automated property testing
+-   [ ] Multiple independent security reviews/audits
+-   [ ] [Boa is no longer experimental](https://github.com/boa-dev/boa)
 
 ## Discussion
 
@@ -1050,145 +1050,145 @@ More documentation to come, see the examples and the DFINITY documentation for t
 
 The following is a comparison of all of the major features of the [Rust CDK](https://github.com/dfinity/cdk-rs), [Motoko](https://github.com/dfinity/motoko), and Azle.
 
-- :heavy_check_mark: = supported
-- :x: = not supported
-- :grey_question: = unknown
-- :white_check_mark: = not applicable
+-   :heavy_check_mark: = supported
+-   :x: = not supported
+-   :grey_question: = unknown
+-   :white_check_mark: = not applicable
 
 #### Canister Methods
 
-| Feature    | Rust CDK | Motoko | Azle           |
-| ------------- | --------------- | -------------------- | -------------- |
-| init method | [:heavy_check_mark:](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.init.html) | :heavy_check_mark: | [:heavy_check_mark:](https://github.com/demergent-labs/azle#init-method) |
-| pre upgrade method | [:heavy_check_mark:](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.pre_upgrade.html) | [:heavy_check_mark:](https://internetcomputer.org/docs/current/developer-docs/build/languages/motoko/upgrades#preupgrade-and-postupgrade-system-methods) | :heavy_check_mark: |
-| post upgrade method | [:heavy_check_mark:](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.post_upgrade.html) | :heavy_check_mark: | :heavy_check_mark: |
-| inspect message method | [:heavy_check_mark:](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.inspect_message.html) | [:heavy_check_mark:](https://github.com/dfinity/motoko/issues/2528) | :heavy_check_mark: |
-| heartbeat method | [:heavy_check_mark:](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.heartbeat.html) | :heavy_check_mark: | :heavy_check_mark: |
-| update methods | [:heavy_check_mark:](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.update.html) | :heavy_check_mark: | :heavy_check_mark: |
-| query methods | [:heavy_check_mark:](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.query.html) | [:heavy_check_mark:](https://internetcomputer.org/docs/current/developer-docs/build/languages/motoko/actors-async#query-functions) | [:heavy_check_mark:](https://github.com/demergent-labs/azle#query-methods) |
-| http_request method | [:heavy_check_mark:](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-gateway) | :heavy_check_mark: | :heavy_check_mark: |
-| http_request_update method | [:heavy_check_mark:](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-gateway) | :heavy_check_mark: | :heavy_check_mark: |
+| Feature                                                                                                              | Rust CDK                                                                                           | Motoko                                                                                                                                                    | Azle                                                                                                                      |
+| -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| init                                                                                                                 | [:heavy_check_mark:](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.init.html)            | :heavy_check_mark:                                                                                                                                        | [:heavy_check_mark:](https://github.com/demergent-labs/azle#init-method)                                                  |
+| pre upgrade                                                                                                          | [:heavy_check_mark:](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.pre_upgrade.html)     | [:heavy_check_mark:](https://internetcomputer.org/docs/current/developer-docs/build/languages/motoko/upgrades#preupgrade-and-postupgrade-system-methods)  | [:heavy_check_mark:](https://github.com/demergent-labs/azle#preupgrade-method)                                            |
+| post upgrade                                                                                                         | [:heavy_check_mark:](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.post_upgrade.html)    | [:heavy_check_mark:](https://internetcomputer.org/docs/current/developer-docs/build/languages/motoko/upgrades/#preupgrade-and-postupgrade-system-methods) | [:heavy_check_mark:](https://github.com/demergent-labs/azle#postupgrade-method)                                           |
+| inspect message                                                                                                      | [:heavy_check_mark:](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.inspect_message.html) | [:heavy_check_mark:](https://github.com/dfinity/motoko/issues/2528)                                                                                       | [:heavy_check_mark:](https://internetcomputer.org/docs/current/developer-docs/build/languages/motoko/message-inspection/) |
+| heartbeat                                                                                                            | [:heavy_check_mark:](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.heartbeat.html)       | [:heavy_check_mark:](https://internetcomputer.org/docs/current/developer-docs/build/languages/motoko/heartbeats)                                          | [:heavy_check_mark:](https://github.com/demergent-labs/azle#heartbeat-method)                                             |
+| update                                                                                                               | [:heavy_check_mark:](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.update.html)          | [:heavy_check_mark:](https://internetcomputer.org/docs/current/developer-docs/build/languages/motoko/actors-async#query-functions)                        | [:heavy_check_mark:](https://github.com/demergent-labs/azle#update-methods)                                               |
+| query                                                                                                                | [:heavy_check_mark:](https://docs.rs/ic-cdk-macros/latest/ic_cdk_macros/attr.query.html)           | [:heavy_check_mark:](https://internetcomputer.org/docs/current/developer-docs/build/languages/motoko/actors-async#query-functions)                        | [:heavy_check_mark:](https://github.com/demergent-labs/azle#query-methods)                                                |
+| [http_request](https://github.com/dfinity/interface-spec/blob/master/spec/index.adoc#ic-method-http_request)         | :heavy_check_mark:                                                                                 | :heavy_check_mark:                                                                                                                                        | :heavy_check_mark:                                                                                                        |
+| [http_request_update](https://github.com/dfinity/interface-spec/blob/master/spec/index.adoc#upgrade-to-update-calls) | :heavy_check_mark:                                                                                 | :heavy_check_mark:                                                                                                                                        | :heavy_check_mark:                                                                                                        |
 
 #### Candid Types
 
-| Feature    | Rust CDK | Motoko | Azle           |
-| ------------- | --------------- | -------------------- | -------------- |
-| [Candid text](https://internetcomputer.org/docs/current/references/candid-ref/#type-text) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Text) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid blob](https://internetcomputer.org/docs/current/references/candid-ref/#type-blob) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Vec) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid nat](https://internetcomputer.org/docs/current/references/candid-ref/#type-nat) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid nat64](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat64) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid nat32](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat32) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid nat16](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat16) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid nat8](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat8) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid int](https://internetcomputer.org/docs/current/references/candid-ref/#type-int) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid int64](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int64) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid int32](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int32) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid int16](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int16) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid int8](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int8) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid float64](https://internetcomputer.org/docs/current/references/candid-ref/#type-float32-and-float64) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Float64) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid float32](https://internetcomputer.org/docs/current/references/candid-ref/#type-float32-and-float64) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Float32) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid bool](https://internetcomputer.org/docs/current/references/candid-ref/#type-bool) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Bool) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid null](https://internetcomputer.org/docs/current/references/candid-ref/#type-null) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Null) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid vec](https://internetcomputer.org/docs/current/references/candid-ref/#type-vec-t) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Vec) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid opt](https://internetcomputer.org/docs/current/references/candid-ref/#type-opt-t) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Opt) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid record](https://internetcomputer.org/docs/current/references/candid-ref/#type-record--n--t--) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Record) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid variant](https://internetcomputer.org/docs/current/references/candid-ref/#type-variant--n--t--) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Variant) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid func](https://internetcomputer.org/docs/current/references/candid-ref/#type-func---) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Func) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid service](https://internetcomputer.org/docs/current/references/candid-ref/#type-service-) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Service) | :heavy_check_mark: | :x: |
-| [Candid principal](https://internetcomputer.org/docs/current/references/candid-ref/#type-principal) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Principal) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid reserved](https://internetcomputer.org/docs/current/references/candid-ref/#type-reserved) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Reserved) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid empty](https://internetcomputer.org/docs/current/references/candid-ref/#type-empty) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Empty) | :heavy_check_mark: | :heavy_check_mark: |
+| Feature                                                                                                     | Rust CDK                                                                                                   | Motoko             | Azle               |
+| ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------ | ------------------ |
+| [Candid text](https://internetcomputer.org/docs/current/references/candid-ref/#type-text)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Text)      | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid blob](https://internetcomputer.org/docs/current/references/candid-ref/#type-blob)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Vec)       | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid nat](https://internetcomputer.org/docs/current/references/candid-ref/#type-nat)                     | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat)       | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid nat64](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat64)     | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid nat32](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat32)     | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid nat16](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat16)     | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid nat8](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)          | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat8)      | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid int](https://internetcomputer.org/docs/current/references/candid-ref/#type-int)                     | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int)       | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid int64](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int64)     | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid int32](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int32)     | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid int16](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int16)     | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid int8](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)          | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int8)      | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid float64](https://internetcomputer.org/docs/current/references/candid-ref/#type-float32-and-float64) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Float64)   | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid float32](https://internetcomputer.org/docs/current/references/candid-ref/#type-float32-and-float64) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Float32)   | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid bool](https://internetcomputer.org/docs/current/references/candid-ref/#type-bool)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Bool)      | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid null](https://internetcomputer.org/docs/current/references/candid-ref/#type-null)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Null)      | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid vec](https://internetcomputer.org/docs/current/references/candid-ref/#type-vec-t)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Vec)       | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid opt](https://internetcomputer.org/docs/current/references/candid-ref/#type-opt-t)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Opt)       | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid record](https://internetcomputer.org/docs/current/references/candid-ref/#type-record--n--t--)       | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Record)    | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid variant](https://internetcomputer.org/docs/current/references/candid-ref/#type-variant--n--t--)     | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Variant)   | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid func](https://internetcomputer.org/docs/current/references/candid-ref/#type-func---)                | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Func)      | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid service](https://internetcomputer.org/docs/current/references/candid-ref/#type-service-)            | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Service)   | :heavy_check_mark: | :x:                |
+| [Candid principal](https://internetcomputer.org/docs/current/references/candid-ref/#type-principal)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Principal) | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid reserved](https://internetcomputer.org/docs/current/references/candid-ref/#type-reserved)           | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Reserved)  | :heavy_check_mark: | :heavy_check_mark: |
+| [Candid empty](https://internetcomputer.org/docs/current/references/candid-ref/#type-empty)                 | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Empty)     | :heavy_check_mark: | :heavy_check_mark: |
 
 #### Canister APIs
 
-| Feature    | Rust CDK | Motoko | Azle           |
-| ------------- | --------------- | -------------------- | -------------- |
-| canister balance | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.canister_balance.html) | :white_check_mark: | :heavy_check_mark: |
+| Feature              | Rust CDK                                                                                   | Motoko             | Azle               |
+| -------------------- | ------------------------------------------------------------------------------------------ | ------------------ | ------------------ |
+| canister balance     | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.canister_balance.html)    | :white_check_mark: | :heavy_check_mark: |
 | canister balance 128 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.canister_balance128.html) | :heavy_check_mark: | :heavy_check_mark: |
-| data certificate | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.data_certificate.html) | :heavy_check_mark: | :heavy_check_mark: |
-| canister id | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.id.html) | :heavy_check_mark: | :heavy_check_mark: |
-| print | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.print.html) | :heavy_check_mark: | :heavy_check_mark: |
-| set certified data | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.set_certified_data.html) | :heavy_check_mark: | :x: |
-| time | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.time.html) | :heavy_check_mark: | :heavy_check_mark: |
-| trap | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.trap.html) | :heavy_check_mark: | :heavy_check_mark: |
+| data certificate     | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.data_certificate.html)    | :heavy_check_mark: | :heavy_check_mark: |
+| canister id          | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.id.html)                  | :heavy_check_mark: | :heavy_check_mark: |
+| print                | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.print.html)               | :heavy_check_mark: | :heavy_check_mark: |
+| set certified data   | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.set_certified_data.html)  | :heavy_check_mark: | :heavy_check_mark: |
+| time                 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.time.html)                | :heavy_check_mark: | :heavy_check_mark: |
+| trap                 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.trap.html)                | :heavy_check_mark: | :heavy_check_mark: |
 
 #### Call APIs
 
-| Feature    | Rust CDK | Motoko | Azle           |
-| ------------- | --------------- | -------------------- | -------------- |
-| caller | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.caller.html) | :heavy_check_mark: | :heavy_check_mark: |
-| accept message | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.accept_message.html) | :heavy_check_mark: | :heavy_check_mark: |
-| arg data | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data.html) | :grey_question: | :x: |
-| arg data raw | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data_raw.html) | :heavy_check_mark: | :x: |
-| arg data raw size | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data_raw_size.html) | :grey_question: | :x: |
-| call | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call.html) | :heavy_check_mark: | :heavy_check_mark: |
-| call raw | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_raw.html) | :grey_question: | :heavy_check_mark: |
-| call raw 128 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_raw128.html) | :grey_question: | :heavy_check_mark: |
-| call with payment | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_with_payment.html) | :grey_question: | :x: |
-| call with payment 128 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_with_payment128.html) | :grey_question: | :x: |
-| method name | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.method_name.html) | :heavy_check_mark: | :heavy_check_mark: |
-| msg cycles accept | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.msg_cycles_accept.html) | :white_check_mark: | :heavy_check_mark: |
-| msg cycles accept 128 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.msg_cycles_accept128.html) | :heavy_check_mark: | :heavy_check_mark: |
-| msg cycles available | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.msg_cycles_available.html) | :white_check_mark: | :heavy_check_mark: |
+| Feature                  | Rust CDK                                                                                            | Motoko             | Azle               |
+| ------------------------ | --------------------------------------------------------------------------------------------------- | ------------------ | ------------------ |
+| caller                   | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.caller.html)                       | :heavy_check_mark: | :heavy_check_mark: |
+| accept message           | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.accept_message.html)          | :heavy_check_mark: | :heavy_check_mark: |
+| arg data                 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data.html)                | :grey_question:    | :x:                |
+| arg data raw             | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data_raw.html)            | :heavy_check_mark: | :heavy_check_mark: |
+| arg data raw size        | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data_raw_size.html)       | :grey_question:    | :heavy_check_mark: |
+| call                     | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call.html)                    | :heavy_check_mark: | :heavy_check_mark: |
+| call raw                 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_raw.html)                | :grey_question:    | :heavy_check_mark: |
+| call raw 128             | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_raw128.html)             | :grey_question:    | :heavy_check_mark: |
+| call with payment        | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_with_payment.html)       | :grey_question:    | :heavy_check_mark: |
+| call with payment 128    | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_with_payment128.html)    | :grey_question:    | :heavy_check_mark: |
+| method name              | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.method_name.html)             | :heavy_check_mark: | :heavy_check_mark: |
+| msg cycles accept        | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.msg_cycles_accept.html)       | :white_check_mark: | :heavy_check_mark: |
+| msg cycles accept 128    | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.msg_cycles_accept128.html)    | :heavy_check_mark: | :heavy_check_mark: |
+| msg cycles available     | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.msg_cycles_available.html)    | :white_check_mark: | :heavy_check_mark: |
 | msg cycles available 128 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.msg_cycles_available128.html) | :heavy_check_mark: | :heavy_check_mark: |
-| msg cycles refunded | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.msg_cycles_refunded.html) | :white_check_mark: | :heavy_check_mark: |
-| msg cycles refunded 128 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.msg_cycles_refunded128.html) | :heavy_check_mark: | :heavy_check_mark: |
-| notify | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.notify.html) | :grey_question: | :x: |
-| notify raw | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.notify_raw.html) | :grey_question: | :x: |
-| notify with payment 128 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.notify_with_payment128.html) | :grey_question: | :x: |
-| performance counter | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.performance_counter.html) | :heavy_check_mark: | :x: |
-| reject | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.reject.html) | :grey_question: | :x: |
-| reject code | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.reject_code.html) | :grey_question: | :x: |
-| reject message | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.reject_message.html) | :grey_question: | :x: |
-| reply | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.reply.html) | :grey_question: | :x: |
-| reply raw | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.reply_raw.html) | :grey_question: | :x: |
-| result | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.result.html) | :grey_question: | :x: |
+| msg cycles refunded      | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.msg_cycles_refunded.html)     | :white_check_mark: | :heavy_check_mark: |
+| msg cycles refunded 128  | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.msg_cycles_refunded128.html)  | :heavy_check_mark: | :heavy_check_mark: |
+| notify                   | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.notify.html)                  | :grey_question:    | :heavy_check_mark: |
+| notify raw               | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.notify_raw.html)              | :grey_question:    | :x:                |
+| notify with payment 128  | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.notify_with_payment128.html)  | :grey_question:    | :heavy_check_mark: |
+| performance counter      | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.performance_counter.html)     | :heavy_check_mark: | :heavy_check_mark: |
+| reject                   | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.reject.html)                  | :grey_question:    | :heavy_check_mark: |
+| reject code              | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.reject_code.html)             | :grey_question:    | :heavy_check_mark: |
+| reject message           | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.reject_message.html)          | :grey_question:    | :heavy_check_mark: |
+| reply                    | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.reply.html)                   | :grey_question:    | :heavy_check_mark: |
+| reply raw                | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.reply_raw.html)               | :grey_question:    | :heavy_check_mark: |
+| result                   | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.result.html)                  | :grey_question:    | :x:                |
 
 #### Stable Memory
 
-| Feature    | Rust CDK | Motoko | Azle           |
-| ------------- | --------------- | -------------------- | -------------- |
-| stable storage | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/storage/index.html) | :heavy_check_mark: | :heavy_check_mark: |
-| stable64 grow | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_grow.html) | [:heavy_check_mark:](https://internetcomputer.org/docs/current/references/motoko-ref/experimentalstablememory#grow) | :x: |
-| stable64 read | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_read.html) | [:heavy_check_mark:](https://internetcomputer.org/docs/current/references/motoko-ref/experimentalstablememory#loadblob) | :x: |
-| stable64 size | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_size.html) | [:heavy_check_mark:](https://internetcomputer.org/docs/current/references/motoko-ref/experimentalstablememory#size) | :x: |
-| stable64 write | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_write.html) | [:heavy_check_mark:](https://internetcomputer.org/docs/current/references/motoko-ref/experimentalstablememory#storeblob) | :x: |
-| stable bytes | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_bytes.html) | :x: | :x: |
-| stable grow | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_grow.html) | :white_check_mark: | :x: |
-| stable read | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_read.html) | :white_check_mark: | :x: |
-| stable size | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_size.html) | :white_check_mark: | :x: |
-| stable write | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_write.html) | :white_check_mark: | :x: |
-| stable read nat64 | :x: | :heavy_check_mark: | :x: |
-| stable write nat64 | :x: | :heavy_check_mark: | :x: |
-| stable read nat32 | :x: | :heavy_check_mark: | :x: |
-| stable write nat32 | :x: | :heavy_check_mark: | :x: |
-| stable read nat16 | :x: | :heavy_check_mark: | :x: |
-| stable write nat16 | :x: | :heavy_check_mark: | :x: |
-| stable read nat8 | :x: | :heavy_check_mark: | :x: |
-| stable write nat8 | :x: | :heavy_check_mark: | :x: |
-| stable read int64 | :x: | :heavy_check_mark: | :x: |
-| stable write int64 | :x: | :heavy_check_mark: | :x: |
-| stable read int32 | :x: | :heavy_check_mark: | :x: |
-| stable write int32 | :x: | :heavy_check_mark: | :x: |
-| stable read int16 | :x: | :heavy_check_mark: | :x: |
-| stable write int16 | :x: | :heavy_check_mark: | :x: |
-| stable read int8 | :x: | :heavy_check_mark: | :x: |
-| stable write int8 | :x: | :heavy_check_mark: | :x: |
-| stable read float64 | :x: | :heavy_check_mark: | :x: |
-| stable write float64 | :x: | :heavy_check_mark: | :x: |
+| Feature              | Rust CDK                                                                                     | Motoko                                                                                                                   | Azle               |
+| -------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------ |
+| stable storage       | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/storage/index.html)                | :heavy_check_mark:                                                                                                       | :heavy_check_mark: |
+| stable64 grow        | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_grow.html)  | [:heavy_check_mark:](https://internetcomputer.org/docs/current/references/motoko-ref/experimentalstablememory#grow)      | :heavy_check_mark: |
+| stable64 read        | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_read.html)  | [:heavy_check_mark:](https://internetcomputer.org/docs/current/references/motoko-ref/experimentalstablememory#loadblob)  | :heavy_check_mark: |
+| stable64 size        | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_size.html)  | [:heavy_check_mark:](https://internetcomputer.org/docs/current/references/motoko-ref/experimentalstablememory#size)      | :heavy_check_mark: |
+| stable64 write       | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable64_write.html) | [:heavy_check_mark:](https://internetcomputer.org/docs/current/references/motoko-ref/experimentalstablememory#storeblob) | :heavy_check_mark: |
+| stable bytes         | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_bytes.html)   | :x:                                                                                                                      | :heavy_check_mark: |
+| stable grow          | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_grow.html)    | :white_check_mark:                                                                                                       | :heavy_check_mark: |
+| stable read          | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_read.html)    | :white_check_mark:                                                                                                       | :heavy_check_mark: |
+| stable size          | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_size.html)    | :white_check_mark:                                                                                                       | :heavy_check_mark: |
+| stable write         | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/stable/fn.stable_write.html)   | :white_check_mark:                                                                                                       | :heavy_check_mark: |
+| stable read nat64    | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable write nat64   | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable read nat32    | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable write nat32   | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable read nat16    | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable write nat16   | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable read nat8     | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable write nat8    | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable read int64    | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable write int64   | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable read int32    | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable write int32   | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable read int16    | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable write int16   | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable read int8     | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable write int8    | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable read float64  | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+| stable write float64 | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
 
 ### Roadmap
 
-- [ ] June 2022
-  - [ ] [Feature parity with the Rust CDK and Motoko](#feature-parity)
-- [ ] July 2022
-  - [ ] Extensive automated benchmarking
-  - [ ] Rust rewrite
-- [ ] August 2022
-  - [ ] Extensive automated property testing
-  - [ ] Compiler error DX revamp
-- [ ] September 2022
-  - [ ] Multiple independent security reviews/audits
+-   [ ] June 2022
+    -   [ ] [Feature parity with the Rust CDK and Motoko](#feature-parity)
+-   [ ] July 2022
+    -   [ ] Extensive automated benchmarking
+    -   [ ] Rust rewrite
+-   [ ] August 2022
+    -   [ ] Extensive automated property testing
+    -   [ ] Compiler error DX revamp
+-   [ ] September 2022
+    -   [ ] Multiple independent security reviews/audits
 
 ### Limitations
 
