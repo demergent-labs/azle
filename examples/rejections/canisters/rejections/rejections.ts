@@ -1,4 +1,4 @@
-import { someService, Result } from '../some_service';
+import { someService } from '../some_service';
 import {
     Canister,
     CanisterResult,

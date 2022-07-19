@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { cleanDeploy, run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/func_types';
 
 const func_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -9,7 +9,8 @@ const func_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('func_types', 'notifiers'),
+    ...deploy('func_types'),
+    ...deploy('notifiers'),
     {
         name: 'get_stable_func',
         test: async () => {

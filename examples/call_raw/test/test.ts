@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { ok, run_tests, Test } from 'azle/test';
+import { deploy, ok, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/call_raw';
 
@@ -10,27 +10,7 @@ const call_raw_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    {
-        name: 'clear canister memory',
-        prep: async () => {
-            execSync(`dfx canister uninstall-code call_raw || true`, {
-                stdio: 'inherit'
-            });
-        }
-    },
-    {
-        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-        name: 'waiting for createActor fetchRootKey',
-        wait: 5000
-    },
-    {
-        name: 'deploy',
-        prep: async () => {
-            execSync(`dfx deploy`, {
-                stdio: 'inherit'
-            });
-        }
-    },
+    ...deploy('call_raw'),
     {
         name: 'execute_call_raw raw_rand',
         test: async () => {
@@ -85,7 +65,7 @@ const tests: Test[] = [
                 Principal.fromText('aaaaa-aa'),
                 'create_canister',
                 candid_encoded_arguments_byte_array,
-                0n
+                100_000_000_000n
             );
 
             if (!ok(result)) {
@@ -165,7 +145,7 @@ const tests: Test[] = [
                 Principal.fromText('aaaaa-aa'),
                 'create_canister',
                 candid_encoded_arguments_byte_array,
-                0n
+                100_000_000_000n
             );
 
             if (!ok(result)) {

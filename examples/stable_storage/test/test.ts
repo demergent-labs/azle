@@ -1,4 +1,4 @@
-import { run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from './dfx_generated/stable_storage';
 import { Principal } from '@dfinity/principal';
@@ -473,27 +473,7 @@ const check_writes: Test[] = [
 ];
 
 const tests: Test[] = [
-    {
-        name: 'clear canister memory',
-        prep: async () => {
-            execSync(`dfx canister uninstall-code stable_storage || true`, {
-                stdio: 'inherit'
-            });
-        }
-    },
-    {
-        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-        name: 'waiting for createActor fetchRootKey',
-        wait: 5000
-    },
-    {
-        name: 'deploy',
-        prep: async () => {
-            execSync(`dfx deploy`, {
-                stdio: 'inherit'
-            });
-        }
-    },
+    ...deploy('stable_storage'),
     ...initial_reads,
     ...writes,
     ...check_writes,
@@ -512,9 +492,12 @@ const tests: Test[] = [
     {
         name: 'deploy',
         prep: async () => {
-            execSync(`dfx deploy`, {
-                stdio: 'inherit'
-            });
+            execSync(
+                `dfx canister install --mode upgrade stable_storage --wasm target/wasm32-unknown-unknown/release/stable_storage.wasm.gz`,
+                {
+                    stdio: 'inherit'
+                }
+            );
         }
     },
     ...check_writes
