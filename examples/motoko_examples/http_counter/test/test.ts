@@ -55,7 +55,7 @@ const tests: Test[] = [
         name: 'get streaming count',
         test: async () => {
             return {
-                ok: getCountStream() === getExpectedGetCountStreamResult(2)
+                ok: getCountStream() === getExpectedGetCountStreamResult(3)
             };
         }
     },
@@ -125,12 +125,7 @@ function getExpectedGetCountResult(expectedCount: number): string {
 }
 
 function getExpectedGetCountStreamResult(expectedCount: number): string {
-    return `Counter`;
-    // TODO below is what the results should be but streaming isn't working
-    // right now for azle or the motoko examples. It only sends back the first
-    // part of the response and doesn't call http_streaming. We should revisit
-    // this when that bug gets fixed.
-    //return `Counter is ${expectedCount} streaming\n`;
+    return `Counter is ${expectedCount} streaming`;
 }
 
 function getExpectedCountResult(expectedCount: number): string {
