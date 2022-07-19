@@ -1,3 +1,5 @@
+import { TypeNode } from 'typescript';
+
 export type Candid = string;
 
 export type CandidTypeInfo = {
@@ -20,8 +22,10 @@ export type CandidTypeClass =
 export type CanisterMethodTypeName =
     | 'Query'
     // 'QueryAsync' | // TODO enable once this is resolved: https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754
+    | 'QueryManual'
     | 'Update'
     | 'UpdateAsync'
+    | 'UpdateManual'
     | 'Init'
     | 'InspectMessage'
     | 'Heartbeat'
@@ -52,16 +56,39 @@ export type Toml = string;
 export type TypeScript = string;
 
 export type CallFunctionInfo = {
+    call: RustFunctionInfo;
+    call_with_payment: RustFunctionInfo;
+    call_with_payment128: RustFunctionInfo;
+    notify: RustFunctionInfo;
+    notify_with_payment128: RustFunctionInfo;
+};
+
+type RustFunctionInfo = {
     functionName: string;
-    params: {
-        paramName: string;
-        paramType: string;
-    }[];
-    text: Rust;
+    params: RustParam[];
+    rust: Rust;
 };
 
 export type StableStorageVariableInfo = {
     name: string;
     rustType: string;
     migrate: boolean;
+};
+
+export type RustParam = {
+    paramName: string;
+    paramType: string;
+};
+
+export type TypeScriptParam = {
+    name: string;
+    typeNode: TypeNode;
+};
+
+export type CanisterMethodFunctionInfo = {
+    name: string;
+    queryOrUpdate: 'QUERY' | 'UPDATE';
+    manual: boolean;
+    rustReturnType: Rust;
+    params: TypeScriptParam[];
 };

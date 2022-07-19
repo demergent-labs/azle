@@ -9,12 +9,14 @@ export interface AccountArgs {
 export type AccountResult = { ok: [] | [Account] } | { err: string };
 export type AccountsResult = { ok: Array<Account> } | { err: string };
 export type BalanceResult = { ok: bigint } | { err: string };
+export type NotifyResult = { ok: null } | { err: string };
 export type TransferResult = { ok: bigint } | { err: string };
 export type TrapResult = { ok: string } | { err: string };
 export interface _SERVICE {
     account: (arg_0: AccountArgs) => Promise<AccountResult>;
     accounts: () => Promise<AccountsResult>;
     balance: (arg_0: string) => Promise<BalanceResult>;
+    send_notification: () => Promise<NotifyResult>;
     transfer: (
         arg_0: string,
         arg_1: string,

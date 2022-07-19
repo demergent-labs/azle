@@ -382,8 +382,8 @@ function updateProposalState(proposal: Proposal, state: ProposalState) {
 }
 
 export function preUpgrade(): PreUpgrade {
-    ic.stableStorage<StableStorage>().installer = installer;
-    ic.stableStorage<StableStorage>().accounts = Object.entries(accounts).map(
+    ic.stable_storage<StableStorage>().installer = installer;
+    ic.stable_storage<StableStorage>().accounts = Object.entries(accounts).map(
         (entry) => {
             return {
                 owner: entry[0],
@@ -391,22 +391,22 @@ export function preUpgrade(): PreUpgrade {
             };
         }
     );
-    ic.stableStorage<StableStorage>().proposals = Object.entries(proposals).map(
-        (entry) => {
-            return {
-                key: entry[0],
-                value: entry[1]
-            };
-        }
-    );
-    ic.stableStorage<StableStorage>().nextProposalId = nextProposalId;
-    ic.stableStorage<StableStorage>().systemParams = systemParams;
+    ic.stable_storage<StableStorage>().proposals = Object.entries(
+        proposals
+    ).map((entry) => {
+        return {
+            key: entry[0],
+            value: entry[1]
+        };
+    });
+    ic.stable_storage<StableStorage>().nextProposalId = nextProposalId;
+    ic.stable_storage<StableStorage>().systemParams = systemParams;
 }
 
 export function postUpgrade(): PostUpgrade {
-    installer = ic.stableStorage<StableStorage>().installer;
+    installer = ic.stable_storage<StableStorage>().installer;
     accounts = ic
-        .stableStorage<StableStorage>()
+        .stable_storage<StableStorage>()
         .accounts.reduce((result, entry) => {
             return {
                 ...result,
@@ -414,13 +414,13 @@ export function postUpgrade(): PostUpgrade {
             };
         }, {});
     proposals = ic
-        .stableStorage<StableStorage>()
+        .stable_storage<StableStorage>()
         .proposals.reduce((result, entry) => {
             return {
                 ...result,
                 [entry.key]: entry.value
             };
         }, {});
-    nextProposalId = ic.stableStorage<StableStorage>().nextProposalId;
-    systemParams = ic.stableStorage<StableStorage>().systemParams;
+    nextProposalId = ic.stable_storage<StableStorage>().nextProposalId;
+    systemParams = ic.stable_storage<StableStorage>().systemParams;
 }

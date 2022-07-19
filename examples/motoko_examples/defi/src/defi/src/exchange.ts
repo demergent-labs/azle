@@ -1,4 +1,4 @@
-import { ic, nat, Opt, Principal } from 'azle';
+import { nat, Opt, Principal } from 'azle';
 import { Book } from './book';
 import { Order, OrderId, Token } from './types';
 
@@ -35,7 +35,7 @@ export const Exchange = function (
     const orders: Orders = {};
 
     function getOrders(): Order[] {
-        ic.print(
+        console.log(
             `List orders on exchange " ${_tradingPair[0]} / ${_tradingPair[1]}`
         );
         let vals = Object.values(orders);
@@ -120,7 +120,7 @@ export const Exchange = function (
         aToAmount: nat,
         bToAmount: nat
     ) {
-        ic.print(
+        console.log(
             `Process trade between order " ${orderA.id} # " and order " ${orderB.id}`
         );
 

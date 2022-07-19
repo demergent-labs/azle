@@ -1,5 +1,9 @@
 import { ImplItemMethod } from '../../../ast_utilities/types';
-import { CallFunctionInfo, Rust } from '../../../../../types';
+import {
+    CallFunctionInfo,
+    CanisterMethodFunctionInfo,
+    Rust
+} from '../../../../../types';
 
 // TODO I think I should hold off on anything crazy for now, just tell people to use float64 until further notice
 // TODO follow this issue https://github.com/boa-dev/boa/issues/1961 and this issue https://github.com/boa-dev/boa/issues/1962
@@ -8,7 +12,8 @@ import { CallFunctionInfo, Rust } from '../../../../../types';
 // TODO I need that control to possibly convert from a BigInt
 // TODO get this to work for Option...if necessary...probably is necessary to do some kind of recursion
 export function generateReturnValueHandler(
-    implItemMethod: ImplItemMethod
+    implItemMethod: ImplItemMethod,
+    canisterMethodFunctionInfo: CanisterMethodFunctionInfo
 ): Rust {
     const returnTypeName = getImplItemMethodReturnTypeName(implItemMethod);
 
@@ -19,10 +24,13 @@ export function generateReturnValueHandler(
         {
             ${
                 returnTypeName === ''
-                    ? `return;`
+                    ? canisterMethodFunctionInfo.manual
+                        ? `return ic_cdk::api::call::ManualReply::empty();`
+                        : `return;`
                     : `${generateReturnValueConversion(
                           '_azle_return_value',
-                          returnTypeName
+                          returnTypeName,
+                          canisterMethodFunctionInfo
                       )}`
             }
         }
@@ -30,7 +38,7 @@ export function generateReturnValueHandler(
         let _azle_final_js_value = handle_generator_result(
             &mut boa_context,
             &_azle_return_value
-        ).await;        
+        ).await;
 
         ${
             returnTypeName === ''
@@ -43,7 +51,8 @@ export function generateReturnValueHandler(
                 // serde_json::from_value(_azle_final_js_value.to_json(&mut boa_context).unwrap()).unwrap()
                 ${generateReturnValueConversion(
                     '_azle_final_js_value',
-                    returnTypeName
+                    returnTypeName,
+                    canisterMethodFunctionInfo
                 )}
             // }
         `
@@ -138,10 +147,10 @@ export function generateHandleGeneratorResultFunction(
             while _azle_continue_running == true {
                 let yield_result_js_value = _azle_next_js_object.call(&_azle_return_value, &_azle_args[..], _azle_boa_context).unwrap();
                 let yield_result_js_object = yield_result_js_value.as_object().unwrap();
-                
+
                 let yield_result_done_js_value = yield_result_js_object.get("done", _azle_boa_context).unwrap();
                 let yield_result_done_bool = yield_result_done_js_value.as_boolean().unwrap();
-                
+
                 let yield_result_value_js_value = yield_result_js_object.get("value", _azle_boa_context).unwrap();
 
                 if yield_result_done_bool == false {
@@ -157,7 +166,7 @@ export function generateHandleGeneratorResultFunction(
 
                         continue;
                     }
-                    
+
                     let name_js_value = yield_result_value_js_object.get("name", _azle_boa_context).unwrap();
                     let name_string = name_js_value.as_string().unwrap();
 
@@ -324,18 +333,18 @@ export function generateHandleGeneratorResultFunction(
                         let call_args_js_value = yield_result_value_js_object.get("args", _azle_boa_context).unwrap();
                         let call_args_js_object = call_args_js_value.as_object().unwrap();
 
-                        let call_function_name_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap(); // TODO get the first call arg
+                        let call_function_name_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap();
                         let call_function_name_string = call_function_name_js_value.as_string().unwrap().to_string();
 
                         match &call_function_name_string[..] {
                             ${callFunctionInfos
                                 .map((callFunctionInfo) => {
                                     return /* rust */ `
-                                    "${callFunctionInfo.functionName}" => {
+                                    "${callFunctionInfo.call.functionName}" => {
                                         let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
                                         let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
 
-                                        ${callFunctionInfo.params
+                                        ${callFunctionInfo.call.params
                                             .map((param, index) => {
                                                 return `
                                                 let ${
@@ -353,14 +362,214 @@ export function generateHandleGeneratorResultFunction(
                                             .join('\n')}
 
                                         let call_result = ${
-                                            callFunctionInfo.functionName
+                                            callFunctionInfo.call.functionName
                                         }(
                                             canister_id_principal,
-                                            ${callFunctionInfo.params
+                                            ${callFunctionInfo.call.params
                                                 .map((param) => {
                                                     return param.paramName;
                                                 })
                                                 .join(',\n')}
+                                        ).await;
+
+                                        match call_result {
+                                            Ok(value) => {
+                                                let js_value = value.0.azle_into_js_value(_azle_boa_context);
+
+                                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                                                    .property(
+                                                        "ok",
+                                                        js_value,
+                                                        boa_engine::property::Attribute::all()
+                                                    )
+                                                    .build();
+
+                                                let canister_result_js_value = canister_result_js_object.into();
+
+                                                _azle_args = vec![canister_result_js_value];
+                                            },
+                                            Err(err) => {
+                                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).azle_into_js_value(_azle_boa_context);
+
+                                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                                                    .property(
+                                                        "err",
+                                                        js_value,
+                                                        boa_engine::property::Attribute::all()
+                                                    )
+                                                    .build();
+
+                                                let canister_result_js_value = canister_result_js_object.into();
+
+                                                _azle_args = vec![canister_result_js_value];
+                                            }
+                                        };
+                                    },
+                                `;
+                                })
+                                .join('\n')}
+                            _ => ()
+                        };
+                    }
+
+                    if name_string == "call_with_payment" {
+                        let call_args_js_value = yield_result_value_js_object.get("args", _azle_boa_context).unwrap();
+                        let call_args_js_object = call_args_js_value.as_object().unwrap();
+
+                        let call_function_name_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap();
+                        let call_function_name_string = call_function_name_js_value.as_string().unwrap().to_string();
+
+                        match &call_function_name_string[..] {
+                            ${callFunctionInfos
+                                .map((callFunctionInfo) => {
+                                    return /* rust */ `
+                                    "${
+                                        callFunctionInfo.call_with_payment
+                                            .functionName
+                                    }" => {
+                                        let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
+                                        let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+
+                                        ${callFunctionInfo.call_with_payment.params
+                                            .map((param, index) => {
+                                                return `
+                                                let ${
+                                                    param.paramName
+                                                }_js_value = call_args_js_object.get("${
+                                                    index + 2
+                                                }", _azle_boa_context).unwrap();
+                                                let ${param.paramName}: ${
+                                                    param.paramType
+                                                } = ${
+                                                    param.paramName
+                                                }_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+                                            `;
+                                            })
+                                            .join('\n')}
+
+                                        let cycles_js_value = call_args_js_object.get("${
+                                            callFunctionInfo.call_with_payment
+                                                .params.length + 2
+                                        }", _azle_boa_context).unwrap();
+                                        let cycles: u64 = cycles_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+
+                                        let call_result = ${
+                                            callFunctionInfo.call_with_payment
+                                                .functionName
+                                        }(
+                                            canister_id_principal,
+                                            ${callFunctionInfo.call_with_payment.params
+                                                .map((param) => {
+                                                    return param.paramName;
+                                                })
+                                                .join(',\n')}${
+                                        callFunctionInfo.call_with_payment
+                                            .params.length > 0
+                                            ? ','
+                                            : ''
+                                    }
+                                            cycles
+                                        ).await;
+
+                                        match call_result {
+                                            Ok(value) => {
+                                                let js_value = value.0.azle_into_js_value(_azle_boa_context);
+
+                                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                                                    .property(
+                                                        "ok",
+                                                        js_value,
+                                                        boa_engine::property::Attribute::all()
+                                                    )
+                                                    .build();
+
+                                                let canister_result_js_value = canister_result_js_object.into();
+
+                                                _azle_args = vec![canister_result_js_value];
+                                            },
+                                            Err(err) => {
+                                                let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).azle_into_js_value(_azle_boa_context);
+
+                                                let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                                                    .property(
+                                                        "err",
+                                                        js_value,
+                                                        boa_engine::property::Attribute::all()
+                                                    )
+                                                    .build();
+
+                                                let canister_result_js_value = canister_result_js_object.into();
+
+                                                _azle_args = vec![canister_result_js_value];
+                                            }
+                                        };
+                                    },
+                                `;
+                                })
+                                .join('\n')}
+                            _ => ()
+                        };
+                    }
+
+                    if name_string == "call_with_payment128" {
+                        let call_args_js_value = yield_result_value_js_object.get("args", _azle_boa_context).unwrap();
+                        let call_args_js_object = call_args_js_value.as_object().unwrap();
+
+                        let call_function_name_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap();
+                        let call_function_name_string = call_function_name_js_value.as_string().unwrap().to_string();
+
+                        match &call_function_name_string[..] {
+                            ${callFunctionInfos
+                                .map((callFunctionInfo) => {
+                                    return /* rust */ `
+                                    "${
+                                        callFunctionInfo.call_with_payment128
+                                            .functionName
+                                    }" => {
+                                        let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
+                                        let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+
+                                        ${callFunctionInfo.call_with_payment128.params
+                                            .map((param, index) => {
+                                                return `
+                                                let ${
+                                                    param.paramName
+                                                }_js_value = call_args_js_object.get("${
+                                                    index + 2
+                                                }", _azle_boa_context).unwrap();
+                                                let ${param.paramName}: ${
+                                                    param.paramType
+                                                } = ${
+                                                    param.paramName
+                                                }_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+                                            `;
+                                            })
+                                            .join('\n')}
+
+                                        let cycles_js_value = call_args_js_object.get("${
+                                            callFunctionInfo
+                                                .call_with_payment128.params
+                                                .length + 2
+                                        }", _azle_boa_context).unwrap();
+                                        let cycles: u128 = cycles_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+
+                                        let call_result = ${
+                                            callFunctionInfo
+                                                .call_with_payment128
+                                                .functionName
+                                        }(
+                                            canister_id_principal,
+                                            ${callFunctionInfo.call_with_payment128.params
+                                                .map((param) => {
+                                                    return param.paramName;
+                                                })
+                                                .join(',\n')}${
+                                        callFunctionInfo.call_with_payment128
+                                            .params.length > 0
+                                            ? ','
+                                            : ''
+                                    }
+                                                cycles
                                         ).await;
 
                                         match call_result {
@@ -424,6 +633,10 @@ function getImplItemMethodReturnTypeName(
     if (returnTypeAst === undefined) {
         return '';
     } else {
+        if (returnTypeAst.tuple?.elems?.length === 0) {
+            return '()';
+        }
+
         if (returnTypeAst.path === undefined) {
             return '';
         }
@@ -443,7 +656,12 @@ function getImplItemMethodReturnTypeName(
 // TODO consider if we should use candid::Nat and candid::Int or if we should just use u128 and i128 directly (I almost think it would be simpler to just do the latter)
 function generateReturnValueConversion(
     jsValueName: string,
-    returnTypeName: string
+    returnTypeName: string,
+    canisterMethodFunctionInfo: CanisterMethodFunctionInfo
 ): string {
-    return `return ${jsValueName}.azle_try_from_js_value(&mut boa_context).unwrap();`;
+    if (canisterMethodFunctionInfo.manual === true) {
+        return `return ic_cdk::api::call::ManualReply::empty();`;
+    } else {
+        return `return ${jsValueName}.azle_try_from_js_value(&mut boa_context).unwrap();`;
+    }
 }

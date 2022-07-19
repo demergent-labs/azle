@@ -1,5 +1,5 @@
 import { generateIcObject } from '../ic_object';
-import { Rust } from '../../../../types';
+import { CallFunctionInfo, Rust } from '../../../../types';
 import * as tsc from 'typescript';
 import { getCanisterMethodFunctionDeclarationsFromSourceFiles } from '../../../typescript_to_candid/ast_utilities/canister_methods';
 import { getFunctionName } from '../../../typescript_to_candid/ast_utilities/miscellaneous';
@@ -9,9 +9,10 @@ import {
 } from '../../ast_utilities/miscellaneous';
 
 export function generateCanisterMethodInit(
-    sourceFiles: readonly tsc.SourceFile[]
+    sourceFiles: readonly tsc.SourceFile[],
+    callFunctionInfos: CallFunctionInfo[]
 ): Rust {
-    const icObject: Rust = generateIcObject([]);
+    const icObject: Rust = generateIcObject([], callFunctionInfos);
 
     // TODO this code is now copied in post_upgrade
     const initFunctionDeclarations =
@@ -31,7 +32,10 @@ export function generateCanisterMethodInit(
     );
     const userDefinedInitFunctionParams = [
         { paramName: 'boa_context', paramType: '&mut boa_engine::Context' },
-        ...getUserDefinedInitFunctionParams(initFunctionDeclaration)
+        ...getUserDefinedInitFunctionParams(
+            sourceFiles,
+            initFunctionDeclaration
+        )
     ];
 
     const developerDefinedInitFunctionCall: Rust =
@@ -104,6 +108,7 @@ export function generateDeveloperDefinedInitFunctionCall(
 
 // TODO this is almost copied verbatim from call_functions/call_function_params.ts
 export function getUserDefinedInitFunctionParams(
+    sourceFiles: readonly tsc.SourceFile[],
     functionDeclaration: tsc.FunctionDeclaration | undefined
 ): {
     paramName: string;
@@ -121,6 +126,7 @@ export function getUserDefinedInitFunctionParams(
         }
 
         const paramType = getRustTypeNameFromTypeNode(
+            sourceFiles,
             parameterDeclaration.type
         );
 

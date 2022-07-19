@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "stable_memory": {
+            "type": "custom",
+            "build": "npx azle stable_memory",
+            "root": "src",
+            "ts": "src/stable_memory.ts",
+            "candid": "src/stable_memory.did",
+            "wasm": "target/wasm32-unknown-unknown/release/stable_memory.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/stable_memory"
+            }
+        }
+    }
+}
