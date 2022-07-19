@@ -1134,7 +1134,7 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | msg cycles refunded      | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.msg_cycles_refunded.html)     | :white_check_mark: | :heavy_check_mark: |
 | msg cycles refunded 128  | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.msg_cycles_refunded128.html)  | :heavy_check_mark: | :heavy_check_mark: |
 | notify                   | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.notify.html)                  | :grey_question:    | :heavy_check_mark: |
-| notify raw               | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.notify_raw.html)              | :grey_question:    | :x:                |
+| notify raw               | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.notify_raw.html)              | :grey_question:    | :heavy_check_mark: |
 | notify with payment 128  | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.notify_with_payment128.html)  | :grey_question:    | :heavy_check_mark: |
 | performance counter      | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.performance_counter.html)     | :heavy_check_mark: | :heavy_check_mark: |
 | reject                   | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.reject.html)                  | :grey_question:    | :heavy_check_mark: |
