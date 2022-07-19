@@ -1,4 +1,4 @@
-import { large_wasm_deploy, run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/pre_and_post_upgrade';
 
@@ -12,7 +12,7 @@ const pre_and_post_upgrade_canister = createActor(
 );
 
 const tests: Test[] = [
-    ...large_wasm_deploy('pre_and_post_upgrade'),
+    ...deploy('pre_and_post_upgrade'),
     {
         name: 'getEntries',
         test: async () => {

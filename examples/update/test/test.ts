@@ -1,4 +1,4 @@
-import { large_wasm_deploy, run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/update';
 
 const update_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -8,7 +8,7 @@ const update_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...large_wasm_deploy('update'),
+    ...deploy('update'),
     {
         name: 'update',
         test: async () => {

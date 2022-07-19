@@ -1,4 +1,4 @@
-import { large_wasm_deploy, run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { createActor } from '../test/dfx_generated/key_value_store';
 
 const key_value_store_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -8,7 +8,7 @@ const key_value_store_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...large_wasm_deploy('key_value_store'),
+    ...deploy('key_value_store'),
     {
         name: 'get 0',
         test: async () => {

@@ -1,4 +1,4 @@
-import { large_wasm_deploy, ok, run_tests, Test } from 'azle/test';
+import { deploy, ok, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/ledger_canister';
 
@@ -62,7 +62,7 @@ function get_test_setups(): Test[] {
                 );
             }
         },
-        ...large_wasm_deploy('ledger_canister'),
+        ...deploy('ledger_canister'),
         {
             name: 'deploy icp_ledger',
             prep: async () => {

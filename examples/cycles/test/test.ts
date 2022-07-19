@@ -1,6 +1,6 @@
 // TODO If we want these tests to be more exact, we can check balances and make sure they are within some margin of error
 
-import { large_wasm_deploy, ok, run_tests, Test } from 'azle/test';
+import { deploy, ok, run_tests, Test } from 'azle/test';
 import { createActor as createCyclesActor } from '../test/dfx_generated/cycles';
 import { createActor as createIntermediaryActor } from '../test/dfx_generated/intermediary';
 
@@ -20,8 +20,8 @@ const intermediary_canister = createIntermediaryActor(
 );
 
 const tests: Test[] = [
-    ...large_wasm_deploy('cycles'), // TODO for now these tests need to be run on a fresh dfx start --clean, since cycles are not discarded on uninstall-code
-    ...large_wasm_deploy('intermediary'), // TODO for now these tests need to be run on a fresh dfx start --clean, since cycles are not discarded on uninstall-code
+    ...deploy('cycles'), // TODO for now these tests need to be run on a fresh dfx start --clean, since cycles are not discarded on uninstall-code
+    ...deploy('intermediary'), // TODO for now these tests need to be run on a fresh dfx start --clean, since cycles are not discarded on uninstall-code
     {
         name: 'initial getCanisterBalance',
         test: async () => {

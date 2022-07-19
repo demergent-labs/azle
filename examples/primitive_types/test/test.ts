@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { large_wasm_deploy, run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { createActor } from '../test/dfx_generated/primitive_types';
 
 const primitive_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -9,7 +9,7 @@ const primitive_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...large_wasm_deploy('primitive_types'),
+    ...deploy('primitive_types'),
     {
         name: 'getInt',
         test: async () => {

@@ -1,4 +1,4 @@
-import { large_wasm_deploy, run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { readFileSync } from 'fs';
 import { createActor } from '../test/dfx_generated/bytes';
 
@@ -9,7 +9,7 @@ const bytes_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...large_wasm_deploy('bytes'),
+    ...deploy('bytes'),
     {
         name: 'get_bytes 1 kb',
         test: async () => {

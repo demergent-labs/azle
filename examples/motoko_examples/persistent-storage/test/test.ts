@@ -1,4 +1,4 @@
-import { large_wasm_deploy, run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { createActor } from '../test/dfx_generated/persistent';
 
 const persistentStorage_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -8,7 +8,7 @@ const persistentStorage_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...large_wasm_deploy('persistent'),
+    ...deploy('persistent'),
     {
         name: 'increment',
         test: async () => {

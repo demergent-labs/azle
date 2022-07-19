@@ -96,45 +96,7 @@ export async function run_tests(tests: Test[]) {
     }
 }
 
-export function cleanDeploy(...canisterNames: string[]): Test[] {
-    return [
-        ...canisterNames.map((canisterName) => {
-            return {
-                name: `clear canister memory for ${canisterName}`,
-                prep: async () => {
-                    execSync(
-                        `dfx canister uninstall-code ${canisterName} || true`,
-                        {
-                            stdio: 'inherit'
-                        }
-                    );
-                }
-            };
-        }),
-        {
-            // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-            name: 'waiting for createActor fetchRootKey',
-            wait: 5000
-        },
-        ...canisterNames
-            .map((canister_name) => large_wasm_deploy(canister_name))
-            .flat()
-        // TODO dfx deploy does not work with gzipped wasm binaries: https://forum.dfinity.org/t/new-and-improved-rust-cdk-first-class-support-for-rust-canister-development/10399/38?u=lastmjs
-        // {
-        //     name: 'deploy',
-        //     prep: async () => {
-        //         execSync(`dfx deploy`, {
-        //             stdio: 'inherit'
-        //         });
-        //     }
-        // }
-    ];
-}
-
-export function large_wasm_deploy(
-    canister_name: string,
-    argument?: string
-): Test[] {
+export function deploy(canister_name: string, argument?: string): Test[] {
     return [
         {
             // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
