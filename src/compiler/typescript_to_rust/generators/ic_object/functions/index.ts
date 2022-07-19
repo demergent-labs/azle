@@ -7,13 +7,14 @@ import { generateIcObjectFunctionCanisterBalance } from './canister_balance';
 import { generateIcObjectFunctionCanisterBalance128 } from './canister_balance128';
 import { generateIcObjectFunctionDataCertificate } from './data_certificate';
 import { generateIcObjectFunctionId } from './id';
+import { generateIcObjectFunctionMethodName } from './method_name';
 import { generateIcObjectFunctionMsgCyclesAccept } from './msg_cycles_accept';
 import { generateIcObjectFunctionMsgCyclesAccept128 } from './msg_cycles_accept128';
 import { generateIcObjectFunctionMsgCyclesAvailable } from './msg_cycles_available';
 import { generateIcObjectFunctionMsgCyclesAvailable128 } from './msg_cycles_available128';
 import { generateIcObjectFunctionMsgCyclesRefunded } from './msg_cycles_refunded';
 import { generateIcObjectFunctionMsgCyclesRefunded128 } from './msg_cycles_refunded128';
-import { generateIcObjectFunctionMethodName } from './method_name';
+import { generateIcObjectFunctionNotifyRaw } from './notify_raw';
 import { generateIcObjectFunctionPrint } from './print';
 import { generateIcObjectFunctionReject } from './reject';
 import { generateIcObjectFunctionRejectCode } from './reject_code';
@@ -71,6 +72,7 @@ export function generateIcObjectFunctions(
         generateIcObjectFunctionMsgCyclesRefunded();
     const icObjectFunctionMsgCyclesRefunded128: Rust =
         generateIcObjectFunctionMsgCyclesRefunded128();
+    const icObjectFunctionNotifyRaw: Rust = generateIcObjectFunctionNotifyRaw();
     const icObjectFunctionPrint: Rust = generateIcObjectFunctionPrint();
     const icObjectFunctionReject: Rust = generateIcObjectFunctionReject();
     const icObjectFunctionRejectCode: Rust =
@@ -121,6 +123,7 @@ export function generateIcObjectFunctions(
         ${icObjectFunctionMsgCyclesAvailable128}
         ${icObjectFunctionMsgCyclesRefunded}
         ${icObjectFunctionMsgCyclesRefunded128}
+        ${icObjectFunctionNotifyRaw}
         ${icObjectFunctionPrint}
         ${icObjectFunctionReject}
         ${icObjectFunctionRejectCode}
