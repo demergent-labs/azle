@@ -1,4 +1,4 @@
-import { large_wasm_deploy, run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from './dfx_generated/whoami';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
@@ -29,7 +29,7 @@ const whoami_canister = createActor(canisterId, {
 });
 
 const tests: Test[] = [
-    ...large_wasm_deploy('whoami', `'(principal "${someonePrincipal}")'`),
+    ...deploy('whoami', `'(principal "${someonePrincipal}")'`),
     {
         name: 'installer',
         test: async () => {

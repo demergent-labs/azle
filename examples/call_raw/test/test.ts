@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { large_wasm_deploy, ok, run_tests, Test } from 'azle/test';
+import { deploy, ok, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/call_raw';
 
@@ -10,7 +10,7 @@ const call_raw_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...large_wasm_deploy('call_raw'),
+    ...deploy('call_raw'),
     {
         name: 'execute_call_raw raw_rand',
         test: async () => {

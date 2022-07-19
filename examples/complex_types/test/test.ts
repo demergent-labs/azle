@@ -1,6 +1,6 @@
 // TODO this needs to be more thoroughly tested
 
-import { large_wasm_deploy, run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { createActor } from '../test/dfx_generated/complex_types';
 
 const complex_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -10,7 +10,7 @@ const complex_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...large_wasm_deploy('complex_types'),
+    ...deploy('complex_types'),
     {
         name: 'getAllUsers',
         test: async () => {

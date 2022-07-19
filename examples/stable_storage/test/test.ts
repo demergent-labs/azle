@@ -1,4 +1,4 @@
-import { large_wasm_deploy, run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from './dfx_generated/stable_storage';
 import { Principal } from '@dfinity/principal';
@@ -473,7 +473,7 @@ const check_writes: Test[] = [
 ];
 
 const tests: Test[] = [
-    ...large_wasm_deploy('stable_storage'),
+    ...deploy('stable_storage'),
     ...initial_reads,
     ...writes,
     ...check_writes,

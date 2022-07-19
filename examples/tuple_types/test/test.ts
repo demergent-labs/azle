@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { large_wasm_deploy, run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/tuple_types';
 
 const tuple_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -9,7 +9,7 @@ const tuple_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...large_wasm_deploy('tuple_types'),
+    ...deploy('tuple_types'),
     // TODO https://github.com/demergent-labs/azle/issues/254
     // {
     //     name: 'primitive_one_tuple_return_type',
