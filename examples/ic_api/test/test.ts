@@ -31,6 +31,14 @@ const tests: Test[] = [
         }
     },
     {
+        name: 'canister build',
+        prep: async () => {
+            execSync(`dfx build ic_api`, {
+                stdio: 'inherit'
+            });
+        }
+    },
+    {
         name: 'canister install',
         prep: async () => {
             execSync(
@@ -214,10 +222,8 @@ const tests: Test[] = [
         test: async () => {
             const result = await ic_api_canister.performance_counter();
 
-            console.log('performance_counter result', result);
-
             return {
-                ok: result === 218_643n // TODO watch this, I am not sure how deterministic it is, it has changed on me once
+                ok: result >= 200_000n && result <= 300_000n
             };
         }
     },
