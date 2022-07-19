@@ -1,4 +1,4 @@
-import { cleanDeploy, run_tests, Test } from 'azle/test';
+import { large_wasm_deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/generators';
 
@@ -9,7 +9,7 @@ const generators_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('generators'),
+    ...large_wasm_deploy('generators'),
     {
         name: 'get_randomness_directly',
         test: async () => {

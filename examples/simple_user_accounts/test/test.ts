@@ -1,4 +1,4 @@
-import { cleanDeploy, run_tests, Test } from 'azle/test';
+import { large_wasm_deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/simple_user_accounts';
 
@@ -12,7 +12,7 @@ const simple_user_accounts_canister = createActor(
 );
 
 const tests: Test[] = [
-    ...cleanDeploy('simple_user_accounts'),
+    ...large_wasm_deploy('simple_user_accounts'),
     {
         name: 'getUserById',
         test: async () => {

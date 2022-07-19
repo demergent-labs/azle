@@ -1,4 +1,4 @@
-import { cleanDeploy, run_tests, Ok, Test } from 'azle/test';
+import { large_wasm_deploy, run_tests, Ok, Test } from 'azle/test';
 import { int } from 'azle';
 import { createActor } from './dfx_generated/quicksort';
 
@@ -23,7 +23,7 @@ async function arrayIsSorted(
 }
 
 const tests: Test[] = [
-    ...cleanDeploy('quicksort'),
+    ...large_wasm_deploy('quicksort'),
     {
         name: 'sort - with values from the motoko repo',
         test: async () => {

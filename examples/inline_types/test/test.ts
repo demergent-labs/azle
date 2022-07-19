@@ -1,4 +1,4 @@
-import { cleanDeploy, run_tests, Test } from 'azle/test';
+import { large_wasm_deploy, run_tests, Test } from 'azle/test';
 import { createActor } from '../test/dfx_generated/inline_types';
 
 const inline_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -8,7 +8,7 @@ const inline_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('inline_types'),
+    ...large_wasm_deploy('inline_types'),
     {
         name: 'inlineRecordReturnType',
         test: async () => {

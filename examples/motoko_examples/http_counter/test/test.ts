@@ -1,8 +1,8 @@
-import { cleanDeploy, run_tests, Test } from 'azle/test';
+import { large_wasm_deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 
 const tests: Test[] = [
-    ...cleanDeploy('http_counter'),
+    ...large_wasm_deploy('http_counter'),
     {
         name: 'init get count',
         test: async () => {

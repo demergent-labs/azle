@@ -1,4 +1,4 @@
-import { cleanDeploy, run_tests, Test } from 'azle/test';
+import { large_wasm_deploy, run_tests, Test } from 'azle/test';
 import { createActor } from '../test/dfx_generated/minimal_dapp';
 
 const counter_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -8,7 +8,7 @@ const counter_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('minimal_dapp'),
+    ...large_wasm_deploy('minimal_dapp'),
     {
         name: 'init get count',
         test: async () => {

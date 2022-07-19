@@ -1,4 +1,4 @@
-import { cleanDeploy, run_tests, Test } from 'azle/test';
+import { large_wasm_deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/heartbeat';
 
@@ -9,7 +9,7 @@ const heartbeat_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('heartbeat'),
+    ...large_wasm_deploy('heartbeat'),
     {
         name: 'Wait for first heartbeat to be called',
         wait: 5000

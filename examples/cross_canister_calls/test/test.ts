@@ -1,4 +1,4 @@
-import { cleanDeploy, ok, run_tests, Test } from 'azle/test';
+import { large_wasm_deploy, ok, run_tests, Test } from 'azle/test';
 import { createActor as createActorCanister1 } from '../test/dfx_generated/canister1';
 import { createActor as createActorCanister2 } from '../test/dfx_generated/canister2';
 
@@ -15,7 +15,8 @@ const canister2 = createActorCanister2('ryjl3-tyaaa-aaaaa-aaaba-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('canister1', 'canister2'),
+    ...large_wasm_deploy('canister1'),
+    ...large_wasm_deploy('canister2'),
     {
         name: 'canister1 balance 0',
         test: async () => {

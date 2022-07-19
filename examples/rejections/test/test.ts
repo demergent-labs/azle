@@ -1,4 +1,4 @@
-import { cleanDeploy, ok, run_tests, Test } from 'azle/test';
+import { large_wasm_deploy, ok, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/rejections';
 
 const rejections_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -8,7 +8,8 @@ const rejections_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('rejections', 'some_service'),
+    ...large_wasm_deploy('rejections'),
+    ...large_wasm_deploy('some_service'),
     {
         name: 'reject code NO_ERROR',
         test: async () => {

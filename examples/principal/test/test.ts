@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { cleanDeploy, run_tests, Test } from 'azle/test';
+import { large_wasm_deploy, run_tests, Test } from 'azle/test';
 import { createActor } from '../test/dfx_generated/principal';
 
 const principal_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -16,7 +16,7 @@ const to_text_tests = get_to_text_tests();
 const to_uint8array_tests = get_to_uint8array_tests();
 
 const tests: Test[] = [
-    ...cleanDeploy('principal'),
+    ...large_wasm_deploy('principal'),
     {
         name: 'principal_return_type',
         test: async () => {

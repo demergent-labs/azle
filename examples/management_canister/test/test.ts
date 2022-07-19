@@ -1,4 +1,4 @@
-import { cleanDeploy, ok, run_tests, Test } from 'azle/test';
+import { large_wasm_deploy, ok, run_tests, Test } from 'azle/test';
 import { readFileSync } from 'fs';
 import { createActor } from '../test/dfx_generated/management_canister';
 
@@ -9,7 +9,7 @@ const management_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('management_canister'),
+    ...large_wasm_deploy('management_canister'),
     {
         name: 'execute_create_canister',
         test: async () => {

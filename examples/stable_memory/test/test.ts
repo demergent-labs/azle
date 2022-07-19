@@ -1,4 +1,4 @@
-import { cleanDeploy, run_tests, Test } from 'azle/test';
+import { large_wasm_deploy, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/stable_memory';
 
 // TODO Understand why these numbers are the way they are https://github.com/demergent-labs/azle/issues/485
@@ -12,7 +12,7 @@ const stable_memory_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('stable_memory'),
+    ...large_wasm_deploy('stable_memory'),
     {
         name: 'stable size',
         test: async () => {

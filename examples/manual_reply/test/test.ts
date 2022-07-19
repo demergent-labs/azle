@@ -1,4 +1,4 @@
-import { cleanDeploy, run_tests, Test } from 'azle/test';
+import { large_wasm_deploy, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/manual_reply';
 import { Element } from './dfx_generated/manual_reply/manual_reply.did';
 import { execSync } from 'child_process';
@@ -10,7 +10,7 @@ const manual_reply_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('manual_reply'),
+    ...large_wasm_deploy('manual_reply'),
     {
         name: 'manual_update when calling ic.reject',
         test: async () => {
