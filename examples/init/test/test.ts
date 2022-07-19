@@ -1,5 +1,4 @@
-import { run_tests, Test } from 'azle/test';
-import { execSync } from 'child_process';
+import { large_wasm_deploy, run_tests, Test } from 'azle/test';
 import { createActor } from '../test/dfx_generated/init';
 
 const init_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -9,46 +8,10 @@ const init_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    {
-        name: 'clear canister memory',
-        prep: async () => {
-            execSync(`dfx canister uninstall-code init || true`, {
-                stdio: 'inherit'
-            });
-        }
-    },
-    {
-        name: `create canister init`,
-        prep: async () => {
-            execSync(`dfx canister create init`, {
-                stdio: 'inherit'
-            });
-        }
-    },
-    {
-        name: `build canister init`,
-        prep: async () => {
-            execSync(`dfx build init`, {
-                stdio: 'inherit'
-            });
-        }
-    },
-    {
-        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-        name: 'waiting for createActor fetchRootKey',
-        wait: 5000
-    },
-    {
-        name: 'deploy',
-        prep: async () => {
-            execSync(
-                `dfx canister install --argument '(record { id = "0" }, variant { Fire }, principal "rrkah-fqaaa-aaaaa-aaaaq-cai")' init --wasm target/wasm32-unknown-unknown/release/init.wasm.gz`,
-                {
-                    stdio: 'inherit'
-                }
-            );
-        }
-    },
+    ...large_wasm_deploy(
+        'init',
+        `'(record { id = "0" }, variant { Fire }, principal "rrkah-fqaaa-aaaaa-aaaaq-cai")'`
+    ),
     {
         name: 'getUser',
         test: async () => {

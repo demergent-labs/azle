@@ -116,39 +116,9 @@ export function cleanDeploy(...canisterNames: string[]): Test[] {
             name: 'waiting for createActor fetchRootKey',
             wait: 5000
         },
-        ...canisterNames.map((canisterName) => {
-            return {
-                name: `create canister ${canisterName}`,
-                prep: async () => {
-                    execSync(`dfx canister create ${canisterName}`, {
-                        stdio: 'inherit'
-                    });
-                }
-            };
-        }),
-        ...canisterNames.map((canisterName) => {
-            return {
-                name: `build canister ${canisterName}`,
-                prep: async () => {
-                    execSync(`dfx build ${canisterName}`, {
-                        stdio: 'inherit'
-                    });
-                }
-            };
-        }),
-        ...canisterNames.map((canisterName) => {
-            return {
-                name: `install canister ${canisterName}`,
-                prep: async () => {
-                    execSync(
-                        `dfx canister install ${canisterName} --wasm target/wasm32-unknown-unknown/release/${canisterName}.wasm.gz`,
-                        {
-                            stdio: 'inherit'
-                        }
-                    );
-                }
-            };
-        })
+        ...canisterNames
+            .map((canister_name) => large_wasm_deploy(canister_name))
+            .flat()
         // TODO dfx deploy does not work with gzipped wasm binaries: https://forum.dfinity.org/t/new-and-improved-rust-cdk-first-class-support-for-rust-canister-development/10399/38?u=lastmjs
         // {
         //     name: 'deploy',
@@ -158,5 +128,58 @@ export function cleanDeploy(...canisterNames: string[]): Test[] {
         //         });
         //     }
         // }
+    ];
+}
+
+export function large_wasm_deploy(
+    canister_name: string,
+    argument?: string
+): Test[] {
+    return [
+        {
+            // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
+            name: 'waiting for createActor fetchRootKey',
+            wait: 5000
+        },
+        {
+            name: 'clear canister memory',
+            prep: async () => {
+                execSync(
+                    `dfx canister uninstall-code ${canister_name} || true`,
+                    {
+                        stdio: 'inherit'
+                    }
+                );
+            }
+        },
+        {
+            name: `create canister ${canister_name}`,
+            prep: async () => {
+                execSync(`dfx canister create ${canister_name}`, {
+                    stdio: 'inherit'
+                });
+            }
+        },
+        {
+            name: `build canister ${canister_name}`,
+            prep: async () => {
+                execSync(`dfx build ${canister_name}`, {
+                    stdio: 'inherit'
+                });
+            }
+        },
+        {
+            name: `install canister ${canister_name}`,
+            prep: async () => {
+                execSync(
+                    `dfx canister install${
+                        argument === undefined ? '' : ` --argument ${argument}`
+                    } ${canister_name} --wasm target/wasm32-unknown-unknown/release/${canister_name}.wasm.gz`,
+                    {
+                        stdio: 'inherit'
+                    }
+                );
+            }
+        }
     ];
 }

@@ -1,5 +1,4 @@
 import { cleanDeploy, run_tests, Test } from 'azle/test';
-import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 import { createActor } from '../test/dfx_generated/bytes';
 

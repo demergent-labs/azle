@@ -1,4 +1,4 @@
-import { ok, run_tests, Test } from 'azle/test';
+import { large_wasm_deploy, ok, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/ledger_canister';
 
@@ -19,24 +19,12 @@ run_tests(tests);
 function get_test_setups(): Test[] {
     return [
         {
-            name: 'clear canister memory',
+            name: 'clear icp_ledger canister memory',
             prep: async () => {
-                execSync(
-                    `dfx canister uninstall-code ledger_canister || true`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-
                 execSync(`dfx canister uninstall-code icp_ledger || true`, {
                     stdio: 'inherit'
                 });
             }
-        },
-        {
-            // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-            name: 'waiting for createActor fetchRootKey',
-            wait: 5000
         },
         {
             name: 'icp_ledger setup',
@@ -74,33 +62,7 @@ function get_test_setups(): Test[] {
                 );
             }
         },
-        {
-            name: `create canister ledger_canister`,
-            prep: async () => {
-                execSync(`dfx canister create ledger_canister`, {
-                    stdio: 'inherit'
-                });
-            }
-        },
-        {
-            name: `build canister ledger_canister`,
-            prep: async () => {
-                execSync(`dfx build ledger_canister`, {
-                    stdio: 'inherit'
-                });
-            }
-        },
-        {
-            name: `install canister ledger_canister`,
-            prep: async () => {
-                execSync(
-                    `dfx canister install ledger_canister --wasm target/wasm32-unknown-unknown/release/ledger_canister.wasm.gz`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-            }
-        },
+        ...large_wasm_deploy('ledger_canister'),
         {
             name: 'deploy icp_ledger',
             prep: async () => {

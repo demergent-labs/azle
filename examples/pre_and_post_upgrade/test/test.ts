@@ -1,4 +1,4 @@
-import { cleanDeploy, run_tests, Test } from 'azle/test';
+import { large_wasm_deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/pre_and_post_upgrade';
 
@@ -12,7 +12,7 @@ const pre_and_post_upgrade_canister = createActor(
 );
 
 const tests: Test[] = [
-    ...cleanDeploy('pre_and_post_upgrade'),
+    ...large_wasm_deploy('pre_and_post_upgrade'),
     {
         name: 'getEntries',
         test: async () => {
@@ -64,9 +64,12 @@ const tests: Test[] = [
     {
         name: 'deploy',
         prep: async () => {
-            execSync(`dfx deploy`, {
-                stdio: 'inherit'
-            });
+            execSync(
+                `dfx canister install --mode upgrade pre_and_post_upgrade --wasm target/wasm32-unknown-unknown/release/pre_and_post_upgrade.wasm.gz`,
+                {
+                    stdio: 'inherit'
+                }
+            );
         }
     },
     {

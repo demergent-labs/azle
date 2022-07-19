@@ -11,6 +11,5 @@
                 "output": "test/dfx_generated/basic_dao"
             }
         }
-    },
-    "dfx": "0.9.3"
+    }
 }
