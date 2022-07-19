@@ -276,7 +276,7 @@ export function getInt(): Query<int> {
 }
 
 export function printInt(int: int): Query<int> {
-    ic.print(typeof int);
+    console.log(typeof int);
     return int;
 }
 ```
@@ -304,7 +304,7 @@ export function getInt64(): Query<int64> {
 }
 
 export function printInt64(int64: int64): Query<int64> {
-    ic.print(typeof int64);
+    console.log(typeof int64);
     return int64;
 }
 ```
@@ -332,7 +332,7 @@ export function getInt32(): Query<int32> {
 }
 
 export function printInt32(int32: int32): Query<int32> {
-    ic.print(typeof int32);
+    console.log(typeof int32);
     return int32;
 }
 ```
@@ -360,7 +360,7 @@ export function getInt16(): Query<int16> {
 }
 
 export function printInt16(int16: int16): Query<int16> {
-    ic.print(typeof int16);
+    console.log(typeof int16);
     return int16;
 }
 ```
@@ -388,7 +388,7 @@ export function getInt8(): Query<int8> {
 }
 
 export function printInt8(int8: int8): Query<int8> {
-    ic.print(typeof int8);
+    console.log(typeof int8);
     return int8;
 }
 ```
@@ -416,7 +416,7 @@ export function getNat(): Query<nat> {
 }
 
 export function printNat(nat: nat): Query<nat> {
-    ic.print(typeof nat);
+    console.log(typeof nat);
     return nat;
 }
 ```
@@ -444,7 +444,7 @@ export function getNat64(): Query<nat64> {
 }
 
 export function printNat64(nat64: nat64): Query<nat64> {
-    ic.print(typeof nat64);
+    console.log(typeof nat64);
     return nat64;
 }
 ```
@@ -472,7 +472,7 @@ export function getNat32(): Query<nat32> {
 }
 
 export function printNat32(nat32: nat32): Query<nat32> {
-    ic.print(typeof nat32);
+    console.log(typeof nat32);
     return nat32;
 }
 ```
@@ -500,7 +500,7 @@ export function getNat16(): Query<nat16> {
 }
 
 export function printNat16(nat16: nat16): Query<nat16> {
-    ic.print(typeof nat16);
+    console.log(typeof nat16);
     return nat16;
 }
 ```
@@ -528,7 +528,7 @@ export function getNat8(): Query<nat8> {
 }
 
 export function printNat8(nat8: nat8): Query<nat8> {
-    ic.print(typeof nat8);
+    console.log(typeof nat8);
     return nat8;
 }
 ```
@@ -556,7 +556,7 @@ export function getFloat64(): Query<float64> {
 }
 
 export function printFloat64(float64: float64): Query<float64> {
-    ic.print(typeof float64);
+    console.log(typeof float64);
     return float64;
 }
 ```
@@ -584,7 +584,7 @@ export function getFloat32(): Query<float32> {
 }
 
 export function printFloat32(float32: float32): Query<float32> {
-    ic.print(typeof float32);
+    console.log(typeof float32);
     return float32;
 }
 ```
@@ -612,7 +612,7 @@ export function getPrincipal(): Query<Principal> {
 }
 
 export function printPrincipal(principal: Principal): Query<Principal> {
-    ic.print(typeof principal);
+    console.log(typeof principal);
     return principal;
 }
 ```
@@ -642,7 +642,7 @@ export function getString(): Query<string> {
 }
 
 export function printString(string: string): Query<string> {
-    ic.print(typeof string);
+    console.log(typeof string);
     return string;
 }
 ```
@@ -670,7 +670,7 @@ export function getBoolean(): Query<boolean> {
 }
 
 export function printBoolean(boolean: boolean): Query<boolean> {
-    ic.print(typeof boolean);
+    console.log(typeof boolean);
     return boolean;
 }
 ```

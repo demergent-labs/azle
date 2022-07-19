@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "null_example": {
+            "type": "custom",
+            "build": "npx azle null_example",
+            "root": "src",
+            "ts": "src/null_example.ts",
+            "candid": "src/null_example.did",
+            "wasm": "target/wasm32-unknown-unknown/release/null_example.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/null_example"
+            }
+        }
+    }
+}

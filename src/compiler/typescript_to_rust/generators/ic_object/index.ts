@@ -1,14 +1,19 @@
-import { Rust, StableStorageVariableInfo } from '../../../../types';
+import {
+    CallFunctionInfo,
+    Rust,
+    StableStorageVariableInfo
+} from '../../../../types';
 
 export function generateIcObject(
-    stableStorageVariableInfos: StableStorageVariableInfo[]
+    stableStorageVariableInfos: StableStorageVariableInfo[],
+    callFunctionInfos: CallFunctionInfo[]
 ): Rust {
-    const _azleStableStorage = generate_AzleStableStorage(
+    const _azle_stable_storage = generateAzleStableStorage(
         stableStorageVariableInfos
     );
 
     return /* rust */ `
-        ${_azleStableStorage}
+        ${_azle_stable_storage}
 
         let ic = boa_engine::object::ObjectInitializer::new(&mut boa_context)
             .function(
@@ -16,8 +21,27 @@ export function generateIcObject(
                 "accept_message",
                 0
             )
+            ${
+                ''
+                // TODO: See https://github.com/demergent-labs/azle/issues/496
+                // .function(
+                //     _azle_ic_arg_data,
+                //     "arg_data",
+                //     0
+                // )
+            }
             .function(
-                azle_ic_caller,
+                _azle_ic_arg_data_raw,
+                "arg_data_raw",
+                0
+            )
+            .function(
+                _azle_ic_arg_data_raw_size,
+                "arg_data_raw_size",
+                0
+            )
+            .function(
+                _azle_ic_caller,
                 "caller",
                 0
             )
@@ -37,74 +61,165 @@ export function generateIcObject(
                 0
             )
             .function(
-                azle_ic_id,
+                _azle_ic_id,
                 "id",
                 0
             )
             .function(
-                _azle_method_name,
+                _azle_ic_method_name,
                 "method_name",
                 0
             )
             .function(
-                _azle_msg_cycles_accept,
+                _azle_ic_msg_cycles_accept,
                 "msg_cycles_accept",
                 0
             )
             .function(
-                _azle_msg_cycles_accept128,
+                _azle_ic_msg_cycles_accept128,
                 "msg_cycles_accept128",
                 0
             )
             .function(
-                _azle_msg_cycles_available,
+                _azle_ic_msg_cycles_available,
                 "msg_cycles_available",
                 0
             )
             .function(
-                _azle_msg_cycles_available128,
+                _azle_ic_msg_cycles_available128,
                 "msg_cycles_available128",
                 0
             )
             .function(
-                _azle_msg_cycles_refunded,
+                _azle_ic_msg_cycles_refunded,
                 "msg_cycles_refunded",
                 0
             )
             .function(
-                _azle_msg_cycles_refunded128,
+                _azle_ic_msg_cycles_refunded128,
                 "msg_cycles_refunded128",
                 0
             )
             .function(
-                azle_ic_print,
+                _azle_ic_print,
                 "print",
                 0
             )
             .function(
-                azle_ic_time,
+                _azle_ic_reject,
+                "reject",
+                0
+            )
+            .function(
+                _azle_ic_reject_code,
+                "reject_code",
+                0
+            )
+            .function(
+                _azle_ic_reply_raw,
+                "reply_raw",
+                0
+            )
+            .function(
+                _azle_ic_reject_message,
+                "reject_message",
+                0
+            )
+            .function(
+                _azle_ic_reply,
+                "reply",
+                0
+            )
+            .function(
+                _azle_ic_set_certified_data,
+                "set_certified_data",
+                0
+            )
+            .function(
+                _azle_ic_stable_bytes,
+                "stable_bytes",
+                0
+            )
+            .function(
+                _azle_ic_stable_grow,
+                "stable_grow",
+                0
+            )
+            .function(
+                _azle_ic_stable_read,
+                "stable_read",
+                0
+            )
+            .function(
+                _azle_ic_stable_size,
+                "stable_size",
+                0
+            )
+            .function(
+                _azle_ic_stable_write,
+                "stable_write",
+                0
+            )
+            .function(
+                _azle_ic_stable64_grow,
+                "stable64_grow",
+                0
+            )
+            .function(
+                _azle_ic_stable64_read,
+                "stable64_read",
+                0
+            )
+            .function(
+                _azle_ic_stable64_size,
+                "stable64_size",
+                0
+            )
+            .function(
+                _azle_ic_stable64_write,
+                "stable64_write",
+                0
+            )
+            .function(
+                _azle_ic_time,
                 "time",
                 0
             )
             .function(
-                azle_ic_trap,
+                _azle_ic_trap,
                 "trap",
                 0
             )
+            ${callFunctionInfos
+                .map((callFunctionInfo) => {
+                    return /* rust */ `
+                    .function(
+                        ${callFunctionInfo.notify.functionName},
+                        "${callFunctionInfo.notify.functionName}",
+                        0
+                    )
+                    .function(
+                        ${callFunctionInfo.notify_with_payment128.functionName},
+                        "${callFunctionInfo.notify_with_payment128.functionName}",
+                        0
+                    )
+                `;
+                })
+                .join('')}
             .property(
-                "_azleStableStorage",
-                _azleStableStorage,
+                "_azle_stable_storage",
+                _azle_stable_storage,
                 boa_engine::property::Attribute::all()
             )
             .build();
     `;
 }
 
-function generate_AzleStableStorage(
+function generateAzleStableStorage(
     stableStorageVariableInfos: StableStorageVariableInfo[]
 ): Rust {
     if (stableStorageVariableInfos.length === 0) {
-        return `let _azleStableStorage = boa_engine::object::ObjectInitializer::new(&mut boa_context).build();`;
+        return `let _azle_stable_storage = boa_engine::object::ObjectInitializer::new(&mut boa_context).build();`;
     } else {
         return `
             let (${stableStorageVariableInfos
@@ -151,7 +266,7 @@ function generate_AzleStableStorage(
                 })
                 .join('\n')}
 
-            let _azleStableStorage = boa_engine::object::ObjectInitializer::new(&mut boa_context)
+            let _azle_stable_storage = boa_engine::object::ObjectInitializer::new(&mut boa_context)
                 ${stableStorageVariableInfos
                     .filter(
                         (stableStorageVariableInfo) =>

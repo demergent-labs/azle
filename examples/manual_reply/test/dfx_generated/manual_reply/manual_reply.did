@@ -1,0 +1,52 @@
+type Element = record {
+    "id": text;
+    "orbitals": vec Orbital;
+    "state": State;
+};
+
+type RawReply = record {
+    "int": int;
+    "text": text;
+    "bool": bool;
+    "blob": blob;
+    "variant": Options;
+};
+
+type Orbital = record {
+    "layer": nat8;
+    "electrons": nat8;
+};
+
+type Solid = record {
+    "element": text;
+};
+
+type Gas = variant { "Elemental": null; "Mixed": null; "Toxic": null };
+
+type State = variant { "Gas": Gas; "Liquid": null; "Solid": Solid };
+
+type Options = variant { "Small": null; "Medium": null; "Large": null };
+
+service: {
+    "manual_query": (text) -> (text) query;
+    "query_blob": () -> (blob) query;
+    "query_float32": () -> (float32) query;
+    "query_int8": () -> (int8) query;
+    "query_nat": () -> (nat) query;
+    "query_null": () -> (null) query;
+    "query_record": () -> (Element) query;
+    "query_reserved": () -> (reserved) query;
+    "query_string": () -> (text) query;
+    "query_variant": () -> (Gas) query;
+    "manual_update": (text) -> (text);
+    "update_blob": () -> (blob);
+    "update_float32": () -> (float32);
+    "update_int8": () -> (int8);
+    "update_nat": () -> (nat);
+    "update_null": () -> (null);
+    "update_record": () -> (Element);
+    "update_reserved": () -> (reserved);
+    "update_string": () -> (text);
+    "update_variant": () -> (Gas);
+    "reply_raw": () -> (RawReply);
+}

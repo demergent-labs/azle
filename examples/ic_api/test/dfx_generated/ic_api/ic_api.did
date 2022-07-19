@@ -1,11 +1,15 @@
 service: {
+    "arg_data_raw": (blob, int8, bool, text) -> (blob) query;
+    "arg_data_raw_size": (blob, int8, bool, text) -> (nat32) query;
     "caller": () -> (principal) query;
     "canister_balance": () -> (nat64) query;
     "canister_balance128": () -> (nat) query;
     "data_certificate": () -> (opt blob) query;
     "id": () -> (principal) query;
     "print": (text) -> (bool) query;
+    "reject": (text) -> (empty) query;
     "time": () -> (nat64) query;
     "trap": (text) -> (bool) query;
     "data_certificate_null": () -> (opt blob);
+    "set_certified_data": (blob) -> ();
 }

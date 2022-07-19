@@ -12,5 +12,7 @@ service: {
     "account": (AccountArgs) -> (opt Account) query;
     "accounts": () -> (vec Account) query;
     "trap": () -> (text) query;
+    "get_notification": () -> (text) query;
     "transfer": (text, text, nat64) -> (nat64);
+    "receive_notification": (text) -> ();
 }

@@ -19,12 +19,12 @@ export const ic: ic = globalThis.ic;
 // globalThis.console = {
 //     ...globalThis.console,
 //     log: (...args: any[]) => {
-//         ic.print(...args);
+//         console.log(...args);
 //     }
 // };
 
-ic.stableStorage = function () {
-    return (ic as any)._azleStableStorage;
+ic.stable_storage = function () {
+    return (ic as any)._azle_stable_storage;
 };
 
 // ic.call = function* (...args) {
@@ -35,6 +35,40 @@ ic.stableStorage = function () {
 //             ...args
 //         ]
 //     } as any;
+// };
+
+// TODO: See https://github.com/demergent-labs/azle/issues/496
+
+/**
+ * Working declaration for `ic.result`. This is NOT the API we want, but at
+ * least it works.'
+ * Note: make sure to use in conjunction with it's type on the IC type below
+ */
+// ic.result = function <T>(canisterResult: AzleResult<T>): AzleResult<T> {
+//     if ('NoError' in ic.reject_code()) {
+//         return {
+//             ok: canisterResult.ok
+//         };
+//     }
+//     return {
+//         err: ic.reject_message()
+//     };
+// };
+
+/**
+ * Non-working declaration for `ic.result`. This is the API we want, but it
+ * doesn't work.
+ * Note: make sure to use in conjunction with it's type on the IC type below
+ */
+// ic.result = function <T>(): AzleResult<Array<T>> {
+//     if ('NoError' in ic.reject_code()) {
+//         return {
+//             ok: ic.arg_data() // Currently errors out.
+//         };
+//     }
+//     return {
+//         err: ic.reject_message()
+//     };
 // };
 
 ic.call_raw = function (...args) {
@@ -53,6 +87,9 @@ ic.call_raw128 = function (...args) {
 
 type ic = {
     accept_message: () => void;
+    // arg_data: () => any[]; // TODO: See https://github.com/demergent-labs/azle/issues/496
+    arg_data_raw: () => blob;
+    arg_data_raw_size: () => nat32;
     // call: (
     //     canisterId: Principal,
     //     methodName: string,
@@ -86,7 +123,26 @@ type ic = {
     msg_cycles_refunded: () => nat64;
     msg_cycles_refunded128: () => nat;
     print: (...args: any) => void;
-    stableStorage: <T>() => T;
+    reject: (message: string) => void;
+    reject_code: () => RejectionCode;
+    reject_message: () => string;
+    reply: (reply: any) => void;
+    reply_raw: (buf: blob) => void;
+    /** Working type declaration. Not the API we want though */
+    // result: <T>(canisterResult: AzleResult<T>) => AzleResult<T>;
+    /** Non-working type declaration. But API we want */
+    // result: <T>() => AzleResult<Array<T>>;
+    set_certified_data: (data: blob) => void;
+    stable_bytes: () => blob;
+    stable_grow: (new_pages: nat32) => StableGrowResult;
+    stable_read: (offset: nat32, length: nat32) => blob;
+    stable_size: () => nat32;
+    stable_write: (offset: nat32, buf: blob) => void;
+    stable64_grow: (new_pages: nat64) => Stable64GrowResult;
+    stable64_read: (offset: nat64, length: nat64) => blob;
+    stable64_size: () => nat64;
+    stable64_write: (offset: nat64, buffer: blob) => void;
+    stable_storage: <T>() => T;
     time: () => nat64;
     trap: (message: string) => never;
 };
@@ -98,14 +154,21 @@ export type Heartbeat = void | Generator;
 export type Init = void;
 export type InspectMessage = void;
 export type Query<T> = T;
+export type QueryManual<T> = void;
 // export type QueryAsync<T> = Generator<T>; // TODO enable once this is resolved: https://forum.dfinity.org/t/inter-canister-query-calls-community-consideration/6754
-export type Update<T> = T;
+export type Update<T> = T | Generator<any, T, any>;
+export type UpdateManual<T> = void;
 export type Oneway = void;
 // TODO we should change the type of UpdateAsync to force the dev to yield if possible
+// TODO UpdateAsync may become deprecated now that Update might be able to handle the generator and non-generator cases
 export type UpdateAsync<T> = Generator<any, T, any>; // TODO to be stricter we may want the last parameter to be unknown: https://github.com/demergent-labs/azle/issues/138
 // TODO the generator types are not exactly correct...but at least I've given the user the Async type
 export type Async<T> = Generator<any, T, any>; // TODO to be stricter we may want the last parameter to be unknown: https://github.com/demergent-labs/azle/issues/138
+
+// TODO see if we can get the T here to have some more information, like the func type
+// TODO we especially want to add the possibility of an optional cycle parameter and the notify method
 export type Canister<T> = T;
+
 export type Variant<T> = Partial<T>;
 export type Opt<T> = T | null;
 // export type Result<T, V> = {
@@ -124,10 +187,13 @@ export type Opt<T> = T | null;
 //     ok?: T;
 //     err?: string;
 // }>;
-export type CanisterResult<T> = Variant<{
+export type CanisterResult<T> = {
     ok?: T;
     err?: string;
-}>;
+    notify: () => CanisterResult<null>;
+    with_cycles: (cycles: nat64) => CanisterResult<T>;
+    with_cycles128: (cycles: nat) => CanisterResult<T>;
+};
 export type Stable<T> = T;
 
 export type int = bigint;
@@ -182,3 +248,28 @@ export type Func<
 > = [Principal, string];
 
 export { Principal } from '@dfinity/principal';
+
+export type RejectionCode = Variant<{
+    NoError: null;
+    SysFatal: null;
+    SysTransient: null;
+    DestinationInvalid: null;
+    CanisterReject: null;
+    CanisterError: null;
+    Unknown: null;
+}>;
+
+export type StableMemoryError = Variant<{
+    OutOfMemory: null;
+    OutOfBounds: null;
+}>;
+
+export type StableGrowResult = Variant<{
+    ok: nat32;
+    err: StableMemoryError;
+}>;
+
+export type Stable64GrowResult = Variant<{
+    ok: nat64;
+    err: StableMemoryError;
+}>;

@@ -5,19 +5,19 @@ type StableStorage = Stable<{
 }>;
 
 export function init(): Init {
-    ic.stableStorage<StableStorage>().counter = 0n;
+    ic.stable_storage<StableStorage>().counter = 0n;
 }
 
 export function increment(): Update<nat> {
-    ic.stableStorage<StableStorage>().counter += 1n;
-    return ic.stableStorage<StableStorage>().counter;
+    ic.stable_storage<StableStorage>().counter += 1n;
+    return ic.stable_storage<StableStorage>().counter;
 }
 
 export function get(): Query<nat> {
-    return ic.stableStorage<StableStorage>().counter;
+    return ic.stable_storage<StableStorage>().counter;
 }
 
 export function reset(): Update<nat> {
-    ic.stableStorage<StableStorage>().counter = 0n;
-    return ic.stableStorage<StableStorage>().counter;
+    ic.stable_storage<StableStorage>().counter = 0n;
+    return ic.stable_storage<StableStorage>().counter;
 }

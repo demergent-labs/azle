@@ -1,6 +1,7 @@
 import { AST, Impl, ImplItem, ImplItemMethod } from './types';
 import * as tsc from 'typescript';
 import { Rust } from '../../../types';
+import { getTypeAliasDeclaration } from '../../typescript_to_candid/ast_utilities/type_aliases';
 
 export function getImpls(ast: AST): Impl[] {
     return ast.items
@@ -35,7 +36,11 @@ export function getParamName(
 // TODO basically we would need to create special types that represent those inline types, which we could consider
 // TODO for now just document that you need to use explicit type names or array types, no inline types for cross-canister calls
 // TODO I would hope most canisters do not actually use inline types, if they do we will run into problems (turns out they do, but you can just give the types a name)
-export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
+export function getRustTypeNameFromTypeNode(
+    sourceFiles: readonly tsc.SourceFile[],
+    typeNode: tsc.TypeNode,
+    parentTypeName?: string
+): Rust {
     if (typeNode.kind === tsc.SyntaxKind.StringKeyword) {
         return `String`;
     }
@@ -48,15 +53,39 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
         return `()`;
     }
 
-    // TODO possibly type literals?
+    if (typeNode.kind === tsc.SyntaxKind.TypeLiteral) {
+        if (parentTypeName === undefined) {
+            throw new Error('The parentTypeName must be defined');
+        }
+
+        return parentTypeName;
+    }
+
+    if (typeNode.kind === tsc.SyntaxKind.LiteralType) {
+        const literalTypeNode = typeNode as tsc.LiteralTypeNode;
+
+        if (literalTypeNode.literal.kind === tsc.SyntaxKind.NullKeyword) {
+            return `()`;
+        }
+        // TODO possibly other literal types?
+    }
 
     if (typeNode.kind === tsc.SyntaxKind.ArrayType) {
         const arrayTypeNode = typeNode as tsc.ArrayTypeNode;
         const elementRustType = getRustTypeNameFromTypeNode(
+            sourceFiles,
             arrayTypeNode.elementType
         );
 
         return `Vec<${elementRustType}>`;
+    }
+
+    if (typeNode.kind === tsc.SyntaxKind.TupleType) {
+        if (parentTypeName === undefined) {
+            throw new Error('The parentTypeName must be defined');
+        }
+
+        return parentTypeName;
     }
 
     if (typeNode.kind === tsc.SyntaxKind.TypeReference) {
@@ -121,6 +150,14 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
                 return 'Vec<u8>';
             }
 
+            if (typeName === 'empty') {
+                return 'ic_cdk::export::candid::Empty';
+            }
+
+            if (typeName === 'reserved') {
+                return 'ic_cdk::export::candid::Reserved';
+            }
+
             if (typeName === 'Opt') {
                 if (typeReferenceNode.typeArguments === undefined) {
                     throw new Error('UpdateAsync must have an enclosed type');
@@ -128,39 +165,46 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
 
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
-                const typeName = getRustTypeNameFromTypeNode(firstTypeArgument);
+                const typeName = getRustTypeNameFromTypeNode(
+                    sourceFiles,
+                    firstTypeArgument
+                );
 
                 return `Option<${typeName}>`;
             }
 
-            if (typeName === 'Query') {
+            if (typeName === 'Query' || typeName === 'QueryManual') {
                 if (typeReferenceNode.typeArguments === undefined) {
-                    throw new Error('Query must have an enclosed type');
+                    throw new Error(
+                        'Query/QueryManual must have an enclosed type'
+                    );
                 }
 
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
-                return getRustTypeNameFromTypeNode(firstTypeArgument);
+                return getRustTypeNameFromTypeNode(
+                    sourceFiles,
+                    firstTypeArgument
+                );
             }
 
-            if (typeName === 'Update') {
+            if (
+                typeName === 'Update' ||
+                typeName === 'UpdateManual' ||
+                typeName === 'UpdateAsync'
+            ) {
                 if (typeReferenceNode.typeArguments === undefined) {
-                    throw new Error('Update must have an enclosed type');
+                    throw new Error(
+                        'Update/UpdateManual must have an enclosed type'
+                    );
                 }
 
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
-                return getRustTypeNameFromTypeNode(firstTypeArgument);
-            }
-
-            if (typeName === 'UpdateAsync') {
-                if (typeReferenceNode.typeArguments === undefined) {
-                    throw new Error('UpdateAsync must have an enclosed type');
-                }
-
-                const firstTypeArgument = typeReferenceNode.typeArguments[0];
-
-                return getRustTypeNameFromTypeNode(firstTypeArgument);
+                return getRustTypeNameFromTypeNode(
+                    sourceFiles,
+                    firstTypeArgument
+                );
             }
 
             if (typeName === 'CanisterResult') {
@@ -172,14 +216,47 @@ export function getRustTypeNameFromTypeNode(typeNode: tsc.TypeNode): Rust {
 
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
-                return getRustTypeNameFromTypeNode(firstTypeArgument);
+                return getRustTypeNameFromTypeNode(
+                    sourceFiles,
+                    firstTypeArgument
+                );
             }
 
             if (typeName === 'Oneway') {
                 return `()`;
             }
 
-            return typeReferenceNode.typeName.escapedText.toString();
+            if (typeName === 'Variant') {
+                if (parentTypeName === undefined) {
+                    throw new Error('The parentTypeName must be defined');
+                }
+
+                return parentTypeName;
+            }
+
+            if (typeName === 'Func') {
+                if (parentTypeName === undefined) {
+                    throw new Error('The parentTypeName must be defined');
+                }
+                return parentTypeName;
+            }
+
+            const typeAliasDeclaration = getTypeAliasDeclaration(
+                sourceFiles,
+                typeName
+            );
+
+            if (typeAliasDeclaration === undefined) {
+                throw new Error(
+                    `${typeName} must be defined in your TypeScript source file`
+                );
+            }
+
+            return getRustTypeNameFromTypeNode(
+                sourceFiles,
+                typeAliasDeclaration.type,
+                typeName
+            );
         }
     }
 

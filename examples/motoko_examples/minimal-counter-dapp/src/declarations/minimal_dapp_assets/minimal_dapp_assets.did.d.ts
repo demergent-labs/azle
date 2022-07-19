@@ -1,4 +1,6 @@
 import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@dfinity/agent';
+
 export type BatchId = bigint;
 export type BatchOperationKind =
     | { CreateAsset: CreateAssetArguments }
@@ -57,37 +59,47 @@ export interface UnsetAssetContentArguments {
     content_encoding: string;
 }
 export interface _SERVICE {
-    authorize: (arg_0: Principal) => Promise<undefined>;
-    clear: (arg_0: ClearArguments) => Promise<undefined>;
-    commit_batch: (arg_0: {
-        batch_id: BatchId;
-        operations: Array<BatchOperationKind>;
-    }) => Promise<undefined>;
-    create_asset: (arg_0: CreateAssetArguments) => Promise<undefined>;
-    create_batch: (arg_0: {}) => Promise<{ batch_id: BatchId }>;
-    create_chunk: (arg_0: {
-        content: Array<number>;
-        batch_id: BatchId;
-    }) => Promise<{ chunk_id: ChunkId }>;
-    delete_asset: (arg_0: DeleteAssetArguments) => Promise<undefined>;
-    get: (arg_0: { key: Key; accept_encodings: Array<string> }) => Promise<{
-        content: Array<number>;
-        sha256: [] | [Array<number>];
-        content_type: string;
-        content_encoding: string;
-        total_length: bigint;
-    }>;
-    get_chunk: (arg_0: {
-        key: Key;
-        sha256: [] | [Array<number>];
-        index: bigint;
-        content_encoding: string;
-    }) => Promise<{ content: Array<number> }>;
-    http_request: (arg_0: HttpRequest) => Promise<HttpResponse>;
-    http_request_streaming_callback: (
-        arg_0: StreamingCallbackToken
-    ) => Promise<[] | [StreamingCallbackHttpResponse]>;
-    list: (arg_0: {}) => Promise<
+    authorize: ActorMethod<[Principal], undefined>;
+    clear: ActorMethod<[ClearArguments], undefined>;
+    commit_batch: ActorMethod<
+        [{ batch_id: BatchId; operations: Array<BatchOperationKind> }],
+        undefined
+    >;
+    create_asset: ActorMethod<[CreateAssetArguments], undefined>;
+    create_batch: ActorMethod<[{}], { batch_id: BatchId }>;
+    create_chunk: ActorMethod<
+        [{ content: Array<number>; batch_id: BatchId }],
+        { chunk_id: ChunkId }
+    >;
+    delete_asset: ActorMethod<[DeleteAssetArguments], undefined>;
+    get: ActorMethod<
+        [{ key: Key; accept_encodings: Array<string> }],
+        {
+            content: Array<number>;
+            sha256: [] | [Array<number>];
+            content_type: string;
+            content_encoding: string;
+            total_length: bigint;
+        }
+    >;
+    get_chunk: ActorMethod<
+        [
+            {
+                key: Key;
+                sha256: [] | [Array<number>];
+                index: bigint;
+                content_encoding: string;
+            }
+        ],
+        { content: Array<number> }
+    >;
+    http_request: ActorMethod<[HttpRequest], HttpResponse>;
+    http_request_streaming_callback: ActorMethod<
+        [StreamingCallbackToken],
+        [] | [StreamingCallbackHttpResponse]
+    >;
+    list: ActorMethod<
+        [{}],
         Array<{
             key: Key;
             encodings: Array<{
@@ -99,15 +111,18 @@ export interface _SERVICE {
             content_type: string;
         }>
     >;
-    set_asset_content: (arg_0: SetAssetContentArguments) => Promise<undefined>;
-    store: (arg_0: {
-        key: Key;
-        content: Array<number>;
-        sha256: [] | [Array<number>];
-        content_type: string;
-        content_encoding: string;
-    }) => Promise<undefined>;
-    unset_asset_content: (
-        arg_0: UnsetAssetContentArguments
-    ) => Promise<undefined>;
+    set_asset_content: ActorMethod<[SetAssetContentArguments], undefined>;
+    store: ActorMethod<
+        [
+            {
+                key: Key;
+                content: Array<number>;
+                sha256: [] | [Array<number>];
+                content_type: string;
+                content_encoding: string;
+            }
+        ],
+        undefined
+    >;
+    unset_asset_content: ActorMethod<[UnsetAssetContentArguments], undefined>;
 }

@@ -9,7 +9,108 @@ const ic_api_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('cycles'),
+    ...cleanDeploy('ic_api'),
+    {
+        skip: true,
+        name: 'arg_data with zero params',
+        test: async () => {
+            const result = await ic_api_canister.arg_data_zero_params();
+
+            return {
+                ok: Array.isArray(result) && result.length === 0
+            };
+        }
+    },
+    {
+        skip: true,
+        name: 'arg_data with a single param',
+        test: async () => {
+            const result = await ic_api_canister.arg_data_one_param(true);
+
+            return {
+                ok: result === true
+            };
+        }
+    },
+    {
+        skip: true,
+        name: 'arg_data with multiple params',
+        test: async () => {
+            const blobString = 'Surprise!';
+            const blob = blobString.split('').map((char) => char.charCodeAt(0));
+            const int = 127;
+            const bool = true;
+            const string = 'test';
+
+            const result = await ic_api_canister.arg_data_multiple_params(
+                blob,
+                int,
+                bool,
+                string
+            );
+
+            return {
+                ok:
+                    result.blob.length === blob.length &&
+                    result.blob.every((byte, i) => blob[i] === byte) &&
+                    result.int === int &&
+                    result.boolean === bool &&
+                    result.string === string
+            };
+        }
+    },
+    {
+        name: 'arg_data_raw',
+        test: async () => {
+            const blobString = 'Surprise!';
+            const blob = blobString.split('').map((char) => char.charCodeAt(0));
+            const int = 127;
+            const bool = true;
+            const string = 'test';
+            const candidString = `(blob "${blobString}", ${int} : int8, ${bool}, "${string}")`;
+
+            const resultBytes = await ic_api_canister.arg_data_raw(
+                blob,
+                int,
+                bool,
+                string
+            );
+            const result = candidDecode(resultBytes);
+
+            return {
+                ok: result === candidString
+            };
+        }
+    },
+    {
+        name: 'arg_data_raw_size',
+        test: async () => {
+            const blobString = 'Surprise!';
+            const blob = blobString.split('').map((char) => char.charCodeAt(0));
+            const int = 127;
+            const bool = true;
+            const string = 'test';
+
+            const resultArgDataRawSize =
+                await ic_api_canister.arg_data_raw_size(
+                    blob,
+                    int,
+                    bool,
+                    string
+                );
+
+            const resultArgDataRaw = await ic_api_canister.arg_data_raw(
+                blob,
+                int,
+                bool,
+                string
+            );
+
+            return {
+                ok: resultArgDataRawSize === resultArgDataRaw.length
+            };
+        }
+    },
     {
         name: 'caller',
         test: async () => {
@@ -88,6 +189,36 @@ const tests: Test[] = [
         }
     },
     {
+        name: 'reject',
+        test: async () => {
+            const rejectionMessage = 'Rejected!';
+            try {
+                await ic_api_canister.reject(rejectionMessage);
+
+                return {
+                    ok: false
+                };
+            } catch (error) {
+                return {
+                    ok:
+                        (error as any).props.Code === 'CanisterReject' &&
+                        (error as any).props.Message === rejectionMessage
+                };
+            }
+        }
+    },
+    {
+        name: 'set_data_certificate',
+        test: async () => {
+            const result = await ic_api_canister.set_certified_data([
+                83, 117, 114, 112, 114, 105, 115, 101, 33
+            ]);
+            return {
+                ok: result === undefined
+            };
+        }
+    },
+    {
         name: 'time',
         test: async () => {
             const node_time_in_nanoseconds =
@@ -134,4 +265,11 @@ function is_none<T>(option: [] | T[]): boolean {
 
 function is_some<T>(option: [] | T[]): boolean {
     return !is_none(option);
+}
+
+function candidDecode(bytes: number[]): string {
+    const hexString = bytes
+        .map((byte) => byte.toString(16).padStart(2, '0'))
+        .join('');
+    return execSync(`./target/bin/didc decode ${hexString}`).toString().trim();
 }

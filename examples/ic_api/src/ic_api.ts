@@ -1,4 +1,72 @@
-import { blob, ic, nat, nat64, Opt, Principal, Query, Update } from 'azle';
+import {
+    blob,
+    empty,
+    ic,
+    int8,
+    nat,
+    nat32,
+    Opt,
+    Principal,
+    Query,
+    QueryManual,
+    Update
+} from 'azle';
+
+type ArgDataMultipleParamsResult = {
+    blob: blob;
+    int: int8;
+    boolean: boolean;
+    string: string;
+};
+
+// TODO: See https://github.com/demergent-labs/azle/issues/496
+//
+// // returns the argument data as an array.
+// export function arg_data_zero_params(): Query<null[]> {
+//     return ic.arg_data();
+// }
+//
+// // returns the argument data as an array.
+// export function arg_data_one_param(arg: boolean): Query<boolean> {
+//     const arg_data = ic.arg_data();
+//     return arg_data[0];
+// }
+//
+// // returns the argument data as an array.
+// export function arg_data_multiple_params(
+//     arg1: blob,
+//     arg2: int8,
+//     arg3: boolean,
+//     arg4: string
+// ): Query<ArgDataMultipleParamsResult> {
+//     const arg_data = ic.arg_data();
+//     return {
+//         blob: Uint8Array.from(arg_data[0]),
+//         int: arg_data[1],
+//         boolean: arg_data[2],
+//         string: arg_data[3]
+//     };
+// }
+
+// returns the argument data as bytes.
+export function arg_data_raw(
+    arg1: blob,
+    arg2: int8,
+    arg3: boolean,
+    arg4: string
+): Query<blob> {
+    return ic.arg_data_raw();
+}
+
+// returns the length of the argument data in bytes
+export function arg_data_raw_size(
+    arg1: blob,
+    arg2: int8,
+    arg3: boolean,
+    arg4: string
+): Query<nat32> {
+    return ic.arg_data_raw_size();
+}
 
 // returns the principal of the identity that called this function
 export function caller(): Query<Principal> {
@@ -35,6 +103,15 @@ export function print(message: string): Query<boolean> {
     ic.print(message);
 
     return true;
+}
+
+export function reject(message: string): QueryManual<empty> {
+    ic.reject(message);
+}
+
+// sets up to 32 bytes of certified data
+export function set_certified_data(data: blob): Update<void> {
+    ic.set_certified_data(data);
 }
 
 // returns the current timestamp
