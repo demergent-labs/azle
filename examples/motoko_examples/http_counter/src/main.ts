@@ -189,7 +189,7 @@ export function http_streaming(
         case 'next': {
             return {
                 body: encode(`${counter}`),
-                token: { arbitrary_data: 'next' }
+                token: { arbitrary_data: 'last' }
             };
         }
         case 'last': {
