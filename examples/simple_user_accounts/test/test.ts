@@ -1,5 +1,4 @@
 import { large_wasm_deploy, run_tests, Test } from 'azle/test';
-import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/simple_user_accounts';
 
 const simple_user_accounts_canister = createActor(
