@@ -98,10 +98,6 @@ export function id(): Query<Principal> {
     return ic.id();
 }
 
-// TODO only available on dfx 0.10.2-btcbeta.0
-// TODO run this command to test: DFX_VERSION="0.10.2-btcbeta.0" sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
-// TODO we also have to install gzip Wasm binaries locally now
-// TODO gzip installation documentation: https://internetcomputer.org/docs/current/developer-docs/deploy/larger-wasm
 export function performance_counter(): Query<nat64> {
     return ic.performance_counter(0);
 }
