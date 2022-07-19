@@ -1,6 +1,5 @@
-import { run_tests, Ok, Test } from 'azle/test';
+import { cleanDeploy, run_tests, Ok, Test } from 'azle/test';
 import { int } from 'azle';
-import { execSync } from 'child_process';
 import { createActor } from './dfx_generated/quicksort';
 
 const quicksort_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -24,27 +23,7 @@ async function arrayIsSorted(
 }
 
 const tests: Test[] = [
-    {
-        name: 'clear canister memory',
-        prep: async () => {
-            execSync(`dfx canister uninstall-code quicksort || true`, {
-                stdio: 'inherit'
-            });
-        }
-    },
-    {
-        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-        name: 'waiting for createActor fetchRootKey',
-        wait: 5000
-    },
-    {
-        name: 'deploy',
-        prep: async () => {
-            execSync(`dfx deploy`, {
-                stdio: 'inherit'
-            });
-        }
-    },
+    ...cleanDeploy('quicksort'),
     {
         name: 'sort - with values from the motoko repo',
         test: async () => {

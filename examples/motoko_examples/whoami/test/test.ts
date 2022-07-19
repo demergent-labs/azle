@@ -1,4 +1,4 @@
-import { run_tests, Test } from 'azle/test';
+import { cleanDeploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from './dfx_generated/whoami';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
