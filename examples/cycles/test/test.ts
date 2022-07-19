@@ -20,7 +20,8 @@ const intermediary_canister = createIntermediaryActor(
 );
 
 const tests: Test[] = [
-    ...large_wasm_deploy('cycles', 'intermediary'), // TODO for now these tests need to be run on a fresh dfx start --clean, since cycles are not discarded on uninstall-code
+    ...large_wasm_deploy('cycles'), // TODO for now these tests need to be run on a fresh dfx start --clean, since cycles are not discarded on uninstall-code
+    ...large_wasm_deploy('intermediary'), // TODO for now these tests need to be run on a fresh dfx start --clean, since cycles are not discarded on uninstall-code
     {
         name: 'initial getCanisterBalance',
         test: async () => {
