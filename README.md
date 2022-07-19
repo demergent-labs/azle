@@ -21,10 +21,10 @@ TypeScript CDK for the Internet Computer.
 
 Please exercise caution when using Azle. It is beta software that you use at your own risk and according to the terms of this [MIT license](/LICENSE).
 
-Demergent Labs will officially recommend Azle for production use when at least the following have occurred:
+Demergent Labs may officially recommend Azle for production use when at least the following have occurred:
 
 -   [x] [Many example-based unit/integration tests](/examples)
--   [ ] [Feature parity with the Rust CDK and Motoko](#feature-parity)
+-   [x] [Feature parity with the Rust CDK and Motoko](#feature-parity)
 -   [ ] Extensive automated benchmarking
 -   [ ] Extensive automated property testing
 -   [ ] Multiple independent security reviews/audits
@@ -1179,8 +1179,8 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 
 ### Roadmap
 
--   [ ] June 2022
-    -   [ ] [Feature parity with the Rust CDK and Motoko](#feature-parity)
+-   [x] June 2022
+    -   [x] [Feature parity with the Rust CDK and Motoko](#feature-parity)
 -   [ ] July 2022
     -   [ ] Extensive automated benchmarking
     -   [ ] Rust rewrite
