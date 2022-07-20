@@ -42,26 +42,14 @@ Most of Azle's documentation is currently found in this README. The Azle Book, s
 -   [Installation](#installation)
 -   [Deployment](#deployment)
 -   [Canisters](#canisters)
-
 -   [Canister Methods](#canister-methods)
 -   [Candid Types](#candid-types)
 -   [Canister APIs](#canister-apis)
 -   [Call APIs](#call-apis)
 -   [Stable Memory](#stable-memory)
-
--   [Query methods](#query-methods)
--   [Update methods](#update-methods)
--   [IC API](#ic-api)
--   [Cross-canister calls](#cross-canister-calls)
--   [Init method](#init-method)
--   [PreUpgrade method](#preupgrade-method)
--   [PostUpgrade method](#postupgrade-method)
--   [Stable storage](#stable-storage)
--   [Heartbeat method](#heartbeat-method)
-
 -   [Feature Parity](#feature-parity)
 -   [Roadmap](#roadmap)
--   [Gotchas and caveats](#gotchas-and-caveats)
+-   [Gotchas and Caveats](#gotchas-and-caveats)
 -   [Decentralization](#decentralization)
 -   [Contributing](#contributing)
 -   [License](#license)
@@ -245,8 +233,8 @@ Azle allows you to write canisters while embracing much of what that the TypeScr
 -   [heartbeat](#heartbeat)
 -   [update](#update)
 -   [query](#query)
--   http_request # TODO fix this link
--   http_request_update # TODO fix this link
+-   [http_request](#httprequest)
+-   [http_request_update](#httprequestupdate)
 
 #### init
 
@@ -1285,7 +1273,15 @@ Examples:
 
 #### call
 
-TODO let's go find all of these examples
+Examples:
+
+-   [cross_canister_calls](/examples/cross_canister_calls)
+-   [cycles](/examples/cycles)
+-   [defi](/examples/motoko_examples/defi)
+-   [func_types](/examples/func_types)
+-   [rejections](/examples/rejections)
+-   [tuple_types](/examples/tuple_types)
+-   [whoami](/examples/motoko_examples/whoami)
 
 #### call raw
 
@@ -1418,118 +1414,82 @@ Not yet implemented.
 
 ### Stable Memory
 
--   [stable storage]()
--   [stable64 grow]()
--   [stable64 read]()
--   [stable64 size]()
--   [stable64 write]()
--   [stable bytes]()
--   [stable grow]()
--   [stable read]()
--   [stable size]()
--   [stable write]()
+-   [stable storage](#stable-storage)
+-   [stable64 grow](#stable64-grow)
+-   [stable64 read](#stable64-read)
+-   [stable64 size](#stable64-size)
+-   [stable64 write](#stable64-write)
+-   [stable bytes](#stable-bytes)
+-   [stable grow](#stable-grow)
+-   [stable read](#stable-read)
+-   [stable size](#stable-size)
+-   [stable write](#stable-write)
 
 #### stable storage
 
+Examples:
+
+-   [basic-dao](/examples/motoko_examples/basic-dao)
+-   [func_types](/examples/func_types)
+-   [http_counter](/examples/motoko_examples/http_counter)
+-   [persistent_storage](/examples/motoko_examples/persistent-storage)
+-   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
+-   [stable_storage](/examples/stable_storage)
+-   [tuple_types](/examples/tuple_types)
+
 #### stable64 grow
+
+Examples:
+
+-   [stable_memory](/examples/stable_memory)
 
 #### stable64 read
 
+Examples:
+
+-   [stable_memory](/examples/stable_memory)
+
 #### stable64 size
+
+Examples:
+
+-   [stable_memory](/examples/stable_memory)
 
 #### stable64 write
 
+Examples:
+
+-   [stable_memory](/examples/stable_memory)
+
 #### stable bytes
+
+Examples:
+
+-   [stable_memory](/examples/stable_memory)
 
 #### stable grow
 
+Examples:
+
+-   [stable_memory](/examples/stable_memory)
+
 #### stable read
+
+Examples:
+
+-   [stable_memory](/examples/stable_memory)
 
 #### stable size
 
+Examples:
+
+-   [stable_memory](/examples/stable_memory)
+
 #### stable write
 
-### IC API
-
 Examples:
 
--   [ic_api](/examples/ic_api)
-
-Azle exports the `ic` object which contains access to certain IC APIs.
-
-```typescript
-import { ic, nat64, Principal, Query } from 'azle';
-
-// returns the principal of the identity that called this function
-export function caller(): Query<string> {
-    return ic.caller();
-}
-
-// returns the amount of cycles available in the canister
-export function canister_balance(): Query<nat64> {
-    return ic.canister_balance();
-}
-
-// returns this canister's id
-export function id(): Query<Principal> {
-    return ic.id();
-}
-
-// prints a message through the local replica's output
-export function print(message: string): Query<boolean> {
-    ic.print(message);
-
-    return true;
-}
-
-// returns the current timestamp
-export function time(): Query<nat64> {
-    return ic.time();
-}
-
-// traps with a message, stopping execution and discarding all state within the call
-export function trap(message: string): Query<boolean> {
-    ic.trap(message);
-
-    return true;
-}
-```
-
-### Cross-canister calls
-
-Examples:
-
--   [cross_canister_calls](/examples/cross_canister_calls)
-
-DFINITY documentation:
-
--   https://smartcontracts.org/docs/introduction/welcome.html
-
-More documentation to come, see the examples and the DFINITY documentation for the time being.
-
-### PostUpgrade method
-
-Examples:
-
--   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
-
-DFINITY documentation:
-
--   https://smartcontracts.org/docs/introduction/welcome.html
-
-More documentation to come, see the examples and the DFINITY documentation for the time being.
-
-### Stable storage
-
-Examples:
-
--   [stable_storage](/examples/stable_storage)
-
-More information:
-
--   https://smartcontracts.org/docs/developers-guide/design-apps.html#_data_storage_and_retrieval
-
-More documentation to come, see the examples and the DFINITY documentation for the time being.
+-   [stable_memory](/examples/stable_memory)
 
 ### Feature Parity
 
