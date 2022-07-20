@@ -222,7 +222,7 @@ A canister is the fundamental application unit on the Internet Computer. It cont
 
 Users of your canister interact with it through RPC calls performed using HTTP requests. These calls will hit your canister's `Query` and `Update` methods. These methods, with their parameter and return types, are the interface to your canister.
 
-Azle allows you to write canisters while embracing much of what that the TypeScript and JavaScript ecosystems have to offer.
+Azle allows you to write canisters while embracing much of what the TypeScript and JavaScript ecosystems have to offer.
 
 ### Canister Methods
 
@@ -1175,7 +1175,7 @@ service: () -> {
 
 #### service
 
-Not yet implemented.
+[Not yet implemented.](https://github.com/demergent-labs/azle/issues/445)
 
 #### principal
 
@@ -1495,7 +1495,7 @@ export function also_inaccessible(): Update<boolean> {
 
 #### arg data
 
-Not yet implemented.
+[Not yet implemented.](https://github.com/demergent-labs/azle/issues/496)
 
 #### arg data raw
 
@@ -2108,7 +2108,7 @@ export function reply_raw(): UpdateManual<RawReply> {
 
 #### result
 
-Not yet implemented.
+[Not yet implemented.](https://github.com/demergent-labs/azle/issues/496)
 
 ### Stable Memory
 
