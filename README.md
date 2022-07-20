@@ -1157,114 +1157,264 @@ service: {
 
 ### Canister APIs
 
--   [canister balance]()
--   [canister balance 128]()
--   [data certificate]()
--   [canister id]()
--   [print]()
--   [set certified data]()
--   [time]()
--   [trap]()
+-   [canister balance](#canister-balance)
+-   [canister balance 128](#canister-balance-128)
+-   [data certificate](#data-certificate)
+-   [canister id](#canister-id)
+-   [print](#print)
+-   [set certified data](#set-certified-data)
+-   [time](#time)
+-   [trap](#trap)
 
 #### canister balance
 
+Examples:
+
+-   [cycles](/examples/cycles)
+-   [ic_api](/examples/ic_api)
+
 #### canister balance 128
+
+Examples:
+
+-   [cycles](/examples/cycles)
+-   [ic_api](/examples/ic_api)
 
 #### data certificate
 
+Examples:
+
+-   [ic_api](/examples/ic_api)
+
 #### canister id
+
+Examples:
+
+-   [basic-dao](/examples/motoko_examples/basic-dao)
+-   [http_counter](/examples/motoko_examples/http_counter)
+-   [ic_api](/examples/ic_api)
+-   [whoami](/examples/motoko_examples/whoami)
 
 #### print
 
+Examples:
+
+-   [ic_api](/examples/ic_api)
+
 #### set certified data
+
+Examples:
+
+-   [ic_api](/examples/ic_api)
 
 #### time
 
+Examples:
+
+-   [basic-dao](/examples/motoko_examples/basic-dao)
+-   [ic_api](/examples/ic_api)
+
 #### trap
+
+Examples:
+
+-   [cross_canister_calls](/examples/cross_canister_calls)
+-   [http_counter](/examples/motoko_examples/http_counter)
+-   [ic_api](/examples/ic_api)
 
 ### Call APIs
 
--   [caller]()
--   [accept message]()
--   [arg data]()
--   [arg data raw]()
--   [arg data raw size]()
--   [call]()
--   [call raw]()
--   [call raw 128]()
--   [call with payment]()
--   [call with payment 128]()
--   [method name]()
--   [msg cycles accept]()
--   [msg cycles accept 128]()
--   [msg cycles available]()
--   [msg cycles available 128]()
--   [msg cycles refunded]()
--   [msg cycles refunded 128]()
--   [notify]()
--   [notify raw]()
--   [notify with payment 128]()
--   [performance counter]()
--   [reject]()
--   [reject code]()
--   [reject message]()
--   [reply]()
--   [reply raw]()
--   [result]()
+-   [caller](#caller)
+-   [accept message](#accept-message)
+-   [arg data](#arg-data)
+-   [arg data raw](#arg-data-raw)
+-   [arg data raw size](#arg-data-raw-size)
+-   [call](#call)
+-   [call raw](#call-raw)
+-   [call raw 128](#call-raw-128)
+-   [call with payment](#call-with-payment)
+-   [call with payment 128](#call-with-payment-128)
+-   [method name](#method-name)
+-   [msg cycles accept](#msg-cycles-accept)
+-   [msg cycles accept 128](#msg-cycles-accept-128)
+-   [msg cycles available](#msg-cycles-available)
+-   [msg cycles available 128](#msg-cycles-available-128)
+-   [msg cycles refunded](#msg-cycles-refunded)
+-   [msg cycles refunded 128](#msg-cycles-refunded-128)
+-   [notify](#notify)
+-   [notify raw](#notify-raw)
+-   [notify with payment 128](#notify-with-payment-128)
+-   [performance counter](#performance-counter)
+-   [reject](#reject)
+-   [reject code](#reject-code)
+-   [reject message](#reject-message)
+-   [reply](#reply)
+-   [reply raw](#reply-raw)
+-   [result](#result)
 
 #### caller
 
+Examples:
+
+-   [basic-dao](/examples/motoko_examples/basic-dao)
+-   [defi](/examples/motoko_examples/defi)
+-   [ic_api](/examples/ic_api)
+-   [whoami](/examples/motoko_examples/whoami)
+
 #### accept message
+
+Examples:
+
+-   [inspect_message](/examples/inspect_message)
 
 #### arg data
 
+Not yet implemented.
+
 #### arg data raw
+
+Examples:
+
+-   [ic_api](/examples/ic_api)
 
 #### arg data raw size
 
+Examples:
+
+-   [ic_api](/examples/ic_api)
+
 #### call
+
+TODO let's go find all of these examples
 
 #### call raw
 
+Examples:
+
+-   [basic-dao](/examples/motoko_examples/basic-dao)
+-   [call_raw](/examples/call_raw)
+
 #### call raw 128
+
+Examples:
+
+-   [call_raw](/examples/call_raw)
 
 #### call with payment
 
+Examples:
+
+-   [cycles](/examples/cycles)
+-   [management_canister](/examples/management_canister)
+
 #### call with payment 128
+
+Examples:
+
+-   [cycles](/examples/cycles)
 
 #### method name
 
+Examples:
+
+-   [inspect_message](/examples/inspect_message)
+
 #### msg cycles accept
+
+Examples:
+
+-   [cycles](/examples/cycles)
 
 #### msg cycles accept 128
 
+Examples:
+
+-   [cycles](/examples/cycles)
+
 #### msg cycles available
+
+Examples:
+
+-   [cycles](/examples/cycles)
 
 #### msg cycles available 128
 
+Examples:
+
+-   [cycles](/examples/cycles)
+
 #### msg cycles refunded
+
+Examples:
+
+-   [cycles](/examples/cycles)
 
 #### msg cycles refunded 128
 
+Examples:
+
+-   [cycles](/examples/cycles)
+
 #### notify
+
+Examples:
+
+-   [cross_canister_calls](/examples/cross_canister_calls)
+-   [cycles](/examples/cycles)
 
 #### notify raw
 
+Examples:
+
+-   [notify_raw](/examples/notify_raw)
+
 #### notify with payment 128
+
+Examples:
+
+-   [cycles](/examples/cycles)
 
 #### performance counter
 
+Examples:
+
+-   [ic_api](/examples/ic_api)
+
 #### reject
+
+Examples:
+
+-   [ic_api](/examples/ic_api)
+-   [manual_reply](/examples/manual_reply)
+-   [rejections](/examples/rejections)
 
 #### reject code
 
+Examples:
+
+-   [rejections](/examples/rejections)
+
 #### reject message
+
+Examples:
+
+-   [rejections](/examples/rejections)
 
 #### reply
 
+Examples:
+
+-   [manual_reply](/examples/manual_reply)
+
 #### reply raw
 
+Examples:
+
+-   [manual_reply](/examples/manual_reply)
+
 #### result
+
+Not yet implemented.
 
 ### Stable Memory
 
@@ -1308,7 +1458,7 @@ Examples:
 Azle exports the `ic` object which contains access to certain IC APIs.
 
 ```typescript
-import { Query, nat64, Principal } from 'azle';
+import { ic, nat64, Principal, Query } from 'azle';
 
 // returns the principal of the identity that called this function
 export function caller(): Query<string> {
@@ -1327,7 +1477,7 @@ export function id(): Query<Principal> {
 
 // prints a message through the local replica's output
 export function print(message: string): Query<boolean> {
-    console.log(message);
+    ic.print(message);
 
     return true;
 }
