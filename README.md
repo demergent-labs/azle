@@ -36,13 +36,19 @@ Feel free to open issues or join us in the [DFINITY DEV TypeScript Discord chann
 
 ## Documentation
 
-Most of Azle's documentation is currently found in this README. A more detailed [mdBook-style](https://rust-lang.github.io/mdBook/) book similar to [Sudograph's](https://i67uk-hiaaa-aaaae-qaaka-cai.raw.ic0.app/) will later be hosted on the Internet Computer.
+Most of Azle's documentation is currently found in this README. The Azle Book, similar to [Sudograph's](https://i67uk-hiaaa-aaaae-qaaka-cai.raw.ic0.app/), will later be hosted on the Internet Computer.
 
 -   [Examples](/examples)
 -   [Installation](#installation)
 -   [Deployment](#deployment)
 -   [Canisters](#canisters)
--   [Candid data types](#candid-data-types)
+
+-   [Canister Methods](#canister-methods)
+-   [Candid Types](#candid-types)
+-   [Canister APIs](#canister-apis)
+-   [Call APIs](#call-apis)
+-   [Stable Memory](#stable-memory)
+
 -   [Query methods](#query-methods)
 -   [Update methods](#update-methods)
 -   [IC API](#ic-api)
@@ -52,10 +58,10 @@ Most of Azle's documentation is currently found in this README. A more detailed 
 -   [PostUpgrade method](#postupgrade-method)
 -   [Stable storage](#stable-storage)
 -   [Heartbeat method](#heartbeat-method)
+
 -   [Feature Parity](#feature-parity)
 -   [Roadmap](#roadmap)
 -   [Gotchas and caveats](#gotchas-and-caveats)
--   [Limitations](#limitations)
 -   [Decentralization](#decentralization)
 -   [Contributing](#contributing)
 -   [License](#license)
@@ -75,7 +81,7 @@ After installing the prerequisites, you can [make a project and install Azle](#a
 Run the following commands to install Node.js and npm. [nvm](https://github.com/nvm-sh/nvm) is highly recommended and its use is shown below:
 
 ```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
 # restart your terminal
 
@@ -92,11 +98,10 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 #### dfx
 
-Run the following command to install dfx 0.9.3:
+Run the following command to install dfx 0.11.0:
 
 ```bash
-# Azle has been tested against version 0.9.3, so it is safest to install that specific version for now
-DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+DFX_VERSION=0.11.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 ```
 
 #### Common Installation Issues
@@ -113,7 +118,7 @@ Follow these steps to create an Azle project. The steps below assume a project c
 2. Create a `package.json` file (`npm init -y`)
 3. Install Azle (`npm install azle`)
 4. Create a `dfx.json` file (`touch dfx.json`)
-5. Create a directory and entry TypeScript file for your canister (`mkdir src && cd src && touch backend.ts`)
+5. Create a directory and an entry TypeScript file for your canister (`mkdir src && cd src && touch index.ts`)
 
 Your `dfx.json` file should look like this:
 
@@ -124,27 +129,29 @@ Your `dfx.json` file should look like this:
             "type": "custom",
             "build": "npx azle backend",
             "root": "src",
-            "ts": "src/backend.ts",
-            "candid": "src/backend.did",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
             "wasm": "target/wasm32-unknown-unknown/release/backend.wasm"
         }
     }
 }
 ```
 
-Your `backend.ts` file should look like this:
+Your `index.ts` file should look like this:
 
 ```typescript
 import { Query } from 'azle';
 
-export function helloWorld(): Query<string> {
+export function hello_world(): Query<string> {
     return 'Hello world!';
 }
 ```
 
+You are now ready to deploy your application.
+
 ### Deployment
 
-#### Local deployment
+#### Local Deployment
 
 Start up an IC replica and deploy. The first deploy will likely take multiple minutes as it downloads and compiles many Rust dependencies. Subsequent deploys should be much quicker:
 
@@ -155,9 +162,17 @@ dfx start
 # Alternatively to the above command, you can run the replica in the background
 dfx start --background
 
-# If you are running the replica in the background, you can run this command within the same terminal as the dfx start --background command
-# If you are not running the replica in the background, then open another terminal and run this command from the root directory of your project
-dfx deploy
+# If you are running the replica in the background, you can run these commands within the same terminal as the dfx start --background command
+# If you are not running the replica in the background, then open another terminal and run these commands from the root directory of your project
+
+# first deploy
+dfx canister create backend
+dfx build backend
+dfx canister install backend --wasm target/wasm32-unknown-unknown/release/backend.wasm.gz
+
+# subsequent deploys
+dfx build backend
+dfx canister install --mode upgrade backend --wasm target/wasm32-unknown-unknown/release/backend.wasm.gz
 ```
 
 You can then interact with your canister like any other canister written in Motoko or Rust. For more information about calling your canister using `dfx`, see [here](https://smartcontracts.org/docs/developers-guide/cli-reference/dfx-canister.html#_dfx_canister_call).
@@ -201,9 +216,9 @@ dfx canister call simple_erc20 transfer '("0", "1", 100)'
 # The result is: (true)
 ```
 
-#### Live deployment
+#### Live Deployment
 
-Deploying to the live Internet Computer generally only requires adding the `--network ic` option to the deploy command: `dfx deploy --network ic`. This assumes you already have converted ICP into cycles appropriately. See [here](https://smartcontracts.org/docs/quickstart/4-quickstart.html) for more information on getting ready to deploy to production.
+Deploying to the live Internet Computer generally only requires adding the `--network ic` option to the deploy command: `dfx canister --network ic install backend --wasm target/wasm32-unknown-unknown/release/backend.wasm.gz`. This assumes you already have converted ICP into cycles appropriately. See [here](https://smartcontracts.org/docs/quickstart/4-quickstart.html) for more information on getting ready to deploy to production.
 
 ### Canisters
 
@@ -221,7 +236,130 @@ Users of your canister interact with it through RPC calls performed using HTTP r
 
 Azle allows you to write canisters while embracing much of what that the TypeScript and JavaScript ecosystems have to offer.
 
-### Candid data types
+### Canister Methods
+
+-   [init](#init)
+-   [pre upgrade](#pre-upgrade)
+-   [post upgrade](#post-upgrade)
+-   [inspect message](#inspect-message)
+-   [heartbeat](#heartbeat)
+-   [update](#update)
+-   [query](#query)
+-   http_request # TODO fix this link
+-   http_request_update # TODO fix this link
+
+#### init
+
+Examples:
+
+-   [basic-dao](/examples/motoko_examples/basic-dao)
+-   [func_types](/examples/func_types)
+-   [init](/examples/init)
+-   [persistent-storage](/examples/motoko_examples/persistent-storage)
+-   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
+-   [whoami](/examples/motoko_examples/whoami)
+
+#### pre upgrade
+
+Examples:
+
+-   [basic-dao](/examples/motoko_examples/basic-dao)
+-   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
+-   [stable_storage](/examples/stable_storage)
+
+#### post upgrade
+
+Examples:
+
+-   [basic-dao](/examples/motoko_examples/basic-dao)
+-   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
+-   [stable_storage](/examples/stable_storage)
+-   [whoami](/examples/motoko_examples/whoami)
+
+#### inspect message
+
+Examples:
+
+-   [inspect_message](/examples/inspect_message)
+
+#### heartbeat
+
+Examples:
+
+-   [basic-dao](/examples/motoko_examples/basic-dao)
+-   [heartbeat](/examples/heartbeat)
+
+#### update
+
+Examples:
+
+-   [update](/examples/update)
+-   [key_value_store](/examples/key_value_store)
+
+More information:
+
+-   https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html#query-update
+
+Update methods expose public callable functions that are writable. All state changes will be persisted after the function call completes.
+
+Update calls go through consensus and thus return very slowly (a few seconds) relative to query calls. This also means they are more secure than query calls unless [certified data](https://smartcontracts.org/docs/base-libraries/certifieddata) is used in conjunction with the query call.
+
+To create an update method, simply wrap the return type of your function in the azle `Update` type.
+
+```typescript
+import { Query, Update } from 'azle';
+
+let currentMessage: string = '';
+
+export function query(): Query<string> {
+    return currentMessage;
+}
+
+export function update(message: string): Update<void> {
+    currentMessage = message;
+}
+```
+
+#### query
+
+Examples:
+
+-   [query](/examples/query)
+-   [update](/examples/update)
+-   [simple_user_accounts](/examples/simple_user_accounts)
+
+More information:
+
+-   https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html#query-update
+-   https://smartcontracts.org/docs/developers-guide/design-apps.html#_using_query_calls
+
+Query methods expose public callable functions that are read-only. All state changes will be discarded after the function call completes.
+
+Query calls do not go through consensus and thus return very quickly relative to update calls. This also means they are less secure than update calls unless [certified data](https://smartcontracts.org/docs/base-libraries/certifieddata) is used in conjunction with the query call.
+
+To create a query method, simply wrap the return type of your function in the Azle `Query` type.
+
+```typescript
+import { Query } from 'azle';
+
+export function query(): Query<string> {
+    return 'This is a query function';
+}
+```
+
+#### http_request
+
+Examples:
+
+-   [http_counter](/examples/motoko_examples/http_counter)
+
+#### http_request_update
+
+Examples:
+
+-   [http_counter](/examples/motoko_examples/http_counter)
+
+### Candid Types
 
 Examples:
 
@@ -242,393 +380,33 @@ You do not need to use these types, and you do not need to use TypeScript, anywh
 
 Data types:
 
--   [int](#int)
--   [int64](#int64)
--   [int32](#int32)
--   [int16](#int16)
--   [int8](#int8)
+-   [text](#text)
+-   [blob](#blob)
 -   [nat](#nat)
 -   [nat64](#nat64)
 -   [nat32](#nat32)
 -   [nat16](#nat16)
 -   [nat8](#nat8)
+-   [int](#int)
+-   [int64](#int64)
+-   [int32](#int32)
+-   [int16](#int16)
+-   [int8](#int8)
 -   [float64](#float64)
 -   [float32](#float32)
--   [Principal](#principal)
--   [string](#string)
--   [boolean](#boolean)
--   [Record](#record)
--   [Variant](#variant)
--   [Array](#array)
--   [Opt](#opt)
-
-##### int
-
-The Azle type `int` corresponds to the [Candid type int](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-int) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
-
-TypeScript:
-
-```typescript
-import { int, Query, ic } from 'azle';
-
-export function getInt(): Query<int> {
-    return 170141183460469231731687303715884105727n;
-}
-
-export function printInt(int: int): Query<int> {
-    console.log(typeof int);
-    return int;
-}
-```
-
-Candid:
-
-```typescript
-service: {
-    "getInt": () -> (int) query;
-    "printInt": (int) -> (int) query;
-}
-```
-
-##### int64
-
-The Azle type `int64` corresponds to the [Candid type int64](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
-
-TypeScript:
-
-```typescript
-import { int64, Query, ic } from 'azle';
-
-export function getInt64(): Query<int64> {
-    return 9223372036854775807n;
-}
-
-export function printInt64(int64: int64): Query<int64> {
-    console.log(typeof int64);
-    return int64;
-}
-```
-
-Candid:
-
-```typescript
-service: {
-    "getInt64": () -> (int64) query;
-    "printInt64": (int64) -> (int64) query;
-}
-```
-
-##### int32
-
-The Azle type `int32` corresponds to the [Candid type int32](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { int32, Query, ic } from 'azle';
-
-export function getInt32(): Query<int32> {
-    return 2147483647;
-}
-
-export function printInt32(int32: int32): Query<int32> {
-    console.log(typeof int32);
-    return int32;
-}
-```
-
-Candid:
-
-```typescript
-service: {
-    "getInt32": () -> (int32) query;
-    "printInt32": (int32) -> (int32) query;
-}
-```
-
-##### int16
-
-The Azle type `int16` corresponds to the [Candid type int16](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { int16, Query, ic } from 'azle';
-
-export function getInt16(): Query<int16> {
-    return 32767;
-}
-
-export function printInt16(int16: int16): Query<int16> {
-    console.log(typeof int16);
-    return int16;
-}
-```
-
-Candid:
-
-```typescript
-service: {
-    "getInt16": () -> (int16) query;
-    "printInt16": (int16) -> (int16) query;
-}
-```
-
-##### int8
-
-The Azle type `int8` corresponds to the [Candid type int8](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { int8, Query, ic } from 'azle';
-
-export function getInt8(): Query<int8> {
-    return 127;
-}
-
-export function printInt8(int8: int8): Query<int8> {
-    console.log(typeof int8);
-    return int8;
-}
-```
-
-Candid:
-
-```typescript
-service: {
-    "getInt8": () -> (int8) query;
-    "printInt8": (int8) -> (int8) query;
-}
-```
-
-##### nat
-
-The Azle type `nat` corresponds to the [Candid type nat](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-nat) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
-
-TypeScript:
-
-```typescript
-import { nat, Query, ic } from 'azle';
-
-export function getNat(): Query<nat> {
-    return 340282366920938463463374607431768211455n;
-}
-
-export function printNat(nat: nat): Query<nat> {
-    console.log(typeof nat);
-    return nat;
-}
-```
-
-Candid:
-
-```typescript
-service: {
-    "getNat": () -> (nat) query;
-    "printNat": (nat) -> (nat) query;
-}
-```
-
-##### nat64
-
-The Azle type `nat64` corresponds to the [Candid type nat64](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
-
-TypeScript:
-
-```typescript
-import { nat64, Query, ic } from 'azle';
-
-export function getNat64(): Query<nat64> {
-    return 18446744073709551615n;
-}
-
-export function printNat64(nat64: nat64): Query<nat64> {
-    console.log(typeof nat64);
-    return nat64;
-}
-```
-
-Candid:
-
-```typescript
-service: {
-    "getNat64": () -> (nat64) query;
-    "printNat64": (nat64) -> (nat64) query;
-}
-```
-
-##### nat32
-
-The Azle type `nat32` corresponds to the [Candid type nat32](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { nat32, Query, ic } from 'azle';
-
-export function getNat32(): Query<nat32> {
-    return 4294967295;
-}
-
-export function printNat32(nat32: nat32): Query<nat32> {
-    console.log(typeof nat32);
-    return nat32;
-}
-```
-
-Candid:
-
-```typescript
-service: {
-    "getNat32": () -> (nat32) query;
-    "printNat32": (nat32) -> (nat32) query;
-}
-```
-
-##### nat16
-
-The Azle type `nat16` corresponds to the [Candid type nat16](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { nat16, Query, ic } from 'azle';
-
-export function getNat16(): Query<nat16> {
-    return 65535;
-}
-
-export function printNat16(nat16: nat16): Query<nat16> {
-    console.log(typeof nat16);
-    return nat16;
-}
-```
-
-Candid:
-
-```typescript
-service: {
-    "getNat16": () -> (nat16) query;
-    "printNat16": (nat16) -> (nat16) query;
-}
-```
-
-##### nat8
-
-The Azle type `nat8` corresponds to the [Candid type nat8](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { nat8, Query, ic } from 'azle';
-
-export function getNat8(): Query<nat8> {
-    return 255;
-}
-
-export function printNat8(nat8: nat8): Query<nat8> {
-    console.log(typeof nat8);
-    return nat8;
-}
-```
-
-Candid:
-
-```typescript
-service: {
-    "getNat8": () -> (nat8) query;
-    "printNat8": (nat8) -> (nat8) query;
-}
-```
-
-##### float64
-
-The Azle type `float64` corresponds to the [Candid type float64](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-floatN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { float64, Query, ic } from 'azle';
-
-export function getFloat64(): Query<float64> {
-    return Math.E;
-}
-
-export function printFloat64(float64: float64): Query<float64> {
-    console.log(typeof float64);
-    return float64;
-}
-```
-
-Candid:
-
-```typescript
-service: {
-    "getFloat64": () -> (float64) query;
-    "printFloat64": (float64) -> (float64) query;
-}
-```
-
-##### float32
-
-The Azle type `float32` corresponds to the [Candid type float32](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-floatN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { float32, Query, ic } from 'azle';
-
-export function getFloat32(): Query<float32> {
-    return Math.PI;
-}
-
-export function printFloat32(float32: float32): Query<float32> {
-    console.log(typeof float32);
-    return float32;
-}
-```
-
-Candid:
-
-```typescript
-service: {
-    "getFloat32": () -> (float32) query;
-    "printFloat32": (float32) -> (float32) query;
-}
-```
-
-##### Principal
-
-The Azle type `Principal` corresponds to the [Candid type principal](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-principal) and will become an [@dfinity/principal](https://www.npmjs.com/package/@dfinity/principal) at runtime.
-
-TypeScript:
-
-```typescript
-import { Principal, Query, ic } from 'azle';
-
-export function getPrincipal(): Query<Principal> {
-    return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
-}
-
-export function printPrincipal(principal: Principal): Query<Principal> {
-    console.log(typeof principal);
-    return principal;
-}
-```
-
-Candid:
-
-```typescript
-service: {
-    "getPrincipal": () -> (principal) query;
-    "printPrincipal": (principal) -> (principal) query;
-}
-```
-
--   Note that `Principal.selfAuthenticating` will not function properly until [this issue is resolved](https://github.com/boa-dev/boa/issues/1917)
-
-##### string
+-   [bool](#bool)
+-   [null](#null)
+-   [vec](#vec)
+-   [opt](#opt)
+-   [record](#record)
+-   [variant](#variant)
+-   [func](#func)
+-   [service](#service)
+-   [principal](#principal)
+-   [reserved](#reserved)
+-   [empty](#empty)
+
+#### text
 
 The TypeScript type `string` corresponds to the [Candid type text](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-text) and will become a [JavaScript String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) at runtime.
 
@@ -637,11 +415,11 @@ TypeScript:
 ```typescript
 import { Query, ic } from 'azle';
 
-export function getString(): Query<string> {
+export function get_string(): Query<string> {
     return 'Hello world!';
 }
 
-export function printString(string: string): Query<string> {
+export function print_string(string: string): Query<string> {
     console.log(typeof string);
     return string;
 }
@@ -651,26 +429,390 @@ Candid:
 
 ```typescript
 service: {
-    "getString": () -> (text) query;
-    "printString": (text) -> (text) query;
+    "get_string": () -> (text) query;
+    "print_string": (text) -> (text) query;
 }
 ```
 
-##### boolean
+#### blob
+
+The Azle type `blob` corresponds to the [Candid type blob](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-blob) and will become a [JavaScript Uint8Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) at runtime.
+
+TypeScript:
+
+```typescript
+import { blob, Query } from 'azle';
+
+export function get_blob(): Query<blob> {
+    return Uint8Array.from([]);
+}
+
+export function print_blob(blob: blob): Query<blob> {
+    console.log(typeof blob);
+    return blob;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_blob": () -> (blob) query;
+    "print_blob": (blob) -> (blob) query;
+}
+```
+
+#### nat
+
+The Azle type `nat` corresponds to the [Candid type nat](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-nat) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
+
+TypeScript:
+
+```typescript
+import { nat, Query } from 'azle';
+
+export function get_nat(): Query<nat> {
+    return 340_282_366_920_938_463_463_374_607_431_768_211_455n;
+}
+
+export function print_nat(nat: nat): Query<nat> {
+    console.log(typeof nat);
+    return nat;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_nat": () -> (nat) query;
+    "print_nat": (nat) -> (nat) query;
+}
+```
+
+#### nat64
+
+The Azle type `nat64` corresponds to the [Candid type nat64](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
+
+TypeScript:
+
+```typescript
+import { nat64, Query } from 'azle';
+
+export function get_nat64(): Query<nat64> {
+    return 18_446_744_073_709_551_615n;
+}
+
+export function print_nat64(nat64: nat64): Query<nat64> {
+    console.log(typeof nat64);
+    return nat64;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_nat64": () -> (nat64) query;
+    "print_nat64": (nat64) -> (nat64) query;
+}
+```
+
+#### nat32
+
+The Azle type `nat32` corresponds to the [Candid type nat32](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { nat32, Query } from 'azle';
+
+export function get_nat32(): Query<nat32> {
+    return 4_294_967_295;
+}
+
+export function print_nat32(nat32: nat32): Query<nat32> {
+    console.log(typeof nat32);
+    return nat32;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_nat32": () -> (nat32) query;
+    "print_nat32": (nat32) -> (nat32) query;
+}
+```
+
+#### nat16
+
+The Azle type `nat16` corresponds to the [Candid type nat16](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { nat16, Query } from 'azle';
+
+export function get_nat16(): Query<nat16> {
+    return 65_535;
+}
+
+export function print_nat16(nat16: nat16): Query<nat16> {
+    console.log(typeof nat16);
+    return nat16;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_nat16": () -> (nat16) query;
+    "print_nat16": (nat16) -> (nat16) query;
+}
+```
+
+#### nat8
+
+The Azle type `nat8` corresponds to the [Candid type nat8](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { nat8, Query } from 'azle';
+
+export function get_nat8(): Query<nat8> {
+    return 255;
+}
+
+export function print_nat8(nat8: nat8): Query<nat8> {
+    console.log(typeof nat8);
+    return nat8;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_nat8": () -> (nat8) query;
+    "print_nat8": (nat8) -> (nat8) query;
+}
+```
+
+#### int
+
+The Azle type `int` corresponds to the [Candid type int](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-int) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
+
+TypeScript:
+
+```typescript
+import { int, Query } from 'azle';
+
+export function get_int(): Query<int> {
+    return 170_141_183_460_469_231_731_687_303_715_884_105_727n;
+}
+
+export function print_int(int: int): Query<int> {
+    console.log(typeof int);
+    return int;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_int": () -> (int) query;
+    "print_int": (int) -> (int) query;
+}
+```
+
+#### int64
+
+The Azle type `int64` corresponds to the [Candid type int64](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
+
+TypeScript:
+
+```typescript
+import { int64, Query } from 'azle';
+
+export function get_int64(): Query<int64> {
+    return 9_223_372_036_854_775_807n;
+}
+
+export function print_int64(int64: int64): Query<int64> {
+    console.log(typeof int64);
+    return int64;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_int64": () -> (int64) query;
+    "print_int64": (int64) -> (int64) query;
+}
+```
+
+#### int32
+
+The Azle type `int32` corresponds to the [Candid type int32](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { int32, Query } from 'azle';
+
+export function get_int32(): Query<int32> {
+    return 2_147_483_647;
+}
+
+export function print_int32(int32: int32): Query<int32> {
+    console.log(typeof int32);
+    return int32;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_int32": () -> (int32) query;
+    "print_int32": (int32) -> (int32) query;
+}
+```
+
+#### int16
+
+The Azle type `int16` corresponds to the [Candid type int16](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { int16, Query } from 'azle';
+
+export function get_int16(): Query<int16> {
+    return 32_767;
+}
+
+export function print_int16(int16: int16): Query<int16> {
+    console.log(typeof int16);
+    return int16;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_int16": () -> (int16) query;
+    "print_int16": (int16) -> (int16) query;
+}
+```
+
+#### int8
+
+The Azle type `int8` corresponds to the [Candid type int8](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { int8, Query } from 'azle';
+
+export function get_int8(): Query<int8> {
+    return 127;
+}
+
+export function print_int8(int8: int8): Query<int8> {
+    console.log(typeof int8);
+    return int8;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_int8": () -> (int8) query;
+    "print_int8": (int8) -> (int8) query;
+}
+```
+
+#### float64
+
+The Azle type `float64` corresponds to the [Candid type float64](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-floatN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { float64, Query } from 'azle';
+
+export function get_float64(): Query<float64> {
+    return Math.E;
+}
+
+export function print_float64(float64: float64): Query<float64> {
+    console.log(typeof float64);
+    return float64;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_float64": () -> (float64) query;
+    "print_float64": (float64) -> (float64) query;
+}
+```
+
+#### float32
+
+The Azle type `float32` corresponds to the [Candid type float32](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-floatN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+
+TypeScript:
+
+```typescript
+import { float32, Query } from 'azle';
+
+export function get_float32(): Query<float32> {
+    return Math.PI;
+}
+
+export function print_float32(float32: float32): Query<float32> {
+    console.log(typeof float32);
+    return float32;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_float32": () -> (float32) query;
+    "print_float32": (float32) -> (float32) query;
+}
+```
+
+#### bool
 
 The TypeScript type `boolean` corresponds to the [Candid type bool](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-bool) and will become a [JavaScript Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) at runtime.
 
 TypeScript:
 
 ```typescript
-import { Query, ic } from 'azle';
+import { Query } from 'azle';
 
-export function getBoolean(): Query<boolean> {
+export function get_bool(): Query<boolean> {
     return true;
 }
 
-export function printBoolean(boolean: boolean): Query<boolean> {
-    console.log(typeof boolean);
+export function print_bool(bool: boolean): Query<boolean> {
+    console.log(typeof bool);
     return boolean;
 }
 ```
@@ -679,12 +821,87 @@ Candid:
 
 ```typescript
 service: {
-    "getBoolean": () -> (bool) query;
-    "printBoolean": (bool) -> (bool) query;
+    "get_bool": () -> (bool) query;
+    "print_bool": (bool) -> (bool) query;
 }
 ```
 
-#### Record
+#### null
+
+The TypeScript type `null` corresponds to the [Candid type null](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-null) and will become a [JavaScript null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null) at runtime.
+
+TypeScript:
+
+```typescript
+export function get_null(): Query<null> {
+    return null;
+}
+
+export function print_null(_null: null): Query<null> {
+    console.log(typeof _null);
+    return _null;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_null": () -> (null) query;
+    "print_null": (null) -> (null) query;
+}
+```
+
+#### vec
+
+TypeScript `[]` array syntax corresponds to the [Candid type vec](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-vec) and will become an array of the enclosed type at runtime (except for `nat8[]` which will become a `Uint8Array`, thus it is recommended to use the `blob` type instead of `nat8[]`). Only the `[]` array syntax is supported at this time (i.e. not `Array` or `ReadonlyArray` etc).
+
+TypeScript:
+
+```typescript
+import { Query, int32 } from 'azle';
+
+export function get_numbers(): Query<int32[]> {
+    return [0, 1, 2, 3];
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_numbers": () -> (vec int32) query;
+}
+```
+
+#### opt
+
+The Azle type `Opt` corresponds to the [Candid type opt](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-opt) and will become the enclosed JavaScript type or null at runtime.
+
+TypeScript:
+
+```typescript
+import { Opt, Query } from 'azle';
+
+export function get_opt_some(): Query<Opt<boolean>> {
+    return true;
+}
+
+export function get_opt_none(): Query<Opt<boolean>> {
+    return null;
+}
+```
+
+Candid:
+
+```typescript
+service: {
+    "get_opt_some": () -> (opt bool) query;
+    "get_opt_none": () -> (opt bool) query;
+}
+```
+
+#### record
 
 TypeScript type aliases referring to object literals correspond to the [Candid record type](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-record) and will become [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
 
@@ -696,23 +913,9 @@ import { Variant } from 'azle';
 type Post = {
     id: string;
     author: User;
-    reactions: Reaction[];
     text: string;
     thread: Thread;
 };
-
-type Reaction = {
-    id: string;
-    author: User;
-    post: Post;
-    reactionType: ReactionType;
-};
-
-type ReactionType = Variant<{
-    fire: null;
-    thumbsUp: null;
-    thumbsDown: null;
-}>;
 
 type Thread = {
     id: string;
@@ -724,7 +927,6 @@ type Thread = {
 type User = {
     id: string;
     posts: Post[];
-    reactions: Reaction[];
     threads: Thread[];
     username: string;
 };
@@ -733,6 +935,13 @@ type User = {
 Candid:
 
 ```typescript
+type Post = record {
+    "id": text;
+    "author": User;
+    "text": text;
+    "thread": Thread;
+};
+
 type Thread = record {
     "id": text;
     "author": User;
@@ -743,41 +952,19 @@ type Thread = record {
 type User = record {
     "id": text;
     "posts": vec Post;
-    "reactions": vec Reaction;
     "threads": vec Thread;
     "username": text;
 };
-
-type Reaction = record {
-    "id": text;
-    "author": User;
-    "post": Post;
-    "reactionType": ReactionType;
-};
-
-type Post = record {
-    "id": text;
-    "author": User;
-    "reactions": vec Reaction;
-    "text": text;
-    "thread": Thread;
-};
-
-type ReactionType = variant {
-    "fire": null;
-    "thumbsUp": null;
-    "thumbsDown": null
-};
 ```
 
-#### Variant
+#### variant
 
 TypeScript type aliases referring to object literals wrapped in the `Variant` Azle type correspond to the [Candid variant type](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-variant) and will become [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
 
 TypeScript:
 
 ```typescript
-import { Variant, nat32 } from 'azle';
+import { nat32, Variant } from 'azle';
 
 type ReactionType = Variant<{
     fire: null;
@@ -820,17 +1007,86 @@ type Firework = record {
 };
 ```
 
-#### Array
+#### func
 
-TypeScript `[]` array syntax corresponds to the [Candid type vec](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-vec) and will become an array of the enclosed type at runtime. Only the `[]` array syntax is supported at this time (i.e. not `Array` or `ReadonlyArray` etc).
+The Azle type `func` corresponds to the [Candid type func](https://internetcomputer.org/docs/current/references/candid-ref/#type-func---) and at runtime will become a JavaScript array with two elements, the first being an [@dfinity/principal](https://www.npmjs.com/package/@dfinity/principal) and the second being a [JavaScript string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String). The `@dfinity/principal` represents the `principal` of the canister/service where the function exists, and the `string` represents the function's name.
 
 TypeScript:
 
 ```typescript
-import { Query, int32 } from 'azle';
+import { nat64, Query, Variant } from 'azle';
 
-export function getNumbers(): Query<int32[]> {
-    return [0, 1, 2, 3];
+type User = {
+    id: string;
+    basic_func: BasicFunc;
+    complex_func: ComplexFunc;
+};
+
+type Reaction = Variant<{
+    Good: null;
+    Bad: null;
+    BasicFunc: BasicFunc;
+    ComplexFunc: ComplexFunc;
+}>;
+
+type BasicFunc = Func<(param1: string) => Query<string>>;
+type ComplexFunc = Func<(user: User, reaction: Reaction) => Update<nat64>>;
+
+export function get_basic_func(): Query<BasicFunc> {
+    return [
+        Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
+        'simple_function_name'
+    ];
+}
+
+export function get_complex_func(): Query<ComplexFunc> {
+    return [
+        Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'),
+        'complex_function_name'
+    ];
+}
+```
+
+Candid:
+
+```typescript
+type User = record {
+    "id": text;
+    "basic_func": BasicFunc;
+    "complex_func": ComplexFunc;
+};
+type Reaction = variant { "Good": null; "Bad": null; "BasicFunc": BasicFunc; "ComplexFunc": ComplexFunc };
+
+type BasicFunc = func (text) -> (text) query;
+type ComplexFunc = func (User, Reaction) -> (nat64);
+
+service: () -> {
+    "get_basic_func": () -> (BasicFunc) query;
+    "get_complex_func": () -> (ComplexFunc) query;
+}
+
+```
+
+#### service
+
+Not yet implemented.
+
+#### principal
+
+The Azle type `Principal` corresponds to the [Candid type principal](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-principal) and will become an [@dfinity/principal](https://www.npmjs.com/package/@dfinity/principal) at runtime.
+
+TypeScript:
+
+```typescript
+import { Principal, Query } from 'azle';
+
+export function get_principal(): Query<Principal> {
+    return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
+}
+
+export function print_principal(principal: Principal): Query<Principal> {
+    console.log(typeof principal);
+    return principal;
 }
 ```
 
@@ -838,25 +1094,27 @@ Candid:
 
 ```typescript
 service: {
-    "getNumbers": () -> (vec int32) query;
+    "get_principal": () -> (principal) query;
+    "print_principal": (principal) -> (principal) query;
 }
 ```
 
-#### Opt
+-   Note that `Principal.selfAuthenticating` will not function properly until [this issue is resolved](https://github.com/boa-dev/boa/issues/1917)
 
-The Azle type `Opt` corresponds to the [Candid type opt](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-opt) and will become the enclosed JavaScript type or null at runtime.
+#### reserved
+
+The Azle type `reserved` corresponds to the [Candid type reserved](https://internetcomputer.org/docs/current/references/candid-ref/#type-reserved) and will become a [JavaScript null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null) at runtime.
 
 TypeScript:
 
 ```typescript
-import { Opt, Query } from 'azle';
-
-export function getOptSome(): Query<Opt<boolean>> {
-    return true;
+export function get_reserved(): Query<reserved> {
+    return 'anything';
 }
 
-export function getOptNone(): Query<Opt<boolean>> {
-    return null;
+export function print_reserved(reserved: reserved): Query<reserved> {
+    console.log(typeof reserved);
+    return reserved;
 }
 ```
 
@@ -864,68 +1122,182 @@ Candid:
 
 ```typescript
 service: {
-    "getOptSome": () -> (opt bool) query;
-    "getOptNone": () -> (opt bool) query;
+    "get_reserved": () -> (reserved) query;
+    "print_reserved": (reserved) -> (reserved) query;
 }
 ```
 
-### Query methods
+#### empty
 
-Examples:
+The Azle type `empty` corresponds to the [Candid type empty](https://internetcomputer.org/docs/current/references/candid-ref/#type-empty) and has no JavaScript value at runtime.
 
--   [query](/examples/query)
--   [update](/examples/update)
--   [simple_user_accounts](/examples/simple_user_accounts)
-
-More information:
-
--   https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html#query-update
--   https://smartcontracts.org/docs/developers-guide/design-apps.html#_using_query_calls
-
-Query methods expose public callable functions that are read-only. All state changes will be discarded after the function call completes.
-
-Query calls do not go through consensus and thus return very quickly relative to update calls. This also means they are less secure than update calls unless [certified data](https://smartcontracts.org/docs/base-libraries/certifieddata) is used in conjunction with the query call.
-
-To create a query method, simply wrap the return type of your function in the Azle `Query` type.
+TypeScript:
 
 ```typescript
-import { Query } from 'azle';
+export function get_empty(): Query<empty> {
+    throw 'Anything you want';
+}
 
-export function query(): Query<string> {
-    return 'This is a query function';
+// Note: It is impossible to call this function because it requires an argument
+// but there is no way to pass an "empty" value as an argument.
+export function print_empty(empty: empty): Query<empty> {
+    console.log(typeof empty);
+    throw 'Anything you want';
 }
 ```
 
-### Update methods
-
-Examples:
-
--   [update](/examples/update)
--   [key_value_store](/examples/key_value_store)
-
-More information:
-
--   https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html#query-update
-
-Update methods expose public callable functions that are writable. All state changes will be persisted after the function call completes.
-
-Update calls go through consensus and thus return very slowly (a few seconds) relative to query calls. This also means they are more secure than query calls unless [certified data](https://smartcontracts.org/docs/base-libraries/certifieddata) is used in conjunction with the query call.
-
-To create an update method, simply wrap the return type of your function in the azle `Update` type.
+Candid:
 
 ```typescript
-import { Query, Update } from 'azle';
-
-let currentMessage: string = '';
-
-export function query(): Query<string> {
-    return currentMessage;
-}
-
-export function update(message: string): Update<void> {
-    currentMessage = message;
+service: {
+    "get_empty": () -> (empty) query;
+    "print_empty": (empty) -> (empty) query;
 }
 ```
+
+### Canister APIs
+
+-   [canister balance]()
+-   [canister balance 128]()
+-   [data certificate]()
+-   [canister id]()
+-   [print]()
+-   [set certified data]()
+-   [time]()
+-   [trap]()
+
+#### canister balance
+
+#### canister balance 128
+
+#### data certificate
+
+#### canister id
+
+#### print
+
+#### set certified data
+
+#### time
+
+#### trap
+
+### Call APIs
+
+-   [caller]()
+-   [accept message]()
+-   [arg data]()
+-   [arg data raw]()
+-   [arg data raw size]()
+-   [call]()
+-   [call raw]()
+-   [call raw 128]()
+-   [call with payment]()
+-   [call with payment 128]()
+-   [method name]()
+-   [msg cycles accept]()
+-   [msg cycles accept 128]()
+-   [msg cycles available]()
+-   [msg cycles available 128]()
+-   [msg cycles refunded]()
+-   [msg cycles refunded 128]()
+-   [notify]()
+-   [notify raw]()
+-   [notify with payment 128]()
+-   [performance counter]()
+-   [reject]()
+-   [reject code]()
+-   [reject message]()
+-   [reply]()
+-   [reply raw]()
+-   [result]()
+
+#### caller
+
+#### accept message
+
+#### arg data
+
+#### arg data raw
+
+#### arg data raw size
+
+#### call
+
+#### call raw
+
+#### call raw 128
+
+#### call with payment
+
+#### call with payment 128
+
+#### method name
+
+#### msg cycles accept
+
+#### msg cycles accept 128
+
+#### msg cycles available
+
+#### msg cycles available 128
+
+#### msg cycles refunded
+
+#### msg cycles refunded 128
+
+#### notify
+
+#### notify raw
+
+#### notify with payment 128
+
+#### performance counter
+
+#### reject
+
+#### reject code
+
+#### reject message
+
+#### reply
+
+#### reply raw
+
+#### result
+
+### Stable Memory
+
+-   [stable storage]()
+-   [stable64 grow]()
+-   [stable64 read]()
+-   [stable64 size]()
+-   [stable64 write]()
+-   [stable bytes]()
+-   [stable grow]()
+-   [stable read]()
+-   [stable size]()
+-   [stable write]()
+
+#### stable storage
+
+#### stable64 grow
+
+#### stable64 read
+
+#### stable64 size
+
+#### stable64 write
+
+#### stable bytes
+
+#### stable grow
+
+#### stable read
+
+#### stable size
+
+#### stable write
 
 ### IC API
 
@@ -936,7 +1308,7 @@ Examples:
 Azle exports the `ic` object which contains access to certain IC APIs.
 
 ```typescript
-import { Query, nat64, ic, Principal } from 'azle';
+import { Query, nat64, Principal } from 'azle';
 
 // returns the principal of the identity that called this function
 export function caller(): Query<string> {
@@ -944,8 +1316,8 @@ export function caller(): Query<string> {
 }
 
 // returns the amount of cycles available in the canister
-export function canisterBalance(): Query<nat64> {
-    return ic.canisterBalance();
+export function canister_balance(): Query<nat64> {
+    return ic.canister_balance();
 }
 
 // returns this canister's id
@@ -955,7 +1327,7 @@ export function id(): Query<Principal> {
 
 // prints a message through the local replica's output
 export function print(message: string): Query<boolean> {
-    ic.print(message);
+    console.log(message);
 
     return true;
 }
@@ -978,31 +1350,6 @@ export function trap(message: string): Query<boolean> {
 Examples:
 
 -   [cross_canister_calls](/examples/cross_canister_calls)
-
-DFINITY documentation:
-
--   https://smartcontracts.org/docs/introduction/welcome.html
-
-More documentation to come, see the examples and the DFINITY documentation for the time being.
-
-### Init method
-
-Examples:
-
--   [init](/examples/init)
--   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
-
-DFINITY documentation:
-
--   https://smartcontracts.org/docs/introduction/welcome.html
-
-More documentation to come, see the examples and the DFINITY documentation for the time being.
-
-### PreUpgrade method
-
-Examples:
-
--   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
 
 DFINITY documentation:
 
@@ -1034,18 +1381,6 @@ More information:
 
 More documentation to come, see the examples and the DFINITY documentation for the time being.
 
-### Heartbeat method
-
-Examples:
-
--   [heartbeat](/examples/heartbeat)
-
-DFINITY documentation:
-
--   https://smartcontracts.org/docs/introduction/welcome.html
-
-More documentation to come, see the examples and the DFINITY documentation for the time being.
-
 ### Feature Parity
 
 The following is a comparison of all of the major features of the [Rust CDK](https://github.com/dfinity/cdk-rs), [Motoko](https://github.com/dfinity/motoko), and Azle.
@@ -1071,33 +1406,33 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 
 #### Candid Types
 
-| Feature                                                                                                     | Rust CDK                                                                                                   | Motoko             | Azle               |
-| ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------ | ------------------ |
-| [Candid text](https://internetcomputer.org/docs/current/references/candid-ref/#type-text)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Text)      | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid blob](https://internetcomputer.org/docs/current/references/candid-ref/#type-blob)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Vec)       | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid nat](https://internetcomputer.org/docs/current/references/candid-ref/#type-nat)                     | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat)       | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid nat64](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat64)     | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid nat32](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat32)     | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid nat16](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat16)     | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid nat8](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)          | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat8)      | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid int](https://internetcomputer.org/docs/current/references/candid-ref/#type-int)                     | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int)       | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid int64](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int64)     | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid int32](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int32)     | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid int16](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int16)     | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid int8](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)          | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int8)      | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid float64](https://internetcomputer.org/docs/current/references/candid-ref/#type-float32-and-float64) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Float64)   | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid float32](https://internetcomputer.org/docs/current/references/candid-ref/#type-float32-and-float64) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Float32)   | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid bool](https://internetcomputer.org/docs/current/references/candid-ref/#type-bool)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Bool)      | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid null](https://internetcomputer.org/docs/current/references/candid-ref/#type-null)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Null)      | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid vec](https://internetcomputer.org/docs/current/references/candid-ref/#type-vec-t)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Vec)       | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid opt](https://internetcomputer.org/docs/current/references/candid-ref/#type-opt-t)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Opt)       | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid record](https://internetcomputer.org/docs/current/references/candid-ref/#type-record--n--t--)       | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Record)    | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid variant](https://internetcomputer.org/docs/current/references/candid-ref/#type-variant--n--t--)     | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Variant)   | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid func](https://internetcomputer.org/docs/current/references/candid-ref/#type-func---)                | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Func)      | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid service](https://internetcomputer.org/docs/current/references/candid-ref/#type-service-)            | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Service)   | :heavy_check_mark: | :x:                |
-| [Candid principal](https://internetcomputer.org/docs/current/references/candid-ref/#type-principal)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Principal) | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid reserved](https://internetcomputer.org/docs/current/references/candid-ref/#type-reserved)           | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Reserved)  | :heavy_check_mark: | :heavy_check_mark: |
-| [Candid empty](https://internetcomputer.org/docs/current/references/candid-ref/#type-empty)                 | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Empty)     | :heavy_check_mark: | :heavy_check_mark: |
+| Feature                                                                                              | Rust CDK                                                                                                   | Motoko             | Azle               |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------ | ------------------ |
+| [text](https://internetcomputer.org/docs/current/references/candid-ref/#type-text)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Text)      | :heavy_check_mark: | :heavy_check_mark: |
+| [blob](https://internetcomputer.org/docs/current/references/candid-ref/#type-blob)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Vec)       | :heavy_check_mark: | :heavy_check_mark: |
+| [nat](https://internetcomputer.org/docs/current/references/candid-ref/#type-nat)                     | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat)       | :heavy_check_mark: | :heavy_check_mark: |
+| [nat64](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat64)     | :heavy_check_mark: | :heavy_check_mark: |
+| [nat32](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat32)     | :heavy_check_mark: | :heavy_check_mark: |
+| [nat16](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat16)     | :heavy_check_mark: | :heavy_check_mark: |
+| [nat8](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)          | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Nat8)      | :heavy_check_mark: | :heavy_check_mark: |
+| [int](https://internetcomputer.org/docs/current/references/candid-ref/#type-int)                     | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int)       | :heavy_check_mark: | :heavy_check_mark: |
+| [int64](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int64)     | :heavy_check_mark: | :heavy_check_mark: |
+| [int32](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int32)     | :heavy_check_mark: | :heavy_check_mark: |
+| [int16](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int16)     | :heavy_check_mark: | :heavy_check_mark: |
+| [int8](https://internetcomputer.org/docs/current/references/candid-ref/#type-natn-and-intn)          | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Int8)      | :heavy_check_mark: | :heavy_check_mark: |
+| [float64](https://internetcomputer.org/docs/current/references/candid-ref/#type-float32-and-float64) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Float64)   | :heavy_check_mark: | :heavy_check_mark: |
+| [float32](https://internetcomputer.org/docs/current/references/candid-ref/#type-float32-and-float64) | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Float32)   | :heavy_check_mark: | :heavy_check_mark: |
+| [bool](https://internetcomputer.org/docs/current/references/candid-ref/#type-bool)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Bool)      | :heavy_check_mark: | :heavy_check_mark: |
+| [null](https://internetcomputer.org/docs/current/references/candid-ref/#type-null)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Null)      | :heavy_check_mark: | :heavy_check_mark: |
+| [vec](https://internetcomputer.org/docs/current/references/candid-ref/#type-vec-t)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Vec)       | :heavy_check_mark: | :heavy_check_mark: |
+| [opt](https://internetcomputer.org/docs/current/references/candid-ref/#type-opt-t)                   | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Opt)       | :heavy_check_mark: | :heavy_check_mark: |
+| [record](https://internetcomputer.org/docs/current/references/candid-ref/#type-record--n--t--)       | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Record)    | :heavy_check_mark: | :heavy_check_mark: |
+| [variant](https://internetcomputer.org/docs/current/references/candid-ref/#type-variant--n--t--)     | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Variant)   | :heavy_check_mark: | :heavy_check_mark: |
+| [func](https://internetcomputer.org/docs/current/references/candid-ref/#type-func---)                | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Func)      | :heavy_check_mark: | :heavy_check_mark: |
+| [service](https://internetcomputer.org/docs/current/references/candid-ref/#type-service-)            | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Service)   | :heavy_check_mark: | :x:                |
+| [principal](https://internetcomputer.org/docs/current/references/candid-ref/#type-principal)         | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Principal) | :heavy_check_mark: | :heavy_check_mark: |
+| [reserved](https://internetcomputer.org/docs/current/references/candid-ref/#type-reserved)           | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Reserved)  | :heavy_check_mark: | :heavy_check_mark: |
+| [empty](https://internetcomputer.org/docs/current/references/candid-ref/#type-empty)                 | [:heavy_check_mark:](https://docs.rs/candid/0.7.14/candid/types/internal/enum.Type.html#variant.Empty)     | :heavy_check_mark: | :heavy_check_mark: |
 
 #### Canister APIs
 
@@ -1119,7 +1454,7 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | caller                   | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/fn.caller.html)                       | :heavy_check_mark: | :heavy_check_mark: |
 | accept message           | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.accept_message.html)          | :heavy_check_mark: | :heavy_check_mark: |
 | arg data                 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data.html)                | :grey_question:    | :x:                |
-| arg data raw             | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data_raw.html)            | :heavy_check_mark: | :heavy_check_mark: |
+| arg data raw             | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data_raw.html)            | :grey_question:    | :heavy_check_mark: |
 | arg data raw size        | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.arg_data_raw_size.html)       | :grey_question:    | :heavy_check_mark: |
 | call                     | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call.html)                    | :heavy_check_mark: | :heavy_check_mark: |
 | call raw                 | [:heavy_check_mark:](https://docs.rs/ic-cdk/latest/ic_cdk/api/call/fn.call_raw.html)                | :white_check_mark: | :heavy_check_mark: |
@@ -1179,31 +1514,25 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 
 ### Roadmap
 
--   [x] June 2022
-    -   [x] [Feature parity with the Rust CDK and Motoko](#feature-parity)
 -   [ ] July 2022
     -   [ ] Extensive automated benchmarking
-    -   [ ] Rust rewrite
 -   [ ] August 2022
-    -   [ ] Extensive automated property testing
     -   [ ] Compiler error DX revamp
+    -   [ ] Rust rewrite
 -   [ ] September 2022
+    -   [ ] Extensive automated property testing
     -   [ ] Multiple independent security reviews/audits
 
-### Limitations
+### Gotchas and Caveats
 
+-   Because Azle is built on Rust, to ensure the best compatibility use underscores to separate words in directory, file, and canister names
+-   You must use type names directly when importing them (TODO do an example)
 -   Varied missing TypeScript syntax or JavaScript features
 -   Really bad compiler errors (you will probably not enjoy them)
 -   Limited asynchronous TypeScript/JavaScript (generators only for now, no promises or async/await)
 -   Imported npm packages may use unsupported syntax or APIs
 -   Unknown security vulnerabilities
--   Unknown cycle efficiency relative to canisters written in Rust or Motoko
--   Many small inconveniences [more](https://github.com/demergent-labs/azle/issues)
-
-### Gotchas and caveats
-
--   Because Azle is built on Rust, to ensure the best compatibility use underscores to separate words in directory, file, and canister names
--   You must use type names directly when importing them (TODO do an example)
+-   [Many small inconveniences](https://github.com/demergent-labs/azle/issues)
 
 ### Decentralization
 
