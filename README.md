@@ -1462,6 +1462,37 @@ Examples:
 
 -   [inspect_message](/examples/inspect_message)
 
+```typescript
+import { ic, InspectMessage, Update } from 'azle';
+
+export function inspect_message(): InspectMessage {
+    console.log('this runs before executing update calls');
+
+    if (ic.method_name() === 'accessible') {
+        ic.accept_message();
+        return;
+    }
+
+    if (ic.method_name() === 'inaccessible') {
+        return;
+    }
+
+    throw `Method "${ic.method_name()}" not allowed`;
+}
+
+export function accessible(): Update<boolean> {
+    return true;
+}
+
+export function inaccessible(): Update<boolean> {
+    return false;
+}
+
+export function also_inaccessible(): Update<boolean> {
+    return false;
+}
+```
+
 #### arg data
 
 Not yet implemented.
@@ -1472,11 +1503,35 @@ Examples:
 
 -   [ic_api](/examples/ic_api)
 
+```typescript
+// returns the argument data as bytes.
+export function arg_data_raw(
+    arg1: blob,
+    arg2: int8,
+    arg3: boolean,
+    arg4: string
+): Query<blob> {
+    return ic.arg_data_raw();
+}
+```
+
 #### arg data raw size
 
 Examples:
 
 -   [ic_api](/examples/ic_api)
+
+```typescript
+// returns the length of the argument data in bytes
+export function arg_data_raw_size(
+    arg1: blob,
+    arg2: int8,
+    arg3: boolean,
+    arg4: string
+): Query<nat32> {
+    return ic.arg_data_raw_size();
+}
+```
 
 #### call
 
@@ -1490,6 +1545,10 @@ Examples:
 -   [tuple_types](/examples/tuple_types)
 -   [whoami](/examples/motoko_examples/whoami)
 
+```typescript
+// TODO let's add some code here
+```
+
 #### call raw
 
 Examples:
@@ -1497,11 +1556,49 @@ Examples:
 -   [basic-dao](/examples/motoko_examples/basic-dao)
 -   [call_raw](/examples/call_raw)
 
+```typescript
+import { blob, ic, ok, Principal, Update } from 'azle';
+
+export function get_randomness(): Update<blob> {
+    const canister_result: CanisterResult<blob> = yield ic.call_raw(
+        Principal.fromText('aaaaa-aa'),
+        'raw_rand',
+        Uint8Array.from([68, 73, 68, 76, 0, 0]),
+        0n // this is a nat64
+    );
+
+    if (!ok(canister_result)) {
+        return Uint8Array.from([]);
+    }
+
+    return canister_result.ok;
+}
+```
+
 #### call raw 128
 
 Examples:
 
 -   [call_raw](/examples/call_raw)
+
+```typescript
+import { blob, ic, ok, Principal, Update } from 'azle';
+
+export function get_randomness(): Update<blob> {
+    const canister_result: CanisterResult<blob> = yield ic.call_raw(
+        Principal.fromText('aaaaa-aa'),
+        'raw_rand',
+        Uint8Array.from([68, 73, 68, 76, 0, 0]),
+        0n // this is a nat
+    );
+
+    if (!ok(canister_result)) {
+        return Uint8Array.from([]);
+    }
+
+    return canister_result.ok;
+}
+```
 
 #### call with payment
 
@@ -1510,11 +1607,15 @@ Examples:
 -   [cycles](/examples/cycles)
 -   [management_canister](/examples/management_canister)
 
+TODO add snippet
+
 #### call with payment 128
 
 Examples:
 
 -   [cycles](/examples/cycles)
+
+TODO add snippet
 
 #### method name
 
@@ -1522,11 +1623,51 @@ Examples:
 
 -   [inspect_message](/examples/inspect_message)
 
+```typescript
+import { ic, InspectMessage, Update } from 'azle';
+
+export function inspect_message(): InspectMessage {
+    console.log('this runs before executing update calls');
+
+    if (ic.method_name() === 'accessible') {
+        ic.accept_message();
+        return;
+    }
+
+    if (ic.method_name() === 'inaccessible') {
+        return;
+    }
+
+    throw `Method "${ic.method_name()}" not allowed`;
+}
+
+export function accessible(): Update<boolean> {
+    return true;
+}
+
+export function inaccessible(): Update<boolean> {
+    return false;
+}
+
+export function also_inaccessible(): Update<boolean> {
+    return false;
+}
+```
+
 #### msg cycles accept
 
 Examples:
 
 -   [cycles](/examples/cycles)
+
+```typescript
+import { ic, nat64, Update } from 'azle';
+
+// Moves all transferred cycles to the canister
+export function receive_cycles(): Update<nat64> {
+    return ic.msg_cycles_accept(ic.msg_cycles_available());
+}
+```
 
 #### msg cycles accept 128
 
@@ -1534,11 +1675,29 @@ Examples:
 
 -   [cycles](/examples/cycles)
 
+```typescript
+import { ic, nat64, Update } from 'azle';
+
+// Moves all transferred cycles to the canister
+export function receive_cycles128(): Update<nat64> {
+    return ic.msg_cycles_accept128(ic.msg_cycles_available128());
+}
+```
+
 #### msg cycles available
 
 Examples:
 
 -   [cycles](/examples/cycles)
+
+```typescript
+import { ic, nat64, Update } from 'azle';
+
+// Moves all transferred cycles to the canister
+export function receive_cycles(): Update<nat64> {
+    return ic.msg_cycles_accept(ic.msg_cycles_available());
+}
+```
 
 #### msg cycles available 128
 
@@ -1546,11 +1705,39 @@ Examples:
 
 -   [cycles](/examples/cycles)
 
+```typescript
+import { ic, nat64, Update } from 'azle';
+
+// Moves all transferred cycles to the canister
+export function receive_cycles128(): Update<nat64> {
+    return ic.msg_cycles_accept128(ic.msg_cycles_available128());
+}
+```
+
 #### msg cycles refunded
+
+TODO fix all of the cycles examples
 
 Examples:
 
 -   [cycles](/examples/cycles)
+
+```typescript
+// Reports the number of cycles returned from the Cycles canister
+export function* sendCycles(): Update<SendCyclesResult> {
+    const result: CanisterResult<nat64> = yield cycles
+        .receiveCycles()
+        .with_cycles(1_000_000n);
+
+    if (!ok(result)) {
+        return { err: result.err };
+    }
+
+    return {
+        ok: ic.msg_cycles_refunded()
+    };
+}
+```
 
 #### msg cycles refunded 128
 
@@ -1565,11 +1752,32 @@ Examples:
 -   [cross_canister_calls](/examples/cross_canister_calls)
 -   [cycles](/examples/cycles)
 
+// TODO this will be similar to the call examples
+
 #### notify raw
 
 Examples:
 
 -   [notify_raw](/examples/notify_raw)
+
+```typescript
+import { ic, ok, Principal, Update } from 'azle';
+
+export function send_notification(): Update<boolean> {
+    const result = ic.notify_raw(
+        Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'),
+        'receive_notification',
+        Uint8Array.from([68, 73, 68, 76, 0, 0]),
+        0n
+    );
+
+    if (!ok(result)) {
+        return false;
+    }
+
+    return true;
+}
+```
 
 #### notify with payment 128
 
@@ -1577,11 +1785,19 @@ Examples:
 
 -   [cycles](/examples/cycles)
 
+TODO finish
+
 #### performance counter
 
 Examples:
 
 -   [ic_api](/examples/ic_api)
+
+```typescript
+export function performance_counter(): Query<nat64> {
+    return ic.performance_counter(0);
+}
+```
 
 #### reject
 
@@ -1591,11 +1807,36 @@ Examples:
 -   [manual_reply](/examples/manual_reply)
 -   [rejections](/examples/rejections)
 
+```typescript
+import { empty, ic, QueryManual } from 'azle';
+
+export function reject(message: string): QueryManual<empty> {
+    ic.reject(message);
+}
+```
+
 #### reject code
 
 Examples:
 
 -   [rejections](/examples/rejections)
+
+```typescript
+import { Canister, CanisterResult, ic, RejectionCode, Update } from 'azle';
+
+type Canister1 = Canister<{
+    method(): CanisterResult<boolean>;
+}>;
+
+const canister1 = ic.canisters.Canister1<Canister1>(
+    Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
+);
+
+export function* get_rejection_code(): Update<RejectionCode> {
+    yield canister1.method();
+    return ic.reject_code();
+}
+```
 
 #### reject message
 
@@ -1603,17 +1844,80 @@ Examples:
 
 -   [rejections](/examples/rejections)
 
+```typescript
+import { Canister, CanisterResult, ic, RejectionCode, Update } from 'azle';
+
+type Canister1 = Canister<{
+    method(): CanisterResult<boolean>;
+}>;
+
+const canister1 = ic.canisters.Canister1<Canister1>(
+    Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
+);
+
+export function* get_rejection_message(): Update<string> {
+    yield canister1.method();
+    return ic.reject_message();
+}
+```
+
 #### reply
 
 Examples:
 
 -   [manual_reply](/examples/manual_reply)
 
+```typescript
+import { ic, UpdateManual } from 'azle';
+
+export function manual_update(message: string): UpdateManual<string> {
+    if (message === 'reject') {
+        ic.reject(message);
+        return;
+    }
+
+    ic.reply(message);
+}
+```
+
 #### reply raw
 
 Examples:
 
 -   [manual_reply](/examples/manual_reply)
+
+```typescript
+import { blob, ic, int, UpdateManual, Variant } from 'azle';
+
+type RawReply = {
+    int: int;
+    text: string;
+    bool: boolean;
+    blob: blob;
+    variant: Options;
+};
+
+type Options = Variant<{
+    Small: null;
+    Medium: null;
+    Large: null;
+}>;
+
+export function reply_raw(): UpdateManual<RawReply> {
+    // const response = '(record { "int" = 42; "text" = "text"; "bool" = true; "blob" = blob "Surprise!"; "variant" = variant {Medium} })';
+    // const hex = execSync(`didc encode '${response}'`).toString().trim();
+    // TODO expose candid encoding/decoding in azle.
+    // See https://github.com/demergent-labs/azle/issues/400
+
+    const candidEncodedArgumentsHexString =
+        '4449444c036c05ef99c0027cddfae4880401aa88ee88047ead99e7e70471858189e70d026d7b6b019591f39a037f01002a0953757270726973652101047465787400';
+    const candidEncodedArgumentsByteArray =
+        candidEncodedArgumentsHexString
+            .match(/.{1,2}/g)
+            ?.map((byte) => parseInt(byte, 16)) ?? [];
+    ic.reply_raw(new Uint8Array(candidEncodedArgumentsByteArray));
+}
+```
 
 #### result
 
