@@ -1,6 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { run_tests, Test } from 'azle/test';
-import { execSync } from 'child_process';
+import { deploy, run_tests, Test } from 'azle/test';
 import { createActor } from '../test/dfx_generated/principal';
 
 const principal_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
@@ -17,27 +16,7 @@ const to_text_tests = get_to_text_tests();
 const to_uint8array_tests = get_to_uint8array_tests();
 
 const tests: Test[] = [
-    {
-        name: 'clear canister memory',
-        prep: async () => {
-            execSync(`dfx canister uninstall-code query || true`, {
-                stdio: 'inherit'
-            });
-        }
-    },
-    {
-        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-        name: 'waiting for createActor fetchRootKey',
-        wait: 5000
-    },
-    {
-        name: 'deploy',
-        prep: async () => {
-            execSync(`dfx deploy`, {
-                stdio: 'inherit'
-            });
-        }
-    },
+    ...deploy('principal'),
     {
         name: 'principal_return_type',
         test: async () => {

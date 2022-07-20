@@ -1,4 +1,4 @@
-import { cleanDeploy, run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/ic_api';
 
@@ -9,7 +9,7 @@ const ic_api_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...cleanDeploy('ic_api'),
+    ...deploy('ic_api'),
     {
         skip: true,
         name: 'arg_data with zero params',
@@ -127,7 +127,7 @@ const tests: Test[] = [
             const result = await ic_api_canister.canister_balance();
 
             return {
-                ok: result === 4_000_000_000_000n
+                ok: result > 3_000_000_000_000n && result < 4_000_000_000_000n
             };
         }
     },
@@ -137,7 +137,7 @@ const tests: Test[] = [
             const result = await ic_api_canister.canister_balance128();
 
             return {
-                ok: result === 4_000_000_000_000n
+                ok: result > 3_000_000_000_000n && result < 4_000_000_000_000n
             };
         }
     },
@@ -175,6 +175,16 @@ const tests: Test[] = [
 
             return {
                 ok: result.toText() === ic_api_canister_id
+            };
+        }
+    },
+    {
+        name: 'performance_counter',
+        test: async () => {
+            const result = await ic_api_canister.performance_counter();
+
+            return {
+                ok: result >= 200_000n && result <= 300_000n
             };
         }
     },

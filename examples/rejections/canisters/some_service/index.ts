@@ -1,4 +1,4 @@
-import { Canister, CanisterResult, empty, ic, Principal, Variant } from 'azle';
+import { Canister, CanisterResult, empty, ic, Principal } from 'azle';
 
 export type SomeService = Canister<{
     reject(message: string): CanisterResult<empty>;
