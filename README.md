@@ -1573,10 +1573,14 @@ export function* call_canister1_method(): Update<CallCanister1MethodResult> {
     const canister_result: CanisterResult<boolean> = yield canister1.method();
 
     if (!ok(canister_result)) {
-        return false;
+        return {
+            err: canister_result.err
+        };
     }
 
-    return canister_result.ok;
+    return {
+        ok: canister_result.ok
+    };
 }
 ```
 
@@ -1660,10 +1664,14 @@ export function* call_canister1_method(): Update<CallCanister1MethodResult> {
         .with_cycles(100_000_000_000n);
 
     if (!ok(canister_result)) {
-        return false;
+        return {
+            err: canister_result.err
+        };
     }
 
-    return canister_result.ok;
+    return {
+        ok: canister_result.ok
+    };
 }
 ```
 
@@ -1695,10 +1703,14 @@ export function* call_canister1_method(): Update<CallCanister1MethodResult> {
         .with_cycles128(100_000_000_000n);
 
     if (!ok(canister_result)) {
-        return false;
+        return {
+            err: canister_result.err
+        };
     }
 
-    return canister_result.ok;
+    return {
+        ok: canister_result.ok
+    };
 }
 ```
 
@@ -1801,21 +1813,35 @@ export function receive_cycles128(): Update<nat64> {
 
 #### msg cycles refunded
 
-TODO fix all of the cycles examples
-
 Examples:
 
 -   [cycles](/examples/cycles)
 
 ```typescript
-// Reports the number of cycles returned from the Cycles canister
-export function* sendCycles(): Update<SendCyclesResult> {
-    const result: CanisterResult<nat64> = yield cycles
-        .receiveCycles()
-        .with_cycles(1_000_000n);
+import { Canister, CanisterResult, ic, nat64, ok, Update, Variant } from 'azle';
 
-    if (!ok(result)) {
-        return { err: result.err };
+type Canister1 = Canister<{
+    method(): CanisterResult<boolean>;
+}>;
+
+const canister1 = ic.canisters.Canister1<Canister1>(
+    Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
+);
+
+type CallCanister1MethodResult = Variant<{
+    ok: nat64;
+    err: strig;
+}>;
+
+export function* call_canister1_method(): Update<CallCanister1MethodResult> {
+    const canister_result: CanisterResult<boolean> = yield canister1
+        .method()
+        .with_cycles(100_000_000_000n);
+
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
     }
 
     return {
@@ -1829,6 +1855,39 @@ export function* sendCycles(): Update<SendCyclesResult> {
 Examples:
 
 -   [cycles](/examples/cycles)
+
+```typescript
+import { Canister, CanisterResult, ic, nat, ok, Update, Variant } from 'azle';
+
+type Canister1 = Canister<{
+    method(): CanisterResult<boolean>;
+}>;
+
+const canister1 = ic.canisters.Canister1<Canister1>(
+    Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
+);
+
+type CallCanister1MethodResult = Variant<{
+    ok: nat;
+    err: strig;
+}>;
+
+export function* call_canister1_method(): Update<CallCanister1MethodResult> {
+    const canister_result: CanisterResult<boolean> = yield canister1
+        .method()
+        .with_cycles128(100_000_000_000n);
+
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
+    }
+
+    return {
+        ok: ic.msg_cycles_refunded128()
+    };
+}
+```
 
 #### notify
 
