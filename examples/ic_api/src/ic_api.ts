@@ -98,6 +98,10 @@ export function id(): Query<Principal> {
     return ic.id();
 }
 
+export function performance_counter(): Query<nat64> {
+    return ic.performance_counter(0);
+}
+
 // prints a message through the local replica's output
 export function print(message: string): Query<boolean> {
     ic.print(message);

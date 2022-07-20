@@ -128,6 +128,7 @@ type ic = {
         args_raw: blob,
         payment: nat
     ) => CanisterResult<null>;
+    performance_counter: (counter_type: nat32) => nat64;
     print: (...args: any) => void;
     reject: (message: string) => void;
     reject_code: () => RejectionCode;
