@@ -1546,7 +1546,38 @@ Examples:
 -   [whoami](/examples/motoko_examples/whoami)
 
 ```typescript
-// TODO let's add some code here
+import {
+    Canister,
+    CanisterResult,
+    ic,
+    ok,
+    RejectionCode,
+    Update,
+    Variant
+} from 'azle';
+
+type Canister1 = Canister<{
+    method(): CanisterResult<boolean>;
+}>;
+
+const canister1 = ic.canisters.Canister1<Canister1>(
+    Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
+);
+
+type CallCanister1MethodResult = Variant<{
+    ok: boolean;
+    err: strig;
+}>;
+
+export function* call_canister1_method(): Update<CallCanister1MethodResult> {
+    const canister_result: CanisterResult<boolean> = yield canister1.method();
+
+    if (!ok(canister_result)) {
+        return false;
+    }
+
+    return canister_result.ok;
+}
 ```
 
 #### call raw
@@ -1607,7 +1638,34 @@ Examples:
 -   [cycles](/examples/cycles)
 -   [management_canister](/examples/management_canister)
 
-TODO add snippet
+```typescript
+import { Canister, CanisterResult, ic, ok, Update, Variant } from 'azle';
+
+type Canister1 = Canister<{
+    method(): CanisterResult<boolean>;
+}>;
+
+const canister1 = ic.canisters.Canister1<Canister1>(
+    Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
+);
+
+type CallCanister1MethodResult = Variant<{
+    ok: boolean;
+    err: strig;
+}>;
+
+export function* call_canister1_method(): Update<CallCanister1MethodResult> {
+    const canister_result: CanisterResult<boolean> = yield canister1
+        .method()
+        .with_cycles(100_000_000_000n);
+
+    if (!ok(canister_result)) {
+        return false;
+    }
+
+    return canister_result.ok;
+}
+```
 
 #### call with payment 128
 
@@ -1615,7 +1673,34 @@ Examples:
 
 -   [cycles](/examples/cycles)
 
-TODO add snippet
+```typescript
+import { Canister, CanisterResult, ic, ok, Update, Variant } from 'azle';
+
+type Canister1 = Canister<{
+    method(): CanisterResult<boolean>;
+}>;
+
+const canister1 = ic.canisters.Canister1<Canister1>(
+    Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
+);
+
+type CallCanister1MethodResult = Variant<{
+    ok: boolean;
+    err: strig;
+}>;
+
+export function* call_canister1_method(): Update<CallCanister1MethodResult> {
+    const canister_result: CanisterResult<boolean> = yield canister1
+        .method()
+        .with_cycles128(100_000_000_000n);
+
+    if (!ok(canister_result)) {
+        return false;
+    }
+
+    return canister_result.ok;
+}
+```
 
 #### method name
 
@@ -1752,7 +1837,27 @@ Examples:
 -   [cross_canister_calls](/examples/cross_canister_calls)
 -   [cycles](/examples/cycles)
 
-// TODO this will be similar to the call examples
+```typescript
+import { Canister, CanisterResult, ic, ok, Update } from 'azle';
+
+type Canister1 = Canister<{
+    method(): CanisterResult<boolean>;
+}>;
+
+const canister1 = ic.canisters.Canister1<Canister1>(
+    Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
+);
+
+export function call_canister1_method(): Update<boolean> {
+    const canister_result: CanisterResult<null> = canister1.method().notify();
+
+    if (!ok(canister_result)) {
+        return false;
+    }
+
+    return true;
+}
+```
 
 #### notify raw
 
@@ -1785,7 +1890,30 @@ Examples:
 
 -   [cycles](/examples/cycles)
 
-TODO finish
+```typescript
+import { Canister, CanisterResult, ic, ok, Update } from 'azle';
+
+type Canister1 = Canister<{
+    method(): CanisterResult<boolean>;
+}>;
+
+const canister1 = ic.canisters.Canister1<Canister1>(
+    Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
+);
+
+export function call_canister1_method(): Update<boolean> {
+    const canister_result: CanisterResult<null> = canister1
+        .method()
+        .notify()
+        .with_cycles128(100_000_000_000n);
+
+    if (!ok(canister_result)) {
+        return false;
+    }
+
+    return true;
+}
+```
 
 #### performance counter
 
