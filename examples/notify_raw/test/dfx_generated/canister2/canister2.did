@@ -1,0 +1,4 @@
+service: {
+    "get_notified": () -> (bool) query;
+    "receive_notification": () -> ();
+}

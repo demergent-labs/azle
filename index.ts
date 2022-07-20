@@ -122,6 +122,12 @@ type ic = {
     msg_cycles_available128: () => nat;
     msg_cycles_refunded: () => nat64;
     msg_cycles_refunded128: () => nat;
+    notify_raw: (
+        canister_id: Principal,
+        method: string,
+        args_raw: blob,
+        payment: nat
+    ) => CanisterResult<null>;
     performance_counter: (counter_type: nat32) => nat64;
     print: (...args: any) => void;
     reject: (message: string) => void;

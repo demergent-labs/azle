@@ -101,6 +101,11 @@ export function generateIcObject(
                 0
             )
             .function(
+                _azle_ic_notify_raw,
+                "notify_raw",
+                0
+            )
+            .function(
                 _azle_ic_performance_counter,
                 "performance_counter",
                 0
