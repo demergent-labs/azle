@@ -1,0 +1,9 @@
+type WhoAmI = 
+ service {
+   argument: () -> (principal) query;
+   id: () -> (principal);
+   idQuick: () -> (principal);
+   installer: () -> (principal) query;
+   whoami: () -> (principal);
+ };
+service : (principal) -> WhoAmI
