@@ -37,4 +37,4 @@ export const createActor = (canisterId, options) => {
  * A ready-to-use agent for the whoami canister
  * @type {import("@dfinity/agent").ActorSubclass<import("./whoami.did.js")._SERVICE>}
  */
-//  export const whoami = createActor(canisterId);
+// export const whoami = createActor(canisterId);

@@ -1,6 +1,6 @@
 import { deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
-import { createActor } from './dfx_generated/whoami';
+import { createActor } from '../dfx_generated/azle';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { SignIdentity } from '@dfinity/agent';
 
@@ -29,7 +29,7 @@ const whoami_canister = createActor(canisterId, {
 });
 
 const tests: Test[] = [
-    ...deploy('whoami', `'(principal "${someonePrincipal}")'`),
+    ...deploy('azle', `'(principal "${someonePrincipal}")'`),
     {
         name: 'installer',
         test: async () => {
@@ -85,7 +85,7 @@ const tests: Test[] = [
         name: 'function hack to allow a redeploy',
         prep: async () => {
             execSync(
-                `echo "\\n\\nexport function hack(): Query<void> {}" >> src/whoami.ts`,
+                `echo "\\n\\nexport function hack(): Query<void> {}" >> canisters/azle/index.ts`,
                 {
                     stdio: 'inherit'
                 }
@@ -96,7 +96,7 @@ const tests: Test[] = [
         name: 'redeploy',
         prep: async () => {
             execSync(
-                `dfx canister install --mode upgrade --argument '(principal "${callingPrincipal}")' whoami --wasm target/wasm32-unknown-unknown/release/whoami.wasm.gz`,
+                `dfx canister install --mode upgrade --argument '(principal "${callingPrincipal}")' azle --wasm target/wasm32-unknown-unknown/release/azle.wasm.gz`,
                 {
                     stdio: 'inherit'
                 }

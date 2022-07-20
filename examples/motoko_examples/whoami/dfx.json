@@ -1,14 +1,14 @@
 {
     "canisters": {
-        "whoami": {
+        "azle": {
             "type": "custom",
-            "build": "npx azle whoami",
-            "root": "src",
-            "ts": "src/whoami.ts",
-            "candid": "src/whoami.did",
-            "wasm": "target/wasm32-unknown-unknown/release/whoami.wasm",
+            "build": "npx azle azle",
+            "root": "canisters/azle",
+            "ts": "canisters/azle/index.ts",
+            "candid": "canisters/azle/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/azle.wasm",
             "declarations": {
-                "output": "test/dfx_generated/whoami"
+                "output": "dfx_generated/azle"
             }
         }
     }
