@@ -1447,6 +1447,15 @@ Examples:
 -   [ic_api](/examples/ic_api)
 -   [whoami](/examples/motoko_examples/whoami)
 
+```typescript
+import { ic, Principal, Query } from 'azle';
+
+// returns the principal of the identity that called this function
+export function caller(): Query<Principal> {
+    return ic.caller();
+}
+```
+
 #### accept message
 
 Examples:
