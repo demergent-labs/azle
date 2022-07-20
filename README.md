@@ -233,8 +233,8 @@ Azle allows you to write canisters while embracing much of what that the TypeScr
 -   [heartbeat](#heartbeat)
 -   [update](#update)
 -   [query](#query)
--   [http_request](#httprequest)
--   [http_request_update](#httprequestupdate)
+-   [http_request](#http_request)
+-   [http_request_update](#http_request_update)
 
 #### init
 
