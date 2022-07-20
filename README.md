@@ -233,8 +233,7 @@ Azle allows you to write canisters while embracing much of what that the TypeScr
 -   [heartbeat](#heartbeat)
 -   [update](#update)
 -   [query](#query)
--   [http_request](#http_request)
--   [http_request_update](#http_request_update)
+-   [http_request and http_request_update](#http_request-and-http_request_update)
 
 #### init
 
@@ -247,6 +246,14 @@ Examples:
 -   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
 -   [whoami](/examples/motoko_examples/whoami)
 
+```typescript
+import { Init } from 'azle';
+
+export function init(): Init {
+    console.log('This runs once when the canister is first initialized');
+}
+```
+
 #### pre upgrade
 
 Examples:
@@ -254,6 +261,14 @@ Examples:
 -   [basic-dao](/examples/motoko_examples/basic-dao)
 -   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
 -   [stable_storage](/examples/stable_storage)
+
+```typescript
+import { PreUpgrade } from 'azle';
+
+export function pre_upgrade(): PreUpgrade {
+    console.log('This runs before every canister upgrade');
+}
+```
 
 #### post upgrade
 
@@ -264,11 +279,50 @@ Examples:
 -   [stable_storage](/examples/stable_storage)
 -   [whoami](/examples/motoko_examples/whoami)
 
+```typescript
+import { PostUpgrade } from 'azle';
+
+export function post_upgrade(): PostUpgrade {
+    console.log('This runs after every canister upgrade');
+}
+```
+
 #### inspect message
 
 Examples:
 
 -   [inspect_message](/examples/inspect_message)
+
+```typescript
+import { ic, InspectMessage, Update } from 'azle';
+
+export function inspect_message(): InspectMessage {
+    console.log('this runs before executing update calls');
+
+    if (ic.method_name() === 'accessible') {
+        ic.accept_message();
+        return;
+    }
+
+    if (ic.method_name() === 'inaccessible') {
+        return;
+    }
+
+    throw `Method "${ic.method_name()}" not allowed`;
+}
+
+export function accessible(): Update<boolean> {
+    return true;
+}
+
+export function inaccessible(): Update<boolean> {
+    return false;
+}
+
+export function also_inaccessible(): Update<boolean> {
+    return false;
+}
+```
 
 #### heartbeat
 
@@ -276,6 +330,14 @@ Examples:
 
 -   [basic-dao](/examples/motoko_examples/basic-dao)
 -   [heartbeat](/examples/heartbeat)
+
+```typescript
+import { Heartbeat } from 'azle';
+
+export function heartbeat(): Heartbeat {
+    console.log('this runs ~1 time per second');
+}
+```
 
 #### update
 
@@ -335,17 +397,73 @@ export function query(): Query<string> {
 }
 ```
 
-#### http_request
+#### http_request and http_request_update
 
 Examples:
 
 -   [http_counter](/examples/motoko_examples/http_counter)
 
-#### http_request_update
+```typescript
+import { blob, Func, ic, nat, nat16, Opt, Query, Update, Variant } from 'azle';
 
-Examples:
+type HttpRequest = {
+    method: string;
+    url: string;
+    headers: HeaderField[];
+    body: blob;
+};
 
--   [http_counter](/examples/motoko_examples/http_counter)
+type HttpResponse = {
+    status_code: nat16;
+    headers: HeaderField[];
+    body: blob;
+    streaming_strategy: Opt<StreamingStrategy>;
+    upgrade: Opt<boolean>;
+};
+
+type HeaderField = [string, string];
+
+type StreamingStrategy = Variant<{
+    Callback: CallbackStrategy;
+}>;
+
+type CallbackStrategy = {
+    callback: Callback;
+    token: Token;
+};
+
+type Callback = Func<(t: Token) => Query<StreamingCallbackHttpResponse>>;
+
+type Token = {
+    // add whatever fields you'd like
+    arbitrary_data: string;
+};
+
+type StreamingCallbackHttpResponse = {
+    body: blob;
+    token: Opt<Token>;
+};
+
+export function http_request(req: HttpRequest): Query<HttpResponse> {
+    return {
+        status_code: 200,
+        headers: [['content-type', 'text/plain']],
+        body: [],
+        streaming_strategy: null,
+        upgrade: true
+    };
+}
+
+export function http_request_update(req: HttpRequest): Update<HttpResponse> {
+    return {
+        status_code: 200,
+        headers: [['content-type', 'text/plain']],
+        body: [],
+        streaming_strategy: null,
+        upgrade: null
+    };
+}
+```
 
 ### Candid Types
 
@@ -401,7 +519,7 @@ The TypeScript type `string` corresponds to the [Candid type text](https://smart
 TypeScript:
 
 ```typescript
-import { Query, ic } from 'azle';
+import { Query } from 'azle';
 
 export function get_string(): Query<string> {
     return 'Hello world!';
@@ -432,7 +550,7 @@ TypeScript:
 import { blob, Query } from 'azle';
 
 export function get_blob(): Query<blob> {
-    return Uint8Array.from([]);
+    return Uint8Array.from([68, 73, 68, 76, 0, 0]);
 }
 
 export function print_blob(blob: blob): Query<blob> {
@@ -821,6 +939,8 @@ The TypeScript type `null` corresponds to the [Candid type null](https://smartco
 TypeScript:
 
 ```typescript
+import { Query } from 'azle';
+
 export function get_null(): Query<null> {
     return null;
 }
@@ -847,7 +967,7 @@ TypeScript `[]` array syntax corresponds to the [Candid type vec](https://smartc
 TypeScript:
 
 ```typescript
-import { Query, int32 } from 'azle';
+import { int32, Query } from 'azle';
 
 export function get_numbers(): Query<int32[]> {
     return [0, 1, 2, 3];
@@ -896,8 +1016,6 @@ TypeScript type aliases referring to object literals correspond to the [Candid r
 TypeScript:
 
 ```typescript
-import { Variant } from 'azle';
-
 type Post = {
     id: string;
     author: User;
@@ -1002,7 +1120,7 @@ The Azle type `func` corresponds to the [Candid type func](https://internetcompu
 TypeScript:
 
 ```typescript
-import { nat64, Query, Variant } from 'azle';
+import { Func, nat64, Principal, Query, Update, Variant } from 'azle';
 
 type User = {
     id: string;
@@ -1096,6 +1214,8 @@ The Azle type `reserved` corresponds to the [Candid type reserved](https://inter
 TypeScript:
 
 ```typescript
+import { Query, reserved } from 'azle';
+
 export function get_reserved(): Query<reserved> {
     return 'anything';
 }
@@ -1122,6 +1242,8 @@ The Azle type `empty` corresponds to the [Candid type empty](https://internetcom
 TypeScript:
 
 ```typescript
+import { empty, Query } from 'azle';
+
 export function get_empty(): Query<empty> {
     throw 'Anything you want';
 }
@@ -1161,6 +1283,15 @@ Examples:
 -   [cycles](/examples/cycles)
 -   [ic_api](/examples/ic_api)
 
+```typescript
+import { ic, nat, Query } from 'azle';
+
+// returns the amount of cycles available in the canister
+export function canister_balance(): Query<nat64> {
+    return ic.canister_balance();
+}
+```
+
 #### canister balance 128
 
 Examples:
@@ -1168,11 +1299,29 @@ Examples:
 -   [cycles](/examples/cycles)
 -   [ic_api](/examples/ic_api)
 
+```typescript
+import { ic, nat, Query } from 'azle';
+
+// returns the amount of cycles available in the canister
+export function canister_balance128(): Query<nat> {
+    return ic.canister_balance128();
+}
+```
+
 #### data certificate
 
 Examples:
 
 -   [ic_api](/examples/ic_api)
+
+```typescript
+import { blob, ic, Opt, Query } from 'azle';
+
+// returns the amount of cycles available in the canister
+export function data_certificate(): Query<Opt<blob>> {
+    return ic.data_certificate();
+}
+```
 
 #### canister id
 
@@ -1183,17 +1332,46 @@ Examples:
 -   [ic_api](/examples/ic_api)
 -   [whoami](/examples/motoko_examples/whoami)
 
+```typescript
+import { ic, Principal, Query } from 'azle';
+
+// returns this canister's id
+export function id(): Query<Principal> {
+    return ic.id();
+}
+```
+
 #### print
 
 Examples:
 
 -   [ic_api](/examples/ic_api)
 
+```typescript
+import { ic, Query } from 'azle';
+
+// prints a message through the local replica's output
+export function print(message: string): Query<boolean> {
+    ic.print(message);
+
+    return true;
+}
+```
+
 #### set certified data
 
 Examples:
 
 -   [ic_api](/examples/ic_api)
+
+```typescript
+import { blob, ic, Update } from 'azle';
+
+// sets up to 32 bytes of certified data
+export function set_certified_data(data: blob): Update<void> {
+    ic.set_certified_data(data);
+}
+```
 
 #### time
 
@@ -1202,6 +1380,15 @@ Examples:
 -   [basic-dao](/examples/motoko_examples/basic-dao)
 -   [ic_api](/examples/ic_api)
 
+```typescript
+import { ic, nat64, Query } from 'azle';
+
+// returns the current timestamp
+export function time(): Query<nat64> {
+    return ic.time();
+}
+```
+
 #### trap
 
 Examples:
@@ -1209,6 +1396,17 @@ Examples:
 -   [cross_canister_calls](/examples/cross_canister_calls)
 -   [http_counter](/examples/motoko_examples/http_counter)
 -   [ic_api](/examples/ic_api)
+
+```typescript
+import { ic, Query } from 'azle';
+
+// traps with a message, stopping execution and discarding all state within the call
+export function trap(message: string): Query<boolean> {
+    ic.trap(message);
+
+    return true;
+}
+```
 
 ### Call APIs
 
@@ -1437,11 +1635,33 @@ Examples:
 -   [stable_storage](/examples/stable_storage)
 -   [tuple_types](/examples/tuple_types)
 
+```typescript
+import { Init, nat, Stable, Update } from 'azle';
+
+type StableStorage = Stable<{
+    stable_nat: nat;
+}>;
+
+let stable_storage: StableStorage = ic.stable_storage();
+
+export function init(_stable_nat: nat): Init {
+    stable_storage.stable_nat = _stable_nat;
+}
+```
+
 #### stable64 grow
 
 Examples:
 
 -   [stable_memory](/examples/stable_memory)
+
+```typescript
+import { ic, nat64, Stable64GrowResult, Update } from 'azle';
+
+export function stable64_grow(new_pages: nat64): Update<Stable64GrowResult> {
+    return ic.stable64_grow(new_pages);
+}
+```
 
 #### stable64 read
 
@@ -1449,11 +1669,27 @@ Examples:
 
 -   [stable_memory](/examples/stable_memory)
 
+```typescript
+import { blob, ic, nat64, Query } from 'azle';
+
+export function stable64_read(offset: nat64, length: nat64): Query<blob> {
+    return ic.stable64_read(offset, length);
+}
+```
+
 #### stable64 size
 
 Examples:
 
 -   [stable_memory](/examples/stable_memory)
+
+```typescript
+import { ic, nat64, Query } from 'azle';
+
+export function stable64_size(): Query<nat64> {
+    return ic.stable64_size();
+}
+```
 
 #### stable64 write
 
@@ -1461,11 +1697,27 @@ Examples:
 
 -   [stable_memory](/examples/stable_memory)
 
+```typescript
+import { blob, ic, nat64, Update } from 'azle';
+
+export function stable64_write(offset: nat64, buf: blob): Update<void> {
+    ic.stable64_write(offset, buf);
+}
+```
+
 #### stable bytes
 
 Examples:
 
 -   [stable_memory](/examples/stable_memory)
+
+```typescript
+import { blob, ic, Query } from 'azle';
+
+export function stable_bytes(): Query<blob> {
+    return ic.stable_bytes();
+}
+```
 
 #### stable grow
 
@@ -1473,11 +1725,27 @@ Examples:
 
 -   [stable_memory](/examples/stable_memory)
 
+```typescript
+import { ic, nat32, StableGrowResult, Update } from 'azle';
+
+export function stable_grow(new_pages: nat32): Update<StableGrowResult> {
+    return ic.stable_grow(new_pages);
+}
+```
+
 #### stable read
 
 Examples:
 
 -   [stable_memory](/examples/stable_memory)
+
+```typescript
+import { blob, ic, nat32, Query } from 'azle';
+
+export function stable_read(offset: nat32, length: nat32): Query<blob> {
+    return ic.stable_read(offset, length);
+}
+```
 
 #### stable size
 
@@ -1485,11 +1753,27 @@ Examples:
 
 -   [stable_memory](/examples/stable_memory)
 
+```typescript
+import { ic, nat32, Query } from 'azle';
+
+export function stable_size(): Query<nat64> {
+    return ic.stable_size();
+}
+```
+
 #### stable write
 
 Examples:
 
 -   [stable_memory](/examples/stable_memory)
+
+```typescript
+import { blob, ic, nat32, Update } from 'azle';
+
+export function stable_write(offset: nat32, buf: blob): Update<void> {
+    ic.stable_write(offset, buf);
+}
+```
 
 ### Feature Parity
 
@@ -1641,6 +1925,7 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 -   Really bad compiler errors (you will probably not enjoy them)
 -   Limited asynchronous TypeScript/JavaScript (generators only for now, no promises or async/await)
 -   Imported npm packages may use unsupported syntax or APIs
+-   Inefficient Wasm instruction usage relative to Rust and Motoko, especially with arrays
 -   Unknown security vulnerabilities
 -   [Many small inconveniences](https://github.com/demergent-labs/azle/issues)
 

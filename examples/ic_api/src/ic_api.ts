@@ -5,6 +5,7 @@ import {
     int8,
     nat,
     nat32,
+    nat64,
     Opt,
     Principal,
     Query,
