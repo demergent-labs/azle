@@ -1,4 +1,4 @@
-import { ok, run_tests, Test } from 'azle/test';
+import { deploy, ok, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/ledger_canister';
 
@@ -19,24 +19,12 @@ run_tests(tests);
 function get_test_setups(): Test[] {
     return [
         {
-            name: 'clear canister memory',
+            name: 'clear icp_ledger canister memory',
             prep: async () => {
-                execSync(
-                    `dfx canister uninstall-code ledger_canister || true`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-
                 execSync(`dfx canister uninstall-code icp_ledger || true`, {
                     stdio: 'inherit'
                 });
             }
-        },
-        {
-            // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-            name: 'waiting for createActor fetchRootKey',
-            wait: 5000
         },
         {
             name: 'icp_ledger setup',
@@ -74,19 +62,12 @@ function get_test_setups(): Test[] {
                 );
             }
         },
-        {
-            name: 'deploy ledger_canister',
-            prep: async () => {
-                execSync(`dfx deploy ledger_canister`, {
-                    stdio: 'inherit'
-                });
-            }
-        },
+        ...deploy('ledger_canister'),
         {
             name: 'deploy icp_ledger',
             prep: async () => {
                 execSync(
-                    `dfx deploy icp_ledger --argument=\'(record {minting_account = "\'$(dfx ledger account-id)\'"; initial_values = vec { record { "\'$(dfx ledger account-id --of-canister ledger_canister)\'"; record { e8s=100_000_000_000 } }; }; send_whitelist = vec {}})\'`,
+                    `dfx deploy icp_ledger --argument='(record {minting_account = "'$(dfx ledger account-id)'"; initial_values = vec { record { "'$(dfx ledger account-id --of-canister ledger_canister)'"; record { e8s=100_000_000_000 } }; }; send_whitelist = vec {}})'`,
                     {
                         stdio: 'inherit'
                     }

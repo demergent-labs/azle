@@ -1,4 +1,4 @@
-import { run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from './dfx_generated/whoami';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
@@ -29,30 +29,7 @@ const whoami_canister = createActor(canisterId, {
 });
 
 const tests: Test[] = [
-    {
-        name: 'clear canister memory',
-        prep: async () => {
-            execSync(`dfx canister uninstall-code whoami || true`, {
-                stdio: 'inherit'
-            });
-        }
-    },
-    {
-        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-        name: 'waiting for createActor fetchRootKey',
-        wait: 5000
-    },
-    {
-        name: 'deploy',
-        prep: async () => {
-            execSync(
-                `dfx deploy --argument '(principal "${someonePrincipal}")'`,
-                {
-                    stdio: 'inherit'
-                }
-            );
-        }
-    },
+    ...deploy('whoami', `'(principal "${someonePrincipal}")'`),
     {
         name: 'installer',
         test: async () => {
@@ -119,7 +96,7 @@ const tests: Test[] = [
         name: 'redeploy',
         prep: async () => {
             execSync(
-                `dfx deploy --argument '(principal "${callingPrincipal}")'`,
+                `dfx canister install --mode upgrade --argument '(principal "${callingPrincipal}")' whoami --wasm target/wasm32-unknown-unknown/release/whoami.wasm.gz`,
                 {
                     stdio: 'inherit'
                 }

@@ -1,5 +1,4 @@
-import { ok, run_tests, Test } from 'azle/test';
-import { execSync } from 'child_process';
+import { deploy, ok, run_tests, Test } from 'azle/test';
 import { readFileSync } from 'fs';
 import { createActor } from '../test/dfx_generated/management_canister';
 
@@ -10,30 +9,7 @@ const management_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    {
-        name: 'clear canister memory',
-        prep: async () => {
-            execSync(
-                `dfx canister uninstall-code management_canister || true`,
-                {
-                    stdio: 'inherit'
-                }
-            );
-        }
-    },
-    {
-        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-        name: 'waiting for createActor fetchRootKey',
-        wait: 5000
-    },
-    {
-        name: 'deploy',
-        prep: async () => {
-            execSync(`dfx deploy`, {
-                stdio: 'inherit'
-            });
-        }
-    },
+    ...deploy('management_canister'),
     {
         name: 'execute_create_canister',
         test: async () => {
@@ -83,8 +59,8 @@ const tests: Test[] = [
             return {
                 ok:
                     canister_settings.compute_allocation === 1n &&
-                    canister_settings.memory_allocation === 4014733n &&
-                    canister_settings.freezing_threshold === 153n
+                    canister_settings.memory_allocation === 3_000_000n &&
+                    canister_settings.freezing_threshold === 2_000_000n
             };
         }
     },
@@ -254,10 +230,11 @@ const tests: Test[] = [
                 ok:
                     'running' in canister_status.status &&
                     canister_status.memory_size === 0n &&
-                    canister_status.cycles === 0n &&
-                    canister_status.settings.freezing_threshold === 153n &&
+                    canister_status.cycles >= 800_000_000_000n &&
+                    canister_status.settings.freezing_threshold ===
+                        2_000_000n &&
                     canister_status.settings.controllers.length === 1 &&
-                    canister_status.settings.memory_allocation === 4014733n &&
+                    canister_status.settings.memory_allocation === 3_000_000n &&
                     canister_status.settings.compute_allocation === 1n &&
                     canister_status.module_hash.length === 0
             };

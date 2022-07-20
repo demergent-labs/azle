@@ -1,0 +1,26 @@
+{
+    "canisters": {
+        "canister1": {
+            "type": "custom",
+            "build": "npx azle canister1",
+            "root": "canisters/canister1",
+            "ts": "canisters/canister1/canister1.ts",
+            "candid": "canisters/canister1/canister1.did",
+            "wasm": "target/wasm32-unknown-unknown/release/canister1.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/canister1"
+            }
+        },
+        "canister2": {
+            "type": "custom",
+            "build": "npx azle canister2",
+            "root": "canisters/canister2",
+            "ts": "canisters/canister2/canister2.ts",
+            "candid": "canisters/canister2/canister2.did",
+            "wasm": "target/wasm32-unknown-unknown/release/canister2.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/canister2"
+            }
+        }
+    }
+}

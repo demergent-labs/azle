@@ -36,7 +36,7 @@ export function* execute_create_canister(): UpdateAsync<ExecuteCreateCanisterRes
     const create_canister_result_canister_result: CanisterResult<CreateCanisterResult> =
         yield ManagementCanister.create_canister({
             settings: null
-        });
+        }).with_cycles(1_000_000_000_000n);
 
     if (!ok(create_canister_result_canister_result)) {
         return {
@@ -62,8 +62,8 @@ export function* execute_update_settings(
             settings: {
                 controllers: null,
                 compute_allocation: 1n,
-                memory_allocation: 4014733n,
-                freezing_threshold: 153n
+                memory_allocation: 3_000_000n,
+                freezing_threshold: 2_000_000n
             }
         });
 
@@ -90,7 +90,7 @@ export function* execute_install_code(
             canister_id,
             wasm_module,
             arg: Uint8Array.from([])
-        });
+        }).with_cycles(100_000_000_000n);
 
     if (!ok(canister_result)) {
         return {

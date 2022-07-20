@@ -1,28 +1,8 @@
-import { run_tests, Test } from 'azle/test';
+import { deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 
 const tests: Test[] = [
-    {
-        name: 'clear canister memory',
-        prep: async () => {
-            execSync(`dfx canister uninstall-code http_counter || true`, {
-                stdio: 'inherit'
-            });
-        }
-    },
-    {
-        // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-        name: 'waiting for createActor fetchRootKey',
-        wait: 5000
-    },
-    {
-        name: 'deploy',
-        prep: async () => {
-            execSync(`dfx deploy`, {
-                stdio: 'inherit'
-            });
-        }
-    },
+    ...deploy('http_counter'),
     {
         name: 'init get count',
         test: async () => {
@@ -75,7 +55,7 @@ const tests: Test[] = [
         name: 'get streaming count',
         test: async () => {
             return {
-                ok: getCountStream() === getExpectedGetCountStreamResult(2)
+                ok: getCountStream() === getExpectedGetCountStreamResult(3)
             };
         }
     },
@@ -145,12 +125,7 @@ function getExpectedGetCountResult(expectedCount: number): string {
 }
 
 function getExpectedGetCountStreamResult(expectedCount: number): string {
-    return `Counter`;
-    // TODO below is what the results should be but streaming isn't working
-    // right now for azle or the motoko examples. It only sends back the first
-    // part of the response and doesn't call http_streaming. We should revisit
-    // this when that bug gets fixed.
-    //return `Counter is ${expectedCount} streaming\n`;
+    return `Counter is ${expectedCount} streaming`;
 }
 
 function getExpectedCountResult(expectedCount: number): string {
