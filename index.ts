@@ -122,6 +122,7 @@ type ic = {
     msg_cycles_available128: () => nat;
     msg_cycles_refunded: () => nat64;
     msg_cycles_refunded128: () => nat;
+    performance_counter: (counter_type: nat32) => nat64;
     print: (...args: any) => void;
     reject: (message: string) => void;
     reject_code: () => RejectionCode;

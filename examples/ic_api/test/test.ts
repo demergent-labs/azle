@@ -179,6 +179,16 @@ const tests: Test[] = [
         }
     },
     {
+        name: 'performance_counter',
+        test: async () => {
+            const result = await ic_api_canister.performance_counter();
+
+            return {
+                ok: result >= 200_000n && result <= 300_000n
+            };
+        }
+    },
+    {
         name: 'print',
         test: async () => {
             const result = await ic_api_canister.print('Hello World!');

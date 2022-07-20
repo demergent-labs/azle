@@ -14,6 +14,7 @@ import { generateIcObjectFunctionMsgCyclesAvailable128 } from './msg_cycles_avai
 import { generateIcObjectFunctionMsgCyclesRefunded } from './msg_cycles_refunded';
 import { generateIcObjectFunctionMsgCyclesRefunded128 } from './msg_cycles_refunded128';
 import { generateIcObjectFunctionMethodName } from './method_name';
+import { generateIcObjectFunctionPerformanceCounter } from './performance_counter';
 import { generateIcObjectFunctionPrint } from './print';
 import { generateIcObjectFunctionReject } from './reject';
 import { generateIcObjectFunctionRejectCode } from './reject_code';
@@ -71,6 +72,8 @@ export function generateIcObjectFunctions(
         generateIcObjectFunctionMsgCyclesRefunded();
     const icObjectFunctionMsgCyclesRefunded128: Rust =
         generateIcObjectFunctionMsgCyclesRefunded128();
+    const icObjectFunctionPerformanceCounter: Rust =
+        generateIcObjectFunctionPerformanceCounter();
     const icObjectFunctionPrint: Rust = generateIcObjectFunctionPrint();
     const icObjectFunctionReject: Rust = generateIcObjectFunctionReject();
     const icObjectFunctionRejectCode: Rust =
@@ -121,6 +124,7 @@ export function generateIcObjectFunctions(
         ${icObjectFunctionMsgCyclesAvailable128}
         ${icObjectFunctionMsgCyclesRefunded}
         ${icObjectFunctionMsgCyclesRefunded128}
+        ${icObjectFunctionPerformanceCounter}
         ${icObjectFunctionPrint}
         ${icObjectFunctionReject}
         ${icObjectFunctionRejectCode}

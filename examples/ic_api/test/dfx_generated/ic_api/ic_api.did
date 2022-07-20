@@ -6,6 +6,7 @@ service: {
     "canister_balance128": () -> (nat) query;
     "data_certificate": () -> (opt blob) query;
     "id": () -> (principal) query;
+    "performance_counter": () -> (nat64) query;
     "print": (text) -> (bool) query;
     "reject": (text) -> (empty) query;
     "time": () -> (nat64) query;
