@@ -1,0 +1,5 @@
+service: {
+    "count": () -> (nat);
+    "get_count": () -> (nat) query;
+    "reset": () -> (nat);
+}
