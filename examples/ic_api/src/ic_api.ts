@@ -5,6 +5,7 @@ import {
     int8,
     nat,
     nat32,
+    nat64,
     Opt,
     Principal,
     Query,
@@ -83,12 +84,12 @@ export function canister_balance128(): Query<nat> {
     return ic.canister_balance128();
 }
 
-// returns the amount of cycles available in the canister
+// When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if called not from a query call.
 export function data_certificate(): Query<Opt<blob>> {
     return ic.data_certificate();
 }
 
-// returns the amount of cycles available in the canister
+// When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if called not from a query call.
 export function data_certificate_null(): Update<Opt<blob>> {
     return ic.data_certificate();
 }
