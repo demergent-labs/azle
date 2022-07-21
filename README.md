@@ -448,7 +448,7 @@ export function http_request(req: HttpRequest): Query<HttpResponse> {
     return {
         status_code: 200,
         headers: [['content-type', 'text/plain']],
-        body: [],
+        body: Uint8Array.from([]),
         streaming_strategy: null,
         upgrade: true
     };
@@ -458,7 +458,7 @@ export function http_request_update(req: HttpRequest): Update<HttpResponse> {
     return {
         status_code: 200,
         headers: [['content-type', 'text/plain']],
-        body: [],
+        body: Uint8Array.from([]),
         streaming_strategy: null,
         upgrade: null
     };
@@ -476,13 +476,13 @@ Examples:
 
 Much of what Azle is doing under-the-hood is translating TypeScript code into various formats that Candid understands (for example Azle will generate a Candid `.did` file from your TypeScript code). To do this your TypeScript code must use various Azle-provided types.
 
-Please note that these types are only needed in the following locations in your code:
+Please note that these types are only needed in specific locations in your code, including but not limited to the following areas:
 
 -   `Query`, `Update`, `Init`, and `PostUpgrade` method parameters and return types
 -   `Canister` method declaration parameters and return types
 -   `Stable` variable declaration types
 
-You do not need to use these types, and you do not need to use TypeScript, anywhere else. You could write the rest of your application in JavaScript if that's what makes you happy.
+Basically, you only need to write in TypeScript and use the Azle types when Candid serialization or deserialization is necessary. You could write the rest of your application in plain JavaScript if you'd like.
 
 Data types:
 
@@ -919,7 +919,7 @@ export function get_bool(): Query<boolean> {
 
 export function print_bool(bool: boolean): Query<boolean> {
     console.log(typeof bool);
-    return boolean;
+    return bool;
 }
 ```
 
@@ -962,7 +962,7 @@ service: {
 
 #### vec
 
-TypeScript `[]` array syntax corresponds to the [Candid type vec](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-vec) and will become an array of the enclosed type at runtime (except for `nat8[]` which will become a `Uint8Array`, thus it is recommended to use the `blob` type instead of `nat8[]`). Only the `[]` array syntax is supported at this time (i.e. not `Array` or `ReadonlyArray` etc).
+TypeScript `[]` array syntax corresponds to the [Candid type vec](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-vec) and will become an array of the specified type at runtime (except for `nat8[]` which will become a `Uint8Array`, thus it is recommended to use the `blob` type instead of `nat8[]`). Only the `[]` array syntax is supported at this time (i.e. not `Array` or `ReadonlyArray` etc).
 
 TypeScript:
 
@@ -1073,21 +1073,21 @@ TypeScript:
 import { nat32, Variant } from 'azle';
 
 type ReactionType = Variant<{
-    fire: null;
-    thumbsUp: null;
-    thumbsDown: null;
-    emotion: Emotion;
-    firework: Firework;
+    Fire: null;
+    ThumbsUp: null;
+    ThumbsDown: null;
+    Emotion: Emotion;
+    Firework: Firework;
 }>;
 
 type Emotion = Variant<{
-    happy: null;
-    sad: null;
+    Happy: null;
+    Sad: null;
 }>;
 
 type Firework = {
-    color: string;
-    numStreaks: nat32;
+    Color: string;
+    NumStreaks: nat32;
 };
 ```
 
@@ -1095,21 +1095,21 @@ Candid:
 
 ```typescript
 type ReactionType = variant {
-    "fire": null;
-    "thumbsUp": null;
-    "thumbsDown": null;
-    "emotion": Emotion;
-    "firework": Firework
+    "Fire": null;
+    "ThumbsUp": null;
+    "ThumbsDown": null;
+    "Emotion": Emotion;
+    "Firework": Firework
 };
 
 type Emotion = variant {
-    "happy": null;
-    "sad": null
+    "Happy": null;
+    "Sad": null
 };
 
 type Firework = record {
-    "color": text;
-    "numStreaks": nat32;
+    "Color": text;
+    "NumStreaks": nat32;
 };
 ```
 
@@ -1317,7 +1317,7 @@ Examples:
 ```typescript
 import { blob, ic, Opt, Query } from 'azle';
 
-// returns the amount of cycles available in the canister
+// When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if called not from a query call.
 export function data_certificate(): Query<Opt<blob>> {
     return ic.data_certificate();
 }
@@ -1546,15 +1546,7 @@ Examples:
 -   [whoami](/examples/motoko_examples/whoami)
 
 ```typescript
-import {
-    Canister,
-    CanisterResult,
-    ic,
-    ok,
-    RejectionCode,
-    Update,
-    Variant
-} from 'azle';
+import { Canister, CanisterResult, ic, ok, Update, Variant } from 'azle';
 
 type Canister1 = Canister<{
     method(): CanisterResult<boolean>;
@@ -1566,7 +1558,7 @@ const canister1 = ic.canisters.Canister1<Canister1>(
 
 type CallCanister1MethodResult = Variant<{
     ok: boolean;
-    err: strig;
+    err: string;
 }>;
 
 export function* call_canister1_method(): Update<CallCanister1MethodResult> {
@@ -1594,7 +1586,7 @@ Examples:
 ```typescript
 import { blob, ic, ok, Principal, Update } from 'azle';
 
-export function get_randomness(): Update<blob> {
+export function* get_randomness(): Update<blob> {
     const canister_result: CanisterResult<blob> = yield ic.call_raw(
         Principal.fromText('aaaaa-aa'),
         'raw_rand',
@@ -1619,8 +1611,8 @@ Examples:
 ```typescript
 import { blob, ic, ok, Principal, Update } from 'azle';
 
-export function get_randomness(): Update<blob> {
-    const canister_result: CanisterResult<blob> = yield ic.call_raw(
+export function* get_randomness(): Update<blob> {
+    const canister_result: CanisterResult<blob> = yield ic.call_raw128(
         Principal.fromText('aaaaa-aa'),
         'raw_rand',
         Uint8Array.from([68, 73, 68, 76, 0, 0]),
@@ -1655,7 +1647,7 @@ const canister1 = ic.canisters.Canister1<Canister1>(
 
 type CallCanister1MethodResult = Variant<{
     ok: boolean;
-    err: strig;
+    err: string;
 }>;
 
 export function* call_canister1_method(): Update<CallCanister1MethodResult> {
@@ -1694,7 +1686,7 @@ const canister1 = ic.canisters.Canister1<Canister1>(
 
 type CallCanister1MethodResult = Variant<{
     ok: boolean;
-    err: strig;
+    err: string;
 }>;
 
 export function* call_canister1_method(): Update<CallCanister1MethodResult> {
@@ -1773,10 +1765,10 @@ Examples:
 -   [cycles](/examples/cycles)
 
 ```typescript
-import { ic, nat64, Update } from 'azle';
+import { ic, nat, Update } from 'azle';
 
 // Moves all transferred cycles to the canister
-export function receive_cycles128(): Update<nat64> {
+export function receive_cycles128(): Update<nat> {
     return ic.msg_cycles_accept128(ic.msg_cycles_available128());
 }
 ```
@@ -1830,7 +1822,7 @@ const canister1 = ic.canisters.Canister1<Canister1>(
 
 type CallCanister1MethodResult = Variant<{
     ok: nat64;
-    err: strig;
+    err: string;
 }>;
 
 export function* call_canister1_method(): Update<CallCanister1MethodResult> {
@@ -1869,7 +1861,7 @@ const canister1 = ic.canisters.Canister1<Canister1>(
 
 type CallCanister1MethodResult = Variant<{
     ok: nat;
-    err: strig;
+    err: string;
 }>;
 
 export function* call_canister1_method(): Update<CallCanister1MethodResult> {
@@ -2032,7 +2024,7 @@ Examples:
 -   [rejections](/examples/rejections)
 
 ```typescript
-import { Canister, CanisterResult, ic, RejectionCode, Update } from 'azle';
+import { Canister, CanisterResult, ic, Update } from 'azle';
 
 type Canister1 = Canister<{
     method(): CanisterResult<boolean>;
@@ -2256,7 +2248,7 @@ Examples:
 ```typescript
 import { ic, nat32, Query } from 'azle';
 
-export function stable_size(): Query<nat64> {
+export function stable_size(): Query<nat32> {
     return ic.stable_size();
 }
 ```
@@ -2425,6 +2417,8 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 -   Really bad compiler errors (you will probably not enjoy them)
 -   Limited asynchronous TypeScript/JavaScript (generators only for now, no promises or async/await)
 -   Imported npm packages may use unsupported syntax or APIs
+-   Avoid inline types and use type aliases instead
+-   `import *` syntax is not supported for any type that will undergo Candid serialization or deserialization
 -   Inefficient Wasm instruction usage relative to Rust and Motoko, especially with arrays
 -   Unknown security vulnerabilities
 -   [Many small inconveniences](https://github.com/demergent-labs/azle/issues)
