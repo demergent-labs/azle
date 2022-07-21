@@ -20,6 +20,13 @@
                 "dist/minimal_dapp_assets/"
             ],
             "type": "assets"
+        },
+        "motoko": {
+            "main": "canisters/motoko/Main.mo",
+            "type": "motoko",
+            "declarations": {
+                "output": "dfx_generated/motoko"
+            }
         }
     }
 }
