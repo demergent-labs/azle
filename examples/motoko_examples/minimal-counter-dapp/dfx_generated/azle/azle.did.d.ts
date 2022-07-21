@@ -3,6 +3,6 @@ import type { ActorMethod } from '@dfinity/agent';
 
 export interface _SERVICE {
     count: ActorMethod<[], bigint>;
-    getCount: ActorMethod<[], bigint>;
+    get_count: ActorMethod<[], bigint>;
     reset: ActorMethod<[], bigint>;
 }

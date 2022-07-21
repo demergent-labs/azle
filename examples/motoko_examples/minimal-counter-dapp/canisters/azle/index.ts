@@ -7,7 +7,7 @@ export function count(): Update<nat> {
     return counter;
 }
 
-export function getCount(): Query<nat> {
+export function get_count(): Query<nat> {
     return counter;
 }
 

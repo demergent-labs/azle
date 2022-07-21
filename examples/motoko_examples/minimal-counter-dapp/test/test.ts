@@ -12,7 +12,7 @@ const tests: Test[] = [
     {
         name: 'init get count',
         test: async () => {
-            const result = await counter_canister.getCount();
+            const result = await counter_canister.get_count();
 
             return {
                 ok: result === 0n
@@ -42,7 +42,7 @@ const tests: Test[] = [
     {
         name: 'get count',
         test: async () => {
-            const result = await counter_canister.getCount();
+            const result = await counter_canister.get_count();
 
             return {
                 ok: result === 2n
@@ -62,7 +62,7 @@ const tests: Test[] = [
     {
         name: 'get count after reset',
         test: async () => {
-            const result = await counter_canister.getCount();
+            const result = await counter_canister.get_count();
 
             return {
                 ok: result === 0n
@@ -82,7 +82,7 @@ const tests: Test[] = [
     {
         name: 'get count after first increment after reset',
         test: async () => {
-            const result = await counter_canister.getCount();
+            const result = await counter_canister.get_count();
 
             return {
                 ok: result === 1n
