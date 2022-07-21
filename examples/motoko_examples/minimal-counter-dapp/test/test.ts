@@ -1,5 +1,5 @@
 import { deploy, run_tests, Test } from 'azle/test';
-import { createActor } from '../test/dfx_generated/minimal_dapp';
+import { createActor } from '../dfx_generated/azle';
 
 const counter_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -8,7 +8,7 @@ const counter_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...deploy('minimal_dapp'),
+    ...deploy('azle'),
     {
         name: 'init get count',
         test: async () => {

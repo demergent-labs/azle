@@ -1,4 +1,4 @@
-import { minimal_dapp } from '../../declarations/minimal_dapp';
+import { azle as minimal_dapp } from '../../declarations/azle';
 
 document.addEventListener('DOMContentLoaded', async function () {
     const counter = await minimal_dapp.getCount();
