@@ -3,6 +3,10 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
+const network =
+    process.env.DFX_NETWORK ||
+    (process.env.NODE_ENV === 'production' ? 'ic' : 'local');
+
 function initCanisterEnv() {
     let localCanisters, prodCanisters;
     try {
@@ -21,10 +25,6 @@ function initCanisterEnv() {
             'No production canister_ids.json found. Continuing with local'
         );
     }
-
-    const network =
-        process.env.DFX_NETWORK ||
-        (process.env.NODE_ENV === 'production' ? 'ic' : 'local');
 
     const canisterConfig = network === 'local' ? localCanisters : prodCanisters;
 
@@ -62,6 +62,9 @@ module.exports = {
         minimizer: [new TerserPlugin()]
     },
     resolve: {
+        alias: {
+            '∞': path.resolve('.dfx', network, 'canisters')
+        },
         extensions: ['.js', '.ts', '.jsx', '.tsx'],
         fallback: {
             assert: require.resolve('assert/'),
