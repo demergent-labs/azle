@@ -1,3 +1,4 @@
+import { Principal } from '@dfinity/principal';
 import { deploy, ok, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from '../test/dfx_generated/ledger_canister';
@@ -11,8 +12,14 @@ const ledger_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 const test_setups = get_test_setups();
 const simple_tests = get_simple_tests();
 const transfer_error_tests = get_transfer_error_tests();
+const address_from_principal_tests = get_address_from_principal_tests();
 
-const tests = [...test_setups, ...simple_tests, ...transfer_error_tests];
+const tests = [
+    ...test_setups,
+    ...simple_tests,
+    ...transfer_error_tests,
+    ...address_from_principal_tests
+];
 
 run_tests(tests);
 
@@ -464,5 +471,188 @@ function get_transfer_error_tests(): Test[] {
         //         };
         //     }
         // }
+    ];
+}
+
+function get_address_from_principal_tests(): Test[] {
+    return [
+        {
+            name: 'get_address_from_principal rrkah-fqaaa-aaaaa-aaaaq-cai',
+            test: async () => {
+                const result = await ledger_canister.get_address_from_principal(
+                    Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
+                );
+                const address = execSync(
+                    `dfx ledger account-id --of-principal rrkah-fqaaa-aaaaa-aaaaq-cai`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    ok: result === address
+                };
+            }
+        },
+        {
+            name: 'get_address_from_principal ryjl3-tyaaa-aaaaa-aaaba-cai',
+            test: async () => {
+                const result = await ledger_canister.get_address_from_principal(
+                    Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
+                );
+                const address = execSync(
+                    `dfx ledger account-id --of-principal ryjl3-tyaaa-aaaaa-aaaba-cai`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    ok: result === address
+                };
+            }
+        },
+        {
+            name: 'get_address_from_principal rno2w-sqaaa-aaaaa-aaacq-cai',
+            test: async () => {
+                const result = await ledger_canister.get_address_from_principal(
+                    Principal.fromText('rno2w-sqaaa-aaaaa-aaacq-cai')
+                );
+                const address = execSync(
+                    `dfx ledger account-id --of-principal rno2w-sqaaa-aaaaa-aaacq-cai`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    ok: result === address
+                };
+            }
+        },
+        {
+            name: 'get_address_from_principal rkp4c-7iaaa-aaaaa-aaaca-cai',
+            test: async () => {
+                const result = await ledger_canister.get_address_from_principal(
+                    Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
+                );
+                const address = execSync(
+                    `dfx ledger account-id --of-principal rkp4c-7iaaa-aaaaa-aaaca-cai`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    ok: result === address
+                };
+            }
+        },
+        {
+            name: 'get_address_from_principal r7inp-6aaaa-aaaaa-aaabq-cai',
+            test: async () => {
+                const result = await ledger_canister.get_address_from_principal(
+                    Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
+                );
+                const address = execSync(
+                    `dfx ledger account-id --of-principal r7inp-6aaaa-aaaaa-aaabq-cai`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    ok: result === address
+                };
+            }
+        },
+        {
+            name: 'get_address_from_principal rwlgt-iiaaa-aaaaa-aaaaa-cai',
+            test: async () => {
+                const result = await ledger_canister.get_address_from_principal(
+                    Principal.fromText('rwlgt-iiaaa-aaaaa-aaaaa-cai')
+                );
+                const address = execSync(
+                    `dfx ledger account-id --of-principal rwlgt-iiaaa-aaaaa-aaaaa-cai`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    ok: result === address
+                };
+            }
+        },
+        {
+            name: 'get_address_from_principal 3zjeh-xtbtx-mwebn-37a43-7nbck-qgquk-xtrny-42ujn-gzaxw-ncbzw-kqe',
+            test: async () => {
+                const result = await ledger_canister.get_address_from_principal(
+                    Principal.fromText(
+                        '3zjeh-xtbtx-mwebn-37a43-7nbck-qgquk-xtrny-42ujn-gzaxw-ncbzw-kqe'
+                    )
+                );
+                const address = execSync(
+                    `dfx ledger account-id --of-principal 3zjeh-xtbtx-mwebn-37a43-7nbck-qgquk-xtrny-42ujn-gzaxw-ncbzw-kqe`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    ok: result === address
+                };
+            }
+        },
+        {
+            name: 'get_address_from_principal o2ivq-5dsz3-nba5d-pwbk2-hdd3i-vybeq-qfz35-rqg27-lyesf-xghzc-3ae',
+            test: async () => {
+                const result = await ledger_canister.get_address_from_principal(
+                    Principal.fromText(
+                        'o2ivq-5dsz3-nba5d-pwbk2-hdd3i-vybeq-qfz35-rqg27-lyesf-xghzc-3ae'
+                    )
+                );
+                const address = execSync(
+                    `dfx ledger account-id --of-principal o2ivq-5dsz3-nba5d-pwbk2-hdd3i-vybeq-qfz35-rqg27-lyesf-xghzc-3ae`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    ok: result === address
+                };
+            }
+        },
+        {
+            name: 'get_address_from_principal cb53b-qsf7f-isr4v-tco56-pu475-66ehq-cfkko-doax3-xrnjh-pdo57-zae',
+            test: async () => {
+                const result = await ledger_canister.get_address_from_principal(
+                    Principal.fromText(
+                        'cb53b-qsf7f-isr4v-tco56-pu475-66ehq-cfkko-doax3-xrnjh-pdo57-zae'
+                    )
+                );
+                const address = execSync(
+                    `dfx ledger account-id --of-principal cb53b-qsf7f-isr4v-tco56-pu475-66ehq-cfkko-doax3-xrnjh-pdo57-zae`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    ok: result === address
+                };
+            }
+        },
+        {
+            name: 'get_address_from_principal fhzp2-mb4kr-hm4io-32js7-oketg-gdi73-4pqb4-6jyxp-ajbhd-tuiwt-bqe',
+            test: async () => {
+                const result = await ledger_canister.get_address_from_principal(
+                    Principal.fromText(
+                        'fhzp2-mb4kr-hm4io-32js7-oketg-gdi73-4pqb4-6jyxp-ajbhd-tuiwt-bqe'
+                    )
+                );
+                const address = execSync(
+                    `dfx ledger account-id --of-principal fhzp2-mb4kr-hm4io-32js7-oketg-gdi73-4pqb4-6jyxp-ajbhd-tuiwt-bqe`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    ok: result === address
+                };
+            }
+        }
     ];
 }
