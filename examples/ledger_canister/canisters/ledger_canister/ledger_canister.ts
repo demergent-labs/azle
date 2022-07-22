@@ -8,7 +8,7 @@ import {
     ok,
     Opt,
     Principal,
-    UpdateAsync,
+    Update,
     Variant
 } from 'azle';
 import {
@@ -40,7 +40,7 @@ export function* execute_transfer(
     amount: nat64,
     fee: nat64,
     created_at_time: Opt<nat64>
-): UpdateAsync<ExecuteTransferResult> {
+): Update<ExecuteTransferResult> {
     const transfer_result_canister_result: CanisterResult<TransferResult> =
         yield ICPCanister.transfer({
             memo: 0n,
@@ -80,7 +80,7 @@ type GetAccountBalanceResult = Variant<{
 
 export function* get_account_balance(
     address: Address
-): UpdateAsync<GetAccountBalanceResult> {
+): Update<GetAccountBalanceResult> {
     const tokens_canister_result: CanisterResult<Tokens> =
         yield ICPCanister.account_balance({
             account: binary_address_from_address(address)
@@ -104,7 +104,7 @@ type GetTransferFeeResult = Variant<{
     err: string;
 }>;
 
-export function* get_transfer_fee(): UpdateAsync<GetTransferFeeResult> {
+export function* get_transfer_fee(): Update<GetTransferFeeResult> {
     const transfer_fee_canister_result: CanisterResult<TransferFee> =
         yield ICPCanister.transfer_fee({});
 
@@ -128,7 +128,7 @@ type GetBlocksResult = Variant<{
 
 export function* get_blocks(
     get_blocks_args: GetBlocksArgs
-): UpdateAsync<GetBlocksResult> {
+): Update<GetBlocksResult> {
     const canister_result: CanisterResult<QueryBlocksResponse> =
         yield ICPCanister.query_blocks(get_blocks_args);
 
@@ -150,7 +150,7 @@ type GetSymbolResult = Variant<{
     err: string;
 }>;
 
-export function* get_symbol(): UpdateAsync<GetSymbolResult> {
+export function* get_symbol(): Update<GetSymbolResult> {
     const symbol_result_canister_result: CanisterResult<SymbolResult> =
         yield ICPCanister.symbol();
 
@@ -172,7 +172,7 @@ type GetNameResult = Variant<{
     err: string;
 }>;
 
-export function* get_name(): UpdateAsync<GetNameResult> {
+export function* get_name(): Update<GetNameResult> {
     const name_result_canister_result: CanisterResult<NameResult> =
         yield ICPCanister.name();
 
@@ -194,7 +194,7 @@ type GetDecimalsResult = Variant<{
     err: string;
 }>;
 
-export function* get_decimals(): UpdateAsync<GetDecimalsResult> {
+export function* get_decimals(): Update<GetDecimalsResult> {
     const decimals_result_canister_result: CanisterResult<DecimalsResult> =
         yield ICPCanister.decimals();
 
@@ -216,7 +216,7 @@ type GetArchivesResult = Variant<{
     err: string;
 }>;
 
-export function* get_archives(): UpdateAsync<GetArchivesResult> {
+export function* get_archives(): Update<GetArchivesResult> {
     const archives_canister_result: CanisterResult<Archives> =
         yield ICPCanister.archives();
 

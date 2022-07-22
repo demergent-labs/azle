@@ -5,7 +5,7 @@ import {
     ic,
     Principal,
     RejectionCode,
-    UpdateAsync
+    Update
 } from 'azle';
 
 export type Nonexistent = Canister<{
@@ -16,27 +16,27 @@ export const nonexistentCanister = ic.canisters.Nonexistent<Nonexistent>(
     Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
 );
 
-export function* getRejectionCodeNoError(): UpdateAsync<RejectionCode> {
+export function* getRejectionCodeNoError(): Update<RejectionCode> {
     yield someService.accept();
     return ic.reject_code();
 }
 
-export function* getRejectionCodeDestinationInvalid(): UpdateAsync<RejectionCode> {
+export function* getRejectionCodeDestinationInvalid(): Update<RejectionCode> {
     yield nonexistentCanister.method();
     return ic.reject_code();
 }
 
-export function* getRejectionCodeCanisterReject(): UpdateAsync<RejectionCode> {
+export function* getRejectionCodeCanisterReject(): Update<RejectionCode> {
     yield someService.reject('reject');
     return ic.reject_code();
 }
 
-export function* getRejectionCodeCanisterError(): UpdateAsync<RejectionCode> {
+export function* getRejectionCodeCanisterError(): Update<RejectionCode> {
     yield someService.error();
     return ic.reject_code();
 }
 
-export function* getRejectionMessage(message: string): UpdateAsync<string> {
+export function* getRejectionMessage(message: string): Update<string> {
     yield someService.reject(message);
     return ic.reject_message();
 }
@@ -62,7 +62,7 @@ export function* getRejectionMessage(message: string): UpdateAsync<string> {
 // export function* getResult(
 //     outcome: Outcome,
 //     message: string
-// ): UpdateAsync<GetResultResult> {
+// ): Update<GetResultResult> {
 //     const canisterResult: Result = yield 'Accept' in outcome
 //         ? someService.accept()
 //         : someService.reject(message);
@@ -88,7 +88,7 @@ export function* getRejectionMessage(message: string): UpdateAsync<string> {
 // export function* getResult(
 //     outcome: Outcome,
 //     message: string
-// ): UpdateAsync<GetResultResult> {
+// ): Update<GetResultResult> {
 //     yield 'Accept' in outcome
 //         ? someService.accept()
 //         : someService.reject(message);

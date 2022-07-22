@@ -1,14 +1,6 @@
 // TODO once the Bitcoin integration is live, add the methods and tests
 
-import {
-    blob,
-    CanisterResult,
-    nat,
-    ok,
-    Principal,
-    Query,
-    UpdateAsync
-} from 'azle';
+import { blob, CanisterResult, nat, ok, Principal, Query, Update } from 'azle';
 import {
     CreateCanisterResult,
     CanisterStatusArgs,
@@ -32,7 +24,7 @@ let state: State = {
     created_canister_id: Principal.fromText('aaaaa-aa')
 };
 
-export function* execute_create_canister(): UpdateAsync<ExecuteCreateCanisterResult> {
+export function* execute_create_canister(): Update<ExecuteCreateCanisterResult> {
     const create_canister_result_canister_result: CanisterResult<CreateCanisterResult> =
         yield ManagementCanister.create_canister({
             settings: null
@@ -55,7 +47,7 @@ export function* execute_create_canister(): UpdateAsync<ExecuteCreateCanisterRes
 
 export function* execute_update_settings(
     canister_id: Principal
-): UpdateAsync<DefaultResult> {
+): Update<DefaultResult> {
     const canister_result: CanisterResult<void> =
         yield ManagementCanister.update_settings({
             canister_id,
@@ -81,7 +73,7 @@ export function* execute_update_settings(
 export function* execute_install_code(
     canister_id: Principal,
     wasm_module: blob
-): UpdateAsync<DefaultResult> {
+): Update<DefaultResult> {
     const canister_result: CanisterResult<void> =
         yield ManagementCanister.install_code({
             mode: {
@@ -105,7 +97,7 @@ export function* execute_install_code(
 
 export function* execute_uninstall_code(
     canister_id: Principal
-): UpdateAsync<DefaultResult> {
+): Update<DefaultResult> {
     const canister_result: CanisterResult<void> =
         yield ManagementCanister.uninstall_code({
             canister_id
@@ -124,7 +116,7 @@ export function* execute_uninstall_code(
 
 export function* execute_start_canister(
     canister_id: Principal
-): UpdateAsync<DefaultResult> {
+): Update<DefaultResult> {
     const canister_result: CanisterResult<void> =
         yield ManagementCanister.start_canister({
             canister_id
@@ -143,7 +135,7 @@ export function* execute_start_canister(
 
 export function* execute_stop_canister(
     canister_id: Principal
-): UpdateAsync<DefaultResult> {
+): Update<DefaultResult> {
     const canister_result: CanisterResult<void> =
         yield ManagementCanister.stop_canister({
             canister_id
@@ -162,7 +154,7 @@ export function* execute_stop_canister(
 
 export function* get_canister_status(
     args: CanisterStatusArgs
-): UpdateAsync<GetCanisterStatusResult> {
+): Update<GetCanisterStatusResult> {
     const canister_status_result_canister_result: CanisterResult<CanisterStatusResult> =
         yield ManagementCanister.canister_status({
             canister_id: args.canister_id
@@ -183,7 +175,7 @@ export function* get_canister_status(
 
 export function* execute_delete_canister(
     canister_id: Principal
-): UpdateAsync<DefaultResult> {
+): Update<DefaultResult> {
     const canister_result: CanisterResult<void> =
         yield ManagementCanister.delete_canister({
             canister_id
@@ -203,7 +195,7 @@ export function* execute_delete_canister(
 // TODO see https://forum.dfinity.org/t/question-about-deposit-cycles/12693
 // TODO this method won't work until we implement call_with_payment and/or call_with_payment128
 // TODO we will need to implement the ability to send payments with our cross canister calls
-// export function* execute_deposit_cycles(canister_id: Principal): UpdateAsync<DefaultResult> {
+// export function* execute_deposit_cycles(canister_id: Principal): Update<DefaultResult> {
 //     const canister_result: CanisterResult<void> = yield ManagementCanister.deposit_cycles({
 //         canister_id
 //     });
@@ -219,7 +211,7 @@ export function* execute_delete_canister(
 //     };
 // }
 
-export function* get_raw_rand(): UpdateAsync<RawRandResult> {
+export function* get_raw_rand(): Update<RawRandResult> {
     const raw_rand_canister_result: CanisterResult<blob> =
         yield ManagementCanister.raw_rand();
 
@@ -237,7 +229,7 @@ export function* get_raw_rand(): UpdateAsync<RawRandResult> {
 }
 
 // TODO we will test these once we can measure cycles better locally
-export function* provisional_create_canister_with_cycles(): UpdateAsync<ExecuteProvisionalCreateCanisterWithCyclesResult> {
+export function* provisional_create_canister_with_cycles(): Update<ExecuteProvisionalCreateCanisterWithCyclesResult> {
     const canister_result: CanisterResult<ProvisionalCreateCanisterWithCyclesResult> =
         yield ManagementCanister.provisional_create_canister_with_cycles({
             amount: null,
@@ -261,7 +253,7 @@ export function* provisional_create_canister_with_cycles(): UpdateAsync<ExecuteP
 export function* provisional_top_up_canister(
     canister_id: Principal,
     amount: nat
-): UpdateAsync<DefaultResult> {
+): Update<DefaultResult> {
     const canister_result: CanisterResult<void> =
         yield ManagementCanister.provisional_top_up_canister({
             canister_id,
