@@ -17,7 +17,7 @@
         "copy:types": "rsync -avr .dfx/$(echo ${DFX_NETWORK:-'**'})/canisters/** --exclude='assets/' --exclude='idl/' --exclude='*.wasm' --delete src/declarations"
     },
     "dependencies": {
-        "azle": "0.4.0"
+        "azle": "0.5.0"
     },
     "devDependencies": {
         "@dfinity/agent": "0.10.3",
