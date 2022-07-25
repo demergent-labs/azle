@@ -1,0 +1,17 @@
+type Phone = text;
+type PerfResult = 
+ record {
+   wasm_body_only: nat64;
+   wasm_including_prelude: nat64;
+ };
+type Name = text;
+type Entry = 
+ record {
+   desc: text;
+   phone: Phone;
+ };
+service : {
+  get_perf_result: () -> (opt PerfResult) query;
+  insert: (Name, Entry) -> ();
+  lookup: (Name) -> (opt Entry) query;
+}

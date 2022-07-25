@@ -1,21 +1,40 @@
 {
     "canisters": {
-        "phone_book": {
+        "azle": {
             "type": "custom",
-            "build": "npx azle phone_book",
-            "root": "src",
-            "ts": "src/phone_book/phone_book.ts",
-            "candid": "src/phone_book/phone_book.did",
-            "wasm": "target/wasm32-unknown-unknown/release/phone_book.wasm"
+            "build": "npx azle azle",
+            "root": "canisters/azle",
+            "ts": "canisters/azle/index.ts",
+            "candid": "canisters/azle/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/azle.wasm",
+            "declarations": {
+                "output": "dfx_generated/azle"
+            }
+        },
+        "motoko": {
+            "type": "motoko",
+            "main": "canisters/motoko/main.mo",
+            "declarations": {
+                "output": "dfx_generated/motoko"
+            }
+        },
+        "rust": {
+            "type": "rust",
+            "package": "rust",
+            "candid": "canisters/rust/src/lib.did",
+            "declarations": {
+                "output": "dfx_generated/rust"
+            }
         },
         "www": {
             "frontend": {
-                "entrypoint": "src/www/public/index.html"
+                "entrypoint": "canisters/www/public/index.html"
             },
-            "source": ["src/www/assets", "dist/www/"],
-            "dependencies": ["phone_book"],
-            "type": "assets"
+            "source": ["canisters/www/assets", "dist/www/"],
+            "type": "assets",
+            "declarations": {
+                "output": "dfx_generated/www"
+            }
         }
-    },
-    "dfx": "0.9.2"
+    }
 }

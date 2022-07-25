@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import { phone_book as canister } from '../../declarations';
+import { azle as canister } from '../../declarations';
 
 class PhoneBook extends React.Component {
     constructor(props) {
