@@ -9,7 +9,7 @@ const bytes_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...deploy('bytes'),
+    ...deploy('azle'),
     {
         name: 'get_bytes 1 kb',
         test: async () => {
