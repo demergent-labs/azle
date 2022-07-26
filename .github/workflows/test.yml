@@ -63,6 +63,7 @@ jobs:
                     "examples/counter",
                     "examples/cross_canister_calls",
                     "examples/cycles",
+                    "examples/date",
                     "examples/func_types",
                     "examples/generators",
                     "examples/heartbeat",

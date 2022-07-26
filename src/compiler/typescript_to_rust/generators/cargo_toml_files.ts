@@ -31,7 +31,8 @@ export function generateLibCargoToml(canisterName: string): Toml {
         ic-cdk = "0.5.2"
         ic-cdk-macros = "0.5.2"
         candid = "0.7.14"
-        boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "call_stack" } # This is a fork of vec_u8_into_typed_array
+        boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "date" } # This is a fork of call_stack
+        # boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "call_stack" } # This is a fork of vec_u8_into_typed_array
         # boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "vec_u8_into_typed_array" } # This is a fork of js-bigint-128
         # boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "js-bigint-128" } # This has a small necessary change that another person has opened a pull request to fix
         # boa_engine = { git = "https://github.com/boa-dev/boa", rev = "f3db18fc5468576d2c6df31b259890c1d43d3607" } # This is the last main git commit we were at
