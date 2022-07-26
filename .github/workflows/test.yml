@@ -57,6 +57,7 @@ jobs:
               run: |
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
+                    "examples/bytes",
                     "examples/call_raw",
                     "examples/complex_types",
                     "examples/counter",
@@ -68,6 +69,7 @@ jobs:
                     "examples/ic_api",
                     "examples/imports",
                     "examples/init",
+                    "examples/inspect_message",
                     "examples/key_value_store",
                     "examples/ledger_canister",
                     "examples/management_canister",
@@ -83,15 +85,18 @@ jobs:
                     "examples/motoko_examples/persistent-storage",
                     "examples/motoko_examples/quicksort",
                     "examples/motoko_examples/whoami",
+                    "examples/notify_raw",
                     "examples/null_example",
                     "examples/optional_types",
                     "examples/pre_and_post_upgrade",
                     "examples/primitive_types",
+                    "examples/principal",
                     "examples/query",
+                    "examples/rejections",
                     "examples/simple_erc20",
                     "examples/simple_user_accounts",
-                    "examples/stable_storage",
                     "examples/stable_memory",
+                    "examples/stable_storage",
                     "examples/tuple_types",
                     "examples/update"
                   ]
@@ -139,7 +144,7 @@ jobs:
               with:
                   node-version: 18
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              run: DFX_VERSION=0.10.2-btcbeta.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+              run: DFX_VERSION=0.11.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               name: Install Rust ${{ matrix.rust }}
               uses: actions-rs/toolchain@v1

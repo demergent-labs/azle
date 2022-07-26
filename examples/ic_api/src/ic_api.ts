@@ -83,12 +83,12 @@ export function canister_balance128(): Query<nat> {
     return ic.canister_balance128();
 }
 
-// returns the amount of cycles available in the canister
+// When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if called not from a query call.
 export function data_certificate(): Query<Opt<blob>> {
     return ic.data_certificate();
 }
 
-// returns the amount of cycles available in the canister
+// When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if called not from a query call.
 export function data_certificate_null(): Update<Opt<blob>> {
     return ic.data_certificate();
 }
@@ -98,10 +98,6 @@ export function id(): Query<Principal> {
     return ic.id();
 }
 
-// TODO only available on dfx 0.10.2-btcbeta.0
-// TODO run this command to test: DFX_VERSION="0.10.2-btcbeta.0" sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
-// TODO we also have to install gzip Wasm binaries locally now
-// TODO gzip installation documentation: https://internetcomputer.org/docs/current/developer-docs/deploy/larger-wasm
 export function performance_counter(): Query<nat64> {
     return ic.performance_counter(0);
 }

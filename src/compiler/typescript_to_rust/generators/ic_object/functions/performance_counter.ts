@@ -2,7 +2,7 @@ import { Rust } from '../../../../../types';
 
 export function generateIcObjectFunctionPerformanceCounter(): Rust {
     return /* rust */ `
-        fn _azle_performance_counter(
+        fn _azle_ic_performance_counter(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
