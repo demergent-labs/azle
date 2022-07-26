@@ -5,19 +5,19 @@ jobs:
     benchmarks:
         runs-on: ubuntu-latest
         env:
-          GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
         strategy:
-          fail-fast: false # We want to see which benchmarks succeed and which ones fail, we don't want one benchmark to cancel the rest
-          matrix:
-            rust: [stable]
-            benchmark_directories:
-              - examples/bytes
-              - examples/primitive_ops
+            fail-fast: false # We want to see which benchmarks succeed and which ones fail, we don't want one benchmark to cancel the rest
+            matrix:
+                rust: [stable]
+                benchmark_directories:
+                    - examples/bytes
+                    - examples/primitive_ops
         if: ${{ contains(github.head_ref, '--benchmarks') }}
         steps:
             - uses: actions/checkout@v2
               with:
-                ref: ${{ github.event.pull_request.head.ref }}
+                  ref: ${{ github.event.pull_request.head.ref }}
             - uses: actions/setup-node@v3
               with:
                   node-version: 18
@@ -25,16 +25,16 @@ jobs:
             - name: Install Rust ${{ matrix.rust }}
               uses: actions-rs/toolchain@v1
               with:
-                toolchain: ${{ matrix.rust }}
-                profile: minimal
-                override: true
+                  toolchain: ${{ matrix.rust }}
+                  profile: minimal
+                  override: true
             - name: Rust cache
               uses: actions/cache@v2
               continue-on-error: false
               with:
-                path: ${{ matrix.benchmark_directories }}/target
-                key: ${{ matrix.benchmark_directories }}-cache
-                restore-keys: ${{ matrix.benchmark_directories }}-cache # TODO might need to be more intelligent and hash files here
+                  path: ${{ matrix.benchmark_directories }}/target
+                  key: ${{ matrix.benchmark_directories }}-cache
+                  restore-keys: ${{ matrix.benchmark_directories }}-cache # TODO might need to be more intelligent and hash files here
             - shell: bash -l {0} # TODO figure out why this is here and comment about it
               run: npm install
             - shell: bash -l {0}

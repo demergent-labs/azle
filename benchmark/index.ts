@@ -35,6 +35,20 @@ type WasmPerfType = {
 export type BenchmarkType = 'RETURN_VALUE' | 'GLOBAL_VALUE';
 
 async function run_setup() {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    execSync(`dfx canister create azle`, {
+        stdio: 'inherit'
+    });
+
+    execSync(`dfx canister create motoko`, {
+        stdio: 'inherit'
+    });
+
+    execSync(`dfx canister create rust`, {
+        stdio: 'inherit'
+    });
+
     execSync(`dfx canister uninstall-code azle || true`, {
         stdio: 'inherit'
     });
@@ -44,12 +58,6 @@ async function run_setup() {
     });
 
     execSync(`dfx canister uninstall-code rust || true`, {
-        stdio: 'inherit'
-    });
-
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
-    execSync(`dfx canister create azle`, {
         stdio: 'inherit'
     });
 
@@ -862,7 +870,7 @@ The format for benchmark numbers is (x / y) where:
 
     return `${title}\n${description}\n\n${averages_title}\n\n${averages_header}\n${averages_header_separator}\n| ${average_rows.join(
         '|'
-    )} |\n\n## Primitive Operations\n\n${primitive_ops_header}\n${primitive_ops_header_separator}\n${primitive_ops_data_rows.join(
+    )} |\n\n## Benchmarks\n\n${primitive_ops_header}\n${primitive_ops_header_separator}\n${primitive_ops_data_rows.join(
         '\n'
     )}`;
 }

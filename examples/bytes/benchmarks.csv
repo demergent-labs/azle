@@ -1,2 +1,7 @@
 Description,Azle Wasm Instructions (function body only),Azle Wasm Instructions (function prelude and body),Motoko Wasm Instructions (function body only),Motoko Wasm Instructions (function prelude and body),Rust Wasm Instructions (function body only),Rust Wasm Instructions (function prelude and body),Azle/Motoko Change Multiplier (function body only),Azle/Motoko Change Multiplier (function prelude and body),Azle/Rust Change Multiplier (function body only),Azle/Rust Change Multiplier (function prelude and body),Motoko/Azle Change Multiplier (function body only),Motoko/Azle Change Multiplier (function prelude and body),Motoko/Rust Change Multiplier (function body only),Motoko/Rust Change Multiplier (function prelude and body),Rust/Azle Change Multiplier (function body only),Rust/Azle Change Multiplier (function prelude and body),Rust/Motoko Change Multiplier (function body only),Rust/Motoko Change Multiplier (function prelude and body)
-get_bytes: 0,64276,28230248,200,2361,200,68103,321,11957,321,418,-321,-11957,1,-29,-321,-418,1,29
+get_bytes: 0 kb,64538,28479729,200,2361,200,66277,323,12063,323,430,-323,-12063,1,-28,-323,-430,1,28
+get_bytes: 1 kb,64538,30187372,200,8181,200,1655517,323,3690,323,18,-323,-3690,1,-202,-323,-18,1,202
+get_bytes: 10 kb,64495,45338442,200,59343,200,15922110,322,764,322,3,-322,-764,1,-268,-322,-3,1,268
+get_bytes: 100 kb,64538,197123886,200,271189,200,158598002,323,727,323,1,-323,-727,1,-585,-323,-1,1,585
+get_bytes: 1000 kb,64538,1712126739,200,2689939,200,1585369571,323,636,323,1,-323,-636,1,-589,-323,-1,1,589
+get_bytes: 2000 kb,64538,3395398169,200,5377439,200,3170468115,323,631,323,1,-323,-631,1,-590,-323,-1,1,590
