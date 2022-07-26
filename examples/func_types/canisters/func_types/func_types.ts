@@ -9,7 +9,6 @@ import {
     Query,
     Stable,
     Update,
-    UpdateAsync,
     Variant
 } from 'azle';
 import { Notifier, NotifierFunc } from '../notifiers/types';
@@ -82,7 +81,7 @@ type GetNotifierFromNotifiersCanisterResult = Variant<{
     err: string;
 }>;
 
-export function* get_notifier_from_notifiers_canister(): UpdateAsync<GetNotifierFromNotifiersCanisterResult> {
+export function* get_notifier_from_notifiers_canister(): Update<GetNotifierFromNotifiersCanisterResult> {
     const notifiers_canister = ic.canisters.Notifier<Notifier>(
         Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
     );

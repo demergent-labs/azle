@@ -160,7 +160,7 @@ export function getRustTypeNameFromTypeNode(
 
             if (typeName === 'Opt') {
                 if (typeReferenceNode.typeArguments === undefined) {
-                    throw new Error('UpdateAsync must have an enclosed type');
+                    throw new Error('Opt must have an enclosed type');
                 }
 
                 const firstTypeArgument = typeReferenceNode.typeArguments[0];
@@ -188,11 +188,7 @@ export function getRustTypeNameFromTypeNode(
                 );
             }
 
-            if (
-                typeName === 'Update' ||
-                typeName === 'UpdateManual' ||
-                typeName === 'UpdateAsync'
-            ) {
+            if (typeName === 'Update' || typeName === 'UpdateManual') {
                 if (typeReferenceNode.typeArguments === undefined) {
                     throw new Error(
                         'Update/UpdateManual must have an enclosed type'

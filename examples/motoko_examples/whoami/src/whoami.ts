@@ -6,7 +6,7 @@ import {
     PostUpgrade,
     Principal,
     Query,
-    UpdateAsync,
+    Update,
     Variant
 } from 'azle';
 
@@ -58,7 +58,7 @@ export function whoami(): Query<Principal> {
 }
 
 // Return the principal identifier of this canister.
-export function* id(): UpdateAsync<Principal> {
+export function* id(): Update<Principal> {
     const thisCanister = ic.canisters.WhoAmICanister<WhoAmICanister>(ic.id());
 
     const result: WhoAmIResult = yield thisCanister.whoami();

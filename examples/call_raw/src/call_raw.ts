@@ -6,7 +6,7 @@ import {
     nat64,
     ok,
     Principal,
-    UpdateAsync,
+    Update,
     Variant
 } from 'azle';
 
@@ -20,7 +20,7 @@ export function* execute_call_raw(
     method: string,
     args_raw: blob,
     payment: nat64
-): UpdateAsync<ExecuteCallRawResult> {
+): Update<ExecuteCallRawResult> {
     const canister_result: CanisterResult<blob> = yield ic.call_raw(
         canister_id,
         method,
@@ -49,7 +49,7 @@ export function* execute_call_raw128(
     method: string,
     args_raw: blob,
     payment: nat
-): UpdateAsync<ExecuteCallRaw128Result> {
+): Update<ExecuteCallRaw128Result> {
     const canister_result: CanisterResult<blob> = yield ic.call_raw128(
         canister_id,
         method,
