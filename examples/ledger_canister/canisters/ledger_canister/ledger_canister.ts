@@ -8,6 +8,7 @@ import {
     ok,
     Opt,
     Principal,
+    Query,
     Update,
     Variant
 } from 'azle';
@@ -17,6 +18,7 @@ import {
     binary_address_from_address,
     DecimalsResult,
     GetBlocksArgs,
+    hex_address_from_principal,
     Ledger,
     NameResult,
     QueryBlocksResponse,
@@ -231,4 +233,10 @@ export function* get_archives(): Update<GetArchivesResult> {
     return {
         ok: archives
     };
+}
+
+export function get_address_from_principal(
+    principal: Principal
+): Query<string> {
+    return hex_address_from_principal(principal, 0);
 }

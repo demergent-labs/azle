@@ -103,6 +103,11 @@ export const idlFactory = ({ IDL }) => {
             [GetAccountBalanceResult],
             []
         ),
+        get_address_from_principal: IDL.Func(
+            [IDL.Principal],
+            [IDL.Text],
+            ['query']
+        ),
         get_archives: IDL.Func([], [GetArchivesResult], []),
         get_blocks: IDL.Func([GetBlocksArgs], [GetBlocksResult], []),
         get_decimals: IDL.Func([], [GetDecimalsResult], []),
