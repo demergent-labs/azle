@@ -105,6 +105,7 @@ type QueryArchiveError = variant { "BadFirstBlockIndex": record { "requested_ind
 type QueryArchiveFn = func (GetBlocksArgs) -> (QueryArchiveResult) query;
 
 service: {
+    "get_address_from_principal": (principal) -> (text) query;
     "execute_transfer": (text, nat64, nat64, opt nat64) -> (ExecuteTransferResult);
     "get_account_balance": (text) -> (GetAccountBalanceResult);
     "get_transfer_fee": () -> (GetTransferFeeResult);
