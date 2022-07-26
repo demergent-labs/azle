@@ -1,4 +1,6 @@
 import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@dfinity/agent';
+
 export interface AccountBalanceArgs {
     account: Array<number>;
 }
@@ -55,9 +57,7 @@ export type QueryArchiveError =
           };
       }
     | { Other: { error_message: string; error_code: bigint } };
-export type QueryArchiveFn = (
-    arg_0: GetBlocksArgs
-) => Promise<QueryArchiveResult>;
+export type QueryArchiveFn = ActorMethod<[GetBlocksArgs], QueryArchiveResult>;
 export type QueryArchiveResult =
     | { Ok: BlockRange }
     | { Err: QueryArchiveError };
@@ -108,17 +108,16 @@ export interface TransferFee {
 export type TransferFeeArg = {};
 export type TransferResult = { Ok: bigint } | { Err: TransferError };
 export interface _SERVICE {
-    execute_transfer: (
-        arg_0: string,
-        arg_1: bigint,
-        arg_2: bigint,
-        arg_3: [] | [bigint]
-    ) => Promise<ExecuteTransferResult>;
-    get_account_balance: (arg_0: string) => Promise<GetAccountBalanceResult>;
-    get_archives: () => Promise<GetArchivesResult>;
-    get_blocks: (arg_0: GetBlocksArgs) => Promise<GetBlocksResult>;
-    get_decimals: () => Promise<GetDecimalsResult>;
-    get_name: () => Promise<GetNameResult>;
-    get_symbol: () => Promise<GetSymbolResult>;
-    get_transfer_fee: () => Promise<GetTransferFeeResult>;
+    execute_transfer: ActorMethod<
+        [string, bigint, bigint, [] | [bigint]],
+        ExecuteTransferResult
+    >;
+    get_account_balance: ActorMethod<[string], GetAccountBalanceResult>;
+    get_address_from_principal: ActorMethod<[Principal], string>;
+    get_archives: ActorMethod<[], GetArchivesResult>;
+    get_blocks: ActorMethod<[GetBlocksArgs], GetBlocksResult>;
+    get_decimals: ActorMethod<[], GetDecimalsResult>;
+    get_name: ActorMethod<[], GetNameResult>;
+    get_symbol: ActorMethod<[], GetSymbolResult>;
+    get_transfer_fee: ActorMethod<[], GetTransferFeeResult>;
 }

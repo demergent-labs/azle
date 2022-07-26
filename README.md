@@ -48,6 +48,7 @@ Most of Azle's documentation is currently found in this README. The Azle Book, s
 -   [Call APIs](#call-apis)
 -   [Stable Memory](#stable-memory)
 -   [Feature Parity](#feature-parity)
+-   [JS APIs](#js-apis)
 -   [Roadmap](#roadmap)
 -   [Gotchas and Caveats](#gotchas-and-caveats)
 -   [Decentralization](#decentralization)
@@ -2397,6 +2398,14 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | stable write int8    | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
 | stable read float64  | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
 | stable write float64 | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
+
+### JS APIs
+
+This section will describe various JS APIs that may need special explanation.
+
+#### Date
+
+You can see examples of how to use the JS Date object [here](/examples/date). Note that `Date.prototype.toLocaleDateString()` and `Date.prototype.toLocaleTimeString()` are [not yet implemented](https://github.com/boa-dev/boa/issues/1562). Also keep in mind that the local timezone of the canister will always be `UTC`.
 
 ### Roadmap
 

@@ -1,4 +1,4 @@
-import { Update, UpdateAsync, ic, nat64, Opt, Principal, Variant } from 'azle';
+import { Update, ic, nat64, Opt, Principal, Variant } from 'azle';
 import { Account, AccountArgs, Canister2 } from '../canister2/types';
 
 type TransferResult = Variant<{
@@ -39,23 +39,23 @@ export function* transfer(
     from: string,
     to: string,
     amount: nat64
-): UpdateAsync<TransferResult> {
+): Update<TransferResult> {
     return yield canister2.transfer(from, to, amount);
 }
 
-export function* balance(id: string): UpdateAsync<BalanceResult> {
+export function* balance(id: string): Update<BalanceResult> {
     return yield canister2.balance(id);
 }
 
-export function* account(args: AccountArgs): UpdateAsync<AccountResult> {
+export function* account(args: AccountArgs): Update<AccountResult> {
     return yield canister2.account(args);
 }
 
-export function* accounts(): UpdateAsync<AccountsResult> {
+export function* accounts(): Update<AccountsResult> {
     return yield canister2.accounts();
 }
 
-export function* trap(): UpdateAsync<TrapResult> {
+export function* trap(): Update<TrapResult> {
     return yield canister2.trap();
 }
 

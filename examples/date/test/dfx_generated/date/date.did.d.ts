@@ -1,0 +1,47 @@
+import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@dfinity/agent';
+
+export interface _SERVICE {
+    get_date: ActorMethod<[string], number>;
+    get_day: ActorMethod<[string], number>;
+    get_full_year: ActorMethod<[string], number>;
+    get_hours: ActorMethod<[string], number>;
+    get_milliseconds: ActorMethod<[string], number>;
+    get_minutes: ActorMethod<[string], number>;
+    get_month: ActorMethod<[string], number>;
+    get_seconds: ActorMethod<[string], number>;
+    get_time: ActorMethod<[string], bigint>;
+    get_timezone_offset: ActorMethod<[string], number>;
+    get_utc_date: ActorMethod<[string], number>;
+    get_utc_day: ActorMethod<[string], number>;
+    get_utc_full_year: ActorMethod<[string], number>;
+    get_utc_hours: ActorMethod<[string], number>;
+    get_utc_milliseconds: ActorMethod<[string], number>;
+    get_utc_minutes: ActorMethod<[string], number>;
+    get_utc_month: ActorMethod<[string], number>;
+    get_utc_seconds: ActorMethod<[string], number>;
+    now: ActorMethod<[], bigint>;
+    parse: ActorMethod<[string], bigint>;
+    set_date: ActorMethod<[string, number], number>;
+    set_full_year: ActorMethod<[string, number], number>;
+    set_hours: ActorMethod<[string, number], number>;
+    set_milliseconds: ActorMethod<[string, number], number>;
+    set_minutes: ActorMethod<[string, number], number>;
+    set_month: ActorMethod<[string, number], number>;
+    set_seconds: ActorMethod<[string, number], number>;
+    set_time: ActorMethod<[string, bigint], bigint>;
+    set_utc_date: ActorMethod<[string, number], number>;
+    set_utc_full_year: ActorMethod<[string, number], number>;
+    set_utc_hours: ActorMethod<[string, number], number>;
+    set_utc_milliseconds: ActorMethod<[string, number], number>;
+    set_utc_minutes: ActorMethod<[string, number], number>;
+    set_utc_month: ActorMethod<[string, number], number>;
+    set_utc_seconds: ActorMethod<[string, number], number>;
+    to_date_string: ActorMethod<[string], string>;
+    to_iso_string: ActorMethod<[string], string>;
+    to_json: ActorMethod<[string], string>;
+    to_string: ActorMethod<[string], string>;
+    to_time_string: ActorMethod<[string], string>;
+    to_utc_string: ActorMethod<[string], string>;
+    utc: ActorMethod<[number, number], bigint>;
+}

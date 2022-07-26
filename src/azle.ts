@@ -42,7 +42,9 @@ function installRustDependencies() {
         { stdio: 'inherit' }
     );
 
-    execSync(`cargo install ic-cdk-optimizer`, { stdio: 'inherit' });
+    execSync(`cargo install ic-cdk-optimizer --version 0.3.4`, {
+        stdio: 'inherit'
+    });
 }
 
 function writeCodeToFileSystem(

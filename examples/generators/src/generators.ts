@@ -1,7 +1,7 @@
-import { Async, blob, CanisterResult, UpdateAsync } from 'azle';
+import { Async, blob, CanisterResult, Update } from 'azle';
 import { ManagementCanister } from 'azle/canisters/management';
 
-export function* get_randomness_directly(): UpdateAsync<blob> {
+export function* get_randomness_directly(): Update<blob> {
     const randomness_result: CanisterResult<blob> =
         yield ManagementCanister.raw_rand();
 
@@ -12,13 +12,13 @@ export function* get_randomness_directly(): UpdateAsync<blob> {
     }
 }
 
-export function* get_randomness_indirectly(): UpdateAsync<blob> {
+export function* get_randomness_indirectly(): Update<blob> {
     const indirect_randomness: blob = yield get_randomness();
 
     return indirect_randomness;
 }
 
-export function* get_randomness_super_indirectly(): UpdateAsync<blob> {
+export function* get_randomness_super_indirectly(): Update<blob> {
     const randomness0: blob = yield get_randomness_level0();
     const randomness1: blob = yield get_randomness_level1();
     const randomness2: blob = yield get_randomness_level2();
