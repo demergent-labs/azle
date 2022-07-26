@@ -104,6 +104,14 @@ export function deploy(canister_name: string, argument?: string): Test[] {
             wait: 5000
         },
         {
+            name: `create canister ${canister_name}`,
+            prep: async () => {
+                execSync(`dfx canister create ${canister_name}`, {
+                    stdio: 'inherit'
+                });
+            }
+        },
+        {
             name: 'clear canister memory',
             prep: async () => {
                 execSync(
@@ -112,14 +120,6 @@ export function deploy(canister_name: string, argument?: string): Test[] {
                         stdio: 'inherit'
                     }
                 );
-            }
-        },
-        {
-            name: `create canister ${canister_name}`,
-            prep: async () => {
-                execSync(`dfx canister create ${canister_name}`, {
-                    stdio: 'inherit'
-                });
             }
         },
         {
