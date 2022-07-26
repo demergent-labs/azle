@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "date": {
+            "type": "custom",
+            "build": "npx azle date",
+            "root": "src",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/date.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/date"
+            }
+        }
+    }
+}
