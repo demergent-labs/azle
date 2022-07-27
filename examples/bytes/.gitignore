@@ -1,3 +1,4 @@
 .dfx
 node_modules
 target
+# dfx_generated TODO it would be nice to check these out but there is that bug with having to manually comment out the last line in the index.js files

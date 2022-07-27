@@ -1,6 +1,6 @@
 import { deploy, run_tests, Test } from 'azle/test';
 import { readFileSync } from 'fs';
-import { createActor } from '../test/dfx_generated/bytes';
+import { createActor } from '../dfx_generated/azle';
 
 const bytes_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -9,7 +9,7 @@ const bytes_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...deploy('bytes'),
+    ...deploy('azle'),
     {
         name: 'get_bytes 1 kb',
         test: async () => {

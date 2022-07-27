@@ -1,0 +1,13 @@
+[package]
+name = "rust"
+version = "0.0.0"
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+ic-cdk = "0.5.2"
+ic-cdk-macros = "0.5.2"
+candid = "0.7.14"
+bencher = "0.1.5"

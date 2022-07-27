@@ -1,0 +1,50 @@
+type PerfResult = 
+ record {
+   wasm_body_only: nat64;
+   wasm_including_prelude: nat64;
+ };
+service : {
+  blob_init_heap: (nat32) -> (PerfResult);
+  blob_init_stack: (nat32) -> (PerfResult);
+  boolean_init_heap: (nat32) -> (PerfResult);
+  boolean_init_stack: (nat32) -> (PerfResult);
+  "empty": () -> (PerfResult);
+  float32_init_heap: (nat32) -> (PerfResult);
+  float32_init_stack: (nat32) -> (PerfResult);
+  float64_init_heap: (nat32) -> (PerfResult);
+  float64_init_stack: (nat32) -> (PerfResult);
+  int16_init_heap: (nat32) -> (PerfResult);
+  int16_init_stack: (nat32) -> (PerfResult);
+  int32_init_heap: (nat32) -> (PerfResult);
+  int32_init_stack: (nat32) -> (PerfResult);
+  int64_init_heap: (nat32) -> (PerfResult);
+  int64_init_stack: (nat32) -> (PerfResult);
+  int8_init_heap: (nat32) -> (PerfResult);
+  int8_init_stack: (nat32) -> (PerfResult);
+  int_init_heap: (nat32) -> (PerfResult);
+  int_init_stack: (nat32) -> (PerfResult);
+  nat16_init_heap: (nat32) -> (PerfResult);
+  nat16_init_stack: (nat32) -> (PerfResult);
+  nat32_init_heap: (nat32) -> (PerfResult);
+  nat32_init_stack: (nat32) -> (PerfResult);
+  nat64_init_heap: (nat32) -> (PerfResult);
+  nat64_init_stack: (nat32) -> (PerfResult);
+  nat8_init_heap: (nat32) -> (PerfResult);
+  nat8_init_stack: (nat32) -> (PerfResult);
+  nat_init_heap: (nat32) -> (PerfResult);
+  nat_init_stack: (nat32) -> (PerfResult);
+  null_init_heap: (nat32) -> (PerfResult);
+  null_init_stack: (nat32) -> (PerfResult);
+  opt_init_heap: (nat32) -> (PerfResult);
+  opt_init_stack: (nat32) -> (PerfResult);
+  principal_init_heap: (nat32) -> (PerfResult);
+  principal_init_stack: (nat32) -> (PerfResult);
+  record_init_heap: (nat32) -> (PerfResult);
+  record_init_stack: (nat32) -> (PerfResult);
+  text_init_heap: (nat32) -> (PerfResult);
+  text_init_stack: (nat32) -> (PerfResult);
+  variant_init_heap: (nat32) -> (PerfResult);
+  variant_init_stack: (nat32) -> (PerfResult);
+  vec_init_heap: (nat32) -> (PerfResult);
+  vec_init_stack: (nat32) -> (PerfResult);
+}
