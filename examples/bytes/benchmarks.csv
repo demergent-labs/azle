@@ -1,7 +1,7 @@
 Description,Azle Wasm Instructions (function body only),Azle Wasm Instructions (function prelude and body),Motoko Wasm Instructions (function body only),Motoko Wasm Instructions (function prelude and body),Rust Wasm Instructions (function body only),Rust Wasm Instructions (function prelude and body),Azle/Motoko Change Multiplier (function body only),Azle/Motoko Change Multiplier (function prelude and body),Azle/Rust Change Multiplier (function body only),Azle/Rust Change Multiplier (function prelude and body),Motoko/Azle Change Multiplier (function body only),Motoko/Azle Change Multiplier (function prelude and body),Motoko/Rust Change Multiplier (function body only),Motoko/Rust Change Multiplier (function prelude and body),Rust/Azle Change Multiplier (function body only),Rust/Azle Change Multiplier (function prelude and body),Rust/Motoko Change Multiplier (function body only),Rust/Motoko Change Multiplier (function prelude and body)
-get_bytes: 0 kb,64243,28170331,200,2361,200,68051,321,11932,321,417,-321,-11932,1,-29,-321,-417,1,29
-get_bytes: 1 kb,64243,29842938,200,8181,200,1653582,321,3648,321,18,-321,-3648,1,-202,-321,-18,1,202
-get_bytes: 10 kb,64208,44992023,200,59343,200,15919714,321,758,321,3,-321,-758,1,-268,-321,-3,1,268
-get_bytes: 100 kb,64243,196834780,200,271189,200,158595508,321,726,321,1,-321,-726,1,-585,-321,-1,1,585
-get_bytes: 1000 kb,64243,1711872406,200,2689939,200,1585366924,321,636,321,1,-321,-636,1,-589,-321,-1,1,589
-get_bytes: 2000 kb,64243,3395120004,200,5377439,200,3170465489,321,631,321,1,-321,-631,1,-590,-321,-1,1,590
+get_bytes: 0 kb,64542,28758792,200,2361,200,68427,323,12181,323,423,-323,-12181,1,-29,-323,-423,1,29
+get_bytes: 1 kb,64542,30429367,200,8181,200,1654191,323,3720,323,18,-323,-3720,1,-202,-323,-18,1,202
+get_bytes: 10 kb,64507,45578417,200,59343,200,15920455,323,768,323,3,-323,-768,1,-268,-323,-3,1,268
+get_bytes: 100 kb,64542,197421147,200,271189,200,158596348,323,728,323,1,-323,-728,1,-585,-323,-1,1,585
+get_bytes: 1000 kb,64542,1712458746,200,2689939,200,1585367863,323,637,323,1,-323,-637,1,-589,-323,-1,1,589
+get_bytes: 2000 kb,64542,3395706335,200,5377439,200,3170466461,323,631,323,1,-323,-631,1,-590,-323,-1,1,590
