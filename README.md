@@ -1924,7 +1924,7 @@ export function send_notification(): Update<boolean> {
     const result = ic.notify_raw(
         Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'),
         'receive_notification',
-        Uint8Array.from([68, 73, 68, 76, 0, 0]),
+        Uint8Array.from(ic.candid_encode('()')),
         0n
     );
 
@@ -2084,18 +2084,11 @@ type Options = Variant<{
 }>;
 
 export function reply_raw(): UpdateManual<RawReply> {
-    // const response = '(record { "int" = 42; "text" = "text"; "bool" = true; "blob" = blob "Surprise!"; "variant" = variant {Medium} })';
-    // const hex = execSync(`didc encode '${response}'`).toString().trim();
-    // TODO expose candid encoding/decoding in azle.
-    // See https://github.com/demergent-labs/azle/issues/400
-
-    const candidEncodedArgumentsHexString =
-        '4449444c036c05ef99c0027cddfae4880401aa88ee88047ead99e7e70471858189e70d026d7b6b019591f39a037f01002a0953757270726973652101047465787400';
-    const candidEncodedArgumentsByteArray =
-        candidEncodedArgumentsHexString
-            .match(/.{1,2}/g)
-            ?.map((byte) => parseInt(byte, 16)) ?? [];
-    ic.reply_raw(new Uint8Array(candidEncodedArgumentsByteArray));
+    ic.reply_raw(
+        ic.candid_encode(
+            '(record { "int" = 42; "text" = "text"; "bool" = true; "blob" = blob "Surprise!"; "variant" = variant { Medium } })'
+        )
+    );
 }
 ```
 
