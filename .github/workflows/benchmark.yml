@@ -12,8 +12,8 @@ jobs:
                 rust: [stable]
                 benchmark_directories:
                     - examples/bytes
-                    - examples/primitive_ops
                     - examples/motoko_examples/counter
+                    - examples/primitive_ops
         if: ${{ contains(github.head_ref, '--benchmarks') }}
         steps:
             - uses: actions/checkout@v2
