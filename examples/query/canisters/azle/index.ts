@@ -1,5 +1,5 @@
 import { Query } from 'azle';
 
-export function query(): Query<string> {
+export function simple_query(): Query<string> {
     return 'This is a query function';
 }
