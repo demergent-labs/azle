@@ -513,7 +513,7 @@ async function get_perf_result(
         ).get_perf_result();
 
         if (perf_result_opt.length === 0) {
-            throw new Error(`PerfResult was no set`);
+            throw new Error(`PerfResult was not set`);
         }
 
         return perf_result_opt[0];

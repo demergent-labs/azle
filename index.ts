@@ -108,6 +108,8 @@ type ic = {
         payment: nat
     ) => CanisterResult<blob>;
     caller: () => Principal;
+    candid_decode: (candid_encoded: blob) => string;
+    candid_encode: (candid_string: string) => blob;
     canisters: {
         [canisterName: string]: <T>(canisterId: Principal) => T;
     };
