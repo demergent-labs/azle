@@ -1,6 +1,13 @@
 import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@dfinity/agent';
+
+export interface PerfResult {
+    wasm_body_only: bigint;
+    wasm_including_prelude: bigint;
+}
 export interface _SERVICE {
-    get: () => Promise<bigint>;
-    inc: () => Promise<undefined>;
-    set: (arg_0: bigint) => Promise<undefined>;
+    get: ActorMethod<[], bigint>;
+    get_perf_result: ActorMethod<[], [] | [PerfResult]>;
+    inc: ActorMethod<[], undefined>;
+    set: ActorMethod<[bigint], undefined>;
 }
