@@ -4,8 +4,8 @@ export const idlFactory = ({ IDL }) => {
         wasm_including_prelude: IDL.Nat64
     });
     return IDL.Service({
+        get_current_message: IDL.Func([], [IDL.Text], ['query']),
         get_perf_result: IDL.Func([], [IDL.Opt(PerfResult)], ['query']),
-        query: IDL.Func([], [IDL.Text], ['query']),
         update: IDL.Func([IDL.Text], [], [])
     });
 };

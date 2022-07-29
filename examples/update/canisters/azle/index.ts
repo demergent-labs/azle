@@ -22,7 +22,7 @@ function record_performance(start: nat64, end: nat64): void {
 
 let currentMessage: string = '';
 
-export function query(): Query<string> {
+export function get_current_message(): Query<string> {
     return currentMessage;
 }
 

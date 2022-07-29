@@ -24,7 +24,7 @@ actor Update {
   var currentMessage = "";
 
   // query is a reserved word and therefore cannot be a function name
-  public query func query1() : async Text {
+  public query func get_current_message() : async Text {
     return currentMessage;
   };
 

@@ -5,6 +5,6 @@ type PerfResult = record {
 
 service: {
     "get_perf_result": () -> (opt PerfResult) query;
-    "query": () -> (text) query;
+    "get_current_message": () -> (text) query;
     "update": (text) -> ();
 }

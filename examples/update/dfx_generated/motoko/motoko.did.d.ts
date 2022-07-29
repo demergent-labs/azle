@@ -6,7 +6,7 @@ export interface PerfResult {
     wasm_including_prelude: bigint;
 }
 export interface _SERVICE {
+    get_current_message: ActorMethod<[], string>;
     get_perf_result: ActorMethod<[], [] | [PerfResult]>;
-    query1: ActorMethod<[], string>;
     update: ActorMethod<[string], undefined>;
 }

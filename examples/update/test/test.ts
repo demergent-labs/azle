@@ -20,9 +20,9 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'query',
+        name: 'get_current_message',
         test: async () => {
-            const result = await update_canister.query();
+            const result = await update_canister.get_current_message();
 
             return {
                 ok: result === 'Why hello there'
