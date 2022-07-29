@@ -1,6 +1,6 @@
 use std::{cmp::Ordering, convert::TryInto};
 
-pub fn sort_by<T: Fn(&i128, &i128) -> Ordering>(xs: Vec<i128>, f: &T) -> Vec<i128> {
+pub fn sort_by<X: Clone + Copy + Ord, T: Fn(&X, &X) -> Ordering>(xs: Vec<X>, f: &T) -> Vec<X> {
     let n: i128 = xs.len().try_into().unwrap();
     if n < 2 {
         return xs;
@@ -11,8 +11,8 @@ pub fn sort_by<T: Fn(&i128, &i128) -> Ordering>(xs: Vec<i128>, f: &T) -> Vec<i12
     }
 }
 
-fn sort_by_helper<T: Fn(&i128, &i128) -> Ordering>(
-    xs: &mut Vec<i128>,
+fn sort_by_helper<X: Copy + Ord, T: Fn(&X, &X) -> Ordering>(
+    xs: &mut Vec<X>,
     l: i128,
     r: i128,
     f: &T,
@@ -23,10 +23,10 @@ fn sort_by_helper<T: Fn(&i128, &i128) -> Ordering>(
         let mut swap = xs[0];
         let pivot = xs[((l + r).abs() / 2) as usize];
         while i <= j {
-            while xs[i.abs() as usize] < pivot {
+            while f(&xs[i.abs() as usize], &pivot).is_lt() {
                 i += 1;
             }
-            while xs[j.abs() as usize] > pivot {
+            while f(&xs[j.abs() as usize], &pivot).is_gt() {
                 j -= 1;
             }
             if i <= j {
