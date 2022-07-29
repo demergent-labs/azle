@@ -1,5 +1,6 @@
 {
     "scripts": {
+        "benchmark": "ts-node --transpile-only --ignore=false benchmark/benchmark.ts",
         "test": "ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
