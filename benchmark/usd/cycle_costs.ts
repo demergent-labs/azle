@@ -10,7 +10,7 @@ export const CYCLE_COST_TABLE = {
     GB_STORAGE_PER_SECOND: 127_000
 };
 
-const ONE_TRILLION = 1_000_000_000_000;
+const CYCLES_PER_XDR = 1_000_000_000_000;
 
 const USD_XDR_EXCHANGE_RATE = 1.32; // Updated July 27, 2022 https://www.imf.org/external/np/fin/data/rms_sdrv.aspx
-export const USD_PER_CYCLE = USD_XDR_EXCHANGE_RATE / ONE_TRILLION;
+export const USD_PER_CYCLE = USD_XDR_EXCHANGE_RATE / CYCLES_PER_XDR;

@@ -47,12 +47,12 @@ const benchmarks: Benchmark[] = [
     },
     {
         canister_method: 'get_bytes',
-        benchmark_description: '1000 kb',
+        benchmark_description: '1_000 kb',
         args: [file_1000_kb]
     },
     {
         canister_method: 'get_bytes',
-        benchmark_description: '2000 kb',
+        benchmark_description: '2_000 kb',
         args: [file_2000_kb]
     }
 ];

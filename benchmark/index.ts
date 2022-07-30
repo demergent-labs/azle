@@ -511,14 +511,10 @@ async function get_perf_result(
 }
 
 function write_reports_to_file(
-    output_file: string | undefined,
+    output_file: string,
     benchmark_results: BenchmarkResult[],
     num_benchmark_iterations: number
 ) {
-    if (output_file === undefined) {
-        return;
-    }
-
     const markdown_report = create_markdown_report(
         benchmark_results,
         num_benchmark_iterations,

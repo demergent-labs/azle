@@ -1,4 +1,16 @@
 import { BenchmarkResult, calculate_average } from './index';
+import { get_usd_cost_estimates } from './usd';
+import {
+    USAGE_CONFIG_HEAVY_QUERY_HEAVY,
+    USAGE_CONFIG_HEAVY_QUERY_UPDATE_EVEN,
+    USAGE_CONFIG_HEAVY_UPDATE_HEAVY,
+    USAGE_CONFIG_LIGHT_QUERY_HEAVY,
+    USAGE_CONFIG_LIGHT_QUERY_UPDATE_EVEN,
+    USAGE_CONFIG_LIGHT_UPDATE_HEAVY,
+    USAGE_CONFIG_MODERATE_QUERY_HEAVY,
+    USAGE_CONFIG_MODERATE_QUERY_UPDATE_EVEN,
+    USAGE_CONFIG_MODERATE_UPDATE_HEAVY
+} from './usd/usage_config';
 
 export function create_markdown_report(
     benchmark_results: BenchmarkResult[],
@@ -34,13 +46,14 @@ The format for benchmark numbers is (x / y) where:
             )
         ).toFixed(0)
     );
-    const average_azle_wasm_instructions_including_prelude =
+    const average_azle_wasm_instructions_including_prelude = calculate_average(
+        benchmark_results.map(
+            (x) => x.azle_wasm_instructions.wasm_including_prelude
+        )
+    );
+    const average_azle_wasm_instructions_including_prelude_string =
         format_number_to_rust(
-            calculate_average(
-                benchmark_results.map(
-                    (x) => x.azle_wasm_instructions.wasm_including_prelude
-                )
-            ).toFixed(0)
+            average_azle_wasm_instructions_including_prelude.toFixed(0)
         );
 
     const average_motoko_wasm_instructions_body_only = format_number_to_rust(
@@ -51,12 +64,14 @@ The format for benchmark numbers is (x / y) where:
         ).toFixed(0)
     );
     const average_motoko_wasm_instructions_including_prelude =
+        calculate_average(
+            benchmark_results.map(
+                (x) => x.motoko_wasm_instructions.wasm_including_prelude
+            )
+        );
+    const average_motoko_wasm_instructions_including_prelude_string =
         format_number_to_rust(
-            calculate_average(
-                benchmark_results.map(
-                    (x) => x.motoko_wasm_instructions.wasm_including_prelude
-                )
-            ).toFixed(0)
+            average_motoko_wasm_instructions_including_prelude.toFixed(0)
         );
 
     const average_rust_wasm_instructions_body_only = format_number_to_rust(
@@ -66,13 +81,14 @@ The format for benchmark numbers is (x / y) where:
             )
         ).toFixed(0)
     );
-    const average_rust_wasm_instructions_including_prelude =
+    const average_rust_wasm_instructions_including_prelude = calculate_average(
+        benchmark_results.map(
+            (x) => x.rust_wasm_instructions.wasm_including_prelude
+        )
+    );
+    const average_rust_wasm_instructions_including_prelude_string =
         format_number_to_rust(
-            calculate_average(
-                benchmark_results.map(
-                    (x) => x.rust_wasm_instructions.wasm_including_prelude
-                )
-            ).toFixed(0)
+            average_rust_wasm_instructions_including_prelude.toFixed(0)
         );
 
     const average_azle_motoko_change_multiplier_body_only =
@@ -179,6 +195,919 @@ The format for benchmark numbers is (x / y) where:
             ).toFixed(0)
         );
 
+    const usd_cost_estimates_string = generate_usd_cost_estimates_string(
+        average_azle_wasm_instructions_including_prelude,
+        average_motoko_wasm_instructions_including_prelude,
+        average_rust_wasm_instructions_including_prelude
+    );
+
+    const averages_string = generate_averages_string(
+        average_azle_wasm_instructions_body_only,
+        average_azle_wasm_instructions_including_prelude_string,
+        average_motoko_wasm_instructions_body_only,
+        average_motoko_wasm_instructions_including_prelude_string,
+        average_rust_wasm_instructions_body_only,
+        average_rust_wasm_instructions_including_prelude_string,
+        average_azle_motoko_change_multiplier_body_only,
+        average_azle_motoko_change_multiplier_including_prelude,
+        average_azle_rust_change_multiplier_body_only,
+        average_azle_rust_change_multiplier_including_prelude,
+        average_motoko_azle_change_multiplier_body_only,
+        average_motoko_azle_change_multiplier_including_prelude,
+        average_motoko_rust_change_multiplier_body_only,
+        average_motoko_rust_change_multiplier_including_prelude,
+        average_rust_azle_change_multiplier_body_only,
+        average_rust_azle_change_multiplier_including_prelude,
+        average_rust_motoko_change_multiplier_body_only,
+        average_rust_motoko_change_multiplier_including_prelude
+    );
+
+    const benchmarks_string = generate_benchmarks_string(benchmark_results);
+
+    return `${title}\n${description}\n${usd_cost_estimates_string}\n\n${averages_string}\n\n${benchmarks_string}\n`;
+}
+
+function generate_usd_cost_estimates_string(
+    azle_wasm_instructions_per_update_message: number,
+    motoko_wasm_instructions_per_update_message: number,
+    rust_wasm_instructions_per_update_message: number
+): string {
+    const usd_cost_estimates = get_usd_cost_estimates(
+        azle_wasm_instructions_per_update_message,
+        motoko_wasm_instructions_per_update_message,
+        rust_wasm_instructions_per_update_message
+    );
+
+    const title = '## USD Cost Estimates Per Year';
+    const description = `These estimates use the average Wasm instructions per update function call including the function prelude from the benchmarks below.\n\nThe Wasm instruction counts used are:\n\n- Azle: ${format_number_to_rust(
+        azle_wasm_instructions_per_update_message.toFixed(0)
+    )}\n- Motoko: ${format_number_to_rust(
+        motoko_wasm_instructions_per_update_message.toFixed(0)
+    )}\n- Rust: ${format_number_to_rust(
+        rust_wasm_instructions_per_update_message.toFixed(0)
+    )}`;
+
+    const application_scenarios_title = `### Application Scenarios`;
+
+    const application_scenarios_header_names = [
+        'Usage',
+        'Query/Update Heaviness',
+        'Ingress Bytes Per Query Message',
+        'Ingress Bytes Per Update Message',
+        'GB Storage',
+        'Query Messages Per Second',
+        'Update Messages Per Second',
+        'Xnet Calls Per Second',
+        'Xnet Call Bytes'
+    ];
+    const application_scenarios_header = `| ${application_scenarios_header_names.join(
+        ' | '
+    )} |`;
+    const application_scenarios_header_separator = `| ${application_scenarios_header_names
+        .map((_) => '---')
+        .join(' | ')} |`;
+
+    const application_scenarios_rows = [
+        [
+            'Light',
+            'Even',
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_QUERY_UPDATE_EVEN.ingress_bytes_per_query_message
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_QUERY_UPDATE_EVEN.ingress_bytes_per_update_message
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_QUERY_UPDATE_EVEN.gb_storage
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_QUERY_UPDATE_EVEN.query_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_QUERY_UPDATE_EVEN.update_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_QUERY_UPDATE_EVEN.xnet_calls_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_QUERY_UPDATE_EVEN.xnet_call_bytes
+            )
+        ].join(' | '),
+        [
+            'Light',
+            'Query Heavy',
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_QUERY_HEAVY.ingress_bytes_per_query_message
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_QUERY_HEAVY.ingress_bytes_per_update_message
+            ),
+            format_number_to_rust(USAGE_CONFIG_LIGHT_QUERY_HEAVY.gb_storage),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_QUERY_HEAVY.query_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_QUERY_HEAVY.update_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_QUERY_HEAVY.xnet_calls_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_QUERY_HEAVY.xnet_call_bytes
+            )
+        ].join(' | '),
+        [
+            'Light',
+            'Update Heavy',
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_UPDATE_HEAVY.ingress_bytes_per_query_message
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_UPDATE_HEAVY.ingress_bytes_per_update_message
+            ),
+            format_number_to_rust(USAGE_CONFIG_LIGHT_UPDATE_HEAVY.gb_storage),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_UPDATE_HEAVY.query_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_UPDATE_HEAVY.update_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_UPDATE_HEAVY.xnet_calls_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_LIGHT_UPDATE_HEAVY.xnet_call_bytes
+            )
+        ].join(' | '),
+        [
+            'Moderate',
+            'Even',
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_QUERY_UPDATE_EVEN.ingress_bytes_per_query_message
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_QUERY_UPDATE_EVEN.ingress_bytes_per_update_message
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_QUERY_UPDATE_EVEN.gb_storage
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_QUERY_UPDATE_EVEN.query_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_QUERY_UPDATE_EVEN.update_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_QUERY_UPDATE_EVEN.xnet_calls_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_QUERY_UPDATE_EVEN.xnet_call_bytes
+            )
+        ].join(' | '),
+        [
+            'Moderate',
+            'Query Heavy',
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_QUERY_HEAVY.ingress_bytes_per_query_message
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_QUERY_HEAVY.ingress_bytes_per_update_message
+            ),
+            format_number_to_rust(USAGE_CONFIG_MODERATE_QUERY_HEAVY.gb_storage),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_QUERY_HEAVY.query_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_QUERY_HEAVY.update_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_QUERY_HEAVY.xnet_calls_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_QUERY_HEAVY.xnet_call_bytes
+            )
+        ].join(' | '),
+        [
+            'Moderate',
+            'Update Heavy',
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_UPDATE_HEAVY.ingress_bytes_per_query_message
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_UPDATE_HEAVY.ingress_bytes_per_update_message
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_UPDATE_HEAVY.gb_storage
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_UPDATE_HEAVY.query_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_UPDATE_HEAVY.update_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_UPDATE_HEAVY.xnet_calls_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_MODERATE_UPDATE_HEAVY.xnet_call_bytes
+            )
+        ].join(' | '),
+        [
+            'Heavy',
+            'Even',
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_QUERY_UPDATE_EVEN.ingress_bytes_per_query_message
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_QUERY_UPDATE_EVEN.ingress_bytes_per_update_message
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_QUERY_UPDATE_EVEN.gb_storage
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_QUERY_UPDATE_EVEN.query_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_QUERY_UPDATE_EVEN.update_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_QUERY_UPDATE_EVEN.xnet_calls_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_QUERY_UPDATE_EVEN.xnet_call_bytes
+            )
+        ].join(' | '),
+        [
+            'Heavy',
+            'Query Heavy',
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_QUERY_HEAVY.ingress_bytes_per_query_message
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_QUERY_HEAVY.ingress_bytes_per_update_message
+            ),
+            format_number_to_rust(USAGE_CONFIG_HEAVY_QUERY_HEAVY.gb_storage),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_QUERY_HEAVY.query_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_QUERY_HEAVY.update_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_QUERY_HEAVY.xnet_calls_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_QUERY_HEAVY.xnet_call_bytes
+            )
+        ].join(' | '),
+        [
+            'Heavy',
+            'Update Heavy',
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_UPDATE_HEAVY.ingress_bytes_per_query_message
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_UPDATE_HEAVY.ingress_bytes_per_update_message
+            ),
+            format_number_to_rust(USAGE_CONFIG_HEAVY_UPDATE_HEAVY.gb_storage),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_UPDATE_HEAVY.query_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_UPDATE_HEAVY.update_messages_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_UPDATE_HEAVY.xnet_calls_per_second
+            ),
+            format_number_to_rust(
+                USAGE_CONFIG_HEAVY_UPDATE_HEAVY.xnet_call_bytes
+            )
+        ].join(' | ')
+    ].join('\n');
+
+    const application_scenarios_string = `${application_scenarios_title}\n\n${application_scenarios_header}\n${application_scenarios_header_separator}\n${application_scenarios_rows}`;
+
+    const application_costs_title = `### Application USD Cost Estimates Per Year`;
+
+    const application_costs_header_names = [
+        'Usage',
+        'Query/Update Heaviness',
+        'CDK',
+        'Ingress Messages',
+        'Ingress Bytes Query Messages',
+        'Ingress Bytes Update Messages',
+        'Update Messages',
+        'Update Instructions',
+        'Xnet Calls',
+        'Xnet Byte Transmission',
+        'GB Storage',
+        'Total Cost'
+    ];
+    const application_costs_header = `| ${application_costs_header_names.join(
+        ' | '
+    )} |`;
+    const application_costs_header_separator = `| ${application_costs_header_names
+        .map((_) => '---')
+        .join(' | ')} |`;
+    const application_costs_rows = [
+        `Light | Even | Azle | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_update_even.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_update_even
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_update_even
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_update_even.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_update_even.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_update_even.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_update_even.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_update_even.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_update_even.total_cost
+        )}`,
+        `Light | Even | Motoko | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_update_even.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_update_even
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_update_even
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_update_even.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_update_even
+                .update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_update_even.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_update_even.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_update_even.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_update_even.total_cost
+        )}`,
+        `Light | Even | Rust | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_update_even.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_update_even
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_update_even
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_update_even.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_update_even.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_update_even.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_update_even.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_update_even.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_update_even.total_cost
+        )}`,
+        `Light | Query Heavy | Azle | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.query_heavy.total_cost
+        )}`,
+        `Light | Query Heavy | Motoko | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.query_heavy.total_cost
+        )}`,
+        `Light | Query Heavy | Rust | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.query_heavy.total_cost
+        )}`,
+        `Light | Update Heavy | Azle | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.update_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.update_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.update_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.update_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.update_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.update_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.update_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.update_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.light.update_heavy.total_cost
+        )}`,
+        `Light | Update Heavy | Motoko | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.update_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.update_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.update_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.update_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.update_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.update_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.update_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.update_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.light.update_heavy.total_cost
+        )}`,
+        `Light | Update Heavy | Rust | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.update_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.update_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.update_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.update_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.update_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.update_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.update_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.update_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.light.update_heavy.total_cost
+        )}`,
+        `Moderate | Even | Azle | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_update_even.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_update_even
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_update_even
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_update_even.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_update_even
+                .update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_update_even.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_update_even.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_update_even.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_update_even.total_cost
+        )}`,
+        `Moderate | Even | Motoko | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_update_even
+                .ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_update_even
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_update_even
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_update_even.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_update_even
+                .update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_update_even.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_update_even.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_update_even.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_update_even.total_cost
+        )}`,
+        `Moderate | Even | Rust | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_update_even.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_update_even
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_update_even
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_update_even.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_update_even
+                .update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_update_even.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_update_even.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_update_even.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_update_even.total_cost
+        )}`,
+        `Moderate | Query Heavy | Azle | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.query_heavy.total_cost
+        )}`,
+        `Moderate | Query Heavy | Motoko | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.query_heavy.total_cost
+        )}`,
+        `Moderate | Query Heavy | Rust | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.query_heavy.total_cost
+        )}`,
+        `Moderate | Update Heavy | Azle | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.update_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.update_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.update_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.update_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.update_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.update_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.update_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.update_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.moderate.update_heavy.total_cost
+        )}`,
+        `Moderate | Update Heavy | Motoko | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.update_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.update_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.update_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.update_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.update_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.update_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.update_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.update_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.moderate.update_heavy.total_cost
+        )}`,
+        `Moderate | Update Heavy | Rust | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.update_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.update_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.update_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.update_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.update_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.update_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.update_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.update_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.moderate.update_heavy.total_cost
+        )}`,
+        `Heavy | Even | Azle | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_update_even.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_update_even
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_update_even
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_update_even.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_update_even.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_update_even.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_update_even.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_update_even.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_update_even.total_cost
+        )}`,
+        `Heavy | Even | Motoko | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_update_even.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_update_even
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_update_even
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_update_even.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_update_even
+                .update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_update_even.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_update_even.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_update_even.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_update_even.total_cost
+        )}`,
+        `Heavy | Even | Rust | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_update_even.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_update_even
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_update_even
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_update_even.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_update_even.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_update_even.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_update_even.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_update_even.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_update_even.total_cost
+        )}`,
+        `Heavy | Query Heavy | Azle | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.query_heavy.total_cost
+        )}`,
+        `Heavy | Query Heavy | Motoko | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.query_heavy.total_cost
+        )}`,
+        `Heavy | Query Heavy | Rust | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.query_heavy.total_cost
+        )}`,
+        `Heavy | Update Heavy | Azle | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.update_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.update_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.update_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.update_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.update_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.update_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.update_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.update_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.azle.heavy.update_heavy.total_cost
+        )}`,
+        `Heavy | Update Heavy | Motoko | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.update_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.update_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.update_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.update_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.update_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.update_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.update_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.update_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.motoko.heavy.update_heavy.total_cost
+        )}`,
+        `Heavy | Update Heavy | Rust | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.update_heavy.ingress_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.update_heavy
+                .ingress_bytes_query_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.update_heavy
+                .ingress_bytes_update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.update_heavy.update_messages
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.update_heavy.update_instructions
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.update_heavy.xnet_calls
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.update_heavy.xnet_call_bytes
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.update_heavy.gb_storage
+        )} | ${format_number_to_usd(
+            usd_cost_estimates.rust.heavy.update_heavy.total_cost
+        )}`
+    ].join('\n');
+
+    return `${title}\n\n${description}\n\n${application_scenarios_string}\n\n${application_costs_title}\n\n${application_costs_header}\n${application_costs_header_separator}\n${application_costs_rows}`;
+}
+
+function generate_averages_string(
+    average_azle_wasm_instructions_body_only: string,
+    average_azle_wasm_instructions_including_prelude: string,
+    average_motoko_wasm_instructions_body_only: string,
+    average_motoko_wasm_instructions_including_prelude: string,
+    average_rust_wasm_instructions_body_only: string,
+    average_rust_wasm_instructions_including_prelude: string,
+    average_azle_motoko_change_multiplier_body_only: string,
+    average_azle_motoko_change_multiplier_including_prelude: string,
+    average_azle_rust_change_multiplier_body_only: string,
+    average_azle_rust_change_multiplier_including_prelude: string,
+    average_motoko_azle_change_multiplier_body_only: string,
+    average_motoko_azle_change_multiplier_including_prelude: string,
+    average_motoko_rust_change_multiplier_body_only: string,
+    average_motoko_rust_change_multiplier_including_prelude: string,
+    average_rust_azle_change_multiplier_body_only: string,
+    average_rust_azle_change_multiplier_including_prelude: string,
+    average_rust_motoko_change_multiplier_body_only: string,
+    average_rust_motoko_change_multiplier_including_prelude: string
+): string {
     const averages_title = `## Averages`;
     const averages_header_names = [
         'Azle Wasm Instructions',
@@ -207,7 +1136,15 @@ The format for benchmark numbers is (x / y) where:
         `(${average_rust_motoko_change_multiplier_body_only}x / ${average_rust_motoko_change_multiplier_including_prelude}x)`
     ];
 
-    const primitive_ops_header_names = [
+    return `${averages_title}\n\n${averages_header}\n${averages_header_separator}\n| ${average_rows.join(
+        '|'
+    )} |`;
+}
+
+function generate_benchmarks_string(
+    benchmark_results: BenchmarkResult[]
+): string {
+    const benchmarks_header_names = [
         'Description',
         'Azle Wasm Instructions',
         'Motoko Wasm Instructions',
@@ -220,124 +1157,116 @@ The format for benchmark numbers is (x / y) where:
         'Rust/Motoko Change Multiplier'
     ];
 
-    const primitive_ops_header = `| ${primitive_ops_header_names.join(
-        ' | '
-    )} |`;
+    const benchmarks_header = `| ${benchmarks_header_names.join(' | ')} |`;
 
-    const primitive_ops_header_separator = `| ${primitive_ops_header_names
+    const benchamrks_header_separator = `| ${benchmarks_header_names
         .map((_) => '---')
         .join(' | ')} |`;
 
-    const primitive_ops_data_rows = benchmark_results.map(
-        (benchmark_result) => {
-            const description = `${benchmark_result.canister_method}${
-                benchmark_result.benchmark_description !== undefined
-                    ? `: ${benchmark_result.benchmark_description}`
-                    : ''
-            }`;
+    const benchmarks_data_rows = benchmark_results.map((benchmark_result) => {
+        const description = `${benchmark_result.canister_method}${
+            benchmark_result.benchmark_description !== undefined
+                ? `: ${benchmark_result.benchmark_description}`
+                : ''
+        }`;
 
-            const azle_wasm_instructions = `(${format_number_to_rust(
-                benchmark_result.azle_wasm_instructions.wasm_body_only.toFixed(
-                    0
-                )
-            )} / ${format_number_to_rust(
-                benchmark_result.azle_wasm_instructions.wasm_including_prelude.toFixed(
-                    0
-                )
-            )})`;
-            const motoko_wasm_instructions = `(${format_number_to_rust(
-                benchmark_result.motoko_wasm_instructions.wasm_body_only.toFixed(
-                    0
-                )
-            )} / ${format_number_to_rust(
-                benchmark_result.motoko_wasm_instructions.wasm_including_prelude.toFixed(
-                    0
-                )
-            )})`;
-            const rust_wasm_instructions = `(${format_number_to_rust(
-                benchmark_result.rust_wasm_instructions.wasm_body_only.toFixed(
-                    0
-                )
-            )} / ${format_number_to_rust(
-                benchmark_result.rust_wasm_instructions.wasm_including_prelude.toFixed(
-                    0
-                )
-            )})`;
+        const azle_wasm_instructions = `(${format_number_to_rust(
+            benchmark_result.azle_wasm_instructions.wasm_body_only.toFixed(0)
+        )} / ${format_number_to_rust(
+            benchmark_result.azle_wasm_instructions.wasm_including_prelude.toFixed(
+                0
+            )
+        )})`;
+        const motoko_wasm_instructions = `(${format_number_to_rust(
+            benchmark_result.motoko_wasm_instructions.wasm_body_only.toFixed(0)
+        )} / ${format_number_to_rust(
+            benchmark_result.motoko_wasm_instructions.wasm_including_prelude.toFixed(
+                0
+            )
+        )})`;
+        const rust_wasm_instructions = `(${format_number_to_rust(
+            benchmark_result.rust_wasm_instructions.wasm_body_only.toFixed(0)
+        )} / ${format_number_to_rust(
+            benchmark_result.rust_wasm_instructions.wasm_including_prelude.toFixed(
+                0
+            )
+        )})`;
 
-            const azle_motoko_change_multiplier = `(${format_number_to_rust(
-                benchmark_result.azle_motoko_change_multiplier.wasm_body_only.toFixed(
-                    0
-                )
-            )}x / ${format_number_to_rust(
-                benchmark_result.azle_motoko_change_multiplier.wasm_including_prelude.toFixed(
-                    0
-                )
-            )}x)`;
-            const azle_rust_change_multiplier = `(${format_number_to_rust(
-                benchmark_result.azle_rust_change_multiplier.wasm_body_only.toFixed(
-                    0
-                )
-            )}x / ${format_number_to_rust(
-                benchmark_result.azle_rust_change_multiplier.wasm_including_prelude.toFixed(
-                    0
-                )
-            )}x)`;
+        const azle_motoko_change_multiplier = `(${format_number_to_rust(
+            benchmark_result.azle_motoko_change_multiplier.wasm_body_only.toFixed(
+                0
+            )
+        )}x / ${format_number_to_rust(
+            benchmark_result.azle_motoko_change_multiplier.wasm_including_prelude.toFixed(
+                0
+            )
+        )}x)`;
+        const azle_rust_change_multiplier = `(${format_number_to_rust(
+            benchmark_result.azle_rust_change_multiplier.wasm_body_only.toFixed(
+                0
+            )
+        )}x / ${format_number_to_rust(
+            benchmark_result.azle_rust_change_multiplier.wasm_including_prelude.toFixed(
+                0
+            )
+        )}x)`;
 
-            const motoko_azle_change_multiplier = `(${format_number_to_rust(
-                benchmark_result.motoko_azle_change_multiplier.wasm_body_only.toFixed(
-                    0
-                )
-            )}x / ${format_number_to_rust(
-                benchmark_result.motoko_azle_change_multiplier.wasm_including_prelude.toFixed(
-                    0
-                )
-            )}x)`;
-            const motoko_rust_change_multiplier = `(${format_number_to_rust(
-                benchmark_result.motoko_rust_change_multiplier.wasm_body_only.toFixed(
-                    0
-                )
-            )}x / ${format_number_to_rust(
-                benchmark_result.motoko_rust_change_multiplier.wasm_including_prelude.toFixed(
-                    0
-                )
-            )}x)`;
+        const motoko_azle_change_multiplier = `(${format_number_to_rust(
+            benchmark_result.motoko_azle_change_multiplier.wasm_body_only.toFixed(
+                0
+            )
+        )}x / ${format_number_to_rust(
+            benchmark_result.motoko_azle_change_multiplier.wasm_including_prelude.toFixed(
+                0
+            )
+        )}x)`;
+        const motoko_rust_change_multiplier = `(${format_number_to_rust(
+            benchmark_result.motoko_rust_change_multiplier.wasm_body_only.toFixed(
+                0
+            )
+        )}x / ${format_number_to_rust(
+            benchmark_result.motoko_rust_change_multiplier.wasm_including_prelude.toFixed(
+                0
+            )
+        )}x)`;
 
-            const rust_azle_change_multiplier = `(${format_number_to_rust(
-                benchmark_result.rust_azle_change_multiplier.wasm_body_only.toFixed(
-                    0
-                )
-            )}x / ${format_number_to_rust(
-                benchmark_result.rust_azle_change_multiplier.wasm_including_prelude.toFixed(
-                    0
-                )
-            )}x)`;
-            const rust_motoko_change_multiplier = `(${format_number_to_rust(
-                benchmark_result.rust_motoko_change_multiplier.wasm_body_only.toFixed(
-                    0
-                )
-            )}x / ${format_number_to_rust(
-                benchmark_result.rust_motoko_change_multiplier.wasm_including_prelude.toFixed(
-                    0
-                )
-            )}x)`;
+        const rust_azle_change_multiplier = `(${format_number_to_rust(
+            benchmark_result.rust_azle_change_multiplier.wasm_body_only.toFixed(
+                0
+            )
+        )}x / ${format_number_to_rust(
+            benchmark_result.rust_azle_change_multiplier.wasm_including_prelude.toFixed(
+                0
+            )
+        )}x)`;
+        const rust_motoko_change_multiplier = `(${format_number_to_rust(
+            benchmark_result.rust_motoko_change_multiplier.wasm_body_only.toFixed(
+                0
+            )
+        )}x / ${format_number_to_rust(
+            benchmark_result.rust_motoko_change_multiplier.wasm_including_prelude.toFixed(
+                0
+            )
+        )}x)`;
 
-            return `| ${description} | ${azle_wasm_instructions} | ${motoko_wasm_instructions} |${rust_wasm_instructions} | ${azle_motoko_change_multiplier} | ${azle_rust_change_multiplier} | ${motoko_azle_change_multiplier} | ${motoko_rust_change_multiplier} | ${rust_azle_change_multiplier} | ${rust_motoko_change_multiplier} |`;
-        }
-    );
+        return `| ${description} | ${azle_wasm_instructions} | ${motoko_wasm_instructions} |${rust_wasm_instructions} | ${azle_motoko_change_multiplier} | ${azle_rust_change_multiplier} | ${motoko_azle_change_multiplier} | ${motoko_rust_change_multiplier} | ${rust_azle_change_multiplier} | ${rust_motoko_change_multiplier} |`;
+    });
 
-    return `${title}\n${description}\n\n${averages_title}\n\n${averages_header}\n${averages_header_separator}\n| ${average_rows.join(
-        '|'
-    )} |\n\n## Benchmarks\n\n${primitive_ops_header}\n${primitive_ops_header_separator}\n${primitive_ops_data_rows.join(
+    return `## Benchmarks\n\n${benchmarks_header}\n${benchamrks_header_separator}\n${benchmarks_data_rows.join(
         '\n'
-    )}\n`;
+    )}`;
 }
 
-function format_number_to_rust(cycles: string | number | bigint) {
-    const negative = cycles.toString()[0] === '-';
+function format_number_to_rust(number: string | number | bigint) {
+    if (Number(number) < 1 && Number(number) >= 0) {
+        return number.toString();
+    }
+
+    const negative = number.toString()[0] === '-';
 
     return (
         (negative ? '-' : '') +
-        cycles
+        number
             .toString()
             .replace('-', '')
             .split('')
@@ -351,4 +1280,12 @@ function format_number_to_rust(cycles: string | number | bigint) {
             .reverse()
             .join('')
     );
+}
+
+function format_number_to_usd(number: number) {
+    return number.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2
+    });
 }
