@@ -1,6 +1,7 @@
 mod quicksort;
+use ic_cdk::export::candid::Int;
 
 #[ic_cdk_macros::query]
-fn sort(xs: Vec<i128>) -> Vec<i128> {
-    quicksort::sort_by(xs, &i128::cmp)
+fn sort(xs: Vec<Int>) -> Vec<Int> {
+    quicksort::sort_by(xs, &Int::cmp)
 }
