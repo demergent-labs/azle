@@ -1,5 +1,6 @@
 import { BenchmarkResult, calculate_average } from './index';
 import { get_usd_cost_estimates } from './usd';
+import { USDCostEstimates } from './usd/usd_cost_estimate';
 import {
     USAGE_CONFIG_HEAVY_QUERY_HEAVY,
     USAGE_CONFIG_HEAVY_QUERY_UPDATE_EVEN,
@@ -247,6 +248,15 @@ function generate_usd_cost_estimates_string(
         rust_wasm_instructions_per_update_message.toFixed(0)
     )}`;
 
+    const application_scenarios_string =
+        generate_application_scenarios_string();
+    const application_costs_string =
+        generate_application_costs_string(usd_cost_estimates);
+
+    return `${title}\n\n${description}\n\n${application_scenarios_string}\n\n${application_costs_string}`;
+}
+
+function generate_application_scenarios_string(): string {
     const application_scenarios_title = `### Application Scenarios`;
 
     const application_scenarios_header_names = [
@@ -485,8 +495,12 @@ function generate_usd_cost_estimates_string(
         ].join(' | ')
     ].join('\n');
 
-    const application_scenarios_string = `${application_scenarios_title}\n\n${application_scenarios_header}\n${application_scenarios_header_separator}\n${application_scenarios_rows}`;
+    return `${application_scenarios_title}\n\n${application_scenarios_header}\n${application_scenarios_header_separator}\n${application_scenarios_rows}`;
+}
 
+function generate_application_costs_string(
+    usd_cost_estimates: USDCostEstimates
+): string {
     const application_costs_title = `### Application USD Cost Estimates Per Year`;
 
     const application_costs_header_names = [
@@ -509,583 +523,957 @@ function generate_usd_cost_estimates_string(
     const application_costs_header_separator = `| ${application_costs_header_names
         .map((_) => '---')
         .join(' | ')} |`;
+
     const application_costs_rows = [
-        `Light | Even | Azle | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_update_even.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_update_even
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_update_even
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_update_even.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_update_even.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_update_even.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_update_even.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_update_even.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_update_even.total_cost
-        )}`,
-        `Light | Even | Motoko | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_update_even.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_update_even
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_update_even
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_update_even.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_update_even
-                .update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_update_even.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_update_even.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_update_even.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_update_even.total_cost
-        )}`,
-        `Light | Even | Rust | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_update_even.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_update_even
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_update_even
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_update_even.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_update_even.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_update_even.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_update_even.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_update_even.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_update_even.total_cost
-        )}`,
-        `Light | Query Heavy | Azle | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.query_heavy.total_cost
-        )}`,
-        `Light | Query Heavy | Motoko | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.query_heavy.total_cost
-        )}`,
-        `Light | Query Heavy | Rust | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.query_heavy.total_cost
-        )}`,
-        `Light | Update Heavy | Azle | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.update_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.update_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.update_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.update_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.update_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.update_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.update_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.update_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.light.update_heavy.total_cost
-        )}`,
-        `Light | Update Heavy | Motoko | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.update_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.update_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.update_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.update_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.update_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.update_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.update_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.update_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.light.update_heavy.total_cost
-        )}`,
-        `Light | Update Heavy | Rust | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.update_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.update_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.update_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.update_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.update_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.update_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.update_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.update_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.light.update_heavy.total_cost
-        )}`,
-        `Moderate | Even | Azle | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_update_even.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_update_even
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_update_even
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_update_even.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_update_even
-                .update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_update_even.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_update_even.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_update_even.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_update_even.total_cost
-        )}`,
-        `Moderate | Even | Motoko | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_update_even
-                .ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_update_even
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_update_even
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_update_even.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_update_even
-                .update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_update_even.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_update_even.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_update_even.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_update_even.total_cost
-        )}`,
-        `Moderate | Even | Rust | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_update_even.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_update_even
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_update_even
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_update_even.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_update_even
-                .update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_update_even.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_update_even.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_update_even.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_update_even.total_cost
-        )}`,
-        `Moderate | Query Heavy | Azle | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.query_heavy.total_cost
-        )}`,
-        `Moderate | Query Heavy | Motoko | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.query_heavy.total_cost
-        )}`,
-        `Moderate | Query Heavy | Rust | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.query_heavy.total_cost
-        )}`,
-        `Moderate | Update Heavy | Azle | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.update_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.update_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.update_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.update_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.update_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.update_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.update_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.update_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.moderate.update_heavy.total_cost
-        )}`,
-        `Moderate | Update Heavy | Motoko | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.update_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.update_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.update_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.update_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.update_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.update_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.update_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.update_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.moderate.update_heavy.total_cost
-        )}`,
-        `Moderate | Update Heavy | Rust | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.update_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.update_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.update_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.update_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.update_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.update_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.update_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.update_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.moderate.update_heavy.total_cost
-        )}`,
-        `Heavy | Even | Azle | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_update_even.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_update_even
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_update_even
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_update_even.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_update_even.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_update_even.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_update_even.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_update_even.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_update_even.total_cost
-        )}`,
-        `Heavy | Even | Motoko | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_update_even.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_update_even
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_update_even
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_update_even.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_update_even
-                .update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_update_even.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_update_even.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_update_even.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_update_even.total_cost
-        )}`,
-        `Heavy | Even | Rust | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_update_even.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_update_even
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_update_even
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_update_even.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_update_even.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_update_even.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_update_even.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_update_even.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_update_even.total_cost
-        )}`,
-        `Heavy | Query Heavy | Azle | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.query_heavy.total_cost
-        )}`,
-        `Heavy | Query Heavy | Motoko | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.query_heavy.total_cost
-        )}`,
-        `Heavy | Query Heavy | Rust | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.query_heavy.total_cost
-        )}`,
-        `Heavy | Update Heavy | Azle | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.update_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.update_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.update_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.update_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.update_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.update_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.update_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.update_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.azle.heavy.update_heavy.total_cost
-        )}`,
-        `Heavy | Update Heavy | Motoko | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.update_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.update_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.update_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.update_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.update_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.update_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.update_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.update_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.motoko.heavy.update_heavy.total_cost
-        )}`,
-        `Heavy | Update Heavy | Rust | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.update_heavy.ingress_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.update_heavy
-                .ingress_bytes_query_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.update_heavy
-                .ingress_bytes_update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.update_heavy.update_messages
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.update_heavy.update_instructions
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.update_heavy.xnet_calls
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.update_heavy.xnet_call_bytes
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.update_heavy.gb_storage
-        )} | ${format_number_to_usd(
-            usd_cost_estimates.rust.heavy.update_heavy.total_cost
-        )}`
+        [
+            'Light',
+            'Even',
+            'Azle',
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_update_even.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_update_even
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_update_even
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_update_even.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_update_even
+                    .update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_update_even.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_update_even.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_update_even.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_update_even.total_cost
+            )
+        ].join(' | '),
+        [
+            'Light',
+            'Even',
+            'Motoko',
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_update_even
+                    .ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_update_even
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_update_even
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_update_even
+                    .update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_update_even
+                    .update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_update_even.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_update_even
+                    .xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_update_even.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_update_even.total_cost
+            )
+        ].join(' | '),
+        [
+            'Light',
+            'Even',
+            'Rust',
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_update_even.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_update_even
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_update_even
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_update_even.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_update_even
+                    .update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_update_even.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_update_even.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_update_even.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_update_even.total_cost
+            )
+        ].join(' | '),
+        [
+            'Light',
+            'Query Heavy',
+            'Azle',
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_heavy.update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.query_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Light',
+            'Query Heavy',
+            'Motoko',
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_heavy.update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.query_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Light',
+            'Query Heavy',
+            'Rust',
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_heavy.update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.query_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Light',
+            'Update Heavy',
+            'Azle',
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.update_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.update_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.update_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.update_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.update_heavy.update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.update_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.update_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.update_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.light.update_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Light',
+            'Update Heavy',
+            'Motoko',
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.update_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.update_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.update_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.update_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.update_heavy.update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.update_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.update_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.update_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.light.update_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Light',
+            'Update Heavy',
+            'Rust',
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.update_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.update_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.update_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.update_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.update_heavy.update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.update_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.update_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.update_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.light.update_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Moderate',
+            'Even',
+            'Azle',
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_update_even
+                    .ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_update_even
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_update_even
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_update_even
+                    .update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_update_even
+                    .update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_update_even.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_update_even
+                    .xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_update_even.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_update_even.total_cost
+            )
+        ].join(' | '),
+        [
+            'Moderate',
+            'Even',
+            'Motoko',
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_update_even
+                    .ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_update_even
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_update_even
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_update_even
+                    .update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_update_even
+                    .update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_update_even.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_update_even
+                    .xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_update_even.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_update_even.total_cost
+            )
+        ].join(' | '),
+        [
+            'Moderate',
+            'Even',
+            'Rust',
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_update_even
+                    .ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_update_even
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_update_even
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_update_even
+                    .update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_update_even
+                    .update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_update_even.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_update_even
+                    .xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_update_even.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_update_even.total_cost
+            )
+        ].join(' | '),
+        [
+            'Moderate',
+            'Query Heavy',
+            'Azle',
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_heavy.update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.query_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Moderate',
+            'Query Heavy',
+            'Motoko',
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_heavy
+                    .update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.query_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Moderate',
+            'Query Heavy',
+            'Rust',
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_heavy.update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.query_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Moderate',
+            'Update Heavy',
+            'Azle',
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.update_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.update_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.update_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.update_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.update_heavy
+                    .update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.update_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.update_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.update_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.moderate.update_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Moderate',
+            'Update Heavy',
+            'Motoko',
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.update_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.update_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.update_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.update_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.update_heavy
+                    .update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.update_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.update_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.update_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.moderate.update_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Moderate',
+            'Update Heavy',
+            'Rust',
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.update_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.update_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.update_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.update_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.update_heavy
+                    .update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.update_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.update_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.update_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.moderate.update_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Heavy',
+            'Even',
+            'Azle',
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_update_even.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_update_even
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_update_even
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_update_even.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_update_even
+                    .update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_update_even.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_update_even.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_update_even.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_update_even.total_cost
+            )
+        ].join(' | '),
+        [
+            'Heavy',
+            'Even',
+            'Motoko',
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_update_even
+                    .ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_update_even
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_update_even
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_update_even
+                    .update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_update_even
+                    .update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_update_even.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_update_even
+                    .xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_update_even.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_update_even.total_cost
+            )
+        ].join(' | '),
+        [
+            'Heavy',
+            'Even',
+            'Rust',
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_update_even.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_update_even
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_update_even
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_update_even.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_update_even
+                    .update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_update_even.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_update_even.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_update_even.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_update_even.total_cost
+            )
+        ].join(' | '),
+        [
+            'Heavy',
+            'Query Heavy',
+            'Azle',
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_heavy.update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.query_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Heavy',
+            'Query Heavy',
+            'Motoko',
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_heavy.update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.query_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Heavy',
+            'Query Heavy',
+            'Rust',
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_heavy.update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.query_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Heavy',
+            'Update Heavy',
+            'Azle',
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.update_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.update_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.update_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.update_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.update_heavy.update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.update_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.update_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.update_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.azle.heavy.update_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Heavy',
+            'Update Heavy',
+            'Motoko',
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.update_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.update_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.update_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.update_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.update_heavy.update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.update_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.update_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.update_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.motoko.heavy.update_heavy.total_cost
+            )
+        ].join(' | '),
+        [
+            'Heavy',
+            'Update Heavy',
+            'Rust',
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.update_heavy.ingress_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.update_heavy
+                    .ingress_bytes_query_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.update_heavy
+                    .ingress_bytes_update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.update_heavy.update_messages
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.update_heavy.update_instructions
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.update_heavy.xnet_calls
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.update_heavy.xnet_call_bytes
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.update_heavy.gb_storage
+            ),
+            format_number_to_usd(
+                usd_cost_estimates.rust.heavy.update_heavy.total_cost
+            )
+        ].join(' | ')
     ].join('\n');
 
-    return `${title}\n\n${description}\n\n${application_scenarios_string}\n\n${application_costs_title}\n\n${application_costs_header}\n${application_costs_header_separator}\n${application_costs_rows}`;
+    return `${application_costs_title}\n\n${application_costs_header}\n${application_costs_header_separator}\n${application_costs_rows}`;
 }
 
 function generate_averages_string(
@@ -1258,14 +1646,17 @@ function generate_benchmarks_string(
 }
 
 function format_number_to_rust(number: string | number | bigint) {
-    if (Number(number) < 1 && Number(number) >= 0) {
+    const number_is_negative = number.toString()[0] === '-';
+    const number_is_decimal_less_than_one =
+        (number_is_negative === false && Number(number) < 1) ||
+        (number_is_negative === true && Number(number) > -1);
+
+    if (number_is_decimal_less_than_one) {
         return number.toString();
     }
 
-    const negative = number.toString()[0] === '-';
-
     return (
-        (negative ? '-' : '') +
+        (number_is_negative ? '-' : '') +
         number
             .toString()
             .replace('-', '')
