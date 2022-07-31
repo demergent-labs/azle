@@ -1,5 +1,5 @@
 import { deploy, run_tests, Test } from 'azle/test';
-import { createActor } from '../test/dfx_generated/persistent';
+import { createActor } from '../dfx_generated/azle';
 
 const persistentStorage_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -8,7 +8,7 @@ const persistentStorage_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...deploy('persistent'),
+    ...deploy('azle'),
     {
         name: 'increment',
         test: async () => {
