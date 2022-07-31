@@ -7,7 +7,7 @@ trait AbsoluteValue {
 
 impl AbsoluteValue for Int {
     fn abs(&self) -> usize {
-        let positive_int = if self > &Int::from(0i8) {
+        let positive_int = if self >= &Int::from(0i8) {
             self.clone()
         } else {
             self.clone() * Int::from(-1i8)
@@ -36,7 +36,7 @@ fn sort_by_helper<X: Clone + Ord, T: Fn(&X, &X) -> Ordering>(
     if l < r {
         let mut i = l.clone();
         let mut j = r.clone();
-        let pivot = xs[(l.clone() + r.clone() / Int::from(2i8)).abs()].clone();
+        let pivot = xs[(l.clone() + r.clone()).abs() / 2].clone();
         while i <= j {
             while f(&xs[i.abs()], &pivot).is_lt() {
                 i += 1;
