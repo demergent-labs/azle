@@ -8,38 +8,35 @@ trait AbsoluteValue {
 impl AbsoluteValue for Int {
     fn abs(&self) -> usize {
         let positive_int = if self > &Int::from(0i8) {
-            *self
+            self.clone()
         } else {
-            *self * Int::from(-1i8)
+            self.clone() * Int::from(-1i8)
         };
         positive_int.0.try_into().unwrap()
     }
 }
 
-pub fn sort_by<X: Clone + Copy + Ord, T: Fn(&X, &X) -> Ordering>(xs: Vec<X>, f: &T) -> Vec<X> {
+pub fn sort_by<X: Clone + Ord, T: Fn(&X, &X) -> Ordering>(xs: Vec<X>, f: &T) -> Vec<X> {
     let n = xs.len();
     if n < 2 {
         return xs;
     } else {
         let mut result = xs.clone();
-        sort_by_helper(&mut result, Int::from(0 as usize), Int::from(n - 1), f);
+        sort_by_helper(&mut result, 0.into(), (n - 1).into(), f);
         result
     }
 }
 
-fn sort_by_helper<X: Copy + Ord, T: Fn(&X, &X) -> Ordering>(
+fn sort_by_helper<X: Clone + Ord, T: Fn(&X, &X) -> Ordering>(
     xs: &mut Vec<X>,
     l: Int,
     r: Int,
     f: &T,
 ) -> () {
     if l < r {
-        let mut i = l;
-        let mut j = r;
-        let mut swap = xs[0];
-        let new_index = (l + r).abs() / Int::from(2i8);
-        let new_index_usize: usize = new_index.0.try_into().unwrap();
-        let pivot = xs[new_index_usize];
+        let mut i = l.clone();
+        let mut j = r.clone();
+        let pivot = xs[(l.clone() + r.clone() / Int::from(2i8)).abs()].clone();
         while i <= j {
             while f(&xs[i.abs()], &pivot).is_lt() {
                 i += 1;
@@ -48,9 +45,7 @@ fn sort_by_helper<X: Copy + Ord, T: Fn(&X, &X) -> Ordering>(
                 j -= 1;
             }
             if i <= j {
-                swap = xs[i.abs()];
-                xs[i.abs()] = xs[j.abs()];
-                xs[j.abs()] = swap;
+                xs.swap(i.abs(), j.abs());
                 i += 1;
                 j -= 1;
             }
