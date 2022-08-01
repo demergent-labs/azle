@@ -1,5 +1,5 @@
 import { deploy, run_tests, Test } from 'azle/test';
-import { createActor } from '../test/dfx_generated/counter';
+import { createActor } from '../dfx_generated/azle';
 
 const counter_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -8,7 +8,7 @@ const counter_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...deploy('counter'),
+    ...deploy('azle'),
     {
         name: 'get',
         test: async () => {
@@ -20,7 +20,7 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'get',
+        name: 'set',
         test: async () => {
             const result = await counter_canister.set(10n);
 
@@ -30,7 +30,7 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'get',
+        name: 'inc',
         test: async () => {
             const result = await counter_canister.inc();
 
@@ -40,7 +40,7 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'get',
+        name: 'inc',
         test: async () => {
             const result = await counter_canister.inc();
 
