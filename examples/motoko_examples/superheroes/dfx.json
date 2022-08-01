@@ -26,7 +26,6 @@
             }
         },
         "www": {
-            "dependencies": ["azle"],
             "frontend": {
                 "entrypoint": "canisters/www/index.html"
             },

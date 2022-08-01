@@ -5,9 +5,14 @@ export const idlFactory = ({ IDL }) => {
         superpowers: IDL.Opt(List),
         name: IDL.Text
     });
+    const PerfResult = IDL.Record({
+        wasm_body_only: IDL.Nat64,
+        wasm_including_prelude: IDL.Nat64
+    });
     return IDL.Service({
         create: IDL.Func([Superhero], [IDL.Nat32], []),
-        deleteHero: IDL.Func([IDL.Nat32], [IDL.Bool], []),
+        delete_hero: IDL.Func([IDL.Nat32], [IDL.Bool], []),
+        get_perf_result: IDL.Func([], [IDL.Opt(PerfResult)], ['query']),
         read: IDL.Func([IDL.Nat32], [IDL.Opt(Superhero)], ['query']),
         update: IDL.Func([IDL.Nat32, Superhero], [IDL.Bool], [])
     });

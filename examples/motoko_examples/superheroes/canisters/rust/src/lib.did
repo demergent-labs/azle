@@ -1,5 +1,10 @@
 type SuperheroId = nat32;
 
+type PerfResult = record {
+    wasm_body_only: nat64;
+    wasm_including_prelude: nat64;
+};
+
 type Superhero = record {
     name: text;
     superpowers: opt List;
@@ -11,8 +16,9 @@ type List = record {
 };
 
 service : {
+    get_perf_result: () -> (opt PerfResult) query;
     create: (Superhero) -> (SuperheroId);
-    delete: (SuperheroId) -> (bool);
+    delete_hero: (SuperheroId) -> (bool);
     read: (SuperheroId) -> (opt Superhero) query;
     update: (SuperheroId, Superhero) -> (bool);
 }

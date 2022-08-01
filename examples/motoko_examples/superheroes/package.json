@@ -1,5 +1,7 @@
 {
     "scripts": {
+        "test": "ts-node --transpile-only --ignore=false test/test.ts",
+        "benchmark": "ts-node --transpile-only --ignore=false benchmark/benchmark.ts",
         "build": "webpack",
         "prebuild": "npm run copy:types",
         "start": "webpack serve --mode development --env development",
