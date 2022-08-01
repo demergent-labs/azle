@@ -59,6 +59,7 @@ jobs:
                   [
                     "examples/bytes",
                     "examples/call_raw",
+                    "examples/candid_encoding",
                     "examples/complex_types",
                     "examples/counter",
                     "examples/cross_canister_calls",

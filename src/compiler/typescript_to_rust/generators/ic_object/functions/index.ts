@@ -3,6 +3,8 @@ import { generateIcObjectFunctionArgData } from './arg_data';
 import { generateIcObjectFunctionArgDataRaw } from './arg_data_raw';
 import { generateIcObjectFunctionArgDataRawSize } from './arg_data_raw_size';
 import { generateIcObjectFunctionCaller } from './caller';
+import { generateIcObjectFunctionCandidDecode } from './candid_decode';
+import { generateIcObjectFunctionCandidEncode } from './candid_encode';
 import { generateIcObjectFunctionCanisterBalance } from './canister_balance';
 import { generateIcObjectFunctionCanisterBalance128 } from './canister_balance128';
 import { generateIcObjectFunctionDataCertificate } from './data_certificate';
@@ -52,6 +54,10 @@ export function generateIcObjectFunctions(
     const icObjectFunctionArgDataRawSize: Rust =
         generateIcObjectFunctionArgDataRawSize();
     const icObjectFunctionCaller: Rust = generateIcObjectFunctionCaller();
+    const icObjectFunctionCandidDecode: Rust =
+        generateIcObjectFunctionCandidDecode();
+    const icObjectFunctionCandidEncode: Rust =
+        generateIcObjectFunctionCandidEncode();
     const icObjectFunctionCanisterBalance: Rust =
         generateIcObjectFunctionCanisterBalance();
     const icObjectFunctionCanisterBalance128: Rust =
@@ -115,6 +121,8 @@ export function generateIcObjectFunctions(
         ${icObjectFunctionArgDataRaw}
         ${icObjectFunctionArgDataRawSize}
         ${icObjectFunctionCaller}
+        ${icObjectFunctionCandidDecode}
+        ${icObjectFunctionCandidEncode}
         ${icObjectFunctionCanisterBalance}
         ${icObjectFunctionCanisterBalance128}
         ${icObjectFunctionDataCertificate}
