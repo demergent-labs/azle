@@ -1,10 +1,12 @@
 {
     "scripts": {
+        "test": "ts-node --transpile-only --ignore=false test/test.ts",
+        "benchmark": "ts-node --transpile-only --ignore=false benchmark/benchmark.ts",
         "build": "webpack",
         "prebuild": "npm run copy:types",
         "start": "webpack serve --mode development --env development",
         "prestart": "npm run copy:types",
-        "copy:types": "rsync -avr .dfx/$(echo ${DFX_NETWORK:-'**'})/canisters/superheroes/** --exclude='assets/' --exclude='idl/' --exclude='*.wasm' --delete src/declarations/"
+        "copy:types": "rsync -avr .dfx/$(echo ${DFX_NETWORK:-'**'})/canisters/azle/** --exclude='assets/' --exclude='idl/' --exclude='*.wasm' --delete canisters/declarations/"
     },
     "devDependencies": {
         "@dfinity/agent": "0.10.2",
