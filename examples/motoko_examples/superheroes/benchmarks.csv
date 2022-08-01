@@ -1,9 +1,9 @@
 Description,Azle Wasm Instructions (function body only),Azle Wasm Instructions (function prelude and body),Motoko Wasm Instructions (function body only),Motoko Wasm Instructions (function prelude and body),Rust Wasm Instructions (function body only),Rust Wasm Instructions (function prelude and body),Azle/Motoko Change Multiplier (function body only),Azle/Motoko Change Multiplier (function prelude and body),Azle/Rust Change Multiplier (function body only),Azle/Rust Change Multiplier (function prelude and body),Motoko/Azle Change Multiplier (function body only),Motoko/Azle Change Multiplier (function prelude and body),Motoko/Rust Change Multiplier (function body only),Motoko/Rust Change Multiplier (function prelude and body),Rust/Azle Change Multiplier (function body only),Rust/Azle Change Multiplier (function prelude and body),Rust/Motoko Change Multiplier (function body only),Rust/Motoko Change Multiplier (function prelude and body)
-create: with no powers,208481,1105932,4048,9655,6719,396222,68,120,31,3,-68,-120,-2,-43,-31,-3,2,43
-create: with powers,210079,1505615,6259,16898,6963,502369,37,92,31,3,-37,-92,-1,-30,-31,-3,1,30
-update: non-existant superhero,148298,1074732,1752,7546,2954,384841,85,142,50,3,-85,-142,-2,-51,-50,-3,2,51
-update: add powers,247868,1430326,4321,16946,13976,558343,57,84,18,3,-57,-84,-3,-33,-18,-3,3,33
-update: remove powers,248286,1189398,4321,10101,9131,391892,57,118,27,3,-57,-118,-2,-39,-27,-3,2,39
-delete_hero: non-existant superhero,147994,726873,1752,3206,2975,34729,84,227,50,21,-84,-227,-2,-11,-50,-21,2,11
-delete_hero: superhero with powers,157159,1045749,1858,3312,3634,35397,88,329,43,30,-88,-329,-2,-11,-43,-30,2,11
-delete_hero: superhero without powers,157094,726080,1858,3312,3649,35413,88,225,43,20,-88,-225,-2,-11,-43,-20,2,11
+create: with no powers,208096,1120658,1441,7048,6916,429595,144,159,30,3,-144,-159,-5,-61,-30,-3,5,61
+create: with powers,206594,1285753,1963,12602,8371,529283,105,102,25,2,-105,-102,-4,-42,-25,-2,4,42
+update: nonexistent superhero,147625,1058955,924,6718,3029,403684,160,158,49,3,-160,-158,-3,-60,-49,-3,3,60
+update: add powers,243437,1411505,2434,15059,9112,591002,100,94,27,2,-100,-94,-4,-39,-27,-2,4,39
+update: remove powers,243975,1165611,2922,8702,14021,417347,83,134,17,3,-83,-134,-5,-48,-17,-3,5,48
+delete_hero: nonexistent superhero,147656,720719,924,2378,2988,37525,160,303,49,19,-160,-303,-3,-16,-49,-19,3,16
+delete_hero: superhero with powers,235045,805986,2149,3603,6685,41222,109,224,35,20,-109,-224,-3,-11,-35,-20,3,11
+delete_hero: superhero without powers,234923,808699,2046,3500,4736,40166,115,231,50,20,-115,-231,-2,-11,-50,-20,2,11

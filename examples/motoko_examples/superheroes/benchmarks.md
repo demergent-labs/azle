@@ -4,7 +4,7 @@
 -   These benchmarks were implemented using the performance counter API
     -   Performance counter information in [The Internet Computer Interface Spec](https://internetcomputer.org/docs/current/references/ic-interface-spec/#system-api-imports)
     -   Performance counter information in [the forum](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027)
--   Each benchmark is the average of 10 runs
+-   Each benchmark is the average of 1 run
 -   The following may be inaccurate or missing from the benchmarks as described [here](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027):
     -   Candid serialization/deserialization of function parameters and return types
     -   Canister method prologue/epilogue
@@ -17,21 +17,77 @@ The format for benchmark numbers is (x / y) where:
 -   x = Wasm instructions counted only in the function body
 -   y = Wasm instructions counted in the function body and the function prelude
 
+## USD Cost Estimates Per Year
+
+These estimates use the average Wasm instructions per update function call including the function prelude from the benchmarks below.
+
+The Wasm instruction counts used are:
+
+-   Azle: 1_047_236
+-   Motoko: 7_451
+-   Rust: 311_228
+
+### Application Scenarios
+
+| Usage    | Query/Update Heaviness | Ingress Bytes Per Query Message | Ingress Bytes Per Update Message | GB Storage | Query Messages Per Second | Update Messages Per Second | Xnet Calls Per Second | Xnet Call Bytes |
+| -------- | ---------------------- | ------------------------------- | -------------------------------- | ---------- | ------------------------- | -------------------------- | --------------------- | --------------- |
+| Light    | Even                   | 100                             | 100                              | 0.5        | 0.01                      | 0.01                       | 0.001                 | 20              |
+| Light    | Query Heavy            | 100                             | 100                              | 0.5        | 0.01                      | 0.0001                     | 0.001                 | 20              |
+| Light    | Update Heavy           | 100                             | 100                              | 0.5        | 0.0001                    | 0.01                       | 0.001                 | 20              |
+| Moderate | Even                   | 1_000                           | 1_000                            | 1          | 1                         | 1                          | 0.1                   | 200             |
+| Moderate | Query Heavy            | 1_000                           | 1_000                            | 1          | 1                         | 0.01                       | 0.1                   | 200             |
+| Moderate | Update Heavy           | 1_000                           | 1_000                            | 1          | 0.01                      | 1                          | 0.1                   | 200             |
+| Heavy    | Even                   | 10_000                          | 10_000                           | 2          | 100                       | 100                        | 10                    | 2_000           |
+| Heavy    | Query Heavy            | 10_000                          | 10_000                           | 2          | 100                       | 1                          | 10                    | 2_000           |
+| Heavy    | Update Heavy           | 10_000                          | 10_000                           | 2          | 1                         | 100                        | 10                    | 2_000           |
+
+### Application USD Cost Estimates Per Year
+
+| Usage    | Query/Update Heaviness | CDK    | Ingress Messages | Ingress Bytes Query Messages | Ingress Bytes Update Messages | Update Messages | Update Instructions | Xnet Calls | Xnet Byte Transmission | GB Storage | Total Cost  |
+| -------- | ---------------------- | ------ | ---------------- | ---------------------------- | ----------------------------- | --------------- | ------------------- | ---------- | ---------------------- | ---------- | ----------- |
+| Light    | Even                   | Azle   | $1.00            | $0.08                        | $0.08                         | $0.25           | $0.17               | $0.01      | $0.00                  | $2.64      | $4.24       |
+| Light    | Even                   | Motoko | $1.00            | $0.08                        | $0.08                         | $0.25           | $0.00               | $0.01      | $0.00                  | $2.64      | $4.07       |
+| Light    | Even                   | Rust   | $1.00            | $0.08                        | $0.08                         | $0.25           | $0.05               | $0.01      | $0.00                  | $2.64      | $4.12       |
+| Light    | Query Heavy            | Azle   | $0.50            | $0.08                        | $0.00                         | $0.00           | $0.00               | $0.01      | $0.00                  | $2.64      | $3.25       |
+| Light    | Query Heavy            | Motoko | $0.50            | $0.08                        | $0.00                         | $0.00           | $0.00               | $0.01      | $0.00                  | $2.64      | $3.25       |
+| Light    | Query Heavy            | Rust   | $0.50            | $0.08                        | $0.00                         | $0.00           | $0.00               | $0.01      | $0.00                  | $2.64      | $3.25       |
+| Light    | Update Heavy           | Azle   | $0.50            | $0.00                        | $0.08                         | $0.25           | $0.17               | $0.01      | $0.00                  | $2.64      | $3.66       |
+| Light    | Update Heavy           | Motoko | $0.50            | $0.00                        | $0.08                         | $0.25           | $0.00               | $0.01      | $0.00                  | $2.64      | $3.49       |
+| Light    | Update Heavy           | Rust   | $0.50            | $0.00                        | $0.08                         | $0.25           | $0.05               | $0.01      | $0.00                  | $2.64      | $3.54       |
+| Moderate | Even                   | Azle   | $99.91           | $83.26                       | $83.26                        | $24.56          | $17.44              | $1.08      | $0.83                  | $5.29      | $315.62     |
+| Moderate | Even                   | Motoko | $99.91           | $83.26                       | $83.26                        | $24.56          | $0.12               | $1.08      | $0.83                  | $5.29      | $298.30     |
+| Moderate | Even                   | Rust   | $99.91           | $83.26                       | $83.26                        | $24.56          | $5.18               | $1.08      | $0.83                  | $5.29      | $303.36     |
+| Moderate | Query Heavy            | Azle   | $50.45           | $83.26                       | $0.83                         | $0.25           | $0.17               | $1.08      | $0.83                  | $5.29      | $142.16     |
+| Moderate | Query Heavy            | Motoko | $50.45           | $83.26                       | $0.83                         | $0.25           | $0.00               | $1.08      | $0.83                  | $5.29      | $141.99     |
+| Moderate | Query Heavy            | Rust   | $50.45           | $83.26                       | $0.83                         | $0.25           | $0.05               | $1.08      | $0.83                  | $5.29      | $142.04     |
+| Moderate | Update Heavy           | Azle   | $50.45           | $0.83                        | $83.26                        | $24.56          | $17.44              | $1.08      | $0.83                  | $5.29      | $183.74     |
+| Moderate | Update Heavy           | Motoko | $50.45           | $0.83                        | $83.26                        | $24.56          | $0.12               | $1.08      | $0.83                  | $5.29      | $166.43     |
+| Moderate | Update Heavy           | Rust   | $50.45           | $0.83                        | $83.26                        | $24.56          | $5.18               | $1.08      | $0.83                  | $5.29      | $171.48     |
+| Heavy    | Even                   | Azle   | $9,990.60        | $83,255.04                   | $83,255.04                    | $2,456.02       | $1,743.75           | $108.23    | $832.55                | $10.57     | $181,651.82 |
+| Heavy    | Even                   | Motoko | $9,990.60        | $83,255.04                   | $83,255.04                    | $2,456.02       | $12.41              | $108.23    | $832.55                | $10.57     | $179,920.47 |
+| Heavy    | Even                   | Rust   | $9,990.60        | $83,255.04                   | $83,255.04                    | $2,456.02       | $518.23             | $108.23    | $832.55                | $10.57     | $180,426.29 |
+| Heavy    | Query Heavy            | Azle   | $5,045.26        | $83,255.04                   | $832.55                       | $24.56          | $17.44              | $108.23    | $832.55                | $10.57     | $90,126.20  |
+| Heavy    | Query Heavy            | Motoko | $5,045.26        | $83,255.04                   | $832.55                       | $24.56          | $0.12               | $108.23    | $832.55                | $10.57     | $90,108.89  |
+| Heavy    | Query Heavy            | Rust   | $5,045.26        | $83,255.04                   | $832.55                       | $24.56          | $5.18               | $108.23    | $832.55                | $10.57     | $90,113.94  |
+| Heavy    | Update Heavy           | Azle   | $5,045.26        | $832.55                      | $83,255.04                    | $2,456.02       | $1,743.75           | $108.23    | $832.55                | $10.57     | $94,283.98  |
+| Heavy    | Update Heavy           | Motoko | $5,045.26        | $832.55                      | $83,255.04                    | $2,456.02       | $12.41              | $108.23    | $832.55                | $10.57     | $92,552.63  |
+| Heavy    | Update Heavy           | Rust   | $5,045.26        | $832.55                      | $83,255.04                    | $2,456.02       | $518.23             | $108.23    | $832.55                | $10.57     | $93,058.45  |
+
 ## Averages
 
 | Azle Wasm Instructions | Motoko Wasm Instructions | Rust Wasm Instructions | Azle/Motoko Change Multiplier | Azle/Rust Change Multiplier | Motoko/Azle Change Multiplier | Motoko/Rust Change Multiplier | Rust/Azle Change Multiplier | Rust/Motoko Change Multiplier |
 | ---------------------- | ------------------------ | ---------------------- | ----------------------------- | --------------------------- | ----------------------------- | ----------------------------- | --------------------------- | ----------------------------- |
-| (190_657 / 1_100_588)  | (3_271 / 8_872)          | (6_250 / 292_401)      | (71x / 167x)                  | (37x / 11x)                 | (-71x / -167x)                | (-2x / -29x)                  | (-37x / -11x)               | (2x / 29x)                    |
+| (208_419 / 1_047_236)  | (1_850 / 7_451)          | (6_982 / 311_228)      | (122x / 176x)                 | (35x / 9x)                  | (-122x / -176x)               | (-4x / -36x)                  | (-35x / -9x)                | (4x / 36x)                    |
 
 ## Benchmarks
 
 | Description                           | Azle Wasm Instructions | Motoko Wasm Instructions | Rust Wasm Instructions | Azle/Motoko Change Multiplier | Azle/Rust Change Multiplier | Motoko/Azle Change Multiplier | Motoko/Rust Change Multiplier | Rust/Azle Change Multiplier | Rust/Motoko Change Multiplier |
 | ------------------------------------- | ---------------------- | ------------------------ | ---------------------- | ----------------------------- | --------------------------- | ----------------------------- | ----------------------------- | --------------------------- | ----------------------------- |
-| create: with no powers                | (208_481 / 1_105_932)  | (4_048 / 9_655)          | (6_719 / 396_222)      | (68x / 120x)                  | (31x / 3x)                  | (-68x / -120x)                | (-2x / -43x)                  | (-31x / -3x)                | (2x / 43x)                    |
-| create: with powers                   | (210_079 / 1_505_615)  | (6_259 / 16_898)         | (6_963 / 502_369)      | (37x / 92x)                   | (31x / 3x)                  | (-37x / -92x)                 | (-1x / -30x)                  | (-31x / -3x)                | (1x / 30x)                    |
-| update: non-existant superhero        | (148_298 / 1_074_732)  | (1_752 / 7_546)          | (2_954 / 384_841)      | (85x / 142x)                  | (50x / 3x)                  | (-85x / -142x)                | (-2x / -51x)                  | (-50x / -3x)                | (2x / 51x)                    |
-| update: add powers                    | (247_868 / 1_430_326)  | (4_321 / 16_946)         | (13_976 / 558_343)     | (57x / 84x)                   | (18x / 3x)                  | (-57x / -84x)                 | (-3x / -33x)                  | (-18x / -3x)                | (3x / 33x)                    |
-| update: remove powers                 | (248_286 / 1_189_398)  | (4_321 / 10_101)         | (9_131 / 391_892)      | (57x / 118x)                  | (27x / 3x)                  | (-57x / -118x)                | (-2x / -39x)                  | (-27x / -3x)                | (2x / 39x)                    |
-| delete_hero: non-existant superhero   | (147_994 / 726_873)    | (1_752 / 3_206)          | (2_975 / 34_729)       | (84x / 227x)                  | (50x / 21x)                 | (-84x / -227x)                | (-2x / -11x)                  | (-50x / -21x)               | (2x / 11x)                    |
-| delete_hero: superhero with powers    | (157_159 / 1_045_749)  | (1_858 / 3_312)          | (3_634 / 35_397)       | (88x / 329x)                  | (43x / 30x)                 | (-88x / -329x)                | (-2x / -11x)                  | (-43x / -30x)               | (2x / 11x)                    |
-| delete_hero: superhero without powers | (157_094 / 726_080)    | (1_858 / 3_312)          | (3_649 / 35_413)       | (88x / 225x)                  | (43x / 20x)                 | (-88x / -225x)                | (-2x / -11x)                  | (-43x / -20x)               | (2x / 11x)                    |
+| create: with no powers                | (208_096 / 1_120_658)  | (1_441 / 7_048)          | (6_916 / 429_595)      | (144x / 159x)                 | (30x / 3x)                  | (-144x / -159x)               | (-5x / -61x)                  | (-30x / -3x)                | (5x / 61x)                    |
+| create: with powers                   | (206_594 / 1_285_753)  | (1_963 / 12_602)         | (8_371 / 529_283)      | (105x / 102x)                 | (25x / 2x)                  | (-105x / -102x)               | (-4x / -42x)                  | (-25x / -2x)                | (4x / 42x)                    |
+| update: nonexistent superhero         | (147_625 / 1_058_955)  | (924 / 6_718)            | (3_029 / 403_684)      | (160x / 158x)                 | (49x / 3x)                  | (-160x / -158x)               | (-3x / -60x)                  | (-49x / -3x)                | (3x / 60x)                    |
+| update: add powers                    | (243_437 / 1_411_505)  | (2_434 / 15_059)         | (9_112 / 591_002)      | (100x / 94x)                  | (27x / 2x)                  | (-100x / -94x)                | (-4x / -39x)                  | (-27x / -2x)                | (4x / 39x)                    |
+| update: remove powers                 | (243_975 / 1_165_611)  | (2_922 / 8_702)          | (14_021 / 417_347)     | (83x / 134x)                  | (17x / 3x)                  | (-83x / -134x)                | (-5x / -48x)                  | (-17x / -3x)                | (5x / 48x)                    |
+| delete_hero: nonexistent superhero    | (147_656 / 720_719)    | (924 / 2_378)            | (2_988 / 37_525)       | (160x / 303x)                 | (49x / 19x)                 | (-160x / -303x)               | (-3x / -16x)                  | (-49x / -19x)               | (3x / 16x)                    |
+| delete_hero: superhero with powers    | (235_045 / 805_986)    | (2_149 / 3_603)          | (6_685 / 41_222)       | (109x / 224x)                 | (35x / 20x)                 | (-109x / -224x)               | (-3x / -11x)                  | (-35x / -20x)               | (3x / 11x)                    |
+| delete_hero: superhero without powers | (234_923 / 808_699)    | (2_046 / 3_500)          | (4_736 / 40_166)       | (115x / 231x)                 | (50x / 20x)                 | (-115x / -231x)               | (-2x / -11x)                  | (-50x / -20x)               | (2x / 11x)                    |
