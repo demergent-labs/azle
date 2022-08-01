@@ -31,7 +31,7 @@ const benchmarks: Benchmark[] = [
     },
     {
         canister_method: 'update',
-        benchmark_description: 'non-existant superhero',
+        benchmark_description: 'nonexistent superhero',
         args: [
             99,
             {
@@ -74,7 +74,7 @@ const benchmarks: Benchmark[] = [
     },
     {
         canister_method: 'delete_hero',
-        benchmark_description: 'non-existant superhero',
+        benchmark_description: 'nonexistent superhero',
         args: [99]
     },
     {
@@ -89,12 +89,19 @@ const benchmarks: Benchmark[] = [
     }
 ];
 
+// Because the args to each method are always the same, running the
+// `delete_hero` method over and over again will result in mostly deleting
+// nonexistent heroes, which isn't what we want for the last two scenarios. So,
+// to more clearly illustrate the difference between the different deletion
+// scenarios, we're only doing a single run for now.
+const iterations = 1;
+
 run_benchmarks(
     'GLOBAL_VALUE',
     benchmarks,
     createActorAzle,
     createActorMotoko,
     createActorRust,
-    10,
+    iterations,
     `benchmarks`
 );
