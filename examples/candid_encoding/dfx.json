@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "candid_encoding": {
+            "type": "custom",
+            "build": "npx azle candid_encoding",
+            "root": "src",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/candid_encoding.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/candid_encoding"
+            }
+        }
+    }
+}

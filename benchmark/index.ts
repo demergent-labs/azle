@@ -513,7 +513,7 @@ async function get_perf_result(
         ).get_perf_result();
 
         if (perf_result_opt.length === 0) {
-            throw new Error(`PerfResult was no set`);
+            throw new Error(`PerfResult was not set`);
         }
 
         return perf_result_opt[0];
@@ -557,7 +557,6 @@ function create_markdown_report(
 - Each benchmark is the average of ${num_benchmark_iterations} run${
         num_benchmark_iterations === 1 ? '' : 's'
     }
-- Each benchmark description gives the benchmark function name followed by the number of value initializations performed by the benchmark function
 - The following may be inaccurate or missing from the benchmarks as described [here](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027):
     - Candid serialization/deserialization of function parameters and return types
     - Canister method prologue/epilogue
@@ -731,7 +730,7 @@ The format for benchmark numbers is (x / y) where:
         'Azle/Rust Change Multiplier',
         'Motoko/Azle Change Multiplier',
         'Motoko/Rust Change Multiplier',
-        'Average Rust/Azle Change Multiplier',
+        'Rust/Azle Change Multiplier',
         'Rust/Motoko Change Multiplier'
     ];
     const averages_header = `| ${averages_header_names.join(' | ')} |`;

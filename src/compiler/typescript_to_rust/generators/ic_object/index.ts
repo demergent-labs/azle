@@ -46,6 +46,16 @@ export function generateIcObject(
                 0
             )
             .function(
+                _azle_ic_candid_decode,
+                "candid_decode",
+                0
+            )
+            .function(
+                _azle_ic_candid_encode,
+                "candid_encode",
+                0
+            )
+            .function(
                 _azle_ic_canister_balance,
                 "canister_balance",
                 0
