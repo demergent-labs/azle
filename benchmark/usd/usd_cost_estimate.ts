@@ -72,6 +72,8 @@ export function get_usd_cost_estimate(
         ingress_bytes_update_messages_cost_usd +
         update_messages_cost_usd +
         update_instructions_cost_usd +
+        xnet_calls_cost_usd +
+        xnet_bytes_cost_usd +
         gb_storage_cost_usd;
 
     return {
