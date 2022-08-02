@@ -670,6 +670,7 @@ checksum = "a3f87b73ce11b1619a3c6332f45341e0047173771e8b8b73f87bfeefb7b56244"
 name = "rust"
 version = "0.0.0"
 dependencies = [
+ "candid",
  "ic-cdk",
  "ic-cdk-macros",
 ]

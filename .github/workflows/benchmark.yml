@@ -14,6 +14,7 @@ jobs:
                     - examples/bytes
                     - examples/motoko_examples/calc
                     - examples/motoko_examples/counter
+                    - examples/motoko_examples/factorial
                     - examples/motoko_examples/persistent-storage
                     - examples/motoko_examples/phone-book
                     - examples/motoko_examples/simple-to-do
