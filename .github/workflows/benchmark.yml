@@ -21,6 +21,7 @@ jobs:
                     - examples/motoko_examples/quicksort
                     - examples/motoko_examples/simple-to-do
                     - examples/motoko_examples/superheroes
+                    - examples/motoko_examples/whoami
                     - examples/primitive_ops
                     - examples/update
         if: ${{ contains(github.head_ref, '--benchmarks') }}

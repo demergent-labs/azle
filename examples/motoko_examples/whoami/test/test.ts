@@ -71,9 +71,9 @@ const tests: Test[] = [
         }
     },
     {
-        name: 'idQuick',
+        name: 'id_quick',
         test: async () => {
-            const result = await whoami_canister.idQuick();
+            const result = await whoami_canister.id_quick();
 
             return {
                 ok: result.toString() === canisterId
