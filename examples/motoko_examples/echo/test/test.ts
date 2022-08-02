@@ -1,5 +1,5 @@
 import { deploy, run_tests, Test } from 'azle/test';
-import { createActor } from '../test/dfx_generated/echo';
+import { createActor } from '../dfx_generated/azle';
 
 const echo_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -8,7 +8,7 @@ const echo_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...deploy('echo'),
+    ...deploy('azle'),
     {
         name: 'say',
         test: async () => {
