@@ -1,0 +1,15 @@
+type PerfResult = record {
+    "wasm_body_only": nat64;
+    "wasm_including_prelude": nat64;
+};
+
+type Entry = record {
+    "desc": text;
+    "phone": text;
+};
+
+service: {
+    "get_perf_result": () -> (opt PerfResult) query;
+    "lookup": (text) -> (opt Entry) query;
+    "insert": (text, Entry) -> ();
+}

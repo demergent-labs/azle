@@ -2,7 +2,6 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
 
 let localCanisters, prodCanisters, canisters;
 
@@ -39,7 +38,7 @@ function initCanisterIds() {
 initCanisterIds();
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const asset_entry = path.join('src', 'www', 'src', 'index.html');
+const asset_entry = path.join('canisters', 'www', 'src', 'index.html');
 
 module.exports = {
     target: 'web',
@@ -85,17 +84,9 @@ module.exports = {
             template: path.join(__dirname, asset_entry),
             cache: false
         }),
-        new CopyPlugin({
-            patterns: [
-                {
-                    from: path.join(__dirname, 'src', 'www', 'assets'),
-                    to: path.join(__dirname, 'dist', 'www')
-                }
-            ]
-        }),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'development',
-            PHONE_BOOK_CANISTER_ID: canisters['phone_book']
+            AZLE_CANISTER_ID: canisters['azle']
         }),
         new webpack.ProvidePlugin({
             Buffer: [require.resolve('buffer/'), 'Buffer'],
@@ -115,7 +106,7 @@ module.exports = {
         },
         hot: 'only',
         static: {
-            directory: path.resolve(__dirname, './src/www')
+            directory: path.resolve(__dirname, './canisters/www')
         }
     }
 };
