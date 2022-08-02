@@ -1,0 +1,13 @@
+type PerfResult = 
+ record {
+   wasm_body_only: nat64;
+   wasm_including_prelude: nat64;
+ };
+service : {
+  add: (int) -> (int);
+  clearall: () -> ();
+  div: (int) -> (opt int);
+  get_perf_result: () -> (opt PerfResult) query;
+  mul: (int) -> (int);
+  sub: (int) -> (int);
+}
