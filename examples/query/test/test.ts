@@ -1,5 +1,5 @@
 import { deploy, run_tests, Test } from 'azle/test';
-import { createActor } from '../test/dfx_generated/query';
+import { createActor } from '../dfx_generated/azle';
 
 const query_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -8,11 +8,11 @@ const query_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...deploy('query'),
+    ...deploy('azle'),
     {
         name: 'query',
         test: async () => {
-            const result = await query_canister.query();
+            const result = await query_canister.simple_query();
 
             return {
                 ok: result === 'This is a query function'
