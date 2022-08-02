@@ -11,6 +11,7 @@
     "scripts": {
         "build": "webpack",
         "test": "ts-node --transpile-only --ignore=false test/test.ts",
+        "benchmark": "ts-node --transpile-only --ignore=false benchmark/benchmark.ts",
         "start": "webpack serve --mode development --env development"
     },
     "dependencies": {
