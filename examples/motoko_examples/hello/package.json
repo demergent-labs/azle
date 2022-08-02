@@ -13,7 +13,7 @@
         "prebuild": "npm run copy:types",
         "start": "webpack serve --mode development --env development",
         "prestart": "npm run copy:types",
-        "copy:types": "rsync -avr .dfx/$(echo ${DFX_NETWORK:-'**'})/canisters/** --exclude='assets/' --exclude='idl/' --exclude='*.wasm' --delete src/declarations",
+        "copy:types": "rsync -avr .dfx/$(echo ${DFX_NETWORK:-'**'})/canisters/** --exclude='assets/' --exclude='idl/' --exclude='*.wasm' --delete canisters/declarations",
         "test": "ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {

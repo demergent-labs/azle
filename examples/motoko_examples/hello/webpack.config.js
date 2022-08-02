@@ -42,7 +42,12 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const frontendDirectory = 'hello_assets';
 
-const asset_entry = path.join('src', frontendDirectory, 'src', 'index.html');
+const asset_entry = path.join(
+    'canisters',
+    frontendDirectory,
+    'src',
+    'index.html'
+);
 
 module.exports = {
     target: 'web',
@@ -88,19 +93,6 @@ module.exports = {
             template: path.join(__dirname, asset_entry),
             cache: false
         }),
-        new CopyPlugin({
-            patterns: [
-                {
-                    from: path.join(
-                        __dirname,
-                        'src',
-                        frontendDirectory,
-                        'assets'
-                    ),
-                    to: path.join(__dirname, 'dist', frontendDirectory)
-                }
-            ]
-        }),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'development',
             ...canisterEnvVariables
@@ -122,7 +114,7 @@ module.exports = {
             }
         },
         hot: true,
-        watchFiles: [path.resolve(__dirname, 'src', frontendDirectory)],
+        watchFiles: [path.resolve(__dirname, 'canisters', frontendDirectory)],
         liveReload: true
     }
 };

@@ -1,4 +1,4 @@
-import { hello } from '../../declarations/hello';
+import { azle as hello } from '../../declarations/azle';
 
 document.querySelector('form').addEventListener('submit', async (e) => {
     e.preventDefault();
