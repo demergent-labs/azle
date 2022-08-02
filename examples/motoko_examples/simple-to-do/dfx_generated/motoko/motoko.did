@@ -1,0 +1,18 @@
+type ToDo = 
+ record {
+   completed: bool;
+   description: text;
+ };
+type PerfResult = 
+ record {
+   wasm_body_only: nat64;
+   wasm_including_prelude: nat64;
+ };
+service : {
+  add_todo: (text) -> (nat);
+  clear_completed: () -> ();
+  complete_todo: (nat) -> ();
+  get_perf_result: () -> (opt PerfResult) query;
+  get_todos: () -> (vec ToDo) query;
+  show_todos: () -> (text) query;
+}
