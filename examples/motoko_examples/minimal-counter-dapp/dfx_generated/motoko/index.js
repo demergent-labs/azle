@@ -1,16 +1,16 @@
 import { Actor, HttpAgent } from '@dfinity/agent';
 
 // Imports and re-exports candid interface
-import { idlFactory } from './minimal_dapp_assets.did.js';
-export { idlFactory } from './minimal_dapp_assets.did.js';
+import { idlFactory } from './motoko.did.js';
+export { idlFactory } from './motoko.did.js';
 // CANISTER_ID is replaced by webpack based on node environment
-export const canisterId = process.env.MINIMAL_DAPP_ASSETS_CANISTER_ID;
+export const canisterId = process.env.MOTOKO_CANISTER_ID;
 
 /**
  *
  * @param {string | import("@dfinity/principal").Principal} canisterId Canister ID of Agent
  * @param {{agentOptions?: import("@dfinity/agent").HttpAgentOptions; actorOptions?: import("@dfinity/agent").ActorConfig}} [options]
- * @return {import("@dfinity/agent").ActorSubclass<import("./minimal_dapp_assets.did.js")._SERVICE>}
+ * @return {import("@dfinity/agent").ActorSubclass<import("./motoko.did.js")._SERVICE>}
  */
 export const createActor = (canisterId, options) => {
     const agent = new HttpAgent({ ...options?.agentOptions });
@@ -34,7 +34,7 @@ export const createActor = (canisterId, options) => {
 };
 
 /**
- * A ready-to-use agent for the minimal_dapp_assets canister
- * @type {import("@dfinity/agent").ActorSubclass<import("./minimal_dapp_assets.did.js")._SERVICE>}
+ * A ready-to-use agent for the motoko canister
+ * @type {import("@dfinity/agent").ActorSubclass<import("./motoko.did.js")._SERVICE>}
  */
-export const minimal_dapp_assets = createActor(canisterId);
+// export const motoko = createActor(canisterId);

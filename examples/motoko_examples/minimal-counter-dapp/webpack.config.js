@@ -2,7 +2,10 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
+
+const network =
+    process.env.DFX_NETWORK ||
+    (process.env.NODE_ENV === 'production' ? 'ic' : 'local');
 
 function initCanisterEnv() {
     let localCanisters, prodCanisters;
@@ -23,10 +26,6 @@ function initCanisterEnv() {
         );
     }
 
-    const network =
-        process.env.DFX_NETWORK ||
-        (process.env.NODE_ENV === 'production' ? 'ic' : 'local');
-
     const canisterConfig = network === 'local' ? localCanisters : prodCanisters;
 
     return Object.entries(canisterConfig).reduce((prev, current) => {
@@ -42,7 +41,12 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const frontendDirectory = 'minimal_dapp_assets';
 
-const asset_entry = path.join('src', frontendDirectory, 'src', 'index.html');
+const asset_entry = path.join(
+    'canisters',
+    frontendDirectory,
+    'src',
+    'index.html'
+);
 
 module.exports = {
     target: 'web',
@@ -58,6 +62,9 @@ module.exports = {
         minimizer: [new TerserPlugin()]
     },
     resolve: {
+        alias: {
+            '∞': path.resolve('.dfx', network, 'canisters')
+        },
         extensions: ['.js', '.ts', '.jsx', '.tsx'],
         fallback: {
             assert: require.resolve('assert/'),
@@ -88,19 +95,6 @@ module.exports = {
             template: path.join(__dirname, asset_entry),
             cache: false
         }),
-        new CopyPlugin({
-            patterns: [
-                {
-                    from: path.join(
-                        __dirname,
-                        'src',
-                        frontendDirectory,
-                        'assets'
-                    ),
-                    to: path.join(__dirname, 'dist', frontendDirectory)
-                }
-            ]
-        }),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'development',
             ...canisterEnvVariables
@@ -122,7 +116,7 @@ module.exports = {
             }
         },
         hot: true,
-        watchFiles: [path.resolve(__dirname, 'src', frontendDirectory)],
+        watchFiles: [path.resolve(__dirname, 'canisters', frontendDirectory)],
         liveReload: true
     }
 };

@@ -1,26 +1,40 @@
 {
     "canisters": {
-        "minimal_dapp": {
+        "azle": {
             "type": "custom",
-            "build": "npx azle minimal_dapp",
-            "root": "src",
-            "ts": "src/minimal_dapp/main.ts",
-            "candid": "src/minimal_dapp/main.did",
-            "wasm": "target/wasm32-unknown-unknown/release/minimal_dapp.wasm",
+            "build": "npx azle azle",
+            "root": "canisters/azle",
+            "ts": "canisters/azle/index.ts",
+            "candid": "canisters/azle/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/azle.wasm",
             "declarations": {
-                "output": "test/dfx_generated/minimal_dapp"
+                "output": "dfx_generated/azle"
             }
         },
         "minimal_dapp_assets": {
-            "dependencies": ["minimal_dapp"],
             "frontend": {
-                "entrypoint": "src/minimal_dapp_assets/src/index.html"
+                "entrypoint": "canisters/minimal_dapp_assets/src/index.html"
             },
             "source": [
-                "src/minimal_dapp_assets/assets",
+                "canisters/minimal_dapp_assets/assets",
                 "dist/minimal_dapp_assets/"
             ],
             "type": "assets"
+        },
+        "motoko": {
+            "main": "canisters/motoko/Main.mo",
+            "type": "motoko",
+            "declarations": {
+                "output": "dfx_generated/motoko"
+            }
+        },
+        "rust": {
+            "candid": "canisters/rust/src/lib.did",
+            "package": "rust",
+            "type": "rust",
+            "declarations": {
+                "output": "dfx_generated/rust"
+            }
         }
     }
 }
