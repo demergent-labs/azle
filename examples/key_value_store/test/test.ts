@@ -1,5 +1,5 @@
 import { deploy, run_tests, Test } from 'azle/test';
-import { createActor } from '../test/dfx_generated/key_value_store';
+import { createActor } from '../dfx_generated/azle';
 
 const key_value_store_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -8,7 +8,7 @@ const key_value_store_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
-    ...deploy('key_value_store'),
+    ...deploy('azle'),
     {
         name: 'get 0',
         test: async () => {

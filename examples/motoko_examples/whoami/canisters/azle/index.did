@@ -1,0 +1,13 @@
+type PerfResult = record {
+    "wasm_body_only": nat64;
+    "wasm_including_prelude": nat64;
+};
+
+service: (principal) -> {
+    "get_perf_result": () -> (opt PerfResult) query;
+    "installer": () -> (principal) query;
+    "argument": () -> (principal) query;
+    "id_quick": () -> (principal) query;
+    "whoami": () -> (principal);
+    "id": () -> (principal);
+}

@@ -45,10 +45,11 @@ export async function run_benchmarks(
     create_actor_rust: any,
     num_benchmark_iterations: number = 10,
     output_file: string = 'benchmarks',
+    argument?: string,
     setup: boolean = process.argv[2] !== 'no-setup'
 ): Promise<BenchmarkResult[]> {
     if (setup === true) {
-        await run_setup();
+        await run_setup(argument);
     }
 
     const { azle_canister, motoko_canister, rust_canister } =
