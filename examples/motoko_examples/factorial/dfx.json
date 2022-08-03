@@ -1,14 +1,29 @@
 {
     "canisters": {
-        "factorial": {
+        "azle": {
             "type": "custom",
-            "build": "npx azle factorial",
-            "root": "src",
-            "ts": "src/factorial.ts",
-            "candid": "src/factorial.did",
-            "wasm": "target/wasm32-unknown-unknown/release/factorial.wasm",
+            "build": "npx azle azle",
+            "root": "canisters/azle",
+            "ts": "canisters/azle/index.ts",
+            "candid": "canisters/azle/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/azle.wasm",
             "declarations": {
-                "output": "test/dfx_generated/factorial"
+                "output": "dfx_generated/azle"
+            }
+        },
+        "motoko": {
+            "type": "motoko",
+            "main": "canisters/motoko/main.mo",
+            "declarations": {
+                "output": "dfx_generated/motoko"
+            }
+        },
+        "rust": {
+            "type": "rust",
+            "package": "rust",
+            "candid": "canisters/rust/src/lib.did",
+            "declarations": {
+                "output": "dfx_generated/rust"
             }
         }
     }
