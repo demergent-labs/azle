@@ -9,10 +9,6 @@ const benchmarks: Benchmark[] = [
         args: []
     },
     {
-        canister_method: 'get_count',
-        args: []
-    },
-    {
         canister_method: 'reset',
         args: []
     }
