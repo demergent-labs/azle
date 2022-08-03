@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-export async function run_setup() {
+export async function run_setup(argument?: string) {
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
     execSync(`dfx canister create azle`, {
@@ -31,18 +31,20 @@ export async function run_setup() {
         stdio: 'inherit'
     });
 
+    const argFlag = argument === undefined ? '' : `--argument ${argument}`;
+
     execSync(
-        `dfx canister install azle --wasm target/wasm32-unknown-unknown/release/azle.wasm.gz`,
+        `dfx canister install azle ${argFlag} --wasm target/wasm32-unknown-unknown/release/azle.wasm.gz`,
         {
             stdio: 'inherit'
         }
     );
 
-    execSync(`dfx deploy motoko`, {
+    execSync(`dfx deploy motoko ${argFlag}`, {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy rust`, {
+    execSync(`dfx deploy rust ${argFlag}`, {
         stdio: 'inherit'
     });
 }
