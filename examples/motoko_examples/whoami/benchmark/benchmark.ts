@@ -15,7 +15,7 @@ const benchmarks: Benchmark[] = [
     }
 ];
 
-const installationPrincipal = execSync(`dfx identity get-principal`)
+const installation_principal = execSync(`dfx identity get-principal`)
     .toString()
     .trim();
 
@@ -27,5 +27,5 @@ run_benchmarks(
     createActorRust,
     10,
     `benchmarks`,
-    `'(principal "${installationPrincipal}")'`
+    `'(principal "${installation_principal}")'`
 );

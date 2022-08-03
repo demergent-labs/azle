@@ -31,20 +31,20 @@ export async function run_setup(argument?: string) {
         stdio: 'inherit'
     });
 
-    const argFlag = argument === undefined ? '' : `--argument ${argument}`;
+    const arg_flag = argument === undefined ? '' : `--argument ${argument}`;
 
     execSync(
-        `dfx canister install azle ${argFlag} --wasm target/wasm32-unknown-unknown/release/azle.wasm.gz`,
+        `dfx canister install azle ${arg_flag} --wasm target/wasm32-unknown-unknown/release/azle.wasm.gz`,
         {
             stdio: 'inherit'
         }
     );
 
-    execSync(`dfx deploy motoko ${argFlag}`, {
+    execSync(`dfx deploy motoko ${arg_flag}`, {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy rust ${argFlag}`, {
+    execSync(`dfx deploy rust ${arg_flag}`, {
         stdio: 'inherit'
     });
 }

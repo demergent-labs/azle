@@ -2,6 +2,15 @@ use ic_cdk::export::Principal;
 use std::cell::RefCell;
 use std::str::FromStr;
 
+thread_local! {
+    static SOMEONE_REF_CELL: RefCell<Principal> = RefCell::new(
+        Principal::from_str("aaaaa-aa").unwrap()
+    );
+    static INSTALLER_REF_CELL: RefCell<Principal> = RefCell::new(
+        Principal::from_str("aaaaa-aa").unwrap()
+    );
+}
+
 //#region Performance
 #[derive(candid::CandidType, Clone)]
 pub struct PerfResult {
@@ -31,41 +40,32 @@ fn record_performance(start: u64, end: u64) -> () {
 }
 //#endregion
 
-thread_local! {
-    static SOMEONE: RefCell<Principal> = RefCell::new(
-        Principal::from_str("aaaaa-aa").unwrap()
-    );
-    static INSTALLER: RefCell<Principal> = RefCell::new(
-        Principal::from_str("aaaaa-aa").unwrap()
-    );
-}
-
 // Manually save the calling principal and argument for later access.
 #[ic_cdk_macros::init]
 fn init(somebody: Principal) {
-    INSTALLER.with(|installer| *installer.borrow_mut() = ic_cdk::caller());
-    SOMEONE.with(|someone| *someone.borrow_mut() = somebody);
+    INSTALLER_REF_CELL.with(|installer_ref_cell| *installer_ref_cell.borrow_mut() = ic_cdk::caller());
+    SOMEONE_REF_CELL.with(|someone_ref_cell| *someone_ref_cell.borrow_mut() = somebody);
 }
 
 // Manually re-save these variables after new deploys.
 #[ic_cdk_macros::post_upgrade]
 fn post_upgrade(somebody: Principal) {
-    INSTALLER.with(|installer| *installer.borrow_mut() = ic_cdk::caller());
-    SOMEONE.with(|someone| *someone.borrow_mut() = somebody);
+    INSTALLER_REF_CELL.with(|installer_ref_cell| *installer_ref_cell.borrow_mut() = ic_cdk::caller());
+    SOMEONE_REF_CELL.with(|someone_ref_cell| *someone_ref_cell.borrow_mut() = somebody);
 }
 
 // Return the principal identifier of the wallet canister that installed this
 // canister.
 #[ic_cdk_macros::query]
-fn installer() -> Principal {
-    INSTALLER.with(|installer| *installer.borrow())
+fn installer_ref_cell() -> Principal {
+    INSTALLER_REF_CELL.with(|installer_ref_cell| *installer_ref_cell.borrow())
 }
 
 // Return the principal identifier that was provided as an installation
 // argument to this canister.
 #[ic_cdk_macros::query]
 fn argument() -> Principal {
-    SOMEONE.with(|someone| *someone.borrow())
+    SOMEONE_REF_CELL.with(|someone_ref_cell| *someone_ref_cell.borrow())
 }
 
 // Return the principal identifier of the caller of this method.
@@ -91,7 +91,7 @@ async fn id() -> Principal {
 
     let post_xnet_call_perf_start = ic_cdk::api::call::performance_counter(0);
 
-    let canister_id = call_result.unwrap().0;
+    let response = call_result.unwrap().0;
 
     let post_xnet_call_perf_end = ic_cdk::api::call::performance_counter(0);
     let pre_xnet_call_perf = pre_xnet_call_perf_end - pre_xnet_call_perf_start;
@@ -106,7 +106,7 @@ async fn id() -> Principal {
         })
     });
 
-    canister_id
+    response
 }
 
 // Return the principal identifier of this canister via the `ic_cdk` API.
