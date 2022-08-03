@@ -12,12 +12,19 @@ jobs:
                 rust: [stable]
                 benchmark_directories:
                     - examples/bytes
+                    - examples/key_value_store
                     - examples/motoko_examples/calc
                     - examples/motoko_examples/counter
+                    - examples/motoko_examples/factorial
+                    - examples/motoko_examples/minimal-counter-dapp
                     - examples/motoko_examples/persistent-storage
                     - examples/motoko_examples/phone-book
+                    - examples/motoko_examples/quicksort
                     - examples/motoko_examples/simple-to-do
+                    - examples/motoko_examples/superheroes
+                    - examples/motoko_examples/whoami
                     - examples/primitive_ops
+                    - examples/update
         if: ${{ contains(github.head_ref, '--benchmarks') }}
         steps:
             - uses: actions/checkout@v2

@@ -1,14 +1,29 @@
 {
     "canisters": {
-        "quicksort": {
+        "azle": {
             "type": "custom",
-            "build": "npx azle quicksort",
-            "root": "src",
-            "ts": "src/main.ts",
-            "candid": "src/quicksort.did",
-            "wasm": "target/wasm32-unknown-unknown/release/quicksort.wasm",
+            "build": "npx azle azle",
+            "root": "canisters/azle",
+            "ts": "canisters/azle/index.ts",
+            "candid": "canisters/azle/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/azle.wasm",
             "declarations": {
-                "output": "test/dfx_generated/quicksort"
+                "output": "dfx_generated/azle"
+            }
+        },
+        "motoko": {
+            "type": "motoko",
+            "main": "canisters/motoko/Main.mo",
+            "declarations": {
+                "output": "dfx_generated/motoko"
+            }
+        },
+        "rust": {
+            "type": "rust",
+            "package": "rust",
+            "candid": "canisters/rust/src/lib.did",
+            "declarations": {
+                "output": "dfx_generated/rust"
             }
         }
     }

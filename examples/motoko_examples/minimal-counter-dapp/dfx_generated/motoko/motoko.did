@@ -1,0 +1,11 @@
+type PerfResult = 
+ record {
+   wasm_body_only: nat64;
+   wasm_including_prelude: nat64;
+ };
+service : {
+  count: () -> (nat);
+  get_count: () -> (nat) query;
+  get_perf_result: () -> (opt PerfResult) query;
+  reset: () -> (nat);
+}

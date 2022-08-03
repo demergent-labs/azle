@@ -1,0 +1,15 @@
+type WhoAmI = 
+ service {
+   argument: () -> (principal) query;
+   get_perf_result: () -> (opt PerfResult) query;
+   id: () -> (principal);
+   id_quick: () -> (principal);
+   installer: () -> (principal) query;
+   whoami: () -> (principal);
+ };
+type PerfResult = 
+ record {
+   wasm_body_only: nat64;
+   wasm_including_prelude: nat64;
+ };
+service : (principal) -> WhoAmI

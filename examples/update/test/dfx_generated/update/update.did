@@ -1,4 +1,0 @@
-service: {
-    "query": () -> (text) query;
-    "update": (text) -> ();
-}

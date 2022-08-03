@@ -1,0 +1,19 @@
+type PerfResult = record {
+    "wasm_body_only": nat64;
+    "wasm_including_prelude": nat64;
+};
+
+type Superhero = record {
+    "name": text;
+    "superpowers": opt List;
+};
+
+type List = record { text; opt List };
+
+service: {
+    "get_perf_result": () -> (opt PerfResult) query;
+    "read": (nat32) -> (opt Superhero) query;
+    "create": (Superhero) -> (nat32);
+    "update": (nat32, Superhero) -> (bool);
+    "delete_hero": (nat32) -> (bool);
+}

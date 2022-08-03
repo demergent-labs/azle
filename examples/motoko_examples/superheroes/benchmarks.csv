@@ -1,0 +1,9 @@
+Description,Azle Wasm Instructions (function body only),Azle Wasm Instructions (function prelude and body),Motoko Wasm Instructions (function body only),Motoko Wasm Instructions (function prelude and body),Rust Wasm Instructions (function body only),Rust Wasm Instructions (function prelude and body),Azle/Motoko Change Multiplier (function body only),Azle/Motoko Change Multiplier (function prelude and body),Azle/Rust Change Multiplier (function body only),Azle/Rust Change Multiplier (function prelude and body),Motoko/Azle Change Multiplier (function body only),Motoko/Azle Change Multiplier (function prelude and body),Motoko/Rust Change Multiplier (function body only),Motoko/Rust Change Multiplier (function prelude and body),Rust/Azle Change Multiplier (function body only),Rust/Azle Change Multiplier (function prelude and body),Rust/Motoko Change Multiplier (function body only),Rust/Motoko Change Multiplier (function prelude and body)
+create: with no powers,208096,1120658,1441,7048,6906,422518,144,159,30,3,-144,-159,-5,-60,-30,-3,5,60
+create: with powers,206594,1285753,1963,12602,8366,521727,105,102,25,2,-105,-102,-4,-41,-25,-2,4,41
+update: nonexistent superhero,147625,1058955,924,6718,3020,397392,160,158,49,3,-160,-158,-3,-59,-49,-3,3,59
+update: add powers,243437,1411505,2434,15059,9110,582302,100,94,27,2,-100,-94,-4,-39,-27,-2,4,39
+update: remove powers,243975,1165611,2922,8702,14019,410929,83,134,17,3,-83,-134,-5,-47,-17,-3,5,47
+delete_hero: nonexistent superhero,147656,720719,924,2378,2987,36533,160,303,49,20,-160,-303,-3,-15,-49,-20,3,15
+delete_hero: superhero with powers,235045,805986,2149,3603,6650,40196,109,224,35,20,-109,-224,-3,-11,-35,-20,3,11
+delete_hero: superhero without powers,234923,808699,2046,3500,4718,39157,115,231,50,21,-115,-231,-2,-11,-50,-21,2,11
