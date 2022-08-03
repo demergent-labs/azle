@@ -14,8 +14,7 @@
 // The original license for the DFINITY code can be found here: https://github.com/dfinity/ic/blob/master/LICENSE
 // This file contains derivative works licensed as MIT: https://github.com/demergent-labs/azle/blob/main/LICENSE
 
-// TODO created based on this documentation: https://smartcontracts.org/docs/interface-spec/index.html#ic-candid
-// TODO I would like to find the canonical did file in the ic repository
+// Taken in part from: https://github.com/dfinity/interface-spec/blob/master/spec/ic.did
 
 import {
     blob,
@@ -23,6 +22,7 @@ import {
     CanisterResult,
     ic,
     nat,
+    nat64,
     Opt,
     Principal,
     Variant
@@ -124,6 +124,32 @@ export type ProvisionalTopUpCanisterArgs = {
     amount: nat;
 };
 
+export type HttpRequestArgs = {
+    url: string;
+    max_response_bytes: Opt<nat64>;
+    http_method: HttpMethod;
+    headers: HttpHeader[];
+    body: Opt<blob>;
+    transform_method_name: Opt<string>;
+};
+
+export type HttpMethod = Variant<{
+    GET: null;
+    HEAD: null;
+    POST: null;
+}>;
+
+export type HttpHeader = {
+    name: string;
+    value: string;
+};
+
+export type HttpResponse = {
+    status: nat64;
+    headers: HttpHeader[];
+    body: blob;
+};
+
 export type Management = Canister<{
     create_canister(
         args: CreateCanisterArgs
@@ -139,6 +165,7 @@ export type Management = Canister<{
     delete_canister(args: DeleteCanisterArgs): CanisterResult<void>;
     deposit_cycles(args: DepositCyclesArgs): CanisterResult<void>;
     raw_rand(): CanisterResult<blob>;
+    http_request(args: HttpRequestArgs): CanisterResult<HttpResponse>;
     provisional_create_canister_with_cycles(
         args: ProvisionalCreateCanisterWithCyclesArgs
     ): CanisterResult<ProvisionalCreateCanisterWithCyclesResult>;

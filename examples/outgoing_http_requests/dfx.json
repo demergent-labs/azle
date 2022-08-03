@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "outgoing_http_requests": {
+            "type": "custom",
+            "build": "npx azle outgoing_http_requests",
+            "root": "src",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/outgoing_http_requests.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/outgoing_http_requests"
+            }
+        }
+    }
+}

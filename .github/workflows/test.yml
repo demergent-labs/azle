@@ -65,6 +65,7 @@ jobs:
                     "examples/cross_canister_calls",
                     "examples/cycles",
                     "examples/date",
+                    "examples/ethereum_json_rpc",
                     "examples/func_types",
                     "examples/generators",
                     "examples/heartbeat",
@@ -92,6 +93,7 @@ jobs:
                     "examples/notify_raw",
                     "examples/null_example",
                     "examples/optional_types",
+                    "examples/outgoing_http_requests",
                     "examples/pre_and_post_upgrade",
                     "examples/primitive_types",
                     "examples/principal",
@@ -124,6 +126,8 @@ jobs:
     basic-integration-tests:
         needs: release-candidate-deploy
         runs-on: ubuntu-latest
+        env:
+            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix:
