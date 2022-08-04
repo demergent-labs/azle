@@ -73,3 +73,5 @@ jobs:
             # - run: git push origin ${{ github.event.pull_request.head.ref }}
             - name: Create Pull Request
               uses: peter-evans/create-pull-request@v4
+              with:
+                  branch: benchmarks_${{ matrix.benchmark_directories }}
