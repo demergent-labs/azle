@@ -1268,6 +1268,8 @@ service: {
 
 ### Canister APIs
 
+-   [Candid decode](#candid-decode)
+-   [Candid encode](#candid-encode)
 -   [canister balance](#canister-balance)
 -   [canister balance 128](#canister-balance-128)
 -   [data certificate](#data-certificate)
@@ -1276,6 +1278,35 @@ service: {
 -   [set certified data](#set-certified-data)
 -   [time](#time)
 -   [trap](#trap)
+
+#### Candid decode
+
+Examples:
+
+-   [call_raw](/examples/call_raw)
+-   [candid_encoding](/examples/candid_encoding)
+
+```typescript
+// decodes Candid bytes to a Candid string
+export function candid_decode(candid_encoded: blob): Query<string> {
+    return ic.candid_decode(candid_encoded);
+}
+```
+
+#### Candid encode
+
+Examples:
+
+-   [candid_encoding](/examples/candid_encoding)
+-   [manual_reply](/examples/manual_reply)
+-   [notify_raw](/examples/notify_raw)
+
+```typescript
+// encodes a Candid string to Candid bytes
+export function candid_encode(candid_string: string): Query<blob> {
+    return ic.candid_encode(candid_string);
+}
+```
 
 #### canister balance
 

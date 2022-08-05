@@ -13,7 +13,7 @@
         },
         "motoko": {
             "type": "motoko",
-            "main": "canisters/motoko/main.mo",
+            "main": "canisters/motoko/Main.mo",
             "declarations": {
                 "output": "dfx_generated/motoko"
             }
