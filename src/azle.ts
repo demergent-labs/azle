@@ -2,6 +2,7 @@ import { execSync } from 'child_process';
 import { compileTypeScriptToRust } from './compiler/typescript_to_rust';
 import {
     generateLibCargoToml,
+    generateWorkspaceCargoLock,
     generateWorkspaceCargoToml
 } from './compiler/typescript_to_rust/generators/cargo_toml_files';
 import * as fs from 'fs';
@@ -22,10 +23,17 @@ async function azle() {
     installRustDependencies();
 
     const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
+    const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
     const libCargoToml: Toml = generateLibCargoToml(canisterName);
     const libFile: Rust = await compileTypeScriptToRust(tsPath, candidPath);
 
-    writeCodeToFileSystem(rootPath, workspaceCargoToml, libCargoToml, libFile);
+    writeCodeToFileSystem(
+        rootPath,
+        workspaceCargoToml,
+        workspaceCargoLock,
+        libCargoToml,
+        libFile
+    );
 
     compileRustCode(canisterName);
 }
@@ -50,6 +58,7 @@ function installRustDependencies() {
 function writeCodeToFileSystem(
     rootPath: string,
     workspaceCargoToml: Toml,
+    workspaceCargoLock: Toml,
     libCargoToml: Toml,
     libFile: Rust
 ) {
@@ -58,6 +67,7 @@ function writeCodeToFileSystem(
     }
 
     fs.writeFileSync('./target/azle/Cargo.toml', workspaceCargoToml);
+    fs.writeFileSync('./target/azle/Cargo.lock', workspaceCargoLock);
 
     if (!fs.existsSync(`./target/azle/${rootPath}`)) {
         fs.mkdirSync(`target/azle/${rootPath}`, { recursive: true });
