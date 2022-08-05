@@ -67,7 +67,7 @@ function writeCodeToFileSystem(
     }
 
     fs.writeFileSync('./target/azle/Cargo.toml', workspaceCargoToml);
-    // fs.writeFileSync('./target/azle/Cargo.lock', workspaceCargoLock); // TODO let's make sure tests fail first, then remove this
+    fs.writeFileSync('./target/azle/Cargo.lock', workspaceCargoLock);
 
     if (!fs.existsSync(`./target/azle/${rootPath}`)) {
         fs.mkdirSync(`target/azle/${rootPath}`, { recursive: true });
