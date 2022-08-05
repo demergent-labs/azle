@@ -1,4 +1,4 @@
 Description,Azle Wasm Instructions (function body only),Azle Wasm Instructions (function prelude and body),Motoko Wasm Instructions (function body only),Motoko Wasm Instructions (function prelude and body),Rust Wasm Instructions (function body only),Rust Wasm Instructions (function prelude and body),Azle/Motoko Change Multiplier (function body only),Azle/Motoko Change Multiplier (function prelude and body),Azle/Rust Change Multiplier (function body only),Azle/Rust Change Multiplier (function prelude and body),Motoko/Azle Change Multiplier (function body only),Motoko/Azle Change Multiplier (function prelude and body),Motoko/Rust Change Multiplier (function body only),Motoko/Rust Change Multiplier (function prelude and body),Rust/Azle Change Multiplier (function body only),Rust/Azle Change Multiplier (function prelude and body),Rust/Motoko Change Multiplier (function body only),Rust/Motoko Change Multiplier (function prelude and body)
-fac: 0,276821,1059327,212,1695,889,35816,1306,625,311,30,-1306,-625,-4,-21,-311,-30,4,21
-fac: 5,1455537,2020757,637,2120,9166,44767,2285,953,159,45,-2285,-953,-14,-21,-159,-45,14,21
-fac: 20,5331903,5898456,17407,18890,39284,74885,306,312,136,79,-306,-312,-2,-4,-136,-79,2,4
+fac: 0,275711,1056245,212,1695,905,36606,1301,623,305,29,-1301,-623,-4,-22,-305,-29,4,22
+fac: 5,1448275,2012405,637,2120,9179,45583,2274,949,158,44,-2274,-949,-14,-22,-158,-44,14,22
+fac: 20,5305157,5870619,17407,18890,39285,75689,305,311,135,78,-305,-311,-2,-4,-135,-78,2,4
