@@ -2563,7 +2563,7 @@ An attempt to estimate actual USD costs per year based on the Wasm instruction c
 
 ##### Average
 
-These estimates use the average Wasm instructions per update function call including the function prelude.
+These estimates use the average Wasm instructions per function call including the function prelude.
 
 The Wasm instruction counts used are:
 
@@ -2629,7 +2629,7 @@ Cycle costs taken from [here](https://internetcomputer.org/docs/current/develope
 
 ###### USD Cost Estimates Per Year
 
-These estimates use the median Wasm instructions per update function call including the function prelude.
+These estimates use the median Wasm instructions per function call including the function prelude.
 
 The Wasm instruction counts used are:
 
