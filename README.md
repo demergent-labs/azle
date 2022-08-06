@@ -2497,7 +2497,7 @@ Below are the results of aggregating all of the benchmarking key metrics from th
 
 #### Wasm Instructions
 
-The number of Wasm instructions counted by `ic0.performance_counter` for a function under measurement.
+The number of Wasm instructions counted by `ic0.performance_counter` for a function under measurement. These do not translate directly into actual cycle costs. See the section on USD cost estimates below for more information.
 
 ##### Azle
 
