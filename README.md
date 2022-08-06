@@ -25,7 +25,7 @@ Demergent Labs may officially recommend Azle for production use when at least th
 
 -   [x] [Many example-based unit/integration tests](/examples)
 -   [x] [Feature parity with the Rust CDK and Motoko](#feature-parity)
--   [ ] Extensive automated benchmarking
+-   [x] Extensive automated benchmarking
 -   [ ] Extensive automated property testing
 -   [ ] Multiple independent security reviews/audits
 -   [ ] [Boa is no longer experimental](https://github.com/boa-dev/boa)
@@ -47,8 +47,9 @@ Most of Azle's documentation is currently found in this README. The Azle Book, s
 -   [Canister APIs](#canister-apis)
 -   [Call APIs](#call-apis)
 -   [Stable Memory](#stable-memory)
--   [Feature Parity](#feature-parity)
 -   [JS APIs](#js-apis)
+-   [Feature Parity](#feature-parity)
+-   [Benchmarks](#benchmarks)
 -   [Roadmap](#roadmap)
 -   [Gotchas and Caveats](#gotchas-and-caveats)
 -   [Decentralization](#decentralization)
@@ -2292,6 +2293,18 @@ export function stable_write(offset: nat32, buf: blob): Update<void> {
 }
 ```
 
+### JS APIs
+
+This section will describe various JS APIs that may need special explanation.
+
+#### Date
+
+You can see examples of how to use the JS Date object [here](/examples/date). Note that `Date.prototype.toLocaleDateString()` and `Date.prototype.toLocaleTimeString()` are [not yet implemented](https://github.com/boa-dev/boa/issues/1562). Also keep in mind that the local timezone of the canister will always be `UTC`.
+
+#### Math.random()
+
+[Math.random()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random) currently returns the same value every time it is called. There is an [issue open to address this](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random). If you need randomness you should use `raw_rand` on the [management canister](<(/examples/management_canister)>).
+
 ### Feature Parity
 
 The following is a comparison of all of the major features of the [Rust CDK](https://github.com/dfinity/cdk-rs), [Motoko](https://github.com/dfinity/motoko), and Azle.
@@ -2423,18 +2436,37 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | stable read float64  | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
 | stable write float64 | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
 
-### JS APIs
+### Benchmarking
 
-This section will describe various JS APIs that may need special explanation.
+Azle's automated benchmarking framework is currently based on the `ic0.performance_counter` [System API](https://internetcomputer.org/docs/current/references/ic-interface-spec/#system-api-imports). `ic0.performance_counter` seems to have a number of limitations including:
 
-#### Date
+    -   Candid serialization/deserialization of function parameters and return types
+    -   Canister method prologue/epilogue
+    -   Some Motoko runtime behavior (such as garbage collection)
 
-You can see examples of how to use the JS Date object [here](/examples/date). Note that `Date.prototype.toLocaleDateString()` and `Date.prototype.toLocaleTimeString()` are [not yet implemented](https://github.com/boa-dev/boa/issues/1562). Also keep in mind that the local timezone of the canister will always be `UTC`.
+You can found out more information about `ic0.performance_counter` [here](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027).
+
+We currently have benchmarks for the following examples written with Azle, Motoko, and Rust:
+
+-   examples/bytes - [summary](/examples/bytes/benchmarks.md) - [csv](/examples/bytes/benchmarks.csv)
+-   examples/key_value_store - [summary](/examples/key_value_store/benchmarks.md) - [csv](/examples/key_value_store/benchmarks.csv)
+-   examples/motoko_examples/calc - [summary](/examples/motoko_examples/calc/benchmarks.md) - [csv](/examples/motoko_examples/calc/benchmarks.csv)
+-   examples/motoko_examples/counter - [summary](/examples/motoko_examples/counter/benchmarks.md) - [csv](/examples/motoko_examples/counter/benchmarks.csv)
+-   examples/motoko_examples/factorial - [summary](/examples/motoko_examples/factorial/benchmarks.md) - [csv](/examples/motoko_examples/factorial/benchmarks.csv)
+-   examples/motoko_examples/minimal-counter-dapp - [summary](/examples/motoko_examples/minimal-counter-dapp/benchmarks.md) - [csv](/examples/motoko_examples/minimal-counter-dapp/benchmarks.csv)
+-   examples/motoko_examples/persistent-storage - [summary](/examples/motoko_examples/persistent-storage/benchmarks.md) - [csv](/examples/motoko_examples/persistent-storage/benchmarks.csv)
+-   examples/motoko_examples/phone-book - [summary](/examples/motoko_examples/phone-book/benchmarks.md) - [csv](/examples/motoko_examples/phone-book/benchmarks.csv)
+-   examples/motoko_examples/quicksort - [summary](/examples/motoko_examples/quicksort/benchmarks.md) - [csv](/examples/motoko_examples/quicksort/benchmarks.csv)
+-   examples/motoko_examples/simple-to-do - [summary](/examples/motoko_examples/simple-to-do/benchmarks.md) - [csv](/examples/motoko_examples/simple-to-do/benchmarks.csv)
+-   examples/motoko_examples/superheroes - [summary](/examples/motoko_examples/superheroes/benchmarks.md) - [csv](/examples/motoko_examples/superheroes/benchmarks.csv)
+-   examples/motoko_examples/whoami - [summary](/examples/motoko_examples/whoami/benchmarks.md) - [csv](/examples/motoko_examples/whoami/benchmarks.csv)
+-   examples/primitive_ops - [summary](/examples/primitive_ops/benchmarks.md) - [csv](/examples/primitive_ops/benchmarks.csv)
+-   examples/update - [summary](/examples/update/benchmarks.md) - [csv](/examples/update/benchmarks.csv)
 
 ### Roadmap
 
--   [ ] July 2022
-    -   [ ] Extensive automated benchmarking
+-   [x] July 2022
+    -   [x] Extensive automated benchmarking
 -   [ ] August 2022
     -   [ ] Compiler error DX revamp
     -   [ ] Rust rewrite
