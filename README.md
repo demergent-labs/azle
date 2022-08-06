@@ -2444,7 +2444,7 @@ Azle's automated benchmarking framework is currently based on the `ic0.performan
 -   Canister method prologue/epilogue
 -   Some Motoko runtime behavior (such as garbage collection and method prologue)
 
-You can found out more information about `ic0.performance_counter` [here](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027).
+You can find out more information about `ic0.performance_counter` [here](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027).
 
 We currently have benchmarks for the following examples written with Azle, Motoko, and Rust:
 
@@ -2491,9 +2491,13 @@ We currently have benchmarks for the following examples written with Azle, Motok
     -   [summary](/examples/update/benchmarks.md)
     -   [csv](/examples/update/benchmarks.csv)
 
-Aggregating all of the benchmarking key metrics from the examples above, here are the results:
+Below are the results of aggregating all of the benchmarking key metrics from the examples above.
+
+`function body only` means measurements were taken only from the beginning to the end of the function body of the function under measurement. `function prelude and body` means measurements were taken at the end of the body of the function under measurement, including what may have happend before the function was invoked. It may be more realistic to rely on `function prelude and body`, as it captures more of the real Wasm instruction usage. That being said, something seems off with the Motoko prelude measurements.
 
 #### Wasm Instructions
+
+The number of Wasm instructions counted by `ic0.performance_counter` for a function under measurement.
 
 ##### Azle
 
@@ -2524,6 +2528,8 @@ Aggregating all of the benchmarking key metrics from the examples above, here ar
 
 #### Change Multipliers
 
+Change multipliers show how many times greater or fewer Wasm instructions are used when comparing one language to another. A positive number means more instructions are used by language a vs language b. A negative number means fewer instructions are used by language a vs language b. Languages a and b are determined with this pattern: considering `Azle/Motoko`, Azle is language a and Motoko is language b.
+
 ##### Azle/Motoko
 
 -   function body only
@@ -2553,6 +2559,8 @@ Aggregating all of the benchmarking key metrics from the examples above, here ar
 
 #### USD Cost Estimates
 
+An attempt to estimate actual USD costs per year based on the Wasm instruction counts. A number of application scenarios are presented that attempt to simulate real-world application usage. Cycle costs are taken from [here](https://internetcomputer.org/docs/current/developer-docs/deploy/computation-and-storage-costs/).
+
 ##### Average
 
 These estimates use the average Wasm instructions per update function call including the function prelude.
@@ -2563,7 +2571,15 @@ The Wasm instruction counts used are:
 -   Motoko: 272_877
 -   Rust: 26_378_678
 
-### Application Scenarios
+###### Cycle Costs Table
+
+Cycle costs taken from [here](https://internetcomputer.org/docs/current/developer-docs/deploy/computation-and-storage-costs/).
+
+| Compute Percent Allocated Per Second | Update Message Execution | Ten Update Instructions Execution | Xnet Call | Xnet Byte Transmission | Ingress Message Reception | Ingress Byte Reception | GB Storage Per Second |
+| ------------------------------------ | ------------------------ | --------------------------------- | --------- | ---------------------- | ------------------------- | ---------------------- | --------------------- |
+| 100_000                              | 590_000                  | 4                                 | 260_000   | 1_000                  | 1_200_000                 | 2_000                  | 127_000               |
+
+###### Application Scenarios
 
 | Usage    | Query/Update Heaviness | Ingress Bytes Per Query Message | Ingress Bytes Per Update Message | GB Storage | Query Messages Per Second | Update Messages Per Second | Xnet Calls Per Second | Xnet Call Bytes |
 | -------- | ---------------------- | ------------------------------- | -------------------------------- | ---------- | ------------------------- | -------------------------- | --------------------- | --------------- |
@@ -2577,7 +2593,7 @@ The Wasm instruction counts used are:
 | Heavy    | Query Heavy            | 10_000                          | 10_000                           | 2          | 100                       | 1                          | 10                    | 2_000           |
 | Heavy    | Update Heavy           | 10_000                          | 10_000                           | 2          | 1                         | 100                        | 10                    | 2_000           |
 
-### Application USD Cost Estimates Per Year
+###### Application USD Cost Estimates Per Year
 
 | Usage    | Query/Update Heaviness | CDK    | Ingress Messages | Ingress Bytes Query Messages | Ingress Bytes Update Messages | Update Messages | Update Instructions | Xnet Calls | Xnet Byte Transmission | GB Storage | Total Cost  |
 | -------- | ---------------------- | ------ | ---------------- | ---------------------------- | ----------------------------- | --------------- | ------------------- | ---------- | ---------------------- | ---------- | ----------- |
@@ -2611,7 +2627,7 @@ The Wasm instruction counts used are:
 
 ##### Median
 
-## USD Cost Estimates Per Year
+###### USD Cost Estimates Per Year
 
 These estimates use the median Wasm instructions per update function call including the function prelude.
 
@@ -2621,7 +2637,15 @@ The Wasm instruction counts used are:
 -   Motoko: 5_169
 -   Rust: 44_074
 
-### Application Scenarios
+###### Cycle Costs Table
+
+Cycle costs taken from [here](https://internetcomputer.org/docs/current/developer-docs/deploy/computation-and-storage-costs/).
+
+| Compute Percent Allocated Per Second | Update Message Execution | Ten Update Instructions Execution | Xnet Call | Xnet Byte Transmission | Ingress Message Reception | Ingress Byte Reception | GB Storage Per Second |
+| ------------------------------------ | ------------------------ | --------------------------------- | --------- | ---------------------- | ------------------------- | ---------------------- | --------------------- |
+| 100_000                              | 590_000                  | 4                                 | 260_000   | 1_000                  | 1_200_000                 | 2_000                  | 127_000               |
+
+###### Application Scenarios
 
 | Usage    | Query/Update Heaviness | Ingress Bytes Per Query Message | Ingress Bytes Per Update Message | GB Storage | Query Messages Per Second | Update Messages Per Second | Xnet Calls Per Second | Xnet Call Bytes |
 | -------- | ---------------------- | ------------------------------- | -------------------------------- | ---------- | ------------------------- | -------------------------- | --------------------- | --------------- |
@@ -2635,7 +2659,7 @@ The Wasm instruction counts used are:
 | Heavy    | Query Heavy            | 10_000                          | 10_000                           | 2          | 100                       | 1                          | 10                    | 2_000           |
 | Heavy    | Update Heavy           | 10_000                          | 10_000                           | 2          | 1                         | 100                        | 10                    | 2_000           |
 
-### Application USD Cost Estimates Per Year
+###### Application USD Cost Estimates Per Year
 
 | Usage    | Query/Update Heaviness | CDK    | Ingress Messages | Ingress Bytes Query Messages | Ingress Bytes Update Messages | Update Messages | Update Instructions | Xnet Calls | Xnet Byte Transmission | GB Storage | Total Cost  |
 | -------- | ---------------------- | ------ | ---------------- | ---------------------------- | ----------------------------- | --------------- | ------------------- | ---------- | ---------------------- | ---------- | ----------- |
