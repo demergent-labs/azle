@@ -2497,28 +2497,28 @@ Aggregating all of the benchmarking key metrics from the examples above, here ar
 
 ##### Azle
 
--   Wasm Instructions (function body only)
+-   function body only
     -   Average: 90_880_192
     -   Median: 1_974_800
--   Wasm Instructions (function prelude and body)
+-   function prelude and body
     -   Average: 121_919_698
     -   Median: 2_387_322
 
 ##### Motoko
 
--   Wasm Instructions (function body only)
+-   function body only
     -   Average: 225_577
     -   Median: 3_361
--   Wasm Instructions (function prelude and body)
+-   function prelude and body
     -   Average: 272_877
     -   Median: 5_169
 
 ##### Rust
 
--   Wasm Instructions (function body only)
+-   function body only
     -   Average: 88_912
     -   Median: 2_820
--   Wasm Instructions (function prelude and body)
+-   function prelude and body
     -   Average: 26_378_678
     -   Median: 44_074
 
