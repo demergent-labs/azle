@@ -2436,32 +2436,60 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | stable read float64  | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
 | stable write float64 | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
 
-### Benchmarking
+### Benchmarks
 
-Azle's automated benchmarking framework is currently based on the `ic0.performance_counter` [System API](https://internetcomputer.org/docs/current/references/ic-interface-spec/#system-api-imports). `ic0.performance_counter` seems to have a number of limitations including:
+Azle's automated benchmarking framework is currently based on the `ic0.performance_counter` [System API](https://internetcomputer.org/docs/current/references/ic-interface-spec/#system-api-imports). `ic0.performance_counter` seems to have a number of limitations. The following may not be measured accurately:
 
-    -   Candid serialization/deserialization of function parameters and return types
-    -   Canister method prologue/epilogue
-    -   Some Motoko runtime behavior (such as garbage collection)
+-   Candid serialization/deserialization of function parameters and return types
+-   Canister method prologue/epilogue
+-   Some Motoko runtime behavior (such as garbage collection and method prologue)
 
 You can found out more information about `ic0.performance_counter` [here](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027).
 
 We currently have benchmarks for the following examples written with Azle, Motoko, and Rust:
 
--   examples/bytes - [summary](/examples/bytes/benchmarks.md) - [csv](/examples/bytes/benchmarks.csv)
--   examples/key_value_store - [summary](/examples/key_value_store/benchmarks.md) - [csv](/examples/key_value_store/benchmarks.csv)
--   examples/motoko_examples/calc - [summary](/examples/motoko_examples/calc/benchmarks.md) - [csv](/examples/motoko_examples/calc/benchmarks.csv)
--   examples/motoko_examples/counter - [summary](/examples/motoko_examples/counter/benchmarks.md) - [csv](/examples/motoko_examples/counter/benchmarks.csv)
--   examples/motoko_examples/factorial - [summary](/examples/motoko_examples/factorial/benchmarks.md) - [csv](/examples/motoko_examples/factorial/benchmarks.csv)
--   examples/motoko_examples/minimal-counter-dapp - [summary](/examples/motoko_examples/minimal-counter-dapp/benchmarks.md) - [csv](/examples/motoko_examples/minimal-counter-dapp/benchmarks.csv)
--   examples/motoko_examples/persistent-storage - [summary](/examples/motoko_examples/persistent-storage/benchmarks.md) - [csv](/examples/motoko_examples/persistent-storage/benchmarks.csv)
--   examples/motoko_examples/phone-book - [summary](/examples/motoko_examples/phone-book/benchmarks.md) - [csv](/examples/motoko_examples/phone-book/benchmarks.csv)
--   examples/motoko_examples/quicksort - [summary](/examples/motoko_examples/quicksort/benchmarks.md) - [csv](/examples/motoko_examples/quicksort/benchmarks.csv)
--   examples/motoko_examples/simple-to-do - [summary](/examples/motoko_examples/simple-to-do/benchmarks.md) - [csv](/examples/motoko_examples/simple-to-do/benchmarks.csv)
--   examples/motoko_examples/superheroes - [summary](/examples/motoko_examples/superheroes/benchmarks.md) - [csv](/examples/motoko_examples/superheroes/benchmarks.csv)
--   examples/motoko_examples/whoami - [summary](/examples/motoko_examples/whoami/benchmarks.md) - [csv](/examples/motoko_examples/whoami/benchmarks.csv)
--   examples/primitive_ops - [summary](/examples/primitive_ops/benchmarks.md) - [csv](/examples/primitive_ops/benchmarks.csv)
--   examples/update - [summary](/examples/update/benchmarks.md) - [csv](/examples/update/benchmarks.csv)
+-   examples/bytes
+    -   [summary](/examples/bytes/benchmarks.md)
+    -   [csv](/examples/bytes/benchmarks.csv)
+-   examples/key_value_store
+    -   [summary](/examples/key_value_store/benchmarks.md)
+    -   [csv](/examples/key_value_store/benchmarks.csv)
+-   examples/motoko_examples/calc
+    -   [summary](/examples/motoko_examples/calc/benchmarks.md)
+    -   [csv](/examples/motoko_examples/calc/benchmarks.csv)
+-   examples/motoko_examples/counter
+    -   [summary](/examples/motoko_examples/counter/benchmarks.md)
+    -   [csv](/examples/motoko_examples/counter/benchmarks.csv)
+-   examples/motoko_examples/factorial
+    -   [summary](/examples/motoko_examples/factorial/benchmarks.md)
+    -   [csv](/examples/motoko_examples/factorial/benchmarks.csv)
+-   examples/motoko_examples/minimal-counter-dapp
+    -   [summary](/examples/motoko_examples/minimal-counter-dapp/benchmarks.md)
+    -   [csv](/examples/motoko_examples/minimal-counter-dapp/benchmarks.csv)
+-   examples/motoko_examples/persistent-storage
+    -   [summary](/examples/motoko_examples/persistent-storage/benchmarks.md)
+    -   [csv](/examples/motoko_examples/persistent-storage/benchmarks.csv)
+-   examples/motoko_examples/phone-book
+    -   [summary](/examples/motoko_examples/phone-book/benchmarks.md)
+    -   [csv](/examples/motoko_examples/phone-book/benchmarks.csv)
+-   examples/motoko_examples/quicksort
+    -   [summary](/examples/motoko_examples/quicksort/benchmarks.md)
+    -   [csv](/examples/motoko_examples/quicksort/benchmarks.csv)
+-   examples/motoko_examples/simple-to-do
+    -   [summary](/examples/motoko_examples/simple-to-do/benchmarks.md)
+    -   [csv](/examples/motoko_examples/simple-to-do/benchmarks.csv)
+-   examples/motoko_examples/superheroes
+    -   [summary](/examples/motoko_examples/superheroes/benchmarks.md)
+    -   [csv](/examples/motoko_examples/superheroes/benchmarks.csv)
+-   examples/motoko_examples/whoami
+    -   [summary](/examples/motoko_examples/whoami/benchmarks.md)
+    -   [csv](/examples/motoko_examples/whoami/benchmarks.csv)
+-   examples/primitive_ops
+    -   [summary](/examples/primitive_ops/benchmarks.md)
+    -   [csv](/examples/primitive_ops/benchmarks.csv)
+-   examples/update
+    -   [summary](/examples/update/benchmarks.md)
+    -   [csv](/examples/update/benchmarks.csv)
 
 ### Roadmap
 
