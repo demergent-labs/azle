@@ -240,7 +240,7 @@ function generate_usd_cost_estimates_string(
     );
 
     const title = '## USD Cost Estimates Per Year';
-    const description = `These estimates use the average Wasm instructions per update function call including the function prelude from the benchmarks below.\n\nThe Wasm instruction counts used are:\n\n- Azle: ${format_number_to_rust(
+    const description = `These estimates use the average Wasm instructions per function call including the function prelude.\n\nThe Wasm instruction counts used are:\n\n- Azle: ${format_number_to_rust(
         azle_wasm_instructions_per_update_message.toFixed(0)
     )}\n- Motoko: ${format_number_to_rust(
         motoko_wasm_instructions_per_update_message.toFixed(0)
@@ -248,12 +248,22 @@ function generate_usd_cost_estimates_string(
         rust_wasm_instructions_per_update_message.toFixed(0)
     )}`;
 
+    const cycle_costs_table_string = `
+### Cycle Costs Table
+
+Cycle costs taken from [here](https://internetcomputer.org/docs/current/developer-docs/deploy/computation-and-storage-costs/).
+
+| Compute Percent Allocated Per Second | Update Message Execution | Ten Update Instructions Execution | Xnet Call | Xnet Byte Transmission | Ingress Message Reception | Ingress Byte Reception | GB Storage Per Second |
+| ------------------------------------ | ------------------------ | --------------------------------- | --------- | ---------------------- | ------------------------- | ---------------------- | --------------------- |
+| 100_000                              | 590_000                  | 4                                 | 260_000   | 1_000                  | 1_200_000                 | 2_000                  | 127_000               |
+    `;
+
     const application_scenarios_string =
         generate_application_scenarios_string();
     const application_costs_string =
         generate_application_costs_string(usd_cost_estimates);
 
-    return `${title}\n\n${description}\n\n${application_scenarios_string}\n\n${application_costs_string}`;
+    return `${title}\n\n${description}\n\n${cycle_costs_table_string}\n\n${application_scenarios_string}\n\n${application_costs_string}`;
 }
 
 function generate_application_scenarios_string(): string {
