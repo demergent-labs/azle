@@ -2444,25 +2444,25 @@ Last major update to this benchmarking information: August 2022
 
 Here's a quick rough estimate summary of the benchmarks:
 
-Average/Median Azle Wasm instructions per function call: 121_919_698 / 2_387_322
-Average/Median Motoko Wasm instructions per function call: 272_877 / 5_169
-Average/Median Rust Wasm instructions per function call: 26_378_678 / 44_074
+-   Average/Median Azle Wasm instructions per function call: 121_919_698 / 2_387_322
+-   Average/Median Motoko Wasm instructions per function call: 272_877 / 5_169
+-   Average/Median Rust Wasm instructions per function call: 26_378_678 / 44_074
 
-Average/Median Azle/Motoko Wasm instructions difference: 1_273x / 396x
-Average/Median Azle/Rust Wasm instructions difference: 204x / 51x
-Average/Median Motoko/Rust Wasm instructions difference: -22x / -8x
+-   Average/Median Azle/Motoko Wasm instructions difference: 1_273x / 396x
+-   Average/Median Azle/Rust Wasm instructions difference: 204x / 51x
+-   Average/Median Motoko/Rust Wasm instructions difference: -22x / -8x
 
-Average/Median Azle/Motoko USD cost estimate difference using average Wasm instructions: 5x / 3x
-Maximum Azle/Motoko USD cost estimate difference using average Wasm instructions: 13x
+-   Average/Median Azle/Motoko USD cost estimate difference using average Wasm instructions: 5x / 3x
+-   Maximum Azle/Motoko USD cost estimate difference using average Wasm instructions: 13x
 
-Average/Median Azle/Rust USD cost estimate difference using average Wasm instructions: 2x / 2x
-Maximum Azle/Rust USD cost estimate difference using average Wasm instructions: 4x
+-   Average/Median Azle/Rust USD cost estimate difference using average Wasm instructions: 2x / 2x
+-   Maximum Azle/Rust USD cost estimate difference using average Wasm instructions: 4x
 
-Average/Median Azle/Motoko USD cost difference using median Wasm instructions: 1x / 1x
-Maximum Azle/Motoko USD cost difference using median Wasm instructions: 1x
+-   Average/Median Azle/Motoko USD cost difference using median Wasm instructions: 1x / 1x
+-   Maximum Azle/Motoko USD cost difference using median Wasm instructions: 1x
 
-Average/Median Azle/Rust USD cost difference using median Wasm instructions: 1x / 1x
-Maximum Azle/Rust USD cost difference using median Wasm instructions: 1x
+-   Average/Median Azle/Rust USD cost difference using median Wasm instructions: 1x / 1x
+-   Maximum Azle/Rust USD cost difference using median Wasm instructions: 1x
 
 #### Introduction to the Benchmarks
 
