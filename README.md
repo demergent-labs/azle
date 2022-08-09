@@ -25,7 +25,7 @@ Demergent Labs may officially recommend Azle for production use when at least th
 
 -   [x] [Many example-based unit/integration tests](/examples)
 -   [x] [Feature parity with the Rust CDK and Motoko](#feature-parity)
--   [ ] Extensive automated benchmarking
+-   [x] Extensive automated benchmarking
 -   [ ] Extensive automated property testing
 -   [ ] Multiple independent security reviews/audits
 -   [ ] [Boa is no longer experimental](https://github.com/boa-dev/boa)
@@ -47,8 +47,9 @@ Most of Azle's documentation is currently found in this README. The Azle Book, s
 -   [Canister APIs](#canister-apis)
 -   [Call APIs](#call-apis)
 -   [Stable Memory](#stable-memory)
--   [Feature Parity](#feature-parity)
 -   [JS APIs](#js-apis)
+-   [Feature Parity](#feature-parity)
+-   [Benchmarks](#benchmarks)
 -   [Roadmap](#roadmap)
 -   [Gotchas and Caveats](#gotchas-and-caveats)
 -   [Decentralization](#decentralization)
@@ -2292,6 +2293,18 @@ export function stable_write(offset: nat32, buf: blob): Update<void> {
 }
 ```
 
+### JS APIs
+
+This section will describe various JS APIs that may need special explanation.
+
+#### Date
+
+You can see examples of how to use the JS Date object [here](/examples/date). Note that `Date.prototype.toLocaleDateString()` and `Date.prototype.toLocaleTimeString()` are [not yet implemented](https://github.com/boa-dev/boa/issues/1562). Also keep in mind that the local timezone of the canister will always be `UTC`.
+
+#### Math.random()
+
+[Math.random()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random) currently returns the same value every time it is called. There is an [issue open to address this](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random). If you need randomness you should use `raw_rand` on the [management canister](<(/examples/management_canister)>).
+
 ### Feature Parity
 
 The following is a comparison of all of the major features of the [Rust CDK](https://github.com/dfinity/cdk-rs), [Motoko](https://github.com/dfinity/motoko), and Azle.
@@ -2423,18 +2436,293 @@ The following is a comparison of all of the major features of the [Rust CDK](htt
 | stable read float64  | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
 | stable write float64 | :x:                                                                                          | :heavy_check_mark:                                                                                                       | :x:                |
 
-### JS APIs
+### Benchmarks
 
-This section will describe various JS APIs that may need special explanation.
+#### TLDR
 
-#### Date
+Last major update to this benchmarking information: August 2022
 
-You can see examples of how to use the JS Date object [here](/examples/date). Note that `Date.prototype.toLocaleDateString()` and `Date.prototype.toLocaleTimeString()` are [not yet implemented](https://github.com/boa-dev/boa/issues/1562). Also keep in mind that the local timezone of the canister will always be `UTC`.
+Here's a quick rough estimate summary of the benchmarks:
+
+-   Average/Median Azle Wasm instructions per function call: 121_919_698 / 2_387_322
+-   Average/Median Motoko Wasm instructions per function call: 272_877 / 5_169
+-   Average/Median Rust Wasm instructions per function call: 26_378_678 / 44_074
+
+-   Average/Median Azle/Motoko Wasm instructions difference: 1_273x / 396x
+-   Average/Median Azle/Rust Wasm instructions difference: 204x / 51x
+-   Average/Median Motoko/Rust Wasm instructions difference: -22x / -8x
+
+-   Average/Median Azle/Motoko USD cost estimate difference using average Wasm instructions: 5x / 3x
+-   Maximum Azle/Motoko USD cost estimate difference using average Wasm instructions: 13x
+
+-   Average/Median Azle/Rust USD cost estimate difference using average Wasm instructions: 2x / 2x
+-   Maximum Azle/Rust USD cost estimate difference using average Wasm instructions: 4x
+
+-   Average/Median Azle/Motoko USD cost difference using median Wasm instructions: 1x / 1x
+-   Maximum Azle/Motoko USD cost difference using median Wasm instructions: 1x
+
+-   Average/Median Azle/Rust USD cost difference using median Wasm instructions: 1x / 1x
+-   Maximum Azle/Rust USD cost difference using median Wasm instructions: 1x
+
+#### Introduction to the Benchmarks
+
+Azle's automated benchmarking framework is currently based on the `ic0.performance_counter` [System API](https://internetcomputer.org/docs/current/references/ic-interface-spec/#system-api-imports). `ic0.performance_counter` seems to have a number of limitations. The following may not be measured accurately:
+
+-   Candid serialization/deserialization of function parameters and return types
+-   Canister method prologue/epilogue
+-   Some Motoko runtime behavior (such as garbage collection and method prologue)
+
+You can find out more information about `ic0.performance_counter` [here](https://forum.dfinity.org/t/introducing-performance-counter-on-the-internet-computer/14027).
+
+We currently have benchmarks for the following examples written with Azle, Motoko, and Rust:
+
+-   examples/bytes
+    -   [summary](/examples/bytes/benchmarks.md)
+    -   [csv](/examples/bytes/benchmarks.csv)
+-   examples/key_value_store
+    -   [summary](/examples/key_value_store/benchmarks.md)
+    -   [csv](/examples/key_value_store/benchmarks.csv)
+-   examples/motoko_examples/calc
+    -   [summary](/examples/motoko_examples/calc/benchmarks.md)
+    -   [csv](/examples/motoko_examples/calc/benchmarks.csv)
+-   examples/motoko_examples/counter
+    -   [summary](/examples/motoko_examples/counter/benchmarks.md)
+    -   [csv](/examples/motoko_examples/counter/benchmarks.csv)
+-   examples/motoko_examples/factorial
+    -   [summary](/examples/motoko_examples/factorial/benchmarks.md)
+    -   [csv](/examples/motoko_examples/factorial/benchmarks.csv)
+-   examples/motoko_examples/minimal-counter-dapp
+    -   [summary](/examples/motoko_examples/minimal-counter-dapp/benchmarks.md)
+    -   [csv](/examples/motoko_examples/minimal-counter-dapp/benchmarks.csv)
+-   examples/motoko_examples/persistent-storage
+    -   [summary](/examples/motoko_examples/persistent-storage/benchmarks.md)
+    -   [csv](/examples/motoko_examples/persistent-storage/benchmarks.csv)
+-   examples/motoko_examples/phone-book
+    -   [summary](/examples/motoko_examples/phone-book/benchmarks.md)
+    -   [csv](/examples/motoko_examples/phone-book/benchmarks.csv)
+-   examples/motoko_examples/quicksort
+    -   [summary](/examples/motoko_examples/quicksort/benchmarks.md)
+    -   [csv](/examples/motoko_examples/quicksort/benchmarks.csv)
+-   examples/motoko_examples/simple-to-do
+    -   [summary](/examples/motoko_examples/simple-to-do/benchmarks.md)
+    -   [csv](/examples/motoko_examples/simple-to-do/benchmarks.csv)
+-   examples/motoko_examples/superheroes
+    -   [summary](/examples/motoko_examples/superheroes/benchmarks.md)
+    -   [csv](/examples/motoko_examples/superheroes/benchmarks.csv)
+-   examples/motoko_examples/whoami
+    -   [summary](/examples/motoko_examples/whoami/benchmarks.md)
+    -   [csv](/examples/motoko_examples/whoami/benchmarks.csv)
+-   examples/primitive_ops
+    -   [summary](/examples/primitive_ops/benchmarks.md)
+    -   [csv](/examples/primitive_ops/benchmarks.csv)
+-   examples/update
+    -   [summary](/examples/update/benchmarks.md)
+    -   [csv](/examples/update/benchmarks.csv)
+
+Below are the results of aggregating all of the benchmarking key metrics from the examples above.
+
+`function body only` means measurements were taken only from the beginning to the end of the function body of the function under measurement. `function prelude and body` means measurements were taken at the end of the body of the function under measurement, including what may have happend before the function was invoked. It may be more realistic to rely on `function prelude and body`, as it captures more of the real Wasm instruction usage. That being said, something seems off with the Motoko prelude measurements.
+
+#### Wasm Instructions
+
+The number of Wasm instructions counted by `ic0.performance_counter` for a function under measurement. These do not translate directly into actual cycle costs. See the section on USD cost estimates below for more information.
+
+##### Azle
+
+-   function body only
+    -   Average: 90_880_192
+    -   Median: 1_974_800
+-   function prelude and body
+    -   Average: 121_919_698
+    -   Median: 2_387_322
+
+##### Motoko
+
+-   function body only
+    -   Average: 225_577
+    -   Median: 3_361
+-   function prelude and body
+    -   Average: 272_877
+    -   Median: 5_169
+
+##### Rust
+
+-   function body only
+    -   Average: 88_912
+    -   Median: 2_820
+-   function prelude and body
+    -   Average: 26_378_678
+    -   Median: 44_074
+
+#### Change Multipliers
+
+Change multipliers show how many times greater or fewer Wasm instructions are used when comparing one language to another. A positive number means more instructions are used by language a vs language b. A negative number means fewer instructions are used by language a vs language b. Languages a and b are determined with this pattern: considering `Azle/Motoko`, Azle is language a and Motoko is language b.
+
+##### Azle/Motoko
+
+-   function body only
+    -   Average: 2_649x
+    -   Median: 468x
+-   function prelude and body
+    -   Average: 1_273x
+    -   Median: 396x
+
+##### Azle/Rust
+
+-   function body only
+    -   Average: 2_426x
+    -   Median: 233x
+-   function prelude and body
+    -   Average: 204x
+    -   Median: 51x
+
+##### Motoko/Rust
+
+-   function body only:
+    -   Average: -3x
+    -   Median: 1x
+-   function prelude and body:
+    -   Average: -22x
+    -   Median: -8x
+
+#### USD Cost Estimates
+
+An attempt to estimate actual USD costs per year based on the Wasm instruction counts. A number of application scenarios are presented that attempt to simulate real-world application usage. Cycle costs are taken from [here](https://internetcomputer.org/docs/current/developer-docs/deploy/computation-and-storage-costs/).
+
+##### Average
+
+These estimates use the average Wasm instructions per function call including the function prelude.
+
+The Wasm instruction counts used are:
+
+-   Azle: 121_919_698
+-   Motoko: 272_877
+-   Rust: 26_378_678
+
+###### Cycle Costs Table
+
+Cycle costs taken from [here](https://internetcomputer.org/docs/current/developer-docs/deploy/computation-and-storage-costs/).
+
+| Compute Percent Allocated Per Second | Update Message Execution | Ten Update Instructions Execution | Xnet Call | Xnet Byte Transmission | Ingress Message Reception | Ingress Byte Reception | GB Storage Per Second |
+| ------------------------------------ | ------------------------ | --------------------------------- | --------- | ---------------------- | ------------------------- | ---------------------- | --------------------- |
+| 100_000                              | 590_000                  | 4                                 | 260_000   | 1_000                  | 1_200_000                 | 2_000                  | 127_000               |
+
+###### Application Scenarios
+
+| Usage    | Query/Update Heaviness | Ingress Bytes Per Query Message | Ingress Bytes Per Update Message | GB Storage | Query Messages Per Second | Update Messages Per Second | Xnet Calls Per Second | Xnet Call Bytes |
+| -------- | ---------------------- | ------------------------------- | -------------------------------- | ---------- | ------------------------- | -------------------------- | --------------------- | --------------- |
+| Light    | Even                   | 100                             | 100                              | 0.5        | 0.01                      | 0.01                       | 0.001                 | 20              |
+| Light    | Query Heavy            | 100                             | 100                              | 0.5        | 0.01                      | 0.0001                     | 0.001                 | 20              |
+| Light    | Update Heavy           | 100                             | 100                              | 0.5        | 0.0001                    | 0.01                       | 0.001                 | 20              |
+| Moderate | Even                   | 1_000                           | 1_000                            | 1          | 1                         | 1                          | 0.1                   | 200             |
+| Moderate | Query Heavy            | 1_000                           | 1_000                            | 1          | 1                         | 0.01                       | 0.1                   | 200             |
+| Moderate | Update Heavy           | 1_000                           | 1_000                            | 1          | 0.01                      | 1                          | 0.1                   | 200             |
+| Heavy    | Even                   | 10_000                          | 10_000                           | 2          | 100                       | 100                        | 10                    | 2_000           |
+| Heavy    | Query Heavy            | 10_000                          | 10_000                           | 2          | 100                       | 1                          | 10                    | 2_000           |
+| Heavy    | Update Heavy           | 10_000                          | 10_000                           | 2          | 1                         | 100                        | 10                    | 2_000           |
+
+###### Application USD Cost Estimates Per Year
+
+| Usage    | Query/Update Heaviness | CDK    | Ingress Messages | Ingress Bytes Query Messages | Ingress Bytes Update Messages | Update Messages | Update Instructions | Xnet Calls | Xnet Byte Transmission | GB Storage | Total Cost  |
+| -------- | ---------------------- | ------ | ---------------- | ---------------------------- | ----------------------------- | --------------- | ------------------- | ---------- | ---------------------- | ---------- | ----------- |
+| Light    | Even                   | Azle   | $1.00            | $0.08                        | $0.08                         | $0.25           | $20.30              | $0.01      | $0.00                  | $2.64      | $24.37      |
+| Light    | Even                   | Motoko | $1.00            | $0.08                        | $0.08                         | $0.25           | $0.05               | $0.01      | $0.00                  | $2.64      | $4.11       |
+| Light    | Even                   | Rust   | $1.00            | $0.08                        | $0.08                         | $0.25           | $4.39               | $0.01      | $0.00                  | $2.64      | $8.46       |
+| Light    | Query Heavy            | Azle   | $0.50            | $0.08                        | $0.00                         | $0.00           | $0.20               | $0.01      | $0.00                  | $2.64      | $3.45       |
+| Light    | Query Heavy            | Motoko | $0.50            | $0.08                        | $0.00                         | $0.00           | $0.00               | $0.01      | $0.00                  | $2.64      | $3.25       |
+| Light    | Query Heavy            | Rust   | $0.50            | $0.08                        | $0.00                         | $0.00           | $0.04               | $0.01      | $0.00                  | $2.64      | $3.29       |
+| Light    | Update Heavy           | Azle   | $0.50            | $0.00                        | $0.08                         | $0.25           | $20.30              | $0.01      | $0.00                  | $2.64      | $23.79      |
+| Light    | Update Heavy           | Motoko | $0.50            | $0.00                        | $0.08                         | $0.25           | $0.05               | $0.01      | $0.00                  | $2.64      | $3.53       |
+| Light    | Update Heavy           | Rust   | $0.50            | $0.00                        | $0.08                         | $0.25           | $4.39               | $0.01      | $0.00                  | $2.64      | $7.88       |
+| Moderate | Even                   | Azle   | $99.91           | $83.26                       | $83.26                        | $24.56          | $2,030.09           | $1.08      | $0.83                  | $5.29      | $2,328.26   |
+| Moderate | Even                   | Motoko | $99.91           | $83.26                       | $83.26                        | $24.56          | $4.54               | $1.08      | $0.83                  | $5.29      | $302.72     |
+| Moderate | Even                   | Rust   | $99.91           | $83.26                       | $83.26                        | $24.56          | $439.23             | $1.08      | $0.83                  | $5.29      | $737.41     |
+| Moderate | Query Heavy            | Azle   | $50.45           | $83.26                       | $0.83                         | $0.25           | $20.30              | $1.08      | $0.83                  | $5.29      | $162.29     |
+| Moderate | Query Heavy            | Motoko | $50.45           | $83.26                       | $0.83                         | $0.25           | $0.05               | $1.08      | $0.83                  | $5.29      | $142.03     |
+| Moderate | Query Heavy            | Rust   | $50.45           | $83.26                       | $0.83                         | $0.25           | $4.39               | $1.08      | $0.83                  | $5.29      | $146.38     |
+| Moderate | Update Heavy           | Azle   | $50.45           | $0.83                        | $83.26                        | $24.56          | $2,030.09           | $1.08      | $0.83                  | $5.29      | $2,196.39   |
+| Moderate | Update Heavy           | Motoko | $50.45           | $0.83                        | $83.26                        | $24.56          | $4.54               | $1.08      | $0.83                  | $5.29      | $170.85     |
+| Moderate | Update Heavy           | Rust   | $50.45           | $0.83                        | $83.26                        | $24.56          | $439.23             | $1.08      | $0.83                  | $5.29      | $605.53     |
+| Heavy    | Even                   | Azle   | $9,990.60        | $83,255.04                   | $83,255.04                    | $2,456.02       | $203,008.59         | $108.23    | $832.55                | $10.57     | $382,916.65 |
+| Heavy    | Even                   | Motoko | $9,990.60        | $83,255.04                   | $83,255.04                    | $2,456.02       | $454.37             | $108.23    | $832.55                | $10.57     | $180,362.43 |
+| Heavy    | Even                   | Rust   | $9,990.60        | $83,255.04                   | $83,255.04                    | $2,456.02       | $43,923.16          | $108.23    | $832.55                | $10.57     | $223,831.22 |
+| Heavy    | Query Heavy            | Azle   | $5,045.26        | $83,255.04                   | $832.55                       | $24.56          | $2,030.09           | $108.23    | $832.55                | $10.57     | $92,138.85  |
+| Heavy    | Query Heavy            | Motoko | $5,045.26        | $83,255.04                   | $832.55                       | $24.56          | $4.54               | $108.23    | $832.55                | $10.57     | $90,113.31  |
+| Heavy    | Query Heavy            | Rust   | $5,045.26        | $83,255.04                   | $832.55                       | $24.56          | $439.23             | $108.23    | $832.55                | $10.57     | $90,547.99  |
+| Heavy    | Update Heavy           | Azle   | $5,045.26        | $832.55                      | $83,255.04                    | $2,456.02       | $203,008.59         | $108.23    | $832.55                | $10.57     | $295,548.81 |
+| Heavy    | Update Heavy           | Motoko | $5,045.26        | $832.55                      | $83,255.04                    | $2,456.02       | $454.37             | $108.23    | $832.55                | $10.57     | $92,994.59  |
+| Heavy    | Update Heavy           | Rust   | $5,045.26        | $832.55                      | $83,255.04                    | $2,456.02       | $43,923.16          | $108.23    | $832.55                | $10.57     | $136,463.38 |
+
+##### Median
+
+###### USD Cost Estimates Per Year
+
+These estimates use the median Wasm instructions per function call including the function prelude.
+
+The Wasm instruction counts used are:
+
+-   Azle: 2_387_322
+-   Motoko: 5_169
+-   Rust: 44_074
+
+###### Cycle Costs Table
+
+Cycle costs taken from [here](https://internetcomputer.org/docs/current/developer-docs/deploy/computation-and-storage-costs/).
+
+| Compute Percent Allocated Per Second | Update Message Execution | Ten Update Instructions Execution | Xnet Call | Xnet Byte Transmission | Ingress Message Reception | Ingress Byte Reception | GB Storage Per Second |
+| ------------------------------------ | ------------------------ | --------------------------------- | --------- | ---------------------- | ------------------------- | ---------------------- | --------------------- |
+| 100_000                              | 590_000                  | 4                                 | 260_000   | 1_000                  | 1_200_000                 | 2_000                  | 127_000               |
+
+###### Application Scenarios
+
+| Usage    | Query/Update Heaviness | Ingress Bytes Per Query Message | Ingress Bytes Per Update Message | GB Storage | Query Messages Per Second | Update Messages Per Second | Xnet Calls Per Second | Xnet Call Bytes |
+| -------- | ---------------------- | ------------------------------- | -------------------------------- | ---------- | ------------------------- | -------------------------- | --------------------- | --------------- |
+| Light    | Even                   | 100                             | 100                              | 0.5        | 0.01                      | 0.01                       | 0.001                 | 20              |
+| Light    | Query Heavy            | 100                             | 100                              | 0.5        | 0.01                      | 0.0001                     | 0.001                 | 20              |
+| Light    | Update Heavy           | 100                             | 100                              | 0.5        | 0.0001                    | 0.01                       | 0.001                 | 20              |
+| Moderate | Even                   | 1_000                           | 1_000                            | 1          | 1                         | 1                          | 0.1                   | 200             |
+| Moderate | Query Heavy            | 1_000                           | 1_000                            | 1          | 1                         | 0.01                       | 0.1                   | 200             |
+| Moderate | Update Heavy           | 1_000                           | 1_000                            | 1          | 0.01                      | 1                          | 0.1                   | 200             |
+| Heavy    | Even                   | 10_000                          | 10_000                           | 2          | 100                       | 100                        | 10                    | 2_000           |
+| Heavy    | Query Heavy            | 10_000                          | 10_000                           | 2          | 100                       | 1                          | 10                    | 2_000           |
+| Heavy    | Update Heavy           | 10_000                          | 10_000                           | 2          | 1                         | 100                        | 10                    | 2_000           |
+
+###### Application USD Cost Estimates Per Year
+
+| Usage    | Query/Update Heaviness | CDK    | Ingress Messages | Ingress Bytes Query Messages | Ingress Bytes Update Messages | Update Messages | Update Instructions | Xnet Calls | Xnet Byte Transmission | GB Storage | Total Cost  |
+| -------- | ---------------------- | ------ | ---------------- | ---------------------------- | ----------------------------- | --------------- | ------------------- | ---------- | ---------------------- | ---------- | ----------- |
+| Light    | Even                   | Azle   | $1.00            | $0.08                        | $0.08                         | $0.25           | $0.40               | $0.01      | $0.00                  | $2.64      | $4.46       |
+| Light    | Even                   | Motoko | $1.00            | $0.08                        | $0.08                         | $0.25           | $0.00               | $0.01      | $0.00                  | $2.64      | $4.07       |
+| Light    | Even                   | Rust   | $1.00            | $0.08                        | $0.08                         | $0.25           | $0.01               | $0.01      | $0.00                  | $2.64      | $4.07       |
+| Light    | Query Heavy            | Azle   | $0.50            | $0.08                        | $0.00                         | $0.00           | $0.00               | $0.01      | $0.00                  | $2.64      | $3.25       |
+| Light    | Query Heavy            | Motoko | $0.50            | $0.08                        | $0.00                         | $0.00           | $0.00               | $0.01      | $0.00                  | $2.64      | $3.25       |
+| Light    | Query Heavy            | Rust   | $0.50            | $0.08                        | $0.00                         | $0.00           | $0.00               | $0.01      | $0.00                  | $2.64      | $3.25       |
+| Light    | Update Heavy           | Azle   | $0.50            | $0.00                        | $0.08                         | $0.25           | $0.40               | $0.01      | $0.00                  | $2.64      | $3.89       |
+| Light    | Update Heavy           | Motoko | $0.50            | $0.00                        | $0.08                         | $0.25           | $0.00               | $0.01      | $0.00                  | $2.64      | $3.49       |
+| Light    | Update Heavy           | Rust   | $0.50            | $0.00                        | $0.08                         | $0.25           | $0.01               | $0.01      | $0.00                  | $2.64      | $3.50       |
+| Moderate | Even                   | Azle   | $99.91           | $83.26                       | $83.26                        | $24.56          | $39.75              | $1.08      | $0.83                  | $5.29      | $337.93     |
+| Moderate | Even                   | Motoko | $99.91           | $83.26                       | $83.26                        | $24.56          | $0.09               | $1.08      | $0.83                  | $5.29      | $298.26     |
+| Moderate | Even                   | Rust   | $99.91           | $83.26                       | $83.26                        | $24.56          | $0.73               | $1.08      | $0.83                  | $5.29      | $298.91     |
+| Moderate | Query Heavy            | Azle   | $50.45           | $83.26                       | $0.83                         | $0.25           | $0.40               | $1.08      | $0.83                  | $5.29      | $142.38     |
+| Moderate | Query Heavy            | Motoko | $50.45           | $83.26                       | $0.83                         | $0.25           | $0.00               | $1.08      | $0.83                  | $5.29      | $141.99     |
+| Moderate | Query Heavy            | Rust   | $50.45           | $83.26                       | $0.83                         | $0.25           | $0.01               | $1.08      | $0.83                  | $5.29      | $141.99     |
+| Moderate | Update Heavy           | Azle   | $50.45           | $0.83                        | $83.26                        | $24.56          | $39.75              | $1.08      | $0.83                  | $5.29      | $206.05     |
+| Moderate | Update Heavy           | Motoko | $50.45           | $0.83                        | $83.26                        | $24.56          | $0.09               | $1.08      | $0.83                  | $5.29      | $166.39     |
+| Moderate | Update Heavy           | Rust   | $50.45           | $0.83                        | $83.26                        | $24.56          | $0.73               | $1.08      | $0.83                  | $5.29      | $167.04     |
+| Heavy    | Even                   | Azle   | $9,990.60        | $83,255.04                   | $83,255.04                    | $2,456.02       | $3,975.13           | $108.23    | $832.55                | $10.57     | $183,883.20 |
+| Heavy    | Even                   | Motoko | $9,990.60        | $83,255.04                   | $83,255.04                    | $2,456.02       | $8.61               | $108.23    | $832.55                | $10.57     | $179,916.67 |
+| Heavy    | Even                   | Rust   | $9,990.60        | $83,255.04                   | $83,255.04                    | $2,456.02       | $73.39              | $108.23    | $832.55                | $10.57     | $179,981.45 |
+| Heavy    | Query Heavy            | Azle   | $5,045.26        | $83,255.04                   | $832.55                       | $24.56          | $39.75              | $108.23    | $832.55                | $10.57     | $90,148.51  |
+| Heavy    | Query Heavy            | Motoko | $5,045.26        | $83,255.04                   | $832.55                       | $24.56          | $0.09               | $108.23    | $832.55                | $10.57     | $90,108.85  |
+| Heavy    | Query Heavy            | Rust   | $5,045.26        | $83,255.04                   | $832.55                       | $24.56          | $0.73               | $108.23    | $832.55                | $10.57     | $90,109.50  |
+| Heavy    | Update Heavy           | Azle   | $5,045.26        | $832.55                      | $83,255.04                    | $2,456.02       | $3,975.13           | $108.23    | $832.55                | $10.57     | $96,515.36  |
+| Heavy    | Update Heavy           | Motoko | $5,045.26        | $832.55                      | $83,255.04                    | $2,456.02       | $8.61               | $108.23    | $832.55                | $10.57     | $92,548.83  |
+| Heavy    | Update Heavy           | Rust   | $5,045.26        | $832.55                      | $83,255.04                    | $2,456.02       | $73.39              | $108.23    | $832.55                | $10.57     | $92,613.61  |
 
 ### Roadmap
 
--   [ ] July 2022
-    -   [ ] Extensive automated benchmarking
+-   [x] July 2022
+    -   [x] Extensive automated benchmarking
 -   [ ] August 2022
     -   [ ] Compiler error DX revamp
     -   [ ] Rust rewrite

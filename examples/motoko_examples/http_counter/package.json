@@ -12,7 +12,7 @@
         "test": "ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
-        "azle": "0.5.0",
+        "azle": "0.6.0",
         "encode-utf8": "2.0.0"
     },
     "devDependencies": {
