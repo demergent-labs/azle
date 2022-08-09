@@ -174,6 +174,6 @@ export type Management = Canister<{
     ): CanisterResult<void>;
 }>;
 
-export const ManagementCanister = ic.canisters.Management<Management>(
+export const ManagementCanister: Management = ic.canisters.Management(
     Principal.fromText('aaaaa-aa')
 );
