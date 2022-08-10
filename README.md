@@ -47,6 +47,7 @@ Most of Azle's documentation is currently found in this README. The Azle Book, s
 -   [Canister APIs](#canister-apis)
 -   [Call APIs](#call-apis)
 -   [Stable Memory](#stable-memory)
+-   [Special APIs](#special-apis)
 -   [JS APIs](#js-apis)
 -   [Feature Parity](#feature-parity)
 -   [Benchmarks](#benchmarks)
@@ -2290,6 +2291,50 @@ import { blob, ic, nat32, Update } from 'azle';
 
 export function stable_write(offset: nat32, buf: blob): Update<void> {
     ic.stable_write(offset, buf);
+}
+```
+
+### Special APIs
+
+#### Outgoing HTTP Requests
+
+This feature is available in `dfx 0.11.0` with the `--enable-canister-http` flag but is not yet live on the IC.
+
+Examples:
+
+-   [ethereum_json_rpc](/examples/ethereum_json_rpc)
+-   [outgoing_http_requests](/examples/outgoing_http_requests)
+
+```typescript
+import { CanisterResult, ic, ok, Query, Update } from 'azle';
+import { HttpResponse, ManagementCanister } from 'azle/canisters/management';
+
+export function* xkcd(): Update<HttpResponse> {
+    const max_response_bytes = 1_000n;
+
+    // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
+    const cycle_cost_base = 400_000_000n;
+    const cycle_cost_per_byte = 300_000n; // TODO not sure on this exact cost
+    const cycle_cost_total =
+        cycle_cost_base + cycle_cost_per_byte * max_response_bytes;
+
+    const http_result: CanisterResult<HttpResponse> =
+        yield ManagementCanister.http_request({
+            url: `https://xkcd.com/642/info.0.json`,
+            max_response_bytes,
+            http_method: {
+                GET: null
+            },
+            headers: [],
+            body: null,
+            transform_method_name: 'xkcd_transform'
+        }).with_cycles(cycle_cost_total);
+
+    if (!ok(http_result)) {
+        ic.trap(http_result.err ?? 'http_result had an error');
+    }
+
+    return http_result.ok;
 }
 ```
 

@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "ethereum_json_rpc": {
+            "type": "custom",
+            "build": "npx azle ethereum_json_rpc",
+            "root": "src",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/ethereum_json_rpc.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/ethereum_json_rpc"
+            }
+        }
+    }
+}

@@ -165,7 +165,7 @@ export type InspectMessage = void;
 export type Query<T> = T;
 export type QueryManual<T> = void;
 export type Update<T> = T | Generator<any, T, any>;
-export type UpdateManual<T> = void;
+export type UpdateManual<T> = void | Generator<any, void, any>;
 export type Oneway = void;
 // TODO the generator types are not exactly correct...but at least I've given the user the Async type
 export type Async<T> = Generator<any, T, any>; // TODO to be stricter we may want the last parameter to be unknown: https://github.com/demergent-labs/azle/issues/138
