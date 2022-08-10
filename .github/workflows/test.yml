@@ -171,6 +171,16 @@ jobs:
             #       key: ${{ matrix.example_directories }}-cache
             #       restore-keys: ${{ matrix.example_directories }}-cache # TODO might need to be more intelligent and hash files here
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ~/.cargo/bin/
+                      ~/.cargo/registry/index/
+                      ~/.cargo/registry/cache/
+                      ~/.cargo/git/db/
+                      target/
+                  key: azle-cargo-${{ hashFiles('src/compiler/typescript_to_rust/generators/cargo_toml_files.ts') }}
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0} # TODO figure out why this is here and comment about it
               run: npm install
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
