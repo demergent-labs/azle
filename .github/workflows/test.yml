@@ -179,7 +179,7 @@ jobs:
                       ~/.cargo/registry/cache/
                       ~/.cargo/git/db/
                       target/
-                  key: azle-cargo-${{ hashFiles('src/compiler/typescript_to_rust/generators/cargo_toml_files.ts') }}
+                  key: azle-cargo-${{ matrix.example_directories }}-${{ hashFiles('src/compiler/typescript_to_rust/generators/cargo_toml_files.ts') }}
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0} # TODO figure out why this is here and comment about it
               run: npm install
