@@ -46,7 +46,7 @@ export function* eth_get_balance(ethereum_address: string): Update<JSON> {
                     JSON.stringify({
                         jsonrpc: '2.0',
                         method: 'eth_getBalance',
-                        params: [ethereum_address, 0],
+                        params: [ethereum_address, 'earliest'],
                         id: 1
                     })
                 )
