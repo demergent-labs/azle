@@ -161,15 +161,6 @@ jobs:
                   toolchain: ${{ matrix.rust }}
                   profile: minimal
                   override: true
-            # TODO The cache doesn't seem to be fully working and might be causing problems by partially working
-            # - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-            #   name: Rust cache
-            #   uses: actions/cache@v2
-            #   continue-on-error: false
-            #   with:
-            #       path: ${{ matrix.example_directories }}/target
-            #       key: ${{ matrix.example_directories }}-cache
-            #       restore-keys: ${{ matrix.example_directories }}-cache # TODO might need to be more intelligent and hash files here
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/cache@v3
               with:
