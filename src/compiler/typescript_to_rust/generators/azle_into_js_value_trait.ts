@@ -461,6 +461,12 @@ export function generateAzleIntoJsValueTrait(): Rust {
             }
         }
 
+        impl AzleIntoJsValue for Vec<Vec<u8>> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
         impl<T: AzleIntoJsValue> AzleIntoJsValue for Vec<Box<T>> {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 azle_into_js_value_generic_array(self, context)
