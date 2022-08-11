@@ -178,6 +178,36 @@ export type HttpResponse = {
     body: blob;
 };
 
+export type KeyID = {
+    curve: Curve;
+    name: string;
+};
+
+export type Curve = Variant<{
+    secp256k1: null;
+}>;
+
+export type EcdsaPublicKeyArgs = {
+    canister_id: Opt<string>;
+    derivation_path: blob[];
+    key_id: KeyID;
+};
+
+export type SignWithEcdsaArgs = {
+    message_hash: blob;
+    derivation_path: blob[];
+    key_id: KeyID;
+};
+
+export type EcdsaPublicKeyResult = {
+    public_key: blob;
+    chain_code: blob;
+};
+
+export type SignWithEcdsaResult = {
+    signature: blob;
+};
+
 export type Management = Canister<{
     bitcoin_get_balance(args: GetBalanceArgs): CanisterResult<Satoshi>;
     bitcoin_get_current_fee_percentiles(
@@ -206,6 +236,12 @@ export type Management = Canister<{
     provisional_top_up_canister(
         args: ProvisionalTopUpCanisterArgs
     ): CanisterResult<void>;
+    ecdsa_public_key(
+        args: EcdsaPublicKeyArgs
+    ): CanisterResult<EcdsaPublicKeyResult>;
+    sign_with_ecdsa(
+        args: SignWithEcdsaArgs
+    ): CanisterResult<SignWithEcdsaResult>;
 }>;
 
 export const ManagementCanister: Management = ic.canisters.Management(
