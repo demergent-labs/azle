@@ -169,7 +169,7 @@ jobs:
                       ~/.cargo/registry/index/
                       ~/.cargo/registry/cache/
                       ~/.cargo/git/db/
-                      target/
+                      ${{ matrix.example_directories }}/target/
                   key: azle-cargo-${{ matrix.example_directories }}-${{ matrix.azle_source }}-${{ hashFiles('src/compiler/typescript_to_rust/generators/cargo_toml_files.ts') }}
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0} # TODO figure out why this is here and comment about it
