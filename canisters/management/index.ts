@@ -26,7 +26,35 @@ import {
     Opt,
     Principal,
     Variant
-} from '../index';
+} from '../../index';
+
+import {
+    GetBalanceArgs,
+    GetCurrentFeePercentilesArgs,
+    GetUtxosArgs,
+    GetUtxosResult,
+    MillisatoshiPerByte,
+    Satoshi,
+    SendTransactionArgs
+} from './bitcoin';
+
+export {
+    BitcoinAddress,
+    BitcoinNetwork,
+    BlockHash,
+    GetBalanceArgs,
+    GetCurrentFeePercentilesArgs,
+    GetUtxosArgs,
+    GetUtxosResult,
+    MillisatoshiPerByte,
+    Outpoint,
+    Page,
+    Satoshi,
+    SendTransactionArgs,
+    SendTransactionError,
+    Utxo,
+    UtxosFilter
+} from './bitcoin';
 
 export type CanisterId = Principal;
 export type UserId = Principal;
@@ -151,6 +179,12 @@ export type HttpResponse = {
 };
 
 export type Management = Canister<{
+    bitcoin_get_balance(args: GetBalanceArgs): CanisterResult<Satoshi>;
+    bitcoin_get_current_fee_percentiles(
+        args: GetCurrentFeePercentilesArgs
+    ): CanisterResult<MillisatoshiPerByte[]>;
+    bitcoin_get_utxos(args: GetUtxosArgs): CanisterResult<GetUtxosResult>;
+    bitcoin_send_transaction(args: SendTransactionArgs): CanisterResult<null>;
     create_canister(
         args: CreateCanisterArgs
     ): CanisterResult<CreateCanisterResult>;
