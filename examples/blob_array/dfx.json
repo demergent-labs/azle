@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "azle": {
+            "type": "custom",
+            "build": "npx azle azle",
+            "root": "canisters/azle",
+            "ts": "canisters/azle/index.ts",
+            "candid": "canisters/azle/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/azle.wasm",
+            "declarations": {
+                "output": "dfx_generated/azle"
+            }
+        }
+    }
+}
