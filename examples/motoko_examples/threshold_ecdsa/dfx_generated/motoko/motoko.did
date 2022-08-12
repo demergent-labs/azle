@@ -1,0 +1,16 @@
+type PerfResult = 
+ record {
+   wasm_body_only: nat64;
+   wasm_including_prelude: nat64;
+ };
+service : {
+  get_perf_result: () -> (opt PerfResult) query;
+  public_key: () -> (variant {
+                       Err: text;
+                       Ok: record {public_key: blob;};
+                     });
+  sign: (blob) -> (variant {
+                     Err: text;
+                     Ok: record {signature: blob;};
+                   });
+}
