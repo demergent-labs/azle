@@ -1,11 +1,4 @@
 {
-<<<<<<< HEAD
-=======
-    "scripts": {
-        "test": "ts-node --transpile-only --ignore=false test/test.ts",
-        "benchmark": "ts-node --transpile-only --ignore=false benchmark/benchmark.ts"
-    },
->>>>>>> 038e6a8f (Add azle threshold ECDSA example)
     "dependencies": {
         "azle": "0.5.0",
         "encode-utf8": "2.0.0"
