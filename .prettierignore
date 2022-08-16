@@ -1,5 +1,6 @@
 .dfx
 .DS_Store
 dist
+.husky
 node_modules
 target
