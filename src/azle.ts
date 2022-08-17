@@ -8,6 +8,7 @@ import {
 import * as fs from 'fs';
 import * as fsExtra from 'fs-extra';
 import { DfxJson, Rust, Toml } from './types';
+import * as tsc from 'typescript';
 
 azle();
 
@@ -25,7 +26,28 @@ async function azle() {
     const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
     const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
     const libCargoToml: Toml = generateLibCargoToml(canisterName);
-    const libFile: Rust = await compileTypeScriptToRust(tsPath, candidPath);
+    // const libFile: Rust = await compileTypeScriptToRust(tsPath, candidPath);
+
+    const program = tsc.createProgram([tsPath], {});
+    const sourceFiles = program.getSourceFiles();
+
+    const root_absolute_path = require('path').join(__dirname, '..');
+
+    // TODO I am not sure people are going to be happy with this...but then again it is just a binary?? But it probably has the raw strings in it
+    const fileNames = sourceFiles.map((sourceFile) => {
+        console.log('sourceFile.fileName', sourceFile.fileName);
+
+        if (sourceFile.fileName.startsWith(root_absolute_path) === false) {
+            return `../../${sourceFile.fileName}`;
+        } else {
+            return sourceFile.fileName;
+        }
+    });
+
+    // TODO putting in these absolute paths may be a security issue
+    const libFile: Rust = `
+        azle_generate::azle_generate!("${fileNames.join(',')}");
+    `;
 
     writeCodeToFileSystem(
         rootPath,
@@ -88,6 +110,15 @@ function writeCodeToFileSystem(
     fsExtra.copySync(
         `${__dirname}/compiler/typescript_to_rust/azle_js_value_derive`,
         `./target/azle/${rootPath}/azle_js_value_derive`
+    );
+
+    if (!fs.existsSync(`./target/azle/${rootPath}/azle_generate`)) {
+        fs.mkdirSync(`./target/azle/${rootPath}/azle_generate`);
+    }
+
+    fsExtra.copySync(
+        `${__dirname}/compiler/typescript_to_rust_redesign/azle_generate`,
+        `./target/azle/${rootPath}/azle_generate`
     );
 }
 
