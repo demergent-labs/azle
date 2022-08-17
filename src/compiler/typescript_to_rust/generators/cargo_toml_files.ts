@@ -40,6 +40,7 @@ export function generateLibCargoToml(canisterName: string): Toml {
         getrandom = { version = "0.2.3", features = ["custom"] }
         serde = "1.0.137"
         azle-js-value-derive = { path = "./azle_js_value_derive" }
+        azle_generate = { path = "./azle_generate" }
         async-recursion = "1.0.0"
     `;
 }
