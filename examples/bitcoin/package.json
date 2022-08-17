@@ -1,0 +1,17 @@
+{
+    "scripts": {
+        "bitcoind": ".bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin --port=18444",
+        "bitcoin-cli": "bitcoin-cli -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin -rpcport=18443",
+        "deploy": "scripts/deploy.sh bitcoin",
+        "start": "dfx start --enable-bitcoin --clean",
+        "test": "ts-node --transpile-only --ignore=false test/test.ts"
+    },
+    "dependencies": {
+        "azle": "0.5.0"
+    },
+    "devDependencies": {
+        "@dfinity/agent": "0.11.1",
+        "ts-node": "10.7.0",
+        "typescript": "4.6.3"
+    }
+}
