@@ -21,7 +21,19 @@ import {
 } from 'azle/canisters/management';
 import encodeUtf8 from 'encode-utf8';
 import { sha256 } from 'hash.js';
-import { ethers } from 'ethers';
+import { BigNumberish, ethers, utils, Wallet } from 'ethers';
+import { keccak256, UnsignedTransaction } from 'ethers/lib/utils';
+import {
+    arrayify,
+    DataOptions,
+    hexlify,
+    SignatureLike,
+    splitSignature,
+    stripZeros
+} from '@ethersproject/bytes';
+import * as RLP from '@ethersproject/rlp';
+import { SigningKey } from '@ethersproject/signing-key';
+import { serialize } from '@ethersproject/transactions';
 
 //#region Performance
 // type PerfResult = {
