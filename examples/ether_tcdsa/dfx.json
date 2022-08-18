@@ -11,6 +11,17 @@
                 "output": "dfx_generated/azle"
             }
         },
+        "keccak": {
+            "type": "custom",
+            "build": "npx azle keccak",
+            "root": "canisters/keccak",
+            "ts": "canisters/keccak/index.ts",
+            "candid": "canisters/keccak/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/keccak.wasm",
+            "declarations": {
+                "output": "dfx_generated/keccak"
+            }
+        },
         "motoko": {
             "type": "motoko",
             "main": "canisters/motoko/main.mo",

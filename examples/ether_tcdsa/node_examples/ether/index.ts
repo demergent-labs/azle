@@ -1,15 +1,9 @@
-import { BigNumberish, ethers, utils, Wallet } from 'ethers';
-import { keccak256, UnsignedTransaction } from 'ethers/lib/utils';
-import {
-    arrayify,
-    DataOptions,
-    hexlify,
-    SignatureLike,
-    splitSignature,
-    stripZeros
-} from '@ethersproject/bytes';
-import * as RLP from '@ethersproject/rlp';
+import { ethers, Wallet } from 'ethers';
+import { UnsignedTransaction } from 'ethers/lib/utils';
+import { SignatureLike } from '@ethersproject/bytes';
 import { SigningKey } from '@ethersproject/signing-key';
+import { TransactionRequest } from '@ethersproject/providers';
+import { keccak256 } from '@ethersproject/keccak256';
 import { serialize } from '@ethersproject/transactions';
 // import * as encodeUtf8 from "encode-utf8";
 
@@ -27,85 +21,36 @@ function create_test_signing_key() {
     return new SigningKey(wallet.privateKey);
 }
 
+const META_WALLET_ADDRESS = '0xC7d1556d0493bFE48CD1FF307E45a75528c7d3D8';
+
 async function make_transfer(): Promise<string> {
-    const transfer_amount = 10;
-    // Create a wallet instance from a mnemonic...
-
-    const walletMnemonic = create_test_wallet();
-
-    const tx: ethers.providers.TransactionRequest = {
+    const tx: TransactionRequest = {
         chainId: 12345,
         to: META_WALLET_ADDRESS,
-        value: utils.parseEther('1.0'),
-        gasLimit: 7021000
-    };
-    const my_tx: TransactionRequest = {
-        chainId: 12345,
-        to: META_WALLET_ADDRESS,
-        value: utils.parseEther('1.0'),
+        value: 0xffffffff,
         gasLimit: 7021000
     };
 
     // Signing a transaction
-    const signedTransaction = await walletMnemonic.signTransaction(tx);
-    console.log(`The signed message is\n${signedTransaction}`);
-    const mySignedTransaction = signTransaction(my_tx);
-    console.log(`The signed message is\n${mySignedTransaction}`);
-    console.log(
-        `11111111111111111111111111111111111111111111111 The two messages are the same ${
-            mySignedTransaction === signedTransaction
-        }`
-    );
-    const otherSignedTransaction = signTransaction(my_tx);
-    console.log(
-        `>>>>>>>>>>>>>>>>>>>>> The other signed message is\n${otherSignedTransaction}`
-    );
-    console.log(
-        `22222222222222222222222222222222222222222222 The two messages are the same ${
-            otherSignedTransaction === signedTransaction
-        }`
-    );
-    return signedTransaction;
+    const mySignedTransaction = signTransaction(tx);
 
-    // The connect method returns a new instance of the
-    // Wallet connected to a provider
-    const wallet = walletMnemonic.connect(provider);
+    const walletMnemonic = create_test_wallet();
 
-    // Querying the network
-    await wallet.getBalance();
-    await wallet.getTransactionCount();
-
-    // Sending ether
-    // await wallet.sendTransaction(tx);
+    const ethersSignedTransaction = await walletMnemonic.signTransaction(tx);
+    if (ethersSignedTransaction !== mySignedTransaction) {
+        console.log('WARNING: Signatures do not match');
+    }
+    return ethersSignedTransaction;
 }
-
-export type TransactionRequest = {
-    to?: string;
-    from?: string;
-    nonce?: BigNumberish;
-
-    gasLimit?: BigNumberish;
-    gasPrice?: BigNumberish;
-
-    data?: Uint8Array;
-    value?: BigNumberish;
-    chainId?: number;
-
-    type?: number;
-
-    maxPriorityFeePerGas?: BigNumberish;
-    maxFeePerGas?: BigNumberish;
-
-    customData?: Record<string, any>;
-    ccipReadEnabled?: boolean;
-};
 
 function signTransaction(tx: TransactionRequest): string {
     // Check that the tx.from is the same as this address if the tx.from is specified.
     // I am not doing a full transaction so I don't think I'll ever have to do this.
-    const signature = signDigest(
-        keccak256(simple_serialize(<UnsignedTransaction>tx))
-    );
+    const serialized_transaction = serialize(<UnsignedTransaction>tx);
+    console.log(`This is the serial to match\n${serialized_transaction}`);
+    const transaction_hash = keccak256(serialized_transaction);
+    console.log(`This is the hash to match\n${transaction_hash}`);
+    const signature = signDigest(transaction_hash);
     // It looks like serialize is formatting the transaction and then RLP
     // encoding it. So the pattern is
     // 1. RLP encode the transaction
@@ -113,91 +58,12 @@ function signTransaction(tx: TransactionRequest): string {
     // 3. Sign that hash
     // 4. RLP encode the signature and the transaction together
 
-    return simple_serialize(<UnsignedTransaction>tx, signature);
-}
-
-function oneMoreSignTransaction(tx: TransactionRequest): string {
-    const signature = signDigest(keccak256(serialize(<UnsignedTransaction>tx)));
     return serialize(<UnsignedTransaction>tx, signature);
 }
 
 function signDigest(digest: string): SignatureLike {
     const signing_key = create_test_signing_key();
     return signing_key.signDigest(digest);
-}
-
-// Legacy Transaction Fields
-const transactionFields = [
-    { name: 'nonce', maxLength: 32, numeric: true },
-    { name: 'gasPrice', maxLength: 32, numeric: true },
-    { name: 'gasLimit', maxLength: 32, numeric: true },
-    { name: 'to', length: 20 },
-    { name: 'value', maxLength: 32, numeric: true },
-    { name: 'data' }
-];
-// TODO try and understand this
-function simple_serialize(
-    transaction: UnsignedTransaction,
-    signature?: SignatureLike
-): string {
-    // TODO check properties? I don't think we need to worry since this isn't a general purpose thing. We just need it for our tests?
-
-    const raw: Array<string | Uint8Array> = [];
-
-    transactionFields.forEach(function (fieldInfo) {
-        let value = (<any>transaction)[fieldInfo.name] || [];
-        const options: DataOptions = {};
-        if (fieldInfo.numeric) {
-            options.hexPad = 'left';
-        }
-        value = arrayify(hexlify(value, options));
-
-        console.log(
-            `We are adding this value to the raw thing\n${value}\nfrom ${fieldInfo.name}`
-        );
-
-        raw.push(hexlify(value));
-    });
-
-    // Serialize the EIP-155 transaction chainId
-    let chainId = transaction.chainId ?? 0;
-    raw.push(hexlify(chainId));
-    raw.push('0x');
-    raw.push('0x');
-
-    // Requesting an unsigned transaction
-    if (!signature) {
-        console.log(
-            `This is the raw thing we are about to encode that has no signature\n${JSON.stringify(
-                raw
-            )}`
-        );
-        return RLP.encode(raw);
-    }
-
-    // The splitSignature will ensure the transaction has a recoveryParam in the
-    // case that the signTransaction function only adds a v.
-    const sig = splitSignature(signature);
-
-    // We pushed a chainId and null r, s on for hashing only; remove those
-    let v = 27 + sig.recoveryParam;
-    if (chainId !== 0) {
-        raw.pop();
-        raw.pop();
-        raw.pop();
-        v += chainId * 2 + 8;
-    }
-
-    raw.push(hexlify(v));
-    raw.push(stripZeros(arrayify(sig.r)));
-    raw.push(stripZeros(arrayify(sig.s)));
-
-    console.log(
-        `This is the raw thing we are about to encode that has a signature\n${JSON.stringify(
-            raw
-        )}`
-    );
-    return RLP.encode(raw);
 }
 
 type SendRawResponse = {
@@ -230,13 +96,12 @@ async function send_raw_transaction(tx: string) {
         params: [tx],
         id: 1
     };
-    await post(send_raw_body);
+    await post<SendRawResponse>(send_raw_body);
 }
 
 const TEST_WALLET_MNEMONIC =
     'announce room limb pattern dry unit scale effort smooth jazz weasel alcohol';
 const TEST_WALLET_ADDRESS = '0x71CB05EE1b1F506fF321Da3dac38f25c0c9ce6E1';
-const META_WALLET_ADDRESS = '0xC7d1556d0493bFE48CD1FF307E45a75528c7d3D8';
 
 async function getBalances() {
     const test_wallet_balance = await provider.send('eth_getBalance', [

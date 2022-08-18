@@ -57,13 +57,13 @@ type ProvisionalTopUpCanisterArgs = record {
     "amount": nat;
 };
 
-type ECDSAPublicKey = record {
+type EcdsaPublicKeyArgs = record {
     "canister_id": opt text;
     "derivation_path": vec blob;
     "key_id": KeyID;
 };
 
-type SignatureParams = record {
+type SignWithEcdsaArgs = record {
     "message_hash": blob;
     "derivation_path": vec blob;
     "key_id": KeyID;
@@ -91,12 +91,12 @@ type ProvisionalCreateCanisterWithCyclesResult = record {
     "canister_id": principal;
 };
 
-type PublicKey = record {
+type EcdsaPublicKeyResult = record {
     "public_key": blob;
     "chain_code": blob;
 };
 
-type Signature = record {
+type SignWithEcdsaResult = record {
     "signature": blob;
 };
 
@@ -124,7 +124,7 @@ type DefiniteCanisterSettings = record {
     "freezing_threshold": nat;
 };
 
-type ECDSAResult = variant { "ok": blob; "err": text };
+type EcdsaResult = variant { "ok": blob; "err": text };
 
 type InstallCodeMode = variant { "install": null; "reinstall": null; "upgrade": null };
 
@@ -137,6 +137,8 @@ type CanisterStatus = variant { "running": null; "stopping": null; "stopped": nu
 service: {
     "getBlobs": () -> (vec blob) query;
     "getBlob": () -> (blob) query;
-    "public_key": () -> (ECDSAResult);
-    "sign": (blob) -> (ECDSAResult);
+    "keccak": (text) -> (text) query;
+    "public_key": () -> (EcdsaResult);
+    "sign": (blob) -> (EcdsaResult);
+    "make_transfer": () -> (text);
 }

@@ -1,38 +1,23 @@
 import {
     blob,
     ok,
-    Opt,
     Query,
     Update,
     ic,
-    nat64,
-    Principal,
     Variant,
-    Canister,
     CanisterResult,
-    int,
     Async
 } from 'azle';
 import {
     ManagementCanister,
-    PublicKey,
-    Signature,
-    ECDSAResult
+    EcdsaPublicKeyResult,
+    SignWithEcdsaResult
 } from 'azle/canisters/management';
 import encodeUtf8 from 'encode-utf8';
 import { sha256 } from 'hash.js';
-import { BigNumberish, ethers, utils, Wallet } from 'ethers';
-import { keccak256, UnsignedTransaction } from 'ethers/lib/utils';
-import {
-    arrayify,
-    DataOptions,
-    hexlify,
-    SignatureLike,
-    splitSignature,
-    stripZeros
-} from '@ethersproject/bytes';
-import * as RLP from '@ethersproject/rlp';
-import { SigningKey } from '@ethersproject/signing-key';
+import { TransactionRequest } from '@ethersproject/providers';
+import { UnsignedTransaction } from 'ethers/lib/utils';
+import { keccak256 } from '@ethersproject/keccak256';
 import { serialize } from '@ethersproject/transactions';
 
 //#region Performance
@@ -116,9 +101,14 @@ function hash_message(message: string): blob {
 //     return `0x${keccak_key.slice(-NIBBLES_PER_ADDRESS)}`;
 // }
 
-function* get_public_key(): Async<CanisterResult<PublicKey>> {
+export type EcdsaResult = Variant<{
+    ok: blob;
+    err: string;
+}>;
+
+function* get_public_key(): Async<CanisterResult<EcdsaPublicKeyResult>> {
     const caller = ic.caller().toUint8Array();
-    const public_key: CanisterResult<PublicKey> =
+    const public_key: CanisterResult<EcdsaPublicKeyResult> =
         yield ManagementCanister.ecdsa_public_key({
             canister_id: null,
             derivation_path: [caller],
@@ -128,8 +118,9 @@ function* get_public_key(): Async<CanisterResult<PublicKey>> {
     return public_key;
 }
 
-export function* public_key(): Update<ECDSAResult> {
-    const public_key: CanisterResult<PublicKey> = yield get_public_key();
+export function* public_key(): Update<EcdsaResult> {
+    const public_key: CanisterResult<EcdsaPublicKeyResult> =
+        yield get_public_key();
 
     if (!ok(public_key)) {
         return public_key;
@@ -138,10 +129,10 @@ export function* public_key(): Update<ECDSAResult> {
     return { ok: public_key.ok.public_key };
 }
 
-export function* sign(message_hash: blob): Update<ECDSAResult> {
+export function* sign(message_hash: blob): Update<EcdsaResult> {
     const caller = ic.caller().toUint8Array();
 
-    const signature_result: CanisterResult<Signature> =
+    const signature_result: CanisterResult<SignWithEcdsaResult> =
         yield ManagementCanister.sign_with_ecdsa({
             message_hash: message_hash,
             derivation_path: [caller],
@@ -153,6 +144,39 @@ export function* sign(message_hash: blob): Update<ECDSAResult> {
     }
 
     return { ok: signature_result.ok.signature };
+}
+
+const META_WALLET_ADDRESS = '0xC7d1556d0493bFE48CD1FF307E45a75528c7d3D8';
+
+export function make_transfer(): Update<string> {
+    const tx: TransactionRequest = {
+        chainId: 12345,
+        to: META_WALLET_ADDRESS,
+        value: 0xffffffff,
+        gasLimit: 7021000
+    };
+
+    const signedTransaction = signTransaction(tx);
+    console.log(
+        `This is the final signed transaction\n${JSON.stringify(
+            signedTransaction
+        )}`
+    );
+    return signedTransaction;
+}
+
+function signTransaction(tx: TransactionRequest): string {
+    const serialized_transaction = serialize(<UnsignedTransaction>tx);
+    console.log(`This is the serial to match\n${serialized_transaction}`);
+    const transaction_hash = keccak256(serialized_transaction);
+    console.log(`This is the hash to match\n${transaction_hash}`);
+    const signedTransaction = transaction_hash;
+    // TODO sign and serialize again
+    return signedTransaction;
+}
+
+export function keccak(data: string): Query<string> {
+    return keccak256(data);
 }
 
 function string_to_blob(string: string): blob {
