@@ -1,3 +1,1 @@
-service: {
-    "query": () -> (text);
-}
+service : { simple_query : () -> (text) query }
