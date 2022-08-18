@@ -35,8 +35,6 @@ async function azle() {
 
     // TODO I am not sure people are going to be happy with this...but then again it is just a binary?? But it probably has the raw strings in it
     const fileNames = sourceFiles.map((sourceFile) => {
-        console.log('sourceFile.fileName', sourceFile.fileName);
-
         if (sourceFile.fileName.startsWith(root_absolute_path) === false) {
             return `../../${sourceFile.fileName}`;
         } else {
