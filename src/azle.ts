@@ -55,7 +55,7 @@ async function azle() {
         libFile
     );
 
-    compileRustCode(canisterName);
+    compileRustCode(canisterName, candidPath);
 }
 
 function installRustDependencies() {
@@ -120,7 +120,7 @@ function writeCodeToFileSystem(
     );
 }
 
-function compileRustCode(canisterName: string) {
+function compileRustCode(canisterName: string, candidPath: string) {
     execSync(
         `cd target/azle && CARGO_TARGET_DIR=.. cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
         { stdio: 'inherit' }
@@ -139,6 +139,20 @@ function compileRustCode(canisterName: string) {
 
     execSync(
         `gzip -f -k ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
+        { stdio: 'inherit' }
+    );
+
+    execSync(
+        `
+        cd target/azle/canisters/azle && cargo test
+    `,
+        { stdio: 'inherit' }
+    );
+
+    execSync(
+        `
+        cp target/azle/canisters/azle/index.did ${candidPath}
+    `,
         { stdio: 'inherit' }
     );
 }
