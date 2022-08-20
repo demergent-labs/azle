@@ -3,10 +3,9 @@
 
 use proc_macro::TokenStream;
 use quote::{
-    format_ident,
     quote
 };
-use std::{path::Path, fmt::format};
+use std::{path::Path};
 use swc_ecma_parser::{
     lexer::Lexer,
     Parser,
@@ -14,24 +13,14 @@ use swc_ecma_parser::{
     // FileInput,
     // SourceFileInput,
     Syntax,
-    TsConfig, token::Token
+    TsConfig
 };
 use swc_ecma_ast::{
     Program,
-    Function,
-    Stmt,
-    ModuleDecl,
-    ExportDecl,
-    FnDecl, TsTypeAnn
 };
 use swc_common::{
-    errors::{
-        ColorConfig,
-        Handler
-    },
     sync::Lrc,
     SourceMap,
-    FileName
 };
 use syn::{
     parse_macro_input,
@@ -45,7 +34,7 @@ mod generators {
 use generators::canister_methods::{
     get_ast_fn_decls_from_programs,
     generate_query_function_token_streams,
-    get_query_fn_decls
+    get_query_fn_decls, get_update_fn_decls, generate_update_function_token_streams,
 };
 
 #[proc_macro]
@@ -59,15 +48,26 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
 
     let ast_fnc_decls = get_ast_fn_decls_from_programs(&programs);
 
-    let ast_fnc_decls_query = get_query_fn_decls(ast_fnc_decls);
+    let ast_fnc_decls_query = get_query_fn_decls(&ast_fnc_decls);
 
-    println!("ast_fnc_decls_query: {:#?}", ast_fnc_decls_query);
+    let ast_fnc_decls_update = get_update_fn_decls(&ast_fnc_decls);
+
+    // println!("ast_fnc_decls_query: {:#?}", ast_fnc_decls_query);
 
     let query_function_token_streams = generate_query_function_token_streams(&ast_fnc_decls_query);
+    let update_function_token_streams = generate_update_function_token_streams(&ast_fnc_decls_update);
 
     quote! {
         type CandidNat = candid::Nat;
+        type CandidInt = candid::Int;
+        type CandidPrincipal = ic_cdk::export::Principal;
+        type CandidEmpty = ic_cdk::export::candid::Empty;
+        type CandidReserved = ic_cdk::export::candid::Reserved;
+        type RustVoid = ();
+        type RustNull = (());
+        type RustBlob = Vec<u8>;
         #(#query_function_token_streams)*
+        #(#update_function_token_streams)*
 
         candid::export_service!();
 
