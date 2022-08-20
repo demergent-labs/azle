@@ -58,14 +58,6 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
     let update_function_token_streams = generate_update_function_token_streams(&ast_fnc_decls_update);
 
     quote! {
-        type CandidNat = candid::Nat;
-        type CandidInt = candid::Int;
-        type CandidPrincipal = ic_cdk::export::Principal;
-        type CandidEmpty = ic_cdk::export::candid::Empty;
-        type CandidReserved = ic_cdk::export::candid::Reserved;
-        type RustVoid = ();
-        type RustNull = (());
-        type RustBlob = Vec<u8>;
         #(#query_function_token_streams)*
         #(#update_function_token_streams)*
 
