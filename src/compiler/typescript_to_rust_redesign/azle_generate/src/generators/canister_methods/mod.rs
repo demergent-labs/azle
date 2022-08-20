@@ -1,8 +1,19 @@
 mod query;
+mod functions;
+mod update;
 
 pub use query::{
     generate_query_function_token_streams,
     get_query_fn_decls
+};
+
+pub use update::{
+    generate_update_function_token_streams,
+    get_update_fn_decls
+};
+
+pub use functions::{
+    generate_function_token_stream
 };
 
 use swc_ecma_ast::{Program, FnDecl, ModuleDecl, ExportDecl};
