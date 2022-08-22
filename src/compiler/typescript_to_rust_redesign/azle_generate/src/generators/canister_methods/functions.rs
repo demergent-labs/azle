@@ -3,9 +3,32 @@ use quote::{
     format_ident,
     quote,
 };
-use swc_ecma_ast::{FnDecl, TsType, TsKeywordTypeKind, TsTypeAnn, TsKeywordType, TsTypeRef, Param, TsArrayType, Id };
+use swc_ecma_ast::{FnDecl, TsType, TsKeywordTypeKind, TsTypeAnn, TsKeywordType, TsTypeRef, Param, TsArrayType, TsTypeLit, TsTypeElement, TsPropertySignature, TsTypeAliasDecl };
 
-pub fn generate_function_token_stream(ast_fnc_decl_query: &FnDecl) -> proc_macro2::TokenStream {
+pub fn generate_type_aliases_token_stream(ast_type_alias_decls: &Vec<TsTypeAliasDecl>) -> Vec<TokenStream> {
+    ast_type_alias_decls.iter().map(|ast_type_alias_decl| {
+        generate_type_alias_token_stream(ast_type_alias_decl)
+    }).collect()
+}
+
+pub fn generate_type_alias_token_stream(type_alias_decl: &TsTypeAliasDecl) -> TokenStream {
+    let ts_type = *type_alias_decl.type_ann.clone();
+    if !ts_type.is_ts_type_lit() {
+        println!("There was an error generating type alias for {:#?}", ts_type);
+        // TODO I don't think we should run into this right?
+        todo!("Maybe we need a better error here?");
+    }
+
+    let ts_type_lit = ts_type.as_ts_type_lit().unwrap();
+    let ts_type_name = type_alias_decl.id.sym.chars().as_str();
+
+    let ts_type_ident = format_ident!("{}", ts_type_name);
+
+    let result = ts_type_literal_to_rust_struct(ts_type_ident, ts_type_lit);
+    result
+}
+
+pub fn generate_function_token_stream(ast_fnc_decl_query: &FnDecl) -> TokenStream {
     let function_name = ast_fnc_decl_query.ident.to_string().replace("#0", "");
     let function_name_ident = format_ident!("{}", function_name);
 
@@ -46,21 +69,21 @@ fn parse_ts_keyword_type(ts_keyword_type: TsKeywordType) -> TokenStream {
         TsKeywordTypeKind::TsStringKeyword => quote!(String),
         TsKeywordTypeKind::TsVoidKeyword => quote!{()},
         TsKeywordTypeKind::TsNullKeyword => quote!{(())},
-        TsKeywordTypeKind::TsObjectKeyword => todo!(),
-        TsKeywordTypeKind::TsNumberKeyword => todo!(),
-        TsKeywordTypeKind::TsBigIntKeyword => todo!(),
-        TsKeywordTypeKind::TsNeverKeyword => todo!(),
-        TsKeywordTypeKind::TsSymbolKeyword => todo!(),
-        TsKeywordTypeKind::TsIntrinsicKeyword => todo!(),
-        TsKeywordTypeKind::TsUndefinedKeyword => todo!(),
-        TsKeywordTypeKind::TsUnknownKeyword => todo!(),
-        TsKeywordTypeKind::TsAnyKeyword => todo!(),
+        TsKeywordTypeKind::TsObjectKeyword => todo!("parse_ts_keyword_type for TsObjectKeyword"),
+        TsKeywordTypeKind::TsNumberKeyword => todo!("parse_ts_keyword_type for TsNumberKeyword"),
+        TsKeywordTypeKind::TsBigIntKeyword => todo!("parse_ts_keyword_type for TsBigIntKeyword"),
+        TsKeywordTypeKind::TsNeverKeyword => todo!("parse_ts_keyword_type for TsNeverKeyword"),
+        TsKeywordTypeKind::TsSymbolKeyword => todo!("parse_ts_keyword_type for TsSymbolKeyword"),
+        TsKeywordTypeKind::TsIntrinsicKeyword => todo!("parse_ts_keyword_type for TsIntrinsicKeyword"),
+        TsKeywordTypeKind::TsUndefinedKeyword => todo!("parse_ts_keyword_type for TsUndefinedKeyword"),
+        TsKeywordTypeKind::TsUnknownKeyword => todo!("parse_ts_keyword_type for TsUnknownKeyword"),
+        TsKeywordTypeKind::TsAnyKeyword => todo!("parse_ts_keyword_type for TsAnyKeyword"),
     }
 }
 
 fn parse_ts_type_ref(ts_type_ref: TsTypeRef) -> TokenStream {
     let type_name = ts_type_ref.type_name.as_ident().unwrap().sym.chars().as_str();
-    match &type_name[..] {
+    match type_name {
         "blob" => quote!(Vec<u8>),
         "float32" => quote!(f32),
         "float64" => quote!(f64),
@@ -77,7 +100,10 @@ fn parse_ts_type_ref(ts_type_ref: TsTypeRef) -> TokenStream {
         "Principal" => quote!(candid::Principal),
         "empty" => quote!(candid::Empty),
         "reserved" => quote!(candid::Reserved),
-        _ => todo!(),
+        _ => {
+            let custom_type_ref_ident = format_ident!("{}", type_name);
+            quote!(#custom_type_ref_ident)
+        }
     }
 }
 
@@ -99,7 +125,6 @@ fn generate_return_type(ts_type_ann:&Option<&TsTypeAnn>) -> TokenStream {
 fn generate_param_types(params: &Vec<Param>) -> Vec<TokenStream> {
     params.iter().map(|param| {
         let type_ann = &param.pat.as_ident().unwrap().type_ann.as_ref();
-
         let type_ann = type_ann.clone().unwrap();
         let ts_type = *type_ann.type_ann.clone();
 
@@ -107,28 +132,60 @@ fn generate_param_types(params: &Vec<Param>) -> Vec<TokenStream> {
     }).collect()
 }
 
+fn ts_type_literal_to_rust_struct(ts_type_ident: Ident, ts_type_lit: &TsTypeLit) -> TokenStream {
+    let members: Vec<TokenStream> = ts_type_lit.members.iter().map(|member| {
+        parse_type_literal_members(member)
+    }).collect();
+    quote!(
+        #[derive(serde::Serialize, serde::Deserialize, Debug, candid::CandidType, Clone)]
+        struct #ts_type_ident {
+            #(#members),*
+        }
+    )
+}
+
+fn parse_type_literal_members(member: &TsTypeElement) -> TokenStream {
+    match member.as_ts_property_signature() {
+        Some(prop_sig) => {
+            let member_name = parse_type_literal_member_name(prop_sig);
+            let member_type = parse_type_literal_member_type(prop_sig);
+            quote!(#member_name: #member_type)
+        }
+        None => todo!("Handle parsing type literals if the member isn't a TsPropertySignature"),
+    }
+}
+
+fn parse_type_literal_member_name(prop_sig: &TsPropertySignature) -> Ident {
+    format_ident!("{}", prop_sig.key.as_ident().unwrap().sym.chars().as_str())
+}
+
+fn parse_type_literal_member_type(prop_sig: &TsPropertySignature) -> TokenStream {
+    let type_ann = prop_sig.type_ann.clone().unwrap();
+    let ts_type = *type_ann.type_ann.clone();
+    ts_type_to_rust_type(ts_type)
+}
 
 fn ts_type_to_rust_type(ts_type: TsType) -> TokenStream {
     match ts_type {
         TsType::TsKeywordType(ts_keyword_type) => parse_ts_keyword_type(ts_keyword_type),
         TsType::TsTypeRef(ts_type_ref) => parse_ts_type_ref(ts_type_ref),
         TsType::TsArrayType(ts_array_type) => parse_ts_array_type(ts_array_type),
-        TsType::TsThisType(_) => todo!(),
-        TsType::TsFnOrConstructorType(_) => todo!(),
-        TsType::TsTypeQuery(_) => todo!(),
-        TsType::TsTypeLit(_) => todo!(),
-        TsType::TsTupleType(_) => todo!(),
-        TsType::TsOptionalType(_) => todo!(),
-        TsType::TsRestType(_) => todo!(),
-        TsType::TsUnionOrIntersectionType(_) => todo!(),
-        TsType::TsConditionalType(_) => todo!(),
-        TsType::TsInferType(_) => todo!(),
-        TsType::TsParenthesizedType(_) => todo!(),
-        TsType::TsTypeOperator(_) => todo!(),
-        TsType::TsIndexedAccessType(_) => todo!(),
-        TsType::TsMappedType(_) => todo!(),
-        TsType::TsLitType(_) => todo!(),
-        TsType::TsTypePredicate(_) => todo!(),
-        TsType::TsImportType(_) => todo!(),
+        TsType::TsThisType(_) => todo!("ts_type_to_rust_type for TsThisType"),
+        TsType::TsFnOrConstructorType(_) => todo!("ts_type_to_rust_type for TsFnOorConstructorType"),
+        TsType::TsTypeQuery(_) => todo!("ts_type_to_rust_type for TsTypeQuery"),
+        TsType::TsTypeLit(_) => todo!("ts_type_to_rust_type for TsTypeLit"),
+        TsType::TsTupleType(_) => todo!("ts_type_to_rust_type for TsTupleType"),
+        TsType::TsOptionalType(_) => todo!("ts_type_to_rust_type for TsOptionalType"),
+        TsType::TsRestType(_) => todo!("ts_type_to_rust_type for TsRestType"),
+        TsType::TsUnionOrIntersectionType(_) => todo!("ts_type_to_rust_type for TsUnionOrIntersectionType"),
+        TsType::TsConditionalType(_) => todo!("ts_type_to_rust_type for TsConditionalType"),
+        TsType::TsInferType(_) => todo!("ts_type_to_rust_type for TsInferType"),
+        TsType::TsParenthesizedType(_) => todo!("ts_type_to_rust_type for TsParenthesizedType"),
+        TsType::TsTypeOperator(_) => todo!("ts_type_to_rust_type for TsTypeOperator"),
+        TsType::TsIndexedAccessType(_) => todo!("ts_type_to_rust_type for TsIndexedAccessType"),
+        TsType::TsMappedType(_) => todo!("ts_type_to_rust_type for TsMappedType"),
+        TsType::TsLitType(_) => todo!("ts_type_to_rust_type for TsLitType"),
+        TsType::TsTypePredicate(_) => todo!("ts_type_to_rust_type for TsTypePredicate"),
+        TsType::TsImportType(_) => todo!("ts_type_to_rust_type for TsImportType"),
     }
 }
