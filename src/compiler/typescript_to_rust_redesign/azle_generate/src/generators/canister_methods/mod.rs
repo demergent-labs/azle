@@ -1,9 +1,11 @@
 mod query;
 mod functions;
 mod update;
+mod types;
+mod type_aliases;
 
 pub use query::{
-    generate_query_function_token_streams,
+    generate_query_function_infos,
     get_query_fn_decls
 };
 
@@ -13,8 +15,22 @@ pub use update::{
 };
 
 pub use functions::{
-    generate_function_token_stream,
-    generate_type_aliases_token_stream
+    generate_function_info,
+    FunctionInformation
+};
+
+pub use type_aliases::{
+    generate_type_aliases_token_stream,
+    generate_with_hash_map
+};
+
+pub use types::{
+    RustType,
+    KeywordInfo,
+    TypeRefInfo,
+    ArrayTypeInfo,
+    StructInfo,
+    ts_type_to_rust_type
 };
 
 use swc_ecma_ast::{Program, FnDecl, ModuleDecl, ExportDecl, Module, TsTypeAliasDecl};
@@ -60,11 +76,11 @@ pub fn get_ast_type_alias_decls_from_program(program: &Program) -> Vec<TsTypeAli
     match program {
         Program::Module(module) => {
             // TODO get rid of this test code
-            let body_len = module.body.len();
-            if body_len != 6 {
-                return vec![]
-            }
-            println!("Continuing");
+            // let body_len = module.body.len();
+            // if body_len != 6 {
+            //     return vec![]
+            // }
+            // println!("Continuing");
             let export_decls = get_export_decls(module);
 
             let type_alias_decls: Vec<TsTypeAliasDecl> =

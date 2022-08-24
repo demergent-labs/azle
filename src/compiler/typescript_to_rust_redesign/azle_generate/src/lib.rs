@@ -5,7 +5,7 @@ use proc_macro::TokenStream;
 use quote::{
     quote
 };
-use std::path::Path;
+use std::{path::Path, collections::HashSet, iter::FromIterator};
 use swc_ecma_parser::{
     lexer::Lexer,
     Parser,
@@ -33,10 +33,21 @@ mod generators {
 
 use generators::canister_methods::{
     get_ast_fn_decls_from_programs,
-    generate_query_function_token_streams,
+    generate_query_function_infos,
     generate_type_aliases_token_stream,
-    get_query_fn_decls, get_update_fn_decls, generate_update_function_token_streams, get_ast_type_alias_decls_from_programs,
+    get_query_fn_decls, get_update_fn_decls, generate_update_function_token_streams, get_ast_type_alias_decls_from_programs, FunctionInformation,
 };
+
+use crate::generators::canister_methods::generate_with_hash_map;
+
+fn collect_function_type_dependencies(function_info: Vec<FunctionInformation>) -> HashSet<String>{
+    let dependencies = function_info
+        .iter()
+        .fold(vec![], |acc, fun_info| {
+            vec![acc, fun_info.dependant_types.clone()].concat()
+        });
+    HashSet::from_iter(dependencies.iter().cloned())
+}
 
 #[proc_macro]
 pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
@@ -57,16 +68,46 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
 
     // println!("ast_fnc_decls_query: {:#?}", ast_fnc_decls_query);
 
-    let query_function_token_streams = generate_query_function_token_streams(&ast_fnc_decls_query);
+    let query_function_info = generate_query_function_infos(&ast_fnc_decls_query);
+    let query_function_token_streams: Vec<proc_macro2::TokenStream> = query_function_info
+        .iter()
+        .map(|fun_info| {
+            fun_info.token_stream.clone()
+        })
+        .collect();
+
     // let query_inline_type_aliases = quote!();
-    let update_function_token_streams = generate_update_function_token_streams(&ast_fnc_decls_update);
+    let update_function_info = generate_update_function_token_streams(&ast_fnc_decls_update);
+    let update_function_token_streams: Vec<proc_macro2::TokenStream> = update_function_info
+        .iter()
+        .map(|fun_info| {
+            fun_info.token_stream.clone()
+        })
+        .collect();
     // let update_inline_type_aliases = quote!();
-    let type_aliases = generate_type_aliases_token_stream(&ast_type_alias_decls);
+
+    // Collect all dependant names
+    let query_function_dependant_types = collect_function_type_dependencies(query_function_info);
+    let update_function_dependant_types = collect_function_type_dependencies(update_function_info);
+
+    let dependant_types: HashSet<&String> = query_function_dependant_types.union(&update_function_dependant_types).collect();
+
+    println!("These are the query function dependant types: {:#?}", query_function_dependant_types);
+    println!("These are the update function dependant types: {:#?}", update_function_dependant_types);
+    println!("These are all the function dependant types: {:#?}", dependant_types);
+
+    // let type_aliases = generate_type_aliases_token_stream(&ast_type_alias_decls, &dependant_types);
+    let type_aliases_map = generate_with_hash_map(&ast_type_alias_decls, &dependant_types);
+
+    let type_aliases = type_aliases_map.iter().fold(quote!(), |acc, (name, token_stream)| {
+        quote!{
+            #acc
+            #token_stream
+        }
+    });
 
     quote! {
-        // #(#update_inline_type_aliases)*
-        // #(#query_inline_type_aliases)*
-        #(#type_aliases)*
+        #type_aliases
         #(#query_function_token_streams)*
         #(#update_function_token_streams)*
 
