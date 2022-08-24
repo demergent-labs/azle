@@ -3,22 +3,25 @@ use quote::{
 };
 use swc_ecma_ast::FnDecl;
 
-use super::generate_function_token_stream;
+use super::{generate_function_info, functions::FunctionInformation};
 
-pub fn generate_update_function_token_streams(ast_fnc_decls_update: &Vec<FnDecl>) -> Vec<proc_macro2::TokenStream> {
+pub fn generate_update_function_token_streams(ast_fnc_decls_update: &Vec<FnDecl>) -> Vec<FunctionInformation> {
     ast_fnc_decls_update.iter().map(|ast_fnc_decl_update| {
         generate_update_function_token_stream(ast_fnc_decl_update)
     }).collect()
 }
 
-fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl) -> proc_macro2::TokenStream {
-    let function_token_stream = generate_function_token_stream(ast_fnc_decl_update);
+fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl) -> FunctionInformation {
+    let function_info = generate_function_info(ast_fnc_decl_update);
+    let function_token_stream = function_info.token_stream;
 
-    quote! {
+    let token_stream = quote! {
         #[ic_cdk_macros::update]
         #[candid::candid_method(update)]
         #function_token_stream
-    }
+    };
+
+    FunctionInformation {token_stream, dependant_types: function_info.dependant_types, type_literals: function_info.type_literals}
 }
 
 pub fn get_update_fn_decls(fn_decls: &Vec<FnDecl>) -> Vec<FnDecl> {
