@@ -21,7 +21,7 @@ fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl) -> Functi
         #function_token_stream
     };
 
-    FunctionInformation {token_stream, dependant_types: function_info.dependant_types, type_literals: function_info.type_literals}
+    FunctionInformation {token_stream, dependant_types: function_info.dependant_types }
 }
 
 pub fn get_update_fn_decls(fn_decls: &Vec<FnDecl>) -> Vec<FnDecl> {

@@ -5,14 +5,12 @@ use quote::{
 };
 use swc_ecma_ast::{FnDecl, TsTypeAnn, Param };
 
-use super::{StructInfo, RustType, TypeRefInfo, ts_type_to_rust_type};
+use super::{RustType, TypeRefInfo, ts_type_to_rust_type};
 
 pub struct FunctionInformation {
     pub token_stream: TokenStream,
     // The dependant types need to have the name of the type so we can find the corresponding type and create a rust type
     pub dependant_types: Vec<String>,
-    // The type literals needs to have the full token stream for their rust type counterpart since they are only defined in line so we have no way to find them again.
-    pub type_literals: Vec<StructInfo>
 }
 
 pub fn generate_function_info(ast_fnc_decl_query: &FnDecl) -> FunctionInformation {
@@ -39,10 +37,8 @@ pub fn generate_function_info(ast_fnc_decl_query: &FnDecl) -> FunctionInformatio
         .fold(vec![], |acc, param_type| {
             let type_name: Option<String> = match param_type {
                 RustType::KeywordType(_) => None,
-                RustType::TypeRef(TypeRefInfo{token_stream: _, type_alias_dependency: type_dependency, inline_dependencies: _}) => type_dependency.clone(),
+                RustType::TypeRef(TypeRefInfo{token_stream: _, type_alias_dependency: type_dependency}) => type_dependency.clone(),
                 RustType::ArrayType(_) => None,
-                RustType::Struct(_) => None,
-                RustType::Enum(_) => todo!(),
             };
             match type_name {
                 Some(name) => {
@@ -53,9 +49,7 @@ pub fn generate_function_info(ast_fnc_decl_query: &FnDecl) -> FunctionInformatio
             }
         });
 
-    let type_literals = vec![];
-
-    FunctionInformation { token_stream, dependant_types, type_literals }
+    FunctionInformation { token_stream, dependant_types }
 }
 
 fn generate_param_name_idents(params: &Vec<Param>) -> Vec<Ident> {

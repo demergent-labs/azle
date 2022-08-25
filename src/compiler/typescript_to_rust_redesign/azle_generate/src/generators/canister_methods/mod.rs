@@ -29,7 +29,6 @@ pub use rust_types::{
     KeywordInfo,
     TypeRefInfo,
     ArrayTypeInfo,
-    StructInfo,
 };
 
 pub use types::{
