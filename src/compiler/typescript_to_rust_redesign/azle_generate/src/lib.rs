@@ -91,17 +91,8 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
 
     let dependant_types: HashSet<&String> = query_function_dependant_types.union(&update_function_dependant_types).collect();
 
-    println!("These are the query function dependant types: {:#?}", query_function_dependant_types);
-    println!("These are the update function dependant types: {:#?}", update_function_dependant_types);
-    println!("These are all the function dependant types: {:#?}", dependant_types);
-
     // let type_aliases = generate_type_aliases_token_stream(&ast_type_alias_decls, &dependant_types);
     let type_aliases_map = generate_type_alias_token_streams(&dependant_types, &ast_type_alias_decls);
-
-    println!("These are all of the dependencies that we found for the whole program");
-    for thing in type_aliases_map.clone() {
-        println!("{}", thing.0)
-    }
 
     let type_aliases = type_aliases_map.iter().fold(quote!(), |acc, (_name, token_stream)| {
         quote!{
