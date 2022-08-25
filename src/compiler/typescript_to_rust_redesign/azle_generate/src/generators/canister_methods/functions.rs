@@ -39,9 +39,10 @@ pub fn generate_function_info(ast_fnc_decl_query: &FnDecl) -> FunctionInformatio
         .fold(vec![], |acc, param_type| {
             let type_name: Option<String> = match param_type {
                 RustType::KeywordType(_) => None,
-                RustType::TypeRef(TypeRefInfo{token_stream: _, name}) => name.clone(),
+                RustType::TypeRef(TypeRefInfo{token_stream: _, type_alias_dependency: type_dependency, inline_dependencies: _}) => type_dependency.clone(),
                 RustType::ArrayType(_) => None,
                 RustType::Struct(_) => None,
+                RustType::Enum(_) => todo!(),
             };
             match type_name {
                 Some(name) => {

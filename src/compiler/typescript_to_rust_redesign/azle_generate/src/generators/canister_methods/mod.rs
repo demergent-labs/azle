@@ -3,6 +3,7 @@ mod functions;
 mod update;
 mod types;
 mod type_aliases;
+mod rust_types;
 
 pub use query::{
     generate_query_function_infos,
@@ -20,16 +21,18 @@ pub use functions::{
 };
 
 pub use type_aliases::{
-    generate_type_aliases_token_stream,
-    generate_with_hash_map
+    generate_type_alias_token_streams
 };
 
-pub use types::{
+pub use rust_types::{
     RustType,
     KeywordInfo,
     TypeRefInfo,
     ArrayTypeInfo,
     StructInfo,
+};
+
+pub use types::{
     ts_type_to_rust_type
 };
 
