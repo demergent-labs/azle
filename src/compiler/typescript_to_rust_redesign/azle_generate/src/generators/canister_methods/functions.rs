@@ -5,7 +5,7 @@ use quote::{
 };
 use swc_ecma_ast::{FnDecl, TsTypeAnn, Param };
 
-use super::{RustType, ts_type_to_rust_type, rust_types::StructInfoTODORename};
+use super::{RustType, ts_type_to_rust_type, rust_types::StructInfo};
 
 #[derive(Clone)]
 pub struct FunctionInformation {
@@ -13,7 +13,7 @@ pub struct FunctionInformation {
     // The dependant types need to have the name of the type so we can find the corresponding type and create a rust type
     pub dependant_types: Vec<String>,
 
-    pub inline_dependant_types: Vec<StructInfoTODORename>
+    pub inline_dependant_types: Box<Vec<StructInfo>>
 }
 
 pub fn generate_function_info(ast_fnc_decl_query: &FnDecl, count: u32) -> (FunctionInformation, u32) {
@@ -70,10 +70,11 @@ pub fn generate_function_info(ast_fnc_decl_query: &FnDecl, count: u32) -> (Funct
         .fold(vec![], |acc, thing| {
             let dependencies_option = thing.get_inline_dependencies();
             match dependencies_option {
-                Some(dependencies) => vec![acc, vec![dependencies]].concat(),
+                Some(dependency) => vec![acc, vec![dependency]].concat(),
                 None => acc,
             }
         });
+    let inline_dependant_types: Box<Vec<StructInfo>> = Box::from(inline_dependant_types);
 
     println!("These are the type_alias_dependant_types at the function level {:#?}", dependant_types);
 

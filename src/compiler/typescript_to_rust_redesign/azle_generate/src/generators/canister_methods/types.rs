@@ -4,7 +4,7 @@ use quote::{
 };
 use swc_ecma_ast::{ TsType, TsKeywordTypeKind, TsKeywordType, TsTypeRef, TsArrayType };
 
-use super::{ RustType, KeywordInfo, ArrayTypeInfo, TypeRefInfo, type_aliases::ts_type_literal_to_rust_struct, rust_types::StructInfoTODORename };
+use super::{ RustType, KeywordInfo, ArrayTypeInfo, TypeRefInfo, type_aliases::ts_type_literal_to_rust_struct, rust_types::StructInfo };
 
 pub fn ts_type_to_rust_type(ts_type: &TsType, count: u32) -> (RustType, u32) {
     let mut count = count;
@@ -22,16 +22,16 @@ pub fn ts_type_to_rust_type(ts_type: &TsType, count: u32) -> (RustType, u32) {
         },
         TsType::TsTypeLit(ts_type_lit) => {
             let ts_type_ident = format_ident!("AzleInlineStruct_{}", count);
+            count += 1;
             let result = ts_type_literal_to_rust_struct(&ts_type_ident, ts_type_lit, count);
             count = result.1;
-            let result = result.0;
-            let struct_info = StructInfoTODORename{
-                identifier: quote!(#ts_type_ident),
-                structure: result.token_stream,
-                inline_dependencies: vec![],
-                type_alias_dependencies: result.type_alias_dependencies
-            };
-            count += 1;
+            let struct_info = result.0;
+            // let struct_info = StructInfoTODORename{
+            //     identifier: quote!(#ts_type_ident),
+            //     structure: result.token_stream,
+            //     inline_dependencies: Box::from(vec![]),
+            //     type_alias_dependencies: result.type_alias_dependencies
+            // };
             RustType::Struct(struct_info)
         },
         TsType::TsThisType(_) => todo!("ts_type_to_rust_type for TsThisType"),

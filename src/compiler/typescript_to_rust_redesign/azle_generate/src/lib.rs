@@ -34,7 +34,7 @@ mod generators {
 use generators::canister_methods::{
     get_ast_fn_decls_from_programs,
     generate_query_function_infos,
-    get_query_fn_decls, get_update_fn_decls, generate_update_function_token_streams, get_ast_type_alias_decls_from_programs, FunctionInformation, StructInfoTODORename,
+    get_query_fn_decls, get_update_fn_decls, generate_update_function_token_streams, get_ast_type_alias_decls_from_programs, FunctionInformation, StructInfo,
 };
 
 use crate::generators::canister_methods::generate_type_alias_token_streams;
@@ -56,11 +56,14 @@ fn collect_inline_dependencies(function_info: &Vec<FunctionInformation>) -> Vec<
         })
 }
 
-fn get_better_name(struct_info: &Vec<StructInfoTODORename>) -> Vec<proc_macro2::TokenStream> {
-    struct_info.iter().fold(vec![], |acc2, inlines| {
-        let thing = &inlines.structure;
-        let things = get_better_name(&inlines.inline_dependencies);
-        vec![acc2, things, vec![thing.clone()]].concat()
+fn get_better_name(struct_info: &Box<Vec<StructInfo>>) -> Vec<proc_macro2::TokenStream> {
+    struct_info.iter().fold(vec![], |acc2, dependencies| {
+        let this_dependency_token_stream = &dependencies.structure;
+        let sub_dependency_token_streams = get_better_name(&dependencies.inline_dependencies);
+        println!("This is the main one {}", this_dependency_token_stream.to_string());
+        let cool_strings: Vec<String> = sub_dependency_token_streams.iter().map(|token_stream| token_stream.to_string()).collect();
+        println!("This is the sub ones {:#?}", cool_strings);
+        vec![acc2, sub_dependency_token_streams, vec![this_dependency_token_stream.clone()]].concat()
     })
 }
 
@@ -82,10 +85,10 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
     let ast_fnc_decls_update = get_update_fn_decls(&ast_fnc_decls);
 
     // println!("ast_fnc_decls_query: {:#?}", ast_fnc_decls_query);
-    let count = 0;
+    let inline_structs_counts = 0;
 
-    let query_function_info = generate_query_function_infos(&ast_fnc_decls_query, count);
-    let count = query_function_info.1;
+    let query_function_info = generate_query_function_infos(&ast_fnc_decls_query, inline_structs_counts);
+    let inline_structs_counts = query_function_info.1;
     let query_function_info = query_function_info.0;
     let query_function_token_streams: Vec<proc_macro2::TokenStream> = query_function_info
         .iter()
@@ -95,7 +98,7 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
         .collect();
 
     // let query_inline_type_aliases = quote!();
-    let update_function_info = generate_update_function_token_streams(&ast_fnc_decls_update, count);
+    let update_function_info = generate_update_function_token_streams(&ast_fnc_decls_update, inline_structs_counts);
     let count = update_function_info.1;
     let update_function_info = update_function_info.0;
     let update_function_token_streams: Vec<proc_macro2::TokenStream> = update_function_info
@@ -116,7 +119,11 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
     let update_function_inline_dependant_types = collect_inline_dependencies(&update_function_info);
     let inline_types = vec![query_function_inline_dependant_types, update_function_inline_dependant_types].concat();
 
-    // println!("#######################\nThese are the inline types {:#?}", inline_types);
+    let inline_types_vec: Vec<String> = inline_types.iter().map(|thing| {
+        thing.to_string()
+    }).collect();
+
+    println!("#######################\nThese are the inline types {:#?}", inline_types_vec);
     println!("#######################\nThese are the dependant types {:#?}", type_alias_dependant_types);
 
     // let type_aliases = generate_type_aliases_token_stream(&ast_type_alias_decls, &dependant_types);

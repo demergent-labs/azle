@@ -33,7 +33,7 @@ pub enum RustType {
     KeywordType(KeywordInfo),
     TypeRef(TypeRefInfo),
     ArrayType(ArrayTypeInfo),
-    Struct(StructInfoTODORename)
+    Struct(StructInfo)
 }
 
 /**
@@ -53,14 +53,14 @@ pub struct KeywordInfo {
 pub struct TypeRefInfo {
     pub identifier: TokenStream,
     pub type_alias_dependency: Option<String>,
-    pub inline_enclosed_type: Option<StructInfoTODORename> // Opt and Variants are examples of TypeRefs that have enclosed types
+    pub inline_enclosed_type: Option<StructInfo> // Opt and Variants are examples of TypeRefs that have enclosed types
 }
 
 #[derive(Clone)]
 pub struct ArrayTypeInfo {
     pub identifier: TokenStream,
     pub type_alias_dependency: Option<String>,
-    pub inline_enclosed_type: Option<StructInfoTODORename>
+    pub inline_enclosed_type: Option<StructInfo>
 }
 
 /**
@@ -95,11 +95,12 @@ pub struct ArrayTypeInfo {
  * pub fn name() -> AzleInlineStruct_2
  */
 #[derive(Clone, Default, Debug)]
-pub struct StructInfoTODORename {
+pub struct StructInfo {
     pub identifier: TokenStream,
+    pub name: String,
     pub type_alias_dependencies: Vec<String>,
     pub structure: TokenStream,
-    pub inline_dependencies: Vec<StructInfoTODORename>
+    pub inline_dependencies: Box<Vec<StructInfo>>
 }
 
 // pub struct EnumInfoTODORename {
@@ -138,7 +139,7 @@ impl RustType {
         }
     }
 
-    pub fn get_inline_dependencies(&self) -> Option<StructInfoTODORename> {
+    pub fn get_inline_dependencies(&self) -> Option<StructInfo> {
         match self {
             RustType::Struct(struct_info) => Some(struct_info.clone()),
             _ => None
