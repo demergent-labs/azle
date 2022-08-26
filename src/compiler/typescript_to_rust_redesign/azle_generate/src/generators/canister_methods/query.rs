@@ -3,16 +3,21 @@ use quote::{
 };
 use swc_ecma_ast::{FnDecl};
 
-use super::{generate_function_info, functions::FunctionInformation};
+use super::{generate_function_info, functions::{FunctionInformation, self}};
 
-pub fn generate_query_function_infos(ast_fnc_decls_query: &Vec<FnDecl>) -> Vec<FunctionInformation> {
-    ast_fnc_decls_query.iter().map(|ast_fnc_decl_query| {
-        generate_query_function_info(ast_fnc_decl_query)
-    }).collect()
+pub fn generate_query_function_infos(ast_fnc_decls_query: &Vec<FnDecl>, count: u32) -> (Vec<FunctionInformation>, u32) {
+    ast_fnc_decls_query.iter().fold((vec![], count), |acc, ast_fnc_decl_query| {
+        let result = generate_query_function_info(ast_fnc_decl_query, acc.1);
+        let count = result.1;
+        (vec![acc.0, vec![result.0]].concat(), count)
+    })
 }
 
-fn generate_query_function_info(ast_fnc_decl_query: &FnDecl) -> FunctionInformation {
-    let function_info = generate_function_info(ast_fnc_decl_query);
+fn generate_query_function_info(ast_fnc_decl_query: &FnDecl, count: u32) -> (FunctionInformation, u32) {
+    let function_info = generate_function_info(ast_fnc_decl_query, count);
+    let count = function_info.1;
+    let function_info = function_info.0;
+
     let function_token_stream = function_info.token_stream;
 
     let token_stream = quote! {
@@ -21,7 +26,7 @@ fn generate_query_function_info(ast_fnc_decl_query: &FnDecl) -> FunctionInformat
         #function_token_stream
     };
 
-    FunctionInformation { token_stream, dependant_types: function_info.dependant_types }
+    (FunctionInformation { token_stream, ..function_info }, count)
 }
 
 pub fn get_query_fn_decls(fn_decls: &Vec<FnDecl>) -> Vec<FnDecl> {

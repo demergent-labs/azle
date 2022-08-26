@@ -14,18 +14,22 @@ use super::{types::{parse_ts_keyword_type, parse_ts_type_ref, parse_ts_array_typ
  * the type aliases, converts them to a rust type, and inserts it into the
  * result map
  */
-pub fn generate_type_alias_token_streams(dependant_types: &HashSet<&String>, ast_type_alias_decls: &Vec<TsTypeAliasDecl>) -> HashMap<String, TokenStream> {
+pub fn generate_type_alias_token_streams(dependant_types: &HashSet<&String>, ast_type_alias_decls: &Vec<TsTypeAliasDecl>, count: u32) -> (HashMap<String, TokenStream>, u32) {
     let type_alias_lookup = generate_hash_map(ast_type_alias_decls);
 
     // For each dependant type, generate a dependency map and add it to the overall dependency map
-    dependant_types.iter().fold(HashMap::new(), |mut all_dependencies, dependant_type| {
+    dependant_types.iter().fold((HashMap::new(), count), |mut acc, dependant_type| {
         let type_alias_decl = type_alias_lookup.get(dependant_type.clone());
         let dependencies_map: HashMap<String, TokenStream> = match type_alias_decl {
-            Some(decl) => generate_dependencies_map_for(decl, &type_alias_lookup),
+            Some(decl) => {
+                let result = generate_dependencies_map_for(decl, &type_alias_lookup, acc.1);
+                acc.1 = result.1;
+                result.0
+            },
             None => todo!("ERROR: Dependant Type [{dependant_type}] not found type alias list!"),
         };
-        all_dependencies.extend(dependencies_map.into_iter());
-        all_dependencies
+        acc.0.extend(dependencies_map.into_iter());
+        acc
     })
 }
 
@@ -56,7 +60,7 @@ pub fn generate_type_alias_token_streams(dependant_types: &HashSet<&String>, ast
  *     sub_id2: `type sub_id2 = SubTsType2AsTokenStream`;
  * }
  */
-fn generate_dependencies_map_for(type_alias_decl: &TsTypeAliasDecl, type_alias_lookup: &HashMap<String, TsTypeAliasDecl>) -> HashMap<String, TokenStream> {
+fn generate_dependencies_map_for(type_alias_decl: &TsTypeAliasDecl, type_alias_lookup: &HashMap<String, TsTypeAliasDecl>, count: u32) -> (HashMap<String, TokenStream>, u32) {
     // TODO I feel like this might run into some namespace issues
     let ts_type_name = type_alias_decl.id.sym.chars().as_str().to_string();
     let ts_type_ident = format_ident!("{}", ts_type_name);
@@ -64,50 +68,63 @@ fn generate_dependencies_map_for(type_alias_decl: &TsTypeAliasDecl, type_alias_l
     let ts_type = *type_alias_decl.type_ann.clone();
 
     let mut result: HashMap<String, TokenStream> = HashMap::new();
+    let mut count = count;
 
     match ts_type {
         TsType::TsKeywordType(ts_keyword_type) => {
-            let keyword_stream = parse_ts_keyword_type(&ts_keyword_type).token_stream;
+            let keyword_stream = parse_ts_keyword_type(&ts_keyword_type).identifier;
             result.insert(ts_type_name, quote!(type #ts_type_ident = #keyword_stream;));
         },
         TsType::TsTypeRef(ts_type_ref) => {
-            let type_ref = parse_ts_type_ref(&ts_type_ref);
+            let type_ref = parse_ts_type_ref(&ts_type_ref, count);
+            count = type_ref.1;
+            let type_ref = type_ref.0;
             if let Some(type_dependency) = type_ref.type_alias_dependency {
                 let dep_type = type_alias_lookup.get(&type_dependency);
                 match dep_type {
                     Some(dep_decl) => {
-                        let ts_type_ref_result = generate_dependencies_map_for(dep_decl, type_alias_lookup);
+                        let ts_type_ref_result = generate_dependencies_map_for(dep_decl, type_alias_lookup, count);
+                        count = ts_type_ref_result.1;
+                        let ts_type_ref_result = ts_type_ref_result.0;
                         result.extend(ts_type_ref_result.into_iter());
                     },
                     None => todo!("Could not find {type_dependency} in the hash map"),
                 }
             }
-            let type_ref_stream = type_ref.token_stream;
+            let type_ref_stream = type_ref.identifier;
             result.insert(ts_type_name, quote!(type #ts_type_ident = #type_ref_stream;));
         },
         TsType::TsArrayType(ts_array_type) => {
-            let array_type = parse_ts_array_type(&ts_array_type);
+            let array_type = parse_ts_array_type(&ts_array_type, count);
+            count = array_type.1;
+            let array_type = array_type.0;
             if let Some(type_dependency) = array_type.type_alias_dependency {
                 let dep_type = type_alias_lookup.get(&type_dependency);
                 match dep_type {
                     Some(dep_decl) => {
-                        let ts_type_ref_result = generate_dependencies_map_for(dep_decl, type_alias_lookup);
+                        let ts_type_ref_result = generate_dependencies_map_for(dep_decl, type_alias_lookup, count);
+                        count = ts_type_ref_result.1;
+                        let ts_type_ref_result = ts_type_ref_result.0;
                         result.extend(ts_type_ref_result.into_iter());
                     },
                     None => todo!("Could not find {type_dependency} in the hash map"),
                 }
             }
-            let type_ref_stream = array_type.token_stream;
+            let type_ref_stream = array_type.identifier;
             result.insert(ts_type_name, quote!(type #ts_type_ident = #type_ref_stream;));
         },
         TsType::TsTypeLit(ts_type_lit) => {
-            let rust_struct = ts_type_literal_to_rust_struct(&ts_type_ident, &ts_type_lit);
+            let rust_struct = ts_type_literal_to_rust_struct(&ts_type_ident, &ts_type_lit, count);
+            count = rust_struct.1;
+            let rust_struct = rust_struct.0;
             let dep_type_map = rust_struct.type_alias_dependencies
                 .iter()
                 .fold(HashMap::new(), |mut acc, dep_name| {
                     let dep_decl = type_alias_lookup.get(dep_name);
 
-                    let dep_result = generate_dependencies_map_for(dep_decl.unwrap(), type_alias_lookup);
+                    let dep_result = generate_dependencies_map_for(dep_decl.unwrap(), type_alias_lookup, count);
+                    count = dep_result.1;
+                    let dep_result = dep_result.0;
                     acc.extend(dep_result.into_iter());
                     acc
             });
@@ -131,7 +148,7 @@ fn generate_dependencies_map_for(type_alias_decl: &TsTypeAliasDecl, type_alias_l
         TsType::TsTypePredicate(_) => todo!("generate for predicate"),
         TsType::TsImportType(_) => todo!("generate for import"),
     };
-    result
+    (result, count)
 }
 
 fn generate_hash_map(ast_type_alias_decls: &Vec<TsTypeAliasDecl>) -> HashMap<String, TsTypeAliasDecl> {
@@ -145,84 +162,98 @@ fn generate_hash_map(ast_type_alias_decls: &Vec<TsTypeAliasDecl>) -> HashMap<Str
 }
 
 fn collect_dependencies(rust_type: &RustType) -> Vec<String> {
-    let dependencies = rust_type.get_type_alias_dependency();
-    match dependencies {
-        Some(dependency) => vec![dependency.clone()],
-        None => vec![],
-    }
+    rust_type.get_type_alias_dependency()
 }
 
-fn parse_type_literal_members(member: &TsTypeElement) -> (TokenStream, Vec<String>) {
+fn parse_type_literal_members(member: &TsTypeElement, count: u32) -> (TokenStream, Vec<String>, u32) {
     match member.as_ts_property_signature() {
         Some(prop_sig) => {
             let member_name = parse_type_literal_member_name(prop_sig);
-            let member_type = parse_type_literal_member_type(prop_sig);
+            let member_type = parse_type_literal_member_type(prop_sig, count);
+            let count = member_type.1;
+            let member_type = member_type.0;
             let member_type_token_stream = member_type.get_type_ident();
             let type_dependencies = collect_dependencies(&member_type);
-            (quote!(#member_name: #member_type_token_stream), type_dependencies)
+            (quote!(#member_name: #member_type_token_stream), type_dependencies, count)
         }
         None => todo!("Handle parsing type literals if the member isn't a TsPropertySignature"),
     }
 }
 
-fn azle_variant_to_rust_enum(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit) -> EnumInfo {
-    let members: Vec<(TokenStream, Vec<String>)> = ts_type_lit.members.iter().map(|member| {
-        parse_type_literal_members_for_enum(member)
-    }).collect();
-    let member_token_streams = members.iter().map(|member| member.0.clone());
-    let type_dependencies = members.iter().fold(vec![], |acc, member| vec![acc, member.1.clone()].concat());
+fn azle_variant_to_rust_enum(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit, count: u32) -> (EnumInfo, u32) {
+    let members: (Vec<(TokenStream, Vec<String>)>, u32) = ts_type_lit.members.iter().fold((vec![], count), |acc, member| {
+        let result = parse_type_literal_members_for_enum(member, acc.1);
+        let count = result.2;
+        let result = vec![acc.0, vec![(result.0, result.1)]].concat();
+        (result, count)
+    });
+    // let members: Vec<(TokenStream, Vec<String>)> = ts_type_lit.members.iter().map(|member| {
+    //     parse_type_literal_members_for_enum(member, count)
+    // }).collect();
+    let member_token_streams = members.0.iter().map(|member| member.0.clone());
+    let type_dependencies = members.0.iter().fold(vec![], |acc, member| vec![acc, member.1.clone()].concat());
+    let count = members.1;
     let token_stream = quote!(
         #[derive(serde::Serialize, serde::Deserialize, Debug, candid::CandidType, Clone)]
         enum #ts_type_ident {
             #(#member_token_streams),*
         }
     );
-    EnumInfo { token_stream, name: "CoolEnumBro".to_string(), type_alias_dependencies: type_dependencies }
+    (EnumInfo { token_stream, name: "CoolEnumBro".to_string(), type_alias_dependencies: type_dependencies }, count)
 }
 
-fn parse_type_literal_members_for_enum(member: &TsTypeElement) -> (TokenStream, Vec<String>) {
+fn parse_type_literal_members_for_enum(member: &TsTypeElement, count: u32) -> (TokenStream, Vec<String>, u32) {
     match member.as_ts_property_signature() {
         Some(prop_sig) => {
             let member_name = parse_type_literal_member_name(prop_sig);
-            let member_type = parse_type_literal_member_type(prop_sig);
+            let member_type = parse_type_literal_member_type(prop_sig, count);
+            let count = member_type.1;
+            let member_type = member_type.0;
             if ! prop_sig.optional {
                 todo!("Handle if the user didn't make the type optional");
             }
             let member_type_token_stream = member_type.get_type_ident();
             let type_dependencies = collect_dependencies(&member_type);
-            (quote!{#member_name(#member_type_token_stream)}, type_dependencies)
+            (quote!{#member_name(#member_type_token_stream)}, type_dependencies, count)
         }
         None => todo!("Handle parsing type literals if the member isn't a TsPropertySignature"),
     }
 }
 
-pub fn ts_type_literal_to_rust_struct(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit) -> StructInfo {
-    let members: Vec<(TokenStream, Vec<String>)> = ts_type_lit.members.iter().map(|member| {
-        parse_type_literal_members(member)
-    }).collect();
-    let member_token_streams = members.iter().map(|member| member.0.clone());
-    let type_dependencies = members.iter().fold(vec![], |acc, member| vec![acc, member.1.clone()].concat());
+pub fn ts_type_literal_to_rust_struct(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit, count: u32) -> (StructInfo, u32) {
+    let members: (Vec<(TokenStream, Vec<String>)>, u32) = ts_type_lit.members.iter().fold((vec![], count), |acc, member| {
+        let result = parse_type_literal_members(member, acc.1);
+        let count = result.2;
+        let result = vec![acc.0, vec![(result.0, result.1)]].concat();
+        (result, count)
+    });
+    // let members: Vec<(TokenStream, Vec<String>)> = ts_type_lit.members.iter().map(|member| {
+    //     parse_type_literal_members(member)
+    // }).collect();
+    let member_token_streams = members.0.iter().map(|member| member.0.clone());
+    let type_dependencies = members.0.iter().fold(vec![], |acc, member| vec![acc, member.1.clone()].concat());
+    let count = members.1;
     let token_stream = quote!(
         #[derive(serde::Serialize, serde::Deserialize, Debug, candid::CandidType, Clone)]
         struct #ts_type_ident {
             #(#member_token_streams),*
         }
     );
-    StructInfo {
+    (StructInfo {
         token_stream,
         name: ts_type_ident.to_string(),
         type_alias_dependencies: type_dependencies,
-    }
+    }, count)
 }
 
 fn parse_type_literal_member_name(prop_sig: &TsPropertySignature) -> Ident {
     format_ident!("{}", prop_sig.key.as_ident().unwrap().sym.chars().as_str())
 }
 
-fn parse_type_literal_member_type(prop_sig: &TsPropertySignature) -> RustType {
+fn parse_type_literal_member_type(prop_sig: &TsPropertySignature, count: u32) -> (RustType, u32) {
     let type_ann = prop_sig.type_ann.clone().unwrap();
     let ts_type = *type_ann.type_ann.clone();
-    ts_type_to_rust_type(&ts_type)
+    ts_type_to_rust_type(&ts_type, count)
 }
 
 #[derive(Clone)]
