@@ -5,14 +5,18 @@ use swc_ecma_ast::FnDecl;
 
 use super::{generate_function_info, functions::FunctionInformation};
 
-pub fn generate_update_function_token_streams(ast_fnc_decls_update: &Vec<FnDecl>) -> Vec<FunctionInformation> {
-    ast_fnc_decls_update.iter().map(|ast_fnc_decl_update| {
-        generate_update_function_token_stream(ast_fnc_decl_update)
-    }).collect()
+pub fn generate_update_function_token_streams(ast_fnc_decls_update: &Vec<FnDecl>, count: u32) -> (Vec<FunctionInformation>, u32) {
+    ast_fnc_decls_update.iter().fold((vec![], count), |acc, ast_fnc_decl_update| {
+        let result = generate_update_function_token_stream(ast_fnc_decl_update, acc.1);
+        let count = result.1;
+        (vec![acc.0, vec![result.0]].concat(), count)
+    })
 }
 
-fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl) -> FunctionInformation {
-    let function_info = generate_function_info(ast_fnc_decl_update);
+fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl, count: u32) -> (FunctionInformation, u32) {
+    let function_info = generate_function_info(ast_fnc_decl_update, count);
+    let count = function_info.1;
+    let function_info = function_info.0;
     let function_token_stream = function_info.token_stream;
 
     let token_stream = quote! {
@@ -21,7 +25,7 @@ fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl) -> Functi
         #function_token_stream
     };
 
-    FunctionInformation {token_stream, dependant_types: function_info.dependant_types }
+    (FunctionInformation {token_stream, ..function_info }, count)
 }
 
 pub fn get_update_fn_decls(fn_decls: &Vec<FnDecl>) -> Vec<FnDecl> {

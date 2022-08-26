@@ -33,6 +33,7 @@ pub enum RustType {
     KeywordType(KeywordInfo),
     TypeRef(TypeRefInfo),
     ArrayType(ArrayTypeInfo),
+    Struct(StructInfoTODORename)
 }
 
 /**
@@ -45,38 +46,102 @@ pub enum RustType {
  */
 #[derive(Clone)]
 pub struct KeywordInfo {
-    pub token_stream: TokenStream
+    pub identifier: TokenStream
 }
 
 #[derive(Clone, Default)]
 pub struct TypeRefInfo {
-    pub token_stream: TokenStream,
+    pub identifier: TokenStream,
     pub type_alias_dependency: Option<String>,
+    pub inline_enclosed_type: Option<StructInfoTODORename> // Opt and Variants are examples of TypeRefs that have enclosed types
 }
 
 #[derive(Clone)]
 pub struct ArrayTypeInfo {
-    pub token_stream: TokenStream,
+    pub identifier: TokenStream,
     pub type_alias_dependency: Option<String>,
+    pub inline_enclosed_type: Option<StructInfoTODORename>
 }
+
+/**
+ * export function name(): {member1: string, member2: boolean}
+ * export function name(): {member1: MemberStruct, member2: {sub_member1: TypeAliasType1, sub_member2: TypeAliasType2}}
+ *
+ * the first one will look like this
+ * StructInfo {
+ *     identifier: quote!{AzleInlineStruct_1},
+ *     type_alias_dependencies: [],
+ *     structure: quote!{struct AzleInlineStruct_1 {member1: String, member2: bool}},
+ *     inline_dependencies []
+ * }
+ *
+ * the second one will look like this
+ * StructInfo {
+ *     identifier: quote!{AzleInlineStruct_2},
+ *     type_alias_dependencies: ["MemberStruct"],
+ *     structure: quote!{struct AzleInlineStruct_2 {member1: MemberStruct, member2: AzleInlineStruct_3}},
+ *     inline_dependencies [
+ *         StructInfo {
+ *             identifier: quote!{AzleInlineStruct_3},
+ *             type_alias_dependencies: ["TypeAliasType1", "TypeAliasType2"],
+ *             structure: quote!{struct AzleInlineStruct_3 {sub_member1: TypeAliasType1, sub_member2: TypeAliasType2}},
+ *             inline_dependencies []
+ *         }
+ *     ]
+ * }
+ *
+ * The final rust version of these functions will be
+ * pub fn name() -> AzleInlineStruct_1
+ * pub fn name() -> AzleInlineStruct_2
+ */
+#[derive(Clone, Default, Debug)]
+pub struct StructInfoTODORename {
+    pub identifier: TokenStream,
+    pub type_alias_dependencies: Vec<String>,
+    pub structure: TokenStream,
+    pub inline_dependencies: Vec<StructInfoTODORename>
+}
+
+// pub struct EnumInfoTODORename {
+//     pub identifier: TokenStream,
+//     pub type_alias_dependencies: Vec<String>,
+//     pub structure:
+// }
 
 impl RustType {
     pub fn get_type_ident(&self) -> TokenStream {
         let token_stream = match self {
-            RustType::KeywordType(KeywordInfo{token_stream}) => token_stream,
-            RustType::TypeRef(TypeRefInfo{token_stream, type_alias_dependency: _}) => token_stream,
-            RustType::ArrayType(ArrayTypeInfo{token_stream, type_alias_dependency: _}) => token_stream,
+            RustType::KeywordType(keyword_info) => &keyword_info.identifier,
+            RustType::TypeRef(type_ref_info) => &type_ref_info.identifier,
+            RustType::ArrayType(array_info) => &array_info.identifier,
+            RustType::Struct(struct_info) => &struct_info.identifier,
         };
         quote!(#token_stream)
     }
 
-    pub fn get_type_alias_dependency(&self) -> Option<String> {
+    pub fn get_type_alias_dependency(&self) -> Vec<String> {
         match self {
-            RustType::KeywordType(KeywordInfo{token_stream: _}) => None,
-            RustType::TypeRef(TypeRefInfo{token_stream: _, type_alias_dependency}) => {
-                type_alias_dependency.clone()
+            RustType::TypeRef(type_ref_info) => {
+                match type_ref_info.type_alias_dependency.clone() {
+                    Some(dependency) => vec![dependency],
+                    None => vec![],
+                }
             },
-            RustType::ArrayType(ArrayTypeInfo{token_stream: _, type_alias_dependency}) => type_alias_dependency.clone(),
+            RustType::ArrayType(array_info) => {
+                match array_info.type_alias_dependency.clone() {
+                    Some(dependency) => vec![dependency],
+                    None => vec![],
+                }
+            },
+            RustType::Struct(struct_info) => struct_info.type_alias_dependencies.clone(),
+            _ => vec![]
+        }
+    }
+
+    pub fn get_inline_dependencies(&self) -> Option<StructInfoTODORename> {
+        match self {
+            RustType::Struct(struct_info) => Some(struct_info.clone()),
+            _ => None
         }
     }
 }

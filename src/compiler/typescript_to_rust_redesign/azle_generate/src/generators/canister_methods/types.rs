@@ -4,14 +4,36 @@ use quote::{
 };
 use swc_ecma_ast::{ TsType, TsKeywordTypeKind, TsKeywordType, TsTypeRef, TsArrayType };
 
-use super::{ RustType, KeywordInfo, ArrayTypeInfo, TypeRefInfo };
+use super::{ RustType, KeywordInfo, ArrayTypeInfo, TypeRefInfo, type_aliases::ts_type_literal_to_rust_struct, rust_types::StructInfoTODORename };
 
-pub fn ts_type_to_rust_type(ts_type: &TsType) -> RustType {
-    match ts_type {
+pub fn ts_type_to_rust_type(ts_type: &TsType, count: u32) -> (RustType, u32) {
+    let mut count = count;
+    let rust_type = match ts_type {
         TsType::TsKeywordType(ts_keyword_type) => RustType::KeywordType(parse_ts_keyword_type(ts_keyword_type)),
-        TsType::TsTypeRef(ts_type_ref) => RustType::TypeRef(parse_ts_type_ref(ts_type_ref)),
-        TsType::TsArrayType(ts_array_type) => RustType::ArrayType(parse_ts_array_type(ts_array_type)),
-        TsType::TsTypeLit(_) => todo!("ts_type_to_rust_type for TsTypeLit"),
+        TsType::TsTypeRef(ts_type_ref) => {
+            let result = parse_ts_type_ref(ts_type_ref, count);
+            count = result.1;
+            RustType::TypeRef(result.0)
+        },
+        TsType::TsArrayType(ts_array_type) => {
+            let result = parse_ts_array_type(ts_array_type, count);
+            count = result.1;
+            RustType::ArrayType(result.0)
+        },
+        TsType::TsTypeLit(ts_type_lit) => {
+            let ts_type_ident = format_ident!("AzleInlineStruct_{}", count);
+            let result = ts_type_literal_to_rust_struct(&ts_type_ident, ts_type_lit, count);
+            count = result.1;
+            let result = result.0;
+            let struct_info = StructInfoTODORename{
+                identifier: quote!(#ts_type_ident),
+                structure: result.token_stream,
+                inline_dependencies: vec![],
+                type_alias_dependencies: result.type_alias_dependencies
+            };
+            count += 1;
+            RustType::Struct(struct_info)
+        },
         TsType::TsThisType(_) => todo!("ts_type_to_rust_type for TsThisType"),
         TsType::TsFnOrConstructorType(_) => todo!("ts_type_to_rust_type for TsFnOorConstructorType"),
         TsType::TsTypeQuery(_) => todo!("ts_type_to_rust_type for TsTypeQuery"),
@@ -28,7 +50,8 @@ pub fn ts_type_to_rust_type(ts_type: &TsType) -> RustType {
         TsType::TsLitType(_) => todo!("ts_type_to_rust_type for TsLitType"),
         TsType::TsTypePredicate(_) => todo!("ts_type_to_rust_type for TsTypePredicate"),
         TsType::TsImportType(_) => todo!("ts_type_to_rust_type for TsImportType"),
-    }
+    };
+    (rust_type, count)
 }
 
 pub fn parse_ts_keyword_type(ts_keyword_type: &TsKeywordType) -> KeywordInfo {
@@ -48,54 +71,88 @@ pub fn parse_ts_keyword_type(ts_keyword_type: &TsKeywordType) -> KeywordInfo {
         TsKeywordTypeKind::TsUnknownKeyword => todo!("parse_ts_keyword_type for TsUnknownKeyword"),
         TsKeywordTypeKind::TsAnyKeyword => todo!("parse_ts_keyword_type for TsAnyKeyword"),
     };
-    KeywordInfo{token_stream}
+    KeywordInfo{identifier: token_stream}
 }
 
-pub fn parse_ts_type_ref(ts_type_ref: &TsTypeRef) -> TypeRefInfo {
+pub fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, count: u32) -> (TypeRefInfo, u32) {
     let type_name = ts_type_ref.type_name.as_ident().unwrap().sym.chars().as_str();
-    match type_name {
-        "blob" => TypeRefInfo{token_stream: quote!(Vec<u8>), ..Default::default()},
-        "float32" => TypeRefInfo{token_stream: quote!(f32), ..Default::default()},
-        "float64" => TypeRefInfo{token_stream: quote!(f64), ..Default::default()},
-        "int" => TypeRefInfo{token_stream: quote!(candid::Int), ..Default::default()},
-        "int8" => TypeRefInfo{token_stream: quote!(i8), ..Default::default()},
-        "int16" => TypeRefInfo{token_stream: quote!(i16), ..Default::default()},
-        "int32" => TypeRefInfo{token_stream: quote!(i32), ..Default::default()},
-        "int64" => TypeRefInfo{token_stream: quote!(i64), ..Default::default()},
-        "nat" => TypeRefInfo{token_stream: quote!(candid::Nat), ..Default::default()},
-        "nat8" => TypeRefInfo{token_stream: quote!(u8), ..Default::default()},
-        "nat16" => TypeRefInfo{token_stream: quote!(u16), ..Default::default()},
-        "nat32" => TypeRefInfo{token_stream: quote!(u32), ..Default::default()},
-        "nat64" => TypeRefInfo{token_stream: quote!(u64), ..Default::default()},
-        "Principal" => TypeRefInfo{token_stream: quote!(candid::Principal), ..Default::default()},
-        "empty" => TypeRefInfo{token_stream: quote!(candid::Empty), ..Default::default()},
-        "reserved" => TypeRefInfo{token_stream: quote!(candid::Reserved), ..Default::default()},
-        "Opt" => parse_opt_type_ref(ts_type_ref),
+    let mut count = count;
+    let type_ref_info = match type_name {
+        "blob" => TypeRefInfo{identifier: quote!(Vec<u8>), ..Default::default()},
+        "float32" => TypeRefInfo{identifier: quote!(f32), ..Default::default()},
+        "float64" => TypeRefInfo{identifier: quote!(f64), ..Default::default()},
+        "int" => TypeRefInfo{identifier: quote!(candid::Int), ..Default::default()},
+        "int8" => TypeRefInfo{identifier: quote!(i8), ..Default::default()},
+        "int16" => TypeRefInfo{identifier: quote!(i16), ..Default::default()},
+        "int32" => TypeRefInfo{identifier: quote!(i32), ..Default::default()},
+        "int64" => TypeRefInfo{identifier: quote!(i64), ..Default::default()},
+        "nat" => TypeRefInfo{identifier: quote!(candid::Nat), ..Default::default()},
+        "nat8" => TypeRefInfo{identifier: quote!(u8), ..Default::default()},
+        "nat16" => TypeRefInfo{identifier: quote!(u16), ..Default::default()},
+        "nat32" => TypeRefInfo{identifier: quote!(u32), ..Default::default()},
+        "nat64" => TypeRefInfo{identifier: quote!(u64), ..Default::default()},
+        "Principal" => TypeRefInfo{identifier: quote!(candid::Principal), ..Default::default()},
+        "empty" => TypeRefInfo{identifier: quote!(candid::Empty), ..Default::default()},
+        "reserved" => TypeRefInfo{identifier: quote!(candid::Reserved), ..Default::default()},
+        "Opt" => {
+            let result = parse_opt_type_ref(ts_type_ref, count);
+            count = result.1;
+            result.0
+        },
         "Variant" => parse_variant_type_ref(ts_type_ref),
         _ => {
             let custom_type_ref_ident = format_ident!("{}", type_name);
-            TypeRefInfo{token_stream: quote!(#custom_type_ref_ident), type_alias_dependency: Some(type_name.to_string()), ..Default::default()}
+            TypeRefInfo{identifier: quote!(#custom_type_ref_ident), type_alias_dependency: Some(type_name.to_string()), ..Default::default()}
         }
-    }
+    };
+    (type_ref_info, count)
 }
 
-pub fn parse_ts_array_type(ts_array_type: &TsArrayType) -> ArrayTypeInfo {
+/**
+ * I am thinking of the array type as fully its own type, in elem type is just
+ * part of the array type. pulling out the info from the elem type and using it
+ * for the array type info is fine because we will never see the elem type info
+ * otherwise. I am also currently assuming that the only way we have an enclosed type that needs to be
+ */
+pub fn parse_ts_array_type(ts_array_type: &TsArrayType, count: u32) -> (ArrayTypeInfo, u32) {
     let elem_type = *ts_array_type.elem_type.clone();
-    let rust_type = ts_type_to_rust_type(&elem_type);
-    let elem_type_ident = rust_type.get_type_ident();
-    let type_alias_dependency = rust_type.get_type_alias_dependency();
-    ArrayTypeInfo{token_stream: quote!{Vec<#elem_type_ident>}, type_alias_dependency}
+    let elem_rust_type = ts_type_to_rust_type(&elem_type, count);
+    let count = elem_rust_type.1;
+    let elem_rust_type = elem_rust_type.0;
+    let elem_type_ident = elem_rust_type.get_type_ident();
+    let type_alias_dependency = match &elem_rust_type {
+        RustType::KeywordType(_) => None,
+        RustType::TypeRef(type_ref_info) => type_ref_info.type_alias_dependency.clone(),
+        RustType::ArrayType(array_type) => array_type.type_alias_dependency.clone(),
+        RustType::Struct(_) => None,
+    };
+    let inline_enclosed_type = match &elem_rust_type {
+        RustType::Struct(struct_info) => Some(struct_info.clone()),
+        _ => None
+    };
+    (ArrayTypeInfo{identifier: quote!{Vec<#elem_type_ident>}, type_alias_dependency, inline_enclosed_type}, count)
 }
 
-pub fn parse_opt_type_ref(ts_type_ref: &TsTypeRef) -> TypeRefInfo {
+pub fn parse_opt_type_ref(ts_type_ref: &TsTypeRef, count: u32) -> (TypeRefInfo, u32) {
     let type_params = ts_type_ref.type_params.clone();
     match type_params {
         Some(params) => {
-            let ts_type = *params.params[0].clone();
-            let rust_type = ts_type_to_rust_type(&ts_type);
-            let rust_ident = rust_type.get_type_ident();
-            let type_alias_dependency = rust_type.get_type_alias_dependency();
-            TypeRefInfo{token_stream: quote!(Option<#rust_ident>), type_alias_dependency}
+            let enclosed_ts_type = *params.params[0].clone();
+            let enclosed_rust_type = ts_type_to_rust_type(&enclosed_ts_type, count);
+            let count = enclosed_rust_type.1;
+            let enclosed_rust_type = enclosed_rust_type.0;
+            let enclosed_rust_ident = enclosed_rust_type.get_type_ident();
+            let type_alias_dependency = match &enclosed_rust_type {
+                RustType::KeywordType(_) => None,
+                RustType::TypeRef(type_ref_info) => type_ref_info.type_alias_dependency.clone(),
+                RustType::ArrayType(array_type) => array_type.type_alias_dependency.clone(),
+                RustType::Struct(_) => None,
+            };
+            let inline_enclosed_type = match &enclosed_rust_type {
+                RustType::Struct(struct_info) => Some(struct_info.clone()),
+                _ => None
+            };
+            (TypeRefInfo{identifier: quote!(Option<#enclosed_rust_ident>), type_alias_dependency, inline_enclosed_type}, count)
         },
         None => todo!("Opt must have an enclosed type"),
     }
@@ -105,14 +162,27 @@ pub fn parse_variant_type_ref(ts_type_ref: &TsTypeRef) -> TypeRefInfo {
     let type_params = ts_type_ref.type_params.clone();
     match type_params {
         Some(params) => {
-            let ts_type = *params.params[0].clone();
-            let rust_type = ts_type_to_rust_type(&ts_type);
-            let rust_ident = rust_type.get_type_ident();
-            let type_alias_dependency = rust_type.get_type_alias_dependency();
-            TypeRefInfo{token_stream: quote!(#rust_ident), type_alias_dependency}
+            let enclosed_ts_type = *params.params[0].clone();
+            let enclosed_rust_type = ts_type_to_rust_enum(&enclosed_ts_type);
+            let enclosed_rust_ident = enclosed_rust_type.get_type_ident();
+            let type_alias_dependency = match &enclosed_rust_type {
+                RustType::KeywordType(_) => None,
+                RustType::TypeRef(type_ref_info) => type_ref_info.type_alias_dependency.clone(),
+                RustType::ArrayType(array_type) => array_type.type_alias_dependency.clone(),
+                RustType::Struct(_) => None,
+            };
+            let inline_enclosed_type = match &enclosed_rust_type {
+                RustType::Struct(struct_info) => Some(struct_info.clone()),
+                _ => None
+            };
+            TypeRefInfo{identifier: quote!(#enclosed_rust_ident), type_alias_dependency, inline_enclosed_type}
         },
         None => todo!("Variant must have an enclosed type"),
     }
+}
+
+pub fn ts_type_to_rust_enum(ts_type: &TsType) -> RustType{
+    return RustType::KeywordType(KeywordInfo{identifier: quote!{}})
 }
 
 // TODO I need to better understand what I am doing before doing this.
