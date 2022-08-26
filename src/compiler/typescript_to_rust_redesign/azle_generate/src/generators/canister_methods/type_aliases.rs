@@ -7,7 +7,7 @@ use quote::{
 };
 use swc_ecma_ast::{TsType, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsPropertySignature};
 
-use super::{types::{parse_ts_keyword_type, parse_ts_type_ref, parse_ts_array_type}, RustType, ts_type_to_rust_type};
+use super::{types::{parse_ts_keyword_type, parse_ts_type_ref, parse_ts_array_type}, RustType, ts_type_to_rust_type, StructInfo};
 
 /**
  * Loops through all of the dependant types, finds the corresponding ts types in
@@ -129,7 +129,7 @@ fn generate_dependencies_map_for(type_alias_decl: &TsTypeAliasDecl, type_alias_l
                     acc
             });
             result.extend(dep_type_map.into_iter());
-            result.insert(rust_struct.name, rust_struct.token_stream);
+            result.insert(rust_struct.name, rust_struct.structure);
         },
         TsType::TsThisType(_) => todo!("generate_dep_map for this type"),
         TsType::TsFnOrConstructorType(_) => todo!("generate_dep_map for fn or constructor"),
@@ -165,16 +165,20 @@ fn collect_dependencies(rust_type: &RustType) -> Vec<String> {
     rust_type.get_type_alias_dependency()
 }
 
-fn parse_type_literal_members(member: &TsTypeElement, count: u32) -> (TokenStream, Vec<String>, u32) {
-    match member.as_ts_property_signature() {
+fn parse_type_literal_fields(field: &TsTypeElement, count: u32) -> (TokenStream, Vec<String>, Option<StructInfo>, u32) {
+    match field.as_ts_property_signature() {
         Some(prop_sig) => {
-            let member_name = parse_type_literal_member_name(prop_sig);
-            let member_type = parse_type_literal_member_type(prop_sig, count);
-            let count = member_type.1;
-            let member_type = member_type.0;
-            let member_type_token_stream = member_type.get_type_ident();
-            let type_dependencies = collect_dependencies(&member_type);
-            (quote!(#member_name: #member_type_token_stream), type_dependencies, count)
+            let field_name = parse_type_literal_field_name(prop_sig);
+            let field_type = parse_type_literal_field_type(prop_sig, count);
+            let count = field_type.1;
+            let field_type = field_type.0;
+            let field_type_token_stream = field_type.get_type_ident();
+            let type_dependencies = field_type.get_type_alias_dependency();
+            let inline_enclosed_type = match &field_type {
+                RustType::Struct(struct_info) => Some(struct_info.clone()),
+                _ => None
+            };
+            (quote!(#field_name: #field_type_token_stream), type_dependencies, inline_enclosed_type, count)
         }
         None => todo!("Handle parsing type literals if the member isn't a TsPropertySignature"),
     }
@@ -205,62 +209,66 @@ fn azle_variant_to_rust_enum(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit, cou
 fn parse_type_literal_members_for_enum(member: &TsTypeElement, count: u32) -> (TokenStream, Vec<String>, u32) {
     match member.as_ts_property_signature() {
         Some(prop_sig) => {
-            let member_name = parse_type_literal_member_name(prop_sig);
-            let member_type = parse_type_literal_member_type(prop_sig, count);
-            let count = member_type.1;
-            let member_type = member_type.0;
+            let variant_name = parse_type_literal_field_name(prop_sig);
+            let variant_type = parse_type_literal_field_type(prop_sig, count);
+            let count = variant_type.1;
+            let variant_type = variant_type.0;
             if ! prop_sig.optional {
                 todo!("Handle if the user didn't make the type optional");
             }
-            let member_type_token_stream = member_type.get_type_ident();
-            let type_dependencies = collect_dependencies(&member_type);
-            (quote!{#member_name(#member_type_token_stream)}, type_dependencies, count)
+            let member_type_token_stream = variant_type.get_type_ident();
+            let type_dependencies = variant_type.get_type_alias_dependency();
+            (quote!{#variant_name(#member_type_token_stream)}, type_dependencies, count)
         }
         None => todo!("Handle parsing type literals if the member isn't a TsPropertySignature"),
     }
 }
 
 pub fn ts_type_literal_to_rust_struct(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit, count: u32) -> (StructInfo, u32) {
-    let members: (Vec<(TokenStream, Vec<String>)>, u32) = ts_type_lit.members.iter().fold((vec![], count), |acc, member| {
-        let result = parse_type_literal_members(member, acc.1);
-        let count = result.2;
-        let result = vec![acc.0, vec![(result.0, result.1)]].concat();
+    let fields: (Vec<(TokenStream, Vec<String>, Option<StructInfo>)>, u32) = ts_type_lit.members.iter().fold((vec![], count), |acc, member| {
+        let result = parse_type_literal_fields(member, acc.1);
+        let count = result.3;
+        let result = vec![acc.0, vec![(result.0, result.1, result.2)]].concat();
         (result, count)
     });
     // let members: Vec<(TokenStream, Vec<String>)> = ts_type_lit.members.iter().map(|member| {
     //     parse_type_literal_members(member)
     // }).collect();
-    let member_token_streams = members.0.iter().map(|member| member.0.clone());
-    let type_dependencies = members.0.iter().fold(vec![], |acc, member| vec![acc, member.1.clone()].concat());
-    let count = members.1;
-    let token_stream = quote!(
+    let count = fields.1;
+    let fields = fields.0;
+    let member_token_streams = fields.iter().map(|field| field.0.clone());
+    let type_dependencies = fields.iter().fold(vec![], |acc, field| vec![acc, field.1.clone()].concat());
+    let inline_dependencies: Vec<StructInfo> = fields
+        .iter()
+        .fold(vec![], |acc, field|{
+            match &field.2 {
+                Some(struct_info) => vec![acc, vec![struct_info.clone()]].concat(),
+                None => acc,
+            }
+        });
+    let structure = quote!(
         #[derive(serde::Serialize, serde::Deserialize, Debug, candid::CandidType, Clone)]
         struct #ts_type_ident {
             #(#member_token_streams),*
         }
     );
     (StructInfo {
-        token_stream,
+        structure,
+        identifier: quote!(#ts_type_ident),
         name: ts_type_ident.to_string(),
         type_alias_dependencies: type_dependencies,
+        inline_dependencies: Box::from(inline_dependencies)
     }, count)
 }
 
-fn parse_type_literal_member_name(prop_sig: &TsPropertySignature) -> Ident {
+fn parse_type_literal_field_name(prop_sig: &TsPropertySignature) -> Ident {
     format_ident!("{}", prop_sig.key.as_ident().unwrap().sym.chars().as_str())
 }
 
-fn parse_type_literal_member_type(prop_sig: &TsPropertySignature, count: u32) -> (RustType, u32) {
+fn parse_type_literal_field_type(prop_sig: &TsPropertySignature, count: u32) -> (RustType, u32) {
     let type_ann = prop_sig.type_ann.clone().unwrap();
     let ts_type = *type_ann.type_ann.clone();
     ts_type_to_rust_type(&ts_type, count)
-}
-
-#[derive(Clone)]
-pub struct StructInfo {
-    pub token_stream: TokenStream,
-    pub name: String,
-    pub type_alias_dependencies: Vec<String>,
 }
 
 // The idea is that you can put the name into a token stream and (which should be pretty much the same, and that will work after you install all of the dependencies)
