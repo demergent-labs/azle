@@ -76,8 +76,6 @@ pub fn generate_function_info(ast_fnc_decl_query: &FnDecl, count: u32) -> (Funct
         });
     let inline_dependant_types: Box<Vec<StructInfo>> = Box::from(inline_dependant_types);
 
-    println!("These are the type_alias_dependant_types at the function level {:#?}", dependant_types);
-
     (FunctionInformation { token_stream, dependant_types, inline_dependant_types }, count)
 }
 
@@ -103,7 +101,7 @@ fn generate_return_type(ts_type_ann:&Option<&TsTypeAnn>, count: u32) -> (RustTyp
     let type_params = type_ref.type_params.clone().unwrap();
 
     let params = *type_params.params[0].clone();
-    ts_type_to_rust_type(&params, count)
+    ts_type_to_rust_type(&params, count, None)
 }
 
 fn generate_param_types(params: &Vec<Param>, count: u32) -> (Vec<RustType>, u32) {
@@ -112,7 +110,7 @@ fn generate_param_types(params: &Vec<Param>, count: u32) -> (Vec<RustType>, u32)
         let type_ann = type_ann.clone().unwrap();
         let ts_type = *type_ann.type_ann.clone();
 
-        let result = ts_type_to_rust_type(&ts_type, acc.1);
+        let result = ts_type_to_rust_type(&ts_type, acc.1, None);
         (vec![acc.0, vec![result.0]].concat(), result.1)
     })
 }

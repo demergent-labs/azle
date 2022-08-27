@@ -3,7 +3,7 @@ use quote::{
 };
 use swc_ecma_ast::{FnDecl};
 
-use super::{generate_function_info, functions::{FunctionInformation, self}};
+use super::{generate_function_info, functions::FunctionInformation};
 
 pub fn generate_query_function_infos(ast_fnc_decls_query: &Vec<FnDecl>, count: u32) -> (Vec<FunctionInformation>, u32) {
     ast_fnc_decls_query.iter().fold((vec![], count), |acc, ast_fnc_decl_query| {
