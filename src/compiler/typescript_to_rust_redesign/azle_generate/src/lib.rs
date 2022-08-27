@@ -60,9 +60,7 @@ fn get_better_name(struct_info: &Box<Vec<StructInfo>>) -> Vec<proc_macro2::Token
     struct_info.iter().fold(vec![], |acc2, dependencies| {
         let this_dependency_token_stream = &dependencies.structure;
         let sub_dependency_token_streams = get_better_name(&dependencies.inline_dependencies);
-        println!("This is the main one {}", this_dependency_token_stream.to_string());
-        let cool_strings: Vec<String> = sub_dependency_token_streams.iter().map(|token_stream| token_stream.to_string()).collect();
-        println!("This is the sub ones {:#?}", cool_strings);
+        // let cool_strings: Vec<String> = sub_dependency_token_streams.iter().map(|token_stream| token_stream.to_string()).collect();
         vec![acc2, sub_dependency_token_streams, vec![this_dependency_token_stream.clone()]].concat()
     })
 }
@@ -117,21 +115,11 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
 
     let query_function_inline_dependant_types = collect_inline_dependencies(&query_function_info);
     let update_function_inline_dependant_types = collect_inline_dependencies(&update_function_info);
+    // TODO it would be great to add the inline_types we found from doing the type aliases while we are at it
     let inline_types = vec![query_function_inline_dependant_types, update_function_inline_dependant_types].concat();
 
-    let inline_types_vec: Vec<String> = inline_types.iter().map(|thing| {
-        thing.to_string()
-    }).collect();
-
-    println!("#######################\nThese are the inline types {:#?}", inline_types_vec);
-    println!("#######################\nThese are the dependant types {:#?}", type_alias_dependant_types);
-
-    // let type_aliases = generate_type_aliases_token_stream(&ast_type_alias_decls, &dependant_types);
     let type_aliases_map = generate_type_alias_token_streams(&type_alias_dependant_types, &ast_type_alias_decls, count);
-    let count = type_aliases_map.1;
     let type_aliases_map = type_aliases_map.0;
-
-    println!("We found {count} inline types");
 
     let type_aliases = type_aliases_map.iter().fold(quote!(), |acc, (_name, token_stream)| {
         quote!{

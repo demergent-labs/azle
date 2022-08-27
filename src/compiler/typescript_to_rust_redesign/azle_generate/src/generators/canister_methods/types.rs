@@ -2,36 +2,37 @@ use quote::{
     format_ident,
     quote,
 };
-use swc_ecma_ast::{ TsType, TsKeywordTypeKind, TsKeywordType, TsTypeRef, TsArrayType };
+use proc_macro2::{Ident, TokenStream};
+use swc_ecma_ast::{ TsType, TsKeywordTypeKind, TsKeywordType, TsTypeRef, TsArrayType, TsTypeLit, TsTypeElement, TsPropertySignature };
 
-use super::{ RustType, KeywordInfo, ArrayTypeInfo, TypeRefInfo, type_aliases::ts_type_literal_to_rust_struct, rust_types::StructInfo };
+use super::{ RustType, KeywordInfo, ArrayTypeInfo, TypeRefInfo, rust_types::StructInfo };
 
-pub fn ts_type_to_rust_type(ts_type: &TsType, count: u32) -> (RustType, u32) {
-    let mut count = count;
+pub fn ts_type_to_rust_type(ts_type: &TsType, count: u32, struct_name: Option<&Ident>) -> (RustType, u32) {
+    let mut inline_struct_count = count;
     let rust_type = match ts_type {
         TsType::TsKeywordType(ts_keyword_type) => RustType::KeywordType(parse_ts_keyword_type(ts_keyword_type)),
         TsType::TsTypeRef(ts_type_ref) => {
-            let result = parse_ts_type_ref(ts_type_ref, count);
-            count = result.1;
+            let result = parse_ts_type_ref(ts_type_ref, inline_struct_count);
+            inline_struct_count = result.1;
             RustType::TypeRef(result.0)
         },
         TsType::TsArrayType(ts_array_type) => {
-            let result = parse_ts_array_type(ts_array_type, count);
-            count = result.1;
+            let result = parse_ts_array_type(ts_array_type, inline_struct_count);
+            inline_struct_count = result.1;
             RustType::ArrayType(result.0)
         },
         TsType::TsTypeLit(ts_type_lit) => {
-            let ts_type_ident = format_ident!("AzleInlineStruct_{}", count);
-            count += 1;
-            let result = ts_type_literal_to_rust_struct(&ts_type_ident, ts_type_lit, count);
-            count = result.1;
+            let type_ident = match struct_name {
+                Some(type_ident) => type_ident.clone(),
+                None => {
+                    let type_ident = format_ident!("AzleInlineStruct_{}", inline_struct_count);
+                    inline_struct_count += 1;
+                    type_ident
+                },
+            };
+            let result = ts_type_literal_to_rust_struct(&type_ident, ts_type_lit, inline_struct_count);
+            inline_struct_count = result.1;
             let struct_info = result.0;
-            // let struct_info = StructInfoTODORename{
-            //     identifier: quote!(#ts_type_ident),
-            //     structure: result.token_stream,
-            //     inline_dependencies: Box::from(vec![]),
-            //     type_alias_dependencies: result.type_alias_dependencies
-            // };
             RustType::Struct(struct_info)
         },
         TsType::TsThisType(_) => todo!("ts_type_to_rust_type for TsThisType"),
@@ -51,10 +52,10 @@ pub fn ts_type_to_rust_type(ts_type: &TsType, count: u32) -> (RustType, u32) {
         TsType::TsTypePredicate(_) => todo!("ts_type_to_rust_type for TsTypePredicate"),
         TsType::TsImportType(_) => todo!("ts_type_to_rust_type for TsImportType"),
     };
-    (rust_type, count)
+    (rust_type, inline_struct_count)
 }
 
-pub fn parse_ts_keyword_type(ts_keyword_type: &TsKeywordType) -> KeywordInfo {
+fn parse_ts_keyword_type(ts_keyword_type: &TsKeywordType) -> KeywordInfo {
     let kind = ts_keyword_type.kind;
     let token_stream = match &kind {
         TsKeywordTypeKind::TsBooleanKeyword => quote!(bool),
@@ -74,7 +75,7 @@ pub fn parse_ts_keyword_type(ts_keyword_type: &TsKeywordType) -> KeywordInfo {
     KeywordInfo{identifier: token_stream}
 }
 
-pub fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, count: u32) -> (TypeRefInfo, u32) {
+fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, count: u32) -> (TypeRefInfo, u32) {
     let type_name = ts_type_ref.type_name.as_ident().unwrap().sym.chars().as_str();
     let mut count = count;
     let type_ref_info = match type_name {
@@ -114,9 +115,9 @@ pub fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, count: u32) -> (TypeRefInfo, u
  * for the array type info is fine because we will never see the elem type info
  * otherwise. I am also currently assuming that the only way we have an enclosed type that needs to be
  */
-pub fn parse_ts_array_type(ts_array_type: &TsArrayType, count: u32) -> (ArrayTypeInfo, u32) {
+fn parse_ts_array_type(ts_array_type: &TsArrayType, count: u32) -> (ArrayTypeInfo, u32) {
     let elem_type = *ts_array_type.elem_type.clone();
-    let elem_rust_type = ts_type_to_rust_type(&elem_type, count);
+    let elem_rust_type = ts_type_to_rust_type(&elem_type, count, None);
     let count = elem_rust_type.1;
     let elem_rust_type = elem_rust_type.0;
     let elem_type_ident = elem_rust_type.get_type_ident();
@@ -133,12 +134,12 @@ pub fn parse_ts_array_type(ts_array_type: &TsArrayType, count: u32) -> (ArrayTyp
     (ArrayTypeInfo{identifier: quote!{Vec<#elem_type_ident>}, type_alias_dependency, inline_enclosed_type}, count)
 }
 
-pub fn parse_opt_type_ref(ts_type_ref: &TsTypeRef, count: u32) -> (TypeRefInfo, u32) {
+fn parse_opt_type_ref(ts_type_ref: &TsTypeRef, count: u32) -> (TypeRefInfo, u32) {
     let type_params = ts_type_ref.type_params.clone();
     match type_params {
         Some(params) => {
             let enclosed_ts_type = *params.params[0].clone();
-            let enclosed_rust_type = ts_type_to_rust_type(&enclosed_ts_type, count);
+            let enclosed_rust_type = ts_type_to_rust_type(&enclosed_ts_type, count, None);
             let count = enclosed_rust_type.1;
             let enclosed_rust_type = enclosed_rust_type.0;
             let enclosed_rust_ident = enclosed_rust_type.get_type_ident();
@@ -158,7 +159,7 @@ pub fn parse_opt_type_ref(ts_type_ref: &TsTypeRef, count: u32) -> (TypeRefInfo, 
     }
 }
 
-pub fn parse_variant_type_ref(ts_type_ref: &TsTypeRef) -> TypeRefInfo {
+fn parse_variant_type_ref(ts_type_ref: &TsTypeRef) -> TypeRefInfo {
     let type_params = ts_type_ref.type_params.clone();
     match type_params {
         Some(params) => {
@@ -181,7 +182,7 @@ pub fn parse_variant_type_ref(ts_type_ref: &TsTypeRef) -> TypeRefInfo {
     }
 }
 
-pub fn ts_type_to_rust_enum(ts_type: &TsType) -> RustType{
+fn ts_type_to_rust_enum(ts_type: &TsType) -> RustType{
     return RustType::KeywordType(KeywordInfo{identifier: quote!{}})
 }
 
@@ -235,3 +236,125 @@ pub fn ts_type_to_rust_enum(ts_type: &TsType) -> RustType{
 //     }
 
 // }
+
+fn ts_type_literal_to_rust_struct(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit, count: u32) -> (StructInfo, u32) {
+    let fields: (Vec<(TokenStream, Vec<String>, Option<StructInfo>)>, u32) = ts_type_lit.members.iter().fold((vec![], count), |acc, member| {
+        let result = parse_type_literal_fields(member, acc.1);
+        let count = result.3;
+        let result = vec![acc.0, vec![(result.0, result.1, result.2)]].concat();
+        (result, count)
+    });
+    // let members: Vec<(TokenStream, Vec<String>)> = ts_type_lit.members.iter().map(|member| {
+    //     parse_type_literal_members(member)
+    // }).collect();
+    let count = fields.1;
+    let fields = fields.0;
+    let member_token_streams = fields.iter().map(|field| field.0.clone());
+    let type_dependencies = fields.iter().fold(vec![], |acc, field| vec![acc, field.1.clone()].concat());
+    let inline_dependencies: Vec<StructInfo> = fields
+        .iter()
+        .fold(vec![], |acc, field|{
+            match &field.2 {
+                Some(struct_info) => vec![acc, vec![struct_info.clone()]].concat(),
+                None => acc,
+            }
+        });
+    let structure = quote!(
+        #[derive(serde::Serialize, serde::Deserialize, Debug, candid::CandidType, Clone)]
+        struct #ts_type_ident {
+            #(#member_token_streams),*
+        }
+    );
+    (StructInfo {
+        structure,
+        identifier: quote!(#ts_type_ident),
+        name: ts_type_ident.to_string(),
+        type_alias_dependencies: type_dependencies,
+        inline_dependencies: Box::from(inline_dependencies)
+    }, count)
+}
+
+fn parse_type_literal_fields(field: &TsTypeElement, count: u32) -> (TokenStream, Vec<String>, Option<StructInfo>, u32) {
+    match field.as_ts_property_signature() {
+        Some(prop_sig) => {
+            let field_name = parse_type_literal_field_name(prop_sig);
+            let field_type = parse_type_literal_field_type(prop_sig, count);
+            let count = field_type.1;
+            let field_type = field_type.0;
+            let field_type_token_stream = field_type.get_type_ident();
+            let type_dependencies = field_type.get_type_alias_dependency();
+            let inline_enclosed_type = match &field_type {
+                RustType::Struct(struct_info) => Some(struct_info.clone()),
+                _ => None
+            };
+            (quote!(#field_name: #field_type_token_stream), type_dependencies, inline_enclosed_type, count)
+        }
+        None => todo!("Handle parsing type literals if the member isn't a TsPropertySignature"),
+    }
+}
+
+fn parse_type_literal_field_name(prop_sig: &TsPropertySignature) -> Ident {
+    format_ident!("{}", prop_sig.key.as_ident().unwrap().sym.chars().as_str())
+}
+
+fn parse_type_literal_field_type(prop_sig: &TsPropertySignature, count: u32) -> (RustType, u32) {
+    let type_ann = prop_sig.type_ann.clone().unwrap();
+    let ts_type = *type_ann.type_ann.clone();
+    ts_type_to_rust_type(&ts_type, count, None)
+}
+
+
+fn azle_variant_to_rust_enum(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit, count: u32) -> (EnumInfo, u32) {
+    let members: (Vec<(TokenStream, Vec<String>)>, u32) = ts_type_lit.members.iter().fold((vec![], count), |acc, member| {
+        let result = parse_type_literal_members_for_enum(member, acc.1);
+        let count = result.2;
+        let result = vec![acc.0, vec![(result.0, result.1)]].concat();
+        (result, count)
+    });
+    // let members: Vec<(TokenStream, Vec<String>)> = ts_type_lit.members.iter().map(|member| {
+    //     parse_type_literal_members_for_enum(member, count)
+    // }).collect();
+    let member_token_streams = members.0.iter().map(|member| member.0.clone());
+    let type_dependencies = members.0.iter().fold(vec![], |acc, member| vec![acc, member.1.clone()].concat());
+    let count = members.1;
+    let token_stream = quote!(
+        #[derive(serde::Serialize, serde::Deserialize, Debug, candid::CandidType, Clone)]
+        enum #ts_type_ident {
+            #(#member_token_streams),*
+        }
+    );
+    (EnumInfo { token_stream, name: "CoolEnumBro".to_string(), type_alias_dependencies: type_dependencies }, count)
+}
+
+fn parse_type_literal_members_for_enum(member: &TsTypeElement, count: u32) -> (TokenStream, Vec<String>, u32) {
+    match member.as_ts_property_signature() {
+        Some(prop_sig) => {
+            let variant_name = parse_type_literal_field_name(prop_sig);
+            let variant_type = parse_type_literal_field_type(prop_sig, count);
+            let count = variant_type.1;
+            let variant_type = variant_type.0;
+            if ! prop_sig.optional {
+                todo!("Handle if the user didn't make the type optional");
+            }
+            let member_type_token_stream = variant_type.get_type_ident();
+            let type_dependencies = variant_type.get_type_alias_dependency();
+            (quote!{#variant_name(#member_type_token_stream)}, type_dependencies, count)
+        }
+        None => todo!("Handle parsing type literals if the member isn't a TsPropertySignature"),
+    }
+}
+
+// The idea is that you can put the name into a token stream and (which should be pretty much the same, and that will work after you install all of the dependencies)
+
+// TODO I think the next thing I need to do is understand what I am doing with the
+// Collect dependencies. My current theory is that I would have a struct not be a
+// Struct type but have it be a type ref with a struct as a dependency
+// It might be helpful to think about the keywords
+// Maybe have simpler examples, work out the architecture,
+// Determine where I determine the dependancies and make sure it's clear in the code
+#[derive(Clone)]
+pub struct EnumInfo {
+    pub token_stream: TokenStream,
+    pub name: String,
+    pub type_alias_dependencies: Vec<String>,
+}
