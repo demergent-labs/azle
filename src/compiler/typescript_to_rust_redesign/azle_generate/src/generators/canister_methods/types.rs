@@ -352,15 +352,17 @@ fn ts_type_literal_to_rust_struct(
             )
         });
     inline_dep_count = count;
-    let field_token_streams = fields.iter().map(|field| field.0.clone());
+    let field_token_streams = fields.iter().map(|(field, _, _)| field.clone());
     let type_dependencies = fields
         .iter()
-        .fold(vec![], |acc, field| vec![acc, field.1.clone()].concat());
+        .fold(vec![], |acc, (_, deps, _)| vec![acc, deps.clone()].concat());
     let inline_dependencies: Vec<StructInfo> =
-        fields.iter().fold(vec![], |acc, field| match &field.2 {
-            Some(struct_info) => vec![acc, vec![struct_info.clone()]].concat(),
-            None => acc,
-        });
+        fields
+            .iter()
+            .fold(vec![], |acc, (_, _, inline_deps)| match &inline_deps {
+                Some(struct_info) => vec![acc, vec![struct_info.clone()]].concat(),
+                None => acc,
+            });
     let structure = quote!(
         #[derive(serde::Serialize, serde::Deserialize, Debug, candid::CandidType, Clone)]
         struct #ts_type_ident {
@@ -421,25 +423,23 @@ fn azle_variant_to_rust_enum(
     ts_type_lit: &TsTypeLit,
     count: u32,
 ) -> (EnumInfo, u32) {
-    let fields: (Vec<(TokenStream, Vec<String>)>, u32) =
+    let (fields, count): (Vec<(TokenStream, Vec<String>)>, u32) =
         ts_type_lit
             .members
             .iter()
             .fold((vec![], count), |acc, member| {
-                let result = parse_type_literal_members_for_enum(member, acc.1);
-                let count = result.2;
-                let result = vec![acc.0, vec![(result.0, result.1)]].concat();
+                let (result, type_alias_deps, count) =
+                    parse_type_literal_members_for_enum(member, acc.1);
+                let result = vec![acc.0, vec![(result, type_alias_deps)]].concat();
                 (result, count)
             });
     // let members: Vec<(TokenStream, Vec<String>)> = ts_type_lit.members.iter().map(|member| {
     //     parse_type_literal_members_for_enum(member, count)
     // }).collect();
-    let member_token_streams = fields.0.iter().map(|member| member.0.clone());
+    let member_token_streams = fields.iter().map(|(member, _)| member.clone());
     let type_dependencies = fields
-        .0
         .iter()
         .fold(vec![], |acc, member| vec![acc, member.1.clone()].concat());
-    let count = fields.1;
     let token_stream = quote!(
         #[derive(serde::Serialize, serde::Deserialize, Debug, candid::CandidType, Clone)]
         enum #ts_type_ident {
@@ -463,9 +463,7 @@ fn parse_type_literal_members_for_enum(
     match member.as_ts_property_signature() {
         Some(prop_sig) => {
             let variant_name = parse_type_literal_field_name(prop_sig);
-            let variant_type = parse_type_literal_field_type(prop_sig, count);
-            let count = variant_type.1;
-            let variant_type = variant_type.0;
+            let (variant_type, count) = parse_type_literal_field_type(prop_sig, count);
             if !prop_sig.optional {
                 todo!("Handle if the user didn't make the type optional");
             }
