@@ -33,7 +33,7 @@ pub enum RustType {
     KeywordType(KeywordInfo),
     TypeRef(TypeRefInfo),
     ArrayType(ArrayTypeInfo),
-    Struct(StructInfo)
+    Struct(StructInfo),
 }
 
 /**
@@ -46,21 +46,21 @@ pub enum RustType {
  */
 #[derive(Clone)]
 pub struct KeywordInfo {
-    pub identifier: TokenStream
+    pub identifier: TokenStream,
 }
 
 #[derive(Clone, Default)]
 pub struct TypeRefInfo {
     pub identifier: TokenStream,
     pub type_alias_dependency: Option<String>,
-    pub inline_enclosed_type: Option<StructInfo> // Opt and Variants are examples of TypeRefs that have enclosed types
+    pub inline_enclosed_type: Option<StructInfo>, // Opt and Variants are examples of TypeRefs that have enclosed types
 }
 
 #[derive(Clone)]
 pub struct ArrayTypeInfo {
     pub identifier: TokenStream,
     pub type_alias_dependency: Option<String>,
-    pub inline_enclosed_type: Option<StructInfo>
+    pub inline_enclosed_type: Option<StructInfo>,
 }
 
 /**
@@ -100,7 +100,7 @@ pub struct StructInfo {
     pub name: String,
     pub type_alias_dependencies: Vec<String>,
     pub structure: TokenStream,
-    pub inline_dependencies: Box<Vec<StructInfo>>
+    pub inline_dependencies: Box<Vec<StructInfo>>,
 }
 
 // pub struct EnumInfoTODORename {
@@ -122,27 +122,23 @@ impl RustType {
 
     pub fn get_type_alias_dependency(&self) -> Vec<String> {
         match self {
-            RustType::TypeRef(type_ref_info) => {
-                match type_ref_info.type_alias_dependency.clone() {
-                    Some(dependency) => vec![dependency],
-                    None => vec![],
-                }
+            RustType::TypeRef(type_ref_info) => match type_ref_info.type_alias_dependency.clone() {
+                Some(dependency) => vec![dependency],
+                None => vec![],
             },
-            RustType::ArrayType(array_info) => {
-                match array_info.type_alias_dependency.clone() {
-                    Some(dependency) => vec![dependency],
-                    None => vec![],
-                }
+            RustType::ArrayType(array_info) => match array_info.type_alias_dependency.clone() {
+                Some(dependency) => vec![dependency],
+                None => vec![],
             },
             RustType::Struct(struct_info) => struct_info.type_alias_dependencies.clone(),
-            _ => vec![]
+            _ => vec![],
         }
     }
 
     pub fn get_inline_dependencies(&self) -> Option<StructInfo> {
         match self {
             RustType::Struct(struct_info) => Some(struct_info.clone()),
-            _ => None
+            _ => None,
         }
     }
 }
