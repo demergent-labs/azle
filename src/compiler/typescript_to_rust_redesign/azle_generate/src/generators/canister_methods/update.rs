@@ -1,22 +1,29 @@
-use quote::{
-    quote,
-};
+use quote::quote;
 use swc_ecma_ast::FnDecl;
 
-use super::{generate_function_info, functions::FunctionInformation};
+use super::{functions::FunctionInformation, generate_function_info};
 
-pub fn generate_update_function_token_streams(ast_fnc_decls_update: &Vec<FnDecl>, count: u32) -> (Vec<FunctionInformation>, u32) {
-    ast_fnc_decls_update.iter().fold((vec![], count), |acc, ast_fnc_decl_update| {
-        let result = generate_update_function_token_stream(ast_fnc_decl_update, acc.1);
-        let count = result.1;
-        (vec![acc.0, vec![result.0]].concat(), count)
-    })
+pub fn generate_update_function_token_streams(
+    ast_fnc_decls_update: &Vec<FnDecl>,
+    inline_dep_count: u32,
+) -> (Vec<FunctionInformation>, u32) {
+    ast_fnc_decls_update.iter().fold(
+        (vec![], inline_dep_count),
+        |(acc, count), ast_fnc_decl_update| {
+            let (func_token_stream, count) =
+                generate_update_function_token_stream(ast_fnc_decl_update, count);
+            (vec![acc, vec![func_token_stream]].concat(), count)
+        },
+    )
 }
 
-fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl, count: u32) -> (FunctionInformation, u32) {
-    let function_info = generate_function_info(ast_fnc_decl_update, count);
-    let count = function_info.1;
-    let function_info = function_info.0;
+fn generate_update_function_token_stream(
+    ast_fnc_decl_update: &FnDecl,
+    inline_dep_count: u32,
+) -> (FunctionInformation, u32) {
+    let mut inline_dep_count = inline_dep_count;
+    let (function_info, count) = generate_function_info(ast_fnc_decl_update, inline_dep_count);
+    inline_dep_count = count;
     let function_token_stream = function_info.token_stream;
 
     let token_stream = quote! {
@@ -25,11 +32,21 @@ fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl, count: u3
         #function_token_stream
     };
 
-    (FunctionInformation {token_stream, ..function_info }, count)
+    (
+        FunctionInformation {
+            token_stream,
+            ..function_info
+        },
+        inline_dep_count,
+    )
 }
 
 pub fn get_update_fn_decls(fn_decls: &Vec<FnDecl>) -> Vec<FnDecl> {
-    fn_decls.clone().into_iter().filter(|fn_decl| is_update_fn_decl(fn_decl)).collect()
+    fn_decls
+        .clone()
+        .into_iter()
+        .filter(|fn_decl| is_update_fn_decl(fn_decl))
+        .collect()
 }
 
 fn is_update_fn_decl(fn_decl: &FnDecl) -> bool {
@@ -41,16 +58,13 @@ fn is_update_fn_decl(fn_decl: &FnDecl) -> bool {
                 let ident = type_ref.type_name.as_ident().unwrap();
 
                 ident.to_string() == "Update#0" // TODO probably use ident.sym to get the real name without the #0
-            }
-            else {
+            } else {
                 false
             }
-        }
-        else {
+        } else {
             false
         }
-    }
-    else {
+    } else {
         false
     }
 }
