@@ -3,7 +3,7 @@ use swc_ecma_ast::FnDecl;
 
 use super::{functions::FunctionInformation, generate_function_info};
 
-pub fn generate_update_function_token_streams(
+pub fn generate_update_function_infos(
     ast_fnc_decls_update: &Vec<FnDecl>,
     inline_dep_count: u32,
 ) -> (Vec<FunctionInformation>, u32) {
@@ -24,7 +24,7 @@ fn generate_update_function_token_stream(
     let mut inline_dep_count = inline_dep_count;
     let (function_info, count) = generate_function_info(ast_fnc_decl_update, inline_dep_count);
     inline_dep_count = count;
-    let function_token_stream = function_info.token_stream;
+    let function_token_stream = function_info.function_signature;
 
     let token_stream = quote! {
         #[ic_cdk_macros::update]
@@ -34,7 +34,7 @@ fn generate_update_function_token_stream(
 
     (
         FunctionInformation {
-            token_stream,
+            function_signature: token_stream,
             ..function_info
         },
         inline_dep_count,

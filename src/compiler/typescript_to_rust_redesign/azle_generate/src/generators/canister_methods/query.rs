@@ -24,17 +24,17 @@ fn generate_query_function_info(
     let mut inline_dep_count = inline_dep_count;
     let (function_info, count) = generate_function_info(ast_fnc_decl_query, inline_dep_count);
     inline_dep_count = count;
-    let function_token_stream = function_info.token_stream;
+    let function_signature_stream = function_info.function_signature;
 
     let token_stream = quote! {
         #[ic_cdk_macros::query]
         #[candid::candid_method(query)]
-        #function_token_stream
+        #function_signature_stream
     };
 
     (
         FunctionInformation {
-            token_stream,
+            function_signature: token_stream,
             ..function_info
         },
         inline_dep_count,

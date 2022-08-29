@@ -4,7 +4,7 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use super::{ts_type_to_rust_type, RustType};
+use super::{ts_type_to_rust_type, RustType, StructInfo};
 
 /**
  * Loops through all of the dependant types, finds the corresponding ts types in
@@ -12,31 +12,37 @@ use super::{ts_type_to_rust_type, RustType};
  * result map
  */
 pub fn generate_type_alias_token_streams(
-    dependant_types: &HashSet<&String>,
+    type_alias_dependant_types: &HashSet<&String>,
     ast_type_alias_decls: &Vec<TsTypeAliasDecl>,
     inline_dep_count: u32,
-) -> (HashMap<String, TokenStream>, u32) {
+) -> (HashMap<String, TokenStream>, Vec<StructInfo>, u32) {
     let type_alias_lookup = generate_hash_map(ast_type_alias_decls);
 
+    println!(
+        "We generating the type alias token streams for {:#?}",
+        type_alias_dependant_types
+    );
     // For each dependant type, generate a dependency map and add it to the overall dependency map
     // TODO I'm guessing that we aren't going to want acc to be mutable
-    dependant_types.iter().fold(
-        (HashMap::new(), inline_dep_count),
-        |mut acc, dependant_type| {
+    type_alias_dependant_types.iter().fold(
+        (HashMap::new(), vec![], inline_dep_count),
+        |(mut all_type_alias_dependencies, mut all_inline_types, count), dependant_type| {
+            println!("We are about to generate the map for {}", dependant_type);
             let type_alias_decl = type_alias_lookup.get(dependant_type.clone());
-            let dependency_map: HashMap<String, TokenStream> = match type_alias_decl {
-                Some(decl) => {
-                    let (dependency_map, count) =
-                        generate_dependencies_map_for(decl, &type_alias_lookup, acc.1);
-                    acc.1 = count;
-                    dependency_map
+            let (dependency_map, inline_types, count) = match type_alias_decl {
+                Some(type_alias_decl) => {
+                    let (dependency_map, inline_deps, count) =
+                        generate_dependencies_map_for(type_alias_decl, &type_alias_lookup, count);
+                    (dependency_map, inline_deps, count)
                 }
                 None => {
                     todo!("ERROR: Dependant Type [{dependant_type}] not found type alias list!")
                 }
             };
-            acc.0.extend(dependency_map.into_iter());
-            acc
+            all_type_alias_dependencies.extend(dependency_map.into_iter());
+            all_inline_types.extend(inline_types);
+            println!{"We are expecting the length to be 1 and the length is actually {}", all_inline_types.len()}
+            (all_type_alias_dependencies, all_inline_types, count)
         },
     )
 }
@@ -72,10 +78,11 @@ fn generate_dependencies_map_for(
     type_alias_decl: &TsTypeAliasDecl,
     type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
     inline_struct_count: u32,
-) -> (HashMap<String, TokenStream>, u32) {
+) -> (HashMap<String, TokenStream>, Vec<StructInfo>, u32) {
     let mut inline_struct_count = inline_struct_count;
     // TODO I feel like this might run into some namespace issues
     let ts_type_name = type_alias_decl.id.sym.chars().as_str().to_string();
+    println!("IN THE RECURSIVE FUNCTION for {}", ts_type_name);
     let ts_type_alias_ident = format_ident!("{}", ts_type_name);
 
     let ts_type = *type_alias_decl.type_ann.clone();
@@ -87,26 +94,32 @@ fn generate_dependencies_map_for(
     inline_struct_count = count;
 
     let aliased_type_sub_dependencies = aliased_rust_type.get_type_alias_dependency();
-    let (aliased_type_sub_dependency_map, count) = aliased_type_sub_dependencies.iter().fold(
-        (HashMap::new(), inline_struct_count),
-        |mut acc, type_alias_name_thing_rename| {
-            let decl = type_alias_lookup.get(type_alias_name_thing_rename);
-            match decl {
-                Some(decl) => {
-                    let (aliased_type_sub_dependency_map, count) =
-                        generate_dependencies_map_for(decl, type_alias_lookup, acc.1);
-                    acc.0.extend(aliased_type_sub_dependency_map);
-                    (acc.0, count)
+    let (aliased_type_sub_dependency_map, top_level_inline_deps, count) =
+        aliased_type_sub_dependencies.iter().fold(
+            (HashMap::new(), vec![], inline_struct_count),
+            |(mut acc, mut acc_inline_deps, count), type_alias_name_thing_rename| {
+                let decl = type_alias_lookup.get(type_alias_name_thing_rename);
+                match decl {
+                    Some(decl) => {
+                        let (aliased_type_sub_dependency_map, sub_inline_deps, count) =
+                            generate_dependencies_map_for(decl, type_alias_lookup, count);
+                        acc.extend(aliased_type_sub_dependency_map);
+                        acc_inline_deps.extend(sub_inline_deps);
+                        (acc, acc_inline_deps, count)
+                    }
+                    None => todo!("Handle if we can't find the type in the dictionary"),
                 }
-                None => todo!("Handle if we can't find the type in the dictionary"),
-            }
-        },
-    );
+            },
+        );
     dependency_map.extend(aliased_type_sub_dependency_map);
+    println!(
+        "the length of the inline_types is {}",
+        top_level_inline_deps.len()
+    );
     inline_struct_count = count;
 
     let aliased_type_ident = aliased_rust_type.get_type_ident();
-    match aliased_rust_type {
+    match aliased_rust_type.clone() {
         RustType::Struct(struct_info) => {
             dependency_map.insert(struct_info.name, struct_info.structure);
         }
@@ -119,7 +132,12 @@ fn generate_dependencies_map_for(
             );
         }
     };
-    (dependency_map, inline_struct_count)
+    let inline_dep = match aliased_rust_type.get_inline_dependencies() {
+        Some(dependency) => vec![dependency],
+        None => vec![],
+    };
+    let inline_dep = vec![]; // TODO obviously we dont' want this to be empty
+    (dependency_map, inline_dep, inline_struct_count)
 }
 
 fn generate_hash_map(
