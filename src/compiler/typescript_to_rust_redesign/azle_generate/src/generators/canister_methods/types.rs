@@ -171,6 +171,10 @@ fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, inline_dep_count: u32) -> (TypeRef
             inline_dep_count = count;
             opt_type_info
         }
+        "Func" => TypeRefInfo {
+            identifier: quote!(candid::Func),
+            ..Default::default()
+        },
         "Variant" => parse_variant_type_ref(ts_type_ref),
         _ => {
             let custom_type_ref_ident = format_ident!("{}", type_name);
