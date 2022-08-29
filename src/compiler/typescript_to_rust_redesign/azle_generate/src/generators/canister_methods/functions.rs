@@ -6,9 +6,9 @@ use super::{rust_types::StructInfo, ts_type_to_rust_type, RustType};
 
 #[derive(Clone)]
 pub struct FunctionInformation {
-    pub token_stream: TokenStream,
+    pub function_signature: TokenStream,
     // The dependant types need to have the name of the type so we can find the corresponding type and create a rust type
-    pub dependant_types: Vec<String>,
+    pub type_alias_dependant_types: Vec<String>,
     pub inline_dependant_types: Box<Vec<StructInfo>>,
 }
 
@@ -31,14 +31,14 @@ pub fn generate_function_info(
     inline_dep_count = count;
     let params = generate_params_token_stream(&param_name_idents, &param_types);
 
-    let token_stream = quote! {
+    let function_signature = quote! {
         async fn #function_name_ident(#(#params),*) -> #return_type_token {
             Default::default()
         }
     };
 
     let types = vec![param_types, vec![return_type]].concat();
-    let dependant_types: Vec<String> =
+    let type_alias_dependant_types: Vec<String> =
         types
             .iter()
             .fold(vec![], |acc, param_type| match param_type {
@@ -72,8 +72,8 @@ pub fn generate_function_info(
 
     (
         FunctionInformation {
-            token_stream,
-            dependant_types,
+            function_signature,
+            type_alias_dependant_types,
             inline_dependant_types,
         },
         inline_dep_count,

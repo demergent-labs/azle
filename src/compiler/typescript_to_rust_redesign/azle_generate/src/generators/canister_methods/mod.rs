@@ -7,7 +7,7 @@ mod update;
 
 pub use query::{generate_query_function_infos, get_query_fn_decls};
 
-pub use update::{generate_update_function_token_streams, get_update_fn_decls};
+pub use update::{generate_update_function_infos, get_update_fn_decls};
 
 pub use functions::{generate_function_info, FunctionInformation};
 
