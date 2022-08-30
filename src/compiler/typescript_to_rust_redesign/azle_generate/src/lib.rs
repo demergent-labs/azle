@@ -2,6 +2,7 @@
 // TODO then we can move on from there
 
 use proc_macro::TokenStream;
+use proc_macro2::token_stream;
 use quote::quote;
 use std::{collections::HashSet, iter::FromIterator, path::Path};
 use swc_common::{sync::Lrc, SourceMap};
@@ -119,12 +120,17 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
     ]
     .concat();
 
-    let (type_aliases_map, type_alias_inline_deps, count) = generate_type_alias_token_streams(
+    let (type_aliases_map, count) = generate_type_alias_token_streams(
         &type_alias_dependant_types,
         &ast_type_alias_decls,
         inline_dep_count,
     );
     inline_dep_count = count;
+    let type_alias_inline_deps = type_aliases_map
+        .iter()
+        .fold(vec![], |acc, (_, (_, token_stream))| {
+            vec![acc, token_stream.clone()].concat()
+        });
     let type_alias_inline_deps: Box<Vec<StructInfo>> = Box::from(type_alias_inline_deps);
     let type_alias_inline_deps_token_streams =
         collect_inline_dependencies_for_struct(&type_alias_inline_deps);
@@ -136,11 +142,9 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
         .map(|token_stream| token_stream.to_string())
         .collect();
 
-    println!("The inline types are {:#?}", token_stream_visual);
-
     let type_aliases = type_aliases_map
         .iter()
-        .fold(quote!(), |acc, (_, token_stream)| {
+        .fold(quote!(), |acc, (_, (token_stream, _))| {
             quote! {
                 #acc
                 #token_stream
