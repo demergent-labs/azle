@@ -24,7 +24,7 @@ fn generate_update_function_token_stream(
     let mut inline_dep_count = inline_dep_count;
     let (function_info, count) = generate_function_info(ast_fnc_decl_update, inline_dep_count);
     inline_dep_count = count;
-    let function_token_stream = function_info.function_signature;
+    let function_token_stream = function_info.function;
 
     let token_stream = quote! {
         #[ic_cdk_macros::update]
@@ -34,7 +34,7 @@ fn generate_update_function_token_stream(
 
     (
         FunctionInformation {
-            function_signature: token_stream,
+            function: token_stream,
             ..function_info
         },
         inline_dep_count,

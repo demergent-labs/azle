@@ -90,7 +90,7 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
     inline_dep_count = count;
     let query_function_signatures: Vec<proc_macro2::TokenStream> = query_function_info
         .iter()
-        .map(|fun_info| fun_info.function_signature.clone())
+        .map(|fun_info| fun_info.function.clone())
         .collect();
 
     // let query_inline_type_aliases = quote!();
@@ -99,7 +99,7 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
     inline_dep_count = count;
     let update_function_signatures: Vec<proc_macro2::TokenStream> = update_function_info
         .iter()
-        .map(|fun_info| fun_info.function_signature.clone())
+        .map(|fun_info| fun_info.function.clone())
         .collect();
     // let update_inline_type_aliases = quote!();
 
