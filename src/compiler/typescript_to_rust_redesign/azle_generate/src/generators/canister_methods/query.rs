@@ -24,7 +24,7 @@ fn generate_query_function_info(
     let mut inline_dep_count = inline_dep_count;
     let (function_info, count) = generate_function_info(ast_fnc_decl_query, inline_dep_count);
     inline_dep_count = count;
-    let function_signature_stream = function_info.function_signature;
+    let function_signature_stream = function_info.function;
 
     let token_stream = quote! {
         #[ic_cdk_macros::query]
@@ -34,7 +34,7 @@ fn generate_query_function_info(
 
     (
         FunctionInformation {
-            function_signature: token_stream,
+            function: token_stream,
             ..function_info
         },
         inline_dep_count,
