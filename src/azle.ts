@@ -65,10 +65,11 @@ function installRustDependencies() {
 
     execSync(`rustup target add wasm32-unknown-unknown`, { stdio: 'inherit' });
 
-    execSync(
-        `cd target/azle && cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 didc --root ..`,
-        { stdio: 'inherit' }
-    );
+    // TODO this is breaking for people for some reason
+    // execSync(
+    //     `cd target/azle && cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 didc --root ..`,
+    //     { stdio: 'inherit' }
+    // );
 
     execSync(`cargo install ic-cdk-optimizer --version 0.3.4 || true`, {
         stdio: 'inherit'
@@ -142,6 +143,7 @@ function compileRustCode(canisterName: string, candidPath: string) {
         { stdio: 'inherit' }
     );
 
+    // TODO canisters/azle is hard-coded right now
     execSync(
         `
         cd target/azle/canisters/azle && cargo test
