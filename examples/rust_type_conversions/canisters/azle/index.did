@@ -1,0 +1,77 @@
+type AzleInlineStruct_0 = record {
+  one : text;
+  two : SimpleRecord;
+  three : bool;
+};
+type AzleInlineStruct_1 = record {
+  one : bool;
+  two : nat16;
+  three : ComplexRecord;
+};
+type AzleInlineStruct_10 = record { thing : text };
+type AzleInlineStruct_11 = record { one : text; two : SimpleRecord };
+type AzleInlineStruct_12 = record { thing : bool };
+type AzleInlineStruct_2 = record {
+  one : text;
+  two : SimpleRecord;
+  three : AzleInlineStruct_3;
+  four : AzleInlineStruct_4;
+};
+type AzleInlineStruct_3 = record { sub_one : bool; sub_two : bool };
+type AzleInlineStruct_4 = record {
+  sub_one : bool;
+  sub_two : AzleInlineStruct_5;
+};
+type AzleInlineStruct_5 = record { sub_three : bool };
+type AzleInlineStruct_6 = record {
+  one : AzleInlineStruct_7;
+  two : AzleInlineStruct_8;
+  three : AzleInlineStruct_9;
+};
+type AzleInlineStruct_7 = record { one_inline : bool };
+type AzleInlineStruct_8 = record { two_inline : nat16 };
+type AzleInlineStruct_9 = record { three_inline : ComplexRecord };
+type ComplexRecord = record {
+  one : nat16;
+  six : AzleInlineStruct_11;
+  two : bool;
+  three : bool;
+  five : vec SimpleRecord;
+  four : vec bool;
+  seven : RecordWithoutDirectInlineRecords;
+};
+type DeepInlineRecords = record {
+  one : AzleInlineStruct_12;
+  six : AzleInlineStruct_11;
+};
+type RecordWithoutDirectInlineRecords = record { one : DeepInlineRecords };
+type SimpleRecord = record { one : bool; other : vec bool };
+service : {
+  complex_record_test : (
+      ComplexRecord,
+      SimpleRecord,
+      bool,
+      AzleInlineStruct_0,
+      AzleInlineStruct_1,
+      AzleInlineStruct_2,
+      AzleInlineStruct_6,
+    ) -> (nat8) query;
+  getPrincipals : (vec vec principal) -> ();
+  not_so_simple : (
+      vec int8,
+      int16,
+      int32,
+      int64,
+      nat8,
+      nat16,
+      nat32,
+      nat64,
+      vec nat8,
+      float32,
+      float64,
+      principal,
+      null,
+      AzleInlineStruct_10,
+    ) -> ();
+  simple_query : (opt nat64, text, nat, bool) -> (text) query;
+}
