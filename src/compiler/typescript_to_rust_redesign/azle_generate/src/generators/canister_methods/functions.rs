@@ -1,8 +1,8 @@
+use crate::generators::canister_methods::method_body::generate_canister_method_body;
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
-use swc_ecma_ast::{FnDecl, Param, TsTypeAnn};
-
 use super::{rust_types::StructInfo, ts_type_to_rust_type, RustType};
+use swc_ecma_ast::{FnDecl, Param, TsTypeAnn};
 
 #[derive(Clone)]
 pub struct FunctionInformation {
@@ -31,9 +31,11 @@ pub fn generate_function_info(
     inline_dep_count = count;
     let params = generate_params_token_stream(&param_name_idents, &param_types);
 
+    let canister_method_body = generate_canister_method_body();
+
     let function_token_stream = quote! {
         async fn #function_name_ident(#(#params),*) -> #return_type_token {
-            Default::default()
+            #canister_method_body
         }
     };
 

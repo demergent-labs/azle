@@ -1,4 +1,5 @@
 mod functions;
+mod method_body;
 mod query;
 mod rust_types;
 mod type_aliases;
