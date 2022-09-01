@@ -52,6 +52,8 @@ use crate::generators::canister_methods::{
 };
 use crate::generators::ic_object::functions::generate_ic_object_functions;
 
+mod ast_utilities;
+
 fn collect_function_type_dependencies(function_info: &Vec<FunctionInformation>) -> HashSet<String> {
     let dependencies = function_info.iter().fold(vec![], |acc, fun_info| {
         vec![acc, fun_info.type_alias_dependant_types.clone()].concat()
