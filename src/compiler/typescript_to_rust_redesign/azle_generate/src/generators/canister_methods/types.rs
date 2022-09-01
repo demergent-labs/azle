@@ -161,10 +161,11 @@ fn parse_ts_type_ref(ts_type_ref: &TsTypeRef) -> TypeRefInfo {
             ..Default::default()
         },
         "Opt" => parse_opt_type_ref(ts_type_ref),
-        "Func" => TypeRefInfo {
-            identifier: quote!(candid::Func),
-            ..Default::default()
-        },
+        // TODO: We may want to inline the func implementation here.
+        // "Func" => TypeRefInfo {
+        //     identifier: quote!(candid::Func),
+        //     ..Default::default()
+        // },
         "Variant" => parse_variant_type_ref(ts_type_ref),
         _ => {
             let custom_type_ref_ident = format_ident!("{}", type_name);
