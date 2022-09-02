@@ -3,9 +3,6 @@ name = "azle_generate"
 version = "0.0.0"
 edition = "2018"
 
-[lib]
-proc_macro = true
-
 [dependencies]
 quote = "1.0.21"
 syn = "1.0.99"
