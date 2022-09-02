@@ -18,7 +18,13 @@ pub use rust_types::{ArrayTypeInfo, KeywordInfo, RustType, StructInfo, TypeRefIn
 
 pub use types::ts_type_to_rust_type;
 
-use swc_ecma_ast::{ExportDecl, FnDecl, Module, ModuleDecl, Program, TsTypeAliasDecl};
+use swc_ecma_ast::{ExportDecl, FnDecl, Module, ModuleDecl, Program, Stmt, TsTypeAliasDecl};
+
+pub fn get_ast_record_type_alias_decls(
+    type_aliases: &Vec<TsTypeAliasDecl>,
+) -> Vec<TsTypeAliasDecl> {
+    type_aliases.clone()
+}
 
 pub fn get_ast_type_alias_decls_from_programs(programs: &Vec<Program>) -> Vec<TsTypeAliasDecl> {
     programs.iter().fold(vec![], |acc, program| {
@@ -53,19 +59,28 @@ fn get_export_decls(module: &Module) -> Vec<ExportDecl> {
     export_decls
 }
 
+fn get_type_alias_decls(module: &Module) -> Vec<TsTypeAliasDecl> {
+    let module_stmts: Vec<Stmt> = module
+        .body
+        .iter()
+        .filter(|module_item| module_item.is_stmt())
+        .map(|module_item| module_item.as_stmt().unwrap().clone())
+        .collect();
+
+    let type_alias_decls: Vec<TsTypeAliasDecl> = module_stmts
+        .iter()
+        .filter(|module_stmt| module_stmt.is_decl())
+        .map(|module_decl| module_decl.as_decl().unwrap().clone())
+        .filter(|decl| decl.is_ts_type_alias())
+        .map(|decl| decl.as_ts_type_alias().unwrap().clone())
+        .collect();
+
+    type_alias_decls
+}
+
 pub fn get_ast_type_alias_decls_from_program(program: &Program) -> Vec<TsTypeAliasDecl> {
     match program {
-        Program::Module(module) => {
-            let export_decls = get_export_decls(module);
-
-            let type_alias_decls: Vec<TsTypeAliasDecl> = export_decls
-                .iter()
-                .filter(|export_decl| export_decl.decl.is_ts_type_alias())
-                .map(|export_decl| export_decl.decl.as_ts_type_alias().unwrap().clone())
-                .collect();
-
-            type_alias_decls
-        }
+        Program::Module(module) => get_type_alias_decls(module),
         Program::Script(_) => vec![],
     }
 }

@@ -1,57 +1,60 @@
-type AzleInlineStruct_26105d96_8c1f_4f09_977f_cec7fc82edff = record {
-  two_inline : nat16;
-};
-type AzleInlineStruct_3914bb54_9c5a_4ee7_97a0_2eac8eff4f2a = record {
+type AzleInlineStruct_0de9326b_7e25_4e77_bd6f_c9d6ce2cf3fd = record {
   sub_one : bool;
   sub_two : bool;
 };
-type AzleInlineStruct_541d8a2b_6a82_4f91_bb3b_e064c2b56f23 = record {
-  sub_three : bool;
+type AzleInlineStruct_1741b3c1_ab88_4201_a42a_1cfd6dcbc1ce = record {
+  one : AzleInlineStruct_5c3305ef_9b67_4b34_a5c4_b2ce22b045e4;
+  two : AzleInlineStruct_219aa876_8d34_4850_a231_72f9ccbbd0cd;
+  three : AzleInlineStruct_3d8fc7a1_a356_4631_ac7c_a788053020e4;
 };
-type AzleInlineStruct_5fac6ce7_f959_4f5b_b387_42a7460125c8 = record {
+type AzleInlineStruct_184a0942_b37e_4714_8255_f63dde3a6d7f = record {
   one : text;
   two : SimpleRecord;
   three : bool;
 };
-type AzleInlineStruct_65a61db0_2f7c_4721_9509_e1606de5c797 = record {
+type AzleInlineStruct_219aa876_8d34_4850_a231_72f9ccbbd0cd = record {
+  two_inline : nat16;
+};
+type AzleInlineStruct_2420a0bb_9199_40d3_8f64_9b6f14d2a4d7 = record {
   thing : text;
 };
-type AzleInlineStruct_7520546e_a5cb_4349_a7a2_a480f695134d = record {
-  one_inline : bool;
-};
-type AzleInlineStruct_869f07b9_f727_4432_a3a2_54777b2b2a4f = record {
+type AzleInlineStruct_3d8fc7a1_a356_4631_ac7c_a788053020e4 = record {
   three_inline : ComplexRecord;
 };
-type AzleInlineStruct_9f574da7_2ca4_4612_8004_4cf22558abaf = record {
+type AzleInlineStruct_5c3305ef_9b67_4b34_a5c4_b2ce22b045e4 = record {
+  one_inline : bool;
+};
+type AzleInlineStruct_5ce3d944_281e_413f_9147_837755ac3305 = record {
+  sub_one : bool;
+  sub_two : AzleInlineStruct_6d627fd3_3e03_4524_bcb9_568303712ea8;
+};
+type AzleInlineStruct_6d627fd3_3e03_4524_bcb9_568303712ea8 = record {
+  sub_three : bool;
+};
+type AzleInlineStruct_7424f583_7a50_4aa9_beaa_be0d4b2affe6 = record {
   thing : bool;
 };
-type AzleInlineStruct_ad472e61_4a66_4343_a9a0_31d437a6e469 = record {
-  one : AzleInlineStruct_7520546e_a5cb_4349_a7a2_a480f695134d;
-  two : AzleInlineStruct_26105d96_8c1f_4f09_977f_cec7fc82edff;
-  three : AzleInlineStruct_869f07b9_f727_4432_a3a2_54777b2b2a4f;
+type AzleInlineStruct_8fd73256_0f43_4b12_92e1_9eb6da126606 = record {
+  one : TypeAliasOnlyUsedInline;
 };
-type AzleInlineStruct_c1bbc5c7_baee_435e_afa0_bd61bd59e42e = record {
-  sub_one : bool;
-  sub_two : AzleInlineStruct_541d8a2b_6a82_4f91_bb3b_e064c2b56f23;
+type AzleInlineStruct_b5b58e5e_25a3_4d95_b971_872ff3550cfd = record {
+  one : text;
+  two : SimpleRecord;
+  three : AzleInlineStruct_0de9326b_7e25_4e77_bd6f_c9d6ce2cf3fd;
+  four : AzleInlineStruct_5ce3d944_281e_413f_9147_837755ac3305;
 };
-type AzleInlineStruct_c2d16d78_bc07_43ab_9d82_4968cc6d0216 = record {
+type AzleInlineStruct_f1992be6_d573_4f89_809a_143ed96e6295 = record {
   one : text;
   two : SimpleRecord;
 };
-type AzleInlineStruct_c34e8da7_3f9a_4a29_b180_31ea9967c12c = record {
-  one : text;
-  two : SimpleRecord;
-  three : AzleInlineStruct_3914bb54_9c5a_4ee7_97a0_2eac8eff4f2a;
-  four : AzleInlineStruct_c1bbc5c7_baee_435e_afa0_bd61bd59e42e;
-};
-type AzleInlineStruct_fcd0139e_86c8_49ef_8921_81b5acb6e6e1 = record {
+type AzleInlineStruct_f4b9a45b_e43d_47a8_ada4_19c331b55cae = record {
   one : bool;
   two : nat16;
   three : ComplexRecord;
 };
 type ComplexRecord = record {
   one : nat16;
-  six : AzleInlineStruct_c2d16d78_bc07_43ab_9d82_4968cc6d0216;
+  six : AzleInlineStruct_f1992be6_d573_4f89_809a_143ed96e6295;
   two : bool;
   three : bool;
   five : vec SimpleRecord;
@@ -59,20 +62,22 @@ type ComplexRecord = record {
   seven : RecordWithoutDirectInlineRecords;
 };
 type DeepInlineRecords = record {
-  one : AzleInlineStruct_9f574da7_2ca4_4612_8004_4cf22558abaf;
-  six : AzleInlineStruct_c2d16d78_bc07_43ab_9d82_4968cc6d0216;
+  one : AzleInlineStruct_7424f583_7a50_4aa9_beaa_be0d4b2affe6;
+  six : AzleInlineStruct_f1992be6_d573_4f89_809a_143ed96e6295;
 };
 type RecordWithoutDirectInlineRecords = record { one : DeepInlineRecords };
 type SimpleRecord = record { one : bool; other : vec bool };
+type TypeAliasOnlyUsedInline = record { one : bool };
 service : {
   complex_record_test : (
       ComplexRecord,
       SimpleRecord,
       bool,
-      AzleInlineStruct_5fac6ce7_f959_4f5b_b387_42a7460125c8,
-      AzleInlineStruct_fcd0139e_86c8_49ef_8921_81b5acb6e6e1,
-      AzleInlineStruct_c34e8da7_3f9a_4a29_b180_31ea9967c12c,
-      AzleInlineStruct_ad472e61_4a66_4343_a9a0_31d437a6e469,
+      AzleInlineStruct_184a0942_b37e_4714_8255_f63dde3a6d7f,
+      AzleInlineStruct_f4b9a45b_e43d_47a8_ada4_19c331b55cae,
+      AzleInlineStruct_b5b58e5e_25a3_4d95_b971_872ff3550cfd,
+      AzleInlineStruct_1741b3c1_ab88_4201_a42a_1cfd6dcbc1ce,
+      AzleInlineStruct_8fd73256_0f43_4b12_92e1_9eb6da126606,
     ) -> (nat8) query;
   getPrincipals : (vec vec principal) -> ();
   not_so_simple : (
@@ -89,7 +94,7 @@ service : {
       float64,
       principal,
       null,
-      AzleInlineStruct_65a61db0_2f7c_4721_9509_e1606de5c797,
+      AzleInlineStruct_2420a0bb_9199_40d3_8f64_9b6f14d2a4d7,
     ) -> ();
   simple_query : (opt nat64, text, nat, bool) -> (text) query;
 }
