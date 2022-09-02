@@ -21,7 +21,7 @@ import {
     Variant
 } from 'azle';
 
-// export type InlineExample = {
+// type InlineExample = {
 //     // first_field: { one: boolean; two: string };
 //     second_field: { one: boolean; two: { thing: string } };
 //     // third_field: { one: boolean; two: string };
@@ -38,39 +38,43 @@ export function simple_query(
     return 'This is a query function';
 }
 
-export type TypeAliasOfATypeRef = nat8;
+type TypeAliasOfATypeRef = nat8;
 
-export type SimpleTypeAlias = boolean;
+type SimpleTypeAlias = boolean;
 
-export type Boolean = boolean;
-export type Boolean2 = Boolean;
-export type Boolean3 = Boolean2;
+type Boolean = boolean;
+type Boolean2 = Boolean;
+type Boolean3 = Boolean2;
 
-export type BooleanArray = Boolean[];
+type BooleanArray = Boolean[];
 
-export type SimpleRecord = {
+type SimpleRecord = {
     one: boolean;
     other: BooleanArray;
 };
 
-export type Unused3 = boolean;
+type Unused3 = boolean;
 
-export type Unused2 = Unused3;
+type Unused2 = Unused3;
 
-export type Unused = Unused2;
+type Unused = Unused2;
 
-export type UsedType = Unused;
+type UsedType = Unused;
 
-export type DeepInlineRecords = {
+type DeepInlineRecords = {
     one: { thing: boolean };
     six: { one: string; two: SimpleRecord };
 };
 
-export type RecordWithoutDirectInlineRecords = {
+type RecordWithoutDirectInlineRecords = {
     one: DeepInlineRecords;
 };
 
-export type ComplexRecord = {
+type TypeAliasOnlyUsedInline = {
+    one: boolean;
+};
+
+type ComplexRecord = {
     one: nat16;
     two: boolean;
     three: SimpleTypeAlias;
@@ -104,12 +108,15 @@ export function complex_record_test(
         one: { one_inline: boolean };
         two: { two_inline: nat16 };
         three: { three_inline: ComplexRecord };
+    },
+    inline_with_type_alias_dependency: {
+        one: TypeAliasOnlyUsedInline;
     }
 ): Query<TypeAliasOfATypeRef> {
     return 1;
 }
 
-// export type Fun = Variant<{
+// type Fun = Variant<{
 //     id?: null;
 //     cool?: null;
 // }>;
@@ -122,20 +129,20 @@ export function complex_record_test(
 //     return 'hello';
 // }
 
-// export type Yes = Variant<{
+// type Yes = Variant<{
 //     One?: null;
 //     Two?: null;
 //     Three?: null;
 // }>;
 
-// export type Reaction = Variant<{
+// type Reaction = Variant<{
 //     Fire?: null;
 //     Great?: null;
 //     Good?: Good;
 //     Fun?: Fun;
 // }>;
 
-// export type Good = {
+// type Good = {
 //     id: string;
 // };
 
