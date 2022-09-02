@@ -12,23 +12,16 @@ pub struct FunctionInformation {
     pub inline_dependant_types: Box<Vec<StructInfo>>,
 }
 
-pub fn generate_function_info(
-    ast_fnc_decl: &FnDecl,
-    inline_dep_count: u32,
-) -> (FunctionInformation, u32) {
-    let mut inline_dep_count = inline_dep_count;
+pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> FunctionInformation {
     let function_name = ast_fnc_decl.ident.sym.chars().as_str().to_string();
     let function_name_ident = format_ident!("{}", function_name);
 
     let ts_type_ann = &ast_fnc_decl.function.return_type.as_ref();
-    let (return_type, count) = generate_return_type(ts_type_ann, inline_dep_count);
-    inline_dep_count = count;
+    let return_type = generate_return_type(ts_type_ann);
     let return_type_token = return_type.get_type_ident();
 
     let param_name_idents = generate_param_name_idents(&ast_fnc_decl.function.params);
-    let (param_types, count) =
-        generate_param_types(&ast_fnc_decl.function.params, inline_dep_count);
-    inline_dep_count = count;
+    let param_types = generate_param_types(&ast_fnc_decl.function.params);
     let params = generate_params_token_stream(&param_name_idents, &param_types);
 
     let canister_method_body = generate_canister_method_body();
@@ -72,14 +65,11 @@ pub fn generate_function_info(
     });
     let inline_dependant_types: Box<Vec<StructInfo>> = Box::from(inline_dependant_types);
 
-    (
-        FunctionInformation {
-            function: function_token_stream,
-            type_alias_dependant_types,
-            inline_dependant_types,
-        },
-        inline_dep_count,
-    )
+    FunctionInformation {
+        function: function_token_stream,
+        type_alias_dependant_types,
+        inline_dependant_types,
+    }
 }
 
 fn generate_param_name_idents(params: &Vec<Param>) -> Vec<Ident> {
@@ -112,27 +102,22 @@ fn generate_params_token_stream(names: &Vec<Ident>, types: &Vec<RustType>) -> Ve
         .collect()
 }
 
-fn generate_return_type(
-    ts_type_ann: &Option<&TsTypeAnn>,
-    inline_dep_count: u32,
-) -> (RustType, u32) {
+fn generate_return_type(ts_type_ann: &Option<&TsTypeAnn>) -> RustType {
     let return_type_ann = ts_type_ann.clone().unwrap();
     let return_type_ref = return_type_ann.type_ann.as_ts_type_ref().unwrap();
     let return_type_params = return_type_ref.type_params.clone().unwrap();
 
     let return_ts_type = *return_type_params.params[0].clone();
-    ts_type_to_rust_type(&return_ts_type, inline_dep_count, None)
+    ts_type_to_rust_type(&return_ts_type, None)
 }
 
-fn generate_param_types(params: &Vec<Param>, inline_dep_count: u32) -> (Vec<RustType>, u32) {
-    params
-        .iter()
-        .fold((vec![], inline_dep_count), |(acc, count), param| {
-            let param_type_ann = &param.pat.as_ident().unwrap().type_ann.as_ref();
-            let param_type_ann = param_type_ann.clone().unwrap();
-            let param_ts_type = *param_type_ann.type_ann.clone();
+fn generate_param_types(params: &Vec<Param>) -> Vec<RustType> {
+    params.iter().fold(vec![], |acc, param| {
+        let param_type_ann = &param.pat.as_ident().unwrap().type_ann.as_ref();
+        let param_type_ann = param_type_ann.clone().unwrap();
+        let param_ts_type = *param_type_ann.type_ann.clone();
 
-            let (param_rust_type, count) = ts_type_to_rust_type(&param_ts_type, count, None);
-            (vec![acc, vec![param_rust_type]].concat(), count)
-        })
+        let param_rust_type = ts_type_to_rust_type(&param_ts_type, None);
+        vec![acc, vec![param_rust_type]].concat()
+    })
 }

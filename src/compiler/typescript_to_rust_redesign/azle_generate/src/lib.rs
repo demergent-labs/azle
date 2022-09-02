@@ -24,8 +24,8 @@ mod generators {
 
 use generators::canister_methods::{
     generate_query_function_infos, generate_update_function_infos, get_ast_fn_decls_from_programs,
-    get_ast_type_alias_decls_from_programs, get_query_fn_decls, get_update_fn_decls,
-    FunctionInformation, StructInfo,
+    get_ast_record_type_alias_decls, get_ast_type_alias_decls_from_programs, get_query_fn_decls,
+    get_update_fn_decls, FunctionInformation, StructInfo,
 };
 
 use crate::generators::canister_methods::generate_type_alias_token_streams;
@@ -76,6 +76,7 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
 
     // Collect AST Information
     let ast_type_alias_decls = get_ast_type_alias_decls_from_programs(&programs);
+    let ast_record_type_alias_decls = get_ast_record_type_alias_decls(&ast_type_alias_decls);
     let ast_fnc_decls = get_ast_fn_decls_from_programs(&programs);
 
     // Separate function decls into queries and updates
@@ -83,21 +84,16 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
     let ast_fnc_decls_update = get_update_fn_decls(&ast_fnc_decls);
 
     // println!("ast_fnc_decls_query: {:#?}", ast_fnc_decls_query);
-    let mut inline_dep_count = 0;
 
-    let (query_function_info, count) =
-        generate_query_function_infos(&ast_fnc_decls_query, inline_dep_count);
-    inline_dep_count = count;
-    let query_function_signatures: Vec<proc_macro2::TokenStream> = query_function_info
+    let query_function_info = generate_query_function_infos(&ast_fnc_decls_query);
+    let query_function_streams: Vec<proc_macro2::TokenStream> = query_function_info
         .iter()
         .map(|fun_info| fun_info.function.clone())
         .collect();
 
     // let query_inline_type_aliases = quote!();
-    let (update_function_info, count) =
-        generate_update_function_infos(&ast_fnc_decls_update, inline_dep_count);
-    inline_dep_count = count;
-    let update_function_signatures: Vec<proc_macro2::TokenStream> = update_function_info
+    let update_function_info = generate_update_function_infos(&ast_fnc_decls_update);
+    let update_function_streams: Vec<proc_macro2::TokenStream> = update_function_info
         .iter()
         .map(|fun_info| fun_info.function.clone())
         .collect();
@@ -114,48 +110,35 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
     let query_function_inline_dependant_types = collect_inline_dependencies(&query_function_info);
     let update_function_inline_dependant_types = collect_inline_dependencies(&update_function_info);
     // TODO it would be great to add the inline_types we found from doing the type aliases while we are at it
-    let inline_types = vec![
+    let function_inline_records = vec![
         query_function_inline_dependant_types,
         update_function_inline_dependant_types,
     ]
     .concat();
 
-    let (type_aliases_map, count) = generate_type_alias_token_streams(
-        &type_alias_dependant_types,
-        &ast_type_alias_decls,
-        inline_dep_count,
-    );
-    inline_dep_count = count;
+    let type_aliases_map =
+        generate_type_alias_token_streams(&type_alias_dependant_types, &ast_type_alias_decls);
     let type_alias_inline_deps = type_aliases_map
         .iter()
         .fold(vec![], |acc, (_, (_, token_stream))| {
             vec![acc, token_stream.clone()].concat()
         });
-    let type_alias_inline_deps: Box<Vec<StructInfo>> = Box::from(type_alias_inline_deps);
-    let type_alias_inline_deps_token_streams =
-        collect_inline_dependencies_for_struct(&type_alias_inline_deps);
+    let type_alias_inline_records =
+        collect_inline_dependencies_for_struct(&Box::from(type_alias_inline_deps));
 
-    let inline_types = vec![inline_types, type_alias_inline_deps_token_streams].concat();
+    let inline_records_function_streams =
+        vec![function_inline_records, type_alias_inline_records].concat();
 
-    let token_stream_visual: Vec<String> = inline_types
+    let records_function_streams: Vec<proc_macro2::TokenStream> = type_aliases_map
         .iter()
-        .map(|token_stream| token_stream.to_string())
+        .map(|(_, (token_stream, _))| token_stream.clone())
         .collect();
 
-    let type_aliases = type_aliases_map
-        .iter()
-        .fold(quote!(), |acc, (_, (token_stream, _))| {
-            quote! {
-                #acc
-                #token_stream
-            }
-        });
-
     quote! {
-        #(#inline_types)*
-        #type_aliases
-        #(#query_function_signatures)*
-        #(#update_function_signatures)*
+        #(#inline_records_function_streams)*
+        #(#records_function_streams)*
+        #(#query_function_streams)*
+        #(#update_function_streams)*
 
         candid::export_service!();
 
