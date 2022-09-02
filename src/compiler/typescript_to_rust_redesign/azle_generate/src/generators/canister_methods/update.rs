@@ -5,25 +5,17 @@ use super::{functions::FunctionInformation, generate_function_info};
 
 pub fn generate_update_function_infos(
     ast_fnc_decls_update: &Vec<FnDecl>,
-    inline_dep_count: u32,
-) -> (Vec<FunctionInformation>, u32) {
-    ast_fnc_decls_update.iter().fold(
-        (vec![], inline_dep_count),
-        |(acc, count), ast_fnc_decl_update| {
-            let (func_token_stream, count) =
-                generate_update_function_token_stream(ast_fnc_decl_update, count);
-            (vec![acc, vec![func_token_stream]].concat(), count)
-        },
-    )
+) -> Vec<FunctionInformation> {
+    ast_fnc_decls_update
+        .iter()
+        .fold(vec![], |acc, ast_fnc_decl_update| {
+            let func_token_stream = generate_update_function_token_stream(ast_fnc_decl_update);
+            vec![acc, vec![func_token_stream]].concat()
+        })
 }
 
-fn generate_update_function_token_stream(
-    ast_fnc_decl_update: &FnDecl,
-    inline_dep_count: u32,
-) -> (FunctionInformation, u32) {
-    let mut inline_dep_count = inline_dep_count;
-    let (function_info, count) = generate_function_info(ast_fnc_decl_update, inline_dep_count);
-    inline_dep_count = count;
+fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl) -> FunctionInformation {
+    let function_info = generate_function_info(ast_fnc_decl_update);
     let function_token_stream = function_info.function;
 
     let token_stream = quote! {
@@ -32,13 +24,10 @@ fn generate_update_function_token_stream(
         #function_token_stream
     };
 
-    (
-        FunctionInformation {
-            function: token_stream,
-            ..function_info
-        },
-        inline_dep_count,
-    )
+    FunctionInformation {
+        function: token_stream,
+        ..function_info
+    }
 }
 
 pub fn get_update_fn_decls(fn_decls: &Vec<FnDecl>) -> Vec<FnDecl> {

@@ -1,39 +1,57 @@
-type AzleInlineStruct_0 = record {
+type AzleInlineStruct_26105d96_8c1f_4f09_977f_cec7fc82edff = record {
+  two_inline : nat16;
+};
+type AzleInlineStruct_3914bb54_9c5a_4ee7_97a0_2eac8eff4f2a = record {
+  sub_one : bool;
+  sub_two : bool;
+};
+type AzleInlineStruct_541d8a2b_6a82_4f91_bb3b_e064c2b56f23 = record {
+  sub_three : bool;
+};
+type AzleInlineStruct_5fac6ce7_f959_4f5b_b387_42a7460125c8 = record {
   one : text;
   two : SimpleRecord;
   three : bool;
 };
-type AzleInlineStruct_1 = record {
+type AzleInlineStruct_65a61db0_2f7c_4721_9509_e1606de5c797 = record {
+  thing : text;
+};
+type AzleInlineStruct_7520546e_a5cb_4349_a7a2_a480f695134d = record {
+  one_inline : bool;
+};
+type AzleInlineStruct_869f07b9_f727_4432_a3a2_54777b2b2a4f = record {
+  three_inline : ComplexRecord;
+};
+type AzleInlineStruct_9f574da7_2ca4_4612_8004_4cf22558abaf = record {
+  thing : bool;
+};
+type AzleInlineStruct_ad472e61_4a66_4343_a9a0_31d437a6e469 = record {
+  one : AzleInlineStruct_7520546e_a5cb_4349_a7a2_a480f695134d;
+  two : AzleInlineStruct_26105d96_8c1f_4f09_977f_cec7fc82edff;
+  three : AzleInlineStruct_869f07b9_f727_4432_a3a2_54777b2b2a4f;
+};
+type AzleInlineStruct_c1bbc5c7_baee_435e_afa0_bd61bd59e42e = record {
+  sub_one : bool;
+  sub_two : AzleInlineStruct_541d8a2b_6a82_4f91_bb3b_e064c2b56f23;
+};
+type AzleInlineStruct_c2d16d78_bc07_43ab_9d82_4968cc6d0216 = record {
+  one : text;
+  two : SimpleRecord;
+};
+type AzleInlineStruct_c34e8da7_3f9a_4a29_b180_31ea9967c12c = record {
+  one : text;
+  two : SimpleRecord;
+  three : AzleInlineStruct_3914bb54_9c5a_4ee7_97a0_2eac8eff4f2a;
+  four : AzleInlineStruct_c1bbc5c7_baee_435e_afa0_bd61bd59e42e;
+};
+type AzleInlineStruct_fcd0139e_86c8_49ef_8921_81b5acb6e6e1 = record {
   one : bool;
   two : nat16;
   three : ComplexRecord;
 };
-type AzleInlineStruct_10 = record { thing : text };
-type AzleInlineStruct_11 = record { one : text; two : SimpleRecord };
-type AzleInlineStruct_12 = record { thing : bool };
-type AzleInlineStruct_2 = record {
-  one : text;
-  two : SimpleRecord;
-  three : AzleInlineStruct_3;
-  four : AzleInlineStruct_4;
-};
-type AzleInlineStruct_3 = record { sub_one : bool; sub_two : bool };
-type AzleInlineStruct_4 = record {
-  sub_one : bool;
-  sub_two : AzleInlineStruct_5;
-};
-type AzleInlineStruct_5 = record { sub_three : bool };
-type AzleInlineStruct_6 = record {
-  one : AzleInlineStruct_7;
-  two : AzleInlineStruct_8;
-  three : AzleInlineStruct_9;
-};
-type AzleInlineStruct_7 = record { one_inline : bool };
-type AzleInlineStruct_8 = record { two_inline : nat16 };
-type AzleInlineStruct_9 = record { three_inline : ComplexRecord };
 type ComplexRecord = record {
   one : nat16;
-  six : AzleInlineStruct_11;
+  six : AzleInlineStruct_c2d16d78_bc07_43ab_9d82_4968cc6d0216;
   two : bool;
   three : bool;
   five : vec SimpleRecord;
@@ -41,8 +59,8 @@ type ComplexRecord = record {
   seven : RecordWithoutDirectInlineRecords;
 };
 type DeepInlineRecords = record {
-  one : AzleInlineStruct_12;
-  six : AzleInlineStruct_11;
+  one : AzleInlineStruct_9f574da7_2ca4_4612_8004_4cf22558abaf;
+  six : AzleInlineStruct_c2d16d78_bc07_43ab_9d82_4968cc6d0216;
 };
 type RecordWithoutDirectInlineRecords = record { one : DeepInlineRecords };
 type SimpleRecord = record { one : bool; other : vec bool };
@@ -51,10 +69,10 @@ service : {
       ComplexRecord,
       SimpleRecord,
       bool,
-      AzleInlineStruct_0,
-      AzleInlineStruct_1,
-      AzleInlineStruct_2,
-      AzleInlineStruct_6,
+      AzleInlineStruct_5fac6ce7_f959_4f5b_b387_42a7460125c8,
+      AzleInlineStruct_fcd0139e_86c8_49ef_8921_81b5acb6e6e1,
+      AzleInlineStruct_c34e8da7_3f9a_4a29_b180_31ea9967c12c,
+      AzleInlineStruct_ad472e61_4a66_4343_a9a0_31d437a6e469,
     ) -> (nat8) query;
   getPrincipals : (vec vec principal) -> ();
   not_so_simple : (
@@ -71,7 +89,7 @@ service : {
       float64,
       principal,
       null,
-      AzleInlineStruct_10,
+      AzleInlineStruct_65a61db0_2f7c_4721_9509_e1606de5c797,
     ) -> ();
   simple_query : (opt nat64, text, nat, bool) -> (text) query;
 }
