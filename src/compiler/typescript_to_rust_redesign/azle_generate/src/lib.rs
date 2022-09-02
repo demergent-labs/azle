@@ -83,20 +83,15 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
     let ast_fnc_decls_update = get_update_fn_decls(&ast_fnc_decls);
 
     // println!("ast_fnc_decls_query: {:#?}", ast_fnc_decls_query);
-    let mut inline_dep_count = 0;
 
-    let (query_function_info, count) =
-        generate_query_function_infos(&ast_fnc_decls_query, inline_dep_count);
-    inline_dep_count = count;
+    let query_function_info = generate_query_function_infos(&ast_fnc_decls_query);
     let query_function_signatures: Vec<proc_macro2::TokenStream> = query_function_info
         .iter()
         .map(|fun_info| fun_info.function.clone())
         .collect();
 
     // let query_inline_type_aliases = quote!();
-    let (update_function_info, count) =
-        generate_update_function_infos(&ast_fnc_decls_update, inline_dep_count);
-    inline_dep_count = count;
+    let update_function_info = generate_update_function_infos(&ast_fnc_decls_update);
     let update_function_signatures: Vec<proc_macro2::TokenStream> = update_function_info
         .iter()
         .map(|fun_info| fun_info.function.clone())
@@ -120,12 +115,8 @@ pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
     ]
     .concat();
 
-    let (type_aliases_map, count) = generate_type_alias_token_streams(
-        &type_alias_dependant_types,
-        &ast_type_alias_decls,
-        inline_dep_count,
-    );
-    inline_dep_count = count;
+    let type_aliases_map =
+        generate_type_alias_token_streams(&type_alias_dependant_types, &ast_type_alias_decls);
     let type_alias_inline_deps = type_aliases_map
         .iter()
         .fold(vec![], |acc, (_, (_, token_stream))| {
