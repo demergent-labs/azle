@@ -44,7 +44,7 @@ async function azle() {
 
     // TODO putting in these absolute paths may be a security issue
     const libFile: Rust = `
-        azle_generate::azle_generate!("${fileNames.join(',')}");
+        azle_generate_macro::generate!("${fileNames.join(',')}");
     `;
 
     writeCodeToFileSystem(
@@ -55,7 +55,7 @@ async function azle() {
         libFile
     );
 
-    compileRustCode(canisterName, candidPath);
+    compileRustCode(canisterName, rootPath, candidPath);
 }
 
 function installRustDependencies() {
@@ -65,10 +65,11 @@ function installRustDependencies() {
 
     execSync(`rustup target add wasm32-unknown-unknown`, { stdio: 'inherit' });
 
-    execSync(
-        `cd target/azle && cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 didc --root ..`,
-        { stdio: 'inherit' }
-    );
+    // TODO this is breaking for people for some reason
+    // execSync(
+    //     `cd target/azle && cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 didc --root ..`,
+    //     { stdio: 'inherit' }
+    // );
 
     execSync(`cargo install ic-cdk-optimizer --version 0.3.4 || true`, {
         stdio: 'inherit'
@@ -118,9 +119,22 @@ function writeCodeToFileSystem(
         `${__dirname}/compiler/typescript_to_rust_redesign/azle_generate`,
         `./target/azle/${rootPath}/azle_generate`
     );
+
+    if (!fs.existsSync(`./target/azle/${rootPath}/azle_generate_macro`)) {
+        fs.mkdirSync(`./target/azle/${rootPath}/azle_generate_macro`);
+    }
+
+    fsExtra.copySync(
+        `${__dirname}/compiler/typescript_to_rust_redesign/azle_generate_macro`,
+        `./target/azle/${rootPath}/azle_generate_macro`
+    );
 }
 
-function compileRustCode(canisterName: string, candidPath: string) {
+function compileRustCode(
+    canisterName: string,
+    rootPath: string,
+    candidPath: string
+) {
     execSync(
         `cd target/azle && CARGO_TARGET_DIR=.. cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
         { stdio: 'inherit' }
@@ -144,14 +158,14 @@ function compileRustCode(canisterName: string, candidPath: string) {
 
     execSync(
         `
-        cd target/azle/canisters/azle && cargo test
+        cd target/azle/${rootPath} && cargo test
     `,
         { stdio: 'inherit' }
     );
 
     execSync(
         `
-        cp target/azle/canisters/azle/index.did ${candidPath}
+        cp target/azle/${rootPath}/index.did ${candidPath}
     `,
         { stdio: 'inherit' }
     );
