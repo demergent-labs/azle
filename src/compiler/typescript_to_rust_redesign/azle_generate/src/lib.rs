@@ -1,8 +1,6 @@
 // TODO let's find all Query and Update functions and create their function bodies
 // TODO then we can move on from there
 
-use proc_macro::TokenStream;
-use proc_macro2::token_stream;
 use quote::quote;
 use std::{collections::HashSet, iter::FromIterator, path::Path};
 use swc_common::{sync::Lrc, SourceMap};
@@ -16,7 +14,6 @@ use swc_ecma_parser::{
     Syntax,
     TsConfig,
 };
-use syn::{parse_macro_input, LitStr};
 
 mod generators {
     pub mod canister_methods;
@@ -65,13 +62,7 @@ fn collect_inline_dependencies_for_struct(
     })
 }
 
-#[proc_macro]
-pub fn azle_generate(ts_file_names_token_stream: TokenStream) -> TokenStream {
-    let ts_file_names_string_literal = parse_macro_input!(ts_file_names_token_stream as LitStr);
-    let ts_file_names_string_value = ts_file_names_string_literal.value();
-
-    let ts_file_names: Vec<&str> = ts_file_names_string_value.split(",").collect();
-
+pub fn azle_generate(ts_file_names: &Vec<&str>) -> proc_macro2::token_stream::TokenStream {
     let programs = get_programs(&ts_file_names);
 
     // Collect AST Information
