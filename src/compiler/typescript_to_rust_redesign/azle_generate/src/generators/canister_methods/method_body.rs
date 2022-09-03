@@ -1,7 +1,7 @@
 use quote::quote;
 use proc_macro2::{Ident};
 
-pub fn generate_canister_method_body(function_name_ident: &Ident, params: &Vec<proc_macro2::TokenStream>) -> proc_macro2::TokenStream {
+pub fn generate_canister_method_body(function_name_ident: &Ident, param_name_idents: &Vec<Ident>) -> proc_macro2::TokenStream {
     quote! {
         unsafe {
             let mut boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
@@ -15,12 +15,12 @@ pub fn generate_canister_method_body(function_name_ident: &Ident, params: &Vec<p
             let _azle_return_value = function_js_object.call(
                 &boa_engine::JsValue::Null,
                 &[
-                    #(#params),*
+                    #(#param_name_idents.azle_into_js_value(&mut boa_context)),*
                 ],
                 &mut boa_context
             ).unwrap();
 
-            _azle_return_value.azle_try_from_js_value(boa_context).unwrap() // TODO add in the return result handler
+            _azle_return_value.azle_try_from_js_value(&mut boa_context).unwrap() // TODO add in the return result handler
         }
     }
 }
