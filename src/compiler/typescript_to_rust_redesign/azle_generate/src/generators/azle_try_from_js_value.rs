@@ -9,13 +9,14 @@ pub fn generate_azle_try_from_js_value() -> proc_macro2::TokenStream {
 
         // Basic types
 
+        // TODO This was changed to allow null or undefined JsValues, this should be thought through and tested
         impl AzleTryFromJsValue<()> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<(), AzleTryFromJsValueError> {
-                if self.is_null() == true {
+                if self.is_null() == true || self.is_undefined() == true {
                     Ok(())
                 }
                 else {
-                    Err(AzleTryFromJsValueError("JsValue is not null".to_string()))
+                    Err(AzleTryFromJsValueError("JsValue is not null or undefined".to_string()))
                 }
             }
         }
