@@ -33,7 +33,7 @@ async function azle() {
 
     const fileNames = sourceFiles.map((sourceFile) => {
         if (sourceFile.fileName.startsWith(root_absolute_path) === false) {
-            return `../../../../${sourceFile.fileName}`;
+            return `${process.cwd()}/${sourceFile.fileName}`;
         } else {
             return sourceFile.fileName;
         }
