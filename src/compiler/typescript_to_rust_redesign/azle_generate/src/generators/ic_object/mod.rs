@@ -4,6 +4,51 @@ pub fn generate_ic_object() -> proc_macro2::TokenStream {
     quote::quote! {
         let ic = boa_engine::object::ObjectInitializer::new(&mut boa_context)
             .function(
+                _azle_ic_arg_data_raw,
+                "arg_data_raw",
+                0
+            )
+            .function(
+                _azle_ic_arg_data_raw_size,
+                "arg_data_raw_size",
+                0
+            )
+            .function(
+                _azle_ic_caller,
+                "caller",
+                0
+            )
+            .function(
+                _azle_ic_candid_decode,
+                "candid_decode",
+                0
+            )
+            .function(
+                _azle_ic_candid_encode,
+                "candid_encode",
+                0
+            )
+            .function(
+                _azle_ic_canister_balance,
+                "canister_balance",
+                0
+            )
+            .function(
+                _azle_ic_canister_balance128,
+                "canister_balance128",
+                0
+            )
+            .function(
+                _azle_ic_data_certificate,
+                "data_certificate",
+                0
+            )
+            .function(
+                _azle_ic_id,
+                "id",
+                0
+            )
+            .function(
                 _azle_ic_performance_counter,
                 "performance_counter",
                 0
@@ -11,6 +56,26 @@ pub fn generate_ic_object() -> proc_macro2::TokenStream {
             .function(
                 _azle_ic_print,
                 "print",
+                0
+            )
+            .function(
+                _azle_ic_reject,
+                "reject",
+                0
+            )
+            .function(
+                _azle_ic_set_certified_data,
+                "set_certified_data",
+                0
+            )
+            .function(
+                _azle_ic_time,
+                "time",
+                0
+            )
+            .function(
+                _azle_ic_trap,
+                "trap",
                 0
             )
             .build();
