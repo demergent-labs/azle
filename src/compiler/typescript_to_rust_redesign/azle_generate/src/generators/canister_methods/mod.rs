@@ -5,6 +5,9 @@ mod rust_types;
 mod type_aliases;
 mod types;
 mod update;
+pub mod system {
+    pub mod init;
+}
 
 pub use query::{generate_query_function_infos, get_query_fn_decls};
 
