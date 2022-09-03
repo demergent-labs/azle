@@ -24,7 +24,7 @@ pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> FunctionInformation {
     let param_types = generate_param_types(&ast_fnc_decl.function.params);
     let params = generate_params_token_stream(&param_name_idents, &param_types);
 
-    let canister_method_body = generate_canister_method_body(&function_name_ident, &params);
+    let canister_method_body = generate_canister_method_body(&function_name_ident, &param_name_idents);
 
     let function_token_stream = quote! {
         async fn #function_name_ident(#(#params),*) -> #return_type_token {
