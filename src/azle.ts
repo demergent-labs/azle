@@ -1,4 +1,5 @@
 import { execSync } from 'child_process';
+import { compileTypeScriptToJavaScript } from './compiler/typescript_to_javascript';
 import {
     generateLibCargoToml,
     generateWorkspaceCargoLock,
@@ -6,7 +7,7 @@ import {
 } from './compiler/typescript_to_rust/generators/cargo_toml_files';
 import * as fs from 'fs';
 import * as fsExtra from 'fs-extra';
-import { DfxJson, Toml } from './types';
+import { DfxJson, JavaScript, Toml } from './types';
 import * as tsc from 'typescript';
 
 azle();
@@ -39,12 +40,15 @@ async function azle() {
         }
     });
 
+    const main_js: JavaScript = await compileTypeScriptToJavaScript(tsPath);
+
     writeCodeToFileSystem(
         rootPath,
         workspaceCargoToml,
         workspaceCargoLock,
         libCargoToml,
-        fileNames
+        fileNames,
+        main_js
     );
 
     compileRustCode(canisterName, rootPath, candidPath);
@@ -67,7 +71,8 @@ function writeCodeToFileSystem(
     workspaceCargoToml: Toml,
     workspaceCargoLock: Toml,
     libCargoToml: Toml,
-    fileNames: string[]
+    fileNames: string[],
+    main_js: JavaScript
 ) {
     if (!fs.existsSync(`./target/azle`)) {
         fs.mkdirSync(`target/azle`, { recursive: true });
@@ -113,6 +118,11 @@ function writeCodeToFileSystem(
     //     `${__dirname}/compiler/typescript_to_rust_redesign/azle_generate_macro`,
     //     `./target/azle/${rootPath}/azle_generate_macro`
     // );
+
+    fs.writeFileSync(
+        `./target/azle/${rootPath}/azle_generate/src/main.js`,
+        main_js
+    );
 
     execSync(
         `cd target/azle/${rootPath}/azle_generate && cargo run -- ${fileNames.join(
