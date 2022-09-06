@@ -1,6 +1,6 @@
 <div align="center">
     <a href="https://github.com/demergent-labs/azle" target="_blank" rel="noopener noreferrer">
-        <img height="150" src="logo/logo.svg" alt="Azle logo">
+        <img height="150" src="https://raw.githubusercontent.com/demergent-labs/azle/main/logo/logo.svg" alt="Azle logo">
     </a>
 </div>
 </br>
