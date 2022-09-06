@@ -38,6 +38,7 @@ pub fn get_query_fn_decls(fn_decls: &Vec<FnDecl>) -> Vec<FnDecl> {
         .collect()
 }
 
+// TODO this should be deprectated in favor of utils::fn_decls::is_canister_method_type_fn_decl
 fn is_query_fn_decl(fn_decl: &FnDecl) -> bool {
     if let Some(ts_type_ann) = &fn_decl.function.return_type {
         if ts_type_ann.type_ann.is_ts_type_ref() {

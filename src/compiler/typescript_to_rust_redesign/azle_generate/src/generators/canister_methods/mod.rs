@@ -7,6 +7,7 @@ mod types;
 mod update;
 pub mod system {
     pub mod init;
+    pub mod heartbeat;
 }
 
 pub use query::{generate_query_function_infos, get_query_fn_decls};
