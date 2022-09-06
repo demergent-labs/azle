@@ -4,6 +4,11 @@ pub fn generate_ic_object() -> proc_macro2::TokenStream {
     quote::quote! {
         let ic = boa_engine::object::ObjectInitializer::new(&mut boa_context)
             .function(
+                _azle_ic_accept_message,
+                "accept_message",
+                0
+            )
+            .function(
                 _azle_ic_arg_data_raw,
                 "arg_data_raw",
                 0
@@ -46,6 +51,11 @@ pub fn generate_ic_object() -> proc_macro2::TokenStream {
             .function(
                 _azle_ic_id,
                 "id",
+                0
+            )
+            .function(
+                _azle_ic_method_name,
+                "method_name",
                 0
             )
             .function(
