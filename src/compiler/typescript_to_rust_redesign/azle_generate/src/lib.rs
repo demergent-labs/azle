@@ -22,11 +22,16 @@ mod generators {
     pub mod azle_try_from_js_value;
 }
 
+pub mod utils {
+    pub mod fn_decls;
+}
+
 use generators::{canister_methods::{
     generate_query_function_infos, generate_update_function_infos, get_ast_fn_decls_from_programs,
     get_ast_record_type_alias_decls, get_ast_type_alias_decls_from_programs, get_query_fn_decls,
     get_update_fn_decls, FunctionInformation, StructInfo,
-    system::init::generate_canister_method_system_init
+    system::init::generate_canister_method_system_init,
+    system::heartbeat::generate_canister_method_system_heartbeat
 }, azle_into_js_value::generate_azle_into_js_value, azle_try_from_js_value::generate_azle_try_from_js_value};
 
 use crate::generators::canister_methods::generate_type_alias_token_streams;
@@ -131,6 +136,7 @@ pub fn azle_generate(ts_file_names: &Vec<&str>, main_js: &str) -> proc_macro2::t
         .collect();
 
     let canister_method_system_init = generate_canister_method_system_init();
+    let canister_method_system_heartbeat = generate_canister_method_system_heartbeat(&programs);
 
     let azle_into_js_value = generate_azle_into_js_value();
     let azle_try_from_js_value = generate_azle_try_from_js_value();
@@ -178,6 +184,7 @@ pub fn azle_generate(ts_file_names: &Vec<&str>, main_js: &str) -> proc_macro2::t
         // static PRINCIPAL_JS: &'static str = r#"${principal_js}"#;
 
         #canister_method_system_init
+        #canister_method_system_heartbeat
 
         #ic_object_functions
 
