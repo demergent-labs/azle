@@ -24,7 +24,7 @@ pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> FunctionInformation {
     let param_types = generate_param_types(&ast_fnc_decl.function.params);
     let params = generate_params_token_stream(&param_name_idents, &param_types);
 
-    let canister_method_body = generate_canister_method_body(&function_name_ident, &param_name_idents);
+    let canister_method_body = generate_canister_method_body(&ast_fnc_decl);
 
     let function_token_stream = quote! {
         async fn #function_name_ident(#(#params),*) -> #return_type_token {
@@ -72,7 +72,7 @@ pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> FunctionInformation {
     }
 }
 
-fn generate_param_name_idents(params: &Vec<Param>) -> Vec<Ident> {
+pub fn generate_param_name_idents(params: &Vec<Param>) -> Vec<Ident> {
     params
         .iter()
         .map(|param| {
@@ -89,7 +89,7 @@ fn generate_param_name_idents(params: &Vec<Param>) -> Vec<Ident> {
         .collect()
 }
 
-fn generate_params_token_stream(names: &Vec<Ident>, types: &Vec<RustType>) -> Vec<TokenStream> {
+pub fn generate_params_token_stream(names: &Vec<Ident>, types: &Vec<RustType>) -> Vec<TokenStream> {
     names
         .iter()
         .enumerate()
@@ -111,7 +111,7 @@ fn generate_return_type(ts_type_ann: &Option<&TsTypeAnn>) -> RustType {
     ts_type_to_rust_type(&return_ts_type, None)
 }
 
-fn generate_param_types(params: &Vec<Param>) -> Vec<RustType> {
+pub fn generate_param_types(params: &Vec<Param>) -> Vec<RustType> {
     params.iter().fold(vec![], |acc, param| {
         let param_type_ann = &param.pat.as_ident().unwrap().type_ann.as_ref();
         let param_type_ann = param_type_ann.clone().unwrap();
