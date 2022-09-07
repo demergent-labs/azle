@@ -1,6 +1,9 @@
-use crate::{utils::fn_decls::{
-    get_canister_method_type_fn_decls, get_fn_decl_function_name, CanisterMethodType,
-}, generators::canister_methods::method_body::generate_call_to_js_function};
+use crate::{
+    generators::canister_methods::method_body::generate_call_to_js_function,
+    utils::fn_decls::{
+        get_canister_method_type_fn_decls, get_fn_decl_function_name, CanisterMethodType,
+    },
+};
 use quote::{format_ident, quote};
 use swc_ecma_ast::Program;
 
@@ -11,7 +14,7 @@ pub fn generate_canister_method_system_inspect_message(
         get_canister_method_type_fn_decls(programs, &CanisterMethodType::InspectMessage);
 
     if inspect_message_fn_decls.len() > 1 {
-        panic!("Only one inspect message function can be defined");
+        panic!("Only one InspectMessage function can be defined");
     }
 
     let inspect_message_fn_decl_option = inspect_message_fn_decls.get(0);
@@ -20,7 +23,8 @@ pub fn generate_canister_method_system_inspect_message(
         let function_name = get_fn_decl_function_name(inspect_message_fn_decl);
         let rust_function_name_ident = format_ident!("_azle_inspect_message_{}", function_name);
 
-        let call_to_inspect_message_js_function = generate_call_to_js_function(inspect_message_fn_decl);
+        let call_to_inspect_message_js_function =
+            generate_call_to_js_function(inspect_message_fn_decl);
 
         quote! {
             #[ic_cdk_macros::inspect_message]

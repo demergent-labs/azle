@@ -1,13 +1,15 @@
-use crate::{utils::fn_decls::{
-    CanisterMethodType,
-    get_canister_method_type_fn_decls,
-}, generators::canister_methods::{functions::{generate_param_name_idents, generate_param_types, generate_params_token_stream}, method_body::generate_call_to_js_function}};
-use quote::quote;
 use crate::generators::ic_object::generate_ic_object;
-use swc_ecma_ast::{
-    Program,
-    FnDecl
+use crate::{
+    generators::canister_methods::{
+        functions::{
+            generate_param_name_idents, generate_param_types, generate_params_token_stream,
+        },
+        method_body::generate_call_to_js_function,
+    },
+    utils::fn_decls::{get_canister_method_type_fn_decls, CanisterMethodType},
 };
+use quote::quote;
+use swc_ecma_ast::{FnDecl, Program};
 
 pub fn generate_canister_method_system_init(programs: &Vec<Program>) -> proc_macro2::TokenStream {
     let ic_object = generate_ic_object();
@@ -15,7 +17,7 @@ pub fn generate_canister_method_system_init(programs: &Vec<Program>) -> proc_mac
     let init_fn_decls = get_canister_method_type_fn_decls(programs, &CanisterMethodType::Init);
 
     if init_fn_decls.len() > 1 {
-        panic!("Only one init function can be defined");
+        panic!("Only one Init function can be defined");
     }
 
     let init_fn_decl_option = init_fn_decls.get(0);
@@ -59,17 +61,17 @@ fn generate_init_params(init_fn_decl_option: &Option<&FnDecl>) -> Vec<proc_macro
         let params = generate_params_token_stream(&param_name_idents, &param_types);
 
         params
-    }
-    else {
+    } else {
         vec![]
     }
 }
 
-fn generate_call_to_init_js_function(init_fn_decl_option: &Option<&FnDecl>) -> proc_macro2::TokenStream {
+fn generate_call_to_init_js_function(
+    init_fn_decl_option: &Option<&FnDecl>,
+) -> proc_macro2::TokenStream {
     if let Some(init_fn_decl) = init_fn_decl_option {
         generate_call_to_js_function(init_fn_decl)
-    }
-    else {
+    } else {
         quote!()
     }
 }
