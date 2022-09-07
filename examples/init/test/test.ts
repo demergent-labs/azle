@@ -8,9 +8,14 @@ const init_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 });
 
 const tests: Test[] = [
+    // TODO put the Variant back eventually
+    // ...deploy(
+    //     'init',
+    //     `'(record { id = "0" }, variant { Fire }, principal "rrkah-fqaaa-aaaaa-aaaaq-cai")'`
+    // ),
     ...deploy(
         'init',
-        `'(record { id = "0" }, variant { Fire }, principal "rrkah-fqaaa-aaaaa-aaaaq-cai")'`
+        `'(record { id = "0" }, principal "rrkah-fqaaa-aaaaa-aaaaq-cai")'`
     ),
     {
         name: 'getUser',
@@ -22,16 +27,17 @@ const tests: Test[] = [
             };
         }
     },
-    {
-        name: 'getReaction',
-        test: async () => {
-            const result = await init_canister.getReaction();
+    // TODO add Reaction back in once Variants are supported
+    // {
+    //     name: 'getReaction',
+    //     test: async () => {
+    //         const result = await init_canister.getReaction();
 
-            return {
-                ok: result.length === 1 && 'Fire' in result[0]
-            };
-        }
-    },
+    //         return {
+    //             ok: result.length === 1 && 'Fire' in result[0]
+    //         };
+    //     }
+    // },
     {
         name: 'getOwner',
         test: async () => {
