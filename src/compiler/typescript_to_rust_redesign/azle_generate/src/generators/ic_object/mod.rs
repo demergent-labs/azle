@@ -59,6 +59,11 @@ pub fn generate_ic_object() -> proc_macro2::TokenStream {
                 0
             )
             .function(
+                _azle_ic_notify_raw,
+                "notify_raw",
+                0
+            )
+            .function(
                 _azle_ic_performance_counter,
                 "performance_counter",
                 0
@@ -76,6 +81,51 @@ pub fn generate_ic_object() -> proc_macro2::TokenStream {
             .function(
                 _azle_ic_set_certified_data,
                 "set_certified_data",
+                0
+            )
+            .function(
+                _azle_ic_stable_bytes,
+                "stable_bytes",
+                0
+            )
+            .function(
+                _azle_ic_stable_grow,
+                "stable_grow",
+                0
+            )
+            .function(
+                _azle_ic_stable_read,
+                "stable_read",
+                0
+            )
+            .function(
+                _azle_ic_stable_size,
+                "stable_size",
+                0
+            )
+            .function(
+                _azle_ic_stable_write,
+                "stable_write",
+                0
+            )
+            .function(
+                _azle_ic_stable64_grow,
+                "stable64_grow",
+                0
+            )
+            .function(
+                _azle_ic_stable64_read,
+                "stable64_read",
+                0
+            )
+            .function(
+                _azle_ic_stable64_size,
+                "stable64_size",
+                0
+            )
+            .function(
+                _azle_ic_stable64_write,
+                "stable64_write",
                 0
             )
             .function(
