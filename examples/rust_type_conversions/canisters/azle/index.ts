@@ -116,31 +116,31 @@ export function complex_record_test(
     return 1;
 }
 
-// type Fun = Variant<{
-//     id?: null;
-//     cool?: null;
-// }>;
+type Fun = Variant<{
+    id?: null;
+    cool?: null;
+}>;
 
-// export function one_variant(thing: Fun): Query<void> {
-//     one_variant({ cool: null, id: null });
-// }
+export function one_variant(thing: Fun): Query<void> {
+    one_variant({ cool: null, id: null });
+}
 
-// export function various_variants(thing: Yes, thing2: Reaction): Query<string> {
-//     return 'hello';
-// }
+export function various_variants(thing: Yes, thing2: Reaction): Query<string> {
+    return 'hello';
+}
 
-// type Yes = Variant<{
-//     One?: null;
-//     Two?: null;
-//     Three?: null;
-// }>;
+type Yes = Variant<{
+    One?: null;
+    Two?: null;
+    Three?: null;
+}>;
 
-// type Reaction = Variant<{
-//     Fire?: null;
-//     Great?: null;
-//     Good?: Good;
-//     Fun?: Fun;
-// }>;
+type Reaction = Variant<{
+    Fire?: null;
+    Great?: null;
+    // Good?: Good;
+    Fun?: Fun;
+}>;
 
 // type Good = {
 //     id: string;
@@ -179,4 +179,5 @@ export function not_so_simple(
     fourteen: { thing: string }
 ): Update<void> {}
 
-export function getPrincipals(principal_lists: Principal[][]): Update<void> {}
+// TODO Why can't we do 2d arrays of principals??
+// export function getPrincipals(principal_lists: Principal[][]): Update<void> {}

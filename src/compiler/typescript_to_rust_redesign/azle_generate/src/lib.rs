@@ -31,8 +31,9 @@ use generators::{
     azle_try_from_js_value::generate_azle_try_from_js_value,
     canister_methods::{
         generate_query_function_infos, generate_update_function_infos,
-        get_ast_fn_decls_from_programs, get_ast_record_type_alias_decls,
-        get_ast_type_alias_decls_from_programs, get_query_fn_decls, get_update_fn_decls,
+        generate_variant_token_streams, get_ast_fn_decls_from_programs,
+        get_ast_record_type_alias_decls, get_ast_type_alias_decls_from_programs,
+        get_ast_variant_type_alias_decls, get_query_fn_decls, get_update_fn_decls,
         system::heartbeat::generate_canister_method_system_heartbeat,
         system::inspect_message::generate_canister_method_system_inspect_message,
         system::pre_upgrade::generate_canister_method_system_pre_upgrade,
@@ -44,7 +45,7 @@ use generators::{
     },
 };
 
-use crate::generators::canister_methods::generate_type_alias_token_streams;
+use crate::generators::canister_methods::generate_record_token_streams;
 use crate::generators::ic_object::functions::generate_ic_object_functions;
 
 fn collect_function_type_dependencies(function_info: &Vec<FunctionInformation>) -> HashSet<String> {
@@ -92,6 +93,7 @@ pub fn azle_generate(
     // Collect AST Information
     let ast_type_alias_decls = get_ast_type_alias_decls_from_programs(&programs);
     let ast_record_type_alias_decls = get_ast_record_type_alias_decls(&ast_type_alias_decls);
+    let ast_variant_type_alias_decls = get_ast_variant_type_alias_decls(&ast_type_alias_decls);
     let ast_fnc_decls = get_ast_fn_decls_from_programs(&programs);
 
     // Separate function decls into queries and updates
@@ -131,20 +133,41 @@ pub fn azle_generate(
     ]
     .concat();
 
-    let type_aliases_map =
-        generate_type_alias_token_streams(&type_alias_dependant_types, &ast_type_alias_decls);
-    let type_alias_inline_deps = type_aliases_map
+    eprintln!("We are looking at the variants");
+    let variant_type_aliases_map =
+        generate_variant_token_streams(&type_alias_dependant_types, &ast_variant_type_alias_decls);
+    let variant_inline_deps = variant_type_aliases_map
+        .iter()
+        .fold(vec![], |acc, (_, (_, token_streams))| {
+            vec![acc, token_streams.clone()].concat()
+        });
+    let variant_inline_records =
+        collect_inline_dependencies_for_struct(&Box::from(variant_inline_deps));
+
+    eprintln!("We are looking at the records");
+    let records_type_aliases_map =
+        generate_record_token_streams(&type_alias_dependant_types, &ast_record_type_alias_decls);
+    let records_inline_deps = records_type_aliases_map
         .iter()
         .fold(vec![], |acc, (_, (_, token_stream))| {
             vec![acc, token_stream.clone()].concat()
         });
-    let type_alias_inline_records =
-        collect_inline_dependencies_for_struct(&Box::from(type_alias_inline_deps));
+    let record_inline_records =
+        collect_inline_dependencies_for_struct(&Box::from(records_inline_deps));
 
-    let inline_records_function_streams =
-        vec![function_inline_records, type_alias_inline_records].concat();
+    let inline_records_function_streams = vec![
+        function_inline_records,
+        record_inline_records,
+        variant_inline_records,
+    ]
+    .concat();
 
-    let records_function_streams: Vec<proc_macro2::TokenStream> = type_aliases_map
+    let records_token_streams: Vec<proc_macro2::TokenStream> = records_type_aliases_map
+        .iter()
+        .map(|(_, (token_stream, _))| token_stream.clone())
+        .collect();
+
+    let variant_token_streams: Vec<proc_macro2::TokenStream> = variant_type_aliases_map
         .iter()
         .map(|(_, (token_stream, _))| token_stream.clone())
         .collect();
@@ -210,7 +233,8 @@ pub fn azle_generate(
         #ic_object_functions
 
         #(#inline_records_function_streams)*
-        #(#records_function_streams)*
+        #(#records_token_streams)*
+        #(#variant_token_streams)*
         #(#query_function_streams)*
         #(#update_function_streams)*
 

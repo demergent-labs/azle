@@ -6,7 +6,10 @@ use swc_ecma_ast::{
 };
 use uuid::Uuid;
 
-use super::{rust_types::StructInfo, ArrayTypeInfo, KeywordInfo, RustType, TypeRefInfo};
+use super::{
+    rust_types::{EnumInfo, StructInfo},
+    ArrayTypeInfo, KeywordInfo, RustType, TypeRefInfo,
+};
 
 pub fn ts_type_to_rust_type(ts_type: &TsType, struct_name: Option<&Ident>) -> RustType {
     let rust_type = match ts_type {
@@ -189,6 +192,7 @@ fn parse_ts_array_type(ts_array_type: &TsArrayType) -> ArrayTypeInfo {
         RustType::ArrayType(array_type) => array_type.type_alias_dependency.clone(),
         RustType::KeywordType(_) => None,
         RustType::Struct(_) => None,
+        RustType::Enum(_) => todo!("parse_ts_array_type for Enum"),
     };
     let inline_enclosed_type = match &elem_rust_type {
         RustType::Struct(struct_info) => Some(struct_info.clone()),
@@ -214,6 +218,7 @@ fn parse_opt_type_ref(ts_type_ref: &TsTypeRef) -> TypeRefInfo {
                 RustType::ArrayType(array_type) => array_type.type_alias_dependency.clone(),
                 RustType::KeywordType(_) => None,
                 RustType::Struct(_) => None,
+                RustType::Enum(_) => todo!("parse_opt_type_ref for Enums"),
             };
             let inline_enclosed_type = match &enclosed_rust_type {
                 RustType::Struct(struct_info) => Some(struct_info.clone()),
@@ -241,6 +246,7 @@ fn parse_variant_type_ref(ts_type_ref: &TsTypeRef) -> TypeRefInfo {
                 RustType::TypeRef(type_ref_info) => type_ref_info.type_alias_dependency.clone(),
                 RustType::ArrayType(array_type) => array_type.type_alias_dependency.clone(),
                 RustType::Struct(_) => None,
+                RustType::Enum(_) => todo!("parse_variant_type_ref for Enum"),
             };
             let inline_enclosed_type = match &enclosed_rust_type {
                 RustType::Struct(struct_info) => Some(struct_info.clone()),
@@ -313,6 +319,43 @@ fn ts_type_to_rust_enum(ts_type: &TsType) -> RustType {
 
 // }
 
+pub fn ts_type_literal_to_rust_enum(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit) -> EnumInfo {
+    let fields: Vec<(TokenStream, Vec<String>, Option<StructInfo>)> =
+        ts_type_lit.members.iter().fold(vec![], |acc, member| {
+            let (structures, type_alias_deps, inline_deps) = parse_type_literal_fields(member);
+            vec![acc, vec![(structures, type_alias_deps, inline_deps)]].concat()
+        });
+    let fields: Vec<(TokenStream, Vec<String>, Option<StructInfo>)> =
+        ts_type_lit.members.iter().fold(vec![], |acc, member| {
+            let (result, type_alias_deps, inline_deps) =
+                parse_type_literal_members_for_enum(member);
+            vec![acc, vec![(result, type_alias_deps, inline_deps)]].concat()
+        });
+    let field_token_streams = fields.iter().map(|(field, _, _)| field.clone());
+    let type_dependencies = fields
+        .iter()
+        .fold(vec![], |acc, (_, deps, _)| vec![acc, deps.clone()].concat());
+    let inline_dependencies: Vec<StructInfo> =
+        fields
+            .iter()
+            .fold(vec![], |acc, (_, _, inline_deps)| match &inline_deps {
+                Some(struct_info) => vec![acc, vec![struct_info.clone()]].concat(),
+                None => acc,
+            });
+    let structure = quote!(
+        #[derive(serde::Serialize, serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
+        enum #ts_type_ident {
+            #(#field_token_streams),*
+        }
+    );
+    EnumInfo {
+        structure,
+        identifier: quote!(#ts_type_ident),
+        type_alias_dependencies: type_dependencies,
+        inline_dependencies: Box::from(inline_dependencies),
+    }
+}
+
 fn ts_type_literal_to_rust_struct(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit) -> StructInfo {
     let fields: Vec<(TokenStream, Vec<String>, Option<StructInfo>)> =
         ts_type_lit.members.iter().fold(vec![], |acc, member| {
@@ -339,7 +382,6 @@ fn ts_type_literal_to_rust_struct(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit
     StructInfo {
         structure,
         identifier: quote!(#ts_type_ident),
-        name: ts_type_ident.to_string(),
         type_alias_dependencies: type_dependencies,
         inline_dependencies: Box::from(inline_dependencies),
     }
@@ -381,7 +423,7 @@ fn parse_type_literal_field_type(prop_sig: &TsPropertySignature) -> RustType {
 fn azle_variant_to_rust_enum(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit) -> EnumInfo {
     let fields: Vec<(TokenStream, Vec<String>)> =
         ts_type_lit.members.iter().fold(vec![], |acc, member| {
-            let (result, type_alias_deps) = parse_type_literal_members_for_enum(member);
+            let (result, type_alias_deps, _) = parse_type_literal_members_for_enum(member);
             vec![acc, vec![(result, type_alias_deps)]].concat()
         });
     // let members: Vec<(TokenStream, Vec<String>)> = ts_type_lit.members.iter().map(|member| {
@@ -398,42 +440,35 @@ fn azle_variant_to_rust_enum(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit) -> 
         }
     );
     EnumInfo {
-        token_stream,
-        name: "CoolEnumBro".to_string(),
+        identifier: quote!(ts_type_ident),
+        structure: token_stream,
         type_alias_dependencies: type_dependencies,
+        inline_dependencies: Box::from(vec![]),
     }
 }
 
-fn parse_type_literal_members_for_enum(member: &TsTypeElement) -> (TokenStream, Vec<String>) {
+fn parse_type_literal_members_for_enum(
+    member: &TsTypeElement,
+) -> (TokenStream, Vec<String>, Option<StructInfo>) {
     match member.as_ts_property_signature() {
         Some(prop_sig) => {
             let variant_name = parse_type_literal_field_name(prop_sig);
             let variant_type = parse_type_literal_field_type(prop_sig);
             if !prop_sig.optional {
-                todo!("Handle if the user didn't make the type optional");
+                // todo!("Handle if the user didn't make the type optional");
+                eprintln!(
+                    "WARNING: {} is not optional and it should be!",
+                    variant_name
+                );
             }
             let member_type_token_stream = variant_type.get_type_ident();
             let type_dependencies = variant_type.get_type_alias_dependency();
             (
                 quote! {#variant_name(#member_type_token_stream)},
                 type_dependencies,
+                None, // TODO actually return something instead of None
             )
         }
         None => todo!("Handle parsing type literals if the member isn't a TsPropertySignature"),
     }
-}
-
-// The idea is that you can put the name into a token stream and (which should be pretty much the same, and that will work after you install all of the dependencies)
-
-// TODO I think the next thing I need to do is understand what I am doing with the
-// Collect dependencies. My current theory is that I would have a struct not be a
-// Struct type but have it be a type ref with a struct as a dependency
-// It might be helpful to think about the keywords
-// Maybe have simpler examples, work out the architecture,
-// Determine where I determine the dependancies and make sure it's clear in the code
-#[derive(Clone)]
-pub struct EnumInfo {
-    pub token_stream: TokenStream,
-    pub name: String,
-    pub type_alias_dependencies: Vec<String>,
 }
