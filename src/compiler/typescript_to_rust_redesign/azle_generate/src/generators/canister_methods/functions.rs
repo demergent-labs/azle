@@ -1,7 +1,7 @@
+use super::{rust_types::StructInfo, ts_type_to_rust_type, RustType};
 use crate::generators::canister_methods::method_body::generate_canister_method_body;
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
-use super::{rust_types::StructInfo, ts_type_to_rust_type, RustType};
 use swc_ecma_ast::{FnDecl, Param, TsTypeAnn};
 
 #[derive(Clone)]
@@ -55,6 +55,7 @@ pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> FunctionInformation {
                 RustType::Struct(struct_info) => {
                     vec![acc, struct_info.type_alias_dependencies.clone()].concat()
                 }
+                RustType::Enum(_) => todo!("Generate function_token_stream for Enum"),
             });
     let inline_dependant_types = types.iter().fold(vec![], |acc, sub_struct| {
         let dependencies_option = sub_struct.get_inline_dependencies();

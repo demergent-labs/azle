@@ -34,6 +34,7 @@ pub enum RustType {
     TypeRef(TypeRefInfo),
     ArrayType(ArrayTypeInfo),
     Struct(StructInfo),
+    Enum(EnumInfo),
 }
 
 /**
@@ -97,17 +98,18 @@ pub struct ArrayTypeInfo {
 #[derive(Clone, Default, Debug)]
 pub struct StructInfo {
     pub identifier: TokenStream,
-    pub name: String,
     pub type_alias_dependencies: Vec<String>,
     pub structure: TokenStream,
     pub inline_dependencies: Box<Vec<StructInfo>>,
 }
 
-// pub struct EnumInfoTODORename {
-//     pub identifier: TokenStream,
-//     pub type_alias_dependencies: Vec<String>,
-//     pub structure:
-// }
+#[derive(Clone, Debug)]
+pub struct EnumInfo {
+    pub identifier: TokenStream,
+    pub type_alias_dependencies: Vec<String>,
+    pub structure: TokenStream,
+    pub inline_dependencies: Box<Vec<StructInfo>>,
+}
 
 impl RustType {
     pub fn get_type_ident(&self) -> TokenStream {
@@ -116,8 +118,13 @@ impl RustType {
             RustType::TypeRef(type_ref_info) => &type_ref_info.identifier,
             RustType::ArrayType(array_info) => &array_info.identifier,
             RustType::Struct(struct_info) => &struct_info.identifier,
+            RustType::Enum(enum_info) => &enum_info.identifier,
         };
         quote!(#token_stream)
+    }
+
+    pub fn get_type_name(&self) -> String {
+        self.get_type_ident().to_string()
     }
 
     pub fn get_type_alias_dependency(&self) -> Vec<String> {
@@ -131,6 +138,7 @@ impl RustType {
                 None => vec![],
             },
             RustType::Struct(struct_info) => struct_info.type_alias_dependencies.clone(),
+            RustType::Enum(enum_info) => enum_info.type_alias_dependencies.clone(),
             _ => vec![],
         }
     }
