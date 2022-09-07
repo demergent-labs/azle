@@ -130,16 +130,16 @@ export function various_variants(thing: Yes, thing2: Reaction): Query<string> {
 }
 
 type Yes = Variant<{
-    One?: null;
-    Two?: null;
-    Three?: null;
+    One: null;
+    Two: null;
+    Three: null;
 }>;
 
 type Reaction = Variant<{
-    Fire?: null;
-    Great?: null;
+    Fire: null;
+    Great: null;
     // Good?: Good;
-    Fun?: Fun;
+    Fun: Fun;
 }>;
 
 // type Good = {
