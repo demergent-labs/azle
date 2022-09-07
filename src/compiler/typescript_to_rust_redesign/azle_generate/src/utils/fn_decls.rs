@@ -1,5 +1,5 @@
-use swc_ecma_ast::{FnDecl, Program};
 use quote::format_ident;
+use swc_ecma_ast::{FnDecl, Program};
 use syn::Ident;
 
 use crate::generators::canister_methods::get_ast_fn_decls_from_programs;
@@ -8,6 +8,7 @@ pub enum CanisterMethodType {
     Heartbeat,
     Init,
     InspectMessage,
+    PreUpgrade,
     Query,
     Update,
 }
@@ -29,8 +30,8 @@ pub fn get_fn_decl_function_name(fn_decl: &FnDecl) -> String {
 }
 
 pub fn get_param_name_idents(fn_decl: &FnDecl) -> Vec<Ident> {
-    fn_decl.
-        function
+    fn_decl
+        .function
         .params
         .iter()
         .map(|param| {
@@ -65,6 +66,7 @@ fn is_canister_method_type_fn_decl(
                     CanisterMethodType::Heartbeat => ident.to_string() == "Heartbeat#0",
                     CanisterMethodType::Init => ident.to_string() == "Init#0",
                     CanisterMethodType::InspectMessage => ident.to_string() == "InspectMessage#0",
+                    CanisterMethodType::PreUpgrade => ident.to_string() == "PreUpgrade#0",
                     CanisterMethodType::Query => ident.to_string() == "Query#0",
                     CanisterMethodType::Update => ident.to_string() == "Update#0",
                 }
