@@ -144,7 +144,7 @@ pub fn azle_generate(
         .map(|(_, (token_stream, _))| token_stream.clone())
         .collect();
 
-    let canister_method_system_init = generate_canister_method_system_init();
+    let canister_method_system_init = generate_canister_method_system_init(&programs);
     let canister_method_system_heartbeat = generate_canister_method_system_heartbeat(&programs);
     let canister_method_system_inspect_message =
         generate_canister_method_system_inspect_message(&programs);
