@@ -36,7 +36,8 @@ use generators::{
         system::heartbeat::generate_canister_method_system_heartbeat,
         system::init::generate_canister_method_system_init,
         system::inspect_message::generate_canister_method_system_inspect_message,
-        FunctionInformation, StructInfo,
+        system::pre_upgrade::generate_canister_method_system_pre_upgrade, FunctionInformation,
+        StructInfo,
     },
 };
 
@@ -148,6 +149,7 @@ pub fn azle_generate(
     let canister_method_system_heartbeat = generate_canister_method_system_heartbeat(&programs);
     let canister_method_system_inspect_message =
         generate_canister_method_system_inspect_message(&programs);
+    let canister_method_system_pre_upgrade = generate_canister_method_system_pre_upgrade(&programs);
 
     let azle_into_js_value = generate_azle_into_js_value();
     let azle_try_from_js_value = generate_azle_try_from_js_value();
@@ -195,6 +197,7 @@ pub fn azle_generate(
         // static PRINCIPAL_JS: &'static str = r#"${principal_js}"#;
 
         #canister_method_system_init
+        #canister_method_system_pre_upgrade
         #canister_method_system_heartbeat
         #canister_method_system_inspect_message
 

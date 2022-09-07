@@ -9,6 +9,7 @@ pub mod system {
     pub mod heartbeat;
     pub mod init;
     pub mod inspect_message;
+    pub mod pre_upgrade;
 }
 
 pub use query::{generate_query_function_infos, get_query_fn_decls};

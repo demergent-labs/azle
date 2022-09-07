@@ -49,23 +49,23 @@ const tests: Test[] = [
             };
         }
     },
-    {
-        // TODO Get rid of this once https://forum.dfinity.org/t/upgrade-a-canister-even-if-the-wasm-module-hash-has-not-changed/11989
-        name: 'function hack to allow a redeploy',
-        prep: async () => {
-            execSync(
-                `echo "\\n\\nexport function hack(): Query<void> {}" >> src/pre_and_post_upgrade.ts`,
-                {
-                    stdio: 'inherit'
-                }
-            );
-        }
-    },
+    // {
+    //     // TODO Get rid of this once https://forum.dfinity.org/t/upgrade-a-canister-even-if-the-wasm-module-hash-has-not-changed/11989
+    //     name: 'function hack to allow a redeploy',
+    //     prep: async () => {
+    //         execSync(
+    //             `echo "\\n\\nexport function hack(): Query<void> {}" >> src/pre_and_post_upgrade.ts`,
+    //             {
+    //                 stdio: 'inherit'
+    //             }
+    //         );
+    //     }
+    // },
     {
         name: 'deploy',
         prep: async () => {
             execSync(
-                `dfx canister install --mode upgrade pre_and_post_upgrade --wasm target/wasm32-unknown-unknown/release/pre_and_post_upgrade.wasm.gz`,
+                `dfx canister install --mode upgrade --upgrade-unchanged --wasm target/wasm32-unknown-unknown/release/pre_and_post_upgrade.wasm.gz pre_and_post_upgrade`,
                 {
                     stdio: 'inherit'
                 }
