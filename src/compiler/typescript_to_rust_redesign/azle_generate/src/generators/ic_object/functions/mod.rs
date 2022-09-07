@@ -9,6 +9,7 @@ mod canister_balance128;
 mod data_certificate;
 mod id;
 mod method_name;
+mod notify_raw;
 mod performance_counter;
 mod print;
 mod reject;
@@ -29,6 +30,7 @@ pub fn generate_ic_object_functions() -> proc_macro2::TokenStream {
     let data_certificate = data_certificate::generate_ic_object_function_data_certificate();
     let id = id::generate_ic_object_function_id();
     let method_name = method_name::generate_ic_object_function_method_name();
+    let notify_raw = notify_raw::generate_ic_object_function_notify_raw();
     let performance_counter =
         performance_counter::generate_ic_object_function_performance_counter();
     let print = print::generate_ic_object_function_print();
@@ -49,6 +51,7 @@ pub fn generate_ic_object_functions() -> proc_macro2::TokenStream {
         #data_certificate
         #id
         #method_name
+        #notify_raw
         #performance_counter
         #print
         #reject
