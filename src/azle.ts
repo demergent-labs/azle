@@ -1,5 +1,8 @@
 import { execSync } from 'child_process';
-import { compileTypeScriptToJavaScript } from './compiler/typescript_to_javascript';
+import {
+    bundle_and_transpile_ts,
+    compileTypeScriptToJavaScript
+} from './compiler/typescript_to_javascript';
 import {
     generateLibCargoToml,
     generateWorkspaceCargoLock,
@@ -41,6 +44,9 @@ async function azle() {
     });
 
     const main_js: JavaScript = await compileTypeScriptToJavaScript(tsPath);
+    const principal_js: JavaScript = bundle_and_transpile_ts(
+        `export { Principal } from '@dfinity/principal';`
+    );
 
     writeCodeToFileSystem(
         rootPath,
@@ -48,7 +54,8 @@ async function azle() {
         workspaceCargoLock,
         libCargoToml,
         fileNames,
-        main_js
+        main_js,
+        principal_js
     );
 
     compileRustCode(canisterName, rootPath, candidPath);
@@ -72,7 +79,8 @@ function writeCodeToFileSystem(
     workspaceCargoLock: Toml,
     libCargoToml: Toml,
     fileNames: string[],
-    main_js: JavaScript
+    main_js: JavaScript,
+    principal_js: JavaScript
 ) {
     if (!fs.existsSync(`./target/azle`)) {
         fs.mkdirSync(`target/azle`, { recursive: true });
@@ -109,19 +117,14 @@ function writeCodeToFileSystem(
         `./target/azle/${rootPath}/azle_generate`
     );
 
-    // TODO we may not need the macro concept at all
-    // if (!fs.existsSync(`./target/azle/${rootPath}/azle_generate_macro`)) {
-    //     fs.mkdirSync(`./target/azle/${rootPath}/azle_generate_macro`);
-    // }
-
-    // fsExtra.copySync(
-    //     `${__dirname}/compiler/typescript_to_rust_redesign/azle_generate_macro`,
-    //     `./target/azle/${rootPath}/azle_generate_macro`
-    // );
-
     fs.writeFileSync(
         `./target/azle/${rootPath}/azle_generate/src/main.js`,
         main_js
+    );
+
+    fs.writeFileSync(
+        `./target/azle/${rootPath}/azle_generate/src/principal.js`,
+        principal_js
     );
 
     execSync(
