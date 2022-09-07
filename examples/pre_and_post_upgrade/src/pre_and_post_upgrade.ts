@@ -9,10 +9,9 @@ import {
     nat64
 } from 'azle';
 
-// TODO put stable storage back in once it is implemented
-// type StableStorage = Stable<{
-//     entries: Entry[];
-// }>;
+type StableStorage = Stable<{
+    entries: Entry[];
+}>;
 
 type Entry = {
     key: string;
@@ -26,33 +25,33 @@ let entries: {
 export function init(): Init {
     console.log('init');
 
-    // ic.stable_storage<StableStorage>().entries = [];
+    ic.stable_storage<StableStorage>().entries = [];
 }
 
 export function preUpgrade(): PreUpgrade {
     console.log('preUpgrade');
 
-    // ic.stable_storage<StableStorage>().entries = Object.entries(entries).map(
-    //     (entry) => {
-    //         return {
-    //             key: entry[0],
-    //             value: entry[1]
-    //         };
-    //     }
-    // );
+    ic.stable_storage<StableStorage>().entries = Object.entries(entries).map(
+        (entry) => {
+            return {
+                key: entry[0],
+                value: entry[1]
+            };
+        }
+    );
 }
 
 export function postUpgrade(): PostUpgrade {
-    console.log('preUpgrade');
+    console.log('postUpgrade');
 
-    // entries = ic
-    //     .stable_storage<StableStorage>()
-    //     .entries.reduce((result, entry) => {
-    //         return {
-    //             ...result,
-    //             [entry.key]: entry.value
-    //         };
-    //     }, {});
+    entries = ic
+        .stable_storage<StableStorage>()
+        .entries.reduce((result, entry) => {
+            return {
+                ...result,
+                [entry.key]: entry.value
+            };
+        }, {});
 }
 
 export function setEntry(entry: Entry): Update<void> {

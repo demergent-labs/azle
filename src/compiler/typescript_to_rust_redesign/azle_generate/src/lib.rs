@@ -34,10 +34,13 @@ use generators::{
         get_ast_fn_decls_from_programs, get_ast_record_type_alias_decls,
         get_ast_type_alias_decls_from_programs, get_query_fn_decls, get_update_fn_decls,
         system::heartbeat::generate_canister_method_system_heartbeat,
-        system::init::generate_canister_method_system_init,
         system::inspect_message::generate_canister_method_system_inspect_message,
-        system::pre_upgrade::generate_canister_method_system_pre_upgrade, FunctionInformation,
-        StructInfo,
+        system::pre_upgrade::generate_canister_method_system_pre_upgrade,
+        system::{
+            init::generate_canister_method_system_init,
+            post_upgrade::generate_canister_method_system_post_upgrade,
+        },
+        FunctionInformation, StructInfo,
     },
 };
 
@@ -82,6 +85,7 @@ fn collect_inline_dependencies_for_struct(
 pub fn azle_generate(
     ts_file_names: &Vec<&str>,
     main_js: &str,
+    principal_js: &str,
 ) -> proc_macro2::token_stream::TokenStream {
     let programs = get_programs(&ts_file_names);
 
@@ -145,10 +149,12 @@ pub fn azle_generate(
         .map(|(_, (token_stream, _))| token_stream.clone())
         .collect();
 
-    let canister_method_system_init = generate_canister_method_system_init(&programs);
     let canister_method_system_heartbeat = generate_canister_method_system_heartbeat(&programs);
+    let canister_method_system_init = generate_canister_method_system_init(&programs);
     let canister_method_system_inspect_message =
         generate_canister_method_system_inspect_message(&programs);
+    let canister_method_system_post_upgrade =
+        generate_canister_method_system_post_upgrade(&programs);
     let canister_method_system_pre_upgrade = generate_canister_method_system_pre_upgrade(&programs);
 
     let azle_into_js_value = generate_azle_into_js_value();
@@ -193,11 +199,11 @@ pub fn azle_generate(
         getrandom::register_custom_getrandom!(custom_getrandom);
 
         static MAIN_JS: &'static str = #main_js;
-
-        // static PRINCIPAL_JS: &'static str = r#"${principal_js}"#;
+        static PRINCIPAL_JS: &'static str = #principal_js;
 
         #canister_method_system_init
         #canister_method_system_pre_upgrade
+        #canister_method_system_post_upgrade
         #canister_method_system_heartbeat
         #canister_method_system_inspect_message
 
