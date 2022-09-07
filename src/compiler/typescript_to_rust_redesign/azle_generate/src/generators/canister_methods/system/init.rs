@@ -28,6 +28,7 @@ pub fn generate_canister_method_system_init(programs: &Vec<Program>) -> proc_mac
 
     quote! {
         #[ic_cdk_macros::init]
+        #[candid::candid_method(init)]
         fn _azle_init(#(#init_params),*) {
             unsafe {
                 BOA_CONTEXT_OPTION = Some(boa_engine::Context::default());

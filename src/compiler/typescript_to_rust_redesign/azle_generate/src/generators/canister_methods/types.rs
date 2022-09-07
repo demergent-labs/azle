@@ -454,17 +454,23 @@ fn parse_type_literal_members_for_enum(
         Some(prop_sig) => {
             let variant_name = parse_type_literal_field_name(prop_sig);
             let variant_type = parse_type_literal_field_type(prop_sig);
-            if !prop_sig.optional {
-                // todo!("Handle if the user didn't make the type optional");
-                eprintln!(
-                    "WARNING: {} is not optional and it should be!",
-                    variant_name
-                );
-            }
-            let member_type_token_stream = variant_type.get_type_ident();
+            let variant_value = match variant_type.clone() {
+                RustType::KeywordType(keyword_type_info) => {
+                    if keyword_type_info.identifier.to_string() == quote!((())).to_string() {
+                        quote!()
+                    } else {
+                        let member_type_token_stream = variant_type.get_type_ident();
+                        quote!((#member_type_token_stream))
+                    }
+                }
+                _ => {
+                    let member_type_token_stream = variant_type.get_type_ident();
+                    quote!((#member_type_token_stream))
+                }
+            };
             let type_dependencies = variant_type.get_type_alias_dependency();
             (
-                quote! {#variant_name(#member_type_token_stream)},
+                quote! {#variant_name#variant_value},
                 type_dependencies,
                 None, // TODO actually return something instead of None
             )
