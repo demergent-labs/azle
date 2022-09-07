@@ -4,7 +4,7 @@
 use quote::quote;
 use std::{collections::HashSet, iter::FromIterator, path::Path};
 use swc_common::{sync::Lrc, SourceMap};
-use swc_ecma_ast::Program;
+use swc_ecma_ast::{Program, TsTypeAliasDecl};
 use swc_ecma_parser::{
     lexer::Lexer,
     Parser,
@@ -83,6 +83,10 @@ fn collect_inline_dependencies_for_struct(
     })
 }
 
+pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
+    decl.id.sym.chars().as_str().to_string()
+}
+
 pub fn azle_generate(
     ts_file_names: &Vec<&str>,
     main_js: &str,
@@ -92,6 +96,14 @@ pub fn azle_generate(
 
     // Collect AST Information
     let ast_type_alias_decls = get_ast_type_alias_decls_from_programs(&programs);
+    let ast_type_alias_decl_strings: Vec<String> = ast_type_alias_decls
+        .iter()
+        .map(|decl| ast_type_alias_decl_to_string(decl))
+        .collect();
+    eprintln!(
+        "These are all of the type alias decls that we have {:#?}",
+        ast_type_alias_decl_strings
+    );
     let ast_record_type_alias_decls = get_ast_record_type_alias_decls(&ast_type_alias_decls);
     let ast_variant_type_alias_decls = get_ast_variant_type_alias_decls(&ast_type_alias_decls);
     let ast_fnc_decls = get_ast_fn_decls_from_programs(&programs);
@@ -133,7 +145,6 @@ pub fn azle_generate(
     ]
     .concat();
 
-    eprintln!("We are looking at the variants");
     let variant_type_aliases_map =
         generate_variant_token_streams(&type_alias_dependant_types, &ast_variant_type_alias_decls);
     let variant_inline_deps = variant_type_aliases_map
@@ -144,7 +155,6 @@ pub fn azle_generate(
     let variant_inline_records =
         collect_inline_dependencies_for_struct(&Box::from(variant_inline_deps));
 
-    eprintln!("We are looking at the records");
     let records_type_aliases_map =
         generate_record_token_streams(&type_alias_dependant_types, &ast_record_type_alias_decls);
     let records_inline_deps = records_type_aliases_map

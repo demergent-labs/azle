@@ -4,12 +4,20 @@ use swc_ecma_ast::{
     TsArrayType, TsKeywordType, TsKeywordTypeKind, TsPropertySignature, TsType, TsTypeElement,
     TsTypeLit, TsTypeRef,
 };
-use uuid::Uuid;
 
 use super::{
     rust_types::{EnumInfo, StructInfo},
     ArrayTypeInfo, KeywordInfo, RustType, TypeRefInfo,
 };
+
+use std::collections::hash_map::DefaultHasher;
+use std::hash::{Hash, Hasher};
+
+fn calculate_ts_type_lit_hash(type_lit: &TsTypeLit) -> String {
+    let mut s = DefaultHasher::new();
+    type_lit.hash(&mut s);
+    format!("{}", s.finish()).to_string()
+}
 
 pub fn ts_type_to_rust_type(ts_type: &TsType, struct_name: Option<&Ident>) -> RustType {
     let rust_type = match ts_type {
@@ -28,7 +36,7 @@ pub fn ts_type_to_rust_type(ts_type: &TsType, struct_name: Option<&Ident>) -> Ru
             let type_ident = match struct_name {
                 Some(type_ident) => type_ident.clone(),
                 None => {
-                    let id = Uuid::new_v4().to_string().replace("-", "_");
+                    let id = calculate_ts_type_lit_hash(ts_type_lit);
                     let type_ident = format_ident!("AzleInlineStruct_{}", id);
                     type_ident
                 }
@@ -235,96 +243,10 @@ fn parse_opt_type_ref(ts_type_ref: &TsTypeRef) -> TypeRefInfo {
 }
 
 fn parse_variant_type_ref(ts_type_ref: &TsTypeRef) -> TypeRefInfo {
-    let type_params = ts_type_ref.type_params.clone();
-    match type_params {
-        Some(params) => {
-            let enclosed_ts_type = *params.params[0].clone();
-            let enclosed_rust_type = ts_type_to_rust_enum(&enclosed_ts_type);
-            let enclosed_rust_ident = enclosed_rust_type.get_type_ident();
-            let type_alias_dependency = match &enclosed_rust_type {
-                RustType::KeywordType(_) => None,
-                RustType::TypeRef(type_ref_info) => type_ref_info.type_alias_dependency.clone(),
-                RustType::ArrayType(array_type) => array_type.type_alias_dependency.clone(),
-                RustType::Struct(_) => None,
-                RustType::Enum(_) => todo!("parse_variant_type_ref for Enum"),
-            };
-            let inline_enclosed_type = match &enclosed_rust_type {
-                RustType::Struct(struct_info) => Some(struct_info.clone()),
-                _ => None,
-            };
-            TypeRefInfo {
-                identifier: quote!(#enclosed_rust_ident),
-                type_alias_dependency,
-                inline_enclosed_type,
-            }
-        }
-        None => todo!("Variant must have an enclosed type"),
-    }
+    todo!("parse_variant_type_ref for {:#?}", ts_type_ref);
 }
-
-fn ts_type_to_rust_enum(ts_type: &TsType) -> RustType {
-    return RustType::KeywordType(KeywordInfo {
-        identifier: quote! {},
-    });
-}
-
-// TODO I need to better understand what I am doing before doing this.
-// How does the AST see a variant? TypeRef for sure first, but then what? Inline type?
-// fn parse_variant_type_ref(ts_type_ref: &TsTypeRef, name: String) -> TypeRefInfo {
-//     let name_token = format_ident!("{}", name);
-//     let type_params = ts_type_ref.type_params.clone();
-//     let enum_info: EnumInfo = match type_params {
-//         Some(param) => {
-//             let ts_type = *param.params[0].clone();
-//             // TODO handle custom type refs
-//             let rust_type = ts_type_to_rust_type(&ts_type);
-//             let type_dependencies = collect_dependencies(rust_type);
-//             let inline_dependencies = collect_inline_dependencies(rust_type);
-//             let type_ident = rust_type.get_type_ident();
-//             let token_stream = quote!{
-//                 #[derive(CandidType, Deserialize)]
-//                 enum #name_token {
-//                     #type_ident
-//                 }
-//             };
-//             EnumInfo{token_stream, name, type_dependencies, inline_dependencies}
-//         },
-//         None => todo!("Variant must have an enclosed type"),
-//     };
-
-//     let enum_thing = quote!(
-//         enum Reaction {
-//             Fire(),
-//             Great(),
-//             Good(Good),
-//             Fun(Fun),
-//             Other(u16)
-//         }
-//     );
-
-//     let enum_thing_info = EnumInfo {
-//         token_stream: enum_thing,
-//         name: String::from("Reation"),
-//         type_dependencies: vec![String::from("Good"), String::from("Fun")],
-//         inline_dependencies: vec![]
-//     };
-
-//     let type_ref_info = TypeRefInfo {
-//         token_stream: quote!(Reaction), name: Some(String::from("Reaction")), inline_dependencies: vec![RustType::Enum((enum_thing_info))]
-//     };
-
-//     TypeRefInfo {
-//         token_stream: quote!(#name_token), name: Some(name), inline_dependencies: vec![RustType::Enum(enum_info)]
-//     }
-
-// }
 
 pub fn ts_type_literal_to_rust_enum(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit) -> EnumInfo {
-    let fields: Vec<(TokenStream, Vec<String>, Option<StructInfo>)> =
-        ts_type_lit.members.iter().fold(vec![], |acc, member| {
-            let (structures, type_alias_deps, inline_deps) = parse_type_literal_fields(member);
-            vec![acc, vec![(structures, type_alias_deps, inline_deps)]].concat()
-        });
     let fields: Vec<(TokenStream, Vec<String>, Option<StructInfo>)> =
         ts_type_lit.members.iter().fold(vec![], |acc, member| {
             let (result, type_alias_deps, inline_deps) =
@@ -418,33 +340,6 @@ fn parse_type_literal_field_type(prop_sig: &TsPropertySignature) -> RustType {
     let type_ann = prop_sig.type_ann.clone().unwrap();
     let ts_type = *type_ann.type_ann.clone();
     ts_type_to_rust_type(&ts_type, None)
-}
-
-fn azle_variant_to_rust_enum(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit) -> EnumInfo {
-    let fields: Vec<(TokenStream, Vec<String>)> =
-        ts_type_lit.members.iter().fold(vec![], |acc, member| {
-            let (result, type_alias_deps, _) = parse_type_literal_members_for_enum(member);
-            vec![acc, vec![(result, type_alias_deps)]].concat()
-        });
-    // let members: Vec<(TokenStream, Vec<String>)> = ts_type_lit.members.iter().map(|member| {
-    //     parse_type_literal_members_for_enum(member, count)
-    // }).collect();
-    let member_token_streams = fields.iter().map(|(member, _)| member.clone());
-    let type_dependencies = fields
-        .iter()
-        .fold(vec![], |acc, member| vec![acc, member.1.clone()].concat());
-    let token_stream = quote!(
-        #[derive(serde::Serialize, serde::Deserialize, Debug, candid::CandidType, Clone)]
-        enum #ts_type_ident {
-            #(#member_token_streams),*
-        }
-    );
-    EnumInfo {
-        identifier: quote!(ts_type_ident),
-        structure: token_stream,
-        type_alias_dependencies: type_dependencies,
-        inline_dependencies: Box::from(vec![]),
-    }
 }
 
 fn parse_type_literal_members_for_enum(

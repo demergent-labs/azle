@@ -1,60 +1,50 @@
-type AzleInlineStruct_459bc164_5d66_4816_9a08_c609f675ff73 = record {
-  one : TypeAliasOnlyUsedInline;
+type AzleInlineStruct_11220735018039115314 = record {
+  three_inline : ComplexRecord;
 };
-type AzleInlineStruct_45f10ebc_d444_4372_8189_37772242bd7c = record {
-  one : text;
-  two : SimpleRecord;
-  three : bool;
+type AzleInlineStruct_13758493464962941964 = record { thing : bool };
+type AzleInlineStruct_13869415584738595727 = record {
+  sub_one : bool;
+  sub_two : AzleInlineStruct_4014416337993997247;
 };
-type AzleInlineStruct_4d3a8f56_3d60_43f1_8965_18c2f32e688c = record {
+type AzleInlineStruct_14755172304595875420 = record { two_inline : nat16 };
+type AzleInlineStruct_1501298277425681439 = record { thing : text };
+type AzleInlineStruct_15216573658267618865 = record {
   one : bool;
   two : nat16;
   three : ComplexRecord;
 };
-type AzleInlineStruct_658aac03_631e_4b57_9b84_2752bca6dbfd = record {
-  sub_three : bool;
-};
-type AzleInlineStruct_6cc97538_a942_4db7_896d_3d9833ab2c5d = record {
+type AzleInlineStruct_16058737412870499661 = record {
   one : text;
   two : SimpleRecord;
+  three : AzleInlineStruct_1660561775355735018;
+  four : AzleInlineStruct_13869415584738595727;
 };
-type AzleInlineStruct_72941e4e_c4da_4796_8bde_c15d530ef84b = record {
-  one : text;
-  two : SimpleRecord;
-  three : AzleInlineStruct_96c7f5d4_8822_41f8_ac57_3533f1648467;
-  four : AzleInlineStruct_bd72091c_475f_4cf4_9c98_a49280d7e376;
-};
-type AzleInlineStruct_885414f8_308d_4933_ac74_1df826aef057 = record {
-  one_inline : bool;
-};
-type AzleInlineStruct_8cc7fd65_8214_4cbb_93da_4a226c069829 = record {
-  two_inline : nat16;
-};
-type AzleInlineStruct_96c7f5d4_8822_41f8_ac57_3533f1648467 = record {
+type AzleInlineStruct_1660561775355735018 = record {
   sub_one : bool;
   sub_two : bool;
 };
-type AzleInlineStruct_bd72091c_475f_4cf4_9c98_a49280d7e376 = record {
-  sub_one : bool;
-  sub_two : AzleInlineStruct_658aac03_631e_4b57_9b84_2752bca6dbfd;
+type AzleInlineStruct_16771366182478042356 = record {
+  one : TypeAliasOnlyUsedInline;
 };
-type AzleInlineStruct_d684abd9_7c7a_4b69_afd0_e1cf4ee3a92c = record {
-  one : AzleInlineStruct_885414f8_308d_4933_ac74_1df826aef057;
-  two : AzleInlineStruct_8cc7fd65_8214_4cbb_93da_4a226c069829;
-  three : AzleInlineStruct_f4f23ccb_9682_4f98_89c3_09e98ee476da;
+type AzleInlineStruct_1963651997611102487 = record { one_inline : bool };
+type AzleInlineStruct_4014416337993997247 = record { sub_three : bool };
+type AzleInlineStruct_5081441631234008174 = record {
+  one : text;
+  two : SimpleRecord;
+  three : bool;
 };
-type AzleInlineStruct_ee688ee1_eaf1_4d59_b7c2_27bf43474fa4 = record {
-  thing : text;
+type AzleInlineStruct_6662656338860968045 = record {
+  one : AzleInlineStruct_1963651997611102487;
+  two : AzleInlineStruct_14755172304595875420;
+  three : AzleInlineStruct_11220735018039115314;
 };
-type AzleInlineStruct_f1d7c401_0a64_41a4_aeeb_9e73440bdda3 = record {
-  thing : bool;
-};
-type AzleInlineStruct_f4f23ccb_9682_4f98_89c3_09e98ee476da = record {
-  three_inline : ComplexRecord;
+type AzleInlineStruct_9123304413166891813 = record {
+  one : text;
+  two : SimpleRecord;
 };
 type ComplexRecord = record {
   one : nat16;
-  six : AzleInlineStruct_6cc97538_a942_4db7_896d_3d9833ab2c5d;
+  six : AzleInlineStruct_9123304413166891813;
   two : bool;
   three : bool;
   five : vec SimpleRecord;
@@ -62,8 +52,8 @@ type ComplexRecord = record {
   seven : RecordWithoutDirectInlineRecords;
 };
 type DeepInlineRecords = record {
-  one : AzleInlineStruct_f1d7c401_0a64_41a4_aeeb_9e73440bdda3;
-  six : AzleInlineStruct_6cc97538_a942_4db7_896d_3d9833ab2c5d;
+  one : AzleInlineStruct_13758493464962941964;
+  six : AzleInlineStruct_9123304413166891813;
 };
 type Fun = variant { id; cool };
 type Reaction = variant { Fun : Fun; Great; Fire };
@@ -71,16 +61,16 @@ type RecordWithoutDirectInlineRecords = record { one : DeepInlineRecords };
 type SimpleRecord = record { one : bool; other : vec bool };
 type TypeAliasOnlyUsedInline = record { one : bool };
 type Yes = variant { One; Two; Three };
-service : {
+service : () -> {
   complex_record_test : (
       ComplexRecord,
       SimpleRecord,
       bool,
-      AzleInlineStruct_45f10ebc_d444_4372_8189_37772242bd7c,
-      AzleInlineStruct_4d3a8f56_3d60_43f1_8965_18c2f32e688c,
-      AzleInlineStruct_72941e4e_c4da_4796_8bde_c15d530ef84b,
-      AzleInlineStruct_d684abd9_7c7a_4b69_afd0_e1cf4ee3a92c,
-      AzleInlineStruct_459bc164_5d66_4816_9a08_c609f675ff73,
+      AzleInlineStruct_5081441631234008174,
+      AzleInlineStruct_15216573658267618865,
+      AzleInlineStruct_16058737412870499661,
+      AzleInlineStruct_6662656338860968045,
+      AzleInlineStruct_16771366182478042356,
     ) -> (nat8) query;
   not_so_simple : (
       vec int8,
@@ -96,7 +86,7 @@ service : {
       float64,
       principal,
       null,
-      AzleInlineStruct_ee688ee1_eaf1_4d59_b7c2_27bf43474fa4,
+      AzleInlineStruct_1501298277425681439,
     ) -> ();
   one_variant : (Fun) -> () query;
   simple_query : (opt nat64, text, nat, bool) -> (text) query;
