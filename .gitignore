@@ -5,5 +5,4 @@
 dist
 node_modules
 target
-/Cargo.lock
 /src/compiler/typescript_to_rust_redesign/azle_generate/src/playground
