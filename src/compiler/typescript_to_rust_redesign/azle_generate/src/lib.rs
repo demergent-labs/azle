@@ -20,10 +20,12 @@ mod generators {
     pub mod azle_try_from_js_value;
     pub mod canister_methods;
     pub mod ic_object;
+    pub mod stable_storage;
 }
 
 pub mod utils {
     pub mod fn_decls;
+    pub mod type_aliases;
 }
 
 use generators::{

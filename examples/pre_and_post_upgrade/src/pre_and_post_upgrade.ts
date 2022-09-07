@@ -1,3 +1,5 @@
+// TODO time to implement StableStorage
+
 import {
     Query,
     Update,
