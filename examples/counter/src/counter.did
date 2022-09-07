@@ -1,4 +1,1 @@
-service: {
-    "readCount": () -> (nat64) query;
-    "incrementCount": () -> (nat64);
-}
+service : { incrementCount : () -> (nat64); readCount : () -> (nat64) query }

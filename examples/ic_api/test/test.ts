@@ -10,6 +10,15 @@ const ic_api_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 
 const tests: Test[] = [
     ...deploy('ic_api'),
+    {
+        name: 'install didc',
+        prep: async () => {
+            execSync(
+                `cd target/azle && cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 didc --root ..`,
+                { stdio: 'inherit' }
+            );
+        }
+    },
     // {
     //     name: 'arg_data with zero params',
     //     test: async () => {

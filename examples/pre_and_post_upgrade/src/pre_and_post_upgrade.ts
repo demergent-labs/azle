@@ -42,7 +42,7 @@ export function preUpgrade(): PreUpgrade {
 }
 
 export function postUpgrade(): PostUpgrade {
-    console.log('preUpgrade');
+    console.log('postUpgrade');
 
     entries = ic
         .stable_storage<StableStorage>()
