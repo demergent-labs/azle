@@ -34,7 +34,10 @@ pub fn generate_canister_method_system_heartbeat(
 
                         #call_to_heartbeat_js_function
 
-                        // TODO add in generator handler
+                        _azle_async_result_handler(
+                            &mut _azle_boa_context,
+                            &_azle_boa_return_value
+                        ).await;
                     });
                 }
             }
