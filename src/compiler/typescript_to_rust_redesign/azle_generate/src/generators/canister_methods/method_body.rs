@@ -1,10 +1,7 @@
 use quote::quote;
 use swc_ecma_ast::FnDecl;
 
-use crate::utils::fn_decls::{
-    get_fn_decl_function_name,
-    get_param_name_idents
-};
+use crate::utils::fn_decls::{get_fn_decl_function_name, get_param_name_idents};
 
 pub fn generate_canister_method_body(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
     let call_to_js_function = generate_call_to_js_function(fn_decl);
@@ -15,7 +12,13 @@ pub fn generate_canister_method_body(fn_decl: &FnDecl) -> proc_macro2::TokenStre
 
             #call_to_js_function
 
-            _azle_boa_return_value.azle_try_from_js_value(&mut _azle_boa_context).unwrap() // TODO add in the return result handler
+            let _azle_final_return_value = _azle_async_result_handler(
+                &mut _azle_boa_context,
+                &_azle_boa_return_value
+            ).await;
+
+            // TODO we have to figure out how to handle returning or not, probably handled when we do QueryManual and UpdateManual
+            _azle_final_return_value.azle_try_from_js_value(&mut _azle_boa_context).unwrap()
         }
     }
 }
