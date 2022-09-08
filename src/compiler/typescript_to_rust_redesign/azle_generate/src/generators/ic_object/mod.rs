@@ -138,6 +138,11 @@ pub fn generate_ic_object() -> proc_macro2::TokenStream {
                 "trap",
                 0
             )
+            .property(
+                "_azle_stable_storage",
+                _azle_stable_storage,
+                boa_engine::property::Attribute::all()
+            )
             .build();
     }
 }

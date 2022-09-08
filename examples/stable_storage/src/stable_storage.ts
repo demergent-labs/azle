@@ -1,4 +1,7 @@
+// TODO add support/tests for func, service, reserved, and empty
+
 import {
+    blob,
     Query,
     Update,
     Stable,
@@ -25,38 +28,45 @@ import {
 type User = {
     id: string;
     children: Child[];
-    country: Country;
+    // country: Country;
 };
 
 type Child = {
     id: string;
 };
 
-type Country = Variant<{
-    USA: null;
-    UK: null;
-    CANADA: null;
-}>;
+// type Country = Variant<{
+//     USA: null;
+//     UK: null;
+//     CANADA: null;
+// }>;
 
-type Reaction = Variant<{
-    Fire: null;
-    Great: null;
-    Fireworks: Fireworks;
-    Emotion: Emotion;
-}>;
+// type Reaction = Variant<{
+//     Fire: null;
+//     Great: null;
+//     // Fireworks: Fireworks; // TODO uncomment and add all of these back in
+//     // Emotion: Emotion;
+// }>;
 
-type Fireworks = {
-    id: string;
-    name: string;
-};
+// type Fireworks = {
+//     id: string;
+//     name: string;
+// };
 
-type Emotion = Variant<{
-    Happy: null;
-    Sad: null;
-}>;
+// type Emotion = Variant<{
+//     Happy: null;
+//     Sad: null;
+// }>;
 
-type StableStorage = Stable<{
+// TODO test blob
+// TODO test vec
+// TODO everything
+// TODO consider getting rid of the Stable type
+type StableStorage = {
+    stableBlob: blob;
+    stableBlobs: blob[];
     stableInt: int;
+    stableInts: int[];
     stableInt64: int64;
     stableInt32: int32;
     stableInt16: int16;
@@ -71,20 +81,36 @@ type StableStorage = Stable<{
     stableString: string;
     stablePrincipal: Principal;
     stableUser: User;
-    stableReaction: Reaction;
-    // stableBoolean: Migrate<boolean>;
+    stableUsers: User[];
+    // stableReaction: Reaction;
+    // stableBoolean: Migrate<boolean>; // TODO I think we can get rid of this concept, but let's play with it
     // To add a stable variable after a canister is deployed
     // you must wrap the variable's type in the Migrate type.
     // Then you must set its initial value in the PostUpgrade method and deploy/upgrade once.
     // After the first deploy/upgrade you should remove the Migrate type and the PostUpgrade
     // method initialization of the variable then deploy again.
-}>;
+};
+// TODO test out migrate, I think we can get rid of it
 
+let stable_storage: StableStorage = ic.stable_storage();
+
+// TODO add array tests for each type
 export function init(): Init {
     console.log('init');
 
+    ic.stable_storage<StableStorage>().stableBlob = Uint8Array.from([
+        0, 1, 2, 3, 4, 5
+    ]);
+    ic.stable_storage<StableStorage>().stableBlobs = [
+        Uint8Array.from([0, 1, 2, 3, 4, 5]),
+        Uint8Array.from([0, 1, 2, 3, 4, 5])
+    ];
     ic.stable_storage<StableStorage>().stableInt =
         170141183460469231731687303715884105727n;
+    ic.stable_storage<StableStorage>().stableInts = [
+        170141183460469231731687303715884105727n,
+        170141183460469231731687303715884105727n
+    ];
     ic.stable_storage<StableStorage>().stableInt64 = 9223372036854775807n;
     ic.stable_storage<StableStorage>().stableInt32 = 2147483647;
     ic.stable_storage<StableStorage>().stableInt16 = 32767;
@@ -107,16 +133,16 @@ export function init(): Init {
             {
                 id: '1'
             }
-        ],
-        country: {
-            CANADA: null
-        }
+        ]
+        // country: {
+        //     CANADA: null
+        // }
     };
-    ic.stable_storage<StableStorage>().stableReaction = {
-        Emotion: {
-            Happy: null
-        }
-    };
+    // ic.stable_storage<StableStorage>().stableReaction = {
+    //     Emotion: {
+    //         Happy: null
+    //     }
+    // };
 }
 
 export function preUpgrade(): PreUpgrade {
@@ -127,12 +153,36 @@ export function postUpgrade(): PostUpgrade {
     console.log('postUpgrade');
 }
 
+export function readStableBlob(): Query<blob> {
+    return ic.stable_storage<StableStorage>().stableBlob;
+}
+
+export function writeStableBlob(blob: blob): Update<void> {
+    ic.stable_storage<StableStorage>().stableBlob = blob;
+}
+
+export function readStableBlobs(): Query<blob[]> {
+    return ic.stable_storage<StableStorage>().stableBlobs;
+}
+
+export function writeStableBlobs(blobs: blob[]): Update<void> {
+    ic.stable_storage<StableStorage>().stableBlobs = blobs;
+}
+
 export function readStableInt(): Query<int> {
     return ic.stable_storage<StableStorage>().stableInt;
 }
 
 export function writeStableInt(int: int): Update<void> {
     ic.stable_storage<StableStorage>().stableInt = int;
+}
+
+export function readStableInts(): Query<int[]> {
+    return ic.stable_storage<StableStorage>().stableInts;
+}
+
+export function writeStableInts(ints: int[]): Update<void> {
+    ic.stable_storage<StableStorage>().stableInts = ints;
 }
 
 export function readStableInt64(): Query<int64> {
@@ -247,10 +297,10 @@ export function writeStableUser(user: User): Update<void> {
     ic.stable_storage<StableStorage>().stableUser = user;
 }
 
-export function readStableReaction(): Query<Reaction> {
-    return ic.stable_storage<StableStorage>().stableReaction;
-}
+// export function readStableReaction(): Query<Reaction> {
+//     return ic.stable_storage<StableStorage>().stableReaction;
+// }
 
-export function writeStableReaction(reaction: Reaction): Update<void> {
-    ic.stable_storage<StableStorage>().stableReaction = reaction;
-}
+// export function writeStableReaction(reaction: Reaction): Update<void> {
+//     ic.stable_storage<StableStorage>().stableReaction = reaction;
+// }

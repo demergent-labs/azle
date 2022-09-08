@@ -44,8 +44,8 @@ async function azle() {
     });
 
     const main_js: JavaScript = await compileTypeScriptToJavaScript(tsPath);
-    const principal_js: JavaScript = bundle_and_transpile_ts(
-        `export { Principal } from '@dfinity/principal';`
+    const stable_storage_js: JavaScript = bundle_and_transpile_ts(
+        `export { stable_storage_deserialize, stable_storage_serialize } from 'azle';`
     );
 
     writeCodeToFileSystem(
@@ -55,7 +55,7 @@ async function azle() {
         libCargoToml,
         fileNames,
         main_js,
-        principal_js
+        stable_storage_js
     );
 
     compileRustCode(canisterName, rootPath, candidPath);
@@ -80,7 +80,7 @@ function writeCodeToFileSystem(
     libCargoToml: Toml,
     fileNames: string[],
     main_js: JavaScript,
-    principal_js: JavaScript
+    stable_storage_js: JavaScript
 ) {
     if (!fs.existsSync(`./target/azle`)) {
         fs.mkdirSync(`target/azle`, { recursive: true });
@@ -123,8 +123,8 @@ function writeCodeToFileSystem(
     );
 
     fs.writeFileSync(
-        `./target/azle/${rootPath}/azle_generate/src/principal.js`,
-        principal_js
+        `./target/azle/${rootPath}/azle_generate/src/stable_storage.js`,
+        stable_storage_js
     );
 
     execSync(

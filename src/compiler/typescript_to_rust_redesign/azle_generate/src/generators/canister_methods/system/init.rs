@@ -34,6 +34,8 @@ pub fn generate_canister_method_system_init(programs: &Vec<Program>) -> proc_mac
                 BOA_CONTEXT_OPTION = Some(boa_engine::Context::default());
                 let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
 
+                let _azle_stable_storage = boa_engine::object::ObjectInitializer::new(&mut _azle_boa_context).build();
+
                 #ic_object
 
                 _azle_boa_context.register_global_property(

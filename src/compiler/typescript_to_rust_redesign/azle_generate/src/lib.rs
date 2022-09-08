@@ -91,7 +91,7 @@ pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
 pub fn azle_generate(
     ts_file_names: &Vec<&str>,
     main_js: &str,
-    principal_js: &str,
+    stable_storage_js: &str,
 ) -> proc_macro2::token_stream::TokenStream {
     let programs = get_programs(&ts_file_names);
 
@@ -236,7 +236,7 @@ pub fn azle_generate(
         getrandom::register_custom_getrandom!(custom_getrandom);
 
         static MAIN_JS: &'static str = #main_js;
-        static PRINCIPAL_JS: &'static str = #principal_js;
+        static STABLE_STORAGE_JS: &'static str = #stable_storage_js;
 
         #canister_method_system_init
         #canister_method_system_pre_upgrade

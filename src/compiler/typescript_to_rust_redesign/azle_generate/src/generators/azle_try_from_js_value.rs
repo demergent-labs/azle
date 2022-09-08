@@ -451,6 +451,13 @@ pub fn generate_azle_try_from_js_value() -> proc_macro2::TokenStream {
             }
         }
 
+        // TODO consider creating a macro that can derive Vec of Vec multiple levels deep for any type
+        impl AzleTryFromJsValue<Vec<Vec<u8>>> for boa_engine::JsValue {
+            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Vec<Vec<u8>>, AzleTryFromJsValueError> {
+                azle_try_from_js_value_generic_array(self, context)
+            }
+        }
+
         impl<T> AzleTryFromJsValue<Vec<Box<T>>> for boa_engine::JsValue where boa_engine::JsValue: AzleTryFromJsValue<T> {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Vec<Box<T>>, AzleTryFromJsValueError> {
                 azle_try_from_js_value_generic_array::<Box<T>>(self, context)
