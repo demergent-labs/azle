@@ -89,6 +89,7 @@ fn collect_inline_dependencies_for_struct(
     })
 }
 
+// TODO find a better home for this
 pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
     decl.id.sym.chars().as_str().to_string()
 }
@@ -102,16 +103,27 @@ pub fn azle_generate(
 
     // Collect AST Information
     let ast_type_alias_decls = get_ast_type_alias_decls_from_programs(&programs);
-    let ast_type_alias_decl_strings: Vec<String> = ast_type_alias_decls
+    let ast_record_type_alias_decls = get_ast_record_type_alias_decls(&ast_type_alias_decls);
+    let ast_variant_type_alias_decls = get_ast_variant_type_alias_decls(&ast_type_alias_decls);
+    let ast_other_type_alias_decls = get_ast_other_type_alias_decls(&ast_type_alias_decls);
+
+    // Visually check that all of the type aliases are present. TODO remove when confident
+    let records: Vec<String> = ast_record_type_alias_decls
         .iter()
         .map(|decl| ast_type_alias_decl_to_string(decl))
         .collect();
-    eprintln!(
-        "These are all of the type alias decls that we have {:#?}",
-        ast_type_alias_decl_strings
-    );
-    let ast_record_type_alias_decls = get_ast_record_type_alias_decls(&ast_type_alias_decls);
-    let ast_variant_type_alias_decls = get_ast_variant_type_alias_decls(&ast_type_alias_decls);
+    let variants: Vec<String> = ast_variant_type_alias_decls
+        .iter()
+        .map(|decl| ast_type_alias_decl_to_string(decl))
+        .collect();
+    let others: Vec<String> = ast_other_type_alias_decls
+        .iter()
+        .map(|decl| ast_type_alias_decl_to_string(decl))
+        .collect();
+    eprintln!("Here are the records {:?}", records);
+    eprintln!("Here are the variant {:?}", variants);
+    eprintln!("Here are the others {:?}", others);
+
     let ast_fnc_decls = get_ast_fn_decls_from_programs(&programs);
     let ast_func_type_alias_decls =
         ast_utilities::get_ast_func_type_alias_decls_from_programs(&programs);
@@ -174,10 +186,21 @@ pub fn azle_generate(
     let record_inline_records =
         collect_inline_dependencies_for_struct(&Box::from(records_inline_deps));
 
+    let other_type_aliases_map =
+        generate_type_alias_token_streams(&type_alias_dependant_types, &ast_other_type_alias_decls);
+    let other_inline_deps = other_type_aliases_map
+        .iter()
+        .fold(vec![], |acc, (_, (_, token_stream))| {
+            vec![acc, token_stream.clone()].concat()
+        });
+    let other_inline_records =
+        collect_inline_dependencies_for_struct(&Box::from(other_inline_deps));
+
     let inline_records_function_streams = vec![
         function_inline_records,
         record_inline_records,
         variant_inline_records,
+        other_inline_records,
     ]
     .concat();
 
@@ -187,6 +210,11 @@ pub fn azle_generate(
         .collect();
 
     let variant_token_streams: Vec<proc_macro2::TokenStream> = variant_type_aliases_map
+        .iter()
+        .map(|(_, (token_stream, _))| token_stream.clone())
+        .collect();
+
+    let other_token_streams: Vec<proc_macro2::TokenStream> = other_type_aliases_map
         .iter()
         .map(|(_, (token_stream, _))| token_stream.clone())
         .collect();
@@ -264,6 +292,7 @@ pub fn azle_generate(
         #(#records_token_streams)*
         #(#variant_token_streams)*
         #(#func_structs_and_impls)*
+        #(#other_token_streams)*
         #(#query_function_streams)*
         #(#update_function_streams)*
 

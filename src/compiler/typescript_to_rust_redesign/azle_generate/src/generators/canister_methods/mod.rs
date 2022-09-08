@@ -2,6 +2,7 @@ pub mod async_result_handler;
 pub mod functions;
 mod method_body;
 mod query;
+mod record_type_aliases;
 mod rust_types;
 mod type_aliases;
 mod types;
@@ -21,9 +22,11 @@ pub use update::{generate_update_function_infos, get_update_fn_decls};
 
 pub use functions::{generate_function_info, FunctionInformation};
 
-pub use type_aliases::generate_record_token_streams;
+pub use type_aliases::{generate_hash_map, generate_type_alias_token_streams};
 
 pub use variant_type_aliases::generate_variant_token_streams;
+
+pub use record_type_aliases::generate_record_token_streams;
 
 pub use rust_types::{ArrayTypeInfo, KeywordInfo, RustType, StructInfo, TypeRefInfo};
 
@@ -31,36 +34,38 @@ pub use types::ts_type_to_rust_type;
 
 use swc_ecma_ast::{ExportDecl, FnDecl, Module, ModuleDecl, Program, Stmt, TsTypeAliasDecl};
 
-pub fn get_ast_record_type_alias_decls(
+pub fn get_ast_other_type_alias_decls(
     type_alias_decls: &Vec<TsTypeAliasDecl>,
 ) -> Vec<TsTypeAliasDecl> {
-    // TODO this does nothing. Eventually it will sort out just the type literals I guess
-    let type_lits: Vec<TsTypeAliasDecl> = type_alias_decls
-        .clone()
-        .into_iter()
-        .filter(|ts_type_alias_decl| ts_type_alias_decl.type_ann.is_ts_type_lit())
-        .collect();
-
-    let others_not_variant_or_func = type_alias_decls
+    type_alias_decls
         .clone()
         .into_iter()
         .filter(|ts_type_alias_decl| {
-            !ts_type_alias_decl.type_ann.is_ts_type_ref()
-                || (ts_type_alias_decl.type_ann.is_ts_type_ref()
-                    && match ts_type_alias_decl.type_ann.as_ts_type_ref() {
-                        Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
-                            Some(ident) => {
-                                let name = ident.sym.chars().as_str();
-                                name != "Func" && name != "Variant"
-                            }
+            !ts_type_alias_decl.type_ann.is_ts_type_lit()
+                && (!ts_type_alias_decl.type_ann.is_ts_type_ref()
+                    || (ts_type_alias_decl.type_ann.is_ts_type_ref()
+                        && match ts_type_alias_decl.type_ann.as_ts_type_ref() {
+                            Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
+                                Some(ident) => {
+                                    let name = ident.sym.chars().as_str();
+                                    name != "Func" && name != "Variant"
+                                }
+                                None => true,
+                            },
                             None => true,
-                        },
-                        None => true,
-                    })
+                        }))
         })
-        .collect();
+        .collect()
+}
 
-    vec![type_lits, others_not_variant_or_func].concat()
+pub fn get_ast_record_type_alias_decls(
+    type_alias_decls: &Vec<TsTypeAliasDecl>,
+) -> Vec<TsTypeAliasDecl> {
+    type_alias_decls
+        .clone()
+        .into_iter()
+        .filter(|ts_type_alias_decl| ts_type_alias_decl.type_ann.is_ts_type_lit())
+        .collect()
 }
 
 pub fn get_ast_variant_type_alias_decls(

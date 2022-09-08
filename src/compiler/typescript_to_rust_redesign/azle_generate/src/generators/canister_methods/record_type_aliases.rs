@@ -1,17 +1,29 @@
 use std::collections::{HashMap, HashSet};
 
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote};
+use quote::format_ident;
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use super::{ts_type_to_rust_type, StructInfo};
+use super::{generate_hash_map, ts_type_to_rust_type, RustType, StructInfo};
+
+/**
+ * Here is what I am thinking
+ *
+ * 1. Get a list of all of the type aliases our program uses
+ * 1. Get a list of the corresponding decls
+ * 1. For each of those decls
+ *      1. Create Struct, or Enum, or Rust Type Alias, or Fun whatever
+ *      1. Get a list of all the type aliases that that decl uses
+ *      1. Get a list of the corresponding decls
+ *      1. Recur
+ */
 
 /**
  * Loops through all of the dependant types, finds the corresponding ts types in
  * the type aliases, converts them to a rust type, and inserts it into the
  * result map
  */
-pub fn generate_type_alias_token_streams(
+pub fn generate_record_token_streams(
     type_alias_dependant_types: &HashSet<&String>,
     ast_type_alias_decls: &Vec<TsTypeAliasDecl>,
 ) -> HashMap<String, (TokenStream, Vec<StructInfo>)> {
@@ -26,7 +38,7 @@ pub fn generate_type_alias_token_streams(
             let dependency_map = match type_alias_decl {
                 Some(type_alias_decl) => {
                     let dependency_map =
-                        generate_dependencies_map_for(type_alias_decl, &type_alias_lookup);
+                        generate_dependencies_map_for_struct(type_alias_decl, &type_alias_lookup);
                     dependency_map
                 }
                 None => {
@@ -73,7 +85,7 @@ pub fn generate_type_alias_token_streams(
  * When you get an item from the hash map it will be the type alias token stream, and the list of structs that it alone
  * requires
  */
-fn generate_dependencies_map_for(
+fn generate_dependencies_map_for_struct(
     type_alias_decl: &TsTypeAliasDecl,
     type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
 ) -> HashMap<String, (TokenStream, Vec<StructInfo>)> {
@@ -88,50 +100,41 @@ fn generate_dependencies_map_for(
     let aliased_rust_type = ts_type_to_rust_type(&ts_type, Some(&ts_type_alias_ident));
 
     // Add the Token Streams for the dependencies of the type alias specified in the arguments
-    let sub_dependencies = aliased_rust_type.get_type_alias_dependency();
-    let sub_dependency_map =
-        sub_dependencies
+    let member_dependencies = aliased_rust_type.get_type_alias_dependency();
+    let member_dependency_map =
+        member_dependencies
             .iter()
-            .fold(HashMap::new(), |mut acc, sub_dependency| {
-                let sub_dependency_decl = type_alias_lookup.get(sub_dependency);
-                match sub_dependency_decl {
+            .fold(
+                HashMap::new(),
+                |mut acc, member_dependency| match type_alias_lookup.get(member_dependency) {
                     Some(decl) => {
-                        let aliased_type_sub_dependency_map =
-                            generate_dependencies_map_for(decl, type_alias_lookup);
-                        acc.extend(aliased_type_sub_dependency_map);
+                        // TODO the thing I am afraid is happening is that we are going to not recurse properly if we have everything seperated out.
+                        // Right now we do just the records and just the variants and just the funcs but the truth is that
+                        // those things are composed of each other and it's not really practical to separte them I think
+                        // But what we can do is have everything separted into their own function any ways and then call to them when we are recuring
+                        acc.extend(generate_dependencies_map_for_struct(
+                            decl,
+                            type_alias_lookup,
+                        ));
                         acc
                     }
-                    None => todo!("Handle if we can't find the type in the dictionary"),
-                }
-            });
-    result_dependency_map.extend(sub_dependency_map);
+                    None => todo!(
+                        "Handle if we can't find the type [{}] in the dictionary",
+                        member_dependency
+                    ),
+                },
+            );
+    result_dependency_map.extend(member_dependency_map);
 
-    // Add the Token stream for the TsTypeAliasDecl specified in the arguments
-    let aliased_type_ident = aliased_rust_type.get_type_ident();
-    result_dependency_map.insert(
-        ts_type_name,
-        (
-            quote! {
-                type #ts_type_alias_ident = #aliased_type_ident;
-            },
-            match aliased_rust_type.get_inline_dependencies() {
-                Some(dep) => vec![dep],
-                None => vec![],
-            },
-        ),
-    );
+    match aliased_rust_type.clone() {
+        RustType::Struct(struct_info) => {
+            result_dependency_map.insert(
+                struct_info.identifier.to_string(),
+                (struct_info.structure, *struct_info.inline_dependencies),
+            );
+        }
+        _ => todo!("Only Structs allowed"),
+    };
 
     result_dependency_map
-}
-
-pub fn generate_hash_map(
-    ast_type_alias_decls: &Vec<TsTypeAliasDecl>,
-) -> HashMap<String, TsTypeAliasDecl> {
-    ast_type_alias_decls
-        .iter()
-        .fold(HashMap::new(), |mut acc, ast_type_alias_decl| {
-            let type_alias_names = ast_type_alias_decl.id.sym.chars().as_str().to_string();
-            acc.insert(type_alias_names, ast_type_alias_decl.clone());
-            acc
-        })
 }
