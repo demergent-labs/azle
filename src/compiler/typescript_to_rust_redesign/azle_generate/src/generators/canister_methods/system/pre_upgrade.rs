@@ -27,6 +27,12 @@ pub fn generate_canister_method_system_pre_upgrade(
                 let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
 
                 #call_to_pre_upgrade_js_function
+
+                let _azle_stable_storage_boa_return_value = _azle_boa_context.eval("exports.stable_storage_serialize(globalThis.ic._azle_stable_storage)").unwrap();
+                let _azle_stable_storage_json_string: String = _azle_stable_storage_boa_return_value.azle_try_from_js_value(&mut _azle_boa_context).unwrap();
+                let _azle_stable_storage = (_azle_stable_storage_json_string,);
+
+                ic_cdk::storage::stable_save(_azle_stable_storage);
             }
         }
     }

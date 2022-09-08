@@ -459,6 +459,13 @@ pub fn generate_azle_into_js_value() -> proc_macro2::TokenStream {
             }
         }
 
+        // TODO consider creating a macro that can derive Vec of Vec multiple levels deep for any type
+        impl AzleIntoJsValue for Vec<Vec<u8>> {
+            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                azle_into_js_value_generic_array(self, context)
+            }
+        }
+
         impl<T: AzleIntoJsValue> AzleIntoJsValue for Vec<Box<T>> {
             fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 azle_into_js_value_generic_array(self, context)
@@ -470,7 +477,6 @@ pub fn generate_azle_into_js_value() -> proc_macro2::TokenStream {
                 azle_into_js_value_generic_array(self, context)
             }
         }
-
 
         fn azle_into_js_value_generic_array<T: AzleIntoJsValue>(generic_array: Vec<T>, context: &mut boa_engine::Context) -> boa_engine::JsValue {
             let js_values = generic_array.into_iter().map(|item| item.azle_into_js_value(context)).collect::<Vec<boa_engine::JsValue>>();

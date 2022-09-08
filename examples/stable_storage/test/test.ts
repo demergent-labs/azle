@@ -11,6 +11,48 @@ const stable_storage_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 
 const initial_reads: Test[] = [
     {
+        name: 'initial read of readStableBlob',
+        test: async () => {
+            const result = await stable_storage_canister.readStableBlob();
+
+            return {
+                ok:
+                    result.length === 6 &&
+                    result[0] === 0 &&
+                    result[1] === 1 &&
+                    result[2] === 2 &&
+                    result[3] === 3 &&
+                    result[4] === 4 &&
+                    result[5] === 5
+            };
+        }
+    },
+    {
+        name: 'initial read of readStableBlobs',
+        test: async () => {
+            const result = await stable_storage_canister.readStableBlobs();
+
+            return {
+                ok:
+                    result.length === 2 &&
+                    result[0].length === 6 &&
+                    result[0][0] === 0 &&
+                    result[0][1] === 1 &&
+                    result[0][2] === 2 &&
+                    result[0][3] === 3 &&
+                    result[0][4] === 4 &&
+                    result[0][5] === 5 &&
+                    result[1].length === 6 &&
+                    result[1][0] === 0 &&
+                    result[1][1] === 1 &&
+                    result[1][2] === 2 &&
+                    result[1][3] === 3 &&
+                    result[1][4] === 4 &&
+                    result[1][5] === 5
+            };
+        }
+    },
+    {
         name: 'initial read of readStableInt',
         test: async () => {
             const result = await stable_storage_canister.readStableInt();
@@ -19,6 +61,20 @@ const initial_reads: Test[] = [
                 ok:
                     result ===
                     170_141_183_460_469_231_731_687_303_715_884_105_727n
+            };
+        }
+    },
+    {
+        name: 'initial read of readStableInts',
+        test: async () => {
+            const result = await stable_storage_canister.readStableInts();
+
+            return {
+                ok:
+                    result[0] ===
+                        170_141_183_460_469_231_731_687_303_715_884_105_727n &&
+                    result[1] ===
+                        170_141_183_460_469_231_731_687_303_715_884_105_727n
             };
         }
     },
@@ -142,29 +198,67 @@ const initial_reads: Test[] = [
             return {
                 ok:
                     result.id === '0' &&
-                    'CANADA' in result.country &&
+                    // 'CANADA' in result.country &&
                     result.children.length === 1 &&
                     result.children[0].id === '1'
             };
         }
-    },
-    {
-        name: 'initial read of readStableReaction',
-        test: async () => {
-            const result = await stable_storage_canister.readStableReaction();
-
-            return {
-                ok: 'Emotion' in result && 'Happy' in result.Emotion
-            };
-        }
     }
+    // {
+    //     name: 'initial read of readStableReaction',
+    //     test: async () => {
+    //         const result = await stable_storage_canister.readStableReaction();
+
+    //         return {
+    //             ok: 'Emotion' in result && 'Happy' in result.Emotion
+    //         };
+    //     }
+    // }
 ];
 
 const writes: Test[] = [
     {
+        name: 'writeStableBlob',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableBlob([
+                5, 4, 3, 2, 1, 0
+            ]);
+
+            return {
+                ok: result === undefined
+            };
+        }
+    },
+    {
+        name: 'writeStableBlobs',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableBlobs([
+                [5, 4, 3, 2, 1, 0],
+                [5, 4, 3, 2, 1, 0]
+            ]);
+
+            return {
+                ok: result === undefined
+            };
+        }
+    },
+    {
         name: 'writeStableInt',
         test: async () => {
             const result = await stable_storage_canister.writeStableInt(0n);
+
+            return {
+                ok: result === undefined
+            };
+        }
+    },
+    {
+        name: 'writeStableInts',
+        test: async () => {
+            const result = await stable_storage_canister.writeStableInts([
+                0n,
+                0n
+            ]);
 
             return {
                 ok: result === undefined
@@ -290,9 +384,9 @@ const writes: Test[] = [
         test: async () => {
             const result = await stable_storage_canister.writeStableUser({
                 id: '2',
-                country: {
-                    UK: null
-                },
+                // country: {
+                //     UK: null
+                // },
                 children: [
                     {
                         id: '3'
@@ -304,25 +398,71 @@ const writes: Test[] = [
                 ok: result === undefined
             };
         }
-    },
-    {
-        name: 'writeStableReaction',
-        test: async () => {
-            const result = await stable_storage_canister.writeStableReaction({
-                Fireworks: {
-                    id: '0',
-                    name: 'Mega Firework'
-                }
-            });
-
-            return {
-                ok: result === undefined
-            };
-        }
     }
+    // {
+    //     name: 'writeStableReaction',
+    //     test: async () => {
+    //         const result = await stable_storage_canister.writeStableReaction({
+    //             Fireworks: {
+    //                 id: '0',
+    //                 name: 'Mega Firework'
+    //             }
+    //         });
+
+    //         return {
+    //             ok: result === undefined
+    //         };
+    //     }
+    // }
 ];
 
 const check_writes: Test[] = [
+    {
+        name: 'check writeStableBlob',
+        test: async () => {
+            const result = await stable_storage_canister.readStableBlob();
+
+            console.log('result', result);
+
+            return {
+                ok:
+                    result.length === 6 &&
+                    result[0] === 5 &&
+                    result[1] === 4 &&
+                    result[2] === 3 &&
+                    result[3] === 2 &&
+                    result[4] === 1 &&
+                    result[5] === 0
+            };
+        }
+    },
+    {
+        name: 'check writeStableBlobs',
+        test: async () => {
+            const result = await stable_storage_canister.readStableBlobs();
+
+            console.log('result', result);
+
+            return {
+                ok:
+                    result.length === 2 &&
+                    result[0].length === 6 &&
+                    result[0][0] === 5 &&
+                    result[0][1] === 4 &&
+                    result[0][2] === 3 &&
+                    result[0][3] === 2 &&
+                    result[0][4] === 1 &&
+                    result[0][5] === 0 &&
+                    result[1].length === 6 &&
+                    result[1][0] === 5 &&
+                    result[1][1] === 4 &&
+                    result[1][2] === 3 &&
+                    result[1][3] === 2 &&
+                    result[1][4] === 1 &&
+                    result[1][5] === 0
+            };
+        }
+    },
     {
         name: 'check writeStableInt',
         test: async () => {
@@ -330,6 +470,16 @@ const check_writes: Test[] = [
 
             return {
                 ok: result === 0n
+            };
+        }
+    },
+    {
+        name: 'check writeStableInts',
+        test: async () => {
+            const result = await stable_storage_canister.readStableInts();
+
+            return {
+                ok: result[0] === 0n && result[1] === 0n
             };
         }
     },
@@ -451,25 +601,25 @@ const check_writes: Test[] = [
             return {
                 ok:
                     result.id === '2' &&
-                    'UK' in result.country &&
+                    // 'UK' in result.country &&
                     result.children.length === 1 &&
                     result.children[0].id === '3'
             };
         }
-    },
-    {
-        name: 'check writeStableReaction',
-        test: async () => {
-            const result = await stable_storage_canister.readStableReaction();
-
-            return {
-                ok:
-                    'Fireworks' in result &&
-                    result.Fireworks.id === '0' &&
-                    result.Fireworks.name === 'Mega Firework'
-            };
-        }
     }
+    // {
+    //     name: 'check writeStableReaction',
+    //     test: async () => {
+    //         const result = await stable_storage_canister.readStableReaction();
+
+    //         return {
+    //             ok:
+    //                 'Fireworks' in result &&
+    //                 result.Fireworks.id === '0' &&
+    //                 result.Fireworks.name === 'Mega Firework'
+    //         };
+    //     }
+    // }
 ];
 
 const tests: Test[] = [
@@ -478,22 +628,10 @@ const tests: Test[] = [
     ...writes,
     ...check_writes,
     {
-        // TODO Get rid of this once https://forum.dfinity.org/t/upgrade-a-canister-even-if-the-wasm-module-hash-has-not-changed/11989
-        name: 'function hack to allow a redeploy',
-        prep: async () => {
-            execSync(
-                `echo "\\n\\nexport function hack(): Query<void> {}" >> src/stable_storage.ts`,
-                {
-                    stdio: 'inherit'
-                }
-            );
-        }
-    },
-    {
         name: 'deploy',
         prep: async () => {
             execSync(
-                `dfx canister install --mode upgrade stable_storage --wasm target/wasm32-unknown-unknown/release/stable_storage.wasm.gz`,
+                `dfx canister install --mode upgrade --upgrade-unchanged --wasm target/wasm32-unknown-unknown/release/stable_storage.wasm.gz stable_storage`,
                 {
                     stdio: 'inherit'
                 }
