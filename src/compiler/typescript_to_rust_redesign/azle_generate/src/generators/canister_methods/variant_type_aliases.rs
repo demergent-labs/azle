@@ -6,7 +6,7 @@ use swc_ecma_ast::TsTypeAliasDecl;
 
 use crate::generators::canister_methods::types::ts_type_literal_to_rust_enum;
 
-use super::{ts_type_to_rust_type, StructInfo};
+use super::StructInfo;
 
 /**
  * Loops through all of the dependant types, finds the corresponding ts types in
@@ -21,10 +21,6 @@ pub fn generate_variant_token_streams(
 
     // For each dependant type, generate a dependency map and add it to the overall dependency map
     // TODO I'm guessing that we aren't going to want acc to be mutable
-    eprintln!(
-        "These are the variants we are going to be looking for {:#?}",
-        type_alias_variants
-    );
     type_alias_variants.iter().fold(
         HashMap::new(),
         |mut all_type_alias_dependencies, dependant_type| {
@@ -69,9 +65,9 @@ fn generate_dependencies_map_for(
     let aliased_rust_type = ts_type_literal_to_rust_enum(&ts_type_alias_ident, inner_type_lit);
 
     // Add the Token Streams for the dependencies of the type alias specified in the arguments
-    let sub_dependencies = aliased_rust_type.type_alias_dependencies;
+    let member_dependencies = aliased_rust_type.type_alias_dependencies;
     let sub_dependency_map =
-        sub_dependencies
+        member_dependencies
             .iter()
             .fold(HashMap::new(), |mut acc, sub_dependency| {
                 let sub_dependency_decl = type_alias_lookup.get(sub_dependency);
@@ -111,7 +107,6 @@ fn generate_hash_map(
         .iter()
         .fold(HashMap::new(), |mut acc, ast_type_alias_decl| {
             let type_alias_names = ast_type_alias_decl.id.sym.chars().as_str().to_string();
-            eprintln!("Adding {:#?} to the map", type_alias_names);
             acc.insert(type_alias_names, ast_type_alias_decl.clone());
             acc
         })

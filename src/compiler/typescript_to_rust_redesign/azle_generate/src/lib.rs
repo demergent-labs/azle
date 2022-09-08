@@ -4,7 +4,7 @@
 use quote::quote;
 use std::{collections::HashSet, iter::FromIterator, path::Path};
 use swc_common::{sync::Lrc, SourceMap};
-use swc_ecma_ast::Program;
+use swc_ecma_ast::{Program, TsTypeAliasDecl};
 use swc_ecma_parser::{
     lexer::Lexer,
     Parser,
@@ -15,42 +15,40 @@ use swc_ecma_parser::{
     TsConfig,
 };
 
-mod generators {
-    pub mod azle_into_js_value;
-    pub mod azle_try_from_js_value;
-    pub mod canister_methods;
-    pub mod ic_object;
-    pub mod stable_storage;
-}
-
-pub mod utils {
-    pub mod fn_decls;
-    pub mod type_aliases;
-}
-
-use generators::{
+use crate::generators::canister_methods::async_result_handler::generate_async_result_handler;
+use crate::generators::funcs;
+use crate::generators::ic_object::functions::generate_ic_object_functions;
+use crate::generators::{
     azle_into_js_value::generate_azle_into_js_value,
     azle_try_from_js_value::generate_azle_try_from_js_value,
     canister_methods::{
-        generate_query_function_infos, generate_update_function_infos,
-        generate_variant_token_streams, get_ast_fn_decls_from_programs,
-        get_ast_record_type_alias_decls, get_ast_type_alias_decls_from_programs,
-        get_ast_variant_type_alias_decls, get_query_fn_decls, get_update_fn_decls,
-        system::heartbeat::generate_canister_method_system_heartbeat,
-        system::inspect_message::generate_canister_method_system_inspect_message,
-        system::pre_upgrade::generate_canister_method_system_pre_upgrade,
+        generate_query_function_infos, generate_record_token_streams,
+        generate_update_function_infos, generate_variant_token_streams,
+        get_ast_fn_decls_from_programs, get_ast_record_type_alias_decls,
+        get_ast_type_alias_decls_from_programs, get_ast_variant_type_alias_decls,
+        get_query_fn_decls, get_update_fn_decls,
         system::{
+            heartbeat::generate_canister_method_system_heartbeat,
             init::generate_canister_method_system_init,
+            inspect_message::generate_canister_method_system_inspect_message,
             post_upgrade::generate_canister_method_system_post_upgrade,
+            pre_upgrade::generate_canister_method_system_pre_upgrade,
         },
         FunctionInformation, StructInfo,
     },
 };
 
-use crate::generators::canister_methods::{
-    async_result_handler::generate_async_result_handler, generate_record_token_streams,
-};
-use crate::generators::ic_object::functions::generate_ic_object_functions;
+mod ast_utilities;
+mod generators {
+    pub mod azle_into_js_value;
+    pub mod azle_try_from_js_value;
+    pub mod canister_methods;
+    pub mod funcs;
+    pub mod ic_object;
+}
+pub mod utils {
+    pub mod fn_decls;
+}
 
 fn collect_function_type_dependencies(function_info: &Vec<FunctionInformation>) -> HashSet<String> {
     let dependencies = function_info.iter().fold(vec![], |acc, fun_info| {
@@ -87,6 +85,10 @@ fn collect_inline_dependencies_for_struct(
     })
 }
 
+pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
+    decl.id.sym.chars().as_str().to_string()
+}
+
 pub fn azle_generate(
     ts_file_names: &Vec<&str>,
     main_js: &str,
@@ -96,9 +98,20 @@ pub fn azle_generate(
 
     // Collect AST Information
     let ast_type_alias_decls = get_ast_type_alias_decls_from_programs(&programs);
+    let ast_type_alias_decl_strings: Vec<String> = ast_type_alias_decls
+        .iter()
+        .map(|decl| ast_type_alias_decl_to_string(decl))
+        .collect();
+    eprintln!(
+        "These are all of the type alias decls that we have {:#?}",
+        ast_type_alias_decl_strings
+    );
     let ast_record_type_alias_decls = get_ast_record_type_alias_decls(&ast_type_alias_decls);
     let ast_variant_type_alias_decls = get_ast_variant_type_alias_decls(&ast_type_alias_decls);
     let ast_fnc_decls = get_ast_fn_decls_from_programs(&programs);
+    let ast_func_type_alias_decls =
+        ast_utilities::get_ast_func_type_alias_decls_from_programs(&programs);
+    let func_structs_and_impls = funcs::generate_func_structs_and_impls(ast_func_type_alias_decls);
 
     // Separate function decls into queries and updates
     let ast_fnc_decls_query = get_query_fn_decls(&ast_fnc_decls);
@@ -137,7 +150,6 @@ pub fn azle_generate(
     ]
     .concat();
 
-    eprintln!("We are looking at the variants");
     let variant_type_aliases_map =
         generate_variant_token_streams(&type_alias_dependant_types, &ast_variant_type_alias_decls);
     let variant_inline_deps = variant_type_aliases_map
@@ -148,7 +160,6 @@ pub fn azle_generate(
     let variant_inline_records =
         collect_inline_dependencies_for_struct(&Box::from(variant_inline_deps));
 
-    eprintln!("We are looking at the records");
     let records_type_aliases_map =
         generate_record_token_streams(&type_alias_dependant_types, &ast_record_type_alias_decls);
     let records_inline_deps = records_type_aliases_map
@@ -243,6 +254,7 @@ pub fn azle_generate(
         #(#inline_records_function_streams)*
         #(#records_token_streams)*
         #(#variant_token_streams)*
+        #(#func_structs_and_impls)*
         #(#query_function_streams)*
         #(#update_function_streams)*
 
