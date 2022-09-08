@@ -199,7 +199,7 @@ export type CanisterResult<T> = {
     with_cycles: (cycles: nat64) => CanisterResult<T>;
     with_cycles128: (cycles: nat) => CanisterResult<T>;
 };
-export type Stable<T> = T;
+export type Stable<T> = T; // TODO let's remove this
 
 export type int = bigint;
 export type int64 = bigint;
