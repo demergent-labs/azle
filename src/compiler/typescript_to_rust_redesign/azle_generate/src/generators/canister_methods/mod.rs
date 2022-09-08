@@ -70,9 +70,9 @@ pub fn get_ast_variant_type_alias_decls(
 
 pub fn get_ast_type_alias_decls_from_programs(programs: &Vec<Program>) -> Vec<TsTypeAliasDecl> {
     programs.iter().fold(vec![], |acc, program| {
-        let ast_struct_decls = get_ast_type_alias_decls_from_program(program);
+        let ast_type_alias_decls = get_ast_type_alias_decls_from_program(program);
 
-        vec![acc, ast_struct_decls].concat()
+        vec![acc, ast_type_alias_decls].concat()
     })
 }
 

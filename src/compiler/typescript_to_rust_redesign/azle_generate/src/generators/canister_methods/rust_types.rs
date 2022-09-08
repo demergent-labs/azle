@@ -123,10 +123,6 @@ impl RustType {
         quote!(#token_stream)
     }
 
-    pub fn get_type_name(&self) -> String {
-        self.get_type_ident().to_string()
-    }
-
     pub fn get_type_alias_dependency(&self) -> Vec<String> {
         match self {
             RustType::TypeRef(type_ref_info) => match type_ref_info.type_alias_dependency.clone() {
