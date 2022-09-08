@@ -12,6 +12,10 @@ export async function compileTypeScriptToJavaScript(
 
     const js_bundled_and_transpiled = bundle_and_transpile_ts(`
         export { Principal } from '@dfinity/principal';
+        export {
+            stable_storage_deserialize,
+            stable_storage_serialize
+        } from 'azle';
         export * from './${ts_path}';
     `);
 
