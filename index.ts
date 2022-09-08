@@ -199,7 +199,6 @@ export type CanisterResult<T> = {
     with_cycles: (cycles: nat64) => CanisterResult<T>;
     with_cycles128: (cycles: nat) => CanisterResult<T>;
 };
-export type Stable<T> = T;
 
 export type int = bigint;
 export type int64 = bigint;
@@ -279,7 +278,7 @@ export type Stable64GrowResult = Variant<{
     err: StableMemoryError;
 }>;
 
-export function stable_storage_serialize<T>(stable_storage: Stable<T>): string {
+export function stable_storage_serialize<T>(stable_storage: T): string {
     return JSON.stringify(stable_storage, (_, value) => {
         if (typeof value === 'bigint') {
             return `AZLE::BigInt::${value}`;
@@ -305,9 +304,7 @@ export function stable_storage_serialize<T>(stable_storage: Stable<T>): string {
     });
 }
 
-export function stable_storage_deserialize<T>(
-    stable_storage: string
-): Stable<T> {
+export function stable_storage_deserialize<T>(stable_storage: string): T {
     return JSON.parse(stable_storage, (_, value) => {
         if (typeof value === 'string') {
             if (value.startsWith('AZLE::BigInt::')) {
