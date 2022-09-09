@@ -1,4 +1,4 @@
-service : {
+service : () -> {
   arg_data_raw : (vec nat8, int8, bool, text) -> (vec nat8) query;
   arg_data_raw_size : (vec nat8, int8, bool, text) -> (nat32) query;
   caller : () -> (principal) query;
@@ -9,6 +9,7 @@ service : {
   id : () -> (principal) query;
   performance_counter : () -> (nat64) query;
   print : (text) -> (bool) query;
+  reject : (text) -> (empty) query;
   set_certified_data : (vec nat8) -> ();
   time : () -> (nat64) query;
   trap : (text) -> (bool) query;
