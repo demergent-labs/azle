@@ -4,7 +4,7 @@
 use quote::quote;
 use std::{collections::HashSet, path::Path};
 use swc_common::{sync::Lrc, SourceMap};
-use swc_ecma_ast::{Program, TsTypeAliasDecl};
+use swc_ecma_ast::{FnDecl, Program, TsTypeAliasDecl};
 use swc_ecma_parser::{
     lexer::Lexer,
     Parser,
@@ -38,6 +38,7 @@ use crate::{
         },
         funcs,
         ic_object::functions::generate_ic_object_functions,
+        stacktrace,
     },
     utils::{
         dependencies,
@@ -53,6 +54,7 @@ pub mod generators {
     pub mod cross_canister_call_functions;
     pub mod funcs;
     pub mod ic_object;
+    pub mod stacktrace;
 }
 pub mod utils {
     pub mod dependencies;
@@ -229,9 +231,12 @@ pub fn azle_generate(
     let azle_into_js_value = generate_azle_into_js_value();
     let azle_try_from_js_value = generate_azle_try_from_js_value();
 
-    let ic_object_functions = generate_ic_object_functions();
+    let query_and_update_func_decls: Vec<FnDecl> =
+        vec![ast_fnc_decls_query, ast_fnc_decls_update].concat();
+    let ic_object_functions = generate_ic_object_functions(&query_and_update_func_decls);
 
     let async_result_handler = generate_async_result_handler();
+    let get_top_level_call_frame_fn = stacktrace::generate_get_top_level_call_frame_fn();
 
     let cross_canister_call_functions = generate_cross_canister_call_functions(&programs);
 
@@ -286,6 +291,7 @@ pub fn azle_generate(
         #cross_canister_call_functions
 
         #async_result_handler
+        #get_top_level_call_frame_fn
 
         #(#inline_records_function_streams)*
         #(#records_token_streams)*
