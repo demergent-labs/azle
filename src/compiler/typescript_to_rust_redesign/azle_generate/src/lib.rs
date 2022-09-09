@@ -30,7 +30,7 @@ use crate::generators::{
         generate_query_function_infos, generate_record_token_streams,
         generate_update_function_infos, generate_variant_token_streams,
         get_ast_record_type_alias_decls, get_ast_type_alias_decls_from_programs,
-        get_ast_variant_type_alias_decls, get_query_fn_decls, get_update_fn_decls,
+        get_ast_variant_type_alias_decls,
         system::{
             heartbeat::generate_canister_method_system_heartbeat,
             init::generate_canister_method_system_init,
@@ -112,8 +112,10 @@ pub fn azle_generate(
     let func_structs_and_impls = funcs::generate_func_structs_and_impls(ast_func_type_alias_decls);
 
     // Separate function decls into queries and updates
-    let ast_fnc_decls_query = get_query_fn_decls(&ast_fnc_decls);
-    let ast_fnc_decls_update = get_update_fn_decls(&ast_fnc_decls);
+    let ast_fnc_decls_query =
+        fn_decls::get_canister_method_type_fn_decls(&programs, &CanisterMethodType::Query);
+    let ast_fnc_decls_update =
+        fn_decls::get_canister_method_type_fn_decls(&programs, &CanisterMethodType::Update);
 
     // Determine which type aliases must be present for the functions to work and save them for later parsing
     let query_dependencies = dependencies::get_dependent_types_from_fn_decls(

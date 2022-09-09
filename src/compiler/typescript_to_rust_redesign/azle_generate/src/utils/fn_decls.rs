@@ -50,7 +50,7 @@ pub fn get_param_name_idents(fn_decl: &FnDecl) -> Vec<Ident> {
 }
 
 
-pub fn get_ast_fn_decls_from_programs(programs: &Vec<Program>) -> Vec<FnDecl> {
+fn get_ast_fn_decls_from_programs(programs: &Vec<Program>) -> Vec<FnDecl> {
     programs.iter().fold(vec![], |acc, program| {
         let ast_fn_decls = get_ast_fn_decls_from_program(program);
 
