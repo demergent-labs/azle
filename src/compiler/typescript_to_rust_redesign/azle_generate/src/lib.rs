@@ -29,9 +29,8 @@ use crate::generators::{
         async_result_handler::generate_async_result_handler,
         generate_query_function_infos, generate_record_token_streams,
         generate_update_function_infos, generate_variant_token_streams,
-        get_ast_fn_decls_from_programs, get_ast_record_type_alias_decls,
-        get_ast_type_alias_decls_from_programs, get_ast_variant_type_alias_decls,
-        get_query_fn_decls, get_update_fn_decls,
+        get_ast_record_type_alias_decls, get_ast_type_alias_decls_from_programs,
+        get_ast_variant_type_alias_decls, get_query_fn_decls, get_update_fn_decls,
         system::{
             heartbeat::generate_canister_method_system_heartbeat,
             init::generate_canister_method_system_init,
@@ -42,7 +41,7 @@ use crate::generators::{
         FunctionInformation, StructInfo,
     },
 };
-use crate::utils::dependencies;
+use crate::utils::{dependencies, fn_decls::get_ast_fn_decls_from_programs};
 
 mod ast_utilities;
 pub mod generators {
