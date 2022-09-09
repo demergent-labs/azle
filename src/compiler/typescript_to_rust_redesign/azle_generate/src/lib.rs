@@ -117,7 +117,7 @@ pub fn azle_generate(
         &ast_type_alias_decls,
     );
     let update_dependencies = dependencies::get_dependent_types_from_fn_decls(
-        &ast_fnc_decls_query,
+        &ast_fnc_decls_update,
         &ast_type_alias_decls,
     );
     let dependencies: HashSet<String> = query_dependencies
