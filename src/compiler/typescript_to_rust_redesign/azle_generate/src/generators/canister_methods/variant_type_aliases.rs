@@ -26,8 +26,7 @@ pub fn generate_variant_token_streams(
             let type_alias_decl = type_alias_lookup.get(dependant_type);
             let dependency_map = match type_alias_decl {
                 Some(type_alias_decl) => {
-                    let dependency_map =
-                        generate_dependencies_map_for(type_alias_decl, &type_alias_lookup);
+                    let dependency_map = generate_dependencies_map_for(type_alias_decl);
                     dependency_map
                 }
                 None => {
@@ -46,7 +45,6 @@ pub fn generate_variant_token_streams(
 
 fn generate_dependencies_map_for(
     type_alias_decl: &TsTypeAliasDecl,
-    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
 ) -> HashMap<String, (TokenStream, Vec<StructInfo>)> {
     // TODO I feel like this might run into some namespace issues
     let ts_type_name = type_alias_decl.id.sym.chars().as_str().to_string();
@@ -62,28 +60,6 @@ fn generate_dependencies_map_for(
     let mut result_dependency_map = HashMap::new();
 
     let aliased_rust_type = ts_type_literal_to_rust_enum(&ts_type_alias_ident, inner_type_lit);
-
-    // Add the Token Streams for the dependencies of the type alias specified in the arguments
-    let member_dependencies = aliased_rust_type.type_alias_dependencies;
-    let member_dependency_map =
-        member_dependencies
-            .iter()
-            .fold(
-                HashMap::new(),
-                |mut acc, member_dependency| match type_alias_lookup.get(member_dependency) {
-                    Some(decl) => {
-                        acc.extend(generate_dependencies_map_for(decl, type_alias_lookup));
-                        acc
-                    }
-                    None => HashMap::new(),
-                    // TODO I think this can stay like this since we should be confident we will find in in another pass?
-                    // todo!(
-                    //     "Handle if we can't find the type [{}] in the dictionary",
-                    //     member_dependency
-                    // ),
-                },
-            );
-    result_dependency_map.extend(member_dependency_map);
 
     // Add the Token stream for the TsTypeAliasDecl specified in the arguments
     let enum_name = aliased_rust_type.identifier.to_string();

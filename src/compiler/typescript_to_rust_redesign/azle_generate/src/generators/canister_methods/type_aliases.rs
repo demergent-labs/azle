@@ -25,8 +25,7 @@ pub fn generate_type_alias_token_streams(
             let type_alias_decl = type_alias_lookup.get(dependant_type);
             let dependency_map = match type_alias_decl {
                 Some(type_alias_decl) => {
-                    let dependency_map =
-                        generate_dependencies_map_for(type_alias_decl, &type_alias_lookup);
+                    let dependency_map = generate_dependencies_map_for(type_alias_decl);
                     dependency_map
                 }
                 None => {
@@ -75,7 +74,6 @@ pub fn generate_type_alias_token_streams(
  */
 fn generate_dependencies_map_for(
     type_alias_decl: &TsTypeAliasDecl,
-    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
 ) -> HashMap<String, (TokenStream, Vec<StructInfo>)> {
     // TODO I feel like this might run into some namespace issues
     let ts_type_name = type_alias_decl.id.sym.chars().as_str().to_string();
@@ -86,25 +84,6 @@ fn generate_dependencies_map_for(
     let mut result_dependency_map = HashMap::new();
 
     let aliased_rust_type = ts_type_to_rust_type(&ts_type, Some(&ts_type_alias_ident));
-
-    // Add the Token Streams for the dependencies of the type alias specified in the arguments
-    let sub_dependencies = aliased_rust_type.get_type_alias_dependency();
-    let sub_dependency_map =
-        sub_dependencies
-            .iter()
-            .fold(HashMap::new(), |mut acc, sub_dependency| {
-                let sub_dependency_decl = type_alias_lookup.get(sub_dependency);
-                match sub_dependency_decl {
-                    Some(decl) => {
-                        let aliased_type_sub_dependency_map =
-                            generate_dependencies_map_for(decl, type_alias_lookup);
-                        acc.extend(aliased_type_sub_dependency_map);
-                        acc
-                    }
-                    None => todo!("Handle if we can't find the type in the dictionary"),
-                }
-            });
-    result_dependency_map.extend(sub_dependency_map);
 
     // Add the Token stream for the TsTypeAliasDecl specified in the arguments
     let aliased_type_ident = aliased_rust_type.get_type_ident();
