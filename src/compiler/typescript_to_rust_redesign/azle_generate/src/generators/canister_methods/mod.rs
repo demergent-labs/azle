@@ -16,9 +16,9 @@ pub mod system {
     pub mod pre_upgrade;
 }
 
-pub use query::{generate_query_function_infos, get_query_fn_decls};
+pub use query::generate_query_function_infos;
 
-pub use update::{generate_update_function_infos, get_update_fn_decls};
+pub use update::generate_update_function_infos;
 
 pub use functions::{
     generate_function_info, get_param_ts_types, get_return_ts_type, FunctionInformation,
@@ -34,7 +34,7 @@ pub use rust_types::{ArrayTypeInfo, KeywordInfo, RustType, StructInfo, TypeRefIn
 
 pub use types::ts_type_to_rust_type;
 
-use swc_ecma_ast::{ExportDecl, FnDecl, Module, ModuleDecl, Program, Stmt, TsTypeAliasDecl};
+use swc_ecma_ast::{ExportDecl, Module, Program, Stmt, TsTypeAliasDecl};
 
 pub fn get_ast_other_type_alias_decls(
     type_alias_decls: &Vec<TsTypeAliasDecl>,
