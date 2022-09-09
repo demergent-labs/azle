@@ -61,16 +61,16 @@ fn is_canister_method_type_fn_decl(
 
             if type_ref.type_name.is_ident() {
                 let ident = type_ref.type_name.as_ident().unwrap();
+                let method_type = ident.sym.chars().as_str();
 
-                // TODO probably use ident.sym to get the real name without the #0
                 match canister_method_type {
-                    CanisterMethodType::Heartbeat => ident.to_string() == "Heartbeat#0",
-                    CanisterMethodType::Init => ident.to_string() == "Init#0",
-                    CanisterMethodType::InspectMessage => ident.to_string() == "InspectMessage#0",
-                    CanisterMethodType::PostUpgrade => ident.to_string() == "PostUpgrade#0",
-                    CanisterMethodType::PreUpgrade => ident.to_string() == "PreUpgrade#0",
-                    CanisterMethodType::Query => ident.to_string() == "Query#0",
-                    CanisterMethodType::Update => ident.to_string() == "Update#0",
+                    CanisterMethodType::Heartbeat => method_type == "Heartbeat",
+                    CanisterMethodType::Init => method_type == "Init",
+                    CanisterMethodType::InspectMessage => method_type == "InspectMessage",
+                    CanisterMethodType::PostUpgrade => method_type == "PostUpgrade",
+                    CanisterMethodType::PreUpgrade => method_type == "PreUpgrade",
+                    CanisterMethodType::Query => method_type == "Query",
+                    CanisterMethodType::Update => method_type == "Update",
                 }
             } else {
                 false
