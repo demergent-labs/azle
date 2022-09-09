@@ -12,7 +12,7 @@ use super::{ts_type_to_rust_type, StructInfo};
  * result map
  */
 pub fn generate_type_alias_token_streams(
-    type_alias_dependant_types: &HashSet<&String>,
+    type_alias_dependant_types: &HashSet<String>,
     ast_type_alias_decls: &Vec<TsTypeAliasDecl>,
 ) -> HashMap<String, (TokenStream, Vec<StructInfo>)> {
     let type_alias_lookup = generate_hash_map(ast_type_alias_decls);
@@ -22,7 +22,7 @@ pub fn generate_type_alias_token_streams(
     type_alias_dependant_types.iter().fold(
         HashMap::new(),
         |mut all_type_alias_dependencies, dependant_type| {
-            let type_alias_decl = type_alias_lookup.get(dependant_type.clone());
+            let type_alias_decl = type_alias_lookup.get(dependant_type);
             let dependency_map = match type_alias_decl {
                 Some(type_alias_decl) => {
                     let dependency_map =
