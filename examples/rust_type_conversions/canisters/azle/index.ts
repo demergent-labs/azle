@@ -21,13 +21,13 @@ import {
     Variant
 } from 'azle';
 
-// type InlineExample = {
-//     // first_field: { one: boolean; two: string };
-//     second_field: { one: boolean; two: { thing: string } };
-//     // third_field: { one: boolean; two: string };
-// };
+type InlineExample = {
+    first_field: { one: boolean; two: string };
+    second_field: { one: boolean; two: { thing: string } };
+    third_field: { one: boolean; two: string };
+};
 
-// export function inline_query(param: InlineExample): Query<void> {}
+export function inline_query(param: InlineExample): Query<void> {}
 
 export function simple_query(
     number: Opt<nat64>,
@@ -135,32 +135,47 @@ type Yes = Variant<{
     Three: null;
 }>;
 
+// type SelfReferencingVariant = Variant<{
+//     One: SelfReferencingVariant;
+//     Two: null;
+// }>;
+
+// type SelfReferencingRecord = {
+//     one: SelfReferencingRecord;
+//     two: string;
+// };
+
+// export function self_reference(
+//     variant: SelfReferencingVariant,
+//     record: SelfReferencingRecord
+// ): Query<void> {}
+
 type Reaction = Variant<{
     Fire: null;
     Great: null;
-    // Good?: Good;
+    Good: Good;
     Fun: Fun;
 }>;
 
-// type Good = {
-//     id: string;
-// };
+type Good = {
+    id: string;
+};
 
 // TODO implement default for inline types
-// export function in_line(param: { one: nat16; two: nat16 }): Query<{
-//     one: string;
-//     two: { two_a: { two_a_i: nat16 }; two_b: boolean };
-// }> {
-//     return {
-//         one: 'hello',
-//         two: {
-//             two_a: {
-//                 two_a_i: 2
-//             },
-//             two_b: false
-//         }
-//     };
-// }
+export function in_line(param: { one: nat16; two: nat16 }): Query<{
+    one: string;
+    two: { two_a: { two_a_i: nat16 }; two_b: boolean };
+}> {
+    return {
+        one: 'hello',
+        two: {
+            two_a: {
+                two_a_i: 2
+            },
+            two_b: false
+        }
+    };
+}
 
 export function not_so_simple(
     one: int8[],

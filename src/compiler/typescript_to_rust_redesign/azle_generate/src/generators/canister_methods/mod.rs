@@ -20,7 +20,9 @@ pub use query::{generate_query_function_infos, get_query_fn_decls};
 
 pub use update::{generate_update_function_infos, get_update_fn_decls};
 
-pub use functions::{generate_function_info, FunctionInformation};
+pub use functions::{
+    generate_function_info, get_param_ts_types, get_return_ts_type, FunctionInformation,
+};
 
 pub use type_aliases::{generate_hash_map, generate_type_alias_token_streams};
 

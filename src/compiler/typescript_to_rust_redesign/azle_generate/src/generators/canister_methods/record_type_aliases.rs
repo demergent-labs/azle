@@ -24,7 +24,7 @@ use super::{generate_hash_map, ts_type_to_rust_type, RustType, StructInfo};
  * result map
  */
 pub fn generate_record_token_streams(
-    type_alias_dependant_types: &HashSet<&String>,
+    type_alias_dependant_types: &HashSet<String>,
     ast_type_alias_decls: &Vec<TsTypeAliasDecl>,
 ) -> HashMap<String, (TokenStream, Vec<StructInfo>)> {
     let type_alias_lookup = generate_hash_map(ast_type_alias_decls);
@@ -34,7 +34,7 @@ pub fn generate_record_token_streams(
     type_alias_dependant_types.iter().fold(
         HashMap::new(),
         |mut all_type_alias_dependencies, dependant_type| {
-            let type_alias_decl = type_alias_lookup.get(dependant_type.clone());
+            let type_alias_decl = type_alias_lookup.get(dependant_type);
             let dependency_map = match type_alias_decl {
                 Some(type_alias_decl) => {
                     let dependency_map =
@@ -118,10 +118,11 @@ fn generate_dependencies_map_for_struct(
                         ));
                         acc
                     }
-                    None => todo!(
-                        "Handle if we can't find the type [{}] in the dictionary",
-                        member_dependency
-                    ),
+                    None => HashMap::new(),
+                    // todo!(
+                    //     "Handle if we can't find the type [{}] in the dictionary",
+                    //     member_dependency
+                    // ),
                 },
             );
     result_dependency_map.extend(member_dependency_map);
