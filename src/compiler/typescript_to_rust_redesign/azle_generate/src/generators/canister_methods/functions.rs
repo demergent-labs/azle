@@ -1,5 +1,6 @@
 use super::{rust_types::StructInfo, ts_type_to_rust_type, RustType};
 use crate::generators::canister_methods::method_body::generate_canister_method_body;
+use crate::utils;
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use swc_ecma_ast::{FnDecl, Param, TsType};
@@ -10,14 +11,24 @@ pub struct FunctionInformation {
     // The dependant types need to have the name of the type so we can find the corresponding type and create a rust type
     pub type_alias_dependant_types: Vec<String>,
     pub inline_dependant_types: Box<Vec<StructInfo>>,
+    pub manual: bool,
 }
 
 pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> FunctionInformation {
     let function_name = ast_fnc_decl.ident.sym.chars().as_str().to_string();
     let function_name_ident = format_ident!("{}", function_name);
 
+    let manual = utils::fn_decls::is_manual(ast_fnc_decl);
+
     let return_type = generate_return_type(&ast_fnc_decl);
     let return_type_token = return_type.get_type_ident();
+    let wrapped_return_type = if manual {
+        quote! {
+            ic_cdk::api::call::ManualReply<#return_type_token>
+        }
+    } else {
+        return_type_token
+    };
 
     let param_name_idents = generate_param_name_idents(&ast_fnc_decl);
     let param_types = generate_param_types(&ast_fnc_decl);
@@ -26,7 +37,7 @@ pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> FunctionInformation {
     let canister_method_body = generate_canister_method_body(&ast_fnc_decl);
 
     let function_token_stream = quote! {
-        async fn #function_name_ident(#(#params),*) -> #return_type_token {
+        async fn #function_name_ident(#(#params),*) -> #wrapped_return_type {
             #canister_method_body
         }
     };
@@ -69,6 +80,7 @@ pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> FunctionInformation {
         function: function_token_stream,
         type_alias_dependant_types,
         inline_dependant_types,
+        manual,
     }
 }
 

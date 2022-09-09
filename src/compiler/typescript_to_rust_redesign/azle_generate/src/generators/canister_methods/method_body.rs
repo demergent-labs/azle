@@ -1,10 +1,15 @@
 use quote::quote;
-use swc_ecma_ast::FnDecl;
+use swc_ecma_ast::{
+    FnDecl,
+    TsKeywordTypeKind::{TsNeverKeyword, TsNullKeyword, TsUndefinedKeyword, TsVoidKeyword},
+    TsType,
+};
 
-use crate::utils::fn_decls::{get_fn_decl_function_name, get_param_name_idents};
+use crate::utils::fn_decls::{self, get_fn_decl_function_name, get_param_name_idents};
 
 pub fn generate_canister_method_body(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
     let call_to_js_function = generate_call_to_js_function(fn_decl);
+    let return_expression = generate_return_expression(fn_decl);
 
     quote! {
         unsafe {
@@ -17,8 +22,7 @@ pub fn generate_canister_method_body(fn_decl: &FnDecl) -> proc_macro2::TokenStre
                 &_azle_boa_return_value
             ).await;
 
-            // TODO we have to figure out how to handle returning or not, probably handled when we do QueryManual and UpdateManual
-            _azle_final_return_value.azle_try_from_js_value(&mut _azle_boa_context).unwrap()
+            #return_expression
         }
     }
 }
@@ -41,5 +45,56 @@ pub fn generate_call_to_js_function(fn_decl: &FnDecl) -> proc_macro2::TokenStrea
             ],
             &mut _azle_boa_context
         ).unwrap();
+    }
+}
+
+/// Generates the return expression for a canister method body
+///
+/// # Context
+///
+/// * `_azle_final_return_value: boa_engine::JsValue` - The value to be returned
+///    unless this is a ManualReply method.
+/// * `_azle_boa_context: &mut boa_engine::Context` - The current boa context
+fn generate_return_expression(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
+    if fn_decls::is_manual(fn_decl) {
+        return quote! {
+            ic_cdk::api::call::ManualReply::empty()
+        };
+    }
+
+    let return_type = fn_decls::get_canister_method_return_type(fn_decl);
+
+    if type_is_emptyish(return_type) {
+        return quote! {
+            return;
+        };
+    }
+
+    quote! {
+        _azle_final_return_value.azle_try_from_js_value(&mut _azle_boa_context).unwrap()
+    }
+}
+
+/// Returns true if the return type is `empty`, `never`, `null`, `void`, or `undefined`.
+/// Otherwise returns false.
+fn type_is_emptyish(ts_type_option: Option<&TsType>) -> bool {
+    match ts_type_option {
+        Some(ts_type) => match ts_type {
+            TsType::TsKeywordType(keyword) => match keyword.kind {
+                TsNeverKeyword | TsNullKeyword | TsUndefinedKeyword | TsVoidKeyword => true,
+                _ => false,
+            },
+            TsType::TsTypeRef(type_ref) => {
+                let type_name = type_ref.type_name.as_ident().unwrap().sym.chars().as_str();
+
+                if type_name == "empty" {
+                    true
+                } else {
+                    false
+                }
+            }
+            _ => false,
+        },
+        None => false,
     }
 }
