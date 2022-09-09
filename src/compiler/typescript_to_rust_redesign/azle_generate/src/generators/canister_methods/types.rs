@@ -266,7 +266,7 @@ pub fn ts_type_literal_to_rust_enum(ts_type_ident: &Ident, ts_type_lit: &TsTypeL
                 None => acc,
             });
     let structure = quote!(
-        #[derive(serde::Serialize, serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
+        #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
         enum #ts_type_ident {
             #(#field_token_streams),*
         }
@@ -297,7 +297,7 @@ fn ts_type_literal_to_rust_struct(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit
                 None => acc,
             });
     let structure = quote!(
-        #[derive(serde::Serialize, serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
+        #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
         struct #ts_type_ident {
             #(#field_token_streams),*
         }

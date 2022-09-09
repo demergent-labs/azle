@@ -4,7 +4,9 @@ use std::{
     vec,
 };
 
-use swc_ecma_ast::{FnDecl, TsArrayType, TsType, TsTypeAliasDecl, TsTypeLit, TsTypeRef};
+use swc_ecma_ast::{
+    FnDecl, TsArrayType, TsFnOrConstructorType, TsType, TsTypeAliasDecl, TsTypeLit, TsTypeRef,
+};
 
 use crate::generators::canister_methods::{get_param_ts_types, get_return_ts_type};
 
@@ -34,7 +36,7 @@ fn get_dependent_types_from_fn_decl(
     let result = ts_types.iter().fold(vec![], |acc, ts_type| {
         vec![
             acc,
-            get_dependent_types_for_ts_type(ts_type, type_alias_lookup.clone()),
+            get_dependent_types_for_ts_type(ts_type, &type_alias_lookup),
         ]
         .concat()
     });
@@ -43,7 +45,7 @@ fn get_dependent_types_from_fn_decl(
 
 fn get_dependent_types_for_ts_type(
     ts_type: &TsType,
-    type_alias_lookup: HashMap<String, TsTypeAliasDecl>,
+    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
 ) -> Vec<String> {
     match ts_type {
         swc_ecma_ast::TsType::TsKeywordType(_) => vec![],
@@ -56,7 +58,12 @@ fn get_dependent_types_for_ts_type(
         swc_ecma_ast::TsType::TsArrayType(ts_array_type) => {
             get_dependent_types_from_array_type(ts_array_type, type_alias_lookup)
         }
-        swc_ecma_ast::TsType::TsFnOrConstructorType(_) => todo!(),
+        swc_ecma_ast::TsType::TsFnOrConstructorType(ts_fn_or_constructor_type) => {
+            get_dependent_types_from_ts_fn_or_constructor_type(
+                ts_fn_or_constructor_type,
+                type_alias_lookup,
+            )
+        }
         swc_ecma_ast::TsType::TsThisType(_) => todo!(),
         swc_ecma_ast::TsType::TsTypeQuery(_) => todo!(),
         swc_ecma_ast::TsType::TsTupleType(_) => todo!(),
@@ -87,16 +94,97 @@ fn generate_hash_map(
         })
 }
 
+fn get_dependent_types_from_ts_fn_or_constructor_type(
+    ts_fn_or_constructor_type: &TsFnOrConstructorType,
+    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+) -> Vec<String> {
+    match ts_fn_or_constructor_type {
+        TsFnOrConstructorType::TsFnType(ts_fn_type) => {
+            let param_types = get_param_types(ts_fn_type, type_alias_lookup);
+            let return_type = get_return_type(ts_fn_type, type_alias_lookup);
+            vec![return_type, param_types].concat()
+        }
+        TsFnOrConstructorType::TsConstructorType(_) => todo!(),
+    }
+}
+
+fn get_param_types(
+    function_type: &swc_ecma_ast::TsFnType,
+    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+) -> Vec<String> {
+    function_type
+        .params
+        .iter()
+        .fold(vec![], |acc, param| match param {
+            swc_ecma_ast::TsFnParam::Ident(identifier) => match &identifier.type_ann {
+                Some(param_type) => {
+                    let ts_type = &*param_type.type_ann;
+                    vec![
+                        acc,
+                        get_dependent_types_for_ts_type(ts_type, type_alias_lookup),
+                    ]
+                    .concat()
+                }
+                None => panic!("Function parameter must have a return type"),
+            },
+            swc_ecma_ast::TsFnParam::Array(_) => todo!(),
+            swc_ecma_ast::TsFnParam::Rest(_) => todo!(),
+            swc_ecma_ast::TsFnParam::Object(_) => todo!(),
+        })
+}
+
+fn get_return_type(
+    function_type: &swc_ecma_ast::TsFnType,
+    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+) -> Vec<String> {
+    let thing = &*function_type.type_ann.type_ann;
+    match thing {
+        TsType::TsTypeRef(ts_type_ref) => {
+            let thing = &ts_type_ref.type_name;
+            match thing {
+                swc_ecma_ast::TsEntityName::TsQualifiedName(_) => todo!(),
+                swc_ecma_ast::TsEntityName::Ident(identifier) => {
+                    let mode = identifier.sym.chars().as_str();
+                    if mode != "Query" && mode != "Update" && mode != "Oneway" {
+                        panic!("Func return type must be Query, Update, or Oneway")
+                    }
+
+                    if mode == "Oneway" {
+                        vec![]
+                    } else {
+                        match &ts_type_ref.type_params {
+                            Some(type_param_inst) => {
+                                if type_param_inst.params.len() != 1 {
+                                    panic!("Func must specify exactly one return type")
+                                }
+                                match type_param_inst.params.get(0) {
+                                    Some(param) => {
+                                        let ts_type = &**param;
+                                        get_dependent_types_for_ts_type(&ts_type, type_alias_lookup)
+                                    }
+                                    None => panic!("Func must specify exactly one return type"),
+                                }
+                            }
+                            None => panic!("Func must specify a return type"),
+                        }
+                    }
+                }
+            }
+        }
+        _ => todo!("Handle if it's not a query or update or oneway"),
+    }
+}
+
 fn get_dependent_types_from_type_alias_decl(
     type_alias_decl: &TsTypeAliasDecl,
-    type_alias_lookup: HashMap<String, TsTypeAliasDecl>,
+    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
 ) -> Vec<String> {
     get_dependent_types_for_ts_type(&*type_alias_decl.type_ann, type_alias_lookup)
 }
 
 fn get_dependent_types_from_type_ref(
     ts_type_ref: &TsTypeRef,
-    type_alias_lookup: HashMap<String, TsTypeAliasDecl>,
+    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
 ) -> Vec<String> {
     let type_name = ts_type_ref
         .type_name
@@ -138,7 +226,7 @@ fn get_dependent_types_from_type_ref(
 
 fn get_dependent_types_from_enclosing_type(
     ts_type_ref: &TsTypeRef,
-    type_alias_lookup: HashMap<String, TsTypeAliasDecl>,
+    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
 ) -> Vec<String> {
     let type_params = &ts_type_ref.type_params;
     match type_params {
@@ -153,7 +241,7 @@ fn get_dependent_types_from_enclosing_type(
 
 fn get_dependent_types_from_array_type(
     ts_array_type: &TsArrayType,
-    type_alias_lookup: HashMap<String, TsTypeAliasDecl>,
+    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
 ) -> Vec<String> {
     let elem_type = *ts_array_type.elem_type.clone();
     get_dependent_types_for_ts_type(&elem_type, type_alias_lookup)
@@ -161,7 +249,7 @@ fn get_dependent_types_from_array_type(
 
 fn get_dependent_types_from_ts_type_lit(
     ts_type_lit: &TsTypeLit,
-    type_alias_lookup: HashMap<String, TsTypeAliasDecl>,
+    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
 ) -> Vec<String> {
     ts_type_lit.members.iter().fold(vec![], |acc, member| {
         match member.as_ts_property_signature() {
@@ -170,7 +258,7 @@ fn get_dependent_types_from_ts_type_lit(
                 let ts_type = *type_ann.type_ann.clone();
                 vec![
                     acc,
-                    get_dependent_types_for_ts_type(&ts_type, type_alias_lookup.clone()),
+                    get_dependent_types_for_ts_type(&ts_type, type_alias_lookup),
                 ]
                 .concat()
             }

@@ -109,7 +109,7 @@ fn get_export_decls(module: &Module) -> Vec<ExportDecl> {
     export_decls
 }
 
-fn get_type_alias_decls(module: &Module) -> Vec<TsTypeAliasDecl> {
+pub fn get_type_alias_decls(module: &Module) -> Vec<TsTypeAliasDecl> {
     let module_stmts: Vec<Stmt> = module
         .body
         .iter()
@@ -143,7 +143,7 @@ fn get_type_alias_decls(module: &Module) -> Vec<TsTypeAliasDecl> {
     vec![type_alias_decls, export_type_alias_decls].concat()
 }
 
-fn get_ast_type_alias_decls_by_type_ref_name(
+pub fn get_ast_type_alias_decls_by_type_ref_name(
     type_alias_decls: &Vec<TsTypeAliasDecl>,
     type_ref_name: &str,
 ) -> Vec<TsTypeAliasDecl> {
