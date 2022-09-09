@@ -1,5 +1,5 @@
 use quote::format_ident;
-use swc_ecma_ast::{ExportDecl, FnDecl, Module, ModuleDecl, Program};
+use swc_ecma_ast::{ExportDecl, FnDecl, Module, ModuleDecl, Program, TsType, TsType::TsTypeRef};
 use syn::Ident;
 
 pub enum CanisterMethodType {
@@ -10,6 +10,16 @@ pub enum CanisterMethodType {
     PreUpgrade,
     Query,
     Update,
+}
+
+pub fn get_canister_method_return_type(fn_decl: &FnDecl) -> Option<&TsType> {
+    let ts_type = &*fn_decl.function.return_type.as_ref().unwrap().type_ann;
+    let type_ref = ts_type.as_ts_type_ref().unwrap();
+    let type_param_instantiation_option = &type_ref.type_params.as_ref();
+    match type_param_instantiation_option {
+        Some(type_param_inst) => Some(&*type_param_inst.params[0]),
+        None => None,
+    }
 }
 
 pub fn get_canister_method_type_fn_decls(
@@ -49,6 +59,22 @@ pub fn get_param_name_idents(fn_decl: &FnDecl) -> Vec<Ident> {
         .collect()
 }
 
+pub fn is_manual(fn_decl: &FnDecl) -> bool {
+    let type_ann = fn_decl.function.return_type.as_ref().unwrap();
+    match &*type_ann.type_ann {
+        TsTypeRef(type_ref) => match &type_ref.type_name {
+            swc_ecma_ast::TsEntityName::Ident(ident) => {
+                let mode = ident.sym.chars().as_str();
+
+                mode == "QueryManual" || mode == "UpdateManual"
+            }
+            swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
+                panic!("Qualified Names are not currently supported")
+            }
+        },
+        _ => panic!("Canister methods must have a return type of Query<T>, Update<T>, or Oneway"),
+    }
+}
 
 fn get_ast_fn_decls_from_programs(programs: &Vec<Program>) -> Vec<FnDecl> {
     programs.iter().fold(vec![], |acc, program| {
