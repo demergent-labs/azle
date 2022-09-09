@@ -18,8 +18,14 @@ fn generate_query_function_info(ast_fnc_decl_query: &FnDecl) -> FunctionInformat
     let function_info = generate_function_info(ast_fnc_decl_query);
     let function_signature_stream = function_info.function;
 
+    let manual_reply_arg = if function_info.manual {
+        quote! {(manual_reply = true)}
+    } else {
+        quote! {}
+    };
+
     let token_stream = quote! {
-        #[ic_cdk_macros::query]
+        #[ic_cdk_macros::query#manual_reply_arg]
         #[candid::candid_method(query)]
         #function_signature_stream
     };
