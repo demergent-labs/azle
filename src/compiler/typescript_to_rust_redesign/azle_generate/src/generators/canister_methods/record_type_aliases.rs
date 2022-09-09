@@ -37,8 +37,7 @@ pub fn generate_record_token_streams(
             let type_alias_decl = type_alias_lookup.get(dependant_type);
             let dependency_map = match type_alias_decl {
                 Some(type_alias_decl) => {
-                    let dependency_map =
-                        generate_dependencies_map_for_struct(type_alias_decl, &type_alias_lookup);
+                    let dependency_map = generate_dependencies_map_for_struct(type_alias_decl);
                     dependency_map
                 }
                 None => {
@@ -87,7 +86,6 @@ pub fn generate_record_token_streams(
  */
 fn generate_dependencies_map_for_struct(
     type_alias_decl: &TsTypeAliasDecl,
-    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
 ) -> HashMap<String, (TokenStream, Vec<StructInfo>)> {
     // TODO I feel like this might run into some namespace issues
     let ts_type_name = type_alias_decl.id.sym.chars().as_str().to_string();
@@ -98,34 +96,6 @@ fn generate_dependencies_map_for_struct(
     let mut result_dependency_map = HashMap::new();
 
     let aliased_rust_type = ts_type_to_rust_type(&ts_type, Some(&ts_type_alias_ident));
-
-    // Add the Token Streams for the dependencies of the type alias specified in the arguments
-    let member_dependencies = aliased_rust_type.get_type_alias_dependency();
-    let member_dependency_map =
-        member_dependencies
-            .iter()
-            .fold(
-                HashMap::new(),
-                |mut acc, member_dependency| match type_alias_lookup.get(member_dependency) {
-                    Some(decl) => {
-                        // TODO the thing I am afraid is happening is that we are going to not recurse properly if we have everything seperated out.
-                        // Right now we do just the records and just the variants and just the funcs but the truth is that
-                        // those things are composed of each other and it's not really practical to separte them I think
-                        // But what we can do is have everything separted into their own function any ways and then call to them when we are recuring
-                        acc.extend(generate_dependencies_map_for_struct(
-                            decl,
-                            type_alias_lookup,
-                        ));
-                        acc
-                    }
-                    None => HashMap::new(),
-                    // todo!(
-                    //     "Handle if we can't find the type [{}] in the dictionary",
-                    //     member_dependency
-                    // ),
-                },
-            );
-    result_dependency_map.extend(member_dependency_map);
 
     match aliased_rust_type.clone() {
         RustType::Struct(struct_info) => {
