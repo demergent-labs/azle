@@ -18,8 +18,14 @@ fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl) -> Functi
     let function_info = generate_function_info(ast_fnc_decl_update);
     let function_token_stream = function_info.function;
 
+    let manual_reply_arg = if function_info.manual {
+        quote! {(manual_reply = true)}
+    } else {
+        quote! {}
+    };
+
     let token_stream = quote! {
-        #[ic_cdk_macros::update]
+        #[ic_cdk_macros::update#manual_reply_arg]
         #[candid::candid_method(update)]
         #function_token_stream
     };
