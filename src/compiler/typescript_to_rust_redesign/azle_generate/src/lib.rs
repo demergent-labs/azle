@@ -15,33 +15,35 @@ use swc_ecma_parser::{
     TsConfig,
 };
 
-use crate::generators::canister_methods::{
-    generate_type_alias_token_streams, get_ast_canister_type_alias_decls,
-    get_ast_other_type_alias_decls,
-};
 use crate::generators::cross_canister_call_functions::generate_cross_canister_call_functions;
-use crate::generators::funcs;
-use crate::generators::ic_object::functions::generate_ic_object_functions;
-use crate::generators::{
-    azle_into_js_value::generate_azle_into_js_value,
-    azle_try_from_js_value::generate_azle_try_from_js_value,
-    canister_methods::{
-        async_result_handler::generate_async_result_handler,
-        generate_query_function_infos, generate_record_token_streams,
-        generate_update_function_infos, generate_variant_token_streams,
-        get_ast_record_type_alias_decls, get_ast_type_alias_decls_from_programs,
-        get_ast_variant_type_alias_decls,
-        system::{
-            heartbeat::generate_canister_method_system_heartbeat,
-            init::generate_canister_method_system_init,
-            inspect_message::generate_canister_method_system_inspect_message,
-            post_upgrade::generate_canister_method_system_post_upgrade,
-            pre_upgrade::generate_canister_method_system_pre_upgrade,
+use crate::{
+    generators::{
+        azle_into_js_value::generate_azle_into_js_value,
+        azle_try_from_js_value::generate_azle_try_from_js_value,
+        canister_methods::{
+            async_result_handler::generate_async_result_handler,
+            generate_query_function_infos, generate_record_token_streams,
+            generate_type_alias_token_streams, generate_update_function_infos,
+            generate_variant_token_streams, get_ast_canister_type_alias_decls,
+            get_ast_other_type_alias_decls, get_ast_record_type_alias_decls,
+            get_ast_type_alias_decls_from_programs, get_ast_variant_type_alias_decls,
+            system::{
+                heartbeat::generate_canister_method_system_heartbeat,
+                init::generate_canister_method_system_init,
+                inspect_message::generate_canister_method_system_inspect_message,
+                post_upgrade::generate_canister_method_system_post_upgrade,
+                pre_upgrade::generate_canister_method_system_pre_upgrade,
+            },
+            FunctionInformation, StructInfo,
         },
-        FunctionInformation, StructInfo,
+        funcs,
+        ic_object::functions::generate_ic_object_functions,
+    },
+    utils::{
+        dependencies,
+        fn_decls::{self, CanisterMethodType},
     },
 };
-use crate::utils::{dependencies, fn_decls::get_ast_fn_decls_from_programs};
 
 mod ast_utilities;
 pub mod generators {
@@ -106,7 +108,6 @@ pub fn azle_generate(
     let ast_other_type_alias_decls = get_ast_other_type_alias_decls(&ast_type_alias_decls);
     let ast_canister_type_alias_decls = get_ast_canister_type_alias_decls(&ast_type_alias_decls);
 
-    let ast_fnc_decls = get_ast_fn_decls_from_programs(&programs);
     let ast_func_type_alias_decls =
         ast_utilities::get_ast_func_type_alias_decls_from_programs(&programs);
     let func_structs_and_impls = funcs::generate_func_structs_and_impls(ast_func_type_alias_decls);
