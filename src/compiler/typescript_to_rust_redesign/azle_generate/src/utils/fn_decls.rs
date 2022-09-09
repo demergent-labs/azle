@@ -69,8 +69,12 @@ fn is_canister_method_type_fn_decl(
                     CanisterMethodType::InspectMessage => method_type == "InspectMessage",
                     CanisterMethodType::PostUpgrade => method_type == "PostUpgrade",
                     CanisterMethodType::PreUpgrade => method_type == "PreUpgrade",
-                    CanisterMethodType::Query => method_type == "Query",
-                    CanisterMethodType::Update => method_type == "Update",
+                    CanisterMethodType::Query => {
+                        method_type == "Query" || method_type == "QueryManual"
+                    }
+                    CanisterMethodType::Update => {
+                        method_type == "Update" || method_type == "UpdateManual"
+                    }
                 }
             } else {
                 false
