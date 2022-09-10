@@ -16,7 +16,8 @@ use swc_ecma_parser::{
 };
 
 use crate::generators::canister_methods::{
-    generate_type_alias_token_streams, get_ast_other_type_alias_decls,
+    generate_type_alias_token_streams, get_ast_canister_type_alias_decls,
+    get_ast_other_type_alias_decls,
 };
 use crate::generators::cross_canister_call_functions::generate_cross_canister_call_functions;
 use crate::generators::funcs;
@@ -104,6 +105,7 @@ pub fn azle_generate(
     let ast_record_type_alias_decls = get_ast_record_type_alias_decls(&ast_type_alias_decls);
     let ast_variant_type_alias_decls = get_ast_variant_type_alias_decls(&ast_type_alias_decls);
     let ast_other_type_alias_decls = get_ast_other_type_alias_decls(&ast_type_alias_decls);
+    let ast_canister_type_alias_decls = get_ast_canister_type_alias_decls(&ast_type_alias_decls);
 
     let ast_fnc_decls = get_ast_fn_decls_from_programs(&programs);
     let ast_func_type_alias_decls =
@@ -123,8 +125,16 @@ pub fn azle_generate(
         &ast_fnc_decls_update,
         &ast_type_alias_decls,
     );
+    let canister_dependencies = dependencies::get_dependent_types_from_canister_decls(
+        &ast_canister_type_alias_decls,
+        &ast_type_alias_decls,
+    );
     let dependencies: HashSet<String> = query_dependencies
         .union(&update_dependencies)
+        .cloned()
+        .collect();
+    let dependencies: HashSet<String> = dependencies
+        .union(&canister_dependencies)
         .cloned()
         .collect();
 
