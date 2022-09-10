@@ -5,7 +5,8 @@ use std::{
 };
 
 use swc_ecma_ast::{
-    FnDecl, TsArrayType, TsFnOrConstructorType, TsType, TsTypeAliasDecl, TsTypeLit, TsTypeRef,
+    FnDecl, TsArrayType, TsFnOrConstructorType, TsMethodSignature, TsType, TsTypeAliasDecl,
+    TsTypeLit, TsTypeRef,
 };
 
 use crate::generators::canister_methods::{get_param_ts_types, get_return_ts_type};
@@ -26,6 +27,23 @@ pub fn get_dependent_types_from_fn_decls(
     })
 }
 
+pub fn get_dependent_types_from_canister_decls(
+    canister_decls: &Vec<TsTypeAliasDecl>,
+    possible_dependencies: &Vec<TsTypeAliasDecl>,
+) -> HashSet<String> {
+    canister_decls
+        .iter()
+        .fold(HashSet::new(), |acc, canister_decl| {
+            acc.union(&get_dependent_types_from_canister_decl(
+                canister_decl,
+                possible_dependencies,
+                &acc,
+            ))
+            .cloned()
+            .collect()
+        })
+}
+
 fn get_dependent_types_from_fn_decl(
     fn_decl: &FnDecl,
     possible_dependencies: &Vec<TsTypeAliasDecl>,
@@ -43,6 +61,86 @@ fn get_dependent_types_from_fn_decl(
                 .cloned(),
         );
         acc.union(&result).cloned().collect()
+    })
+}
+
+fn get_dependent_types_from_canister_decl(
+    canister_decl: &TsTypeAliasDecl,
+    possible_dependencies: &Vec<TsTypeAliasDecl>,
+    found_types: &HashSet<String>,
+) -> HashSet<String> {
+    let type_alias_lookup = generate_hash_map(possible_dependencies);
+
+    // Verify that it is a canister
+    let is_canister = canister_decl.type_ann.is_ts_type_ref()
+        && canister_decl
+            .type_ann
+            .as_ts_type_ref()
+            .unwrap()
+            .type_name
+            .as_ident()
+            .unwrap()
+            .sym
+            .chars()
+            .as_str()
+            == "Canister";
+    if !is_canister {
+        panic!("Expecting Canister")
+    }
+    // Get the tstypeliteral out of it
+    let ts_type_lit = &*canister_decl
+        .type_ann
+        .as_ts_type_ref()
+        .unwrap()
+        .type_params
+        .as_ref()
+        .unwrap()
+        .params[0];
+    let ts_type_lit = ts_type_lit.as_ts_type_lit().unwrap();
+
+    // Look at the members
+    // Make sure that all of the members are tsMethodSignators and not tsPropertySignatures
+    let ts_types = ts_type_lit
+        .members
+        .iter()
+        .fold(vec![], |acc, member| match member {
+            swc_ecma_ast::TsTypeElement::TsMethodSignature(method_sig) => {
+                let return_types = get_return_ts_type_from_method(method_sig);
+                let param_types = get_param_ts_types_from_method(method_sig);
+                vec![acc, vec![return_types], param_types].concat()
+            }
+            _ => todo!("There should only be Method Signatures on a Canister type?"),
+        });
+
+    // Get the goods out of a method signature
+    ts_types.iter().fold(found_types.clone(), |acc, ts_type| {
+        let result = HashSet::from_iter(
+            get_dependent_types_for_ts_type(ts_type, &type_alias_lookup, &acc)
+                .iter()
+                .cloned(),
+        );
+        acc.union(&result).cloned().collect()
+    })
+}
+
+fn get_return_ts_type_from_method(method_sig: &TsMethodSignature) -> TsType {
+    let ts_type_ann = method_sig.type_ann.as_ref();
+    let return_type_ann = ts_type_ann.clone().unwrap();
+    let return_type_ref = return_type_ann.type_ann.as_ts_type_ref().unwrap();
+    let return_type_params = return_type_ref.type_params.clone().unwrap();
+
+    let return_ts_type = *return_type_params.params[0].clone();
+    return_ts_type
+}
+
+fn get_param_ts_types_from_method(method_sig: &TsMethodSignature) -> Vec<TsType> {
+    let params = &method_sig.params;
+    params.iter().fold(vec![], |acc, param| {
+        let param_type_ann = &param.as_ident().unwrap().type_ann.as_ref();
+        let param_type_ann = param_type_ann.clone().unwrap();
+        let param_ts_type = *param_type_ann.type_ann.clone();
+
+        vec![acc, vec![param_ts_type]].concat()
     })
 }
 
