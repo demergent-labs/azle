@@ -16,6 +16,7 @@ mod performance_counter;
 mod print;
 mod reject;
 mod reply;
+mod reply_raw;
 mod set_certified_data;
 mod stable64_grow;
 mod stable64_read;
@@ -48,6 +49,7 @@ pub fn generate_ic_object_functions(fn_decls: &Vec<FnDecl>) -> proc_macro2::Toke
     let print = print::generate_ic_object_function_print();
     let reject = reject::generate_ic_object_function_reject();
     let reply = reply::generate_ic_object_function_reply(fn_decls);
+    let reply_raw = reply_raw::generate_ic_object_function_reply_raw();
     let set_certified_data = set_certified_data::generate_ic_object_function_set_certified_data();
     let stable64_grow = stable64_grow::generate_ic_object_function_stable64_grow();
     let stable64_read = stable64_read::generate_ic_object_function_stable64_read();
@@ -78,6 +80,7 @@ pub fn generate_ic_object_functions(fn_decls: &Vec<FnDecl>) -> proc_macro2::Toke
         #print
         #reject
         #reply
+        #reply_raw
         #set_certified_data
         #stable64_grow
         #stable64_read
