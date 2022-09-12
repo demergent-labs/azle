@@ -1,16 +1,15 @@
-use super::{rust_types::StructInfo, ts_type_to_rust_type, RustType};
+use super::{ts_type_to_rust_type, RustType};
 use crate::generators::canister_methods::method_body::generate_canister_method_body;
 use crate::utils;
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
-use swc_ecma_ast::{FnDecl, Param, TsType};
+use swc_ecma_ast::{FnDecl, TsType};
 
 #[derive(Clone)]
 pub struct FunctionInformation {
     pub function: TokenStream,
     // The dependant types need to have the name of the type so we can find the corresponding type and create a rust type
-    pub type_alias_dependant_types: Vec<String>,
-    pub inline_dependant_types: Box<Vec<StructInfo>>,
+    pub inline_dependant_types: Box<Vec<RustType>>,
     pub manual: bool,
 }
 
@@ -43,43 +42,17 @@ pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> FunctionInformation {
     };
 
     let types = vec![param_types, vec![return_type]].concat();
-    let type_alias_dependant_types: Vec<String> =
-        types
-            .iter()
-            .fold(vec![], |acc, param_type| match param_type {
-                RustType::KeywordType(_) => acc,
-                RustType::TypeRef(type_ref_info) => {
-                    let type_name = type_ref_info.type_alias_dependency.clone();
-                    match type_name {
-                        Some(name) => vec![acc, vec![name]].concat(),
-                        None => acc,
-                    }
-                }
-                RustType::ArrayType(array_type_info) => {
-                    let type_name = array_type_info.type_alias_dependency.clone();
-                    match type_name {
-                        Some(type_name) => vec![acc, vec![type_name]].concat(),
-                        None => acc,
-                    }
-                }
-                RustType::Struct(struct_info) => {
-                    vec![acc, struct_info.type_alias_dependencies.clone()].concat()
-                }
-                RustType::Enum(_) => todo!("Generate function_token_stream for Enum"),
-            });
-    let inline_dependant_types = types.iter().fold(vec![], |acc, sub_struct| {
-        let dependencies_option = sub_struct.get_inline_dependencies();
-        match dependencies_option {
-            Some(dependency) => vec![acc, vec![dependency]].concat(),
-            None => acc,
-        }
-    });
-    let inline_dependant_types: Box<Vec<StructInfo>> = Box::from(inline_dependant_types);
+    let inline_dependencies = types
+        .iter()
+        .filter(|rust_type| rust_type.is_inline_rust_type())
+        .fold(vec![], |acc, rust_type| {
+            vec![acc, vec![rust_type.clone()]].concat()
+        });
+    let inline_dependencies: Box<Vec<RustType>> = Box::from(inline_dependencies);
 
     FunctionInformation {
         function: function_token_stream,
-        type_alias_dependant_types,
-        inline_dependant_types,
+        inline_dependant_types: inline_dependencies,
         manual,
     }
 }
@@ -117,7 +90,7 @@ pub fn generate_params_token_stream(names: &Vec<Ident>, types: &Vec<RustType>) -
 
 fn generate_return_type(ast_fnc_decl: &FnDecl) -> RustType {
     let return_ts_type = get_return_ts_type(ast_fnc_decl);
-    ts_type_to_rust_type(&return_ts_type, None)
+    ts_type_to_rust_type(&return_ts_type, &None)
 }
 
 pub fn get_return_ts_type(ast_fnc_decl: &FnDecl) -> TsType {
@@ -144,6 +117,6 @@ pub fn get_param_ts_types(ast_fnc_decl: &FnDecl) -> Vec<TsType> {
 pub fn generate_param_types(ast_fnc_decl: &FnDecl) -> Vec<RustType> {
     get_param_ts_types(ast_fnc_decl)
         .iter()
-        .map(|ts_type| ts_type_to_rust_type(ts_type, None))
+        .map(|ts_type| ts_type_to_rust_type(ts_type, &None))
         .collect()
 }

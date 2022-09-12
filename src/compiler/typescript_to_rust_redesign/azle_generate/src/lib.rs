@@ -1,6 +1,7 @@
 // TODO let's find all Query and Update functions and create their function bodies
 // TODO then we can move on from there
 
+use generators::canister_methods::RustType;
 use quote::quote;
 use std::{collections::HashSet, path::Path};
 use swc_common::{sync::Lrc, SourceMap};
@@ -34,7 +35,7 @@ use crate::{
                 post_upgrade::generate_canister_method_system_post_upgrade,
                 pre_upgrade::generate_canister_method_system_pre_upgrade,
             },
-            FunctionInformation, StructInfo,
+            FunctionInformation,
         },
         cross_canister_call_functions::generate_cross_canister_call_functions,
         funcs,
@@ -70,23 +71,7 @@ fn collect_inline_dependencies(
     function_info.iter().fold(vec![], |acc, fun_info| {
         vec![
             acc,
-            collect_inline_dependencies_for_struct(&fun_info.inline_dependant_types),
-        ]
-        .concat()
-    })
-}
-
-fn collect_inline_dependencies_for_struct(
-    struct_info: &Box<Vec<StructInfo>>,
-) -> Vec<proc_macro2::TokenStream> {
-    struct_info.iter().fold(vec![], |acc2, dependencies| {
-        let this_dependency_token_stream = &dependencies.structure;
-        let sub_dependency_token_streams =
-            collect_inline_dependencies_for_struct(&dependencies.inline_dependencies);
-        vec![
-            acc2,
-            vec![this_dependency_token_stream.clone()],
-            sub_dependency_token_streams,
+            collect_inline_dependencies_from_list(&*fun_info.inline_dependant_types),
         ]
         .concat()
     })
@@ -106,8 +91,8 @@ pub fn azle_generate(
 
     // Collect AST Information
     let ast_type_alias_decls = get_ast_type_alias_decls_from_programs(&programs);
-    let ast_record_type_alias_decls = get_ast_record_type_alias_decls(&ast_type_alias_decls);
-    let ast_variant_type_alias_decls = get_ast_variant_type_alias_decls(&ast_type_alias_decls);
+    // let ast_record_type_alias_decls = get_ast_record_type_alias_decls(&ast_type_alias_decls);
+    // let ast_variant_type_alias_decls = get_ast_variant_type_alias_decls(&ast_type_alias_decls);
     let ast_other_type_alias_decls = get_ast_other_type_alias_decls(&ast_type_alias_decls);
     let ast_canister_type_alias_decls = get_ast_canister_type_alias_decls(&ast_type_alias_decls);
 
@@ -168,25 +153,11 @@ pub fn azle_generate(
     ]
     .concat();
 
-    let variant_type_aliases_map =
-        generate_variant_token_streams(&dependencies, &ast_variant_type_alias_decls);
-    let variant_inline_deps = variant_type_aliases_map
-        .iter()
-        .fold(vec![], |acc, (_, (_, token_streams))| {
-            vec![acc, token_streams.clone()].concat()
-        });
-    let variant_inline_records =
-        collect_inline_dependencies_for_struct(&Box::from(variant_inline_deps));
+    // let variant_token_streams =
+    //     generate_variant_token_streams(&dependencies, &ast_variant_type_alias_decls);
 
-    let records_type_aliases_map =
-        generate_record_token_streams(&dependencies, &ast_record_type_alias_decls);
-    let records_inline_deps = records_type_aliases_map
-        .iter()
-        .fold(vec![], |acc, (_, (_, token_stream))| {
-            vec![acc, token_stream.clone()].concat()
-        });
-    let record_inline_records =
-        collect_inline_dependencies_for_struct(&Box::from(records_inline_deps));
+    // let records_type_token_streams =
+    //     generate_record_token_streams(&dependencies, &ast_record_type_alias_decls);
 
     let other_type_aliases_map =
         generate_type_alias_token_streams(&dependencies, &ast_other_type_alias_decls);
@@ -195,31 +166,20 @@ pub fn azle_generate(
         .fold(vec![], |acc, (_, (_, token_stream))| {
             vec![acc, token_stream.clone()].concat()
         });
-    let other_inline_records =
-        collect_inline_dependencies_for_struct(&Box::from(other_inline_deps));
+    let other_inline_records = collect_inline_dependencies_from_list(&other_inline_deps);
 
-    let inline_records_function_streams = vec![
-        function_inline_records,
-        record_inline_records,
-        variant_inline_records,
-        other_inline_records,
-    ]
-    .concat();
+    let inline_records_function_streams = vec![function_inline_records].concat();
 
-    let records_token_streams: Vec<proc_macro2::TokenStream> = records_type_aliases_map
-        .iter()
-        .map(|(_, (token_stream, _))| token_stream.clone())
-        .collect();
+    // let records_token_streams = records_type_token_streams;
 
-    let variant_token_streams: Vec<proc_macro2::TokenStream> = variant_type_aliases_map
-        .iter()
-        .map(|(_, (token_stream, _))| token_stream.clone())
-        .collect();
+    // let variant_token_streams = variant_token_streams;
 
     let other_token_streams: Vec<proc_macro2::TokenStream> = other_type_aliases_map
         .iter()
         .map(|(_, (token_stream, _))| token_stream.clone())
         .collect();
+    let type_alias_token_streams =
+        generate_variant_token_streams(&dependencies, &ast_type_alias_decls);
 
     let canister_method_system_heartbeat = generate_canister_method_system_heartbeat(&programs);
     let canister_method_system_init = generate_canister_method_system_init(&programs);
@@ -294,9 +254,10 @@ pub fn azle_generate(
         #async_result_handler
         #get_top_level_call_frame_fn
 
+        #(#type_alias_token_streams)*
         #(#inline_records_function_streams)*
-        #(#records_token_streams)*
-        #(#variant_token_streams)*
+        // #(#records_token_streams)*
+        // #(#variant_token_streams)*
         #(#func_structs_and_impls)*
         #(#other_token_streams)*
         #(#query_function_streams)*
@@ -350,4 +311,24 @@ fn get_programs(ts_file_names: &Vec<&str>) -> Vec<Program> {
             program
         })
         .collect()
+}
+
+fn collect_inline_dependencies_from_list(
+    rust_types: &Vec<RustType>,
+) -> Vec<proc_macro2::TokenStream> {
+    rust_types.iter().fold(vec![], |acc, rust_type| {
+        vec![acc, collect_inline_dependencies_rust_type(rust_type)].concat()
+    })
+}
+
+fn collect_inline_dependencies_rust_type(rust_type: &RustType) -> Vec<proc_macro2::TokenStream> {
+    let rust_type_structure = match rust_type.get_structure() {
+        Some(structure) => structure,
+        None => quote!(),
+    };
+    let member_structures = rust_type.get_inline_members();
+    let member_structures = member_structures.iter().fold(vec![], |acc, member| {
+        vec![acc, collect_inline_dependencies_rust_type(member)].concat()
+    });
+    vec![vec![rust_type_structure], member_structures].concat()
 }

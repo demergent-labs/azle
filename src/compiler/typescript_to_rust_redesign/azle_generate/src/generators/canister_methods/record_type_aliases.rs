@@ -1,22 +1,10 @@
-use std::collections::{HashMap, HashSet};
+use std::{collections::HashSet, vec};
 
 use proc_macro2::TokenStream;
-use quote::format_ident;
+use quote::{format_ident, quote};
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use super::{generate_hash_map, ts_type_to_rust_type, RustType, StructInfo};
-
-/**
- * Here is what I am thinking
- *
- * 1. Get a list of all of the type aliases our program uses
- * 1. Get a list of the corresponding decls
- * 1. For each of those decls
- *      1. Create Struct, or Enum, or Rust Type Alias, or Fun whatever
- *      1. Get a list of all the type aliases that that decl uses
- *      1. Get a list of the corresponding decls
- *      1. Recur
- */
+use super::{generate_hash_map, ts_type_to_rust_type, RustType};
 
 /**
  * Loops through all of the dependant types, finds the corresponding ts types in
@@ -26,32 +14,27 @@ use super::{generate_hash_map, ts_type_to_rust_type, RustType, StructInfo};
 pub fn generate_record_token_streams(
     type_alias_dependant_types: &HashSet<String>,
     ast_type_alias_decls: &Vec<TsTypeAliasDecl>,
-) -> HashMap<String, (TokenStream, Vec<StructInfo>)> {
+) -> Vec<TokenStream> {
     let type_alias_lookup = generate_hash_map(ast_type_alias_decls);
 
     // For each dependant type, generate a dependency map and add it to the overall dependency map
     // TODO I'm guessing that we aren't going to want acc to be mutable
-    type_alias_dependant_types.iter().fold(
-        HashMap::new(),
-        |mut all_type_alias_dependencies, dependant_type| {
+    type_alias_dependant_types
+        .iter()
+        .fold(vec![], |acc, dependant_type| {
             let type_alias_decl = type_alias_lookup.get(dependant_type);
-            let dependency_map = match type_alias_decl {
-                Some(type_alias_decl) => {
-                    let dependency_map = generate_dependencies_map_for_struct(type_alias_decl);
-                    dependency_map
-                }
+            let token_stream = match type_alias_decl {
+                Some(type_alias_decl) => type_alias_to_token_stream(type_alias_decl),
                 None => {
                     // For right now we are going to assume that if it's not in the map then we caught it somewhere else
                     // TODO for the future we should fix that assumption by limiting type_alias_dependant_types to be only the records
                     // Right now I think we are passing in whatever
                     // todo!("ERROR: Dependant Type [{dependant_type}] not found type alias list!")
-                    HashMap::new()
+                    quote!()
                 }
             };
-            all_type_alias_dependencies.extend(dependency_map.into_iter());
-            all_type_alias_dependencies
-        },
-    )
+            vec![acc, vec![token_stream]].concat()
+        })
 }
 
 /**
@@ -84,28 +67,28 @@ pub fn generate_record_token_streams(
  * When you get an item from the hash map it will be the type alias token stream, and the list of structs that it alone
  * requires
  */
-fn generate_dependencies_map_for_struct(
-    type_alias_decl: &TsTypeAliasDecl,
-) -> HashMap<String, (TokenStream, Vec<StructInfo>)> {
-    // TODO I feel like this might run into some namespace issues
+fn type_alias_to_token_stream(type_alias_decl: &TsTypeAliasDecl) -> TokenStream {
     let ts_type_name = type_alias_decl.id.sym.chars().as_str().to_string();
     let ts_type_alias_ident = format_ident!("{}", ts_type_name);
 
     let ts_type = *type_alias_decl.type_ann.clone();
 
-    let mut result_dependency_map = HashMap::new();
+    let aliased_rust_type = ts_type_to_rust_type(&ts_type, &Some(&ts_type_alias_ident));
+    aliased_rust_type.to_token_stream()
+}
 
-    let aliased_rust_type = ts_type_to_rust_type(&ts_type, Some(&ts_type_alias_ident));
-
-    match aliased_rust_type.clone() {
-        RustType::Struct(struct_info) => {
-            result_dependency_map.insert(
-                struct_info.identifier.to_string(),
-                (struct_info.structure, *struct_info.inline_dependencies),
-            );
-        }
-        _ => todo!("Only Structs allowed"),
+fn rust_inline_type_to_token_stream(rust_type: &RustType) -> TokenStream {
+    let rust_type_structure = match rust_type.get_structure() {
+        Some(structure) => structure,
+        None => quote!(),
     };
-
-    result_dependency_map
+    let rust_member_type_structures: Vec<TokenStream> = rust_type
+        .get_inline_members()
+        .iter()
+        .map(|member| rust_inline_type_to_token_stream(member))
+        .collect();
+    quote! {
+        #rust_type_structure
+        #(#rust_member_type_structures)*
+    }
 }
