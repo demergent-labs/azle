@@ -5,7 +5,7 @@ use quote::quote;
 use std::iter::FromIterator;
 use std::{collections::HashSet, path::Path};
 use swc_common::{sync::Lrc, SourceMap};
-use swc_ecma_ast::{Program, TsTypeAliasDecl};
+use swc_ecma_ast::{FnDecl, Program, TsTypeAliasDecl};
 use swc_ecma_parser::{
     lexer::Lexer,
     Parser,
@@ -16,34 +16,36 @@ use swc_ecma_parser::{
     TsConfig,
 };
 
-use crate::generators::canister_methods::async_result_handler::generate_async_result_handler;
-use crate::generators::canister_methods::{
-    generate_type_alias_token_streams, get_ast_canister_type_alias_decls,
-    get_ast_other_type_alias_decls,
-};
-use crate::generators::cross_canister_call_functions::generate_cross_canister_call_functions;
-use crate::generators::funcs;
-use crate::generators::ic_object::functions::generate_ic_object_functions;
-use crate::generators::{
-    azle_into_js_value::generate_azle_into_js_value,
-    azle_try_from_js_value::generate_azle_try_from_js_value,
-    canister_methods::{
-        generate_query_function_infos, generate_record_token_streams,
-        generate_update_function_infos, generate_variant_token_streams,
-        get_ast_fn_decls_from_programs, get_ast_record_type_alias_decls,
-        get_ast_type_alias_decls_from_programs, get_ast_variant_type_alias_decls,
-        get_query_fn_decls, get_update_fn_decls,
-        system::{
-            heartbeat::generate_canister_method_system_heartbeat,
-            init::generate_canister_method_system_init,
-            inspect_message::generate_canister_method_system_inspect_message,
-            post_upgrade::generate_canister_method_system_post_upgrade,
-            pre_upgrade::generate_canister_method_system_pre_upgrade,
+use crate::{
+    generators::{
+        azle_into_js_value::generate_azle_into_js_value,
+        azle_try_from_js_value::generate_azle_try_from_js_value,
+        canister_methods::{
+            async_result_handler::generate_async_result_handler,
+            generate_query_function_infos, generate_record_token_streams,
+            generate_type_alias_token_streams, generate_update_function_infos,
+            generate_variant_token_streams, get_ast_canister_type_alias_decls,
+            get_ast_other_type_alias_decls, get_ast_record_type_alias_decls,
+            get_ast_type_alias_decls_from_programs, get_ast_variant_type_alias_decls,
+            system::{
+                heartbeat::generate_canister_method_system_heartbeat,
+                init::generate_canister_method_system_init,
+                inspect_message::generate_canister_method_system_inspect_message,
+                post_upgrade::generate_canister_method_system_post_upgrade,
+                pre_upgrade::generate_canister_method_system_pre_upgrade,
+            },
+            FunctionInformation, StructInfo,
         },
-        FunctionInformation, StructInfo,
+        funcs,
+        generate_cross_canister_call_functions::generate_cross_canister_call_functions,
+        ic_object::functions::generate_ic_object_functions,
+        stacktrace,
+    },
+    utils::{
+        dependencies,
+        fn_decls::{self, CanisterMethodType},
     },
 };
-use crate::utils::dependencies;
 
 mod ast_utilities;
 pub mod generators {
@@ -53,6 +55,7 @@ pub mod generators {
     pub mod cross_canister_call_functions;
     pub mod funcs;
     pub mod ic_object;
+    pub mod stacktrace;
 }
 pub mod utils {
     pub mod dependencies;
@@ -115,14 +118,15 @@ pub fn azle_generate(
     let ast_other_type_alias_decls = get_ast_other_type_alias_decls(&ast_type_alias_decls);
     let ast_canister_type_alias_decls = get_ast_canister_type_alias_decls(&ast_type_alias_decls);
 
-    let ast_fnc_decls = get_ast_fn_decls_from_programs(&programs);
     let ast_func_type_alias_decls =
         ast_utilities::get_ast_func_type_alias_decls_from_programs(&programs);
     let func_structs_and_impls = funcs::generate_func_structs_and_impls(ast_func_type_alias_decls);
 
     // Separate function decls into queries and updates
-    let ast_fnc_decls_query = get_query_fn_decls(&ast_fnc_decls);
-    let ast_fnc_decls_update = get_update_fn_decls(&ast_fnc_decls);
+    let ast_fnc_decls_query =
+        fn_decls::get_canister_method_type_fn_decls(&programs, &CanisterMethodType::Query);
+    let ast_fnc_decls_update =
+        fn_decls::get_canister_method_type_fn_decls(&programs, &CanisterMethodType::Update);
 
     // Determine which type aliases must be present for the functions to work and save them for later parsing
     let query_dependencies = dependencies::get_dependent_types_from_fn_decls(
@@ -235,9 +239,12 @@ pub fn azle_generate(
     let azle_into_js_value = generate_azle_into_js_value();
     let azle_try_from_js_value = generate_azle_try_from_js_value();
 
-    let ic_object_functions = generate_ic_object_functions();
+    let query_and_update_func_decls: Vec<FnDecl> =
+        vec![ast_fnc_decls_query, ast_fnc_decls_update].concat();
+    let ic_object_functions = generate_ic_object_functions(&query_and_update_func_decls);
 
     let async_result_handler = generate_async_result_handler();
+    let get_top_level_call_frame_fn = stacktrace::generate_get_top_level_call_frame_fn();
 
     let cross_canister_call_functions = generate_cross_canister_call_functions(&programs);
 
@@ -292,6 +299,7 @@ pub fn azle_generate(
         #cross_canister_call_functions
 
         #async_result_handler
+        #get_top_level_call_frame_fn
 
         #(#inline_records_function_streams)*
         #(#records_token_streams)*

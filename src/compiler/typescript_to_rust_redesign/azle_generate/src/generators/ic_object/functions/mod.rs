@@ -1,3 +1,5 @@
+use swc_ecma_ast::FnDecl;
+
 mod accept_message;
 mod arg_data_raw;
 mod arg_data_raw_size;
@@ -13,6 +15,7 @@ mod notify_raw;
 mod performance_counter;
 mod print;
 mod reject;
+mod reply;
 mod set_certified_data;
 mod stable64_grow;
 mod stable64_read;
@@ -26,7 +29,7 @@ mod stable_write;
 mod time;
 mod trap;
 
-pub fn generate_ic_object_functions() -> proc_macro2::TokenStream {
+pub fn generate_ic_object_functions(fn_decls: &Vec<FnDecl>) -> proc_macro2::TokenStream {
     let accept_message = accept_message::generate_ic_object_function_accept_message();
     let arg_data_raw = arg_data_raw::generate_ic_object_function_arg_data_raw();
     let arg_data_raw_size = arg_data_raw_size::generate_ic_object_function_arg_data_raw_size();
@@ -44,6 +47,7 @@ pub fn generate_ic_object_functions() -> proc_macro2::TokenStream {
         performance_counter::generate_ic_object_function_performance_counter();
     let print = print::generate_ic_object_function_print();
     let reject = reject::generate_ic_object_function_reject();
+    let reply = reply::generate_ic_object_function_reply(fn_decls);
     let set_certified_data = set_certified_data::generate_ic_object_function_set_certified_data();
     let stable64_grow = stable64_grow::generate_ic_object_function_stable64_grow();
     let stable64_read = stable64_read::generate_ic_object_function_stable64_read();
@@ -73,6 +77,7 @@ pub fn generate_ic_object_functions() -> proc_macro2::TokenStream {
         #performance_counter
         #print
         #reject
+        #reply
         #set_certified_data
         #stable64_grow
         #stable64_read
