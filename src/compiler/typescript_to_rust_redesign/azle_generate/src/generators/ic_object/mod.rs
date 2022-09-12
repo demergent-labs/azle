@@ -1,6 +1,13 @@
+use quote::{format_ident, quote};
+use swc_ecma_ast::Program;
+
+use super::cross_canister_call_functions::generate_cross_canister_call_functions_infos;
+
 pub mod functions;
 
-pub fn generate_ic_object() -> proc_macro2::TokenStream {
+pub fn generate_ic_object(programs: &Vec<Program>) -> proc_macro2::TokenStream {
+    let notify_functions = generate_notify_functions(programs);
+
     quote::quote! {
         let ic = boa_engine::object::ObjectInitializer::new(&mut _azle_boa_context)
             .function(
@@ -58,6 +65,7 @@ pub fn generate_ic_object() -> proc_macro2::TokenStream {
                 "method_name",
                 0
             )
+            #(#notify_functions)*
             .function(
                 _azle_ic_notify_raw,
                 "notify_raw",
@@ -150,4 +158,36 @@ pub fn generate_ic_object() -> proc_macro2::TokenStream {
             )
             .build();
     }
+}
+
+fn generate_notify_functions(programs: &Vec<Program>) -> Vec<proc_macro2::TokenStream> {
+    let cross_canister_call_functions_infos =
+        generate_cross_canister_call_functions_infos(programs);
+
+    cross_canister_call_functions_infos
+        .iter()
+        .map(|cross_canister_call_functions_info| {
+            let notify_function_name_string = &cross_canister_call_functions_info.notify.name;
+            let notify_function_name_ident = format_ident!("{}", notify_function_name_string);
+
+            let notify_with_payment128_function_name_string = &cross_canister_call_functions_info
+                .notify_with_payment128
+                .name;
+            let notify_with_payment128_function_name_ident =
+                format_ident!("{}", notify_with_payment128_function_name_string);
+
+            quote! {
+                .function(
+                    #notify_function_name_ident,
+                    #notify_function_name_string,
+                    0
+                )
+                .function(
+                    #notify_with_payment128_function_name_ident,
+                    #notify_with_payment128_function_name_string,
+                    0
+                )
+            }
+        })
+        .collect()
 }

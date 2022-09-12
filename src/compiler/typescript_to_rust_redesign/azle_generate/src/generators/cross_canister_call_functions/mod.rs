@@ -19,25 +19,27 @@ use super::canister_methods::{
 };
 
 #[derive(Clone)]
-struct CrossCanisterCallFunctionsInfo {
-    call: CrossCanisterCallFunctionInfo,
-    call_with_payment: CrossCanisterCallFunctionInfo,
-    call_with_payment128: CrossCanisterCallFunctionInfo,
-    notify: CrossCanisterCallFunctionInfo,
-    notify_with_payment128: CrossCanisterCallFunctionInfo,
+pub struct CrossCanisterCallFunctionsInfo {
+    pub call: CrossCanisterCallFunctionInfo,
+    pub call_with_payment: CrossCanisterCallFunctionInfo,
+    pub call_with_payment128: CrossCanisterCallFunctionInfo,
+    pub notify: CrossCanisterCallFunctionInfo,
+    pub notify_with_payment128: CrossCanisterCallFunctionInfo,
 }
 
 #[derive(Clone)]
-struct CrossCanisterCallFunctionInfo {
-    name: String,
-    rust: proc_macro2::TokenStream,
+pub struct CrossCanisterCallFunctionInfo {
+    pub name: String,
+    pub rust_params: RustParams,
+    pub rust: proc_macro2::TokenStream,
 }
 
-// struct RustParams {
-//     param_names: Vec<String>,
-//     param_name_token_streams: Vec<proc_macro2::TokenStream>,
-//     param_types: Vec<proc_macro2::TokenStream>,
-// }
+#[derive(Clone)]
+pub struct RustParams {
+    pub params: Vec<proc_macro2::TokenStream>,
+    pub param_names: Vec<proc_macro2::TokenStream>,
+    pub param_types: Vec<proc_macro2::TokenStream>,
+}
 
 struct CrossCanisterCallFunctionNames {
     method_name: String,
@@ -54,13 +56,8 @@ struct RustParam {
 }
 
 pub fn generate_cross_canister_call_functions(programs: &Vec<Program>) -> proc_macro2::TokenStream {
-    let canister_type_alias_decls =
-        get_type_alias_decls_for_system_structure_type(programs, &SystemStructureType::Canister);
-
     let cross_canister_call_functions_infos =
-        generate_cross_canister_call_functions_infos_from_canister_type_alias_decls(
-            &canister_type_alias_decls,
-        );
+        generate_cross_canister_call_functions_infos(programs);
 
     let call_functions: Vec<proc_macro2::TokenStream> = cross_canister_call_functions_infos
         .iter()
@@ -116,6 +113,20 @@ pub fn generate_cross_canister_call_functions(programs: &Vec<Program>) -> proc_m
         #(#notify_functions)*
         #(#notify_with_payment128_functions)*
     }
+}
+
+pub fn generate_cross_canister_call_functions_infos(
+    programs: &Vec<Program>,
+) -> Vec<CrossCanisterCallFunctionsInfo> {
+    let canister_type_alias_decls =
+        get_type_alias_decls_for_system_structure_type(programs, &SystemStructureType::Canister);
+
+    let cross_canister_call_functions_infos =
+        generate_cross_canister_call_functions_infos_from_canister_type_alias_decls(
+            &canister_type_alias_decls,
+        );
+
+    cross_canister_call_functions_infos
 }
 
 fn generate_cross_canister_call_functions_infos_from_canister_type_alias_decls(
@@ -230,22 +241,27 @@ fn generate_cross_canister_call_functions_info_from_canister_type_element(
             CrossCanisterCallFunctionsInfo {
                 call: CrossCanisterCallFunctionInfo {
                     name: cross_canister_call_function_names.call_function_name,
+                    rust_params: call_params.clone(),
                     rust: call_rust,
                 },
                 call_with_payment: CrossCanisterCallFunctionInfo {
                     name: cross_canister_call_function_names.call_with_payment_function_name,
+                    rust_params: call_params.clone(),
                     rust: call_with_payment_rust,
                 },
                 call_with_payment128: CrossCanisterCallFunctionInfo {
                     name: cross_canister_call_function_names.call_with_payment128_function_name,
+                    rust_params: call_params.clone(),
                     rust: call_with_payment128_rust,
                 },
                 notify: CrossCanisterCallFunctionInfo {
                     name: cross_canister_call_function_names.notify_function_name,
+                    rust_params: call_params.clone(),
                     rust: notify_rust,
                 },
                 notify_with_payment128: CrossCanisterCallFunctionInfo {
                     name: cross_canister_call_function_names.notify_with_payment128_function_name,
+                    rust_params: call_params,
                     rust: notify_with_payment128_rust,
                 },
             }
@@ -411,7 +427,7 @@ fn generate_notify_rust(
             let param_type = &rust_params.param_types[index];
 
             quote! {
-                let #param_name_js_value = args_js_object.get(stringify!(index), _context).unwrap();
+                let #param_name_js_value = args_js_object.get(#index, _context).unwrap();
                 let #param_name: #param_type = #param_name_js_value.azle_try_from_js_value(_context).unwrap();
             }
         })
@@ -465,7 +481,7 @@ fn generate_notify_with_payment128_rust(
             let param_type = &rust_params.param_types[index];
 
             quote! {
-                let #param_name_js_value = args_js_object.get(stringify!(index), _context).unwrap();
+                let #param_name_js_value = args_js_object.get(#index, _context).unwrap();
                 let #param_name: #param_type = #param_name_js_value.azle_try_from_js_value(_context).unwrap();
             }
         })
@@ -576,10 +592,4 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
         param_names,
         param_types,
     }
-}
-
-struct RustParams {
-    params: Vec<proc_macro2::TokenStream>,
-    param_names: Vec<proc_macro2::TokenStream>,
-    param_types: Vec<proc_macro2::TokenStream>,
 }

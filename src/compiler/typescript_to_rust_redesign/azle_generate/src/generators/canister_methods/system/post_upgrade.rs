@@ -14,7 +14,7 @@ use swc_ecma_ast::{FnDecl, Program};
 pub fn generate_canister_method_system_post_upgrade(
     programs: &Vec<Program>,
 ) -> proc_macro2::TokenStream {
-    let ic_object = generate_ic_object();
+    let ic_object = generate_ic_object(programs);
 
     let post_upgrade_fn_decls =
         get_canister_method_type_fn_decls(programs, &CanisterMethodType::PostUpgrade);
