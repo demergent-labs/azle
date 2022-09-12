@@ -81,22 +81,10 @@ const tests: Test[] = [
         }
     },
     {
-        // TODO Get rid of this once https://forum.dfinity.org/t/upgrade-a-canister-even-if-the-wasm-module-hash-has-not-changed/11989
-        name: 'function hack to allow a redeploy',
-        prep: async () => {
-            execSync(
-                `echo "\\n\\nexport function hack(): Query<void> {}" >> canisters/azle/index.ts`,
-                {
-                    stdio: 'inherit'
-                }
-            );
-        }
-    },
-    {
         name: 'redeploy',
         prep: async () => {
             execSync(
-                `dfx canister install --mode upgrade --argument '(principal "${callingPrincipal}")' azle --wasm target/wasm32-unknown-unknown/release/azle.wasm.gz`,
+                `dfx canister install --mode upgrade --upgrade-unchanged --argument '(principal "${callingPrincipal}")' azle --wasm target/wasm32-unknown-unknown/release/azle.wasm.gz`,
                 {
                     stdio: 'inherit'
                 }
