@@ -34,14 +34,13 @@ fn generate_match_arms(fn_decls: &Vec<FnDecl>) -> Vec<TokenStream> {
 
 fn generate_match_arm(fn_decl: &FnDecl) -> TokenStream {
     let fn_name = utils::fn_decls::get_fn_decl_function_name(fn_decl);
-    let quoted_fn_name: TokenStream = format!("\"{}\"", fn_name).parse().unwrap();
     let return_type_ast = utils::fn_decls::get_canister_method_return_type(fn_decl);
     let rust_return_type = match return_type_ast {
         Some(ts_type) => canister_methods::ts_type_to_rust_type(ts_type, None).get_type_ident(),
         None => quote! {()},
     };
     quote!(
-        #quoted_fn_name => {
+        #fn_name => {
             let reply_value: #rust_return_type = _aargs.get(0).unwrap().clone().azle_try_from_js_value(_context).unwrap();
             Ok(ic_cdk::api::call::reply((reply_value,)).azle_into_js_value(_context))
         }
