@@ -50,7 +50,7 @@ pub fn get_ast_other_type_alias_decls(
                             Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
                                 Some(ident) => {
                                     let name = ident.sym.chars().as_str();
-                                    name != "Func" && name != "Variant"
+                                    name != "Func" && name != "Variant" && name != "Canister"
                                 }
                                 None => true,
                             },
@@ -74,6 +74,12 @@ pub fn get_ast_variant_type_alias_decls(
     type_alias_decls: &Vec<TsTypeAliasDecl>,
 ) -> Vec<TsTypeAliasDecl> {
     get_ast_type_alias_decls_by_type_ref_name(type_alias_decls, "Variant")
+}
+
+pub fn get_ast_canister_type_alias_decls(
+    type_alias_decls: &Vec<TsTypeAliasDecl>,
+) -> Vec<TsTypeAliasDecl> {
+    get_ast_type_alias_decls_by_type_ref_name(type_alias_decls, "Canister")
 }
 
 pub fn get_ast_type_alias_decls_from_programs(programs: &Vec<Program>) -> Vec<TsTypeAliasDecl> {

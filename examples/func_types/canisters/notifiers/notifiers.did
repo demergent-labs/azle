@@ -1,5 +1,1 @@
-type NotifierFunc = func (blob) -> () oneway;
-
-service: {
-    "get_notifier": () -> (NotifierFunc) query;
-}
+service : () -> { get_notifier : () -> (func (vec nat8) -> () oneway) query }
