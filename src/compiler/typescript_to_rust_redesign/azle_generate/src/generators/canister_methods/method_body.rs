@@ -75,13 +75,14 @@ fn generate_return_expression(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
     }
 }
 
-/// Returns true if the return type is `empty`, `never`, `null`, `void`, or `undefined`.
+/// Returns true if the return type is `empty`, `null`, or `void`.
 /// Otherwise returns false.
 fn type_is_emptyish(ts_type_option: Option<&TsType>) -> bool {
     match ts_type_option {
         Some(ts_type) => match ts_type {
             TsType::TsKeywordType(keyword) => match keyword.kind {
-                TsNeverKeyword | TsNullKeyword | TsUndefinedKeyword | TsVoidKeyword => true,
+                // TODO: Consider handling `TsNeverKeyword` and `TsUndefinedKeyword`
+                TsNullKeyword | TsVoidKeyword => true,
                 _ => false,
             },
             TsType::TsTypeRef(type_ref) => {
