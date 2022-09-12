@@ -2,7 +2,7 @@
 // TODO then we can move on from there
 
 use quote::quote;
-use std::{collections::HashSet, iter::FromIterator, path::Path};
+use std::{collections::HashSet, path::Path};
 use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_ast::{Program, TsTypeAliasDecl};
 use swc_ecma_parser::{
@@ -16,6 +16,9 @@ use swc_ecma_parser::{
 };
 
 use crate::generators::canister_methods::async_result_handler::generate_async_result_handler;
+use crate::generators::canister_methods::{
+    generate_type_alias_token_streams, get_ast_other_type_alias_decls,
+};
 use crate::generators::funcs;
 use crate::generators::ic_object::functions::generate_ic_object_functions;
 use crate::generators::{
@@ -37,6 +40,7 @@ use crate::generators::{
         FunctionInformation, StructInfo,
     },
 };
+use crate::utils::dependencies;
 
 mod ast_utilities;
 mod generators {
@@ -47,14 +51,9 @@ mod generators {
     pub mod ic_object;
 }
 pub mod utils {
+    pub mod dependencies;
     pub mod fn_decls;
-}
-
-fn collect_function_type_dependencies(function_info: &Vec<FunctionInformation>) -> HashSet<String> {
-    let dependencies = function_info.iter().fold(vec![], |acc, fun_info| {
-        vec![acc, fun_info.type_alias_dependant_types.clone()].concat()
-    });
-    HashSet::from_iter(dependencies.iter().cloned())
+    pub mod type_aliases;
 }
 
 fn collect_inline_dependencies(
@@ -85,6 +84,7 @@ fn collect_inline_dependencies_for_struct(
     })
 }
 
+// TODO find a better home for this
 pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
     decl.id.sym.chars().as_str().to_string()
 }
@@ -98,16 +98,10 @@ pub fn azle_generate(
 
     // Collect AST Information
     let ast_type_alias_decls = get_ast_type_alias_decls_from_programs(&programs);
-    let ast_type_alias_decl_strings: Vec<String> = ast_type_alias_decls
-        .iter()
-        .map(|decl| ast_type_alias_decl_to_string(decl))
-        .collect();
-    eprintln!(
-        "These are all of the type alias decls that we have {:#?}",
-        ast_type_alias_decl_strings
-    );
     let ast_record_type_alias_decls = get_ast_record_type_alias_decls(&ast_type_alias_decls);
     let ast_variant_type_alias_decls = get_ast_variant_type_alias_decls(&ast_type_alias_decls);
+    let ast_other_type_alias_decls = get_ast_other_type_alias_decls(&ast_type_alias_decls);
+
     let ast_fnc_decls = get_ast_fn_decls_from_programs(&programs);
     let ast_func_type_alias_decls =
         ast_utilities::get_ast_func_type_alias_decls_from_programs(&programs);
@@ -116,6 +110,20 @@ pub fn azle_generate(
     // Separate function decls into queries and updates
     let ast_fnc_decls_query = get_query_fn_decls(&ast_fnc_decls);
     let ast_fnc_decls_update = get_update_fn_decls(&ast_fnc_decls);
+
+    // Determine which type aliases must be present for the functions to work and save them for later parsing
+    let query_dependencies = dependencies::get_dependent_types_from_fn_decls(
+        &ast_fnc_decls_query,
+        &ast_type_alias_decls,
+    );
+    let update_dependencies = dependencies::get_dependent_types_from_fn_decls(
+        &ast_fnc_decls_update,
+        &ast_type_alias_decls,
+    );
+    let dependencies: HashSet<String> = query_dependencies
+        .union(&update_dependencies)
+        .cloned()
+        .collect();
 
     // println!("ast_fnc_decls_query: {:#?}", ast_fnc_decls_query);
 
@@ -133,14 +141,6 @@ pub fn azle_generate(
         .collect();
     // let update_inline_type_aliases = quote!();
 
-    // Collect all dependant names
-    let query_function_dependant_types = collect_function_type_dependencies(&query_function_info);
-    let update_function_dependant_types = collect_function_type_dependencies(&update_function_info);
-
-    let type_alias_dependant_types: HashSet<&String> = query_function_dependant_types
-        .union(&update_function_dependant_types)
-        .collect();
-
     let query_function_inline_dependant_types = collect_inline_dependencies(&query_function_info);
     let update_function_inline_dependant_types = collect_inline_dependencies(&update_function_info);
     // TODO it would be great to add the inline_types we found from doing the type aliases while we are at it
@@ -151,7 +151,7 @@ pub fn azle_generate(
     .concat();
 
     let variant_type_aliases_map =
-        generate_variant_token_streams(&type_alias_dependant_types, &ast_variant_type_alias_decls);
+        generate_variant_token_streams(&dependencies, &ast_variant_type_alias_decls);
     let variant_inline_deps = variant_type_aliases_map
         .iter()
         .fold(vec![], |acc, (_, (_, token_streams))| {
@@ -161,7 +161,7 @@ pub fn azle_generate(
         collect_inline_dependencies_for_struct(&Box::from(variant_inline_deps));
 
     let records_type_aliases_map =
-        generate_record_token_streams(&type_alias_dependant_types, &ast_record_type_alias_decls);
+        generate_record_token_streams(&dependencies, &ast_record_type_alias_decls);
     let records_inline_deps = records_type_aliases_map
         .iter()
         .fold(vec![], |acc, (_, (_, token_stream))| {
@@ -170,10 +170,21 @@ pub fn azle_generate(
     let record_inline_records =
         collect_inline_dependencies_for_struct(&Box::from(records_inline_deps));
 
+    let other_type_aliases_map =
+        generate_type_alias_token_streams(&dependencies, &ast_other_type_alias_decls);
+    let other_inline_deps = other_type_aliases_map
+        .iter()
+        .fold(vec![], |acc, (_, (_, token_stream))| {
+            vec![acc, token_stream.clone()].concat()
+        });
+    let other_inline_records =
+        collect_inline_dependencies_for_struct(&Box::from(other_inline_deps));
+
     let inline_records_function_streams = vec![
         function_inline_records,
         record_inline_records,
         variant_inline_records,
+        other_inline_records,
     ]
     .concat();
 
@@ -183,6 +194,11 @@ pub fn azle_generate(
         .collect();
 
     let variant_token_streams: Vec<proc_macro2::TokenStream> = variant_type_aliases_map
+        .iter()
+        .map(|(_, (token_stream, _))| token_stream.clone())
+        .collect();
+
+    let other_token_streams: Vec<proc_macro2::TokenStream> = other_type_aliases_map
         .iter()
         .map(|(_, (token_stream, _))| token_stream.clone())
         .collect();
@@ -255,6 +271,7 @@ pub fn azle_generate(
         #(#records_token_streams)*
         #(#variant_token_streams)*
         #(#func_structs_and_impls)*
+        #(#other_token_streams)*
         #(#query_function_streams)*
         #(#update_function_streams)*
 

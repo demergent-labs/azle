@@ -266,7 +266,7 @@ pub fn ts_type_literal_to_rust_enum(ts_type_ident: &Ident, ts_type_lit: &TsTypeL
                 None => acc,
             });
     let structure = quote!(
-        #[derive(serde::Serialize, serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
+        #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
         enum #ts_type_ident {
             #(#field_token_streams),*
         }
@@ -297,7 +297,7 @@ fn ts_type_literal_to_rust_struct(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit
                 None => acc,
             });
     let structure = quote!(
-        #[derive(serde::Serialize, serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
+        #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
         struct #ts_type_ident {
             #(#field_token_streams),*
         }
@@ -311,20 +311,20 @@ fn ts_type_literal_to_rust_struct(ts_type_ident: &Ident, ts_type_lit: &TsTypeLit
 }
 
 fn parse_type_literal_fields(
-    field: &TsTypeElement,
+    member: &TsTypeElement,
 ) -> (TokenStream, Vec<String>, Option<StructInfo>) {
-    match field.as_ts_property_signature() {
+    match member.as_ts_property_signature() {
         Some(prop_sig) => {
-            let field_name = parse_type_literal_field_name(prop_sig);
-            let field_type = parse_type_literal_field_type(prop_sig);
-            let field_type_token_stream = field_type.get_type_ident();
-            let type_dependencies = field_type.get_type_alias_dependency();
-            let inline_enclosed_type = match &field_type {
+            let member_name = parse_type_literal_member_name(prop_sig);
+            let member_type = parse_type_literal_member_type(prop_sig);
+            let member_type_token_stream = member_type.get_type_ident();
+            let type_dependencies = member_type.get_type_alias_dependency();
+            let inline_enclosed_type = match &member_type {
                 RustType::Struct(struct_info) => Some(struct_info.clone()),
                 _ => None,
             };
             (
-                quote!(#field_name: #field_type_token_stream),
+                quote!(#member_name: #member_type_token_stream),
                 type_dependencies,
                 inline_enclosed_type,
             )
@@ -333,11 +333,11 @@ fn parse_type_literal_fields(
     }
 }
 
-fn parse_type_literal_field_name(prop_sig: &TsPropertySignature) -> Ident {
+fn parse_type_literal_member_name(prop_sig: &TsPropertySignature) -> Ident {
     format_ident!("{}", prop_sig.key.as_ident().unwrap().sym.chars().as_str())
 }
 
-fn parse_type_literal_field_type(prop_sig: &TsPropertySignature) -> RustType {
+pub fn parse_type_literal_member_type(prop_sig: &TsPropertySignature) -> RustType {
     let type_ann = prop_sig.type_ann.clone().unwrap();
     let ts_type = *type_ann.type_ann.clone();
     ts_type_to_rust_type(&ts_type, None)
@@ -348,8 +348,8 @@ fn parse_type_literal_members_for_enum(
 ) -> (TokenStream, Vec<String>, Option<StructInfo>) {
     match member.as_ts_property_signature() {
         Some(prop_sig) => {
-            let variant_name = parse_type_literal_field_name(prop_sig);
-            let variant_type = parse_type_literal_field_type(prop_sig);
+            let variant_name = parse_type_literal_member_name(prop_sig);
+            let variant_type = parse_type_literal_member_type(prop_sig);
             let variant_value = match variant_type.clone() {
                 RustType::KeywordType(keyword_type_info) => {
                     if keyword_type_info.identifier.to_string() == quote!((())).to_string() {
