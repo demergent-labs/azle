@@ -1,3 +1,1 @@
-service: {
-    "greet": (text) -> (text) query;
-}
+service : () -> { greet : (text) -> (text) query }
