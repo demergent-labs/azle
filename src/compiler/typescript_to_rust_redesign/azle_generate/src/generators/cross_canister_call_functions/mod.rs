@@ -63,12 +63,58 @@ pub fn generate_cross_canister_call_functions(programs: &Vec<Program>) -> proc_m
         );
 
     let call_functions: Vec<proc_macro2::TokenStream> = cross_canister_call_functions_infos
-        .into_iter()
-        .map(|cross_canister_call_functions_info| cross_canister_call_functions_info.call.rust)
+        .iter()
+        .map(|cross_canister_call_functions_info| {
+            cross_canister_call_functions_info.call.rust.clone()
+        })
         .collect();
+
+    let call_with_payment_functions: Vec<proc_macro2::TokenStream> =
+        cross_canister_call_functions_infos
+            .iter()
+            .map(|cross_canister_call_functions_info| {
+                cross_canister_call_functions_info
+                    .call_with_payment
+                    .rust
+                    .clone()
+            })
+            .collect();
+
+    let call_with_payment128_functions: Vec<proc_macro2::TokenStream> =
+        cross_canister_call_functions_infos
+            .iter()
+            .map(|cross_canister_call_functions_info| {
+                cross_canister_call_functions_info
+                    .call_with_payment128
+                    .rust
+                    .clone()
+            })
+            .collect();
+
+    let notify_functions: Vec<proc_macro2::TokenStream> = cross_canister_call_functions_infos
+        .iter()
+        .map(|cross_canister_call_functions_info| {
+            cross_canister_call_functions_info.notify.rust.clone()
+        })
+        .collect();
+
+    let notify_with_payment128_functions: Vec<proc_macro2::TokenStream> =
+        cross_canister_call_functions_infos
+            .iter()
+            .map(|cross_canister_call_functions_info| {
+                cross_canister_call_functions_info
+                    .notify_with_payment128
+                    .rust
+                    .clone()
+            })
+            .collect();
 
     quote! {
         #(#call_functions)*
+        #(#call_with_payment_functions)*
+        #(#call_with_payment128_functions)*
+        #(#notify_functions)*
+        #(#notify_with_payment128_functions)*
     }
 }
 
@@ -155,6 +201,32 @@ fn generate_cross_canister_call_functions_info_from_canister_type_element(
                 &call_params,
             );
 
+            let call_with_payment_rust = generate_call_with_payment_rust(
+                &cross_canister_call_function_names.call_with_payment_function_name,
+                &method_name,
+                &function_return_type,
+                &call_params,
+            );
+
+            let call_with_payment128_rust = generate_call_with_payment128_rust(
+                &cross_canister_call_function_names.call_with_payment128_function_name,
+                &method_name,
+                &function_return_type,
+                &call_params,
+            );
+
+            let notify_rust = generate_notify_rust(
+                &cross_canister_call_function_names.notify_function_name,
+                &method_name,
+                &call_params,
+            );
+
+            let notify_with_payment128_rust = generate_notify_with_payment128_rust(
+                &cross_canister_call_function_names.notify_with_payment128_function_name,
+                &method_name,
+                &call_params,
+            );
+
             CrossCanisterCallFunctionsInfo {
                 call: CrossCanisterCallFunctionInfo {
                     name: cross_canister_call_function_names.call_function_name,
@@ -162,19 +234,19 @@ fn generate_cross_canister_call_functions_info_from_canister_type_element(
                 },
                 call_with_payment: CrossCanisterCallFunctionInfo {
                     name: cross_canister_call_function_names.call_with_payment_function_name,
-                    rust: quote!(),
+                    rust: call_with_payment_rust,
                 },
                 call_with_payment128: CrossCanisterCallFunctionInfo {
                     name: cross_canister_call_function_names.call_with_payment128_function_name,
-                    rust: quote!(),
+                    rust: call_with_payment128_rust,
                 },
                 notify: CrossCanisterCallFunctionInfo {
                     name: cross_canister_call_function_names.notify_function_name,
-                    rust: quote!(),
+                    rust: notify_rust,
                 },
                 notify_with_payment128: CrossCanisterCallFunctionInfo {
                     name: cross_canister_call_function_names.notify_with_payment128_function_name,
-                    rust: quote!(),
+                    rust: notify_with_payment128_rust,
                 },
             }
         }
@@ -236,28 +308,213 @@ fn generate_call_rust(
 
     let param_names = &rust_params.param_names;
 
+    let comma = if param_names.len() == 1 {
+        quote! { , }
+    } else {
+        quote! {}
+    };
+
     quote! {
         async fn #function_name_ident(#(#params),*) -> CallResult<(#function_return_type,)> {
             ic_cdk::api::call::call(
                 canister_id_principal,
                 #method_name,
-                (#(#param_names),*,)
+                (#(#param_names),*#comma)
             ).await
         }
     }
 }
 
-// TODO we need to go one level deeper here
+fn generate_call_with_payment_rust(
+    function_name: &str,
+    method_name: &str,
+    function_return_type: &proc_macro2::TokenStream,
+    rust_params: &RustParams,
+) -> proc_macro2::TokenStream {
+    let function_name_ident = format_ident!("{}", function_name);
+
+    let params = vec![
+        vec![quote! { canister_id_principal: ic_cdk::export::Principal }],
+        rust_params.params.clone(),
+        vec![quote! { cycles: u64 }],
+    ]
+    .concat();
+
+    let param_names = &rust_params.param_names;
+
+    let comma = if param_names.len() == 1 {
+        quote! { , }
+    } else {
+        quote! {}
+    };
+    quote! {
+        async fn #function_name_ident(#(#params),*) -> CallResult<(#function_return_type,)> {
+            ic_cdk::api::call::call_with_payment(
+                canister_id_principal,
+                #method_name,
+                (#(#param_names),*#comma),
+                cycles
+            ).await
+        }
+    }
+}
+
+fn generate_call_with_payment128_rust(
+    function_name: &str,
+    method_name: &str,
+    function_return_type: &proc_macro2::TokenStream,
+    rust_params: &RustParams,
+) -> proc_macro2::TokenStream {
+    let function_name_ident = format_ident!("{}", function_name);
+
+    let params = vec![
+        vec![quote! { canister_id_principal: ic_cdk::export::Principal }],
+        rust_params.params.clone(),
+        vec![quote! { cycles: u128 }],
+    ]
+    .concat();
+
+    let param_names = &rust_params.param_names;
+
+    let comma = if param_names.len() == 1 {
+        quote! { , }
+    } else {
+        quote! {}
+    };
+
+    quote! {
+        async fn #function_name_ident(#(#params),*) -> CallResult<(#function_return_type,)> {
+            ic_cdk::api::call::call_with_payment128(
+                canister_id_principal,
+                #method_name,
+                (#(#param_names),*#comma),
+                cycles
+            ).await
+        }
+    }
+}
+
+fn generate_notify_rust(
+    function_name: &str,
+    method_name: &str,
+    rust_params: &RustParams,
+) -> proc_macro2::TokenStream {
+    let function_name_ident = format_ident!("{}", function_name);
+
+    let param_names = &rust_params.param_names;
+
+    let param_variables: Vec<proc_macro2::TokenStream> = param_names
+        .iter()
+        .enumerate()
+        .map(|(index, param_name)| {
+            let param_name_js_value = format_ident!("{}_js_value", param_name.to_string());
+            let param_type = &rust_params.param_types[index];
+
+            quote! {
+                let #param_name_js_value = args_js_object.get(stringify!(index), _context).unwrap();
+                let #param_name: #param_type = #param_name_js_value.azle_try_from_js_value(_context).unwrap();
+            }
+        })
+        .collect();
+
+    let comma = if param_names.len() == 1 {
+        quote! { , }
+    } else {
+        quote! {}
+    };
+
+    quote! {
+        fn #function_name_ident(
+            _this: &boa_engine::JsValue,
+            _aargs: &[boa_engine::JsValue],
+            _context: &mut boa_engine::Context
+        ) -> boa_engine::JsResult<boa_engine::JsValue> {
+            let canister_id_js_value = _aargs.get(0).unwrap().clone();
+            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_context).unwrap();
+
+            let args_js_value = _aargs.get(1).unwrap().clone();
+            let args_js_object = args_js_value.as_object().unwrap();
+
+            #(#param_variables)*
+
+            let notify_result = ic_cdk::api::call::notify(
+                canister_id_principal,
+                #method_name,
+                (#(#param_names),*#comma)
+            );
+
+            Ok(notify_result.azle_into_js_value(_context))
+        }
+    }
+}
+
+fn generate_notify_with_payment128_rust(
+    function_name: &str,
+    method_name: &str,
+    rust_params: &RustParams,
+) -> proc_macro2::TokenStream {
+    let function_name_ident = format_ident!("{}", function_name);
+
+    let param_names = &rust_params.param_names;
+
+    let param_variables: Vec<proc_macro2::TokenStream> = param_names
+        .iter()
+        .enumerate()
+        .map(|(index, param_name)| {
+            let param_name_js_value = format_ident!("{}_js_value", param_name.to_string());
+            let param_type = &rust_params.param_types[index];
+
+            quote! {
+                let #param_name_js_value = args_js_object.get(stringify!(index), _context).unwrap();
+                let #param_name: #param_type = #param_name_js_value.azle_try_from_js_value(_context).unwrap();
+            }
+        })
+        .collect();
+
+    let comma = if param_names.len() == 1 {
+        quote! { , }
+    } else {
+        quote! {}
+    };
+
+    quote! {
+        fn #function_name_ident(
+            _this: &boa_engine::JsValue,
+            _aargs: &[boa_engine::JsValue],
+            _context: &mut boa_engine::Context
+        ) -> boa_engine::JsResult<boa_engine::JsValue> {
+            let canister_id_js_value = _aargs.get(0).unwrap().clone();
+            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_context).unwrap();
+
+            let args_js_value = _aargs.get(1).unwrap().clone();
+            let args_js_object = args_js_value.as_object().unwrap();
+
+            #(#param_variables)*
+
+            let cycles_js_value = _aargs.get(2).unwrap().clone();
+            let cycles: u128 = cycles_js_value.azle_try_from_js_value(_context).unwrap();
+
+            let notify_result = ic_cdk::api::call::notify_with_payment128(
+                canister_id_principal,
+                #method_name,
+                (#(#param_names),*#comma),
+                cycles
+            );
+
+            Ok(notify_result.azle_into_js_value(_context))
+        }
+    }
+}
+
 fn get_ts_method_signature_return_type(
     ts_method_signature: &TsMethodSignature,
 ) -> proc_macro2::TokenStream {
-    // TODO need to go one level deeper through the CanisteResult
-    // ts_type_to_rust_type(
-    //     &ts_method_signature.type_ann.as_ref().unwrap().type_ann,
-    //     None,
-    // )
-    // .get_type_ident()
-    quote! { String }
+    let ts_type_ann = &*ts_method_signature.type_ann.as_ref().unwrap().type_ann;
+    let ts_type_ref = &ts_type_ann.as_ts_type_ref().unwrap();
+    let type_params = ts_type_ref.type_params.as_ref().unwrap();
+    let return_type = &**type_params.params.get(0).unwrap();
+
+    ts_type_to_rust_type(return_type, None).get_type_ident()
 }
 
 // TODO this part should be refactored to allow us to get a params data structure by just passing in a &FnDecl
