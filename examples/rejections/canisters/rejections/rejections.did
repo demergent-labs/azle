@@ -1,9 +1,16 @@
-type RejectionCode = variant { "NoError": null; "SysFatal": null; "SysTransient": null; "DestinationInvalid": null; "CanisterReject": null; "CanisterError": null; "Unknown": null };
-
-service: {
-    "getRejectionCodeNoError": () -> (RejectionCode);
-    "getRejectionCodeDestinationInvalid": () -> (RejectionCode);
-    "getRejectionCodeCanisterReject": () -> (RejectionCode);
-    "getRejectionCodeCanisterError": () -> (RejectionCode);
-    "getRejectionMessage": (text) -> (text);
+type RejectionCode = variant {
+  NoError;
+  CanisterError;
+  SysTransient;
+  DestinationInvalid;
+  Unknown;
+  SysFatal;
+  CanisterReject;
+};
+service : () -> {
+  getRejectionCodeCanisterError : () -> (RejectionCode);
+  getRejectionCodeCanisterReject : () -> (RejectionCode);
+  getRejectionCodeDestinationInvalid : () -> (RejectionCode);
+  getRejectionCodeNoError : () -> (RejectionCode);
+  getRejectionMessage : (text) -> (text);
 }
