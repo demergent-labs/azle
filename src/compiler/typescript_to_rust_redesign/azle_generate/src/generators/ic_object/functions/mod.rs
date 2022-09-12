@@ -11,10 +11,18 @@ mod canister_balance128;
 mod data_certificate;
 mod id;
 mod method_name;
+mod msg_cycles_accept;
+mod msg_cycles_accept128;
+mod msg_cycles_available;
+mod msg_cycles_available128;
+mod msg_cycles_refunded;
+mod msg_cycles_refunded128;
 mod notify_raw;
 mod performance_counter;
 mod print;
 mod reject;
+mod reject_code;
+mod reject_message;
 mod reply;
 mod reply_raw;
 mod set_certified_data;
@@ -43,11 +51,24 @@ pub fn generate_ic_object_functions(fn_decls: &Vec<FnDecl>) -> proc_macro2::Toke
     let data_certificate = data_certificate::generate_ic_object_function_data_certificate();
     let id = id::generate_ic_object_function_id();
     let method_name = method_name::generate_ic_object_function_method_name();
+    let msg_cycles_accept = msg_cycles_accept::generate_ic_object_function_msg_cycles_accept();
+    let msg_cycles_accept128 =
+        msg_cycles_accept128::generate_ic_object_function_msg_cycles_accept128();
+    let msg_cycles_available =
+        msg_cycles_available::generate_ic_object_function_msg_cycles_available();
+    let msg_cycles_available128 =
+        msg_cycles_available128::generate_ic_object_function_msg_cycles_available128();
+    let msg_cycles_refunded =
+        msg_cycles_refunded::generate_ic_object_function_msg_cycles_refunded();
+    let msg_cycles_refunded128 =
+        msg_cycles_refunded128::generate_ic_object_function_msg_cycles_refunded128();
     let notify_raw = notify_raw::generate_ic_object_function_notify_raw();
     let performance_counter =
         performance_counter::generate_ic_object_function_performance_counter();
     let print = print::generate_ic_object_function_print();
     let reject = reject::generate_ic_object_function_reject();
+    let reject_code = reject_code::generate_ic_object_function_reject_code();
+    let reject_message = reject_message::generate_ic_object_function_reject_message();
     let reply = reply::generate_ic_object_function_reply(fn_decls);
     let reply_raw = reply_raw::generate_ic_object_function_reply_raw();
     let set_certified_data = set_certified_data::generate_ic_object_function_set_certified_data();
@@ -75,10 +96,18 @@ pub fn generate_ic_object_functions(fn_decls: &Vec<FnDecl>) -> proc_macro2::Toke
         #data_certificate
         #id
         #method_name
+        #msg_cycles_accept
+        #msg_cycles_accept128
+        #msg_cycles_available
+        #msg_cycles_available128
+        #msg_cycles_refunded
+        #msg_cycles_refunded128
         #notify_raw
         #performance_counter
         #print
         #reject
+        #reject_code
+        #reject_message
         #reply
         #reply_raw
         #set_certified_data
