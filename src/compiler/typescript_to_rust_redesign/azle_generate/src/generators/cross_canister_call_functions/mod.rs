@@ -530,7 +530,7 @@ fn get_ts_method_signature_return_type(
     let type_params = ts_type_ref.type_params.as_ref().unwrap();
     let return_type = &**type_params.params.get(0).unwrap();
 
-    ts_type_to_rust_type(return_type, None).get_type_ident()
+    ts_type_to_rust_type(return_type, &None).get_type_ident()
 }
 
 // TODO this part should be refactored to allow us to get a params data structure by just passing in a &FnDecl
@@ -544,7 +544,7 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
                 let param_name = ident_to_string(&binding_ident.id);
                 let param_name_ident = format_ident!("{}", param_name);
                 let param_type =
-                    ts_type_to_rust_type(&binding_ident.type_ann.as_ref().unwrap().type_ann, None)
+                    ts_type_to_rust_type(&binding_ident.type_ann.as_ref().unwrap().type_ann, &None)
                         .get_type_ident();
 
                 quote! {
@@ -576,7 +576,7 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
         .map(|ts_fn_param| match ts_fn_param {
             TsFnParam::Ident(binding_ident) => {
                 let param_type =
-                    ts_type_to_rust_type(&binding_ident.type_ann.as_ref().unwrap().type_ann, None)
+                    ts_type_to_rust_type(&binding_ident.type_ann.as_ref().unwrap().type_ann, &None)
                         .get_type_ident();
 
                 quote! {

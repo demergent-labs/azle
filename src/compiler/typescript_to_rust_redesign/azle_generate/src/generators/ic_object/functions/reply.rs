@@ -36,7 +36,7 @@ fn generate_match_arm(fn_decl: &FnDecl) -> TokenStream {
     let fn_name = utils::fn_decls::get_fn_decl_function_name(fn_decl);
     let return_type_ast = utils::fn_decls::get_canister_method_return_type(fn_decl);
     let rust_return_type = match return_type_ast {
-        Some(ts_type) => canister_methods::ts_type_to_rust_type(ts_type, None).get_type_ident(),
+        Some(ts_type) => canister_methods::ts_type_to_rust_type(ts_type, &None).get_type_ident(),
         None => quote! {()},
     };
     quote!(
