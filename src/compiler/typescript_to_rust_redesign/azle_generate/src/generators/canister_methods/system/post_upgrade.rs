@@ -84,8 +84,8 @@ fn generate_post_upgrade_params(
     if let Some(post_upgrade_fn_decl) = post_upgrade_fn_decl_option {
         // TODO this part should be refactored to allow us to get a params data structure by just passing in a &FnDecl
         // TODO that params data structures can have the name, the type, and both strings and idents as necessary
-        let param_name_idents = generate_param_name_idents(&post_upgrade_fn_decl.function.params);
-        let param_types = generate_param_types(&post_upgrade_fn_decl.function.params);
+        let param_name_idents = generate_param_name_idents(&post_upgrade_fn_decl);
+        let param_types = generate_param_types(&post_upgrade_fn_decl);
         let params = generate_params_token_stream(&param_name_idents, &param_types);
 
         params

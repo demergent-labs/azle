@@ -6,15 +6,14 @@ use swc_ecma_ast::TsTypeAliasDecl;
 
 use crate::generators::canister_methods::types::ts_type_literal_to_rust_enum;
 
-use super::StructInfo;
-
+use super::{generate_hash_map, StructInfo};
 /**
  * Loops through all of the dependant types, finds the corresponding ts types in
  * the type aliases, converts them to a rust type, and inserts it into the
  * result map
  */
 pub fn generate_variant_token_streams(
-    type_alias_variants: &HashSet<&String>,
+    type_alias_variants: &HashSet<String>,
     ast_type_alias_variant_decls: &Vec<TsTypeAliasDecl>,
 ) -> HashMap<String, (TokenStream, Vec<StructInfo>)> {
     let type_alias_lookup = generate_hash_map(ast_type_alias_variant_decls);
@@ -24,11 +23,10 @@ pub fn generate_variant_token_streams(
     type_alias_variants.iter().fold(
         HashMap::new(),
         |mut all_type_alias_dependencies, dependant_type| {
-            let type_alias_decl = type_alias_lookup.get(dependant_type.clone());
+            let type_alias_decl = type_alias_lookup.get(dependant_type);
             let dependency_map = match type_alias_decl {
                 Some(type_alias_decl) => {
-                    let dependency_map =
-                        generate_dependencies_map_for(type_alias_decl, &type_alias_lookup);
+                    let dependency_map = generate_dependencies_map_for(type_alias_decl);
                     dependency_map
                 }
                 None => {
@@ -47,7 +45,6 @@ pub fn generate_variant_token_streams(
 
 fn generate_dependencies_map_for(
     type_alias_decl: &TsTypeAliasDecl,
-    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
 ) -> HashMap<String, (TokenStream, Vec<StructInfo>)> {
     // TODO I feel like this might run into some namespace issues
     let ts_type_name = type_alias_decl.id.sym.chars().as_str().to_string();
@@ -64,28 +61,6 @@ fn generate_dependencies_map_for(
 
     let aliased_rust_type = ts_type_literal_to_rust_enum(&ts_type_alias_ident, inner_type_lit);
 
-    // Add the Token Streams for the dependencies of the type alias specified in the arguments
-    let member_dependencies = aliased_rust_type.type_alias_dependencies;
-    let sub_dependency_map =
-        member_dependencies
-            .iter()
-            .fold(HashMap::new(), |mut acc, sub_dependency| {
-                let sub_dependency_decl = type_alias_lookup.get(sub_dependency);
-                match sub_dependency_decl {
-                    Some(decl) => {
-                        let aliased_type_sub_dependency_map =
-                            generate_dependencies_map_for(decl, type_alias_lookup);
-                        acc.extend(aliased_type_sub_dependency_map);
-                        acc
-                    }
-                    None => todo!(
-                        "Handle if we can't find the type [{}] in the dictionary",
-                        sub_dependency
-                    ),
-                }
-            });
-    result_dependency_map.extend(sub_dependency_map);
-
     // Add the Token stream for the TsTypeAliasDecl specified in the arguments
     let enum_name = aliased_rust_type.identifier.to_string();
 
@@ -98,16 +73,4 @@ fn generate_dependencies_map_for(
     );
 
     result_dependency_map
-}
-
-fn generate_hash_map(
-    ast_type_alias_decls: &Vec<TsTypeAliasDecl>,
-) -> HashMap<String, TsTypeAliasDecl> {
-    ast_type_alias_decls
-        .iter()
-        .fold(HashMap::new(), |mut acc, ast_type_alias_decl| {
-            let type_alias_names = ast_type_alias_decl.id.sym.chars().as_str().to_string();
-            acc.insert(type_alias_names, ast_type_alias_decl.clone());
-            acc
-        })
 }

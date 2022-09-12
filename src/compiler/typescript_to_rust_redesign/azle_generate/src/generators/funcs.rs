@@ -206,7 +206,11 @@ fn get_param_types(function_type: &swc_ecma_ast::TsFnType) -> Vec<TokenStream> {
                             .to_string();
 
                     let modified_rust_type = if rust_type.starts_with("Vec") {
-                        format!("Vec::<{}", rust_type.replacen("Vec<", "", 1))
+                        rust_type
+                            .chars()
+                            .filter(|c| !c.is_whitespace())
+                            .collect::<String>()
+                            .replacen("Vec<", "Vec::<", 1)
                     } else {
                         rust_type
                     };

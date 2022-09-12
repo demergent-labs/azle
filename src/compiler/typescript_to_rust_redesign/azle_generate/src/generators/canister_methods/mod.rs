@@ -2,6 +2,7 @@ pub mod async_result_handler;
 pub mod functions;
 mod method_body;
 mod query;
+mod record_type_aliases;
 mod rust_types;
 mod type_aliases;
 mod types;
@@ -19,11 +20,15 @@ pub use query::{generate_query_function_infos, get_query_fn_decls};
 
 pub use update::{generate_update_function_infos, get_update_fn_decls};
 
-pub use functions::{generate_function_info, FunctionInformation};
+pub use functions::{
+    generate_function_info, get_param_ts_types, get_return_ts_type, FunctionInformation,
+};
 
-pub use type_aliases::generate_record_token_streams;
+pub use type_aliases::{generate_hash_map, generate_type_alias_token_streams};
 
 pub use variant_type_aliases::generate_variant_token_streams;
+
+pub use record_type_aliases::generate_record_token_streams;
 
 pub use rust_types::{ArrayTypeInfo, KeywordInfo, RustType, StructInfo, TypeRefInfo};
 
@@ -31,42 +36,50 @@ pub use types::ts_type_to_rust_type;
 
 use swc_ecma_ast::{ExportDecl, FnDecl, Module, ModuleDecl, Program, Stmt, TsTypeAliasDecl};
 
-pub fn get_ast_record_type_alias_decls(
+pub fn get_ast_other_type_alias_decls(
     type_alias_decls: &Vec<TsTypeAliasDecl>,
 ) -> Vec<TsTypeAliasDecl> {
-    // TODO this does nothing. Eventually it will sort out just the type literals I guess
-    let type_lits: Vec<TsTypeAliasDecl> = type_alias_decls
-        .clone()
-        .into_iter()
-        .filter(|ts_type_alias_decl| ts_type_alias_decl.type_ann.is_ts_type_lit())
-        .collect();
-
-    let others_not_variant_or_func = type_alias_decls
+    type_alias_decls
         .clone()
         .into_iter()
         .filter(|ts_type_alias_decl| {
-            !ts_type_alias_decl.type_ann.is_ts_type_ref()
-                || (ts_type_alias_decl.type_ann.is_ts_type_ref()
-                    && match ts_type_alias_decl.type_ann.as_ts_type_ref() {
-                        Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
-                            Some(ident) => {
-                                let name = ident.sym.chars().as_str();
-                                name != "Func" && name != "Variant"
-                            }
+            !ts_type_alias_decl.type_ann.is_ts_type_lit()
+                && (!ts_type_alias_decl.type_ann.is_ts_type_ref()
+                    || (ts_type_alias_decl.type_ann.is_ts_type_ref()
+                        && match ts_type_alias_decl.type_ann.as_ts_type_ref() {
+                            Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
+                                Some(ident) => {
+                                    let name = ident.sym.chars().as_str();
+                                    name != "Func" && name != "Variant" && name != "Canister"
+                                }
+                                None => true,
+                            },
                             None => true,
-                        },
-                        None => true,
-                    })
+                        }))
         })
-        .collect();
+        .collect()
+}
 
-    vec![type_lits, others_not_variant_or_func].concat()
+pub fn get_ast_record_type_alias_decls(
+    type_alias_decls: &Vec<TsTypeAliasDecl>,
+) -> Vec<TsTypeAliasDecl> {
+    type_alias_decls
+        .clone()
+        .into_iter()
+        .filter(|ts_type_alias_decl| ts_type_alias_decl.type_ann.is_ts_type_lit())
+        .collect()
 }
 
 pub fn get_ast_variant_type_alias_decls(
     type_alias_decls: &Vec<TsTypeAliasDecl>,
 ) -> Vec<TsTypeAliasDecl> {
     get_ast_type_alias_decls_by_type_ref_name(type_alias_decls, "Variant")
+}
+
+pub fn get_ast_canister_type_alias_decls(
+    type_alias_decls: &Vec<TsTypeAliasDecl>,
+) -> Vec<TsTypeAliasDecl> {
+    get_ast_type_alias_decls_by_type_ref_name(type_alias_decls, "Canister")
 }
 
 pub fn get_ast_type_alias_decls_from_programs(programs: &Vec<Program>) -> Vec<TsTypeAliasDecl> {
@@ -102,7 +115,7 @@ fn get_export_decls(module: &Module) -> Vec<ExportDecl> {
     export_decls
 }
 
-fn get_type_alias_decls(module: &Module) -> Vec<TsTypeAliasDecl> {
+pub fn get_type_alias_decls(module: &Module) -> Vec<TsTypeAliasDecl> {
     let module_stmts: Vec<Stmt> = module
         .body
         .iter()
@@ -136,7 +149,7 @@ fn get_type_alias_decls(module: &Module) -> Vec<TsTypeAliasDecl> {
     vec![type_alias_decls, export_type_alias_decls].concat()
 }
 
-fn get_ast_type_alias_decls_by_type_ref_name(
+pub fn get_ast_type_alias_decls_by_type_ref_name(
     type_alias_decls: &Vec<TsTypeAliasDecl>,
     type_ref_name: &str,
 ) -> Vec<TsTypeAliasDecl> {

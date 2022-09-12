@@ -1,25 +1,75 @@
-type User = record {
-    "id": text;
-    "basic_func": BasicFunc;
-    "complex_func": ComplexFunc;
+type ComplexFunc = func (
+    record {
+      id : text;
+      basic_func : func (text) -> (text) query;
+      complex_func : ComplexFunc;
+    },
+    variant {
+      Bad;
+      ComplexFunc : ComplexFunc;
+      Good;
+      BasicFunc : func (text) -> (text) query;
+    },
+  ) -> (nat64);
+type GetNotifierFromNotifiersCanisterResult = variant {
+  ok : func (vec nat8) -> () oneway;
+  err : text;
 };
-
-type GetNotifierFromNotifiersCanisterResult = variant { "ok": NotifierFunc; "err": text };
-
-type Reaction = variant { "Good": null; "Bad": null; "BasicFunc": BasicFunc; "ComplexFunc": ComplexFunc };
-
-type NotifierFunc = func (blob) -> () oneway;
-type BasicFunc = func (text) -> (text) query;
-type ComplexFunc = func (User, Reaction) -> (nat64);
-type StableFunc = func (nat64, text) -> () query;
-
-service: () -> {
-    "get_stable_func": () -> (StableFunc) query;
-    "basic_func_param": (BasicFunc) -> (BasicFunc) query;
-    "basic_func_param_array": (vec BasicFunc) -> (vec BasicFunc) query;
-    "basic_func_return_type": () -> (BasicFunc) query;
-    "basic_func_return_type_array": () -> (vec BasicFunc) query;
-    "complex_func_param": (ComplexFunc) -> (ComplexFunc) query;
-    "complex_func_return_type": () -> (ComplexFunc) query;
-    "get_notifier_from_notifiers_canister": () -> (GetNotifierFromNotifiersCanisterResult);
+service : () -> {
+  basic_func_param : (func (text) -> (text) query) -> (
+      func (text) -> (text) query,
+    ) query;
+  basic_func_param_array : (vec func (text) -> (text) query) -> (
+      vec func (text) -> (text) query,
+    ) query;
+  basic_func_return_type : () -> (func (text) -> (text) query) query;
+  basic_func_return_type_array : () -> (vec func (text) -> (text) query) query;
+  complex_func_param : (
+      func (
+          record {
+            id : text;
+            basic_func : func (text) -> (text) query;
+            complex_func : ComplexFunc;
+          },
+          variant {
+            Bad;
+            ComplexFunc : ComplexFunc;
+            Good;
+            BasicFunc : func (text) -> (text) query;
+          },
+        ) -> (nat64),
+    ) -> (
+      func (
+          record {
+            id : text;
+            basic_func : func (text) -> (text) query;
+            complex_func : ComplexFunc;
+          },
+          variant {
+            Bad;
+            ComplexFunc : ComplexFunc;
+            Good;
+            BasicFunc : func (text) -> (text) query;
+          },
+        ) -> (nat64),
+    ) query;
+  complex_func_return_type : () -> (
+      func (
+          record {
+            id : text;
+            basic_func : func (text) -> (text) query;
+            complex_func : ComplexFunc;
+          },
+          variant {
+            Bad;
+            ComplexFunc : ComplexFunc;
+            Good;
+            BasicFunc : func (text) -> (text) query;
+          },
+        ) -> (nat64),
+    ) query;
+  get_notifier_from_notifiers_canister : () -> (
+      GetNotifierFromNotifiersCanisterResult,
+    );
+  get_stable_func : () -> (func (nat64, text) -> () query) query;
 }
