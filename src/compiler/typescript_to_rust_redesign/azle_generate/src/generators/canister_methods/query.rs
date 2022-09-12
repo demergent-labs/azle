@@ -18,8 +18,14 @@ fn generate_query_function_info(ast_fnc_decl_query: &FnDecl) -> FunctionInformat
     let function_info = generate_function_info(ast_fnc_decl_query);
     let function_signature_stream = function_info.function;
 
+    let manual_reply_arg = if function_info.manual {
+        quote! {(manual_reply = true)}
+    } else {
+        quote! {}
+    };
+
     let token_stream = quote! {
-        #[ic_cdk_macros::query]
+        #[ic_cdk_macros::query#manual_reply_arg]
         #[candid::candid_method(query)]
         #function_signature_stream
     };
@@ -27,34 +33,5 @@ fn generate_query_function_info(ast_fnc_decl_query: &FnDecl) -> FunctionInformat
     FunctionInformation {
         function: token_stream,
         ..function_info
-    }
-}
-
-pub fn get_query_fn_decls(fn_decls: &Vec<FnDecl>) -> Vec<FnDecl> {
-    fn_decls
-        .clone()
-        .into_iter()
-        .filter(|fn_decl| is_query_fn_decl(fn_decl))
-        .collect()
-}
-
-// TODO this should be deprectated in favor of utils::fn_decls::is_canister_method_type_fn_decl
-fn is_query_fn_decl(fn_decl: &FnDecl) -> bool {
-    if let Some(ts_type_ann) = &fn_decl.function.return_type {
-        if ts_type_ann.type_ann.is_ts_type_ref() {
-            let type_ref = ts_type_ann.type_ann.as_ts_type_ref().unwrap();
-
-            if type_ref.type_name.is_ident() {
-                let ident = type_ref.type_name.as_ident().unwrap();
-
-                ident.to_string() == "Query#0" // TODO probably use ident.sym to get the real name without the #0
-            } else {
-                false
-            }
-        } else {
-            false
-        }
-    } else {
-        false
     }
 }
