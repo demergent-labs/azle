@@ -36,6 +36,7 @@ use crate::{
             },
             FunctionInformation, StructInfo,
         },
+        cross_canister_call_functions::generate_cross_canister_call_functions,
         funcs,
         ic_object::functions::generate_ic_object_functions,
         stacktrace,
