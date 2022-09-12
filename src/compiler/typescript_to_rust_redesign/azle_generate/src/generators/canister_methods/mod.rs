@@ -1,5 +1,5 @@
 pub mod async_result_handler;
-mod functions;
+pub mod functions;
 mod method_body;
 mod query;
 mod record_type_aliases;
