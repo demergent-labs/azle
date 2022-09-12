@@ -236,7 +236,7 @@ pub fn azle_generate(
         vec![ast_fnc_decls_query, ast_fnc_decls_update].concat();
     let ic_object_functions = generate_ic_object_functions(&query_and_update_func_decls);
 
-    let async_result_handler = generate_async_result_handler();
+    let async_result_handler = generate_async_result_handler(&programs);
     let get_top_level_call_frame_fn = stacktrace::generate_get_top_level_call_frame_fn();
 
     let cross_canister_call_functions = generate_cross_canister_call_functions(&programs);
