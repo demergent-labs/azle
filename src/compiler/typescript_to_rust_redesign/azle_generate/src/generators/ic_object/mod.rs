@@ -67,6 +67,36 @@ pub fn generate_ic_object(programs: &Vec<Program>) -> proc_macro2::TokenStream {
             )
             #(#notify_functions)*
             .function(
+                _azle_ic_msg_cycles_accept,
+                "msg_cycles_accept",
+                0
+            )
+            .function(
+                _azle_ic_msg_cycles_accept128,
+                "msg_cycles_accept128",
+                0
+            )
+            .function(
+                _azle_ic_msg_cycles_available,
+                "msg_cycles_available",
+                0
+            )
+            .function(
+                _azle_ic_msg_cycles_available128,
+                "msg_cycles_available128",
+                0
+            )
+            .function(
+                _azle_ic_msg_cycles_refunded,
+                "msg_cycles_refunded",
+                0
+            )
+            .function(
+                _azle_ic_msg_cycles_refunded128,
+                "msg_cycles_refunded128",
+                0
+            )
+            .function(
                 _azle_ic_notify_raw,
                 "notify_raw",
                 0
@@ -87,8 +117,23 @@ pub fn generate_ic_object(programs: &Vec<Program>) -> proc_macro2::TokenStream {
                 0
             )
             .function(
+                _azle_ic_reject_code,
+                "reject_code",
+                0
+            )
+            .function(
+                _azle_ic_reject_message,
+                "reject_message",
+                0
+            )
+            .function(
                 _azle_ic_reply,
                 "reply",
+                0
+            )
+            .function(
+                _azle_ic_reply_raw,
+                "reply_raw",
                 0
             )
             .function(
