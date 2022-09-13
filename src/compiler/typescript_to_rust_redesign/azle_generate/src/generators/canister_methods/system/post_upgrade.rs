@@ -1,12 +1,13 @@
 use crate::generators::ic_object::generate_ic_object;
 use crate::{
+    azle_ast::CanisterMethodType,
     generators::canister_methods::{
         functions::{
             generate_param_name_idents, generate_param_types, generate_params_token_stream,
         },
         method_body::generate_call_to_js_function,
     },
-    utils::fn_decls::{get_canister_method_type_fn_decls, CanisterMethodType},
+    ts_ast,
 };
 use quote::quote;
 use swc_ecma_ast::{FnDecl, Program};
@@ -16,8 +17,10 @@ pub fn generate_canister_method_system_post_upgrade(
 ) -> proc_macro2::TokenStream {
     let ic_object = generate_ic_object(programs);
 
-    let post_upgrade_fn_decls =
-        get_canister_method_type_fn_decls(programs, &CanisterMethodType::PostUpgrade);
+    let post_upgrade_fn_decls = ts_ast::program::get_canister_method_type_fn_decls(
+        programs,
+        &CanisterMethodType::PostUpgrade,
+    );
 
     if post_upgrade_fn_decls.len() > 1 {
         panic!("Only one PostUpgrade function can be defined");

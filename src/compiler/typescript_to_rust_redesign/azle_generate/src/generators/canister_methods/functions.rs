@@ -1,6 +1,5 @@
 use super::{ts_type_to_rust_type, RustType};
-use crate::generators::canister_methods::method_body::generate_canister_method_body;
-use crate::utils;
+use crate::{generators::canister_methods::method_body::generate_canister_method_body, ts_ast};
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use swc_ecma_ast::{FnDecl, TsType};
@@ -17,7 +16,7 @@ pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> FunctionInformation {
     let function_name = ast_fnc_decl.ident.sym.chars().as_str().to_string();
     let function_name_ident = format_ident!("{}", function_name);
 
-    let manual = utils::fn_decls::is_manual(ast_fnc_decl);
+    let manual = ts_ast::fn_decl::is_manual(ast_fnc_decl);
 
     let return_type = generate_return_type(&ast_fnc_decl);
     let return_type_token = return_type.get_type_ident();

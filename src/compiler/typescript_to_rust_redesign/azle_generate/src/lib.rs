@@ -18,6 +18,7 @@ use swc_ecma_parser::{
 
 use crate::generators::cross_canister_call_functions::generate_cross_canister_call_functions;
 use crate::{
+    azle_ast::CanisterMethodType,
     generators::{
         azle_into_js_value::generate_azle_into_js_value,
         azle_try_from_js_value::generate_azle_try_from_js_value,
@@ -41,12 +42,11 @@ use crate::{
         ic_object::functions::generate_ic_object_functions,
         stacktrace,
     },
-    utils::fn_decls::{self, CanisterMethodType},
 };
 
 mod ast_utilities;
+mod azle_ast;
 mod ts_ast;
-
 pub mod generators {
     pub mod azle_into_js_value;
     pub mod azle_try_from_js_value;
@@ -57,7 +57,6 @@ pub mod generators {
     pub mod stacktrace;
 }
 pub mod utils {
-    pub mod fn_decls;
     pub mod ident;
     pub mod type_aliases;
 }
@@ -99,9 +98,9 @@ pub fn azle_generate(
 
     // Separate function decls into queries and updates
     let ast_fnc_decls_query =
-        fn_decls::get_canister_method_type_fn_decls(&programs, &CanisterMethodType::Query);
+        ts_ast::program::get_canister_method_type_fn_decls(&programs, &CanisterMethodType::Query);
     let ast_fnc_decls_update =
-        fn_decls::get_canister_method_type_fn_decls(&programs, &CanisterMethodType::Update);
+        ts_ast::program::get_canister_method_type_fn_decls(&programs, &CanisterMethodType::Update);
 
     // Determine which type aliases must be present for the functions to work and save them for later parsing
     let query_dependencies = ts_ast::fn_decl::get_dependent_types_from_fn_decls(
