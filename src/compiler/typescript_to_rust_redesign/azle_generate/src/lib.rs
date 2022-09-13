@@ -40,13 +40,12 @@ use crate::{
         ic_object::functions::generate_ic_object_functions,
         stacktrace,
     },
-    utils::{
-        dependencies,
-        fn_decls::{self, CanisterMethodType},
-    },
+    utils::fn_decls::{self, CanisterMethodType},
 };
 
 mod ast_utilities;
+mod ts_ast;
+
 pub mod generators {
     pub mod azle_into_js_value;
     pub mod azle_try_from_js_value;
@@ -57,7 +56,6 @@ pub mod generators {
     pub mod stacktrace;
 }
 pub mod utils {
-    pub mod dependencies;
     pub mod fn_decls;
     pub mod ident;
     pub mod type_aliases;
@@ -105,15 +103,15 @@ pub fn azle_generate(
         fn_decls::get_canister_method_type_fn_decls(&programs, &CanisterMethodType::Update);
 
     // Determine which type aliases must be present for the functions to work and save them for later parsing
-    let query_dependencies = dependencies::get_dependent_types_from_fn_decls(
+    let query_dependencies = ts_ast::fn_decl::get_dependent_types_from_fn_decls(
         &ast_fnc_decls_query,
         &ast_type_alias_decls,
     );
-    let update_dependencies = dependencies::get_dependent_types_from_fn_decls(
+    let update_dependencies = ts_ast::fn_decl::get_dependent_types_from_fn_decls(
         &ast_fnc_decls_update,
         &ast_type_alias_decls,
     );
-    let canister_dependencies = dependencies::get_dependent_types_from_canister_decls(
+    let canister_dependencies = ts_ast::ts_type_alias_decl::get_dependent_types_from_canister_decls(
         &ast_canister_type_alias_decls,
         &ast_type_alias_decls,
     );
