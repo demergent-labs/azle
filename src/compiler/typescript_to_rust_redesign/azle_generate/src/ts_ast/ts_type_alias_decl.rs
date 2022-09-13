@@ -11,6 +11,10 @@ use super::{
 };
 use crate::azle_ast::SystemStructureType;
 
+pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
+    decl.id.sym.chars().as_str().to_string()
+}
+
 pub fn get_ast_canister_type_alias_decls(
     type_alias_decls: &Vec<TsTypeAliasDecl>,
 ) -> Vec<TsTypeAliasDecl> {

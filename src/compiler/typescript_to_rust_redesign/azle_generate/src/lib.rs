@@ -70,11 +70,6 @@ fn collect_inline_dependencies(
     })
 }
 
-// TODO find a better home for this
-pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
-    decl.id.sym.chars().as_str().to_string()
-}
-
 pub fn azle_generate(
     ts_file_names: &Vec<&str>,
     main_js: &str,
