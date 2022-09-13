@@ -2,12 +2,14 @@ use std::{
     collections::{HashMap, HashSet},
     iter::FromIterator,
 };
-use swc_ecma_ast::TsTypeAliasDecl;
+use swc_ecma_ast::{TsEntityName, TsType, TsTypeAliasDecl};
 
 use super::{
+    ident::ident_to_string,
     ts_method_signature::{get_param_ts_types_from_method, get_return_ts_type_from_method},
     ts_type::get_dependent_types_for_ts_type,
 };
+use crate::azle_ast::SystemStructureType;
 
 pub fn get_dependent_types_from_type_alias_decl(
     type_alias_decl: &TsTypeAliasDecl,
@@ -103,4 +105,36 @@ pub fn generate_hash_map(
             acc.insert(type_alias_names, ast_type_alias_decl.clone());
             acc
         })
+}
+
+pub fn get_type_alias_decl_name(ts_type_alias_decl: &TsTypeAliasDecl) -> String {
+    ident_to_string(&ts_type_alias_decl.id)
+}
+
+pub fn is_type_alias_decl_system_structure_type(
+    type_alias_decl: &TsTypeAliasDecl,
+    system_structure_type: &SystemStructureType,
+) -> bool {
+    // let type_alias_decl
+    match system_structure_type {
+        SystemStructureType::Canister => {
+            let type_reference_name_option =
+                get_identifier_name_for_ts_type(&*type_alias_decl.type_ann);
+
+            match type_reference_name_option {
+                Some(type_reference_name) => type_reference_name == "Canister",
+                None => false,
+            }
+        }
+    }
+}
+
+fn get_identifier_name_for_ts_type(ts_type: &TsType) -> Option<String> {
+    match ts_type {
+        TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
+            TsEntityName::Ident(ident) => Some(ident_to_string(&ident)),
+            _ => None,
+        },
+        _ => None,
+    }
 }

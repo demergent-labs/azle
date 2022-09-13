@@ -44,7 +44,6 @@ use crate::{
     },
 };
 
-mod ast_utilities;
 mod azle_ast;
 mod ts_ast;
 pub mod generators {
@@ -55,10 +54,6 @@ pub mod generators {
     pub mod funcs;
     pub mod ic_object;
     pub mod stacktrace;
-}
-pub mod utils {
-    pub mod ident;
-    pub mod type_aliases;
 }
 
 fn collect_inline_dependencies(
@@ -93,7 +88,7 @@ pub fn azle_generate(
     let ast_canister_type_alias_decls = get_ast_canister_type_alias_decls(&ast_type_alias_decls);
 
     let ast_func_type_alias_decls =
-        ast_utilities::get_ast_func_type_alias_decls_from_programs(&programs);
+        ts_ast::program::get_ast_func_type_alias_decls_from_programs(&programs);
     let func_structs_and_impls = funcs::generate_func_structs_and_impls(ast_func_type_alias_decls);
 
     // Separate function decls into queries and updates

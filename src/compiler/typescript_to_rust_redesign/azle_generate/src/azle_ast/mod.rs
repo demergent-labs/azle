@@ -7,3 +7,7 @@ pub enum CanisterMethodType {
     Query,
     Update,
 }
+
+pub enum SystemStructureType {
+    Canister,
+}
