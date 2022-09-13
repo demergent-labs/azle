@@ -44,6 +44,7 @@ pub fn get_ast_other_type_alias_decls(
         .into_iter()
         .filter(|ts_type_alias_decl| {
             !ts_type_alias_decl.type_ann.is_ts_type_lit()
+                && !ts_type_alias_decl.type_ann.is_ts_tuple_type()
                 && (!ts_type_alias_decl.type_ann.is_ts_type_ref()
                     || (ts_type_alias_decl.type_ann.is_ts_type_ref()
                         && match ts_type_alias_decl.type_ann.as_ts_type_ref() {

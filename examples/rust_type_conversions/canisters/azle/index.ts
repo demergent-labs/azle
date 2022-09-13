@@ -235,3 +235,13 @@ export function inline_vec(
     array: { thing: string; thing2: boolean }[],
     struct_thing: StructWithInlineArray
 ): Query<void> {}
+type CanisterOnly = boolean;
+
+type CanisterTuple1 = [
+    string,
+    nat64,
+    { tuple_inline: boolean; tuple_inline2: string },
+    CanisterOnly
+];
+
+export function tuple_test(tup: CanisterTuple1): Query<void> {}

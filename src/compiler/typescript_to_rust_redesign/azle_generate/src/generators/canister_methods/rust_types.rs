@@ -36,6 +36,7 @@ pub enum RustType {
     Struct(StructInfo),
     Enum(EnumInfo),
     Func(FuncInfo),
+    Tuple(TupleInfo),
 }
 
 /**
@@ -118,6 +119,14 @@ pub struct FuncInfo {
     pub inline_members: Box<Vec<RustType>>,
 }
 
+#[derive(Clone, Debug)]
+pub struct TupleInfo {
+    pub identifier: TokenStream,
+    pub structure: TokenStream,
+    pub is_inline: bool,
+    pub inline_members: Box<Vec<RustType>>,
+}
+
 impl RustType {
     pub fn get_type_ident(&self) -> TokenStream {
         let token_stream = match self {
@@ -127,6 +136,7 @@ impl RustType {
             RustType::Struct(struct_info) => &struct_info.identifier,
             RustType::Enum(enum_info) => &enum_info.identifier,
             RustType::Func(func_info) => &func_info.identifier,
+            RustType::Tuple(tuple_info) => &tuple_info.identifier,
         };
         quote!(#token_stream)
     }
@@ -140,6 +150,7 @@ impl RustType {
             RustType::Struct(struct_info) => struct_info.is_inline,
             RustType::Enum(enum_info) => enum_info.is_inline,
             RustType::Func(func_info) => func_info.is_inline,
+            RustType::Tuple(tuple_info) => tuple_info.is_inline,
         }
     }
 
@@ -149,6 +160,7 @@ impl RustType {
             RustType::Struct(struct_info) => Some(struct_info.structure.clone()),
             RustType::Enum(enum_info) => Some(enum_info.structure.clone()),
             RustType::Func(func_info) => Some(func_info.structure.clone()),
+            RustType::Tuple(tuple_info) => Some(tuple_info.structure.clone()),
             RustType::KeywordType(_) => None,
             RustType::TypeRef(type_ref_info) => match &*type_ref_info.enclosed_inline_type {
                 Some(inline_type) => inline_type.get_structure(),
@@ -170,6 +182,7 @@ impl RustType {
             RustType::KeywordType(_) => vec![],
             RustType::TypeRef(_) => vec![],
             RustType::ArrayType(_) => vec![],
+            RustType::Tuple(tuple_info) => *tuple_info.inline_members.clone(),
         }
     }
 

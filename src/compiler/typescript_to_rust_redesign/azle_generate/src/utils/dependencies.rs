@@ -5,8 +5,8 @@ use std::{
 };
 
 use swc_ecma_ast::{
-    FnDecl, TsArrayType, TsFnOrConstructorType, TsMethodSignature, TsType, TsTypeAliasDecl,
-    TsTypeLit, TsTypeRef,
+    FnDecl, TsArrayType, TsFnOrConstructorType, TsMethodSignature, TsTupleType, TsType,
+    TsTypeAliasDecl, TsTypeLit, TsTypeRef,
 };
 
 use crate::generators::canister_methods::{get_param_ts_types, get_return_ts_type};
@@ -167,9 +167,11 @@ fn get_dependent_types_for_ts_type(
                 found_types,
             )
         }
+        swc_ecma_ast::TsType::TsTupleType(ts_tuple_type) => {
+            get_dependent_types_from_ts_tuple_type(ts_tuple_type, type_alias_lookup, found_types)
+        }
         swc_ecma_ast::TsType::TsThisType(_) => todo!(),
         swc_ecma_ast::TsType::TsTypeQuery(_) => todo!(),
-        swc_ecma_ast::TsType::TsTupleType(_) => todo!(),
         swc_ecma_ast::TsType::TsOptionalType(_) => todo!(),
         swc_ecma_ast::TsType::TsRestType(_) => todo!(),
         swc_ecma_ast::TsType::TsUnionOrIntersectionType(_) => todo!(),
@@ -210,6 +212,23 @@ fn get_dependent_types_from_ts_fn_or_constructor_type(
         }
         TsFnOrConstructorType::TsConstructorType(_) => todo!(),
     }
+}
+
+fn get_dependent_types_from_ts_tuple_type(
+    ts_tuple_type: &TsTupleType,
+    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+    found_types: &HashSet<String>,
+) -> Vec<String> {
+    ts_tuple_type
+        .elem_types
+        .iter()
+        .fold(vec![], |acc, elem_type| {
+            vec![
+                acc,
+                get_dependent_types_for_ts_type(&elem_type.ty, type_alias_lookup, found_types),
+            ]
+            .concat()
+        })
 }
 
 fn get_param_types(
