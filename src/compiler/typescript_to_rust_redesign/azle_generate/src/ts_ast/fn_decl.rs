@@ -3,7 +3,7 @@ use std::{collections::HashSet, iter::FromIterator};
 use swc_ecma_ast::{FnDecl, TsType, TsTypeAliasDecl};
 use syn::Ident;
 
-use super::{ts_type::get_dependent_types_for_ts_type, ts_type_alias_decl::generate_hash_map};
+use super::{ts_type, ts_type_alias_decl};
 use crate::azle_ast::CanisterMethodType;
 
 pub fn get_canister_method_return_type(fn_decl: &FnDecl) -> Option<&TsType> {
@@ -136,14 +136,14 @@ fn get_dependent_types_from_fn_decl(
     possible_dependencies: &Vec<TsTypeAliasDecl>,
     found_types: &HashSet<String>,
 ) -> HashSet<String> {
-    let type_alias_lookup = generate_hash_map(possible_dependencies);
+    let type_alias_lookup = ts_type_alias_decl::generate_hash_map(possible_dependencies);
     let return_types = get_return_ts_type(fn_decl);
     let param_types = get_param_ts_types(fn_decl);
     let ts_types = vec![vec![return_types], param_types].concat();
 
     ts_types.iter().fold(found_types.clone(), |acc, ts_type| {
         let result = HashSet::from_iter(
-            get_dependent_types_for_ts_type(ts_type, &type_alias_lookup, &acc)
+            ts_type::get_dependent_types_for_ts_type(ts_type, &type_alias_lookup, &acc)
                 .iter()
                 .cloned(),
         );
