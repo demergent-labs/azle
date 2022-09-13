@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::{TsTypeAliasDecl, TsTypeLit};
 
-use super::ts_type::get_dependent_types_for_ts_type;
+use super::ts_type;
 
 pub fn get_dependent_types_from_ts_type_lit(
     ts_type_lit: &TsTypeLit,
@@ -15,7 +15,11 @@ pub fn get_dependent_types_from_ts_type_lit(
                 let ts_type = *type_ann.type_ann.clone();
                 vec![
                     acc,
-                    get_dependent_types_for_ts_type(&ts_type, type_alias_lookup, found_types),
+                    ts_type::get_dependent_types_for_ts_type(
+                        &ts_type,
+                        type_alias_lookup,
+                        found_types,
+                    ),
                 ]
                 .concat()
             }

@@ -4,8 +4,7 @@ use std::{
 };
 use swc_ecma_ast::{TsTypeAliasDecl, TsTypeRef};
 
-use super::ts_type::get_dependent_types_for_ts_type;
-use super::ts_type_alias_decl::get_dependent_types_from_type_alias_decl;
+use super::{ts_type, ts_type_alias_decl};
 
 pub fn get_dependent_types_from_type_ref(
     ts_type_ref: &TsTypeRef,
@@ -57,7 +56,7 @@ pub fn get_dependent_types_from_type_ref(
                         found_types.clone().union(&new_hash).cloned().collect();
                     vec![
                         new_type,
-                        get_dependent_types_from_type_alias_decl(
+                        ts_type_alias_decl::get_dependent_types_from_type_alias_decl(
                             decl,
                             type_alias_lookup,
                             &found_types,
@@ -81,7 +80,11 @@ fn get_dependent_types_from_enclosing_type(
         Some(params) => {
             // TODO do we want to check that 0 is the only valid index?
             let enclosed_ts_type = &*params.params[0];
-            get_dependent_types_for_ts_type(&enclosed_ts_type, type_alias_lookup, found_types)
+            ts_type::get_dependent_types_for_ts_type(
+                &enclosed_ts_type,
+                type_alias_lookup,
+                found_types,
+            )
         }
         None => vec![],
     }

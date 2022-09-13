@@ -2,13 +2,9 @@ use std::{
     collections::{HashMap, HashSet},
     iter::FromIterator,
 };
-use swc_ecma_ast::{TsEntityName, TsType, TsTypeAliasDecl};
+use swc_ecma_ast::TsTypeAliasDecl;
 
-use super::{
-    ident::ident_to_string,
-    ts_method_signature::{get_param_ts_types_from_method, get_return_ts_type_from_method},
-    ts_type::get_dependent_types_for_ts_type,
-};
+use super::{ident, ts_method_signature, ts_type};
 use crate::azle_ast::SystemStructureType;
 
 pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
@@ -87,7 +83,11 @@ pub fn get_dependent_types_from_type_alias_decl(
     type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
     found_types: &HashSet<String>,
 ) -> Vec<String> {
-    get_dependent_types_for_ts_type(&*type_alias_decl.type_ann, type_alias_lookup, found_types)
+    ts_type::get_dependent_types_for_ts_type(
+        &*type_alias_decl.type_ann,
+        type_alias_lookup,
+        found_types,
+    )
 }
 
 pub fn get_dependent_types_from_canister_decls(
@@ -105,6 +105,40 @@ pub fn get_dependent_types_from_canister_decls(
             .cloned()
             .collect()
         })
+}
+
+pub fn generate_hash_map(
+    ast_type_alias_decls: &Vec<TsTypeAliasDecl>,
+) -> HashMap<String, TsTypeAliasDecl> {
+    ast_type_alias_decls
+        .iter()
+        .fold(HashMap::new(), |mut acc, ast_type_alias_decl| {
+            let type_alias_names = ast_type_alias_decl.id.sym.chars().as_str().to_string();
+            acc.insert(type_alias_names, ast_type_alias_decl.clone());
+            acc
+        })
+}
+
+pub fn get_type_alias_decl_name(ts_type_alias_decl: &TsTypeAliasDecl) -> String {
+    ident::ident_to_string(&ts_type_alias_decl.id)
+}
+
+pub fn is_type_alias_decl_system_structure_type(
+    type_alias_decl: &TsTypeAliasDecl,
+    system_structure_type: &SystemStructureType,
+) -> bool {
+    // let type_alias_decl
+    match system_structure_type {
+        SystemStructureType::Canister => {
+            let type_reference_name_option =
+                ts_type::get_identifier_name_for_ts_type(&*type_alias_decl.type_ann);
+
+            match type_reference_name_option {
+                Some(type_reference_name) => type_reference_name == "Canister",
+                None => false,
+            }
+        }
+    }
 }
 
 fn get_dependent_types_from_canister_decl(
@@ -148,8 +182,8 @@ fn get_dependent_types_from_canister_decl(
         .iter()
         .fold(vec![], |acc, member| match member {
             swc_ecma_ast::TsTypeElement::TsMethodSignature(method_sig) => {
-                let return_types = get_return_ts_type_from_method(method_sig);
-                let param_types = get_param_ts_types_from_method(method_sig);
+                let return_types = ts_method_signature::get_return_ts_type_from_method(method_sig);
+                let param_types = ts_method_signature::get_param_ts_types_from_method(method_sig);
                 vec![acc, vec![return_types], param_types].concat()
             }
             _ => todo!("There should only be Method Signatures on a Canister type?"),
@@ -158,54 +192,10 @@ fn get_dependent_types_from_canister_decl(
     // Get the goods out of a method signature
     ts_types.iter().fold(found_types.clone(), |acc, ts_type| {
         let result = HashSet::from_iter(
-            get_dependent_types_for_ts_type(ts_type, &type_alias_lookup, &acc)
+            ts_type::get_dependent_types_for_ts_type(ts_type, &type_alias_lookup, &acc)
                 .iter()
                 .cloned(),
         );
         acc.union(&result).cloned().collect()
     })
-}
-
-pub fn generate_hash_map(
-    ast_type_alias_decls: &Vec<TsTypeAliasDecl>,
-) -> HashMap<String, TsTypeAliasDecl> {
-    ast_type_alias_decls
-        .iter()
-        .fold(HashMap::new(), |mut acc, ast_type_alias_decl| {
-            let type_alias_names = ast_type_alias_decl.id.sym.chars().as_str().to_string();
-            acc.insert(type_alias_names, ast_type_alias_decl.clone());
-            acc
-        })
-}
-
-pub fn get_type_alias_decl_name(ts_type_alias_decl: &TsTypeAliasDecl) -> String {
-    ident_to_string(&ts_type_alias_decl.id)
-}
-
-pub fn is_type_alias_decl_system_structure_type(
-    type_alias_decl: &TsTypeAliasDecl,
-    system_structure_type: &SystemStructureType,
-) -> bool {
-    // let type_alias_decl
-    match system_structure_type {
-        SystemStructureType::Canister => {
-            let type_reference_name_option =
-                get_identifier_name_for_ts_type(&*type_alias_decl.type_ann);
-
-            match type_reference_name_option {
-                Some(type_reference_name) => type_reference_name == "Canister",
-                None => false,
-            }
-        }
-    }
-}
-
-fn get_identifier_name_for_ts_type(ts_type: &TsType) -> Option<String> {
-    match ts_type {
-        TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-            TsEntityName::Ident(ident) => Some(ident_to_string(&ident)),
-            _ => None,
-        },
-        _ => None,
-    }
 }
