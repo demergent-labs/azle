@@ -1,8 +1,23 @@
+use quote::format_ident;
 use std::{collections::HashSet, iter::FromIterator};
-use swc_ecma_ast::{FnDecl, TsTypeAliasDecl};
+use swc_ecma_ast::{FnDecl, TsType, TsTypeAliasDecl};
+use syn::Ident;
 
 use super::{ts_type::get_dependent_types_for_ts_type, ts_type_alias_decl::generate_hash_map};
-use crate::generators::canister_methods::{get_param_ts_types, get_return_ts_type};
+use crate::{
+    azle_ast::CanisterMethodType,
+    generators::canister_methods::{get_param_ts_types, get_return_ts_type},
+};
+
+pub fn get_canister_method_return_type(fn_decl: &FnDecl) -> Option<&TsType> {
+    let ts_type = &*fn_decl.function.return_type.as_ref().unwrap().type_ann;
+    let type_ref = ts_type.as_ts_type_ref().unwrap();
+    let type_param_instantiation_option = &type_ref.type_params.as_ref();
+    match type_param_instantiation_option {
+        Some(type_param_inst) => Some(&*type_param_inst.params[0]),
+        None => None,
+    }
+}
 
 pub fn get_dependent_types_from_fn_decls(
     fn_decls: &Vec<FnDecl>,
@@ -18,6 +33,84 @@ pub fn get_dependent_types_from_fn_decls(
         .cloned()
         .collect()
     })
+}
+
+pub fn get_fn_decl_function_name(fn_decl: &FnDecl) -> String {
+    fn_decl.ident.sym.chars().as_str().to_string()
+}
+
+pub fn get_param_name_idents(fn_decl: &FnDecl) -> Vec<Ident> {
+    fn_decl
+        .function
+        .params
+        .iter()
+        .map(|param| {
+            format_ident!(
+                "{}",
+                param
+                    .pat
+                    .as_ident()
+                    .unwrap()
+                    .sym
+                    .chars()
+                    .as_str()
+                    .to_string()
+            )
+        })
+        .collect()
+}
+
+pub fn is_canister_method_type_fn_decl(
+    fn_decl: &FnDecl,
+    canister_method_type: &CanisterMethodType,
+) -> bool {
+    if let Some(ts_type_ann) = &fn_decl.function.return_type {
+        if ts_type_ann.type_ann.is_ts_type_ref() {
+            let type_ref = ts_type_ann.type_ann.as_ts_type_ref().unwrap();
+
+            if type_ref.type_name.is_ident() {
+                let ident = type_ref.type_name.as_ident().unwrap();
+                let method_type = ident.sym.chars().as_str();
+
+                match canister_method_type {
+                    CanisterMethodType::Heartbeat => method_type == "Heartbeat",
+                    CanisterMethodType::Init => method_type == "Init",
+                    CanisterMethodType::InspectMessage => method_type == "InspectMessage",
+                    CanisterMethodType::PostUpgrade => method_type == "PostUpgrade",
+                    CanisterMethodType::PreUpgrade => method_type == "PreUpgrade",
+                    CanisterMethodType::Query => {
+                        method_type == "Query" || method_type == "QueryManual"
+                    }
+                    CanisterMethodType::Update => {
+                        method_type == "Update" || method_type == "UpdateManual"
+                    }
+                }
+            } else {
+                false
+            }
+        } else {
+            false
+        }
+    } else {
+        false
+    }
+}
+
+pub fn is_manual(fn_decl: &FnDecl) -> bool {
+    let type_ann = fn_decl.function.return_type.as_ref().unwrap();
+    match &*type_ann.type_ann {
+        TsType::TsTypeRef(type_ref) => match &type_ref.type_name {
+            swc_ecma_ast::TsEntityName::Ident(ident) => {
+                let mode = ident.sym.chars().as_str();
+
+                mode == "QueryManual" || mode == "UpdateManual"
+            }
+            swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
+                panic!("Qualified Names are not currently supported")
+            }
+        },
+        _ => panic!("Canister methods must have a return type of Query<T>, Update<T>, or Oneway"),
+    }
 }
 
 fn get_dependent_types_from_fn_decl(

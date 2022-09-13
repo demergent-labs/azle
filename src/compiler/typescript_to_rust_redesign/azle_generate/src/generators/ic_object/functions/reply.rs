@@ -2,7 +2,7 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use swc_ecma_ast::FnDecl;
 
-use crate::{generators::canister_methods, utils};
+use crate::{generators::canister_methods, ts_ast};
 
 pub fn generate_ic_object_function_reply(fn_decls: &Vec<FnDecl>) -> TokenStream {
     let match_arms = generate_match_arms(fn_decls);
@@ -27,14 +27,14 @@ pub fn generate_ic_object_function_reply(fn_decls: &Vec<FnDecl>) -> TokenStream 
 fn generate_match_arms(fn_decls: &Vec<FnDecl>) -> Vec<TokenStream> {
     fn_decls
         .iter()
-        .filter(|fn_decl| utils::fn_decls::is_manual(fn_decl))
+        .filter(|fn_decl| ts_ast::fn_decl::is_manual(fn_decl))
         .map(|fn_decl| generate_match_arm(fn_decl))
         .collect()
 }
 
 fn generate_match_arm(fn_decl: &FnDecl) -> TokenStream {
-    let fn_name = utils::fn_decls::get_fn_decl_function_name(fn_decl);
-    let return_type_ast = utils::fn_decls::get_canister_method_return_type(fn_decl);
+    let fn_name = ts_ast::fn_decl::get_fn_decl_function_name(fn_decl);
+    let return_type_ast = ts_ast::fn_decl::get_canister_method_return_type(fn_decl);
     let rust_return_type = match return_type_ast {
         Some(ts_type) => canister_methods::ts_type_to_rust_type(ts_type, &None).get_type_ident(),
         None => quote! {()},

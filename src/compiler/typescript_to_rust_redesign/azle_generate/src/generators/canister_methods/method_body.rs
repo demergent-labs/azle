@@ -5,7 +5,7 @@ use swc_ecma_ast::{
     TsType,
 };
 
-use crate::utils::fn_decls::{self, get_fn_decl_function_name, get_param_name_idents};
+use crate::ts_ast;
 
 pub fn generate_canister_method_body(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
     let call_to_js_function = generate_call_to_js_function(fn_decl);
@@ -28,8 +28,8 @@ pub fn generate_canister_method_body(fn_decl: &FnDecl) -> proc_macro2::TokenStre
 }
 
 pub fn generate_call_to_js_function(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
-    let function_name = get_fn_decl_function_name(fn_decl);
-    let param_name_idents = get_param_name_idents(fn_decl);
+    let function_name = ts_ast::fn_decl::get_fn_decl_function_name(fn_decl);
+    let param_name_idents = ts_ast::fn_decl::get_param_name_idents(fn_decl);
 
     quote! {
         let _azle_exports_js_value = _azle_boa_context.eval("exports").unwrap();
@@ -56,13 +56,13 @@ pub fn generate_call_to_js_function(fn_decl: &FnDecl) -> proc_macro2::TokenStrea
 ///    unless this is a ManualReply method.
 /// * `_azle_boa_context: &mut boa_engine::Context` - The current boa context
 fn generate_return_expression(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
-    if fn_decls::is_manual(fn_decl) {
+    if ts_ast::fn_decl::is_manual(fn_decl) {
         return quote! {
             ic_cdk::api::call::ManualReply::empty()
         };
     }
 
-    let return_type = fn_decls::get_canister_method_return_type(fn_decl);
+    let return_type = ts_ast::fn_decl::get_canister_method_return_type(fn_decl);
 
     if type_is_emptyish(return_type) {
         return quote! {
