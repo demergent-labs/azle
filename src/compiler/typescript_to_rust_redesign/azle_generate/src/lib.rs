@@ -48,15 +48,8 @@ use crate::{
 
 mod azle_ast;
 mod ts_ast;
-pub mod generators {
-    pub mod azle_into_js_value;
-    pub mod azle_try_from_js_value;
-    pub mod canister_methods;
-    pub mod cross_canister_call_functions;
-    pub mod funcs;
-    pub mod ic_object;
-    pub mod stacktrace;
-}
+
+pub mod generators;
 
 fn collect_inline_dependencies(
     function_info: &Vec<FunctionInformation>,
