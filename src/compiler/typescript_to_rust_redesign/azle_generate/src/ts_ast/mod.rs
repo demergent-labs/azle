@@ -1,6 +1,6 @@
 pub mod fn_decl;
 pub mod ident;
-mod module;
+pub mod module;
 pub mod program;
 mod ts_array_type;
 mod ts_fn_or_constructor_type;

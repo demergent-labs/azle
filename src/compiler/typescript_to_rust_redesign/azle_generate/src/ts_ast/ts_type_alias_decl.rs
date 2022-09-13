@@ -11,6 +11,73 @@ use super::{
 };
 use crate::azle_ast::SystemStructureType;
 
+pub fn get_ast_canister_type_alias_decls(
+    type_alias_decls: &Vec<TsTypeAliasDecl>,
+) -> Vec<TsTypeAliasDecl> {
+    get_ast_type_alias_decls_by_type_ref_name(type_alias_decls, "Canister")
+}
+
+pub fn get_ast_type_alias_decls_by_type_ref_name(
+    type_alias_decls: &Vec<TsTypeAliasDecl>,
+    type_ref_name: &str,
+) -> Vec<TsTypeAliasDecl> {
+    type_alias_decls
+        .clone()
+        .into_iter()
+        .filter(|ts_type_alias_decl| {
+            ts_type_alias_decl.type_ann.is_ts_type_ref()
+                && match ts_type_alias_decl.type_ann.as_ts_type_ref() {
+                    Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
+                        Some(ident) => ident.sym.chars().as_str() == type_ref_name,
+                        None => false,
+                    },
+                    None => false,
+                }
+        })
+        .collect()
+}
+
+pub fn get_ast_other_type_alias_decls(
+    type_alias_decls: &Vec<TsTypeAliasDecl>,
+) -> Vec<TsTypeAliasDecl> {
+    type_alias_decls
+        .clone()
+        .into_iter()
+        .filter(|ts_type_alias_decl| {
+            !ts_type_alias_decl.type_ann.is_ts_type_lit()
+                && !ts_type_alias_decl.type_ann.is_ts_tuple_type()
+                && (!ts_type_alias_decl.type_ann.is_ts_type_ref()
+                    || (ts_type_alias_decl.type_ann.is_ts_type_ref()
+                        && match ts_type_alias_decl.type_ann.as_ts_type_ref() {
+                            Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
+                                Some(ident) => {
+                                    let name = ident.sym.chars().as_str();
+                                    name != "Func" && name != "Variant" && name != "Canister"
+                                }
+                                None => true,
+                            },
+                            None => true,
+                        }))
+        })
+        .collect()
+}
+
+pub fn get_ast_record_type_alias_decls(
+    type_alias_decls: &Vec<TsTypeAliasDecl>,
+) -> Vec<TsTypeAliasDecl> {
+    type_alias_decls
+        .clone()
+        .into_iter()
+        .filter(|ts_type_alias_decl| ts_type_alias_decl.type_ann.is_ts_type_lit())
+        .collect()
+}
+
+pub fn get_ast_variant_type_alias_decls(
+    type_alias_decls: &Vec<TsTypeAliasDecl>,
+) -> Vec<TsTypeAliasDecl> {
+    get_ast_type_alias_decls_by_type_ref_name(type_alias_decls, "Variant")
+}
+
 pub fn get_dependent_types_from_type_alias_decl(
     type_alias_decl: &TsTypeAliasDecl,
     type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,

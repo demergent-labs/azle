@@ -26,8 +26,6 @@ use crate::{
             async_result_handler::generate_async_result_handler,
             generate_query_function_infos, generate_type_alias_token_streams,
             generate_update_function_infos, generate_variant_token_streams,
-            get_ast_canister_type_alias_decls, get_ast_other_type_alias_decls,
-            get_ast_type_alias_decls_from_programs,
             system::{
                 heartbeat::generate_canister_method_system_heartbeat,
                 init::generate_canister_method_system_init,
@@ -41,6 +39,10 @@ use crate::{
         funcs,
         ic_object::functions::generate_ic_object_functions,
         stacktrace,
+    },
+    ts_ast::{
+        program::get_ast_type_alias_decls_from_programs,
+        ts_type_alias_decl::{get_ast_canister_type_alias_decls, get_ast_other_type_alias_decls},
     },
 };
 
