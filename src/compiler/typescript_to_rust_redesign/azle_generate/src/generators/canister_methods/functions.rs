@@ -1,6 +1,5 @@
 use super::{ts_type_to_rust_type, RustType};
-use crate::generators::canister_methods::method_body::generate_canister_method_body;
-use crate::utils;
+use crate::{generators::canister_methods::method_body::generate_canister_method_body, ts_ast};
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use swc_ecma_ast::{FnDecl, TsType};
@@ -17,7 +16,7 @@ pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> FunctionInformation {
     let function_name = ast_fnc_decl.ident.sym.chars().as_str().to_string();
     let function_name_ident = format_ident!("{}", function_name);
 
-    let manual = utils::fn_decls::is_manual(ast_fnc_decl);
+    let manual = ts_ast::fn_decl::is_manual(ast_fnc_decl);
 
     let return_type = generate_return_type(&ast_fnc_decl);
     let return_type_token = return_type.get_type_ident();
@@ -89,33 +88,12 @@ pub fn generate_params_token_stream(names: &Vec<Ident>, types: &Vec<RustType>) -
 }
 
 fn generate_return_type(ast_fnc_decl: &FnDecl) -> RustType {
-    let return_ts_type = get_return_ts_type(ast_fnc_decl);
+    let return_ts_type = ts_ast::fn_decl::get_return_ts_type(ast_fnc_decl);
     ts_type_to_rust_type(&return_ts_type, &None)
 }
 
-pub fn get_return_ts_type(ast_fnc_decl: &FnDecl) -> TsType {
-    let ts_type_ann = ast_fnc_decl.function.return_type.as_ref();
-    let return_type_ann = ts_type_ann.clone().unwrap();
-    let return_type_ref = return_type_ann.type_ann.as_ts_type_ref().unwrap();
-    let return_type_params = return_type_ref.type_params.clone().unwrap();
-
-    let return_ts_type = *return_type_params.params[0].clone();
-    return_ts_type
-}
-
-pub fn get_param_ts_types(ast_fnc_decl: &FnDecl) -> Vec<TsType> {
-    let params = &ast_fnc_decl.function.params;
-    params.iter().fold(vec![], |acc, param| {
-        let param_type_ann = &param.pat.as_ident().unwrap().type_ann.as_ref();
-        let param_type_ann = param_type_ann.clone().unwrap();
-        let param_ts_type = *param_type_ann.type_ann.clone();
-
-        vec![acc, vec![param_ts_type]].concat()
-    })
-}
-
 pub fn generate_param_types(ast_fnc_decl: &FnDecl) -> Vec<RustType> {
-    get_param_ts_types(ast_fnc_decl)
+    ts_ast::fn_decl::get_param_ts_types(ast_fnc_decl)
         .iter()
         .map(|ts_type| ts_type_to_rust_type(ts_type, &None))
         .collect()

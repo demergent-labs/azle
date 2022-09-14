@@ -1,6 +1,6 @@
 use crate::{
-    generators::canister_methods::method_body::generate_call_to_js_function,
-    utils::fn_decls::{get_canister_method_type_fn_decls, CanisterMethodType},
+    azle_act::CanisterMethodType,
+    generators::canister_methods::method_body::generate_call_to_js_function, ts_ast,
 };
 use quote::quote;
 use swc_ecma_ast::{FnDecl, Program};
@@ -8,8 +8,10 @@ use swc_ecma_ast::{FnDecl, Program};
 pub fn generate_canister_method_system_pre_upgrade(
     programs: &Vec<Program>,
 ) -> proc_macro2::TokenStream {
-    let pre_upgrade_fn_decls =
-        get_canister_method_type_fn_decls(programs, &CanisterMethodType::PreUpgrade);
+    let pre_upgrade_fn_decls = ts_ast::program::get_canister_method_type_fn_decls(
+        programs,
+        &CanisterMethodType::PreUpgrade,
+    );
 
     if pre_upgrade_fn_decls.len() > 1 {
         panic!("Only one PreUpgrade function can be defined");

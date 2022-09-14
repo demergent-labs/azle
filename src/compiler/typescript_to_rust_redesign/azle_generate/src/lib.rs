@@ -17,6 +17,7 @@ use swc_ecma_parser::{
 };
 
 use crate::{
+    azle_act::CanisterMethodType,
     generators::{
         azle_into_js_value::generate_azle_into_js_value,
         azle_try_from_js_value::generate_azle_try_from_js_value,
@@ -24,8 +25,6 @@ use crate::{
             async_result_handler::generate_async_result_handler,
             generate_query_function_infos, generate_type_alias_token_streams,
             generate_update_function_infos, generate_variant_token_streams,
-            get_ast_canister_type_alias_decls, get_ast_other_type_alias_decls,
-            get_ast_type_alias_decls_from_programs,
             system::{
                 heartbeat::generate_canister_method_system_heartbeat,
                 init::generate_canister_method_system_init,
@@ -40,28 +39,16 @@ use crate::{
         ic_object::functions::generate_ic_object_functions,
         stacktrace,
     },
-    utils::{
-        dependencies,
-        fn_decls::{self, CanisterMethodType},
+    ts_ast::{
+        program::get_ast_type_alias_decls_from_programs,
+        ts_type_alias_decl::{get_ast_canister_type_alias_decls, get_ast_other_type_alias_decls},
     },
 };
 
-mod ast_utilities;
-pub mod generators {
-    pub mod azle_into_js_value;
-    pub mod azle_try_from_js_value;
-    pub mod canister_methods;
-    pub mod cross_canister_call_functions;
-    pub mod funcs;
-    pub mod ic_object;
-    pub mod stacktrace;
-}
-pub mod utils {
-    pub mod dependencies;
-    pub mod fn_decls;
-    pub mod ident;
-    pub mod type_aliases;
-}
+mod azle_act;
+mod ts_ast;
+
+pub mod generators;
 
 fn collect_inline_dependencies(
     function_info: &Vec<FunctionInformation>,
@@ -73,11 +60,6 @@ fn collect_inline_dependencies(
         ]
         .concat()
     })
-}
-
-// TODO find a better home for this
-pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
-    decl.id.sym.chars().as_str().to_string()
 }
 
 pub fn azle_generate(
@@ -95,25 +77,25 @@ pub fn azle_generate(
     let ast_canister_type_alias_decls = get_ast_canister_type_alias_decls(&ast_type_alias_decls);
 
     let ast_func_type_alias_decls =
-        ast_utilities::get_ast_func_type_alias_decls_from_programs(&programs);
+        ts_ast::program::get_ast_func_type_alias_decls_from_programs(&programs);
     let func_structs_and_impls = funcs::generate_func_structs_and_impls(ast_func_type_alias_decls);
 
     // Separate function decls into queries and updates
     let ast_fnc_decls_query =
-        fn_decls::get_canister_method_type_fn_decls(&programs, &CanisterMethodType::Query);
+        ts_ast::program::get_canister_method_type_fn_decls(&programs, &CanisterMethodType::Query);
     let ast_fnc_decls_update =
-        fn_decls::get_canister_method_type_fn_decls(&programs, &CanisterMethodType::Update);
+        ts_ast::program::get_canister_method_type_fn_decls(&programs, &CanisterMethodType::Update);
 
     // Determine which type aliases must be present for the functions to work and save them for later parsing
-    let query_dependencies = dependencies::get_dependent_types_from_fn_decls(
+    let query_dependencies = ts_ast::fn_decl::get_dependent_types_from_fn_decls(
         &ast_fnc_decls_query,
         &ast_type_alias_decls,
     );
-    let update_dependencies = dependencies::get_dependent_types_from_fn_decls(
+    let update_dependencies = ts_ast::fn_decl::get_dependent_types_from_fn_decls(
         &ast_fnc_decls_update,
         &ast_type_alias_decls,
     );
-    let canister_dependencies = dependencies::get_dependent_types_from_canister_decls(
+    let canister_dependencies = ts_ast::ts_type_alias_decl::get_dependent_types_from_canister_decls(
         &ast_canister_type_alias_decls,
         &ast_type_alias_decls,
     );

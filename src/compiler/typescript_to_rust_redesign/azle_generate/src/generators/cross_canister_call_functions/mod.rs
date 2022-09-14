@@ -5,11 +5,11 @@ use swc_ecma_ast::{
     TsTypeLit,
 };
 
-use crate::utils::{
-    ident::ident_to_string,
-    type_aliases::{
-        get_type_alias_decl_name, get_type_alias_decls_for_system_structure_type,
-        SystemStructureType,
+use crate::{
+    azle_act::SystemStructureType,
+    ts_ast::{
+        ident::ident_to_string, program::get_type_alias_decls_for_system_structure_type,
+        ts_type_alias_decl::get_type_alias_decl_name,
     },
 };
 
