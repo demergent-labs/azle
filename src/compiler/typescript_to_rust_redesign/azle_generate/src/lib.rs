@@ -3,7 +3,6 @@
 
 use generators::canister_methods::RustType;
 use quote::quote;
-use std::iter::FromIterator;
 use std::{collections::HashSet, path::Path};
 use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_ast::{FnDecl, Program, TsTypeAliasDecl};
@@ -23,11 +22,10 @@ use crate::{
         azle_try_from_js_value::generate_azle_try_from_js_value,
         canister_methods::{
             async_result_handler::generate_async_result_handler,
-            generate_query_function_infos, generate_record_token_streams,
-            generate_type_alias_token_streams, generate_update_function_infos,
-            generate_variant_token_streams, get_ast_canister_type_alias_decls,
-            get_ast_other_type_alias_decls, get_ast_record_type_alias_decls,
-            get_ast_type_alias_decls_from_programs, get_ast_variant_type_alias_decls,
+            generate_query_function_infos, generate_type_alias_token_streams,
+            generate_update_function_infos, generate_variant_token_streams,
+            get_ast_canister_type_alias_decls, get_ast_other_type_alias_decls,
+            get_ast_type_alias_decls_from_programs,
             system::{
                 heartbeat::generate_canister_method_system_heartbeat,
                 init::generate_canister_method_system_init,
@@ -168,7 +166,8 @@ pub fn azle_generate(
         });
     let other_inline_records = collect_inline_dependencies_from_list(&other_inline_deps);
 
-    let inline_records_function_streams = vec![function_inline_records].concat();
+    let inline_records_function_streams =
+        vec![function_inline_records, other_inline_records].concat();
 
     // let records_token_streams = records_type_token_streams;
 

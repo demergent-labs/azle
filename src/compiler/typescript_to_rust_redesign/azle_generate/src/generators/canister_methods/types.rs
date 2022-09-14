@@ -1,8 +1,8 @@
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use swc_ecma_ast::{
-    TsArrayType, TsFnType, TsKeywordType, TsKeywordTypeKind, TsPropertySignature, TsQualifiedName,
-    TsType, TsTypeElement, TsTypeLit, TsTypeRef,
+    TsArrayType, TsFnType, TsKeywordType, TsKeywordTypeKind, TsPropertySignature, TsType,
+    TsTypeElement, TsTypeLit, TsTypeRef,
 };
 
 use crate::generators::funcs;

@@ -74,7 +74,7 @@ fn type_alias_to_token_stream(type_alias_decl: &TsTypeAliasDecl) -> TokenStream 
     let ts_type = *type_alias_decl.type_ann.clone();
 
     let aliased_rust_type = ts_type_to_rust_type(&ts_type, &Some(&ts_type_alias_ident));
-    aliased_rust_type.to_token_stream()
+    aliased_rust_type.to_type_definition_token_stream()
 }
 
 fn rust_inline_type_to_token_stream(rust_type: &RustType) -> TokenStream {

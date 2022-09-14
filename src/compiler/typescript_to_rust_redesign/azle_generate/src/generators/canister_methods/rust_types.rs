@@ -135,8 +135,8 @@ impl RustType {
     pub fn is_inline_rust_type(&self) -> bool {
         match self {
             RustType::KeywordType(_) => false,
-            RustType::TypeRef(_) => false,
-            RustType::ArrayType(_) => false,
+            RustType::TypeRef(type_ref_info) => type_ref_info.enclosed_inline_type.is_some(),
+            RustType::ArrayType(array_type_info) => array_type_info.enclosed_inline_type.is_some(),
             RustType::Struct(struct_info) => struct_info.is_inline,
             RustType::Enum(enum_info) => enum_info.is_inline,
             RustType::Func(func_info) => func_info.is_inline,
@@ -150,29 +150,30 @@ impl RustType {
             RustType::Enum(enum_info) => Some(enum_info.structure.clone()),
             RustType::Func(func_info) => Some(func_info.structure.clone()),
             RustType::KeywordType(_) => None,
-            RustType::TypeRef(_) => None,
-            RustType::ArrayType(_) => None,
+            RustType::TypeRef(type_ref_info) => match &*type_ref_info.enclosed_inline_type {
+                Some(inline_type) => inline_type.get_structure(),
+                None => None,
+            },
+            RustType::ArrayType(array_type_info) => match &*array_type_info.enclosed_inline_type {
+                Some(inline_type) => inline_type.get_structure(),
+                None => None,
+            },
         }
     }
 
+    // TODO I think that the inline members for type ref and array type ought to be empty list since we are taking care of it with get_structure
     pub fn get_inline_members(&self) -> Vec<RustType> {
         match self {
             RustType::Struct(struct_info) => *struct_info.inline_members.clone(),
             RustType::Enum(enum_info) => *enum_info.inline_members.clone(),
             RustType::Func(func_info) => *func_info.inline_members.clone(),
             RustType::KeywordType(_) => vec![],
-            RustType::TypeRef(type_ref_info) => match *type_ref_info.enclosed_inline_type.clone() {
-                Some(inline_type) => vec![inline_type],
-                None => vec![],
-            },
-            RustType::ArrayType(array_type) => match *array_type.enclosed_inline_type.clone() {
-                Some(inline_type) => vec![inline_type],
-                None => vec![],
-            },
+            RustType::TypeRef(_) => vec![],
+            RustType::ArrayType(_) => vec![],
         }
     }
 
-    pub fn to_token_stream(&self) -> TokenStream {
+    pub fn to_type_definition_token_stream(&self) -> TokenStream {
         let rust_type_structure = match self.get_structure() {
             Some(structure) => structure,
             None => quote!(),
@@ -180,7 +181,7 @@ impl RustType {
         let rust_member_type_structures: Vec<TokenStream> = self
             .get_inline_members()
             .iter()
-            .map(|member| member.to_token_stream())
+            .map(|member| member.to_type_definition_token_stream())
             .collect();
         quote! {
             #rust_type_structure

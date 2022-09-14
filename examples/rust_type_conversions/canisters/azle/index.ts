@@ -224,3 +224,14 @@ export function everything_inline(
     variant: VariantWithInline,
     func: FuncWithInline
 ): Update<void> {}
+
+type StructWithInlineArray = {
+    name: string;
+    not_array: { thing: boolean; thing2: boolean };
+    array: { thing: boolean; thing2: boolean }[];
+};
+
+export function inline_vec(
+    array: { thing: string; thing2: boolean }[],
+    struct_thing: StructWithInlineArray
+): Query<void> {}
