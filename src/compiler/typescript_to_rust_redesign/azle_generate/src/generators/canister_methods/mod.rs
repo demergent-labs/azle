@@ -30,7 +30,7 @@ pub use variant_type_aliases::generate_variant_token_streams;
 
 pub use record_type_aliases::generate_record_token_streams;
 
-pub use rust_types::{ArrayTypeInfo, KeywordInfo, RustType, StructInfo, TypeRefInfo};
+pub use rust_types::{ArrayTypeInfo, FuncInfo, KeywordInfo, RustType, StructInfo, TypeRefInfo};
 
 pub use types::ts_type_to_rust_type;
 

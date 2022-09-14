@@ -18,7 +18,8 @@ import {
     empty,
     int,
     reserved,
-    Variant
+    Variant,
+    Func
 } from 'azle';
 
 type InlineExample = {
@@ -196,3 +197,41 @@ export function not_so_simple(
 
 // TODO Why can't we do 2d arrays of principals??
 // export function getPrincipals(principal_lists: Principal[][]): Update<void> {}
+
+type RecordWithInline = {
+    inline_record: { one: boolean; two: boolean; three: boolean };
+    inline_variant: Variant<{ one: string; two: null; three: boolean }>;
+    inline_func: Func<(param1: string) => Query<string>>;
+};
+
+type VariantWithInline = Variant<{
+    thing: null;
+    inline_record: { one: boolean; two: boolean; three: boolean };
+    inline_variant: Variant<{ one: string; two: null; three: boolean }>;
+    inline_func: Func<(param1: string) => Query<string>>;
+}>;
+
+type FuncWithInline = Func<
+    (
+        inline_record: { one: boolean; two: boolean; three: boolean },
+        inline_variant: Variant<{ one: string; two: null; three: boolean }>,
+        inline_func: Func<(param1: string) => Query<string>>
+    ) => Query<string>
+>;
+
+export function everything_inline(
+    record: RecordWithInline,
+    variant: VariantWithInline,
+    func: FuncWithInline
+): Update<void> {}
+
+type StructWithInlineArray = {
+    name: string;
+    not_array: { thing: boolean; thing2: boolean };
+    array: { thing: boolean; thing2: boolean }[];
+};
+
+export function inline_vec(
+    array: { thing: string; thing2: boolean }[],
+    struct_thing: StructWithInlineArray
+): Query<void> {}
