@@ -5,7 +5,7 @@ use std::{
 use swc_ecma_ast::TsTypeAliasDecl;
 
 use super::{ident, ts_method_signature, ts_type};
-use crate::azle_ast::SystemStructureType;
+use crate::azle_act::SystemStructureType;
 
 pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
     decl.id.sym.chars().as_str().to_string()

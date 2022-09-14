@@ -1,5 +1,5 @@
 use crate::{
-    azle_ast::CanisterMethodType,
+    azle_act::CanisterMethodType,
     generators::canister_methods::method_body::generate_call_to_js_function, ts_ast,
 };
 use quote::quote;
