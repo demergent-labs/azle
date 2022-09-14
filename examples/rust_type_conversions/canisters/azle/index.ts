@@ -136,20 +136,28 @@ type Yes = Variant<{
     Three: null;
 }>;
 
-// type SelfReferencingVariant = Variant<{
-//     One: SelfReferencingVariant;
-//     Two: null;
-// }>;
+type SelfReferencingVariant = Variant<{
+    One: SelfReferencingVariant;
+    Two: null;
+}>;
 
-// type SelfReferencingRecord = {
-//     one: SelfReferencingRecord;
-//     two: string;
-// };
+// type SelfReferencingFunc = Func<
+//     (first_param: boolean, second_param: SelfReferencingFunc) => Query<string>
+// >;
 
-// export function self_reference(
-//     variant: SelfReferencingVariant,
-//     record: SelfReferencingRecord
-// ): Query<void> {}
+type SelfReferencingTuple = [string, SelfReferencingTuple];
+
+type SelfReferencingRecord = {
+    one: SelfReferencingRecord;
+    two: string;
+};
+
+export function self_reference(
+    variant: SelfReferencingVariant,
+    record: SelfReferencingRecord,
+    tuple: SelfReferencingTuple
+    // func: SelfReferencingFunc
+): Query<void> {}
 
 type Reaction = Variant<{
     Fire: null;
