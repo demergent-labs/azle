@@ -1,7 +1,7 @@
 use swc_ecma_ast::{FnDecl, Program, TsTypeAliasDecl};
 
 use super::{fn_decl, module, ts_type_alias_decl};
-use crate::azle_ast::{CanisterMethodType, SystemStructureType};
+use crate::azle_act::{CanisterMethodType, SystemStructureType};
 
 // TODO: This may grab unintended Func declarations. Instead traverse starting
 // from the exported canister methods.

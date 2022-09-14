@@ -4,7 +4,7 @@ use swc_ecma_ast::{FnDecl, TsType, TsTypeAliasDecl};
 use syn::Ident;
 
 use super::{ts_type, ts_type_alias_decl};
-use crate::azle_ast::CanisterMethodType;
+use crate::azle_act::CanisterMethodType;
 
 pub fn get_canister_method_return_type(fn_decl: &FnDecl) -> Option<&TsType> {
     let ts_type = &*fn_decl.function.return_type.as_ref().unwrap().type_ann;

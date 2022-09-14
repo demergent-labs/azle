@@ -18,7 +18,7 @@ use swc_ecma_parser::{
 
 use crate::generators::cross_canister_call_functions::generate_cross_canister_call_functions;
 use crate::{
-    azle_ast::CanisterMethodType,
+    azle_act::CanisterMethodType,
     generators::{
         azle_into_js_value::generate_azle_into_js_value,
         azle_try_from_js_value::generate_azle_try_from_js_value,
@@ -46,7 +46,7 @@ use crate::{
     },
 };
 
-mod azle_ast;
+mod azle_act;
 mod ts_ast;
 
 pub mod generators;

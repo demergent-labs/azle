@@ -6,7 +6,7 @@ use swc_ecma_ast::{
 };
 
 use crate::{
-    azle_ast::SystemStructureType,
+    azle_act::SystemStructureType,
     ts_ast::{
         ident::ident_to_string, program::get_type_alias_decls_for_system_structure_type,
         ts_type_alias_decl::get_type_alias_decl_name,
