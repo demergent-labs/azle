@@ -97,9 +97,14 @@ fn parse_ts_tuple_type(ts_tuple_type: &TsTupleType, name: &Option<&Ident>) -> Tu
     };
 
     let elem_types = get_elem_types(ts_tuple_type);
-    let elem_idents = elem_types
-        .iter()
-        .map(|elem_rust_type| elem_rust_type.get_type_ident());
+    let elem_idents = elem_types.iter().map(|elem_rust_type| {
+        if elem_rust_type.needs_to_be_boxed() {
+            let ident = elem_rust_type.get_type_ident();
+            quote!(Box<#ident>)
+        } else {
+            elem_rust_type.get_type_ident()
+        }
+    });
 
     let definition = quote!(
         #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
@@ -346,7 +351,7 @@ fn parse_func_param_types(ts_type: &TsFnType) -> Vec<RustType> {
                     let ts_type = &*param_type.type_ann;
                     ts_type_to_rust_type(ts_type, &None)
                 }
-                None => panic!("Func paramter must have a type"),
+                None => panic!("Func parameter must have a type"),
             },
             _ => panic!("Func parameter must be an identifier"),
         })
@@ -437,7 +442,12 @@ fn parse_type_literal_fields(member: &TsTypeElement) -> (TokenStream, Option<Rus
         Some(prop_sig) => {
             let member_name = parse_type_literal_member_name(prop_sig);
             let member_type = parse_type_literal_member_type(prop_sig);
-            let member_type_token_stream = member_type.get_type_ident();
+            let member_type_token_stream = if member_type.needs_to_be_boxed() {
+                let ident = member_type.get_type_ident();
+                quote!(Box<#ident>)
+            } else {
+                member_type.get_type_ident()
+            };
             let inline_enclosed_type = if member_type.is_inline_rust_type() {
                 Some(member_type)
             } else {
@@ -477,7 +487,12 @@ fn parse_type_literal_members_for_enum(member: &TsTypeElement) -> (TokenStream, 
                     }
                 }
                 _ => {
-                    let member_type_token_stream = member_type.get_type_ident();
+                    let member_type_token_stream = if member_type.needs_to_be_boxed() {
+                        let ident = member_type.get_type_ident();
+                        quote!(Box<#ident>)
+                    } else {
+                        member_type.get_type_ident()
+                    };
                     quote!((#member_type_token_stream))
                 }
             };

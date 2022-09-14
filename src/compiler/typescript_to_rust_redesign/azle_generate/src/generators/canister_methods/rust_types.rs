@@ -173,6 +173,10 @@ impl RustType {
         }
     }
 
+    pub fn needs_to_be_boxed(&self) -> bool {
+        true
+    }
+
     // TODO I think that the inline members for type ref and array type ought to be empty list since we are taking care of it with get_structure
     pub fn get_inline_members(&self) -> Vec<RustType> {
         match self {
