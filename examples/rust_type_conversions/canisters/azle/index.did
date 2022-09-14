@@ -29,13 +29,13 @@ type AzleInline_14806421258981238475 = record {
   three : AzleInline_6196361535868770603;
   four : AzleInline_10174769152289428498;
 };
-type AzleInline_15730480668120121283 = record { one : TypeAliasOnlyUsedInline };
-type AzleInline_1579767579123437749 = variant { one : text; two; three : bool };
-type AzleInline_1805274857099726532 = record { one : text; two : SimpleRecord };
-type AzleInline_18201927574302905642 = record {
+type AzleInline_15303326424226609930 = record {
   tuple_inline2 : text;
   tuple_inline : bool;
 };
+type AzleInline_15730480668120121283 = record { one : TypeAliasOnlyUsedInline };
+type AzleInline_1579767579123437749 = variant { one : text; two; three : bool };
+type AzleInline_1805274857099726532 = record { one : text; two : SimpleRecord };
 type AzleInline_2079212390168712599 = record {
   one : bool;
   two : nat16;
@@ -147,7 +147,7 @@ service : () -> {
   one_variant : (Fun) -> () query;
   simple_query : (opt nat64, text, nat, bool) -> (text) query;
   tuple_test : (
-      record { text; nat64; AzleInline_18201927574302905642; bool },
+      record { text; nat64; AzleInline_15303326424226609930; bool },
     ) -> () query;
   various_variants : (Yes, Reaction) -> (text) query;
 }
