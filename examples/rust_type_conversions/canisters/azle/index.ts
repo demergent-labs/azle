@@ -239,6 +239,9 @@ type StructWithInlineArray = {
     array: { thing: boolean; thing2: boolean }[];
 };
 
+// TODO test an inline opt
+// TODO test with self referencing where its a couple levels deep. For example A references b and b reference c and c references A
+
 export function inline_vec(
     array: { thing: string; thing2: boolean }[],
     struct_thing: StructWithInlineArray
