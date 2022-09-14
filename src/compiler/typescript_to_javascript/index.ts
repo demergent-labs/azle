@@ -2,8 +2,6 @@ import * as swc from '@swc/core';
 import * as tsc from 'typescript';
 import { buildSync } from 'esbuild';
 import { JavaScript, TypeScript } from '../../types';
-import { getCanisterTypeAliasDeclarations } from '../typescript_to_rust/generators/call_functions';
-import { generateCallFunctionName } from '../typescript_to_rust/generators/call_functions/call_function_name';
 
 export async function compileTypeScriptToJavaScript(
     ts_path: string
@@ -263,4 +261,100 @@ function generateCanisterMethodFromTypeElement(
             };
         }
     `;
+}
+
+function generateCallFunctionName(
+    methodSignature: tsc.MethodSignature,
+    typeAliasName: string
+): {
+    methodName: string;
+    callFunctionName: string;
+    callWithPaymentFunctionName: string;
+    callWithPayment128FunctionName: string;
+    notifyFunctionName: string;
+    notifyWithPayment128FunctionName: string;
+} {
+    if (methodSignature.name.kind !== tsc.SyntaxKind.Identifier) {
+        throw new Error(`Method signature must be an identifier`);
+    }
+
+    return {
+        methodName: methodSignature.name.escapedText.toString(),
+        callFunctionName: `_azle_call_${typeAliasName}_${methodSignature.name.escapedText.toString()}`,
+        callWithPaymentFunctionName: `_azle_call_with_payment_${typeAliasName}_${methodSignature.name.escapedText.toString()}`,
+        callWithPayment128FunctionName: `_azle_call_with_payment128_${typeAliasName}_${methodSignature.name.escapedText.toString()}`,
+        notifyFunctionName: `_azle_notify_${typeAliasName}_${methodSignature.name.escapedText.toString()}`,
+        notifyWithPayment128FunctionName: `_azle_notify_with_payment128_${typeAliasName}_${methodSignature.name.escapedText.toString()}`
+    };
+}
+
+function getCanisterTypeAliasDeclarations(
+    sourceFiles: readonly tsc.SourceFile[]
+): tsc.TypeAliasDeclaration[] {
+    const typeAliasDeclarations =
+        getTypeAliasDeclarationsFromSourceFiles(sourceFiles);
+
+    return typeAliasDeclarations.filter((typeAliasDeclaration) => {
+        if (typeAliasDeclaration.type.kind === tsc.SyntaxKind.TypeReference) {
+            const typeReferenceNode =
+                typeAliasDeclaration.type as tsc.TypeReferenceNode;
+
+            if (typeReferenceNode.typeName.kind === tsc.SyntaxKind.Identifier) {
+                return (
+                    typeReferenceNode.typeName.escapedText.toString() ===
+                    'Canister'
+                );
+            }
+
+            return false;
+        }
+
+        return false;
+    });
+}
+
+function getTypeAliasDeclarationsFromSourceFiles(
+    sourceFiles: readonly tsc.SourceFile[]
+): tsc.TypeAliasDeclaration[] {
+    return sourceFiles.reduce(
+        (result: tsc.TypeAliasDeclaration[], sourceFile) => {
+            return [
+                ...result,
+                ...getTypeAliasDeclarationsFromNodes(
+                    sourceFile,
+                    sourceFile.getChildren()
+                )
+            ];
+        },
+        []
+    );
+}
+
+function getTypeAliasDeclarationsFromNodes(
+    sourceFile: tsc.SourceFile,
+    nodes: tsc.Node[]
+): tsc.TypeAliasDeclaration[] {
+    return nodes.reduce((result: tsc.TypeAliasDeclaration[], node) => {
+        const typeAliasDeclarations = getTypeAliasDeclarationsFromNode(node);
+
+        return [
+            ...result,
+            ...typeAliasDeclarations,
+            ...getTypeAliasDeclarationsFromNodes(
+                sourceFile,
+                node.getChildren(sourceFile)
+            )
+        ];
+    }, []);
+}
+
+function getTypeAliasDeclarationsFromNode(
+    node: tsc.Node
+): tsc.TypeAliasDeclaration[] {
+    if (node.kind === tsc.SyntaxKind.TypeAliasDeclaration) {
+        const typeAliasDeclaration = node as tsc.TypeAliasDeclaration;
+        return [typeAliasDeclaration];
+    } else {
+        return [];
+    }
 }
