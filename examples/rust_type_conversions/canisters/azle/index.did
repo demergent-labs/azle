@@ -37,6 +37,7 @@ type AzleInline_2079212390168712599 = record {
   two : nat16;
   three : ComplexRecord;
 };
+type AzleInline_2237554914371442763 = record { thing : bool; thing2 : bool };
 type AzleInline_2474745210287299794 = record { one_inline : bool };
 type AzleInline_323333797164242328 = record { two_a_i : nat16 };
 type AzleInline_4064619906461566232 = record { thing : text };
@@ -52,6 +53,7 @@ type AzleInline_4502094796870336716 = record {
 type AzleInline_5243159794805180565 = record { thing : bool };
 type AzleInline_6196361535868770603 = record { sub_one : bool; sub_two : bool };
 type AzleInline_7603740651129624619 = record { two_inline : nat16 };
+type AzleInline_7963996630050382152 = record { thing : text; thing2 : bool };
 type AzleInline_9864422139172514499 = record { one : bool; two : text };
 type ComplexRecord = record {
   one : nat16;
@@ -81,6 +83,11 @@ type RecordWithInline = record {
 };
 type RecordWithoutDirectInlineRecords = record { one : DeepInlineRecords };
 type SimpleRecord = record { one : bool; other : vec bool };
+type StructWithInlineArray = record {
+  array : vec AzleInline_2237554914371442763;
+  name : text;
+  not_array : AzleInline_2237554914371442763;
+};
 type TypeAliasOnlyUsedInline = record { one : bool };
 type VariantWithInline = variant {
   thing;
@@ -113,6 +120,10 @@ service : () -> {
       AzleInline_11336909418008909617,
     ) query;
   inline_query : (InlineExample) -> () query;
+  inline_vec : (
+      vec AzleInline_7963996630050382152,
+      StructWithInlineArray,
+    ) -> () query;
   not_so_simple : (
       vec int8,
       int16,

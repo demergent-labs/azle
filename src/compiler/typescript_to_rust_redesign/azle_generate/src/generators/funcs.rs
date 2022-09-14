@@ -47,7 +47,7 @@ fn generate_func_struct_and_impls(type_alias: &TsTypeAliasDecl) -> TokenStream {
     let type_ident = format_ident!("{}", type_alias_name.to_string());
     let name = &Some(&type_ident);
     let rust_type = ts_type_to_rust_type(ts_type, name);
-    rust_type.to_token_stream()
+    rust_type.to_type_definition_token_stream()
 }
 
 pub fn generate_func_struct_and_impls_structure(

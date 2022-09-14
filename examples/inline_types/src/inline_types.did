@@ -1,45 +1,42 @@
-type User1 = record {
-    "id": text;
-    "job": record { "id": text; "title": text; };
-};
-
-type Thing = record {
-    "id": text;
-};
-
-type Bling = record {
-    "id": text;
-};
-
-type Test = record {
-    "id": text;
-};
-
-type Test1 = record {
-    "id": text;
-};
-
-type User = record {
-    "id": text;
-};
-
-type Reaction = variant { "one": null; "two": null; "three": record { "id": text; } };
-
-type TestVariant = variant { "prop1": text; "prop2": Test1 };
-
-type UserVariant = variant { "prop1": null };
-
-service: {
-    "inlineRecordReturnType": () -> (record { "prop1": text; "prop2": text; }) query;
-    "inlineRecordParam": (record { "prop1": text; }) -> (text) query;
-    "inlineVariantReturnType": () -> (variant { "var1": null; "var2": null; "var3": null }) query;
-    "inlineVariantParam": (variant { "var1": null; "var2": null }) -> (variant { "var1": null; "var2": null }) query;
-    "recordWithInlineFields": () -> (User1) query;
-    "variantWithInlineFields": () -> (Reaction) query;
-    "recordReferencingOtherTypesFromReturnType": () -> (record { "prop1": text; "prop2": Thing; }) query;
-    "variantReferencingOtherTypesFromReturnType": () -> (variant { "prop1": text; "prop2": Bling }) query;
-    "recordReferencingRecordFromParam": (record { "test": Test; }) -> (text) query;
-    "recordReferencingVariantFromParam": (record { "testVariant": TestVariant; }) -> (opt text) query;
-    "variantReferencingRecordFromParam": (variant { "prop1": User }) -> () query;
-    "variantReferencingVariantFromParam": (variant { "prop1": UserVariant }) -> () query;
+type AzleInline_10127915031264347897 = variant { prop1 : UserVariant };
+type AzleInline_10834546925052033820 = variant { var1; var2; var3 };
+type AzleInline_12853828385948924578 = record { prop1 : text; prop2 : text };
+type AzleInline_15218571106764965672 = record { prop1 : text; prop2 : Thing };
+type AzleInline_17762858968137841589 = record { test : Test };
+type AzleInline_2705451830631252756 = variant { prop1 : Test };
+type AzleInline_2818606678343492310 = record { prop1 : text };
+type AzleInline_3762840849174695043 = variant { var1; var2 };
+type AzleInline_6018132258519184282 = record { id : text; title : text };
+type AzleInline_9732615453787353053 = record { testVariant : TestVariant };
+type Reaction = variant { one; two; three : Test };
+type Test = record { id : text };
+type TestVariant = variant { prop1 : text; prop2 : Test };
+type Thing = record { id : text };
+type User1 = record { id : text; job : AzleInline_6018132258519184282 };
+type UserVariant = variant { prop1 };
+service : () -> {
+  inlineRecordParam : (AzleInline_2818606678343492310) -> (text) query;
+  inlineRecordReturnType : () -> (AzleInline_12853828385948924578) query;
+  inlineVariantParam : (AzleInline_3762840849174695043) -> (
+      AzleInline_3762840849174695043,
+    ) query;
+  inlineVariantReturnType : () -> (AzleInline_10834546925052033820) query;
+  recordReferencingOtherTypesFromReturnType : () -> (
+      AzleInline_15218571106764965672,
+    ) query;
+  recordReferencingRecordFromParam : (AzleInline_17762858968137841589) -> (
+      text,
+    ) query;
+  recordReferencingVariantFromParam : (AzleInline_9732615453787353053) -> (
+      opt text,
+    ) query;
+  recordWithInlineFields : () -> (User1) query;
+  variantReferencingOtherTypesFromReturnType : () -> (TestVariant) query;
+  variantReferencingRecordFromParam : (
+      AzleInline_2705451830631252756,
+    ) -> () query;
+  variantReferencingVariantFromParam : (
+      AzleInline_10127915031264347897,
+    ) -> () query;
+  variantWithInlineFields : () -> (Reaction) query;
 }
