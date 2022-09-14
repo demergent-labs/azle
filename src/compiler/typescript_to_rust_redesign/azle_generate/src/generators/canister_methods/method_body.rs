@@ -1,7 +1,7 @@
 use quote::quote;
 use swc_ecma_ast::{
     FnDecl,
-    TsKeywordTypeKind::{TsNeverKeyword, TsNullKeyword, TsUndefinedKeyword, TsVoidKeyword},
+    TsKeywordTypeKind::{TsNullKeyword, TsVoidKeyword},
     TsType,
 };
 
@@ -64,7 +64,7 @@ fn generate_return_expression(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
 
     let return_type = ts_ast::fn_decl::get_canister_method_return_type(fn_decl);
 
-    if type_is_emptyish(return_type) {
+    if type_is_null_or_void(return_type) {
         return quote! {
             return;
         };
@@ -75,9 +75,8 @@ fn generate_return_expression(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
     }
 }
 
-/// Returns true if the return type is `empty`, `null`, or `void`.
-/// Otherwise returns false.
-fn type_is_emptyish(ts_type_option: Option<&TsType>) -> bool {
+/// Returns true if the return type is `null`, or `void`. Otherwise returns false.
+fn type_is_null_or_void(ts_type_option: Option<&TsType>) -> bool {
     match ts_type_option {
         Some(ts_type) => match ts_type {
             TsType::TsKeywordType(keyword) => match keyword.kind {
@@ -85,15 +84,6 @@ fn type_is_emptyish(ts_type_option: Option<&TsType>) -> bool {
                 TsNullKeyword | TsVoidKeyword => true,
                 _ => false,
             },
-            TsType::TsTypeRef(type_ref) => {
-                let type_name = type_ref.type_name.as_ident().unwrap().sym.chars().as_str();
-
-                if type_name == "empty" {
-                    true
-                } else {
-                    false
-                }
-            }
             _ => false,
         },
         None => false,
