@@ -1,5 +1,5 @@
 [workspace]
 members = [
-    "src/compiler/typescript_to_rust_redesign/azle_generate",
-    # "src/compiler/typescript_to_rust_redesign/azle_generate_macro"
+    "src/compiler/typescript_to_rust/azle_generate",
+    "src/compiler/typescript_to_rust/azle_js_value_derive"
 ]

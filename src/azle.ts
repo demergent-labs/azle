@@ -113,7 +113,7 @@ function writeCodeToFileSystem(
     }
 
     fsExtra.copySync(
-        `${__dirname}/compiler/typescript_to_rust_redesign/azle_generate`,
+        `${__dirname}/compiler/typescript_to_rust/azle_generate`,
         `./target/azle/${rootPath}/azle_generate`
     );
 
