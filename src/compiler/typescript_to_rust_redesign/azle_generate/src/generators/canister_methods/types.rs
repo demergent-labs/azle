@@ -1,14 +1,14 @@
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use swc_ecma_ast::{
-    TsArrayType, TsFnType, TsKeywordType, TsKeywordTypeKind, TsPropertySignature, TsType,
-    TsTypeElement, TsTypeLit, TsTypeRef,
+    TsArrayType, TsFnType, TsKeywordType, TsKeywordTypeKind, TsPropertySignature, TsTupleType,
+    TsType, TsTypeElement, TsTypeLit, TsTypeRef,
 };
 
 use crate::generators::funcs;
 
 use super::{
-    rust_types::{EnumInfo, FuncInfo, StructInfo},
+    rust_types::{EnumInfo, FuncInfo, StructInfo, TupleInfo},
     ArrayTypeInfo, KeywordInfo, RustType, TypeRefInfo,
 };
 
@@ -40,6 +40,17 @@ fn generate_inline_ident_for_func(ts_type_ref: &TsTypeRef) -> Ident {
     format_ident!("AzleInlineFunc_{}", id)
 }
 
+fn calculate_ts_type_lit_hash_for_tuple(type_lit: &TsTupleType) -> String {
+    let mut s = DefaultHasher::new();
+    type_lit.hash(&mut s);
+    format!("{}", s.finish()).to_string()
+}
+
+fn generate_inline_ident_for_tuple(ts_type_ref: &TsTupleType) -> Ident {
+    let id = calculate_ts_type_lit_hash_for_tuple(ts_type_ref);
+    format_ident!("AzleInlineTuple_{}", id)
+}
+
 pub fn ts_type_to_rust_type(ts_type: &TsType, name: &Option<&Ident>) -> RustType {
     let rust_type = match ts_type {
         TsType::TsKeywordType(ts_keyword_type) => {
@@ -52,12 +63,14 @@ pub fn ts_type_to_rust_type(ts_type: &TsType, name: &Option<&Ident>) -> RustType
         TsType::TsTypeLit(ts_type_lit) => {
             RustType::Struct(parse_ts_type_lit_as_struct(name, ts_type_lit))
         }
+        TsType::TsTupleType(ts_tuple_type) => {
+            RustType::Tuple(parse_ts_tuple_type(ts_tuple_type, name))
+        }
         TsType::TsThisType(_) => todo!("ts_type_to_rust_type for TsThisType"),
         TsType::TsFnOrConstructorType(_) => {
             todo!("ts_type_to_rust_type for TsFnOorConstructorType")
         }
         TsType::TsTypeQuery(_) => todo!("ts_type_to_rust_type for TsTypeQuery"),
-        TsType::TsTupleType(_) => todo!("ts_type_to_rust_type for TsTupleType"),
         TsType::TsOptionalType(_) => todo!("ts_type_to_rust_type for TsOptionalType"),
         TsType::TsRestType(_) => todo!("ts_type_to_rust_type for TsRestType"),
         TsType::TsUnionOrIntersectionType(_) => {
@@ -74,6 +87,52 @@ pub fn ts_type_to_rust_type(ts_type: &TsType, name: &Option<&Ident>) -> RustType
         TsType::TsImportType(_) => todo!("ts_type_to_rust_type for TsImportType"),
     };
     rust_type
+}
+
+fn parse_ts_tuple_type(ts_tuple_type: &TsTupleType, name: &Option<&Ident>) -> TupleInfo {
+    let inline_ident = generate_inline_ident_for_tuple(ts_tuple_type);
+    let type_ident = match name {
+        Some(type_ident) => type_ident,
+        None => &inline_ident,
+    };
+
+    let elem_types = get_elem_types(ts_tuple_type);
+    let elem_idents = elem_types.iter().map(|elem_rust_type| {
+        if elem_rust_type.needs_to_be_boxed() {
+            let ident = elem_rust_type.get_type_ident();
+            quote!(Box<#ident>)
+        } else {
+            elem_rust_type.get_type_ident()
+        }
+    });
+
+    let definition = quote!(
+        #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
+        struct #type_ident (
+            #(#elem_idents),*
+        );
+    );
+
+    let inline_members: Vec<RustType> = elem_types
+        .iter()
+        .filter(|elem_type| elem_type.is_inline_rust_type())
+        .cloned()
+        .collect();
+
+    TupleInfo {
+        identifier: quote!(#type_ident),
+        structure: definition,
+        is_inline: name.is_none(),
+        inline_members: Box::from(inline_members),
+    }
+}
+
+fn get_elem_types(ts_tuple_type: &TsTupleType) -> Vec<RustType> {
+    ts_tuple_type
+        .elem_types
+        .iter()
+        .map(|elem| ts_type_to_rust_type(&elem.ty, &None))
+        .collect()
 }
 
 fn parse_ts_keyword_type(ts_keyword_type: &TsKeywordType) -> KeywordInfo {
@@ -272,9 +331,30 @@ fn parse_func_return_type(ts_type: &TsFnType) -> RustType {
         TsType::TsTypeRef(type_reference) => match &type_reference.type_params {
             Some(type_param_inst) => match type_param_inst.params.get(0) {
                 Some(param) => ts_type_to_rust_type(&*param, &None),
-                None => todo!(),
+                None => panic!("Func must specify exactly one return type"),
             },
-            None => todo!(),
+            None => {
+                // TODO Handle Oneways more elegantly. Probably by using the
+                // funcs.rs version of this function that is much more robust
+                // the only problem is that it returns a token stream  instead
+                // of a rust type and we need the rust type in order to evaluate
+                // any inline dependencies we have
+                if type_reference
+                    .type_name
+                    .as_ident()
+                    .unwrap()
+                    .sym
+                    .chars()
+                    .as_str()
+                    == "Oneway"
+                {
+                    RustType::KeywordType(KeywordInfo {
+                        identifier: quote!(),
+                    })
+                } else {
+                    panic!("Func must specify a return type")
+                }
+            }
         },
         _ => panic!("Must be a Query or Update or Oneway (which are all type refs"),
     }
@@ -292,7 +372,7 @@ fn parse_func_param_types(ts_type: &TsFnType) -> Vec<RustType> {
                     let ts_type = &*param_type.type_ann;
                     ts_type_to_rust_type(ts_type, &None)
                 }
-                None => panic!("Func paramter must have a type"),
+                None => panic!("Func parameter must have a type"),
             },
             _ => panic!("Func parameter must be an identifier"),
         })
@@ -383,7 +463,12 @@ fn parse_type_literal_fields(member: &TsTypeElement) -> (TokenStream, Option<Rus
         Some(prop_sig) => {
             let member_name = parse_type_literal_member_name(prop_sig);
             let member_type = parse_type_literal_member_type(prop_sig);
-            let member_type_token_stream = member_type.get_type_ident();
+            let member_type_token_stream = if member_type.needs_to_be_boxed() {
+                let ident = member_type.get_type_ident();
+                quote!(Box<#ident>)
+            } else {
+                member_type.get_type_ident()
+            };
             let inline_enclosed_type = if member_type.is_inline_rust_type() {
                 Some(member_type)
             } else {
@@ -423,7 +508,12 @@ fn parse_type_literal_members_for_enum(member: &TsTypeElement) -> (TokenStream, 
                     }
                 }
                 _ => {
-                    let member_type_token_stream = member_type.get_type_ident();
+                    let member_type_token_stream = if member_type.needs_to_be_boxed() {
+                        let ident = member_type.get_type_ident();
+                        quote!(Box<#ident>)
+                    } else {
+                        member_type.get_type_ident()
+                    };
                     quote!((#member_type_token_stream))
                 }
             };

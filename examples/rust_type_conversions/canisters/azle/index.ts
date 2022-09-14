@@ -136,20 +136,28 @@ type Yes = Variant<{
     Three: null;
 }>;
 
-// type SelfReferencingVariant = Variant<{
-//     One: SelfReferencingVariant;
-//     Two: null;
-// }>;
+type SelfReferencingVariant = Variant<{
+    One: SelfReferencingVariant;
+    Two: null;
+}>;
 
-// type SelfReferencingRecord = {
-//     one: SelfReferencingRecord;
-//     two: string;
-// };
+// type SelfReferencingFunc = Func<
+//     (first_param: boolean, second_param: SelfReferencingFunc) => Query<string>
+// >;
 
-// export function self_reference(
-//     variant: SelfReferencingVariant,
-//     record: SelfReferencingRecord
-// ): Query<void> {}
+type SelfReferencingTuple = [string, SelfReferencingTuple];
+
+type SelfReferencingRecord = {
+    one: SelfReferencingRecord;
+    two: string;
+};
+
+export function self_reference(
+    variant: SelfReferencingVariant,
+    record: SelfReferencingRecord,
+    tuple: SelfReferencingTuple
+    // func: SelfReferencingFunc
+): Query<void> {}
 
 type Reaction = Variant<{
     Fire: null;
@@ -231,7 +239,20 @@ type StructWithInlineArray = {
     array: { thing: boolean; thing2: boolean }[];
 };
 
+// TODO test an inline opt
+// TODO test with self referencing where its a couple levels deep. For example A references b and b reference c and c references A
+
 export function inline_vec(
     array: { thing: string; thing2: boolean }[],
     struct_thing: StructWithInlineArray
 ): Query<void> {}
+type CanisterOnly = boolean;
+
+type CanisterTuple1 = [
+    string,
+    nat64,
+    { tuple_inline: boolean; tuple_inline2: string },
+    CanisterOnly
+];
+
+export function tuple_test(tup: CanisterTuple1): Query<void> {}

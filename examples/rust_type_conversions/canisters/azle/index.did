@@ -6,18 +6,12 @@ type AzleInline_10550531413164410119 = record {
   one : bool;
   two : AzleInline_4064619906461566232;
 };
-type AzleInline_11336909418008909617 = record {
-  one : text;
-  two : AzleInline_4440350408087292955;
-};
-type AzleInline_11759017109883458370 = record { one : nat16; two : nat16 };
 type AzleInline_11785136007535424815 = record { three_inline : ComplexRecord };
-type AzleInline_12477736162160781291 = record { sub_three : bool };
-type AzleInline_14062599278484511097 = record {
-  one : bool;
-  two : bool;
-  three : bool;
+type AzleInline_11938290237207584742 = record {
+  two_a : AzleInline_17024899950976082855;
+  two_b : bool;
 };
+type AzleInline_12477736162160781291 = record { sub_three : bool };
 type AzleInline_14090109093491927075 = record {
   one : text;
   two : SimpleRecord;
@@ -30,20 +24,21 @@ type AzleInline_14806421258981238475 = record {
   four : AzleInline_10174769152289428498;
 };
 type AzleInline_15730480668120121283 = record { one : TypeAliasOnlyUsedInline };
-type AzleInline_1579767579123437749 = variant { one : text; two; three : bool };
+type AzleInline_15837983335320594581 = record { thing : bool; thing2 : bool };
+type AzleInline_17024899950976082855 = record { two_a_i : nat16 };
 type AzleInline_1805274857099726532 = record { one : text; two : SimpleRecord };
 type AzleInline_2079212390168712599 = record {
   one : bool;
   two : nat16;
   three : ComplexRecord;
 };
-type AzleInline_2237554914371442763 = record { thing : bool; thing2 : bool };
 type AzleInline_2474745210287299794 = record { one_inline : bool };
-type AzleInline_323333797164242328 = record { two_a_i : nat16 };
+type AzleInline_331500420231041961 = record { thing : text };
 type AzleInline_4064619906461566232 = record { thing : text };
-type AzleInline_4440350408087292955 = record {
-  two_a : AzleInline_323333797164242328;
-  two_b : bool;
+type AzleInline_4208827517137868323 = record {
+  one : bool;
+  two : bool;
+  three : bool;
 };
 type AzleInline_4502094796870336716 = record {
   one : AzleInline_2474745210287299794;
@@ -52,8 +47,18 @@ type AzleInline_4502094796870336716 = record {
 };
 type AzleInline_5243159794805180565 = record { thing : bool };
 type AzleInline_6196361535868770603 = record { sub_one : bool; sub_two : bool };
+type AzleInline_6786282192879576985 = record {
+  one : text;
+  two : AzleInline_11938290237207584742;
+};
+type AzleInline_7071524478913472088 = record { thing : text; thing2 : bool };
+type AzleInline_7336418468724526833 = record { one : nat16; two : nat16 };
 type AzleInline_7603740651129624619 = record { two_inline : nat16 };
-type AzleInline_7963996630050382152 = record { thing : text; thing2 : bool };
+type AzleInline_8878595774774867537 = variant { one : text; two; three : bool };
+type AzleInline_9079640898303026199 = record {
+  tuple_inline2 : text;
+  tuple_inline : bool;
+};
 type AzleInline_9864422139172514499 = record { one : bool; two : text };
 type ComplexRecord = record {
   one : nat16;
@@ -78,22 +83,25 @@ type InlineExample = record {
 type Reaction = variant { Fun : Fun; Great; Fire; Good : Good };
 type RecordWithInline = record {
   inline_func : func (text) -> (text) query;
-  inline_variant : AzleInline_1579767579123437749;
-  inline_record : AzleInline_14062599278484511097;
+  inline_variant : AzleInline_8878595774774867537;
+  inline_record : AzleInline_4208827517137868323;
 };
 type RecordWithoutDirectInlineRecords = record { one : DeepInlineRecords };
+type SelfReferencingRecord = record { one : SelfReferencingRecord; two : text };
+type SelfReferencingTuple = record { text; SelfReferencingTuple };
+type SelfReferencingVariant = variant { One : SelfReferencingVariant; Two };
 type SimpleRecord = record { one : bool; other : vec bool };
 type StructWithInlineArray = record {
-  array : vec AzleInline_2237554914371442763;
+  array : vec AzleInline_15837983335320594581;
   name : text;
-  not_array : AzleInline_2237554914371442763;
+  not_array : AzleInline_15837983335320594581;
 };
 type TypeAliasOnlyUsedInline = record { one : bool };
 type VariantWithInline = variant {
   thing;
   inline_func : func (text) -> (text) query;
-  inline_variant : AzleInline_1579767579123437749;
-  inline_record : AzleInline_14062599278484511097;
+  inline_variant : AzleInline_8878595774774867537;
+  inline_record : AzleInline_4208827517137868323;
 };
 type Yes = variant { One; Two; Three };
 service : () -> {
@@ -111,17 +119,17 @@ service : () -> {
       RecordWithInline,
       VariantWithInline,
       func (
-          AzleInline_14062599278484511097,
-          AzleInline_1579767579123437749,
+          AzleInline_4208827517137868323,
+          AzleInline_8878595774774867537,
           func (text) -> (text) query,
         ) -> (text) query,
     ) -> ();
-  in_line : (AzleInline_11759017109883458370) -> (
-      AzleInline_11336909418008909617,
+  in_line : (AzleInline_7336418468724526833) -> (
+      AzleInline_6786282192879576985,
     ) query;
   inline_query : (InlineExample) -> () query;
   inline_vec : (
-      vec AzleInline_7963996630050382152,
+      vec AzleInline_7071524478913472088,
       StructWithInlineArray,
     ) -> () query;
   not_so_simple : (
@@ -138,9 +146,17 @@ service : () -> {
       float64,
       principal,
       null,
-      AzleInline_4064619906461566232,
+      AzleInline_331500420231041961,
     ) -> ();
   one_variant : (Fun) -> () query;
+  self_reference : (
+      SelfReferencingVariant,
+      SelfReferencingRecord,
+      record { text; SelfReferencingTuple },
+    ) -> () query;
   simple_query : (opt nat64, text, nat, bool) -> (text) query;
+  tuple_test : (
+      record { text; nat64; AzleInline_9079640898303026199; bool },
+    ) -> () query;
   various_variants : (Yes, Reaction) -> (text) query;
 }
