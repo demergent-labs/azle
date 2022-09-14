@@ -1,5 +1,5 @@
 type NullRecord = record { prop : null };
-service : {
+service : () -> {
   getEmpty : () -> (empty) query;
   getFloat32 : () -> (float32) query;
   getFloat64 : () -> (float64) query;
