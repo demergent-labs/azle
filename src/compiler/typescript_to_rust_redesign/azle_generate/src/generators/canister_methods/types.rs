@@ -331,9 +331,30 @@ fn parse_func_return_type(ts_type: &TsFnType) -> RustType {
         TsType::TsTypeRef(type_reference) => match &type_reference.type_params {
             Some(type_param_inst) => match type_param_inst.params.get(0) {
                 Some(param) => ts_type_to_rust_type(&*param, &None),
-                None => todo!(),
+                None => panic!("Func must specify exactly one return type"),
             },
-            None => todo!(),
+            None => {
+                // TODO Handle Oneways more elegantly. Probably by using the
+                // funcs.rs version of this function that is much more robust
+                // the only problem is that it returns a token stream  instead
+                // of a rust type and we need the rust type in order to evaluate
+                // any inline dependencies we have
+                if type_reference
+                    .type_name
+                    .as_ident()
+                    .unwrap()
+                    .sym
+                    .chars()
+                    .as_str()
+                    == "Oneway"
+                {
+                    RustType::KeywordType(KeywordInfo {
+                        identifier: quote!(),
+                    })
+                } else {
+                    panic!("Func must specify a return type")
+                }
+            }
         },
         _ => panic!("Must be a Query or Update or Oneway (which are all type refs"),
     }
