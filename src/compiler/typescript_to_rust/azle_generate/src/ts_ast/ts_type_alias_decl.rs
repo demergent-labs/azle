@@ -1,15 +1,16 @@
+use super::{ident, ts_method_signature, ts_type};
+use crate::azle_act::SystemStructureType;
 use std::{
     collections::{HashMap, HashSet},
     iter::FromIterator,
 };
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use super::{ident, ts_method_signature, ts_type};
-use crate::azle_act::SystemStructureType;
-
-pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
-    decl.id.sym.chars().as_str().to_string()
-}
+// This function is great for debugging but we wont need it in production. Feel
+// free to uncomment it if you need it
+// pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
+//     decl.id.sym.chars().as_str().to_string()
+// }
 
 pub fn get_ast_canister_type_alias_decls(
     type_alias_decls: &Vec<TsTypeAliasDecl>,
@@ -60,22 +61,6 @@ pub fn get_ast_other_type_alias_decls(
                         }))
         })
         .collect()
-}
-
-pub fn get_ast_record_type_alias_decls(
-    type_alias_decls: &Vec<TsTypeAliasDecl>,
-) -> Vec<TsTypeAliasDecl> {
-    type_alias_decls
-        .clone()
-        .into_iter()
-        .filter(|ts_type_alias_decl| ts_type_alias_decl.type_ann.is_ts_type_lit())
-        .collect()
-}
-
-pub fn get_ast_variant_type_alias_decls(
-    type_alias_decls: &Vec<TsTypeAliasDecl>,
-) -> Vec<TsTypeAliasDecl> {
-    get_ast_type_alias_decls_by_type_ref_name(type_alias_decls, "Variant")
 }
 
 pub fn get_dependent_types_from_type_alias_decl(

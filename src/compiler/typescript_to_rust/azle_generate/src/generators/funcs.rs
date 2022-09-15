@@ -1,12 +1,9 @@
+use crate::azle_act;
 use proc_macro2::TokenStream;
 use quote::quote;
 use swc_ecma_ast::TsEntityName::{Ident, TsQualifiedName};
-use swc_ecma_ast::TsType;
+use swc_ecma_ast::TsFnType;
 use swc_ecma_ast::TsType::TsTypeRef;
-use swc_ecma_ast::TsTypeAliasDecl;
-use swc_ecma_ast::{TsFnOrConstructorType, TsFnType};
-
-use crate::generators::canister_methods;
 
 pub fn generate_func_arg_token() -> TokenStream {
     quote! {
@@ -116,53 +113,6 @@ pub fn generate_func_struct_and_impls(
     }
 }
 
-fn get_type_alias_name(type_alias: &TsTypeAliasDecl) -> TokenStream {
-    type_alias
-        .id
-        .sym
-        .chars()
-        .as_str()
-        .parse::<TokenStream>()
-        .unwrap()
-}
-
-fn get_func_type(type_alias: &TsTypeAliasDecl) -> &swc_ecma_ast::TsFnType {
-    let type_alias_name = get_type_alias_name(type_alias);
-    match &*type_alias.type_ann {
-        TsTypeRef(type_ref) => match &type_ref.type_params {
-            Some(type_params) => {
-                if type_params.params.len() != 1 {
-                    panic!(
-                        "type {} must only specify a single type param for Func type reference",
-                        type_alias_name
-                    )
-                }
-
-                match &*type_params.params[0] {
-                    TsType::TsFnOrConstructorType(fn_or_constructor_type) => {
-                        match fn_or_constructor_type {
-                            TsFnOrConstructorType::TsFnType(fn_type) => fn_type,
-                            TsFnOrConstructorType::TsConstructorType(_) => panic!(
-                                "type {} must pass a function type as a type parameter to it's Func type reference",
-                                type_alias_name
-                            )
-                        }
-                    },
-                    _ => panic!(
-                        "type {} must pass a function type as a type parameter to it's Func type reference",
-                        type_alias_name
-                    )
-                }
-            }
-            None => panic!(
-                "type {} must include a function signature as a type parameter to Func",
-                type_alias_name
-            ),
-        },
-        _ => panic!("Func types must be declared using Azle's Func type with a type parameter"),
-    }
-}
-
 fn get_func_mode(function_type: &swc_ecma_ast::TsFnType) -> TokenStream {
     match &*function_type.type_ann.type_ann {
         TsTypeRef(type_reference) => match &type_reference.type_name {
@@ -194,7 +144,7 @@ fn get_param_types(function_type: &swc_ecma_ast::TsFnType) -> Vec<TokenStream> {
             swc_ecma_ast::TsFnParam::Ident(identifier) => match &identifier.type_ann {
                 Some(param_type) => {
                     let rust_type =
-                        canister_methods::ts_type_to_rust_type(&*param_type.type_ann, &None)
+                        azle_act::types::ts_type_to_rust_type(&*param_type.type_ann, &None)
                             .get_type_ident()
                             .to_string();
 
@@ -240,7 +190,7 @@ fn get_return_type(function_type: &swc_ecma_ast::TsFnType) -> TokenStream {
                             }
                             match type_param_inst.params.get(0) {
                                 Some(param) => {
-                                    let return_type = canister_methods::ts_type_to_rust_type(&**param, &None).get_type_ident().to_string();
+                                    let return_type = azle_act::types::ts_type_to_rust_type(&**param, &None).get_type_ident().to_string();
                                     if return_type == "()" {
                                         quote! {}
                                     } else {

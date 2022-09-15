@@ -34,7 +34,7 @@ pub fn get_dependent_types_for_ts_type(
                 found_types,
             )
         }
-        swc_ecma_ast::TsType::TsTupleType(ts_tuple_type) => {
+        TsType::TsTupleType(ts_tuple_type) => {
             ts_tuple_type::get_dependent_types_from_ts_tuple_type(
                 ts_tuple_type,
                 type_alias_lookup,

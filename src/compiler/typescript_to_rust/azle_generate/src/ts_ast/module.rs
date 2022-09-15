@@ -1,7 +1,5 @@
 use swc_ecma_ast::{ExportDecl, Module, ModuleDecl, Stmt, TsTypeAliasDecl};
 
-use super::ts_type_alias_decl;
-
 pub fn get_export_decls(module: &Module) -> Vec<ExportDecl> {
     let module_decls: Vec<ModuleDecl> = module
         .body
@@ -17,12 +15,6 @@ pub fn get_export_decls(module: &Module) -> Vec<ExportDecl> {
         .collect();
 
     export_decls
-}
-
-pub fn get_ast_func_type_alias_decls(module: &Module) -> Vec<TsTypeAliasDecl> {
-    // TODO should we have this take a Vec<TsTypeAliasDecl> so its more like the other ones like it in mod.rs and we should all put them in the same place, probably here.
-    let decls = get_type_alias_decls(module);
-    ts_type_alias_decl::get_ast_type_alias_decls_by_type_ref_name(&decls, "Func")
 }
 
 pub fn get_type_alias_decls(module: &Module) -> Vec<TsTypeAliasDecl> {

@@ -11,3 +11,7 @@ pub enum CanisterMethodType {
 pub enum SystemStructureType {
     Canister,
 }
+
+pub mod canister_method_act;
+pub mod rust_types;
+pub mod types;

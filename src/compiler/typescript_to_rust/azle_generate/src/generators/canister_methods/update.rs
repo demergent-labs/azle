@@ -1,7 +1,9 @@
 use quote::quote;
 use swc_ecma_ast::FnDecl;
 
-use super::{functions::FunctionInformation, generate_function_info};
+use crate::azle_act::canister_method_act::FunctionInformation;
+
+use super::functions;
 
 pub fn generate_update_function_infos(
     ast_fnc_decls_update: &Vec<FnDecl>,
@@ -15,7 +17,7 @@ pub fn generate_update_function_infos(
 }
 
 fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl) -> FunctionInformation {
-    let function_info = generate_function_info(ast_fnc_decl_update);
+    let function_info = functions::generate_function_info(ast_fnc_decl_update);
     let function_token_stream = function_info.function;
 
     let manual_reply_arg = if function_info.manual {

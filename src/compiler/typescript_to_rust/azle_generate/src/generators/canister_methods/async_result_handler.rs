@@ -284,7 +284,6 @@ fn generate_async_result_handler_call(
                         let cycles: u128 = cycles_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
                     }
                 }
-                _ => quote! {}
             };
 
             let cycles_comma = if param_names.len() == 0 { quote! {} } else { quote! { , } };

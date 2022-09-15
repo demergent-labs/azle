@@ -4,7 +4,7 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use super::ts_type_to_rust_type;
+use crate::azle_act;
 
 /**
  * Loops through all of the dependant types, finds the corresponding ts types in
@@ -44,7 +44,8 @@ fn type_alias_decl_to_token_stream(type_alias_decl: &TsTypeAliasDecl) -> TokenSt
 
     let aliased_ts_type = *type_alias_decl.type_ann.clone();
 
-    let aliased_rust_type = ts_type_to_rust_type(&aliased_ts_type, &Some(&alias_ident));
+    let aliased_rust_type =
+        azle_act::types::ts_type_to_rust_type(&aliased_ts_type, &Some(&alias_ident));
     let aliased_definition = if aliased_rust_type.is_inline_rust_type() {
         aliased_rust_type.to_type_definition_token_stream()
     } else {
@@ -60,6 +61,7 @@ fn type_alias_decl_to_token_stream(type_alias_decl: &TsTypeAliasDecl) -> TokenSt
     }
 }
 
+// TODO merge this one with the other one of the same name wherever it lives now
 pub fn generate_type_alias_lookup(
     ast_type_alias_decls: &Vec<TsTypeAliasDecl>,
 ) -> HashMap<String, TsTypeAliasDecl> {
