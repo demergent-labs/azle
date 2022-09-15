@@ -314,7 +314,7 @@ fn parse_func_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> RustTy
         .filter(|rust_type| rust_type.is_inline_rust_type())
         .cloned()
         .collect();
-    let structure = funcs::generate_func_struct_and_impls_structure(quote!(#type_ident), ts_type);
+    let structure = funcs::generate_func_struct_and_impls(quote!(#type_ident), ts_type);
     let func_info = FuncInfo {
         identifier: quote!(#type_ident),
         structure,
