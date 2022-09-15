@@ -1,13 +1,11 @@
 use quote::quote;
 use swc_ecma_ast::FnDecl;
 
-use crate::azle_act::canister_method_act::FunctionInformation;
+use crate::azle_act::canister_method::CanisterMethod;
 
 use super::functions;
 
-pub fn generate_update_function_infos(
-    ast_fnc_decls_update: &Vec<FnDecl>,
-) -> Vec<FunctionInformation> {
+pub fn generate_update_function_infos(ast_fnc_decls_update: &Vec<FnDecl>) -> Vec<CanisterMethod> {
     ast_fnc_decls_update
         .iter()
         .fold(vec![], |acc, ast_fnc_decl_update| {
@@ -16,11 +14,11 @@ pub fn generate_update_function_infos(
         })
 }
 
-fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl) -> FunctionInformation {
+fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl) -> CanisterMethod {
     let function_info = functions::generate_function_info(ast_fnc_decl_update);
-    let function_token_stream = function_info.function;
+    let function_token_stream = function_info.canister_method;
 
-    let manual_reply_arg = if function_info.manual {
+    let manual_reply_arg = if function_info.is_manual {
         quote! {(manual_reply = true)}
     } else {
         quote! {}
@@ -32,8 +30,8 @@ fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl) -> Functi
         #function_token_stream
     };
 
-    FunctionInformation {
-        function: token_stream,
+    CanisterMethod {
+        canister_method: token_stream,
         ..function_info
     }
 }

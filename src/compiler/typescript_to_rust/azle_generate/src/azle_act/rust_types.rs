@@ -1,3 +1,5 @@
+use std::vec;
+
 use proc_macro2::TokenStream;
 use quote::quote;
 
@@ -29,12 +31,13 @@ use quote::quote;
  * stream to put into the function
  */
 #[derive(Clone, Debug)]
-pub enum RustType {
-    KeywordType(KeywordInfo),
-    TypeRef(TypeRefInfo),
-    ArrayType(ArrayTypeInfo),
-    Struct(StructInfo),
-    Enum(EnumInfo),
+pub enum ActNode {
+    Primitive(PrimitiveInfo),
+    Option(TypeRefInfo),
+    TypeAlias(TypeRefInfo),
+    Array(ArrayTypeInfo),
+    Record(StructInfo),
+    Variant(EnumInfo),
     Func(FuncInfo),
     Tuple(TupleInfo),
 }
@@ -48,20 +51,20 @@ pub enum RustType {
  * They don't have any dependencies.
  */
 #[derive(Clone, Debug)]
-pub struct KeywordInfo {
+pub struct PrimitiveInfo {
     pub identifier: TokenStream,
 }
 
 #[derive(Clone, Default, Debug)]
 pub struct TypeRefInfo {
     pub identifier: TokenStream,
-    pub enclosed_inline_type: Box<Option<RustType>>, // Opt and Variants are examples of TypeRefs that have enclosed types
+    pub enclosed_inline_type: Box<Option<ActNode>>, // Opt and Variants are examples of TypeRefs that have enclosed types
 }
 
 #[derive(Clone, Debug)]
 pub struct ArrayTypeInfo {
     pub identifier: TokenStream,
-    pub enclosed_inline_type: Box<Option<RustType>>,
+    pub enclosed_inline_type: Box<Option<ActNode>>,
 }
 
 /**
@@ -100,7 +103,7 @@ pub struct StructInfo {
     pub identifier: TokenStream,
     pub structure: TokenStream,
     pub is_inline: bool,
-    pub inline_members: Box<Vec<RustType>>,
+    pub inline_members: Box<Vec<ActNode>>,
 }
 
 #[derive(Clone, Debug)]
@@ -108,7 +111,7 @@ pub struct EnumInfo {
     pub identifier: TokenStream,
     pub structure: TokenStream,
     pub is_inline: bool,
-    pub inline_members: Box<Vec<RustType>>,
+    pub inline_members: Box<Vec<ActNode>>,
 }
 
 #[derive(Clone, Debug)]
@@ -116,7 +119,7 @@ pub struct FuncInfo {
     pub identifier: TokenStream,
     pub structure: TokenStream,
     pub is_inline: bool,
-    pub inline_members: Box<Vec<RustType>>,
+    pub inline_members: Box<Vec<ActNode>>,
 }
 
 #[derive(Clone, Debug)]
@@ -124,19 +127,20 @@ pub struct TupleInfo {
     pub identifier: TokenStream,
     pub structure: TokenStream,
     pub is_inline: bool,
-    pub inline_members: Box<Vec<RustType>>,
+    pub inline_members: Box<Vec<ActNode>>,
 }
 
-impl RustType {
+impl ActNode {
     pub fn get_type_ident(&self) -> TokenStream {
         let token_stream = match self {
-            RustType::KeywordType(keyword_info) => &keyword_info.identifier,
-            RustType::TypeRef(type_ref_info) => &type_ref_info.identifier,
-            RustType::ArrayType(array_info) => &array_info.identifier,
-            RustType::Struct(struct_info) => &struct_info.identifier,
-            RustType::Enum(enum_info) => &enum_info.identifier,
-            RustType::Func(func_info) => &func_info.identifier,
-            RustType::Tuple(tuple_info) => &tuple_info.identifier,
+            ActNode::Primitive(keyword_info) => &keyword_info.identifier,
+            ActNode::TypeAlias(type_ref_info) => &type_ref_info.identifier,
+            ActNode::Array(array_info) => &array_info.identifier,
+            ActNode::Record(struct_info) => &struct_info.identifier,
+            ActNode::Variant(enum_info) => &enum_info.identifier,
+            ActNode::Func(func_info) => &func_info.identifier,
+            ActNode::Tuple(tuple_info) => &tuple_info.identifier,
+            ActNode::Option(option_info) => &option_info.identifier,
         };
         quote!(#token_stream)
     }
@@ -144,29 +148,34 @@ impl RustType {
     // TODO I am not sure if and array type could be an inline type?? We should test that
     pub fn is_inline_rust_type(&self) -> bool {
         match self {
-            RustType::KeywordType(_) => false,
-            RustType::TypeRef(type_ref_info) => type_ref_info.enclosed_inline_type.is_some(),
-            RustType::ArrayType(array_type_info) => array_type_info.enclosed_inline_type.is_some(),
-            RustType::Struct(struct_info) => struct_info.is_inline,
-            RustType::Enum(enum_info) => enum_info.is_inline,
-            RustType::Func(func_info) => func_info.is_inline,
-            RustType::Tuple(tuple_info) => tuple_info.is_inline,
+            ActNode::Primitive(_) => false,
+            ActNode::TypeAlias(type_ref_info) => type_ref_info.enclosed_inline_type.is_some(),
+            ActNode::Array(array_type_info) => array_type_info.enclosed_inline_type.is_some(),
+            ActNode::Record(struct_info) => struct_info.is_inline,
+            ActNode::Variant(enum_info) => enum_info.is_inline,
+            ActNode::Func(func_info) => func_info.is_inline,
+            ActNode::Tuple(tuple_info) => tuple_info.is_inline,
+            ActNode::Option(option_info) => option_info.enclosed_inline_type.is_some(),
         }
     }
 
     // TODO rename to get_definition
     pub fn get_structure(&self) -> Option<TokenStream> {
         match self {
-            RustType::Struct(struct_info) => Some(struct_info.structure.clone()),
-            RustType::Enum(enum_info) => Some(enum_info.structure.clone()),
-            RustType::Func(func_info) => Some(func_info.structure.clone()),
-            RustType::Tuple(tuple_info) => Some(tuple_info.structure.clone()),
-            RustType::KeywordType(_) => None,
-            RustType::TypeRef(type_ref_info) => match &*type_ref_info.enclosed_inline_type {
+            ActNode::Record(struct_info) => Some(struct_info.structure.clone()),
+            ActNode::Variant(enum_info) => Some(enum_info.structure.clone()),
+            ActNode::Func(func_info) => Some(func_info.structure.clone()),
+            ActNode::Tuple(tuple_info) => Some(tuple_info.structure.clone()),
+            ActNode::Primitive(_) => None,
+            ActNode::TypeAlias(type_ref_info) => match &*type_ref_info.enclosed_inline_type {
                 Some(inline_type) => inline_type.get_structure(),
                 None => None,
             },
-            RustType::ArrayType(array_type_info) => match &*array_type_info.enclosed_inline_type {
+            ActNode::Option(type_ref_info) => match &*type_ref_info.enclosed_inline_type {
+                Some(inline_type) => inline_type.get_structure(),
+                None => None,
+            },
+            ActNode::Array(array_type_info) => match &*array_type_info.enclosed_inline_type {
                 Some(inline_type) => inline_type.get_structure(),
                 None => None,
             },
@@ -178,15 +187,16 @@ impl RustType {
     }
 
     // TODO I think that the inline members for type ref and array type ought to be empty list since we are taking care of it with get_structure
-    pub fn get_inline_members(&self) -> Vec<RustType> {
+    pub fn get_inline_members(&self) -> Vec<ActNode> {
         match self {
-            RustType::Struct(struct_info) => *struct_info.inline_members.clone(),
-            RustType::Enum(enum_info) => *enum_info.inline_members.clone(),
-            RustType::Func(func_info) => *func_info.inline_members.clone(),
-            RustType::KeywordType(_) => vec![],
-            RustType::TypeRef(_) => vec![],
-            RustType::ArrayType(_) => vec![],
-            RustType::Tuple(tuple_info) => *tuple_info.inline_members.clone(),
+            ActNode::Record(struct_info) => *struct_info.inline_members.clone(),
+            ActNode::Variant(enum_info) => *enum_info.inline_members.clone(),
+            ActNode::Func(func_info) => *func_info.inline_members.clone(),
+            ActNode::Primitive(_) => vec![],
+            ActNode::TypeAlias(_) => vec![],
+            ActNode::Array(_) => vec![],
+            ActNode::Tuple(tuple_info) => *tuple_info.inline_members.clone(),
+            ActNode::Option(_) => vec![],
         }
     }
 

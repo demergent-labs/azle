@@ -1,12 +1,12 @@
 use crate::{
-    azle_act::{self, canister_method_act, rust_types::RustType},
+    azle_act::{self, canister_method, rust_types::ActNode},
     generators, ts_ast,
 };
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use swc_ecma_ast::FnDecl;
 
-pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> canister_method_act::FunctionInformation {
+pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> canister_method::CanisterMethod {
     let function_name = ast_fnc_decl.ident.sym.chars().as_str().to_string();
     let function_name_ident = format_ident!("{}", function_name);
 
@@ -42,12 +42,12 @@ pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> canister_method_act::Fun
         .fold(vec![], |acc, rust_type| {
             vec![acc, vec![rust_type.clone()]].concat()
         });
-    let inline_types: Box<Vec<RustType>> = Box::from(inline_types);
+    let inline_types: Box<Vec<ActNode>> = Box::from(inline_types);
 
-    canister_method_act::FunctionInformation {
-        function: function_token_stream,
+    canister_method::CanisterMethod {
+        canister_method: function_token_stream,
         inline_types,
-        manual,
+        is_manual: manual,
     }
 }
 
@@ -69,7 +69,7 @@ pub fn generate_param_name_idents(ast_fn_decl: &FnDecl) -> Vec<Ident> {
         .collect()
 }
 
-pub fn generate_params_token_stream(names: &Vec<Ident>, types: &Vec<RustType>) -> Vec<TokenStream> {
+pub fn generate_params_token_stream(names: &Vec<Ident>, types: &Vec<ActNode>) -> Vec<TokenStream> {
     names
         .iter()
         .enumerate()
@@ -82,12 +82,12 @@ pub fn generate_params_token_stream(names: &Vec<Ident>, types: &Vec<RustType>) -
         .collect()
 }
 
-fn generate_return_type(ast_fnc_decl: &FnDecl) -> RustType {
+fn generate_return_type(ast_fnc_decl: &FnDecl) -> ActNode {
     let return_ts_type = ts_ast::fn_decl::get_return_ts_type(ast_fnc_decl);
     azle_act::types::ts_type_to_rust_type(&return_ts_type, &None)
 }
 
-pub fn generate_param_types(ast_fnc_decl: &FnDecl) -> Vec<RustType> {
+pub fn generate_param_types(ast_fnc_decl: &FnDecl) -> Vec<ActNode> {
     ts_ast::fn_decl::get_param_ts_types(ast_fnc_decl)
         .iter()
         .map(|ts_type| azle_act::types::ts_type_to_rust_type(ts_type, &None))

@@ -1,13 +1,11 @@
 use quote::quote;
 use swc_ecma_ast::FnDecl;
 
-use crate::azle_act::canister_method_act::FunctionInformation;
+use crate::azle_act::canister_method::CanisterMethod;
 
 use super::functions;
 
-pub fn generate_query_function_infos(
-    ast_fnc_decls_query: &Vec<FnDecl>,
-) -> Vec<FunctionInformation> {
+pub fn generate_query_function_infos(ast_fnc_decls_query: &Vec<FnDecl>) -> Vec<CanisterMethod> {
     ast_fnc_decls_query
         .iter()
         .fold(vec![], |acc, ast_fnc_decl_query| {
@@ -16,11 +14,11 @@ pub fn generate_query_function_infos(
         })
 }
 
-fn generate_query_function_info(ast_fnc_decl_query: &FnDecl) -> FunctionInformation {
+fn generate_query_function_info(ast_fnc_decl_query: &FnDecl) -> CanisterMethod {
     let function_info = functions::generate_function_info(ast_fnc_decl_query);
-    let function_signature_stream = function_info.function;
+    let function_signature_stream = function_info.canister_method;
 
-    let manual_reply_arg = if function_info.manual {
+    let manual_reply_arg = if function_info.is_manual {
         quote! {(manual_reply = true)}
     } else {
         quote! {}
@@ -32,8 +30,8 @@ fn generate_query_function_info(ast_fnc_decl_query: &FnDecl) -> FunctionInformat
         #function_signature_stream
     };
 
-    FunctionInformation {
-        function: token_stream,
+    CanisterMethod {
+        canister_method: token_stream,
         ..function_info
     }
 }
