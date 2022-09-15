@@ -7,9 +7,8 @@ use swc_ecma_ast::{
 
 use crate::generators::funcs;
 
-use super::{
-    rust_types::{EnumInfo, FuncInfo, StructInfo, TupleInfo},
-    ArrayTypeInfo, KeywordInfo, RustType, TypeRefInfo,
+use super::rust_types::{
+    ArrayTypeInfo, EnumInfo, FuncInfo, KeywordInfo, RustType, StructInfo, TupleInfo, TypeRefInfo,
 };
 
 use core::panic;
