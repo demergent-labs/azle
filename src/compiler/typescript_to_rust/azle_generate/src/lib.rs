@@ -1,15 +1,15 @@
 // TODO let's find all Query and Update functions and create their function bodies
 // TODO then we can move on from there
 
-use azle_act::{rust_types::RustType, CanisterMethodType};
+use azle_act::{rust_types::ActNode, CanisterMethodType};
 use generators::{
     azle_into_js_value, azle_try_from_js_value,
     canister_methods::{
         self,
         system::{heartbeat, init, inspect_message, post_upgrade, pre_upgrade},
     },
-    canister_type_aliases::{type_aliases, variant_type_aliases},
-    cross_canister_call_functions, funcs, ic_object, stacktrace,
+    cross_canister_call_functions, funcs, ic_object, stacktrace, type_aliases,
+    variant_type_aliases,
 };
 use quote::quote;
 use std::{collections::HashSet, path::Path};
@@ -71,14 +71,14 @@ pub fn azle_generate(
         canister_methods::query::generate_query_function_infos(&ast_fnc_decls_query);
     let query_function_streams: Vec<proc_macro2::TokenStream> = query_function_info
         .iter()
-        .map(|fun_info| fun_info.function.clone())
+        .map(|fun_info| fun_info.canister_method.clone())
         .collect();
 
     let update_function_info =
         canister_methods::update::generate_update_function_infos(&ast_fnc_decls_update);
     let update_function_streams: Vec<proc_macro2::TokenStream> = update_function_info
         .iter()
-        .map(|fun_info| fun_info.function.clone())
+        .map(|fun_info| fun_info.canister_method.clone())
         .collect();
 
     let query_function_inline_dependant_types = collect_inline_dependencies(&query_function_info);
@@ -94,7 +94,7 @@ pub fn azle_generate(
         &dependencies,
         &ast_other_type_alias_decls,
     );
-    let type_alias_token_streams = variant_type_aliases::generate_type_alias_token_streams(
+    let type_alias_token_streams = variant_type_aliases::generate_type_definition_token_streams(
         &dependencies,
         &ast_type_alias_decls,
     );
@@ -235,7 +235,7 @@ fn get_programs(ts_file_names: &Vec<&str>) -> Vec<Program> {
 }
 
 fn collect_inline_dependencies(
-    function_info: &Vec<azle_act::canister_method_act::FunctionInformation>,
+    function_info: &Vec<azle_act::canister_method::CanisterMethod>,
 ) -> Vec<proc_macro2::TokenStream> {
     function_info.iter().fold(vec![], |acc, fun_info| {
         vec![
@@ -248,14 +248,14 @@ fn collect_inline_dependencies(
 
 // TODO I think we can get rid of these two functions with a little work
 fn collect_inline_dependencies_from_list(
-    rust_types: &Vec<RustType>,
+    rust_types: &Vec<ActNode>,
 ) -> Vec<proc_macro2::TokenStream> {
     rust_types.iter().fold(vec![], |acc, rust_type| {
         vec![acc, collect_inline_dependencies_rust_type(rust_type)].concat()
     })
 }
 
-fn collect_inline_dependencies_rust_type(rust_type: &RustType) -> Vec<proc_macro2::TokenStream> {
+fn collect_inline_dependencies_rust_type(rust_type: &ActNode) -> Vec<proc_macro2::TokenStream> {
     let rust_type_structure = match rust_type.get_structure() {
         Some(structure) => structure,
         None => quote!(),
