@@ -1,22 +1,12 @@
 use proc_macro2::Ident;
-use quote::{
-    format_ident,
-    quote
-};
-use syn::{
-    DataEnum,
-    Field,
-    Fields
-};
+use quote::{format_ident, quote};
+use syn::{DataEnum, Field, Fields};
 
 pub fn derive_azle_into_js_value_enum(
     enum_name: &Ident,
-    data_enum: &DataEnum
+    data_enum: &DataEnum,
 ) -> proc_macro2::TokenStream {
-    let variant_branches = derive_variant_branches(
-        &enum_name,
-        &data_enum
-    );
+    let variant_branches = derive_variant_branches(&enum_name, &data_enum);
 
     quote! {
         impl AzleIntoJsValue for #enum_name {
@@ -39,41 +29,37 @@ pub fn derive_azle_into_js_value_enum(
 
 fn derive_variant_branches(
     enum_name: &Ident,
-    data_enum: &DataEnum
+    data_enum: &DataEnum,
 ) -> Vec<proc_macro2::TokenStream> {
-    data_enum.variants.iter().map(|variant| {
-        let variant_name = &variant.ident;
+    data_enum
+        .variants
+        .iter()
+        .map(|variant| {
+            let variant_name = &variant.ident;
 
-        match &variant.fields {
-            Fields::Named(fields_named) => {
-                derive_variant_branches_named_fields(
+            match &variant.fields {
+                Fields::Named(fields_named) => derive_variant_branches_named_fields(
                     enum_name,
                     variant_name,
-                    fields_named.named.iter().collect()
-                )
-            },
-            Fields::Unnamed(fields_unnamed) => {
-                derive_variant_branches_unnamed_fields(
+                    fields_named.named.iter().collect(),
+                ),
+                Fields::Unnamed(fields_unnamed) => derive_variant_branches_unnamed_fields(
                     enum_name,
                     variant_name,
-                    fields_unnamed.unnamed.iter().collect()
-                )
-            },
-            Fields::Unit => {
-                derive_variant_branches_unnamed_fields(
-                    enum_name,
-                    variant_name,
-                    vec![]
-                )
+                    fields_unnamed.unnamed.iter().collect(),
+                ),
+                Fields::Unit => {
+                    derive_variant_branches_unnamed_fields(enum_name, variant_name, vec![])
+                }
             }
-        }
-    }).collect()
+        })
+        .collect()
 }
 
 fn derive_variant_branches_named_fields(
     enum_name: &Ident,
     variant_name: &Ident,
-    named_fields: Vec<&Field>
+    named_fields: Vec<&Field>,
 ) -> proc_macro2::TokenStream {
     let field_names = named_fields.iter().map(|named_field| {
         let field_name = &named_field.ident.as_ref().unwrap();
@@ -131,7 +117,7 @@ fn derive_variant_branches_named_fields(
 fn derive_variant_branches_unnamed_fields(
     enum_name: &Ident,
     variant_name: &Ident,
-    unnamed_fields: Vec<&Field>
+    unnamed_fields: Vec<&Field>,
 ) -> proc_macro2::TokenStream {
     if unnamed_fields.len() == 0 {
         quote! {
@@ -147,8 +133,7 @@ fn derive_variant_branches_unnamed_fields(
                 object.into()
             }
         }
-    }
-    else {
+    } else {
         quote! {
             #enum_name::#variant_name(value) => {
                 let js_value = value.azle_into_js_value(context);

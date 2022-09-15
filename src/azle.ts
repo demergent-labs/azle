@@ -7,7 +7,7 @@ import {
     generateLibCargoToml,
     generateWorkspaceCargoLock,
     generateWorkspaceCargoToml
-} from './compiler/typescript_to_rust/generators/cargo_toml_files';
+} from './compiler/typescript_to_javascript/cargo_toml_files';
 import * as fs from 'fs';
 import * as fsExtra from 'fs-extra';
 import { DfxJson, JavaScript, Toml } from './types';
@@ -113,7 +113,7 @@ function writeCodeToFileSystem(
     }
 
     fsExtra.copySync(
-        `${__dirname}/compiler/typescript_to_rust_redesign/azle_generate`,
+        `${__dirname}/compiler/typescript_to_rust/azle_generate`,
         `./target/azle/${rootPath}/azle_generate`
     );
 
