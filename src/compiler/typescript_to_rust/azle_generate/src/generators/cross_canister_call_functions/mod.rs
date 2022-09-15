@@ -1,8 +1,6 @@
-use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use swc_ecma_ast::{
-    Expr, Param, Program, TsFnParam, TsMethodSignature, TsType, TsTypeAliasDecl, TsTypeElement,
-    TsTypeLit,
+    Expr, Program, TsFnParam, TsMethodSignature, TsType, TsTypeAliasDecl, TsTypeElement, TsTypeLit,
 };
 
 use crate::{
@@ -13,10 +11,7 @@ use crate::{
     },
 };
 
-use super::canister_methods::{
-    functions::{generate_param_name_idents, generate_param_types, generate_params_token_stream},
-    ts_type_to_rust_type,
-};
+use super::canister_methods::ts_type_to_rust_type;
 
 #[derive(Clone)]
 pub struct CrossCanisterCallFunctionsInfo {

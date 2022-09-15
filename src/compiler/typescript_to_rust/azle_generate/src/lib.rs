@@ -56,7 +56,7 @@ fn collect_inline_dependencies(
     function_info.iter().fold(vec![], |acc, fun_info| {
         vec![
             acc,
-            collect_inline_dependencies_from_list(&*fun_info.inline_dependant_types),
+            collect_inline_dependencies_from_list(&*fun_info.inline_types),
         ]
         .concat()
     })
@@ -71,14 +71,10 @@ pub fn azle_generate(
 
     // Collect AST Information
     let ast_type_alias_decls = get_ast_type_alias_decls_from_programs(&programs);
-    // let ast_record_type_alias_decls = get_ast_record_type_alias_decls(&ast_type_alias_decls);
-    // let ast_variant_type_alias_decls = get_ast_variant_type_alias_decls(&ast_type_alias_decls);
     let ast_other_type_alias_decls = get_ast_other_type_alias_decls(&ast_type_alias_decls);
     let ast_canister_type_alias_decls = get_ast_canister_type_alias_decls(&ast_type_alias_decls);
 
-    let ast_func_type_alias_decls =
-        ts_ast::program::get_ast_func_type_alias_decls_from_programs(&programs);
-    let func_structs_and_impls = funcs::generate_func_structs_and_impls(ast_func_type_alias_decls);
+    let func_arg_token = funcs::generate_func_arg_token();
 
     // Separate function decls into queries and updates
     let ast_fnc_decls_query =
@@ -116,13 +112,11 @@ pub fn azle_generate(
         .map(|fun_info| fun_info.function.clone())
         .collect();
 
-    // let query_inline_type_aliases = quote!();
     let update_function_info = generate_update_function_infos(&ast_fnc_decls_update);
     let update_function_streams: Vec<proc_macro2::TokenStream> = update_function_info
         .iter()
         .map(|fun_info| fun_info.function.clone())
         .collect();
-    // let update_inline_type_aliases = quote!();
 
     let query_function_inline_dependant_types = collect_inline_dependencies(&query_function_info);
     let update_function_inline_dependant_types = collect_inline_dependencies(&update_function_info);
@@ -133,34 +127,10 @@ pub fn azle_generate(
     ]
     .concat();
 
-    // let variant_token_streams =
-    //     generate_variant_token_streams(&dependencies, &ast_variant_type_alias_decls);
-
-    // let records_type_token_streams =
-    //     generate_record_token_streams(&dependencies, &ast_record_type_alias_decls);
-
-    let other_type_aliases_map =
-        generate_type_alias_token_streams(&dependencies, &ast_other_type_alias_decls);
-    let other_inline_deps = other_type_aliases_map
-        .iter()
-        .fold(vec![], |acc, (_, (_, token_stream))| {
-            vec![acc, token_stream.clone()].concat()
-        });
-    let other_inline_records = collect_inline_dependencies_from_list(&other_inline_deps);
-
-    let inline_records_function_streams =
-        vec![function_inline_records, other_inline_records].concat();
-
-    // let records_token_streams = records_type_token_streams;
-
-    // let variant_token_streams = variant_token_streams;
-
-    let other_token_streams: Vec<proc_macro2::TokenStream> = other_type_aliases_map
-        .iter()
-        .map(|(_, (token_stream, _))| token_stream.clone())
-        .collect();
+    let other_token_streams =
+        generate_other_type_alias_token_streams(&dependencies, &ast_other_type_alias_decls);
     let type_alias_token_streams =
-        generate_variant_token_streams(&dependencies, &ast_type_alias_decls);
+        generate_type_alias_token_streams(&dependencies, &ast_type_alias_decls);
 
     let canister_method_system_heartbeat = generate_canister_method_system_heartbeat(&programs);
     let canister_method_system_init = generate_canister_method_system_init(&programs);
@@ -235,11 +205,9 @@ pub fn azle_generate(
         #async_result_handler
         #get_top_level_call_frame_fn
 
+        #func_arg_token
         #(#type_alias_token_streams)*
-        #(#inline_records_function_streams)*
-        // #(#records_token_streams)*
-        // #(#variant_token_streams)*
-        #(#func_structs_and_impls)*
+        #(#function_inline_records)*
         #(#other_token_streams)*
         #(#query_function_streams)*
         #(#update_function_streams)*

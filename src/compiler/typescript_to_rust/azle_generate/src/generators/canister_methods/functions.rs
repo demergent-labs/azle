@@ -7,8 +7,7 @@ use swc_ecma_ast::{FnDecl, TsType};
 #[derive(Clone)]
 pub struct FunctionInformation {
     pub function: TokenStream,
-    // The dependant types need to have the name of the type so we can find the corresponding type and create a rust type
-    pub inline_dependant_types: Box<Vec<RustType>>,
+    pub inline_types: Box<Vec<RustType>>,
     pub manual: bool,
 }
 
@@ -40,18 +39,18 @@ pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> FunctionInformation {
         }
     };
 
-    let types = vec![param_types, vec![return_type]].concat();
-    let inline_dependencies = types
+    let inline_types = vec![param_types, vec![return_type]]
+        .concat()
         .iter()
         .filter(|rust_type| rust_type.is_inline_rust_type())
         .fold(vec![], |acc, rust_type| {
             vec![acc, vec![rust_type.clone()]].concat()
         });
-    let inline_dependencies: Box<Vec<RustType>> = Box::from(inline_dependencies);
+    let inline_types: Box<Vec<RustType>> = Box::from(inline_types);
 
     FunctionInformation {
         function: function_token_stream,
-        inline_dependant_types: inline_dependencies,
+        inline_types,
         manual,
     }
 }
