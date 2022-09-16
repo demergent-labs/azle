@@ -7,7 +7,7 @@ use crate::{
     azle_act::{self, SystemStructureType},
     ts_ast::{
         ident::ident_to_string, program::get_type_alias_decls_for_system_structure_type,
-        ts_type_alias_decl::get_type_alias_decl_name,
+        ts_type_alias_decl::get_type_alias_decl_name, ts_types_to_act,
     },
 };
 
@@ -516,7 +516,7 @@ fn get_ts_method_signature_return_type(
     let type_params = ts_type_ref.type_params.as_ref().unwrap();
     let return_type = &**type_params.params.get(0).unwrap();
 
-    azle_act::types::ts_type_to_rust_type(return_type, &None).get_type_ident()
+    ts_types_to_act::ts_type_to_act_node(return_type, &None).get_type_ident()
 }
 
 // TODO this part should be refactored to allow us to get a params data structure by just passing in a &FnDecl
@@ -529,7 +529,7 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
             TsFnParam::Ident(binding_ident) => {
                 let param_name = ident_to_string(&binding_ident.id);
                 let param_name_ident = format_ident!("{}", param_name);
-                let param_type = azle_act::types::ts_type_to_rust_type(
+                let param_type = ts_types_to_act::ts_type_to_act_node(
                     &binding_ident.type_ann.as_ref().unwrap().type_ann,
                     &None,
                 )
@@ -563,7 +563,7 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
         .iter()
         .map(|ts_fn_param| match ts_fn_param {
             TsFnParam::Ident(binding_ident) => {
-                let param_type = azle_act::types::ts_type_to_rust_type(
+                let param_type = ts_types_to_act::ts_type_to_act_node(
                     &binding_ident.type_ann.as_ref().unwrap().type_ann,
                     &None,
                 )

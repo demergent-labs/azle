@@ -1,6 +1,7 @@
 use crate::{
-    azle_act::{self, canister_method, rust_types::ActNode},
-    generators, ts_ast,
+    azle_act::{act_node::ActNode, canister_method},
+    generators,
+    ts_ast::{self, ts_types_to_act},
 };
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
@@ -84,12 +85,12 @@ pub fn generate_params_token_stream(names: &Vec<Ident>, types: &Vec<ActNode>) ->
 
 fn generate_return_type(ast_fnc_decl: &FnDecl) -> ActNode {
     let return_ts_type = ts_ast::fn_decl::get_return_ts_type(ast_fnc_decl);
-    azle_act::types::ts_type_to_rust_type(&return_ts_type, &None)
+    ts_types_to_act::ts_type_to_act_node(&return_ts_type, &None)
 }
 
 pub fn generate_param_types(ast_fnc_decl: &FnDecl) -> Vec<ActNode> {
     ts_ast::fn_decl::get_param_ts_types(ast_fnc_decl)
         .iter()
-        .map(|ts_type| azle_act::types::ts_type_to_rust_type(ts_type, &None))
+        .map(|ts_type| ts_types_to_act::ts_type_to_act_node(ts_type, &None))
         .collect()
 }

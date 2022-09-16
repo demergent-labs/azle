@@ -4,7 +4,7 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use crate::azle_act;
+use crate::ts_ast::ts_types_to_act;
 
 /**
  * Loops through all of the dependant types, finds the corresponding ts types in
@@ -45,7 +45,12 @@ fn type_alias_decl_to_token_stream(type_alias_decl: &TsTypeAliasDecl) -> TokenSt
     let aliased_ts_type = *type_alias_decl.type_ann.clone();
 
     let aliased_rust_type =
-        azle_act::types::ts_type_to_rust_type(&aliased_ts_type, &Some(&alias_ident));
+        ts_types_to_act::ts_type_to_act_node(&aliased_ts_type, &Some(&alias_ident));
+
+    eprintln!(
+        "This is the type: {}",
+        aliased_rust_type.get_type_ident().to_string()
+    );
     let aliased_definition = if aliased_rust_type.is_inline_rust_type() {
         aliased_rust_type.to_type_definition_token_stream()
     } else {

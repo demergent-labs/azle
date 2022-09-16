@@ -1,7 +1,7 @@
 // TODO let's find all Query and Update functions and create their function bodies
 // TODO then we can move on from there
 
-use azle_act::{rust_types::ActNode, CanisterMethodType};
+use azle_act::{act_node::ActNode, CanisterMethodType};
 use generators::{
     azle_into_js_value, azle_try_from_js_value,
     canister_methods::{
@@ -9,7 +9,7 @@ use generators::{
         system::{heartbeat, init, inspect_message, post_upgrade, pre_upgrade},
     },
     cross_canister_call_functions, funcs, ic_object, stacktrace, type_aliases,
-    variant_type_aliases,
+    variant_type_aliases::{self},
 };
 use quote::quote;
 use std::{collections::HashSet, path::Path};
@@ -94,10 +94,11 @@ pub fn azle_generate(
         &dependencies,
         &ast_other_type_alias_decls,
     );
-    let type_alias_token_streams = variant_type_aliases::generate_type_definition_token_streams(
-        &dependencies,
-        &ast_type_alias_decls,
-    );
+
+    let type_alias_acts =
+        variant_type_aliases::generate_type_alias_acts(&dependencies, &ast_type_alias_decls);
+    let type_alias_token_streams =
+        variant_type_aliases::generate_type_definition_token_streams(&type_alias_acts);
 
     let canister_method_system_heartbeat =
         heartbeat::generate_canister_method_system_heartbeat(&programs);

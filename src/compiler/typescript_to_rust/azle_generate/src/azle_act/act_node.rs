@@ -33,8 +33,8 @@ use quote::quote;
 #[derive(Clone, Debug)]
 pub enum ActNode {
     Primitive(PrimitiveInfo),
-    Option(TypeRefInfo),
-    TypeAlias(TypeRefInfo),
+    Option(OptionInfo),
+    CustomType(PrimitiveInfo),
     Array(ArrayTypeInfo),
     Record(StructInfo),
     Variant(EnumInfo),
@@ -56,7 +56,7 @@ pub struct PrimitiveInfo {
 }
 
 #[derive(Clone, Default, Debug)]
-pub struct TypeRefInfo {
+pub struct OptionInfo {
     pub identifier: TokenStream,
     pub enclosed_inline_type: Box<Option<ActNode>>, // Opt and Variants are examples of TypeRefs that have enclosed types
 }
@@ -134,7 +134,7 @@ impl ActNode {
     pub fn get_type_ident(&self) -> TokenStream {
         let token_stream = match self {
             ActNode::Primitive(keyword_info) => &keyword_info.identifier,
-            ActNode::TypeAlias(type_ref_info) => &type_ref_info.identifier,
+            ActNode::CustomType(type_ref_info) => &type_ref_info.identifier,
             ActNode::Array(array_info) => &array_info.identifier,
             ActNode::Record(struct_info) => &struct_info.identifier,
             ActNode::Variant(enum_info) => &enum_info.identifier,
@@ -149,7 +149,7 @@ impl ActNode {
     pub fn is_inline_rust_type(&self) -> bool {
         match self {
             ActNode::Primitive(_) => false,
-            ActNode::TypeAlias(type_ref_info) => type_ref_info.enclosed_inline_type.is_some(),
+            ActNode::CustomType(_) => false,
             ActNode::Array(array_type_info) => array_type_info.enclosed_inline_type.is_some(),
             ActNode::Record(struct_info) => struct_info.is_inline,
             ActNode::Variant(enum_info) => enum_info.is_inline,
@@ -167,10 +167,7 @@ impl ActNode {
             ActNode::Func(func_info) => Some(func_info.structure.clone()),
             ActNode::Tuple(tuple_info) => Some(tuple_info.structure.clone()),
             ActNode::Primitive(_) => None,
-            ActNode::TypeAlias(type_ref_info) => match &*type_ref_info.enclosed_inline_type {
-                Some(inline_type) => inline_type.get_structure(),
-                None => None,
-            },
+            ActNode::CustomType(_) => None,
             ActNode::Option(type_ref_info) => match &*type_ref_info.enclosed_inline_type {
                 Some(inline_type) => inline_type.get_structure(),
                 None => None,
@@ -193,7 +190,7 @@ impl ActNode {
             ActNode::Variant(enum_info) => *enum_info.inline_members.clone(),
             ActNode::Func(func_info) => *func_info.inline_members.clone(),
             ActNode::Primitive(_) => vec![],
-            ActNode::TypeAlias(_) => vec![],
+            ActNode::CustomType(_) => vec![],
             ActNode::Array(_) => vec![],
             ActNode::Tuple(tuple_info) => *tuple_info.inline_members.clone(),
             ActNode::Option(_) => vec![],

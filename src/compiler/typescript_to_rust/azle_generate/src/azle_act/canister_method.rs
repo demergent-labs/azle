@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 
-use super::rust_types::ActNode;
+use super::ActNode;
 
 #[derive(Clone)]
 pub struct CanisterMethod {
