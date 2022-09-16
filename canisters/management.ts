@@ -150,25 +150,25 @@ export type HttpResponse = {
     body: blob;
 };
 
-export type KeyID = {
-    curve: Curve;
+export type KeyId = {
+    curve: EcdsaCurve;
     name: string;
 };
 
-export type Curve = Variant<{
+export type EcdsaCurve = Variant<{
     secp256k1: null;
 }>;
 
 export type EcdsaPublicKeyArgs = {
-    canister_id: Opt<string>;
+    canister_id: Opt<Principal>;
     derivation_path: blob[];
-    key_id: KeyID;
+    key_id: KeyId;
 };
 
 export type SignWithEcdsaArgs = {
     message_hash: blob;
     derivation_path: blob[];
-    key_id: KeyID;
+    key_id: KeyId;
 };
 
 export type EcdsaPublicKeyResult = {

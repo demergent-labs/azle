@@ -6,26 +6,6 @@ import Principal "mo:base/Principal";
 // Define the actor
 actor Assistant {
 
-  //#region Performance
-  type PerfResult = {
-    wasm_body_only: Nat64;
-    wasm_including_prelude: Nat64;
-  };
-
-  var perf_result: ?PerfResult = null;
-
-  public query func get_perf_result(): async ?PerfResult {
-    return perf_result;
-  };
-
-  func record_performance(start: Nat64, end: Nat64) {
-    perf_result := ?{
-      wasm_body_only = end - start;
-      wasm_including_prelude = Prim.performanceCounter(0);
-    };
-  };
-  //#endregion
-
   type Key = {
     curve: Curve;
     name: Text;
