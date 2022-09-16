@@ -3,8 +3,7 @@ use std::collections::HashSet;
 
 use crate::{
     cdk_act::{
-        self, generators::candid_file_generation, AbstractCanisterTree, ActNode, CanisterMethod,
-        CanisterMethodType, CanisterTree,
+        self, AbstractCanisterTree, ActNode, CanisterMethod, CanisterMethodType, CanisterTree,
     },
     complex_types, funcs, functions,
     generators::{
@@ -130,9 +129,6 @@ impl CanisterTree for TsProgramBundle {
         let cross_canister_call_functions =
             cross_canister_call_functions::generate_cross_canister_call_functions(&self.programs);
 
-        let candid_file_generation_code =
-            candid_file_generation::generate_candid_file_generation_code();
-
         // TODO Some of the things in this quote belong inside of the quote in AbstractCanisterTree
 
         AbstractCanisterTree {
@@ -160,7 +156,6 @@ impl CanisterTree for TsProgramBundle {
                 #azle_into_js_value
                 #azle_try_from_js_value
 
-                #candid_file_generation_code
             },
         }
     }
