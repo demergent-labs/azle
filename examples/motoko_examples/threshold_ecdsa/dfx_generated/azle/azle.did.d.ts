@@ -27,7 +27,6 @@ export interface CreateCanisterArgs {
 export interface CreateCanisterResult {
     canister_id: Principal;
 }
-export type Curve = { secp256k1: null };
 export interface DefiniteCanisterSettings {
     freezing_threshold: bigint;
     controllers: Array<Principal>;
@@ -40,16 +39,16 @@ export interface DeleteCanisterArgs {
 export interface DepositCyclesArgs {
     canister_id: Principal;
 }
+export type EcdsaCurve = { secp256k1: null };
 export interface EcdsaPublicKeyArgs {
-    key_id: KeyID;
-    canister_id: [] | [string];
+    key_id: KeyId;
+    canister_id: [] | [Principal];
     derivation_path: Array<Array<number>>;
 }
 export interface EcdsaPublicKeyResult {
     public_key: Array<number>;
     chain_code: Array<number>;
 }
-export type EcdsaResult = { ok: Array<number> } | { err: string };
 export interface HttpHeader {
     value: string;
     name: string;
@@ -78,9 +77,9 @@ export type InstallCodeMode =
     | { reinstall: null }
     | { upgrade: null }
     | { install: null };
-export interface KeyID {
+export interface KeyId {
     name: string;
-    curve: Curve;
+    curve: EcdsaCurve;
 }
 export interface ProvisionalCreateCanisterWithCyclesArgs {
     settings: [] | [CanisterSettings];
@@ -93,8 +92,12 @@ export interface ProvisionalTopUpCanisterArgs {
     canister_id: Principal;
     amount: bigint;
 }
+export type PublicKeyResult =
+    | { ok: { public_key: Array<number> } }
+    | { err: string };
+export type SignResult = { ok: { signature: Array<number> } } | { err: string };
 export interface SignWithEcdsaArgs {
-    key_id: KeyID;
+    key_id: KeyId;
     derivation_path: Array<Array<number>>;
     message_hash: Array<number>;
 }
@@ -115,6 +118,6 @@ export interface UpdateSettingsArgs {
     settings: CanisterSettings;
 }
 export interface _SERVICE {
-    public_key: ActorMethod<[], EcdsaResult>;
-    sign: ActorMethod<[Array<number>], EcdsaResult>;
+    public_key: ActorMethod<[], PublicKeyResult>;
+    sign: ActorMethod<[Array<number>], SignResult>;
 }

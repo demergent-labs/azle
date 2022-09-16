@@ -37,4 +37,4 @@ export const createActor = (canisterId, options) => {
  * A ready-to-use agent for the motoko canister
  * @type {import("@dfinity/agent").ActorSubclass<import("./motoko.did.js")._SERVICE>}
  */
-// export const motoko = createActor(canisterId);
+//  export const motoko = createActor(canisterId);

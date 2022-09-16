@@ -92,6 +92,7 @@ jobs:
                     "examples/motoko_examples/quicksort",
                     "examples/motoko_examples/simple-to-do",
                     "examples/motoko_examples/superheroes",
+                    "examples/motoko_examples/threshold_ecdsa",
                     "examples/motoko_examples/whoami",
                     "examples/notify_raw",
                     "examples/null_example",

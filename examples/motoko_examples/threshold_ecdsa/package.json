@@ -1,4 +1,7 @@
 {
+    "scripts": {
+        "test": "ts-node --transpile-only --ignore=false test/test.ts"
+    },
     "dependencies": {
         "azle": "0.5.0",
         "encode-utf8": "2.0.0"

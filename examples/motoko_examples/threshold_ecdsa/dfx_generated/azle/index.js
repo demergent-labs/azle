@@ -37,4 +37,4 @@ export const createActor = (canisterId, options) => {
  * A ready-to-use agent for the azle canister
  * @type {import("@dfinity/agent").ActorSubclass<import("./azle.did.js")._SERVICE>}
  */
-// export const azle = createActor(canisterId);
+//  export const azle = createActor(canisterId);

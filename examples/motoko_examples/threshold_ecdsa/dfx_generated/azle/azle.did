@@ -58,15 +58,15 @@ type ProvisionalTopUpCanisterArgs = record {
 };
 
 type EcdsaPublicKeyArgs = record {
-    "canister_id": opt text;
+    "canister_id": opt principal;
     "derivation_path": vec blob;
-    "key_id": KeyID;
+    "key_id": KeyId;
 };
 
 type SignWithEcdsaArgs = record {
     "message_hash": blob;
     "derivation_path": vec blob;
-    "key_id": KeyID;
+    "key_id": KeyId;
 };
 
 type CreateCanisterResult = record {
@@ -112,8 +112,8 @@ type HttpHeader = record {
     "value": text;
 };
 
-type KeyID = record {
-    "curve": Curve;
+type KeyId = record {
+    "curve": EcdsaCurve;
     "name": text;
 };
 
@@ -124,17 +124,19 @@ type DefiniteCanisterSettings = record {
     "freezing_threshold": nat;
 };
 
-type EcdsaResult = variant { "ok": blob; "err": text };
+type PublicKeyResult = variant { "ok": record { "public_key": blob; }; "err": text };
+
+type SignResult = variant { "ok": record { "signature": blob; }; "err": text };
 
 type InstallCodeMode = variant { "install": null; "reinstall": null; "upgrade": null };
 
 type HttpMethod = variant { "GET": null; "HEAD": null; "POST": null };
 
-type Curve = variant { "secp256k1": null };
+type EcdsaCurve = variant { "secp256k1": null };
 
 type CanisterStatus = variant { "running": null; "stopping": null; "stopped": null };
 
 service: {
-    "public_key": () -> (EcdsaResult);
-    "sign": (blob) -> (EcdsaResult);
+    "public_key": () -> (PublicKeyResult);
+    "sign": (blob) -> (SignResult);
 }

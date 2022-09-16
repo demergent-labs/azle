@@ -1,3 +1,24 @@
+type GetBalanceArgs = record {
+    "address": text;
+    "min_confirmations": opt nat32;
+    "network": BitcoinNetwork;
+};
+
+type GetCurrentFeePercentilesArgs = record {
+    "network": BitcoinNetwork;
+};
+
+type GetUtxosArgs = record {
+    "address": text;
+    "filter": opt UtxosFilter;
+    "network": BitcoinNetwork;
+};
+
+type SendTransactionArgs = record {
+    "transaction": blob;
+    "network": BitcoinNetwork;
+};
+
 type CreateCanisterArgs = record {
     "settings": opt CanisterSettings;
 };
@@ -38,6 +59,15 @@ type DepositCyclesArgs = record {
     "canister_id": principal;
 };
 
+type HttpRequestArgs = record {
+    "url": text;
+    "max_response_bytes": opt nat64;
+    "http_method": HttpMethod;
+    "headers": vec HttpHeader;
+    "body": opt blob;
+    "transform_method_name": opt text;
+};
+
 type ProvisionalCreateCanisterWithCyclesArgs = record {
     "amount": opt nat;
     "settings": opt CanisterSettings;
@@ -46,6 +76,25 @@ type ProvisionalCreateCanisterWithCyclesArgs = record {
 type ProvisionalTopUpCanisterArgs = record {
     "canister_id": principal;
     "amount": nat;
+};
+
+type EcdsaPublicKeyArgs = record {
+    "canister_id": opt principal;
+    "derivation_path": vec blob;
+    "key_id": KeyId;
+};
+
+type SignWithEcdsaArgs = record {
+    "message_hash": blob;
+    "derivation_path": vec blob;
+    "key_id": KeyId;
+};
+
+type GetUtxosResult = record {
+    "next_page": opt blob;
+    "tip_block_hash": blob;
+    "tip_height": nat32;
+    "utxos": vec Utxo;
 };
 
 type CreateCanisterResult = record {
@@ -60,8 +109,23 @@ type CanisterStatusResult = record {
     "cycles": nat;
 };
 
+type HttpResponse = record {
+    "status": nat64;
+    "headers": vec HttpHeader;
+    "body": blob;
+};
+
 type ProvisionalCreateCanisterWithCyclesResult = record {
     "canister_id": principal;
+};
+
+type EcdsaPublicKeyResult = record {
+    "public_key": blob;
+    "chain_code": blob;
+};
+
+type SignWithEcdsaResult = record {
+    "signature": blob;
 };
 
 type CanisterSettings = record {
@@ -71,6 +135,27 @@ type CanisterSettings = record {
     "freezing_threshold": opt nat;
 };
 
+type HttpHeader = record {
+    "name": text;
+    "value": text;
+};
+
+type KeyId = record {
+    "curve": EcdsaCurve;
+    "name": text;
+};
+
+type Utxo = record {
+    "height": nat32;
+    "outpoint": Outpoint;
+    "value": nat64;
+};
+
+type Outpoint = record {
+    "txid": blob;
+    "vout": nat32;
+};
+
 type DefiniteCanisterSettings = record {
     "controllers": vec principal;
     "compute_allocation": nat;
@@ -78,13 +163,23 @@ type DefiniteCanisterSettings = record {
     "freezing_threshold": nat;
 };
 
-type EcdsaResult = variant { "ok": blob; "err": text };
+type PublicKeyResult = variant { "ok": record { "public_key": blob; }; "err": text };
+
+type SignResult = variant { "ok": record { "signature": blob; }; "err": text };
+
+type BitcoinNetwork = variant { "Mainnet": null; "Regtest": null; "Testnet": null };
+
+type UtxosFilter = variant { "MinConfirmations": nat32; "Page": blob };
 
 type InstallCodeMode = variant { "install": null; "reinstall": null; "upgrade": null };
+
+type HttpMethod = variant { "GET": null; "HEAD": null; "POST": null };
+
+type EcdsaCurve = variant { "secp256k1": null };
 
 type CanisterStatus = variant { "running": null; "stopping": null; "stopped": null };
 
 service: {
-    "public_key": () -> (EcdsaResult);
-    "sign": (blob) -> (EcdsaResult);
+    "public_key": () -> (PublicKeyResult);
+    "sign": (blob) -> (SignResult);
 }

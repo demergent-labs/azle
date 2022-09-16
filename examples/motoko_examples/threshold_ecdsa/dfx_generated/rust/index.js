@@ -37,4 +37,4 @@ export const createActor = (canisterId, options) => {
  * A ready-to-use agent for the rust canister
  * @type {import("@dfinity/agent").ActorSubclass<import("./rust.did.js")._SERVICE>}
  */
-// export const rust = createActor(canisterId);
+//  export const rust = createActor(canisterId);
