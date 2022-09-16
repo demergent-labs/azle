@@ -1,5 +1,5 @@
 use super::{ident, ts_method_signature, ts_type, ts_types_to_act};
-use crate::azle_act::{Actable, SystemStructureType};
+use crate::cdk_act::{Actable, SystemStructureType};
 use quote::format_ident;
 use std::{
     collections::{HashMap, HashSet},
@@ -7,15 +7,13 @@ use std::{
 };
 use swc_ecma_ast::TsTypeAliasDecl;
 
-// This function is great for debugging but we wont need it in production. Feel
-// free to uncomment it if you need it
-// pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
-//     decl.id.sym.chars().as_str().to_string()
-// }
+pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
+    decl.id.sym.chars().as_str().to_string()
+}
 
 impl Actable for TsTypeAliasDecl {
-    fn to_act(&self) -> crate::azle_act::ActNode {
-        let ts_type_name = self.id.sym.chars().as_str().to_string();
+    fn to_act_node(&self) -> crate::cdk_act::ActNode {
+        let ts_type_name = ast_type_alias_decl_to_string(self);
         let ts_type_alias_ident = format_ident!("{}", ts_type_name);
 
         let ts_type = *self.type_ann.clone();

@@ -1,6 +1,6 @@
 use crate::generators::ic_object::generate_ic_object;
 use crate::{
-    azle_act::CanisterMethodType,
+    cdk_act::CanisterMethodType,
     generators::canister_methods::{
         functions::{
             generate_param_name_idents, generate_param_types, generate_params_token_stream,

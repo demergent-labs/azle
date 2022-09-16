@@ -101,7 +101,7 @@ pub struct ArrayTypeInfo {
 #[derive(Clone, Default, Debug)]
 pub struct StructInfo {
     pub identifier: TokenStream,
-    pub structure: TokenStream,
+    pub definition: TokenStream,
     pub is_inline: bool,
     pub inline_members: Box<Vec<ActNode>>,
 }
@@ -109,7 +109,7 @@ pub struct StructInfo {
 #[derive(Clone, Debug)]
 pub struct EnumInfo {
     pub identifier: TokenStream,
-    pub structure: TokenStream,
+    pub definition: TokenStream,
     pub is_inline: bool,
     pub inline_members: Box<Vec<ActNode>>,
 }
@@ -117,7 +117,7 @@ pub struct EnumInfo {
 #[derive(Clone, Debug)]
 pub struct FuncInfo {
     pub identifier: TokenStream,
-    pub structure: TokenStream,
+    pub definition: TokenStream,
     pub is_inline: bool,
     pub inline_members: Box<Vec<ActNode>>,
 }
@@ -125,7 +125,7 @@ pub struct FuncInfo {
 #[derive(Clone, Debug)]
 pub struct TupleInfo {
     pub identifier: TokenStream,
-    pub structure: TokenStream,
+    pub definition: TokenStream,
     pub is_inline: bool,
     pub inline_members: Box<Vec<ActNode>>,
 }
@@ -159,21 +159,20 @@ impl ActNode {
         }
     }
 
-    // TODO rename to get_definition
-    pub fn get_structure(&self) -> Option<TokenStream> {
+    pub fn get_definition(&self) -> Option<TokenStream> {
         match self {
-            ActNode::Record(struct_info) => Some(struct_info.structure.clone()),
-            ActNode::Variant(enum_info) => Some(enum_info.structure.clone()),
-            ActNode::Func(func_info) => Some(func_info.structure.clone()),
-            ActNode::Tuple(tuple_info) => Some(tuple_info.structure.clone()),
+            ActNode::Record(struct_info) => Some(struct_info.definition.clone()),
+            ActNode::Variant(enum_info) => Some(enum_info.definition.clone()),
+            ActNode::Func(func_info) => Some(func_info.definition.clone()),
+            ActNode::Tuple(tuple_info) => Some(tuple_info.definition.clone()),
             ActNode::Primitive(_) => None,
             ActNode::CustomType(_) => None,
             ActNode::Option(type_ref_info) => match &*type_ref_info.enclosed_inline_type {
-                Some(inline_type) => inline_type.get_structure(),
+                Some(inline_type) => inline_type.get_definition(),
                 None => None,
             },
             ActNode::Array(array_type_info) => match &*array_type_info.enclosed_inline_type {
-                Some(inline_type) => inline_type.get_structure(),
+                Some(inline_type) => inline_type.get_definition(),
                 None => None,
             },
         }
@@ -198,18 +197,18 @@ impl ActNode {
     }
 
     pub fn to_type_definition_token_stream(&self) -> TokenStream {
-        let rust_type_structure = match self.get_structure() {
-            Some(structure) => structure,
+        let rust_type_definition = match self.get_definition() {
+            Some(definition) => definition,
             None => quote!(),
         };
-        let rust_member_type_structures: Vec<TokenStream> = self
+        let rust_member_type_definitions: Vec<TokenStream> = self
             .get_inline_members()
             .iter()
             .map(|member| member.to_type_definition_token_stream())
             .collect();
         quote! {
-            #rust_type_structure
-            #(#rust_member_type_structures)*
+            #rust_type_definition
+            #(#rust_member_type_definitions)*
         }
     }
 }
