@@ -1,21 +1,24 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use crate::ts_ast::ts_types_to_act;
+use crate::{
+    azle_act::ActNode,
+    ts_ast::{ts_type_alias_decl, ts_types_to_act},
+};
 
 /**
  * Loops through all of the dependant types, finds the corresponding ts types in
  * the type aliases, converts them to a rust type, and inserts it into the
  * result map
  */
-pub fn generate_other_type_alias_token_streams(
+pub fn generate_type_alias_acts(
     type_alias_dependant_types: &HashSet<String>,
     ast_type_alias_decls: &Vec<TsTypeAliasDecl>,
 ) -> Vec<TokenStream> {
-    let type_alias_lookup = generate_type_alias_lookup(ast_type_alias_decls);
+    let type_alias_lookup = ts_type_alias_decl::generate_type_alias_lookup(ast_type_alias_decls);
 
     // For each dependant type, generate a dependency map and add it to the overall dependency map
     // TODO I'm guessing that we aren't going to want acc to be mutable
@@ -24,7 +27,7 @@ pub fn generate_other_type_alias_token_streams(
         .fold(vec![], |acc, dependant_type| {
             let type_alias_decl = type_alias_lookup.get(dependant_type);
             let dependency_map = match type_alias_decl {
-                Some(type_alias_decl) => type_alias_decl_to_token_stream(type_alias_decl),
+                Some(type_alias_decl) => type_alias_decl_to_type_alias_act(type_alias_decl),
                 None => {
                     // For right now we are going to assume that if it's not in the map then we caught it somewhere else
                     // TODO for the future we should fix that assumption by limiting type_alias_dependant_types to be only the records
@@ -37,7 +40,7 @@ pub fn generate_other_type_alias_token_streams(
         })
 }
 
-fn type_alias_decl_to_token_stream(type_alias_decl: &TsTypeAliasDecl) -> TokenStream {
+fn type_alias_decl_to_type_alias_act(type_alias_decl: &TsTypeAliasDecl) -> TokenStream {
     // TODO I feel like this might run into some namespace issues
     let ts_type_name = type_alias_decl.id.sym.chars().as_str().to_string();
     let alias_ident = format_ident!("{}", ts_type_name);
@@ -66,15 +69,6 @@ fn type_alias_decl_to_token_stream(type_alias_decl: &TsTypeAliasDecl) -> TokenSt
     }
 }
 
-// TODO merge this one with the other one of the same name wherever it lives now
-pub fn generate_type_alias_lookup(
-    ast_type_alias_decls: &Vec<TsTypeAliasDecl>,
-) -> HashMap<String, TsTypeAliasDecl> {
-    ast_type_alias_decls
-        .iter()
-        .fold(HashMap::new(), |mut acc, ast_type_alias_decl| {
-            let type_alias_names = ast_type_alias_decl.id.sym.chars().as_str().to_string();
-            acc.insert(type_alias_names, ast_type_alias_decl.clone());
-            acc
-        })
+pub fn generate_complex_type_definition_token_streams(acts: &Vec<ActNode>) -> Vec<TokenStream> {
+    vec![quote! {}]
 }
