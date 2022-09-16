@@ -1,4 +1,4 @@
-use swc_ecma_ast::FnDecl;
+use crate::cdk_act::CanisterMethod;
 
 mod accept_message;
 mod arg_data_raw;
@@ -38,7 +38,9 @@ mod stable_write;
 mod time;
 mod trap;
 
-pub fn generate_ic_object_functions(fn_decls: &Vec<FnDecl>) -> proc_macro2::TokenStream {
+pub fn generate_ic_object_functions(
+    canister_methods: &Vec<CanisterMethod>,
+) -> proc_macro2::TokenStream {
     let accept_message = accept_message::generate_ic_object_function_accept_message();
     let arg_data_raw = arg_data_raw::generate_ic_object_function_arg_data_raw();
     let arg_data_raw_size = arg_data_raw_size::generate_ic_object_function_arg_data_raw_size();
@@ -69,7 +71,7 @@ pub fn generate_ic_object_functions(fn_decls: &Vec<FnDecl>) -> proc_macro2::Toke
     let reject = reject::generate_ic_object_function_reject();
     let reject_code = reject_code::generate_ic_object_function_reject_code();
     let reject_message = reject_message::generate_ic_object_function_reject_message();
-    let reply = reply::generate_ic_object_function_reply(fn_decls);
+    let reply = reply::generate_ic_object_function_reply(canister_methods);
     let reply_raw = reply_raw::generate_ic_object_function_reply_raw();
     let set_certified_data = set_certified_data::generate_ic_object_function_set_certified_data();
     let stable64_grow = stable64_grow::generate_ic_object_function_stable64_grow();

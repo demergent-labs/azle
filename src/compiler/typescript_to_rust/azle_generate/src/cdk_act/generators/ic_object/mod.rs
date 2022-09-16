@@ -1,7 +1,7 @@
 use quote::{format_ident, quote};
 use swc_ecma_ast::Program;
 
-use super::cross_canister_call_functions::generate_cross_canister_call_functions_infos;
+use crate::generators::cross_canister_call_functions::generate_cross_canister_call_functions_infos;
 
 pub mod functions;
 

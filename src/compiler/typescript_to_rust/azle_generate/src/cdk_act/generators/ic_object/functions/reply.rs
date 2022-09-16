@@ -1,14 +1,10 @@
 use proc_macro2::TokenStream;
 use quote::quote;
-use swc_ecma_ast::FnDecl;
 
-use crate::{
-    cdk_act,
-    ts_ast::{self, ts_types_to_act},
-};
+use crate::cdk_act::CanisterMethod;
 
-pub fn generate_ic_object_function_reply(fn_decls: &Vec<FnDecl>) -> TokenStream {
-    let match_arms = generate_match_arms(fn_decls);
+pub fn generate_ic_object_function_reply(canister_methods: &Vec<CanisterMethod>) -> TokenStream {
+    let match_arms = generate_match_arms(canister_methods);
     quote! {
         fn _azle_ic_reply(
             _this: &boa_engine::JsValue,
@@ -27,24 +23,20 @@ pub fn generate_ic_object_function_reply(fn_decls: &Vec<FnDecl>) -> TokenStream 
     }
 }
 
-fn generate_match_arms(fn_decls: &Vec<FnDecl>) -> Vec<TokenStream> {
-    fn_decls
+fn generate_match_arms(canister_methods: &Vec<CanisterMethod>) -> Vec<TokenStream> {
+    canister_methods
         .iter()
-        .filter(|fn_decl| ts_ast::fn_decl::is_manual(fn_decl))
-        .map(|fn_decl| generate_match_arm(fn_decl))
+        .filter(|canister_method| canister_method.is_manual)
+        .map(|canister_method| generate_match_arm(canister_method))
         .collect()
 }
 
-fn generate_match_arm(fn_decl: &FnDecl) -> TokenStream {
-    let fn_name = ts_ast::fn_decl::get_fn_decl_function_name(fn_decl);
-    let return_type_ast = ts_ast::fn_decl::get_canister_method_return_type(fn_decl);
-    let rust_return_type = match return_type_ast {
-        Some(ts_type) => ts_types_to_act::ts_type_to_act_node(ts_type, &None).get_type_ident(),
-        None => quote! {()},
-    };
+fn generate_match_arm(canister_method: &CanisterMethod) -> TokenStream {
+    let name = &canister_method.name;
+    let return_type = &canister_method.rust_return_type;
     quote!(
-        #fn_name => {
-            let reply_value: #rust_return_type = _aargs.get(0).unwrap().clone().azle_try_from_js_value(_context).unwrap();
+        #name => {
+            let reply_value: #return_type = _aargs.get(0).unwrap().clone().azle_try_from_js_value(_context).unwrap();
             Ok(ic_cdk::api::call::reply((reply_value,)).azle_into_js_value(_context))
         }
     )

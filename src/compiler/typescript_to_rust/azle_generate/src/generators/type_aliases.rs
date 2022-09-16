@@ -69,6 +69,6 @@ fn type_alias_decl_to_type_alias_act(type_alias_decl: &TsTypeAliasDecl) -> Token
     }
 }
 
-pub fn generate_complex_type_definition_token_streams(acts: &Vec<ActNode>) -> Vec<TokenStream> {
+pub fn generate_complex_type_definition_token_streams(_acts: &Vec<ActNode>) -> Vec<TokenStream> {
     vec![quote! {}]
 }

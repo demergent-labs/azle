@@ -1,4 +1,4 @@
-use crate::generators::ic_object::generate_ic_object;
+use crate::cdk_act::generators::ic_object::generate_ic_object;
 use crate::{
     cdk_act::CanisterMethodType,
     generators::canister_methods::{
