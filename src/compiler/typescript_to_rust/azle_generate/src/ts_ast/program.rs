@@ -1,7 +1,7 @@
 use swc_ecma_ast::{FnDecl, Program, TsTypeAliasDecl};
 
 use super::{fn_decl, module, ts_type_alias_decl};
-use crate::azle_act::{CanisterMethodType, SystemStructureType};
+use crate::cdk_act::{CanisterMethodType, SystemStructureType};
 
 pub fn get_canister_method_type_fn_decls(
     programs: &Vec<Program>,

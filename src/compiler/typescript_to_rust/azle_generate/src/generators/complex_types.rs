@@ -5,7 +5,7 @@ use quote::quote;
 use swc_ecma_ast::TsTypeAliasDecl;
 
 use crate::{
-    azle_act::{act_node::PrimitiveInfo, ActNode, Actable},
+    cdk_act::{act_node::PrimitiveInfo, ActNode, Actable},
     ts_ast::ts_type_alias_decl,
 };
 
@@ -25,7 +25,7 @@ pub fn generate_complex_acts(
     type_names.iter().fold(vec![], |acc, dependant_type| {
         let type_alias_decl = type_alias_lookup.get(dependant_type);
         let token_stream = match type_alias_decl {
-            Some(type_alias_decl) => type_alias_decl.to_act(),
+            Some(type_alias_decl) => type_alias_decl.to_act_node(),
             None => {
                 // For right now we are going to assume that if it's not in the map then we caught it somewhere else
                 // TODO for the future we should fix that assumption by limiting type_alias_variants to be only the variants

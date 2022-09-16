@@ -4,7 +4,7 @@ use swc_ecma_ast::{
 };
 
 use crate::{
-    azle_act::{self, SystemStructureType},
+    cdk_act::{self, SystemStructureType},
     ts_ast::{
         ident::ident_to_string, program::get_type_alias_decls_for_system_structure_type,
         ts_type_alias_decl::get_type_alias_decl_name, ts_types_to_act,

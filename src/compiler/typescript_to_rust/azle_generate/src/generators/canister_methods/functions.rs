@@ -1,5 +1,5 @@
 use crate::{
-    azle_act::{act_node::ActNode, canister_method},
+    cdk_act::{act_node::ActNode, canister_method},
     generators,
     ts_ast::{self, ts_types_to_act},
 };

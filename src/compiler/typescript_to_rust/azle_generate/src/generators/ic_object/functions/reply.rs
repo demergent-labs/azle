@@ -3,7 +3,7 @@ use quote::quote;
 use swc_ecma_ast::FnDecl;
 
 use crate::{
-    azle_act,
+    cdk_act,
     ts_ast::{self, ts_types_to_act},
 };
 

@@ -1,7 +1,7 @@
 // TODO let's find all Query and Update functions and create their function bodies
 // TODO then we can move on from there
 
-use azle_act::{act_node::ActNode, CanisterMethodType};
+use cdk_act::{act_node::ActNode, CanisterMethodType};
 use generators::{
     azle_into_js_value, azle_try_from_js_value,
     canister_methods::{
@@ -18,7 +18,7 @@ use swc_ecma_ast::{FnDecl, Program};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 use ts_ast::ts_type_alias_decl;
 
-mod azle_act;
+mod cdk_act;
 mod ts_ast;
 
 pub mod generators;
@@ -235,7 +235,7 @@ fn get_programs(ts_file_names: &Vec<&str>) -> Vec<Program> {
 }
 
 fn collect_inline_dependencies(
-    function_info: &Vec<azle_act::canister_method::CanisterMethod>,
+    function_info: &Vec<cdk_act::canister_method::CanisterMethod>,
 ) -> Vec<proc_macro2::TokenStream> {
     function_info.iter().fold(vec![], |acc, fun_info| {
         vec![
@@ -256,7 +256,7 @@ fn collect_inline_dependencies_from_list(
 }
 
 fn collect_inline_dependencies_rust_type(rust_type: &ActNode) -> Vec<proc_macro2::TokenStream> {
-    let rust_type_structure = match rust_type.get_structure() {
+    let rust_type_structure = match rust_type.get_definition() {
         Some(structure) => structure,
         None => quote!(),
     };

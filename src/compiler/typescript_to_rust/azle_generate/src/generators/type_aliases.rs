@@ -5,7 +5,7 @@ use quote::{format_ident, quote};
 use swc_ecma_ast::TsTypeAliasDecl;
 
 use crate::{
-    azle_act::ActNode,
+    cdk_act::ActNode,
     ts_ast::{ts_type_alias_decl, ts_types_to_act},
 };
 

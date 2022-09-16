@@ -1,7 +1,7 @@
 use quote::quote;
 use swc_ecma_ast::FnDecl;
 
-use crate::azle_act::canister_method::CanisterMethod;
+use crate::cdk_act::canister_method::CanisterMethod;
 
 use super::functions;
 

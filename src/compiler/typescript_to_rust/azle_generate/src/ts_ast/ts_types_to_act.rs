@@ -7,7 +7,7 @@ use swc_ecma_ast::{
 
 use crate::generators::funcs;
 
-use crate::azle_act::act_node::{
+use crate::cdk_act::act_node::{
     ActNode, ArrayTypeInfo, EnumInfo, FuncInfo, OptionInfo, PrimitiveInfo, StructInfo, TupleInfo,
 };
 
@@ -118,7 +118,7 @@ fn parse_ts_tuple_type(ts_tuple_type: &TsTupleType, name: &Option<&Ident>) -> Tu
 
     TupleInfo {
         identifier: quote!(#type_ident),
-        structure: definition,
+        definition,
         is_inline: name.is_none(),
         inline_members: Box::from(inline_members),
     }
@@ -297,7 +297,7 @@ fn parse_func_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActNod
     let structure = funcs::generate_func_struct_and_impls(quote!(#type_ident), ts_type);
     let func_info = FuncInfo {
         identifier: quote!(#type_ident),
-        structure,
+        definition: structure,
         is_inline: name.is_none(),
         inline_members: Box::from(inline_members),
     };
@@ -392,7 +392,7 @@ fn parse_ts_type_lit_as_enum(ts_type_ident: &Option<&Ident>, ts_type_lit: &TsTyp
         }
     );
     EnumInfo {
-        structure,
+        definition: structure,
         identifier: quote!(#type_ident),
         is_inline: ts_type_ident.is_none(),
         inline_members: Box::from(inline_dependencies),
@@ -429,7 +429,7 @@ fn parse_ts_type_lit_as_struct(
         }
     );
     let result = StructInfo {
-        structure: structure.clone(),
+        definition: structure.clone(),
         identifier: quote!(#type_ident),
         is_inline: ts_type_ident.is_none(),
         inline_members: Box::from(inline_dependencies),
