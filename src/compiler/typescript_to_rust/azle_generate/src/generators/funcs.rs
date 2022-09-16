@@ -1,4 +1,3 @@
-use crate::cdk_act;
 use crate::ts_ast::ts_types_to_act;
 use proc_macro2::TokenStream;
 use quote::quote;

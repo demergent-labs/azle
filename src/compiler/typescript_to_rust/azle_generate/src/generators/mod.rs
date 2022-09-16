@@ -4,6 +4,5 @@ pub mod canister_methods;
 pub mod complex_types;
 pub mod cross_canister_call_functions;
 pub mod funcs;
-pub mod ic_object;
 pub mod stacktrace;
 pub mod type_aliases;

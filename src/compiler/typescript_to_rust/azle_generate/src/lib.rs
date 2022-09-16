@@ -1,7 +1,9 @@
 // TODO let's find all Query and Update functions and create their function bodies
 // TODO then we can move on from there
 
-use cdk_act::{act_node::ActNode, CanisterMethodType};
+use cdk_act::{
+    act_node::ActNode, generators::ic_object::functions, CanisterMethod, CanisterMethodType,
+};
 use generators::{
     azle_into_js_value, azle_try_from_js_value,
     canister_methods::{
@@ -9,12 +11,12 @@ use generators::{
         system::{heartbeat, init, inspect_message, post_upgrade, pre_upgrade},
     },
     complex_types::{self},
-    cross_canister_call_functions, funcs, ic_object, stacktrace, type_aliases,
+    cross_canister_call_functions, funcs, stacktrace, type_aliases,
 };
 use quote::quote;
 use std::{collections::HashSet, path::Path};
 use swc_common::{sync::Lrc, SourceMap};
-use swc_ecma_ast::{FnDecl, Program};
+use swc_ecma_ast::Program;
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 use ts_ast::ts_type_alias_decl;
 
@@ -68,22 +70,24 @@ pub fn azle_generate(
         .cloned()
         .collect();
 
-    let query_function_info =
+    let query_canister_methods =
         canister_methods::query::generate_query_function_infos(&ast_fnc_decls_query);
-    let query_function_streams: Vec<proc_macro2::TokenStream> = query_function_info
+    let query_function_streams: Vec<proc_macro2::TokenStream> = query_canister_methods
         .iter()
         .map(|fun_info| fun_info.canister_method.clone())
         .collect();
 
-    let update_function_info =
+    let update_canister_methods =
         canister_methods::update::generate_update_function_infos(&ast_fnc_decls_update);
-    let update_function_streams: Vec<proc_macro2::TokenStream> = update_function_info
+    let update_function_streams: Vec<proc_macro2::TokenStream> = update_canister_methods
         .iter()
         .map(|fun_info| fun_info.canister_method.clone())
         .collect();
 
-    let query_function_inline_dependant_types = collect_inline_dependencies(&query_function_info);
-    let update_function_inline_dependant_types = collect_inline_dependencies(&update_function_info);
+    let query_function_inline_dependant_types =
+        collect_inline_dependencies(&query_canister_methods);
+    let update_function_inline_dependant_types =
+        collect_inline_dependencies(&update_canister_methods);
     // TODO it would be great to add the inline_types we found from doing the type aliases while we are at it
     let function_inline_records = vec![
         query_function_inline_dependant_types,
@@ -112,10 +116,10 @@ pub fn azle_generate(
     let azle_into_js_value = azle_into_js_value::generate_azle_into_js_value();
     let azle_try_from_js_value = azle_try_from_js_value::generate_azle_try_from_js_value();
 
-    let query_and_update_func_decls: Vec<FnDecl> =
-        vec![ast_fnc_decls_query, ast_fnc_decls_update].concat();
+    let query_and_update_canister_methods: Vec<CanisterMethod> =
+        vec![query_canister_methods, update_canister_methods].concat();
     let ic_object_functions =
-        ic_object::functions::generate_ic_object_functions(&query_and_update_func_decls);
+        functions::generate_ic_object_functions(&query_and_update_canister_methods);
 
     let async_result_handler =
         canister_methods::async_result_handler::generate_async_result_handler(&programs);
@@ -235,7 +239,7 @@ fn get_programs(ts_file_names: &Vec<&str>) -> Vec<Program> {
 }
 
 fn collect_inline_dependencies(
-    function_info: &Vec<cdk_act::canister_method::CanisterMethod>,
+    function_info: &Vec<cdk_act::CanisterMethod>,
 ) -> Vec<proc_macro2::TokenStream> {
     function_info.iter().fold(vec![], |acc, fun_info| {
         vec![

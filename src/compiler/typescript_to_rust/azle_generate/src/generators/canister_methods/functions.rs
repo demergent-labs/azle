@@ -1,5 +1,5 @@
 use crate::{
-    cdk_act::{act_node::ActNode, canister_method},
+    cdk_act::{act_node::ActNode, CanisterMethod},
     generators,
     ts_ast::{self, ts_types_to_act},
 };
@@ -7,14 +7,23 @@ use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use swc_ecma_ast::FnDecl;
 
-pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> canister_method::CanisterMethod {
-    let function_name = ast_fnc_decl.ident.sym.chars().as_str().to_string();
+pub fn generate_canister_method_node(ast_fnc_decl: &FnDecl) -> CanisterMethod {
+    let function_name = ts_ast::fn_decl::get_fn_decl_function_name(ast_fnc_decl);
     let function_name_ident = format_ident!("{}", function_name);
 
     let manual = ts_ast::fn_decl::is_manual(ast_fnc_decl);
 
     let return_type = generate_return_type(&ast_fnc_decl);
     let return_type_token = return_type.get_type_ident();
+
+    // TODO: This and the return type above should likely be combined somehow
+    let possible_repeat_return_type_ast =
+        ts_ast::fn_decl::get_canister_method_return_type(ast_fnc_decl);
+    let rust_return_type = match possible_repeat_return_type_ast {
+        Some(ts_type) => ts_types_to_act::ts_type_to_act_node(ts_type, &None).get_type_ident(),
+        None => quote! {()},
+    };
+
     let wrapped_return_type = if manual {
         quote! {
             ic_cdk::api::call::ManualReply<#return_type_token>
@@ -45,10 +54,12 @@ pub fn generate_function_info(ast_fnc_decl: &FnDecl) -> canister_method::Caniste
         });
     let inline_types: Box<Vec<ActNode>> = Box::from(inline_types);
 
-    canister_method::CanisterMethod {
+    CanisterMethod {
         canister_method: function_token_stream,
         inline_types,
         is_manual: manual,
+        name: function_name,
+        rust_return_type: rust_return_type,
     }
 }
 
