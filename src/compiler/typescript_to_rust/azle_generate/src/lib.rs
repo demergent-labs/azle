@@ -8,8 +8,8 @@ use generators::{
         self,
         system::{heartbeat, init, inspect_message, post_upgrade, pre_upgrade},
     },
+    complex_types::{self},
     cross_canister_call_functions, funcs, ic_object, stacktrace, type_aliases,
-    variant_type_aliases::{self},
 };
 use quote::quote;
 use std::{collections::HashSet, path::Path};
@@ -31,11 +31,12 @@ pub fn azle_generate(
     let programs = get_programs(&ts_file_names);
 
     // Collect AST Information
-    let ast_type_alias_decls = ts_ast::program::get_ast_type_alias_decls_from_programs(&programs);
-    let ast_other_type_alias_decls =
-        ts_type_alias_decl::get_ast_other_type_alias_decls(&ast_type_alias_decls);
+    let ast_complex_type_alias_decls =
+        ts_ast::program::get_ast_type_alias_decls_from_programs(&programs);
+    let ast_type_alias_decls =
+        ts_type_alias_decl::get_ast_type_alias_decls(&ast_complex_type_alias_decls);
     let ast_canister_type_alias_decls =
-        ts_type_alias_decl::get_ast_canister_type_alias_decls(&ast_type_alias_decls);
+        ts_type_alias_decl::get_ast_canister_type_alias_decls(&ast_complex_type_alias_decls);
 
     let func_arg_token = funcs::generate_func_arg_token();
 
@@ -48,15 +49,15 @@ pub fn azle_generate(
     // Determine which type aliases must be present for the functions to work and save them for later parsing
     let query_dependencies = ts_ast::fn_decl::get_dependent_types_from_fn_decls(
         &ast_fnc_decls_query,
-        &ast_type_alias_decls,
+        &ast_complex_type_alias_decls,
     );
     let update_dependencies = ts_ast::fn_decl::get_dependent_types_from_fn_decls(
         &ast_fnc_decls_update,
-        &ast_type_alias_decls,
+        &ast_complex_type_alias_decls,
     );
     let canister_dependencies = ts_ast::ts_type_alias_decl::get_dependent_types_from_canister_decls(
         &ast_canister_type_alias_decls,
-        &ast_type_alias_decls,
+        &ast_complex_type_alias_decls,
     );
     let dependencies: HashSet<String> = query_dependencies
         .union(&update_dependencies)
@@ -90,15 +91,13 @@ pub fn azle_generate(
     ]
     .concat();
 
-    let other_token_streams = type_aliases::generate_other_type_alias_token_streams(
-        &dependencies,
-        &ast_other_type_alias_decls,
-    );
-
-    let type_alias_acts =
-        variant_type_aliases::generate_type_alias_acts(&dependencies, &ast_type_alias_decls);
     let type_alias_token_streams =
-        variant_type_aliases::generate_type_definition_token_streams(&type_alias_acts);
+        type_aliases::generate_type_alias_acts(&dependencies, &ast_type_alias_decls);
+
+    let complex_type_alias_acts =
+        complex_types::generate_complex_acts(&dependencies, &ast_complex_type_alias_decls);
+    let complex_type_definitions_token_streams =
+        complex_types::generate_complex_type_definition_token_streams(&complex_type_alias_acts);
 
     let canister_method_system_heartbeat =
         heartbeat::generate_canister_method_system_heartbeat(&programs);
@@ -179,9 +178,9 @@ pub fn azle_generate(
         #get_top_level_call_frame_fn
 
         #func_arg_token
-        #(#type_alias_token_streams)*
+        #(#complex_type_definitions_token_streams)*
         #(#function_inline_records)*
-        #(#other_token_streams)*
+        #(#type_alias_token_streams)*
         #(#query_function_streams)*
         #(#update_function_streams)*
 
