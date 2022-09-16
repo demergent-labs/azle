@@ -1,5 +1,6 @@
-use super::{ident, ts_method_signature, ts_type};
-use crate::azle_act::SystemStructureType;
+use super::{ident, ts_method_signature, ts_type, ts_types_to_act};
+use crate::azle_act::{Actable, SystemStructureType};
+use quote::format_ident;
 use std::{
     collections::{HashMap, HashSet},
     iter::FromIterator,
@@ -11,6 +12,16 @@ use swc_ecma_ast::TsTypeAliasDecl;
 // pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
 //     decl.id.sym.chars().as_str().to_string()
 // }
+
+impl Actable for TsTypeAliasDecl {
+    fn to_act(&self) -> crate::azle_act::ActNode {
+        let ts_type_name = self.id.sym.chars().as_str().to_string();
+        let ts_type_alias_ident = format_ident!("{}", ts_type_name);
+
+        let ts_type = *self.type_ann.clone();
+        ts_types_to_act::ts_type_to_act_node(&ts_type, &Some(&ts_type_alias_ident))
+    }
+}
 
 pub fn get_ast_canister_type_alias_decls(
     type_alias_decls: &Vec<TsTypeAliasDecl>,

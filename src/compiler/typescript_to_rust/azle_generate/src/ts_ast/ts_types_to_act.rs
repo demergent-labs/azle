@@ -7,8 +7,8 @@ use swc_ecma_ast::{
 
 use crate::generators::funcs;
 
-use super::rust_types::{
-    ActNode, ArrayTypeInfo, EnumInfo, FuncInfo, PrimitiveInfo, StructInfo, TupleInfo, TypeRefInfo,
+use crate::azle_act::act_node::{
+    ActNode, ArrayTypeInfo, EnumInfo, FuncInfo, OptionInfo, PrimitiveInfo, StructInfo, TupleInfo,
 };
 
 use core::panic;
@@ -50,7 +50,7 @@ fn generate_inline_ident_for_tuple(ts_type_ref: &TsTupleType) -> Ident {
     format_ident!("AzleInlineTuple_{}", id)
 }
 
-pub fn ts_type_to_rust_type(ts_type: &TsType, name: &Option<&Ident>) -> ActNode {
+pub fn ts_type_to_act_node(ts_type: &TsType, name: &Option<&Ident>) -> ActNode {
     let rust_type = match ts_type {
         TsType::TsKeywordType(ts_keyword_type) => {
             ActNode::Primitive(parse_ts_keyword_type(ts_keyword_type))
@@ -128,7 +128,7 @@ fn get_elem_types(ts_tuple_type: &TsTupleType) -> Vec<ActNode> {
     ts_tuple_type
         .elem_types
         .iter()
-        .map(|elem| ts_type_to_rust_type(&elem.ty, &None))
+        .map(|elem| ts_type_to_act_node(&elem.ty, &None))
         .collect()
 }
 
@@ -220,9 +220,8 @@ fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActNode 
         "Variant" => parse_variant_type_ref(ts_type_ref, name),
         _ => {
             let custom_type_ref_ident = format_ident!("{}", type_name);
-            ActNode::TypeAlias(TypeRefInfo {
+            ActNode::CustomType(PrimitiveInfo {
                 identifier: quote!(#custom_type_ref_ident),
-                ..Default::default()
             })
         }
     }
@@ -236,7 +235,7 @@ fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActNode 
  */
 fn parse_ts_array_type(ts_array_type: &TsArrayType) -> ArrayTypeInfo {
     let elem_type = *ts_array_type.elem_type.clone();
-    let elem_rust_type = ts_type_to_rust_type(&elem_type, &None);
+    let elem_rust_type = ts_type_to_act_node(&elem_type, &None);
     let elem_type_ident = elem_rust_type.get_type_ident();
     let inline_enclosed_type = if elem_rust_type.is_inline_rust_type() {
         Some(elem_rust_type)
@@ -255,14 +254,14 @@ fn parse_opt_type_ref(ts_type_ref: &TsTypeRef) -> ActNode {
         Some(params) => {
             // TODO do we want to check that 0 is the only valid index?
             let enclosed_ts_type = *params.params[0].clone();
-            let enclosed_rust_type = ts_type_to_rust_type(&enclosed_ts_type, &None);
+            let enclosed_rust_type = ts_type_to_act_node(&enclosed_ts_type, &None);
             let enclosed_rust_ident = enclosed_rust_type.get_type_ident();
             let inline_enclosed_type = if enclosed_rust_type.is_inline_rust_type() {
                 Some(enclosed_rust_type)
             } else {
                 None
             };
-            ActNode::Option(TypeRefInfo {
+            ActNode::Option(OptionInfo {
                 identifier: quote!(Option<#enclosed_rust_ident>),
                 enclosed_inline_type: Box::from(inline_enclosed_type),
             })
@@ -311,7 +310,7 @@ fn parse_func_return_type(ts_type: &TsFnType) -> ActNode {
     match &*ts_type.type_ann.type_ann {
         TsType::TsTypeRef(type_reference) => match &type_reference.type_params {
             Some(type_param_inst) => match type_param_inst.params.get(0) {
-                Some(param) => ts_type_to_rust_type(&*param, &None),
+                Some(param) => ts_type_to_act_node(&*param, &None),
                 None => panic!("Func must specify exactly one return type"),
             },
             None => {
@@ -351,7 +350,7 @@ fn parse_func_param_types(ts_type: &TsFnType) -> Vec<ActNode> {
             swc_ecma_ast::TsFnParam::Ident(ident) => match &ident.type_ann {
                 Some(param_type) => {
                     let ts_type = &*param_type.type_ann;
-                    ts_type_to_rust_type(ts_type, &None)
+                    ts_type_to_act_node(ts_type, &None)
                 }
                 None => panic!("Func parameter must have a type"),
             },
@@ -471,7 +470,7 @@ fn parse_type_literal_member_name(prop_sig: &TsPropertySignature) -> Ident {
 pub fn parse_type_literal_member_type(prop_sig: &TsPropertySignature) -> ActNode {
     let type_ann = prop_sig.type_ann.clone().unwrap();
     let ts_type = *type_ann.type_ann.clone();
-    ts_type_to_rust_type(&ts_type, &None)
+    ts_type_to_act_node(&ts_type, &None)
 }
 
 fn parse_type_literal_members_for_enum(member: &TsTypeElement) -> (TokenStream, Option<ActNode>) {

@@ -1,4 +1,5 @@
 use crate::azle_act;
+use crate::ts_ast::ts_types_to_act;
 use proc_macro2::TokenStream;
 use quote::quote;
 use swc_ecma_ast::TsEntityName::{Ident, TsQualifiedName};
@@ -144,7 +145,7 @@ fn get_param_types(function_type: &swc_ecma_ast::TsFnType) -> Vec<TokenStream> {
             swc_ecma_ast::TsFnParam::Ident(identifier) => match &identifier.type_ann {
                 Some(param_type) => {
                     let rust_type =
-                        azle_act::types::ts_type_to_rust_type(&*param_type.type_ann, &None)
+                        ts_types_to_act::ts_type_to_act_node(&*param_type.type_ann, &None)
                             .get_type_ident()
                             .to_string();
 
@@ -190,7 +191,7 @@ fn get_return_type(function_type: &swc_ecma_ast::TsFnType) -> TokenStream {
                             }
                             match type_param_inst.params.get(0) {
                                 Some(param) => {
-                                    let return_type = azle_act::types::ts_type_to_rust_type(&**param, &None).get_type_ident().to_string();
+                                    let return_type = ts_types_to_act::ts_type_to_act_node(&**param, &None).get_type_ident().to_string();
                                     if return_type == "()" {
                                         quote! {}
                                     } else {
