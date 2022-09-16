@@ -30,7 +30,6 @@ function test_canister_functionality() {
     return [
         {
             name: 'get_balance',
-            skip: true,
             test: async () => {
                 const result = await bitcoin_canister.get_balance(
                     wallets.alice.p2wpkh
@@ -40,7 +39,7 @@ function test_canister_functionality() {
                     return { err: result.err };
                 }
 
-                const block_reward = 5000000000n;
+                const block_reward = 5_000_000_000n;
                 const blocks_mined_in_setup = 101n;
                 const expected_balance = block_reward * blocks_mined_in_setup;
 
