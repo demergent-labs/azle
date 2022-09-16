@@ -57,6 +57,7 @@ jobs:
               run: |
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
+                    "examples/bitcoin",
                     "examples/bytes",
                     "examples/call_raw",
                     "examples/candid_encoding",
