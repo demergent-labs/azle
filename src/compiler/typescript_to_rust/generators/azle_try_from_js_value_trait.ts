@@ -39,7 +39,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 }
             }
         }
-        
+
         impl AzleTryFromJsValue<ic_cdk::export::candid::Empty> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::export::candid::Empty, AzleTryFromJsValueError> {
                 panic!("JsValue cannot be converted into Empty");
@@ -51,7 +51,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                 Ok(ic_cdk::export::candid::Reserved)
             }
         }
-        
+
         impl AzleTryFromJsValue<ic_cdk::export::candid::Func> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::export::candid::Func, AzleTryFromJsValueError> {
                 match self.as_object() {
@@ -86,7 +86,7 @@ export function generateAzleTryFromJsValueTrait(): Rust {
                                 match principal_to_text_function_js_value.as_object() {
                                     Some(principal_to_text_function_js_object) => {
                                         match principal_to_text_function_js_object.call(&self, &[], context) {
-                                            Ok(principal_string_js_value) => {                        
+                                            Ok(principal_string_js_value) => {
                                                 match principal_string_js_value.as_string() {
                                                     Some(principal_js_string) => {
                                                         match ic_cdk::export::Principal::from_text(principal_js_string.to_string()) {
@@ -427,6 +427,12 @@ export function generateAzleTryFromJsValueTrait(): Rust {
 
         impl AzleTryFromJsValue<Vec<u16>> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Vec<u16>, AzleTryFromJsValueError> {
+                azle_try_from_js_value_generic_array(self, context)
+            }
+        }
+
+        impl AzleTryFromJsValue<Vec<Vec<u8>>> for boa_engine::JsValue {
+            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Vec<Vec<u8>>, AzleTryFromJsValueError> {
                 azle_try_from_js_value_generic_array(self, context)
             }
         }

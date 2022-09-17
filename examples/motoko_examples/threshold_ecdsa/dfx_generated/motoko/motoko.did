@@ -1,0 +1,10 @@
+service : {
+  public_key: () -> (variant {
+                       Err: text;
+                       Ok: record {public_key: blob;};
+                     });
+  sign: (blob) -> (variant {
+                     Err: text;
+                     Ok: record {signature: blob;};
+                   });
+}
