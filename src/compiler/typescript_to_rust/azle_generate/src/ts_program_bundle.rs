@@ -3,25 +3,25 @@ use std::collections::HashSet;
 
 use crate::{
     cdk_act::{
-        self, AbstractCanisterTree, ActNode, CanisterMethod, CanisterMethodType, CanisterTree,
+        self, generators::ic_object::functions, AbstractCanisterTree, ActNode, CanisterMethod,
+        CanisterMethodType, ToAct,
     },
-    complex_types, funcs, functions,
     generators::{
         azle_into_js_value, azle_try_from_js_value,
         canister_methods::{
             self,
             system::{heartbeat, init, inspect_message, post_upgrade, pre_upgrade},
         },
-        cross_canister_call_functions,
+        complex_types, cross_canister_call_functions, funcs, stacktrace, type_aliases,
     },
-    stacktrace, ts_ast, type_aliases,
+    ts_ast,
 };
 
 pub struct TsProgramBundle {
     pub programs: Vec<swc_ecma_ast::Program>,
 }
 
-impl CanisterTree for TsProgramBundle {
+impl ToAct for TsProgramBundle {
     fn to_act(&self) -> AbstractCanisterTree {
         // Collect AST Information
         let ast_complex_type_alias_decls =

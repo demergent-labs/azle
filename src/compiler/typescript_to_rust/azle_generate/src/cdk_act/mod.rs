@@ -23,6 +23,6 @@ pub enum SystemStructureType {
     Canister,
 }
 
-pub trait CanisterTree {
+pub trait ToAct {
     fn to_act(&self) -> AbstractCanisterTree;
 }
