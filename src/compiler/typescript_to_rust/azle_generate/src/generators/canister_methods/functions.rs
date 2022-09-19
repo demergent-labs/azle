@@ -7,7 +7,7 @@ use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use swc_ecma_ast::FnDecl;
 
-pub fn generate_canister_method_node(ast_fnc_decl: &FnDecl) -> CanisterMethod {
+pub fn build_canister_method(ast_fnc_decl: &FnDecl) -> CanisterMethod {
     let function_name = ts_ast::fn_decl::get_fn_decl_function_name(ast_fnc_decl);
     let function_name_ident = format_ident!("{}", function_name);
 
