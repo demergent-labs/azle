@@ -47,41 +47,6 @@ pub fn get_ast_type_alias_decls_by_type_ref_name(
         .collect()
 }
 
-pub fn is_complex_type(ts_type_alias_decl: &TsTypeAliasDecl) -> bool {
-    !(!ts_type_alias_decl.type_ann.is_ts_type_lit()
-        && !ts_type_alias_decl.type_ann.is_ts_tuple_type()
-        && (!ts_type_alias_decl.type_ann.is_ts_type_ref()
-            || (ts_type_alias_decl.type_ann.is_ts_type_ref()
-                && match ts_type_alias_decl.type_ann.as_ts_type_ref() {
-                    Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
-                        Some(ident) => {
-                            let name = ident.sym.chars().as_str();
-                            name != "Func" && name != "Variant" && name != "Canister"
-                        }
-                        None => true,
-                    },
-                    None => true,
-                })))
-}
-
-pub fn get_ast_type_alias_decls(type_alias_decls: &Vec<TsTypeAliasDecl>) -> Vec<TsTypeAliasDecl> {
-    type_alias_decls
-        .clone()
-        .into_iter()
-        .filter(|ts_type_alias_decl| !is_complex_type(ts_type_alias_decl))
-        .collect()
-}
-
-pub fn get_ast_complex_type_alias_decls(
-    type_alias_decls: &Vec<TsTypeAliasDecl>,
-) -> Vec<TsTypeAliasDecl> {
-    type_alias_decls
-        .clone()
-        .into_iter()
-        .filter(|ts_type_alias_decl| is_complex_type(ts_type_alias_decl))
-        .collect()
-}
-
 pub fn get_dependent_types_from_type_alias_decl(
     type_alias_decl: &TsTypeAliasDecl,
     type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,

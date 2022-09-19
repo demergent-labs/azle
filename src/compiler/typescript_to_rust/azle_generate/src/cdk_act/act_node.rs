@@ -40,6 +40,7 @@ pub enum ActNode {
     Variant(EnumInfo),
     Func(FuncInfo),
     Tuple(TupleInfo),
+    TypeAlias(TypeAliasInfo),
 }
 
 /**
@@ -123,6 +124,14 @@ pub struct FuncInfo {
 }
 
 #[derive(Clone, Debug)]
+pub struct TypeAliasInfo {
+    pub identifier: TokenStream,
+    pub definition: TokenStream,
+    pub is_inline: bool,
+    pub inline_members: Box<Vec<ActNode>>,
+}
+
+#[derive(Clone, Debug)]
 pub struct TupleInfo {
     pub identifier: TokenStream,
     pub definition: TokenStream,
@@ -141,11 +150,13 @@ impl ActNode {
             ActNode::Func(func_info) => &func_info.identifier,
             ActNode::Tuple(tuple_info) => &tuple_info.identifier,
             ActNode::Option(option_info) => &option_info.identifier,
+            ActNode::TypeAlias(type_alias_info) => &type_alias_info.identifier,
         };
         quote!(#token_stream)
     }
 
     // TODO I am not sure if and array type could be an inline type?? We should test that
+    // TODO change is_inline to needs to be defined?
     pub fn is_inline_rust_type(&self) -> bool {
         match self {
             ActNode::Primitive(_) => false,
@@ -156,6 +167,7 @@ impl ActNode {
             ActNode::Func(func_info) => func_info.is_inline,
             ActNode::Tuple(tuple_info) => tuple_info.is_inline,
             ActNode::Option(option_info) => option_info.enclosed_inline_type.is_some(),
+            ActNode::TypeAlias(type_alias_info) => type_alias_info.is_inline,
         }
     }
 
@@ -175,6 +187,7 @@ impl ActNode {
                 Some(inline_type) => inline_type.get_definition(),
                 None => None,
             },
+            ActNode::TypeAlias(type_alias_info) => Some(type_alias_info.definition.clone()),
         }
     }
 
@@ -193,6 +206,7 @@ impl ActNode {
             ActNode::Array(_) => vec![],
             ActNode::Tuple(tuple_info) => *tuple_info.inline_members.clone(),
             ActNode::Option(_) => vec![],
+            ActNode::TypeAlias(_) => vec![],
         }
     }
 
