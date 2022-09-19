@@ -9,6 +9,7 @@ use crate::generators::funcs;
 
 use crate::cdk_act::act_node::{
     ActNode, ArrayTypeInfo, EnumInfo, FuncInfo, OptionInfo, PrimitiveInfo, StructInfo, TupleInfo,
+    TypeAliasInfo,
 };
 
 use core::panic;
@@ -52,11 +53,9 @@ fn generate_inline_ident_for_tuple(ts_type_ref: &TsTupleType) -> Ident {
 
 pub fn ts_type_to_act_node(ts_type: &TsType, name: &Option<&Ident>) -> ActNode {
     let rust_type = match ts_type {
-        TsType::TsKeywordType(ts_keyword_type) => {
-            ActNode::Primitive(parse_ts_keyword_type(ts_keyword_type))
-        }
+        TsType::TsKeywordType(ts_keyword_type) => parse_ts_keyword_type(ts_keyword_type, name),
         TsType::TsTypeRef(ts_type_ref) => parse_ts_type_ref(ts_type_ref, name),
-        TsType::TsArrayType(ts_array_type) => ActNode::Array(parse_ts_array_type(ts_array_type)),
+        TsType::TsArrayType(ts_array_type) => parse_ts_array_type(ts_array_type, name),
         TsType::TsTypeLit(ts_type_lit) => {
             ActNode::Record(parse_ts_type_lit_as_struct(name, ts_type_lit))
         }
@@ -132,7 +131,7 @@ fn get_elem_types(ts_tuple_type: &TsTupleType) -> Vec<ActNode> {
         .collect()
 }
 
-fn parse_ts_keyword_type(ts_keyword_type: &TsKeywordType) -> PrimitiveInfo {
+fn parse_ts_keyword_type(ts_keyword_type: &TsKeywordType, name: &Option<&Ident>) -> ActNode {
     let kind = ts_keyword_type.kind;
     let token_stream = match &kind {
         TsKeywordTypeKind::TsBooleanKeyword => quote!(bool),
@@ -153,8 +152,34 @@ fn parse_ts_keyword_type(ts_keyword_type: &TsKeywordType) -> PrimitiveInfo {
         TsKeywordTypeKind::TsUnknownKeyword => todo!("parse_ts_keyword_type for TsUnknownKeyword"),
         TsKeywordTypeKind::TsAnyKeyword => todo!("parse_ts_keyword_type for TsAnyKeyword"),
     };
-    PrimitiveInfo {
-        identifier: token_stream,
+    build_act_primitive_type_node(token_stream, name)
+}
+
+fn build_act_primitive_type_node(token_stream: TokenStream, name: &Option<&Ident>) -> ActNode {
+    match name {
+        Some(_) => ActNode::TypeAlias(TypeAliasInfo {
+            identifier: quote!(#name),
+            definition: quote!(type #name = #token_stream;),
+            is_inline: true,
+            inline_members: Box::from(vec![]),
+        }),
+        None => ActNode::Primitive(PrimitiveInfo {
+            identifier: token_stream,
+        }),
+    }
+}
+
+fn build_act_custom_type_node(token_stream: TokenStream, name: &Option<&Ident>) -> ActNode {
+    match name {
+        Some(_) => ActNode::TypeAlias(TypeAliasInfo {
+            identifier: quote!(#name),
+            definition: quote!(type #name = #token_stream;),
+            is_inline: true,
+            inline_members: Box::from(vec![]),
+        }),
+        None => ActNode::CustomType(PrimitiveInfo {
+            identifier: token_stream,
+        }),
     }
 }
 
@@ -167,62 +192,28 @@ fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActNode 
         .chars()
         .as_str();
     match type_name {
-        "blob" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(Vec<u8>),
-        }),
-        "float32" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(f32),
-        }),
-        "float64" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(f64),
-        }),
-        "int" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(candid::Int),
-        }),
-        "int8" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(i8),
-        }),
-        "int16" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(i16),
-        }),
-        "int32" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(i32),
-        }),
-        "int64" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(i64),
-        }),
-        "nat" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(candid::Nat),
-        }),
-        "nat8" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(u8),
-        }),
-        "nat16" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(u16),
-        }),
-        "nat32" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(u32),
-        }),
-        "nat64" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(u64),
-        }),
-        "Principal" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(candid::Principal),
-        }),
-        "empty" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(candid::Empty),
-        }),
-        "reserved" => ActNode::Primitive(PrimitiveInfo {
-            identifier: quote!(candid::Reserved),
-        }),
+        "blob" => build_act_custom_type_node(quote!(Vec<u8>), name),
+        "float32" => build_act_primitive_type_node(quote!(f32), name),
+        "float64" => build_act_primitive_type_node(quote!(f64), name),
+        "int" => build_act_custom_type_node(quote!(candid::Int), name),
+        "int8" => build_act_primitive_type_node(quote!(i8), name),
+        "int16" => build_act_primitive_type_node(quote!(i16), name),
+        "int32" => build_act_primitive_type_node(quote!(i32), name),
+        "int64" => build_act_primitive_type_node(quote!(i64), name),
+        "nat" => build_act_custom_type_node(quote!(candid::Nat), name),
+        "nat8" => build_act_primitive_type_node(quote!(u8), name),
+        "nat16" => build_act_primitive_type_node(quote!(u16), name),
+        "nat32" => build_act_primitive_type_node(quote!(u32), name),
+        "nat64" => build_act_primitive_type_node(quote!(u64), name),
+        "Principal" => build_act_custom_type_node(quote!(candid::Principal), name),
+        "empty" => build_act_custom_type_node(quote!(candid::Empty), name),
+        "reserved" => build_act_custom_type_node(quote!(candid::Reserved), name),
         "Opt" => parse_opt_type_ref(ts_type_ref),
         "Func" => parse_func_type_ref(ts_type_ref, name),
         "Variant" => parse_variant_type_ref(ts_type_ref, name),
         _ => {
             let custom_type_ref_ident = format_ident!("{}", type_name);
-            ActNode::CustomType(PrimitiveInfo {
-                identifier: quote!(#custom_type_ref_ident),
-            })
+            build_act_custom_type_node(quote!(#custom_type_ref_ident), name)
         }
     }
 }
@@ -233,7 +224,7 @@ fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActNode 
  * for the array type info is fine because we will never see the elem type info
  * otherwise. I am also currently assuming that the only way we have an enclosed type that needs to be
  */
-fn parse_ts_array_type(ts_array_type: &TsArrayType) -> ArrayTypeInfo {
+fn parse_ts_array_type(ts_array_type: &TsArrayType, name: &Option<&Ident>) -> ActNode {
     let elem_type = *ts_array_type.elem_type.clone();
     let elem_rust_type = ts_type_to_act_node(&elem_type, &None);
     let elem_type_ident = elem_rust_type.get_type_ident();
@@ -242,9 +233,13 @@ fn parse_ts_array_type(ts_array_type: &TsArrayType) -> ArrayTypeInfo {
     } else {
         None
     };
-    ArrayTypeInfo {
-        identifier: quote! {Vec<#elem_type_ident>},
-        enclosed_inline_type: Box::from(inline_enclosed_type),
+    let token_stream = quote! {Vec<#elem_type_ident>};
+    match name {
+        Some(_) => build_act_custom_type_node(token_stream, name),
+        None => ActNode::Array(ArrayTypeInfo {
+            identifier: token_stream,
+            enclosed_inline_type: Box::from(inline_enclosed_type),
+        }),
     }
 }
 

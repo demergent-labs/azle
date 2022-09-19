@@ -12,7 +12,7 @@ use crate::{
             self,
             system::{heartbeat, init, inspect_message, post_upgrade, pre_upgrade},
         },
-        complex_types, cross_canister_call_functions, funcs, stacktrace, type_aliases,
+        cross_canister_call_functions, funcs, stacktrace, type_aliases,
     },
     ts_ast,
 };
@@ -24,14 +24,10 @@ pub struct TsProgramBundle {
 impl ToAct for TsProgramBundle {
     fn to_act(&self) -> AbstractCanisterTree {
         // Collect AST Information
-        let ast_complex_type_alias_decls =
-            ts_ast::program::get_ast_type_alias_decls_from_programs(&self.programs);
         let ast_type_alias_decls =
-            ts_ast::ts_type_alias_decl::get_ast_type_alias_decls(&ast_complex_type_alias_decls);
+            ts_ast::program::get_ast_type_alias_decls_from_programs(&self.programs);
         let ast_canister_type_alias_decls =
-            ts_ast::ts_type_alias_decl::get_ast_canister_type_alias_decls(
-                &ast_complex_type_alias_decls,
-            );
+            ts_ast::ts_type_alias_decl::get_ast_canister_type_alias_decls(&ast_type_alias_decls);
 
         let func_arg_token = funcs::generate_func_arg_token();
 
@@ -48,16 +44,16 @@ impl ToAct for TsProgramBundle {
         // Determine which type aliases must be present for the functions to work and save them for later parsing
         let query_dependencies = ts_ast::fn_decl::get_dependent_types_from_fn_decls(
             &ast_fnc_decls_query,
-            &ast_complex_type_alias_decls,
+            &ast_type_alias_decls,
         );
         let update_dependencies = ts_ast::fn_decl::get_dependent_types_from_fn_decls(
             &ast_fnc_decls_update,
-            &ast_complex_type_alias_decls,
+            &ast_type_alias_decls,
         );
         let canister_dependencies =
             ts_ast::ts_type_alias_decl::get_dependent_types_from_canister_decls(
                 &ast_canister_type_alias_decls,
-                &ast_complex_type_alias_decls,
+                &ast_type_alias_decls,
             );
 
         let dependencies: HashSet<String> = query_dependencies
@@ -94,14 +90,10 @@ impl ToAct for TsProgramBundle {
         ]
         .concat();
 
-        let type_alias_token_streams =
+        let type_alias_acts =
             type_aliases::generate_type_alias_acts(&dependencies, &ast_type_alias_decls);
-
-        let complex_type_alias_acts =
-            complex_types::generate_complex_acts(&dependencies, &ast_complex_type_alias_decls);
-
-        let complex_type_definitions_token_streams =
-            complex_types::generate_complex_type_definition_token_streams(&complex_type_alias_acts);
+        let type_alias_token_streams =
+            type_aliases::generate_type_definition_token_streams(&type_alias_acts);
 
         let query_and_update_canister_methods: Vec<CanisterMethod> =
             vec![query_canister_methods, update_canister_methods].concat();
@@ -147,7 +139,6 @@ impl ToAct for TsProgramBundle {
                 #get_top_level_call_frame_fn
 
                 #func_arg_token
-                #(#complex_type_definitions_token_streams)*
                 #(#function_inline_records)*
                 #(#type_alias_token_streams)*
                 #(#query_function_streams)*
