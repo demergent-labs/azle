@@ -4,7 +4,7 @@ use swc_ecma_ast::{FnDecl, TsType, TsTypeAliasDecl};
 use syn::Ident;
 
 use super::{ts_type, ts_type_alias_decl};
-use crate::azle_act::CanisterMethodType;
+use crate::cdk_act::CanisterMethodType;
 
 pub fn get_canister_method_return_type(fn_decl: &FnDecl) -> Option<&TsType> {
     let ts_type = &*fn_decl.function.return_type.as_ref().unwrap().type_ann;
@@ -136,7 +136,7 @@ fn get_dependent_types_from_fn_decl(
     possible_dependencies: &Vec<TsTypeAliasDecl>,
     found_types: &HashSet<String>,
 ) -> HashSet<String> {
-    let type_alias_lookup = ts_type_alias_decl::generate_hash_map(possible_dependencies);
+    let type_alias_lookup = ts_type_alias_decl::generate_type_alias_lookup(possible_dependencies);
     let return_types = get_return_ts_type(fn_decl);
     let param_types = get_param_ts_types(fn_decl);
     let ts_types = vec![vec![return_types], param_types].concat();

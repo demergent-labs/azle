@@ -7,9 +7,8 @@ use swc_ecma_ast::{
 
 use crate::generators::funcs;
 
-use super::{
-    rust_types::{EnumInfo, FuncInfo, StructInfo, TupleInfo},
-    ArrayTypeInfo, KeywordInfo, RustType, TypeRefInfo,
+use crate::cdk_act::act_node::{
+    ActNode, ArrayTypeInfo, EnumInfo, FuncInfo, OptionInfo, PrimitiveInfo, StructInfo, TupleInfo,
 };
 
 use core::panic;
@@ -51,20 +50,18 @@ fn generate_inline_ident_for_tuple(ts_type_ref: &TsTupleType) -> Ident {
     format_ident!("AzleInlineTuple_{}", id)
 }
 
-pub fn ts_type_to_rust_type(ts_type: &TsType, name: &Option<&Ident>) -> RustType {
+pub fn ts_type_to_act_node(ts_type: &TsType, name: &Option<&Ident>) -> ActNode {
     let rust_type = match ts_type {
         TsType::TsKeywordType(ts_keyword_type) => {
-            RustType::KeywordType(parse_ts_keyword_type(ts_keyword_type))
+            ActNode::Primitive(parse_ts_keyword_type(ts_keyword_type))
         }
         TsType::TsTypeRef(ts_type_ref) => parse_ts_type_ref(ts_type_ref, name),
-        TsType::TsArrayType(ts_array_type) => {
-            RustType::ArrayType(parse_ts_array_type(ts_array_type))
-        }
+        TsType::TsArrayType(ts_array_type) => ActNode::Array(parse_ts_array_type(ts_array_type)),
         TsType::TsTypeLit(ts_type_lit) => {
-            RustType::Struct(parse_ts_type_lit_as_struct(name, ts_type_lit))
+            ActNode::Record(parse_ts_type_lit_as_struct(name, ts_type_lit))
         }
         TsType::TsTupleType(ts_tuple_type) => {
-            RustType::Tuple(parse_ts_tuple_type(ts_tuple_type, name))
+            ActNode::Tuple(parse_ts_tuple_type(ts_tuple_type, name))
         }
         TsType::TsThisType(_) => todo!("ts_type_to_rust_type for TsThisType"),
         TsType::TsFnOrConstructorType(_) => {
@@ -113,7 +110,7 @@ fn parse_ts_tuple_type(ts_tuple_type: &TsTupleType, name: &Option<&Ident>) -> Tu
         );
     );
 
-    let inline_members: Vec<RustType> = elem_types
+    let inline_members: Vec<ActNode> = elem_types
         .iter()
         .filter(|elem_type| elem_type.is_inline_rust_type())
         .cloned()
@@ -121,21 +118,21 @@ fn parse_ts_tuple_type(ts_tuple_type: &TsTupleType, name: &Option<&Ident>) -> Tu
 
     TupleInfo {
         identifier: quote!(#type_ident),
-        structure: definition,
+        definition,
         is_inline: name.is_none(),
         inline_members: Box::from(inline_members),
     }
 }
 
-fn get_elem_types(ts_tuple_type: &TsTupleType) -> Vec<RustType> {
+fn get_elem_types(ts_tuple_type: &TsTupleType) -> Vec<ActNode> {
     ts_tuple_type
         .elem_types
         .iter()
-        .map(|elem| ts_type_to_rust_type(&elem.ty, &None))
+        .map(|elem| ts_type_to_act_node(&elem.ty, &None))
         .collect()
 }
 
-fn parse_ts_keyword_type(ts_keyword_type: &TsKeywordType) -> KeywordInfo {
+fn parse_ts_keyword_type(ts_keyword_type: &TsKeywordType) -> PrimitiveInfo {
     let kind = ts_keyword_type.kind;
     let token_stream = match &kind {
         TsKeywordTypeKind::TsBooleanKeyword => quote!(bool),
@@ -156,12 +153,12 @@ fn parse_ts_keyword_type(ts_keyword_type: &TsKeywordType) -> KeywordInfo {
         TsKeywordTypeKind::TsUnknownKeyword => todo!("parse_ts_keyword_type for TsUnknownKeyword"),
         TsKeywordTypeKind::TsAnyKeyword => todo!("parse_ts_keyword_type for TsAnyKeyword"),
     };
-    KeywordInfo {
+    PrimitiveInfo {
         identifier: token_stream,
     }
 }
 
-fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> RustType {
+fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActNode {
     let type_name = ts_type_ref
         .type_name
         .as_ident()
@@ -170,78 +167,61 @@ fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> RustType
         .chars()
         .as_str();
     match type_name {
-        "blob" => RustType::TypeRef(TypeRefInfo {
+        "blob" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(Vec<u8>),
-            ..Default::default()
         }),
-        "float32" => RustType::TypeRef(TypeRefInfo {
+        "float32" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(f32),
-            ..Default::default()
         }),
-        "float64" => RustType::TypeRef(TypeRefInfo {
+        "float64" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(f64),
-            ..Default::default()
         }),
-        "int" => RustType::TypeRef(TypeRefInfo {
+        "int" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(candid::Int),
-            ..Default::default()
         }),
-        "int8" => RustType::TypeRef(TypeRefInfo {
+        "int8" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(i8),
-            ..Default::default()
         }),
-        "int16" => RustType::TypeRef(TypeRefInfo {
+        "int16" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(i16),
-            ..Default::default()
         }),
-        "int32" => RustType::TypeRef(TypeRefInfo {
+        "int32" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(i32),
-            ..Default::default()
         }),
-        "int64" => RustType::TypeRef(TypeRefInfo {
+        "int64" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(i64),
-            ..Default::default()
         }),
-        "nat" => RustType::TypeRef(TypeRefInfo {
+        "nat" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(candid::Nat),
-            ..Default::default()
         }),
-        "nat8" => RustType::TypeRef(TypeRefInfo {
+        "nat8" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(u8),
-            ..Default::default()
         }),
-        "nat16" => RustType::TypeRef(TypeRefInfo {
+        "nat16" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(u16),
-            ..Default::default()
         }),
-        "nat32" => RustType::TypeRef(TypeRefInfo {
+        "nat32" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(u32),
-            ..Default::default()
         }),
-        "nat64" => RustType::TypeRef(TypeRefInfo {
+        "nat64" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(u64),
-            ..Default::default()
         }),
-        "Principal" => RustType::TypeRef(TypeRefInfo {
+        "Principal" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(candid::Principal),
-            ..Default::default()
         }),
-        "empty" => RustType::TypeRef(TypeRefInfo {
+        "empty" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(candid::Empty),
-            ..Default::default()
         }),
-        "reserved" => RustType::TypeRef(TypeRefInfo {
+        "reserved" => ActNode::Primitive(PrimitiveInfo {
             identifier: quote!(candid::Reserved),
-            ..Default::default()
         }),
         "Opt" => parse_opt_type_ref(ts_type_ref),
         "Func" => parse_func_type_ref(ts_type_ref, name),
         "Variant" => parse_variant_type_ref(ts_type_ref, name),
         _ => {
             let custom_type_ref_ident = format_ident!("{}", type_name);
-            RustType::TypeRef(TypeRefInfo {
+            ActNode::CustomType(PrimitiveInfo {
                 identifier: quote!(#custom_type_ref_ident),
-                ..Default::default()
             })
         }
     }
@@ -255,7 +235,7 @@ fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> RustType
  */
 fn parse_ts_array_type(ts_array_type: &TsArrayType) -> ArrayTypeInfo {
     let elem_type = *ts_array_type.elem_type.clone();
-    let elem_rust_type = ts_type_to_rust_type(&elem_type, &None);
+    let elem_rust_type = ts_type_to_act_node(&elem_type, &None);
     let elem_type_ident = elem_rust_type.get_type_ident();
     let inline_enclosed_type = if elem_rust_type.is_inline_rust_type() {
         Some(elem_rust_type)
@@ -268,20 +248,20 @@ fn parse_ts_array_type(ts_array_type: &TsArrayType) -> ArrayTypeInfo {
     }
 }
 
-fn parse_opt_type_ref(ts_type_ref: &TsTypeRef) -> RustType {
+fn parse_opt_type_ref(ts_type_ref: &TsTypeRef) -> ActNode {
     let type_params = ts_type_ref.type_params.clone();
     match type_params {
         Some(params) => {
             // TODO do we want to check that 0 is the only valid index?
             let enclosed_ts_type = *params.params[0].clone();
-            let enclosed_rust_type = ts_type_to_rust_type(&enclosed_ts_type, &None);
+            let enclosed_rust_type = ts_type_to_act_node(&enclosed_ts_type, &None);
             let enclosed_rust_ident = enclosed_rust_type.get_type_ident();
             let inline_enclosed_type = if enclosed_rust_type.is_inline_rust_type() {
                 Some(enclosed_rust_type)
             } else {
                 None
             };
-            RustType::TypeRef(TypeRefInfo {
+            ActNode::Option(OptionInfo {
                 identifier: quote!(Option<#enclosed_rust_ident>),
                 enclosed_inline_type: Box::from(inline_enclosed_type),
             })
@@ -290,7 +270,7 @@ fn parse_opt_type_ref(ts_type_ref: &TsTypeRef) -> RustType {
     }
 }
 
-fn parse_func_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> RustType {
+fn parse_func_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActNode {
     let inline_ident = generate_inline_ident_for_func(ts_type_ref);
     let type_ident = match name {
         Some(type_ident) => type_ident,
@@ -309,28 +289,28 @@ fn parse_func_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> RustTy
     let return_type = parse_func_return_type(ts_type);
     let param_types = parse_func_param_types(ts_type);
     let types = vec![vec![return_type], param_types].concat();
-    let inline_members: Vec<RustType> = types
+    let inline_members: Vec<ActNode> = types
         .iter()
         .filter(|rust_type| rust_type.is_inline_rust_type())
         .cloned()
         .collect();
-    let structure = funcs::generate_func_struct_and_impls_structure(quote!(#type_ident), ts_type);
+    let structure = funcs::generate_func_struct_and_impls(quote!(#type_ident), ts_type);
     let func_info = FuncInfo {
         identifier: quote!(#type_ident),
-        structure,
+        definition: structure,
         is_inline: name.is_none(),
         inline_members: Box::from(inline_members),
     };
-    RustType::Func(func_info)
+    ActNode::Func(func_info)
 }
 
 // Same comment as parse_func_param_types
-fn parse_func_return_type(ts_type: &TsFnType) -> RustType {
+fn parse_func_return_type(ts_type: &TsFnType) -> ActNode {
     // This feels a little weird to ignore the query update and oneway of theses fun return types, but for right now I just need the inline goodies
     match &*ts_type.type_ann.type_ann {
         TsType::TsTypeRef(type_reference) => match &type_reference.type_params {
             Some(type_param_inst) => match type_param_inst.params.get(0) {
-                Some(param) => ts_type_to_rust_type(&*param, &None),
+                Some(param) => ts_type_to_act_node(&*param, &None),
                 None => panic!("Func must specify exactly one return type"),
             },
             None => {
@@ -348,7 +328,7 @@ fn parse_func_return_type(ts_type: &TsFnType) -> RustType {
                     .as_str()
                     == "Oneway"
                 {
-                    RustType::KeywordType(KeywordInfo {
+                    ActNode::Primitive(PrimitiveInfo {
                         identifier: quote!(),
                     })
                 } else {
@@ -362,7 +342,7 @@ fn parse_func_return_type(ts_type: &TsFnType) -> RustType {
 
 // TODO can we merge this with funcs.rs's get_param_types? Or have that function use
 // This one and then grab the info out for the token streams?
-fn parse_func_param_types(ts_type: &TsFnType) -> Vec<RustType> {
+fn parse_func_param_types(ts_type: &TsFnType) -> Vec<ActNode> {
     ts_type
         .params
         .iter()
@@ -370,7 +350,7 @@ fn parse_func_param_types(ts_type: &TsFnType) -> Vec<RustType> {
             swc_ecma_ast::TsFnParam::Ident(ident) => match &ident.type_ann {
                 Some(param_type) => {
                     let ts_type = &*param_type.type_ann;
-                    ts_type_to_rust_type(ts_type, &None)
+                    ts_type_to_act_node(ts_type, &None)
                 }
                 None => panic!("Func parameter must have a type"),
             },
@@ -379,10 +359,10 @@ fn parse_func_param_types(ts_type: &TsFnType) -> Vec<RustType> {
         .collect()
 }
 
-fn parse_variant_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> RustType {
+fn parse_variant_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActNode {
     let enclosed_type = &*ts_type_ref.type_params.as_ref().unwrap().params[0];
     let enclosed_type_lit = enclosed_type.as_ts_type_lit().unwrap();
-    RustType::Enum(parse_ts_type_lit_as_enum(name, &enclosed_type_lit))
+    ActNode::Variant(parse_ts_type_lit_as_enum(name, &enclosed_type_lit))
 }
 
 fn parse_ts_type_lit_as_enum(ts_type_ident: &Option<&Ident>, ts_type_lit: &TsTypeLit) -> EnumInfo {
@@ -392,13 +372,13 @@ fn parse_ts_type_lit_as_enum(ts_type_ident: &Option<&Ident>, ts_type_lit: &TsTyp
         Some(type_ident) => type_ident,
         None => &inline_ident,
     };
-    let members: Vec<(TokenStream, Option<RustType>)> =
+    let members: Vec<(TokenStream, Option<ActNode>)> =
         ts_type_lit.members.iter().fold(vec![], |acc, member| {
             let (result, inline_deps) = parse_type_literal_members_for_enum(member);
             vec![acc, vec![(result, inline_deps)]].concat()
         });
     let field_token_streams = members.iter().map(|(field, _)| field.clone());
-    let inline_dependencies: Vec<RustType> =
+    let inline_dependencies: Vec<ActNode> =
         members
             .iter()
             .fold(vec![], |acc, (_, inline_deps)| match inline_deps {
@@ -412,7 +392,7 @@ fn parse_ts_type_lit_as_enum(ts_type_ident: &Option<&Ident>, ts_type_lit: &TsTyp
         }
     );
     EnumInfo {
-        structure,
+        definition: structure,
         identifier: quote!(#type_ident),
         is_inline: ts_type_ident.is_none(),
         inline_members: Box::from(inline_dependencies),
@@ -429,13 +409,13 @@ fn parse_ts_type_lit_as_struct(
         Some(type_ident) => type_ident,
         None => &inline_ident,
     };
-    let fields: Vec<(TokenStream, Option<RustType>)> =
+    let fields: Vec<(TokenStream, Option<ActNode>)> =
         ts_type_lit.members.iter().fold(vec![], |acc, member| {
             let (structures, inline_deps) = parse_type_literal_fields(member);
             vec![acc, vec![(structures, inline_deps)]].concat()
         });
     let field_token_streams = fields.iter().map(|(field, _)| field.clone());
-    let inline_dependencies: Vec<RustType> =
+    let inline_dependencies: Vec<ActNode> =
         fields
             .iter()
             .fold(vec![], |acc, (_, inline_deps)| match &inline_deps {
@@ -449,7 +429,7 @@ fn parse_ts_type_lit_as_struct(
         }
     );
     let result = StructInfo {
-        structure: structure.clone(),
+        definition: structure.clone(),
         identifier: quote!(#type_ident),
         is_inline: ts_type_ident.is_none(),
         inline_members: Box::from(inline_dependencies),
@@ -458,7 +438,7 @@ fn parse_ts_type_lit_as_struct(
     result
 }
 
-fn parse_type_literal_fields(member: &TsTypeElement) -> (TokenStream, Option<RustType>) {
+fn parse_type_literal_fields(member: &TsTypeElement) -> (TokenStream, Option<ActNode>) {
     match member.as_ts_property_signature() {
         Some(prop_sig) => {
             let member_name = parse_type_literal_member_name(prop_sig);
@@ -487,19 +467,19 @@ fn parse_type_literal_member_name(prop_sig: &TsPropertySignature) -> Ident {
     format_ident!("{}", prop_sig.key.as_ident().unwrap().sym.chars().as_str())
 }
 
-pub fn parse_type_literal_member_type(prop_sig: &TsPropertySignature) -> RustType {
+pub fn parse_type_literal_member_type(prop_sig: &TsPropertySignature) -> ActNode {
     let type_ann = prop_sig.type_ann.clone().unwrap();
     let ts_type = *type_ann.type_ann.clone();
-    ts_type_to_rust_type(&ts_type, &None)
+    ts_type_to_act_node(&ts_type, &None)
 }
 
-fn parse_type_literal_members_for_enum(member: &TsTypeElement) -> (TokenStream, Option<RustType>) {
+fn parse_type_literal_members_for_enum(member: &TsTypeElement) -> (TokenStream, Option<ActNode>) {
     match member.as_ts_property_signature() {
         Some(prop_sig) => {
             let member_name = parse_type_literal_member_name(prop_sig);
             let member_type = parse_type_literal_member_type(prop_sig);
             let member_type_token_stream = match member_type.clone() {
-                RustType::KeywordType(keyword_type_info) => {
+                ActNode::Primitive(keyword_type_info) => {
                     if keyword_type_info.identifier.to_string() == quote!((())).to_string() {
                         quote!()
                     } else {

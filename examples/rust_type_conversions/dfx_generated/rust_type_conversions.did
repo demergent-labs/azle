@@ -12,10 +12,15 @@ type AzleInline_11938290237207584742 = record {
   two_b : bool;
 };
 type AzleInline_12477736162160781291 = record { sub_three : bool };
+type AzleInline_13325028789399404902 = record { thing : text; thing2 : bool };
 type AzleInline_14090109093491927075 = record {
   one : text;
   two : SimpleRecord;
   three : bool;
+};
+type AzleInline_1461050149674757944 = record {
+  tuple_inline2 : text;
+  tuple_inline : bool;
 };
 type AzleInline_14806421258981238475 = record {
   one : text;
@@ -51,14 +56,9 @@ type AzleInline_6786282192879576985 = record {
   one : text;
   two : AzleInline_11938290237207584742;
 };
-type AzleInline_7071524478913472088 = record { thing : text; thing2 : bool };
 type AzleInline_7336418468724526833 = record { one : nat16; two : nat16 };
 type AzleInline_7603740651129624619 = record { two_inline : nat16 };
 type AzleInline_8878595774774867537 = variant { one : text; two; three : bool };
-type AzleInline_9079640898303026199 = record {
-  tuple_inline2 : text;
-  tuple_inline : bool;
-};
 type AzleInline_9864422139172514499 = record { one : bool; two : text };
 type ComplexRecord = record {
   one : nat16;
@@ -129,7 +129,7 @@ service : () -> {
     ) query;
   inline_query : (InlineExample) -> () query;
   inline_vec : (
-      vec AzleInline_7071524478913472088,
+      vec AzleInline_13325028789399404902,
       StructWithInlineArray,
     ) -> () query;
   not_so_simple : (
@@ -156,7 +156,7 @@ service : () -> {
     ) -> () query;
   simple_query : (opt nat64, text, nat, bool) -> (text) query;
   tuple_test : (
-      record { text; nat64; AzleInline_9079640898303026199; bool },
+      record { text; nat64; AzleInline_1461050149674757944; bool },
     ) -> () query;
   various_variants : (Yes, Reaction) -> (text) query;
 }

@@ -1,17 +1,13 @@
+use crate::cdk_act;
+use crate::ts_ast::ts_types_to_act;
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote};
+use quote::quote;
 use swc_ecma_ast::TsEntityName::{Ident, TsQualifiedName};
-use swc_ecma_ast::TsType;
+use swc_ecma_ast::TsFnType;
 use swc_ecma_ast::TsType::TsTypeRef;
-use swc_ecma_ast::TsTypeAliasDecl;
-use swc_ecma_ast::{TsFnOrConstructorType, TsFnType};
 
-use crate::generators::canister_methods;
-
-use super::canister_methods::ts_type_to_rust_type;
-
-pub fn generate_func_structs_and_impls(type_aliases: Vec<TsTypeAliasDecl>) -> Vec<TokenStream> {
-    let arg_token_struct_and_impl = quote! {
+pub fn generate_func_arg_token() -> TokenStream {
+    quote! {
         // TODO I think it's debatable whether or not we even need ArgToken
         /// A marker type to match unconstrained callback arguments
         #[derive(Debug, Clone, Copy, PartialEq, candid::Deserialize)]
@@ -28,29 +24,10 @@ pub fn generate_func_structs_and_impls(type_aliases: Vec<TsTypeAliasDecl>) -> Ve
                 unimplemented!("Token is not serializable")
             }
         }
-    };
-
-    let func_structs_and_impls: Vec<TokenStream> = type_aliases
-        .iter()
-        .map(|type_alias| generate_func_struct_and_impls(type_alias))
-        .collect();
-
-    // vec![vec![arg_token_struct_and_impl], func_structs_and_impls].concat()
-    vec![arg_token_struct_and_impl]
+    }
 }
 
-// TODO this is starting to look a lot like variant_type_aliases type_alias_decl_to_token_stream
-fn generate_func_struct_and_impls(type_alias: &TsTypeAliasDecl) -> TokenStream {
-    let type_alias_name = get_type_alias_name(&type_alias);
-
-    let ts_type = &*type_alias.type_ann;
-    let type_ident = format_ident!("{}", type_alias_name.to_string());
-    let name = &Some(&type_ident);
-    let rust_type = ts_type_to_rust_type(ts_type, name);
-    rust_type.to_type_definition_token_stream()
-}
-
-pub fn generate_func_struct_and_impls_structure(
+pub fn generate_func_struct_and_impls(
     type_alias_name: proc_macro2::TokenStream,
     func_type: &TsFnType,
 ) -> TokenStream {
@@ -137,53 +114,6 @@ pub fn generate_func_struct_and_impls_structure(
     }
 }
 
-fn get_type_alias_name(type_alias: &TsTypeAliasDecl) -> TokenStream {
-    type_alias
-        .id
-        .sym
-        .chars()
-        .as_str()
-        .parse::<TokenStream>()
-        .unwrap()
-}
-
-fn get_func_type(type_alias: &TsTypeAliasDecl) -> &swc_ecma_ast::TsFnType {
-    let type_alias_name = get_type_alias_name(type_alias);
-    match &*type_alias.type_ann {
-        TsTypeRef(type_ref) => match &type_ref.type_params {
-            Some(type_params) => {
-                if type_params.params.len() != 1 {
-                    panic!(
-                        "type {} must only specify a single type param for Func type reference",
-                        type_alias_name
-                    )
-                }
-
-                match &*type_params.params[0] {
-                    TsType::TsFnOrConstructorType(fn_or_constructor_type) => {
-                        match fn_or_constructor_type {
-                            TsFnOrConstructorType::TsFnType(fn_type) => fn_type,
-                            TsFnOrConstructorType::TsConstructorType(_) => panic!(
-                                "type {} must pass a function type as a type parameter to it's Func type reference",
-                                type_alias_name
-                            )
-                        }
-                    },
-                    _ => panic!(
-                        "type {} must pass a function type as a type parameter to it's Func type reference",
-                        type_alias_name
-                    )
-                }
-            }
-            None => panic!(
-                "type {} must include a function signature as a type parameter to Func",
-                type_alias_name
-            ),
-        },
-        _ => panic!("Func types must be declared using Azle's Func type with a type parameter"),
-    }
-}
-
 fn get_func_mode(function_type: &swc_ecma_ast::TsFnType) -> TokenStream {
     match &*function_type.type_ann.type_ann {
         TsTypeRef(type_reference) => match &type_reference.type_name {
@@ -215,7 +145,7 @@ fn get_param_types(function_type: &swc_ecma_ast::TsFnType) -> Vec<TokenStream> {
             swc_ecma_ast::TsFnParam::Ident(identifier) => match &identifier.type_ann {
                 Some(param_type) => {
                     let rust_type =
-                        canister_methods::ts_type_to_rust_type(&*param_type.type_ann, &None)
+                        ts_types_to_act::ts_type_to_act_node(&*param_type.type_ann, &None)
                             .get_type_ident()
                             .to_string();
 
@@ -261,7 +191,7 @@ fn get_return_type(function_type: &swc_ecma_ast::TsFnType) -> TokenStream {
                             }
                             match type_param_inst.params.get(0) {
                                 Some(param) => {
-                                    let return_type = canister_methods::ts_type_to_rust_type(&**param, &None).get_type_ident().to_string();
+                                    let return_type = ts_types_to_act::ts_type_to_act_node(&**param, &None).get_type_ident().to_string();
                                     if return_type == "()" {
                                         quote! {}
                                     } else {

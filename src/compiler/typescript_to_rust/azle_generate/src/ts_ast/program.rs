@@ -1,26 +1,7 @@
 use swc_ecma_ast::{FnDecl, Program, TsTypeAliasDecl};
 
 use super::{fn_decl, module, ts_type_alias_decl};
-use crate::azle_act::{CanisterMethodType, SystemStructureType};
-
-// TODO: This may grab unintended Func declarations. Instead traverse starting
-// from the exported canister methods.
-pub fn get_ast_func_type_alias_decls_from_programs(
-    programs: &Vec<Program>,
-) -> Vec<TsTypeAliasDecl> {
-    programs.iter().fold(vec![], |acc, program| {
-        let ast_func_type_alias_decls = get_ast_func_type_alias_decls_from_program(program);
-
-        vec![acc, ast_func_type_alias_decls].concat()
-    })
-}
-
-pub fn get_ast_func_type_alias_decls_from_program(program: &Program) -> Vec<TsTypeAliasDecl> {
-    match program {
-        Program::Module(module) => module::get_ast_func_type_alias_decls(module),
-        Program::Script(_) => vec![],
-    }
-}
+use crate::cdk_act::{CanisterMethodType, SystemStructureType};
 
 pub fn get_canister_method_type_fn_decls(
     programs: &Vec<Program>,

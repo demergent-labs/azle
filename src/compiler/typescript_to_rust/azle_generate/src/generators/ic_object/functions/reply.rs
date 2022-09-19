@@ -2,7 +2,10 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use swc_ecma_ast::FnDecl;
 
-use crate::{generators::canister_methods, ts_ast};
+use crate::{
+    cdk_act,
+    ts_ast::{self, ts_types_to_act},
+};
 
 pub fn generate_ic_object_function_reply(fn_decls: &Vec<FnDecl>) -> TokenStream {
     let match_arms = generate_match_arms(fn_decls);
@@ -36,7 +39,7 @@ fn generate_match_arm(fn_decl: &FnDecl) -> TokenStream {
     let fn_name = ts_ast::fn_decl::get_fn_decl_function_name(fn_decl);
     let return_type_ast = ts_ast::fn_decl::get_canister_method_return_type(fn_decl);
     let rust_return_type = match return_type_ast {
-        Some(ts_type) => canister_methods::ts_type_to_rust_type(ts_type, &None).get_type_ident(),
+        Some(ts_type) => ts_types_to_act::ts_type_to_act_node(ts_type, &None).get_type_ident(),
         None => quote! {()},
     };
     quote!(

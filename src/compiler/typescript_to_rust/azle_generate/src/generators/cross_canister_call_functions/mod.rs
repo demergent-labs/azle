@@ -1,21 +1,14 @@
-use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use swc_ecma_ast::{
-    Expr, Param, Program, TsFnParam, TsMethodSignature, TsType, TsTypeAliasDecl, TsTypeElement,
-    TsTypeLit,
+    Expr, Program, TsFnParam, TsMethodSignature, TsType, TsTypeAliasDecl, TsTypeElement, TsTypeLit,
 };
 
 use crate::{
-    azle_act::SystemStructureType,
+    cdk_act::{self, SystemStructureType},
     ts_ast::{
         ident::ident_to_string, program::get_type_alias_decls_for_system_structure_type,
-        ts_type_alias_decl::get_type_alias_decl_name,
+        ts_type_alias_decl::get_type_alias_decl_name, ts_types_to_act,
     },
-};
-
-use super::canister_methods::{
-    functions::{generate_param_name_idents, generate_param_types, generate_params_token_stream},
-    ts_type_to_rust_type,
 };
 
 #[derive(Clone)]
@@ -42,17 +35,11 @@ pub struct RustParams {
 }
 
 struct CrossCanisterCallFunctionNames {
-    method_name: String,
     call_function_name: String,
     call_with_payment_function_name: String,
     call_with_payment128_function_name: String,
     notify_function_name: String,
     notify_with_payment128_function_name: String,
-}
-
-struct RustParam {
-    param_name: proc_macro2::TokenStream,
-    param_type: proc_macro2::TokenStream,
 }
 
 pub fn generate_cross_canister_call_functions(programs: &Vec<Program>) -> proc_macro2::TokenStream {
@@ -277,7 +264,6 @@ fn get_cross_canister_call_function_names(
     let method_name = get_method_name(ts_method_signature);
 
     CrossCanisterCallFunctionNames {
-        method_name: method_name.clone(),
         call_function_name: format!(
             "_azle_call_{}_{}",
             canister_type_alias_decl_name, &method_name
@@ -530,7 +516,7 @@ fn get_ts_method_signature_return_type(
     let type_params = ts_type_ref.type_params.as_ref().unwrap();
     let return_type = &**type_params.params.get(0).unwrap();
 
-    ts_type_to_rust_type(return_type, &None).get_type_ident()
+    ts_types_to_act::ts_type_to_act_node(return_type, &None).get_type_ident()
 }
 
 // TODO this part should be refactored to allow us to get a params data structure by just passing in a &FnDecl
@@ -543,9 +529,11 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
             TsFnParam::Ident(binding_ident) => {
                 let param_name = ident_to_string(&binding_ident.id);
                 let param_name_ident = format_ident!("{}", param_name);
-                let param_type =
-                    ts_type_to_rust_type(&binding_ident.type_ann.as_ref().unwrap().type_ann, &None)
-                        .get_type_ident();
+                let param_type = ts_types_to_act::ts_type_to_act_node(
+                    &binding_ident.type_ann.as_ref().unwrap().type_ann,
+                    &None,
+                )
+                .get_type_ident();
 
                 quote! {
                     #param_name_ident: #param_type
@@ -575,9 +563,11 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
         .iter()
         .map(|ts_fn_param| match ts_fn_param {
             TsFnParam::Ident(binding_ident) => {
-                let param_type =
-                    ts_type_to_rust_type(&binding_ident.type_ann.as_ref().unwrap().type_ann, &None)
-                        .get_type_ident();
+                let param_type = ts_types_to_act::ts_type_to_act_node(
+                    &binding_ident.type_ann.as_ref().unwrap().type_ann,
+                    &None,
+                )
+                .get_type_ident();
 
                 quote! {
                     #param_type

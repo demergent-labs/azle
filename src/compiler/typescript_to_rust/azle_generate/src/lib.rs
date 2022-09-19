@@ -1,66 +1,27 @@
 // TODO let's find all Query and Update functions and create their function bodies
 // TODO then we can move on from there
 
-use generators::canister_methods::RustType;
+use cdk_act::{act_node::ActNode, CanisterMethodType};
+use generators::{
+    azle_into_js_value, azle_try_from_js_value,
+    canister_methods::{
+        self,
+        system::{heartbeat, init, inspect_message, post_upgrade, pre_upgrade},
+    },
+    complex_types::{self},
+    cross_canister_call_functions, funcs, ic_object, stacktrace, type_aliases,
+};
 use quote::quote;
 use std::{collections::HashSet, path::Path};
 use swc_common::{sync::Lrc, SourceMap};
-use swc_ecma_ast::{FnDecl, Program, TsTypeAliasDecl};
-use swc_ecma_parser::{
-    lexer::Lexer,
-    Parser,
-    StringInput,
-    // FileInput,
-    // SourceFileInput,
-    Syntax,
-    TsConfig,
-};
+use swc_ecma_ast::{FnDecl, Program};
+use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
+use ts_ast::ts_type_alias_decl;
 
-use crate::{
-    azle_act::CanisterMethodType,
-    generators::{
-        azle_into_js_value::generate_azle_into_js_value,
-        azle_try_from_js_value::generate_azle_try_from_js_value,
-        canister_methods::{
-            async_result_handler::generate_async_result_handler,
-            generate_query_function_infos, generate_type_alias_token_streams,
-            generate_update_function_infos, generate_variant_token_streams,
-            system::{
-                heartbeat::generate_canister_method_system_heartbeat,
-                init::generate_canister_method_system_init,
-                inspect_message::generate_canister_method_system_inspect_message,
-                post_upgrade::generate_canister_method_system_post_upgrade,
-                pre_upgrade::generate_canister_method_system_pre_upgrade,
-            },
-            FunctionInformation,
-        },
-        cross_canister_call_functions::generate_cross_canister_call_functions,
-        funcs,
-        ic_object::functions::generate_ic_object_functions,
-        stacktrace,
-    },
-    ts_ast::{
-        program::get_ast_type_alias_decls_from_programs,
-        ts_type_alias_decl::{get_ast_canister_type_alias_decls, get_ast_other_type_alias_decls},
-    },
-};
-
-mod azle_act;
+mod cdk_act;
 mod ts_ast;
 
 pub mod generators;
-
-fn collect_inline_dependencies(
-    function_info: &Vec<FunctionInformation>,
-) -> Vec<proc_macro2::TokenStream> {
-    function_info.iter().fold(vec![], |acc, fun_info| {
-        vec![
-            acc,
-            collect_inline_dependencies_from_list(&*fun_info.inline_dependant_types),
-        ]
-        .concat()
-    })
-}
 
 pub fn azle_generate(
     ts_file_names: &Vec<&str>,
@@ -70,15 +31,14 @@ pub fn azle_generate(
     let programs = get_programs(&ts_file_names);
 
     // Collect AST Information
-    let ast_type_alias_decls = get_ast_type_alias_decls_from_programs(&programs);
-    // let ast_record_type_alias_decls = get_ast_record_type_alias_decls(&ast_type_alias_decls);
-    // let ast_variant_type_alias_decls = get_ast_variant_type_alias_decls(&ast_type_alias_decls);
-    let ast_other_type_alias_decls = get_ast_other_type_alias_decls(&ast_type_alias_decls);
-    let ast_canister_type_alias_decls = get_ast_canister_type_alias_decls(&ast_type_alias_decls);
+    let ast_complex_type_alias_decls =
+        ts_ast::program::get_ast_type_alias_decls_from_programs(&programs);
+    let ast_type_alias_decls =
+        ts_type_alias_decl::get_ast_type_alias_decls(&ast_complex_type_alias_decls);
+    let ast_canister_type_alias_decls =
+        ts_type_alias_decl::get_ast_canister_type_alias_decls(&ast_complex_type_alias_decls);
 
-    let ast_func_type_alias_decls =
-        ts_ast::program::get_ast_func_type_alias_decls_from_programs(&programs);
-    let func_structs_and_impls = funcs::generate_func_structs_and_impls(ast_func_type_alias_decls);
+    let func_arg_token = funcs::generate_func_arg_token();
 
     // Separate function decls into queries and updates
     let ast_fnc_decls_query =
@@ -89,15 +49,15 @@ pub fn azle_generate(
     // Determine which type aliases must be present for the functions to work and save them for later parsing
     let query_dependencies = ts_ast::fn_decl::get_dependent_types_from_fn_decls(
         &ast_fnc_decls_query,
-        &ast_type_alias_decls,
+        &ast_complex_type_alias_decls,
     );
     let update_dependencies = ts_ast::fn_decl::get_dependent_types_from_fn_decls(
         &ast_fnc_decls_update,
-        &ast_type_alias_decls,
+        &ast_complex_type_alias_decls,
     );
     let canister_dependencies = ts_ast::ts_type_alias_decl::get_dependent_types_from_canister_decls(
         &ast_canister_type_alias_decls,
-        &ast_type_alias_decls,
+        &ast_complex_type_alias_decls,
     );
     let dependencies: HashSet<String> = query_dependencies
         .union(&update_dependencies)
@@ -108,21 +68,19 @@ pub fn azle_generate(
         .cloned()
         .collect();
 
-    // println!("ast_fnc_decls_query: {:#?}", ast_fnc_decls_query);
-
-    let query_function_info = generate_query_function_infos(&ast_fnc_decls_query);
+    let query_function_info =
+        canister_methods::query::generate_query_function_infos(&ast_fnc_decls_query);
     let query_function_streams: Vec<proc_macro2::TokenStream> = query_function_info
         .iter()
-        .map(|fun_info| fun_info.function.clone())
+        .map(|fun_info| fun_info.canister_method.clone())
         .collect();
 
-    // let query_inline_type_aliases = quote!();
-    let update_function_info = generate_update_function_infos(&ast_fnc_decls_update);
+    let update_function_info =
+        canister_methods::update::generate_update_function_infos(&ast_fnc_decls_update);
     let update_function_streams: Vec<proc_macro2::TokenStream> = update_function_info
         .iter()
-        .map(|fun_info| fun_info.function.clone())
+        .map(|fun_info| fun_info.canister_method.clone())
         .collect();
-    // let update_inline_type_aliases = quote!();
 
     let query_function_inline_dependant_types = collect_inline_dependencies(&query_function_info);
     let update_function_inline_dependant_types = collect_inline_dependencies(&update_function_info);
@@ -133,54 +91,38 @@ pub fn azle_generate(
     ]
     .concat();
 
-    // let variant_token_streams =
-    //     generate_variant_token_streams(&dependencies, &ast_variant_type_alias_decls);
-
-    // let records_type_token_streams =
-    //     generate_record_token_streams(&dependencies, &ast_record_type_alias_decls);
-
-    let other_type_aliases_map =
-        generate_type_alias_token_streams(&dependencies, &ast_other_type_alias_decls);
-    let other_inline_deps = other_type_aliases_map
-        .iter()
-        .fold(vec![], |acc, (_, (_, token_stream))| {
-            vec![acc, token_stream.clone()].concat()
-        });
-    let other_inline_records = collect_inline_dependencies_from_list(&other_inline_deps);
-
-    let inline_records_function_streams =
-        vec![function_inline_records, other_inline_records].concat();
-
-    // let records_token_streams = records_type_token_streams;
-
-    // let variant_token_streams = variant_token_streams;
-
-    let other_token_streams: Vec<proc_macro2::TokenStream> = other_type_aliases_map
-        .iter()
-        .map(|(_, (token_stream, _))| token_stream.clone())
-        .collect();
     let type_alias_token_streams =
-        generate_variant_token_streams(&dependencies, &ast_type_alias_decls);
+        type_aliases::generate_type_alias_acts(&dependencies, &ast_type_alias_decls);
 
-    let canister_method_system_heartbeat = generate_canister_method_system_heartbeat(&programs);
-    let canister_method_system_init = generate_canister_method_system_init(&programs);
+    let complex_type_alias_acts =
+        complex_types::generate_complex_acts(&dependencies, &ast_complex_type_alias_decls);
+    let complex_type_definitions_token_streams =
+        complex_types::generate_complex_type_definition_token_streams(&complex_type_alias_acts);
+
+    let canister_method_system_heartbeat =
+        heartbeat::generate_canister_method_system_heartbeat(&programs);
+    let canister_method_system_init = init::generate_canister_method_system_init(&programs);
     let canister_method_system_inspect_message =
-        generate_canister_method_system_inspect_message(&programs);
+        inspect_message::generate_canister_method_system_inspect_message(&programs);
     let canister_method_system_post_upgrade =
-        generate_canister_method_system_post_upgrade(&programs);
-    let canister_method_system_pre_upgrade = generate_canister_method_system_pre_upgrade(&programs);
+        post_upgrade::generate_canister_method_system_post_upgrade(&programs);
+    let canister_method_system_pre_upgrade =
+        pre_upgrade::generate_canister_method_system_pre_upgrade(&programs);
 
-    let azle_into_js_value = generate_azle_into_js_value();
-    let azle_try_from_js_value = generate_azle_try_from_js_value();
+    let azle_into_js_value = azle_into_js_value::generate_azle_into_js_value();
+    let azle_try_from_js_value = azle_try_from_js_value::generate_azle_try_from_js_value();
 
     let query_and_update_func_decls: Vec<FnDecl> =
         vec![ast_fnc_decls_query, ast_fnc_decls_update].concat();
-    let ic_object_functions = generate_ic_object_functions(&query_and_update_func_decls);
+    let ic_object_functions =
+        ic_object::functions::generate_ic_object_functions(&query_and_update_func_decls);
 
-    let async_result_handler = generate_async_result_handler(&programs);
+    let async_result_handler =
+        canister_methods::async_result_handler::generate_async_result_handler(&programs);
     let get_top_level_call_frame_fn = stacktrace::generate_get_top_level_call_frame_fn();
 
-    let cross_canister_call_functions = generate_cross_canister_call_functions(&programs);
+    let cross_canister_call_functions =
+        cross_canister_call_functions::generate_cross_canister_call_functions(&programs);
 
     quote! {
         // This code is automatically generated by Azle
@@ -235,12 +177,10 @@ pub fn azle_generate(
         #async_result_handler
         #get_top_level_call_frame_fn
 
+        #func_arg_token
+        #(#complex_type_definitions_token_streams)*
+        #(#function_inline_records)*
         #(#type_alias_token_streams)*
-        #(#inline_records_function_streams)*
-        // #(#records_token_streams)*
-        // #(#variant_token_streams)*
-        #(#func_structs_and_impls)*
-        #(#other_token_streams)*
         #(#query_function_streams)*
         #(#update_function_streams)*
 
@@ -294,16 +234,29 @@ fn get_programs(ts_file_names: &Vec<&str>) -> Vec<Program> {
         .collect()
 }
 
+fn collect_inline_dependencies(
+    function_info: &Vec<cdk_act::canister_method::CanisterMethod>,
+) -> Vec<proc_macro2::TokenStream> {
+    function_info.iter().fold(vec![], |acc, fun_info| {
+        vec![
+            acc,
+            collect_inline_dependencies_from_list(&*fun_info.inline_types),
+        ]
+        .concat()
+    })
+}
+
+// TODO I think we can get rid of these two functions with a little work
 fn collect_inline_dependencies_from_list(
-    rust_types: &Vec<RustType>,
+    rust_types: &Vec<ActNode>,
 ) -> Vec<proc_macro2::TokenStream> {
     rust_types.iter().fold(vec![], |acc, rust_type| {
         vec![acc, collect_inline_dependencies_rust_type(rust_type)].concat()
     })
 }
 
-fn collect_inline_dependencies_rust_type(rust_type: &RustType) -> Vec<proc_macro2::TokenStream> {
-    let rust_type_structure = match rust_type.get_structure() {
+fn collect_inline_dependencies_rust_type(rust_type: &ActNode) -> Vec<proc_macro2::TokenStream> {
+    let rust_type_structure = match rust_type.get_definition() {
         Some(structure) => structure,
         None => quote!(),
     };

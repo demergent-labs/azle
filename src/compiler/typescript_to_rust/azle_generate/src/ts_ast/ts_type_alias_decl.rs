@@ -1,14 +1,24 @@
+use super::{ident, ts_method_signature, ts_type, ts_types_to_act};
+use crate::cdk_act::{Actable, SystemStructureType};
+use quote::format_ident;
 use std::{
     collections::{HashMap, HashSet},
     iter::FromIterator,
 };
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use super::{ident, ts_method_signature, ts_type};
-use crate::azle_act::SystemStructureType;
-
 pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
     decl.id.sym.chars().as_str().to_string()
+}
+
+impl Actable for TsTypeAliasDecl {
+    fn to_act_node(&self) -> crate::cdk_act::ActNode {
+        let ts_type_name = ast_type_alias_decl_to_string(self);
+        let ts_type_alias_ident = format_ident!("{}", ts_type_name);
+
+        let ts_type = *self.type_ann.clone();
+        ts_types_to_act::ts_type_to_act_node(&ts_type, &Some(&ts_type_alias_ident))
+    }
 }
 
 pub fn get_ast_canister_type_alias_decls(
@@ -37,45 +47,39 @@ pub fn get_ast_type_alias_decls_by_type_ref_name(
         .collect()
 }
 
-pub fn get_ast_other_type_alias_decls(
+pub fn is_complex_type(ts_type_alias_decl: &TsTypeAliasDecl) -> bool {
+    !(!ts_type_alias_decl.type_ann.is_ts_type_lit()
+        && !ts_type_alias_decl.type_ann.is_ts_tuple_type()
+        && (!ts_type_alias_decl.type_ann.is_ts_type_ref()
+            || (ts_type_alias_decl.type_ann.is_ts_type_ref()
+                && match ts_type_alias_decl.type_ann.as_ts_type_ref() {
+                    Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
+                        Some(ident) => {
+                            let name = ident.sym.chars().as_str();
+                            name != "Func" && name != "Variant" && name != "Canister"
+                        }
+                        None => true,
+                    },
+                    None => true,
+                })))
+}
+
+pub fn get_ast_type_alias_decls(type_alias_decls: &Vec<TsTypeAliasDecl>) -> Vec<TsTypeAliasDecl> {
+    type_alias_decls
+        .clone()
+        .into_iter()
+        .filter(|ts_type_alias_decl| !is_complex_type(ts_type_alias_decl))
+        .collect()
+}
+
+pub fn get_ast_complex_type_alias_decls(
     type_alias_decls: &Vec<TsTypeAliasDecl>,
 ) -> Vec<TsTypeAliasDecl> {
     type_alias_decls
         .clone()
         .into_iter()
-        .filter(|ts_type_alias_decl| {
-            !ts_type_alias_decl.type_ann.is_ts_type_lit()
-                && !ts_type_alias_decl.type_ann.is_ts_tuple_type()
-                && (!ts_type_alias_decl.type_ann.is_ts_type_ref()
-                    || (ts_type_alias_decl.type_ann.is_ts_type_ref()
-                        && match ts_type_alias_decl.type_ann.as_ts_type_ref() {
-                            Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
-                                Some(ident) => {
-                                    let name = ident.sym.chars().as_str();
-                                    name != "Func" && name != "Variant" && name != "Canister"
-                                }
-                                None => true,
-                            },
-                            None => true,
-                        }))
-        })
+        .filter(|ts_type_alias_decl| is_complex_type(ts_type_alias_decl))
         .collect()
-}
-
-pub fn get_ast_record_type_alias_decls(
-    type_alias_decls: &Vec<TsTypeAliasDecl>,
-) -> Vec<TsTypeAliasDecl> {
-    type_alias_decls
-        .clone()
-        .into_iter()
-        .filter(|ts_type_alias_decl| ts_type_alias_decl.type_ann.is_ts_type_lit())
-        .collect()
-}
-
-pub fn get_ast_variant_type_alias_decls(
-    type_alias_decls: &Vec<TsTypeAliasDecl>,
-) -> Vec<TsTypeAliasDecl> {
-    get_ast_type_alias_decls_by_type_ref_name(type_alias_decls, "Variant")
 }
 
 pub fn get_dependent_types_from_type_alias_decl(
@@ -107,7 +111,7 @@ pub fn get_dependent_types_from_canister_decls(
         })
 }
 
-pub fn generate_hash_map(
+pub fn generate_type_alias_lookup(
     ast_type_alias_decls: &Vec<TsTypeAliasDecl>,
 ) -> HashMap<String, TsTypeAliasDecl> {
     ast_type_alias_decls
@@ -146,7 +150,7 @@ fn get_dependent_types_from_canister_decl(
     possible_dependencies: &Vec<TsTypeAliasDecl>,
     found_types: &HashSet<String>,
 ) -> HashSet<String> {
-    let type_alias_lookup = generate_hash_map(possible_dependencies);
+    let type_alias_lookup = generate_type_alias_lookup(possible_dependencies);
 
     // Verify that it is a canister
     let is_canister = canister_decl.type_ann.is_ts_type_ref()
