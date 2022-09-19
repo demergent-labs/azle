@@ -1,20 +1,19 @@
 use quote::quote;
 use swc_ecma_ast::FnDecl;
 
-use crate::cdk_act::CanisterMethod;
-
 use super::functions;
+use crate::cdk_act::{CanisterMethod, CanisterMethodActNode};
 
-pub fn generate_query_function_infos(ast_fnc_decls_query: &Vec<FnDecl>) -> Vec<CanisterMethod> {
+pub fn build_query_methods(ast_fnc_decls_query: &Vec<FnDecl>) -> Vec<CanisterMethodActNode> {
     ast_fnc_decls_query
         .iter()
         .fold(vec![], |acc, ast_fnc_decl_query| {
-            let function_token_stream = generate_query_function_info(ast_fnc_decl_query);
-            vec![acc, vec![function_token_stream]].concat()
+            let query_method = build_query_method(ast_fnc_decl_query);
+            vec![acc, vec![query_method]].concat()
         })
 }
 
-fn generate_query_function_info(ast_fnc_decl_query: &FnDecl) -> CanisterMethod {
+fn build_query_method(ast_fnc_decl_query: &FnDecl) -> CanisterMethodActNode {
     let function_info = functions::generate_canister_method_node(ast_fnc_decl_query);
     let function_signature_stream = function_info.canister_method;
 
@@ -30,8 +29,8 @@ fn generate_query_function_info(ast_fnc_decl_query: &FnDecl) -> CanisterMethod {
         #function_signature_stream
     };
 
-    CanisterMethod {
+    CanisterMethodActNode::QueryMethod(CanisterMethod {
         canister_method: token_stream,
         ..function_info
-    }
+    })
 }
