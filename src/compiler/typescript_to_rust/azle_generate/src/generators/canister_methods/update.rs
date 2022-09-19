@@ -1,20 +1,19 @@
 use quote::quote;
 use swc_ecma_ast::FnDecl;
 
-use crate::cdk_act::CanisterMethod;
-
 use super::functions;
+use crate::cdk_act::{CanisterMethod, CanisterMethodActNode};
 
-pub fn generate_update_function_infos(ast_fnc_decls_update: &Vec<FnDecl>) -> Vec<CanisterMethod> {
+pub fn build_update_methods(ast_fnc_decls_update: &Vec<FnDecl>) -> Vec<CanisterMethodActNode> {
     ast_fnc_decls_update
         .iter()
         .fold(vec![], |acc, ast_fnc_decl_update| {
-            let func_token_stream = generate_update_function_token_stream(ast_fnc_decl_update);
-            vec![acc, vec![func_token_stream]].concat()
+            let update_method = build_update_method(ast_fnc_decl_update);
+            vec![acc, vec![update_method]].concat()
         })
 }
 
-fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl) -> CanisterMethod {
+fn build_update_method(ast_fnc_decl_update: &FnDecl) -> CanisterMethodActNode {
     let function_info = functions::generate_canister_method_node(ast_fnc_decl_update);
     let function_token_stream = function_info.canister_method;
 
@@ -30,8 +29,8 @@ fn generate_update_function_token_stream(ast_fnc_decl_update: &FnDecl) -> Canist
         #function_token_stream
     };
 
-    CanisterMethod {
+    CanisterMethodActNode::UpdateMethod(CanisterMethod {
         canister_method: token_stream,
         ..function_info
-    }
+    })
 }

@@ -3,8 +3,7 @@ use std::collections::HashSet;
 
 use crate::{
     cdk_act::{
-        self, act_data_type_node, generators::ic_object::functions, AbstractCanisterTree,
-        ActDataTypeNode, CanisterMethod, CanisterMethodType, ToAct,
+        self, act_data_type_node, AbstractCanisterTree, ActDataTypeNode, CanisterMethodType, ToAct,
     },
     generators::{
         azle_into_js_value, azle_try_from_js_value,
@@ -65,27 +64,16 @@ impl ToAct for TsProgramBundle {
             .cloned()
             .collect();
 
-        let query_canister_methods =
-            canister_methods::query::generate_query_function_infos(&ast_fnc_decls_query);
-        let query_function_streams: Vec<proc_macro2::TokenStream> = query_canister_methods
-            .iter()
-            .map(|fun_info| fun_info.canister_method.clone())
-            .collect();
-
-        let update_canister_methods =
-            canister_methods::update::generate_update_function_infos(&ast_fnc_decls_update);
-        let update_function_streams: Vec<proc_macro2::TokenStream> = update_canister_methods
-            .iter()
-            .map(|fun_info| fun_info.canister_method.clone())
-            .collect();
+        let query_methods = canister_methods::query::build_query_methods(&ast_fnc_decls_query);
+        let update_methods = canister_methods::update::build_update_methods(&ast_fnc_decls_update);
 
         let query_method_inline_acts =
-            cdk_act::canister_method::build_inline_types_from_canister_method_acts(
-                &query_canister_methods,
+            cdk_act::nodes::canister_method::build_inline_types_from_canister_method_acts(
+                &query_methods,
             );
         let update_method_inline_acts =
-            cdk_act::canister_method::build_inline_types_from_canister_method_acts(
-                &update_canister_methods,
+            cdk_act::nodes::canister_method::build_inline_types_from_canister_method_acts(
+                &update_methods,
             );
 
         let type_alias_acts =
@@ -185,11 +173,6 @@ impl ToAct for TsProgramBundle {
             .map(|act| act.clone())
             .collect();
 
-        let query_and_update_canister_methods: Vec<CanisterMethod> =
-            vec![query_canister_methods, update_canister_methods].concat();
-        let ic_object_functions =
-            functions::generate_ic_object_functions(&query_and_update_canister_methods);
-
         let canister_method_system_heartbeat =
             heartbeat::generate_canister_method_system_heartbeat(&self.programs);
         let canister_method_system_init =
@@ -214,6 +197,8 @@ impl ToAct for TsProgramBundle {
         // TODO Some of the things in this quote belong inside of the quote in AbstractCanisterTree
 
         AbstractCanisterTree {
+            update_methods,
+            query_methods,
             rust_code: quote! {
                 #canister_method_system_init
                 #canister_method_system_pre_upgrade
@@ -221,16 +206,12 @@ impl ToAct for TsProgramBundle {
                 #canister_method_system_heartbeat
                 #canister_method_system_inspect_message
 
-                #ic_object_functions
-
                 #cross_canister_call_functions
 
                 #async_result_handler
                 #get_top_level_call_frame_fn
 
                 #func_arg_token
-                #(#query_function_streams)*
-                #(#update_function_streams)*
 
                 #azle_into_js_value
                 #azle_try_from_js_value
