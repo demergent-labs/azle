@@ -14,7 +14,7 @@ pub fn build_query_methods(ast_fnc_decls_query: &Vec<FnDecl>) -> Vec<CanisterMet
 }
 
 fn build_query_method(ast_fnc_decl_query: &FnDecl) -> CanisterMethodActNode {
-    let function_info = functions::generate_canister_method_node(ast_fnc_decl_query);
+    let function_info = functions::build_canister_method(ast_fnc_decl_query);
     let function_signature_stream = function_info.canister_method;
 
     let manual_reply_arg = if function_info.is_manual {

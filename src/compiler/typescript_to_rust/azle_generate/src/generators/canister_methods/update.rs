@@ -14,7 +14,7 @@ pub fn build_update_methods(ast_fnc_decls_update: &Vec<FnDecl>) -> Vec<CanisterM
 }
 
 fn build_update_method(ast_fnc_decl_update: &FnDecl) -> CanisterMethodActNode {
-    let function_info = functions::generate_canister_method_node(ast_fnc_decl_update);
+    let function_info = functions::build_canister_method(ast_fnc_decl_update);
     let function_token_stream = function_info.canister_method;
 
     let manual_reply_arg = if function_info.is_manual {
