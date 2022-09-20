@@ -1,10 +1,10 @@
 use quote::quote;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use crate::{
     cdk_act::{
-        self, generators::ic_object::functions, AbstractCanisterTree, ActNode, CanisterMethod,
-        CanisterMethodType, ToAct,
+        self, act_data_type_node, generators::ic_object::functions, AbstractCanisterTree,
+        ActDataTypeNode, CanisterMethod, CanisterMethodType, ToAct,
     },
     generators::{
         azle_into_js_value, azle_try_from_js_value,
@@ -79,21 +79,98 @@ impl ToAct for TsProgramBundle {
             .map(|fun_info| fun_info.canister_method.clone())
             .collect();
 
-        let query_function_inline_dependant_types =
-            collect_inline_dependencies(&query_canister_methods);
-        let update_function_inline_dependant_types =
-            collect_inline_dependencies(&update_canister_methods);
-        // TODO it would be great to add the inline_types we found from doing the type aliases while we are at it
-        let function_inline_records = vec![
-            query_function_inline_dependant_types,
-            update_function_inline_dependant_types,
-        ]
-        .concat();
+        let query_method_inline_acts =
+            cdk_act::canister_method::build_inline_types_from_canister_method_acts(
+                &query_canister_methods,
+            );
+        let update_method_inline_acts =
+            cdk_act::canister_method::build_inline_types_from_canister_method_acts(
+                &update_canister_methods,
+            );
 
         let type_alias_acts =
-            type_aliases::generate_type_alias_acts(&dependencies, &ast_type_alias_decls);
-        let type_alias_token_streams =
-            type_aliases::generate_type_definition_token_streams(&type_alias_acts);
+            type_aliases::build_type_alias_acts(&dependencies, &ast_type_alias_decls);
+
+        let type_alias_inline_acts =
+            act_data_type_node::build_inline_types_from_type_alias_acts(&type_alias_acts);
+
+        let all_inline_acts = vec![
+            type_alias_inline_acts,
+            query_method_inline_acts,
+            update_method_inline_acts,
+        ]
+        .concat();
+        let all_inline_acts = act_data_type_node::deduplicate(all_inline_acts);
+
+        let all_type_acts = vec![type_alias_acts, all_inline_acts].concat();
+
+        let aliases: Vec<ActDataTypeNode> = all_type_acts
+            .iter()
+            .filter(|act| match act {
+                ActDataTypeNode::TypeAlias(_) => true,
+                _ => false,
+            })
+            .map(|act| act.clone())
+            .collect();
+        let arrays: Vec<ActDataTypeNode> = all_type_acts
+            .iter()
+            .filter(|act| match act {
+                ActDataTypeNode::Array(_) => true,
+                _ => false,
+            })
+            .map(|act| act.clone())
+            .collect();
+        let funcs: Vec<ActDataTypeNode> = all_type_acts
+            .iter()
+            .filter(|act| match act {
+                ActDataTypeNode::Func(_) => true,
+                _ => false,
+            })
+            .map(|act| act.clone())
+            .collect();
+        let options: Vec<ActDataTypeNode> = all_type_acts
+            .iter()
+            .filter(|act| match act {
+                ActDataTypeNode::Option(_) => true,
+                _ => false,
+            })
+            .map(|act| act.clone())
+            .collect();
+        let primitives: Vec<ActDataTypeNode> = all_type_acts
+            .iter()
+            .filter(|act| match act {
+                ActDataTypeNode::Primitive(_) => true,
+                ActDataTypeNode::CustomType(_) => {
+                    todo!("Figure out if this actually happens at this point.")
+                }
+                _ => false,
+            })
+            .map(|act| act.clone())
+            .collect();
+        let records: Vec<ActDataTypeNode> = all_type_acts
+            .iter()
+            .filter(|act| match act {
+                ActDataTypeNode::Record(_) => true,
+                _ => false,
+            })
+            .map(|act| act.clone())
+            .collect();
+        let tuples: Vec<ActDataTypeNode> = all_type_acts
+            .iter()
+            .filter(|act| match act {
+                ActDataTypeNode::Tuple(_) => true,
+                _ => false,
+            })
+            .map(|act| act.clone())
+            .collect();
+        let variants: Vec<ActDataTypeNode> = all_type_acts
+            .iter()
+            .filter(|act| match act {
+                ActDataTypeNode::Variant(_) => true,
+                _ => false,
+            })
+            .map(|act| act.clone())
+            .collect();
 
         let query_and_update_canister_methods: Vec<CanisterMethod> =
             vec![query_canister_methods, update_canister_methods].concat();
@@ -139,8 +216,6 @@ impl ToAct for TsProgramBundle {
                 #get_top_level_call_frame_fn
 
                 #func_arg_token
-                #(#function_inline_records)*
-                #(#type_alias_token_streams)*
                 #(#query_function_streams)*
                 #(#update_function_streams)*
 
@@ -148,39 +223,14 @@ impl ToAct for TsProgramBundle {
                 #azle_try_from_js_value
 
             },
+            aliases,
+            arrays,
+            funcs,
+            options,
+            primitives,
+            records,
+            tuples,
+            variants,
         }
     }
-}
-
-fn collect_inline_dependencies(
-    function_info: &Vec<cdk_act::CanisterMethod>,
-) -> Vec<proc_macro2::TokenStream> {
-    function_info.iter().fold(vec![], |acc, fun_info| {
-        vec![
-            acc,
-            collect_inline_dependencies_from_list(&*fun_info.inline_types),
-        ]
-        .concat()
-    })
-}
-
-// TODO I think we can get rid of these two functions with a little work
-fn collect_inline_dependencies_from_list(
-    rust_types: &Vec<ActNode>,
-) -> Vec<proc_macro2::TokenStream> {
-    rust_types.iter().fold(vec![], |acc, rust_type| {
-        vec![acc, collect_inline_dependencies_rust_type(rust_type)].concat()
-    })
-}
-
-fn collect_inline_dependencies_rust_type(rust_type: &ActNode) -> Vec<proc_macro2::TokenStream> {
-    let rust_type_structure = match rust_type.get_definition() {
-        Some(structure) => structure,
-        None => quote!(),
-    };
-    let member_structures = rust_type.get_inline_members();
-    let member_structures = member_structures.iter().fold(vec![], |acc, member| {
-        vec![acc, collect_inline_dependencies_rust_type(member)].concat()
-    });
-    vec![vec![rust_type_structure], member_structures].concat()
 }
