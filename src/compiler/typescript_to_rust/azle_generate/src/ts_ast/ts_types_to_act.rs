@@ -7,8 +7,8 @@ use swc_ecma_ast::{
 
 use crate::generators::funcs;
 
-use crate::cdk_act::act_node::{
-    ActNode, ArrayTypeInfo, EnumInfo, FuncInfo, OptionInfo, PrimitiveInfo, StructInfo, TupleInfo,
+use crate::cdk_act::act_data_type_node::{
+    ActDataTypeNode, EnumInfo, FuncInfo, GenericTypeInfo, PrimitiveInfo, StructInfo, TupleInfo,
     TypeAliasInfo,
 };
 
@@ -51,16 +51,16 @@ fn generate_inline_ident_for_tuple(ts_type_ref: &TsTupleType) -> Ident {
     format_ident!("AzleInlineTuple_{}", id)
 }
 
-pub fn ts_type_to_act_node(ts_type: &TsType, name: &Option<&Ident>) -> ActNode {
+pub fn ts_type_to_act_node(ts_type: &TsType, name: &Option<&Ident>) -> ActDataTypeNode {
     let rust_type = match ts_type {
         TsType::TsKeywordType(ts_keyword_type) => parse_ts_keyword_type(ts_keyword_type, name),
         TsType::TsTypeRef(ts_type_ref) => parse_ts_type_ref(ts_type_ref, name),
         TsType::TsArrayType(ts_array_type) => parse_ts_array_type(ts_array_type, name),
         TsType::TsTypeLit(ts_type_lit) => {
-            ActNode::Record(parse_ts_type_lit_as_struct(name, ts_type_lit))
+            ActDataTypeNode::Record(parse_ts_type_lit_as_struct(name, ts_type_lit))
         }
         TsType::TsTupleType(ts_tuple_type) => {
-            ActNode::Tuple(parse_ts_tuple_type(ts_tuple_type, name))
+            ActDataTypeNode::Tuple(parse_ts_tuple_type(ts_tuple_type, name))
         }
         TsType::TsThisType(_) => todo!("ts_type_to_rust_type for TsThisType"),
         TsType::TsFnOrConstructorType(_) => {
@@ -109,7 +109,7 @@ fn parse_ts_tuple_type(ts_tuple_type: &TsTupleType, name: &Option<&Ident>) -> Tu
         );
     );
 
-    let inline_members: Vec<ActNode> = elem_types
+    let inline_members: Vec<ActDataTypeNode> = elem_types
         .iter()
         .filter(|elem_type| elem_type.is_inline_rust_type())
         .cloned()
@@ -123,7 +123,7 @@ fn parse_ts_tuple_type(ts_tuple_type: &TsTupleType, name: &Option<&Ident>) -> Tu
     }
 }
 
-fn get_elem_types(ts_tuple_type: &TsTupleType) -> Vec<ActNode> {
+fn get_elem_types(ts_tuple_type: &TsTupleType) -> Vec<ActDataTypeNode> {
     ts_tuple_type
         .elem_types
         .iter()
@@ -131,7 +131,10 @@ fn get_elem_types(ts_tuple_type: &TsTupleType) -> Vec<ActNode> {
         .collect()
 }
 
-fn parse_ts_keyword_type(ts_keyword_type: &TsKeywordType, name: &Option<&Ident>) -> ActNode {
+fn parse_ts_keyword_type(
+    ts_keyword_type: &TsKeywordType,
+    name: &Option<&Ident>,
+) -> ActDataTypeNode {
     let kind = ts_keyword_type.kind;
     let token_stream = match &kind {
         TsKeywordTypeKind::TsBooleanKeyword => quote!(bool),
@@ -155,35 +158,34 @@ fn parse_ts_keyword_type(ts_keyword_type: &TsKeywordType, name: &Option<&Ident>)
     build_act_primitive_type_node(token_stream, name)
 }
 
-fn build_act_primitive_type_node(token_stream: TokenStream, name: &Option<&Ident>) -> ActNode {
+fn build_act_primitive_type_node(
+    token_stream: TokenStream,
+    name: &Option<&Ident>,
+) -> ActDataTypeNode {
     match name {
-        Some(_) => ActNode::TypeAlias(TypeAliasInfo {
+        Some(_) => ActDataTypeNode::TypeAlias(TypeAliasInfo {
             identifier: quote!(#name),
             definition: quote!(type #name = #token_stream;),
-            is_inline: true,
-            inline_members: Box::from(vec![]),
         }),
-        None => ActNode::Primitive(PrimitiveInfo {
+        None => ActDataTypeNode::Primitive(PrimitiveInfo {
             identifier: token_stream,
         }),
     }
 }
 
-fn build_act_custom_type_node(token_stream: TokenStream, name: &Option<&Ident>) -> ActNode {
+fn build_act_custom_type_node(token_stream: TokenStream, name: &Option<&Ident>) -> ActDataTypeNode {
     match name {
-        Some(_) => ActNode::TypeAlias(TypeAliasInfo {
+        Some(_) => ActDataTypeNode::TypeAlias(TypeAliasInfo {
             identifier: quote!(#name),
             definition: quote!(type #name = #token_stream;),
-            is_inline: true,
-            inline_members: Box::from(vec![]),
         }),
-        None => ActNode::CustomType(PrimitiveInfo {
+        None => ActDataTypeNode::CustomType(PrimitiveInfo {
             identifier: token_stream,
         }),
     }
 }
 
-fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActNode {
+fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActDataTypeNode {
     let type_name = ts_type_ref
         .type_name
         .as_ident()
@@ -224,7 +226,7 @@ fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActNode 
  * for the array type info is fine because we will never see the elem type info
  * otherwise. I am also currently assuming that the only way we have an enclosed type that needs to be
  */
-fn parse_ts_array_type(ts_array_type: &TsArrayType, name: &Option<&Ident>) -> ActNode {
+fn parse_ts_array_type(ts_array_type: &TsArrayType, name: &Option<&Ident>) -> ActDataTypeNode {
     let elem_type = *ts_array_type.elem_type.clone();
     let elem_rust_type = ts_type_to_act_node(&elem_type, &None);
     let elem_type_ident = elem_rust_type.get_type_ident();
@@ -236,14 +238,14 @@ fn parse_ts_array_type(ts_array_type: &TsArrayType, name: &Option<&Ident>) -> Ac
     let token_stream = quote! {Vec<#elem_type_ident>};
     match name {
         Some(_) => build_act_custom_type_node(token_stream, name),
-        None => ActNode::Array(ArrayTypeInfo {
+        None => ActDataTypeNode::Array(GenericTypeInfo {
             identifier: token_stream,
             enclosed_inline_type: Box::from(inline_enclosed_type),
         }),
     }
 }
 
-fn parse_opt_type_ref(ts_type_ref: &TsTypeRef) -> ActNode {
+fn parse_opt_type_ref(ts_type_ref: &TsTypeRef) -> ActDataTypeNode {
     let type_params = ts_type_ref.type_params.clone();
     match type_params {
         Some(params) => {
@@ -256,7 +258,7 @@ fn parse_opt_type_ref(ts_type_ref: &TsTypeRef) -> ActNode {
             } else {
                 None
             };
-            ActNode::Option(OptionInfo {
+            ActDataTypeNode::Option(GenericTypeInfo {
                 identifier: quote!(Option<#enclosed_rust_ident>),
                 enclosed_inline_type: Box::from(inline_enclosed_type),
             })
@@ -265,7 +267,7 @@ fn parse_opt_type_ref(ts_type_ref: &TsTypeRef) -> ActNode {
     }
 }
 
-fn parse_func_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActNode {
+fn parse_func_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActDataTypeNode {
     let inline_ident = generate_inline_ident_for_func(ts_type_ref);
     let type_ident = match name {
         Some(type_ident) => type_ident,
@@ -284,7 +286,7 @@ fn parse_func_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActNod
     let return_type = parse_func_return_type(ts_type);
     let param_types = parse_func_param_types(ts_type);
     let types = vec![vec![return_type], param_types].concat();
-    let inline_members: Vec<ActNode> = types
+    let inline_members: Vec<ActDataTypeNode> = types
         .iter()
         .filter(|rust_type| rust_type.is_inline_rust_type())
         .cloned()
@@ -296,11 +298,11 @@ fn parse_func_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActNod
         is_inline: name.is_none(),
         inline_members: Box::from(inline_members),
     };
-    ActNode::Func(func_info)
+    ActDataTypeNode::Func(func_info)
 }
 
 // Same comment as parse_func_param_types
-fn parse_func_return_type(ts_type: &TsFnType) -> ActNode {
+fn parse_func_return_type(ts_type: &TsFnType) -> ActDataTypeNode {
     // This feels a little weird to ignore the query update and oneway of theses fun return types, but for right now I just need the inline goodies
     match &*ts_type.type_ann.type_ann {
         TsType::TsTypeRef(type_reference) => match &type_reference.type_params {
@@ -323,7 +325,7 @@ fn parse_func_return_type(ts_type: &TsFnType) -> ActNode {
                     .as_str()
                     == "Oneway"
                 {
-                    ActNode::Primitive(PrimitiveInfo {
+                    ActDataTypeNode::Primitive(PrimitiveInfo {
                         identifier: quote!(),
                     })
                 } else {
@@ -337,7 +339,7 @@ fn parse_func_return_type(ts_type: &TsFnType) -> ActNode {
 
 // TODO can we merge this with funcs.rs's get_param_types? Or have that function use
 // This one and then grab the info out for the token streams?
-fn parse_func_param_types(ts_type: &TsFnType) -> Vec<ActNode> {
+fn parse_func_param_types(ts_type: &TsFnType) -> Vec<ActDataTypeNode> {
     ts_type
         .params
         .iter()
@@ -354,10 +356,10 @@ fn parse_func_param_types(ts_type: &TsFnType) -> Vec<ActNode> {
         .collect()
 }
 
-fn parse_variant_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActNode {
+fn parse_variant_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActDataTypeNode {
     let enclosed_type = &*ts_type_ref.type_params.as_ref().unwrap().params[0];
     let enclosed_type_lit = enclosed_type.as_ts_type_lit().unwrap();
-    ActNode::Variant(parse_ts_type_lit_as_enum(name, &enclosed_type_lit))
+    ActDataTypeNode::Variant(parse_ts_type_lit_as_enum(name, &enclosed_type_lit))
 }
 
 fn parse_ts_type_lit_as_enum(ts_type_ident: &Option<&Ident>, ts_type_lit: &TsTypeLit) -> EnumInfo {
@@ -367,13 +369,13 @@ fn parse_ts_type_lit_as_enum(ts_type_ident: &Option<&Ident>, ts_type_lit: &TsTyp
         Some(type_ident) => type_ident,
         None => &inline_ident,
     };
-    let members: Vec<(TokenStream, Option<ActNode>)> =
+    let members: Vec<(TokenStream, Option<ActDataTypeNode>)> =
         ts_type_lit.members.iter().fold(vec![], |acc, member| {
             let (result, inline_deps) = parse_type_literal_members_for_enum(member);
             vec![acc, vec![(result, inline_deps)]].concat()
         });
     let field_token_streams = members.iter().map(|(field, _)| field.clone());
-    let inline_dependencies: Vec<ActNode> =
+    let inline_dependencies: Vec<ActDataTypeNode> =
         members
             .iter()
             .fold(vec![], |acc, (_, inline_deps)| match inline_deps {
@@ -404,13 +406,13 @@ fn parse_ts_type_lit_as_struct(
         Some(type_ident) => type_ident,
         None => &inline_ident,
     };
-    let fields: Vec<(TokenStream, Option<ActNode>)> =
+    let fields: Vec<(TokenStream, Option<ActDataTypeNode>)> =
         ts_type_lit.members.iter().fold(vec![], |acc, member| {
             let (structures, inline_deps) = parse_type_literal_fields(member);
             vec![acc, vec![(structures, inline_deps)]].concat()
         });
     let field_token_streams = fields.iter().map(|(field, _)| field.clone());
-    let inline_dependencies: Vec<ActNode> =
+    let inline_dependencies: Vec<ActDataTypeNode> =
         fields
             .iter()
             .fold(vec![], |acc, (_, inline_deps)| match &inline_deps {
@@ -433,7 +435,7 @@ fn parse_ts_type_lit_as_struct(
     result
 }
 
-fn parse_type_literal_fields(member: &TsTypeElement) -> (TokenStream, Option<ActNode>) {
+fn parse_type_literal_fields(member: &TsTypeElement) -> (TokenStream, Option<ActDataTypeNode>) {
     match member.as_ts_property_signature() {
         Some(prop_sig) => {
             let member_name = parse_type_literal_member_name(prop_sig);
@@ -462,19 +464,21 @@ fn parse_type_literal_member_name(prop_sig: &TsPropertySignature) -> Ident {
     format_ident!("{}", prop_sig.key.as_ident().unwrap().sym.chars().as_str())
 }
 
-pub fn parse_type_literal_member_type(prop_sig: &TsPropertySignature) -> ActNode {
+pub fn parse_type_literal_member_type(prop_sig: &TsPropertySignature) -> ActDataTypeNode {
     let type_ann = prop_sig.type_ann.clone().unwrap();
     let ts_type = *type_ann.type_ann.clone();
     ts_type_to_act_node(&ts_type, &None)
 }
 
-fn parse_type_literal_members_for_enum(member: &TsTypeElement) -> (TokenStream, Option<ActNode>) {
+fn parse_type_literal_members_for_enum(
+    member: &TsTypeElement,
+) -> (TokenStream, Option<ActDataTypeNode>) {
     match member.as_ts_property_signature() {
         Some(prop_sig) => {
             let member_name = parse_type_literal_member_name(prop_sig);
             let member_type = parse_type_literal_member_type(prop_sig);
             let member_type_token_stream = match member_type.clone() {
-                ActNode::Primitive(keyword_type_info) => {
+                ActDataTypeNode::Primitive(keyword_type_info) => {
                     if keyword_type_info.identifier.to_string() == quote!((())).to_string() {
                         quote!()
                     } else {

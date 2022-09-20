@@ -1,8 +1,7 @@
 use crate::{
-    cdk_act::{ActNode, Actable},
+    cdk_act::{ActDataTypeNode, Actable},
     ts_ast::ts_type_alias_decl,
 };
-use proc_macro2::TokenStream;
 use std::collections::HashSet;
 use swc_ecma_ast::TsTypeAliasDecl;
 
@@ -10,10 +9,10 @@ use swc_ecma_ast::TsTypeAliasDecl;
  * Loops through all of the dependant types, finds the corresponding ts types in
  * the type aliases, converts them to a rust type, and convert those rust types to token streams
  */
-pub fn generate_type_alias_acts(
+pub fn build_type_alias_acts(
     type_names: &HashSet<String>,
     ast_type_alias_variant_decls: &Vec<TsTypeAliasDecl>,
-) -> Vec<ActNode> {
+) -> Vec<ActDataTypeNode> {
     let type_alias_lookup =
         ts_type_alias_decl::generate_type_alias_lookup(ast_type_alias_variant_decls);
 
@@ -27,10 +26,4 @@ pub fn generate_type_alias_acts(
         };
         vec![acc, vec![token_stream]].concat()
     })
-}
-
-pub fn generate_type_definition_token_streams(acts: &Vec<ActNode>) -> Vec<TokenStream> {
-    acts.iter()
-        .map(|act| act.to_type_definition_token_stream())
-        .collect()
 }

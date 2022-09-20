@@ -1,5 +1,5 @@
-use super::ActNode;
+use super::ActDataTypeNode;
 
 pub trait Actable {
-    fn to_act_node(&self) -> ActNode;
+    fn to_act_node(&self) -> ActDataTypeNode;
 }
