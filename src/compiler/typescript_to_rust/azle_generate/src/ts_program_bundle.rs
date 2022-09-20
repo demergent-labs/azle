@@ -1,5 +1,5 @@
 use quote::quote;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 use crate::{
     cdk_act::{
@@ -107,7 +107,14 @@ impl ToAct for TsProgramBundle {
         let aliases: Vec<ActDataTypeNode> = all_type_acts
             .iter()
             .filter(|act| match act {
-                ActDataTypeNode::TypeAlias(_) => true,
+                ActDataTypeNode::Primitive(primitive) => match primitive {
+                    act_data_type_node::Primitive::TypeAlias(_) => true,
+                    _ => false,
+                },
+                ActDataTypeNode::TypeRef(type_ref) => match type_ref {
+                    act_data_type_node::TypeRef::TypeAlias(_) => true,
+                    _ => false,
+                },
                 _ => false,
             })
             .map(|act| act.clone())
@@ -139,10 +146,16 @@ impl ToAct for TsProgramBundle {
         let primitives: Vec<ActDataTypeNode> = all_type_acts
             .iter()
             .filter(|act| match act {
-                ActDataTypeNode::Primitive(_) => true,
-                ActDataTypeNode::CustomType(_) => {
-                    todo!("Figure out if this actually happens at this point.")
-                }
+                ActDataTypeNode::Primitive(primitive) => match primitive {
+                    act_data_type_node::Primitive::Literal(_) => todo!(),
+                    act_data_type_node::Primitive::TypeAlias(_) => false,
+                },
+                ActDataTypeNode::TypeRef(type_ref) => match type_ref {
+                    act_data_type_node::TypeRef::Literal(_) => {
+                        todo!("Figure out if this actually happens at this point.")
+                    }
+                    act_data_type_node::TypeRef::TypeAlias(_) => false,
+                },
                 _ => false,
             })
             .map(|act| act.clone())

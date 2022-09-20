@@ -8,8 +8,8 @@ use swc_ecma_ast::{
 use crate::generators::funcs;
 
 use crate::cdk_act::act_data_type_node::{
-    ActDataTypeNode, EnumInfo, FuncInfo, GenericTypeInfo, PrimitiveInfo, StructInfo, TupleInfo,
-    TypeAliasInfo,
+    ActDataTypeNode, AliasedType, EnumInfo, FuncInfo, GenericTypeInfo, Primitive, PrimitiveInfo,
+    PrimitiveType, StructInfo, TupleInfo, TypeAliasInfo, TypeRef,
 };
 
 use core::panic;
@@ -137,10 +137,10 @@ fn parse_ts_keyword_type(
 ) -> ActDataTypeNode {
     let kind = ts_keyword_type.kind;
     let token_stream = match &kind {
-        TsKeywordTypeKind::TsBooleanKeyword => quote!(bool),
-        TsKeywordTypeKind::TsStringKeyword => quote!(String),
-        TsKeywordTypeKind::TsVoidKeyword => quote! {()},
-        TsKeywordTypeKind::TsNullKeyword => quote! {(())},
+        TsKeywordTypeKind::TsBooleanKeyword => PrimitiveType::Bool,
+        TsKeywordTypeKind::TsStringKeyword => PrimitiveType::String,
+        TsKeywordTypeKind::TsVoidKeyword => PrimitiveType::Unit,
+        TsKeywordTypeKind::TsNullKeyword => PrimitiveType::Null,
         TsKeywordTypeKind::TsObjectKeyword => todo!("parse_ts_keyword_type for TsObjectKeyword"),
         TsKeywordTypeKind::TsNumberKeyword => todo!("parse_ts_keyword_type for TsNumberKeyword"),
         TsKeywordTypeKind::TsBigIntKeyword => todo!("parse_ts_keyword_type for TsBigIntKeyword"),
@@ -159,30 +159,30 @@ fn parse_ts_keyword_type(
 }
 
 fn build_act_primitive_type_node(
-    token_stream: TokenStream,
+    primitive_type: PrimitiveType,
     name: &Option<&Ident>,
 ) -> ActDataTypeNode {
-    match name {
-        Some(_) => ActDataTypeNode::TypeAlias(TypeAliasInfo {
-            identifier: quote!(#name),
-            definition: quote!(type #name = #token_stream;),
+    let primitive = match name {
+        None => Primitive::Literal(primitive_type),
+        Some(name) => Primitive::TypeAlias(TypeAliasInfo {
+            name: name.clone().clone(),
+            aliased_type: AliasedType::Primitive(primitive_type),
         }),
-        None => ActDataTypeNode::Primitive(PrimitiveInfo {
-            identifier: token_stream,
-        }),
-    }
+    };
+    ActDataTypeNode::Primitive(primitive)
 }
 
 fn build_act_custom_type_node(token_stream: TokenStream, name: &Option<&Ident>) -> ActDataTypeNode {
-    match name {
-        Some(_) => ActDataTypeNode::TypeAlias(TypeAliasInfo {
-            identifier: quote!(#name),
-            definition: quote!(type #name = #token_stream;),
-        }),
-        None => ActDataTypeNode::CustomType(PrimitiveInfo {
+    let type_ref = match name {
+        None => TypeRef::Literal(PrimitiveInfo {
             identifier: token_stream,
         }),
-    }
+        Some(name) => TypeRef::TypeAlias(TypeAliasInfo {
+            name: name.clone().clone(),
+            aliased_type: AliasedType::TypeRef(token_stream),
+        }),
+    };
+    ActDataTypeNode::TypeRef(type_ref)
 }
 
 fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActDataTypeNode {
@@ -194,22 +194,22 @@ fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&Ident>) -> ActDataT
         .chars()
         .as_str();
     match type_name {
-        "blob" => build_act_custom_type_node(quote!(Vec<u8>), name),
-        "float32" => build_act_primitive_type_node(quote!(f32), name),
-        "float64" => build_act_primitive_type_node(quote!(f64), name),
-        "int" => build_act_custom_type_node(quote!(candid::Int), name),
-        "int8" => build_act_primitive_type_node(quote!(i8), name),
-        "int16" => build_act_primitive_type_node(quote!(i16), name),
-        "int32" => build_act_primitive_type_node(quote!(i32), name),
-        "int64" => build_act_primitive_type_node(quote!(i64), name),
-        "nat" => build_act_custom_type_node(quote!(candid::Nat), name),
-        "nat8" => build_act_primitive_type_node(quote!(u8), name),
-        "nat16" => build_act_primitive_type_node(quote!(u16), name),
-        "nat32" => build_act_primitive_type_node(quote!(u32), name),
-        "nat64" => build_act_primitive_type_node(quote!(u64), name),
-        "Principal" => build_act_custom_type_node(quote!(candid::Principal), name),
-        "empty" => build_act_custom_type_node(quote!(candid::Empty), name),
-        "reserved" => build_act_custom_type_node(quote!(candid::Reserved), name),
+        "blob" => build_act_primitive_type_node(PrimitiveType::Blob, name),
+        "float32" => build_act_primitive_type_node(PrimitiveType::Float32, name),
+        "float64" => build_act_primitive_type_node(PrimitiveType::Float64, name),
+        "int" => build_act_primitive_type_node(PrimitiveType::Int, name),
+        "int8" => build_act_primitive_type_node(PrimitiveType::Int8, name),
+        "int16" => build_act_primitive_type_node(PrimitiveType::Int16, name),
+        "int32" => build_act_primitive_type_node(PrimitiveType::Int32, name),
+        "int64" => build_act_primitive_type_node(PrimitiveType::Int64, name),
+        "nat" => build_act_primitive_type_node(PrimitiveType::Nat, name),
+        "nat8" => build_act_primitive_type_node(PrimitiveType::Nat8, name),
+        "nat16" => build_act_primitive_type_node(PrimitiveType::Nat16, name),
+        "nat32" => build_act_primitive_type_node(PrimitiveType::Nat32, name),
+        "nat64" => build_act_primitive_type_node(PrimitiveType::Nat64, name),
+        "Principal" => build_act_primitive_type_node(PrimitiveType::Principal, name),
+        "empty" => build_act_primitive_type_node(PrimitiveType::Empty, name),
+        "reserved" => build_act_primitive_type_node(PrimitiveType::Reserved, name),
         "Opt" => parse_opt_type_ref(ts_type_ref),
         "Func" => parse_func_type_ref(ts_type_ref, name),
         "Variant" => parse_variant_type_ref(ts_type_ref, name),
@@ -325,9 +325,9 @@ fn parse_func_return_type(ts_type: &TsFnType) -> ActDataTypeNode {
                     .as_str()
                     == "Oneway"
                 {
-                    ActDataTypeNode::Primitive(PrimitiveInfo {
+                    ActDataTypeNode::TypeRef(TypeRef::Literal(PrimitiveInfo {
                         identifier: quote!(),
-                    })
+                    }))
                 } else {
                     panic!("Func must specify a return type")
                 }
@@ -430,6 +430,8 @@ fn parse_ts_type_lit_as_struct(
         identifier: quote!(#type_ident),
         is_inline: ts_type_ident.is_none(),
         inline_members: Box::from(inline_dependencies),
+        // name: type_ident.clone(),
+        // members: fields,
     };
 
     result
@@ -479,7 +481,7 @@ fn parse_type_literal_members_for_enum(
             let member_type = parse_type_literal_member_type(prop_sig);
             let member_type_token_stream = match member_type.clone() {
                 ActDataTypeNode::Primitive(keyword_type_info) => {
-                    if keyword_type_info.identifier.to_string() == quote!((())).to_string() {
+                    if member_type.get_type_ident().to_string() == quote!((())).to_string() {
                         quote!()
                     } else {
                         let member_type_token_stream = member_type.get_type_ident();
