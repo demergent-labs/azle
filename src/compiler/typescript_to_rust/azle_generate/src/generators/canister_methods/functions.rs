@@ -8,13 +8,16 @@ use quote::{format_ident, quote};
 use swc_ecma_ast::FnDecl;
 
 pub fn build_canister_method(ast_fnc_decl: &FnDecl) -> CanisterMethod {
-    let function_name = ts_ast::fn_decl::get_fn_decl_function_name(ast_fnc_decl);
-    let function_name_ident = format_ident!("{}", function_name);
+    let body =
+        generators::canister_methods::method_body::generate_canister_method_body(&ast_fnc_decl);
 
-    let manual = ts_ast::fn_decl::is_manual(ast_fnc_decl);
+    let param_names = generate_param_name_idents(&ast_fnc_decl);
+    let param_types = generate_param_types(&ast_fnc_decl);
+
+    let is_manual = ts_ast::fn_decl::is_manual(ast_fnc_decl);
+    let name = ts_ast::fn_decl::get_fn_decl_function_name(ast_fnc_decl);
 
     let return_type = generate_return_type(&ast_fnc_decl);
-    let return_type_token = return_type.get_type_ident();
 
     // TODO: This and the return type above should likely be combined somehow
     let possible_repeat_return_type_ast =
@@ -24,28 +27,7 @@ pub fn build_canister_method(ast_fnc_decl: &FnDecl) -> CanisterMethod {
         None => quote! {()},
     };
 
-    let wrapped_return_type = if manual {
-        quote! {
-            ic_cdk::api::call::ManualReply<#return_type_token>
-        }
-    } else {
-        return_type_token
-    };
-
-    let param_name_idents = generate_param_name_idents(&ast_fnc_decl);
-    let param_types = generate_param_types(&ast_fnc_decl);
-    let params = generate_params_token_stream(&param_name_idents, &param_types);
-
-    let canister_method_body =
-        generators::canister_methods::method_body::generate_canister_method_body(&ast_fnc_decl);
-
-    let function_token_stream = quote! {
-        async fn #function_name_ident(#(#params),*) -> #wrapped_return_type {
-            #canister_method_body
-        }
-    };
-
-    let inline_types = vec![param_types, vec![return_type]]
+    let inline_types = vec![param_types.clone(), vec![return_type.clone()]]
         .concat()
         .iter()
         .filter(|rust_type| rust_type.is_inline_rust_type())
@@ -55,11 +37,14 @@ pub fn build_canister_method(ast_fnc_decl: &FnDecl) -> CanisterMethod {
     let inline_types: Box<Vec<ActDataTypeNode>> = Box::from(inline_types);
 
     CanisterMethod {
-        canister_method: function_token_stream,
+        body,
+        param_names,
+        param_types,
         inline_types,
-        is_manual: manual,
-        name: function_name,
-        rust_return_type: rust_return_type,
+        is_manual,
+        name,
+        return_type,
+        rust_return_type,
     }
 }
 
