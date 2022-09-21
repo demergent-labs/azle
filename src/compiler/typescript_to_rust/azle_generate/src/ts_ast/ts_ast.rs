@@ -1,5 +1,8 @@
 use quote::quote;
 use std::collections::HashSet;
+use std::path::Path;
+use swc_common::{sync::Lrc, SourceMap};
+use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 use crate::{
     cdk_act::{
@@ -16,11 +19,40 @@ use crate::{
     ts_ast,
 };
 
-pub struct TsProgramBundle {
+pub struct TsAst {
     pub programs: Vec<swc_ecma_ast::Program>,
 }
 
-impl ToAct for TsProgramBundle {
+impl TsAst {
+    pub fn from_ts_file_names(ts_file_names: &Vec<&str>) -> Self {
+        let programs = ts_file_names
+            .iter()
+            .map(|ts_file_name| {
+                let filepath = Path::new(ts_file_name).to_path_buf();
+
+                let cm: Lrc<SourceMap> = Default::default();
+
+                let fm = cm.load_file(&filepath).unwrap();
+
+                let lexer = Lexer::new(
+                    Syntax::Typescript(TsConfig::default()),
+                    Default::default(),
+                    StringInput::from(&*fm),
+                    None,
+                );
+
+                let mut parser = Parser::new_from(lexer);
+
+                let program = parser.parse_program().unwrap();
+
+                program
+            })
+            .collect();
+        Self { programs }
+    }
+}
+
+impl ToAct for TsAst {
     fn to_act(&self) -> AbstractCanisterTree {
         // Collect AST Information
         let ast_type_alias_decls =

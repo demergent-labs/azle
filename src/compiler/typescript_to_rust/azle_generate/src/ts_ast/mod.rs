@@ -1,4 +1,7 @@
+pub use ts_ast::TsAst;
+
 mod ts_array_type;
+mod ts_ast;
 mod ts_fn_or_constructor_type;
 mod ts_fn_type;
 mod ts_method_signature;
