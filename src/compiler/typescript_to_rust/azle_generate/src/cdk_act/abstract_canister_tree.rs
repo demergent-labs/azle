@@ -3,7 +3,7 @@ use proc_macro2::TokenStream;
 use super::{
     generators::{candid_file_generation, ic_object::functions, random},
     nodes::CanisterMethodActNode,
-    ToTokenStream, ActDataTypeNode
+    ActDataTypeNode, ToTokenStream, ToTokenStreams,
 };
 
 /// An easily traversable representation of a rust canister
@@ -23,22 +23,14 @@ pub struct AbstractCanisterTree {
     pub variants: Vec<ActDataTypeNode>,
 }
 
-impl AbstractCanisterTree {
-    pub fn to_token_stream(&self) -> TokenStream {
+impl ToTokenStream for AbstractCanisterTree {
+    fn to_token_stream(&self) -> TokenStream {
         // TODO: This needs A LOT of work
         let randomness_implementation = random::generate_randomness_implementation();
 
         let user_defined_code = &self.rust_code;
-        let query_methods: Vec<TokenStream> = self
-            .query_methods
-            .iter()
-            .map(|query_method| query_method.to_token_stream())
-            .collect();
-        let update_methods: Vec<TokenStream> = self
-            .update_methods
-            .iter()
-            .map(|update_method| update_method.to_token_stream())
-            .collect();
+        let query_methods = self.query_methods.to_token_streams();
+        let update_methods = self.update_methods.to_token_streams();
 
         // TODO: Remove these clones
         let query_and_update_canister_methods: Vec<CanisterMethodActNode> =

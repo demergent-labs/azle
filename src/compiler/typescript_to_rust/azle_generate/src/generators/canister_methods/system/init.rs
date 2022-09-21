@@ -3,7 +3,7 @@ use quote::quote;
 use swc_ecma_ast::{FnDecl, Program};
 
 use crate::{
-    cdk_act::{generators::ic_object, CanisterMethodType, ToTokenStream},
+    cdk_act::{generators::ic_object, CanisterMethodType, ToTokenStreams},
     generators::canister_methods::{functions, method_body},
     ts_ast,
 };
@@ -56,10 +56,7 @@ pub fn generate_canister_method_system_init(programs: &Vec<Program>) -> TokenStr
 fn generate_init_params(init_fn_decl_option: &Option<&FnDecl>) -> Vec<TokenStream> {
     if let Some(init_fn_decl) = init_fn_decl_option {
         // TODO that params data structures can have the name, the type, and both strings and idents as necessary
-        functions::build_params(&init_fn_decl)
-            .iter()
-            .map(|param| param.to_token_stream())
-            .collect()
+        functions::build_params(&init_fn_decl).to_token_streams()
     } else {
         vec![]
     }

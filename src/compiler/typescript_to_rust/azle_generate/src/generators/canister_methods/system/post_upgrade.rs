@@ -2,7 +2,7 @@ use quote::quote;
 use swc_ecma_ast::{FnDecl, Program};
 
 use crate::{
-    cdk_act::{generators::ic_object, CanisterMethodType, ToTokenStream},
+    cdk_act::{generators::ic_object, CanisterMethodType, ToTokenStreams},
     generators::canister_methods::{functions, method_body},
     ts_ast,
 };
@@ -81,10 +81,7 @@ fn generate_post_upgrade_params(
 ) -> Vec<proc_macro2::TokenStream> {
     if let Some(post_upgrade_fn_decl) = post_upgrade_fn_decl_option {
         // TODO that params data structures can have the name, the type, and both strings and idents as necessary
-        functions::build_params(&post_upgrade_fn_decl)
-            .iter()
-            .map(|param| param.to_token_stream())
-            .collect()
+        functions::build_params(&post_upgrade_fn_decl).to_token_streams()
     } else {
         vec![]
     }

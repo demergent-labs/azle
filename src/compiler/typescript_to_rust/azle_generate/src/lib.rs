@@ -1,6 +1,10 @@
 use quote::quote;
 
-use crate::{cdk_act::ToAct, generators::header, ts_ast::TsAst};
+use crate::{
+    cdk_act::{ToAct, ToTokenStream},
+    generators::header,
+    ts_ast::TsAst,
+};
 
 mod cdk_act;
 mod ts_ast;
