@@ -1,6 +1,7 @@
-use proc_macro2::{Ident, TokenStream};
+use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
+use super::Param;
 use crate::cdk_act::{ActDataTypeNode, ToTokenStream};
 
 #[derive(Clone)]
@@ -13,9 +14,7 @@ pub enum CanisterMethodActNode {
 #[derive(Clone)]
 pub struct CanisterMethod {
     pub body: TokenStream,
-    // TODO: Combine param names and param types into a new ParamActNode or something
-    pub param_names: Vec<Ident>,
-    pub param_types: Vec<ActDataTypeNode>,
+    pub params: Vec<Param>,
     pub is_manual: bool,
     pub name: String,
     pub return_type: ActDataTypeNode,
@@ -119,22 +118,13 @@ impl CanisterMethodActNode {
     }
 }
 
-fn generate_params(names: &Vec<Ident>, types: &Vec<ActDataTypeNode>) -> Vec<TokenStream> {
-    names
-        .iter()
-        .enumerate()
-        .map(|(i, name)| {
-            let param_type_token_stream = types[i].get_type_ident();
-            quote! {
-                #name: #param_type_token_stream
-            }
-        })
-        .collect()
-}
-
 fn generate_function(canister_method: &CanisterMethod) -> TokenStream {
     let function_name = format_ident!("{}", canister_method.name);
-    let params = generate_params(&canister_method.param_names, &canister_method.param_types);
+    let params: Vec<TokenStream> = canister_method
+        .params
+        .iter()
+        .map(|param| param.to_token_stream())
+        .collect();
 
     let function_body = &canister_method.body;
 
@@ -156,7 +146,11 @@ fn generate_function(canister_method: &CanisterMethod) -> TokenStream {
 
 fn get_inline_types(canister_method: &CanisterMethod) -> Box<Vec<ActDataTypeNode>> {
     let inline_types = vec![
-        canister_method.param_types.clone(),
+        canister_method
+            .params
+            .iter()
+            .map(|param| param.data_type.clone())
+            .collect(),
         vec![canister_method.return_type.clone()],
     ]
     .concat()
