@@ -31,3 +31,13 @@ pub trait ToAct {
 pub trait ToTokenStream {
     fn to_token_stream(&self) -> proc_macro2::TokenStream;
 }
+
+pub trait ToTokenStreams {
+    fn to_token_streams(&self) -> Vec<proc_macro2::TokenStream>;
+}
+
+impl<T: ToTokenStream> ToTokenStreams for Vec<T> {
+    fn to_token_streams(&self) -> Vec<proc_macro2::TokenStream> {
+        self.iter().map(|t| t.to_token_stream()).collect()
+    }
+}

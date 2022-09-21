@@ -2,7 +2,7 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
 use super::Param;
-use crate::cdk_act::{ActDataTypeNode, ToTokenStream};
+use crate::cdk_act::{ActDataTypeNode, ToTokenStream, ToTokenStreams};
 
 #[derive(Clone)]
 pub enum CanisterMethodActNode {
@@ -120,11 +120,7 @@ impl CanisterMethodActNode {
 
 fn generate_function(canister_method: &CanisterMethod) -> TokenStream {
     let function_name = format_ident!("{}", canister_method.name);
-    let params: Vec<TokenStream> = canister_method
-        .params
-        .iter()
-        .map(|param| param.to_token_stream())
-        .collect();
+    let params = canister_method.params.to_token_streams();
 
     let function_body = &canister_method.body;
 
