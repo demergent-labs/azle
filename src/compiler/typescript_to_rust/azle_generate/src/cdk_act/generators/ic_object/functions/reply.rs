@@ -35,7 +35,7 @@ fn generate_match_arms(canister_methods: &Vec<CanisterMethodActNode>) -> Vec<Tok
 
 fn generate_match_arm(canister_method: &CanisterMethodActNode) -> TokenStream {
     let name = &canister_method.get_name();
-    let return_type = &canister_method.get_rust_return_type();
+    let return_type = &canister_method.get_return_type().get_type_ident();
     quote!(
         #name => {
             let reply_value: #return_type = _aargs.get(0).unwrap().clone().azle_try_from_js_value(_context).unwrap();

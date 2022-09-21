@@ -19,32 +19,13 @@ pub fn build_canister_method(ast_fnc_decl: &FnDecl) -> CanisterMethod {
 
     let return_type = generate_return_type(&ast_fnc_decl);
 
-    // TODO: This and the return type above should likely be combined somehow
-    let possible_repeat_return_type_ast =
-        ts_ast::fn_decl::get_canister_method_return_type(ast_fnc_decl);
-    let rust_return_type = match possible_repeat_return_type_ast {
-        Some(ts_type) => ts_types_to_act::ts_type_to_act_node(ts_type, &None).get_type_ident(),
-        None => quote! {()},
-    };
-
-    let inline_types = vec![param_types.clone(), vec![return_type.clone()]]
-        .concat()
-        .iter()
-        .filter(|rust_type| rust_type.is_inline_rust_type())
-        .fold(vec![], |acc, rust_type| {
-            vec![acc, vec![rust_type.clone()]].concat()
-        });
-    let inline_types: Box<Vec<ActDataTypeNode>> = Box::from(inline_types);
-
     CanisterMethod {
         body,
         param_names,
         param_types,
-        inline_types,
         is_manual,
         name,
         return_type,
-        rust_return_type,
     }
 }
 
