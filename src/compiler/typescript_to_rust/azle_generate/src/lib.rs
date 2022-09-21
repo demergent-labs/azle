@@ -1,14 +1,9 @@
 use quote::quote;
-use std::path::Path;
-use swc_common::{sync::Lrc, SourceMap};
-use swc_ecma_ast::Program;
-use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
-use crate::{cdk_act::ToAct, generators::header, ts_program_bundle::TsProgramBundle};
+use crate::{cdk_act::ToAct, generators::header, ts_ast::TsAst};
 
 mod cdk_act;
 mod ts_ast;
-mod ts_program_bundle;
 
 pub mod generators;
 
@@ -19,10 +14,9 @@ pub fn azle_generate(
 ) -> proc_macro2::token_stream::TokenStream {
     let header = header::generate_header_code();
 
-    let programs = get_programs(&ts_file_names);
-    let ts_program_bundle = TsProgramBundle { programs };
-    let abstract_canister_tree = ts_program_bundle.to_act();
-    let canister_definition = abstract_canister_tree.to_token_stream();
+    let canister_definition = TsAst::from_ts_file_names(&ts_file_names)
+        .to_act()
+        .to_token_stream();
 
     // -------------------------------------------------------------------------
 
@@ -49,30 +43,4 @@ pub fn azle_generate(
         #canister_definition
     }
     .into()
-}
-
-fn get_programs(ts_file_names: &Vec<&str>) -> Vec<Program> {
-    ts_file_names
-        .iter()
-        .map(|ts_file_name| {
-            let filepath = Path::new(ts_file_name).to_path_buf();
-
-            let cm: Lrc<SourceMap> = Default::default();
-
-            let fm = cm.load_file(&filepath).unwrap();
-
-            let lexer = Lexer::new(
-                Syntax::Typescript(TsConfig::default()),
-                Default::default(),
-                StringInput::from(&*fm),
-                None,
-            );
-
-            let mut parser = Parser::new_from(lexer);
-
-            let program = parser.parse_program().unwrap();
-
-            program
-        })
-        .collect()
 }
