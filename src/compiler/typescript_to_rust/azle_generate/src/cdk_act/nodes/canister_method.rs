@@ -13,13 +13,12 @@ pub enum CanisterMethodActNode {
 #[derive(Clone)]
 pub struct CanisterMethod {
     pub body: TokenStream,
+    // TODO: Combine param names and param types into a new ParamActNode or something
     pub param_names: Vec<Ident>,
     pub param_types: Vec<ActDataTypeNode>,
-    pub inline_types: Box<Vec<ActDataTypeNode>>,
     pub is_manual: bool,
     pub name: String,
     pub return_type: ActDataTypeNode,
-    pub rust_return_type: TokenStream,
 }
 
 pub fn build_inline_types_from_canister_method_acts(
@@ -82,10 +81,10 @@ impl CanisterMethodActNode {
     pub fn get_inline_types(&self) -> Box<Vec<ActDataTypeNode>> {
         match self {
             CanisterMethodActNode::QueryMethod(canister_method) => {
-                canister_method.inline_types.clone()
+                get_inline_types(canister_method)
             }
             CanisterMethodActNode::UpdateMethod(canister_method) => {
-                canister_method.inline_types.clone()
+                get_inline_types(canister_method)
             }
         }
     }
@@ -97,13 +96,13 @@ impl CanisterMethodActNode {
         }
     }
 
-    pub fn get_rust_return_type(&self) -> TokenStream {
+    pub fn get_return_type(&self) -> ActDataTypeNode {
         match self {
             CanisterMethodActNode::QueryMethod(canister_method) => {
-                canister_method.rust_return_type.clone()
+                canister_method.return_type.clone()
             }
             CanisterMethodActNode::UpdateMethod(canister_method) => {
-                canister_method.rust_return_type.clone()
+                canister_method.return_type.clone()
             }
         }
     }
@@ -120,7 +119,7 @@ impl CanisterMethodActNode {
     }
 }
 
-fn generate_params(names: &Vec<Ident>, types: &Vec<ActNode>) -> Vec<TokenStream> {
+fn generate_params(names: &Vec<Ident>, types: &Vec<ActDataTypeNode>) -> Vec<TokenStream> {
     names
         .iter()
         .enumerate()
@@ -135,8 +134,7 @@ fn generate_params(names: &Vec<Ident>, types: &Vec<ActNode>) -> Vec<TokenStream>
 
 fn generate_function(canister_method: &CanisterMethod) -> TokenStream {
     let function_name = format_ident!("{}", canister_method.name);
-    let params =
-        generate_params(&canister_method.param_names, &canister_method.param_types);
+    let params = generate_params(&canister_method.param_names, &canister_method.param_types);
 
     let function_body = &canister_method.body;
 
@@ -154,4 +152,18 @@ fn generate_function(canister_method: &CanisterMethod) -> TokenStream {
             #function_body
         }
     }
+}
+
+fn get_inline_types(canister_method: &CanisterMethod) -> Box<Vec<ActDataTypeNode>> {
+    let inline_types = vec![
+        canister_method.param_types.clone(),
+        vec![canister_method.return_type.clone()],
+    ]
+    .concat()
+    .iter()
+    .filter(|rust_type| rust_type.is_inline_rust_type())
+    .fold(vec![], |acc, rust_type| {
+        vec![acc, vec![rust_type.clone()]].concat()
+    });
+    Box::from(inline_types)
 }
