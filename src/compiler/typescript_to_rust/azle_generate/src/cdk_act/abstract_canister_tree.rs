@@ -90,14 +90,23 @@ impl ToTokenStream for AbstractCanisterTree {
             #(#query_methods)*
             #(#update_methods)*
 
+            struct ActArrays {}
             #(#arrays)*
+            struct ActAliases {}
             #(#aliases)*
+            struct ActFuncs{}
             #(#funcs)*
+            struct ActOptions {}
             #(#options)*
+            struct ActPrimitives {}
             #(#primitives)*
+            struct ActRecords {}
             #(#records)*
+            struct ActTuples {}
             #(#tuples)*
+            struct ActVariants {}
             #(#variants)*
+            struct EndActTypes {}
 
             #user_defined_code
 

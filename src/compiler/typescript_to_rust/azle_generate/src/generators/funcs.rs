@@ -1,8 +1,7 @@
 use crate::ts_ast::ts_types_to_act;
 use proc_macro2::TokenStream;
-use quote::quote;
+use quote::{quote, ToTokens};
 use swc_ecma_ast::TsEntityName::{Ident, TsQualifiedName};
-use swc_ecma_ast::TsFnType;
 use swc_ecma_ast::TsType::TsTypeRef;
 
 pub fn generate_func_arg_token() -> TokenStream {
@@ -27,12 +26,43 @@ pub fn generate_func_arg_token() -> TokenStream {
 }
 
 pub fn generate_func_struct_and_impls(
-    type_alias_name: proc_macro2::TokenStream,
-    func_type: &TsFnType,
+    type_alias_name: &proc_macro2::Ident,
+    func_mode: &String,
+    param_types: &Vec<String>,
+    return_type: &String,
 ) -> TokenStream {
-    let func_mode = get_func_mode(&func_type);
-    let func_param_types = get_param_types(&func_type);
-    let func_return_type = get_return_type(&func_type);
+    let type_alias_name = type_alias_name.to_token_stream();
+    let func_mode = if func_mode == "Query" {
+        quote! {candid::parser::types::FuncMode::Query }
+    } else if func_mode == "Oneway" {
+        quote! {candid::parser::types::FuncMode::Oneway }
+    } else {
+        quote! {}
+    };
+    let func_param_types: Vec<TokenStream> = param_types
+        .iter()
+        .map(|rust_type| {
+            let modified_rust_type = if rust_type.starts_with("Vec") {
+                rust_type
+                    .chars()
+                    .filter(|c| !c.is_whitespace())
+                    .collect::<String>()
+                    .replacen("Vec<", "Vec::<", 1)
+            } else {
+                rust_type.clone()
+            };
+
+            let modified_rust_type_token_stream: TokenStream = modified_rust_type.parse().unwrap();
+
+            quote! {#modified_rust_type_token_stream::_ty()}
+        })
+        .collect();
+    let func_return_type = if return_type == "()" || return_type == "" {
+        quote! {}
+    } else {
+        let return_type_token_stream: TokenStream = return_type.parse().unwrap();
+        quote! { #return_type_token_stream::_ty()}
+    };
 
     quote! {
         #[derive(Debug, Clone)]
@@ -113,7 +143,7 @@ pub fn generate_func_struct_and_impls(
     }
 }
 
-fn get_func_mode(function_type: &swc_ecma_ast::TsFnType) -> TokenStream {
+pub fn get_func_mode(function_type: &swc_ecma_ast::TsFnType) -> String {
     match &*function_type.type_ann.type_ann {
         TsTypeRef(type_reference) => match &type_reference.type_name {
             TsQualifiedName(_) => panic!("Unsupported qualified name. Func return type must directly be Query, Update, or Oneway"),
@@ -122,46 +152,23 @@ fn get_func_mode(function_type: &swc_ecma_ast::TsFnType) -> TokenStream {
                 if mode != "Query" && mode != "Update" && mode != "Oneway" {
                     panic!("Func return type must be Query, Update, or Oneway")
                 }
-
-                if mode == "Query" {
-                    quote! {candid::parser::types::FuncMode::Query }
-                } else if mode == "Oneway" {
-                    quote! {candid::parser::types::FuncMode::Oneway }
-                } else {
-                    quote! {}
-                }
+                mode.to_string()
             }
         },
         _ => panic!("Func return type must be Query, Update, or Oneway"),
     }
 }
 
-fn get_param_types(function_type: &swc_ecma_ast::TsFnType) -> Vec<TokenStream> {
+pub fn get_param_types(function_type: &swc_ecma_ast::TsFnType) -> Vec<String> {
     function_type
         .params
         .iter()
         .map(|param| match param {
             swc_ecma_ast::TsFnParam::Ident(identifier) => match &identifier.type_ann {
                 Some(param_type) => {
-                    let rust_type =
-                        ts_types_to_act::ts_type_to_act_node(&*param_type.type_ann, &None)
-                            .get_type_ident()
-                            .to_string();
-
-                    let modified_rust_type = if rust_type.starts_with("Vec") {
-                        rust_type
-                            .chars()
-                            .filter(|c| !c.is_whitespace())
-                            .collect::<String>()
-                            .replacen("Vec<", "Vec::<", 1)
-                    } else {
-                        rust_type
-                    };
-
-                    let modified_rust_type_token_stream: TokenStream =
-                        modified_rust_type.parse().unwrap();
-
-                    quote! {#modified_rust_type_token_stream::_ty()}
+                    ts_types_to_act::ts_type_to_act_node(&*param_type.type_ann, &None)
+                        .get_type_ident()
+                        .to_string()
                 }
                 None => panic!("Function parameter must have a return type"),
             },
@@ -170,7 +177,7 @@ fn get_param_types(function_type: &swc_ecma_ast::TsFnType) -> Vec<TokenStream> {
         .collect()
 }
 
-fn get_return_type(function_type: &swc_ecma_ast::TsFnType) -> TokenStream {
+pub fn get_return_type(function_type: &swc_ecma_ast::TsFnType) -> String {
     match &*function_type.type_ann.type_ann {
         TsTypeRef(type_reference) => match &type_reference.type_name {
             TsQualifiedName(_) => panic!("Unsupported qualified name. Func return type must directly be Query, Update, or Oneway"),
@@ -181,7 +188,7 @@ fn get_return_type(function_type: &swc_ecma_ast::TsFnType) -> TokenStream {
                 }
 
                 if mode == "Oneway" {
-                    quote! {}
+                    "".to_string()
                 } else {
                     match &type_reference.type_params {
                         Some(type_param_inst) => {
@@ -190,13 +197,7 @@ fn get_return_type(function_type: &swc_ecma_ast::TsFnType) -> TokenStream {
                             }
                             match type_param_inst.params.get(0) {
                                 Some(param) => {
-                                    let return_type = ts_types_to_act::ts_type_to_act_node(&**param, &None).get_type_ident().to_string();
-                                    if return_type == "()" {
-                                        quote! {}
-                                    } else {
-                                        let return_type_token_stream: TokenStream = return_type.parse().unwrap();
-                                        quote! { #return_type_token_stream::_ty()}
-                                    }
+                                    ts_types_to_act::ts_type_to_act_node(&**param, &None).get_type_ident().to_string()
                                 },
                                 None => panic!("Func must specify exactly one return type"),
                             }
