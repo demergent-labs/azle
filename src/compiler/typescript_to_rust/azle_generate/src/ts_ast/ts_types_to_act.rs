@@ -8,8 +8,8 @@ use swc_ecma_ast::{
 use crate::generators::funcs;
 
 use crate::cdk_act::act_data_type_node::{
-    ActDataTypeNode, AliasedType, EnumInfo, FuncInfo, GenericTypeInfo, Primitive, PrimitiveInfo,
-    PrimitiveType, StructInfo, TupleInfo, TypeAliasInfo, TypeRef,
+    ActDataTypeNode, AliasedType, EnumInfo, EnumMember, FuncInfo, GenericTypeInfo, Primitive,
+    PrimitiveInfo, PrimitiveType, StructInfo, StructMember, TupleInfo, TypeAliasInfo, TypeRef,
 };
 
 use core::panic;
@@ -369,30 +369,14 @@ fn parse_ts_type_lit_as_enum(ts_type_ident: &Option<&Ident>, ts_type_lit: &TsTyp
         Some(type_ident) => type_ident,
         None => &inline_ident,
     };
-    let members: Vec<(TokenStream, Option<ActDataTypeNode>)> =
-        ts_type_lit.members.iter().fold(vec![], |acc, member| {
-            let (result, inline_deps) = parse_type_literal_members_for_enum(member);
-            vec![acc, vec![(result, inline_deps)]].concat()
-        });
-    let field_token_streams = members.iter().map(|(field, _)| field.clone());
-    let inline_dependencies: Vec<ActDataTypeNode> =
-        members
-            .iter()
-            .fold(vec![], |acc, (_, inline_deps)| match inline_deps {
-                Some(inline_dep) => vec![acc, vec![inline_dep.clone()]].concat(),
-                None => acc,
-            });
-    let structure = quote!(
-        #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
-        enum #type_ident {
-            #(#field_token_streams),*
-        }
-    );
+    let members: Vec<EnumMember> = ts_type_lit.members.iter().fold(vec![], |acc, member| {
+        let result = parse_type_literal_members_for_enum(member);
+        vec![acc, vec![result]].concat()
+    });
     EnumInfo {
-        definition: structure,
-        identifier: quote!(#type_ident),
         is_inline: ts_type_ident.is_none(),
-        inline_members: Box::from(inline_dependencies),
+        name: type_ident.clone(),
+        members: members,
     }
 }
 
@@ -406,58 +390,25 @@ fn parse_ts_type_lit_as_struct(
         Some(type_ident) => type_ident,
         None => &inline_ident,
     };
-    let fields: Vec<(TokenStream, Option<ActDataTypeNode>)> =
-        ts_type_lit.members.iter().fold(vec![], |acc, member| {
-            let (structures, inline_deps) = parse_type_literal_fields(member);
-            vec![acc, vec![(structures, inline_deps)]].concat()
-        });
-    let field_token_streams = fields.iter().map(|(field, _)| field.clone());
-    let inline_dependencies: Vec<ActDataTypeNode> =
-        fields
-            .iter()
-            .fold(vec![], |acc, (_, inline_deps)| match &inline_deps {
-                Some(struct_info) => vec![acc, vec![struct_info.clone()]].concat(),
-                None => acc,
-            });
-    let structure = quote!(
-        #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
-        struct #type_ident {
-            #(#field_token_streams),*
-        }
-    );
-    let result = StructInfo {
-        definition: structure.clone(),
-        identifier: quote!(#type_ident),
-        is_inline: ts_type_ident.is_none(),
-        inline_members: Box::from(inline_dependencies),
-        // name: type_ident.clone(),
-        // members: fields,
-    };
 
-    result
+    let members: Vec<StructMember> = ts_type_lit.members.iter().fold(vec![], |acc, member| {
+        let structures = parse_type_literal_fields(member);
+        vec![acc, vec![structures]].concat()
+    });
+
+    StructInfo {
+        name: type_ident.clone(),
+        members,
+        is_inline: ts_type_ident.is_none(),
+    }
 }
 
-fn parse_type_literal_fields(member: &TsTypeElement) -> (TokenStream, Option<ActDataTypeNode>) {
+fn parse_type_literal_fields(member: &TsTypeElement) -> StructMember {
     match member.as_ts_property_signature() {
-        Some(prop_sig) => {
-            let member_name = parse_type_literal_member_name(prop_sig);
-            let member_type = parse_type_literal_member_type(prop_sig);
-            let member_type_token_stream = if member_type.needs_to_be_boxed() {
-                let ident = member_type.get_type_ident();
-                quote!(Box<#ident>)
-            } else {
-                member_type.get_type_ident()
-            };
-            let inline_enclosed_type = if member_type.is_inline_rust_type() {
-                Some(member_type)
-            } else {
-                None
-            };
-            (
-                quote!(#member_name: #member_type_token_stream),
-                inline_enclosed_type,
-            )
-        }
+        Some(prop_sig) => StructMember {
+            member_name: parse_type_literal_member_name(prop_sig),
+            member_type: parse_type_literal_member_type(prop_sig),
+        },
         None => todo!("Handle parsing type literals if the field isn't a TsPropertySignature"),
     }
 }
@@ -472,42 +423,12 @@ pub fn parse_type_literal_member_type(prop_sig: &TsPropertySignature) -> ActData
     ts_type_to_act_node(&ts_type, &None)
 }
 
-fn parse_type_literal_members_for_enum(
-    member: &TsTypeElement,
-) -> (TokenStream, Option<ActDataTypeNode>) {
+fn parse_type_literal_members_for_enum(member: &TsTypeElement) -> EnumMember {
     match member.as_ts_property_signature() {
-        Some(prop_sig) => {
-            let member_name = parse_type_literal_member_name(prop_sig);
-            let member_type = parse_type_literal_member_type(prop_sig);
-            let member_type_token_stream = match member_type.clone() {
-                ActDataTypeNode::Primitive(keyword_type_info) => {
-                    if member_type.get_type_ident().to_string() == quote!((())).to_string() {
-                        quote!()
-                    } else {
-                        let member_type_token_stream = member_type.get_type_ident();
-                        quote!((#member_type_token_stream))
-                    }
-                }
-                _ => {
-                    let member_type_token_stream = if member_type.needs_to_be_boxed() {
-                        let ident = member_type.get_type_ident();
-                        quote!(Box<#ident>)
-                    } else {
-                        member_type.get_type_ident()
-                    };
-                    quote!((#member_type_token_stream))
-                }
-            };
-            let member_inline_dependencies = if member_type.is_inline_rust_type() {
-                Some(member_type)
-            } else {
-                None
-            };
-            (
-                quote! {#member_name#member_type_token_stream},
-                member_inline_dependencies,
-            )
-        }
+        Some(prop_sig) => EnumMember {
+            member_name: parse_type_literal_member_name(prop_sig),
+            member_type: parse_type_literal_member_type(prop_sig),
+        },
         None => todo!("Handle parsing type literals if the member isn't a TsPropertySignature"),
     }
 }
