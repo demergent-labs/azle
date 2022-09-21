@@ -1,5 +1,5 @@
 use crate::{
-    cdk_act::{act_node::ActNode, CanisterMethod},
+    cdk_act::{act_data_type_node::ActDataTypeNode, CanisterMethod},
     generators,
     ts_ast::{self, ts_types_to_act},
 };
@@ -52,7 +52,7 @@ pub fn generate_canister_method_node(ast_fnc_decl: &FnDecl) -> CanisterMethod {
         .fold(vec![], |acc, rust_type| {
             vec![acc, vec![rust_type.clone()]].concat()
         });
-    let inline_types: Box<Vec<ActNode>> = Box::from(inline_types);
+    let inline_types: Box<Vec<ActDataTypeNode>> = Box::from(inline_types);
 
     CanisterMethod {
         canister_method: function_token_stream,
@@ -81,7 +81,10 @@ pub fn generate_param_name_idents(ast_fn_decl: &FnDecl) -> Vec<Ident> {
         .collect()
 }
 
-pub fn generate_params_token_stream(names: &Vec<Ident>, types: &Vec<ActNode>) -> Vec<TokenStream> {
+pub fn generate_params_token_stream(
+    names: &Vec<Ident>,
+    types: &Vec<ActDataTypeNode>,
+) -> Vec<TokenStream> {
     names
         .iter()
         .enumerate()
@@ -94,12 +97,12 @@ pub fn generate_params_token_stream(names: &Vec<Ident>, types: &Vec<ActNode>) ->
         .collect()
 }
 
-fn generate_return_type(ast_fnc_decl: &FnDecl) -> ActNode {
+fn generate_return_type(ast_fnc_decl: &FnDecl) -> ActDataTypeNode {
     let return_ts_type = ts_ast::fn_decl::get_return_ts_type(ast_fnc_decl);
     ts_types_to_act::ts_type_to_act_node(&return_ts_type, &None)
 }
 
-pub fn generate_param_types(ast_fnc_decl: &FnDecl) -> Vec<ActNode> {
+pub fn generate_param_types(ast_fnc_decl: &FnDecl) -> Vec<ActDataTypeNode> {
     ts_ast::fn_decl::get_param_ts_types(ast_fnc_decl)
         .iter()
         .map(|ts_type| ts_types_to_act::ts_type_to_act_node(ts_type, &None))

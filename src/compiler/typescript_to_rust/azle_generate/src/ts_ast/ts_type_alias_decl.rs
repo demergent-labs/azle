@@ -12,7 +12,7 @@ pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
 }
 
 impl Actable for TsTypeAliasDecl {
-    fn to_act_node(&self) -> crate::cdk_act::ActNode {
+    fn to_act_node(&self) -> crate::cdk_act::ActDataTypeNode {
         let ts_type_name = ast_type_alias_decl_to_string(self);
         let ts_type_alias_ident = format_ident!("{}", ts_type_name);
 
