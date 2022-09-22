@@ -258,5 +258,19 @@ type CanisterTuple1 = [
 export function tuple_test(tup: CanisterTuple1): Query<void> {}
 
 type OptionAlias = Opt<Boolean>;
+type InlineOptionAlias = Opt<{ inline_bool: boolean }>;
 
-export function option_test(opt: OptionAlias): Update<void> {}
+export function option_test(
+    opt: OptionAlias,
+    inline_opt: Opt<{ thing: String }>
+    // inline_alias: InlineOptionAlias
+): Update<void> {}
+
+type ArrayAlias = Boolean[];
+type InlineArrayAlias = { inline_bool: boolean }[];
+
+export function array_test(
+    opt: ArrayAlias,
+    inline_opt: { thing: String }[]
+    // inline_alias: InlineArrayAlias
+): Update<void> {}

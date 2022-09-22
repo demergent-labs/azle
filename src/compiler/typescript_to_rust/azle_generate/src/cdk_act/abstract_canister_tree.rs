@@ -1,6 +1,7 @@
 use proc_macro2::TokenStream;
 
 use super::{
+    data_type_nodes,
     generators::{candid_file_generation, ic_object::functions, random},
     nodes::CanisterMethodActNode,
     ActDataTypeNode, ToTokenStream, ToTokenStreams,
@@ -27,6 +28,8 @@ impl ToTokenStream for AbstractCanisterTree {
     fn to_token_stream(&self) -> TokenStream {
         // TODO: This needs A LOT of work
         let randomness_implementation = random::generate_randomness_implementation();
+
+        let func_arg_token = data_type_nodes::generate_func_arg_token();
 
         let user_defined_code = &self.rust_code;
         let query_methods = self.query_methods.to_token_streams();
@@ -89,6 +92,7 @@ impl ToTokenStream for AbstractCanisterTree {
 
             #(#query_methods)*
             #(#update_methods)*
+            #func_arg_token
 
             struct ActArrays {}
             #(#arrays)*

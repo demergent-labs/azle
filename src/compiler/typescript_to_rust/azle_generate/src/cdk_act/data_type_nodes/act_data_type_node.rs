@@ -25,42 +25,27 @@ pub enum ActDataTypeNode {
     Tuple(ActTuple),
 }
 
-#[derive(Clone, Debug)]
-pub enum ActAliasedType {
-    Primitive(ActPrimitiveLit),
-    TypeRef(String),
-}
-
-impl ActAliasedType {
-    pub fn to_token_stream(&self) -> TokenStream {
-        match self {
-            ActAliasedType::Primitive(primitive) => primitive.to_token_stream(),
-            ActAliasedType::TypeRef(type_ref) => type_ref.to_ident().into_token_stream(),
-        }
-    }
-}
-
 impl ActDataTypeNode {
     // TODO change this to Ident? Or String? or at the very least have the match return an ident and then wrap the result in a quote?
     pub fn get_type_ident(&self) -> TokenStream {
         match self {
-            ActDataTypeNode::Primitive(primitive) => match primitive {
+            ActDataTypeNode::Primitive(act_primitive) => match act_primitive {
                 ActPrimitive::Literal(literal) => literal.to_token_stream(),
                 ActPrimitive::TypeAlias(type_alias) => type_alias.name.to_ident().to_token_stream(),
             },
-            ActDataTypeNode::TypeRef(type_ref) => match type_ref {
+            ActDataTypeNode::TypeRef(act_type_ref) => match act_type_ref {
                 ActTypeRef::Literal(literal) => literal.name.to_ident().to_token_stream(),
                 ActTypeRef::TypeAlias(type_alias) => type_alias.name.to_ident().to_token_stream(),
             },
-            ActDataTypeNode::Array(array_info) => match array_info {
-                ActArray::Literal(literal) => literal.token_stream.clone(),
+            ActDataTypeNode::Array(act_array) => match act_array {
+                ActArray::Literal(literal) => literal.to_token_stream(),
                 ActArray::TypeAlias(type_alias) => type_alias.name.to_ident().to_token_stream(),
             },
-            ActDataTypeNode::Record(struct_info) => struct_info.name.to_ident().to_token_stream(),
-            ActDataTypeNode::Variant(enum_info) => enum_info.name.to_ident().to_token_stream(),
-            ActDataTypeNode::Func(func_info) => func_info.name.to_ident().to_token_stream(),
-            ActDataTypeNode::Tuple(tuple_info) => tuple_info.name.to_ident().to_token_stream(),
-            ActDataTypeNode::Option(option_info) => match option_info {
+            ActDataTypeNode::Record(act_record) => act_record.name.to_ident().to_token_stream(),
+            ActDataTypeNode::Variant(act_variant) => act_variant.name.to_ident().to_token_stream(),
+            ActDataTypeNode::Func(act_func) => act_func.name.to_ident().to_token_stream(),
+            ActDataTypeNode::Tuple(act_tuple) => act_tuple.name.to_ident().to_token_stream(),
+            ActDataTypeNode::Option(act_option) => match act_option {
                 ActOption::Literal(literal) => literal.to_token_stream(),
                 ActOption::TypeAlias(type_alias) => type_alias.name.to_ident().to_token_stream(),
             },
@@ -72,47 +57,36 @@ impl ActDataTypeNode {
         match self {
             ActDataTypeNode::Primitive(_) => false,
             ActDataTypeNode::TypeRef(_) => false,
-            ActDataTypeNode::Array(array_type_info) => match array_type_info {
-                ActArray::Literal(literal) => literal.enclosed_inline_type.is_some(),
-                ActArray::TypeAlias(type_alias) => type_alias.enclosed_inline_type.is_some(),
-            },
-            ActDataTypeNode::Record(struct_info) => struct_info.is_inline,
-            ActDataTypeNode::Variant(enum_info) => enum_info.is_inline,
-            ActDataTypeNode::Func(func_info) => func_info.is_inline,
-            ActDataTypeNode::Tuple(tuple_info) => tuple_info.is_inline,
-            ActDataTypeNode::Option(option_info) => {
-                option_info.get_enclosed_type().is_inline_type()
-            }
+            ActDataTypeNode::Array(act_array) => act_array.get_enclosed_type().is_inline_type(),
+            ActDataTypeNode::Record(act_record) => act_record.is_inline,
+            ActDataTypeNode::Variant(act_variant) => act_variant.is_inline,
+            ActDataTypeNode::Func(act_func) => act_func.is_inline,
+            ActDataTypeNode::Tuple(act_tuple) => act_tuple.is_inline,
+            ActDataTypeNode::Option(act_option) => act_option.get_enclosed_type().is_inline_type(),
         }
     }
 
     pub fn get_definition(&self) -> Option<TokenStream> {
         match self {
-            ActDataTypeNode::Record(struct_info) => Some(struct_info.to_token_stream()),
-            ActDataTypeNode::Variant(enum_info) => Some(enum_info.to_token_stream()),
-            ActDataTypeNode::Func(func_info) => Some(func_info.to_token_stream()),
-            ActDataTypeNode::Tuple(tuple_info) => Some(tuple_info.to_token_stream()),
-            ActDataTypeNode::Primitive(primitive) => match primitive {
+            ActDataTypeNode::Record(act_record) => Some(act_record.to_token_stream()),
+            ActDataTypeNode::Variant(act_variant) => Some(act_variant.to_token_stream()),
+            ActDataTypeNode::Func(act_func) => Some(act_func.to_token_stream()),
+            ActDataTypeNode::Tuple(act_tuple) => Some(act_tuple.to_token_stream()),
+            ActDataTypeNode::Primitive(act_primitive) => match act_primitive {
                 ActPrimitive::Literal(_) => None,
                 ActPrimitive::TypeAlias(type_alias) => Some(type_alias.to_token_stream()),
             },
-            ActDataTypeNode::TypeRef(type_ref) => match type_ref {
+            ActDataTypeNode::TypeRef(act_type_ref) => match act_type_ref {
                 ActTypeRef::Literal(_) => None,
                 ActTypeRef::TypeAlias(type_alias) => Some(type_alias.to_token_stream()),
             },
-            ActDataTypeNode::Option(type_ref_info) => match type_ref_info {
+            ActDataTypeNode::Option(act_option) => match act_option {
                 ActOption::Literal(_) => None,
                 ActOption::TypeAlias(type_alias) => Some(type_alias.to_token_stream()),
             },
-            ActDataTypeNode::Array(array_type_info) => match array_type_info {
-                ActArray::Literal(literal) => match &*literal.enclosed_inline_type {
-                    Some(inline_type) => inline_type.get_definition(),
-                    None => None,
-                },
-                ActArray::TypeAlias(type_alias) => match &*type_alias.enclosed_inline_type {
-                    Some(inline_type) => inline_type.get_definition(),
-                    None => Some(type_alias.to_token_stream()),
-                },
+            ActDataTypeNode::Array(act_array) => match act_array {
+                ActArray::Literal(_) => None,
+                ActArray::TypeAlias(type_alias) => Some(type_alias.to_token_stream()),
             },
         }
     }
@@ -123,59 +97,64 @@ impl ActDataTypeNode {
 
     pub fn get_inline_members(&self) -> Vec<ActDataTypeNode> {
         match self {
-            ActDataTypeNode::Record(struct_info) => struct_info
+            ActDataTypeNode::Record(act_record) => act_record
                 .members
                 .iter()
                 .filter(|member| member.member_type.is_inline_type())
                 .map(|member| member.member_type.clone())
                 .collect(),
-            ActDataTypeNode::Variant(enum_info) => enum_info
+            ActDataTypeNode::Variant(act_variant) => act_variant
                 .members
                 .iter()
                 .filter(|member| member.member_type.is_inline_type())
                 .map(|member| member.member_type.clone())
                 .collect(),
-            ActDataTypeNode::Func(func_info) => vec![
-                func_info.params.clone(),
-                vec![*func_info.return_type.clone()],
-            ]
-            .concat()
-            .iter()
-            .filter(|elem| elem.is_inline_type())
-            .cloned()
-            .collect(),
+            ActDataTypeNode::Func(act_func) => {
+                vec![act_func.params.clone(), vec![*act_func.return_type.clone()]]
+                    .concat()
+                    .iter()
+                    .filter(|elem| elem.is_inline_type())
+                    .cloned()
+                    .collect()
+            }
             ActDataTypeNode::Primitive(_) => vec![],
             ActDataTypeNode::TypeRef(_) => vec![],
-            ActDataTypeNode::Array(_) => vec![],
-            ActDataTypeNode::Tuple(tuple_info) => tuple_info
+            ActDataTypeNode::Array(act_array) => vec![act_array.get_enclosed_type()]
+                .iter()
+                .filter(|enclosed_type| enclosed_type.is_inline_type())
+                .cloned()
+                .collect(),
+            ActDataTypeNode::Tuple(act_tuple) => act_tuple
                 .elems
                 .iter()
                 .filter(|member| member.elem_type.is_inline_type())
                 .map(|elem| elem.elem_type.clone())
                 .collect(),
-            ActDataTypeNode::Option(_) => vec![],
+            ActDataTypeNode::Option(act_option) => vec![act_option.get_enclosed_type()]
+                .iter()
+                .filter(|enclosed_type| enclosed_type.is_inline_type())
+                .cloned()
+                .collect(),
         }
     }
 
     pub fn collect_inline_types(&self) -> Vec<ActDataTypeNode> {
-        let rust_type_structure = match self.is_inline_type() {
+        let act_data_type = match self.is_inline_type() {
             true => vec![self.clone()],
             false => vec![],
         };
-        let member_structures = self.get_inline_members();
-        let member_structures = member_structures.iter().fold(vec![], |acc, member| {
-            vec![acc, member.collect_inline_types()].concat()
-        });
-        vec![rust_type_structure, member_structures].concat()
+        let member_act_data_types = self.get_inline_members();
+        let all_descendant_act_data_types =
+            member_act_data_types.iter().fold(vec![], |acc, member| {
+                vec![acc, member.collect_inline_types()].concat()
+            });
+        vec![act_data_type, all_descendant_act_data_types].concat()
     }
 
     pub fn to_type_definition_token_stream(&self) -> TokenStream {
-        let rust_type_definition = match self.get_definition() {
+        match self.get_definition() {
             Some(definition) => definition,
             None => quote!(),
-        };
-        quote! {
-            #rust_type_definition
         }
     }
 }
@@ -202,4 +181,19 @@ pub fn deduplicate(act_data_type_nodes: Vec<ActDataTypeNode>) -> Vec<ActDataType
                 }
             });
     map.values().cloned().collect()
+}
+
+#[derive(Clone, Debug)]
+pub enum ActAliasedType {
+    Primitive(ActPrimitiveLit),
+    TypeRef(String),
+}
+
+impl ToTokenStream for ActAliasedType {
+    fn to_token_stream(&self) -> TokenStream {
+        match self {
+            ActAliasedType::Primitive(primitive) => primitive.to_token_stream(),
+            ActAliasedType::TypeRef(type_ref) => type_ref.to_ident().into_token_stream(),
+        }
+    }
 }

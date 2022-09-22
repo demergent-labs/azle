@@ -12,15 +12,37 @@ pub enum ActArray {
 
 #[derive(Clone, Debug)]
 pub struct ActArrayLiteral {
-    pub token_stream: TokenStream,
-    pub enclosed_inline_type: Box<Option<ActDataTypeNode>>,
+    pub enclosed_type: Box<ActDataTypeNode>,
 }
 
 #[derive(Clone, Debug)]
 pub struct ActArrayTypeAlias {
     pub name: String,
-    pub aliased_type: TokenStream,
-    pub enclosed_inline_type: Box<Option<ActDataTypeNode>>,
+    pub enclosed_type: Box<ActDataTypeNode>,
+}
+
+impl ActArray {
+    pub fn get_enclosed_type(&self) -> ActDataTypeNode {
+        match self {
+            ActArray::Literal(literal) => *literal.enclosed_type.clone(),
+            ActArray::TypeAlias(type_alias) => *type_alias.enclosed_type.clone(),
+        }
+    }
+}
+
+impl ToTokenStream for ActArrayLiteral {
+    fn to_token_stream(&self) -> TokenStream {
+        let enclosed_rust_ident = self.enclosed_type.get_type_ident();
+        quote!(Vec<#enclosed_rust_ident>)
+    }
+}
+
+impl ToTokenStream for ActArrayTypeAlias {
+    fn to_token_stream(&self) -> TokenStream {
+        let name = self.name.to_ident().to_token_stream();
+        let enclosed_type = self.enclosed_type.get_type_ident();
+        quote!(type #name = Vec<#enclosed_type>;)
+    }
 }
 
 impl ToTokenStream for ActArray {
@@ -29,13 +51,5 @@ impl ToTokenStream for ActArray {
             ActArray::Literal(_) => todo!(),
             ActArray::TypeAlias(type_alias) => type_alias.to_token_stream(),
         }
-    }
-}
-
-impl ToTokenStream for ActArrayTypeAlias {
-    fn to_token_stream(&self) -> TokenStream {
-        let name = &self.name.to_ident().to_token_stream();
-        let aliased_type = &self.aliased_type;
-        quote!(type #name = #aliased_type;)
     }
 }

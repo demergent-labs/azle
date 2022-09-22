@@ -1,54 +1,17 @@
-use crate::cdk_act::data_type_nodes::option::{ActOptionLiteral, ActOptionTypeAlias};
 use crate::cdk_act::data_type_nodes::{
     ActAliasedType, ActArray, ActArrayLiteral, ActArrayTypeAlias, ActDataTypeNode, ActFunc,
-    ActOption, ActPrimitive, ActPrimitiveLit, ActPrimitiveTypeAlias, ActRecord, ActRecordMember,
-    ActTuple, ActTupleElem, ActTypeRef, ActTypeRefLit, ActTypeRefTypeAlias, ActVariant,
-    ActVariantMember,
+    ActOption, ActOptionLiteral, ActOptionTypeAlias, ActPrimitive, ActPrimitiveLit,
+    ActPrimitiveTypeAlias, ActRecord, ActRecordMember, ActTuple, ActTupleElem, ActTypeRef,
+    ActTypeRefLit, ActTypeRefTypeAlias, ActVariant, ActVariantMember,
 };
 use crate::generators::funcs;
 use core::panic;
-use quote::quote;
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 use swc_ecma_ast::{
     TsArrayType, TsFnType, TsKeywordType, TsKeywordTypeKind, TsPropertySignature, TsTupleType,
     TsType, TsTypeElement, TsTypeLit, TsTypeRef,
 };
-
-fn calculate_ts_type_lit_hash(type_lit: &TsTypeLit) -> String {
-    let mut s = DefaultHasher::new();
-    type_lit.hash(&mut s);
-    format!("{}", s.finish()).to_string()
-}
-
-fn generate_inline_ident(ts_type_lit: &TsTypeLit) -> String {
-    let id = calculate_ts_type_lit_hash(ts_type_lit);
-    // TODO could a variant and a struct produce the same hash if they have the same inline part?
-    format!("AzleInline_{}", id)
-}
-
-fn calculate_ts_type_lit_hash_for_type_ref(type_lit: &TsTypeRef) -> String {
-    let mut s = DefaultHasher::new();
-    type_lit.hash(&mut s);
-    format!("{}", s.finish()).to_string()
-}
-
-fn generate_inline_ident_for_func(ts_type_ref: &TsTypeRef) -> String {
-    let id = calculate_ts_type_lit_hash_for_type_ref(ts_type_ref);
-    // TODO could a variant and a struct produce the same hash if they have the same inline part?
-    format!("AzleInlineFunc_{}", id)
-}
-
-fn calculate_ts_type_lit_hash_for_tuple(type_lit: &TsTupleType) -> String {
-    let mut s = DefaultHasher::new();
-    type_lit.hash(&mut s);
-    format!("{}", s.finish()).to_string()
-}
-
-fn generate_inline_ident_for_tuple(ts_type_ref: &TsTupleType) -> String {
-    let id = calculate_ts_type_lit_hash_for_tuple(ts_type_ref);
-    format!("AzleInlineTuple_{}", id)
-}
 
 pub fn ts_type_to_act_node(ts_type: &TsType, name: &Option<&String>) -> ActDataTypeNode {
     let rust_type = match ts_type {
@@ -194,34 +157,18 @@ fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&String>) -> ActData
     }
 }
 
-/**
- * I am thinking of the array type as fully its own type, in elem type is just
- * part of the array type. pulling out the info from the elem type and using it
- * for the array type info is fine because we will never see the elem type info
- * otherwise. I am also currently assuming that the only way we have an enclosed type that needs to be
- */
 fn parse_ts_array_type(ts_array_type: &TsArrayType, name: &Option<&String>) -> ActDataTypeNode {
-    let elem_type = *ts_array_type.elem_type.clone();
-    let elem_rust_type = ts_type_to_act_node(&elem_type, &None);
-    let elem_type_ident = elem_rust_type.get_type_ident();
-    let inline_enclosed_type = if elem_rust_type.is_inline_type() {
-        Some(elem_rust_type)
-    } else {
-        None
-    };
-    let token_stream = quote! {Vec<#elem_type_ident>};
-    let array_type_info = match name {
-        Some(name) => ActArray::TypeAlias(ActArrayTypeAlias {
+    let elem_ts_type = *ts_array_type.elem_type.clone();
+    let act_elem = ts_type_to_act_node(&elem_ts_type, &None);
+    match name {
+        Some(name) => ActDataTypeNode::Array(ActArray::TypeAlias(ActArrayTypeAlias {
             name: name.clone().clone(),
-            aliased_type: token_stream,
-            enclosed_inline_type: Box::from(inline_enclosed_type),
-        }),
-        None => ActArray::Literal(ActArrayLiteral {
-            token_stream,
-            enclosed_inline_type: Box::from(inline_enclosed_type),
-        }),
-    };
-    ActDataTypeNode::Array(array_type_info)
+            enclosed_type: Box::from(act_elem.clone()),
+        })),
+        None => ActDataTypeNode::Array(ActArray::Literal(ActArrayLiteral {
+            enclosed_type: Box::from(act_elem.clone()),
+        })),
+    }
 }
 
 fn parse_opt_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&String>) -> ActDataTypeNode {
@@ -419,4 +366,39 @@ fn parse_type_literal_members_for_enum(member: &TsTypeElement) -> ActVariantMemb
         },
         None => todo!("Handle parsing type literals if the member isn't a TsPropertySignature"),
     }
+}
+
+fn calculate_ts_type_lit_hash(type_lit: &TsTypeLit) -> String {
+    let mut s = DefaultHasher::new();
+    type_lit.hash(&mut s);
+    format!("{}", s.finish()).to_string()
+}
+
+fn generate_inline_ident(ts_type_lit: &TsTypeLit) -> String {
+    let id = calculate_ts_type_lit_hash(ts_type_lit);
+    // TODO could a variant and a struct produce the same hash if they have the same inline part?
+    format!("AzleInline_{}", id)
+}
+
+fn calculate_ts_type_lit_hash_for_type_ref(type_lit: &TsTypeRef) -> String {
+    let mut s = DefaultHasher::new();
+    type_lit.hash(&mut s);
+    format!("{}", s.finish()).to_string()
+}
+
+fn generate_inline_ident_for_func(ts_type_ref: &TsTypeRef) -> String {
+    let id = calculate_ts_type_lit_hash_for_type_ref(ts_type_ref);
+    // TODO could a variant and a struct produce the same hash if they have the same inline part?
+    format!("AzleInlineFunc_{}", id)
+}
+
+fn calculate_ts_type_lit_hash_for_tuple(type_lit: &TsTupleType) -> String {
+    let mut s = DefaultHasher::new();
+    type_lit.hash(&mut s);
+    format!("{}", s.finish()).to_string()
+}
+
+fn generate_inline_ident_for_tuple(ts_type_ref: &TsTupleType) -> String {
+    let id = calculate_ts_type_lit_hash_for_tuple(ts_type_ref);
+    format!("AzleInlineTuple_{}", id)
 }

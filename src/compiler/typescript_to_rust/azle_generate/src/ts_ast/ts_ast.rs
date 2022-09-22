@@ -14,7 +14,7 @@ use crate::{
             self,
             system::{heartbeat, init, inspect_message, post_upgrade, pre_upgrade},
         },
-        cross_canister_call_functions, funcs, stacktrace, type_aliases,
+        cross_canister_call_functions, stacktrace, type_aliases,
     },
     ts_ast,
 };
@@ -59,8 +59,6 @@ impl ToAct for TsAst {
             ts_ast::program::get_ast_type_alias_decls_from_programs(&self.programs);
         let ast_canister_type_alias_decls =
             ts_ast::ts_type_alias_decl::get_ast_canister_type_alias_decls(&ast_type_alias_decls);
-
-        let func_arg_token = funcs::generate_func_arg_token();
 
         // Separate function decls into queries and updates
         let ast_fnc_decls_query = ts_ast::program::get_canister_method_type_fn_decls(
@@ -121,6 +119,9 @@ impl ToAct for TsAst {
         ]
         .concat();
         let all_inline_acts = data_type_nodes::deduplicate(all_inline_acts);
+        for inline_act in all_inline_acts.clone() {
+            eprintln!("{}", inline_act.get_type_ident());
+        }
 
         let all_type_acts = vec![type_alias_acts, all_inline_acts].concat();
 
@@ -242,8 +243,6 @@ impl ToAct for TsAst {
 
                 #async_result_handler
                 #get_top_level_call_frame_fn
-
-                #func_arg_token
 
                 #azle_into_js_value
                 #azle_try_from_js_value
