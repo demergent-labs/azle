@@ -149,6 +149,7 @@ service : () -> {
       AzleInline_331500420231041961,
     ) -> ();
   one_variant : (Fun) -> () query;
+  option_test : (opt bool) -> ();
   self_reference : (
       SelfReferencingVariant,
       SelfReferencingRecord,

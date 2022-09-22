@@ -3,7 +3,7 @@ use quote::format_ident;
 use swc_ecma_ast::FnDecl;
 
 use crate::{
-    cdk_act::{act_data_type_node::ActDataTypeNode, nodes::Param, CanisterMethod},
+    cdk_act::{data_type_nodes::ActDataTypeNode, nodes::Param, CanisterMethod},
     generators,
     ts_ast::{self, ts_types_to_act},
 };

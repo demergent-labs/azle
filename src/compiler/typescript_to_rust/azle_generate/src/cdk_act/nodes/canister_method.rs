@@ -151,7 +151,7 @@ fn get_inline_types(canister_method: &CanisterMethod) -> Box<Vec<ActDataTypeNode
     ]
     .concat()
     .iter()
-    .filter(|rust_type| rust_type.is_inline_rust_type())
+    .filter(|rust_type| rust_type.is_inline_type())
     .fold(vec![], |acc, rust_type| {
         vec![acc, vec![rust_type.clone()]].concat()
     });

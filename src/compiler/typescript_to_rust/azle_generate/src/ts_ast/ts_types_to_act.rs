@@ -1,7 +1,9 @@
-use crate::cdk_act::act_data_type_node::{
-    ActDataTypeNode, AliasedType, ArrayLiteral, ArrayTypeAlias, ArrayTypeInfo, EnumInfo,
-    EnumMember, FuncInfo, GenericTypeInfo, Primitive, PrimitiveType, StructInfo, StructMember,
-    TupleElem, TupleInfo, TypeAliasInfo, TypeRef, TypeRefInfo,
+use crate::cdk_act::data_type_nodes::option::{ActOptionLiteral, ActOptionTypeAlias};
+use crate::cdk_act::data_type_nodes::{
+    ActAliasedType, ActArray, ActArrayLiteral, ActArrayTypeAlias, ActDataTypeNode, ActFunc,
+    ActOption, ActPrimitive, ActPrimitiveLit, ActPrimitiveTypeAlias, ActRecord, ActRecordMember,
+    ActTuple, ActTupleElem, ActTypeRef, ActTypeRefLit, ActTypeRefTypeAlias, ActVariant,
+    ActVariantMember,
 };
 use crate::generators::funcs;
 use core::panic;
@@ -82,7 +84,7 @@ pub fn ts_type_to_act_node(ts_type: &TsType, name: &Option<&String>) -> ActDataT
     rust_type
 }
 
-fn parse_ts_tuple_type(ts_tuple_type: &TsTupleType, name: &Option<&String>) -> TupleInfo {
+fn parse_ts_tuple_type(ts_tuple_type: &TsTupleType, name: &Option<&String>) -> ActTuple {
     let inline_ident = generate_inline_ident_for_tuple(ts_tuple_type);
     let type_ident = match name {
         Some(type_ident) => type_ident,
@@ -91,18 +93,18 @@ fn parse_ts_tuple_type(ts_tuple_type: &TsTupleType, name: &Option<&String>) -> T
 
     let elem_types = get_elem_types(ts_tuple_type);
 
-    TupleInfo {
+    ActTuple {
         name: type_ident.clone(),
         elems: elem_types,
         is_inline: name.is_none(),
     }
 }
 
-fn get_elem_types(ts_tuple_type: &TsTupleType) -> Vec<TupleElem> {
+fn get_elem_types(ts_tuple_type: &TsTupleType) -> Vec<ActTupleElem> {
     ts_tuple_type
         .elem_types
         .iter()
-        .map(|elem| TupleElem {
+        .map(|elem| ActTupleElem {
             elem_type: ts_type_to_act_node(&elem.ty, &None),
         })
         .collect()
@@ -114,10 +116,10 @@ fn parse_ts_keyword_type(
 ) -> ActDataTypeNode {
     let kind = ts_keyword_type.kind;
     let token_stream = match &kind {
-        TsKeywordTypeKind::TsBooleanKeyword => PrimitiveType::Bool,
-        TsKeywordTypeKind::TsStringKeyword => PrimitiveType::String,
-        TsKeywordTypeKind::TsVoidKeyword => PrimitiveType::Unit,
-        TsKeywordTypeKind::TsNullKeyword => PrimitiveType::Null,
+        TsKeywordTypeKind::TsBooleanKeyword => ActPrimitiveLit::Bool,
+        TsKeywordTypeKind::TsStringKeyword => ActPrimitiveLit::String,
+        TsKeywordTypeKind::TsVoidKeyword => ActPrimitiveLit::Void,
+        TsKeywordTypeKind::TsNullKeyword => ActPrimitiveLit::Null,
         TsKeywordTypeKind::TsObjectKeyword => todo!("parse_ts_keyword_type for TsObjectKeyword"),
         TsKeywordTypeKind::TsNumberKeyword => todo!("parse_ts_keyword_type for TsNumberKeyword"),
         TsKeywordTypeKind::TsBigIntKeyword => todo!("parse_ts_keyword_type for TsBigIntKeyword"),
@@ -136,14 +138,14 @@ fn parse_ts_keyword_type(
 }
 
 fn build_act_primitive_type_node(
-    primitive_type: PrimitiveType,
+    primitive_type: ActPrimitiveLit,
     name: &Option<&String>,
 ) -> ActDataTypeNode {
     let primitive = match name {
-        None => Primitive::Literal(primitive_type),
-        Some(name) => Primitive::TypeAlias(TypeAliasInfo {
+        None => ActPrimitive::Literal(primitive_type),
+        Some(name) => ActPrimitive::TypeAlias(ActPrimitiveTypeAlias {
             name: name.clone().clone(),
-            aliased_type: AliasedType::Primitive(primitive_type),
+            aliased_type: ActAliasedType::Primitive(primitive_type),
         }),
     };
     ActDataTypeNode::Primitive(primitive)
@@ -151,10 +153,10 @@ fn build_act_primitive_type_node(
 
 fn build_act_custom_type_node(token_stream: String, name: &Option<&String>) -> ActDataTypeNode {
     let type_ref = match name {
-        None => TypeRef::Literal(TypeRefInfo { name: token_stream }),
-        Some(name) => TypeRef::TypeAlias(TypeAliasInfo {
+        None => ActTypeRef::Literal(ActTypeRefLit { name: token_stream }),
+        Some(name) => ActTypeRef::TypeAlias(ActTypeRefTypeAlias {
             name: name.clone().clone(),
-            aliased_type: AliasedType::TypeRef(token_stream),
+            aliased_type: ActAliasedType::TypeRef(token_stream),
         }),
     };
     ActDataTypeNode::TypeRef(type_ref)
@@ -169,22 +171,22 @@ fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&String>) -> ActData
         .chars()
         .as_str();
     match type_name {
-        "blob" => build_act_primitive_type_node(PrimitiveType::Blob, name),
-        "float32" => build_act_primitive_type_node(PrimitiveType::Float32, name),
-        "float64" => build_act_primitive_type_node(PrimitiveType::Float64, name),
-        "int" => build_act_primitive_type_node(PrimitiveType::Int, name),
-        "int8" => build_act_primitive_type_node(PrimitiveType::Int8, name),
-        "int16" => build_act_primitive_type_node(PrimitiveType::Int16, name),
-        "int32" => build_act_primitive_type_node(PrimitiveType::Int32, name),
-        "int64" => build_act_primitive_type_node(PrimitiveType::Int64, name),
-        "nat" => build_act_primitive_type_node(PrimitiveType::Nat, name),
-        "nat8" => build_act_primitive_type_node(PrimitiveType::Nat8, name),
-        "nat16" => build_act_primitive_type_node(PrimitiveType::Nat16, name),
-        "nat32" => build_act_primitive_type_node(PrimitiveType::Nat32, name),
-        "nat64" => build_act_primitive_type_node(PrimitiveType::Nat64, name),
-        "Principal" => build_act_primitive_type_node(PrimitiveType::Principal, name),
-        "empty" => build_act_primitive_type_node(PrimitiveType::Empty, name),
-        "reserved" => build_act_primitive_type_node(PrimitiveType::Reserved, name),
+        "blob" => build_act_primitive_type_node(ActPrimitiveLit::Blob, name),
+        "float32" => build_act_primitive_type_node(ActPrimitiveLit::Float32, name),
+        "float64" => build_act_primitive_type_node(ActPrimitiveLit::Float64, name),
+        "int" => build_act_primitive_type_node(ActPrimitiveLit::Int, name),
+        "int8" => build_act_primitive_type_node(ActPrimitiveLit::Int8, name),
+        "int16" => build_act_primitive_type_node(ActPrimitiveLit::Int16, name),
+        "int32" => build_act_primitive_type_node(ActPrimitiveLit::Int32, name),
+        "int64" => build_act_primitive_type_node(ActPrimitiveLit::Int64, name),
+        "nat" => build_act_primitive_type_node(ActPrimitiveLit::Nat, name),
+        "nat8" => build_act_primitive_type_node(ActPrimitiveLit::Nat8, name),
+        "nat16" => build_act_primitive_type_node(ActPrimitiveLit::Nat16, name),
+        "nat32" => build_act_primitive_type_node(ActPrimitiveLit::Nat32, name),
+        "nat64" => build_act_primitive_type_node(ActPrimitiveLit::Nat64, name),
+        "Principal" => build_act_primitive_type_node(ActPrimitiveLit::Principal, name),
+        "empty" => build_act_primitive_type_node(ActPrimitiveLit::Empty, name),
+        "reserved" => build_act_primitive_type_node(ActPrimitiveLit::Reserved, name),
         "Opt" => parse_opt_type_ref(ts_type_ref, name),
         "Func" => parse_func_type_ref(ts_type_ref, name),
         "Variant" => parse_variant_type_ref(ts_type_ref, name),
@@ -202,19 +204,19 @@ fn parse_ts_array_type(ts_array_type: &TsArrayType, name: &Option<&String>) -> A
     let elem_type = *ts_array_type.elem_type.clone();
     let elem_rust_type = ts_type_to_act_node(&elem_type, &None);
     let elem_type_ident = elem_rust_type.get_type_ident();
-    let inline_enclosed_type = if elem_rust_type.is_inline_rust_type() {
+    let inline_enclosed_type = if elem_rust_type.is_inline_type() {
         Some(elem_rust_type)
     } else {
         None
     };
     let token_stream = quote! {Vec<#elem_type_ident>};
     let array_type_info = match name {
-        Some(name) => ArrayTypeInfo::TypeAlias(ArrayTypeAlias {
+        Some(name) => ActArray::TypeAlias(ActArrayTypeAlias {
             name: name.clone().clone(),
             aliased_type: token_stream,
             enclosed_inline_type: Box::from(inline_enclosed_type),
         }),
-        None => ArrayTypeInfo::Literal(ArrayLiteral {
+        None => ActArray::Literal(ActArrayLiteral {
             token_stream,
             enclosed_inline_type: Box::from(inline_enclosed_type),
         }),
@@ -229,17 +231,15 @@ fn parse_opt_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&String>) -> ActDat
             // TODO do we want to check that 0 is the only valid index?
             let enclosed_ts_type = *params.params[0].clone();
             let enclosed_rust_type = ts_type_to_act_node(&enclosed_ts_type, &None);
-            let enclosed_rust_ident = enclosed_rust_type.get_type_ident();
-            let inline_enclosed_type = if enclosed_rust_type.is_inline_rust_type() {
-                Some(enclosed_rust_type)
-            } else {
-                None
-            };
-            ActDataTypeNode::Option(GenericTypeInfo {
-                identifier: quote!(Option<#enclosed_rust_ident>),
-                enclosed_inline_type: Box::from(inline_enclosed_type),
-                name: name.cloned(),
-            })
+            match name {
+                Some(name) => ActDataTypeNode::Option(ActOption::TypeAlias(ActOptionTypeAlias {
+                    name: name.clone().clone(),
+                    enclosed_type: Box::from(enclosed_rust_type),
+                })),
+                None => ActDataTypeNode::Option(ActOption::Literal(ActOptionLiteral {
+                    enclosed_type: Box::from(enclosed_rust_type),
+                })),
+            }
         }
         None => todo!("Opt must have an enclosed type"),
     }
@@ -267,7 +267,7 @@ fn parse_func_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&String>) -> ActDa
     let params = funcs::get_param_types(ts_type);
     let return_type_string = funcs::get_return_type(ts_type);
 
-    let func_info = FuncInfo {
+    let func_info = ActFunc {
         is_inline: name.is_none(),
         name: type_ident.clone(),
         params: param_types,
@@ -303,7 +303,7 @@ fn parse_func_return_type(ts_type: &TsFnType) -> ActDataTypeNode {
                     .as_str()
                     == "Oneway"
                 {
-                    ActDataTypeNode::TypeRef(TypeRef::Literal(TypeRefInfo {
+                    ActDataTypeNode::TypeRef(ActTypeRef::Literal(ActTypeRefLit {
                         name: "".to_string(),
                     }))
                 } else {
@@ -340,18 +340,21 @@ fn parse_variant_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&String>) -> Ac
     ActDataTypeNode::Variant(parse_ts_type_lit_as_enum(name, &enclosed_type_lit))
 }
 
-fn parse_ts_type_lit_as_enum(ts_type_ident: &Option<&String>, ts_type_lit: &TsTypeLit) -> EnumInfo {
+fn parse_ts_type_lit_as_enum(
+    ts_type_ident: &Option<&String>,
+    ts_type_lit: &TsTypeLit,
+) -> ActVariant {
     // TODO it would be much neater to have this on the same line as None, but I don't know how to do that.
     let inline_ident = generate_inline_ident(ts_type_lit);
     let type_ident = match ts_type_ident {
         Some(type_ident) => type_ident,
         None => &inline_ident,
     };
-    let members: Vec<EnumMember> = ts_type_lit.members.iter().fold(vec![], |acc, member| {
+    let members: Vec<ActVariantMember> = ts_type_lit.members.iter().fold(vec![], |acc, member| {
         let result = parse_type_literal_members_for_enum(member);
         vec![acc, vec![result]].concat()
     });
-    EnumInfo {
+    ActVariant {
         is_inline: ts_type_ident.is_none(),
         name: type_ident.clone(),
         members: members,
@@ -361,7 +364,7 @@ fn parse_ts_type_lit_as_enum(ts_type_ident: &Option<&String>, ts_type_lit: &TsTy
 fn parse_ts_type_lit_as_struct(
     ts_type_ident: &Option<&String>,
     ts_type_lit: &TsTypeLit,
-) -> StructInfo {
+) -> ActRecord {
     // TODO it would be much neater to have this on the same line as None, but I don't know how to do that.
     let inline_ident = generate_inline_ident(ts_type_lit);
     let type_ident = match ts_type_ident {
@@ -369,21 +372,21 @@ fn parse_ts_type_lit_as_struct(
         None => &inline_ident,
     };
 
-    let members: Vec<StructMember> = ts_type_lit.members.iter().fold(vec![], |acc, member| {
+    let members: Vec<ActRecordMember> = ts_type_lit.members.iter().fold(vec![], |acc, member| {
         let structures = parse_type_literal_fields(member);
         vec![acc, vec![structures]].concat()
     });
 
-    StructInfo {
+    ActRecord {
         name: type_ident.clone(),
         members,
         is_inline: ts_type_ident.is_none(),
     }
 }
 
-fn parse_type_literal_fields(member: &TsTypeElement) -> StructMember {
+fn parse_type_literal_fields(member: &TsTypeElement) -> ActRecordMember {
     match member.as_ts_property_signature() {
-        Some(prop_sig) => StructMember {
+        Some(prop_sig) => ActRecordMember {
             member_name: parse_type_literal_member_name(prop_sig),
             member_type: parse_type_literal_member_type(prop_sig),
         },
@@ -408,9 +411,9 @@ pub fn parse_type_literal_member_type(prop_sig: &TsPropertySignature) -> ActData
     ts_type_to_act_node(&ts_type, &None)
 }
 
-fn parse_type_literal_members_for_enum(member: &TsTypeElement) -> EnumMember {
+fn parse_type_literal_members_for_enum(member: &TsTypeElement) -> ActVariantMember {
     match member.as_ts_property_signature() {
-        Some(prop_sig) => EnumMember {
+        Some(prop_sig) => ActVariantMember {
             member_name: parse_type_literal_member_name(prop_sig),
             member_type: parse_type_literal_member_type(prop_sig),
         },

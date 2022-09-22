@@ -257,7 +257,6 @@ type CanisterTuple1 = [
 
 export function tuple_test(tup: CanisterTuple1): Query<void> {}
 
-// TODO support this
-// type OptionAlias = Opt<Boolean>;
+type OptionAlias = Opt<Boolean>;
 
-// export function option_test(opt: OptionAlias): Update<void> {}
+export function option_test(opt: OptionAlias): Update<void> {}
