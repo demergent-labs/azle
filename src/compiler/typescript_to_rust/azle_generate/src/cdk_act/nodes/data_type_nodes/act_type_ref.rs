@@ -1,4 +1,4 @@
-use super::{act_data_type_node::ActAliasedType, ToIdent, ToTokenStream};
+use super::{ToIdent, ToTokenStream};
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
@@ -16,12 +16,18 @@ pub struct ActTypeRefLit {
 #[derive(Clone, Debug)]
 pub struct ActTypeRefTypeAlias {
     pub name: String,
-    pub aliased_type: ActAliasedType,
+    pub aliased_type: ActTypeRefLit,
+}
+
+impl ToTokenStream for ActTypeRefLit {
+    fn to_token_stream(&self) -> TokenStream {
+        self.name.to_identifier().to_token_stream()
+    }
 }
 
 impl ToTokenStream for ActTypeRefTypeAlias {
     fn to_token_stream(&self) -> TokenStream {
-        let name = self.name.to_ident().to_token_stream();
+        let name = self.name.to_identifier().to_token_stream();
         let alias = self.aliased_type.to_token_stream();
         quote!(type #name = #alias;)
     }

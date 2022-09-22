@@ -10,7 +10,7 @@ pub struct Param {
 impl ToTokenStream for Param {
     fn to_token_stream(&self) -> TokenStream {
         let name = &self.name;
-        let data_type = &self.data_type.get_type_ident();
+        let data_type = &self.data_type.get_type_identifier();
         quote::quote! {
             #name: #data_type
         }

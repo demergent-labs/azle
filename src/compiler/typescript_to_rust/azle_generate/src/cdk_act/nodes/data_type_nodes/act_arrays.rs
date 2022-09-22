@@ -1,8 +1,8 @@
 use super::ToTokenStream;
 use super::{ActDataTypeNode, ToIdent};
 use proc_macro2::TokenStream;
-use quote::quote;
 use quote::ToTokens;
+use quote::{format_ident, quote};
 
 #[derive(Clone, Debug)]
 pub enum ActArray {
@@ -32,19 +32,20 @@ impl ActArray {
 
 impl ToTokenStream for ActArrayLiteral {
     fn to_token_stream(&self) -> TokenStream {
-        let enclosed_rust_ident = self.enclosed_type.get_type_ident();
+        let enclosed_rust_ident = self.enclosed_type.get_type_identifier();
         quote!(Vec<#enclosed_rust_ident>)
     }
 }
 
 impl ToTokenStream for ActArrayTypeAlias {
     fn to_token_stream(&self) -> TokenStream {
-        let name = self.name.to_ident().to_token_stream();
-        let enclosed_type = self.enclosed_type.get_type_ident();
+        let name = self.name.to_identifier().to_token_stream();
+        let enclosed_type = self.enclosed_type.get_type_identifier();
         quote!(type #name = Vec<#enclosed_type>;)
     }
 }
 
+// TODO do we use this?
 impl ToTokenStream for ActArray {
     fn to_token_stream(&self) -> TokenStream {
         match self {

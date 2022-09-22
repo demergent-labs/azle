@@ -17,7 +17,7 @@ pub struct ActRecordMember {
 
 impl ToTokenStream for ActRecord {
     fn to_token_stream(&self) -> TokenStream {
-        let type_ident = &self.name.to_ident();
+        let type_ident = &self.name.to_identifier();
         let member_token_streams: Vec<TokenStream> = self
             .members
             .iter()
@@ -32,15 +32,15 @@ impl ToTokenStream for ActRecord {
     }
 }
 
-impl ActRecordMember {
-    pub fn to_token_stream(&self) -> TokenStream {
+impl ToTokenStream for ActRecordMember {
+    fn to_token_stream(&self) -> TokenStream {
         let member_type_token_stream = if self.member_type.needs_to_be_boxed() {
-            let ident = self.member_type.get_type_ident();
+            let ident = self.member_type.get_type_identifier();
             quote!(Box<#ident>)
         } else {
-            self.member_type.get_type_ident()
+            quote!(self.member_type.get_type_identifier())
         };
-        let member_name = &self.member_name.to_ident();
+        let member_name = &self.member_name.to_identifier();
         quote!(#member_name: #member_type_token_stream)
     }
 }

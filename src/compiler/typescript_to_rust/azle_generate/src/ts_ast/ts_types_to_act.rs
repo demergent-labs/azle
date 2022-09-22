@@ -1,8 +1,8 @@
-use crate::cdk_act::data_type_nodes::{
-    ActAliasedType, ActArray, ActArrayLiteral, ActArrayTypeAlias, ActDataTypeNode, ActFunc,
-    ActOption, ActOptionLiteral, ActOptionTypeAlias, ActPrimitive, ActPrimitiveLit,
-    ActPrimitiveTypeAlias, ActRecord, ActRecordMember, ActTuple, ActTupleElem, ActTypeRef,
-    ActTypeRefLit, ActTypeRefTypeAlias, ActVariant, ActVariantMember,
+use crate::cdk_act::nodes::data_type_nodes::{
+    ActArray, ActArrayLiteral, ActArrayTypeAlias, ActDataTypeNode, ActFunc, ActOption,
+    ActOptionLiteral, ActOptionTypeAlias, ActPrimitive, ActPrimitiveLit, ActPrimitiveTypeAlias,
+    ActRecord, ActRecordMember, ActTuple, ActTupleElem, ActTypeRef, ActTypeRefLit,
+    ActTypeRefTypeAlias, ActVariant, ActVariantMember,
 };
 use crate::generators::funcs;
 use core::panic;
@@ -108,7 +108,7 @@ fn build_act_primitive_type_node(
         None => ActPrimitive::Literal(primitive_type),
         Some(name) => ActPrimitive::TypeAlias(ActPrimitiveTypeAlias {
             name: name.clone().clone(),
-            aliased_type: ActAliasedType::Primitive(primitive_type),
+            aliased_type: primitive_type,
         }),
     };
     ActDataTypeNode::Primitive(primitive)
@@ -119,7 +119,7 @@ fn build_act_custom_type_node(token_stream: String, name: &Option<&String>) -> A
         None => ActTypeRef::Literal(ActTypeRefLit { name: token_stream }),
         Some(name) => ActTypeRef::TypeAlias(ActTypeRefTypeAlias {
             name: name.clone().clone(),
-            aliased_type: ActAliasedType::TypeRef(token_stream),
+            aliased_type: ActTypeRefLit { name: token_stream },
         }),
     };
     ActDataTypeNode::TypeRef(type_ref)

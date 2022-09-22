@@ -30,15 +30,15 @@ impl ActOption {
 
 impl ToTokenStream for ActOptionLiteral {
     fn to_token_stream(&self) -> TokenStream {
-        let enclosed_rust_ident = self.enclosed_type.get_type_ident();
+        let enclosed_rust_ident = self.enclosed_type.get_type_identifier();
         quote!(Option<#enclosed_rust_ident>)
     }
 }
 
 impl ToTokenStream for ActOptionTypeAlias {
     fn to_token_stream(&self) -> TokenStream {
-        let name = self.name.to_ident().to_token_stream();
-        let enclosed_type = self.enclosed_type.get_type_ident();
+        let name = self.name.to_identifier().to_token_stream();
+        let enclosed_type = self.enclosed_type.get_type_identifier();
         quote!(type #name = Option<#enclosed_type>;)
     }
 }

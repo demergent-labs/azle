@@ -16,7 +16,7 @@ pub struct ActFunc {
 impl ToTokenStream for ActFunc {
     fn to_token_stream(&self) -> TokenStream {
         generate_func_struct_and_impls(
-            &self.name.to_ident(),
+            &self.name.to_identifier(),
             &self.mode,
             &self.param_strings,
             &self.return_string,
