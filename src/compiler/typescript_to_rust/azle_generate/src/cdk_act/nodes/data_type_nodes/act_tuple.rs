@@ -16,7 +16,7 @@ pub struct ActTupleElem {
 
 impl ToTokenStream for ActTuple {
     fn to_token_stream(&self) -> TokenStream {
-        let type_ident = &self.name.to_ident();
+        let type_ident = &self.name.to_identifier();
         let elem_idents: Vec<TokenStream> = self
             .elems
             .iter()
@@ -34,10 +34,10 @@ impl ToTokenStream for ActTuple {
 impl ToTokenStream for ActTupleElem {
     fn to_token_stream(&self) -> TokenStream {
         if self.elem_type.needs_to_be_boxed() {
-            let ident = self.elem_type.get_type_ident();
+            let ident = self.elem_type.get_type_identifier();
             quote!(Box<#ident>)
         } else {
-            self.elem_type.get_type_ident()
+            quote!(self.elem_type.get_type_identifier())
         }
     }
 }

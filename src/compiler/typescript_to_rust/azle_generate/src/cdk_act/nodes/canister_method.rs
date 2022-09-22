@@ -124,7 +124,7 @@ fn generate_function(canister_method: &CanisterMethod) -> TokenStream {
 
     let function_body = &canister_method.body;
 
-    let return_type_token = canister_method.return_type.get_type_ident();
+    let return_type_token = canister_method.return_type.get_type_identifier();
     let wrapped_return_type = if canister_method.is_manual {
         quote! {
             ic_cdk::api::call::ManualReply<#return_type_token>

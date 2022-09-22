@@ -1,12 +1,11 @@
 pub use abstract_canister_tree::AbstractCanisterTree;
 pub use actable::Actable;
-pub use data_type_nodes::ActDataTypeNode;
+pub use nodes::data_type_nodes::ActDataTypeNode;
 pub use nodes::CanisterMethod;
 pub use nodes::CanisterMethodActNode;
 
 pub mod abstract_canister_tree;
 pub mod actable;
-pub mod data_type_nodes;
 pub mod generators;
 pub mod nodes;
 

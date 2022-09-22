@@ -6,7 +6,8 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 use crate::{
     cdk_act::{
-        self, data_type_nodes, AbstractCanisterTree, ActDataTypeNode, CanisterMethodType, ToAct,
+        self, nodes::data_type_nodes, AbstractCanisterTree, ActDataTypeNode, CanisterMethodType,
+        ToAct,
     },
     generators::{
         azle_into_js_value, azle_try_from_js_value,
@@ -120,26 +121,11 @@ impl ToAct for TsAst {
         .concat();
         let all_inline_acts = data_type_nodes::deduplicate(all_inline_acts);
         for inline_act in all_inline_acts.clone() {
-            eprintln!("{}", inline_act.get_type_ident());
+            eprintln!("{}", inline_act.get_type_identifier());
         }
 
         let all_type_acts = vec![type_alias_acts, all_inline_acts].concat();
 
-        let aliases: Vec<ActDataTypeNode> = all_type_acts
-            .iter()
-            .filter(|act| match act {
-                ActDataTypeNode::Primitive(primitive) => match primitive {
-                    data_type_nodes::ActPrimitive::TypeAlias(_) => true,
-                    _ => false,
-                },
-                ActDataTypeNode::TypeRef(type_ref) => match type_ref {
-                    data_type_nodes::ActTypeRef::TypeAlias(_) => true,
-                    _ => false,
-                },
-                _ => false,
-            })
-            .map(|act| act.clone())
-            .collect();
         let arrays: Vec<ActDataTypeNode> = all_type_acts
             .iter()
             .filter(|act| match act {
@@ -167,16 +153,7 @@ impl ToAct for TsAst {
         let primitives: Vec<ActDataTypeNode> = all_type_acts
             .iter()
             .filter(|act| match act {
-                ActDataTypeNode::Primitive(primitive) => match primitive {
-                    data_type_nodes::ActPrimitive::Literal(_) => todo!(),
-                    data_type_nodes::ActPrimitive::TypeAlias(_) => false,
-                },
-                ActDataTypeNode::TypeRef(type_ref) => match type_ref {
-                    data_type_nodes::ActTypeRef::Literal(_) => {
-                        todo!("Figure out if this actually happens at this point.")
-                    }
-                    data_type_nodes::ActTypeRef::TypeAlias(_) => false,
-                },
+                ActDataTypeNode::Primitive(_) => true,
                 _ => false,
             })
             .map(|act| act.clone())
@@ -193,6 +170,14 @@ impl ToAct for TsAst {
             .iter()
             .filter(|act| match act {
                 ActDataTypeNode::Tuple(_) => true,
+                _ => false,
+            })
+            .map(|act| act.clone())
+            .collect();
+        let type_refs: Vec<ActDataTypeNode> = all_type_acts
+            .iter()
+            .filter(|act| match act {
+                ActDataTypeNode::TypeRef(_) => true,
                 _ => false,
             })
             .map(|act| act.clone())
@@ -248,13 +233,13 @@ impl ToAct for TsAst {
                 #azle_try_from_js_value
 
             },
-            aliases,
             arrays,
             funcs,
             options,
             primitives,
             records,
             tuples,
+            type_refs,
             variants,
         }
     }

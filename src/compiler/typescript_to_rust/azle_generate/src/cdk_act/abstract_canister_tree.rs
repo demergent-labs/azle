@@ -1,9 +1,8 @@
 use proc_macro2::TokenStream;
 
 use super::{
-    data_type_nodes,
     generators::{candid_file_generation, ic_object::functions, random},
-    nodes::CanisterMethodActNode,
+    nodes::{data_type_nodes, CanisterMethodActNode},
     ActDataTypeNode, ToTokenStream, ToTokenStreams,
 };
 
@@ -14,13 +13,13 @@ pub struct AbstractCanisterTree {
     pub rust_code: TokenStream,
     pub update_methods: Vec<CanisterMethodActNode>,
     pub query_methods: Vec<CanisterMethodActNode>,
-    pub aliases: Vec<ActDataTypeNode>,
     pub arrays: Vec<ActDataTypeNode>,
     pub funcs: Vec<ActDataTypeNode>,
     pub options: Vec<ActDataTypeNode>,
     pub primitives: Vec<ActDataTypeNode>,
     pub records: Vec<ActDataTypeNode>,
     pub tuples: Vec<ActDataTypeNode>,
+    pub type_refs: Vec<ActDataTypeNode>,
     pub variants: Vec<ActDataTypeNode>,
 }
 
@@ -44,11 +43,6 @@ impl ToTokenStream for AbstractCanisterTree {
         let candid_file_generation_code =
             candid_file_generation::generate_candid_file_generation_code();
 
-        let aliases: Vec<TokenStream> = self
-            .aliases
-            .iter()
-            .map(|act| act.to_type_definition_token_stream())
-            .collect();
         let arrays: Vec<TokenStream> = self
             .arrays
             .iter()
@@ -79,6 +73,11 @@ impl ToTokenStream for AbstractCanisterTree {
             .iter()
             .map(|act| act.to_type_definition_token_stream())
             .collect();
+        let type_refs: Vec<TokenStream> = self
+            .type_refs
+            .iter()
+            .map(|act| act.to_type_definition_token_stream())
+            .collect();
         let variants: Vec<TokenStream> = self
             .variants
             .iter()
@@ -94,23 +93,14 @@ impl ToTokenStream for AbstractCanisterTree {
             #(#update_methods)*
             #func_arg_token
 
-            struct ActArrays {}
             #(#arrays)*
-            struct ActAliases {}
-            #(#aliases)*
-            struct ActFuncs{}
+            #(#type_refs)*
             #(#funcs)*
-            struct ActOptions {}
             #(#options)*
-            struct ActPrimitives {}
             #(#primitives)*
-            struct ActRecords {}
             #(#records)*
-            struct ActTuples {}
             #(#tuples)*
-            struct ActVariants {}
             #(#variants)*
-            struct EndActTypes {}
 
             #user_defined_code
 
