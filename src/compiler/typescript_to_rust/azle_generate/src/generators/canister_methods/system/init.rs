@@ -1,19 +1,15 @@
-use crate::cdk_act::generators::ic_object::generate_ic_object;
-use crate::{
-    cdk_act::CanisterMethodType,
-    generators::canister_methods::{
-        functions::{
-            generate_param_name_idents, generate_param_types, generate_params_token_stream,
-        },
-        method_body::generate_call_to_js_function,
-    },
-    ts_ast,
-};
+use proc_macro2::TokenStream;
 use quote::quote;
 use swc_ecma_ast::{FnDecl, Program};
 
-pub fn generate_canister_method_system_init(programs: &Vec<Program>) -> proc_macro2::TokenStream {
-    let ic_object = generate_ic_object(programs);
+use crate::{
+    cdk_act::{generators::ic_object, CanisterMethodType, ToTokenStreams},
+    generators::canister_methods::{functions, method_body},
+    ts_ast,
+};
+
+pub fn generate_canister_method_system_init(programs: &Vec<Program>) -> TokenStream {
+    let ic_object = ic_object::generate_ic_object(programs);
 
     let init_fn_decls =
         ts_ast::program::get_canister_method_type_fn_decls(programs, &CanisterMethodType::Init);
@@ -57,25 +53,18 @@ pub fn generate_canister_method_system_init(programs: &Vec<Program>) -> proc_mac
     }
 }
 
-fn generate_init_params(init_fn_decl_option: &Option<&FnDecl>) -> Vec<proc_macro2::TokenStream> {
+fn generate_init_params(init_fn_decl_option: &Option<&FnDecl>) -> Vec<TokenStream> {
     if let Some(init_fn_decl) = init_fn_decl_option {
-        // TODO this part should be refactored to allow us to get a params data structure by just passing in a &FnDecl
         // TODO that params data structures can have the name, the type, and both strings and idents as necessary
-        let param_name_idents = generate_param_name_idents(&init_fn_decl);
-        let param_types = generate_param_types(&init_fn_decl);
-        let params = generate_params_token_stream(&param_name_idents, &param_types);
-
-        params
+        functions::build_params(&init_fn_decl).to_token_streams()
     } else {
         vec![]
     }
 }
 
-fn generate_call_to_init_js_function(
-    init_fn_decl_option: &Option<&FnDecl>,
-) -> proc_macro2::TokenStream {
+fn generate_call_to_init_js_function(init_fn_decl_option: &Option<&FnDecl>) -> TokenStream {
     if let Some(init_fn_decl) = init_fn_decl_option {
-        generate_call_to_js_function(init_fn_decl)
+        method_body::generate_call_to_js_function(init_fn_decl)
     } else {
         quote!()
     }

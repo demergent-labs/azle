@@ -6,6 +6,7 @@ use syn::Ident;
 use super::{ts_type, ts_type_alias_decl};
 use crate::cdk_act::CanisterMethodType;
 
+// TODO: Should be combined with `get_return_ts_type` below
 pub fn get_canister_method_return_type(fn_decl: &FnDecl) -> Option<&TsType> {
     let ts_type = &*fn_decl.function.return_type.as_ref().unwrap().type_ann;
     let type_ref = ts_type.as_ts_type_ref().unwrap();
@@ -68,6 +69,7 @@ pub fn get_param_ts_types(ast_fnc_decl: &FnDecl) -> Vec<TsType> {
     })
 }
 
+// TODO: Should be combined with `get_canister_method_return_type` above
 pub fn get_return_ts_type(ast_fnc_decl: &FnDecl) -> TsType {
     let ts_type_ann = ast_fnc_decl.function.return_type.as_ref();
     let return_type_ann = ts_type_ann.clone().unwrap();
