@@ -2,8 +2,8 @@ pub use act_data_type_node::{
     build_inline_types_from_type_alias_acts, deduplicate, ActAliasedType, ActDataTypeNode,
 };
 pub use arrays::{ActArray, ActArrayLiteral, ActArrayTypeAlias};
-pub use funcs::ActFunc;
-pub use option::ActOption;
+pub use funcs::{generate_func_arg_token, ActFunc};
+pub use option::{ActOption, ActOptionLiteral, ActOptionTypeAlias};
 pub use primitives::{ActPrimitive, ActPrimitiveLit, ActPrimitiveTypeAlias};
 use proc_macro2::{Ident, TokenStream};
 use quote::format_ident;

@@ -7,6 +7,7 @@ type AzleInline_10550531413164410119 = record {
   two : AzleInline_4064619906461566232;
 };
 type AzleInline_11785136007535424815 = record { three_inline : ComplexRecord };
+type AzleInline_11877730417962673067 = record { thing : text };
 type AzleInline_11938290237207584742 = record {
   two_a : AzleInline_17024899950976082855;
   two_b : bool;
@@ -105,6 +106,7 @@ type VariantWithInline = variant {
 };
 type Yes = variant { One; Two; Three };
 service : () -> {
+  array_test : (vec bool, vec AzleInline_11877730417962673067) -> ();
   complex_record_test : (
       ComplexRecord,
       SimpleRecord,
@@ -149,7 +151,7 @@ service : () -> {
       AzleInline_331500420231041961,
     ) -> ();
   one_variant : (Fun) -> () query;
-  option_test : (opt bool) -> ();
+  option_test : (opt bool, opt AzleInline_331500420231041961) -> ();
   self_reference : (
       SelfReferencingVariant,
       SelfReferencingRecord,
