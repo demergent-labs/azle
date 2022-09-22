@@ -41,9 +41,7 @@ impl ActDataTypeNode {
                     type_alias.name.to_identifier().to_token_stream()
                 }
             },
-            ActDataTypeNode::Record(act_record) => {
-                act_record.name.to_identifier().to_token_stream()
-            }
+            ActDataTypeNode::Record(act_record) => act_record.to_token_stream(),
             ActDataTypeNode::Variant(act_variant) => {
                 act_variant.name.to_identifier().to_token_stream()
             }
@@ -65,7 +63,7 @@ impl ActDataTypeNode {
             ActDataTypeNode::Primitive(_) => false,
             ActDataTypeNode::TypeRef(_) => false,
             ActDataTypeNode::Array(act_array) => act_array.get_enclosed_type().is_inline_type(),
-            ActDataTypeNode::Record(act_record) => act_record.is_inline,
+            ActDataTypeNode::Record(act_record) => act_record.is_literal(),
             ActDataTypeNode::Variant(act_variant) => act_variant.is_inline,
             ActDataTypeNode::Func(act_func) => act_func.is_inline,
             ActDataTypeNode::Tuple(act_tuple) => act_tuple.is_inline,
@@ -99,6 +97,19 @@ impl ActDataTypeNode {
         }
     }
 
+    pub fn as_type_alias(&self) -> ActDataTypeNode {
+        match self {
+            ActDataTypeNode::Primitive(_) => todo!(),
+            ActDataTypeNode::Option(_) => self.clone(),
+            ActDataTypeNode::TypeRef(_) => todo!(),
+            ActDataTypeNode::Array(_) => self.clone(),
+            ActDataTypeNode::Record(record) => ActDataTypeNode::Record(record.as_type_alias()),
+            ActDataTypeNode::Variant(_) => self.clone(),
+            ActDataTypeNode::Func(_) => self.clone(),
+            ActDataTypeNode::Tuple(_) => self.clone(),
+        }
+    }
+
     pub fn needs_to_be_boxed(&self) -> bool {
         true
     }
@@ -106,10 +117,10 @@ impl ActDataTypeNode {
     pub fn get_inline_members(&self) -> Vec<ActDataTypeNode> {
         match self {
             ActDataTypeNode::Record(act_record) => act_record
-                .members
+                .get_member_types()
                 .iter()
-                .filter(|member| member.member_type.is_inline_type())
-                .map(|member| member.member_type.clone())
+                .filter(|member| member.is_inline_type())
+                .map(|member| member.clone())
                 .collect(),
             ActDataTypeNode::Variant(act_variant) => act_variant
                 .members
@@ -148,7 +159,7 @@ impl ActDataTypeNode {
 
     pub fn collect_inline_types(&self) -> Vec<ActDataTypeNode> {
         let act_data_type = match self.is_inline_type() {
-            true => vec![self.clone()],
+            true => vec![self.as_type_alias()],
             false => vec![],
         };
         let member_act_data_types = self.get_inline_members();

@@ -1,3 +1,4 @@
+use crate::cdk_act::nodes::data_type_nodes::act_record::{ActRecordLiteral, ActRecordTypeAlias};
 use crate::cdk_act::nodes::data_type_nodes::{
     ActArray, ActArrayLiteral, ActArrayTypeAlias, ActDataTypeNode, ActFunc, ActOption,
     ActOptionLiteral, ActOptionTypeAlias, ActPrimitive, ActPrimitiveLit, ActPrimitiveTypeAlias,
@@ -308,26 +309,21 @@ fn parse_ts_type_lit_as_enum(
     }
 }
 
-fn parse_ts_type_lit_as_struct(
-    ts_type_ident: &Option<&String>,
-    ts_type_lit: &TsTypeLit,
-) -> ActRecord {
-    // TODO it would be much neater to have this on the same line as None, but I don't know how to do that.
-    let inline_ident = generate_inline_ident(ts_type_lit);
-    let type_ident = match ts_type_ident {
-        Some(type_ident) => type_ident,
-        None => &inline_ident,
-    };
-
+fn parse_ts_type_lit_as_struct(name: &Option<&String>, ts_type_lit: &TsTypeLit) -> ActRecord {
     let members: Vec<ActRecordMember> = ts_type_lit.members.iter().fold(vec![], |acc, member| {
         let structures = parse_type_literal_fields(member);
         vec![acc, vec![structures]].concat()
     });
 
-    ActRecord {
-        name: type_ident.clone(),
-        members,
-        is_inline: ts_type_ident.is_none(),
+    match name {
+        Some(name) => ActRecord::TypeAlias(ActRecordTypeAlias {
+            name: name.clone().clone(),
+            members,
+        }),
+        None => ActRecord::Literal(ActRecordLiteral {
+            name: generate_inline_ident(ts_type_lit),
+            members,
+        }),
     }
 }
 
@@ -377,7 +373,7 @@ fn calculate_ts_type_lit_hash(type_lit: &TsTypeLit) -> String {
 fn generate_inline_ident(ts_type_lit: &TsTypeLit) -> String {
     let id = calculate_ts_type_lit_hash(ts_type_lit);
     // TODO could a variant and a struct produce the same hash if they have the same inline part?
-    format!("AzleInline_{}", id)
+    format!("AzleInline{}", id)
 }
 
 fn calculate_ts_type_lit_hash_for_type_ref(type_lit: &TsTypeRef) -> String {
@@ -388,8 +384,7 @@ fn calculate_ts_type_lit_hash_for_type_ref(type_lit: &TsTypeRef) -> String {
 
 fn generate_inline_ident_for_func(ts_type_ref: &TsTypeRef) -> String {
     let id = calculate_ts_type_lit_hash_for_type_ref(ts_type_ref);
-    // TODO could a variant and a struct produce the same hash if they have the same inline part?
-    format!("AzleInlineFunc_{}", id)
+    format!("AzleInlineFunc{}", id)
 }
 
 fn calculate_ts_type_lit_hash_for_tuple(type_lit: &TsTupleType) -> String {
@@ -400,5 +395,5 @@ fn calculate_ts_type_lit_hash_for_tuple(type_lit: &TsTupleType) -> String {
 
 fn generate_inline_ident_for_tuple(ts_type_ref: &TsTupleType) -> String {
     let id = calculate_ts_type_lit_hash_for_tuple(ts_type_ref);
-    format!("AzleInlineTuple_{}", id)
+    format!("AzleInlineTuple{}", id)
 }
