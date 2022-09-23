@@ -1,4 +1,7 @@
-use crate::cdk_act::nodes::data_type_nodes::act_record::{ActRecordLiteral, ActRecordTypeAlias};
+use crate::cdk_act::nodes::data_type_nodes::act_funcs::Func;
+use crate::cdk_act::nodes::data_type_nodes::act_record::Record;
+use crate::cdk_act::nodes::data_type_nodes::act_tuple::Tuple;
+use crate::cdk_act::nodes::data_type_nodes::act_variants::Variant;
 use crate::cdk_act::nodes::data_type_nodes::{
     ActArray, ActArrayLiteral, ActArrayTypeAlias, ActDataTypeNode, ActFunc, ActOption,
     ActOptionLiteral, ActOptionTypeAlias, ActPrimitive, ActPrimitiveLit, ActPrimitiveTypeAlias,
@@ -49,18 +52,17 @@ pub fn ts_type_to_act_node(ts_type: &TsType, name: &Option<&String>) -> ActDataT
 }
 
 fn parse_ts_tuple_type(ts_tuple_type: &TsTupleType, name: &Option<&String>) -> ActTuple {
-    let inline_ident = generate_inline_ident_for_tuple(ts_tuple_type);
-    let type_ident = match name {
-        Some(type_ident) => type_ident,
-        None => &inline_ident,
-    };
-
     let elem_types = get_elem_types(ts_tuple_type);
 
-    ActTuple {
-        name: type_ident.clone(),
-        elems: elem_types,
-        is_inline: name.is_none(),
+    match name {
+        Some(name) => ActTuple::TypeAlias(Tuple {
+            name: name.clone().clone(),
+            elems: elem_types,
+        }),
+        None => ActTuple::Literal(Tuple {
+            name: generate_inline_ident_for_tuple(ts_tuple_type),
+            elems: elem_types,
+        }),
     }
 }
 
@@ -215,7 +217,7 @@ fn parse_func_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&String>) -> ActDa
     let params = funcs::get_param_types(ts_type);
     let return_type_string = funcs::get_return_type(ts_type);
 
-    let func_info = ActFunc {
+    let func_info = Func {
         is_inline: name.is_none(),
         name: type_ident.clone(),
         params: param_types,
@@ -224,7 +226,11 @@ fn parse_func_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&String>) -> ActDa
         param_strings: params,
         return_string: return_type_string,
     };
-    ActDataTypeNode::Func(func_info)
+    let act_func = match name {
+        Some(_) => ActFunc::TypeAlias(func_info),
+        None => ActFunc::Literal(func_info),
+    };
+    ActDataTypeNode::Func(act_func)
 }
 
 // Same comment as parse_func_param_types
@@ -288,24 +294,20 @@ fn parse_variant_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&String>) -> Ac
     ActDataTypeNode::Variant(parse_ts_type_lit_as_enum(name, &enclosed_type_lit))
 }
 
-fn parse_ts_type_lit_as_enum(
-    ts_type_ident: &Option<&String>,
-    ts_type_lit: &TsTypeLit,
-) -> ActVariant {
-    // TODO it would be much neater to have this on the same line as None, but I don't know how to do that.
-    let inline_ident = generate_inline_ident(ts_type_lit);
-    let type_ident = match ts_type_ident {
-        Some(type_ident) => type_ident,
-        None => &inline_ident,
-    };
+fn parse_ts_type_lit_as_enum(name: &Option<&String>, ts_type_lit: &TsTypeLit) -> ActVariant {
     let members: Vec<ActVariantMember> = ts_type_lit.members.iter().fold(vec![], |acc, member| {
         let result = parse_type_literal_members_for_enum(member);
         vec![acc, vec![result]].concat()
     });
-    ActVariant {
-        is_inline: ts_type_ident.is_none(),
-        name: type_ident.clone(),
-        members: members,
+    match name {
+        Some(name) => ActVariant::TypeAlias(Variant {
+            name: name.clone().clone(),
+            members,
+        }),
+        None => ActVariant::Literal(Variant {
+            name: generate_inline_ident(ts_type_lit),
+            members,
+        }),
     }
 }
 
@@ -316,11 +318,11 @@ fn parse_ts_type_lit_as_struct(name: &Option<&String>, ts_type_lit: &TsTypeLit) 
     });
 
     match name {
-        Some(name) => ActRecord::TypeAlias(ActRecordTypeAlias {
+        Some(name) => ActRecord::TypeAlias(Record {
             name: name.clone().clone(),
             members,
         }),
-        None => ActRecord::Literal(ActRecordLiteral {
+        None => ActRecord::Literal(Record {
             name: generate_inline_ident(ts_type_lit),
             members,
         }),

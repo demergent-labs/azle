@@ -1,7 +1,7 @@
 use super::{
     act_arrays::ActArray, act_funcs::ActFunc, act_option::ActOption, act_primitives::ActPrimitive,
     act_record::ActRecord, act_tuple::ActTuple, act_type_ref::ActTypeRef, act_variants::ActVariant,
-    ToIdent, ToTokenStream,
+    Literally, ToIdent, ToTokenStream,
 };
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
@@ -42,11 +42,9 @@ impl ActDataTypeNode {
                 }
             },
             ActDataTypeNode::Record(act_record) => act_record.to_token_stream(),
-            ActDataTypeNode::Variant(act_variant) => {
-                act_variant.name.to_identifier().to_token_stream()
-            }
-            ActDataTypeNode::Func(act_func) => act_func.name.to_identifier().to_token_stream(),
-            ActDataTypeNode::Tuple(act_tuple) => act_tuple.name.to_identifier().to_token_stream(),
+            ActDataTypeNode::Variant(act_variant) => act_variant.to_token_stream(),
+            ActDataTypeNode::Func(act_func) => act_func.to_token_stream(),
+            ActDataTypeNode::Tuple(act_tuple) => act_tuple.to_token_stream(),
             ActDataTypeNode::Option(act_option) => match act_option {
                 ActOption::Literal(literal) => literal.to_token_stream(),
                 ActOption::TypeAlias(type_alias) => {
@@ -64,9 +62,9 @@ impl ActDataTypeNode {
             ActDataTypeNode::TypeRef(_) => false,
             ActDataTypeNode::Array(act_array) => act_array.get_enclosed_type().is_inline_type(),
             ActDataTypeNode::Record(act_record) => act_record.is_literal(),
-            ActDataTypeNode::Variant(act_variant) => act_variant.is_inline,
-            ActDataTypeNode::Func(act_func) => act_func.is_inline,
-            ActDataTypeNode::Tuple(act_tuple) => act_tuple.is_inline,
+            ActDataTypeNode::Variant(act_variant) => act_variant.is_literal(),
+            ActDataTypeNode::Func(act_func) => act_func.is_literal(),
+            ActDataTypeNode::Tuple(act_tuple) => act_tuple.is_literal(),
             ActDataTypeNode::Option(act_option) => act_option.get_enclosed_type().is_inline_type(),
         }
     }
@@ -104,9 +102,9 @@ impl ActDataTypeNode {
             ActDataTypeNode::TypeRef(_) => todo!(),
             ActDataTypeNode::Array(_) => self.clone(),
             ActDataTypeNode::Record(record) => ActDataTypeNode::Record(record.as_type_alias()),
-            ActDataTypeNode::Variant(_) => self.clone(),
-            ActDataTypeNode::Func(_) => self.clone(),
-            ActDataTypeNode::Tuple(_) => self.clone(),
+            ActDataTypeNode::Variant(variant) => ActDataTypeNode::Variant(variant.as_type_alias()),
+            ActDataTypeNode::Func(func) => ActDataTypeNode::Func(func.as_type_alias()),
+            ActDataTypeNode::Tuple(tuple) => ActDataTypeNode::Tuple(tuple.as_type_alias()),
         }
     }
 
@@ -114,28 +112,11 @@ impl ActDataTypeNode {
         true
     }
 
-    pub fn get_inline_members(&self) -> Vec<ActDataTypeNode> {
+    pub fn get_literal_members(&self) -> Vec<ActDataTypeNode> {
         match self {
-            ActDataTypeNode::Record(act_record) => act_record
-                .get_member_types()
-                .iter()
-                .filter(|member| member.is_inline_type())
-                .map(|member| member.clone())
-                .collect(),
-            ActDataTypeNode::Variant(act_variant) => act_variant
-                .members
-                .iter()
-                .filter(|member| member.member_type.is_inline_type())
-                .map(|member| member.member_type.clone())
-                .collect(),
-            ActDataTypeNode::Func(act_func) => {
-                vec![act_func.params.clone(), vec![*act_func.return_type.clone()]]
-                    .concat()
-                    .iter()
-                    .filter(|elem| elem.is_inline_type())
-                    .cloned()
-                    .collect()
-            }
+            ActDataTypeNode::Record(act_record) => act_record.get_literal_members(),
+            ActDataTypeNode::Variant(act_variant) => act_variant.get_literal_members(),
+            ActDataTypeNode::Func(act_func) => act_func.get_literal_members(),
             ActDataTypeNode::Primitive(_) => vec![],
             ActDataTypeNode::TypeRef(_) => vec![],
             ActDataTypeNode::Array(act_array) => vec![act_array.get_enclosed_type()]
@@ -143,12 +124,7 @@ impl ActDataTypeNode {
                 .filter(|enclosed_type| enclosed_type.is_inline_type())
                 .cloned()
                 .collect(),
-            ActDataTypeNode::Tuple(act_tuple) => act_tuple
-                .elems
-                .iter()
-                .filter(|member| member.elem_type.is_inline_type())
-                .map(|elem| elem.elem_type.clone())
-                .collect(),
+            ActDataTypeNode::Tuple(act_tuple) => act_tuple.get_literal_members(),
             ActDataTypeNode::Option(act_option) => vec![act_option.get_enclosed_type()]
                 .iter()
                 .filter(|enclosed_type| enclosed_type.is_inline_type())
@@ -162,7 +138,7 @@ impl ActDataTypeNode {
             true => vec![self.as_type_alias()],
             false => vec![],
         };
-        let member_act_data_types = self.get_inline_members();
+        let member_act_data_types = self.get_literal_members();
         let all_descendant_act_data_types =
             member_act_data_types.iter().fold(vec![], |acc, member| {
                 vec![acc, member.collect_inline_types()].concat()

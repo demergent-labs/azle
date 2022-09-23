@@ -35,3 +35,9 @@ impl ToIdent for String {
         format_ident!("{}", self)
     }
 }
+
+pub trait Literally<T> {
+    fn is_literal(&self) -> bool;
+    fn as_type_alias(&self) -> T;
+    fn get_literal_members(&self) -> Vec<ActDataTypeNode>;
+}
