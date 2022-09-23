@@ -1,3 +1,4 @@
+use crate::cdk_act::ToTokenStream;
 use crate::ts_ast::ts_types_to_act;
 use swc_ecma_ast::TsEntityName::{Ident, TsQualifiedName};
 use swc_ecma_ast::TsType::TsTypeRef;
@@ -26,7 +27,7 @@ pub fn get_param_types(function_type: &swc_ecma_ast::TsFnType) -> Vec<String> {
             swc_ecma_ast::TsFnParam::Ident(identifier) => match &identifier.type_ann {
                 Some(param_type) => {
                     ts_types_to_act::ts_type_to_act_node(&*param_type.type_ann, &None)
-                        .get_type_identifier()
+                        .to_token_stream()
                         .to_string()
                 }
                 None => panic!("Function parameter must have a return type"),
@@ -56,7 +57,7 @@ pub fn get_return_type(function_type: &swc_ecma_ast::TsFnType) -> String {
                             }
                             match type_param_inst.params.get(0) {
                                 Some(param) => {
-                                    ts_types_to_act::ts_type_to_act_node(&**param, &None).get_type_identifier().to_string()
+                                    ts_types_to_act::ts_type_to_act_node(&**param, &None).to_token_stream().to_string()
                                 },
                                 None => panic!("Func must specify exactly one return type"),
                             }

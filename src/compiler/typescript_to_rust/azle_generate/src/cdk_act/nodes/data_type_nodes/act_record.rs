@@ -1,4 +1,5 @@
-use super::{ActDataTypeNode, Literally, ToIdent, ToTokenStream};
+use super::{ActDataTypeNode, Literally, ToIdent, TypeAliasize};
+use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
@@ -20,27 +21,21 @@ pub struct ActRecordMember {
     pub member_type: ActDataTypeNode,
 }
 
-impl Literally<ActRecord> for ActRecord {
-    fn is_literal(&self) -> bool {
-        match self {
-            ActRecord::Literal(_) => true,
-            ActRecord::TypeAlias(_) => false,
-        }
-    }
-
+impl TypeAliasize<ActRecord> for ActRecord {
     fn as_type_alias(&self) -> ActRecord {
         match self {
             ActRecord::Literal(literal) => ActRecord::TypeAlias(literal.clone()),
             ActRecord::TypeAlias(_) => self.clone(),
         }
     }
+}
 
-    fn get_literal_members(&self) -> Vec<ActDataTypeNode> {
-        self.get_member_types()
-            .iter()
-            .filter(|member| member.needs_definition())
-            .map(|member| member.clone())
-            .collect()
+impl Literally for ActRecord {
+    fn is_literal(&self) -> bool {
+        match self {
+            ActRecord::Literal(_) => true,
+            ActRecord::TypeAlias(_) => false,
+        }
     }
 
     fn get_members(&self) -> Vec<ActDataTypeNode> {
@@ -93,10 +88,10 @@ impl ToTokenStream for ActRecord {
 impl ToTokenStream for ActRecordMember {
     fn to_token_stream(&self) -> TokenStream {
         let member_type_token_stream = if self.member_type.needs_to_be_boxed() {
-            let ident = self.member_type.get_type_identifier();
+            let ident = self.member_type.to_token_stream();
             quote!(Box<#ident>)
         } else {
-            quote!(self.member_type.get_type_identifier())
+            quote!(self.member_type.to_token_stream())
         };
         let member_name = &self.member_name.to_identifier();
         quote!(#member_name: #member_type_token_stream)

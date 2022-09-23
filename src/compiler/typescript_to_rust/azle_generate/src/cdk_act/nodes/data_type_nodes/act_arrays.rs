@@ -1,5 +1,5 @@
-use super::{ActDataTypeNode, ToIdent};
-use super::{Literally, ToTokenStream};
+use super::{ActDataTypeNode, Literally, ToIdent};
+use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
@@ -20,31 +20,12 @@ pub struct ActArrayTypeAlias {
     pub enclosed_type: Box<ActDataTypeNode>,
 }
 
-impl Literally<ActArray> for ActArray {
-    // TODO this is an example of a literal that does not need to be defined. It's literal member will need to be though
+impl Literally for ActArray {
     fn is_literal(&self) -> bool {
         match self {
             ActArray::Literal(_) => true,
             ActArray::TypeAlias(_) => false,
         }
-    }
-
-    fn as_type_alias(&self) -> ActArray {
-        match self {
-            ActArray::Literal(_) => {
-                // TODO if this is truly the case then we should have this in a different trait that only those that can will implement
-                panic!("Array literals should never need to be converted to type aliases")
-            }
-            ActArray::TypeAlias(_) => self.clone(),
-        }
-    }
-
-    fn get_literal_members(&self) -> Vec<ActDataTypeNode> {
-        vec![self.get_enclosed_type()]
-            .iter()
-            .filter(|enclosed_type| enclosed_type.needs_definition())
-            .cloned()
-            .collect()
     }
 
     fn get_members(&self) -> Vec<ActDataTypeNode> {
@@ -70,7 +51,7 @@ impl ActArray {
 
 impl ToTokenStream for ActArrayLiteral {
     fn to_token_stream(&self) -> TokenStream {
-        let enclosed_rust_ident = self.enclosed_type.get_type_identifier();
+        let enclosed_rust_ident = self.enclosed_type.to_token_stream();
         quote!(Vec<#enclosed_rust_ident>)
     }
 }
@@ -78,7 +59,7 @@ impl ToTokenStream for ActArrayLiteral {
 impl ToTokenStream for ActArrayTypeAlias {
     fn to_token_stream(&self) -> TokenStream {
         let name = self.name.to_identifier().to_token_stream();
-        let enclosed_type = self.enclosed_type.get_type_identifier();
+        let enclosed_type = self.enclosed_type.to_token_stream();
         quote!(type #name = Vec<#enclosed_type>;)
     }
 }

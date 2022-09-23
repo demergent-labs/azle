@@ -46,44 +46,43 @@ impl ToTokenStream for AbstractCanisterTree {
         let arrays: Vec<TokenStream> = self
             .arrays
             .iter()
-            .map(|act| act.to_type_definition_token_stream())
+            .map(|act| act.to_token_stream())
             .collect();
-        let funcs: Vec<TokenStream> = self
-            .funcs
-            .iter()
-            .map(|act| act.to_type_definition_token_stream())
-            .collect();
+        let funcs: Vec<TokenStream> = self.funcs.iter().map(|act| act.to_token_stream()).collect();
         let options: Vec<TokenStream> = self
             .options
             .iter()
-            .map(|act| act.to_type_definition_token_stream())
+            .map(|act| act.to_token_stream())
             .collect();
         let primitives: Vec<TokenStream> = self
             .primitives
             .iter()
-            .map(|act| act.to_type_definition_token_stream())
+            .map(|act| act.to_token_stream())
             .collect();
         let records: Vec<TokenStream> = self
             .records
             .iter()
-            .map(|act| act.to_type_definition_token_stream())
+            .map(|act| act.to_token_stream())
             .collect();
         let tuples: Vec<TokenStream> = self
             .tuples
             .iter()
-            .map(|act| act.to_type_definition_token_stream())
+            .map(|act| act.to_token_stream())
             .collect();
         let type_refs: Vec<TokenStream> = self
             .type_refs
             .iter()
-            .map(|act| act.to_type_definition_token_stream())
+            .map(|act| act.to_token_stream())
             .collect();
         let variants: Vec<TokenStream> = self
             .variants
             .iter()
-            .map(|act| act.to_type_definition_token_stream())
+            .map(|act| act.to_token_stream())
             .collect();
 
+        eprintln!("-----------------------------------------------");
+        eprintln!("--- Finished ACT to TokenStream Conversion ----");
+        eprintln!("-----------------------------------------------");
         quote::quote! {
             #randomness_implementation
 

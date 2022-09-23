@@ -1,4 +1,5 @@
-use super::{ActDataTypeNode, Literally, ToIdent, ToTokenStream};
+use super::{ActDataTypeNode, Literally, ToIdent, TypeAliasize};
+use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
@@ -28,32 +29,21 @@ impl ActFunc {
     }
 }
 
-impl Literally<ActFunc> for ActFunc {
-    fn is_literal(&self) -> bool {
-        match self {
-            ActFunc::Literal(_) => true,
-            ActFunc::TypeAlias(_) => false,
-        }
-    }
-
+impl TypeAliasize<ActFunc> for ActFunc {
     fn as_type_alias(&self) -> ActFunc {
         match self {
             ActFunc::Literal(literal) => ActFunc::TypeAlias(literal.clone()),
             ActFunc::TypeAlias(_) => self.clone(),
         }
     }
+}
 
-    fn get_literal_members(&self) -> Vec<ActDataTypeNode> {
-        let act_func = match self {
-            ActFunc::Literal(literal) => literal.clone(),
-            ActFunc::TypeAlias(type_alias) => type_alias.clone(),
-        };
-        vec![act_func.params.clone(), vec![*act_func.return_type.clone()]]
-            .concat()
-            .iter()
-            .filter(|elem| elem.needs_definition())
-            .cloned()
-            .collect()
+impl Literally for ActFunc {
+    fn is_literal(&self) -> bool {
+        match self {
+            ActFunc::Literal(_) => true,
+            ActFunc::TypeAlias(_) => false,
+        }
     }
 
     fn get_members(&self) -> Vec<ActDataTypeNode> {

@@ -20,13 +20,13 @@ pub struct CanisterMethod {
     pub return_type: ActDataTypeNode,
 }
 
-pub fn build_inline_types_from_canister_method_acts(
+pub fn get_all_types_from_canister_method_acts(
     canister_methods: &Vec<CanisterMethodActNode>,
 ) -> Vec<ActDataTypeNode> {
     canister_methods
         .iter()
         .fold(vec![], |acc, canister_method| {
-            let inline_types = canister_method.build_inline_types();
+            let inline_types = canister_method.get_all_types();
             vec![acc, inline_types].concat()
         })
 }
@@ -69,28 +69,9 @@ impl ToTokenStream for CanisterMethodActNode {
 }
 
 impl CanisterMethodActNode {
-    pub fn build_inline_types(&self) -> Vec<ActDataTypeNode> {
-        self.get_all_types()
-            .iter()
-            .fold(vec![], |acc, inline_type| {
-                vec![acc, inline_type.collect_inline_types()].concat()
-            })
-    }
-
     pub fn get_all_types(&self) -> Vec<ActDataTypeNode> {
         vec![self.get_param_types(), vec![self.get_return_type()]].concat()
     }
-
-    // pub fn get_inline_types(&self) -> Box<Vec<ActDataTypeNode>> {
-    //     match self {
-    //         CanisterMethodActNode::QueryMethod(canister_method) => {
-    //             get_inline_types(canister_method)
-    //         }
-    //         CanisterMethodActNode::UpdateMethod(canister_method) => {
-    //             get_inline_types(canister_method)
-    //         }
-    //     }
-    // }
 
     pub fn get_name(&self) -> String {
         match self {
@@ -133,7 +114,7 @@ fn generate_function(canister_method: &CanisterMethod) -> TokenStream {
 
     let function_body = &canister_method.body;
 
-    let return_type_token = canister_method.return_type.get_type_identifier();
+    let return_type_token = canister_method.return_type.to_token_stream();
     let wrapped_return_type = if canister_method.is_manual {
         quote! {
             ic_cdk::api::call::ManualReply<#return_type_token>
@@ -148,21 +129,3 @@ fn generate_function(canister_method: &CanisterMethod) -> TokenStream {
         }
     }
 }
-
-// fn get_inline_types(canister_method: &CanisterMethod) -> Box<Vec<ActDataTypeNode>> {
-//     let inline_types = vec![
-//         canister_method
-//             .params
-//             .iter()
-//             .map(|param| param.data_type.clone())
-//             .collect(),
-//         vec![canister_method.return_type.clone()],
-//     ]
-//     .concat()
-//     .iter()
-//     .filter(|rust_type| rust_type.needs_definition())
-//     .fold(vec![], |acc, rust_type| {
-//         vec![acc, vec![rust_type.clone()]].concat()
-//     });
-//     Box::from(inline_types)
-// }
