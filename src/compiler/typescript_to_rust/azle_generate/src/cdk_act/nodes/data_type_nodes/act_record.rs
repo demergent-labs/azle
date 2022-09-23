@@ -38,22 +38,33 @@ impl Literally<ActRecord> for ActRecord {
     fn get_literal_members(&self) -> Vec<ActDataTypeNode> {
         self.get_member_types()
             .iter()
-            .filter(|member| member.is_inline_type())
+            .filter(|member| member.needs_definition())
             .map(|member| member.clone())
             .collect()
+    }
+
+    fn get_members(&self) -> Vec<ActDataTypeNode> {
+        self.get_member_types()
     }
 }
 
 impl ActRecord {
     pub fn get_member_types(&self) -> Vec<ActDataTypeNode> {
-        let members = match self {
-            ActRecord::Literal(literal) => literal.members.clone(),
-            ActRecord::TypeAlias(type_alias) => type_alias.members.clone(),
-        };
-        members
-            .iter()
-            .map(|member| member.member_type.clone())
-            .collect()
+        match self {
+            ActRecord::Literal(literal) => literal,
+            ActRecord::TypeAlias(type_alias) => type_alias,
+        }
+        .members
+        .iter()
+        .map(|member| member.member_type.clone())
+        .collect()
+    }
+
+    pub fn get_name(&self) -> String {
+        match self {
+            ActRecord::Literal(literal) => literal.name.clone(),
+            ActRecord::TypeAlias(type_alias) => type_alias.name.clone(),
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-use super::{ToIdent, ToTokenStream};
+use super::{Literally, ToIdent, ToTokenStream};
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
@@ -36,6 +36,48 @@ pub enum ActPrimitiveLit {
 pub struct ActPrimitiveTypeAlias {
     pub name: String,
     pub aliased_type: ActPrimitiveLit,
+}
+
+impl ActPrimitive {
+    pub fn get_name(&self) -> String {
+        match self {
+            ActPrimitive::Literal(literal) => literal.to_token_stream().to_string(),
+            ActPrimitive::TypeAlias(type_alias) => type_alias.name.clone(),
+        }
+    }
+}
+
+impl Literally<ActPrimitive> for ActPrimitive {
+    fn is_literal(&self) -> bool {
+        match self {
+            ActPrimitive::Literal(_) => true,
+            ActPrimitive::TypeAlias(_) => false,
+        }
+    }
+
+    fn as_type_alias(&self) -> ActPrimitive {
+        match self {
+            ActPrimitive::Literal(_) => todo!(),
+            ActPrimitive::TypeAlias(_) => self.clone(),
+        }
+    }
+
+    fn get_literal_members(&self) -> Vec<super::ActDataTypeNode> {
+        vec![]
+    }
+
+    fn get_members(&self) -> Vec<super::ActDataTypeNode> {
+        vec![]
+    }
+}
+
+impl ToTokenStream for ActPrimitive {
+    fn to_token_stream(&self) -> TokenStream {
+        match self {
+            ActPrimitive::Literal(literal) => literal.to_token_stream(),
+            ActPrimitive::TypeAlias(type_alias) => type_alias.to_token_stream(),
+        }
+    }
 }
 
 impl ToTokenStream for ActPrimitiveTypeAlias {

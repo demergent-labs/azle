@@ -20,6 +20,15 @@ pub struct ActVariantMember {
     pub member_type: ActDataTypeNode,
 }
 
+impl ActVariant {
+    pub fn get_name(&self) -> String {
+        match self {
+            ActVariant::Literal(literal) => literal.name.clone(),
+            ActVariant::TypeAlias(type_alias) => type_alias.name.clone(),
+        }
+    }
+}
+
 impl Literally<ActVariant> for ActVariant {
     fn is_literal(&self) -> bool {
         match self {
@@ -37,13 +46,25 @@ impl Literally<ActVariant> for ActVariant {
 
     fn get_literal_members(&self) -> Vec<ActDataTypeNode> {
         let act_variant = match self {
-            ActVariant::Literal(literal) => literal.clone(),
-            ActVariant::TypeAlias(type_alias) => type_alias.clone(),
+            ActVariant::Literal(literal) => literal,
+            ActVariant::TypeAlias(type_alias) => type_alias,
         };
         act_variant
             .members
             .iter()
-            .filter(|member| member.member_type.is_inline_type())
+            .filter(|member| member.member_type.needs_definition())
+            .map(|member| member.member_type.clone())
+            .collect()
+    }
+
+    fn get_members(&self) -> Vec<ActDataTypeNode> {
+        let act_variant = match self {
+            ActVariant::Literal(literal) => literal,
+            ActVariant::TypeAlias(type_alias) => type_alias,
+        };
+        act_variant
+            .members
+            .iter()
             .map(|member| member.member_type.clone())
             .collect()
     }

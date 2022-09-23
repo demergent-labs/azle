@@ -19,6 +19,15 @@ pub struct ActTupleElem {
     pub elem_type: ActDataTypeNode,
 }
 
+impl ActTuple {
+    pub fn get_name(&self) -> String {
+        match self {
+            ActTuple::Literal(literal) => literal.name.clone(),
+            ActTuple::TypeAlias(type_alias) => type_alias.name.clone(),
+        }
+    }
+}
+
 impl Literally<ActTuple> for ActTuple {
     fn is_literal(&self) -> bool {
         match self {
@@ -36,13 +45,25 @@ impl Literally<ActTuple> for ActTuple {
 
     fn get_literal_members(&self) -> Vec<ActDataTypeNode> {
         let act_tuple = match self {
-            ActTuple::Literal(literal) => literal.clone(),
-            ActTuple::TypeAlias(type_alias) => type_alias.clone(),
+            ActTuple::Literal(literal) => literal,
+            ActTuple::TypeAlias(type_alias) => type_alias,
         };
         act_tuple
             .elems
             .iter()
-            .filter(|member| member.elem_type.is_inline_type())
+            .filter(|member| member.elem_type.needs_definition())
+            .map(|elem| elem.elem_type.clone())
+            .collect()
+    }
+
+    fn get_members(&self) -> Vec<ActDataTypeNode> {
+        let act_tuple = match self {
+            ActTuple::Literal(literal) => literal,
+            ActTuple::TypeAlias(type_alias) => type_alias,
+        };
+        act_tuple
+            .elems
+            .iter()
             .map(|elem| elem.elem_type.clone())
             .collect()
     }
