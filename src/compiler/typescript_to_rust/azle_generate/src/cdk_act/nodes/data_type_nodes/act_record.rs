@@ -1,21 +1,15 @@
-use super::{ActDataTypeNode, ToIdent, ToTokenStream};
+use super::{ActDataTypeNode, Literally, ToIdent, ToTokenStream};
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
 #[derive(Clone, Debug)]
 pub enum ActRecord {
-    Literal(ActRecordLiteral),
-    TypeAlias(ActRecordTypeAlias),
+    Literal(Record),
+    TypeAlias(Record),
 }
 
 #[derive(Clone, Debug)]
-pub struct ActRecordLiteral {
-    pub name: String,
-    pub members: Vec<ActRecordMember>,
-}
-
-#[derive(Clone, Debug)]
-pub struct ActRecordTypeAlias {
+pub struct Record {
     pub name: String,
     pub members: Vec<ActRecordMember>,
 }
@@ -26,24 +20,31 @@ pub struct ActRecordMember {
     pub member_type: ActDataTypeNode,
 }
 
-impl ActRecord {
-    pub fn is_literal(&self) -> bool {
+impl Literally<ActRecord> for ActRecord {
+    fn is_literal(&self) -> bool {
         match self {
             ActRecord::Literal(_) => true,
             ActRecord::TypeAlias(_) => false,
         }
     }
 
-    pub fn as_type_alias(&self) -> ActRecord {
+    fn as_type_alias(&self) -> ActRecord {
         match self {
-            ActRecord::Literal(literal) => ActRecord::TypeAlias(ActRecordTypeAlias {
-                name: literal.name.clone(),
-                members: literal.members.clone(),
-            }),
+            ActRecord::Literal(literal) => ActRecord::TypeAlias(literal.clone()),
             ActRecord::TypeAlias(_) => self.clone(),
         }
     }
 
+    fn get_literal_members(&self) -> Vec<ActDataTypeNode> {
+        self.get_member_types()
+            .iter()
+            .filter(|member| member.is_inline_type())
+            .map(|member| member.clone())
+            .collect()
+    }
+}
+
+impl ActRecord {
     pub fn get_member_types(&self) -> Vec<ActDataTypeNode> {
         let members = match self {
             ActRecord::Literal(literal) => literal.members.clone(),

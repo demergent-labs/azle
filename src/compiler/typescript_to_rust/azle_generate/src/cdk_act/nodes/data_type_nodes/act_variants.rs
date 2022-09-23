@@ -1,13 +1,17 @@
-use super::{ActDataTypeNode, ToIdent, ToTokenStream};
+use super::{ActDataTypeNode, Literally, ToIdent, ToTokenStream};
 use proc_macro2::TokenStream;
-use quote::quote;
+use quote::{quote, ToTokens};
 
-// TODO replace is_inline with literal vs type alias
 #[derive(Clone, Debug)]
-pub struct ActVariant {
+pub enum ActVariant {
+    Literal(Variant),
+    TypeAlias(Variant),
+}
+
+#[derive(Clone, Debug)]
+pub struct Variant {
     pub name: String,
     pub members: Vec<ActVariantMember>,
-    pub is_inline: bool,
 }
 
 #[derive(Clone, Debug)]
@@ -16,20 +20,54 @@ pub struct ActVariantMember {
     pub member_type: ActDataTypeNode,
 }
 
-impl ToTokenStream for ActVariant {
-    fn to_token_stream(&self) -> TokenStream {
-        let type_ident = &self.name.to_identifier();
-        let member_token_streams: Vec<TokenStream> = self
+impl Literally<ActVariant> for ActVariant {
+    fn is_literal(&self) -> bool {
+        match self {
+            ActVariant::Literal(_) => true,
+            ActVariant::TypeAlias(_) => false,
+        }
+    }
+
+    fn as_type_alias(&self) -> ActVariant {
+        match self {
+            ActVariant::Literal(literal) => ActVariant::TypeAlias(literal.clone()),
+            ActVariant::TypeAlias(_) => self.clone(),
+        }
+    }
+
+    fn get_literal_members(&self) -> Vec<ActDataTypeNode> {
+        let act_variant = match self {
+            ActVariant::Literal(literal) => literal.clone(),
+            ActVariant::TypeAlias(type_alias) => type_alias.clone(),
+        };
+        act_variant
             .members
             .iter()
-            .map(|member| member.to_token_stream())
-            .collect();
-        quote!(
-            #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
-            enum #type_ident {
-                #(#member_token_streams),*
+            .filter(|member| member.member_type.is_inline_type())
+            .map(|member| member.member_type.clone())
+            .collect()
+    }
+}
+
+impl ToTokenStream for ActVariant {
+    fn to_token_stream(&self) -> TokenStream {
+        match self {
+            ActVariant::Literal(literal) => literal.name.to_identifier().to_token_stream(),
+            ActVariant::TypeAlias(type_alias) => {
+                let type_ident = type_alias.name.to_identifier();
+                let member_token_streams: Vec<TokenStream> = type_alias
+                    .members
+                    .iter()
+                    .map(|member| member.to_token_stream())
+                    .collect();
+                quote!(
+                    #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
+                    enum #type_ident {
+                        #(#member_token_streams),*
+                    }
+                )
             }
-        )
+        }
     }
 }
 

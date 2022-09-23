@@ -1,9 +1,15 @@
-use super::{ActDataTypeNode, ToIdent, ToTokenStream};
+use super::{ActDataTypeNode, Literally, ToIdent, ToTokenStream};
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
 #[derive(Clone, Debug)]
-pub struct ActFunc {
+pub enum ActFunc {
+    Literal(Func),
+    TypeAlias(Func),
+}
+
+#[derive(Clone, Debug)]
+pub struct Func {
     pub name: String,
     pub params: Vec<ActDataTypeNode>,
     pub return_type: Box<ActDataTypeNode>,
@@ -13,14 +19,46 @@ pub struct ActFunc {
     pub is_inline: bool,
 }
 
+impl Literally<ActFunc> for ActFunc {
+    fn is_literal(&self) -> bool {
+        match self {
+            ActFunc::Literal(_) => true,
+            ActFunc::TypeAlias(_) => false,
+        }
+    }
+
+    fn as_type_alias(&self) -> ActFunc {
+        match self {
+            ActFunc::Literal(literal) => ActFunc::TypeAlias(literal.clone()),
+            ActFunc::TypeAlias(_) => self.clone(),
+        }
+    }
+
+    fn get_literal_members(&self) -> Vec<ActDataTypeNode> {
+        let act_func = match self {
+            ActFunc::Literal(literal) => literal.clone(),
+            ActFunc::TypeAlias(type_alias) => type_alias.clone(),
+        };
+        vec![act_func.params.clone(), vec![*act_func.return_type.clone()]]
+            .concat()
+            .iter()
+            .filter(|elem| elem.is_inline_type())
+            .cloned()
+            .collect()
+    }
+}
+
 impl ToTokenStream for ActFunc {
     fn to_token_stream(&self) -> TokenStream {
-        generate_func_struct_and_impls(
-            &self.name.to_identifier(),
-            &self.mode,
-            &self.param_strings,
-            &self.return_string,
-        )
+        match self {
+            ActFunc::Literal(literal) => literal.name.to_identifier().to_token_stream(),
+            ActFunc::TypeAlias(type_alias) => generate_func_struct_and_impls(
+                &type_alias.name.to_identifier(),
+                &type_alias.mode,
+                &type_alias.param_strings,
+                &type_alias.return_string,
+            ),
+        }
     }
 }
 

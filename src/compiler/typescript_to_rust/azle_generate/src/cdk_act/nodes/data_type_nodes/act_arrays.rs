@@ -1,8 +1,7 @@
 use super::ToTokenStream;
 use super::{ActDataTypeNode, ToIdent};
 use proc_macro2::TokenStream;
-use quote::ToTokens;
-use quote::{format_ident, quote};
+use quote::{quote, ToTokens};
 
 #[derive(Clone, Debug)]
 pub enum ActArray {

@@ -1,12 +1,17 @@
-use super::{ActDataTypeNode, ToIdent, ToTokenStream};
+use super::{ActDataTypeNode, Literally, ToIdent, ToTokenStream};
 use proc_macro2::TokenStream;
-use quote::quote;
+use quote::{quote, ToTokens};
 
 #[derive(Clone, Debug)]
-pub struct ActTuple {
+pub enum ActTuple {
+    Literal(Tuple),
+    TypeAlias(Tuple),
+}
+
+#[derive(Clone, Debug)]
+pub struct Tuple {
     pub name: String,
     pub elems: Vec<ActTupleElem>,
-    pub is_inline: bool,
 }
 
 #[derive(Clone, Debug)]
@@ -14,20 +19,54 @@ pub struct ActTupleElem {
     pub elem_type: ActDataTypeNode,
 }
 
-impl ToTokenStream for ActTuple {
-    fn to_token_stream(&self) -> TokenStream {
-        let type_ident = &self.name.to_identifier();
-        let elem_idents: Vec<TokenStream> = self
+impl Literally<ActTuple> for ActTuple {
+    fn is_literal(&self) -> bool {
+        match self {
+            ActTuple::Literal(_) => true,
+            ActTuple::TypeAlias(_) => false,
+        }
+    }
+
+    fn as_type_alias(&self) -> ActTuple {
+        match self {
+            ActTuple::Literal(literal) => ActTuple::TypeAlias(literal.clone()),
+            ActTuple::TypeAlias(_) => self.clone(),
+        }
+    }
+
+    fn get_literal_members(&self) -> Vec<ActDataTypeNode> {
+        let act_tuple = match self {
+            ActTuple::Literal(literal) => literal.clone(),
+            ActTuple::TypeAlias(type_alias) => type_alias.clone(),
+        };
+        act_tuple
             .elems
             .iter()
-            .map(|elem| elem.to_token_stream())
-            .collect();
-        quote!(
-            #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
-            struct #type_ident (
-                #(#elem_idents),*
-            );
-        )
+            .filter(|member| member.elem_type.is_inline_type())
+            .map(|elem| elem.elem_type.clone())
+            .collect()
+    }
+}
+
+impl ToTokenStream for ActTuple {
+    fn to_token_stream(&self) -> TokenStream {
+        match self {
+            ActTuple::Literal(literal) => literal.name.to_identifier().to_token_stream(),
+            ActTuple::TypeAlias(type_alias) => {
+                let type_ident = type_alias.name.to_identifier();
+                let elem_idents: Vec<TokenStream> = type_alias
+                    .elems
+                    .iter()
+                    .map(|elem| elem.to_token_stream())
+                    .collect();
+                quote!(
+                    #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
+                    struct #type_ident (
+                        #(#elem_idents),*
+                    );
+                )
+            }
+        }
     }
 }
 
