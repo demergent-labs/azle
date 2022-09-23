@@ -55,9 +55,9 @@ impl TsAst {
 
 impl ToAct for TsAst {
     fn to_act(&self) -> AbstractCanisterTree {
-        eprintln!("--------------------------------");
-        eprintln!("--- Starting to ACT ------------");
-        eprintln!("--------------------------------");
+        eprintln!("-----------------------------------------------");
+        eprintln!("--- Starting AST to ACT Conversion ------------");
+        eprintln!("-----------------------------------------------");
         // Collect AST Information
         let ast_type_alias_decls =
             ts_ast::program::get_ast_type_alias_decls_from_programs(&self.programs);
@@ -101,20 +101,23 @@ impl ToAct for TsAst {
         let query_methods = canister_methods::query::build_query_methods(&ast_fnc_decls_query);
         let update_methods = canister_methods::update::build_update_methods(&ast_fnc_decls_update);
 
-        let query_method_inline_acts =
-            cdk_act::nodes::canister_method::build_inline_types_from_canister_method_acts(
+        let query_method_type_acts =
+            cdk_act::nodes::canister_method::get_all_types_from_canister_method_acts(
                 &query_methods,
             );
-        let update_method_inline_acts =
-            cdk_act::nodes::canister_method::build_inline_types_from_canister_method_acts(
+        let update_method_type_acts =
+            cdk_act::nodes::canister_method::get_all_types_from_canister_method_acts(
                 &update_methods,
             );
 
         let type_alias_acts =
             type_aliases::build_type_alias_acts(&dependencies, &ast_type_alias_decls);
 
-        let type_alias_inline_acts =
-            data_type_nodes::build_inline_types_from_type_alias_acts(&type_alias_acts);
+        let type_alias_inline_acts = data_type_nodes::build_inline_type_acts(&type_alias_acts);
+        let query_method_inline_acts =
+            data_type_nodes::build_inline_type_acts(&query_method_type_acts);
+        let update_method_inline_acts =
+            data_type_nodes::build_inline_type_acts(&update_method_type_acts);
 
         let all_inline_acts = vec![
             type_alias_inline_acts,

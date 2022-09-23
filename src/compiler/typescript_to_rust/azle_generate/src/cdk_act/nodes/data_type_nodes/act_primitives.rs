@@ -1,4 +1,5 @@
-use super::{Literally, ToIdent, ToTokenStream};
+use super::{Literally, ToIdent};
+use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
@@ -47,23 +48,12 @@ impl ActPrimitive {
     }
 }
 
-impl Literally<ActPrimitive> for ActPrimitive {
+impl Literally for ActPrimitive {
     fn is_literal(&self) -> bool {
         match self {
             ActPrimitive::Literal(_) => true,
             ActPrimitive::TypeAlias(_) => false,
         }
-    }
-
-    fn as_type_alias(&self) -> ActPrimitive {
-        match self {
-            ActPrimitive::Literal(_) => todo!(),
-            ActPrimitive::TypeAlias(_) => self.clone(),
-        }
-    }
-
-    fn get_literal_members(&self) -> Vec<super::ActDataTypeNode> {
-        vec![]
     }
 
     fn get_members(&self) -> Vec<super::ActDataTypeNode> {

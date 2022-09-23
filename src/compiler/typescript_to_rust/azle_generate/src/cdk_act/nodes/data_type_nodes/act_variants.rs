@@ -1,4 +1,5 @@
-use super::{ActDataTypeNode, Literally, ToIdent, ToTokenStream};
+use super::{ActDataTypeNode, Literally, ToIdent, TypeAliasize};
+use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
@@ -29,32 +30,21 @@ impl ActVariant {
     }
 }
 
-impl Literally<ActVariant> for ActVariant {
-    fn is_literal(&self) -> bool {
-        match self {
-            ActVariant::Literal(_) => true,
-            ActVariant::TypeAlias(_) => false,
-        }
-    }
-
+impl TypeAliasize<ActVariant> for ActVariant {
     fn as_type_alias(&self) -> ActVariant {
         match self {
             ActVariant::Literal(literal) => ActVariant::TypeAlias(literal.clone()),
             ActVariant::TypeAlias(_) => self.clone(),
         }
     }
+}
 
-    fn get_literal_members(&self) -> Vec<ActDataTypeNode> {
-        let act_variant = match self {
-            ActVariant::Literal(literal) => literal,
-            ActVariant::TypeAlias(type_alias) => type_alias,
-        };
-        act_variant
-            .members
-            .iter()
-            .filter(|member| member.member_type.needs_definition())
-            .map(|member| member.member_type.clone())
-            .collect()
+impl Literally for ActVariant {
+    fn is_literal(&self) -> bool {
+        match self {
+            ActVariant::Literal(_) => true,
+            ActVariant::TypeAlias(_) => false,
+        }
     }
 
     fn get_members(&self) -> Vec<ActDataTypeNode> {
@@ -96,19 +86,19 @@ impl ToTokenStream for ActVariantMember {
     fn to_token_stream(&self) -> TokenStream {
         let member_type_token_stream = match self.member_type.clone() {
             ActDataTypeNode::Primitive(_) => {
-                if self.member_type.get_type_identifier().to_string() == quote!((())).to_string() {
+                if self.member_type.to_token_stream().to_string() == quote!((())).to_string() {
                     quote!()
                 } else {
-                    let member_type_token_stream = self.member_type.get_type_identifier();
+                    let member_type_token_stream = self.member_type.to_token_stream();
                     quote!((#member_type_token_stream))
                 }
             }
             _ => {
                 let member_type_token_stream = if self.member_type.needs_to_be_boxed() {
-                    let ident = self.member_type.get_type_identifier();
+                    let ident = self.member_type.to_token_stream();
                     quote!(Box<#ident>)
                 } else {
-                    quote!(self.member_type.get_type_identifier())
+                    quote!(self.member_type.to_token_stream())
                 };
                 quote!((#member_type_token_stream))
             }

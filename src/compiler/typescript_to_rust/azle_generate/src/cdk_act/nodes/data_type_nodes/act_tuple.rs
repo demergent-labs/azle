@@ -1,4 +1,5 @@
-use super::{ActDataTypeNode, Literally, ToIdent, ToTokenStream};
+use super::{ActDataTypeNode, Literally, ToIdent, TypeAliasize};
+use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
@@ -28,32 +29,21 @@ impl ActTuple {
     }
 }
 
-impl Literally<ActTuple> for ActTuple {
-    fn is_literal(&self) -> bool {
-        match self {
-            ActTuple::Literal(_) => true,
-            ActTuple::TypeAlias(_) => false,
-        }
-    }
-
+impl TypeAliasize<ActTuple> for ActTuple {
     fn as_type_alias(&self) -> ActTuple {
         match self {
             ActTuple::Literal(literal) => ActTuple::TypeAlias(literal.clone()),
             ActTuple::TypeAlias(_) => self.clone(),
         }
     }
+}
 
-    fn get_literal_members(&self) -> Vec<ActDataTypeNode> {
-        let act_tuple = match self {
-            ActTuple::Literal(literal) => literal,
-            ActTuple::TypeAlias(type_alias) => type_alias,
-        };
-        act_tuple
-            .elems
-            .iter()
-            .filter(|member| member.elem_type.needs_definition())
-            .map(|elem| elem.elem_type.clone())
-            .collect()
+impl Literally for ActTuple {
+    fn is_literal(&self) -> bool {
+        match self {
+            ActTuple::Literal(_) => true,
+            ActTuple::TypeAlias(_) => false,
+        }
     }
 
     fn get_members(&self) -> Vec<ActDataTypeNode> {
@@ -94,10 +84,10 @@ impl ToTokenStream for ActTuple {
 impl ToTokenStream for ActTupleElem {
     fn to_token_stream(&self) -> TokenStream {
         if self.elem_type.needs_to_be_boxed() {
-            let ident = self.elem_type.get_type_identifier();
+            let ident = self.elem_type.to_token_stream();
             quote!(Box<#ident>)
         } else {
-            quote!(self.elem_type.get_type_identifier())
+            quote!(self.elem_type.to_token_stream())
         }
     }
 }
