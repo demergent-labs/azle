@@ -70,51 +70,60 @@ impl ToTokenStream for CanisterMethodActNode {
 
 impl CanisterMethodActNode {
     pub fn build_inline_types(&self) -> Vec<ActDataTypeNode> {
-        self.get_inline_types()
+        self.get_all_types()
             .iter()
             .fold(vec![], |acc, inline_type| {
                 vec![acc, inline_type.collect_inline_types()].concat()
             })
     }
 
-    pub fn get_inline_types(&self) -> Box<Vec<ActDataTypeNode>> {
-        match self {
-            CanisterMethodActNode::QueryMethod(canister_method) => {
-                get_inline_types(canister_method)
-            }
-            CanisterMethodActNode::UpdateMethod(canister_method) => {
-                get_inline_types(canister_method)
-            }
-        }
+    pub fn get_all_types(&self) -> Vec<ActDataTypeNode> {
+        vec![self.get_param_types(), vec![self.get_return_type()]].concat()
     }
+
+    // pub fn get_inline_types(&self) -> Box<Vec<ActDataTypeNode>> {
+    //     match self {
+    //         CanisterMethodActNode::QueryMethod(canister_method) => {
+    //             get_inline_types(canister_method)
+    //         }
+    //         CanisterMethodActNode::UpdateMethod(canister_method) => {
+    //             get_inline_types(canister_method)
+    //         }
+    //     }
+    // }
 
     pub fn get_name(&self) -> String {
         match self {
-            CanisterMethodActNode::QueryMethod(canister_method) => canister_method.name.clone(),
-            CanisterMethodActNode::UpdateMethod(canister_method) => canister_method.name.clone(),
+            CanisterMethodActNode::QueryMethod(canister_method) => &canister_method.name,
+            CanisterMethodActNode::UpdateMethod(canister_method) => &canister_method.name,
         }
+        .clone()
     }
 
     pub fn get_return_type(&self) -> ActDataTypeNode {
         match self {
-            CanisterMethodActNode::QueryMethod(canister_method) => {
-                canister_method.return_type.clone()
-            }
-            CanisterMethodActNode::UpdateMethod(canister_method) => {
-                canister_method.return_type.clone()
-            }
+            CanisterMethodActNode::QueryMethod(canister_method) => &canister_method.return_type,
+            CanisterMethodActNode::UpdateMethod(canister_method) => &canister_method.return_type,
         }
+        .clone()
+    }
+
+    pub fn get_param_types(&self) -> Vec<ActDataTypeNode> {
+        match self {
+            CanisterMethodActNode::QueryMethod(query) => &query.params,
+            CanisterMethodActNode::UpdateMethod(update) => &update.params,
+        }
+        .iter()
+        .map(|param| param.data_type.clone())
+        .collect()
     }
 
     pub fn is_manual(&self) -> bool {
         match self {
-            CanisterMethodActNode::QueryMethod(canister_method) => {
-                canister_method.is_manual.clone()
-            }
-            CanisterMethodActNode::UpdateMethod(canister_method) => {
-                canister_method.is_manual.clone()
-            }
+            CanisterMethodActNode::QueryMethod(canister_method) => canister_method.is_manual,
+            CanisterMethodActNode::UpdateMethod(canister_method) => canister_method.is_manual,
         }
+        .clone()
     }
 }
 
@@ -140,20 +149,20 @@ fn generate_function(canister_method: &CanisterMethod) -> TokenStream {
     }
 }
 
-fn get_inline_types(canister_method: &CanisterMethod) -> Box<Vec<ActDataTypeNode>> {
-    let inline_types = vec![
-        canister_method
-            .params
-            .iter()
-            .map(|param| param.data_type.clone())
-            .collect(),
-        vec![canister_method.return_type.clone()],
-    ]
-    .concat()
-    .iter()
-    .filter(|rust_type| rust_type.is_inline_type())
-    .fold(vec![], |acc, rust_type| {
-        vec![acc, vec![rust_type.clone()]].concat()
-    });
-    Box::from(inline_types)
-}
+// fn get_inline_types(canister_method: &CanisterMethod) -> Box<Vec<ActDataTypeNode>> {
+//     let inline_types = vec![
+//         canister_method
+//             .params
+//             .iter()
+//             .map(|param| param.data_type.clone())
+//             .collect(),
+//         vec![canister_method.return_type.clone()],
+//     ]
+//     .concat()
+//     .iter()
+//     .filter(|rust_type| rust_type.needs_definition())
+//     .fold(vec![], |acc, rust_type| {
+//         vec![acc, vec![rust_type.clone()]].concat()
+//     });
+//     Box::from(inline_types)
+// }

@@ -19,6 +19,15 @@ pub struct Func {
     pub is_inline: bool,
 }
 
+impl ActFunc {
+    pub fn get_name(&self) -> String {
+        match self {
+            ActFunc::Literal(literal) => literal.name.clone(),
+            ActFunc::TypeAlias(type_alias) => type_alias.name.clone(),
+        }
+    }
+}
+
 impl Literally<ActFunc> for ActFunc {
     fn is_literal(&self) -> bool {
         match self {
@@ -42,9 +51,17 @@ impl Literally<ActFunc> for ActFunc {
         vec![act_func.params.clone(), vec![*act_func.return_type.clone()]]
             .concat()
             .iter()
-            .filter(|elem| elem.is_inline_type())
+            .filter(|elem| elem.needs_definition())
             .cloned()
             .collect()
+    }
+
+    fn get_members(&self) -> Vec<ActDataTypeNode> {
+        let act_func = match self {
+            ActFunc::Literal(literal) => literal,
+            ActFunc::TypeAlias(type_alias) => type_alias,
+        };
+        vec![act_func.params.clone(), vec![*act_func.return_type.clone()]].concat()
     }
 }
 

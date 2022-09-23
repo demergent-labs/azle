@@ -40,4 +40,5 @@ pub trait Literally<T> {
     fn is_literal(&self) -> bool;
     fn as_type_alias(&self) -> T;
     fn get_literal_members(&self) -> Vec<ActDataTypeNode>;
+    fn get_members(&self) -> Vec<ActDataTypeNode>;
 }

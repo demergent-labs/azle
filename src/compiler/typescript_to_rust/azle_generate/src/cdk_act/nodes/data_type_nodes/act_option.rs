@@ -1,4 +1,4 @@
-use super::{ActDataTypeNode, ToIdent, ToTokenStream};
+use super::{ActDataTypeNode, Literally, ToIdent, ToTokenStream};
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
@@ -19,11 +19,58 @@ pub struct ActOptionTypeAlias {
     pub enclosed_type: Box<ActDataTypeNode>,
 }
 
+impl Literally<ActOption> for ActOption {
+    fn is_literal(&self) -> bool {
+        match self {
+            ActOption::Literal(_) => true,
+            ActOption::TypeAlias(_) => false,
+        }
+    }
+
+    fn as_type_alias(&self) -> ActOption {
+        match self {
+            // TODO if this is truly the case then we should have this in a different trait that only those that can will implement
+            ActOption::Literal(_) => {
+                panic!("Option literals should never need to be converted to type aliases")
+            }
+            ActOption::TypeAlias(_) => self.clone(),
+        }
+    }
+
+    fn get_literal_members(&self) -> Vec<ActDataTypeNode> {
+        vec![self.get_enclosed_type()]
+            .iter()
+            .filter(|enclosed_type| enclosed_type.needs_definition())
+            .cloned()
+            .collect()
+    }
+
+    fn get_members(&self) -> Vec<ActDataTypeNode> {
+        vec![self.get_enclosed_type()]
+    }
+}
+
 impl ActOption {
     pub fn get_enclosed_type(&self) -> ActDataTypeNode {
         match self {
             ActOption::Literal(literal) => *literal.enclosed_type.clone(),
             ActOption::TypeAlias(type_alias) => *type_alias.enclosed_type.clone(),
+        }
+    }
+
+    pub fn get_name(&self) -> String {
+        match self {
+            ActOption::Literal(literal) => literal.to_token_stream().to_string(),
+            ActOption::TypeAlias(type_alias) => type_alias.name.clone(),
+        }
+    }
+}
+
+impl ToTokenStream for ActOption {
+    fn to_token_stream(&self) -> TokenStream {
+        match self {
+            ActOption::Literal(literal) => literal.to_token_stream(),
+            ActOption::TypeAlias(type_alias) => type_alias.to_token_stream(),
         }
     }
 }

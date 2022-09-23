@@ -55,6 +55,9 @@ impl TsAst {
 
 impl ToAct for TsAst {
     fn to_act(&self) -> AbstractCanisterTree {
+        eprintln!("--------------------------------");
+        eprintln!("--- Starting to ACT ------------");
+        eprintln!("--------------------------------");
         // Collect AST Information
         let ast_type_alias_decls =
             ts_ast::program::get_ast_type_alias_decls_from_programs(&self.programs);
@@ -120,9 +123,6 @@ impl ToAct for TsAst {
         ]
         .concat();
         let all_inline_acts = data_type_nodes::deduplicate(all_inline_acts);
-        for inline_act in all_inline_acts.clone() {
-            eprintln!("{}", inline_act.get_type_identifier());
-        }
 
         let all_type_acts = vec![type_alias_acts, all_inline_acts].concat();
 
