@@ -7,8 +7,7 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 use crate::{
     cdk_act::{
         self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
-        ActDataTypeNode, CanisterMethodType,
-        RequestType, ToAct,
+        ActDataTypeNode, CanisterMethodType, RequestType, ToAct,
     },
     generators::{
         async_result_handler, azle_into_js_value, azle_try_from_js_value, canister_methods,

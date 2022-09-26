@@ -1,21 +1,22 @@
-use super::{ident, ts_method_signature, ts_type, ts_types_to_act};
-use crate::cdk_act::{Actable, SystemStructureType};
+use super::{ts_method_signature, ts_type, GetDependencies, GetName};
+use crate::cdk_act::{Actable, SystemStructureType, ToActDataType};
 use std::{
     collections::{HashMap, HashSet},
     iter::FromIterator,
 };
 use swc_ecma_ast::TsTypeAliasDecl;
 
-pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
-    decl.id.sym.chars().as_str().to_string()
+impl GetName for TsTypeAliasDecl {
+    fn get_name(&self) -> &str {
+        self.id.sym.chars().as_str()
+    }
 }
 
 impl Actable for TsTypeAliasDecl {
     fn to_act_node(&self) -> crate::cdk_act::ActDataTypeNode {
-        let ts_type_name = ast_type_alias_decl_to_string(self);
+        let ts_type_name = self.get_name().to_string();
 
-        let ts_type = *self.type_ann.clone();
-        ts_types_to_act::ts_type_to_act_node(&ts_type, &Some(&ts_type_name))
+        self.type_ann.to_act_data_type(&Some(&ts_type_name))
     }
 }
 
@@ -45,16 +46,15 @@ pub fn get_ast_type_alias_decls_by_type_ref_name(
         .collect()
 }
 
-pub fn get_dependent_types_from_type_alias_decl(
-    type_alias_decl: &TsTypeAliasDecl,
-    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
-    found_types: &HashSet<String>,
-) -> Vec<String> {
-    ts_type::get_dependent_types_for_ts_type(
-        &*type_alias_decl.type_ann,
-        type_alias_lookup,
-        found_types,
-    )
+impl GetDependencies for TsTypeAliasDecl {
+    fn get_dependent_types(
+        &self,
+        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        found_types: &HashSet<String>,
+    ) -> Vec<String> {
+        self.type_ann
+            .get_dependent_types(type_alias_lookup, found_types)
+    }
 }
 
 pub fn get_dependent_types_from_canister_decls(
@@ -84,10 +84,6 @@ pub fn generate_type_alias_lookup(
             acc.insert(type_alias_names, ast_type_alias_decl.clone());
             acc
         })
-}
-
-pub fn get_type_alias_decl_name(ts_type_alias_decl: &TsTypeAliasDecl) -> String {
-    ident::ident_to_string(&ts_type_alias_decl.id)
 }
 
 pub fn is_type_alias_decl_system_structure_type(
@@ -159,7 +155,8 @@ fn get_dependent_types_from_canister_decl(
     // Get the goods out of a method signature
     ts_types.iter().fold(found_types.clone(), |acc, ts_type| {
         let result = HashSet::from_iter(
-            ts_type::get_dependent_types_for_ts_type(ts_type, &type_alias_lookup, &acc)
+            ts_type
+                .get_dependent_types(&type_alias_lookup, &acc)
                 .iter()
                 .cloned(),
         );
