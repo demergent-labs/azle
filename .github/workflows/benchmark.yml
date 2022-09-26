@@ -66,7 +66,7 @@ jobs:
             - run: git config --global user.email 'jordan.michael.last@gmail.com'
             - run: git config --global commit.gpgsign true
             - run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
-            - run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
+            - run: git config --global user.signingkey 64A25D9E68A5C8A1A3A04A8E6AB40504E70274AA
             - run: git add --all
             - run: git commit -am "benchmarks for ${{ matrix.benchmark_directories }}"
             - name: Create Pull Request
