@@ -1,4 +1,4 @@
-use crate::cdk_act::CanisterMethodActNode;
+use crate::cdk_act::ActCanisterMethod;
 
 mod accept_message;
 mod arg_data_raw;
@@ -39,7 +39,7 @@ mod time;
 mod trap;
 
 pub fn generate_ic_object_functions(
-    canister_methods: &Vec<CanisterMethodActNode>,
+    canister_methods: &Vec<ActCanisterMethod>,
 ) -> proc_macro2::TokenStream {
     let accept_message = accept_message::generate_ic_object_function_accept_message();
     let arg_data_raw = arg_data_raw::generate_ic_object_function_arg_data_raw();

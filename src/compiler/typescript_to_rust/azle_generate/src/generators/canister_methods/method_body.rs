@@ -5,7 +5,7 @@ use swc_ecma_ast::{
     TsType,
 };
 
-use crate::ts_ast;
+use crate::ts_ast::fn_decl::FnDeclHelperMethods;
 
 pub fn generate_canister_method_body(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
     let call_to_js_function = generate_call_to_js_function(fn_decl);
@@ -27,9 +27,19 @@ pub fn generate_canister_method_body(fn_decl: &FnDecl) -> proc_macro2::TokenStre
     }
 }
 
+pub fn maybe_generate_call_to_js_function(
+    fn_decl_option: &Option<&FnDecl>,
+) -> proc_macro2::TokenStream {
+    if let Some(post_upgrade_fn_decl) = fn_decl_option {
+        generate_call_to_js_function(post_upgrade_fn_decl)
+    } else {
+        quote!()
+    }
+}
+
 pub fn generate_call_to_js_function(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
-    let function_name = ts_ast::fn_decl::get_fn_decl_function_name(fn_decl);
-    let param_name_idents = ts_ast::fn_decl::get_param_name_idents(fn_decl);
+    let function_name = fn_decl.get_fn_decl_function_name();
+    let param_name_idents = fn_decl.get_param_name_idents();
 
     quote! {
         let _azle_exports_js_value = _azle_boa_context.eval("exports").unwrap();
@@ -56,13 +66,13 @@ pub fn generate_call_to_js_function(fn_decl: &FnDecl) -> proc_macro2::TokenStrea
 ///    unless this is a ManualReply method.
 /// * `_azle_boa_context: &mut boa_engine::Context` - The current boa context
 fn generate_return_expression(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
-    if ts_ast::fn_decl::is_manual(fn_decl) {
+    if fn_decl.is_manual() {
         return quote! {
             ic_cdk::api::call::ManualReply::empty()
         };
     }
 
-    let return_type = ts_ast::fn_decl::get_canister_method_return_type(fn_decl);
+    let return_type = fn_decl.get_canister_method_return_type();
 
     if type_is_null_or_void(return_type) {
         return quote! {

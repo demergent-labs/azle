@@ -1,3 +1,4 @@
+pub mod async_result_handler;
 pub mod azle_into_js_value;
 pub mod azle_try_from_js_value;
 pub mod canister_methods;

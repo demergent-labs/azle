@@ -1,15 +1,19 @@
+use proc_macro2::TokenStream;
+use quote::format_ident;
+
 use crate::cdk_act::{ActDataTypeNode, ToTokenStream};
-use proc_macro2::{Ident, TokenStream};
+
+// TODO Consider having access to both strings and idents as necessary
 
 #[derive(Clone)]
-pub struct Param {
-    pub name: Ident,
+pub struct ActFnParam {
+    pub name: String,
     pub data_type: ActDataTypeNode,
 }
 
-impl ToTokenStream for Param {
+impl ToTokenStream for ActFnParam {
     fn to_token_stream(&self) -> TokenStream {
-        let name = &self.name;
+        let name = format_ident!("{}", &self.name);
         let data_type = &self.data_type.to_token_stream();
         quote::quote! {
             #name: #data_type

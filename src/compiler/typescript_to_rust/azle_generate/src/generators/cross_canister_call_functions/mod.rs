@@ -1,7 +1,7 @@
 use crate::{
     cdk_act::{SystemStructureType, ToTokenStream},
     ts_ast::{
-        ident::ident_to_string, program::get_type_alias_decls_for_system_structure_type,
+        ident::ident_to_string, program::TsProgramVecHelperMethods,
         ts_type_alias_decl::get_type_alias_decl_name, ts_types_to_act,
     },
 };
@@ -105,7 +105,7 @@ pub fn generate_cross_canister_call_functions_infos(
     programs: &Vec<Program>,
 ) -> Vec<CrossCanisterCallFunctionsInfo> {
     let canister_type_alias_decls =
-        get_type_alias_decls_for_system_structure_type(programs, &SystemStructureType::Canister);
+        programs.get_type_alias_decls_for_system_structure_type(&SystemStructureType::Canister);
 
     let cross_canister_call_functions_infos =
         generate_cross_canister_call_functions_infos_from_canister_type_alias_decls(

@@ -2,7 +2,13 @@ use proc_macro2::TokenStream;
 
 use super::{
     generators::{candid_file_generation, ic_object::functions, random},
-    nodes::{data_type_nodes, CanisterMethodActNode},
+    nodes::{
+        data_type_nodes,
+        {
+            ActCanisterMethod, ActHeartbeatMethod, ActInitMethod, ActInspectMessageMethod,
+            ActPostUpgradeMethod, ActPreUpgradeMethod,
+        },
+    },
     ActDataTypeNode, ToTokenStream, ToTokenStreams,
 };
 
@@ -10,16 +16,21 @@ use super::{
 ///
 /// TODO: This needs A LOT of work
 pub struct AbstractCanisterTree {
-    pub rust_code: TokenStream,
-    pub update_methods: Vec<CanisterMethodActNode>,
-    pub query_methods: Vec<CanisterMethodActNode>,
     pub arrays: Vec<ActDataTypeNode>,
     pub funcs: Vec<ActDataTypeNode>,
+    pub heartbeat_method: Option<ActHeartbeatMethod>,
+    pub init_method: ActInitMethod,
+    pub inspect_message_method: Option<ActInspectMessageMethod>,
     pub options: Vec<ActDataTypeNode>,
+    pub post_upgrade_method: ActPostUpgradeMethod,
+    pub pre_upgrade_method: ActPreUpgradeMethod,
     pub primitives: Vec<ActDataTypeNode>,
+    pub query_methods: Vec<ActCanisterMethod>,
     pub records: Vec<ActDataTypeNode>,
+    pub rust_code: TokenStream,
     pub tuples: Vec<ActDataTypeNode>,
     pub type_refs: Vec<ActDataTypeNode>,
+    pub update_methods: Vec<ActCanisterMethod>,
     pub variants: Vec<ActDataTypeNode>,
 }
 
@@ -31,11 +42,18 @@ impl ToTokenStream for AbstractCanisterTree {
         let func_arg_token = data_type_nodes::generate_func_arg_token();
 
         let user_defined_code = &self.rust_code;
+
+        let heartbeat_method = self.heartbeat_method.to_token_stream();
+        let init_method = self.init_method.to_token_stream();
+        let inspect_message_method = self.inspect_message_method.to_token_stream();
+        let post_upgrade_method = self.post_upgrade_method.to_token_stream();
+        let pre_upgrade_method = self.pre_upgrade_method.to_token_stream();
+
         let query_methods = self.query_methods.to_token_streams();
         let update_methods = self.update_methods.to_token_streams();
 
         // TODO: Remove these clones
-        let query_and_update_canister_methods: Vec<CanisterMethodActNode> =
+        let query_and_update_canister_methods: Vec<ActCanisterMethod> =
             vec![self.query_methods.clone(), self.update_methods.clone()].concat();
         let ic_object_functions =
             functions::generate_ic_object_functions(&query_and_update_canister_methods);
@@ -87,6 +105,12 @@ impl ToTokenStream for AbstractCanisterTree {
             #randomness_implementation
 
             #ic_object_functions
+
+            #heartbeat_method
+            #init_method
+            #inspect_message_method
+            #post_upgrade_method
+            #pre_upgrade_method
 
             #(#query_methods)*
             #(#update_methods)*

@@ -130,7 +130,7 @@ function writeCodeToFileSystem(
     execSync(
         `cd target/azle/${rootPath}/azle_generate && cargo run -- ${fileNames.join(
             ','
-        )} | rustfmt > ../src/lib.rs`,
+        )} | rustfmt --edition 2018 > ../src/lib.rs`,
         { stdio: 'inherit' }
     );
 }
