@@ -4,7 +4,7 @@ use quote::{format_ident, quote};
 use crate::cdk_act::{nodes::ActFnParam, ActDataTypeNode, ToTokenStream, ToTokenStreams};
 
 #[derive(Clone)]
-pub enum ActCanisterMethodNode {
+pub enum ActCanisterMethod {
     QueryMethod(CanisterMethod),
     UpdateMethod(CanisterMethod),
 }
@@ -20,7 +20,7 @@ pub struct CanisterMethod {
 }
 
 pub fn get_all_types_from_canister_method_acts(
-    canister_methods: &Vec<ActCanisterMethodNode>,
+    canister_methods: &Vec<ActCanisterMethod>,
 ) -> Vec<ActDataTypeNode> {
     canister_methods
         .iter()
@@ -30,10 +30,10 @@ pub fn get_all_types_from_canister_method_acts(
         })
 }
 
-impl ToTokenStream for ActCanisterMethodNode {
+impl ToTokenStream for ActCanisterMethod {
     fn to_token_stream(&self) -> TokenStream {
         match self {
-            ActCanisterMethodNode::QueryMethod(query_method) => {
+            ActCanisterMethod::QueryMethod(query_method) => {
                 let function_signature = generate_function(query_method);
 
                 let manual_reply_arg = if query_method.is_manual {
@@ -48,7 +48,7 @@ impl ToTokenStream for ActCanisterMethodNode {
                     #function_signature
                 }
             }
-            ActCanisterMethodNode::UpdateMethod(update_method) => {
+            ActCanisterMethod::UpdateMethod(update_method) => {
                 let function_signature = generate_function(update_method);
 
                 let manual_reply_arg = if update_method.is_manual {
@@ -67,31 +67,31 @@ impl ToTokenStream for ActCanisterMethodNode {
     }
 }
 
-impl ActCanisterMethodNode {
+impl ActCanisterMethod {
     pub fn get_all_types(&self) -> Vec<ActDataTypeNode> {
         vec![self.get_param_types(), vec![self.get_return_type()]].concat()
     }
 
     pub fn get_name(&self) -> String {
         match self {
-            ActCanisterMethodNode::QueryMethod(canister_method) => &canister_method.name,
-            ActCanisterMethodNode::UpdateMethod(canister_method) => &canister_method.name,
+            ActCanisterMethod::QueryMethod(canister_method) => &canister_method.name,
+            ActCanisterMethod::UpdateMethod(canister_method) => &canister_method.name,
         }
         .clone()
     }
 
     pub fn get_return_type(&self) -> ActDataTypeNode {
         match self {
-            ActCanisterMethodNode::QueryMethod(canister_method) => &canister_method.return_type,
-            ActCanisterMethodNode::UpdateMethod(canister_method) => &canister_method.return_type,
+            ActCanisterMethod::QueryMethod(canister_method) => &canister_method.return_type,
+            ActCanisterMethod::UpdateMethod(canister_method) => &canister_method.return_type,
         }
         .clone()
     }
 
     pub fn get_param_types(&self) -> Vec<ActDataTypeNode> {
         match self {
-            ActCanisterMethodNode::QueryMethod(query) => &query.params,
-            ActCanisterMethodNode::UpdateMethod(update) => &update.params,
+            ActCanisterMethod::QueryMethod(query) => &query.params,
+            ActCanisterMethod::UpdateMethod(update) => &update.params,
         }
         .iter()
         .map(|param| param.data_type.clone())
@@ -100,8 +100,8 @@ impl ActCanisterMethodNode {
 
     pub fn is_manual(&self) -> bool {
         match self {
-            ActCanisterMethodNode::QueryMethod(canister_method) => canister_method.is_manual,
-            ActCanisterMethodNode::UpdateMethod(canister_method) => canister_method.is_manual,
+            ActCanisterMethod::QueryMethod(canister_method) => canister_method.is_manual,
+            ActCanisterMethod::UpdateMethod(canister_method) => canister_method.is_manual,
         }
         .clone()
     }

@@ -3,16 +3,14 @@ use swc_ecma_ast::Program;
 
 use crate::{
     cdk_act::{
-        generators::ic_object, nodes::ActPostUpgradeMethodNode, traits::CanisterMethodBuilder,
+        generators::ic_object, nodes::ActPostUpgradeMethod, traits::CanisterMethodBuilder,
         CanisterMethodType,
     },
     generators::canister_methods::method_body,
     ts_ast::program::TsProgramVecHelperMethods,
 };
 
-pub fn build_canister_method_system_post_upgrade(
-    programs: &Vec<Program>,
-) -> ActPostUpgradeMethodNode {
+pub fn build_canister_method_system_post_upgrade(programs: &Vec<Program>) -> ActPostUpgradeMethod {
     let ic_object = ic_object::generate_ic_object(programs);
 
     let post_upgrade_fn_decls = programs.get_fn_decls_of_type(&CanisterMethodType::PostUpgrade);
@@ -76,5 +74,5 @@ pub fn build_canister_method_system_post_upgrade(
         }
     };
 
-    ActPostUpgradeMethodNode { body, params }
+    ActPostUpgradeMethod { body, params }
 }

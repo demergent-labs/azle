@@ -1,14 +1,14 @@
 use swc_ecma_ast::Program;
 
 use crate::{
-    cdk_act::{nodes::ActInspectMessageMethodNode, CanisterMethodType},
+    cdk_act::{nodes::ActInspectMessageMethod, CanisterMethodType},
     generators::canister_methods::method_body,
     ts_ast::{fn_decl::FnDeclHelperMethods, program::TsProgramVecHelperMethods},
 };
 
 pub fn build_canister_method_system_inspect_message(
     programs: &Vec<Program>,
-) -> Option<ActInspectMessageMethodNode> {
+) -> Option<ActInspectMessageMethod> {
     let inspect_message_fn_decls =
         programs.get_fn_decls_of_type(&CanisterMethodType::InspectMessage);
 
@@ -31,7 +31,7 @@ pub fn build_canister_method_system_inspect_message(
                 #call_to_inspect_message_js_function
             }
         };
-        Some(ActInspectMessageMethodNode { name, body })
+        Some(ActInspectMessageMethod { name, body })
     } else {
         None
     }

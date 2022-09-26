@@ -3,12 +3,12 @@ use quote::quote;
 
 use crate::cdk_act::{nodes::ActFnParam, ToTokenStream, ToTokenStreams};
 
-pub struct ActPostUpgradeMethodNode {
+pub struct ActPostUpgradeMethod {
     pub params: Vec<ActFnParam>,
     pub body: TokenStream,
 }
 
-impl ToTokenStream for ActPostUpgradeMethodNode {
+impl ToTokenStream for ActPostUpgradeMethod {
     fn to_token_stream(&self) -> TokenStream {
         let body = &self.body;
         let params = &self.params.to_token_streams();

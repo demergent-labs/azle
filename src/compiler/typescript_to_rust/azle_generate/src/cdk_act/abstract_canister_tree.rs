@@ -5,8 +5,8 @@ use super::{
     nodes::{
         data_type_nodes,
         {
-            ActCanisterMethodNode, ActHeartbeatMethodNode, ActInitMethodNode,
-            ActInspectMessageMethodNode, ActPostUpgradeMethodNode, ActPreUpgradeMethodNode,
+            ActCanisterMethod, ActHeartbeatMethod, ActInitMethod, ActInspectMessageMethod,
+            ActPostUpgradeMethod, ActPreUpgradeMethod,
         },
     },
     ActDataTypeNode, ToTokenStream, ToTokenStreams,
@@ -18,19 +18,19 @@ use super::{
 pub struct AbstractCanisterTree {
     pub arrays: Vec<ActDataTypeNode>,
     pub funcs: Vec<ActDataTypeNode>,
-    pub heartbeat_method: Option<ActHeartbeatMethodNode>,
-    pub init_method: ActInitMethodNode,
-    pub inspect_message_method: Option<ActInspectMessageMethodNode>,
+    pub heartbeat_method: Option<ActHeartbeatMethod>,
+    pub init_method: ActInitMethod,
+    pub inspect_message_method: Option<ActInspectMessageMethod>,
     pub options: Vec<ActDataTypeNode>,
-    pub post_upgrade_method: ActPostUpgradeMethodNode,
-    pub pre_upgrade_method: ActPreUpgradeMethodNode,
+    pub post_upgrade_method: ActPostUpgradeMethod,
+    pub pre_upgrade_method: ActPreUpgradeMethod,
     pub primitives: Vec<ActDataTypeNode>,
-    pub query_methods: Vec<ActCanisterMethodNode>,
+    pub query_methods: Vec<ActCanisterMethod>,
     pub records: Vec<ActDataTypeNode>,
     pub rust_code: TokenStream,
     pub tuples: Vec<ActDataTypeNode>,
     pub type_refs: Vec<ActDataTypeNode>,
-    pub update_methods: Vec<ActCanisterMethodNode>,
+    pub update_methods: Vec<ActCanisterMethod>,
     pub variants: Vec<ActDataTypeNode>,
 }
 
@@ -53,7 +53,7 @@ impl ToTokenStream for AbstractCanisterTree {
         let update_methods = self.update_methods.to_token_streams();
 
         // TODO: Remove these clones
-        let query_and_update_canister_methods: Vec<ActCanisterMethodNode> =
+        let query_and_update_canister_methods: Vec<ActCanisterMethod> =
             vec![self.query_methods.clone(), self.update_methods.clone()].concat();
         let ic_object_functions =
             functions::generate_ic_object_functions(&query_and_update_canister_methods);
