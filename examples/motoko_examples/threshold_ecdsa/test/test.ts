@@ -10,9 +10,18 @@ const tecdsa_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 // TODO currently the replica take 5-10 minutes before it is ready to process
 // any tecdsa requests, so we are skipping these tests until we can think of
 // an elegant way to run these tests only after the replica is ready to process
-// them
+// them, when we are no longer skipping the tests we can remove the dummy test
 const tests: Test[] = [
     ...deploy('azle'),
+    {
+        name: 'dummy test',
+        test: async () => {
+            await tecdsa_canister.public_key();
+            return {
+                ok: true
+            };
+        }
+    },
     {
         name: 'public key',
         test: async () => {
