@@ -38,3 +38,9 @@ pub trait Literally {
     fn is_literal(&self) -> bool;
     fn get_members(&self) -> Vec<ActDataTypeNode>;
 }
+
+#[derive(Clone, Debug)]
+pub enum LiteralOrTypeAlias<L, T> {
+    Literal(L),
+    TypeAlias(T),
+}

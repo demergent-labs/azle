@@ -1,12 +1,11 @@
-use super::{ActDataTypeNode, Literally, ToIdent, TypeAliasize};
+use super::{ActDataTypeNode, LiteralOrTypeAlias, Literally, ToIdent, TypeAliasize};
 use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
 #[derive(Clone, Debug)]
-pub enum ActRecord {
-    Literal(Record),
-    TypeAlias(Record),
+pub struct ActRecord {
+    pub record: LiteralOrTypeAlias<Record, Record>,
 }
 
 #[derive(Clone, Debug)]
@@ -23,18 +22,20 @@ pub struct ActRecordMember {
 
 impl TypeAliasize<ActRecord> for ActRecord {
     fn as_type_alias(&self) -> ActRecord {
-        match self {
-            ActRecord::Literal(literal) => ActRecord::TypeAlias(literal.clone()),
-            ActRecord::TypeAlias(_) => self.clone(),
+        match &self.record {
+            LiteralOrTypeAlias::Literal(literal) => ActRecord {
+                record: LiteralOrTypeAlias::TypeAlias(literal.clone()),
+            },
+            LiteralOrTypeAlias::TypeAlias(_) => self.clone(),
         }
     }
 }
 
 impl Literally for ActRecord {
     fn is_literal(&self) -> bool {
-        match self {
-            ActRecord::Literal(_) => true,
-            ActRecord::TypeAlias(_) => false,
+        match self.record {
+            LiteralOrTypeAlias::Literal(_) => true,
+            LiteralOrTypeAlias::TypeAlias(_) => false,
         }
     }
 
@@ -45,9 +46,9 @@ impl Literally for ActRecord {
 
 impl ActRecord {
     pub fn get_member_types(&self) -> Vec<ActDataTypeNode> {
-        match self {
-            ActRecord::Literal(literal) => literal,
-            ActRecord::TypeAlias(type_alias) => type_alias,
+        match &self.record {
+            LiteralOrTypeAlias::Literal(literal) => literal,
+            LiteralOrTypeAlias::TypeAlias(type_alias) => type_alias,
         }
         .members
         .iter()
@@ -56,18 +57,20 @@ impl ActRecord {
     }
 
     pub fn get_name(&self) -> String {
-        match self {
-            ActRecord::Literal(literal) => literal.name.clone(),
-            ActRecord::TypeAlias(type_alias) => type_alias.name.clone(),
+        match &self.record {
+            LiteralOrTypeAlias::Literal(literal) => literal,
+            LiteralOrTypeAlias::TypeAlias(type_alias) => type_alias,
         }
+        .name
+        .clone()
     }
 }
 
 impl ToTokenStream for ActRecord {
     fn to_token_stream(&self) -> TokenStream {
-        match self {
-            ActRecord::Literal(literal) => literal.name.to_identifier().to_token_stream(),
-            ActRecord::TypeAlias(type_alias) => {
+        match &self.record {
+            LiteralOrTypeAlias::Literal(literal) => literal.name.to_identifier().to_token_stream(),
+            LiteralOrTypeAlias::TypeAlias(type_alias) => {
                 let type_ident = type_alias.name.to_identifier();
                 let member_token_streams: Vec<TokenStream> = type_alias
                     .members

@@ -6,7 +6,7 @@ use crate::cdk_act::nodes::data_type_nodes::{
     ActArray, ActArrayLiteral, ActArrayTypeAlias, ActDataTypeNode, ActFunc, ActOption,
     ActOptionLiteral, ActOptionTypeAlias, ActPrimitive, ActPrimitiveLit, ActPrimitiveTypeAlias,
     ActRecord, ActRecordMember, ActTuple, ActTupleElem, ActTypeRef, ActTypeRefLit,
-    ActTypeRefTypeAlias, ActVariant, ActVariantMember,
+    ActTypeRefTypeAlias, ActVariant, ActVariantMember, LiteralOrTypeAlias,
 };
 use crate::generators::funcs;
 use core::panic;
@@ -318,14 +318,18 @@ fn parse_ts_type_lit_as_struct(name: &Option<&String>, ts_type_lit: &TsTypeLit) 
     });
 
     match name {
-        Some(name) => ActRecord::TypeAlias(Record {
-            name: name.clone().clone(),
-            members,
-        }),
-        None => ActRecord::Literal(Record {
-            name: generate_inline_ident(ts_type_lit),
-            members,
-        }),
+        Some(name) => ActRecord {
+            record: LiteralOrTypeAlias::TypeAlias(Record {
+                name: name.clone().clone(),
+                members,
+            }),
+        },
+        None => ActRecord {
+            record: LiteralOrTypeAlias::Literal(Record {
+                name: generate_inline_ident(ts_type_lit),
+                members,
+            }),
+        },
     }
 }
 
