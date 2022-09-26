@@ -1,13 +1,15 @@
-mod method_body;
-pub mod query;
-pub mod update;
+use swc_ecma_ast::FnDecl;
 
-pub mod async_result_handler;
-pub mod functions;
-pub mod system {
-    pub mod heartbeat;
-    pub mod init;
-    pub mod inspect_message;
-    pub mod post_upgrade;
-    pub mod pre_upgrade;
+use crate::cdk_act::{nodes::ActCanisterMethodNode, traits::CanisterMethodBuilder, RequestType};
+
+pub mod method_body;
+
+pub fn build_canister_method_nodes(
+    fn_decls: &Vec<FnDecl>,
+    request_type: RequestType,
+) -> Vec<ActCanisterMethodNode> {
+    fn_decls.iter().fold(vec![], |acc, fn_decl| {
+        let canister_method_node = fn_decl.build_canister_method_node(&request_type);
+        vec![acc, vec![canister_method_node]].concat()
+    })
 }
