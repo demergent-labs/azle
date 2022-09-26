@@ -1,11 +1,10 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
-use super::Param;
-use crate::cdk_act::{ActDataTypeNode, ToTokenStream, ToTokenStreams};
+use crate::cdk_act::{nodes::ActFnParam, ActDataTypeNode, ToTokenStream, ToTokenStreams};
 
 #[derive(Clone)]
-pub enum CanisterMethodActNode {
+pub enum ActCanisterMethodNode {
     QueryMethod(CanisterMethod),
     UpdateMethod(CanisterMethod),
 }
@@ -14,14 +13,14 @@ pub enum CanisterMethodActNode {
 #[derive(Clone)]
 pub struct CanisterMethod {
     pub body: TokenStream,
-    pub params: Vec<Param>,
+    pub params: Vec<ActFnParam>,
     pub is_manual: bool,
     pub name: String,
     pub return_type: ActDataTypeNode,
 }
 
 pub fn get_all_types_from_canister_method_acts(
-    canister_methods: &Vec<CanisterMethodActNode>,
+    canister_methods: &Vec<ActCanisterMethodNode>,
 ) -> Vec<ActDataTypeNode> {
     canister_methods
         .iter()
@@ -31,10 +30,10 @@ pub fn get_all_types_from_canister_method_acts(
         })
 }
 
-impl ToTokenStream for CanisterMethodActNode {
+impl ToTokenStream for ActCanisterMethodNode {
     fn to_token_stream(&self) -> TokenStream {
         match self {
-            CanisterMethodActNode::QueryMethod(query_method) => {
+            ActCanisterMethodNode::QueryMethod(query_method) => {
                 let function_signature = generate_function(query_method);
 
                 let manual_reply_arg = if query_method.is_manual {
@@ -49,7 +48,7 @@ impl ToTokenStream for CanisterMethodActNode {
                     #function_signature
                 }
             }
-            CanisterMethodActNode::UpdateMethod(update_method) => {
+            ActCanisterMethodNode::UpdateMethod(update_method) => {
                 let function_signature = generate_function(update_method);
 
                 let manual_reply_arg = if update_method.is_manual {
@@ -68,31 +67,31 @@ impl ToTokenStream for CanisterMethodActNode {
     }
 }
 
-impl CanisterMethodActNode {
+impl ActCanisterMethodNode {
     pub fn get_all_types(&self) -> Vec<ActDataTypeNode> {
         vec![self.get_param_types(), vec![self.get_return_type()]].concat()
     }
 
     pub fn get_name(&self) -> String {
         match self {
-            CanisterMethodActNode::QueryMethod(canister_method) => &canister_method.name,
-            CanisterMethodActNode::UpdateMethod(canister_method) => &canister_method.name,
+            ActCanisterMethodNode::QueryMethod(canister_method) => &canister_method.name,
+            ActCanisterMethodNode::UpdateMethod(canister_method) => &canister_method.name,
         }
         .clone()
     }
 
     pub fn get_return_type(&self) -> ActDataTypeNode {
         match self {
-            CanisterMethodActNode::QueryMethod(canister_method) => &canister_method.return_type,
-            CanisterMethodActNode::UpdateMethod(canister_method) => &canister_method.return_type,
+            ActCanisterMethodNode::QueryMethod(canister_method) => &canister_method.return_type,
+            ActCanisterMethodNode::UpdateMethod(canister_method) => &canister_method.return_type,
         }
         .clone()
     }
 
     pub fn get_param_types(&self) -> Vec<ActDataTypeNode> {
         match self {
-            CanisterMethodActNode::QueryMethod(query) => &query.params,
-            CanisterMethodActNode::UpdateMethod(update) => &update.params,
+            ActCanisterMethodNode::QueryMethod(query) => &query.params,
+            ActCanisterMethodNode::UpdateMethod(update) => &update.params,
         }
         .iter()
         .map(|param| param.data_type.clone())
@@ -101,8 +100,8 @@ impl CanisterMethodActNode {
 
     pub fn is_manual(&self) -> bool {
         match self {
-            CanisterMethodActNode::QueryMethod(canister_method) => canister_method.is_manual,
-            CanisterMethodActNode::UpdateMethod(canister_method) => canister_method.is_manual,
+            ActCanisterMethodNode::QueryMethod(canister_method) => canister_method.is_manual,
+            ActCanisterMethodNode::UpdateMethod(canister_method) => canister_method.is_manual,
         }
         .clone()
     }

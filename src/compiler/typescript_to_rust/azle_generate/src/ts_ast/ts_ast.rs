@@ -6,18 +6,15 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 use crate::{
     cdk_act::{
-        self, nodes::data_type_nodes, AbstractCanisterTree, ActDataTypeNode, CanisterMethodType,
-        ToAct,
+        self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
+        ActDataTypeNode, CanisterMethodType,
+        RequestType, ToAct,
     },
     generators::{
-        azle_into_js_value, azle_try_from_js_value,
-        canister_methods::{
-            self,
-            system::{heartbeat, init, inspect_message, post_upgrade, pre_upgrade},
-        },
+        async_result_handler, azle_into_js_value, azle_try_from_js_value, canister_methods,
         cross_canister_call_functions, stacktrace, type_aliases,
     },
-    ts_ast,
+    ts_ast::{self, fn_decl::FnDeclVecHelperMethods, program::TsProgramVecHelperMethods},
 };
 
 pub struct TsAst {
@@ -59,30 +56,23 @@ impl ToAct for TsAst {
         eprintln!("--- Starting AST to ACT Conversion ------------");
         eprintln!("-----------------------------------------------");
         // Collect AST Information
-        let ast_type_alias_decls =
-            ts_ast::program::get_ast_type_alias_decls_from_programs(&self.programs);
+        let ast_type_alias_decls = &self.programs.get_ast_type_alias_decls();
         let ast_canister_type_alias_decls =
             ts_ast::ts_type_alias_decl::get_ast_canister_type_alias_decls(&ast_type_alias_decls);
 
         // Separate function decls into queries and updates
-        let ast_fnc_decls_query = ts_ast::program::get_canister_method_type_fn_decls(
-            &self.programs,
-            &CanisterMethodType::Query,
-        );
-        let ast_fnc_decls_update = ts_ast::program::get_canister_method_type_fn_decls(
-            &self.programs,
-            &CanisterMethodType::Update,
-        );
+        let ast_fnc_decls_query = &self
+            .programs
+            .get_fn_decls_of_type(&CanisterMethodType::Query);
+        let ast_fnc_decls_update = &self
+            .programs
+            .get_fn_decls_of_type(&CanisterMethodType::Update);
 
         // Determine which type aliases must be present for the functions to work and save them for later parsing
-        let query_dependencies = ts_ast::fn_decl::get_dependent_types_from_fn_decls(
-            &ast_fnc_decls_query,
-            &ast_type_alias_decls,
-        );
-        let update_dependencies = ts_ast::fn_decl::get_dependent_types_from_fn_decls(
-            &ast_fnc_decls_update,
-            &ast_type_alias_decls,
-        );
+        let query_dependencies =
+            ast_fnc_decls_query.get_dependent_types_from_fn_decls(&ast_type_alias_decls);
+        let update_dependencies =
+            ast_fnc_decls_update.get_dependent_types_from_fn_decls(&ast_type_alias_decls);
         let canister_dependencies =
             ts_ast::ts_type_alias_decl::get_dependent_types_from_canister_decls(
                 &ast_canister_type_alias_decls,
@@ -98,15 +88,19 @@ impl ToAct for TsAst {
             .cloned()
             .collect();
 
-        let query_methods = canister_methods::query::build_query_methods(&ast_fnc_decls_query);
-        let update_methods = canister_methods::update::build_update_methods(&ast_fnc_decls_update);
+        let query_methods =
+            canister_methods::build_canister_method_nodes(&ast_fnc_decls_query, RequestType::Query);
+        let update_methods = canister_methods::build_canister_method_nodes(
+            &ast_fnc_decls_update,
+            RequestType::Update,
+        );
 
         let query_method_type_acts =
-            cdk_act::nodes::canister_method::get_all_types_from_canister_method_acts(
+            cdk_act::nodes::act_canister_method_node::get_all_types_from_canister_method_acts(
                 &query_methods,
             );
         let update_method_type_acts =
-            cdk_act::nodes::canister_method::get_all_types_from_canister_method_acts(
+            cdk_act::nodes::act_canister_method_node::get_all_types_from_canister_method_acts(
                 &update_methods,
             );
 
@@ -194,22 +188,17 @@ impl ToAct for TsAst {
             .map(|act| act.clone())
             .collect();
 
-        let canister_method_system_heartbeat =
-            heartbeat::generate_canister_method_system_heartbeat(&self.programs);
-        let canister_method_system_init =
-            init::generate_canister_method_system_init(&self.programs);
-        let canister_method_system_inspect_message =
-            inspect_message::generate_canister_method_system_inspect_message(&self.programs);
-        let canister_method_system_post_upgrade =
-            post_upgrade::generate_canister_method_system_post_upgrade(&self.programs);
-        let canister_method_system_pre_upgrade =
-            pre_upgrade::generate_canister_method_system_pre_upgrade(&self.programs);
+        let heartbeat_method = self.programs.build_heartbeat_method();
+        let init_method = self.programs.build_init_method();
+        let inspect_message_method = self.programs.build_inspect_method();
+        let post_upgrade_method = self.programs.build_post_upgrade_method();
+        let pre_upgrade_method = self.programs.build_pre_upgrade_method();
 
         let azle_into_js_value = azle_into_js_value::generate_azle_into_js_value();
         let azle_try_from_js_value = azle_try_from_js_value::generate_azle_try_from_js_value();
 
         let async_result_handler =
-            canister_methods::async_result_handler::generate_async_result_handler(&self.programs);
+            async_result_handler::generate_async_result_handler(&self.programs);
         let get_top_level_call_frame_fn = stacktrace::generate_get_top_level_call_frame_fn();
 
         let cross_canister_call_functions =
@@ -218,14 +207,15 @@ impl ToAct for TsAst {
         // TODO Some of the things in this quote belong inside of the quote in AbstractCanisterTree
 
         AbstractCanisterTree {
+            // TODO put a CDK_name property on here for use in things
             update_methods,
             query_methods,
+            heartbeat_method,
+            init_method,
+            inspect_message_method,
+            post_upgrade_method,
+            pre_upgrade_method,
             rust_code: quote! {
-                #canister_method_system_init
-                #canister_method_system_pre_upgrade
-                #canister_method_system_post_upgrade
-                #canister_method_system_heartbeat
-                #canister_method_system_inspect_message
 
                 #cross_canister_call_functions
 
