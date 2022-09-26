@@ -1,14 +1,14 @@
 use swc_ecma_ast::Program;
 
 use crate::{
-    cdk_act::{nodes::ActHeartbeatMethodNode, CanisterMethodType},
+    cdk_act::{nodes::ActHeartbeatMethod, CanisterMethodType},
     generators::canister_methods::method_body,
     ts_ast::program::TsProgramVecHelperMethods,
 };
 
 pub fn build_canister_method_system_heartbeat(
     programs: &Vec<Program>,
-) -> Option<ActHeartbeatMethodNode> {
+) -> Option<ActHeartbeatMethod> {
     let heartbeat_fn_decls = programs.get_fn_decls_of_type(&CanisterMethodType::Heartbeat);
 
     if heartbeat_fn_decls.len() > 1 {
@@ -34,7 +34,7 @@ pub fn build_canister_method_system_heartbeat(
                     });
                 }
         };
-        Some(ActHeartbeatMethodNode { body })
+        Some(ActHeartbeatMethod { body })
     } else {
         None
     }

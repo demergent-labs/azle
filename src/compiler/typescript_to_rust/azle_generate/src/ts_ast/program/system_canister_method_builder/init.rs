@@ -2,14 +2,14 @@ use swc_ecma_ast::Program;
 
 use crate::{
     cdk_act::{
-        generators::ic_object, nodes::ActInitMethodNode, traits::CanisterMethodBuilder,
+        generators::ic_object, nodes::ActInitMethod, traits::CanisterMethodBuilder,
         CanisterMethodType,
     },
     generators::canister_methods::method_body,
     ts_ast::program::TsProgramVecHelperMethods,
 };
 
-pub fn build_canister_method_system_init(programs: &Vec<Program>) -> ActInitMethodNode {
+pub fn build_canister_method_system_init(programs: &Vec<Program>) -> ActInitMethod {
     let ic_object = ic_object::generate_ic_object(programs);
 
     let init_fn_decls = programs.get_fn_decls_of_type(&CanisterMethodType::Init);
@@ -53,5 +53,5 @@ pub fn build_canister_method_system_init(programs: &Vec<Program>) -> ActInitMeth
         }
     };
 
-    ActInitMethodNode { params, body }
+    ActInitMethod { params, body }
 }

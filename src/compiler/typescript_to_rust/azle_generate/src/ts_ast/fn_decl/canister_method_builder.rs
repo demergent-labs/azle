@@ -2,7 +2,7 @@ use swc_ecma_ast::FnDecl;
 
 use crate::{
     cdk_act::{
-        nodes::{ActCanisterMethodNode, ActFnParam, CanisterMethod},
+        nodes::{ActCanisterMethod, ActFnParam, CanisterMethod},
         traits::CanisterMethodBuilder,
         ActDataTypeNode, RequestType,
     },
@@ -11,7 +11,7 @@ use crate::{
 };
 
 impl CanisterMethodBuilder for FnDecl {
-    fn build_canister_method_node(&self, request_type: &RequestType) -> ActCanisterMethodNode {
+    fn build_canister_method_node(&self, request_type: &RequestType) -> ActCanisterMethod {
         let body = method_body::generate_canister_method_body(&self);
         let is_manual = self.is_manual();
         let name = self.get_fn_decl_function_name();
@@ -27,8 +27,8 @@ impl CanisterMethodBuilder for FnDecl {
         };
 
         match request_type {
-            RequestType::Query => ActCanisterMethodNode::QueryMethod(canister_method),
-            RequestType::Update => ActCanisterMethodNode::UpdateMethod(canister_method),
+            RequestType::Query => ActCanisterMethod::QueryMethod(canister_method),
+            RequestType::Update => ActCanisterMethod::UpdateMethod(canister_method),
         }
     }
 

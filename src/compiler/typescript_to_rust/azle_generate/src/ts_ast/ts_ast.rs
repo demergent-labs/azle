@@ -96,11 +96,11 @@ impl ToAct for TsAst {
         );
 
         let query_method_type_acts =
-            cdk_act::nodes::act_canister_method_node::get_all_types_from_canister_method_acts(
+            cdk_act::nodes::act_canister_method::get_all_types_from_canister_method_acts(
                 &query_methods,
             );
         let update_method_type_acts =
-            cdk_act::nodes::act_canister_method_node::get_all_types_from_canister_method_acts(
+            cdk_act::nodes::act_canister_method::get_all_types_from_canister_method_acts(
                 &update_methods,
             );
 

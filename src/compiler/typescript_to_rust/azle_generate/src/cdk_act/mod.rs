@@ -3,7 +3,7 @@ use proc_macro2::TokenStream;
 pub use abstract_canister_tree::AbstractCanisterTree;
 pub use actable::Actable;
 pub use nodes::data_type_nodes::ActDataTypeNode;
-pub use nodes::ActCanisterMethodNode;
+pub use nodes::ActCanisterMethod;
 pub use nodes::CanisterMethod;
 
 pub mod abstract_canister_tree;

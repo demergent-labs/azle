@@ -1,14 +1,12 @@
 use crate::{
-    cdk_act::{nodes::ActPreUpgradeMethodNode, CanisterMethodType},
+    cdk_act::{nodes::ActPreUpgradeMethod, CanisterMethodType},
     generators::canister_methods::method_body,
     ts_ast::program::TsProgramVecHelperMethods,
 };
 use quote::quote;
 use swc_ecma_ast::Program;
 
-pub fn build_canister_method_system_pre_upgrade(
-    programs: &Vec<Program>,
-) -> ActPreUpgradeMethodNode {
+pub fn build_canister_method_system_pre_upgrade(programs: &Vec<Program>) -> ActPreUpgradeMethod {
     let pre_upgrade_fn_decls = programs.get_fn_decls_of_type(&CanisterMethodType::PreUpgrade);
 
     if pre_upgrade_fn_decls.len() > 1 {
@@ -34,5 +32,5 @@ pub fn build_canister_method_system_pre_upgrade(
         }
     };
 
-    ActPreUpgradeMethodNode { body }
+    ActPreUpgradeMethod { body }
 }
