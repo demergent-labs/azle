@@ -1,6 +1,5 @@
 use super::{ident, ts_method_signature, ts_type, ts_types_to_act};
 use crate::cdk_act::{Actable, SystemStructureType};
-use quote::format_ident;
 use std::{
     collections::{HashMap, HashSet},
     iter::FromIterator,
@@ -14,10 +13,9 @@ pub fn ast_type_alias_decl_to_string(decl: &TsTypeAliasDecl) -> String {
 impl Actable for TsTypeAliasDecl {
     fn to_act_node(&self) -> crate::cdk_act::ActDataTypeNode {
         let ts_type_name = ast_type_alias_decl_to_string(self);
-        let ts_type_alias_ident = format_ident!("{}", ts_type_name);
 
         let ts_type = *self.type_ann.clone();
-        ts_types_to_act::ts_type_to_act_node(&ts_type, &Some(&ts_type_alias_ident))
+        ts_types_to_act::ts_type_to_act_node(&ts_type, &Some(&ts_type_name))
     }
 }
 

@@ -1,14 +1,13 @@
-use quote::{format_ident, quote};
-use swc_ecma_ast::{
-    Expr, Program, TsFnParam, TsMethodSignature, TsType, TsTypeAliasDecl, TsTypeElement, TsTypeLit,
-};
-
 use crate::{
-    cdk_act::SystemStructureType,
+    cdk_act::{SystemStructureType, ToTokenStream},
     ts_ast::{
         ident::ident_to_string, program::get_type_alias_decls_for_system_structure_type,
         ts_type_alias_decl::get_type_alias_decl_name, ts_types_to_act,
     },
+};
+use quote::{format_ident, quote};
+use swc_ecma_ast::{
+    Expr, Program, TsFnParam, TsMethodSignature, TsType, TsTypeAliasDecl, TsTypeElement, TsTypeLit,
 };
 
 #[derive(Clone)]
@@ -516,7 +515,7 @@ fn get_ts_method_signature_return_type(
     let type_params = ts_type_ref.type_params.as_ref().unwrap();
     let return_type = &**type_params.params.get(0).unwrap();
 
-    ts_types_to_act::ts_type_to_act_node(return_type, &None).get_type_ident()
+    ts_types_to_act::ts_type_to_act_node(return_type, &None).to_token_stream()
 }
 
 // TODO this part should be refactored to allow us to get a params data structure by just passing in a &FnDecl
@@ -533,7 +532,7 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
                     &binding_ident.type_ann.as_ref().unwrap().type_ann,
                     &None,
                 )
-                .get_type_ident();
+                .to_token_stream();
 
                 quote! {
                     #param_name_ident: #param_type
@@ -567,7 +566,7 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
                     &binding_ident.type_ann.as_ref().unwrap().type_ann,
                     &None,
                 )
-                .get_type_ident();
+                .to_token_stream();
 
                 quote! {
                     #param_type

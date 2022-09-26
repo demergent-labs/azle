@@ -141,6 +141,7 @@ type SelfReferencingVariant = Variant<{
     Two: null;
 }>;
 
+// TODO start boxing things in funcs
 // type SelfReferencingFunc = Func<
 //     (first_param: boolean, second_param: SelfReferencingFunc) => Query<string>
 // >;
@@ -170,7 +171,6 @@ type Good = {
     id: string;
 };
 
-// TODO implement default for inline types
 export function in_line(param: { one: nat16; two: nat16 }): Query<{
     one: string;
     two: { two_a: { two_a_i: nat16 }; two_b: boolean };
@@ -239,9 +239,6 @@ type StructWithInlineArray = {
     array: { thing: boolean; thing2: boolean }[];
 };
 
-// TODO test an inline opt
-// TODO test with self referencing where its a couple levels deep. For example A references b and b reference c and c references A
-
 export function inline_vec(
     array: { thing: string; thing2: boolean }[],
     struct_thing: StructWithInlineArray
@@ -256,3 +253,47 @@ type CanisterTuple1 = [
 ];
 
 export function tuple_test(tup: CanisterTuple1): Query<void> {}
+
+type OptionAlias = Opt<Boolean>;
+type InlineOptionAlias = Opt<{ inline_bool: boolean }>;
+type InlineOptionStruct = {
+    opt: Opt<{ inline_string: String }>;
+};
+
+export function option_test(
+    opt: OptionAlias,
+    inline_opt: Opt<{ thing: String }>,
+    inline_alias: InlineOptionAlias,
+    struct_with_option: InlineOptionStruct,
+    inline_struct_with_array: { arr: Opt<{ inline_number: nat16 }> }
+): Update<void> {}
+
+type ArrayAlias = Boolean[];
+type InlineArrayAlias = { inline_bool: boolean }[];
+type InlineArrayStruct = {
+    arr: { inline_string: String }[];
+};
+
+export function array_test(
+    opt: ArrayAlias,
+    inline_array: { thing: String }[],
+    inline_alias: InlineArrayAlias,
+    struct_with_array: InlineArrayStruct,
+    inline_struct_with_array: { arr: { inline_number: nat16 }[] }
+): Update<void> {}
+
+type UltimateSelfRef = {
+    pen_ultimate: PenultimateSelfRef;
+};
+
+type PenultimateSelfRef = {
+    antepenultimate: AntepenultimateSelfRef;
+};
+
+type AntepenultimateSelfRef = {
+    ultimate: UltimateSelfRef;
+};
+
+export function ultimate_self_reference_test(
+    self_ref: UltimateSelfRef
+): Update<void> {}

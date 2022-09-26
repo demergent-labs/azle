@@ -6,7 +6,8 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 use crate::{
     cdk_act::{
-        self, act_data_type_node, AbstractCanisterTree, ActDataTypeNode, CanisterMethodType, ToAct,
+        self, nodes::data_type_nodes, AbstractCanisterTree, ActDataTypeNode, CanisterMethodType,
+        ToAct,
     },
     generators::{
         azle_into_js_value, azle_try_from_js_value,
@@ -14,7 +15,7 @@ use crate::{
             self,
             system::{heartbeat, init, inspect_message, post_upgrade, pre_upgrade},
         },
-        cross_canister_call_functions, funcs, stacktrace, type_aliases,
+        cross_canister_call_functions, stacktrace, type_aliases,
     },
     ts_ast,
 };
@@ -54,13 +55,14 @@ impl TsAst {
 
 impl ToAct for TsAst {
     fn to_act(&self) -> AbstractCanisterTree {
+        eprintln!("-----------------------------------------------");
+        eprintln!("--- Starting AST to ACT Conversion ------------");
+        eprintln!("-----------------------------------------------");
         // Collect AST Information
         let ast_type_alias_decls =
             ts_ast::program::get_ast_type_alias_decls_from_programs(&self.programs);
         let ast_canister_type_alias_decls =
             ts_ast::ts_type_alias_decl::get_ast_canister_type_alias_decls(&ast_type_alias_decls);
-
-        let func_arg_token = funcs::generate_func_arg_token();
 
         // Separate function decls into queries and updates
         let ast_fnc_decls_query = ts_ast::program::get_canister_method_type_fn_decls(
@@ -99,20 +101,23 @@ impl ToAct for TsAst {
         let query_methods = canister_methods::query::build_query_methods(&ast_fnc_decls_query);
         let update_methods = canister_methods::update::build_update_methods(&ast_fnc_decls_update);
 
-        let query_method_inline_acts =
-            cdk_act::nodes::canister_method::build_inline_types_from_canister_method_acts(
+        let query_method_type_acts =
+            cdk_act::nodes::canister_method::get_all_types_from_canister_method_acts(
                 &query_methods,
             );
-        let update_method_inline_acts =
-            cdk_act::nodes::canister_method::build_inline_types_from_canister_method_acts(
+        let update_method_type_acts =
+            cdk_act::nodes::canister_method::get_all_types_from_canister_method_acts(
                 &update_methods,
             );
 
         let type_alias_acts =
             type_aliases::build_type_alias_acts(&dependencies, &ast_type_alias_decls);
 
-        let type_alias_inline_acts =
-            act_data_type_node::build_inline_types_from_type_alias_acts(&type_alias_acts);
+        let type_alias_inline_acts = data_type_nodes::build_inline_type_acts(&type_alias_acts);
+        let query_method_inline_acts =
+            data_type_nodes::build_inline_type_acts(&query_method_type_acts);
+        let update_method_inline_acts =
+            data_type_nodes::build_inline_type_acts(&update_method_type_acts);
 
         let all_inline_acts = vec![
             type_alias_inline_acts,
@@ -120,25 +125,10 @@ impl ToAct for TsAst {
             update_method_inline_acts,
         ]
         .concat();
-        let all_inline_acts = act_data_type_node::deduplicate(all_inline_acts);
+        let all_inline_acts = data_type_nodes::deduplicate(all_inline_acts);
 
         let all_type_acts = vec![type_alias_acts, all_inline_acts].concat();
 
-        let aliases: Vec<ActDataTypeNode> = all_type_acts
-            .iter()
-            .filter(|act| match act {
-                ActDataTypeNode::Primitive(primitive) => match primitive {
-                    act_data_type_node::Primitive::TypeAlias(_) => true,
-                    _ => false,
-                },
-                ActDataTypeNode::TypeRef(type_ref) => match type_ref {
-                    act_data_type_node::TypeRef::TypeAlias(_) => true,
-                    _ => false,
-                },
-                _ => false,
-            })
-            .map(|act| act.clone())
-            .collect();
         let arrays: Vec<ActDataTypeNode> = all_type_acts
             .iter()
             .filter(|act| match act {
@@ -166,16 +156,7 @@ impl ToAct for TsAst {
         let primitives: Vec<ActDataTypeNode> = all_type_acts
             .iter()
             .filter(|act| match act {
-                ActDataTypeNode::Primitive(primitive) => match primitive {
-                    act_data_type_node::Primitive::Literal(_) => todo!(),
-                    act_data_type_node::Primitive::TypeAlias(_) => false,
-                },
-                ActDataTypeNode::TypeRef(type_ref) => match type_ref {
-                    act_data_type_node::TypeRef::Literal(_) => {
-                        todo!("Figure out if this actually happens at this point.")
-                    }
-                    act_data_type_node::TypeRef::TypeAlias(_) => false,
-                },
+                ActDataTypeNode::Primitive(_) => true,
                 _ => false,
             })
             .map(|act| act.clone())
@@ -192,6 +173,14 @@ impl ToAct for TsAst {
             .iter()
             .filter(|act| match act {
                 ActDataTypeNode::Tuple(_) => true,
+                _ => false,
+            })
+            .map(|act| act.clone())
+            .collect();
+        let type_refs: Vec<ActDataTypeNode> = all_type_acts
+            .iter()
+            .filter(|act| match act {
+                ActDataTypeNode::TypeRef(_) => true,
                 _ => false,
             })
             .map(|act| act.clone())
@@ -243,19 +232,17 @@ impl ToAct for TsAst {
                 #async_result_handler
                 #get_top_level_call_frame_fn
 
-                #func_arg_token
-
                 #azle_into_js_value
                 #azle_try_from_js_value
 
             },
-            aliases,
             arrays,
             funcs,
             options,
             primitives,
             records,
             tuples,
+            type_refs,
             variants,
         }
     }
