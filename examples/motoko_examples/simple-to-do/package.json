@@ -4,7 +4,7 @@
         "benchmark": "ts-node --transpile-only --ignore=false benchmark/benchmark.ts"
     },
     "dependencies": {
-        "azle": "0.7.0-rc.2"
+        "azle": "0.7.0-rc.3"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.12.1",
