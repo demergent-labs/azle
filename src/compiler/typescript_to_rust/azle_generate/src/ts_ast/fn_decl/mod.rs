@@ -3,7 +3,7 @@ use std::{collections::HashSet, iter::FromIterator};
 use swc_ecma_ast::{FnDecl, TsType, TsTypeAliasDecl};
 use syn::Ident;
 
-use super::{ts_type, ts_type_alias_decl};
+use super::{ts_type_alias_decl, GetDependencies};
 use crate::cdk_act::CanisterMethodType;
 
 mod canister_method_builder;
@@ -154,6 +154,7 @@ impl FnDeclVecHelperMethods for Vec<FnDecl> {
     }
 }
 
+// TODO what is this doing in here?
 fn get_dependent_types_from_fn_decl(
     fn_decl: &FnDecl,
     possible_dependencies: &Vec<TsTypeAliasDecl>,
@@ -166,7 +167,8 @@ fn get_dependent_types_from_fn_decl(
 
     ts_types.iter().fold(found_types.clone(), |acc, ts_type| {
         let result = HashSet::from_iter(
-            ts_type::get_dependent_types_for_ts_type(ts_type, &type_alias_lookup, &acc)
+            ts_type
+                .get_dependent_types(&type_alias_lookup, &acc)
                 .iter()
                 .cloned(),
         );

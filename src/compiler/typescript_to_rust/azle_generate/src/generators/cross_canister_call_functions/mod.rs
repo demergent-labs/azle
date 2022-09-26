@@ -1,9 +1,6 @@
 use crate::{
-    cdk_act::{SystemStructureType, ToTokenStream},
-    ts_ast::{
-        ident::ident_to_string, program::TsProgramVecHelperMethods,
-        ts_type_alias_decl::get_type_alias_decl_name, ts_types_to_act,
-    },
+    cdk_act::{SystemStructureType, ToActDataType, ToTokenStream},
+    ts_ast::{ident::ident_to_string, program::TsProgramVecHelperMethods, GetName},
 };
 use quote::{format_ident, quote};
 use swc_ecma_ast::{
@@ -137,8 +134,7 @@ fn generate_cross_canister_call_functions_infos_from_canister_type_alias_decl(
         TsType::TsTypeRef(ts_type_ref) => {
             match &ts_type_ref.type_params {
                 Some(type_params) => {
-                    let canister_type_alias_decl_name =
-                        get_type_alias_decl_name(canister_type_alias_decl);
+                    let canister_type_alias_decl_name = canister_type_alias_decl.get_name();
 
                     let type_param = &type_params.params[0]; // TODO I think we can assume this will be here
 
@@ -515,7 +511,7 @@ fn get_ts_method_signature_return_type(
     let type_params = ts_type_ref.type_params.as_ref().unwrap();
     let return_type = &**type_params.params.get(0).unwrap();
 
-    ts_types_to_act::ts_type_to_act_node(return_type, &None).to_token_stream()
+    return_type.to_act_data_type(&None).to_token_stream()
 }
 
 // TODO this part should be refactored to allow us to get a params data structure by just passing in a &FnDecl
@@ -528,11 +524,13 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
             TsFnParam::Ident(binding_ident) => {
                 let param_name = ident_to_string(&binding_ident.id);
                 let param_name_ident = format_ident!("{}", param_name);
-                let param_type = ts_types_to_act::ts_type_to_act_node(
-                    &binding_ident.type_ann.as_ref().unwrap().type_ann,
-                    &None,
-                )
-                .to_token_stream();
+                let param_type = &binding_ident
+                    .type_ann
+                    .as_ref()
+                    .unwrap()
+                    .type_ann
+                    .to_act_data_type(&None)
+                    .to_token_stream();
 
                 quote! {
                     #param_name_ident: #param_type
@@ -562,11 +560,13 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
         .iter()
         .map(|ts_fn_param| match ts_fn_param {
             TsFnParam::Ident(binding_ident) => {
-                let param_type = ts_types_to_act::ts_type_to_act_node(
-                    &binding_ident.type_ann.as_ref().unwrap().type_ann,
-                    &None,
-                )
-                .to_token_stream();
+                let param_type = binding_ident
+                    .type_ann
+                    .as_ref()
+                    .unwrap()
+                    .type_ann
+                    .to_act_data_type(&None)
+                    .to_token_stream();
 
                 quote! {
                     #param_type

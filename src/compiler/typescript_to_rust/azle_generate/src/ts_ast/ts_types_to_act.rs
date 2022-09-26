@@ -17,38 +17,77 @@ use swc_ecma_ast::{
     TsType, TsTypeElement, TsTypeLit, TsTypeRef,
 };
 
-pub fn ts_type_to_act_node(ts_type: &TsType, name: &Option<&String>) -> ActDataTypeNode {
-    let rust_type = match ts_type {
-        TsType::TsKeywordType(ts_keyword_type) => parse_ts_keyword_type(ts_keyword_type, name),
-        TsType::TsTypeRef(ts_type_ref) => parse_ts_type_ref(ts_type_ref, name),
-        TsType::TsArrayType(ts_array_type) => parse_ts_array_type(ts_array_type, name),
-        TsType::TsTypeLit(ts_type_lit) => {
-            ActDataTypeNode::Record(parse_ts_type_lit_as_struct(name, ts_type_lit))
+use crate::cdk_act::actable::ToActDataType;
+
+impl ToActDataType for TsType {
+    fn to_act_data_type(&self, name: &Option<&String>) -> ActDataTypeNode {
+        match self {
+            TsType::TsKeywordType(ts_keyword_type) => ts_keyword_type.to_act_data_type(name),
+            TsType::TsTypeRef(ts_type_ref) => parse_ts_type_ref(ts_type_ref, name),
+            TsType::TsArrayType(ts_array_type) => parse_ts_array_type(ts_array_type, name),
+            TsType::TsTypeLit(ts_type_lit) => {
+                ActDataTypeNode::Record(parse_ts_type_lit_as_struct(name, ts_type_lit))
+            }
+            TsType::TsTupleType(ts_tuple_type) => {
+                ActDataTypeNode::Tuple(parse_ts_tuple_type(ts_tuple_type, name))
+            }
+            TsType::TsThisType(_) => todo!("to_act_data_type for TsThisType"),
+            TsType::TsFnOrConstructorType(_) => {
+                todo!("to_act_data_type for TsFnOorConstructorType")
+            }
+            TsType::TsTypeQuery(_) => todo!("to_act_data_type for TsTypeQuery"),
+            TsType::TsOptionalType(_) => todo!("to_act_data_type for TsOptionalType"),
+            TsType::TsRestType(_) => todo!("to_act_data_type for TsRestType"),
+            TsType::TsUnionOrIntersectionType(_) => {
+                todo!("to_act_data_type for TsUnionOrIntersectionType")
+            }
+            TsType::TsConditionalType(_) => todo!("to_act_data_type for TsConditionalType"),
+            TsType::TsInferType(_) => todo!("to_act_data_type for TsInferType"),
+            TsType::TsParenthesizedType(_) => todo!("to_act_data_type for TsParenthesizedType"),
+            TsType::TsTypeOperator(_) => todo!("to_act_data_type for TsTypeOperator"),
+            TsType::TsIndexedAccessType(_) => todo!("to_act_data_type for TsIndexedAccessType"),
+            TsType::TsMappedType(_) => todo!("to_act_data_type for TsMappedType"),
+            TsType::TsLitType(_) => todo!("to_act_data_type for TsLitType"),
+            TsType::TsTypePredicate(_) => todo!("to_act_data_type for TsTypePredicate"),
+            TsType::TsImportType(_) => todo!("to_act_data_type for TsImportType"),
         }
-        TsType::TsTupleType(ts_tuple_type) => {
-            ActDataTypeNode::Tuple(parse_ts_tuple_type(ts_tuple_type, name))
-        }
-        TsType::TsThisType(_) => todo!("ts_type_to_rust_type for TsThisType"),
-        TsType::TsFnOrConstructorType(_) => {
-            todo!("ts_type_to_rust_type for TsFnOorConstructorType")
-        }
-        TsType::TsTypeQuery(_) => todo!("ts_type_to_rust_type for TsTypeQuery"),
-        TsType::TsOptionalType(_) => todo!("ts_type_to_rust_type for TsOptionalType"),
-        TsType::TsRestType(_) => todo!("ts_type_to_rust_type for TsRestType"),
-        TsType::TsUnionOrIntersectionType(_) => {
-            todo!("ts_type_to_rust_type for TsUnionOrIntersectionType")
-        }
-        TsType::TsConditionalType(_) => todo!("ts_type_to_rust_type for TsConditionalType"),
-        TsType::TsInferType(_) => todo!("ts_type_to_rust_type for TsInferType"),
-        TsType::TsParenthesizedType(_) => todo!("ts_type_to_rust_type for TsParenthesizedType"),
-        TsType::TsTypeOperator(_) => todo!("ts_type_to_rust_type for TsTypeOperator"),
-        TsType::TsIndexedAccessType(_) => todo!("ts_type_to_rust_type for TsIndexedAccessType"),
-        TsType::TsMappedType(_) => todo!("ts_type_to_rust_type for TsMappedType"),
-        TsType::TsLitType(_) => todo!("ts_type_to_rust_type for TsLitType"),
-        TsType::TsTypePredicate(_) => todo!("ts_type_to_rust_type for TsTypePredicate"),
-        TsType::TsImportType(_) => todo!("ts_type_to_rust_type for TsImportType"),
-    };
-    rust_type
+    }
+}
+
+impl ToActDataType for TsKeywordType {
+    fn to_act_data_type(&self, name: &Option<&String>) -> ActDataTypeNode {
+        let kind = self.kind;
+        let token_stream = match &kind {
+            TsKeywordTypeKind::TsBooleanKeyword => ActPrimitiveLit::Bool,
+            TsKeywordTypeKind::TsStringKeyword => ActPrimitiveLit::String,
+            TsKeywordTypeKind::TsVoidKeyword => ActPrimitiveLit::Void,
+            TsKeywordTypeKind::TsNullKeyword => ActPrimitiveLit::Null,
+            TsKeywordTypeKind::TsObjectKeyword => {
+                todo!("to_act_data_type for TsObjectKeyword")
+            }
+            TsKeywordTypeKind::TsNumberKeyword => {
+                todo!("to_act_data_type for TsNumberKeyword")
+            }
+            TsKeywordTypeKind::TsBigIntKeyword => {
+                todo!("to_act_data_type for TsBigIntKeyword")
+            }
+            TsKeywordTypeKind::TsNeverKeyword => todo!("to_act_data_type for TsNeverKeyword"),
+            TsKeywordTypeKind::TsSymbolKeyword => {
+                todo!("to_act_data_type for TsSymbolKeyword")
+            }
+            TsKeywordTypeKind::TsIntrinsicKeyword => {
+                todo!("to_act_data_type for TsIntrinsicKeyword")
+            }
+            TsKeywordTypeKind::TsUndefinedKeyword => {
+                todo!("to_act_data_type for TsUndefinedKeyword")
+            }
+            TsKeywordTypeKind::TsUnknownKeyword => {
+                todo!("to_act_data_type for TsUnknownKeyword")
+            }
+            TsKeywordTypeKind::TsAnyKeyword => todo!("to_act_data_type for TsAnyKeyword"),
+        };
+        build_act_primitive_type_node(token_stream, name)
+    }
 }
 
 fn parse_ts_tuple_type(ts_tuple_type: &TsTupleType, name: &Option<&String>) -> ActTuple {
@@ -71,36 +110,9 @@ fn get_elem_types(ts_tuple_type: &TsTupleType) -> Vec<ActTupleElem> {
         .elem_types
         .iter()
         .map(|elem| ActTupleElem {
-            elem_type: ts_type_to_act_node(&elem.ty, &None),
+            elem_type: elem.ty.to_act_data_type(&None),
         })
         .collect()
-}
-
-fn parse_ts_keyword_type(
-    ts_keyword_type: &TsKeywordType,
-    name: &Option<&String>,
-) -> ActDataTypeNode {
-    let kind = ts_keyword_type.kind;
-    let token_stream = match &kind {
-        TsKeywordTypeKind::TsBooleanKeyword => ActPrimitiveLit::Bool,
-        TsKeywordTypeKind::TsStringKeyword => ActPrimitiveLit::String,
-        TsKeywordTypeKind::TsVoidKeyword => ActPrimitiveLit::Void,
-        TsKeywordTypeKind::TsNullKeyword => ActPrimitiveLit::Null,
-        TsKeywordTypeKind::TsObjectKeyword => todo!("parse_ts_keyword_type for TsObjectKeyword"),
-        TsKeywordTypeKind::TsNumberKeyword => todo!("parse_ts_keyword_type for TsNumberKeyword"),
-        TsKeywordTypeKind::TsBigIntKeyword => todo!("parse_ts_keyword_type for TsBigIntKeyword"),
-        TsKeywordTypeKind::TsNeverKeyword => todo!("parse_ts_keyword_type for TsNeverKeyword"),
-        TsKeywordTypeKind::TsSymbolKeyword => todo!("parse_ts_keyword_type for TsSymbolKeyword"),
-        TsKeywordTypeKind::TsIntrinsicKeyword => {
-            todo!("parse_ts_keyword_type for TsIntrinsicKeyword")
-        }
-        TsKeywordTypeKind::TsUndefinedKeyword => {
-            todo!("parse_ts_keyword_type for TsUndefinedKeyword")
-        }
-        TsKeywordTypeKind::TsUnknownKeyword => todo!("parse_ts_keyword_type for TsUnknownKeyword"),
-        TsKeywordTypeKind::TsAnyKeyword => todo!("parse_ts_keyword_type for TsAnyKeyword"),
-    };
-    build_act_primitive_type_node(token_stream, name)
 }
 
 fn build_act_primitive_type_node(
@@ -162,7 +174,7 @@ fn parse_ts_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&String>) -> ActData
 
 fn parse_ts_array_type(ts_array_type: &TsArrayType, name: &Option<&String>) -> ActDataTypeNode {
     let elem_ts_type = *ts_array_type.elem_type.clone();
-    let act_elem = ts_type_to_act_node(&elem_ts_type, &None);
+    let act_elem = elem_ts_type.to_act_data_type(&None);
     match name {
         Some(name) => ActDataTypeNode::Array(ActArray::TypeAlias(ActArrayTypeAlias {
             name: name.clone().clone(),
@@ -180,7 +192,7 @@ fn parse_opt_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&String>) -> ActDat
         Some(params) => {
             // TODO do we want to check that 0 is the only valid index?
             let enclosed_ts_type = *params.params[0].clone();
-            let enclosed_rust_type = ts_type_to_act_node(&enclosed_ts_type, &None);
+            let enclosed_rust_type = enclosed_ts_type.to_act_data_type(&None);
             match name {
                 Some(name) => ActDataTypeNode::Option(ActOption::TypeAlias(ActOptionTypeAlias {
                     name: name.clone().clone(),
@@ -239,7 +251,7 @@ fn parse_func_return_type(ts_type: &TsFnType) -> ActDataTypeNode {
     match &*ts_type.type_ann.type_ann {
         TsType::TsTypeRef(type_reference) => match &type_reference.type_params {
             Some(type_param_inst) => match type_param_inst.params.get(0) {
-                Some(param) => ts_type_to_act_node(&*param, &None),
+                Some(param) => param.to_act_data_type(&None),
                 None => panic!("Func must specify exactly one return type"),
             },
             None => {
@@ -279,7 +291,7 @@ fn parse_func_param_types(ts_type: &TsFnType) -> Vec<ActDataTypeNode> {
             swc_ecma_ast::TsFnParam::Ident(ident) => match &ident.type_ann {
                 Some(param_type) => {
                     let ts_type = &*param_type.type_ann;
-                    ts_type_to_act_node(ts_type, &None)
+                    ts_type.to_act_data_type(&None)
                 }
                 None => panic!("Func parameter must have a type"),
             },
@@ -353,7 +365,7 @@ fn parse_type_literal_member_name(prop_sig: &TsPropertySignature) -> String {
 pub fn parse_type_literal_member_type(prop_sig: &TsPropertySignature) -> ActDataTypeNode {
     let type_ann = prop_sig.type_ann.clone().unwrap();
     let ts_type = *type_ann.type_ann.clone();
-    ts_type_to_act_node(&ts_type, &None)
+    ts_type.to_act_data_type(&None)
 }
 
 fn parse_type_literal_members_for_enum(member: &TsTypeElement) -> ActVariantMember {
@@ -366,36 +378,24 @@ fn parse_type_literal_members_for_enum(member: &TsTypeElement) -> ActVariantMemb
     }
 }
 
-fn calculate_ts_type_lit_hash(type_lit: &TsTypeLit) -> String {
-    let mut s = DefaultHasher::new();
-    type_lit.hash(&mut s);
-    format!("{}", s.finish()).to_string()
-}
-
 fn generate_inline_ident(ts_type_lit: &TsTypeLit) -> String {
-    let id = calculate_ts_type_lit_hash(ts_type_lit);
+    let id = calculate_hash(ts_type_lit);
     // TODO could a variant and a struct produce the same hash if they have the same inline part?
     format!("AzleInline{}", id)
 }
 
-fn calculate_ts_type_lit_hash_for_type_ref(type_lit: &TsTypeRef) -> String {
-    let mut s = DefaultHasher::new();
-    type_lit.hash(&mut s);
-    format!("{}", s.finish()).to_string()
-}
-
 fn generate_inline_ident_for_func(ts_type_ref: &TsTypeRef) -> String {
-    let id = calculate_ts_type_lit_hash_for_type_ref(ts_type_ref);
+    let id = calculate_hash(ts_type_ref);
     format!("AzleInlineFunc{}", id)
 }
 
-fn calculate_ts_type_lit_hash_for_tuple(type_lit: &TsTupleType) -> String {
-    let mut s = DefaultHasher::new();
-    type_lit.hash(&mut s);
-    format!("{}", s.finish()).to_string()
+fn generate_inline_ident_for_tuple(ts_type_ref: &TsTupleType) -> String {
+    let id = calculate_hash(ts_type_ref);
+    format!("AzleInlineTuple{}", id)
 }
 
-fn generate_inline_ident_for_tuple(ts_type_ref: &TsTupleType) -> String {
-    let id = calculate_ts_type_lit_hash_for_tuple(ts_type_ref);
-    format!("AzleInlineTuple{}", id)
+fn calculate_hash<T: Hash>(hash: &T) -> String {
+    let mut s = DefaultHasher::new();
+    hash.hash(&mut s);
+    format!("{}", s.finish()).to_string()
 }
