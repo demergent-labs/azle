@@ -1,5 +1,5 @@
-use super::{ts_method_signature, ts_type, GetDependencies, GetName};
-use crate::cdk_act::{Actable, SystemStructureType, ToActDataType};
+use super::{ts_method_signature::TsMethodHelperMethods, ts_type, GetDependencies, GetName};
+use crate::cdk_act::{nodes::ActNode, Actable, SystemStructureType, ToActDataType};
 use std::{
     collections::{HashMap, HashSet},
     iter::FromIterator,
@@ -13,10 +13,10 @@ impl GetName for TsTypeAliasDecl {
 }
 
 impl Actable for TsTypeAliasDecl {
-    fn to_act_node(&self) -> crate::cdk_act::ActDataTypeNode {
+    fn to_act_node(&self) -> ActNode {
         let ts_type_name = self.get_name().to_string();
 
-        self.type_ann.to_act_data_type(&Some(&ts_type_name))
+        ActNode::DataType(self.type_ann.to_act_data_type(&Some(&ts_type_name)))
     }
 }
 
@@ -145,8 +145,8 @@ fn get_dependent_types_from_canister_decl(
         .iter()
         .fold(vec![], |acc, member| match member {
             swc_ecma_ast::TsTypeElement::TsMethodSignature(method_sig) => {
-                let return_types = ts_method_signature::get_return_ts_type_from_method(method_sig);
-                let param_types = ts_method_signature::get_param_ts_types_from_method(method_sig);
+                let return_types = method_sig.get_return_type();
+                let param_types = method_sig.get_param_ts_types();
                 vec![acc, vec![return_types], param_types].concat()
             }
             _ => todo!("There should only be Method Signatures on a Canister type?"),

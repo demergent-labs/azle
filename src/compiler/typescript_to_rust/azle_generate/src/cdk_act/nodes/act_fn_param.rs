@@ -5,7 +5,7 @@ use crate::cdk_act::{ActDataTypeNode, ToTokenStream};
 
 // TODO Consider having access to both strings and idents as necessary
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct ActFnParam {
     pub name: String,
     pub data_type: ActDataTypeNode,
