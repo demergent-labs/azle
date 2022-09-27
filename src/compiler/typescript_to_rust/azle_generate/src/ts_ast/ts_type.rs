@@ -1,7 +1,9 @@
 use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::{TsEntityName, TsType, TsTypeAliasDecl};
 
-use super::{ident, GetDependencies};
+use crate::cdk_act::{ActDataType, ToActDataType};
+
+use super::{ident, ts_type_lit, GetDependencies};
 
 impl GetDependencies for TsType {
     fn get_dependent_types(
@@ -51,5 +53,38 @@ pub fn get_identifier_name_for_ts_type(ts_type: &TsType) -> Option<String> {
             _ => None,
         },
         _ => None,
+    }
+}
+
+impl ToActDataType for TsType {
+    fn to_act_data_type(&self, name: &Option<&String>) -> ActDataType {
+        match self {
+            TsType::TsKeywordType(ts_keyword_type) => ts_keyword_type.to_act_data_type(name),
+            TsType::TsTypeRef(ts_type_ref) => ts_type_ref.to_act_data_type(name),
+            TsType::TsArrayType(ts_array_type) => ts_array_type.to_act_data_type(name),
+            TsType::TsTypeLit(ts_type_lit) => {
+                ActDataType::Record(ts_type_lit::parse_ts_type_lit_as_struct(name, ts_type_lit))
+            }
+            TsType::TsTupleType(ts_tuple_type) => ts_tuple_type.to_act_data_type(name),
+            TsType::TsThisType(_) => todo!("to_act_data_type for TsThisType"),
+            TsType::TsFnOrConstructorType(_) => {
+                todo!("to_act_data_type for TsFnOorConstructorType")
+            }
+            TsType::TsTypeQuery(_) => todo!("to_act_data_type for TsTypeQuery"),
+            TsType::TsOptionalType(_) => todo!("to_act_data_type for TsOptionalType"),
+            TsType::TsRestType(_) => todo!("to_act_data_type for TsRestType"),
+            TsType::TsUnionOrIntersectionType(_) => {
+                todo!("to_act_data_type for TsUnionOrIntersectionType")
+            }
+            TsType::TsConditionalType(_) => todo!("to_act_data_type for TsConditionalType"),
+            TsType::TsInferType(_) => todo!("to_act_data_type for TsInferType"),
+            TsType::TsParenthesizedType(_) => todo!("to_act_data_type for TsParenthesizedType"),
+            TsType::TsTypeOperator(_) => todo!("to_act_data_type for TsTypeOperator"),
+            TsType::TsIndexedAccessType(_) => todo!("to_act_data_type for TsIndexedAccessType"),
+            TsType::TsMappedType(_) => todo!("to_act_data_type for TsMappedType"),
+            TsType::TsLitType(_) => todo!("to_act_data_type for TsLitType"),
+            TsType::TsTypePredicate(_) => todo!("to_act_data_type for TsTypePredicate"),
+            TsType::TsImportType(_) => todo!("to_act_data_type for TsImportType"),
+        }
     }
 }
