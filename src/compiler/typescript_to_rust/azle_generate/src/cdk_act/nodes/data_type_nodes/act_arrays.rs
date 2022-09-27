@@ -1,4 +1,4 @@
-use super::{ActDataTypeNode, Literally, ToIdent};
+use super::{ActDataType, Literally, ToIdent};
 use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
@@ -11,13 +11,13 @@ pub enum ActArray {
 
 #[derive(Clone, Debug)]
 pub struct ActArrayLiteral {
-    pub enclosed_type: Box<ActDataTypeNode>,
+    pub enclosed_type: Box<ActDataType>,
 }
 
 #[derive(Clone, Debug)]
 pub struct ActArrayTypeAlias {
     pub name: String,
-    pub enclosed_type: Box<ActDataTypeNode>,
+    pub enclosed_type: Box<ActDataType>,
 }
 
 impl Literally for ActArray {
@@ -28,13 +28,13 @@ impl Literally for ActArray {
         }
     }
 
-    fn get_members(&self) -> Vec<ActDataTypeNode> {
+    fn get_members(&self) -> Vec<ActDataType> {
         vec![self.get_enclosed_type()]
     }
 }
 
 impl ActArray {
-    pub fn get_enclosed_type(&self) -> ActDataTypeNode {
+    pub fn get_enclosed_type(&self) -> ActDataType {
         match self {
             ActArray::Literal(literal) => *literal.enclosed_type.clone(),
             ActArray::TypeAlias(type_alias) => *type_alias.enclosed_type.clone(),

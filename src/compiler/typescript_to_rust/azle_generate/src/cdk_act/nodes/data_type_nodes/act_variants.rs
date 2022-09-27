@@ -1,4 +1,4 @@
-use super::{ActDataTypeNode, Literally, ToIdent, TypeAliasize};
+use super::{ActDataType, Literally, ToIdent, TypeAliasize};
 use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
@@ -18,7 +18,7 @@ pub struct Variant {
 #[derive(Clone, Debug)]
 pub struct ActVariantMember {
     pub member_name: String,
-    pub member_type: ActDataTypeNode,
+    pub member_type: ActDataType,
 }
 
 impl ActVariant {
@@ -47,7 +47,7 @@ impl Literally for ActVariant {
         }
     }
 
-    fn get_members(&self) -> Vec<ActDataTypeNode> {
+    fn get_members(&self) -> Vec<ActDataType> {
         let act_variant = match self {
             ActVariant::Literal(literal) => literal,
             ActVariant::TypeAlias(type_alias) => type_alias,
@@ -85,7 +85,7 @@ impl ToTokenStream for ActVariant {
 impl ToTokenStream for ActVariantMember {
     fn to_token_stream(&self) -> TokenStream {
         let member_type_token_stream = match self.member_type.clone() {
-            ActDataTypeNode::Primitive(_) => {
+            ActDataType::Primitive(_) => {
                 if self.member_type.to_token_stream().to_string() == quote!((())).to_string() {
                     quote!()
                 } else {

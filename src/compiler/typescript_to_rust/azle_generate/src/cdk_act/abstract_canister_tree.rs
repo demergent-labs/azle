@@ -9,29 +9,29 @@ use super::{
             ActPostUpgradeMethod, ActPreUpgradeMethod,
         },
     },
-    ActDataTypeNode, ToTokenStream, ToTokenStreams,
+    ActDataType, ToTokenStream, ToTokenStreams,
 };
 
 /// An easily traversable representation of a rust canister
 ///
 /// TODO: This needs A LOT of work
 pub struct AbstractCanisterTree {
-    pub arrays: Vec<ActDataTypeNode>,
-    pub funcs: Vec<ActDataTypeNode>,
+    pub arrays: Vec<ActDataType>,
+    pub funcs: Vec<ActDataType>,
     pub heartbeat_method: Option<ActHeartbeatMethod>,
     pub init_method: ActInitMethod,
     pub inspect_message_method: Option<ActInspectMessageMethod>,
-    pub options: Vec<ActDataTypeNode>,
+    pub options: Vec<ActDataType>,
     pub post_upgrade_method: ActPostUpgradeMethod,
     pub pre_upgrade_method: ActPreUpgradeMethod,
-    pub primitives: Vec<ActDataTypeNode>,
+    pub primitives: Vec<ActDataType>,
     pub query_methods: Vec<ActCanisterMethod>,
-    pub records: Vec<ActDataTypeNode>,
+    pub records: Vec<ActDataType>,
     pub rust_code: TokenStream,
-    pub tuples: Vec<ActDataTypeNode>,
-    pub type_refs: Vec<ActDataTypeNode>,
+    pub tuples: Vec<ActDataType>,
+    pub type_refs: Vec<ActDataType>,
     pub update_methods: Vec<ActCanisterMethod>,
-    pub variants: Vec<ActDataTypeNode>,
+    pub variants: Vec<ActDataType>,
 }
 
 impl ToTokenStream for AbstractCanisterTree {

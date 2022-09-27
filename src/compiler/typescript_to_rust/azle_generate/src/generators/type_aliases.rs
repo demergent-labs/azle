@@ -1,5 +1,5 @@
 use crate::{
-    cdk_act::{ActDataTypeNode, Actable},
+    cdk_act::{ActDataType, Actable},
     ts_ast::ts_type_alias_decl,
 };
 use std::collections::HashSet;
@@ -12,7 +12,7 @@ use swc_ecma_ast::TsTypeAliasDecl;
 pub fn build_type_alias_acts(
     type_names: &HashSet<String>,
     ast_type_alias_variant_decls: &Vec<TsTypeAliasDecl>,
-) -> Vec<ActDataTypeNode> {
+) -> Vec<ActDataType> {
     let type_alias_lookup =
         ts_type_alias_decl::generate_type_alias_lookup(ast_type_alias_variant_decls);
 

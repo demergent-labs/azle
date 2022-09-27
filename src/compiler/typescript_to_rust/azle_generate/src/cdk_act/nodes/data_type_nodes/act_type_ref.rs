@@ -37,7 +37,7 @@ impl Literally for ActTypeRef {
         }
     }
 
-    fn get_members(&self) -> Vec<super::ActDataTypeNode> {
+    fn get_members(&self) -> Vec<super::ActDataType> {
         vec![]
     }
 }

@@ -7,7 +7,7 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 use crate::{
     cdk_act::{
         self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
-        ActDataTypeNode, CanisterMethodType, RequestType, ToAct,
+        ActDataType, CanisterMethodType, RequestType, ToAct,
     },
     generators::{
         async_result_handler, azle_into_js_value, azle_try_from_js_value, canister_methods,
@@ -122,66 +122,66 @@ impl ToAct for TsAst {
 
         let all_type_acts = vec![type_alias_acts, all_inline_acts].concat();
 
-        let arrays: Vec<ActDataTypeNode> = all_type_acts
+        let arrays: Vec<ActDataType> = all_type_acts
             .iter()
             .filter(|act| match act {
-                ActDataTypeNode::Array(_) => true,
+                ActDataType::Array(_) => true,
                 _ => false,
             })
             .map(|act| act.clone())
             .collect();
-        let funcs: Vec<ActDataTypeNode> = all_type_acts
+        let funcs: Vec<ActDataType> = all_type_acts
             .iter()
             .filter(|act| match act {
-                ActDataTypeNode::Func(_) => true,
+                ActDataType::Func(_) => true,
                 _ => false,
             })
             .map(|act| act.clone())
             .collect();
-        let options: Vec<ActDataTypeNode> = all_type_acts
+        let options: Vec<ActDataType> = all_type_acts
             .iter()
             .filter(|act| match act {
-                ActDataTypeNode::Option(_) => true,
+                ActDataType::Option(_) => true,
                 _ => false,
             })
             .map(|act| act.clone())
             .collect();
-        let primitives: Vec<ActDataTypeNode> = all_type_acts
+        let primitives: Vec<ActDataType> = all_type_acts
             .iter()
             .filter(|act| match act {
-                ActDataTypeNode::Primitive(_) => true,
+                ActDataType::Primitive(_) => true,
                 _ => false,
             })
             .map(|act| act.clone())
             .collect();
-        let records: Vec<ActDataTypeNode> = all_type_acts
+        let records: Vec<ActDataType> = all_type_acts
             .iter()
             .filter(|act| match act {
-                ActDataTypeNode::Record(_) => true,
+                ActDataType::Record(_) => true,
                 _ => false,
             })
             .map(|act| act.clone())
             .collect();
-        let tuples: Vec<ActDataTypeNode> = all_type_acts
+        let tuples: Vec<ActDataType> = all_type_acts
             .iter()
             .filter(|act| match act {
-                ActDataTypeNode::Tuple(_) => true,
+                ActDataType::Tuple(_) => true,
                 _ => false,
             })
             .map(|act| act.clone())
             .collect();
-        let type_refs: Vec<ActDataTypeNode> = all_type_acts
+        let type_refs: Vec<ActDataType> = all_type_acts
             .iter()
             .filter(|act| match act {
-                ActDataTypeNode::TypeRef(_) => true,
+                ActDataType::TypeRef(_) => true,
                 _ => false,
             })
             .map(|act| act.clone())
             .collect();
-        let variants: Vec<ActDataTypeNode> = all_type_acts
+        let variants: Vec<ActDataType> = all_type_acts
             .iter()
             .filter(|act| match act {
-                ActDataTypeNode::Variant(_) => true,
+                ActDataType::Variant(_) => true,
                 _ => false,
             })
             .map(|act| act.clone())
