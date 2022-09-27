@@ -10,6 +10,8 @@ pub use act_variants::{ActVariant, ActVariantMember};
 use proc_macro2::Ident;
 use quote::format_ident;
 
+use crate::cdk_act::ToTokenStream;
+
 pub mod act_arrays;
 pub mod act_data_type_node;
 pub mod act_funcs;
@@ -43,4 +45,13 @@ pub trait Literally {
 pub enum LiteralOrTypeAlias<L, T> {
     Literal(L),
     TypeAlias(T),
+}
+
+impl<L: ToTokenStream, T: ToTokenStream> ToTokenStream for LiteralOrTypeAlias<L, T> {
+    fn to_token_stream(&self) -> proc_macro2::TokenStream {
+        match self {
+            LiteralOrTypeAlias::Literal(literal) => literal.to_token_stream(),
+            LiteralOrTypeAlias::TypeAlias(type_alias) => type_alias.to_token_stream(),
+        }
+    }
 }
