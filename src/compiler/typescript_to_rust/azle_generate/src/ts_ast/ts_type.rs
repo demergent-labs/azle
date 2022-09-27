@@ -3,7 +3,17 @@ use swc_ecma_ast::{TsEntityName, TsType, TsTypeAliasDecl};
 
 use crate::cdk_act::{ActDataType, ToActDataType};
 
-use super::{ident, ts_type_lit, GetDependencies};
+use super::{ident, ts_type_lit::TsTypeLitHelperMethods, GetDependencies};
+
+pub fn get_identifier_name_for_ts_type(ts_type: &TsType) -> Option<String> {
+    match ts_type {
+        TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
+            TsEntityName::Ident(ident) => Some(ident::ident_to_string(&ident)),
+            _ => None,
+        },
+        _ => None,
+    }
+}
 
 impl GetDependencies for TsType {
     fn get_dependent_types(
@@ -46,26 +56,14 @@ impl GetDependencies for TsType {
     }
 }
 
-pub fn get_identifier_name_for_ts_type(ts_type: &TsType) -> Option<String> {
-    match ts_type {
-        TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-            TsEntityName::Ident(ident) => Some(ident::ident_to_string(&ident)),
-            _ => None,
-        },
-        _ => None,
-    }
-}
-
 impl ToActDataType for TsType {
-    fn to_act_data_type(&self, name: &Option<&String>) -> ActDataType {
+    fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType {
         match self {
-            TsType::TsKeywordType(ts_keyword_type) => ts_keyword_type.to_act_data_type(name),
-            TsType::TsTypeRef(ts_type_ref) => ts_type_ref.to_act_data_type(name),
-            TsType::TsArrayType(ts_array_type) => ts_array_type.to_act_data_type(name),
-            TsType::TsTypeLit(ts_type_lit) => {
-                ActDataType::Record(ts_type_lit::parse_ts_type_lit_as_struct(name, ts_type_lit))
-            }
-            TsType::TsTupleType(ts_tuple_type) => ts_tuple_type.to_act_data_type(name),
+            TsType::TsKeywordType(ts_keyword_type) => ts_keyword_type.to_act_data_type(alias_name),
+            TsType::TsTypeRef(ts_type_ref) => ts_type_ref.to_act_data_type(alias_name),
+            TsType::TsArrayType(ts_array_type) => ts_array_type.to_act_data_type(alias_name),
+            TsType::TsTypeLit(ts_type_lit) => ts_type_lit.to_record(alias_name),
+            TsType::TsTupleType(ts_tuple_type) => ts_tuple_type.to_act_data_type(alias_name),
             TsType::TsThisType(_) => todo!("to_act_data_type for TsThisType"),
             TsType::TsFnOrConstructorType(_) => {
                 todo!("to_act_data_type for TsFnOorConstructorType")

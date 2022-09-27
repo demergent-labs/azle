@@ -297,3 +297,10 @@ type AntepenultimateSelfRef = {
 export function ultimate_self_reference_test(
     self_ref: UltimateSelfRef
 ): Update<void> {}
+
+export function hash_duplication_test(
+    record: { one: boolean; two: boolean; three: boolean },
+    variant: Variant<{ one: boolean; two: boolean; three: boolean }>,
+    record2: { one: boolean; two: boolean; three: boolean },
+    variant2: Variant<{ one: boolean; two: boolean; three: boolean }>
+): Update<void> {}

@@ -38,6 +38,11 @@ type AzleInline2079212390168712599 = record {
   two : nat16;
   three : ComplexRecord;
 };
+type AzleInline2111496708298283262 = variant {
+  one : bool;
+  two : bool;
+  three : bool;
+};
 type AzleInline2474745210287299794 = record { one_inline : bool };
 type AzleInline3375743466499998219 = record {
   tuple_inline2 : text;
@@ -150,6 +155,12 @@ service : () -> {
           AzleInline5851461990099161040,
           func (text) -> (text) query,
         ) -> (text) query,
+    ) -> ();
+  hash_duplication_test : (
+      AzleInline6717164493631940106,
+      AzleInline2111496708298283262,
+      AzleInline6717164493631940106,
+      AzleInline2111496708298283262,
     ) -> ();
   in_line : (AzleInline15898118440128258751) -> (
       AzleInline4336820218706807391,

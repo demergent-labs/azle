@@ -1,9 +1,9 @@
-use std::{
-    collections::{HashMap, HashSet},
-    iter::FromIterator,
+use super::{
+    ts_fn_type,
+    ts_type_lit::TsTypeLitHelperMethods,
+    ts_types_to_act::{build_act_custom_type_node, build_act_primitive_type_node},
+    GenerateInlineName, GetDependencies, GetName,
 };
-use swc_ecma_ast::{TsType, TsTypeAliasDecl, TsTypeRef};
-
 use crate::{
     cdk_act::{
         nodes::data_type_nodes::{
@@ -14,43 +14,22 @@ use crate::{
     },
     generators::funcs,
 };
-
-use super::{
-    ts_fn_type, ts_type_lit,
-    ts_types_to_act::{build_act_custom_type_node, build_act_primitive_type_node, calculate_hash},
-    GetDependencies, GetName,
+use std::{
+    collections::{HashMap, HashSet},
+    iter::FromIterator,
 };
+use swc_ecma_ast::{TsFnType, TsType, TsTypeAliasDecl, TsTypeRef};
 
-impl GetName for TsTypeRef {
-    fn get_name(&self) -> &str {
-        &self.type_name.as_ident().unwrap().sym.chars().as_str()
-    }
+trait TsTypeRefHelperMethods {
+    fn to_func(&self, variant_name: &Option<&String>) -> ActDataType;
+    fn to_option(&self, record_name: &Option<&String>) -> ActDataType;
+    fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType;
+    fn get_enclosed_ts_type(&self) -> TsType;
 }
 
-impl ToActDataType for TsTypeRef {
-    fn to_act_data_type(&self, name: &Option<&String>) -> crate::cdk_act::ActDataType {
-        match self.get_name() {
-            "blob" => build_act_primitive_type_node(ActPrimitiveLit::Blob, name),
-            "float32" => build_act_primitive_type_node(ActPrimitiveLit::Float32, name),
-            "float64" => build_act_primitive_type_node(ActPrimitiveLit::Float64, name),
-            "int" => build_act_primitive_type_node(ActPrimitiveLit::Int, name),
-            "int8" => build_act_primitive_type_node(ActPrimitiveLit::Int8, name),
-            "int16" => build_act_primitive_type_node(ActPrimitiveLit::Int16, name),
-            "int32" => build_act_primitive_type_node(ActPrimitiveLit::Int32, name),
-            "int64" => build_act_primitive_type_node(ActPrimitiveLit::Int64, name),
-            "nat" => build_act_primitive_type_node(ActPrimitiveLit::Nat, name),
-            "nat8" => build_act_primitive_type_node(ActPrimitiveLit::Nat8, name),
-            "nat16" => build_act_primitive_type_node(ActPrimitiveLit::Nat16, name),
-            "nat32" => build_act_primitive_type_node(ActPrimitiveLit::Nat32, name),
-            "nat64" => build_act_primitive_type_node(ActPrimitiveLit::Nat64, name),
-            "Principal" => build_act_primitive_type_node(ActPrimitiveLit::Principal, name),
-            "empty" => build_act_primitive_type_node(ActPrimitiveLit::Empty, name),
-            "reserved" => build_act_primitive_type_node(ActPrimitiveLit::Reserved, name),
-            "Opt" => parse_opt_type_ref(self, name),
-            "Func" => parse_func_type_ref(self, name),
-            "Variant" => parse_variant_type_ref(self, name),
-            _ => build_act_custom_type_node(self.get_name().to_string(), name),
-        }
+impl GenerateInlineName for TsFnType {
+    fn generate_inline_name(&self) -> String {
+        format!("AzleInlineFunc{}", self.calculate_hash())
     }
 }
 
@@ -77,11 +56,15 @@ impl GetDependencies for TsTypeRef {
             "Principal" => vec![],
             "empty" => vec![],
             "reserved" => vec![],
-            "Opt" => get_dependent_types_from_enclosing_type(self, type_alias_lookup, found_types),
-            "Func" => get_dependent_types_from_enclosing_type(self, type_alias_lookup, found_types),
-            "Variant" => {
-                get_dependent_types_from_enclosing_type(self, type_alias_lookup, found_types)
-            }
+            "Opt" => self
+                .get_enclosed_ts_type()
+                .get_dependent_types(type_alias_lookup, found_types),
+            "Func" => self
+                .get_enclosed_ts_type()
+                .get_dependent_types(type_alias_lookup, found_types),
+            "Variant" => self
+                .get_enclosed_ts_type()
+                .get_dependent_types(type_alias_lookup, found_types),
             _ => {
                 let name = self.get_name().to_string();
                 if found_types.contains(&name) {
@@ -107,91 +90,107 @@ impl GetDependencies for TsTypeRef {
     }
 }
 
-fn get_dependent_types_from_enclosing_type(
-    ts_type_ref: &TsTypeRef,
-    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
-    found_types: &HashSet<String>,
-) -> Vec<String> {
-    let type_params = &ts_type_ref.type_params;
-    match type_params {
-        Some(params) => {
-            // TODO do we want to check that 0 is the only valid index?
-            let enclosed_ts_type = &*params.params[0];
-            enclosed_ts_type.get_dependent_types(type_alias_lookup, found_types)
-        }
-        None => vec![],
+impl GetName for TsTypeRef {
+    fn get_name(&self) -> &str {
+        &self.type_name.as_ident().unwrap().sym.chars().as_str()
     }
 }
 
-fn parse_opt_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&String>) -> ActDataType {
-    let type_params = ts_type_ref.type_params.clone();
-    match type_params {
-        Some(params) => {
-            // TODO do we want to check that 0 is the only valid index?
-            let enclosed_ts_type = *params.params[0].clone();
-            let enclosed_rust_type = enclosed_ts_type.to_act_data_type(&None);
-            match name {
-                Some(name) => ActDataType::Option(ActOption::TypeAlias(ActOptionTypeAlias {
-                    name: name.clone().clone(),
-                    enclosed_type: Box::from(enclosed_rust_type),
-                })),
-                None => ActDataType::Option(ActOption::Literal(ActOptionLiteral {
-                    enclosed_type: Box::from(enclosed_rust_type),
-                })),
-            }
+impl ToActDataType for TsTypeRef {
+    fn to_act_data_type(&self, alias_name: &Option<&String>) -> crate::cdk_act::ActDataType {
+        match self.get_name() {
+            "blob" => build_act_primitive_type_node(ActPrimitiveLit::Blob, alias_name),
+            "float32" => build_act_primitive_type_node(ActPrimitiveLit::Float32, alias_name),
+            "float64" => build_act_primitive_type_node(ActPrimitiveLit::Float64, alias_name),
+            "int" => build_act_primitive_type_node(ActPrimitiveLit::Int, alias_name),
+            "int8" => build_act_primitive_type_node(ActPrimitiveLit::Int8, alias_name),
+            "int16" => build_act_primitive_type_node(ActPrimitiveLit::Int16, alias_name),
+            "int32" => build_act_primitive_type_node(ActPrimitiveLit::Int32, alias_name),
+            "int64" => build_act_primitive_type_node(ActPrimitiveLit::Int64, alias_name),
+            "nat" => build_act_primitive_type_node(ActPrimitiveLit::Nat, alias_name),
+            "nat8" => build_act_primitive_type_node(ActPrimitiveLit::Nat8, alias_name),
+            "nat16" => build_act_primitive_type_node(ActPrimitiveLit::Nat16, alias_name),
+            "nat32" => build_act_primitive_type_node(ActPrimitiveLit::Nat32, alias_name),
+            "nat64" => build_act_primitive_type_node(ActPrimitiveLit::Nat64, alias_name),
+            "Principal" => build_act_primitive_type_node(ActPrimitiveLit::Principal, alias_name),
+            "empty" => build_act_primitive_type_node(ActPrimitiveLit::Empty, alias_name),
+            "reserved" => build_act_primitive_type_node(ActPrimitiveLit::Reserved, alias_name),
+            "Opt" => self.to_option(alias_name),
+            "Func" => self.to_func(alias_name),
+            "Variant" => self.to_variant(alias_name),
+            _ => build_act_custom_type_node(self.get_name().to_string(), alias_name),
         }
-        None => todo!("Opt must have an enclosed type"),
     }
 }
 
-fn parse_func_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&String>) -> ActDataType {
-    let inline_ident = generate_inline_ident_for_func(ts_type_ref);
-    let type_ident = match name {
-        Some(type_ident) => type_ident,
-        None => &inline_ident,
-    };
-    let ts_type = match &ts_type_ref.type_params {
-        Some(type_params) => match &*type_params.params[0] {
+impl TsTypeRefHelperMethods for TsTypeRef {
+    fn to_func(&self, func_name: &Option<&String>) -> ActDataType {
+        let ts_fn_type = match self.get_enclosed_ts_type() {
             TsType::TsFnOrConstructorType(fn_or_const) => match fn_or_const {
                 swc_ecma_ast::TsFnOrConstructorType::TsFnType(ts_fn_type) => ts_fn_type,
-                swc_ecma_ast::TsFnOrConstructorType::TsConstructorType(_) => todo!(),
+                swc_ecma_ast::TsFnOrConstructorType::TsConstructorType(_) => {
+                    todo!("Funcs must have a function as the enclosed type")
+                }
             },
-            _ => todo!(),
-        },
-        None => todo!(),
-    };
-    let return_type = ts_fn_type::parse_func_return_type(ts_type);
-    let param_types = ts_fn_type::parse_func_param_types(ts_type);
-    let func_mode = funcs::get_func_mode(ts_type);
-    let params = funcs::get_param_types(ts_type);
-    let return_type_string = funcs::get_return_type(ts_type);
+            _ => todo!("Funcs must have a function as the enclosed type"),
+        };
+        let type_ident = match func_name {
+            Some(type_ident) => type_ident.clone().clone(),
+            None => ts_fn_type.generate_inline_name(),
+        };
+        let return_type = ts_fn_type::parse_func_return_type(&ts_fn_type);
+        let param_types = ts_fn_type::parse_func_param_types(&ts_fn_type);
+        let func_mode = funcs::get_func_mode(&ts_fn_type);
+        let params = funcs::get_param_types(&ts_fn_type);
+        let return_type_string = funcs::get_return_type(&ts_fn_type);
 
-    let func_info = Func {
-        is_inline: name.is_none(),
-        name: type_ident.clone(),
-        params: param_types,
-        return_type: Box::from(return_type),
-        mode: func_mode,
-        param_strings: params,
-        return_string: return_type_string,
-    };
-    let act_func = match name {
-        Some(_) => ActFunc::TypeAlias(func_info),
-        None => ActFunc::Literal(func_info),
-    };
-    ActDataType::Func(act_func)
-}
+        let func_info = Func {
+            is_inline: func_name.is_none(),
+            name: type_ident.clone(),
+            params: param_types,
+            return_type: Box::from(return_type),
+            mode: func_mode,
+            param_strings: params,
+            return_string: return_type_string,
+        };
+        let act_func = match func_name {
+            Some(_) => ActFunc::TypeAlias(func_info),
+            None => ActFunc::Literal(func_info),
+        };
+        ActDataType::Func(act_func)
+    }
 
-fn generate_inline_ident_for_func(ts_type_ref: &TsTypeRef) -> String {
-    let id = calculate_hash(ts_type_ref);
-    format!("AzleInlineFunc{}", id)
-}
+    fn to_option(&self, alias_name: &Option<&String>) -> ActDataType {
+        let enclosed_act_data_type = self.get_enclosed_ts_type().to_act_data_type(&None);
+        match alias_name {
+            Some(name) => ActDataType::Option(ActOption::TypeAlias(ActOptionTypeAlias {
+                name: name.clone().clone(),
+                enclosed_type: Box::from(enclosed_act_data_type),
+            })),
+            None => ActDataType::Option(ActOption::Literal(ActOptionLiteral {
+                enclosed_type: Box::from(enclosed_act_data_type),
+            })),
+        }
+    }
 
-fn parse_variant_type_ref(ts_type_ref: &TsTypeRef, name: &Option<&String>) -> ActDataType {
-    let enclosed_type = &*ts_type_ref.type_params.as_ref().unwrap().params[0];
-    let enclosed_type_lit = enclosed_type.as_ts_type_lit().unwrap();
-    ActDataType::Variant(ts_type_lit::parse_ts_type_lit_as_enum(
-        name,
-        &enclosed_type_lit,
-    ))
+    fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType {
+        match self.get_enclosed_ts_type().as_ts_type_lit() {
+            Some(ts_type_lit) => ts_type_lit,
+            None => todo!("Variants must have a type literal as the enclosed type"),
+        }
+        .to_variant(variant_name)
+    }
+
+    fn get_enclosed_ts_type(&self) -> TsType {
+        let type_params = self.type_params.clone();
+        match type_params {
+            Some(params) => {
+                if params.params.len() != 1 {
+                    todo!("Funcs, Variants, and Options must have only one enclosed type")
+                }
+                *params.params[0].clone()
+            }
+            None => todo!("Funcs, Variants, and Options must have an enclosed type"),
+        }
+    }
 }

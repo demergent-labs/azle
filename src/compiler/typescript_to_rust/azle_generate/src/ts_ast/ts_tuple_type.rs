@@ -6,7 +6,17 @@ use crate::cdk_act::{
     ActDataType, ToActDataType,
 };
 
-use super::{ts_types_to_act::calculate_hash, GetDependencies};
+use super::{GenerateInlineName, GetDependencies};
+
+trait TsTupleHelperMethods {
+    fn get_elem_types(&self) -> Vec<ActTupleElem>;
+}
+
+impl GenerateInlineName for TsTupleType {
+    fn generate_inline_name(&self) -> String {
+        format!("AzleInlineTuple{}", self.calculate_hash())
+    }
+}
 
 impl GetDependencies for TsTupleType {
     fn get_dependent_types(
@@ -26,17 +36,22 @@ impl GetDependencies for TsTupleType {
     }
 }
 
-trait TsTupleHelperMethods {
-    fn generate_inline_ident(&self) -> String;
-    fn get_elem_types(&self) -> Vec<ActTupleElem>;
+impl ToActDataType for TsTupleType {
+    fn to_act_data_type(&self, name: &Option<&String>) -> ActDataType {
+        ActDataType::Tuple(match name {
+            Some(name) => ActTuple::TypeAlias(Tuple {
+                name: name.clone().clone(),
+                elems: self.get_elem_types(),
+            }),
+            None => ActTuple::Literal(Tuple {
+                name: self.generate_inline_name(),
+                elems: self.get_elem_types(),
+            }),
+        })
+    }
 }
 
 impl TsTupleHelperMethods for TsTupleType {
-    fn generate_inline_ident(&self) -> String {
-        let id = calculate_hash(self);
-        format!("AzleInlineTuple{}", id)
-    }
-
     fn get_elem_types(&self) -> Vec<ActTupleElem> {
         self.elem_types
             .iter()
@@ -44,22 +59,5 @@ impl TsTupleHelperMethods for TsTupleType {
                 elem_type: elem.ty.to_act_data_type(&None),
             })
             .collect()
-    }
-}
-
-impl ToActDataType for TsTupleType {
-    fn to_act_data_type(&self, name: &Option<&String>) -> ActDataType {
-        let elem_types = self.get_elem_types();
-
-        ActDataType::Tuple(match name {
-            Some(name) => ActTuple::TypeAlias(Tuple {
-                name: name.clone().clone(),
-                elems: elem_types,
-            }),
-            None => ActTuple::Literal(Tuple {
-                name: self.generate_inline_ident(),
-                elems: elem_types,
-            }),
-        })
     }
 }
