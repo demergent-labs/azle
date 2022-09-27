@@ -19,7 +19,7 @@ pub fn build_type_alias_acts(
     type_names.iter().fold(vec![], |acc, dependant_type| {
         let type_alias_decl = type_alias_lookup.get(dependant_type);
         let token_stream = match type_alias_decl {
-            Some(type_alias_decl) => type_alias_decl.to_act_node(),
+            Some(type_alias_decl) => type_alias_decl.to_act_node().as_data_type().unwrap(),
             None => {
                 todo!("ERROR: Dependant Type [{dependant_type}] not found type alias list!")
             }

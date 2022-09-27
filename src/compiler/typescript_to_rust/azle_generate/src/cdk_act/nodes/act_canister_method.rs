@@ -1,16 +1,15 @@
+use crate::cdk_act::{nodes::ActFnParam, ActDataTypeNode, ToTokenStream, ToTokenStreams};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
-use crate::cdk_act::{nodes::ActFnParam, ActDataTypeNode, ToTokenStream, ToTokenStreams};
-
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum ActCanisterMethod {
     QueryMethod(CanisterMethod),
     UpdateMethod(CanisterMethod),
 }
 
 /// Describes a Rust canister method function body
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct CanisterMethod {
     pub body: TokenStream,
     pub params: Vec<ActFnParam>,
