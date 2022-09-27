@@ -1,6 +1,11 @@
 use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::{TsEntityName, TsFnParam, TsFnType, TsType, TsTypeAliasDecl};
 
+use crate::cdk_act::{
+    nodes::data_type_nodes::{ActTypeRef, ActTypeRefLit},
+    ActDataType, ToActDataType,
+};
+
 use super::GetDependencies;
 
 impl GetDependencies for TsFnType {
@@ -82,4 +87,59 @@ pub fn get_return_type(function_type: &TsFnType) -> Option<TsType> {
         }
         _ => todo!("Handle if it's not a query or update or oneway"),
     }
+}
+
+// Same comment as parse_func_param_types
+pub fn parse_func_return_type(ts_type: &TsFnType) -> ActDataType {
+    // This feels a little weird to ignore the query update and oneway of theses fun return types, but for right now I just need the inline goodies
+    match &*ts_type.type_ann.type_ann {
+        TsType::TsTypeRef(type_reference) => match &type_reference.type_params {
+            Some(type_param_inst) => match type_param_inst.params.get(0) {
+                Some(param) => param.to_act_data_type(&None),
+                None => panic!("Func must specify exactly one return type"),
+            },
+            None => {
+                // TODO Handle Oneways more elegantly. Probably by using the
+                // funcs.rs version of this function that is much more robust
+                // the only problem is that it returns a token stream  instead
+                // of a rust type and we need the rust type in order to evaluate
+                // any inline dependencies we have
+                if type_reference
+                    .type_name
+                    .as_ident()
+                    .unwrap()
+                    .sym
+                    .chars()
+                    .as_str()
+                    == "Oneway"
+                {
+                    ActDataType::TypeRef(ActTypeRef::Literal(ActTypeRefLit {
+                        name: "".to_string(),
+                    }))
+                } else {
+                    panic!("Func must specify a return type")
+                }
+            }
+        },
+        _ => panic!("Must be a Query or Update or Oneway (which are all type refs"),
+    }
+}
+
+// TODO can we merge this with funcs.rs's get_param_types? Or have that function use
+// This one and then grab the info out for the token streams?
+pub fn parse_func_param_types(ts_type: &TsFnType) -> Vec<ActDataType> {
+    ts_type
+        .params
+        .iter()
+        .map(|param| match param {
+            swc_ecma_ast::TsFnParam::Ident(ident) => match &ident.type_ann {
+                Some(param_type) => {
+                    let ts_type = &*param_type.type_ann;
+                    ts_type.to_act_data_type(&None)
+                }
+                None => panic!("Func parameter must have a type"),
+            },
+            _ => panic!("Func parameter must be an identifier"),
+        })
+        .collect()
 }

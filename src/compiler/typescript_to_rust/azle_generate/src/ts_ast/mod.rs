@@ -7,6 +7,7 @@ mod ts_array_type;
 mod ts_ast;
 mod ts_fn_or_constructor_type;
 mod ts_fn_type;
+mod ts_keyword_type;
 mod ts_method_signature;
 mod ts_tuple_type;
 mod ts_type;
