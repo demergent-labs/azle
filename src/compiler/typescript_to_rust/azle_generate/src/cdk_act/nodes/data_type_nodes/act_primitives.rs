@@ -56,7 +56,7 @@ impl Literally for ActPrimitive {
         }
     }
 
-    fn get_members(&self) -> Vec<super::ActDataTypeNode> {
+    fn get_members(&self) -> Vec<super::ActDataType> {
         vec![]
     }
 }

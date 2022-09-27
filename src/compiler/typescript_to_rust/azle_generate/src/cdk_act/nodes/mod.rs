@@ -17,4 +17,4 @@ pub use act_inspect_message_method::ActInspectMessageMethod;
 pub use act_node::ActNode;
 pub use act_post_upgrade_method::ActPostUpgradeMethod;
 pub use act_pre_upgrade_method::ActPreUpgradeMethod;
-pub use data_type_nodes::ActDataTypeNode;
+pub use data_type_nodes::ActDataType;

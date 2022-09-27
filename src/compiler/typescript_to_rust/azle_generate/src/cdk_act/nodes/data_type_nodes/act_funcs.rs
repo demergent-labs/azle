@@ -1,4 +1,4 @@
-use super::{ActDataTypeNode, Literally, ToIdent, TypeAliasize};
+use super::{ActDataType, Literally, ToIdent, TypeAliasize};
 use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
@@ -12,8 +12,8 @@ pub enum ActFunc {
 #[derive(Clone, Debug)]
 pub struct Func {
     pub name: String,
-    pub params: Vec<ActDataTypeNode>,
-    pub return_type: Box<ActDataTypeNode>,
+    pub params: Vec<ActDataType>,
+    pub return_type: Box<ActDataType>,
     pub param_strings: Vec<String>,
     pub return_string: String,
     pub mode: String,
@@ -46,7 +46,7 @@ impl Literally for ActFunc {
         }
     }
 
-    fn get_members(&self) -> Vec<ActDataTypeNode> {
+    fn get_members(&self) -> Vec<ActDataType> {
         let act_func = match self {
             ActFunc::Literal(literal) => literal,
             ActFunc::TypeAlias(type_alias) => type_alias,

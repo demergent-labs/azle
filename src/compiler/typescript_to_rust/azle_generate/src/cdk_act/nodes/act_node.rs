@@ -1,8 +1,8 @@
-use super::{ActCanisterMethod, ActDataTypeNode};
+use super::{ActCanisterMethod, ActDataType};
 
 #[derive(Clone, Debug)]
 pub enum ActNode {
-    DataType(ActDataTypeNode),
+    DataType(ActDataType),
     CanisterMethod(ActCanisterMethod),
 }
 
@@ -12,7 +12,7 @@ pub enum ActNodeError {
 }
 
 impl ActNode {
-    pub fn as_data_type(&self) -> Result<ActDataTypeNode, ActNodeError> {
+    pub fn as_data_type(&self) -> Result<ActDataType, ActNodeError> {
         match self {
             ActNode::DataType(data_type) => Ok(data_type.clone()),
             _ => Err(ActNodeError::NotDataType),
