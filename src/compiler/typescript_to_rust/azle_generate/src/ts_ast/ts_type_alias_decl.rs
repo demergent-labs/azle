@@ -6,57 +6,6 @@ use std::{
 };
 use swc_ecma_ast::TsTypeAliasDecl;
 
-impl GetName for TsTypeAliasDecl {
-    fn get_name(&self) -> &str {
-        self.id.sym.chars().as_str()
-    }
-}
-
-impl Actable for TsTypeAliasDecl {
-    fn to_act_node(&self) -> ActNode {
-        let ts_type_name = self.get_name().to_string();
-
-        ActNode::DataType(self.type_ann.to_act_data_type(&Some(&ts_type_name)))
-    }
-}
-
-pub fn get_ast_canister_type_alias_decls(
-    type_alias_decls: &Vec<TsTypeAliasDecl>,
-) -> Vec<TsTypeAliasDecl> {
-    get_ast_type_alias_decls_by_type_ref_name(type_alias_decls, "Canister")
-}
-
-pub fn get_ast_type_alias_decls_by_type_ref_name(
-    type_alias_decls: &Vec<TsTypeAliasDecl>,
-    type_ref_name: &str,
-) -> Vec<TsTypeAliasDecl> {
-    type_alias_decls
-        .clone()
-        .into_iter()
-        .filter(|ts_type_alias_decl| {
-            ts_type_alias_decl.type_ann.is_ts_type_ref()
-                && match ts_type_alias_decl.type_ann.as_ts_type_ref() {
-                    Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
-                        Some(ident) => ident.sym.chars().as_str() == type_ref_name,
-                        None => false,
-                    },
-                    None => false,
-                }
-        })
-        .collect()
-}
-
-impl GetDependencies for TsTypeAliasDecl {
-    fn get_dependent_types(
-        &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
-        found_types: &HashSet<String>,
-    ) -> Vec<String> {
-        self.type_ann
-            .get_dependent_types(type_alias_lookup, found_types)
-    }
-}
-
 pub fn get_dependent_types_from_canister_decls(
     canister_decls: &Vec<TsTypeAliasDecl>,
     possible_dependencies: &Vec<TsTypeAliasDecl>,
@@ -80,7 +29,7 @@ pub fn generate_type_alias_lookup(
     ast_type_alias_decls
         .iter()
         .fold(HashMap::new(), |mut acc, ast_type_alias_decl| {
-            let type_alias_names = ast_type_alias_decl.id.sym.chars().as_str().to_string();
+            let type_alias_names = ast_type_alias_decl.id.get_name().to_string();
             acc.insert(type_alias_names, ast_type_alias_decl.clone());
             acc
         })
@@ -162,4 +111,55 @@ fn get_dependent_types_from_canister_decl(
         );
         acc.union(&result).cloned().collect()
     })
+}
+
+pub fn get_ast_canister_type_alias_decls(
+    type_alias_decls: &Vec<TsTypeAliasDecl>,
+) -> Vec<TsTypeAliasDecl> {
+    get_ast_type_alias_decls_by_type_ref_name(type_alias_decls, "Canister")
+}
+
+pub fn get_ast_type_alias_decls_by_type_ref_name(
+    type_alias_decls: &Vec<TsTypeAliasDecl>,
+    type_ref_name: &str,
+) -> Vec<TsTypeAliasDecl> {
+    type_alias_decls
+        .clone()
+        .into_iter()
+        .filter(|ts_type_alias_decl| {
+            ts_type_alias_decl.type_ann.is_ts_type_ref()
+                && match ts_type_alias_decl.type_ann.as_ts_type_ref() {
+                    Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
+                        Some(ident) => ident.sym.chars().as_str() == type_ref_name,
+                        None => false,
+                    },
+                    None => false,
+                }
+        })
+        .collect()
+}
+
+impl Actable for TsTypeAliasDecl {
+    fn to_act_node(&self) -> ActNode {
+        let ts_type_name = self.get_name().to_string();
+
+        ActNode::DataType(self.type_ann.to_act_data_type(&Some(&ts_type_name)))
+    }
+}
+
+impl GetDependencies for TsTypeAliasDecl {
+    fn get_dependent_types(
+        &self,
+        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        found_types: &HashSet<String>,
+    ) -> Vec<String> {
+        self.type_ann
+            .get_dependent_types(type_alias_lookup, found_types)
+    }
+}
+
+impl GetName for TsTypeAliasDecl {
+    fn get_name(&self) -> &str {
+        self.id.sym.chars().as_str()
+    }
 }

@@ -5,5 +5,5 @@ pub trait Actable {
 }
 
 pub trait ToActDataType {
-    fn to_act_data_type(&self, name: &Option<&String>) -> ActDataType;
+    fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType;
 }

@@ -1,8 +1,9 @@
-use std::collections::{HashMap, HashSet};
-use swc_ecma_ast::TsTypeAliasDecl;
-
+pub use ast_traits::GenerateInlineName;
+pub use ast_traits::GetDependencies;
+pub use ast_traits::GetName;
 pub use ts_ast::TsAst;
 
+pub mod ast_traits;
 mod ts_array_type;
 mod ts_ast;
 mod ts_fn_or_constructor_type;
@@ -11,6 +12,8 @@ mod ts_keyword_type;
 mod ts_method_signature;
 mod ts_tuple_type;
 mod ts_type;
+mod ts_type_ann;
+mod ts_type_element;
 mod ts_type_lit;
 mod ts_type_ref;
 
@@ -20,15 +23,3 @@ pub mod module;
 pub mod program;
 pub mod ts_type_alias_decl;
 pub mod ts_types_to_act;
-
-pub trait GetDependencies {
-    fn get_dependent_types(
-        &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
-        found_types: &HashSet<String>,
-    ) -> Vec<String>;
-}
-
-pub trait GetName {
-    fn get_name(&self) -> &str;
-}

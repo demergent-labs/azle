@@ -8,30 +8,6 @@ use crate::cdk_act::{
 
 use super::GetDependencies;
 
-impl GetDependencies for TsFnType {
-    fn get_dependent_types(
-        &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
-        found_types: &HashSet<String>,
-    ) -> Vec<String> {
-        let param_types = get_param_types(self);
-        let return_type = match get_return_type(self) {
-            Some(return_type) => vec![return_type],
-            None => vec![],
-        };
-        vec![param_types, return_type]
-            .concat()
-            .iter()
-            .fold(vec![], |acc, ts_type| {
-                vec![
-                    acc,
-                    ts_type.get_dependent_types(type_alias_lookup, found_types),
-                ]
-                .concat()
-            })
-    }
-}
-
 pub fn get_param_types(function_type: &TsFnType) -> Vec<TsType> {
     function_type
         .params
@@ -142,4 +118,28 @@ pub fn parse_func_param_types(ts_type: &TsFnType) -> Vec<ActDataType> {
             _ => panic!("Func parameter must be an identifier"),
         })
         .collect()
+}
+
+impl GetDependencies for TsFnType {
+    fn get_dependent_types(
+        &self,
+        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        found_types: &HashSet<String>,
+    ) -> Vec<String> {
+        let param_types = get_param_types(self);
+        let return_type = match get_return_type(self) {
+            Some(return_type) => vec![return_type],
+            None => vec![],
+        };
+        vec![param_types, return_type]
+            .concat()
+            .iter()
+            .fold(vec![], |acc, ts_type| {
+                vec![
+                    acc,
+                    ts_type.get_dependent_types(type_alias_lookup, found_types),
+                ]
+                .concat()
+            })
+    }
 }
