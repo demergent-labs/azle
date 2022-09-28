@@ -55,7 +55,7 @@ impl ActDataType {
             ActDataType::Record(act_record) => act_record.act_type.is_literal(),
             ActDataType::Variant(act_variant) => act_variant.is_literal(),
             ActDataType::Func(act_func) => act_func.act_type.is_literal(),
-            ActDataType::Tuple(act_tuple) => act_tuple.is_literal(),
+            ActDataType::Tuple(act_tuple) => act_tuple.act_type.is_literal(),
         }
     }
 
@@ -109,7 +109,7 @@ impl ToTokenStream for ActDataType {
             ActDataType::Record(act_record) => act_record.act_type.to_token_stream(),
             ActDataType::Variant(act_variant) => act_variant.to_token_stream(),
             ActDataType::Func(act_func) => act_func.act_type.to_token_stream(),
-            ActDataType::Tuple(act_tuple) => act_tuple.to_token_stream(),
+            ActDataType::Tuple(act_tuple) => act_tuple.act_type.to_token_stream(),
             ActDataType::Primitive(act_primitive) => act_primitive.act_type.to_token_stream(),
             ActDataType::TypeRef(act_type_ref) => act_type_ref.to_token_stream(),
             ActDataType::Option(act_option) => act_option.to_token_stream(),
