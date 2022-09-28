@@ -14,7 +14,7 @@ use crate::{
         cross_canister_call_functions, stacktrace, type_aliases,
     },
     ts_ast::{
-        program::TsProgramVecHelperMethods, ts_type_alias_decl::TsTypeAliasHelperMethods,
+        program::TsProgramVecHelperMethods, ts_type_alias_decl::TsTypeAliasListHelperMethods,
         GetDependencies,
     },
 };

@@ -1,11 +1,12 @@
-use std::{collections::HashSet, iter::FromIterator};
-
-use swc_ecma_ast::TsTypeAliasDecl;
-
 use super::{
     ts_type_ref::TsTypeRefHelperMethods, FunctionAndMethodTypeHelperMethods, GetDependencies,
     GetName, GetTsType,
 };
+use std::{
+    collections::{HashMap, HashSet},
+    iter::FromIterator,
+};
+use swc_ecma_ast::TsTypeAliasDecl;
 
 pub struct TsCanisterDecl {
     pub decl: TsTypeAliasDecl,
@@ -14,8 +15,8 @@ pub struct TsCanisterDecl {
 impl GetDependencies for TsCanisterDecl {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &std::collections::HashMap<String, TsTypeAliasDecl>,
-        found_types: &std::collections::HashSet<String>,
+        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        found_types: &HashSet<String>,
     ) -> Vec<String> {
         // Verify that it is a canister
         let is_canister = self.decl.get_ts_type().is_ts_type_ref()
@@ -60,6 +61,27 @@ impl GetDependencies for TsCanisterDecl {
                         .cloned(),
                 );
                 acc.union(&result).cloned().collect()
+            })
+            .into_iter()
+            .collect()
+    }
+}
+
+impl GetDependencies for Vec<TsCanisterDecl> {
+    fn get_dependent_types(
+        &self,
+        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        found_types: &HashSet<String>,
+    ) -> Vec<String> {
+        self.iter()
+            .fold(found_types.clone(), |acc, canister_decl| {
+                let hash_set: HashSet<String> = HashSet::from_iter(
+                    canister_decl
+                        .get_dependent_types(type_alias_lookup, &acc)
+                        .iter()
+                        .cloned(),
+                );
+                acc.union(&hash_set).cloned().collect()
             })
             .into_iter()
             .collect()

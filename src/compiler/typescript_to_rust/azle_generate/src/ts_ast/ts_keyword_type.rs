@@ -1,6 +1,5 @@
-use swc_ecma_ast::{TsKeywordType, TsKeywordTypeKind};
-
 use crate::cdk_act::{nodes::data_type_nodes::ActPrimitiveLit, ActDataType, ToActDataType};
+use swc_ecma_ast::{TsKeywordType, TsKeywordTypeKind};
 
 impl ToActDataType for TsKeywordType {
     fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType {

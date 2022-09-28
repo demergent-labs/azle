@@ -1,19 +1,9 @@
 use std::collections::{HashMap, HashSet};
-use swc_ecma_ast::{TsEntityName, TsType, TsTypeAliasDecl};
+use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
 use crate::cdk_act::{ActDataType, ToActDataType};
 
-use super::{ident, ts_type_lit::TsTypeLitHelperMethods, GetDependencies};
-
-pub fn get_identifier_name_for_ts_type(ts_type: &TsType) -> Option<String> {
-    match ts_type {
-        TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-            TsEntityName::Ident(ident) => Some(ident::ident_to_string(&ident)),
-            _ => None,
-        },
-        _ => None,
-    }
-}
+use super::{ts_type_lit::TsTypeLitHelperMethods, GetDependencies, GetName};
 
 impl GetDependencies for TsType {
     fn get_dependent_types(
@@ -52,6 +42,15 @@ impl GetDependencies for TsType {
             TsType::TsLitType(_) => todo!(),
             TsType::TsTypePredicate(_) => todo!(),
             TsType::TsImportType(_) => todo!(),
+        }
+    }
+}
+
+impl GetName for TsType {
+    fn get_name(&self) -> &str {
+        match self {
+            TsType::TsTypeRef(type_ref) => type_ref.get_name(),
+            _ => "",
         }
     }
 }

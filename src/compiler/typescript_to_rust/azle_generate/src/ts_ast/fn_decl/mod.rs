@@ -129,13 +129,6 @@ impl FnDeclHelperMethods for FnDecl {
     }
 }
 
-pub trait FnDeclVecHelperMethods {
-    fn get_dependent_types_from_fn_decls(
-        &self,
-        possible_dependencies: &Vec<TsTypeAliasDecl>,
-    ) -> HashSet<String>;
-}
-
 impl GetDependencies for Vec<FnDecl> {
     fn get_dependent_types(
         &self,
@@ -144,7 +137,7 @@ impl GetDependencies for Vec<FnDecl> {
     ) -> Vec<String> {
         // TODO the found types are resetting every once and a while. I am guessing it's as we start another function or maybe a different type in that function. Either way it might be slightly more efficient to continually build up the list to avoid redundancy
         self.iter()
-            .fold(HashSet::new(), |acc, fn_decl| {
+            .fold(found_types.clone(), |acc, fn_decl| {
                 let hash_set: HashSet<String> = HashSet::from_iter(
                     fn_decl
                         .get_dependent_types(type_alias_lookup, &acc)
@@ -158,7 +151,6 @@ impl GetDependencies for Vec<FnDecl> {
     }
 }
 
-// TODO what is this doing in here?
 impl GetDependencies for FnDecl {
     fn get_dependent_types(
         &self,

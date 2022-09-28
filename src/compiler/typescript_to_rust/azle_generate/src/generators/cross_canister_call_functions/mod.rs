@@ -1,6 +1,6 @@
 use crate::{
     cdk_act::{SystemStructureType, ToActDataType, ToTokenStream},
-    ts_ast::{ident::ident_to_string, program::TsProgramVecHelperMethods, GetName},
+    ts_ast::{program::TsProgramVecHelperMethods, GetName},
 };
 use quote::{format_ident, quote};
 use swc_ecma_ast::{
@@ -522,7 +522,7 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
         .iter()
         .map(|ts_fn_param| match ts_fn_param {
             TsFnParam::Ident(binding_ident) => {
-                let param_name = ident_to_string(&binding_ident.id);
+                let param_name = &binding_ident.id.get_name().to_string();
                 let param_name_ident = format_ident!("{}", param_name);
                 let param_type = &binding_ident
                     .type_ann
@@ -545,7 +545,7 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
         .iter()
         .map(|ts_fn_param| match ts_fn_param {
             TsFnParam::Ident(binding_ident) => {
-                let param_name = ident_to_string(&binding_ident.id);
+                let param_name = &binding_ident.id.get_name().to_string();
 
                 let param_name_ident = format_ident!("{}", param_name);
 

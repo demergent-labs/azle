@@ -86,7 +86,7 @@ impl GetDependencies for TsTypeRef {
 
 impl GetName for TsTypeRef {
     fn get_name(&self) -> &str {
-        &self.type_name.as_ident().unwrap().sym.chars().as_str()
+        &self.type_name.as_ident().unwrap().get_name()
     }
 }
 
