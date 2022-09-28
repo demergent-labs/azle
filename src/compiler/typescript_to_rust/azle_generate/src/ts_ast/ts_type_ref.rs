@@ -167,13 +167,17 @@ impl TsTypeRefHelperMethods for TsTypeRef {
     fn to_option(&self, alias_name: &Option<&String>) -> ActDataType {
         let enclosed_act_data_type = self.get_enclosed_ts_type().to_act_data_type(&None);
         match alias_name {
-            Some(name) => ActDataType::Option(ActOption::TypeAlias(ActOptionTypeAlias {
-                name: name.clone().clone(),
-                enclosed_type: Box::from(enclosed_act_data_type),
-            })),
-            None => ActDataType::Option(ActOption::Literal(ActOptionLiteral {
-                enclosed_type: Box::from(enclosed_act_data_type),
-            })),
+            Some(name) => ActDataType::Option(ActOption {
+                act_type: LiteralOrTypeAlias::TypeAlias(ActOptionTypeAlias {
+                    name: name.clone().clone(),
+                    enclosed_type: Box::from(enclosed_act_data_type),
+                }),
+            }),
+            None => ActDataType::Option(ActOption {
+                act_type: LiteralOrTypeAlias::Literal(ActOptionLiteral {
+                    enclosed_type: Box::from(enclosed_act_data_type),
+                }),
+            }),
         }
     }
 
