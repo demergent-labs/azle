@@ -1,18 +1,13 @@
 use super::{
-    ts_fn_type,
     ts_type_lit::TsTypeLitHelperMethods,
     ts_types_to_act::{build_act_custom_type_node, build_act_primitive_type_node},
-    GenerateInlineName, GetDependencies, GetName,
+    FunctionAndMethodTypeHelperMethods, GenerateInlineName, GetDependencies, GetName,
 };
-use crate::{
-    cdk_act::{
-        nodes::data_type_nodes::{
-            act_funcs::Func, ActFunc, ActOption, ActOptionLiteral, ActOptionTypeAlias,
-            ActPrimitiveLit,
-        },
-        ActDataType, ToActDataType,
+use crate::cdk_act::{
+    nodes::data_type_nodes::{
+        act_funcs::Func, ActFunc, ActOption, ActOptionLiteral, ActOptionTypeAlias, ActPrimitiveLit,
     },
-    generators::funcs,
+    ActDataType, ToActDataType,
 };
 use std::{
     collections::{HashMap, HashSet},
@@ -134,30 +129,31 @@ impl TsTypeRefHelperMethods for TsTypeRef {
             },
             _ => todo!("Funcs must have a function as the enclosed type"),
         };
-        let type_ident = match func_name {
-            Some(type_ident) => type_ident.clone().clone(),
-            None => ts_fn_type.generate_inline_name(),
+        let return_type = match ts_fn_type.get_return_type() {
+            Some(ts_type) => Some(ts_type.to_act_data_type(&None)),
+            None => None,
         };
-        let return_type = ts_fn_type::parse_func_return_type(&ts_fn_type);
-        let param_types = ts_fn_type::parse_func_param_types(&ts_fn_type);
-        let func_mode = funcs::get_func_mode(&ts_fn_type);
-        let params = funcs::get_param_types(&ts_fn_type);
-        let return_type_string = funcs::get_return_type(&ts_fn_type);
+        let param_types: Vec<ActDataType> = ts_fn_type
+            .get_param_types()
+            .iter()
+            .map(|param| param.to_act_data_type(&None))
+            .collect();
+        let func_mode = ts_fn_type.get_func_mode();
 
-        let func_info = Func {
-            is_inline: func_name.is_none(),
-            name: type_ident.clone(),
-            params: param_types,
-            return_type: Box::from(return_type),
-            mode: func_mode,
-            param_strings: params,
-            return_string: return_type_string,
-        };
-        let act_func = match func_name {
-            Some(_) => ActFunc::TypeAlias(func_info),
-            None => ActFunc::Literal(func_info),
-        };
-        ActDataType::Func(act_func)
+        ActDataType::Func(match func_name {
+            Some(func_name) => ActFunc::TypeAlias(Func {
+                name: func_name.clone().clone(),
+                params: param_types,
+                return_type: Box::from(return_type),
+                mode: func_mode,
+            }),
+            None => ActFunc::Literal(Func {
+                name: ts_fn_type.generate_inline_name(),
+                params: param_types,
+                return_type: Box::from(return_type),
+                mode: func_mode,
+            }),
+        })
     }
 
     fn to_option(&self, alias_name: &Option<&String>) -> ActDataType {
