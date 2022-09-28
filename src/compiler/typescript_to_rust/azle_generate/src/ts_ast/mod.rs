@@ -8,6 +8,7 @@ pub use ts_ast::TsAst;
 pub mod ast_traits;
 mod ts_array_type;
 mod ts_ast;
+mod ts_canister_decl;
 mod ts_fn_or_constructor_type;
 mod ts_fn_type;
 mod ts_keyword_type;

@@ -14,7 +14,7 @@ use std::{
 };
 use swc_ecma_ast::{TsFnType, TsType, TsTypeAliasDecl, TsTypeRef};
 
-trait TsTypeRefHelperMethods {
+pub trait TsTypeRefHelperMethods {
     fn to_func(&self, variant_name: &Option<&String>) -> ActDataType;
     fn to_option(&self, record_name: &Option<&String>) -> ActDataType;
     fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType;
