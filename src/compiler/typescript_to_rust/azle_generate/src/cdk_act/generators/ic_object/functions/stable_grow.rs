@@ -11,7 +11,7 @@ pub fn generate_ic_object_function_stable_grow() -> proc_macro2::TokenStream {
                 .clone()
                 .azle_try_from_js_value(_context)
                 .unwrap();
-            Ok(ic_cdk::api::stable::stable_grow(new_pages).azle_into_js_value(_context))
+            Ok(ic_cdk::api::stable::stable_grow(new_pages).try_into_vm_value(_context))
         }
     }
 }

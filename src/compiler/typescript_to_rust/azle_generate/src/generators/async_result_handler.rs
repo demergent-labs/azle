@@ -206,7 +206,7 @@ pub fn generate_async_result_handler(programs: &Vec<Program>) -> proc_macro2::To
 
             match call_result {
                 Ok(value) => {
-                    let js_value = value.azle_into_js_value(_azle_boa_context);
+                    let js_value = value.try_into_vm_value(_azle_boa_context);
 
                     let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
                         .property(
@@ -221,7 +221,7 @@ pub fn generate_async_result_handler(programs: &Vec<Program>) -> proc_macro2::To
                     canister_result_js_value
                 },
                 Err(err) => {
-                    let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).azle_into_js_value(_azle_boa_context);
+                    let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).try_into_vm_value(_azle_boa_context);
 
                     let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
                         .property(
@@ -311,7 +311,7 @@ fn generate_async_result_handler_call(
 
                     match call_result {
                         Ok(value) => {
-                            let js_value = value.0.azle_into_js_value(_azle_boa_context);
+                            let js_value = value.0.try_into_vm_value(_azle_boa_context);
 
                             let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
                                 .property(
@@ -326,7 +326,7 @@ fn generate_async_result_handler_call(
                             canister_result_js_value
                         },
                         Err(err) => {
-                            let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).azle_into_js_value(_azle_boa_context);
+                            let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).try_into_vm_value(_azle_boa_context);
 
                             let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
                                 .property(

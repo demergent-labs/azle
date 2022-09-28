@@ -156,15 +156,15 @@ pub fn generate_func_struct_and_impls(
             pub std::marker::PhantomData<ArgToken>,
         );
 
-        impl AzleIntoJsValue for #type_alias_name {
-            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                self.0.azle_into_js_value(context)
+        impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for #type_alias_name {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                self.0.try_into_vm_value(context)
             }
         }
 
-        impl AzleIntoJsValue for Vec<#type_alias_name> {
-            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                azle_into_js_value_generic_array(self, context)
+        impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<#type_alias_name> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                try_into_vm_value_generic_array(self, context)
             }
         }
 

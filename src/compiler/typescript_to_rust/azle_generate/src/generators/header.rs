@@ -11,7 +11,7 @@ pub fn generate_header_code() -> proc_macro2::TokenStream {
 
         use std::str::FromStr;
         use azle_js_value_derive::{
-            AzleIntoJsValue,
+            CdkActTryIntoVmValue,
             AzleTryFromJsValue
         };
         use ic_cdk::api::call::CallResult;

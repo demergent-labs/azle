@@ -20,7 +20,7 @@ pub fn generate_ic_object_function_stable64_read() -> proc_macro2::TokenStream {
 
             let mut buf: Vec<u8> = vec![0; length as usize];
             ic_cdk::api::stable::stable64_read(offset, &mut buf);
-            Ok(buf.to_vec().azle_into_js_value(_context))
+            Ok(buf.to_vec().try_into_vm_value(_context))
         }
     }
 }

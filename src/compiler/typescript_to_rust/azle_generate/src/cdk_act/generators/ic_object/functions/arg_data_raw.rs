@@ -5,7 +5,7 @@ pub fn generate_ic_object_function_arg_data_raw() -> proc_macro2::TokenStream {
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            Ok(ic_cdk::api::call::arg_data_raw().azle_into_js_value(_context))
+            Ok(ic_cdk::api::call::arg_data_raw().try_into_vm_value(_context))
         }
     }
 }

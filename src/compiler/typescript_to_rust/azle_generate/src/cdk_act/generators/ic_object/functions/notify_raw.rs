@@ -24,7 +24,7 @@ pub fn generate_ic_object_function_notify_raw() -> proc_macro2::TokenStream {
                 payment
             );
 
-            Ok(notify_result.azle_into_js_value(_context))
+            Ok(notify_result.try_into_vm_value(_context))
         }
     }
 }

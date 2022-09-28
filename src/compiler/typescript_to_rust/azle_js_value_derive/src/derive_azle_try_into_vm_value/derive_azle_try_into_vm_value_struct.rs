@@ -2,7 +2,7 @@ use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::{DataStruct, Fields, Index};
 
-pub fn derive_azle_into_js_value_struct(
+pub fn derive_azle_try_into_vm_value_struct(
     struct_name: &Ident,
     data_struct: &DataStruct,
 ) -> proc_macro2::TokenStream {
@@ -10,8 +10,8 @@ pub fn derive_azle_into_js_value_struct(
     let property_definitions = derive_struct_fields_property_definitions(data_struct);
 
     quote! {
-        impl AzleIntoJsValue for #struct_name {
-            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+        impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for #struct_name {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 #(#variable_definitions)*
 
                 let object = boa_engine::object::ObjectInitializer::new(context)
@@ -23,9 +23,9 @@ pub fn derive_azle_into_js_value_struct(
         }
 
         // TODO the body of this function is repeated in azle_into_js_value_trait.ts
-        impl AzleIntoJsValue for Vec<#struct_name> {
-            fn azle_into_js_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                let js_values = self.into_iter().map(|item| item.azle_into_js_value(context)).collect::<Vec<boa_engine::JsValue>>();
+        impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<#struct_name> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                let js_values = self.into_iter().map(|item| item.try_into_vm_value(context)).collect::<Vec<boa_engine::JsValue>>();
                 boa_engine::object::JsArray::from_iter(js_values, context).into()
             }
         }
@@ -43,7 +43,7 @@ fn derive_struct_fields_variable_definitions(
                 let field_name = &field.ident;
 
                 quote! {
-                    let #field_name = self.#field_name.azle_into_js_value(context);
+                    let #field_name = self.#field_name.try_into_vm_value(context);
                 }
             })
             .collect(),
@@ -56,7 +56,7 @@ fn derive_struct_fields_variable_definitions(
                 let syn_index = Index::from(index);
 
                 quote! {
-                    let #field_name = self.#syn_index.azle_into_js_value(context);
+                    let #field_name = self.#syn_index.try_into_vm_value(context);
                 }
             })
             .collect(),
