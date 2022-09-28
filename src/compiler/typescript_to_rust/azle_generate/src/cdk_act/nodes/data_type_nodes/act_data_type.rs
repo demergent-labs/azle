@@ -111,7 +111,7 @@ impl ToTokenStream for ActDataType {
             ActDataType::Func(act_func) => act_func.act_type.to_token_stream(),
             ActDataType::Tuple(act_tuple) => act_tuple.act_type.to_token_stream(),
             ActDataType::Primitive(act_primitive) => act_primitive.act_type.to_token_stream(),
-            ActDataType::TypeRef(act_type_ref) => act_type_ref.to_token_stream(),
+            ActDataType::TypeRef(act_type_ref) => act_type_ref.act_type.to_token_stream(),
             ActDataType::Option(act_option) => act_option.to_token_stream(),
             ActDataType::Array(act_array) => act_array.act_type.to_token_stream(),
         }
