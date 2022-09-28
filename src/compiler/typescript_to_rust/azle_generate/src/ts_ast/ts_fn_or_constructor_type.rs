@@ -8,7 +8,7 @@ impl GetDependencies for TsFnOrConstructorType {
         &self,
         type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
         found_types: &HashSet<String>,
-    ) -> Vec<String> {
+    ) -> HashSet<String> {
         match self {
             TsFnOrConstructorType::TsFnType(ts_fn_type) => {
                 ts_fn_type.get_dependent_types(type_alias_lookup, found_types)

@@ -13,7 +13,7 @@ impl GetDependencies for TsArrayType {
         &self,
         type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
         found_types: &HashSet<String>,
-    ) -> Vec<String> {
+    ) -> HashSet<String> {
         self.elem_type
             .get_dependent_types(type_alias_lookup, found_types)
     }

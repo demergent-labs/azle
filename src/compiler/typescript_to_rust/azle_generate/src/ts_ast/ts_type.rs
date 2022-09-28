@@ -10,9 +10,9 @@ impl GetDependencies for TsType {
         &self,
         type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
         found_types: &HashSet<String>,
-    ) -> Vec<String> {
+    ) -> HashSet<String> {
         match self {
-            TsType::TsKeywordType(_) => vec![],
+            TsType::TsKeywordType(_) => HashSet::new(),
             TsType::TsTypeRef(ts_type_ref) => {
                 ts_type_ref.get_dependent_types(type_alias_lookup, found_types)
             }

@@ -23,16 +23,14 @@ impl GetDependencies for TsTupleType {
         &self,
         type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
         found_types: &HashSet<String>,
-    ) -> Vec<String> {
-        self.elem_types.iter().fold(vec![], |acc, elem_type| {
-            vec![
-                acc,
-                elem_type
-                    .ty
-                    .get_dependent_types(type_alias_lookup, found_types),
-            ]
-            .concat()
-        })
+    ) -> HashSet<String> {
+        self.elem_types
+            .iter()
+            .fold(found_types.clone(), |acc, elem_type| {
+                acc.union(&elem_type.ty.get_dependent_types(type_alias_lookup, &acc))
+                    .cloned()
+                    .collect()
+            })
     }
 }
 

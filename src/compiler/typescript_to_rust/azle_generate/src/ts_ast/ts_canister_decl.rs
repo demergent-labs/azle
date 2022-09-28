@@ -2,10 +2,7 @@ use super::{
     ts_type_ref::TsTypeRefHelperMethods, FunctionAndMethodTypeHelperMethods, GetDependencies,
     GetName, GetTsType,
 };
-use std::{
-    collections::{HashMap, HashSet},
-    iter::FromIterator,
-};
+use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::TsTypeAliasDecl;
 
 pub struct TsCanisterDecl {
@@ -17,7 +14,7 @@ impl GetDependencies for TsCanisterDecl {
         &self,
         type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
         found_types: &HashSet<String>,
-    ) -> Vec<String> {
+    ) -> HashSet<String> {
         // Verify that it is a canister
         let is_canister = self.decl.get_ts_type().is_ts_type_ref()
             && self.decl.get_ts_type().as_ts_type_ref().unwrap().get_name() == "Canister";
@@ -51,19 +48,11 @@ impl GetDependencies for TsCanisterDecl {
             });
 
         // Get the goods out of a method signature
-        ts_types
-            .iter()
-            .fold(found_types.clone(), |acc, ts_type| {
-                let result = HashSet::from_iter(
-                    ts_type
-                        .get_dependent_types(type_alias_lookup, &acc)
-                        .iter()
-                        .cloned(),
-                );
-                acc.union(&result).cloned().collect()
-            })
-            .into_iter()
-            .collect()
+        ts_types.iter().fold(found_types.clone(), |acc, ts_type| {
+            acc.union(&ts_type.get_dependent_types(type_alias_lookup, &acc))
+                .cloned()
+                .collect()
+        })
     }
 }
 
@@ -72,18 +61,11 @@ impl GetDependencies for Vec<TsCanisterDecl> {
         &self,
         type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
         found_types: &HashSet<String>,
-    ) -> Vec<String> {
-        self.iter()
-            .fold(found_types.clone(), |acc, canister_decl| {
-                let hash_set: HashSet<String> = HashSet::from_iter(
-                    canister_decl
-                        .get_dependent_types(type_alias_lookup, &acc)
-                        .iter()
-                        .cloned(),
-                );
-                acc.union(&hash_set).cloned().collect()
-            })
-            .into_iter()
-            .collect()
+    ) -> HashSet<String> {
+        self.iter().fold(found_types.clone(), |acc, canister_decl| {
+            acc.union(&canister_decl.get_dependent_types(type_alias_lookup, &acc))
+                .cloned()
+                .collect()
+        })
     }
 }

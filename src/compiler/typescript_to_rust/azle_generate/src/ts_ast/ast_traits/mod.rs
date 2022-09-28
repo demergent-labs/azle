@@ -4,13 +4,12 @@ use std::collections::{HashMap, HashSet};
 pub use generate_inline_name::GenerateInlineName;
 use swc_ecma_ast::{TsEntityName, TsFnParam, TsType, TsTypeAliasDecl, TsTypeAnn};
 
-// TODO should this return a hashset?
 pub trait GetDependencies {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
         found_types: &HashSet<String>,
-    ) -> Vec<String>;
+    ) -> HashSet<String>;
 }
 
 pub trait GetName {
