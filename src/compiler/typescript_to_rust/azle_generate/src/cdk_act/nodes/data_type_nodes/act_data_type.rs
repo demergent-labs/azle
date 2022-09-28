@@ -1,7 +1,7 @@
 use super::{
     act_arrays::ActArray, act_funcs::ActFunc, act_option::ActOption, act_primitives::ActPrimitive,
     act_record::ActRecord, act_tuple::ActTuple, act_type_ref::ActTypeRef, act_variants::ActVariant,
-    Literally, TypeAliasize,
+    HasMembers, Literally, TypeAliasize,
 };
 use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
@@ -52,7 +52,7 @@ impl ActDataType {
             ActDataType::TypeRef(_) => false,
             ActDataType::Array(_) => false,
             ActDataType::Option(_) => false,
-            ActDataType::Record(act_record) => act_record.is_literal(),
+            ActDataType::Record(act_record) => act_record.act_type.is_literal(),
             ActDataType::Variant(act_variant) => act_variant.is_literal(),
             ActDataType::Func(act_func) => act_func.is_literal(),
             ActDataType::Tuple(act_tuple) => act_tuple.is_literal(),
@@ -81,8 +81,8 @@ impl ActDataType {
             ActDataType::Record(act_record) => act_record.get_members(),
             ActDataType::Variant(act_variant) => act_variant.get_members(),
             ActDataType::Func(act_func) => act_func.get_members(),
-            ActDataType::Primitive(primitive) => primitive.get_members(),
-            ActDataType::TypeRef(type_ref) => type_ref.get_members(),
+            ActDataType::Primitive(_) => vec![],
+            ActDataType::TypeRef(_) => vec![],
             ActDataType::Array(act_array) => act_array.get_members(),
             ActDataType::Tuple(act_tuple) => act_tuple.get_members(),
             ActDataType::Option(act_option) => act_option.get_members(),
@@ -106,7 +106,7 @@ impl ActDataType {
 impl ToTokenStream for ActDataType {
     fn to_token_stream(&self) -> TokenStream {
         match self {
-            ActDataType::Record(act_record) => act_record.to_token_stream(),
+            ActDataType::Record(act_record) => act_record.act_type.to_token_stream(),
             ActDataType::Variant(act_variant) => act_variant.to_token_stream(),
             ActDataType::Func(act_func) => act_func.to_token_stream(),
             ActDataType::Tuple(act_tuple) => act_tuple.to_token_stream(),

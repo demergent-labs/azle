@@ -36,10 +36,6 @@ impl Literally for ActTypeRef {
             ActTypeRef::TypeAlias(_) => false,
         }
     }
-
-    fn get_members(&self) -> Vec<super::ActDataType> {
-        vec![]
-    }
 }
 
 impl ToActDataType for String {

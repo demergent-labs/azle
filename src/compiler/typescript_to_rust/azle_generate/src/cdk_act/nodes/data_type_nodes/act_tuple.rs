@@ -1,4 +1,4 @@
-use super::{ActDataType, Literally, ToIdent, TypeAliasize};
+use super::{ActDataType, HasMembers, Literally, ToIdent, TypeAliasize};
 use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
@@ -45,7 +45,9 @@ impl Literally for ActTuple {
             ActTuple::TypeAlias(_) => false,
         }
     }
+}
 
+impl HasMembers for ActTuple {
     fn get_members(&self) -> Vec<ActDataType> {
         let act_tuple = match self {
             ActTuple::Literal(literal) => literal,
