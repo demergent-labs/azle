@@ -68,10 +68,6 @@ impl Literally for ActPrimitive {
             ActPrimitive::TypeAlias(_) => false,
         }
     }
-
-    fn get_members(&self) -> Vec<super::ActDataType> {
-        vec![]
-    }
 }
 
 impl ToTokenStream for ActPrimitive {

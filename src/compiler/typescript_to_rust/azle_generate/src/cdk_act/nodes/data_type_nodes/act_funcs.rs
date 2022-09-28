@@ -1,4 +1,4 @@
-use super::{ActDataType, Literally, ToIdent, TypeAliasize};
+use super::{ActDataType, HasMembers, Literally, ToIdent, TypeAliasize};
 use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
@@ -42,7 +42,9 @@ impl Literally for ActFunc {
             ActFunc::TypeAlias(_) => false,
         }
     }
+}
 
+impl HasMembers for ActFunc {
     fn get_members(&self) -> Vec<ActDataType> {
         let act_func = match self {
             ActFunc::Literal(literal) => literal,

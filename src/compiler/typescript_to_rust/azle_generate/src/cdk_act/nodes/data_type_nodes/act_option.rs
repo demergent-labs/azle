@@ -1,4 +1,4 @@
-use super::{ActDataType, Literally, ToIdent};
+use super::{ActDataType, HasMembers, Literally, ToIdent};
 use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
@@ -27,7 +27,9 @@ impl Literally for ActOption {
             ActOption::TypeAlias(_) => false,
         }
     }
+}
 
+impl HasMembers for ActOption {
     fn get_members(&self) -> Vec<ActDataType> {
         vec![self.get_enclosed_type()]
     }
