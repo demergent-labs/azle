@@ -1,12 +1,11 @@
-use super::{ActDataType, Literally, ToIdent};
+use super::{ActDataType, LiteralOrTypeAlias, ToIdent};
 use crate::cdk_act::{ToActDataType, ToTokenStream};
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
 #[derive(Clone, Debug)]
-pub enum ActPrimitive {
-    Literal(ActPrimitiveLit),
-    TypeAlias(ActPrimitiveTypeAlias),
+pub struct ActPrimitive {
+    pub act_type: LiteralOrTypeAlias<ActPrimitiveLit, ActPrimitiveTypeAlias>,
 }
 
 #[derive(Clone, Debug)]
@@ -35,14 +34,15 @@ pub enum ActPrimitiveLit {
 
 impl ToActDataType for ActPrimitiveLit {
     fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType {
-        let primitive = match alias_name {
-            None => ActPrimitive::Literal(self.clone()),
-            Some(name) => ActPrimitive::TypeAlias(ActPrimitiveTypeAlias {
-                name: name.clone().clone(),
-                aliased_type: self.clone(),
-            }),
-        };
-        ActDataType::Primitive(primitive)
+        ActDataType::Primitive(ActPrimitive {
+            act_type: match alias_name {
+                None => LiteralOrTypeAlias::Literal(self.clone()),
+                Some(name) => LiteralOrTypeAlias::TypeAlias(ActPrimitiveTypeAlias {
+                    name: name.clone().clone(),
+                    aliased_type: self.clone(),
+                }),
+            },
+        })
     }
 }
 
@@ -54,27 +54,9 @@ pub struct ActPrimitiveTypeAlias {
 
 impl ActPrimitive {
     pub fn get_name(&self) -> String {
-        match self {
-            ActPrimitive::Literal(literal) => literal.to_token_stream().to_string(),
-            ActPrimitive::TypeAlias(type_alias) => type_alias.name.clone(),
-        }
-    }
-}
-
-impl Literally for ActPrimitive {
-    fn is_literal(&self) -> bool {
-        match self {
-            ActPrimitive::Literal(_) => true,
-            ActPrimitive::TypeAlias(_) => false,
-        }
-    }
-}
-
-impl ToTokenStream for ActPrimitive {
-    fn to_token_stream(&self) -> TokenStream {
-        match self {
-            ActPrimitive::Literal(literal) => literal.to_token_stream(),
-            ActPrimitive::TypeAlias(type_alias) => type_alias.to_token_stream(),
+        match &self.act_type {
+            LiteralOrTypeAlias::Literal(literal) => literal.to_token_stream().to_string(),
+            LiteralOrTypeAlias::TypeAlias(type_alias) => type_alias.name.clone(),
         }
     }
 }
