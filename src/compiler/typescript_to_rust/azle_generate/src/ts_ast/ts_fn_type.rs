@@ -22,7 +22,7 @@ impl GetDependencies for TsFnType {
         &self,
         type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
         found_types: &HashSet<String>,
-    ) -> Vec<String> {
+    ) -> HashSet<String> {
         let return_type = match self.get_return_type() {
             Some(return_type) => vec![return_type],
             None => vec![],
@@ -30,12 +30,10 @@ impl GetDependencies for TsFnType {
         vec![self.get_param_types(), return_type]
             .concat()
             .iter()
-            .fold(vec![], |acc, ts_type| {
-                vec![
-                    acc,
-                    ts_type.get_dependent_types(type_alias_lookup, found_types),
-                ]
-                .concat()
+            .fold(found_types.clone(), |acc, ts_type| {
+                acc.union(&ts_type.get_dependent_types(type_alias_lookup, &acc))
+                    .cloned()
+                    .collect()
             })
     }
 }

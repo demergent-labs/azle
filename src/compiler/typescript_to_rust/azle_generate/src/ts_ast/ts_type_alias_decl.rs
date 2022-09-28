@@ -40,8 +40,8 @@ impl GetDependencies for TsTypeAliasDecl {
         &self,
         type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
         found_types: &HashSet<String>,
-    ) -> Vec<String> {
-        self.type_ann
+    ) -> HashSet<String> {
+        self.get_ts_type()
             .get_dependent_types(type_alias_lookup, found_types)
     }
 }

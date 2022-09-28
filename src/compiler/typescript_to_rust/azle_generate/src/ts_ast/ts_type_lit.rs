@@ -69,15 +69,17 @@ impl GetDependencies for TsTypeLit {
         &self,
         type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
         found_types: &HashSet<String>,
-    ) -> Vec<String> {
-        self.members.iter().fold(vec![], |acc, member| {
-            vec![
-                acc,
-                member
-                    .get_ts_type()
-                    .get_dependent_types(type_alias_lookup, found_types),
-            ]
-            .concat()
-        })
+    ) -> HashSet<String> {
+        self.members
+            .iter()
+            .fold(found_types.clone(), |acc, member| {
+                acc.union(
+                    &member
+                        .get_ts_type()
+                        .get_dependent_types(type_alias_lookup, &acc),
+                )
+                .cloned()
+                .collect()
+            })
     }
 }
