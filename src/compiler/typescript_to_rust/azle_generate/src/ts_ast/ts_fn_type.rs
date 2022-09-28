@@ -11,6 +11,10 @@ impl FunctionAndMethodTypeHelperMethods for TsFnType {
     fn get_ts_type_ann(&self) -> TsTypeAnn {
         self.type_ann.clone()
     }
+
+    fn get_valid_return_types(&self) -> Vec<&str> {
+        vec!["Oneway", "Update", "Query"]
+    }
 }
 
 impl GetDependencies for TsFnType {
