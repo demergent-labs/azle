@@ -2,7 +2,10 @@ use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::{TsTupleType, TsTypeAliasDecl};
 
 use crate::cdk_act::{
-    nodes::data_type_nodes::{act_tuple::Tuple, ActTuple, ActTupleElem},
+    nodes::data_type_nodes::{
+        act_tuple::{Tuple, TupleLiteral, TupleTypeAlias},
+        ActTuple, ActTupleElem, LiteralOrTypeAlias,
+    },
     ActDataType, ToActDataType,
 };
 
@@ -36,15 +39,21 @@ impl GetDependencies for TsTupleType {
 
 impl ToActDataType for TsTupleType {
     fn to_act_data_type(&self, name: &Option<&String>) -> ActDataType {
-        ActDataType::Tuple(match name {
-            Some(name) => ActTuple::TypeAlias(Tuple {
-                name: name.clone().clone(),
-                elems: self.get_elem_types(),
-            }),
-            None => ActTuple::Literal(Tuple {
-                name: self.generate_inline_name(),
-                elems: self.get_elem_types(),
-            }),
+        ActDataType::Tuple(ActTuple {
+            act_type: match name {
+                Some(name) => LiteralOrTypeAlias::TypeAlias(TupleTypeAlias {
+                    tuple: Tuple {
+                        name: name.clone().clone(),
+                        elems: self.get_elem_types(),
+                    },
+                }),
+                None => LiteralOrTypeAlias::Literal(TupleLiteral {
+                    tuple: Tuple {
+                        name: self.generate_inline_name(),
+                        elems: self.get_elem_types(),
+                    },
+                }),
+            },
         })
     }
 }
