@@ -1,6 +1,6 @@
 use crate::{
     cdk_act::{ActDataType, Actable},
-    ts_ast::ts_type_alias_decl::TsTypeAliasHelperMethods,
+    ts_ast::ts_type_alias_decl::TsTypeAliasListHelperMethods,
 };
 use std::collections::HashSet;
 use swc_ecma_ast::TsTypeAliasDecl;

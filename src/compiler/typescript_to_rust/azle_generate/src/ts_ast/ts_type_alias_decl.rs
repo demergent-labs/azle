@@ -1,39 +1,69 @@
-use super::{ts_canister_decl::TsCanisterDecl, ts_type, GetDependencies, GetName, GetTsType};
+use super::{ts_canister_decl::TsCanisterDecl, GetDependencies, GetName, GetTsType};
 use crate::cdk_act::{nodes::ActNode, Actable, SystemStructureType, ToActDataType};
-use std::{
-    collections::{HashMap, HashSet},
-    iter::FromIterator,
-};
+use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
-pub fn is_type_alias_decl_system_structure_type(
-    type_alias_decl: &TsTypeAliasDecl,
-    system_structure_type: &SystemStructureType,
-) -> bool {
-    // let type_alias_decl
-    match system_structure_type {
-        SystemStructureType::Canister => {
-            let type_reference_name_option =
-                ts_type::get_identifier_name_for_ts_type(&*type_alias_decl.type_ann);
-
-            match type_reference_name_option {
-                Some(type_reference_name) => type_reference_name == "Canister",
-                None => false,
-            }
-        }
-    }
+// TODO I am not super happy with this function... but that might be because I don't understand the system structure stuff
+pub trait TsTypeAliasHelperMethods {
+    fn is_type_alias_decl_system_structure_type(
+        &self,
+        system_structure_type: &SystemStructureType,
+    ) -> bool;
 }
 
-pub trait TsTypeAliasHelperMethods {
+pub trait TsTypeAliasListHelperMethods {
     fn generate_type_alias_lookup(&self) -> HashMap<String, TsTypeAliasDecl>;
     fn get_ast_ts_canister_decls(&self) -> Vec<TsCanisterDecl>;
+    // TODO I think the only one we use this for nowadays is Canister... Should we condense these?
     fn get_ast_type_alias_decls_by_type_ref_name(
         &self,
         type_ref_name: &str,
     ) -> Vec<TsTypeAliasDecl>;
 }
 
-impl TsTypeAliasHelperMethods for Vec<TsTypeAliasDecl> {
+impl Actable for TsTypeAliasDecl {
+    fn to_act_node(&self) -> ActNode {
+        let ts_type_name = self.get_name().to_string();
+
+        ActNode::DataType(self.type_ann.to_act_data_type(&Some(&ts_type_name)))
+    }
+}
+
+impl GetTsType for TsTypeAliasDecl {
+    fn get_ts_type(&self) -> TsType {
+        *self.type_ann.clone()
+    }
+}
+
+impl GetDependencies for TsTypeAliasDecl {
+    fn get_dependent_types(
+        &self,
+        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        found_types: &HashSet<String>,
+    ) -> Vec<String> {
+        self.type_ann
+            .get_dependent_types(type_alias_lookup, found_types)
+    }
+}
+
+impl GetName for TsTypeAliasDecl {
+    fn get_name(&self) -> &str {
+        self.id.sym.chars().as_str()
+    }
+}
+
+impl TsTypeAliasHelperMethods for TsTypeAliasDecl {
+    fn is_type_alias_decl_system_structure_type(
+        &self,
+        system_structure_type: &SystemStructureType,
+    ) -> bool {
+        match system_structure_type {
+            SystemStructureType::Canister => &*self.type_ann.get_name() == "Canister",
+        }
+    }
+}
+
+impl TsTypeAliasListHelperMethods for Vec<TsTypeAliasDecl> {
     fn generate_type_alias_lookup(&self) -> HashMap<String, TsTypeAliasDecl> {
         self.iter()
             .fold(HashMap::new(), |mut acc, ast_type_alias_decl| {
@@ -67,57 +97,5 @@ impl TsTypeAliasHelperMethods for Vec<TsTypeAliasDecl> {
                     }
             })
             .collect()
-    }
-}
-
-impl GetTsType for TsTypeAliasDecl {
-    fn get_ts_type(&self) -> TsType {
-        *self.type_ann.clone()
-    }
-}
-
-impl Actable for TsTypeAliasDecl {
-    fn to_act_node(&self) -> ActNode {
-        let ts_type_name = self.get_name().to_string();
-
-        ActNode::DataType(self.type_ann.to_act_data_type(&Some(&ts_type_name)))
-    }
-}
-
-impl GetDependencies for Vec<TsCanisterDecl> {
-    fn get_dependent_types(
-        &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
-        found_types: &HashSet<String>,
-    ) -> Vec<String> {
-        self.iter()
-            .fold(HashSet::new(), |acc, canister_decl| {
-                let hash_set: HashSet<String> = HashSet::from_iter(
-                    canister_decl
-                        .get_dependent_types(type_alias_lookup, &acc)
-                        .iter()
-                        .cloned(),
-                );
-                acc.union(&hash_set).cloned().collect()
-            })
-            .into_iter()
-            .collect()
-    }
-}
-
-impl GetDependencies for TsTypeAliasDecl {
-    fn get_dependent_types(
-        &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
-        found_types: &HashSet<String>,
-    ) -> Vec<String> {
-        self.type_ann
-            .get_dependent_types(type_alias_lookup, found_types)
-    }
-}
-
-impl GetName for TsTypeAliasDecl {
-    fn get_name(&self) -> &str {
-        self.id.sym.chars().as_str()
     }
 }

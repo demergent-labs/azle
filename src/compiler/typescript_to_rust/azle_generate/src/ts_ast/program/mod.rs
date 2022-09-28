@@ -1,10 +1,9 @@
-use swc_ecma_ast::{FnDecl, Program, TsTypeAliasDecl};
-
+use super::ts_type_alias_decl::TsTypeAliasHelperMethods;
 use crate::{
     cdk_act::{CanisterMethodType, SystemStructureType},
-    ts_ast::{fn_decl::FnDeclHelperMethods, module, ts_type_alias_decl},
+    ts_ast::{fn_decl::FnDeclHelperMethods, module},
 };
-
+use swc_ecma_ast::{FnDecl, Program, TsTypeAliasDecl};
 mod system_canister_method_builder;
 
 pub trait TsProgramHelperMethods {
@@ -85,10 +84,7 @@ impl TsProgramVecHelperMethods for Vec<Program> {
         type_alias_decls
             .into_iter()
             .filter(|type_alias_decl| {
-                ts_type_alias_decl::is_type_alias_decl_system_structure_type(
-                    type_alias_decl,
-                    system_structure_type,
-                )
+                type_alias_decl.is_type_alias_decl_system_structure_type(system_structure_type)
             })
             .collect()
     }
