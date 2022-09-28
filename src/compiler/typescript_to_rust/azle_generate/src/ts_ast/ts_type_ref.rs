@@ -1,7 +1,6 @@
 use super::{
-    ts_type_lit::TsTypeLitHelperMethods,
-    ts_types_to_act::{build_act_custom_type_node, build_act_primitive_type_node},
-    FunctionAndMethodTypeHelperMethods, GenerateInlineName, GetDependencies, GetName,
+    ts_type_lit::TsTypeLitHelperMethods, FunctionAndMethodTypeHelperMethods, GenerateInlineName,
+    GetDependencies, GetName,
 };
 use crate::cdk_act::{
     nodes::data_type_nodes::{
@@ -94,26 +93,26 @@ impl GetName for TsTypeRef {
 impl ToActDataType for TsTypeRef {
     fn to_act_data_type(&self, alias_name: &Option<&String>) -> crate::cdk_act::ActDataType {
         match self.get_name() {
-            "blob" => build_act_primitive_type_node(ActPrimitiveLit::Blob, alias_name),
-            "float32" => build_act_primitive_type_node(ActPrimitiveLit::Float32, alias_name),
-            "float64" => build_act_primitive_type_node(ActPrimitiveLit::Float64, alias_name),
-            "int" => build_act_primitive_type_node(ActPrimitiveLit::Int, alias_name),
-            "int8" => build_act_primitive_type_node(ActPrimitiveLit::Int8, alias_name),
-            "int16" => build_act_primitive_type_node(ActPrimitiveLit::Int16, alias_name),
-            "int32" => build_act_primitive_type_node(ActPrimitiveLit::Int32, alias_name),
-            "int64" => build_act_primitive_type_node(ActPrimitiveLit::Int64, alias_name),
-            "nat" => build_act_primitive_type_node(ActPrimitiveLit::Nat, alias_name),
-            "nat8" => build_act_primitive_type_node(ActPrimitiveLit::Nat8, alias_name),
-            "nat16" => build_act_primitive_type_node(ActPrimitiveLit::Nat16, alias_name),
-            "nat32" => build_act_primitive_type_node(ActPrimitiveLit::Nat32, alias_name),
-            "nat64" => build_act_primitive_type_node(ActPrimitiveLit::Nat64, alias_name),
-            "Principal" => build_act_primitive_type_node(ActPrimitiveLit::Principal, alias_name),
-            "empty" => build_act_primitive_type_node(ActPrimitiveLit::Empty, alias_name),
-            "reserved" => build_act_primitive_type_node(ActPrimitiveLit::Reserved, alias_name),
+            "blob" => ActPrimitiveLit::Blob.to_act_data_type(alias_name),
+            "float32" => ActPrimitiveLit::Float32.to_act_data_type(alias_name),
+            "float64" => ActPrimitiveLit::Float64.to_act_data_type(alias_name),
+            "int" => ActPrimitiveLit::Int.to_act_data_type(alias_name),
+            "int8" => ActPrimitiveLit::Int8.to_act_data_type(alias_name),
+            "int16" => ActPrimitiveLit::Int16.to_act_data_type(alias_name),
+            "int32" => ActPrimitiveLit::Int32.to_act_data_type(alias_name),
+            "int64" => ActPrimitiveLit::Int64.to_act_data_type(alias_name),
+            "nat" => ActPrimitiveLit::Nat.to_act_data_type(alias_name),
+            "nat8" => ActPrimitiveLit::Nat8.to_act_data_type(alias_name),
+            "nat16" => ActPrimitiveLit::Nat16.to_act_data_type(alias_name),
+            "nat32" => ActPrimitiveLit::Nat32.to_act_data_type(alias_name),
+            "nat64" => ActPrimitiveLit::Nat64.to_act_data_type(alias_name),
+            "Principal" => ActPrimitiveLit::Principal.to_act_data_type(alias_name),
+            "empty" => ActPrimitiveLit::Empty.to_act_data_type(alias_name),
+            "reserved" => ActPrimitiveLit::Reserved.to_act_data_type(alias_name),
             "Opt" => self.to_option(alias_name),
             "Func" => self.to_func(alias_name),
             "Variant" => self.to_variant(alias_name),
-            _ => build_act_custom_type_node(self.get_name().to_string(), alias_name),
+            _ => self.get_name().to_string().to_act_data_type(alias_name),
         }
     }
 }

@@ -24,4 +24,3 @@ pub mod ident;
 pub mod module;
 pub mod program;
 pub mod ts_type_alias_decl;
-pub mod ts_types_to_act;

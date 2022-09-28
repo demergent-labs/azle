@@ -1,5 +1,5 @@
-use super::{Literally, ToIdent};
-use crate::cdk_act::ToTokenStream;
+use super::{ActDataType, Literally, ToIdent};
+use crate::cdk_act::{ToActDataType, ToTokenStream};
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
@@ -31,6 +31,19 @@ pub enum ActPrimitiveLit {
     Reserved,
     String,
     Void,
+}
+
+impl ToActDataType for ActPrimitiveLit {
+    fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType {
+        let primitive = match alias_name {
+            None => ActPrimitive::Literal(self.clone()),
+            Some(name) => ActPrimitive::TypeAlias(ActPrimitiveTypeAlias {
+                name: name.clone().clone(),
+                aliased_type: self.clone(),
+            }),
+        };
+        ActDataType::Primitive(primitive)
+    }
 }
 
 #[derive(Clone, Debug)]

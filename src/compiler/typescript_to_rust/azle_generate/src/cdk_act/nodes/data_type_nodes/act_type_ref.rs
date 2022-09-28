@@ -1,5 +1,5 @@
-use super::{Literally, ToIdent};
-use crate::cdk_act::ToTokenStream;
+use super::{ActDataType, Literally, ToIdent};
+use crate::cdk_act::{ToActDataType, ToTokenStream};
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
@@ -39,6 +39,19 @@ impl Literally for ActTypeRef {
 
     fn get_members(&self) -> Vec<super::ActDataType> {
         vec![]
+    }
+}
+
+impl ToActDataType for String {
+    fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType {
+        let type_ref = match alias_name {
+            None => ActTypeRef::Literal(ActTypeRefLit { name: self.clone() }),
+            Some(name) => ActTypeRef::TypeAlias(ActTypeRefTypeAlias {
+                name: name.clone().clone(),
+                aliased_type: ActTypeRefLit { name: self.clone() },
+            }),
+        };
+        ActDataType::TypeRef(type_ref)
     }
 }
 
