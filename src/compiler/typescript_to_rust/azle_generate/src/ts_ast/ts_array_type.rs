@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::{TsArrayType, TsTypeAliasDecl};
 
 use crate::cdk_act::{
-    nodes::data_type_nodes::{ActArray, ActArrayLiteral, ActArrayTypeAlias},
+    nodes::data_type_nodes::{ActArray, ActArrayLiteral, ActArrayTypeAlias, LiteralOrTypeAlias},
     ActDataType, ToActDataType,
 };
 
@@ -24,13 +24,17 @@ impl ToActDataType for TsArrayType {
         let elem_ts_type = self.elem_type.clone();
         let act_elem = elem_ts_type.to_act_data_type(&None);
         match name {
-            Some(name) => ActDataType::Array(ActArray::TypeAlias(ActArrayTypeAlias {
-                name: name.clone().clone(),
-                enclosed_type: Box::from(act_elem.clone()),
-            })),
-            None => ActDataType::Array(ActArray::Literal(ActArrayLiteral {
-                enclosed_type: Box::from(act_elem.clone()),
-            })),
+            Some(name) => ActDataType::Array(ActArray {
+                act_type: LiteralOrTypeAlias::TypeAlias(ActArrayTypeAlias {
+                    name: name.clone().clone(),
+                    enclosed_type: Box::from(act_elem.clone()),
+                }),
+            }),
+            None => ActDataType::Array(ActArray {
+                act_type: LiteralOrTypeAlias::Literal(ActArrayLiteral {
+                    enclosed_type: Box::from(act_elem.clone()),
+                }),
+            }),
         }
     }
 }
