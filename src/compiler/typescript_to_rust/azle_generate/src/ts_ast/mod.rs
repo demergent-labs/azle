@@ -1,6 +1,8 @@
+pub use ast_traits::FunctionAndMethodTypeHelperMethods;
 pub use ast_traits::GenerateInlineName;
 pub use ast_traits::GetDependencies;
 pub use ast_traits::GetName;
+pub use ast_traits::GetTsType;
 pub use ts_ast::TsAst;
 
 pub mod ast_traits;

@@ -1,4 +1,4 @@
-use super::{ts_method_signature::TsMethodHelperMethods, ts_type, GetDependencies, GetName};
+use super::{ts_type, FunctionAndMethodTypeHelperMethods, GetDependencies, GetName};
 use crate::cdk_act::{nodes::ActNode, Actable, SystemStructureType, ToActDataType};
 use std::{
     collections::{HashMap, HashSet},
@@ -94,11 +94,14 @@ fn get_dependent_types_from_canister_decl(
         .iter()
         .fold(vec![], |acc, member| match member {
             swc_ecma_ast::TsTypeElement::TsMethodSignature(method_sig) => {
-                let return_types = method_sig.get_return_type();
-                let param_types = method_sig.get_param_ts_types();
-                vec![acc, vec![return_types], param_types].concat()
+                let return_types = match method_sig.get_return_type() {
+                    Some(return_type) => vec![return_type],
+                    None => vec![],
+                };
+                let param_types = method_sig.get_param_types();
+                vec![acc, return_types, param_types].concat()
             }
-            _ => todo!("There should only be Method Signatures on a Canister type?"),
+            _ => todo!("There should only be Method Signatures on a Canister type"),
         });
 
     // Get the goods out of a method signature

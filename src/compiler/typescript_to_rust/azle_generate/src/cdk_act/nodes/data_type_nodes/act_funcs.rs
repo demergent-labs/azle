@@ -13,11 +13,8 @@ pub enum ActFunc {
 pub struct Func {
     pub name: String,
     pub params: Vec<ActDataType>,
-    pub return_type: Box<ActDataType>,
-    pub param_strings: Vec<String>,
-    pub return_string: String,
+    pub return_type: Box<Option<ActDataType>>,
     pub mode: String,
-    pub is_inline: bool,
 }
 
 impl ActFunc {
@@ -51,7 +48,11 @@ impl Literally for ActFunc {
             ActFunc::Literal(literal) => literal,
             ActFunc::TypeAlias(type_alias) => type_alias,
         };
-        vec![act_func.params.clone(), vec![*act_func.return_type.clone()]].concat()
+        let return_type = match &*act_func.return_type {
+            Some(return_type) => vec![return_type.clone()],
+            None => vec![],
+        };
+        vec![act_func.params.clone(), return_type].concat()
     }
 }
 
@@ -60,10 +61,10 @@ impl ToTokenStream for ActFunc {
         match self {
             ActFunc::Literal(literal) => literal.name.to_identifier().to_token_stream(),
             ActFunc::TypeAlias(type_alias) => generate_func_struct_and_impls(
-                &type_alias.name.to_identifier(),
+                &type_alias.name,
                 &type_alias.mode,
-                &type_alias.param_strings,
-                &type_alias.return_string,
+                &type_alias.params,
+                &*type_alias.return_type,
             ),
         }
     }
@@ -91,12 +92,12 @@ pub fn generate_func_arg_token() -> TokenStream {
 }
 
 pub fn generate_func_struct_and_impls(
-    type_alias_name: &proc_macro2::Ident,
+    type_alias_name: &String,
     func_mode: &String,
-    param_types: &Vec<String>,
-    return_type: &String,
+    param_types: &Vec<ActDataType>,
+    return_type: &Option<ActDataType>,
 ) -> TokenStream {
-    let type_alias_name = type_alias_name.to_token_stream();
+    let type_alias_name = type_alias_name.to_identifier().to_token_stream();
     let func_mode = if func_mode == "Query" {
         quote! {candid::parser::types::FuncMode::Query }
     } else if func_mode == "Oneway" {
@@ -104,7 +105,11 @@ pub fn generate_func_struct_and_impls(
     } else {
         quote! {}
     };
-    let func_param_types: Vec<TokenStream> = param_types
+    let param_type_strings: Vec<String> = param_types
+        .iter()
+        .map(|param| param.to_token_stream().to_string())
+        .collect();
+    let func_param_types: Vec<TokenStream> = param_type_strings
         .iter()
         .map(|rust_type| {
             let modified_rust_type = if rust_type.starts_with("Vec") {
@@ -122,10 +127,14 @@ pub fn generate_func_struct_and_impls(
             quote! {#modified_rust_type_token_stream::_ty()}
         })
         .collect();
-    let func_return_type = if return_type == "()" || return_type == "" {
+    let return_type_string = match &return_type {
+        Some(return_type) => return_type.to_token_stream().to_string(),
+        None => "".to_string(),
+    };
+    let func_return_type = if return_type_string == "()" || return_type_string == "" {
         quote! {}
     } else {
-        let return_type_token_stream: TokenStream = return_type.parse().unwrap();
+        let return_type_token_stream: TokenStream = return_type_string.parse().unwrap();
         quote! { #return_type_token_stream::_ty()}
     };
 
