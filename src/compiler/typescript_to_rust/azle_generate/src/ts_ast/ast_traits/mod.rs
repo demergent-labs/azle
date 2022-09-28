@@ -24,6 +24,7 @@ pub trait GetTsType {
 pub trait FunctionAndMethodTypeHelperMethods {
     fn get_ts_type_ann(&self) -> TsTypeAnn;
     fn get_ts_fn_params(&self) -> Vec<TsFnParam>;
+    fn get_valid_return_types(&self) -> Vec<&str>;
 
     fn get_param_types(&self) -> Vec<TsType> {
         self.get_ts_fn_params()
@@ -65,19 +66,18 @@ pub trait FunctionAndMethodTypeHelperMethods {
     }
 
     fn get_func_mode(&self) -> String {
-        // TODO should this be an enum since the only legal values are Update, Oneway, and Query?
         match self.get_ts_type_ann().get_ts_type() {
             TsType::TsTypeRef(type_reference) => match &type_reference.type_name {
                 TsEntityName::TsQualifiedName(_) => panic!("Unsupported qualified name. Func return type must directly be Query, Update, or Oneway"),
                 TsEntityName::Ident(identifier) => {
                 let mode = identifier.get_name();
-                if mode != "Query" && mode != "Update" && mode != "Oneway" {
-                    panic!("Func return type must be Query, Update, or Oneway")
+                if !self.get_valid_return_types().contains(&mode) {
+                    panic!("Return type must be one of {:?}", self.get_valid_return_types())
                 }
                 mode.to_string()
             }
             },
-            _ => panic!("Func return type must be Query, Update, or Oneway"),
+            _ => panic!("Return type must be one of {:?}", self.get_valid_return_types()),
         }
     }
 }

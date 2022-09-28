@@ -16,4 +16,8 @@ impl FunctionAndMethodTypeHelperMethods for TsMethodSignature {
             None => todo!("Canister Method must have a return type"),
         }
     }
+
+    fn get_valid_return_types(&self) -> Vec<&str> {
+        vec!["Oneway", "Update", "Query", "CanisterResult"]
+    }
 }
