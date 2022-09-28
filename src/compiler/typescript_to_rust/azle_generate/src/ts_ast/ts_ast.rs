@@ -1,6 +1,6 @@
 use quote::quote;
-use std::collections::HashSet;
 use std::path::Path;
+use std::{collections::HashSet, iter::FromIterator};
 use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
@@ -13,7 +13,10 @@ use crate::{
         async_result_handler, azle_into_js_value, azle_try_from_js_value, canister_methods,
         cross_canister_call_functions, stacktrace, type_aliases,
     },
-    ts_ast::{self, fn_decl::FnDeclVecHelperMethods, program::TsProgramVecHelperMethods},
+    ts_ast::{
+        program::TsProgramVecHelperMethods, ts_type_alias_decl::TsTypeAliasHelperMethods,
+        GetDependencies,
+    },
 };
 
 pub struct TsAst {
@@ -56,8 +59,7 @@ impl ToAct for TsAst {
         eprintln!("-----------------------------------------------");
         // Collect AST Information
         let ast_type_alias_decls = &self.programs.get_ast_type_alias_decls();
-        let ast_canister_type_alias_decls =
-            ts_ast::ts_type_alias_decl::get_ast_canister_type_alias_decls(&ast_type_alias_decls);
+        let ast_canister_type_alias_decls = ast_type_alias_decls.get_ast_ts_canister_decls();
 
         // Separate function decls into queries and updates
         let ast_fnc_decls_query = &self
@@ -68,16 +70,22 @@ impl ToAct for TsAst {
             .get_fn_decls_of_type(&CanisterMethodType::Update);
 
         // Determine which type aliases must be present for the functions to work and save them for later parsing
+        let found_types = HashSet::new();
+        let ast_type_alias_lookup = ast_type_alias_decls.generate_type_alias_lookup();
         let query_dependencies =
-            ast_fnc_decls_query.get_dependent_types_from_fn_decls(&ast_type_alias_decls);
+            ast_fnc_decls_query.get_dependent_types(&ast_type_alias_lookup, &found_types);
         let update_dependencies =
-            ast_fnc_decls_update.get_dependent_types_from_fn_decls(&ast_type_alias_decls);
+            ast_fnc_decls_update.get_dependent_types(&ast_type_alias_lookup, &found_types);
         let canister_dependencies =
-            ts_ast::ts_type_alias_decl::get_dependent_types_from_canister_decls(
-                &ast_canister_type_alias_decls,
-                &ast_type_alias_decls,
-            );
+            ast_canister_type_alias_decls.get_dependent_types(&ast_type_alias_lookup, &found_types);
 
+        // TODO I think this should already be a HashSet at this point
+        let query_dependencies: HashSet<String> =
+            HashSet::from_iter(query_dependencies.iter().cloned());
+        let update_dependencies: HashSet<String> =
+            HashSet::from_iter(update_dependencies.iter().cloned());
+        let canister_dependencies: HashSet<String> =
+            HashSet::from_iter(canister_dependencies.iter().cloned());
         let dependencies: HashSet<String> = query_dependencies
             .union(&update_dependencies)
             .cloned()
