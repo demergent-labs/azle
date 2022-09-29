@@ -1,27 +1,26 @@
+use crate::cdk_act::{nodes::ActFnParam, ActDataType, ToTokenStream, ToTokenStreams};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
-use crate::cdk_act::{nodes::ActFnParam, ActDataTypeNode, ToTokenStream, ToTokenStreams};
-
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum ActCanisterMethod {
     QueryMethod(CanisterMethod),
     UpdateMethod(CanisterMethod),
 }
 
 /// Describes a Rust canister method function body
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct CanisterMethod {
     pub body: TokenStream,
     pub params: Vec<ActFnParam>,
     pub is_manual: bool,
     pub name: String,
-    pub return_type: ActDataTypeNode,
+    pub return_type: ActDataType,
 }
 
 pub fn get_all_types_from_canister_method_acts(
     canister_methods: &Vec<ActCanisterMethod>,
-) -> Vec<ActDataTypeNode> {
+) -> Vec<ActDataType> {
     canister_methods
         .iter()
         .fold(vec![], |acc, canister_method| {
@@ -68,7 +67,7 @@ impl ToTokenStream for ActCanisterMethod {
 }
 
 impl ActCanisterMethod {
-    pub fn get_all_types(&self) -> Vec<ActDataTypeNode> {
+    pub fn get_all_types(&self) -> Vec<ActDataType> {
         vec![self.get_param_types(), vec![self.get_return_type()]].concat()
     }
 
@@ -80,7 +79,7 @@ impl ActCanisterMethod {
         .clone()
     }
 
-    pub fn get_return_type(&self) -> ActDataTypeNode {
+    pub fn get_return_type(&self) -> ActDataType {
         match self {
             ActCanisterMethod::QueryMethod(canister_method) => &canister_method.return_type,
             ActCanisterMethod::UpdateMethod(canister_method) => &canister_method.return_type,
@@ -88,7 +87,7 @@ impl ActCanisterMethod {
         .clone()
     }
 
-    pub fn get_param_types(&self) -> Vec<ActDataTypeNode> {
+    pub fn get_param_types(&self) -> Vec<ActDataType> {
         match self {
             ActCanisterMethod::QueryMethod(query) => &query.params,
             ActCanisterMethod::UpdateMethod(update) => &update.params,

@@ -1,9 +1,9 @@
 use quote::format_ident;
-use std::{collections::HashSet, iter::FromIterator};
+use std::collections::HashSet;
 use swc_ecma_ast::{FnDecl, TsType, TsTypeAliasDecl};
 use syn::Ident;
 
-use super::{ts_type, ts_type_alias_decl};
+use super::GetDependencies;
 use crate::cdk_act::CanisterMethodType;
 
 mod canister_method_builder;
@@ -129,47 +129,35 @@ impl FnDeclHelperMethods for FnDecl {
     }
 }
 
-pub trait FnDeclVecHelperMethods {
-    fn get_dependent_types_from_fn_decls(
+impl GetDependencies for Vec<FnDecl> {
+    fn get_dependent_types(
         &self,
-        possible_dependencies: &Vec<TsTypeAliasDecl>,
-    ) -> HashSet<String>;
-}
-
-impl FnDeclVecHelperMethods for Vec<FnDecl> {
-    fn get_dependent_types_from_fn_decls(
-        &self,
-        possible_dependencies: &Vec<TsTypeAliasDecl>,
+        type_alias_lookup: &std::collections::HashMap<String, TsTypeAliasDecl>,
+        found_types: &HashSet<String>,
     ) -> HashSet<String> {
         // TODO the found types are resetting every once and a while. I am guessing it's as we start another function or maybe a different type in that function. Either way it might be slightly more efficient to continually build up the list to avoid redundancy
-        self.iter().fold(HashSet::new(), |acc, fn_decl| {
-            acc.union(&get_dependent_types_from_fn_decl(
-                fn_decl,
-                possible_dependencies,
-                &acc,
-            ))
-            .cloned()
-            .collect()
+        self.iter().fold(found_types.clone(), |acc, fn_decl| {
+            acc.union(&fn_decl.get_dependent_types(type_alias_lookup, &acc))
+                .cloned()
+                .collect()
         })
     }
 }
 
-fn get_dependent_types_from_fn_decl(
-    fn_decl: &FnDecl,
-    possible_dependencies: &Vec<TsTypeAliasDecl>,
-    found_types: &HashSet<String>,
-) -> HashSet<String> {
-    let type_alias_lookup = ts_type_alias_decl::generate_type_alias_lookup(possible_dependencies);
-    let return_types = fn_decl.get_return_ts_type();
-    let param_types = fn_decl.get_param_ts_types();
-    let ts_types = vec![vec![return_types], param_types].concat();
+impl GetDependencies for FnDecl {
+    fn get_dependent_types(
+        &self,
+        type_alias_lookup: &std::collections::HashMap<String, TsTypeAliasDecl>,
+        found_types: &HashSet<String>,
+    ) -> HashSet<String> {
+        let return_types = self.get_return_ts_type();
+        let param_types = self.get_param_ts_types();
+        let ts_types = vec![vec![return_types], param_types].concat();
 
-    ts_types.iter().fold(found_types.clone(), |acc, ts_type| {
-        let result = HashSet::from_iter(
-            ts_type::get_dependent_types_for_ts_type(ts_type, &type_alias_lookup, &acc)
-                .iter()
-                .cloned(),
-        );
-        acc.union(&result).cloned().collect()
-    })
+        ts_types.iter().fold(found_types.clone(), |acc, ts_type| {
+            acc.union(&ts_type.get_dependent_types(type_alias_lookup, &acc))
+                .cloned()
+                .collect()
+        })
+    }
 }

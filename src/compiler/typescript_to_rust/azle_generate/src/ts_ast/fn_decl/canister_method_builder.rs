@@ -4,10 +4,10 @@ use crate::{
     cdk_act::{
         nodes::{ActCanisterMethod, ActFnParam, CanisterMethod},
         traits::CanisterMethodBuilder,
-        ActDataTypeNode, RequestType,
+        ActDataType, RequestType, ToActDataType,
     },
     generators::canister_methods::method_body,
-    ts_ast::{fn_decl::FnDeclHelperMethods, ts_types_to_act},
+    ts_ast::fn_decl::FnDeclHelperMethods,
 };
 
 impl CanisterMethodBuilder for FnDecl {
@@ -45,16 +45,16 @@ impl CanisterMethodBuilder for FnDecl {
             .collect()
     }
 
-    fn build_return_type(&self) -> ActDataTypeNode {
+    fn build_return_type(&self) -> ActDataType {
         let return_ts_type = self.get_return_ts_type();
-        ts_types_to_act::ts_type_to_act_node(&return_ts_type, &None)
+        return_ts_type.to_act_data_type(&None)
     }
 }
 
-fn build_param_types(fn_decl: &FnDecl) -> Vec<ActDataTypeNode> {
+fn build_param_types(fn_decl: &FnDecl) -> Vec<ActDataType> {
     fn_decl
         .get_param_ts_types()
         .iter()
-        .map(|ts_type| ts_types_to_act::ts_type_to_act_node(ts_type, &None))
+        .map(|ts_type| ts_type.to_act_data_type(&None))
         .collect()
 }

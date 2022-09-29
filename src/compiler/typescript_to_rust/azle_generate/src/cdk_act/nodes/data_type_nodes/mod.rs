@@ -1,5 +1,5 @@
 pub use act_arrays::{ActArray, ActArrayLiteral, ActArrayTypeAlias};
-pub use act_data_type_node::{build_inline_type_acts, deduplicate, ActDataTypeNode};
+pub use act_data_type::{build_inline_type_acts, deduplicate, ActDataType};
 pub use act_funcs::{generate_func_arg_token, ActFunc};
 pub use act_option::{ActOption, ActOptionLiteral, ActOptionTypeAlias};
 pub use act_primitives::{ActPrimitive, ActPrimitiveLit, ActPrimitiveTypeAlias};
@@ -11,7 +11,7 @@ use proc_macro2::Ident;
 use quote::format_ident;
 
 pub mod act_arrays;
-pub mod act_data_type_node;
+pub mod act_data_type;
 pub mod act_funcs;
 pub mod act_option;
 pub mod act_primitives;
@@ -36,5 +36,5 @@ pub trait TypeAliasize<T> {
 
 pub trait Literally {
     fn is_literal(&self) -> bool;
-    fn get_members(&self) -> Vec<ActDataTypeNode>;
+    fn get_members(&self) -> Vec<ActDataType>;
 }

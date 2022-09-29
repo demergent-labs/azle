@@ -1,22 +1,23 @@
-use swc_ecma_ast::{TsMethodSignature, TsType};
-
-pub fn get_return_ts_type_from_method(method_sig: &TsMethodSignature) -> TsType {
-    let ts_type_ann = method_sig.type_ann.as_ref();
-    let return_type_ann = ts_type_ann.clone().unwrap();
-    let return_type_ref = return_type_ann.type_ann.as_ts_type_ref().unwrap();
-    let return_type_params = return_type_ref.type_params.clone().unwrap();
-
-    let return_ts_type = *return_type_params.params[0].clone();
-    return_ts_type
+use swc_ecma_ast::{TsFnParam, TsMethodSignature, TsType, TsTypeAnn};
+pub trait TsMethodHelperMethods {
+    fn get_return_type(&self) -> TsType;
+    fn get_param_ts_types(&self) -> Vec<TsType>;
 }
+use super::FunctionAndMethodTypeHelperMethods;
 
-pub fn get_param_ts_types_from_method(method_sig: &TsMethodSignature) -> Vec<TsType> {
-    let params = &method_sig.params;
-    params.iter().fold(vec![], |acc, param| {
-        let param_type_ann = &param.as_ident().unwrap().type_ann.as_ref();
-        let param_type_ann = param_type_ann.clone().unwrap();
-        let param_ts_type = *param_type_ann.type_ann.clone();
+impl FunctionAndMethodTypeHelperMethods for TsMethodSignature {
+    fn get_ts_fn_params(&self) -> Vec<TsFnParam> {
+        self.params.clone()
+    }
 
-        vec![acc, vec![param_ts_type]].concat()
-    })
+    fn get_ts_type_ann(&self) -> TsTypeAnn {
+        match &self.type_ann {
+            Some(type_ann) => type_ann.clone(),
+            None => todo!("Canister Method must have a return type"),
+        }
+    }
+
+    fn get_valid_return_types(&self) -> Vec<&str> {
+        vec!["Oneway", "Update", "Query", "CanisterResult"]
+    }
 }

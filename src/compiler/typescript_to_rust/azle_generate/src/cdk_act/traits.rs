@@ -3,7 +3,7 @@ use crate::cdk_act::{
         ActCanisterMethod, ActFnParam, ActHeartbeatMethod, ActInitMethod, ActInspectMessageMethod,
         ActPostUpgradeMethod, ActPreUpgradeMethod,
     },
-    ActDataTypeNode, RequestType,
+    ActDataType, RequestType,
 };
 
 pub trait SystemCanisterMethodBuilder {
@@ -17,5 +17,5 @@ pub trait SystemCanisterMethodBuilder {
 pub trait CanisterMethodBuilder {
     fn build_canister_method_node(&self, request_type: &RequestType) -> ActCanisterMethod;
     fn build_params(&self) -> Vec<ActFnParam>;
-    fn build_return_type(&self) -> ActDataTypeNode;
+    fn build_return_type(&self) -> ActDataType;
 }

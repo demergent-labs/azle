@@ -2,7 +2,8 @@ use proc_macro2::TokenStream;
 
 pub use abstract_canister_tree::AbstractCanisterTree;
 pub use actable::Actable;
-pub use nodes::data_type_nodes::ActDataTypeNode;
+pub use actable::ToActDataType;
+pub use nodes::data_type_nodes::ActDataType;
 pub use nodes::ActCanisterMethod;
 pub use nodes::CanisterMethod;
 

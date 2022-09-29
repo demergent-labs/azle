@@ -1,5 +1,9 @@
 use swc_ecma_ast::Ident;
 
-pub fn ident_to_string(ident: &Ident) -> String {
-    ident.sym.chars().as_str().to_string()
+use super::GetName;
+
+impl GetName for Ident {
+    fn get_name(&self) -> &str {
+        self.sym.chars().as_str()
+    }
 }

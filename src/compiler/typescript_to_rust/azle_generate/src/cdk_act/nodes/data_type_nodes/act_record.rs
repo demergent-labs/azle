@@ -1,4 +1,4 @@
-use super::{ActDataTypeNode, Literally, ToIdent, TypeAliasize};
+use super::{ActDataType, Literally, ToIdent, TypeAliasize};
 use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
@@ -18,7 +18,7 @@ pub struct Record {
 #[derive(Clone, Debug)]
 pub struct ActRecordMember {
     pub member_name: String,
-    pub member_type: ActDataTypeNode,
+    pub member_type: ActDataType,
 }
 
 impl TypeAliasize<ActRecord> for ActRecord {
@@ -38,13 +38,13 @@ impl Literally for ActRecord {
         }
     }
 
-    fn get_members(&self) -> Vec<ActDataTypeNode> {
+    fn get_members(&self) -> Vec<ActDataType> {
         self.get_member_types()
     }
 }
 
 impl ActRecord {
-    pub fn get_member_types(&self) -> Vec<ActDataTypeNode> {
+    pub fn get_member_types(&self) -> Vec<ActDataType> {
         match self {
             ActRecord::Literal(literal) => literal,
             ActRecord::TypeAlias(type_alias) => type_alias,

@@ -1,81 +1,39 @@
 use std::collections::{HashMap, HashSet};
-use swc_ecma_ast::{TsEntityName, TsFnParam, TsFnType, TsType, TsTypeAliasDecl};
+use swc_ecma_ast::{TsFnParam, TsFnType, TsTypeAliasDecl, TsTypeAnn};
 
-use super::ts_type;
+use super::{FunctionAndMethodTypeHelperMethods, GetDependencies};
 
-pub fn get_param_types(
-    function_type: &TsFnType,
-    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
-    found_types: &HashSet<String>,
-) -> Vec<String> {
-    function_type
-        .params
-        .iter()
-        .fold(vec![], |acc, param| match param {
-            TsFnParam::Ident(identifier) => match &identifier.type_ann {
-                Some(param_type) => {
-                    let ts_type = &*param_type.type_ann;
-                    vec![
-                        acc,
-                        ts_type::get_dependent_types_for_ts_type(
-                            ts_type,
-                            type_alias_lookup,
-                            found_types,
-                        ),
-                    ]
-                    .concat()
-                }
-                None => panic!("Function parameter must have a return type"),
-            },
-            TsFnParam::Array(_) => todo!(),
-            TsFnParam::Rest(_) => todo!(),
-            TsFnParam::Object(_) => todo!(),
-        })
+impl FunctionAndMethodTypeHelperMethods for TsFnType {
+    fn get_ts_fn_params(&self) -> Vec<TsFnParam> {
+        self.params.clone()
+    }
+
+    fn get_ts_type_ann(&self) -> TsTypeAnn {
+        self.type_ann.clone()
+    }
+
+    fn get_valid_return_types(&self) -> Vec<&str> {
+        vec!["Oneway", "Update", "Query"]
+    }
 }
 
-pub fn get_return_type(
-    function_type: &TsFnType,
-    type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
-    found_types: &HashSet<String>,
-) -> Vec<String> {
-    let thing = &*function_type.type_ann.type_ann;
-    match thing {
-        TsType::TsTypeRef(ts_type_ref) => {
-            let thing = &ts_type_ref.type_name;
-            match thing {
-                TsEntityName::TsQualifiedName(_) => todo!(),
-                TsEntityName::Ident(identifier) => {
-                    let mode = identifier.sym.chars().as_str();
-                    if mode != "Query" && mode != "Update" && mode != "Oneway" {
-                        panic!("Func return type must be Query, Update, or Oneway")
-                    }
-
-                    if mode == "Oneway" {
-                        vec![]
-                    } else {
-                        match &ts_type_ref.type_params {
-                            Some(type_param_inst) => {
-                                if type_param_inst.params.len() != 1 {
-                                    panic!("Func must specify exactly one return type")
-                                }
-                                match type_param_inst.params.get(0) {
-                                    Some(param) => {
-                                        let ts_type = &**param;
-                                        ts_type::get_dependent_types_for_ts_type(
-                                            &ts_type,
-                                            type_alias_lookup,
-                                            found_types,
-                                        )
-                                    }
-                                    None => panic!("Func must specify exactly one return type"),
-                                }
-                            }
-                            None => panic!("Func must specify a return type"),
-                        }
-                    }
-                }
-            }
-        }
-        _ => todo!("Handle if it's not a query or update or oneway"),
+impl GetDependencies for TsFnType {
+    fn get_dependent_types(
+        &self,
+        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        found_types: &HashSet<String>,
+    ) -> HashSet<String> {
+        let return_type = match self.get_return_type() {
+            Some(return_type) => vec![return_type],
+            None => vec![],
+        };
+        vec![self.get_param_types(), return_type]
+            .concat()
+            .iter()
+            .fold(found_types.clone(), |acc, ts_type| {
+                acc.union(&ts_type.get_dependent_types(type_alias_lookup, &acc))
+                    .cloned()
+                    .collect()
+            })
     }
 }

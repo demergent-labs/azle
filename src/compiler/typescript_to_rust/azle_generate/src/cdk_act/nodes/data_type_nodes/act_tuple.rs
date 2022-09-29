@@ -1,4 +1,4 @@
-use super::{ActDataTypeNode, Literally, ToIdent, TypeAliasize};
+use super::{ActDataType, Literally, ToIdent, TypeAliasize};
 use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
@@ -17,7 +17,7 @@ pub struct Tuple {
 
 #[derive(Clone, Debug)]
 pub struct ActTupleElem {
-    pub elem_type: ActDataTypeNode,
+    pub elem_type: ActDataType,
 }
 
 impl ActTuple {
@@ -46,7 +46,7 @@ impl Literally for ActTuple {
         }
     }
 
-    fn get_members(&self) -> Vec<ActDataTypeNode> {
+    fn get_members(&self) -> Vec<ActDataType> {
         let act_tuple = match self {
             ActTuple::Literal(literal) => literal,
             ActTuple::TypeAlias(type_alias) => type_alias,
