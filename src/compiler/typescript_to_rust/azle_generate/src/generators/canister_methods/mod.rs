@@ -1,27 +1,15 @@
-pub use functions::{generate_function_info, FunctionInformation};
-pub use query::generate_query_function_infos;
-pub use record_type_aliases::generate_record_token_streams;
-pub use rust_types::{ArrayTypeInfo, FuncInfo, KeywordInfo, RustType, StructInfo, TypeRefInfo};
-pub use type_aliases::{generate_hash_map, generate_type_alias_token_streams};
-pub use types::ts_type_to_rust_type;
-pub use update::generate_update_function_infos;
-pub use variant_type_aliases::generate_variant_token_streams;
+use swc_ecma_ast::FnDecl;
 
-mod method_body;
-mod query;
-mod record_type_aliases;
-mod rust_types;
-mod type_aliases;
-mod types;
-mod update;
-mod variant_type_aliases;
+use crate::cdk_act::{nodes::ActCanisterMethod, traits::CanisterMethodBuilder, RequestType};
 
-pub mod async_result_handler;
-pub mod functions;
-pub mod system {
-    pub mod heartbeat;
-    pub mod init;
-    pub mod inspect_message;
-    pub mod post_upgrade;
-    pub mod pre_upgrade;
+pub mod method_body;
+
+pub fn build_canister_method_nodes(
+    fn_decls: &Vec<FnDecl>,
+    request_type: RequestType,
+) -> Vec<ActCanisterMethod> {
+    fn_decls.iter().fold(vec![], |acc, fn_decl| {
+        let canister_method_node = fn_decl.build_canister_method_node(&request_type);
+        vec![acc, vec![canister_method_node]].concat()
+    })
 }
