@@ -10,6 +10,8 @@ pub use act_variants::{ActVariant, ActVariantMember};
 use proc_macro2::Ident;
 use quote::format_ident;
 
+use crate::cdk_act::ToTokenStream;
+
 pub mod act_arrays;
 pub mod act_data_type;
 pub mod act_funcs;
@@ -36,5 +38,32 @@ pub trait TypeAliasize<T> {
 
 pub trait Literally {
     fn is_literal(&self) -> bool;
+}
+
+pub trait HasMembers {
     fn get_members(&self) -> Vec<ActDataType>;
+}
+
+#[derive(Clone, Debug)]
+pub enum LiteralOrTypeAlias<L, T> {
+    Literal(L),
+    TypeAlias(T),
+}
+
+impl<L: ToTokenStream, T: ToTokenStream> ToTokenStream for LiteralOrTypeAlias<L, T> {
+    fn to_token_stream(&self) -> proc_macro2::TokenStream {
+        match self {
+            LiteralOrTypeAlias::Literal(literal) => literal.to_token_stream(),
+            LiteralOrTypeAlias::TypeAlias(type_alias) => type_alias.to_token_stream(),
+        }
+    }
+}
+
+impl<L, T> Literally for LiteralOrTypeAlias<L, T> {
+    fn is_literal(&self) -> bool {
+        match self {
+            LiteralOrTypeAlias::Literal(_) => true,
+            LiteralOrTypeAlias::TypeAlias(_) => false,
+        }
+    }
 }

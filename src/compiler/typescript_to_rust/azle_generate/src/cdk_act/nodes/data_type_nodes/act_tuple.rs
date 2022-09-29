@@ -1,12 +1,21 @@
-use super::{ActDataType, Literally, ToIdent, TypeAliasize};
+use super::{ActDataType, HasMembers, LiteralOrTypeAlias, ToIdent, TypeAliasize};
 use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
 #[derive(Clone, Debug)]
-pub enum ActTuple {
-    Literal(Tuple),
-    TypeAlias(Tuple),
+pub struct ActTuple {
+    pub act_type: LiteralOrTypeAlias<TupleLiteral, TupleTypeAlias>,
+}
+
+#[derive(Clone, Debug)]
+pub struct TupleLiteral {
+    pub tuple: Tuple,
+}
+
+#[derive(Clone, Debug)]
+pub struct TupleTypeAlias {
+    pub tuple: Tuple,
 }
 
 #[derive(Clone, Debug)]
@@ -22,62 +31,64 @@ pub struct ActTupleElem {
 
 impl ActTuple {
     pub fn get_name(&self) -> String {
-        match self {
-            ActTuple::Literal(literal) => literal.name.clone(),
-            ActTuple::TypeAlias(type_alias) => type_alias.name.clone(),
+        match &self.act_type {
+            LiteralOrTypeAlias::Literal(literal) => &literal.tuple,
+            LiteralOrTypeAlias::TypeAlias(type_alias) => &type_alias.tuple,
         }
+        .name
+        .clone()
     }
 }
 
 impl TypeAliasize<ActTuple> for ActTuple {
     fn as_type_alias(&self) -> ActTuple {
-        match self {
-            ActTuple::Literal(literal) => ActTuple::TypeAlias(literal.clone()),
-            ActTuple::TypeAlias(_) => self.clone(),
+        ActTuple {
+            act_type: match &self.act_type {
+                LiteralOrTypeAlias::Literal(literal) => {
+                    LiteralOrTypeAlias::TypeAlias(TupleTypeAlias {
+                        tuple: literal.tuple.clone(),
+                    })
+                }
+                LiteralOrTypeAlias::TypeAlias(_) => self.act_type.clone(),
+            },
         }
     }
 }
 
-impl Literally for ActTuple {
-    fn is_literal(&self) -> bool {
-        match self {
-            ActTuple::Literal(_) => true,
-            ActTuple::TypeAlias(_) => false,
-        }
-    }
-
+impl HasMembers for ActTuple {
     fn get_members(&self) -> Vec<ActDataType> {
-        let act_tuple = match self {
-            ActTuple::Literal(literal) => literal,
-            ActTuple::TypeAlias(type_alias) => type_alias,
-        };
-        act_tuple
+        match &self.act_type {
+            LiteralOrTypeAlias::Literal(literal) => &literal.tuple,
+            LiteralOrTypeAlias::TypeAlias(type_alias) => &type_alias.tuple,
+        }
+        .elems
+        .iter()
+        .map(|elem| elem.elem_type.clone())
+        .collect()
+    }
+}
+
+impl ToTokenStream for TupleLiteral {
+    fn to_token_stream(&self) -> TokenStream {
+        self.tuple.name.to_identifier().to_token_stream()
+    }
+}
+
+impl ToTokenStream for TupleTypeAlias {
+    fn to_token_stream(&self) -> TokenStream {
+        let type_ident = self.tuple.name.to_identifier();
+        let elem_idents: Vec<TokenStream> = self
+            .tuple
             .elems
             .iter()
-            .map(|elem| elem.elem_type.clone())
-            .collect()
-    }
-}
-
-impl ToTokenStream for ActTuple {
-    fn to_token_stream(&self) -> TokenStream {
-        match self {
-            ActTuple::Literal(literal) => literal.name.to_identifier().to_token_stream(),
-            ActTuple::TypeAlias(type_alias) => {
-                let type_ident = type_alias.name.to_identifier();
-                let elem_idents: Vec<TokenStream> = type_alias
-                    .elems
-                    .iter()
-                    .map(|elem| elem.to_token_stream())
-                    .collect();
-                quote!(
-                    #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
-                    struct #type_ident (
-                        #(#elem_idents),*
-                    );
-                )
-            }
-        }
+            .map(|elem| elem.to_token_stream())
+            .collect();
+        quote!(
+            #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
+            struct #type_ident (
+                #(#elem_idents),*
+            );
+        )
     }
 }
 

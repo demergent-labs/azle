@@ -1,18 +1,27 @@
-use super::{ActDataType, Literally, ToIdent, TypeAliasize};
+use super::{ActDataType, HasMembers, LiteralOrTypeAlias, ToIdent, TypeAliasize};
 use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
 #[derive(Clone, Debug)]
-pub enum ActRecord {
-    Literal(Record),
-    TypeAlias(Record),
+pub struct ActRecord {
+    pub act_type: LiteralOrTypeAlias<RecordLiteral, RecordTypeAlias>,
 }
 
 #[derive(Clone, Debug)]
 pub struct Record {
     pub name: String,
     pub members: Vec<ActRecordMember>,
+}
+
+#[derive(Clone, Debug)]
+pub struct RecordLiteral {
+    pub record: Record,
+}
+
+#[derive(Clone, Debug)]
+pub struct RecordTypeAlias {
+    pub record: Record,
 }
 
 #[derive(Clone, Debug)]
@@ -23,21 +32,27 @@ pub struct ActRecordMember {
 
 impl TypeAliasize<ActRecord> for ActRecord {
     fn as_type_alias(&self) -> ActRecord {
-        match self {
-            ActRecord::Literal(literal) => ActRecord::TypeAlias(literal.clone()),
-            ActRecord::TypeAlias(_) => self.clone(),
+        match &self.act_type {
+            LiteralOrTypeAlias::Literal(literal) => ActRecord {
+                act_type: LiteralOrTypeAlias::TypeAlias(RecordTypeAlias {
+                    record: literal.record.clone(),
+                }),
+            },
+            LiteralOrTypeAlias::TypeAlias(_) => self.clone(),
         }
     }
 }
 
-impl Literally for ActRecord {
-    fn is_literal(&self) -> bool {
-        match self {
-            ActRecord::Literal(_) => true,
-            ActRecord::TypeAlias(_) => false,
+// TODO see if I can do this
+impl TypeAliasize<RecordTypeAlias> for RecordLiteral {
+    fn as_type_alias(&self) -> RecordTypeAlias {
+        RecordTypeAlias {
+            record: self.record.clone(),
         }
     }
+}
 
+impl HasMembers for ActRecord {
     fn get_members(&self) -> Vec<ActDataType> {
         self.get_member_types()
     }
@@ -45,9 +60,9 @@ impl Literally for ActRecord {
 
 impl ActRecord {
     pub fn get_member_types(&self) -> Vec<ActDataType> {
-        match self {
-            ActRecord::Literal(literal) => literal,
-            ActRecord::TypeAlias(type_alias) => type_alias,
+        match &self.act_type {
+            LiteralOrTypeAlias::Literal(literal) => &literal.record,
+            LiteralOrTypeAlias::TypeAlias(type_alias) => &type_alias.record,
         }
         .members
         .iter()
@@ -56,32 +71,36 @@ impl ActRecord {
     }
 
     pub fn get_name(&self) -> String {
-        match self {
-            ActRecord::Literal(literal) => literal.name.clone(),
-            ActRecord::TypeAlias(type_alias) => type_alias.name.clone(),
+        match &self.act_type {
+            LiteralOrTypeAlias::Literal(literal) => &literal.record,
+            LiteralOrTypeAlias::TypeAlias(type_alias) => &type_alias.record,
         }
+        .name
+        .clone()
     }
 }
 
-impl ToTokenStream for ActRecord {
+impl ToTokenStream for RecordLiteral {
     fn to_token_stream(&self) -> TokenStream {
-        match self {
-            ActRecord::Literal(literal) => literal.name.to_identifier().to_token_stream(),
-            ActRecord::TypeAlias(type_alias) => {
-                let type_ident = type_alias.name.to_identifier();
-                let member_token_streams: Vec<TokenStream> = type_alias
-                    .members
-                    .iter()
-                    .map(|member| member.to_token_stream())
-                    .collect();
-                quote!(
-                    #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
-                    struct #type_ident {
-                        #(#member_token_streams),*
-                    }
-                )
+        self.record.name.to_identifier().to_token_stream()
+    }
+}
+
+impl ToTokenStream for RecordTypeAlias {
+    fn to_token_stream(&self) -> TokenStream {
+        let type_ident = self.record.name.to_identifier();
+        let member_token_streams: Vec<TokenStream> = self
+            .record
+            .members
+            .iter()
+            .map(|member| member.to_token_stream())
+            .collect();
+        quote!(
+            #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, AzleIntoJsValue, AzleTryFromJsValue)]
+            struct #type_ident {
+                #(#member_token_streams),*
             }
-        }
+        )
     }
 }
 

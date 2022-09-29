@@ -4,8 +4,9 @@ use super::{
 };
 use crate::cdk_act::{
     nodes::data_type_nodes::{
-        act_record::Record, act_variants::Variant, ActRecord, ActRecordMember, ActVariant,
-        ActVariantMember,
+        act_record::{Record, RecordLiteral, RecordTypeAlias},
+        act_variants::{Variant, VariantLiteral, VariantTypeAlias},
+        ActRecord, ActRecordMember, ActVariant, ActVariantMember, LiteralOrTypeAlias,
     },
     ActDataType,
 };
@@ -26,14 +27,22 @@ impl TsTypeLitHelperMethods for TsTypeLit {
             .collect();
 
         ActDataType::Record(match record_name {
-            Some(record_name) => ActRecord::TypeAlias(Record {
-                name: record_name.clone().clone(),
-                members,
-            }),
-            None => ActRecord::Literal(Record {
-                name: self.generate_inline_name(),
-                members,
-            }),
+            Some(record_name) => ActRecord {
+                act_type: LiteralOrTypeAlias::TypeAlias(RecordTypeAlias {
+                    record: Record {
+                        name: record_name.clone().clone(),
+                        members,
+                    },
+                }),
+            },
+            None => ActRecord {
+                act_type: LiteralOrTypeAlias::Literal(RecordLiteral {
+                    record: Record {
+                        name: self.generate_inline_name(),
+                        members,
+                    },
+                }),
+            },
         })
     }
 
@@ -45,14 +54,22 @@ impl TsTypeLitHelperMethods for TsTypeLit {
             .collect();
 
         ActDataType::Variant(match variant_name {
-            Some(name) => ActVariant::TypeAlias(Variant {
-                name: name.clone().clone(),
-                members,
-            }),
-            None => ActVariant::Literal(Variant {
-                name: self.generate_inline_name(),
-                members,
-            }),
+            Some(record_name) => ActVariant {
+                act_type: LiteralOrTypeAlias::TypeAlias(VariantTypeAlias {
+                    variant: Variant {
+                        name: record_name.clone().clone(),
+                        members,
+                    },
+                }),
+            },
+            None => ActVariant {
+                act_type: LiteralOrTypeAlias::Literal(VariantLiteral {
+                    variant: Variant {
+                        name: self.generate_inline_name(),
+                        members,
+                    },
+                }),
+            },
         })
     }
 }

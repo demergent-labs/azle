@@ -4,7 +4,9 @@ use super::{
 };
 use crate::cdk_act::{
     nodes::data_type_nodes::{
-        act_funcs::Func, ActFunc, ActOption, ActOptionLiteral, ActOptionTypeAlias, ActPrimitiveLit,
+        act_funcs::{Func, FuncLiteral, FuncTypeAlias},
+        ActFunc, ActOption, ActOptionLiteral, ActOptionTypeAlias, ActPrimitiveLit,
+        LiteralOrTypeAlias,
     },
     ActDataType, ToActDataType,
 };
@@ -139,31 +141,43 @@ impl TsTypeRefHelperMethods for TsTypeRef {
         let func_mode = ts_fn_type.get_func_mode();
 
         ActDataType::Func(match func_name {
-            Some(func_name) => ActFunc::TypeAlias(Func {
-                name: func_name.clone().clone(),
-                params: param_types,
-                return_type: Box::from(return_type),
-                mode: func_mode,
-            }),
-            None => ActFunc::Literal(Func {
-                name: ts_fn_type.generate_inline_name(),
-                params: param_types,
-                return_type: Box::from(return_type),
-                mode: func_mode,
-            }),
+            Some(func_name) => ActFunc {
+                act_type: LiteralOrTypeAlias::TypeAlias(FuncTypeAlias {
+                    func: Func {
+                        name: func_name.clone().clone(),
+                        params: param_types,
+                        return_type: Box::from(return_type),
+                        mode: func_mode,
+                    },
+                }),
+            },
+            None => ActFunc {
+                act_type: LiteralOrTypeAlias::Literal(FuncLiteral {
+                    func: Func {
+                        name: ts_fn_type.generate_inline_name(),
+                        params: param_types,
+                        return_type: Box::from(return_type),
+                        mode: func_mode,
+                    },
+                }),
+            },
         })
     }
 
     fn to_option(&self, alias_name: &Option<&String>) -> ActDataType {
         let enclosed_act_data_type = self.get_enclosed_ts_type().to_act_data_type(&None);
         match alias_name {
-            Some(name) => ActDataType::Option(ActOption::TypeAlias(ActOptionTypeAlias {
-                name: name.clone().clone(),
-                enclosed_type: Box::from(enclosed_act_data_type),
-            })),
-            None => ActDataType::Option(ActOption::Literal(ActOptionLiteral {
-                enclosed_type: Box::from(enclosed_act_data_type),
-            })),
+            Some(name) => ActDataType::Option(ActOption {
+                act_type: LiteralOrTypeAlias::TypeAlias(ActOptionTypeAlias {
+                    name: name.clone().clone(),
+                    enclosed_type: Box::from(enclosed_act_data_type),
+                }),
+            }),
+            None => ActDataType::Option(ActOption {
+                act_type: LiteralOrTypeAlias::Literal(ActOptionLiteral {
+                    enclosed_type: Box::from(enclosed_act_data_type),
+                }),
+            }),
         }
     }
 

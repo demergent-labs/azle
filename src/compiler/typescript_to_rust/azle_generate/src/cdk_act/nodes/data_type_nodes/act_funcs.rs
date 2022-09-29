@@ -1,12 +1,11 @@
-use super::{ActDataType, Literally, ToIdent, TypeAliasize};
+use super::{ActDataType, HasMembers, LiteralOrTypeAlias, ToIdent, TypeAliasize};
 use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
 #[derive(Clone, Debug)]
-pub enum ActFunc {
-    Literal(Func),
-    TypeAlias(Func),
+pub struct ActFunc {
+    pub act_type: LiteralOrTypeAlias<FuncLiteral, FuncTypeAlias>,
 }
 
 #[derive(Clone, Debug)]
@@ -17,36 +16,45 @@ pub struct Func {
     pub mode: String,
 }
 
+#[derive(Clone, Debug)]
+pub struct FuncLiteral {
+    pub func: Func,
+}
+
+#[derive(Clone, Debug)]
+pub struct FuncTypeAlias {
+    pub func: Func,
+}
+
 impl ActFunc {
     pub fn get_name(&self) -> String {
-        match self {
-            ActFunc::Literal(literal) => literal.name.clone(),
-            ActFunc::TypeAlias(type_alias) => type_alias.name.clone(),
+        match &self.act_type {
+            LiteralOrTypeAlias::Literal(literal) => &literal.func,
+            LiteralOrTypeAlias::TypeAlias(type_alias) => &type_alias.func,
         }
+        .name
+        .clone()
     }
 }
 
 impl TypeAliasize<ActFunc> for ActFunc {
     fn as_type_alias(&self) -> ActFunc {
-        match self {
-            ActFunc::Literal(literal) => ActFunc::TypeAlias(literal.clone()),
-            ActFunc::TypeAlias(_) => self.clone(),
+        match &self.act_type {
+            LiteralOrTypeAlias::Literal(literal) => ActFunc {
+                act_type: LiteralOrTypeAlias::TypeAlias(FuncTypeAlias {
+                    func: literal.func.clone(),
+                }),
+            },
+            LiteralOrTypeAlias::TypeAlias(_) => self.clone(),
         }
     }
 }
 
-impl Literally for ActFunc {
-    fn is_literal(&self) -> bool {
-        match self {
-            ActFunc::Literal(_) => true,
-            ActFunc::TypeAlias(_) => false,
-        }
-    }
-
+impl HasMembers for ActFunc {
     fn get_members(&self) -> Vec<ActDataType> {
-        let act_func = match self {
-            ActFunc::Literal(literal) => literal,
-            ActFunc::TypeAlias(type_alias) => type_alias,
+        let act_func = match &self.act_type {
+            LiteralOrTypeAlias::Literal(literal) => &literal.func,
+            LiteralOrTypeAlias::TypeAlias(type_alias) => &type_alias.func,
         };
         let return_type = match &*act_func.return_type {
             Some(return_type) => vec![return_type.clone()],
@@ -56,17 +64,20 @@ impl Literally for ActFunc {
     }
 }
 
-impl ToTokenStream for ActFunc {
+impl ToTokenStream for FuncLiteral {
     fn to_token_stream(&self) -> TokenStream {
-        match self {
-            ActFunc::Literal(literal) => literal.name.to_identifier().to_token_stream(),
-            ActFunc::TypeAlias(type_alias) => generate_func_struct_and_impls(
-                &type_alias.name,
-                &type_alias.mode,
-                &type_alias.params,
-                &*type_alias.return_type,
-            ),
-        }
+        self.func.name.to_identifier().to_token_stream()
+    }
+}
+
+impl ToTokenStream for FuncTypeAlias {
+    fn to_token_stream(&self) -> TokenStream {
+        generate_func_struct_and_impls(
+            &self.func.name,
+            &self.func.mode,
+            &self.func.params,
+            &*self.func.return_type,
+        )
     }
 }
 

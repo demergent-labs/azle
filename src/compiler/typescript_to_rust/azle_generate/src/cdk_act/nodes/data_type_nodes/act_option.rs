@@ -1,12 +1,11 @@
-use super::{ActDataType, Literally, ToIdent};
+use super::{ActDataType, HasMembers, LiteralOrTypeAlias, ToIdent};
 use crate::cdk_act::ToTokenStream;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 
 #[derive(Clone, Debug)]
-pub enum ActOption {
-    Literal(ActOptionLiteral),
-    TypeAlias(ActOptionTypeAlias),
+pub struct ActOption {
+    pub act_type: LiteralOrTypeAlias<ActOptionLiteral, ActOptionTypeAlias>,
 }
 
 #[derive(Clone, Debug)]
@@ -20,14 +19,7 @@ pub struct ActOptionTypeAlias {
     pub enclosed_type: Box<ActDataType>,
 }
 
-impl Literally for ActOption {
-    fn is_literal(&self) -> bool {
-        match self {
-            ActOption::Literal(_) => true,
-            ActOption::TypeAlias(_) => false,
-        }
-    }
-
+impl HasMembers for ActOption {
     fn get_members(&self) -> Vec<ActDataType> {
         vec![self.get_enclosed_type()]
     }
@@ -35,25 +27,25 @@ impl Literally for ActOption {
 
 impl ActOption {
     pub fn get_enclosed_type(&self) -> ActDataType {
-        match self {
-            ActOption::Literal(literal) => *literal.enclosed_type.clone(),
-            ActOption::TypeAlias(type_alias) => *type_alias.enclosed_type.clone(),
+        match &self.act_type {
+            LiteralOrTypeAlias::Literal(literal) => *literal.enclosed_type.clone(),
+            LiteralOrTypeAlias::TypeAlias(type_alias) => *type_alias.enclosed_type.clone(),
         }
     }
 
     pub fn get_name(&self) -> String {
-        match self {
-            ActOption::Literal(literal) => literal.to_token_stream().to_string(),
-            ActOption::TypeAlias(type_alias) => type_alias.name.clone(),
+        match &self.act_type {
+            LiteralOrTypeAlias::Literal(literal) => literal.to_token_stream().to_string(),
+            LiteralOrTypeAlias::TypeAlias(type_alias) => type_alias.name.clone(),
         }
     }
 }
 
 impl ToTokenStream for ActOption {
     fn to_token_stream(&self) -> TokenStream {
-        match self {
-            ActOption::Literal(literal) => literal.to_token_stream(),
-            ActOption::TypeAlias(type_alias) => type_alias.to_token_stream(),
+        match &self.act_type {
+            LiteralOrTypeAlias::Literal(literal) => literal.to_token_stream(),
+            LiteralOrTypeAlias::TypeAlias(type_alias) => type_alias.to_token_stream(),
         }
     }
 }
