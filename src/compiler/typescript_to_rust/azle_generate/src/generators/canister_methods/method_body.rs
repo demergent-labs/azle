@@ -81,7 +81,7 @@ fn generate_return_expression(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
     }
 
     quote! {
-        _azle_final_return_value.azle_try_from_js_value(&mut _azle_boa_context).unwrap()
+        _azle_final_return_value.try_from_vm_value(_azle_boa_context).unwrap()
     }
 }
 

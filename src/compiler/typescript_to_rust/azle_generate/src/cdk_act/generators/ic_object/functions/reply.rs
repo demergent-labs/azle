@@ -36,7 +36,7 @@ fn generate_match_arm(canister_method: &ActCanisterMethod) -> TokenStream {
     let return_type = &canister_method.get_return_type().to_token_stream();
     quote!(
         #name => {
-            let reply_value: #return_type = _aargs.get(0).unwrap().clone().azle_try_from_js_value(_context).unwrap();
+            let reply_value: #return_type = _aargs.get(0).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
             Ok(ic_cdk::api::call::reply((reply_value,)).try_into_vm_value(_context))
         }
     )

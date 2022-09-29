@@ -168,16 +168,16 @@ pub fn generate_func_struct_and_impls(
             }
         }
 
-        impl AzleTryFromJsValue<#type_alias_name> for boa_engine::JsValue {
-            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<#type_alias_name, AzleTryFromJsValueError> {
-                let candid_func: candid::Func = self.azle_try_from_js_value(context).unwrap();
+        impl CdkActTryFromVmValue<#type_alias_name, &mut boa_engine::Context> for boa_engine::JsValue {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<#type_alias_name, CdkActTryFromVmValueError> {
+                let candid_func: candid::Func = self.try_from_vm_value(context).unwrap();
                 Ok(candid_func.into())
             }
         }
 
-        impl AzleTryFromJsValue<Vec<#type_alias_name>> for boa_engine::JsValue {
-            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Vec<#type_alias_name>, AzleTryFromJsValueError> {
-                azle_try_from_js_value_generic_array(self, context)
+        impl CdkActTryFromVmValue<Vec<#type_alias_name>, &mut boa_engine::Context> for boa_engine::JsValue {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<#type_alias_name>, CdkActTryFromVmValueError> {
+                try_from_vm_value_generic_array(self, context)
             }
         }
 

@@ -2,31 +2,31 @@ use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::{DataEnum, Field, Fields};
 
-pub fn derive_azle_try_from_js_value_enum(
+pub fn derive_azle_try_from_vm_value_enum(
     enum_name: &Ident,
     data_enum: &DataEnum,
 ) -> proc_macro2::TokenStream {
     let properties = derive_properties(enum_name, data_enum);
 
     quote! {
-        impl AzleTryFromJsValue<#enum_name> for boa_engine::JsValue {
-            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<#enum_name, AzleTryFromJsValueError> {
+        impl CdkActTryFromVmValue<#enum_name, &mut boa_engine::Context> for boa_engine::JsValue {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<#enum_name, CdkActTryFromVmValueError> {
                 let object_option = self.as_object();
 
                 if let Some(object) = object_option {
                     #(#properties)*
 
-                    return Err(AzleTryFromJsValueError("Enum variant does not exist".to_string()));
+                    return Err(CdkActTryFromVmValueError("Enum variant does not exist".to_string()));
                 }
                 else {
-                    return Err(AzleTryFromJsValueError("JsValue is not an object".to_string()));
+                    return Err(CdkActTryFromVmValueError("JsValue is not an object".to_string()));
                 }
             }
         }
 
-        // TODO the body of this function is repeated in azle_try_from_js_value_trait.ts
-        impl AzleTryFromJsValue<Vec<#enum_name>> for boa_engine::JsValue {
-            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Vec<#enum_name>, AzleTryFromJsValueError> {
+        // TODO the body of this function is repeated in try_from_vm_value_trait.ts
+        impl CdkActTryFromVmValue<Vec<#enum_name>, &mut boa_engine::Context> for boa_engine::JsValue {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<#enum_name>, CdkActTryFromVmValueError> {
                 match self.as_object() {
                     Some(js_object) => {
                         if js_object.is_array() {
@@ -42,7 +42,7 @@ pub fn derive_azle_try_from_js_value_enum(
                                             processing = false;
                                         }
                                         else {
-                                            match js_value.azle_try_from_js_value(context) {
+                                            match js_value.try_from_vm_value(&mut *context) {
                                                 Ok(value) => {
                                                     result.push(value);
                                                     index += 1;
@@ -54,7 +54,7 @@ pub fn derive_azle_try_from_js_value_enum(
                                         }
                                     },
                                     Err(_) => {
-                                        return Err(AzleTryFromJsValueError("Item at array index does not exist".to_string()))
+                                        return Err(CdkActTryFromVmValueError("Item at array index does not exist".to_string()))
                                     }
                                 }
                             }
@@ -62,10 +62,10 @@ pub fn derive_azle_try_from_js_value_enum(
                             Ok(result)
                         }
                         else {
-                            Err(AzleTryFromJsValueError("JsObject is not an array".to_string()))
+                            Err(CdkActTryFromVmValueError("JsObject is not an array".to_string()))
                         }
                     },
-                    None => Err(AzleTryFromJsValueError("JsValue is not an object".to_string()))
+                    None => Err(CdkActTryFromVmValueError("JsValue is not an object".to_string()))
                 }
             }
         }
@@ -152,7 +152,7 @@ fn derive_property_for_named_fields(
         let named_field_js_value_variable_name = format_ident!("{}_js_value", field_name);
 
         quote! {
-            let #variable_name = #named_field_js_value_variable_name.azle_try_from_js_value(context);
+            let #variable_name = #named_field_js_value_variable_name.try_from_vm_value(&mut *context);
         }
     });
 
@@ -199,12 +199,12 @@ fn derive_property_for_named_fields(
                                 });
                             },
                             _ => {
-                                return Err(AzleTryFromJsValueError("Could not convert JsValue to Rust type".to_string()));
+                                return Err(CdkActTryFromVmValueError("Could not convert JsValue to Rust type".to_string()));
                             }
                         };
                     },
                     _ => {
-                        return Err(AzleTryFromJsValueError("Could not convert JsValue to Rust type".to_string()));
+                        return Err(CdkActTryFromVmValueError("Could not convert JsValue to Rust type".to_string()));
                     }
                 };
             }
@@ -238,7 +238,7 @@ fn derive_property_for_unnamed_fields(
 
             if let Ok(#object_variant_js_value_var_name) = #object_variant_js_value_result_var_name {
                 if #object_variant_js_value_var_name.is_undefined() == false {
-                    let #object_variant_result_var_name = #object_variant_js_value_var_name.azle_try_from_js_value(context);
+                    let #object_variant_result_var_name = #object_variant_js_value_var_name.try_from_vm_value(&mut *context);
 
                     match #object_variant_result_var_name {
                         Ok(#object_variant_var_name) => {

@@ -6,7 +6,7 @@ pub fn generate_ic_object_function_set_certified_data() -> proc_macro2::TokenStr
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             let data_js_value: boa_engine::JsValue = _aargs.get(0).unwrap().clone();
-            let data_vec: Vec<u8> = data_js_value.azle_try_from_js_value(_context).unwrap();
+            let data_vec: Vec<u8> = data_js_value.try_from_vm_value(&mut *_context).unwrap();
             Ok(ic_cdk::api::set_certified_data(&data_vec).try_into_vm_value(_context))
         }
     }

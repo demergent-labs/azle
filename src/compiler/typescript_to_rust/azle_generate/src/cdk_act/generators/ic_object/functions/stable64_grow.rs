@@ -9,7 +9,7 @@ pub fn generate_ic_object_function_stable64_grow() -> proc_macro2::TokenStream {
                 .get(0)
                 .unwrap()
                 .clone()
-                .azle_try_from_js_value(_context)
+                .try_from_vm_value(&mut *_context)
                 .unwrap();
             Ok(ic_cdk::api::stable::stable64_grow(new_pages).try_into_vm_value(_context))
         }

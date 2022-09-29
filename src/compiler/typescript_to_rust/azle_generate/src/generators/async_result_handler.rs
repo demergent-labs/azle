@@ -175,13 +175,13 @@ pub fn generate_async_result_handler(programs: &Vec<Program>) -> proc_macro2::To
             let call_args_js_object = call_args_js_value.as_object().unwrap();
 
             let canister_id_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap();
-            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
 
             let method_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
             let method_string = method_js_value.as_string().unwrap().to_string();
 
             let args_raw_js_value = call_args_js_object.get("2", _azle_boa_context).unwrap();
-            let args_raw_vec: Vec<u8> = args_raw_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+            let args_raw_vec: Vec<u8> = args_raw_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
 
             let payment_js_value = call_args_js_object.get("3", _azle_boa_context).unwrap();
 
@@ -191,7 +191,7 @@ pub fn generate_async_result_handler(programs: &Vec<Program>) -> proc_macro2::To
                         canister_id_principal,
                         &method_string,
                         &args_raw_vec,
-                        payment_js_value.azle_try_from_js_value(_azle_boa_context).unwrap()
+                        payment_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap()
                     ).await
                 },
                 AzleCallRawType::U128 => {
@@ -199,7 +199,7 @@ pub fn generate_async_result_handler(programs: &Vec<Program>) -> proc_macro2::To
                         canister_id_principal,
                         &method_string,
                         &args_raw_vec,
-                        payment_js_value.azle_try_from_js_value(_azle_boa_context).unwrap()
+                        payment_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap()
                     ).await
                 }
             };
@@ -260,7 +260,7 @@ fn generate_async_result_handler_call(
 
                 quote! {
                     let #param_name_js_value = call_args_js_object.get(#index_string, _azle_boa_context).unwrap();
-                    let #param_name: #param_type = #param_name_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+                    let #param_name: #param_type = #param_name_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
                 }
             }).collect();
 
@@ -273,7 +273,7 @@ fn generate_async_result_handler_call(
 
                     quote! {
                         let cycles_js_value = call_args_js_object.get(#index_string, _azle_boa_context).unwrap();
-                        let cycles: u64 = cycles_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+                        let cycles: u64 = cycles_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
                     }
                 },
                 AzleCallType::WithPayment128 => {
@@ -281,7 +281,7 @@ fn generate_async_result_handler_call(
 
                     quote! {
                         let cycles_js_value = call_args_js_object.get(#index_string, _azle_boa_context).unwrap();
-                        let cycles: u128 = cycles_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+                        let cycles: u128 = cycles_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
                     }
                 }
             };
@@ -296,7 +296,7 @@ fn generate_async_result_handler_call(
             quote! {
                 #cross_canister_call_function_name => {
                     let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
-                    let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+                    let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
 
                     #(#params_variables)*
 

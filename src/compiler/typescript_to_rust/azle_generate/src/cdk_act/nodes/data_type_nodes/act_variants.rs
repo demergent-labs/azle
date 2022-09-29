@@ -83,7 +83,7 @@ impl ToTokenStream for VariantTypeAlias {
             .map(|member| member.to_token_stream())
             .collect();
         quote!(
-            #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, CdkActTryIntoVmValue, AzleTryFromJsValue)]
+            #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, CdkActTryIntoVmValue, TryFromVmValue)]
             enum #type_ident {
                 #(#member_token_streams),*
             }
