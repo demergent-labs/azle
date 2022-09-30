@@ -3,33 +3,53 @@ import * as tsc from 'typescript';
 import { buildSync } from 'esbuild';
 import { JavaScript, TypeScript } from '../../types';
 
-export async function compileTypeScriptToJavaScript(
-    ts_path: string
-): Promise<JavaScript> {
-    const icCanisters: JavaScript = generateICCanisters(ts_path);
+export function compileTypeScriptToJavaScript(ts_path: string): JavaScript[] {
+    try {
+        const icCanisters: JavaScript = generateICCanisters(ts_path);
 
-    const js_bundled_and_transpiled = bundle_and_transpile_ts(`
-        export { Principal } from '@dfinity/principal';
-        export {
-            stable_storage_deserialize,
-            stable_storage_serialize
-        } from 'azle';
-        export * from './${ts_path}';
-    `);
+        const js_bundled_and_transpiled = bundle_and_transpile_ts(`
+            export { Principal } from '@dfinity/principal';
+            export {
+                stable_storage_deserialize,
+                stable_storage_serialize
+            } from 'azle';
+            export * from './${ts_path}';
+        `);
 
-    return `
-        // TODO we should centralize/standardize where we add global variables to the JS, we are doing this in multiple places (i.e. the exports variable is not here, found in init/post_upgrade)
-        globalThis.console = {
-            ...globalThis.console,
-            log: (...args) => {
-                ic.print(...args);
-            }
-        };
+        const main_js: JavaScript = `
+            // TODO we should centralize/standardize where we add global variables to the JS, we are doing this in multiple places (i.e. the exports variable is not here, found in init/post_upgrade)
+            globalThis.console = {
+                ...globalThis.console,
+                log: (...args) => {
+                    ic.print(...args);
+                }
+            };
 
-        ${icCanisters}
+            ${icCanisters}
 
-        ${js_bundled_and_transpiled}
-    `;
+            ${js_bundled_and_transpiled}
+        `;
+
+        const stable_storage_js: JavaScript = bundle_and_transpile_ts(
+            `export { stable_storage_deserialize, stable_storage_serialize } from 'azle';`
+        );
+
+        return [main_js, stable_storage_js];
+    } catch (error) {
+        console.error(
+            `\n💣 \x1b[31mThere's something wrong in your typescript:\x1b[0m`
+        );
+
+        const firstError = error.errors[0];
+        const { file, line, column, lineText } = firstError.location;
+        const marker = `\x1b[31m${'^'.padStart(column + 1)}\x1b[0m`;
+        console.error(`\n\`\`\` ${file}:${line}:${column}\n\``);
+        console.error(`\`${lineText}`);
+        console.error(`\`${marker}\n\`\`\``);
+        console.error(`\x1b[31m${firstError.text}\x1b[0m`);
+        console.error(`\n💀 Build failed`);
+        process.exit(1);
+    }
 }
 
 export function bundle_and_transpile_ts(ts: TypeScript): JavaScript {

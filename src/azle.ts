@@ -1,4 +1,4 @@
-import { execSync } from 'child_process';
+import { execSync, IOType } from 'child_process';
 import {
     bundle_and_transpile_ts,
     compileTypeScriptToJavaScript
@@ -16,15 +16,21 @@ import * as tsc from 'typescript';
 azle();
 
 async function azle() {
-    const canisterName = process.argv[2];
+    const isVerboseMode =
+        process.argv.includes('--verbose') || process.argv.includes('-v');
+    const stdioType = isVerboseMode ? 'inherit' : 'pipe';
+
+    const canisterName = process.argv.filter((arg, i) => {
+        return i > 1 && !(arg.startsWith('--') || arg.startsWith('-'));
+    })[0];
+    console.info(`\nBuilding canister \x1b[32m${canisterName}\x1b[0m\n`);
+
     const dfxJson: DfxJson = JSON.parse(fs.readFileSync('dfx.json').toString());
     const canisterConfig = dfxJson.canisters[canisterName];
 
     const rootPath = canisterConfig.root;
     const tsPath = canisterConfig.ts;
     const candidPath = canisterConfig.candid;
-
-    installRustDependencies();
 
     const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
     const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
@@ -43,9 +49,9 @@ async function azle() {
         }
     });
 
-    const main_js: JavaScript = await compileTypeScriptToJavaScript(tsPath);
-    const stable_storage_js: JavaScript = bundle_and_transpile_ts(
-        `export { stable_storage_deserialize, stable_storage_serialize } from 'azle';`
+    console.info('[1/4] 🔨 Compiling typescript to javascript...');
+    const [main_js, stable_storage_js] = await compileTypeScriptToJavaScript(
+        tsPath
     );
 
     writeCodeToFileSystem(
@@ -58,18 +64,32 @@ async function azle() {
         stable_storage_js
     );
 
-    compileRustCode(canisterName, rootPath, candidPath);
+    console.info('[2/4] 🦀 Generating rust project...');
+
+    // TODO: If our rust dependencies never change, maybe we shouldn't be
+    // reinstalling them every time we build.
+    installRustDependencies(stdioType);
+    execSync(
+        `cd target/azle/${rootPath}/azle_generate && cargo run -- ${fileNames.join(
+            ','
+        )} | rustfmt --edition 2018 > ../src/lib.rs`,
+        { stdio: stdioType }
+    );
+
+    compileRustCode(canisterName, rootPath, candidPath, stdioType);
+
+    console.info(`\n🎉 Built canister \x1b[32m${canisterName}\x1b[0m\n`);
 }
 
-function installRustDependencies() {
+function installRustDependencies(stdio: IOType) {
     if (!fs.existsSync(`./target/azle`)) {
         fs.mkdirSync(`target/azle`, { recursive: true });
     }
 
-    execSync(`rustup target add wasm32-unknown-unknown`, { stdio: 'inherit' });
+    execSync(`rustup target add wasm32-unknown-unknown`, { stdio });
 
     execSync(`cargo install ic-cdk-optimizer --version 0.3.4 || true`, {
-        stdio: 'inherit'
+        stdio: 'ignore'
     });
 }
 
@@ -126,23 +146,19 @@ function writeCodeToFileSystem(
         `./target/azle/${rootPath}/azle_generate/src/stable_storage.js`,
         stable_storage_js
     );
-
-    execSync(
-        `cd target/azle/${rootPath}/azle_generate && cargo run -- ${fileNames.join(
-            ','
-        )} | rustfmt --edition 2018 > ../src/lib.rs`,
-        { stdio: 'inherit' }
-    );
 }
 
 function compileRustCode(
     canisterName: string,
     rootPath: string,
-    candidPath: string
+    candidPath: string,
+    stdio: IOType
 ) {
+    console.info('[3/4] 🚧 Compiling rust code...');
+
     execSync(
         `cd target/azle && CARGO_TARGET_DIR=.. cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
-        { stdio: 'inherit' }
+        { stdio }
     );
 
     const cargo_bin_root =
@@ -153,25 +169,27 @@ function compileRustCode(
     // optimization, binary is too big to deploy without this
     execSync(
         `${cargo_bin_root}/bin/ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/${canisterName}.wasm -o ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
-        { stdio: 'inherit' }
+        { stdio }
     );
 
     execSync(
         `gzip -f -k ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
-        { stdio: 'inherit' }
+        { stdio }
     );
+
+    console.info('[4/4] 📝 Generating candid file...');
 
     execSync(
         `
         cd target/azle/${rootPath} && cargo test
     `,
-        { stdio: 'inherit' } // TODO probably don't need to sdtio: inherit here so people don't see the test case running
+        { stdio }
     );
 
     execSync(
         `
         cp target/azle/${rootPath}/index.did ${candidPath}
     `,
-        { stdio: 'inherit' }
+        { stdio }
     );
 }
