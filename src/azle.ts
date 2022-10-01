@@ -1,8 +1,5 @@
 import { execSync, IOType } from 'child_process';
-import {
-    bundle_and_transpile_ts,
-    compileTypeScriptToJavaScript
-} from './compiler/typescript_to_javascript';
+import { compileTypeScriptToJavaScript } from './compiler/typescript_to_javascript';
 import {
     generateLibCargoToml,
     generateWorkspaceCargoLock,
@@ -20,17 +17,85 @@ async function azle() {
         process.argv.includes('--verbose') || process.argv.includes('-v');
     const stdioType = isVerboseMode ? 'inherit' : 'pipe';
 
-    const canisterName = process.argv.filter((arg, i) => {
+    const canisterNames = process.argv.filter((arg, i) => {
         return i > 1 && !(arg.startsWith('--') || arg.startsWith('-'));
-    })[0];
+    });
+
+    if (canisterNames.length === 0) {
+        console.info('azle v0.7.0');
+        console.info(
+            `\nUsage: azle \x1b[2m[-v|--verbose]\x1b[0m \x1b[32m<canister_name>\x1b[0m`
+        );
+        process.exit(1);
+    }
+
+    const canisterName = canisterNames[0];
+
+    if (canisterNames.length > 1) {
+        console.error(
+            '\n💣 \x1b[31mBuilding multiple canisters is unsupported at this time.\x1b[0m'
+        );
+        console.info(
+            'Try running azle again, providing only one canister name.'
+        );
+        console.error(`\n💀 Build failed`);
+        process.exit(2);
+    }
+
     console.info(`\nBuilding canister \x1b[32m${canisterName}\x1b[0m\n`);
+
+    if (!fs.existsSync(`dfx.json`)) {
+        console.error(`💣 \x1b[31mMissing dfx.json\x1b[0m`);
+        console.info(
+            `Create a dfx.json file in the current directory following the`
+        );
+        console.info(
+            `schema at https://internetcomputer.org/docs/current/references/dfx-json-reference`
+        );
+        console.error(`\n💀 Build failed`);
+        process.exit(3);
+    }
 
     const dfxJson: DfxJson = JSON.parse(fs.readFileSync('dfx.json').toString());
     const canisterConfig = dfxJson.canisters[canisterName];
 
+    if (!canisterConfig) {
+        console.error(
+            `💣 \x1b[31mUnable to find canister "${canisterName}" in dfx.json.\x1b[0m`
+        );
+        console.info(
+            `Make sure your dfx.json contains an entry for "${canisterName}".`
+        );
+        console.error(`\n💀 Build failed`);
+        process.exit(4);
+    }
+
     const rootPath = canisterConfig.root;
     const tsPath = canisterConfig.ts;
     const candidPath = canisterConfig.candid;
+
+    if (!rootPath || !tsPath || !candidPath) {
+        console.error(`💣 \x1b[31mMissing field in dfx.json.\x1b[0m`);
+        console.info(
+            `Make sure your dfx.json looks something like the following:`
+        );
+        console.info(`\x1b[2m
+            {
+                "canisters": {
+                    "${canisterName}": {
+                        "type": "custom",
+                        "build": "npx azle ${canisterName}",
+                        "root": "src",
+                        "ts": "src/index.ts",
+                        "candid": "src/index.did",
+                        "wasm": "target/wasm32-unknown-unknown/release/${canisterName}.wasm"
+                    }
+                }
+            }
+        \x1b[0m`);
+        console.error(`💀 Build failed`);
+        process.exit(5);
+    }
 
     const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
     const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
@@ -69,6 +134,7 @@ async function azle() {
     // TODO: If our rust dependencies never change, maybe we shouldn't be
     // reinstalling them every time we build.
     installRustDependencies(stdioType);
+
     execSync(
         `cd target/azle/${rootPath}/azle_generate && cargo run -- ${fileNames.join(
             ','
@@ -78,7 +144,9 @@ async function azle() {
 
     compileRustCode(canisterName, rootPath, candidPath, stdioType);
 
-    console.info(`\n🎉 Built canister \x1b[32m${canisterName}\x1b[0m\n`);
+    console.info(
+        `\n🎉 Built canister \x1b[32m${canisterName}\x1b[0m \x1b[2mat ./target/wasm32-unknown-unknown/release/${canisterName}.wasm.gz`
+    );
 }
 
 function installRustDependencies(stdio: IOType) {
