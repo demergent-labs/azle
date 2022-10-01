@@ -35,7 +35,7 @@ async function azle() {
         console.error(
             '\n💣 \x1b[31mBuilding multiple canisters is unsupported at this time.\x1b[0m'
         );
-        console.info(
+        console.error(
             'Try running azle again, providing only one canister name.'
         );
         console.error(`\n💀 Build failed`);
@@ -46,10 +46,10 @@ async function azle() {
 
     if (!fs.existsSync(`dfx.json`)) {
         console.error(`💣 \x1b[31mMissing dfx.json\x1b[0m`);
-        console.info(
+        console.error(
             `Create a dfx.json file in the current directory following the`
         );
-        console.info(
+        console.error(
             `schema at https://internetcomputer.org/docs/current/references/dfx-json-reference`
         );
         console.error(`\n💀 Build failed`);
@@ -63,7 +63,7 @@ async function azle() {
         console.error(
             `💣 \x1b[31mUnable to find canister "${canisterName}" in dfx.json.\x1b[0m`
         );
-        console.info(
+        console.error(
             `Make sure your dfx.json contains an entry for "${canisterName}".`
         );
         console.error(`\n💀 Build failed`);
@@ -76,10 +76,10 @@ async function azle() {
 
     if (!rootPath || !tsPath || !candidPath) {
         console.error(`💣 \x1b[31mMissing field in dfx.json.\x1b[0m`);
-        console.info(
+        console.error(
             `Make sure your dfx.json looks something like the following:`
         );
-        console.info(`\x1b[2m
+        console.error(`\x1b[2m
             {
                 "canisters": {
                     "${canisterName}": {

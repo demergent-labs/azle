@@ -36,17 +36,27 @@ export function compileTypeScriptToJavaScript(ts_path: string): JavaScript[] {
 
         return [main_js, stable_storage_js];
     } catch (error) {
+        const firstError = error.errors[0];
         console.error(
-            `\n💣 \x1b[31mThere's something wrong in your typescript:\x1b[0m`
+            `\n💣 \x1b[31mThere's something wrong in your typescript: ${firstError.text}\x1b[0m`
         );
 
-        const firstError = error.errors[0];
         const { file, line, column, lineText } = firstError.location;
         const marker = `\x1b[31m${'^'.padStart(column + 1)}\x1b[0m`;
-        console.error(`\n\`\`\` ${file}:${line}:${column}\n\``);
-        console.error(`\`${lineText}`);
-        console.error(`\`${marker}\n\`\`\``);
-        console.error(`\x1b[31m${firstError.text}\x1b[0m`);
+        console.error(`\n\x1b[2m${file}:${line}:${column}\x1b[0m`);
+        if (line > 1) {
+            console.error(
+                `\x1b[2m${(line - 1)
+                    .toString()
+                    .padStart(line.toString().length)}| \x1b[0m`
+            );
+        }
+        console.error(`\x1b[2m${line}| \x1b[0m${lineText}`);
+        console.error(
+            `\x1b[2m${(line + 1)
+                .toString()
+                .padStart(line.toString().length)}| \x1b[0m${marker}`
+        );
         console.error(`\n💀 Build failed`);
         process.exit(1);
     }
