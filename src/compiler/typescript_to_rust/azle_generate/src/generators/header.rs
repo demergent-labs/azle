@@ -10,9 +10,9 @@ pub fn generate_header_code() -> proc_macro2::TokenStream {
         #![allow(warnings, unused)]
 
         use std::str::FromStr;
-        use azle_js_value_derive::{
+        use azle_vm_value_derive::{
             CdkActTryIntoVmValue,
-            TryFromVmValue
+            CdkActTryFromVmValue
         };
         use ic_cdk::api::call::CallResult;
     }

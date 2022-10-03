@@ -1,5 +1,5 @@
 [package]
-name = "azle-js-value-derive"
+name = "azle-vm-value-derive"
 version = "0.0.0"
 edition = "2018"
 

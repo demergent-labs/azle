@@ -2,7 +2,7 @@ use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::{DataStruct, Fields, Index};
 
-pub fn derive_azle_try_into_vm_value_struct(
+pub fn derive_try_into_vm_value_struct(
     struct_name: &Ident,
     data_struct: &DataStruct,
 ) -> proc_macro2::TokenStream {

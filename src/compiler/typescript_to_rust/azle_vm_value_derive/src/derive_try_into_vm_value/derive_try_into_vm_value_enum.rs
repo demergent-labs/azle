@@ -2,7 +2,7 @@ use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::{DataEnum, Field, Fields};
 
-pub fn derive_azle_try_into_vm_value_enum(
+pub fn derive_try_into_vm_value_enum(
     enum_name: &Ident,
     data_enum: &DataEnum,
 ) -> proc_macro2::TokenStream {
