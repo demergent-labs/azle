@@ -11,6 +11,15 @@ const candid_encoding_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 const tests: Test[] = [
     ...deploy('candid_encoding'),
     {
+        name: 'install didc',
+        prep: async () => {
+            execSync(
+                `cd target/azle && cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 didc --root ..`,
+                { stdio: 'inherit' }
+            );
+        }
+    },
+    {
         name: 'candid_encode/candid_decode ()',
         test: async () => {
             const candid_string = '()';

@@ -1,13 +1,17 @@
 import { execSync } from 'child_process';
-import { compileTypeScriptToRust } from './compiler/typescript_to_rust';
+import {
+    bundle_and_transpile_ts,
+    compileTypeScriptToJavaScript
+} from './compiler/typescript_to_javascript';
 import {
     generateLibCargoToml,
     generateWorkspaceCargoLock,
     generateWorkspaceCargoToml
-} from './compiler/typescript_to_rust/generators/cargo_toml_files';
+} from './compiler/typescript_to_javascript/cargo_toml_files';
 import * as fs from 'fs';
 import * as fsExtra from 'fs-extra';
-import { DfxJson, Rust, Toml } from './types';
+import { DfxJson, JavaScript, Toml } from './types';
+import * as tsc from 'typescript';
 
 azle();
 
@@ -25,17 +29,36 @@ async function azle() {
     const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
     const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
     const libCargoToml: Toml = generateLibCargoToml(canisterName);
-    const libFile: Rust = await compileTypeScriptToRust(tsPath, candidPath);
+
+    const program = tsc.createProgram([tsPath], {});
+    const sourceFiles = program.getSourceFiles();
+
+    const root_absolute_path = require('path').join(__dirname, '..');
+
+    const fileNames = sourceFiles.map((sourceFile) => {
+        if (sourceFile.fileName.startsWith(root_absolute_path) === false) {
+            return `${process.cwd()}/${sourceFile.fileName}`;
+        } else {
+            return sourceFile.fileName;
+        }
+    });
+
+    const main_js: JavaScript = await compileTypeScriptToJavaScript(tsPath);
+    const stable_storage_js: JavaScript = bundle_and_transpile_ts(
+        `export { stable_storage_deserialize, stable_storage_serialize } from 'azle';`
+    );
 
     writeCodeToFileSystem(
         rootPath,
         workspaceCargoToml,
         workspaceCargoLock,
         libCargoToml,
-        libFile
+        fileNames,
+        main_js,
+        stable_storage_js
     );
 
-    compileRustCode(canisterName);
+    compileRustCode(canisterName, rootPath, candidPath);
 }
 
 function installRustDependencies() {
@@ -44,11 +67,6 @@ function installRustDependencies() {
     }
 
     execSync(`rustup target add wasm32-unknown-unknown`, { stdio: 'inherit' });
-
-    execSync(
-        `cd target/azle && cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 didc --root ..`,
-        { stdio: 'inherit' }
-    );
 
     execSync(`cargo install ic-cdk-optimizer --version 0.3.4 || true`, {
         stdio: 'inherit'
@@ -60,7 +78,9 @@ function writeCodeToFileSystem(
     workspaceCargoToml: Toml,
     workspaceCargoLock: Toml,
     libCargoToml: Toml,
-    libFile: Rust
+    fileNames: string[],
+    main_js: JavaScript,
+    stable_storage_js: JavaScript
 ) {
     if (!fs.existsSync(`./target/azle`)) {
         fs.mkdirSync(`target/azle`, { recursive: true });
@@ -79,8 +99,6 @@ function writeCodeToFileSystem(
         fs.mkdirSync(`./target/azle/${rootPath}/src`);
     }
 
-    fs.writeFileSync(`./target/azle/${rootPath}/src/lib.rs`, libFile);
-
     if (!fs.existsSync(`./target/azle/${rootPath}/azle_js_value_derive`)) {
         fs.mkdirSync(`./target/azle/${rootPath}/azle_js_value_derive`);
     }
@@ -89,9 +107,39 @@ function writeCodeToFileSystem(
         `${__dirname}/compiler/typescript_to_rust/azle_js_value_derive`,
         `./target/azle/${rootPath}/azle_js_value_derive`
     );
+
+    if (!fs.existsSync(`./target/azle/${rootPath}/azle_generate`)) {
+        fs.mkdirSync(`./target/azle/${rootPath}/azle_generate`);
+    }
+
+    fsExtra.copySync(
+        `${__dirname}/compiler/typescript_to_rust/azle_generate`,
+        `./target/azle/${rootPath}/azle_generate`
+    );
+
+    fs.writeFileSync(
+        `./target/azle/${rootPath}/azle_generate/src/main.js`,
+        main_js
+    );
+
+    fs.writeFileSync(
+        `./target/azle/${rootPath}/azle_generate/src/stable_storage.js`,
+        stable_storage_js
+    );
+
+    execSync(
+        `cd target/azle/${rootPath}/azle_generate && cargo run -- ${fileNames.join(
+            ','
+        )} | rustfmt --edition 2018 > ../src/lib.rs`,
+        { stdio: 'inherit' }
+    );
 }
 
-function compileRustCode(canisterName: string) {
+function compileRustCode(
+    canisterName: string,
+    rootPath: string,
+    candidPath: string
+) {
     execSync(
         `cd target/azle && CARGO_TARGET_DIR=.. cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
         { stdio: 'inherit' }
@@ -110,6 +158,20 @@ function compileRustCode(canisterName: string) {
 
     execSync(
         `gzip -f -k ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
+        { stdio: 'inherit' }
+    );
+
+    execSync(
+        `
+        cd target/azle/${rootPath} && cargo test
+    `,
+        { stdio: 'inherit' } // TODO probably don't need to sdtio: inherit here so people don't see the test case running
+    );
+
+    execSync(
+        `
+        cp target/azle/${rootPath}/index.did ${candidPath}
+    `,
         { stdio: 'inherit' }
     );
 }

@@ -5,7 +5,7 @@ import { Principal } from '@dfinity/principal';
 
 declare var globalThis: any;
 
-export const ic: ic = globalThis.ic;
+export const ic: ic = globalThis.ic ?? {};
 
 // TODO perhaps this should just be provided through calling
 // TODO the management canister
@@ -199,7 +199,7 @@ export type CanisterResult<T> = {
     with_cycles: (cycles: nat64) => CanisterResult<T>;
     with_cycles128: (cycles: nat) => CanisterResult<T>;
 };
-export type Stable<T> = T;
+export type Stable<T> = T; // TODO let's remove this
 
 export type int = bigint;
 export type int64 = bigint;
@@ -278,3 +278,62 @@ export type Stable64GrowResult = Variant<{
     ok: nat64;
     err: StableMemoryError;
 }>;
+
+export function stable_storage_serialize<T>(stable_storage: Stable<T>): string {
+    return JSON.stringify(stable_storage, (_, value) => {
+        if (typeof value === 'bigint') {
+            return `AZLE::BigInt::${value}`;
+        }
+
+        if (typeof value === 'undefined') {
+            return `AZLE::Undefined`;
+        }
+
+        // TODO we should open an issue with Boa, instanceof doesn't work
+        if (value?._isPrincipal === true) {
+            return `AZLE::Principal::${value.toHex()}`;
+        }
+
+        // TODO we should open an issue with Boa, instanceof doesn't work
+        if (value?.constructor?.name === 'Uint8Array') {
+            return `AZLE::Uint8Array::${[...value]
+                .map((uint8) => uint8.toString(16).padStart(2, '0'))
+                .join('')}`;
+        }
+
+        return value;
+    });
+}
+
+export function stable_storage_deserialize<T>(
+    stable_storage: string
+): Stable<T> {
+    return JSON.parse(stable_storage, (_, value) => {
+        if (typeof value === 'string') {
+            if (value.startsWith('AZLE::BigInt::')) {
+                return BigInt(value.replace('AZLE::BigInt::', ''));
+            }
+
+            if (value === 'AZLE::Undefined') {
+                return undefined;
+            }
+
+            if (value.startsWith('AZLE::Principal::')) {
+                return Principal.fromHex(
+                    value.replace('AZLE::Principal::', '')
+                );
+            }
+
+            if (value.startsWith('AZLE::Uint8Array::')) {
+                return Uint8Array.from(
+                    value
+                        .replace('AZLE::Uint8Array::', '')
+                        .match(/.{1,2}/g)
+                        ?.map((x) => parseInt(x, 16)) ?? []
+                );
+            }
+        }
+
+        return value;
+    });
+}

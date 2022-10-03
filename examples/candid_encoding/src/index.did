@@ -1,4 +1,4 @@
-service: {
-    "candid_encode": (text) -> (blob) query;
-    "candid_decode": (blob) -> (text) query;
+service : {
+  candid_decode : (vec nat8) -> (text) query;
+  candid_encode : (text) -> (vec nat8) query;
 }

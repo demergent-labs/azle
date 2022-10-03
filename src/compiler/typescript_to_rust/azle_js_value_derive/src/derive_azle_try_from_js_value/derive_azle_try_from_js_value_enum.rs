@@ -1,22 +1,12 @@
 use proc_macro2::Ident;
-use quote::{
-    format_ident,
-    quote
-};
-use syn::{
-    DataEnum,
-    Field,
-    Fields
-};
+use quote::{format_ident, quote};
+use syn::{DataEnum, Field, Fields};
 
 pub fn derive_azle_try_from_js_value_enum(
     enum_name: &Ident,
-    data_enum: &DataEnum
+    data_enum: &DataEnum,
 ) -> proc_macro2::TokenStream {
-    let properties = derive_properties(
-        enum_name,
-        data_enum
-    );
+    let properties = derive_properties(enum_name, data_enum);
 
     quote! {
         impl AzleTryFromJsValue<#enum_name> for boa_engine::JsValue {
@@ -82,46 +72,43 @@ pub fn derive_azle_try_from_js_value_enum(
     }
 }
 
-fn derive_properties(
-    enum_name: &Ident,
-    data_enum: &DataEnum
-) -> Vec<proc_macro2::TokenStream> {
-    data_enum.variants.iter().map(|variant| {
-        let variant_name = &variant.ident;
+fn derive_properties(enum_name: &Ident, data_enum: &DataEnum) -> Vec<proc_macro2::TokenStream> {
+    data_enum
+        .variants
+        .iter()
+        .map(|variant| {
+            let variant_name = &variant.ident;
 
-        let object_variant_js_value_result_var_name = format_ident!("object_{}_js_value_result", variant_name);
-        let object_variant_js_value_var_name = format_ident!("object_{}_js_value", variant_name);
+            let object_variant_js_value_result_var_name =
+                format_ident!("object_{}_js_value_result", variant_name);
+            let object_variant_js_value_var_name =
+                format_ident!("object_{}_js_value", variant_name);
 
-        match &variant.fields {
-            Fields::Named(fields_named) => {
-                derive_property_for_named_fields(
+            match &variant.fields {
+                Fields::Named(fields_named) => derive_property_for_named_fields(
                     fields_named.named.iter().collect(),
                     enum_name,
                     variant_name,
                     &object_variant_js_value_result_var_name,
-                    &object_variant_js_value_var_name
-                )
-            },
-            Fields::Unnamed(fields_unnamed) => {
-                derive_property_for_unnamed_fields(
+                    &object_variant_js_value_var_name,
+                ),
+                Fields::Unnamed(fields_unnamed) => derive_property_for_unnamed_fields(
                     fields_unnamed.unnamed.iter().collect(),
                     enum_name,
                     variant_name,
                     &object_variant_js_value_result_var_name,
-                    &object_variant_js_value_var_name
-                )
-            },
-            Fields::Unit => {
-                derive_property_for_unnamed_fields(
+                    &object_variant_js_value_var_name,
+                ),
+                Fields::Unit => derive_property_for_unnamed_fields(
                     vec![],
                     enum_name,
                     variant_name,
                     &object_variant_js_value_result_var_name,
-                    &object_variant_js_value_var_name
-                )
+                    &object_variant_js_value_var_name,
+                ),
             }
-        }
-    }).collect()
+        })
+        .collect()
 }
 
 fn derive_property_for_named_fields(
@@ -129,7 +116,7 @@ fn derive_property_for_named_fields(
     enum_name: &Ident,
     variant_name: &Ident,
     object_variant_js_value_result_var_name: &Ident,
-    object_variant_js_value_var_name: &Ident
+    object_variant_js_value_var_name: &Ident,
 ) -> proc_macro2::TokenStream {
     let named_field_js_value_result_variable_names = named_fields.iter().map(|named_field| {
         let field_name = &named_field.ident.as_ref().unwrap();
@@ -230,7 +217,7 @@ fn derive_property_for_unnamed_fields(
     enum_name: &Ident,
     variant_name: &Ident,
     object_variant_js_value_result_var_name: &Ident,
-    object_variant_js_value_var_name: &Ident
+    object_variant_js_value_var_name: &Ident,
 ) -> proc_macro2::TokenStream {
     if unnamed_fields.len() == 0 {
         quote! {
@@ -242,8 +229,7 @@ fn derive_property_for_unnamed_fields(
                 }
             }
         }
-    }
-    else {
+    } else {
         let object_variant_result_var_name = format_ident!("object_{}_result", variant_name);
         let object_variant_var_name = format_ident!("object_{}", variant_name);
 
