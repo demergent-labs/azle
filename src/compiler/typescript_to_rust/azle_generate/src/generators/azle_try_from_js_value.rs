@@ -430,12 +430,6 @@ pub fn generate_azle_try_from_js_value() -> proc_macro2::TokenStream {
             }
         }
 
-        impl AzleTryFromJsValue<Vec<Vec<u8>>> for boa_engine::JsValue {
-            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Vec<Vec<u8>>, AzleTryFromJsValueError> {
-                azle_try_from_js_value_generic_array(self, context)
-            }
-        }
-
         impl AzleTryFromJsValue<Vec<u8>> for boa_engine::JsValue {
             fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Vec<u8>, AzleTryFromJsValueError> {
                 Ok(
