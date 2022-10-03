@@ -1,0 +1,12 @@
+type AzleInline10550531413164410119 = record {
+  one : bool;
+  two : AzleInline4064619906461566232;
+};
+type AzleInline4064619906461566232 = record { thing : text };
+type AzleInline9864422139172514499 = record { one : bool; two : text };
+type InlineExample = record {
+  second_field : AzleInline10550531413164410119;
+  first_field : AzleInline9864422139172514499;
+  third_field : AzleInline9864422139172514499;
+};
+service : () -> { inline_query : (InlineExample) -> () query }

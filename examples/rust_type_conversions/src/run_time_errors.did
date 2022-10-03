@@ -1,0 +1,18 @@
+service : () -> {
+  accessible : () -> (bool);
+  alsoInaccessible : () -> (bool);
+  getInitialized : () -> (bool) query;
+  inaccessible : () -> (bool);
+  throw_bigint : () -> () query;
+  throw_boolean : () -> () query;
+  throw_class : () -> () query;
+  throw_custom_error : () -> () query;
+  throw_int : () -> () query;
+  throw_null : () -> () query;
+  throw_null_reference : () -> () query;
+  throw_object : () -> () query;
+  throw_rational : () -> () query;
+  throw_string : () -> () query;
+  throw_symbol : () -> () query;
+  throw_undefined : () -> () query;
+}

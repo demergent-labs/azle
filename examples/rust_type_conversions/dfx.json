@@ -10,6 +10,28 @@
             "declarations": {
                 "output": "dfx_generated"
             }
+        },
+        "run_time_errors": {
+            "type": "custom",
+            "build": "npx azle run_time_errors",
+            "root": "src",
+            "ts": "src/run_time_errors.ts",
+            "candid": "src/run_time_errors.did",
+            "wasm": "target/wasm32-unknown-unknown/release/run_time_errors.wasm",
+            "declarations": {
+                "output": "dfx_generated"
+            }
+        },
+        "errors": {
+            "type": "custom",
+            "build": "npx azle errors",
+            "root": "src",
+            "ts": "src/errors.ts",
+            "candid": "src/errors.did",
+            "wasm": "target/wasm32-unknown-unknown/release/errors.wasm",
+            "declarations": {
+                "output": "dfx_generated"
+            }
         }
     }
 }
