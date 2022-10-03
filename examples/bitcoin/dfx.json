@@ -1,0 +1,22 @@
+{
+    "canisters": {
+        "bitcoin": {
+            "type": "custom",
+            "build": "npx azle bitcoin",
+            "root": "src",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/bitcoin.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/bitcoin"
+            }
+        }
+    },
+    "defaults": {
+        "bitcoin": {
+            "enabled": true,
+            "nodes": ["127.0.0.1:18444"],
+            "log_level": "info"
+        }
+    }
+}

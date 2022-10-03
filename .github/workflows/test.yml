@@ -50,13 +50,15 @@ jobs:
             - if: contains(github.head_ref, 'release--')
               run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
             - if: contains(github.head_ref, 'release--')
-              run: git config --global user.signingkey 0C8D5F108E5C767681F8C0EE4CC856C99F21BDB0
+              run: git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
             - id: example_directories
               # TODO to improve this further we might be able to create an environment variable that grabs the example directories with a glob
               # TODO we want to be able to easily include and exclude examples though
               run: |
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
+                    "examples/bitcoin",
+                    "examples/blob_array",
                     "examples/bytes",
                     "examples/call_raw",
                     "examples/candid_encoding",
@@ -91,6 +93,7 @@ jobs:
                     "examples/motoko_examples/quicksort",
                     "examples/motoko_examples/simple-to-do",
                     "examples/motoko_examples/superheroes",
+                    "examples/motoko_examples/threshold_ecdsa",
                     "examples/motoko_examples/whoami",
                     "examples/notify_raw",
                     "examples/null_example",

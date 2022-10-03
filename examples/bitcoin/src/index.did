@@ -1,0 +1,163 @@
+type GetBalanceArgs = record {
+    "address": text;
+    "min_confirmations": opt nat32;
+    "network": BitcoinNetwork;
+};
+
+type GetCurrentFeePercentilesArgs = record {
+    "network": BitcoinNetwork;
+};
+
+type GetUtxosArgs = record {
+    "address": text;
+    "filter": opt UtxosFilter;
+    "network": BitcoinNetwork;
+};
+
+type SendTransactionArgs = record {
+    "transaction": blob;
+    "network": BitcoinNetwork;
+};
+
+type CreateCanisterArgs = record {
+    "settings": opt CanisterSettings;
+};
+
+type UpdateSettingsArgs = record {
+    "canister_id": principal;
+    "settings": CanisterSettings;
+};
+
+type InstallCodeArgs = record {
+    "mode": InstallCodeMode;
+    "canister_id": principal;
+    "wasm_module": blob;
+    "arg": blob;
+};
+
+type UninstallCodeArgs = record {
+    "canister_id": principal;
+};
+
+type StartCanisterArgs = record {
+    "canister_id": principal;
+};
+
+type StopCanisterArgs = record {
+    "canister_id": principal;
+};
+
+type CanisterStatusArgs = record {
+    "canister_id": principal;
+};
+
+type DeleteCanisterArgs = record {
+    "canister_id": principal;
+};
+
+type DepositCyclesArgs = record {
+    "canister_id": principal;
+};
+
+type HttpRequestArgs = record {
+    "url": text;
+    "max_response_bytes": opt nat64;
+    "http_method": HttpMethod;
+    "headers": vec HttpHeader;
+    "body": opt blob;
+    "transform_method_name": opt text;
+};
+
+type ProvisionalCreateCanisterWithCyclesArgs = record {
+    "amount": opt nat;
+    "settings": opt CanisterSettings;
+};
+
+type ProvisionalTopUpCanisterArgs = record {
+    "canister_id": principal;
+    "amount": nat;
+};
+
+type GetUtxosResult = record {
+    "next_page": opt blob;
+    "tip_block_hash": blob;
+    "tip_height": nat32;
+    "utxos": vec Utxo;
+};
+
+type CreateCanisterResult = record {
+    "canister_id": principal;
+};
+
+type CanisterStatusResult = record {
+    "status": CanisterStatus;
+    "settings": DefiniteCanisterSettings;
+    "module_hash": opt blob;
+    "memory_size": nat;
+    "cycles": nat;
+};
+
+type HttpResponse = record {
+    "status": nat64;
+    "headers": vec HttpHeader;
+    "body": blob;
+};
+
+type ProvisionalCreateCanisterWithCyclesResult = record {
+    "canister_id": principal;
+};
+
+type CanisterSettings = record {
+    "controllers": opt vec principal;
+    "compute_allocation": opt nat;
+    "memory_allocation": opt nat;
+    "freezing_threshold": opt nat;
+};
+
+type HttpHeader = record {
+    "name": text;
+    "value": text;
+};
+
+type Utxo = record {
+    "height": nat32;
+    "outpoint": Outpoint;
+    "value": nat64;
+};
+
+type Outpoint = record {
+    "txid": blob;
+    "vout": nat32;
+};
+
+type DefiniteCanisterSettings = record {
+    "controllers": vec principal;
+    "compute_allocation": nat;
+    "memory_allocation": nat;
+    "freezing_threshold": nat;
+};
+
+type ExecuteGetBalanceResult = variant { "ok": nat64; "err": text };
+
+type ExecuteGetCurrentFeePercentiles = variant { "ok": vec nat64; "err": text };
+
+type ExecuteGetUtxosResult = variant { "ok": GetUtxosResult; "err": text };
+
+type ExecuteSendTransactionResult = variant { "ok": null; "err": text };
+
+type BitcoinNetwork = variant { "Mainnet": null; "Regtest": null; "Testnet": null };
+
+type UtxosFilter = variant { "MinConfirmations": nat32; "Page": blob };
+
+type InstallCodeMode = variant { "install": null; "reinstall": null; "upgrade": null };
+
+type HttpMethod = variant { "GET": null; "HEAD": null; "POST": null };
+
+type CanisterStatus = variant { "running": null; "stopping": null; "stopped": null };
+
+service: {
+    "get_balance": (text) -> (ExecuteGetBalanceResult);
+    "get_current_fee_percentiles": () -> (ExecuteGetCurrentFeePercentiles);
+    "get_utxos": (text) -> (ExecuteGetUtxosResult);
+    "send_transaction": (blob) -> (ExecuteSendTransactionResult);
+}

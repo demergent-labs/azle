@@ -1,0 +1,9 @@
+.dfx
+node_modules
+target
+
+# Bitcoin
+.bitcoin/*
+!.bitcoin/.gitkeep
+*.tar.gz
+bitcoin-23.0/
