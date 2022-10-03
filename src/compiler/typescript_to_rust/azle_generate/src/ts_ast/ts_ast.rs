@@ -4,6 +4,7 @@ use std::{collections::HashSet, iter::FromIterator};
 use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
+use crate::generators::errors;
 use crate::{
     cdk_act::{
         self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
@@ -211,6 +212,7 @@ impl ToAct for TsAst {
         let cross_canister_call_functions =
             cross_canister_call_functions::generate_cross_canister_call_functions(&self.programs);
 
+        let boa_error_handler = errors::generate_error_handler();
         // TODO Some of the things in this quote belong inside of the quote in AbstractCanisterTree
 
         AbstractCanisterTree {
@@ -223,6 +225,7 @@ impl ToAct for TsAst {
             post_upgrade_method,
             pre_upgrade_method,
             rust_code: quote! {
+                #boa_error_handler
                 #cross_canister_call_functions
                 #async_result_handler
                 #get_top_level_call_frame_fn

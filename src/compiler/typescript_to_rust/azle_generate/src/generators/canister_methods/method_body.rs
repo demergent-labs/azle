@@ -48,13 +48,19 @@ pub fn generate_call_to_js_function(fn_decl: &FnDecl) -> proc_macro2::TokenStrea
         let _azle_function_js_value = _azle_exports_js_object.get(#function_name, &mut _azle_boa_context).unwrap();
         let _azle_function_js_object = _azle_function_js_value.as_object().unwrap();
 
-        let _azle_boa_return_value = _azle_function_js_object.call(
+        let _azle_boa_return_value = match _azle_function_js_object.call(
             &boa_engine::JsValue::Null,
             &[
                 #(#param_name_idents.try_into_vm_value(&mut _azle_boa_context)),*
             ],
             &mut _azle_boa_context
-        ).unwrap();
+        ) {
+            Ok(_azle_boa_return_value) => _azle_boa_return_value,
+            Err(_azle_boa_error) => {
+                let error_message = handler_boa_error(_azle_boa_error, &mut _azle_boa_context);
+                panic!("AZLE RUNTIME ERROR: {}", error_message);
+            },
+        };
     }
 }
 
