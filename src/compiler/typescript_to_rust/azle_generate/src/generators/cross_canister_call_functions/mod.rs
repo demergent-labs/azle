@@ -409,7 +409,7 @@ fn generate_notify_rust(
 
             quote! {
                 let #param_name_js_value = args_js_object.get(#index, _context).unwrap();
-                let #param_name: #param_type = #param_name_js_value.try_from_vm_value(_context).unwrap();
+                let #param_name: #param_type = #param_name_js_value.try_from_vm_value(&mut *_context).unwrap();
             }
         })
         .collect();
@@ -463,7 +463,7 @@ fn generate_notify_with_payment128_rust(
 
             quote! {
                 let #param_name_js_value = args_js_object.get(#index, _context).unwrap();
-                let #param_name: #param_type = #param_name_js_value.try_from_vm_value(_context).unwrap();
+                let #param_name: #param_type = #param_name_js_value.try_from_vm_value(&mut *_context).unwrap();
             }
         })
         .collect();
