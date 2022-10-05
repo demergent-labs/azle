@@ -31,16 +31,16 @@ async function azle() {
         process.exit(0);
     }
 
-    const canisterName = canisterNames[0];
-
     if (canisterNames.length > 1) {
         exitWithError({
-            error: 'Building multiple canisters is unsupported at this time.',
-            suggestion:
-                'Try running azle again, providing only one canister name.',
+            error: 'Too many arguments',
+            suggestion: `Usage: azle ${dim('[-v|--verbose]')} ${green(
+                '<canister_name>'
+            )}`,
             exitCode: 1
         });
     }
+    const canisterName = canisterNames[0];
 
     console.info(`\nBuilding canister ${green(canisterName)}`);
 
@@ -60,7 +60,7 @@ async function azle() {
     if (!canisterConfig) {
         exitWithError({
             error: `Unable to find canister "${canisterName}" in ./dfx.json`,
-            suggestion: `Make sure your dfx.json contains an entry for "${canisterName}".`,
+            suggestion: `Make sure your dfx.json contains an entry for "${canisterName}". For example:\n\n${exampleDfxJson}`,
             exitCode: 3
         });
     }
@@ -80,11 +80,31 @@ async function azle() {
         const fieldOrFields = missingFields.length == 1 ? 'field' : 'fields';
         const missingFieldNames = missingFields.join(', ');
         exitWithError({
-            error: `Missing ${fieldOrFields} ${missingFieldNames} in dfx.json.`,
+            error: `Missing ${fieldOrFields} ${missingFieldNames} in ./dfx.json`,
             suggestion: `Make sure your dfx.json looks similar to the following:\n\n${exampleDfxJson}`,
             exitCode: 4
         });
     }
+
+    // TODO: Consider a better detection method
+    const isInitialCompile = !fs.existsSync(
+        `target/wasm32-unknown-unknown/release/${canisterName}.wasm.gz`
+    );
+
+    if (isInitialCompile) {
+        console.info(
+            yellow(
+                "\nInitial build takes a few minutes. Don't panic. Subsequent builds will be faster."
+            )
+        );
+    }
+
+    const step1StartTime = process.hrtime();
+    const step1Message = '[1/3] 🔨 Compiling TypeScript...';
+    console.info(`\n${step1Message}`);
+    const [main_js, stable_storage_js] = await compileTypeScriptToJavaScript(
+        tsPath
+    );
 
     const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
     const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
@@ -103,21 +123,6 @@ async function azle() {
         }
     });
 
-    // TODO: Consider a better detection method
-    const isAzleGenerateCompiled = !fs.existsSync(`./target/azle/target`);
-
-    if (isAzleGenerateCompiled) {
-        console.info(
-            yellow("\nWarn: Initial build can take up to 4 mins. Don't panic.")
-        );
-        console.info(yellow('Subsequent builds will be faster (~30 seconds)'));
-    }
-
-    console.info('\n[1/4] 👀 Checking typescript syntax...');
-    const [main_js, stable_storage_js] = await compileTypeScriptToJavaScript(
-        tsPath
-    );
-
     writeCodeToFileSystem(
         rootPath,
         workspaceCargoToml,
@@ -126,13 +131,6 @@ async function azle() {
         fileNames,
         main_js,
         stable_storage_js
-    );
-
-    const azleGenerateTimeEstimate = isAzleGenerateCompiled
-        ? '(~45s)'
-        : '(~5s)';
-    console.info(
-        `[2/4] 🔍 Checking azle-specific syntax... ${azleGenerateTimeEstimate}`
     );
 
     // TODO: If our rust dependencies never change, maybe we shouldn't be
@@ -146,23 +144,33 @@ async function azle() {
         { stdio: stdioType }
     );
 
-    // TODO: Consider a better detection method
-    const isInitialCompile = !fs.existsSync(
-        'target/wasm32-unknown-unknown/release/primitive_types.wasm'
+    const step1Duration = parseHrTimeToSeconds(process.hrtime(step1StartTime));
+    process.stdout.write(
+        `\x1b[1A${step1Message} ${dim(`${step1Duration}s`)}\n`
     );
-    const compilationTimeEstimate = isInitialCompile ? '(~2m)' : '(~30s)';
-    console.info(`[3/4] 🚧 Building wasm binary... ${compilationTimeEstimate}`);
-    compileRustCode(canisterName, stdioType);
 
-    // TODO: Consider a better detection method
-    const isFirstCandidGeneration = !fs.existsSync(candidPath);
-    const candidGenerationTimeEstimate = isFirstCandidGeneration
-        ? '(~1m)'
-        : '(~5s)';
-    console.info(
-        `[4/4] 📝 Generating candid file... ${candidGenerationTimeEstimate}`
+    // Step 2
+    const step2StartTime = process.hrtime();
+    const compilationTimeEstimate = isInitialCompile
+        ? '(this may take awhile)'
+        : '';
+    const step2Message = `[2/3] 🚧 Building Wasm binary... ${compilationTimeEstimate}`;
+    console.info(step2Message);
+    compileRustCode(canisterName, stdioType);
+    const step2Duration = parseHrTimeToSeconds(process.hrtime(step2StartTime));
+    process.stdout.write(
+        `\x1b[1A${step2Message} ${dim(`${step2Duration}s`)}\n`
     );
+
+    // Step 3
+    const step3StartTime = process.hrtime();
+    const step3Message = `[3/3] 📝 Generating Candid file...`;
+    console.info(step3Message);
     generateCandidFile(rootPath, candidPath, stdioType);
+    const step3Duration = parseHrTimeToSeconds(process.hrtime(step3StartTime));
+    process.stdout.write(
+        `\x1b[1A${step3Message} ${dim(`${step3Duration}s`)}\n`
+    );
 
     const elapsedSeconds = parseHrTimeToSeconds(process.hrtime(startTime));
     console.info(`\nDone in ${elapsedSeconds}s.`);
