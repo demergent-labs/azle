@@ -1,7 +1,14 @@
 import * as swc from '@swc/core';
 import * as tsc from 'typescript';
 import { buildSync } from 'esbuild';
-import { JavaScript, TypeScript } from '../../types';
+import {
+    AzleError,
+    JavaScript,
+    TypeScript,
+    TsCompilationError,
+    TsSyntaxErrorLocation
+} from '../../types';
+import { red, dim } from '../../colors';
 
 export function compileTypeScriptToJavaScript(ts_path: string): JavaScript[] {
     try {
@@ -36,30 +43,63 @@ export function compileTypeScriptToJavaScript(ts_path: string): JavaScript[] {
 
         return [main_js, stable_storage_js];
     } catch (error) {
-        const firstError = error.errors[0];
-        console.error(
-            `\n💣 \x1b[31mThere's something wrong in your typescript: ${firstError.text}\x1b[0m`
-        );
-
-        const { file, line, column, lineText } = firstError.location;
-        const marker = `\x1b[31m${'^'.padStart(column + 1)}\x1b[0m`;
-        console.error(`\n\x1b[2m${file}:${line}:${column}\x1b[0m`);
-        if (line > 1) {
-            console.error(
-                `\x1b[2m${(line - 1)
-                    .toString()
-                    .padStart(line.toString().length)}| \x1b[0m`
+        if (isTsCompilationError(error)) {
+            const firstError = error.errors[0];
+            const codeSnippet = generateVisualDisplayOfErrorLocation(
+                firstError.location
             );
+            exitWithError({
+                error: `There's something wrong in your typescript: ${firstError.text}`,
+                suggestion: codeSnippet,
+                exitCode: 5
+            });
+        } else {
+            console.error(
+                `\n💣 ${red(`Unable to compile TS to JS: ${error}`)}`
+            );
+            console.error(`\n💀 Build failed`);
+            process.exit(6);
         }
-        console.error(`\x1b[2m${line}| \x1b[0m${lineText}`);
-        console.error(
-            `\x1b[2m${(line + 1)
-                .toString()
-                .padStart(line.toString().length)}| \x1b[0m${marker}`
-        );
-        console.error(`\n💀 Build failed`);
-        process.exit(1);
     }
+}
+
+// TODO: Unable to import this from azle.ts for some reason
+export function exitWithError(payload: AzleError): never {
+    console.error(`\n💣 ${red(payload.error)}`);
+    console.error(`\n${payload.suggestion}`);
+    console.error(`\n💀 Build failed`);
+    process.exit(payload.exitCode);
+}
+
+function isTsCompilationError(error: unknown): error is TsCompilationError {
+    if (
+        error &&
+        typeof error === 'object' &&
+        'stack' in error &&
+        'message' in error &&
+        'errors' in error &&
+        'warnings' in error
+    ) {
+        return true;
+    }
+    return false;
+}
+
+function generateVisualDisplayOfErrorLocation(
+    location: TsSyntaxErrorLocation
+): string {
+    const { file, line, column, lineText } = location;
+    const marker = red('^'.padStart(column + 1));
+    const preciseLocation = dim(`${file}:${line}:${column}`);
+    const previousLine =
+        line > 1
+            ? dim(`${(line - 1).toString().padStart(line.toString().length)}| `)
+            : '';
+    const offendingLine = `${dim(`${line}| `)}${lineText}`;
+    const subsequentLine = `${dim(
+        `${(line + 1).toString().padStart(line.toString().length)}| `
+    )}${marker}`;
+    return `${preciseLocation}\n${previousLine}\n${offendingLine}\n${subsequentLine}`;
 }
 
 export function bundle_and_transpile_ts(ts: TypeScript): JavaScript {

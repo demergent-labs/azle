@@ -7,12 +7,14 @@ import {
 } from './compiler/typescript_to_javascript/cargo_toml_files';
 import * as fs from 'fs';
 import * as fsExtra from 'fs-extra';
-import { DfxJson, JavaScript, Toml } from './types';
+import { AzleError, DfxJson, JavaScript, Toml } from './types';
+import { red, yellow, green, blue, purple, dim } from './colors';
 import * as tsc from 'typescript';
 
 azle();
 
 async function azle() {
+    const startTime = process.hrtime();
     const isVerboseMode =
         process.argv.includes('--verbose') || process.argv.includes('-v');
     const stdioType = isVerboseMode ? 'inherit' : 'pipe';
@@ -22,52 +24,45 @@ async function azle() {
     });
 
     if (canisterNames.length === 0) {
-        console.info('azle v0.7.0');
+        console.info('\nazle v0.7.0');
         console.info(
-            `\nUsage: azle \x1b[2m[-v|--verbose]\x1b[0m \x1b[32m<canister_name>\x1b[0m`
+            `\nUsage: azle ${dim('[-v|--verbose]')} ${green('<canister_name>')}`
         );
-        process.exit(1);
+        process.exit(0);
     }
 
     const canisterName = canisterNames[0];
 
     if (canisterNames.length > 1) {
-        console.error(
-            '\n💣 \x1b[31mBuilding multiple canisters is unsupported at this time.\x1b[0m'
-        );
-        console.error(
-            'Try running azle again, providing only one canister name.'
-        );
-        console.error(`\n💀 Build failed`);
-        process.exit(2);
+        exitWithError({
+            error: 'Building multiple canisters is unsupported at this time.',
+            suggestion:
+                'Try running azle again, providing only one canister name.',
+            exitCode: 1
+        });
     }
 
-    console.info(`\nBuilding canister \x1b[32m${canisterName}\x1b[0m\n`);
+    console.info(`\nBuilding canister ${green(canisterName)}`);
+
+    const exampleDfxJson = colorFormattedDfxJsonExample(canisterName);
 
     if (!fs.existsSync(`dfx.json`)) {
-        console.error(`💣 \x1b[31mMissing dfx.json\x1b[0m`);
-        console.error(
-            `Create a dfx.json file in the current directory following the`
-        );
-        console.error(
-            `schema at https://internetcomputer.org/docs/current/references/dfx-json-reference`
-        );
-        console.error(`\n💀 Build failed`);
-        process.exit(3);
+        exitWithError({
+            error: 'Missing dfx.json',
+            suggestion: `Create a dfx.json file in the current directory with the following format:\n\n${exampleDfxJson}`,
+            exitCode: 2
+        });
     }
 
     const dfxJson: DfxJson = JSON.parse(fs.readFileSync('dfx.json').toString());
     const canisterConfig = dfxJson.canisters[canisterName];
 
     if (!canisterConfig) {
-        console.error(
-            `💣 \x1b[31mUnable to find canister "${canisterName}" in dfx.json.\x1b[0m`
-        );
-        console.error(
-            `Make sure your dfx.json contains an entry for "${canisterName}".`
-        );
-        console.error(`\n💀 Build failed`);
-        process.exit(4);
+        exitWithError({
+            error: `Unable to find canister "${canisterName}" in ./dfx.json`,
+            suggestion: `Make sure your dfx.json contains an entry for "${canisterName}".`,
+            exitCode: 3
+        });
     }
 
     const rootPath = canisterConfig.root;
@@ -75,26 +70,20 @@ async function azle() {
     const candidPath = canisterConfig.candid;
 
     if (!rootPath || !tsPath || !candidPath) {
-        console.error(`💣 \x1b[31mMissing field in dfx.json.\x1b[0m`);
-        console.error(
-            `Make sure your dfx.json looks something like the following:`
-        );
-        console.error(`\x1b[2m
-            {
-                "canisters": {
-                    "${canisterName}": {
-                        "type": "custom",
-                        "build": "npx azle ${canisterName}",
-                        "root": "src",
-                        "ts": "src/index.ts",
-                        "candid": "src/index.did",
-                        "wasm": "target/wasm32-unknown-unknown/release/${canisterName}.wasm"
-                    }
-                }
-            }
-        \x1b[0m`);
-        console.error(`💀 Build failed`);
-        process.exit(5);
+        const missingFields = [
+            ['"root"', rootPath],
+            ['"ts"', tsPath],
+            ['"candid"', candidPath]
+        ]
+            .filter(([_, value]) => !value)
+            .map(([field, _]) => field);
+        const fieldOrFields = missingFields.length == 1 ? 'field' : 'fields';
+        const missingFieldNames = missingFields.join(', ');
+        exitWithError({
+            error: `Missing ${fieldOrFields} ${missingFieldNames} in dfx.json.`,
+            suggestion: `Make sure your dfx.json looks similar to the following:\n\n${exampleDfxJson}`,
+            exitCode: 4
+        });
     }
 
     const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
@@ -114,7 +103,17 @@ async function azle() {
         }
     });
 
-    console.info('[1/4] 🔨 Compiling typescript to javascript...');
+    // TODO: Consider a better detection method
+    const isAzleGenerateCompiled = !fs.existsSync(`./target/azle/target`);
+
+    if (isAzleGenerateCompiled) {
+        console.info(
+            yellow("\nWarn: Initial build can take up to 4 mins. Don't panic.")
+        );
+        console.info(yellow('Subsequent builds will be faster (~30 seconds)'));
+    }
+
+    console.info('\n[1/4] 🔁 Compiling typescript to javascript...');
     const [main_js, stable_storage_js] = await compileTypeScriptToJavaScript(
         tsPath
     );
@@ -129,7 +128,12 @@ async function azle() {
         stable_storage_js
     );
 
-    console.info('[2/4] 🦀 Generating rust project...');
+    const azleGenerateTimeEstimate = isAzleGenerateCompiled
+        ? '(~45s)'
+        : '(~5s)';
+    console.info(
+        `[2/4] 🔍 Checking IC specific syntax... ${azleGenerateTimeEstimate}`
+    );
 
     // TODO: If our rust dependencies never change, maybe we shouldn't be
     // reinstalling them every time we build.
@@ -142,10 +146,31 @@ async function azle() {
         { stdio: stdioType }
     );
 
-    compileRustCode(canisterName, rootPath, candidPath, stdioType);
+    // TODO: Consider a better detection method
+    const isInitialCompile = !fs.existsSync(
+        'target/wasm32-unknown-unknown/release/primitive_types.wasm'
+    );
+    const compilationTimeEstimate = isInitialCompile ? '(~2m)' : '(~30s)';
+    console.info(`[3/4] 🚧 Building wasm binary... ${compilationTimeEstimate}`);
+    compileRustCode(canisterName, stdioType);
+
+    // TODO: Consider a better detection method
+    const isFirstCandidGeneration = !fs.existsSync(candidPath);
+    const candidGenerationTimeEstimate = isFirstCandidGeneration
+        ? '(~1m)'
+        : '(~5s)';
+    console.info(
+        `[4/4] 📝 Generating candid file... ${candidGenerationTimeEstimate}`
+    );
+    generateCandidFile(rootPath, candidPath, stdioType);
+
+    const elapsedSeconds = parseHrTimeToSeconds(process.hrtime(startTime));
+    console.info(`\nDone in ${elapsedSeconds}s.`);
 
     console.info(
-        `\n🎉 Built canister \x1b[32m${canisterName}\x1b[0m \x1b[2mat ./target/wasm32-unknown-unknown/release/${canisterName}.wasm.gz`
+        `\n🎉 Built canister ${green(canisterName)} ${dim(
+            `at ./target/wasm32-unknown-unknown/release/${canisterName}.wasm.gz`
+        )}`
     );
 }
 
@@ -216,14 +241,7 @@ function writeCodeToFileSystem(
     );
 }
 
-function compileRustCode(
-    canisterName: string,
-    rootPath: string,
-    candidPath: string,
-    stdio: IOType
-) {
-    console.info('[3/4] 🚧 Compiling rust code...');
-
+function compileRustCode(canisterName: string, stdio: IOType) {
     execSync(
         `cd target/azle && CARGO_TARGET_DIR=.. cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
         { stdio }
@@ -244,9 +262,37 @@ function compileRustCode(
         `gzip -f -k ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
         { stdio }
     );
+}
 
-    console.info('[4/4] 📝 Generating candid file...');
+function colorFormattedDfxJsonExample(canisterName: string): string {
+    return `    ${yellow('{')}
+        ${red('"canisters"')}: ${purple('{')}
+            ${red(`"${canisterName}"`)}: ${blue('{')}
+                ${red('"type"')}: ${green('"custom"')},
+                ${red('"build"')}: ${green(`"npx azle ${canisterName}"`)},
+                ${red('"root"')}: ${green('"src"')},
+                ${red('"ts"')}: ${green('"src/index.ts"')},
+                ${red('"candid"')}: ${green('"src/index.did"')},
+                ${red('"wasm"')}: ${green(
+        `"target/wasm32-unknown-unknown/release/${canisterName}.wasm"`
+    )},
+            ${blue('}')}
+        ${purple('}')}
+    ${yellow('}')}`;
+}
 
+function exitWithError(payload: AzleError): never {
+    console.error(`\n💣 ${red(payload.error)}`);
+    console.error(`\n${payload.suggestion}`);
+    console.error(`\n💀 Build failed`);
+    process.exit(payload.exitCode);
+}
+
+function generateCandidFile(
+    rootPath: string,
+    candidPath: string,
+    stdio: IOType
+) {
     execSync(
         `
         cd target/azle/${rootPath} && cargo test
@@ -260,4 +306,12 @@ function compileRustCode(
     `,
         { stdio }
     );
+}
+
+function parseHrTimeToSeconds(
+    hrTime: [number, number],
+    precision: number = 2
+): string {
+    let seconds = (hrTime[0] + hrTime[1] / 1_000_000_000).toFixed(precision);
+    return seconds;
 }
