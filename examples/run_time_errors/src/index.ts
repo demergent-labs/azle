@@ -9,6 +9,8 @@ import {
     Update
 } from 'azle';
 
+// throw 'Uncomment this to test that errors are handled during the eval process.';
+
 class CustomClass {
     public toString = (): string => {
         return 'CustomClass toString';
@@ -40,8 +42,8 @@ export function throw_null(): Query<void> {
 }
 
 export function throw_null_reference(): Query<void> {
-    const null_object = null;
-    trick_type_checker(null_object);
+    const null_object: any = null;
+    null_object.first_field;
 }
 
 export function throw_object(): Query<void> {
@@ -64,10 +66,6 @@ export function throw_undefined(): Query<void> {
     throw undefined;
 }
 
-function trick_type_checker(object: any) {
-    return object.first_field;
-}
-
 // All of the functionality can be tested with only the functions above.
 // The functions below demonstrate that heartbeat, init, etc are also handled
 // but they are all handled with the same code.
@@ -75,7 +73,7 @@ function trick_type_checker(object: any) {
 let inititalized = false;
 let heartbeating = false;
 
-export function getInitialized(): Query<boolean> {
+export function get_initialized(): Query<boolean> {
     return inititalized;
 }
 
@@ -84,12 +82,12 @@ export function heartbeat(): Heartbeat {
     throw 'We are throwing in the heartbeat';
 }
 
-export function inspectMessage(): InspectMessage {
+export function inspect_message(): InspectMessage {
     console.log('inspect_message called');
 
     if (
         ic.method_name() !== 'inaccessible' ||
-        ic.method_name() !== 'alsoInaccessible'
+        ic.method_name() !== 'also_inaccessible'
     ) {
         ic.accept_message();
         return;
@@ -110,7 +108,7 @@ export function inaccessible(): Update<boolean> {
     return false;
 }
 
-export function alsoInaccessible(): Update<boolean> {
+export function also_inaccessible(): Update<boolean> {
     return false;
 }
 
@@ -124,12 +122,12 @@ export function alsoInaccessible(): Update<boolean> {
 //     throw 'We are throwing in the init';
 // }
 
-// export function preUpgrade(): PreUpgrade {
-//     console.log('preUpgrade');
+// export function pre_upgrade(): PreUpgrade {
+//     console.log('pre_upgrade');
 //     throw 'We are throwing in the pre-upgrade';
 // }
 
-// export function postUpgrade(): PostUpgrade {
-//     console.log('postUpgrade');
+// export function post_upgrade(): PostUpgrade {
+//     console.log('post_upgrade');
 //     throw 'We are throwing in the post-upgrade';
 // }

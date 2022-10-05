@@ -1,7 +1,7 @@
 service : () -> {
   accessible : () -> (bool);
-  alsoInaccessible : () -> (bool);
-  getInitialized : () -> (bool) query;
+  also_inaccessible : () -> (bool);
+  get_initialized : () -> (bool) query;
   inaccessible : () -> (bool);
   throw_bigint : () -> () query;
   throw_boolean : () -> () query;
