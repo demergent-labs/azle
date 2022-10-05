@@ -10,8 +10,8 @@ use crate::{
         ActDataType, CanisterMethodType, RequestType, ToAct,
     },
     generators::{
-        async_result_handler, azle_into_js_value, azle_try_from_js_value, canister_methods,
-        cross_canister_call_functions, stacktrace, type_aliases,
+        async_result_handler, canister_methods, cross_canister_call_functions, stacktrace,
+        type_aliases, vm_value_conversion,
     },
     ts_ast::{
         program::TsProgramVecHelperMethods, ts_type_alias_decl::TsTypeAliasListHelperMethods,
@@ -201,8 +201,8 @@ impl ToAct for TsAst {
         let post_upgrade_method = self.programs.build_post_upgrade_method();
         let pre_upgrade_method = self.programs.build_pre_upgrade_method();
 
-        let azle_into_js_value = azle_into_js_value::generate_azle_into_js_value();
-        let azle_try_from_js_value = azle_try_from_js_value::generate_azle_try_from_js_value();
+        let try_into_vm_value_impls = vm_value_conversion::generate_try_into_vm_value_impls();
+        let try_from_vm_value_impls = vm_value_conversion::generate_try_from_vm_value_impls();
 
         let async_result_handler =
             async_result_handler::generate_async_result_handler(&self.programs);
@@ -223,21 +223,17 @@ impl ToAct for TsAst {
             post_upgrade_method,
             pre_upgrade_method,
             rust_code: quote! {
-
                 #cross_canister_call_functions
-
                 #async_result_handler
                 #get_top_level_call_frame_fn
-
-                #azle_into_js_value
-                #azle_try_from_js_value
-
             },
             arrays,
             funcs,
             options,
             primitives,
             records,
+            try_from_vm_value_impls,
+            try_into_vm_value_impls,
             tuples,
             type_refs,
             variants,

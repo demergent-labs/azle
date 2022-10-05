@@ -9,18 +9,18 @@ pub fn generate_ic_object_function_stable_read() -> proc_macro2::TokenStream {
                 .get(0)
                 .unwrap()
                 .clone()
-                .azle_try_from_js_value(_context)
+                .try_from_vm_value(&mut *_context)
                 .unwrap();
             let length: u32 = _aargs
                 .get(1)
                 .unwrap()
                 .clone()
-                .azle_try_from_js_value(_context)
+                .try_from_vm_value(&mut *_context)
                 .unwrap();
 
             let mut buf: Vec<u8> = vec![0; length as usize];
             ic_cdk::api::stable::stable_read(offset, &mut buf);
-            Ok(buf.azle_into_js_value(_context))
+            Ok(buf.try_into_vm_value(_context))
         }
     }
 }

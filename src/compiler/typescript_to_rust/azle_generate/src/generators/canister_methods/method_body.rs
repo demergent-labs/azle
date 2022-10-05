@@ -51,7 +51,7 @@ pub fn generate_call_to_js_function(fn_decl: &FnDecl) -> proc_macro2::TokenStrea
         let _azle_boa_return_value = _azle_function_js_object.call(
             &boa_engine::JsValue::Null,
             &[
-                #(#param_name_idents.azle_into_js_value(&mut _azle_boa_context)),*
+                #(#param_name_idents.try_into_vm_value(&mut _azle_boa_context)),*
             ],
             &mut _azle_boa_context
         ).unwrap();
@@ -81,7 +81,7 @@ fn generate_return_expression(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
     }
 
     quote! {
-        _azle_final_return_value.azle_try_from_js_value(&mut _azle_boa_context).unwrap()
+        _azle_final_return_value.try_from_vm_value(_azle_boa_context).unwrap()
     }
 }
 

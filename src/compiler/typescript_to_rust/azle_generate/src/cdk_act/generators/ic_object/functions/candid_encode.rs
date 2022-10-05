@@ -9,7 +9,7 @@ pub fn generate_ic_object_function_candid_encode() -> proc_macro2::TokenStream {
             let candid_args: candid::IDLArgs = candid_string.parse().unwrap();
             let candid_encoded: Vec<u8> = candid_args.to_bytes().unwrap();
 
-            Ok(candid_encoded.azle_into_js_value(_context))
+            Ok(candid_encoded.try_into_vm_value(_context))
         }
     }
 }

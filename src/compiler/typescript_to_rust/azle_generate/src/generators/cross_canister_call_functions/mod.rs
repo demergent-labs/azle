@@ -409,7 +409,7 @@ fn generate_notify_rust(
 
             quote! {
                 let #param_name_js_value = args_js_object.get(#index, _context).unwrap();
-                let #param_name: #param_type = #param_name_js_value.azle_try_from_js_value(_context).unwrap();
+                let #param_name: #param_type = #param_name_js_value.try_from_vm_value(&mut *_context).unwrap();
             }
         })
         .collect();
@@ -427,7 +427,7 @@ fn generate_notify_rust(
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             let canister_id_js_value = _aargs.get(0).unwrap().clone();
-            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_context).unwrap();
+            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.try_from_vm_value(&mut *_context).unwrap();
 
             let args_js_value = _aargs.get(1).unwrap().clone();
             let args_js_object = args_js_value.as_object().unwrap();
@@ -440,7 +440,7 @@ fn generate_notify_rust(
                 (#(#param_names),*#comma)
             );
 
-            Ok(notify_result.azle_into_js_value(_context))
+            Ok(notify_result.try_into_vm_value(_context))
         }
     }
 }
@@ -463,7 +463,7 @@ fn generate_notify_with_payment128_rust(
 
             quote! {
                 let #param_name_js_value = args_js_object.get(#index, _context).unwrap();
-                let #param_name: #param_type = #param_name_js_value.azle_try_from_js_value(_context).unwrap();
+                let #param_name: #param_type = #param_name_js_value.try_from_vm_value(&mut *_context).unwrap();
             }
         })
         .collect();
@@ -481,7 +481,7 @@ fn generate_notify_with_payment128_rust(
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             let canister_id_js_value = _aargs.get(0).unwrap().clone();
-            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_context).unwrap();
+            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.try_from_vm_value(&mut *_context).unwrap();
 
             let args_js_value = _aargs.get(1).unwrap().clone();
             let args_js_object = args_js_value.as_object().unwrap();
@@ -489,7 +489,7 @@ fn generate_notify_with_payment128_rust(
             #(#param_variables)*
 
             let cycles_js_value = _aargs.get(2).unwrap().clone();
-            let cycles: u128 = cycles_js_value.azle_try_from_js_value(_context).unwrap();
+            let cycles: u128 = cycles_js_value.try_from_vm_value(&mut *_context).unwrap();
 
             let notify_result = ic_cdk::api::call::notify_with_payment128(
                 canister_id_principal,
@@ -498,7 +498,7 @@ fn generate_notify_with_payment128_rust(
                 cycles
             );
 
-            Ok(notify_result.azle_into_js_value(_context))
+            Ok(notify_result.try_into_vm_value(_context))
         }
     }
 }

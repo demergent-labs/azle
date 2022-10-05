@@ -9,13 +9,13 @@ pub fn generate_ic_object_function_stable64_write() -> proc_macro2::TokenStream 
                 .get(0)
                 .unwrap()
                 .clone()
-                .azle_try_from_js_value(_context)
+                .try_from_vm_value(&mut *_context)
                 .unwrap();
             let buf_vector: Vec<u8> = _aargs
                 .get(1)
                 .unwrap()
                 .clone()
-                .azle_try_from_js_value(_context)
+                .try_from_vm_value(&mut *_context)
                 .unwrap();
             let buf: &[u8] = &buf_vector[..];
             ic_cdk::api::stable::stable64_write(offset, buf);

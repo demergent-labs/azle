@@ -52,7 +52,7 @@ pub fn build_canister_method_system_post_upgrade(programs: &Vec<Program>) -> Act
             let _azle_stable_storage = _azle_stable_storage_deserialize_function_js_object.call(
                 &boa_engine::JsValue::Null,
                 &[
-                    _azle_stable_storage_json_string.azle_into_js_value(&mut _azle_boa_context)
+                    _azle_stable_storage_json_string.try_into_vm_value(&mut _azle_boa_context)
                 ],
                 &mut _azle_boa_context
             ).unwrap();

@@ -40,7 +40,7 @@ export function generateLibCargoToml(canisterName: string): Toml {
         # boa_engine = { path = "../../../../../../boa/boa_engine" }
         getrandom = { version = "0.2.3", features = ["custom"] }
         serde = "1.0.137"
-        azle-js-value-derive = { path = "./azle_js_value_derive" }
+        azle-vm-value-derive = { path = "./azle_vm_value_derive" }
         # azle_generate_macro = { path = "./azle_generate_macro" }
         async-recursion = "1.0.0"
     `;
@@ -146,7 +146,7 @@ export function generateWorkspaceCargoLock(): Toml {
         checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
         [[package]]
-        name = "azle-js-value-derive"
+        name = "azle-vm-value-derive"
         version = "0.0.0"
         dependencies = [
         "proc-macro2",
@@ -1148,7 +1148,7 @@ export function generateWorkspaceCargoLock(): Toml {
         version = "0.0.0"
         dependencies = [
         "async-recursion",
-        "azle-js-value-derive",
+        "azle-vm-value-derive",
         "boa_engine",
         "candid",
         "getrandom",

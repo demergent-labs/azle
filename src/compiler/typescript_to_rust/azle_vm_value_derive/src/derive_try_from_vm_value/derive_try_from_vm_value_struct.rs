@@ -2,7 +2,7 @@ use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::{DataStruct, Fields, Index};
 
-pub fn derive_azle_try_from_js_value_struct(
+pub fn derive_try_from_vm_value_struct(
     struct_name: &Ident,
     data_struct: &DataStruct,
 ) -> proc_macro2::TokenStream {
@@ -20,8 +20,8 @@ pub fn derive_azle_try_from_js_value_struct(
         derive_struct_instantiation(struct_name, data_struct, &field_initializers);
 
     quote! {
-        impl AzleTryFromJsValue<#struct_name> for boa_engine::JsValue {
-            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<#struct_name, AzleTryFromJsValueError> {
+        impl CdkActTryFromVmValue<#struct_name, &mut boa_engine::Context> for boa_engine::JsValue {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<#struct_name, CdkActTryFromVmValueError> {
                 let object_option = self.as_object();
 
                 if let Some(object) = object_option {
@@ -36,24 +36,24 @@ pub fn derive_azle_try_from_js_value_struct(
                                     return Ok(#struct_instantiation);
                                 },
                                 _ => {
-                                    return Err(AzleTryFromJsValueError("Could not convert JsValue to Rust type".to_string()));
+                                    return Err(CdkActTryFromVmValueError("Could not convert JsValue to Rust type".to_string()));
                                 }
                             };
                         },
                         _ => {
-                            return Err(AzleTryFromJsValueError("Struct field does not exist".to_string()));
+                            return Err(CdkActTryFromVmValueError("Struct field does not exist".to_string()));
                         }
                     };
                 }
                 else {
-                    return Err(AzleTryFromJsValueError("JsValue is not an object".to_string()));
+                    return Err(CdkActTryFromVmValueError("JsValue is not an object".to_string()));
                 }
             }
         }
 
-        // TODO the body of this function is repeated in azle_try_from_js_value_trait.ts
-        impl AzleTryFromJsValue<Vec<#struct_name>> for boa_engine::JsValue {
-            fn azle_try_from_js_value(self, context: &mut boa_engine::Context) -> Result<Vec<#struct_name>, AzleTryFromJsValueError> {
+        // TODO the body of this function is repeated in try_from_vm_value_trait.ts
+        impl CdkActTryFromVmValue<Vec<#struct_name>, &mut boa_engine::Context> for boa_engine::JsValue {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<#struct_name>, CdkActTryFromVmValueError> {
                 match self.as_object() {
                     Some(js_object) => {
                         if js_object.is_array() {
@@ -69,7 +69,7 @@ pub fn derive_azle_try_from_js_value_struct(
                                             processing = false;
                                         }
                                         else {
-                                            match js_value.azle_try_from_js_value(context) {
+                                            match js_value.try_from_vm_value(&mut *context) {
                                                 Ok(value) => {
                                                     result.push(value);
                                                     index += 1;
@@ -81,7 +81,7 @@ pub fn derive_azle_try_from_js_value_struct(
                                         }
                                     },
                                     Err(_) => {
-                                        return Err(AzleTryFromJsValueError("Item at array index does not exist".to_string()))
+                                        return Err(CdkActTryFromVmValueError("Item at array index does not exist".to_string()))
                                     }
                                 }
                             }
@@ -89,10 +89,10 @@ pub fn derive_azle_try_from_js_value_struct(
                             Ok(result)
                         }
                         else {
-                            Err(AzleTryFromJsValueError("JsObject is not an array".to_string()))
+                            Err(CdkActTryFromVmValueError("JsObject is not an array".to_string()))
                         }
                     },
-                    None => Err(AzleTryFromJsValueError("JsValue is not an object".to_string()))
+                    None => Err(CdkActTryFromVmValueError("JsValue is not an object".to_string()))
                 }
             }
         }
@@ -220,7 +220,7 @@ fn derive_field_result_variable_definitions(
                 let field_result_name = format_ident!("object_{}_result", field_name);
 
                 quote! {
-                    let #field_result_name = #field_js_value_name.azle_try_from_js_value(context);
+                    let #field_result_name = #field_js_value_name.try_from_vm_value(&mut *context);
                 }
             })
             .collect(),
@@ -235,7 +235,7 @@ fn derive_field_result_variable_definitions(
                 let field_result_name = format_ident!("object_{}_result", field_name);
 
                 quote! {
-                    let #field_result_name = #field_js_value_name.azle_try_from_js_value(context);
+                    let #field_result_name = #field_js_value_name.try_from_vm_value(&mut *context);
                 }
             })
             .collect(),
