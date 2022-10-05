@@ -113,7 +113,7 @@ async function azle() {
         console.info(yellow('Subsequent builds will be faster (~30 seconds)'));
     }
 
-    console.info('\n[1/4] 🔁 Compiling typescript to javascript...');
+    console.info('\n[1/4] 👀 Checking typescript syntax...');
     const [main_js, stable_storage_js] = await compileTypeScriptToJavaScript(
         tsPath
     );
@@ -132,7 +132,7 @@ async function azle() {
         ? '(~45s)'
         : '(~5s)';
     console.info(
-        `[2/4] 🔍 Checking IC specific syntax... ${azleGenerateTimeEstimate}`
+        `[2/4] 🔍 Checking azle-specific syntax... ${azleGenerateTimeEstimate}`
     );
 
     // TODO: If our rust dependencies never change, maybe we shouldn't be
