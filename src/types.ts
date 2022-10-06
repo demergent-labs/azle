@@ -12,7 +12,7 @@ export type DfxJson = Readonly<{
 
 export type JavaScript = string;
 
-type JSCanisterConfig = Readonly<{
+export type JSCanisterConfig = Readonly<{
     type: 'custom';
     build: string;
     root: string;
