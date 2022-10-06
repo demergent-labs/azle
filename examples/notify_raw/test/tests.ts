@@ -1,26 +1,48 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/azle/azle.did';
+import { ok, Test } from 'azle/test';
+import { _SERVICE as CANISTER1_SERVICE } from './dfx_generated/canister1/canister1.did';
+import { _SERVICE as CANISTER2_SERVICE } from './dfx_generated/canister2/canister2.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(update_canister: ActorSubclass<_SERVICE>): Test[] {
+export function get_tests(
+    canister1: ActorSubclass<CANISTER1_SERVICE>,
+    canister2: ActorSubclass<CANISTER2_SERVICE>
+): Test[] {
     return [
         {
-            name: 'update',
+            name: 'check notification before',
             test: async () => {
-                const result = await update_canister.update('Why hello there');
+                const result = await canister2.get_notified();
 
                 return {
-                    ok: result === undefined
+                    ok: result === false
                 };
             }
         },
         {
-            name: 'get_current_message',
+            name: 'send notification',
             test: async () => {
-                const result = await update_canister.get_current_message();
+                const result = await canister1.send_notification();
+
+                await new Promise((resolve) => setTimeout(resolve, 5000));
+
+                if (!ok(result)) {
+                    return {
+                        err: result.err
+                    };
+                }
 
                 return {
-                    ok: result === 'Why hello there'
+                    ok: true
+                };
+            }
+        },
+        {
+            name: 'check notification after',
+            test: async () => {
+                const result = await canister2.get_notified();
+
+                return {
+                    ok: result === true
                 };
             }
         }
