@@ -2,25 +2,25 @@ import { Test } from 'azle/test';
 import { _SERVICE } from '../dfx_generated/azle/azle.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(update_canister: ActorSubclass<_SERVICE>): Test[] {
+export function get_tests(hello_canister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'update',
+            name: 'greet',
             test: async () => {
-                const result = await update_canister.update('Why hello there');
+                const result = await hello_canister.greet('everyone');
 
                 return {
-                    ok: result === undefined
+                    ok: result === 'Hello, everyone!'
                 };
             }
         },
         {
-            name: 'get_current_message',
+            name: 'greet nobody',
             test: async () => {
-                const result = await update_canister.get_current_message();
+                const result = await hello_canister.greet('');
 
                 return {
-                    ok: result === 'Why hello there'
+                    ok: result === 'Hello, !'
                 };
             }
         }

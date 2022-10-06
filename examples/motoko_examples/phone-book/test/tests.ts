@@ -1,26 +1,40 @@
 import { Test } from 'azle/test';
+import { Entry } from '../canisters/azle';
 import { _SERVICE } from '../dfx_generated/azle/azle.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(update_canister: ActorSubclass<_SERVICE>): Test[] {
+const TEST_PHONE_BOOK_RECORD: Entry = {
+    desc: 'This is a test record',
+    phone: '555-555-5555'
+};
+
+export function get_tests(
+    phone_book_canister: ActorSubclass<_SERVICE>
+): Test[] {
     return [
         {
-            name: 'update',
+            name: 'insert',
             test: async () => {
-                const result = await update_canister.update('Why hello there');
-
+                const result = await phone_book_canister.insert(
+                    'Test',
+                    TEST_PHONE_BOOK_RECORD
+                );
                 return {
                     ok: result === undefined
                 };
             }
         },
         {
-            name: 'get_current_message',
+            name: 'look up',
             test: async () => {
-                const result = await update_canister.get_current_message();
-
+                const result: Entry | undefined = (
+                    await phone_book_canister.lookup('Test')
+                )[0];
                 return {
-                    ok: result === 'Why hello there'
+                    ok:
+                        result !== undefined &&
+                        result.desc === TEST_PHONE_BOOK_RECORD.desc &&
+                        result.phone === TEST_PHONE_BOOK_RECORD.phone
                 };
             }
         }
