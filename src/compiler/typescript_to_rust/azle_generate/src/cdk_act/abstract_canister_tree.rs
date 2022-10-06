@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 
 use super::{
-    generators::{candid_file_generation, ic_object::functions, random},
+    generators::{candid_file_generation, ic_object::functions, random, vm_value_conversion},
     nodes::{
         data_type_nodes,
         {
@@ -28,6 +28,8 @@ pub struct AbstractCanisterTree {
     pub query_methods: Vec<ActCanisterMethod>,
     pub records: Vec<ActDataType>,
     pub rust_code: TokenStream,
+    pub try_from_vm_value_impls: TokenStream,
+    pub try_into_vm_value_impls: TokenStream,
     pub tuples: Vec<ActDataType>,
     pub type_refs: Vec<ActDataType>,
     pub update_methods: Vec<ActCanisterMethod>,
@@ -38,6 +40,11 @@ impl ToTokenStream for AbstractCanisterTree {
     fn to_token_stream(&self) -> TokenStream {
         // TODO: This needs A LOT of work
         let randomness_implementation = random::generate_randomness_implementation();
+
+        let try_into_vm_value_trait = vm_value_conversion::generate_try_into_vm_value();
+        let try_into_vm_value_impls = &self.try_into_vm_value_impls;
+        let try_from_vm_value_trait = vm_value_conversion::generate_try_from_vm_value();
+        let try_from_vm_value_impls = &self.try_from_vm_value_impls;
 
         let func_arg_token = data_type_nodes::generate_func_arg_token();
 
@@ -103,6 +110,11 @@ impl ToTokenStream for AbstractCanisterTree {
         eprintln!("-----------------------------------------------");
         quote::quote! {
             #randomness_implementation
+
+            #try_into_vm_value_trait
+            #try_into_vm_value_impls
+            #try_from_vm_value_trait
+            #try_from_vm_value_impls
 
             #ic_object_functions
 

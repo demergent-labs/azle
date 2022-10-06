@@ -5,7 +5,7 @@ pub fn generate_ic_object_function_data_certificate() -> proc_macro2::TokenStrea
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            Ok(ic_cdk::api::data_certificate().azle_into_js_value(_context))
+            Ok(ic_cdk::api::data_certificate().try_into_vm_value(_context))
         }
     }
 }

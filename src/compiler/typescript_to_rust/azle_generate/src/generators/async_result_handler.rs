@@ -61,7 +61,7 @@ pub fn generate_async_result_handler(programs: &Vec<Program>) -> proc_macro2::To
             let mut _azle_final_js_value = boa_engine::JsValue::from("hello"); // TODO this will probably break down below
 
             while _azle_continue_running == true {
-                let yield_result_js_value = _azle_next_js_object.call(&_azle_boa_return_value, &_azle_args[..], _azle_boa_context).unwrap();
+                let yield_result_js_value = handle_boa_result(_azle_next_js_object.call(&_azle_boa_return_value, &_azle_args[..], _azle_boa_context), _azle_boa_context);
                 let yield_result_js_object = yield_result_js_value.as_object().unwrap();
 
                 let yield_result_done_js_value = yield_result_js_object.get("done", _azle_boa_context).unwrap();
@@ -175,13 +175,13 @@ pub fn generate_async_result_handler(programs: &Vec<Program>) -> proc_macro2::To
             let call_args_js_object = call_args_js_value.as_object().unwrap();
 
             let canister_id_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap();
-            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
 
             let method_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
             let method_string = method_js_value.as_string().unwrap().to_string();
 
             let args_raw_js_value = call_args_js_object.get("2", _azle_boa_context).unwrap();
-            let args_raw_vec: Vec<u8> = args_raw_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+            let args_raw_vec: Vec<u8> = args_raw_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
 
             let payment_js_value = call_args_js_object.get("3", _azle_boa_context).unwrap();
 
@@ -191,7 +191,7 @@ pub fn generate_async_result_handler(programs: &Vec<Program>) -> proc_macro2::To
                         canister_id_principal,
                         &method_string,
                         &args_raw_vec,
-                        payment_js_value.azle_try_from_js_value(_azle_boa_context).unwrap()
+                        payment_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap()
                     ).await
                 },
                 AzleCallRawType::U128 => {
@@ -199,14 +199,14 @@ pub fn generate_async_result_handler(programs: &Vec<Program>) -> proc_macro2::To
                         canister_id_principal,
                         &method_string,
                         &args_raw_vec,
-                        payment_js_value.azle_try_from_js_value(_azle_boa_context).unwrap()
+                        payment_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap()
                     ).await
                 }
             };
 
             match call_result {
                 Ok(value) => {
-                    let js_value = value.azle_into_js_value(_azle_boa_context);
+                    let js_value = value.try_into_vm_value(_azle_boa_context);
 
                     let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
                         .property(
@@ -221,7 +221,7 @@ pub fn generate_async_result_handler(programs: &Vec<Program>) -> proc_macro2::To
                     canister_result_js_value
                 },
                 Err(err) => {
-                    let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).azle_into_js_value(_azle_boa_context);
+                    let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).try_into_vm_value(_azle_boa_context);
 
                     let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
                         .property(
@@ -260,7 +260,7 @@ fn generate_async_result_handler_call(
 
                 quote! {
                     let #param_name_js_value = call_args_js_object.get(#index_string, _azle_boa_context).unwrap();
-                    let #param_name: #param_type = #param_name_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+                    let #param_name: #param_type = #param_name_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
                 }
             }).collect();
 
@@ -273,7 +273,7 @@ fn generate_async_result_handler_call(
 
                     quote! {
                         let cycles_js_value = call_args_js_object.get(#index_string, _azle_boa_context).unwrap();
-                        let cycles: u64 = cycles_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+                        let cycles: u64 = cycles_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
                     }
                 },
                 AzleCallType::WithPayment128 => {
@@ -281,7 +281,7 @@ fn generate_async_result_handler_call(
 
                     quote! {
                         let cycles_js_value = call_args_js_object.get(#index_string, _azle_boa_context).unwrap();
-                        let cycles: u128 = cycles_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+                        let cycles: u128 = cycles_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
                     }
                 }
             };
@@ -296,7 +296,7 @@ fn generate_async_result_handler_call(
             quote! {
                 #cross_canister_call_function_name => {
                     let canister_id_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
-                    let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.azle_try_from_js_value(_azle_boa_context).unwrap();
+                    let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
 
                     #(#params_variables)*
 
@@ -311,7 +311,7 @@ fn generate_async_result_handler_call(
 
                     match call_result {
                         Ok(value) => {
-                            let js_value = value.0.azle_into_js_value(_azle_boa_context);
+                            let js_value = value.0.try_into_vm_value(_azle_boa_context);
 
                             let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
                                 .property(
@@ -326,7 +326,7 @@ fn generate_async_result_handler_call(
                             canister_result_js_value
                         },
                         Err(err) => {
-                            let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).azle_into_js_value(_azle_boa_context);
+                            let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).try_into_vm_value(_azle_boa_context);
 
                             let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
                                 .property(

@@ -384,13 +384,13 @@ function writeCodeToFileSystem(
         fs.mkdirSync(`./target/azle/${rootPath}/src`);
     }
 
-    if (!fs.existsSync(`./target/azle/${rootPath}/azle_js_value_derive`)) {
-        fs.mkdirSync(`./target/azle/${rootPath}/azle_js_value_derive`);
+    if (!fs.existsSync(`./target/azle/${rootPath}/azle_vm_value_derive`)) {
+        fs.mkdirSync(`./target/azle/${rootPath}/azle_vm_value_derive`);
     }
 
     fsExtra.copySync(
-        `${__dirname}/compiler/typescript_to_rust/azle_js_value_derive`,
-        `./target/azle/${rootPath}/azle_js_value_derive`
+        `${__dirname}/compiler/typescript_to_rust/azle_vm_value_derive`,
+        `./target/azle/${rootPath}/azle_vm_value_derive`
     );
 
     if (!fs.existsSync(`./target/azle/${rootPath}/azle_generate`)) {
