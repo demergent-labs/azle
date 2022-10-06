@@ -44,10 +44,10 @@ pub fn build_canister_method_system_init(programs: &Vec<Program>) -> ActInitMeth
                 boa_engine::property::Attribute::all()
             );
 
-            _azle_boa_context.eval(format!(
+            handle_boa_result(_azle_boa_context.eval(format!(
                 "let exports = {{}}; {compiled_js}",
                 compiled_js = MAIN_JS
-            )).unwrap();
+            )), &mut _azle_boa_context);
 
             #call_to_init_js_function
         }
