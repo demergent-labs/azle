@@ -30,28 +30,13 @@ function azle() {
         const canisterConfig = unwrap(getCanisterConfig(canisterName));
 
         printFirstBuildWarning(canisterName);
-
-        time('\n[1/3] 🔨 Compiling TypeScript...', 'inline', () => {
-            unwrap(
-                compileTypeScriptToRust(canisterName, canisterConfig, stdioType)
-            );
-        });
-
-        time(
-            `[2/3] 🚧 Building Wasm binary...${getBuildWarning(canisterName)}`,
-            'inline',
-            () => {
-                compileRustCode(canisterName, stdioType);
-            }
+        compileTypeScriptToRust(canisterName, canisterConfig, stdioType);
+        compileRustCode(canisterName, stdioType);
+        generateCandidFile(
+            canisterConfig.root,
+            canisterConfig.candid,
+            stdioType
         );
-
-        time(`[3/3] 📝 Generating Candid file...`, 'inline', () => {
-            generateCandidFile(
-                canisterConfig.root,
-                canisterConfig.candid,
-                stdioType
-            );
-        });
     });
 
     logSuccess(canisterName);
@@ -81,25 +66,31 @@ function colorFormattedDfxJsonExample(canisterName: string): string {
 }
 
 function compileRustCode(canisterName: string, stdio: IOType) {
-    execSync(
-        `cd target/azle && CARGO_TARGET_DIR=.. cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
-        { stdio }
-    );
+    time(
+        `[2/3] 🚧 Building Wasm binary...${getBuildWarning(canisterName)}`,
+        'inline',
+        () => {
+            execSync(
+                `cd target/azle && CARGO_TARGET_DIR=.. cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
+                { stdio }
+            );
 
-    const cargo_bin_root =
-        process.env.CARGO_INSTALL_ROOT ??
-        process.env.CARGO_HOME ??
-        `$HOME/.cargo`;
+            const cargo_bin_root =
+                process.env.CARGO_INSTALL_ROOT ??
+                process.env.CARGO_HOME ??
+                `$HOME/.cargo`;
 
-    // optimization, binary is too big to deploy without this
-    execSync(
-        `${cargo_bin_root}/bin/ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/${canisterName}.wasm -o ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
-        { stdio }
-    );
+            // optimization, binary is too big to deploy without this
+            execSync(
+                `${cargo_bin_root}/bin/ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/${canisterName}.wasm -o ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
+                { stdio }
+            );
 
-    execSync(
-        `gzip -f -k ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
-        { stdio }
+            execSync(
+                `gzip -f -k ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
+                { stdio }
+            );
+        }
     );
 }
 
@@ -107,54 +98,57 @@ function compileTypeScriptToRust(
     canisterName: string,
     { root: rootPath, ts: tsPath }: JSCanisterConfig,
     stdioType: IOType
-): Result<undefined, AzleError> {
-    const compilationResult = compileTypeScriptToJavaScript(tsPath);
+): void | never {
+    time('\n[1/3] 🔨 Compiling TypeScript...', 'inline', () => {
+        const compilationResult = compileTypeScriptToJavaScript(tsPath);
 
-    if (!ok<string[], unknown>(compilationResult)) {
-        const err = compilationResult.err;
-        return compilationErrorToAzleErrorResult(compilationResult.err);
-    }
-
-    const [main_js, stable_storage_js] = compilationResult.ok;
-
-    const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
-    const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
-    const libCargoToml: Toml = generateLibCargoToml(canisterName);
-
-    const program = tsc.createProgram([tsPath], {});
-    const sourceFiles = program.getSourceFiles();
-
-    const root_absolute_path = require('path').join(__dirname, '..');
-
-    const fileNames = sourceFiles.map((sourceFile) => {
-        if (sourceFile.fileName.startsWith(root_absolute_path) === false) {
-            return `${process.cwd()}/${sourceFile.fileName}`;
-        } else {
-            return sourceFile.fileName;
+        if (!ok<string[], unknown>(compilationResult)) {
+            const err = compilationResult.err;
+            const azleErrorResult = compilationErrorToAzleErrorResult(
+                compilationResult.err
+            );
+            unwrap(azleErrorResult);
         }
+
+        const [main_js, stable_storage_js] = compilationResult.ok;
+
+        const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
+        const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
+        const libCargoToml: Toml = generateLibCargoToml(canisterName);
+
+        const program = tsc.createProgram([tsPath], {});
+        const sourceFiles = program.getSourceFiles();
+
+        const root_absolute_path = require('path').join(__dirname, '..');
+
+        const fileNames = sourceFiles.map((sourceFile) => {
+            if (sourceFile.fileName.startsWith(root_absolute_path) === false) {
+                return `${process.cwd()}/${sourceFile.fileName}`;
+            } else {
+                return sourceFile.fileName;
+            }
+        });
+
+        writeCodeToFileSystem(
+            rootPath,
+            workspaceCargoToml,
+            workspaceCargoLock,
+            libCargoToml,
+            main_js,
+            stable_storage_js
+        );
+
+        // TODO: If our rust dependencies never change, maybe we shouldn't be
+        // reinstalling them every time we build.
+        installRustDependencies(stdioType);
+
+        execSync(
+            `cd target/azle/${rootPath}/azle_generate && cargo run -- ${fileNames.join(
+                ','
+            )} | rustfmt --edition 2018 > ../src/lib.rs`,
+            { stdio: stdioType }
+        );
     });
-
-    writeCodeToFileSystem(
-        rootPath,
-        workspaceCargoToml,
-        workspaceCargoLock,
-        libCargoToml,
-        main_js,
-        stable_storage_js
-    );
-
-    // TODO: If our rust dependencies never change, maybe we shouldn't be
-    // reinstalling them every time we build.
-    installRustDependencies(stdioType);
-
-    execSync(
-        `cd target/azle/${rootPath}/azle_generate && cargo run -- ${fileNames.join(
-            ','
-        )} | rustfmt --edition 2018 > ../src/lib.rs`,
-        { stdio: stdioType }
-    );
-
-    return Ok(undefined);
 }
 
 function generateCandidFile(
@@ -162,19 +156,13 @@ function generateCandidFile(
     candidPath: string,
     stdio: IOType
 ) {
-    execSync(
-        `
-        cd target/azle/${rootPath} && cargo test
-    `,
-        { stdio }
-    );
+    time(`[3/3] 📝 Generating Candid file...`, 'inline', () => {
+        execSync(`cd target/azle/${rootPath} && cargo test`, { stdio });
 
-    execSync(
-        `
-        cp target/azle/${rootPath}/index.did ${candidPath}
-    `,
-        { stdio }
-    );
+        execSync(`cp target/azle/${rootPath}/index.did ${candidPath}`, {
+            stdio
+        });
+    });
 }
 
 function generateVisualDisplayOfErrorLocation(
