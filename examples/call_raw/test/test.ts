@@ -1,7 +1,6 @@
-import { Principal } from '@dfinity/principal';
-import { deploy, ok, run_tests, Test } from 'azle/test';
-import { execSync } from 'child_process';
+import { deploy, run_tests, Test } from 'azle/test';
 import { createActor } from '../test/dfx_generated/call_raw';
+import { get_tests } from './tests';
 
 const call_raw_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -9,96 +8,6 @@ const call_raw_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-const tests: Test[] = [
-    ...deploy('call_raw'),
-    {
-        name: 'execute_call_raw raw_rand',
-        test: async () => {
-            const result = await call_raw_canister.execute_call_raw(
-                Principal.fromText('aaaaa-aa'),
-                'raw_rand',
-                '()',
-                0n
-            );
-
-            if (!ok(result)) {
-                return {
-                    err: result.err
-                };
-            }
-
-            return {
-                ok: result.ok.includes('blob')
-            };
-        }
-    },
-    {
-        name: 'execute_call_raw create_canister',
-        test: async () => {
-            const result = await call_raw_canister.execute_call_raw(
-                Principal.fromText('aaaaa-aa'),
-                'create_canister',
-                '(record { settings = null })',
-                100_000_000_000n
-            );
-
-            if (!ok(result)) {
-                return {
-                    err: result.err
-                };
-            }
-
-            return {
-                ok:
-                    result.ok.includes('record') &&
-                    result.ok.includes('principal')
-            };
-        }
-    },
-    {
-        name: 'execute_call_raw128 raw_rand',
-        test: async () => {
-            const result = await call_raw_canister.execute_call_raw128(
-                Principal.fromText('aaaaa-aa'),
-                'raw_rand',
-                '()',
-                0n
-            );
-
-            if (!ok(result)) {
-                return {
-                    err: result.err
-                };
-            }
-
-            return {
-                ok: result.ok.includes('blob')
-            };
-        }
-    },
-    {
-        name: 'execute_call_raw128 create_canister',
-        test: async () => {
-            const result = await call_raw_canister.execute_call_raw128(
-                Principal.fromText('aaaaa-aa'),
-                'create_canister',
-                '(record { settings = null })',
-                100_000_000_000n
-            );
-
-            if (!ok(result)) {
-                return {
-                    err: result.err
-                };
-            }
-
-            return {
-                ok:
-                    result.ok.includes('record') &&
-                    result.ok.includes('principal')
-            };
-        }
-    }
-];
+const tests: Test[] = [...deploy('call_raw'), ...get_tests(call_raw_canister)];
 
 run_tests(tests);
