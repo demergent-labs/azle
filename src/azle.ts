@@ -12,7 +12,11 @@ import {
     DfxJson,
     JavaScript,
     JSCanisterConfig,
-    Toml
+    Ok,
+    Result,
+    Toml,
+    TsCompilationError,
+    TsSyntaxErrorLocation
 } from './types';
 import { red, yellow, green, blue, purple, dim } from './colors';
 import * as tsc from 'typescript';
@@ -110,7 +114,13 @@ function compileTypeScriptToRust(
     { root: rootPath, ts: tsPath }: JSCanisterConfig,
     stdioType: IOType
 ): void | never {
-    const [main_js, stable_storage_js] = compileTypeScriptToJavaScript(tsPath);
+    const compilationResult = compileTypeScriptToJavaScript(tsPath);
+
+    if (!ok(compilationResult)) {
+        logCompilationError(compilationResult.err);
+    }
+
+    const [main_js, stable_storage_js] = compilationResult.ok;
 
     const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
     const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
@@ -175,6 +185,23 @@ function generateCandidFile(
     `,
         { stdio }
     );
+}
+
+function generateVisualDisplayOfErrorLocation(
+    location: TsSyntaxErrorLocation
+): string {
+    const { file, line, column, lineText } = location;
+    const marker = red('^'.padStart(column + 1));
+    const preciseLocation = dim(`${file}:${line}:${column}`);
+    const previousLine =
+        line > 1
+            ? dim(`${(line - 1).toString().padStart(line.toString().length)}| `)
+            : '';
+    const offendingLine = `${dim(`${line}| `)}${lineText}`;
+    const subsequentLine = `${dim(
+        `${(line + 1).toString().padStart(line.toString().length)}| `
+    )}${marker}`;
+    return `${preciseLocation}\n${previousLine}\n${offendingLine}\n${subsequentLine}`;
 }
 
 function getCanisterConfig(canisterName: string): JSCanisterConfig | never {
@@ -261,12 +288,44 @@ function isCliFlag(arg: string): boolean {
     return arg.startsWith('--') || arg.startsWith('-');
 }
 
+function isTsCompilationError(error: unknown): error is TsCompilationError {
+    if (
+        error &&
+        typeof error === 'object' &&
+        'stack' in error &&
+        'message' in error &&
+        'errors' in error &&
+        'warnings' in error
+    ) {
+        return true;
+    }
+    return false;
+}
+
 function logSuccess(canisterName: string): void {
     console.info(
         `\n🎉 Built canister ${green(canisterName)} ${dim(
             `at ./target/wasm32-unknown-unknown/release/${canisterName}.wasm.gz`
         )}`
     );
+}
+
+function logCompilationError(error: unknown): never {
+    if (isTsCompilationError(error)) {
+        const firstError = error.errors[0];
+        const codeSnippet = generateVisualDisplayOfErrorLocation(
+            firstError.location
+        );
+        exitWithError({
+            error: `There's something wrong in your typescript: ${firstError.text}`,
+            suggestion: codeSnippet,
+            exitCode: 5
+        });
+    } else {
+        console.error(`\n💣 ${red(`Unable to compile TS to JS: ${error}`)}`);
+        console.error(`\n💀 Build failed`);
+        process.exit(6);
+    }
 }
 
 function parseHrTimeToSeconds(
@@ -349,4 +408,8 @@ function writeCodeToFileSystem(
         `./target/azle/${rootPath}/azle_generate/src/stable_storage.js`,
         stable_storage_js
     );
+}
+
+export function ok<T, V>(result: Result<T, V>): result is Ok<T> {
+    return result.err === undefined;
 }

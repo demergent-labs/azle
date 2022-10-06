@@ -1,16 +1,11 @@
 import * as swc from '@swc/core';
 import * as tsc from 'typescript';
 import { buildSync } from 'esbuild';
-import {
-    AzleError,
-    JavaScript,
-    TypeScript,
-    TsCompilationError,
-    TsSyntaxErrorLocation
-} from '../../types';
-import { red, dim } from '../../colors';
+import { JavaScript, Result, TypeScript } from '../../types';
 
-export function compileTypeScriptToJavaScript(ts_path: string): JavaScript[] {
+export function compileTypeScriptToJavaScript(
+    ts_path: string
+): Result<JavaScript[], unknown> {
     try {
         const icCanisters: JavaScript = generateICCanisters(ts_path);
 
@@ -41,65 +36,10 @@ export function compileTypeScriptToJavaScript(ts_path: string): JavaScript[] {
             `export { stable_storage_deserialize, stable_storage_serialize } from 'azle';`
         );
 
-        return [main_js, stable_storage_js];
-    } catch (error) {
-        if (isTsCompilationError(error)) {
-            const firstError = error.errors[0];
-            const codeSnippet = generateVisualDisplayOfErrorLocation(
-                firstError.location
-            );
-            exitWithError({
-                error: `There's something wrong in your typescript: ${firstError.text}`,
-                suggestion: codeSnippet,
-                exitCode: 5
-            });
-        } else {
-            console.error(
-                `\n💣 ${red(`Unable to compile TS to JS: ${error}`)}`
-            );
-            console.error(`\n💀 Build failed`);
-            process.exit(6);
-        }
+        return { ok: [main_js, stable_storage_js] };
+    } catch (err) {
+        return { err };
     }
-}
-
-// TODO: Unable to import this from azle.ts for some reason
-export function exitWithError(payload: AzleError): never {
-    console.error(`\n💣 ${red(payload.error)}`);
-    console.error(`\n${payload.suggestion}`);
-    console.error(`\n💀 Build failed`);
-    process.exit(payload.exitCode);
-}
-
-function isTsCompilationError(error: unknown): error is TsCompilationError {
-    if (
-        error &&
-        typeof error === 'object' &&
-        'stack' in error &&
-        'message' in error &&
-        'errors' in error &&
-        'warnings' in error
-    ) {
-        return true;
-    }
-    return false;
-}
-
-function generateVisualDisplayOfErrorLocation(
-    location: TsSyntaxErrorLocation
-): string {
-    const { file, line, column, lineText } = location;
-    const marker = red('^'.padStart(column + 1));
-    const preciseLocation = dim(`${file}:${line}:${column}`);
-    const previousLine =
-        line > 1
-            ? dim(`${(line - 1).toString().padStart(line.toString().length)}| `)
-            : '';
-    const offendingLine = `${dim(`${line}| `)}${lineText}`;
-    const subsequentLine = `${dim(
-        `${(line + 1).toString().padStart(line.toString().length)}| `
-    )}${marker}`;
-    return `${preciseLocation}\n${previousLine}\n${offendingLine}\n${subsequentLine}`;
 }
 
 export function bundle_and_transpile_ts(ts: TypeScript): JavaScript {

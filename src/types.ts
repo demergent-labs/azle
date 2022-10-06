@@ -21,6 +21,15 @@ export type JSCanisterConfig = Readonly<{
     wasm: string;
 }>;
 
+export type Ok<T> = {
+    ok: T;
+};
+
+export type Result<Ok, Err> = Partial<{
+    ok: Ok;
+    err: Err;
+}>;
+
 export type Rust = string;
 
 export type Toml = string;
