@@ -1,26 +1,48 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/azle/azle.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Test } from 'azle/test';
+import { _SERVICE } from './dfx_generated/imports/imports.did';
 
-export function get_tests(update_canister: ActorSubclass<_SERVICE>): Test[] {
+export function get_tests(imports_canister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'update',
+            name: 'getOne',
             test: async () => {
-                const result = await update_canister.update('Why hello there');
+                const result = await imports_canister.getOne();
 
                 return {
-                    ok: result === undefined
+                    ok: result === 'one'
                 };
             }
         },
         {
-            name: 'get_current_message',
+            name: 'getTwo',
             test: async () => {
-                const result = await update_canister.get_current_message();
+                const result = await imports_canister.getTwo();
 
                 return {
-                    ok: result === 'Why hello there'
+                    ok: result === 'two'
+                };
+            }
+        },
+        {
+            name: 'getThree',
+            test: async () => {
+                const result = await imports_canister.getThree();
+
+                return {
+                    ok: result === 'three'
+                };
+            }
+        },
+        {
+            name: 'sha224Hash',
+            test: async () => {
+                const result = await imports_canister.sha224Hash('hello');
+
+                return {
+                    ok:
+                        result ===
+                        'ea09ae9cc6768c50fcee903ed054556e5bfc8347907f12598aa24193'
                 };
             }
         }

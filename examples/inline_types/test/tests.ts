@@ -1,13 +1,180 @@
 import { Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/azle/azle.did';
+import { _SERVICE } from './dfx_generated/inline_types/inline_types.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(update_canister: ActorSubclass<_SERVICE>): Test[] {
+export function get_tests(
+    inline_types_canister: ActorSubclass<_SERVICE>
+): Test[] {
     return [
         {
-            name: 'update',
+            name: 'inlineRecordReturnType',
             test: async () => {
-                const result = await update_canister.update('Why hello there');
+                const result =
+                    await inline_types_canister.inlineRecordReturnType();
+
+                return {
+                    ok: result.prop1 === 'prop1' && result.prop2 === 'prop2'
+                };
+            }
+        },
+        {
+            name: 'inlineRecordParam',
+            test: async () => {
+                const result = await inline_types_canister.inlineRecordParam({
+                    prop1: 'prop1'
+                });
+
+                return {
+                    ok: result === 'prop1'
+                };
+            }
+        },
+        {
+            name: 'inlineVariantReturnType',
+            test: async () => {
+                const result =
+                    await inline_types_canister.inlineVariantReturnType();
+
+                return {
+                    ok: 'var1' in result
+                };
+            }
+        },
+        {
+            name: 'inlineRecordReturnType',
+            test: async () => {
+                const result = await inline_types_canister.inlineVariantParam({
+                    var1: null
+                });
+
+                return {
+                    ok: 'var1' in result
+                };
+            }
+        },
+        {
+            name: 'inlineVariantParam',
+            test: async () => {
+                const result = await inline_types_canister.inlineVariantParam({
+                    var2: null
+                });
+
+                return {
+                    ok: 'var2' in result
+                };
+            }
+        },
+        {
+            name: 'recordWithInlineFields',
+            test: async () => {
+                const result =
+                    await inline_types_canister.recordWithInlineFields();
+
+                return {
+                    ok:
+                        result.id === '0' &&
+                        result.job.id === '0' &&
+                        result.job.title === 'Software Developer'
+                };
+            }
+        },
+        {
+            name: 'variantWithInlineFields',
+            test: async () => {
+                const result =
+                    await inline_types_canister.variantWithInlineFields();
+
+                return {
+                    ok: 'three' in result && result.three.id === '0'
+                };
+            }
+        },
+        {
+            name: 'recordReferencingOtherTypesFromReturnType',
+            test: async () => {
+                const result =
+                    await inline_types_canister.recordReferencingOtherTypesFromReturnType();
+
+                return {
+                    ok: result.prop1 === 'prop1' && result.prop2.id === '0'
+                };
+            }
+        },
+        {
+            name: 'variantReferencingOtherTypesFromReturnType',
+            test: async () => {
+                const result =
+                    await inline_types_canister.variantReferencingOtherTypesFromReturnType();
+
+                return {
+                    ok: 'prop2' in result && result.prop2.id === '0'
+                };
+            }
+        },
+        {
+            name: 'recordReferencingRecordFromParam',
+            test: async () => {
+                const result =
+                    await inline_types_canister.recordReferencingRecordFromParam(
+                        {
+                            test: {
+                                id: '0'
+                            }
+                        }
+                    );
+
+                return {
+                    ok: result === '0'
+                };
+            }
+        },
+        {
+            name: 'recordReferencingVariantFromParam',
+            test: async () => {
+                const result =
+                    await inline_types_canister.recordReferencingVariantFromParam(
+                        {
+                            testVariant: {
+                                prop1: '0'
+                            }
+                        }
+                    );
+
+                return {
+                    ok: result.length === 1 && result[0] === '0'
+                };
+            }
+        },
+        {
+            name: 'recordReferencingVariantFromParam',
+            test: async () => {
+                const result =
+                    await inline_types_canister.recordReferencingVariantFromParam(
+                        {
+                            testVariant: {
+                                prop2: {
+                                    id: '0'
+                                }
+                            }
+                        }
+                    );
+
+                return {
+                    ok: result.length === 0
+                };
+            }
+        },
+        {
+            name: 'variantReferencingRecordFromParam',
+            test: async () => {
+                const result =
+                    await inline_types_canister.variantReferencingRecordFromParam(
+                        {
+                            prop1: {
+                                id: '0'
+                            }
+                        }
+                    );
 
                 return {
                     ok: result === undefined
@@ -15,12 +182,19 @@ export function get_tests(update_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'get_current_message',
+            name: 'variantReferencingVariantFromParam',
             test: async () => {
-                const result = await update_canister.get_current_message();
+                const result =
+                    await inline_types_canister.variantReferencingVariantFromParam(
+                        {
+                            prop1: {
+                                prop1: null
+                            }
+                        }
+                    );
 
                 return {
-                    ok: result === 'Why hello there'
+                    ok: result === undefined
                 };
             }
         }

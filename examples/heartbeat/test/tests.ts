@@ -1,26 +1,20 @@
 import { Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/azle/azle.did';
+import { _SERVICE } from './dfx_generated/heartbeat/heartbeat.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(update_canister: ActorSubclass<_SERVICE>): Test[] {
+export function get_tests(heartbeat_canister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'update',
-            test: async () => {
-                const result = await update_canister.update('Why hello there');
-
-                return {
-                    ok: result === undefined
-                };
-            }
+            name: 'Wait for first heartbeat to be called',
+            wait: 5000
         },
         {
-            name: 'get_current_message',
+            name: 'getInitialized',
             test: async () => {
-                const result = await update_canister.get_current_message();
+                const result = await heartbeat_canister.getInitialized();
 
                 return {
-                    ok: result === 'Why hello there'
+                    ok: result
                 };
             }
         }
