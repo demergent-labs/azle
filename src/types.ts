@@ -1,7 +1,7 @@
 export type AzleError = {
-    error: string;
-    suggestion: string;
-    exitCode: number;
+    error?: string;
+    suggestion?: string;
+    exitCode?: number;
 };
 
 export type DfxJson = Readonly<{
@@ -19,15 +19,6 @@ export type JSCanisterConfig = Readonly<{
     ts: string;
     candid: string;
     wasm: string;
-}>;
-
-export type Ok<T> = {
-    ok: T;
-};
-
-export type Result<Ok, Err> = Partial<{
-    ok: Ok;
-    err: Err;
 }>;
 
 export type Rust = string;
