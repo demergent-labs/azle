@@ -1,131 +1,147 @@
 use quote::format_ident;
 use std::collections::{HashMap, HashSet};
-use swc_ecma_ast::{FnDecl, TsType};
+use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType, TsTypeRef};
 use syn::Ident;
 
 use super::{AzleTypeAliasDecl, GetDependencies};
 use crate::cdk_act::CanisterMethodType;
+use errors::FnDeclErrors;
 
 mod canister_method_builder;
+mod errors;
 
 pub trait FnDeclHelperMethods {
-    fn get_canister_method_return_type(&self) -> Option<&TsType>;
-    fn get_fn_decl_function_name(&self) -> String;
+    fn get_canister_method_type(&self) -> &str;
+    fn get_function_name(&self) -> String;
+    fn get_param_binding_idents(&self) -> Vec<&BindingIdent>;
     fn get_param_name_idents(&self) -> Vec<Ident>;
-    fn get_param_ts_types(&self) -> Vec<TsType>;
-    fn get_return_ts_type(&self) -> TsType;
-    fn is_canister_method_type_fn_decl(&self, canister_method_type: &CanisterMethodType) -> bool;
+    fn get_param_ts_types(&self) -> Vec<&TsType>;
+    fn get_return_type_ref(&self) -> &TsTypeRef;
+    fn get_return_ts_type(&self) -> &TsType;
+    fn is_canister_method_type(&self, canister_method_type: &CanisterMethodType) -> bool;
     fn is_manual(&self) -> bool;
 }
 
 impl FnDeclHelperMethods for FnDecl {
-    // TODO: Should be combined with `get_return_ts_type` below
-    fn get_canister_method_return_type(&self) -> Option<&TsType> {
-        let ts_type = &*self.function.return_type.as_ref().unwrap().type_ann;
-        let type_ref = ts_type.as_ts_type_ref().unwrap();
-        let type_param_instantiation_option = &type_ref.type_params.as_ref();
-        match type_param_instantiation_option {
-            Some(type_param_inst) => Some(&*type_param_inst.params[0]),
-            None => None,
+    fn get_canister_method_type(&self) -> &str {
+        match &self.get_return_type_ref().type_name {
+            TsEntityName::Ident(ident) => ident.sym.chars().as_str(),
+            TsEntityName::TsQualifiedName(_) => panic!("{}", self.build_qualified_type_error_msg()),
         }
     }
 
-    // TODO: Should be combined with `get_canister_method_return_type` above
-    fn get_return_ts_type(&self) -> TsType {
-        let ts_type_ann = self.function.return_type.as_ref();
-        let return_type_ann = ts_type_ann.clone().unwrap();
-        let return_type_ref = return_type_ann.type_ann.as_ts_type_ref().unwrap();
-        let return_type_params = return_type_ref.type_params.clone().unwrap();
-
-        let return_ts_type = *return_type_params.params[0].clone();
-        return_ts_type
+    fn get_return_type_ref(&self) -> &TsTypeRef {
+        match &self.function.return_type {
+            Some(ts_type_ann) => match &*ts_type_ann.type_ann {
+                TsType::TsTypeRef(type_ref) => &type_ref,
+                _ => panic!("{}", self.build_non_type_ref_return_type_error_msg()),
+            },
+            None => panic!("{}", self.build_missing_return_annotation_error_msg()),
+        }
     }
 
-    fn get_fn_decl_function_name(&self) -> String {
+    fn get_return_ts_type(&self) -> &TsType {
+        let type_ref = &self.get_return_type_ref();
+        match &type_ref.type_params {
+            Some(type_param_instantiation) => &*type_param_instantiation.params[0],
+            None => {
+                let canister_method_type = self.get_canister_method_type();
+                let error_message = self.build_missing_return_type_error_msg(canister_method_type);
+                panic!("{}", error_message)
+            }
+        }
+    }
+
+    fn get_function_name(&self) -> String {
         self.ident.sym.chars().as_str().to_string()
     }
 
     fn get_param_name_idents(&self) -> Vec<Ident> {
+        let param_idents = self.get_param_binding_idents();
+
+        param_idents
+            .iter()
+            .map(|ident| format_ident!("{}", ident.sym.chars().as_str().to_string()))
+            .collect()
+    }
+
+    fn get_param_binding_idents(&self) -> Vec<&BindingIdent> {
         self.function
             .params
             .iter()
-            .map(|param| {
-                format_ident!(
-                    "{}",
-                    param
-                        .pat
-                        .as_ident()
-                        .unwrap()
-                        .sym
-                        .chars()
-                        .as_str()
-                        .to_string()
-                )
+            .map(|param| match &param.pat {
+                Pat::Ident(ident) => ident,
+                Pat::Array(_) => panic!("{}", self.build_array_destructure_error_msg()),
+                Pat::Rest(_) => panic!("{}", self.build_rest_param_error_msg()),
+                Pat::Object(_) => panic!("{}", self.build_object_destructure_error_msg()),
+                Pat::Assign(_) => panic!("{}", self.build_param_default_value_error_msg()),
+                Pat::Invalid(_) => panic!("{}", self.build_invalid_param_error_msg()),
+                Pat::Expr(_) => panic!("{}", self.build_invalid_param_error_msg()),
             })
             .collect()
     }
 
-    fn get_param_ts_types(&self) -> Vec<TsType> {
-        let params = &self.function.params;
-        params.iter().fold(vec![], |acc, param| {
-            let param_type_ann = &param.pat.as_ident().unwrap().type_ann.as_ref();
-            let param_type_ann = param_type_ann.clone().unwrap();
-            let param_ts_type = *param_type_ann.type_ann.clone();
+    fn get_param_ts_types(&self) -> Vec<&TsType> {
+        let param_idents = self.get_param_binding_idents();
 
-            vec![acc, vec![param_ts_type]].concat()
-        })
+        param_idents
+            .iter()
+            .fold(vec![], |acc, ident| match &ident.type_ann {
+                Some(ts_type_ann) => vec![acc, vec![&ts_type_ann.type_ann]].concat(),
+                None => panic!("{}", self.build_untyped_param_error_msg()),
+            })
     }
 
-    fn is_canister_method_type_fn_decl(&self, canister_method_type: &CanisterMethodType) -> bool {
-        if let Some(ts_type_ann) = &self.function.return_type {
-            if ts_type_ann.type_ann.is_ts_type_ref() {
-                let type_ref = ts_type_ann.type_ann.as_ts_type_ref().unwrap();
-
-                if type_ref.type_name.is_ident() {
-                    let ident = type_ref.type_name.as_ident().unwrap();
-                    let method_type = ident.sym.chars().as_str();
-
-                    match canister_method_type {
-                        CanisterMethodType::Heartbeat => method_type == "Heartbeat",
-                        CanisterMethodType::Init => method_type == "Init",
-                        CanisterMethodType::InspectMessage => method_type == "InspectMessage",
-                        CanisterMethodType::PostUpgrade => method_type == "PostUpgrade",
-                        CanisterMethodType::PreUpgrade => method_type == "PreUpgrade",
-                        CanisterMethodType::Query => {
-                            method_type == "Query" || method_type == "QueryManual"
-                        }
-                        CanisterMethodType::Update => {
-                            method_type == "Update" || method_type == "UpdateManual"
+    /// Returns whether the fn_decl is of the provided type.
+    ///
+    /// **Note:** This method shouldn't panic even if it is missing a return
+    /// type because it is called to filter all fn_decls, including those that
+    /// aren't canister methods.
+    fn is_canister_method_type(&self, canister_method_type: &CanisterMethodType) -> bool {
+        match &self.function.return_type {
+            Some(ts_type_ann) => match &*ts_type_ann.type_ann {
+                TsType::TsTypeRef(type_ref) => match &type_ref.type_name {
+                    TsEntityName::Ident(ident) => {
+                        let method_type = ident.sym.chars().as_str();
+                        match canister_method_type {
+                            // TODO: Consider that these names may not come from azle. For example:
+                            // ```
+                            // import { Query } from 'not_azle';
+                            // export function example(): Query<string> {...}
+                            // ```
+                            CanisterMethodType::Heartbeat => method_type == "Heartbeat",
+                            CanisterMethodType::Init => method_type == "Init",
+                            CanisterMethodType::InspectMessage => method_type == "InspectMessage",
+                            CanisterMethodType::PostUpgrade => method_type == "PostUpgrade",
+                            CanisterMethodType::PreUpgrade => method_type == "PreUpgrade",
+                            CanisterMethodType::Query => {
+                                method_type == "Query" || method_type == "QueryManual"
+                            }
+                            CanisterMethodType::Update => {
+                                method_type == "Update" || method_type == "UpdateManual"
+                            }
                         }
                     }
-                } else {
-                    false
-                }
-            } else {
-                false
-            }
-        } else {
-            false
+                    TsEntityName::TsQualifiedName(_) => {
+                        // TODO: Consider that azle may have been imported with a wildcard import
+                        // and should still be valid. For example:
+                        // ```
+                        // import * as Azle from 'azle';
+                        // export function example(): Azle.Query<string> {...}
+                        // ```
+                        false
+                    }
+                },
+                _ => false,
+            },
+            None => false,
         }
     }
 
     fn is_manual(&self) -> bool {
-        let type_ann = self.function.return_type.as_ref().unwrap();
-        match &*type_ann.type_ann {
-            TsType::TsTypeRef(type_ref) => match &type_ref.type_name {
-                swc_ecma_ast::TsEntityName::Ident(ident) => {
-                    let mode = ident.sym.chars().as_str();
+        let canister_method_type = self.get_canister_method_type();
 
-                    mode == "QueryManual" || mode == "UpdateManual"
-                }
-                swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
-                    panic!("Qualified Names are not currently supported")
-                }
-            },
-            _ => {
-                panic!("Canister methods must have a return type of Query<T>, Update<T>, or Oneway")
-            }
-        }
+        canister_method_type == "QueryManual" || canister_method_type == "UpdateManual"
     }
 }
 

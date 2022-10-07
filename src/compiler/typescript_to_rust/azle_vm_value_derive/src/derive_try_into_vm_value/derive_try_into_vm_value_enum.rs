@@ -61,8 +61,13 @@ fn derive_variant_branches_named_fields(
     variant_name: &Ident,
     named_fields: Vec<&Field>,
 ) -> proc_macro2::TokenStream {
+    let fields_must_be_named = format!(
+        "All fields of variant {} in enum {} must be named",
+        variant_name, enum_name
+    );
+
     let field_names = named_fields.iter().map(|named_field| {
-        let field_name = &named_field.ident.as_ref().unwrap();
+        let field_name = &named_field.ident.as_ref().expect(&fields_must_be_named);
 
         quote! {
             #field_name
@@ -70,7 +75,7 @@ fn derive_variant_branches_named_fields(
     });
 
     let named_field_variable_declarations = named_fields.iter().map(|named_field| {
-        let field_name = &named_field.ident.as_ref().unwrap();
+        let field_name = &named_field.ident.as_ref().expect(&fields_must_be_named);
         let variable_name = format_ident!("{}_js_value", field_name);
 
         quote! {
@@ -79,7 +84,7 @@ fn derive_variant_branches_named_fields(
     });
 
     let named_field_property_definitions = named_fields.iter().map(|named_field| {
-        let field_name = &named_field.ident.as_ref().unwrap();
+        let field_name = &named_field.ident.as_ref().expect(&fields_must_be_named);
         let variable_name = format_ident!("{}_js_value", field_name);
 
         quote! {

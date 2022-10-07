@@ -58,7 +58,7 @@ impl AzleProgramVecHelperMethods for Vec<AzleProgram> {
 
         fn_decls
             .into_iter()
-            .filter(|fn_decl| fn_decl.is_canister_method_type_fn_decl(canister_method_type))
+            .filter(|fn_decl| fn_decl.is_canister_method_type(canister_method_type))
             .collect()
     }
 

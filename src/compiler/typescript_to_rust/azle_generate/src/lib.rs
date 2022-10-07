@@ -7,6 +7,7 @@ use crate::{
 };
 
 mod cdk_act;
+mod errors;
 mod ts_ast;
 
 pub mod generators;

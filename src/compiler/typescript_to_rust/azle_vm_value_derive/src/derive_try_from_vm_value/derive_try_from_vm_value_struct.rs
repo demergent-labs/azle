@@ -7,15 +7,16 @@ pub fn derive_try_from_vm_value_struct(
     data_struct: &DataStruct,
 ) -> proc_macro2::TokenStream {
     let field_js_value_result_variable_definitions =
-        derive_field_js_value_result_variable_definitions(data_struct);
-    let field_js_value_result_names = derive_field_js_value_result_names(data_struct);
-    let field_js_value_oks = derive_field_js_value_oks(data_struct);
+        derive_field_js_value_result_variable_definitions(struct_name, data_struct);
+    let field_js_value_result_names = derive_field_js_value_result_names(struct_name, data_struct);
+    let field_js_value_oks = derive_field_js_value_oks(struct_name, data_struct);
 
-    let field_result_variable_definitions = derive_field_result_variable_definitions(data_struct);
-    let field_result_names = derive_field_result_names(data_struct);
-    let field_oks = derive_field_oks(data_struct);
+    let field_result_variable_definitions =
+        derive_field_result_variable_definitions(struct_name, data_struct);
+    let field_result_names = derive_field_result_names(struct_name, data_struct);
+    let field_oks = derive_field_oks(struct_name, data_struct);
 
-    let field_initializers = derive_field_initializers(data_struct);
+    let field_initializers = derive_field_initializers(struct_name, data_struct);
     let struct_instantiation =
         derive_struct_instantiation(struct_name, data_struct, &field_initializers);
 
@@ -99,22 +100,41 @@ pub fn derive_try_from_vm_value_struct(
     }
 }
 
-fn derive_field_js_value_result_variable_definitions(
+fn uniformly_map_fields<F>(
+    struct_name: &Ident,
     data_struct: &DataStruct,
-) -> Vec<proc_macro2::TokenStream> {
+    closure: F,
+) -> Vec<proc_macro2::TokenStream>
+where
+    F: Fn(&Ident) -> proc_macro2::TokenStream,
+{
+    map_fields(
+        struct_name,
+        data_struct,
+        |field_name| closure(field_name),
+        |field_name, _| closure(field_name),
+    )
+}
+
+fn map_fields<F, G>(
+    struct_name: &Ident,
+    data_struct: &DataStruct,
+    named_field_closure: F,
+    unnamed_field_closure: G,
+) -> Vec<proc_macro2::TokenStream>
+where
+    F: Fn(&Ident) -> proc_macro2::TokenStream,
+    G: Fn(&Ident, usize) -> proc_macro2::TokenStream,
+{
+    let field_must_be_named = format!("Named fields of struct {} must be named", struct_name);
     match &data_struct.fields {
         Fields::Named(fields_named) => fields_named
             .named
             .iter()
             .map(|field| {
-                let field_name = field.ident.as_ref().unwrap();
+                let field_name = field.ident.as_ref().expect(&field_must_be_named);
 
-                let field_js_value_result_name =
-                    format_ident!("object_{}_js_value_result", field_name);
-
-                quote! {
-                    let #field_js_value_result_name = object.get(stringify!(#field_name), context);
-                }
+                named_field_closure(field_name)
             })
             .collect(),
         Fields::Unnamed(field_unnamed) => field_unnamed
@@ -124,222 +144,113 @@ fn derive_field_js_value_result_variable_definitions(
             .map(|(index, _)| {
                 let field_name = format_ident!("field_{}", index);
 
-                let field_js_value_result_name =
-                    format_ident!("object_{}_js_value_result", field_name);
-
-                let syn_index = Index::from(index);
-
-                quote! {
-                    let #field_js_value_result_name = object.get(stringify!(#syn_index), context);
-                }
+                unnamed_field_closure(&field_name, index)
             })
             .collect(),
         _ => panic!("Only named and unnamed fields supported for Structs"),
     }
 }
 
-fn derive_field_js_value_result_names(data_struct: &DataStruct) -> Vec<proc_macro2::TokenStream> {
-    match &data_struct.fields {
-        Fields::Named(fields_named) => fields_named
-            .named
-            .iter()
-            .map(|field| {
-                let field_name = field.ident.as_ref().unwrap();
+fn derive_field_js_value_result_variable_definitions(
+    struct_name: &Ident,
+    data_struct: &DataStruct,
+) -> Vec<proc_macro2::TokenStream> {
+    map_fields(
+        struct_name,
+        data_struct,
+        |field_name| {
+            let field_js_value_result_name = format_ident!("object_{}_js_value_result", field_name);
 
-                let field_js_value_result_name =
-                    format_ident!("object_{}_js_value_result", field_name);
+            quote! {
+                let #field_js_value_result_name = object.get(stringify!(#field_name), context);
+            }
+        },
+        |field_name, index| {
+            let field_js_value_result_name = format_ident!("object_{}_js_value_result", field_name);
 
-                quote! {
-                    #field_js_value_result_name
-                }
-            })
-            .collect(),
-        Fields::Unnamed(fields_unnamed) => fields_unnamed
-            .unnamed
-            .iter()
-            .enumerate()
-            .map(|(index, _)| {
-                let field_name = format_ident!("field_{}", index);
+            let syn_index = Index::from(index);
 
-                let field_js_value_result_name =
-                    format_ident!("object_{}_js_value_result", field_name);
-
-                quote! {
-                    #field_js_value_result_name
-                }
-            })
-            .collect(),
-        _ => panic!("Only named and unnamed fields supported for Structs"),
-    }
+            quote! {
+                let #field_js_value_result_name = object.get(stringify!(#syn_index), context);
+            }
+        },
+    )
 }
 
-fn derive_field_js_value_oks(data_struct: &DataStruct) -> Vec<proc_macro2::TokenStream> {
-    match &data_struct.fields {
-        Fields::Named(fields_named) => fields_named
-            .named
-            .iter()
-            .map(|field| {
-                let field_name = field.ident.as_ref().unwrap();
+fn derive_field_js_value_result_names(
+    struct_name: &Ident,
+    data_struct: &DataStruct,
+) -> Vec<proc_macro2::TokenStream> {
+    uniformly_map_fields(struct_name, data_struct, |field_name| {
+        let field_js_value_result_name = format_ident!("object_{}_js_value_result", field_name);
 
-                let field_js_value_name = format_ident!("object_{}_js_value", field_name);
+        quote! { #field_js_value_result_name }
+    })
+}
 
-                quote! {
-                    Ok(#field_js_value_name)
-                }
-            })
-            .collect(),
-        Fields::Unnamed(fields_unnamed) => fields_unnamed
-            .unnamed
-            .iter()
-            .enumerate()
-            .map(|(index, _)| {
-                let field_name = format_ident!("field_{}", index);
+fn derive_field_js_value_oks(
+    struct_name: &Ident,
+    data_struct: &DataStruct,
+) -> Vec<proc_macro2::TokenStream> {
+    uniformly_map_fields(struct_name, data_struct, |field_name| {
+        let field_js_value_name = format_ident!("object_{}_js_value", field_name);
 
-                let field_js_value_name = format_ident!("object_{}_js_value", field_name);
-
-                quote! {
-                    Ok(#field_js_value_name)
-                }
-            })
-            .collect(),
-        _ => panic!("Only named and unnamed fields supported for Structs"),
-    }
+        quote! { Ok(#field_js_value_name) }
+    })
 }
 
 fn derive_field_result_variable_definitions(
+    struct_name: &Ident,
     data_struct: &DataStruct,
 ) -> Vec<proc_macro2::TokenStream> {
-    match &data_struct.fields {
-        Fields::Named(fields_named) => fields_named
-            .named
-            .iter()
-            .map(|field| {
-                let field_name = field.ident.as_ref().unwrap();
+    uniformly_map_fields(struct_name, data_struct, |field_name| {
+        let field_js_value_name = format_ident!("object_{}_js_value", field_name);
+        let field_result_name = format_ident!("object_{}_result", field_name);
 
-                let field_js_value_name = format_ident!("object_{}_js_value", field_name);
-                let field_result_name = format_ident!("object_{}_result", field_name);
-
-                quote! {
-                    let #field_result_name = #field_js_value_name.try_from_vm_value(&mut *context);
-                }
-            })
-            .collect(),
-        Fields::Unnamed(fields_unnamed) => fields_unnamed
-            .unnamed
-            .iter()
-            .enumerate()
-            .map(|(index, _)| {
-                let field_name = format_ident!("field_{}", index);
-
-                let field_js_value_name = format_ident!("object_{}_js_value", field_name);
-                let field_result_name = format_ident!("object_{}_result", field_name);
-
-                quote! {
-                    let #field_result_name = #field_js_value_name.try_from_vm_value(&mut *context);
-                }
-            })
-            .collect(),
-        _ => panic!("Only named and unnamed fields supported for Structs"),
-    }
+        quote! { let #field_result_name = #field_js_value_name.try_from_vm_value(&mut *context); }
+    })
 }
 
-fn derive_field_result_names(data_struct: &DataStruct) -> Vec<proc_macro2::TokenStream> {
-    match &data_struct.fields {
-        Fields::Named(fields_named) => fields_named
-            .named
-            .iter()
-            .map(|field| {
-                let field_name = field.ident.as_ref().unwrap();
+fn derive_field_result_names(
+    struct_name: &Ident,
+    data_struct: &DataStruct,
+) -> Vec<proc_macro2::TokenStream> {
+    uniformly_map_fields(struct_name, data_struct, |field_name| {
+        let field_result_name = format_ident!("object_{}_result", field_name);
 
-                let field_result_name = format_ident!("object_{}_result", field_name);
-
-                quote! {
-                    #field_result_name
-                }
-            })
-            .collect(),
-        Fields::Unnamed(fields_unnamed) => fields_unnamed
-            .unnamed
-            .iter()
-            .enumerate()
-            .map(|(index, _)| {
-                let field_name = format_ident!("field_{}", index);
-
-                let field_result_name = format_ident!("object_{}_result", field_name);
-
-                quote! {
-                    #field_result_name
-                }
-            })
-            .collect(),
-        _ => panic!("Only named and unnamed fields supported for Structs"),
-    }
+        quote! { #field_result_name }
+    })
 }
 
-fn derive_field_oks(data_struct: &DataStruct) -> Vec<proc_macro2::TokenStream> {
-    match &data_struct.fields {
-        Fields::Named(fields_named) => fields_named
-            .named
-            .iter()
-            .map(|field| {
-                let field_name = field.ident.as_ref().unwrap();
+fn derive_field_oks(
+    struct_name: &Ident,
+    data_struct: &DataStruct,
+) -> Vec<proc_macro2::TokenStream> {
+    uniformly_map_fields(struct_name, data_struct, |field_name| {
+        let field_var_name = format_ident!("object_{}", field_name);
 
-                let field_var_name = format_ident!("object_{}", field_name);
-
-                quote! {
-                    Ok(#field_var_name)
-                }
-            })
-            .collect(),
-        Fields::Unnamed(fields_unnamed) => fields_unnamed
-            .unnamed
-            .iter()
-            .enumerate()
-            .map(|(index, _)| {
-                let field_name = format_ident!("field_{}", index);
-
-                let field_var_name = format_ident!("object_{}", field_name);
-
-                quote! {
-                    Ok(#field_var_name)
-                }
-            })
-            .collect(),
-        _ => panic!("Only named and unnamed fields supported for Structs"),
-    }
+        quote! { Ok(#field_var_name) }
+    })
 }
 
-fn derive_field_initializers(data_struct: &DataStruct) -> Vec<proc_macro2::TokenStream> {
-    match &data_struct.fields {
-        Fields::Named(fields_named) => fields_named
-            .named
-            .iter()
-            .map(|field| {
-                let field_name = field.ident.as_ref().unwrap();
+fn derive_field_initializers(
+    struct_name: &Ident,
+    data_struct: &DataStruct,
+) -> Vec<proc_macro2::TokenStream> {
+    map_fields(
+        struct_name,
+        data_struct,
+        |field_name| {
+            let field_var_name = format_ident!("object_{}", field_name);
 
-                let field_var_name = format_ident!("object_{}", field_name);
+            quote! { #field_name: #field_var_name }
+        },
+        |field_name, _| {
+            let field_var_name = format_ident!("object_{}", field_name);
 
-                quote! {
-                    #field_name: #field_var_name
-                }
-            })
-            .collect(),
-        Fields::Unnamed(fields_unnamed) => fields_unnamed
-            .unnamed
-            .iter()
-            .enumerate()
-            .map(|(index, _)| {
-                let field_name = format_ident!("field_{}", index);
-
-                let field_var_name = format_ident!("object_{}", field_name);
-
-                quote! {
-                    #field_var_name
-                }
-            })
-            .collect(),
-        _ => panic!("Only named and unnamed fields supported for Structs"),
-    }
+            quote! { #field_var_name }
+        },
+    )
 }
 
 fn derive_struct_instantiation(

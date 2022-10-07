@@ -19,7 +19,7 @@ impl CanisterMethodBuilder for FnDecl {
     ) -> ActCanisterMethod {
         let body = method_body::generate_canister_method_body(&self);
         let is_manual = self.is_manual();
-        let name = self.get_fn_decl_function_name();
+        let name = self.get_function_name();
         let params = self.build_params(source_map);
         let return_type = self.build_return_type(source_map);
 

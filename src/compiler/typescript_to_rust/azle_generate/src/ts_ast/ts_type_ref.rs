@@ -2,13 +2,16 @@ use super::{
     ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl, FunctionAndMethodTypeHelperMethods,
     GenerateInlineName, GetDependencies, GetName,
 };
-use crate::cdk_act::{
-    nodes::data_type_nodes::{
-        act_funcs::{Func, FuncLiteral, FuncTypeAlias},
-        ActFunc, ActOption, ActOptionLiteral, ActOptionTypeAlias, ActPrimitiveLit,
-        LiteralOrTypeAlias,
+use crate::{
+    cdk_act::{
+        nodes::data_type_nodes::{
+            act_funcs::{Func, FuncLiteral, FuncTypeAlias},
+            ActFunc, ActOption, ActOptionLiteral, ActOptionTypeAlias, ActPrimitiveLit,
+            LiteralOrTypeAlias,
+        },
+        ActDataType, ToActDataType,
     },
-    ActDataType, ToActDataType,
+    errors::ErrorWithExampleDiff,
 };
 use std::{
     collections::{HashMap, HashSet},
@@ -88,7 +91,18 @@ impl GetDependencies for TsTypeRef {
 
 impl GetName for TsTypeRef {
     fn get_name(&self) -> &str {
-        &self.type_name.as_ident().unwrap().get_name()
+        match &self.type_name {
+            swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
+                let error_message = ErrorWithExampleDiff {
+                    error: "Namespace-qualified types are not currently supported",
+                    help: "Either declare the type locally or import it without a wildcard",
+                    remove: "Namespace.MyType",
+                    add: "MyType",
+                };
+                panic!("{}", error_message.to_string())
+            }
+            swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name(),
+        }
     }
 }
 
