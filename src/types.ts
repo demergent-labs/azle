@@ -1,3 +1,5 @@
+import { IOType } from 'child_process';
+
 export type AzleError = {
     error?: string;
     suggestion?: string;
@@ -20,6 +22,11 @@ export type JSCanisterConfig = Readonly<{
     candid: string;
     wasm: string;
 }>;
+
+export type RunOptions = {
+    rootPath: string;
+    stdioType: IOType;
+};
 
 export type Rust = string;
 
