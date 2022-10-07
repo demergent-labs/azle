@@ -506,6 +506,10 @@ function writeCodeToFileSystem(
         fs.mkdirSync(`./target/azle/${rootPath}/src`);
     }
 
+    if (!fs.existsSync(`./target/azle/${rootPath}/src/lib.rs`)) {
+        fs.writeFileSync(`./target/azle/${rootPath}/src/lib.rs`, '');
+    }
+
     if (!fs.existsSync(`./target/azle/${rootPath}/azle_vm_value_derive`)) {
         fs.mkdirSync(`./target/azle/${rootPath}/azle_vm_value_derive`);
     }
