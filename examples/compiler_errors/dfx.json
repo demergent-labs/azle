@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "compiler_errors": {
+            "type": "custom",
+            "build": "npx azle compiler_errors",
+            "root": "src",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
+            "wasm": "target/wasm32-unknown-unknown/release/compiler_errors.wasm",
+            "declarations": {
+                "output": "test/dfx_generated/compiler_errors"
+            }
+        }
+    }
+}
