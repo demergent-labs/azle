@@ -3,7 +3,7 @@ use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
 use crate::cdk_act::{ActDataType, ToActDataType};
 
-use super::{ts_type_lit::TsTypeLitHelperMethods, GetDependencies, GetName};
+use super::{ast_traits::GetString, ts_type_lit::TsTypeLitHelperMethods, GetDependencies};
 
 impl GetDependencies for TsType {
     fn get_dependent_types(
@@ -46,11 +46,32 @@ impl GetDependencies for TsType {
     }
 }
 
-impl GetName for TsType {
-    fn get_name(&self) -> &str {
+// TODO I am wondering if to_string() might make more sense for these? I just am
+// not sure that get name works for any of these type except typeref which is
+// what it was limited to before we started trying to make errors
+impl GetString for TsType {
+    fn get_string(&self) -> String {
         match self {
-            TsType::TsTypeRef(type_ref) => type_ref.get_name(),
-            _ => "",
+            TsType::TsTypeRef(type_ref) => type_ref.get_string(),
+            TsType::TsKeywordType(keyword_type) => keyword_type.get_string(),
+            TsType::TsTypeLit(type_lit) => type_lit.get_string(),
+            TsType::TsFnOrConstructorType(fn_or_const_type) => fn_or_const_type.get_string(),
+            TsType::TsTupleType(tuple_type) => tuple_type.get_string(),
+            TsType::TsArrayType(array_type) => array_type.get_string(),
+            TsType::TsThisType(_) => todo!(),
+            TsType::TsTypeQuery(_) => todo!(),
+            TsType::TsOptionalType(_) => todo!(),
+            TsType::TsRestType(_) => todo!(),
+            TsType::TsUnionOrIntersectionType(_) => todo!(),
+            TsType::TsConditionalType(_) => todo!(),
+            TsType::TsInferType(_) => todo!(),
+            TsType::TsParenthesizedType(_) => todo!(),
+            TsType::TsTypeOperator(_) => todo!(),
+            TsType::TsIndexedAccessType(_) => todo!(),
+            TsType::TsMappedType(_) => todo!(),
+            TsType::TsLitType(_) => todo!(),
+            TsType::TsTypePredicate(_) => todo!(),
+            TsType::TsImportType(_) => todo!(),
         }
     }
 }

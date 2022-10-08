@@ -58,7 +58,10 @@ impl TsTypeAliasHelperMethods for TsTypeAliasDecl {
         system_structure_type: &SystemStructureType,
     ) -> bool {
         match system_structure_type {
-            SystemStructureType::Canister => &*self.type_ann.get_name() == "Canister",
+            SystemStructureType::Canister => {
+                self.type_ann.is_ts_type_ref()
+                    && &*self.type_ann.as_ts_type_ref().unwrap().get_name() == "Canister"
+            }
         }
     }
 }

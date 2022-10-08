@@ -1,6 +1,7 @@
 use super::{
-    ast_traits::GetTsType, ts_type_element::TsTypeElementHelperMethods, GenerateInlineName,
-    GetDependencies,
+    ast_traits::{GetString, GetTsType},
+    ts_type_element::TsTypeElementHelperMethods,
+    GenerateInlineName, GetDependencies, GetName,
 };
 use crate::cdk_act::{
     nodes::data_type_nodes::{
@@ -98,5 +99,17 @@ impl GetDependencies for TsTypeLit {
                 .cloned()
                 .collect()
             })
+    }
+}
+
+impl GetString for TsTypeLit {
+    fn get_string(&self) -> String {
+        let members = self.members.iter().fold(String::new(), |acc, member| {
+            let member_name = member.get_name();
+            let member_type = member.get_ts_type().get_string();
+            let member_string = format!("{member_name}, {member_type}");
+            format!("{}, {}", acc, member_string)
+        });
+        format!("{{{}}}", members)
     }
 }

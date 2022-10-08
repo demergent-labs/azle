@@ -1,7 +1,11 @@
 pub mod generate_inline_name;
-use std::collections::{HashMap, HashSet};
+pub mod get_name;
+pub mod get_string;
 
 pub use generate_inline_name::GenerateInlineName;
+pub use get_name::GetName;
+pub use get_string::GetString;
+use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::{TsEntityName, TsFnParam, TsType, TsTypeAliasDecl, TsTypeAnn};
 
 pub trait GetDependencies {
@@ -12,12 +16,33 @@ pub trait GetDependencies {
     ) -> HashSet<String>;
 }
 
-pub trait GetName {
-    fn get_name(&self) -> &str;
-}
-
 pub trait GetTsType {
     fn get_ts_type(&self) -> TsType;
+}
+
+impl GetName for TsFnParam {
+    fn get_name(&self) -> &str {
+        match self {
+            TsFnParam::Ident(identifier) => identifier.id.get_name(),
+            TsFnParam::Array(_) => todo!(),
+            TsFnParam::Rest(_) => todo!(),
+            TsFnParam::Object(_) => todo!(),
+        }
+    }
+}
+
+impl GetTsType for TsFnParam {
+    fn get_ts_type(&self) -> TsType {
+        match self {
+            TsFnParam::Ident(identifier) => match &identifier.type_ann {
+                Some(param_type) => param_type.get_ts_type(),
+                None => panic!("Function parameter must have a type"),
+            },
+            TsFnParam::Array(_) => todo!(),
+            TsFnParam::Rest(_) => todo!(),
+            TsFnParam::Object(_) => todo!(),
+        }
+    }
 }
 
 pub trait FunctionAndMethodTypeHelperMethods {
@@ -26,17 +51,9 @@ pub trait FunctionAndMethodTypeHelperMethods {
     fn get_valid_return_types(&self) -> Vec<&str>;
 
     fn get_param_types(&self) -> Vec<TsType> {
-        self.get_ts_fn_params()
-            .iter()
-            .fold(vec![], |acc, param| match param {
-                TsFnParam::Ident(identifier) => match &identifier.type_ann {
-                    Some(param_type) => vec![acc, vec![param_type.get_ts_type().clone()]].concat(),
-                    None => panic!("Function parameter must have a type"),
-                },
-                TsFnParam::Array(_) => todo!(),
-                TsFnParam::Rest(_) => todo!(),
-                TsFnParam::Object(_) => todo!(),
-            })
+        self.get_ts_fn_params().iter().fold(vec![], |acc, param| {
+            vec![acc, vec![param.get_ts_type().clone()]].concat()
+        })
     }
 
     fn get_return_type(&self) -> Option<TsType> {

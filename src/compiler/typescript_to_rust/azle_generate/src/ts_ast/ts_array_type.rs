@@ -6,7 +6,7 @@ use crate::cdk_act::{
     ActDataType, ToActDataType,
 };
 
-use super::GetDependencies;
+use super::{ast_traits::GetString, GetDependencies};
 
 impl GetDependencies for TsArrayType {
     fn get_dependent_types(
@@ -36,5 +36,11 @@ impl ToActDataType for TsArrayType {
                 }),
             }),
         }
+    }
+}
+
+impl GetString for TsArrayType {
+    fn get_string(&self) -> String {
+        format!("{}[]", self.elem_type.get_string())
     }
 }

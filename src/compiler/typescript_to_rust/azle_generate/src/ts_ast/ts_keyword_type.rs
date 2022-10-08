@@ -1,10 +1,11 @@
 use crate::cdk_act::{nodes::data_type_nodes::ActPrimitiveLit, ActDataType, ToActDataType};
 use swc_ecma_ast::{TsKeywordType, TsKeywordTypeKind};
 
+use super::ast_traits::GetString;
+
 impl ToActDataType for TsKeywordType {
     fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType {
-        let kind = self.kind;
-        match &kind {
+        match self.kind {
             TsKeywordTypeKind::TsBooleanKeyword => ActPrimitiveLit::Bool,
             TsKeywordTypeKind::TsStringKeyword => ActPrimitiveLit::String,
             TsKeywordTypeKind::TsVoidKeyword => ActPrimitiveLit::Void,
@@ -34,5 +35,25 @@ impl ToActDataType for TsKeywordType {
             TsKeywordTypeKind::TsAnyKeyword => todo!("to_act_data_type for TsAnyKeyword"),
         }
         .to_act_data_type(alias_name)
+    }
+}
+
+impl GetString for TsKeywordType {
+    fn get_string(&self) -> String {
+        match self.kind {
+            TsKeywordTypeKind::TsAnyKeyword => todo!(),
+            TsKeywordTypeKind::TsUnknownKeyword => todo!(),
+            TsKeywordTypeKind::TsNumberKeyword => todo!(),
+            TsKeywordTypeKind::TsObjectKeyword => todo!(),
+            TsKeywordTypeKind::TsBooleanKeyword => "boolean".to_string(),
+            TsKeywordTypeKind::TsBigIntKeyword => todo!(),
+            TsKeywordTypeKind::TsStringKeyword => "string".to_string(),
+            TsKeywordTypeKind::TsSymbolKeyword => todo!(),
+            TsKeywordTypeKind::TsVoidKeyword => "void".to_string(),
+            TsKeywordTypeKind::TsUndefinedKeyword => todo!(),
+            TsKeywordTypeKind::TsNullKeyword => "null".to_string(),
+            TsKeywordTypeKind::TsNeverKeyword => todo!(),
+            TsKeywordTypeKind::TsIntrinsicKeyword => todo!(),
+        }
     }
 }

@@ -1,6 +1,6 @@
 use super::{
     ts_type_lit::TsTypeLitHelperMethods, FunctionAndMethodTypeHelperMethods, GenerateInlineName,
-    GetDependencies, GetName,
+    GetDependencies, GetName, GetString,
 };
 use crate::cdk_act::{
     nodes::data_type_nodes::{
@@ -14,7 +14,7 @@ use std::{
     collections::{HashMap, HashSet},
     iter::FromIterator,
 };
-use swc_ecma_ast::{TsFnType, TsType, TsTypeAliasDecl, TsTypeRef};
+use swc_ecma_ast::{TsType, TsTypeAliasDecl, TsTypeRef};
 
 pub trait TsTypeRefHelperMethods {
     fn to_func(&self, variant_name: &Option<&String>) -> ActDataType;
@@ -23,10 +23,17 @@ pub trait TsTypeRefHelperMethods {
     fn get_enclosed_ts_type(&self) -> TsType;
 }
 
-impl GenerateInlineName for TsFnType {
-    fn generate_inline_name(&self) -> String {
-        format!("AzleInlineFunc{}", self.calculate_hash())
-    }
+trait TsTypeRefErrors {
+    fn generate_func_wrong_number_of_params_error(&self) -> String;
+    fn generate_variant_wrong_number_of_params_error(&self) -> String;
+    fn generate_option_wrong_number_of_params_error(&self) -> String;
+    fn generate_variant_wrong_enclosed_type_error(&self) -> String;
+    fn generate_wrong_number_of_params_error(&self) -> String;
+    fn generate_func_wrong_enclosed_type_error(&self) -> String;
+}
+
+trait TsTypeRefPrivateMethods {
+    fn get_enclosed_ts_types(&self) -> Vec<TsType>;
 }
 
 impl GetDependencies for TsTypeRef {
@@ -87,7 +94,25 @@ impl GetDependencies for TsTypeRef {
 
 impl GetName for TsTypeRef {
     fn get_name(&self) -> &str {
-        &self.type_name.as_ident().unwrap().get_name()
+        self.type_name.get_name()
+    }
+}
+
+impl GetString for TsTypeRef {
+    fn get_string(&self) -> String {
+        let enclosed_types = if self.get_enclosed_ts_types().len() == 0 {
+            String::new()
+        } else {
+            format!(
+                "<{}>",
+                self.get_enclosed_ts_types()
+                    .iter()
+                    .fold(String::new(), |acc, enclosed_type| {
+                        format!("{} {},", acc, enclosed_type.get_string())
+                    })
+            )
+        };
+        format!("{}{}", self.type_name.get_name(), enclosed_types)
     }
 }
 
@@ -124,15 +149,17 @@ impl TsTypeRefHelperMethods for TsTypeRef {
             TsType::TsFnOrConstructorType(fn_or_const) => match fn_or_const {
                 swc_ecma_ast::TsFnOrConstructorType::TsFnType(ts_fn_type) => ts_fn_type,
                 swc_ecma_ast::TsFnOrConstructorType::TsConstructorType(_) => {
-                    todo!("Funcs must have a function as the enclosed type")
+                    panic!("{}", self.generate_func_wrong_enclosed_type_error())
                 }
             },
-            _ => todo!("Funcs must have a function as the enclosed type"),
+            _ => panic!("{}", self.generate_func_wrong_enclosed_type_error()),
         };
+        eprintln!("Start");
         let return_type = match ts_fn_type.get_return_type() {
             Some(ts_type) => Some(ts_type.to_act_data_type(&None)),
             None => None,
         };
+        eprintln!("End");
         let param_types: Vec<ActDataType> = ts_fn_type
             .get_param_types()
             .iter()
@@ -184,21 +211,94 @@ impl TsTypeRefHelperMethods for TsTypeRef {
     fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType {
         match self.get_enclosed_ts_type().as_ts_type_lit() {
             Some(ts_type_lit) => ts_type_lit,
-            None => todo!("Variants must have a type literal as the enclosed type"),
+            None => panic!("{}", self.generate_variant_wrong_enclosed_type_error()),
         }
         .to_variant(variant_name)
     }
 
     fn get_enclosed_ts_type(&self) -> TsType {
-        let type_params = self.type_params.clone();
-        match type_params {
+        match &self.type_params {
             Some(params) => {
                 if params.params.len() != 1 {
-                    todo!("Funcs, Variants, and Options must have only one enclosed type")
+                    panic!("{}", self.generate_wrong_number_of_params_error())
                 }
                 *params.params[0].clone()
             }
-            None => todo!("Funcs, Variants, and Options must have an enclosed type"),
+            None => panic!("{}", self.generate_wrong_number_of_params_error()),
         }
+    }
+}
+
+impl TsTypeRefPrivateMethods for TsTypeRef {
+    fn get_enclosed_ts_types(&self) -> Vec<TsType> {
+        match &self.type_params {
+            Some(params) => params.params.iter().map(|param| *param.clone()).collect(),
+            None => vec![],
+        }
+    }
+}
+
+impl TsTypeRefErrors for TsTypeRef {
+    fn generate_wrong_number_of_params_error(&self) -> String {
+        let specific_help = match self.get_name() {
+            "Variant" => self.generate_variant_wrong_number_of_params_error(),
+            "Func" => self.generate_func_wrong_number_of_params_error(),
+            "Option" => self.generate_option_wrong_number_of_params_error(),
+            _ => String::new(),
+        };
+        format!(
+            "\n{} is not a valid type.\nFuncs, Variants, and Options must have exactly one enclosed type\n{}",
+            self.get_string(),
+            specific_help
+        )
+    }
+
+    fn generate_func_wrong_number_of_params_error(&self) -> String {
+        String::new()
+    }
+
+    fn generate_variant_wrong_number_of_params_error(&self) -> String {
+        let enclosed_types: String = if self.get_enclosed_ts_types().len() == 0 {
+            "    variant_name: variant_type\n".to_string()
+        } else {
+            self.get_enclosed_ts_types().iter().enumerate().fold(
+                String::new(),
+                |acc, (index, enclosed_type)| {
+                    format!(
+                        "{}    variant_name{}: {},\n",
+                        acc,
+                        index,
+                        enclosed_type.get_string()
+                    )
+                },
+            )
+        };
+
+        let example_variant = format!("\n{}<\n{{\n{}}}>\n", self.get_string(), enclosed_types);
+        format!("A Variant must only have one enclosed type. If you need multiple variants, put them all in type literal like this:\n{}", example_variant)
+    }
+
+    fn generate_variant_wrong_enclosed_type_error(&self) -> String {
+        let enclosed_types: String = self.get_enclosed_ts_types().iter().enumerate().fold(
+            String::new(),
+            |acc, (index, enclosed_type)| {
+                format!(
+                    "{}    variant_name{}: {},\n",
+                    acc,
+                    index,
+                    enclosed_type.get_string()
+                )
+            },
+        );
+        let example_variant = format!("\n{}<\n{{\n{}}}>\n", self.get_string(), enclosed_types);
+        format!("Variants must have a type literal as the enclosed type. Variants should be formed like this:\n{}", example_variant)
+    }
+
+    fn generate_func_wrong_enclosed_type_error(&self) -> String {
+        format!("Funcs must have a function as the enclosed type")
+    }
+
+    fn generate_option_wrong_number_of_params_error(&self) -> String {
+        String::new()
     }
 }

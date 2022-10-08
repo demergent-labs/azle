@@ -9,7 +9,7 @@ use crate::cdk_act::{
     ActDataType, ToActDataType,
 };
 
-use super::{GenerateInlineName, GetDependencies};
+use super::{GenerateInlineName, GetDependencies, GetString};
 
 trait TsTupleHelperMethods {
     fn get_elem_types(&self) -> Vec<ActTupleElem>;
@@ -34,6 +34,12 @@ impl GetDependencies for TsTupleType {
                     .cloned()
                     .collect()
             })
+    }
+}
+
+impl GetString for TsTupleType {
+    fn get_string(&self) -> String {
+        todo!("We need to revisit this once I figure out if this should be to_string or get_name or something else");
     }
 }
 
