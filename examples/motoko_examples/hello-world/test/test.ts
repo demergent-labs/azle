@@ -1,5 +1,6 @@
 import { deploy, run_tests, Test } from 'azle/test';
 import { createActor } from '../dfx_generated/azle';
+import { get_tests } from './tests';
 
 const hello_world_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -7,18 +8,6 @@ const hello_world_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-const tests: Test[] = [
-    ...deploy('azle'),
-    {
-        name: 'main',
-        test: async () => {
-            const result = await hello_world_canister.main();
-
-            return {
-                ok: result === undefined
-            };
-        }
-    }
-];
+const tests: Test[] = [...deploy('azle'), ...get_tests(hello_world_canister)];
 
 run_tests(tests);
