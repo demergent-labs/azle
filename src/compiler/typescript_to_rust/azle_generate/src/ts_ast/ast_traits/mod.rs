@@ -6,7 +6,9 @@ pub use generate_inline_name::GenerateInlineName;
 pub use get_name::GetName;
 pub use get_string::GetString;
 use std::collections::{HashMap, HashSet};
-use swc_ecma_ast::{TsEntityName, TsFnParam, TsType, TsTypeAliasDecl, TsTypeAnn};
+use swc_ecma_ast::{
+    TsEntityName, TsFnParam, TsPropertySignature, TsType, TsTypeAliasDecl, TsTypeAnn,
+};
 
 pub trait GetDependencies {
     fn get_dependent_types(
@@ -18,6 +20,12 @@ pub trait GetDependencies {
 
 pub trait GetTsType {
     fn get_ts_type(&self) -> TsType;
+}
+
+impl GetTsType for TsPropertySignature {
+    fn get_ts_type(&self) -> TsType {
+        self.type_ann.as_ref().unwrap().get_ts_type()
+    }
 }
 
 impl GetName for TsFnParam {

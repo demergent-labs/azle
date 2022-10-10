@@ -1,16 +1,18 @@
-use swc_ecma_ast::Program;
-
 use crate::{
     cdk_act::{
-        generators::ic_object, nodes::ActInitMethod, traits::CanisterMethodBuilder,
-        CanisterMethodType,
+        generators::ic_object::IcObjectHelperMethods, nodes::ActInitMethod,
+        traits::CanisterMethodBuilder, CanisterMethodType,
     },
     generators::canister_methods::method_body,
-    ts_ast::program::TsProgramVecHelperMethods,
+    ts_ast::program::{azle_program::TsProgramVecHelperMethods, AzleProgram},
 };
+use swc_common::SourceMap;
 
-pub fn build_canister_method_system_init(programs: &Vec<Program>) -> ActInitMethod {
-    let ic_object = ic_object::generate_ic_object(programs);
+pub fn build_canister_method_system_init(
+    programs: &Vec<AzleProgram>,
+    source_map: &SourceMap,
+) -> ActInitMethod {
+    let ic_object = programs.generate_ic_object();
 
     let init_fn_decls = programs.get_fn_decls_of_type(&CanisterMethodType::Init);
 
@@ -21,7 +23,7 @@ pub fn build_canister_method_system_init(programs: &Vec<Program>) -> ActInitMeth
     let init_fn_decl_option = init_fn_decls.get(0);
 
     let params = if let Some(fn_decl) = init_fn_decl_option {
-        fn_decl.build_params()
+        fn_decl.build_params(source_map)
     } else {
         vec![]
     };

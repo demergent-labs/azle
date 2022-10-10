@@ -1,6 +1,7 @@
 use super::{ts_canister_decl::TsCanisterDecl, GetDependencies, GetName, GetTsType};
 use crate::cdk_act::{nodes::ActNode, Actable, SystemStructureType, ToActDataType};
 use std::collections::{HashMap, HashSet};
+use swc_common::SourceMap;
 use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
 // TODO I am not super happy with this function... but that might be because I don't understand the system structure stuff
@@ -22,10 +23,13 @@ pub trait TsTypeAliasListHelperMethods {
 }
 
 impl Actable for TsTypeAliasDecl {
-    fn to_act_node(&self) -> ActNode {
+    fn to_act_node(&self, source_map: &SourceMap) -> ActNode {
         let ts_type_name = self.get_name().to_string();
 
-        ActNode::DataType(self.type_ann.to_act_data_type(&Some(&ts_type_name)))
+        ActNode::DataType(
+            self.type_ann
+                .to_act_data_type(&Some(&ts_type_name), source_map),
+        )
     }
 }
 

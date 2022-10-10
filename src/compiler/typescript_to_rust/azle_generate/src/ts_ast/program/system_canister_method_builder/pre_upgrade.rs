@@ -1,12 +1,13 @@
 use crate::{
     cdk_act::{nodes::ActPreUpgradeMethod, CanisterMethodType},
     generators::canister_methods::method_body,
-    ts_ast::program::TsProgramVecHelperMethods,
+    ts_ast::program::{azle_program::TsProgramVecHelperMethods, AzleProgram},
 };
 use quote::quote;
-use swc_ecma_ast::Program;
 
-pub fn build_canister_method_system_pre_upgrade(programs: &Vec<Program>) -> ActPreUpgradeMethod {
+pub fn build_canister_method_system_pre_upgrade(
+    programs: &Vec<AzleProgram>,
+) -> ActPreUpgradeMethod {
     let pre_upgrade_fn_decls = programs.get_fn_decls_of_type(&CanisterMethodType::PreUpgrade);
 
     if pre_upgrade_fn_decls.len() > 1 {

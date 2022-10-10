@@ -1,4 +1,5 @@
 use std::collections::{HashMap, HashSet};
+use swc_common::SourceMap;
 use swc_ecma_ast::{TsArrayType, TsTypeAliasDecl};
 
 use crate::cdk_act::{
@@ -20,9 +21,13 @@ impl GetDependencies for TsArrayType {
 }
 
 impl ToActDataType for TsArrayType {
-    fn to_act_data_type(&self, name: &Option<&String>) -> crate::cdk_act::ActDataType {
+    fn to_act_data_type(
+        &self,
+        name: &Option<&String>,
+        source_map: &SourceMap,
+    ) -> crate::cdk_act::ActDataType {
         let elem_ts_type = self.elem_type.clone();
-        let act_elem = elem_ts_type.to_act_data_type(&None);
+        let act_elem = elem_ts_type.to_act_data_type(&None, source_map);
         match name {
             Some(name) => ActDataType::Array(ActArray {
                 act_type: LiteralOrTypeAlias::TypeAlias(ActArrayTypeAlias {

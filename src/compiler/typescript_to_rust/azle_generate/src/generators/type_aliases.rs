@@ -3,6 +3,7 @@ use crate::{
     ts_ast::ts_type_alias_decl::TsTypeAliasListHelperMethods,
 };
 use std::collections::HashSet;
+use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeAliasDecl;
 
 /**
@@ -12,13 +13,17 @@ use swc_ecma_ast::TsTypeAliasDecl;
 pub fn build_type_alias_acts(
     type_names: &HashSet<String>,
     ast_type_alias_variant_decls: &Vec<TsTypeAliasDecl>,
+    source_map: &SourceMap,
 ) -> Vec<ActDataType> {
     let type_alias_lookup = ast_type_alias_variant_decls.generate_type_alias_lookup();
 
     type_names.iter().fold(vec![], |acc, dependant_type| {
         let type_alias_decl = type_alias_lookup.get(dependant_type);
         let token_stream = match type_alias_decl {
-            Some(type_alias_decl) => type_alias_decl.to_act_node().as_data_type().unwrap(),
+            Some(type_alias_decl) => type_alias_decl
+                .to_act_node(source_map)
+                .as_data_type()
+                .unwrap(),
             None => {
                 todo!("ERROR: Dependant Type [{dependant_type}] not found type alias list!")
             }

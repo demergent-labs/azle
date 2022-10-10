@@ -1,3 +1,4 @@
+use swc_common::SourceMap;
 use swc_ecma_ast::{TsType, TsTypeElement};
 
 use crate::cdk_act::{
@@ -8,44 +9,54 @@ use crate::cdk_act::{
 use super::{ast_traits::GetTsType, GetName};
 
 pub trait TsTypeElementHelperMethods {
-    fn to_record_member(&self) -> ActRecordMember;
-    fn to_variant_member(&self) -> ActVariantMember;
+    fn to_record_member(&self, source_map: &SourceMap) -> ActRecordMember;
+    fn to_variant_member(&self, source_map: &SourceMap) -> ActVariantMember;
 }
+
+trait TsTypeElementErrors {}
+
+impl TsTypeElementErrors for TsTypeElement {}
 
 impl GetName for TsTypeElement {
     fn get_name(&self) -> &str {
-        match self.as_ts_property_signature() {
-            Some(prop_sig) => prop_sig.key.as_ident().unwrap().get_name(),
-            None => {
-                todo!("Handle parsing type literals if the field isn't a TsPropertySignature")
-            }
+        match self {
+            TsTypeElement::TsCallSignatureDecl(_) => todo!(),
+            TsTypeElement::TsConstructSignatureDecl(_) => todo!(),
+            TsTypeElement::TsPropertySignature(prop_sig) => prop_sig.get_name(),
+            TsTypeElement::TsGetterSignature(getter_sig) => getter_sig.get_name(),
+            TsTypeElement::TsSetterSignature(setter_sig) => setter_sig.get_name(),
+            TsTypeElement::TsMethodSignature(method_sig) => method_sig.get_name(),
+            TsTypeElement::TsIndexSignature(index_sig) => index_sig.get_name(),
         }
     }
 }
 
 impl GetTsType for TsTypeElement {
     fn get_ts_type(&self) -> TsType {
-        match self.as_ts_property_signature() {
-            Some(prop_sig) => prop_sig.type_ann.as_ref().unwrap().get_ts_type(),
-            None => {
-                todo!("Handle parsing type literals if the field isn't a TsPropertySignature")
-            }
+        match self {
+            TsTypeElement::TsCallSignatureDecl(_) => todo!(),
+            TsTypeElement::TsConstructSignatureDecl(_) => todo!(),
+            TsTypeElement::TsPropertySignature(prop_sig) => prop_sig.get_ts_type(),
+            TsTypeElement::TsGetterSignature(_) => todo!(),
+            TsTypeElement::TsSetterSignature(_) => todo!(),
+            TsTypeElement::TsMethodSignature(_) => todo!(),
+            TsTypeElement::TsIndexSignature(_) => todo!(),
         }
     }
 }
 
 impl TsTypeElementHelperMethods for TsTypeElement {
-    fn to_record_member(&self) -> ActRecordMember {
+    fn to_record_member(&self, source_map: &SourceMap) -> ActRecordMember {
         ActRecordMember {
             member_name: self.get_name().to_string(),
-            member_type: self.get_ts_type().to_act_data_type(&None),
+            member_type: self.get_ts_type().to_act_data_type(&None, source_map),
         }
     }
 
-    fn to_variant_member(&self) -> ActVariantMember {
+    fn to_variant_member(&self, source_map: &SourceMap) -> ActVariantMember {
         ActVariantMember {
             member_name: self.get_name().to_string(),
-            member_type: self.get_ts_type().to_act_data_type(&None),
+            member_type: self.get_ts_type().to_act_data_type(&None, source_map),
         }
     }
 }

@@ -1,17 +1,20 @@
 use quote::quote;
-use swc_ecma_ast::Program;
+use swc_common::SourceMap;
 
 use crate::{
     cdk_act::{
-        generators::ic_object, nodes::ActPostUpgradeMethod, traits::CanisterMethodBuilder,
-        CanisterMethodType,
+        generators::ic_object::IcObjectHelperMethods, nodes::ActPostUpgradeMethod,
+        traits::CanisterMethodBuilder, CanisterMethodType,
     },
     generators::canister_methods::method_body,
-    ts_ast::program::TsProgramVecHelperMethods,
+    ts_ast::program::{azle_program::TsProgramVecHelperMethods, AzleProgram},
 };
 
-pub fn build_canister_method_system_post_upgrade(programs: &Vec<Program>) -> ActPostUpgradeMethod {
-    let ic_object = ic_object::generate_ic_object(programs);
+pub fn build_canister_method_system_post_upgrade(
+    programs: &Vec<AzleProgram>,
+    source_map: &SourceMap,
+) -> ActPostUpgradeMethod {
+    let ic_object = programs.generate_ic_object();
 
     let post_upgrade_fn_decls = programs.get_fn_decls_of_type(&CanisterMethodType::PostUpgrade);
 
@@ -22,7 +25,7 @@ pub fn build_canister_method_system_post_upgrade(programs: &Vec<Program>) -> Act
     let post_upgrade_fn_decl_option = post_upgrade_fn_decls.get(0);
 
     let params = if let Some(fn_decl) = post_upgrade_fn_decl_option {
-        fn_decl.build_params()
+        fn_decl.build_params(source_map)
     } else {
         vec![]
     };
