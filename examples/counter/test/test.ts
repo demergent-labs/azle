@@ -1,5 +1,6 @@
 import { deploy, run_tests, Test } from 'azle/test';
 import { createActor } from '../test/dfx_generated/counter';
+import { get_tests } from './tests';
 
 const counter_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -7,58 +8,6 @@ const counter_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-const tests: Test[] = [
-    ...deploy('counter'),
-    {
-        name: 'readCount',
-        test: async () => {
-            const result = await counter_canister.readCount();
-
-            return {
-                ok: result === 0n
-            };
-        }
-    },
-    {
-        name: 'readCount',
-        test: async () => {
-            const result = await counter_canister.incrementCount();
-
-            return {
-                ok: result === 1n
-            };
-        }
-    },
-    {
-        name: 'readCount',
-        test: async () => {
-            const result = await counter_canister.incrementCount();
-
-            return {
-                ok: result === 2n
-            };
-        }
-    },
-    {
-        name: 'readCount',
-        test: async () => {
-            const result = await counter_canister.incrementCount();
-
-            return {
-                ok: result === 3n
-            };
-        }
-    },
-    {
-        name: 'readCount',
-        test: async () => {
-            const result = await counter_canister.readCount();
-
-            return {
-                ok: result === 3n
-            };
-        }
-    }
-];
+const tests: Test[] = [...deploy('counter'), ...get_tests(counter_canister)];
 
 run_tests(tests);

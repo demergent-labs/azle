@@ -1,5 +1,6 @@
 import { deploy, run_tests, Test } from 'azle/test';
 import { createActor } from '../test/dfx_generated/generators';
+import { get_tests } from './tests';
 
 const generators_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -9,38 +10,7 @@ const generators_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 
 const tests: Test[] = [
     ...deploy('generators'),
-    {
-        name: 'get_randomness_directly',
-        test: async () => {
-            const result = await generators_canister.get_randomness_directly();
-
-            return {
-                ok: result.length === 32
-            };
-        }
-    },
-    {
-        name: 'get_randomness_indirectly',
-        test: async () => {
-            const result =
-                await generators_canister.get_randomness_indirectly();
-
-            return {
-                ok: result.length === 32
-            };
-        }
-    },
-    {
-        name: 'get_randomness_super_indirectly',
-        test: async () => {
-            const result =
-                await generators_canister.get_randomness_super_indirectly();
-
-            return {
-                ok: result.length === 96
-            };
-        }
-    }
+    ...get_tests(generators_canister)
 ];
 
 run_tests(tests);

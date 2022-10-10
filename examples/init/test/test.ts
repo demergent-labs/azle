@@ -1,5 +1,6 @@
 import { deploy, run_tests, Test } from 'azle/test';
 import { createActor } from '../test/dfx_generated/init';
+import { get_tests } from './tests';
 
 const init_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -12,38 +13,7 @@ const tests: Test[] = [
         'init',
         `'(record { id = "0" }, variant { Fire }, principal "rrkah-fqaaa-aaaaa-aaaaq-cai")'`
     ),
-    {
-        name: 'getUser',
-        test: async () => {
-            const result = await init_canister.getUser();
-
-            return {
-                ok: result.length === 1 && result[0].id === '0'
-            };
-        }
-    },
-    {
-        name: 'getReaction',
-        test: async () => {
-            const result = await init_canister.getReaction();
-
-            return {
-                ok: result.length === 1 && 'Fire' in result[0]
-            };
-        }
-    },
-    {
-        name: 'getOwner',
-        test: async () => {
-            const result = await init_canister.getOwner();
-
-            return {
-                ok:
-                    result.length === 1 &&
-                    result[0].toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
-            };
-        }
-    }
+    ...get_tests(init_canister)
 ];
 
 run_tests(tests);
