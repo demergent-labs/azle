@@ -1,4 +1,4 @@
-import { execSync, IOType } from 'child_process';
+import { execSync, IOType, spawnSync } from 'child_process';
 import { compileTypeScriptToJavaScript } from './compiler/typescript_to_javascript';
 import {
     generateLibCargoToml,
@@ -12,6 +12,8 @@ import {
     DfxJson,
     JavaScript,
     JSCanisterConfig,
+    RunOptions,
+    Rust,
     Toml,
     TsCompilationError,
     TsSyntaxErrorLocation
@@ -40,12 +42,6 @@ function azle() {
     });
 
     logSuccess(canisterName);
-}
-
-function getStdIoType() {
-    const isVerboseMode =
-        process.argv.includes('--verbose') || process.argv.includes('-v');
-    return isVerboseMode ? 'inherit' : 'pipe';
 }
 
 function colorFormattedDfxJsonExample(canisterName: string): string {
@@ -102,8 +98,7 @@ function compileTypeScriptToRust(
     time('\n[1/3] 🔨 Compiling TypeScript...', 'inline', () => {
         const compilationResult = compileTypeScriptToJavaScript(tsPath);
 
-        if (!ok<string[], unknown>(compilationResult)) {
-            const err = compilationResult.err;
+        if (!ok(compilationResult)) {
             const azleErrorResult = compilationErrorToAzleErrorResult(
                 compilationResult.err
             );
@@ -111,23 +106,10 @@ function compileTypeScriptToRust(
         }
 
         const [main_js, stable_storage_js] = compilationResult.ok;
-
         const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
         const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
         const libCargoToml: Toml = generateLibCargoToml(canisterName);
-
-        const program = tsc.createProgram([tsPath], {});
-        const sourceFiles = program.getSourceFiles();
-
-        const root_absolute_path = require('path').join(__dirname, '..');
-
-        const fileNames = sourceFiles.map((sourceFile) => {
-            if (sourceFile.fileName.startsWith(root_absolute_path) === false) {
-                return `${process.cwd()}/${sourceFile.fileName}`;
-            } else {
-                return sourceFile.fileName;
-            }
-        });
+        const fileNames = getFileNames(tsPath);
 
         writeCodeToFileSystem(
             rootPath,
@@ -142,12 +124,7 @@ function compileTypeScriptToRust(
         // reinstalling them every time we build.
         installRustDependencies(stdioType);
 
-        execSync(
-            `cd target/azle/${rootPath}/azle_generate && cargo run -- ${fileNames.join(
-                ','
-            )} | rustfmt --edition 2018 > ../src/lib.rs`,
-            { stdio: stdioType }
-        );
+        unwrap(generateRustCanister(fileNames, { rootPath }));
     });
 }
 
@@ -163,6 +140,40 @@ function generateCandidFile(
             stdio
         });
     });
+}
+
+function generateRustCanister(
+    fileNames: string[],
+    { rootPath }: RunOptions
+): Result<undefined, AzleError> {
+    const azleGenerateResult = runAzleGenerate(fileNames, {
+        rootPath
+    });
+
+    if (!ok(azleGenerateResult)) {
+        return Err(azleGenerateResult.err);
+    }
+
+    const unformattedLibFile = azleGenerateResult.ok;
+
+    const runRustFmtResult = runRustFmt(unformattedLibFile, {
+        rootPath
+    });
+
+    if (!ok(runRustFmtResult)) {
+        return Err(runRustFmtResult.err);
+    }
+
+    const formattedLibFile = runRustFmtResult.ok;
+
+    fs.writeFileSync(`target/azle/${rootPath}/src/lib.rs`, formattedLibFile);
+
+    if (isVerboseMode()) {
+        console.info(
+            `Wrote formatted lib.rs file to target/azle/${rootPath}/src/lib.rs\n`
+        );
+    }
+    return Ok(undefined);
 }
 
 function generateVisualDisplayOfErrorLocation(
@@ -257,6 +268,26 @@ function getBuildWarning(canisterName: string): string {
         : '';
 }
 
+function getFileNames(tsPath: string): string[] {
+    const program = tsc.createProgram([tsPath], {});
+    const sourceFiles = program.getSourceFiles();
+
+    const root_absolute_path = require('path').join(__dirname, '..');
+
+    const fileNames = sourceFiles.map((sourceFile) => {
+        if (sourceFile.fileName.startsWith(root_absolute_path) === false) {
+            return `${process.cwd()}/${sourceFile.fileName}`;
+        } else {
+            return sourceFile.fileName;
+        }
+    });
+    return fileNames;
+}
+
+function getStdIoType() {
+    return isVerboseMode() ? 'inherit' : 'pipe';
+}
+
 function installRustDependencies(stdio: IOType) {
     if (!fs.existsSync(`./target/azle`)) {
         fs.mkdirSync(`target/azle`, { recursive: true });
@@ -294,6 +325,10 @@ function isTsCompilationError(error: unknown): error is TsCompilationError {
     return false;
 }
 
+function isVerboseMode(): boolean {
+    return process.argv.includes('--verbose') || process.argv.includes('-v');
+}
+
 function logSuccess(canisterName: string): void {
     console.info(
         `\n🎉 Built canister ${green(canisterName)} ${dim(
@@ -309,7 +344,7 @@ function compilationErrorToAzleErrorResult(error: unknown): Err<AzleError> {
             firstError.location
         );
         return Err({
-            error: `There's something wrong in your typescript: ${firstError.text}`,
+            error: `There's something wrong in your TypeScript: ${firstError.text}`,
             suggestion: codeSnippet,
             exitCode: 5
         });
@@ -337,6 +372,93 @@ function printFirstBuildWarning(canisterName: string): void {
             )
         );
     }
+}
+
+function runAzleGenerate(
+    fileNames: string[],
+    { rootPath }: RunOptions
+): Result<Rust, AzleError> {
+    if (isVerboseMode()) {
+        console.info('running azle_generate');
+    }
+    const executionResult = spawnSync(
+        `cargo`,
+        ['run', '--', fileNames.join(',')],
+        {
+            cwd: `target/azle/${rootPath}/azle_generate`,
+            stdio: 'pipe'
+        }
+    );
+
+    if (executionResult.status !== 0) {
+        const generalErrorMessage =
+            "Something about your TypeScript violates Azle's requirements";
+        const suggestion =
+            'If you are unable to decipher the error above, reach out in the #typescript\nchannel of the DFINITY DEV OFFICIAL discord: https://discord.gg/zuUEzSf4mV';
+
+        const stdErr = executionResult.stderr.toString();
+        const longErrorMessage = `The underlying cause is likely at the bottom of the following output:\n\n${stdErr}`;
+        const stdErrLines = stdErr.split('\n');
+        const linesWithPanic = stdErrLines.filter((line) =>
+            line.startsWith("thread 'main' panicked")
+        );
+        if (linesWithPanic.length !== 1) {
+            return Err({
+                error: generalErrorMessage,
+                suggestion: `${longErrorMessage}\n${suggestion}`,
+                exitCode: 11
+            });
+        }
+        const rawPanicMessage = linesWithPanic[0];
+        const panicLocation = /, src\/.*/;
+        const panicMessageWithoutLocation = rawPanicMessage.replace(
+            panicLocation,
+            ''
+        );
+        if (isVerboseMode()) {
+            return Err({
+                error: generalErrorMessage,
+                suggestion: `${longErrorMessage}\n${suggestion}`,
+                exitCode: 12
+            });
+        }
+        return Err({
+            error: `${generalErrorMessage}\n\n${panicMessageWithoutLocation}`,
+            suggestion,
+            exitCode: 12
+        });
+    }
+
+    if (isVerboseMode()) {
+        console.info('Generated unformatted lib.rs file');
+    }
+    return Ok(executionResult.stdout.toString());
+}
+
+function runRustFmt(
+    input: Rust,
+    { rootPath }: RunOptions
+): Result<Rust, AzleError> {
+    const executionResult = spawnSync(`rustfmt`, ['--edition=2018'], {
+        cwd: `target/azle/${rootPath}/azle_generate`,
+        input,
+        stdio: 'pipe'
+    });
+    if (executionResult.status !== 0) {
+        const error = executionResult.stderr.toString();
+        return Err({
+            error: 'Azle has experienced an internal error while trying to\n   format your generated rust canister',
+            suggestion: `Please open an issue at https://github.com/demergent-labs/azle/issues/new\nincluding this message and the following error:\n\n${red(
+                error
+            )}`,
+            exitCode: 12
+        });
+    }
+
+    if (isVerboseMode()) {
+        console.info('Formatted lib.rs file');
+    }
+    return Ok(executionResult.stdout.toString());
 }
 
 function time(
@@ -382,6 +504,10 @@ function writeCodeToFileSystem(
 
     if (!fs.existsSync(`./target/azle/${rootPath}/src`)) {
         fs.mkdirSync(`./target/azle/${rootPath}/src`);
+    }
+
+    if (!fs.existsSync(`./target/azle/${rootPath}/src/lib.rs`)) {
+        fs.writeFileSync(`./target/azle/${rootPath}/src/lib.rs`, '');
     }
 
     if (!fs.existsSync(`./target/azle/${rootPath}/azle_vm_value_derive`)) {
