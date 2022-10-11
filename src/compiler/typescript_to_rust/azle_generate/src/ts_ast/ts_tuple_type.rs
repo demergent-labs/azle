@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 use swc_common::SourceMap;
-use swc_ecma_ast::{TsTupleType, TsTypeAliasDecl};
+use swc_ecma_ast::TsTupleType;
 
 use crate::cdk_act::{
     nodes::data_type_nodes::{
@@ -10,7 +10,7 @@ use crate::cdk_act::{
     ActDataType, ToActDataType,
 };
 
-use super::{GenerateInlineName, GetDependencies, GetString};
+use super::{AzleTypeAlias, GenerateInlineName, GetDependencies, GetString};
 
 trait TsTupleHelperMethods {
     fn get_elem_types(&self, source_map: &SourceMap) -> Vec<ActTupleElem>;
@@ -25,7 +25,7 @@ impl GenerateInlineName for TsTupleType {
 impl GetDependencies for TsTupleType {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        type_alias_lookup: &HashMap<String, AzleTypeAlias>,
         found_types: &HashSet<String>,
     ) -> HashSet<String> {
         self.elem_types

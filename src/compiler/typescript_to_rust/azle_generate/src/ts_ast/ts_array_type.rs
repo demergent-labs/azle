@@ -1,18 +1,18 @@
 use std::collections::{HashMap, HashSet};
 use swc_common::SourceMap;
-use swc_ecma_ast::{TsArrayType, TsTypeAliasDecl};
+use swc_ecma_ast::TsArrayType;
 
 use crate::cdk_act::{
     nodes::data_type_nodes::{ActArray, ActArrayLiteral, ActArrayTypeAlias, LiteralOrTypeAlias},
     ActDataType, ToActDataType,
 };
 
-use super::{ast_traits::GetString, GetDependencies};
+use super::{ast_traits::GetString, AzleTypeAlias, GetDependencies};
 
 impl GetDependencies for TsArrayType {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        type_alias_lookup: &HashMap<String, AzleTypeAlias>,
         found_types: &HashSet<String>,
     ) -> HashSet<String> {
         self.elem_type

@@ -1,6 +1,6 @@
 use super::{
-    ts_type_lit::TsTypeLitHelperMethods, FunctionAndMethodTypeHelperMethods, GenerateInlineName,
-    GetDependencies, GetName, GetString,
+    source_map::GetLocInfo, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAlias,
+    FunctionAndMethodTypeHelperMethods, GenerateInlineName, GetDependencies, GetName, GetString,
 };
 use crate::cdk_act::{
     nodes::data_type_nodes::{
@@ -15,7 +15,7 @@ use std::{
     iter::FromIterator,
 };
 use swc_common::SourceMap;
-use swc_ecma_ast::{TsType, TsTypeAliasDecl, TsTypeRef};
+use swc_ecma_ast::{TsType, TsTypeRef};
 
 pub trait TsTypeRefHelperMethods {
     fn to_func(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
@@ -40,7 +40,7 @@ trait TsTypeRefPrivateMethods {
 impl GetDependencies for TsTypeRef {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        type_alias_lookup: &HashMap<String, AzleTypeAlias>,
         found_types: &HashSet<String>,
     ) -> HashSet<String> {
         match self.get_name() {
@@ -320,13 +320,16 @@ impl TsTypeRefErrors for TsTypeRef {
                 )
             },
         );
-        let example_variant = format!("\n{}<\n{{\n{}}}>\n", self.get_name(), enclosed_types);
-        let loc = source_map.lookup_char_pos(self.span.lo);
-        let file_name = loc.file.name.to_string();
-        let line_number = loc.line;
-        let col_number = loc.col_display;
-        let location = format!("{}:{}:{}", file_name, line_number, col_number);
-        format!("Variants must have a type literal as the enclosed type. Variants should be formed like this:\n{}\n{}", example_variant, location)
+        let well_formed = source_map.get_well_formed_line(self.span);
+        let example_variant = format!(
+            "\n{}{}<\n{{\n{}}}>;\n",
+            well_formed,
+            self.get_name(),
+            enclosed_types
+        );
+        let location = source_map.get_line_info(self.span);
+        let highlighted_line = source_map.generate_highlighted_line(self.span);
+        format!("\n\nInvalid variant at {}\n{}\nVariants must have a type literal as the enclosed type. Try this:\n{}\n", location, highlighted_line, example_variant)
     }
 
     fn generate_func_wrong_enclosed_type_error(&self) -> String {

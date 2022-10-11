@@ -6,14 +6,14 @@ pub use generate_inline_name::GenerateInlineName;
 pub use get_name::GetName;
 pub use get_string::GetString;
 use std::collections::{HashMap, HashSet};
-use swc_ecma_ast::{
-    TsEntityName, TsFnParam, TsPropertySignature, TsType, TsTypeAliasDecl, TsTypeAnn,
-};
+use swc_ecma_ast::{TsEntityName, TsFnParam, TsPropertySignature, TsType, TsTypeAnn};
+
+use super::AzleTypeAlias;
 
 pub trait GetDependencies {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        type_alias_lookup: &HashMap<String, AzleTypeAlias>,
         found_types: &HashSet<String>,
     ) -> HashSet<String>;
 }

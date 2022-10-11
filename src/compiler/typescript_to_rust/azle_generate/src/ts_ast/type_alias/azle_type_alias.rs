@@ -1,8 +1,18 @@
-use super::{ts_canister_decl::TsCanisterDecl, GetDependencies, GetName, GetTsType};
-use crate::cdk_act::{nodes::ActNode, Actable, SystemStructureType, ToActDataType};
 use std::collections::{HashMap, HashSet};
+
 use swc_common::SourceMap;
 use swc_ecma_ast::{TsType, TsTypeAliasDecl};
+
+use crate::{
+    cdk_act::{nodes::ActNode, Actable, SystemStructureType, ToActDataType},
+    ts_ast::{ts_canister_decl::TsCanisterDecl, GetDependencies, GetName, GetTsType},
+};
+
+#[derive(Clone)]
+pub struct AzleTypeAlias<'a> {
+    pub ts_type_alias_decl: TsTypeAliasDecl,
+    pub source_map: &'a SourceMap,
+}
 
 // TODO I am not super happy with this function... but that might be because I don't understand the system structure stuff
 pub trait TsTypeAliasHelperMethods {
@@ -13,36 +23,34 @@ pub trait TsTypeAliasHelperMethods {
 }
 
 pub trait TsTypeAliasListHelperMethods {
-    fn generate_type_alias_lookup(&self) -> HashMap<String, TsTypeAliasDecl>;
+    fn generate_type_alias_lookup(&self) -> HashMap<String, AzleTypeAlias>;
     fn get_ast_ts_canister_decls(&self) -> Vec<TsCanisterDecl>;
     // TODO I think the only one we use this for nowadays is Canister... Should we condense these?
-    fn get_ast_type_alias_decls_by_type_ref_name(
-        &self,
-        type_ref_name: &str,
-    ) -> Vec<TsTypeAliasDecl>;
+    fn get_ast_type_alias_decls_by_type_ref_name(&self, type_ref_name: &str) -> Vec<AzleTypeAlias>;
 }
 
-impl Actable for TsTypeAliasDecl {
+impl Actable for AzleTypeAlias<'_> {
     fn to_act_node(&self, source_map: &SourceMap) -> ActNode {
         let ts_type_name = self.get_name().to_string();
 
         ActNode::DataType(
-            self.type_ann
+            self.ts_type_alias_decl
+                .type_ann
                 .to_act_data_type(&Some(&ts_type_name), source_map),
         )
     }
 }
 
-impl GetTsType for TsTypeAliasDecl {
+impl GetTsType for AzleTypeAlias<'_> {
     fn get_ts_type(&self) -> TsType {
-        *self.type_ann.clone()
+        *self.ts_type_alias_decl.type_ann.clone()
     }
 }
 
-impl GetDependencies for TsTypeAliasDecl {
+impl GetDependencies for AzleTypeAlias<'_> {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        type_alias_lookup: &HashMap<String, AzleTypeAlias>,
         found_types: &HashSet<String>,
     ) -> HashSet<String> {
         self.get_ts_type()
@@ -50,32 +58,38 @@ impl GetDependencies for TsTypeAliasDecl {
     }
 }
 
-impl GetName for TsTypeAliasDecl {
+impl GetName for AzleTypeAlias<'_> {
     fn get_name(&self) -> &str {
-        self.id.sym.chars().as_str()
+        self.ts_type_alias_decl.id.sym.chars().as_str()
     }
 }
 
-impl TsTypeAliasHelperMethods for TsTypeAliasDecl {
+impl TsTypeAliasHelperMethods for AzleTypeAlias<'_> {
     fn is_type_alias_decl_system_structure_type(
         &self,
         system_structure_type: &SystemStructureType,
     ) -> bool {
         match system_structure_type {
             SystemStructureType::Canister => {
-                self.type_ann.is_ts_type_ref()
-                    && &*self.type_ann.as_ts_type_ref().unwrap().get_name() == "Canister"
+                self.ts_type_alias_decl.type_ann.is_ts_type_ref()
+                    && &*self
+                        .ts_type_alias_decl
+                        .type_ann
+                        .as_ts_type_ref()
+                        .unwrap()
+                        .get_name()
+                        == "Canister"
             }
         }
     }
 }
 
-impl TsTypeAliasListHelperMethods for Vec<TsTypeAliasDecl> {
-    fn generate_type_alias_lookup(&self) -> HashMap<String, TsTypeAliasDecl> {
+impl TsTypeAliasListHelperMethods for Vec<AzleTypeAlias<'_>> {
+    fn generate_type_alias_lookup(&self) -> HashMap<String, AzleTypeAlias> {
         self.iter()
-            .fold(HashMap::new(), |mut acc, ast_type_alias_decl| {
-                let type_alias_names = ast_type_alias_decl.id.get_name().to_string();
-                acc.insert(type_alias_names, ast_type_alias_decl.clone());
+            .fold(HashMap::new(), |mut acc, azle_type_alias| {
+                let type_alias_names = azle_type_alias.ts_type_alias_decl.id.get_name().to_string();
+                acc.insert(type_alias_names, azle_type_alias.clone());
                 acc
             })
     }
@@ -83,19 +97,18 @@ impl TsTypeAliasListHelperMethods for Vec<TsTypeAliasDecl> {
     fn get_ast_ts_canister_decls(&self) -> Vec<TsCanisterDecl> {
         self.get_ast_type_alias_decls_by_type_ref_name("Canister")
             .iter()
-            .map(|decl| TsCanisterDecl { decl: decl.clone() })
+            .map(|decl| TsCanisterDecl {
+                azle_type_alias: decl.clone(),
+            })
             .collect()
     }
 
-    fn get_ast_type_alias_decls_by_type_ref_name(
-        &self,
-        type_ref_name: &str,
-    ) -> Vec<TsTypeAliasDecl> {
+    fn get_ast_type_alias_decls_by_type_ref_name(&self, type_ref_name: &str) -> Vec<AzleTypeAlias> {
         self.clone()
             .into_iter()
-            .filter(|ts_type_alias_decl| {
-                ts_type_alias_decl.type_ann.is_ts_type_ref()
-                    && match ts_type_alias_decl.type_ann.as_ts_type_ref() {
+            .filter(|azle_type_alias| {
+                azle_type_alias.ts_type_alias_decl.type_ann.is_ts_type_ref()
+                    && match azle_type_alias.ts_type_alias_decl.type_ann.as_ts_type_ref() {
                         Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
                             Some(ident) => ident.sym.chars().as_str() == type_ref_name,
                             None => false,

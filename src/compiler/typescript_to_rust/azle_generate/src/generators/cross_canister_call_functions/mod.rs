@@ -2,15 +2,13 @@ use crate::{
     cdk_act::{SystemStructureType, ToActDataType, ToTokenStream},
     ts_ast::{
         program::{azle_program::TsProgramVecHelperMethods, AzleProgram},
-        GetName,
+        AzleTypeAlias, GetName,
     },
 };
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use swc_common::SourceMap;
-use swc_ecma_ast::{
-    Expr, TsFnParam, TsMethodSignature, TsType, TsTypeAliasDecl, TsTypeElement, TsTypeLit,
-};
+use swc_ecma_ast::{Expr, TsFnParam, TsMethodSignature, TsType, TsTypeElement, TsTypeLit};
 
 #[derive(Clone)]
 pub struct CrossCanisterCallFunctionsInfo {
@@ -121,7 +119,7 @@ trait GenerateCrossCanisterCallFunctionsInfos {
     fn generate_cross_canister_call_functions_infos(&self) -> Vec<CrossCanisterCallFunctionsInfo>;
 }
 
-impl GenerateCrossCanisterCallFunctionsInfos for Vec<TsTypeAliasDecl> {
+impl GenerateCrossCanisterCallFunctionsInfos for Vec<AzleTypeAlias<'_>> {
     fn generate_cross_canister_call_functions_infos(&self) -> Vec<CrossCanisterCallFunctionsInfo> {
         self.iter().fold(vec![], |acc, canister_type_alias_decl| {
             let cross_canister_call_functions_infos =
@@ -132,9 +130,9 @@ impl GenerateCrossCanisterCallFunctionsInfos for Vec<TsTypeAliasDecl> {
     }
 }
 
-impl GenerateCrossCanisterCallFunctionsInfos for TsTypeAliasDecl {
+impl GenerateCrossCanisterCallFunctionsInfos for AzleTypeAlias<'_> {
     fn generate_cross_canister_call_functions_infos(&self) -> Vec<CrossCanisterCallFunctionsInfo> {
-        match &*self.type_ann {
+        match &*self.ts_type_alias_decl.type_ann {
             TsType::TsTypeRef(ts_type_ref) => {
                 match &ts_type_ref.type_params {
                     Some(type_params) => {
@@ -142,13 +140,12 @@ impl GenerateCrossCanisterCallFunctionsInfos for TsTypeAliasDecl {
 
                         let type_param = &type_params.params[0]; // TODO I think we can assume this will be here
 
-                        todo!("We can't have this be a default");
                         match &**type_param {
                         TsType::TsTypeLit(ts_type_lit) => {
                             generate_cross_canister_call_functions_infos_from_canister_type_literal(
                                 ts_type_lit,
                                 &canister_type_alias_decl_name,
-                                &Default::default()
+                                self.source_map
                             )
                         }
                         _ => panic!("The Canister type param must be a type literal"),

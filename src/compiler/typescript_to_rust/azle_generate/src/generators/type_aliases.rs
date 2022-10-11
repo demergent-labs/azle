@@ -1,10 +1,8 @@
 use crate::{
     cdk_act::{ActDataType, Actable},
-    ts_ast::ts_type_alias_decl::TsTypeAliasListHelperMethods,
+    ts_ast::{type_alias::azle_type_alias::TsTypeAliasListHelperMethods, AzleTypeAlias},
 };
 use std::collections::HashSet;
-use swc_common::SourceMap;
-use swc_ecma_ast::TsTypeAliasDecl;
 
 /**
  * Loops through all of the dependant types, finds the corresponding ts types in
@@ -12,20 +10,19 @@ use swc_ecma_ast::TsTypeAliasDecl;
  */
 pub fn build_type_alias_acts(
     type_names: &HashSet<String>,
-    ast_type_alias_variant_decls: &Vec<TsTypeAliasDecl>,
-    source_map: &SourceMap,
+    azle_type_aliases: &Vec<AzleTypeAlias>,
 ) -> Vec<ActDataType> {
-    let type_alias_lookup = ast_type_alias_variant_decls.generate_type_alias_lookup();
+    let type_alias_lookup = azle_type_aliases.generate_type_alias_lookup();
 
-    type_names.iter().fold(vec![], |acc, dependant_type| {
-        let type_alias_decl = type_alias_lookup.get(dependant_type);
+    type_names.iter().fold(vec![], |acc, dependant_type_name| {
+        let type_alias_decl = type_alias_lookup.get(dependant_type_name);
         let token_stream = match type_alias_decl {
-            Some(type_alias_decl) => type_alias_decl
-                .to_act_node(source_map)
+            Some(azle_type_alias) => azle_type_alias
+                .to_act_node(azle_type_alias.source_map)
                 .as_data_type()
                 .unwrap(),
             None => {
-                todo!("ERROR: Dependant Type [{dependant_type}] not found type alias list!")
+                todo!("ERROR: Dependant Type [{dependant_type_name}] not found type alias list!")
             }
         };
         vec![acc, vec![token_stream]].concat()

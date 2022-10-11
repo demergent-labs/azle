@@ -8,13 +8,14 @@ use crate::generators::async_result_handler::AsyncResultHelperMethods;
 use crate::generators::cross_canister_call_functions::CrossCanisterHelperMethods;
 use crate::generators::errors;
 use crate::ts_ast::program::azle_program::TsProgramVecHelperMethods;
+use crate::ts_ast::type_alias::azle_type_alias::TsTypeAliasListHelperMethods;
 use crate::{
     cdk_act::{
         self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
         ActDataType, CanisterMethodType, RequestType, ToAct,
     },
     generators::{canister_methods, stacktrace, type_aliases, vm_value_conversion},
-    ts_ast::{ts_type_alias_decl::TsTypeAliasListHelperMethods, GetDependencies},
+    ts_ast::GetDependencies,
 };
 
 use super::program::AzleProgram;
@@ -50,8 +51,7 @@ impl TsAst {
                         program,
                         source_map,
                     };
-                }
-
+                };
                 panic!("this cannot happen");
             })
             .collect();
@@ -61,31 +61,9 @@ impl TsAst {
 
 impl ToAct for TsAst {
     fn to_act(&self) -> AbstractCanisterTree {
-        eprintln!("-----------------------------------------------");
-        eprintln!("--- Starting AST to ACT Conversion ------------");
-        eprintln!("-----------------------------------------------");
         // Collect AST Information
         let ast_type_alias_decls = &self.azle_programs.get_ast_type_alias_decls();
         let ast_canister_type_alias_decls = ast_type_alias_decls.get_ast_ts_canister_decls();
-
-        let source_map_option = self.azle_programs.iter().find(|azle_program| {
-            azle_program
-                .source_map
-                .files()
-                .get(0)
-                .unwrap()
-                .name
-                .to_string()
-                == "/home/bdemann/code/demergent_labs/azle/examples/compiler_errors/src/index.ts"
-                    .to_string()
-        });
-        let source_map = &source_map_option.unwrap().source_map;
-        eprintln!(">>>>>>>>>>>>>>>>>>> ALL THE FILES");
-        for thing in &self.azle_programs {
-            let lock_thing = thing.source_map.files();
-            let other_thing = &lock_thing.get(0).unwrap().name;
-            eprintln!("{}", other_thing)
-        }
 
         // Separate function decls into queries and updates
         let ast_fnc_decls_query = &self
@@ -142,7 +120,7 @@ impl ToAct for TsAst {
             );
 
         let type_alias_acts =
-            type_aliases::build_type_alias_acts(&dependencies, &ast_type_alias_decls, &source_map);
+            type_aliases::build_type_alias_acts(&dependencies, &ast_type_alias_decls);
 
         let type_alias_inline_acts = data_type_nodes::build_inline_type_acts(&type_alias_acts);
         let query_method_inline_acts =

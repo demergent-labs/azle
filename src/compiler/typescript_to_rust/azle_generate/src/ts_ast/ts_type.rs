@@ -1,15 +1,17 @@
 use std::collections::{HashMap, HashSet};
 use swc_common::SourceMap;
-use swc_ecma_ast::{TsType, TsTypeAliasDecl};
+use swc_ecma_ast::TsType;
 
 use crate::cdk_act::{ActDataType, ToActDataType};
 
-use super::{ast_traits::GetString, ts_type_lit::TsTypeLitHelperMethods, GetDependencies};
+use super::{
+    ast_traits::GetString, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAlias, GetDependencies,
+};
 
 impl GetDependencies for TsType {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        type_alias_lookup: &HashMap<String, AzleTypeAlias>,
         found_types: &HashSet<String>,
     ) -> HashSet<String> {
         match self {

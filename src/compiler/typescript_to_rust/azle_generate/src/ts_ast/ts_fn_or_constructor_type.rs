@@ -1,12 +1,12 @@
 use std::collections::{HashMap, HashSet};
-use swc_ecma_ast::{TsFnOrConstructorType, TsTypeAliasDecl};
+use swc_ecma_ast::TsFnOrConstructorType;
 
-use super::{GetDependencies, GetString};
+use super::{AzleTypeAlias, GetDependencies, GetString};
 
 impl GetDependencies for TsFnOrConstructorType {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        type_alias_lookup: &HashMap<String, AzleTypeAlias>,
         found_types: &HashSet<String>,
     ) -> HashSet<String> {
         match self {

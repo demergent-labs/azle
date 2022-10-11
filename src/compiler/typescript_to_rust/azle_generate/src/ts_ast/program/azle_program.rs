@@ -1,11 +1,11 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::{FnDecl, Program, TsTypeAliasDecl};
+use swc_ecma_ast::{FnDecl, Program};
 
 use crate::{
     cdk_act::{CanisterMethodType, SystemStructureType},
     ts_ast::{
         fn_decl::FnDeclHelperMethods, module::ModuleHelperMethods,
-        ts_type_alias_decl::TsTypeAliasHelperMethods,
+        type_alias::azle_type_alias::TsTypeAliasHelperMethods, AzleTypeAlias,
     },
 };
 
@@ -34,9 +34,9 @@ impl AzleProgram {
         }
     }
 
-    fn get_ast_type_alias_decls(&self) -> Vec<TsTypeAliasDecl> {
+    fn get_ast_type_alias_decls(&self) -> Vec<AzleTypeAlias> {
         match &self.program {
-            Program::Module(module) => module.get_type_alias_decls(),
+            Program::Module(module) => module.get_type_alias_decls(&self.source_map),
             Program::Script(_) => vec![],
         }
     }
@@ -44,11 +44,11 @@ impl AzleProgram {
 
 pub trait TsProgramVecHelperMethods {
     fn get_fn_decls(&self) -> Vec<FnDecl>;
-    fn get_ast_type_alias_decls(&self) -> Vec<TsTypeAliasDecl>;
+    fn get_ast_type_alias_decls(&self) -> Vec<AzleTypeAlias>;
     fn get_type_alias_decls_for_system_structure_type(
         &self,
         system_structure_type: &SystemStructureType,
-    ) -> Vec<TsTypeAliasDecl>;
+    ) -> Vec<AzleTypeAlias>;
     fn get_fn_decls_of_type(&self, canister_method_type: &CanisterMethodType) -> Vec<FnDecl>;
 }
 
@@ -70,7 +70,7 @@ impl TsProgramVecHelperMethods for Vec<AzleProgram> {
         })
     }
 
-    fn get_ast_type_alias_decls(&self) -> Vec<TsTypeAliasDecl> {
+    fn get_ast_type_alias_decls(&self) -> Vec<AzleTypeAlias> {
         self.iter().fold(vec![], |acc, program| {
             let ast_type_alias_decls = program.get_ast_type_alias_decls();
 
@@ -81,7 +81,7 @@ impl TsProgramVecHelperMethods for Vec<AzleProgram> {
     fn get_type_alias_decls_for_system_structure_type(
         &self,
         system_structure_type: &SystemStructureType,
-    ) -> Vec<TsTypeAliasDecl> {
+    ) -> Vec<AzleTypeAlias> {
         let type_alias_decls = self.get_ast_type_alias_decls();
 
         type_alias_decls

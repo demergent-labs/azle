@@ -1,7 +1,7 @@
 use super::{
     ast_traits::{GetString, GetTsType},
     ts_type_element::TsTypeElementHelperMethods,
-    GenerateInlineName, GetDependencies, GetName,
+    AzleTypeAlias, GenerateInlineName, GetDependencies, GetName,
 };
 use crate::cdk_act::{
     nodes::data_type_nodes::{
@@ -13,7 +13,7 @@ use crate::cdk_act::{
 };
 use std::collections::{HashMap, HashSet};
 use swc_common::SourceMap;
-use swc_ecma_ast::{TsTypeAliasDecl, TsTypeLit};
+use swc_ecma_ast::TsTypeLit;
 
 pub trait TsTypeLitHelperMethods {
     fn to_record(&self, record_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
@@ -86,7 +86,7 @@ impl GenerateInlineName for TsTypeLit {
 impl GetDependencies for TsTypeLit {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        type_alias_lookup: &HashMap<String, AzleTypeAlias>,
         found_types: &HashSet<String>,
     ) -> HashSet<String> {
         self.members
