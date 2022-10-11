@@ -10,24 +10,24 @@ impl GetDependencies for TsType {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
-        found_types: &HashSet<String>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
         match self {
             TsType::TsKeywordType(_) => HashSet::new(),
             TsType::TsTypeRef(ts_type_ref) => {
-                ts_type_ref.get_dependent_types(type_alias_lookup, found_types)
+                ts_type_ref.get_dependent_types(type_alias_lookup, found_type_names)
             }
             TsType::TsTypeLit(ts_type_lit) => {
-                ts_type_lit.get_dependent_types(type_alias_lookup, found_types)
+                ts_type_lit.get_dependent_types(type_alias_lookup, found_type_names)
             }
             TsType::TsArrayType(ts_array_type) => {
-                ts_array_type.get_dependent_types(type_alias_lookup, found_types)
+                ts_array_type.get_dependent_types(type_alias_lookup, found_type_names)
             }
             TsType::TsFnOrConstructorType(ts_fn_or_constructor_type) => {
-                ts_fn_or_constructor_type.get_dependent_types(type_alias_lookup, found_types)
+                ts_fn_or_constructor_type.get_dependent_types(type_alias_lookup, found_type_names)
             }
             TsType::TsTupleType(ts_tuple_type) => {
-                ts_tuple_type.get_dependent_types(type_alias_lookup, found_types)
+                ts_tuple_type.get_dependent_types(type_alias_lookup, found_type_names)
             }
             TsType::TsThisType(_) => todo!(),
             TsType::TsTypeQuery(_) => todo!(),

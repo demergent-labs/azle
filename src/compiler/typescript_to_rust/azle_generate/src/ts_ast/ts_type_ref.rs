@@ -18,10 +18,10 @@ use swc_common::SourceMap;
 use swc_ecma_ast::{TsFnType, TsType, TsTypeRef};
 
 pub trait TsTypeRefHelperMethods {
+    fn get_enclosed_ts_type(&self) -> TsType;
     fn to_func(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
     fn to_option(&self, record_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
     fn to_variant(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
-    fn get_enclosed_ts_type(&self) -> TsType;
 }
 
 impl GenerateInlineName for TsFnType {
@@ -34,7 +34,7 @@ impl GetDependencies for TsTypeRef {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
-        found_types: &HashSet<String>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
         match self.get_name() {
             "blob" => HashSet::new(),
@@ -55,16 +55,16 @@ impl GetDependencies for TsTypeRef {
             "reserved" => HashSet::new(),
             "Opt" => self
                 .get_enclosed_ts_type()
-                .get_dependent_types(type_alias_lookup, found_types),
+                .get_dependent_types(type_alias_lookup, found_type_names),
             "Func" => self
                 .get_enclosed_ts_type()
-                .get_dependent_types(type_alias_lookup, found_types),
+                .get_dependent_types(type_alias_lookup, found_type_names),
             "Variant" => self
                 .get_enclosed_ts_type()
-                .get_dependent_types(type_alias_lookup, found_types),
+                .get_dependent_types(type_alias_lookup, found_type_names),
             _ => {
                 let name = self.get_name().to_string();
-                if found_types.contains(&name) {
+                if found_type_names.contains(&name) {
                     return HashSet::new();
                 }
                 match type_alias_lookup.clone().get(&name) {
@@ -72,7 +72,7 @@ impl GetDependencies for TsTypeRef {
                         let new_type: HashSet<String> =
                             HashSet::from_iter(vec![name].iter().cloned());
                         let found_types: HashSet<String> =
-                            found_types.clone().union(&new_type).cloned().collect();
+                            found_type_names.clone().union(&new_type).cloned().collect();
                         // When finding a new type return it and all of it's dependents
                         found_types
                             .union(&decl.get_dependent_types(type_alias_lookup, &found_types))

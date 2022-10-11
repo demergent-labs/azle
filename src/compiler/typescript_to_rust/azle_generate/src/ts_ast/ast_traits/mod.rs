@@ -10,7 +10,7 @@ pub trait GetDependencies {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
-        found_types: &HashSet<String>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String>;
 }
 

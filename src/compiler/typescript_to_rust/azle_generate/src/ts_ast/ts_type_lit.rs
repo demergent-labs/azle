@@ -86,11 +86,11 @@ impl GetDependencies for TsTypeLit {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
-        found_types: &HashSet<String>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
         self.members
             .iter()
-            .fold(found_types.clone(), |acc, member| {
+            .fold(found_type_names.clone(), |acc, member| {
                 acc.union(
                     &member
                         .get_ts_type()

@@ -51,16 +51,16 @@ impl GetDependencies for AzleTypeAliasDecl<'_> {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
-        found_types: &HashSet<String>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
         self.get_ts_type()
-            .get_dependent_types(type_alias_lookup, found_types)
+            .get_dependent_types(type_alias_lookup, found_type_names)
     }
 }
 
 impl GetName for AzleTypeAliasDecl<'_> {
     fn get_name(&self) -> &str {
-        self.ts_type_alias_decl.id.sym.chars().as_str()
+        self.ts_type_alias_decl.id.get_name()
     }
 }
 
