@@ -1,6 +1,6 @@
 use super::{
-    ts_type_lit::TsTypeLitHelperMethods, FunctionAndMethodTypeHelperMethods, GenerateInlineName,
-    GetDependencies, GetName,
+    ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl, FunctionAndMethodTypeHelperMethods,
+    GenerateInlineName, GetDependencies, GetName,
 };
 use crate::cdk_act::{
     nodes::data_type_nodes::{
@@ -14,12 +14,13 @@ use std::{
     collections::{HashMap, HashSet},
     iter::FromIterator,
 };
-use swc_ecma_ast::{TsFnType, TsType, TsTypeAliasDecl, TsTypeRef};
+use swc_common::SourceMap;
+use swc_ecma_ast::{TsFnType, TsType, TsTypeRef};
 
 pub trait TsTypeRefHelperMethods {
-    fn to_func(&self, variant_name: &Option<&String>) -> ActDataType;
-    fn to_option(&self, record_name: &Option<&String>) -> ActDataType;
-    fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType;
+    fn to_func(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
+    fn to_option(&self, record_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
+    fn to_variant(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
     fn get_enclosed_ts_type(&self) -> TsType;
 }
 
@@ -32,7 +33,7 @@ impl GenerateInlineName for TsFnType {
 impl GetDependencies for TsTypeRef {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
         found_types: &HashSet<String>,
     ) -> HashSet<String> {
         match self.get_name() {
@@ -92,34 +93,41 @@ impl GetName for TsTypeRef {
 }
 
 impl ToActDataType for TsTypeRef {
-    fn to_act_data_type(&self, alias_name: &Option<&String>) -> crate::cdk_act::ActDataType {
+    fn to_act_data_type(
+        &self,
+        alias_name: &Option<&String>,
+        source_map: &SourceMap,
+    ) -> crate::cdk_act::ActDataType {
         match self.get_name() {
-            "blob" => ActPrimitiveLit::Blob.to_act_data_type(alias_name),
-            "float32" => ActPrimitiveLit::Float32.to_act_data_type(alias_name),
-            "float64" => ActPrimitiveLit::Float64.to_act_data_type(alias_name),
-            "int" => ActPrimitiveLit::Int.to_act_data_type(alias_name),
-            "int8" => ActPrimitiveLit::Int8.to_act_data_type(alias_name),
-            "int16" => ActPrimitiveLit::Int16.to_act_data_type(alias_name),
-            "int32" => ActPrimitiveLit::Int32.to_act_data_type(alias_name),
-            "int64" => ActPrimitiveLit::Int64.to_act_data_type(alias_name),
-            "nat" => ActPrimitiveLit::Nat.to_act_data_type(alias_name),
-            "nat8" => ActPrimitiveLit::Nat8.to_act_data_type(alias_name),
-            "nat16" => ActPrimitiveLit::Nat16.to_act_data_type(alias_name),
-            "nat32" => ActPrimitiveLit::Nat32.to_act_data_type(alias_name),
-            "nat64" => ActPrimitiveLit::Nat64.to_act_data_type(alias_name),
-            "Principal" => ActPrimitiveLit::Principal.to_act_data_type(alias_name),
-            "empty" => ActPrimitiveLit::Empty.to_act_data_type(alias_name),
-            "reserved" => ActPrimitiveLit::Reserved.to_act_data_type(alias_name),
-            "Opt" => self.to_option(alias_name),
-            "Func" => self.to_func(alias_name),
-            "Variant" => self.to_variant(alias_name),
-            _ => self.get_name().to_string().to_act_data_type(alias_name),
+            "blob" => ActPrimitiveLit::Blob.to_act_data_type(alias_name, source_map),
+            "float32" => ActPrimitiveLit::Float32.to_act_data_type(alias_name, source_map),
+            "float64" => ActPrimitiveLit::Float64.to_act_data_type(alias_name, source_map),
+            "int" => ActPrimitiveLit::Int.to_act_data_type(alias_name, source_map),
+            "int8" => ActPrimitiveLit::Int8.to_act_data_type(alias_name, source_map),
+            "int16" => ActPrimitiveLit::Int16.to_act_data_type(alias_name, source_map),
+            "int32" => ActPrimitiveLit::Int32.to_act_data_type(alias_name, source_map),
+            "int64" => ActPrimitiveLit::Int64.to_act_data_type(alias_name, source_map),
+            "nat" => ActPrimitiveLit::Nat.to_act_data_type(alias_name, source_map),
+            "nat8" => ActPrimitiveLit::Nat8.to_act_data_type(alias_name, source_map),
+            "nat16" => ActPrimitiveLit::Nat16.to_act_data_type(alias_name, source_map),
+            "nat32" => ActPrimitiveLit::Nat32.to_act_data_type(alias_name, source_map),
+            "nat64" => ActPrimitiveLit::Nat64.to_act_data_type(alias_name, source_map),
+            "Principal" => ActPrimitiveLit::Principal.to_act_data_type(alias_name, source_map),
+            "empty" => ActPrimitiveLit::Empty.to_act_data_type(alias_name, source_map),
+            "reserved" => ActPrimitiveLit::Reserved.to_act_data_type(alias_name, source_map),
+            "Opt" => self.to_option(alias_name, source_map),
+            "Func" => self.to_func(alias_name, source_map),
+            "Variant" => self.to_variant(alias_name, source_map),
+            _ => self
+                .get_name()
+                .to_string()
+                .to_act_data_type(alias_name, source_map),
         }
     }
 }
 
 impl TsTypeRefHelperMethods for TsTypeRef {
-    fn to_func(&self, func_name: &Option<&String>) -> ActDataType {
+    fn to_func(&self, func_name: &Option<&String>, source_map: &SourceMap) -> ActDataType {
         let ts_fn_type = match self.get_enclosed_ts_type() {
             TsType::TsFnOrConstructorType(fn_or_const) => match fn_or_const {
                 swc_ecma_ast::TsFnOrConstructorType::TsFnType(ts_fn_type) => ts_fn_type,
@@ -130,13 +138,13 @@ impl TsTypeRefHelperMethods for TsTypeRef {
             _ => todo!("Funcs must have a function as the enclosed type"),
         };
         let return_type = match ts_fn_type.get_return_type() {
-            Some(ts_type) => Some(ts_type.to_act_data_type(&None)),
+            Some(ts_type) => Some(ts_type.to_act_data_type(&None, &source_map)),
             None => None,
         };
         let param_types: Vec<ActDataType> = ts_fn_type
             .get_param_types()
             .iter()
-            .map(|param| param.to_act_data_type(&None))
+            .map(|param| param.to_act_data_type(&None, &source_map))
             .collect();
         let func_mode = ts_fn_type.get_func_mode();
 
@@ -164,8 +172,10 @@ impl TsTypeRefHelperMethods for TsTypeRef {
         })
     }
 
-    fn to_option(&self, alias_name: &Option<&String>) -> ActDataType {
-        let enclosed_act_data_type = self.get_enclosed_ts_type().to_act_data_type(&None);
+    fn to_option(&self, alias_name: &Option<&String>, source_map: &SourceMap) -> ActDataType {
+        let enclosed_act_data_type = self
+            .get_enclosed_ts_type()
+            .to_act_data_type(&None, source_map);
         match alias_name {
             Some(name) => ActDataType::Option(ActOption {
                 act_type: LiteralOrTypeAlias::TypeAlias(ActOptionTypeAlias {
@@ -181,12 +191,12 @@ impl TsTypeRefHelperMethods for TsTypeRef {
         }
     }
 
-    fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType {
+    fn to_variant(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType {
         match self.get_enclosed_ts_type().as_ts_type_lit() {
             Some(ts_type_lit) => ts_type_lit,
             None => todo!("Variants must have a type literal as the enclosed type"),
         }
-        .to_variant(variant_name)
+        .to_variant(variant_name, source_map)
     }
 
     fn get_enclosed_ts_type(&self) -> TsType {

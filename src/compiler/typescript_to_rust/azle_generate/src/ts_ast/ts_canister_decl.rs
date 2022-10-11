@@ -1,29 +1,35 @@
 use super::{
-    ts_type_ref::TsTypeRefHelperMethods, FunctionAndMethodTypeHelperMethods, GetDependencies,
-    GetName, GetTsType,
+    ts_type_ref::TsTypeRefHelperMethods, AzleTypeAliasDecl, FunctionAndMethodTypeHelperMethods,
+    GetDependencies, GetName, GetTsType,
 };
 use std::collections::{HashMap, HashSet};
-use swc_ecma_ast::TsTypeAliasDecl;
 
-pub struct TsCanisterDecl {
-    pub decl: TsTypeAliasDecl,
+pub struct TsCanisterDecl<'a> {
+    pub azle_type_alias: AzleTypeAliasDecl<'a>,
 }
 
-impl GetDependencies for TsCanisterDecl {
+impl GetDependencies for TsCanisterDecl<'_> {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
         found_types: &HashSet<String>,
     ) -> HashSet<String> {
         // Verify that it is a canister
-        let is_canister = self.decl.get_ts_type().is_ts_type_ref()
-            && self.decl.get_ts_type().as_ts_type_ref().unwrap().get_name() == "Canister";
+        let is_canister = self.azle_type_alias.get_ts_type().is_ts_type_ref()
+            && self
+                .azle_type_alias
+                .get_ts_type()
+                .as_ts_type_ref()
+                .unwrap()
+                .get_name()
+                == "Canister";
         if !is_canister {
             panic!("Expecting Canister")
         }
         // Get the tstypeliteral out of it
         let ts_type = self
-            .decl
+            .azle_type_alias
+            .ts_type_alias_decl
             .type_ann
             .as_ts_type_ref()
             .unwrap()
@@ -56,10 +62,10 @@ impl GetDependencies for TsCanisterDecl {
     }
 }
 
-impl GetDependencies for Vec<TsCanisterDecl> {
+impl GetDependencies for Vec<TsCanisterDecl<'_>> {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
         found_types: &HashSet<String>,
     ) -> HashSet<String> {
         self.iter().fold(found_types.clone(), |acc, canister_decl| {

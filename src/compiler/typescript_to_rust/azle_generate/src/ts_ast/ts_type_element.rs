@@ -1,3 +1,4 @@
+use swc_common::SourceMap;
 use swc_ecma_ast::{TsType, TsTypeElement};
 
 use crate::cdk_act::{
@@ -8,8 +9,8 @@ use crate::cdk_act::{
 use super::{ast_traits::GetTsType, GetName};
 
 pub trait TsTypeElementHelperMethods {
-    fn to_record_member(&self) -> ActRecordMember;
-    fn to_variant_member(&self) -> ActVariantMember;
+    fn to_record_member(&self, source_map: &SourceMap) -> ActRecordMember;
+    fn to_variant_member(&self, source_map: &SourceMap) -> ActVariantMember;
 }
 
 impl GetName for TsTypeElement {
@@ -35,17 +36,17 @@ impl GetTsType for TsTypeElement {
 }
 
 impl TsTypeElementHelperMethods for TsTypeElement {
-    fn to_record_member(&self) -> ActRecordMember {
+    fn to_record_member(&self, source_map: &SourceMap) -> ActRecordMember {
         ActRecordMember {
             member_name: self.get_name().to_string(),
-            member_type: self.get_ts_type().to_act_data_type(&None),
+            member_type: self.get_ts_type().to_act_data_type(&None, source_map),
         }
     }
 
-    fn to_variant_member(&self) -> ActVariantMember {
+    fn to_variant_member(&self, source_map: &SourceMap) -> ActVariantMember {
         ActVariantMember {
             member_name: self.get_name().to_string(),
-            member_type: self.get_ts_type().to_act_data_type(&None),
+            member_type: self.get_ts_type().to_act_data_type(&None, source_map),
         }
     }
 }

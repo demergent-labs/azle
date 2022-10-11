@@ -1,14 +1,15 @@
 use std::collections::{HashMap, HashSet};
-use swc_ecma_ast::{TsType, TsTypeAliasDecl};
+use swc_common::SourceMap;
+use swc_ecma_ast::TsType;
 
 use crate::cdk_act::{ActDataType, ToActDataType};
 
-use super::{ts_type_lit::TsTypeLitHelperMethods, GetDependencies, GetName};
+use super::{ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl, GetDependencies, GetName};
 
 impl GetDependencies for TsType {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
+        type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
         found_types: &HashSet<String>,
     ) -> HashSet<String> {
         match self {
@@ -56,13 +57,23 @@ impl GetName for TsType {
 }
 
 impl ToActDataType for TsType {
-    fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType {
+    fn to_act_data_type(
+        &self,
+        alias_name: &Option<&String>,
+        source_map: &SourceMap,
+    ) -> ActDataType {
         match self {
-            TsType::TsKeywordType(ts_keyword_type) => ts_keyword_type.to_act_data_type(alias_name),
-            TsType::TsTypeRef(ts_type_ref) => ts_type_ref.to_act_data_type(alias_name),
-            TsType::TsArrayType(ts_array_type) => ts_array_type.to_act_data_type(alias_name),
-            TsType::TsTypeLit(ts_type_lit) => ts_type_lit.to_record(alias_name),
-            TsType::TsTupleType(ts_tuple_type) => ts_tuple_type.to_act_data_type(alias_name),
+            TsType::TsKeywordType(ts_keyword_type) => {
+                ts_keyword_type.to_act_data_type(alias_name, source_map)
+            }
+            TsType::TsTypeRef(ts_type_ref) => ts_type_ref.to_act_data_type(alias_name, source_map),
+            TsType::TsArrayType(ts_array_type) => {
+                ts_array_type.to_act_data_type(alias_name, source_map)
+            }
+            TsType::TsTypeLit(ts_type_lit) => ts_type_lit.to_record(alias_name, source_map),
+            TsType::TsTupleType(ts_tuple_type) => {
+                ts_tuple_type.to_act_data_type(alias_name, source_map)
+            }
             TsType::TsThisType(_) => todo!("to_act_data_type for TsThisType"),
             TsType::TsFnOrConstructorType(_) => {
                 todo!("to_act_data_type for TsFnOorConstructorType")
