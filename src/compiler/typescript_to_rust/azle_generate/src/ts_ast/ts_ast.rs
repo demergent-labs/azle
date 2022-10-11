@@ -61,9 +61,6 @@ impl TsAst {
 
 impl ToAct for TsAst {
     fn to_act(&self) -> AbstractCanisterTree {
-        eprintln!("-----------------------------------------------");
-        eprintln!("--- Starting AST to ACT Conversion ------------");
-        eprintln!("-----------------------------------------------");
         // Collect AST Information
         let ast_type_alias_decls = &self.azle_programs.get_azle_type_alias_decls();
         let ast_canister_type_alias_decls = ast_type_alias_decls.get_ast_ts_canister_decls();

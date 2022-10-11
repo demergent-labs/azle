@@ -105,9 +105,6 @@ impl ToTokenStream for AbstractCanisterTree {
             .map(|act| act.to_token_stream())
             .collect();
 
-        eprintln!("-----------------------------------------------");
-        eprintln!("--- Finished ACT to TokenStream Conversion ----");
-        eprintln!("-----------------------------------------------");
         quote::quote! {
             #randomness_implementation
 
