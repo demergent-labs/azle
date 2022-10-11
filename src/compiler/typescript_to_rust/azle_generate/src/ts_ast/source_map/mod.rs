@@ -1,3 +1,3 @@
 pub mod source_map;
 
-pub use source_map::GetLocInfo;
+pub use source_map::GetSourceFileInfo;

@@ -1,5 +1,5 @@
 use super::{
-    ast_traits::{GetString, GetTsType},
+    ast_traits::{GetTsType, ToDisplayString},
     ts_type_element::TsTypeElementHelperMethods,
     AzleTypeAlias, GenerateInlineName, GetDependencies, GetName,
 };
@@ -87,11 +87,11 @@ impl GetDependencies for TsTypeLit {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAlias>,
-        found_types: &HashSet<String>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
         self.members
             .iter()
-            .fold(found_types.clone(), |acc, member| {
+            .fold(found_type_names.clone(), |acc, member| {
                 acc.union(
                     &member
                         .get_ts_type()
@@ -103,11 +103,11 @@ impl GetDependencies for TsTypeLit {
     }
 }
 
-impl GetString for TsTypeLit {
-    fn get_string(&self) -> String {
+impl ToDisplayString for TsTypeLit {
+    fn to_display_string(&self) -> String {
         let members = self.members.iter().fold(String::new(), |acc, member| {
             let member_name = member.get_name();
-            let member_type = member.get_ts_type().get_string();
+            let member_type = member.get_ts_type().to_display_string();
             let member_string = format!("{member_name}, {member_type}");
             format!("{}, {}", acc, member_string)
         });

@@ -5,31 +5,32 @@ use swc_ecma_ast::TsType;
 use crate::cdk_act::{ActDataType, ToActDataType};
 
 use super::{
-    ast_traits::GetString, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAlias, GetDependencies,
+    ast_traits::ToDisplayString, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAlias,
+    GetDependencies,
 };
 
 impl GetDependencies for TsType {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAlias>,
-        found_types: &HashSet<String>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
         match self {
             TsType::TsKeywordType(_) => HashSet::new(),
             TsType::TsTypeRef(ts_type_ref) => {
-                ts_type_ref.get_dependent_types(type_alias_lookup, found_types)
+                ts_type_ref.get_dependent_types(type_alias_lookup, found_type_names)
             }
             TsType::TsTypeLit(ts_type_lit) => {
-                ts_type_lit.get_dependent_types(type_alias_lookup, found_types)
+                ts_type_lit.get_dependent_types(type_alias_lookup, found_type_names)
             }
             TsType::TsArrayType(ts_array_type) => {
-                ts_array_type.get_dependent_types(type_alias_lookup, found_types)
+                ts_array_type.get_dependent_types(type_alias_lookup, found_type_names)
             }
             TsType::TsFnOrConstructorType(ts_fn_or_constructor_type) => {
-                ts_fn_or_constructor_type.get_dependent_types(type_alias_lookup, found_types)
+                ts_fn_or_constructor_type.get_dependent_types(type_alias_lookup, found_type_names)
             }
             TsType::TsTupleType(ts_tuple_type) => {
-                ts_tuple_type.get_dependent_types(type_alias_lookup, found_types)
+                ts_tuple_type.get_dependent_types(type_alias_lookup, found_type_names)
             }
             TsType::TsThisType(_) => todo!(),
             TsType::TsTypeQuery(_) => todo!(),
@@ -49,18 +50,15 @@ impl GetDependencies for TsType {
     }
 }
 
-// TODO I am wondering if to_string() might make more sense for these? I just am
-// not sure that get name works for any of these type except typeref which is
-// what it was limited to before we started trying to make errors
-impl GetString for TsType {
-    fn get_string(&self) -> String {
+impl ToDisplayString for TsType {
+    fn to_display_string(&self) -> String {
         match self {
-            TsType::TsTypeRef(type_ref) => type_ref.get_string(),
-            TsType::TsKeywordType(keyword_type) => keyword_type.get_string(),
-            TsType::TsTypeLit(type_lit) => type_lit.get_string(),
-            TsType::TsFnOrConstructorType(fn_or_const_type) => fn_or_const_type.get_string(),
-            TsType::TsTupleType(tuple_type) => tuple_type.get_string(),
-            TsType::TsArrayType(array_type) => array_type.get_string(),
+            TsType::TsTypeRef(type_ref) => type_ref.to_display_string(),
+            TsType::TsKeywordType(keyword_type) => keyword_type.to_display_string(),
+            TsType::TsTypeLit(type_lit) => type_lit.to_display_string(),
+            TsType::TsFnOrConstructorType(fn_or_const_type) => fn_or_const_type.to_display_string(),
+            TsType::TsTupleType(tuple_type) => tuple_type.to_display_string(),
+            TsType::TsArrayType(array_type) => array_type.to_display_string(),
             TsType::TsThisType(_) => todo!(),
             TsType::TsTypeQuery(_) => todo!(),
             TsType::TsOptionalType(_) => todo!(),

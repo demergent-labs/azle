@@ -34,25 +34,25 @@ impl AzleProgram {
         }
     }
 
-    fn get_ast_type_alias_decls(&self) -> Vec<AzleTypeAlias> {
+    fn get_azle_type_aliases(&self) -> Vec<AzleTypeAlias> {
         match &self.program {
-            Program::Module(module) => module.get_type_alias_decls(&self.source_map),
+            Program::Module(module) => module.get_azle_type_aliases(&self.source_map),
             Program::Script(_) => vec![],
         }
     }
 }
 
-pub trait TsProgramVecHelperMethods {
+pub trait AzleProgramVecHelperMethods {
     fn get_fn_decls(&self) -> Vec<FnDecl>;
-    fn get_ast_type_alias_decls(&self) -> Vec<AzleTypeAlias>;
-    fn get_type_alias_decls_for_system_structure_type(
+    fn get_azle_type_aliases(&self) -> Vec<AzleTypeAlias>;
+    fn get_azle_type_aliases_for_system_structure_type(
         &self,
         system_structure_type: &SystemStructureType,
     ) -> Vec<AzleTypeAlias>;
     fn get_fn_decls_of_type(&self, canister_method_type: &CanisterMethodType) -> Vec<FnDecl>;
 }
 
-impl TsProgramVecHelperMethods for Vec<AzleProgram> {
+impl AzleProgramVecHelperMethods for Vec<AzleProgram> {
     fn get_fn_decls_of_type(&self, canister_method_type: &CanisterMethodType) -> Vec<FnDecl> {
         let fn_decls = self.get_fn_decls();
 
@@ -70,19 +70,19 @@ impl TsProgramVecHelperMethods for Vec<AzleProgram> {
         })
     }
 
-    fn get_ast_type_alias_decls(&self) -> Vec<AzleTypeAlias> {
+    fn get_azle_type_aliases(&self) -> Vec<AzleTypeAlias> {
         self.iter().fold(vec![], |acc, program| {
-            let ast_type_alias_decls = program.get_ast_type_alias_decls();
+            let ast_type_alias_decls = program.get_azle_type_aliases();
 
             vec![acc, ast_type_alias_decls].concat()
         })
     }
 
-    fn get_type_alias_decls_for_system_structure_type(
+    fn get_azle_type_aliases_for_system_structure_type(
         &self,
         system_structure_type: &SystemStructureType,
     ) -> Vec<AzleTypeAlias> {
-        let type_alias_decls = self.get_ast_type_alias_decls();
+        let type_alias_decls = self.get_azle_type_aliases();
 
         type_alias_decls
             .into_iter()

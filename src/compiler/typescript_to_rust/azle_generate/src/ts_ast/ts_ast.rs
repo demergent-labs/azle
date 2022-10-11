@@ -7,8 +7,8 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 use crate::generators::async_result_handler::AsyncResultHelperMethods;
 use crate::generators::cross_canister_call_functions::CrossCanisterHelperMethods;
 use crate::generators::errors;
-use crate::ts_ast::program::azle_program::TsProgramVecHelperMethods;
-use crate::ts_ast::type_alias::azle_type_alias::TsTypeAliasListHelperMethods;
+use crate::ts_ast::program::azle_program::AzleProgramVecHelperMethods;
+use crate::ts_ast::type_alias::azle_type_alias::AzleTypeAliasListHelperMethods;
 use crate::{
     cdk_act::{
         self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
@@ -62,7 +62,7 @@ impl TsAst {
 impl ToAct for TsAst {
     fn to_act(&self) -> AbstractCanisterTree {
         // Collect AST Information
-        let ast_type_alias_decls = &self.azle_programs.get_ast_type_alias_decls();
+        let ast_type_alias_decls = &self.azle_programs.get_azle_type_aliases();
         let ast_canister_type_alias_decls = ast_type_alias_decls.get_ast_ts_canister_decls();
 
         // Separate function decls into queries and updates

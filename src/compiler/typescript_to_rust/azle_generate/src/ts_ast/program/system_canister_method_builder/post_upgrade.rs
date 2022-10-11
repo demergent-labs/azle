@@ -7,7 +7,7 @@ use crate::{
         traits::CanisterMethodBuilder, CanisterMethodType,
     },
     generators::canister_methods::method_body,
-    ts_ast::program::{azle_program::TsProgramVecHelperMethods, AzleProgram},
+    ts_ast::program::{azle_program::AzleProgramVecHelperMethods, AzleProgram},
 };
 
 pub fn build_canister_method_system_post_upgrade(

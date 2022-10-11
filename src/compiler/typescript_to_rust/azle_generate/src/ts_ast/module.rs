@@ -5,7 +5,7 @@ use super::AzleTypeAlias;
 
 pub trait ModuleHelperMethods {
     fn get_export_decls(&self) -> Vec<ExportDecl>;
-    fn get_type_alias_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AzleTypeAlias>;
+    fn get_azle_type_aliases<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AzleTypeAlias>;
 }
 
 impl ModuleHelperMethods for Module {
@@ -26,7 +26,7 @@ impl ModuleHelperMethods for Module {
         export_decls
     }
 
-    fn get_type_alias_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AzleTypeAlias> {
+    fn get_azle_type_aliases<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AzleTypeAlias> {
         let module_stmts: Vec<Stmt> = self
             .body
             .iter()
@@ -34,7 +34,7 @@ impl ModuleHelperMethods for Module {
             .map(|module_item| module_item.as_stmt().unwrap().clone())
             .collect();
 
-        let type_alias_decls: Vec<AzleTypeAlias> = module_stmts
+        let stmt_azle_type_aliases: Vec<AzleTypeAlias> = module_stmts
             .iter()
             .filter(|module_stmt| module_stmt.is_decl())
             .map(|module_decl| module_decl.as_decl().unwrap().clone())
@@ -54,7 +54,7 @@ impl ModuleHelperMethods for Module {
             .map(|module_decl| module_decl.as_export_decl().unwrap().clone())
             .collect();
 
-        let export_type_alias_decls: Vec<AzleTypeAlias> = export_decls
+        let export_azle_type_aliases: Vec<AzleTypeAlias> = export_decls
             .iter()
             .filter(|export_decl| export_decl.decl.is_ts_type_alias())
             .map(|export_decl| AzleTypeAlias {
@@ -63,6 +63,6 @@ impl ModuleHelperMethods for Module {
             })
             .collect();
 
-        vec![type_alias_decls, export_type_alias_decls].concat()
+        vec![stmt_azle_type_aliases, export_azle_type_aliases].concat()
     }
 }

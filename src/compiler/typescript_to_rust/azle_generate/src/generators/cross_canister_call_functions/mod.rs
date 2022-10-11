@@ -1,7 +1,7 @@
 use crate::{
     cdk_act::{SystemStructureType, ToActDataType, ToTokenStream},
     ts_ast::{
-        program::{azle_program::TsProgramVecHelperMethods, AzleProgram},
+        program::{azle_program::AzleProgramVecHelperMethods, AzleProgram},
         AzleTypeAlias, GetName,
     },
 };
@@ -109,7 +109,7 @@ impl CrossCanisterHelperMethods for Vec<AzleProgram> {
 
     fn generate_cross_canister_call_functions_infos(&self) -> Vec<CrossCanisterCallFunctionsInfo> {
         let canister_type_alias_decls =
-            self.get_type_alias_decls_for_system_structure_type(&SystemStructureType::Canister);
+            self.get_azle_type_aliases_for_system_structure_type(&SystemStructureType::Canister);
 
         canister_type_alias_decls.generate_cross_canister_call_functions_infos()
     }

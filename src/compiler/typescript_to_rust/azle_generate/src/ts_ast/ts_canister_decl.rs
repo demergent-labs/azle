@@ -12,7 +12,7 @@ impl GetDependencies for TsCanisterDecl<'_> {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAlias>,
-        found_types: &HashSet<String>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
         // Verify that it is a canister
         let is_canister = self.azle_type_alias.get_ts_type().is_ts_type_ref()
@@ -54,11 +54,13 @@ impl GetDependencies for TsCanisterDecl<'_> {
             });
 
         // Get the goods out of a method signature
-        ts_types.iter().fold(found_types.clone(), |acc, ts_type| {
-            acc.union(&ts_type.get_dependent_types(type_alias_lookup, &acc))
-                .cloned()
-                .collect()
-        })
+        ts_types
+            .iter()
+            .fold(found_type_names.clone(), |acc, ts_type| {
+                acc.union(&ts_type.get_dependent_types(type_alias_lookup, &acc))
+                    .cloned()
+                    .collect()
+            })
     }
 }
 
@@ -66,12 +68,13 @@ impl GetDependencies for Vec<TsCanisterDecl<'_>> {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAlias>,
-        found_types: &HashSet<String>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
-        self.iter().fold(found_types.clone(), |acc, canister_decl| {
-            acc.union(&canister_decl.get_dependent_types(type_alias_lookup, &acc))
-                .cloned()
-                .collect()
-        })
+        self.iter()
+            .fold(found_type_names.clone(), |acc, canister_decl| {
+                acc.union(&canister_decl.get_dependent_types(type_alias_lookup, &acc))
+                    .cloned()
+                    .collect()
+            })
     }
 }

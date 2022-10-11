@@ -1,6 +1,7 @@
 use super::{
-    source_map::GetLocInfo, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAlias,
-    FunctionAndMethodTypeHelperMethods, GenerateInlineName, GetDependencies, GetName, GetString,
+    source_map::GetSourceFileInfo, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAlias,
+    FunctionAndMethodTypeHelperMethods, GenerateInlineName, GetDependencies, GetName,
+    ToDisplayString,
 };
 use crate::cdk_act::{
     nodes::data_type_nodes::{
@@ -18,19 +19,19 @@ use swc_common::SourceMap;
 use swc_ecma_ast::{TsType, TsTypeRef};
 
 pub trait TsTypeRefHelperMethods {
+    fn get_enclosed_ts_type(&self) -> TsType;
     fn to_func(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
     fn to_option(&self, record_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
     fn to_variant(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
-    fn get_enclosed_ts_type(&self) -> TsType;
 }
 
 trait TsTypeRefErrors {
-    fn generate_func_wrong_number_of_params_error(&self) -> String;
-    fn generate_variant_wrong_number_of_params_error(&self) -> String;
-    fn generate_option_wrong_number_of_params_error(&self) -> String;
-    fn generate_variant_wrong_enclosed_type_error(&self, source_map: &SourceMap) -> String;
-    fn generate_wrong_number_of_params_error(&self) -> String;
-    fn generate_func_wrong_enclosed_type_error(&self) -> String;
+    fn func_wrong_number_of_params_error(&self) -> String;
+    fn func_wrong_enclosed_type_error(&self) -> String;
+    fn option_wrong_number_of_params_error(&self) -> String;
+    fn type_ref_wrong_number_of_params_error(&self) -> String;
+    fn variant_wrong_number_of_params_error(&self) -> String;
+    fn variant_wrong_enclosed_type_error(&self, source_map: &SourceMap) -> String;
 }
 
 trait TsTypeRefPrivateMethods {
@@ -41,7 +42,7 @@ impl GetDependencies for TsTypeRef {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAlias>,
-        found_types: &HashSet<String>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
         match self.get_name() {
             "blob" => HashSet::new(),
@@ -62,16 +63,16 @@ impl GetDependencies for TsTypeRef {
             "reserved" => HashSet::new(),
             "Opt" => self
                 .get_enclosed_ts_type()
-                .get_dependent_types(type_alias_lookup, found_types),
+                .get_dependent_types(type_alias_lookup, found_type_names),
             "Func" => self
                 .get_enclosed_ts_type()
-                .get_dependent_types(type_alias_lookup, found_types),
+                .get_dependent_types(type_alias_lookup, found_type_names),
             "Variant" => self
                 .get_enclosed_ts_type()
-                .get_dependent_types(type_alias_lookup, found_types),
+                .get_dependent_types(type_alias_lookup, found_type_names),
             _ => {
                 let name = self.get_name().to_string();
-                if found_types.contains(&name) {
+                if found_type_names.contains(&name) {
                     return HashSet::new();
                 }
                 match type_alias_lookup.clone().get(&name) {
@@ -79,7 +80,7 @@ impl GetDependencies for TsTypeRef {
                         let new_type: HashSet<String> =
                             HashSet::from_iter(vec![name].iter().cloned());
                         let found_types: HashSet<String> =
-                            found_types.clone().union(&new_type).cloned().collect();
+                            found_type_names.clone().union(&new_type).cloned().collect();
                         // When finding a new type return it and all of it's dependents
                         found_types
                             .union(&decl.get_dependent_types(type_alias_lookup, &found_types))
@@ -99,8 +100,8 @@ impl GetName for TsTypeRef {
     }
 }
 
-impl GetString for TsTypeRef {
-    fn get_string(&self) -> String {
+impl ToDisplayString for TsTypeRef {
+    fn to_display_string(&self) -> String {
         let enclosed_types = if self.get_enclosed_ts_types().len() == 0 {
             String::new()
         } else {
@@ -109,7 +110,7 @@ impl GetString for TsTypeRef {
                 self.get_enclosed_ts_types()
                     .iter()
                     .fold(String::new(), |acc, enclosed_type| {
-                        format!("{} {},", acc, enclosed_type.get_string())
+                        format!("{} {},", acc, enclosed_type.to_display_string())
                     })
             )
         };
@@ -157,10 +158,10 @@ impl TsTypeRefHelperMethods for TsTypeRef {
             TsType::TsFnOrConstructorType(fn_or_const) => match fn_or_const {
                 swc_ecma_ast::TsFnOrConstructorType::TsFnType(ts_fn_type) => ts_fn_type,
                 swc_ecma_ast::TsFnOrConstructorType::TsConstructorType(_) => {
-                    panic!("{}", self.generate_func_wrong_enclosed_type_error())
+                    panic!("{}", self.func_wrong_enclosed_type_error())
                 }
             },
-            _ => panic!("{}", self.generate_func_wrong_enclosed_type_error()),
+            _ => panic!("{}", self.func_wrong_enclosed_type_error()),
         };
         eprintln!("Start");
         let return_type = match ts_fn_type.get_return_type() {
@@ -221,10 +222,7 @@ impl TsTypeRefHelperMethods for TsTypeRef {
     fn to_variant(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType {
         match self.get_enclosed_ts_type().as_ts_type_lit() {
             Some(ts_type_lit) => ts_type_lit,
-            None => panic!(
-                "{}",
-                self.generate_variant_wrong_enclosed_type_error(source_map)
-            ),
+            None => panic!("{}", self.variant_wrong_enclosed_type_error(source_map)),
         }
         .to_variant(variant_name, source_map)
     }
@@ -233,11 +231,11 @@ impl TsTypeRefHelperMethods for TsTypeRef {
         match &self.type_params {
             Some(params) => {
                 if params.params.len() != 1 {
-                    panic!("{}", self.generate_wrong_number_of_params_error())
+                    panic!("{}", self.type_ref_wrong_number_of_params_error())
                 }
                 *params.params[0].clone()
             }
-            None => panic!("{}", self.generate_wrong_number_of_params_error()),
+            None => panic!("{}", self.type_ref_wrong_number_of_params_error()),
         }
     }
 }
@@ -252,21 +250,21 @@ impl TsTypeRefPrivateMethods for TsTypeRef {
 }
 
 impl TsTypeRefErrors for TsTypeRef {
-    fn generate_wrong_number_of_params_error(&self) -> String {
+    fn type_ref_wrong_number_of_params_error(&self) -> String {
         let specific_help = match self.get_name() {
-            "Variant" => self.generate_variant_wrong_number_of_params_error(),
-            "Func" => self.generate_func_wrong_number_of_params_error(),
-            "Option" => self.generate_option_wrong_number_of_params_error(),
+            "Variant" => self.variant_wrong_number_of_params_error(),
+            "Func" => self.func_wrong_number_of_params_error(),
+            "Option" => self.option_wrong_number_of_params_error(),
             _ => String::new(),
         };
         format!(
             "\n{} is not a valid type.\nFuncs, Variants, and Options must have exactly one enclosed type\n{}",
-            self.get_string(),
+            self.to_display_string(),
             specific_help
         )
     }
 
-    fn generate_func_wrong_number_of_params_error(&self) -> String {
+    fn func_wrong_number_of_params_error(&self) -> String {
         let enclosed_types: String = if self.get_enclosed_ts_types().len() == 0 {
             "param_name: param_type".to_string()
         } else {
@@ -277,7 +275,7 @@ impl TsTypeRefErrors for TsTypeRef {
                         "{}param_name{}: {}, ",
                         acc,
                         index,
-                        enclosed_type.get_string()
+                        enclosed_type.to_display_string()
                     )
                 },
             )
@@ -287,7 +285,7 @@ impl TsTypeRefErrors for TsTypeRef {
         format!("A Func must have exactly one enclosed type. And that type must be a function type:\n{func_example}")
     }
 
-    fn generate_variant_wrong_number_of_params_error(&self) -> String {
+    fn variant_wrong_number_of_params_error(&self) -> String {
         let enclosed_types: String = if self.get_enclosed_ts_types().len() == 0 {
             "    variant_name: variant_type\n".to_string()
         } else {
@@ -298,7 +296,7 @@ impl TsTypeRefErrors for TsTypeRef {
                         "{}    variant_name{}: {},\n",
                         acc,
                         index,
-                        enclosed_type.get_string()
+                        enclosed_type.to_display_string()
                     )
                 },
             )
@@ -308,7 +306,7 @@ impl TsTypeRefErrors for TsTypeRef {
         format!("A Variant must have exactly one enclosed type. If you need multiple variants, put them all in type literal like this:\n{}", example_variant)
     }
 
-    fn generate_variant_wrong_enclosed_type_error(&self, source_map: &SourceMap) -> String {
+    fn variant_wrong_enclosed_type_error(&self, source_map: &SourceMap) -> String {
         let enclosed_types: String = self.get_enclosed_ts_types().iter().enumerate().fold(
             String::new(),
             |acc, (index, enclosed_type)| {
@@ -316,7 +314,7 @@ impl TsTypeRefErrors for TsTypeRef {
                     "{}    variant_name{}: {},\n",
                     acc,
                     index,
-                    enclosed_type.get_string()
+                    enclosed_type.to_display_string()
                 )
             },
         );
@@ -332,11 +330,11 @@ impl TsTypeRefErrors for TsTypeRef {
         format!("\n\nInvalid variant at {}\n{}\nVariants must have a type literal as the enclosed type. Try this:\n{}\n", location, highlighted_line, example_variant)
     }
 
-    fn generate_func_wrong_enclosed_type_error(&self) -> String {
+    fn func_wrong_enclosed_type_error(&self) -> String {
         format!("Funcs must have a function as the enclosed type")
     }
 
-    fn generate_option_wrong_number_of_params_error(&self) -> String {
+    fn option_wrong_number_of_params_error(&self) -> String {
         String::new()
     }
 }

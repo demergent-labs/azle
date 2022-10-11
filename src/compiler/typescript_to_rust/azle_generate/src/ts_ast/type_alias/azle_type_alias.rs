@@ -22,11 +22,10 @@ pub trait TsTypeAliasHelperMethods {
     ) -> bool;
 }
 
-pub trait TsTypeAliasListHelperMethods {
+pub trait AzleTypeAliasListHelperMethods {
     fn generate_type_alias_lookup(&self) -> HashMap<String, AzleTypeAlias>;
     fn get_ast_ts_canister_decls(&self) -> Vec<TsCanisterDecl>;
-    // TODO I think the only one we use this for nowadays is Canister... Should we condense these?
-    fn get_ast_type_alias_decls_by_type_ref_name(&self, type_ref_name: &str) -> Vec<AzleTypeAlias>;
+    fn get_azle_type_aliases_by_type_ref_name(&self, type_ref_name: &str) -> Vec<AzleTypeAlias>;
 }
 
 impl Actable for AzleTypeAlias<'_> {
@@ -51,16 +50,16 @@ impl GetDependencies for AzleTypeAlias<'_> {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAlias>,
-        found_types: &HashSet<String>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
         self.get_ts_type()
-            .get_dependent_types(type_alias_lookup, found_types)
+            .get_dependent_types(type_alias_lookup, found_type_names)
     }
 }
 
 impl GetName for AzleTypeAlias<'_> {
     fn get_name(&self) -> &str {
-        self.ts_type_alias_decl.id.sym.chars().as_str()
+        self.ts_type_alias_decl.id.get_name()
     }
 }
 
@@ -84,7 +83,7 @@ impl TsTypeAliasHelperMethods for AzleTypeAlias<'_> {
     }
 }
 
-impl TsTypeAliasListHelperMethods for Vec<AzleTypeAlias<'_>> {
+impl AzleTypeAliasListHelperMethods for Vec<AzleTypeAlias<'_>> {
     fn generate_type_alias_lookup(&self) -> HashMap<String, AzleTypeAlias> {
         self.iter()
             .fold(HashMap::new(), |mut acc, azle_type_alias| {
@@ -95,7 +94,7 @@ impl TsTypeAliasListHelperMethods for Vec<AzleTypeAlias<'_>> {
     }
 
     fn get_ast_ts_canister_decls(&self) -> Vec<TsCanisterDecl> {
-        self.get_ast_type_alias_decls_by_type_ref_name("Canister")
+        self.get_azle_type_aliases_by_type_ref_name("Canister")
             .iter()
             .map(|decl| TsCanisterDecl {
                 azle_type_alias: decl.clone(),
@@ -103,7 +102,7 @@ impl TsTypeAliasListHelperMethods for Vec<AzleTypeAlias<'_>> {
             .collect()
     }
 
-    fn get_ast_type_alias_decls_by_type_ref_name(&self, type_ref_name: &str) -> Vec<AzleTypeAlias> {
+    fn get_azle_type_aliases_by_type_ref_name(&self, type_ref_name: &str) -> Vec<AzleTypeAlias> {
         self.clone()
             .into_iter()
             .filter(|azle_type_alias| {

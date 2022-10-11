@@ -111,14 +111,12 @@ impl GetName for swc_ecma_ast::TsIndexSignature {
 
 impl GetName for swc_ecma_ast::TsCallSignatureDecl {
     fn get_name(&self) -> &str {
-        todo!()
-        // self.key.get_name()
+        todo!("Get Name for TsCallSignatureDecl not implemented. It's unclear what a name would be for a TsCallSignatureDecl")
     }
 }
 
 impl GetName for swc_ecma_ast::TsConstructSignatureDecl {
     fn get_name(&self) -> &str {
-        todo!()
-        // self.key.get_name()
+        todo!("Get Name for TsConstructSignatureDecl not implemented. It's unclear what a name would be for a TsConstructSignatureDecl")
     }
 }

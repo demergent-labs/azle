@@ -1,10 +1,38 @@
 use swc_common::{Loc, SourceMap, Span};
 
-impl GetLocInfo for SourceMap {
+pub trait GetSourceFileInfo {
+    fn get_file_name(&self, span: Span) -> String;
+    fn get_line_info(&self, span: Span) -> String;
+    fn get_line(&self, span: Span) -> String;
+    fn get_line_number(&self, span: Span) -> usize;
+    fn generate_line_highlight(&self, span: Span) -> String;
+    fn generate_highlighted_line(&self, span: Span) -> String;
+    fn get_well_formed_line(&self, span: Span) -> String;
+}
+
+trait PrivateGetSourceFileInfo {
+    fn get_loc(&self, span: Span) -> Loc;
+    fn get_start_col(&self, span: Span) -> usize;
+    fn get_end_col(&self, span: Span) -> usize;
+}
+
+impl PrivateGetSourceFileInfo for SourceMap {
     fn get_loc(&self, span: Span) -> Loc {
         self.lookup_char_pos(span.lo)
     }
 
+    fn get_start_col(&self, span: Span) -> usize {
+        let loc = self.lookup_char_pos(span.lo);
+        loc.col_display
+    }
+
+    fn get_end_col(&self, span: Span) -> usize {
+        let loc = self.lookup_char_pos(span.hi);
+        loc.col_display
+    }
+}
+
+impl GetSourceFileInfo for SourceMap {
     fn get_line_info(&self, span: Span) -> String {
         let loc = self.get_loc(span);
         let file_name = self.get_file_name(span);
@@ -58,16 +86,6 @@ impl GetLocInfo for SourceMap {
         line[..self.get_start_col(span)].to_string()
     }
 
-    fn get_start_col(&self, span: Span) -> usize {
-        let loc = self.lookup_char_pos(span.lo);
-        loc.col_display
-    }
-
-    fn get_end_col(&self, span: Span) -> usize {
-        let loc = self.lookup_char_pos(span.hi);
-        loc.col_display
-    }
-
     fn get_file_name(&self, span: Span) -> String {
         let loc = self.get_loc(span);
         loc.file.name.to_string()
@@ -77,17 +95,4 @@ impl GetLocInfo for SourceMap {
         let loc = self.get_loc(span);
         loc.line
     }
-}
-
-pub trait GetLocInfo {
-    fn get_loc(&self, span: Span) -> Loc;
-    fn get_file_name(&self, span: Span) -> String;
-    fn get_line_info(&self, span: Span) -> String;
-    fn get_line(&self, span: Span) -> String;
-    fn get_line_number(&self, span: Span) -> usize;
-    fn generate_line_highlight(&self, span: Span) -> String;
-    fn get_start_col(&self, span: Span) -> usize;
-    fn get_end_col(&self, span: Span) -> usize;
-    fn generate_highlighted_line(&self, span: Span) -> String;
-    fn get_well_formed_line(&self, span: Span) -> String;
 }

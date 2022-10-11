@@ -13,10 +13,6 @@ pub trait TsTypeElementHelperMethods {
     fn to_variant_member(&self, source_map: &SourceMap) -> ActVariantMember;
 }
 
-trait TsTypeElementErrors {}
-
-impl TsTypeElementErrors for TsTypeElement {}
-
 impl GetName for TsTypeElement {
     fn get_name(&self) -> &str {
         match self {

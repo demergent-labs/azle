@@ -1,12 +1,12 @@
 pub mod generate_inline_name;
 pub mod get_name;
-pub mod get_string;
+pub mod to_display_string;
 
 pub use generate_inline_name::GenerateInlineName;
 pub use get_name::GetName;
-pub use get_string::GetString;
 use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::{TsEntityName, TsFnParam, TsPropertySignature, TsType, TsTypeAnn};
+pub use to_display_string::ToDisplayString;
 
 use super::AzleTypeAlias;
 
@@ -14,7 +14,7 @@ pub trait GetDependencies {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAlias>,
-        found_types: &HashSet<String>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String>;
 }
 
@@ -25,31 +25,6 @@ pub trait GetTsType {
 impl GetTsType for TsPropertySignature {
     fn get_ts_type(&self) -> TsType {
         self.type_ann.as_ref().unwrap().get_ts_type()
-    }
-}
-
-impl GetName for TsFnParam {
-    fn get_name(&self) -> &str {
-        match self {
-            TsFnParam::Ident(identifier) => identifier.id.get_name(),
-            TsFnParam::Array(_) => todo!(),
-            TsFnParam::Rest(_) => todo!(),
-            TsFnParam::Object(_) => todo!(),
-        }
-    }
-}
-
-impl GetTsType for TsFnParam {
-    fn get_ts_type(&self) -> TsType {
-        match self {
-            TsFnParam::Ident(identifier) => match &identifier.type_ann {
-                Some(param_type) => param_type.get_ts_type(),
-                None => panic!("Function parameter must have a type"),
-            },
-            TsFnParam::Array(_) => todo!(),
-            TsFnParam::Rest(_) => todo!(),
-            TsFnParam::Object(_) => todo!(),
-        }
     }
 }
 

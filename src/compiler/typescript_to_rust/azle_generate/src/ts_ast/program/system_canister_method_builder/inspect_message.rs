@@ -3,7 +3,7 @@ use crate::{
     generators::canister_methods::method_body,
     ts_ast::{
         fn_decl::FnDeclHelperMethods,
-        program::{azle_program::TsProgramVecHelperMethods, AzleProgram},
+        program::{azle_program::AzleProgramVecHelperMethods, AzleProgram},
     },
 };
 

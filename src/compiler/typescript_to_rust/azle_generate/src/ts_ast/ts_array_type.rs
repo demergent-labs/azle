@@ -7,7 +7,7 @@ use crate::cdk_act::{
     ActDataType, ToActDataType,
 };
 
-use super::{ast_traits::GetString, AzleTypeAlias, GetDependencies};
+use super::{ast_traits::ToDisplayString, AzleTypeAlias, GetDependencies};
 
 impl GetDependencies for TsArrayType {
     fn get_dependent_types(
@@ -44,8 +44,8 @@ impl ToActDataType for TsArrayType {
     }
 }
 
-impl GetString for TsArrayType {
-    fn get_string(&self) -> String {
-        format!("{}[]", self.elem_type.get_string())
+impl ToDisplayString for TsArrayType {
+    fn to_display_string(&self) -> String {
+        format!("{}[]", self.elem_type.to_display_string())
     }
 }

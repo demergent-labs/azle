@@ -2,8 +2,8 @@ pub use ast_traits::FunctionAndMethodTypeHelperMethods;
 pub use ast_traits::GenerateInlineName;
 pub use ast_traits::GetDependencies;
 pub use ast_traits::GetName;
-pub use ast_traits::GetString;
 pub use ast_traits::GetTsType;
+pub use ast_traits::ToDisplayString;
 pub use ts_ast::TsAst;
 pub use type_alias::AzleTypeAlias;
 
@@ -27,4 +27,5 @@ pub mod ident;
 pub mod module;
 pub mod program;
 pub mod source_map;
+pub mod ts_fn_param;
 pub mod type_alias;
