@@ -15,22 +15,28 @@ pub trait TsTypeElementHelperMethods {
 
 impl GetName for TsTypeElement {
     fn get_name(&self) -> &str {
-        match self.as_ts_property_signature() {
-            Some(prop_sig) => prop_sig.key.as_ident().unwrap().get_name(),
-            None => {
-                todo!("Handle parsing type literals if the field isn't a TsPropertySignature")
-            }
+        match self {
+            TsTypeElement::TsCallSignatureDecl(_) => todo!(),
+            TsTypeElement::TsConstructSignatureDecl(_) => todo!(),
+            TsTypeElement::TsPropertySignature(prop_sig) => prop_sig.get_name(),
+            TsTypeElement::TsGetterSignature(getter_sig) => getter_sig.get_name(),
+            TsTypeElement::TsSetterSignature(setter_sig) => setter_sig.get_name(),
+            TsTypeElement::TsMethodSignature(method_sig) => method_sig.get_name(),
+            TsTypeElement::TsIndexSignature(index_sig) => index_sig.get_name(),
         }
     }
 }
 
 impl GetTsType for TsTypeElement {
     fn get_ts_type(&self) -> TsType {
-        match self.as_ts_property_signature() {
-            Some(prop_sig) => prop_sig.type_ann.as_ref().unwrap().get_ts_type(),
-            None => {
-                todo!("Handle parsing type literals if the field isn't a TsPropertySignature")
-            }
+        match self {
+            TsTypeElement::TsCallSignatureDecl(_) => todo!(),
+            TsTypeElement::TsConstructSignatureDecl(_) => todo!(),
+            TsTypeElement::TsPropertySignature(prop_sig) => prop_sig.get_ts_type(),
+            TsTypeElement::TsGetterSignature(_) => todo!(),
+            TsTypeElement::TsSetterSignature(_) => todo!(),
+            TsTypeElement::TsMethodSignature(_) => todo!(),
+            TsTypeElement::TsIndexSignature(_) => todo!(),
         }
     }
 }

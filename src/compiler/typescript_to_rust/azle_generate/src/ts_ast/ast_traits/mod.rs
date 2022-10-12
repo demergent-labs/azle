@@ -1,12 +1,12 @@
 pub mod generate_inline_name;
 pub mod get_name;
-use std::collections::{HashMap, HashSet};
 pub mod to_display_string;
 
 use super::AzleTypeAliasDecl;
 pub use generate_inline_name::GenerateInlineName;
 pub use get_name::GetName;
-use swc_ecma_ast::{TsEntityName, TsFnParam, TsType, TsTypeAnn};
+use std::collections::{HashMap, HashSet};
+use swc_ecma_ast::{TsEntityName, TsFnParam, TsPropertySignature, TsType, TsTypeAnn};
 pub use to_display_string::ToDisplayString;
 
 pub trait GetDependencies {
@@ -96,5 +96,11 @@ impl GetTsType for TsFnParam {
             TsFnParam::Rest(_) => todo!(),
             TsFnParam::Object(_) => todo!(),
         }
+    }
+}
+
+impl GetTsType for TsPropertySignature {
+    fn get_ts_type(&self) -> TsType {
+        self.type_ann.as_ref().unwrap().get_ts_type()
     }
 }
