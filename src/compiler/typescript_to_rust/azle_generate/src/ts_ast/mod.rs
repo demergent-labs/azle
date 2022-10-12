@@ -3,6 +3,7 @@ pub use ast_traits::GenerateInlineName;
 pub use ast_traits::GetDependencies;
 pub use ast_traits::GetName;
 pub use ast_traits::GetTsType;
+pub use ast_traits::ToDisplayString;
 pub use azle_types::AzleArrayType;
 pub use azle_types::AzleFnOrConstructorType;
 pub use azle_types::AzleKeywordType;

@@ -1,6 +1,6 @@
 use super::{
-    ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl, FunctionAndMethodTypeHelperMethods,
-    GenerateInlineName, GetDependencies, GetName,
+    ast_traits::ToDisplayString, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl,
+    FunctionAndMethodTypeHelperMethods, GenerateInlineName, GetDependencies, GetName,
 };
 use crate::{
     cdk_act::{
@@ -90,6 +90,24 @@ impl GetDependencies for TsTypeRef {
 impl GetName for TsTypeRef {
     fn get_name(&self) -> &str {
         self.type_name.get_name()
+    }
+}
+
+impl ToDisplayString for TsTypeRef {
+    fn to_display_string(&self) -> String {
+        let enclosed_types = if self.get_enclosed_ts_types().len() == 0 {
+            String::new()
+        } else {
+            format!(
+                "<{}>",
+                self.get_enclosed_ts_types()
+                    .iter()
+                    .fold(String::new(), |acc, enclosed_type| {
+                        format!("{} {},", acc, enclosed_type.to_display_string())
+                    })
+            )
+        };
+        format!("{}{}", self.type_name.get_name(), enclosed_types)
     }
 }
 

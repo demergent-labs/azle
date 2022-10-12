@@ -2,6 +2,8 @@ use crate::cdk_act::{nodes::data_type_nodes::ActPrimitiveLit, ActDataType, ToAct
 use swc_common::SourceMap;
 use swc_ecma_ast::{TsKeywordType, TsKeywordTypeKind};
 
+use super::ast_traits::ToDisplayString;
+
 impl ToActDataType for TsKeywordType {
     fn to_act_data_type(
         &self,
@@ -38,5 +40,25 @@ impl ToActDataType for TsKeywordType {
             TsKeywordTypeKind::TsAnyKeyword => todo!("to_act_data_type for TsAnyKeyword"),
         }
         .to_act_data_type(alias_name, source_map)
+    }
+}
+
+impl ToDisplayString for TsKeywordType {
+    fn to_display_string(&self) -> String {
+        match self.kind {
+            TsKeywordTypeKind::TsAnyKeyword => todo!(),
+            TsKeywordTypeKind::TsUnknownKeyword => todo!(),
+            TsKeywordTypeKind::TsNumberKeyword => todo!(),
+            TsKeywordTypeKind::TsObjectKeyword => todo!(),
+            TsKeywordTypeKind::TsBooleanKeyword => "boolean".to_string(),
+            TsKeywordTypeKind::TsBigIntKeyword => todo!(),
+            TsKeywordTypeKind::TsStringKeyword => "string".to_string(),
+            TsKeywordTypeKind::TsSymbolKeyword => todo!(),
+            TsKeywordTypeKind::TsVoidKeyword => "void".to_string(),
+            TsKeywordTypeKind::TsUndefinedKeyword => todo!(),
+            TsKeywordTypeKind::TsNullKeyword => "null".to_string(),
+            TsKeywordTypeKind::TsNeverKeyword => todo!(),
+            TsKeywordTypeKind::TsIntrinsicKeyword => todo!(),
+        }
     }
 }

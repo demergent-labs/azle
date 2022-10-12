@@ -3,6 +3,7 @@ use swc_ecma_ast::{TsFnParam, TsFnType, TsTypeAnn};
 
 use super::{
     AzleTypeAliasDecl, FunctionAndMethodTypeHelperMethods, GenerateInlineName, GetDependencies,
+    GetName, GetTsType, ToDisplayString,
 };
 
 impl FunctionAndMethodTypeHelperMethods for TsFnType {
@@ -43,5 +44,20 @@ impl GetDependencies for TsFnType {
                     .cloned()
                     .collect()
             })
+    }
+}
+
+impl ToDisplayString for TsFnType {
+    fn to_display_string(&self) -> String {
+        let params = self.params.iter().fold(String::new(), |acc, param| {
+            let param_name = param.get_name();
+            let param_type = param.get_ts_type().to_display_string();
+            format!("{}, {}: {}", acc, param_name, param_type)
+        });
+        let return_type = match self.get_return_type() {
+            Some(return_type) => return_type.to_display_string(),
+            None => "void".to_string(),
+        };
+        format!("({}) => {}", params, return_type)
     }
 }

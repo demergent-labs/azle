@@ -10,7 +10,7 @@ use crate::cdk_act::{
     ActDataType, ToActDataType,
 };
 
-use super::{AzleTypeAliasDecl, GenerateInlineName, GetDependencies};
+use super::{AzleTypeAliasDecl, GenerateInlineName, GetDependencies, ToDisplayString};
 
 trait TsTupleHelperMethods {
     fn get_elem_types(&self, source_map: &SourceMap) -> Vec<ActTupleElem>;
@@ -35,6 +35,16 @@ impl GetDependencies for TsTupleType {
                     .cloned()
                     .collect()
             })
+    }
+}
+
+impl ToDisplayString for TsTupleType {
+    fn to_display_string(&self) -> String {
+        let elems = self.elem_types.iter().fold(String::new(), |acc, member| {
+            let elem_type = member.ty.to_display_string();
+            format!("{}, {}", acc, elem_type)
+        });
+        format!("{{{}}}", elems)
     }
 }
 

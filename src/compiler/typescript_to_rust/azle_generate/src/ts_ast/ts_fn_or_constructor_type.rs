@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::TsFnOrConstructorType;
 
-use super::{AzleTypeAliasDecl, GetDependencies};
+use super::{AzleTypeAliasDecl, GetDependencies, ToDisplayString};
 
 impl GetDependencies for TsFnOrConstructorType {
     fn get_dependent_types(
@@ -13,6 +13,15 @@ impl GetDependencies for TsFnOrConstructorType {
             TsFnOrConstructorType::TsFnType(ts_fn_type) => {
                 ts_fn_type.get_dependent_types(type_alias_lookup, found_type_names)
             }
+            TsFnOrConstructorType::TsConstructorType(_) => todo!(),
+        }
+    }
+}
+
+impl ToDisplayString for TsFnOrConstructorType {
+    fn to_display_string(&self) -> String {
+        match self {
+            TsFnOrConstructorType::TsFnType(ts_fn_type) => ts_fn_type.to_display_string(),
             TsFnOrConstructorType::TsConstructorType(_) => todo!(),
         }
     }
