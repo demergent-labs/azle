@@ -74,31 +74,6 @@ pub trait FunctionAndMethodTypeHelperMethods {
     }
 }
 
-impl GetName for TsFnParam {
-    fn get_name(&self) -> &str {
-        match self {
-            TsFnParam::Ident(identifier) => identifier.id.get_name(),
-            TsFnParam::Array(_) => todo!(),
-            TsFnParam::Rest(_) => todo!(),
-            TsFnParam::Object(_) => todo!(),
-        }
-    }
-}
-
-impl GetTsType for TsFnParam {
-    fn get_ts_type(&self) -> TsType {
-        match self {
-            TsFnParam::Ident(identifier) => match &identifier.type_ann {
-                Some(param_type) => param_type.get_ts_type(),
-                None => panic!("Function parameter must have a type"),
-            },
-            TsFnParam::Array(_) => todo!(),
-            TsFnParam::Rest(_) => todo!(),
-            TsFnParam::Object(_) => todo!(),
-        }
-    }
-}
-
 impl GetTsType for TsPropertySignature {
     fn get_ts_type(&self) -> TsType {
         self.type_ann.as_ref().unwrap().get_ts_type()
