@@ -33,6 +33,10 @@ impl GenerateInlineName for TsFnType {
     }
 }
 
+trait TsTypeRefPrivateMethods {
+    fn get_enclosed_ts_types(&self) -> Vec<TsType>;
+}
+
 impl GetDependencies for TsTypeRef {
     fn get_dependent_types(
         &self,
@@ -223,6 +227,15 @@ impl TsTypeRefHelperMethods for TsTypeRef {
                 *params.params[0].clone()
             }
             None => todo!("Funcs, Variants, and Options must have an enclosed type"),
+        }
+    }
+}
+
+impl TsTypeRefPrivateMethods for TsTypeRef {
+    fn get_enclosed_ts_types(&self) -> Vec<TsType> {
+        match &self.type_params {
+            Some(params) => params.params.iter().map(|param| *param.clone()).collect(),
+            None => vec![],
         }
     }
 }
