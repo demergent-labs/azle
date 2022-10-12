@@ -1,7 +1,9 @@
 use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::{TsFnParam, TsFnType, TsTypeAnn};
 
-use super::{AzleTypeAliasDecl, FunctionAndMethodTypeHelperMethods, GetDependencies};
+use super::{
+    AzleTypeAliasDecl, FunctionAndMethodTypeHelperMethods, GenerateInlineName, GetDependencies,
+};
 
 impl FunctionAndMethodTypeHelperMethods for TsFnType {
     fn get_ts_fn_params(&self) -> Vec<TsFnParam> {
@@ -14,6 +16,12 @@ impl FunctionAndMethodTypeHelperMethods for TsFnType {
 
     fn get_valid_return_types(&self) -> Vec<&str> {
         vec!["Oneway", "Update", "Query"]
+    }
+}
+
+impl GenerateInlineName for TsFnType {
+    fn generate_inline_name(&self) -> String {
+        format!("AzleInlineFunc{}", self.calculate_hash())
     }
 }
 

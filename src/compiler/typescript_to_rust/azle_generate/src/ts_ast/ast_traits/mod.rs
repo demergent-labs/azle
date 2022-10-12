@@ -26,17 +26,9 @@ pub trait FunctionAndMethodTypeHelperMethods {
     fn get_valid_return_types(&self) -> Vec<&str>;
 
     fn get_param_types(&self) -> Vec<TsType> {
-        self.get_ts_fn_params()
-            .iter()
-            .fold(vec![], |acc, param| match param {
-                TsFnParam::Ident(identifier) => match &identifier.type_ann {
-                    Some(param_type) => vec![acc, vec![param_type.get_ts_type().clone()]].concat(),
-                    None => panic!("Function parameter must have a type"),
-                },
-                TsFnParam::Array(_) => todo!(),
-                TsFnParam::Rest(_) => todo!(),
-                TsFnParam::Object(_) => todo!(),
-            })
+        self.get_ts_fn_params().iter().fold(vec![], |acc, param| {
+            vec![acc, vec![param.get_ts_type().clone()]].concat()
+        })
     }
 
     fn get_return_type(&self) -> Option<TsType> {
@@ -77,6 +69,31 @@ pub trait FunctionAndMethodTypeHelperMethods {
             }
             },
             _ => panic!("Return type must be one of {:?}", self.get_valid_return_types()),
+        }
+    }
+}
+
+impl GetName for TsFnParam {
+    fn get_name(&self) -> &str {
+        match self {
+            TsFnParam::Ident(identifier) => identifier.id.get_name(),
+            TsFnParam::Array(_) => todo!(),
+            TsFnParam::Rest(_) => todo!(),
+            TsFnParam::Object(_) => todo!(),
+        }
+    }
+}
+
+impl GetTsType for TsFnParam {
+    fn get_ts_type(&self) -> TsType {
+        match self {
+            TsFnParam::Ident(identifier) => match &identifier.type_ann {
+                Some(param_type) => param_type.get_ts_type(),
+                None => panic!("Function parameter must have a type"),
+            },
+            TsFnParam::Array(_) => todo!(),
+            TsFnParam::Rest(_) => todo!(),
+            TsFnParam::Object(_) => todo!(),
         }
     }
 }

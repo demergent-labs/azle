@@ -18,19 +18,13 @@ use std::{
     iter::FromIterator,
 };
 use swc_common::SourceMap;
-use swc_ecma_ast::{TsFnType, TsType, TsTypeRef};
+use swc_ecma_ast::{TsType, TsTypeRef};
 
 pub trait TsTypeRefHelperMethods {
     fn get_enclosed_ts_type(&self) -> TsType;
     fn to_func(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
     fn to_option(&self, record_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
     fn to_variant(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
-}
-
-impl GenerateInlineName for TsFnType {
-    fn generate_inline_name(&self) -> String {
-        format!("AzleInlineFunc{}", self.calculate_hash())
-    }
 }
 
 trait TsTypeRefPrivateMethods {
