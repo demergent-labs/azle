@@ -13,10 +13,10 @@ impl GetDependencies for TsArrayType {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
-        found_types: &HashSet<String>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
         self.elem_type
-            .get_dependent_types(type_alias_lookup, found_types)
+            .get_dependent_types(type_alias_lookup, found_type_names)
     }
 }
 

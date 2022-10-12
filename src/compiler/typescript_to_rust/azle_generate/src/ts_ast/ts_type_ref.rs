@@ -71,11 +71,11 @@ impl GetDependencies for TsTypeRef {
                     Some(decl) => {
                         let new_type: HashSet<String> =
                             HashSet::from_iter(vec![name].iter().cloned());
-                        let found_types: HashSet<String> =
+                        let found_type_names: HashSet<String> =
                             found_type_names.clone().union(&new_type).cloned().collect();
                         // When finding a new type return it and all of it's dependents
-                        found_types
-                            .union(&decl.get_dependent_types(type_alias_lookup, &found_types))
+                        found_type_names
+                            .union(&decl.get_dependent_types(type_alias_lookup, &found_type_names))
                             .cloned()
                             .collect()
                     }

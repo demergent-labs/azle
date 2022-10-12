@@ -26,11 +26,11 @@ impl GetDependencies for TsTupleType {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
-        found_types: &HashSet<String>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
         self.elem_types
             .iter()
-            .fold(found_types.clone(), |acc, elem_type| {
+            .fold(found_type_names.clone(), |acc, elem_type| {
                 acc.union(&elem_type.ty.get_dependent_types(type_alias_lookup, &acc))
                     .cloned()
                     .collect()

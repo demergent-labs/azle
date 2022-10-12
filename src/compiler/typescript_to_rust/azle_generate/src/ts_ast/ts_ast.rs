@@ -74,14 +74,14 @@ impl ToAct for TsAst {
             .get_fn_decls_of_type(&CanisterMethodType::Update);
 
         // Determine which type aliases must be present for the functions to work and save them for later parsing
-        let found_types = HashSet::new();
+        let found_type_names = HashSet::new();
         let ast_type_alias_lookup = ast_type_alias_decls.generate_type_alias_lookup();
         let query_dependencies =
-            ast_fnc_decls_query.get_dependent_types(&ast_type_alias_lookup, &found_types);
+            ast_fnc_decls_query.get_dependent_types(&ast_type_alias_lookup, &found_type_names);
         let update_dependencies =
-            ast_fnc_decls_update.get_dependent_types(&ast_type_alias_lookup, &found_types);
-        let canister_dependencies =
-            ast_canister_type_alias_decls.get_dependent_types(&ast_type_alias_lookup, &found_types);
+            ast_fnc_decls_update.get_dependent_types(&ast_type_alias_lookup, &found_type_names);
+        let canister_dependencies = ast_canister_type_alias_decls
+            .get_dependent_types(&ast_type_alias_lookup, &found_type_names);
 
         // TODO I think this should already be a HashSet at this point
         let query_dependencies: HashSet<String> =
