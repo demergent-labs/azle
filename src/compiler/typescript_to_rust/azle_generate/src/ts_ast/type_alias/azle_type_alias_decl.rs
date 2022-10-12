@@ -71,7 +71,14 @@ impl TsTypeAliasHelperMethods for AzleTypeAliasDecl<'_> {
     ) -> bool {
         match system_structure_type {
             SystemStructureType::Canister => {
-                &*self.ts_type_alias_decl.type_ann.get_name() == "Canister"
+                self.ts_type_alias_decl.type_ann.is_ts_type_ref()
+                    && &*self
+                        .ts_type_alias_decl
+                        .type_ann
+                        .as_ts_type_ref()
+                        .unwrap()
+                        .get_name()
+                        == "Canister"
             }
         }
     }

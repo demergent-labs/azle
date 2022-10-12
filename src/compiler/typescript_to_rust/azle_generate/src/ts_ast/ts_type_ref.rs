@@ -95,18 +95,7 @@ impl GetDependencies for TsTypeRef {
 
 impl GetName for TsTypeRef {
     fn get_name(&self) -> &str {
-        match &self.type_name {
-            swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
-                let error_message = ErrorWithExampleDiff {
-                    error: "Namespace-qualified types are not currently supported",
-                    help: "Either declare the type locally or import it without a wildcard",
-                    remove: "Namespace.MyType",
-                    add: "MyType",
-                };
-                panic!("{}", error_message.to_string())
-            }
-            swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name(),
-        }
+        self.type_name.get_name()
     }
 }
 

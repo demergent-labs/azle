@@ -4,7 +4,7 @@ use swc_ecma_ast::TsType;
 
 use crate::cdk_act::{ActDataType, ToActDataType};
 
-use super::{ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl, GetDependencies, GetName};
+use super::{ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl, GetDependencies};
 
 impl GetDependencies for TsType {
     fn get_dependent_types(
@@ -43,15 +43,6 @@ impl GetDependencies for TsType {
             TsType::TsLitType(_) => todo!(),
             TsType::TsTypePredicate(_) => todo!(),
             TsType::TsImportType(_) => todo!(),
-        }
-    }
-}
-
-impl GetName for TsType {
-    fn get_name(&self) -> &str {
-        match self {
-            TsType::TsTypeRef(type_ref) => type_ref.get_name(),
-            _ => "",
         }
     }
 }

@@ -1,10 +1,12 @@
 pub mod generate_inline_name;
-use std::collections::{HashMap, HashSet};
+pub mod get_name;
 
 pub use generate_inline_name::GenerateInlineName;
 use swc_ecma_ast::{TsEntityName, TsFnParam, TsType, TsTypeAnn};
 
 use super::AzleTypeAliasDecl;
+pub use get_name::GetName;
+use std::collections::{HashMap, HashSet};
 
 pub trait GetDependencies {
     fn get_dependent_types(
@@ -12,10 +14,6 @@ pub trait GetDependencies {
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
         found_type_names: &HashSet<String>,
     ) -> HashSet<String>;
-}
-
-pub trait GetName {
-    fn get_name(&self) -> &str;
 }
 
 pub trait GetTsType {
