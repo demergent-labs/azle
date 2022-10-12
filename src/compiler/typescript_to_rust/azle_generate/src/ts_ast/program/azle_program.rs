@@ -63,16 +63,16 @@ impl AzleProgramVecHelperMethods for Vec<AzleProgram> {
     }
 
     fn get_fn_decls(&self) -> Vec<FnDecl> {
-        self.iter().fold(vec![], |acc, program| {
-            let ast_fn_decls = program.get_ast_fn_decls();
+        self.iter().fold(vec![], |acc, azle_program| {
+            let ast_fn_decls = azle_program.get_ast_fn_decls();
 
             vec![acc, ast_fn_decls].concat()
         })
     }
 
     fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl> {
-        self.iter().fold(vec![], |acc, program| {
-            let ast_type_alias_decls = program.get_azle_type_alias_decls();
+        self.iter().fold(vec![], |acc, azle_program| {
+            let ast_type_alias_decls = azle_program.get_azle_type_alias_decls();
 
             vec![acc, ast_type_alias_decls].concat()
         })
