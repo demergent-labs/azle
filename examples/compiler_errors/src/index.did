@@ -1,1 +1,2 @@
-service : () -> { standin : () -> () query }
+type BadVariant = variant { thing };
+service : () -> { bad_variant : (BadVariant) -> () query }
