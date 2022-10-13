@@ -395,26 +395,8 @@ function runAzleGenerate(
             "Something about your TypeScript violates Azle's requirements";
         const suggestion =
             'If you are unable to decipher the error above, reach out in the #typescript\nchannel of the DFINITY DEV OFFICIAL discord: https://discord.gg/zuUEzSf4mV';
-
         const stdErr = executionResult.stderr.toString();
         const longErrorMessage = `The underlying cause is likely at the bottom of the following output:\n\n${stdErr}`;
-        const stdErrLines = stdErr.split('\n');
-        const linesWithPanic = stdErrLines.filter((line) =>
-            line.startsWith("thread 'main' panicked")
-        );
-        if (linesWithPanic.length !== 1) {
-            return Err({
-                error: generalErrorMessage,
-                suggestion: `${longErrorMessage}\n${suggestion}`,
-                exitCode: 11
-            });
-        }
-        const rawPanicMessage = linesWithPanic[0];
-        const panicLocation = /, src\/.*/;
-        const panicMessageWithoutLocation = rawPanicMessage.replace(
-            panicLocation,
-            ''
-        );
         if (isVerboseMode()) {
             return Err({
                 error: generalErrorMessage,
@@ -422,8 +404,39 @@ function runAzleGenerate(
                 exitCode: 12
             });
         }
+
+        const stdErrLines = stdErr.split('\n');
+        const lineWhereErrorMessageStarts = stdErrLines.findIndex((line) =>
+            line.startsWith("thread 'main' panicked")
+        );
+        const lineWhereErrorMessageEnds = stdErrLines.findIndex((line) =>
+            line.includes("', src/azle_generate")
+        );
+        if (
+            lineWhereErrorMessageStarts === -1 ||
+            lineWhereErrorMessageEnds === -1
+        ) {
+            return Err({
+                error: generalErrorMessage,
+                suggestion: `${longErrorMessage}\n${suggestion}`,
+                exitCode: 11
+            });
+        }
+        let errorLines = stdErrLines.slice(
+            lineWhereErrorMessageStarts,
+            lineWhereErrorMessageEnds + 1
+        );
+        errorLines[0] = errorLines[0].replace(
+            "thread 'main' panicked at '",
+            ''
+        );
+        const panicLocation = /', src\/.*/;
+        errorLines[errorLines.length - 1] = errorLines[
+            errorLines.length - 1
+        ].replace(panicLocation, '');
+
         return Err({
-            error: `${generalErrorMessage}\n\n${panicMessageWithoutLocation}`,
+            error: `${generalErrorMessage}\n\n${errorLines.join('\n')}`,
             suggestion,
             exitCode: 12
         });
