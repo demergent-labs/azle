@@ -1,11 +1,14 @@
 use crate::{
     cdk_act::{SystemStructureType, ToActDataType, ToTokenStream},
-    ts_ast::{program::TsProgramVecHelperMethods, GetName},
+    ts_ast::{
+        program::{azle_program::AzleProgramVecHelperMethods, AzleProgram},
+        AzleTypeAliasDecl, GetName,
+    },
 };
+use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use swc_ecma_ast::{
-    Expr, Program, TsFnParam, TsMethodSignature, TsType, TsTypeAliasDecl, TsTypeElement, TsTypeLit,
-};
+use swc_common::SourceMap;
+use swc_ecma_ast::{Expr, TsFnParam, TsMethodSignature, TsType, TsTypeElement, TsTypeLit};
 
 #[derive(Clone)]
 pub struct CrossCanisterCallFunctionsInfo {
@@ -38,126 +41,128 @@ struct CrossCanisterCallFunctionNames {
     notify_with_payment128_function_name: String,
 }
 
-pub fn generate_cross_canister_call_functions(programs: &Vec<Program>) -> proc_macro2::TokenStream {
-    let cross_canister_call_functions_infos =
-        generate_cross_canister_call_functions_infos(programs);
+pub trait CrossCanisterHelperMethods {
+    fn generate_cross_canister_call_functions(&self) -> TokenStream;
+    fn generate_cross_canister_call_functions_infos(&self) -> Vec<CrossCanisterCallFunctionsInfo>;
+}
 
-    let call_functions: Vec<proc_macro2::TokenStream> = cross_canister_call_functions_infos
-        .iter()
-        .map(|cross_canister_call_functions_info| {
-            cross_canister_call_functions_info.call.rust.clone()
-        })
-        .collect();
+impl CrossCanisterHelperMethods for Vec<AzleProgram> {
+    fn generate_cross_canister_call_functions(&self) -> TokenStream {
+        let cross_canister_call_functions_infos =
+            self.generate_cross_canister_call_functions_infos();
 
-    let call_with_payment_functions: Vec<proc_macro2::TokenStream> =
-        cross_canister_call_functions_infos
+        let call_functions: Vec<proc_macro2::TokenStream> = cross_canister_call_functions_infos
             .iter()
             .map(|cross_canister_call_functions_info| {
-                cross_canister_call_functions_info
-                    .call_with_payment
-                    .rust
-                    .clone()
+                cross_canister_call_functions_info.call.rust.clone()
             })
             .collect();
 
-    let call_with_payment128_functions: Vec<proc_macro2::TokenStream> =
-        cross_canister_call_functions_infos
+        let call_with_payment_functions: Vec<proc_macro2::TokenStream> =
+            cross_canister_call_functions_infos
+                .iter()
+                .map(|cross_canister_call_functions_info| {
+                    cross_canister_call_functions_info
+                        .call_with_payment
+                        .rust
+                        .clone()
+                })
+                .collect();
+
+        let call_with_payment128_functions: Vec<proc_macro2::TokenStream> =
+            cross_canister_call_functions_infos
+                .iter()
+                .map(|cross_canister_call_functions_info| {
+                    cross_canister_call_functions_info
+                        .call_with_payment128
+                        .rust
+                        .clone()
+                })
+                .collect();
+
+        let notify_functions: Vec<proc_macro2::TokenStream> = cross_canister_call_functions_infos
             .iter()
             .map(|cross_canister_call_functions_info| {
-                cross_canister_call_functions_info
-                    .call_with_payment128
-                    .rust
-                    .clone()
+                cross_canister_call_functions_info.notify.rust.clone()
             })
             .collect();
 
-    let notify_functions: Vec<proc_macro2::TokenStream> = cross_canister_call_functions_infos
-        .iter()
-        .map(|cross_canister_call_functions_info| {
-            cross_canister_call_functions_info.notify.rust.clone()
-        })
-        .collect();
+        let notify_with_payment128_functions: Vec<proc_macro2::TokenStream> =
+            cross_canister_call_functions_infos
+                .iter()
+                .map(|cross_canister_call_functions_info| {
+                    cross_canister_call_functions_info
+                        .notify_with_payment128
+                        .rust
+                        .clone()
+                })
+                .collect();
 
-    let notify_with_payment128_functions: Vec<proc_macro2::TokenStream> =
-        cross_canister_call_functions_infos
-            .iter()
-            .map(|cross_canister_call_functions_info| {
-                cross_canister_call_functions_info
-                    .notify_with_payment128
-                    .rust
-                    .clone()
-            })
-            .collect();
+        quote! {
+            #(#call_functions)*
+            #(#call_with_payment_functions)*
+            #(#call_with_payment128_functions)*
+            #(#notify_functions)*
+            #(#notify_with_payment128_functions)*
+        }
+    }
 
-    quote! {
-        #(#call_functions)*
-        #(#call_with_payment_functions)*
-        #(#call_with_payment128_functions)*
-        #(#notify_functions)*
-        #(#notify_with_payment128_functions)*
+    fn generate_cross_canister_call_functions_infos(&self) -> Vec<CrossCanisterCallFunctionsInfo> {
+        let canister_type_alias_decls = self
+            .get_azle_type_alias_decls_for_system_structure_type(&SystemStructureType::Canister);
+
+        canister_type_alias_decls.generate_cross_canister_call_functions_infos()
     }
 }
 
-pub fn generate_cross_canister_call_functions_infos(
-    programs: &Vec<Program>,
-) -> Vec<CrossCanisterCallFunctionsInfo> {
-    let canister_type_alias_decls =
-        programs.get_type_alias_decls_for_system_structure_type(&SystemStructureType::Canister);
-
-    let cross_canister_call_functions_infos =
-        generate_cross_canister_call_functions_infos_from_canister_type_alias_decls(
-            &canister_type_alias_decls,
-        );
-
-    cross_canister_call_functions_infos
+trait GenerateCrossCanisterCallFunctionsInfos {
+    fn generate_cross_canister_call_functions_infos(&self) -> Vec<CrossCanisterCallFunctionsInfo>;
 }
 
-fn generate_cross_canister_call_functions_infos_from_canister_type_alias_decls(
-    canister_type_alias_decls: &Vec<TsTypeAliasDecl>,
-) -> Vec<CrossCanisterCallFunctionsInfo> {
-    canister_type_alias_decls
-        .iter()
-        .fold(vec![], |acc, canister_type_alias_decl| {
+impl GenerateCrossCanisterCallFunctionsInfos for Vec<AzleTypeAliasDecl<'_>> {
+    fn generate_cross_canister_call_functions_infos(&self) -> Vec<CrossCanisterCallFunctionsInfo> {
+        self.iter().fold(vec![], |acc, canister_type_alias_decl| {
             let cross_canister_call_functions_infos =
-                generate_cross_canister_call_functions_infos_from_canister_type_alias_decl(
-                    canister_type_alias_decl,
-                );
+                canister_type_alias_decl.generate_cross_canister_call_functions_infos();
 
             vec![acc, cross_canister_call_functions_infos].concat()
         })
+    }
 }
 
-fn generate_cross_canister_call_functions_infos_from_canister_type_alias_decl(
-    canister_type_alias_decl: &TsTypeAliasDecl,
-) -> Vec<CrossCanisterCallFunctionsInfo> {
-    match &*canister_type_alias_decl.type_ann {
-        TsType::TsTypeRef(ts_type_ref) => {
-            match &ts_type_ref.type_params {
-                Some(type_params) => {
-                    let canister_type_alias_decl_name = canister_type_alias_decl.get_name();
+impl GenerateCrossCanisterCallFunctionsInfos for AzleTypeAliasDecl<'_> {
+    fn generate_cross_canister_call_functions_infos(&self) -> Vec<CrossCanisterCallFunctionsInfo> {
+        match &*self.ts_type_alias_decl.type_ann {
+            TsType::TsTypeRef(ts_type_ref) => {
+                match &ts_type_ref.type_params {
+                    Some(type_params) => {
+                        let canister_type_alias_decl_name = self.get_name();
 
-                    let type_param = &type_params.params[0]; // TODO I think we can assume this will be here
+                        let type_param = &type_params.params[0]; // TODO I think we can assume this will be here
 
-                    match &**type_param {
+                        match &**type_param {
                         TsType::TsTypeLit(ts_type_lit) => {
                             generate_cross_canister_call_functions_infos_from_canister_type_literal(
                                 ts_type_lit,
                                 &canister_type_alias_decl_name,
+                                self.source_map
                             )
                         }
                         _ => panic!("The Canister type param must be a type literal"),
                     }
+                    }
+                    None => panic!("A Canister type must have one type param"),
                 }
-                None => panic!("A Canister type must have one type param"),
             }
+            _ => panic!("A Canister type must be a TsTypeRef"),
         }
-        _ => panic!("A Canister type must be a TsTypeRef"),
     }
 }
 
 fn generate_cross_canister_call_functions_infos_from_canister_type_literal(
     canister_type_literal_node: &TsTypeLit,
     canister_type_alias_decl_name: &str,
+    source_map: &SourceMap,
 ) -> Vec<CrossCanisterCallFunctionsInfo> {
     canister_type_literal_node
         .members
@@ -166,6 +171,7 @@ fn generate_cross_canister_call_functions_infos_from_canister_type_literal(
             generate_cross_canister_call_functions_info_from_canister_type_element(
                 member,
                 canister_type_alias_decl_name,
+                source_map,
             )
         })
         .collect()
@@ -174,6 +180,7 @@ fn generate_cross_canister_call_functions_infos_from_canister_type_literal(
 fn generate_cross_canister_call_functions_info_from_canister_type_element(
     canister_type_element: &TsTypeElement,
     canister_type_alias_decl_name: &str,
+    source_map: &SourceMap,
 ) -> CrossCanisterCallFunctionsInfo {
     match canister_type_element {
         TsTypeElement::TsMethodSignature(ts_method_signature) => {
@@ -182,8 +189,9 @@ fn generate_cross_canister_call_functions_info_from_canister_type_element(
                 canister_type_alias_decl_name,
             );
 
-            let call_params = get_ts_method_signature_rust_params(ts_method_signature);
-            let function_return_type = get_ts_method_signature_return_type(ts_method_signature);
+            let call_params = get_ts_method_signature_rust_params(ts_method_signature, source_map);
+            let function_return_type =
+                get_ts_method_signature_return_type(ts_method_signature, source_map);
 
             let method_name = get_method_name(ts_method_signature);
 
@@ -505,18 +513,24 @@ fn generate_notify_with_payment128_rust(
 
 fn get_ts_method_signature_return_type(
     ts_method_signature: &TsMethodSignature,
+    source_map: &SourceMap,
 ) -> proc_macro2::TokenStream {
     let ts_type_ann = &*ts_method_signature.type_ann.as_ref().unwrap().type_ann;
     let ts_type_ref = &ts_type_ann.as_ts_type_ref().unwrap();
     let type_params = ts_type_ref.type_params.as_ref().unwrap();
     let return_type = &**type_params.params.get(0).unwrap();
 
-    return_type.to_act_data_type(&None).to_token_stream()
+    return_type
+        .to_act_data_type(&None, source_map)
+        .to_token_stream()
 }
 
 // TODO this part should be refactored to allow us to get a params data structure by just passing in a &FnDecl
 // TODO that params data structures can have the name, the type, and both strings and idents as necessary
-fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) -> RustParams {
+fn get_ts_method_signature_rust_params(
+    ts_method_signature: &TsMethodSignature,
+    source_map: &SourceMap,
+) -> RustParams {
     let params = ts_method_signature
         .params
         .iter()
@@ -529,7 +543,7 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
                     .as_ref()
                     .unwrap()
                     .type_ann
-                    .to_act_data_type(&None)
+                    .to_act_data_type(&None, source_map)
                     .to_token_stream();
 
                 quote! {
@@ -565,7 +579,7 @@ fn get_ts_method_signature_rust_params(ts_method_signature: &TsMethodSignature) 
                     .as_ref()
                     .unwrap()
                     .type_ann
-                    .to_act_data_type(&None)
+                    .to_act_data_type(&None, source_map)
                     .to_token_stream();
 
                 quote! {

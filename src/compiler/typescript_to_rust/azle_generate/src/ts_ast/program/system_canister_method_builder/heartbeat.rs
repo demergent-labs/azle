@@ -1,13 +1,11 @@
-use swc_ecma_ast::Program;
-
 use crate::{
     cdk_act::{nodes::ActHeartbeatMethod, CanisterMethodType},
     generators::canister_methods::method_body,
-    ts_ast::program::TsProgramVecHelperMethods,
+    ts_ast::program::{azle_program::AzleProgramVecHelperMethods, AzleProgram},
 };
 
 pub fn build_canister_method_system_heartbeat(
-    programs: &Vec<Program>,
+    programs: &Vec<AzleProgram>,
 ) -> Option<ActHeartbeatMethod> {
     let heartbeat_fn_decls = programs.get_fn_decls_of_type(&CanisterMethodType::Heartbeat);
 

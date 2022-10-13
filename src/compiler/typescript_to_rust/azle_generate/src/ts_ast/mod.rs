@@ -4,6 +4,7 @@ pub use ast_traits::GetDependencies;
 pub use ast_traits::GetName;
 pub use ast_traits::GetTsType;
 pub use ts_ast::TsAst;
+pub use type_alias::AzleTypeAliasDecl;
 
 pub mod ast_traits;
 mod ts_array_type;
@@ -24,4 +25,5 @@ pub mod fn_decl;
 pub mod ident;
 pub mod module;
 pub mod program;
-pub mod ts_type_alias_decl;
+pub mod source_map;
+pub mod type_alias;

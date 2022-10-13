@@ -1,10 +1,14 @@
 use crate::cdk_act::{nodes::data_type_nodes::ActPrimitiveLit, ActDataType, ToActDataType};
+use swc_common::SourceMap;
 use swc_ecma_ast::{TsKeywordType, TsKeywordTypeKind};
 
 impl ToActDataType for TsKeywordType {
-    fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType {
-        let kind = self.kind;
-        match &kind {
+    fn to_act_data_type(
+        &self,
+        alias_name: &Option<&String>,
+        source_map: &SourceMap,
+    ) -> ActDataType {
+        match self.kind {
             TsKeywordTypeKind::TsBooleanKeyword => ActPrimitiveLit::Bool,
             TsKeywordTypeKind::TsStringKeyword => ActPrimitiveLit::String,
             TsKeywordTypeKind::TsVoidKeyword => ActPrimitiveLit::Void,
@@ -33,6 +37,6 @@ impl ToActDataType for TsKeywordType {
             }
             TsKeywordTypeKind::TsAnyKeyword => todo!("to_act_data_type for TsAnyKeyword"),
         }
-        .to_act_data_type(alias_name)
+        .to_act_data_type(alias_name, source_map)
     }
 }

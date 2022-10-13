@@ -1,6 +1,6 @@
 use super::{
-    ast_traits::GetTsType, ts_type_element::TsTypeElementHelperMethods, GenerateInlineName,
-    GetDependencies,
+    ts_type_element::TsTypeElementHelperMethods, AzleTypeAliasDecl, GenerateInlineName,
+    GetDependencies, GetTsType,
 };
 use crate::cdk_act::{
     nodes::data_type_nodes::{
@@ -11,19 +11,20 @@ use crate::cdk_act::{
     ActDataType,
 };
 use std::collections::{HashMap, HashSet};
-use swc_ecma_ast::{TsTypeAliasDecl, TsTypeLit};
+use swc_common::SourceMap;
+use swc_ecma_ast::TsTypeLit;
 
 pub trait TsTypeLitHelperMethods {
-    fn to_record(&self, record_name: &Option<&String>) -> ActDataType;
-    fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType;
+    fn to_record(&self, record_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
+    fn to_variant(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
 }
 
 impl TsTypeLitHelperMethods for TsTypeLit {
-    fn to_record(&self, record_name: &Option<&String>) -> ActDataType {
+    fn to_record(&self, record_name: &Option<&String>, source_map: &SourceMap) -> ActDataType {
         let members: Vec<ActRecordMember> = self
             .members
             .iter()
-            .map(|member| member.to_record_member())
+            .map(|member| member.to_record_member(source_map))
             .collect();
 
         ActDataType::Record(match record_name {
@@ -46,11 +47,11 @@ impl TsTypeLitHelperMethods for TsTypeLit {
         })
     }
 
-    fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType {
+    fn to_variant(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType {
         let members: Vec<ActVariantMember> = self
             .members
             .iter()
-            .map(|member| member.to_variant_member())
+            .map(|member| member.to_variant_member(source_map))
             .collect();
 
         ActDataType::Variant(match variant_name {
@@ -84,12 +85,12 @@ impl GenerateInlineName for TsTypeLit {
 impl GetDependencies for TsTypeLit {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &HashMap<String, TsTypeAliasDecl>,
-        found_types: &HashSet<String>,
+        type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
+        found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
         self.members
             .iter()
-            .fold(found_types.clone(), |acc, member| {
+            .fold(found_type_names.clone(), |acc, member| {
                 acc.union(
                     &member
                         .get_ts_type()
