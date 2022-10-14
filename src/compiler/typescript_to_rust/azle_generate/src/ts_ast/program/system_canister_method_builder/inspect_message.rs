@@ -20,7 +20,7 @@ pub fn build_canister_method_system_inspect_message(
     let inspect_message_fn_decl_option = inspect_message_fn_decls.get(0);
 
     if let Some(inspect_message_fn_decl) = inspect_message_fn_decl_option {
-        let name = inspect_message_fn_decl.get_fn_decl_function_name();
+        let name = inspect_message_fn_decl.get_function_name();
 
         let call_to_inspect_message_js_function =
             method_body::generate_call_to_js_function(inspect_message_fn_decl);

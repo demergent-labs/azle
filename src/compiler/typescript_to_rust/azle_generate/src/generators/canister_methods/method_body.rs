@@ -38,7 +38,7 @@ pub fn maybe_generate_call_to_js_function(
 }
 
 pub fn generate_call_to_js_function(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
-    let function_name = fn_decl.get_fn_decl_function_name();
+    let function_name = fn_decl.get_function_name();
     let param_name_idents = fn_decl.get_param_name_idents();
 
     quote! {
@@ -75,7 +75,7 @@ fn generate_return_expression(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
         };
     }
 
-    let return_type = fn_decl.get_canister_method_return_type();
+    let return_type = fn_decl.get_return_ts_type();
 
     if type_is_null_or_void(return_type) {
         return quote! {
@@ -89,16 +89,13 @@ fn generate_return_expression(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
 }
 
 /// Returns true if the return type is `null`, or `void`. Otherwise returns false.
-fn type_is_null_or_void(ts_type_option: Option<&TsType>) -> bool {
-    match ts_type_option {
-        Some(ts_type) => match ts_type {
-            TsType::TsKeywordType(keyword) => match keyword.kind {
-                // TODO: Consider handling `TsNeverKeyword` and `TsUndefinedKeyword`
-                TsNullKeyword | TsVoidKeyword => true,
-                _ => false,
-            },
+fn type_is_null_or_void(ts_type: &TsType) -> bool {
+    match ts_type {
+        TsType::TsKeywordType(keyword) => match keyword.kind {
+            // TODO: Consider handling `TsNeverKeyword` and `TsUndefinedKeyword`
+            TsNullKeyword | TsVoidKeyword => true,
             _ => false,
         },
-        None => false,
+        _ => false,
     }
 }

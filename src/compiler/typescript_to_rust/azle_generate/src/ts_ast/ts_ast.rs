@@ -44,15 +44,19 @@ impl TsAst {
 
                 let mut parser = Parser::new_from(lexer);
 
-                let program = parser.parse_program().unwrap();
-
-                if let Ok(source_map) = std::rc::Rc::try_unwrap(cm) {
-                    return AzleProgram {
-                        program,
-                        source_map,
-                    };
-                };
-                panic!("this cannot happen");
+                let parse_result = parser.parse_program();
+                match parse_result {
+                    Ok(program) => {
+                        if let Ok(source_map) = std::rc::Rc::try_unwrap(cm) {
+                            return AzleProgram {
+                                program,
+                                source_map,
+                            };
+                        };
+                        panic!("this cannot happen");
+                    }
+                    Err(error) => panic!("{}: Syntax Error: {}", ts_file_name, error.kind().msg()),
+                }
             })
             .collect();
         Self { azle_programs }

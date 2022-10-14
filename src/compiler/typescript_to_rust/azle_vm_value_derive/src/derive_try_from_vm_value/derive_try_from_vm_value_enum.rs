@@ -2,6 +2,20 @@ use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::{DataEnum, Field, Fields};
 
+trait TryGetEnumVariantFieldIdent {
+    fn try_get_ident(&self, enum_name: &Ident, variant_name: &Ident) -> &Ident;
+}
+
+impl TryGetEnumVariantFieldIdent for Field {
+    fn try_get_ident(&self, enum_name: &Ident, variant_name: &Ident) -> &Ident {
+        let field_must_be_named = format!(
+            "All fields of variant {} in enum {} must be named. Note: If you hit this case something went very wrong.",
+            variant_name, enum_name
+        );
+        self.ident.as_ref().expect(&field_must_be_named)
+    }
+}
+
 pub fn derive_try_from_vm_value_enum(
     enum_name: &Ident,
     data_enum: &DataEnum,
@@ -119,7 +133,7 @@ fn derive_property_for_named_fields(
     object_variant_js_value_var_name: &Ident,
 ) -> proc_macro2::TokenStream {
     let named_field_js_value_result_variable_names = named_fields.iter().map(|named_field| {
-        let field_name = &named_field.ident.as_ref().unwrap();
+        let field_name = named_field.try_get_ident(enum_name, variant_name);
         let variable_name = format_ident!("{}_js_value_result", field_name);
 
         quote! {
@@ -128,7 +142,7 @@ fn derive_property_for_named_fields(
     });
 
     let named_field_js_value_result_variable_declarations = named_fields.iter().map(|named_field| {
-        let field_name = &named_field.ident.as_ref().unwrap();
+        let field_name = named_field.try_get_ident(enum_name, variant_name);
         let variable_name = format_ident!("{}_js_value_result", field_name);
 
         quote! {
@@ -137,7 +151,7 @@ fn derive_property_for_named_fields(
     });
 
     let named_field_js_value_oks = named_fields.iter().map(|named_field| {
-        let field_name = &named_field.ident.as_ref().unwrap();
+        let field_name = named_field.try_get_ident(enum_name, variant_name);
         let variable_name = format_ident!("{}_js_value", field_name);
 
         quote! {
@@ -146,7 +160,7 @@ fn derive_property_for_named_fields(
     });
 
     let named_field_variable_declarations = named_fields.iter().map(|named_field| {
-        let field_name = &named_field.ident.as_ref().unwrap();
+        let field_name = named_field.try_get_ident(enum_name, variant_name);
         let variable_name = format_ident!("{}_result", field_name);
 
         let named_field_js_value_variable_name = format_ident!("{}_js_value", field_name);
@@ -157,7 +171,7 @@ fn derive_property_for_named_fields(
     });
 
     let named_field_variable_oks = named_fields.iter().map(|named_field| {
-        let field_name = &named_field.ident.as_ref().unwrap();
+        let field_name = named_field.try_get_ident(enum_name, variant_name);
         let variable_name = format_ident!("{}_result", field_name);
 
         quote! {
@@ -166,7 +180,7 @@ fn derive_property_for_named_fields(
     });
 
     let named_field_variable_names = named_fields.iter().map(|named_field| {
-        let field_name = &named_field.ident.as_ref().unwrap();
+        let field_name = named_field.try_get_ident(enum_name, variant_name);
 
         quote! {
             Ok(#field_name)
@@ -174,7 +188,7 @@ fn derive_property_for_named_fields(
     });
 
     let tuple_struct_field_definition = named_fields.iter().map(|named_field| {
-        let field_name = &named_field.ident.as_ref().unwrap();
+        let field_name = named_field.try_get_ident(enum_name, variant_name);
 
         quote! {
             #field_name: #field_name
