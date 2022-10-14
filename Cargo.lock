@@ -33,6 +33,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "annotate-snippets"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c3b9d411ecbaf79885c6df4d75fff75858d5995ff25385657a28af47e82f9c36"
+dependencies = [
+ "unicode-width",
+]
+
+[[package]]
 name = "ast_node"
 version = "0.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -65,6 +74,7 @@ dependencies = [
 name = "azle_generate"
 version = "0.0.0"
 dependencies = [
+ "annotate-snippets",
  "derive-syn-parse",
  "proc-macro2",
  "quote",
