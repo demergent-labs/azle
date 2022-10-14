@@ -3,7 +3,7 @@ use swc_ecma_ast::TsTypeRef;
 
 use crate::{
     cdk_act::ToActDataType,
-    ts_ast::{GetDependencies, GetName},
+    ts_ast::{source_map::GetSourceFileInfo, GetDependencies, GetName, ToDisplayString},
 };
 
 #[derive(Clone)]
@@ -26,6 +26,12 @@ impl GetDependencies for AzleTypeRef<'_> {
 impl GetName for AzleTypeRef<'_> {
     fn get_name(&self) -> &str {
         self.ts_type_ref.get_name()
+    }
+}
+
+impl ToDisplayString for AzleTypeRef<'_> {
+    fn to_display_string(&self) -> String {
+        self.source_map.get_span_text(self.ts_type_ref.span)
     }
 }
 

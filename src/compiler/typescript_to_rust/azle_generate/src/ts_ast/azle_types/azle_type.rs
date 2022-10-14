@@ -4,7 +4,7 @@ use super::{
 };
 use crate::{
     cdk_act::{ActDataType, ToActDataType},
-    ts_ast::{AzleTypeAliasDecl, GetDependencies},
+    ts_ast::{AzleTypeAliasDecl, GetDependencies, ToDisplayString},
 };
 use std::collections::{HashMap, HashSet};
 use swc_common::SourceMap;
@@ -105,6 +105,21 @@ impl GetDependencies for AzleType<'_> {
             AzleType::AzleTupleType(azle_tuple_type) => {
                 azle_tuple_type.get_dependent_types(type_alias_lookup, found_type_names)
             }
+        }
+    }
+}
+
+impl ToDisplayString for AzleType<'_> {
+    fn to_display_string(&self) -> String {
+        match self {
+            AzleType::AzleTypeRef(type_ref) => type_ref.to_display_string(),
+            AzleType::AzleKeywordType(keyword_type) => keyword_type.to_display_string(),
+            AzleType::AzleTypeLit(type_lit) => type_lit.to_display_string(),
+            AzleType::AzleFnOrConstructorType(fn_or_const_type) => {
+                fn_or_const_type.to_display_string()
+            }
+            AzleType::AzleTupleType(tuple_type) => tuple_type.to_display_string(),
+            AzleType::AzleArrayType(array_type) => array_type.to_display_string(),
         }
     }
 }

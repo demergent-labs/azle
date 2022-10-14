@@ -1,4 +1,7 @@
-use crate::{cdk_act::ToActDataType, ts_ast::GetDependencies};
+use crate::{
+    cdk_act::ToActDataType,
+    ts_ast::{source_map::GetSourceFileInfo, GetDependencies, ToDisplayString},
+};
 use swc_common::SourceMap;
 use swc_ecma_ast::TsFnOrConstructorType;
 
@@ -16,6 +19,16 @@ impl GetDependencies for AzleFnOrConstructorType<'_> {
     ) -> std::collections::HashSet<String> {
         self.ts_fn_or_constructor_type
             .get_dependent_types(type_alias_lookup, found_type_names)
+    }
+}
+
+impl ToDisplayString for AzleFnOrConstructorType<'_> {
+    fn to_display_string(&self) -> String {
+        let span = match &self.ts_fn_or_constructor_type {
+            TsFnOrConstructorType::TsFnType(fn_type) => fn_type.span,
+            TsFnOrConstructorType::TsConstructorType(constructor_type) => constructor_type.span,
+        };
+        self.source_map.get_span_text(span)
     }
 }
 

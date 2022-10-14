@@ -1,7 +1,10 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTupleType;
 
-use crate::{cdk_act::ToActDataType, ts_ast::GetDependencies};
+use crate::{
+    cdk_act::ToActDataType,
+    ts_ast::{source_map::GetSourceFileInfo, GetDependencies, ToDisplayString},
+};
 
 #[derive(Clone)]
 pub struct AzleTupleType<'a> {
@@ -17,6 +20,12 @@ impl GetDependencies for AzleTupleType<'_> {
     ) -> std::collections::HashSet<String> {
         self.ts_tuple_type
             .get_dependent_types(type_alias_lookup, found_type_names)
+    }
+}
+
+impl ToDisplayString for AzleTupleType<'_> {
+    fn to_display_string(&self) -> String {
+        self.source_map.get_span_text(self.ts_tuple_type.span)
     }
 }
 

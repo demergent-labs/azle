@@ -1,7 +1,10 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeLit;
 
-use crate::{cdk_act::ActDataType, ts_ast::GetDependencies};
+use crate::{
+    cdk_act::ActDataType,
+    ts_ast::{source_map::GetSourceFileInfo, GetDependencies, ToDisplayString},
+};
 
 #[derive(Clone)]
 pub struct AzleTypeLit<'a> {
@@ -26,5 +29,11 @@ impl GetDependencies for AzleTypeLit<'_> {
     ) -> std::collections::HashSet<String> {
         self.ts_type_lit
             .get_dependent_types(type_alias_lookup, found_type_names)
+    }
+}
+
+impl ToDisplayString for AzleTypeLit<'_> {
+    fn to_display_string(&self) -> String {
+        self.source_map.get_span_text(self.ts_type_lit.span)
     }
 }

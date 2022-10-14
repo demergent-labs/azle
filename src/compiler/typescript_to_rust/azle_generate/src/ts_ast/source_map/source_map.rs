@@ -1,6 +1,7 @@
 use swc_common::{Loc, SourceMap, Span};
 
 pub trait GetSourceFileInfo {
+    fn get_span_text(&self, span: Span) -> String;
     fn get_file_name(&self, span: Span) -> String;
     fn get_line_info(&self, span: Span) -> String;
     fn get_line(&self, span: Span) -> String;
@@ -33,6 +34,11 @@ impl PrivateGetSourceFileInfo for SourceMap {
 }
 
 impl GetSourceFileInfo for SourceMap {
+    fn get_span_text(&self, span: Span) -> String {
+        let line = self.get_line(span);
+        line[self.get_start_col(span)..self.get_end_col(span)].to_string()
+    }
+
     fn get_line_info(&self, span: Span) -> String {
         let loc = self.get_loc(span);
         let file_name = self.get_file_name(span);
