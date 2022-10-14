@@ -1,5 +1,4 @@
 use std::collections::{HashMap, HashSet};
-use swc_common::SourceMap;
 use swc_ecma_ast::TsTupleType;
 
 use crate::cdk_act::{
@@ -13,7 +12,7 @@ use crate::cdk_act::{
 use super::{AzleTypeAliasDecl, GenerateInlineName, GetDependencies, ToDisplayString};
 
 trait TsTupleHelperMethods {
-    fn get_elem_types(&self, source_map: &SourceMap) -> Vec<ActTupleElem>;
+    fn get_elem_types(&self) -> Vec<ActTupleElem>;
 }
 
 impl GenerateInlineName for TsTupleType {
@@ -49,19 +48,19 @@ impl ToDisplayString for TsTupleType {
 }
 
 impl ToActDataType for TsTupleType {
-    fn to_act_data_type(&self, name: &Option<&String>, source_map: &SourceMap) -> ActDataType {
+    fn to_act_data_type(&self, name: &Option<&String>) -> ActDataType {
         ActDataType::Tuple(ActTuple {
             act_type: match name {
                 Some(name) => LiteralOrTypeAlias::TypeAlias(TupleTypeAlias {
                     tuple: Tuple {
                         name: name.clone().clone(),
-                        elems: self.get_elem_types(source_map),
+                        elems: self.get_elem_types(),
                     },
                 }),
                 None => LiteralOrTypeAlias::Literal(TupleLiteral {
                     tuple: Tuple {
                         name: self.generate_inline_name(),
-                        elems: self.get_elem_types(source_map),
+                        elems: self.get_elem_types(),
                     },
                 }),
             },
@@ -70,11 +69,11 @@ impl ToActDataType for TsTupleType {
 }
 
 impl TsTupleHelperMethods for TsTupleType {
-    fn get_elem_types(&self, source_map: &SourceMap) -> Vec<ActTupleElem> {
+    fn get_elem_types(&self) -> Vec<ActTupleElem> {
         self.elem_types
             .iter()
             .map(|elem| ActTupleElem {
-                elem_type: elem.ty.to_act_data_type(&None, source_map),
+                elem_type: elem.ty.to_act_data_type(&None),
             })
             .collect()
     }

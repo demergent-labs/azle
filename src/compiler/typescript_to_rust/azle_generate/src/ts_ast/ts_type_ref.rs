@@ -1,7 +1,6 @@
 use super::{
-    ast_traits::ToDisplayString, source_map::GetSourceFileInfo,
-    ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl, FunctionAndMethodTypeHelperMethods,
-    GenerateInlineName, GetDependencies, GetName,
+    ast_traits::ToDisplayString, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl,
+    FunctionAndMethodTypeHelperMethods, GenerateInlineName, GetDependencies, GetName,
 };
 use crate::{
     cdk_act::{
@@ -18,14 +17,13 @@ use std::{
     collections::{HashMap, HashSet},
     iter::FromIterator,
 };
-use swc_common::SourceMap;
 use swc_ecma_ast::{TsType, TsTypeRef};
 
 pub trait TsTypeRefHelperMethods {
     fn get_enclosed_ts_type(&self) -> TsType;
-    fn to_func(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
-    fn to_option(&self, record_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
-    fn to_variant(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
+    fn to_func(&self, variant_name: &Option<&String>) -> ActDataType;
+    fn to_option(&self, record_name: &Option<&String>) -> ActDataType;
+    fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType;
 }
 
 trait TsTypeRefErrors {
@@ -34,7 +32,7 @@ trait TsTypeRefErrors {
     fn option_wrong_number_of_params_error(&self) -> String;
     fn type_ref_wrong_number_of_params_error(&self) -> String;
     fn variant_wrong_number_of_params_error(&self) -> String;
-    fn variant_wrong_enclosed_type_error(&self, source_map: &SourceMap) -> String;
+    fn variant_wrong_enclosed_type_error(&self) -> String;
     fn generate_example_variant(&self) -> String;
 }
 
@@ -124,41 +122,34 @@ impl ToDisplayString for TsTypeRef {
 }
 
 impl ToActDataType for TsTypeRef {
-    fn to_act_data_type(
-        &self,
-        alias_name: &Option<&String>,
-        source_map: &SourceMap,
-    ) -> crate::cdk_act::ActDataType {
+    fn to_act_data_type(&self, alias_name: &Option<&String>) -> crate::cdk_act::ActDataType {
         match self.get_name() {
-            "blob" => ActPrimitiveLit::Blob.to_act_data_type(alias_name, source_map),
-            "float32" => ActPrimitiveLit::Float32.to_act_data_type(alias_name, source_map),
-            "float64" => ActPrimitiveLit::Float64.to_act_data_type(alias_name, source_map),
-            "int" => ActPrimitiveLit::Int.to_act_data_type(alias_name, source_map),
-            "int8" => ActPrimitiveLit::Int8.to_act_data_type(alias_name, source_map),
-            "int16" => ActPrimitiveLit::Int16.to_act_data_type(alias_name, source_map),
-            "int32" => ActPrimitiveLit::Int32.to_act_data_type(alias_name, source_map),
-            "int64" => ActPrimitiveLit::Int64.to_act_data_type(alias_name, source_map),
-            "nat" => ActPrimitiveLit::Nat.to_act_data_type(alias_name, source_map),
-            "nat8" => ActPrimitiveLit::Nat8.to_act_data_type(alias_name, source_map),
-            "nat16" => ActPrimitiveLit::Nat16.to_act_data_type(alias_name, source_map),
-            "nat32" => ActPrimitiveLit::Nat32.to_act_data_type(alias_name, source_map),
-            "nat64" => ActPrimitiveLit::Nat64.to_act_data_type(alias_name, source_map),
-            "Principal" => ActPrimitiveLit::Principal.to_act_data_type(alias_name, source_map),
-            "empty" => ActPrimitiveLit::Empty.to_act_data_type(alias_name, source_map),
-            "reserved" => ActPrimitiveLit::Reserved.to_act_data_type(alias_name, source_map),
-            "Opt" => self.to_option(alias_name, source_map),
-            "Func" => self.to_func(alias_name, source_map),
-            "Variant" => self.to_variant(alias_name, source_map),
-            _ => self
-                .get_name()
-                .to_string()
-                .to_act_data_type(alias_name, source_map),
+            "blob" => ActPrimitiveLit::Blob.to_act_data_type(alias_name),
+            "float32" => ActPrimitiveLit::Float32.to_act_data_type(alias_name),
+            "float64" => ActPrimitiveLit::Float64.to_act_data_type(alias_name),
+            "int" => ActPrimitiveLit::Int.to_act_data_type(alias_name),
+            "int8" => ActPrimitiveLit::Int8.to_act_data_type(alias_name),
+            "int16" => ActPrimitiveLit::Int16.to_act_data_type(alias_name),
+            "int32" => ActPrimitiveLit::Int32.to_act_data_type(alias_name),
+            "int64" => ActPrimitiveLit::Int64.to_act_data_type(alias_name),
+            "nat" => ActPrimitiveLit::Nat.to_act_data_type(alias_name),
+            "nat8" => ActPrimitiveLit::Nat8.to_act_data_type(alias_name),
+            "nat16" => ActPrimitiveLit::Nat16.to_act_data_type(alias_name),
+            "nat32" => ActPrimitiveLit::Nat32.to_act_data_type(alias_name),
+            "nat64" => ActPrimitiveLit::Nat64.to_act_data_type(alias_name),
+            "Principal" => ActPrimitiveLit::Principal.to_act_data_type(alias_name),
+            "empty" => ActPrimitiveLit::Empty.to_act_data_type(alias_name),
+            "reserved" => ActPrimitiveLit::Reserved.to_act_data_type(alias_name),
+            "Opt" => self.to_option(alias_name),
+            "Func" => self.to_func(alias_name),
+            "Variant" => self.to_variant(alias_name),
+            _ => self.get_name().to_string().to_act_data_type(alias_name),
         }
     }
 }
 
 impl TsTypeRefHelperMethods for TsTypeRef {
-    fn to_func(&self, func_name: &Option<&String>, source_map: &SourceMap) -> ActDataType {
+    fn to_func(&self, func_name: &Option<&String>) -> ActDataType {
         let ts_fn_type = match self.get_enclosed_ts_type() {
             TsType::TsFnOrConstructorType(fn_or_const) => match fn_or_const {
                 swc_ecma_ast::TsFnOrConstructorType::TsFnType(ts_fn_type) => ts_fn_type,
@@ -170,14 +161,14 @@ impl TsTypeRefHelperMethods for TsTypeRef {
         };
         eprintln!("Start");
         let return_type = match ts_fn_type.get_return_type() {
-            Some(ts_type) => Some(ts_type.to_act_data_type(&None, &source_map)),
+            Some(ts_type) => Some(ts_type.to_act_data_type(&None)),
             None => None,
         };
         eprintln!("End");
         let param_types: Vec<ActDataType> = ts_fn_type
             .get_param_types()
             .iter()
-            .map(|param| param.to_act_data_type(&None, &source_map))
+            .map(|param| param.to_act_data_type(&None))
             .collect();
         let func_mode = ts_fn_type.get_func_mode();
 
@@ -205,10 +196,8 @@ impl TsTypeRefHelperMethods for TsTypeRef {
         })
     }
 
-    fn to_option(&self, alias_name: &Option<&String>, source_map: &SourceMap) -> ActDataType {
-        let enclosed_act_data_type = self
-            .get_enclosed_ts_type()
-            .to_act_data_type(&None, source_map);
+    fn to_option(&self, alias_name: &Option<&String>) -> ActDataType {
+        let enclosed_act_data_type = self.get_enclosed_ts_type().to_act_data_type(&None);
         match alias_name {
             Some(name) => ActDataType::Option(ActOption {
                 act_type: LiteralOrTypeAlias::TypeAlias(ActOptionTypeAlias {
@@ -224,12 +213,12 @@ impl TsTypeRefHelperMethods for TsTypeRef {
         }
     }
 
-    fn to_variant(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType {
+    fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType {
         match self.get_enclosed_ts_type().as_ts_type_lit() {
             Some(ts_type_lit) => ts_type_lit,
-            None => panic!("{}", self.variant_wrong_enclosed_type_error(source_map)),
+            None => panic!("{}", self.variant_wrong_enclosed_type_error()),
         }
-        .to_variant(variant_name, source_map)
+        .to_variant(variant_name)
     }
 
     fn get_enclosed_ts_type(&self) -> TsType {
@@ -310,13 +299,9 @@ impl TsTypeRefErrors for TsTypeRef {
         format!("{}<\n{{\n{}}}>;", self.get_name(), enclosed_types)
     }
 
-    fn variant_wrong_enclosed_type_error(&self, source_map: &SourceMap) -> String {
-        let well_formed = source_map.get_well_formed_line(self.span);
+    fn variant_wrong_enclosed_type_error(&self) -> String {
         let example = self.generate_example_variant();
-        let example_variant = format!("\n{}{}\n", well_formed, example);
-        let location = source_map.get_line_info(self.span);
-        let highlighted_line = source_map.generate_highlighted_line(self.span);
-        format!("\n\nInvalid variant at {}\n{}\nVariants must have a type literal as the enclosed type. Try this:\n{}\n", location, highlighted_line, example_variant)
+        format!("\n\nInvalid variant\nVariants must have a type literal as the enclosed type. Try this:\n{}\n", example)
     }
 
     fn func_wrong_enclosed_type_error(&self) -> String {

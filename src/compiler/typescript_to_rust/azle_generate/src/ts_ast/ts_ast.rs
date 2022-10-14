@@ -103,15 +103,11 @@ impl ToAct for TsAst {
             .cloned()
             .collect();
 
-        let query_methods = canister_methods::build_canister_method_nodes(
-            &ast_fnc_decls_query,
-            RequestType::Query,
-            &Default::default(),
-        );
+        let query_methods =
+            canister_methods::build_canister_method_nodes(&ast_fnc_decls_query, RequestType::Query);
         let update_methods = canister_methods::build_canister_method_nodes(
             &ast_fnc_decls_update,
             RequestType::Update,
-            &Default::default(),
         );
 
         let query_method_type_acts =
@@ -208,11 +204,9 @@ impl ToAct for TsAst {
             .collect();
 
         let heartbeat_method = self.azle_programs.build_heartbeat_method();
-        let init_method = self.azle_programs.build_init_method(&Default::default());
+        let init_method = self.azle_programs.build_init_method();
         let inspect_message_method = self.azle_programs.build_inspect_method();
-        let post_upgrade_method = self
-            .azle_programs
-            .build_post_upgrade_method(&Default::default());
+        let post_upgrade_method = self.azle_programs.build_post_upgrade_method();
         let pre_upgrade_method = self.azle_programs.build_pre_upgrade_method();
 
         let try_into_vm_value_impls = vm_value_conversion::generate_try_into_vm_value_impls();

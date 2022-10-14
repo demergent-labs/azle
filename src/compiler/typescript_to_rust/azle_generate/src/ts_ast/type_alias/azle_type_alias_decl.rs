@@ -30,13 +30,13 @@ pub trait AzleTypeAliasListHelperMethods {
 }
 
 impl Actable for AzleTypeAliasDecl<'_> {
-    fn to_act_node(&self, source_map: &SourceMap) -> ActNode {
+    fn to_act_node(&self) -> ActNode {
         let ts_type_name = self.get_name().to_string();
 
         ActNode::DataType(
             self.ts_type_alias_decl
                 .type_ann
-                .to_act_data_type(&Some(&ts_type_name), source_map),
+                .to_act_data_type(&Some(&ts_type_name)),
         )
     }
 }

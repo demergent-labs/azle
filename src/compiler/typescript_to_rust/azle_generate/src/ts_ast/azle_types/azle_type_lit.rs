@@ -13,10 +13,10 @@ pub struct AzleTypeLit<'a> {
 }
 
 impl AzleTypeLit<'_> {
-    pub fn to_record(&self, alias_name: &Option<&String>, source_map: &SourceMap) -> ActDataType {
+    pub fn to_record(&self, alias_name: &Option<&String>) -> ActDataType {
         todo!()
     }
-    pub fn to_variant(&self, alias_name: &Option<&String>, source_map: &SourceMap) -> ActDataType {
+    pub fn to_variant(&self, alias_name: &Option<&String>) -> ActDataType {
         todo!()
     }
 }

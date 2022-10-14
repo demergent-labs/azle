@@ -11,20 +11,19 @@ use crate::cdk_act::{
     ActDataType,
 };
 use std::collections::{HashMap, HashSet};
-use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeLit;
 
 pub trait TsTypeLitHelperMethods {
-    fn to_record(&self, record_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
-    fn to_variant(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType;
+    fn to_record(&self, record_name: &Option<&String>) -> ActDataType;
+    fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType;
 }
 
 impl TsTypeLitHelperMethods for TsTypeLit {
-    fn to_record(&self, record_name: &Option<&String>, source_map: &SourceMap) -> ActDataType {
+    fn to_record(&self, record_name: &Option<&String>) -> ActDataType {
         let members: Vec<ActRecordMember> = self
             .members
             .iter()
-            .map(|member| member.to_record_member(source_map))
+            .map(|member| member.to_record_member())
             .collect();
 
         ActDataType::Record(match record_name {
@@ -47,11 +46,11 @@ impl TsTypeLitHelperMethods for TsTypeLit {
         })
     }
 
-    fn to_variant(&self, variant_name: &Option<&String>, source_map: &SourceMap) -> ActDataType {
+    fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType {
         let members: Vec<ActVariantMember> = self
             .members
             .iter()
-            .map(|member| member.to_variant_member(source_map))
+            .map(|member| member.to_variant_member())
             .collect();
 
         ActDataType::Variant(match variant_name {

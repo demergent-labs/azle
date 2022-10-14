@@ -1,5 +1,4 @@
 use quote::quote;
-use swc_common::SourceMap;
 
 use crate::{
     cdk_act::{
@@ -12,7 +11,6 @@ use crate::{
 
 pub fn build_canister_method_system_post_upgrade(
     programs: &Vec<AzleProgram>,
-    source_map: &SourceMap,
 ) -> ActPostUpgradeMethod {
     let ic_object = programs.generate_ic_object();
 
@@ -25,7 +23,7 @@ pub fn build_canister_method_system_post_upgrade(
     let post_upgrade_fn_decl_option = post_upgrade_fn_decls.get(0);
 
     let params = if let Some(fn_decl) = post_upgrade_fn_decl_option {
-        fn_decl.build_params(source_map)
+        fn_decl.build_params()
     } else {
         vec![]
     };

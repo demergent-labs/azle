@@ -1,5 +1,3 @@
-use swc_common::SourceMap;
-
 use crate::cdk_act::{
     nodes::{
         ActHeartbeatMethod, ActInitMethod, ActInspectMessageMethod, ActPostUpgradeMethod,
@@ -21,8 +19,8 @@ impl SystemCanisterMethodBuilder for Vec<AzleProgram> {
         heartbeat::build_canister_method_system_heartbeat(self)
     }
 
-    fn build_init_method(&self, source_map: &SourceMap) -> ActInitMethod {
-        init::build_canister_method_system_init(self, source_map)
+    fn build_init_method(&self) -> ActInitMethod {
+        init::build_canister_method_system_init(self)
     }
 
     fn build_inspect_method(&self) -> Option<ActInspectMessageMethod> {
@@ -33,7 +31,7 @@ impl SystemCanisterMethodBuilder for Vec<AzleProgram> {
         pre_upgrade::build_canister_method_system_pre_upgrade(self)
     }
 
-    fn build_post_upgrade_method(&self, source_map: &SourceMap) -> ActPostUpgradeMethod {
-        post_upgrade::build_canister_method_system_post_upgrade(self, source_map)
+    fn build_post_upgrade_method(&self) -> ActPostUpgradeMethod {
+        post_upgrade::build_canister_method_system_post_upgrade(self)
     }
 }

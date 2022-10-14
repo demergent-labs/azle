@@ -30,11 +30,7 @@ impl ToDisplayString for AzleTupleType<'_> {
 }
 
 impl ToActDataType for AzleTupleType<'_> {
-    fn to_act_data_type(
-        &self,
-        alias_name: &Option<&String>,
-        source_map: &SourceMap,
-    ) -> crate::cdk_act::ActDataType {
+    fn to_act_data_type(&self, alias_name: &Option<&String>) -> crate::cdk_act::ActDataType {
         todo!()
     }
 }
