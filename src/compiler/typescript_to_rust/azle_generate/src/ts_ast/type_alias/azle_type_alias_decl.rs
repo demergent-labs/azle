@@ -30,13 +30,13 @@ pub trait AzleTypeAliasListHelperMethods {
 }
 
 impl Actable for AzleTypeAliasDecl<'_> {
-    fn to_act_node(&self, source_map: &SourceMap) -> ActNode {
+    fn to_act_node(&self) -> ActNode {
         let ts_type_name = self.get_name().to_string();
 
         ActNode::DataType(
             self.ts_type_alias_decl
                 .type_ann
-                .to_act_data_type(&Some(&ts_type_name), source_map),
+                .to_act_data_type(&Some(&ts_type_name)),
         )
     }
 }
@@ -71,7 +71,14 @@ impl TsTypeAliasHelperMethods for AzleTypeAliasDecl<'_> {
     ) -> bool {
         match system_structure_type {
             SystemStructureType::Canister => {
-                &*self.ts_type_alias_decl.type_ann.get_name() == "Canister"
+                self.ts_type_alias_decl.type_ann.is_ts_type_ref()
+                    && &*self
+                        .ts_type_alias_decl
+                        .type_ann
+                        .as_ts_type_ref()
+                        .unwrap()
+                        .get_name()
+                        == "Canister"
             }
         }
     }

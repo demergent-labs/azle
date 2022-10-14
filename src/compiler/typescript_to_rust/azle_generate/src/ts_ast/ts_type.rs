@@ -1,10 +1,10 @@
-use std::collections::{HashMap, HashSet};
-use swc_common::SourceMap;
-use swc_ecma_ast::TsType;
-
+use super::{
+    ast_traits::ToDisplayString, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl,
+    GetDependencies,
+};
 use crate::cdk_act::{ActDataType, ToActDataType};
-
-use super::{ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl, GetDependencies, GetName};
+use std::collections::{HashMap, HashSet};
+use swc_ecma_ast::TsType;
 
 impl GetDependencies for TsType {
     fn get_dependent_types(
@@ -47,33 +47,41 @@ impl GetDependencies for TsType {
     }
 }
 
-impl GetName for TsType {
-    fn get_name(&self) -> &str {
+impl ToDisplayString for TsType {
+    fn to_display_string(&self) -> String {
         match self {
-            TsType::TsTypeRef(type_ref) => type_ref.get_name(),
-            _ => "",
+            TsType::TsTypeRef(type_ref) => type_ref.to_display_string(),
+            TsType::TsKeywordType(keyword_type) => keyword_type.to_display_string(),
+            TsType::TsTypeLit(type_lit) => type_lit.to_display_string(),
+            TsType::TsFnOrConstructorType(fn_or_const_type) => fn_or_const_type.to_display_string(),
+            TsType::TsTupleType(tuple_type) => tuple_type.to_display_string(),
+            TsType::TsArrayType(array_type) => array_type.to_display_string(),
+            TsType::TsThisType(_) => todo!(),
+            TsType::TsTypeQuery(_) => todo!(),
+            TsType::TsOptionalType(_) => todo!(),
+            TsType::TsRestType(_) => todo!(),
+            TsType::TsUnionOrIntersectionType(_) => todo!(),
+            TsType::TsConditionalType(_) => todo!(),
+            TsType::TsInferType(_) => todo!(),
+            TsType::TsParenthesizedType(_) => todo!(),
+            TsType::TsTypeOperator(_) => todo!(),
+            TsType::TsIndexedAccessType(_) => todo!(),
+            TsType::TsMappedType(_) => todo!(),
+            TsType::TsLitType(_) => todo!(),
+            TsType::TsTypePredicate(_) => todo!(),
+            TsType::TsImportType(_) => todo!(),
         }
     }
 }
 
 impl ToActDataType for TsType {
-    fn to_act_data_type(
-        &self,
-        alias_name: &Option<&String>,
-        source_map: &SourceMap,
-    ) -> ActDataType {
+    fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType {
         match self {
-            TsType::TsKeywordType(ts_keyword_type) => {
-                ts_keyword_type.to_act_data_type(alias_name, source_map)
-            }
-            TsType::TsTypeRef(ts_type_ref) => ts_type_ref.to_act_data_type(alias_name, source_map),
-            TsType::TsArrayType(ts_array_type) => {
-                ts_array_type.to_act_data_type(alias_name, source_map)
-            }
-            TsType::TsTypeLit(ts_type_lit) => ts_type_lit.to_record(alias_name, source_map),
-            TsType::TsTupleType(ts_tuple_type) => {
-                ts_tuple_type.to_act_data_type(alias_name, source_map)
-            }
+            TsType::TsKeywordType(ts_keyword_type) => ts_keyword_type.to_act_data_type(alias_name),
+            TsType::TsTypeRef(ts_type_ref) => ts_type_ref.to_act_data_type(alias_name),
+            TsType::TsArrayType(ts_array_type) => ts_array_type.to_act_data_type(alias_name),
+            TsType::TsTypeLit(ts_type_lit) => ts_type_lit.to_record(alias_name),
+            TsType::TsTupleType(ts_tuple_type) => ts_tuple_type.to_act_data_type(alias_name),
             TsType::TsThisType(_) => todo!("to_act_data_type for TsThisType"),
             TsType::TsFnOrConstructorType(_) => {
                 todo!("to_act_data_type for TsFnOorConstructorType")

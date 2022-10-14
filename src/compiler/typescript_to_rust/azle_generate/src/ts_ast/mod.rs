@@ -3,6 +3,13 @@ pub use ast_traits::GenerateInlineName;
 pub use ast_traits::GetDependencies;
 pub use ast_traits::GetName;
 pub use ast_traits::GetTsType;
+pub use ast_traits::ToDisplayString;
+pub use azle_types::AzleArrayType;
+pub use azle_types::AzleFnOrConstructorType;
+pub use azle_types::AzleKeywordType;
+pub use azle_types::AzleTupleType;
+pub use azle_types::AzleTypeLit;
+pub use azle_types::AzleTypeRef;
 pub use ts_ast::TsAst;
 pub use type_alias::AzleTypeAliasDecl;
 
@@ -21,9 +28,11 @@ mod ts_type_element;
 mod ts_type_lit;
 mod ts_type_ref;
 
+pub mod azle_types;
 pub mod fn_decl;
 pub mod ident;
 pub mod module;
 pub mod program;
 pub mod source_map;
+pub mod ts_fn_param;
 pub mod type_alias;

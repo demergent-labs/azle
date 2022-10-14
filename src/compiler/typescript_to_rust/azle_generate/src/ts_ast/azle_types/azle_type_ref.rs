@@ -1,7 +1,6 @@
-use super::{
-    ast_traits::ToDisplayString, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl,
-    FunctionAndMethodTypeHelperMethods, GenerateInlineName, GetDependencies, GetName,
-};
+use swc_common::SourceMap;
+use swc_ecma_ast::{TsType, TsTypeRef};
+
 use crate::{
     cdk_act::{
         nodes::data_type_nodes::{
@@ -11,117 +10,43 @@ use crate::{
         },
         ActDataType, ToActDataType,
     },
-    errors::ErrorWithExampleDiff,
+    ts_ast::{
+        source_map::GetSourceFileInfo, ts_type_lit::TsTypeLitHelperMethods,
+        ts_type_ref::TsTypeRefPrivateMethods, FunctionAndMethodTypeHelperMethods,
+        GenerateInlineName, GetDependencies, GetName, ToDisplayString,
+    },
 };
-use std::{
-    collections::{HashMap, HashSet},
-    iter::FromIterator,
-};
-use swc_ecma_ast::{TsType, TsTypeRef};
 
-pub trait TsTypeRefHelperMethods {
-    fn get_enclosed_ts_type(&self) -> TsType;
-    fn to_func(&self, variant_name: &Option<&String>) -> ActDataType;
-    fn to_option(&self, record_name: &Option<&String>) -> ActDataType;
-    fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType;
+#[derive(Clone)]
+pub struct AzleTypeRef<'a> {
+    pub ts_type_ref: TsTypeRef,
+    pub source_map: &'a SourceMap,
 }
 
-trait TsTypeRefErrors {
-    fn func_wrong_number_of_params_error(&self) -> String;
-    fn func_wrong_enclosed_type_error(&self) -> String;
-    fn option_wrong_number_of_params_error(&self) -> String;
-    fn type_ref_wrong_number_of_params_error(&self) -> String;
-    fn variant_wrong_number_of_params_error(&self) -> String;
-    fn variant_wrong_enclosed_type_error(&self) -> String;
-    fn generate_example_variant(&self) -> String;
-}
-
-// TODO I think this will eventually be the only one on here and it will be public
-pub trait TsTypeRefPrivateMethods {
-    fn get_enclosed_ts_types(&self) -> Vec<TsType>;
-}
-
-impl GetDependencies for TsTypeRef {
+impl GetDependencies for AzleTypeRef<'_> {
     fn get_dependent_types(
         &self,
-        type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
-        found_type_names: &HashSet<String>,
-    ) -> HashSet<String> {
-        match self.get_name() {
-            "blob" => HashSet::new(),
-            "float32" => HashSet::new(),
-            "float64" => HashSet::new(),
-            "int" => HashSet::new(),
-            "int8" => HashSet::new(),
-            "int16" => HashSet::new(),
-            "int32" => HashSet::new(),
-            "int64" => HashSet::new(),
-            "nat" => HashSet::new(),
-            "nat8" => HashSet::new(),
-            "nat16" => HashSet::new(),
-            "nat32" => HashSet::new(),
-            "nat64" => HashSet::new(),
-            "Principal" => HashSet::new(),
-            "empty" => HashSet::new(),
-            "reserved" => HashSet::new(),
-            "Opt" => self
-                .get_enclosed_ts_type()
-                .get_dependent_types(type_alias_lookup, found_type_names),
-            "Func" => self
-                .get_enclosed_ts_type()
-                .get_dependent_types(type_alias_lookup, found_type_names),
-            "Variant" => self
-                .get_enclosed_ts_type()
-                .get_dependent_types(type_alias_lookup, found_type_names),
-            _ => {
-                let name = self.get_name().to_string();
-                if found_type_names.contains(&name) {
-                    return HashSet::new();
-                }
-                match type_alias_lookup.clone().get(&name) {
-                    Some(decl) => {
-                        let new_type: HashSet<String> =
-                            HashSet::from_iter(vec![name].iter().cloned());
-                        let found_type_names: HashSet<String> =
-                            found_type_names.clone().union(&new_type).cloned().collect();
-                        // When finding a new type return it and all of it's dependents
-                        found_type_names
-                            .union(&decl.get_dependent_types(type_alias_lookup, &found_type_names))
-                            .cloned()
-                            .collect()
-                    }
-                    None => HashSet::new(),
-                }
-            }
-        }
+        type_alias_lookup: &std::collections::HashMap<String, crate::ts_ast::AzleTypeAliasDecl>,
+        found_type_names: &std::collections::HashSet<String>,
+    ) -> std::collections::HashSet<String> {
+        self.ts_type_ref
+            .get_dependent_types(type_alias_lookup, found_type_names)
     }
 }
 
-impl GetName for TsTypeRef {
+impl GetName for AzleTypeRef<'_> {
     fn get_name(&self) -> &str {
-        self.type_name.get_name()
+        self.ts_type_ref.get_name()
     }
 }
 
-impl ToDisplayString for TsTypeRef {
+impl ToDisplayString for AzleTypeRef<'_> {
     fn to_display_string(&self) -> String {
-        let enclosed_types = if self.get_enclosed_ts_types().len() == 0 {
-            String::new()
-        } else {
-            format!(
-                "<{}>",
-                self.get_enclosed_ts_types()
-                    .iter()
-                    .fold(String::new(), |acc, enclosed_type| {
-                        format!("{} {},", acc, enclosed_type.to_display_string())
-                    })
-            )
-        };
-        format!("{}{}", self.type_name.get_name(), enclosed_types)
+        self.source_map.get_span_text(self.ts_type_ref.span)
     }
 }
 
-impl ToActDataType for TsTypeRef {
+impl ToActDataType for AzleTypeRef<'_> {
     fn to_act_data_type(&self, alias_name: &Option<&String>) -> crate::cdk_act::ActDataType {
         match self.get_name() {
             "blob" => ActPrimitiveLit::Blob.to_act_data_type(alias_name),
@@ -148,7 +73,7 @@ impl ToActDataType for TsTypeRef {
     }
 }
 
-impl TsTypeRefHelperMethods for TsTypeRef {
+impl AzleTypeRef<'_> {
     fn to_func(&self, func_name: &Option<&String>) -> ActDataType {
         let ts_fn_type = match self.get_enclosed_ts_type() {
             TsType::TsFnOrConstructorType(fn_or_const) => match fn_or_const {
@@ -222,7 +147,7 @@ impl TsTypeRefHelperMethods for TsTypeRef {
     }
 
     fn get_enclosed_ts_type(&self) -> TsType {
-        match &self.type_params {
+        match &self.ts_type_ref.type_params {
             Some(params) => {
                 if params.params.len() != 1 {
                     panic!("{}", self.type_ref_wrong_number_of_params_error())
@@ -232,18 +157,7 @@ impl TsTypeRefHelperMethods for TsTypeRef {
             None => panic!("{}", self.type_ref_wrong_number_of_params_error()),
         }
     }
-}
 
-impl TsTypeRefPrivateMethods for TsTypeRef {
-    fn get_enclosed_ts_types(&self) -> Vec<TsType> {
-        match &self.type_params {
-            Some(params) => params.params.iter().map(|param| *param.clone()).collect(),
-            None => vec![],
-        }
-    }
-}
-
-impl TsTypeRefErrors for TsTypeRef {
     fn type_ref_wrong_number_of_params_error(&self) -> String {
         match self.get_name() {
             "Variant" => self.variant_wrong_number_of_params_error(),
@@ -254,20 +168,21 @@ impl TsTypeRefErrors for TsTypeRef {
     }
 
     fn func_wrong_number_of_params_error(&self) -> String {
-        let enclosed_types: String = if self.get_enclosed_ts_types().len() == 0 {
+        let enclosed_types: String = if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
             "param_name: param_type".to_string()
         } else {
-            self.get_enclosed_ts_types().iter().enumerate().fold(
-                String::new(),
-                |acc, (index, enclosed_type)| {
+            self.ts_type_ref
+                .get_enclosed_ts_types()
+                .iter()
+                .enumerate()
+                .fold(String::new(), |acc, (index, enclosed_type)| {
                     format!(
                         "{}param_name{}: {}, ",
                         acc,
                         index,
                         enclosed_type.to_display_string()
                     )
-                },
-            )
+                })
         };
 
         let func_example = format!("For example: Func<({enclosed_types}) => Update<Type>>");
@@ -285,23 +200,31 @@ impl TsTypeRefErrors for TsTypeRef {
     }
 
     fn generate_example_variant(&self) -> String {
-        let enclosed_types: String = self.get_enclosed_ts_types().iter().enumerate().fold(
-            String::new(),
-            |acc, (index, enclosed_type)| {
+        let enclosed_types: String = self
+            .ts_type_ref
+            .get_enclosed_ts_types()
+            .iter()
+            .enumerate()
+            .fold(String::new(), |acc, (index, enclosed_type)| {
                 format!(
                     "{}    variant_name{}: {},\n",
                     acc,
                     index,
                     enclosed_type.to_display_string()
                 )
-            },
-        );
+            });
         format!("{}<\n{{\n{}}}>;", self.get_name(), enclosed_types)
     }
 
     fn variant_wrong_enclosed_type_error(&self) -> String {
+        let well_formed = self.source_map.get_well_formed_line(self.ts_type_ref.span);
         let example = self.generate_example_variant();
-        format!("\n\nInvalid variant\nVariants must have a type literal as the enclosed type. Try this:\n{}\n", example)
+        let example_variant = format!("\n{}{}\n", well_formed, example);
+        let location = self.source_map.get_line_info(self.ts_type_ref.span);
+        let highlighted_line = self
+            .source_map
+            .generate_highlighted_line(self.ts_type_ref.span);
+        format!("\n\nInvalid variant at {}\n{}\nVariants must have a type literal as the enclosed type. Try this:\n{}\n", location, highlighted_line, example_variant)
     }
 
     fn func_wrong_enclosed_type_error(&self) -> String {

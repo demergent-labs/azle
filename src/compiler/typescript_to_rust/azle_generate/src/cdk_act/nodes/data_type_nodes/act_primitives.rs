@@ -2,7 +2,6 @@ use super::{ActDataType, LiteralOrTypeAlias, ToIdent};
 use crate::cdk_act::{ToActDataType, ToTokenStream};
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
-use swc_common::SourceMap;
 
 #[derive(Clone, Debug)]
 pub struct ActPrimitive {
@@ -34,7 +33,7 @@ pub enum ActPrimitiveLit {
 }
 
 impl ToActDataType for ActPrimitiveLit {
-    fn to_act_data_type(&self, alias_name: &Option<&String>, _: &SourceMap) -> ActDataType {
+    fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType {
         ActDataType::Primitive(ActPrimitive {
             act_type: match alias_name {
                 None => LiteralOrTypeAlias::Literal(self.clone()),

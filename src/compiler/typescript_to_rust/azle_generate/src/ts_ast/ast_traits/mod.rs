@@ -1,10 +1,13 @@
 pub mod generate_inline_name;
-use std::collections::{HashMap, HashSet};
-
-pub use generate_inline_name::GenerateInlineName;
-use swc_ecma_ast::{TsEntityName, TsFnParam, TsType, TsTypeAnn};
+pub mod get_name;
+pub mod to_display_string;
 
 use super::AzleTypeAliasDecl;
+pub use generate_inline_name::GenerateInlineName;
+pub use get_name::GetName;
+use std::collections::{HashMap, HashSet};
+use swc_ecma_ast::{TsEntityName, TsFnParam, TsPropertySignature, TsType, TsTypeAnn};
+pub use to_display_string::ToDisplayString;
 
 pub trait GetDependencies {
     fn get_dependent_types(
@@ -12,10 +15,6 @@ pub trait GetDependencies {
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
         found_type_names: &HashSet<String>,
     ) -> HashSet<String>;
-}
-
-pub trait GetName {
-    fn get_name(&self) -> &str;
 }
 
 pub trait GetTsType {
@@ -28,17 +27,9 @@ pub trait FunctionAndMethodTypeHelperMethods {
     fn get_valid_return_types(&self) -> Vec<&str>;
 
     fn get_param_types(&self) -> Vec<TsType> {
-        self.get_ts_fn_params()
-            .iter()
-            .fold(vec![], |acc, param| match param {
-                TsFnParam::Ident(identifier) => match &identifier.type_ann {
-                    Some(param_type) => vec![acc, vec![param_type.get_ts_type().clone()]].concat(),
-                    None => panic!("Function parameter must have a type"),
-                },
-                TsFnParam::Array(_) => todo!(),
-                TsFnParam::Rest(_) => todo!(),
-                TsFnParam::Object(_) => todo!(),
-            })
+        self.get_ts_fn_params().iter().fold(vec![], |acc, param| {
+            vec![acc, vec![param.get_ts_type().clone()]].concat()
+        })
     }
 
     fn get_return_type(&self) -> Option<TsType> {
@@ -80,5 +71,11 @@ pub trait FunctionAndMethodTypeHelperMethods {
             },
             _ => panic!("Return type must be one of {:?}", self.get_valid_return_types()),
         }
+    }
+}
+
+impl GetTsType for TsPropertySignature {
+    fn get_ts_type(&self) -> TsType {
+        self.type_ann.as_ref().unwrap().get_ts_type()
     }
 }
