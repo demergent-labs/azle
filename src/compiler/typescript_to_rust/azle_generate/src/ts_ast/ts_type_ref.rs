@@ -38,7 +38,8 @@ trait TsTypeRefErrors {
     fn generate_example_variant(&self) -> String;
 }
 
-trait TsTypeRefPrivateMethods {
+// TODO I think this will eventually be the only one on here and it will be public
+pub trait TsTypeRefPrivateMethods {
     fn get_enclosed_ts_types(&self) -> Vec<TsType>;
 }
 
