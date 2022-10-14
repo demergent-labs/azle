@@ -3,7 +3,7 @@ use swc_ecma_ast::TsTypeLit;
 
 use crate::{
     cdk_act::ActDataType,
-    ts_ast::{source_map::GetSourceFileInfo, GetDependencies, ToDisplayString},
+    ts_ast::{source_map::GetSourceFileInfo, GetDependencies, GetSourceText},
 };
 
 #[derive(Clone)]
@@ -32,8 +32,8 @@ impl GetDependencies for AzleTypeLit<'_> {
     }
 }
 
-impl ToDisplayString for AzleTypeLit<'_> {
-    fn to_display_string(&self) -> String {
+impl GetSourceText for AzleTypeLit<'_> {
+    fn get_source_text(&self) -> String {
         self.source_map.get_span_text(self.ts_type_lit.span)
     }
 }

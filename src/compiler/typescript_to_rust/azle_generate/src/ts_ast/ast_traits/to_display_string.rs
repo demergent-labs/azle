@@ -1,3 +1,3 @@
-pub trait ToDisplayString {
-    fn to_display_string(&self) -> String;
+pub trait GetSourceText {
+    fn get_source_text(&self) -> String;
 }

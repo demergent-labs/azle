@@ -13,7 +13,7 @@ use crate::{
     ts_ast::{
         source_map::GetSourceFileInfo, ts_type_lit::TsTypeLitHelperMethods,
         ts_type_ref::TsTypeRefPrivateMethods, FunctionAndMethodTypeHelperMethods,
-        GenerateInlineName, GetDependencies, GetName, ToDisplayString,
+        GenerateInlineName, GetDependencies, GetName, GetSourceText,
     },
 };
 
@@ -40,8 +40,8 @@ impl GetName for AzleTypeRef<'_> {
     }
 }
 
-impl ToDisplayString for AzleTypeRef<'_> {
-    fn to_display_string(&self) -> String {
+impl GetSourceText for AzleTypeRef<'_> {
+    fn get_source_text(&self) -> String {
         self.source_map.get_span_text(self.ts_type_ref.span)
     }
 }
@@ -84,12 +84,10 @@ impl AzleTypeRef<'_> {
             },
             _ => panic!("{}", self.func_wrong_enclosed_type_error()),
         };
-        eprintln!("Start");
         let return_type = match ts_fn_type.get_return_type() {
             Some(ts_type) => Some(ts_type.to_act_data_type(&None)),
             None => None,
         };
-        eprintln!("End");
         let param_types: Vec<ActDataType> = ts_fn_type
             .get_param_types()
             .iter()
@@ -163,7 +161,7 @@ impl AzleTypeRef<'_> {
             "Variant" => self.variant_wrong_number_of_params_error(),
             "Func" => self.func_wrong_number_of_params_error(),
             "Option" => self.option_wrong_number_of_params_error(),
-            _ => format!("Unreachable: {} is not a valid type.\nFuncs, Variants, and Options must have exactly one enclosed type", self.to_display_string()),
+            _ => format!("Unreachable: {} is not a valid type.\nFuncs, Variants, and Options must have exactly one enclosed type", self.get_source_text()),
         }
     }
 
@@ -180,7 +178,7 @@ impl AzleTypeRef<'_> {
                         "{}param_name{}: {}, ",
                         acc,
                         index,
-                        enclosed_type.to_display_string()
+                        enclosed_type.get_source_text()
                     )
                 })
         };
@@ -210,7 +208,7 @@ impl AzleTypeRef<'_> {
                     "{}    variant_name{}: {},\n",
                     acc,
                     index,
-                    enclosed_type.to_display_string()
+                    enclosed_type.get_source_text()
                 )
             });
         format!("{}<\n{{\n{}}}>;", self.get_name(), enclosed_types)
@@ -224,7 +222,7 @@ impl AzleTypeRef<'_> {
         let highlighted_line = self
             .source_map
             .generate_highlighted_line(self.ts_type_ref.span);
-        format!("\n\nInvalid variant at {}\n{}\nVariants must have a type literal as the enclosed type. Try this:\n{}\n", location, highlighted_line, example_variant)
+        format!("Invalid variant at {}\n{}\nVariants must have a type literal as the enclosed type. Try this:\n{}", location, highlighted_line, example_variant)
     }
 
     fn func_wrong_enclosed_type_error(&self) -> String {

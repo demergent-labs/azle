@@ -1,5 +1,5 @@
 use super::{
-    ast_traits::ToDisplayString, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl,
+    ast_traits::GetSourceText, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl,
     FunctionAndMethodTypeHelperMethods, GenerateInlineName, GetDependencies, GetName,
 };
 use crate::{
@@ -103,8 +103,8 @@ impl GetName for TsTypeRef {
     }
 }
 
-impl ToDisplayString for TsTypeRef {
-    fn to_display_string(&self) -> String {
+impl GetSourceText for TsTypeRef {
+    fn get_source_text(&self) -> String {
         let enclosed_types = if self.get_enclosed_ts_types().len() == 0 {
             String::new()
         } else {
@@ -113,7 +113,7 @@ impl ToDisplayString for TsTypeRef {
                 self.get_enclosed_ts_types()
                     .iter()
                     .fold(String::new(), |acc, enclosed_type| {
-                        format!("{} {},", acc, enclosed_type.to_display_string())
+                        format!("{} {},", acc, enclosed_type.get_source_text())
                     })
             )
         };
@@ -249,7 +249,7 @@ impl TsTypeRefErrors for TsTypeRef {
             "Variant" => self.variant_wrong_number_of_params_error(),
             "Func" => self.func_wrong_number_of_params_error(),
             "Option" => self.option_wrong_number_of_params_error(),
-            _ => format!("Unreachable: {} is not a valid type.\nFuncs, Variants, and Options must have exactly one enclosed type", self.to_display_string()),
+            _ => format!("Unreachable: {} is not a valid type.\nFuncs, Variants, and Options must have exactly one enclosed type", self.get_source_text()),
         }
     }
 
@@ -264,7 +264,7 @@ impl TsTypeRefErrors for TsTypeRef {
                         "{}param_name{}: {}, ",
                         acc,
                         index,
-                        enclosed_type.to_display_string()
+                        enclosed_type.get_source_text()
                     )
                 },
             )
@@ -292,16 +292,16 @@ impl TsTypeRefErrors for TsTypeRef {
                     "{}    variant_name{}: {},\n",
                     acc,
                     index,
-                    enclosed_type.to_display_string()
+                    enclosed_type.get_source_text()
                 )
             },
         );
-        format!("{}<\n{{\n{}}}>;", self.get_name(), enclosed_types)
+        format!("{}<{{\n{}}}>;", self.get_name(), enclosed_types)
     }
 
     fn variant_wrong_enclosed_type_error(&self) -> String {
         let example = self.generate_example_variant();
-        format!("\n\nInvalid variant\nVariants must have a type literal as the enclosed type. Try this:\n{}\n", example)
+        format!("Invalid variant\nVariants must have a type literal as the enclosed type. Try this:\n{}", example)
     }
 
     fn func_wrong_enclosed_type_error(&self) -> String {

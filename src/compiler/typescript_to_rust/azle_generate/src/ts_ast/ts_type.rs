@@ -1,5 +1,5 @@
 use super::{
-    ast_traits::ToDisplayString, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl,
+    ast_traits::GetSourceText, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl,
     GetDependencies,
 };
 use crate::cdk_act::{ActDataType, ToActDataType};
@@ -47,15 +47,15 @@ impl GetDependencies for TsType {
     }
 }
 
-impl ToDisplayString for TsType {
-    fn to_display_string(&self) -> String {
+impl GetSourceText for TsType {
+    fn get_source_text(&self) -> String {
         match self {
-            TsType::TsTypeRef(type_ref) => type_ref.to_display_string(),
-            TsType::TsKeywordType(keyword_type) => keyword_type.to_display_string(),
-            TsType::TsTypeLit(type_lit) => type_lit.to_display_string(),
-            TsType::TsFnOrConstructorType(fn_or_const_type) => fn_or_const_type.to_display_string(),
-            TsType::TsTupleType(tuple_type) => tuple_type.to_display_string(),
-            TsType::TsArrayType(array_type) => array_type.to_display_string(),
+            TsType::TsTypeRef(type_ref) => type_ref.get_source_text(),
+            TsType::TsKeywordType(keyword_type) => keyword_type.get_source_text(),
+            TsType::TsTypeLit(type_lit) => type_lit.get_source_text(),
+            TsType::TsFnOrConstructorType(fn_or_const_type) => fn_or_const_type.get_source_text(),
+            TsType::TsTupleType(tuple_type) => tuple_type.get_source_text(),
+            TsType::TsArrayType(array_type) => array_type.get_source_text(),
             TsType::TsThisType(_) => todo!(),
             TsType::TsTypeQuery(_) => todo!(),
             TsType::TsOptionalType(_) => todo!(),

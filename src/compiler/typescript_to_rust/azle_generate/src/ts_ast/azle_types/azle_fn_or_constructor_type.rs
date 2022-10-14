@@ -1,6 +1,6 @@
 use crate::{
     cdk_act::ToActDataType,
-    ts_ast::{source_map::GetSourceFileInfo, GetDependencies, ToDisplayString},
+    ts_ast::{source_map::GetSourceFileInfo, GetDependencies, GetSourceText},
 };
 use swc_common::SourceMap;
 use swc_ecma_ast::TsFnOrConstructorType;
@@ -22,8 +22,8 @@ impl GetDependencies for AzleFnOrConstructorType<'_> {
     }
 }
 
-impl ToDisplayString for AzleFnOrConstructorType<'_> {
-    fn to_display_string(&self) -> String {
+impl GetSourceText for AzleFnOrConstructorType<'_> {
+    fn get_source_text(&self) -> String {
         let span = match &self.ts_fn_or_constructor_type {
             TsFnOrConstructorType::TsFnType(fn_type) => fn_type.span,
             TsFnOrConstructorType::TsConstructorType(constructor_type) => constructor_type.span,

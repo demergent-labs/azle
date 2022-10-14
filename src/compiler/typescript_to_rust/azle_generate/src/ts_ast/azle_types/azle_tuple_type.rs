@@ -3,7 +3,7 @@ use swc_ecma_ast::TsTupleType;
 
 use crate::{
     cdk_act::ToActDataType,
-    ts_ast::{source_map::GetSourceFileInfo, GetDependencies, ToDisplayString},
+    ts_ast::{source_map::GetSourceFileInfo, GetDependencies, GetSourceText},
 };
 
 #[derive(Clone)]
@@ -23,8 +23,8 @@ impl GetDependencies for AzleTupleType<'_> {
     }
 }
 
-impl ToDisplayString for AzleTupleType<'_> {
-    fn to_display_string(&self) -> String {
+impl GetSourceText for AzleTupleType<'_> {
+    fn get_source_text(&self) -> String {
         self.source_map.get_span_text(self.ts_tuple_type.span)
     }
 }

@@ -7,7 +7,7 @@ pub use generate_inline_name::GenerateInlineName;
 pub use get_name::GetName;
 use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::{TsEntityName, TsFnParam, TsPropertySignature, TsType, TsTypeAnn};
-pub use to_display_string::ToDisplayString;
+pub use to_display_string::GetSourceText;
 
 pub trait GetDependencies {
     fn get_dependent_types(

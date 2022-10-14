@@ -3,7 +3,7 @@ use swc_ecma_ast::TsKeywordType;
 
 use crate::{
     cdk_act::ToActDataType,
-    ts_ast::{source_map::GetSourceFileInfo, ToDisplayString},
+    ts_ast::{source_map::GetSourceFileInfo, GetSourceText},
 };
 
 #[derive(Clone)]
@@ -12,8 +12,8 @@ pub struct AzleKeywordType<'a> {
     pub source_map: &'a SourceMap,
 }
 
-impl ToDisplayString for AzleKeywordType<'_> {
-    fn to_display_string(&self) -> String {
+impl GetSourceText for AzleKeywordType<'_> {
+    fn get_source_text(&self) -> String {
         self.source_map.get_span_text(self.ts_keyword_type.span)
     }
 }
