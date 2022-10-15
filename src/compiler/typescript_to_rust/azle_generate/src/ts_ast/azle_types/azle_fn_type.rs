@@ -25,10 +25,6 @@ impl FunctionAndMethodTypeHelperMethods for AzleFnType<'_> {
     fn get_valid_return_types(&self) -> Vec<&str> {
         vec!["Oneway", "Update", "Query"]
     }
-
-    fn get_source_map(&self) -> &swc_common::SourceMap {
-        self.source_map
-    }
 }
 
 impl GetDependencies for AzleFnType<'_> {
@@ -54,6 +50,6 @@ impl GetDependencies for AzleFnType<'_> {
 
 impl GetSourceText for AzleFnType<'_> {
     fn get_source_text(&self) -> String {
-        self.source_map.get_span_text(self.ts_fn_type.span)
+        self.source_map.get_text(self.ts_fn_type.span)
     }
 }

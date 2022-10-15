@@ -1,6 +1,6 @@
 use super::{
-    ast_traits::GetSourceText, ts_type_element::TsTypeElementHelperMethods, AzleTypeAliasDecl,
-    GenerateInlineName, GetDependencies, GetName, GetTsType,
+    ts_type_element::TsTypeElementHelperMethods, AzleTypeAliasDecl, GenerateInlineName,
+    GetDependencies, GetTsType,
 };
 use crate::cdk_act::{
     nodes::data_type_nodes::{
@@ -98,17 +98,5 @@ impl GetDependencies for TsTypeLit {
                 .cloned()
                 .collect()
             })
-    }
-}
-
-impl GetSourceText for TsTypeLit {
-    fn get_source_text(&self) -> String {
-        let members = self.members.iter().fold(String::new(), |acc, member| {
-            let member_name = member.get_name();
-            let member_type = member.get_ts_type().get_source_text();
-            let member_string = format!("{member_name}, {member_type}");
-            format!("{}, {}", acc, member_string)
-        });
-        format!("{{{}}}", members)
     }
 }

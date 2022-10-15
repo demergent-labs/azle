@@ -1,5 +1,6 @@
 use crate::ts_ast::{
-    source_map::GetSourceFileInfo, ts_type_ref::TsTypeRefPrivateMethods, GetName, GetSourceText,
+    source_map::GetSourceFileInfo, ts_type::GetSpan, ts_type_ref::TsTypeRefPrivateMethods, GetName,
+    GetSourceText,
 };
 
 use super::AzleTypeRef;
@@ -82,12 +83,8 @@ impl AzleTypeRef<'_> {
             .iter()
             .enumerate()
             .fold(String::new(), |acc, (index, enclosed_type)| {
-                format!(
-                    "{}    member_name{}: {},\n",
-                    acc,
-                    index,
-                    enclosed_type.get_source_text()
-                )
+                let source_text = self.source_map.get_text(enclosed_type.get_span());
+                format!("{}    member_name{}: {},\n", acc, index, source_text)
             });
         format!("{}<\n{{\n{}}}>;", self.get_name(), enclosed_types)
     }
@@ -101,12 +98,8 @@ impl AzleTypeRef<'_> {
                 .iter()
                 .enumerate()
                 .fold(String::new(), |acc, (index, enclosed_type)| {
-                    format!(
-                        "{}param_name{}: {}, ",
-                        acc,
-                        index,
-                        enclosed_type.get_source_text()
-                    )
+                    let source_text = self.source_map.get_text(enclosed_type.get_span());
+                    format!("{}param_name{}: {}, ", acc, index, source_text)
                 })
         };
 
@@ -120,12 +113,8 @@ impl AzleTypeRef<'_> {
             .iter()
             .enumerate()
             .fold(String::new(), |acc, (index, enclosed_type)| {
-                format!(
-                    "{}    variant_name{}: {},\n",
-                    acc,
-                    index,
-                    enclosed_type.get_source_text()
-                )
+                let source_text = self.source_map.get_text(enclosed_type.get_span());
+                format!("{}    variant_name{}: {},\n", acc, index, source_text)
             });
         format!("{}<\n{{\n{}}}>;", self.get_name(), enclosed_types)
     }

@@ -1,6 +1,6 @@
 use super::{
-    ast_traits::GetSourceText, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl,
-    FunctionAndMethodTypeHelperMethods, GenerateInlineName, GetDependencies, GetName,
+    ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl, FunctionAndMethodTypeHelperMethods,
+    GenerateInlineName, GetDependencies, GetName,
 };
 use crate::cdk_act::{
     nodes::data_type_nodes::{
@@ -30,7 +30,6 @@ trait TsTypeRefErrors {
     fn type_ref_wrong_number_of_params_error(&self) -> String;
     fn variant_wrong_number_of_params_error(&self) -> String;
     fn variant_wrong_enclosed_type_error(&self) -> String;
-    fn generate_example_variant(&self) -> String;
 }
 
 // TODO I think this will eventually be the only one on here and it will be public
@@ -97,24 +96,6 @@ impl GetDependencies for TsTypeRef {
 impl GetName for TsTypeRef {
     fn get_name(&self) -> &str {
         self.type_name.get_name()
-    }
-}
-
-impl GetSourceText for TsTypeRef {
-    fn get_source_text(&self) -> String {
-        let enclosed_types = if self.get_enclosed_ts_types().len() == 0 {
-            String::new()
-        } else {
-            format!(
-                "<{}>",
-                self.get_enclosed_ts_types()
-                    .iter()
-                    .fold(String::new(), |acc, enclosed_type| {
-                        format!("{} {},", acc, enclosed_type.get_source_text())
-                    })
-            )
-        };
-        format!("{}{}", self.type_name.get_name(), enclosed_types)
     }
 }
 
@@ -246,59 +227,20 @@ impl TsTypeRefErrors for TsTypeRef {
             "Variant" => self.variant_wrong_number_of_params_error(),
             "Func" => self.func_wrong_number_of_params_error(),
             "Option" => self.option_wrong_number_of_params_error(),
-            _ => format!("Unreachable: {} is not a valid type.\nFuncs, Variants, and Options must have exactly one enclosed type", self.get_source_text()),
+            _ => format!("Unreachable: {} is not a valid type.\nFuncs, Variants, and Options must have exactly one enclosed type", self.get_name()),
         }
     }
 
     fn func_wrong_number_of_params_error(&self) -> String {
-        let enclosed_types: String = if self.get_enclosed_ts_types().len() == 0 {
-            "param_name: param_type".to_string()
-        } else {
-            self.get_enclosed_ts_types().iter().enumerate().fold(
-                String::new(),
-                |acc, (index, enclosed_type)| {
-                    format!(
-                        "{}param_name{}: {}, ",
-                        acc,
-                        index,
-                        enclosed_type.get_source_text()
-                    )
-                },
-            )
-        };
-
-        let func_example = format!("For example: Func<({enclosed_types}) => Update<Type>>");
-        format!("A Func must have exactly one enclosed type. And that type must be a function type:\n{func_example}")
+        format!("A Func must have exactly one enclosed type.")
     }
 
     fn variant_wrong_number_of_params_error(&self) -> String {
-        // let well_formed = source_map.get_well_formed_line(self.span);
-        let example = self.generate_example_variant();
-        // let example_variant = format!("\n{}{}\n", well_formed, example);
-        // let location = source_map.get_line_info(self.span);
-        // let highlighted_line = source_map.generate_highlighted_line(self.span);
-        // format!("A Variant must have exactly one enclosed type. If you need multiple variants, put them all in type literal like this:\n{}", example_variant)
-        example
-    }
-
-    fn generate_example_variant(&self) -> String {
-        let enclosed_types: String = self.get_enclosed_ts_types().iter().enumerate().fold(
-            String::new(),
-            |acc, (index, enclosed_type)| {
-                format!(
-                    "{}    variant_name{}: {},\n",
-                    acc,
-                    index,
-                    enclosed_type.get_source_text()
-                )
-            },
-        );
-        format!("{}<{{\n{}}}>;", self.get_name(), enclosed_types)
+        format!("A Variant must have exactly one enclosed type.")
     }
 
     fn variant_wrong_enclosed_type_error(&self) -> String {
-        let example = self.generate_example_variant();
-        format!("Invalid variant\nVariants must have a type literal as the enclosed type. Try this:\n{}", example)
+        format!("Variants must have a type literal as the enclosed type.")
     }
 
     fn func_wrong_enclosed_type_error(&self) -> String {
