@@ -1,14 +1,32 @@
-use crate::{
-    cdk_act::ToActDataType,
-    ts_ast::{source_map::GetSourceFileInfo, GetDependencies, GetSourceText},
-};
 use swc_common::SourceMap;
 use swc_ecma_ast::TsFnOrConstructorType;
 
+use super::AzleFnType;
+use crate::{
+    cdk_act::ToActDataType,
+    ts_ast::{GetDependencies, GetSourceText},
+};
+
 #[derive(Clone)]
-pub struct AzleFnOrConstructorType<'a> {
-    pub ts_fn_or_constructor_type: TsFnOrConstructorType,
-    pub source_map: &'a SourceMap,
+pub enum AzleFnOrConstructorType<'a> {
+    AzleFnType(AzleFnType<'a>),
+}
+
+impl AzleFnOrConstructorType<'_> {
+    pub fn from_ts_fn_or_constructor_type(
+        ts_fn_or_constructor_type: TsFnOrConstructorType,
+        source_map: &SourceMap,
+    ) -> AzleFnOrConstructorType {
+        match ts_fn_or_constructor_type {
+            TsFnOrConstructorType::TsFnType(ts_fn_type) => {
+                AzleFnOrConstructorType::AzleFnType(AzleFnType {
+                    ts_fn_type,
+                    source_map,
+                })
+            }
+            TsFnOrConstructorType::TsConstructorType(_) => todo!(),
+        }
+    }
 }
 
 impl GetDependencies for AzleFnOrConstructorType<'_> {
@@ -17,18 +35,19 @@ impl GetDependencies for AzleFnOrConstructorType<'_> {
         type_alias_lookup: &std::collections::HashMap<String, crate::ts_ast::AzleTypeAliasDecl>,
         found_type_names: &std::collections::HashSet<String>,
     ) -> std::collections::HashSet<String> {
-        self.ts_fn_or_constructor_type
-            .get_dependent_types(type_alias_lookup, found_type_names)
+        match self {
+            AzleFnOrConstructorType::AzleFnType(azle_fn_type) => {
+                azle_fn_type.get_dependent_types(type_alias_lookup, found_type_names)
+            }
+        }
     }
 }
 
 impl GetSourceText for AzleFnOrConstructorType<'_> {
     fn get_source_text(&self) -> String {
-        let span = match &self.ts_fn_or_constructor_type {
-            TsFnOrConstructorType::TsFnType(fn_type) => fn_type.span,
-            TsFnOrConstructorType::TsConstructorType(constructor_type) => constructor_type.span,
-        };
-        self.source_map.get_text(span)
+        match self {
+            AzleFnOrConstructorType::AzleFnType(azle_fn_type) => azle_fn_type.get_source_text(),
+        }
     }
 }
 

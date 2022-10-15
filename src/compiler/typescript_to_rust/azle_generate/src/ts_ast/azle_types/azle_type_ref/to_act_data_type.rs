@@ -1,5 +1,3 @@
-use swc_ecma_ast::TsType;
-
 use crate::{
     cdk_act::{
         nodes::data_type_nodes::{
@@ -10,7 +8,7 @@ use crate::{
         ActDataType, ToActDataType,
     },
     ts_ast::{
-        ts_type_lit::TsTypeLitHelperMethods, FunctionAndMethodTypeHelperMethods,
+        azle_types::AzleType, AzleFnOrConstructorType, FunctionAndMethodTypeHelperMethods,
         GenerateInlineName, GetName,
     },
 };
@@ -46,25 +44,22 @@ impl ToActDataType for AzleTypeRef<'_> {
 
 impl AzleTypeRef<'_> {
     fn to_func(&self, func_name: &Option<&String>) -> ActDataType {
-        let ts_fn_type = match self.get_enclosed_ts_type() {
-            TsType::TsFnOrConstructorType(fn_or_const) => match fn_or_const {
-                swc_ecma_ast::TsFnOrConstructorType::TsFnType(ts_fn_type) => ts_fn_type,
-                swc_ecma_ast::TsFnOrConstructorType::TsConstructorType(_) => {
-                    panic!("{}", self.wrong_enclosed_type_error())
-                }
+        let azle_fn_type = match self.get_enclosed_ts_type() {
+            AzleType::AzleFnOrConstructorType(fn_or_const) => match fn_or_const {
+                AzleFnOrConstructorType::AzleFnType(ts_fn_type) => ts_fn_type,
             },
             _ => panic!("{}", self.wrong_enclosed_type_error()),
         };
-        let return_type = match ts_fn_type.get_return_type() {
+        let return_type = match azle_fn_type.get_return_type() {
             Some(ts_type) => Some(ts_type.to_act_data_type(&None)),
             None => None,
         };
-        let param_types: Vec<ActDataType> = ts_fn_type
+        let param_types: Vec<ActDataType> = azle_fn_type
             .get_param_types()
             .iter()
             .map(|param| param.to_act_data_type(&None))
             .collect();
-        let func_mode = ts_fn_type.get_func_mode();
+        let func_mode = azle_fn_type.get_func_mode();
 
         ActDataType::Func(match func_name {
             Some(func_name) => ActFunc {
@@ -80,7 +75,7 @@ impl AzleTypeRef<'_> {
             None => ActFunc {
                 act_type: LiteralOrTypeAlias::Literal(FuncLiteral {
                     func: Func {
-                        name: ts_fn_type.generate_inline_name(),
+                        name: azle_fn_type.ts_fn_type.generate_inline_name(),
                         params: param_types,
                         return_type: Box::from(return_type),
                         mode: func_mode,
@@ -108,7 +103,7 @@ impl AzleTypeRef<'_> {
     }
 
     fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType {
-        match self.get_enclosed_ts_type().as_ts_type_lit() {
+        match self.get_enclosed_ts_type().as_azle_type_lit() {
             Some(ts_type_lit) => ts_type_lit,
             None => panic!("{}", self.wrong_enclosed_type_error()),
         }

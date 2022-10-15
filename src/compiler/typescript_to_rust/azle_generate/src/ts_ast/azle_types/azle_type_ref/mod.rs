@@ -1,12 +1,13 @@
 pub mod errors;
 pub mod get_dependencies;
+pub mod get_name;
 pub mod get_source_text;
 pub mod to_act_data_type;
 
 use swc_common::SourceMap;
-use swc_ecma_ast::{TsType, TsTypeRef};
+use swc_ecma_ast::TsTypeRef;
 
-use crate::ts_ast::GetName;
+use super::AzleType;
 
 #[derive(Clone)]
 pub struct AzleTypeRef<'a> {
@@ -14,20 +15,14 @@ pub struct AzleTypeRef<'a> {
     pub source_map: &'a SourceMap,
 }
 
-impl GetName for AzleTypeRef<'_> {
-    fn get_name(&self) -> &str {
-        self.ts_type_ref.get_name()
-    }
-}
-
 impl AzleTypeRef<'_> {
-    fn get_enclosed_ts_type(&self) -> TsType {
+    fn get_enclosed_ts_type(&self) -> AzleType {
         match &self.ts_type_ref.type_params {
             Some(params) => {
                 if params.params.len() != 1 {
                     panic!("{}", self.wrong_number_of_params_error())
                 }
-                *params.params[0].clone()
+                AzleType::from_ts_type(*params.params[0].clone(), self.source_map)
             }
             None => panic!("{}", self.wrong_number_of_params_error()),
         }

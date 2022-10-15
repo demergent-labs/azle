@@ -10,6 +10,7 @@ use std::collections::{HashMap, HashSet};
 use swc_common::SourceMap;
 use swc_ecma_ast::TsType;
 
+#[derive(Clone)]
 pub enum AzleType<'a> {
     AzleKeywordType(AzleKeywordType<'a>),
     AzleTypeRef(AzleTypeRef<'a>),
@@ -33,6 +34,20 @@ impl<'a> AzleType<'a> {
             _ => false,
         }
     }
+
+    pub fn as_azle_type_ref(self) -> Option<AzleTypeRef<'a>> {
+        match self {
+            AzleType::AzleTypeRef(azle_type_ref) => Some(azle_type_ref),
+            _ => None,
+        }
+    }
+
+    pub fn is_azle_type_ref(&self) -> bool {
+        match self {
+            AzleType::AzleTypeRef(_) => true,
+            _ => false,
+        }
+    }
 }
 
 impl AzleType<'_> {
@@ -43,10 +58,12 @@ impl AzleType<'_> {
                 source_map,
             }),
             TsType::TsFnOrConstructorType(ts_fn_or_constructor_type) => {
-                AzleType::AzleFnOrConstructorType(AzleFnOrConstructorType {
-                    ts_fn_or_constructor_type,
-                    source_map,
-                })
+                AzleType::AzleFnOrConstructorType(
+                    AzleFnOrConstructorType::from_ts_fn_or_constructor_type(
+                        ts_fn_or_constructor_type,
+                        source_map,
+                    ),
+                )
             }
             TsType::TsTypeRef(ts_type_ref) => AzleType::AzleTypeRef(AzleTypeRef {
                 ts_type_ref,
