@@ -2,16 +2,13 @@ use super::{
     ast_traits::GetSourceText, ts_type_lit::TsTypeLitHelperMethods, AzleTypeAliasDecl,
     FunctionAndMethodTypeHelperMethods, GenerateInlineName, GetDependencies, GetName,
 };
-use crate::{
-    cdk_act::{
-        nodes::data_type_nodes::{
-            act_funcs::{Func, FuncLiteral, FuncTypeAlias},
-            ActFunc, ActOption, ActOptionLiteral, ActOptionTypeAlias, ActPrimitiveLit,
-            LiteralOrTypeAlias,
-        },
-        ActDataType, ToActDataType,
+use crate::cdk_act::{
+    nodes::data_type_nodes::{
+        act_funcs::{Func, FuncLiteral, FuncTypeAlias},
+        ActFunc, ActOption, ActOptionLiteral, ActOptionTypeAlias, ActPrimitiveLit,
+        LiteralOrTypeAlias,
     },
-    errors::ErrorWithExampleDiff,
+    ActDataType, ToActDataType,
 };
 use std::{
     collections::{HashMap, HashSet},
