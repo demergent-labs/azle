@@ -1,10 +1,12 @@
 pub mod generate_inline_name;
 pub mod get_name;
+pub mod get_source_info;
 pub mod to_display_string;
 
 use super::AzleTypeAliasDecl;
 pub use generate_inline_name::GenerateInlineName;
 pub use get_name::GetName;
+pub use get_source_info::GetSourceInfo;
 use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::{TsEntityName, TsFnParam, TsPropertySignature, TsType, TsTypeAnn};
 pub use to_display_string::GetSourceText;

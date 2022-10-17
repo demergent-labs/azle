@@ -1,14 +1,14 @@
 use swc_common::{Loc, SourceMap, Span};
 
 pub trait GetSourceFileInfo {
-    fn get_span_text(&self, span: Span) -> String;
-    fn get_file_name(&self, span: Span) -> String;
-    fn get_line_info(&self, span: Span) -> String;
-    fn get_line(&self, span: Span) -> String;
+    fn get_text(&self, span: Span) -> String;
+    fn get_origin(&self, span: Span) -> String;
+    fn get_source(&self, span: Span) -> String;
     fn get_line_number(&self, span: Span) -> usize;
     fn generate_line_highlight(&self, span: Span) -> String;
     fn generate_highlighted_line(&self, span: Span) -> String;
     fn get_well_formed_line(&self, span: Span) -> String;
+    fn get_range(&self, span: Span) -> (usize, usize);
 }
 
 trait PrivateGetSourceFileInfo {
@@ -34,20 +34,18 @@ impl PrivateGetSourceFileInfo for SourceMap {
 }
 
 impl GetSourceFileInfo for SourceMap {
-    fn get_span_text(&self, span: Span) -> String {
-        let line = self.get_line(span);
+    fn get_text(&self, span: Span) -> String {
+        let line = self.get_source(span);
         line[self.get_start_col(span)..self.get_end_col(span)].to_string()
     }
 
-    fn get_line_info(&self, span: Span) -> String {
-        let loc = self.get_loc(span);
-        let file_name = self.get_file_name(span);
-        let line_number = loc.line;
-        let col_number = loc.col_display;
-        format!("{}:{}:{}", file_name, line_number, col_number)
+    fn get_range(&self, span: Span) -> (usize, usize) {
+        let start = self.get_start_col(span);
+        let end = self.get_end_col(span);
+        (start, end)
     }
 
-    fn get_line(&self, span: Span) -> String {
+    fn get_source(&self, span: Span) -> String {
         let line_result = self.lookup_line(span.lo);
         match line_result {
             Ok(source_file_and_line) => {
@@ -64,13 +62,13 @@ impl GetSourceFileInfo for SourceMap {
     fn generate_highlighted_line(&self, span: Span) -> String {
         format!(
             "{}\n{}",
-            self.get_line(span),
+            self.get_source(span),
             self.generate_line_highlight(span)
         )
     }
 
     fn generate_line_highlight(&self, span: Span) -> String {
-        let line = self.get_line(span);
+        let line = self.get_source(span);
         let start = self.get_start_col(span);
         let end = self.get_end_col(span);
 
@@ -88,11 +86,11 @@ impl GetSourceFileInfo for SourceMap {
     }
 
     fn get_well_formed_line(&self, span: Span) -> String {
-        let line = self.get_line(span);
+        let line = self.get_source(span);
         line[..self.get_start_col(span)].to_string()
     }
 
-    fn get_file_name(&self, span: Span) -> String {
+    fn get_origin(&self, span: Span) -> String {
         let loc = self.get_loc(span);
         loc.file.name.to_string()
     }
