@@ -13,6 +13,19 @@ impl GetName for swc_ecma_ast::TsEntityName {
             }
             swc_ecma_ast::TsEntityName::Ident(identifier) => identifier.get_name(),
         }
+        // TODO this was something that Dan wrote back when this bit of code lived in ts_type_ref.
+        // match &self {
+        //     swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
+        //         let error_message = ErrorWithExampleDiff {
+        //             error: "Namespace-qualified types are not currently supported",
+        //             help: "Either declare the type locally or import it without a wildcard",
+        //             remove: "Namespace.MyType",
+        //             add: "MyType",
+        //         };
+        //         panic!("{}", error_message.to_string())
+        //     }
+        //     swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name(),
+        // }
     }
 }
 

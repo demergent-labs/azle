@@ -60,7 +60,7 @@ impl ErrorMessage {
                         source: &suggestion.source,
                         line_start: self.line_number,
                         origin: None,
-                        fold: true,
+                        fold: false,
                         annotations: vec![SourceAnnotation {
                             label: "",
                             annotation_type: AnnotationType::Help,

@@ -31,13 +31,13 @@ impl GetDependencies for AzleTypeRef<'_> {
             "empty" => HashSet::new(),
             "reserved" => HashSet::new(),
             "Opt" => self
-                .get_enclosed_ts_type()
+                .get_enclosed_azle_type()
                 .get_dependent_types(type_alias_lookup, found_type_names),
             "Func" => self
-                .get_enclosed_ts_type()
+                .get_enclosed_azle_type()
                 .get_dependent_types(type_alias_lookup, found_type_names),
             "Variant" => self
-                .get_enclosed_ts_type()
+                .get_enclosed_azle_type()
                 .get_dependent_types(type_alias_lookup, found_type_names),
             _ => {
                 let name = self.get_name().to_string();

@@ -1,12 +1,20 @@
-use super::{
-    AzleArrayType, AzleFnOrConstructorType, AzleKeywordType, AzleTupleType, AzleTypeLit,
-    AzleTypeRef,
-};
-use crate::{
-    cdk_act::{ActDataType, ToActDataType},
-    ts_ast::{AzleTypeAliasDecl, GetDependencies, GetSourceText},
-};
-use std::collections::{HashMap, HashSet};
+pub mod azle_array_type;
+pub mod azle_fn_or_constructor_type;
+pub mod azle_keyword_type;
+pub mod azle_tuple_type;
+pub mod azle_type_lit;
+pub mod azle_type_ref;
+pub mod get_dependent_types;
+pub mod get_source_text;
+pub mod to_act_data_type;
+pub use azle_array_type::AzleArrayType;
+pub use azle_fn_or_constructor_type::AzleFnOrConstructorType;
+pub use azle_fn_or_constructor_type::AzleFnType;
+pub use azle_keyword_type::AzleKeywordType;
+pub use azle_tuple_type::AzleTupleType;
+pub use azle_type_lit::AzleTypeLit;
+pub use azle_type_ref::AzleTypeRef;
+
 use swc_common::SourceMap;
 use swc_ecma_ast::TsType;
 
@@ -95,67 +103,6 @@ impl AzleType<'_> {
             TsType::TsLitType(_) => todo!(),
             TsType::TsTypePredicate(_) => todo!(),
             TsType::TsImportType(_) => todo!(),
-        }
-    }
-}
-
-impl GetDependencies for AzleType<'_> {
-    fn get_dependent_types(
-        &self,
-        type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
-        found_type_names: &HashSet<String>,
-    ) -> HashSet<String> {
-        match self {
-            AzleType::AzleKeywordType(_) => HashSet::new(),
-            AzleType::AzleTypeRef(azle_type_ref) => {
-                azle_type_ref.get_dependent_types(type_alias_lookup, found_type_names)
-            }
-            AzleType::AzleTypeLit(azle_type_lit) => {
-                azle_type_lit.get_dependent_types(type_alias_lookup, found_type_names)
-            }
-            AzleType::AzleArrayType(azle_array_type) => {
-                azle_array_type.get_dependent_types(type_alias_lookup, found_type_names)
-            }
-            AzleType::AzleFnOrConstructorType(azle_fn_or_constructor_type) => {
-                azle_fn_or_constructor_type.get_dependent_types(type_alias_lookup, found_type_names)
-            }
-            AzleType::AzleTupleType(azle_tuple_type) => {
-                azle_tuple_type.get_dependent_types(type_alias_lookup, found_type_names)
-            }
-        }
-    }
-}
-
-impl GetSourceText for AzleType<'_> {
-    fn get_source_text(&self) -> String {
-        match self {
-            AzleType::AzleTypeRef(type_ref) => type_ref.get_source_text(),
-            AzleType::AzleKeywordType(keyword_type) => keyword_type.get_source_text(),
-            AzleType::AzleTypeLit(type_lit) => type_lit.get_source_text(),
-            AzleType::AzleFnOrConstructorType(fn_or_const_type) => {
-                fn_or_const_type.get_source_text()
-            }
-            AzleType::AzleTupleType(tuple_type) => tuple_type.get_source_text(),
-            AzleType::AzleArrayType(array_type) => array_type.get_source_text(),
-        }
-    }
-}
-
-impl ToActDataType for AzleType<'_> {
-    fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType {
-        match self {
-            AzleType::AzleKeywordType(azle_keyword_type) => {
-                azle_keyword_type.to_act_data_type(alias_name)
-            }
-            AzleType::AzleTypeRef(azle_type_ref) => azle_type_ref.to_act_data_type(alias_name),
-            AzleType::AzleArrayType(azle_array_type) => {
-                azle_array_type.to_act_data_type(alias_name)
-            }
-            AzleType::AzleTypeLit(azle_type_lit) => azle_type_lit.to_record(alias_name),
-            AzleType::AzleTupleType(azle_tuple_type) => {
-                azle_tuple_type.to_act_data_type(alias_name)
-            }
-            AzleType::AzleFnOrConstructorType(_) => todo!(),
         }
     }
 }

@@ -5,7 +5,7 @@ use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
 use crate::{
     cdk_act::{nodes::ActNode, Actable, SystemStructureType, ToActDataType},
-    ts_ast::{azle_types::AzleType, GetDependencies, GetName, GetTsType},
+    ts_ast::{azle_type::AzleType, GetDependencies, GetName, GetTsType},
 };
 
 use super::AzleCanisterDecl;
@@ -35,8 +35,7 @@ impl Actable for AzleTypeAliasDecl<'_> {
     fn to_act_node(&self) -> ActNode {
         let ts_type_name = self.get_name().to_string();
 
-        let ts_type = *self.ts_type_alias_decl.type_ann.clone();
-        let azle_type = AzleType::from_ts_type(ts_type, self.source_map);
+        let azle_type = AzleType::from_ts_type(self.get_ts_type(), self.source_map);
 
         ActNode::DataType(azle_type.to_act_data_type(&Some(&ts_type_name)))
     }
@@ -54,8 +53,9 @@ impl GetDependencies for AzleTypeAliasDecl<'_> {
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
         found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
-        self.get_ts_type()
-            .get_dependent_types(type_alias_lookup, found_type_names)
+        let azle_type = AzleType::from_ts_type(self.get_ts_type(), self.source_map);
+
+        azle_type.get_dependent_types(type_alias_lookup, found_type_names)
     }
 }
 

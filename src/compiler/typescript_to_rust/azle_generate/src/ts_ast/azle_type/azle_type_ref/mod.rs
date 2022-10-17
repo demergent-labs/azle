@@ -1,6 +1,7 @@
 pub mod errors;
 pub mod get_dependencies;
 pub mod get_name;
+pub mod get_source_info;
 pub mod get_source_text;
 pub mod to_act_data_type;
 
@@ -16,7 +17,7 @@ pub struct AzleTypeRef<'a> {
 }
 
 impl AzleTypeRef<'_> {
-    fn get_enclosed_ts_type(&self) -> AzleType {
+    pub fn get_enclosed_azle_type(&self) -> AzleType {
         match &self.ts_type_ref.type_params {
             Some(params) => {
                 if params.params.len() != 1 {

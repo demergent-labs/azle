@@ -1,4 +1,4 @@
-import { Func, Query, Variant } from 'azle';
+import { Func, Opt, Query, Variant } from 'azle';
 
 type VariantNotProperties = Variant<{}>;
 // export function qualified_name(param: azle.query.values.int): Query<void> {}
@@ -28,6 +28,16 @@ export function bad_variant_two(param: VariantWithWrongType): Query<void> {}
 // export function bad_func_two(param: FuncWithWrongType): Query<void> {}
 // export function bad_func_three(param: FuncWithNotEnoughTypes): Query<void> {}
 // export function bad_func_four(param: FuncWithNotEnoughTypes): Query<void> {}
+
+// Option tests
+// type OptionWithTooManyTypes = Opt<boolean, string, null, string[]>;
+// type OptionWithWrongType = Opt<string>;
+// type optionWithNotEnoughTypes = Opt;
+// export function bad_option_one(param: OptionWithTooManyTypes): Query<void> {}
+// export function bad_option_two(param: OptionWithWrongType): Query<void> {}
+// export function bad_option_three(
+//     param: OptionWithNotEnoughTypes
+// ): Query<void> {}
 
 // I don't remember what these are testing
 // type BadFunc = Func<myFunction>;

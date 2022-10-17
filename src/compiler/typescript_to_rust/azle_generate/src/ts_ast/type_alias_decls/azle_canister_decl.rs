@@ -1,8 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
 use crate::ts_ast::{
-    ts_type_ref::TsTypeRefHelperMethods, FunctionAndMethodTypeHelperMethods, GetDependencies,
-    GetName, GetTsType,
+    azle_type::AzleType, FunctionAndMethodTypeHelperMethods, GetDependencies, GetName, GetTsType,
 };
 
 use super::AzleTypeAliasDecl;
@@ -30,18 +29,16 @@ impl GetDependencies for AzleCanisterDecl<'_> {
             panic!("Expecting Canister")
         }
         // Get the tstypeliteral out of it
-        let ts_type = self
-            .azle_type_alias
-            .ts_type_alias_decl
-            .type_ann
-            .as_ts_type_ref()
-            .unwrap()
-            .get_enclosed_ts_type();
-        let ts_type_lit = ts_type.as_ts_type_lit().unwrap();
+        let ts_type = *self.azle_type_alias.ts_type_alias_decl.type_ann.clone();
+        let azle_type = AzleType::from_ts_type(ts_type, self.azle_type_alias.source_map);
+        let azle_type_ref = azle_type.as_azle_type_ref().unwrap();
+        let azle_type_lit = azle_type_ref.get_enclosed_azle_type();
+        let azle_type_lit = azle_type_lit.as_azle_type_lit().unwrap();
 
         // Look at the members
         // Make sure that all of the members are tsMethodSignatures and not tsPropertySignatures
-        let ts_types = ts_type_lit
+        let ts_types = azle_type_lit
+            .ts_type_lit
             .members
             .iter()
             .fold(vec![], |acc, member| match member {
@@ -56,14 +53,16 @@ impl GetDependencies for AzleCanisterDecl<'_> {
                 _ => todo!("There should only be Method Signatures on a Canister type"),
             });
 
+        let azle_types = ts_types.iter().map(|ts_type| {
+            AzleType::from_ts_type(ts_type.clone(), self.azle_type_alias.source_map)
+        });
+
         // Get the goods out of a method signature
-        ts_types
-            .iter()
-            .fold(found_type_names.clone(), |acc, ts_type| {
-                acc.union(&ts_type.get_dependent_types(type_alias_lookup, &acc))
-                    .cloned()
-                    .collect()
-            })
+        azle_types.fold(found_type_names.clone(), |acc, ts_type| {
+            acc.union(&ts_type.get_dependent_types(type_alias_lookup, &acc))
+                .cloned()
+                .collect()
+        })
     }
 }
 

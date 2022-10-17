@@ -1,11 +1,13 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsFnOrConstructorType;
 
-use super::AzleFnType;
+pub mod azle_fn_type;
+
 use crate::{
     cdk_act::ToActDataType,
     ts_ast::{GetDependencies, GetSourceText},
 };
+pub use azle_fn_type::AzleFnType;
 
 #[derive(Clone)]
 pub enum AzleFnOrConstructorType<'a> {
@@ -53,6 +55,10 @@ impl GetSourceText for AzleFnOrConstructorType<'_> {
 
 impl ToActDataType for AzleFnOrConstructorType<'_> {
     fn to_act_data_type(&self, alias_name: &Option<&String>) -> crate::cdk_act::ActDataType {
-        todo!()
+        match self {
+            AzleFnOrConstructorType::AzleFnType(azle_fn_type) => {
+                azle_fn_type.to_act_data_type(alias_name)
+            }
+        }
     }
 }
