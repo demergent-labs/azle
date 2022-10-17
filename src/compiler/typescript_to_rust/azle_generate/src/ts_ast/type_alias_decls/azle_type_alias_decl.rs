@@ -5,8 +5,10 @@ use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
 use crate::{
     cdk_act::{nodes::ActNode, Actable, SystemStructureType, ToActDataType},
-    ts_ast::{ts_canister_decl::TsCanisterDecl, GetDependencies, GetName, GetTsType},
+    ts_ast::{azle_types::AzleType, GetDependencies, GetName, GetTsType},
 };
+
+use super::AzleCanisterDecl;
 
 #[derive(Clone)]
 pub struct AzleTypeAliasDecl<'a> {
@@ -24,7 +26,7 @@ pub trait TsTypeAliasHelperMethods {
 
 pub trait AzleTypeAliasListHelperMethods {
     fn generate_type_alias_lookup(&self) -> HashMap<String, AzleTypeAliasDecl>;
-    fn get_ast_ts_canister_decls(&self) -> Vec<TsCanisterDecl>;
+    fn get_ast_ts_canister_decls(&self) -> Vec<AzleCanisterDecl>;
     fn get_azle_type_aliases_by_type_ref_name(&self, type_ref_name: &str)
         -> Vec<AzleTypeAliasDecl>;
 }
@@ -33,11 +35,10 @@ impl Actable for AzleTypeAliasDecl<'_> {
     fn to_act_node(&self) -> ActNode {
         let ts_type_name = self.get_name().to_string();
 
-        ActNode::DataType(
-            self.ts_type_alias_decl
-                .type_ann
-                .to_act_data_type(&Some(&ts_type_name)),
-        )
+        let ts_type = *self.ts_type_alias_decl.type_ann.clone();
+        let azle_type = AzleType::from_ts_type(ts_type, self.source_map);
+
+        ActNode::DataType(azle_type.to_act_data_type(&Some(&ts_type_name)))
     }
 }
 
@@ -94,10 +95,10 @@ impl AzleTypeAliasListHelperMethods for Vec<AzleTypeAliasDecl<'_>> {
             })
     }
 
-    fn get_ast_ts_canister_decls(&self) -> Vec<TsCanisterDecl> {
+    fn get_ast_ts_canister_decls(&self) -> Vec<AzleCanisterDecl> {
         self.get_azle_type_aliases_by_type_ref_name("Canister")
             .iter()
-            .map(|decl| TsCanisterDecl {
+            .map(|decl| AzleCanisterDecl {
                 azle_type_alias: decl.clone(),
             })
             .collect()

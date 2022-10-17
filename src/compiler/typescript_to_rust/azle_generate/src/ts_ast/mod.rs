@@ -12,11 +12,10 @@ pub use azle_types::AzleTupleType;
 pub use azle_types::AzleTypeLit;
 pub use azle_types::AzleTypeRef;
 pub use ts_ast::TsAst;
-pub use type_alias::AzleTypeAliasDecl;
+pub use type_alias_decls::AzleTypeAliasDecl;
 
 mod ts_array_type;
 mod ts_ast;
-mod ts_canister_decl;
 mod ts_fn_or_constructor_type;
 mod ts_fn_type;
 mod ts_keyword_type;
@@ -36,4 +35,4 @@ pub mod module;
 pub mod program;
 pub mod source_map;
 pub mod ts_fn_param;
-pub mod type_alias;
+pub mod type_alias_decls;

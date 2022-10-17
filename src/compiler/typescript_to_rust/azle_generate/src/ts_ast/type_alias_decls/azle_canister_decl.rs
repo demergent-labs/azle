@@ -1,14 +1,17 @@
-use super::{
-    ts_type_ref::TsTypeRefHelperMethods, AzleTypeAliasDecl, FunctionAndMethodTypeHelperMethods,
-    GetDependencies, GetName, GetTsType,
-};
 use std::collections::{HashMap, HashSet};
 
-pub struct TsCanisterDecl<'a> {
+use crate::ts_ast::{
+    ts_type_ref::TsTypeRefHelperMethods, FunctionAndMethodTypeHelperMethods, GetDependencies,
+    GetName, GetTsType,
+};
+
+use super::AzleTypeAliasDecl;
+
+pub struct AzleCanisterDecl<'a> {
     pub azle_type_alias: AzleTypeAliasDecl<'a>,
 }
 
-impl GetDependencies for TsCanisterDecl<'_> {
+impl GetDependencies for AzleCanisterDecl<'_> {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
@@ -64,7 +67,7 @@ impl GetDependencies for TsCanisterDecl<'_> {
     }
 }
 
-impl GetDependencies for Vec<TsCanisterDecl<'_>> {
+impl GetDependencies for Vec<AzleCanisterDecl<'_>> {
     fn get_dependent_types(
         &self,
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
