@@ -113,7 +113,7 @@ impl AzleTypeAliasListHelperMethods for Vec<AzleTypeAliasDecl<'_>> {
                 azle_type_alias.ts_type_alias_decl.type_ann.is_ts_type_ref()
                     && match azle_type_alias.ts_type_alias_decl.type_ann.as_ts_type_ref() {
                         Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
-                            Some(ident) => ident.sym.chars().as_str() == type_ref_name,
+                            Some(ident) => ident.get_name() == type_ref_name,
                             None => false,
                         },
                         None => false,

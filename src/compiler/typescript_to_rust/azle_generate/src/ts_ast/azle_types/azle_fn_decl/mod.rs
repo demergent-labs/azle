@@ -3,7 +3,7 @@ use swc_common::SourceMap;
 use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType, TsTypeRef};
 use syn::Ident;
 
-use crate::cdk_act::CanisterMethodType;
+use crate::{cdk_act::CanisterMethodType, ts_ast::GetName};
 
 pub mod canister_method_builder;
 pub mod errors;
@@ -18,7 +18,7 @@ pub struct AzleFnDecl<'a> {
 impl AzleFnDecl<'_> {
     pub fn get_canister_method_type(&self) -> &str {
         match &self.get_return_type_ref().type_name {
-            TsEntityName::Ident(ident) => ident.sym.chars().as_str(),
+            TsEntityName::Ident(ident) => ident.get_name(),
             TsEntityName::TsQualifiedName(_) => panic!("{}", self.build_qualified_type_error_msg()),
         }
     }
@@ -46,7 +46,7 @@ impl AzleFnDecl<'_> {
     }
 
     pub fn get_function_name(&self) -> String {
-        self.fn_decl.ident.sym.chars().as_str().to_string() // TODO Change to ident.get_name()
+        self.fn_decl.ident.get_name().to_string()
     }
 
     pub fn get_param_name_idents(&self) -> Vec<Ident> {
@@ -54,7 +54,7 @@ impl AzleFnDecl<'_> {
 
         param_idents
             .iter()
-            .map(|ident| format_ident!("{}", ident.sym.chars().as_str().to_string()))
+            .map(|ident| format_ident!("{}", ident.get_name().to_string()))
             .collect()
     }
 
@@ -96,7 +96,7 @@ impl AzleFnDecl<'_> {
             Some(ts_type_ann) => match &*ts_type_ann.type_ann {
                 TsType::TsTypeRef(type_ref) => match &type_ref.type_name {
                     TsEntityName::Ident(ident) => {
-                        let method_type = ident.sym.chars().as_str();
+                        let method_type = ident.get_name();
                         match canister_method_type {
                             // TODO: Consider that these names may not come from azle. For example:
                             // ```
