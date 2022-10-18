@@ -1,37 +1,30 @@
 use quote::format_ident;
-use std::collections::{HashMap, HashSet};
+use swc_common::SourceMap;
 use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType, TsTypeRef};
 use syn::Ident;
 
-use super::{AzleTypeAliasDecl, GetDependencies};
 use crate::cdk_act::CanisterMethodType;
-use errors::FnDeclErrors;
 
-mod canister_method_builder;
-mod errors;
+pub mod canister_method_builder;
+pub mod errors;
+pub mod get_dependencies;
 
-pub trait FnDeclHelperMethods {
-    fn get_canister_method_type(&self) -> &str;
-    fn get_function_name(&self) -> String;
-    fn get_param_binding_idents(&self) -> Vec<&BindingIdent>;
-    fn get_param_name_idents(&self) -> Vec<Ident>;
-    fn get_param_ts_types(&self) -> Vec<&TsType>;
-    fn get_return_type_ref(&self) -> &TsTypeRef;
-    fn get_return_ts_type(&self) -> &TsType;
-    fn is_canister_method_type(&self, canister_method_type: &CanisterMethodType) -> bool;
-    fn is_manual(&self) -> bool;
+#[derive(Clone)]
+pub struct AzleFnDecl<'a> {
+    pub fn_decl: FnDecl,
+    pub source_map: &'a SourceMap,
 }
 
-impl FnDeclHelperMethods for FnDecl {
-    fn get_canister_method_type(&self) -> &str {
+impl AzleFnDecl<'_> {
+    pub fn get_canister_method_type(&self) -> &str {
         match &self.get_return_type_ref().type_name {
             TsEntityName::Ident(ident) => ident.sym.chars().as_str(),
             TsEntityName::TsQualifiedName(_) => panic!("{}", self.build_qualified_type_error_msg()),
         }
     }
 
-    fn get_return_type_ref(&self) -> &TsTypeRef {
-        match &self.function.return_type {
+    pub fn get_return_type_ref(&self) -> &TsTypeRef {
+        match &self.fn_decl.function.return_type {
             Some(ts_type_ann) => match &*ts_type_ann.type_ann {
                 TsType::TsTypeRef(type_ref) => &type_ref,
                 _ => panic!("{}", self.build_non_type_ref_return_type_error_msg()),
@@ -40,7 +33,7 @@ impl FnDeclHelperMethods for FnDecl {
         }
     }
 
-    fn get_return_ts_type(&self) -> &TsType {
+    pub fn get_return_ts_type(&self) -> &TsType {
         let type_ref = &self.get_return_type_ref();
         match &type_ref.type_params {
             Some(type_param_instantiation) => &*type_param_instantiation.params[0],
@@ -52,11 +45,11 @@ impl FnDeclHelperMethods for FnDecl {
         }
     }
 
-    fn get_function_name(&self) -> String {
-        self.ident.sym.chars().as_str().to_string()
+    pub fn get_function_name(&self) -> String {
+        self.fn_decl.ident.sym.chars().as_str().to_string() // TODO Change to ident.get_name()
     }
 
-    fn get_param_name_idents(&self) -> Vec<Ident> {
+    pub fn get_param_name_idents(&self) -> Vec<Ident> {
         let param_idents = self.get_param_binding_idents();
 
         param_idents
@@ -65,8 +58,9 @@ impl FnDeclHelperMethods for FnDecl {
             .collect()
     }
 
-    fn get_param_binding_idents(&self) -> Vec<&BindingIdent> {
-        self.function
+    pub fn get_param_binding_idents(&self) -> Vec<&BindingIdent> {
+        self.fn_decl
+            .function
             .params
             .iter()
             .map(|param| match &param.pat {
@@ -81,7 +75,7 @@ impl FnDeclHelperMethods for FnDecl {
             .collect()
     }
 
-    fn get_param_ts_types(&self) -> Vec<&TsType> {
+    pub fn get_param_ts_types(&self) -> Vec<&TsType> {
         let param_idents = self.get_param_binding_idents();
 
         param_idents
@@ -97,8 +91,8 @@ impl FnDeclHelperMethods for FnDecl {
     /// **Note:** This method shouldn't panic even if it is missing a return
     /// type because it is called to filter all fn_decls, including those that
     /// aren't canister methods.
-    fn is_canister_method_type(&self, canister_method_type: &CanisterMethodType) -> bool {
-        match &self.function.return_type {
+    pub fn is_canister_method_type(&self, canister_method_type: &CanisterMethodType) -> bool {
+        match &self.fn_decl.function.return_type {
             Some(ts_type_ann) => match &*ts_type_ann.type_ann {
                 TsType::TsTypeRef(type_ref) => match &type_ref.type_name {
                     TsEntityName::Ident(ident) => {
@@ -138,44 +132,9 @@ impl FnDeclHelperMethods for FnDecl {
         }
     }
 
-    fn is_manual(&self) -> bool {
+    pub fn is_manual(&self) -> bool {
         let canister_method_type = self.get_canister_method_type();
 
         canister_method_type == "QueryManual" || canister_method_type == "UpdateManual"
-    }
-}
-
-impl GetDependencies for Vec<FnDecl> {
-    fn get_dependent_types(
-        &self,
-        type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
-        found_type_names: &HashSet<String>,
-    ) -> HashSet<String> {
-        // TODO the found types are resetting every once and a while. I am guessing it's as we start another function or maybe a different type in that function. Either way it might be slightly more efficient to continually build up the list to avoid redundancy
-        self.iter().fold(found_type_names.clone(), |acc, fn_decl| {
-            acc.union(&fn_decl.get_dependent_types(type_alias_lookup, &acc))
-                .cloned()
-                .collect()
-        })
-    }
-}
-
-impl GetDependencies for FnDecl {
-    fn get_dependent_types(
-        &self,
-        type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
-        found_type_names: &HashSet<String>,
-    ) -> HashSet<String> {
-        let return_types = self.get_return_ts_type();
-        let param_types = self.get_param_ts_types();
-        let ts_types = vec![vec![return_types], param_types].concat();
-
-        ts_types
-            .iter()
-            .fold(found_type_names.clone(), |acc, ts_type| {
-                acc.union(&ts_type.get_dependent_types(type_alias_lookup, &acc))
-                    .cloned()
-                    .collect()
-            })
     }
 }

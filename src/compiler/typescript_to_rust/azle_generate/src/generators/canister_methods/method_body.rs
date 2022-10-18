@@ -1,13 +1,12 @@
 use quote::quote;
 use swc_ecma_ast::{
-    FnDecl,
     TsKeywordTypeKind::{TsNullKeyword, TsVoidKeyword},
     TsType,
 };
 
-use crate::ts_ast::fn_decl::FnDeclHelperMethods;
+use crate::ts_ast::azle_types::AzleFnDecl;
 
-pub fn generate_canister_method_body(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
+pub fn generate_canister_method_body(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
     let call_to_js_function = generate_call_to_js_function(fn_decl);
     let return_expression = generate_return_expression(fn_decl);
 
@@ -28,7 +27,7 @@ pub fn generate_canister_method_body(fn_decl: &FnDecl) -> proc_macro2::TokenStre
 }
 
 pub fn maybe_generate_call_to_js_function(
-    fn_decl_option: &Option<&FnDecl>,
+    fn_decl_option: &Option<&AzleFnDecl>,
 ) -> proc_macro2::TokenStream {
     if let Some(post_upgrade_fn_decl) = fn_decl_option {
         generate_call_to_js_function(post_upgrade_fn_decl)
@@ -37,7 +36,7 @@ pub fn maybe_generate_call_to_js_function(
     }
 }
 
-pub fn generate_call_to_js_function(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
+pub fn generate_call_to_js_function(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
     let function_name = fn_decl.get_function_name();
     let param_name_idents = fn_decl.get_param_name_idents();
 
@@ -68,7 +67,7 @@ pub fn generate_call_to_js_function(fn_decl: &FnDecl) -> proc_macro2::TokenStrea
 /// * `_azle_final_return_value: boa_engine::JsValue` - The value to be returned
 ///    unless this is a ManualReply method.
 /// * `_azle_boa_context: &mut boa_engine::Context` - The current boa context
-fn generate_return_expression(fn_decl: &FnDecl) -> proc_macro2::TokenStream {
+fn generate_return_expression(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
     if fn_decl.is_manual() {
         return quote! {
             ic_cdk::api::call::ManualReply::empty()

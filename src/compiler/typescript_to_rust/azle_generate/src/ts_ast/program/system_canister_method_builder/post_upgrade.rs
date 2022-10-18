@@ -14,7 +14,8 @@ pub fn build_canister_method_system_post_upgrade(
 ) -> ActPostUpgradeMethod {
     let ic_object = programs.generate_ic_object();
 
-    let post_upgrade_fn_decls = programs.get_fn_decls_of_type(&CanisterMethodType::PostUpgrade);
+    let post_upgrade_fn_decls =
+        programs.get_azle_fn_decls_of_type(&CanisterMethodType::PostUpgrade);
 
     if post_upgrade_fn_decls.len() > 1 {
         panic!("Only one PostUpgrade function can be defined");

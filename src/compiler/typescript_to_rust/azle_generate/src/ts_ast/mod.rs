@@ -29,7 +29,6 @@ mod ts_type_lit;
 mod ts_type_ref;
 
 pub mod azle_types;
-pub mod fn_decl;
 pub mod ident;
 pub mod module;
 pub mod program;

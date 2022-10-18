@@ -7,7 +7,7 @@ use crate::{
 pub fn build_canister_method_system_heartbeat(
     programs: &Vec<AzleProgram>,
 ) -> Option<ActHeartbeatMethod> {
-    let heartbeat_fn_decls = programs.get_fn_decls_of_type(&CanisterMethodType::Heartbeat);
+    let heartbeat_fn_decls = programs.get_azle_fn_decls_of_type(&CanisterMethodType::Heartbeat);
 
     if heartbeat_fn_decls.len() > 1 {
         panic!("Only one Heartbeat function can be defined");

@@ -1,17 +1,14 @@
 use crate::{
     cdk_act::{nodes::ActInspectMessageMethod, CanisterMethodType},
     generators::canister_methods::method_body,
-    ts_ast::{
-        fn_decl::FnDeclHelperMethods,
-        program::{azle_program::AzleProgramVecHelperMethods, AzleProgram},
-    },
+    ts_ast::program::{azle_program::AzleProgramVecHelperMethods, AzleProgram},
 };
 
 pub fn build_canister_method_system_inspect_message(
     programs: &Vec<AzleProgram>,
 ) -> Option<ActInspectMessageMethod> {
     let inspect_message_fn_decls =
-        programs.get_fn_decls_of_type(&CanisterMethodType::InspectMessage);
+        programs.get_azle_fn_decls_of_type(&CanisterMethodType::InspectMessage);
 
     if inspect_message_fn_decls.len() > 1 {
         panic!("Only one InspectMessage function can be defined");

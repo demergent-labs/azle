@@ -1,10 +1,10 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::{FnDecl, Program};
+use swc_ecma_ast::Program;
 
 use crate::{
     cdk_act::{CanisterMethodType, SystemStructureType},
     ts_ast::{
-        fn_decl::FnDeclHelperMethods, module::ModuleHelperMethods,
+        azle_types::AzleFnDecl, module::ModuleHelperMethods,
         type_alias::azle_type_alias_decl::TsTypeAliasHelperMethods, AzleTypeAliasDecl,
     },
 };
@@ -15,15 +15,19 @@ pub struct AzleProgram {
 }
 
 impl AzleProgram {
-    fn get_ast_fn_decls(&self) -> Vec<FnDecl> {
+    fn get_ast_fn_decls(&self) -> Vec<AzleFnDecl> {
         match &self.program {
             Program::Module(module) => {
                 let export_decls = module.get_export_decls();
 
-                let fn_decls: Vec<FnDecl> = export_decls
+                let fn_decls: Vec<AzleFnDecl> = export_decls
                     .iter()
                     .filter(|export_decl| export_decl.decl.is_fn_decl())
                     .map(|export_decl| export_decl.decl.as_fn_decl().unwrap().clone())
+                    .map(|fn_decl| AzleFnDecl {
+                        fn_decl,
+                        source_map: &self.source_map,
+                    })
                     .collect();
 
                 fn_decls
@@ -43,30 +47,36 @@ impl AzleProgram {
 }
 
 pub trait AzleProgramVecHelperMethods {
-    fn get_fn_decls(&self) -> Vec<FnDecl>;
+    fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl>;
     fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
     fn get_azle_type_alias_decls_for_system_structure_type(
         &self,
         system_structure_type: &SystemStructureType,
     ) -> Vec<AzleTypeAliasDecl>;
-    fn get_fn_decls_of_type(&self, canister_method_type: &CanisterMethodType) -> Vec<FnDecl>;
+    fn get_azle_fn_decls_of_type(
+        &self,
+        canister_method_type: &CanisterMethodType,
+    ) -> Vec<AzleFnDecl>;
 }
 
 impl AzleProgramVecHelperMethods for Vec<AzleProgram> {
-    fn get_fn_decls_of_type(&self, canister_method_type: &CanisterMethodType) -> Vec<FnDecl> {
-        let fn_decls = self.get_fn_decls();
+    fn get_azle_fn_decls_of_type(
+        &self,
+        canister_method_type: &CanisterMethodType,
+    ) -> Vec<AzleFnDecl> {
+        let azle_fn_decls = self.get_azle_fn_decls();
 
-        fn_decls
+        azle_fn_decls
             .into_iter()
-            .filter(|fn_decl| fn_decl.is_canister_method_type(canister_method_type))
+            .filter(|azle_fn_decl| azle_fn_decl.is_canister_method_type(canister_method_type))
             .collect()
     }
 
-    fn get_fn_decls(&self) -> Vec<FnDecl> {
+    fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl> {
         self.iter().fold(vec![], |acc, azle_program| {
-            let ast_fn_decls = azle_program.get_ast_fn_decls();
+            let azle_fn_decls = azle_program.get_ast_fn_decls();
 
-            vec![acc, ast_fn_decls].concat()
+            vec![acc, azle_fn_decls].concat()
         })
     }
 

@@ -8,7 +8,7 @@ use quote::quote;
 pub fn build_canister_method_system_pre_upgrade(
     programs: &Vec<AzleProgram>,
 ) -> ActPreUpgradeMethod {
-    let pre_upgrade_fn_decls = programs.get_fn_decls_of_type(&CanisterMethodType::PreUpgrade);
+    let pre_upgrade_fn_decls = programs.get_azle_fn_decls_of_type(&CanisterMethodType::PreUpgrade);
 
     if pre_upgrade_fn_decls.len() > 1 {
         panic!("Only one PreUpgrade function can be defined");
