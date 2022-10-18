@@ -1,6 +1,3 @@
-use super::{AzleTypeAliasDecl, GetDependencies};
-use crate::cdk_act::{ActDataType, ToActDataType};
-use std::collections::{HashMap, HashSet};
 use swc_common::Span;
 use swc_ecma_ast::TsType;
 
@@ -39,28 +36,6 @@ impl GetSpan for TsType {
             TsType::TsLitType(lit_type) => lit_type.span,
             TsType::TsTypePredicate(pred) => pred.span,
             TsType::TsImportType(import) => import.span,
-        }
-    }
-}
-
-impl GetDependencies for TsType {
-    fn get_dependent_types(
-        &self,
-        _: &HashMap<String, AzleTypeAliasDecl>,
-        _: &HashSet<String>,
-    ) -> HashSet<String> {
-        match self {
-            _ => {
-                panic!("Unreachable");
-            }
-        }
-    }
-}
-
-impl ToActDataType for TsType {
-    fn to_act_data_type(&self, _: &Option<&String>) -> ActDataType {
-        match self {
-            _ => panic!("Unreachable"),
         }
     }
 }

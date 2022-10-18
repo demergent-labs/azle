@@ -6,6 +6,7 @@ use crate::{
         ActDataType, RequestType, ToActDataType,
     },
     generators::canister_methods::method_body,
+    ts_ast::azle_type::AzleType,
 };
 
 impl<'a> CanisterMethodBuilder for AzleFnDecl<'a> {
@@ -45,7 +46,8 @@ impl<'a> CanisterMethodBuilder for AzleFnDecl<'a> {
 
     fn build_return_type(&self) -> ActDataType {
         let return_ts_type = self.get_return_ts_type();
-        return_ts_type.to_act_data_type(&None)
+        let return_azle_type = AzleType::from_ts_type(return_ts_type.clone(), self.source_map);
+        return_azle_type.to_act_data_type(&None)
     }
 }
 
@@ -53,6 +55,10 @@ fn build_param_types(azle_fn_decl: &AzleFnDecl) -> Vec<ActDataType> {
     azle_fn_decl
         .get_param_ts_types()
         .iter()
-        .map(|ts_type| ts_type.to_act_data_type(&None))
+        .map(|ts_type| {
+            let azle_type =
+                AzleType::from_ts_type(ts_type.clone().clone(), azle_fn_decl.source_map);
+            azle_type.to_act_data_type(&None)
+        })
         .collect()
 }

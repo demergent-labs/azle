@@ -8,6 +8,7 @@ pub struct Suggestion {
     pub title: String,
     pub source: String,
     pub range: (usize, usize),
+    pub annotation: Option<String>,
 }
 
 pub struct ErrorMessage {
@@ -62,7 +63,10 @@ impl ErrorMessage {
                         origin: None,
                         fold: false,
                         annotations: vec![SourceAnnotation {
-                            label: "",
+                            label: match &suggestion.annotation {
+                                Some(annotation) => &annotation,
+                                None => "",
+                            },
                             annotation_type: AnnotationType::Help,
                             range: suggestion.range,
                         }],

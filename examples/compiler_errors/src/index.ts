@@ -5,19 +5,13 @@ type VariantNotProperties = Variant<{}>;
 
 // Variant tests
 // type VariantWithTooManyTypes = Variant<boolean, string, null, string[]>;
-type VariantWithWrongType = Variant<string>;
-// type VariantWithNotEnoughTypes = Variant;
+// type VariantWithWrongType = Variant<string>;
+type VariantWithNotEnoughTypes = Variant;
 // export function bad_variant_one(param: VariantWithTooManyTypes): Query<void> {}
-export function bad_variant_two(param: VariantWithWrongType): Query<void> {}
-// export function bad_variant_three(
-//     param: VariantWithNotEnoughTypes
-// ): Query<void> {}
-
-// type TypeLit = {
-//     thing(): {};
-//     get thing_two(): void;
-//     set thing_three(value: string);
-// };
+// export function bad_variant_two(param: VariantWithWrongType): Query<void> {}
+export function bad_variant_three(
+    param: VariantWithNotEnoughTypes
+): Query<void> {}
 
 // // Function tests
 // type FuncWithTooManyTypes = Func<boolean, string, null, string[]>;
@@ -27,17 +21,13 @@ export function bad_variant_two(param: VariantWithWrongType): Query<void> {}
 // export function bad_func_one(param: FuncWithTooManyTypes): Query<void> {}
 // export function bad_func_two(param: FuncWithWrongType): Query<void> {}
 // export function bad_func_three(param: FuncWithNotEnoughTypes): Query<void> {}
-// export function bad_func_four(param: FuncWithNotEnoughTypes): Query<void> {}
+// export function bad_func_four(param: FuncWithMultipleFuncs): Query<void> {}
 
 // Option tests
 // type OptionWithTooManyTypes = Opt<boolean, string, null, string[]>;
-// type OptionWithWrongType = Opt<string>;
-// type optionWithNotEnoughTypes = Opt;
+// type OptWithNotEnoughTypes = Opt;
 // export function bad_option_one(param: OptionWithTooManyTypes): Query<void> {}
-// export function bad_option_two(param: OptionWithWrongType): Query<void> {}
-// export function bad_option_three(
-//     param: OptionWithNotEnoughTypes
-// ): Query<void> {}
+// export function bad_option_three(param: OptWithNotEnoughTypes): Query<void> {}
 
 // I don't remember what these are testing
 // type BadFunc = Func<myFunction>;

@@ -1,3 +1,5 @@
+pub mod get_source_info;
+
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTupleType;
 

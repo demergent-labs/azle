@@ -1,4 +1,5 @@
 pub mod get_dependencies;
+pub mod get_source_info;
 pub mod get_source_text;
 pub mod to_act_data_type;
 

@@ -1,4 +1,5 @@
 mod azle_type_element;
+pub mod get_source_info;
 
 use crate::ts_ast::{ast_traits::generate_inline_name::GenerateInlineName, GetTsType};
 use swc_common::SourceMap;

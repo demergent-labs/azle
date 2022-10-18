@@ -2,6 +2,7 @@ use swc_common::SourceMap;
 use swc_ecma_ast::TsFnOrConstructorType;
 
 pub mod azle_fn_type;
+pub mod get_source_info;
 
 use crate::{
     cdk_act::ToActDataType,

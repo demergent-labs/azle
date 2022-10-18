@@ -5,6 +5,7 @@ pub mod azle_tuple_type;
 pub mod azle_type_lit;
 pub mod azle_type_ref;
 pub mod get_dependent_types;
+pub mod get_source_info;
 pub mod get_source_text;
 pub mod to_act_data_type;
 pub use azle_array_type::AzleArrayType;
@@ -36,13 +37,6 @@ impl<'a> AzleType<'a> {
         }
     }
 
-    pub fn is_azle_type_lit(&self) -> bool {
-        match self {
-            AzleType::AzleTypeLit(_) => true,
-            _ => false,
-        }
-    }
-
     pub fn as_azle_type_ref(self) -> Option<AzleTypeRef<'a>> {
         match self {
             AzleType::AzleTypeRef(azle_type_ref) => Some(azle_type_ref),
@@ -50,12 +44,23 @@ impl<'a> AzleType<'a> {
         }
     }
 
-    pub fn is_azle_type_ref(&self) -> bool {
-        match self {
-            AzleType::AzleTypeRef(_) => true,
-            _ => false,
-        }
-    }
+    // It seems like these would be useful, but we aren't using them right now,
+    // but they can hang out here until we are done that way if we need them
+    // they are here. though its not like they are that hard to write up from
+    // scratch...
+    // pub fn is_azle_type_lit(&self) -> bool {
+    //     match self {
+    //         AzleType::AzleTypeLit(_) => true,
+    //         _ => false,
+    //     }
+    // }
+
+    // pub fn is_azle_type_ref(&self) -> bool {
+    //     match self {
+    //         AzleType::AzleTypeRef(_) => true,
+    //         _ => false,
+    //     }
+    // }
 }
 
 impl AzleType<'_> {
