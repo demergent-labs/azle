@@ -4,8 +4,8 @@ use swc_ecma_ast::Program;
 use crate::{
     cdk_act::{CanisterMethodType, SystemStructureType},
     ts_ast::{
-        azle_types::AzleFnDecl, module::ModuleHelperMethods,
-        type_alias::azle_type_alias_decl::TsTypeAliasHelperMethods, AzleTypeAliasDecl,
+        module::ModuleHelperMethods, type_alias::azle_type_alias_decl::TsTypeAliasHelperMethods,
+        AzleFnDecl, AzleTypeAliasDecl,
     },
 };
 

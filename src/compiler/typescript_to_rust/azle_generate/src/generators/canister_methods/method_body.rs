@@ -4,7 +4,7 @@ use swc_ecma_ast::{
     TsType,
 };
 
-use crate::ts_ast::azle_types::AzleFnDecl;
+use crate::ts_ast::AzleFnDecl;
 
 pub fn generate_canister_method_body(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
     let call_to_js_function = generate_call_to_js_function(fn_decl);

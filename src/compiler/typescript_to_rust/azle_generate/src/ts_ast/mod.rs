@@ -4,6 +4,7 @@ pub use ast_traits::GetDependencies;
 pub use ast_traits::GetName;
 pub use ast_traits::GetSourceText;
 pub use ast_traits::GetTsType;
+pub use azle_fn_decl::AzleFnDecl;
 pub use azle_types::AzleArrayType;
 pub use azle_types::AzleFnOrConstructorType;
 pub use azle_types::AzleKeywordType;
@@ -13,7 +14,6 @@ pub use azle_types::AzleTypeRef;
 pub use ts_ast::TsAst;
 pub use type_alias::AzleTypeAliasDecl;
 
-pub mod ast_traits;
 mod ts_array_type;
 mod ts_ast;
 mod ts_canister_decl;
@@ -28,6 +28,8 @@ mod ts_type_element;
 mod ts_type_lit;
 mod ts_type_ref;
 
+pub mod ast_traits;
+pub mod azle_fn_decl;
 pub mod azle_types;
 pub mod ident;
 pub mod module;
