@@ -28,7 +28,7 @@ impl GetSourceText for AzleFnOrConstructorType<'_> {
             TsFnOrConstructorType::TsFnType(fn_type) => fn_type.span,
             TsFnOrConstructorType::TsConstructorType(constructor_type) => constructor_type.span,
         };
-        self.source_map.get_span_text(span)
+        self.source_map.get_text(span)
     }
 }
 

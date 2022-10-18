@@ -286,7 +286,7 @@ fn get_cross_canister_call_function_names(
 
 fn get_method_name(ts_method_signature: &TsMethodSignature) -> String {
     match &*ts_method_signature.key {
-        Expr::Ident(ident) => ident.sym.chars().as_str().to_string(),
+        Expr::Ident(ident) => ident.get_name().to_string(),
         _ => panic!(""),
     }
 }

@@ -25,7 +25,7 @@ impl GetDependencies for AzleTupleType<'_> {
 
 impl GetSourceText for AzleTupleType<'_> {
     fn get_source_text(&self) -> String {
-        self.source_map.get_span_text(self.ts_tuple_type.span)
+        self.source_map.get_text(self.ts_tuple_type.span)
     }
 }
 

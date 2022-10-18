@@ -70,20 +70,20 @@ impl ToAct for TsAst {
         let ast_canister_type_alias_decls = ast_type_alias_decls.get_ast_ts_canister_decls();
 
         // Separate function decls into queries and updates
-        let ast_fnc_decls_query = &self
+        let azle_fnc_decls_query = self
             .azle_programs
-            .get_fn_decls_of_type(&CanisterMethodType::Query);
-        let ast_fnc_decls_update = &self
+            .get_azle_fn_decls_of_type(&CanisterMethodType::Query);
+        let azle_fnc_decls_update = self
             .azle_programs
-            .get_fn_decls_of_type(&CanisterMethodType::Update);
+            .get_azle_fn_decls_of_type(&CanisterMethodType::Update);
 
         // Determine which type aliases must be present for the functions to work and save them for later parsing
         let found_type_names = HashSet::new();
         let ast_type_alias_lookup = ast_type_alias_decls.generate_type_alias_lookup();
         let query_dependencies =
-            ast_fnc_decls_query.get_dependent_types(&ast_type_alias_lookup, &found_type_names);
+            azle_fnc_decls_query.get_dependent_types(&ast_type_alias_lookup, &found_type_names);
         let update_dependencies =
-            ast_fnc_decls_update.get_dependent_types(&ast_type_alias_lookup, &found_type_names);
+            azle_fnc_decls_update.get_dependent_types(&ast_type_alias_lookup, &found_type_names);
         let canister_dependencies = ast_canister_type_alias_decls
             .get_dependent_types(&ast_type_alias_lookup, &found_type_names);
 
@@ -103,10 +103,12 @@ impl ToAct for TsAst {
             .cloned()
             .collect();
 
-        let query_methods =
-            canister_methods::build_canister_method_nodes(&ast_fnc_decls_query, RequestType::Query);
+        let query_methods = canister_methods::build_canister_method_nodes(
+            &azle_fnc_decls_query,
+            RequestType::Query,
+        );
         let update_methods = canister_methods::build_canister_method_nodes(
-            &ast_fnc_decls_update,
+            &azle_fnc_decls_update,
             RequestType::Update,
         );
 

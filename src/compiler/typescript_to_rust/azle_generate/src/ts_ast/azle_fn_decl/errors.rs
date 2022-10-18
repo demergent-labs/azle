@@ -1,22 +1,8 @@
-use swc_ecma_ast::FnDecl;
-
+use super::AzleFnDecl;
 use crate::errors::{ErrorMessage, Suggestion};
 
-pub trait FnDeclErrors {
-    fn build_array_destructure_error_msg(&self) -> ErrorMessage;
-    fn build_invalid_param_error_msg(&self) -> String;
-    fn build_missing_return_annotation_error_msg(&self) -> String;
-    fn build_missing_return_type_error_msg(&self, canister_method_type: &str) -> ErrorMessage;
-    fn build_non_type_ref_return_type_error_msg(&self) -> String;
-    fn build_object_destructure_error_msg(&self) -> ErrorMessage;
-    fn build_param_default_value_error_msg(&self) -> ErrorMessage;
-    fn build_qualified_type_error_msg(&self) -> ErrorMessage;
-    fn build_rest_param_error_msg(&self) -> ErrorMessage;
-    fn build_untyped_param_error_msg(&self) -> ErrorMessage;
-}
-
-impl FnDeclErrors for FnDecl {
-    fn build_array_destructure_error_msg(&self) -> ErrorMessage {
+impl AzleFnDecl<'_> {
+    pub(super) fn build_array_destructure_error_msg(&self) -> ErrorMessage {
         ErrorMessage {
             title: "Array destructuring in parameters is unsupported at this time".to_string(),
             origin: "index.ts".to_string(), // TODO: Get this from the source map
@@ -32,15 +18,18 @@ impl FnDeclErrors for FnDecl {
         }
     }
 
-    fn build_invalid_param_error_msg(&self) -> String {
+    pub(super) fn build_invalid_param_error_msg(&self) -> String {
         "Something is impossibly wrong with your parameters. Please open an issue showing your canister methods and this error.".to_string()
     }
 
-    fn build_missing_return_annotation_error_msg(&self) -> String {
+    pub(super) fn build_missing_return_annotation_error_msg(&self) -> String {
         "Canister methods must specify a return type".to_string()
     }
 
-    fn build_missing_return_type_error_msg(&self, canister_method_type: &str) -> ErrorMessage {
+    pub(super) fn build_missing_return_type_error_msg(
+        &self,
+        canister_method_type: &str,
+    ) -> ErrorMessage {
         ErrorMessage {
             title: "Missing return type".to_string(),
             origin: "index.ts".to_string(), // TODO: Get this from the source map
@@ -59,11 +48,11 @@ impl FnDeclErrors for FnDecl {
         }
     }
 
-    fn build_non_type_ref_return_type_error_msg(&self) -> String {
+    pub(super) fn build_non_type_ref_return_type_error_msg(&self) -> String {
         "Canister method return types must be one of: Init, InspectMessage, Oneway, PostUpgrade, PreUpgrade, Query, QueryManual, Update, UpdateManual".to_string()
     }
 
-    fn build_object_destructure_error_msg(&self) -> ErrorMessage {
+    pub(super) fn build_object_destructure_error_msg(&self) -> ErrorMessage {
         ErrorMessage {
             title: "Object destructuring in parameters is unsupported at this time".to_string(),
             origin: "index.ts".to_string(), // TODO: Get this from the source map
@@ -79,7 +68,7 @@ impl FnDeclErrors for FnDecl {
         }
     }
 
-    fn build_param_default_value_error_msg(&self) -> ErrorMessage {
+    pub(super) fn build_param_default_value_error_msg(&self) -> ErrorMessage {
         ErrorMessage {
             title: "Setting default values for parameters is unsupported at this time".to_string(),
             origin: "index.ts".to_string(), // TODO: Get this from the source map
@@ -95,7 +84,7 @@ impl FnDeclErrors for FnDecl {
         }
     }
 
-    fn build_qualified_type_error_msg(&self) -> ErrorMessage {
+    pub(super) fn build_qualified_type_error_msg(&self) -> ErrorMessage {
         ErrorMessage {
             title: "Namespace-qualified types are not currently supported".to_string(),
             origin: "index.ts".to_string(), // TODO: Get this from the source map
@@ -112,7 +101,7 @@ impl FnDeclErrors for FnDecl {
         }
     }
 
-    fn build_rest_param_error_msg(&self) -> ErrorMessage {
+    pub(super) fn build_rest_param_error_msg(&self) -> ErrorMessage {
         ErrorMessage {
             title: "Rest parameters are not supported in canister method signatures".to_string(),
             origin: "index.ts".to_string(), // TODO: Get this from the source map
@@ -128,7 +117,7 @@ impl FnDeclErrors for FnDecl {
         }
     }
 
-    fn build_untyped_param_error_msg(&self) -> ErrorMessage {
+    pub(super) fn build_untyped_param_error_msg(&self) -> ErrorMessage {
         ErrorMessage {
             title: "Untyped parameter".to_string(),
             origin: "index.ts".to_string(), // TODO: Get this from the source map

@@ -14,7 +14,7 @@ pub struct AzleKeywordType<'a> {
 
 impl GetSourceText for AzleKeywordType<'_> {
     fn get_source_text(&self) -> String {
-        self.source_map.get_span_text(self.ts_keyword_type.span)
+        self.source_map.get_text(self.ts_keyword_type.span)
     }
 }
 

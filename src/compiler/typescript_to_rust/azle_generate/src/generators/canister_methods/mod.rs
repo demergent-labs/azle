@@ -1,11 +1,12 @@
-use swc_ecma_ast::FnDecl;
-
-use crate::cdk_act::{nodes::ActCanisterMethod, traits::CanisterMethodBuilder, RequestType};
+use crate::{
+    cdk_act::{nodes::ActCanisterMethod, traits::CanisterMethodBuilder, RequestType},
+    ts_ast::AzleFnDecl,
+};
 
 pub mod method_body;
 
 pub fn build_canister_method_nodes(
-    fn_decls: &Vec<FnDecl>,
+    fn_decls: &Vec<AzleFnDecl>,
     request_type: RequestType,
 ) -> Vec<ActCanisterMethod> {
     fn_decls.iter().fold(vec![], |acc, fn_decl| {

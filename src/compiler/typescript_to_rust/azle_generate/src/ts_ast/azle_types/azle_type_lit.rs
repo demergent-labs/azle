@@ -34,6 +34,6 @@ impl GetDependencies for AzleTypeLit<'_> {
 
 impl GetSourceText for AzleTypeLit<'_> {
     fn get_source_text(&self) -> String {
-        self.source_map.get_span_text(self.ts_type_lit.span)
+        self.source_map.get_text(self.ts_type_lit.span)
     }
 }

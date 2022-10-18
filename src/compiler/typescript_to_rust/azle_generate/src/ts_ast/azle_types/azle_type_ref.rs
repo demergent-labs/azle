@@ -42,7 +42,7 @@ impl GetName for AzleTypeRef<'_> {
 
 impl GetSourceText for AzleTypeRef<'_> {
     fn get_source_text(&self) -> String {
-        self.source_map.get_span_text(self.ts_type_ref.span)
+        self.source_map.get_text(self.ts_type_ref.span)
     }
 }
 
@@ -218,7 +218,7 @@ impl AzleTypeRef<'_> {
         let well_formed = self.source_map.get_well_formed_line(self.ts_type_ref.span);
         let example = self.generate_example_variant();
         let example_variant = format!("\n{}{}\n", well_formed, example);
-        let location = self.source_map.get_line_info(self.ts_type_ref.span);
+        let location = self.source_map.get_origin(self.ts_type_ref.span);
         let highlighted_line = self
             .source_map
             .generate_highlighted_line(self.ts_type_ref.span);

@@ -10,7 +10,7 @@ use crate::{
 pub fn build_canister_method_system_init(programs: &Vec<AzleProgram>) -> ActInitMethod {
     let ic_object = programs.generate_ic_object();
 
-    let init_fn_decls = programs.get_fn_decls_of_type(&CanisterMethodType::Init);
+    let init_fn_decls = programs.get_azle_fn_decls_of_type(&CanisterMethodType::Init);
 
     if init_fn_decls.len() > 1 {
         panic!("Only one Init function can be defined");
