@@ -1,9 +1,9 @@
-pub mod errors;
-pub mod get_dependencies;
-pub mod get_name;
-pub mod get_source_info;
-pub mod get_source_text;
-pub mod to_act_data_type;
+mod errors;
+mod get_dependencies;
+mod get_name;
+mod get_source_info;
+mod get_source_text;
+mod to_act_data_type;
 
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeRef;

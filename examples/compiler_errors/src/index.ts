@@ -39,3 +39,20 @@ export function bad_func_five(param: FunctionWithoutFunc): Query<void> {}
 // type BadFunc = Func<goodFunction>;
 // type myFunction = boolean;
 // type goodFunction = (param: string) => Query<boolean>;
+
+// TODO test unsupported types
+// TsConstructorType
+// TsThisType
+// TsTypeQuery
+// TsOptionalType
+// TsRestType
+// TsUnionOrIntersectionType
+// TsConditionalType
+// TsInferType
+// TsParenthesizedType
+// TsTypeOperator
+// TsIndexedAccessType
+// TsMappedType
+// TsLitType
+// TsTypePredicate
+// TsImportType

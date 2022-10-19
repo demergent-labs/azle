@@ -1,20 +1,19 @@
 mod azle_type_element;
+mod get_dependencies;
 pub mod get_source_info;
+mod get_source_text;
 
-use crate::ts_ast::{ast_traits::generate_inline_name::GenerateInlineName, GetTsType};
+use crate::ts_ast::ast_traits::generate_inline_name::GenerateInlineName;
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeLit;
 
-use crate::{
-    cdk_act::{
-        nodes::data_type_nodes::{
-            act_record::{Record, RecordLiteral, RecordTypeAlias},
-            act_variants::{Variant, VariantLiteral, VariantTypeAlias},
-            ActRecord, ActRecordMember, ActVariant, ActVariantMember, LiteralOrTypeAlias,
-        },
-        ActDataType,
+use crate::cdk_act::{
+    nodes::data_type_nodes::{
+        act_record::{Record, RecordLiteral, RecordTypeAlias},
+        act_variants::{Variant, VariantLiteral, VariantTypeAlias},
+        ActRecord, ActRecordMember, ActVariant, ActVariantMember, LiteralOrTypeAlias,
     },
-    ts_ast::{source_map::GetSourceFileInfo, GetDependencies, GetSourceText},
+    ActDataType,
 };
 
 use self::azle_type_element::AzleTypeElement;
@@ -93,30 +92,5 @@ impl AzleTypeLit<'_> {
                 }),
             },
         })
-    }
-}
-
-impl GetDependencies for AzleTypeLit<'_> {
-    fn get_dependent_types(
-        &self,
-        type_alias_lookup: &std::collections::HashMap<String, crate::ts_ast::AzleTypeAliasDecl>,
-        found_type_names: &std::collections::HashSet<String>,
-    ) -> std::collections::HashSet<String> {
-        self.ts_type_lit
-            .members
-            .iter()
-            .fold(found_type_names.clone(), |acc, member| {
-                let ts_type = member.get_ts_type();
-                let azle_type = AzleType::from_ts_type(ts_type, self.source_map);
-                acc.union(&azle_type.get_dependent_types(type_alias_lookup, &acc))
-                    .cloned()
-                    .collect()
-            })
-    }
-}
-
-impl GetSourceText for AzleTypeLit<'_> {
-    fn get_source_text(&self) -> String {
-        self.source_map.get_source(self.ts_type_lit.span)
     }
 }

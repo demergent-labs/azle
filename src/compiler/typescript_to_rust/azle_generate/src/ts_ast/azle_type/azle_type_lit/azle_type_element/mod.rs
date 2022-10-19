@@ -1,5 +1,8 @@
+mod get_name;
+mod get_ts_type;
+
 use swc_common::SourceMap;
-use swc_ecma_ast::{TsType, TsTypeElement};
+use swc_ecma_ast::TsTypeElement;
 
 use crate::{
     cdk_act::{
@@ -12,18 +15,6 @@ use crate::{
 pub struct AzleTypeElement<'a> {
     pub ts_type_element: TsTypeElement,
     pub source_map: &'a SourceMap,
-}
-
-impl GetName for AzleTypeElement<'_> {
-    fn get_name(&self) -> &str {
-        self.ts_type_element.get_name()
-    }
-}
-
-impl GetTsType for AzleTypeElement<'_> {
-    fn get_ts_type(&self) -> TsType {
-        self.ts_type_element.get_ts_type()
-    }
 }
 
 impl AzleTypeElement<'_> {

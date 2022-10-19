@@ -1,14 +1,13 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsFnOrConstructorType;
 
-pub mod azle_fn_type;
+mod azle_fn_type;
 mod errors;
-pub mod get_source_info;
+mod get_dependencies;
+mod get_source_info;
+mod get_source_text;
+mod to_act_data_type;
 
-use crate::{
-    cdk_act::ToActDataType,
-    ts_ast::{GetDependencies, GetSourceText},
-};
 pub use azle_fn_type::AzleFnType;
 
 #[derive(Clone)]
@@ -33,38 +32,6 @@ impl AzleFnOrConstructorType<'_> {
                     "{}",
                     errors::constructor_not_supported_error(ts_fn_or_constructor_type, source_map)
                 )
-            }
-        }
-    }
-}
-
-impl GetDependencies for AzleFnOrConstructorType<'_> {
-    fn get_dependent_types(
-        &self,
-        type_alias_lookup: &std::collections::HashMap<String, crate::ts_ast::AzleTypeAliasDecl>,
-        found_type_names: &std::collections::HashSet<String>,
-    ) -> std::collections::HashSet<String> {
-        match self {
-            AzleFnOrConstructorType::AzleFnType(azle_fn_type) => {
-                azle_fn_type.get_dependent_types(type_alias_lookup, found_type_names)
-            }
-        }
-    }
-}
-
-impl GetSourceText for AzleFnOrConstructorType<'_> {
-    fn get_source_text(&self) -> String {
-        match self {
-            AzleFnOrConstructorType::AzleFnType(azle_fn_type) => azle_fn_type.get_source_text(),
-        }
-    }
-}
-
-impl ToActDataType for AzleFnOrConstructorType<'_> {
-    fn to_act_data_type(&self, alias_name: &Option<&String>) -> crate::cdk_act::ActDataType {
-        match self {
-            AzleFnOrConstructorType::AzleFnType(azle_fn_type) => {
-                azle_fn_type.to_act_data_type(alias_name)
             }
         }
     }
