@@ -4,6 +4,7 @@ pub mod azle_keyword_type;
 pub mod azle_tuple_type;
 pub mod azle_type_lit;
 pub mod azle_type_ref;
+mod errors;
 pub mod get_dependent_types;
 pub mod get_source_info;
 pub mod get_source_text;
@@ -94,20 +95,7 @@ impl AzleType<'_> {
                 ts_tuple_type,
                 source_map,
             }),
-            TsType::TsThisType(_) => todo!(),
-            TsType::TsTypeQuery(_) => todo!(),
-            TsType::TsOptionalType(_) => todo!(),
-            TsType::TsRestType(_) => todo!(),
-            TsType::TsUnionOrIntersectionType(_) => todo!(),
-            TsType::TsConditionalType(_) => todo!(),
-            TsType::TsInferType(_) => todo!(),
-            TsType::TsParenthesizedType(_) => todo!(),
-            TsType::TsTypeOperator(_) => todo!(),
-            TsType::TsIndexedAccessType(_) => todo!(),
-            TsType::TsMappedType(_) => todo!(),
-            TsType::TsLitType(_) => todo!(),
-            TsType::TsTypePredicate(_) => todo!(),
-            TsType::TsImportType(_) => todo!(),
+            _ => panic!("{}", errors::unsupported_type_error(ts_type, source_map)),
         }
     }
 }

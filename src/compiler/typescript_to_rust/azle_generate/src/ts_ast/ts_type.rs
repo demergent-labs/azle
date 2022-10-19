@@ -1,9 +1,7 @@
 use swc_common::Span;
 use swc_ecma_ast::TsType;
 
-pub trait GetSpan {
-    fn get_span(&self) -> Span;
-}
+use super::ast_traits::GetSpan;
 
 impl GetSpan for TsType {
     fn get_span(&self) -> Span {
@@ -30,7 +28,7 @@ impl GetSpan for TsType {
             TsType::TsConditionalType(cond) => cond.span,
             TsType::TsInferType(infer) => infer.span,
             TsType::TsParenthesizedType(paren) => paren.span,
-            TsType::TsTypeOperator(oper) => oper.span,
+            TsType::TsTypeOperator(operator) => operator.span,
             TsType::TsIndexedAccessType(index) => index.span,
             TsType::TsMappedType(map) => map.span,
             TsType::TsLitType(lit_type) => lit_type.span,

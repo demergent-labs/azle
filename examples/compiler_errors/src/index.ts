@@ -6,22 +6,26 @@ type VariantNotProperties = Variant<{}>;
 // Variant tests
 // type VariantWithTooManyTypes = Variant<boolean, string, null, string[]>;
 // type VariantWithWrongType = Variant<string>;
-type VariantWithNotEnoughTypes = Variant;
+// type VariantWithNotEnoughTypes = Variant;
 // export function bad_variant_one(param: VariantWithTooManyTypes): Query<void> {}
 // export function bad_variant_two(param: VariantWithWrongType): Query<void> {}
-export function bad_variant_three(
-    param: VariantWithNotEnoughTypes
-): Query<void> {}
+// export function bad_variant_three(
+//     param: VariantWithNotEnoughTypes
+// ): Query<void> {}
 
 // // Function tests
 // type FuncWithTooManyTypes = Func<boolean, string, null, string[]>;
 // type FuncWithWrongType = Func<string>;
 // type FuncWithNotEnoughTypes = Func;
 // type FuncWithMultipleFuncs = Func<() => void, () => void>;
+type FunctionWithoutFunc = () => Query<void>;
+// type FuncWithoutQuery = Func<() => void>;
 // export function bad_func_one(param: FuncWithTooManyTypes): Query<void> {}
 // export function bad_func_two(param: FuncWithWrongType): Query<void> {}
 // export function bad_func_three(param: FuncWithNotEnoughTypes): Query<void> {}
 // export function bad_func_four(param: FuncWithMultipleFuncs): Query<void> {}
+export function bad_func_five(param: FunctionWithoutFunc): Query<void> {}
+// export function bad_func_six(param: FuncWithoutQuery): Query<void> {}
 
 // Option tests
 // type OptionWithTooManyTypes = Opt<boolean, string, null, string[]>;

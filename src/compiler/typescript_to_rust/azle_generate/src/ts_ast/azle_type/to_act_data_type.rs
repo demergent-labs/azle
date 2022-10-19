@@ -15,7 +15,13 @@ impl ToActDataType for AzleType<'_> {
             AzleType::AzleTupleType(azle_tuple_type) => {
                 azle_tuple_type.to_act_data_type(alias_name)
             }
-            AzleType::AzleFnOrConstructorType(_) => todo!(),
+            AzleType::AzleFnOrConstructorType(azle_fn_or_constructor_type) => {
+                match azle_fn_or_constructor_type {
+                    super::AzleFnOrConstructorType::AzleFnType(azle_fn_type) => {
+                        azle_fn_type.to_act_data_type(alias_name)
+                    }
+                }
+            }
         }
     }
 }

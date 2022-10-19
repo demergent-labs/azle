@@ -1,5 +1,5 @@
 use super::AzleFnOrConstructorType;
-use crate::ts_ast::{ast_traits::GetSourceInfo, source_map::GetSourceFileInfo};
+use crate::ts_ast::ast_traits::GetSourceInfo;
 
 impl GetSourceInfo for AzleFnOrConstructorType<'_> {
     fn get_source(&self) -> String {

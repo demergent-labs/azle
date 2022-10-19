@@ -8,6 +8,7 @@ pub use generate_inline_name::GenerateInlineName;
 pub use get_name::GetName;
 pub use get_source_info::GetSourceInfo;
 use std::collections::{HashMap, HashSet};
+use swc_common::Span;
 use swc_ecma_ast::{TsEntityName, TsFnParam, TsPropertySignature, TsType, TsTypeAnn};
 pub use to_display_string::GetSourceText;
 
@@ -21,6 +22,10 @@ pub trait GetDependencies {
 
 pub trait GetTsType {
     fn get_ts_type(&self) -> TsType;
+}
+
+pub trait GetSpan {
+    fn get_span(&self) -> Span;
 }
 
 pub trait FunctionAndMethodTypeHelperMethods {

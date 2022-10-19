@@ -3,7 +3,7 @@ use swc_common::Span;
 use crate::{
     errors::{ErrorMessage, Suggestion},
     ts_ast::{
-        ast_traits::GetSourceInfo, source_map::GetSourceFileInfo, ts_type::GetSpan,
+        ast_traits::GetSourceInfo, ast_traits::GetSpan, source_map::GetSourceFileInfo,
         ts_type_ref::TsTypeRefHelperMethods, GetName, GetSourceText,
     },
 };

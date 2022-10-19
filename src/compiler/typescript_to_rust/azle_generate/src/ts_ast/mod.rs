@@ -32,5 +32,6 @@ pub mod ident;
 pub mod module;
 pub mod program;
 pub mod source_map;
+pub mod ts_fn_or_constructor_type;
 pub mod ts_fn_param;
 pub mod type_alias_decls;

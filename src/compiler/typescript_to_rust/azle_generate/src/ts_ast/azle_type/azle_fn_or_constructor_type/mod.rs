@@ -2,6 +2,7 @@ use swc_common::SourceMap;
 use swc_ecma_ast::TsFnOrConstructorType;
 
 pub mod azle_fn_type;
+mod errors;
 pub mod get_source_info;
 
 use crate::{
@@ -27,7 +28,12 @@ impl AzleFnOrConstructorType<'_> {
                     source_map,
                 })
             }
-            TsFnOrConstructorType::TsConstructorType(_) => todo!(),
+            TsFnOrConstructorType::TsConstructorType(_) => {
+                panic!(
+                    "{}",
+                    errors::constructor_not_supported_error(ts_fn_or_constructor_type, source_map)
+                )
+            }
         }
     }
 }
