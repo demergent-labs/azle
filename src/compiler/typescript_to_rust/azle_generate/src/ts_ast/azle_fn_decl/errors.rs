@@ -1,3 +1,4 @@
+use swc_common::Span;
 use swc_ecma_ast::{ArrayPat, TsTypeAnn};
 
 use super::AzleFnDecl;
@@ -51,22 +52,31 @@ impl AzleFnDecl<'_> {
 
     pub(super) fn build_missing_return_type_error_msg(
         &self,
+        span: Span,
         canister_method_type: &str,
     ) -> ErrorMessage {
+        let range = self.source_map.get_range(span);
+        let example_type_param = "<null>".to_string();
+
         ErrorMessage {
             title: "Missing return type".to_string(),
-            origin: "index.ts".to_string(), // TODO: Get this from the source map
-            line_number: 1,                 // TODO: Get this from the source map
-            source: format!("export function example(): {} {{}}", canister_method_type), // TODO: Get this from the source map
-            range: (32, 33), // TODO: Get this from the source map
-            annotation: "Expected return type here".to_string(), // TODO
+            origin: self.source_map.get_origin(span),
+            line_number: self.source_map.get_line_number(span),
+            source: format!("{} ", self.source_map.get_source(span)),
+            range: (range.1, range.1 + 1),
+            annotation: "Expected return type here".to_string(),
             suggestion: Some(Suggestion {
-                title: format!("Specify a return type inside of {}", canister_method_type),
-                source: format!(
-                    "export function example(): {}<null> {{}}",
+                title: format!(
+                    "Specify a return type as a type argument to `{}`. E.g.:",
                     canister_method_type
-                ), // TODO: Get this from the source map
-                range: (32, 38), // TODO: Get this from the source map
+                ),
+                source: format!(
+                    "{}{}{} {{}}",
+                    self.source_map.get_well_formed_line(span),
+                    canister_method_type,
+                    example_type_param
+                ), // TODO: Use the new source_map.get_modified_source(replacement_name)
+                range: (range.1, range.1 + example_type_param.len()),
                 annotation: None,
                 import_suggestion: None,
             }),

@@ -39,7 +39,8 @@ impl AzleFnDecl<'_> {
             Some(type_param_instantiation) => &*type_param_instantiation.params[0],
             None => {
                 let canister_method_type = self.get_canister_method_type();
-                let error_message = self.build_missing_return_type_error_msg(canister_method_type);
+                let error_message =
+                    self.build_missing_return_type_error_msg(type_ref.span, canister_method_type);
                 panic!("{}", error_message)
             }
         }
