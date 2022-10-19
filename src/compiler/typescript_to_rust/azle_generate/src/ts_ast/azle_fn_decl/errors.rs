@@ -1,19 +1,40 @@
+use swc_ecma_ast::{ArrayPat, TsTypeAnn};
+
 use super::AzleFnDecl;
-use crate::errors::{ErrorMessage, Suggestion};
+use crate::{
+    errors::{ErrorMessage, Suggestion},
+    ts_ast::source_map::GetSourceFileInfo,
+};
 
 impl AzleFnDecl<'_> {
-    pub(super) fn build_array_destructure_error_msg(&self) -> ErrorMessage {
+    pub(super) fn build_array_destructure_error_msg(
+        &self,
+        array_pat: &ArrayPat,
+        ts_type_ann: &TsTypeAnn,
+    ) -> ErrorMessage {
+        let type_ann_start_col = self.source_map.get_range(ts_type_ann.span);
+        let full_param_span_range = self.source_map.get_range(array_pat.span);
+        let range_without_type_annotation = (full_param_span_range.0, type_ann_start_col.0);
+        let replacement_name = "myParam"; // TODO: Come up with a better name from the ts_type_ann
+
         ErrorMessage {
             title: "Array destructuring in parameters is unsupported at this time".to_string(),
-            origin: "index.ts".to_string(), // TODO: Get this from the source map
-            line_number: 1,                 // TODO: Get this from the source map
-            source: "export function example([i1, i2]: List) {}".to_string(), // TODO: Get this from the source map
-            range: (24, 32), // TODO: Get this from the source map
+            origin: self.source_map.get_origin(array_pat.span),
+            line_number: self.source_map.get_line_number(array_pat.span),
+            source: self.source_map.get_source(array_pat.span),
+            range: range_without_type_annotation,
             annotation: "Attempted to destructure here".to_string(),
             suggestion: Some(Suggestion {
                 title: "Remove destructuring in favor of a concrete name".to_string(),
-                source: "export function example(list: List) {}".to_string(), // TODO: Get this from the source map
-                range: (24, 28), // TODO: Get this from the source map
+                source: format!(
+                    "{}{}...",
+                    self.source_map.get_well_formed_line(array_pat.span),
+                    replacement_name
+                ), // TODO: Use the new source_map.get_modified_source(replacement_name)
+                range: (
+                    full_param_span_range.0,
+                    full_param_span_range.0 + replacement_name.len(),
+                ), // TODO: Use the new source_map.get_modified_range(replacement_name)
                 annotation: None,
                 import_suggestion: None,
             }),
