@@ -7,8 +7,8 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 use crate::generators::async_result_handler::AsyncResultHelperMethods;
 use crate::generators::cross_canister_call_functions::CrossCanisterHelperMethods;
 use crate::generators::errors;
+use crate::ts_ast::azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods;
 use crate::ts_ast::program::azle_program::AzleProgramVecHelperMethods;
-use crate::ts_ast::type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods;
 use crate::{
     cdk_act::{
         self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
