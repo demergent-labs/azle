@@ -9,7 +9,7 @@ pub use get_name::GetName;
 pub use get_source_info::GetSourceInfo;
 use std::collections::{HashMap, HashSet};
 use swc_common::Span;
-use swc_ecma_ast::{TsPropertySignature, TsType};
+use swc_ecma_ast::TsType;
 pub use to_display_string::GetSourceText;
 
 pub trait GetDependencies {
@@ -26,10 +26,4 @@ pub trait GetTsType {
 
 pub trait GetSpan {
     fn get_span(&self) -> Span;
-}
-
-impl GetTsType for TsPropertySignature {
-    fn get_ts_type(&self) -> TsType {
-        self.type_ann.as_ref().unwrap().get_ts_type()
-    }
 }

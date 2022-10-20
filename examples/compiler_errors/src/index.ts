@@ -6,32 +6,40 @@ type VariantNotProperties = Variant<{}>;
 
 // Variant tests
 // type VariantWithTooManyTypes = Variant<boolean, string, null, string[]>;
-// type VariantWithWrongType = Variant<string>;
-// type VariantWithNotEnoughTypes = Variant;
 // export function bad_variant_one(param: VariantWithTooManyTypes): Query<void> {}
+// type VariantWithWrongType = Variant<string>;
 // export function bad_variant_two(param: VariantWithWrongType): Query<void> {}
+// type VariantWithNotEnoughTypes = Variant;
 // export function bad_variant_three(
 //     param: VariantWithNotEnoughTypes
 // ): Query<void> {}
+// type VariantWithNoTypeAnnotation = Variant<{
+//     whatTypeIsThis;
+// }>;
+// export function varNoType(variant: VariantWithNoTypeAnnotation): Query<void> {}
+// type VariantWithMethod = Variant<{
+//     thing(): Query<void>;
+// }>;
+// export function varMethod(variant: VariantWithMethod): Query<void> {}
 
 // // Function tests
 // type FuncWithTooManyTypes = Func<boolean, string, null, string[]>;
-// type FuncWithWrongType = Func<string>;
-// type FuncWithNotEnoughTypes = Func;
-// type FuncWithMultipleFuncs = Func<() => void, () => void>;
-// type FunctionWithoutFunc = () => Query<void>;
-// type FuncWithoutQuery = Func<() => void>;
 // export function bad_func_one(param: FuncWithTooManyTypes): Query<void> {}
+// type FuncWithWrongType = Func<string>;
 // export function bad_func_two(param: FuncWithWrongType): Query<void> {}
+// type FuncWithNotEnoughTypes = Func;
 // export function bad_func_three(param: FuncWithNotEnoughTypes): Query<void> {}
+// type FuncWithMultipleFuncs = Func<() => void, () => void>;
 // export function bad_func_four(param: FuncWithMultipleFuncs): Query<void> {}
+// type FunctionWithoutFunc = () => Query<void>;
 // export function bad_func_five(param: FunctionWithoutFunc): Query<void> {}
+// type FuncWithoutQuery = Func<() => void>;
 // export function bad_func_six(param: FuncWithoutQuery): Query<void> {}
 
 // Option tests
 // type OptionWithTooManyTypes = Opt<boolean, string, null, string[]>;
-// type OptWithNotEnoughTypes = Opt;
 // export function bad_option_one(param: OptionWithTooManyTypes): Query<void> {}
+// type OptWithNotEnoughTypes = Opt;
 // export function bad_option_three(param: OptWithNotEnoughTypes): Query<void> {}
 
 // I don't remember what these are testing
@@ -74,10 +82,31 @@ type VariantNotProperties = Variant<{}>;
 // TODO test unsupported member types
 // TsCallSignatureDecl
 // TsConstructorSignatureDecl
-// TsGetterSignature
-// TsSetterSignature
-// TsMethodSignature
-// TsIndexSignature
 
 // TODO test Canisters that have property signatures
-// TODO test Records and Variants that have method signatures
+
+// Record Tests
+// type RecordWithNoTypeAnnotation = {
+//     whatTypeIsThis;
+// };
+// export function recNoType(record: RecordWithNoTypeAnnotation): Query<void> {}
+type RecordWithAny = {
+    whatTypeIsThis: any;
+};
+export function recAny(record: RecordWithAny): Query<void> {}
+// type RecordWithMethod = {
+//     thing(): Query<void>;
+// };
+// export function recMethod(record: RecordWithMethod): Query<void> {}
+// type RecordWithIndex = {
+//     [index: string]: { message: string };
+// };
+// export function recIndex(record: RecordWithMethod): Query<void> {}
+// type RecordWithSet = {
+//     set thing_three(value: string);
+// };
+// export function recSet(record: RecordWithSet): Query<void> {}
+// type RecordWithGet = {
+//     get thing_two(): void;
+// };
+// export function recGet(record: RecordWithGet): Query<void> {}

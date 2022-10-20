@@ -15,7 +15,10 @@ impl GetDependencies for AzleTypeElement<'_> {
     ) -> HashSet<String> {
         match &self.ts_type_element {
             TsTypeElement::TsPropertySignature(ts_property_signature) => {
-                let ts_type = ts_property_signature.get_ts_type();
+                let ts_type = match &ts_property_signature.type_ann {
+                    Some(ts_type_ann) => ts_type_ann.get_ts_type(),
+                    None => panic!("{}", self.no_type_annotation_error()),
+                };
                 let azle_type = AzleType::from_ts_type(ts_type, self.source_map);
                 azle_type.get_dependent_types(type_alias_lookup, &found_type_names)
             }
@@ -33,7 +36,7 @@ impl GetDependencies for AzleTypeElement<'_> {
                         .collect()
                 })
             }
-            _ => panic!("{}", self.unsupported_member_error()),
+            _ => HashSet::new(),
         }
     }
 }
