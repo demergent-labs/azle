@@ -1,4 +1,8 @@
+mod errors;
+pub mod get_dependencies;
 mod get_name;
+mod get_source_info;
+mod get_source_text;
 mod get_ts_type;
 
 use swc_common::SourceMap;

@@ -1,7 +1,6 @@
+use super::azle_type_element::AzleTypeElement;
+use super::AzleTypeLit;
 use crate::ts_ast::GetDependencies;
-use crate::ts_ast::GetTsType;
-
-use super::{AzleType, AzleTypeLit};
 
 impl GetDependencies for AzleTypeLit<'_> {
     fn get_dependent_types(
@@ -13,9 +12,11 @@ impl GetDependencies for AzleTypeLit<'_> {
             .members
             .iter()
             .fold(found_type_names.clone(), |acc, member| {
-                let ts_type = member.get_ts_type();
-                let azle_type = AzleType::from_ts_type(ts_type, self.source_map);
-                acc.union(&azle_type.get_dependent_types(type_alias_lookup, &acc))
+                let azle_type_element = AzleTypeElement {
+                    ts_type_element: member.clone(),
+                    source_map: self.source_map,
+                };
+                acc.union(&azle_type_element.get_dependent_types(type_alias_lookup, &acc))
                     .cloned()
                     .collect()
             })

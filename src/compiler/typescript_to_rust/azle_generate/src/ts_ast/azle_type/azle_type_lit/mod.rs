@@ -18,8 +18,6 @@ use crate::cdk_act::{
 
 use self::azle_type_element::AzleTypeElement;
 
-use super::AzleType;
-
 #[derive(Clone)]
 pub struct AzleTypeLit<'a> {
     pub ts_type_lit: TsTypeLit,

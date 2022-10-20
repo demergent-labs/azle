@@ -6,6 +6,11 @@ use super::AzleTypeElement;
 
 impl GetTsType for AzleTypeElement<'_> {
     fn get_ts_type(&self) -> TsType {
-        self.ts_type_element.get_ts_type()
+        match &self.ts_type_element {
+            swc_ecma_ast::TsTypeElement::TsPropertySignature(ts_property_signature) => {
+                ts_property_signature.get_ts_type()
+            }
+            _ => panic!("{}", self.unsupported_member_error()),
+        }
     }
 }
