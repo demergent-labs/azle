@@ -1,6 +1,6 @@
 use swc_ecma_ast::{TsType, TsTypeElement};
 
-use super::{ast_traits::GetTsType, GetName};
+use crate::ts_ast::{GetName, GetTsType};
 
 impl GetName for TsTypeElement {
     fn get_name(&self) -> &str {

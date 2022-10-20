@@ -1,6 +1,6 @@
 use swc_ecma_ast::{TsFnParam, TsFnType, TsTypeAnn};
 
-use super::{FunctionAndMethodTypeHelperMethods, GenerateInlineName};
+use crate::ts_ast::{FunctionAndMethodTypeHelperMethods, GenerateInlineName};
 
 impl FunctionAndMethodTypeHelperMethods for TsFnType {
     fn get_ts_fn_params(&self) -> Vec<TsFnParam> {

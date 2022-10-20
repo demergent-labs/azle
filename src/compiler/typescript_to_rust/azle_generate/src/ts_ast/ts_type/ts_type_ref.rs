@@ -1,5 +1,6 @@
-use super::GetName;
 use swc_ecma_ast::{TsType, TsTypeRef};
+
+use crate::ts_ast::GetName;
 
 pub trait TsTypeRefHelperMethods {
     fn get_enclosed_ts_types(&self) -> Vec<TsType>;

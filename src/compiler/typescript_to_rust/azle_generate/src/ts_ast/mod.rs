@@ -15,23 +15,15 @@ pub use ts_ast::TsAst;
 pub use type_alias_decls::AzleTypeAliasDecl;
 
 pub mod ast_traits;
-mod ts_ast;
-mod ts_fn_type;
-mod ts_keyword_type;
-mod ts_method_signature;
-mod ts_tuple_type;
-mod ts_type;
-mod ts_type_ann;
-mod ts_type_element;
-mod ts_type_lit;
-mod ts_type_ref;
-
 pub mod azle_fn_decl;
 pub mod azle_type;
 pub mod ident;
 pub mod module;
 pub mod program;
 pub mod source_map;
-pub mod ts_fn_or_constructor_type;
+mod ts_ast;
 pub mod ts_fn_param;
+mod ts_method_signature;
+pub mod ts_type;
+mod ts_type_ann;
 pub mod type_alias_decls;
