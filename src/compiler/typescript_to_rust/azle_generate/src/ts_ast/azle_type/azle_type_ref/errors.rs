@@ -4,7 +4,7 @@ use crate::{
     errors::{ErrorMessage, Suggestion},
     ts_ast::{
         ast_traits::GetSourceInfo, ast_traits::GetSpan, source_map::GetSourceFileInfo,
-        ts_type::ts_type_ref::TsTypeRefHelperMethods, GetName, GetSourceText,
+        ts_type::ts_type_ref::GetEnclosedTsTypes, GetName, GetSourceText,
     },
 };
 

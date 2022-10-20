@@ -70,3 +70,11 @@ type VariantNotProperties = Variant<{}>;
 // export function intrinsic_function(
 //     my_intrinsic: Uppercase<string>
 // ): Query<void> {}
+
+// TODO test unsupported member types
+// TsCallSignatureDecl
+// TsConstructorSignatureDecl
+// TsGetterSignature
+// TsSetterSignature
+// TsMethodSignature
+// TsIndexSignature

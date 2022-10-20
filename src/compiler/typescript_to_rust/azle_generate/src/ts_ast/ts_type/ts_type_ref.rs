@@ -2,7 +2,7 @@ use swc_ecma_ast::{TsType, TsTypeRef};
 
 use crate::ts_ast::GetName;
 
-pub trait TsTypeRefHelperMethods {
+pub trait GetEnclosedTsTypes {
     fn get_enclosed_ts_types(&self) -> Vec<TsType>;
 }
 
@@ -12,7 +12,7 @@ impl GetName for TsTypeRef {
     }
 }
 
-impl TsTypeRefHelperMethods for TsTypeRef {
+impl GetEnclosedTsTypes for TsTypeRef {
     fn get_enclosed_ts_types(&self) -> Vec<TsType> {
         match &self.type_params {
             Some(params) => params.params.iter().map(|param| *param.clone()).collect(),

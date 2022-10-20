@@ -1,5 +1,5 @@
 mod get_dependencies;
-pub mod get_source_info;
+mod get_source_info;
 mod get_source_text;
 mod to_act_data_type;
 
