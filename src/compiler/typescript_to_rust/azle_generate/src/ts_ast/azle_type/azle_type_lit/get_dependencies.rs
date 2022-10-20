@@ -1,5 +1,4 @@
-use super::azle_type_element::AzleTypeElement;
-use super::AzleTypeLit;
+use super::{AzleTypeElement, AzleTypeLit};
 use crate::ts_ast::GetDependencies;
 
 impl GetDependencies for AzleTypeLit<'_> {

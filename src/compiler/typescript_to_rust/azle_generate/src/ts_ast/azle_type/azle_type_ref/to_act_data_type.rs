@@ -1,3 +1,4 @@
+use super::AzleTypeRef;
 use crate::{
     cdk_act::{
         nodes::data_type_nodes::{
@@ -12,8 +13,6 @@ use crate::{
         GenerateInlineName, GetName,
     },
 };
-
-use super::AzleTypeRef;
 
 impl ToActDataType for AzleTypeRef<'_> {
     fn to_act_data_type(&self, alias_name: &Option<&String>) -> crate::cdk_act::ActDataType {

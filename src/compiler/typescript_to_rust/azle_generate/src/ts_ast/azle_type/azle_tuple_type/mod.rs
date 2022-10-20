@@ -1,14 +1,13 @@
+use swc_common::SourceMap;
+use swc_ecma_ast::TsTupleType;
+
+use super::AzleType;
+use crate::cdk_act::{nodes::data_type_nodes::ActTupleElem, ToActDataType};
+
 mod get_dependencies;
 mod get_source_info;
 mod get_source_text;
 mod to_act_data_type;
-
-use swc_common::SourceMap;
-use swc_ecma_ast::TsTupleType;
-
-use crate::cdk_act::{nodes::data_type_nodes::ActTupleElem, ToActDataType};
-
-use super::AzleType;
 
 #[derive(Clone)]
 pub struct AzleTupleType<'a> {

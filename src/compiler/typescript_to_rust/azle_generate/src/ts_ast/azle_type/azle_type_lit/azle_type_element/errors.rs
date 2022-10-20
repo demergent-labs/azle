@@ -1,5 +1,6 @@
 use swc_ecma_ast::TsTypeElement;
 
+use super::AzleTypeElement;
 use crate::{
     errors::ErrorMessage,
     ts_ast::{
@@ -8,8 +9,6 @@ use crate::{
         GetSourceText,
     },
 };
-
-use super::AzleTypeElement;
 
 impl AzleTypeElement<'_> {
     pub(super) fn unsupported_member_error(&self) -> ErrorMessage {

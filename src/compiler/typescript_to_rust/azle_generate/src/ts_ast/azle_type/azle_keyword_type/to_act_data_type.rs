@@ -1,6 +1,7 @@
+use swc_ecma_ast::TsKeywordTypeKind;
+
 use super::AzleKeywordType;
 use crate::cdk_act::{nodes::data_type_nodes::ActPrimitiveLit, ActDataType, ToActDataType};
-use swc_ecma_ast::TsKeywordTypeKind;
 
 impl ToActDataType for AzleKeywordType<'_> {
     fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType {

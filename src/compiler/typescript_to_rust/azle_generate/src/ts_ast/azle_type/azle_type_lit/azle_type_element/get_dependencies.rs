@@ -1,7 +1,5 @@
-use crate::ts_ast::GetDependencies;
-use crate::ts_ast::GetTsType;
-
 use super::{AzleType, AzleTypeElement};
+use crate::ts_ast::{GetDependencies, GetTsType};
 
 impl GetDependencies for AzleTypeElement<'_> {
     fn get_dependent_types(

@@ -1,6 +1,5 @@
-use crate::ts_ast::GetDependencies;
-
 use super::{AzleTupleType, AzleType};
+use crate::ts_ast::GetDependencies;
 
 impl GetDependencies for AzleTupleType<'_> {
     fn get_dependent_types(

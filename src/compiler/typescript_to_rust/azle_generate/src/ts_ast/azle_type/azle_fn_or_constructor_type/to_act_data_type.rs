@@ -1,6 +1,5 @@
-use crate::cdk_act::ToActDataType;
-
 use super::AzleFnOrConstructorType;
+use crate::cdk_act::ToActDataType;
 
 impl ToActDataType for AzleFnOrConstructorType<'_> {
     fn to_act_data_type(&self, alias_name: &Option<&String>) -> crate::cdk_act::ActDataType {

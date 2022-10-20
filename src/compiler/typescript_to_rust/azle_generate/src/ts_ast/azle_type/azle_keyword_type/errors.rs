@@ -1,11 +1,10 @@
 use swc_ecma_ast::TsKeywordTypeKind;
 
+use super::AzleKeywordType;
 use crate::{
     errors::{ErrorMessage, Suggestion},
     ts_ast::{ast_traits::GetSourceInfo, source_map::GetSourceFileInfo, GetSourceText},
 };
-
-use super::AzleKeywordType;
 
 impl AzleKeywordType<'_> {
     pub(super) fn unsupported_type_error(&self) -> ErrorMessage {

@@ -1,7 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
 use super::AzleFnType;
-
 use crate::ts_ast::{
     azle_type::AzleType, AzleTypeAliasDecl, FunctionAndMethodTypeHelperMethods, GetDependencies,
 };

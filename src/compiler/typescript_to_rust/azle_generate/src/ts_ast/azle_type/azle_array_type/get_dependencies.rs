@@ -1,6 +1,7 @@
+use std::collections::{HashMap, HashSet};
+
 use super::AzleArrayType;
 use crate::ts_ast::{AzleTypeAliasDecl, GetDependencies};
-use std::collections::{HashMap, HashSet};
 
 impl GetDependencies for AzleArrayType<'_> {
     fn get_dependent_types(

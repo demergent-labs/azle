@@ -1,8 +1,7 @@
 use swc_ecma_ast::TsType;
 
-use crate::ts_ast::GetTsType;
-
 use super::AzleTypeElement;
+use crate::ts_ast::GetTsType;
 
 impl GetTsType for AzleTypeElement<'_> {
     fn get_ts_type(&self) -> TsType {

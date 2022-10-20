@@ -1,14 +1,14 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsFnOrConstructorType;
 
+pub use azle_fn_type::AzleFnType;
+
 mod azle_fn_type;
 mod errors;
 mod get_dependencies;
 mod get_source_info;
 mod get_source_text;
 mod to_act_data_type;
-
-pub use azle_fn_type::AzleFnType;
 
 #[derive(Clone)]
 pub enum AzleFnOrConstructorType<'a> {

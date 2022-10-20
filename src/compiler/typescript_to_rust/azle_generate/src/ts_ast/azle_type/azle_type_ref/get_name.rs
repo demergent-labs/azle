@@ -1,6 +1,5 @@
-use crate::ts_ast::GetName;
-
 use super::AzleTypeRef;
+use crate::ts_ast::GetName;
 
 impl GetName for AzleTypeRef<'_> {
     fn get_name(&self) -> &str {

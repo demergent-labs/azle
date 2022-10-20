@@ -3,9 +3,8 @@ use std::{
     iter::FromIterator,
 };
 
-use crate::ts_ast::{AzleTypeAliasDecl, GetDependencies, GetName};
-
 use super::AzleTypeRef;
+use crate::ts_ast::{AzleTypeAliasDecl, GetDependencies, GetName};
 
 impl GetDependencies for AzleTypeRef<'_> {
     fn get_dependent_types(

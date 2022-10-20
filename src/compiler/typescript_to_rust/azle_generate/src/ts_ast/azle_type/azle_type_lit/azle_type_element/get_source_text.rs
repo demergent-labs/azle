@@ -1,6 +1,5 @@
-use crate::ts_ast::{ast_traits::GetSpan, source_map::GetSourceFileInfo, GetSourceText};
-
 use super::AzleTypeElement;
+use crate::ts_ast::{ast_traits::GetSpan, source_map::GetSourceFileInfo, GetSourceText};
 
 impl GetSourceText for AzleTypeElement<'_> {
     fn get_source_text(&self) -> String {

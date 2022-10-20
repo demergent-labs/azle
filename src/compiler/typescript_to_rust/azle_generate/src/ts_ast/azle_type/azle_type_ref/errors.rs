@@ -1,5 +1,6 @@
 use swc_common::Span;
 
+use super::AzleTypeRef;
 use crate::{
     errors::{ErrorMessage, Suggestion},
     ts_ast::{
@@ -7,8 +8,6 @@ use crate::{
         ts_type::ts_type_ref::GetEnclosedTsTypes, GetName, GetSourceText,
     },
 };
-
-use super::AzleTypeRef;
 
 impl AzleTypeRef<'_> {
     pub(super) fn wrong_number_of_params_error(&self) -> ErrorMessage {

@@ -1,22 +1,25 @@
-mod azle_type_element;
-mod get_dependencies;
-pub mod get_source_info;
-mod get_source_text;
-
-use crate::ts_ast::ast_traits::generate_inline_name::GenerateInlineName;
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeLit;
 
-use crate::cdk_act::{
-    nodes::data_type_nodes::{
-        act_record::{Record, RecordLiteral, RecordTypeAlias},
-        act_variants::{Variant, VariantLiteral, VariantTypeAlias},
-        ActRecord, ActRecordMember, ActVariant, ActVariantMember, LiteralOrTypeAlias,
+use crate::{
+    cdk_act::{
+        nodes::data_type_nodes::{
+            act_record::{Record, RecordLiteral, RecordTypeAlias},
+            act_variants::{Variant, VariantLiteral, VariantTypeAlias},
+            ActRecord, ActRecordMember, ActVariant, ActVariantMember, LiteralOrTypeAlias,
+        },
+        ActDataType,
     },
-    ActDataType,
+    ts_ast::ast_traits::generate_inline_name::GenerateInlineName,
 };
 
-use self::azle_type_element::AzleTypeElement;
+pub use azle_type_element::AzleTypeElement;
+
+mod azle_type_element;
+mod get_dependencies;
+mod get_source_text;
+
+pub mod get_source_info;
 
 #[derive(Clone)]
 pub struct AzleTypeLit<'a> {

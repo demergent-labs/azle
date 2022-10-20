@@ -1,8 +1,7 @@
 use swc_ecma_ast::{TsFnParam, TsTypeAnn};
 
-use crate::ts_ast::FunctionAndMethodTypeHelperMethods;
-
 use super::AzleFnType;
+use crate::ts_ast::FunctionAndMethodTypeHelperMethods;
 
 impl FunctionAndMethodTypeHelperMethods for AzleFnType<'_> {
     fn get_ts_fn_params(&self) -> Vec<TsFnParam> {

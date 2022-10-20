@@ -1,3 +1,4 @@
+use super::AzleTupleType;
 use crate::{
     cdk_act::{
         nodes::data_type_nodes::{
@@ -8,8 +9,6 @@ use crate::{
     },
     ts_ast::GenerateInlineName,
 };
-
-use super::AzleTupleType;
 
 impl ToActDataType for AzleTupleType<'_> {
     fn to_act_data_type(&self, alias_name: &Option<&String>) -> crate::cdk_act::ActDataType {

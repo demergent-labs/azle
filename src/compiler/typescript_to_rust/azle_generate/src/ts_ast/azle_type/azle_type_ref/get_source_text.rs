@@ -1,6 +1,5 @@
-use crate::ts_ast::{source_map::source_map::GetSourceFileInfo, GetSourceText};
-
 use super::AzleTypeRef;
+use crate::ts_ast::{source_map::source_map::GetSourceFileInfo, GetSourceText};
 
 impl GetSourceText for AzleTypeRef<'_> {
     fn get_source_text(&self) -> String {

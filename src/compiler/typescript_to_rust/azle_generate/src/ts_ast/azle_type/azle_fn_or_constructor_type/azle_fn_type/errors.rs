@@ -1,9 +1,8 @@
+use super::AzleFnType;
 use crate::{
     errors::{ErrorMessage, Suggestion},
     ts_ast::{ast_traits::GetSourceInfo, source_map::GetSourceFileInfo, GetSourceText},
 };
-
-use super::AzleFnType;
 
 impl AzleFnType<'_> {
     pub(super) fn not_enclosed_in_func_error(&self) -> ErrorMessage {

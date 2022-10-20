@@ -1,5 +1,4 @@
 use super::AzleFnType;
-
 use crate::cdk_act::ToActDataType;
 
 impl ToActDataType for AzleFnType<'_> {

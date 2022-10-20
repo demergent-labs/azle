@@ -1,6 +1,5 @@
-use crate::ts_ast::GetName;
-
 use super::AzleTypeElement;
+use crate::ts_ast::GetName;
 
 impl GetName for AzleTypeElement<'_> {
     fn get_name(&self) -> &str {

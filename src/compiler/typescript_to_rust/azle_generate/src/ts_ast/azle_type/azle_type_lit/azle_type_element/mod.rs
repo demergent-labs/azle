@@ -1,10 +1,3 @@
-mod errors;
-pub mod get_dependencies;
-mod get_name;
-mod get_source_info;
-mod get_source_text;
-mod get_ts_type;
-
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeElement;
 
@@ -15,6 +8,13 @@ use crate::{
     },
     ts_ast::{azle_type::AzleType, GetName, GetTsType},
 };
+
+mod errors;
+mod get_dependencies;
+mod get_name;
+mod get_source_info;
+mod get_source_text;
+mod get_ts_type;
 
 pub struct AzleTypeElement<'a> {
     pub ts_type_element: TsTypeElement,

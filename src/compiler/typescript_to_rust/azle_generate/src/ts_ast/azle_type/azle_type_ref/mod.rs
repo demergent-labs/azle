@@ -1,14 +1,14 @@
+use swc_common::SourceMap;
+use swc_ecma_ast::TsTypeRef;
+
+use super::AzleType;
+
 mod errors;
 mod get_dependencies;
 mod get_name;
 mod get_source_info;
 mod get_source_text;
 mod to_act_data_type;
-
-use swc_common::SourceMap;
-use swc_ecma_ast::TsTypeRef;
-
-use super::AzleType;
 
 #[derive(Clone)]
 pub struct AzleTypeRef<'a> {

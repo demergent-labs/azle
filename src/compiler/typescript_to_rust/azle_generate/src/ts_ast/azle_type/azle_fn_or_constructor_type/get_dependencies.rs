@@ -1,6 +1,5 @@
-use crate::ts_ast::GetDependencies;
-
 use super::AzleFnOrConstructorType;
+use crate::ts_ast::GetDependencies;
 
 impl GetDependencies for AzleFnOrConstructorType<'_> {
     fn get_dependent_types(
