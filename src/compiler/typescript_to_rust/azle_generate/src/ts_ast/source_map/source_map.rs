@@ -1,5 +1,7 @@
 use swc_common::{Loc, SourceMap, Span};
 
+pub type Range = (usize, usize);
+
 pub trait GetSourceFileInfo {
     fn get_text(&self, span: Span) -> String;
     fn get_origin(&self, span: Span) -> String;
@@ -7,7 +9,7 @@ pub trait GetSourceFileInfo {
     fn get_line_number(&self, span: Span) -> usize;
     fn generate_line_highlight(&self, span: Span) -> String;
     fn generate_highlighted_line(&self, span: Span) -> String;
-    fn get_range(&self, span: Span) -> (usize, usize);
+    fn get_range(&self, span: Span) -> Range;
     fn generate_modified_source(&self, span: Span, replacement: &String) -> String;
     fn generate_modified_range(&self, span: Span, replacement: &String) -> (usize, usize);
 }
@@ -52,7 +54,7 @@ impl GetSourceFileInfo for SourceMap {
         line[self.get_start_col(span)..self.get_end_col(span)].to_string()
     }
 
-    fn get_range(&self, span: Span) -> (usize, usize) {
+    fn get_range(&self, span: Span) -> Range {
         let start = self.get_start_col(span);
         let end = self.get_end_col(span);
         (start, end)

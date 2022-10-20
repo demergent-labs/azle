@@ -1,21 +1,17 @@
 use swc_common::Span;
-use swc_ecma_ast::{ArrayPat, TsTypeAnn};
+use swc_ecma_ast::Param;
 
 use super::AzleFnDecl;
 use crate::{
     errors::{ErrorMessage, Suggestion},
-    ts_ast::source_map::GetSourceFileInfo,
+    ts_ast::{param::GetParamRange, source_map::GetSourceFileInfo},
 };
 
 impl AzleFnDecl<'_> {
-    pub(super) fn build_array_destructure_error_msg(
-        &self,
-        array_pat: &ArrayPat,
-        ts_type_ann: &TsTypeAnn,
-    ) -> ErrorMessage {
-        let type_ann_start_col = self.source_map.get_range(ts_type_ann.span);
-        let full_param_span_range = self.source_map.get_range(array_pat.span);
-        let range_without_type_annotation = (full_param_span_range.0, type_ann_start_col.0);
+    pub(super) fn build_array_destructure_error_msg(&self, param: &Param) -> ErrorMessage {
+        let array_pat = param.pat.as_array().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
+
+        let range = param.get_destructure_range(self.source_map);
         let replacement_name = "myParam"; // TODO: Come up with a better name from the ts_type_ann
 
         ErrorMessage {
@@ -23,7 +19,7 @@ impl AzleFnDecl<'_> {
             origin: self.source_map.get_origin(array_pat.span),
             line_number: self.source_map.get_line_number(array_pat.span),
             source: self.source_map.get_source(array_pat.span),
-            range: range_without_type_annotation,
+            range,
             annotation: "Attempted to destructure here".to_string(),
             suggestion: Some(Suggestion {
                 title: "Remove destructuring in favor of a concrete name".to_string(),
@@ -32,10 +28,7 @@ impl AzleFnDecl<'_> {
                     self.source_map.get_well_formed_line(array_pat.span),
                     replacement_name
                 ), // TODO: Use the new source_map.get_modified_source(replacement_name)
-                range: (
-                    full_param_span_range.0,
-                    full_param_span_range.0 + replacement_name.len(),
-                ), // TODO: Use the new source_map.get_modified_range(replacement_name)
+                range: (range.0, range.0 + replacement_name.len()), // TODO: Use the new source_map.get_modified_range(replacement_name)
                 annotation: None,
                 import_suggestion: None,
             }),
@@ -87,18 +80,27 @@ impl AzleFnDecl<'_> {
         "Canister method return types must be one of: Init, InspectMessage, Oneway, PostUpgrade, PreUpgrade, Query, QueryManual, Update, UpdateManual".to_string()
     }
 
-    pub(super) fn build_object_destructure_error_msg(&self) -> ErrorMessage {
+    pub(super) fn build_object_destructure_error_msg(&self, param: &Param) -> ErrorMessage {
+        let object_pat = param.pat.as_object().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
+
+        let range = param.get_destructure_range(self.source_map);
+        let replacement_name = "myParam"; // TODO: Come up with a better name from the ts_type_ann
+
         ErrorMessage {
             title: "Object destructuring in parameters is unsupported at this time".to_string(),
-            origin: "index.ts".to_string(), // TODO: Get this from the source map
-            line_number: 1,                 // TODO: Get this from the source map
-            source: "export function example({id, name}: User) {}".to_string(), // TODO: Get this from the source map
-            range: (24, 34), // TODO: Get this from the source map
-            annotation: "Attempted to destructure here".to_string(), // TODO
+            origin: self.source_map.get_origin(object_pat.span),
+            line_number: self.source_map.get_line_number(object_pat.span),
+            source: self.source_map.get_source(object_pat.span),
+            range,
+            annotation: "Attempted to destructure here".to_string(),
             suggestion: Some(Suggestion {
                 title: "Remove destructuring in favor of a concrete name".to_string(),
-                source: "export function example(user: User) {}".to_string(), // TODO: Get this from the source map
-                range: (24, 28), // TODO: Get this from the source map
+                source: format!(
+                    "{}{}...",
+                    self.source_map.get_well_formed_line(object_pat.span),
+                    replacement_name
+                ), // TODO: Use the new source_map.get_modified_source(replacement_name)
+                range: (range.0, range.0 + replacement_name.len()), // TODO: Use the new source_map.get_modified_range(replacement_name)
                 annotation: None,
                 import_suggestion: None,
             }),

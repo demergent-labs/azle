@@ -23,4 +23,5 @@ mod ts_type_ann;
 
 pub mod azle_type;
 pub mod azle_type_alias_decls;
+pub mod param;
 pub mod program;

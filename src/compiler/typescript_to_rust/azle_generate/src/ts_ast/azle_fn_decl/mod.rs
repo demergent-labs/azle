@@ -66,17 +66,9 @@ impl AzleFnDecl<'_> {
             .iter()
             .map(|param| match &param.pat {
                 Pat::Ident(ident) => ident,
-                Pat::Array(array_pat) => match &array_pat.type_ann {
-                    Some(ts_type_ann) => {
-                        panic!(
-                            "{}",
-                            self.build_array_destructure_error_msg(array_pat, ts_type_ann)
-                        )
-                    }
-                    None => panic!("{}", self.build_untyped_param_error_msg()),
-                },
+                Pat::Array(_) => panic!("{}", self.build_array_destructure_error_msg(param)),
                 Pat::Rest(_) => panic!("{}", self.build_rest_param_error_msg()),
-                Pat::Object(_) => panic!("{}", self.build_object_destructure_error_msg()),
+                Pat::Object(_) => panic!("{}", self.build_object_destructure_error_msg(param)),
                 Pat::Assign(_) => panic!("{}", self.build_param_default_value_error_msg()),
                 Pat::Invalid(_) => panic!("{}", self.build_invalid_param_error_msg()),
                 Pat::Expr(_) => panic!("{}", self.build_invalid_param_error_msg()),
