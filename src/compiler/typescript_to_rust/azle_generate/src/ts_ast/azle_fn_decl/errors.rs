@@ -144,18 +144,27 @@ impl AzleFnDecl<'_> {
         }
     }
 
-    pub(super) fn build_rest_param_error_msg(&self) -> ErrorMessage {
+    pub(super) fn build_rest_param_error_msg(&self, param: &Param) -> ErrorMessage {
+        let rest_pat = param.pat.as_rest().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
+
+        let range = param.get_destructure_range(self.source_map);
+        let replacement_name = "myParam"; // TODO: Come up with a better name from the ts_type_ann
+
         ErrorMessage {
             title: "Rest parameters are not supported in canister method signatures".to_string(),
-            origin: "index.ts".to_string(), // TODO: Get this from the source map
-            line_number: 1,                 // TODO: Get this from the source map
-            source: "export function example(...options: any[]) {}".to_string(), // TODO: Get this from the source map
-            range: (24, 34), // TODO: Get this from the source map
+            origin: self.source_map.get_origin(rest_pat.span),
+            line_number: self.source_map.get_line_number(rest_pat.span),
+            source: self.source_map.get_source(rest_pat.span),
+            range,
             annotation: "Attempted parameter spread here".to_string(), // TODO
             suggestion: Some(Suggestion {
-                title: "Specify each param individually with a concrete type".to_string(),
-                source: "export function example(options: Options) {}".to_string(), // TODO: Get this from the source map
-                range: (24, 31), // TODO: Get this from the source map
+                title: "Specify each parameter individually with a concrete type".to_string(),
+                source: format!(
+                    "{}{}...",
+                    self.source_map.get_well_formed_line(rest_pat.span),
+                    replacement_name
+                ), // TODO: Use the new source_map.get_modified_source(replacement_name)
+                range: (range.0, range.0 + replacement_name.len()), // TODO: Use the new source_map.get_modified_range(replacement_name)
                 annotation: None,
                 import_suggestion: None,
             }),

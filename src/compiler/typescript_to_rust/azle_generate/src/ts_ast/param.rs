@@ -21,7 +21,16 @@ impl GetParamRange for Param {
                 let range_without_type_annotation = (full_param_span_range.0, type_ann_range.0);
                 range_without_type_annotation
             }
-            Pat::Rest(_) => todo!(),
+            Pat::Rest(rest_pat) => {
+                let full_param_span_range = source_map.get_range(rest_pat.span);
+                if rest_pat.type_ann.is_none() {
+                    return full_param_span_range;
+                }
+                let ts_type_ann = rest_pat.type_ann.as_ref().unwrap();
+                let type_ann_range = source_map.get_range(ts_type_ann.span);
+                let range_without_type_annotation = (full_param_span_range.0, type_ann_range.0);
+                range_without_type_annotation
+            }
             Pat::Object(object_pat) => {
                 let full_param_span_range = source_map.get_range(object_pat.span);
                 if object_pat.type_ann.is_none() {

@@ -67,7 +67,7 @@ impl AzleFnDecl<'_> {
             .map(|param| match &param.pat {
                 Pat::Ident(ident) => ident,
                 Pat::Array(_) => panic!("{}", self.build_array_destructure_error_msg(param)),
-                Pat::Rest(_) => panic!("{}", self.build_rest_param_error_msg()),
+                Pat::Rest(_) => panic!("{}", self.build_rest_param_error_msg(param)),
                 Pat::Object(_) => panic!("{}", self.build_object_destructure_error_msg(param)),
                 Pat::Assign(_) => panic!("{}", self.build_param_default_value_error_msg()),
                 Pat::Invalid(_) => panic!("{}", self.build_invalid_param_error_msg()),
