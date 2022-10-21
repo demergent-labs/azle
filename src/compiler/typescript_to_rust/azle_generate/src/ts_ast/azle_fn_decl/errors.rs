@@ -14,6 +14,8 @@ impl AzleFnDecl<'_> {
                 title: "Remove destructuring in favor of a concrete name".to_string(),
                 source: "export function example(list: List) {}".to_string(), // TODO: Get this from the source map
                 range: (24, 28), // TODO: Get this from the source map
+                annotation: None,
+                import_suggestion: None,
             }),
         }
     }
@@ -44,6 +46,8 @@ impl AzleFnDecl<'_> {
                     canister_method_type
                 ), // TODO: Get this from the source map
                 range: (32, 38), // TODO: Get this from the source map
+                annotation: None,
+                import_suggestion: None,
             }),
         }
     }
@@ -64,6 +68,8 @@ impl AzleFnDecl<'_> {
                 title: "Remove destructuring in favor of a concrete name".to_string(),
                 source: "export function example(user: User) {}".to_string(), // TODO: Get this from the source map
                 range: (24, 28), // TODO: Get this from the source map
+                annotation: None,
+                import_suggestion: None,
             }),
         }
     }
@@ -80,6 +86,8 @@ impl AzleFnDecl<'_> {
                 title: "Remove the default value or set it inside the function body".to_string(),
                 source: "export function example(param: string) {}".to_string(), // TODO: Get this from the source map
                 range: (31, 37), // TODO: Get this from the source map
+                annotation: None,
+                import_suggestion: None,
             }),
         }
     }
@@ -97,6 +105,8 @@ impl AzleFnDecl<'_> {
                     .to_string(),
                 source: "export function example(): Query<MyType> {}".to_string(), // TODO: Get this from the source map
                 range: (33, 39), // TODO: Get this from the source map
+                annotation: None,
+                import_suggestion: None,
             }),
         }
     }
@@ -113,6 +123,8 @@ impl AzleFnDecl<'_> {
                 title: "Specify each param individually with a concrete type".to_string(),
                 source: "export function example(options: Options) {}".to_string(), // TODO: Get this from the source map
                 range: (24, 31), // TODO: Get this from the source map
+                annotation: None,
+                import_suggestion: None,
             }),
         }
     }
@@ -129,6 +141,8 @@ impl AzleFnDecl<'_> {
                 title: "Specify a type for the parameter".to_string(),
                 source: "export function example(param: MyParam) {}".to_string(), // TODO: Get this from the source map
                 range: (29, 38), // TODO: Get this from the source map
+                annotation: None,
+                import_suggestion: None,
             }),
         }
     }

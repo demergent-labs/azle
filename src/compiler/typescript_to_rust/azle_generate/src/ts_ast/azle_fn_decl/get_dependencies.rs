@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
 use super::AzleFnDecl;
-use crate::ts_ast::{ast_traits::GetDependencies, AzleTypeAliasDecl};
+use crate::ts_ast::{ast_traits::GetDependencies, azle_type::AzleType, AzleTypeAliasDecl};
 
 impl GetDependencies for Vec<AzleFnDecl<'_>> {
     fn get_dependent_types(
@@ -35,7 +35,8 @@ impl GetDependencies for AzleFnDecl<'_> {
         ts_types
             .iter()
             .fold(found_type_names.clone(), |acc, ts_type| {
-                acc.union(&ts_type.get_dependent_types(type_alias_lookup, &acc))
+                let azle_type = AzleType::from_ts_type(ts_type.clone().clone(), self.source_map);
+                acc.union(&azle_type.get_dependent_types(type_alias_lookup, &acc))
                     .cloned()
                     .collect()
             })

@@ -1,6 +1,9 @@
 use crate::{
     cdk_act::{ActDataType, Actable},
-    ts_ast::{type_alias::azle_type_alias_decl::AzleTypeAliasListHelperMethods, AzleTypeAliasDecl},
+    ts_ast::{
+        azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods,
+        AzleTypeAliasDecl,
+    },
 };
 use std::collections::HashSet;
 

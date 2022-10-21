@@ -7,14 +7,17 @@ pub trait GetSourceFileInfo {
     fn get_line_number(&self, span: Span) -> usize;
     fn generate_line_highlight(&self, span: Span) -> String;
     fn generate_highlighted_line(&self, span: Span) -> String;
-    fn get_well_formed_line(&self, span: Span) -> String;
     fn get_range(&self, span: Span) -> (usize, usize);
+    fn generate_modified_source(&self, span: Span, replacement: &String) -> String;
+    fn generate_modified_range(&self, span: Span, replacement: &String) -> (usize, usize);
 }
 
 trait PrivateGetSourceFileInfo {
     fn get_loc(&self, span: Span) -> Loc;
     fn get_start_col(&self, span: Span) -> usize;
     fn get_end_col(&self, span: Span) -> usize;
+    fn get_well_formed_end_line(&self, span: Span) -> String;
+    fn get_well_formed_line(&self, span: Span) -> String;
 }
 
 impl PrivateGetSourceFileInfo for SourceMap {
@@ -30,6 +33,16 @@ impl PrivateGetSourceFileInfo for SourceMap {
     fn get_end_col(&self, span: Span) -> usize {
         let loc = self.lookup_char_pos(span.hi);
         loc.col_display
+    }
+
+    fn get_well_formed_end_line(&self, span: Span) -> String {
+        let line = self.get_source(span);
+        line[self.get_end_col(span)..].to_string()
+    }
+
+    fn get_well_formed_line(&self, span: Span) -> String {
+        let line = self.get_source(span);
+        line[..self.get_start_col(span)].to_string()
     }
 }
 
@@ -85,9 +98,20 @@ impl GetSourceFileInfo for SourceMap {
         highlight
     }
 
-    fn get_well_formed_line(&self, span: Span) -> String {
-        let line = self.get_source(span);
-        line[..self.get_start_col(span)].to_string()
+    fn generate_modified_source(&self, span: Span, replacement: &String) -> String {
+        format!(
+            "{}{}{}",
+            self.get_well_formed_line(span),
+            replacement,
+            self.get_well_formed_end_line(span)
+        )
+    }
+
+    fn generate_modified_range(&self, span: Span, replacement: &String) -> (usize, usize) {
+        (
+            self.get_start_col(span),
+            self.get_start_col(span) + replacement.len(),
+        )
     }
 
     fn get_origin(&self, span: Span) -> String {

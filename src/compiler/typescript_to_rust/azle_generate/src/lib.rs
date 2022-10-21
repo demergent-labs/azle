@@ -8,9 +8,8 @@ use crate::{
 
 mod cdk_act;
 mod errors;
+mod generators;
 mod ts_ast;
-
-pub mod generators;
 
 pub fn azle_generate(
     ts_file_names: &Vec<&str>,
