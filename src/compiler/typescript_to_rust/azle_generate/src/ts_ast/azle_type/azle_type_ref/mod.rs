@@ -17,7 +17,7 @@ pub struct AzleTypeRef<'a> {
 }
 
 impl AzleTypeRef<'_> {
-    pub fn get_enclosed_azle_type(&self) -> AzleType {
+    pub(self) fn get_enclosed_azle_type(&self) -> AzleType {
         match &self.ts_type_ref.type_params {
             Some(params) => {
                 if params.params.len() != 1 {

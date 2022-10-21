@@ -21,7 +21,7 @@ pub struct AzleTypeElement<'a> {
 }
 
 impl AzleTypeElement<'_> {
-    pub fn to_record_member(&self) -> ActRecordMember {
+    pub(super) fn to_record_member(&self) -> ActRecordMember {
         let ts_property_signature = match self.as_ts_property_signature() {
             Some(ts_property_signature) => ts_property_signature,
             None => panic!("{}", self.record_property_signature_error()),
@@ -37,7 +37,7 @@ impl AzleTypeElement<'_> {
         }
     }
 
-    pub fn to_variant_member(&self) -> ActVariantMember {
+    pub(super) fn to_variant_member(&self) -> ActVariantMember {
         let ts_property_signature = match self.as_ts_property_signature() {
             Some(ts_property_signature) => ts_property_signature,
             None => panic!("{}", self.variant_property_signature_error()),

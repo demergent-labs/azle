@@ -28,7 +28,7 @@ pub struct AzleTypeLit<'a> {
 }
 
 impl AzleTypeLit<'_> {
-    pub fn to_record(&self, record_name: &Option<&String>) -> ActDataType {
+    pub(super) fn to_record(&self, record_name: &Option<&String>) -> ActDataType {
         let members: Vec<ActRecordMember> = self
             .ts_type_lit
             .members
@@ -61,7 +61,7 @@ impl AzleTypeLit<'_> {
             },
         })
     }
-    pub fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType {
+    pub(super) fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType {
         let members: Vec<ActVariantMember> = self
             .ts_type_lit
             .members
