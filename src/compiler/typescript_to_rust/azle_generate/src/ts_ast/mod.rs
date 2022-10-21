@@ -1,25 +1,27 @@
 use ast_traits::GenerateInlineName;
 use ast_traits::GetDependencies;
-pub use ast_traits::GetName;
 use ast_traits::GetSourceText;
 use ast_traits::GetTsType;
-pub use azle_fn_decl::AzleFnDecl;
 use azle_functions_and_methods::FunctionAndMethodTypeHelperMethods;
 use azle_type::AzleArrayType;
 use azle_type::AzleFnOrConstructorType;
+
+pub use ast_traits::GetName;
+pub use azle_fn_decl::AzleFnDecl;
 pub use azle_type_alias_decls::AzleTypeAliasDecl;
 pub use ts_ast::TsAst;
 
 mod ast_traits;
 mod azle_fn_decl;
 mod azle_functions_and_methods;
-pub mod azle_type;
-pub mod azle_type_alias_decls;
 mod ident;
 mod module;
-pub mod program;
 mod source_map;
 mod ts_ast;
 mod ts_method_signature;
 mod ts_type;
 mod ts_type_ann;
+
+pub mod azle_type;
+pub mod azle_type_alias_decls;
+pub mod program;
