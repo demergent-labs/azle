@@ -29,17 +29,6 @@ pub struct ActTupleElem {
     pub elem_type: ActDataType,
 }
 
-impl ActTuple {
-    pub fn get_name(&self) -> String {
-        match &self.act_type {
-            LiteralOrTypeAlias::Literal(literal) => &literal.tuple,
-            LiteralOrTypeAlias::TypeAlias(type_alias) => &type_alias.tuple,
-        }
-        .name
-        .clone()
-    }
-}
-
 impl TypeAliasize<ActTuple> for ActTuple {
     fn as_type_alias(&self) -> ActTuple {
         ActTuple {

@@ -20,32 +20,6 @@ pub enum ActDataType {
 }
 
 impl ActDataType {
-    pub fn get_name(&self) -> String {
-        match self {
-            ActDataType::Array(array) => array.get_name(),
-            ActDataType::Func(func) => func.get_name(),
-            ActDataType::Option(option) => option.get_name(),
-            ActDataType::Primitive(primitive) => primitive.get_name(),
-            ActDataType::Record(record) => record.get_name(),
-            ActDataType::Tuple(tuple) => tuple.get_name(),
-            ActDataType::TypeRef(type_ref) => type_ref.get_name(),
-            ActDataType::Variant(variant) => variant.get_name(),
-        }
-    }
-    pub fn get_type_name(&self) -> String {
-        match self {
-            ActDataType::Array(_) => "Array",
-            ActDataType::Func(_) => "Func",
-            ActDataType::Option(_) => "Option",
-            ActDataType::Primitive(_) => "Primitive",
-            ActDataType::Record(_) => "Record",
-            ActDataType::Tuple(_) => "Tuple",
-            ActDataType::TypeRef(_) => "TypeRef",
-            ActDataType::Variant(_) => "Variant",
-        }
-        .to_string()
-    }
-
     pub fn needs_definition(&self) -> bool {
         match self {
             ActDataType::Primitive(_) => false,

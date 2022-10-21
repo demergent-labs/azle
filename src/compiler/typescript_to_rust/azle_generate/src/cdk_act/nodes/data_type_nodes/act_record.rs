@@ -69,15 +69,6 @@ impl ActRecord {
         .map(|member| member.member_type.clone())
         .collect()
     }
-
-    pub fn get_name(&self) -> String {
-        match &self.act_type {
-            LiteralOrTypeAlias::Literal(literal) => &literal.record,
-            LiteralOrTypeAlias::TypeAlias(type_alias) => &type_alias.record,
-        }
-        .name
-        .clone()
-    }
 }
 
 impl ToTokenStream for RecordLiteral {
