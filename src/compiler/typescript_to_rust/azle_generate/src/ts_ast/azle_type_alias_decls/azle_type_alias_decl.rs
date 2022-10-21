@@ -78,6 +78,9 @@ impl TsTypeAliasHelperMethods for AzleTypeAliasDecl<'_> {
                         .type_ann
                         .as_ts_type_ref()
                         .unwrap()
+                        .type_name
+                        .as_ident()
+                        .unwrap()
                         .get_name()
                         == "Canister"
             }

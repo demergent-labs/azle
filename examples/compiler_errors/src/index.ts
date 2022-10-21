@@ -55,14 +55,12 @@ type VariantNotProperties = Variant<{}>;
 // TsTypeQuery
 // TsOptionalType
 // TsRestType
-// TsUnionOrIntersectionType
 // TsConditionalType
 // TsInferType
 // TsParenthesizedType
 // TsTypeOperator
 // TsIndexedAccessType
 // TsMappedType
-// TsLitType
 // TsTypePredicate
 // TsImportType
 
@@ -90,10 +88,26 @@ type VariantNotProperties = Variant<{}>;
 //     whatTypeIsThis;
 // };
 // export function recNoType(record: RecordWithNoTypeAnnotation): Query<void> {}
-type RecordWithAny = {
-    whatTypeIsThis: any;
-};
-export function recAny(record: RecordWithAny): Query<void> {}
+// type RecordWithAny = {
+//     whatTypeIsThis: any;
+// };
+// export function recAny(record: RecordWithAny): Query<void> {}
+// type RecordWithQualifiedName = {
+//     whatTypeIsThis: azle.int;
+// };
+// export function recQualified(record: RecordWithQualifiedName): Query<void> {}
+// type RecordWithUnion = {
+//     whatTypeIsThis: int | string;
+// };
+// export function recUnion(record: RecordWithUnion): Query<void> {}
+// type RecordWithLitType = {
+//     whatTypeIsThis: 'string';
+// };
+// export function recLitType(record: RecordWithLitType): Query<void> {}
+// type RecordWithIntersection = {
+//     whatTypeIsThis: int & string;
+// };
+// export function recIntersection(record: RecordWithIntersection): Query<void> {}
 // type RecordWithMethod = {
 //     thing(): Query<void>;
 // };

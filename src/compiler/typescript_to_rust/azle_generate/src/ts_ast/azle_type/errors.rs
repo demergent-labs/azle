@@ -3,7 +3,10 @@ use swc_ecma_ast::TsType;
 
 use crate::{
     errors::ErrorMessage,
-    ts_ast::{ast_traits::GetSpan, source_map::GetSourceFileInfo},
+    ts_ast::{
+        ast_traits::{GetSpan, TypeToString},
+        source_map::GetSourceFileInfo,
+    },
 };
 
 // TODO we probably should specify that they can use these types in their code
@@ -16,7 +19,7 @@ pub(super) fn unsupported_type_error(ts_type: TsType, source_map: &SourceMap) ->
         line_number: source_map.get_line_number(ts_type.get_span()),
         source: source_map.get_source(ts_type.get_span()),
         range: source_map.get_range(ts_type.get_span()),
-        annotation: "This type is not supported".to_string(),
+        annotation: format!("{} type is not supported", ts_type.type_to_string()),
         suggestion: None,
     }
 }

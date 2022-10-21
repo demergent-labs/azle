@@ -13,6 +13,7 @@ mod errors;
 mod get_dependencies;
 mod get_source_info;
 mod get_source_text;
+mod type_to_string;
 
 pub struct AzleTypeElement<'a> {
     pub ts_type_element: TsTypeElement,

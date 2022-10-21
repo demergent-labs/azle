@@ -27,3 +27,7 @@ pub trait GetTsType {
 pub trait GetSpan {
     fn get_span(&self) -> Span;
 }
+
+pub trait TypeToString {
+    fn type_to_string(&self) -> String;
+}

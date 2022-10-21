@@ -1,7 +1,7 @@
 use swc_common::Span;
-use swc_ecma_ast::TsType;
+use swc_ecma_ast::{TsFnOrConstructorType, TsType, TsUnionOrIntersectionType};
 
-use crate::ts_ast::ast_traits::GetSpan;
+use crate::ts_ast::ast_traits::{GetSpan, TypeToString};
 
 impl GetSpan for TsType {
     fn get_span(&self) -> Span {
@@ -9,10 +9,8 @@ impl GetSpan for TsType {
             TsType::TsKeywordType(keyword) => keyword.span,
             TsType::TsThisType(this) => this.span,
             TsType::TsFnOrConstructorType(fn_or_const) => match fn_or_const {
-                swc_ecma_ast::TsFnOrConstructorType::TsFnType(fn_type) => fn_type.span,
-                swc_ecma_ast::TsFnOrConstructorType::TsConstructorType(const_type) => {
-                    const_type.span
-                }
+                TsFnOrConstructorType::TsFnType(fn_type) => fn_type.span,
+                TsFnOrConstructorType::TsConstructorType(const_type) => const_type.span,
             },
             TsType::TsTypeRef(type_ref) => type_ref.span,
             TsType::TsTypeQuery(type_query) => type_query.span,
@@ -22,8 +20,8 @@ impl GetSpan for TsType {
             TsType::TsOptionalType(opt) => opt.span,
             TsType::TsRestType(rest) => rest.span,
             TsType::TsUnionOrIntersectionType(union_or_inter) => match union_or_inter {
-                swc_ecma_ast::TsUnionOrIntersectionType::TsUnionType(union) => union.span,
-                swc_ecma_ast::TsUnionOrIntersectionType::TsIntersectionType(inter) => inter.span,
+                TsUnionOrIntersectionType::TsUnionType(union) => union.span,
+                TsUnionOrIntersectionType::TsIntersectionType(inter) => inter.span,
             },
             TsType::TsConditionalType(cond) => cond.span,
             TsType::TsInferType(infer) => infer.span,
@@ -35,5 +33,43 @@ impl GetSpan for TsType {
             TsType::TsTypePredicate(pred) => pred.span,
             TsType::TsImportType(import) => import.span,
         }
+    }
+}
+
+impl TypeToString for TsType {
+    fn type_to_string(&self) -> String {
+        match self {
+            TsType::TsKeywordType(_) => "keyword",
+            TsType::TsThisType(_) => "this",
+            TsType::TsFnOrConstructorType(ts_fn_or_constructor_type) => {
+                match ts_fn_or_constructor_type {
+                    TsFnOrConstructorType::TsFnType(_) => "function",
+                    TsFnOrConstructorType::TsConstructorType(_) => "constructor",
+                }
+            }
+            TsType::TsTypeRef(_) => "type reference",
+            TsType::TsTypeQuery(_) => "type query",
+            TsType::TsTypeLit(_) => "type literal",
+            TsType::TsArrayType(_) => "array",
+            TsType::TsTupleType(_) => "tuple",
+            TsType::TsOptionalType(_) => "optional",
+            TsType::TsRestType(_) => "rest",
+            TsType::TsUnionOrIntersectionType(ts_union_or_intersection_type) => {
+                match ts_union_or_intersection_type {
+                    TsUnionOrIntersectionType::TsUnionType(_) => "union",
+                    TsUnionOrIntersectionType::TsIntersectionType(_) => "intersection",
+                }
+            }
+            TsType::TsConditionalType(_) => "conditional",
+            TsType::TsInferType(_) => "infer",
+            TsType::TsParenthesizedType(_) => "parenthesized",
+            TsType::TsTypeOperator(_) => "type operator",
+            TsType::TsIndexedAccessType(_) => "indexed access",
+            TsType::TsMappedType(_) => "mapped",
+            TsType::TsLitType(_) => "literal",
+            TsType::TsTypePredicate(_) => "type predicate",
+            TsType::TsImportType(_) => "import",
+        }
+        .to_string()
     }
 }

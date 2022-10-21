@@ -2,33 +2,6 @@ pub trait GetName {
     fn get_name(&self) -> &str;
 }
 
-impl GetName for swc_ecma_ast::TsEntityName {
-    fn get_name(&self) -> &str {
-        match self {
-            swc_ecma_ast::TsEntityName::TsQualifiedName(qualified_name) => {
-                let left = qualified_name.left.get_name();
-                let right = qualified_name.right.get_name();
-                let message = format!("We don't support qualified names like {left}.{right}\nTry importing {left} and then use {right} directly");
-                panic!("{}", message)
-            }
-            swc_ecma_ast::TsEntityName::Ident(identifier) => identifier.get_name(),
-        }
-        // TODO this was something that Dan wrote back when this bit of code lived in ts_type_ref.
-        // match &self {
-        //     swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
-        //         let error_message = ErrorWithExampleDiff {
-        //             error: "Namespace-qualified types are not currently supported",
-        //             help: "Either declare the type locally or import it without a wildcard",
-        //             remove: "Namespace.MyType",
-        //             add: "MyType",
-        //         };
-        //         panic!("{}", error_message.to_string())
-        //     }
-        //     swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name(),
-        // }
-    }
-}
-
 impl GetName for swc_ecma_ast::Expr {
     fn get_name(&self) -> &str {
         match self {
@@ -76,60 +49,5 @@ impl GetName for swc_ecma_ast::Expr {
 impl GetName for swc_ecma_ast::TsPropertySignature {
     fn get_name(&self) -> &str {
         self.key.get_name()
-    }
-}
-
-impl GetName for swc_ecma_ast::TsMethodSignature {
-    fn get_name(&self) -> &str {
-        self.key.get_name()
-    }
-}
-
-impl GetName for swc_ecma_ast::TsGetterSignature {
-    fn get_name(&self) -> &str {
-        self.key.get_name()
-    }
-}
-
-impl GetName for swc_ecma_ast::TsSetterSignature {
-    fn get_name(&self) -> &str {
-        self.key.get_name()
-    }
-}
-
-trait TsIndexSignatureErrors {
-    fn wrong_number_of_params_error(&self) -> String;
-}
-
-impl TsIndexSignatureErrors for swc_ecma_ast::TsIndexSignature {
-    fn wrong_number_of_params_error(&self) -> String {
-        format!(
-            "There should be only one parameter for an index signature. {} were found.",
-            self.params.len()
-        )
-    }
-}
-
-impl GetName for swc_ecma_ast::TsIndexSignature {
-    fn get_name(&self) -> &str {
-        if self.params.len() != 1 {
-            panic!("{}", self.wrong_number_of_params_error())
-        }
-        match self.params.get(0) {
-            Some(param) => param.get_name(),
-            None => panic!("{}", self.wrong_number_of_params_error()),
-        }
-    }
-}
-
-impl GetName for swc_ecma_ast::TsCallSignatureDecl {
-    fn get_name(&self) -> &str {
-        todo!("Get Name for TsCallSignatureDecl not implemented. It's unclear what a name would be for a TsCallSignatureDecl")
-    }
-}
-
-impl GetName for swc_ecma_ast::TsConstructSignatureDecl {
-    fn get_name(&self) -> &str {
-        todo!("Get Name for TsConstructSignatureDecl not implemented. It's unclear what a name would be for a TsConstructSignatureDecl")
     }
 }
