@@ -31,7 +31,10 @@ impl TsAst {
 
                 let cm: Lrc<SourceMap> = Default::default();
 
-                let fm = cm.load_file(&filepath).unwrap();
+                let fm = match cm.load_file(&filepath) {
+                    Ok(rc_source_file) => rc_source_file,
+                    Err(err) => panic!("Error: Unable to load file {}\n{}", ts_file_name, err),
+                };
 
                 let lexer = Lexer::new(
                     Syntax::Typescript(TsConfig::default()),
@@ -51,7 +54,7 @@ impl TsAst {
                                 source_map,
                             };
                         };
-                        panic!("this cannot happen");
+                        panic!("Unreachable");
                     }
                     Err(error) => panic!("{}: Syntax Error: {}", ts_file_name, error.kind().msg()),
                 }
