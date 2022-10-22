@@ -11,10 +11,8 @@ impl GetDependencies for AzleTypeLit<'_> {
             .members
             .iter()
             .fold(found_type_names.clone(), |acc, member| {
-                let azle_type_element = AzleTypeElement {
-                    ts_type_element: member.clone(),
-                    source_map: self.source_map,
-                };
+                let azle_type_element =
+                    AzleTypeElement::from_ts_type_element(member.clone(), self.source_map);
                 acc.union(&azle_type_element.get_dependent_types(type_alias_lookup, &acc))
                     .cloned()
                     .collect()

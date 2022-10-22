@@ -34,10 +34,8 @@ impl AzleTypeLit<'_> {
             .members
             .iter()
             .map(|member| {
-                let azle_member = AzleTypeElement {
-                    ts_type_element: member.clone(),
-                    source_map: self.source_map,
-                };
+                let azle_member =
+                    AzleTypeElement::from_ts_type_element(member.clone(), self.source_map);
                 azle_member.to_record_member()
             })
             .collect();
@@ -67,10 +65,8 @@ impl AzleTypeLit<'_> {
             .members
             .iter()
             .map(|member| {
-                let azle_member = AzleTypeElement {
-                    ts_type_element: member.clone(),
-                    source_map: self.source_map,
-                };
+                let azle_member =
+                    AzleTypeElement::from_ts_type_element(member.clone(), self.source_map);
                 azle_member.to_variant_member()
             })
             .collect();

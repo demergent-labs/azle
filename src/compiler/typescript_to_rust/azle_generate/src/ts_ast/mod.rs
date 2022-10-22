@@ -18,7 +18,6 @@ mod ident;
 mod module;
 mod source_map;
 mod ts_ast;
-mod ts_method_signature;
 mod ts_type;
 mod ts_type_ann;
 
