@@ -1,7 +1,7 @@
 use crate::{
     cdk_act::{SystemStructureType, ToActDataType, ToTokenStream},
     ts_ast::{
-        azle_type::AzleType,
+        azle_type::{AzleMethodSignature, AzleType, AzleTypeElement},
         program::{azle_program::AzleProgramVecHelperMethods, AzleProgram},
         AzleTypeAliasDecl, GetName,
     },
@@ -9,7 +9,7 @@ use crate::{
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use swc_common::SourceMap;
-use swc_ecma_ast::{Expr, TsFnParam, TsMethodSignature, TsType, TsTypeElement, TsTypeLit};
+use swc_ecma_ast::{TsFnParam, TsType, TsTypeLit};
 
 #[derive(Clone)]
 pub struct CrossCanisterCallFunctionsInfo {
@@ -169,32 +169,30 @@ fn generate_cross_canister_call_functions_infos_from_canister_type_literal(
         .members
         .iter()
         .map(|member| {
+            let azle_member = AzleTypeElement::from_ts_type_element(member.clone(), source_map);
             generate_cross_canister_call_functions_info_from_canister_type_element(
-                member,
+                &azle_member,
                 canister_type_alias_decl_name,
-                source_map,
             )
         })
         .collect()
 }
 
 fn generate_cross_canister_call_functions_info_from_canister_type_element(
-    canister_type_element: &TsTypeElement,
+    canister_type_element: &AzleTypeElement,
     canister_type_alias_decl_name: &str,
-    source_map: &SourceMap,
 ) -> CrossCanisterCallFunctionsInfo {
     match canister_type_element {
-        TsTypeElement::TsMethodSignature(ts_method_signature) => {
+        AzleTypeElement::AzleMethodSignature(azle_method_signature) => {
             let cross_canister_call_function_names = get_cross_canister_call_function_names(
-                ts_method_signature,
+                azle_method_signature,
                 canister_type_alias_decl_name,
             );
 
-            let call_params = get_ts_method_signature_rust_params(ts_method_signature, source_map);
-            let function_return_type =
-                get_ts_method_signature_return_type(ts_method_signature, source_map);
+            let call_params = get_ts_method_signature_rust_params(azle_method_signature);
+            let function_return_type = get_ts_method_signature_return_type(azle_method_signature);
 
-            let method_name = get_method_name(ts_method_signature);
+            let method_name = azle_method_signature.get_method_name();
 
             let call_rust = generate_call_rust(
                 &cross_canister_call_function_names.call_function_name,
@@ -262,10 +260,10 @@ fn generate_cross_canister_call_functions_info_from_canister_type_element(
 }
 
 fn get_cross_canister_call_function_names(
-    ts_method_signature: &TsMethodSignature,
+    ts_method_signature: &AzleMethodSignature,
     canister_type_alias_decl_name: &str,
 ) -> CrossCanisterCallFunctionNames {
-    let method_name = get_method_name(ts_method_signature);
+    let method_name = ts_method_signature.get_method_name();
 
     CrossCanisterCallFunctionNames {
         call_function_name: format!(
@@ -288,13 +286,6 @@ fn get_cross_canister_call_function_names(
             "_azle_notify_with_payment128_{}_{}",
             canister_type_alias_decl_name, &method_name
         ),
-    }
-}
-
-fn get_method_name(ts_method_signature: &TsMethodSignature) -> String {
-    match &*ts_method_signature.key {
-        Expr::Ident(ident) => ident.get_name().to_string(),
-        _ => panic!(""),
     }
 }
 
@@ -513,25 +504,29 @@ fn generate_notify_with_payment128_rust(
 }
 
 fn get_ts_method_signature_return_type(
-    ts_method_signature: &TsMethodSignature,
-    source_map: &SourceMap,
+    azle_method_signature: &AzleMethodSignature,
 ) -> proc_macro2::TokenStream {
-    let ts_type_ann = &*ts_method_signature.type_ann.as_ref().unwrap().type_ann;
+    let ts_type_ann = &*azle_method_signature
+        .ts_method_signature
+        .type_ann
+        .as_ref()
+        .unwrap()
+        .type_ann;
     let ts_type_ref = &ts_type_ann.as_ts_type_ref().unwrap();
     let type_params = ts_type_ref.type_params.as_ref().unwrap();
     let return_ts_type = &**type_params.params.get(0).unwrap();
-    let return_azle_type = AzleType::from_ts_type(return_ts_type.clone(), source_map);
+    let return_azle_type =
+        AzleType::from_ts_type(return_ts_type.clone(), azle_method_signature.source_map);
 
     return_azle_type.to_act_data_type(&None).to_token_stream()
 }
 
 // TODO this part should be refactored to allow us to get a params data structure by just passing in a &FnDecl
 // TODO that params data structures can have the name, the type, and both strings and idents as necessary
-fn get_ts_method_signature_rust_params(
-    ts_method_signature: &TsMethodSignature,
-    source_map: &SourceMap,
-) -> RustParams {
-    let params = ts_method_signature
+// Okay so a rust param is
+fn get_ts_method_signature_rust_params(azle_method_signature: &AzleMethodSignature) -> RustParams {
+    let params = azle_method_signature
+        .ts_method_signature
         .params
         .iter()
         .map(|ts_fn_param| match ts_fn_param {
@@ -539,7 +534,8 @@ fn get_ts_method_signature_rust_params(
                 let param_name = &binding_ident.id.get_name().to_string();
                 let param_name_ident = format_ident!("{}", param_name);
                 let param_ts_type = &*binding_ident.type_ann.as_ref().unwrap().type_ann.clone();
-                let param_azle_type = AzleType::from_ts_type(param_ts_type.clone(), source_map);
+                let param_azle_type =
+                    AzleType::from_ts_type(param_ts_type.clone(), azle_method_signature.source_map);
                 let param_type = param_azle_type.to_act_data_type(&None).to_token_stream();
 
                 quote! {
@@ -550,7 +546,8 @@ fn get_ts_method_signature_rust_params(
         })
         .collect();
 
-    let param_names = ts_method_signature
+    let param_names = azle_method_signature
+        .ts_method_signature
         .params
         .iter()
         .map(|ts_fn_param| match ts_fn_param {
@@ -565,13 +562,15 @@ fn get_ts_method_signature_rust_params(
         })
         .collect();
 
-    let param_types = ts_method_signature
+    let param_types = azle_method_signature
+        .ts_method_signature
         .params
         .iter()
         .map(|ts_fn_param| match ts_fn_param {
             TsFnParam::Ident(binding_ident) => {
                 let param_ts_type = &*binding_ident.type_ann.as_ref().unwrap().type_ann;
-                let param_azle_type = AzleType::from_ts_type(param_ts_type.clone(), source_map);
+                let param_azle_type =
+                    AzleType::from_ts_type(param_ts_type.clone(), azle_method_signature.source_map);
                 let param_type = param_azle_type.to_act_data_type(&None).to_token_stream();
 
                 quote! {

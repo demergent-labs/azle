@@ -14,4 +14,16 @@ impl AzleMethodSignature<'_> {
             suggestion: None,
         }
     }
+
+    pub(super) fn todo_name_this_error(&self) -> ErrorMessage {
+        ErrorMessage {
+            title: "This is an error that I am not sure about right now".to_string(),
+            origin: self.get_origin(),
+            line_number: self.get_line_number(),
+            source: self.get_source(),
+            range: self.get_range(),
+            annotation: "this isn't right, I think you know why".to_string(),
+            suggestion: None,
+        }
+    }
 }

@@ -6,6 +6,9 @@ pub use azle_fn_or_constructor_type::AzleFnOrConstructorType;
 pub use azle_fn_or_constructor_type::AzleFnType;
 pub use azle_keyword_type::AzleKeywordType;
 pub use azle_tuple_type::AzleTupleType;
+pub use azle_type_lit::AzleMethodSignature;
+pub use azle_type_lit::AzlePropertySignature;
+pub use azle_type_lit::AzleTypeElement;
 pub use azle_type_lit::AzleTypeLit;
 pub use azle_type_ref::AzleTypeRef;
 
@@ -39,6 +42,13 @@ impl<'a> AzleType<'a> {
         }
     }
 
+    pub fn as_azle_type_ref(self) -> Option<AzleTypeRef<'a>> {
+        match self {
+            AzleType::AzleTypeRef(azle_type_ref) => Some(azle_type_ref),
+            _ => None,
+        }
+    }
+
     // It seems like these would be useful, but we aren't using them right now,
     // but they can hang out here until we are done that way if we need them
     // they are here. though its not like they are that hard to write up from
@@ -47,13 +57,6 @@ impl<'a> AzleType<'a> {
     //     match self {
     //         AzleType::AzleTypeLit(_) => true,
     //         _ => false,
-    //     }
-    // }
-
-    // pub fn as_azle_type_ref(self) -> Option<AzleTypeRef<'a>> {
-    //     match self {
-    //         AzleType::AzleTypeRef(azle_type_ref) => Some(azle_type_ref),
-    //         _ => None,
     //     }
     // }
 

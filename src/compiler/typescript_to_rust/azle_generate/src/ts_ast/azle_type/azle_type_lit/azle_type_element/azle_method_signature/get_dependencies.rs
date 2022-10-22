@@ -12,11 +12,11 @@ impl GetDependencies for AzleMethodSignature<'_> {
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
         found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
-        let return_types = match self.get_return_type() {
+        let return_types = match self.get_return_type(self.source_map) {
             Some(return_type) => vec![return_type],
             None => vec![],
         };
-        let param_types = self.get_param_types();
+        let param_types = self.get_param_types(self.source_map);
         let ts_types = vec![return_types, param_types].concat();
         ts_types
             .iter()

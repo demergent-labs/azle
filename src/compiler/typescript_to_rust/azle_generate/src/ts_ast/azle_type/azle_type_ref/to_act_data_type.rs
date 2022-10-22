@@ -49,7 +49,7 @@ impl AzleTypeRef<'_> {
             },
             _ => panic!("{}", self.wrong_enclosed_type_error()),
         };
-        let return_type = match azle_fn_type.get_return_type() {
+        let return_type = match azle_fn_type.get_return_type(self.source_map) {
             Some(ts_type) => {
                 let azle_type = AzleType::from_ts_type(ts_type, self.source_map);
                 Some(azle_type.to_act_data_type(&None))
@@ -57,14 +57,14 @@ impl AzleTypeRef<'_> {
             None => None,
         };
         let param_types: Vec<ActDataType> = azle_fn_type
-            .get_param_types()
+            .get_param_types(self.source_map)
             .iter()
             .map(|param| {
                 let azle_param = AzleType::from_ts_type(param.clone(), self.source_map);
                 azle_param.to_act_data_type(&None)
             })
             .collect();
-        let func_mode = azle_fn_type.get_func_mode();
+        let func_mode = azle_fn_type.get_func_mode(self.source_map);
 
         ActDataType::Func(match func_name {
             Some(func_name) => ActFunc {

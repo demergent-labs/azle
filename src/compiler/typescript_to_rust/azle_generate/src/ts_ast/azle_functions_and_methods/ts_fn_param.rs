@@ -1,28 +1,26 @@
-use swc_ecma_ast::{TsFnParam, TsType};
+use swc_ecma_ast::TsFnParam;
 
-use super::{GetName, GetTsType};
+use crate::ts_ast::ast_traits::{GetSpan, TypeToString};
 
-impl GetName for TsFnParam {
-    fn get_name(&self) -> &str {
+impl GetSpan for TsFnParam {
+    fn get_span(&self) -> swc_common::Span {
         match self {
-            TsFnParam::Ident(identifier) => identifier.id.get_name(),
-            TsFnParam::Array(_) => todo!(),
-            TsFnParam::Rest(_) => todo!(),
-            TsFnParam::Object(_) => todo!(),
+            TsFnParam::Ident(ident) => ident.span,
+            TsFnParam::Array(array) => array.span,
+            TsFnParam::Rest(rest) => rest.span,
+            TsFnParam::Object(object) => object.span,
         }
     }
 }
 
-impl GetTsType for TsFnParam {
-    fn get_ts_type(&self) -> TsType {
+impl TypeToString for TsFnParam {
+    fn type_to_string(&self) -> String {
         match self {
-            TsFnParam::Ident(identifier) => match &identifier.type_ann {
-                Some(param_type) => param_type.get_ts_type(),
-                None => panic!("Function parameter must have a type"),
-            },
-            TsFnParam::Array(_) => todo!(),
-            TsFnParam::Rest(_) => todo!(),
-            TsFnParam::Object(_) => todo!(),
+            TsFnParam::Ident(_) => "ident",
+            TsFnParam::Array(_) => "array",
+            TsFnParam::Rest(_) => "rest",
+            TsFnParam::Object(_) => "object",
         }
+        .to_string()
     }
 }

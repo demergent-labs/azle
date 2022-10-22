@@ -3,7 +3,7 @@ use swc_ecma_ast::TsTypeElement;
 
 use crate::cdk_act::nodes::data_type_nodes::{ActRecordMember, ActVariantMember};
 
-use self::{
+pub use self::{
     azle_method_signature::AzleMethodSignature, azle_property_signature::AzlePropertySignature,
 };
 
@@ -22,7 +22,7 @@ pub enum AzleTypeElement<'a> {
 }
 
 impl AzleTypeElement<'_> {
-    pub(super) fn from_ts_type_element(
+    pub fn from_ts_type_element(
         ts_type_element: TsTypeElement,
         source_map: &SourceMap,
     ) -> AzleTypeElement {

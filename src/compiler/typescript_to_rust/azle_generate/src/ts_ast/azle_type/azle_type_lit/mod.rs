@@ -13,6 +13,8 @@ use crate::{
     ts_ast::ast_traits::generate_inline_name::GenerateInlineName,
 };
 
+pub use azle_type_element::AzleMethodSignature;
+pub use azle_type_element::AzlePropertySignature;
 pub use azle_type_element::AzleTypeElement;
 
 mod azle_type_element;

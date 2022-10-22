@@ -11,11 +11,11 @@ impl GetDependencies for AzleFnType<'_> {
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
         found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
-        let return_type = match self.get_return_type() {
+        let return_type = match self.get_return_type(self.source_map) {
             Some(return_type) => vec![return_type],
             None => vec![],
         };
-        vec![self.get_param_types(), return_type]
+        vec![self.get_param_types(self.source_map), return_type]
             .concat()
             .iter()
             .fold(found_type_names.clone(), |acc, ts_type| {

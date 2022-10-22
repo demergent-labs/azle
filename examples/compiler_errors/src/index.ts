@@ -35,6 +35,14 @@ type VariantNotProperties = Variant<{}>;
 // export function bad_func_five(param: FunctionWithoutFunc): Query<void> {}
 // type FuncWithoutQuery = Func<() => void>;
 // export function bad_func_six(param: FuncWithoutQuery): Query<void> {}
+type FuncWithRestParam = Func<(...thing: object[]) => Query<void>>;
+export function bad_func_rest_param(param: FuncWithRestParam): Query<void> {}
+// type FuncWithArrayParam = Func<([thing]: object[]) => Query<void>>;
+// export function bad_func_array_param(param: FuncWithArrayParam): Query<void> {}
+// type FuncWithObjectParam = Func<({ thing }) => Query<void>>;
+// export function bad_func_object_param(
+//     param: FuncWithObjectParam
+// ): Query<void> {}
 
 // Option tests
 // type OptionWithTooManyTypes = Opt<boolean, string, null, string[]>;
@@ -124,3 +132,15 @@ type VariantNotProperties = Variant<{}>;
 //     get thing_two(): void;
 // };
 // export function recGet(record: RecordWithGet): Query<void> {}
+
+// TODO these errors are not understandable
+// type RecordWithMapped = {
+//     [Property in keyof string]: boolean;
+// };
+// export function recMapped(record: RecordWithMapped): Query<void> {}
+// type RecordWithGenericMapped<Type> = {
+//     [Property in keyof Type]: boolean;
+// };
+// export function recGenericMapped(
+//     record: RecordWithGenericMapped<boolean>
+// ): Query<void> {}
