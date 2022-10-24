@@ -1,5 +1,4 @@
 use quote::quote;
-use std::collections::HashSet;
 use std::path::Path;
 use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
@@ -14,8 +13,7 @@ use crate::{
         self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
         ActDataType, CanisterMethodType, RequestType, ToAct,
     },
-    generators::{canister_methods, stacktrace, type_aliases, vm_value_conversion},
-    ts_ast::GetDependencies,
+    generators::{canister_methods, stacktrace, vm_value_conversion},
 };
 
 use super::program::AzleProgram;
@@ -33,7 +31,10 @@ impl TsAst {
 
                 let cm: Lrc<SourceMap> = Default::default();
 
-                let fm = cm.load_file(&filepath).unwrap();
+                let fm = match cm.load_file(&filepath) {
+                    Ok(rc_source_file) => rc_source_file,
+                    Err(err) => panic!("Error: Unable to load file {}\n{}", ts_file_name, err),
+                };
 
                 let lexer = Lexer::new(
                     Syntax::Typescript(TsConfig::default()),
@@ -53,7 +54,7 @@ impl TsAst {
                                 source_map,
                             };
                         };
-                        panic!("this cannot happen");
+                        panic!("Unreachable");
                     }
                     Err(error) => panic!("{}: Syntax Error: {}", ts_file_name, error.kind().msg()),
                 }
@@ -67,7 +68,6 @@ impl ToAct for TsAst {
     fn to_act(&self) -> AbstractCanisterTree {
         // Collect AST Information
         let ast_type_alias_decls = &self.azle_programs.get_azle_type_alias_decls();
-        let ast_canister_type_alias_decls = ast_type_alias_decls.get_ast_ts_canister_decls();
 
         // Separate function decls into queries and updates
         let azle_fnc_decls_query = self
@@ -76,25 +76,6 @@ impl ToAct for TsAst {
         let azle_fnc_decls_update = self
             .azle_programs
             .get_azle_fn_decls_of_type(&CanisterMethodType::Update);
-
-        // Determine which type aliases must be present for the functions to work and save them for later parsing
-        let found_type_names = HashSet::new();
-        let ast_type_alias_lookup = ast_type_alias_decls.generate_type_alias_lookup();
-        let query_dependencies =
-            azle_fnc_decls_query.get_dependent_types(&ast_type_alias_lookup, &found_type_names);
-        let update_dependencies =
-            azle_fnc_decls_update.get_dependent_types(&ast_type_alias_lookup, &found_type_names);
-        let canister_dependencies = ast_canister_type_alias_decls
-            .get_dependent_types(&ast_type_alias_lookup, &found_type_names);
-
-        let dependencies: HashSet<String> = query_dependencies
-            .union(&update_dependencies)
-            .cloned()
-            .collect();
-        let dependencies: HashSet<String> = dependencies
-            .union(&canister_dependencies)
-            .cloned()
-            .collect();
 
         let query_methods = canister_methods::build_canister_method_nodes(
             &azle_fnc_decls_query,
@@ -114,8 +95,8 @@ impl ToAct for TsAst {
                 &update_methods,
             );
 
-        let type_alias_acts =
-            type_aliases::build_type_alias_acts(&dependencies, &ast_type_alias_decls);
+        let dependencies = self.azle_programs.get_dependent_types();
+        let type_alias_acts = ast_type_alias_decls.build_type_alias_acts(&dependencies);
 
         let type_alias_inline_acts = data_type_nodes::build_inline_type_acts(&type_alias_acts);
         let query_method_inline_acts =

@@ -26,6 +26,7 @@ pub trait TsTypeAliasHelperMethods {
 
 pub trait AzleTypeAliasListHelperMethods {
     fn generate_type_alias_lookup(&self) -> HashMap<String, AzleTypeAliasDecl>;
+    fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<ActDataType>;
     fn get_ast_ts_canister_decls(&self) -> Vec<AzleCanisterDecl>;
     fn get_azle_type_aliases_by_type_ref_name(&self, type_ref_name: &str)
         -> Vec<AzleTypeAliasDecl>;
@@ -124,5 +125,23 @@ impl AzleTypeAliasListHelperMethods for Vec<AzleTypeAliasDecl<'_>> {
                     }
             })
             .collect()
+    }
+
+    fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<ActDataType> {
+        let type_alias_lookup = self.generate_type_alias_lookup();
+
+        type_names.iter().fold(vec![], |acc, dependant_type_name| {
+            let type_alias_decl = type_alias_lookup.get(dependant_type_name);
+            let token_stream = match type_alias_decl {
+                Some(azle_type_alias) => azle_type_alias.to_act_node(),
+                None => {
+                    panic!(
+                        "ERROR: Dependant Type [{}] not found in TS program!",
+                        dependant_type_name
+                    )
+                }
+            };
+            vec![acc, vec![token_stream]].concat()
+        })
     }
 }

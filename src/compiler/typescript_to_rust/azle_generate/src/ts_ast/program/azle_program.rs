@@ -1,11 +1,17 @@
+use std::collections::HashSet;
+
 use swc_common::SourceMap;
 use swc_ecma_ast::Program;
 
 use crate::{
     cdk_act::{CanisterMethodType, SystemStructureType},
     ts_ast::{
-        azle_type_alias_decls::azle_type_alias_decl::TsTypeAliasHelperMethods,
-        module::ModuleHelperMethods, AzleFnDecl, AzleTypeAliasDecl,
+        ast_traits::GetDependencies,
+        azle_type_alias_decls::azle_type_alias_decl::{
+            AzleTypeAliasListHelperMethods, TsTypeAliasHelperMethods,
+        },
+        module::ModuleHelperMethods,
+        AzleFnDecl, AzleTypeAliasDecl,
     },
 };
 
@@ -57,6 +63,7 @@ pub trait AzleProgramVecHelperMethods {
         &self,
         canister_method_type: &CanisterMethodType,
     ) -> Vec<AzleFnDecl>;
+    fn get_dependent_types(&self) -> HashSet<String>;
 }
 
 impl AzleProgramVecHelperMethods for Vec<AzleProgram> {
@@ -100,5 +107,36 @@ impl AzleProgramVecHelperMethods for Vec<AzleProgram> {
                 type_alias_decl.is_type_alias_decl_system_structure_type(system_structure_type)
             })
             .collect()
+    }
+
+    fn get_dependent_types(&self) -> HashSet<String> {
+        let ast_type_alias_decls = &self.get_azle_type_alias_decls();
+
+        // Pull out canister type alias decls
+        let ast_canister_type_alias_decls = ast_type_alias_decls.get_ast_ts_canister_decls();
+
+        // Separate function decls into queries and updates
+        let azle_fnc_decls_query = self.get_azle_fn_decls_of_type(&CanisterMethodType::Query);
+        let azle_fnc_decls_update = self.get_azle_fn_decls_of_type(&CanisterMethodType::Update);
+
+        // Determine which type aliases must be present for the functions to work and save them for later parsing
+        let found_type_names = HashSet::new();
+        let ast_type_alias_lookup = ast_type_alias_decls.generate_type_alias_lookup();
+        let query_dependencies =
+            azle_fnc_decls_query.get_dependent_types(&ast_type_alias_lookup, &found_type_names);
+        let update_dependencies =
+            azle_fnc_decls_update.get_dependent_types(&ast_type_alias_lookup, &found_type_names);
+        let canister_dependencies = ast_canister_type_alias_decls
+            .get_dependent_types(&ast_type_alias_lookup, &found_type_names);
+
+        let dependencies: HashSet<String> = query_dependencies
+            .union(&update_dependencies)
+            .cloned()
+            .collect();
+        let dependencies: HashSet<String> = dependencies
+            .union(&canister_dependencies)
+            .cloned()
+            .collect();
+        dependencies
     }
 }
