@@ -78,3 +78,6 @@ type VariantNotProperties = Variant<{}>;
 // TsSetterSignature
 // TsMethodSignature
 // TsIndexSignature
+
+// TODO test Canisters that have property signatures
+// TODO test Records and Variants that have method signatures
