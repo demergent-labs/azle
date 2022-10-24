@@ -390,11 +390,21 @@ function runAzleGenerate(
         }
     );
 
+    const suggestion =
+        'If you are unable to decipher the error above, reach out in the #typescript\nchannel of the DFINITY DEV OFFICIAL discord: https://discord.gg/zuUEzSf4mV';
+
+    if (executionResult.error) {
+        const exitCode = executionResult.error.errno ?? 13;
+        return Err({
+            error: `Azle encountered an error: ${executionResult.error.message}`,
+            suggestion,
+            exitCode
+        });
+    }
+
     if (executionResult.status !== 0) {
         const generalErrorMessage =
             "Something about your TypeScript violates Azle's requirements";
-        const suggestion =
-            'If you are unable to decipher the error above, reach out in the #typescript\nchannel of the DFINITY DEV OFFICIAL discord: https://discord.gg/zuUEzSf4mV';
         const stdErr = executionResult.stderr.toString();
         const longErrorMessage = `The underlying cause is likely at the bottom of the following output:\n\n${stdErr}`;
         if (isVerboseMode()) {
