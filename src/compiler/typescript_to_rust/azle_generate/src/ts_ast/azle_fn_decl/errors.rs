@@ -1,5 +1,5 @@
 use swc_common::Span;
-use swc_ecma_ast::{AssignPat, Param};
+use swc_ecma_ast::{AssignPat, BindingIdent, Param};
 
 use super::AzleFnDecl;
 use crate::{
@@ -196,18 +196,37 @@ impl AzleFnDecl<'_> {
         }
     }
 
-    pub(super) fn build_untyped_param_error_msg(&self) -> ErrorMessage {
+    pub(super) fn build_untyped_param_error_msg(
+        &self,
+        binding_ident: &BindingIdent,
+    ) -> ErrorMessage {
+        let range = self.source_map.get_range(binding_ident.span);
+        let raw_source = self.source_map.get_source(binding_ident.span);
+        let example_type_ann = ": ParamType"; // TODO: Come up with a better name from the source
+        let source = if raw_source.len() <= range.1 + 1 {
+            format!("{} ", raw_source)
+        } else {
+            raw_source
+        };
+
+        let corrected_source: String = source
+            .chars()
+            .take(range.1)
+            .chain(example_type_ann.to_string().chars())
+            .chain(source.chars().skip(range.1))
+            .collect();
+
         ErrorMessage {
             title: "Untyped parameter".to_string(),
-            origin: "index.ts".to_string(), // TODO: Get this from the source map
-            line_number: 1,                 // TODO: Get this from the source map
-            source: "export function example(param) {}".to_string(), // TODO: Get this from the source map
-            range: (29, 30), // TODO: Get this from the source map
-            annotation: "Expected type here".to_string(), // TODO
+            origin: self.source_map.get_origin(binding_ident.span),
+            line_number: self.source_map.get_line_number(binding_ident.span),
+            source,
+            range: (range.1, range.1 + 1),
+            annotation: "Expected type annotation here".to_string(),
             suggestion: Some(Suggestion {
                 title: "Specify a type for the parameter".to_string(),
-                source: "export function example(param: MyParam) {}".to_string(), // TODO: Get this from the source map
-                range: (29, 38), // TODO: Get this from the source map
+                source: corrected_source,
+                range: (range.1, range.1 + example_type_ann.len()),
                 annotation: None,
                 import_suggestion: None,
             }),

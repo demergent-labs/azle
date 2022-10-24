@@ -91,7 +91,7 @@ impl AzleFnDecl<'_> {
             .iter()
             .fold(vec![], |acc, ident| match &ident.type_ann {
                 Some(ts_type_ann) => vec![acc, vec![&ts_type_ann.type_ann]].concat(),
-                None => panic!("{}", self.build_untyped_param_error_msg()),
+                None => panic!("{}", self.build_untyped_param_error_msg(*ident)),
             })
     }
 
