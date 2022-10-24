@@ -17,9 +17,15 @@ pub struct AzleFnDecl<'a> {
 
 impl AzleFnDecl<'_> {
     pub fn get_canister_method_type(&self) -> &str {
-        match &self.get_return_type_ref().type_name {
+        let return_type_ref = self.get_return_type_ref();
+        match &return_type_ref.type_name {
             TsEntityName::Ident(ident) => ident.get_name(),
-            TsEntityName::TsQualifiedName(_) => panic!("{}", self.build_qualified_type_error_msg()),
+            TsEntityName::TsQualifiedName(_) => {
+                panic!(
+                    "{}",
+                    self.build_qualified_type_error_msg(return_type_ref.span)
+                )
+            }
         }
     }
 

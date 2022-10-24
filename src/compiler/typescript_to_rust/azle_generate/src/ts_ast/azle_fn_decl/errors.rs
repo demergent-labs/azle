@@ -157,22 +157,15 @@ impl AzleFnDecl<'_> {
         }
     }
 
-    pub(super) fn build_qualified_type_error_msg(&self) -> ErrorMessage {
+    pub(super) fn build_qualified_type_error_msg(&self, span: Span) -> ErrorMessage {
         ErrorMessage {
             title: "Namespace-qualified types are not currently supported".to_string(),
-            origin: "index.ts".to_string(), // TODO: Get this from the source map
-            line_number: 1,                 // TODO: Get this from the source map
-            source: "export function example(): Query<Namespace.MyType> {}".to_string(), // TODO: Get this from the source map
-            range: (33, 43), // TODO: Get this from the source map
-            annotation: "Namespace specified here".to_string(), // TODO
-            suggestion: Some(Suggestion {
-                title: "Either declare the import locally or remove the wildcard import"
-                    .to_string(),
-                source: "export function example(): Query<MyType> {}".to_string(), // TODO: Get this from the source map
-                range: (33, 39), // TODO: Get this from the source map
-                annotation: None,
-                import_suggestion: None,
-            }),
+            origin: self.source_map.get_origin(span),
+            line_number: self.source_map.get_line_number(span),
+            source: self.source_map.get_source(span),
+            range: self.source_map.get_range(span),
+            annotation: "Namespace specified here".to_string(),
+            suggestion: None, // This is caught first by src/compiler/typescript_to_rust/azle_generate/src/ts_ast/ast_traits/get_name.rs
         }
     }
 
