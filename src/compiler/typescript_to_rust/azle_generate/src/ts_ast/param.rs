@@ -41,7 +41,7 @@ impl GetParamRange for Param {
                 let range_without_type_annotation = (full_param_span_range.0, type_ann_range.0);
                 range_without_type_annotation
             }
-            Pat::Assign(assign) => source_map.get_range(assign.span),
+            Pat::Assign(assign_pat) => source_map.get_range(assign_pat.span),
             Pat::Invalid(invalid) => source_map.get_range(invalid.span),
             Pat::Expr(_) => panic!("Something's very wrong with your parameters"), // TODO: handle this better
         }

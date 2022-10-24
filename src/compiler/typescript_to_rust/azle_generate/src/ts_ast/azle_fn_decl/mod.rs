@@ -69,7 +69,9 @@ impl AzleFnDecl<'_> {
                 Pat::Array(_) => panic!("{}", self.build_array_destructure_error_msg(param)),
                 Pat::Rest(_) => panic!("{}", self.build_rest_param_error_msg(param)),
                 Pat::Object(_) => panic!("{}", self.build_object_destructure_error_msg(param)),
-                Pat::Assign(_) => panic!("{}", self.build_param_default_value_error_msg()),
+                Pat::Assign(assign_pat) => {
+                    panic!("{}", self.build_param_default_value_error_msg(assign_pat))
+                }
                 Pat::Invalid(_) => panic!("{}", self.build_invalid_param_error_msg()),
                 Pat::Expr(_) => panic!("{}", self.build_invalid_param_error_msg()),
             })

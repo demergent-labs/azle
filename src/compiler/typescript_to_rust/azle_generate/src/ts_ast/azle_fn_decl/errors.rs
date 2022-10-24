@@ -1,5 +1,5 @@
 use swc_common::Span;
-use swc_ecma_ast::Param;
+use swc_ecma_ast::{AssignPat, Param};
 
 use super::AzleFnDecl;
 use crate::{
@@ -107,21 +107,52 @@ impl AzleFnDecl<'_> {
         }
     }
 
-    pub(super) fn build_param_default_value_error_msg(&self) -> ErrorMessage {
-        ErrorMessage {
-            title: "Setting default values for parameters is unsupported at this time".to_string(),
-            origin: "index.ts".to_string(), // TODO: Get this from the source map
-            line_number: 1,                 // TODO: Get this from the source map
-            source: "export function example(param: string = 'default') {}".to_string(), // TODO: Get this from the source map
-            range: (38, 49), // TODO: Get this from the source map
-            annotation: "Attempted to set a default value here".to_string(), // TODO
-            suggestion: Some(Suggestion {
-                title: "Remove the default value or set it inside the function body".to_string(),
-                source: "export function example(param: string) {}".to_string(), // TODO: Get this from the source map
-                range: (31, 37), // TODO: Get this from the source map
-                annotation: None,
-                import_suggestion: None,
-            }),
+    pub(super) fn build_param_default_value_error_msg(
+        &self,
+        assign_pat: &AssignPat,
+    ) -> ErrorMessage {
+        let source = self.source_map.get_source(assign_pat.span);
+        let range = self.source_map.get_range(assign_pat.span);
+        eprintln!("The source code is: {}", source);
+        let equals_index_option = source.find('=');
+        match equals_index_option {
+            Some(equals_index) => {
+                let equals_sign_and_right_hand_range = (equals_index, range.1);
+
+                let corrected_source: String = source
+                    .chars()
+                    .take(equals_index)
+                    .chain(source.chars().skip(range.1))
+                    .collect();
+
+                ErrorMessage {
+                    title: "Setting default values for parameters is unsupported at this time"
+                        .to_string(),
+                    origin: self.source_map.get_origin(assign_pat.span),
+                    line_number: self.source_map.get_line_number(assign_pat.span),
+                    source,
+                    range: equals_sign_and_right_hand_range,
+                    annotation: "Attempted to set a default value here".to_string(),
+                    suggestion: Some(Suggestion {
+                        title: "Remove the default value or set it inside the function body"
+                            .to_string(),
+                        source: corrected_source, // TODO: Use the new source_map.get_modified_source(replacement_name)
+                        range: (range.0, equals_index), // TODO: Use the new source_map.get_modified_range(replacement_name)
+                        annotation: None,
+                        import_suggestion: None,
+                    }),
+                }
+            }
+            None => ErrorMessage {
+                title: "Setting default values for parameters is unsupported at this time"
+                    .to_string(),
+                origin: self.source_map.get_origin(assign_pat.span),
+                line_number: self.source_map.get_line_number(assign_pat.span),
+                source: source.clone(),
+                range: (range.0, source.len()),
+                annotation: "Attempted to assign a default value to this parameter".to_string(),
+                suggestion: None,
+            },
         }
     }
 
