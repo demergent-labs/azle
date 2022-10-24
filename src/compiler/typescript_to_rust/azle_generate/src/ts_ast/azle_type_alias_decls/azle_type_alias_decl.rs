@@ -4,7 +4,7 @@ use swc_common::SourceMap;
 use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
 use crate::{
-    cdk_act::{nodes::ActNode, Actable, SystemStructureType, ToActDataType},
+    cdk_act::{ActDataType, Actable, SystemStructureType, ToActDataType},
     ts_ast::{azle_type::AzleType, GetDependencies, GetName, GetTsType},
 };
 
@@ -32,12 +32,12 @@ pub trait AzleTypeAliasListHelperMethods {
 }
 
 impl Actable for AzleTypeAliasDecl<'_> {
-    fn to_act_node(&self) -> ActNode {
+    fn to_act_node(&self) -> ActDataType {
         let ts_type_name = self.get_name().to_string();
 
         let azle_type = AzleType::from_ts_type(self.get_ts_type(), self.source_map);
 
-        ActNode::DataType(azle_type.to_act_data_type(&Some(&ts_type_name)))
+        azle_type.to_act_data_type(&Some(&ts_type_name))
     }
 }
 
@@ -77,6 +77,9 @@ impl TsTypeAliasHelperMethods for AzleTypeAliasDecl<'_> {
                         .ts_type_alias_decl
                         .type_ann
                         .as_ts_type_ref()
+                        .unwrap()
+                        .type_name
+                        .as_ident()
                         .unwrap()
                         .get_name()
                         == "Canister"

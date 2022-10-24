@@ -16,7 +16,7 @@ pub enum AzleFnOrConstructorType<'a> {
 }
 
 impl AzleFnOrConstructorType<'_> {
-    pub fn from_ts_fn_or_constructor_type(
+    pub(super) fn from_ts_fn_or_constructor_type(
         ts_fn_or_constructor_type: TsFnOrConstructorType,
         source_map: &SourceMap,
     ) -> AzleFnOrConstructorType {

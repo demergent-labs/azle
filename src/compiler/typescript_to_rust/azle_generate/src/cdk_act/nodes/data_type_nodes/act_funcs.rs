@@ -26,17 +26,6 @@ pub struct FuncTypeAlias {
     pub func: Func,
 }
 
-impl ActFunc {
-    pub fn get_name(&self) -> String {
-        match &self.act_type {
-            LiteralOrTypeAlias::Literal(literal) => &literal.func,
-            LiteralOrTypeAlias::TypeAlias(type_alias) => &type_alias.func,
-        }
-        .name
-        .clone()
-    }
-}
-
 impl TypeAliasize<ActFunc> for ActFunc {
     fn as_type_alias(&self) -> ActFunc {
         match &self.act_type {

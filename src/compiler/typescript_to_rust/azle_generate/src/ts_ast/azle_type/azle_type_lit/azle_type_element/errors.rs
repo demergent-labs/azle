@@ -1,40 +1,68 @@
-use swc_ecma_ast::TsTypeElement;
-
 use super::AzleTypeElement;
 use crate::{
-    errors::ErrorMessage,
+    errors::{ErrorMessage, Suggestion},
     ts_ast::{
-        ast_traits::{GetSourceInfo, GetSpan},
+        ast_traits::{GetSourceInfo, GetSpan, TypeToString},
         source_map::GetSourceFileInfo,
-        GetSourceText,
     },
 };
 
 impl AzleTypeElement<'_> {
-    pub(super) fn unsupported_member_error(&self) -> ErrorMessage {
-        match &self.ts_type_element {
-            TsTypeElement::TsCallSignatureDecl(_) => self.member_not_supported_error(),
-            TsTypeElement::TsConstructSignatureDecl(_) => self.member_not_supported_error(),
-            TsTypeElement::TsGetterSignature(_) => self.member_not_supported_error(),
-            TsTypeElement::TsSetterSignature(_) => self.member_not_supported_error(),
-            TsTypeElement::TsMethodSignature(_) => self.member_not_supported_error(),
-            TsTypeElement::TsIndexSignature(_) => self.member_not_supported_error(),
-            _ => panic!("Unreachable: {} is supported", self.get_source_text()),
-        }
-    }
-
-    fn member_not_supported_error(&self) -> ErrorMessage {
+    pub(super) fn no_type_annotation_error(&self) -> ErrorMessage {
         ErrorMessage {
-            title: "Unsupported Type".to_string(),
+            title: "Type Annotation Needed".to_string(),
             origin: self.get_origin(),
             line_number: self.get_line_number(),
             source: self.get_source(),
             range: self.get_range(),
-            annotation: format!(
-                "{} is not a supported type",
-                self.source_map.get_text(self.ts_type_element.get_span())
-            ),
+            annotation: "type annotation needed for this member".to_string(),
             suggestion: None,
+        }
+    }
+
+    pub(super) fn record_property_signature_error(&self) -> ErrorMessage {
+        let replacement = "property_name: boolean".to_string();
+        ErrorMessage {
+            title: "Invalid Record".to_string(),
+            origin: self.get_origin(),
+            line_number: self.get_line_number(),
+            source: self.get_source(),
+            range: self.get_range(),
+            annotation: format!("{} is not allowed here.", self.type_to_string()),
+            suggestion: Some(Suggestion {
+                title: "Variant members must be properties.".to_string(),
+                source: self
+                    .source_map
+                    .generate_modified_source(self.ts_type_element.get_span(), &replacement),
+                range: self
+                    .source_map
+                    .generate_modified_range(self.ts_type_element.get_span(), &replacement),
+                annotation: Some("For example".to_string()),
+                import_suggestion: None,
+            }),
+        }
+    }
+
+    pub(super) fn variant_property_signature_error(&self) -> ErrorMessage {
+        let replacement = "property_name: null".to_string();
+        ErrorMessage {
+            title: "Invalid Variant".to_string(),
+            origin: self.get_origin(),
+            line_number: self.get_line_number(),
+            source: self.get_source(),
+            range: self.get_range(),
+            annotation: format!("{} is not allowed here.", self.type_to_string()),
+            suggestion: Some(Suggestion {
+                title: "Variant members must be properties".to_string(),
+                source: self
+                    .source_map
+                    .generate_modified_source(self.ts_type_element.get_span(), &replacement),
+                range: self
+                    .source_map
+                    .generate_modified_range(self.ts_type_element.get_span(), &replacement),
+                annotation: Some("For example".to_string()),
+                import_suggestion: None,
+            }),
         }
     }
 }

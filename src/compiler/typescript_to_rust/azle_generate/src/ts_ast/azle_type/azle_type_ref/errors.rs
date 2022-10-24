@@ -27,6 +27,29 @@ impl AzleTypeRef<'_> {
         }
     }
 
+    pub(super) fn qualified_name_error(&self, unqualified_name: String) -> ErrorMessage {
+        ErrorMessage {
+            title: "Namespace-qualified types are not currently supported".to_string(),
+            origin: self.get_origin(),
+            line_number: self.get_line_number(),
+            source: self.get_source(),
+            range: self.get_range(),
+            annotation: "qualified name here".to_string(),
+            suggestion: Some(Suggestion {
+                title: "Either declare the type locally or import it without a wildcard"
+                    .to_string(),
+                source: self
+                    .source_map
+                    .generate_modified_source(self.ts_type_ref.span, &unqualified_name),
+                range: self
+                    .source_map
+                    .generate_modified_range(self.ts_type_ref.span, &unqualified_name),
+                annotation: Some("Use type directly here".to_string()),
+                import_suggestion: None,
+            }),
+        }
+    }
+
     fn func_wrong_number_of_params_error(&self) -> ErrorMessage {
         let example_func = self.generate_example_func();
         let modified_source = self

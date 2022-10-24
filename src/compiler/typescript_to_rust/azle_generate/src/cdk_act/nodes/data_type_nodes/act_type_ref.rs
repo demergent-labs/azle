@@ -19,16 +19,6 @@ pub struct ActTypeRefTypeAlias {
     pub aliased_type: ActTypeRefLit,
 }
 
-impl ActTypeRef {
-    pub fn get_name(&self) -> String {
-        match &self.act_type {
-            LiteralOrTypeAlias::Literal(literal) => &literal.name,
-            LiteralOrTypeAlias::TypeAlias(type_alias) => &type_alias.name,
-        }
-        .clone()
-    }
-}
-
 impl ToActDataType for String {
     fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType {
         ActDataType::TypeRef(ActTypeRef {
