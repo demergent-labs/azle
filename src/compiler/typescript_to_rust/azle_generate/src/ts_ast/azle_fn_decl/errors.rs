@@ -111,10 +111,13 @@ impl AzleFnDecl<'_> {
         &self,
         assign_pat: &AssignPat,
     ) -> ErrorMessage {
+        let title = "Setting default values for parameters is unsupported at this time".to_string();
+        let origin = self.source_map.get_origin(assign_pat.span);
+        let line_number = self.source_map.get_line_number(assign_pat.span);
         let source = self.source_map.get_source(assign_pat.span);
         let range = self.source_map.get_range(assign_pat.span);
-        eprintln!("The source code is: {}", source);
         let equals_index_option = source.find('=');
+
         match equals_index_option {
             Some(equals_index) => {
                 let equals_sign_and_right_hand_range = (equals_index, range.1);
@@ -126,28 +129,26 @@ impl AzleFnDecl<'_> {
                     .collect();
 
                 ErrorMessage {
-                    title: "Setting default values for parameters is unsupported at this time"
-                        .to_string(),
-                    origin: self.source_map.get_origin(assign_pat.span),
-                    line_number: self.source_map.get_line_number(assign_pat.span),
+                    title,
+                    origin,
+                    line_number,
                     source,
                     range: equals_sign_and_right_hand_range,
                     annotation: "Attempted to set a default value here".to_string(),
                     suggestion: Some(Suggestion {
                         title: "Remove the default value or set it inside the function body"
                             .to_string(),
-                        source: corrected_source, // TODO: Use the new source_map.get_modified_source(replacement_name)
-                        range: (range.0, equals_index), // TODO: Use the new source_map.get_modified_range(replacement_name)
+                        source: corrected_source,
+                        range: (range.0, equals_index),
                         annotation: None,
                         import_suggestion: None,
                     }),
                 }
             }
             None => ErrorMessage {
-                title: "Setting default values for parameters is unsupported at this time"
-                    .to_string(),
-                origin: self.source_map.get_origin(assign_pat.span),
-                line_number: self.source_map.get_line_number(assign_pat.span),
+                title,
+                origin,
+                line_number,
                 source: source.clone(),
                 range: (range.0, source.len()),
                 annotation: "Attempted to assign a default value to this parameter".to_string(),
