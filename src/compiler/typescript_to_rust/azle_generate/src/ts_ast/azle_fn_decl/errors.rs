@@ -12,7 +12,7 @@ impl AzleFnDecl<'_> {
         let array_pat = param.pat.as_array().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
 
         let range = param.get_destructure_range(self.source_map);
-        let replacement_name = "myParam"; // TODO: Come up with a better name from the ts_type_ann
+        let replacement_name = "myParam".to_string(); // TODO: Come up with a better name from the ts_type_ann
 
         ErrorMessage {
             title: "Array destructuring in parameters is unsupported at this time".to_string(),
@@ -23,12 +23,12 @@ impl AzleFnDecl<'_> {
             annotation: "Attempted to destructure here".to_string(),
             suggestion: Some(Suggestion {
                 title: "Remove destructuring in favor of a concrete name".to_string(),
-                source: format!(
-                    "{}{}...",
-                    self.source_map.get_well_formed_line(array_pat.span),
-                    replacement_name
-                ), // TODO: Use the new source_map.get_modified_source(replacement_name)
-                range: (range.0, range.0 + replacement_name.len()), // TODO: Use the new source_map.get_modified_range(replacement_name)
+                source: self.source_map.generate_source_with_range_replaced(
+                    array_pat.span,
+                    range,
+                    &replacement_name,
+                ),
+                range: (range.0, range.0 + replacement_name.len()),
                 annotation: None,
                 import_suggestion: None,
             }),
@@ -50,6 +50,7 @@ impl AzleFnDecl<'_> {
     ) -> ErrorMessage {
         let range = self.source_map.get_range(span);
         let example_type_param = "<null>".to_string();
+        let example_return_type = format!("{}{}", canister_method_type, example_type_param);
 
         ErrorMessage {
             title: "Missing return type".to_string(),
@@ -63,12 +64,9 @@ impl AzleFnDecl<'_> {
                     "Specify a return type as a type argument to `{}`. E.g.:",
                     canister_method_type
                 ),
-                source: format!(
-                    "{}{}{} {{}}",
-                    self.source_map.get_well_formed_line(span),
-                    canister_method_type,
-                    example_type_param
-                ), // TODO: Use the new source_map.get_modified_source(replacement_name)
+                source: self
+                    .source_map
+                    .generate_modified_source(span, &example_return_type),
                 range: (range.1, range.1 + example_type_param.len()),
                 annotation: None,
                 import_suggestion: None,
@@ -84,7 +82,7 @@ impl AzleFnDecl<'_> {
         let object_pat = param.pat.as_object().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
 
         let range = param.get_destructure_range(self.source_map);
-        let replacement_name = "myParam"; // TODO: Come up with a better name from the ts_type_ann
+        let replacement_name = "myParam".to_string(); // TODO: Come up with a better name from the ts_type_ann
 
         ErrorMessage {
             title: "Object destructuring in parameters is unsupported at this time".to_string(),
@@ -95,12 +93,12 @@ impl AzleFnDecl<'_> {
             annotation: "Attempted to destructure here".to_string(),
             suggestion: Some(Suggestion {
                 title: "Remove destructuring in favor of a concrete name".to_string(),
-                source: format!(
-                    "{}{}...",
-                    self.source_map.get_well_formed_line(object_pat.span),
-                    replacement_name
-                ), // TODO: Use the new source_map.get_modified_source(replacement_name)
-                range: (range.0, range.0 + replacement_name.len()), // TODO: Use the new source_map.get_modified_range(replacement_name)
+                source: self.source_map.generate_source_with_range_replaced(
+                    object_pat.span,
+                    range,
+                    &replacement_name,
+                ),
+                range: (range.0, range.0 + replacement_name.len()),
                 annotation: None,
                 import_suggestion: None,
             }),
@@ -165,7 +163,7 @@ impl AzleFnDecl<'_> {
             source: self.source_map.get_source(span),
             range: self.source_map.get_range(span),
             annotation: "Namespace specified here".to_string(),
-            suggestion: None, // This is caught first by src/compiler/typescript_to_rust/azle_generate/src/ts_ast/ast_traits/get_name.rs
+            suggestion: None, // This is caught first by src/compiler/typescript_to_rust/azle_generate/src/ts_ast/azle_type/azle_type_ref/errors.rs
         }
     }
 
@@ -173,7 +171,7 @@ impl AzleFnDecl<'_> {
         let rest_pat = param.pat.as_rest().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
 
         let range = param.get_destructure_range(self.source_map);
-        let replacement_name = "myParam"; // TODO: Come up with a better name from the ts_type_ann
+        let replacement_name = "myParam".to_string(); // TODO: Come up with a better name from the ts_type_ann
 
         ErrorMessage {
             title: "Rest parameters are not supported in canister method signatures".to_string(),
@@ -184,11 +182,11 @@ impl AzleFnDecl<'_> {
             annotation: "Attempted parameter spread here".to_string(), // TODO
             suggestion: Some(Suggestion {
                 title: "Specify each parameter individually with a concrete type".to_string(),
-                source: format!(
-                    "{}{}...",
-                    self.source_map.get_well_formed_line(rest_pat.span),
-                    replacement_name
-                ), // TODO: Use the new source_map.get_modified_source(replacement_name)
+                source: self.source_map.generate_source_with_range_replaced(
+                    rest_pat.span,
+                    range,
+                    &replacement_name,
+                ),
                 range: (range.0, range.0 + replacement_name.len()), // TODO: Use the new source_map.get_modified_range(replacement_name)
                 annotation: None,
                 import_suggestion: None,

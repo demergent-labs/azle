@@ -10,8 +10,14 @@ pub trait GetSourceFileInfo {
     fn generate_line_highlight(&self, span: Span) -> String;
     fn generate_highlighted_line(&self, span: Span) -> String;
     fn get_range(&self, span: Span) -> Range;
+    fn generate_source_with_range_replaced(
+        &self,
+        span: Span,
+        range: Range,
+        replacement: &String,
+    ) -> String;
     fn generate_modified_source(&self, span: Span, replacement: &String) -> String;
-    fn generate_modified_range(&self, span: Span, replacement: &String) -> (usize, usize);
+    fn generate_modified_range(&self, span: Span, replacement: &String) -> Range;
 }
 
 trait PrivateGetSourceFileInfo {
@@ -100,6 +106,21 @@ impl GetSourceFileInfo for SourceMap {
         highlight
     }
 
+    fn generate_source_with_range_replaced(
+        &self,
+        span: Span,
+        range: Range,
+        replacement: &String,
+    ) -> String {
+        let source = self.get_source(span);
+        source
+            .chars()
+            .take(range.0)
+            .chain(replacement.to_string().chars())
+            .chain(source.chars().skip(range.1))
+            .collect()
+    }
+
     fn generate_modified_source(&self, span: Span, replacement: &String) -> String {
         format!(
             "{}{}{}",
@@ -109,7 +130,7 @@ impl GetSourceFileInfo for SourceMap {
         )
     }
 
-    fn generate_modified_range(&self, span: Span, replacement: &String) -> (usize, usize) {
+    fn generate_modified_range(&self, span: Span, replacement: &String) -> Range {
         (
             self.get_start_col(span),
             self.get_start_col(span) + replacement.len(),
