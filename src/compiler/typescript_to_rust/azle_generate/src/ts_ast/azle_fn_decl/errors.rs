@@ -179,7 +179,7 @@ impl AzleFnDecl<'_> {
             line_number: self.source_map.get_line_number(rest_pat.span),
             source: self.source_map.get_source(rest_pat.span),
             range,
-            annotation: "Attempted parameter spread here".to_string(), // TODO
+            annotation: "Attempted parameter spread here".to_string(),
             suggestion: Some(Suggestion {
                 title: "Specify each parameter individually with a concrete type".to_string(),
                 source: self.source_map.generate_source_with_range_replaced(
@@ -187,7 +187,7 @@ impl AzleFnDecl<'_> {
                     range,
                     &replacement_name,
                 ),
-                range: (range.0, range.0 + replacement_name.len()), // TODO: Use the new source_map.get_modified_range(replacement_name)
+                range: (range.0, range.0 + replacement_name.len()),
                 annotation: None,
                 import_suggestion: None,
             }),
@@ -200,19 +200,18 @@ impl AzleFnDecl<'_> {
     ) -> ErrorMessage {
         let range = self.source_map.get_range(binding_ident.span);
         let raw_source = self.source_map.get_source(binding_ident.span);
-        let example_type_ann = ": ParamType"; // TODO: Come up with a better name from the source
+        let example_type_ann = ": ParamType".to_string(); // TODO: Come up with a better name from the source
         let source = if raw_source.len() <= range.1 + 1 {
             format!("{} ", raw_source)
         } else {
             raw_source
         };
 
-        let corrected_source: String = source
-            .chars()
-            .take(range.1)
-            .chain(example_type_ann.to_string().chars())
-            .chain(source.chars().skip(range.1))
-            .collect();
+        let corrected_source = self.source_map.generate_source_with_range_replaced(
+            binding_ident.span,
+            (range.1, range.1),
+            &example_type_ann,
+        );
 
         ErrorMessage {
             title: "Untyped parameter".to_string(),
