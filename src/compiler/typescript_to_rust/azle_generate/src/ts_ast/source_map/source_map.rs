@@ -11,7 +11,7 @@ pub trait GetSourceFileInfo {
     fn generate_line_highlight(&self, span: Span) -> String;
     fn generate_highlighted_line(&self, span: Span) -> String;
     fn get_range(&self, span: Span) -> Range;
-    fn get_multi_line_range(&self, span: Span, adjuster: usize) -> Range;
+    fn get_multi_line_range(&self, span: &Span, adjuster: usize) -> Range;
     fn generate_source_with_range_replaced(
         &self,
         span: Span,
@@ -68,11 +68,8 @@ impl GetSourceFileInfo for SourceMap {
         (start, end)
     }
 
-    fn get_multi_line_range(&self, span: Span, adjuster: usize) -> Range {
-        (
-            span.lo().to_usize() - adjuster,
-            span.hi().to_usize() - adjuster,
-        )
+    fn get_multi_line_range(&self, span: &Span, offset: usize) -> Range {
+        (span.lo().to_usize() - offset, span.hi().to_usize() - offset)
     }
 
     fn get_source(&self, span: Span) -> String {
