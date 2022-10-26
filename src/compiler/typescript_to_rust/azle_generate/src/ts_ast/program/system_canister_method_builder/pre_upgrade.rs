@@ -1,7 +1,7 @@
 use crate::{
     cdk_act::{nodes::ActPreUpgradeMethod, CanisterMethodType},
     generators::canister_methods::method_body,
-    ts_ast::program::{azle_program::AzleProgramVecHelperMethods, AzleProgram},
+    ts_ast::program::{azle_program::AzleProgramVecHelperMethods, errors, AzleProgram},
 };
 use quote::quote;
 
@@ -11,7 +11,12 @@ pub fn build_canister_method_system_pre_upgrade(
     let pre_upgrade_fn_decls = programs.get_azle_fn_decls_of_type(&CanisterMethodType::PreUpgrade);
 
     if pre_upgrade_fn_decls.len() > 1 {
-        panic!("Only one PreUpgrade function can be defined");
+        let error_message = errors::create_duplicate_method_types_error_message(
+            pre_upgrade_fn_decls,
+            CanisterMethodType::PreUpgrade,
+        );
+
+        panic!("{}", error_message);
     }
 
     let pre_upgrade_fn_decl_option = pre_upgrade_fn_decls.get(0);
