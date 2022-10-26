@@ -27,9 +27,9 @@ export function get_tests(
             }
         },
         {
-            name: 'empty totalSupply',
+            name: 'empty total_supply',
             test: async () => {
-                const result = await simple_erc20_canister.totalSupply();
+                const result = await simple_erc20_canister.total_supply();
 
                 return {
                     ok: result === 0n
@@ -47,13 +47,13 @@ export function get_tests(
             }
         },
         {
-            name: 'initializeSupply',
+            name: 'initialize_supply',
             test: async () => {
-                const result = await simple_erc20_canister.initializeSupply(
-                    'TOKEN',
+                const result = await simple_erc20_canister.initialize_supply(
                     'Token',
-                    1_000_000n,
-                    '0'
+                    '0',
+                    'TOKEN',
+                    1_000_000n
                 );
 
                 return {
@@ -82,9 +82,9 @@ export function get_tests(
             }
         },
         {
-            name: 'initialized totalSupply',
+            name: 'initialized total_supply',
             test: async () => {
-                const result = await simple_erc20_canister.totalSupply();
+                const result = await simple_erc20_canister.total_supply();
 
                 return {
                     ok: result === 1_000_000n

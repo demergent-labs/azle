@@ -1,14 +1,11 @@
 import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@dfinity/agent';
+
 export interface _SERVICE {
-    balance: (arg_0: string) => Promise<bigint>;
-    initializeSupply: (
-        arg_0: string,
-        arg_1: string,
-        arg_2: bigint,
-        arg_3: string
-    ) => Promise<boolean>;
-    name: () => Promise<string>;
-    ticker: () => Promise<string>;
-    totalSupply: () => Promise<bigint>;
-    transfer: (arg_0: string, arg_1: string, arg_2: bigint) => Promise<boolean>;
+    balance: ActorMethod<[string], bigint>;
+    initialize_supply: ActorMethod<[string, string, string, bigint], boolean>;
+    name: ActorMethod<[], string>;
+    ticker: ActorMethod<[], string>;
+    total_supply: ActorMethod<[], bigint>;
+    transfer: ActorMethod<[string, string, bigint], boolean>;
 }
