@@ -1,4 +1,5 @@
 use proc_macro2::TokenStream;
+use std::fmt;
 
 pub use abstract_canister_tree::AbstractCanisterTree;
 pub use actable::Actable;
@@ -23,6 +24,19 @@ pub enum CanisterMethodType {
     Update,
 }
 
+impl fmt::Display for CanisterMethodType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            CanisterMethodType::Heartbeat => write!(f, "Heartbeat"),
+            CanisterMethodType::Init => write!(f, "Init"),
+            CanisterMethodType::InspectMessage => write!(f, "InspectMessage"),
+            CanisterMethodType::PostUpgrade => write!(f, "PostUpgrade"),
+            CanisterMethodType::PreUpgrade => write!(f, "PreUpgrade"),
+            CanisterMethodType::Query => write!(f, "Query"),
+            CanisterMethodType::Update => write!(f, "Update"),
+        }
+    }
+}
 pub enum RequestType {
     Query,
     Update,

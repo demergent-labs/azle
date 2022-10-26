@@ -10,8 +10,10 @@ pub fn build_canister_method_system_heartbeat(
     let heartbeat_fn_decls = programs.get_azle_fn_decls_of_type(&CanisterMethodType::Heartbeat);
 
     if heartbeat_fn_decls.len() > 1 {
-        let error_message =
-            errors::create_duplicate_method_types_error_message(heartbeat_fn_decls, "heartbeat");
+        let error_message = errors::create_duplicate_method_types_error_message(
+            heartbeat_fn_decls,
+            CanisterMethodType::Heartbeat,
+        );
 
         panic!("{}", error_message);
     }

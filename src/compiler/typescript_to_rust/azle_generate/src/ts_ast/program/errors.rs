@@ -4,11 +4,14 @@ use annotate_snippets::{
 };
 use swc_common::{source_map::Pos, Span};
 
-use crate::ts_ast::{source_map::GetSourceFileInfo, AzleFnDecl};
+use crate::{
+    cdk_act::CanisterMethodType,
+    ts_ast::{source_map::GetSourceFileInfo, AzleFnDecl},
+};
 
 pub fn create_duplicate_method_types_error_message(
     azle_fn_decls: Vec<AzleFnDecl>,
-    method_type: &str,
+    canister_method_type: CanisterMethodType,
 ) -> String {
     let source_map = azle_fn_decls[0].source_map;
 
@@ -44,17 +47,20 @@ pub fn create_duplicate_method_types_error_message(
         .enumerate()
         .map(|(i, span)| SourceAnnotation {
             label: if i == 0 {
-                "first defined here"
+                "first specified here"
             } else {
-                "and later defined here"
+                "and later specified here"
             },
             annotation_type: AnnotationType::Error,
             range: source_map.get_multi_line_range(span, offset),
         })
         .collect();
 
-    let error_message = format!("cannot expose more than one {} method", method_type);
-    let suggestion = format!("remove all but one {} method", method_type);
+    let error_message = format!(
+        "cannot expose more than one {} method",
+        canister_method_type
+    );
+    let suggestion = format!("remove all but one {} method", canister_method_type);
 
     let error_snippet = Snippet {
         title: Some(Annotation {
