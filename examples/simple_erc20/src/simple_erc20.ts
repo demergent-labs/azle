@@ -1,4 +1,4 @@
-import { Query, Update, nat64 } from 'azle';
+import { nat64, Query, Update } from 'azle';
 
 type Account = {
     address: string;
@@ -9,54 +9,54 @@ type State = {
     accounts: {
         [key: string]: Account;
     };
-    totalSupply: nat64;
-    ticker: string;
     name: string;
+    ticker: string;
+    total_supply: nat64;
 };
 
 let state: State = {
     accounts: {},
-    totalSupply: 0n,
+    name: '',
     ticker: '',
-    name: ''
+    total_supply: 0n
 };
 
-export function initializeSupply(
-    ticker: string,
+export function initialize_supply(
     name: string,
-    totalSupply: nat64,
-    originalAddress: string
+    original_address: string,
+    ticker: string,
+    total_supply: nat64
 ): Update<boolean> {
     state = {
         ...state,
         accounts: {
-            [originalAddress]: {
-                address: originalAddress,
-                balance: totalSupply
+            [original_address]: {
+                address: original_address,
+                balance: total_supply
             }
         },
-        ticker,
         name,
-        totalSupply
+        ticker,
+        total_supply
     };
 
     return true;
 }
 
 export function transfer(
-    from: string,
-    to: string,
+    from_address: string,
+    to_address: string,
     amount: nat64
 ): Update<boolean> {
-    if (state.accounts[to] === undefined) {
-        state.accounts[to] = {
-            address: to,
+    if (state.accounts[to_address] === undefined) {
+        state.accounts[to_address] = {
+            address: to_address,
             balance: 0n
         };
     }
 
-    state.accounts[from].balance -= amount;
-    state.accounts[to].balance += amount;
+    state.accounts[from_address].balance -= amount;
+    state.accounts[to_address].balance += amount;
 
     return true;
 }
@@ -73,6 +73,6 @@ export function name(): Query<string> {
     return state.name;
 }
 
-export function totalSupply(): Query<nat64> {
-    return state.totalSupply;
+export function total_supply(): Query<nat64> {
+    return state.total_supply;
 }
