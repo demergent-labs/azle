@@ -1,8 +1,8 @@
 // TODO let's add more examples here, really test it out
 
-import { Query, Opt } from 'azle';
+import { Opt, Query } from 'azle';
 
-type HTML = {
+type Html = {
     head: Opt<Head>;
 };
 
@@ -14,19 +14,19 @@ type Element = {
     id: string;
 };
 
-export function getHTML(): Query<HTML> {
+export function get_html(): Query<Html> {
     return {
         head: null
     };
 }
 
-export function getHead(): Query<Opt<Head>> {
+export function get_head(): Query<Opt<Head>> {
     return {
         elements: []
     };
 }
 
-export function getHeadWithElements(): Query<Opt<Head>> {
+export function get_head_with_elements(): Query<Opt<Head>> {
     return {
         elements: [
             {
@@ -36,7 +36,7 @@ export function getHeadWithElements(): Query<Opt<Head>> {
     };
 }
 
-export function getElement(
+export function get_element(
     element: Opt<Opt<Element>>
 ): Query<Opt<Opt<Element>>> {
     return element;

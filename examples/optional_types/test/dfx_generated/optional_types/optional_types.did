@@ -1,18 +1,9 @@
-type HTML = record {
-    "head": opt Head;
-};
-
-type Head = record {
-    "elements": vec Element;
-};
-
-type Element = record {
-    "id": text;
-};
-
-service: {
-    "getHTML": () -> (HTML) query;
-    "getHead": () -> (opt Head) query;
-    "getHeadWithElements": () -> (opt Head) query;
-    "getElement": (opt opt Element) -> (opt opt Element) query;
+type Element = record { id : text };
+type Head = record { elements : vec Element };
+type Html = record { head : opt Head };
+service : () -> {
+  get_element : (opt opt Element) -> (opt opt Element) query;
+  get_head : () -> (opt Head) query;
+  get_head_with_elements : () -> (opt Head) query;
+  get_html : () -> (Html) query;
 }
