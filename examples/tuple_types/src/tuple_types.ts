@@ -79,9 +79,9 @@ export function primitive_two_tuple_return_type(): Query<PrimitiveTwoTuple> {
 }
 
 export function primitive_two_tuple_param(
-    header: PrimitiveTwoTuple
+    param: PrimitiveTwoTuple
 ): Query<PrimitiveTwoTuple> {
-    return header;
+    return param;
 }
 
 export function primitive_two_tuple_inline_return_type(): Query<
@@ -101,9 +101,9 @@ export function primitive_three_tuple_return_type(): Query<PrimitiveThreeTuple> 
 }
 
 export function primitive_three_tuple_param(
-    header: PrimitiveThreeTuple
+    param: PrimitiveThreeTuple
 ): Query<PrimitiveThreeTuple> {
-    return header;
+    return param;
 }
 
 export function primitive_three_tuple_inline_return_type(): Query<
@@ -151,9 +151,9 @@ export function complex_two_tuple_return_type(): Query<ComplexTwoTuple> {
 }
 
 export function complex_two_tuple_param(
-    header: ComplexTwoTuple
+    param: ComplexTwoTuple
 ): Query<ComplexTwoTuple> {
-    return header;
+    return param;
 }
 
 export function complex_two_tuple_inline_return_type(): Query<
@@ -197,9 +197,9 @@ export function complex_three_tuple_return_type(): Query<ComplexThreeTuple> {
 }
 
 export function complex_three_tuple_param(
-    header: ComplexThreeTuple
+    param: ComplexThreeTuple
 ): Query<ComplexThreeTuple> {
-    return header;
+    return param;
 }
 
 export function complex_three_tuple_inline_return_type(): Query<

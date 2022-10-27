@@ -1,5 +1,5 @@
-type AzleInline13573015674368967065 = record { goodbye : nat64 };
-type AzleInline2622686677058427252 = record { hello : nat64 };
+type AzleInline4230170853101504796 = record { hello : nat64 };
+type AzleInline5131143341488460789 = record { goodbye : nat64 };
 type Box = variant {
   Bad : record {
     record { text; nat64 };
@@ -81,8 +81,8 @@ service : () -> {
   tuple_array_record_field : () -> (HttpResponse) query;
   tuple_array_variant_field : () -> (StreamingCallbackType) query;
   two_tuple_with_inline_records : (
-      record { AzleInline2622686677058427252; AzleInline13573015674368967065 },
+      record { AzleInline4230170853101504796; AzleInline5131143341488460789 },
     ) -> (
-      record { AzleInline2622686677058427252; AzleInline13573015674368967065 },
+      record { AzleInline4230170853101504796; AzleInline5131143341488460789 },
     ) query;
 }
