@@ -1,16 +1,15 @@
 use crate::{
-    cdk_act::{
-        generators::ic_object::IcObjectHelperMethods, nodes::ActInitMethod,
-        traits::CanisterMethodBuilder, CanisterMethodType,
-    },
+    cdk_act::{nodes::ActInitMethod, traits::CanisterMethodBuilder, CanisterMethodType},
     generators::canister_methods::method_body,
-    ts_ast::program::{azle_program::AzleProgramVecHelperMethods, errors, AzleProgram},
+    ts_ast::{program::azle_program::AzleProgramVecHelperMethods, ts_ast::errors, TsAst},
 };
 
-pub fn build_canister_method_system_init(programs: &Vec<AzleProgram>) -> ActInitMethod {
-    let ic_object = programs.generate_ic_object();
+pub fn build_canister_method_system_init(ts_ast: &TsAst) -> ActInitMethod {
+    let ic_object = ts_ast.generate_ic_object();
 
-    let init_fn_decls = programs.get_azle_fn_decls_of_type(&CanisterMethodType::Init);
+    let init_fn_decls = ts_ast
+        .azle_programs
+        .get_azle_fn_decls_of_type(&CanisterMethodType::Init);
 
     if init_fn_decls.len() > 1 {
         let error_message = errors::create_duplicate_method_types_error_message(

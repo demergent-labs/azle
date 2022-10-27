@@ -2,12 +2,8 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn::Ident;
 
-use crate::{
-    generators::cross_canister_call_functions::CrossCanisterCallFunctionsInfo,
-    ts_ast::program::AzleProgram,
-};
-
-use super::cross_canister_call_functions::CrossCanisterHelperMethods;
+use super::TsAst;
+use crate::generators::cross_canister_call_functions::CrossCanisterCallFunctionsInfo;
 
 enum AzleCallType {
     WithoutPayment,
@@ -15,12 +11,8 @@ enum AzleCallType {
     WithPayment128,
 }
 
-pub trait AsyncResultHelperMethods {
-    fn generate_async_result_handler(&self) -> TokenStream;
-}
-
-impl AsyncResultHelperMethods for Vec<AzleProgram> {
-    fn generate_async_result_handler(&self) -> TokenStream {
+impl TsAst {
+    pub fn generate_async_result_handler(&self) -> TokenStream {
         let cross_canister_call_functions_infos =
             self.generate_cross_canister_call_functions_infos();
 
