@@ -6,10 +6,10 @@ import { _SERVICE } from './dfx_generated/principal/principal.did';
 export function get_tests(principal_canister: ActorSubclass<_SERVICE>): Test[] {
     const from_hex_tests = get_from_hex_tests(principal_canister);
     const from_text_tests = get_from_text_tests(principal_canister);
-    const from_uint8array_tests = get_from_uint8array_tests(principal_canister);
+    const from_blob_tests = get_from_blob_tests(principal_canister);
     const to_hex_tests = get_to_hex_tests(principal_canister);
     const to_text_tests = get_to_text_tests(principal_canister);
-    const to_uint8array_tests = get_to_uint8array_tests(principal_canister);
+    const to_blob_tests = get_to_blob_tests(principal_canister);
 
     return [
         {
@@ -58,10 +58,10 @@ export function get_tests(principal_canister: ActorSubclass<_SERVICE>): Test[] {
         },
         ...from_hex_tests,
         ...from_text_tests,
-        ...from_uint8array_tests,
+        ...from_blob_tests,
         ...to_hex_tests,
         ...to_text_tests,
-        ...to_uint8array_tests
+        ...to_blob_tests
     ];
 }
 
@@ -267,19 +267,18 @@ function get_from_text_tests(
     ];
 }
 
-function get_from_uint8array_tests(
+function get_from_blob_tests(
     principal_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
         {
-            name: 'principal_from_uint8array aaaaa-aa',
+            name: 'principal_from_blob aaaaa-aa',
             test: async () => {
                 const principal = Principal.fromText('aaaaa-aa');
 
-                const result =
-                    await principal_canister.principal_from_uint8array(
-                        Array.from(principal.toUint8Array())
-                    );
+                const result = await principal_canister.principal_from_blob(
+                    Array.from(principal.toUint8Array())
+                );
 
                 return {
                     ok: result.toText() === principal.toText()
@@ -287,16 +286,15 @@ function get_from_uint8array_tests(
             }
         },
         {
-            name: 'principal_from_uint8array rrkah-fqaaa-aaaaa-aaaaq-cai',
+            name: 'principal_from_blob rrkah-fqaaa-aaaaa-aaaaq-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 );
 
-                const result =
-                    await principal_canister.principal_from_uint8array(
-                        Array.from(principal.toUint8Array())
-                    );
+                const result = await principal_canister.principal_from_blob(
+                    Array.from(principal.toUint8Array())
+                );
 
                 return {
                     ok: result.toText() === principal.toText()
@@ -304,16 +302,15 @@ function get_from_uint8array_tests(
             }
         },
         {
-            name: 'principal_from_uint8array ryjl3-tyaaa-aaaaa-aaaba-cai',
+            name: 'principal_from_blob ryjl3-tyaaa-aaaaa-aaaba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'ryjl3-tyaaa-aaaaa-aaaba-cai'
                 );
 
-                const result =
-                    await principal_canister.principal_from_uint8array(
-                        Array.from(principal.toUint8Array())
-                    );
+                const result = await principal_canister.principal_from_blob(
+                    Array.from(principal.toUint8Array())
+                );
 
                 return {
                     ok: result.toText() === principal.toText()
@@ -321,16 +318,15 @@ function get_from_uint8array_tests(
             }
         },
         {
-            name: 'principal_from_uint8array jiyou-fiaaa-aaaam-aad6q-cai',
+            name: 'principal_from_blob jiyou-fiaaa-aaaam-aad6q-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jiyou-fiaaa-aaaam-aad6q-cai'
                 );
 
-                const result =
-                    await principal_canister.principal_from_uint8array(
-                        Array.from(principal.toUint8Array())
-                    );
+                const result = await principal_canister.principal_from_blob(
+                    Array.from(principal.toUint8Array())
+                );
 
                 return {
                     ok: result.toText() === principal.toText()
@@ -338,16 +334,15 @@ function get_from_uint8array_tests(
             }
         },
         {
-            name: 'principal_from_uint8array jqklt-hiaaa-aaaam-aaeba-cai',
+            name: 'principal_from_blob jqklt-hiaaa-aaaam-aaeba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jqklt-hiaaa-aaaam-aaeba-cai'
                 );
 
-                const result =
-                    await principal_canister.principal_from_uint8array(
-                        Array.from(principal.toUint8Array())
-                    );
+                const result = await principal_canister.principal_from_blob(
+                    Array.from(principal.toUint8Array())
+                );
 
                 return {
                     ok: result.toText() === principal.toText()
@@ -355,16 +350,15 @@ function get_from_uint8array_tests(
             }
         },
         {
-            name: 'principal_from_uint8array qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            name: 'principal_from_blob qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
             test: async () => {
                 const principal = Principal.fromText(
                     'qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe'
                 );
 
-                const result =
-                    await principal_canister.principal_from_uint8array(
-                        Array.from(principal.toUint8Array())
-                    );
+                const result = await principal_canister.principal_from_blob(
+                    Array.from(principal.toUint8Array())
+                );
 
                 return {
                     ok: result.toText() === principal.toText()
@@ -574,16 +568,16 @@ function get_to_text_tests(
     ];
 }
 
-function get_to_uint8array_tests(
+function get_to_blob_tests(
     principal_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
         {
-            name: 'principal_to_uint8array aaaaa-aa',
+            name: 'principal_to_blob aaaaa-aa',
             test: async () => {
                 const principal = Principal.fromText('aaaaa-aa');
 
-                const result = await principal_canister.principal_to_uint8array(
+                const result = await principal_canister.principal_to_blob(
                     principal
                 );
 
@@ -596,13 +590,13 @@ function get_to_uint8array_tests(
             }
         },
         {
-            name: 'principal_to_uint8array rrkah-fqaaa-aaaaa-aaaaq-cai',
+            name: 'principal_to_blob rrkah-fqaaa-aaaaa-aaaaq-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 );
 
-                const result = await principal_canister.principal_to_uint8array(
+                const result = await principal_canister.principal_to_blob(
                     principal
                 );
 
@@ -615,13 +609,13 @@ function get_to_uint8array_tests(
             }
         },
         {
-            name: 'principal_to_uint8array ryjl3-tyaaa-aaaaa-aaaba-cai',
+            name: 'principal_to_blob ryjl3-tyaaa-aaaaa-aaaba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'ryjl3-tyaaa-aaaaa-aaaba-cai'
                 );
 
-                const result = await principal_canister.principal_to_uint8array(
+                const result = await principal_canister.principal_to_blob(
                     principal
                 );
 
@@ -634,13 +628,13 @@ function get_to_uint8array_tests(
             }
         },
         {
-            name: 'principal_to_uint8array jiyou-fiaaa-aaaam-aad6q-cai',
+            name: 'principal_to_blob jiyou-fiaaa-aaaam-aad6q-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jiyou-fiaaa-aaaam-aad6q-cai'
                 );
 
-                const result = await principal_canister.principal_to_uint8array(
+                const result = await principal_canister.principal_to_blob(
                     principal
                 );
 
@@ -653,13 +647,13 @@ function get_to_uint8array_tests(
             }
         },
         {
-            name: 'principal_to_uint8array jqklt-hiaaa-aaaam-aaeba-cai',
+            name: 'principal_to_blob jqklt-hiaaa-aaaam-aaeba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jqklt-hiaaa-aaaam-aaeba-cai'
                 );
 
-                const result = await principal_canister.principal_to_uint8array(
+                const result = await principal_canister.principal_to_blob(
                     principal
                 );
 
@@ -672,13 +666,13 @@ function get_to_uint8array_tests(
             }
         },
         {
-            name: 'principal_to_uint8array qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            name: 'principal_to_blob qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
             test: async () => {
                 const principal = Principal.fromText(
                     'qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe'
                 );
 
-                const result = await principal_canister.principal_to_uint8array(
+                const result = await principal_canister.principal_to_blob(
                     principal
                 );
 
