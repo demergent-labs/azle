@@ -5,9 +5,9 @@ import { _SERVICE } from './dfx_generated/counter/counter.did';
 export function get_tests(counter_canister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'readCount',
+            name: 'read_count',
             test: async () => {
-                const result = await counter_canister.readCount();
+                const result = await counter_canister.read_count();
 
                 return {
                     ok: result === 0n
@@ -15,9 +15,9 @@ export function get_tests(counter_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'readCount',
+            name: 'increment_count',
             test: async () => {
-                const result = await counter_canister.incrementCount();
+                const result = await counter_canister.increment_count();
 
                 return {
                     ok: result === 1n
@@ -25,9 +25,9 @@ export function get_tests(counter_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'readCount',
+            name: 'increment_count',
             test: async () => {
-                const result = await counter_canister.incrementCount();
+                const result = await counter_canister.increment_count();
 
                 return {
                     ok: result === 2n
@@ -35,9 +35,9 @@ export function get_tests(counter_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'readCount',
+            name: 'increment_count',
             test: async () => {
-                const result = await counter_canister.incrementCount();
+                const result = await counter_canister.increment_count();
 
                 return {
                     ok: result === 3n
@@ -45,9 +45,9 @@ export function get_tests(counter_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'readCount',
+            name: 'read_count',
             test: async () => {
-                const result = await counter_canister.readCount();
+                const result = await counter_canister.read_count();
 
                 return {
                     ok: result === 3n
