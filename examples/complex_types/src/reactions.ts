@@ -1,81 +1,90 @@
-import { Query, Update, nat32 } from 'azle';
+import { nat32, Query, Update } from 'azle';
 import { Reaction, ReactionType } from './candid_types';
-import { getPostFromStatePost } from './posts';
+import { get_post_from_state_post } from './posts';
 import { state, StatePost, StateReaction, StateUser } from './state';
-import { getUserFromStateUser } from './users';
+import { get_user_from_state_user } from './users';
 
-export function createReaction(
-    authorId: string,
-    postId: string,
-    reactionType: ReactionType,
-    joinDepth: nat32
+export function create_reaction(
+    author_id: string,
+    post_id: string,
+    reaction_type: ReactionType,
+    join_depth: nat32
 ): Update<Reaction> {
     const id = Object.keys(state.posts).length.toString();
 
-    const stateReaction = {
+    const state_reaction = {
         id,
-        authorId,
-        postId,
-        reactionType
+        author_id,
+        post_id,
+        reaction_type
     };
-    const updatedStateAuthor = getUpdatedStateAuthor(
-        authorId,
-        stateReaction.id
+    const updated_state_author = get_updated_state_author(
+        author_id,
+        state_reaction.id
     );
-    const updatedStatePost = getUpdatedStatePost(postId, stateReaction.id);
+    const updated_state_post = get_updated_state_post(
+        post_id,
+        state_reaction.id
+    );
 
-    state.reactions[id] = stateReaction;
-    state.users[authorId] = updatedStateAuthor;
-    state.posts[postId] = updatedStatePost;
+    state.reactions[id] = state_reaction;
+    state.users[author_id] = updated_state_author;
+    state.posts[post_id] = updated_state_post;
 
-    const reaction = getReactionFromStateReaction(stateReaction, joinDepth);
+    const reaction = get_reaction_from_state_reaction(
+        state_reaction,
+        join_depth
+    );
 
     return reaction;
 }
 
-export function getAllReactions(joinDepth: nat32): Query<Reaction[]> {
-    return Object.values(state.reactions).map((stateReaction) =>
-        getReactionFromStateReaction(stateReaction, joinDepth)
+export function get_all_reactions(join_depth: nat32): Query<Reaction[]> {
+    return Object.values(state.reactions).map((state_reaction) =>
+        get_reaction_from_state_reaction(state_reaction, join_depth)
     );
 }
 
-export function getReactionFromStateReaction(
-    stateReaction: StateReaction,
-    joinDepth: nat32
+export function get_reaction_from_state_reaction(
+    state_reaction: StateReaction,
+    join_depth: nat32
 ): Reaction {
-    const stateAuthor = state.users[stateReaction.authorId];
-    const author = getUserFromStateUser(stateAuthor, joinDepth);
+    const state_author = state.users[state_reaction.author_id];
+    const author = get_user_from_state_user(state_author, join_depth);
 
-    const statePost = state.posts[stateReaction.postId];
-    const post = getPostFromStatePost(statePost, joinDepth);
+    const state_post = state.posts[state_reaction.post_id];
+    const post = get_post_from_state_post(state_post, join_depth);
 
     return {
-        id: stateReaction.id,
+        id: state_reaction.id,
         author,
         post,
-        reactionType: stateReaction.reactionType
+        reaction_type: state_reaction.reaction_type
     };
 }
 
-function getUpdatedStateAuthor(
-    authorId: string,
-    reactionId: string
+function get_updated_state_author(
+    author_id: string,
+    reaction_id: string
 ): StateUser {
-    const stateAuthor = state.users[authorId];
-    const updatedStateAuthor = {
-        ...stateAuthor,
-        reactionIds: [...stateAuthor.reactionIds, reactionId]
+    const state_author = state.users[author_id];
+    const updated_state_author = {
+        ...state_author,
+        reaction_ids: [...state_author.reaction_ids, reaction_id]
     };
 
-    return updatedStateAuthor;
+    return updated_state_author;
 }
 
-function getUpdatedStatePost(postId: string, reactionId: string): StatePost {
-    const statePost = state.posts[postId];
-    const updatedStatePost = {
-        ...statePost,
-        reactionIds: [...statePost.reactionIds, reactionId]
+function get_updated_state_post(
+    post_id: string,
+    reaction_id: string
+): StatePost {
+    const state_post = state.posts[post_id];
+    const updated_state_post = {
+        ...state_post,
+        reaction_ids: [...state_post.reaction_ids, reaction_id]
     };
 
-    return updatedStatePost;
+    return updated_state_post;
 }

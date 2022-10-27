@@ -1,94 +1,106 @@
-import { Query, Update, nat32 } from 'azle';
+import { nat32, Query, Update } from 'azle';
 import { Post } from './candid_types';
-import { getReactionFromStateReaction } from './reactions';
+import { get_reaction_from_state_reaction } from './reactions';
 import { state, StatePost, StateThread, StateUser } from './state';
-import { getThreadFromStateThread } from './threads';
-import { getUserFromStateUser } from './users';
+import { get_thread_from_state_thread } from './threads';
+import { get_user_from_state_user } from './users';
 
-export function createPost(
-    authorId: string,
+export function create_post(
+    author_id: string,
     text: string,
-    threadId: string,
-    joinDepth: nat32
+    thread_id: string,
+    join_depth: nat32
 ): Update<Post> {
     const id = Object.keys(state.posts).length.toString();
 
-    const statePost = {
+    const state_post = {
         id,
-        authorId,
-        reactionIds: [],
+        author_id,
+        reaction_ids: [],
         text,
-        threadId
+        thread_id
     };
-    const updatedStateAuthor = getUpdatedStateAuthor(authorId, statePost.id);
-    const updatedStateThread = getUpdatedStateThread(threadId, statePost.id);
+    const updated_state_author = get_updated_state_author(
+        author_id,
+        state_post.id
+    );
+    const updated_state_thread = get_updated_state_thread(
+        thread_id,
+        state_post.id
+    );
 
-    state.posts[id] = statePost;
-    state.users[authorId] = updatedStateAuthor;
-    state.threads[threadId] = updatedStateThread;
+    state.posts[id] = state_post;
+    state.users[author_id] = updated_state_author;
+    state.threads[thread_id] = updated_state_thread;
 
-    const post = getPostFromStatePost(statePost, joinDepth);
+    const post = get_post_from_state_post(state_post, join_depth);
 
     return post;
 }
 
-export function getAllPosts(joinDepth: nat32): Query<Post[]> {
-    return Object.values(state.posts).map((statePost) =>
-        getPostFromStatePost(statePost, joinDepth)
+export function get_all_posts(join_depth: nat32): Query<Post[]> {
+    return Object.values(state.posts).map((state_post) =>
+        get_post_from_state_post(state_post, join_depth)
     );
 }
 
-export function getPostFromStatePost(
-    statePost: StatePost,
-    joinDepth: nat32
+export function get_post_from_state_post(
+    state_post: StatePost,
+    join_depth: nat32
 ): Post {
-    const stateAuthor = state.users[statePost.authorId];
-    const author = getUserFromStateUser(stateAuthor, joinDepth);
+    const state_author = state.users[state_post.author_id];
+    const author = get_user_from_state_user(state_author, join_depth);
 
-    const stateThread = state.threads[statePost.threadId];
-    const thread = getThreadFromStateThread(stateThread, joinDepth);
+    const state_thread = state.threads[state_post.thread_id];
+    const thread = get_thread_from_state_thread(state_thread, join_depth);
 
-    if (joinDepth === 0) {
+    if (join_depth === 0) {
         return {
-            id: statePost.id,
+            id: state_post.id,
             author,
             reactions: [],
-            text: statePost.text,
+            text: state_post.text,
             thread
         };
     } else {
-        const reactions = statePost.reactionIds
-            .map((reactionId) => state.reactions[reactionId])
-            .map((stateReaction) =>
-                getReactionFromStateReaction(stateReaction, joinDepth - 1)
+        const reactions = state_post.reaction_ids
+            .map((reaction_id) => state.reactions[reaction_id])
+            .map((state_reaction) =>
+                get_reaction_from_state_reaction(state_reaction, join_depth - 1)
             );
 
         return {
-            id: statePost.id,
+            id: state_post.id,
             author,
             reactions,
-            text: statePost.text,
+            text: state_post.text,
             thread
         };
     }
 }
 
-function getUpdatedStateAuthor(authorId: string, postId: string): StateUser {
-    const stateAuthor = state.users[authorId];
-    const updatedStateAuthor = {
-        ...stateAuthor,
-        postIds: [...stateAuthor.postIds, postId]
+function get_updated_state_author(
+    author_id: string,
+    post_id: string
+): StateUser {
+    const state_author = state.users[author_id];
+    const updated_state_author = {
+        ...state_author,
+        post_ids: [...state_author.post_ids, post_id]
     };
 
-    return updatedStateAuthor;
+    return updated_state_author;
 }
 
-function getUpdatedStateThread(threadId: string, postId: string): StateThread {
-    const stateThread = state.threads[threadId];
-    const updatedStateThread = {
-        ...stateThread,
-        postIds: [...stateThread.postIds, postId]
+function get_updated_state_thread(
+    thread_id: string,
+    post_id: string
+): StateThread {
+    const state_thread = state.threads[thread_id];
+    const updated_state_thread = {
+        ...state_thread,
+        postIds: [...state_thread.post_ids, post_id]
     };
 
-    return updatedStateThread;
+    return updated_state_thread;
 }
