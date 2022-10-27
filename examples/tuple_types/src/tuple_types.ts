@@ -1,5 +1,3 @@
-// TODO add tests for inline types inside of tuple (not sure if Candid even supports that)
-
 import {
     Query,
     nat64,
@@ -37,11 +35,11 @@ type Reaction = Variant<{
     Bad: ComplexThreeTuple;
 }>;
 
-// type PrimitiveOneTuple = [string]; // TODO https://github.com/demergent-labs/azle/issues/254
+type PrimitiveOneTuple = [string];
 type PrimitiveTwoTuple = [string, nat64];
 type PrimitiveThreeTuple = [string, nat64, Principal];
 
-// type ComplexOneTuple = [PrimitiveTwoTuple]; // TODO https://github.com/demergent-labs/azle/issues/254
+type ComplexOneTuple = [PrimitiveTwoTuple];
 type ComplexTwoTuple = [PrimitiveTwoTuple, User];
 type ComplexThreeTuple = [PrimitiveTwoTuple, User, Reaction];
 
@@ -56,18 +54,25 @@ type StreamingCallbackType = Variant<{
     without_headers: null;
 }>;
 
-// TODO https://github.com/demergent-labs/azle/issues/254
-// export function primitive_one_tuple_return_type(): Query<PrimitiveOneTuple> {
-//     return ['Hello'];
-// }
+export function primitive_one_tuple_return_type(): Query<PrimitiveOneTuple> {
+    return ['Hello'];
+}
 
-// export function primitive_one_tuple_param(param: PrimitiveOneTuple): Query<PrimitiveOneTuple> {
-//     return param;
-// }
+export function primitive_one_tuple_param(
+    param: PrimitiveOneTuple
+): Query<PrimitiveOneTuple> {
+    return param;
+}
 
-// TODO wait for https://github.com/demergent-labs/azle/issues/253
-// TODO primitive_one_tuple_inline_param
-// TODO primitive_one_tuple_inline_return_type
+export function primitive_one_tuple_inline_return_type(): Query<[string]> {
+    return ['Greenland'];
+}
+
+export function primitive_one_tuple_inline_param(
+    param: [string]
+): Query<[string]> {
+    return param;
+}
 
 export function primitive_two_tuple_return_type(): Query<PrimitiveTwoTuple> {
     return ['Content-Type', 64n];
@@ -79,15 +84,17 @@ export function primitive_two_tuple_param(
     return header;
 }
 
-// TODO wait for https://github.com/demergent-labs/azle/issues/253
-// export function primitive_two_tuple_inline_return_type(): Query<[string, string]> {
-//     return ['Fun', 'Times'];
-// }
+export function primitive_two_tuple_inline_return_type(): Query<
+    [string, string]
+> {
+    return ['Fun', 'Times'];
+}
 
-// TODO wait for https://github.com/demergent-labs/azle/issues/253
-// export function primitive_two_tuple_inline_param(header: [string, string]): Query<Header> {
-//     return header;
-// }
+export function primitive_two_tuple_inline_param(
+    param: [string, string]
+): Query<[string, string]> {
+    return param;
+}
 
 export function primitive_three_tuple_return_type(): Query<PrimitiveThreeTuple> {
     return ['Good', 454n, Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')];
@@ -99,24 +106,39 @@ export function primitive_three_tuple_param(
     return header;
 }
 
-// TODO wait for https://github.com/demergent-labs/azle/issues/253
-// TODO primitive_three_tuple_inline_param
-// TODO primitive_three_tuple_inline_return_type
+export function primitive_three_tuple_inline_return_type(): Query<
+    [string, nat64, Principal]
+> {
+    return ['Fun', 101n, Principal.fromText('aaaaa-aa')];
+}
 
-// TODO https://github.com/demergent-labs/azle/issues/254
-// export function complex_one_tuple_return_type(): Query<ComplexOneTuple> {
-//     return [
-//         ['Hello']
-//     ];
-// }
+export function primitive_three_tuple_inline_param(
+    param: [string, nat64, Principal]
+): Query<[string, nat64, Principal]> {
+    return param;
+}
 
-// export function complex_one_tuple_param(param: ComplexOneTuple): Query<ComplexOneTuple> {
-//     return param;
-// }
+export function complex_one_tuple_return_type(): Query<ComplexOneTuple> {
+    return [['Hello', 0n]];
+}
 
-// TODO wait for https://github.com/demergent-labs/azle/issues/253
-// TODO complex_one_tuple_inline_param
-// TODO complex_one_tuple_inline_return_type
+export function complex_one_tuple_param(
+    param: ComplexOneTuple
+): Query<ComplexOneTuple> {
+    return param;
+}
+
+export function complex_one_tuple_inline_return_type(): Query<
+    [PrimitiveTwoTuple]
+> {
+    return [['Candy', 56n]];
+}
+
+export function complex_one_tuple_inline_param(
+    param: [PrimitiveTwoTuple]
+): Query<[PrimitiveTwoTuple]> {
+    return param;
+}
 
 export function complex_two_tuple_return_type(): Query<ComplexTwoTuple> {
     return [
@@ -134,9 +156,23 @@ export function complex_two_tuple_param(
     return header;
 }
 
-// TODO wait for https://github.com/demergent-labs/azle/issues/253
-// TODO complex_two_tuple_inline_param
-// TODO complex_two_tuple_inline_return_type
+export function complex_two_tuple_inline_return_type(): Query<
+    [PrimitiveTwoTuple, User]
+> {
+    return [
+        ['Content-Type', 644n],
+        {
+            id: '444',
+            primitive_two_tuple: ['Content-Type', 6_422n]
+        }
+    ];
+}
+
+export function complex_two_tuple_inline_param(
+    param: [PrimitiveTwoTuple, User]
+): Query<[PrimitiveTwoTuple, User]> {
+    return param;
+}
 
 export function complex_three_tuple_return_type(): Query<ComplexThreeTuple> {
     return [
@@ -166,9 +202,35 @@ export function complex_three_tuple_param(
     return header;
 }
 
-// TODO wait for https://github.com/demergent-labs/azle/issues/253
-// TODO complex_three_tuple_inline_param
-// TODO complex_three_tuple_inline_return_type
+export function complex_three_tuple_inline_return_type(): Query<
+    [PrimitiveTwoTuple, User, Reaction]
+> {
+    return [
+        ['Content-Type', 64n],
+        {
+            id: '0',
+            primitive_two_tuple: ['Content-Type', 64n]
+        },
+        {
+            Bad: [
+                ['Content-Type', 64n],
+                {
+                    id: '1',
+                    primitive_two_tuple: ['Content-Type', 64n]
+                },
+                {
+                    Good: null
+                }
+            ]
+        }
+    ];
+}
+
+export function complex_three_tuple_inline_param(
+    param: [PrimitiveTwoTuple, User, Reaction]
+): Query<[PrimitiveTwoTuple, User, Reaction]> {
+    return param;
+}
 
 export function tuple_array_params_and_return_type(
     headers: Header[]
@@ -192,4 +254,10 @@ export function tuple_array_variant_field(): Query<StreamingCallbackType> {
             ['Accept-Ranges', 'bytes']
         ]
     };
+}
+
+export function two_tuple_with_inline_records(
+    param: [{ hello: nat64 }, { goodbye: nat64 }]
+): Query<[{ hello: nat64 }, { goodbye: nat64 }]> {
+    return param;
 }

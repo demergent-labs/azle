@@ -1,44 +1,88 @@
-type PrimitiveTwoTuple = record { text; nat64 };
-
-type PrimitiveThreeTuple = record { text; nat64; principal };
-
-type ComplexTwoTuple = record { PrimitiveTwoTuple; User };
-
-type ComplexThreeTuple = record { PrimitiveTwoTuple; User; Reaction };
-
-type Header = record { text; text };
-
-type HttpResponse = record {
-    "headers": vec Header;
+type AzleInline13573015674368967065 = record { goodbye : nat64 };
+type AzleInline2622686677058427252 = record { hello : nat64 };
+type Box = variant {
+  Bad : record {
+    record { text; nat64 };
+    record { id : text; primitive_two_tuple : record { text; nat64 } };
+    Box;
+  };
+  Good;
 };
-
-type CanisterTuple1 = record { text; nat64 };
-
-type CanisterTuple2 = record { text; CanisterTuple1 };
-
-type StableTuple1 = record { text; nat64 };
-
-type StableTuple2 = record { text; CanisterTuple1 };
-
-type User = record {
-    "id": text;
-    "primitive_two_tuple": PrimitiveTwoTuple;
+type HttpResponse = record { headers : vec record { text; text } };
+type Reaction = variant {
+  Bad : record { record { text; nat64 }; User; Box };
+  Good;
 };
-
-type StreamingCallbackType = variant { "with_headers": vec Header; "without_headers": null };
-
-type Reaction = variant { "Good": null; "Bad": ComplexThreeTuple };
-
-service: {
-    "primitive_two_tuple_return_type": () -> (PrimitiveTwoTuple) query;
-    "primitive_two_tuple_param": (PrimitiveTwoTuple) -> (PrimitiveTwoTuple) query;
-    "primitive_three_tuple_return_type": () -> (PrimitiveThreeTuple) query;
-    "primitive_three_tuple_param": (PrimitiveThreeTuple) -> (PrimitiveThreeTuple) query;
-    "complex_two_tuple_return_type": () -> (ComplexTwoTuple) query;
-    "complex_two_tuple_param": (ComplexTwoTuple) -> (ComplexTwoTuple) query;
-    "complex_three_tuple_return_type": () -> (ComplexThreeTuple) query;
-    "complex_three_tuple_param": (ComplexThreeTuple) -> (ComplexThreeTuple) query;
-    "tuple_array_params_and_return_type": (vec Header) -> (vec Header) query;
-    "tuple_array_record_field": () -> (HttpResponse) query;
-    "tuple_array_variant_field": () -> (StreamingCallbackType) query;
+type StreamingCallbackType = variant {
+  without_headers;
+  with_headers : vec record { text; text };
+};
+type User = record { id : text; primitive_two_tuple : record { text; nat64 } };
+service : () -> {
+  complex_one_tuple_inline_param : (record { text; nat64 }) -> (
+      record { text; nat64 },
+    ) query;
+  complex_one_tuple_inline_return_type : () -> (record { text; nat64 }) query;
+  complex_one_tuple_param : (record { text; nat64 }) -> (
+      record { text; nat64 },
+    ) query;
+  complex_one_tuple_return_type : () -> (record { text; nat64 }) query;
+  complex_three_tuple_inline_param : (
+      record { record { text; nat64 }; User; Reaction },
+    ) -> (record { record { text; nat64 }; User; Reaction }) query;
+  complex_three_tuple_inline_return_type : () -> (
+      record { record { text; nat64 }; User; Reaction },
+    ) query;
+  complex_three_tuple_param : (
+      record { record { text; nat64 }; User; Box },
+    ) -> (record { record { text; nat64 }; User; Box }) query;
+  complex_three_tuple_return_type : () -> (
+      record { record { text; nat64 }; User; Box },
+    ) query;
+  complex_two_tuple_inline_param : (
+      record { record { text; nat64 }; User },
+    ) -> (record { record { text; nat64 }; User }) query;
+  complex_two_tuple_inline_return_type : () -> (
+      record { record { text; nat64 }; User },
+    ) query;
+  complex_two_tuple_param : (record { record { text; nat64 }; User }) -> (
+      record { record { text; nat64 }; User },
+    ) query;
+  complex_two_tuple_return_type : () -> (
+      record { record { text; nat64 }; User },
+    ) query;
+  primitive_one_tuple_inline_param : (text) -> (text) query;
+  primitive_one_tuple_inline_return_type : () -> (text) query;
+  primitive_one_tuple_param : (text) -> (text) query;
+  primitive_one_tuple_return_type : () -> (text) query;
+  primitive_three_tuple_inline_param : (record { text; nat64; principal }) -> (
+      record { text; nat64; principal },
+    ) query;
+  primitive_three_tuple_inline_return_type : () -> (
+      record { text; nat64; principal },
+    ) query;
+  primitive_three_tuple_param : (record { text; nat64; principal }) -> (
+      record { text; nat64; principal },
+    ) query;
+  primitive_three_tuple_return_type : () -> (
+      record { text; nat64; principal },
+    ) query;
+  primitive_two_tuple_inline_param : (record { text; text }) -> (
+      record { text; text },
+    ) query;
+  primitive_two_tuple_inline_return_type : () -> (record { text; text }) query;
+  primitive_two_tuple_param : (record { text; nat64 }) -> (
+      record { text; nat64 },
+    ) query;
+  primitive_two_tuple_return_type : () -> (record { text; nat64 }) query;
+  tuple_array_params_and_return_type : (vec record { text; text }) -> (
+      vec record { text; text },
+    ) query;
+  tuple_array_record_field : () -> (HttpResponse) query;
+  tuple_array_variant_field : () -> (StreamingCallbackType) query;
+  two_tuple_with_inline_records : (
+      record { AzleInline2622686677058427252; AzleInline13573015674368967065 },
+    ) -> (
+      record { AzleInline2622686677058427252; AzleInline13573015674368967065 },
+    ) query;
 }
