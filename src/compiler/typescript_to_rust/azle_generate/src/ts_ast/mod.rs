@@ -14,6 +14,7 @@ pub use ts_ast::TsAst;
 mod ast_traits;
 mod azle_fn_decl;
 mod azle_functions_and_methods;
+mod azle_method_signature;
 mod ident;
 mod module;
 mod source_map;
