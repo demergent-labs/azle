@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
-use quote::quote;
+use quote::{format_ident, quote};
 
-use crate::cdk_act::{nodes::ActFnParam, ActDataType, ToTokenStream};
+use crate::cdk_act::{nodes::ActFnParam, ActDataType, ToTokenStream, ToTokenStreams};
 
 pub struct ActExternalCanisterMethod {
     pub name: String,
@@ -9,11 +9,11 @@ pub struct ActExternalCanisterMethod {
     pub return_type: ActDataType,
 }
 
-impl ToTokenStream for ActExternalCanisterMethod {
-    fn to_token_stream(&self) -> TokenStream {
+impl ActExternalCanisterMethod {
+    pub fn to_token_stream(&self, canister_name: &String) -> TokenStream {
         // TODO
 
-        // self.generate_call_function()
+        let call_function = self.generate_call_function(canister_name);
         // self.generate_call_with_payment_function()
         // self.generate_call_with_payment128_function()
         // self.generate_notify_function()
@@ -26,6 +26,46 @@ impl ToTokenStream for ActExternalCanisterMethod {
         // NOTE2: Some of these implementations are VM specific and we need
         // the CDK library author
 
-        quote! {}
+        quote! {
+            #call_function
+        }
+    }
+
+    fn generate_call_function(&self, canister_name: &String) -> TokenStream {
+        let function_name = format_ident!("_azle_call_{}_{}", canister_name, &self.name);
+
+        let params = vec![
+            vec![quote! { canister_id_principal: ic_cdk::export::Principal }],
+            self.params.to_token_streams(),
+        ]
+        .concat();
+
+        let function_return_type = self.return_type.to_token_stream();
+        let method_name = &self.name;
+
+        let param_names: Vec<TokenStream> = self
+            .params
+            .iter()
+            .map(|param| {
+                let param_ident = format_ident!("{}", param.name);
+                quote! { #param_ident }
+            })
+            .collect();
+
+        let comma = if param_names.len() == 1 {
+            quote! { , }
+        } else {
+            quote! {}
+        };
+
+        quote! {
+            async fn #function_name(#(#params),*) -> CallResult<(#function_return_type,)> {
+                ic_cdk::api::call::call(
+                    canister_id_principal,
+                    #method_name,
+                    (#(#param_names),*#comma)
+                ).await
+            }
+        }
     }
 }

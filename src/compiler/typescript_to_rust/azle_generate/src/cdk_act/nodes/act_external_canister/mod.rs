@@ -19,7 +19,7 @@ impl ToTokenStream for ActExternalCanister {
         let cross_canister_call_functions: Vec<TokenStream> = self
             .methods
             .iter()
-            .map(|method| method.to_token_stream())
+            .map(|method| method.to_token_stream(&self.name))
             .collect();
         quote! { #(#cross_canister_call_functions)*}
     }
