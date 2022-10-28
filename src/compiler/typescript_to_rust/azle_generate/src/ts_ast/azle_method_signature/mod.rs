@@ -17,9 +17,9 @@ pub struct AzleMethodSignature<'a> {
 
 impl AzleMethodSignature<'_> {
     pub fn to_act_external_canister_method(&self) -> ActExternalCanisterMethod {
-        let name = self.get_method_name();
-        let return_type = self.get_return_type();
-        let params = self.get_params();
+        let name = self.method_name();
+        let return_type = self.return_type();
+        let params = self.params();
 
         ActExternalCanisterMethod {
             name,
@@ -28,7 +28,7 @@ impl AzleMethodSignature<'_> {
         }
     }
 
-    fn get_method_name(&self) -> String {
+    fn method_name(&self) -> String {
         // TODO: Use source map to improve the error message in this panic
         match &*self.ts_method_signature.key {
             Expr::Ident(ident) => ident.get_name().to_string(),
@@ -36,7 +36,7 @@ impl AzleMethodSignature<'_> {
         }
     }
 
-    fn get_return_type(&self) -> ActDataType {
+    fn return_type(&self) -> ActDataType {
         // TODO: Swap out unwraps for panics and use source map to provide better
         // error messages
 
@@ -49,7 +49,7 @@ impl AzleMethodSignature<'_> {
         return_azle_type.to_act_data_type(&None)
     }
 
-    fn get_params(&self) -> Vec<ActFnParam> {
+    fn params(&self) -> Vec<ActFnParam> {
         self.ts_method_signature
             .params
             .iter()
