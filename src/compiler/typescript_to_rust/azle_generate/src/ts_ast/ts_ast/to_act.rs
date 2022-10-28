@@ -141,7 +141,7 @@ impl ToAct for TsAst {
         let get_top_level_call_frame_fn = stacktrace::generate_get_top_level_call_frame_fn();
 
         let cross_canister_call_functions = self.generate_cross_canister_call_functions(); // TODO: Remove this
-        let canisters = self.build_canisters();
+        let external_canisters = self.build_external_canisters();
 
         let boa_error_handler = errors::generate_error_handler();
 
@@ -149,7 +149,7 @@ impl ToAct for TsAst {
         AbstractCanisterTree {
             // TODO put a CDK_name property on here for use in things
             arrays,
-            external_canisters: canisters,
+            external_canisters,
             funcs,
             heartbeat_method,
             init_method,

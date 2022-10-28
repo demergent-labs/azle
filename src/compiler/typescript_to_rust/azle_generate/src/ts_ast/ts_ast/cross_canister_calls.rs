@@ -81,8 +81,14 @@ impl TsAst {
         canister_type_alias_decls.generate_cross_canister_call_functions_infos()
     }
 
-    pub fn build_canisters(&self) -> Vec<ActExternalCanister> {
-        // TODO: Build this out
-        vec![]
+    pub fn build_external_canisters(&self) -> Vec<ActExternalCanister> {
+        let canister_type_alias_decls = self
+            .azle_programs
+            .get_azle_type_alias_decls_for_system_structure_type(&SystemStructureType::Canister);
+
+        canister_type_alias_decls
+            .iter()
+            .map(|canister_type_alias_decl| canister_type_alias_decl.build_external_canister())
+            .collect()
     }
 }

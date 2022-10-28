@@ -1,21 +1,18 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 
-use crate::{cdk_act::ActDataType, ToTokenStream};
-
-pub struct ParamThingPleaseRename {
-    // id: String,
-    // data_type: ActDataType,
-}
+use crate::cdk_act::{nodes::ActFnParam, ActDataType, ToTokenStream};
 
 pub struct ActExternalCanisterMethod {
     pub name: String,
-    pub params: Vec<ParamThingPleaseRename>,
+    pub params: Vec<ActFnParam>,
     pub return_type: ActDataType,
 }
 
 impl ToTokenStream for ActExternalCanisterMethod {
     fn to_token_stream(&self) -> TokenStream {
+        // TODO
+
         // self.generate_call_function()
         // self.generate_call_with_payment_function()
         // self.generate_call_with_payment128_function()
