@@ -1,69 +1,71 @@
-import { Query, Update, nat32 } from 'azle';
+import { nat32, Query, Update } from 'azle';
 import { User } from './candid_types';
-import { getPostFromStatePost } from './posts';
-import { getReactionFromStateReaction } from './reactions';
+import { get_post_from_state_post } from './posts';
+import { get_reaction_from_state_reaction } from './reactions';
 import { state, StateUser } from './state';
-import { getThreadFromStateThread } from './threads';
+import { get_thread_from_state_thread } from './threads';
 
-export function createUser(username: string, joinDepth: nat32): Update<User> {
+export function create_user(username: string, join_depth: nat32): Update<User> {
     const id = Object.keys(state.users).length.toString();
 
-    const stateUser = {
+    const state_user: StateUser = {
         id,
-        postIds: [],
-        reactionIds: [],
-        threadIds: [],
+        post_ids: [],
+        reaction_ids: [],
+        thread_ids: [],
         username
     };
 
-    state.users[id] = stateUser;
+    state.users[id] = state_user;
 
-    const user = getUserFromStateUser(stateUser, joinDepth);
+    const user = get_user_from_state_user(state_user, join_depth);
 
     return user;
 }
 
-export function getAllUsers(joinDepth: nat32): Query<User[]> {
-    return Object.values(state.users).map((stateUser) =>
-        getUserFromStateUser(stateUser, joinDepth)
+export function get_all_users(join_depth: nat32): Query<User[]> {
+    return Object.values(state.users).map((state_user) =>
+        get_user_from_state_user(state_user, join_depth)
     );
 }
 
-export function getUserFromStateUser(
-    stateUser: StateUser,
-    joinDepth: nat32
+export function get_user_from_state_user(
+    state_user: StateUser,
+    join_depth: nat32
 ): User {
-    if (joinDepth === 0) {
+    if (join_depth === 0) {
         return {
-            id: stateUser.id,
+            id: state_user.id,
             posts: [],
             reactions: [],
             threads: [],
-            username: stateUser.username
+            username: state_user.username
         };
     } else {
-        const posts = stateUser.postIds
-            .map((postId) => state.posts[postId])
-            .map((statePost) => getPostFromStatePost(statePost, joinDepth - 1));
-
-        const reactions = stateUser.reactionIds
-            .map((reactionId) => state.reactions[reactionId])
-            .map((stateReaction) =>
-                getReactionFromStateReaction(stateReaction, joinDepth - 1)
+        const posts = state_user.post_ids
+            .map((post_id) => state.posts[post_id])
+            .map((state_post) =>
+                get_post_from_state_post(state_post, join_depth - 1)
             );
 
-        const threads = stateUser.threadIds
-            .map((threadId) => state.threads[threadId])
-            .map((stateThread) =>
-                getThreadFromStateThread(stateThread, joinDepth - 1)
+        const reactions = state_user.reaction_ids
+            .map((reaction_id) => state.reactions[reaction_id])
+            .map((state_reaction) =>
+                get_reaction_from_state_reaction(state_reaction, join_depth - 1)
+            );
+
+        const threads = state_user.thread_ids
+            .map((thread_id) => state.threads[thread_id])
+            .map((state_thread) =>
+                get_thread_from_state_thread(state_thread, join_depth - 1)
             );
 
         return {
-            id: stateUser.id,
+            id: state_user.id,
             posts,
             reactions,
             threads,
-            username: stateUser.username
+            username: state_user.username
         };
     }
 }

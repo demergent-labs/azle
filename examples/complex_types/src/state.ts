@@ -24,30 +24,30 @@ export type State = {
 
 export type StatePost = {
     id: string;
-    authorId: string;
-    reactionIds: string[];
+    author_id: string;
+    reaction_ids: string[];
     text: string;
-    threadId: string;
+    thread_id: string;
 };
 
 export type StateReaction = {
     id: string;
-    authorId: string;
-    postId: string;
-    reactionType: ReactionType;
+    author_id: string;
+    post_id: string;
+    reaction_type: ReactionType;
 };
 
 export type StateThread = {
     id: string;
-    authorId: string;
-    postIds: string[];
+    author_id: string;
+    post_ids: string[];
     title: string;
 };
 
 export type StateUser = {
     id: string;
-    postIds: string[];
-    reactionIds: string[];
-    threadIds: string[];
+    post_ids: string[];
+    reaction_ids: string[];
+    thread_ids: string[];
     username: string;
 };

@@ -1,25 +1,79 @@
 import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@dfinity/agent';
+
+export interface Box {
+    id: string;
+    username: string;
+    threads: Array<{
+        id: string;
+        title: string;
+        author: Box;
+        posts: Array<Post>;
+    }>;
+    posts: Array<Post>;
+    reactions: Array<{
+        id: string;
+        reaction_type:
+            | { Fire: null }
+            | { ThumbsDown: null }
+            | { ThumbsUp: null };
+        post: Post;
+        author: Box;
+    }>;
+}
 export interface Post {
     id: string;
     text: string;
-    author: User;
-    thread: Thread;
-    reactions: Array<Reaction>;
+    author: {
+        id: string;
+        username: string;
+        threads: Array<{
+            id: string;
+            title: string;
+            author: Box;
+            posts: Array<Post>;
+        }>;
+        posts: Array<Post>;
+        reactions: Array<{
+            id: string;
+            reaction_type:
+                | { Fire: null }
+                | { ThumbsDown: null }
+                | { ThumbsUp: null };
+            post: Post;
+            author: Box;
+        }>;
+    };
+    thread: {
+        id: string;
+        title: string;
+        author: Box;
+        posts: Array<Post>;
+    };
+    reactions: Array<{
+        id: string;
+        reaction_type:
+            | { Fire: null }
+            | { ThumbsDown: null }
+            | { ThumbsUp: null };
+        post: Post;
+        author: Box;
+    }>;
 }
 export interface Reaction {
     id: string;
+    reaction_type: ReactionType;
     post: Post;
-    author: User;
-    reactionType: ReactionType;
+    author: Box;
 }
 export type ReactionType =
-    | { thumbsDown: null }
-    | { fire: null }
-    | { thumbsUp: null };
+    | { Fire: null }
+    | { ThumbsDown: null }
+    | { ThumbsUp: null };
 export interface Thread {
     id: string;
     title: string;
-    author: User;
+    author: Box;
     posts: Array<Post>;
 }
 export interface User {
@@ -30,26 +84,15 @@ export interface User {
     reactions: Array<Reaction>;
 }
 export interface _SERVICE {
-    createPost: (
-        arg_0: string,
-        arg_1: string,
-        arg_2: string,
-        arg_3: number
-    ) => Promise<Post>;
-    createReaction: (
-        arg_0: string,
-        arg_1: string,
-        arg_2: ReactionType,
-        arg_3: number
-    ) => Promise<Reaction>;
-    createThread: (
-        arg_0: string,
-        arg_1: string,
-        arg_2: number
-    ) => Promise<Thread>;
-    createUser: (arg_0: string, arg_1: number) => Promise<User>;
-    getAllPosts: (arg_0: number) => Promise<Array<Post>>;
-    getAllReactions: (arg_0: number) => Promise<Array<Reaction>>;
-    getAllThreads: (arg_0: number) => Promise<Array<Thread>>;
-    getAllUsers: (arg_0: number) => Promise<Array<User>>;
+    create_post: ActorMethod<[string, string, string, number], Post>;
+    create_reaction: ActorMethod<
+        [string, string, ReactionType, number],
+        Reaction
+    >;
+    create_thread: ActorMethod<[string, string, number], Thread>;
+    create_user: ActorMethod<[string, number], User>;
+    get_all_posts: ActorMethod<[number], Array<Post>>;
+    get_all_reactions: ActorMethod<[number], Array<Reaction>>;
+    get_all_threads: ActorMethod<[number], Array<Thread>>;
+    get_all_users: ActorMethod<[number], Array<User>>;
 }

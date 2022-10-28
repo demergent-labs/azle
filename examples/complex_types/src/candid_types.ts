@@ -14,13 +14,13 @@ export type Reaction = {
     id: string;
     author: User;
     post: Post;
-    reactionType: ReactionType;
+    reaction_type: ReactionType;
 };
 
 export type ReactionType = Variant<{
-    fire?: null;
-    thumbsUp?: null;
-    thumbsDown?: null;
+    Fire: null;
+    ThumbsUp: null;
+    ThumbsDown: null;
 }>;
 
 export type Thread = {
