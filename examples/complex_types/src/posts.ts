@@ -13,7 +13,7 @@ export function create_post(
 ): Update<Post> {
     const id = Object.keys(state.posts).length.toString();
 
-    const state_post = {
+    const state_post: StatePost = {
         id,
         author_id,
         reaction_ids: [],
@@ -84,7 +84,7 @@ function get_updated_state_author(
     post_id: string
 ): StateUser {
     const state_author = state.users[author_id];
-    const updated_state_author = {
+    const updated_state_author: StateUser = {
         ...state_author,
         post_ids: [...state_author.post_ids, post_id]
     };
@@ -97,9 +97,9 @@ function get_updated_state_thread(
     post_id: string
 ): StateThread {
     const state_thread = state.threads[thread_id];
-    const updated_state_thread = {
+    const updated_state_thread: StateThread = {
         ...state_thread,
-        postIds: [...state_thread.post_ids, post_id]
+        post_ids: [...state_thread.post_ids, post_id]
     };
 
     return updated_state_thread;

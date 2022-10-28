@@ -10,9 +10,9 @@ export function create_reaction(
     reaction_type: ReactionType,
     join_depth: nat32
 ): Update<Reaction> {
-    const id = Object.keys(state.posts).length.toString();
+    const id = Object.keys(state.reactions).length.toString();
 
-    const state_reaction = {
+    const state_reaction: StateReaction = {
         id,
         author_id,
         post_id,
@@ -68,7 +68,7 @@ function get_updated_state_author(
     reaction_id: string
 ): StateUser {
     const state_author = state.users[author_id];
-    const updated_state_author = {
+    const updated_state_author: StateUser = {
         ...state_author,
         reaction_ids: [...state_author.reaction_ids, reaction_id]
     };
@@ -81,7 +81,7 @@ function get_updated_state_post(
     reaction_id: string
 ): StatePost {
     const state_post = state.posts[post_id];
-    const updated_state_post = {
+    const updated_state_post: StatePost = {
         ...state_post,
         reaction_ids: [...state_post.reaction_ids, reaction_id]
     };

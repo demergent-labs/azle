@@ -11,7 +11,7 @@ export function create_thread(
 ): Update<Thread> {
     const id = Object.keys(state.threads).length.toString();
 
-    const state_thread = {
+    const state_thread: StateThread = {
         id,
         author_id,
         post_ids: [],
@@ -71,9 +71,9 @@ function get_updated_state_author(
     thread_id: string
 ): StateUser {
     const state_author = state.users[author_id];
-    const updated_state_author = {
+    const updated_state_author: StateUser = {
         ...state_author,
-        threadIds: [...state_author.thread_ids, thread_id]
+        thread_ids: [...state_author.thread_ids, thread_id]
     };
 
     return updated_state_author;

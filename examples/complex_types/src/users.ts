@@ -8,7 +8,7 @@ import { get_thread_from_state_thread } from './threads';
 export function create_user(username: string, join_depth: nat32): Update<User> {
     const id = Object.keys(state.users).length.toString();
 
-    const state_user = {
+    const state_user: StateUser = {
         id,
         post_ids: [],
         reaction_ids: [],
