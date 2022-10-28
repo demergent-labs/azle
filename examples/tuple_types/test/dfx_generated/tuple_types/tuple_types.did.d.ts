@@ -1,11 +1,11 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
-export interface AzleInline13573015674368967065 {
-    goodbye: bigint;
-}
-export interface AzleInline2622686677058427252 {
+export interface AzleInline4230170853101504796 {
     hello: bigint;
+}
+export interface AzleInline5131143341488460789 {
+    goodbye: bigint;
 }
 export type Box =
     | {
@@ -29,12 +29,15 @@ export interface User {
 }
 export interface _SERVICE {
     complex_one_tuple_inline_param: ActorMethod<
-        [[string, bigint]],
-        [string, bigint]
+        [[[string, bigint]]],
+        [[string, bigint]]
     >;
-    complex_one_tuple_inline_return_type: ActorMethod<[], [string, bigint]>;
-    complex_one_tuple_param: ActorMethod<[[string, bigint]], [string, bigint]>;
-    complex_one_tuple_return_type: ActorMethod<[], [string, bigint]>;
+    complex_one_tuple_inline_return_type: ActorMethod<[], [[string, bigint]]>;
+    complex_one_tuple_param: ActorMethod<
+        [[[string, bigint]]],
+        [[string, bigint]]
+    >;
+    complex_one_tuple_return_type: ActorMethod<[], [[string, bigint]]>;
     complex_three_tuple_inline_param: ActorMethod<
         [[[string, bigint], User, Reaction]],
         [[string, bigint], User, Reaction]
@@ -64,10 +67,10 @@ export interface _SERVICE {
         [[string, bigint], User]
     >;
     complex_two_tuple_return_type: ActorMethod<[], [[string, bigint], User]>;
-    primitive_one_tuple_inline_param: ActorMethod<[string], string>;
-    primitive_one_tuple_inline_return_type: ActorMethod<[], string>;
-    primitive_one_tuple_param: ActorMethod<[string], string>;
-    primitive_one_tuple_return_type: ActorMethod<[], string>;
+    primitive_one_tuple_inline_param: ActorMethod<[[string]], [string]>;
+    primitive_one_tuple_inline_return_type: ActorMethod<[], [string]>;
+    primitive_one_tuple_param: ActorMethod<[[string]], [string]>;
+    primitive_one_tuple_return_type: ActorMethod<[], [string]>;
     primitive_three_tuple_inline_param: ActorMethod<
         [[string, bigint, Principal]],
         [string, bigint, Principal]
@@ -101,7 +104,7 @@ export interface _SERVICE {
     tuple_array_record_field: ActorMethod<[], HttpResponse>;
     tuple_array_variant_field: ActorMethod<[], StreamingCallbackType>;
     two_tuple_with_inline_records: ActorMethod<
-        [[AzleInline2622686677058427252, AzleInline13573015674368967065]],
-        [AzleInline2622686677058427252, AzleInline13573015674368967065]
+        [[AzleInline4230170853101504796, AzleInline5131143341488460789]],
+        [AzleInline4230170853101504796, AzleInline5131143341488460789]
     >;
 }

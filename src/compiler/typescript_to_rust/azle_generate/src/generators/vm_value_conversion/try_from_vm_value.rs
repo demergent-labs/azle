@@ -276,7 +276,16 @@ pub fn generate_try_from_vm_value_impls() -> proc_macro2::TokenStream {
             }
         }
 
-        // // Generic types
+        // Generic types
+
+        impl<T> CdkActTryFromVmValue<(T,), &mut boa_engine::Context> for boa_engine::JsValue
+        where
+            boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context>
+        {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<(T,), CdkActTryFromVmValueError> {
+                Ok((self.try_from_vm_value(context).unwrap(),))
+            }
+        }
 
         impl<T> CdkActTryFromVmValue<Box<T>, &mut boa_engine::Context> for boa_engine::JsValue
         where
