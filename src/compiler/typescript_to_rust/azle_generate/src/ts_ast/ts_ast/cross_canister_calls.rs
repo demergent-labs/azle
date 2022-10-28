@@ -3,7 +3,7 @@ use quote::quote;
 
 use super::TsAst;
 use crate::{
-    cdk_act::SystemStructureType,
+    cdk_act::{nodes::ActExternalCanister, SystemStructureType},
     generators::cross_canister_call_functions::{
         CrossCanisterCallFunctionsInfo, GenerateCrossCanisterCallFunctionsInfos,
     },
@@ -79,5 +79,10 @@ impl TsAst {
             .get_azle_type_alias_decls_for_system_structure_type(&SystemStructureType::Canister);
 
         canister_type_alias_decls.generate_cross_canister_call_functions_infos()
+    }
+
+    pub fn build_canisters(&self) -> Vec<ActExternalCanister> {
+        // TODO: Build this out
+        vec![]
     }
 }

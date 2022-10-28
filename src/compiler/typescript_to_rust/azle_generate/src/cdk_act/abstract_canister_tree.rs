@@ -3,7 +3,7 @@ use proc_macro2::TokenStream;
 use super::{
     generators::{candid_file_generation, ic_object::functions, random, vm_value_conversion},
     nodes::{
-        data_type_nodes,
+        data_type_nodes, ActExternalCanister,
         {
             ActCanisterMethod, ActHeartbeatMethod, ActInitMethod, ActInspectMessageMethod,
             ActPostUpgradeMethod, ActPreUpgradeMethod,
@@ -13,10 +13,9 @@ use super::{
 };
 
 /// An easily traversable representation of a rust canister
-///
-/// TODO: This needs A LOT of work
 pub struct AbstractCanisterTree {
     pub arrays: Vec<ActDataType>,
+    pub external_canisters: Vec<ActExternalCanister>,
     pub funcs: Vec<ActDataType>,
     pub heartbeat_method: Option<ActHeartbeatMethod>,
     pub init_method: ActInitMethod,
@@ -38,7 +37,6 @@ pub struct AbstractCanisterTree {
 
 impl ToTokenStream for AbstractCanisterTree {
     fn to_token_stream(&self) -> TokenStream {
-        // TODO: This needs A LOT of work
         let randomness_implementation = random::generate_randomness_implementation();
 
         let try_into_vm_value_trait = vm_value_conversion::generate_try_into_vm_value();
@@ -47,6 +45,8 @@ impl ToTokenStream for AbstractCanisterTree {
         let try_from_vm_value_impls = &self.try_from_vm_value_impls;
 
         let func_arg_token = data_type_nodes::generate_func_arg_token();
+
+        let canisters = self.external_canisters.to_token_streams();
 
         let user_defined_code = &self.rust_code;
 
@@ -68,42 +68,14 @@ impl ToTokenStream for AbstractCanisterTree {
         let candid_file_generation_code =
             candid_file_generation::generate_candid_file_generation_code();
 
-        let arrays: Vec<TokenStream> = self
-            .arrays
-            .iter()
-            .map(|act| act.to_token_stream())
-            .collect();
+        let arrays: Vec<TokenStream> = self.arrays.to_token_streams();
         let funcs: Vec<TokenStream> = self.funcs.iter().map(|act| act.to_token_stream()).collect();
-        let options: Vec<TokenStream> = self
-            .options
-            .iter()
-            .map(|act| act.to_token_stream())
-            .collect();
-        let primitives: Vec<TokenStream> = self
-            .primitives
-            .iter()
-            .map(|act| act.to_token_stream())
-            .collect();
-        let records: Vec<TokenStream> = self
-            .records
-            .iter()
-            .map(|act| act.to_token_stream())
-            .collect();
-        let tuples: Vec<TokenStream> = self
-            .tuples
-            .iter()
-            .map(|act| act.to_token_stream())
-            .collect();
-        let type_refs: Vec<TokenStream> = self
-            .type_refs
-            .iter()
-            .map(|act| act.to_token_stream())
-            .collect();
-        let variants: Vec<TokenStream> = self
-            .variants
-            .iter()
-            .map(|act| act.to_token_stream())
-            .collect();
+        let options: Vec<TokenStream> = self.options.to_token_streams();
+        let primitives: Vec<TokenStream> = self.primitives.to_token_streams();
+        let records: Vec<TokenStream> = self.records.to_token_streams();
+        let tuples: Vec<TokenStream> = self.tuples.to_token_streams();
+        let type_refs: Vec<TokenStream> = self.type_refs.to_token_streams();
+        let variants: Vec<TokenStream> = self.variants.to_token_streams();
 
         quote::quote! {
             #randomness_implementation
@@ -133,6 +105,8 @@ impl ToTokenStream for AbstractCanisterTree {
             #(#records)*
             #(#tuples)*
             #(#variants)*
+
+            #(#canisters)*
 
             #user_defined_code
 

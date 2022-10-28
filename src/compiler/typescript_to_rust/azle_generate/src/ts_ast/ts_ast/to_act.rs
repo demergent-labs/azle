@@ -140,35 +140,37 @@ impl ToAct for TsAst {
         let async_result_handler = self.generate_async_result_handler();
         let get_top_level_call_frame_fn = stacktrace::generate_get_top_level_call_frame_fn();
 
-        let cross_canister_call_functions = self.generate_cross_canister_call_functions();
+        let cross_canister_call_functions = self.generate_cross_canister_call_functions(); // TODO: Remove this
+        let canisters = self.build_canisters();
 
         let boa_error_handler = errors::generate_error_handler();
 
         // TODO Some of the things in this quote belong inside of the quote in AbstractCanisterTree
         AbstractCanisterTree {
             // TODO put a CDK_name property on here for use in things
-            update_methods,
-            query_methods,
+            arrays,
+            external_canisters: canisters,
+            funcs,
             heartbeat_method,
             init_method,
             inspect_message_method,
+            options,
             post_upgrade_method,
             pre_upgrade_method,
+            primitives,
+            query_methods,
+            records,
             rust_code: quote! {
                 #boa_error_handler
                 #cross_canister_call_functions
                 #async_result_handler
                 #get_top_level_call_frame_fn
             },
-            arrays,
-            funcs,
-            options,
-            primitives,
-            records,
             try_from_vm_value_impls,
             try_into_vm_value_impls,
             tuples,
             type_refs,
+            update_methods,
             variants,
         }
     }
