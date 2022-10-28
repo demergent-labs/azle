@@ -7,7 +7,6 @@ export function get_tests(
     tuple_types_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
-        // TODO make sure 1-tuples are being handled correctly: https://github.com/demergent-labs/azle/issues/760
         {
             name: 'primitive_one_tuple_return_type',
             test: async () => {
@@ -15,7 +14,7 @@ export function get_tests(
                     await tuple_types_canister.primitive_one_tuple_return_type();
 
                 return {
-                    ok: result === 'Hello'
+                    ok: result[0] === 'Hello'
                 };
             }
         },
@@ -23,10 +22,12 @@ export function get_tests(
             name: 'primitive_one_tuple_param',
             test: async () => {
                 const result =
-                    await tuple_types_canister.primitive_one_tuple_param('Yes');
+                    await tuple_types_canister.primitive_one_tuple_param([
+                        'Yes'
+                    ]);
 
                 return {
-                    ok: result === 'Yes'
+                    ok: result[0] === 'Yes'
                 };
             }
         },
@@ -37,7 +38,7 @@ export function get_tests(
                     await tuple_types_canister.primitive_one_tuple_inline_return_type();
 
                 return {
-                    ok: result === 'Greenland'
+                    ok: result[0] === 'Greenland'
                 };
             }
         },
@@ -46,11 +47,11 @@ export function get_tests(
             test: async () => {
                 const result =
                     await tuple_types_canister.primitive_one_tuple_inline_param(
-                        'Rocks'
+                        ['Rocks']
                     );
 
                 return {
-                    ok: result === 'Rocks'
+                    ok: result[0] === 'Rocks'
                 };
             }
         },
@@ -165,7 +166,6 @@ export function get_tests(
                 };
             }
         },
-        // TODO make sure 1-tuples are being handled correctly: https://github.com/demergent-labs/azle/issues/760
         {
             name: 'complex_one_tuple_return_type',
             test: async () => {
@@ -173,7 +173,7 @@ export function get_tests(
                     await tuple_types_canister.complex_one_tuple_return_type();
 
                 return {
-                    ok: result[0] === 'Hello' && result[1] === 0n
+                    ok: result[0][0] === 'Hello' && result[0][1] === 0n
                 };
             }
         },
@@ -182,12 +182,11 @@ export function get_tests(
             test: async () => {
                 const result =
                     await tuple_types_canister.complex_one_tuple_param([
-                        'Goodbye',
-                        1n
+                        ['Goodbye', 1n]
                     ]);
 
                 return {
-                    ok: result[0] === 'Goodbye' && result[1] === 1n
+                    ok: result[0][0] === 'Goodbye' && result[0][1] === 1n
                 };
             }
         },
@@ -198,7 +197,7 @@ export function get_tests(
                     await tuple_types_canister.complex_one_tuple_inline_return_type();
 
                 return {
-                    ok: result[0] === 'Candy' && result[1] === 56n
+                    ok: result[0][0] === 'Candy' && result[0][1] === 56n
                 };
             }
         },
@@ -207,12 +206,11 @@ export function get_tests(
             test: async () => {
                 const result =
                     await tuple_types_canister.complex_one_tuple_inline_param([
-                        'Mountain',
-                        76n
+                        ['Mountain', 76n]
                     ]);
 
                 return {
-                    ok: result[0] === 'Mountain' && result[1] === 76n
+                    ok: result[0][0] === 'Mountain' && result[0][1] === 76n
                 };
             }
         },

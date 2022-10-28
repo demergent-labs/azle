@@ -255,6 +255,15 @@ pub fn generate_try_into_vm_value_impls() -> proc_macro2::TokenStream {
 
         // Generic types
 
+        impl<'a, T> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue> for (T,)
+        where
+            T : CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>,
+        {
+            fn try_into_vm_value(self, context: &'a mut boa_engine::Context) -> boa_engine::JsValue {
+                self.0.try_into_vm_value(context)
+            }
+        }
+
         impl<'a, T> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue> for Box<T>
         where
             T : CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>,

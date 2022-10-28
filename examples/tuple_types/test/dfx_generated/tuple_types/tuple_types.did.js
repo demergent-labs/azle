@@ -28,27 +28,27 @@ export const idlFactory = ({ IDL }) => {
         without_headers: IDL.Null,
         with_headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))
     });
-    const AzleInline2622686677058427252 = IDL.Record({ hello: IDL.Nat64 });
-    const AzleInline13573015674368967065 = IDL.Record({ goodbye: IDL.Nat64 });
+    const AzleInline4230170853101504796 = IDL.Record({ hello: IDL.Nat64 });
+    const AzleInline5131143341488460789 = IDL.Record({ goodbye: IDL.Nat64 });
     return IDL.Service({
         complex_one_tuple_inline_param: IDL.Func(
-            [IDL.Tuple(IDL.Text, IDL.Nat64)],
-            [IDL.Tuple(IDL.Text, IDL.Nat64)],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64))],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64))],
             ['query']
         ),
         complex_one_tuple_inline_return_type: IDL.Func(
             [],
-            [IDL.Tuple(IDL.Text, IDL.Nat64)],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64))],
             ['query']
         ),
         complex_one_tuple_param: IDL.Func(
-            [IDL.Tuple(IDL.Text, IDL.Nat64)],
-            [IDL.Tuple(IDL.Text, IDL.Nat64)],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64))],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64))],
             ['query']
         ),
         complex_one_tuple_return_type: IDL.Func(
             [],
-            [IDL.Tuple(IDL.Text, IDL.Nat64)],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64))],
             ['query']
         ),
         complex_three_tuple_inline_param: IDL.Func(
@@ -92,17 +92,25 @@ export const idlFactory = ({ IDL }) => {
             ['query']
         ),
         primitive_one_tuple_inline_param: IDL.Func(
-            [IDL.Text],
-            [IDL.Text],
+            [IDL.Tuple(IDL.Text)],
+            [IDL.Tuple(IDL.Text)],
             ['query']
         ),
         primitive_one_tuple_inline_return_type: IDL.Func(
             [],
-            [IDL.Text],
+            [IDL.Tuple(IDL.Text)],
             ['query']
         ),
-        primitive_one_tuple_param: IDL.Func([IDL.Text], [IDL.Text], ['query']),
-        primitive_one_tuple_return_type: IDL.Func([], [IDL.Text], ['query']),
+        primitive_one_tuple_param: IDL.Func(
+            [IDL.Tuple(IDL.Text)],
+            [IDL.Tuple(IDL.Text)],
+            ['query']
+        ),
+        primitive_one_tuple_return_type: IDL.Func(
+            [],
+            [IDL.Tuple(IDL.Text)],
+            ['query']
+        ),
         primitive_three_tuple_inline_param: IDL.Func(
             [IDL.Tuple(IDL.Text, IDL.Nat64, IDL.Principal)],
             [IDL.Tuple(IDL.Text, IDL.Nat64, IDL.Principal)],
@@ -157,14 +165,14 @@ export const idlFactory = ({ IDL }) => {
         two_tuple_with_inline_records: IDL.Func(
             [
                 IDL.Tuple(
-                    AzleInline2622686677058427252,
-                    AzleInline13573015674368967065
+                    AzleInline4230170853101504796,
+                    AzleInline5131143341488460789
                 )
             ],
             [
                 IDL.Tuple(
-                    AzleInline2622686677058427252,
-                    AzleInline13573015674368967065
+                    AzleInline4230170853101504796,
+                    AzleInline5131143341488460789
                 )
             ],
             ['query']
