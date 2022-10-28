@@ -283,9 +283,6 @@ pub fn generate_try_from_vm_value_impls() -> proc_macro2::TokenStream {
             boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context>
         {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<(T,), CdkActTryFromVmValueError> {
-                // TODO why is Boa not treating these values as arrays?
-                // TODO A 1-tuple is a single-element array
-                // TODO see here: https://github.com/demergent-labs/azle/issues/760
                 Ok((self.try_from_vm_value(context).unwrap(),))
             }
         }
