@@ -7,7 +7,7 @@ use crate::{
 };
 
 impl AzleTypeAliasDecl<'_> {
-    pub fn build_external_canister(&self) -> ActExternalCanister {
+    pub fn to_act_external_canister(&self) -> ActExternalCanister {
         match &*self.ts_type_alias_decl.type_ann {
             TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_params {
                 Some(type_params) => {

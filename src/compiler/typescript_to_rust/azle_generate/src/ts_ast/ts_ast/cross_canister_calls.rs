@@ -88,7 +88,7 @@ impl TsAst {
 
         canister_type_alias_decls
             .iter()
-            .map(|canister_type_alias_decl| canister_type_alias_decl.build_external_canister())
+            .map(|canister_type_alias_decl| canister_type_alias_decl.to_act_external_canister())
             .collect()
     }
 }
