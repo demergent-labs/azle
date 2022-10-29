@@ -302,7 +302,7 @@ export function get_tests(
                 }
 
                 const candid_encoded_hex_string = execSync(
-                    `./target/bin/didc encode '${candid_string}'`
+                    `didc encode '${candid_string}'`
                 )
                     .toString()
                     .trim();
@@ -341,7 +341,7 @@ export function get_tests(
                 }
 
                 const candid_encoded_hex_string = execSync(
-                    `./target/bin/didc encode '${candid_string}'`
+                    `didc encode '${candid_string}'`
                 )
                     .toString()
                     .trim();
