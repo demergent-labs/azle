@@ -17,7 +17,7 @@ impl ActExternalCanisterMethod {
         let call_with_payment_function = self.generate_call_with_payment_function(canister_name);
         let call_with_payment128_function =
             self.generate_call_with_payment128_function(canister_name);
-        // self.generate_notify_function()
+        let notify_function = self.generate_notify_function(canister_name);
         // self.generate_notify_with_payment_function()
         // self.generate_notify_with_payment128_function()
 
@@ -31,6 +31,7 @@ impl ActExternalCanisterMethod {
             #call_function
             #call_with_payment_function
             #call_with_payment128_function
+            #notify_function
         }
     }
 
@@ -115,15 +116,31 @@ impl ActExternalCanisterMethod {
         }
     }
 
+    fn generate_notify_function(&self, canister_name: &String) -> TokenStream {
+        let function_name = format_ident!("_azle_notify_{}_{}", canister_name, &self.name);
+
+        let params = vec![
+            vec![quote! { canister_id_principal: ic_cdk::export::Principal }],
+            self.params.to_token_streams(),
+        ]
+        .concat();
+
+        let method_name = &self.name;
+        let args = self.params_as_args_list();
+
+        quote! {
+            fn #function_name(#(#params),*) -> Result<(), ic_cdk::api::call::RejectionCode> {
+                ic_cdk::api::call::notify(
+                    canister_id_principal,
+                    #method_name,
+                    (#args)
+                )
+            }
+        }
+    }
+
     fn params_as_args_list(&self) -> TokenStream {
-        let param_names: Vec<TokenStream> = self
-            .params
-            .iter()
-            .map(|param| {
-                let param_ident = format_ident!("{}", param.name);
-                quote! { #param_ident }
-            })
-            .collect();
+        let param_names = self.param_names();
 
         let comma = if param_names.len() == 1 {
             quote! { , }
@@ -131,5 +148,15 @@ impl ActExternalCanisterMethod {
             quote! {}
         };
         return quote! { #(#param_names),*#comma };
+    }
+
+    fn param_names(&self) -> Vec<TokenStream> {
+        self.params
+            .iter()
+            .map(|param| {
+                let param_ident = format_ident!("{}", param.name);
+                quote! { #param_ident }
+            })
+            .collect()
     }
 }

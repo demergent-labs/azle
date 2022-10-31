@@ -134,11 +134,15 @@ impl ToAct for TsAst {
         let post_upgrade_method = self.build_post_upgrade_method();
         let pre_upgrade_method = self.build_pre_upgrade_method();
 
+        let external_canisters = self.build_external_canisters();
+
         // TODO: Remove these clones
         let query_and_update_canister_methods: Vec<ActCanisterMethod> =
             vec![query_methods.clone(), update_methods.clone()].concat();
-        let ic_object_functions =
-            functions::generate_ic_object_functions(&query_and_update_canister_methods);
+        let ic_object_functions = functions::generate_ic_object_functions(
+            &query_and_update_canister_methods,
+            &external_canisters,
+        );
 
         let try_into_vm_value_impls = vm_value_conversion::generate_try_into_vm_value_impls();
         let try_from_vm_value_impls = vm_value_conversion::generate_try_from_vm_value_impls();
@@ -147,7 +151,6 @@ impl ToAct for TsAst {
         let get_top_level_call_frame_fn = stacktrace::generate_get_top_level_call_frame_fn();
 
         let cross_canister_call_functions = self.generate_cross_canister_call_functions(); // TODO: Remove this
-        let external_canisters = self.build_external_canisters();
 
         let boa_error_handler = errors::generate_error_handler();
 

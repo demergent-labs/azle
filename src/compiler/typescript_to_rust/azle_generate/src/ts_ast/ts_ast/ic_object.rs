@@ -20,13 +20,13 @@ impl TsAst {
                 .function(_azle_ic_data_certificate, "data_certificate", 0)
                 .function(_azle_ic_id, "id", 0)
                 .function(_azle_ic_method_name, "method_name", 0)
-                #(#notify_functions)*
                 .function(_azle_ic_msg_cycles_accept, "msg_cycles_accept", 0)
                 .function(_azle_ic_msg_cycles_accept128, "msg_cycles_accept128", 0)
                 .function(_azle_ic_msg_cycles_available, "msg_cycles_available", 0)
                 .function(_azle_ic_msg_cycles_available128, "msg_cycles_available128", 0)
                 .function(_azle_ic_msg_cycles_refunded, "msg_cycles_refunded", 0)
                 .function(_azle_ic_msg_cycles_refunded128, "msg_cycles_refunded128", 0)
+                #(#notify_functions)*
                 .function(_azle_ic_notify_raw, "notify_raw", 0)
                 .function(_azle_ic_performance_counter, "performance_counter", 0)
                 .function(_azle_ic_print, "print", 0)
@@ -53,27 +53,27 @@ impl TsAst {
     }
 
     fn generate_notify_functions(&self) -> Vec<TokenStream> {
-        let cross_canister_call_functions_infos =
-            self.generate_cross_canister_call_functions_infos();
+        let external_canisters = self.build_external_canisters();
 
-        cross_canister_call_functions_infos
+        external_canisters
             .iter()
-            .map(|cross_canister_call_functions_info| {
-                let notify_function_name_string = &cross_canister_call_functions_info.notify.name;
-                let notify_function_name_ident = format_ident!("{}", notify_function_name_string);
+            .map(|canister| {
+                canister
+                    .methods
+                    .iter()
+                    .map(|method| {
+                        let notify_function_name_string =
+                            format!("_azle_notify_{}_{}", canister.name, method.name);
+                        let notify_function_name_ident =
+                            format_ident!("{}_wrapper", notify_function_name_string);
 
-                let notify_with_payment128_function_name_string =
-                    &cross_canister_call_functions_info
-                        .notify_with_payment128
-                        .name;
-                let notify_with_payment128_function_name_ident =
-                    format_ident!("{}", notify_with_payment128_function_name_string);
-
-                quote! {
-                    .function(#notify_function_name_ident, #notify_function_name_string, 0)
-                    .function(#notify_with_payment128_function_name_ident, #notify_with_payment128_function_name_string, 0)
-                }
+                        quote! {
+                            .function(#notify_function_name_ident, #notify_function_name_string, 0)
+                        }
+                    })
+                    .collect()
             })
-            .collect()
+            .collect::<Vec<Vec<TokenStream>>>()
+            .concat()
     }
 }
