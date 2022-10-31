@@ -15,17 +15,6 @@ impl TsAst {
         let cross_canister_call_functions_infos =
             self.generate_cross_canister_call_functions_infos();
 
-        let call_with_payment_functions: Vec<proc_macro2::TokenStream> =
-            cross_canister_call_functions_infos
-                .iter()
-                .map(|cross_canister_call_functions_info| {
-                    cross_canister_call_functions_info
-                        .call_with_payment
-                        .rust
-                        .clone()
-                })
-                .collect();
-
         let call_with_payment128_functions: Vec<proc_macro2::TokenStream> =
             cross_canister_call_functions_infos
                 .iter()
@@ -56,7 +45,6 @@ impl TsAst {
                 .collect();
 
         quote! {
-            #(#call_with_payment_functions)*
             #(#call_with_payment128_functions)*
             #(#notify_functions)*
             #(#notify_with_payment128_functions)*

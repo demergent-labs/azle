@@ -14,7 +14,7 @@ impl ActExternalCanisterMethod {
         // TODO
 
         let call_function = self.generate_call_function(canister_name);
-        // self.generate_call_with_payment_function()
+        let call_with_payment_function = self.generate_call_with_payment_function(canister_name);
         // self.generate_call_with_payment128_function()
         // self.generate_notify_function()
         // self.generate_notify_with_payment_function()
@@ -28,6 +28,7 @@ impl ActExternalCanisterMethod {
 
         quote! {
             #call_function
+            #call_with_payment_function
         }
     }
 
@@ -42,7 +43,47 @@ impl ActExternalCanisterMethod {
 
         let function_return_type = self.return_type.to_token_stream();
         let method_name = &self.name;
+        let args = self.params_as_args_list();
 
+        quote! {
+            async fn #function_name(#(#params),*) -> CallResult<(#function_return_type,)> {
+                ic_cdk::api::call::call(
+                    canister_id_principal,
+                    #method_name,
+                    (#args)
+                ).await
+            }
+        }
+    }
+
+    fn generate_call_with_payment_function(&self, canister_name: &String) -> TokenStream {
+        let function_name =
+            format_ident!("_azle_call_with_payment_{}_{}", canister_name, &self.name);
+
+        let params = vec![
+            vec![quote! { canister_id_principal: ic_cdk::export::Principal }],
+            self.params.to_token_streams(),
+            vec![quote! { cycles: u64 }],
+        ]
+        .concat();
+
+        let function_return_type = self.return_type.to_token_stream();
+        let method_name = &self.name;
+        let args = self.params_as_args_list();
+
+        quote! {
+            async fn #function_name(#(#params),*) -> CallResult<(#function_return_type,)> {
+                ic_cdk::api::call::call_with_payment(
+                    canister_id_principal,
+                    #method_name,
+                    (#args),
+                    cycles
+                ).await
+            }
+        }
+    }
+
+    fn params_as_args_list(&self) -> TokenStream {
         let param_names: Vec<TokenStream> = self
             .params
             .iter()
@@ -57,15 +98,6 @@ impl ActExternalCanisterMethod {
         } else {
             quote! {}
         };
-
-        quote! {
-            async fn #function_name(#(#params),*) -> CallResult<(#function_return_type,)> {
-                ic_cdk::api::call::call(
-                    canister_id_principal,
-                    #method_name,
-                    (#(#param_names),*#comma)
-                ).await
-            }
-        }
+        return quote! { #(#param_names),*#comma };
     }
 }
