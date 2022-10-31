@@ -51,6 +51,9 @@ impl CanisterMethodBuilder for FnDecl {
     }
 }
 
+// TODO why isn't this on the trait? and for that matter why is it separated
+// from the get name. It would be much simpler imho to get the names and the
+// params all in the same pass
 fn build_param_types(fn_decl: &FnDecl) -> Vec<ActDataType> {
     fn_decl
         .get_param_ts_types()
