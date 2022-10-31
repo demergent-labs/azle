@@ -4,9 +4,9 @@ use super::TsAst;
 use crate::{
     cdk_act::{
         self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
-        ActDataType, CanisterMethodType, RequestType, ToAct,
+        ActCanisterMethod, ActDataType, CanisterMethodType, RequestType, ToAct,
     },
-    generators::{canister_methods, errors, stacktrace, vm_value_conversion},
+    generators::{canister_methods, errors, ic_object::functions, stacktrace, vm_value_conversion},
     ts_ast::{
         azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods,
         program::azle_program::AzleProgramVecHelperMethods,
@@ -134,6 +134,12 @@ impl ToAct for TsAst {
         let post_upgrade_method = self.build_post_upgrade_method();
         let pre_upgrade_method = self.build_pre_upgrade_method();
 
+        // TODO: Remove these clones
+        let query_and_update_canister_methods: Vec<ActCanisterMethod> =
+            vec![query_methods.clone(), update_methods.clone()].concat();
+        let ic_object_functions =
+            functions::generate_ic_object_functions(&query_and_update_canister_methods);
+
         let try_into_vm_value_impls = vm_value_conversion::generate_try_into_vm_value_impls();
         let try_from_vm_value_impls = vm_value_conversion::generate_try_from_vm_value_impls();
 
@@ -162,6 +168,7 @@ impl ToAct for TsAst {
             records,
             rust_code: quote! {
                 #boa_error_handler
+                #ic_object_functions
                 #cross_canister_call_functions
                 #async_result_handler
                 #get_top_level_call_frame_fn

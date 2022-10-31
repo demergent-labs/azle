@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 
 use super::{
-    generators::{candid_file_generation, ic_object::functions, random, vm_value_conversion},
+    generators::{candid_file_generation, random, vm_value_conversion},
     nodes::{
         data_type_nodes, ActExternalCanister,
         {
@@ -59,12 +59,6 @@ impl ToTokenStream for AbstractCanisterTree {
         let query_methods = self.query_methods.to_token_streams();
         let update_methods = self.update_methods.to_token_streams();
 
-        // TODO: Remove these clones
-        let query_and_update_canister_methods: Vec<ActCanisterMethod> =
-            vec![self.query_methods.clone(), self.update_methods.clone()].concat();
-        let ic_object_functions =
-            functions::generate_ic_object_functions(&query_and_update_canister_methods);
-
         let candid_file_generation_code =
             candid_file_generation::generate_candid_file_generation_code();
 
@@ -85,7 +79,6 @@ impl ToTokenStream for AbstractCanisterTree {
             #try_from_vm_value_trait
             #try_from_vm_value_impls
 
-            #ic_object_functions
 
             #heartbeat_method
             #init_method
