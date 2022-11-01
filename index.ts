@@ -129,7 +129,7 @@ type ic = {
         method: string,
         args_raw: blob,
         payment: nat
-    ) => CanisterResult<null>;
+    ) => NotifyRawResult;
     performance_counter: (counter_type: nat32) => nat64;
     print: (...args: any) => void;
     reject: (message: string) => void;
@@ -199,6 +199,12 @@ export type CanisterResult<T> = {
     with_cycles: (cycles: nat64) => CanisterResult<T>;
     with_cycles128: (cycles: nat) => CanisterResult<T>;
 };
+
+export type NotifyRawResult = Variant<{
+    ok: null;
+    err: RejectionCode;
+}>;
+
 export type Stable<T> = T; // TODO let's remove this
 
 export type int = bigint;
