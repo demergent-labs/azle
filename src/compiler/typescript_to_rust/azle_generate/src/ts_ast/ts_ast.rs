@@ -87,13 +87,6 @@ impl ToAct for TsAst {
         let canister_dependencies = ast_canister_type_alias_decls
             .get_dependent_types(&ast_type_alias_lookup, &found_type_names);
 
-        // TODO I think this should already be a HashSet at this point
-        let query_dependencies: HashSet<String> =
-            HashSet::from_iter(query_dependencies.iter().cloned());
-        let update_dependencies: HashSet<String> =
-            HashSet::from_iter(update_dependencies.iter().cloned());
-        let canister_dependencies: HashSet<String> =
-            HashSet::from_iter(canister_dependencies.iter().cloned());
         let dependencies: HashSet<String> = query_dependencies
             .union(&update_dependencies)
             .cloned()
