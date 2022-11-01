@@ -1,6 +1,9 @@
-import { Func, Opt, Query, Variant } from 'azle';
+import { empty, Func, Opt, Query, Update, Variant } from 'azle';
 import { int } from 'azle';
 
+type User = {
+    id: string;
+};
 type VariantNotProperties = Variant<{}>;
 // export function qualified_name(param: azle.query.values.int): Query<void> {}
 
@@ -124,3 +127,51 @@ type VariantNotProperties = Variant<{}>;
 //     get thing_two(): void;
 // };
 // export function recGet(record: RecordWithGet): Query<void> {}
+
+// #region FnDecl Errors
+
+// export function array_destructure(
+//     [firstUser]: User[],
+//     user: User
+// ): Query<empty> {
+//     throw "This function uses array destructuring, which isn't currently supported";
+// }
+
+// export function missing_return_type(): Update {
+//     throw 'This method is missing a return type inside `Query`';
+// }
+
+// export function object_destructure({ name }: User): Query<empty> {
+//     throw "This function uses object destructuring, which isn't currently supported";
+// }
+
+// export function assignment_pattern(
+//     first: User,
+//     thing: String = 'default',
+//     third: User
+// ): Query<empty> {
+//     throw "This function uses an assignment pattern, which isn't currently supported";
+// }
+
+// export function assignment_pattern_with_assignment_on_new_line(
+//     first: User,
+//     thing: String
+//         = 'default',
+//     third: User
+// ): Query<empty> {
+//     throw "This function uses an assignment pattern, which isn't currently supported";
+// }
+
+// export function rest_param(first: User, ...rest: any[]): Query<empty> {
+//     throw "This function uses a rest parameter, which can't be represented in candid";
+// }
+
+// export function using_namespace_qualified_return_type_inside_query(): Query<Azle.empty> {
+//     throw 'This function namespace qualifies the return type inside of Query';
+// }
+
+// export function untyped_param(thing): Query<empty> {
+//     throw "This function's parameter does not have a type specified";
+// }
+
+// #endregion FnDecl Errors

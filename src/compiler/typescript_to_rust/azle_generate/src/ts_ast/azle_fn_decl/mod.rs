@@ -17,9 +17,15 @@ pub struct AzleFnDecl<'a> {
 
 impl AzleFnDecl<'_> {
     pub fn get_canister_method_type(&self) -> &str {
-        match &self.get_return_type_ref().type_name {
+        let return_type_ref = self.get_return_type_ref();
+        match &return_type_ref.type_name {
             TsEntityName::Ident(ident) => ident.get_name(),
-            TsEntityName::TsQualifiedName(_) => panic!("{}", self.build_qualified_type_error_msg()),
+            TsEntityName::TsQualifiedName(_) => {
+                panic!(
+                    "{}",
+                    self.build_qualified_type_error_msg(return_type_ref.span)
+                )
+            }
         }
     }
 
@@ -39,7 +45,8 @@ impl AzleFnDecl<'_> {
             Some(type_param_instantiation) => &*type_param_instantiation.params[0],
             None => {
                 let canister_method_type = self.get_canister_method_type();
-                let error_message = self.build_missing_return_type_error_msg(canister_method_type);
+                let error_message =
+                    self.build_missing_return_type_error_msg(type_ref.span, canister_method_type);
                 panic!("{}", error_message)
             }
         }
@@ -65,10 +72,12 @@ impl AzleFnDecl<'_> {
             .iter()
             .map(|param| match &param.pat {
                 Pat::Ident(ident) => ident,
-                Pat::Array(_) => panic!("{}", self.build_array_destructure_error_msg()),
-                Pat::Rest(_) => panic!("{}", self.build_rest_param_error_msg()),
-                Pat::Object(_) => panic!("{}", self.build_object_destructure_error_msg()),
-                Pat::Assign(_) => panic!("{}", self.build_param_default_value_error_msg()),
+                Pat::Array(_) => panic!("{}", self.build_array_destructure_error_msg(param)),
+                Pat::Rest(_) => panic!("{}", self.build_rest_param_error_msg(param)),
+                Pat::Object(_) => panic!("{}", self.build_object_destructure_error_msg(param)),
+                Pat::Assign(assign_pat) => {
+                    panic!("{}", self.build_param_default_value_error_msg(assign_pat))
+                }
                 Pat::Invalid(_) => panic!("{}", self.build_invalid_param_error_msg()),
                 Pat::Expr(_) => panic!("{}", self.build_invalid_param_error_msg()),
             })
@@ -82,7 +91,7 @@ impl AzleFnDecl<'_> {
             .iter()
             .fold(vec![], |acc, ident| match &ident.type_ann {
                 Some(ts_type_ann) => vec![acc, vec![&ts_type_ann.type_ann]].concat(),
-                None => panic!("{}", self.build_untyped_param_error_msg()),
+                None => panic!("{}", self.build_untyped_param_error_msg(*ident)),
             })
     }
 
