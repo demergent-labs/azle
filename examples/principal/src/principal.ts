@@ -40,9 +40,7 @@ export function principal_from_text(principal_text: string): Query<Principal> {
     return Principal.fromText(principal_text);
 }
 
-export function principal_from_uint8array(
-    principal_bytes: blob
-): Query<Principal> {
+export function principal_from_blob(principal_bytes: blob): Query<Principal> {
     return Principal.fromUint8Array(Uint8Array.from(principal_bytes));
 }
 
@@ -54,6 +52,6 @@ export function principal_to_text(principal: Principal): Query<string> {
     return principal.toText();
 }
 
-export function principal_to_uint8array(principal: Principal): Query<blob> {
+export function principal_to_blob(principal: Principal): Query<blob> {
     return principal.toUint8Array();
 }

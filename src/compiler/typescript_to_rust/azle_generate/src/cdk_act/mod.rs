@@ -14,6 +14,7 @@ pub mod generators;
 pub mod nodes;
 pub mod traits;
 
+#[derive(Clone)]
 pub enum CanisterMethodType {
     Heartbeat,
     Init,

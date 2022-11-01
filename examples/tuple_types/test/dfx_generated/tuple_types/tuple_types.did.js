@@ -1,73 +1,180 @@
 export const idlFactory = ({ IDL }) => {
-    const ComplexThreeTuple = IDL.Rec();
-    const PrimitiveTwoTuple = IDL.Tuple(IDL.Text, IDL.Nat64);
+    const Box = IDL.Rec();
     const User = IDL.Record({
         id: IDL.Text,
-        primitive_two_tuple: PrimitiveTwoTuple
+        primitive_two_tuple: IDL.Tuple(IDL.Text, IDL.Nat64)
     });
+    Box.fill(
+        IDL.Variant({
+            Bad: IDL.Tuple(
+                IDL.Tuple(IDL.Text, IDL.Nat64),
+                IDL.Record({
+                    id: IDL.Text,
+                    primitive_two_tuple: IDL.Tuple(IDL.Text, IDL.Nat64)
+                }),
+                Box
+            ),
+            Good: IDL.Null
+        })
+    );
     const Reaction = IDL.Variant({
-        Bad: ComplexThreeTuple,
+        Bad: IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64), User, Box),
         Good: IDL.Null
     });
-    ComplexThreeTuple.fill(IDL.Tuple(PrimitiveTwoTuple, User, Reaction));
-    const ComplexTwoTuple = IDL.Tuple(PrimitiveTwoTuple, User);
-    const PrimitiveThreeTuple = IDL.Tuple(IDL.Text, IDL.Nat64, IDL.Principal);
-    const Header = IDL.Tuple(IDL.Text, IDL.Text);
-    const HttpResponse = IDL.Record({ headers: IDL.Vec(Header) });
+    const HttpResponse = IDL.Record({
+        headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))
+    });
     const StreamingCallbackType = IDL.Variant({
         without_headers: IDL.Null,
-        with_headers: IDL.Vec(Header)
+        with_headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))
     });
+    const AzleInline4230170853101504796 = IDL.Record({ hello: IDL.Nat64 });
+    const AzleInline5131143341488460789 = IDL.Record({ goodbye: IDL.Nat64 });
     return IDL.Service({
+        complex_one_tuple_inline_param: IDL.Func(
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64))],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64))],
+            ['query']
+        ),
+        complex_one_tuple_inline_return_type: IDL.Func(
+            [],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64))],
+            ['query']
+        ),
+        complex_one_tuple_param: IDL.Func(
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64))],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64))],
+            ['query']
+        ),
+        complex_one_tuple_return_type: IDL.Func(
+            [],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64))],
+            ['query']
+        ),
+        complex_three_tuple_inline_param: IDL.Func(
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64), User, Reaction)],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64), User, Reaction)],
+            ['query']
+        ),
+        complex_three_tuple_inline_return_type: IDL.Func(
+            [],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64), User, Reaction)],
+            ['query']
+        ),
         complex_three_tuple_param: IDL.Func(
-            [ComplexThreeTuple],
-            [ComplexThreeTuple],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64), User, Box)],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64), User, Box)],
             ['query']
         ),
         complex_three_tuple_return_type: IDL.Func(
             [],
-            [ComplexThreeTuple],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64), User, Box)],
+            ['query']
+        ),
+        complex_two_tuple_inline_param: IDL.Func(
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64), User)],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64), User)],
+            ['query']
+        ),
+        complex_two_tuple_inline_return_type: IDL.Func(
+            [],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64), User)],
             ['query']
         ),
         complex_two_tuple_param: IDL.Func(
-            [ComplexTwoTuple],
-            [ComplexTwoTuple],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64), User)],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64), User)],
             ['query']
         ),
         complex_two_tuple_return_type: IDL.Func(
             [],
-            [ComplexTwoTuple],
+            [IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Nat64), User)],
+            ['query']
+        ),
+        primitive_one_tuple_inline_param: IDL.Func(
+            [IDL.Tuple(IDL.Text)],
+            [IDL.Tuple(IDL.Text)],
+            ['query']
+        ),
+        primitive_one_tuple_inline_return_type: IDL.Func(
+            [],
+            [IDL.Tuple(IDL.Text)],
+            ['query']
+        ),
+        primitive_one_tuple_param: IDL.Func(
+            [IDL.Tuple(IDL.Text)],
+            [IDL.Tuple(IDL.Text)],
+            ['query']
+        ),
+        primitive_one_tuple_return_type: IDL.Func(
+            [],
+            [IDL.Tuple(IDL.Text)],
+            ['query']
+        ),
+        primitive_three_tuple_inline_param: IDL.Func(
+            [IDL.Tuple(IDL.Text, IDL.Nat64, IDL.Principal)],
+            [IDL.Tuple(IDL.Text, IDL.Nat64, IDL.Principal)],
+            ['query']
+        ),
+        primitive_three_tuple_inline_return_type: IDL.Func(
+            [],
+            [IDL.Tuple(IDL.Text, IDL.Nat64, IDL.Principal)],
             ['query']
         ),
         primitive_three_tuple_param: IDL.Func(
-            [PrimitiveThreeTuple],
-            [PrimitiveThreeTuple],
+            [IDL.Tuple(IDL.Text, IDL.Nat64, IDL.Principal)],
+            [IDL.Tuple(IDL.Text, IDL.Nat64, IDL.Principal)],
             ['query']
         ),
         primitive_three_tuple_return_type: IDL.Func(
             [],
-            [PrimitiveThreeTuple],
+            [IDL.Tuple(IDL.Text, IDL.Nat64, IDL.Principal)],
+            ['query']
+        ),
+        primitive_two_tuple_inline_param: IDL.Func(
+            [IDL.Tuple(IDL.Text, IDL.Text)],
+            [IDL.Tuple(IDL.Text, IDL.Text)],
+            ['query']
+        ),
+        primitive_two_tuple_inline_return_type: IDL.Func(
+            [],
+            [IDL.Tuple(IDL.Text, IDL.Text)],
             ['query']
         ),
         primitive_two_tuple_param: IDL.Func(
-            [PrimitiveTwoTuple],
-            [PrimitiveTwoTuple],
+            [IDL.Tuple(IDL.Text, IDL.Nat64)],
+            [IDL.Tuple(IDL.Text, IDL.Nat64)],
             ['query']
         ),
         primitive_two_tuple_return_type: IDL.Func(
             [],
-            [PrimitiveTwoTuple],
+            [IDL.Tuple(IDL.Text, IDL.Nat64)],
             ['query']
         ),
         tuple_array_params_and_return_type: IDL.Func(
-            [IDL.Vec(Header)],
-            [IDL.Vec(Header)],
+            [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
+            [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
             ['query']
         ),
         tuple_array_record_field: IDL.Func([], [HttpResponse], ['query']),
         tuple_array_variant_field: IDL.Func(
             [],
             [StreamingCallbackType],
+            ['query']
+        ),
+        two_tuple_with_inline_records: IDL.Func(
+            [
+                IDL.Tuple(
+                    AzleInline4230170853101504796,
+                    AzleInline5131143341488460789
+                )
+            ],
+            [
+                IDL.Tuple(
+                    AzleInline4230170853101504796,
+                    AzleInline5131143341488460789
+                )
+            ],
             ['query']
         )
     });

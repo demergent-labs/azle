@@ -1,13 +1,13 @@
-import { Query, Update, nat64 } from 'azle';
+import { nat64, Query, Update } from 'azle';
 
 let count: nat64 = 0n;
 
-export function readCount(): Query<nat64> {
+export function read_count(): Query<nat64> {
     return count;
 }
 
-export function incrementCount(): Update<nat64> {
-    count = count + 1n;
+export function increment_count(): Update<nat64> {
+    count += 1n;
 
     return count;
 }

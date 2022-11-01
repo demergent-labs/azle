@@ -1,5 +1,11 @@
-type SendNotificationResult = variant { "ok": bool; "err": text };
-
-service: {
-    "send_notification": () -> (SendNotificationResult);
-}
+type RejectionCode = variant {
+  NoError;
+  CanisterError;
+  SysTransient;
+  DestinationInvalid;
+  Unknown;
+  SysFatal;
+  CanisterReject;
+};
+type SendNotificationResult = variant { ok : bool; err : RejectionCode };
+service : () -> { send_notification : () -> (SendNotificationResult) }

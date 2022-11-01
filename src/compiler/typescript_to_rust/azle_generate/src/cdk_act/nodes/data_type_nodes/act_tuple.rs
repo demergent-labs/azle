@@ -72,10 +72,18 @@ impl ToTokenStream for TupleTypeAlias {
             .iter()
             .map(|elem| elem.to_token_stream())
             .collect();
+
+        let elem_idents = if elem_idents.len() == 1 {
+            let elem_ident = &elem_idents[0];
+            quote!((#elem_ident,))
+        } else {
+            quote!(#(#elem_idents),*)
+        };
+
         quote!(
             #[derive(serde::Deserialize, Debug, candid::CandidType, Clone, CdkActTryIntoVmValue, CdkActTryFromVmValue)]
             struct #type_ident (
-                #(#elem_idents),*
+                #elem_idents
             );
         )
     }

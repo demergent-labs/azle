@@ -255,21 +255,30 @@ pub fn generate_try_into_vm_value_impls() -> proc_macro2::TokenStream {
 
         // Generic types
 
-        impl<'a, T> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue> for Box<T>
+        impl<T> CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for (T,)
         where
-            T : CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>,
+            T : for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>,
         {
-            fn try_into_vm_value(self, context: &'a mut boa_engine::Context) -> boa_engine::JsValue {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                self.0.try_into_vm_value(context)
+            }
+        }
+
+        impl<T> CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Box<T>
+        where
+            T : for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>,
+        {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 (*self).try_into_vm_value(context)
             }
         }
 
         // TODO I wonder if we will have some problems with Option because of the type bound??
-        impl<'a, T> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue> for Option<T>
+        impl<T> CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Option<T>
         where
-            T: CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>
+            T: for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>
         {
-            fn try_into_vm_value(self, context: &'a mut boa_engine::Context) -> boa_engine::JsValue {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 match self {
                     Some(value) => value.try_into_vm_value(context),
                     None => boa_engine::JsValue::Null

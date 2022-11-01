@@ -7,22 +7,10 @@ export function get_tests(
 ): Test[] {
     return [
         {
-            name: 'getUserById',
-            test: async () => {
-                const result = await simple_user_accounts_canister.getUserById(
-                    '0'
-                );
-
-                return {
-                    ok: result.length === 0
-                };
-            }
-        },
-        {
-            name: 'getAllUsers',
+            name: 'get_user_by_id',
             test: async () => {
                 const result =
-                    await simple_user_accounts_canister.getAllUsers();
+                    await simple_user_accounts_canister.get_user_by_id('0');
 
                 return {
                     ok: result.length === 0
@@ -30,9 +18,20 @@ export function get_tests(
             }
         },
         {
-            name: 'createUser',
+            name: 'get_all_users',
             test: async () => {
-                const result = await simple_user_accounts_canister.createUser(
+                const result =
+                    await simple_user_accounts_canister.get_all_users();
+
+                return {
+                    ok: result.length === 0
+                };
+            }
+        },
+        {
+            name: 'create_user',
+            test: async () => {
+                const result = await simple_user_accounts_canister.create_user(
                     'lastmjs'
                 );
 
@@ -42,11 +41,10 @@ export function get_tests(
             }
         },
         {
-            name: 'getUserById',
+            name: 'get_user_by_id',
             test: async () => {
-                const result = await simple_user_accounts_canister.getUserById(
-                    '0'
-                );
+                const result =
+                    await simple_user_accounts_canister.get_user_by_id('0');
 
                 return {
                     ok:
@@ -57,10 +55,10 @@ export function get_tests(
             }
         },
         {
-            name: 'getAllUsers',
+            name: 'get_all_users',
             test: async () => {
                 const result =
-                    await simple_user_accounts_canister.getAllUsers();
+                    await simple_user_accounts_canister.get_all_users();
 
                 return {
                     ok:

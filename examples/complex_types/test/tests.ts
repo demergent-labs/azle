@@ -7,9 +7,9 @@ export function get_tests(
 ): Test[] {
     return [
         {
-            name: 'getAllUsers',
+            name: 'get_all_users',
             test: async () => {
-                const result = await complex_types_canister.getAllUsers(0);
+                const result = await complex_types_canister.get_all_users(0);
 
                 return {
                     ok: result.length === 0
@@ -17,9 +17,9 @@ export function get_tests(
             }
         },
         {
-            name: 'createUser',
+            name: 'create_user',
             test: async () => {
-                const result = await complex_types_canister.createUser(
+                const result = await complex_types_canister.create_user(
                     'user1',
                     0
                 );
@@ -35,9 +35,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getAllUsers',
+            name: 'get_all_users',
             test: async () => {
-                const result = await complex_types_canister.getAllUsers(0);
+                const result = await complex_types_canister.get_all_users(0);
 
                 return {
                     ok:

@@ -7,9 +7,9 @@ export function get_tests(
 ): Test[] {
     return [
         {
-            name: 'getHTML',
+            name: 'get_html',
             test: async () => {
-                const result = await optional_types_canister.getHTML();
+                const result = await optional_types_canister.get_html();
 
                 return {
                     ok: result.head.length === 0
@@ -17,9 +17,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getHead',
+            name: 'get_head',
             test: async () => {
-                const result = await optional_types_canister.getHead();
+                const result = await optional_types_canister.get_head();
 
                 return {
                     ok: result.length === 1 && result[0].elements.length === 0
@@ -27,10 +27,10 @@ export function get_tests(
             }
         },
         {
-            name: 'getHeadWithElements',
+            name: 'get_head_with_elements',
             test: async () => {
                 const result =
-                    await optional_types_canister.getHeadWithElements();
+                    await optional_types_canister.get_head_with_elements();
 
                 return {
                     ok:
@@ -41,9 +41,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getElement',
+            name: 'get_element',
             test: async () => {
-                const result = await optional_types_canister.getElement([]);
+                const result = await optional_types_canister.get_element([]);
 
                 return {
                     ok: result.length === 0
@@ -51,9 +51,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getElement',
+            name: 'get_element',
             test: async () => {
-                const result = await optional_types_canister.getElement([[]]);
+                const result = await optional_types_canister.get_element([[]]);
 
                 return {
                     ok: result.length === 0
@@ -61,9 +61,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getElement',
+            name: 'get_element',
             test: async () => {
-                const result = await optional_types_canister.getElement([
+                const result = await optional_types_canister.get_element([
                     [{ id: '0' }]
                 ]);
 

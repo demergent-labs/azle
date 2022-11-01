@@ -2,6 +2,7 @@ use proc_macro2::TokenStream;
 
 use crate::cdk_act::ToTokenStream;
 
+#[derive(Clone)]
 pub struct ActHeartbeatMethod {
     pub body: TokenStream,
 }

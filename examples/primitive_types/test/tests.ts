@@ -8,9 +8,9 @@ export function get_tests(
 ): Test[] {
     return [
         {
-            name: 'getInt',
+            name: 'get_int',
             test: async () => {
-                const result = await primitive_types_canister.getInt();
+                const result = await primitive_types_canister.get_int();
 
                 return {
                     ok:
@@ -20,9 +20,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printInt',
+            name: 'print_int',
             test: async () => {
-                const result = await primitive_types_canister.printInt(
+                const result = await primitive_types_canister.print_int(
                     170_141_183_460_469_231_731_687_303_715_884_105_727n
                 );
 
@@ -34,9 +34,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getInt64',
+            name: 'get_int64',
             test: async () => {
-                const result = await primitive_types_canister.getInt64();
+                const result = await primitive_types_canister.get_int64();
 
                 return {
                     ok: result === 9_223_372_036_854_775_807n
@@ -44,9 +44,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printInt64',
+            name: 'print_int64',
             test: async () => {
-                const result = await primitive_types_canister.printInt(
+                const result = await primitive_types_canister.print_int(
                     9_223_372_036_854_775_807n
                 );
 
@@ -56,9 +56,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getInt32',
+            name: 'get_int32',
             test: async () => {
-                const result = await primitive_types_canister.getInt32();
+                const result = await primitive_types_canister.get_int32();
 
                 return {
                     ok: result === 2_147_483_647
@@ -66,9 +66,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printInt32',
+            name: 'print_int32',
             test: async () => {
-                const result = await primitive_types_canister.printInt32(
+                const result = await primitive_types_canister.print_int32(
                     2_147_483_647
                 );
 
@@ -78,9 +78,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getInt16',
+            name: 'get_int16',
             test: async () => {
-                const result = await primitive_types_canister.getInt16();
+                const result = await primitive_types_canister.get_int16();
 
                 return {
                     ok: result === 32_767
@@ -88,9 +88,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printInt16',
+            name: 'print_int16',
             test: async () => {
-                const result = await primitive_types_canister.printInt16(
+                const result = await primitive_types_canister.print_int16(
                     32_767
                 );
 
@@ -100,9 +100,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getInt8',
+            name: 'get_int8',
             test: async () => {
-                const result = await primitive_types_canister.getInt8();
+                const result = await primitive_types_canister.get_int8();
 
                 return {
                     ok: result === 127
@@ -110,9 +110,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printInt8',
+            name: 'print_int8',
             test: async () => {
-                const result = await primitive_types_canister.printInt8(127);
+                const result = await primitive_types_canister.print_int8(127);
 
                 return {
                     ok: result === 127
@@ -120,9 +120,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getNat',
+            name: 'get_nat',
             test: async () => {
-                const result = await primitive_types_canister.getNat();
+                const result = await primitive_types_canister.get_nat();
 
                 return {
                     ok:
@@ -132,9 +132,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printNat',
+            name: 'print_nat',
             test: async () => {
-                const result = await primitive_types_canister.printNat(
+                const result = await primitive_types_canister.print_nat(
                     340_282_366_920_938_463_463_374_607_431_768_211_455n
                 );
 
@@ -146,9 +146,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getNat64',
+            name: 'get_nat64',
             test: async () => {
-                const result = await primitive_types_canister.getNat64();
+                const result = await primitive_types_canister.get_nat64();
 
                 return {
                     ok: result === 18_446_744_073_709_551_615n
@@ -156,9 +156,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printNat64',
+            name: 'print_nat64',
             test: async () => {
-                const result = await primitive_types_canister.printNat64(
+                const result = await primitive_types_canister.print_nat64(
                     18_446_744_073_709_551_615n
                 );
 
@@ -168,9 +168,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getNat32',
+            name: 'get_nat32',
             test: async () => {
-                const result = await primitive_types_canister.getNat32();
+                const result = await primitive_types_canister.get_nat32();
 
                 return {
                     ok: result === 4_294_967_295
@@ -178,9 +178,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printNat32',
+            name: 'print_nat32',
             test: async () => {
-                const result = await primitive_types_canister.printNat32(
+                const result = await primitive_types_canister.print_nat32(
                     4_294_967_295
                 );
 
@@ -190,9 +190,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getNat16',
+            name: 'get_nat16',
             test: async () => {
-                const result = await primitive_types_canister.getNat16();
+                const result = await primitive_types_canister.get_nat16();
 
                 return {
                     ok: result === 65_535
@@ -200,9 +200,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printNat16',
+            name: 'print_nat16',
             test: async () => {
-                const result = await primitive_types_canister.printNat16(
+                const result = await primitive_types_canister.print_nat16(
                     65_535
                 );
 
@@ -212,9 +212,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getNat8',
+            name: 'get_nat8',
             test: async () => {
-                const result = await primitive_types_canister.getNat8();
+                const result = await primitive_types_canister.get_nat8();
 
                 return {
                     ok: result === 255
@@ -222,9 +222,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printNat8',
+            name: 'print_nat8',
             test: async () => {
-                const result = await primitive_types_canister.printNat8(255);
+                const result = await primitive_types_canister.print_nat8(255);
 
                 return {
                     ok: result === 255
@@ -232,9 +232,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getFloat64',
+            name: 'get_float64',
             test: async () => {
-                const result = await primitive_types_canister.getFloat64();
+                const result = await primitive_types_canister.get_float64();
 
                 return {
                     ok: result.toString() === '2.718281828459045'
@@ -242,9 +242,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printFloat64',
+            name: 'print_float64',
             test: async () => {
-                const result = await primitive_types_canister.printFloat64(
+                const result = await primitive_types_canister.print_float64(
                     2.718281828459045
                 );
 
@@ -254,9 +254,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getFloat32',
+            name: 'get_float32',
             test: async () => {
-                const result = await primitive_types_canister.getFloat32();
+                const result = await primitive_types_canister.get_float32();
 
                 return {
                     // ok: result.toString() === '3.1415927' // TODO on the command line this is returned
@@ -265,9 +265,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printFloat32',
+            name: 'print_float32',
             test: async () => {
-                const result = await primitive_types_canister.printFloat32(
+                const result = await primitive_types_canister.print_float32(
                     3.1415927
                 );
 
@@ -278,9 +278,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getPrincipal',
+            name: 'get_principal',
             test: async () => {
-                const result = await primitive_types_canister.getPrincipal();
+                const result = await primitive_types_canister.get_principal();
 
                 return {
                     ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
@@ -288,9 +288,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printPrincipal',
+            name: 'print_principal',
             test: async () => {
-                const result = await primitive_types_canister.printPrincipal(
+                const result = await primitive_types_canister.print_principal(
                     Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
                 );
 
@@ -300,9 +300,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getNull',
+            name: 'get_null',
             test: async () => {
-                const result = await primitive_types_canister.getNull();
+                const result = await primitive_types_canister.get_null();
 
                 return {
                     ok: result === null
@@ -310,9 +310,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printNull',
+            name: 'print_null',
             test: async () => {
-                const result = await primitive_types_canister.printNull(null);
+                const result = await primitive_types_canister.print_null(null);
 
                 return {
                     ok: result === null
@@ -320,9 +320,9 @@ export function get_tests(
             }
         },
         {
-            name: 'getReserved',
+            name: 'get_reserved',
             test: async () => {
-                const result = await primitive_types_canister.getReserved();
+                const result = await primitive_types_canister.get_reserved();
 
                 return {
                     ok: result === null
@@ -330,9 +330,9 @@ export function get_tests(
             }
         },
         {
-            name: 'printReserved',
+            name: 'print_reserved',
             test: async () => {
-                const result = await primitive_types_canister.printReserved(
+                const result = await primitive_types_canister.print_reserved(
                     Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
                 );
 
@@ -342,13 +342,13 @@ export function get_tests(
             }
         },
         {
-            name: 'getEmpty',
+            name: 'get_empty',
             test: async () => {
                 try {
-                    const result = await primitive_types_canister.getEmpty();
+                    const result = await primitive_types_canister.get_empty();
                 } catch (error) {
                     return {
-                        ok: error.message.startsWith('Call failed')
+                        ok: (error as any).message.startsWith('Call failed')
                     };
                 }
 
@@ -358,16 +358,16 @@ export function get_tests(
             }
         },
         {
-            name: 'printEmpty',
+            name: 'print_empty',
             test: async () => {
                 try {
-                    const result = await primitive_types_canister.printEmpty(
-                        undefined
+                    const result = await primitive_types_canister.print_empty(
+                        undefined as never
                     );
                 } catch (error) {
                     return {
                         ok:
-                            error.message ===
+                            (error as any).message ===
                             'Invalid empty argument: undefined'
                     };
                 }

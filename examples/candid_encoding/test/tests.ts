@@ -11,7 +11,7 @@ export function get_tests(
             name: 'install didc',
             prep: async () => {
                 execSync(
-                    `cd target/azle && cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 didc --root ..`,
+                    `cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 --force didc`,
                     { stdio: 'inherit' }
                 );
             }
@@ -302,7 +302,7 @@ export function get_tests(
                 }
 
                 const candid_encoded_hex_string = execSync(
-                    `./target/bin/didc encode '${candid_string}'`
+                    `didc encode '${candid_string}'`
                 )
                     .toString()
                     .trim();
@@ -341,7 +341,7 @@ export function get_tests(
                 }
 
                 const candid_encoded_hex_string = execSync(
-                    `./target/bin/didc encode '${candid_string}'`
+                    `didc encode '${candid_string}'`
                 )
                     .toString()
                     .trim();
@@ -430,9 +430,7 @@ async function candid_encode_test(
     candid_encoding_canister: ActorSubclass<_SERVICE>,
     candid_string: string
 ): Promise<AzleResult<boolean>> {
-    const candid_encoded_hex_string = execSync(
-        `./target/bin/didc encode '${candid_string}'`
-    )
+    const candid_encoded_hex_string = execSync(`didc encode '${candid_string}'`)
         .toString()
         .trim();
     const candid_encoded_byte_array =
@@ -455,9 +453,7 @@ async function candid_decode_test(
     candid_encoding_canister: ActorSubclass<_SERVICE>,
     candid_string: string
 ): Promise<AzleResult<boolean>> {
-    const candid_encoded_hex_string = execSync(
-        `./target/bin/didc encode '${candid_string}'`
-    )
+    const candid_encoded_hex_string = execSync(`didc encode '${candid_string}'`)
         .toString()
         .trim();
     const candid_encoded_byte_array =
