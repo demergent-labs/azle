@@ -30,17 +30,6 @@ pub struct ActVariantMember {
     pub member_type: ActDataType,
 }
 
-impl ActVariant {
-    pub fn get_name(&self) -> String {
-        match &self.act_type {
-            LiteralOrTypeAlias::Literal(literal) => &literal.variant,
-            LiteralOrTypeAlias::TypeAlias(type_alias) => &type_alias.variant,
-        }
-        .name
-        .clone()
-    }
-}
-
 impl TypeAliasize<ActVariant> for ActVariant {
     fn as_type_alias(&self) -> ActVariant {
         match &self.act_type {

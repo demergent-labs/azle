@@ -52,15 +52,6 @@ pub struct ActPrimitiveTypeAlias {
     pub aliased_type: ActPrimitiveLit,
 }
 
-impl ActPrimitive {
-    pub fn get_name(&self) -> String {
-        match &self.act_type {
-            LiteralOrTypeAlias::Literal(literal) => literal.to_token_stream().to_string(),
-            LiteralOrTypeAlias::TypeAlias(type_alias) => type_alias.name.clone(),
-        }
-    }
-}
-
 impl ToTokenStream for ActPrimitiveTypeAlias {
     fn to_token_stream(&self) -> TokenStream {
         let name = self.name.to_identifier().to_token_stream();

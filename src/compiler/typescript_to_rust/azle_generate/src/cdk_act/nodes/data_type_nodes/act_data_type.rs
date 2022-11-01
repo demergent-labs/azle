@@ -20,32 +20,6 @@ pub enum ActDataType {
 }
 
 impl ActDataType {
-    pub fn get_name(&self) -> String {
-        match self {
-            ActDataType::Array(array) => array.get_name(),
-            ActDataType::Func(func) => func.get_name(),
-            ActDataType::Option(option) => option.get_name(),
-            ActDataType::Primitive(primitive) => primitive.get_name(),
-            ActDataType::Record(record) => record.get_name(),
-            ActDataType::Tuple(tuple) => tuple.get_name(),
-            ActDataType::TypeRef(type_ref) => type_ref.get_name(),
-            ActDataType::Variant(variant) => variant.get_name(),
-        }
-    }
-    pub fn get_type_name(&self) -> String {
-        match self {
-            ActDataType::Array(_) => "Array",
-            ActDataType::Func(_) => "Func",
-            ActDataType::Option(_) => "Option",
-            ActDataType::Primitive(_) => "Primitive",
-            ActDataType::Record(_) => "Record",
-            ActDataType::Tuple(_) => "Tuple",
-            ActDataType::TypeRef(_) => "TypeRef",
-            ActDataType::Variant(_) => "Variant",
-        }
-        .to_string()
-    }
-
     pub fn needs_definition(&self) -> bool {
         match self {
             ActDataType::Primitive(_) => false,
@@ -59,16 +33,16 @@ impl ActDataType {
         }
     }
 
-    pub fn as_type_alias(&self) -> ActDataType {
+    pub fn as_type_alias(&self) -> Option<ActDataType> {
         match self {
-            ActDataType::Primitive(_) => todo!(),
-            ActDataType::Option(_) => todo!(),
-            ActDataType::TypeRef(_) => todo!(),
-            ActDataType::Array(_) => todo!(),
-            ActDataType::Record(record) => ActDataType::Record(record.as_type_alias()),
-            ActDataType::Variant(variant) => ActDataType::Variant(variant.as_type_alias()),
-            ActDataType::Func(func) => ActDataType::Func(func.as_type_alias()),
-            ActDataType::Tuple(tuple) => ActDataType::Tuple(tuple.as_type_alias()),
+            ActDataType::Primitive(_) => None,
+            ActDataType::Option(_) => None,
+            ActDataType::TypeRef(_) => None,
+            ActDataType::Array(_) => None,
+            ActDataType::Record(record) => Some(ActDataType::Record(record.as_type_alias())),
+            ActDataType::Variant(variant) => Some(ActDataType::Variant(variant.as_type_alias())),
+            ActDataType::Func(func) => Some(ActDataType::Func(func.as_type_alias())),
+            ActDataType::Tuple(tuple) => Some(ActDataType::Tuple(tuple.as_type_alias())),
         }
     }
 
@@ -91,7 +65,10 @@ impl ActDataType {
 
     pub fn collect_inline_types(&self) -> Vec<ActDataType> {
         let act_data_type = match self.needs_definition() {
-            true => vec![self.as_type_alias()],
+            true => match self.as_type_alias() {
+                Some(type_alias) => vec![type_alias],
+                None => vec![],
+            },
             false => vec![],
         };
         let member_act_data_types = self.get_members();

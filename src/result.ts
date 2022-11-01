@@ -41,6 +41,6 @@ function exitWithError(payload: AzleError): never {
     if (payload.suggestion) {
         console.error(`\n${payload.suggestion}`);
     }
-    console.error(`\n💀 Build failed`);
+    console.log(`\n💀 Build failed`);
     process.exit(payload.exitCode ?? 0);
 }
