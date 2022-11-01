@@ -55,25 +55,19 @@ impl TsAst {
     fn generate_notify_functions(&self) -> Vec<TokenStream> {
         let external_canisters = self.build_external_canisters();
 
-        external_canisters
-            .iter()
-            .map(|canister| {
-                canister
-                    .methods
-                    .iter()
-                    .map(|method| {
-                        let notify_function_name_string =
-                            format!("_azle_notify_{}_{}", canister.name, method.name);
-                        let notify_function_name_ident =
-                            format_ident!("{}_wrapper", notify_function_name_string);
+        external_canisters.iter().map(|canister| {
+            canister.methods.iter().map(|method| {
+                let notify_function_name_string = format!("_azle_notify_{}_{}", canister.name, method.name);
+                let notify_function_name_ident = format_ident!("{}_wrapper", notify_function_name_string);
 
-                        quote! {
-                            .function(#notify_function_name_ident, #notify_function_name_string, 0)
-                        }
-                    })
-                    .collect()
-            })
-            .collect::<Vec<Vec<TokenStream>>>()
-            .concat()
+                let notify_with_payment128_function_name_string = format!("_azle_notify_with_payment128_{}_{}", canister.name, method.name);
+                let notify_with_payment128_function_name_ident = format_ident!("{}_wrapper", notify_with_payment128_function_name_string);
+
+                quote! {
+                    .function(#notify_function_name_ident, #notify_function_name_string, 0)
+                    .function(#notify_with_payment128_function_name_ident, #notify_with_payment128_function_name_string, 0)
+                }
+            }).collect()
+        }).collect::<Vec<Vec<TokenStream>>>().concat()
     }
 }

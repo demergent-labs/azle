@@ -6,20 +6,16 @@ use crate::cdk_act::{
     ToTokenStream,
 };
 
-pub fn generate_ic_object_notify_functions(
+pub fn generate_ic_object_notify_with_payment128_functions(
     external_canisters: &Vec<ActExternalCanister>,
 ) -> Vec<TokenStream> {
     external_canisters.iter().map(|canister| {
         canister.methods.iter().map(|method| {
-            let function_name_string = format!("_azle_notify_{}_{}", canister.name, method.name);
+            let function_name_string = format!("_azle_notify_with_payment128_{}_{}", canister.name, method.name);
             let real_function_name = format_ident!("{}", function_name_string);
             let wrapper_fn_name = format_ident!("{}_wrapper", function_name_string);
             let param_variables = generate_param_variables(method);
-            let params: Vec<TokenStream> = method.params.iter().map(|param| {
-                let name = format_ident!("{}", param.name);
-                quote! { #name }
-            }).collect();
-
+            let params = method.params_as_args_list();
             quote!{
                 fn #wrapper_fn_name(
                     _this: &boa_engine::JsValue,
@@ -34,9 +30,13 @@ pub fn generate_ic_object_notify_functions(
 
                     #(#param_variables)*
 
+                    let cycles_js_value = _aargs.get(2).unwrap().clone();
+                    let cycles: u128 = cycles_js_value.try_from_vm_value(&mut *_context).unwrap();
+
                     let notify_result = #real_function_name(
                         canister_id_principal,
-                        #(#params),*
+                        #params
+                        cycles,
                     );
 
                     Ok(notify_result.try_into_vm_value(_context))

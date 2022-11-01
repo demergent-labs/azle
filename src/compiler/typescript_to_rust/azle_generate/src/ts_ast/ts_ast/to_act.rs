@@ -150,8 +150,6 @@ impl ToAct for TsAst {
         let async_result_handler = self.generate_async_result_handler();
         let get_top_level_call_frame_fn = stacktrace::generate_get_top_level_call_frame_fn();
 
-        let cross_canister_call_functions = self.generate_cross_canister_call_functions(); // TODO: Remove this
-
         let boa_error_handler = errors::generate_error_handler();
 
         // TODO Some of the things in this quote belong inside of the quote in AbstractCanisterTree
@@ -172,7 +170,6 @@ impl ToAct for TsAst {
             rust_code: quote! {
                 #boa_error_handler
                 #ic_object_functions
-                #cross_canister_call_functions
                 #async_result_handler
                 #get_top_level_call_frame_fn
             },
