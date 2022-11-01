@@ -1,7 +1,7 @@
 use crate::{
     cdk_act::{nodes::ActHeartbeatMethod, CanisterMethodType},
     generators::canister_methods::method_body,
-    ts_ast::program::{azle_program::AzleProgramVecHelperMethods, AzleProgram},
+    ts_ast::program::{azle_program::AzleProgramVecHelperMethods, errors, AzleProgram},
 };
 
 pub fn build_canister_method_system_heartbeat(
@@ -10,7 +10,12 @@ pub fn build_canister_method_system_heartbeat(
     let heartbeat_fn_decls = programs.get_azle_fn_decls_of_type(&CanisterMethodType::Heartbeat);
 
     if heartbeat_fn_decls.len() > 1 {
-        panic!("Only one Heartbeat function can be defined");
+        let error_message = errors::create_duplicate_method_types_error_message(
+            heartbeat_fn_decls,
+            CanisterMethodType::Heartbeat,
+        );
+
+        panic!("{}", error_message);
     }
 
     let heartbeat_fn_decl_option = heartbeat_fn_decls.get(0);

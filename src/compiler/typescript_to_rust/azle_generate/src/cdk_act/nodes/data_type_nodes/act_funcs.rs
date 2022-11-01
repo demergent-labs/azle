@@ -122,7 +122,14 @@ pub fn generate_func_struct_and_impls(
                 rust_type.clone()
             };
 
-            let modified_rust_type_token_stream: TokenStream = modified_rust_type.parse().unwrap();
+            let modified_rust_type_token_stream: TokenStream = modified_rust_type
+                .parse()
+                // Note: This should be impossible to hit. Anything that isn't
+                // parsable should be caught when going from TS to JS.
+                .expect(&format!(
+                    "Unable to parse parameter type {} in Func {}",
+                    modified_rust_type, type_alias_name
+                ));
 
             quote! {#modified_rust_type_token_stream::_ty()}
         })
@@ -134,7 +141,14 @@ pub fn generate_func_struct_and_impls(
     let func_return_type = if return_type_string == "()" || return_type_string == "" {
         quote! {}
     } else {
-        let return_type_token_stream: TokenStream = return_type_string.parse().unwrap();
+        let return_type_token_stream: TokenStream = return_type_string
+            .parse()
+            // Note: This should be impossible to hit. Anything that isn't
+            // parsable should be caught when going from TS to JS.
+            .expect(&format!(
+                "Unable to parse return type {} in Func {}",
+                return_type_string, type_alias_name
+            ));
         quote! { #return_type_token_stream::_ty()}
     };
 

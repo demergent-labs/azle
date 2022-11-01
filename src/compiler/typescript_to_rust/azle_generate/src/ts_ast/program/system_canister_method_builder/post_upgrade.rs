@@ -6,7 +6,7 @@ use crate::{
         traits::CanisterMethodBuilder, CanisterMethodType,
     },
     generators::canister_methods::method_body,
-    ts_ast::program::{azle_program::AzleProgramVecHelperMethods, AzleProgram},
+    ts_ast::program::{azle_program::AzleProgramVecHelperMethods, errors, AzleProgram},
 };
 
 pub fn build_canister_method_system_post_upgrade(
@@ -18,7 +18,12 @@ pub fn build_canister_method_system_post_upgrade(
         programs.get_azle_fn_decls_of_type(&CanisterMethodType::PostUpgrade);
 
     if post_upgrade_fn_decls.len() > 1 {
-        panic!("Only one PostUpgrade function can be defined");
+        let error_message = errors::create_duplicate_method_types_error_message(
+            post_upgrade_fn_decls,
+            CanisterMethodType::PostUpgrade,
+        );
+
+        panic!("{}", error_message);
     }
 
     let post_upgrade_fn_decl_option = post_upgrade_fn_decls.get(0);

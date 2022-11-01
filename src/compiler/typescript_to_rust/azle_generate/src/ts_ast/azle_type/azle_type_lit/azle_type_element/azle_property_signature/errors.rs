@@ -15,6 +15,22 @@ impl AzlePropertySignature<'_> {
         }
     }
 
+    /// Note: This shouldn't ever be hit because it is mostly likely caught by
+    /// by the `unsupported_type_error` function in
+    /// ts_ast/azle_type/azle_type_lit/azle_type_element/errors.rs
+    ///
+    pub(super) fn unsupported_member_name_error(&self) -> ErrorMessage {
+        ErrorMessage {
+            title: "Unsupported member name".to_string(),
+            origin: self.get_origin(),
+            line_number: self.get_line_number(),
+            source: self.get_source(),
+            range: self.get_range(),
+            annotation: "change this to a simple identifier".to_string(),
+            suggestion: None,
+        }
+    }
+
     // TODO I liked these functions because it said, hey this is a record or
     // this is a variant and so it needs this. As opposed to a canister that
     // needs something else entirely. If we could figure out how to get that
