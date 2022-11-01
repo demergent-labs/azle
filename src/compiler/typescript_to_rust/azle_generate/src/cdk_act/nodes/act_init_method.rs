@@ -3,6 +3,7 @@ use quote::quote;
 
 use crate::cdk_act::{nodes::ActFnParam, ToTokenStream, ToTokenStreams};
 
+#[derive(Clone)]
 pub struct ActInitMethod {
     pub params: Vec<ActFnParam>,
     pub body: TokenStream,

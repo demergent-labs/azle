@@ -3,6 +3,7 @@ use quote::quote;
 
 use crate::cdk_act::ToTokenStream;
 
+#[derive(Clone)]
 pub struct ActPreUpgradeMethod {
     pub body: TokenStream,
 }

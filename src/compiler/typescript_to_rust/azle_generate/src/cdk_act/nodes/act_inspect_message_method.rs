@@ -3,6 +3,7 @@ use quote::{format_ident, quote};
 
 use crate::cdk_act::ToTokenStream;
 
+#[derive(Clone)]
 pub struct ActInspectMessageMethod {
     pub name: String,
     pub body: TokenStream,
