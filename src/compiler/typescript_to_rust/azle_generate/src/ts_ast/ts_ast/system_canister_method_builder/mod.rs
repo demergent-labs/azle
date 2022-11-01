@@ -6,7 +6,7 @@ use crate::cdk_act::{
     traits::SystemCanisterMethodBuilder,
 };
 
-use super::AzleProgram;
+use super::TsAst;
 
 mod heartbeat;
 mod init;
@@ -14,7 +14,7 @@ mod inspect_message;
 mod post_upgrade;
 mod pre_upgrade;
 
-impl SystemCanisterMethodBuilder for Vec<AzleProgram> {
+impl SystemCanisterMethodBuilder for TsAst {
     fn build_heartbeat_method(&self) -> Option<ActHeartbeatMethod> {
         heartbeat::build_canister_method_system_heartbeat(self)
     }

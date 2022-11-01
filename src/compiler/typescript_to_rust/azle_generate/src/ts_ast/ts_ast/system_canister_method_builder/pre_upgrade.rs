@@ -1,14 +1,14 @@
 use crate::{
     cdk_act::{nodes::ActPreUpgradeMethod, CanisterMethodType},
     generators::canister_methods::method_body,
-    ts_ast::program::{azle_program::AzleProgramVecHelperMethods, errors, AzleProgram},
+    ts_ast::{program::azle_program::AzleProgramVecHelperMethods, ts_ast::errors, TsAst},
 };
 use quote::quote;
 
-pub fn build_canister_method_system_pre_upgrade(
-    programs: &Vec<AzleProgram>,
-) -> ActPreUpgradeMethod {
-    let pre_upgrade_fn_decls = programs.get_azle_fn_decls_of_type(&CanisterMethodType::PreUpgrade);
+pub fn build_canister_method_system_pre_upgrade(ts_ast: &TsAst) -> ActPreUpgradeMethod {
+    let pre_upgrade_fn_decls = ts_ast
+        .azle_programs
+        .get_azle_fn_decls_of_type(&CanisterMethodType::PreUpgrade);
 
     if pre_upgrade_fn_decls.len() > 1 {
         let error_message = errors::create_duplicate_method_types_error_message(

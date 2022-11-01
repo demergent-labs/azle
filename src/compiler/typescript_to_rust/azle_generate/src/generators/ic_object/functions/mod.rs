@@ -1,4 +1,4 @@
-use crate::cdk_act::ActCanisterMethod;
+use crate::cdk_act::{nodes::ActExternalCanister, ActCanisterMethod};
 
 mod accept_message;
 mod arg_data_raw;
@@ -17,7 +17,9 @@ mod msg_cycles_available;
 mod msg_cycles_available128;
 mod msg_cycles_refunded;
 mod msg_cycles_refunded128;
+mod notify_functions;
 mod notify_raw;
+mod notify_with_payment128_functions;
 mod performance_counter;
 mod print;
 mod reject;
@@ -40,6 +42,7 @@ mod trap;
 
 pub fn generate_ic_object_functions(
     canister_methods: &Vec<ActCanisterMethod>,
+    external_canisters: &Vec<ActExternalCanister>,
 ) -> proc_macro2::TokenStream {
     let accept_message = accept_message::generate_ic_object_function_accept_message();
     let arg_data_raw = arg_data_raw::generate_ic_object_function_arg_data_raw();
@@ -64,6 +67,12 @@ pub fn generate_ic_object_functions(
         msg_cycles_refunded::generate_ic_object_function_msg_cycles_refunded();
     let msg_cycles_refunded128 =
         msg_cycles_refunded128::generate_ic_object_function_msg_cycles_refunded128();
+    let notify_functions =
+        notify_functions::generate_ic_object_notify_functions(external_canisters);
+    let notify_with_payment128_functions =
+        notify_with_payment128_functions::generate_ic_object_notify_with_payment128_functions(
+            external_canisters,
+        );
     let notify_raw = notify_raw::generate_ic_object_function_notify_raw();
     let performance_counter =
         performance_counter::generate_ic_object_function_performance_counter();
@@ -104,6 +113,8 @@ pub fn generate_ic_object_functions(
         #msg_cycles_available128
         #msg_cycles_refunded
         #msg_cycles_refunded128
+        #(#notify_functions)*
+        #(#notify_with_payment128_functions)*
         #notify_raw
         #performance_counter
         #print

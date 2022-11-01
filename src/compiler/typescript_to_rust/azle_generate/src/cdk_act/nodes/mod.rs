@@ -1,4 +1,5 @@
 pub mod act_canister_method;
+pub mod act_external_canister;
 pub mod act_fn_param;
 pub mod act_heartbeat_method;
 pub mod act_init_method;
@@ -9,6 +10,8 @@ pub mod data_type_nodes;
 
 pub use act_canister_method::ActCanisterMethod;
 pub use act_canister_method::CanisterMethod;
+pub use act_external_canister::ActExternalCanister;
+pub use act_external_canister::ActExternalCanisterMethod;
 pub use act_fn_param::ActFnParam;
 pub use act_heartbeat_method::ActHeartbeatMethod;
 pub use act_init_method::ActInitMethod;
