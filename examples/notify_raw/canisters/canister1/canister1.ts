@@ -1,8 +1,8 @@
-import { ic, ok, Principal, Update, Variant } from 'azle';
+import { ic, Principal, RejectionCode, Update, Variant } from 'azle';
 
 type SendNotificationResult = Variant<{
     ok: boolean;
-    err: string;
+    err: RejectionCode;
 }>;
 
 export function send_notification(): Update<SendNotificationResult> {
@@ -13,7 +13,7 @@ export function send_notification(): Update<SendNotificationResult> {
         0n
     );
 
-    if (!ok(result)) {
+    if ('err' in result) {
         return {
             err: result.err
         };
