@@ -46,7 +46,7 @@ impl ToTokenStream for AbstractCanisterTree {
 
         let func_arg_token = data_type_nodes::generate_func_arg_token();
 
-        let canisters = self.external_canisters.to_token_streams();
+        let cross_canister_functions = self.external_canisters.to_token_streams();
 
         let user_defined_code = &self.rust_code;
 
@@ -99,7 +99,7 @@ impl ToTokenStream for AbstractCanisterTree {
             #(#tuples)*
             #(#variants)*
 
-            #(#canisters)*
+            #(#cross_canister_functions)*
 
             #user_defined_code
 
