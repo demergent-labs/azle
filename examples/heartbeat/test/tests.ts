@@ -9,9 +9,9 @@ export function get_tests(heartbeat_canister: ActorSubclass<_SERVICE>): Test[] {
             wait: 5000
         },
         {
-            name: 'getInitialized',
+            name: 'get_initialized',
             test: async () => {
-                const result = await heartbeat_canister.getInitialized();
+                const result = await heartbeat_canister.get_initialized();
 
                 return {
                     ok: result

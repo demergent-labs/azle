@@ -23,14 +23,14 @@ export function init(
     owner = initOwner;
 }
 
-export function getUser(): Query<Opt<User>> {
+export function get_user(): Query<Opt<User>> {
     return user;
 }
 
-export function getReaction(): Query<Opt<Reaction>> {
+export function get_reaction(): Query<Opt<Reaction>> {
     return reaction;
 }
 
-export function getOwner(): Query<Opt<Principal>> {
+export function get_owner(): Query<Opt<Principal>> {
     return owner;
 }
