@@ -10,7 +10,7 @@ pub fn derive_try_into_vm_value_enum(
 
     quote! {
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for #enum_name {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {
                     #(#variant_branches)*,
                 }
@@ -19,9 +19,9 @@ pub fn derive_try_into_vm_value_enum(
 
         // TODO the body of this function is repeated in azle_into_js_value_trait.ts
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<#enum_name> {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 let js_values = self.into_iter().map(|item| item.try_into_vm_value(context).unwrap()).collect::<Vec<boa_engine::JsValue>>();
-                boa_engine::object::JsArray::from_iter(js_values, context).into()
+                Ok(boa_engine::object::JsArray::from_iter(js_values, context).into())
             }
         }
     }
@@ -114,7 +114,7 @@ fn derive_variant_branches_named_fields(
                 )
                 .build();
 
-            object.into()
+            Ok(object.into())
         }
     }
 }
@@ -135,7 +135,7 @@ fn derive_variant_branches_unnamed_fields(
                     )
                     .build();
 
-                object.into()
+                Ok(object.into())
             }
         }
     } else {
@@ -151,7 +151,7 @@ fn derive_variant_branches_unnamed_fields(
                     )
                     .build();
 
-                object.into()
+                Ok(object.into())
             }
         }
     }
