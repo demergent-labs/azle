@@ -5,7 +5,7 @@ pub fn generate_ic_object_function_stable_size() -> proc_macro2::TokenStream {
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            Ok(ic_cdk::api::stable::stable_size().try_into_vm_value(_context))
+            Ok(ic_cdk::api::stable::stable_size().try_into_vm_value(_context).unwrap())
         }
     }
 }

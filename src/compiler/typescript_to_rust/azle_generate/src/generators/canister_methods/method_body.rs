@@ -51,7 +51,7 @@ pub fn generate_call_to_js_function(fn_decl: &AzleFnDecl) -> proc_macro2::TokenS
             _azle_function_js_object.call(
                 &boa_engine::JsValue::Null,
                 &[
-                    #(#param_name_idents.try_into_vm_value(&mut _azle_boa_context)),*
+                    #(#param_name_idents.try_into_vm_value(&mut _azle_boa_context).unwrap()),*
                 ],
                 &mut _azle_boa_context
             ),

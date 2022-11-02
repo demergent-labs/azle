@@ -39,7 +39,7 @@ pub fn generate_ic_object_notify_with_payment128_functions(
                         cycles,
                     );
 
-                    Ok(notify_result.try_into_vm_value(_context))
+                    Ok(notify_result.try_into_vm_value(_context).unwrap())
                 }
             }
         }).collect()

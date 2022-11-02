@@ -20,7 +20,7 @@ pub fn derive_try_into_vm_value_enum(
         // TODO the body of this function is repeated in azle_into_js_value_trait.ts
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<#enum_name> {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                let js_values = self.into_iter().map(|item| item.try_into_vm_value(context)).collect::<Vec<boa_engine::JsValue>>();
+                let js_values = self.into_iter().map(|item| item.try_into_vm_value(context).unwrap()).collect::<Vec<boa_engine::JsValue>>();
                 boa_engine::object::JsArray::from_iter(js_values, context).into()
             }
         }
@@ -79,7 +79,7 @@ fn derive_variant_branches_named_fields(
         let variable_name = format_ident!("{}_js_value", field_name);
 
         quote! {
-            let #variable_name = #field_name.try_into_vm_value(context);
+            let #variable_name = #field_name.try_into_vm_value(context).unwrap();
         }
     });
 
@@ -141,7 +141,7 @@ fn derive_variant_branches_unnamed_fields(
     } else {
         quote! {
             #enum_name::#variant_name(value) => {
-                let js_value = value.try_into_vm_value(context);
+                let js_value = value.try_into_vm_value(context).unwrap();
 
                 let object = boa_engine::object::ObjectInitializer::new(context)
                     .property(

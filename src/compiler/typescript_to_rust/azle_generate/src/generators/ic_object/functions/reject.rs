@@ -7,7 +7,7 @@ pub fn generate_ic_object_function_reject() -> proc_macro2::TokenStream {
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             Ok(
                 ic_cdk::api::call::reject(_aargs.get(0).unwrap().as_string().unwrap())
-                    .try_into_vm_value(_context)
+                    .try_into_vm_value(_context).unwrap()
             )
         }
     }

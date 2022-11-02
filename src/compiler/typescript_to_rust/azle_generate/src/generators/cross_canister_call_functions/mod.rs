@@ -369,7 +369,7 @@ fn generate_notify_rust(
                 (#(#param_names),*#comma)
             );
 
-            Ok(notify_result.try_into_vm_value(_context))
+            Ok(notify_result.try_into_vm_value(_context).unwrap())
         }
     }
 }
@@ -427,7 +427,7 @@ fn generate_notify_with_payment128_rust(
                 cycles
             );
 
-            Ok(notify_result.try_into_vm_value(_context))
+            Ok(notify_result.try_into_vm_value(_context).unwrap())
         }
     }
 }
