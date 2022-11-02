@@ -2,7 +2,7 @@ use swc_common::SourceMap;
 use swc_ecma_ast::TsTupleType;
 
 use super::AzleType;
-use crate::cdk_act::{nodes::data_type_nodes::ActTupleElem, ToActDataType};
+use cdk_framework::{nodes::data_type_nodes::ActTupleElem, ToActDataType};
 
 mod get_dependencies;
 mod get_source_info;

@@ -1,4 +1,4 @@
-use crate::cdk_act::{nodes::ActExternalCanister, ActCanisterMethod};
+use cdk_framework::{nodes::ActExternalCanister, ActCanisterMethod};
 
 mod accept_message;
 mod arg_data_raw;

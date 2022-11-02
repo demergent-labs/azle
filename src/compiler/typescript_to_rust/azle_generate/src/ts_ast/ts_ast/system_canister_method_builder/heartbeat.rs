@@ -1,8 +1,8 @@
 use crate::{
-    cdk_act::{nodes::ActHeartbeatMethod, CanisterMethodType},
     generators::canister_methods::method_body,
     ts_ast::{program::azle_program::AzleProgramVecHelperMethods, ts_ast::errors, TsAst},
 };
+use cdk_framework::{nodes::ActHeartbeatMethod, CanisterMethodType};
 
 pub fn build_canister_method_system_heartbeat(ts_ast: &TsAst) -> Option<ActHeartbeatMethod> {
     let heartbeat_fn_decls = ts_ast

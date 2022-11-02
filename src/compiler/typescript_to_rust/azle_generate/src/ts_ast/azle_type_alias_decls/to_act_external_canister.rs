@@ -1,10 +1,8 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::{TsType, TsTypeElement, TsTypeLit};
 
-use crate::{
-    cdk_act::nodes::{ActExternalCanister, ActExternalCanisterMethod},
-    ts_ast::{azle_method_signature::AzleMethodSignature, AzleTypeAliasDecl, GetName},
-};
+use crate::ts_ast::{azle_method_signature::AzleMethodSignature, AzleTypeAliasDecl, GetName};
+use cdk_framework::nodes::{ActExternalCanister, ActExternalCanisterMethod};
 
 impl AzleTypeAliasDecl<'_> {
     pub fn to_act_external_canister(&self) -> ActExternalCanister {

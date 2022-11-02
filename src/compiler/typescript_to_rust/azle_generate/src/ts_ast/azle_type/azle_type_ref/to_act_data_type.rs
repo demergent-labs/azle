@@ -1,21 +1,19 @@
 use super::AzleTypeRef;
-use crate::{
-    cdk_act::{
-        nodes::data_type_nodes::{
-            act_funcs::{Func, FuncLiteral, FuncTypeAlias},
-            ActFunc, ActOption, ActOptionLiteral, ActOptionTypeAlias, ActPrimitiveLit,
-            LiteralOrTypeAlias,
-        },
-        ActDataType, ToActDataType,
+use crate::ts_ast::{
+    azle_type::AzleType, AzleFnOrConstructorType, FunctionAndMethodTypeHelperMethods,
+    GenerateInlineName, GetName,
+};
+use cdk_framework::{
+    nodes::data_type_nodes::{
+        act_funcs::{Func, FuncLiteral, FuncTypeAlias},
+        ActFunc, ActOption, ActOptionLiteral, ActOptionTypeAlias, ActPrimitiveLit,
+        LiteralOrTypeAlias,
     },
-    ts_ast::{
-        azle_type::AzleType, AzleFnOrConstructorType, FunctionAndMethodTypeHelperMethods,
-        GenerateInlineName, GetName,
-    },
+    ActDataType, ToActDataType,
 };
 
 impl ToActDataType for AzleTypeRef<'_> {
-    fn to_act_data_type(&self, alias_name: &Option<&String>) -> crate::cdk_act::ActDataType {
+    fn to_act_data_type(&self, alias_name: &Option<&String>) -> cdk_framework::ActDataType {
         match self.get_name() {
             "blob" => ActPrimitiveLit::Blob.to_act_data_type(alias_name),
             "float32" => ActPrimitiveLit::Float32.to_act_data_type(alias_name),

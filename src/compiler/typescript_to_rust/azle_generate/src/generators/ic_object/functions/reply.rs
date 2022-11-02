@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 
-use crate::cdk_act::{ActCanisterMethod, ToTokenStream};
+use cdk_framework::{ActCanisterMethod, ToTokenStream};
 
 pub fn generate_ic_object_function_reply(canister_methods: &Vec<ActCanisterMethod>) -> TokenStream {
     let match_arms = generate_match_arms(canister_methods);

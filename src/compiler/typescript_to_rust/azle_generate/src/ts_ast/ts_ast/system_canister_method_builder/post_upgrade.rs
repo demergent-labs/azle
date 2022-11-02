@@ -1,9 +1,11 @@
 use quote::quote;
 
 use crate::{
-    cdk_act::{nodes::ActPostUpgradeMethod, traits::CanisterMethodBuilder, CanisterMethodType},
     generators::canister_methods::method_body,
     ts_ast::{program::azle_program::AzleProgramVecHelperMethods, ts_ast::errors, TsAst},
+};
+use cdk_framework::{
+    nodes::ActPostUpgradeMethod, traits::CanisterMethodBuilder, CanisterMethodType,
 };
 
 pub fn build_canister_method_system_post_upgrade(ts_ast: &TsAst) -> ActPostUpgradeMethod {

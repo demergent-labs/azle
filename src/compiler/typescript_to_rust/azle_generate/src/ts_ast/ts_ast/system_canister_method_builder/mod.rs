@@ -1,4 +1,4 @@
-use crate::cdk_act::{
+use cdk_framework::{
     nodes::{
         ActHeartbeatMethod, ActInitMethod, ActInspectMessageMethod, ActPostUpgradeMethod,
         ActPreUpgradeMethod,

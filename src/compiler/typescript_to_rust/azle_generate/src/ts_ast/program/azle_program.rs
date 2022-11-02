@@ -3,17 +3,15 @@ use std::collections::HashSet;
 use swc_common::SourceMap;
 use swc_ecma_ast::Program;
 
-use crate::{
-    cdk_act::{CanisterMethodType, SystemStructureType},
-    ts_ast::{
-        ast_traits::GetDependencies,
-        azle_type_alias_decls::azle_type_alias_decl::{
-            AzleTypeAliasListHelperMethods, TsTypeAliasHelperMethods,
-        },
-        module::ModuleHelperMethods,
-        AzleFnDecl, AzleTypeAliasDecl,
+use crate::ts_ast::{
+    ast_traits::GetDependencies,
+    azle_type_alias_decls::azle_type_alias_decl::{
+        AzleTypeAliasListHelperMethods, TsTypeAliasHelperMethods,
     },
+    module::ModuleHelperMethods,
+    AzleFnDecl, AzleTypeAliasDecl,
 };
+use cdk_framework::{CanisterMethodType, SystemStructureType};
 
 pub struct AzleProgram {
     pub program: swc_ecma_ast::Program,

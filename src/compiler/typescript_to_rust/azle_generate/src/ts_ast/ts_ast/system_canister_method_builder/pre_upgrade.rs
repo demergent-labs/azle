@@ -1,8 +1,8 @@
 use crate::{
-    cdk_act::{nodes::ActPreUpgradeMethod, CanisterMethodType},
     generators::canister_methods::method_body,
     ts_ast::{program::azle_program::AzleProgramVecHelperMethods, ts_ast::errors, TsAst},
 };
+use cdk_framework::{nodes::ActPreUpgradeMethod, CanisterMethodType};
 use quote::quote;
 
 pub fn build_canister_method_system_pre_upgrade(ts_ast: &TsAst) -> ActPreUpgradeMethod {

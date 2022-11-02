@@ -1,11 +1,11 @@
-use crate::cdk_act::nodes::data_type_nodes::{
-    ActArray, ActArrayLiteral, ActArrayTypeAlias, LiteralOrTypeAlias,
-};
-use crate::cdk_act::{ActDataType, ToActDataType};
 use crate::ts_ast::AzleArrayType;
+use cdk_framework::{
+    nodes::data_type_nodes::{ActArray, ActArrayLiteral, ActArrayTypeAlias, LiteralOrTypeAlias},
+    ActDataType, ToActDataType,
+};
 
 impl ToActDataType for AzleArrayType<'_> {
-    fn to_act_data_type(&self, alias_name: &Option<&String>) -> crate::cdk_act::ActDataType {
+    fn to_act_data_type(&self, alias_name: &Option<&String>) -> cdk_framework::ActDataType {
         let elem_ts_type = self.get_azle_elem();
         let act_elem = elem_ts_type.to_act_data_type(&None);
         match alias_name {

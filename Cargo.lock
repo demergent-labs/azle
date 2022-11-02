@@ -75,6 +75,7 @@ name = "azle_generate"
 version = "0.0.0"
 dependencies = [
  "annotate-snippets",
+ "cdk_framework",
  "derive-syn-parse",
  "proc-macro2",
  "quote",
@@ -98,6 +99,15 @@ name = "bitflags"
 version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
+
+[[package]]
+name = "cdk_framework"
+version = "0.0.0"
+source = "git+https://github.com/demergent-labs/cdk_framework?rev=22c1c88caa290f743291ae88b776261160b61f5b#22c1c88caa290f743291ae88b776261160b61f5b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+]
 
 [[package]]
 name = "cfg-if"

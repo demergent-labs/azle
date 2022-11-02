@@ -1,5 +1,5 @@
 use super::AzleType;
-use crate::cdk_act::{ActDataType, ToActDataType};
+use cdk_framework::{ActDataType, ToActDataType};
 
 impl ToActDataType for AzleType<'_> {
     fn to_act_data_type(&self, alias_name: &Option<&String>) -> ActDataType {

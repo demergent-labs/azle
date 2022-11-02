@@ -1,7 +1,5 @@
-use crate::{
-    cdk_act::{nodes::ActCanisterMethod, traits::CanisterMethodBuilder, RequestType},
-    ts_ast::AzleFnDecl,
-};
+use crate::ts_ast::AzleFnDecl;
+use cdk_framework::{nodes::ActCanisterMethod, traits::CanisterMethodBuilder, RequestType};
 
 pub mod method_body;
 

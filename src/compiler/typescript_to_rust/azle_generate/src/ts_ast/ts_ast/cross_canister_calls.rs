@@ -1,11 +1,11 @@
 use super::TsAst;
 use crate::{
-    cdk_act::{nodes::ActExternalCanister, SystemStructureType},
     generators::cross_canister_call_functions::{
         CrossCanisterCallFunctionsInfo, GenerateCrossCanisterCallFunctionsInfos,
     },
     ts_ast::program::azle_program::AzleProgramVecHelperMethods,
 };
+use cdk_framework::{nodes::ActExternalCanister, SystemStructureType};
 
 impl TsAst {
     pub fn generate_cross_canister_call_functions_infos(
