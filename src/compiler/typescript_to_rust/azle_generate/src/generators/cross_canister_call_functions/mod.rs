@@ -2,10 +2,8 @@ use quote::{format_ident, quote};
 use swc_common::SourceMap;
 use swc_ecma_ast::{Expr, TsFnParam, TsMethodSignature, TsType, TsTypeElement, TsTypeLit};
 
-use crate::{
-    cdk_act::{ToActDataType, ToTokenStream},
-    ts_ast::{azle_type::AzleType, AzleTypeAliasDecl, GetName},
-};
+use crate::ts_ast::{azle_type::AzleType, AzleTypeAliasDecl, GetName};
+use cdk_framework::{ToActDataType, ToTokenStream};
 
 #[derive(Clone)]
 pub struct CrossCanisterCallFunctionsInfo {

@@ -3,10 +3,8 @@ use std::collections::{HashMap, HashSet};
 use swc_common::SourceMap;
 use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
-use crate::{
-    cdk_act::{ActDataType, Actable, SystemStructureType, ToActDataType},
-    ts_ast::{azle_type::AzleType, GetDependencies, GetName, GetTsType},
-};
+use crate::ts_ast::{azle_type::AzleType, GetDependencies, GetName, GetTsType};
+use cdk_framework::{ActDataType, Actable, SystemStructureType, ToActDataType};
 
 use super::AzleCanisterDecl;
 

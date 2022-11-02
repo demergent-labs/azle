@@ -1,12 +1,9 @@
 use super::AzleFnDecl;
-use crate::{
-    cdk_act::{
-        nodes::{ActCanisterMethod, ActFnParam, CanisterMethod},
-        traits::CanisterMethodBuilder,
-        ActDataType, RequestType, ToActDataType,
-    },
-    generators::canister_methods::method_body,
-    ts_ast::azle_type::AzleType,
+use crate::{generators::canister_methods::method_body, ts_ast::azle_type::AzleType};
+use cdk_framework::{
+    nodes::{ActCanisterMethod, ActFnParam, CanisterMethod},
+    traits::CanisterMethodBuilder,
+    ActDataType, RequestType, ToActDataType,
 };
 
 impl<'a> CanisterMethodBuilder for AzleFnDecl<'a> {

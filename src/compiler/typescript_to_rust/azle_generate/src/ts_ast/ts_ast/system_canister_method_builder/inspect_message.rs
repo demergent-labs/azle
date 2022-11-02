@@ -1,8 +1,8 @@
 use crate::{
-    cdk_act::{nodes::ActInspectMessageMethod, CanisterMethodType},
     generators::canister_methods::method_body,
     ts_ast::{program::azle_program::AzleProgramVecHelperMethods, ts_ast::errors, TsAst},
 };
+use cdk_framework::{nodes::ActInspectMessageMethod, CanisterMethodType};
 
 pub fn build_canister_method_system_inspect_message(
     ts_ast: &TsAst,

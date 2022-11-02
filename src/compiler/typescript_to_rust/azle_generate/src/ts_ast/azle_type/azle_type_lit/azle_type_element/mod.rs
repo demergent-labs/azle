@@ -1,7 +1,7 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeElement;
 
-use crate::cdk_act::nodes::data_type_nodes::{ActRecordMember, ActVariantMember};
+use cdk_framework::nodes::data_type_nodes::{ActRecordMember, ActVariantMember};
 
 use self::{
     azle_method_signature::AzleMethodSignature, azle_property_signature::AzlePropertySignature,

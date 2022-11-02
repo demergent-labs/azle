@@ -1,12 +1,10 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsPropertySignature;
 
-use crate::{
-    cdk_act::{
-        nodes::data_type_nodes::{ActRecordMember, ActVariantMember},
-        ActDataType, ToActDataType,
-    },
-    ts_ast::{ast_traits::GetTsType, azle_type::AzleType, GetName},
+use crate::ts_ast::{ast_traits::GetTsType, azle_type::AzleType, GetName};
+use cdk_framework::{
+    nodes::data_type_nodes::{ActRecordMember, ActVariantMember},
+    ActDataType, ToActDataType,
 };
 
 mod errors;

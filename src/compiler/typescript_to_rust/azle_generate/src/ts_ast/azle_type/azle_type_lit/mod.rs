@@ -1,16 +1,14 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeLit;
 
-use crate::{
-    cdk_act::{
-        nodes::data_type_nodes::{
-            act_record::{Record, RecordLiteral, RecordTypeAlias},
-            act_variants::{Variant, VariantLiteral, VariantTypeAlias},
-            ActRecord, ActRecordMember, ActVariant, ActVariantMember, LiteralOrTypeAlias,
-        },
-        ActDataType,
+use crate::ts_ast::ast_traits::generate_inline_name::GenerateInlineName;
+use cdk_framework::{
+    nodes::data_type_nodes::{
+        act_record::{Record, RecordLiteral, RecordTypeAlias},
+        act_variants::{Variant, VariantLiteral, VariantTypeAlias},
+        ActRecord, ActRecordMember, ActVariant, ActVariantMember, LiteralOrTypeAlias,
     },
-    ts_ast::ast_traits::generate_inline_name::GenerateInlineName,
+    ActDataType,
 };
 
 pub use azle_type_element::AzleTypeElement;

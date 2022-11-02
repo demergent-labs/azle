@@ -1,11 +1,11 @@
+use cdk_framework::{
+    self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
+    ActCanisterMethod, ActDataType, CanisterMethodType, RequestType, ToAct,
+};
 use quote::quote;
 
 use super::TsAst;
 use crate::{
-    cdk_act::{
-        self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
-        ActCanisterMethod, ActDataType, CanisterMethodType, RequestType, ToAct,
-    },
     generators::{canister_methods, errors, ic_object::functions, stacktrace, vm_value_conversion},
     ts_ast::{
         azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods,
@@ -36,11 +36,11 @@ impl ToAct for TsAst {
         );
 
         let query_method_type_acts =
-            cdk_act::nodes::act_canister_method::get_all_types_from_canister_method_acts(
+            cdk_framework::nodes::act_canister_method::get_all_types_from_canister_method_acts(
                 &query_methods,
             );
         let update_method_type_acts =
-            cdk_act::nodes::act_canister_method::get_all_types_from_canister_method_acts(
+            cdk_framework::nodes::act_canister_method::get_all_types_from_canister_method_acts(
                 &update_methods,
             );
 

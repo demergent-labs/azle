@@ -2,12 +2,10 @@ use annotate_snippets::{
     display_list::{DisplayList, FormatOptions},
     snippet::{Annotation, AnnotationType, Slice, Snippet, SourceAnnotation},
 };
+use cdk_framework::CanisterMethodType;
 use swc_common::{source_map::Pos, Span};
 
-use crate::{
-    cdk_act::CanisterMethodType,
-    ts_ast::{source_map::GetSourceFileInfo, AzleFnDecl},
-};
+use crate::ts_ast::{source_map::GetSourceFileInfo, AzleFnDecl};
 
 pub fn create_duplicate_method_types_error_message(
     azle_fn_decls: Vec<AzleFnDecl>,

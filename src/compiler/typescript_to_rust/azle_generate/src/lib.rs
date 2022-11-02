@@ -1,12 +1,8 @@
+use cdk_framework::{ToAct, ToTokenStream};
 use quote::quote;
 
-use crate::{
-    cdk_act::{ToAct, ToTokenStream},
-    generators::header,
-    ts_ast::TsAst,
-};
+use crate::{generators::header, ts_ast::TsAst};
 
-mod cdk_act;
 mod errors;
 mod generators;
 mod ts_ast;

@@ -1,12 +1,10 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::{Expr, TsFnParam, TsMethodSignature};
 
-use crate::{
-    cdk_act::{
-        nodes::{ActExternalCanisterMethod, ActFnParam},
-        ActDataType, ToActDataType,
-    },
-    ts_ast::{azle_type::AzleType, GetName},
+use crate::ts_ast::{azle_type::AzleType, GetName};
+use cdk_framework::{
+    nodes::{ActExternalCanisterMethod, ActFnParam},
+    ActDataType, ToActDataType,
 };
 
 #[derive(Clone)]
