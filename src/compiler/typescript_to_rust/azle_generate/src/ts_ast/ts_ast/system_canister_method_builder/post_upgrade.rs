@@ -57,7 +57,7 @@ pub fn build_canister_method_system_post_upgrade(ts_ast: &TsAst) -> ActPostUpgra
             let _azle_stable_storage = handle_boa_result(_azle_stable_storage_deserialize_function_js_object.call(
                 &boa_engine::JsValue::Null,
                 &[
-                    _azle_stable_storage_json_string.try_into_vm_value(&mut _azle_boa_context)
+                    _azle_stable_storage_json_string.try_into_vm_value(&mut _azle_boa_context).unwrap()
                 ],
                 &mut _azle_boa_context
             ), &mut _azle_boa_context);

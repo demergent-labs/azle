@@ -11,22 +11,22 @@ pub fn derive_try_into_vm_value_struct(
 
     quote! {
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for #struct_name {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 #(#variable_definitions)*
 
                 let object = boa_engine::object::ObjectInitializer::new(context)
                     #(#property_definitions)*
                     .build();
 
-                object.into()
+                Ok(object.into())
             }
         }
 
         // TODO the body of this function is repeated in azle_into_js_value_trait.ts
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<#struct_name> {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
-                let js_values = self.into_iter().map(|item| item.try_into_vm_value(context)).collect::<Vec<boa_engine::JsValue>>();
-                boa_engine::object::JsArray::from_iter(js_values, context).into()
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+                let js_values = self.into_iter().map(|item| item.try_into_vm_value(context).unwrap()).collect::<Vec<boa_engine::JsValue>>();
+                Ok(boa_engine::object::JsArray::from_iter(js_values, context).into())
             }
         }
     }
@@ -43,7 +43,7 @@ fn derive_struct_fields_variable_definitions(
                 let field_name = &field.ident;
 
                 quote! {
-                    let #field_name = self.#field_name.try_into_vm_value(context);
+                    let #field_name = self.#field_name.try_into_vm_value(context).unwrap();
                 }
             })
             .collect(),
@@ -56,7 +56,7 @@ fn derive_struct_fields_variable_definitions(
                 let syn_index = Index::from(index);
 
                 quote! {
-                    let #field_name = self.#syn_index.try_into_vm_value(context);
+                    let #field_name = self.#syn_index.try_into_vm_value(context).unwrap();
                 }
             })
             .collect(),
