@@ -16,15 +16,24 @@ export function transfer(
     to: string,
     amount: nat64
 ): Update<nat64> {
-    const fromBalance: nat64 = state.accounts[from]?.balance ?? 0n;
+    const from_account: Account | undefined = state.accounts[from];
 
-    if (fromBalance < amount) {
+    if (from_account === undefined) {
+        state.accounts[from] = {
+            id: from,
+            balance: 0n
+        };
+    }
+
+    const from_balance = state.accounts[from].balance;
+
+    if (from_balance < amount) {
         return 0n;
     }
 
-    const toBalance: nat64 | undefined = state.accounts[to]?.balance;
+    const to_balance: nat64 | undefined = state.accounts[to]?.balance;
 
-    if (toBalance === undefined) {
+    if (to_balance === undefined) {
         state.accounts[to] = {
             id: to,
             balance: 0n

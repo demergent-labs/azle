@@ -129,7 +129,7 @@ type ic = {
         method: string,
         args_raw: blob,
         payment: nat
-    ) => NotifyRawResult;
+    ) => NotifyResult;
     performance_counter: (counter_type: nat32) => nat64;
     print: (...args: any) => void;
     reject: (message: string) => void;
@@ -195,12 +195,12 @@ export type Opt<T> = T | null;
 export type CanisterResult<T> = {
     ok?: T;
     err?: string;
-    notify: () => CanisterResult<null>;
+    notify: () => NotifyResult;
     with_cycles: (cycles: nat64) => CanisterResult<T>;
     with_cycles128: (cycles: nat) => CanisterResult<T>;
 };
 
-export type NotifyRawResult = Variant<{
+export type NotifyResult = Variant<{
     ok: null;
     err: RejectionCode;
 }>;

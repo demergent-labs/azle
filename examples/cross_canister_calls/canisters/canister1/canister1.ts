@@ -1,4 +1,4 @@
-import { Update, ic, nat64, Opt, Principal, Variant } from 'azle';
+import { Update, ic, nat64, NotifyResult, Opt, Principal, Variant } from 'azle';
 import { Account, AccountArgs, Canister2 } from '../canister2/types';
 
 type TransferResult = Variant<{
@@ -23,11 +23,6 @@ type AccountsResult = Variant<{
 
 type TrapResult = Variant<{
     ok: string;
-    err: string;
-}>;
-
-type NotifyResult = Variant<{
-    ok: null;
     err: string;
 }>;
 
