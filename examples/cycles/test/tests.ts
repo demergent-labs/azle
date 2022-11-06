@@ -23,13 +23,13 @@ export function get_tests(
 
                 return {
                     ok:
-                        intermediary_canister_result > 3_000_000_000_000n &&
+                        intermediary_canister_result > 2_500_000_000_000n &&
                         intermediary_canister_result < 4_000_000_000_000n &&
-                        cycles_canister_result > 3_000_000_000_000n &&
+                        cycles_canister_result > 2_500_000_000_000n &&
                         cycles_canister_result < 4_000_000_000_000n &&
-                        intermediary_canister128_result > 3_000_000_000_000n &&
+                        intermediary_canister128_result > 2_500_000_000_000n &&
                         intermediary_canister128_result < 4_000_000_000_000n &&
-                        cycles_canister128_result > 3_000_000_000_000n &&
+                        cycles_canister128_result > 2_500_000_000_000n &&
                         cycles_canister128_result < 4_000_000_000_000n
                 };
             }
