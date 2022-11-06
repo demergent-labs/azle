@@ -1,9 +1,9 @@
 export const idlFactory = ({ IDL }) => {
     return IDL.Service({
-        getCanisterBalance: IDL.Func([], [IDL.Nat64], ['query']),
-        getCanisterBalance128: IDL.Func([], [IDL.Nat], ['query']),
-        receiveCycles: IDL.Func([], [IDL.Nat64], []),
-        receiveCycles128: IDL.Func([], [IDL.Nat], [])
+        get_canister_balance: IDL.Func([], [IDL.Nat64], ['query']),
+        get_canister_balance128: IDL.Func([], [IDL.Nat], ['query']),
+        receive_cycles: IDL.Func([], [IDL.Nat64], []),
+        receive_cycles128: IDL.Func([], [IDL.Nat], [])
     });
 };
 export const init = ({ IDL }) => {

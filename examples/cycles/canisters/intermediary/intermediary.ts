@@ -1,14 +1,15 @@
-import { cycles } from '../cycles';
 import {
     CanisterResult,
     ic,
     nat,
     nat64,
+    NotifyResult,
     ok,
     Query,
     Update,
     Variant
 } from 'azle';
+import { cycles } from '../cycles';
 
 type SendCyclesResult = Variant<{
     ok: nat64;
@@ -20,15 +21,10 @@ type SendCyclesResult128 = Variant<{
     err: string;
 }>;
 
-type NotifyResult = Variant<{
-    ok: null;
-    err: string;
-}>;
-
 // Reports the number of cycles returned from the Cycles canister
-export function* sendCycles(): Update<SendCyclesResult> {
+export function* send_cycles(): Update<SendCyclesResult> {
     const result: CanisterResult<nat64> = yield cycles
-        .receiveCycles()
+        .receive_cycles()
         .with_cycles(1_000_000n);
 
     if (!ok(result)) {
@@ -40,14 +36,14 @@ export function* sendCycles(): Update<SendCyclesResult> {
     };
 }
 
-export function sendCyclesNotify(): Update<NotifyResult> {
-    return cycles.receiveCycles().with_cycles(1_000_000n).notify();
+export function send_cycles_notify(): Update<NotifyResult> {
+    return cycles.receive_cycles().with_cycles(1_000_000n).notify();
 }
 
 // Reports the number of cycles returned from the Cycles canister
-export function* sendCycles128(): Update<SendCyclesResult128> {
+export function* send_cycles128(): Update<SendCyclesResult128> {
     const result: CanisterResult<nat> = yield cycles
-        .receiveCycles128()
+        .receive_cycles128()
         .with_cycles128(1_000_000n);
 
     if (!ok(result)) {
@@ -59,14 +55,14 @@ export function* sendCycles128(): Update<SendCyclesResult128> {
     };
 }
 
-export function sendCycles128Notify(): Update<NotifyResult> {
-    return cycles.receiveCycles128().with_cycles128(1_000_000n).notify();
+export function send_cycles128_notify(): Update<NotifyResult> {
+    return cycles.receive_cycles128().with_cycles128(1_000_000n).notify();
 }
 
-export function getCanisterBalance(): Query<nat64> {
+export function get_canister_balance(): Query<nat64> {
     return ic.canister_balance();
 }
 
-export function getCanisterBalance128(): Query<nat> {
+export function get_canister_balance128(): Query<nat> {
     return ic.canister_balance128();
 }

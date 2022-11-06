@@ -1,6 +1,6 @@
 service : () -> {
-  getCanisterBalance : () -> (nat64) query;
-  getCanisterBalance128 : () -> (nat) query;
-  receiveCycles : () -> (nat64);
-  receiveCycles128 : () -> (nat);
+  get_canister_balance : () -> (nat64) query;
+  get_canister_balance128 : () -> (nat) query;
+  receive_cycles : () -> (nat64);
+  receive_cycles128 : () -> (nat);
 }
