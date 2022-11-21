@@ -1,9 +1,5 @@
-type Entry = record {
-    "key": text;
-    "value": nat64;
-};
-
-service: () -> {
-    "getEntries": () -> (vec Entry) query;
-    "setEntry": (Entry) -> ();
+type Entry = record { key : text; value : nat64 };
+service : () -> {
+  get_entries : () -> (vec Entry) query;
+  set_entry : (Entry) -> ();
 }

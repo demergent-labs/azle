@@ -43,10 +43,9 @@ type StableStorage = {
     counter: nat;
 };
 
-let stable_storage: StableStorage = {
-    ...ic.stable_storage(),
-    counter: 0n
-};
+let stable_storage: StableStorage = ic.stable_storage();
+
+stable_storage.counter = 0n;
 
 function isGzip(x: HeaderField): boolean {
     return (
