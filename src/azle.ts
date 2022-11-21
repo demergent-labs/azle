@@ -391,7 +391,7 @@ function runAzleGenerate(
     );
 
     const suggestion =
-        'If you are unable to decipher the error above, reach out in the #typescript\nchannel of the DFINITY DEV OFFICIAL discord: https://discord.gg/zuUEzSf4mV';
+        'If you are unable to decipher the error above, reach out in the #typescript\nchannel of the DFINITY DEV OFFICIAL discord:\nhttps://discord.com/channels/748416164832608337/956466775380336680';
 
     if (executionResult.error) {
         const exitCode = executionResult.error.errno ?? 13;
