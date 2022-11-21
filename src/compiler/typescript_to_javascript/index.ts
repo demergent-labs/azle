@@ -156,6 +156,8 @@ function generateICCanistersFromTypeAliasDeclarations(
 function generateICCanisterFromTypeAliasDeclaration(
     typeAliasDeclaration: tsc.TypeAliasDeclaration
 ): JavaScript {
+    const canisterName = typeAliasDeclaration.name.escapedText;
+
     if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TypeReference) {
         throw new Error('This cannot happen');
     }
@@ -163,13 +165,23 @@ function generateICCanisterFromTypeAliasDeclaration(
     const typeRefenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
     if (typeRefenceNode.typeArguments === undefined) {
-        throw new Error('This cannot happen');
+        throw new Error(
+            `Generic type "Canister" in type alias "${canisterName}" requires one type argument.\nHelp: Specify a type argument. E.g. Canister<string>.`
+        );
+    }
+
+    if (typeRefenceNode.typeArguments.length > 1) {
+        throw new Error(
+            `Generic type "Canister" in type alias "${canisterName}" requires one type argument.\nHelp: Remove all but one type argument.`
+        );
     }
 
     const firstTypeArgument = typeRefenceNode.typeArguments[0];
 
     if (firstTypeArgument.kind !== tsc.SyntaxKind.TypeLiteral) {
-        throw new Error('This cannot happen');
+        throw new Error(
+            `Generic type "Canister" in type alias "${canisterName}" currently requires a type literal as an argument.\nHelp: Define your canister shape inline. E.g. Canister<{method(): CanisterResult<string>}>`
+        );
     }
 
     const typeLiteralNode = firstTypeArgument as tsc.TypeLiteralNode;
