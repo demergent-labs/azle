@@ -1,40 +1,47 @@
-type Child = record { id : text };
-type User = record { id : text; children : vec Child };
-service : () -> {
-  readStableBlob : () -> (vec nat8) query;
-  readStableBlobs : () -> (vec vec nat8) query;
-  readStableFloat32 : () -> (float32) query;
-  readStableFloat64 : () -> (float64) query;
-  readStableInt : () -> (int) query;
-  readStableInt16 : () -> (int16) query;
-  readStableInt32 : () -> (int32) query;
-  readStableInt64 : () -> (int64) query;
-  readStableInt8 : () -> (int8) query;
-  readStableInts : () -> (vec int) query;
-  readStableNat : () -> (nat) query;
-  readStableNat16 : () -> (nat16) query;
-  readStableNat32 : () -> (nat32) query;
-  readStableNat64 : () -> (nat64) query;
-  readStableNat8 : () -> (nat8) query;
-  readStablePrincipal : () -> (principal) query;
-  readStableString : () -> (text) query;
-  readStableUser : () -> (User) query;
-  writeStableBlob : (vec nat8) -> ();
-  writeStableBlobs : (vec vec nat8) -> ();
-  writeStableFloat32 : (float32) -> ();
-  writeStableFloat64 : (float64) -> ();
-  writeStableInt : (int) -> ();
-  writeStableInt16 : (int16) -> ();
-  writeStableInt32 : (int32) -> ();
-  writeStableInt64 : (int64) -> ();
-  writeStableInt8 : (int8) -> ();
-  writeStableInts : (vec int) -> ();
-  writeStableNat : (nat) -> ();
-  writeStableNat16 : (nat16) -> ();
-  writeStableNat32 : (nat32) -> ();
-  writeStableNat64 : (nat64) -> ();
-  writeStableNat8 : (nat8) -> ();
-  writeStablePrincipal : (principal) -> ();
-  writeStableString : (text) -> ();
-  writeStableUser : (User) -> ();
+type User = record {
+    "id": text;
+    "children": vec Child;
+};
+
+type Child = record {
+    "id": text;
+};
+
+service: () -> {
+    "read_stable_blob": () -> (blob) query;
+    "read_stable_blobs": () -> (vec blob) query;
+    "read_stable_int": () -> (int) query;
+    "read_stable_ints": () -> (vec int) query;
+    "read_stable_int64": () -> (int64) query;
+    "read_stable_int32": () -> (int32) query;
+    "read_stable_int16": () -> (int16) query;
+    "read_stable_int8": () -> (int8) query;
+    "read_stable_nat": () -> (nat) query;
+    "read_stable_nat64": () -> (nat64) query;
+    "read_stable_nat32": () -> (nat32) query;
+    "read_stable_nat16": () -> (nat16) query;
+    "read_stable_nat8": () -> (nat8) query;
+    "read_stable_float64": () -> (float64) query;
+    "read_stable_float32": () -> (float32) query;
+    "read_stable_string": () -> (text) query;
+    "read_stable_principal": () -> (principal) query;
+    "read_stable_user": () -> (User) query;
+    "write_stable_blob": (blob) -> ();
+    "write_stable_blobs": (vec blob) -> ();
+    "write_stable_int": (int) -> ();
+    "write_stable_ints": (vec int) -> ();
+    "write_stable_int64": (int64) -> ();
+    "write_stable_int32": (int32) -> ();
+    "write_stable_int16": (int16) -> ();
+    "write_stable_int8": (int8) -> ();
+    "write_stable_nat": (nat) -> ();
+    "write_stable_nat64": (nat64) -> ();
+    "write_stable_nat32": (nat32) -> ();
+    "write_stable_nat16": (nat16) -> ();
+    "write_stable_nat8": (nat8) -> ();
+    "write_stable_float64": (float64) -> ();
+    "write_stable_float32": (float32) -> ();
+    "write_stable_string": (text) -> ();
+    "write_stable_principal": (principal) -> ();
+    "write_stable_user": (User) -> ();
 }

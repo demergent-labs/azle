@@ -37,9 +37,12 @@ pub fn build_canister_method_system_pre_upgrade(ts_ast: &TsAst) -> ActPreUpgrade
                 &mut _azle_boa_context
             );
             let _azle_stable_storage_json_string: String = _azle_stable_storage_boa_return_value.try_from_vm_value(_azle_boa_context).unwrap();
-            let _azle_stable_storage = (_azle_stable_storage_json_string,);
 
-            ic_cdk::storage::stable_save(_azle_stable_storage);
+            if _azle_stable_storage_json_string != "AZLE_STABLE_STORAGE_NOT_INITIALIZED" {
+                let _azle_stable_storage = (_azle_stable_storage_json_string,);
+
+                ic_cdk::storage::stable_save(_azle_stable_storage);
+            }
         }
     };
 

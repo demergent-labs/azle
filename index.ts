@@ -24,6 +24,7 @@ export const ic: ic = globalThis.ic ?? {};
 // };
 
 ic.stable_storage = function () {
+    (ic as any)._azle_stable_storage._azle_initialized = true;
     return (ic as any)._azle_stable_storage;
 };
 
@@ -205,8 +206,6 @@ export type NotifyResult = Variant<{
     err: RejectionCode;
 }>;
 
-export type Stable<T> = T; // TODO let's remove this
-
 export type int = bigint;
 export type int64 = bigint;
 export type int32 = number;
@@ -285,35 +284,37 @@ export type Stable64GrowResult = Variant<{
     err: StableMemoryError;
 }>;
 
-export function stable_storage_serialize<T>(stable_storage: Stable<T>): string {
-    return JSON.stringify(stable_storage, (_, value) => {
-        if (typeof value === 'bigint') {
-            return `AZLE::BigInt::${value}`;
-        }
+export function stable_storage_serialize<T>(stable_storage: T): string {
+    if ((stable_storage as any)._azle_initialized === true) {
+        return JSON.stringify(stable_storage, (_, value) => {
+            if (typeof value === 'bigint') {
+                return `AZLE::BigInt::${value}`;
+            }
 
-        if (typeof value === 'undefined') {
-            return `AZLE::Undefined`;
-        }
+            if (typeof value === 'undefined') {
+                return `AZLE::Undefined`;
+            }
 
-        // TODO we should open an issue with Boa, instanceof doesn't work
-        if (value?._isPrincipal === true) {
-            return `AZLE::Principal::${value.toHex()}`;
-        }
+            // TODO we should open an issue with Boa, instanceof doesn't work
+            if (value?._isPrincipal === true) {
+                return `AZLE::Principal::${value.toHex()}`;
+            }
 
-        // TODO we should open an issue with Boa, instanceof doesn't work
-        if (value?.constructor?.name === 'Uint8Array') {
-            return `AZLE::Uint8Array::${[...value]
-                .map((uint8) => uint8.toString(16).padStart(2, '0'))
-                .join('')}`;
-        }
+            // TODO we should open an issue with Boa, instanceof doesn't work
+            if (value?.constructor?.name === 'Uint8Array') {
+                return `AZLE::Uint8Array::${[...value]
+                    .map((uint8) => uint8.toString(16).padStart(2, '0'))
+                    .join('')}`;
+            }
 
-        return value;
-    });
+            return value;
+        });
+    } else {
+        return 'AZLE_STABLE_STORAGE_NOT_INITIALIZED';
+    }
 }
 
-export function stable_storage_deserialize<T>(
-    stable_storage: string
-): Stable<T> {
+export function stable_storage_deserialize<T>(stable_storage: string): T {
     return JSON.parse(stable_storage, (_, value) => {
         if (typeof value === 'string') {
             if (value.startsWith('AZLE::BigInt::')) {

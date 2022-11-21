@@ -7,15 +7,14 @@ import {
     ok,
     Principal,
     Query,
-    Stable,
     Update,
     Variant
 } from 'azle';
 import { Notifier, NotifierFunc } from '../notifiers/types';
 
-type StableStorage = Stable<{
+type StableStorage = {
     stable_func: StableFunc;
-}>;
+};
 
 let stable_storage: StableStorage = ic.stable_storage();
 

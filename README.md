@@ -483,7 +483,6 @@ Please note that these types are only needed in specific locations in your code,
 
 -   `Query`, `Update`, `Init`, and `PostUpgrade` method parameters and return types
 -   `Canister` method declaration parameters and return types
--   `Stable` variable declaration types
 
 Basically, you only need to write in TypeScript and use the Azle types when Candid serialization or deserialization is necessary. You could write the rest of your application in plain JavaScript if you'd like.
 
@@ -2155,16 +2154,16 @@ Examples:
 -   [tuple_types](/examples/tuple_types)
 
 ```typescript
-import { Init, nat, Stable, Update } from 'azle';
+import { Init, nat, Update } from 'azle';
 
-type StableStorage = Stable<{
+type StableStorage = {
     stable_nat: nat;
-}>;
+};
 
 let stable_storage: StableStorage = ic.stable_storage();
 
-export function init(_stable_nat: nat): Init {
-    stable_storage.stable_nat = _stable_nat;
+export function init(stable_nat: nat): Init {
+    stable_storage.stable_nat = stable_nat;
 }
 ```
 

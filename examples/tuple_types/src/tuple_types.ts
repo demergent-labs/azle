@@ -4,8 +4,7 @@ import {
     Principal,
     Variant,
     Canister,
-    CanisterResult,
-    Stable
+    CanisterResult
 } from 'azle';
 
 // TODO maybe we should write tests for canister and stable storage?
@@ -15,14 +14,6 @@ type CanisterTuple2 = [string, CanisterTuple1];
 
 type TestCanister = Canister<{
     test(param: CanisterTuple1): CanisterResult<CanisterTuple2>;
-}>;
-
-type StableTuple1 = [string, nat64];
-type StableTuple2 = [string, CanisterTuple1];
-
-type StableStorage = Stable<{
-    stable_tuple_1: StableTuple1;
-    stable_tuple_2: StableTuple2;
 }>;
 
 type User = {

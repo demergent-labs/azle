@@ -1,17 +1,8 @@
-import {
-    Query,
-    Update,
-    Stable,
-    Init,
-    PreUpgrade,
-    PostUpgrade,
-    ic,
-    nat64
-} from 'azle';
+import { Query, Update, Init, PreUpgrade, PostUpgrade, ic, nat64 } from 'azle';
 
-type StableStorage = Stable<{
+type StableStorage = {
     entries: Entry[];
-}>;
+};
 
 type Entry = {
     key: string;

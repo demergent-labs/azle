@@ -1,22 +1,13 @@
-import {
-    CanisterResult,
-    ic,
-    Init,
-    nat32,
-    ok,
-    Query,
-    Stable,
-    Update
-} from 'azle';
+import { CanisterResult, ic, Init, nat32, ok, Query, Update } from 'azle';
 import { HttpResponse, ManagementCanister } from 'azle/canisters/management';
 import decodeUtf8 from 'decode-utf8';
 import encodeUtf8 from 'encode-utf8';
 
 type JSON = string;
 
-type StableStorage = Stable<{
+type StableStorage = {
     ethereum_url: string;
-}>;
+};
 
 let stable_storage: StableStorage = ic.stable_storage();
 
