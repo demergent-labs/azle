@@ -28,7 +28,7 @@ export function* execute_create_canister(): Update<ExecuteCreateCanisterResult> 
     const create_canister_result_canister_result: CanisterResult<CreateCanisterResult> =
         yield ManagementCanister.create_canister({
             settings: null
-        }).with_cycles(1_000_000_000_000n);
+        }).with_cycles(50_000_000_000_000n);
 
     if (!ok(create_canister_result_canister_result)) {
         return {
