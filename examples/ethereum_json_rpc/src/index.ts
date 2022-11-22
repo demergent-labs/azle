@@ -1,5 +1,9 @@
 import { CanisterResult, ic, Init, nat32, ok, Query, Update } from 'azle';
-import { HttpResponse, ManagementCanister } from 'azle/canisters/management';
+import {
+    HttpResponse,
+    HttpTransformArgs,
+    ManagementCanister
+} from 'azle/canisters/management';
 import decodeUtf8 from 'decode-utf8';
 import encodeUtf8 from 'encode-utf8';
 
@@ -28,8 +32,8 @@ export function* eth_get_balance(ethereum_address: string): Update<JSON> {
         yield ManagementCanister.http_request({
             url: stable_storage.ethereum_url,
             max_response_bytes,
-            http_method: {
-                POST: null
+            method: {
+                post: null
             },
             headers: [],
             body: new Uint8Array(
@@ -42,7 +46,10 @@ export function* eth_get_balance(ethereum_address: string): Update<JSON> {
                     })
                 )
             ),
-            transform_method_name: 'eth_block_number_transform'
+            transform: {
+                function: [ic.id(), 'eth_transform'],
+                context: Uint8Array.from([])
+            }
         }).with_cycles(cycle_cost_total);
 
     if (!ok(http_result)) {
@@ -65,8 +72,8 @@ export function* eth_get_block_by_number(number: nat32): Update<JSON> {
         yield ManagementCanister.http_request({
             url: stable_storage.ethereum_url,
             max_response_bytes,
-            http_method: {
-                POST: null
+            method: {
+                post: null
             },
             headers: [],
             body: new Uint8Array(
@@ -79,7 +86,10 @@ export function* eth_get_block_by_number(number: nat32): Update<JSON> {
                     })
                 )
             ),
-            transform_method_name: 'eth_block_number_transform'
+            transform: {
+                function: [ic.id(), 'eth_transform'],
+                context: Uint8Array.from([])
+            }
         }).with_cycles(cycle_cost_total);
 
     if (!ok(http_result)) {
@@ -89,11 +99,9 @@ export function* eth_get_block_by_number(number: nat32): Update<JSON> {
     return decodeUtf8(Uint8Array.from(http_result.ok.body));
 }
 
-export function eth_block_number_transform(
-    http_response: HttpResponse
-): Query<HttpResponse> {
+export function eth_transform(args: HttpTransformArgs): Query<HttpResponse> {
     return {
-        ...http_response,
+        ...args.response,
         headers: []
     };
 }

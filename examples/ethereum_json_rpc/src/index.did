@@ -1,11 +1,12 @@
 type HttpHeader = record { value : text; name : text };
 type HttpResponse = record {
-  status : nat64;
+  status : nat;
   body : vec nat8;
   headers : vec HttpHeader;
 };
+type HttpTransformArgs = record { context : vec nat8; response : HttpResponse };
 service : (text) -> {
-  eth_block_number_transform : (HttpResponse) -> (HttpResponse) query;
   eth_get_balance : (text) -> (text);
   eth_get_block_by_number : (nat32) -> (text);
+  eth_transform : (HttpTransformArgs) -> (HttpResponse) query;
 }
