@@ -3,7 +3,7 @@
         "token": {
             "build": "cargo build --target wasm32-unknown-unknown --release",
             "candid": "token.did",
-            "wasm": "target/wasm32-unknown-unknown/release/token.wasm",
+            "wasm": "target/wasm32-unknown-unknown/release/token.wasm.gz",
             "type": "custom"
         }
     },

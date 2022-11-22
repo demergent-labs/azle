@@ -10,7 +10,7 @@
             "root": "src/defi",
             "ts": "src/defi/src/main.ts",
             "candid": "src/defi/src/defi.did",
-            "wasm": "target/wasm32-unknown-unknown/release/defi.wasm"
+            "wasm": "target/wasm32-unknown-unknown/release/defi.wasm.gz"
         },
         "ledger": {
             "type": "custom",

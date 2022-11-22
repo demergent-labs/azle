@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "src/inline_types.ts",
             "candid": "src/inline_types.did",
-            "wasm": "target/wasm32-unknown-unknown/release/inline_types.wasm",
+            "wasm": "target/wasm32-unknown-unknown/release/inline_types.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/inline_types"
             }

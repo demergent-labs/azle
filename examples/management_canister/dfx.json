@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "src/management_canister.ts",
             "candid": "src/management_canister.did",
-            "wasm": "target/wasm32-unknown-unknown/release/management_canister.wasm",
+            "wasm": "target/wasm32-unknown-unknown/release/management_canister.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/management_canister"
             }

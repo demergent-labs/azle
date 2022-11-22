@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "src/basic_dao.ts",
             "candid": "src/basic_dao.did",
-            "wasm": "target/wasm32-unknown-unknown/release/basic_dao.wasm",
+            "wasm": "target/wasm32-unknown-unknown/release/basic_dao.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/basic_dao"
             }

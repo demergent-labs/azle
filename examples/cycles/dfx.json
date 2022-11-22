@@ -6,7 +6,7 @@
             "root": "canisters/cycles",
             "ts": "canisters/cycles/cycles.ts",
             "candid": "canisters/cycles/cycles.did",
-            "wasm": "target/wasm32-unknown-unknown/release/cycles.wasm",
+            "wasm": "target/wasm32-unknown-unknown/release/cycles.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/cycles"
             }
@@ -17,7 +17,7 @@
             "root": "canisters/intermediary",
             "ts": "canisters/intermediary/intermediary.ts",
             "candid": "canisters/intermediary/intermediary.did",
-            "wasm": "target/wasm32-unknown-unknown/release/intermediary.wasm",
+            "wasm": "target/wasm32-unknown-unknown/release/intermediary.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/intermediary"
             }

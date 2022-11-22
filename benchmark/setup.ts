@@ -33,12 +33,9 @@ export async function run_setup(argument?: string) {
 
     const arg_flag = argument === undefined ? '' : `--argument ${argument}`;
 
-    execSync(
-        `dfx canister install azle ${arg_flag} --wasm target/wasm32-unknown-unknown/release/azle.wasm.gz`,
-        {
-            stdio: 'inherit'
-        }
-    );
+    execSync(`dfx deploy azle ${arg_flag}`, {
+        stdio: 'inherit'
+    });
 
     execSync(`dfx deploy motoko ${arg_flag}`, {
         stdio: 'inherit'

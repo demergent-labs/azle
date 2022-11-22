@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "src/optional_types.ts",
             "candid": "src/optional_types.did",
-            "wasm": "target/wasm32-unknown-unknown/release/optional_types.wasm",
+            "wasm": "target/wasm32-unknown-unknown/release/optional_types.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/optional_types"
             }

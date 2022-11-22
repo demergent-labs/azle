@@ -78,7 +78,7 @@ export function get_tests(whoami_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'redeploy',
             prep: async () => {
                 execSync(
-                    `dfx canister install --mode upgrade --upgrade-unchanged --argument '(principal "${callingPrincipal}")' azle --wasm target/wasm32-unknown-unknown/release/azle.wasm.gz`,
+                    `dfx deploy azle --argument '(principal "${callingPrincipal}")'`,
                     {
                         stdio: 'inherit'
                     }
