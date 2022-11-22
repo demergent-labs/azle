@@ -33,7 +33,7 @@ jobs:
             - uses: actions/setup-node@v3
               with:
                   node-version: 18
-            - run: DFX_VERSION=0.11.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+            - run: DFX_VERSION=0.12.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
             - name: Install Rust ${{ matrix.rust }}
               uses: actions-rs/toolchain@v1
               with:
@@ -52,7 +52,7 @@ jobs:
             - shell: bash -l {0}
               run: npm link
             - working-directory: ${{ matrix.benchmark_directories }}
-              run: dfx start --clean --background
+              run: dfx start --clean --background --host 127.0.0.1:8000
             - shell: bash -l {0}
               working-directory: ${{ matrix.benchmark_directories }}
               run: npm install
