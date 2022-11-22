@@ -20,11 +20,13 @@ import {
     blob,
     Canister,
     CanisterResult,
+    Func,
     ic,
     nat,
     nat64,
     Opt,
     Principal,
+    Query,
     Variant
 } from '../../index';
 
@@ -155,16 +157,30 @@ export type ProvisionalTopUpCanisterArgs = {
 export type HttpRequestArgs = {
     url: string;
     max_response_bytes: Opt<nat64>;
-    http_method: HttpMethod;
+    method: HttpMethod;
     headers: HttpHeader[];
     body: Opt<blob>;
-    transform_method_name: Opt<string>;
+    transform: Opt<HttpTransform>;
+};
+
+export type HttpTransform = {
+    function: HttpTransformFunc;
+    context: blob;
+};
+
+export type HttpTransformFunc = Func<
+    (args: HttpTransformArgs) => Query<HttpResponse>
+>;
+
+export type HttpTransformArgs = {
+    response: HttpResponse;
+    context: blob;
 };
 
 export type HttpMethod = Variant<{
-    GET: null;
-    HEAD: null;
-    POST: null;
+    get: null;
+    head: null;
+    post: null;
 }>;
 
 export type HttpHeader = {
@@ -173,7 +189,7 @@ export type HttpHeader = {
 };
 
 export type HttpResponse = {
-    status: nat64;
+    status: nat;
     headers: HttpHeader[];
     body: blob;
 };
