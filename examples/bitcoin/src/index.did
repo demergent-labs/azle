@@ -78,6 +78,18 @@ type ProvisionalTopUpCanisterArgs = record {
     "amount": nat;
 };
 
+type EcdsaPublicKeyArgs = record {
+    "canister_id": opt principal;
+    "derivation_path": vec blob;
+    "key_id": KeyId;
+};
+
+type SignWithEcdsaArgs = record {
+    "message_hash": blob;
+    "derivation_path": vec blob;
+    "key_id": KeyId;
+};
+
 type GetUtxosResult = record {
     "next_page": opt blob;
     "tip_block_hash": blob;
@@ -107,6 +119,15 @@ type ProvisionalCreateCanisterWithCyclesResult = record {
     "canister_id": principal;
 };
 
+type EcdsaPublicKeyResult = record {
+    "public_key": blob;
+    "chain_code": blob;
+};
+
+type SignWithEcdsaResult = record {
+    "signature": blob;
+};
+
 type CanisterSettings = record {
     "controllers": opt vec principal;
     "compute_allocation": opt nat;
@@ -117,6 +138,11 @@ type CanisterSettings = record {
 type HttpHeader = record {
     "name": text;
     "value": text;
+};
+
+type KeyId = record {
+    "curve": EcdsaCurve;
+    "name": text;
 };
 
 type Utxo = record {
@@ -152,6 +178,8 @@ type UtxosFilter = variant { "MinConfirmations": nat32; "Page": blob };
 type InstallCodeMode = variant { "install": null; "reinstall": null; "upgrade": null };
 
 type HttpMethod = variant { "GET": null; "HEAD": null; "POST": null };
+
+type EcdsaCurve = variant { "secp256k1": null };
 
 type CanisterStatus = variant { "running": null; "stopping": null; "stopped": null };
 
