@@ -18,7 +18,7 @@ impl GetTsType for TsFnParam {
         match self {
             TsFnParam::Ident(identifier) => match &identifier.type_ann {
                 Some(param_type) => param_type.get_ts_type(),
-                None => panic!("Function parameter must have a type"),
+                None => panic!("Function parameters must have a type"),
             },
             TsFnParam::Array(_) => {
                 panic!("Array destructuring in parameters is unsupported at this time")
