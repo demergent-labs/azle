@@ -10,6 +10,12 @@ export type Annotation = {
 
 export type AnnotationType = 'Error' | 'Warning' | 'Info' | 'Note' | 'Help';
 
+export type Location = {
+    path: string;
+    line: number;
+    column: number;
+};
+
 export type Range = [number, number];
 
 /**
@@ -32,7 +38,8 @@ export type Slice = {
  */
 export type Snippet = {
     title: Annotation;
-    slice: Slice;
+    location?: Location;
+    source?: string;
 };
 
 /**
@@ -50,36 +57,22 @@ export function snippetsToDisplayString(snippets: Snippet[]): string {
             const tag = snippet.title.annotationType.toLowerCase();
             const titleLine = `${tag}: ${snippet.title.label}`;
 
-            const originLine = snippet.slice.origin
-                ? ` --> ${snippet.slice.origin}:${snippet.slice.lineStart}:${snippet.slice.annotation.range[0]}`
+            const originLine = snippet.location
+                ? ` --> ${snippet.location.path}:${snippet.location.line}:${snippet.location.column}`
                 : null;
 
-            const sourceCodeLineGutter = `${snippet.slice.lineStart} | `;
-            const emptyLineGutter = '| '.padStart(sourceCodeLineGutter.length);
-
-            const range = snippet.slice.annotation.range;
-
-            const gutteredSourceCode = snippet.slice.source.replace(
-                /\n/g,
-                `\n${emptyLineGutter}`
-            );
-
-            const sourceCodeLine = `${sourceCodeLineGutter}${gutteredSourceCode}`;
-            const marker =
-                snippet.slice.annotation.annotationType === 'Error' ? '^' : '-';
-            const annotationLine = `${emptyLineGutter}${' '.repeat(
-                range[0] - 1
-            )}${marker.repeat(range[1] - range[0])} ${
-                snippet.slice.annotation.label ?? ''
-            }`;
+            const gutter = '  | ';
+            const blankLine = snippet.source ? gutter : null;
+            const sourceCodeWithSimpleGutter = snippet.source
+                ? `${gutter}${snippet.source?.replace(/\n/g, `\n${gutter}`)}`
+                : null;
 
             return [
                 titleLine,
                 originLine,
-                emptyLineGutter,
-                sourceCodeLine,
-                annotationLine,
-                emptyLineGutter
+                blankLine,
+                sourceCodeWithSimpleGutter,
+                blankLine
             ]
                 .filter((l) => l)
                 .join('\n');
