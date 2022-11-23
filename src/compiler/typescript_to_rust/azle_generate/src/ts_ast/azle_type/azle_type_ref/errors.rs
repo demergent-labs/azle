@@ -12,6 +12,7 @@ use crate::{
 impl AzleTypeRef<'_> {
     pub(super) fn wrong_number_of_params_error(&self) -> ErrorMessage {
         match self.get_name() {
+            "Canister" => self.canister_wrong_number_of_params_error(),
             "Variant" => self.variant_wrong_number_of_params_error(),
             "Func" => self.func_wrong_number_of_params_error(),
             "Opt" => self.option_wrong_number_of_params_error(),
@@ -47,6 +48,36 @@ impl AzleTypeRef<'_> {
                 annotation: Some("Use type directly here".to_string()),
                 import_suggestion: None,
             }),
+        }
+    }
+
+    fn canister_wrong_number_of_params_error(&self) -> ErrorMessage {
+        let example = self.generate_example_canister();
+        let modified_source = self
+            .source_map
+            .generate_modified_source(self.get_enclosed_span(), &example);
+        let annotation = if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
+            "Needs to have an enclosed type here."
+        } else {
+            "Only one enclosed type allowed here."
+        };
+        let suggestion = Some(Suggestion {
+            title: "Canister must have exactly one enclosed type. For example:".to_string(),
+            range: self
+                .source_map
+                .generate_modified_range(self.get_enclosed_span(), &example),
+            source: modified_source,
+            annotation: None,
+            import_suggestion: None,
+        });
+        ErrorMessage {
+            title: "Invalid Canister".to_string(),
+            origin: self.get_origin(),
+            line_number: self.get_line_number(),
+            source: self.get_source(),
+            range: self.source_map.get_range(self.get_enclosed_span()),
+            annotation: annotation.to_string(),
+            suggestion,
         }
     }
 
@@ -218,6 +249,14 @@ impl AzleTypeRef<'_> {
                 format!("{}    member_name{}: {},\n", acc, index, source_text)
             });
         format!("<{{\n{}\n}}>", enclosed_types)
+    }
+
+    fn generate_example_canister(&self) -> String {
+        if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
+            "Canister<{method(): CanisterResult<void>}>".to_string()
+        } else {
+            "<{method(): CanisterResult<void>}>".to_string()
+        }
     }
 
     fn generate_example_func(&self) -> String {
