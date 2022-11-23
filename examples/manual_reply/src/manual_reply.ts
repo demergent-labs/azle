@@ -153,7 +153,7 @@ export function query_int8(): QueryManual<int8> {
 }
 
 export function query_nat(): QueryManual<nat> {
-    ic.reply(184467440737095516150n);
+    ic.reply(184_467_440_737_095_516_150n);
 }
 
 export function query_null(): QueryManual<null> {

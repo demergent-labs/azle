@@ -54,9 +54,7 @@ export function get_tests(
                 ];
 
                 return {
-                    ok:
-                        Array.isArray(result) &&
-                        result.every((byte, i) => byte === expectedResult[i])
+                    ok: result.every((byte, i) => byte === expectedResult[i])
                 };
             }
         },
@@ -93,7 +91,7 @@ export function get_tests(
                 const result = await manual_reply_canister.update_nat();
 
                 return {
-                    ok: result === 184467440737095516150n
+                    ok: result === 184_467_440_737_095_516_150n
                 };
             }
         },
@@ -205,9 +203,7 @@ export function get_tests(
                 ];
 
                 return {
-                    ok:
-                        Array.isArray(result) &&
-                        result.every((byte, i) => byte === expectedResult[i])
+                    ok: result.every((byte, i) => byte === expectedResult[i])
                 };
             }
         },
@@ -244,7 +240,7 @@ export function get_tests(
                 const result = await manual_reply_canister.query_nat();
 
                 return {
-                    ok: result === 184467440737095516150n
+                    ok: result === 184_467_440_737_095_516_150n
                 };
             }
         },
