@@ -20,9 +20,13 @@ impl GetTsType for TsFnParam {
                 Some(param_type) => param_type.get_ts_type(),
                 None => panic!("Function parameter must have a type"),
             },
-            TsFnParam::Array(_) => todo!(),
-            TsFnParam::Rest(_) => todo!(),
-            TsFnParam::Object(_) => todo!(),
+            TsFnParam::Array(_) => {
+                panic!("Array destructuring in parameters is unsupported at this time")
+            }
+            TsFnParam::Rest(_) => panic!("Rest parameters are not supported at this time"),
+            TsFnParam::Object(_) => {
+                panic!("Object destructuring in parameters is unsupported at this time")
+            }
         }
     }
 }
