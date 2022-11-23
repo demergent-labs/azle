@@ -8,9 +8,10 @@ export function get_tests(
 ): Test[] {
     return [
         {
-            name: 'getEntries',
+            name: 'get_entries',
             test: async () => {
-                const result = await pre_and_post_upgrade_canister.getEntries();
+                const result =
+                    await pre_and_post_upgrade_canister.get_entries();
 
                 return {
                     ok: result.length === 0
@@ -18,9 +19,9 @@ export function get_tests(
             }
         },
         {
-            name: 'setEntry',
+            name: 'set_entry',
             test: async () => {
-                const result = await pre_and_post_upgrade_canister.setEntry({
+                const result = await pre_and_post_upgrade_canister.set_entry({
                     key: '0',
                     value: 0n
                 });
@@ -31,9 +32,10 @@ export function get_tests(
             }
         },
         {
-            name: 'getEntries',
+            name: 'get_entries',
             test: async () => {
-                const result = await pre_and_post_upgrade_canister.getEntries();
+                const result =
+                    await pre_and_post_upgrade_canister.get_entries();
 
                 return {
                     ok:
@@ -46,18 +48,16 @@ export function get_tests(
         {
             name: 'deploy',
             prep: async () => {
-                execSync(
-                    `dfx canister install --mode upgrade --upgrade-unchanged --wasm target/wasm32-unknown-unknown/release/pre_and_post_upgrade.wasm.gz pre_and_post_upgrade`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
+                execSync(`dfx deploy`, {
+                    stdio: 'inherit'
+                });
             }
         },
         {
-            name: 'getEntries',
+            name: 'get_entries',
             test: async () => {
-                const result = await pre_and_post_upgrade_canister.getEntries();
+                const result =
+                    await pre_and_post_upgrade_canister.get_entries();
 
                 return {
                     ok:

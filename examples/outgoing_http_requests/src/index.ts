@@ -8,7 +8,11 @@ import {
     Update,
     UpdateManual
 } from 'azle';
-import { HttpResponse, ManagementCanister } from 'azle/canisters/management';
+import {
+    HttpResponse,
+    HttpTransformArgs,
+    ManagementCanister
+} from 'azle/canisters/management';
 
 export function* xkcd(): Update<HttpResponse> {
     const max_response_bytes = 1_000n;
@@ -23,12 +27,15 @@ export function* xkcd(): Update<HttpResponse> {
         yield ManagementCanister.http_request({
             url: `https://xkcd.com/642/info.0.json`,
             max_response_bytes,
-            http_method: {
-                GET: null
+            method: {
+                get: null
             },
             headers: [],
             body: null,
-            transform_method_name: 'xkcd_transform'
+            transform: {
+                function: [ic.id(), 'xkcd_transform'],
+                context: Uint8Array.from([])
+            }
         }).with_cycles(cycle_cost_total);
 
     if (!ok(http_result)) {
@@ -55,10 +62,12 @@ export function* xkcd_raw(): UpdateManual<HttpResponse> {
                 record {
                     url = "https://xkcd.com/642/info.0.json";
                     max_response_bytes = ${max_response_bytes} : nat64;
-                    http_method = variant { GET };
+                    method = variant { get };
                     headers = vec {};
                     body = null;
-                    transform_method_name = "xkcd_transform";
+                    transform = opt record { function = record { principal "${ic
+                        .id()
+                        .toString()}"; "xkcd_transform" }; context = vec {} };
                 }
             )
         `),
@@ -72,11 +81,9 @@ export function* xkcd_raw(): UpdateManual<HttpResponse> {
     return ic.reply_raw(http_result.ok);
 }
 
-export function xkcd_transform(
-    http_response: HttpResponse
-): Query<HttpResponse> {
+export function xkcd_transform(args: HttpTransformArgs): Query<HttpResponse> {
     return {
-        ...http_response,
+        ...args.response,
         headers: []
     };
 }

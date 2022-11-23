@@ -7,11 +7,36 @@ import { _SERVICE } from './dfx_generated/stable_storage/stable_storage.did';
 export function get_tests(
     stable_storage_canister: ActorSubclass<_SERVICE>
 ): Test[] {
-    const initial_reads: Test[] = [
+    const initial_reads = get_initial_reads(stable_storage_canister);
+    const writes: Test[] = get_writes(stable_storage_canister);
+    const check_writes = get_check_writes(stable_storage_canister);
+
+    const tests: Test[] = [
+        ...initial_reads,
+        ...writes,
+        ...check_writes,
         {
-            name: 'initial read of readStableBlob',
+            name: 'deploy',
+            prep: async () => {
+                execSync(`dfx deploy`, {
+                    stdio: 'inherit'
+                });
+            }
+        },
+        ...check_writes
+    ];
+
+    return tests;
+}
+
+function get_initial_reads(
+    stable_storage_canister: ActorSubclass<_SERVICE>
+): Test[] {
+    return [
+        {
+            name: 'initial read of read_stable_blob',
             test: async () => {
-                const result = await stable_storage_canister.readStableBlob();
+                const result = await stable_storage_canister.read_stable_blob();
 
                 return {
                     ok:
@@ -26,9 +51,10 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStableBlobs',
+            name: 'initial read of read_stable_blobs',
             test: async () => {
-                const result = await stable_storage_canister.readStableBlobs();
+                const result =
+                    await stable_storage_canister.read_stable_blobs();
 
                 return {
                     ok:
@@ -51,9 +77,9 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStableInt',
+            name: 'initial read of read_stable_int',
             test: async () => {
-                const result = await stable_storage_canister.readStableInt();
+                const result = await stable_storage_canister.read_stable_int();
 
                 return {
                     ok:
@@ -63,9 +89,9 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStableInts',
+            name: 'initial read of read_stable_ints',
             test: async () => {
-                const result = await stable_storage_canister.readStableInts();
+                const result = await stable_storage_canister.read_stable_ints();
 
                 return {
                     ok:
@@ -77,9 +103,10 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStableInt64',
+            name: 'initial read of read_stable_int64',
             test: async () => {
-                const result = await stable_storage_canister.readStableInt64();
+                const result =
+                    await stable_storage_canister.read_stable_int64();
 
                 return {
                     ok: result === 9_223_372_036_854_775_807n
@@ -87,9 +114,10 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStableInt32',
+            name: 'initial read of read_stable_int32',
             test: async () => {
-                const result = await stable_storage_canister.readStableInt32();
+                const result =
+                    await stable_storage_canister.read_stable_int32();
 
                 return {
                     ok: result === 2_147_483_647
@@ -97,9 +125,10 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStableInt16',
+            name: 'initial read of read_stable_int16',
             test: async () => {
-                const result = await stable_storage_canister.readStableInt16();
+                const result =
+                    await stable_storage_canister.read_stable_int16();
 
                 return {
                     ok: result === 32_767
@@ -107,9 +136,9 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStableInt8',
+            name: 'initial read of read_stable_int8',
             test: async () => {
-                const result = await stable_storage_canister.readStableInt8();
+                const result = await stable_storage_canister.read_stable_int8();
 
                 return {
                     ok: result === 127
@@ -117,9 +146,9 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStableNat',
+            name: 'initial read of read_stable_nat',
             test: async () => {
-                const result = await stable_storage_canister.readStableNat();
+                const result = await stable_storage_canister.read_stable_nat();
 
                 return {
                     ok:
@@ -129,9 +158,10 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStableNat64',
+            name: 'initial read of read_stable_nat64',
             test: async () => {
-                const result = await stable_storage_canister.readStableNat64();
+                const result =
+                    await stable_storage_canister.read_stable_nat64();
 
                 return {
                     ok: result === 18_446_744_073_709_551_615n
@@ -139,9 +169,10 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStableNat32',
+            name: 'initial read of read_stable_nat32',
             test: async () => {
-                const result = await stable_storage_canister.readStableNat32();
+                const result =
+                    await stable_storage_canister.read_stable_nat32();
 
                 return {
                     ok: result === 4_294_967_295
@@ -149,9 +180,10 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStableNat16',
+            name: 'initial read of read_stable_nat16',
             test: async () => {
-                const result = await stable_storage_canister.readStableNat16();
+                const result =
+                    await stable_storage_canister.read_stable_nat16();
 
                 return {
                     ok: result === 65_535
@@ -159,9 +191,9 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStableNat8',
+            name: 'initial read of read_stable_nat8',
             test: async () => {
-                const result = await stable_storage_canister.readStableNat8();
+                const result = await stable_storage_canister.read_stable_nat8();
 
                 return {
                     ok: result === 255
@@ -169,9 +201,10 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStableString',
+            name: 'initial read of read_stable_string',
             test: async () => {
-                const result = await stable_storage_canister.readStableString();
+                const result =
+                    await stable_storage_canister.read_stable_string();
 
                 return {
                     ok: result === 'Hello there'
@@ -179,10 +212,10 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStablePrincipal',
+            name: 'initial read of read_stable_principal',
             test: async () => {
                 const result =
-                    await stable_storage_canister.readStablePrincipal();
+                    await stable_storage_canister.read_stable_principal();
 
                 return {
                     ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
@@ -190,9 +223,9 @@ export function get_tests(
             }
         },
         {
-            name: 'initial read of readStableUser',
+            name: 'initial read of read_stable_user',
             test: async () => {
-                const result = await stable_storage_canister.readStableUser();
+                const result = await stable_storage_canister.read_stable_user();
 
                 return {
                     ok:
@@ -204,9 +237,9 @@ export function get_tests(
             }
         }
         // {
-        //     name: 'initial read of readStableReaction',
+        //     name: 'initial read of read_stable_reaction',
         //     test: async () => {
-        //         const result = await stable_storage_canister.readStableReaction();
+        //         const result = await stable_storage_canister.read_stable_reaction();
 
         //         return {
         //             ok: 'Emotion' in result && 'Happy' in result.Emotion
@@ -214,27 +247,16 @@ export function get_tests(
         //     }
         // }
     ];
+}
 
-    const writes: Test[] = [
+function get_writes(stable_storage_canister: ActorSubclass<_SERVICE>): Test[] {
+    return [
         {
-            name: 'writeStableBlob',
+            name: 'write_stable_blob',
             test: async () => {
-                const result = await stable_storage_canister.writeStableBlob([
-                    5, 4, 3, 2, 1, 0
-                ]);
-
-                return {
-                    ok: result === undefined
-                };
-            }
-        },
-        {
-            name: 'writeStableBlobs',
-            test: async () => {
-                const result = await stable_storage_canister.writeStableBlobs([
-                    [5, 4, 3, 2, 1, 0],
-                    [5, 4, 3, 2, 1, 0]
-                ]);
+                const result = await stable_storage_canister.write_stable_blob(
+                    Uint8Array.from([5, 4, 3, 2, 1, 0])
+                );
 
                 return {
                     ok: result === undefined
@@ -242,9 +264,14 @@ export function get_tests(
             }
         },
         {
-            name: 'writeStableInt',
+            name: 'write_stable_blobs',
             test: async () => {
-                const result = await stable_storage_canister.writeStableInt(0n);
+                const result = await stable_storage_canister.write_stable_blobs(
+                    [
+                        Uint8Array.from([5, 4, 3, 2, 1, 0]),
+                        Uint8Array.from([5, 4, 3, 2, 1, 0])
+                    ]
+                );
 
                 return {
                     ok: result === undefined
@@ -252,9 +279,21 @@ export function get_tests(
             }
         },
         {
-            name: 'writeStableInts',
+            name: 'write_stable_int',
             test: async () => {
-                const result = await stable_storage_canister.writeStableInts([
+                const result = await stable_storage_canister.write_stable_int(
+                    0n
+                );
+
+                return {
+                    ok: result === undefined
+                };
+            }
+        },
+        {
+            name: 'write_stable_ints',
+            test: async () => {
+                const result = await stable_storage_canister.write_stable_ints([
                     0n,
                     0n
                 ]);
@@ -265,9 +304,9 @@ export function get_tests(
             }
         },
         {
-            name: 'writeStableInt64',
+            name: 'write_stable_int64',
             test: async () => {
-                const result = await stable_storage_canister.writeStableInt64(
+                const result = await stable_storage_canister.write_stable_int64(
                     1n
                 );
 
@@ -277,9 +316,9 @@ export function get_tests(
             }
         },
         {
-            name: 'writeStableInt32',
+            name: 'write_stable_int32',
             test: async () => {
-                const result = await stable_storage_canister.writeStableInt32(
+                const result = await stable_storage_canister.write_stable_int32(
                     2
                 );
 
@@ -289,9 +328,9 @@ export function get_tests(
             }
         },
         {
-            name: 'writeStableInt16',
+            name: 'write_stable_int16',
             test: async () => {
-                const result = await stable_storage_canister.writeStableInt16(
+                const result = await stable_storage_canister.write_stable_int16(
                     3
                 );
 
@@ -301,9 +340,11 @@ export function get_tests(
             }
         },
         {
-            name: 'writeStableInt8',
+            name: 'write_stable_int8',
             test: async () => {
-                const result = await stable_storage_canister.writeStableInt8(4);
+                const result = await stable_storage_canister.write_stable_int8(
+                    4
+                );
 
                 return {
                     ok: result === undefined
@@ -311,9 +352,11 @@ export function get_tests(
             }
         },
         {
-            name: 'writeStableNat',
+            name: 'write_stable_nat',
             test: async () => {
-                const result = await stable_storage_canister.writeStableNat(5n);
+                const result = await stable_storage_canister.write_stable_nat(
+                    5n
+                );
 
                 return {
                     ok: result === undefined
@@ -321,9 +364,9 @@ export function get_tests(
             }
         },
         {
-            name: 'writeStableNat64',
+            name: 'write_stable_nat64',
             test: async () => {
-                const result = await stable_storage_canister.writeStableNat64(
+                const result = await stable_storage_canister.write_stable_nat64(
                     6n
                 );
 
@@ -333,9 +376,9 @@ export function get_tests(
             }
         },
         {
-            name: 'writeStableNat32',
+            name: 'write_stable_nat32',
             test: async () => {
-                const result = await stable_storage_canister.writeStableNat32(
+                const result = await stable_storage_canister.write_stable_nat32(
                     7
                 );
 
@@ -345,9 +388,9 @@ export function get_tests(
             }
         },
         {
-            name: 'writeStableNat16',
+            name: 'write_stable_nat16',
             test: async () => {
-                const result = await stable_storage_canister.writeStableNat16(
+                const result = await stable_storage_canister.write_stable_nat16(
                     8
                 );
 
@@ -357,20 +400,10 @@ export function get_tests(
             }
         },
         {
-            name: 'writeStableNat8',
+            name: 'write_stable_nat8',
             test: async () => {
-                const result = await stable_storage_canister.writeStableNat8(9);
-
-                return {
-                    ok: result === undefined
-                };
-            }
-        },
-        {
-            name: 'writeStableString',
-            test: async () => {
-                const result = await stable_storage_canister.writeStableString(
-                    'Yes sir!'
+                const result = await stable_storage_canister.write_stable_nat8(
+                    9
                 );
 
                 return {
@@ -379,10 +412,23 @@ export function get_tests(
             }
         },
         {
-            name: 'writeStablePrincipal',
+            name: 'write_stable_string',
             test: async () => {
                 const result =
-                    await stable_storage_canister.writeStablePrincipal(
+                    await stable_storage_canister.write_stable_string(
+                        'Yes sir!'
+                    );
+
+                return {
+                    ok: result === undefined
+                };
+            }
+        },
+        {
+            name: 'write_stable_principal',
+            test: async () => {
+                const result =
+                    await stable_storage_canister.write_stable_principal(
                         Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
                     );
 
@@ -392,9 +438,9 @@ export function get_tests(
             }
         },
         {
-            name: 'writeStableUser',
+            name: 'write_stable_user',
             test: async () => {
-                const result = await stable_storage_canister.writeStableUser({
+                const result = await stable_storage_canister.write_stable_user({
                     id: '2',
                     // country: {
                     //     UK: null
@@ -427,12 +473,16 @@ export function get_tests(
         //     }
         // }
     ];
+}
 
-    const check_writes: Test[] = [
+function get_check_writes(
+    stable_storage_canister: ActorSubclass<_SERVICE>
+): Test[] {
+    return [
         {
-            name: 'check writeStableBlob',
+            name: 'check write_stable_blob',
             test: async () => {
-                const result = await stable_storage_canister.readStableBlob();
+                const result = await stable_storage_canister.read_stable_blob();
 
                 console.log('result', result);
 
@@ -449,9 +499,10 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStableBlobs',
+            name: 'check write_stable_blobs',
             test: async () => {
-                const result = await stable_storage_canister.readStableBlobs();
+                const result =
+                    await stable_storage_canister.read_stable_blobs();
 
                 console.log('result', result);
 
@@ -476,9 +527,9 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStableInt',
+            name: 'check write_stable_int',
             test: async () => {
-                const result = await stable_storage_canister.readStableInt();
+                const result = await stable_storage_canister.read_stable_int();
 
                 return {
                     ok: result === 0n
@@ -486,9 +537,9 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStableInts',
+            name: 'check write_stable_ints',
             test: async () => {
-                const result = await stable_storage_canister.readStableInts();
+                const result = await stable_storage_canister.read_stable_ints();
 
                 return {
                     ok: result[0] === 0n && result[1] === 0n
@@ -496,9 +547,10 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStableInt64',
+            name: 'check write_stable_int64',
             test: async () => {
-                const result = await stable_storage_canister.readStableInt64();
+                const result =
+                    await stable_storage_canister.read_stable_int64();
 
                 return {
                     ok: result === 1n
@@ -506,9 +558,10 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStableInt32',
+            name: 'check write_stable_int32',
             test: async () => {
-                const result = await stable_storage_canister.readStableInt32();
+                const result =
+                    await stable_storage_canister.read_stable_int32();
 
                 return {
                     ok: result === 2
@@ -516,9 +569,10 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStableInt16',
+            name: 'check write_stable_int16',
             test: async () => {
-                const result = await stable_storage_canister.readStableInt16();
+                const result =
+                    await stable_storage_canister.read_stable_int16();
 
                 return {
                     ok: result === 3
@@ -526,9 +580,9 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStableInt8',
+            name: 'check write_stable_int8',
             test: async () => {
-                const result = await stable_storage_canister.readStableInt8();
+                const result = await stable_storage_canister.read_stable_int8();
 
                 return {
                     ok: result === 4
@@ -536,9 +590,9 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStableNat',
+            name: 'check write_stable_nat',
             test: async () => {
-                const result = await stable_storage_canister.readStableNat();
+                const result = await stable_storage_canister.read_stable_nat();
 
                 return {
                     ok: result === 5n
@@ -546,9 +600,10 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStableNat64',
+            name: 'check write_stable_nat64',
             test: async () => {
-                const result = await stable_storage_canister.readStableNat64();
+                const result =
+                    await stable_storage_canister.read_stable_nat64();
 
                 return {
                     ok: result === 6n
@@ -556,9 +611,10 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStableNat32',
+            name: 'check write_stable_nat32',
             test: async () => {
-                const result = await stable_storage_canister.readStableNat32();
+                const result =
+                    await stable_storage_canister.read_stable_nat32();
 
                 return {
                     ok: result === 7
@@ -566,9 +622,10 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStableNat16',
+            name: 'check write_stable_nat16',
             test: async () => {
-                const result = await stable_storage_canister.readStableNat16();
+                const result =
+                    await stable_storage_canister.read_stable_nat16();
 
                 return {
                     ok: result === 8
@@ -576,9 +633,9 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStableNat8',
+            name: 'check write_stable_nat8',
             test: async () => {
-                const result = await stable_storage_canister.readStableNat8();
+                const result = await stable_storage_canister.read_stable_nat8();
 
                 return {
                     ok: result === 9
@@ -586,9 +643,10 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStableString',
+            name: 'check write_stable_string',
             test: async () => {
-                const result = await stable_storage_canister.readStableString();
+                const result =
+                    await stable_storage_canister.read_stable_string();
 
                 return {
                     ok: result === 'Yes sir!'
@@ -596,10 +654,10 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStablePrincipal',
+            name: 'check write_stable_principal',
             test: async () => {
                 const result =
-                    await stable_storage_canister.readStablePrincipal();
+                    await stable_storage_canister.read_stable_principal();
 
                 return {
                     ok: result.toText() === 'ryjl3-tyaaa-aaaaa-aaaba-cai'
@@ -607,9 +665,9 @@ export function get_tests(
             }
         },
         {
-            name: 'check writeStableUser',
+            name: 'check write_stable_user',
             test: async () => {
-                const result = await stable_storage_canister.readStableUser();
+                const result = await stable_storage_canister.read_stable_user();
 
                 return {
                     ok:
@@ -621,9 +679,9 @@ export function get_tests(
             }
         }
         // {
-        //     name: 'check writeStableReaction',
+        //     name: 'check write_stable_reaction',
         //     test: async () => {
-        //         const result = await stable_storage_canister.readStableReaction();
+        //         const result = await stable_storage_canister.read_stable_reaction();
 
         //         return {
         //             ok:
@@ -634,24 +692,4 @@ export function get_tests(
         //     }
         // }
     ];
-
-    const tests: Test[] = [
-        ...initial_reads,
-        ...writes,
-        ...check_writes,
-        {
-            name: 'deploy',
-            prep: async () => {
-                execSync(
-                    `dfx canister install --mode upgrade --upgrade-unchanged --wasm target/wasm32-unknown-unknown/release/stable_storage.wasm.gz stable_storage`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-            }
-        },
-        ...check_writes
-    ];
-
-    return tests;
 }

@@ -1,4 +1,4 @@
-import { ic, Init, nat, nat64, Opt, Query, Stable, Update } from 'azle';
+import { ic, Init, nat, nat64, Opt, Query, Update } from 'azle';
 
 //#region Performance
 type PerfResult = {
@@ -20,9 +20,9 @@ function record_performance(start: nat64, end: nat64): void {
 }
 //#endregion
 
-type StableStorage = Stable<{
+type StableStorage = {
     counter: nat;
-}>;
+};
 
 let stable_storage = ic.stable_storage<StableStorage>();
 

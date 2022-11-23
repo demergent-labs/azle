@@ -22,7 +22,7 @@ pub fn derive_try_from_vm_value_struct(
 
     quote! {
         impl CdkActTryFromVmValue<#struct_name, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<#struct_name, CdkActTryFromVmValueError> {
+            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<#struct_name, CdkActTryFromVmValueError> {
                 let object_option = self.as_object();
 
                 if let Some(object) = object_option {
@@ -54,7 +54,7 @@ pub fn derive_try_from_vm_value_struct(
 
         // TODO the body of this function is repeated in try_from_vm_value_trait.ts
         impl CdkActTryFromVmValue<Vec<#struct_name>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<#struct_name>, CdkActTryFromVmValueError> {
+            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<Vec<#struct_name>, CdkActTryFromVmValueError> {
                 match self.as_object() {
                     Some(js_object) => {
                         if js_object.is_array() {
@@ -64,13 +64,13 @@ pub fn derive_try_from_vm_value_struct(
                             let mut result = vec![];
 
                             while processing == true {
-                                match js_object.get(index, context) {
+                                match js_object.get(index, _azle_context) {
                                     Ok(js_value) => {
                                         if js_value.is_undefined() {
                                             processing = false;
                                         }
                                         else {
-                                            match js_value.try_from_vm_value(&mut *context) {
+                                            match js_value.try_from_vm_value(&mut *_azle_context) {
                                                 Ok(value) => {
                                                     result.push(value);
                                                     index += 1;
@@ -162,7 +162,7 @@ fn derive_field_js_value_result_variable_definitions(
             let field_js_value_result_name = format_ident!("object_{}_js_value_result", field_name);
 
             quote! {
-                let #field_js_value_result_name = object.get(stringify!(#field_name), context);
+                let #field_js_value_result_name = object.get(stringify!(#field_name), _azle_context);
             }
         },
         |field_name, index| {
@@ -171,7 +171,7 @@ fn derive_field_js_value_result_variable_definitions(
             let syn_index = Index::from(index);
 
             quote! {
-                let #field_js_value_result_name = object.get(stringify!(#syn_index), context);
+                let #field_js_value_result_name = object.get(stringify!(#syn_index), _azle_context);
             }
         },
     )
@@ -207,7 +207,7 @@ fn derive_field_result_variable_definitions(
         let field_js_value_name = format_ident!("object_{}_js_value", field_name);
         let field_result_name = format_ident!("object_{}_result", field_name);
 
-        quote! { let #field_result_name = #field_js_value_name.try_from_vm_value(&mut *context); }
+        quote! { let #field_result_name = #field_js_value_name.try_from_vm_value(&mut *_azle_context); }
     })
 }
 

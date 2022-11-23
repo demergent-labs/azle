@@ -63,7 +63,7 @@ You should have the following installed on your system:
 
 -   [Node.js](#nodejs)
 -   [Rust](#rust)
--   [dfx](#dfx)
+-   [dfx 0.12.0](#dfx)
 
 After installing the prerequisites, you can [make a project and install Azle](#azle).
 
@@ -89,10 +89,10 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 #### dfx
 
-Run the following command to install dfx 0.11.0:
+Run the following command to install dfx 0.12.0:
 
 ```bash
-DFX_VERSION=0.11.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+DFX_VERSION=0.12.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 ```
 
 #### Common Installation Issues
@@ -122,7 +122,7 @@ Your `dfx.json` file should look like this:
             "root": "src",
             "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": "target/wasm32-unknown-unknown/release/backend.wasm"
+            "wasm": "target/wasm32-unknown-unknown/release/backend.wasm.gz"
         }
     }
 }
@@ -156,14 +156,8 @@ dfx start --background
 # If you are running the replica in the background, you can run these commands within the same terminal as the dfx start --background command
 # If you are not running the replica in the background, then open another terminal and run these commands from the root directory of your project
 
-# first deploy
-dfx canister create backend
-dfx build backend
-dfx canister install backend --wasm target/wasm32-unknown-unknown/release/backend.wasm.gz
-
-# subsequent deploys
-dfx build backend
-dfx canister install --mode upgrade backend --wasm target/wasm32-unknown-unknown/release/backend.wasm.gz
+# deploy
+dfx deploy
 ```
 
 You can then interact with your canister like any other canister written in Motoko or Rust. For more information about calling your canister using `dfx`, see [here](https://smartcontracts.org/docs/developers-guide/cli-reference/dfx-canister.html#_dfx_canister_call).
@@ -209,7 +203,7 @@ dfx canister call simple_erc20 transfer '("0", "1", 100)'
 
 #### Live Deployment
 
-Deploying to the live Internet Computer generally only requires adding the `--network ic` option to the deploy command: `dfx canister --network ic install backend --wasm target/wasm32-unknown-unknown/release/backend.wasm.gz`. This assumes you already have converted ICP into cycles appropriately. See [here](https://smartcontracts.org/docs/quickstart/4-quickstart.html) for more information on getting ready to deploy to production.
+Deploying to the live Internet Computer generally only requires adding the `--network ic` option to the deploy command: `dfx deploy --network ic`. This assumes you already have converted ICP into cycles appropriately. See [here](https://smartcontracts.org/docs/quickstart/4-quickstart.html) for more information on getting ready to deploy to production.
 
 ### Canisters
 
@@ -483,7 +477,6 @@ Please note that these types are only needed in specific locations in your code,
 
 -   `Query`, `Update`, `Init`, and `PostUpgrade` method parameters and return types
 -   `Canister` method declaration parameters and return types
--   `Stable` variable declaration types
 
 Basically, you only need to write in TypeScript and use the Azle types when Candid serialization or deserialization is necessary. You could write the rest of your application in plain JavaScript if you'd like.
 
@@ -2155,16 +2148,16 @@ Examples:
 -   [tuple_types](/examples/tuple_types)
 
 ```typescript
-import { Init, nat, Stable, Update } from 'azle';
+import { Init, nat, Update } from 'azle';
 
-type StableStorage = Stable<{
+type StableStorage = {
     stable_nat: nat;
-}>;
+};
 
 let stable_storage: StableStorage = ic.stable_storage();
 
-export function init(_stable_nat: nat): Init {
-    stable_storage.stable_nat = _stable_nat;
+export function init(stable_nat: nat): Init {
+    stable_storage.stable_nat = stable_nat;
 }
 ```
 

@@ -158,7 +158,7 @@ jobs:
               with:
                   node-version: 18
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              run: DFX_VERSION=0.11.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+              run: DFX_VERSION=0.12.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               name: Install Rust ${{ matrix.rust }}
               uses: actions-rs/toolchain@v1
@@ -184,7 +184,7 @@ jobs:
               run: npm link
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               working-directory: ${{ matrix.example_directories }}
-              run: dfx start --clean --background --enable-canister-http
+              run: dfx start --clean --background --host 127.0.0.1:8000
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}

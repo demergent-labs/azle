@@ -123,20 +123,12 @@ export function deploy(canister_name: string, argument?: string): Test[] {
             }
         },
         {
-            name: `build canister ${canister_name}`,
-            prep: async () => {
-                execSync(`dfx build ${canister_name}`, {
-                    stdio: 'inherit'
-                });
-            }
-        },
-        {
-            name: `install canister ${canister_name}`,
+            name: `deploy canister ${canister_name}`,
             prep: async () => {
                 execSync(
-                    `dfx canister install${
+                    `dfx deploy${
                         argument === undefined ? '' : ` --argument ${argument}`
-                    } ${canister_name} --wasm target/wasm32-unknown-unknown/release/${canister_name}.wasm.gz`,
+                    } ${canister_name}`,
                     {
                         stdio: 'inherit'
                     }

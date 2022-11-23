@@ -3,7 +3,7 @@
         "factory": {
             "build": "cargo build --target wasm32-unknown-unknown --release",
             "candid": "factory.did",
-            "wasm": "target/wasm32-unknown-unknown/release/factory.wasm",
+            "wasm": "target/wasm32-unknown-unknown/release/factory.wasm.gz",
             "type": "custom"
         }
     },

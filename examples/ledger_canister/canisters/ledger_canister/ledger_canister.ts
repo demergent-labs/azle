@@ -29,7 +29,7 @@ import {
 } from 'azle/canisters/ledger';
 
 const ICPCanister = ic.canisters.Ledger<Ledger>(
-    Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
+    Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
 );
 
 type ExecuteTransferResult = Variant<{

@@ -1,5 +1,5 @@
 import { deploy, ok, run_tests, Test } from 'azle/test';
-import { createActor } from '../test/dfx_generated/bitcoin';
+import { createActor } from './dfx_generated/bitcoin';
 import { wallets } from './wallets';
 import { impure_setup, while_running_bitcoin_daemon } from './setup';
 import { bitcoin_cli } from './bitcoin_cli';

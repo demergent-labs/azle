@@ -133,7 +133,7 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 return {
                     ok:
-                        result > 3_000_000_000_000n &&
+                        result > 2_000_000_000_000n &&
                         result < 4_000_000_000_000n
                 };
             }
@@ -145,7 +145,7 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 return {
                     ok:
-                        result > 3_000_000_000_000n &&
+                        result > 2_000_000_000_000n &&
                         result < 4_000_000_000_000n
                 };
             }

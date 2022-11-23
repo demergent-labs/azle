@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "src/inspect_message.ts",
             "candid": "src/inspect_message.did",
-            "wasm": "target/wasm32-unknown-unknown/release/inspect_message.wasm",
+            "wasm": "target/wasm32-unknown-unknown/release/inspect_message.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/inspect_message"
             }

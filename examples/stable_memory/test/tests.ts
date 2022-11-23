@@ -2,8 +2,9 @@ import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/stable_memory/stable_memory.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-// TODO Understand why these numbers are the way they are https://github.com/demergent-labs/azle/issues/485
-const MAX_STABLE_MEM = 65_536;
+const PAGE_SIZE = 65_536;
+const MAX_STABLE_MEM_PAGES = 65_536;
+const MAX_STABLE64_MEM_PAGES = 524_288n;
 const STABLE_BYTES_SIZE = 655_360;
 
 export function get_tests(
@@ -125,21 +126,27 @@ export function get_tests(
                 };
             }
         },
-        // TODO ic_cdk::api::stable::stable_write doesn't panic when given an invalid offset.
-        // https://github.com/demergent-labs/azle/issues/481
-        // {
-        //     name: 'stable write out of bounds error',
-        //     test: async () => {
-        //         const offset = MAX_STABLE_MEM;
-        //         const buffer = [0, 1, 2, 3, 4, 5, 6];
+        {
+            name: 'stable write out of bounds error',
+            test: async () => {
+                const offset = PAGE_SIZE * MAX_STABLE_MEM_PAGES - 1;
+                const buffer = [0, 1, 2, 3, 4, 5, 6];
 
-        //         await stable_memory_canister.stable_write(offset, buffer);
+                try {
+                    await stable_memory_canister.stable_write(offset, buffer);
+                } catch (error) {
+                    return {
+                        ok: (error as any)
+                            .toString()
+                            .includes('stable memory out of bounds')
+                    };
+                }
 
-        //         return {
-        //             ok: true
-        //         };
-        //     }
-        // },
+                return {
+                    ok: false
+                };
+            }
+        },
         {
             name: 'stable64 read/write no offset',
             test: async () => {
@@ -176,26 +183,32 @@ export function get_tests(
                 };
             }
         },
-        // TODO ic_cdk::api::stable::stable_write doesn't panic when given an invalid offset.
-        // https://github.com/demergent-labs/azle/issues/481
-        // {
-        //     name: 'stable64 write out of bounds error',
-        //     test: async () => {
-        //         const offset = MAX_STABLE_MEM;
-        //         const buffer = [0, 1, 2, 3, 4, 5, 6];
+        {
+            name: 'stable64 write out of bounds error',
+            test: async () => {
+                const offset = BigInt(PAGE_SIZE) * MAX_STABLE64_MEM_PAGES - 1n;
+                const buffer = [0, 1, 2, 3, 4, 5, 6];
 
-        //         await stable_memory_canister.stable64_write(offset, buffer);
+                try {
+                    await stable_memory_canister.stable64_write(offset, buffer);
+                } catch (error) {
+                    return {
+                        ok: (error as any)
+                            .toString()
+                            .includes('stable memory out of bounds')
+                    };
+                }
 
-        //         return {
-        //             ok: true
-        //         };
-        //     }
-        // },
+                return {
+                    ok: false
+                };
+            }
+        },
         {
             name: 'stable grow to max',
             test: async () => {
                 const old_size = await stable_memory_canister.stable_size();
-                const new_pages = MAX_STABLE_MEM - old_size;
+                const new_pages = MAX_STABLE_MEM_PAGES - old_size;
                 const result = await stable_memory_canister.stable_grow(
                     new_pages
                 );
@@ -218,10 +231,7 @@ export function get_tests(
         {
             name: 'stable grow out of memory',
             test: async () => {
-                const new_pages = MAX_STABLE_MEM + 1;
-                const result = await stable_memory_canister.stable_grow(
-                    new_pages
-                );
+                const result = await stable_memory_canister.stable_grow(1);
 
                 return {
                     ok: 'err' in result && 'OutOfMemory' in result.err
@@ -229,12 +239,33 @@ export function get_tests(
             }
         },
         {
+            name: 'stable64 grow to max',
+            test: async () => {
+                const old_size = await stable_memory_canister.stable64_size();
+                const new_pages = MAX_STABLE64_MEM_PAGES - old_size;
+                const result = await stable_memory_canister.stable64_grow(
+                    new_pages
+                );
+                const new_size = await stable_memory_canister.stable64_size();
+
+                if ('err' in result) {
+                    return {
+                        err: JSON.stringify(result.err)
+                    };
+                }
+
+                return {
+                    ok:
+                        'ok' in result &&
+                        result.ok === old_size &&
+                        new_pages + old_size === new_size
+                };
+            }
+        },
+        {
             name: 'stable64 grow out of memory',
             test: async () => {
-                const new_pages = MAX_STABLE_MEM + 1;
-                const result = await stable_memory_canister.stable64_grow(
-                    BigInt(new_pages)
-                );
+                const result = await stable_memory_canister.stable64_grow(1n);
 
                 return {
                     ok: 'err' in result && 'OutOfMemory' in result.err

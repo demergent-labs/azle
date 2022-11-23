@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "src/simple_erc20.ts",
             "candid": "src/simple_erc20.did",
-            "wasm": "target/wasm32-unknown-unknown/release/simple_erc20.wasm",
+            "wasm": "target/wasm32-unknown-unknown/release/simple_erc20.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/simple_erc20"
             }

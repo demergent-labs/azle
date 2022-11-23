@@ -6,7 +6,7 @@
             "root": "canisters/rejections",
             "ts": "canisters/rejections/rejections.ts",
             "candid": "canisters/rejections/rejections.did",
-            "wasm": "target/wasm32-unknown-unknown/release/rejections.wasm",
+            "wasm": "target/wasm32-unknown-unknown/release/rejections.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/rejections"
             }
@@ -17,7 +17,7 @@
             "root": "canisters/some_service",
             "ts": "canisters/some_service/some_service.ts",
             "candid": "canisters/some_service/some_service.did",
-            "wasm": "target/wasm32-unknown-unknown/release/some_service.wasm",
+            "wasm": "target/wasm32-unknown-unknown/release/some_service.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/some_service"
             }

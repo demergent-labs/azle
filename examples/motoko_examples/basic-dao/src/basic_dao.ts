@@ -9,7 +9,6 @@ import {
     Heartbeat,
     PreUpgrade,
     PostUpgrade,
-    Stable,
     CanisterResult,
     Variant,
     ok
@@ -49,13 +48,13 @@ type ProposalStable = {
     value: Proposal;
 };
 
-type StableStorage = Stable<{
+type StableStorage = {
     installer: Principal;
     accounts: Account[];
     proposals: ProposalStable[];
     nextProposalId: nat;
     systemParams: SystemParams;
-}>;
+};
 
 export function init(
     initAccounts: Account[],

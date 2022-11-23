@@ -1,15 +1,4 @@
-import {
-    Func,
-    Query,
-    Stable,
-    Opt,
-    Update,
-    Variant,
-    blob,
-    ic,
-    nat,
-    nat16
-} from 'azle';
+import { Func, Query, Opt, Update, Variant, blob, ic, nat, nat16 } from 'azle';
 import encodeUtf8 from 'encode-utf8';
 
 type StreamingCallbackHttpResponse = {
@@ -50,7 +39,13 @@ type HttpRequest = {
     body: blob;
 };
 
-let counter: Stable<nat> = 0n;
+type StableStorage = {
+    counter: nat;
+};
+
+let stable_storage: StableStorage = ic.stable_storage();
+
+stable_storage.counter = 0n;
 
 function isGzip(x: HeaderField): boolean {
     return (
@@ -87,7 +82,9 @@ export function http_request(req: HttpRequest): Query<HttpResponse> {
             return {
                 status_code: 200,
                 headers: [['content-type', 'text/plain']],
-                body: encode(`Counter is ${counter}\n${req.url}\n`),
+                body: encode(
+                    `Counter is ${stable_storage.counter}\n${req.url}\n`
+                ),
                 streaming_strategy: null,
                 upgrade: null
             };
@@ -134,13 +131,13 @@ export function http_request(req: HttpRequest): Query<HttpResponse> {
 
 export function http_request_update(req: HttpRequest): Update<HttpResponse> {
     if (req.method === 'POST') {
-        counter += 1n;
+        stable_storage.counter += 1n;
 
         if (req.headers.find(isGzip) === undefined) {
             return {
                 status_code: 201,
                 headers: [['content-type', 'text/plain']],
-                body: encode(`Counter updated to ${counter}\n`),
+                body: encode(`Counter updated to ${stable_storage.counter}\n`),
                 streaming_strategy: null,
                 upgrade: null
             };
@@ -188,7 +185,7 @@ export function http_streaming(
         }
         case 'next': {
             return {
-                body: encode(`${counter}`),
+                body: encode(`${stable_storage.counter}`),
                 token: { arbitrary_data: 'last' }
             };
         }

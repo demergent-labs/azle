@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "src/main.ts",
             "candid": "src/main.did",
-            "wasm": "target/wasm32-unknown-unknown/release/http_counter.wasm",
+            "wasm": "target/wasm32-unknown-unknown/release/http_counter.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/http_counter"
             }
