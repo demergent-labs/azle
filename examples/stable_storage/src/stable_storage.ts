@@ -1,7 +1,6 @@
-// TODO add support/tests for func, service, reserved, and empty
-
 import {
     blob,
+    Func,
     Query,
     Update,
     PreUpgrade,
@@ -21,46 +20,26 @@ import {
     float64,
     float32,
     Principal,
-    Variant
+    Variant,
+    Opt
 } from 'azle';
 
 type User = {
     id: string;
     children: Child[];
-    // country: Country;
 };
 
 type Child = {
     id: string;
 };
 
-// type Country = Variant<{
-//     USA: null;
-//     UK: null;
-//     CANADA: null;
-// }>;
+type Reaction = Variant<{
+    Fire: null;
+    Great: null;
+}>;
 
-// type Reaction = Variant<{
-//     Fire: null;
-//     Great: null;
-//     // Fireworks: Fireworks; // TODO uncomment and add all of these back in
-//     // Emotion: Emotion;
-// }>;
+type StableFunc = Func<(param: string) => Query<boolean>>;
 
-// type Fireworks = {
-//     id: string;
-//     name: string;
-// };
-
-// type Emotion = Variant<{
-//     Happy: null;
-//     Sad: null;
-// }>;
-
-// TODO test blob
-// TODO test vec
-// TODO everything
-// TODO consider getting rid of the Stable type
 type StableStorage = {
     stable_blob: blob;
     stable_blobs: blob[];
@@ -81,19 +60,15 @@ type StableStorage = {
     stable_principal: Principal;
     stable_user: User;
     stable_users: User[];
-    // stable_reaction: Reaction;
-    // stable_boolean: Migrate<boolean>; // TODO I think we can get rid of this concept, but let's play with it
-    // To add a stable variable after a canister is deployed
-    // you must wrap the variable's type in the Migrate type.
-    // Then you must set its initial value in the PostUpgrade method and deploy/upgrade once.
-    // After the first deploy/upgrade you should remove the Migrate type and the PostUpgrade
-    // method initialization of the variable then deploy again.
+    stable_reaction: Reaction;
+    stable_func: StableFunc;
+    stable_boolean: boolean;
+    stable_null: null;
+    stable_opt: Opt<int>;
 };
-// TODO test out migrate, I think we can get rid of it
 
 let stable_storage: StableStorage = ic.stable_storage();
 
-// TODO add array tests for each type
 export function init(): Init {
     console.log('init');
 
@@ -102,19 +77,21 @@ export function init(): Init {
         Uint8Array.from([0, 1, 2, 3, 4, 5]),
         Uint8Array.from([0, 1, 2, 3, 4, 5])
     ];
-    stable_storage.stable_int = 170141183460469231731687303715884105727n;
+    stable_storage.stable_int =
+        170_141_183_460_469_231_731_687_303_715_884_105_727n;
     stable_storage.stable_ints = [
-        170141183460469231731687303715884105727n,
-        170141183460469231731687303715884105727n
+        170_141_183_460_469_231_731_687_303_715_884_105_727n,
+        170_141_183_460_469_231_731_687_303_715_884_105_727n
     ];
-    stable_storage.stable_int64 = 9223372036854775807n;
-    stable_storage.stable_int32 = 2147483647;
-    stable_storage.stable_int16 = 32767;
+    stable_storage.stable_int64 = 9_223_372_036_854_775_807n;
+    stable_storage.stable_int32 = 2_147_483_647;
+    stable_storage.stable_int16 = 32_767;
     stable_storage.stable_int8 = 127;
-    stable_storage.stable_nat = 340282366920938463463374607431768211455n;
-    stable_storage.stable_nat64 = 18446744073709551615n;
-    stable_storage.stable_nat32 = 4294967295;
-    stable_storage.stable_nat16 = 65535;
+    stable_storage.stable_nat =
+        340_282_366_920_938_463_463_374_607_431_768_211_455n;
+    stable_storage.stable_nat64 = 18_446_744_073_709_551_615n;
+    stable_storage.stable_nat32 = 4_294_967_295;
+    stable_storage.stable_nat16 = 65_535;
     stable_storage.stable_nat8 = 255;
     stable_storage.stable_float64 = Math.E;
     stable_storage.stable_float32 = Math.PI;
@@ -129,15 +106,14 @@ export function init(): Init {
                 id: '1'
             }
         ]
-        // country: {
-        //     CANADA: null
-        // }
     };
-    // stable_storage.stable_reaction = {
-    //     Emotion: {
-    //         Happy: null
-    //     }
-    // };
+    stable_storage.stable_reaction = {
+        Fire: null
+    };
+    stable_storage.stable_func = [Principal.fromText('aaaaa-aa'), 'raw_rand'];
+    stable_storage.stable_boolean = true;
+    stable_storage.stable_null = null;
+    stable_storage.stable_opt = null;
 }
 
 export function pre_upgrade(): PreUpgrade {
@@ -292,10 +268,42 @@ export function write_stable_user(user: User): Update<void> {
     stable_storage.stable_user = user;
 }
 
-// export function read_stable_reaction(): Query<Reaction> {
-//     return stable_storage.stable_reaction;
-// }
+export function read_stable_reaction(): Query<Reaction> {
+    return stable_storage.stable_reaction;
+}
 
-// export function write_stable_reaction(reaction: Reaction): Update<void> {
-//     stable_storage.stable_reaction = reaction;
-// }
+export function write_stable_reaction(reaction: Reaction): Update<void> {
+    stable_storage.stable_reaction = reaction;
+}
+
+export function read_stable_func(): Query<StableFunc> {
+    return stable_storage.stable_func;
+}
+
+export function write_stable_func(func: StableFunc): Update<void> {
+    stable_storage.stable_func = func;
+}
+
+export function read_stable_boolean(): Query<boolean> {
+    return stable_storage.stable_boolean;
+}
+
+export function write_stable_boolean(boolean: boolean): Update<void> {
+    stable_storage.stable_boolean = boolean;
+}
+
+export function read_stable_null(): Query<null> {
+    return stable_storage.stable_null;
+}
+
+export function write_stable_null(null_: null): Update<void> {
+    stable_storage.stable_null = null_;
+}
+
+export function read_stable_opt(): Query<Opt<int>> {
+    return stable_storage.stable_opt;
+}
+
+export function write_stable_opt(opt: Opt<int>): Update<void> {
+    stable_storage.stable_opt = opt;
+}
