@@ -230,22 +230,65 @@ function get_initial_reads(
                 return {
                     ok:
                         result.id === '0' &&
-                        // 'CANADA' in result.country &&
                         result.children.length === 1 &&
                         result.children[0].id === '1'
                 };
             }
-        }
-        // {
-        //     name: 'initial read of read_stable_reaction',
-        //     test: async () => {
-        //         const result = await stable_storage_canister.read_stable_reaction();
+        },
+        {
+            name: 'initial read of read_stable_reaction',
+            test: async () => {
+                const result =
+                    await stable_storage_canister.read_stable_reaction();
 
-        //         return {
-        //             ok: 'Emotion' in result && 'Happy' in result.Emotion
-        //         };
-        //     }
-        // }
+                return {
+                    ok: 'Fire' in result
+                };
+            }
+        },
+        {
+            name: 'initial read of read_stable_func',
+            test: async () => {
+                const result = await stable_storage_canister.read_stable_func();
+
+                return {
+                    ok:
+                        result[0].toText() === 'aaaaa-aa' &&
+                        result[1] === 'raw_rand'
+                };
+            }
+        },
+        {
+            name: 'initial read of read_stable_boolean',
+            test: async () => {
+                const result =
+                    await stable_storage_canister.read_stable_boolean();
+
+                return {
+                    ok: result === true
+                };
+            }
+        },
+        {
+            name: 'initial read of read_stable_null',
+            test: async () => {
+                const result = await stable_storage_canister.read_stable_null();
+
+                return {
+                    ok: result === null
+                };
+            }
+        },
+        {
+            name: 'initial read of read_stable_opt',
+            test: async () => {
+                const result = await stable_storage_canister.read_stable_opt();
+
+                return {
+                    ok: result.length === 0
+                };
+            }
+        }
     ];
 }
 
@@ -442,9 +485,6 @@ function get_writes(stable_storage_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await stable_storage_canister.write_stable_user({
                     id: '2',
-                    // country: {
-                    //     UK: null
-                    // },
                     children: [
                         {
                             id: '3'
@@ -456,22 +496,68 @@ function get_writes(stable_storage_canister: ActorSubclass<_SERVICE>): Test[] {
                     ok: result === undefined
                 };
             }
-        }
-        // {
-        //     name: 'writeStableReaction',
-        //     test: async () => {
-        //         const result = await stable_storage_canister.writeStableReaction({
-        //             Fireworks: {
-        //                 id: '0',
-        //                 name: 'Mega Firework'
-        //             }
-        //         });
+        },
+        {
+            name: 'write_stable_reaction',
+            test: async () => {
+                const result =
+                    await stable_storage_canister.write_stable_reaction({
+                        Great: null
+                    });
 
-        //         return {
-        //             ok: result === undefined
-        //         };
-        //     }
-        // }
+                return {
+                    ok: result === undefined
+                };
+            }
+        },
+        {
+            name: 'write_stable_func',
+            test: async () => {
+                const result = await stable_storage_canister.write_stable_func([
+                    Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'),
+                    'have_fun'
+                ]);
+
+                return {
+                    ok: result === undefined
+                };
+            }
+        },
+        {
+            name: 'write_stable_boolean',
+            test: async () => {
+                const result =
+                    await stable_storage_canister.write_stable_boolean(false);
+
+                return {
+                    ok: result === undefined
+                };
+            }
+        },
+        {
+            name: 'write_stable_null',
+            test: async () => {
+                const result = await stable_storage_canister.write_stable_null(
+                    null
+                );
+
+                return {
+                    ok: result === undefined
+                };
+            }
+        },
+        {
+            name: 'write_stable_opt',
+            test: async () => {
+                const result = await stable_storage_canister.write_stable_opt([
+                    3n
+                ]);
+
+                return {
+                    ok: result === undefined
+                };
+            }
+        }
     ];
 }
 
@@ -672,24 +758,64 @@ function get_check_writes(
                 return {
                     ok:
                         result.id === '2' &&
-                        // 'UK' in result.country &&
                         result.children.length === 1 &&
                         result.children[0].id === '3'
                 };
             }
-        }
-        // {
-        //     name: 'check write_stable_reaction',
-        //     test: async () => {
-        //         const result = await stable_storage_canister.read_stable_reaction();
+        },
+        {
+            name: 'check write_stable_reaction',
+            test: async () => {
+                const result =
+                    await stable_storage_canister.read_stable_reaction();
 
-        //         return {
-        //             ok:
-        //                 'Fireworks' in result &&
-        //                 result.Fireworks.id === '0' &&
-        //                 result.Fireworks.name === 'Mega Firework'
-        //         };
-        //     }
-        // }
+                return {
+                    ok: 'Great' in result
+                };
+            }
+        },
+        {
+            name: 'check write_stable_func',
+            test: async () => {
+                const result = await stable_storage_canister.read_stable_func();
+
+                return {
+                    ok:
+                        result[0].toText() === 'ryjl3-tyaaa-aaaaa-aaaba-cai' &&
+                        result[1] === 'have_fun'
+                };
+            }
+        },
+        {
+            name: 'check write_stable_boolean',
+            test: async () => {
+                const result =
+                    await stable_storage_canister.read_stable_boolean();
+
+                return {
+                    ok: result === false
+                };
+            }
+        },
+        {
+            name: 'check write_stable_null',
+            test: async () => {
+                const result = await stable_storage_canister.read_stable_null();
+
+                return {
+                    ok: result === null
+                };
+            }
+        },
+        {
+            name: 'check write_stable_opt',
+            test: async () => {
+                const result = await stable_storage_canister.read_stable_opt();
+
+                return {
+                    ok: result[0] === 3n
+                };
+            }
+        }
     ];
 }
