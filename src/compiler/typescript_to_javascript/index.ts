@@ -1,7 +1,10 @@
 import * as swc from '@swc/core';
 import * as tsc from 'typescript';
 import { buildSync } from 'esbuild';
-import { JavaScript, Result, TypeScript } from '../../types';
+import { JavaScript, TypeScript } from '../../types';
+import { Result } from '../../result';
+import { createMissingTypeArgumentErrorMessage } from './errors';
+import * as ts from 'typescript';
 
 export function compileTypeScriptToJavaScript(
     ts_path: string
@@ -162,21 +165,23 @@ function generateICCanisterFromTypeAliasDeclaration(
         throw new Error('This cannot happen');
     }
 
-    const typeRefenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+    const typeReferenceNode =
+        typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
-    if (typeRefenceNode.typeArguments === undefined) {
-        throw new Error(
-            `Generic type "Canister" in type alias "${canisterName}" requires one type argument.\nHelp: Specify a type argument. E.g. Canister<string>.`
-        );
+    if (typeReferenceNode.typeArguments === undefined) {
+        const errorMessage =
+            createMissingTypeArgumentErrorMessage(typeAliasDeclaration);
+
+        throw new Error(errorMessage);
     }
 
-    if (typeRefenceNode.typeArguments.length > 1) {
+    if (typeReferenceNode.typeArguments.length > 1) {
         throw new Error(
             `Generic type "Canister" in type alias "${canisterName}" requires one type argument.\nHelp: Remove all but one type argument.`
         );
     }
 
-    const firstTypeArgument = typeRefenceNode.typeArguments[0];
+    const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
     if (firstTypeArgument.kind !== tsc.SyntaxKind.TypeLiteral) {
         throw new Error(
@@ -357,7 +362,10 @@ function getTypeAliasDeclarationsFromNodes(
     nodes: tsc.Node[]
 ): tsc.TypeAliasDeclaration[] {
     return nodes.reduce((result: tsc.TypeAliasDeclaration[], node) => {
-        const typeAliasDeclarations = getTypeAliasDeclarationsFromNode(node);
+        const typeAliasDeclarations = getTypeAliasDeclarationsFromNode(
+            sourceFile,
+            node
+        );
 
         return [
             ...result,
@@ -371,10 +379,13 @@ function getTypeAliasDeclarationsFromNodes(
 }
 
 function getTypeAliasDeclarationsFromNode(
+    sourceFile: tsc.SourceFile,
     node: tsc.Node
 ): tsc.TypeAliasDeclaration[] {
     if (node.kind === tsc.SyntaxKind.TypeAliasDeclaration) {
-        const typeAliasDeclaration = node as tsc.TypeAliasDeclaration;
+        let typeAliasDeclaration = node as tsc.TypeAliasDeclaration;
+        typeAliasDeclaration.getSourceFile = () => sourceFile;
+
         return [typeAliasDeclaration];
     } else {
         return [];
