@@ -1,3 +1,5 @@
+import { SourceFile } from 'typescript';
+
 /**
  * Gives an introductory statement about the snippet to follow.
  */
@@ -78,4 +80,20 @@ export function snippetsToDisplayString(snippets: Snippet[]): string {
                 .join('\n');
         })
         .join('\n');
+}
+
+export function getLineNumber(sourceFile: SourceFile, range: Range): number {
+    const codePrecedingRange = sourceFile.text.substring(0, range[0]);
+    const numberOfNewlinesBeforeRange = (codePrecedingRange.match(/\n/g) ?? [])
+        .length;
+    return numberOfNewlinesBeforeRange + 1;
+}
+
+export function convertFileRangeToLineRange(
+    sourceFile: SourceFile,
+    range: Range
+): Range {
+    const codePrecedingRange = sourceFile.text.substring(0, range[0]);
+    const lastNewlineIndex = codePrecedingRange.lastIndexOf('\n');
+    return [range[0] - lastNewlineIndex, range[1] - lastNewlineIndex];
 }

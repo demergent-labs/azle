@@ -1,4 +1,4 @@
-import { TypeAliasDeclaration, TypeReferenceNode } from 'typescript';
+import * as tsc from 'typescript';
 import {
     convertFileRangeToLineRange,
     getLineNumber,
@@ -6,8 +6,8 @@ import {
     snippetsToDisplayString
 } from '../annotations';
 
-export function createMissingTypeArgumentErrorMessage(
-    typeAliasDeclaration: TypeAliasDeclaration
+export function createNonTypeLiteralErrorMessage(
+    typeAliasDeclaration: tsc.TypeAliasDeclaration
 ): string {
     const sourceFile = typeAliasDeclaration.getSourceFile();
 
@@ -16,7 +16,8 @@ export function createMissingTypeArgumentErrorMessage(
         typeAliasDeclaration.end
     );
 
-    const typeReferenceNode = typeAliasDeclaration.type as TypeReferenceNode;
+    const typeReferenceNode =
+        typeAliasDeclaration.type as tsc.TypeReferenceNode;
     const typeReferenceNodeLineNumber = getLineNumber(sourceFile, [
         typeReferenceNode.pos,
         typeReferenceNode.end
@@ -25,7 +26,7 @@ export function createMissingTypeArgumentErrorMessage(
     const errorSnippet: Snippet = {
         title: {
             annotationType: 'Error',
-            label: 'Generic type "Canister" requires one type argument'
+            label: 'Generic type "Canister" currently requires an inline object literal as a type argument'
         },
         location: {
             path: sourceFile.fileName,
@@ -33,7 +34,7 @@ export function createMissingTypeArgumentErrorMessage(
             column: convertFileRangeToLineRange(sourceFile, [
                 typeReferenceNode.pos,
                 typeReferenceNode.end
-            ])[1]
+            ])[0]
         },
         source: typeAliasDeclarationSourceCode
     };
@@ -41,7 +42,7 @@ export function createMissingTypeArgumentErrorMessage(
     const helpSnippet: Snippet = {
         title: {
             annotationType: 'Help',
-            label: 'Specify a type literal as a type argument to "Canister"'
+            label: 'Define your canister shape inline. E.g. Canister<{method(): CanisterResult<string>}>'
         }
     };
 
