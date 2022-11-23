@@ -6,7 +6,8 @@ import { Result } from '../../result';
 import {
     createMissingTypeArgumentErrorMessage,
     createMultipleTypeArgumentsErrorMessage,
-    createNonTypeLiteralErrorMessage
+    createNonTypeLiteralErrorMessage,
+    createNonMethodSignatureMemberErrorMessage
 } from './errors';
 import * as ts from 'typescript';
 
@@ -195,7 +196,11 @@ function generateICCanisterFromTypeAliasDeclaration(
         throw new Error(errorMessage);
     }
 
-    const typeLiteralNode = firstTypeArgument as tsc.TypeLiteralNode;
+    let typeLiteralNode = firstTypeArgument as tsc.TypeLiteralNode;
+
+    if (!typeLiteralNode.getSourceFile()) {
+        typeLiteralNode.getSourceFile = typeAliasDeclaration.getSourceFile;
+    }
 
     return generateICCanisterFromTypeLiteralNode(
         typeLiteralNode,
@@ -208,6 +213,9 @@ function generateICCanisterFromTypeLiteralNode(
     typeAliasName: string
 ): JavaScript {
     const canisterMethods = typeLiteralNode.members.map((member) => {
+        if (!member.getSourceFile()) {
+            member.getSourceFile = typeLiteralNode.getSourceFile;
+        }
         return generateCanisterMethodFromTypeElement(member, typeAliasName);
     });
 
@@ -225,7 +233,9 @@ function generateCanisterMethodFromTypeElement(
     typeAliasName: string
 ): JavaScript {
     if (typeElement.kind !== tsc.SyntaxKind.MethodSignature) {
-        throw new Error('Must use method signature syntax');
+        const errorMessage =
+            createNonMethodSignatureMemberErrorMessage(typeElement);
+        throw new Error(errorMessage);
     }
 
     const methodSignature = typeElement as tsc.MethodSignature;
