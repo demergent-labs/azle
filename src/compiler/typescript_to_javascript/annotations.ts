@@ -59,7 +59,12 @@ export function snippetsToDisplayString(snippets: Snippet[]): string {
 
             const range = snippet.slice.annotation.range;
 
-            const sourceCodeLine = `${sourceCodeLineGutter}${snippet.slice.source}`;
+            const gutteredSourceCode = snippet.slice.source.replace(
+                /\n/g,
+                `\n${emptyLineGutter}`
+            );
+
+            const sourceCodeLine = `${sourceCodeLineGutter}${gutteredSourceCode}`;
             const marker =
                 snippet.slice.annotation.annotationType === 'Error' ? '^' : '-';
             const annotationLine = `${emptyLineGutter}${' '.repeat(
