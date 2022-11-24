@@ -2,7 +2,7 @@ use quote::{format_ident, quote};
 use swc_common::SourceMap;
 use swc_ecma_ast::{Expr, TsFnParam, TsMethodSignature, TsType, TsTypeElement, TsTypeLit};
 
-use crate::ts_ast::{azle_type::AzleType, AzleTypeAliasDecl, GetName};
+use crate::ts_ast::{azle_type::AzleType, AzleBindingIdent, AzleTypeAliasDecl, GetName};
 use cdk_framework::{ToActDataType, ToTokenStream};
 
 #[derive(Clone)]
@@ -54,27 +54,25 @@ impl GenerateCrossCanisterCallFunctionsInfos for Vec<AzleTypeAliasDecl<'_>> {
 impl GenerateCrossCanisterCallFunctionsInfos for AzleTypeAliasDecl<'_> {
     fn generate_cross_canister_call_functions_infos(&self) -> Vec<CrossCanisterCallFunctionsInfo> {
         match &*self.ts_type_alias_decl.type_ann {
-            TsType::TsTypeRef(ts_type_ref) => {
-                match &ts_type_ref.type_params {
-                    Some(type_params) => {
-                        let canister_type_alias_decl_name = self.get_name();
+            TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_params {
+                Some(type_params) => {
+                    let canister_type_alias_decl_name = self.get_name();
 
-                        let type_param = &type_params.params[0]; // TODO I think we can assume this will be here
+                    let type_param = &type_params.params[0];
 
-                        match &**type_param {
+                    match &**type_param {
                         TsType::TsTypeLit(ts_type_lit) => {
                             generate_cross_canister_call_functions_infos_from_canister_type_literal(
                                 ts_type_lit,
                                 &canister_type_alias_decl_name,
-                                self.source_map
+                                self.source_map,
                             )
                         }
                         _ => panic!("The Canister type param must be a type literal"),
                     }
-                    }
-                    None => panic!("A Canister type must have one type param"),
                 }
-            }
+                None => panic!("A Canister type must have one type param"),
+            },
             _ => panic!("A Canister type must be a TsTypeRef"),
         }
     }
@@ -214,7 +212,7 @@ fn get_cross_canister_call_function_names(
 fn get_method_name(ts_method_signature: &TsMethodSignature) -> String {
     match &*ts_method_signature.key {
         Expr::Ident(ident) => ident.get_name().to_string(),
-        _ => panic!(""),
+        _ => panic!("This should have been impossible. We expected your method name to be an Identifier, but it's some other type of expression."),
     }
 }
 
@@ -436,10 +434,12 @@ fn get_ts_method_signature_return_type(
     ts_method_signature: &TsMethodSignature,
     source_map: &SourceMap,
 ) -> proc_macro2::TokenStream {
-    let ts_type_ann = &*ts_method_signature.type_ann.as_ref().unwrap().type_ann;
-    let ts_type_ref = &ts_type_ann.as_ts_type_ref().unwrap();
-    let type_params = ts_type_ref.type_params.as_ref().unwrap();
-    let return_ts_type = &**type_params.params.get(0).unwrap();
+    // TODO: This should be handled in the same way that we handle these same sorts of errors on
+    // regular canister methods. So we should be able to re-use code here.
+    let ts_type_ann = &*ts_method_signature.type_ann.as_ref().unwrap().type_ann; // TODO: Properly handle this unwrap
+    let ts_type_ref = &ts_type_ann.as_ts_type_ref().unwrap(); // TODO: Properly handle this unwrap
+    let type_params = ts_type_ref.type_params.as_ref().unwrap(); // TODO: Properly handle this unwrap
+    let return_ts_type = &**type_params.params.get(0).unwrap(); // TODO: Properly handle this unwrap
     let return_azle_type = AzleType::from_ts_type(return_ts_type.clone(), source_map);
 
     return_azle_type.to_act_data_type(&None).to_token_stream()
@@ -451,55 +451,47 @@ fn get_ts_method_signature_rust_params(
     ts_method_signature: &TsMethodSignature,
     source_map: &SourceMap,
 ) -> RustParams {
-    let params = ts_method_signature
+    let params_as_azle_binding_idents: Vec<AzleBindingIdent> = ts_method_signature
         .params
         .iter()
         .map(|ts_fn_param| match ts_fn_param {
-            TsFnParam::Ident(binding_ident) => {
-                let param_name = &binding_ident.id.get_name().to_string();
-                let param_name_ident = format_ident!("{}", param_name);
-                let param_ts_type = &*binding_ident.type_ann.as_ref().unwrap().type_ann.clone();
-                let param_azle_type = AzleType::from_ts_type(param_ts_type.clone(), source_map);
-                let param_type = param_azle_type.to_act_data_type(&None).to_token_stream();
-
-                quote! {
-                    #param_name_ident: #param_type
-                }
+            // TODO: We should be able to use some of the error message generation code found over
+            // in src/compiler/typescript_to_rust/azle_generate/src/ts_ast/azle_fn_decl/errors.rs
+            TsFnParam::Ident(binding_ident) => AzleBindingIdent {
+                binding_ident: binding_ident.clone(),
+                source_map,
+            },
+            TsFnParam::Array(_) => {
+                // TODO: Use a snippet to show the exact location of the problem
+                panic!("Array destructuring in parameters is unsupported at this time")
             }
-            _ => todo!(),
+            TsFnParam::Rest(_) => {
+                // TODO: Use a snippet to show the exact location of the problem
+                panic!("Rest parameters are not supported in canister method signatures")
+            }
+            TsFnParam::Object(_) => {
+                // TODO: Use a snippet to show the exact location of the problem
+                panic!("Object destructuring in parameters is unsupported at this time")
+            }
         })
         .collect();
 
-    let param_names = ts_method_signature
-        .params
+    let params = params_as_azle_binding_idents
         .iter()
-        .map(|ts_fn_param| match ts_fn_param {
-            TsFnParam::Ident(binding_ident) => {
-                let param_name = &binding_ident.id.get_name().to_string();
+        .map(|azle_binding_ident| azle_binding_ident.to_token_stream())
+        .collect();
 
-                let param_name_ident = format_ident!("{}", param_name);
-
-                quote! { #param_name_ident }
-            }
-            _ => todo!(),
+    let param_names = params_as_azle_binding_idents
+        .iter()
+        .map(|azle_binding_ident| {
+            let name = azle_binding_ident.name_as_ident();
+            quote! { #name }
         })
         .collect();
 
-    let param_types = ts_method_signature
-        .params
+    let param_types = params_as_azle_binding_idents
         .iter()
-        .map(|ts_fn_param| match ts_fn_param {
-            TsFnParam::Ident(binding_ident) => {
-                let param_ts_type = &*binding_ident.type_ann.as_ref().unwrap().type_ann;
-                let param_azle_type = AzleType::from_ts_type(param_ts_type.clone(), source_map);
-                let param_type = param_azle_type.to_act_data_type(&None).to_token_stream();
-
-                quote! {
-                    #param_type
-                }
-            }
-            _ => todo!(),
-        })
+        .map(|azle_binding_ident| azle_binding_ident.data_type().to_token_stream())
         .collect();
 
     RustParams {

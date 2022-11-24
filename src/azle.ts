@@ -391,7 +391,7 @@ function runAzleGenerate(
     );
 
     const suggestion =
-        'If you are unable to decipher the error above, reach out in the #typescript\nchannel of the DFINITY DEV OFFICIAL discord: https://discord.gg/zuUEzSf4mV';
+        'If you are unable to decipher the error above, reach out in the #typescript\nchannel of the DFINITY DEV OFFICIAL discord:\nhttps://discord.com/channels/748416164832608337/956466775380336680';
 
     if (executionResult.error) {
         const exitCode = executionResult.error.errno ?? 13;
@@ -419,9 +419,13 @@ function runAzleGenerate(
         const lineWhereErrorMessageStarts = stdErrLines.findIndex((line) =>
             line.startsWith("thread 'main' panicked")
         );
-        const lineWhereErrorMessageEnds = stdErrLines.findIndex((line) =>
-            line.includes("', src/azle_generate")
-        );
+        const starts_with_quote_comma_and_contains_a_path_and_ends_with_line_and_column_number =
+            /',\s.*\/.*\.rs:\d*:\d*/;
+        const lineWhereErrorMessageEnds = stdErrLines.findIndex((line) => {
+            return starts_with_quote_comma_and_contains_a_path_and_ends_with_line_and_column_number.test(
+                line
+            );
+        });
         if (
             lineWhereErrorMessageStarts === -1 ||
             lineWhereErrorMessageEnds === -1
@@ -440,10 +444,12 @@ function runAzleGenerate(
             "thread 'main' panicked at '",
             ''
         );
-        const panicLocation = /', src\/.*/;
         errorLines[errorLines.length - 1] = errorLines[
             errorLines.length - 1
-        ].replace(panicLocation, '');
+        ].replace(
+            starts_with_quote_comma_and_contains_a_path_and_ends_with_line_and_column_number,
+            ''
+        );
 
         return Err({
             error: `${generalErrorMessage}\n\n${errorLines.join('\n')}`,

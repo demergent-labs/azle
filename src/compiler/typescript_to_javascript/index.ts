@@ -1,7 +1,14 @@
 import * as swc from '@swc/core';
 import * as tsc from 'typescript';
 import { buildSync } from 'esbuild';
-import { JavaScript, Result, TypeScript } from '../../types';
+import { JavaScript, TypeScript } from '../../types';
+import { Result } from '../../result';
+import {
+    createMissingTypeArgumentErrorMessage,
+    createMultipleTypeArgumentsErrorMessage,
+    createNonTypeLiteralErrorMessage,
+    createNonMethodSignatureMemberErrorMessage
+} from './errors';
 
 export function compileTypeScriptToJavaScript(
     ts_path: string
@@ -156,23 +163,43 @@ function generateICCanistersFromTypeAliasDeclarations(
 function generateICCanisterFromTypeAliasDeclaration(
     typeAliasDeclaration: tsc.TypeAliasDeclaration
 ): JavaScript {
+    const canisterName = typeAliasDeclaration.name.escapedText;
+
     if (typeAliasDeclaration.type.kind !== tsc.SyntaxKind.TypeReference) {
         throw new Error('This cannot happen');
     }
 
-    const typeRefenceNode = typeAliasDeclaration.type as tsc.TypeReferenceNode;
+    const typeReferenceNode =
+        typeAliasDeclaration.type as tsc.TypeReferenceNode;
 
-    if (typeRefenceNode.typeArguments === undefined) {
-        throw new Error('This cannot happen');
+    if (typeReferenceNode.typeArguments === undefined) {
+        const errorMessage =
+            createMissingTypeArgumentErrorMessage(typeAliasDeclaration);
+
+        throw errorMessage;
     }
 
-    const firstTypeArgument = typeRefenceNode.typeArguments[0];
+    if (typeReferenceNode.typeArguments.length > 1) {
+        const errorMessage =
+            createMultipleTypeArgumentsErrorMessage(typeAliasDeclaration);
+
+        throw errorMessage;
+    }
+
+    const firstTypeArgument = typeReferenceNode.typeArguments[0];
 
     if (firstTypeArgument.kind !== tsc.SyntaxKind.TypeLiteral) {
-        throw new Error('This cannot happen');
+        const errorMessage =
+            createNonTypeLiteralErrorMessage(typeAliasDeclaration);
+
+        throw errorMessage;
     }
 
-    const typeLiteralNode = firstTypeArgument as tsc.TypeLiteralNode;
+    let typeLiteralNode = firstTypeArgument as tsc.TypeLiteralNode;
+
+    if (!typeLiteralNode.getSourceFile()) {
+        typeLiteralNode.getSourceFile = typeAliasDeclaration.getSourceFile;
+    }
 
     return generateICCanisterFromTypeLiteralNode(
         typeLiteralNode,
@@ -185,6 +212,9 @@ function generateICCanisterFromTypeLiteralNode(
     typeAliasName: string
 ): JavaScript {
     const canisterMethods = typeLiteralNode.members.map((member) => {
+        if (!member.getSourceFile()) {
+            member.getSourceFile = typeLiteralNode.getSourceFile;
+        }
         return generateCanisterMethodFromTypeElement(member, typeAliasName);
     });
 
@@ -202,7 +232,9 @@ function generateCanisterMethodFromTypeElement(
     typeAliasName: string
 ): JavaScript {
     if (typeElement.kind !== tsc.SyntaxKind.MethodSignature) {
-        throw new Error('Must use method signature syntax');
+        const errorMessage =
+            createNonMethodSignatureMemberErrorMessage(typeElement);
+        throw errorMessage;
     }
 
     const methodSignature = typeElement as tsc.MethodSignature;
@@ -345,7 +377,10 @@ function getTypeAliasDeclarationsFromNodes(
     nodes: tsc.Node[]
 ): tsc.TypeAliasDeclaration[] {
     return nodes.reduce((result: tsc.TypeAliasDeclaration[], node) => {
-        const typeAliasDeclarations = getTypeAliasDeclarationsFromNode(node);
+        const typeAliasDeclarations = getTypeAliasDeclarationsFromNode(
+            sourceFile,
+            node
+        );
 
         return [
             ...result,
@@ -359,10 +394,13 @@ function getTypeAliasDeclarationsFromNodes(
 }
 
 function getTypeAliasDeclarationsFromNode(
+    sourceFile: tsc.SourceFile,
     node: tsc.Node
 ): tsc.TypeAliasDeclaration[] {
     if (node.kind === tsc.SyntaxKind.TypeAliasDeclaration) {
-        const typeAliasDeclaration = node as tsc.TypeAliasDeclaration;
+        let typeAliasDeclaration = node as tsc.TypeAliasDeclaration;
+        typeAliasDeclaration.getSourceFile = () => sourceFile;
+
         return [typeAliasDeclaration];
     } else {
         return [];

@@ -7,11 +7,13 @@ use azle_type::AzleArrayType;
 use azle_type::AzleFnOrConstructorType;
 
 pub use ast_traits::GetName;
+pub use azle_binding_ident::AzleBindingIdent;
 pub use azle_fn_decl::AzleFnDecl;
 pub use azle_type_alias_decls::AzleTypeAliasDecl;
 pub use ts_ast::TsAst;
 
 mod ast_traits;
+mod azle_binding_ident;
 mod azle_fn_decl;
 mod azle_functions_and_methods;
 mod azle_method_signature;
