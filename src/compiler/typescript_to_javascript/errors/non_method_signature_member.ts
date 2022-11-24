@@ -1,4 +1,5 @@
 import { TypeElement } from 'typescript';
+import { createExampleCanisterDeclaration } from '.';
 import {
     convertFileRangeToLineRange,
     getLineNumber,
@@ -24,7 +25,7 @@ export function createNonMethodSignatureMemberErrorMessage(
     const errorSnippet: Snippet = {
         title: {
             annotationType: 'Error',
-            label: 'Invalid member. Generic type "Canister" requires all members of it\'s enclosed type to be method signatures.'
+            label: 'Invalid member in Canister type argument.'
         },
         location: {
             path: sourceFile.fileName,
@@ -40,12 +41,10 @@ export function createNonMethodSignatureMemberErrorMessage(
     const helpSnippet: Snippet = {
         title: {
             annotationType: 'Help',
-            label: 'Remove this member or make it a method signature'
-        }
+            label: 'The Canister type requires all members of its enclosed type to be method signatures. For example:'
+        },
+        source: createExampleCanisterDeclaration()
     };
 
-    return `Azle requirement violation.\n\n${snippetsToDisplayString([
-        errorSnippet,
-        helpSnippet
-    ])}`;
+    return `\n\n${snippetsToDisplayString([errorSnippet, helpSnippet])}`;
 }

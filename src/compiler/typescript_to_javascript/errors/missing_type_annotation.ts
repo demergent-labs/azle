@@ -5,6 +5,7 @@ import {
     Snippet,
     snippetsToDisplayString
 } from '../annotations';
+import { createExampleCanisterDeclaration } from '.';
 
 export function createMissingTypeArgumentErrorMessage(
     typeAliasDeclaration: TypeAliasDeclaration
@@ -25,7 +26,7 @@ export function createMissingTypeArgumentErrorMessage(
     const errorSnippet: Snippet = {
         title: {
             annotationType: 'Error',
-            label: 'Generic type "Canister" requires one type argument'
+            label: 'Canister type missing type literal.'
         },
         location: {
             path: sourceFile.fileName,
@@ -41,12 +42,10 @@ export function createMissingTypeArgumentErrorMessage(
     const helpSnippet: Snippet = {
         title: {
             annotationType: 'Help',
-            label: 'Specify a type literal as a type argument to "Canister"'
-        }
+            label: 'Specify a type literal as a type argument to Canister. For example:'
+        },
+        source: createExampleCanisterDeclaration()
     };
 
-    return `Azle requirement violation.\n\n${snippetsToDisplayString([
-        errorSnippet,
-        helpSnippet
-    ])}`;
+    return `\n\n${snippetsToDisplayString([errorSnippet, helpSnippet])}`;
 }

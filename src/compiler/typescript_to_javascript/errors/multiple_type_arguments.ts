@@ -1,4 +1,5 @@
 import * as tsc from 'typescript';
+import { createExampleCanisterDeclaration } from '.';
 import {
     convertFileRangeToLineRange,
     getLineNumber,
@@ -26,7 +27,7 @@ export function createMultipleTypeArgumentsErrorMessage(
     const errorSnippet: Snippet = {
         title: {
             annotationType: 'Error',
-            label: 'Generic type "Canister" accepts only one type argument'
+            label: 'Too many type arguments passed to Canister type'
         },
         location: {
             path: sourceFile.fileName,
@@ -42,12 +43,10 @@ export function createMultipleTypeArgumentsErrorMessage(
     const helpSnippet: Snippet = {
         title: {
             annotationType: 'Help',
-            label: 'Remove all but one type argument.'
-        }
+            label: 'The Canister type accepts only one type argument, which must be a type literal. For example:'
+        },
+        source: createExampleCanisterDeclaration()
     };
 
-    return `Azle requirement violation.\n\n${snippetsToDisplayString([
-        errorSnippet,
-        helpSnippet
-    ])}`;
+    return `\n\n${snippetsToDisplayString([errorSnippet, helpSnippet])}`;
 }

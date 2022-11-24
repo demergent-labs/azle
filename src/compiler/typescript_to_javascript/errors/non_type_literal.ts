@@ -1,4 +1,5 @@
 import * as tsc from 'typescript';
+import { createExampleCanisterDeclaration } from '.';
 import {
     convertFileRangeToLineRange,
     getLineNumber,
@@ -26,7 +27,7 @@ export function createNonTypeLiteralErrorMessage(
     const errorSnippet: Snippet = {
         title: {
             annotationType: 'Error',
-            label: 'Generic type "Canister" currently requires an inline object literal as a type argument'
+            label: 'Non-type literal passed as type argument to Canister type.'
         },
         location: {
             path: sourceFile.fileName,
@@ -42,12 +43,10 @@ export function createNonTypeLiteralErrorMessage(
     const helpSnippet: Snippet = {
         title: {
             annotationType: 'Help',
-            label: 'Define your canister shape inline. E.g. Canister<{method(): CanisterResult<string>}>'
-        }
+            label: 'The Canister type accepts one type argument, which must be a type literal. For example:'
+        },
+        source: createExampleCanisterDeclaration()
     };
 
-    return `Azle requirement violation.\n\n${snippetsToDisplayString([
-        errorSnippet,
-        helpSnippet
-    ])}`;
+    return `\n\n${snippetsToDisplayString([errorSnippet, helpSnippet])}`;
 }

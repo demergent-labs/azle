@@ -9,7 +9,6 @@ import {
     createNonTypeLiteralErrorMessage,
     createNonMethodSignatureMemberErrorMessage
 } from './errors';
-import * as ts from 'typescript';
 
 export function compileTypeScriptToJavaScript(
     ts_path: string
@@ -177,14 +176,14 @@ function generateICCanisterFromTypeAliasDeclaration(
         const errorMessage =
             createMissingTypeArgumentErrorMessage(typeAliasDeclaration);
 
-        throw new Error(errorMessage);
+        throw errorMessage;
     }
 
     if (typeReferenceNode.typeArguments.length > 1) {
         const errorMessage =
             createMultipleTypeArgumentsErrorMessage(typeAliasDeclaration);
 
-        throw new Error(errorMessage);
+        throw errorMessage;
     }
 
     const firstTypeArgument = typeReferenceNode.typeArguments[0];
@@ -193,7 +192,7 @@ function generateICCanisterFromTypeAliasDeclaration(
         const errorMessage =
             createNonTypeLiteralErrorMessage(typeAliasDeclaration);
 
-        throw new Error(errorMessage);
+        throw errorMessage;
     }
 
     let typeLiteralNode = firstTypeArgument as tsc.TypeLiteralNode;
@@ -235,7 +234,7 @@ function generateCanisterMethodFromTypeElement(
     if (typeElement.kind !== tsc.SyntaxKind.MethodSignature) {
         const errorMessage =
             createNonMethodSignatureMemberErrorMessage(typeElement);
-        throw new Error(errorMessage);
+        throw errorMessage;
     }
 
     const methodSignature = typeElement as tsc.MethodSignature;
