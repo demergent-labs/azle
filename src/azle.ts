@@ -21,6 +21,7 @@ import {
 import { Err, ok, Ok, Result, unwrap } from './result';
 import { red, yellow, green, blue, purple, dim } from './colors';
 import * as tsc from 'typescript';
+import * as path from 'path';
 
 azle();
 
@@ -272,11 +273,9 @@ function getFileNames(tsPath: string): string[] {
     const program = tsc.createProgram([tsPath], {});
     const sourceFiles = program.getSourceFiles();
 
-    const root_absolute_path = require('path').join(__dirname, '..');
-
     const fileNames = sourceFiles.map((sourceFile) => {
-        if (sourceFile.fileName.startsWith(root_absolute_path) === false) {
-            return `${process.cwd()}/${sourceFile.fileName}`;
+        if (!sourceFile.fileName.startsWith('/')) {
+            return path.join(process.cwd(), sourceFile.fileName);
         } else {
             return sourceFile.fileName;
         }
