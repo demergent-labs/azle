@@ -9,11 +9,15 @@ export const idlFactory = ({ IDL }) => {
         CanisterReject: IDL.Null
     });
     return IDL.Service({
-        getRejectionCodeCanisterError: IDL.Func([], [RejectionCode], []),
-        getRejectionCodeCanisterReject: IDL.Func([], [RejectionCode], []),
-        getRejectionCodeDestinationInvalid: IDL.Func([], [RejectionCode], []),
-        getRejectionCodeNoError: IDL.Func([], [RejectionCode], []),
-        getRejectionMessage: IDL.Func([IDL.Text], [IDL.Text], [])
+        get_rejection_code_canister_error: IDL.Func([], [RejectionCode], []),
+        get_rejection_code_canister_reject: IDL.Func([], [RejectionCode], []),
+        get_rejection_code_destination_invalid: IDL.Func(
+            [],
+            [RejectionCode],
+            []
+        ),
+        get_rejection_code_no_error: IDL.Func([], [RejectionCode], []),
+        get_rejection_message: IDL.Func([IDL.Text], [IDL.Text], [])
     });
 };
 export const init = ({ IDL }) => {

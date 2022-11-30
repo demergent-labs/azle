@@ -1,4 +1,6 @@
 import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@dfinity/agent';
+
 export type RejectionCode =
     | { NoError: null }
     | { CanisterError: null }
@@ -8,9 +10,9 @@ export type RejectionCode =
     | { SysFatal: null }
     | { CanisterReject: null };
 export interface _SERVICE {
-    getRejectionCodeCanisterError: () => Promise<RejectionCode>;
-    getRejectionCodeCanisterReject: () => Promise<RejectionCode>;
-    getRejectionCodeDestinationInvalid: () => Promise<RejectionCode>;
-    getRejectionCodeNoError: () => Promise<RejectionCode>;
-    getRejectionMessage: (arg_0: string) => Promise<string>;
+    get_rejection_code_canister_error: ActorMethod<[], RejectionCode>;
+    get_rejection_code_canister_reject: ActorMethod<[], RejectionCode>;
+    get_rejection_code_destination_invalid: ActorMethod<[], RejectionCode>;
+    get_rejection_code_no_error: ActorMethod<[], RejectionCode>;
+    get_rejection_message: ActorMethod<[string], string>;
 }

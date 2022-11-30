@@ -8,9 +8,9 @@ type RejectionCode = variant {
   CanisterReject;
 };
 service : () -> {
-  getRejectionCodeCanisterError : () -> (RejectionCode);
-  getRejectionCodeCanisterReject : () -> (RejectionCode);
-  getRejectionCodeDestinationInvalid : () -> (RejectionCode);
-  getRejectionCodeNoError : () -> (RejectionCode);
-  getRejectionMessage : (text) -> (text);
+  get_rejection_code_canister_error : () -> (RejectionCode);
+  get_rejection_code_canister_reject : () -> (RejectionCode);
+  get_rejection_code_destination_invalid : () -> (RejectionCode);
+  get_rejection_code_no_error : () -> (RejectionCode);
+  get_rejection_message : (text) -> (text);
 }

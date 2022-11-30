@@ -6,7 +6,7 @@ export type SomeService = Canister<{
     error(): CanisterResult<empty>;
 }>;
 
-export const someService = ic.canisters.SomeService<SomeService>(
+export const some_service = ic.canisters.SomeService<SomeService>(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
