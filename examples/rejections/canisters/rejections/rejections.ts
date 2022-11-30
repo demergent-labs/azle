@@ -1,4 +1,4 @@
-import { someService } from '../some_service';
+import { some_service } from '../some_service';
 import {
     Canister,
     CanisterResult,
@@ -12,32 +12,32 @@ export type Nonexistent = Canister<{
     method(): CanisterResult<void>;
 }>;
 
-export const nonexistentCanister = ic.canisters.Nonexistent<Nonexistent>(
+export const nonexistent_canister: Nonexistent = ic.canisters.Nonexistent(
     Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
 );
 
-export function* getRejectionCodeNoError(): Update<RejectionCode> {
-    yield someService.accept();
+export function* get_rejection_code_no_error(): Update<RejectionCode> {
+    yield some_service.accept();
     return ic.reject_code();
 }
 
-export function* getRejectionCodeDestinationInvalid(): Update<RejectionCode> {
-    yield nonexistentCanister.method();
+export function* get_rejection_code_destination_invalid(): Update<RejectionCode> {
+    yield nonexistent_canister.method();
     return ic.reject_code();
 }
 
-export function* getRejectionCodeCanisterReject(): Update<RejectionCode> {
-    yield someService.reject('reject');
+export function* get_rejection_code_canister_reject(): Update<RejectionCode> {
+    yield some_service.reject('reject');
     return ic.reject_code();
 }
 
-export function* getRejectionCodeCanisterError(): Update<RejectionCode> {
-    yield someService.error();
+export function* get_rejection_code_canister_error(): Update<RejectionCode> {
+    yield some_service.error();
     return ic.reject_code();
 }
 
-export function* getRejectionMessage(message: string): Update<string> {
-    yield someService.reject(message);
+export function* get_rejection_message(message: string): Update<string> {
+    yield some_service.reject(message);
     return ic.reject_message();
 }
 

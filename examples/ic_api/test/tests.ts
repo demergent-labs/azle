@@ -9,7 +9,7 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'install didc',
             prep: async () => {
                 execSync(
-                    `cd target/azle && cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 didc --root ..`,
+                    `cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 --force didc`,
                     { stdio: 'inherit' }
                 );
             }

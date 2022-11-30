@@ -10,7 +10,7 @@ export function get_tests(
             name: 'reject code NO_ERROR',
             test: async () => {
                 const result =
-                    await rejections_canister.getRejectionCodeNoError();
+                    await rejections_canister.get_rejection_code_no_error();
                 return {
                     ok: 'NoError' in result
                 };
@@ -20,7 +20,7 @@ export function get_tests(
             name: 'reject code DESTINATION_INVALID',
             test: async () => {
                 const result =
-                    await rejections_canister.getRejectionCodeDestinationInvalid();
+                    await rejections_canister.get_rejection_code_destination_invalid();
                 return {
                     ok: 'DestinationInvalid' in result
                 };
@@ -30,7 +30,7 @@ export function get_tests(
             name: 'reject code CANISTER_REJECT',
             test: async () => {
                 const result =
-                    await rejections_canister.getRejectionCodeCanisterReject();
+                    await rejections_canister.get_rejection_code_canister_reject();
                 return {
                     ok: 'CanisterReject' in result
                 };
@@ -40,7 +40,7 @@ export function get_tests(
             name: 'reject code CANISTER_ERROR',
             test: async () => {
                 const result =
-                    await rejections_canister.getRejectionCodeCanisterError();
+                    await rejections_canister.get_rejection_code_canister_error();
                 return {
                     ok: 'CanisterError' in result
                 };
@@ -49,56 +49,54 @@ export function get_tests(
         {
             name: 'reject message',
             test: async () => {
-                const rejectionMessage = 'custom rejection message';
-                const result = await rejections_canister.getRejectionMessage(
-                    rejectionMessage
+                const rejection_message = 'custom rejection message';
+                const result = await rejections_canister.get_rejection_message(
+                    rejection_message
                 );
                 return {
-                    ok: result === rejectionMessage
-                };
-            }
-        },
-        {
-            skip: true,
-            name: 'result with an accept',
-            test: async () => {
-                const rejectionMessage = 'custom rejection message';
-                const result = await rejections_canister.getResult(
-                    { Accept: null },
-                    rejectionMessage
-                );
-                if (!ok(result)) {
-                    return {
-                        err: result.err
-                    };
-                }
-
-                return {
-                    ok: result.ok === null
-                };
-            }
-        },
-        {
-            skip: true,
-            name: 'result with an accept',
-            test: async () => {
-                const rejectionMessage = 'custom rejection message';
-
-                const result = await rejections_canister.getResult(
-                    { Reject: null },
-                    rejectionMessage
-                );
-
-                if (ok(result)) {
-                    return {
-                        ok: false
-                    };
-                }
-
-                return {
-                    ok: result.err === rejectionMessage
+                    ok: result === rejection_message
                 };
             }
         }
+        // {
+        //     name: 'result with an accept',
+        //     test: async () => {
+        //         const rejectionMessage = 'custom rejection message';
+        //         const result = await rejections_canister.getResult(
+        //             { Accept: null },
+        //             rejectionMessage
+        //         );
+        //         if (!ok(result)) {
+        //             return {
+        //                 err: result.err
+        //             };
+        //         }
+
+        //         return {
+        //             ok: result.ok === null
+        //         };
+        //     }
+        // },
+        // {
+        //     name: 'result with an accept',
+        //     test: async () => {
+        //         const rejectionMessage = 'custom rejection message';
+
+        //         const result = await rejections_canister.getResult(
+        //             { Reject: null },
+        //             rejectionMessage
+        //         );
+
+        //         if (ok(result)) {
+        //             return {
+        //                 ok: false
+        //             };
+        //         }
+
+        //         return {
+        //             ok: result.err === rejectionMessage
+        //         };
+        //     }
+        // }
     ];
 }

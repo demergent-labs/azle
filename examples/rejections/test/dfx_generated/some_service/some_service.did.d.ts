@@ -1,6 +1,8 @@
 import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@dfinity/agent';
+
 export interface _SERVICE {
-    accept: () => Promise<boolean>;
-    error: () => Promise<never>;
-    reject: (arg_0: string) => Promise<never>;
+    accept: ActorMethod<[], boolean>;
+    error: ActorMethod<[], never>;
+    reject: ActorMethod<[string], never>;
 }
