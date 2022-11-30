@@ -289,5 +289,5 @@ function candidDecode(bytes: number[]): string {
     const hexString = bytes
         .map((byte) => byte.toString(16).padStart(2, '0'))
         .join('');
-    return execSync(`./target/bin/didc decode ${hexString}`).toString().trim();
+    return execSync(`didc decode ${hexString}`).toString().trim();
 }
