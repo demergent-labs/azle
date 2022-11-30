@@ -8,6 +8,9 @@ const ic_api_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-const tests: Test[] = [...deploy('ic_api'), ...get_tests(ic_api_canister)];
+const tests: Test[] = [
+    ...deploy('ic_api'),
+    ...get_tests(ic_api_canister as any)
+];
 
 run_tests(tests);

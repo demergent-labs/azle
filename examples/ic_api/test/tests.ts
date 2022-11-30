@@ -64,9 +64,9 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'arg_data_raw',
             test: async () => {
                 const blobString = 'Surprise!';
-                const blob = blobString
-                    .split('')
-                    .map((char) => char.charCodeAt(0));
+                const blob = Uint8Array.from(
+                    blobString.split('').map((char) => char.charCodeAt(0))
+                );
                 const int = 127;
                 const bool = true;
                 const string = 'test';
@@ -89,9 +89,9 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'arg_data_raw_size',
             test: async () => {
                 const blobString = 'Surprise!';
-                const blob = blobString
-                    .split('')
-                    .map((char) => char.charCodeAt(0));
+                const blob = Uint8Array.from(
+                    blobString.split('').map((char) => char.charCodeAt(0))
+                );
                 const int = 127;
                 const bool = true;
                 const string = 'test';
@@ -156,10 +156,7 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await ic_api_canister.data_certificate();
 
                 return {
-                    ok:
-                        is_some(result) &&
-                        Array.isArray(result[0]) &&
-                        result[0].length > 0
+                    ok: result[0] !== undefined && result[0].length > 0
                 };
             }
         },
@@ -229,9 +226,9 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'set_data_certificate',
             test: async () => {
-                const result = await ic_api_canister.set_certified_data([
-                    83, 117, 114, 112, 114, 105, 115, 101, 33
-                ]);
+                const result = await ic_api_canister.set_certified_data(
+                    Uint8Array.from([83, 117, 114, 112, 114, 105, 115, 101, 33])
+                );
                 return {
                     ok: result === undefined
                 };
@@ -281,12 +278,8 @@ function is_none<T>(option: [] | T[]): boolean {
     return option.length === 0;
 }
 
-function is_some<T>(option: [] | T[]): boolean {
-    return !is_none(option);
-}
-
-function candidDecode(bytes: number[]): string {
-    const hexString = bytes
+function candidDecode(bytes: Uint8Array): string {
+    const hexString = [...bytes]
         .map((byte) => byte.toString(16).padStart(2, '0'))
         .join('');
     return execSync(`didc decode ${hexString}`).toString().trim();
