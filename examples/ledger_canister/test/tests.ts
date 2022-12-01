@@ -4,8 +4,11 @@ import { deploy, ok, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { _SERVICE } from './dfx_generated/ledger_canister/ledger_canister.did';
 
-export function get_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
-    const test_setups = get_test_setups();
+export function get_tests(
+    ledger_canister: ActorSubclass<_SERVICE>,
+    icp_ledger_path: string
+): Test[] {
+    const test_setups = get_test_setups(icp_ledger_path);
     const simple_tests = get_simple_tests(ledger_canister);
     const transfer_error_tests = get_transfer_error_tests(ledger_canister);
     const address_from_principal_tests =
@@ -21,7 +24,7 @@ export function get_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
     return tests;
 }
 
-function get_test_setups(): Test[] {
+function get_test_setups(icp_ledger_path: string): Test[] {
     return [
         {
             name: 'clear icp_ledger canister memory',
@@ -34,33 +37,30 @@ function get_test_setups(): Test[] {
         {
             name: 'icp_ledger setup',
             prep: async () => {
-                execSync(`mkdir -p canisters/icp_ledger`, {
+                execSync(`mkdir -p ${icp_ledger_path}`, {
                     stdio: 'inherit'
                 });
 
                 execSync(
-                    `cd canisters/icp_ledger && curl -o ledger.wasm.gz https://download.dfinity.systems/ic/dfdba729414d3639b2a6c269600bbbd689b35385/canisters/ledger-canister_notify-method.wasm.gz`,
+                    `cd ${icp_ledger_path} && curl -o ledger.wasm.gz https://download.dfinity.systems/ic/dfdba729414d3639b2a6c269600bbbd689b35385/canisters/ledger-canister_notify-method.wasm.gz`,
+                    {
+                        stdio: 'inherit'
+                    }
+                );
+
+                execSync(`cd ${icp_ledger_path} && gunzip -f ledger.wasm.gz`, {
+                    stdio: 'inherit'
+                });
+
+                execSync(
+                    `cd ${icp_ledger_path} && curl -o ledger.private.did https://raw.githubusercontent.com/dfinity/ic/dfdba729414d3639b2a6c269600bbbd689b35385/rs/rosetta-api/ledger.did`,
                     {
                         stdio: 'inherit'
                     }
                 );
 
                 execSync(
-                    `cd canisters/icp_ledger && gunzip -f ledger.wasm.gz`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-
-                execSync(
-                    `cd canisters/icp_ledger && curl -o ledger.private.did https://raw.githubusercontent.com/dfinity/ic/dfdba729414d3639b2a6c269600bbbd689b35385/rs/rosetta-api/ledger.did`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-
-                execSync(
-                    `cd canisters/icp_ledger && curl -o ledger.public.did https://raw.githubusercontent.com/dfinity/ic/dfdba729414d3639b2a6c269600bbbd689b35385/rs/rosetta-api/ledger_canister/ledger.did`,
+                    `cd ${icp_ledger_path} && curl -o ledger.public.did https://raw.githubusercontent.com/dfinity/ic/dfdba729414d3639b2a6c269600bbbd689b35385/rs/rosetta-api/ledger_canister/ledger.did`,
                     {
                         stdio: 'inherit'
                     }

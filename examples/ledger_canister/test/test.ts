@@ -8,4 +8,4 @@ const ledger_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(get_tests(ledger_canister));
+run_tests(get_tests(ledger_canister, 'canisters/icp_ledger'));
