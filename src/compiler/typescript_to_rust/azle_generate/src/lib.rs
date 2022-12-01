@@ -6,6 +6,7 @@ use crate::{generators::header, ts_ast::TsAst};
 mod errors;
 mod generators;
 mod ts_ast;
+mod ts_keywords;
 
 pub fn azle_generate(
     ts_file_names: &Vec<&str>,
@@ -16,7 +17,7 @@ pub fn azle_generate(
 
     let canister_definition = TsAst::from_ts_file_names(&ts_file_names)
         .to_act()
-        .to_token_stream();
+        .to_token_stream(());
 
     // -------------------------------------------------------------------------
 

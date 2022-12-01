@@ -2,7 +2,10 @@ use quote::{format_ident, quote};
 use swc_common::SourceMap;
 use swc_ecma_ast::{Expr, TsFnParam, TsMethodSignature, TsType, TsTypeElement, TsTypeLit};
 
-use crate::ts_ast::{azle_type::AzleType, AzleBindingIdent, AzleTypeAliasDecl, GetName};
+use crate::{
+    ts_ast::{azle_type::AzleType, AzleBindingIdent, AzleTypeAliasDecl, GetName},
+    ts_keywords,
+};
 use cdk_framework::{ToActDataType, ToTokenStream};
 
 #[derive(Clone)]
@@ -442,7 +445,9 @@ fn get_ts_method_signature_return_type(
     let return_ts_type = &**type_params.params.get(0).unwrap(); // TODO: Properly handle this unwrap
     let return_azle_type = AzleType::from_ts_type(return_ts_type.clone(), source_map);
 
-    return_azle_type.to_act_data_type(&None).to_token_stream()
+    return_azle_type
+        .to_act_data_type(&None)
+        .to_token_stream(&ts_keywords::ts_keywords())
 }
 
 // TODO this part should be refactored to allow us to get a params data structure by just passing in a &FnDecl
@@ -478,7 +483,7 @@ fn get_ts_method_signature_rust_params(
 
     let params = params_as_azle_binding_idents
         .iter()
-        .map(|azle_binding_ident| azle_binding_ident.to_token_stream())
+        .map(|azle_binding_ident| azle_binding_ident.to_token_stream(&ts_keywords::ts_keywords()))
         .collect();
 
     let param_names = params_as_azle_binding_idents
@@ -491,7 +496,11 @@ fn get_ts_method_signature_rust_params(
 
     let param_types = params_as_azle_binding_idents
         .iter()
-        .map(|azle_binding_ident| azle_binding_ident.data_type().to_token_stream())
+        .map(|azle_binding_ident| {
+            azle_binding_ident
+                .data_type()
+                .to_token_stream(&ts_keywords::ts_keywords())
+        })
         .collect();
 
     RustParams {
