@@ -6,6 +6,8 @@ use cdk_framework::{
     ToTokenStream,
 };
 
+use crate::ts_keywords;
+
 pub fn generate_ic_object_notify_with_payment128_functions(
     external_canisters: &Vec<ActExternalCanister>,
 ) -> Vec<TokenStream> {
@@ -53,7 +55,7 @@ fn generate_param_variables(method: &ActExternalCanisterMethod) -> Vec<TokenStre
         .map(|(index, param)| {
             let param_name_js_value = format_ident!("{}_js_value", param.name);
             let param_name = format_ident!("{}", param.name);
-            let param_type = param.data_type.to_token_stream();
+            let param_type = param.data_type.to_token_stream(&ts_keywords::ts_keywords());
 
             quote! {
                 let #param_name_js_value = args_js_object.get(#index, _context).unwrap();

@@ -11,10 +11,13 @@ use crate::{
         azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods,
         program::azle_program::AzleProgramVecHelperMethods,
     },
+    ts_keywords,
 };
 
 impl ToAct for TsAst {
     fn to_act(&self) -> AbstractCanisterTree {
+        let keywords = ts_keywords::ts_keywords();
+
         // Collect AST Information
         let ast_type_alias_decls = &self.azle_programs.get_azle_type_alias_decls();
 
@@ -59,7 +62,7 @@ impl ToAct for TsAst {
             update_method_inline_acts,
         ]
         .concat();
-        let all_inline_acts = data_type_nodes::deduplicate(all_inline_acts);
+        let all_inline_acts = data_type_nodes::deduplicate(all_inline_acts, &keywords);
 
         let all_type_acts = vec![type_alias_acts, all_inline_acts].concat();
 
@@ -161,6 +164,7 @@ impl ToAct for TsAst {
             heartbeat_method,
             init_method,
             inspect_message_method,
+            keywords,
             options,
             post_upgrade_method,
             pre_upgrade_method,

@@ -3,6 +3,8 @@ use quote::quote;
 
 use cdk_framework::{ActCanisterMethod, ToTokenStream};
 
+use crate::ts_keywords;
+
 pub fn generate_ic_object_function_reply(canister_methods: &Vec<ActCanisterMethod>) -> TokenStream {
     let match_arms = generate_match_arms(canister_methods);
     quote! {
@@ -33,7 +35,9 @@ fn generate_match_arms(canister_methods: &Vec<ActCanisterMethod>) -> Vec<TokenSt
 
 fn generate_match_arm(canister_method: &ActCanisterMethod) -> TokenStream {
     let name = &canister_method.get_name();
-    let return_type = &canister_method.get_return_type().to_token_stream();
+    let return_type = &canister_method
+        .get_return_type()
+        .to_token_stream(&ts_keywords::ts_keywords());
     quote!(
         #name => {
             let reply_value: #return_type = _aargs.get(0).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
