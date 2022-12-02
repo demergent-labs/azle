@@ -157,7 +157,7 @@ impl ToAct for TsAst {
 
         // TODO Some of the things in this quote belong inside of the quote in AbstractCanisterTree
         AbstractCanisterTree {
-            // TODO put a CDK_name property on here for use in things
+            cdk_name: "azle".to_string(),
             arrays,
             external_canisters,
             funcs,
