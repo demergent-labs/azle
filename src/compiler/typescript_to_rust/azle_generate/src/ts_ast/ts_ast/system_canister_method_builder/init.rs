@@ -46,7 +46,7 @@ pub fn build_canister_method_system_init(ts_ast: &TsAst) -> ActInitMethod {
                 boa_engine::property::Attribute::all()
             );
 
-            handle_boa_result(_azle_boa_context.eval(format!(
+            _azle_handle_boa_result(_azle_boa_context.eval(format!(
                 "let exports = {{}}; {compiled_js}",
                 compiled_js = MAIN_JS
             )), &mut _azle_boa_context);

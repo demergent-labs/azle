@@ -3,20 +3,20 @@ use quote::quote;
 
 pub fn generate_error_handler() -> TokenStream {
     quote! {
-        pub fn handle_boa_result(
+        pub fn _azle_handle_boa_result(
             boa_result: boa_engine::JsResult<boa_engine::JsValue>,
             context: &mut boa_engine::Context
         ) -> boa_engine::JsValue {
             match boa_result {
                 Ok(_azle_boa_return_value) => _azle_boa_return_value,
                 Err(_azle_boa_error) => {
-                    let error_message = handler_boa_error(_azle_boa_error, context);
+                    let error_message = _azle_handle_boa_error(_azle_boa_error, context);
                     panic!("AZLE RUNTIME ERROR: {}", error_message);
                 },
             }
         }
 
-        fn handler_boa_error(error_value: boa_engine::JsValue, context: &mut boa_engine::Context) -> String{
+        fn _azle_handle_boa_error(error_value: boa_engine::JsValue, context: &mut boa_engine::Context) -> String{
             match &error_value {
                 boa_engine::JsValue::BigInt(bigint) => bigint.to_string(),
                 boa_engine::JsValue::Boolean(boolean) => boolean.to_string(),

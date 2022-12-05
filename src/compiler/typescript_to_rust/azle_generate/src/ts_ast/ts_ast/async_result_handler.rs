@@ -61,7 +61,7 @@ impl TsAst {
                 let mut _azle_final_js_value = boa_engine::JsValue::from("hello"); // TODO this will probably break down below
 
                 while _azle_continue_running == true {
-                    let yield_result_js_value = handle_boa_result(_azle_next_js_object.call(&_azle_boa_return_value, &_azle_args[..], _azle_boa_context), _azle_boa_context);
+                    let yield_result_js_value = _azle_handle_boa_result(_azle_next_js_object.call(&_azle_boa_return_value, &_azle_args[..], _azle_boa_context), _azle_boa_context);
                     let yield_result_js_object = yield_result_js_value.as_object().unwrap();
 
                     let yield_result_done_js_value = yield_result_js_object.get("done", _azle_boa_context).unwrap();
