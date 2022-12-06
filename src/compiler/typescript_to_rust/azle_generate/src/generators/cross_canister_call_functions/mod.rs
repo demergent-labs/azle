@@ -1,5 +1,5 @@
 use cdk_framework::{ToActDataType, ToTokenStream, ToTokenStreams};
-use proc_macro2::TokenStream;
+use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use swc_common::SourceMap;
 use swc_ecma_ast::{Expr, TsMethodSignature, TsType, TsTypeElement, TsTypeLit};
@@ -30,7 +30,7 @@ pub struct CrossCanisterCallFunctionInfo {
 #[derive(Clone)]
 pub struct RustParams {
     pub params: Vec<TokenStream>,
-    pub param_names: Vec<TokenStream>,
+    pub param_names: Vec<Ident>,
     pub param_types: Vec<TokenStream>,
 }
 
@@ -236,20 +236,14 @@ fn generate_call_rust(
     ]
     .concat();
 
-    let param_names = &rust_params.param_names;
-
-    let comma = if param_names.len() == 1 {
-        quote! { , }
-    } else {
-        quote! {}
-    };
+    let param_names = generate_tuple(&rust_params.param_names);
 
     quote! {
         async fn #function_name_ident(#(#params),*) -> CallResult<(#function_return_type,)> {
             ic_cdk::api::call::call(
                 canister_id_principal,
                 #method_name,
-                (#(#param_names),*#comma)
+                #param_names
             ).await
         }
     }
@@ -270,19 +264,14 @@ fn generate_call_with_payment_rust(
     ]
     .concat();
 
-    let param_names = &rust_params.param_names;
+    let param_names = generate_tuple(&rust_params.param_names);
 
-    let comma = if param_names.len() == 1 {
-        quote! { , }
-    } else {
-        quote! {}
-    };
     quote! {
         async fn #function_name_ident(#(#params),*) -> CallResult<(#function_return_type,)> {
             ic_cdk::api::call::call_with_payment(
                 canister_id_principal,
                 #method_name,
-                (#(#param_names),*#comma),
+                #param_names,
                 cycles
             ).await
         }
@@ -304,20 +293,14 @@ fn generate_call_with_payment128_rust(
     ]
     .concat();
 
-    let param_names = &rust_params.param_names;
-
-    let comma = if param_names.len() == 1 {
-        quote! { , }
-    } else {
-        quote! {}
-    };
+    let param_names = generate_tuple(&rust_params.param_names);
 
     quote! {
         async fn #function_name_ident(#(#params),*) -> CallResult<(#function_return_type,)> {
             ic_cdk::api::call::call_with_payment128(
                 canister_id_principal,
                 #method_name,
-                (#(#param_names),*#comma),
+                #param_names,
                 cycles
             ).await
         }
@@ -330,16 +313,8 @@ fn generate_notify_rust(
     rust_params: &RustParams,
 ) -> TokenStream {
     let function_name_ident = format_ident!("{}", function_name);
-
-    let param_names = &rust_params.param_names;
-
+    let param_names = generate_tuple(&rust_params.param_names);
     let param_variables = generate_param_variables(&rust_params);
-
-    let comma = if param_names.len() == 1 {
-        quote! { , }
-    } else {
-        quote! {}
-    };
 
     quote! {
         fn #function_name_ident(
@@ -358,7 +333,7 @@ fn generate_notify_rust(
             let notify_result = ic_cdk::api::call::notify(
                 canister_id_principal,
                 #method_name,
-                (#(#param_names),*#comma)
+                #param_names
             );
 
             Ok(notify_result.try_into_vm_value(_context).unwrap())
@@ -372,16 +347,8 @@ fn generate_notify_with_payment128_rust(
     rust_params: &RustParams,
 ) -> TokenStream {
     let function_name_ident = format_ident!("{}", function_name);
-
-    let param_names = &rust_params.param_names;
-
+    let param_names = generate_tuple(&rust_params.param_names);
     let param_variables = generate_param_variables(&rust_params);
-
-    let comma = if param_names.len() == 1 {
-        quote! { , }
-    } else {
-        quote! {}
-    };
 
     quote! {
         fn #function_name_ident(
@@ -403,7 +370,7 @@ fn generate_notify_with_payment128_rust(
             let notify_result = ic_cdk::api::call::notify_with_payment128(
                 canister_id_principal,
                 #method_name,
-                (#(#param_names),*#comma),
+                #param_names,
                 cycles
             );
 
@@ -445,13 +412,10 @@ fn get_ts_method_signature_rust_params(
         .params
         .to_token_streams(&ts_keywords::ts_keywords());
 
-    let param_names: Vec<TokenStream> = external_canister_method
+    let param_names: Vec<Ident> = external_canister_method
         .params
         .iter()
-        .map(|param| {
-            let name = format_ident!("{}", param.prefixed_name());
-            quote! { #name }
-        })
+        .map(|param| format_ident!("{}", param.prefixed_name()))
         .collect();
 
     let param_types: Vec<TokenStream> = external_canister_method
@@ -483,4 +447,13 @@ pub fn generate_param_variables(rust_params: &RustParams) -> Vec<TokenStream> {
         }
     })
     .collect()
+}
+
+fn generate_tuple(idents: &Vec<Ident>) -> TokenStream {
+    let comma = if idents.len() == 1 {
+        quote! { , }
+    } else {
+        quote! {}
+    };
+    quote! { (#(#idents),*#comma) }
 }
