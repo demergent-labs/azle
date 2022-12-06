@@ -1,4 +1,6 @@
-use quote::quote;
+use cdk_framework::traits::CanisterMethodBuilder;
+use proc_macro2::Ident;
+use quote::{format_ident, quote};
 use swc_ecma_ast::{
     TsKeywordTypeKind::{TsNullKeyword, TsVoidKeyword},
     TsType,
@@ -38,7 +40,11 @@ pub fn maybe_generate_call_to_js_function(
 
 pub fn generate_call_to_js_function(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
     let function_name = fn_decl.get_function_name();
-    let param_name_idents = fn_decl.get_param_name_idents();
+    let param_name_idents: Vec<Ident> = fn_decl
+        .build_params()
+        .iter()
+        .map(|param| format_ident!("{}", param.prefixed_name()))
+        .collect();
 
     quote! {
         let _azle_exports_js_value = _azle_handle_boa_result(_azle_boa_context.eval("exports"), &mut _azle_boa_context);
