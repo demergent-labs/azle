@@ -4,7 +4,7 @@ use swc_ecma_ast::{
     TsType,
 };
 
-use crate::{generators::ic_object::mark_user_defined, ts_ast::AzleFnDecl};
+use crate::ts_ast::AzleFnDecl;
 
 pub fn generate_canister_method_body(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
     let call_to_js_function = generate_call_to_js_function(fn_decl);
@@ -39,10 +39,6 @@ pub fn maybe_generate_call_to_js_function(
 pub fn generate_call_to_js_function(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
     let function_name = fn_decl.get_function_name();
     let param_name_idents = fn_decl.get_param_name_idents();
-    let user_defined_param_name_idents: Vec<proc_macro2::Ident> = param_name_idents
-        .iter()
-        .map(|ident| mark_user_defined(&ident.to_string()))
-        .collect();
 
     quote! {
         let _azle_exports_js_value = _azle_handle_boa_result(_azle_boa_context.eval("exports"), &mut _azle_boa_context);
@@ -55,7 +51,7 @@ pub fn generate_call_to_js_function(fn_decl: &AzleFnDecl) -> proc_macro2::TokenS
             _azle_function_js_object.call(
                 &boa_engine::JsValue::Null,
                 &[
-                    #(#user_defined_param_name_idents.try_into_vm_value(&mut _azle_boa_context).unwrap()),*
+                    #(#param_name_idents.try_into_vm_value(&mut _azle_boa_context).unwrap()),*
                 ],
                 &mut _azle_boa_context
             ),
