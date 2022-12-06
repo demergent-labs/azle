@@ -8,6 +8,8 @@ use crate::{
 };
 use cdk_framework::{ToActDataType, ToTokenStream};
 
+use crate::generators::ic_object;
+
 #[derive(Clone)]
 pub struct CrossCanisterCallFunctionsInfo {
     pub call: CrossCanisterCallFunctionInfo,
@@ -489,8 +491,9 @@ fn get_ts_method_signature_rust_params(
     let param_names = params_as_azle_binding_idents
         .iter()
         .map(|azle_binding_ident| {
-            let name = azle_binding_ident.name_as_ident();
-            quote! { #name }
+            let name_string = azle_binding_ident.binding_ident.id.get_name().to_string();
+            let name_ident = ic_object::param_name_as_variable(&name_string);
+            quote! { #name_ident }
         })
         .collect();
 

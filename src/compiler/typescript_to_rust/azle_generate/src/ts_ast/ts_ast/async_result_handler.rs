@@ -244,8 +244,8 @@ impl TsAst {
 fn generate_async_result_handler_call(
     cross_canister_call_functions_infos: &Vec<CrossCanisterCallFunctionsInfo>,
     azle_call_type: &AzleCallType,
-) -> proc_macro2::TokenStream {
-    let match_arms: Vec<proc_macro2::TokenStream> = cross_canister_call_functions_infos
+) -> TokenStream {
+    let match_arms: Vec<TokenStream> = cross_canister_call_functions_infos
         .iter()
         .map(|cross_canister_call_functions_info| {
             let (cross_canister_call_function_name, cross_canister_call_function_name_ident) = generate_async_result_handler_function_name_info(
@@ -253,7 +253,7 @@ fn generate_async_result_handler_call(
                 azle_call_type
             );
 
-            let params_variables: Vec<proc_macro2::TokenStream> = cross_canister_call_functions_info.call.rust_params.param_names.iter().enumerate().map(|(index, param_name)| {
+            let params_variables: Vec<TokenStream> = cross_canister_call_functions_info.call.rust_params.param_names.iter().enumerate().map(|(index, param_name)| {
                 let param_name_js_value = format_ident!("{}_js_value", param_name.to_string());
                 let param_type = &cross_canister_call_functions_info.call.rust_params.param_types[index];
 
@@ -287,7 +287,7 @@ fn generate_async_result_handler_call(
                 }
             };
 
-            let cycles_comma = if param_names.len() == 0 { quote! {} } else { quote! { , } };
+            let trailing_comma = if param_names.len() == 1 { quote! {,} } else { quote! { } };
 
             let cycles_ident = match azle_call_type {
                 AzleCallType::WithPayment | AzleCallType::WithPayment128 => quote! { cycles },
@@ -305,8 +305,7 @@ fn generate_async_result_handler_call(
 
                     let call_result = #cross_canister_call_function_name_ident(
                         canister_id_principal,
-                        #(#param_names),*
-                        #cycles_comma
+                        (#(#param_names),* #trailing_comma),
                         #cycles_ident
                     ).await;
 
