@@ -492,7 +492,7 @@ fn get_ts_method_signature_rust_params(
         .iter()
         .map(|azle_binding_ident| {
             let name_string = azle_binding_ident.binding_ident.id.get_name().to_string();
-            let name_ident = ic_object::param_name_as_variable(&name_string);
+            let name_ident = ic_object::mark_user_defined(&name_string);
             quote! { #name_ident }
         })
         .collect();
