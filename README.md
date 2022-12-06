@@ -152,7 +152,7 @@ dfx start --background
 dfx deploy
 ```
 
-You can then interact with your canister like any other canister written with Kybra, Motoko, or Rust. For more information about calling your canister using `dfx`, see [here](https://smartcontracts.org/docs/developers-guide/cli-reference/dfx-canister.html#_dfx_canister_call).
+You can then interact with your canister like any other canister written with Motoko, Rust, or Kybra. For more information about calling your canister using `dfx`, see [here](https://internetcomputer.org/docs/current/references/cli-reference/dfx-canister#dfx-canister-call).
 
 dfx commands for the [query example](/examples/query):
 
@@ -340,7 +340,7 @@ More information:
 
 Update methods expose public callable functions that are writable. All state changes will be persisted after the function call completes.
 
-Update calls go through consensus and thus return very slowly (a few seconds) relative to query calls. This also means they are more secure than query calls unless [certified data](https://smartcontracts.org/docs/base-libraries/certifieddata) is used in conjunction with the query call.
+Update calls go through consensus and thus return very slowly (a few seconds) relative to query calls. This also means they are more secure than query calls unless [certified variables](https://internetcomputer.org/how-it-works/response-certification/) are used in conjunction with the query call.
 
 To create an update method, simply wrap the return type of your function in the azle `Update` type.
 
@@ -372,7 +372,7 @@ More information:
 
 Query methods expose public callable functions that are read-only. All state changes will be discarded after the function call completes.
 
-Query calls do not go through consensus and thus return very quickly relative to update calls. This also means they are less secure than update calls unless [certified data](https://smartcontracts.org/docs/base-libraries/certifieddata) is used in conjunction with the query call.
+Query calls do not go through consensus and thus return very quickly relative to update calls. This also means they are less secure than update calls unless [certified variables](https://internetcomputer.org/how-it-works/response-certification/) are used in conjunction with the query call.
 
 To create a query method, simply wrap the return type of your function in the Azle `Query` type.
 
