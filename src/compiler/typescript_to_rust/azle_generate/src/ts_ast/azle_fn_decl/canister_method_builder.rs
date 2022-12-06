@@ -1,5 +1,8 @@
 use super::AzleFnDecl;
-use crate::{generators::canister_methods::method_body, ts_ast::azle_type::AzleType};
+use crate::{
+    generators::{canister_methods::method_body, ic_object::mark_user_defined},
+    ts_ast::azle_type::AzleType,
+};
 use cdk_framework::{
     nodes::{ActCanisterMethod, ActFnParam, CanisterMethod},
     traits::CanisterMethodBuilder,
@@ -35,7 +38,7 @@ impl<'a> CanisterMethodBuilder for AzleFnDecl<'a> {
             .iter()
             .enumerate()
             .map(|(i, name)| ActFnParam {
-                name: name.clone().to_string(),
+                name: mark_user_defined(&name.clone().to_string()).to_string(),
                 data_type: types[i].clone(),
             })
             .collect()
