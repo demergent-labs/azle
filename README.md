@@ -40,6 +40,7 @@ Most of Azle's documentation is currently found in this README. The Azle Book, s
 -   [Stable Memory](#stable-memory)
 -   [Special APIs](#special-apis)
 -   [JS APIs](#js-apis)
+-   [npm packages](#npm-packages)
 -   [Feature Parity](#feature-parity)
 -   [Benchmarks](#benchmarks)
 -   [Security](#security)
@@ -2178,6 +2179,12 @@ export function reply_raw(): UpdateManual<RawReply> {
 
 #### stable storage
 
+The current stable storage implementation is limited in how much data can be serialized/deserialized in the pre_upgrade/post_upgrade step before the cycle limit is reached. It's unclear exactly what the serialization/deserialization limits are, but consider that they will most likely be significantly less than 4GiB.
+
+This applies to stable storage only, not the more primitive stable memory operations.
+
+To resolve these issues, we plan to release an Azle-specific stable structure similar to what can be found [here](https://github.com/dfinity/stable-structures).
+
 Examples:
 
 -   [basic-dao](/examples/motoko_examples/basic-dao)
@@ -2383,6 +2390,14 @@ You can see examples of how to use the JS Date object [here](/examples/date). No
 #### Math.random()
 
 [Math.random()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random) currently returns the same value every time it is called. There is an [issue open to address this](https://github.com/demergent-labs/azle/issues/247). If you need randomness you should use `raw_rand` on the [management canister](/examples/management_canister).
+
+### npm packages
+
+Installing and running npm packages within your canister may or may not work, depending on the package. The most fundamental problem you are likely to face is an npm package that depends on an API that is not supported by the IC or Azle's underlying JS engine.
+
+The IC is a new environment, separate from Node.js and the browser. Just like there are APIs specific to Node.js and the browser, there are APIs specific to the IC and to Azle's underlying JS engine.
+
+Much of the future work for enabling external packages will be forking and patching packages to support IC APIs.
 
 ### Feature Parity
 
