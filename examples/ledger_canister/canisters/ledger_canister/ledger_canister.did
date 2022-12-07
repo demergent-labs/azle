@@ -1,11 +1,5 @@
 type Archive = record { canister_id : principal };
 type Archives = record { archives : vec Archive };
-type AzleInline11804335565527792297 = record {
-  to : vec nat8;
-  fee : Tokens;
-  from : vec nat8;
-  amount : Tokens;
-};
 type AzleInline12373753716509696688 = record {
   from : vec nat8;
   amount : Tokens;
@@ -16,10 +10,16 @@ type AzleInline14801010896561872351 = record {
   requested_index : nat64;
   first_valid_index : nat64;
 };
+type AzleInline15497265404079156732 = record { to : vec nat8; amount : Tokens };
 type AzleInline16382696833118207597 = record { balance : Tokens };
 type AzleInline2802593598360289448 = record { duplicate_of : nat64 };
-type AzleInline3751257598229003272 = record { to : vec nat8; amount : Tokens };
-type AzleInline437713155240343969 = record {
+type AzleInline4311096731304566805 = record {
+  to : vec nat8;
+  fee : Tokens;
+  from : vec nat8;
+  amount : Tokens;
+};
+type AzleInline5573285044870263930 = record {
   callback : func (GetBlocksArgs) -> (
       variant { Ok : BlockRange; Err : QueryArchiveError },
     ) query;
@@ -46,8 +46,8 @@ type GetNameResult = variant { ok : text; err : text };
 type GetTransferFeeResult = variant { ok : TransferFee; err : text };
 type Operation = variant {
   Burn : AzleInline12373753716509696688;
-  Mint : AzleInline3751257598229003272;
-  Transfer : AzleInline11804335565527792297;
+  Mint : AzleInline15497265404079156732;
+  Transfer : AzleInline4311096731304566805;
 };
 type QueryArchiveError = variant {
   BadFirstBlockIndex : AzleInline14801010896561872351;
@@ -58,7 +58,7 @@ type QueryBlocksResponse = record {
   blocks : vec Block;
   chain_length : nat64;
   first_block_index : nat64;
-  archived_blocks : vec AzleInline437713155240343969;
+  archived_blocks : vec AzleInline5573285044870263930;
 };
 type TimeStamp = record { timestamp_nanos : nat64 };
 type Tokens = record { e8s : nat64 };
