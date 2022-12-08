@@ -10,7 +10,7 @@ pub fn generate_error_handler() -> TokenStream {
             match boa_result {
                 Ok(_azle_boa_return_value) => _azle_boa_return_value,
                 Err(_azle_boa_error) => {
-                    let error_message = handler_boa_error(_azle_boa_error, context);
+                    let error_message = handler_boa_error(_azle_boa_error.to_opaque(context), context);
                     panic!("AZLE RUNTIME ERROR: {}", error_message);
                 },
             }
@@ -30,7 +30,7 @@ pub fn generate_error_handler() -> TokenStream {
                 },
                 boa_engine::JsValue::Rational(rational) => rational.to_string(),
                 boa_engine::JsValue::String(string) => {
-                    string.to_string()
+                    string.to_std_string().unwrap()
                 },
                 boa_engine::JsValue::Symbol(symbol) => symbol.to_string(),
                 boa_engine::JsValue::Undefined => "undefined".to_string(),

@@ -84,7 +84,7 @@ impl TsAst {
                         }
 
                         let name_js_value = yield_result_value_js_object.get("name", _azle_boa_context).unwrap();
-                        let name_string = name_js_value.as_string().unwrap();
+                        let name_string: String = name_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
 
                         match &name_string[..] {
                             "call" => {
@@ -92,7 +92,7 @@ impl TsAst {
                                 let call_args_js_object = call_args_js_value.as_object().unwrap();
 
                                 let call_function_name_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap();
-                                let call_function_name_string = call_function_name_js_value.as_string().unwrap().to_string();
+                                let call_function_name_string: String = call_function_name_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
 
                                 let canister_result_js_value = _azle_async_result_handler_call(
                                     _azle_boa_context,
@@ -107,7 +107,7 @@ impl TsAst {
                                 let call_args_js_object = call_args_js_value.as_object().unwrap();
 
                                 let call_function_name_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap();
-                                let call_function_name_string = call_function_name_js_value.as_string().unwrap().to_string();
+                                let call_function_name_string: String = call_function_name_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
 
                                 let canister_result_js_value = _azle_async_result_handler_call_with_payment(
                                     _azle_boa_context,
@@ -122,7 +122,7 @@ impl TsAst {
                                 let call_args_js_object = call_args_js_value.as_object().unwrap();
 
                                 let call_function_name_js_value = call_args_js_object.get("0", _azle_boa_context).unwrap();
-                                let call_function_name_string = call_function_name_js_value.as_string().unwrap().to_string();
+                                let call_function_name_string: String = call_function_name_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
 
                                 let canister_result_js_value = _azle_async_result_handler_call_with_payment128(
                                     _azle_boa_context,
@@ -178,7 +178,7 @@ impl TsAst {
                 let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
 
                 let method_js_value = call_args_js_object.get("1", _azle_boa_context).unwrap();
-                let method_string = method_js_value.as_string().unwrap().to_string();
+                let method_string: String = method_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
 
                 let args_raw_js_value = call_args_js_object.get("2", _azle_boa_context).unwrap();
                 let args_raw_vec: Vec<u8> = args_raw_js_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();

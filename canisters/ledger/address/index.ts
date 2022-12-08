@@ -1,6 +1,6 @@
 import { blob, Principal } from '../../../index';
 import { getCrc32 } from '@dfinity/principal/lib/esm/utils/getCrc';
-import { sha224 } from 'hash.js';
+import { sha224 } from 'js-sha256';
 import { Address } from '../index';
 
 // TODO we need to review these heavily
@@ -50,7 +50,7 @@ function address_from_principal(
     const subaccountBytes = getSubAccountArray(subaccount);
 
     const hash = new Uint8Array(
-        sha224()
+        sha224
             .update([...prefixBytes, ...principalBytes, ...subaccountBytes])
             .digest()
     );

@@ -1,4 +1,4 @@
-service : {
+service : () -> {
   get_date : (text) -> (nat32) query;
   get_day : (text) -> (nat32) query;
   get_full_year : (text) -> (nat32) query;
