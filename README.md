@@ -15,28 +15,19 @@
 
 # Azle (Beta)
 
-TypeScript CDK for the Internet Computer.
+TypeScript CDK for the [Internet Computer](https://internetcomputer.org/).
 
 ## Disclaimer
 
-Please exercise caution when using Azle. It is beta software that you use at your own risk and according to the terms of this [MIT license](/LICENSE).
-
-Demergent Labs may officially recommend Azle for production use when at least the following have occurred:
-
--   [x] [Many example-based unit/integration tests](/examples)
--   [x] [Feature parity with the Rust CDK and Motoko](#feature-parity)
--   [x] Extensive automated benchmarking
--   [ ] Extensive automated property testing
--   [ ] Multiple independent security reviews/audits
--   [ ] [Boa is no longer experimental](https://github.com/boa-dev/boa)
+Please consider the [security section](#security).
 
 ## Discussion
 
-Feel free to open issues or join us in the [DFINITY DEV TypeScript Discord channel](https://discord.com/channels/748416164832608337/956466775380336680).
+Feel free to open issues or join us in the [Discord channel](https://discord.com/channels/748416164832608337/956466775380336680).
 
 ## Documentation
 
-Most of Azle's documentation is currently found in this README. The Azle Book, similar to [Sudograph's](https://i67uk-hiaaa-aaaae-qaaka-cai.raw.ic0.app/), will later be hosted on the Internet Computer.
+Most of Azle's documentation is currently found in this README. The Azle Book, similar to [Sudograph's](https://i67uk-hiaaa-aaaae-qaaka-cai.raw.ic0.app/), will later be published.
 
 -   [Examples](/examples)
 -   [Installation](#installation)
@@ -49,8 +40,10 @@ Most of Azle's documentation is currently found in this README. The Azle Book, s
 -   [Stable Memory](#stable-memory)
 -   [Special APIs](#special-apis)
 -   [JS APIs](#js-apis)
+-   [npm packages](#npm-packages)
 -   [Feature Parity](#feature-parity)
 -   [Benchmarks](#benchmarks)
+-   [Security](#security)
 -   [Roadmap](#roadmap)
 -   [Gotchas and Caveats](#gotchas-and-caveats)
 -   [Decentralization](#decentralization)
@@ -160,29 +153,29 @@ dfx start --background
 dfx deploy
 ```
 
-You can then interact with your canister like any other canister written in Motoko or Rust. For more information about calling your canister using `dfx`, see [here](https://smartcontracts.org/docs/developers-guide/cli-reference/dfx-canister.html#_dfx_canister_call).
+You can then interact with your canister like any other canister written with Motoko, Rust, or Kybra. For more information about calling your canister using `dfx`, see [here](https://internetcomputer.org/docs/current/references/cli-reference/dfx-canister#dfx-canister-call).
 
 dfx commands for the [query example](/examples/query):
 
 ```bash
-dfx canister call query query
+dfx canister call azle simple_query
 # The result is: ("This is a query function")
 ```
 
 dfx commands for the [update example](/examples/update):
 
 ```bash
-dfx canister call update update '("Why hello there")'
+dfx canister call azle update '("Why hello there")'
 # The result is: ()
 
-dfx canister call update query
+dfx canister call update get_current_message
 # The result is: ("Why hello there")
 ```
 
 dfx commands for the [simple_erc20 example](/examples/simple_erc20):
 
 ```bash
-dfx canister call simple_erc20 initializeSupply '("TOKEN", "Token", 1_000_000, "0")'
+dfx canister call simple_erc20 initialize_supply '("Token", "0", "TOKEN", 1_000_000)'
 # The result is: (true)
 
 dfx canister call simple_erc20 name
@@ -191,7 +184,7 @@ dfx canister call simple_erc20 name
 dfx canister call simple_erc20 ticker
 # The result is: ("TOKEN")
 
-dfx canister call simple_erc20 totalSupply
+dfx canister call simple_erc20 total_supply
 # The result is: (1_000_000 : nat64)
 
 dfx canister call simple_erc20 balance '("0")'
@@ -203,19 +196,18 @@ dfx canister call simple_erc20 transfer '("0", "1", 100)'
 
 #### Live Deployment
 
-Deploying to the live Internet Computer generally only requires adding the `--network ic` option to the deploy command: `dfx deploy --network ic`. This assumes you already have converted ICP into cycles appropriately. See [here](https://smartcontracts.org/docs/quickstart/4-quickstart.html) for more information on getting ready to deploy to production.
+Deploying to the live Internet Computer generally only requires adding the `--network ic` option to the deploy command: `dfx deploy --network ic`. This assumes you already have converted ICP into cycles appropriately. See [here](https://internetcomputer.org/docs/current/developer-docs/quickstart/network-quickstart#before-you-begin) for more information on getting ready to deploy to production.
 
 ### Canisters
 
 More information:
 
--   https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html
+-   https://internetcomputer.org/docs/current/concepts/canisters-code
 -   https://wiki.internetcomputer.org/wiki/Canisters_(dapps/smart_contracts)
--   https://smartcontracts.org/docs/developers-guide/design-apps.html#_single_or_multiple_canister_architecture
 
 In many ways developing canisters with Azle is similar to any other TypeScript/JavaScript project. To see what canister source code looks like, see the [examples](/examples).
 
-A canister is the fundamental application unit on the Internet Computer. It contains the code and state of your application. When deployed to the Internet Computer, your canister becomes an everlasting process. Its global variables automatically persist.
+A canister is the fundamental application unit on the Internet Computer. It contains the code and state of your application. When deployed to the Internet Computer, your canister essentially becomes an everlasting process.
 
 Users of your canister interact with it through RPC calls performed using HTTP requests. These calls will hit your canister's `Query` and `Update` methods. These methods, with their parameter and return types, are the interface to your canister.
 
@@ -345,25 +337,25 @@ Examples:
 
 More information:
 
--   https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html#query-update
+-   https://internetcomputer.org/docs/current/concepts/canisters-code#query-and-update-methods
 
 Update methods expose public callable functions that are writable. All state changes will be persisted after the function call completes.
 
-Update calls go through consensus and thus return very slowly (a few seconds) relative to query calls. This also means they are more secure than query calls unless [certified data](https://smartcontracts.org/docs/base-libraries/certifieddata) is used in conjunction with the query call.
+Update calls go through consensus and thus return very slowly (a few seconds) relative to query calls. This also means they are more secure than query calls unless [certified variables](https://internetcomputer.org/how-it-works/response-certification/) are used in conjunction with the query call.
 
 To create an update method, simply wrap the return type of your function in the azle `Update` type.
 
 ```typescript
 import { Query, Update } from 'azle';
 
-let currentMessage: string = '';
+let current_message: string = '';
 
 export function query(): Query<string> {
-    return currentMessage;
+    return current_message;
 }
 
 export function update(message: string): Update<void> {
-    currentMessage = message;
+    current_message = message;
 }
 ```
 
@@ -377,12 +369,11 @@ Examples:
 
 More information:
 
--   https://smartcontracts.org/docs/developers-guide/concepts/canisters-code.html#query-update
--   https://smartcontracts.org/docs/developers-guide/design-apps.html#_using_query_calls
+-   https://internetcomputer.org/docs/current/concepts/canisters-code#query-and-update-methods
 
 Query methods expose public callable functions that are read-only. All state changes will be discarded after the function call completes.
 
-Query calls do not go through consensus and thus return very quickly relative to update calls. This also means they are less secure than update calls unless [certified data](https://smartcontracts.org/docs/base-libraries/certifieddata) is used in conjunction with the query call.
+Query calls do not go through consensus and thus return very quickly relative to update calls. This also means they are less secure than update calls unless [certified variables](https://internetcomputer.org/how-it-works/response-certification/) are used in conjunction with the query call.
 
 To create a query method, simply wrap the return type of your function in the Azle `Query` type.
 
@@ -469,14 +460,14 @@ Examples:
 -   [primitive_types](/examples/primitive_types)
 -   [complex_types](/examples/complex_types)
 
-[Candid](https://smartcontracts.org/docs/candid-guide/candid-intro.html) is an interface description language created by DFINITY. It defines interfaces between services (in our context canisters), allowing canisters and clients written in various languages to easily interact with each other.
+[Candid](https://internetcomputer.org/docs/current/developer-docs/build/candid/candid-intro) is an interface description language created by [DFINITY](https://dfinity.org/). It defines interfaces between services (in our context canisters), allowing canisters and clients written in various languages to easily interact with each other.
 
 Much of what Azle is doing under-the-hood is translating TypeScript code into various formats that Candid understands (for example Azle will generate a Candid `.did` file from your TypeScript code). To do this your TypeScript code must use various Azle-provided types.
 
 Please note that these types are only needed in specific locations in your code, including but not limited to the following areas:
 
 -   `Query`, `Update`, `Init`, and `PostUpgrade` method parameters and return types
--   `Canister` method declaration parameters and return types
+-   External `Canister` method declaration parameters and return types
 
 Basically, you only need to write in TypeScript and use the Azle types when Candid serialization or deserialization is necessary. You could write the rest of your application in plain JavaScript if you'd like.
 
@@ -510,7 +501,7 @@ Data types:
 
 #### text
 
-The TypeScript type `string` corresponds to the [Candid type text](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-text) and will become a [JavaScript String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) at runtime.
+The TypeScript type `string` corresponds to the [Candid type text](https://internetcomputer.org/docs/current/references/candid-ref#type-text) and will become a [JavaScript String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) at runtime.
 
 TypeScript:
 
@@ -538,7 +529,7 @@ service: {
 
 #### blob
 
-The Azle type `blob` corresponds to the [Candid type blob](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-blob) and will become a [JavaScript Uint8Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) at runtime.
+The Azle type `blob` corresponds to the [Candid type blob](https://internetcomputer.org/docs/current/references/candid-ref#type-blob) and will become a [JavaScript Uint8Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) at runtime.
 
 TypeScript:
 
@@ -566,7 +557,7 @@ service: {
 
 #### nat
 
-The Azle type `nat` corresponds to the [Candid type nat](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-nat) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
+The Azle type `nat` corresponds to the [Candid type nat](https://internetcomputer.org/docs/current/references/candid-ref#type-nat) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
 
 TypeScript:
 
@@ -594,7 +585,7 @@ service: {
 
 #### nat64
 
-The Azle type `nat64` corresponds to the [Candid type nat64](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
+The Azle type `nat64` corresponds to the [Candid type nat64](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
 
 TypeScript:
 
@@ -622,7 +613,7 @@ service: {
 
 #### nat32
 
-The Azle type `nat32` corresponds to the [Candid type nat32](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+The Azle type `nat32` corresponds to the [Candid type nat32](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
 
 TypeScript:
 
@@ -650,7 +641,7 @@ service: {
 
 #### nat16
 
-The Azle type `nat16` corresponds to the [Candid type nat16](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+The Azle type `nat16` corresponds to the [Candid type nat16](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
 
 TypeScript:
 
@@ -678,7 +669,7 @@ service: {
 
 #### nat8
 
-The Azle type `nat8` corresponds to the [Candid type nat8](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+The Azle type `nat8` corresponds to the [Candid type nat8](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
 
 TypeScript:
 
@@ -706,7 +697,7 @@ service: {
 
 #### int
 
-The Azle type `int` corresponds to the [Candid type int](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-int) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
+The Azle type `int` corresponds to the [Candid type int](https://internetcomputer.org/docs/current/references/candid-ref#type-int) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
 
 TypeScript:
 
@@ -734,7 +725,7 @@ service: {
 
 #### int64
 
-The Azle type `int64` corresponds to the [Candid type int64](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
+The Azle type `int64` corresponds to the [Candid type int64](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
 
 TypeScript:
 
@@ -762,7 +753,7 @@ service: {
 
 #### int32
 
-The Azle type `int32` corresponds to the [Candid type int32](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+The Azle type `int32` corresponds to the [Candid type int32](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
 
 TypeScript:
 
@@ -790,7 +781,7 @@ service: {
 
 #### int16
 
-The Azle type `int16` corresponds to the [Candid type int16](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+The Azle type `int16` corresponds to the [Candid type int16](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
 
 TypeScript:
 
@@ -818,7 +809,7 @@ service: {
 
 #### int8
 
-The Azle type `int8` corresponds to the [Candid type int8](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-intN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+The Azle type `int8` corresponds to the [Candid type int8](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
 
 TypeScript:
 
@@ -846,7 +837,7 @@ service: {
 
 #### float64
 
-The Azle type `float64` corresponds to the [Candid type float64](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-floatN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+The Azle type `float64` corresponds to the [Candid type float64](https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
 
 TypeScript:
 
@@ -874,7 +865,7 @@ service: {
 
 #### float32
 
-The Azle type `float32` corresponds to the [Candid type float32](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-floatN) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+The Azle type `float32` corresponds to the [Candid type float32](https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
 
 TypeScript:
 
@@ -902,7 +893,7 @@ service: {
 
 #### bool
 
-The TypeScript type `boolean` corresponds to the [Candid type bool](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-bool) and will become a [JavaScript Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) at runtime.
+The TypeScript type `boolean` corresponds to the [Candid type bool](https://internetcomputer.org/docs/current/references/candid-ref#type-bool) and will become a [JavaScript Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) at runtime.
 
 TypeScript:
 
@@ -930,7 +921,7 @@ service: {
 
 #### null
 
-The TypeScript type `null` corresponds to the [Candid type null](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-null) and will become a [JavaScript null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null) at runtime.
+The TypeScript type `null` corresponds to the [Candid type null](https://internetcomputer.org/docs/current/references/candid-ref#type-null) and will become a [JavaScript null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null) at runtime.
 
 TypeScript:
 
@@ -958,7 +949,7 @@ service: {
 
 #### vec
 
-TypeScript `[]` array syntax corresponds to the [Candid type vec](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-vec) and will become an array of the specified type at runtime (except for `nat8[]` which will become a `Uint8Array`, thus it is recommended to use the `blob` type instead of `nat8[]`). Only the `[]` array syntax is supported at this time (i.e. not `Array` or `ReadonlyArray` etc).
+TypeScript `[]` array syntax corresponds to the [Candid type vec](https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t) and will become an array of the specified type at runtime (except for `nat8[]` which will become a `Uint8Array`, thus it is recommended to use the `blob` type instead of `nat8[]`). Only the `[]` array syntax is supported at this time (i.e. not `Array` or `ReadonlyArray` etc).
 
 TypeScript:
 
@@ -980,7 +971,7 @@ service: {
 
 #### opt
 
-The Azle type `Opt` corresponds to the [Candid type opt](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-opt) and will become the enclosed JavaScript type or null at runtime.
+The Azle type `Opt` corresponds to the [Candid type opt](https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t) and will become the enclosed JavaScript type or null at runtime.
 
 TypeScript:
 
@@ -1007,7 +998,7 @@ service: {
 
 #### record
 
-TypeScript type aliases referring to object literals correspond to the [Candid record type](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-record) and will become [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
+TypeScript type aliases referring to object literals correspond to the [Candid record type](https://internetcomputer.org/docs/current/references/candid-ref#type-record--n--t--) and will become [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
 
 TypeScript:
 
@@ -1061,7 +1052,7 @@ type User = record {
 
 #### variant
 
-TypeScript type aliases referring to object literals wrapped in the `Variant` Azle type correspond to the [Candid variant type](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-variant) and will become [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
+TypeScript type aliases referring to object literals wrapped in the `Variant` Azle type correspond to the [Candid variant type](https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--) and will become [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
 
 TypeScript:
 
@@ -1111,7 +1102,7 @@ type Firework = record {
 
 #### func
 
-The Azle type `func` corresponds to the [Candid type func](https://internetcomputer.org/docs/current/references/candid-ref/#type-func---) and at runtime will become a JavaScript array with two elements, the first being an [@dfinity/principal](https://www.npmjs.com/package/@dfinity/principal) and the second being a [JavaScript string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String). The `@dfinity/principal` represents the `principal` of the canister/service where the function exists, and the `string` represents the function's name.
+The Azle type `func` corresponds to the [Candid type func](https://internetcomputer.org/docs/current/references/candid-ref#type-func---) and at runtime will become a JavaScript array with two elements, the first being an [@dfinity/principal](https://www.npmjs.com/package/@dfinity/principal) and the second being a [JavaScript string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String). The `@dfinity/principal` represents the `principal` of the canister/service where the function exists, and the `string` represents the function's name.
 
 TypeScript:
 
@@ -1175,7 +1166,7 @@ service: () -> {
 
 #### principal
 
-The Azle type `Principal` corresponds to the [Candid type principal](https://smartcontracts.org/docs/candid-guide/candid-types.html#type-principal) and will become an [@dfinity/principal](https://www.npmjs.com/package/@dfinity/principal) at runtime.
+The Azle type `Principal` corresponds to the [Candid type principal](https://internetcomputer.org/docs/current/references/candid-ref#type-principal) and will become an [@dfinity/principal](https://www.npmjs.com/package/@dfinity/principal) at runtime.
 
 TypeScript:
 
@@ -1205,7 +1196,7 @@ service: {
 
 #### reserved
 
-The Azle type `reserved` corresponds to the [Candid type reserved](https://internetcomputer.org/docs/current/references/candid-ref/#type-reserved) and will become a [JavaScript null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null) at runtime.
+The Azle type `reserved` corresponds to the [Candid type reserved](https://internetcomputer.org/docs/current/references/candid-ref#type-reserved) and will become a [JavaScript null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null) at runtime.
 
 TypeScript:
 
@@ -1233,7 +1224,7 @@ service: {
 
 #### empty
 
-The Azle type `empty` corresponds to the [Candid type empty](https://internetcomputer.org/docs/current/references/candid-ref/#type-empty) and has no JavaScript value at runtime.
+The Azle type `empty` corresponds to the [Candid type empty](https://internetcomputer.org/docs/current/references/candid-ref#type-empty) and has no JavaScript value at runtime.
 
 TypeScript:
 
@@ -1282,6 +1273,8 @@ Examples:
 -   [candid_encoding](/examples/candid_encoding)
 
 ```typescript
+import { blob, ic, Query } from 'azle';
+
 // decodes Candid bytes to a Candid string
 export function candid_decode(candid_encoded: blob): Query<string> {
     return ic.candid_decode(candid_encoded);
@@ -1297,6 +1290,8 @@ Examples:
 -   [notify_raw](/examples/notify_raw)
 
 ```typescript
+import { blob, ic, Query } from 'azle';
+
 // encodes a Candid string to Candid bytes
 export function candid_encode(candid_string: string): Query<blob> {
     return ic.candid_encode(candid_string);
@@ -1311,7 +1306,7 @@ Examples:
 -   [ic_api](/examples/ic_api)
 
 ```typescript
-import { ic, nat, Query } from 'azle';
+import { ic, nat64, Query } from 'azle';
 
 // returns the amount of cycles available in the canister
 export function canister_balance(): Query<nat64> {
@@ -1531,6 +1526,8 @@ Examples:
 -   [ic_api](/examples/ic_api)
 
 ```typescript
+import { blob, ic, int8, Query } from 'azle';
+
 // returns the argument data as bytes.
 export function arg_data_raw(
     arg1: blob,
@@ -1549,6 +1546,8 @@ Examples:
 -   [ic_api](/examples/ic_api)
 
 ```typescript
+import { blob, ic, int8, nat32, Query } from 'azle';
+
 // returns the length of the argument data in bytes
 export function arg_data_raw_size(
     arg1: blob,
@@ -1573,7 +1572,15 @@ Examples:
 -   [whoami](/examples/motoko_examples/whoami)
 
 ```typescript
-import { Canister, CanisterResult, ic, ok, Update, Variant } from 'azle';
+import {
+    Canister,
+    CanisterResult,
+    ic,
+    ok,
+    Principal,
+    Update,
+    Variant
+} from 'azle';
 
 type Canister1 = Canister<{
     method(): CanisterResult<boolean>;
@@ -1611,13 +1618,13 @@ Examples:
 -   [call_raw](/examples/call_raw)
 
 ```typescript
-import { blob, ic, ok, Principal, Update } from 'azle';
+import { blob, CanisterResult, ic, ok, Principal, Update } from 'azle';
 
 export function* get_randomness(): Update<blob> {
     const canister_result: CanisterResult<blob> = yield ic.call_raw(
         Principal.fromText('aaaaa-aa'),
         'raw_rand',
-        Uint8Array.from([68, 73, 68, 76, 0, 0]),
+        Uint8Array.from(ic.candid_encode('()')),
         0n // this is a nat64
     );
 
@@ -1636,13 +1643,13 @@ Examples:
 -   [call_raw](/examples/call_raw)
 
 ```typescript
-import { blob, ic, ok, Principal, Update } from 'azle';
+import { blob, CanisterResult, ic, ok, Principal, Update } from 'azle';
 
 export function* get_randomness(): Update<blob> {
     const canister_result: CanisterResult<blob> = yield ic.call_raw128(
         Principal.fromText('aaaaa-aa'),
         'raw_rand',
-        Uint8Array.from([68, 73, 68, 76, 0, 0]),
+        Uint8Array.from(ic.candid_encode('()')),
         0n // this is a nat
     );
 
@@ -1662,7 +1669,15 @@ Examples:
 -   [management_canister](/examples/management_canister)
 
 ```typescript
-import { Canister, CanisterResult, ic, ok, Update, Variant } from 'azle';
+import {
+    Canister,
+    CanisterResult,
+    ic,
+    ok,
+    Principal,
+    Update,
+    Variant
+} from 'azle';
 
 type Canister1 = Canister<{
     method(): CanisterResult<boolean>;
@@ -1837,7 +1852,16 @@ Examples:
 -   [cycles](/examples/cycles)
 
 ```typescript
-import { Canister, CanisterResult, ic, nat64, ok, Update, Variant } from 'azle';
+import {
+    Canister,
+    CanisterResult,
+    ic,
+    nat64,
+    ok,
+    Principal,
+    Update,
+    Variant
+} from 'azle';
 
 type Canister1 = Canister<{
     method(): CanisterResult<boolean>;
@@ -1876,7 +1900,16 @@ Examples:
 -   [cycles](/examples/cycles)
 
 ```typescript
-import { Canister, CanisterResult, ic, nat, ok, Update, Variant } from 'azle';
+import {
+    Canister,
+    CanisterResult,
+    ic,
+    nat,
+    ok,
+    Principal,
+    Update,
+    Variant
+} from 'azle';
 
 type Canister1 = Canister<{
     method(): CanisterResult<boolean>;
@@ -1916,7 +1949,7 @@ Examples:
 -   [cycles](/examples/cycles)
 
 ```typescript
-import { Canister, CanisterResult, ic, ok, Update } from 'azle';
+import { Canister, CanisterResult, ic, ok, Principal, Update } from 'azle';
 
 type Canister1 = Canister<{
     method(): CanisterResult<boolean>;
@@ -1969,7 +2002,7 @@ Examples:
 -   [cycles](/examples/cycles)
 
 ```typescript
-import { Canister, CanisterResult, ic, ok, Update } from 'azle';
+import { Canister, CanisterResult, ic, ok, Principal, Update } from 'azle';
 
 type Canister1 = Canister<{
     method(): CanisterResult<boolean>;
@@ -1982,8 +2015,8 @@ const canister1 = ic.canisters.Canister1<Canister1>(
 export function call_canister1_method(): Update<boolean> {
     const canister_result: CanisterResult<null> = canister1
         .method()
-        .notify()
         .with_cycles128(100_000_000_000n);
+        .notify()
 
     if (!ok(canister_result)) {
         return false;
@@ -2000,6 +2033,8 @@ Examples:
 -   [ic_api](/examples/ic_api)
 
 ```typescript
+import { ic, nat64, Query } from 'azle';
+
 export function performance_counter(): Query<nat64> {
     return ic.performance_counter(0);
 }
@@ -2028,7 +2063,14 @@ Examples:
 -   [rejections](/examples/rejections)
 
 ```typescript
-import { Canister, CanisterResult, ic, RejectionCode, Update } from 'azle';
+import {
+    Canister,
+    CanisterResult,
+    ic,
+    Principal,
+    RejectionCode,
+    Update
+} from 'azle';
 
 type Canister1 = Canister<{
     method(): CanisterResult<boolean>;
@@ -2051,7 +2093,7 @@ Examples:
 -   [rejections](/examples/rejections)
 
 ```typescript
-import { Canister, CanisterResult, ic, Update } from 'azle';
+import { Canister, CanisterResult, ic, Principal, Update } from 'azle';
 
 type Canister1 = Canister<{
     method(): CanisterResult<boolean>;
@@ -2136,6 +2178,12 @@ export function reply_raw(): UpdateManual<RawReply> {
 -   [stable write](#stable-write)
 
 #### stable storage
+
+The current stable storage implementation is limited in how much data can be serialized/deserialized in the pre_upgrade/post_upgrade step before the cycle limit is reached. It's unclear exactly what the serialization/deserialization limits are, but consider that they will most likely be significantly less than 4GiB.
+
+This applies to stable storage only, not the more primitive stable memory operations.
+
+To resolve these issues, we plan to release an Azle-specific stable structure similar to what can be found [here](https://github.com/dfinity/stable-structures).
 
 Examples:
 
@@ -2341,7 +2389,15 @@ You can see examples of how to use the JS Date object [here](/examples/date). No
 
 #### Math.random()
 
-[Math.random()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random) currently returns the same value every time it is called. There is an [issue open to address this](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random). If you need randomness you should use `raw_rand` on the [management canister](<(/examples/management_canister)>).
+[Math.random()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random) currently returns the same value every time it is called. There is an [issue open to address this](https://github.com/demergent-labs/azle/issues/247). If you need randomness you should use `raw_rand` on the [management canister](/examples/management_canister).
+
+### npm packages
+
+Installing and running npm packages within your canister may or may not work, depending on the package. The most fundamental problem you are likely to face is an npm package that depends on an API that is not supported by the IC or Azle's underlying JS engine.
+
+The IC is a new environment, separate from Node.js and the browser. Just like there are APIs specific to Node.js and the browser, there are APIs specific to the IC and to Azle's underlying JS engine.
+
+Much of the future work for enabling external packages will be forking and patching packages to support IC APIs.
 
 ### Feature Parity
 
@@ -2757,16 +2813,23 @@ Cycle costs taken from [here](https://internetcomputer.org/docs/current/develope
 | Heavy    | Update Heavy           | Motoko | $5,045.26        | $832.55                      | $83,255.04                    | $2,456.02       | $8.61               | $108.23    | $832.55                | $10.57     | $92,548.83  |
 | Heavy    | Update Heavy           | Rust   | $5,045.26        | $832.55                      | $83,255.04                    | $2,456.02       | $73.39              | $108.23    | $832.55                | $10.57     | $92,613.61  |
 
+### Security
+
+Things to keep in mind:
+
+-   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
+-   Azle does not yet have extensive automated property tests
+-   Azle does not yet have multiple independent security reviews/audits
+-   Azle heavily relies on Boa which is [self-proclaimed to be experimental](https://github.com/boa-dev/boa#boa)
+
 ### Roadmap
 
--   [x] July 2022
-    -   [x] Extensive automated benchmarking
--   [ ] August 2022
-    -   [ ] Compiler error DX revamp
-    -   [ ] Rust rewrite
--   [ ] September 2022
-    -   [ ] Extensive automated property testing
-    -   [ ] Multiple independent security reviews/audits
+The following are the major blockers to 1.0/production-readiness:
+
+-   Extensive automated property testing (~Q1 2023)
+-   Multiple independent security reviews/audits (~Q1/Q2 2023)
+-   Performance improvements if necessary (~Q1/Q2 2023)
+-   Boa production-ready, JS Engine swapout, or risks accepted (~2023)
 
 ### Gotchas and Caveats
 
