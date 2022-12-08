@@ -116,6 +116,7 @@ type ic = {
     };
     canister_balance: () => nat64;
     canister_balance128: () => nat;
+    clear_timer: (id: TimerId) => void;
     data_certificate: () => Opt<blob>;
     id: () => Principal;
     method_name: () => string;
@@ -143,6 +144,11 @@ type ic = {
     /** Non-working type declaration. But API we want */
     // result: <T>() => AzleResult<Array<T>>;
     set_certified_data: (data: blob) => void;
+    set_timer: (delay: Duration, callback: () => Update<void>) => TimerId;
+    set_timer_interval: (
+        interval: Duration,
+        callback: () => Update<void>
+    ) => TimerId;
     stable_bytes: () => blob;
     stable_grow: (new_pages: nat32) => StableGrowResult;
     stable_read: (offset: nat32, length: nat32) => blob;
@@ -205,6 +211,16 @@ export type NotifyResult = Variant<{
     ok: null;
     err: RejectionCode;
 }>;
+
+/**
+ * Type returned by the `ic.set_timer` and `ic.set_timer_interval` functions. Pass to `ic.clear_timer` to remove the timer.
+ */
+export type TimerId = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
+
+/**
+ * Represents a duration of time in seconds.
+ */
+export type Duration = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
 
 export type int = bigint;
 export type int64 = bigint;
