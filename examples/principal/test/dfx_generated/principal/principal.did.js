@@ -17,6 +17,11 @@ export const idlFactory = ({ IDL }) => {
         principal_in_variant: IDL.Func([], [Status], ['query']),
         principal_param: IDL.Func([IDL.Principal], [IDL.Principal], ['query']),
         principal_return_type: IDL.Func([], [IDL.Principal], ['query']),
+        principal_self_authenticating: IDL.Func(
+            [IDL.Vec(IDL.Nat8)],
+            [IDL.Principal],
+            ['query']
+        ),
         principal_to_blob: IDL.Func(
             [IDL.Principal],
             [IDL.Vec(IDL.Nat8)],

@@ -8,6 +8,7 @@ service : () -> {
   principal_in_variant : () -> (Status) query;
   principal_param : (principal) -> (principal) query;
   principal_return_type : () -> (principal) query;
+  principal_self_authenticating : (vec nat8) -> (principal) query;
   principal_to_blob : (principal) -> (vec nat8) query;
   principal_to_hex : (principal) -> (text) query;
   principal_to_text : (principal) -> (text) query;
