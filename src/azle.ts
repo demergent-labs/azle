@@ -157,6 +157,8 @@ function generateRustCanister(
 
     const unformattedLibFile = azleGenerateResult.ok;
 
+    fs.writeFileSync(`target/azle/${rootPath}/src/lib.rs`, unformattedLibFile);
+
     const runRustFmtResult = runRustFmt(unformattedLibFile, {
         rootPath
     });

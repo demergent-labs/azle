@@ -1,12 +1,15 @@
+use cdk_framework::{ToActDataType, ToTokenStream, ToTokenStreams};
+use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use swc_common::SourceMap;
-use swc_ecma_ast::{Expr, TsFnParam, TsMethodSignature, TsType, TsTypeElement, TsTypeLit};
+use swc_ecma_ast::{Expr, TsMethodSignature, TsType, TsTypeElement, TsTypeLit};
 
 use crate::{
-    ts_ast::{azle_type::AzleType, AzleBindingIdent, AzleTypeAliasDecl, GetName},
+    ts_ast::{
+        azle_method_signature::AzleMethodSignature, azle_type::AzleType, AzleTypeAliasDecl, GetName,
+    },
     ts_keywords,
 };
-use cdk_framework::{ToActDataType, ToTokenStream};
 
 #[derive(Clone)]
 pub struct CrossCanisterCallFunctionsInfo {
@@ -21,14 +24,14 @@ pub struct CrossCanisterCallFunctionsInfo {
 pub struct CrossCanisterCallFunctionInfo {
     pub name: String,
     pub rust_params: RustParams,
-    pub rust: proc_macro2::TokenStream,
+    pub rust: TokenStream,
 }
 
 #[derive(Clone)]
 pub struct RustParams {
-    pub params: Vec<proc_macro2::TokenStream>,
-    pub param_names: Vec<proc_macro2::TokenStream>,
-    pub param_types: Vec<proc_macro2::TokenStream>,
+    pub params: Vec<TokenStream>,
+    pub param_names: Vec<Ident>,
+    pub param_types: Vec<TokenStream>,
 }
 
 struct CrossCanisterCallFunctionNames {
@@ -222,9 +225,9 @@ fn get_method_name(ts_method_signature: &TsMethodSignature) -> String {
 fn generate_call_rust(
     function_name: &str,
     method_name: &str,
-    function_return_type: &proc_macro2::TokenStream,
+    function_return_type: &TokenStream,
     rust_params: &RustParams,
-) -> proc_macro2::TokenStream {
+) -> TokenStream {
     let function_name_ident = format_ident!("{}", function_name);
 
     let params = vec![
@@ -233,20 +236,14 @@ fn generate_call_rust(
     ]
     .concat();
 
-    let param_names = &rust_params.param_names;
-
-    let comma = if param_names.len() == 1 {
-        quote! { , }
-    } else {
-        quote! {}
-    };
+    let param_names = generate_tuple(&rust_params.param_names);
 
     quote! {
         async fn #function_name_ident(#(#params),*) -> CallResult<(#function_return_type,)> {
             ic_cdk::api::call::call(
                 canister_id_principal,
                 #method_name,
-                (#(#param_names),*#comma)
+                #param_names
             ).await
         }
     }
@@ -255,9 +252,9 @@ fn generate_call_rust(
 fn generate_call_with_payment_rust(
     function_name: &str,
     method_name: &str,
-    function_return_type: &proc_macro2::TokenStream,
+    function_return_type: &TokenStream,
     rust_params: &RustParams,
-) -> proc_macro2::TokenStream {
+) -> TokenStream {
     let function_name_ident = format_ident!("{}", function_name);
 
     let params = vec![
@@ -267,19 +264,14 @@ fn generate_call_with_payment_rust(
     ]
     .concat();
 
-    let param_names = &rust_params.param_names;
+    let param_names = generate_tuple(&rust_params.param_names);
 
-    let comma = if param_names.len() == 1 {
-        quote! { , }
-    } else {
-        quote! {}
-    };
     quote! {
         async fn #function_name_ident(#(#params),*) -> CallResult<(#function_return_type,)> {
             ic_cdk::api::call::call_with_payment(
                 canister_id_principal,
                 #method_name,
-                (#(#param_names),*#comma),
+                #param_names,
                 cycles
             ).await
         }
@@ -289,9 +281,9 @@ fn generate_call_with_payment_rust(
 fn generate_call_with_payment128_rust(
     function_name: &str,
     method_name: &str,
-    function_return_type: &proc_macro2::TokenStream,
+    function_return_type: &TokenStream,
     rust_params: &RustParams,
-) -> proc_macro2::TokenStream {
+) -> TokenStream {
     let function_name_ident = format_ident!("{}", function_name);
 
     let params = vec![
@@ -301,20 +293,14 @@ fn generate_call_with_payment128_rust(
     ]
     .concat();
 
-    let param_names = &rust_params.param_names;
-
-    let comma = if param_names.len() == 1 {
-        quote! { , }
-    } else {
-        quote! {}
-    };
+    let param_names = generate_tuple(&rust_params.param_names);
 
     quote! {
         async fn #function_name_ident(#(#params),*) -> CallResult<(#function_return_type,)> {
             ic_cdk::api::call::call_with_payment128(
                 canister_id_principal,
                 #method_name,
-                (#(#param_names),*#comma),
+                #param_names,
                 cycles
             ).await
         }
@@ -325,30 +311,10 @@ fn generate_notify_rust(
     function_name: &str,
     method_name: &str,
     rust_params: &RustParams,
-) -> proc_macro2::TokenStream {
+) -> TokenStream {
     let function_name_ident = format_ident!("{}", function_name);
-
-    let param_names = &rust_params.param_names;
-
-    let param_variables: Vec<proc_macro2::TokenStream> = param_names
-        .iter()
-        .enumerate()
-        .map(|(index, param_name)| {
-            let param_name_js_value = format_ident!("{}_js_value", param_name.to_string());
-            let param_type = &rust_params.param_types[index];
-
-            quote! {
-                let #param_name_js_value = args_js_object.get(#index, _context).unwrap();
-                let #param_name: #param_type = #param_name_js_value.try_from_vm_value(&mut *_context).unwrap();
-            }
-        })
-        .collect();
-
-    let comma = if param_names.len() == 1 {
-        quote! { , }
-    } else {
-        quote! {}
-    };
+    let param_names = generate_tuple(&rust_params.param_names);
+    let param_variables = generate_param_variables(&rust_params);
 
     quote! {
         fn #function_name_ident(
@@ -367,7 +333,7 @@ fn generate_notify_rust(
             let notify_result = ic_cdk::api::call::notify(
                 canister_id_principal,
                 #method_name,
-                (#(#param_names),*#comma)
+                #param_names
             );
 
             Ok(notify_result.try_into_vm_value(_context).unwrap())
@@ -379,30 +345,10 @@ fn generate_notify_with_payment128_rust(
     function_name: &str,
     method_name: &str,
     rust_params: &RustParams,
-) -> proc_macro2::TokenStream {
+) -> TokenStream {
     let function_name_ident = format_ident!("{}", function_name);
-
-    let param_names = &rust_params.param_names;
-
-    let param_variables: Vec<proc_macro2::TokenStream> = param_names
-        .iter()
-        .enumerate()
-        .map(|(index, param_name)| {
-            let param_name_js_value = format_ident!("{}_js_value", param_name.to_string());
-            let param_type = &rust_params.param_types[index];
-
-            quote! {
-                let #param_name_js_value = args_js_object.get(#index, _context).unwrap();
-                let #param_name: #param_type = #param_name_js_value.try_from_vm_value(&mut *_context).unwrap();
-            }
-        })
-        .collect();
-
-    let comma = if param_names.len() == 1 {
-        quote! { , }
-    } else {
-        quote! {}
-    };
+    let param_names = generate_tuple(&rust_params.param_names);
+    let param_variables = generate_param_variables(&rust_params);
 
     quote! {
         fn #function_name_ident(
@@ -424,7 +370,7 @@ fn generate_notify_with_payment128_rust(
             let notify_result = ic_cdk::api::call::notify_with_payment128(
                 canister_id_principal,
                 #method_name,
-                (#(#param_names),*#comma),
+                #param_names,
                 cycles
             );
 
@@ -436,7 +382,7 @@ fn generate_notify_with_payment128_rust(
 fn get_ts_method_signature_return_type(
     ts_method_signature: &TsMethodSignature,
     source_map: &SourceMap,
-) -> proc_macro2::TokenStream {
+) -> TokenStream {
     // TODO: This should be handled in the same way that we handle these same sorts of errors on
     // regular canister methods. So we should be able to re-use code here.
     let ts_type_ann = &*ts_method_signature.type_ann.as_ref().unwrap().type_ann; // TODO: Properly handle this unwrap
@@ -456,51 +402,26 @@ fn get_ts_method_signature_rust_params(
     ts_method_signature: &TsMethodSignature,
     source_map: &SourceMap,
 ) -> RustParams {
-    let params_as_azle_binding_idents: Vec<AzleBindingIdent> = ts_method_signature
+    let azle_method_signature = AzleMethodSignature {
+        ts_method_signature: ts_method_signature.clone(),
+        source_map,
+    };
+    let external_canister_method = azle_method_signature.to_act_external_canister_method();
+
+    let params = external_canister_method
+        .params
+        .to_token_streams(&ts_keywords::ts_keywords());
+
+    let param_names: Vec<Ident> = external_canister_method
         .params
         .iter()
-        .map(|ts_fn_param| match ts_fn_param {
-            // TODO: We should be able to use some of the error message generation code found over
-            // in src/compiler/typescript_to_rust/azle_generate/src/ts_ast/azle_fn_decl/errors.rs
-            TsFnParam::Ident(binding_ident) => AzleBindingIdent {
-                binding_ident: binding_ident.clone(),
-                source_map,
-            },
-            TsFnParam::Array(_) => {
-                // TODO: Use a snippet to show the exact location of the problem
-                panic!("Array destructuring in parameters is unsupported at this time")
-            }
-            TsFnParam::Rest(_) => {
-                // TODO: Use a snippet to show the exact location of the problem
-                panic!("Rest parameters are not supported in canister method signatures")
-            }
-            TsFnParam::Object(_) => {
-                // TODO: Use a snippet to show the exact location of the problem
-                panic!("Object destructuring in parameters is unsupported at this time")
-            }
-        })
+        .map(|param| format_ident!("{}", param.prefixed_name()))
         .collect();
 
-    let params = params_as_azle_binding_idents
+    let param_types: Vec<TokenStream> = external_canister_method
+        .params
         .iter()
-        .map(|azle_binding_ident| azle_binding_ident.to_token_stream(&ts_keywords::ts_keywords()))
-        .collect();
-
-    let param_names = params_as_azle_binding_idents
-        .iter()
-        .map(|azle_binding_ident| {
-            let name = azle_binding_ident.name_as_ident();
-            quote! { #name }
-        })
-        .collect();
-
-    let param_types = params_as_azle_binding_idents
-        .iter()
-        .map(|azle_binding_ident| {
-            azle_binding_ident
-                .data_type()
-                .to_token_stream(&ts_keywords::ts_keywords())
-        })
+        .map(|param| param.data_type.to_token_stream(&ts_keywords::ts_keywords()))
         .collect();
 
     RustParams {
@@ -508,4 +429,31 @@ fn get_ts_method_signature_rust_params(
         param_names,
         param_types,
     }
+}
+
+pub fn generate_param_variables(rust_params: &RustParams) -> Vec<TokenStream> {
+    let param_names = &rust_params.param_names;
+
+    param_names
+    .iter()
+    .enumerate()
+    .map(|(index, param_name)| {
+        let param_name_js_value = format_ident!("{}_js_value", param_name.to_string());
+        let param_type = &rust_params.param_types[index];
+
+        quote! {
+            let #param_name_js_value = args_js_object.get(#index, _context).unwrap();
+            let #param_name: #param_type = #param_name_js_value.try_from_vm_value(&mut *_context).unwrap();
+        }
+    })
+    .collect()
+}
+
+fn generate_tuple(idents: &Vec<Ident>) -> TokenStream {
+    let comma = if idents.len() == 1 {
+        quote! { , }
+    } else {
+        quote! {}
+    };
+    quote! { (#(#idents),*#comma) }
 }

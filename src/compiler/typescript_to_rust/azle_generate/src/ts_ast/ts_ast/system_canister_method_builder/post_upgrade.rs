@@ -40,7 +40,7 @@ pub fn build_canister_method_system_post_upgrade(ts_ast: &TsAst) -> ActPostUpgra
             BOA_CONTEXT_OPTION = Some(boa_engine::Context::default());
             let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
 
-            handle_boa_result(_azle_boa_context.eval(format!(
+            _azle_handle_boa_result(_azle_boa_context.eval(format!(
                 "let exports = {{}}; {compiled_js}",
                 compiled_js = STABLE_STORAGE_JS
             )), &mut _azle_boa_context);
@@ -51,13 +51,13 @@ pub fn build_canister_method_system_post_upgrade(ts_ast: &TsAst) -> ActPostUpgra
                 Ok(_azle_stable_storage) => {
                     let _azle_stable_storage_json_string = _azle_stable_storage.0;
 
-                    let _azle_stable_storage_deserialize_exports_js_value = handle_boa_result(_azle_boa_context.eval("exports"), &mut _azle_boa_context);
+                    let _azle_stable_storage_deserialize_exports_js_value = _azle_handle_boa_result(_azle_boa_context.eval("exports"), &mut _azle_boa_context);
                     let _azle_stable_storage_deserialize_exports_js_object = _azle_stable_storage_deserialize_exports_js_value.as_object().unwrap();
 
                     let _azle_stable_storage_deserialize_function_js_value = _azle_stable_storage_deserialize_exports_js_object.get("stable_storage_deserialize", &mut _azle_boa_context).unwrap();
                     let _azle_stable_storage_deserialize_function_js_object = _azle_stable_storage_deserialize_function_js_value.as_object().unwrap();
 
-                    handle_boa_result(_azle_stable_storage_deserialize_function_js_object.call(
+                    _azle_handle_boa_result(_azle_stable_storage_deserialize_function_js_object.call(
                         &boa_engine::JsValue::Null,
                         &[
                             _azle_stable_storage_json_string.try_into_vm_value(&mut _azle_boa_context).unwrap()
@@ -84,7 +84,7 @@ pub fn build_canister_method_system_post_upgrade(ts_ast: &TsAst) -> ActPostUpgra
                 boa_engine::property::Attribute::all()
             );
 
-            handle_boa_result(_azle_boa_context.eval(format!(
+            _azle_handle_boa_result(_azle_boa_context.eval(format!(
                 "{compiled_js}",
                 compiled_js = MAIN_JS
             )), &mut _azle_boa_context);

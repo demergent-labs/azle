@@ -1,12 +1,9 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
-use cdk_framework::{
-    nodes::{ActExternalCanister, ActExternalCanisterMethod},
-    ToTokenStream,
-};
+use cdk_framework::nodes::ActExternalCanister;
 
-use crate::ts_keywords;
+use crate::generators::ic_object;
 
 pub fn generate_ic_object_notify_with_payment128_functions(
     external_canisters: &Vec<ActExternalCanister>,
@@ -16,8 +13,9 @@ pub fn generate_ic_object_notify_with_payment128_functions(
             let function_name_string = format!("_azle_notify_with_payment128_{}_{}", canister.name, method.name);
             let real_function_name = format_ident!("{}", function_name_string);
             let wrapper_fn_name = format_ident!("{}_wrapper", function_name_string);
-            let param_variables = generate_param_variables(method);
-            let params = method.params_as_args_list();
+            let param_variables = ic_object::generate_param_variables(method);
+            let args = ic_object::generate_args_list(method);
+
             quote!{
                 fn #wrapper_fn_name(
                     _this: &boa_engine::JsValue,
@@ -37,7 +35,7 @@ pub fn generate_ic_object_notify_with_payment128_functions(
 
                     let notify_result = #real_function_name(
                         canister_id_principal,
-                        #params
+                        #args,
                         cycles,
                     );
 
@@ -46,21 +44,4 @@ pub fn generate_ic_object_notify_with_payment128_functions(
             }
         }).collect()
     }).collect::<Vec<Vec<TokenStream>>>().concat()
-}
-
-fn generate_param_variables(method: &ActExternalCanisterMethod) -> Vec<TokenStream> {
-    method.params
-        .iter()
-        .enumerate()
-        .map(|(index, param)| {
-            let param_name_js_value = format_ident!("{}_js_value", param.name);
-            let param_name = format_ident!("{}", param.name);
-            let param_type = param.data_type.to_token_stream(&ts_keywords::ts_keywords());
-
-            quote! {
-                let #param_name_js_value = args_js_object.get(#index, _context).unwrap();
-                let #param_name: #param_type = #param_name_js_value.try_from_vm_value(&mut *_context).unwrap();
-            }
-        })
-    .collect()
 }
