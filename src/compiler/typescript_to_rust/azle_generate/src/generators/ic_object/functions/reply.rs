@@ -13,9 +13,9 @@ pub fn generate_ic_object_function_reply(canister_methods: &Vec<ActCanisterMetho
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let top_level_call_frame = _azle_get_top_level_call_frame(&_context.vm.frame.as_ref().unwrap());
+            let top_level_call_frame = &_context.vm.frames[0];
             let function_name_sym = top_level_call_frame.code.name;
-            let function_name = &_context.interner.resolve_expect(function_name_sym.clone());
+            let function_name = _context.interner.resolve_expect(function_name_sym.clone()).to_string();
 
             match &function_name[..] {
                 #(#match_arms)*

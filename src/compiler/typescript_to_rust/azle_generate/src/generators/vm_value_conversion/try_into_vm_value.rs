@@ -32,7 +32,7 @@ pub fn generate_try_into_vm_value_impls() -> proc_macro2::TokenStream {
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk::export::candid::Func {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                Ok(boa_engine::object::JsArray::from_iter([
+                Ok(boa_engine::object::builtins::JsArray::from_iter([
                     self.principal.try_into_vm_value(context).unwrap(),
                     self.method.into()
                 ], context).into())
@@ -502,7 +502,7 @@ pub fn generate_try_into_vm_value_impls() -> proc_macro2::TokenStream {
             T:  for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>
         {
             let js_values = generic_array.into_iter().map(|item| item.try_into_vm_value(context).unwrap()).collect::<Vec<boa_engine::JsValue>>();
-            Ok(boa_engine::object::JsArray::from_iter(js_values, context).into())
+            Ok(boa_engine::object::builtins::JsArray::from_iter(js_values, context).into())
         }
     }
 }

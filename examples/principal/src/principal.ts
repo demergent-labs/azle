@@ -55,3 +55,9 @@ export function principal_to_text(principal: Principal): Query<string> {
 export function principal_to_blob(principal: Principal): Query<blob> {
     return principal.toUint8Array();
 }
+
+export function principal_self_authenticating(
+    public_key: blob
+): Query<Principal> {
+    return Principal.selfAuthenticating(public_key);
+}

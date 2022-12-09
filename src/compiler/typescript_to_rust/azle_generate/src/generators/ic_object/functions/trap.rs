@@ -5,7 +5,8 @@ pub fn generate_ic_object_function_trap() -> proc_macro2::TokenStream {
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            ic_cdk::api::trap(_aargs.get(0).unwrap().as_string().unwrap());
+            let message: String = _aargs.get(0).unwrap().clone().try_from_vm_value(_context).unwrap();
+            ic_cdk::api::trap(&message);
         }
     }
 }

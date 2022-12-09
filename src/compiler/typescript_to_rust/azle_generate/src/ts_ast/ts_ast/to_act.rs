@@ -6,7 +6,7 @@ use quote::quote;
 
 use super::TsAst;
 use crate::{
-    generators::{canister_methods, errors, ic_object::functions, stacktrace, vm_value_conversion},
+    generators::{canister_methods, errors, ic_object::functions, vm_value_conversion},
     ts_ast::{
         azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods,
         program::azle_program::AzleProgramVecHelperMethods,
@@ -151,7 +151,6 @@ impl ToAct for TsAst {
         let try_from_vm_value_impls = vm_value_conversion::generate_try_from_vm_value_impls();
 
         let async_result_handler = self.generate_async_result_handler();
-        let get_top_level_call_frame_fn = stacktrace::generate_get_top_level_call_frame_fn();
 
         let boa_error_handler = errors::generate_error_handler();
 
@@ -175,7 +174,6 @@ impl ToAct for TsAst {
                 #boa_error_handler
                 #ic_object_functions
                 #async_result_handler
-                #get_top_level_call_frame_fn
             },
             try_from_vm_value_impls,
             try_into_vm_value_impls,

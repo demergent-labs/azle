@@ -9,7 +9,7 @@ pub fn generate_ic_object_function_notify_raw() -> proc_macro2::TokenStream {
             let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.try_from_vm_value(&mut *_context).unwrap();
 
             let method_js_value = _aargs.get(1).unwrap().clone();
-            let method_string = method_js_value.as_string().unwrap().to_string();
+            let method_string: String = method_js_value.try_from_vm_value(&mut *_context).unwrap();
 
             let args_raw_js_value = _aargs.get(2).unwrap().clone();
             let args_raw_vec: Vec<u8> = args_raw_js_value.try_from_vm_value(&mut *_context).unwrap();

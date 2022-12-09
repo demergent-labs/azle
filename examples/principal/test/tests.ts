@@ -10,6 +10,8 @@ export function get_tests(principal_canister: ActorSubclass<_SERVICE>): Test[] {
     const to_hex_tests = get_to_hex_tests(principal_canister);
     const to_text_tests = get_to_text_tests(principal_canister);
     const to_blob_tests = get_to_blob_tests(principal_canister);
+    const self_authenticating_tests =
+        get_self_authenticating_tests(principal_canister);
 
     return [
         {
@@ -61,7 +63,8 @@ export function get_tests(principal_canister: ActorSubclass<_SERVICE>): Test[] {
         ...from_blob_tests,
         ...to_hex_tests,
         ...to_text_tests,
-        ...to_blob_tests
+        ...to_blob_tests,
+        ...self_authenticating_tests
     ];
 }
 
@@ -277,7 +280,7 @@ function get_from_blob_tests(
                 const principal = Principal.fromText('aaaaa-aa');
 
                 const result = await principal_canister.principal_from_blob(
-                    Array.from(principal.toUint8Array())
+                    principal.toUint8Array()
                 );
 
                 return {
@@ -293,7 +296,7 @@ function get_from_blob_tests(
                 );
 
                 const result = await principal_canister.principal_from_blob(
-                    Array.from(principal.toUint8Array())
+                    principal.toUint8Array()
                 );
 
                 return {
@@ -309,7 +312,7 @@ function get_from_blob_tests(
                 );
 
                 const result = await principal_canister.principal_from_blob(
-                    Array.from(principal.toUint8Array())
+                    principal.toUint8Array()
                 );
 
                 return {
@@ -325,7 +328,7 @@ function get_from_blob_tests(
                 );
 
                 const result = await principal_canister.principal_from_blob(
-                    Array.from(principal.toUint8Array())
+                    principal.toUint8Array()
                 );
 
                 return {
@@ -341,7 +344,7 @@ function get_from_blob_tests(
                 );
 
                 const result = await principal_canister.principal_from_blob(
-                    Array.from(principal.toUint8Array())
+                    principal.toUint8Array()
                 );
 
                 return {
@@ -357,7 +360,7 @@ function get_from_blob_tests(
                 );
 
                 const result = await principal_canister.principal_from_blob(
-                    Array.from(principal.toUint8Array())
+                    principal.toUint8Array()
                 );
 
                 return {
@@ -681,6 +684,125 @@ function get_to_blob_tests(
                         Principal.fromUint8Array(
                             Uint8Array.from(result)
                         ).toText() === principal.toText()
+                };
+            }
+        }
+    ];
+}
+
+function get_self_authenticating_tests(
+    principal_canister: ActorSubclass<_SERVICE>
+): Test[] {
+    return [
+        {
+            name: 'principal_self_authenticating aaaaa-aa',
+            test: async () => {
+                const principal = Principal.fromText('aaaaa-aa');
+
+                const result =
+                    await principal_canister.principal_self_authenticating(
+                        principal.toUint8Array()
+                    );
+
+                return {
+                    ok:
+                        result.toText() ===
+                        'o2x4y-ywrji-biykr-2fpeu-oyicx-muien-gecwr-lah4c-r2tcv-rnt4q-xqe'
+                };
+            }
+        },
+        {
+            name: 'principal_self_authenticating rrkah-fqaaa-aaaaa-aaaaq-cai',
+            test: async () => {
+                const principal = Principal.fromText(
+                    'rrkah-fqaaa-aaaaa-aaaaq-cai'
+                );
+
+                const result =
+                    await principal_canister.principal_self_authenticating(
+                        principal.toUint8Array()
+                    );
+
+                return {
+                    ok:
+                        result.toText() ===
+                        '5lxmd-uwt2d-ectu2-srh3d-l4np5-n6w32-3ctg2-pdf5v-vg5vu-do25a-oae'
+                };
+            }
+        },
+        {
+            name: 'principal_self_authenticating ryjl3-tyaaa-aaaaa-aaaba-cai',
+            test: async () => {
+                const principal = Principal.fromText(
+                    'ryjl3-tyaaa-aaaaa-aaaba-cai'
+                );
+
+                const result =
+                    await principal_canister.principal_self_authenticating(
+                        principal.toUint8Array()
+                    );
+
+                return {
+                    ok:
+                        result.toText() ===
+                        'w2hw6-vz32b-dpt2b-afpwq-2ip32-hki4g-tbzcp-7zifb-suydo-jad42-5ae'
+                };
+            }
+        },
+        {
+            name: 'principal_self_authenticating jiyou-fiaaa-aaaam-aad6q-cai',
+            test: async () => {
+                const principal = Principal.fromText(
+                    'jiyou-fiaaa-aaaam-aad6q-cai'
+                );
+
+                const result =
+                    await principal_canister.principal_self_authenticating(
+                        principal.toUint8Array()
+                    );
+
+                return {
+                    ok:
+                        result.toText() ===
+                        'vagij-vhj5f-jmcqm-6sfyr-onklf-d6rjs-oikld-4jlr6-jnf4k-a25k7-bae'
+                };
+            }
+        },
+        {
+            name: 'principal_self_authenticating jqklt-hiaaa-aaaam-aaeba-cai',
+            test: async () => {
+                const principal = Principal.fromText(
+                    'jqklt-hiaaa-aaaam-aaeba-cai'
+                );
+
+                const result =
+                    await principal_canister.principal_self_authenticating(
+                        principal.toUint8Array()
+                    );
+
+                return {
+                    ok:
+                        result.toText() ===
+                        'hp4bt-rgpk2-27zh7-4bhef-fz4v7-zwrfd-3tbnz-wgy2i-pzjui-os54t-5ae'
+                };
+            }
+        },
+        {
+            name: 'principal_self_authenticating qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            test: async () => {
+                const principal = Principal.fromText(
+                    'qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe'
+                );
+
+                const result =
+                    await principal_canister.principal_self_authenticating(
+                        principal.toUint8Array()
+                    );
+
+                return {
+                    ok:
+                        result.toText() ===
+                        'e5rvd-hgfjt-aclta-o3few-2p3fo-txhpm-ypb2i-ex56n-l6brh-jnvja-4ae'
                 };
             }
         }
