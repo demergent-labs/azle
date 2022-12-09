@@ -34,15 +34,21 @@ function azle() {
 
         printFirstBuildWarning(canisterName);
         compileTypeScriptToRust(canisterName, canisterConfig, stdioType);
-        compileRustCode(canisterName, stdioType);
         generateCandidFile(
             canisterConfig.root,
             canisterConfig.candid,
             stdioType
         );
+        compileRustCode(canisterName, canisterConfig.candid, stdioType);
     });
 
     logSuccess(canisterName);
+}
+
+function addCandidToWasmMetaData(candidPath: string, wasmPath: string): void {
+    execSync(
+        `ic-wasm ${wasmPath} -o ${wasmPath} metadata candid:service -f ${candidPath} -v public`
+    );
 }
 
 function colorFormattedDfxJsonExample(canisterName: string): string {
@@ -62,15 +68,21 @@ function colorFormattedDfxJsonExample(canisterName: string): string {
     ${yellow('}')}`;
 }
 
-function compileRustCode(canisterName: string, stdio: IOType) {
+function compileRustCode(
+    canisterName: string,
+    candidPath: string,
+    stdio: IOType
+) {
     time(
-        `[2/3] 🚧 Building Wasm binary...${getBuildWarning(canisterName)}`,
+        `[3/3] 🚧 Building Wasm binary...${getBuildWarning(canisterName)}`,
         'inline',
         () => {
             execSync(
                 `cd target/azle && CARGO_TARGET_DIR=.. cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
                 { stdio }
             );
+
+            const wasmFileRelativePath = `./target/wasm32-unknown-unknown/release/${canisterName}.wasm`;
 
             const cargo_bin_root =
                 process.env.CARGO_INSTALL_ROOT ??
@@ -79,14 +91,13 @@ function compileRustCode(canisterName: string, stdio: IOType) {
 
             // optimization, binary is too big to deploy without this
             execSync(
-                `${cargo_bin_root}/bin/ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/${canisterName}.wasm -o ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
+                `${cargo_bin_root}/bin/ic-cdk-optimizer ${wasmFileRelativePath} -o ${wasmFileRelativePath}`,
                 { stdio }
             );
 
-            execSync(
-                `gzip -f -k ./target/wasm32-unknown-unknown/release/${canisterName}.wasm`,
-                { stdio }
-            );
+            addCandidToWasmMetaData(candidPath, wasmFileRelativePath);
+
+            execSync(`gzip -f -k ${wasmFileRelativePath}`, { stdio });
         }
     );
 }
@@ -134,7 +145,7 @@ function generateCandidFile(
     candidPath: string,
     stdio: IOType
 ) {
-    time(`[3/3] 📝 Generating Candid file...`, 'inline', () => {
+    time(`[2/3] 📝 Generating Candid file...`, 'inline', () => {
         execSync(`cd target/azle/${rootPath} && cargo test`, { stdio });
 
         execSync(`cp target/azle/${rootPath}/index.did ${candidPath}`, {
@@ -297,6 +308,10 @@ function installRustDependencies(stdio: IOType) {
     execSync(`rustup target add wasm32-unknown-unknown`, { stdio });
 
     execSync(`cargo install ic-cdk-optimizer --version 0.3.4 || true`, {
+        stdio: 'ignore'
+    });
+
+    execSync(`cargo install ic-wasm --version 0.3.0 || true`, {
         stdio: 'ignore'
     });
 }
