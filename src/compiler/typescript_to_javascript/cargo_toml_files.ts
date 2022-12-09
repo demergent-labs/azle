@@ -32,7 +32,7 @@ export function generateLibCargoToml(canisterName: string): Toml {
         ic-cdk = "0.5.2"
         ic-cdk-macros = "0.5.2"
         candid = "0.7.16"
-        boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "3aea26e5419fd67327541b2d4d1323e5e60c2a52" }
+        boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "c340049bc8060c3fc7079bda00ee84dc627187d9" }
         # boa_engine = { path = "../../../../../../boa/boa_engine" }
 
         # boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "date" } # This is a fork of call_stack
