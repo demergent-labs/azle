@@ -1,6 +1,6 @@
 import { ic, InspectMessage, Update } from 'azle';
 
-export function inspectMessage(): InspectMessage {
+export function inspect_message(): InspectMessage {
     console.log('inspect_message called');
 
     if (ic.method_name() === 'accessible') {
@@ -23,6 +23,6 @@ export function inaccessible(): Update<boolean> {
     return false;
 }
 
-export function alsoInaccessible(): Update<boolean> {
+export function also_inaccessible(): Update<boolean> {
     return false;
 }

@@ -1,1 +1,1 @@
-service : () -> { getInitialized : () -> (bool) query }
+service : () -> { get_initialized : () -> (bool) query }

@@ -5,9 +5,9 @@ import { _SERVICE } from './dfx_generated/init/init.did';
 export function get_tests(init_canister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'getUser',
+            name: 'get_user',
             test: async () => {
-                const result = await init_canister.getUser();
+                const result = await init_canister.get_user();
 
                 return {
                     ok: result.length === 1 && result[0].id === '0'
@@ -15,9 +15,9 @@ export function get_tests(init_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'getReaction',
+            name: 'get_reaction',
             test: async () => {
-                const result = await init_canister.getReaction();
+                const result = await init_canister.get_reaction();
 
                 return {
                     ok: result.length === 1 && 'Fire' in result[0]
@@ -25,9 +25,9 @@ export function get_tests(init_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'getOwner',
+            name: 'get_owner',
             test: async () => {
-                const result = await init_canister.getOwner();
+                const result = await init_canister.get_owner();
 
                 return {
                     ok:

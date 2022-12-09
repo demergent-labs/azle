@@ -37,4 +37,4 @@ export const createActor = (canisterId, options) => {
  * A ready-to-use agent for the inspect_message canister
  * @type {import("@dfinity/agent").ActorSubclass<import("./inspect_message.did.js")._SERVICE>}
  */
-//  export const inspect_message = createActor(canisterId);
+// export const inspect_message = createActor(canisterId);

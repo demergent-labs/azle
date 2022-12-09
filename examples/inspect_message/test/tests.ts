@@ -7,7 +7,7 @@ export function get_tests(
 ): Test[] {
     return [
         {
-            name: 'calling `ic.accept_message` in inspectMessage',
+            name: 'calling `ic.accept_message` in inspect_message',
             test: async () => {
                 try {
                     const result = await inspect_message_canister.accessible();
@@ -23,7 +23,7 @@ export function get_tests(
             }
         },
         {
-            name: 'not calling `ic.accept_message` in inspectMessage',
+            name: 'not calling `ic.accept_message` in inspect_message',
             test: async () => {
                 try {
                     const result =
@@ -41,11 +41,11 @@ export function get_tests(
             }
         },
         {
-            name: 'throwing in `inspectMessage`',
+            name: 'throwing in `inspect_message`',
             test: async () => {
                 try {
                     const result =
-                        await inspect_message_canister.alsoInaccessible();
+                        await inspect_message_canister.also_inaccessible();
 
                     return {
                         ok: false

@@ -37,4 +37,4 @@ export const createActor = (canisterId, options) => {
  * A ready-to-use agent for the heartbeat canister
  * @type {import("@dfinity/agent").ActorSubclass<import("./heartbeat.did.js")._SERVICE>}
  */
-//  export const heartbeat = createActor(canisterId);
+// export const heartbeat = createActor(canisterId);

@@ -7,6 +7,6 @@ export function heartbeat(): Heartbeat {
     console.log('heartbeat initialized', inititalized);
 }
 
-export function getInitialized(): Query<boolean> {
+export function get_initialized(): Query<boolean> {
     return inititalized;
 }
