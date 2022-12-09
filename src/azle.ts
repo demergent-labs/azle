@@ -22,6 +22,7 @@ import { Err, ok, Ok, Result, unwrap } from './result';
 import { red, yellow, green, blue, purple, dim } from './colors';
 import * as tsc from 'typescript';
 import * as path from 'path';
+import { version } from '../package.json';
 
 azle();
 
@@ -48,6 +49,10 @@ function azle() {
 function addCandidToWasmMetaData(candidPath: string, wasmPath: string): void {
     execSync(
         `ic-wasm ${wasmPath} -o ${wasmPath} metadata candid:service -f ${candidPath} -v public`
+    );
+
+    execSync(
+        `ic-wasm ${wasmPath} -o ${wasmPath} metadata cdk -d "azle ${version}" -v public`
     );
 }
 
@@ -257,7 +262,7 @@ function getCanisterName(args: string[]): Result<string, AzleError> {
     const canisterNames = args.slice(2).filter((arg) => !isCliFlag(arg));
 
     if (canisterNames.length === 0) {
-        return Err({ suggestion: `azle v0.7.0\n\n${getUsageInfo()}` });
+        return Err({ suggestion: `azle v${version}\n\n${getUsageInfo()}` });
     }
 
     if (canisterNames.length > 1) {
