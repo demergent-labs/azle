@@ -23,7 +23,7 @@ Please consider the [security section](#security).
 
 ## Discussion
 
-Feel free to open issues or join us in the [Discord channel](https://discord.com/channels/748416164832608337/956466775380336680).
+Feel free to open issues or join us in the [Discord channel](https://discord.gg/5Hb6rM2QUM).
 
 ## Documentation
 
@@ -1191,8 +1191,6 @@ service: {
     "print_principal": (principal) -> (principal) query;
 }
 ```
-
--   Note that `Principal.selfAuthenticating` will not function properly until [this issue is resolved](https://github.com/boa-dev/boa/issues/1917)
 
 #### reserved
 
