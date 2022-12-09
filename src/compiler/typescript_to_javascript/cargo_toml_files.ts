@@ -29,10 +29,10 @@ export function generateLibCargoToml(canisterName: string): Toml {
         crate-type = ["cdylib"]
 
         [dependencies]
-        ic-cdk = "0.5.2"
-        ic-cdk-macros = "0.5.2"
-        candid = "0.7.16"
-        boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "3aea26e5419fd67327541b2d4d1323e5e60c2a52" }
+        ic-cdk = { version = "0.6.8", features = ["timers"] }
+        ic-cdk-macros = "0.6.8"
+        candid = "0.8.4"
+        boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "c340049bc8060c3fc7079bda00ee84dc627187d9" }
         # boa_engine = { path = "../../../../../../boa/boa_engine" }
 
         # boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "date" } # This is a fork of call_stack
@@ -260,7 +260,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_ast"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=3aea26e5419fd67327541b2d4d1323e5e60c2a52#3aea26e5419fd67327541b2d4d1323e5e60c2a52"
+        source = "git+https://github.com/demergent-labs/boa?rev=c340049bc8060c3fc7079bda00ee84dc627187d9#c340049bc8060c3fc7079bda00ee84dc627187d9"
         dependencies = [
         "bitflags",
         "boa_interner",
@@ -272,7 +272,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_engine"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=3aea26e5419fd67327541b2d4d1323e5e60c2a52#3aea26e5419fd67327541b2d4d1323e5e60c2a52"
+        source = "git+https://github.com/demergent-labs/boa?rev=c340049bc8060c3fc7079bda00ee84dc627187d9#c340049bc8060c3fc7079bda00ee84dc627187d9"
         dependencies = [
         "bitflags",
         "boa_ast",
@@ -284,7 +284,7 @@ export function generateWorkspaceCargoLock(): Toml {
         "chrono",
         "dyn-clone",
         "fast-float",
-        "ic-cdk 0.6.8",
+        "ic-cdk",
         "indexmap",
         "num-bigint",
         "num-integer",
@@ -306,7 +306,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_gc"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=3aea26e5419fd67327541b2d4d1323e5e60c2a52#3aea26e5419fd67327541b2d4d1323e5e60c2a52"
+        source = "git+https://github.com/demergent-labs/boa?rev=c340049bc8060c3fc7079bda00ee84dc627187d9#c340049bc8060c3fc7079bda00ee84dc627187d9"
         dependencies = [
         "boa_macros",
         "boa_profiler",
@@ -315,7 +315,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_interner"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=3aea26e5419fd67327541b2d4d1323e5e60c2a52#3aea26e5419fd67327541b2d4d1323e5e60c2a52"
+        source = "git+https://github.com/demergent-labs/boa?rev=c340049bc8060c3fc7079bda00ee84dc627187d9#c340049bc8060c3fc7079bda00ee84dc627187d9"
         dependencies = [
         "boa_macros",
         "indexmap",
@@ -328,7 +328,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_macros"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=3aea26e5419fd67327541b2d4d1323e5e60c2a52#3aea26e5419fd67327541b2d4d1323e5e60c2a52"
+        source = "git+https://github.com/demergent-labs/boa?rev=c340049bc8060c3fc7079bda00ee84dc627187d9#c340049bc8060c3fc7079bda00ee84dc627187d9"
         dependencies = [
         "proc-macro2",
         "quote",
@@ -339,7 +339,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_parser"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=3aea26e5419fd67327541b2d4d1323e5e60c2a52#3aea26e5419fd67327541b2d4d1323e5e60c2a52"
+        source = "git+https://github.com/demergent-labs/boa?rev=c340049bc8060c3fc7079bda00ee84dc627187d9#c340049bc8060c3fc7079bda00ee84dc627187d9"
         dependencies = [
         "bitflags",
         "boa_ast",
@@ -356,12 +356,12 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_profiler"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=3aea26e5419fd67327541b2d4d1323e5e60c2a52#3aea26e5419fd67327541b2d4d1323e5e60c2a52"
+        source = "git+https://github.com/demergent-labs/boa?rev=c340049bc8060c3fc7079bda00ee84dc627187d9#c340049bc8060c3fc7079bda00ee84dc627187d9"
 
         [[package]]
         name = "boa_unicode"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=3aea26e5419fd67327541b2d4d1323e5e60c2a52#3aea26e5419fd67327541b2d4d1323e5e60c2a52"
+        source = "git+https://github.com/demergent-labs/boa?rev=c340049bc8060c3fc7079bda00ee84dc627187d9#c340049bc8060c3fc7079bda00ee84dc627187d9"
         dependencies = [
         "unicode-general-category",
         ]
@@ -380,33 +380,6 @@ export function generateWorkspaceCargoLock(): Toml {
 
         [[package]]
         name = "candid"
-        version = "0.7.18"
-        source = "registry+https://github.com/rust-lang/crates.io-index"
-        checksum = "d510cc32b8b991acc955dd3d5e0cb6f404069d1dccd9203ee90f5865557c9165"
-        dependencies = [
-        "anyhow",
-        "binread",
-        "byteorder",
-        "candid_derive 0.4.5",
-        "codespan-reporting",
-        "hex",
-        "ic-types",
-        "lalrpop",
-        "lalrpop-util",
-        "leb128",
-        "logos",
-        "num-bigint",
-        "num-traits",
-        "num_enum",
-        "paste",
-        "pretty",
-        "serde",
-        "serde_bytes",
-        "thiserror",
-        ]
-
-        [[package]]
-        name = "candid"
         version = "0.8.4"
         source = "registry+https://github.com/rust-lang/crates.io-index"
         checksum = "244005a1917bb7614cd775ca8a5d59efeb5ac74397bb14ba29a19347ebd78591"
@@ -414,7 +387,7 @@ export function generateWorkspaceCargoLock(): Toml {
         "anyhow",
         "binread",
         "byteorder",
-        "candid_derive 0.5.0",
+        "candid_derive",
         "codespan-reporting",
         "crc32fast",
         "data-encoding",
@@ -432,18 +405,6 @@ export function generateWorkspaceCargoLock(): Toml {
         "serde_bytes",
         "sha2",
         "thiserror",
-        ]
-
-        [[package]]
-        name = "candid_derive"
-        version = "0.4.5"
-        source = "registry+https://github.com/rust-lang/crates.io-index"
-        checksum = "2e02c03c4d547674a3f3f3109538fb49871fbe636216daa019f06a62faca9061"
-        dependencies = [
-        "lazy_static",
-        "proc-macro2",
-        "quote",
-        "syn",
         ]
 
         [[package]]
@@ -634,10 +595,10 @@ export function generateWorkspaceCargoLock(): Toml {
         "async-recursion",
         "azle-vm-value-derive",
         "boa_engine",
-        "candid 0.7.18",
+        "candid",
         "getrandom",
-        "ic-cdk 0.5.7",
-        "ic-cdk-macros 0.5.7",
+        "ic-cdk",
+        "ic-cdk-macros",
         "serde",
         ]
 
@@ -771,6 +732,95 @@ export function generateWorkspaceCargoLock(): Toml {
         ]
 
         [[package]]
+        name = "futures"
+        version = "0.3.25"
+        source = "registry+https://github.com/rust-lang/crates.io-index"
+        checksum = "38390104763dc37a5145a53c29c63c1290b5d316d6086ec32c293f6736051bb0"
+        dependencies = [
+        "futures-channel",
+        "futures-core",
+        "futures-executor",
+        "futures-io",
+        "futures-sink",
+        "futures-task",
+        "futures-util",
+        ]
+
+        [[package]]
+        name = "futures-channel"
+        version = "0.3.25"
+        source = "registry+https://github.com/rust-lang/crates.io-index"
+        checksum = "52ba265a92256105f45b719605a571ffe2d1f0fea3807304b522c1d778f79eed"
+        dependencies = [
+        "futures-core",
+        "futures-sink",
+        ]
+
+        [[package]]
+        name = "futures-core"
+        version = "0.3.25"
+        source = "registry+https://github.com/rust-lang/crates.io-index"
+        checksum = "04909a7a7e4633ae6c4a9ab280aeb86da1236243a77b694a49eacd659a4bd3ac"
+
+        [[package]]
+        name = "futures-executor"
+        version = "0.3.25"
+        source = "registry+https://github.com/rust-lang/crates.io-index"
+        checksum = "7acc85df6714c176ab5edf386123fafe217be88c0840ec11f199441134a074e2"
+        dependencies = [
+        "futures-core",
+        "futures-task",
+        "futures-util",
+        ]
+
+        [[package]]
+        name = "futures-io"
+        version = "0.3.25"
+        source = "registry+https://github.com/rust-lang/crates.io-index"
+        checksum = "00f5fb52a06bdcadeb54e8d3671f8888a39697dcb0b81b23b55174030427f4eb"
+
+        [[package]]
+        name = "futures-macro"
+        version = "0.3.25"
+        source = "registry+https://github.com/rust-lang/crates.io-index"
+        checksum = "bdfb8ce053d86b91919aad980c220b1fb8401a9394410e1c289ed7e66b61835d"
+        dependencies = [
+        "proc-macro2",
+        "quote",
+        "syn",
+        ]
+
+        [[package]]
+        name = "futures-sink"
+        version = "0.3.25"
+        source = "registry+https://github.com/rust-lang/crates.io-index"
+        checksum = "39c15cf1a4aa79df40f1bb462fb39676d0ad9e366c2a33b590d7c66f4f81fcf9"
+
+        [[package]]
+        name = "futures-task"
+        version = "0.3.25"
+        source = "registry+https://github.com/rust-lang/crates.io-index"
+        checksum = "2ffb393ac5d9a6eaa9d3fdf37ae2776656b706e200c8e16b1bdb227f5198e6ea"
+
+        [[package]]
+        name = "futures-util"
+        version = "0.3.25"
+        source = "registry+https://github.com/rust-lang/crates.io-index"
+        checksum = "197676987abd2f9cadff84926f410af1c183608d36641465df73ae8211dc65d6"
+        dependencies = [
+        "futures-channel",
+        "futures-core",
+        "futures-io",
+        "futures-macro",
+        "futures-sink",
+        "futures-task",
+        "memchr",
+        "pin-project-lite",
+        "pin-utils",
+        "slab",
+        ]
+
+        [[package]]
         name = "generic-array"
         version = "0.14.6"
         source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -838,42 +888,18 @@ export function generateWorkspaceCargoLock(): Toml {
 
         [[package]]
         name = "ic-cdk"
-        version = "0.5.7"
-        source = "registry+https://github.com/rust-lang/crates.io-index"
-        checksum = "0554d77b453140eefcb8c8192a342927f8c48cfda911dfa3cd4561a919dbd32f"
-        dependencies = [
-        "candid 0.7.18",
-        "cfg-if",
-        "serde",
-        ]
-
-        [[package]]
-        name = "ic-cdk"
         version = "0.6.8"
         source = "registry+https://github.com/rust-lang/crates.io-index"
         checksum = "e2693ba66f3d54284643713ca2be0b23f91a02cb3ab793a22ffd75f95593305e"
         dependencies = [
-        "candid 0.8.4",
+        "candid",
         "cfg-if",
-        "ic-cdk-macros 0.6.8",
+        "futures",
+        "ic-cdk-macros",
         "ic0",
         "serde",
         "serde_bytes",
-        ]
-
-        [[package]]
-        name = "ic-cdk-macros"
-        version = "0.5.7"
-        source = "registry+https://github.com/rust-lang/crates.io-index"
-        checksum = "954a421ace8b8c8e52d2847c4aa68c80101396134c800ecb12f63457937c4ab4"
-        dependencies = [
-        "candid 0.7.18",
-        "ic-cdk 0.5.7",
-        "proc-macro2",
-        "quote",
-        "serde",
-        "serde_tokenstream",
-        "syn",
+        "slotmap",
         ]
 
         [[package]]
@@ -882,27 +908,12 @@ export function generateWorkspaceCargoLock(): Toml {
         source = "registry+https://github.com/rust-lang/crates.io-index"
         checksum = "cb423dab7c5bf19d4abccabd2ffe35e09b9dde611d478ea3afe0347b50fa727f"
         dependencies = [
-        "candid 0.8.4",
+        "candid",
         "proc-macro2",
         "quote",
         "serde",
         "serde_tokenstream",
         "syn",
-        ]
-
-        [[package]]
-        name = "ic-types"
-        version = "0.5.0"
-        source = "registry+https://github.com/rust-lang/crates.io-index"
-        checksum = "79a17269dff0ec6ca4c3d04e18fca97d018ff53d809e6d92348fc22f9588e1a5"
-        dependencies = [
-        "crc32fast",
-        "data-encoding",
-        "hex",
-        "serde",
-        "serde_bytes",
-        "sha2",
-        "thiserror",
         ]
 
         [[package]]
@@ -1337,6 +1348,12 @@ export function generateWorkspaceCargoLock(): Toml {
         checksum = "e0a7ae3ac2f1173085d398531c705756c94a4c56843785df85a60c1a0afac116"
 
         [[package]]
+        name = "pin-utils"
+        version = "0.1.0"
+        source = "registry+https://github.com/rust-lang/crates.io-index"
+        checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
+
+        [[package]]
         name = "pmutil"
         version = "0.5.3"
         source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1583,6 +1600,24 @@ export function generateWorkspaceCargoLock(): Toml {
         version = "0.3.10"
         source = "registry+https://github.com/rust-lang/crates.io-index"
         checksum = "7bd3e3206899af3f8b12af284fafc038cc1dc2b41d1b89dd17297221c5d225de"
+
+        [[package]]
+        name = "slab"
+        version = "0.4.7"
+        source = "registry+https://github.com/rust-lang/crates.io-index"
+        checksum = "4614a76b2a8be0058caa9dbbaf66d988527d86d003c11a94fbd335d7661edcef"
+        dependencies = [
+        "autocfg",
+        ]
+
+        [[package]]
+        name = "slotmap"
+        version = "1.0.6"
+        source = "registry+https://github.com/rust-lang/crates.io-index"
+        checksum = "e1e08e261d0e8f5c43123b7adf3e4ca1690d655377ac93a03b2c9d3e98de1342"
+        dependencies = [
+        "version_check",
+        ]
 
         [[package]]
         name = "smallvec"
