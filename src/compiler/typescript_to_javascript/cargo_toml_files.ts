@@ -47,6 +47,7 @@ export function generateLibCargoToml(canisterName: string): Toml {
         azle-vm-value-derive = { path = "./azle_vm_value_derive" }
         # azle_generate_macro = { path = "./azle_generate_macro" }
         async-recursion = "1.0.0"
+        slotmap = "1.0.6"
     `;
 }
 

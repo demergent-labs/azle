@@ -115,6 +115,13 @@ pub fn generate_try_from_vm_value_impls() -> proc_macro2::TokenStream {
             }
         }
 
+        impl CdkActTryFromVmValue<ic_cdk::timer::TimerId, &mut boa_engine::Context> for boa_engine::JsValue {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::timer::TimerId, CdkActTryFromVmValueError> {
+                let js_value_as_u64: u64 = self.try_from_vm_value(context).unwrap();
+                Ok(ic_cdk::timer::TimerId::from(slotmap::KeyData::from_ffi(js_value_as_u64)))
+            }
+        }
+
         // Number types
 
         impl CdkActTryFromVmValue<f64, &mut boa_engine::Context> for boa_engine::JsValue {
@@ -333,6 +340,8 @@ pub fn generate_try_from_vm_value_impls() -> proc_macro2::TokenStream {
         impl AzleTryFromVec for ic_cdk::export::candid::Func {}
 
         impl AzleTryFromVec for ic_cdk::export::Principal {}
+
+        impl AzleTryFromVec for ic_cdk::timer::TimerId {}
 
         impl AzleTryFromVec for f64 {}
 

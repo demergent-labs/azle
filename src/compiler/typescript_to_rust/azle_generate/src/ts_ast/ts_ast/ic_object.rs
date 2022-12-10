@@ -17,6 +17,7 @@ impl TsAst {
                 .function(_azle_ic_candid_encode, "candid_encode", 0)
                 .function(_azle_ic_canister_balance, "canister_balance", 0)
                 .function(_azle_ic_canister_balance128, "canister_balance128", 0)
+                .function(_azle_ic_clear_timer, "clear_timer", 0)
                 .function(_azle_ic_data_certificate, "data_certificate", 0)
                 .function(_azle_ic_id, "id", 0)
                 .function(_azle_ic_method_name, "method_name", 0)

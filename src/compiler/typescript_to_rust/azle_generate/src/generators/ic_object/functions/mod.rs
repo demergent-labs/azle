@@ -8,6 +8,7 @@ mod candid_decode;
 mod candid_encode;
 mod canister_balance;
 mod canister_balance128;
+mod clear_timer;
 mod data_certificate;
 mod id;
 mod method_name;
@@ -53,6 +54,7 @@ pub fn generate_ic_object_functions(
     let canister_balance = canister_balance::generate_ic_object_function_canister_balance();
     let canister_balance128 =
         canister_balance128::generate_ic_object_function_canister_balance128();
+    let clear_timer = clear_timer::generate_ic_object_function_clear_timer();
     let data_certificate = data_certificate::generate_ic_object_function_data_certificate();
     let id = id::generate_ic_object_function_id();
     let method_name = method_name::generate_ic_object_function_method_name();
@@ -104,6 +106,7 @@ pub fn generate_ic_object_functions(
         #candid_encode
         #canister_balance
         #canister_balance128
+        #clear_timer
         #data_certificate
         #id
         #method_name
