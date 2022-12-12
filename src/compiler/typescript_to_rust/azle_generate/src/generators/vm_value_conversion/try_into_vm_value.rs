@@ -56,6 +56,13 @@ pub fn generate_try_into_vm_value_impls() -> proc_macro2::TokenStream {
             }
         }
 
+        impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk::timer::TimerId {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+                let timer_id_as_u64 = self.data().as_ffi();
+                Ok(boa_engine::JsValue::BigInt(timer_id_as_u64.into()))
+            }
+        }
+
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk::api::stable::StableMemoryError {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {
@@ -343,6 +350,8 @@ pub fn generate_try_into_vm_value_impls() -> proc_macro2::TokenStream {
         impl AzleTryIntoVec for ic_cdk::export::candid::Func {}
 
         impl AzleTryIntoVec for ic_cdk::export::Principal {}
+
+        impl AzleTryIntoVec for ic_cdk::timer::TimerId {}
 
         impl AzleTryIntoVec for ic_cdk::api::call::RejectionCode {}
 

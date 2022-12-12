@@ -1,8 +1,5 @@
 service : () -> {
-  clear_timer : (nat64) -> () query;
-  one_time_timer : () -> ();
-  repeated_timer : () -> () query;
-  repeated_timer_call_count : () -> (nat32) query;
+  clear_timer : (nat64) -> ();
+  set_timer : (nat64) -> (nat64);
   single_use_timer_called : () -> (bool) query;
-  start_timers : (nat64, nat64) -> (record { nat64; nat64 });
 }

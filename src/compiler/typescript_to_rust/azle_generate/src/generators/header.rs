@@ -9,11 +9,18 @@ pub fn generate_header_code() -> proc_macro2::TokenStream {
         // #![allow(unused_variables)]
         #![allow(warnings, unused)]
 
-        use std::str::FromStr;
-        use azle_vm_value_derive::{
-            CdkActTryIntoVmValue,
-            CdkActTryFromVmValue
-        };
+        use azle_vm_value_derive::{CdkActTryIntoVmValue, CdkActTryFromVmValue};
+        use base32::Alphabet;
+        use boa_engine::object::JsObject;
         use ic_cdk::api::call::CallResult;
+        use rand::{Rng, rngs::StdRng, SeedableRng};
+        use sha2::{Digest, Sha224};
+        use slotmap::Key;
+        use std::{cell::RefCell, collections::HashMap, str::FromStr};
+
+        thread_local! {
+            static TIMER_CALLBACKS_REF_CELL: RefCell<HashMap<String, JsObject>> = RefCell::new(HashMap::new());
+            static RNG_REF_CELL: RefCell<StdRng> = RefCell::new(SeedableRng::from_seed([0u8;32]));
+        }
     }
 }

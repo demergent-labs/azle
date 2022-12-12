@@ -116,6 +116,10 @@ type ic = {
     };
     canister_balance: () => nat64;
     canister_balance128: () => nat;
+    /**
+     * Cancels an existing timer. Does nothing if the timer has already been canceled.
+     * @param id The ID of the timer to be cancelled.
+     */
     clear_timer: (id: TimerId) => void;
     data_certificate: () => Opt<blob>;
     id: () => Principal;
@@ -144,7 +148,16 @@ type ic = {
     /** Non-working type declaration. But API we want */
     // result: <T>() => AzleResult<Array<T>>;
     set_certified_data: (data: blob) => void;
-    set_timer: (delay: Duration, callback: () => Update<void>) => TimerId;
+    /**
+     * Sets callback to be executed later, after delay. Panics if `delay` + time() is more than 2<sup>64</sup> - 1.
+     * To cancel the timer before it executes, pass the returned `TimerId` to `clear_timer`.
+     * Note that timers are not persisted across canister upgrades.
+     *
+     * @param delay The time (in seconds) to wait before executing the provided callback.
+     * @param callback the function to invoke after the specified delay has passed.
+     * @returns the ID of the created timer. Used to cancel the timer.
+     */
+    set_timer: (delay: Duration, callback: () => void) => TimerId;
     set_timer_interval: (
         interval: Duration,
         callback: () => Update<void>
