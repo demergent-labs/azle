@@ -190,7 +190,7 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await ic_api_canister.performance_counter();
 
                 return {
-                    ok: result >= 200_000n && result <= 300_000n
+                    ok: result >= 150_000n && result <= 250_000n
                 };
             }
         },

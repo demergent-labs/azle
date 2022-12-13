@@ -11,7 +11,9 @@ export function generateWorkspaceCargoToml(rootPath: string): Toml {
         ]
 
         [profile.release]
-        lto = true
+        opt-level = 'z'
+
+        [profile.test]
         opt-level = 'z'
     `;
 }
