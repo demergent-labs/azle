@@ -50,12 +50,12 @@ impl<'a> AzleType<'a> {
     //     }
     // }
 
-    // pub fn as_azle_type_ref(self) -> Option<AzleTypeRef<'a>> {
-    //     match self {
-    //         AzleType::AzleTypeRef(azle_type_ref) => Some(azle_type_ref),
-    //         _ => None,
-    //     }
-    // }
+    pub fn as_azle_type_ref(self) -> Option<AzleTypeRef<'a>> {
+        match self {
+            AzleType::AzleTypeRef(azle_type_ref) => Some(azle_type_ref),
+            _ => None,
+        }
+    }
 
     // pub fn is_azle_type_ref(&self) -> bool {
     //     match self {
