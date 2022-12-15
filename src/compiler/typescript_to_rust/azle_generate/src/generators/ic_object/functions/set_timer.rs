@@ -35,8 +35,8 @@ pub fn generate_ic_object_function_set_timer() -> proc_macro2::TokenStream {
 
                     let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
 
-                    TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
-                        let mut timer_callbacks = timer_callbacks_ref_cell.borrow_mut();
+                    let timer_id = TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
+                        let timer_callbacks = timer_callbacks_ref_cell.borrow();
 
                         let timer_callback = timer_callbacks.get(&callback_id_clone_for_closure).unwrap();
 
@@ -49,13 +49,20 @@ pub fn generate_ic_object_function_set_timer() -> proc_macro2::TokenStream {
                             &mut *_azle_boa_context
                         );
 
-                        // timer_callbacks.remove(&callback_id_clone_for_closure);
-
-                        TIMER_CALLBACK_LOOKUP_REF_CELL.with(|timer_callback_lookup_ref_cell| {
-                            timer_callback_lookup_ref_cell.borrow_mut().remove(&timer_callback.timer_id);
-                        });
-                        ic_cdk::println!("Timer {} removed from HashMap", &timer_callback.timer_id);
+                        timer_callback.timer_id
                     });
+
+
+                    TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
+                        let mut timer_callbacks = timer_callbacks_ref_cell.borrow_mut();
+                        timer_callbacks.remove(&callback_id_clone_for_closure);
+                    });
+                    ic_cdk::println!("TimerCallback {} removed from HashMap", &callback_id_clone_for_closure);
+
+                    TIMER_CALLBACK_LOOKUP_REF_CELL.with(|timer_callback_lookup_ref_cell| {
+                        timer_callback_lookup_ref_cell.borrow_mut().remove(&timer_id);
+                    });
+                    ic_cdk::println!("Timer {} removed from HashMap", &timer_id);
                 }
             };
 
