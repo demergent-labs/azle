@@ -28,6 +28,12 @@ pub fn generate_canister_method_body(fn_decl: &AzleFnDecl) -> proc_macro2::Token
                 *uuid_mut = uuid.clone();
             });
 
+            METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                let mut method_name_mut = method_name_ref_cell.borrow_mut();
+
+                *method_name_mut = #function_name.to_string()
+            });
+
             #call_to_js_function
 
             let _azle_final_return_value = _azle_async_result_handler(

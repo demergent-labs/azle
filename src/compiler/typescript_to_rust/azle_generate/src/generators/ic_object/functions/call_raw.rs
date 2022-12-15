@@ -4,6 +4,7 @@ pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
         thread_local! {
             static PROMISE_MAP_REF_CELL: std::cell::RefCell<std::collections::HashMap<String, boa_engine::JsValue>> = std::cell::RefCell::new(std::collections::HashMap::new());
             static UUID_REF_CELL: std::cell::RefCell<String> = std::cell::RefCell::new("".to_string());
+            static METHOD_NAME_REF_CELL: std::cell::RefCell<String> = std::cell::RefCell::new("".to_string());
             static RNG_REF_CELL: std::cell::RefCell<StdRng> = std::cell::RefCell::new(SeedableRng::from_seed([0u8; 32]));
         }
 
@@ -20,17 +21,12 @@ pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
             let args_raw: Vec<u8> = _aargs.get(2).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
             let payment: u64 = _aargs.get(3).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
 
-            let top_level_call_frame = &_context.vm.frames[0];
-            let function_name_sym = top_level_call_frame.code.name;
-            let function_name = _context.interner.resolve_expect(function_name_sym.clone()).to_string();
-
             _azle_ic_call_raw_spawn(
                 &promise_js_value,
                 canister_id,
                 method,
                 args_raw,
-                payment,
-                function_name
+                payment
             );
 
             Ok(promise_js_value)
@@ -41,8 +37,7 @@ pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
             canister_id: ic_cdk::export::Principal,
             method: String,
             args_raw: Vec<u8>,
-            payment: u64,
-            function_name: String
+            payment: u64
         ) {
             let promise_js_value = promise_js_value.clone();
 
@@ -51,6 +46,7 @@ pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
                     let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
 
                     let uuid = UUID_REF_CELL.with(|uuid_ref_cell| uuid_ref_cell.borrow().clone());
+                    let method_name = METHOD_NAME_REF_CELL.with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
 
                     let call_result = ic_cdk::api::call::call_raw(
                         canister_id,
@@ -63,6 +59,12 @@ pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
                         let mut uuid_mut = uuid_ref_cell.borrow_mut();
 
                         *uuid_mut = uuid.clone();
+                    });
+
+                    METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                        let mut method_name_mut = method_name_ref_cell.borrow_mut();
+
+                        *method_name_mut = method_name.clone()
                     });
 
                     let call_result_js_value = match call_result {
@@ -112,7 +114,7 @@ pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
                         main_promise.clone()
                     });
 
-                    _azle_async_result_handler(_azle_boa_context, &main_promise, &uuid, &function_name).await;
+                    _azle_async_result_handler(_azle_boa_context, &main_promise, &uuid, &method_name).await;
                 }
             });
         }
