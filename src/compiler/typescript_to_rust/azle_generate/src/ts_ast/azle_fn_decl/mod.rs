@@ -3,7 +3,7 @@ use swc_common::SourceMap;
 use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType, TsTypeRef};
 use syn::Ident;
 
-use crate::ts_ast::GetName;
+use crate::ts_ast::{azle_type::AzleType, GetName};
 use cdk_framework::CanisterMethodType;
 
 pub mod canister_method_builder;
@@ -43,7 +43,33 @@ impl AzleFnDecl<'_> {
     pub fn get_return_ts_type(&self) -> &TsType {
         let type_ref = &self.get_return_type_ref();
         match &type_ref.type_params {
-            Some(type_param_instantiation) => &*type_param_instantiation.params[0],
+            Some(type_param_instantiation) => {
+                let return_type = &*type_param_instantiation.params[0];
+                if return_type.is_ts_type_ref() {
+                    if AzleType::from_ts_type(return_type.clone(), self.source_map)
+                        .as_azle_type_ref()
+                        .unwrap()
+                        .get_name()
+                        == "Promise"
+                    {
+                        match &return_type.as_ts_type_ref().unwrap().type_params {
+                            Some(type_param_instantiation) => &*type_param_instantiation.params[0],
+                            None => {
+                                let canister_method_type = self.get_canister_method_type();
+                                let error_message = self.build_missing_return_type_error_msg(
+                                    type_ref.span,
+                                    canister_method_type,
+                                );
+                                panic!("{}", error_message)
+                            }
+                        }
+                    } else {
+                        return_type
+                    }
+                } else {
+                    return_type
+                }
+            }
             None => {
                 let canister_method_type = self.get_canister_method_type();
                 let error_message =
