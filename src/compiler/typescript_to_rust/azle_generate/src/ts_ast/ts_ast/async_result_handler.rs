@@ -40,8 +40,53 @@ impl TsAst {
             #[async_recursion::async_recursion(?Send)]
             async fn _azle_async_result_handler(
                 _azle_boa_context: &mut boa_engine::Context,
-                _azle_boa_return_value: &boa_engine::JsValue
+                _azle_boa_return_value: &boa_engine::JsValue,
+                _azle_uuid: &str
             ) -> boa_engine::JsValue {
+                if
+                    _azle_boa_return_value.is_object() == true &&
+                    _azle_boa_return_value.as_object().unwrap().is_promise() == true
+                {
+                    // This runs all pending promises to completion
+                    // TODO use the better Boa API once it's available
+                    _azle_boa_context.eval("");
+
+                    let object = _azle_boa_return_value.as_object().unwrap().borrow();
+                    let promise = object.as_promise().unwrap();
+
+                    return match &promise.promise_state {
+                        boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
+                            ic_cdk::println!("it is fulfilled");
+
+                            // TODO I think I need to get the method_name before the await boundary
+                            // ic_cdk::println!("method_name: {}", ic_cdk::api::call::method_name());
+
+                            // TODO we will need to do the correct types in here, we need to generate them appropriately
+                            // TODO pass in the canister method name to get what you need, this should be very similar to reply
+                            let reply_value: ExecuteCallRawResult = js_value.clone().try_from_vm_value(_azle_boa_context).unwrap();
+
+                            ic_cdk::api::call::reply((reply_value,));
+
+                            return boa_engine::JsValue::Null;
+                        },
+                        boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
+                            // TODO handle rejections
+                            panic!("rejected there is a js_value: {:#?}", js_value);
+                        },
+                        Pending => {
+                            ic_cdk::println!("Pending my friend");
+
+                            PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+                                let mut promise_map = promise_map_ref_cell.borrow_mut();
+
+                                promise_map.insert(_azle_uuid.to_string(), _azle_boa_return_value.clone().into());
+                            });
+
+                            return boa_engine::JsValue::Null;
+                        }
+                    };
+                }
+
                 if
                     _azle_boa_return_value.is_object() == false ||
                     _azle_boa_return_value.as_object().unwrap().is_generator() == false
@@ -75,7 +120,8 @@ impl TsAst {
                         if yield_result_value_js_object.is_generator() {
                             let recursed_generator_js_value = _azle_async_result_handler(
                                 _azle_boa_context,
-                                &yield_result_value_js_value
+                                &yield_result_value_js_value,
+                                _azle_uuid
                             ).await;
 
                             _azle_args = vec![recursed_generator_js_value];

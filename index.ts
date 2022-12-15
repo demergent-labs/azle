@@ -72,20 +72,6 @@ ic.stable_storage = function () {
 //     };
 // };
 
-ic.call_raw = function (...args) {
-    return {
-        name: 'call_raw',
-        args
-    } as any;
-};
-
-ic.call_raw128 = function (...args) {
-    return {
-        name: 'call_raw128',
-        args
-    } as any;
-};
-
 type ic = {
     accept_message: () => void;
     // arg_data: () => any[]; // TODO: See https://github.com/demergent-labs/azle/issues/496
@@ -101,13 +87,13 @@ type ic = {
         method: string,
         args_raw: blob,
         payment: nat64
-    ) => CanisterResult<blob>;
+    ) => Promise<CanisterResult<blob>>;
     call_raw128: (
         canister_id: Principal,
         method: string,
         args_raw: blob,
         payment: nat
-    ) => CanisterResult<blob>;
+    ) => Promise<CanisterResult<blob>>;
     caller: () => Principal;
     candid_decode: (candid_encoded: blob) => string;
     candid_encode: (candid_string: string) => blob;
@@ -165,8 +151,8 @@ export type Init = void;
 export type InspectMessage = void;
 export type Query<T> = T;
 export type QueryManual<T> = void;
-export type Update<T> = T | Generator<any, T, any>;
-export type UpdateManual<T> = void | Generator<any, void, any>;
+export type Update<T> = T;
+export type UpdateManual<T> = void | Promise<void>;
 export type Oneway = void;
 // TODO the generator types are not exactly correct...but at least I've given the user the Async type
 export type Async<T> = Generator<any, T, any>; // TODO to be stricter we may want the last parameter to be unknown: https://github.com/demergent-labs/azle/issues/138

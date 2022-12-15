@@ -15,5 +15,11 @@ pub fn generate_header_code() -> proc_macro2::TokenStream {
             CdkActTryFromVmValue
         };
         use ic_cdk::api::call::CallResult;
+        use std::borrow::BorrowMut;
+        use rand::{
+            Rng,
+            SeedableRng,
+            rngs::StdRng
+        };
     }
 }

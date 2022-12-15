@@ -3,6 +3,8 @@ use cdk_framework::{nodes::ActExternalCanister, ActCanisterMethod};
 mod accept_message;
 mod arg_data_raw;
 mod arg_data_raw_size;
+mod call_raw;
+mod call_raw128;
 mod caller;
 mod candid_decode;
 mod candid_encode;
@@ -47,6 +49,8 @@ pub fn generate_ic_object_functions(
     let accept_message = accept_message::generate_ic_object_function_accept_message();
     let arg_data_raw = arg_data_raw::generate_ic_object_function_arg_data_raw();
     let arg_data_raw_size = arg_data_raw_size::generate_ic_object_function_arg_data_raw_size();
+    let call_raw = call_raw::generate_ic_object_function_call_raw();
+    let call_raw128 = call_raw128::generate_ic_object_function_call_raw128();
     let caller = caller::generate_ic_object_function_caller();
     let candid_decode = candid_decode::generate_ic_object_function_candid_decode();
     let candid_encode = candid_encode::generate_ic_object_function_candid_encode();
@@ -99,6 +103,8 @@ pub fn generate_ic_object_functions(
         #accept_message
         #arg_data_raw
         #arg_data_raw_size
+        #call_raw
+        #call_raw128
         #caller
         #candid_decode
         #candid_encode

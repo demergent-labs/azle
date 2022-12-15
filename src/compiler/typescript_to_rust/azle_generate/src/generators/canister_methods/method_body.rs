@@ -16,11 +16,20 @@ pub fn generate_canister_method_body(fn_decl: &AzleFnDecl) -> proc_macro2::Token
         unsafe {
             let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
 
+            let uuid = uuid::Uuid::new_v4().to_string();
+
+            UUID_REF_CELL.with(|uuid_ref_cell| {
+                let mut uuid_mut = uuid_ref_cell.borrow_mut();
+
+                *uuid_mut = uuid.clone();
+            });
+
             #call_to_js_function
 
             let _azle_final_return_value = _azle_async_result_handler(
                 &mut _azle_boa_context,
-                &_azle_boa_return_value
+                &_azle_boa_return_value,
+                &uuid
             ).await;
 
             #return_expression
@@ -74,7 +83,7 @@ pub fn generate_call_to_js_function(fn_decl: &AzleFnDecl) -> proc_macro2::TokenS
 ///    unless this is a ManualReply method.
 /// * `_azle_boa_context: &mut boa_engine::Context` - The current boa context
 fn generate_return_expression(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
-    if fn_decl.is_manual() {
+    if fn_decl.is_manual() || fn_decl.is_promise() {
         return quote! {
             ic_cdk::api::call::ManualReply::empty()
         };

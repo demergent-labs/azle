@@ -12,6 +12,5 @@ swc_ecma_parser = "0.117.4"
 derive-syn-parse = "0.1.5"
 swc_ecma_ast = "0.90.10"
 annotate-snippets = "0.9.1"
-cdk_framework = { git = "https://github.com/demergent-labs/cdk_framework", rev = "1147dd7dac981676b0b65b8e40f9a56fabb9bca2" }
-# cdk_framework = { path = "../../../../../cdk_framework" } # For local rust-analyzer
-# cdk_framework = { path = "../../../../../../../cdk_framework" } # For local deployment in azle/examples
+# cdk_framework = { git = "https://github.com/demergent-labs/cdk_framework", rev = "1147dd7dac981676b0b65b8e40f9a56fabb9bca2" }
+cdk_framework = { path = "/home/lastmjs/development/cdk_framework" }

@@ -28,11 +28,20 @@ pub fn build_canister_method_system_heartbeat(ts_ast: &TsAst) -> Option<ActHeart
                     ic_cdk::spawn(async {
                         let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
 
+                        let uuid = uuid::Uuid::new_v4().to_string();
+
+                        UUID_REF_CELL.with(|uuid_ref_cell| {
+                            let mut uuid_mut = uuid_ref_cell.borrow_mut();
+
+                            *uuid_mut = uuid.clone();
+                        });
+
                         #call_to_heartbeat_js_function
 
                         _azle_async_result_handler(
                             &mut _azle_boa_context,
-                            &_azle_boa_return_value
+                            &_azle_boa_return_value,
+                            &uuid
                         ).await;
                     });
                 }

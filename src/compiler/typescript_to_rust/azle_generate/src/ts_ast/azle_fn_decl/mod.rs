@@ -173,4 +173,29 @@ impl AzleFnDecl<'_> {
 
         canister_method_type == "QueryManual" || canister_method_type == "UpdateManual"
     }
+
+    pub fn is_promise(&self) -> bool {
+        let type_ref = &self.get_return_type_ref();
+
+        match &type_ref.type_params {
+            Some(type_param_instantiation) => {
+                let return_type = &*type_param_instantiation.params[0];
+                if return_type.is_ts_type_ref() {
+                    if AzleType::from_ts_type(return_type.clone(), self.source_map)
+                        .as_azle_type_ref()
+                        .unwrap()
+                        .get_name()
+                        == "Promise"
+                    {
+                        true
+                    } else {
+                        false
+                    }
+                } else {
+                    false
+                }
+            }
+            None => false,
+        }
+    }
 }

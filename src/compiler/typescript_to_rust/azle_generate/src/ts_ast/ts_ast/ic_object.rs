@@ -12,6 +12,8 @@ impl TsAst {
                 .function(_azle_ic_accept_message, "accept_message", 0)
                 .function(_azle_ic_arg_data_raw, "arg_data_raw", 0)
                 .function(_azle_ic_arg_data_raw_size, "arg_data_raw_size", 0)
+                .function(_azle_ic_call_raw, "call_raw", 0)
+                .function(_azle_ic_call_raw128, "call_raw128", 0)
                 .function(_azle_ic_caller, "caller", 0)
                 .function(_azle_ic_candid_decode, "candid_decode", 0)
                 .function(_azle_ic_candid_encode, "candid_encode", 0)
