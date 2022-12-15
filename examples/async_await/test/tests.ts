@@ -1,16 +1,16 @@
 import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/generators/generators.did';
+import { _SERVICE } from './dfx_generated/async_await/async_await.did';
 import { ActorSubclass } from '@dfinity/agent';
 
 export function get_tests(
-    generators_canister: ActorSubclass<_SERVICE>
+    async_await_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
         {
             name: 'get_randomness_directly',
             test: async () => {
                 const result =
-                    await generators_canister.get_randomness_directly();
+                    await async_await_canister.get_randomness_directly();
 
                 return {
                     ok: result.length === 32
@@ -21,7 +21,7 @@ export function get_tests(
             name: 'get_randomness_indirectly',
             test: async () => {
                 const result =
-                    await generators_canister.get_randomness_indirectly();
+                    await async_await_canister.get_randomness_indirectly();
 
                 return {
                     ok: result.length === 32
@@ -32,7 +32,7 @@ export function get_tests(
             name: 'get_randomness_super_indirectly',
             test: async () => {
                 const result =
-                    await generators_canister.get_randomness_super_indirectly();
+                    await async_await_canister.get_randomness_super_indirectly();
 
                 return {
                     ok: result.length === 96
