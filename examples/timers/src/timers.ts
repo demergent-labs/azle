@@ -28,15 +28,15 @@ export function set_timers(
     const single_id = ic.set_timer(delay, one_time_timer_callback);
     const inline1_id = ic.set_timer(delay, () => {
         status.inline1 = 1;
+        console.log('Inline timer 1 called');
     });
     const inline2_id = ic.set_timer(delay, () => {
         status.inline2 = 2;
+        console.log('Inline timer 2 called');
     });
-    // const repeat_id = ic.set_timer_interval(interval, () => {
-    //     status.repeat += status.repeat;
-    // });
-    const repeat_id = ic.set_timer(interval, () => {
-        status.repeat += status.repeat;
+    const repeat_id = ic.set_timer_interval(interval, () => {
+        status.repeat++;
+        console.log(`Repeating timer. Call ${status.repeat}`);
     });
     return {
         single: single_id,

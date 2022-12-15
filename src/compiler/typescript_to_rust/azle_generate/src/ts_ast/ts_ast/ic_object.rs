@@ -38,6 +38,7 @@ impl TsAst {
                 .function(_azle_ic_reply_raw, "reply_raw", 0)
                 .function(_azle_ic_set_certified_data, "set_certified_data", 0)
                 .function(_azle_ic_set_timer, "set_timer", 0)
+                .function(_azle_ic_set_timer_interval, "set_timer_interval", 0)
                 .function(_azle_ic_stable_bytes, "stable_bytes", 0)
                 .function(_azle_ic_stable_grow, "stable_grow", 0)
                 .function(_azle_ic_stable_read, "stable_read", 0)

@@ -30,6 +30,7 @@ mod reply;
 mod reply_raw;
 mod set_certified_data;
 mod set_timer;
+mod set_timer_interval;
 mod stable64_grow;
 mod stable64_read;
 mod stable64_size;
@@ -87,6 +88,7 @@ pub fn generate_ic_object_functions(
     let reply_raw = reply_raw::generate_ic_object_function_reply_raw();
     let set_certified_data = set_certified_data::generate_ic_object_function_set_certified_data();
     let set_timer = set_timer::generate_ic_object_function_set_timer();
+    let set_timer_interval = set_timer_interval::generate_ic_object_function_set_timer_interval();
     let stable64_grow = stable64_grow::generate_ic_object_function_stable64_grow();
     let stable64_read = stable64_read::generate_ic_object_function_stable64_read();
     let stable64_size = stable64_size::generate_ic_object_function_stable64_size();
@@ -130,6 +132,7 @@ pub fn generate_ic_object_functions(
         #reply_raw
         #set_certified_data
         #set_timer
+        #set_timer_interval
         #stable64_grow
         #stable64_read
         #stable64_size

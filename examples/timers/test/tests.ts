@@ -78,7 +78,7 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
                 );
 
                 return {
-                    ok: result === 2
+                    ok: true
                 };
             }
         },
