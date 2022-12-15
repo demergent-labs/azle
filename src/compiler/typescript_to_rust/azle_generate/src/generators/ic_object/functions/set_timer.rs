@@ -12,42 +12,7 @@ pub fn generate_ic_object_function_set_timer() -> proc_macro2::TokenStream {
             let func_js_value = _aargs.get(1).unwrap();
             let func_js_object = func_js_value.as_object().unwrap().clone();
 
-            let callback_id = _azle_create_uid();
-            let closure_owned_callback_id = callback_id.clone();
-
-            // We cannot pass the func_js_object directly to the closure because it's lifetime isn't
-            // long enough. It will go out of scope before it can be used by the closure. So
-            // instead, we store it in a global variable using a string key, and then use the string
-            // key (which can be passed to the closure) to look up the func_js_object, and then we
-            // can call it.
-            TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
-                let mut timer_callbacks = timer_callbacks_ref_cell.borrow_mut();
-
-                timer_callbacks.insert(callback_id.clone(), timers::TimerCallback {
-                    function: func_js_object,
-                    timer_id: ic_cdk::timer::TimerId::default() // This is just a placeholder until we create the timer below.
-                })
-            });
-
-            let closure = timers::create_callback_closure(closure_owned_callback_id);
-
-            let timer_id = ic_cdk::timer::set_timer(delay, closure);
-
-            TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell|{
-                let mut timer_callbacks = timer_callbacks_ref_cell.borrow_mut();
-
-                timer_callbacks
-                    .entry(callback_id.clone())
-                    .and_modify(|timer_callback| timer_callback.timer_id = timer_id);
-            });
-
-            TIMER_CALLBACK_LOOKUP_REF_CELL.with(|timer_callback_lookup_ref_cell|{
-                let mut timer_callback_lookup = timer_callback_lookup_ref_cell.borrow_mut();
-
-                timer_callback_lookup.insert(timer_id, callback_id.clone());
-            });
-
-            ic_cdk::println!("Registered timer {:?} with callback: {}", &timer_id, &callback_id);
+            let timer_id = timers::set_timer(delay, func_js_object);
 
             Ok(timer_id.try_into_vm_value(_context).unwrap())
         }
