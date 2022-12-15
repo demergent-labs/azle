@@ -1,5 +1,6 @@
 service : () -> {
   clear_timer : (nat64) -> ();
+  set_inline_timer : (nat64) -> (nat64);
   set_timer : (nat64) -> (nat64);
   single_use_timer_called : () -> (bool) query;
 }

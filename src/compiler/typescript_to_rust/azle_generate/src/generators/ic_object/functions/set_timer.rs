@@ -12,7 +12,8 @@ pub fn generate_ic_object_function_set_timer() -> proc_macro2::TokenStream {
             let func_js_value = _aargs.get(1).unwrap();
             let func_js_object = func_js_value.as_object().unwrap().clone();
 
-            let uid = _azle_create_uid();
+            let callback_id = _azle_create_uid();
+            let callback_id_clone_for_closure = callback_id.clone();
 
             // We cannot pass the func_js_object directly to the closure because it's lifetime isn't
             // long enough. It will go out of scope before it can be used by the closure. So
@@ -22,20 +23,25 @@ pub fn generate_ic_object_function_set_timer() -> proc_macro2::TokenStream {
             TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
                 let mut timer_callbacks = timer_callbacks_ref_cell.borrow_mut();
 
-                timer_callbacks.insert(uid.clone(), func_js_object)
+                timer_callbacks.insert(callback_id.clone(), TimerCallback {
+                    callback: func_js_object,
+                    timer_id: 0 // This is just a placeholder until we create the timer below.
+                })
             });
 
             let closure = move || {
                 unsafe {
+                    ic_cdk::println!("Callback {} called", &callback_id_clone_for_closure);
+
                     let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
 
                     TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
                         let mut timer_callbacks = timer_callbacks_ref_cell.borrow_mut();
 
-                        let callback = timer_callbacks.get(&uid).unwrap();
+                        let timer_callback = timer_callbacks.get(&callback_id_clone_for_closure).unwrap();
 
                         _azle_handle_boa_result(
-                            callback.call(
+                            timer_callback.callback.call(
                                 &boa_engine::JsValue::Null,
                                 &[],
                                 &mut *_azle_boa_context
@@ -43,23 +49,37 @@ pub fn generate_ic_object_function_set_timer() -> proc_macro2::TokenStream {
                             &mut *_azle_boa_context
                         );
 
-                        timer_callbacks.remove(&uid)
+                        // timer_callbacks.remove(&callback_id_clone_for_closure);
+
+                        TIMER_CALLBACK_LOOKUP_REF_CELL.with(|timer_callback_lookup_ref_cell| {
+                            timer_callback_lookup_ref_cell.borrow_mut().remove(&timer_callback.timer_id);
+                        });
+                        ic_cdk::println!("Timer {} removed from HashMap", &timer_callback.timer_id);
                     });
                 }
             };
 
-            Ok(ic_cdk::timer::set_timer(delay, closure).try_into_vm_value(_context).unwrap())
-        }
+            let timer_id = ic_cdk::timer::set_timer(delay, closure);
 
-        fn _azle_create_uid() -> String {
-            RNG_REF_CELL.with(|rng_ref_cell| {
-                let mut rng = rng_ref_cell.borrow_mut();
-                let random_values: [u8; 32] = rng.gen();
-                let mut hasher = Sha224::new();
-                hasher.update(random_values);
-                let hash = hasher.finalize();
-                base32::encode(Alphabet::RFC4648 { padding: false }, &hash)
-            })
+            let timer_id_as_u64 = timer_id.data().as_ffi();
+
+            TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell|{
+                let mut timer_callbacks = timer_callbacks_ref_cell.borrow_mut();
+
+                timer_callbacks
+                    .entry(callback_id.clone())
+                    .and_modify(|timer_callback| timer_callback.timer_id = timer_id_as_u64);
+            });
+
+            TIMER_CALLBACK_LOOKUP_REF_CELL.with(|timer_callback_lookup_ref_cell|{
+                let mut timer_callback_lookup = timer_callback_lookup_ref_cell.borrow_mut();
+
+                timer_callback_lookup.insert(timer_id_as_u64, callback_id.clone());
+            });
+
+            ic_cdk::println!("Registered timer {} with callback: {}", &timer_id_as_u64, &callback_id);
+
+            Ok(timer_id.try_into_vm_value(_context).unwrap())
         }
     }
 }
