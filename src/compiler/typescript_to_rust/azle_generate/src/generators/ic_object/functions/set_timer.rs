@@ -25,7 +25,7 @@ pub fn generate_ic_object_function_set_timer() -> proc_macro2::TokenStream {
 
                 timer_callbacks.insert(callback_id.clone(), TimerCallback {
                     callback: func_js_object,
-                    timer_id: 0 // This is just a placeholder until we create the timer below.
+                    timer_id: ic_cdk::timer::TimerId::default() // This is just a placeholder until we create the timer below.
                 })
             });
 
@@ -62,29 +62,27 @@ pub fn generate_ic_object_function_set_timer() -> proc_macro2::TokenStream {
                     TIMER_CALLBACK_LOOKUP_REF_CELL.with(|timer_callback_lookup_ref_cell| {
                         timer_callback_lookup_ref_cell.borrow_mut().remove(&timer_id);
                     });
-                    ic_cdk::println!("Timer {} removed from HashMap", &timer_id);
+                    ic_cdk::println!("Timer {:?} removed from HashMap", &timer_id);
                 }
             };
 
             let timer_id = ic_cdk::timer::set_timer(delay, closure);
-
-            let timer_id_as_u64 = timer_id.data().as_ffi();
 
             TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell|{
                 let mut timer_callbacks = timer_callbacks_ref_cell.borrow_mut();
 
                 timer_callbacks
                     .entry(callback_id.clone())
-                    .and_modify(|timer_callback| timer_callback.timer_id = timer_id_as_u64);
+                    .and_modify(|timer_callback| timer_callback.timer_id = timer_id);
             });
 
             TIMER_CALLBACK_LOOKUP_REF_CELL.with(|timer_callback_lookup_ref_cell|{
                 let mut timer_callback_lookup = timer_callback_lookup_ref_cell.borrow_mut();
 
-                timer_callback_lookup.insert(timer_id_as_u64, callback_id.clone());
+                timer_callback_lookup.insert(timer_id, callback_id.clone());
             });
 
-            ic_cdk::println!("Registered timer {} with callback: {}", &timer_id_as_u64, &callback_id);
+            ic_cdk::println!("Registered timer {:?} with callback: {}", &timer_id, &callback_id);
 
             Ok(timer_id.try_into_vm_value(_context).unwrap())
         }

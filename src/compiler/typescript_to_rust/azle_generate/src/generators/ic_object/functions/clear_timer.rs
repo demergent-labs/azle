@@ -7,14 +7,13 @@ pub fn generate_ic_object_function_clear_timer() -> proc_macro2::TokenStream {
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             let timer_id_js_value: boa_engine::JsValue = _aargs.get(0).unwrap().clone();
             let timer_id: ic_cdk::timer::TimerId = timer_id_js_value.try_from_vm_value(&mut *_context).unwrap();
-            let timer_id_as_u64 = timer_id.data().as_ffi();
 
             ic_cdk::timer::clear_timer(timer_id);
 
             TIMER_CALLBACK_LOOKUP_REF_CELL.with(|timer_callback_lookup_ref_cell| {
                 let mut timer_callback_lookup = timer_callback_lookup_ref_cell.borrow_mut();
 
-                let timer_callback_id = &timer_callback_lookup.get(&timer_id_as_u64).unwrap();
+                let timer_callback_id = &timer_callback_lookup.get(&timer_id).unwrap();
 
                 TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
                     let mut timer_callbacks = timer_callbacks_ref_cell.borrow_mut();
@@ -22,8 +21,8 @@ pub fn generate_ic_object_function_clear_timer() -> proc_macro2::TokenStream {
                     ic_cdk::println!("Cleared TimerCallback: {}", timer_callback_id);
                 });
 
-                timer_callback_lookup.remove(&timer_id_as_u64);
-                ic_cdk::println!("Cleared TimerCallback Lookup: {}", &timer_id_as_u64);
+                timer_callback_lookup.remove(&timer_id);
+                ic_cdk::println!("Cleared TimerCallback Lookup: {:?}", &timer_id);
             });
 
             Ok(boa_engine::JsValue::Undefined)

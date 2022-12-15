@@ -20,13 +20,13 @@ pub fn generate_header_code() -> proc_macro2::TokenStream {
 
         struct TimerCallback {
             callback: JsObject,
-            timer_id: u64,
+            timer_id: ic_cdk::timer::TimerId,
         }
 
         thread_local! {
             static RNG_REF_CELL: RefCell<StdRng> = RefCell::new(SeedableRng::from_seed([0u8;32]));
             static TIMER_CALLBACKS_REF_CELL: RefCell<HashMap<String, TimerCallback>> = RefCell::new(HashMap::new());
-            static TIMER_CALLBACK_LOOKUP_REF_CELL: RefCell<HashMap<u64, String>> = RefCell::new(HashMap::new());
+            static TIMER_CALLBACK_LOOKUP_REF_CELL: RefCell<HashMap<ic_cdk::timer::TimerId, String>> = RefCell::new(HashMap::new());
         }
 
         fn _azle_create_uid() -> String {
