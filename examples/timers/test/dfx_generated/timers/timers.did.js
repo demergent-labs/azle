@@ -1,17 +1,19 @@
 export const idlFactory = ({ IDL }) => {
     const TimerIds = IDL.Record({
+        repeat: IDL.Nat64,
         inline1: IDL.Nat64,
         inline2: IDL.Nat64,
         single: IDL.Nat64
     });
     const StatusReport = IDL.Record({
+        repeat: IDL.Int8,
         inline1: IDL.Int8,
         inline2: IDL.Int8,
         single: IDL.Bool
     });
     return IDL.Service({
         clear_timer: IDL.Func([IDL.Nat64], [], []),
-        set_timers: IDL.Func([IDL.Nat64], [TimerIds], []),
+        set_timers: IDL.Func([IDL.Nat64, IDL.Nat64], [TimerIds], []),
         status_report: IDL.Func([], [StatusReport], ['query'])
     });
 };

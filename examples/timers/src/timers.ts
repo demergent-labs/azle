@@ -4,21 +4,27 @@ export type StatusReport = {
     single: boolean;
     inline1: int8;
     inline2: int8;
+    repeat: int8;
 };
 
 export type TimerIds = {
     single: TimerId;
     inline1: TimerId;
     inline2: TimerId;
+    repeat: TimerId;
 };
 
 let status: StatusReport = {
     single: false,
     inline1: 0,
-    inline2: 0
+    inline2: 0,
+    repeat: 0
 };
 
-export function set_timers(delay: Duration): Update<TimerIds> {
+export function set_timers(
+    delay: Duration,
+    interval: Duration
+): Update<TimerIds> {
     const single_id = ic.set_timer(delay, one_time_timer_callback);
     const inline1_id = ic.set_timer(delay, () => {
         status.inline1 = 1;
@@ -26,10 +32,17 @@ export function set_timers(delay: Duration): Update<TimerIds> {
     const inline2_id = ic.set_timer(delay, () => {
         status.inline2 = 2;
     });
+    // const repeat_id = ic.set_timer_interval(interval, () => {
+    //     status.repeat += status.repeat;
+    // });
+    const repeat_id = ic.set_timer(interval, () => {
+        status.repeat += status.repeat;
+    });
     return {
         single: single_id,
         inline1: inline1_id,
-        inline2: inline2_id
+        inline2: inline2_id,
+        repeat: repeat_id
     };
 }
 
