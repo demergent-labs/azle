@@ -1,17 +1,12 @@
 pub fn generate_timers_module() -> proc_macro2::TokenStream {
     quote::quote! {
         pub mod timers {
-            use rand::Rng;
-            use sha2::Digest;
-
             pub struct TimerCallback {
                 pub function: boa_engine::object::JsObject,
                 pub timer_id: ic_cdk::timer::TimerId,
             }
 
             thread_local! {
-                static RNG_REF_CELL: std::cell::RefCell<rand::rngs::StdRng>
-                    = std::cell::RefCell::new(rand::SeedableRng::from_seed([0u8;32]));
                 static TIMER_CALLBACKS_REF_CELL: std::cell::RefCell<std::collections::HashMap<String, TimerCallback>>
                     = std::cell::RefCell::new(std::collections::HashMap::new());
                 static TIMER_CALLBACK_LOOKUP_REF_CELL: std::cell::RefCell<std::collections::HashMap<ic_cdk::timer::TimerId, String>>
@@ -33,7 +28,8 @@ pub fn generate_timers_module() -> proc_macro2::TokenStream {
             }
 
             pub fn set_timer(delay: core::time::Duration, func_js_object: boa_engine::object::JsObject) -> ic_cdk::timer::TimerId {
-                let callback_id = create_uid();
+
+                let callback_id = uuid::Uuid::new_v4().to_string();
 
                 // We cannot pass the func_js_object directly to the closure because it's lifetime isn't
                 // long enough. It will go out of scope before it can be used by the closure. So
@@ -71,7 +67,7 @@ pub fn generate_timers_module() -> proc_macro2::TokenStream {
             }
 
             pub fn set_timer_interval(interval: core::time::Duration, func_js_object: boa_engine::object::JsObject) -> ic_cdk::timer::TimerId {
-                let callback_id = create_uid();
+                let callback_id = uuid::Uuid::new_v4().to_string();
 
                 // We cannot pass the func_js_object directly to the closure because it's lifetime isn't
                 // long enough. It will go out of scope before it can be used by the closure. So
@@ -158,17 +154,6 @@ pub fn generate_timers_module() -> proc_macro2::TokenStream {
                         });
                     }
                 }
-            }
-
-            fn create_uid() -> String {
-                RNG_REF_CELL.with(|rng_ref_cell| {
-                    let mut rng = rng_ref_cell.borrow_mut();
-                    let random_values: [u8; 32] = rng.gen();
-                    let mut hasher = sha2::Sha224::new();
-                    hasher.update(random_values);
-                    let hash = hasher.finalize();
-                    base32::encode(base32::Alphabet::RFC4648 { padding: false }, &hash)
-                })
             }
         }
     }
