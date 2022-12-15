@@ -6,6 +6,10 @@ pub fn generate_ic_object_function_call_raw128() -> proc_macro2::TokenStream {
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
+            let top_level_call_frame = &_context.vm.frames[0];
+            let function_name_sym = top_level_call_frame.code.name;
+            let function_name = _context.interner.resolve_expect(function_name_sym.clone()).to_string();
+
             // TODO make this promise in a better way once Boa allows it or you can figure it out
             let promise_js_value = _context.eval("new Promise(() => {})").unwrap();
             let promise_js_value_cloned = promise_js_value.clone();
@@ -76,7 +80,7 @@ pub fn generate_ic_object_function_call_raw128() -> proc_macro2::TokenStream {
                         main_promise.clone()
                     });
 
-                    _azle_async_result_handler(_azle_boa_context, &main_promise, &uuid).await;
+                    _azle_async_result_handler(_azle_boa_context, &main_promise, &uuid, &function_name).await;
                 }
             });
 

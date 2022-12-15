@@ -23,6 +23,7 @@ pub fn build_canister_method_system_heartbeat(ts_ast: &TsAst) -> Option<ActHeart
     if let Some(heartbeat_fn_decl) = heartbeat_fn_decl_option {
         let call_to_heartbeat_js_function =
             method_body::generate_call_to_js_function(heartbeat_fn_decl);
+        let function_name = heartbeat_fn_decl.get_function_name();
         let body = quote::quote! {
                 unsafe {
                     ic_cdk::spawn(async {
@@ -41,7 +42,8 @@ pub fn build_canister_method_system_heartbeat(ts_ast: &TsAst) -> Option<ActHeart
                         _azle_async_result_handler(
                             &mut _azle_boa_context,
                             &_azle_boa_return_value,
-                            &uuid
+                            &uuid,
+                            #function_name
                         ).await;
                     });
                 }

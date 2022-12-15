@@ -12,6 +12,10 @@ pub fn generate_canister_method_body(fn_decl: &AzleFnDecl) -> proc_macro2::Token
     let call_to_js_function = generate_call_to_js_function(fn_decl);
     let return_expression = generate_return_expression(fn_decl);
 
+    // TODO could we store the function name globally to remove the need
+    // TODO to rely on the call stack?
+    let function_name = fn_decl.get_function_name();
+
     quote! {
         unsafe {
             let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
@@ -29,7 +33,8 @@ pub fn generate_canister_method_body(fn_decl: &AzleFnDecl) -> proc_macro2::Token
             let _azle_final_return_value = _azle_async_result_handler(
                 &mut _azle_boa_context,
                 &_azle_boa_return_value,
-                &uuid
+                &uuid,
+                #function_name
             ).await;
 
             #return_expression

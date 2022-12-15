@@ -14,12 +14,37 @@ pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             // TODO make this promise in a better way once Boa allows it or you can figure it out
             let promise_js_value = _context.eval("new Promise(() => {})").unwrap();
-            let promise_js_value_cloned = promise_js_value.clone();
 
             let canister_id: ic_cdk::export::Principal = _aargs.get(0).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
             let method: String = _aargs.get(1).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
             let args_raw: Vec<u8> = _aargs.get(2).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
             let payment: u64 = _aargs.get(3).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
+
+            let top_level_call_frame = &_context.vm.frames[0];
+            let function_name_sym = top_level_call_frame.code.name;
+            let function_name = _context.interner.resolve_expect(function_name_sym.clone()).to_string();
+
+            _azle_ic_call_raw_spawn(
+                &promise_js_value,
+                canister_id,
+                method,
+                args_raw,
+                payment,
+                function_name
+            );
+
+            Ok(promise_js_value)
+        }
+
+        fn _azle_ic_call_raw_spawn(
+            promise_js_value: &boa_engine::JsValue,
+            canister_id: ic_cdk::export::Principal,
+            method: String,
+            args_raw: Vec<u8>,
+            payment: u64,
+            function_name: String
+        ) {
+            let promise_js_value = promise_js_value.clone();
 
             ic_cdk::spawn(async move {
                 unsafe {
@@ -27,7 +52,12 @@ pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
 
                     let uuid = UUID_REF_CELL.with(|uuid_ref_cell| uuid_ref_cell.borrow().clone());
 
-                    let call_result = ic_cdk::api::call::call_raw(canister_id, &method, &args_raw, payment).await;
+                    let call_result = ic_cdk::api::call::call_raw(
+                        canister_id,
+                        &method,
+                        &args_raw,
+                        payment
+                    ).await;
 
                     UUID_REF_CELL.with(|uuid_ref_cell| {
                         let mut uuid_mut = uuid_ref_cell.borrow_mut();
@@ -68,7 +98,7 @@ pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
                         }
                     };
 
-                    let promise_js_object = promise_js_value_cloned.as_object().unwrap();
+                    let promise_js_object = promise_js_value.as_object().unwrap();
                     let mut promise_object = promise_js_object.borrow_mut();
                     let mut promise = promise_object.as_promise_mut().unwrap();
 
@@ -82,11 +112,9 @@ pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
                         main_promise.clone()
                     });
 
-                    _azle_async_result_handler(_azle_boa_context, &main_promise, &uuid).await;
+                    _azle_async_result_handler(_azle_boa_context, &main_promise, &uuid, &function_name).await;
                 }
             });
-
-            Ok(promise_js_value)
         }
     }
 }

@@ -1,9 +1,11 @@
+use cdk_framework::{ActCanisterMethod, ToTokenStream};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn::Ident;
 
 use super::TsAst;
 use crate::generators::cross_canister_call_functions::CrossCanisterCallFunctionsInfo;
+use crate::ts_keywords;
 
 enum AzleCallType {
     WithoutPayment,
@@ -12,7 +14,10 @@ enum AzleCallType {
 }
 
 impl TsAst {
-    pub fn generate_async_result_handler(&self) -> TokenStream {
+    pub fn generate_async_result_handler(
+        &self,
+        canister_methods: &Vec<ActCanisterMethod>,
+    ) -> TokenStream {
         let cross_canister_call_functions_infos =
             self.generate_cross_canister_call_functions_infos();
 
@@ -31,6 +36,8 @@ impl TsAst {
             &AzleCallType::WithPayment128,
         );
 
+        let match_arms = generate_match_arms(canister_methods);
+
         quote! {
             enum AzleCallRawType {
                 U64,
@@ -41,7 +48,8 @@ impl TsAst {
             async fn _azle_async_result_handler(
                 _azle_boa_context: &mut boa_engine::Context,
                 _azle_boa_return_value: &boa_engine::JsValue,
-                _azle_uuid: &str
+                _azle_uuid: &str,
+                _azle_method_name: &str
             ) -> boa_engine::JsValue {
                 if
                     _azle_boa_return_value.is_object() == true &&
@@ -56,25 +64,21 @@ impl TsAst {
 
                     return match &promise.promise_state {
                         boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
-                            ic_cdk::println!("it is fulfilled");
+                            ic_cdk::println!("boa_engine::builtins::promise::PromiseState::Fulfilled");
 
-                            // TODO I think I need to get the method_name before the await boundary
-                            // ic_cdk::println!("method_name: {}", ic_cdk::api::call::method_name());
-
-                            // TODO we will need to do the correct types in here, we need to generate them appropriately
-                            // TODO pass in the canister method name to get what you need, this should be very similar to reply
-                            let reply_value: ExecuteCallRawResult = js_value.clone().try_from_vm_value(_azle_boa_context).unwrap();
-
-                            ic_cdk::api::call::reply((reply_value,));
+                            match _azle_method_name {
+                                #(#match_arms)*
+                                _ => panic!("This cannot happen")
+                            };
 
                             return boa_engine::JsValue::Null;
                         },
                         boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
                             // TODO handle rejections
-                            panic!("rejected there is a js_value: {:#?}", js_value);
+                            panic!("boa_engine::builtins::promise::PromiseState::Rejected");
                         },
-                        Pending => {
-                            ic_cdk::println!("Pending my friend");
+                        boa_engine::builtins::promise::PromiseState::Pending => {
+                            ic_cdk::println!("boa_engine::builtins::promise::PromiseState::Pending");
 
                             PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                                 let mut promise_map = promise_map_ref_cell.borrow_mut();
@@ -121,7 +125,8 @@ impl TsAst {
                             let recursed_generator_js_value = _azle_async_result_handler(
                                 _azle_boa_context,
                                 &yield_result_value_js_value,
-                                _azle_uuid
+                                _azle_uuid,
+                                _azle_method_name
                             ).await;
 
                             _azle_args = vec![recursed_generator_js_value];
@@ -454,4 +459,25 @@ fn generate_async_result_handler_function_name_info(
             )
         }
     }
+}
+
+fn generate_match_arms(canister_methods: &Vec<ActCanisterMethod>) -> Vec<TokenStream> {
+    canister_methods
+        .iter()
+        .filter(|canister_method| canister_method.is_promise())
+        .map(|canister_method| generate_match_arm(canister_method))
+        .collect()
+}
+
+fn generate_match_arm(canister_method: &ActCanisterMethod) -> TokenStream {
+    let name = &canister_method.get_name();
+    let return_type = &canister_method
+        .get_return_type()
+        .to_token_stream(&ts_keywords::ts_keywords());
+    quote!(
+        #name => {
+            let reply_value: #return_type = js_value.clone().try_from_vm_value(&mut *_azle_boa_context).unwrap();
+            ic_cdk::api::call::reply((reply_value,));
+        }
+    )
 }
