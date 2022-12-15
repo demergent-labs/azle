@@ -23,7 +23,7 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'set timers',
             test: async () => {
-                timer_ids = await timers_canister.set_timers(10n, 5n);
+                timer_ids = await timers_canister.set_timers(9n, 5n);
 
                 return {
                     ok: true
@@ -32,7 +32,7 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
         },
         {
             name: 'wait for repeated timer to be called once',
-            wait: 5000
+            wait: 6000
         },
         {
             name: 'check that only the repeated timer was called',
