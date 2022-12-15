@@ -29,7 +29,6 @@ pub fn generate_timers_module() -> proc_macro2::TokenStream {
                     });
 
                     timer_callback_lookup.remove(&timer_id);
-                    ic_cdk::println!("Removed timer {:?} with callback {}", timer_id, &timer_callback_id);
                 });
             }
 
@@ -68,16 +67,12 @@ pub fn generate_timers_module() -> proc_macro2::TokenStream {
                     timer_callback_lookup.insert(timer_id, callback_id.clone());
                 });
 
-                ic_cdk::println!("Registered timer {:?} with callback: {}", &timer_id, &callback_id);
-
                 timer_id
             }
 
             fn create_callback_closure(callback_id: String) -> impl FnOnce() + 'static {
                 move || {
                     unsafe {
-                        ic_cdk::println!("Callback {} called", &callback_id);
-
                         let mut _azle_boa_context = crate::BOA_CONTEXT_OPTION.as_mut().unwrap();
 
                         let timer_id = TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
