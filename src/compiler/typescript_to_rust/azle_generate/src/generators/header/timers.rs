@@ -1,19 +1,24 @@
 pub fn generate_timers_module() -> proc_macro2::TokenStream {
     quote::quote! {
         pub mod timers {
+            use std::{cell::RefCell, collections::HashMap};
+            use ic_cdk::timer::TimerId;
+            use boa_engine::object::JsObject;
+            use core::time::Duration;
+
             pub struct TimerCallback {
-                pub function: boa_engine::object::JsObject,
-                pub timer_id: ic_cdk::timer::TimerId,
+                pub function: JsObject,
+                pub timer_id: TimerId,
             }
 
             thread_local! {
-                static TIMER_CALLBACKS_REF_CELL: std::cell::RefCell<std::collections::HashMap<String, TimerCallback>>
-                    = std::cell::RefCell::new(std::collections::HashMap::new());
-                static TIMER_CALLBACK_LOOKUP_REF_CELL: std::cell::RefCell<std::collections::HashMap<ic_cdk::timer::TimerId, String>>
-                    = std::cell::RefCell::new(std::collections::HashMap::new());
+                static TIMER_CALLBACKS_REF_CELL: RefCell<HashMap<String, TimerCallback>>
+                    = RefCell::new(HashMap::new());
+                static TIMER_CALLBACK_LOOKUP_REF_CELL: RefCell<HashMap<TimerId, String>>
+                    = RefCell::new(HashMap::new());
             }
 
-            pub fn delete_timer_callback(timer_id: &ic_cdk::timer::TimerId) {
+            pub fn delete_timer_callback(timer_id: &TimerId) {
                 TIMER_CALLBACK_LOOKUP_REF_CELL.with(|timer_callback_lookup_ref_cell| {
                     let mut timer_callback_lookup = timer_callback_lookup_ref_cell.borrow_mut();
 
@@ -28,24 +33,22 @@ pub fn generate_timers_module() -> proc_macro2::TokenStream {
             }
 
             pub fn set_timer(
-                duration: core::time::Duration,
-                func_js_object: boa_engine::object::JsObject,
+                duration: Duration,
+                function: JsObject,
                 repeat: bool
-            ) -> ic_cdk::timer::TimerId {
-
+            ) -> TimerId {
                 let callback_id = uuid::Uuid::new_v4().to_string();
 
-                // We cannot pass the func_js_object directly to the closure because it's lifetime isn't
+                // We cannot pass the function directly to the closure because it's lifetime isn't
                 // long enough. It will go out of scope before it can be used by the closure. So
-                // instead, we store it in a global variable using a string key, and then use the string
-                // key (which can be passed to the closure) to look up the func_js_object, and then we
-                // can call it.
+                // instead, we store it in a global variable using a string key, and then later
+                // use that key (which can be passed to the closure) to look up the function.
                 TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
                     let mut timer_callbacks = timer_callbacks_ref_cell.borrow_mut();
 
                     timer_callbacks.insert(callback_id.clone(), TimerCallback {
-                        function: func_js_object,
-                        timer_id: ic_cdk::timer::TimerId::default() // This is just a placeholder until we create the timer below.
+                        function,
+                        timer_id: TimerId::default() // This is just a placeholder until we create the timer below.
                     })
                 });
 
