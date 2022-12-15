@@ -1,18 +1,36 @@
-import { ic, Query, Duration, TimerId, Update } from 'azle';
+import { Duration, ic, int8, Query, TimerId, Update } from 'azle';
 
-let _single_use_timer_called = false;
+export type StatusReport = {
+    single: boolean;
+    inline1: int8;
+    inline2: int8;
+};
 
-export function set_timer(delay: Duration): Update<TimerId> {
-    return ic.set_timer(delay, one_time_timer);
-}
+export type TimerIds = {
+    single: TimerId;
+    inline1: TimerId;
+    inline2: TimerId;
+};
 
-export function set_inline_timer(delay: Duration): Update<TimerId> {
-    ic.set_timer(delay, () => {
-        console.log('First inline timer in JS');
+let status: StatusReport = {
+    single: false,
+    inline1: 0,
+    inline2: 0
+};
+
+export function set_timers(delay: Duration): Update<TimerIds> {
+    const single_id = ic.set_timer(delay, one_time_timer_callback);
+    const inline1_id = ic.set_timer(delay, () => {
+        status.inline1 = 1;
     });
-    return ic.set_timer(delay, () => {
-        console.log('Second inline timer in JS');
+    const inline2_id = ic.set_timer(delay, () => {
+        status.inline2 = 2;
     });
+    return {
+        single: single_id,
+        inline1: inline1_id,
+        inline2: inline2_id
+    };
 }
 
 export function clear_timer(timer_id: TimerId): Update<void> {
@@ -20,15 +38,11 @@ export function clear_timer(timer_id: TimerId): Update<void> {
     console.log(`timer ${timer_id} cancelled`);
 }
 
-export function single_use_timer_called(): Query<boolean> {
-    return _single_use_timer_called;
+export function status_report(): Query<StatusReport> {
+    return status;
 }
 
-function one_time_timer(): void {
-    _single_use_timer_called = true;
-    console.log('one_time_timer called');
-}
-
-function something_else(): void {
-    console.log('something_else called');
+function one_time_timer_callback(): void {
+    status.single = true;
+    console.log('one_time_timer_callback called');
 }
