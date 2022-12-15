@@ -104,7 +104,7 @@ pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
                     let mut promise_object = promise_js_object.borrow_mut();
                     let mut promise = promise_object.as_promise_mut().unwrap();
 
-                    promise.clone().fulfill_promise(&call_result_js_value, &mut *_azle_boa_context);
+                    promise.fulfill_promise(&call_result_js_value, &mut *_azle_boa_context);
 
                     let main_promise = PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                         let promise_map = promise_map_ref_cell.borrow().clone();

@@ -37,6 +37,12 @@ pub fn build_canister_method_system_heartbeat(ts_ast: &TsAst) -> Option<ActHeart
                             *uuid_mut = uuid.clone();
                         });
 
+                        METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                            let mut method_name_mut = method_name_ref_cell.borrow_mut();
+
+                            *method_name_mut = #function_name.to_string()
+                        });
+
                         #call_to_heartbeat_js_function
 
                         _azle_async_result_handler(
