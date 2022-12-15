@@ -36,6 +36,35 @@ pub fn generate_header_code() -> proc_macro2::TokenStream {
                     ic_cdk::println!("Removed timer {:?} with callback {}", timer_id, &timer_callback_id);
                 });
             }
+
+            pub fn create_callback_closure(callback_id: String) -> impl FnOnce() + 'static {
+                move || {
+                    unsafe {
+                        ic_cdk::println!("Callback {} called", &callback_id);
+
+                        let mut _azle_boa_context = crate::BOA_CONTEXT_OPTION.as_mut().unwrap();
+
+                        let timer_id = crate::TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
+                            let timer_callbacks = timer_callbacks_ref_cell.borrow();
+
+                            let timer_callback = timer_callbacks.get(&callback_id).unwrap();
+
+                            crate::_azle_handle_boa_result(
+                                timer_callback.function.call(
+                                    &boa_engine::JsValue::Null,
+                                    &[],
+                                    &mut *_azle_boa_context
+                                ),
+                                &mut *_azle_boa_context
+                            );
+
+                            timer_callback.timer_id
+                        });
+
+                        delete_timer_callback(&timer_id);
+                    }
+                }
+            }
         }
 
         thread_local! {

@@ -29,32 +29,7 @@ pub fn generate_ic_object_function_set_timer() -> proc_macro2::TokenStream {
                 })
             });
 
-            let closure = move || {
-                unsafe {
-                    ic_cdk::println!("Callback {} called", &closure_owned_callback_id);
-
-                    let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
-
-                    let timer_id = TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
-                        let timer_callbacks = timer_callbacks_ref_cell.borrow();
-
-                        let timer_callback = timer_callbacks.get(&closure_owned_callback_id).unwrap();
-
-                        _azle_handle_boa_result(
-                            timer_callback.function.call(
-                                &boa_engine::JsValue::Null,
-                                &[],
-                                &mut *_azle_boa_context
-                            ),
-                            &mut *_azle_boa_context
-                        );
-
-                        timer_callback.timer_id
-                    });
-
-                    timers::delete_timer_callback(&timer_id);
-                }
-            };
+            let closure = timers::create_callback_closure(closure_owned_callback_id);
 
             let timer_id = ic_cdk::timer::set_timer(delay, closure);
 
