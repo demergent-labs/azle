@@ -13,7 +13,7 @@ pub fn generate_ic_object_function_set_timer() -> proc_macro2::TokenStream {
             let func_js_object = func_js_value.as_object().unwrap().clone();
 
             let callback_id = _azle_create_uid();
-            let callback_id_clone_for_closure = callback_id.clone();
+            let closure_owned_callback_id = callback_id.clone();
 
             // We cannot pass the func_js_object directly to the closure because it's lifetime isn't
             // long enough. It will go out of scope before it can be used by the closure. So
@@ -23,25 +23,25 @@ pub fn generate_ic_object_function_set_timer() -> proc_macro2::TokenStream {
             TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
                 let mut timer_callbacks = timer_callbacks_ref_cell.borrow_mut();
 
-                timer_callbacks.insert(callback_id.clone(), TimerCallback {
-                    callback: func_js_object,
+                timer_callbacks.insert(callback_id.clone(), timers::TimerCallback {
+                    function: func_js_object,
                     timer_id: ic_cdk::timer::TimerId::default() // This is just a placeholder until we create the timer below.
                 })
             });
 
             let closure = move || {
                 unsafe {
-                    ic_cdk::println!("Callback {} called", &callback_id_clone_for_closure);
+                    ic_cdk::println!("Callback {} called", &closure_owned_callback_id);
 
                     let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
 
                     let timer_id = TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
                         let timer_callbacks = timer_callbacks_ref_cell.borrow();
 
-                        let timer_callback = timer_callbacks.get(&callback_id_clone_for_closure).unwrap();
+                        let timer_callback = timer_callbacks.get(&closure_owned_callback_id).unwrap();
 
                         _azle_handle_boa_result(
-                            timer_callback.callback.call(
+                            timer_callback.function.call(
                                 &boa_engine::JsValue::Null,
                                 &[],
                                 &mut *_azle_boa_context
@@ -52,17 +52,7 @@ pub fn generate_ic_object_function_set_timer() -> proc_macro2::TokenStream {
                         timer_callback.timer_id
                     });
 
-
-                    TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
-                        let mut timer_callbacks = timer_callbacks_ref_cell.borrow_mut();
-                        timer_callbacks.remove(&callback_id_clone_for_closure);
-                    });
-                    ic_cdk::println!("TimerCallback {} removed from HashMap", &callback_id_clone_for_closure);
-
-                    TIMER_CALLBACK_LOOKUP_REF_CELL.with(|timer_callback_lookup_ref_cell| {
-                        timer_callback_lookup_ref_cell.borrow_mut().remove(&timer_id);
-                    });
-                    ic_cdk::println!("Timer {:?} removed from HashMap", &timer_id);
+                    timers::delete_timer_callback(&timer_id);
                 }
             };
 

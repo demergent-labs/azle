@@ -10,33 +10,51 @@ pub fn generate_header_code() -> proc_macro2::TokenStream {
         #![allow(warnings, unused)]
 
         use azle_vm_value_derive::{CdkActTryIntoVmValue, CdkActTryFromVmValue};
-        use base32::Alphabet;
-        use boa_engine::object::JsObject;
         use ic_cdk::api::call::CallResult;
-        use rand::{Rng, rngs::StdRng, SeedableRng};
-        use sha2::{Digest, Sha224};
+        use rand::Rng;
+        use sha2::Digest;
         use slotmap::Key;
-        use std::{cell::RefCell, collections::HashMap, str::FromStr};
+        use std::str::FromStr;
 
-        struct TimerCallback {
-            callback: JsObject,
-            timer_id: ic_cdk::timer::TimerId,
+        pub mod timers {
+            pub struct TimerCallback {
+                pub function: boa_engine::object::JsObject,
+                pub timer_id: ic_cdk::timer::TimerId,
+            }
+
+            pub fn delete_timer_callback(timer_id: &ic_cdk::timer::TimerId) {
+                crate::TIMER_CALLBACK_LOOKUP_REF_CELL.with(|timer_callback_lookup_ref_cell| {
+                    let mut timer_callback_lookup = timer_callback_lookup_ref_cell.borrow_mut();
+
+                    let timer_callback_id = timer_callback_lookup.get(&timer_id).unwrap().clone();
+
+                    crate::TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
+                        timer_callbacks_ref_cell.borrow_mut().remove(&timer_callback_id);
+                    });
+
+                    timer_callback_lookup.remove(&timer_id);
+                    ic_cdk::println!("Removed timer {:?} with callback {}", timer_id, &timer_callback_id);
+                });
+            }
         }
 
         thread_local! {
-            static RNG_REF_CELL: RefCell<StdRng> = RefCell::new(SeedableRng::from_seed([0u8;32]));
-            static TIMER_CALLBACKS_REF_CELL: RefCell<HashMap<String, TimerCallback>> = RefCell::new(HashMap::new());
-            static TIMER_CALLBACK_LOOKUP_REF_CELL: RefCell<HashMap<ic_cdk::timer::TimerId, String>> = RefCell::new(HashMap::new());
+            static RNG_REF_CELL: std::cell::RefCell<rand::rngs::StdRng>
+                = std::cell::RefCell::new(rand::SeedableRng::from_seed([0u8;32]));
+            static TIMER_CALLBACKS_REF_CELL: std::cell::RefCell<std::collections::HashMap<String, timers::TimerCallback>>
+                = std::cell::RefCell::new(std::collections::HashMap::new());
+            static TIMER_CALLBACK_LOOKUP_REF_CELL: std::cell::RefCell<std::collections::HashMap<ic_cdk::timer::TimerId, String>>
+                = std::cell::RefCell::new(std::collections::HashMap::new());
         }
 
         fn _azle_create_uid() -> String {
             RNG_REF_CELL.with(|rng_ref_cell| {
                 let mut rng = rng_ref_cell.borrow_mut();
                 let random_values: [u8; 32] = rng.gen();
-                let mut hasher = Sha224::new();
+                let mut hasher = sha2::Sha224::new();
                 hasher.update(random_values);
                 let hash = hasher.finalize();
-                base32::encode(Alphabet::RFC4648 { padding: false }, &hash)
+                base32::encode(base32::Alphabet::RFC4648 { padding: false }, &hash)
             })
         }
     }

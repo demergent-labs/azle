@@ -9,21 +9,7 @@ pub fn generate_ic_object_function_clear_timer() -> proc_macro2::TokenStream {
             let timer_id: ic_cdk::timer::TimerId = timer_id_js_value.try_from_vm_value(&mut *_context).unwrap();
 
             ic_cdk::timer::clear_timer(timer_id);
-
-            TIMER_CALLBACK_LOOKUP_REF_CELL.with(|timer_callback_lookup_ref_cell| {
-                let mut timer_callback_lookup = timer_callback_lookup_ref_cell.borrow_mut();
-
-                let timer_callback_id = &timer_callback_lookup.get(&timer_id).unwrap();
-
-                TIMER_CALLBACKS_REF_CELL.with(|timer_callbacks_ref_cell| {
-                    let mut timer_callbacks = timer_callbacks_ref_cell.borrow_mut();
-                    timer_callbacks.remove(timer_callback_id.clone());
-                    ic_cdk::println!("Cleared TimerCallback: {}", timer_callback_id);
-                });
-
-                timer_callback_lookup.remove(&timer_id);
-                ic_cdk::println!("Cleared TimerCallback Lookup: {:?}", &timer_id);
-            });
+            timers::delete_timer_callback(&timer_id);
 
             Ok(boa_engine::JsValue::Undefined)
         }
