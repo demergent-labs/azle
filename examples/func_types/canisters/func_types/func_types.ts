@@ -1,5 +1,4 @@
 import {
-    CanisterResult,
     Func,
     ic,
     Init,
@@ -80,13 +79,14 @@ type GetNotifierFromNotifiersCanisterResult = Variant<{
     err: string;
 }>;
 
-export function* get_notifier_from_notifiers_canister(): Update<GetNotifierFromNotifiersCanisterResult> {
-    const notifiers_canister = ic.canisters.Notifier<Notifier>(
+export async function get_notifier_from_notifiers_canister(): Update<
+    Promise<GetNotifierFromNotifiersCanisterResult>
+> {
+    const notifiers_canister: Notifier = ic.canisters.Notifier(
         Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
     );
 
-    const result: CanisterResult<NotifierFunc> =
-        yield notifiers_canister.get_notifier();
+    const result = await notifiers_canister.get_notifier().call();
 
     if (!ok(result)) {
         return {

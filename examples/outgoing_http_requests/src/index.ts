@@ -1,20 +1,11 @@
-import {
-    blob,
-    CanisterResult,
-    ic,
-    ok,
-    Principal,
-    Query,
-    Update,
-    UpdateManual
-} from 'azle';
+import { ic, ok, Principal, Query, Update, UpdateManual } from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
-    ManagementCanister
+    management_canister
 } from 'azle/canisters/management';
 
-export function* xkcd(): Update<HttpResponse> {
+export async function xkcd(): Update<Promise<HttpResponse>> {
     const max_response_bytes = 1_000n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
@@ -23,8 +14,8 @@ export function* xkcd(): Update<HttpResponse> {
     const cycle_cost_total =
         cycle_cost_base + cycle_cost_per_byte * max_response_bytes;
 
-    const http_result: CanisterResult<HttpResponse> =
-        yield ManagementCanister.http_request({
+    const http_result = await management_canister
+        .http_request({
             url: `https://xkcd.com/642/info.0.json`,
             max_response_bytes,
             method: {
@@ -36,7 +27,9 @@ export function* xkcd(): Update<HttpResponse> {
                 function: [ic.id(), 'xkcd_transform'],
                 context: Uint8Array.from([])
             }
-        }).with_cycles(cycle_cost_total);
+        })
+        .cycles(cycle_cost_total)
+        .call();
 
     if (!ok(http_result)) {
         ic.trap(http_result.err ?? 'http_result had an error');
@@ -45,7 +38,7 @@ export function* xkcd(): Update<HttpResponse> {
     return http_result.ok;
 }
 
-export function* xkcd_raw(): UpdateManual<HttpResponse> {
+export async function xkcd_raw(): UpdateManual<Promise<HttpResponse>> {
     const max_response_bytes = 1_000n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
@@ -54,7 +47,7 @@ export function* xkcd_raw(): UpdateManual<HttpResponse> {
     const cycle_cost_total =
         cycle_cost_base + cycle_cost_per_byte * max_response_bytes;
 
-    const http_result: CanisterResult<blob> = yield ic.call_raw(
+    const http_result = await ic.call_raw(
         Principal.fromText('aaaaa-aa'),
         'http_request',
         ic.candid_encode(`
@@ -78,7 +71,7 @@ export function* xkcd_raw(): UpdateManual<HttpResponse> {
         ic.trap(http_result.err ?? 'http_result had an error');
     }
 
-    return ic.reply_raw(http_result.ok);
+    ic.reply_raw(http_result.ok);
 }
 
 export function xkcd_transform(args: HttpTransformArgs): Query<HttpResponse> {

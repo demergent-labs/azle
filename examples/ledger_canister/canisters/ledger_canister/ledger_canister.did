@@ -36,14 +36,14 @@ type Block = record {
   parent_hash : opt vec nat8;
 };
 type BlockRange = record { blocks : vec Block };
-type ExecuteTransferResult = variant { ok : TransferResult; err : text };
-type GetAccountBalanceResult = variant { ok : Tokens; err : text };
-type GetArchivesResult = variant { ok : Archives; err : text };
 type GetBlocksArgs = record { start : nat64; length : nat64 };
-type GetBlocksResult = variant { ok : QueryBlocksResponse; err : text };
-type GetDecimalsResult = variant { ok : nat32; err : text };
-type GetNameResult = variant { ok : text; err : text };
-type GetTransferFeeResult = variant { ok : TransferFee; err : text };
+type ManualReply = variant { ok : TransferResult; err : text };
+type ManualReply_1 = variant { ok : Tokens; err : text };
+type ManualReply_2 = variant { ok : Archives; err : text };
+type ManualReply_3 = variant { ok : QueryBlocksResponse; err : text };
+type ManualReply_4 = variant { ok : nat32; err : text };
+type ManualReply_5 = variant { ok : text; err : text };
+type ManualReply_6 = variant { ok : TransferFee; err : text };
 type Operation = variant {
   Burn : AzleInline12373753716509696688;
   Mint : AzleInline15497265404079156732;
@@ -77,13 +77,13 @@ type TransferError = variant {
 type TransferFee = record { transfer_fee : Tokens };
 type TransferResult = variant { Ok : nat64; Err : TransferError };
 service : () -> {
-  execute_transfer : (text, nat64, nat64, opt nat64) -> (ExecuteTransferResult);
-  get_account_balance : (text) -> (GetAccountBalanceResult);
+  execute_transfer : (text, nat64, nat64, opt nat64) -> (ManualReply);
+  get_account_balance : (text) -> (ManualReply_1);
   get_address_from_principal : (principal) -> (text) query;
-  get_archives : () -> (GetArchivesResult);
-  get_blocks : (GetBlocksArgs) -> (GetBlocksResult);
-  get_decimals : () -> (GetDecimalsResult);
-  get_name : () -> (GetNameResult);
-  get_symbol : () -> (GetNameResult);
-  get_transfer_fee : () -> (GetTransferFeeResult);
+  get_archives : () -> (ManualReply_2);
+  get_blocks : (GetBlocksArgs) -> (ManualReply_3);
+  get_decimals : () -> (ManualReply_4);
+  get_name : () -> (ManualReply_5);
+  get_symbol : () -> (ManualReply_5);
+  get_transfer_fee : () -> (ManualReply_6);
 }
