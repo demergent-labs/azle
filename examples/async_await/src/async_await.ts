@@ -1,17 +1,9 @@
-// TODO let's just rename this example to async_await
+import { blob, ok, Update } from 'azle';
 
-import { blob, ic, ok, Principal, Update } from 'azle';
-
-// TODO use the management canister once we have typed cross-canister calls
-// import { ManagementCanister } from 'azle/canisters/management';
+import { management_canister } from 'azle/canisters/management';
 
 export async function get_randomness_directly(): Update<Promise<blob>> {
-    const randomness_result = await ic.call_raw(
-        Principal.fromText('aaaaa-aa'),
-        'raw_rand',
-        ic.candid_encode('()'),
-        0n
-    );
+    const randomness_result = await management_canister.raw_rand().call();
 
     if (!ok(randomness_result)) {
         return Uint8Array.from([]);
@@ -47,12 +39,7 @@ async function get_randomness_level2(): Promise<blob> {
 }
 
 async function get_randomness(): Promise<blob> {
-    const randomness_result = await ic.call_raw(
-        Principal.fromText('aaaaa-aa'),
-        'raw_rand',
-        ic.candid_encode('()'),
-        0n
-    );
+    const randomness_result = await management_canister.raw_rand().call();
 
     if (!ok(randomness_result)) {
         return Uint8Array.from([]);

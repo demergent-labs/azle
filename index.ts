@@ -1,42 +1,13 @@
 import { Principal } from '@dfinity/principal';
 
-// TODO it would be great if we could allow importing this file (azle bare specifier) into frontends or Node.js
-// TODO but it isn't quite set up to do that right now
-
 declare var globalThis: any;
 
 export const ic: ic = globalThis.ic ?? {};
-
-// TODO perhaps this should just be provided through calling
-// TODO the management canister
-// ic.rawRand = function() {
-//     return {
-//         name: 'rawRand'
-//     } as any;
-// };
-
-// TODO this needs to be included in all code even if the user has not imported anything concrete from azle
-// globalThis.console = {
-//     ...globalThis.console,
-//     log: (...args: any[]) => {
-//         console.log(...args);
-//     }
-// };
 
 ic.stable_storage = function () {
     (ic as any)._azle_stable_storage._azle_initialized = true;
     return (ic as any)._azle_stable_storage;
 };
-
-// ic.call = function* (...args) {
-//     return yield {
-//         name: 'call',
-//         args: [
-//             arguments.callee.name,
-//             ...args
-//         ]
-//     } as any;
-// };
 
 // TODO: See https://github.com/demergent-labs/azle/issues/496
 
