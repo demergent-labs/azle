@@ -23,7 +23,9 @@ pub fn build_canister_method_system_heartbeat(ts_ast: &TsAst) -> Option<ActHeart
     if let Some(heartbeat_fn_decl) = heartbeat_fn_decl_option {
         let call_to_heartbeat_js_function =
             method_body::generate_call_to_js_function(heartbeat_fn_decl);
+
         let function_name = heartbeat_fn_decl.get_function_name();
+
         let body = quote::quote! {
             BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
                 let mut _azle_boa_context = box_context_ref_cell.borrow_mut();

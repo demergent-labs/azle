@@ -11,9 +11,6 @@ use crate::ts_ast::AzleFnDecl;
 pub fn generate_canister_method_body(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
     let call_to_js_function = generate_call_to_js_function(fn_decl);
     let return_expression = generate_return_expression(fn_decl);
-
-    // TODO could we store the function name globally to remove the need
-    // TODO to rely on the call stack?
     let function_name = fn_decl.get_function_name();
 
     quote! {
