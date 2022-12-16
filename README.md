@@ -1593,8 +1593,10 @@ type CallCanister1MethodResult = Variant<{
     err: string;
 }>;
 
-export function* call_canister1_method(): Update<CallCanister1MethodResult> {
-    const canister_result: CanisterResult<boolean> = yield canister1.method();
+export async function call_canister1_method(): Update<
+    Promise<CallCanister1MethodResult>
+> {
+    const canister_result = await canister1.method().call();
 
     if (!ok(canister_result)) {
         return {
@@ -1618,8 +1620,8 @@ Examples:
 ```typescript
 import { blob, CanisterResult, ic, ok, Principal, Update } from 'azle';
 
-export function* get_randomness(): Update<blob> {
-    const canister_result: CanisterResult<blob> = yield ic.call_raw(
+export async function get_randomness(): Update<Promise<blob>> {
+    const canister_result = await ic.call_raw(
         Principal.fromText('aaaaa-aa'),
         'raw_rand',
         Uint8Array.from(ic.candid_encode('()')),
@@ -1643,8 +1645,8 @@ Examples:
 ```typescript
 import { blob, CanisterResult, ic, ok, Principal, Update } from 'azle';
 
-export function* get_randomness(): Update<blob> {
-    const canister_result: CanisterResult<blob> = yield ic.call_raw128(
+export async function get_randomness(): Update<Promise<blob>> {
+    const canister_result = await ic.call_raw128(
         Principal.fromText('aaaaa-aa'),
         'raw_rand',
         Uint8Array.from(ic.candid_encode('()')),
@@ -1690,10 +1692,13 @@ type CallCanister1MethodResult = Variant<{
     err: string;
 }>;
 
-export function* call_canister1_method(): Update<CallCanister1MethodResult> {
-    const canister_result: CanisterResult<boolean> = yield canister1
+export async function call_canister1_method(): Update<
+    Promise<CallCanister1MethodResult>
+> {
+    const canister_result = await canister1
         .method()
-        .with_cycles(100_000_000_000n);
+        .cycles(100_000_000_000n)
+        .call();
 
     if (!ok(canister_result)) {
         return {
@@ -1729,10 +1734,13 @@ type CallCanister1MethodResult = Variant<{
     err: string;
 }>;
 
-export function* call_canister1_method(): Update<CallCanister1MethodResult> {
-    const canister_result: CanisterResult<boolean> = yield canister1
+export async function call_canister1_method(): Update<
+    Promise<CallCanister1MethodResult>
+> {
+    const canister_result = await canister1
         .method()
-        .with_cycles128(100_000_000_000n);
+        .cycles128(100_000_000_000n)
+        .call();
 
     if (!ok(canister_result)) {
         return {
@@ -1874,10 +1882,13 @@ type CallCanister1MethodResult = Variant<{
     err: string;
 }>;
 
-export function* call_canister1_method(): Update<CallCanister1MethodResult> {
-    const canister_result: CanisterResult<boolean> = yield canister1
+export async function call_canister1_method(): Update<
+    Promise<CallCanister1MethodResult>
+> {
+    const canister_result = await canister1
         .method()
-        .with_cycles(100_000_000_000n);
+        .cycles(100_000_000_000n)
+        .call();
 
     if (!ok(canister_result)) {
         return {
@@ -1922,10 +1933,13 @@ type CallCanister1MethodResult = Variant<{
     err: string;
 }>;
 
-export function* call_canister1_method(): Update<CallCanister1MethodResult> {
-    const canister_result: CanisterResult<boolean> = yield canister1
+export async function call_canister1_method(): Update<
+    Promise<CallCanister1MethodResult>
+> {
+    const canister_result = await canister1
         .method()
-        .with_cycles128(100_000_000_000n);
+        .cycles128(100_000_000_000n)
+        .call();
 
     if (!ok(canister_result)) {
         return {
@@ -2078,8 +2092,8 @@ const canister1 = ic.canisters.Canister1<Canister1>(
     Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
 );
 
-export function* get_rejection_code(): Update<RejectionCode> {
-    yield canister1.method();
+export async function get_rejection_code(): Update<Promise<RejectionCode>> {
+    await canister1.method().call();
     return ic.reject_code();
 }
 ```
@@ -2101,8 +2115,8 @@ const canister1 = ic.canisters.Canister1<Canister1>(
     Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
 );
 
-export function* get_rejection_message(): Update<string> {
-    yield canister1.method();
+export async function get_rejection_message(): Update<Promise<string>> {
+    await canister1.method().call();
     return ic.reject_message();
 }
 ```
@@ -2348,7 +2362,7 @@ Examples:
 import { CanisterResult, ic, ok, Query, Update } from 'azle';
 import { HttpResponse, ManagementCanister } from 'azle/canisters/management';
 
-export function* xkcd(): Update<HttpResponse> {
+export async function xkcd(): Update<Promise<HttpResponse>> {
     const max_response_bytes = 1_000n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
@@ -2357,8 +2371,8 @@ export function* xkcd(): Update<HttpResponse> {
     const cycle_cost_total =
         cycle_cost_base + cycle_cost_per_byte * max_response_bytes;
 
-    const http_result: CanisterResult<HttpResponse> =
-        yield ManagementCanister.http_request({
+    const http_result = await management_canister
+        .http_request({
             url: `https://xkcd.com/642/info.0.json`,
             max_response_bytes,
             http_method: {
@@ -2367,7 +2381,9 @@ export function* xkcd(): Update<HttpResponse> {
             headers: [],
             body: null,
             transform_method_name: 'xkcd_transform'
-        }).with_cycles(cycle_cost_total);
+        })
+        .cycles(cycle_cost_total)
+        .call();
 
     if (!ok(http_result)) {
         ic.trap(http_result.err ?? 'http_result had an error');
@@ -2834,11 +2850,7 @@ The following are the major blockers to 1.0/production-readiness:
 -   Because Azle is built on Rust, to ensure the best compatibility use underscores to separate words in directory, file, and canister names
 -   You must use type names directly when importing them (TODO do an example)
 -   Varied missing TypeScript syntax or JavaScript features
--   Really bad compiler errors (you will probably not enjoy them)
--   Limited asynchronous TypeScript/JavaScript (generators only for now, no promises or async/await)
 -   Imported npm packages may use unsupported syntax or APIs
--   Avoid inline types and use type aliases instead
--   `import *` syntax is not supported for any type that will undergo Candid serialization or deserialization
 -   Inefficient Wasm instruction usage relative to Rust and Motoko, especially with arrays
 -   Unknown security vulnerabilities
 -   [Many small inconveniences](https://github.com/demergent-labs/azle/issues)

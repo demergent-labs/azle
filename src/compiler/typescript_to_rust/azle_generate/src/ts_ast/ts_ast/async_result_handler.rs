@@ -31,7 +31,11 @@ impl TsAst {
 
                     return match &promise.promise_state {
                         boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
-                            ic_cdk::println!("boa_engine::builtins::promise::PromiseState::Fulfilled");
+                            PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+                                let mut promise_map = promise_map_ref_cell.borrow_mut();
+
+                                promise_map.remove(_azle_uuid);
+                            });
 
                             match _azle_method_name {
                                 #(#match_arms)*
@@ -41,16 +45,21 @@ impl TsAst {
                             return _azle_boa_return_value.clone();
                         },
                         boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
-                            // TODO handle rejections
-                            panic!("boa_engine::builtins::promise::PromiseState::Rejected");
-                        },
-                        boa_engine::builtins::promise::PromiseState::Pending => {
-                            ic_cdk::println!("boa_engine::builtins::promise::PromiseState::Pending");
-
                             PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                                 let mut promise_map = promise_map_ref_cell.borrow_mut();
 
-                                promise_map.insert(_azle_uuid.to_string(), _azle_boa_return_value.clone().into());
+                                promise_map.remove(_azle_uuid);
+                            });
+
+                            let error_message = _azle_handle_boa_error(js_value.clone(), _azle_boa_context);
+
+                            panic!("Azle runtime error: {}", error_message);
+                        },
+                        boa_engine::builtins::promise::PromiseState::Pending => {
+                            PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+                                let mut promise_map = promise_map_ref_cell.borrow_mut();
+
+                                promise_map.insert(_azle_uuid.to_string(), _azle_boa_return_value.clone());
                             });
 
                             return _azle_boa_return_value.clone();

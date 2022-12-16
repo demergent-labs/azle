@@ -1,13 +1,14 @@
-// TODO this is almost identical to generate_ic_object_function_call_raw128
-pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
-    quote::quote! {
-        thread_local! {
-            static PROMISE_MAP_REF_CELL: std::cell::RefCell<std::collections::HashMap<String, boa_engine::JsValue>> = std::cell::RefCell::new(std::collections::HashMap::new());
-            static UUID_REF_CELL: std::cell::RefCell<String> = std::cell::RefCell::new("".to_string());
-            static METHOD_NAME_REF_CELL: std::cell::RefCell<String> = std::cell::RefCell::new("".to_string());
-            static RNG_REF_CELL: std::cell::RefCell<StdRng> = std::cell::RefCell::new(SeedableRng::from_seed([0u8; 32]));
-        }
+use crate::generators::cross_canister_calls::{
+    generate_post_await_state_management, generate_pre_await_state_management,
+    generate_promise_fulfillment,
+};
 
+pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
+    let pre_await_state_management = generate_pre_await_state_management();
+    let post_await_state_management = generate_post_await_state_management();
+    let promise_fulfillment = generate_promise_fulfillment();
+
+    quote::quote! {
         fn _azle_ic_call_raw(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
@@ -42,8 +43,7 @@ pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
             let promise_js_value = promise_js_value.clone();
 
             ic_cdk::spawn(async move {
-                let uuid = UUID_REF_CELL.with(|uuid_ref_cell| uuid_ref_cell.borrow().clone());
-                let method_name = METHOD_NAME_REF_CELL.with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
+                #pre_await_state_management
 
                 let call_result = ic_cdk::api::call::call_raw(
                     canister_id,
@@ -52,70 +52,9 @@ pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
                     payment
                 ).await;
 
-                UUID_REF_CELL.with(|uuid_ref_cell| {
-                    let mut uuid_mut = uuid_ref_cell.borrow_mut();
+                #post_await_state_management
 
-                    *uuid_mut = uuid.clone();
-                });
-
-                METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
-                    let mut method_name_mut = method_name_ref_cell.borrow_mut();
-
-                    *method_name_mut = method_name.clone()
-                });
-
-                BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
-                    let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
-
-                    let call_result_js_value = match call_result {
-                        Ok(value) => {
-                            let js_value = value.try_into_vm_value(&mut *_azle_boa_context).unwrap();
-
-                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(&mut *_azle_boa_context)
-                                .property(
-                                    "ok",
-                                    js_value,
-                                    boa_engine::property::Attribute::all()
-                                )
-                                .build();
-
-                            let canister_result_js_value = canister_result_js_object.into();
-
-                            canister_result_js_value
-                        },
-                        Err(err) => {
-                            let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).try_into_vm_value(&mut *_azle_boa_context).unwrap();
-
-                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(&mut *_azle_boa_context)
-                                .property(
-                                    "err",
-                                    js_value,
-                                    boa_engine::property::Attribute::all()
-                                )
-                                .build();
-
-                            let canister_result_js_value = canister_result_js_object.into();
-
-                            canister_result_js_value
-                        }
-                    };
-
-                    let promise_js_object = promise_js_value.as_object().unwrap();
-                    let mut promise_object = promise_js_object.borrow_mut();
-                    let mut promise = promise_object.as_promise_mut().unwrap();
-
-                    promise.fulfill_promise(&call_result_js_value, &mut *_azle_boa_context);
-
-                    let main_promise = PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
-                        let promise_map = promise_map_ref_cell.borrow().clone();
-
-                        let main_promise = promise_map.get(&uuid).unwrap();
-
-                        main_promise.clone()
-                    });
-
-                    _azle_async_await_result_handler(&mut *_azle_boa_context, &main_promise, &uuid, &method_name);
-                });
+                #promise_fulfillment
             });
         }
     }

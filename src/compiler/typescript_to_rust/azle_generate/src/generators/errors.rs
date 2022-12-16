@@ -12,12 +12,12 @@ pub fn generate_error_handler() -> TokenStream {
                 Err(_azle_boa_error) => {
                     let error_message = _azle_handle_boa_error(_azle_boa_error.to_opaque(context), context);
 
-                    panic!("AZLE RUNTIME ERROR: {}", error_message);
+                    panic!("Azle runtime error: {}", error_message);
                 },
             }
         }
 
-        fn _azle_handle_boa_error(error_value: boa_engine::JsValue, context: &mut boa_engine::Context) -> String{
+        fn _azle_handle_boa_error(error_value: boa_engine::JsValue, context: &mut boa_engine::Context) -> String {
             match &error_value {
                 boa_engine::JsValue::BigInt(bigint) => bigint.to_string(),
                 boa_engine::JsValue::Boolean(boolean) => boolean.to_string(),
