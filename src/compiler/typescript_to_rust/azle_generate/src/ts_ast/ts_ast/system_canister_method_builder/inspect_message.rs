@@ -27,11 +27,11 @@ pub fn build_canister_method_system_inspect_message(
             method_body::generate_call_to_js_function(inspect_message_fn_decl);
 
         let body = quote::quote! {
-            unsafe {
-                let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+            BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
+                let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
 
                 #call_to_inspect_message_js_function
-            }
+            });
         };
         Some(ActInspectMessageMethod { body })
     } else {

@@ -32,9 +32,8 @@ pub fn build_canister_method_system_init(ts_ast: &TsAst) -> ActInitMethod {
         method_body::maybe_generate_call_to_js_function(&init_fn_decl_option);
 
     let body = quote::quote! {
-        unsafe {
-            BOA_CONTEXT_OPTION = Some(boa_engine::Context::default());
-            let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+        BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
+            let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
 
             let _azle_stable_storage = boa_engine::object::ObjectInitializer::new(&mut _azle_boa_context).build();
 
@@ -52,7 +51,7 @@ pub fn build_canister_method_system_init(ts_ast: &TsAst) -> ActInitMethod {
             )), &mut _azle_boa_context);
 
             #call_to_init_js_function
-        }
+        });
     };
 
     ActInitMethod { params, body }

@@ -6,10 +6,6 @@ pub fn generate_ic_object_function_call_raw128() -> proc_macro2::TokenStream {
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let top_level_call_frame = &_context.vm.frames[0];
-            let function_name_sym = top_level_call_frame.code.name;
-            let function_name = _context.interner.resolve_expect(function_name_sym.clone()).to_string();
-
             // TODO make this promise in a better way once Boa allows it or you can figure it out
             let promise_js_value = _context.eval("new Promise(() => {})").unwrap();
             let promise_js_value_cloned = promise_js_value.clone();
@@ -20,24 +16,31 @@ pub fn generate_ic_object_function_call_raw128() -> proc_macro2::TokenStream {
             let payment: u128 = _aargs.get(3).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
 
             ic_cdk::spawn(async move {
-                unsafe {
-                    let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+                let uuid = UUID_REF_CELL.with(|uuid_ref_cell| uuid_ref_cell.borrow().clone());
+                let method_name = METHOD_NAME_REF_CELL.with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
 
-                    let uuid = UUID_REF_CELL.with(|uuid_ref_cell| uuid_ref_cell.borrow().clone());
+                let call_result = ic_cdk::api::call::call_raw128(canister_id, &method, &args_raw, payment).await;
 
-                    let call_result = ic_cdk::api::call::call_raw128(canister_id, &method, &args_raw, payment).await;
+                UUID_REF_CELL.with(|uuid_ref_cell| {
+                    let mut uuid_mut = uuid_ref_cell.borrow_mut();
 
-                    UUID_REF_CELL.with(|uuid_ref_cell| {
-                        let mut uuid_mut = uuid_ref_cell.borrow_mut();
+                    *uuid_mut = uuid.clone();
+                });
 
-                        *uuid_mut = uuid.clone();
-                    });
+                METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                    let mut method_name_mut = method_name_ref_cell.borrow_mut();
+
+                    *method_name_mut = method_name.clone()
+                });
+
+                BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
+                    let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
 
                     let call_result_js_value = match call_result {
                         Ok(value) => {
-                            let js_value = value.try_into_vm_value(_azle_boa_context).unwrap();
+                            let js_value = value.try_into_vm_value(&mut *_azle_boa_context).unwrap();
 
-                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(&mut *_azle_boa_context)
                                 .property(
                                     "ok",
                                     js_value,
@@ -50,9 +53,9 @@ pub fn generate_ic_object_function_call_raw128() -> proc_macro2::TokenStream {
                             canister_result_js_value
                         },
                         Err(err) => {
-                            let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).try_into_vm_value(_azle_boa_context).unwrap();
+                            let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).try_into_vm_value(&mut *_azle_boa_context).unwrap();
 
-                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(&mut *_azle_boa_context)
                                 .property(
                                     "err",
                                     js_value,
@@ -80,8 +83,8 @@ pub fn generate_ic_object_function_call_raw128() -> proc_macro2::TokenStream {
                         main_promise.clone()
                     });
 
-                    _azle_async_result_handler(_azle_boa_context, &main_promise, &uuid, &function_name).await;
-                }
+                    _azle_async_await_result_handler(&mut *_azle_boa_context, &main_promise, &uuid, &method_name);
+                });
             });
 
             Ok(promise_js_value)

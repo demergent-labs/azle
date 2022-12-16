@@ -25,8 +25,8 @@ pub fn build_canister_method_system_pre_upgrade(ts_ast: &TsAst) -> ActPreUpgrade
         method_body::maybe_generate_call_to_js_function(&pre_upgrade_fn_decl_option);
 
     let body = quote! {
-        unsafe {
-            let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+        BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
+            let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
 
             #call_to_pre_upgrade_js_function
 
@@ -36,14 +36,14 @@ pub fn build_canister_method_system_pre_upgrade(ts_ast: &TsAst) -> ActPreUpgrade
                 ),
                 &mut _azle_boa_context
             );
-            let _azle_stable_storage_json_string: String = _azle_stable_storage_boa_return_value.try_from_vm_value(_azle_boa_context).unwrap();
+            let _azle_stable_storage_json_string: String = _azle_stable_storage_boa_return_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
 
             if _azle_stable_storage_json_string != "AZLE_STABLE_STORAGE_NOT_INITIALIZED" {
                 let _azle_stable_storage = (_azle_stable_storage_json_string,);
 
                 ic_cdk::storage::stable_save(_azle_stable_storage);
             }
-        }
+        });
     };
 
     ActPreUpgradeMethod { body }

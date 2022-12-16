@@ -62,34 +62,34 @@ fn generate_call_function(
             let promise_js_value_cloned = promise_js_value.clone();
 
             ic_cdk::spawn(async move {
-                unsafe {
-                    let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+                let uuid = UUID_REF_CELL.with(|uuid_ref_cell| uuid_ref_cell.borrow().clone());
+                let method_name = METHOD_NAME_REF_CELL.with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
 
-                    let uuid = UUID_REF_CELL.with(|uuid_ref_cell| uuid_ref_cell.borrow().clone());
-                    let method_name = METHOD_NAME_REF_CELL.with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
+                let call_result = #call_function_name_ident(
+                    canister_id_principal,
+                    #args
+                ).await;
 
-                    let call_result = #call_function_name_ident(
-                        canister_id_principal,
-                        #args
-                    ).await;
+                UUID_REF_CELL.with(|uuid_ref_cell| {
+                    let mut uuid_mut = uuid_ref_cell.borrow_mut();
 
-                    UUID_REF_CELL.with(|uuid_ref_cell| {
-                        let mut uuid_mut = uuid_ref_cell.borrow_mut();
+                    *uuid_mut = uuid.clone();
+                });
 
-                        *uuid_mut = uuid.clone();
-                    });
+                METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                    let mut method_name_mut = method_name_ref_cell.borrow_mut();
 
-                    METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
-                        let mut method_name_mut = method_name_ref_cell.borrow_mut();
+                    *method_name_mut = method_name.clone()
+                });
 
-                        *method_name_mut = method_name.clone()
-                    });
+                BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
+                    let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
 
                     let call_result_js_value = match call_result {
                         Ok(value) => {
-                            let js_value = value.try_into_vm_value(_azle_boa_context).unwrap();
+                            let js_value = value.try_into_vm_value(&mut *_azle_boa_context).unwrap();
 
-                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(&mut *_azle_boa_context)
                                 .property(
                                     "ok",
                                     js_value,
@@ -102,9 +102,9 @@ fn generate_call_function(
                             canister_result_js_value
                         },
                         Err(err) => {
-                            let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).try_into_vm_value(_azle_boa_context).unwrap();
+                            let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).try_into_vm_value(&mut *_azle_boa_context).unwrap();
 
-                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(&mut *_azle_boa_context)
                                 .property(
                                     "err",
                                     js_value,
@@ -132,8 +132,8 @@ fn generate_call_function(
                         main_promise.clone()
                     });
 
-                    _azle_async_result_handler(_azle_boa_context, &main_promise, &uuid, &method_name).await;
-                }
+                    _azle_async_await_result_handler(&mut *_azle_boa_context, &main_promise, &uuid, &method_name);
+                });
             });
 
             Ok(promise_js_value_cloned)
@@ -177,35 +177,35 @@ fn generate_call_with_payment_function(
             let promise_js_value_cloned = promise_js_value.clone();
 
             ic_cdk::spawn(async move {
-                unsafe {
-                    let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+                let uuid = UUID_REF_CELL.with(|uuid_ref_cell| uuid_ref_cell.borrow().clone());
+                let method_name = METHOD_NAME_REF_CELL.with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
 
-                    let uuid = UUID_REF_CELL.with(|uuid_ref_cell| uuid_ref_cell.borrow().clone());
-                    let method_name = METHOD_NAME_REF_CELL.with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
+                let call_result = #call_with_payment_function_name_ident(
+                    canister_id_principal,
+                    #args,
+                    cycles
+                ).await;
 
-                    let call_result = #call_with_payment_function_name_ident(
-                        canister_id_principal,
-                        #args,
-                        cycles
-                    ).await;
+                UUID_REF_CELL.with(|uuid_ref_cell| {
+                    let mut uuid_mut = uuid_ref_cell.borrow_mut();
 
-                    UUID_REF_CELL.with(|uuid_ref_cell| {
-                        let mut uuid_mut = uuid_ref_cell.borrow_mut();
+                    *uuid_mut = uuid.clone();
+                });
 
-                        *uuid_mut = uuid.clone();
-                    });
+                METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                    let mut method_name_mut = method_name_ref_cell.borrow_mut();
 
-                    METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
-                        let mut method_name_mut = method_name_ref_cell.borrow_mut();
+                    *method_name_mut = method_name.clone()
+                });
 
-                        *method_name_mut = method_name.clone()
-                    });
+                BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
+                    let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
 
                     let call_result_js_value = match call_result {
                         Ok(value) => {
-                            let js_value = value.try_into_vm_value(_azle_boa_context).unwrap();
+                            let js_value = value.try_into_vm_value(&mut *_azle_boa_context).unwrap();
 
-                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(&mut *_azle_boa_context)
                                 .property(
                                     "ok",
                                     js_value,
@@ -218,9 +218,9 @@ fn generate_call_with_payment_function(
                             canister_result_js_value
                         },
                         Err(err) => {
-                            let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).try_into_vm_value(_azle_boa_context).unwrap();
+                            let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).try_into_vm_value(&mut *_azle_boa_context).unwrap();
 
-                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(&mut *_azle_boa_context)
                                 .property(
                                     "err",
                                     js_value,
@@ -248,8 +248,8 @@ fn generate_call_with_payment_function(
                         main_promise.clone()
                     });
 
-                    _azle_async_result_handler(_azle_boa_context, &main_promise, &uuid, &method_name).await;
-                }
+                    _azle_async_await_result_handler(&mut *_azle_boa_context, &main_promise, &uuid, &method_name);
+                });
             });
 
             Ok(promise_js_value_cloned)
@@ -295,35 +295,35 @@ fn generate_call_with_payment128_function(
             let promise_js_value_cloned = promise_js_value.clone();
 
             ic_cdk::spawn(async move {
-                unsafe {
-                    let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+                let uuid = UUID_REF_CELL.with(|uuid_ref_cell| uuid_ref_cell.borrow().clone());
+                let method_name = METHOD_NAME_REF_CELL.with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
 
-                    let uuid = UUID_REF_CELL.with(|uuid_ref_cell| uuid_ref_cell.borrow().clone());
-                    let method_name = METHOD_NAME_REF_CELL.with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
+                let call_result = #call_with_payment128_function_name_ident(
+                    canister_id_principal,
+                    #args,
+                    cycles
+                ).await;
 
-                    let call_result = #call_with_payment128_function_name_ident(
-                        canister_id_principal,
-                        #args,
-                        cycles
-                    ).await;
+                UUID_REF_CELL.with(|uuid_ref_cell| {
+                    let mut uuid_mut = uuid_ref_cell.borrow_mut();
 
-                    UUID_REF_CELL.with(|uuid_ref_cell| {
-                        let mut uuid_mut = uuid_ref_cell.borrow_mut();
+                    *uuid_mut = uuid.clone();
+                });
 
-                        *uuid_mut = uuid.clone();
-                    });
+                METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                    let mut method_name_mut = method_name_ref_cell.borrow_mut();
 
-                    METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
-                        let mut method_name_mut = method_name_ref_cell.borrow_mut();
+                    *method_name_mut = method_name.clone()
+                });
 
-                        *method_name_mut = method_name.clone()
-                    });
+                BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
+                    let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
 
                     let call_result_js_value = match call_result {
                         Ok(value) => {
-                            let js_value = value.try_into_vm_value(_azle_boa_context).unwrap();
+                            let js_value = value.try_into_vm_value(&mut *_azle_boa_context).unwrap();
 
-                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(&mut *_azle_boa_context)
                                 .property(
                                     "ok",
                                     js_value,
@@ -336,9 +336,9 @@ fn generate_call_with_payment128_function(
                             canister_result_js_value
                         },
                         Err(err) => {
-                            let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).try_into_vm_value(_azle_boa_context).unwrap();
+                            let js_value = format!("Rejection code {rejection_code}, {error_message}", rejection_code = (err.0 as i32).to_string(), error_message = err.1).try_into_vm_value(&mut *_azle_boa_context).unwrap();
 
-                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(_azle_boa_context)
+                            let canister_result_js_object = boa_engine::object::ObjectInitializer::new(&mut *_azle_boa_context)
                                 .property(
                                     "err",
                                     js_value,
@@ -366,8 +366,8 @@ fn generate_call_with_payment128_function(
                         main_promise.clone()
                     });
 
-                    _azle_async_result_handler(_azle_boa_context, &main_promise, &uuid, &method_name).await;
-                }
+                    _azle_async_await_result_handler(&mut *_azle_boa_context, &main_promise, &uuid, &method_name);
+                });
             });
 
             Ok(promise_js_value_cloned)

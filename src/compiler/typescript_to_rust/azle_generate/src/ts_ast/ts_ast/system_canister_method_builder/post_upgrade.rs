@@ -36,9 +36,8 @@ pub fn build_canister_method_system_post_upgrade(ts_ast: &TsAst) -> ActPostUpgra
         method_body::maybe_generate_call_to_js_function(&post_upgrade_fn_decl_option);
 
     let body = quote! {
-        unsafe {
-            BOA_CONTEXT_OPTION = Some(boa_engine::Context::default());
-            let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+        BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
+            let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
 
             _azle_handle_boa_result(_azle_boa_context.eval(format!(
                 "let exports = {{}}; {compiled_js}",
@@ -90,7 +89,7 @@ pub fn build_canister_method_system_post_upgrade(ts_ast: &TsAst) -> ActPostUpgra
             )), &mut _azle_boa_context);
 
             #call_to_post_upgrade_js_function
-        }
+        });
     };
 
     ActPostUpgradeMethod { body, params }

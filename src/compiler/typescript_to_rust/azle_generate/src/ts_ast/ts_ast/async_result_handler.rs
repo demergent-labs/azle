@@ -44,6 +44,56 @@ impl TsAst {
                 U128
             }
 
+            fn _azle_async_await_result_handler(
+                _azle_boa_context: &mut boa_engine::Context,
+                _azle_boa_return_value: &boa_engine::JsValue,
+                _azle_uuid: &str,
+                _azle_method_name: &str
+            ) -> boa_engine::JsValue {
+                if
+                    _azle_boa_return_value.is_object() == true &&
+                    _azle_boa_return_value.as_object().unwrap().is_promise() == true
+                {
+                    // This runs all pending promises to completion
+                    // TODO use the better Boa API once it's available
+                    _azle_boa_context.eval("");
+
+                    let object = _azle_boa_return_value.as_object().unwrap().borrow();
+                    let promise = object.as_promise().unwrap();
+
+                    return match &promise.promise_state {
+                        boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
+                            ic_cdk::println!("boa_engine::builtins::promise::PromiseState::Fulfilled");
+
+                            match _azle_method_name {
+                                #(#match_arms)*
+                                _ => panic!("This cannot happen")
+                            };
+
+                            return _azle_boa_return_value.clone();
+                        },
+                        boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
+                            // TODO handle rejections
+                            panic!("boa_engine::builtins::promise::PromiseState::Rejected");
+                        },
+                        boa_engine::builtins::promise::PromiseState::Pending => {
+                            ic_cdk::println!("boa_engine::builtins::promise::PromiseState::Pending");
+
+                            PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+                                let mut promise_map = promise_map_ref_cell.borrow_mut();
+
+                                promise_map.insert(_azle_uuid.to_string(), _azle_boa_return_value.clone().into());
+                            });
+
+                            return _azle_boa_return_value.clone();
+                        }
+                    };
+                }
+                else {
+                    return _azle_boa_return_value.clone();
+                }
+            }
+
             #[async_recursion::async_recursion(?Send)]
             async fn _azle_async_result_handler(
                 _azle_boa_context: &mut boa_engine::Context,

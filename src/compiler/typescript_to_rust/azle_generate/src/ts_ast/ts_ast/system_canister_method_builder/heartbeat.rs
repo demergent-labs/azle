@@ -25,34 +25,32 @@ pub fn build_canister_method_system_heartbeat(ts_ast: &TsAst) -> Option<ActHeart
             method_body::generate_call_to_js_function(heartbeat_fn_decl);
         let function_name = heartbeat_fn_decl.get_function_name();
         let body = quote::quote! {
-                unsafe {
-                    ic_cdk::spawn(async {
-                        let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+            BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
+                let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
 
-                        let uuid = uuid::Uuid::new_v4().to_string();
+                let uuid = uuid::Uuid::new_v4().to_string();
 
-                        UUID_REF_CELL.with(|uuid_ref_cell| {
-                            let mut uuid_mut = uuid_ref_cell.borrow_mut();
+                UUID_REF_CELL.with(|uuid_ref_cell| {
+                    let mut uuid_mut = uuid_ref_cell.borrow_mut();
 
-                            *uuid_mut = uuid.clone();
-                        });
+                    *uuid_mut = uuid.clone();
+                });
 
-                        METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
-                            let mut method_name_mut = method_name_ref_cell.borrow_mut();
+                METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                    let mut method_name_mut = method_name_ref_cell.borrow_mut();
 
-                            *method_name_mut = #function_name.to_string()
-                        });
+                    *method_name_mut = #function_name.to_string()
+                });
 
-                        #call_to_heartbeat_js_function
+                #call_to_heartbeat_js_function
 
-                        _azle_async_result_handler(
-                            &mut _azle_boa_context,
-                            &_azle_boa_return_value,
-                            &uuid,
-                            #function_name
-                        ).await;
-                    });
-                }
+                _azle_async_await_result_handler(
+                    &mut _azle_boa_context,
+                    &_azle_boa_return_value,
+                    &uuid,
+                    #function_name
+                );
+            });
         };
         Some(ActHeartbeatMethod { body })
     } else {

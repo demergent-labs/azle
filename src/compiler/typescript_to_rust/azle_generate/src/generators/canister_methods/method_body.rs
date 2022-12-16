@@ -17,8 +17,8 @@ pub fn generate_canister_method_body(fn_decl: &AzleFnDecl) -> proc_macro2::Token
     let function_name = fn_decl.get_function_name();
 
     quote! {
-        unsafe {
-            let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+        BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
+            let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
 
             let uuid = uuid::Uuid::new_v4().to_string();
 
@@ -36,15 +36,15 @@ pub fn generate_canister_method_body(fn_decl: &AzleFnDecl) -> proc_macro2::Token
 
             #call_to_js_function
 
-            let _azle_final_return_value = _azle_async_result_handler(
+            let _azle_final_return_value = _azle_async_await_result_handler(
                 &mut _azle_boa_context,
                 &_azle_boa_return_value,
                 &uuid,
                 #function_name
-            ).await;
+            );
 
             #return_expression
-        }
+        })
     }
 }
 
@@ -109,7 +109,7 @@ fn generate_return_expression(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream 
     }
 
     quote! {
-        _azle_final_return_value.try_from_vm_value(_azle_boa_context).unwrap()
+        _azle_final_return_value.try_from_vm_value(&mut *_azle_boa_context).unwrap()
     }
 }
 
