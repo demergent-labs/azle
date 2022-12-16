@@ -34,8 +34,8 @@ export function generateLibCargoToml(canisterName: string): Toml {
         ic-cdk = { version = "0.6.8", features = ["timers"] }
         ic-cdk-macros = "0.6.8"
         candid = "0.8.4"
-        # boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "c340049bc8060c3fc7079bda00ee84dc627187d9" }
-        boa_engine = { path = "../../../../../../boa/boa_engine" }
+        boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "ec93e4d294bf0b60579a577b2430c5adf1a864a1" }
+        # boa_engine = { path = "../../../../../../boa/boa_engine" }
 
         # boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "date" } # This is a fork of call_stack
         # boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "call_stack" } # This is a fork of vec_u8_into_typed_array

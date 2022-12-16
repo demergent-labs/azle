@@ -6,6 +6,7 @@ use super::TsAst;
 impl TsAst {
     pub fn generate_ic_object(&self) -> proc_macro2::TokenStream {
         let notify_functions = self.generate_notify_functions();
+        let cross_canister_functions = self.generate_cross_canister_functions();
 
         quote::quote! {
             let ic = boa_engine::object::ObjectInitializer::new(&mut _azle_boa_context)
@@ -29,6 +30,7 @@ impl TsAst {
                 .function(_azle_ic_msg_cycles_refunded, "msg_cycles_refunded", 0)
                 .function(_azle_ic_msg_cycles_refunded128, "msg_cycles_refunded128", 0)
                 #(#notify_functions)*
+                #(#cross_canister_functions)*
                 .function(_azle_ic_notify_raw, "notify_raw", 0)
                 .function(_azle_ic_performance_counter, "performance_counter", 0)
                 .function(_azle_ic_print, "print", 0)
@@ -71,5 +73,34 @@ impl TsAst {
                 }
             }).collect()
         }).collect::<Vec<Vec<TokenStream>>>().concat()
+    }
+
+    fn generate_cross_canister_functions(&self) -> Vec<TokenStream> {
+        let external_canisters = self.build_external_canisters();
+
+        external_canisters
+            .iter()
+            .map(|canister| {
+                canister
+                    .methods
+                    .iter()
+                    .map(|method| {
+                        let call_function_name_string =
+                            format!("_azle_call_{}_{}", canister.name, method.name);
+                        let call_wrapper_function_name =
+                            format_ident!("{}_wrapper", call_function_name_string);
+
+                        // let notify_with_payment128_function_name_string = format!("_azle_notify_with_payment128_{}_{}", canister.name, method.name);
+                        // let notify_with_payment128_wrapper_function_name = format_ident!("{}_wrapper", notify_with_payment128_function_name_string);
+
+                        quote! {
+                            .function(#call_wrapper_function_name, #call_function_name_string, 0)
+                            // .function(#notify_with_payment128_wrapper_function_name, #notify_with_payment128_function_name_string, 0)
+                        }
+                    })
+                    .collect()
+            })
+            .collect::<Vec<Vec<TokenStream>>>()
+            .concat()
     }
 }

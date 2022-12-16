@@ -10,6 +10,7 @@ mod candid_decode;
 mod candid_encode;
 mod canister_balance;
 mod canister_balance128;
+mod cross_canister_functions;
 mod data_certificate;
 mod id;
 mod method_name;
@@ -51,6 +52,8 @@ pub fn generate_ic_object_functions(
     let arg_data_raw_size = arg_data_raw_size::generate_ic_object_function_arg_data_raw_size();
     let call_raw = call_raw::generate_ic_object_function_call_raw();
     let call_raw128 = call_raw128::generate_ic_object_function_call_raw128();
+    let cross_canister_functions =
+        cross_canister_functions::generate_ic_object_cross_canister_functions(external_canisters);
     let caller = caller::generate_ic_object_function_caller();
     let candid_decode = candid_decode::generate_ic_object_function_candid_decode();
     let candid_encode = candid_encode::generate_ic_object_function_candid_encode();
@@ -105,6 +108,7 @@ pub fn generate_ic_object_functions(
         #arg_data_raw_size
         #call_raw
         #call_raw128
+        #(#cross_canister_functions)*
         #caller
         #candid_decode
         #candid_encode

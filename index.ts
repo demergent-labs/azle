@@ -182,9 +182,10 @@ export type Opt<T> = T | null;
 export type CanisterResult<T> = {
     ok?: T;
     err?: string;
+    call: () => Promise<CanisterResult<T>>;
     notify: () => NotifyResult;
-    with_cycles: (cycles: nat64) => CanisterResult<T>;
-    with_cycles128: (cycles: nat) => CanisterResult<T>;
+    cycles: (cycles: nat64) => CanisterResult<T>;
+    cycles128: (cycles: nat) => CanisterResult<T>;
 };
 
 export type NotifyResult = Variant<{
