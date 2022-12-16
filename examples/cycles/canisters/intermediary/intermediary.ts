@@ -1,15 +1,5 @@
-import {
-    CanisterResult,
-    ic,
-    nat,
-    nat64,
-    NotifyResult,
-    ok,
-    Query,
-    Update,
-    Variant
-} from 'azle';
-import { cycles } from '../cycles';
+import { ic, nat, nat64, NotifyResult, ok, Query, Update, Variant } from 'azle';
+import { cycles_canister } from '../cycles';
 
 type SendCyclesResult = Variant<{
     ok: nat64;
@@ -22,10 +12,11 @@ type SendCyclesResult128 = Variant<{
 }>;
 
 // Reports the number of cycles returned from the Cycles canister
-export function* send_cycles(): Update<SendCyclesResult> {
-    const result: CanisterResult<nat64> = yield cycles
+export async function send_cycles(): Update<Promise<SendCyclesResult>> {
+    const result = await cycles_canister
         .receive_cycles()
-        .with_cycles(1_000_000n);
+        .cycles(1_000_000n)
+        .call();
 
     if (!ok(result)) {
         return { err: result.err };
@@ -37,14 +28,15 @@ export function* send_cycles(): Update<SendCyclesResult> {
 }
 
 export function send_cycles_notify(): Update<NotifyResult> {
-    return cycles.receive_cycles().with_cycles(1_000_000n).notify();
+    return cycles_canister.receive_cycles().cycles(1_000_000n).notify();
 }
 
 // Reports the number of cycles returned from the Cycles canister
-export function* send_cycles128(): Update<SendCyclesResult128> {
-    const result: CanisterResult<nat> = yield cycles
+export async function send_cycles128(): Update<Promise<SendCyclesResult128>> {
+    const result = await cycles_canister
         .receive_cycles128()
-        .with_cycles128(1_000_000n);
+        .cycles128(1_000_000n)
+        .call();
 
     if (!ok(result)) {
         return { err: result.err };
@@ -56,7 +48,7 @@ export function* send_cycles128(): Update<SendCyclesResult128> {
 }
 
 export function send_cycles128_notify(): Update<NotifyResult> {
-    return cycles.receive_cycles128().with_cycles128(1_000_000n).notify();
+    return cycles_canister.receive_cycles128().cycles128(1_000_000n).notify();
 }
 
 export function get_canister_balance(): Query<nat64> {

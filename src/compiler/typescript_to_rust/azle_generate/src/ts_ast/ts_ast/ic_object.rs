@@ -90,12 +90,20 @@ impl TsAst {
                         let call_wrapper_function_name =
                             format_ident!("{}_wrapper", call_function_name_string);
 
-                        // let notify_with_payment128_function_name_string = format!("_azle_notify_with_payment128_{}_{}", canister.name, method.name);
-                        // let notify_with_payment128_wrapper_function_name = format_ident!("{}_wrapper", notify_with_payment128_function_name_string);
+                        let call_with_payment_function_name_string =
+                            format!("_azle_call_with_payment_{}_{}", canister.name, method.name);
+                        let call_with_payment_wrapper_function_name =
+                            format_ident!("{}_wrapper", call_with_payment_function_name_string);
+
+                        let call_with_payment128_function_name_string =
+                            format!("_azle_call_with_payment128_{}_{}", canister.name, method.name);
+                        let call_with_payment128_wrapper_function_name =
+                            format_ident!("{}_wrapper", call_with_payment128_function_name_string);
 
                         quote! {
                             .function(#call_wrapper_function_name, #call_function_name_string, 0)
-                            // .function(#notify_with_payment128_wrapper_function_name, #notify_with_payment128_function_name_string, 0)
+                            .function(#call_with_payment_wrapper_function_name, #call_with_payment_function_name_string, 0)
+                            .function(#call_with_payment128_wrapper_function_name, #call_with_payment128_function_name_string, 0)
                         }
                     })
                     .collect()

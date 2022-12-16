@@ -257,10 +257,8 @@ function generateCanisterMethodFromTypeElement(
                             // There is no notify_with_payment, there is only a notify_with_payment128
                             return ic['${notifyWithPayment128FunctionName}'](
                                 canisterId,
-                                [
-                                    ...args,
-                                    cycles
-                                ]
+                                args,
+                                cycles
                             );
                         },
                         call: () => {
@@ -279,10 +277,8 @@ function generateCanisterMethodFromTypeElement(
                         notify: () => {
                             return ic['${notifyWithPayment128FunctionName}'](
                                 canisterId,
-                                [
-                                    ...args,
-                                    cycles
-                                ]
+                                args,
+                                cycles
                             );
                         },
                         call: () => {

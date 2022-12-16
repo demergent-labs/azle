@@ -5,6 +5,6 @@ export type Cycles = Canister<{
     receive_cycles128(): CanisterResult<nat>;
 }>;
 
-export const cycles = ic.canisters.Cycles<Cycles>(
+export const cycles_canister: Cycles = ic.canisters.Cycles(
     Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
 );
