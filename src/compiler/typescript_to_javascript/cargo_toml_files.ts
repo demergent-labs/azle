@@ -36,17 +36,9 @@ export function generateLibCargoToml(canisterName: string): Toml {
         candid = "0.8.4"
         boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "ec93e4d294bf0b60579a577b2430c5adf1a864a1" }
         # boa_engine = { path = "../../../../../../boa/boa_engine" }
-
-        # boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "date" } # This is a fork of call_stack
-        # boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "call_stack" } # This is a fork of vec_u8_into_typed_array
-        # boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "vec_u8_into_typed_array" } # This is a fork of js-bigint-128
-        # boa_engine = { git = "https://github.com/demergent-labs/boa", branch = "js-bigint-128" } # This has a small necessary change that another person has opened a pull request to fix
-        # boa_engine = { git = "https://github.com/boa-dev/boa", rev = "f3db18fc5468576d2c6df31b259890c1d43d3607" } # This is the last main git commit we were at
         getrandom = { version = "0.2.3", features = ["custom"] }
         serde = "1.0.137"
         azle-vm-value-derive = { path = "./azle_vm_value_derive" }
-        # azle_generate_macro = { path = "./azle_generate_macro" }
-        async-recursion = "1.0.0"
         uuid = { version = "1.2.2", features = ["v4"] }
         rand = "0.8.5"
     `;

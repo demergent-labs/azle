@@ -5,4 +5,3 @@
 dist
 node_modules
 target
-/src/compiler/typescript_to_rust_redesign/azle_generate/src/playground

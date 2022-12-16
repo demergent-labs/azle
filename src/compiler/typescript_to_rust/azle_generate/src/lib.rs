@@ -13,24 +13,14 @@ pub fn azle_generate(
     main_js: &str,
     stable_storage_js: &str,
 ) -> proc_macro2::token_stream::TokenStream {
-    let header = header::generate_header_code();
+    let header = header::generate_header_code(main_js, stable_storage_js);
 
     let canister_definition = TsAst::from_ts_file_names(&ts_file_names)
         .to_act()
         .to_token_stream(());
 
-    // -------------------------------------------------------------------------
-
     quote! {
         #header
-
-        thread_local! {
-            static BOA_CONTEXT_REF_CELL: std::cell::RefCell<boa_engine::Context> = std::cell::RefCell::new(boa_engine::Context::default());
-        }
-
-        static MAIN_JS: &'static str = #main_js;
-        static STABLE_STORAGE_JS: &'static str = #stable_storage_js;
-
         #canister_definition
     }
     .into()
