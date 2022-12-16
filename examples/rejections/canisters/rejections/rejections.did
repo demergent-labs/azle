@@ -1,4 +1,4 @@
-type RejectionCode = variant {
+type ManualReply = variant {
   NoError;
   CanisterError;
   SysTransient;
@@ -8,9 +8,9 @@ type RejectionCode = variant {
   CanisterReject;
 };
 service : () -> {
-  get_rejection_code_canister_error : () -> (RejectionCode);
-  get_rejection_code_canister_reject : () -> (RejectionCode);
-  get_rejection_code_destination_invalid : () -> (RejectionCode);
-  get_rejection_code_no_error : () -> (RejectionCode);
+  get_rejection_code_canister_error : () -> (ManualReply);
+  get_rejection_code_canister_reject : () -> (ManualReply);
+  get_rejection_code_destination_invalid : () -> (ManualReply);
+  get_rejection_code_no_error : () -> (ManualReply);
   get_rejection_message : (text) -> (text);
 }

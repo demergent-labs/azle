@@ -1,4 +1,3 @@
-import { some_service } from '../some_service';
 import {
     Canister,
     CanisterResult,
@@ -7,6 +6,7 @@ import {
     RejectionCode,
     Update
 } from 'azle';
+import { some_service } from '../some_service';
 
 export type Nonexistent = Canister<{
     method(): CanisterResult<void>;
@@ -16,28 +16,38 @@ export const nonexistent_canister: Nonexistent = ic.canisters.Nonexistent(
     Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
 );
 
-export function* get_rejection_code_no_error(): Update<RejectionCode> {
-    yield some_service.accept();
+export async function get_rejection_code_no_error(): Update<
+    Promise<RejectionCode>
+> {
+    await some_service.accept().call();
     return ic.reject_code();
 }
 
-export function* get_rejection_code_destination_invalid(): Update<RejectionCode> {
-    yield nonexistent_canister.method();
+export async function get_rejection_code_destination_invalid(): Update<
+    Promise<RejectionCode>
+> {
+    await nonexistent_canister.method().call();
     return ic.reject_code();
 }
 
-export function* get_rejection_code_canister_reject(): Update<RejectionCode> {
-    yield some_service.reject('reject');
+export async function get_rejection_code_canister_reject(): Update<
+    Promise<RejectionCode>
+> {
+    await some_service.reject('reject').call();
     return ic.reject_code();
 }
 
-export function* get_rejection_code_canister_error(): Update<RejectionCode> {
-    yield some_service.error();
+export async function get_rejection_code_canister_error(): Update<
+    Promise<RejectionCode>
+> {
+    await some_service.error().call();
     return ic.reject_code();
 }
 
-export function* get_rejection_message(message: string): Update<string> {
-    yield some_service.reject(message);
+export async function get_rejection_message(
+    message: string
+): Update<Promise<string>> {
+    await some_service.reject(message).call();
     return ic.reject_message();
 }
 
