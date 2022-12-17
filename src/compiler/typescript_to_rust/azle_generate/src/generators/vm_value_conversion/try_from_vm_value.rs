@@ -318,55 +318,55 @@ pub fn generate_try_from_vm_value_impls() -> proc_macro2::TokenStream {
         }
 
         // Vec types
-        trait AzleTryFrom {}
+        trait AzleTryFromVec {}
 
-        impl AzleTryFrom for () {}
+        impl AzleTryFromVec for () {}
 
-        impl AzleTryFrom for bool {}
+        impl AzleTryFromVec for bool {}
 
-        impl AzleTryFrom for String {}
+        impl AzleTryFromVec for String {}
 
-        impl AzleTryFrom for ic_cdk::export::candid::Empty {}
+        impl AzleTryFromVec for ic_cdk::export::candid::Empty {}
 
-        impl AzleTryFrom for ic_cdk::export::candid::Reserved {}
+        impl AzleTryFromVec for ic_cdk::export::candid::Reserved {}
 
-        impl AzleTryFrom for ic_cdk::export::candid::Func {}
+        impl AzleTryFromVec for ic_cdk::export::candid::Func {}
 
-        impl AzleTryFrom for ic_cdk::export::Principal {}
+        impl AzleTryFromVec for ic_cdk::export::Principal {}
 
-        impl AzleTryFrom for f64 {}
+        impl AzleTryFromVec for f64 {}
 
-        impl AzleTryFrom for f32 {}
+        impl AzleTryFromVec for f32 {}
 
-        impl AzleTryFrom for ic_cdk::export::candid::Int {}
+        impl AzleTryFromVec for ic_cdk::export::candid::Int {}
 
-        impl AzleTryFrom for i128 {}
+        impl AzleTryFromVec for i128 {}
 
-        impl AzleTryFrom for i64 {}
+        impl AzleTryFromVec for i64 {}
 
-        impl AzleTryFrom for i32 {}
+        impl AzleTryFromVec for i32 {}
 
-        impl AzleTryFrom for i16 {}
+        impl AzleTryFromVec for i16 {}
 
-        impl AzleTryFrom for i8 {}
+        impl AzleTryFromVec for i8 {}
 
-        impl AzleTryFrom for ic_cdk::export::candid::Nat {}
+        impl AzleTryFromVec for ic_cdk::export::candid::Nat {}
 
-        impl AzleTryFrom for u128 {}
+        impl AzleTryFromVec for u128 {}
 
-        impl AzleTryFrom for u64 {}
+        impl AzleTryFromVec for u64 {}
 
-        impl AzleTryFrom for u32 {}
+        impl AzleTryFromVec for u32 {}
 
-        impl AzleTryFrom for u16 {}
+        impl AzleTryFromVec for u16 {}
 
-        impl<T> AzleTryFrom for Option<T> {}
+        impl<T> AzleTryFromVec for Option<T> {}
 
-        impl<T> AzleTryFrom for Vec<T> {}
+        impl<T> AzleTryFromVec for Vec<T> {}
 
         impl<T> CdkActTryFromVmValue<Vec<T>, &mut boa_engine::Context> for boa_engine::JsValue
         where
-            T: AzleTryFrom,
+            T: AzleTryFromVec,
             boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context>
         {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<T>, CdkActTryFromVmValueError> {

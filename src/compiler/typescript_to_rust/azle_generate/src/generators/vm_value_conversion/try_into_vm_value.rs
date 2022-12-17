@@ -328,63 +328,63 @@ pub fn generate_try_into_vm_value_impls() -> proc_macro2::TokenStream {
         }
 
         // Vec types
-        trait AzleTryInto {}
+        trait AzleTryIntoVec {}
 
-        impl AzleTryInto for () {}
+        impl AzleTryIntoVec for () {}
 
-        impl AzleTryInto for bool {}
+        impl AzleTryIntoVec for bool {}
 
-        impl AzleTryInto for String {}
+        impl AzleTryIntoVec for String {}
 
-        impl AzleTryInto for ic_cdk::export::candid::Empty {}
+        impl AzleTryIntoVec for ic_cdk::export::candid::Empty {}
 
-        impl AzleTryInto for ic_cdk::export::candid::Reserved {}
+        impl AzleTryIntoVec for ic_cdk::export::candid::Reserved {}
 
-        impl AzleTryInto for ic_cdk::export::candid::Func {}
+        impl AzleTryIntoVec for ic_cdk::export::candid::Func {}
 
-        impl AzleTryInto for ic_cdk::export::Principal {}
+        impl AzleTryIntoVec for ic_cdk::export::Principal {}
 
-        impl AzleTryInto for ic_cdk::api::call::RejectionCode {}
+        impl AzleTryIntoVec for ic_cdk::api::call::RejectionCode {}
 
         // TODO add all number types
         // TODO need to figure out how to convert number Vecs to Vec<u8>
         // TODO need to abstract the number vecs out
 
-        impl AzleTryInto for f64 {}
+        impl AzleTryIntoVec for f64 {}
 
-        impl AzleTryInto for f32 {}
+        impl AzleTryIntoVec for f32 {}
 
-        impl AzleTryInto for ic_cdk::export::candid::Int {}
+        impl AzleTryIntoVec for ic_cdk::export::candid::Int {}
 
-        impl AzleTryInto for i128 {}
+        impl AzleTryIntoVec for i128 {}
 
-        impl AzleTryInto for i64 {}
+        impl AzleTryIntoVec for i64 {}
 
-        impl AzleTryInto for i32 {}
+        impl AzleTryIntoVec for i32 {}
 
-        impl AzleTryInto for i16 {}
+        impl AzleTryIntoVec for i16 {}
 
-        impl AzleTryInto for i8 {}
+        impl AzleTryIntoVec for i8 {}
 
-        impl AzleTryInto for ic_cdk::export::candid::Nat {}
+        impl AzleTryIntoVec for ic_cdk::export::candid::Nat {}
 
-        impl AzleTryInto for u128 {}
+        impl AzleTryIntoVec for u128 {}
 
-        impl AzleTryInto for u64 {}
+        impl AzleTryIntoVec for u64 {}
 
-        impl AzleTryInto for usize {}
+        impl AzleTryIntoVec for usize {}
 
-        impl AzleTryInto for u32 {}
+        impl AzleTryIntoVec for u32 {}
 
-        impl AzleTryInto for u16 {}
+        impl AzleTryIntoVec for u16 {}
 
-        impl<T> AzleTryInto for Option<T> {}
+        impl<T> AzleTryIntoVec for Option<T> {}
 
-        impl<T> AzleTryInto for Vec<T> {}
+        impl<T> AzleTryIntoVec for Vec<T> {}
 
         impl<T> CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<T>
         where
-            T: AzleTryInto,
+            T: AzleTryIntoVec,
             T: for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>
         {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
