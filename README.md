@@ -37,6 +37,7 @@ Most of Azle's documentation is currently found in this README. The Azle Book, s
 -   [Candid Types](#candid-types)
 -   [Canister APIs](#canister-apis)
 -   [Call APIs](#call-apis)
+-   [Timer APIs](#timer-apis)
 -   [Stable Memory](#stable-memory)
 -   [Special APIs](#special-apis)
 -   [JS APIs](#js-apis)
@@ -2161,6 +2162,74 @@ export function reply_raw(): UpdateManual<RawReply> {
 #### result
 
 [Not yet implemented.](https://github.com/demergent-labs/azle/issues/496)
+
+### Timer APIs
+
+-   [clear timer](#clear-timer)
+-   [set timer](#set-timer)
+-   [set timer interval](#set-timer-interval)
+
+#### clear timer
+
+Examples:
+
+-   [timers](/examples/timers)
+
+```ts
+import { ic, TimerId, Update } from 'azle';
+
+export function clear_timer(timer_id: TimerId): Update<void> {
+    ic.clear_timer(timer_id);
+}
+```
+
+#### set timer
+
+Examples:
+
+-   [timers](/examples/timers)
+
+```ts
+import { Duration, ic, TimerId, Update } from 'azle';
+
+export function set_timers(delay: Duration): Update<[TimerId, TimerId]> {
+    const functionTimerId = ic.set_timer(delay, callback);
+
+    const inlineTimerId = ic.set_timer(delay, () => {
+        console.log('inline callback called');
+    });
+
+    return [functionTimerId, inlineTimerId];
+}
+
+function callback(): void {
+    console.log('callback called');
+}
+```
+
+#### set timer interval
+
+Examples:
+
+-   [timers](/examples/timers)
+
+```python
+import { Duration, ic, TimerId, Update } from 'azle';
+
+export function set_timer_intervals(interval: Duration): Update<[TimerId, TimerId]> {
+    const functionTimerId = ic.set_timer_interval(interval, callback);
+
+    const inlineTimerId = ic.set_timer_interval(interval, () => {
+        console.log('inline callback called');
+    });
+
+    return [functionTimerId, inlineTimerId];
+}
+
+function callback(): void {
+    console.log('callback called');
+}
+```
 
 ### Stable Memory
 
