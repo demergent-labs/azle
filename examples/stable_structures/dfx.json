@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "stable_structures": {
+            "type": "custom",
+            "build": "npx azle stable_structures",
+            "root": "src",
+            "ts": "src/stable_structures.ts",
+            "candid": "src/stable_structures.did",
+            "wasm": "target/wasm32-unknown-unknown/release/stable_structures.wasm.gz",
+            "declarations": {
+                "output": "test/dfx_generated/stable_structures",
+                "node_compatibility": true
+            }
+        }
+    }
+}

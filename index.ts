@@ -321,3 +321,17 @@ export function stable_storage_deserialize<T>(stable_storage: string): T {
         return value;
     });
 }
+
+export class StableBTreeMap<Key, Value> {
+    /**
+     * Creates a new StableBTreeMap object.
+     * @param id A unique identifier for this StableBTreeMap instance.
+     * @param maxKeySize the largest size a key will ever be.
+     * @param maxValueSize the largest size a value will ever be.
+     */
+    constructor(id: string, maxKeySize: nat64, maxValueSize: nat64) {}
+
+    get(key: Key): Value {
+        return 'test_value' as Value;
+    }
+}
