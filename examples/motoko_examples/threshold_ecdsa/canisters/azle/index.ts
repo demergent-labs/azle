@@ -11,7 +11,7 @@ type SignResult = Variant<{
     err: string;
 }>;
 
-export async function public_key(): Update<Promise<PublicKeyResult>> {
+export async function public_key(): Promise<Update<PublicKeyResult>> {
     const caller = ic.caller().toUint8Array();
     const public_key_result = await management_canister
         .ecdsa_public_key({
@@ -28,7 +28,7 @@ export async function public_key(): Update<Promise<PublicKeyResult>> {
     return { ok: { public_key: public_key_result.ok.public_key } };
 }
 
-export async function sign(message_hash: blob): Update<Promise<SignResult>> {
+export async function sign(message_hash: blob): Promise<Update<SignResult>> {
     if (message_hash.length !== 32) {
         ic.trap('message_hash must be 32 bytes');
     }

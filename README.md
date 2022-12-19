@@ -320,6 +320,8 @@ Examples:
 -   [basic-dao](/examples/motoko_examples/basic-dao)
 -   [heartbeat](/examples/heartbeat)
 
+Note that a heartbeat can be asynchronous.
+
 ```typescript
 import { Heartbeat } from 'azle';
 
@@ -1593,8 +1595,8 @@ type CallCanister1MethodResult = Variant<{
     err: string;
 }>;
 
-export async function call_canister1_method(): Update<
-    Promise<CallCanister1MethodResult>
+export async function call_canister1_method(): Promise<
+    Update<CallCanister1MethodResult>
 > {
     const canister_result = await canister1.method().call();
 
@@ -1620,7 +1622,7 @@ Examples:
 ```typescript
 import { blob, CanisterResult, ic, ok, Principal, Update } from 'azle';
 
-export async function get_randomness(): Update<Promise<blob>> {
+export async function get_randomness(): Promise<Update<blob>> {
     const canister_result = await ic.call_raw(
         Principal.fromText('aaaaa-aa'),
         'raw_rand',
@@ -1645,7 +1647,7 @@ Examples:
 ```typescript
 import { blob, CanisterResult, ic, ok, Principal, Update } from 'azle';
 
-export async function get_randomness(): Update<Promise<blob>> {
+export async function get_randomness(): Promise<Update<blob>> {
     const canister_result = await ic.call_raw128(
         Principal.fromText('aaaaa-aa'),
         'raw_rand',
@@ -1692,8 +1694,8 @@ type CallCanister1MethodResult = Variant<{
     err: string;
 }>;
 
-export async function call_canister1_method(): Update<
-    Promise<CallCanister1MethodResult>
+export async function call_canister1_method(): Promise<
+    Update<CallCanister1MethodResult>
 > {
     const canister_result = await canister1
         .method()
@@ -1734,8 +1736,8 @@ type CallCanister1MethodResult = Variant<{
     err: string;
 }>;
 
-export async function call_canister1_method(): Update<
-    Promise<CallCanister1MethodResult>
+export async function call_canister1_method(): Promise<
+    Update<CallCanister1MethodResult>
 > {
     const canister_result = await canister1
         .method()
@@ -1882,8 +1884,8 @@ type CallCanister1MethodResult = Variant<{
     err: string;
 }>;
 
-export async function call_canister1_method(): Update<
-    Promise<CallCanister1MethodResult>
+export async function call_canister1_method(): Promise<
+    Update<CallCanister1MethodResult>
 > {
     const canister_result = await canister1
         .method()
@@ -1933,8 +1935,8 @@ type CallCanister1MethodResult = Variant<{
     err: string;
 }>;
 
-export async function call_canister1_method(): Update<
-    Promise<CallCanister1MethodResult>
+export async function call_canister1_method(): Promise<
+    Update<CallCanister1MethodResult>
 > {
     const canister_result = await canister1
         .method()
@@ -2092,7 +2094,7 @@ const canister1 = ic.canisters.Canister1<Canister1>(
     Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
 );
 
-export async function get_rejection_code(): Update<Promise<RejectionCode>> {
+export async function get_rejection_code(): Promise<Update<RejectionCode>> {
     await canister1.method().call();
     return ic.reject_code();
 }
@@ -2115,7 +2117,7 @@ const canister1 = ic.canisters.Canister1<Canister1>(
     Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
 );
 
-export async function get_rejection_message(): Update<Promise<string>> {
+export async function get_rejection_message(): Promise<Update<string>> {
     await canister1.method().call();
     return ic.reject_message();
 }
@@ -2362,7 +2364,7 @@ Examples:
 import { CanisterResult, ic, ok, Query, Update } from 'azle';
 import { HttpResponse, ManagementCanister } from 'azle/canisters/management';
 
-export async function xkcd(): Update<Promise<HttpResponse>> {
+export async function xkcd(): Promise<Update<HttpResponse>> {
     const max_response_bytes = 1_000n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130

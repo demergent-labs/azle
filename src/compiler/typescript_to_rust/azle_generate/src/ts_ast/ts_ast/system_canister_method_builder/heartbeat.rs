@@ -44,6 +44,12 @@ pub fn build_canister_method_system_heartbeat(ts_ast: &TsAst) -> Option<ActHeart
                     *method_name_mut = #function_name.to_string()
                 });
 
+                MANUAL_REF_CELL.with(|manual_ref_cell| {
+                    let mut manual_mut = manual_ref_cell.borrow_mut();
+
+                    *manual_mut = true;
+                });
+
                 #call_to_heartbeat_js_function
 
                 _azle_async_await_result_handler(
@@ -51,7 +57,7 @@ pub fn build_canister_method_system_heartbeat(ts_ast: &TsAst) -> Option<ActHeart
                     &_azle_boa_return_value,
                     &uuid,
                     #function_name,
-                    false
+                    true
                 );
             });
         };

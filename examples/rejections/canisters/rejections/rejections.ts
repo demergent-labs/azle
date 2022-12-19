@@ -16,29 +16,29 @@ export const nonexistent_canister: Nonexistent = ic.canisters.Nonexistent(
     Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
 );
 
-export async function get_rejection_code_no_error(): Update<
-    Promise<RejectionCode>
+export async function get_rejection_code_no_error(): Promise<
+    Update<RejectionCode>
 > {
     await some_service.accept().call();
     return ic.reject_code();
 }
 
-export async function get_rejection_code_destination_invalid(): Update<
-    Promise<RejectionCode>
+export async function get_rejection_code_destination_invalid(): Promise<
+    Update<RejectionCode>
 > {
     await nonexistent_canister.method().call();
     return ic.reject_code();
 }
 
-export async function get_rejection_code_canister_reject(): Update<
-    Promise<RejectionCode>
+export async function get_rejection_code_canister_reject(): Promise<
+    Update<RejectionCode>
 > {
     await some_service.reject('reject').call();
     return ic.reject_code();
 }
 
-export async function get_rejection_code_canister_error(): Update<
-    Promise<RejectionCode>
+export async function get_rejection_code_canister_error(): Promise<
+    Update<RejectionCode>
 > {
     await some_service.error().call();
     return ic.reject_code();
@@ -46,7 +46,7 @@ export async function get_rejection_code_canister_error(): Update<
 
 export async function get_rejection_message(
     message: string
-): Update<Promise<string>> {
+): Promise<Update<string>> {
     await some_service.reject(message).call();
     return ic.reject_message();
 }
