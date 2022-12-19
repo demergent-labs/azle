@@ -2195,11 +2195,13 @@ import { Duration, ic, TimerId, Update } from 'azle';
 export function set_timers(delay: Duration): Update<[TimerId, TimerId]> {
     const function_timer_id = ic.set_timer(delay, callback);
 
-    const inline_timer_id = ic.set_timer(delay, () => {
-        console.log('inline callback called');
+    const captured_value = '🚩';
+
+    const closure_timer_id = ic.set_timer(delay, () => {
+        console.log(`closure called and captured value ${captured_value}`);
     });
 
-    return [function_timer_id, inline_timer_id];
+    return [function_timer_id, closure_timer_id];
 }
 
 function callback(): void {
@@ -2221,11 +2223,13 @@ export function set_timer_intervals(
 ): Update<[TimerId, TimerId]> {
     const function_timer_id = ic.set_timer_interval(interval, callback);
 
-    const inline_timer_id = ic.set_timer_interval(interval, () => {
-        console.log('inline callback called');
+    const captured_value = '🚩';
+
+    const closure_timer_id = ic.set_timer_interval(interval, () => {
+        console.log(`closure called and captured value ${captured_value}`);
     });
 
-    return [function_timer_id, inline_timer_id];
+    return [function_timer_id, closure_timer_id];
 }
 
 function callback(): void {
