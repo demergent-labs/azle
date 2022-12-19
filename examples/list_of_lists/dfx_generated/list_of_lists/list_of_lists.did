@@ -1,0 +1,36 @@
+type Person = record { age : nat8; name : text };
+type State = variant { gas; solid; liquid };
+service : () -> {
+  list_of_blob : (vec vec nat8) -> (vec vec nat8) query;
+  list_of_bool : (vec vec vec bool) -> (vec vec vec bool) query;
+  list_of_empty : () -> (vec vec vec empty) query;
+  list_of_f32 : (vec vec vec float32) -> (vec vec vec float32) query;
+  list_of_f64 : (vec vec vec float64) -> (vec vec vec float64) query;
+  list_of_func : (vec vec vec func (text) -> (text) query) -> (
+      vec vec vec func (text) -> (text) query,
+    ) query;
+  list_of_int : (vec vec vec int) -> (vec vec vec int) query;
+  list_of_int16 : (vec vec vec int16) -> (vec vec vec int16) query;
+  list_of_int32 : (vec vec vec int32) -> (vec vec vec int32) query;
+  list_of_int64 : (vec vec vec int64) -> (vec vec vec int64) query;
+  list_of_int8 : (vec vec vec int8) -> (vec vec vec int8) query;
+  list_of_list_of_blob : (vec vec vec nat8) -> (vec vec vec nat8) query;
+  list_of_list_of_int8 : () -> (vec vec vec vec vec vec vec int8) query;
+  list_of_nat : (vec vec vec nat) -> (vec vec vec nat) query;
+  list_of_nat16 : (vec vec vec nat16) -> (vec vec vec nat16) query;
+  list_of_nat32 : (vec vec vec nat32) -> (vec vec vec nat32) query;
+  list_of_nat64 : (vec vec vec nat64) -> (vec vec vec nat64) query;
+  list_of_nat8 : (vec vec vec nat8) -> (vec vec vec nat8) query;
+  list_of_null : (vec vec vec null) -> (vec vec vec null) query;
+  list_of_option_string : (vec vec vec opt text) -> (
+      vec vec vec opt text,
+    ) query;
+  list_of_principal : (vec vec vec principal) -> (vec vec vec principal) query;
+  list_of_record : (vec vec vec Person) -> (vec vec vec Person) query;
+  list_of_reserved : () -> (vec vec vec reserved) query;
+  list_of_string : (vec vec vec text) -> (vec vec vec text) query;
+  list_of_string_four : (vec vec vec vec text) -> (vec vec vec vec text) query;
+  list_of_string_one : (vec text) -> (vec text) query;
+  list_of_string_two : (vec vec text) -> (vec vec text) query;
+  list_of_variant : (vec vec vec State) -> (vec vec vec State) query;
+}
