@@ -31,44 +31,37 @@ impl AzleFnDecl<'_> {
     }
 
     pub fn get_return_type_ref(&self) -> &TsTypeRef {
-        match &self.fn_decl.function.return_type {
-            Some(ts_type_ann) => match &*ts_type_ann.type_ann {
-                TsType::TsTypeRef(type_ref) => &type_ref,
-                _ => panic!("{}", self.build_non_type_ref_return_type_error_msg()),
-            },
-            None => panic!("{}", self.build_missing_return_annotation_error_msg()),
+        if self.is_promise() {
+            match &self.fn_decl.function.return_type {
+                Some(ts_type_ann) => match &*ts_type_ann.type_ann {
+                    TsType::TsTypeRef(type_ref) => {
+                        let type_params = &type_ref.type_params.as_ref().unwrap().params;
+                        let return_type_ref = type_params[0].as_ts_type_ref().unwrap();
+
+                        return_type_ref
+                    }
+                    _ => panic!("{}", self.build_non_type_ref_return_type_error_msg()),
+                },
+                None => panic!("{}", self.build_missing_return_annotation_error_msg()),
+            }
+        } else {
+            match &self.fn_decl.function.return_type {
+                Some(ts_type_ann) => match &*ts_type_ann.type_ann {
+                    TsType::TsTypeRef(type_ref) => &type_ref,
+                    _ => panic!("{}", self.build_non_type_ref_return_type_error_msg()),
+                },
+                None => panic!("{}", self.build_missing_return_annotation_error_msg()),
+            }
         }
     }
 
     pub fn get_return_ts_type(&self) -> &TsType {
         let type_ref = &self.get_return_type_ref();
+
         match &type_ref.type_params {
             Some(type_param_instantiation) => {
                 let return_type = &*type_param_instantiation.params[0];
-                if return_type.is_ts_type_ref() {
-                    if AzleType::from_ts_type(return_type.clone(), self.source_map)
-                        .as_azle_type_ref()
-                        .unwrap()
-                        .get_name()
-                        == "Promise"
-                    {
-                        match &return_type.as_ts_type_ref().unwrap().type_params {
-                            Some(type_param_instantiation) => &*type_param_instantiation.params[0],
-                            None => {
-                                let canister_method_type = self.get_canister_method_type();
-                                let error_message = self.build_missing_return_type_error_msg(
-                                    type_ref.span,
-                                    canister_method_type,
-                                );
-                                panic!("{}", error_message)
-                            }
-                        }
-                    } else {
-                        return_type
-                    }
-                } else {
-                    return_type
-                }
+                return_type
             }
             None => {
                 let canister_method_type = self.get_canister_method_type();
@@ -130,38 +123,51 @@ impl AzleFnDecl<'_> {
     pub fn is_canister_method_type(&self, canister_method_type: &CanisterMethodType) -> bool {
         match &self.fn_decl.function.return_type {
             Some(ts_type_ann) => match &*ts_type_ann.type_ann {
-                TsType::TsTypeRef(type_ref) => match &type_ref.type_name {
-                    TsEntityName::Ident(ident) => {
-                        let method_type = ident.get_name();
-                        match canister_method_type {
-                            // TODO: Consider that these names may not come from azle. For example:
-                            // ```
-                            // import { Query } from 'not_azle';
-                            // export function example(): Query<string> {...}
-                            // ```
-                            CanisterMethodType::Heartbeat => method_type == "Heartbeat",
-                            CanisterMethodType::Init => method_type == "Init",
-                            CanisterMethodType::InspectMessage => method_type == "InspectMessage",
-                            CanisterMethodType::PostUpgrade => method_type == "PostUpgrade",
-                            CanisterMethodType::PreUpgrade => method_type == "PreUpgrade",
-                            CanisterMethodType::Query => {
-                                method_type == "Query" || method_type == "QueryManual"
-                            }
-                            CanisterMethodType::Update => {
-                                method_type == "Update" || method_type == "UpdateManual"
+                TsType::TsTypeRef(type_ref) => {
+                    let type_ref = if self.is_promise() {
+                        let type_params = &type_ref.type_params.as_ref().unwrap().params;
+                        let return_type_ref = type_params[0].as_ts_type_ref().unwrap();
+
+                        return_type_ref
+                    } else {
+                        type_ref
+                    };
+
+                    match &type_ref.type_name {
+                        TsEntityName::Ident(ident) => {
+                            let method_type = ident.get_name();
+                            match canister_method_type {
+                                // TODO: Consider that these names may not come from azle. For example:
+                                // ```
+                                // import { Query } from 'not_azle';
+                                // export function example(): Query<string> {...}
+                                // ```
+                                CanisterMethodType::Heartbeat => method_type == "Heartbeat",
+                                CanisterMethodType::Init => method_type == "Init",
+                                CanisterMethodType::InspectMessage => {
+                                    method_type == "InspectMessage"
+                                }
+                                CanisterMethodType::PostUpgrade => method_type == "PostUpgrade",
+                                CanisterMethodType::PreUpgrade => method_type == "PreUpgrade",
+                                CanisterMethodType::Query => {
+                                    method_type == "Query" || method_type == "QueryManual"
+                                }
+                                CanisterMethodType::Update => {
+                                    method_type == "Update" || method_type == "UpdateManual"
+                                }
                             }
                         }
+                        TsEntityName::TsQualifiedName(_) => {
+                            // TODO: Consider that azle may have been imported with a wildcard import
+                            // and should still be valid. For example:
+                            // ```
+                            // import * as Azle from 'azle';
+                            // export function example(): Azle.Query<string> {...}
+                            // ```
+                            false
+                        }
                     }
-                    TsEntityName::TsQualifiedName(_) => {
-                        // TODO: Consider that azle may have been imported with a wildcard import
-                        // and should still be valid. For example:
-                        // ```
-                        // import * as Azle from 'azle';
-                        // export function example(): Azle.Query<string> {...}
-                        // ```
-                        false
-                    }
-                },
+                }
                 _ => false,
             },
             None => false,
@@ -175,27 +181,28 @@ impl AzleFnDecl<'_> {
     }
 
     pub fn is_promise(&self) -> bool {
-        let type_ref = &self.get_return_type_ref();
-
-        match &type_ref.type_params {
-            Some(type_param_instantiation) => {
-                let return_type = &*type_param_instantiation.params[0];
-                if return_type.is_ts_type_ref() {
-                    if AzleType::from_ts_type(return_type.clone(), self.source_map)
-                        .as_azle_type_ref()
-                        .unwrap()
-                        .get_name()
-                        == "Promise"
-                    {
-                        true
-                    } else {
-                        false
-                    }
-                } else {
-                    false
+        match &self.fn_decl.function.return_type {
+            Some(ts_type_ann) => {
+                match &*ts_type_ann.type_ann {
+                    TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_params {
+                        Some(ts_type_param_instantiation) => match &ts_type_ref.type_name {
+                            TsEntityName::Ident(ident) => {
+                                ident.get_name() == "Promise"
+                                    && ts_type_param_instantiation.params[0].is_ts_type_ref()
+                                // TODO this needs to be a bit more in-depth, it also needs to be one of the canister types
+                                // TODO the problem is that other dependencies might use Promise<T> as a return type
+                            }
+                            _ => false,
+                        },
+                        None => false,
+                    },
+                    _ => false,
                 }
             }
-            None => false,
+            None => {
+                eprintln!("definitely false");
+                false
+            }
         }
     }
 }

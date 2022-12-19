@@ -12,7 +12,7 @@ type SendCyclesResult128 = Variant<{
 }>;
 
 // Reports the number of cycles returned from the Cycles canister
-export async function send_cycles(): Update<Promise<SendCyclesResult>> {
+export async function send_cycles(): Promise<Update<SendCyclesResult>> {
     const result = await cycles_canister
         .receive_cycles()
         .cycles(1_000_000n)
@@ -32,7 +32,7 @@ export function send_cycles_notify(): Update<NotifyResult> {
 }
 
 // Reports the number of cycles returned from the Cycles canister
-export async function send_cycles128(): Update<Promise<SendCyclesResult128>> {
+export async function send_cycles128(): Promise<Update<SendCyclesResult128>> {
     const result = await cycles_canister
         .receive_cycles128()
         .cycles128(1_000_000n)

@@ -5,7 +5,7 @@ import {
     management_canister
 } from 'azle/canisters/management';
 
-export async function xkcd(): Update<Promise<HttpResponse>> {
+export async function xkcd(): Promise<Update<HttpResponse>> {
     const max_response_bytes = 1_000n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
@@ -38,7 +38,7 @@ export async function xkcd(): Update<Promise<HttpResponse>> {
     return http_result.ok;
 }
 
-export async function xkcd_raw(): UpdateManual<Promise<HttpResponse>> {
+export async function xkcd_raw(): Promise<UpdateManual<HttpResponse>> {
     const max_response_bytes = 1_000n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130

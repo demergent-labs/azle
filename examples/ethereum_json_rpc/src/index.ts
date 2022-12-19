@@ -21,7 +21,7 @@ export function init(ethereum_url: string): Init {
 
 export async function eth_get_balance(
     ethereum_address: string
-): Update<Promise<JSON>> {
+): Promise<Update<JSON>> {
     const max_response_bytes = 200n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
@@ -65,7 +65,7 @@ export async function eth_get_balance(
 
 export async function eth_get_block_by_number(
     number: nat32
-): Update<Promise<JSON>> {
+): Promise<Update<JSON>> {
     const max_response_bytes = 2_000n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130

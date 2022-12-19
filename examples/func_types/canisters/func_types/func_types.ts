@@ -79,8 +79,8 @@ type GetNotifierFromNotifiersCanisterResult = Variant<{
     err: string;
 }>;
 
-export async function get_notifier_from_notifiers_canister(): Update<
-    Promise<GetNotifierFromNotifiersCanisterResult>
+export async function get_notifier_from_notifiers_canister(): Promise<
+    Update<GetNotifierFromNotifiersCanisterResult>
 > {
     const notifiers_canister: Notifier = ic.canisters.Notifier(
         Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')

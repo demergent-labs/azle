@@ -13,7 +13,7 @@ const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 
 export async function get_balance(
     address: string
-): Update<Promise<ExecuteGetBalanceResult>> {
+): Promise<Update<ExecuteGetBalanceResult>> {
     const canister_result = await management_canister
         .bitcoin_get_balance({
             address,
@@ -26,8 +26,8 @@ export async function get_balance(
     return canister_result;
 }
 
-export async function get_current_fee_percentiles(): Update<
-    Promise<ExecuteGetCurrentFeePercentiles>
+export async function get_current_fee_percentiles(): Promise<
+    Update<ExecuteGetCurrentFeePercentiles>
 > {
     const canister_result = await management_canister
         .bitcoin_get_current_fee_percentiles({
@@ -41,7 +41,7 @@ export async function get_current_fee_percentiles(): Update<
 
 export async function get_utxos(
     address: string
-): Update<Promise<ExecuteGetUtxosResult>> {
+): Promise<Update<ExecuteGetUtxosResult>> {
     const canister_result = await management_canister
         .bitcoin_get_utxos({
             address,
@@ -56,7 +56,7 @@ export async function get_utxos(
 
 export async function send_transaction(
     transaction: blob
-): Update<Promise<ExecuteSendTransactionResult>> {
+): Promise<Update<ExecuteSendTransactionResult>> {
     const transaction_fee =
         BITCOIN_BASE_TRANSACTION_COST +
         BigInt(transaction.length) * BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;

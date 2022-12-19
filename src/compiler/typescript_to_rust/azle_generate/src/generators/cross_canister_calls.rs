@@ -4,6 +4,7 @@ pub fn generate_pre_await_state_management() -> proc_macro2::TokenStream {
     quote! {
         let uuid = UUID_REF_CELL.with(|uuid_ref_cell| uuid_ref_cell.borrow().clone());
         let method_name = METHOD_NAME_REF_CELL.with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
+        let manual = MANUAL_REF_CELL.with(|manual_ref_cell| manual_ref_cell.borrow().clone());
     }
 }
 
@@ -19,6 +20,12 @@ pub fn generate_post_await_state_management() -> proc_macro2::TokenStream {
             let mut method_name_mut = method_name_ref_cell.borrow_mut();
 
             *method_name_mut = method_name.clone()
+        });
+
+        MANUAL_REF_CELL.with(|manual_ref_cell| {
+            let mut manual_mut = manual_ref_cell.borrow_mut();
+
+            *manual_mut = manual;
         });
     }
 }
@@ -75,7 +82,7 @@ pub fn generate_promise_fulfillment() -> proc_macro2::TokenStream {
                 main_promise.clone()
             });
 
-            _azle_async_await_result_handler(&mut *_azle_boa_context, &main_promise, &uuid, &method_name);
+            _azle_async_await_result_handler(&mut *_azle_boa_context, &main_promise, &uuid, &method_name, manual);
         });
     }
 }

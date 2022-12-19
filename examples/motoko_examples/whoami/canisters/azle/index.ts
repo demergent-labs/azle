@@ -87,7 +87,7 @@ export function whoami(): Update<Principal> {
 }
 
 // Return the principal identifier of this canister.
-export async function id(): Update<Promise<Principal>> {
+export async function id(): Promise<Update<Principal>> {
     const pre_xnet_call_perf_start = ic.performance_counter(0);
 
     const thisCanister = ic.canisters.WhoAmICanister<WhoAmICanister>(ic.id());

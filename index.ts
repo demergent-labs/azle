@@ -48,11 +48,6 @@ type ic = {
     // arg_data: () => any[]; // TODO: See https://github.com/demergent-labs/azle/issues/496
     arg_data_raw: () => blob;
     arg_data_raw_size: () => nat32;
-    // call: (
-    //     canisterId: Principal,
-    //     methodName: string,
-    //     ...args: any[]
-    // ) => Generator; // TODO improve type inference here, try to get rid of the type parameters
     call_raw: (
         canister_id: Principal,
         method: string,
@@ -114,19 +109,16 @@ type ic = {
     trap: (message: string) => never;
 };
 
-export type Migrate<T> = T;
 export type PreUpgrade = void;
 export type PostUpgrade = void;
-export type Heartbeat = void | Generator;
+export type Heartbeat = void;
 export type Init = void;
 export type InspectMessage = void;
 export type Query<T> = T;
 export type QueryManual<T> = void;
 export type Update<T> = T;
-export type UpdateManual<T> = Promise<void>; // TODO this type doesn't quite work
+export type UpdateManual<T> = void;
 export type Oneway = void;
-// TODO the generator types are not exactly correct...but at least I've given the user the Async type
-export type Async<T> = Generator<any, T, any>; // TODO to be stricter we may want the last parameter to be unknown: https://github.com/demergent-labs/azle/issues/138
 
 // TODO see if we can get the T here to have some more information, like the func type
 // TODO we especially want to add the possibility of an optional cycle parameter and the notify method
@@ -138,14 +130,6 @@ export type Opt<T> = T | null;
 //     ok?: T;
 //     err?: V;
 // };
-// export type CallResult<T> = Generator<
-//     any,
-//     Variant<{
-//         ok?: T;
-//         err?: string;
-//     }>,
-//     any
-// >;
 // export type CallResult<T> = Variant<{
 //     ok?: T;
 //     err?: string;

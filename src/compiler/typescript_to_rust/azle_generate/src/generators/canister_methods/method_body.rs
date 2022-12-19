@@ -12,6 +12,7 @@ pub fn generate_canister_method_body(fn_decl: &AzleFnDecl) -> proc_macro2::Token
     let call_to_js_function = generate_call_to_js_function(fn_decl);
     let return_expression = generate_return_expression(fn_decl);
     let function_name = fn_decl.get_function_name();
+    let manual = fn_decl.is_manual();
 
     quote! {
         BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
@@ -31,13 +32,20 @@ pub fn generate_canister_method_body(fn_decl: &AzleFnDecl) -> proc_macro2::Token
                 *method_name_mut = #function_name.to_string()
             });
 
+            MANUAL_REF_CELL.with(|manual_ref_cell| {
+                let mut manual_mut = manual_ref_cell.borrow_mut();
+
+                *manual_mut = #manual;
+            });
+
             #call_to_js_function
 
             let _azle_final_return_value = _azle_async_await_result_handler(
                 &mut _azle_boa_context,
                 &_azle_boa_return_value,
                 &uuid,
-                #function_name
+                #function_name,
+                #manual
             );
 
             #return_expression

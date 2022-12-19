@@ -34,25 +34,25 @@ export async function transfer(
     from: string,
     to: string,
     amount: nat64
-): Update<Promise<TransferResult>> {
+): Promise<Update<TransferResult>> {
     return await canister2.transfer(from, to, amount).call();
 }
 
-export async function balance(id: string): Update<Promise<BalanceResult>> {
+export async function balance(id: string): Promise<Update<BalanceResult>> {
     return await canister2.balance(id).call();
 }
 
 export async function account(
     args: AccountArgs
-): Update<Promise<AccountResult>> {
+): Promise<Update<AccountResult>> {
     return await canister2.account(args).call();
 }
 
-export async function accounts(): Update<Promise<AccountsResult>> {
+export async function accounts(): Promise<Update<AccountsResult>> {
     return await canister2.accounts().call();
 }
 
-export async function trap(): Update<Promise<TrapResult>> {
+export async function trap(): Promise<Update<TrapResult>> {
     return await canister2.trap().call();
 }
 

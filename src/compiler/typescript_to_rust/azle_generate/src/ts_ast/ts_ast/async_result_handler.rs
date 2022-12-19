@@ -16,7 +16,8 @@ impl TsAst {
                 _azle_boa_context: &mut boa_engine::Context,
                 _azle_boa_return_value: &boa_engine::JsValue,
                 _azle_uuid: &str,
-                _azle_method_name: &str
+                _azle_method_name: &str,
+                _azle_manual: bool
             ) -> boa_engine::JsValue {
                 if
                     _azle_boa_return_value.is_object() == true &&
@@ -36,6 +37,10 @@ impl TsAst {
 
                                 promise_map.remove(_azle_uuid);
                             });
+
+                            if _azle_manual == true {
+                                return _azle_boa_return_value.clone();
+                            }
 
                             match _azle_method_name {
                                 #(#match_arms)*

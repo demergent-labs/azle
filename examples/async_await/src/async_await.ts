@@ -2,7 +2,7 @@ import { blob, ok, Update } from 'azle';
 
 import { management_canister } from 'azle/canisters/management';
 
-export async function get_randomness_directly(): Update<Promise<blob>> {
+export async function get_randomness_directly(): Promise<Update<blob>> {
     const randomness_result = await management_canister.raw_rand().call();
 
     if (!ok(randomness_result)) {
@@ -12,13 +12,13 @@ export async function get_randomness_directly(): Update<Promise<blob>> {
     return randomness_result.ok;
 }
 
-export async function get_randomness_indirectly(): Update<Promise<blob>> {
+export async function get_randomness_indirectly(): Promise<Update<blob>> {
     const indirect_randomness = await get_randomness();
 
     return indirect_randomness;
 }
 
-export async function get_randomness_super_indirectly(): Update<Promise<blob>> {
+export async function get_randomness_super_indirectly(): Promise<Update<blob>> {
     const randomness0 = await get_randomness_level0();
     const randomness1 = await get_randomness_level1();
     const randomness2 = await get_randomness_level2();

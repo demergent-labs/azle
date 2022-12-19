@@ -1,12 +1,9 @@
 // TODO once the Bitcoin integration is live, add the methods and tests
 
-import { blob, CanisterResult, nat, ok, Principal, Query, Update } from 'azle';
+import { blob, nat, ok, Principal, Query, Update } from 'azle';
 import {
-    CreateCanisterResult,
     CanisterStatusArgs,
-    CanisterStatusResult,
-    management_canister,
-    ProvisionalCreateCanisterWithCyclesResult
+    management_canister
 } from 'azle/canisters/management';
 import {
     DefaultResult,
@@ -24,8 +21,8 @@ let state: State = {
     created_canister_id: Principal.fromText('aaaaa-aa')
 };
 
-export async function execute_create_canister(): Update<
-    Promise<ExecuteCreateCanisterResult>
+export async function execute_create_canister(): Promise<
+    Update<ExecuteCreateCanisterResult>
 > {
     const create_canister_result_canister_result = await management_canister
         .create_canister({
@@ -51,7 +48,7 @@ export async function execute_create_canister(): Update<
 
 export async function execute_update_settings(
     canister_id: Principal
-): Update<Promise<DefaultResult>> {
+): Promise<Update<DefaultResult>> {
     const canister_result = await management_canister
         .update_settings({
             canister_id,
@@ -78,7 +75,7 @@ export async function execute_update_settings(
 export async function execute_install_code(
     canister_id: Principal,
     wasm_module: blob
-): Update<Promise<DefaultResult>> {
+): Promise<Update<DefaultResult>> {
     const canister_result = await management_canister
         .install_code({
             mode: {
@@ -104,7 +101,7 @@ export async function execute_install_code(
 
 export async function execute_uninstall_code(
     canister_id: Principal
-): Update<Promise<DefaultResult>> {
+): Promise<Update<DefaultResult>> {
     const canister_result = await management_canister
         .uninstall_code({
             canister_id
@@ -124,7 +121,7 @@ export async function execute_uninstall_code(
 
 export async function execute_start_canister(
     canister_id: Principal
-): Update<Promise<DefaultResult>> {
+): Promise<Update<DefaultResult>> {
     const canister_result = await management_canister
         .start_canister({
             canister_id
@@ -144,7 +141,7 @@ export async function execute_start_canister(
 
 export async function execute_stop_canister(
     canister_id: Principal
-): Update<Promise<DefaultResult>> {
+): Promise<Update<DefaultResult>> {
     const canister_result = await management_canister
         .stop_canister({
             canister_id
@@ -164,7 +161,7 @@ export async function execute_stop_canister(
 
 export async function get_canister_status(
     args: CanisterStatusArgs
-): Update<Promise<GetCanisterStatusResult>> {
+): Promise<Update<GetCanisterStatusResult>> {
     const canister_status_result_canister_result = await management_canister
         .canister_status({
             canister_id: args.canister_id
@@ -186,7 +183,7 @@ export async function get_canister_status(
 
 export async function execute_delete_canister(
     canister_id: Principal
-): Update<Promise<DefaultResult>> {
+): Promise<Update<DefaultResult>> {
     const canister_result = await management_canister
         .delete_canister({
             canister_id
@@ -223,7 +220,7 @@ export async function execute_delete_canister(
 //     };
 // }
 
-export async function get_raw_rand(): Update<Promise<RawRandResult>> {
+export async function get_raw_rand(): Promise<Update<RawRandResult>> {
     const raw_rand_canister_result = await management_canister
         .raw_rand()
         .call();
@@ -242,8 +239,8 @@ export async function get_raw_rand(): Update<Promise<RawRandResult>> {
 }
 
 // TODO we will test these once we can measure cycles better locally
-export async function provisional_create_canister_with_cycles(): Update<
-    Promise<ExecuteProvisionalCreateCanisterWithCyclesResult>
+export async function provisional_create_canister_with_cycles(): Promise<
+    Update<ExecuteProvisionalCreateCanisterWithCyclesResult>
 > {
     const canister_result = await management_canister
         .provisional_create_canister_with_cycles({
@@ -269,7 +266,7 @@ export async function provisional_create_canister_with_cycles(): Update<
 export async function provisional_top_up_canister(
     canister_id: Principal,
     amount: nat
-): Update<Promise<DefaultResult>> {
+): Promise<Update<DefaultResult>> {
     const canister_result = await management_canister
         .provisional_top_up_canister({
             canister_id,

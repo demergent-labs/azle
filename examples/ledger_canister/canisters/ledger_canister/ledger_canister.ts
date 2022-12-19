@@ -16,13 +16,10 @@ import {
     Address,
     Archives,
     binary_address_from_address,
-    DecimalsResult,
     GetBlocksArgs,
     hex_address_from_principal,
     Ledger,
-    NameResult,
     QueryBlocksResponse,
-    SymbolResult,
     Tokens,
     TransferFee,
     TransferResult
@@ -42,7 +39,7 @@ export async function execute_transfer(
     amount: nat64,
     fee: nat64,
     created_at_time: Opt<nat64>
-): Update<Promise<ExecuteTransferResult>> {
+): Promise<Update<ExecuteTransferResult>> {
     const transfer_result_canister_result = await ICPCanister.transfer({
         memo: 0n,
         amount: {
@@ -81,7 +78,7 @@ type GetAccountBalanceResult = Variant<{
 
 export async function get_account_balance(
     address: Address
-): Update<Promise<GetAccountBalanceResult>> {
+): Promise<Update<GetAccountBalanceResult>> {
     const tokens_canister_result = await ICPCanister.account_balance({
         account: binary_address_from_address(address)
     }).call();
@@ -104,8 +101,8 @@ type GetTransferFeeResult = Variant<{
     err: string;
 }>;
 
-export async function get_transfer_fee(): Update<
-    Promise<GetTransferFeeResult>
+export async function get_transfer_fee(): Promise<
+    Update<GetTransferFeeResult>
 > {
     const transfer_fee_canister_result = await ICPCanister.transfer_fee(
         {}
@@ -131,7 +128,7 @@ type GetBlocksResult = Variant<{
 
 export async function get_blocks(
     get_blocks_args: GetBlocksArgs
-): Update<Promise<GetBlocksResult>> {
+): Promise<Update<GetBlocksResult>> {
     const canister_result = await ICPCanister.query_blocks(
         get_blocks_args
     ).call();
@@ -154,7 +151,7 @@ type GetSymbolResult = Variant<{
     err: string;
 }>;
 
-export async function get_symbol(): Update<Promise<GetSymbolResult>> {
+export async function get_symbol(): Promise<Update<GetSymbolResult>> {
     const symbol_result_canister_result = await ICPCanister.symbol().call();
 
     if (!ok(symbol_result_canister_result)) {
@@ -175,7 +172,7 @@ type GetNameResult = Variant<{
     err: string;
 }>;
 
-export async function get_name(): Update<Promise<GetNameResult>> {
+export async function get_name(): Promise<Update<GetNameResult>> {
     const name_result_canister_result = await ICPCanister.name().call();
 
     if (!ok(name_result_canister_result)) {
@@ -196,7 +193,7 @@ type GetDecimalsResult = Variant<{
     err: string;
 }>;
 
-export async function get_decimals(): Update<Promise<GetDecimalsResult>> {
+export async function get_decimals(): Promise<Update<GetDecimalsResult>> {
     const decimals_result_canister_result = await ICPCanister.decimals().call();
 
     if (!ok(decimals_result_canister_result)) {
@@ -217,7 +214,7 @@ type GetArchivesResult = Variant<{
     err: string;
 }>;
 
-export async function get_archives(): Update<Promise<GetArchivesResult>> {
+export async function get_archives(): Promise<Update<GetArchivesResult>> {
     const archives_canister_result: CanisterResult<Archives> =
         await ICPCanister.archives().call();
 

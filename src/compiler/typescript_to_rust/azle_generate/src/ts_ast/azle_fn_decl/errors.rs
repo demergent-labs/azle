@@ -75,7 +75,7 @@ impl AzleFnDecl<'_> {
     }
 
     pub(super) fn build_non_type_ref_return_type_error_msg(&self) -> String {
-        "Canister method return types must be one of: Init, InspectMessage, Oneway, PostUpgrade, PreUpgrade, Query, QueryManual, Update, UpdateManual".to_string()
+        "Canister method return types must be one of: Init, InspectMessage, Oneway, PostUpgrade, PreUpgrade, Promise, Query, QueryManual, Update, UpdateManual".to_string()
     }
 
     pub(super) fn build_object_destructure_error_msg(&self, param: &Param) -> ErrorMessage {

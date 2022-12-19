@@ -50,7 +50,8 @@ pub fn build_canister_method_system_heartbeat(ts_ast: &TsAst) -> Option<ActHeart
                     &mut _azle_boa_context,
                     &_azle_boa_return_value,
                     &uuid,
-                    #function_name
+                    #function_name,
+                    false
                 );
             });
         };
