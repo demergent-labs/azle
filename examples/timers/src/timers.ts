@@ -1,13 +1,13 @@
 import { Duration, ic, int8, Query, TimerId, Update } from 'azle';
 
-export type StatusReport = {
+type StatusReport = {
     single: boolean;
     inline1: int8;
     inline2: int8;
     repeat: int8;
 };
 
-export type TimerIds = {
+type TimerIds = {
     single: TimerId;
     inline1: TimerId;
     inline2: TimerId;

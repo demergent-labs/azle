@@ -12,7 +12,21 @@ pub fn generate_ic_object_function_set_timer_interval() -> proc_macro2::TokenStr
             let func_js_value = _aargs.get(1).unwrap();
             let func_js_object = func_js_value.as_object().unwrap().clone();
 
-            let timer_id = timers::set_timer(interval, func_js_object, true);
+            let closure = move || {
+                unsafe {
+                    let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+                    _azle_handle_boa_result(
+                        func_js_object.call(
+                            &boa_engine::JsValue::Null,
+                            &[],
+                            &mut *_azle_boa_context
+                        ),
+                        &mut *_azle_boa_context
+                    );
+                }
+            };
+
+            let timer_id = ic_cdk::timer::set_timer_interval(interval, closure);
 
             Ok(timer_id.try_into_vm_value(_context).unwrap())
         }

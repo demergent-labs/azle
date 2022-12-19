@@ -2193,13 +2193,13 @@ Examples:
 import { Duration, ic, TimerId, Update } from 'azle';
 
 export function set_timers(delay: Duration): Update<[TimerId, TimerId]> {
-    const functionTimerId = ic.set_timer(delay, callback);
+    const function_timer_id = ic.set_timer(delay, callback);
 
-    const inlineTimerId = ic.set_timer(delay, () => {
+    const inline_timer_id = ic.set_timer(delay, () => {
         console.log('inline callback called');
     });
 
-    return [functionTimerId, inlineTimerId];
+    return [function_timer_id, inline_timer_id];
 }
 
 function callback(): void {
@@ -2213,17 +2213,19 @@ Examples:
 
 -   [timers](/examples/timers)
 
-```python
+```ts
 import { Duration, ic, TimerId, Update } from 'azle';
 
-export function set_timer_intervals(interval: Duration): Update<[TimerId, TimerId]> {
-    const functionTimerId = ic.set_timer_interval(interval, callback);
+export function set_timer_intervals(
+    interval: Duration
+): Update<[TimerId, TimerId]> {
+    const function_timer_id = ic.set_timer_interval(interval, callback);
 
-    const inlineTimerId = ic.set_timer_interval(interval, () => {
+    const inline_timer_id = ic.set_timer_interval(interval, () => {
         console.log('inline callback called');
     });
 
-    return [functionTimerId, inlineTimerId];
+    return [function_timer_id, inline_timer_id];
 }
 
 function callback(): void {

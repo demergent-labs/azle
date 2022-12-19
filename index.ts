@@ -167,10 +167,7 @@ type ic = {
      * @param callback the function to invoke after the specified delay has passed.
      * @returns the ID of the created timer. Used to cancel the timer.
      */
-    set_timer_interval: (
-        interval: Duration,
-        callback: () => Update<void>
-    ) => TimerId;
+    set_timer_interval: (interval: Duration, callback: () => void) => TimerId;
     stable_bytes: () => blob;
     stable_grow: (new_pages: nat32) => StableGrowResult;
     stable_read: (offset: nat32, length: nat32) => blob;
