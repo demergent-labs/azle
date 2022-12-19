@@ -149,7 +149,7 @@ function check_error_message(actual_error: any, expected_error: string) {
         'result' in actual_error &&
         'reject_message' in actual_error.result &&
         actual_error.result.reject_message.includes(
-            `AZLE RUNTIME ERROR: ${expected_error}`
+            `Azle runtime error: ${expected_error}`
         )
     );
 }
