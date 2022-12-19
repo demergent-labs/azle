@@ -3,14 +3,14 @@ import type { ActorMethod } from '@dfinity/agent';
 
 export interface StatusReport {
     repeat: number;
-    inline1: number;
-    inline2: number;
+    inline: number;
+    capture: string;
     single: boolean;
 }
 export interface TimerIds {
     repeat: bigint;
-    inline1: bigint;
-    inline2: bigint;
+    inline: bigint;
+    capture: bigint;
     single: bigint;
 }
 export interface _SERVICE {

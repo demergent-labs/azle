@@ -1,14 +1,14 @@
 export const idlFactory = ({ IDL }) => {
     const TimerIds = IDL.Record({
         repeat: IDL.Nat64,
-        inline1: IDL.Nat64,
-        inline2: IDL.Nat64,
+        inline: IDL.Nat64,
+        capture: IDL.Nat64,
         single: IDL.Nat64
     });
     const StatusReport = IDL.Record({
         repeat: IDL.Int8,
-        inline1: IDL.Int8,
-        inline2: IDL.Int8,
+        inline: IDL.Int8,
+        capture: IDL.Text,
         single: IDL.Bool
     });
     return IDL.Service({
