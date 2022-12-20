@@ -1,6 +1,6 @@
 use crate::{
     generators::canister_methods::method_body,
-    ts_ast::{program::azle_program::AzleProgramVecHelperMethods, ts_ast::errors, TsAst},
+    ts_ast::{azle_program::HelperMethods, ts_ast::errors, TsAst},
 };
 use cdk_framework::{nodes::ActHeartbeatMethod, CanisterMethodType};
 

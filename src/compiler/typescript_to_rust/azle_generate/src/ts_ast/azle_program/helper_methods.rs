@@ -1,56 +1,15 @@
 use std::collections::HashSet;
 
-use swc_common::SourceMap;
-use swc_ecma_ast::Program;
-
 use crate::ts_ast::{
     ast_traits::GetDependencies,
     azle_type_alias_decls::azle_type_alias_decl::{
         AzleTypeAliasListHelperMethods, TsTypeAliasHelperMethods,
     },
-    module::ModuleHelperMethods,
-    AzleFnDecl, AzleTypeAliasDecl,
+    AzleFnDecl, AzleProgram, AzleTypeAliasDecl,
 };
 use cdk_framework::{CanisterMethodType, SystemStructureType};
 
-pub struct AzleProgram {
-    pub program: swc_ecma_ast::Program,
-    pub source_map: SourceMap,
-}
-
-impl AzleProgram {
-    fn get_ast_fn_decls(&self) -> Vec<AzleFnDecl> {
-        match &self.program {
-            Program::Module(module) => {
-                let export_decls = module.get_export_decls();
-
-                let fn_decls: Vec<AzleFnDecl> = export_decls
-                    .iter()
-                    .filter(|export_decl| export_decl.decl.is_fn_decl())
-                    .map(|export_decl| export_decl.decl.as_fn_decl().unwrap().clone())
-                    .map(|fn_decl| AzleFnDecl {
-                        fn_decl,
-                        source_map: &self.source_map,
-                    })
-                    .collect();
-
-                fn_decls
-            }
-            Program::Script(_) => {
-                vec![]
-            }
-        }
-    }
-
-    fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl> {
-        match &self.program {
-            Program::Module(module) => module.get_azle_type_alias_decls(&self.source_map),
-            Program::Script(_) => vec![],
-        }
-    }
-}
-
-pub trait AzleProgramVecHelperMethods {
+pub trait HelperMethods {
     fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl>;
     fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
     fn get_azle_type_alias_decls_for_system_structure_type(
@@ -64,7 +23,7 @@ pub trait AzleProgramVecHelperMethods {
     fn get_dependent_types(&self) -> HashSet<String>;
 }
 
-impl AzleProgramVecHelperMethods for Vec<AzleProgram> {
+impl HelperMethods for Vec<AzleProgram> {
     fn get_azle_fn_decls_of_type(
         &self,
         canister_method_type: &CanisterMethodType,

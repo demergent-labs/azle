@@ -1,5 +1,5 @@
 use super::TsAst;
-use crate::ts_ast::program::azle_program::AzleProgramVecHelperMethods;
+use crate::ts_ast::azle_program::HelperMethods;
 use cdk_framework::{nodes::ActExternalCanister, SystemStructureType};
 
 impl TsAst {
