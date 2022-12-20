@@ -1,7 +1,10 @@
 use swc_ecma_ast::{Decl, Expr, ModuleItem, Program, Stmt};
 
 use super::AzleProgram;
-use crate::{stable_b_tree_map::StableBTreeMap, ts_ast::GetName};
+use crate::{
+    stable_b_tree_map::StableBTreeMap,
+    ts_ast::{AzleNewExpr, GetName},
+};
 
 impl AzleProgram {
     pub fn stable_b_tree_maps(&self) -> Vec<StableBTreeMap> {
@@ -21,16 +24,16 @@ impl AzleProgram {
                                                 Expr::New(new_expr) => match &*new_expr.callee {
                                                     Expr::Ident(ident) => {
                                                         if ident.get_name() == "StableBTreeMap" {
-                                                            // TODO: Implement this correctly
-                                                            vec![inner_acc, vec![StableBTreeMap {
-                                                                id: "TEST_ID".to_string(),
-                                                                key_type: "TEST_KEY_TYPE"
-                                                                    .to_string(),
-                                                                max_key_size: 100u64,
-                                                                value_type: "TEST_KEY_TYPE"
-                                                                    .to_string(),
-                                                                max_value_size: 100u64,
-                                                            }]].concat()
+                                                            let azle_new_expr = AzleNewExpr {
+                                                                new_expr: new_expr.clone(),
+                                                                source_map: &self.source_map
+                                                            };
+
+                                                            let stable_b_tree_map_node_option = azle_new_expr.to_stable_b_tree_map();
+                                                            match stable_b_tree_map_node_option {
+                                                                Ok(stable_b_tree_map_node) => vec![inner_acc, vec![stable_b_tree_map_node]].concat(),
+                                                                Err(err) => panic!("{}", err),
+                                                            }
                                                         } else {
                                                             inner_acc
                                                         }
