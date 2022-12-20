@@ -2,12 +2,13 @@ use std::path::Path;
 use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
-use super::program::AzleProgram;
+use super::AzleProgram;
 
 mod async_result_handler;
 mod cross_canister_calls;
 mod errors;
 mod ic_object;
+mod stable_b_tree_map;
 mod system_canister_method_builder;
 mod to_act;
 

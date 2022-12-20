@@ -8,8 +8,8 @@ use super::TsAst;
 use crate::{
     generators::{canister_methods, errors, ic_object::functions, vm_value_conversion},
     ts_ast::{
+        azle_program::HelperMethods,
         azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods,
-        program::azle_program::AzleProgramVecHelperMethods,
     },
     ts_keywords,
 };
