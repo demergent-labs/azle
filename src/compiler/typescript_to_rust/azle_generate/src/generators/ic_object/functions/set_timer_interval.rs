@@ -13,8 +13,9 @@ pub fn generate_ic_object_function_set_timer_interval() -> proc_macro2::TokenStr
             let func_js_object = func_js_value.as_object().unwrap().clone();
 
             let closure = move || {
-                unsafe {
-                    let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+                BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
+                    let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
+
                     _azle_handle_boa_result(
                         func_js_object.call(
                             &boa_engine::JsValue::Null,
@@ -23,7 +24,7 @@ pub fn generate_ic_object_function_set_timer_interval() -> proc_macro2::TokenStr
                         ),
                         &mut *_azle_boa_context
                     );
-                }
+                });
             };
 
             let timer_id = ic_cdk::timer::set_timer_interval(interval, closure);
