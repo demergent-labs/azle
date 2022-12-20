@@ -3,11 +3,14 @@ use quote::quote;
 
 use crate::{generators::header, ts_ast::TsAst};
 
+pub use stable_b_tree_map::StableBTreeMap;
+
 mod errors;
 mod generators;
 mod stable_b_tree_map;
 mod ts_ast;
 mod ts_keywords;
+mod utils;
 
 pub fn azle_generate(
     ts_file_names: &Vec<&str>,

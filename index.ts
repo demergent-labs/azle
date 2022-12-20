@@ -329,7 +329,7 @@ export class StableBTreeMap<Key, Value> {
      * @param maxKeySize the largest size a key will ever be.
      * @param maxValueSize the largest size a value will ever be.
      */
-    constructor(id: string, maxKeySize: nat64, maxValueSize: nat64) {}
+    constructor(id: nat8, maxKeySize: nat32, maxValueSize: nat32) {}
 
     get(key: Key): Value {
         return 'test_value' as Value;
