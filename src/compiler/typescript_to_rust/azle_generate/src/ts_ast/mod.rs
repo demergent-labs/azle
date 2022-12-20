@@ -19,6 +19,7 @@ mod azle_binding_ident;
 mod azle_fn_decl;
 mod azle_functions_and_methods;
 mod azle_new_expr;
+mod expr;
 mod ident;
 mod module;
 mod source_map;
