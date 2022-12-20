@@ -1,7 +1,8 @@
-use quote::quote;
+use cdk_framework::ToActDataType;
 
 use super::AzleNewExpr;
 use crate::{
+    ts_ast::azle_type::AzleType,
     utils::{ToU32, ToU8},
     StableBTreeMap,
 };
@@ -30,6 +31,18 @@ impl AzleNewExpr<'_> {
                 if type_args.params.len() != 2 {
                     return Err(type_arg_error_message);
                 }
+
+                let key_type = AzleType::from_ts_type(
+                    *type_args.params.get(0).unwrap().clone(),
+                    self.source_map,
+                )
+                .to_act_data_type(&None);
+
+                let value_type = AzleType::from_ts_type(
+                    *type_args.params.get(1).unwrap().clone(),
+                    self.source_map,
+                )
+                .to_act_data_type(&None);
 
                 match &self.new_expr.args {
                     Some(args) => {
@@ -60,9 +73,9 @@ impl AzleNewExpr<'_> {
 
                         Ok(StableBTreeMap {
                             memory_id,
-                            key_type: quote! {String},
+                            key_type,
                             max_key_size,
-                            value_type: quote! {String},
+                            value_type,
                             max_value_size,
                         })
                     }
