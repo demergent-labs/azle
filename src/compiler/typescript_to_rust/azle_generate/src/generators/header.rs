@@ -9,11 +9,14 @@ pub fn generate_header_code() -> proc_macro2::TokenStream {
         // #![allow(unused_variables)]
         #![allow(warnings, unused)]
 
-        use std::str::FromStr;
-        use azle_vm_value_derive::{
-            CdkActTryIntoVmValue,
-            CdkActTryFromVmValue
-        };
+        use azle_vm_value_derive::{CdkActTryIntoVmValue, CdkActTryFromVmValue};
         use ic_cdk::api::call::CallResult;
+        use rand::Rng;
+        use slotmap::Key;
+        use std::str::FromStr;
+
+        thread_local! {
+            static RNG_REF_CELL: std::cell::RefCell<rand::rngs::StdRng> = std::cell::RefCell::new(rand::SeedableRng::from_seed([0u8; 32]));
+        }
     }
 }

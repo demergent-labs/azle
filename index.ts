@@ -116,6 +116,11 @@ type ic = {
     };
     canister_balance: () => nat64;
     canister_balance128: () => nat;
+    /**
+     * Cancels an existing timer. Does nothing if the timer has already been canceled.
+     * @param id The ID of the timer to be cancelled.
+     */
+    clear_timer: (id: TimerId) => void;
     data_certificate: () => Opt<blob>;
     id: () => Principal;
     method_name: () => string;
@@ -143,6 +148,26 @@ type ic = {
     /** Non-working type declaration. But API we want */
     // result: <T>() => AzleResult<Array<T>>;
     set_certified_data: (data: blob) => void;
+    /**
+     * Sets callback to be executed later, after delay. Panics if `delay` + time() is more than 2^64 - 1.
+     * To cancel the timer before it executes, pass the returned `TimerId` to `clear_timer`.
+     * Note that timers are not persisted across canister upgrades.
+     *
+     * @param delay The time (in seconds) to wait before executing the provided callback.
+     * @param callback the function to invoke after the specified delay has passed.
+     * @returns the ID of the created timer. Used to cancel the timer.
+     */
+    set_timer: (delay: Duration, callback: () => void) => TimerId;
+    /**
+     * Sets callback to be executed every interval. Panics if `interval` + time() is more than 2^64 - 1.
+     * To cancel the interval timer, pass the returned `TimerId` to `clear_timer`.
+     * Note that timers are not persisted across canister upgrades.
+     *
+     * @param interval The interval (in seconds) between each callback execution.
+     * @param callback the function to invoke after the specified delay has passed.
+     * @returns the ID of the created timer. Used to cancel the timer.
+     */
+    set_timer_interval: (interval: Duration, callback: () => void) => TimerId;
     stable_bytes: () => blob;
     stable_grow: (new_pages: nat32) => StableGrowResult;
     stable_read: (offset: nat32, length: nat32) => blob;
@@ -205,6 +230,16 @@ export type NotifyResult = Variant<{
     ok: null;
     err: RejectionCode;
 }>;
+
+/**
+ * Type returned by the `ic.set_timer` and `ic.set_timer_interval` functions. Pass to `ic.clear_timer` to remove the timer.
+ */
+export type TimerId = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
+
+/**
+ * Represents a duration of time in seconds.
+ */
+export type Duration = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
 
 export type int = bigint;
 export type int64 = bigint;

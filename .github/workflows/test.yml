@@ -110,6 +110,7 @@ jobs:
                     "examples/simple_user_accounts",
                     "examples/stable_memory",
                     "examples/stable_storage",
+                    "examples/timers",
                     "examples/tuple_types",
                     "examples/update"
                   ]

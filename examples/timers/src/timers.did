@@ -1,0 +1,17 @@
+type StatusReport = record {
+  repeat : int8;
+  inline : int8;
+  capture : text;
+  single : bool;
+};
+type TimerIds = record {
+  repeat : nat64;
+  inline : nat64;
+  capture : nat64;
+  single : nat64;
+};
+service : () -> {
+  clear_timer : (nat64) -> ();
+  set_timers : (nat64, nat64) -> (TimerIds);
+  status_report : () -> (StatusReport) query;
+}
