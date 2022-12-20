@@ -2,12 +2,12 @@ use swc_ecma_ast::{Decl, Expr, ModuleItem, Program, Stmt};
 
 use super::AzleProgram;
 use crate::{
-    stable_b_tree_map::StableBTreeMap,
+    stable_b_tree_map_node::StableBTreeMapNode,
     ts_ast::{AzleNewExpr, GetName},
 };
 
 impl AzleProgram {
-    pub fn stable_b_tree_maps(&self) -> Vec<StableBTreeMap> {
+    pub fn stable_b_tree_map_nodes(&self) -> Vec<StableBTreeMapNode> {
         match &self.program {
             Program::Module(module) => {
                 module
@@ -29,7 +29,7 @@ impl AzleProgram {
                                                                 source_map: &self.source_map
                                                             };
 
-                                                            let stable_b_tree_map_node_option = azle_new_expr.to_stable_b_tree_map();
+                                                            let stable_b_tree_map_node_option = azle_new_expr.to_stable_b_tree_map_nodes();
                                                             match stable_b_tree_map_node_option {
                                                                 Ok(stable_b_tree_map_node) => vec![inner_acc, vec![stable_b_tree_map_node]].concat(),
                                                                 Err(err) => panic!("{}", err),

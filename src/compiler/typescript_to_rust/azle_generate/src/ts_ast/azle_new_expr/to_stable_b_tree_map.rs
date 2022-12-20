@@ -4,11 +4,11 @@ use super::AzleNewExpr;
 use crate::{
     ts_ast::azle_type::AzleType,
     utils::{ToU32, ToU8},
-    StableBTreeMap,
+    StableBTreeMapNode,
 };
 
 impl AzleNewExpr<'_> {
-    pub fn to_stable_b_tree_map(&self) -> Result<StableBTreeMap, String> {
+    pub fn to_stable_b_tree_map_nodes(&self) -> Result<StableBTreeMapNode, String> {
         let example = "\n    new StableBTreeMap<CustomKeyType, CustomValueType>(0, 100, 1000)";
         let type_arg_error_message = format!("The \"StableBTreeMap\" type requires exactly 2 type arguments: the key datatype, and the value datatype. E.g.\n{}", example);
         let arg_spread_error_message = format!("The \"StableBTreeMap\" type does not currently support argument spreading. Instead, pass each argument individually. E.g.\n{}", example);
@@ -71,7 +71,7 @@ impl AzleNewExpr<'_> {
                             Err(_) => return Err(third_argument_size_error_message),
                         };
 
-                        Ok(StableBTreeMap {
+                        Ok(StableBTreeMapNode {
                             memory_id,
                             key_type,
                             max_key_size,

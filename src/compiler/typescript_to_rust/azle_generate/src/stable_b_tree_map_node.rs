@@ -1,7 +1,7 @@
 use cdk_framework::ActDataType;
 
 #[derive(Clone, Debug)]
-pub struct StableBTreeMap {
+pub struct StableBTreeMapNode {
     pub memory_id: u8,
     pub key_type: ActDataType,
     pub value_type: ActDataType,
