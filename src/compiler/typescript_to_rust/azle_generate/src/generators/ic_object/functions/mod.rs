@@ -10,6 +10,7 @@ mod candid_decode;
 mod candid_encode;
 mod canister_balance;
 mod canister_balance128;
+mod clear_timer;
 mod cross_canister_functions;
 mod data_certificate;
 mod id;
@@ -31,6 +32,8 @@ mod reject_message;
 mod reply;
 mod reply_raw;
 mod set_certified_data;
+mod set_timer;
+mod set_timer_interval;
 mod stable64_grow;
 mod stable64_read;
 mod stable64_size;
@@ -60,6 +63,7 @@ pub fn generate_ic_object_functions(
     let canister_balance = canister_balance::generate_ic_object_function_canister_balance();
     let canister_balance128 =
         canister_balance128::generate_ic_object_function_canister_balance128();
+    let clear_timer = clear_timer::generate_ic_object_function_clear_timer();
     let data_certificate = data_certificate::generate_ic_object_function_data_certificate();
     let id = id::generate_ic_object_function_id();
     let method_name = method_name::generate_ic_object_function_method_name();
@@ -90,6 +94,8 @@ pub fn generate_ic_object_functions(
     let reply = reply::generate_ic_object_function_reply(canister_methods);
     let reply_raw = reply_raw::generate_ic_object_function_reply_raw();
     let set_certified_data = set_certified_data::generate_ic_object_function_set_certified_data();
+    let set_timer = set_timer::generate_ic_object_function_set_timer();
+    let set_timer_interval = set_timer_interval::generate_ic_object_function_set_timer_interval();
     let stable64_grow = stable64_grow::generate_ic_object_function_stable64_grow();
     let stable64_read = stable64_read::generate_ic_object_function_stable64_read();
     let stable64_size = stable64_size::generate_ic_object_function_stable64_size();
@@ -114,6 +120,7 @@ pub fn generate_ic_object_functions(
         #candid_encode
         #canister_balance
         #canister_balance128
+        #clear_timer
         #data_certificate
         #id
         #method_name
@@ -134,6 +141,8 @@ pub fn generate_ic_object_functions(
         #reply
         #reply_raw
         #set_certified_data
+        #set_timer
+        #set_timer_interval
         #stable64_grow
         #stable64_read
         #stable64_size

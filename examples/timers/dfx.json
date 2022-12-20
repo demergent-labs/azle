@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "timers": {
+            "type": "custom",
+            "build": "npx azle timers",
+            "root": "src",
+            "ts": "src/timers.ts",
+            "candid": "src/timers.did",
+            "wasm": "target/wasm32-unknown-unknown/release/timers.wasm.gz",
+            "declarations": {
+                "output": "test/dfx_generated/timers",
+                "node_compatibility": true
+            }
+        }
+    }
+}

@@ -4,11 +4,7 @@ pub fn generate_header_code(main_js: &str, stable_storage_js: &str) -> proc_macr
 
         #![allow(warnings, unused)]
 
-        use std::str::FromStr;
-        use azle_vm_value_derive::{
-            CdkActTryIntoVmValue,
-            CdkActTryFromVmValue
-        };
+        use azle_vm_value_derive::{CdkActTryIntoVmValue, CdkActTryFromVmValue};
         use ic_cdk::api::call::CallResult;
         use std::borrow::BorrowMut;
         use rand::{
@@ -16,6 +12,8 @@ pub fn generate_header_code(main_js: &str, stable_storage_js: &str) -> proc_macr
             SeedableRng,
             rngs::StdRng
         };
+        use slotmap::Key;
+        use std::str::FromStr;
 
         thread_local! {
             static BOA_CONTEXT_REF_CELL: std::cell::RefCell<boa_engine::Context> = std::cell::RefCell::new(boa_engine::Context::default());

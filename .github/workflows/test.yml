@@ -78,6 +78,7 @@ jobs:
                     "examples/inspect_message",
                     "examples/key_value_store",
                     "examples/ledger_canister",
+                    "examples/list_of_lists",
                     "examples/management_canister",
                     "examples/manual_reply",
                     "examples/motoko_examples/calc",
@@ -109,6 +110,7 @@ jobs:
                     "examples/simple_user_accounts",
                     "examples/stable_memory",
                     "examples/stable_storage",
+                    "examples/timers",
                     "examples/tuple_types",
                     "examples/update"
                   ]

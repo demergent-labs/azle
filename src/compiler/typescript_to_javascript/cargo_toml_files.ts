@@ -41,6 +41,7 @@ export function generateLibCargoToml(canisterName: string): Toml {
         azle-vm-value-derive = { path = "./azle_vm_value_derive" }
         uuid = { version = "1.2.2", features = ["v4"] }
         rand = "0.8.5"
+        slotmap = "1.0.6"
     `;
 }
 
@@ -424,7 +425,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "cdk_framework"
         version = "0.0.0"
-        source = "git+https://github.com/demergent-labs/cdk_framework?rev=1f1da280f00e1382ee43b60b0e00187f89cbc7dd#1f1da280f00e1382ee43b60b0e00187f89cbc7dd"
+        source = "git+https://github.com/demergent-labs/cdk_framework?rev=5949f048f4afeb57f4eb23b136990907b449c6a8#5949f048f4afeb57f4eb23b136990907b449c6a8"
         dependencies = [
         "proc-macro2",
         "quote",
@@ -583,20 +584,6 @@ export function generateWorkspaceCargoLock(): Toml {
         version = "2.3.3"
         source = "registry+https://github.com/rust-lang/crates.io-index"
         checksum = "23d8666cb01533c39dde32bcbab8e227b4ed6679b2c925eba05feabea39508fb"
-
-        [[package]]
-        name = "date"
-        version = "0.0.0"
-        dependencies = [
-        "async-recursion",
-        "azle-vm-value-derive",
-        "boa_engine",
-        "candid",
-        "getrandom",
-        "ic-cdk",
-        "ic-cdk-macros",
-        "serde",
-        ]
 
         [[package]]
         name = "debug_unreachable"
@@ -2028,6 +2015,15 @@ export function generateWorkspaceCargoLock(): Toml {
         "form_urlencoded",
         "idna",
         "percent-encoding",
+        ]
+
+        [[package]]
+        name = "uuid"
+        version = "1.2.2"
+        source = "registry+https://github.com/rust-lang/crates.io-index"
+        checksum = "422ee0de9031b5b948b97a8fc04e3aa35230001a722ddd27943e0be31564ce4c"
+        dependencies = [
+        "getrandom",
         ]
 
         [[package]]

@@ -115,6 +115,13 @@ pub fn generate_try_from_vm_value_impls() -> proc_macro2::TokenStream {
             }
         }
 
+        impl CdkActTryFromVmValue<ic_cdk::timer::TimerId, &mut boa_engine::Context> for boa_engine::JsValue {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::timer::TimerId, CdkActTryFromVmValueError> {
+                let js_value_as_u64: u64 = self.try_from_vm_value(context).unwrap();
+                Ok(ic_cdk::timer::TimerId::from(slotmap::KeyData::from_ffi(js_value_as_u64)))
+            }
+        }
+
         // Number types
 
         impl CdkActTryFromVmValue<f64, &mut boa_engine::Context> for boa_engine::JsValue {
@@ -318,124 +325,61 @@ pub fn generate_try_from_vm_value_impls() -> proc_macro2::TokenStream {
         }
 
         // Vec types
+        trait AzleTryFromVec {}
 
-        impl CdkActTryFromVmValue<Vec<()>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<()>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for () {}
 
-        impl CdkActTryFromVmValue<Vec<bool>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<bool>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for bool {}
 
-        impl CdkActTryFromVmValue<Vec<String>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<String>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for String {}
 
-        impl CdkActTryFromVmValue<Vec<ic_cdk::export::candid::Empty>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<ic_cdk::export::candid::Empty>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for ic_cdk::export::candid::Empty {}
 
-        impl CdkActTryFromVmValue<Vec<ic_cdk::export::candid::Reserved>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<ic_cdk::export::candid::Reserved>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for ic_cdk::export::candid::Reserved {}
 
-        impl CdkActTryFromVmValue<Vec<ic_cdk::export::candid::Func>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<ic_cdk::export::candid::Func>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for ic_cdk::export::candid::Func {}
 
-        impl CdkActTryFromVmValue<Vec<ic_cdk::export::Principal>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<ic_cdk::export::Principal>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for ic_cdk::export::Principal {}
 
-        impl CdkActTryFromVmValue<Vec<f64>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<f64>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for ic_cdk::timer::TimerId {}
 
-        impl CdkActTryFromVmValue<Vec<f32>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<f32>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for f64 {}
 
-        impl CdkActTryFromVmValue<Vec<ic_cdk::export::candid::Int>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<ic_cdk::export::candid::Int>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for f32 {}
 
-        impl CdkActTryFromVmValue<Vec<i128>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<i128>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for ic_cdk::export::candid::Int {}
 
-        impl CdkActTryFromVmValue<Vec<i64>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<i64>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for i128 {}
 
-        impl CdkActTryFromVmValue<Vec<i32>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<i32>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for i64 {}
 
-        impl CdkActTryFromVmValue<Vec<i16>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<i16>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for i32 {}
 
-        impl CdkActTryFromVmValue<Vec<i8>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<i8>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for i16 {}
 
-        impl CdkActTryFromVmValue<Vec<ic_cdk::export::candid::Nat>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<ic_cdk::export::candid::Nat>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for i8 {}
 
-        impl CdkActTryFromVmValue<Vec<u128>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<u128>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for ic_cdk::export::candid::Nat {}
 
-        impl CdkActTryFromVmValue<Vec<u64>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<u64>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for u128 {}
 
-        impl CdkActTryFromVmValue<Vec<u32>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<u32>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
+        impl AzleTryFromVec for u64 {}
 
-        impl CdkActTryFromVmValue<Vec<u16>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<u16>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
+        impl AzleTryFromVec for u32 {}
+
+        impl AzleTryFromVec for u16 {}
+
+        impl<T> AzleTryFromVec for Option<T> {}
+
+        impl<T> AzleTryFromVec for Vec<T> {}
+
+        impl<T> CdkActTryFromVmValue<Vec<T>, &mut boa_engine::Context> for boa_engine::JsValue
+        where
+            T: AzleTryFromVec,
+            boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context>
+        {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<T>, CdkActTryFromVmValueError> {
+                try_from_vm_value_generic_array::<T>(self, context)
             }
         }
 
@@ -457,31 +401,6 @@ pub fn generate_try_from_vm_value_impls() -> proc_macro2::TokenStream {
                         .clone()
                         .unwrap()
                 )
-            }
-        }
-
-        // TODO consider creating a macro that can derive Vec of Vec multiple levels deep for any type
-        impl CdkActTryFromVmValue<Vec<Vec<u8>>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<Vec<u8>>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array(self, context)
-            }
-        }
-
-        impl<T> CdkActTryFromVmValue<Vec<Box<T>>, &mut boa_engine::Context> for boa_engine::JsValue
-        where
-            boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context>
-        {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<Box<T>>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array::<Box<T>>(self, context)
-            }
-        }
-
-        impl<T> CdkActTryFromVmValue<Vec<Option<T>>, &mut boa_engine::Context> for boa_engine::JsValue
-        where
-            boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context>
-        {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<Option<T>>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array::<Option<T>>(self, context)
             }
         }
 
