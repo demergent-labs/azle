@@ -2437,7 +2437,7 @@ Examples:
 
 ```typescript
 import { CanisterResult, ic, ok, Query, Update } from 'azle';
-import { HttpResponse, ManagementCanister } from 'azle/canisters/management';
+import { HttpResponse, management_canister } from 'azle/canisters/management';
 
 export async function xkcd(): Promise<Update<HttpResponse>> {
     const max_response_bytes = 1_000n;
