@@ -14,7 +14,6 @@ pub use azle_program::AzleProgram;
 pub use azle_type_alias_decls::AzleTypeAliasDecl;
 pub use ts_ast::TsAst;
 
-mod ast_traits;
 mod azle_binding_ident;
 mod azle_fn_decl;
 mod azle_functions_and_methods;
@@ -27,6 +26,7 @@ mod ts_ast;
 mod ts_type;
 mod ts_type_ann;
 
+pub mod ast_traits;
 pub mod azle_method_signature;
 pub mod azle_program;
 pub mod azle_type;

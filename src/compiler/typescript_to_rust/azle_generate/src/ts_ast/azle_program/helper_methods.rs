@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use crate::ts_ast::{
     ast_traits::GetDependencies,
@@ -20,6 +20,11 @@ pub trait HelperMethods {
         &self,
         canister_method_type: &CanisterMethodType,
     ) -> Vec<AzleFnDecl>;
+    fn get_stable_b_tree_map_node_dependencies(
+        &self,
+        type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
+        found_type_names: &HashSet<String>,
+    ) -> HashSet<String>;
     fn get_dependent_types(&self) -> HashSet<String>;
 }
 
@@ -66,6 +71,33 @@ impl HelperMethods for Vec<AzleProgram> {
             .collect()
     }
 
+    fn get_stable_b_tree_map_node_dependencies(
+        &self,
+        type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
+        found_type_names: &HashSet<String>,
+    ) -> HashSet<String> {
+        self.iter()
+            .fold(found_type_names.clone(), |acc, azle_program| {
+                let azle_stable_b_tree_map_nodes = azle_program.azle_stable_b_tree_map_nodes();
+                let stable_b_tree_map_dependencies = azle_stable_b_tree_map_nodes.iter().fold(
+                    acc.clone(),
+                    |acc, azle_stable_b_tree_map_node| {
+                        acc.union(&azle_stable_b_tree_map_node.get_dependent_types(
+                            type_alias_lookup,
+                            &acc,
+                            &azle_program.source_map,
+                        ))
+                        .cloned()
+                        .collect()
+                    },
+                );
+
+                acc.union(&stable_b_tree_map_dependencies)
+                    .cloned()
+                    .collect()
+            })
+    }
+
     fn get_dependent_types(&self) -> HashSet<String> {
         let ast_type_alias_decls = &self.get_azle_type_alias_decls();
 
@@ -86,12 +118,23 @@ impl HelperMethods for Vec<AzleProgram> {
         let canister_dependencies = ast_canister_type_alias_decls
             .get_dependent_types(&ast_type_alias_lookup, &found_type_names);
 
+        let stable_b_tree_map_dependencies =
+            self.get_stable_b_tree_map_node_dependencies(&ast_type_alias_lookup, &found_type_names);
+
+        // // TODO: Get them from StableBTreeMaps
+        // let stable_b_tree_map_node_deps = self.stable_b_tree_map_nodes().iter()
+        //     .get_dependent_types;
+
         let dependencies: HashSet<String> = query_dependencies
             .union(&update_dependencies)
             .cloned()
             .collect();
         let dependencies: HashSet<String> = dependencies
             .union(&canister_dependencies)
+            .cloned()
+            .collect();
+        let dependencies: HashSet<String> = dependencies
+            .union(&stable_b_tree_map_dependencies)
             .cloned()
             .collect();
         dependencies

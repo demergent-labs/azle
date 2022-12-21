@@ -3,7 +3,7 @@ use quote::quote;
 
 use crate::{generators::header, ts_ast::TsAst};
 
-pub use stable_b_tree_map_node::StableBTreeMapNode;
+pub use stable_b_tree_map_node::{AzleStableBTreeMapNode, StableBTreeMapNode};
 
 mod errors;
 mod generators;
@@ -19,9 +19,9 @@ pub fn azle_generate(
 ) -> proc_macro2::token_stream::TokenStream {
     let header = header::generate_header_code(main_js, stable_storage_js);
 
-    let ts_ast = TsAst::from_ts_file_names(&ts_file_names);
-    let _stable_b_tree_map_nodes = ts_ast.stable_b_tree_map_nodes();
-    let canister_definition = ts_ast.to_act().to_token_stream(());
+    let canister_definition = TsAst::from_ts_file_names(&ts_file_names)
+        .to_act()
+        .to_token_stream(());
 
     quote! {
         #header
