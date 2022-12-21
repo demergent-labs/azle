@@ -1,14 +1,11 @@
-use cdk_framework::ToActDataType;
-
 use super::AzleNewExpr;
 use crate::{
-    ts_ast::azle_type::AzleType,
     utils::{ToU32, ToU8},
-    StableBTreeMapNode,
+    AzleStableBTreeMapNode,
 };
 
 impl AzleNewExpr<'_> {
-    pub fn to_stable_b_tree_map_nodes(&self) -> Result<StableBTreeMapNode, String> {
+    pub fn to_azle_stable_b_tree_map_node(&self) -> Result<AzleStableBTreeMapNode, String> {
         let example = "\n    new StableBTreeMap<CustomKeyType, CustomValueType>(0, 100, 1000)";
         let type_arg_error_message = format!("The \"StableBTreeMap\" type requires exactly 2 type arguments: the key datatype, and the value datatype. E.g.\n{}", example);
         let arg_spread_error_message = format!("The \"StableBTreeMap\" type does not currently support argument spreading. Instead, pass each argument individually. E.g.\n{}", example);
@@ -32,17 +29,8 @@ impl AzleNewExpr<'_> {
                     return Err(type_arg_error_message);
                 }
 
-                let key_type = AzleType::from_ts_type(
-                    *type_args.params.get(0).unwrap().clone(),
-                    self.source_map,
-                )
-                .to_act_data_type(&None);
-
-                let value_type = AzleType::from_ts_type(
-                    *type_args.params.get(1).unwrap().clone(),
-                    self.source_map,
-                )
-                .to_act_data_type(&None);
+                let key_type = *type_args.params.get(0).unwrap().clone();
+                let value_type = *type_args.params.get(1).unwrap().clone();
 
                 match &self.new_expr.args {
                     Some(args) => {
@@ -71,7 +59,7 @@ impl AzleNewExpr<'_> {
                             Err(_) => return Err(third_argument_size_error_message),
                         };
 
-                        Ok(StableBTreeMapNode {
+                        Ok(AzleStableBTreeMapNode {
                             memory_id,
                             key_type,
                             max_key_size,
