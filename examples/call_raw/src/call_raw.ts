@@ -15,13 +15,13 @@ type ExecuteCallRawResult = Variant<{
     err: string;
 }>;
 
-export function* execute_call_raw(
+export async function execute_call_raw(
     canister_id: Principal,
     method: string,
     candid_args: string,
     payment: nat64
-): Update<ExecuteCallRawResult> {
-    const canister_result: CanisterResult<blob> = yield ic.call_raw(
+): Promise<Update<ExecuteCallRawResult>> {
+    const canister_result = await ic.call_raw(
         canister_id,
         method,
         ic.candid_encode(candid_args),
@@ -44,13 +44,13 @@ type ExecuteCallRaw128Result = Variant<{
     err: string;
 }>;
 
-export function* execute_call_raw128(
+export async function execute_call_raw128(
     canister_id: Principal,
     method: string,
     candid_args: string,
     payment: nat
-): Update<ExecuteCallRaw128Result> {
-    const canister_result: CanisterResult<blob> = yield ic.call_raw128(
+): Promise<Update<ExecuteCallRaw128Result>> {
+    const canister_result = await ic.call_raw128(
         canister_id,
         method,
         ic.candid_encode(candid_args),

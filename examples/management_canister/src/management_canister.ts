@@ -1,12 +1,9 @@
 // TODO once the Bitcoin integration is live, add the methods and tests
 
-import { blob, CanisterResult, nat, ok, Principal, Query, Update } from 'azle';
+import { blob, nat, ok, Principal, Query, Update } from 'azle';
 import {
-    CreateCanisterResult,
     CanisterStatusArgs,
-    CanisterStatusResult,
-    ManagementCanister,
-    ProvisionalCreateCanisterWithCyclesResult
+    management_canister
 } from 'azle/canisters/management';
 import {
     DefaultResult,
@@ -24,11 +21,15 @@ let state: State = {
     created_canister_id: Principal.fromText('aaaaa-aa')
 };
 
-export function* execute_create_canister(): Update<ExecuteCreateCanisterResult> {
-    const create_canister_result_canister_result: CanisterResult<CreateCanisterResult> =
-        yield ManagementCanister.create_canister({
+export async function execute_create_canister(): Promise<
+    Update<ExecuteCreateCanisterResult>
+> {
+    const create_canister_result_canister_result = await management_canister
+        .create_canister({
             settings: null
-        }).with_cycles(50_000_000_000_000n);
+        })
+        .cycles(50_000_000_000_000n)
+        .call();
 
     if (!ok(create_canister_result_canister_result)) {
         return {
@@ -45,11 +46,11 @@ export function* execute_create_canister(): Update<ExecuteCreateCanisterResult> 
     };
 }
 
-export function* execute_update_settings(
+export async function execute_update_settings(
     canister_id: Principal
-): Update<DefaultResult> {
-    const canister_result: CanisterResult<void> =
-        yield ManagementCanister.update_settings({
+): Promise<Update<DefaultResult>> {
+    const canister_result = await management_canister
+        .update_settings({
             canister_id,
             settings: {
                 controllers: null,
@@ -57,7 +58,8 @@ export function* execute_update_settings(
                 memory_allocation: 3_000_000n,
                 freezing_threshold: 2_000_000n
             }
-        });
+        })
+        .call();
 
     if (!ok(canister_result)) {
         return {
@@ -70,19 +72,21 @@ export function* execute_update_settings(
     };
 }
 
-export function* execute_install_code(
+export async function execute_install_code(
     canister_id: Principal,
     wasm_module: blob
-): Update<DefaultResult> {
-    const canister_result: CanisterResult<void> =
-        yield ManagementCanister.install_code({
+): Promise<Update<DefaultResult>> {
+    const canister_result = await management_canister
+        .install_code({
             mode: {
                 install: null
             },
             canister_id,
             wasm_module,
             arg: Uint8Array.from([])
-        }).with_cycles(100_000_000_000n);
+        })
+        .cycles(100_000_000_000n)
+        .call();
 
     if (!ok(canister_result)) {
         return {
@@ -95,13 +99,14 @@ export function* execute_install_code(
     };
 }
 
-export function* execute_uninstall_code(
+export async function execute_uninstall_code(
     canister_id: Principal
-): Update<DefaultResult> {
-    const canister_result: CanisterResult<void> =
-        yield ManagementCanister.uninstall_code({
+): Promise<Update<DefaultResult>> {
+    const canister_result = await management_canister
+        .uninstall_code({
             canister_id
-        });
+        })
+        .call();
 
     if (!ok(canister_result)) {
         return {
@@ -114,13 +119,14 @@ export function* execute_uninstall_code(
     };
 }
 
-export function* execute_start_canister(
+export async function execute_start_canister(
     canister_id: Principal
-): Update<DefaultResult> {
-    const canister_result: CanisterResult<void> =
-        yield ManagementCanister.start_canister({
+): Promise<Update<DefaultResult>> {
+    const canister_result = await management_canister
+        .start_canister({
             canister_id
-        });
+        })
+        .call();
 
     if (!ok(canister_result)) {
         return {
@@ -133,13 +139,14 @@ export function* execute_start_canister(
     };
 }
 
-export function* execute_stop_canister(
+export async function execute_stop_canister(
     canister_id: Principal
-): Update<DefaultResult> {
-    const canister_result: CanisterResult<void> =
-        yield ManagementCanister.stop_canister({
+): Promise<Update<DefaultResult>> {
+    const canister_result = await management_canister
+        .stop_canister({
             canister_id
-        });
+        })
+        .call();
 
     if (!ok(canister_result)) {
         return {
@@ -152,13 +159,14 @@ export function* execute_stop_canister(
     };
 }
 
-export function* get_canister_status(
+export async function get_canister_status(
     args: CanisterStatusArgs
-): Update<GetCanisterStatusResult> {
-    const canister_status_result_canister_result: CanisterResult<CanisterStatusResult> =
-        yield ManagementCanister.canister_status({
+): Promise<Update<GetCanisterStatusResult>> {
+    const canister_status_result_canister_result = await management_canister
+        .canister_status({
             canister_id: args.canister_id
-        });
+        })
+        .call();
 
     if (canister_status_result_canister_result.ok === undefined) {
         return {
@@ -173,13 +181,14 @@ export function* get_canister_status(
     };
 }
 
-export function* execute_delete_canister(
+export async function execute_delete_canister(
     canister_id: Principal
-): Update<DefaultResult> {
-    const canister_result: CanisterResult<void> =
-        yield ManagementCanister.delete_canister({
+): Promise<Update<DefaultResult>> {
+    const canister_result = await management_canister
+        .delete_canister({
             canister_id
-        });
+        })
+        .call();
 
     if (!ok(canister_result)) {
         return {
@@ -211,9 +220,10 @@ export function* execute_delete_canister(
 //     };
 // }
 
-export function* get_raw_rand(): Update<RawRandResult> {
-    const raw_rand_canister_result: CanisterResult<blob> =
-        yield ManagementCanister.raw_rand();
+export async function get_raw_rand(): Promise<Update<RawRandResult>> {
+    const raw_rand_canister_result = await management_canister
+        .raw_rand()
+        .call();
 
     if (!ok(raw_rand_canister_result)) {
         return {
@@ -229,12 +239,15 @@ export function* get_raw_rand(): Update<RawRandResult> {
 }
 
 // TODO we will test these once we can measure cycles better locally
-export function* provisional_create_canister_with_cycles(): Update<ExecuteProvisionalCreateCanisterWithCyclesResult> {
-    const canister_result: CanisterResult<ProvisionalCreateCanisterWithCyclesResult> =
-        yield ManagementCanister.provisional_create_canister_with_cycles({
+export async function provisional_create_canister_with_cycles(): Promise<
+    Update<ExecuteProvisionalCreateCanisterWithCyclesResult>
+> {
+    const canister_result = await management_canister
+        .provisional_create_canister_with_cycles({
             amount: null,
             settings: null
-        });
+        })
+        .call();
 
     if (!ok(canister_result)) {
         return {
@@ -250,15 +263,16 @@ export function* provisional_create_canister_with_cycles(): Update<ExecuteProvis
 }
 
 // TODO we will test these once we can measure cycles better locally
-export function* provisional_top_up_canister(
+export async function provisional_top_up_canister(
     canister_id: Principal,
     amount: nat
-): Update<DefaultResult> {
-    const canister_result: CanisterResult<void> =
-        yield ManagementCanister.provisional_top_up_canister({
+): Promise<Update<DefaultResult>> {
+    const canister_result = await management_canister
+        .provisional_top_up_canister({
             canister_id,
             amount
-        });
+        })
+        .call();
 
     if (!ok(canister_result)) {
         return {

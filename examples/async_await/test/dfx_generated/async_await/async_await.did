@@ -1,0 +1,5 @@
+service : () -> {
+  get_randomness_directly : () -> (vec nat8);
+  get_randomness_indirectly : () -> (vec nat8);
+  get_randomness_super_indirectly : () -> (vec nat8);
+}

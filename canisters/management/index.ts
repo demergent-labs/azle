@@ -260,6 +260,6 @@ export type Management = Canister<{
     ): CanisterResult<SignWithEcdsaResult>;
 }>;
 
-export const ManagementCanister: Management = ic.canisters.Management(
+export const management_canister: Management = ic.canisters.Management(
     Principal.fromText('aaaaa-aa')
 );

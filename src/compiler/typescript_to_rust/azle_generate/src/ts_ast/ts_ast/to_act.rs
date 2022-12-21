@@ -150,7 +150,8 @@ impl ToAct for TsAst {
         let try_into_vm_value_impls = vm_value_conversion::generate_try_into_vm_value_impls();
         let try_from_vm_value_impls = vm_value_conversion::generate_try_from_vm_value_impls();
 
-        let async_result_handler = self.generate_async_result_handler();
+        let async_result_handler =
+            self.generate_async_result_handler(&query_and_update_canister_methods);
 
         let boa_error_handler = errors::generate_error_handler();
 

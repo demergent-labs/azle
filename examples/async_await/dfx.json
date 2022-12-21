@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "async_await": {
+            "type": "custom",
+            "build": "npx azle async_await",
+            "root": "src",
+            "ts": "src/async_await.ts",
+            "candid": "src/async_await.did",
+            "wasm": "target/wasm32-unknown-unknown/release/async_await.wasm.gz",
+            "declarations": {
+                "output": "test/dfx_generated/async_await",
+                "node_compatibility": true
+            }
+        }
+    }
+}

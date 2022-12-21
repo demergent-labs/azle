@@ -6,12 +6,15 @@ use super::TsAst;
 impl TsAst {
     pub fn generate_ic_object(&self) -> proc_macro2::TokenStream {
         let notify_functions = self.generate_notify_functions();
+        let cross_canister_functions = self.generate_cross_canister_functions();
 
         quote::quote! {
             let ic = boa_engine::object::ObjectInitializer::new(&mut _azle_boa_context)
                 .function(_azle_ic_accept_message, "accept_message", 0)
                 .function(_azle_ic_arg_data_raw, "arg_data_raw", 0)
                 .function(_azle_ic_arg_data_raw_size, "arg_data_raw_size", 0)
+                .function(_azle_ic_call_raw, "call_raw", 0)
+                .function(_azle_ic_call_raw128, "call_raw128", 0)
                 .function(_azle_ic_caller, "caller", 0)
                 .function(_azle_ic_candid_decode, "candid_decode", 0)
                 .function(_azle_ic_candid_encode, "candid_encode", 0)
@@ -28,6 +31,7 @@ impl TsAst {
                 .function(_azle_ic_msg_cycles_refunded, "msg_cycles_refunded", 0)
                 .function(_azle_ic_msg_cycles_refunded128, "msg_cycles_refunded128", 0)
                 #(#notify_functions)*
+                #(#cross_canister_functions)*
                 .function(_azle_ic_notify_raw, "notify_raw", 0)
                 .function(_azle_ic_performance_counter, "performance_counter", 0)
                 .function(_azle_ic_print, "print", 0)
@@ -72,5 +76,42 @@ impl TsAst {
                 }
             }).collect()
         }).collect::<Vec<Vec<TokenStream>>>().concat()
+    }
+
+    fn generate_cross_canister_functions(&self) -> Vec<TokenStream> {
+        let external_canisters = self.build_external_canisters();
+
+        external_canisters
+            .iter()
+            .map(|canister| {
+                canister
+                    .methods
+                    .iter()
+                    .map(|method| {
+                        let call_function_name_string =
+                            format!("_azle_call_{}_{}", canister.name, method.name);
+                        let call_wrapper_function_name =
+                            format_ident!("{}_wrapper", call_function_name_string);
+
+                        let call_with_payment_function_name_string =
+                            format!("_azle_call_with_payment_{}_{}", canister.name, method.name);
+                        let call_with_payment_wrapper_function_name =
+                            format_ident!("{}_wrapper", call_with_payment_function_name_string);
+
+                        let call_with_payment128_function_name_string =
+                            format!("_azle_call_with_payment128_{}_{}", canister.name, method.name);
+                        let call_with_payment128_wrapper_function_name =
+                            format_ident!("{}_wrapper", call_with_payment128_function_name_string);
+
+                        quote! {
+                            .function(#call_wrapper_function_name, #call_function_name_string, 0)
+                            .function(#call_with_payment_wrapper_function_name, #call_with_payment_function_name_string, 0)
+                            .function(#call_with_payment128_wrapper_function_name, #call_with_payment128_function_name_string, 0)
+                        }
+                    })
+                    .collect()
+            })
+            .collect::<Vec<Vec<TokenStream>>>()
+            .concat()
     }
 }

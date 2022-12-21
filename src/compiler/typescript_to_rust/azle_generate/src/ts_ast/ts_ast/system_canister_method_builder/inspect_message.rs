@@ -26,12 +26,20 @@ pub fn build_canister_method_system_inspect_message(
         let call_to_inspect_message_js_function =
             method_body::generate_call_to_js_function(inspect_message_fn_decl);
 
+        let function_name = inspect_message_fn_decl.get_function_name();
+
         let body = quote::quote! {
-            unsafe {
-                let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+            BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
+                let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
+
+                METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                    let mut method_name_mut = method_name_ref_cell.borrow_mut();
+
+                    *method_name_mut = #function_name.to_string()
+                });
 
                 #call_to_inspect_message_js_function
-            }
+            });
         };
         Some(ActInspectMessageMethod { body })
     } else {

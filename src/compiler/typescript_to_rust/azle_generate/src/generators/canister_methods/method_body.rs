@@ -11,20 +11,45 @@ use crate::ts_ast::AzleFnDecl;
 pub fn generate_canister_method_body(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
     let call_to_js_function = generate_call_to_js_function(fn_decl);
     let return_expression = generate_return_expression(fn_decl);
+    let function_name = fn_decl.get_function_name();
+    let manual = fn_decl.is_manual();
 
     quote! {
-        unsafe {
-            let mut _azle_boa_context = BOA_CONTEXT_OPTION.as_mut().unwrap();
+        BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
+            let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
+
+            let uuid = uuid::Uuid::new_v4().to_string();
+
+            UUID_REF_CELL.with(|uuid_ref_cell| {
+                let mut uuid_mut = uuid_ref_cell.borrow_mut();
+
+                *uuid_mut = uuid.clone();
+            });
+
+            METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                let mut method_name_mut = method_name_ref_cell.borrow_mut();
+
+                *method_name_mut = #function_name.to_string()
+            });
+
+            MANUAL_REF_CELL.with(|manual_ref_cell| {
+                let mut manual_mut = manual_ref_cell.borrow_mut();
+
+                *manual_mut = #manual;
+            });
 
             #call_to_js_function
 
-            let _azle_final_return_value = _azle_async_result_handler(
+            let _azle_final_return_value = _azle_async_await_result_handler(
                 &mut _azle_boa_context,
-                &_azle_boa_return_value
-            ).await;
+                &_azle_boa_return_value,
+                &uuid,
+                #function_name,
+                #manual
+            );
 
             #return_expression
-        }
+        })
     }
 }
 
@@ -74,7 +99,7 @@ pub fn generate_call_to_js_function(fn_decl: &AzleFnDecl) -> proc_macro2::TokenS
 ///    unless this is a ManualReply method.
 /// * `_azle_boa_context: &mut boa_engine::Context` - The current boa context
 fn generate_return_expression(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
-    if fn_decl.is_manual() {
+    if fn_decl.is_manual() || fn_decl.is_promise() {
         return quote! {
             ic_cdk::api::call::ManualReply::empty()
         };
@@ -89,7 +114,7 @@ fn generate_return_expression(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream 
     }
 
     quote! {
-        _azle_final_return_value.try_from_vm_value(_azle_boa_context).unwrap()
+        _azle_final_return_value.try_from_vm_value(&mut *_azle_boa_context).unwrap()
     }
 }
 

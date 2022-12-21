@@ -1,12 +1,12 @@
 import { Query, Heartbeat } from 'azle';
 
-let inititalized = false;
+let initialized = false;
 
 export function heartbeat(): Heartbeat {
-    inititalized = true;
-    console.log('heartbeat initialized', inititalized);
+    initialized = true;
+    console.log('heartbeat initialized', initialized);
 }
 
 export function get_initialized(): Query<boolean> {
-    return inititalized;
+    return initialized;
 }

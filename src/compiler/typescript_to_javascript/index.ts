@@ -251,21 +251,8 @@ function generateCanisterMethodFromTypeElement(
     return `
         ${methodName}: (...args) => {
             return {
-                name: 'call',
-                args: [
-                    '${callFunctionName}',
-                    canisterId,
-                    ...args
-                ],
-                with_cycles: (cycles) => {
+                cycles: (cycles) => {
                     return {
-                        name: 'call_with_payment',
-                        args: [
-                            '${callWithPaymentFunctionName}',
-                            canisterId,
-                            ...args,
-                            cycles
-                        ],
                         notify: () => {
                             // There is no notify_with_payment, there is only a notify_with_payment128
                             return ic['${notifyWithPayment128FunctionName}'](
@@ -273,23 +260,34 @@ function generateCanisterMethodFromTypeElement(
                                 args,
                                 cycles
                             );
+                        },
+                        call: () => {
+                            return ic['${callWithPaymentFunctionName}'](
+                                canisterId,
+                                [
+                                    ...args,
+                                    cycles
+                                ]
+                            );
                         }
                     };
                 },
-                with_cycles128: (cycles) => {
+                cycles128: (cycles) => {
                     return {
-                        name: 'call_with_payment128',
-                        args: [
-                            '${callWithPayment128FunctionName}',
-                            canisterId,
-                            ...args,
-                            cycles
-                        ],
                         notify: () => {
                             return ic['${notifyWithPayment128FunctionName}'](
                                 canisterId,
                                 args,
                                 cycles
+                            );
+                        },
+                        call: () => {
+                            return ic['${callWithPayment128FunctionName}'](
+                                canisterId,
+                                [
+                                    ...args,
+                                    cycles
+                                ]
                             );
                         }
                     };
@@ -299,6 +297,12 @@ function generateCanisterMethodFromTypeElement(
                         canisterId,
                         args
                     );
+                },
+                call: () => {
+                    return ic['${callFunctionName}'](
+                        canisterId,
+                        args
+                    )
                 }
             };
         }

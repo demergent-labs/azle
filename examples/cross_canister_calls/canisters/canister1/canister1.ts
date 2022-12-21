@@ -30,28 +30,30 @@ let canister2 = ic.canisters.Canister2<Canister2>(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
-export function* transfer(
+export async function transfer(
     from: string,
     to: string,
     amount: nat64
-): Update<TransferResult> {
-    return yield canister2.transfer(from, to, amount);
+): Promise<Update<TransferResult>> {
+    return await canister2.transfer(from, to, amount).call();
 }
 
-export function* balance(id: string): Update<BalanceResult> {
-    return yield canister2.balance(id);
+export async function balance(id: string): Promise<Update<BalanceResult>> {
+    return await canister2.balance(id).call();
 }
 
-export function* account(args: AccountArgs): Update<AccountResult> {
-    return yield canister2.account(args);
+export async function account(
+    args: AccountArgs
+): Promise<Update<AccountResult>> {
+    return await canister2.account(args).call();
 }
 
-export function* accounts(): Update<AccountsResult> {
-    return yield canister2.accounts();
+export async function accounts(): Promise<Update<AccountsResult>> {
+    return await canister2.accounts().call();
 }
 
-export function* trap(): Update<TrapResult> {
-    return yield canister2.trap();
+export async function trap(): Promise<Update<TrapResult>> {
+    return await canister2.trap().call();
 }
 
 export function send_notification(): Update<NotifyResult> {

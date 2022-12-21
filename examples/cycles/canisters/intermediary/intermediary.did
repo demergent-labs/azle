@@ -1,3 +1,5 @@
+type ManualReply = variant { ok : nat64; err : text };
+type ManualReply_1 = variant { ok : nat; err : text };
 type NotifyResult = variant { ok; err : RejectionCode };
 type RejectionCode = variant {
   NoError;
@@ -8,13 +10,11 @@ type RejectionCode = variant {
   SysFatal;
   CanisterReject;
 };
-type SendCyclesResult = variant { ok : nat64; err : text };
-type SendCyclesResult128 = variant { ok : nat; err : text };
 service : () -> {
   get_canister_balance : () -> (nat64) query;
   get_canister_balance128 : () -> (nat) query;
-  send_cycles : () -> (SendCyclesResult);
-  send_cycles128 : () -> (SendCyclesResult128);
+  send_cycles : () -> (ManualReply);
+  send_cycles128 : () -> (ManualReply_1);
   send_cycles128_notify : () -> (NotifyResult);
   send_cycles_notify : () -> (NotifyResult);
 }

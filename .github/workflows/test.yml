@@ -57,6 +57,7 @@ jobs:
               run: |
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
+                    "examples/async_await",
                     "examples/bitcoin",
                     "examples/blob_array",
                     "examples/bytes",
@@ -69,7 +70,6 @@ jobs:
                     "examples/date",
                     "examples/ethereum_json_rpc",
                     "examples/func_types",
-                    "examples/generators",
                     "examples/heartbeat",
                     "examples/ic_api",
                     "examples/imports",

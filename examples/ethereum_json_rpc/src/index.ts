@@ -1,8 +1,8 @@
-import { CanisterResult, ic, Init, nat32, ok, Query, Update } from 'azle';
+import { ic, Init, nat32, ok, Query, Update } from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
-    ManagementCanister
+    management_canister
 } from 'azle/canisters/management';
 import decodeUtf8 from 'decode-utf8';
 import encodeUtf8 from 'encode-utf8';
@@ -19,7 +19,9 @@ export function init(ethereum_url: string): Init {
     stable_storage.ethereum_url = ethereum_url;
 }
 
-export function* eth_get_balance(ethereum_address: string): Update<JSON> {
+export async function eth_get_balance(
+    ethereum_address: string
+): Promise<Update<JSON>> {
     const max_response_bytes = 200n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
@@ -28,8 +30,8 @@ export function* eth_get_balance(ethereum_address: string): Update<JSON> {
     const cycle_cost_total =
         cycle_cost_base + cycle_cost_per_byte * max_response_bytes;
 
-    const http_result: CanisterResult<HttpResponse> =
-        yield ManagementCanister.http_request({
+    const http_result = await management_canister
+        .http_request({
             url: stable_storage.ethereum_url,
             max_response_bytes,
             method: {
@@ -50,7 +52,9 @@ export function* eth_get_balance(ethereum_address: string): Update<JSON> {
                 function: [ic.id(), 'eth_transform'],
                 context: Uint8Array.from([])
             }
-        }).with_cycles(cycle_cost_total);
+        })
+        .cycles(cycle_cost_total)
+        .call();
 
     if (!ok(http_result)) {
         ic.trap(http_result.err ?? 'http_result had an error');
@@ -59,7 +63,9 @@ export function* eth_get_balance(ethereum_address: string): Update<JSON> {
     return decodeUtf8(Uint8Array.from(http_result.ok.body));
 }
 
-export function* eth_get_block_by_number(number: nat32): Update<JSON> {
+export async function eth_get_block_by_number(
+    number: nat32
+): Promise<Update<JSON>> {
     const max_response_bytes = 2_000n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
@@ -68,8 +74,8 @@ export function* eth_get_block_by_number(number: nat32): Update<JSON> {
     const cycle_cost_total =
         cycle_cost_base + cycle_cost_per_byte * max_response_bytes;
 
-    const http_result: CanisterResult<HttpResponse> =
-        yield ManagementCanister.http_request({
+    const http_result = await management_canister
+        .http_request({
             url: stable_storage.ethereum_url,
             max_response_bytes,
             method: {
@@ -90,7 +96,9 @@ export function* eth_get_block_by_number(number: nat32): Update<JSON> {
                 function: [ic.id(), 'eth_transform'],
                 context: Uint8Array.from([])
             }
-        }).with_cycles(cycle_cost_total);
+        })
+        .cycles(cycle_cost_total)
+        .call();
 
     if (!ok(http_result)) {
         ic.trap(http_result.err ?? 'http_result had an error');

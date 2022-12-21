@@ -10,6 +10,7 @@ impl<'a> CanisterMethodBuilder for AzleFnDecl<'a> {
     fn build_canister_method_node(&self, request_type: &RequestType) -> ActCanisterMethod {
         let body = method_body::generate_canister_method_body(&self);
         let is_manual = self.is_manual();
+        let is_promise = self.is_promise();
         let name = self.get_function_name();
         let params = self.build_params();
         let return_type = self.build_return_type();
@@ -17,6 +18,7 @@ impl<'a> CanisterMethodBuilder for AzleFnDecl<'a> {
         let canister_method = CanisterMethod {
             body,
             is_manual,
+            is_promise,
             name,
             params,
             return_type,

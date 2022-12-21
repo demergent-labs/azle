@@ -5,8 +5,13 @@ type HttpResponse = record {
   headers : vec HttpHeader;
 };
 type HttpTransformArgs = record { context : vec nat8; response : HttpResponse };
+type ManualReply = record {
+  status : nat;
+  body : vec nat8;
+  headers : vec HttpHeader;
+};
 service : () -> {
-  xkcd : () -> (HttpResponse);
-  xkcd_raw : () -> (HttpResponse);
+  xkcd : () -> (ManualReply);
+  xkcd_raw : () -> (ManualReply);
   xkcd_transform : (HttpTransformArgs) -> (HttpResponse) query;
 }
