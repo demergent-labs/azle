@@ -1,4 +1,6 @@
-pub fn generate() -> proc_macro2::TokenStream {
+use crate::StableBTreeMapNode;
+
+pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro2::TokenStream {
     quote::quote! {
         fn _azle_ic_stable_b_tree_map_contains_key(
             _this: &boa_engine::JsValue,

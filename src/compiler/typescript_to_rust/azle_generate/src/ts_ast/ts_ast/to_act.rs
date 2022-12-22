@@ -137,6 +137,8 @@ impl ToAct for TsAst {
         let post_upgrade_method = self.build_post_upgrade_method();
         let pre_upgrade_method = self.build_pre_upgrade_method();
 
+        let stable_b_tree_map_nodes = self.stable_b_tree_map_nodes();
+
         let external_canisters = self.build_external_canisters();
 
         // TODO: Remove these clones
@@ -145,6 +147,7 @@ impl ToAct for TsAst {
         let ic_object_functions = functions::generate_ic_object_functions(
             &query_and_update_canister_methods,
             &external_canisters,
+            &stable_b_tree_map_nodes,
         );
 
         let try_into_vm_value_impls = vm_value_conversion::generate_try_into_vm_value_impls();
