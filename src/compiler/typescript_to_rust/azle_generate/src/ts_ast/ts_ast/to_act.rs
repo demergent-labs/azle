@@ -6,7 +6,9 @@ use quote::quote;
 
 use super::TsAst;
 use crate::{
-    generators::{canister_methods, errors, ic_object::functions, vm_value_conversion},
+    generators::{
+        canister_methods, errors, ic_object::functions, stable_b_tree_map, vm_value_conversion,
+    },
     ts_ast::{
         azle_program::HelperMethods,
         azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods,
@@ -160,6 +162,9 @@ impl ToAct for TsAst {
 
         let boa_error_handler = errors::generate_error_handler();
 
+        let stable_b_tree_maps =
+            stable_b_tree_map::generate_stable_b_tree_map(&stable_b_tree_map_nodes);
+
         // TODO Some of the things in this quote belong inside of the quote in AbstractCanisterTree
         AbstractCanisterTree {
             cdk_name: "azle".to_string(),
@@ -180,6 +185,7 @@ impl ToAct for TsAst {
                 #boa_error_handler
                 #ic_object_functions
                 #async_result_handler
+                #stable_b_tree_maps
             },
             try_from_vm_value_impls,
             try_into_vm_value_impls,

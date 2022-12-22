@@ -33,6 +33,7 @@ export function generateLibCargoToml(canisterName: string): Toml {
         [dependencies]
         ic-cdk = { version = "0.6.8", features = ["timers"] }
         ic-cdk-macros = "0.6.8"
+        ic-stable-structures = "0.3.0"
         candid = "0.8.4"
         boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "9ef62f77d8f0ce01053452c55b5a51e2a912e60d" }
         # boa_engine = { path = "../../../../../../boa/boa_engine" }
