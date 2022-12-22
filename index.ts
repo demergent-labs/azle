@@ -1,4 +1,5 @@
 import { Principal } from '@dfinity/principal';
+export { StableBTreeMap } from './src/StableBTreeMap';
 
 declare var globalThis: any;
 
@@ -120,6 +121,19 @@ type ic = {
      * @returns the ID of the created timer. Used to cancel the timer.
      */
     set_timer_interval: (interval: Duration, callback: () => void) => TimerId;
+    // stable_b_tree_map_contains_key: <Key>(memory_id: nat8, key: Key) => boolean;
+    // stable_b_tree_map_get: <Key, Value>(memory_id: nat8, key: Key) => Value;
+    // stable_b_tree_map_insert: <Key, Value>(
+    //     memory_id: nat8,
+    //     key: Key,
+    //     value: Value
+    // ) => Value;
+    // stable_b_tree_map_is_empty: (memory_id: nat8) => boolean;
+    // stable_b_tree_map_len: (memory_id: nat8) => nat64;
+    // stable_b_tree_map_remove: <Key, Value>(
+    //     memory_id: nat8,
+    //     key: Key
+    // ) => Opt<Value>;
     stable_bytes: () => blob;
     stable_grow: (new_pages: nat32) => StableGrowResult;
     stable_read: (offset: nat32, length: nat32) => blob;
@@ -320,18 +334,4 @@ export function stable_storage_deserialize<T>(stable_storage: string): T {
 
         return value;
     });
-}
-
-export class StableBTreeMap<Key, Value> {
-    /**
-     * Creates a new StableBTreeMap object.
-     * @param id A unique identifier for this StableBTreeMap instance.
-     * @param maxKeySize the largest size a key will ever be.
-     * @param maxValueSize the largest size a value will ever be.
-     */
-    constructor(id: nat8, maxKeySize: nat32, maxValueSize: nat32) {}
-
-    get(key: Key): Value {
-        return 'test_value' as Value;
-    }
 }
