@@ -1,1 +1,8 @@
-service : () -> { get : (text) -> (text) query }
+service : () -> {
+  contains_key : (text) -> (bool) query;
+  get : (text) -> (text) query;
+  insert : (text, text) -> (text) query;
+  is_empty : () -> (bool) query;
+  len : () -> (nat64) query;
+  remove : (text) -> (opt text) query;
+}
