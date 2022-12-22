@@ -24,8 +24,7 @@ export class StableBTreeMap<Key, Value> {
      */
     containsKey(key: Key): boolean {
         // @ts-ignore
-        // return ic.stable_b_tree_map_contains_key(this.memoryId, key);
-        return false;
+        return ic.stable_b_tree_map_contains_key(this.memoryId, key);
     }
 
     /**
@@ -35,8 +34,7 @@ export class StableBTreeMap<Key, Value> {
      */
     get(key: Key): Value {
         // @ts-ignore
-        // return ic.stable_b_tree_map_get<Key, Value>(this.memoryId, key);
-        return 'test_value' as Value;
+        return ic.stable_b_tree_map_get<Key, Value>(this.memoryId, key);
     }
 
     /**
@@ -47,8 +45,7 @@ export class StableBTreeMap<Key, Value> {
      */
     insert(key: Key, value: Value): Value {
         // @ts-ignore
-        // return ic.stable_b_tree_map_insert(this.memoryId, key, value);
-        return 'test_value' as Value;
+        return ic.stable_b_tree_map_insert(this.memoryId, key, value);
     }
 
     /**
@@ -57,8 +54,7 @@ export class StableBTreeMap<Key, Value> {
      */
     isEmpty(): boolean {
         // @ts-ignore
-        // return ic.stable_b_tree_map_is_empty(this.memoryId);
-        return true;
+        return ic.stable_b_tree_map_is_empty(this.memoryId);
     }
 
     /**
@@ -67,8 +63,7 @@ export class StableBTreeMap<Key, Value> {
      */
     len(): nat64 {
         // @ts-ignore
-        // return ic.stable_b_tree_map_len(this.memoryId);
-        return 0n;
+        return ic.stable_b_tree_map_len(this.memoryId);
     }
 
     /**
@@ -78,7 +73,6 @@ export class StableBTreeMap<Key, Value> {
      */
     remove(key: Key): Opt<Value> {
         // @ts-ignore
-        // return ic.stable_b_tree_map_remove(this.memoryId, key);
-        return null;
+        return ic.stable_b_tree_map_remove(this.memoryId, key);
     }
 }

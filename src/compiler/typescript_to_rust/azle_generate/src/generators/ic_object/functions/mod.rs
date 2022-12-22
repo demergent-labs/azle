@@ -38,6 +38,7 @@ mod stable64_grow;
 mod stable64_read;
 mod stable64_size;
 mod stable64_write;
+mod stable_b_tree_map;
 mod stable_bytes;
 mod stable_grow;
 mod stable_read;
@@ -107,6 +108,7 @@ pub fn generate_ic_object_functions(
     let stable_write = stable_write::generate_ic_object_function_stable_write();
     let time = time::generate_ic_object_function_time();
     let trap = trap::generate_ic_object_function_trap();
+    let stable_b_tree_map_functions = stable_b_tree_map::generate();
 
     quote::quote! {
         #accept_message
@@ -143,6 +145,7 @@ pub fn generate_ic_object_functions(
         #set_certified_data
         #set_timer
         #set_timer_interval
+        #stable_b_tree_map_functions
         #stable64_grow
         #stable64_read
         #stable64_size
