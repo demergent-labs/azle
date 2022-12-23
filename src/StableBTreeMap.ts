@@ -32,7 +32,7 @@ export class StableBTreeMap<Key, Value> {
      * @param key the location from which to retrieve.
      * @returns the value associated with the given key, if it exists.
      */
-    get(key: Key): Value {
+    get(key: Key): Opt<Value> {
         // @ts-ignore
         return ic.stable_b_tree_map_get<Key, Value>(this.memoryId, key);
     }
@@ -43,7 +43,7 @@ export class StableBTreeMap<Key, Value> {
      * @param value the value to insert.
      * @returns the previous value of the key, if present.
      */
-    insert(key: Key, value: Value): Value {
+    insert(key: Key, value: Value): Opt<Value> {
         // @ts-ignore
         return ic.stable_b_tree_map_insert(this.memoryId, key, value);
     }

@@ -17,17 +17,17 @@ import { nat64, Opt, Query, StableBTreeMap } from 'azle';
 type Key = string;
 type Value = string;
 
-let stable_map = new StableBTreeMap<Key, Value>(0, 10, 100);
+let stable_map = new StableBTreeMap<Key, Value>(0, 100, 500);
 
 export function contains_key(key: Key): Query<boolean> {
     return stable_map.containsKey(key);
 }
 
-export function get(key: Key): Query<Value> {
+export function get(key: Key): Query<Opt<Value>> {
     return stable_map.get(key);
 }
 
-export function insert(key: Key, value: Value): Query<Value> {
+export function insert(key: Key, value: Value): Query<Opt<Value>> {
     return stable_map.insert(key, value);
 }
 
