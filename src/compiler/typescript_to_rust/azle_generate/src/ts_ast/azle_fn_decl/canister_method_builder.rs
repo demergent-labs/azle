@@ -25,7 +25,10 @@ impl<'a> CanisterMethodBuilder for AzleFnDecl<'a> {
         };
 
         match request_type {
-            RequestType::Query => ActCanisterMethod::QueryMethod(canister_method),
+            RequestType::Query => ActCanisterMethod::QueryMethod {
+                query_method: canister_method,
+                is_composite: self.is_composite(),
+            },
             RequestType::Update => ActCanisterMethod::UpdateMethod(canister_method),
         }
     }
