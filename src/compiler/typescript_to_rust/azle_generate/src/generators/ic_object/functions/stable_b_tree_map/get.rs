@@ -1,4 +1,4 @@
-use quote::{format_ident, quote};
+use quote::quote;
 
 use crate::{generators::stable_b_tree_map, StableBTreeMapNode};
 
@@ -30,7 +30,7 @@ fn generate_match_arms(
         .map(|stable_b_tree_map_node| {
             let memory_id = stable_b_tree_map_node.memory_id;
             let map_name_ident =
-                format_ident!("STABLE_B_TREE_MAP_{}", stable_b_tree_map_node.memory_id);
+                stable_b_tree_map::ref_cell_ident(stable_b_tree_map_node.memory_id);
 
             let (key_wrapper_type_name, _) = stable_b_tree_map::generate_wrapper_type(
                 &stable_b_tree_map_node.key_type,
