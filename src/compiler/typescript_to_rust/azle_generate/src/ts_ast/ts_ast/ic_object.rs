@@ -60,7 +60,6 @@ impl TsAst {
                 .function(_azle_ic_stable64_write, "stable64_write", 0)
                 .function(_azle_ic_time, "time", 0)
                 .function(_azle_ic_trap, "trap", 0)
-                .property("_azle_stable_storage", _azle_stable_storage, boa_engine::property::Attribute::all())
                 .build();
         }
     }
