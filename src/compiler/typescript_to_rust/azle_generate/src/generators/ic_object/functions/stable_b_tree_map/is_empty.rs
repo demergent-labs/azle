@@ -33,7 +33,9 @@ fn generate_match_arms(
 
             quote! {
                 #memory_id => {
-                    Ok(#map_name_ident.with(|p| p.borrow().is_empty()).try_into_vm_value(&mut *_context).unwrap())
+                    Ok(#map_name_ident.with(|p| {
+                        p.borrow().is_empty()
+                    }).try_into_vm_value(&mut *_context).unwrap())
                 }
             }
         })
