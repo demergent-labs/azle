@@ -1,4 +1,4 @@
-import { nat64, Opt, Query, StableBTreeMap } from 'azle';
+import { nat64, Opt, Query, Update, StableBTreeMap } from 'azle';
 
 // Error Cases
 //
@@ -27,7 +27,7 @@ export function get(key: Key): Query<Opt<Value>> {
     return stable_map.get(key);
 }
 
-export function insert(key: Key, value: Value): Query<Opt<Value>> {
+export function insert(key: Key, value: Value): Update<Opt<Value>> {
     return stable_map.insert(key, value);
 }
 
@@ -39,6 +39,6 @@ export function len(): Query<nat64> {
     return stable_map.len();
 }
 
-export function remove(key: Key): Query<Opt<Value>> {
+export function remove(key: Key): Update<Opt<Value>> {
     return stable_map.remove(key);
 }
