@@ -47,16 +47,23 @@ fn generate_match_arms(
             // TODO the return value here might need a little work like in get
             quote! {
                 #memory_id => {
-                    Ok(#map_name_ident.with(|p| {
-                        p.borrow_mut().insert(
-                            #key_wrapper_type_name(
-                                key_js_value.try_from_vm_value(&mut *_context).unwrap()
-                            ),
-                            #value_wrapper_type_name(
-                                value_js_value.try_from_vm_value(&mut *_context).unwrap()
-                            )
-                        )
-                    }).unwrap().try_into_vm_value(&mut *_context).unwrap())
+                    let key = #key_wrapper_type_name(
+                        key_js_value.try_from_vm_value(&mut *_context).unwrap()
+                    );
+                    let value = #value_wrapper_type_name(
+                        value_js_value.try_from_vm_value(&mut *_context).unwrap()
+                    );
+
+                    let existing_value_option = #map_name_ident.with(|p| {
+                        p.borrow_mut().insert(key, value)
+                    }).unwrap();
+
+                    match existing_value_option {
+                        Some(existing_value) => {
+                            Ok(existing_value.0.try_into_vm_value(&mut *_context).unwrap())
+                        },
+                        None => Ok(().try_into_vm_value(&mut *_context).unwrap())
+                    }
                 }
             }
         })
