@@ -1,4 +1,5 @@
-import { nat64, Opt, Query, Update, StableBTreeMap } from 'azle';
+import { nat64, Opt, Query, StableBTreeMap, Update } from 'azle';
+import { InsertResult, Key, Value } from './types';
 
 // Error Cases
 //
@@ -14,25 +15,22 @@ import { nat64, Opt, Query, Update, StableBTreeMap } from 'azle';
 // let with_large_second_param = new StableBTreeMap<string, string>(0, 4_294_967_295, 100);
 // let with_large_third_param = new StableBTreeMap<string, string>(0, 100, 4_294_967_295);
 
-type Key = string;
-type Value = string;
-
-let stable_map = new StableBTreeMap<Key, Value>(0, 100, 500);
+let stable_map = new StableBTreeMap<Key, Value>(0, 10, 10);
 
 export function contains_key(key: Key): Query<boolean> {
-    return stable_map.containsKey(key);
+    return stable_map.contains_key(key);
 }
 
 export function get(key: Key): Query<Opt<Value>> {
     return stable_map.get(key);
 }
 
-export function insert(key: Key, value: Value): Update<Opt<Value>> {
+export function insert(key: Key, value: Value): Update<InsertResult> {
     return stable_map.insert(key, value);
 }
 
 export function is_empty(): Query<boolean> {
-    return stable_map.isEmpty();
+    return stable_map.is_empty();
 }
 
 export function len(): Query<nat64> {

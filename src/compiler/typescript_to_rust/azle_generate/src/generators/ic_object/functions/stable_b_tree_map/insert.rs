@@ -54,15 +54,96 @@ fn generate_match_arms(
                         value_js_value.try_from_vm_value(&mut *_context).unwrap()
                     );
 
-                    let existing_value_option = #map_name_ident.with(|p| {
+                    let insert_result = #map_name_ident.with(|p| {
                         p.borrow_mut().insert(key, value)
-                    }).unwrap();
+                    });
 
-                    match existing_value_option {
-                        Some(existing_value) => {
-                            Ok(existing_value.0.try_into_vm_value(&mut *_context).unwrap())
+                    match insert_result {
+                        Ok(existing_value_option) => {
+                            let js_value = match existing_value_option {
+                                Some(existing_value) => {
+                                    existing_value.0.try_into_vm_value(&mut *_context).unwrap()
+                                },
+                                None => {
+                                    ().try_into_vm_value(&mut *_context).unwrap()
+                                }
+                            };
+
+                            let result_object = boa_engine::object::ObjectInitializer::new(&mut *_context)
+                                .property(
+                                    "ok",
+                                    js_value,
+                                    boa_engine::property::Attribute::all()
+                                )
+                                .build();
+
+                            Ok(result_object.into())
                         },
-                        None => Ok(().try_into_vm_value(&mut *_context).unwrap())
+                        Err(insert_error) => {
+                            let err_object = match insert_error {
+                                ic_stable_structures::btreemap::InsertError::KeyTooLarge {given, max} => {
+                                    let given_js_value =  given.try_into_vm_value(&mut *_context).unwrap();
+                                    let max_js_value =  max.try_into_vm_value(&mut *_context).unwrap();
+
+                                    let key_too_large_object = boa_engine::object::ObjectInitializer::new(&mut *_context)
+                                        .property(
+                                            "given",
+                                            given_js_value,
+                                            boa_engine::property::Attribute::all(),
+                                        )
+                                        .property(
+                                            "max",
+                                            max_js_value,
+                                            boa_engine::property::Attribute::all(),
+                                        )
+                                        .build();
+
+                                    boa_engine::object::ObjectInitializer::new(&mut *_context)
+                                        .property(
+                                            "KeyTooLarge",
+                                            key_too_large_object,
+                                            boa_engine::property::Attribute::all(),
+                                        )
+                                        .build()
+                                }
+                                ic_stable_structures::btreemap::InsertError::ValueTooLarge {given, max} => {
+                                    let given_js_value =  given.try_into_vm_value(&mut *_context).unwrap();
+                                    let max_js_value =  max.try_into_vm_value(&mut *_context).unwrap();
+
+                                    let value_too_large_object = boa_engine::object::ObjectInitializer::new(&mut *_context)
+                                        .property(
+                                            "given",
+                                            given_js_value,
+                                            boa_engine::property::Attribute::all(),
+                                        )
+                                        .property(
+                                            "max",
+                                            max_js_value,
+                                            boa_engine::property::Attribute::all(),
+                                        )
+                                        .build();
+
+                                    boa_engine::object::ObjectInitializer::new(&mut *_context)
+                                        .property(
+                                            "ValueTooLarge",
+                                            value_too_large_object,
+                                            boa_engine::property::Attribute::all(),
+                                        )
+                                        .build()
+                                }
+                            };
+
+
+                            let result_object = boa_engine::object::ObjectInitializer::new(&mut *_context)
+                                .property(
+                                    "err",
+                                    err_object,
+                                    boa_engine::property::Attribute::all()
+                                )
+                                .build();
+
+                            Ok(result_object.into())
+                        }
                     }
                 }
             }

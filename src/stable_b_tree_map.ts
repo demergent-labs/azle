@@ -1,20 +1,44 @@
-import { nat8, nat32, nat64, Opt } from '../index';
+import { nat8, nat32, nat64, Opt, Variant } from '../index';
+
+type KeyTooLarge = {
+    given: nat32;
+    max: nat32;
+};
+
+type ValueTooLarge = {
+    given: nat32;
+    max: nat32;
+};
+
+export type InsertError = Variant<{
+    KeyTooLarge: KeyTooLarge;
+    ValueTooLarge: ValueTooLarge;
+}>;
+
+export type InsertResult<T> = Variant<{
+    ok: T;
+    err: InsertError;
+}>;
 
 /**
  * A Map based on a self-balancing tree that persists across
  * canister upgrades.
  */
 export class StableBTreeMap<Key, Value> {
-    memoryId: nat8;
+    memory_id: nat8;
 
     /**
      * Creates a new StableBTreeMap object.
-     * @param memoryId the memory id at which to instantiate this map.
-     * @param maxKeySize the largest size a key can be.
-     * @param maxValueSize the largest size a value can be.
+     * @param memory_id the memory id at which to instantiate this map.
+     * @param max_key_size the largest size (in bytes) a key can be.
+     * @param max_value_size the largest size (in bytes) a value can be.
      */
-    constructor(memoryId: nat8, maxKeySize: nat32, maxValueSize: nat32) {
-        this.memoryId = memoryId;
+    constructor(memory_id: nat8, max_key_size: nat32, max_value_size: nat32) {
+        this.memory_id = memory_id;
+
+        // Note: Although max_key_size and max_value_size aren't used here, they
+        // are read by Azle at compilation time and are necessary to properly
+        // initialize the StableBTreeMap.
     }
 
     /**
@@ -22,9 +46,9 @@ export class StableBTreeMap<Key, Value> {
      * @param key the key to check.
      * @returns `true` if the key exists in the map, `false` otherwise.
      */
-    containsKey(key: Key): boolean {
+    contains_key(key: Key): boolean {
         // @ts-ignore
-        return ic.stable_b_tree_map_contains_key(this.memoryId, key);
+        return ic.stable_b_tree_map_contains_key(this.memory_id, key);
     }
 
     /**
@@ -34,7 +58,7 @@ export class StableBTreeMap<Key, Value> {
      */
     get(key: Key): Opt<Value> {
         // @ts-ignore
-        return ic.stable_b_tree_map_get<Key, Value>(this.memoryId, key);
+        return ic.stable_b_tree_map_get<Key, Value>(this.memory_id, key);
     }
 
     /**
@@ -43,18 +67,18 @@ export class StableBTreeMap<Key, Value> {
      * @param value the value to insert.
      * @returns the previous value of the key, if present.
      */
-    insert(key: Key, value: Value): Opt<Value> {
+    insert(key: Key, value: Value): InsertResult<Opt<Value>> {
         // @ts-ignore
-        return ic.stable_b_tree_map_insert(this.memoryId, key, value);
+        return ic.stable_b_tree_map_insert(this.memory_id, key, value);
     }
 
     /**
      * Checks if the map is empty.
      * @returns `true` if the map contains no elements, `false` otherwise.
      */
-    isEmpty(): boolean {
+    is_empty(): boolean {
         // @ts-ignore
-        return ic.stable_b_tree_map_is_empty(this.memoryId);
+        return ic.stable_b_tree_map_is_empty(this.memory_id);
     }
 
     /**
@@ -63,7 +87,7 @@ export class StableBTreeMap<Key, Value> {
      */
     len(): nat64 {
         // @ts-ignore
-        return ic.stable_b_tree_map_len(this.memoryId);
+        return ic.stable_b_tree_map_len(this.memory_id);
     }
 
     /**
@@ -73,6 +97,6 @@ export class StableBTreeMap<Key, Value> {
      */
     remove(key: Key): Opt<Value> {
         // @ts-ignore
-        return ic.stable_b_tree_map_remove(this.memoryId, key);
+        return ic.stable_b_tree_map_remove(this.memory_id, key);
     }
 }

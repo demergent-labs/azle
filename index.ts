@@ -1,5 +1,9 @@
 import { Principal } from '@dfinity/principal';
-export { StableBTreeMap } from './src/StableBTreeMap';
+export {
+    StableBTreeMap,
+    InsertResult,
+    InsertError
+} from './src/stable_b_tree_map';
 
 declare var globalThis: any;
 
