@@ -58,7 +58,7 @@ fn generate_match_arms(
                         p.borrow_mut().insert(key, value)
                     });
 
-                    match insert_result {
+                    let name_and_js_value = match insert_result {
                         Ok(existing_value_option) => {
                             let ok_js_value = match existing_value_option {
                                 Some(existing_value) => {
@@ -67,29 +67,22 @@ fn generate_match_arms(
                                 None => ().try_into_vm_value(&mut *_context).unwrap()
                             };
 
-                            let result_object = boa_engine::object::ObjectInitializer::new(&mut *_context)
-                                .property(
-                                    "ok",
-                                    ok_js_value,
-                                    boa_engine::property::Attribute::all()
-                                )
-                                .build();
-
-                            Ok(result_object.into())
+                            ("ok", ok_js_value)
                         },
                         Err(insert_error) => {
-                            let err_js_value = insert_error.try_into_vm_value(&mut *_context).unwrap();
-                            let result_object = boa_engine::object::ObjectInitializer::new(&mut *_context)
-                                .property(
-                                    "err",
-                                    err_js_value,
-                                    boa_engine::property::Attribute::all()
-                                )
-                                .build();
-
-                            Ok(result_object.into())
+                            ("err", insert_error.try_into_vm_value(&mut *_context).unwrap())
                         }
-                    }
+                    };
+
+                    let result_object = boa_engine::object::ObjectInitializer::new(&mut *_context)
+                        .property(
+                            name_and_js_value.0,
+                            name_and_js_value.1,
+                            boa_engine::property::Attribute::all()
+                        )
+                        .build();
+
+                    Ok(result_object.into())
                 }
             }
         })
