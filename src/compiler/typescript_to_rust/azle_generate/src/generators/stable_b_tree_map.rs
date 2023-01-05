@@ -57,12 +57,14 @@ fn generate_global_stable_b_tree_maps_and_impls(
             let (value_wrapper_type_name, value_wrapper_type)
                 = generate_wrapper_type(&stable_b_tree_map_node.value_type, memory_id, "Value");
 
+            let key_try_into_vm_value_impl = generate_try_into_vm_value_impl(&key_wrapper_type_name);
             let key_storable_impl = generate_storable_impl(&key_wrapper_type_name);
             let key_bounded_storable_impl = generate_bounded_storable_impl(
                 &key_wrapper_type_name,
                 stable_b_tree_map_node.max_key_size
             );
 
+            let value_try_into_vm_value_impl = generate_try_into_vm_value_impl(&value_wrapper_type_name);
             let value_storable_impl = generate_storable_impl(&value_wrapper_type_name);
             let value_bounded_storable_impl= generate_bounded_storable_impl(
                 &value_wrapper_type_name,
@@ -76,10 +78,12 @@ fn generate_global_stable_b_tree_maps_and_impls(
                 },
                 quote! {
                     #key_wrapper_type
+                    #key_try_into_vm_value_impl
                     #key_storable_impl
                     #key_bounded_storable_impl
 
                     #value_wrapper_type
+                    #value_try_into_vm_value_impl
                     #value_storable_impl
                     #value_bounded_storable_impl
                 }
@@ -98,14 +102,13 @@ pub fn generate_wrapper_type(
     key_or_value: &str,
 ) -> (Ident, proc_macro2::TokenStream) {
     let key_type = &act_data_type.to_token_stream(&vec![]); // TODO do we need the keyword lists?
-    let wrapper_struct_name_ident =
-        format_ident!("StableBTreeMap{}{}Type", memory_id, key_or_value);
+    let wrapper_struct_name = format_ident!("StableBTreeMap{}{}Type", memory_id, key_or_value);
 
     (
-        wrapper_struct_name_ident.clone(),
+        wrapper_struct_name.clone(),
         quote! {
-            #[derive(CandidType, Deserialize, CdkActTryIntoVmValue, CdkActTryFromVmValue)]
-            struct #wrapper_struct_name_ident(#key_type);
+            #[derive(CandidType, Deserialize, CdkActTryFromVmValue)]
+            struct #wrapper_struct_name(#key_type);
         },
     )
 }
@@ -132,6 +135,16 @@ fn generate_bounded_storable_impl(
         impl BoundedStorable for #wrapper_type_name {
             fn max_size() -> u32 {
                 #max_size
+            }
+        }
+    }
+}
+
+pub fn generate_try_into_vm_value_impl(wrapper_type_name: &Ident) -> proc_macro2::TokenStream {
+    quote::quote! {
+        impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for #wrapper_type_name {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+                Ok(self.0.try_into_vm_value(context).unwrap())
             }
         }
     }

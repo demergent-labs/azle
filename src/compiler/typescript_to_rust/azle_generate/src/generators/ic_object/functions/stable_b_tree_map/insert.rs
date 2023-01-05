@@ -58,31 +58,7 @@ fn generate_match_arms(
                         p.borrow_mut().insert(key, value)
                     });
 
-                    let name_and_js_value = match insert_result {
-                        Ok(existing_value_option) => {
-                            let ok_js_value = match existing_value_option {
-                                Some(existing_value) => {
-                                    existing_value.0.try_into_vm_value(&mut *_context).unwrap()
-                                }
-                                None => ().try_into_vm_value(&mut *_context).unwrap()
-                            };
-
-                            ("ok", ok_js_value)
-                        },
-                        Err(insert_error) => {
-                            ("err", insert_error.try_into_vm_value(&mut *_context).unwrap())
-                        }
-                    };
-
-                    let result_object = boa_engine::object::ObjectInitializer::new(&mut *_context)
-                        .property(
-                            name_and_js_value.0,
-                            name_and_js_value.1,
-                            boa_engine::property::Attribute::all()
-                        )
-                        .build();
-
-                    Ok(result_object.into())
+                    Ok(insert_result.try_into_vm_value(&mut *_context).unwrap())
                 }
             }
         })
