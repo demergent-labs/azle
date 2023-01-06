@@ -187,6 +187,57 @@ export function get_first_tests(
     ];
 }
 
+export function get_additional_tests(
+    stable_structures_canister: ActorSubclass<_SERVICE>
+): Test[] {
+    return [
+        {
+            name: 'insert returns a KeyTooLarge error if the key is too large',
+            test: async () => {
+                const key_over_100_bytes =
+                    '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
+                const result =
+                    await stable_structures_canister.set_stable_map_13(
+                        key_over_100_bytes,
+                        Principal.fromText('aaaaa-aa')
+                    );
+
+                console.log(`The result is: ${JSON.stringify(result)}`);
+
+                return {
+                    ok:
+                        'err' in result &&
+                        'KeyTooLarge' in result.err &&
+                        result.err.KeyTooLarge.given === 109 &&
+                        result.err.KeyTooLarge.max === 100
+                };
+            }
+        },
+        {
+            name: 'insert returns a ValueTooLarge error if the value is too large',
+            test: async () => {
+                const value_over_100_bytes =
+                    '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
+                const result =
+                    await stable_structures_canister.set_stable_map_0(
+                        1,
+                        value_over_100_bytes
+                    );
+
+                console.log(`The result is: ${JSON.stringify(result)}`);
+
+                return {
+                    ok:
+                        'err' in result &&
+                        'ValueTooLarge' in result.err &&
+                        result.err.ValueTooLarge.given === 109 &&
+                        result.err.ValueTooLarge.max === 100
+                };
+            }
+        }
+    ];
+}
+
 export function get_second_tests(
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {

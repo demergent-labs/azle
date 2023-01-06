@@ -1,7 +1,11 @@
 import { deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor } from './dfx_generated/stable_structures';
-import { get_first_tests, get_second_tests } from './tests';
+import {
+    get_first_tests,
+    get_second_tests,
+    get_additional_tests
+} from './tests';
 
 const stable_structures_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -20,7 +24,8 @@ const tests: Test[] = [
             });
         }
     },
-    ...get_second_tests(stable_structures_canister)
+    ...get_second_tests(stable_structures_canister),
+    ...get_additional_tests(stable_structures_canister)
 ];
 
 run_tests(tests);
