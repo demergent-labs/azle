@@ -24,7 +24,7 @@ export function get_stable_map_0(key: nat8): Query<Opt<string>> {
     return stable_map_0.get(key);
 }
 
-export function insert_stable_map_0(
+export function set_stable_map_0(
     key: nat8,
     value: string
 ): Update<StableMap0InsertResult> {

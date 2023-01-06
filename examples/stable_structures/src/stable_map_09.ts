@@ -24,7 +24,7 @@ export function get_stable_map_9(key: float64): Query<Opt<string[]>> {
     return stable_map_9.get(key);
 }
 
-export function insert_stable_map_9(
+export function set_stable_map_9(
     key: float64,
     value: string[]
 ): Update<StableMap9InsertResult> {

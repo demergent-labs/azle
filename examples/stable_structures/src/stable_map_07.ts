@@ -23,7 +23,7 @@ export function get_stable_map_7(key: null): Query<Opt<null>> {
     return stable_map_7.get(key);
 }
 
-export function insert_stable_map_7(
+export function set_stable_map_7(
     key: null,
     value: null
 ): Update<StableMap7InsertResult> {

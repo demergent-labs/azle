@@ -25,7 +25,7 @@ export function get_stable_map_2(key: nat32): Query<Opt<nat>> {
     return stable_map_2.get(key);
 }
 
-export function insert_stable_map_2(
+export function set_stable_map_2(
     key: nat32,
     value: nat
 ): Update<StableMap2InsertResult> {

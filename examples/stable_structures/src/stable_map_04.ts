@@ -25,7 +25,7 @@ export function get_stable_map_4(key: User): Query<Opt<float32>> {
     return stable_map_4.get(key);
 }
 
-export function insert_stable_map_4(
+export function set_stable_map_4(
     key: User,
     value: float32
 ): Update<StableMap4InsertResult> {

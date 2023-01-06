@@ -25,7 +25,7 @@ export function get_stable_map_1(key: nat16): Query<Opt<blob>> {
     return stable_map_1.get(key);
 }
 
-export function insert_stable_map_1(
+export function set_stable_map_1(
     key: nat16,
     value: blob
 ): Update<StableMap1InsertResult> {

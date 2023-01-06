@@ -25,7 +25,7 @@ export function get_stable_map_11(key: nat): Query<Opt<User>> {
     return stable_map_11.get(key);
 }
 
-export function insert_stable_map_11(
+export function set_stable_map_11(
     key: nat,
     value: User
 ): Update<StableMap11InsertResult> {

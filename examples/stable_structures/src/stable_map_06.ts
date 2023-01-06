@@ -23,7 +23,7 @@ export function get_stable_map_6(key: nat64[]): Query<Opt<boolean>> {
     return stable_map_6.get(key);
 }
 
-export function insert_stable_map_6(
+export function set_stable_map_6(
     key: nat64[],
     value: boolean
 ): Update<StableMap6InsertResult> {

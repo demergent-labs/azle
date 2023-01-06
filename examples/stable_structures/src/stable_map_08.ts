@@ -24,7 +24,7 @@ export function get_stable_map_8(key: boolean): Query<Opt<null>> {
     return stable_map_8.get(key);
 }
 
-export function insert_stable_map_8(
+export function set_stable_map_8(
     key: boolean,
     value: null
 ): Update<StableMap8InsertResult> {

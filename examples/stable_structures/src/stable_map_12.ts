@@ -25,7 +25,7 @@ export function get_stable_map_12(key: blob): Query<Opt<Reaction>> {
     return stable_map_12.get(key);
 }
 
-export function insert_stable_map_12(
+export function set_stable_map_12(
     key: blob,
     value: Reaction
 ): Update<StableMap12InsertResult> {

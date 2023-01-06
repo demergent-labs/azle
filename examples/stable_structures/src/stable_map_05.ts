@@ -28,7 +28,7 @@ export function get_stable_map_5(key: Opt<String>): Query<Opt<float64>> {
     return stable_map_5.get(key);
 }
 
-export function insert_stable_map_5(
+export function set_stable_map_5(
     key: Opt<String>,
     value: float64
 ): Update<StableMap5InsertResult> {

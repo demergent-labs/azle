@@ -28,7 +28,7 @@ export function get_stable_map_13(key: string): Query<Opt<Principal>> {
     return stable_map_13.get(key);
 }
 
-export function insert_stable_map_13(
+export function set_stable_map_13(
     key: string,
     value: Principal
 ): Update<StableMap13InsertResult> {

@@ -25,7 +25,7 @@ export function get_stable_map_3(key: Reaction): Query<Opt<int>> {
     return stable_map_3.get(key);
 }
 
-export function insert_stable_map_3(
+export function set_stable_map_3(
     key: Reaction,
     value: int
 ): Update<StableMap3InsertResult> {

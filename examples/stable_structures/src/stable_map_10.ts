@@ -28,7 +28,7 @@ export function get_stable_map_10(key: float32): Query<Opt<Opt<boolean>>> {
     return stable_map_10.get(key);
 }
 
-export function insert_stable_map_10(
+export function set_stable_map_10(
     key: float32,
     value: Opt<boolean>
 ): Update<StableMap10InsertResult> {
