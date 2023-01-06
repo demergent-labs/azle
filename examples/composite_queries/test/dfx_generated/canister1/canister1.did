@@ -1,0 +1,13 @@
+type NatQueryResult = variant { ok : nat; err : text };
+type StringQueryResult = variant { ok : text; err : text };
+service : () -> {
+  deep_query : () -> (StringQueryResult) query;
+  inc_canister1 : () -> (NatQueryResult) query;
+  inc_canister2 : () -> (NatQueryResult) query;
+  inc_counter : () -> (nat) query;
+  manual_query : () -> (StringQueryResult) query;
+  simple_composite_query : () -> (StringQueryResult) query;
+  simple_query : () -> (StringQueryResult) query;
+  simple_update : () -> (StringQueryResult);
+  update_query : () -> (StringQueryResult) query;
+}
