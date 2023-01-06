@@ -1,9 +1,15 @@
-import { InsertError, Opt, Variant } from 'azle';
+import { Variant } from 'azle';
 
-export type Key = string;
-export type Value = string;
+export type User = {
+    username: string;
+    blog_posts: BlogPost[];
+};
 
-export type InsertResult = Variant<{
-    ok: Opt<Value>;
-    err: InsertError;
+export type BlogPost = {
+    title: string;
+};
+
+export type Reaction = Variant<{
+    Happy: null;
+    Sad: null;
 }>;
