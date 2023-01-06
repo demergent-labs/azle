@@ -40,7 +40,7 @@ pub fn build_canister_method_system_pre_upgrade(ts_ast: &TsAst) -> ActPreUpgrade
             });
 
             #call_to_pre_upgrade_js_function
-        }
+        })
     };
 
     ActPreUpgradeMethod { body }

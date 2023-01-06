@@ -16,7 +16,7 @@ pub fn azle_generate(
     ts_file_names: &Vec<&str>,
     main_js: &str,
 ) -> proc_macro2::token_stream::TokenStream {
-    let header = header::generate_header_code(main_js, stable_storage_js);
+    let header = header::generate_header_code(main_js);
 
     let canister_definition = TsAst::from_ts_file_names(&ts_file_names)
         .to_act()
