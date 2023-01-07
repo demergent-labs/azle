@@ -1,15 +1,19 @@
-import { Query, Update, Init, PreUpgrade, PostUpgrade, ic, nat64 } from 'azle';
-
-type StableStorage = {
-    entries: Entry[];
-};
+import {
+    Query,
+    Update,
+    Init,
+    PreUpgrade,
+    PostUpgrade,
+    nat64,
+    StableBTreeMap
+} from 'azle';
 
 type Entry = {
     key: string;
     value: nat64;
 };
 
-let stable_storage: StableStorage = ic.stable_storage();
+let stable_storage = new StableBTreeMap<string, Entry[]>(0, 25, 1_000);
 
 let entries: {
     [key: string]: nat64;
@@ -18,24 +22,27 @@ let entries: {
 export function init(): Init {
     console.log('init');
 
-    stable_storage.entries = [];
+    stable_storage.insert('entries', []);
 }
 
 export function pre_upgrade(): PreUpgrade {
     console.log('pre_upgrade');
 
-    stable_storage.entries = Object.entries(entries).map((entry) => {
-        return {
-            key: entry[0],
-            value: entry[1]
-        };
-    });
+    stable_storage.insert(
+        'entries',
+        Object.entries(entries).map((entry) => {
+            return {
+                key: entry[0],
+                value: entry[1]
+            };
+        })
+    );
 }
 
 export function post_upgrade(): PostUpgrade {
     console.log('post_upgrade');
 
-    entries = stable_storage.entries.reduce((result, entry) => {
+    entries = (stable_storage.get('entries') ?? []).reduce((result, entry) => {
         return {
             ...result,
             [entry.key]: entry.value
