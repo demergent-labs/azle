@@ -197,7 +197,7 @@ export function get_additional_tests(
                 const key_over_100_bytes =
                     '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
                 const result =
-                    await stable_structures_canister.set_stable_map_13(
+                    await stable_structures_canister.stable_map_13_insert(
                         key_over_100_bytes,
                         Principal.fromText('aaaaa-aa')
                     );
@@ -219,7 +219,7 @@ export function get_additional_tests(
                 const value_over_100_bytes =
                     '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
                 const result =
-                    await stable_structures_canister.set_stable_map_0(
+                    await stable_structures_canister.stable_map_0_insert(
                         1,
                         value_over_100_bytes
                     );
@@ -273,7 +273,7 @@ function get_set_value_tests(
             name: `stable_map_${index} set value ${suffix}`,
             test: async () => {
                 const set_result = await (stable_structures_canister as any)[
-                    `set_stable_map_${index}`
+                    `stable_map_${index}_insert`
                 ](key, STABLE_MAP_VALUES[index]);
 
                 if (!ok(set_result)) {
@@ -298,7 +298,7 @@ function get_contains_key_tests(
             name: `stable_map_${index} contains key that exists ${suffix}`,
             test: async () => {
                 const set_result = await (stable_structures_canister as any)[
-                    `contains_key_stable_map_${index}`
+                    `stable_map_${index}_contains_key`
                 ](stable_map_key);
 
                 return {
@@ -318,7 +318,7 @@ function get_empty_read_tests(
             name: `stable_map_${index} initial read ${suffix}`,
             test: async () => {
                 const get_result = await (stable_structures_canister as any)[
-                    `get_stable_map_${index}`
+                    `stable_map_${index}_get`
                 ](stable_map_key);
 
                 return {
@@ -340,7 +340,7 @@ function get_get_tests(
             name: `stable_map_${index} get test for sure automated ${suffix}`,
             test: async () => {
                 const get_result = await (stable_structures_canister as any)[
-                    `get_stable_map_${index}`
+                    `stable_map_${index}_get`
                 ](stable_map_key);
 
                 return {
@@ -361,7 +361,7 @@ function get_is_empty_tests(
             name: `stable_map_${index} is empty test ${suffix}`,
             test: async () => {
                 const result = await (stable_structures_canister as any)[
-                    `is_empty_stable_map_${index}`
+                    `stable_map_${index}_is_empty`
                 ]();
 
                 return {
@@ -382,7 +382,7 @@ function get_len_tests(
             name: `stable_map_${index} length test ${suffix}`,
             test: async () => {
                 const result = await (stable_structures_canister as any)[
-                    `len_stable_map_${index}`
+                    `stable_map_${index}_len`
                 ]();
 
                 return {
@@ -404,7 +404,7 @@ function get_remove_tests(
             name: `stable_map_${index} remove value test ${suffix}`,
             test: async () => {
                 const get_result = await (stable_structures_canister as any)[
-                    `remove_stable_map_${index}`
+                    `stable_map_${index}_remove`
                 ](stable_map_keys);
 
                 return {

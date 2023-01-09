@@ -54,106 +54,112 @@ export interface User {
     blog_posts: Array<BlogPost>;
 }
 export interface _SERVICE {
-    contains_key_stable_map_0: ActorMethod<[number], boolean>;
-    contains_key_stable_map_1: ActorMethod<[number], boolean>;
-    contains_key_stable_map_10: ActorMethod<[number], boolean>;
-    contains_key_stable_map_11: ActorMethod<[bigint], boolean>;
-    contains_key_stable_map_12: ActorMethod<[Uint8Array], boolean>;
-    contains_key_stable_map_13: ActorMethod<[string], boolean>;
-    contains_key_stable_map_2: ActorMethod<[number], boolean>;
-    contains_key_stable_map_3: ActorMethod<[Reaction], boolean>;
-    contains_key_stable_map_4: ActorMethod<[User], boolean>;
-    contains_key_stable_map_5: ActorMethod<[[] | [string]], boolean>;
-    contains_key_stable_map_6: ActorMethod<[BigUint64Array], boolean>;
-    contains_key_stable_map_7: ActorMethod<[null], boolean>;
-    contains_key_stable_map_8: ActorMethod<[boolean], boolean>;
-    contains_key_stable_map_9: ActorMethod<[number], boolean>;
-    get_stable_map_0: ActorMethod<[number], [] | [string]>;
-    get_stable_map_1: ActorMethod<[number], [] | [Uint8Array]>;
-    get_stable_map_10: ActorMethod<[number], [] | [[] | [boolean]]>;
-    get_stable_map_11: ActorMethod<[bigint], [] | [User]>;
-    get_stable_map_12: ActorMethod<[Uint8Array], [] | [Reaction]>;
-    get_stable_map_13: ActorMethod<[string], [] | [Principal]>;
-    get_stable_map_2: ActorMethod<[number], [] | [bigint]>;
-    get_stable_map_3: ActorMethod<[Reaction], [] | [bigint]>;
-    get_stable_map_4: ActorMethod<[User], [] | [number]>;
-    get_stable_map_5: ActorMethod<[[] | [string]], [] | [number]>;
-    get_stable_map_6: ActorMethod<[BigUint64Array], [] | [boolean]>;
-    get_stable_map_7: ActorMethod<[null], [] | [null]>;
-    get_stable_map_8: ActorMethod<[boolean], [] | [null]>;
-    get_stable_map_9: ActorMethod<[number], [] | [Array<string>]>;
-    is_empty_stable_map_0: ActorMethod<[], boolean>;
-    is_empty_stable_map_1: ActorMethod<[], boolean>;
-    is_empty_stable_map_10: ActorMethod<[], boolean>;
-    is_empty_stable_map_11: ActorMethod<[], boolean>;
-    is_empty_stable_map_12: ActorMethod<[], boolean>;
-    is_empty_stable_map_13: ActorMethod<[], boolean>;
-    is_empty_stable_map_2: ActorMethod<[], boolean>;
-    is_empty_stable_map_3: ActorMethod<[], boolean>;
-    is_empty_stable_map_4: ActorMethod<[], boolean>;
-    is_empty_stable_map_5: ActorMethod<[], boolean>;
-    is_empty_stable_map_6: ActorMethod<[], boolean>;
-    is_empty_stable_map_7: ActorMethod<[], boolean>;
-    is_empty_stable_map_8: ActorMethod<[], boolean>;
-    is_empty_stable_map_9: ActorMethod<[], boolean>;
-    len_stable_map_0: ActorMethod<[], bigint>;
-    len_stable_map_1: ActorMethod<[], bigint>;
-    len_stable_map_10: ActorMethod<[], bigint>;
-    len_stable_map_11: ActorMethod<[], bigint>;
-    len_stable_map_12: ActorMethod<[], bigint>;
-    len_stable_map_13: ActorMethod<[], bigint>;
-    len_stable_map_2: ActorMethod<[], bigint>;
-    len_stable_map_3: ActorMethod<[], bigint>;
-    len_stable_map_4: ActorMethod<[], bigint>;
-    len_stable_map_5: ActorMethod<[], bigint>;
-    len_stable_map_6: ActorMethod<[], bigint>;
-    len_stable_map_7: ActorMethod<[], bigint>;
-    len_stable_map_8: ActorMethod<[], bigint>;
-    len_stable_map_9: ActorMethod<[], bigint>;
-    remove_stable_map_0: ActorMethod<[number], [] | [string]>;
-    remove_stable_map_1: ActorMethod<[number], [] | [Uint8Array]>;
-    remove_stable_map_10: ActorMethod<[number], [] | [[] | [boolean]]>;
-    remove_stable_map_11: ActorMethod<[bigint], [] | [User]>;
-    remove_stable_map_12: ActorMethod<[Uint8Array], [] | [Reaction]>;
-    remove_stable_map_13: ActorMethod<[string], [] | [Principal]>;
-    remove_stable_map_2: ActorMethod<[number], [] | [bigint]>;
-    remove_stable_map_3: ActorMethod<[Reaction], [] | [bigint]>;
-    remove_stable_map_4: ActorMethod<[User], [] | [number]>;
-    remove_stable_map_5: ActorMethod<[[] | [string]], [] | [number]>;
-    remove_stable_map_6: ActorMethod<[BigUint64Array], [] | [boolean]>;
-    remove_stable_map_7: ActorMethod<[null], [] | [null]>;
-    remove_stable_map_8: ActorMethod<[boolean], [] | [null]>;
-    remove_stable_map_9: ActorMethod<[number], [] | [Array<string>]>;
-    set_stable_map_0: ActorMethod<[number, string], StableMap0InsertResult>;
-    set_stable_map_1: ActorMethod<[number, Uint8Array], StableMap1InsertResult>;
-    set_stable_map_10: ActorMethod<
+    stable_map_0_contains_key: ActorMethod<[number], boolean>;
+    stable_map_0_get: ActorMethod<[number], [] | [string]>;
+    stable_map_0_insert: ActorMethod<[number, string], StableMap0InsertResult>;
+    stable_map_0_is_empty: ActorMethod<[], boolean>;
+    stable_map_0_len: ActorMethod<[], bigint>;
+    stable_map_0_remove: ActorMethod<[number], [] | [string]>;
+    stable_map_10_contains_key: ActorMethod<[number], boolean>;
+    stable_map_10_get: ActorMethod<[number], [] | [[] | [boolean]]>;
+    stable_map_10_insert: ActorMethod<
         [number, [] | [boolean]],
         StableMap10InsertResult
     >;
-    set_stable_map_11: ActorMethod<[bigint, User], StableMap11InsertResult>;
-    set_stable_map_12: ActorMethod<
+    stable_map_10_is_empty: ActorMethod<[], boolean>;
+    stable_map_10_len: ActorMethod<[], bigint>;
+    stable_map_10_remove: ActorMethod<[number], [] | [[] | [boolean]]>;
+    stable_map_11_contains_key: ActorMethod<[bigint], boolean>;
+    stable_map_11_get: ActorMethod<[bigint], [] | [User]>;
+    stable_map_11_insert: ActorMethod<[bigint, User], StableMap11InsertResult>;
+    stable_map_11_is_empty: ActorMethod<[], boolean>;
+    stable_map_11_len: ActorMethod<[], bigint>;
+    stable_map_11_remove: ActorMethod<[bigint], [] | [User]>;
+    stable_map_12_contains_key: ActorMethod<[Uint8Array], boolean>;
+    stable_map_12_get: ActorMethod<[Uint8Array], [] | [Reaction]>;
+    stable_map_12_insert: ActorMethod<
         [Uint8Array, Reaction],
         StableMap12InsertResult
     >;
-    set_stable_map_13: ActorMethod<
+    stable_map_12_is_empty: ActorMethod<[], boolean>;
+    stable_map_12_len: ActorMethod<[], bigint>;
+    stable_map_12_remove: ActorMethod<[Uint8Array], [] | [Reaction]>;
+    stable_map_13_contains_key: ActorMethod<[string], boolean>;
+    stable_map_13_get: ActorMethod<[string], [] | [Principal]>;
+    stable_map_13_insert: ActorMethod<
         [string, Principal],
         StableMap13InsertResult
     >;
-    set_stable_map_2: ActorMethod<[number, bigint], StableMap2InsertResult>;
-    set_stable_map_3: ActorMethod<[Reaction, bigint], StableMap3InsertResult>;
-    set_stable_map_4: ActorMethod<[User, number], StableMap4InsertResult>;
-    set_stable_map_5: ActorMethod<
+    stable_map_13_is_empty: ActorMethod<[], boolean>;
+    stable_map_13_len: ActorMethod<[], bigint>;
+    stable_map_13_remove: ActorMethod<[string], [] | [Principal]>;
+    stable_map_1_contains_key: ActorMethod<[number], boolean>;
+    stable_map_1_get: ActorMethod<[number], [] | [Uint8Array]>;
+    stable_map_1_insert: ActorMethod<
+        [number, Uint8Array],
+        StableMap1InsertResult
+    >;
+    stable_map_1_is_empty: ActorMethod<[], boolean>;
+    stable_map_1_len: ActorMethod<[], bigint>;
+    stable_map_1_remove: ActorMethod<[number], [] | [Uint8Array]>;
+    stable_map_2_contains_key: ActorMethod<[number], boolean>;
+    stable_map_2_get: ActorMethod<[number], [] | [bigint]>;
+    stable_map_2_insert: ActorMethod<[number, bigint], StableMap2InsertResult>;
+    stable_map_2_is_empty: ActorMethod<[], boolean>;
+    stable_map_2_len: ActorMethod<[], bigint>;
+    stable_map_2_remove: ActorMethod<[number], [] | [bigint]>;
+    stable_map_3_contains_key: ActorMethod<[Reaction], boolean>;
+    stable_map_3_get: ActorMethod<[Reaction], [] | [bigint]>;
+    stable_map_3_insert: ActorMethod<
+        [Reaction, bigint],
+        StableMap3InsertResult
+    >;
+    stable_map_3_is_empty: ActorMethod<[], boolean>;
+    stable_map_3_len: ActorMethod<[], bigint>;
+    stable_map_3_remove: ActorMethod<[Reaction], [] | [bigint]>;
+    stable_map_4_contains_key: ActorMethod<[User], boolean>;
+    stable_map_4_get: ActorMethod<[User], [] | [number]>;
+    stable_map_4_insert: ActorMethod<[User, number], StableMap4InsertResult>;
+    stable_map_4_is_empty: ActorMethod<[], boolean>;
+    stable_map_4_len: ActorMethod<[], bigint>;
+    stable_map_4_remove: ActorMethod<[User], [] | [number]>;
+    stable_map_5_contains_key: ActorMethod<[[] | [string]], boolean>;
+    stable_map_5_get: ActorMethod<[[] | [string]], [] | [number]>;
+    stable_map_5_insert: ActorMethod<
         [[] | [string], number],
         StableMap5InsertResult
     >;
-    set_stable_map_6: ActorMethod<
+    stable_map_5_is_empty: ActorMethod<[], boolean>;
+    stable_map_5_len: ActorMethod<[], bigint>;
+    stable_map_5_remove: ActorMethod<[[] | [string]], [] | [number]>;
+    stable_map_6_contains_key: ActorMethod<[BigUint64Array], boolean>;
+    stable_map_6_get: ActorMethod<[BigUint64Array], [] | [boolean]>;
+    stable_map_6_insert: ActorMethod<
         [BigUint64Array, boolean],
         StableMap6InsertResult
     >;
-    set_stable_map_7: ActorMethod<[null, null], StableMap7InsertResult>;
-    set_stable_map_8: ActorMethod<[boolean, null], StableMap7InsertResult>;
-    set_stable_map_9: ActorMethod<
+    stable_map_6_is_empty: ActorMethod<[], boolean>;
+    stable_map_6_len: ActorMethod<[], bigint>;
+    stable_map_6_remove: ActorMethod<[BigUint64Array], [] | [boolean]>;
+    stable_map_7_contains_key: ActorMethod<[null], boolean>;
+    stable_map_7_get: ActorMethod<[null], [] | [null]>;
+    stable_map_7_insert: ActorMethod<[null, null], StableMap7InsertResult>;
+    stable_map_7_is_empty: ActorMethod<[], boolean>;
+    stable_map_7_len: ActorMethod<[], bigint>;
+    stable_map_7_remove: ActorMethod<[null], [] | [null]>;
+    stable_map_8_contains_key: ActorMethod<[boolean], boolean>;
+    stable_map_8_get: ActorMethod<[boolean], [] | [null]>;
+    stable_map_8_insert: ActorMethod<[boolean, null], StableMap7InsertResult>;
+    stable_map_8_is_empty: ActorMethod<[], boolean>;
+    stable_map_8_len: ActorMethod<[], bigint>;
+    stable_map_8_remove: ActorMethod<[boolean], [] | [null]>;
+    stable_map_9_contains_key: ActorMethod<[number], boolean>;
+    stable_map_9_get: ActorMethod<[number], [] | [Array<string>]>;
+    stable_map_9_insert: ActorMethod<
         [number, Array<string>],
         StableMap9InsertResult
     >;
+    stable_map_9_is_empty: ActorMethod<[], boolean>;
+    stable_map_9_len: ActorMethod<[], bigint>;
+    stable_map_9_remove: ActorMethod<[number], [] | [Array<string>]>;
 }

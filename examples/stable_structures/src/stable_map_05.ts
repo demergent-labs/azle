@@ -20,29 +20,29 @@ export let stable_map_5 = new StableBTreeMap<Opt<String>, float64>(
     1_000
 );
 
-export function contains_key_stable_map_5(key: Opt<String>): Query<boolean> {
+export function stable_map_5_contains_key(key: Opt<String>): Query<boolean> {
     return stable_map_5.contains_key(key);
 }
 
-export function get_stable_map_5(key: Opt<String>): Query<Opt<float64>> {
+export function stable_map_5_get(key: Opt<String>): Query<Opt<float64>> {
     return stable_map_5.get(key);
 }
 
-export function set_stable_map_5(
+export function stable_map_5_insert(
     key: Opt<String>,
     value: float64
 ): Update<StableMap5InsertResult> {
     return stable_map_5.insert(key, value);
 }
 
-export function is_empty_stable_map_5(): Query<boolean> {
+export function stable_map_5_is_empty(): Query<boolean> {
     return stable_map_5.is_empty();
 }
 
-export function len_stable_map_5(): Query<nat64> {
+export function stable_map_5_len(): Query<nat64> {
     return stable_map_5.len();
 }
 
-export function remove_stable_map_5(key: Opt<String>): Update<Opt<float64>> {
+export function stable_map_5_remove(key: Opt<String>): Update<Opt<float64>> {
     return stable_map_5.remove(key);
 }
