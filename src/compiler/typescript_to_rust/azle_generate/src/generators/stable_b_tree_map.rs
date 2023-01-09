@@ -32,7 +32,7 @@ pub fn generate_stable_b_tree_map(
         type Memory = VirtualMemory<DefaultMemoryImpl>;
 
         thread_local! {
-            static MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>>
+            static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>>
                 = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 
             #(#stable_b_tree_maps)*
@@ -48,33 +48,37 @@ fn generate_global_stable_b_tree_maps_and_impls(
     stable_b_tree_map_nodes
         .iter()
         .map(|stable_b_tree_map_node| {
-            let map_name_ident =
-                ref_cell_ident(stable_b_tree_map_node.memory_id);
+            let map_name_ident = ref_cell_ident(stable_b_tree_map_node.memory_id);
             let memory_id = stable_b_tree_map_node.memory_id;
 
-            let (key_wrapper_type_name, key_wrapper_type)
-                = generate_wrapper_type(&stable_b_tree_map_node.key_type, memory_id, "Key");
-            let (value_wrapper_type_name, value_wrapper_type)
-                = generate_wrapper_type(&stable_b_tree_map_node.value_type, memory_id, "Value");
+            let (key_wrapper_type_name, key_wrapper_type) =
+                generate_wrapper_type(&stable_b_tree_map_node.key_type, memory_id, "Key");
+            let (value_wrapper_type_name, value_wrapper_type) =
+                generate_wrapper_type(&stable_b_tree_map_node.value_type, memory_id, "Value");
 
-            let key_try_into_vm_value_impl = generate_try_into_vm_value_impl(&key_wrapper_type_name);
+            let key_try_into_vm_value_impl =
+                generate_try_into_vm_value_impl(&key_wrapper_type_name);
             let key_storable_impl = generate_storable_impl(&key_wrapper_type_name);
             let key_bounded_storable_impl = generate_bounded_storable_impl(
                 &key_wrapper_type_name,
-                stable_b_tree_map_node.max_key_size
+                stable_b_tree_map_node.max_key_size,
             );
 
-            let value_try_into_vm_value_impl = generate_try_into_vm_value_impl(&value_wrapper_type_name);
+            let value_try_into_vm_value_impl =
+                generate_try_into_vm_value_impl(&value_wrapper_type_name);
             let value_storable_impl = generate_storable_impl(&value_wrapper_type_name);
-            let value_bounded_storable_impl= generate_bounded_storable_impl(
+            let value_bounded_storable_impl = generate_bounded_storable_impl(
                 &value_wrapper_type_name,
-                stable_b_tree_map_node.max_value_size
+                stable_b_tree_map_node.max_value_size,
             );
 
             (
                 quote! {
-                    static #map_name_ident: RefCell<StableBTreeMap<Memory, #key_wrapper_type_name, #value_wrapper_type_name>>
-                        = RefCell::new(StableBTreeMap::init(MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(#memory_id))),));
+                    static #map_name_ident: RefCell<
+                        StableBTreeMap<Memory, #key_wrapper_type_name, #value_wrapper_type_name>
+                    > = RefCell::new(StableBTreeMap::init(
+                        MEMORY_MANAGER_REF_CELL.with(|m| m.borrow().get(MemoryId::new(#memory_id))),
+                    ));
                 },
                 quote! {
                     #key_wrapper_type
@@ -86,7 +90,7 @@ fn generate_global_stable_b_tree_maps_and_impls(
                     #value_try_into_vm_value_impl
                     #value_storable_impl
                     #value_bounded_storable_impl
-                }
+                },
             )
         })
         .collect()
