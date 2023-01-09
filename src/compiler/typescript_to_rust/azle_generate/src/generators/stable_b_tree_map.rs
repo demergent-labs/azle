@@ -29,7 +29,7 @@ pub fn generate_stable_b_tree_map(
 
         // TODO prefix everything
 
-        type Memory = VirtualMemory<DefaultMemoryImpl>;
+        type AzleMemory = VirtualMemory<DefaultMemoryImpl>;
 
         thread_local! {
             static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>>
@@ -75,7 +75,7 @@ fn generate_global_stable_b_tree_maps_and_impls(
             (
                 quote! {
                     static #map_name_ident: RefCell<
-                        StableBTreeMap<Memory, #key_wrapper_type_name, #value_wrapper_type_name>
+                        StableBTreeMap<AzleMemory, #key_wrapper_type_name, #value_wrapper_type_name>
                     > = RefCell::new(StableBTreeMap::init(
                         MEMORY_MANAGER_REF_CELL.with(|m| m.borrow().get(MemoryId::new(#memory_id))),
                     ));
