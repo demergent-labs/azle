@@ -9,16 +9,12 @@ import {
     Variant
 } from 'azle';
 
-export type StableMap13InsertResult = Variant<{
+type StableMap13InsertResult = Variant<{
     ok: Opt<Principal>;
     err: InsertError;
 }>;
 
-export let stable_map_13 = new StableBTreeMap<string, Principal>(
-    13,
-    100,
-    1_000
-);
+let stable_map_13 = new StableBTreeMap<string, Principal>(13, 100, 1_000);
 
 export function stable_map_13_contains_key(key: string): Query<boolean> {
     return stable_map_13.contains_key(key);

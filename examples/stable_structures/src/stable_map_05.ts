@@ -9,16 +9,12 @@ import {
     Variant
 } from 'azle';
 
-export type StableMap5InsertResult = Variant<{
+type StableMap5InsertResult = Variant<{
     ok: Opt<float64>;
     err: InsertError;
 }>;
 
-export let stable_map_5 = new StableBTreeMap<Opt<String>, float64>(
-    5,
-    100,
-    1_000
-);
+let stable_map_5 = new StableBTreeMap<Opt<String>, float64>(5, 100, 1_000);
 
 export function stable_map_5_contains_key(key: Opt<String>): Query<boolean> {
     return stable_map_5.contains_key(key);

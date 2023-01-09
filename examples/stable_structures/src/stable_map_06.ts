@@ -8,12 +8,12 @@ import {
     Variant
 } from 'azle';
 
-export type StableMap6InsertResult = Variant<{
+type StableMap6InsertResult = Variant<{
     ok: Opt<boolean>;
     err: InsertError;
 }>;
 
-export let stable_map_6 = new StableBTreeMap<nat64[], boolean>(6, 100, 1_000);
+let stable_map_6 = new StableBTreeMap<nat64[], boolean>(6, 100, 1_000);
 
 export function stable_map_6_contains_key(key: nat64[]): Query<boolean> {
     return stable_map_6.contains_key(key);

@@ -10,12 +10,12 @@ import {
     Variant
 } from 'azle';
 
-export type StableMap2InsertResult = Variant<{
+type StableMap2InsertResult = Variant<{
     ok: Opt<nat>;
     err: InsertError;
 }>;
 
-export let stable_map_2 = new StableBTreeMap<nat32, nat>(2, 100, 1_000);
+let stable_map_2 = new StableBTreeMap<nat32, nat>(2, 100, 1_000);
 
 export function stable_map_2_contains_key(key: nat32): Query<boolean> {
     return stable_map_2.contains_key(key);

@@ -10,12 +10,12 @@ import {
 } from 'azle';
 import { Reaction } from './types';
 
-export type StableMap12InsertResult = Variant<{
+type StableMap12InsertResult = Variant<{
     ok: Opt<Reaction>;
     err: InsertError;
 }>;
 
-export let stable_map_12 = new StableBTreeMap<blob, Reaction>(12, 100, 1_000);
+let stable_map_12 = new StableBTreeMap<blob, Reaction>(12, 100, 1_000);
 
 export function stable_map_12_contains_key(key: blob): Query<boolean> {
     return stable_map_12.contains_key(key);

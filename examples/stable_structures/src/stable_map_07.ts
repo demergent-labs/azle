@@ -8,12 +8,12 @@ import {
     Variant
 } from 'azle';
 
-export type StableMap7InsertResult = Variant<{
+type StableMap7InsertResult = Variant<{
     ok: Opt<null>;
     err: InsertError;
 }>;
 
-export let stable_map_7 = new StableBTreeMap<null, null>(7, 100, 1_000);
+let stable_map_7 = new StableBTreeMap<null, null>(7, 100, 1_000);
 
 export function stable_map_7_contains_key(key: null): Query<boolean> {
     return stable_map_7.contains_key(key);
