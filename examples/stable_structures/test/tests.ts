@@ -140,127 +140,53 @@ const STABLE_MAP_VALUE_COMPS: [
     (a, b) => a !== undefined && a.toText() === b.toText()
 ];
 
-export function get_pre_deploy_tests(
+export function pre_redeploy_tests(
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
-        ...get_empty_read_tests(
-            'initial read',
-            stable_structures_canister
-        ).filter(
-            (value) =>
-                !value.name.includes('stable_map_7') &&
-                !value.name.includes('stable_map_8')
+        ...get_empty_read_tests(stable_structures_canister).filter(
+            is_not_stable_map_7_or_8_test
         ),
         ...get_is_empty_tests(
             true,
             'initial read',
             stable_structures_canister
-        ).filter(
-            (value) =>
-                !value.name.includes('stable_map_7') &&
-                !value.name.includes('stable_map_8')
-        ),
+        ).filter(is_not_stable_map_7_or_8_test),
         ...get_len_tests(0n, 'initial read', stable_structures_canister).filter(
-            (value) =>
-                !value.name.includes('stable_map_7') &&
-                !value.name.includes('stable_map_8')
+            is_not_stable_map_7_or_8_test
         ),
         ...get_contains_key_tests(
             false,
             'initial read',
             stable_structures_canister
-        ).filter(
-            (value) =>
-                !value.name.includes('stable_map_7') &&
-                !value.name.includes('stable_map_8')
-        ),
+        ).filter(is_not_stable_map_7_or_8_test),
         ...get_set_value_tests('initial set', stable_structures_canister),
         ...get_contains_key_tests(true, 'post set', stable_structures_canister),
         ...get_is_empty_tests(false, 'post set', stable_structures_canister),
         ...get_len_tests(1n, 'post set', stable_structures_canister),
         ...get_get_tests('post set', stable_structures_canister).filter(
-            (value) =>
-                !value.name.includes('stable_map_7') &&
-                !value.name.includes('stable_map_8')
-        )
+            is_not_stable_map_7_or_8_test
+        ),
+        ...get_insert_error_tests(stable_structures_canister)
     ];
 }
 
-export function get_additional_tests(
-    stable_structures_canister: ActorSubclass<_SERVICE>
-): Test[] {
-    return [
-        {
-            name: 'insert returns a KeyTooLarge error if the key is too large',
-            test: async () => {
-                const key_over_100_bytes =
-                    '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
-                const result =
-                    await stable_structures_canister.stable_map_13_insert(
-                        key_over_100_bytes,
-                        Principal.fromText('aaaaa-aa')
-                    );
-
-                console.log(`The result is: ${JSON.stringify(result)}`);
-
-                return {
-                    ok:
-                        'err' in result &&
-                        'KeyTooLarge' in result.err &&
-                        result.err.KeyTooLarge.given === 109 &&
-                        result.err.KeyTooLarge.max === 100
-                };
-            }
-        },
-        {
-            name: 'insert returns a ValueTooLarge error if the value is too large',
-            test: async () => {
-                const value_over_100_bytes =
-                    '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
-                const result =
-                    await stable_structures_canister.stable_map_0_insert(
-                        1,
-                        value_over_100_bytes
-                    );
-
-                console.log(`The result is: ${JSON.stringify(result)}`);
-
-                return {
-                    ok:
-                        'err' in result &&
-                        'ValueTooLarge' in result.err &&
-                        result.err.ValueTooLarge.given === 109 &&
-                        result.err.ValueTooLarge.max === 100
-                };
-            }
-        }
-    ];
-}
-
-export function get_post_deploy_tests(
+export function post_redeploy_tests(
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
         ...get_get_tests('post redeploy', stable_structures_canister).filter(
-            (value) =>
-                !value.name.includes('stable_map_7') &&
-                !value.name.includes('stable_map_8')
+            is_not_stable_map_7_or_8_test
         ),
         ...get_remove_tests('clean up', stable_structures_canister).filter(
-            (value) =>
-                !value.name.includes('stable_map_7') &&
-                !value.name.includes('stable_map_8')
+            is_not_stable_map_7_or_8_test
         ),
         ...get_contains_key_tests(
             false,
             'post clean up',
             stable_structures_canister
-        ).filter(
-            (value) =>
-                !value.name.includes('stable_map_7') &&
-                !value.name.includes('stable_map_8')
-        )
+        ).filter(is_not_stable_map_7_or_8_test),
+        ...get_insert_error_tests(stable_structures_canister)
     ];
 }
 
@@ -310,19 +236,18 @@ function get_contains_key_tests(
 }
 
 function get_empty_read_tests(
-    suffix: string,
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return STABLE_MAP_KEYS.map((stable_map_key, index) => {
         return {
-            name: `stable_map_${index} initial read ${suffix}`,
+            name: `stable_map_${index} initial read`,
             test: async () => {
                 const get_result = await (stable_structures_canister as any)[
                     `stable_map_${index}_get`
                 ](stable_map_key);
 
                 return {
-                    ok: get_result[0] === undefined
+                    ok: is_empty_opt(get_result)
                 };
             }
         };
@@ -334,10 +259,10 @@ function get_get_tests(
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return STABLE_MAP_KEYS.map((stable_map_key, index) => {
-        let value_comp: (a: any, b: any) => boolean =
+        const value_comp: (a: any, b: any) => boolean =
             STABLE_MAP_VALUE_COMPS[index];
         return {
-            name: `stable_map_${index} get test for sure automated ${suffix}`,
+            name: `stable_map_${index} get test ${suffix}`,
             test: async () => {
                 const get_result = await (stable_structures_canister as any)[
                     `stable_map_${index}_get`
@@ -415,6 +340,65 @@ function get_remove_tests(
     });
 }
 
+export function get_insert_error_tests(
+    stable_structures_canister: ActorSubclass<_SERVICE>
+): Test[] {
+    return [
+        {
+            name: 'insert returns a KeyTooLarge error if the key is too large',
+            test: async () => {
+                const key_over_100_bytes =
+                    '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
+                const result =
+                    await stable_structures_canister.stable_map_13_insert(
+                        key_over_100_bytes,
+                        Principal.fromText('aaaaa-aa')
+                    );
+
+                return {
+                    ok:
+                        'err' in result &&
+                        'KeyTooLarge' in result.err &&
+                        result.err.KeyTooLarge.given === 109 &&
+                        result.err.KeyTooLarge.max === 100
+                };
+            }
+        },
+        {
+            name: 'insert returns a ValueTooLarge error if the value is too large',
+            test: async () => {
+                const value_over_100_bytes =
+                    '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
+                const result =
+                    await stable_structures_canister.stable_map_0_insert(
+                        1,
+                        value_over_100_bytes
+                    );
+
+                return {
+                    ok:
+                        'err' in result &&
+                        'ValueTooLarge' in result.err &&
+                        result.err.ValueTooLarge.given === 109 &&
+                        result.err.ValueTooLarge.max === 100
+                };
+            }
+        }
+    ];
+}
+
+/**
+ * Determines whether the provided value is an Opt<T> or not.
+ * @param value the value to test.
+ * @returns `true` if the provided value is an empty Opt<T>, `false` otherwise.
+ */
 function is_empty_opt(value: any): boolean {
     return Array.isArray(value) && value.length === 0;
+}
+
+function is_not_stable_map_7_or_8_test(value: Test): boolean {
+    return (
+        !value.name.includes('stable_map_7') &&
+        !value.name.includes('stable_map_8')
+    );
 }
