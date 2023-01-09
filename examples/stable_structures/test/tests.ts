@@ -140,7 +140,7 @@ const STABLE_MAP_VALUE_COMPS: [
     (a, b) => a !== undefined && a.toText() === b.toText()
 ];
 
-export function get_first_tests(
+export function get_pre_deploy_tests(
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
@@ -238,7 +238,7 @@ export function get_additional_tests(
     ];
 }
 
-export function get_second_tests(
+export function get_post_deploy_tests(
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
