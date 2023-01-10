@@ -126,8 +126,8 @@ const STABLE_MAP_VALUE_COMPS: [
     simple_equals,
     simple_equals,
     simple_equals,
-    simple_equals,
-    simple_equals,
+    (a, b) => a === undefined, // See https://github.com/demergent-labs/azle/issues/847
+    (a, b) => a === undefined, // See https://github.com/demergent-labs/azle/issues/847
     (a, b) => a !== undefined && a.every((value, index) => value === b[index]),
     (a, b) => a !== undefined && a.every((value, index) => value === b[index]),
     (a, b) =>
@@ -144,29 +144,19 @@ export function pre_redeploy_tests(
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
-        ...get_empty_read_tests(stable_structures_canister).filter(
-            is_not_stable_map_7_or_8_test
-        ),
-        ...get_is_empty_tests(
-            true,
-            'initial read',
-            stable_structures_canister
-        ).filter(is_not_stable_map_7_or_8_test),
-        ...get_len_tests(0n, 'initial read', stable_structures_canister).filter(
-            is_not_stable_map_7_or_8_test
-        ),
+        ...get_empty_read_tests(stable_structures_canister),
+        ...get_is_empty_tests(true, 'initial read', stable_structures_canister),
+        ...get_len_tests(0n, 'initial read', stable_structures_canister),
         ...get_contains_key_tests(
             false,
             'initial read',
             stable_structures_canister
-        ).filter(is_not_stable_map_7_or_8_test),
+        ),
         ...get_set_value_tests('initial set', stable_structures_canister),
         ...get_contains_key_tests(true, 'post set', stable_structures_canister),
         ...get_is_empty_tests(false, 'post set', stable_structures_canister),
         ...get_len_tests(1n, 'post set', stable_structures_canister),
-        ...get_get_tests('post set', stable_structures_canister).filter(
-            is_not_stable_map_7_or_8_test
-        ),
+        ...get_get_tests('post set', stable_structures_canister),
         ...get_insert_error_tests(stable_structures_canister)
     ];
 }
@@ -175,17 +165,13 @@ export function post_redeploy_tests(
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
-        ...get_get_tests('post redeploy', stable_structures_canister).filter(
-            is_not_stable_map_7_or_8_test
-        ),
-        ...get_remove_tests('clean up', stable_structures_canister).filter(
-            is_not_stable_map_7_or_8_test
-        ),
+        ...get_get_tests('post redeploy', stable_structures_canister),
+        ...get_remove_tests('clean up', stable_structures_canister),
         ...get_contains_key_tests(
             false,
             'post clean up',
             stable_structures_canister
-        ).filter(is_not_stable_map_7_or_8_test),
+        ),
         ...get_insert_error_tests(stable_structures_canister)
     ];
 }
@@ -394,11 +380,4 @@ export function get_insert_error_tests(
  */
 function is_empty_opt(value: any): boolean {
     return Array.isArray(value) && value.length === 0;
-}
-
-function is_not_stable_map_7_or_8_test(value: Test): boolean {
-    return (
-        !value.name.includes('stable_map_7') &&
-        !value.name.includes('stable_map_8')
-    );
 }
