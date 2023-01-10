@@ -36,10 +36,22 @@ export function stable_map_4_is_empty(): Query<boolean> {
     return stable_map_4.is_empty();
 }
 
+export function stable_map_4_items(): Update<[User, float32][]> {
+    return stable_map_4.items();
+}
+
+export function stable_map_4_keys(): Update<User[]> {
+    return stable_map_4.keys();
+}
+
 export function stable_map_4_len(): Query<nat64> {
     return stable_map_4.len();
 }
 
 export function stable_map_4_remove(key: User): Update<Opt<float32>> {
     return stable_map_4.remove(key);
+}
+
+export function stable_map_4_values(): Update<float32[]> {
+    return stable_map_4.values();
 }

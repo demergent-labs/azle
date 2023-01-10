@@ -36,10 +36,22 @@ export function stable_map_3_is_empty(): Query<boolean> {
     return stable_map_3.is_empty();
 }
 
+export function stable_map_3_items(): Update<[Reaction, int][]> {
+    return stable_map_3.items();
+}
+
+export function stable_map_3_keys(): Update<Reaction[]> {
+    return stable_map_3.keys();
+}
+
 export function stable_map_3_len(): Query<nat64> {
     return stable_map_3.len();
 }
 
 export function stable_map_3_remove(key: Reaction): Update<Opt<int>> {
     return stable_map_3.remove(key);
+}
+
+export function stable_map_3_values(): Update<int[]> {
+    return stable_map_3.values();
 }

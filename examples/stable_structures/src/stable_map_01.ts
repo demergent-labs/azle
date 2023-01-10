@@ -36,10 +36,22 @@ export function stable_map_1_is_empty(): Query<boolean> {
     return stable_map_1.is_empty();
 }
 
+export function stable_map_1_items(): Update<[nat16, blob][]> {
+    return stable_map_1.items();
+}
+
+export function stable_map_1_keys(): Update<nat16[]> {
+    return stable_map_1.keys();
+}
+
 export function stable_map_1_len(): Query<nat64> {
     return stable_map_1.len();
 }
 
 export function stable_map_1_remove(key: nat16): Update<Opt<blob>> {
     return stable_map_1.remove(key);
+}
+
+export function stable_map_0_values(): Update<blob[]> {
+    return stable_map_1.values();
 }
