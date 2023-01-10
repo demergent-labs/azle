@@ -1,4 +1,4 @@
-import { nat8, nat32, nat64, Opt, Variant } from '../index';
+import { ic, nat8, nat32, nat64, Opt, Variant } from '../index';
 
 type KeyTooLarge = {
     given: nat32;
@@ -82,6 +82,24 @@ export class StableBTreeMap<Key, Value> {
     }
 
     /**
+     * Retrieves the items in the map in sorted order.
+     * @returns tuples representing key/value pairs.
+     */
+    items(): [Key, Value][] {
+        // @ts-ignore
+        return ic.stable_b_tree_map_items(this.memory_id);
+    }
+
+    /**
+     * The keys for each element in the map in sorted order.
+     * @returns they keys in the map.
+     */
+    keys(): Key[] {
+        // @ts-ignore
+        return ic.stable_b_tree_map_keys(this.memory_id);
+    }
+
+    /**
      * Checks to see how many elements are in the map.
      * @returns the number of elements in the map.
      */
@@ -98,5 +116,14 @@ export class StableBTreeMap<Key, Value> {
     remove(key: Key): Opt<Value> {
         // @ts-ignore
         return ic.stable_b_tree_map_remove(this.memory_id, key);
+    }
+
+    /**
+     * The values in the map in sorted order.
+     * @returns the values in the map.
+     */
+    values(): Value[] {
+        // @ts-ignore
+        return ic.stable_b_tree_map_values(this.memory_id);
     }
 }
