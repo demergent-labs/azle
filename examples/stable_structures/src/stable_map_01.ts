@@ -52,6 +52,6 @@ export function stable_map_1_remove(key: nat16): Update<Opt<blob>> {
     return stable_map_1.remove(key);
 }
 
-export function stable_map_0_values(): Update<blob[]> {
+export function stable_map_1_values(): Update<blob[]> {
     return stable_map_1.values();
 }
