@@ -48,6 +48,8 @@ impl TsAst {
                 .function(_azle_ic_stable_b_tree_map_get, "stable_b_tree_map_get", 0)
                 .function(_azle_ic_stable_b_tree_map_insert, "stable_b_tree_map_insert", 0)
                 .function(_azle_ic_stable_b_tree_map_is_empty, "stable_b_tree_map_is_empty", 0)
+                .function(_azle_ic_stable_b_tree_map_keys, "stable_b_tree_map_keys", 0)
+                .function(_azle_ic_stable_b_tree_map_values, "stable_b_tree_map_values", 0)
                 .function(_azle_ic_stable_b_tree_map_len, "stable_b_tree_map_len", 0)
                 .function(_azle_ic_stable_b_tree_map_remove, "stable_b_tree_map_remove", 0)
                 .function(_azle_ic_stable_grow, "stable_grow", 0)
