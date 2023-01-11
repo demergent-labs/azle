@@ -35,11 +35,11 @@ export function stable_map_13_is_empty(): Query<boolean> {
     return stable_map_13.is_empty();
 }
 
-export function stable_map_13_items(): Update<[string, Principal][]> {
+export function stable_map_13_items(): Query<[string, Principal][]> {
     return stable_map_13.items();
 }
 
-export function stable_map_13_keys(): Update<string[]> {
+export function stable_map_13_keys(): Query<string[]> {
     return stable_map_13.keys();
 }
 
@@ -51,6 +51,6 @@ export function stable_map_13_remove(key: string): Update<Opt<Principal>> {
     return stable_map_13.remove(key);
 }
 
-export function stable_map_13_values(): Update<Principal[]> {
+export function stable_map_13_values(): Query<Principal[]> {
     return stable_map_13.values();
 }

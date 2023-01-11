@@ -36,11 +36,11 @@ export function stable_map_12_is_empty(): Query<boolean> {
     return stable_map_12.is_empty();
 }
 
-export function stable_map_12_items(): Update<[blob, Reaction][]> {
+export function stable_map_12_items(): Query<[blob, Reaction][]> {
     return stable_map_12.items();
 }
 
-export function stable_map_12_keys(): Update<blob[]> {
+export function stable_map_12_keys(): Query<blob[]> {
     return stable_map_12.keys();
 }
 
@@ -52,6 +52,6 @@ export function stable_map_12_remove(key: blob): Update<Opt<Reaction>> {
     return stable_map_12.remove(key);
 }
 
-export function stable_map_12_values(): Update<Reaction[]> {
+export function stable_map_12_values(): Query<Reaction[]> {
     return stable_map_12.values();
 }

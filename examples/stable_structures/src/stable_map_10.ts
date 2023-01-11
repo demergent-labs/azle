@@ -35,11 +35,11 @@ export function stable_map_10_is_empty(): Query<boolean> {
     return stable_map_10.is_empty();
 }
 
-export function stable_map_10_items(): Update<[float32, Opt<boolean>][]> {
+export function stable_map_10_items(): Query<[float32, Opt<boolean>][]> {
     return stable_map_10.items();
 }
 
-export function stable_map_10_keys(): Update<float32[]> {
+export function stable_map_10_keys(): Query<float32[]> {
     return stable_map_10.keys();
 }
 
@@ -51,6 +51,6 @@ export function stable_map_10_remove(key: float32): Update<Opt<Opt<boolean>>> {
     return stable_map_10.remove(key);
 }
 
-export function stable_map_10_values(): Update<Opt<boolean>[]> {
+export function stable_map_10_values(): Query<Opt<boolean>[]> {
     return stable_map_10.values();
 }

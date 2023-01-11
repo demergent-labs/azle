@@ -34,11 +34,11 @@ export function stable_map_6_is_empty(): Query<boolean> {
     return stable_map_6.is_empty();
 }
 
-export function stable_map_6_items(): Update<[nat64[], boolean][]> {
+export function stable_map_6_items(): Query<[nat64[], boolean][]> {
     return stable_map_6.items();
 }
 
-export function stable_map_6_keys(): Update<nat64[][]> {
+export function stable_map_6_keys(): Query<nat64[][]> {
     return stable_map_6.keys();
 }
 
@@ -50,6 +50,6 @@ export function stable_map_6_remove(key: nat64[]): Update<Opt<boolean>> {
     return stable_map_6.remove(key);
 }
 
-export function stable_map_6_values(): Update<boolean[]> {
+export function stable_map_6_values(): Query<boolean[]> {
     return stable_map_6.values();
 }

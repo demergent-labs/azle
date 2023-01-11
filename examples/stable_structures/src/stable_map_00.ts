@@ -35,11 +35,11 @@ export function stable_map_0_is_empty(): Query<boolean> {
     return stable_map_0.is_empty();
 }
 
-export function stable_map_0_items(): Update<[nat8, string][]> {
+export function stable_map_0_items(): Query<[nat8, string][]> {
     return stable_map_0.items();
 }
 
-export function stable_map_0_keys(): Update<nat8[]> {
+export function stable_map_0_keys(): Query<nat8[]> {
     return stable_map_0.keys();
 }
 
@@ -51,6 +51,6 @@ export function stable_map_0_remove(key: nat8): Update<Opt<string>> {
     return stable_map_0.remove(key);
 }
 
-export function stable_map_0_values(): Update<string[]> {
+export function stable_map_0_values(): Query<string[]> {
     return stable_map_0.values();
 }

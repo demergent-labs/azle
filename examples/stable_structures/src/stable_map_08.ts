@@ -35,11 +35,11 @@ export function stable_map_8_is_empty(): Query<boolean> {
     return stable_map_8.is_empty();
 }
 
-export function stable_map_8_items(): Update<[boolean, null][]> {
+export function stable_map_8_items(): Query<[boolean, null][]> {
     return stable_map_8.items();
 }
 
-export function stable_map_8_keys(): Update<boolean[]> {
+export function stable_map_8_keys(): Query<boolean[]> {
     return stable_map_8.keys();
 }
 
@@ -51,6 +51,6 @@ export function stable_map_8_remove(key: boolean): Update<Opt<null>> {
     return stable_map_8.remove(key);
 }
 
-export function stable_map_8_values(): Update<null[]> {
+export function stable_map_8_values(): Query<null[]> {
     return stable_map_8.values();
 }

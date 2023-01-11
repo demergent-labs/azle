@@ -36,11 +36,11 @@ export function stable_map_11_is_empty(): Query<boolean> {
     return stable_map_11.is_empty();
 }
 
-export function stable_map_11_items(): Update<[nat, User][]> {
+export function stable_map_11_items(): Query<[nat, User][]> {
     return stable_map_11.items();
 }
 
-export function stable_map_11_keys(): Update<nat[]> {
+export function stable_map_11_keys(): Query<nat[]> {
     return stable_map_11.keys();
 }
 
@@ -52,6 +52,6 @@ export function stable_map_11_remove(key: nat): Update<Opt<User>> {
     return stable_map_11.remove(key);
 }
 
-export function stable_map_11_values(): Update<User[]> {
+export function stable_map_11_values(): Query<User[]> {
     return stable_map_11.values();
 }
