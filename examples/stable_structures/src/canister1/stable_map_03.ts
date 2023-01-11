@@ -8,7 +8,7 @@ import {
     Update,
     Variant
 } from 'azle';
-import { Reaction } from './types';
+import { Reaction } from '../types';
 
 type StableMap3InsertResult = Variant<{
     ok: Opt<int>;

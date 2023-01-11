@@ -2,8 +2,9 @@ import { ok, Test } from 'azle/test';
 import {
     Reaction,
     User,
-    _SERVICE
-} from './dfx_generated/stable_structures/stable_structures.did';
+    _SERVICE as CANISTER1_SERVICE
+} from './dfx_generated/canister1/canister1.did';
+import { _SERVICE as CANISTER2_SERVICE } from './dfx_generated/canister2/canister2.did';
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import {
@@ -17,6 +18,8 @@ import {
     nat64,
     nat8
 } from 'azle';
+
+type _SERVICE = CANISTER1_SERVICE | CANISTER2_SERVICE;
 
 const HELLO_BYTES = [104, 101, 108, 108, 111];
 const STABLE_MAP_KEYS: [
@@ -173,56 +176,47 @@ const STABLE_MAP_VALUE_COMPS: [
 ];
 
 export function pre_redeploy_tests(
-    stable_structures_canister: ActorSubclass<_SERVICE>
+    canister: ActorSubclass<_SERVICE>,
+    start: number,
+    end: number
 ): Test[] {
+    const range = (_: Test, index: number) => index >= start && index <= end;
+
     return [
-        ...get_returns_empty(stable_structures_canister),
-        ...is_empty_returns(true, 'before insert', stable_structures_canister),
-        ...len_returns(0n, 'before insert', stable_structures_canister),
-        ...contains_key_returns(
-            false,
-            'before insert',
-            stable_structures_canister
-        ),
-        ...keys_is_length(0, 'before insert', stable_structures_canister),
-        ...values_is_length(0, 'before insert', stable_structures_canister),
-        ...items_is_length(0, 'before insert', stable_structures_canister),
+        ...get_returns_empty(canister).filter(range),
+        ...is_empty_returns(true, 'before insert', canister).filter(range),
+        ...len_returns(0n, 'before insert', canister).filter(range),
+        ...contains_key_returns(false, 'before insert', canister).filter(range),
+        ...keys_is_length(0, 'before insert', canister).filter(range),
+        ...values_is_length(0, 'before insert', canister).filter(range),
+        ...items_is_length(0, 'before insert', canister).filter(range),
 
-        ...insert(stable_structures_canister),
+        ...insert(canister).filter(range),
 
-        ...contains_key_returns(
-            true,
-            'after insert',
-            stable_structures_canister
-        ),
-        ...is_empty_returns(false, 'after insert', stable_structures_canister),
-        ...len_returns(1n, 'after insert', stable_structures_canister),
-        ...get_returns_expected_value(
-            'after insert',
-            stable_structures_canister
-        ),
-        ...keys_is_length(1, 'after insert', stable_structures_canister),
-        ...values_is_length(1, 'after insert', stable_structures_canister),
-        ...items_is_length(1, 'after insert', stable_structures_canister),
-        ...insert_returns_insert_error(stable_structures_canister)
+        ...contains_key_returns(true, 'after insert', canister).filter(range),
+        ...is_empty_returns(false, 'after insert', canister).filter(range),
+        ...len_returns(1n, 'after insert', canister).filter(range),
+        ...get_returns_expected_value('after insert', canister).filter(range),
+        ...keys_is_length(1, 'after insert', canister).filter(range),
+        ...values_is_length(1, 'after insert', canister).filter(range),
+        ...items_is_length(1, 'after insert', canister).filter(range)
     ];
 }
 
 export function post_redeploy_tests(
-    stable_structures_canister: ActorSubclass<_SERVICE>
+    canister: ActorSubclass<_SERVICE>,
+    start: number,
+    end: number
 ): Test[] {
+    const range = (_: Test, index: number) => index >= start && index <= end;
+
     return [
-        ...get_returns_expected_value(
-            'post redeploy',
-            stable_structures_canister
-        ),
-        ...remove(stable_structures_canister),
-        ...contains_key_returns(
-            false,
-            'after remove',
-            stable_structures_canister
-        ),
-        ...insert_returns_insert_error(stable_structures_canister)
+        ...get_returns_expected_value('post redeploy', canister).filter(range),
+        ...keys_is_length(1, 'after insert', canister).filter(range),
+        ...values_is_length(1, 'after insert', canister).filter(range),
+        ...items_is_length(1, 'after insert', canister).filter(range),
+        ...remove(canister).filter(range),
+        ...contains_key_returns(false, 'after remove', canister).filter(range)
     ];
 }
 
@@ -466,8 +460,9 @@ function values_is_length(
     });
 }
 
-export function insert_returns_insert_error(
-    stable_structures_canister: ActorSubclass<_SERVICE>
+export function insert_error_tests(
+    canister1: ActorSubclass<CANISTER1_SERVICE>,
+    canister2: ActorSubclass<CANISTER2_SERVICE>
 ): Test[] {
     return [
         {
@@ -475,11 +470,10 @@ export function insert_returns_insert_error(
             test: async () => {
                 const key_over_100_bytes =
                     '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
-                const result =
-                    await stable_structures_canister.stable_map_13_insert(
-                        key_over_100_bytes,
-                        Principal.fromText('aaaaa-aa')
-                    );
+                const result = await canister2.stable_map_13_insert(
+                    key_over_100_bytes,
+                    Principal.fromText('aaaaa-aa')
+                );
 
                 return {
                     ok:
@@ -495,11 +489,10 @@ export function insert_returns_insert_error(
             test: async () => {
                 const value_over_100_bytes =
                     '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
-                const result =
-                    await stable_structures_canister.stable_map_0_insert(
-                        1,
-                        value_over_100_bytes
-                    );
+                const result = await canister1.stable_map_0_insert(
+                    1,
+                    value_over_100_bytes
+                );
 
                 return {
                     ok:

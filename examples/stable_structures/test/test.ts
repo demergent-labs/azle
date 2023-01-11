@@ -1,24 +1,48 @@
 import { deploy, run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
-import { createActor } from './dfx_generated/stable_structures';
-import { pre_redeploy_tests, post_redeploy_tests } from './tests';
+import { createActor as createActorCanister1 } from './dfx_generated/canister1';
+import { createActor as createActorCanister2 } from './dfx_generated/canister2';
+import {
+    pre_redeploy_tests,
+    post_redeploy_tests,
+    insert_error_tests
+} from './tests';
 
-const stable_structures_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
-    agentOptions: {
-        host: 'http://127.0.0.1:8000'
+const stable_structures_canister_1 = createActorCanister1(
+    'rrkah-fqaaa-aaaaa-aaaaq-cai',
+    {
+        agentOptions: {
+            host: 'http://127.0.0.1:8000'
+        }
     }
-});
+);
+
+const stable_structures_canister_2 = createActorCanister2(
+    'ryjl3-tyaaa-aaaaa-aaaba-cai',
+    {
+        agentOptions: {
+            host: 'http://127.0.0.1:8000'
+        }
+    }
+);
 
 const tests: Test[] = [
-    ...deploy('stable_structures'),
-    ...pre_redeploy_tests(stable_structures_canister),
+    ...deploy('canister1'),
+    ...deploy('canister2'),
+    ...pre_redeploy_tests(stable_structures_canister_1, 0, 6),
+    ...pre_redeploy_tests(stable_structures_canister_2, 7, 13),
     {
-        name: 'redeploy stable_structures',
+        name: 'redeploy canisters',
         prep: async () => {
-            execSync('dfx deploy stable_structures', { stdio: 'inherit' });
+            execSync('dfx deploy', { stdio: 'inherit' });
         }
     },
-    ...post_redeploy_tests(stable_structures_canister)
+    ...post_redeploy_tests(stable_structures_canister_1, 0, 6),
+    ...post_redeploy_tests(stable_structures_canister_2, 7, 13),
+    ...insert_error_tests(
+        stable_structures_canister_1,
+        stable_structures_canister_2
+    )
 ];
 
 run_tests(tests);
