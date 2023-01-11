@@ -2280,9 +2280,9 @@ let map = new StableBTreeMap<Key, Value>(0, 100, 100);
 
 Note that the constructor requires the following parameters in the specified order:
 
-0   `memory_id` the memory id at which to instantiate this map. Must be between 0 and 255 inclusive.
-1   `max_key_size` the largest size (in bytes) a key can be
-2   `max_value_size` the largest size (in bytes) a value can be
+0.   `memory_id` the memory id at which to instantiate this map. Must be between 0 and 255 inclusive.
+1.   `max_key_size` the largest size (in bytes) a key can be
+2.   `max_value_size` the largest size (in bytes) a value can be
 
 Items inserted into the map must be smaller than the specified max values otherwise an [InsertError](src/stable_b_tree_map.ts#L13) will be returned.
 
