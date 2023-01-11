@@ -12,7 +12,7 @@ pub fn generate_header_code(main_js: &str) -> proc_macro2::TokenStream {
             SeedableRng,
             rngs::StdRng
         };
-        use slotmap::Key;
+        use slotmap::Key as AzleSlotMapKey; // Renamed to avoid clashes with user-defined types
         use std::str::FromStr;
 
         thread_local! {
