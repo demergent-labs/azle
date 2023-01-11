@@ -6,10 +6,12 @@ use quote::quote;
 
 use super::TsAst;
 use crate::{
-    generators::{canister_methods, errors, ic_object::functions, vm_value_conversion},
+    generators::{
+        canister_methods, errors, ic_object::functions, stable_b_tree_map, vm_value_conversion,
+    },
     ts_ast::{
+        azle_program::HelperMethods,
         azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods,
-        program::azle_program::AzleProgramVecHelperMethods,
     },
     ts_keywords,
 };
@@ -137,6 +139,8 @@ impl ToAct for TsAst {
         let post_upgrade_method = self.build_post_upgrade_method();
         let pre_upgrade_method = self.build_pre_upgrade_method();
 
+        let stable_b_tree_map_nodes = self.stable_b_tree_map_nodes();
+
         let external_canisters = self.build_external_canisters();
 
         // TODO: Remove these clones
@@ -145,15 +149,21 @@ impl ToAct for TsAst {
         let ic_object_functions = functions::generate_ic_object_functions(
             &query_and_update_canister_methods,
             &external_canisters,
+            &stable_b_tree_map_nodes,
         );
 
         let try_into_vm_value_impls = vm_value_conversion::generate_try_into_vm_value_impls();
         let try_from_vm_value_impls = vm_value_conversion::generate_try_from_vm_value_impls();
 
+        let _stable_b_tree_map_nodes = self.stable_b_tree_map_nodes();
+
         let async_result_handler =
             self.generate_async_result_handler(&query_and_update_canister_methods);
 
         let boa_error_handler = errors::generate_error_handler();
+
+        let stable_b_tree_maps =
+            stable_b_tree_map::generate_stable_b_tree_map(&stable_b_tree_map_nodes);
 
         // TODO Some of the things in this quote belong inside of the quote in AbstractCanisterTree
         AbstractCanisterTree {
@@ -175,6 +185,7 @@ impl ToAct for TsAst {
                 #boa_error_handler
                 #ic_object_functions
                 #async_result_handler
+                #stable_b_tree_maps
             },
             try_from_vm_value_impls,
             try_into_vm_value_impls,

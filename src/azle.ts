@@ -122,7 +122,7 @@ function compileTypeScriptToRust(
             unwrap(azleErrorResult);
         }
 
-        const [main_js, stable_storage_js] = compilationResult.ok;
+        const main_js = compilationResult.ok;
         const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
         const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
         const libCargoToml: Toml = generateLibCargoToml(canisterName);
@@ -133,8 +133,7 @@ function compileTypeScriptToRust(
             workspaceCargoToml,
             workspaceCargoLock,
             libCargoToml,
-            main_js,
-            stable_storage_js
+            main_js
         );
 
         // TODO: If our rust dependencies never change, maybe we shouldn't be
@@ -536,8 +535,7 @@ function writeCodeToFileSystem(
     workspaceCargoToml: Toml,
     workspaceCargoLock: Toml,
     libCargoToml: Toml,
-    main_js: JavaScript,
-    stable_storage_js: JavaScript
+    main_js: JavaScript
 ) {
     if (!fs.existsSync(`./target/azle`)) {
         fs.mkdirSync(`target/azle`, { recursive: true });
@@ -581,10 +579,5 @@ function writeCodeToFileSystem(
     fs.writeFileSync(
         `./target/azle/${rootPath}/azle_generate/src/main.js`,
         main_js
-    );
-
-    fs.writeFileSync(
-        `./target/azle/${rootPath}/azle_generate/src/stable_storage.js`,
-        stable_storage_js
     );
 }

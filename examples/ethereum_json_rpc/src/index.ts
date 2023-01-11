@@ -1,4 +1,4 @@
-import { ic, Init, nat32, ok, Query, Update } from 'azle';
+import { ic, Init, nat32, ok, Query, StableBTreeMap, Update } from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
@@ -9,14 +9,10 @@ import encodeUtf8 from 'encode-utf8';
 
 type JSON = string;
 
-type StableStorage = {
-    ethereum_url: string;
-};
-
-let stable_storage: StableStorage = ic.stable_storage();
+let stable_storage = new StableBTreeMap<string, string>(0, 25, 1_000);
 
 export function init(ethereum_url: string): Init {
-    stable_storage.ethereum_url = ethereum_url;
+    stable_storage.insert('ethereum_url', ethereum_url);
 }
 
 export async function eth_get_balance(
@@ -32,7 +28,7 @@ export async function eth_get_balance(
 
     const http_result = await management_canister
         .http_request({
-            url: stable_storage.ethereum_url,
+            url: stable_storage.get('ethereum_url') ?? '',
             max_response_bytes,
             method: {
                 post: null
@@ -76,7 +72,7 @@ export async function eth_get_block_by_number(
 
     const http_result = await management_canister
         .http_request({
-            url: stable_storage.ethereum_url,
+            url: stable_storage.get('ethereum_url') ?? '',
             max_response_bytes,
             method: {
                 post: null

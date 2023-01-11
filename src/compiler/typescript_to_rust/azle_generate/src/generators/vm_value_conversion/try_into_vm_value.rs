@@ -90,6 +90,65 @@ pub fn generate_try_into_vm_value_impls() -> proc_macro2::TokenStream {
             }
         }
 
+        impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_stable_structures::btreemap::InsertError {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+                match self {
+                    ic_stable_structures::btreemap::InsertError::KeyTooLarge {given, max} => {
+                        let given_js_value = given.try_into_vm_value(context).unwrap();
+                        let max_js_value = max.try_into_vm_value(context).unwrap();
+
+                        let key_too_large_object = boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "given",
+                                given_js_value,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .property(
+                                "max",
+                                max_js_value,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .build();
+
+                        Ok(boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "KeyTooLarge",
+                                key_too_large_object,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .build()
+                            .into())
+                    }
+                    ic_stable_structures::btreemap::InsertError::ValueTooLarge {given, max} => {
+                        let given_js_value = given.try_into_vm_value(context).unwrap();
+                        let max_js_value = max.try_into_vm_value(context).unwrap();
+
+                        let value_too_large_object = boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "given",
+                                given_js_value,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .property(
+                                "max",
+                                max_js_value,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .build();
+
+                        Ok(boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "ValueTooLarge",
+                                value_too_large_object,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .build()
+                            .into())
+                    }
+                }
+            }
+        }
+
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk::api::call::RejectionCode {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {

@@ -12,16 +12,12 @@ import {
 
 export function compileTypeScriptToJavaScript(
     ts_path: string
-): Result<JavaScript[], unknown> {
+): Result<JavaScript, unknown> {
     try {
         const icCanisters: JavaScript = generateICCanisters(ts_path);
 
         const js_bundled_and_transpiled = bundle_and_transpile_ts(`
             export { Principal } from '@dfinity/principal';
-            export {
-                stable_storage_deserialize,
-                stable_storage_serialize
-            } from 'azle';
             export * from './${ts_path}';
         `);
 
@@ -39,11 +35,7 @@ export function compileTypeScriptToJavaScript(
             ${js_bundled_and_transpiled}
         `;
 
-        const stable_storage_js: JavaScript = bundle_and_transpile_ts(
-            `export { stable_storage_deserialize, stable_storage_serialize } from 'azle';`
-        );
-
-        return { ok: [main_js, stable_storage_js] };
+        return { ok: main_js };
     } catch (err) {
         return { err };
     }

@@ -1,6 +1,6 @@
 use crate::{
     generators::canister_methods::method_body,
-    ts_ast::{program::azle_program::AzleProgramVecHelperMethods, ts_ast::errors, TsAst},
+    ts_ast::{azle_program::HelperMethods, ts_ast::errors, TsAst},
 };
 use cdk_framework::{nodes::ActInitMethod, traits::CanisterMethodBuilder, CanisterMethodType};
 
@@ -45,8 +45,6 @@ pub fn build_canister_method_system_init(ts_ast: &TsAst) -> ActInitMethod {
 
                 *method_name_mut = #function_name.to_string()
             });
-
-            let _azle_stable_storage = boa_engine::object::ObjectInitializer::new(&mut _azle_boa_context).build();
 
             #ic_object
 

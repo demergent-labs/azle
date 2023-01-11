@@ -6,16 +6,13 @@ import {
     ok,
     Principal,
     Query,
+    StableBTreeMap,
     Update,
     Variant
 } from 'azle';
 import { Notifier, NotifierFunc } from '../notifiers/types';
 
-type StableStorage = {
-    stable_func: StableFunc;
-};
-
-let stable_storage: StableStorage = ic.stable_storage();
+let stable_storage = new StableBTreeMap<string, StableFunc>(0, 25, 1_000);
 
 type User = {
     id: string;
@@ -35,11 +32,19 @@ type ComplexFunc = Func<(user: User, reaction: Reaction) => Update<nat64>>;
 type StableFunc = Func<(param1: nat64, param2: string) => Query<void>>;
 
 export function init(): Init {
-    stable_storage.stable_func = [Principal.from('aaaaa-aa'), 'start_canister'];
+    stable_storage.insert('stable_func', [
+        Principal.from('aaaaa-aa'),
+        'start_canister'
+    ]);
 }
 
 export function get_stable_func(): Query<StableFunc> {
-    return stable_storage.stable_func;
+    return (
+        stable_storage.get('stable_func') ?? [
+            Principal.from('aaaaa-aa'),
+            'raw_rand'
+        ]
+    );
 }
 
 export function basic_func_param(basic_func: BasicFunc): Query<BasicFunc> {

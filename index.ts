@@ -1,13 +1,14 @@
 import { Principal } from '@dfinity/principal';
+// import { InsertResult } from './src/stable_b_tree_map';
+export {
+    StableBTreeMap,
+    InsertResult,
+    InsertError
+} from './src/stable_b_tree_map';
 
 declare var globalThis: any;
 
 export const ic: ic = globalThis.ic ?? {};
-
-ic.stable_storage = function () {
-    (ic as any)._azle_stable_storage._azle_initialized = true;
-    return (ic as any)._azle_stable_storage;
-};
 
 // TODO: See https://github.com/demergent-labs/azle/issues/496
 
@@ -120,6 +121,22 @@ type ic = {
      * @returns the ID of the created timer. Used to cancel the timer.
      */
     set_timer_interval: (interval: Duration, callback: () => void) => TimerId;
+    // stable_b_tree_map_contains_key: <Key>(memory_id: nat8, key: Key) => boolean;
+    // stable_b_tree_map_get: <Key, Value>(memory_id: nat8, key: Key) => Value;
+    // stable_b_tree_map_insert: <Key, Value>(
+    //     memory_id: nat8,
+    //     key: Key,
+    //     value: Value
+    // ) => InsertResult<Opt<Value>>;
+    // stable_b_tree_map_is_empty: (memory_id: nat8) => boolean;
+    // stable_b_tree_map_items: <Key, Value>(memory_id: nat8) => [Key, Value][];
+    // stable_b_tree_map_keys: <Key>(memory_id: nat8) => Key[];
+    // stable_b_tree_map_len: (memory_id: nat8) => nat64;
+    // stable_b_tree_map_remove: <Key, Value>(
+    //     memory_id: nat8,
+    //     key: Key
+    // ) => Opt<Value>;
+    // stable_b_tree_map_values: <Value>(memory_id: nat8) => Value[];
     stable_bytes: () => blob;
     stable_grow: (new_pages: nat32) => StableGrowResult;
     stable_read: (offset: nat32, length: nat32) => blob;
@@ -129,7 +146,6 @@ type ic = {
     stable64_read: (offset: nat64, length: nat64) => blob;
     stable64_size: () => nat64;
     stable64_write: (offset: nat64, buffer: blob) => void;
-    stable_storage: <T>() => T;
     time: () => nat64;
     trap: (message: string) => never;
 };
@@ -260,64 +276,3 @@ export type Stable64GrowResult = Variant<{
     ok: nat64;
     err: StableMemoryError;
 }>;
-
-export function stable_storage_serialize<T>(stable_storage: T): string {
-    if ((stable_storage as any)._azle_initialized === true) {
-        return JSON.stringify(stable_storage, (_, value) => {
-            if (typeof value === 'bigint') {
-                return `AZLE::BigInt::${value}`;
-            }
-
-            if (typeof value === 'undefined') {
-                return `AZLE::Undefined`;
-            }
-
-            // TODO we should open an issue with Boa, instanceof doesn't work
-            if (value?._isPrincipal === true) {
-                return `AZLE::Principal::${value.toHex()}`;
-            }
-
-            // TODO we should open an issue with Boa, instanceof doesn't work
-            if (value?.constructor?.name === 'Uint8Array') {
-                return `AZLE::Uint8Array::${[...value]
-                    .map((uint8) => uint8.toString(16).padStart(2, '0'))
-                    .join('')}`;
-            }
-
-            return value;
-        });
-    } else {
-        return 'AZLE_STABLE_STORAGE_NOT_INITIALIZED';
-    }
-}
-
-export function stable_storage_deserialize<T>(stable_storage: string): T {
-    return JSON.parse(stable_storage, (_, value) => {
-        if (typeof value === 'string') {
-            if (value.startsWith('AZLE::BigInt::')) {
-                return BigInt(value.replace('AZLE::BigInt::', ''));
-            }
-
-            if (value === 'AZLE::Undefined') {
-                return undefined;
-            }
-
-            if (value.startsWith('AZLE::Principal::')) {
-                return Principal.fromHex(
-                    value.replace('AZLE::Principal::', '')
-                );
-            }
-
-            if (value.startsWith('AZLE::Uint8Array::')) {
-                return Uint8Array.from(
-                    value
-                        .replace('AZLE::Uint8Array::', '')
-                        .match(/.{1,2}/g)
-                        ?.map((x) => parseInt(x, 16)) ?? []
-                );
-            }
-        }
-
-        return value;
-    });
-}

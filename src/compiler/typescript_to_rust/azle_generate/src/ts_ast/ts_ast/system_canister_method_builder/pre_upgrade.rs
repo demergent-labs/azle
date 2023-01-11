@@ -1,6 +1,6 @@
 use crate::{
     generators::canister_methods::method_body,
-    ts_ast::{program::azle_program::AzleProgramVecHelperMethods, ts_ast::errors, TsAst},
+    ts_ast::{azle_program::HelperMethods, ts_ast::errors, TsAst},
 };
 use cdk_framework::{nodes::ActPreUpgradeMethod, CanisterMethodType};
 use quote::quote;
@@ -40,21 +40,7 @@ pub fn build_canister_method_system_pre_upgrade(ts_ast: &TsAst) -> ActPreUpgrade
             });
 
             #call_to_pre_upgrade_js_function
-
-            let _azle_stable_storage_boa_return_value = _azle_handle_boa_result(
-                _azle_boa_context.eval(
-                    "exports.stable_storage_serialize(globalThis.ic._azle_stable_storage)"
-                ),
-                &mut _azle_boa_context
-            );
-            let _azle_stable_storage_json_string: String = _azle_stable_storage_boa_return_value.try_from_vm_value(&mut *_azle_boa_context).unwrap();
-
-            if _azle_stable_storage_json_string != "AZLE_STABLE_STORAGE_NOT_INITIALIZED" {
-                let _azle_stable_storage = (_azle_stable_storage_json_string,);
-
-                ic_cdk::storage::stable_save(_azle_stable_storage);
-            }
-        });
+        })
     };
 
     ActPreUpgradeMethod { body }

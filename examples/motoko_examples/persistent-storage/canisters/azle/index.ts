@@ -1,4 +1,4 @@
-import { ic, Init, nat, nat64, Opt, Query, Update } from 'azle';
+import { ic, Init, nat, nat64, Opt, Query, StableBTreeMap, Update } from 'azle';
 
 //#region Performance
 type PerfResult = {
@@ -20,21 +20,20 @@ function record_performance(start: nat64, end: nat64): void {
 }
 //#endregion
 
-type StableStorage = {
-    counter: nat;
-};
-
-let stable_storage = ic.stable_storage<StableStorage>();
+let stable_storage = new StableBTreeMap<string, nat>(0, 25, 1_000);
 
 export function init(): Init {
-    stable_storage.counter = 0n;
+    stable_storage.insert('counter', 0n);
 }
 
 export function increment(): Update<nat> {
     const perf_start = ic.performance_counter(0);
 
-    stable_storage.counter += 1n;
-    const result = stable_storage.counter;
+    stable_storage.insert(
+        'counter',
+        (stable_storage.get('counter') ?? 0n) + 1n
+    );
+    const result = stable_storage.get('counter') ?? 0n;
 
     const perf_end = ic.performance_counter(0);
 
@@ -44,14 +43,14 @@ export function increment(): Update<nat> {
 }
 
 export function get(): Query<nat> {
-    return stable_storage.counter;
+    return stable_storage.get('counter') ?? 0n;
 }
 
 export function reset(): Update<nat> {
     const perf_start = ic.performance_counter(0);
 
-    stable_storage.counter = 0n;
-    const result = stable_storage.counter;
+    stable_storage.insert('counter', 0n);
+    const result = stable_storage.get('counter') ?? 0n;
 
     const perf_end = ic.performance_counter(0);
 

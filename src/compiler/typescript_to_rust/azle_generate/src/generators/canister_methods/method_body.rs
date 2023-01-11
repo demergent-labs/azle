@@ -56,8 +56,8 @@ pub fn generate_canister_method_body(fn_decl: &AzleFnDecl) -> proc_macro2::Token
 pub fn maybe_generate_call_to_js_function(
     fn_decl_option: &Option<&AzleFnDecl>,
 ) -> proc_macro2::TokenStream {
-    if let Some(post_upgrade_fn_decl) = fn_decl_option {
-        generate_call_to_js_function(post_upgrade_fn_decl)
+    if let Some(azle_fn_decl) = fn_decl_option {
+        generate_call_to_js_function(azle_fn_decl)
     } else {
         quote!()
     }

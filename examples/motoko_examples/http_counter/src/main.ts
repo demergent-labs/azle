@@ -1,4 +1,15 @@
-import { Func, Query, Opt, Update, Variant, blob, ic, nat, nat16 } from 'azle';
+import {
+    blob,
+    Func,
+    ic,
+    nat,
+    nat16,
+    Opt,
+    Query,
+    StableBTreeMap,
+    Update,
+    Variant
+} from 'azle';
 import encodeUtf8 from 'encode-utf8';
 
 type StreamingCallbackHttpResponse = {
@@ -39,13 +50,9 @@ type HttpRequest = {
     body: blob;
 };
 
-type StableStorage = {
-    counter: nat;
-};
+let stable_storage = new StableBTreeMap<string, nat>(0, 25, 1_000);
 
-let stable_storage: StableStorage = ic.stable_storage();
-
-stable_storage.counter = 0n;
+stable_storage.insert('counter', 0n);
 
 function isGzip(x: HeaderField): boolean {
     return (
@@ -83,7 +90,9 @@ export function http_request(req: HttpRequest): Query<HttpResponse> {
                 status_code: 200,
                 headers: [['content-type', 'text/plain']],
                 body: encode(
-                    `Counter is ${stable_storage.counter}\n${req.url}\n`
+                    `Counter is ${stable_storage.get('counter') ?? 0n}\n${
+                        req.url
+                    }\n`
                 ),
                 streaming_strategy: null,
                 upgrade: null
@@ -131,13 +140,20 @@ export function http_request(req: HttpRequest): Query<HttpResponse> {
 
 export function http_request_update(req: HttpRequest): Update<HttpResponse> {
     if (req.method === 'POST') {
-        stable_storage.counter += 1n;
+        stable_storage.insert(
+            'counter',
+            (stable_storage.get('counter') ?? 0n) + 1n
+        );
 
         if (req.headers.find(isGzip) === undefined) {
             return {
                 status_code: 201,
                 headers: [['content-type', 'text/plain']],
-                body: encode(`Counter updated to ${stable_storage.counter}\n`),
+                body: encode(
+                    `Counter updated to ${
+                        stable_storage.get('counter') ?? 0n
+                    }\n`
+                ),
                 streaming_strategy: null,
                 upgrade: null
             };
@@ -185,7 +201,7 @@ export function http_streaming(
         }
         case 'next': {
             return {
-                body: encode(`${stable_storage.counter}`),
+                body: encode(`${stable_storage.get('counter') ?? 0n}`),
                 token: { arbitrary_data: 'last' }
             };
         }

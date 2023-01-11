@@ -44,6 +44,15 @@ impl TsAst {
                 .function(_azle_ic_set_timer, "set_timer", 0)
                 .function(_azle_ic_set_timer_interval, "set_timer_interval", 0)
                 .function(_azle_ic_stable_bytes, "stable_bytes", 0)
+                .function(_azle_ic_stable_b_tree_map_contains_key, "stable_b_tree_map_contains_key", 0)
+                .function(_azle_ic_stable_b_tree_map_get, "stable_b_tree_map_get", 0)
+                .function(_azle_ic_stable_b_tree_map_insert, "stable_b_tree_map_insert", 0)
+                .function(_azle_ic_stable_b_tree_map_is_empty, "stable_b_tree_map_is_empty", 0)
+                .function(_azle_ic_stable_b_tree_map_items, "stable_b_tree_map_items", 0)
+                .function(_azle_ic_stable_b_tree_map_keys, "stable_b_tree_map_keys", 0)
+                .function(_azle_ic_stable_b_tree_map_values, "stable_b_tree_map_values", 0)
+                .function(_azle_ic_stable_b_tree_map_len, "stable_b_tree_map_len", 0)
+                .function(_azle_ic_stable_b_tree_map_remove, "stable_b_tree_map_remove", 0)
                 .function(_azle_ic_stable_grow, "stable_grow", 0)
                 .function(_azle_ic_stable_read, "stable_read", 0)
                 .function(_azle_ic_stable_size, "stable_size", 0)
@@ -54,7 +63,6 @@ impl TsAst {
                 .function(_azle_ic_stable64_write, "stable64_write", 0)
                 .function(_azle_ic_time, "time", 0)
                 .function(_azle_ic_trap, "trap", 0)
-                .property("_azle_stable_storage", _azle_stable_storage, boa_engine::property::Attribute::all())
                 .build();
         }
     }
