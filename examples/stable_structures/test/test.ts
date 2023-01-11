@@ -27,8 +27,24 @@ const stable_structures_canister_2 = createActorCanister2(
 );
 
 const tests: Test[] = [
-    ...deploy('canister1'),
-    ...deploy('canister2'),
+    {
+        name: 'deploy',
+        prep: async () => {
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+
+            execSync(`dfx canister uninstall-code canister1 || true`, {
+                stdio: 'inherit'
+            });
+
+            execSync(`dfx canister uninstall-code canister2 || true`, {
+                stdio: 'inherit'
+            });
+
+            execSync(`dfx deploy`, {
+                stdio: 'inherit'
+            });
+        }
+    },
     ...pre_redeploy_tests(stable_structures_canister_1, 0, 6),
     ...pre_redeploy_tests(stable_structures_canister_2, 7, 13),
     {
