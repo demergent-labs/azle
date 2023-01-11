@@ -250,7 +250,6 @@ Examples:
 
 -   [basic-dao](/examples/motoko_examples/basic-dao)
 -   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
--   [stable_storage](/examples/stable_storage)
 
 ```typescript
 import { PreUpgrade } from 'azle';
@@ -266,7 +265,6 @@ Examples:
 
 -   [basic-dao](/examples/motoko_examples/basic-dao)
 -   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
--   [stable_storage](/examples/stable_storage)
 -   [whoami](/examples/motoko_examples/whoami)
 
 ```typescript
@@ -2255,7 +2253,7 @@ function callback(): void {
 
 ### Stable Memory
 
--   [stable storage](#stable-storage)
+-   [stable structures](#stable-structures)
 -   [stable64 grow](#stable64-grow)
 -   [stable64 read](#stable64-read)
 -   [stable64 size](#stable64-size)
@@ -2266,35 +2264,92 @@ function callback(): void {
 -   [stable size](#stable-size)
 -   [stable write](#stable-write)
 
-#### stable storage
+#### stable structures
 
-The current stable storage implementation is limited in how much data can be serialized/deserialized in the pre_upgrade/post_upgrade step before the cycle limit is reached. It's unclear exactly what the serialization/deserialization limits are, but consider that they will most likely be significantly less than 4GiB.
+Higher-level data structures backed directly by the lower level [stable memory](#stable-memory). These data structures can grow to GiBs in size across canister upgrades without the need for manual serialization/deserialization in pre/post upgrade hooks. These data structures are based on their Rust counterparts [here](https://github.com/dfinity/stable-structures).
 
-This applies to stable storage only, not the more primitive stable memory operations.
+Currently Azle only exposes the `StableBTreeMap` data structure. Additional structures will be added in the future.
 
-To resolve these issues, we plan to release an Azle-specific stable structure similar to what can be found [here](https://github.com/dfinity/stable-structures).
+#### StableBTreeMap
+
+Given the types `Key`, and `Value`, a new StableBTreeMap can be created like this:
+
+```ts
+let map = new StableBTreeMap<Key, Value>(0, 100, 100);
+```
+
+Note that the constructor requires the following parameters:
+
+-   `memory_id` the memory id at which to instantiate this map. Must be between 0 and 255 inclusive.
+-   `max_key_size` the largest size (in bytes) a key can be
+-   `max_value_size` the largest size (in bytes) a value can be
+
+Items inserted into the map must be smaller than the specified max values otherwise an [InsertError](src/stable_b_tree_map.ts) will be returned.
 
 Examples:
 
--   [basic-dao](/examples/motoko_examples/basic-dao)
 -   [func_types](/examples/func_types)
 -   [http_counter](/examples/motoko_examples/http_counter)
 -   [persistent_storage](/examples/motoko_examples/persistent-storage)
 -   [pre_and_post_upgrade](/examples/pre_and_post_upgrade)
--   [stable_storage](/examples/stable_storage)
--   [tuple_types](/examples/tuple_types)
+-   [stable_structures](/examples/stable_structures)
 
 ```typescript
-import { Init, nat, Update } from 'azle';
+import {
+    InsertError,
+    nat64,
+    nat8,
+    Opt,
+    Query,
+    StableBTreeMap,
+    Update,
+    Variant
+} from 'azle';
 
-type StableStorage = {
-    stable_nat: nat;
-};
+type Key = nat8;
+type Value = string;
 
-let stable_storage: StableStorage = ic.stable_storage();
+type InsertResult = Variant<{
+    ok: Opt<Value>;
+    err: InsertError;
+}>;
 
-export function init(stable_nat: nat): Init {
-    stable_storage.stable_nat = stable_nat;
+let map = new StableBTreeMap<Key, Value>(0, 100, 100);
+
+export function contains_key(key: Key): Query<boolean> {
+    return map.contains_key(key);
+}
+
+export function get(key: Key): Query<Opt<Value>> {
+    return map.get(key);
+}
+
+export function insert(key: Key, value: Value): Update<InsertResult> {
+    return map.insert(key, value);
+}
+
+export function is_empty(): Query<boolean> {
+    return map.is_empty();
+}
+
+export function items(): Query<[Key, Value][]> {
+    return map.items();
+}
+
+export function keys(): Query<Key[]> {
+    return map.keys();
+}
+
+export function len(): Query<nat64> {
+    return map.len();
+}
+
+export function remove(key: Key): Update<Opt<Value>> {
+    return map.remove(key);
+}
+
+export function values(): Query<Value[]> {
+    return map.values();
 }
 ```
 

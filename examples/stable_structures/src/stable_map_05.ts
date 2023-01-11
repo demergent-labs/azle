@@ -35,10 +35,22 @@ export function stable_map_5_is_empty(): Query<boolean> {
     return stable_map_5.is_empty();
 }
 
+export function stable_map_5_items(): Query<[Opt<String>, float64][]> {
+    return stable_map_5.items();
+}
+
+export function stable_map_5_keys(): Query<Opt<String>[]> {
+    return stable_map_5.keys();
+}
+
 export function stable_map_5_len(): Query<nat64> {
     return stable_map_5.len();
 }
 
 export function stable_map_5_remove(key: Opt<String>): Update<Opt<float64>> {
     return stable_map_5.remove(key);
+}
+
+export function stable_map_5_values(): Query<float64[]> {
+    return stable_map_5.values();
 }

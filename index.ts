@@ -1,4 +1,5 @@
 import { Principal } from '@dfinity/principal';
+import { InsertResult } from './src/stable_b_tree_map';
 export {
     StableBTreeMap,
     InsertResult,
@@ -126,13 +127,16 @@ type ic = {
     //     memory_id: nat8,
     //     key: Key,
     //     value: Value
-    // ) => Value;
+    // ) => InsertResult<Opt<Value>>;
     // stable_b_tree_map_is_empty: (memory_id: nat8) => boolean;
+    // stable_b_tree_map_items: <Key, Value>(memory_id: nat8) => [Key, Value][];
+    // stable_b_tree_map_keys: <Key>(memory_id: nat8) => Key[];
     // stable_b_tree_map_len: (memory_id: nat8) => nat64;
     // stable_b_tree_map_remove: <Key, Value>(
     //     memory_id: nat8,
     //     key: Key
     // ) => Opt<Value>;
+    // stable_b_tree_map_values: <Value>(memory_id: nat8) => Value[];
     stable_bytes: () => blob;
     stable_grow: (new_pages: nat32) => StableGrowResult;
     stable_read: (offset: nat32, length: nat32) => blob;

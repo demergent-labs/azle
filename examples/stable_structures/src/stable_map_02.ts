@@ -36,10 +36,22 @@ export function stable_map_2_is_empty(): Query<boolean> {
     return stable_map_2.is_empty();
 }
 
+export function stable_map_2_items(): Query<[nat32, nat][]> {
+    return stable_map_2.items();
+}
+
+export function stable_map_2_keys(): Query<nat32[]> {
+    return stable_map_2.keys();
+}
+
 export function stable_map_2_len(): Query<nat64> {
     return stable_map_2.len();
 }
 
 export function stable_map_2_remove(key: nat32): Update<Opt<nat>> {
     return stable_map_2.remove(key);
+}
+
+export function stable_map_2_values(): Query<nat[]> {
+    return stable_map_2.values();
 }
