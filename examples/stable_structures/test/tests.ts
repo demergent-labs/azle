@@ -152,7 +152,7 @@ export function pre_redeploy_tests(
             'initial read',
             stable_structures_canister
         ),
-        ...get_set_value_tests('initial set', stable_structures_canister),
+        ...get_insert_tests('initial set', stable_structures_canister),
         ...get_contains_key_tests(true, 'post set', stable_structures_canister),
         ...get_is_empty_tests(false, 'post set', stable_structures_canister),
         ...get_len_tests(1n, 'post set', stable_structures_canister),
@@ -176,7 +176,7 @@ export function post_redeploy_tests(
     ];
 }
 
-function get_set_value_tests(
+function get_insert_tests(
     suffix: string,
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
