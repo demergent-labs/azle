@@ -60,6 +60,42 @@ const STABLE_MAP_KEYS: [
     'hello'
 ];
 
+const STABLE_MAP_KEYS_COMPS: [
+    (a: nat8 | undefined, b: nat8) => boolean,
+    (a: nat16 | undefined, b: nat16) => boolean,
+    (a: nat32 | undefined, b: nat32) => boolean,
+    (a: Reaction | undefined, b: Reaction) => boolean,
+    (a: User | undefined, b: User) => boolean,
+    (a: string[] | undefined, b: string[]) => boolean,
+    (a: BigUint64Array | undefined, b: BigInt64Array) => boolean,
+    (a: null | undefined, b: null) => boolean,
+    (a: boolean | undefined, b: boolean) => boolean,
+    (a: float64 | undefined, b: float64) => boolean,
+    (a: float32 | undefined, b: float32) => boolean,
+    (a: nat | undefined, b: nat) => boolean,
+    (a: blob | undefined, b: blob) => boolean,
+    (a: string | undefined, b: string) => boolean
+] = [
+    simple_equals,
+    simple_equals,
+    simple_equals,
+    (a, b) =>
+        a !== undefined &&
+        Object.keys(a).every((value) => Object.keys(b).includes(value)),
+    (a, b) =>
+        a !== undefined &&
+        Object.keys(a).every((value) => Object.keys(b).includes(value)),
+    (a, b) => a !== undefined && a.every((value, index) => value === b[index]),
+    (a, b) => a !== undefined && a.every((value, index) => value === b[index]),
+    simple_equals,
+    simple_equals,
+    simple_equals,
+    (a, b) => a?.toFixed(2) === b.toFixed(2),
+    simple_equals,
+    (a, b) => a !== undefined && a.every((value, index) => value === b[index]),
+    simple_equals
+];
+
 const STABLE_MAP_VALUES: [
     string,
     blob,
@@ -98,10 +134,6 @@ const STABLE_MAP_VALUES: [
     { Sad: null },
     Principal.fromText('aaaaa-aa')
 ];
-
-function simple_equals(a: any, b: any): boolean {
-    return a === b;
-}
 
 const STABLE_MAP_VALUE_COMPS: [
     (a: string | undefined, b: string) => boolean,
@@ -144,20 +176,39 @@ export function pre_redeploy_tests(
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
-        ...get_empty_read_tests(stable_structures_canister),
-        ...get_is_empty_tests(true, 'initial read', stable_structures_canister),
-        ...get_len_tests(0n, 'initial read', stable_structures_canister),
-        ...get_contains_key_tests(
-            false,
-            'initial read',
+        ...get_returns_empty(stable_structures_canister),
+        ...is_empty_returns(
+            true,
+            'before inserting',
             stable_structures_canister
         ),
-        ...get_insert_tests('initial set', stable_structures_canister),
-        ...get_contains_key_tests(true, 'post set', stable_structures_canister),
-        ...get_is_empty_tests(false, 'post set', stable_structures_canister),
-        ...get_len_tests(1n, 'post set', stable_structures_canister),
-        ...get_get_tests('post set', stable_structures_canister),
-        ...get_insert_error_tests(stable_structures_canister)
+        ...len_returns(0n, 'before inserting', stable_structures_canister),
+        ...contains_key_returns(
+            false,
+            'before inserting',
+            stable_structures_canister
+        ),
+        ...keys_is_length(0, 'before inserting', stable_structures_canister),
+        ...values_is_length(0, 'before inserting', stable_structures_canister),
+
+        ...insert(stable_structures_canister),
+
+        ...contains_key_returns(
+            true,
+            'after inserting',
+            stable_structures_canister
+        ),
+        ...is_empty_returns(
+            false,
+            'after inserting',
+            stable_structures_canister
+        ),
+        ...len_returns(1n, 'after inserting', stable_structures_canister),
+        ...get_returns_expected_value(
+            'after inserting',
+            stable_structures_canister
+        ),
+        ...insert_returns_insert_error(stable_structures_canister)
     ];
 }
 
@@ -165,24 +216,86 @@ export function post_redeploy_tests(
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
-        ...get_get_tests('post redeploy', stable_structures_canister),
-        ...get_remove_tests('clean up', stable_structures_canister),
-        ...get_contains_key_tests(
+        ...get_returns_expected_value(
+            'post redeploy',
+            stable_structures_canister
+        ),
+        ...remove(stable_structures_canister),
+        ...contains_key_returns(
             false,
             'post clean up',
             stable_structures_canister
         ),
-        ...get_insert_error_tests(stable_structures_canister)
+        ...insert_returns_insert_error(stable_structures_canister)
     ];
 }
 
-function get_insert_tests(
+function contains_key_returns(
+    should_contain: boolean,
     suffix: string,
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
+    return STABLE_MAP_KEYS.map((stable_map_key, index) => {
+        return {
+            name: `stable_map_${index}.contains_key() that exists ${suffix}`,
+            test: async () => {
+                const set_result = await (stable_structures_canister as any)[
+                    `stable_map_${index}_contains_key`
+                ](stable_map_key);
+
+                return {
+                    ok: set_result === should_contain
+                };
+            }
+        };
+    });
+}
+
+function get_returns_empty(
+    stable_structures_canister: ActorSubclass<_SERVICE>
+): Test[] {
+    return STABLE_MAP_KEYS.map((stable_map_key, index) => {
+        return {
+            name: `stable_map_${index}.get() returns an empty Opt<T>`,
+            test: async () => {
+                const get_result = await (stable_structures_canister as any)[
+                    `stable_map_${index}_get`
+                ](stable_map_key);
+
+                return {
+                    ok: is_empty_opt(get_result)
+                };
+            }
+        };
+    });
+}
+
+function get_returns_expected_value(
+    suffix: string,
+    stable_structures_canister: ActorSubclass<_SERVICE>
+): Test[] {
+    return STABLE_MAP_KEYS.map((stable_map_key, index) => {
+        const value_comp: (a: any, b: any) => boolean =
+            STABLE_MAP_VALUE_COMPS[index];
+        return {
+            name: `stable_map_${index}.get(), ${suffix}, contains the expected value`,
+            test: async () => {
+                const get_result = await (stable_structures_canister as any)[
+                    `stable_map_${index}_get`
+                ](stable_map_key);
+
+                return {
+                    ok: value_comp(get_result[0], STABLE_MAP_VALUES[index])
+                };
+            }
+        };
+    });
+}
+
+function insert(stable_structures_canister: ActorSubclass<_SERVICE>): Test[] {
     return STABLE_MAP_KEYS.map((key, index) => {
         return {
-            name: `stable_map_${index} set value ${suffix}`,
+            name: `stable_map_${index}.insert() doesn't error out, and returns an empty Opt<T>`,
             test: async () => {
                 const set_result = await (stable_structures_canister as any)[
                     `stable_map_${index}_insert`
@@ -200,76 +313,14 @@ function get_insert_tests(
     });
 }
 
-function get_contains_key_tests(
-    should_contain: boolean,
-    suffix: string,
-    stable_structures_canister: ActorSubclass<_SERVICE>
-): Test[] {
-    return STABLE_MAP_KEYS.map((stable_map_key, index) => {
-        return {
-            name: `stable_map_${index} contains key that exists ${suffix}`,
-            test: async () => {
-                const set_result = await (stable_structures_canister as any)[
-                    `stable_map_${index}_contains_key`
-                ](stable_map_key);
-
-                return {
-                    ok: set_result === should_contain
-                };
-            }
-        };
-    });
-}
-
-function get_empty_read_tests(
-    stable_structures_canister: ActorSubclass<_SERVICE>
-): Test[] {
-    return STABLE_MAP_KEYS.map((stable_map_key, index) => {
-        return {
-            name: `stable_map_${index} initial read`,
-            test: async () => {
-                const get_result = await (stable_structures_canister as any)[
-                    `stable_map_${index}_get`
-                ](stable_map_key);
-
-                return {
-                    ok: is_empty_opt(get_result)
-                };
-            }
-        };
-    });
-}
-
-function get_get_tests(
-    suffix: string,
-    stable_structures_canister: ActorSubclass<_SERVICE>
-): Test[] {
-    return STABLE_MAP_KEYS.map((stable_map_key, index) => {
-        const value_comp: (a: any, b: any) => boolean =
-            STABLE_MAP_VALUE_COMPS[index];
-        return {
-            name: `stable_map_${index} get test ${suffix}`,
-            test: async () => {
-                const get_result = await (stable_structures_canister as any)[
-                    `stable_map_${index}_get`
-                ](stable_map_key);
-
-                return {
-                    ok: value_comp(get_result[0], STABLE_MAP_VALUES[index])
-                };
-            }
-        };
-    });
-}
-
-function get_is_empty_tests(
+function is_empty_returns(
     should_be_empty: boolean,
     suffix: string,
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return STABLE_MAP_KEYS.map((_value, index) => {
         return {
-            name: `stable_map_${index} is empty test ${suffix}`,
+            name: `stable_map_${index}.is_empty(), ${suffix}, returns ${should_be_empty}`,
             test: async () => {
                 const result = await (stable_structures_canister as any)[
                     `stable_map_${index}_is_empty`
@@ -283,14 +334,42 @@ function get_is_empty_tests(
     });
 }
 
-function get_len_tests(
+function keys_is_length(
+    length: number,
+    suffix: string,
+    stable_structures_canister: ActorSubclass<_SERVICE>
+): Test[] {
+    return STABLE_MAP_KEYS.map((key, index) => {
+        return {
+            name: `stable_map_${index}.keys(), ${suffix}, returns ${length} ${
+                length === 1 ? 'item' : 'items'
+            }`,
+            test: async () => {
+                let key_comp: (a: any, b: any) => boolean =
+                    STABLE_MAP_KEYS_COMPS[index];
+                const keys_result = await (stable_structures_canister as any)[
+                    `stable_map_${index}_keys`
+                ]();
+
+                return {
+                    ok:
+                        (length === 0 && is_empty_array(keys_result)) ||
+                        (length === 1 &&
+                            key_comp(keys_result[0], STABLE_MAP_KEYS[index]))
+                };
+            }
+        };
+    });
+}
+
+function len_returns(
     expected_len: nat64,
     suffix: string,
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return STABLE_MAP_KEYS.map((_value, index) => {
         return {
-            name: `stable_map_${index} length test ${suffix}`,
+            name: `stable_map_${index}.len(), ${suffix}, returns ${expected_len}`,
             test: async () => {
                 const result = await (stable_structures_canister as any)[
                     `stable_map_${index}_len`
@@ -304,15 +383,12 @@ function get_len_tests(
     });
 }
 
-function get_remove_tests(
-    suffix: string,
-    stable_structures_canister: ActorSubclass<_SERVICE>
-): Test[] {
+function remove(stable_structures_canister: ActorSubclass<_SERVICE>): Test[] {
     return STABLE_MAP_KEYS.map((stable_map_keys, index) => {
         let value_comp: (a: any, b: any) => boolean =
             STABLE_MAP_VALUE_COMPS[index];
         return {
-            name: `stable_map_${index} remove value test ${suffix}`,
+            name: `stable_map_${index}.remove(), returns the previously stored value`,
             test: async () => {
                 const get_result = await (stable_structures_canister as any)[
                     `stable_map_${index}_remove`
@@ -326,7 +402,38 @@ function get_remove_tests(
     });
 }
 
-export function get_insert_error_tests(
+function values_is_length(
+    length: number,
+    suffix: string,
+    stable_structures_canister: ActorSubclass<_SERVICE>
+): Test[] {
+    return STABLE_MAP_VALUES.map((key, index) => {
+        return {
+            name: `stable_map_${index}.values(), ${suffix}, returns ${length} ${
+                length === 1 ? 'item' : 'items'
+            }`,
+            test: async () => {
+                let value_comp: (a: any, b: any) => boolean =
+                    STABLE_MAP_VALUE_COMPS[index];
+                const values_result = await (stable_structures_canister as any)[
+                    `stable_map_${index}_values`
+                ]();
+
+                return {
+                    ok:
+                        (length === 0 && is_empty_array(values_result)) ||
+                        (length === 1 &&
+                            value_comp(
+                                values_result[0],
+                                STABLE_MAP_VALUES[index]
+                            ))
+                };
+            }
+        };
+    });
+}
+
+export function insert_returns_insert_error(
     stable_structures_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
@@ -374,10 +481,30 @@ export function get_insert_error_tests(
 }
 
 /**
+ * Determines whether the provided value is an empty array
+ * @param value the value to test.
+ * @returns `true` if the provided value is an empty array, `false` otherwise.
+ */
+function is_empty_array(value: any): boolean {
+    return (
+        (Array.isArray(value) ||
+            value instanceof Uint8Array ||
+            value instanceof Uint16Array ||
+            value instanceof Uint32Array ||
+            value instanceof BigUint64Array) &&
+        value.length === 0
+    );
+}
+
+/**
  * Determines whether the provided value is an Opt<T> or not.
  * @param value the value to test.
  * @returns `true` if the provided value is an empty Opt<T>, `false` otherwise.
  */
 function is_empty_opt(value: any): boolean {
-    return Array.isArray(value) && value.length === 0;
+    return is_empty_array(value);
+}
+
+function simple_equals(a: any, b: any): boolean {
+    return a === b;
 }
