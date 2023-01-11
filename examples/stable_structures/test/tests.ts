@@ -158,8 +158,8 @@ const STABLE_MAP_VALUE_COMPS: [
     simple_equals,
     simple_equals,
     simple_equals,
-    (a, b) => a === undefined, // See https://github.com/demergent-labs/azle/issues/847
-    (a, b) => a === undefined, // See https://github.com/demergent-labs/azle/issues/847
+    (a, b) => (a === undefined ? true : a === b), // See https://github.com/demergent-labs/azle/issues/847
+    (a, b) => (a === undefined ? true : a === b), // See https://github.com/demergent-labs/azle/issues/847
     (a, b) => a !== undefined && a.every((value, index) => value === b[index]),
     (a, b) => a !== undefined && a.every((value, index) => value === b[index]),
     (a, b) =>
@@ -177,37 +177,33 @@ export function pre_redeploy_tests(
 ): Test[] {
     return [
         ...get_returns_empty(stable_structures_canister),
-        ...is_empty_returns(
-            true,
-            'before inserting',
-            stable_structures_canister
-        ),
-        ...len_returns(0n, 'before inserting', stable_structures_canister),
+        ...is_empty_returns(true, 'before insert', stable_structures_canister),
+        ...len_returns(0n, 'before insert', stable_structures_canister),
         ...contains_key_returns(
             false,
-            'before inserting',
+            'before insert',
             stable_structures_canister
         ),
-        ...keys_is_length(0, 'before inserting', stable_structures_canister),
-        ...values_is_length(0, 'before inserting', stable_structures_canister),
+        ...keys_is_length(0, 'before insert', stable_structures_canister),
+        ...values_is_length(0, 'before insert', stable_structures_canister),
+        ...items_is_length(0, 'before insert', stable_structures_canister),
 
         ...insert(stable_structures_canister),
 
         ...contains_key_returns(
             true,
-            'after inserting',
+            'after insert',
             stable_structures_canister
         ),
-        ...is_empty_returns(
-            false,
-            'after inserting',
-            stable_structures_canister
-        ),
-        ...len_returns(1n, 'after inserting', stable_structures_canister),
+        ...is_empty_returns(false, 'after insert', stable_structures_canister),
+        ...len_returns(1n, 'after insert', stable_structures_canister),
         ...get_returns_expected_value(
-            'after inserting',
+            'after insert',
             stable_structures_canister
         ),
+        ...keys_is_length(1, 'after insert', stable_structures_canister),
+        ...values_is_length(1, 'after insert', stable_structures_canister),
+        ...items_is_length(1, 'after insert', stable_structures_canister),
         ...insert_returns_insert_error(stable_structures_canister)
     ];
 }
@@ -223,7 +219,7 @@ export function post_redeploy_tests(
         ...remove(stable_structures_canister),
         ...contains_key_returns(
             false,
-            'post clean up',
+            'after remove',
             stable_structures_canister
         ),
         ...insert_returns_insert_error(stable_structures_canister)
@@ -237,7 +233,7 @@ function contains_key_returns(
 ): Test[] {
     return STABLE_MAP_KEYS.map((stable_map_key, index) => {
         return {
-            name: `stable_map_${index}.contains_key() that exists ${suffix}`,
+            name: `stable_map_${index}.contains_key(), ${suffix}, returns ${should_contain}`,
             test: async () => {
                 const set_result = await (stable_structures_canister as any)[
                     `stable_map_${index}_contains_key`
@@ -256,7 +252,7 @@ function get_returns_empty(
 ): Test[] {
     return STABLE_MAP_KEYS.map((stable_map_key, index) => {
         return {
-            name: `stable_map_${index}.get() returns an empty Opt<T>`,
+            name: `stable_map_${index}.get() returns an empty Opt`,
             test: async () => {
                 const get_result = await (stable_structures_canister as any)[
                     `stable_map_${index}_get`
@@ -295,7 +291,7 @@ function get_returns_expected_value(
 function insert(stable_structures_canister: ActorSubclass<_SERVICE>): Test[] {
     return STABLE_MAP_KEYS.map((key, index) => {
         return {
-            name: `stable_map_${index}.insert() doesn't error out, and returns an empty Opt<T>`,
+            name: `stable_map_${index}.insert() doesn't error out, and returns an empty Opt`,
             test: async () => {
                 const set_result = await (stable_structures_canister as any)[
                     `stable_map_${index}_insert`
@@ -334,6 +330,43 @@ function is_empty_returns(
     });
 }
 
+function items_is_length(
+    length: number,
+    suffix: string,
+    stable_structures_canister: ActorSubclass<_SERVICE>
+): Test[] {
+    return STABLE_MAP_KEYS.map((key, index) => {
+        return {
+            name: `stable_map_${index}.items(), ${suffix}, returns ${length} ${
+                length === 1 ? 'item' : 'items'
+            }`,
+            test: async () => {
+                let key_comp: (a: any, b: any) => boolean =
+                    STABLE_MAP_KEYS_COMPS[index];
+                let value_comp: (a: any, b: any) => boolean =
+                    STABLE_MAP_VALUE_COMPS[index];
+                const items_result = await (stable_structures_canister as any)[
+                    `stable_map_${index}_items`
+                ]();
+
+                return {
+                    ok:
+                        (length === 0 && is_empty_array(items_result)) ||
+                        (length === 1 &&
+                            key_comp(
+                                items_result[0][0],
+                                STABLE_MAP_KEYS[index]
+                            ) &&
+                            value_comp(
+                                items_result[0][1],
+                                STABLE_MAP_VALUES[index]
+                            ))
+                };
+            }
+        };
+    });
+}
+
 function keys_is_length(
     length: number,
     suffix: string,
@@ -342,7 +375,7 @@ function keys_is_length(
     return STABLE_MAP_KEYS.map((key, index) => {
         return {
             name: `stable_map_${index}.keys(), ${suffix}, returns ${length} ${
-                length === 1 ? 'item' : 'items'
+                length === 1 ? 'key' : 'keys'
             }`,
             test: async () => {
                 let key_comp: (a: any, b: any) => boolean =
@@ -388,7 +421,7 @@ function remove(stable_structures_canister: ActorSubclass<_SERVICE>): Test[] {
         let value_comp: (a: any, b: any) => boolean =
             STABLE_MAP_VALUE_COMPS[index];
         return {
-            name: `stable_map_${index}.remove(), returns the previously stored value`,
+            name: `stable_map_${index}.remove() returns the previously stored value`,
             test: async () => {
                 const get_result = await (stable_structures_canister as any)[
                     `stable_map_${index}_remove`
@@ -410,7 +443,7 @@ function values_is_length(
     return STABLE_MAP_VALUES.map((key, index) => {
         return {
             name: `stable_map_${index}.values(), ${suffix}, returns ${length} ${
-                length === 1 ? 'item' : 'items'
+                length === 1 ? 'value' : 'values'
             }`,
             test: async () => {
                 let value_comp: (a: any, b: any) => boolean =
@@ -438,7 +471,7 @@ export function insert_returns_insert_error(
 ): Test[] {
     return [
         {
-            name: 'insert returns a KeyTooLarge error if the key is too large',
+            name: 'insert() returns a KeyTooLarge error if the key is too large',
             test: async () => {
                 const key_over_100_bytes =
                     '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
@@ -458,7 +491,7 @@ export function insert_returns_insert_error(
             }
         },
         {
-            name: 'insert returns a ValueTooLarge error if the value is too large',
+            name: 'insert() returns a ValueTooLarge error if the value is too large',
             test: async () => {
                 const value_over_100_bytes =
                     '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
