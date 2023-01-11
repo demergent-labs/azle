@@ -8,7 +8,7 @@ import {
     Update,
     Variant
 } from 'azle';
-import { User } from './types';
+import { User } from '../types';
 
 type StableMap4InsertResult = Variant<{
     ok: Opt<float32>;
