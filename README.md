@@ -2272,19 +2272,19 @@ Currently Azle only exposes the `StableBTreeMap` data structure. Additional stru
 
 #### StableBTreeMap
 
-Given the types `Key`, and `Value` a new StableBTreeMap can be created like this:
+Given the types `Key`, and `Value`, a new StableBTreeMap can be created like this:
 
 ```ts
 let map = new StableBTreeMap<Key, Value>(0, 100, 100);
 ```
 
-Note the following required parameters:
+Note that the constructor requires the following parameters:
 
 -   `memory_id` the memory id at which to instantiate this map. Must be between 0 and 255 inclusive.
 -   `max_key_size` the largest size (in bytes) a key can be
 -   `max_value_size` the largest size (in bytes) a value can be
 
-Items inserted into the map must be smaller than the specified max values otherwise an InsertError will be returned.
+Items inserted into the map must be smaller than the specified max values otherwise an [InsertError](src/stable_b_tree_map.ts) will be returned.
 
 Examples:
 
