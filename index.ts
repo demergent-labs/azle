@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { InsertResult } from './src/stable_b_tree_map';
+// import { InsertResult } from './src/stable_b_tree_map';
 export {
     StableBTreeMap,
     InsertResult,
