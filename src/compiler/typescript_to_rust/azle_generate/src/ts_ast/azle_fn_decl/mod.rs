@@ -3,7 +3,7 @@ use swc_common::SourceMap;
 use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType, TsTypeRef};
 use syn::Ident;
 
-use crate::ts_ast::{azle_type::AzleType, GetName};
+use crate::ts_ast::GetName;
 use cdk_framework::CanisterMethodType;
 
 pub mod canister_method_builder;
