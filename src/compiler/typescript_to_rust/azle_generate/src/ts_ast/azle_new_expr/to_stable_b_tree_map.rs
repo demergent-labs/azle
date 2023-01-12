@@ -6,8 +6,6 @@ use crate::{
 
 impl AzleNewExpr<'_> {
     pub fn to_azle_stable_b_tree_map_node(&self) -> Result<AzleStableBTreeMapNode, String> {
-        let missing_type_args_error_message = self.build_missing_type_args_error_message();
-        let type_arg_error_message = self.build_type_arg_error_message();
         let arg_spread_error_message = self.build_arg_spread_error_message();
         let arg_error_message = self.build_arg_error_message();
         let memory_id_error_message = self.build_memory_id_error_message();
@@ -17,7 +15,7 @@ impl AzleNewExpr<'_> {
         match &self.new_expr.type_args {
             Some(type_args) => {
                 if type_args.params.len() != 2 {
-                    return Err(type_arg_error_message);
+                    return Err(self.build_incorrect_type_args_error_message().to_string());
                 }
 
                 let key_type = *type_args.params.get(0).unwrap().clone();
@@ -61,7 +59,7 @@ impl AzleNewExpr<'_> {
                     None => Err(arg_error_message),
                 }
             }
-            None => Err(missing_type_args_error_message.to_string()),
+            None => Err(self.build_missing_type_args_error_message().to_string()),
         }
     }
 }

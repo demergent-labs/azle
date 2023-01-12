@@ -25,9 +25,10 @@ impl AzleNewExpr<'_> {
             line_number: self.source_map.get_line_number(self.new_expr.span),
             source,
             range: (type_params_start_index, type_params_end_index + 1),
-            annotation: "Expected exactly 2 type arguments here".to_string(),
+            annotation: "expected exactly 2 type arguments here: the key and value types"
+                .to_string(),
             suggestion: Some(Suggestion {
-                title: "Specify a key and value type".to_string(),
+                title: "specify a key and value type".to_string(),
                 source: modified_source,
                 range: (
                     type_params_start_index,
@@ -39,9 +40,39 @@ impl AzleNewExpr<'_> {
         }
     }
 
-    pub fn build_type_arg_error_message(&self) -> String {
-        let example = "\n    new StableBTreeMap<CustomKeyType, CustomValueType>(0, 100, 1000)";
-        format!("The \"StableBTreeMap\" type requires exactly 2 type arguments: the key datatype, and the value datatype. E.g.\n{}", example)
+    pub fn build_incorrect_type_args_error_message(&self) -> ErrorMessage {
+        let source = self.source_map.get_source(self.new_expr.span);
+
+        let type_params_start_index =
+            source.find("StableBTreeMap").unwrap() + "StableBTreeMap".len();
+        let type_params_end_index = source.find("(").unwrap();
+
+        let modified_source = [
+            source.get(..type_params_start_index).unwrap(),
+            "<KeyType, ValueType>",
+            source.get(type_params_end_index..).unwrap(),
+        ]
+        .join("");
+
+        ErrorMessage {
+            title: "wrong number of type arguments".to_string(),
+            origin: self.source_map.get_origin(self.new_expr.span),
+            line_number: self.source_map.get_line_number(self.new_expr.span),
+            source,
+            range: (type_params_start_index, type_params_end_index),
+            annotation: "expected exactly 2 type arguments here: the key and value types"
+                .to_string(),
+            suggestion: Some(Suggestion {
+                title: "specify a key and value type".to_string(),
+                source: modified_source,
+                range: (
+                    type_params_start_index,
+                    type_params_start_index + "<KeyType, ValueType>".len(),
+                ),
+                annotation: None,
+                import_suggestion: None,
+            }),
+        }
     }
 
     pub fn build_arg_spread_error_message(&self) -> String {
