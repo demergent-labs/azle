@@ -29,7 +29,7 @@ impl AzleNewExpr<'_> {
                         }
 
                         if args.len() != 3 {
-                            return Err(arg_error_message);
+                            return Err(self.build_missing_args_error_message().to_string());
                         }
 
                         let memory_id = match &args.get(0).unwrap().expr.to_u8() {
