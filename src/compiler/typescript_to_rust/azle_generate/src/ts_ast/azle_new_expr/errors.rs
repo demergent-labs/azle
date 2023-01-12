@@ -1,12 +1,12 @@
 use super::AzleNewExpr;
 use crate::{
     errors::{ErrorMessage, Suggestion},
-    ts_ast::source_map::GetSourceFileInfo,
+    ts_ast::ast_traits::GetSourceInfo,
 };
 
 impl AzleNewExpr<'_> {
     pub fn build_missing_type_args_error_message(&self) -> ErrorMessage {
-        let source = self.source_map.get_source(self.new_expr.span);
+        let source = self.get_source();
 
         let type_params_start_index =
             source.find("StableBTreeMap").unwrap() + "StableBTreeMap".len();
@@ -21,8 +21,8 @@ impl AzleNewExpr<'_> {
 
         ErrorMessage {
             title: "missing type arguments".to_string(),
-            origin: self.source_map.get_origin(self.new_expr.span),
-            line_number: self.source_map.get_line_number(self.new_expr.span),
+            origin: self.get_origin(),
+            line_number: self.get_line_number(),
             source,
             range: (type_params_start_index, type_params_end_index + 1),
             annotation: "expected exactly 2 type arguments here".to_string(),
@@ -40,7 +40,7 @@ impl AzleNewExpr<'_> {
     }
 
     pub fn build_incorrect_type_args_error_message(&self) -> ErrorMessage {
-        let source = self.source_map.get_source(self.new_expr.span);
+        let source = self.get_source();
 
         let type_params_start_index =
             source.find("StableBTreeMap").unwrap() + "StableBTreeMap".len();
@@ -55,8 +55,8 @@ impl AzleNewExpr<'_> {
 
         ErrorMessage {
             title: "wrong number of type arguments".to_string(),
-            origin: self.source_map.get_origin(self.new_expr.span),
-            line_number: self.source_map.get_line_number(self.new_expr.span),
+            origin: self.get_origin(),
+            line_number: self.get_line_number(),
             source,
             range: (type_params_start_index, type_params_end_index),
             annotation: "expected exactly 2 type arguments here".to_string(),
@@ -74,7 +74,7 @@ impl AzleNewExpr<'_> {
     }
 
     pub fn build_arg_spread_error_message(&self) -> ErrorMessage {
-        let source = self.source_map.get_source(self.new_expr.span);
+        let source = self.get_source();
 
         let args_start_index = source.find("(").unwrap() + 1;
         let args_end_index = source.find(")").unwrap();
@@ -90,8 +90,8 @@ impl AzleNewExpr<'_> {
 
         ErrorMessage {
             title: "StableBTreeMap does not currently support argument spreading".to_string(),
-            origin: self.source_map.get_origin(self.new_expr.span),
-            line_number: self.source_map.get_line_number(self.new_expr.span),
+            origin: self.get_origin(),
+            line_number: self.get_line_number(),
             source,
             range: (args_start_index, args_end_index),
             annotation: "attempted to spread arguments here".to_string(),
@@ -106,7 +106,7 @@ impl AzleNewExpr<'_> {
     }
 
     pub fn build_missing_args_error_message(&self) -> ErrorMessage {
-        let source = self.source_map.get_source(self.new_expr.span);
+        let source = self.get_source();
 
         let args_start_index = source.find("(").unwrap() + 1;
         let args_end_index = source.find(")").unwrap();
@@ -122,8 +122,8 @@ impl AzleNewExpr<'_> {
 
         ErrorMessage {
             title: "missing arguments".to_string(),
-            origin: self.source_map.get_origin(self.new_expr.span),
-            line_number: self.source_map.get_line_number(self.new_expr.span),
+            origin: self.get_origin(),
+            line_number: self.get_line_number(),
             source,
             range: (args_start_index - 1, args_end_index + 1),
             annotation: "expected 3 arguments here".to_string(),
