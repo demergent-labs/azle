@@ -472,7 +472,7 @@ function runAzleGenerate(
         );
 
         return Err({
-            error: `${generalErrorMessage}\n\n${errorLines.join('\n')}`,
+            error: errorLines.join('\n'),
             suggestion,
             exitCode: 12
         });
