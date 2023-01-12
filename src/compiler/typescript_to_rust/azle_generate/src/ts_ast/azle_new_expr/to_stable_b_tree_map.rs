@@ -6,22 +6,12 @@ use crate::{
 
 impl AzleNewExpr<'_> {
     pub fn to_azle_stable_b_tree_map_node(&self) -> Result<AzleStableBTreeMapNode, String> {
-        let example = "\n    new StableBTreeMap<CustomKeyType, CustomValueType>(0, 100, 1000)";
-        let type_arg_error_message = format!("The \"StableBTreeMap\" type requires exactly 2 type arguments: the key datatype, and the value datatype. E.g.\n{}", example);
-        let arg_spread_error_message = format!("The \"StableBTreeMap\" type does not currently support argument spreading. Instead, pass each argument individually. E.g.\n{}", example);
-        let arg_error_message = format!("The \"StableBTreeMap\" type requires exactly 3 arguments: an identifier, the max key length, and the max value length. E.g.\n{}", example);
-        let memory_id_error_message = format!(
-            "The first argument to StableBTreeMap must be an integer literal between 0 and 255. E.g.\n{}",
-            example
-        );
-        let second_argument_size_error_message = format!(
-            "The second argument to StableBTreeMap must be an integer literal between 0 and 4,294,967,295. E.g.\n{}",
-            example
-        );
-        let third_argument_size_error_message = format!(
-            "The third argument to StableBTreeMap must be an integer literal between 0 and 4,294,967,295. E.g.\n{}",
-            example
-        );
+        let type_arg_error_message = self.build_type_arg_error_message();
+        let arg_spread_error_message = self.build_arg_spread_error_message();
+        let arg_error_message = self.build_arg_error_message();
+        let memory_id_error_message = self.build_memory_id_error_message();
+        let second_argument_size_error_message = self.build_second_argument_size_error_message();
+        let third_argument_size_error_message = self.build_third_argument_size_error_message();
 
         match &self.new_expr.type_args {
             Some(type_args) => {
