@@ -171,12 +171,50 @@ impl AzleNewExpr<'_> {
         }
     }
 
-    pub fn build_memory_id_error_message(&self) -> String {
-        let example = "\n    new StableBTreeMap<CustomKeyType, CustomValueType>(0, 100, 1000)";
-        format!(
-            "The first argument to StableBTreeMap must be an integer literal between 0 and 255. E.g.\n{}",
-            example
-        )
+    pub fn build_memory_id_error_message(&self) -> ErrorMessage {
+        let source = self.get_source();
+
+        let open_paren_index = source.find("(").unwrap();
+        let message_id_start_index = source
+            .char_indices()
+            .find(|(i, c)| *i > open_paren_index && !c.is_whitespace())
+            .map(|(i, _)| i)
+            .unwrap();
+
+        let message_id_end_index = source
+            .char_indices()
+            .find(|(i, c)| *i > message_id_start_index && c == &',')
+            .map(|(i, _)| i)
+            .unwrap();
+
+        let suggested_replacement = "0".to_string();
+
+        let modified_source = [
+            source.get(..message_id_start_index).unwrap(),
+            &suggested_replacement,
+            source.get(message_id_end_index..).unwrap(),
+        ]
+        .join("");
+
+        ErrorMessage {
+            title: "invalid argument: must be an integer literal between 0 and 255 inclusive"
+                .to_string(),
+            origin: self.get_origin(),
+            line_number: self.get_line_number(),
+            source,
+            range: (message_id_start_index, message_id_end_index),
+            annotation: "expected here".to_string(),
+            suggestion: Some(Suggestion {
+                title: "use a valid integer literal. E.g.:".to_string(),
+                source: modified_source,
+                range: (
+                    message_id_start_index,
+                    message_id_start_index + &suggested_replacement.len(),
+                ),
+                annotation: None,
+                import_suggestion: None,
+            }),
+        }
     }
 
     pub fn build_second_argument_size_error_message(&self) -> String {

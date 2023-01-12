@@ -6,7 +6,6 @@ use crate::{
 
 impl AzleNewExpr<'_> {
     pub fn to_azle_stable_b_tree_map_node(&self) -> Result<AzleStableBTreeMapNode, String> {
-        let memory_id_error_message = self.build_memory_id_error_message();
         let second_argument_size_error_message = self.build_second_argument_size_error_message();
         let third_argument_size_error_message = self.build_third_argument_size_error_message();
 
@@ -39,7 +38,7 @@ impl AzleNewExpr<'_> {
 
                         let memory_id = match &args.get(0).unwrap().expr.to_u8() {
                             Ok(value) => *value,
-                            Err(_) => return Err(memory_id_error_message),
+                            Err(_) => return Err(self.build_memory_id_error_message().to_string()),
                         };
 
                         let max_key_size = match &args.get(1).unwrap().expr.to_u32() {
