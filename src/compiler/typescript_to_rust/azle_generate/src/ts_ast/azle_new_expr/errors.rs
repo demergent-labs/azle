@@ -138,9 +138,37 @@ impl AzleNewExpr<'_> {
         }
     }
 
-    pub fn build_arg_error_message(&self) -> String {
-        let example = "\n    new StableBTreeMap<CustomKeyType, CustomValueType>(0, 100, 1000)";
-        format!("The \"StableBTreeMap\" type requires exactly 3 arguments: an identifier, the max key length, and the max value length. E.g.\n{}", example)
+    pub fn build_incorrect_number_of_args_error_message(&self) -> ErrorMessage {
+        let source = self.get_source();
+
+        let args_start_index = source.find("(").unwrap() + 1;
+        let args_end_index = source.find(")").unwrap();
+
+        let args_suggestion = "memory_id, max_key_size, max_value_size".to_string();
+
+        let modified_source = [
+            source.get(..args_start_index).unwrap(),
+            &args_suggestion,
+            source.get(args_end_index..).unwrap(),
+        ]
+        .join("");
+
+        ErrorMessage {
+            title: "incorrect arguments".to_string(),
+            origin: self.get_origin(),
+            line_number: self.get_line_number(),
+            source,
+            range: (args_start_index - 1, args_end_index + 1),
+            annotation: "expected exactly 3 arguments here".to_string(),
+            suggestion: Some(Suggestion {
+                title: "specify a memory id, the max key size, and the max value size. E.g.:"
+                    .to_string(),
+                source: modified_source,
+                range: (args_start_index, args_start_index + &args_suggestion.len()),
+                annotation: None,
+                import_suggestion: None,
+            }),
+        }
     }
 
     pub fn build_memory_id_error_message(&self) -> String {

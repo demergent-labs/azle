@@ -6,7 +6,6 @@ use crate::{
 
 impl AzleNewExpr<'_> {
     pub fn to_azle_stable_b_tree_map_node(&self) -> Result<AzleStableBTreeMapNode, String> {
-        let arg_error_message = self.build_arg_error_message();
         let memory_id_error_message = self.build_memory_id_error_message();
         let second_argument_size_error_message = self.build_second_argument_size_error_message();
         let third_argument_size_error_message = self.build_third_argument_size_error_message();
@@ -22,6 +21,10 @@ impl AzleNewExpr<'_> {
 
                 match &self.new_expr.args {
                     Some(args) => {
+                        if args.len() == 0 {
+                            return Err(self.build_missing_args_error_message().to_string());
+                        }
+
                         for arg in args {
                             if arg.spread.is_some() {
                                 return Err(self.build_arg_spread_error_message().to_string());
@@ -29,7 +32,9 @@ impl AzleNewExpr<'_> {
                         }
 
                         if args.len() != 3 {
-                            return Err(self.build_missing_args_error_message().to_string());
+                            return Err(self
+                                .build_incorrect_number_of_args_error_message()
+                                .to_string());
                         }
 
                         let memory_id = match &args.get(0).unwrap().expr.to_u8() {
@@ -55,7 +60,7 @@ impl AzleNewExpr<'_> {
                             max_value_size,
                         })
                     }
-                    None => Err(arg_error_message),
+                    None => Err(self.build_missing_args_error_message().to_string()),
                 }
             }
             None => Err(self.build_missing_type_args_error_message().to_string()),
