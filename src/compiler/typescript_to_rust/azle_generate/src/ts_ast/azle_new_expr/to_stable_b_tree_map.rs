@@ -6,7 +6,6 @@ use crate::{
 
 impl AzleNewExpr<'_> {
     pub fn to_azle_stable_b_tree_map_node(&self) -> Result<AzleStableBTreeMapNode, String> {
-        let arg_spread_error_message = self.build_arg_spread_error_message();
         let arg_error_message = self.build_arg_error_message();
         let memory_id_error_message = self.build_memory_id_error_message();
         let second_argument_size_error_message = self.build_second_argument_size_error_message();
@@ -25,7 +24,7 @@ impl AzleNewExpr<'_> {
                     Some(args) => {
                         for arg in args {
                             if arg.spread.is_some() {
-                                return Err(arg_spread_error_message);
+                                return Err(self.build_arg_spread_error_message().to_string());
                             }
                         }
 
