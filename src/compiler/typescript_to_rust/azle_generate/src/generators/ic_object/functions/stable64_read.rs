@@ -1,4 +1,4 @@
-pub fn generate_ic_object_function_stable64_read() -> proc_macro2::TokenStream {
+pub fn generate_stable64_read() -> proc_macro2::TokenStream {
     quote::quote! {
         fn _azle_ic_stable64_read(
             _this: &boa_engine::JsValue,

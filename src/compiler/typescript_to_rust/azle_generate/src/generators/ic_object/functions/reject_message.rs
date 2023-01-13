@@ -1,4 +1,4 @@
-pub fn generate_ic_object_function_reject_message() -> proc_macro2::TokenStream {
+pub fn generate_reject_message() -> proc_macro2::TokenStream {
     quote::quote! {
         fn _azle_ic_reject_message(
             _this: &boa_engine::JsValue,

@@ -3,7 +3,7 @@ use crate::generators::cross_canister_calls::{
     generate_promise_fulfillment,
 };
 
-pub fn generate_ic_object_function_call_raw128() -> proc_macro2::TokenStream {
+pub fn generate_call_raw128() -> proc_macro2::TokenStream {
     let pre_await_state_management = generate_pre_await_state_management();
     let post_await_state_management = generate_post_await_state_management();
     let promise_fulfillment = generate_promise_fulfillment();

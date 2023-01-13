@@ -1,4 +1,4 @@
-pub fn generate_ic_object_function_candid_encode() -> proc_macro2::TokenStream {
+pub fn generate_candid_encode() -> proc_macro2::TokenStream {
     quote::quote! {
         fn _azle_ic_candid_encode(
             _this: &boa_engine::JsValue,

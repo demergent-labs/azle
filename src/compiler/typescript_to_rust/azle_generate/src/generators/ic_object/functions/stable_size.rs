@@ -1,4 +1,4 @@
-pub fn generate_ic_object_function_stable_size() -> proc_macro2::TokenStream {
+pub fn generate_stable_size() -> proc_macro2::TokenStream {
     quote::quote! {
         fn _azle_ic_stable_size(
             _this: &boa_engine::JsValue,
