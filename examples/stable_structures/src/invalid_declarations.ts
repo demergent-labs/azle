@@ -21,11 +21,11 @@ let with_out_of_range_memory_id = new StableBTreeMap<string, string>(
 let with_float_memory_id = new StableBTreeMap<string, string>(100.5, 10, 100);
 let with_large_second_param = new StableBTreeMap<string, string>(
     0,
-    4_294_967_295,
+    4_294_967_296,
     100
 );
 let with_large_third_param = new StableBTreeMap<string, string>(
     0,
     100,
-    4_294_967_295
+    4_294_967_296
 );
