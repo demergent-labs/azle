@@ -1,0 +1,9 @@
+[book]
+authors = ["Jordan Last"]
+language = "en"
+multilingual = false
+src = "src"
+title = "The Azle Book"
+
+[watch]
+exclude = ["src/*"]
