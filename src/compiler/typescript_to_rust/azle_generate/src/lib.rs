@@ -1,4 +1,5 @@
 use cdk_framework::{ToAct, ToTokenStream};
+use proc_macro2::TokenStream;
 use quote::quote;
 
 use crate::{generators::header, ts_ast::TsAst};
@@ -12,11 +13,8 @@ mod ts_ast;
 mod ts_keywords;
 mod utils;
 
-pub fn azle_generate(
-    ts_file_names: &Vec<&str>,
-    main_js: &str,
-) -> proc_macro2::token_stream::TokenStream {
-    let header = header::generate_header_code(main_js);
+pub fn azle_generate(ts_file_names: &Vec<&str>, main_js: &str) -> TokenStream {
+    let header = header::generate_header(main_js);
 
     let canister_definition = TsAst::from_ts_file_names(&ts_file_names)
         .to_act()
@@ -26,5 +24,4 @@ pub fn azle_generate(
         #header
         #canister_definition
     }
-    .into()
 }
