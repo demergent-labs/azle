@@ -6,21 +6,14 @@ use crate::{
 
 impl AzleNewExpr<'_> {
     pub fn build_missing_type_args_error_message(&self) -> ErrorMessage {
-        let title = "missing type arguments".to_string();
-        let source = self.get_source();
-        let range = (
-            source.find("StableBTreeMap").unwrap() + "StableBTreeMap".len(),
-            source.find("(").unwrap(),
-        );
-        let annotation = "expected exactly 2 type arguments here".to_string();
-        let help = "specify a key and value type. E.g.:".to_string();
-        let suggestion = "<KeyType, ValueType>".to_string();
-
-        self.create_error_message(title, range, annotation, help, suggestion)
+        self.build_type_arg_error_message("missing type arguments".to_string())
     }
 
     pub fn build_incorrect_type_args_error_message(&self) -> ErrorMessage {
-        let title = "wrong number of type arguments".to_string();
+        self.build_type_arg_error_message("wrong number of type arguments".to_string())
+    }
+
+    fn build_type_arg_error_message(&self, title: String) -> ErrorMessage {
         let source = self.get_source();
         let range = (
             source.find("StableBTreeMap").unwrap() + "StableBTreeMap".len(),
@@ -30,7 +23,7 @@ impl AzleNewExpr<'_> {
         let help = "specify a key and value type. E.g.:".to_string();
         let suggestion = "<KeyType, ValueType>".to_string();
 
-        self.create_error_message(title, range, annotation, help, suggestion)
+        self.build_error_message(title, range, annotation, help, suggestion)
     }
 
     pub fn build_arg_spread_error_message(&self) -> ErrorMessage {
@@ -41,23 +34,18 @@ impl AzleNewExpr<'_> {
         let help = "specify each argument individually. E.g.:".to_string();
         let suggestion = "memory_id, max_key_size, max_value_size".to_string();
 
-        self.create_error_message(title, range, annotation, help, suggestion)
+        self.build_error_message(title, range, annotation, help, suggestion)
     }
 
     pub fn build_missing_args_error_message(&self) -> ErrorMessage {
-        let title = "missing arguments".to_string();
-        let source = self.get_source();
-        let range = (source.find("(").unwrap() + 1, source.find(")").unwrap());
-        let annotation = "expected 3 arguments here".to_string();
-        let help =
-            "specify a memory id, the max key size, and the max value size. E.g.:".to_string();
-        let suggestion = "memory_id, max_key_size, max_value_size".to_string();
-
-        self.create_error_message(title, range, annotation, help, suggestion)
+        self.build_arg_error_message("missing arguments".to_string())
     }
 
     pub fn build_incorrect_number_of_args_error_message(&self) -> ErrorMessage {
-        let title = "incorrect arguments".to_string();
+        self.build_arg_error_message("incorrect arguments".to_string())
+    }
+
+    pub fn build_arg_error_message(&self, title: String) -> ErrorMessage {
         let source = self.get_source();
         let range = (source.find("(").unwrap() + 1, source.find(")").unwrap());
         let annotation = "expected exactly 3 arguments here".to_string();
@@ -65,7 +53,7 @@ impl AzleNewExpr<'_> {
             "specify a memory id, the max key size, and the max value size. E.g.:".to_string();
         let suggestion = "memory_id, max_key_size, max_value_size".to_string();
 
-        self.create_error_message(title, range, annotation, help, suggestion)
+        self.build_error_message(title, range, annotation, help, suggestion)
     }
 
     pub fn build_invalid_arg_error_message(&self, arg_name: ArgName) -> ErrorMessage {
@@ -87,7 +75,6 @@ impl AzleNewExpr<'_> {
             .find(|(i, c)| *i > open_paren_index && !c.is_whitespace())
             .map(|(i, _)| i)
             .unwrap();
-
         let message_id_end_index = source
             .char_indices()
             .find(|(i, c)| *i > message_id_start_index && c == &',')
@@ -100,7 +87,6 @@ impl AzleNewExpr<'_> {
             .find(|(i, c)| *i > message_id_end_index && !c.is_whitespace())
             .map(|(i, _)| i)
             .unwrap();
-
         let max_key_size_end_index = source
             .char_indices()
             .find(|(i, c)| *i > max_key_size_start_index && c == &',')
@@ -113,7 +99,6 @@ impl AzleNewExpr<'_> {
             .find(|(i, c)| *i > max_key_size_end_index && !c.is_whitespace())
             .map(|(i, _)| i)
             .unwrap();
-
         let max_value_size_end_index = source
             .char_indices()
             .find(|(i, c)| *i > max_value_size_start_index && (c.is_whitespace() || c == &')'))
@@ -134,10 +119,10 @@ impl AzleNewExpr<'_> {
             ArgName::MaxValueSize => "1_000".to_string(),
         };
 
-        self.create_error_message(title, range, annotation, help, suggestion)
+        self.build_error_message(title, range, annotation, help, suggestion)
     }
 
-    fn create_error_message(
+    fn build_error_message(
         &self,
         title: String,
         range: (usize, usize),
