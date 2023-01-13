@@ -4,11 +4,14 @@ use crate::{
     AzleStableBTreeMapNode,
 };
 
+pub enum ArgName {
+    MessageId,
+    MaxKeySize,
+    MaxValueSize,
+}
+
 impl AzleNewExpr<'_> {
     pub fn to_azle_stable_b_tree_map_node(&self) -> Result<AzleStableBTreeMapNode, String> {
-        let second_argument_size_error_message = self.build_second_argument_size_error_message();
-        let third_argument_size_error_message = self.build_third_argument_size_error_message();
-
         match &self.new_expr.type_args {
             Some(type_args) => {
                 if type_args.params.len() != 2 {
@@ -38,17 +41,29 @@ impl AzleNewExpr<'_> {
 
                         let memory_id = match &args.get(0).unwrap().expr.to_u8() {
                             Ok(value) => *value,
-                            Err(_) => return Err(self.build_memory_id_error_message().to_string()),
+                            Err(_) => {
+                                return Err(self
+                                    .build_invalid_arg_error_message(ArgName::MessageId)
+                                    .to_string())
+                            }
                         };
 
                         let max_key_size = match &args.get(1).unwrap().expr.to_u32() {
                             Ok(value) => *value,
-                            Err(_) => return Err(second_argument_size_error_message),
+                            Err(_) => {
+                                return Err(self
+                                    .build_invalid_arg_error_message(ArgName::MaxKeySize)
+                                    .to_string())
+                            }
                         };
 
                         let max_value_size = match &args.get(2).unwrap().expr.to_u32() {
                             Ok(value) => *value,
-                            Err(_) => return Err(third_argument_size_error_message),
+                            Err(_) => {
+                                return Err(self
+                                    .build_invalid_arg_error_message(ArgName::MaxValueSize)
+                                    .to_string())
+                            }
                         };
 
                         Ok(AzleStableBTreeMapNode {

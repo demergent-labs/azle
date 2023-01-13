@@ -1,4 +1,4 @@
-use super::AzleNewExpr;
+use super::{to_stable_b_tree_map::ArgName, AzleNewExpr};
 use crate::{
     errors::{ErrorMessage, Suggestion},
     ts_ast::ast_traits::GetSourceInfo,
@@ -171,7 +171,7 @@ impl AzleNewExpr<'_> {
         }
     }
 
-    pub fn build_memory_id_error_message(&self) -> ErrorMessage {
+    pub fn build_invalid_arg_error_message(&self, arg_name: ArgName) -> ErrorMessage {
         let source = self.get_source();
 
         let open_paren_index = source.find("(").unwrap();
@@ -187,49 +187,101 @@ impl AzleNewExpr<'_> {
             .map(|(i, _)| i)
             .unwrap();
 
-        let suggested_replacement = "0".to_string();
+        let max_key_size_start_index = source
+            .char_indices()
+            .find(|(i, c)| *i > message_id_end_index && !c.is_whitespace())
+            .map(|(i, _)| i)
+            .unwrap();
 
-        let modified_source = [
-            source.get(..message_id_start_index).unwrap(),
-            &suggested_replacement,
-            source.get(message_id_end_index..).unwrap(),
-        ]
-        .join("");
+        let max_key_size_end_index = source
+            .char_indices()
+            .find(|(i, c)| *i > max_key_size_start_index && c == &',')
+            .map(|(i, _)| i)
+            .unwrap();
+
+        let max_value_size_start_index = source
+            .char_indices()
+            .find(|(i, c)| *i > max_key_size_end_index && !c.is_whitespace())
+            .map(|(i, _)| i)
+            .unwrap();
+
+        let max_value_size_end_index = source
+            .char_indices()
+            .find(|(i, c)| *i > max_value_size_start_index && (c.is_whitespace() || c == &')'))
+            .map(|(i, _)| i)
+            .unwrap();
+
+        let suggested_replacement = match arg_name {
+            ArgName::MessageId => "0".to_string(),
+            ArgName::MaxKeySize => "100".to_string(),
+            ArgName::MaxValueSize => "1_000".to_string(),
+        };
+
+        let modified_source = match arg_name {
+            ArgName::MessageId => [
+                source.get(..message_id_start_index).unwrap(),
+                &suggested_replacement,
+                source.get(message_id_end_index..).unwrap(),
+            ]
+            .join(""),
+            ArgName::MaxKeySize => [
+                source.get(..max_key_size_start_index).unwrap(),
+                &suggested_replacement,
+                source.get(max_key_size_end_index..).unwrap(),
+            ]
+            .join(""),
+            ArgName::MaxValueSize => [
+                source.get(..max_value_size_start_index).unwrap(),
+                &suggested_replacement,
+                source.get(max_value_size_end_index..).unwrap(),
+            ]
+            .join(""),
+        };
+
+        let range = match arg_name {
+            ArgName::MessageId => (message_id_start_index, message_id_end_index),
+            ArgName::MaxKeySize => (max_key_size_start_index, max_key_size_end_index),
+            ArgName::MaxValueSize => (max_value_size_start_index, max_value_size_end_index),
+        };
+
+        let suggestion_range = match arg_name {
+            ArgName::MessageId => (
+                message_id_start_index,
+                message_id_start_index + &suggested_replacement.len(),
+            ),
+            ArgName::MaxKeySize => (
+                max_key_size_start_index,
+                max_key_size_start_index + &suggested_replacement.len(),
+            ),
+            ArgName::MaxValueSize => (
+                max_value_size_start_index,
+                max_value_size_start_index + &suggested_replacement.len(),
+            ),
+        };
+
+        let max_size = match arg_name {
+            ArgName::MessageId => "255".to_string(),
+            ArgName::MaxKeySize => "4,294,967,295".to_string(),
+            ArgName::MaxValueSize => "4,294,967,295".to_string(),
+        };
 
         ErrorMessage {
-            title: "invalid argument: must be an integer literal between 0 and 255 inclusive"
-                .to_string(),
+            title: format!(
+                "invalid argument: must be an integer literal between 0 and {} inclusive",
+                max_size
+            ),
             origin: self.get_origin(),
             line_number: self.get_line_number(),
             source,
-            range: (message_id_start_index, message_id_end_index),
+            range,
             annotation: "expected here".to_string(),
             suggestion: Some(Suggestion {
                 title: "use a valid integer literal. E.g.:".to_string(),
                 source: modified_source,
-                range: (
-                    message_id_start_index,
-                    message_id_start_index + &suggested_replacement.len(),
-                ),
+                range: suggestion_range,
                 annotation: None,
                 import_suggestion: None,
             }),
         }
-    }
-
-    pub fn build_second_argument_size_error_message(&self) -> String {
-        let example = "\n    new StableBTreeMap<CustomKeyType, CustomValueType>(0, 100, 1000)";
-        format!(
-            "The second argument to StableBTreeMap must be an integer literal between 0 and 4,294,967,295. E.g.\n{}",
-            example
-        )
-    }
-
-    pub fn build_third_argument_size_error_message(&self) -> String {
-        let example = "\n    new StableBTreeMap<CustomKeyType, CustomValueType>(0, 100, 1000)";
-        format!(
-            "The third argument to StableBTreeMap must be an integer literal between 0 and 4,294,967,295. E.g.\n{}",
-            example
-        )
     }
 }
