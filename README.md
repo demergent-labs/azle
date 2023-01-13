@@ -57,7 +57,7 @@ You should have the following installed on your system:
 
 -   [Node.js](#nodejs)
 -   [Rust](#rust)
--   [dfx 0.12.0](#dfx)
+-   [dfx 0.12.1](#dfx)
 
 After installing the prerequisites, you can [make a project and install Azle](#azle).
 
@@ -83,10 +83,10 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 #### dfx
 
-Run the following command to install dfx 0.12.0:
+Run the following command to install dfx 0.12.1:
 
 ```bash
-DFX_VERSION=0.12.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+DFX_VERSION=0.12.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 ```
 
 #### Common Installation Issues
@@ -2280,9 +2280,9 @@ let map = new StableBTreeMap<Key, Value>(0, 100, 100);
 
 Note that the constructor requires the following parameters in the specified order:
 
-0.   `memory_id` the memory id at which to instantiate this map. Must be between 0 and 255 inclusive.
-1.   `max_key_size` the largest size (in bytes) a key can be
-2.   `max_value_size` the largest size (in bytes) a value can be
+0.  `memory_id` the memory id at which to instantiate this map. Must be between 0 and 255 inclusive.
+1.  `max_key_size` the largest size (in bytes) a key can be
+2.  `max_value_size` the largest size (in bytes) a value can be
 
 Items inserted into the map must be smaller than the specified max values otherwise an [InsertError](src/stable_b_tree_map.ts#L13) will be returned.
 
