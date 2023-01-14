@@ -1,5 +1,6 @@
 # Summary
 
+-   [The Azle Book](./the_azle_book.md)
 -   [Azle](./azle.md)
 -   [Examples](./examples.md)
 -   [Installation](./installation.md)
