@@ -3012,3 +3012,20 @@ If you want to ensure running the examples with a fresh clone works, run `npm li
 ### License
 
 Azle's copyright is governed by the [LICENSE](/LICENSE) and [LICENSE_EXTENSION](/LICENSE_EXTENSION.md).
+
+### The Azle Book
+
+```bash
+# For local editing
+
+cd the_azle_book
+mdbook serve --open
+```
+
+```bash
+# For deployment
+cd the_azle_book
+mdbook build --dest-dir ../docs
+
+# Then commit the changes to git and merge into main on GitHub
+```
