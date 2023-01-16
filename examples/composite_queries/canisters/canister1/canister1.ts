@@ -6,7 +6,8 @@ import {
     Principal,
     CompositeQuery,
     CanisterResult,
-    Query
+    Query,
+    CompositeQueryManual
 } from 'azle';
 import { Canister2 } from '../canister2/types';
 import { Canister1 } from '../canister1/types';
@@ -34,6 +35,13 @@ export async function manual_query(): Promise<
     CompositeQuery<StringQueryResult>
 > {
     return await canister2.manual_query().call();
+}
+
+// Manual composite query calling a manual query
+export async function totally_manual_query(): Promise<
+    CompositeQueryManual<StringQueryResult>
+> {
+    ic.reply(await canister2.manual_query().call());
 }
 
 // Composite query calling another composite query

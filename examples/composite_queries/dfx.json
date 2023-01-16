@@ -6,7 +6,7 @@
             "root": "canisters/canister1",
             "ts": "canisters/canister1/canister1.ts",
             "candid": "canisters/canister1/canister1.did",
-            "wasm": "target/wasm32-unknown-unknown/release/canister1.wasm.gz",
+            "wasm": ".azle/canister1.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/canister1",
                 "node_compatibility": true
@@ -18,7 +18,7 @@
             "root": "canisters/canister2",
             "ts": "canisters/canister2/canister2.ts",
             "candid": "canisters/canister2/canister2.did",
-            "wasm": "target/wasm32-unknown-unknown/release/canister2.wasm.gz",
+            "wasm": ".azle/canister2.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true
@@ -30,7 +30,7 @@
             "root": "canisters/canister3",
             "ts": "canisters/canister3/canister3.ts",
             "candid": "canisters/canister3/canister3.did",
-            "wasm": "target/wasm32-unknown-unknown/release/canister3.wasm.gz",
+            "wasm": ".azle/canister3.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/canister3",
                 "node_compatibility": true

@@ -1,6 +1,6 @@
-type StringQueryResult = variant { ok : text; err : text };
+type ManualReply = variant { ok : text; err : text };
 service : () -> {
-  deep_query : () -> (StringQueryResult) query;
+  deep_query : () -> (ManualReply) query;
   inc_counter : () -> (nat) query;
   manual_query : () -> (text) query;
   simple_query : () -> (text) query;

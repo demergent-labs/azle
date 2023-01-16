@@ -9,5 +9,6 @@ service : () -> {
   simple_composite_query : () -> (ManualReply) query;
   simple_query : () -> (ManualReply) query;
   simple_update : () -> (ManualReply);
+  totally_manual_query : () -> (ManualReply) query;
   update_query : () -> (ManualReply) query;
 }
