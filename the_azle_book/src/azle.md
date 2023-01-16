@@ -1,12 +1,14 @@
 # Azle
 
-Azle is a [TypeScript](https://www.typescriptlang.org/) [Canister Development Kit](https://internetcomputer.org/docs/current/developer-docs/build/cdks/) (CDK) for the [Internet Computer](https://internetcomputer.org/) (IC).
+Azle is a [TypeScript](https://www.typescriptlang.org/) [Canister Development Kit](https://internetcomputer.org/docs/current/developer-docs/build/cdks/) (CDK) for the [Internet Computer](https://internetcomputer.org/) (IC). It's essentially a TypeScript/JavaScript runtime that allows you to build applications (canisters) for the IC.
 
-It is currently being developed by [Demergent Labs](https://github.com/demergent-labs), a for-profit company with a grant from [DFINITY](https://dfinity.org/) to develop [Azle](https://github.com/demergent-labs/azle), [Kybra](https://github.com/demergent-labs/kybra), and [Sudograph](https://github.com/sudograph/sudograph).
+It is currently being developed by [Demergent Labs](https://github.com/demergent-labs), a for-profit company with a grant from [DFINITY](https://dfinity.org/).
 
 Demergent Labs' [vision](https://github.com/demergent-labs/blog/blob/main/demergent-labs-grand-plan-part-1.md) is to accelerate the adoption of Web3, the Internet Computer, and sustainable open source.
 
-## Why TypeScript?
+## Explain the advantages and disadvantages of Azle compared with Node, Deno, etc
+
+## Why Choose Azle or Congratulations, Benefits, Stuff Like That?
 
 A very common question for newcomers to the IC is which language to write their canisters in. Practically speaking based on CDK maturity, the following languages are available for canister development on the IC: Motoko, Python, TypeScript, and Rust.
 
