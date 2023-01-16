@@ -49,7 +49,7 @@ mod stable_write;
 mod time;
 mod trap;
 
-pub fn generate_ic_object_functions(
+pub fn generate_functions(
     canister_methods: &Vec<ActCanisterMethod>,
     external_canisters: &Vec<ActExternalCanister>,
     stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
@@ -76,10 +76,9 @@ pub fn generate_ic_object_functions(
     let msg_cycles_available128 = msg_cycles_available128::generate_msg_cycles_available128();
     let msg_cycles_refunded = msg_cycles_refunded::generate_msg_cycles_refunded();
     let msg_cycles_refunded128 = msg_cycles_refunded128::generate_msg_cycles_refunded128();
-    let notify_functions =
-        notify_functions::generate_ic_object_notify_functions(external_canisters);
+    let notify_functions = notify_functions::generate_notify_functions(external_canisters);
     let notify_with_payment128_functions =
-        notify_with_payment128_functions::generate_ic_object_notify_with_payment128_functions(
+        notify_with_payment128_functions::generate_notify_with_payment128_functions(
             external_canisters,
         );
     let notify_raw = notify_raw::generate_notify_raw();

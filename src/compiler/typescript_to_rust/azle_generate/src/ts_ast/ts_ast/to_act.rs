@@ -146,7 +146,7 @@ impl ToAct for TsAst {
         // TODO: Remove these clones
         let query_and_update_canister_methods: Vec<ActCanisterMethod> =
             vec![query_methods.clone(), update_methods.clone()].concat();
-        let ic_object_functions = functions::generate_ic_object_functions(
+        let ic_object_functions = functions::generate_functions(
             &query_and_update_canister_methods,
             &external_canisters,
             &stable_b_tree_map_nodes,
