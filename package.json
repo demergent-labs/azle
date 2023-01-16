@@ -13,15 +13,15 @@
     "main": "./index.ts",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/lastmjs/azle.git"
+        "url": "git+https://github.com/demergent-labs/azle.git"
     },
     "keywords": [],
     "author": "AZLE token holders (nlhft-2iaaa-aaaae-qaaua-cai)",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/lastmjs/azle/issues"
+        "url": "https://github.com/demergent-labs/azle/issues"
     },
-    "homepage": "https://github.com/lastmjs/azle#readme",
+    "homepage": "https://github.com/demergent-labs/azle#readme",
     "dependencies": {
         "@dfinity/principal": "0.11.2",
         "@swc/core": "1.2.151",

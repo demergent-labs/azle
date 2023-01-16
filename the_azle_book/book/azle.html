@@ -141,25 +141,69 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="azle"><a class="header" href="#azle">Azle</a></h1>
-<p>Azle is a <a href="https://www.typescriptlang.org/">TypeScript</a> <a href="https://internetcomputer.org/docs/current/developer-docs/build/cdks/">Canister Development Kit</a> (CDK) for the <a href="https://internetcomputer.org/">Internet Computer</a> (IC). It's essentially a TypeScript/JavaScript runtime that allows you to build applications (canisters) for the IC.</p>
-<p>It is currently being developed by <a href="https://github.com/demergent-labs">Demergent Labs</a>, a for-profit company with a grant from <a href="https://dfinity.org/">DFINITY</a>.</p>
-<p>Demergent Labs' <a href="https://github.com/demergent-labs/blog/blob/main/demergent-labs-grand-plan-part-1.md">vision</a> is to accelerate the adoption of Web3, the Internet Computer, and sustainable open source.</p>
-<h2 id="explain-the-advantages-and-disadvantages-of-azle-compared-with-node-deno-etc"><a class="header" href="#explain-the-advantages-and-disadvantages-of-azle-compared-with-node-deno-etc">Explain the advantages and disadvantages of Azle compared with Node, Deno, etc</a></h2>
-<h2 id="why-choose-azle-or-congratulations-benefits-stuff-like-that"><a class="header" href="#why-choose-azle-or-congratulations-benefits-stuff-like-that">Why Choose Azle or Congratulations, Benefits, Stuff Like That?</a></h2>
-<p>A very common question for newcomers to the IC is which language to write their canisters in. Practically speaking based on CDK maturity, the following languages are available for canister development on the IC: Motoko, Python, TypeScript, and Rust.</p>
-<p>The answer to this question for you will be multi-facted and somewhat subjective. A few simple answers for why you might choose TypeScript for your canister development:</p>
+                        <h1 id="azle-beta"><a class="header" href="#azle-beta">Azle (Beta)</a></h1>
+<p>Azle is a <a href="https://www.typescriptlang.org/">TypeScript</a> <a href="https://internetcomputer.org/docs/current/developer-docs/build/cdks/">Canister Development Kit</a> (CDK) for the <a href="https://internetcomputer.org/">Internet Computer</a> (IC). In other words, it's a TypeScript/JavaScript runtime for building applications (<a href="https://internetcomputer.org/docs/current/concepts/canisters-code">canisters</a>) on the IC.</p>
 <ul>
-<li>TypeScript (JavaScript) is one of the most popular programming languages in the world</li>
-<li>Many pre-existing libraries are available for immediate use with package managers/registries like <code>npm</code></li>
-<li>TypeScript (JavaScript) has existed for over 25 years</li>
-<li>TypeScript has a huge community</li>
-<li>Many existing tutorials, blog posts, podcasts, videos, etc</li>
+<li><a href="https://github.com/demergent-labs/azle">GitHub repo</a></li>
+<li><a href="https://www.npmjs.com/package/azle">npm package</a></li>
 </ul>
-<h2 id="github-repository"><a class="header" href="#github-repository">GitHub Repository</a></h2>
-<p>Currently Demergent Labs is leading Azle development from its <a href="https://github.com/demergent-labs/azle">GitHub repository</a>.</p>
-<h2 id="npm"><a class="header" href="#npm">npm</a></h2>
-<p>Currently Demergent Labs offers Azle for easy installation with <code>npm</code> from its <a href="https://www.npmjs.com/package/azle">npm package</a>.</p>
+<h2 id="demergent-labs"><a class="header" href="#demergent-labs">Demergent Labs</a></h2>
+<p>Azle is currently developed by <a href="https://github.com/demergent-labs">Demergent Labs</a>, a for-profit company with a grant from <a href="https://dfinity.org/">DFINITY</a>.</p>
+<p>Demergent Labs' <a href="https://github.com/demergent-labs/blog/blob/main/demergent-labs-grand-plan-part-1.md">vision</a> is to accelerate the adoption of Web3, the Internet Computer, and sustainable open source.</p>
+<h2 id="benefits-and-drawbacks"><a class="header" href="#benefits-and-drawbacks">Benefits and drawbacks</a></h2>
+<p>Azle and the IC provide unique benefits and drawbacks, and the IC is not currently suitable for all application use-cases.</p>
+<p>The following information will help you to determine when Azle and the IC might be beneficial for your use-case.</p>
+<h3 id="benefits"><a class="header" href="#benefits">Benefits</a></h3>
+<p>Azle allows web developers to bring their TypeScript/JavaScript skills to the IC (a decentralized cloud platform). It allows the use of various npm packages, VS Code intellisense, and much of what the TypeScript/JavaScript community has to offer.</p>
+<p>As for the IC, at the highest level we believe that it is best suited for building applications that require the following:</p>
+<ul>
+<li><a href="#full-stack-community-ownership">Full-stack community ownership</a></li>
+<li><a href="#credibly-neutrality">Credible neutrality</a></li>
+<li><a href="#permanent-apis">Permanent APIs</a></li>
+<li><a href="#high-transparency">High transparency</a></li>
+<li><a href="#built-in-security">Built-in security</a></li>
+<li><a href="#reduced-platform-risk">Reduced platform risk</a></li>
+<li><a href="#integration-with-cryptocurrencies-and-blockchain-tokens">Integration with cryptocurrencies and blockchain tokens</a></li>
+<li><a href="#built-in-devops">Built-in devops</a></li>
+</ul>
+<p>Most of these benefits stem from the decentralized nature of the IC, though the IC is best thought of as a progressively decentralizing cloud platform. As opposed to traditional cloud platforms, its goal is to be owned and controlled by many independent entities.</p>
+<h4 id="full-stack-community-ownership"><a class="header" href="#full-stack-community-ownership">Full-stack community ownership</a></h4>
+<p>The IC allows you to build applications that are controlled directly by a group of people. In the blockchain world, these types of applications are known as <a href="https://en.wikipedia.org/wiki/Decentralized_autonomous_organization">DAOs</a>. As opposed to DAOs built on most blockchains, the IC allows full-stack applications to be controlled by groups. This means that the frontend and the backend code can only be updated by the group.</p>
+<h4 id="credible-neutrality"><a class="header" href="#credible-neutrality">Credible neutrality</a></h4>
+<p>Because the IC is not owned or controlled by any one entity or individual, the risk of being deplatformed is possibly reduced. There are various ways that an application can be censored, but to truly take it down requires a vote from the entire NNS community. Being deplatformed for political or religious reasons is highly unlikely.</p>
+<p>The IC is an ideal platform for building systems that must remain credibly neutral. It's possible to build software controlled by a large and diverse set of individuals, and no individuals at all.</p>
+<h4 id="permanent-apis"><a class="header" href="#permanent-apis">Permanent APIs</a></h4>
+<p>It is possible to build APIs that are credibly neutral and not owned by any one group or entity. This allows for the creation of APIs that are essentially permanent, that only need to have their computations paid for to keep running. These APIs can be verified to execute in a certain way, and only need to be topped up to keep alive.</p>
+<h4 id="high-transparency"><a class="header" href="#high-transparency">High transparency</a></h4>
+<p>The IC allows you to build applications with verifiable source code. This means that the source code can be compiled into a Wasm binary, and a hash of the binary can be checked against the running hash to ensure that the code running on the IC does what the source code says it does.</p>
+<p>You can also build into these applications endpoints that return the current state of information, allowing anyone to audit what is going on.</p>
+<h4 id="built-in-security"><a class="header" href="#built-in-security">Built-in security</a></h4>
+<p>Because of built-in replication and the distribution of replica machines around the world, individual canisters are highly secure against various attack vectors. IC applications are distributed and replicated applications which use Byzantine Fault Tolerance to provide a high level of security and availability against various attack vectors.</p>
+<h4 id="reduced-platform-risk"><a class="header" href="#reduced-platform-risk">Reduced platform risk</a></h4>
+<p>Because the IC is not owned or controlled by any one entity or individual, the risk of being deplatformed is possibly reduced. There are various ways that an application can be censored, but to truly take it down requires a vote from the entire NNS community. Being deplatformed for political or religious reasons is highly unlikely.</p>
+<h4 id="integration-with-cryptocurrencies-and-blockchain-tokens"><a class="header" href="#integration-with-cryptocurrencies-and-blockchain-tokens">Integration with cryptocurrencies and blockchain tokens</a></h4>
+<p>The IC has direct integration with the Bitcoin blockchain, and the IC hosts ICP and many NFT projects. Ethereum integration is possible now and a deeper/more native integration is possibly coming in the future.</p>
+<p>If you want to integrate with cryptocurrencies and other blockchain tokens, the IC provides unique benefits.</p>
+<h4 id="built-in-devops"><a class="header" href="#built-in-devops">Built-in devops</a></h4>
+<p>The IC seeks to build into it many devops concepts, such as load balancing, autoscaling, redundancy, firewalls, etc. This provides a very simple backend/devops developer experience.</p>
+<p>Because the Internet Computer Protocol (ICP) seeks to build into it decentralization, distribution, security, etc, the developer experience is quite simple. With a few commands, one can deploy an application that takes advantage of the properties of ICP without having to go through the complicated configuration that would ensure on a traditional cloud platform. SaaS providers attempt to give you a similar DX but also bring with them the downsides of centralization.</p>
+<h3 id="drawbacks"><a class="header" href="#drawbacks">Drawbacks</a></h3>
+<ul>
+<li>Azle Beta security risks</li>
+<li>High latencies</li>
+<li>Lack of mature tooling</li>
+<li>Limited compute resources</li>
+<li>Expensive compute, storage, and network resources</li>
+<li>Unproven track record of Azle and the IC</li>
+<li>Lack of APIs from an environment you're used to (Node.js and web APIs)</li>
+<li>Lack of some npm packages</li>
+<li>Lack of privacy</li>
+<li>Being associated with anything that's running?</li>
+<li>NNS centralization risks</li>
+</ul>
+<p>On the path to a decentralized world computer, certain trade-offs must be made, at least at this time. Currently not all npm packages are available for use with Azle. Latencies are high for certain operations (like http requests, which take multiple seconds to complete). The heap is capped at 4GiB, and no robust general-purpose database solutions (like MySQL, Postgres, MongoDB, etc) currently exist (though Demergent Labs is building one called Sudograph).</p>
+<p>Keep in mind that the IC ecosystem is young but maturing. There are various problems that must be resolved along the path to a fully decentralized world computer, and latency of various operations, including missing APIs that you might be used to from a traditional OS or browser environment might be common.</p>
+<p>Azle is also currently in beta. It is currently being subjected to in-depth property-based tests, but those have not been completed. There are many example-based tests, but relatively few live applications. Azle is also built on the Boa engine which is not yet production-ready. It's important to keep these things in mind while developing Azle applications, it is your responsibility to understand the risks involved with deploying an Azle application to the IC.</p>
 
                     </main>
 
