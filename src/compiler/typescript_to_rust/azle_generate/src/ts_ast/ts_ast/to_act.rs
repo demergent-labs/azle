@@ -1,14 +1,12 @@
 use cdk_framework::{
     self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
-    ActCanisterMethod, ActDataType, CanisterMethodType, RequestType, ToAct,
+    ActCanisterMethod, ActDataType, RequestType, ToAct,
 };
 use quote::quote;
 
 use super::TsAst;
 use crate::{
-    generators::{
-        canister_methods, errors, ic_object::functions, stable_b_tree_map, vm_value_conversion,
-    },
+    generators::{errors, ic_object::functions, stable_b_tree_map, vm_value_conversion},
     ts_ast::{
         azle_program::HelperMethods,
         azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods,
@@ -24,21 +22,13 @@ impl ToAct for TsAst {
         let ast_type_alias_decls = &self.azle_programs.get_azle_type_alias_decls();
 
         // Separate function decls into queries and updates
-        let azle_fnc_decls_query = self
+        let query_methods = self
             .azle_programs
-            .get_azle_fn_decls_of_type(&CanisterMethodType::Query);
-        let azle_fnc_decls_update = self
-            .azle_programs
-            .get_azle_fn_decls_of_type(&CanisterMethodType::Update);
+            .build_canister_method_nodes(RequestType::Query);
 
-        let query_methods = canister_methods::build_canister_method_nodes(
-            &azle_fnc_decls_query,
-            RequestType::Query,
-        );
-        let update_methods = canister_methods::build_canister_method_nodes(
-            &azle_fnc_decls_update,
-            RequestType::Update,
-        );
+        let update_methods = self
+            .azle_programs
+            .build_canister_method_nodes(RequestType::Update);
 
         let query_method_type_acts =
             cdk_framework::nodes::act_canister_method::get_all_types_from_canister_method_acts(
