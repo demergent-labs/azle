@@ -29,8 +29,7 @@ pub fn build_canister_method_system_post_upgrade(ts_ast: &TsAst) -> ActPostUpgra
         vec![]
     };
 
-    let ic_object = ts_ast.generate_ic_object();
-    let body =
-        post_upgrade::generate_post_upgrade_method_body(post_upgrade_fn_decl_option, ic_object);
+    let body = post_upgrade::generate_post_upgrade_method_body(post_upgrade_fn_decl_option);
+
     ActPostUpgradeMethod { body, params }
 }

@@ -4,7 +4,6 @@ use crate::{generators::canister_methods::method_body, ts_ast::AzleFnDecl};
 
 pub fn generate_post_upgrade_method_body(
     post_upgrade_fn_decl_option: Option<&AzleFnDecl>,
-    ic_object: TokenStream,
 ) -> TokenStream {
     let call_to_post_upgrade_js_function =
         method_body::maybe_generate_call_to_js_function(&post_upgrade_fn_decl_option);
@@ -24,21 +23,10 @@ pub fn generate_post_upgrade_method_body(
                 *method_name_mut = #function_name.to_string()
             });
 
-            _azle_handle_boa_result(
-                _azle_boa_context.eval("let exports = {};".to_string()),
-                &mut _azle_boa_context
-            );
-
-            #ic_object
-
-            _azle_boa_context.register_global_property(
-                "ic",
-                ic,
-                boa_engine::property::Attribute::all()
-            );
+            _azle_register_ic_object(&mut _azle_boa_context);
 
             _azle_handle_boa_result(_azle_boa_context.eval(format!(
-                "{compiled_js}",
+                "let exports = {{}}; {compiled_js}",
                 compiled_js = MAIN_JS
             )), &mut _azle_boa_context);
 

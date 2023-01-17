@@ -27,8 +27,7 @@ pub fn build_canister_method_system_init(ts_ast: &TsAst) -> ActInitMethod {
         vec![]
     };
 
-    let ic_object = ts_ast.generate_ic_object();
+    let body = init::generate_init_method_body(init_fn_decl_option);
 
-    let body = init::generate_init_method_body(init_fn_decl_option, ic_object);
     ActInitMethod { params, body }
 }

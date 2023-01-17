@@ -161,6 +161,7 @@ impl ToAct for TsAst {
             self.generate_async_result_handler(&query_and_update_canister_methods);
 
         let boa_error_handler = errors::generate_error_handler();
+        let register_ic_object_function = self.generate_register_ic_object_function();
 
         let stable_b_tree_maps =
             stable_b_tree_map::generate_stable_b_tree_map(&stable_b_tree_map_nodes);
@@ -183,6 +184,7 @@ impl ToAct for TsAst {
             records,
             rust_code: quote! {
                 #boa_error_handler
+                #register_ic_object_function
                 #ic_object_functions
                 #async_result_handler
                 #stable_b_tree_maps
