@@ -1,4 +1,4 @@
-pub fn generate_candid_decode() -> proc_macro2::TokenStream {
+pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
         fn _azle_ic_candid_decode(
             _this: &boa_engine::JsValue,

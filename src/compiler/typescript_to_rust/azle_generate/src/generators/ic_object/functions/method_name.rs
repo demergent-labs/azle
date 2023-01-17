@@ -1,4 +1,4 @@
-pub fn generate_method_name() -> proc_macro2::TokenStream {
+pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
         fn _azle_ic_method_name(
             _this: &boa_engine::JsValue,

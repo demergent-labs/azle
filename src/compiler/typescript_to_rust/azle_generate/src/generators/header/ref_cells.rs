@@ -1,4 +1,4 @@
-pub fn generate_ref_cells() -> proc_macro2::TokenStream {
+pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
         thread_local! {
             static BOA_CONTEXT_REF_CELL: std::cell::RefCell<boa_engine::Context> =

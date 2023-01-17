@@ -1,4 +1,4 @@
-pub fn generate_use_statements() -> proc_macro2::TokenStream {
+pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
         use azle_vm_value_derive::{CdkActTryIntoVmValue, CdkActTryFromVmValue};
         use ic_cdk::api::call::CallResult;

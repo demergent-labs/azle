@@ -1,4 +1,4 @@
-pub fn generate_msg_cycles_available() -> proc_macro2::TokenStream {
+pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
         fn _azle_ic_msg_cycles_available(
             _this: &boa_engine::JsValue,

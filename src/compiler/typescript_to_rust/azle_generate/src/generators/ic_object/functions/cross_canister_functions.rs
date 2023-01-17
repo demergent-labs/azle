@@ -8,9 +8,7 @@ use quote::{format_ident, quote};
 
 use crate::generators::ic_object;
 
-pub fn generate_cross_canister_functions(
-    external_canisters: &Vec<ActExternalCanister>,
-) -> Vec<TokenStream> {
+pub fn generate(external_canisters: &Vec<ActExternalCanister>) -> Vec<TokenStream> {
     external_canisters
         .iter()
         .map(|canister| {

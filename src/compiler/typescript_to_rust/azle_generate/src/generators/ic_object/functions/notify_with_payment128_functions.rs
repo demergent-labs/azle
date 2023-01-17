@@ -5,9 +5,7 @@ use cdk_framework::nodes::ActExternalCanister;
 
 use crate::generators::ic_object;
 
-pub fn generate_notify_with_payment128_functions(
-    external_canisters: &Vec<ActExternalCanister>,
-) -> Vec<TokenStream> {
+pub fn generate(external_canisters: &Vec<ActExternalCanister>) -> Vec<TokenStream> {
     external_canisters.iter().map(|canister| {
         canister.methods.iter().map(|method| {
             let function_name_string = format!("_azle_notify_with_payment128_{}_{}", canister.name, method.name);

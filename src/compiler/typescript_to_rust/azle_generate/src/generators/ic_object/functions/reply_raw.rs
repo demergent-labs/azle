@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 
-pub fn generate_reply_raw() -> TokenStream {
+pub fn generate() -> TokenStream {
     quote! {
         fn _azle_ic_reply_raw(
             _this: &boa_engine::JsValue,
