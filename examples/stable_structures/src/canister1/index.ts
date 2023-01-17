@@ -53,25 +53,3 @@ export {
     stable_map_4_remove,
     stable_map_4_values
 } from './stable_map_04';
-export {
-    stable_map_5_contains_key,
-    stable_map_5_get,
-    stable_map_5_insert,
-    stable_map_5_is_empty,
-    stable_map_5_items,
-    stable_map_5_keys,
-    stable_map_5_len,
-    stable_map_5_remove,
-    stable_map_5_values
-} from './stable_map_05';
-export {
-    stable_map_6_contains_key,
-    stable_map_6_get,
-    stable_map_6_insert,
-    stable_map_6_is_empty,
-    stable_map_6_items,
-    stable_map_6_keys,
-    stable_map_6_len,
-    stable_map_6_remove,
-    stable_map_6_values
-} from './stable_map_06';

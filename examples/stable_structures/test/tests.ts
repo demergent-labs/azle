@@ -5,6 +5,7 @@ import {
     _SERVICE as CANISTER1_SERVICE
 } from './dfx_generated/canister1/canister1.did';
 import { _SERVICE as CANISTER2_SERVICE } from './dfx_generated/canister2/canister2.did';
+import { _SERVICE as CANISTER3_SERVICE } from './dfx_generated/canister3/canister3.did';
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import {
@@ -19,7 +20,7 @@ import {
     nat8
 } from 'azle';
 
-type _SERVICE = CANISTER1_SERVICE | CANISTER2_SERVICE;
+type _SERVICE = CANISTER1_SERVICE | CANISTER2_SERVICE | CANISTER3_SERVICE;
 
 const HELLO_BYTES = [104, 101, 108, 108, 111];
 const STABLE_MAP_KEYS: [
@@ -462,7 +463,7 @@ function values_is_length(
 
 export function insert_error_tests(
     canister1: ActorSubclass<CANISTER1_SERVICE>,
-    canister2: ActorSubclass<CANISTER2_SERVICE>
+    canister3: ActorSubclass<CANISTER3_SERVICE>
 ): Test[] {
     return [
         {
@@ -470,7 +471,7 @@ export function insert_error_tests(
             test: async () => {
                 const key_over_100_bytes =
                     '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
-                const result = await canister2.stable_map_13_insert(
+                const result = await canister3.stable_map_13_insert(
                     key_over_100_bytes,
                     Principal.fromText('aaaaa-aa')
                 );
