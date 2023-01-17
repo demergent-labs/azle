@@ -2,6 +2,7 @@ use crate::ts_ast::AzleFnDecl;
 use cdk_framework::{nodes::ActCanisterMethod, traits::CanisterMethodBuilder, RequestType};
 
 pub mod heartbeat;
+pub mod init;
 pub mod method_body;
 
 pub fn build_canister_method_nodes(
