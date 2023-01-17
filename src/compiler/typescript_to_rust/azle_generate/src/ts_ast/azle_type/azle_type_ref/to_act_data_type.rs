@@ -1,8 +1,3 @@
-use super::AzleTypeRef;
-use crate::ts_ast::{
-    azle_type::AzleType, AzleFnOrConstructorType, FunctionAndMethodTypeHelperMethods,
-    GenerateInlineName, GetName,
-};
 use cdk_framework::{
     nodes::data_type_nodes::{
         act_funcs::{Func, FuncLiteral, FuncTypeAlias},
@@ -11,7 +6,16 @@ use cdk_framework::{
     },
     ActDataType, ToActDataType,
 };
-use quote::{quote, ToTokens};
+use quote::ToTokens;
+
+use super::AzleTypeRef;
+use crate::{
+    generators::func,
+    ts_ast::{
+        azle_type::AzleType, AzleFnOrConstructorType, FunctionAndMethodTypeHelperMethods,
+        GenerateInlineName, GetName,
+    },
+};
 
 impl ToActDataType for AzleTypeRef<'_> {
     fn to_act_data_type(&self, alias_name: &Option<&String>) -> cdk_framework::ActDataType {
@@ -72,36 +76,10 @@ impl AzleTypeRef<'_> {
         };
 
         let type_alias_name = func_name.to_identifier().to_token_stream();
-
-        let to_vm_value = quote! {
-            impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for #type_alias_name {
-                fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                    self.0.try_into_vm_value(context)
-                }
-            }
-        };
-        let list_to_vm_value = quote! {
-            impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<#type_alias_name> {
-                fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                    try_into_vm_value_generic_array(self, context)
-                }
-            }
-        };
-        let from_vm_value = quote! {
-            impl CdkActTryFromVmValue<#type_alias_name, &mut boa_engine::Context> for boa_engine::JsValue {
-                fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<#type_alias_name, CdkActTryFromVmValueError> {
-                    let candid_func: candid::Func = self.try_from_vm_value(context).unwrap();
-                    Ok(candid_func.into())
-                }
-            }
-        };
-        let list_from_vm_value = quote! {
-            impl CdkActTryFromVmValue<Vec<#type_alias_name>, &mut boa_engine::Context> for boa_engine::JsValue {
-                fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<#type_alias_name>, CdkActTryFromVmValueError> {
-                    try_from_vm_value_generic_array(self, context)
-                }
-            }
-        };
+        let to_vm_value = func::generate_into_vm_value_impl(&type_alias_name);
+        let list_to_vm_value = func::generate_list_into_vm_value_impl(&type_alias_name);
+        let from_vm_value = func::generate_from_vm_value_impl(&type_alias_name);
+        let list_from_vm_value = func::generate_list_from_vm_value_impl(&type_alias_name);
 
         let func = Func {
             name: func_name,

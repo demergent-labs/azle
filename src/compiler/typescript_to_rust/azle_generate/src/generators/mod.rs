@@ -3,6 +3,7 @@ pub mod boa_error_handlers;
 pub mod body;
 pub mod canister_methods;
 pub mod cross_canister_calls;
+pub mod func;
 pub mod header;
 pub mod ic_object;
 pub mod stable_b_tree_map;
