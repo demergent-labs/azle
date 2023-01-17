@@ -5,7 +5,8 @@
     "scripts": {
         "typecheck": "tsc --noEmit",
         "prepare": "husky install",
-        "test": "test/test.sh"
+        "test": "test/test.sh",
+        "postinstall": "./install_rustup.sh"
     },
     "bin": {
         "azle": "./bin.js"
