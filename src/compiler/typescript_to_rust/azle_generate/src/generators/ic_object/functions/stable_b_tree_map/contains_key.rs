@@ -30,9 +30,9 @@ fn generate_match_arms(
         .map(|stable_b_tree_map_node| {
             let memory_id = stable_b_tree_map_node.memory_id;
             let map_name_ident =
-                stable_b_tree_map::ref_cell_ident(stable_b_tree_map_node.memory_id);
+                stable_b_tree_map::ref_cell_ident::generate(stable_b_tree_map_node.memory_id);
 
-            let (key_wrapper_type_name, _) = stable_b_tree_map::generate_wrapper_type(
+            let (key_wrapper_type_name, _) = stable_b_tree_map::wrapper_type::generate(
                 &stable_b_tree_map_node.key_type,
                 memory_id,
                 "Key",

@@ -13,7 +13,7 @@ mod candid_encode;
 mod canister_balance;
 mod canister_balance128;
 mod clear_timer;
-mod cross_canister_functions;
+mod cross_canister_calls;
 mod data_certificate;
 mod id;
 mod method_name;
@@ -23,9 +23,9 @@ mod msg_cycles_available;
 mod msg_cycles_available128;
 mod msg_cycles_refunded;
 mod msg_cycles_refunded128;
-mod notify_functions;
+mod notify;
 mod notify_raw;
-mod notify_with_payment128_functions;
+mod notify_with_payment128;
 mod performance_counter;
 mod print;
 mod reject;
@@ -59,7 +59,7 @@ pub fn generate(
     let arg_data_raw_size = arg_data_raw_size::generate();
     let call_raw = call_raw::generate();
     let call_raw128 = call_raw128::generate();
-    let cross_canister_functions = cross_canister_functions::generate(external_canisters);
+    let cross_canister_calls = cross_canister_calls::generate(external_canisters);
     let caller = caller::generate();
     let candid_decode = candid_decode::generate();
     let candid_encode = candid_encode::generate();
@@ -75,9 +75,8 @@ pub fn generate(
     let msg_cycles_available128 = msg_cycles_available128::generate();
     let msg_cycles_refunded = msg_cycles_refunded::generate();
     let msg_cycles_refunded128 = msg_cycles_refunded128::generate();
-    let notify_functions = notify_functions::generate_notify_functions(external_canisters);
-    let notify_with_payment128_functions =
-        notify_with_payment128_functions::generate(external_canisters);
+    let notify = notify::generate(external_canisters);
+    let notify_with_payment128 = notify_with_payment128::generate(external_canisters);
     let notify_raw = notify_raw::generate();
     let performance_counter = performance_counter::generate();
     let print = print::generate();
@@ -100,7 +99,7 @@ pub fn generate(
     let stable_write = stable_write::generate();
     let time = time::generate();
     let trap = trap::generate();
-    let stable_b_tree_map_functions = stable_b_tree_map::generate(stable_b_tree_map_nodes);
+    let stable_b_tree_map = stable_b_tree_map::generate(stable_b_tree_map_nodes);
 
     quote::quote! {
         #accept_message
@@ -108,7 +107,7 @@ pub fn generate(
         #arg_data_raw_size
         #call_raw
         #call_raw128
-        #(#cross_canister_functions)*
+        #(#cross_canister_calls)*
         #caller
         #candid_decode
         #candid_encode
@@ -124,8 +123,8 @@ pub fn generate(
         #msg_cycles_available128
         #msg_cycles_refunded
         #msg_cycles_refunded128
-        #(#notify_functions)*
-        #(#notify_with_payment128_functions)*
+        #(#notify)*
+        #(#notify_with_payment128)*
         #notify_raw
         #performance_counter
         #print
@@ -137,7 +136,7 @@ pub fn generate(
         #set_certified_data
         #set_timer
         #set_timer_interval
-        #stable_b_tree_map_functions
+        #stable_b_tree_map
         #stable64_grow
         #stable64_read
         #stable64_size

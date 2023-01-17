@@ -31,7 +31,7 @@ fn generate_match_arms(
             let memory_id = stable_b_tree_map_node.memory_id;
             let key_type = stable_b_tree_map_node.key_type.to_token_stream(&vec![]); // TODO do we need the keyword lists?
             let stable_b_tree_map_ref_cell =
-                stable_b_tree_map::ref_cell_ident(stable_b_tree_map_node.memory_id);
+                stable_b_tree_map::ref_cell_ident::generate(stable_b_tree_map_node.memory_id);
 
             quote! {
                 #memory_id => {
