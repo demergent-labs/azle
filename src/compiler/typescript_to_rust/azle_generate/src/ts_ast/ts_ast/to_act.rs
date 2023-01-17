@@ -2,11 +2,10 @@ use cdk_framework::{
     self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
     ActCanisterMethod, ActDataType, RequestType, ToAct,
 };
-use quote::quote;
 
 use super::TsAst;
 use crate::{
-    generators::{async_result_handler, errors, ic_object, stable_b_tree_map, vm_value_conversion},
+    generators::{azle_specific_code, vm_value_conversion},
     ts_ast::{
         azle_program::HelperMethods,
         azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods,
@@ -129,32 +128,20 @@ impl ToAct for TsAst {
         let post_upgrade_method = self.build_post_upgrade_method();
         let pre_upgrade_method = self.build_pre_upgrade_method();
 
-        let stable_b_tree_map_nodes = self.stable_b_tree_map_nodes();
-
         let external_canisters = self.build_external_canisters();
 
         // TODO: Remove these clones
         let query_and_update_canister_methods: Vec<ActCanisterMethod> =
             vec![query_methods.clone(), update_methods.clone()].concat();
-        let ic_object_functions = ic_object::functions::generate_functions(
-            &query_and_update_canister_methods,
-            &external_canisters,
-            &stable_b_tree_map_nodes,
-        );
 
         let try_into_vm_value_impls = vm_value_conversion::generate_try_into_vm_value_impls();
         let try_from_vm_value_impls = vm_value_conversion::generate_try_from_vm_value_impls();
 
-        let _stable_b_tree_map_nodes = self.stable_b_tree_map_nodes();
-
-        let async_result_handler =
-            async_result_handler::generate_async_result_handler(&query_and_update_canister_methods);
-
-        let boa_error_handler = errors::generate_error_handler();
-        let register_ic_object_function = self.generate_register_ic_object_function();
-
-        let stable_b_tree_maps =
-            stable_b_tree_map::generate_stable_b_tree_map(&stable_b_tree_map_nodes);
+        let azle_specific_code = azle_specific_code::generate_azle_specific_code(
+            self,
+            query_and_update_canister_methods,
+            &external_canisters,
+        );
 
         // TODO Some of the things in this quote belong inside of the quote in AbstractCanisterTree
         AbstractCanisterTree {
@@ -172,13 +159,7 @@ impl ToAct for TsAst {
             primitives,
             query_methods,
             records,
-            rust_code: quote! {
-                #boa_error_handler
-                #register_ic_object_function
-                #ic_object_functions
-                #async_result_handler
-                #stable_b_tree_maps
-            },
+            rust_code: azle_specific_code,
             try_from_vm_value_impls,
             try_into_vm_value_impls,
             tuples,

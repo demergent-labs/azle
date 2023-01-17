@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 
-pub fn generate_error_handler() -> TokenStream {
+pub fn generate_boa_error_handlers() -> TokenStream {
     quote! {
         pub fn _azle_handle_boa_result(
             boa_result: boa_engine::JsResult<boa_engine::JsValue>,

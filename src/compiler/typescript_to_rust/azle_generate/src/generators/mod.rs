@@ -1,4 +1,5 @@
 pub mod async_result_handler;
+pub mod azle_specific_code;
 pub mod canister_methods;
 pub mod cross_canister_calls;
 pub mod errors;

@@ -4,7 +4,7 @@ use quote::{format_ident, quote};
 
 use crate::StableBTreeMapNode;
 
-pub fn generate_stable_b_tree_map(
+pub fn generate_stable_b_tree_maps(
     stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
 ) -> TokenStream {
     let stable_b_tree_maps_and_impls =

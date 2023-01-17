@@ -6,7 +6,6 @@ use super::AzleProgram;
 
 mod cross_canister_calls;
 mod errors;
-mod ic_object;
 mod stable_b_tree_map;
 mod system_canister_method_builder;
 mod to_act;
