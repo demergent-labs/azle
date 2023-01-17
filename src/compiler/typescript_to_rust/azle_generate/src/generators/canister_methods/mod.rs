@@ -4,6 +4,7 @@ use cdk_framework::{nodes::ActCanisterMethod, traits::CanisterMethodBuilder, Req
 pub mod heartbeat;
 pub mod init;
 pub mod method_body;
+pub mod post_upgrade;
 
 pub fn build_canister_method_nodes(
     fn_decls: &Vec<AzleFnDecl>,

@@ -1,9 +1,9 @@
+use cdk_framework::{nodes::ActInitMethod, traits::CanisterMethodBuilder, CanisterMethodType};
+
 use crate::{
     generators::canister_methods::init,
     ts_ast::{azle_program::HelperMethods, ts_ast::errors, TsAst},
 };
-
-use cdk_framework::{nodes::ActInitMethod, traits::CanisterMethodBuilder, CanisterMethodType};
 
 pub fn build_canister_method_system_init(ts_ast: &TsAst) -> ActInitMethod {
     let init_fn_decls = ts_ast
