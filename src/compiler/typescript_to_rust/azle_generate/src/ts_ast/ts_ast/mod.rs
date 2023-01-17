@@ -4,7 +4,6 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 use super::AzleProgram;
 
-mod async_result_handler;
 mod cross_canister_calls;
 mod errors;
 mod ic_object;

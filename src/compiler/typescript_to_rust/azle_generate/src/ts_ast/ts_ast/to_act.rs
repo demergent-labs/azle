@@ -6,7 +6,7 @@ use quote::quote;
 
 use super::TsAst;
 use crate::{
-    generators::{errors, ic_object::functions, stable_b_tree_map, vm_value_conversion},
+    generators::{async_result_handler, errors, ic_object, stable_b_tree_map, vm_value_conversion},
     ts_ast::{
         azle_program::HelperMethods,
         azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods,
@@ -136,7 +136,7 @@ impl ToAct for TsAst {
         // TODO: Remove these clones
         let query_and_update_canister_methods: Vec<ActCanisterMethod> =
             vec![query_methods.clone(), update_methods.clone()].concat();
-        let ic_object_functions = functions::generate_functions(
+        let ic_object_functions = ic_object::functions::generate_functions(
             &query_and_update_canister_methods,
             &external_canisters,
             &stable_b_tree_map_nodes,
@@ -148,7 +148,7 @@ impl ToAct for TsAst {
         let _stable_b_tree_map_nodes = self.stable_b_tree_map_nodes();
 
         let async_result_handler =
-            self.generate_async_result_handler(&query_and_update_canister_methods);
+            async_result_handler::generate_async_result_handler(&query_and_update_canister_methods);
 
         let boa_error_handler = errors::generate_error_handler();
         let register_ic_object_function = self.generate_register_ic_object_function();
