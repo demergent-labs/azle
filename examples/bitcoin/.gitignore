@@ -1,6 +1,6 @@
+.azle
 .dfx
 node_modules
-target
 
 # Bitcoin
 .bitcoin/*
