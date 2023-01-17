@@ -144,7 +144,6 @@ impl ToAct for TsAst {
 
         let body = body::generate(self, query_and_update_canister_methods, &external_canisters);
 
-        // TODO Some of the things in this quote belong inside of the quote in AbstractCanisterTree
         AbstractCanisterTree {
             arrays,
             body,
