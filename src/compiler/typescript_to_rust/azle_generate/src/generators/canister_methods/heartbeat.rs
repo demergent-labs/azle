@@ -1,8 +1,8 @@
-use crate::{generators::canister_methods::method_body, ts_ast::AzleFnDecl};
+use crate::{generators::canister_methods, ts_ast::AzleFnDecl};
 
 pub fn generate_heartbeat_method_body(heartbeat_fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
     let call_to_heartbeat_js_function =
-        method_body::generate_call_to_js_function(heartbeat_fn_decl);
+        canister_methods::generate_call_to_js_function(heartbeat_fn_decl);
 
     let function_name = heartbeat_fn_decl.get_function_name();
 

@@ -49,7 +49,7 @@ mod stable_write;
 mod time;
 mod trap;
 
-pub fn generate_functions(
+pub fn generate(
     canister_methods: &Vec<ActCanisterMethod>,
     external_canisters: &Vec<ActExternalCanister>,
     stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,

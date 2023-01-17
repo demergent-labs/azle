@@ -1,4 +1,4 @@
-use crate::{generators::canister_methods::method_body, ts_ast::AzleFnDecl};
+use crate::{generators::canister_methods, ts_ast::AzleFnDecl};
 
 pub fn generate_init_method_body(
     init_fn_decl_option: Option<&AzleFnDecl>,
@@ -9,7 +9,7 @@ pub fn generate_init_method_body(
     };
 
     let call_to_init_js_function =
-        method_body::maybe_generate_call_to_js_function(&init_fn_decl_option);
+        canister_methods::maybe_generate_call_to_js_function(&init_fn_decl_option);
 
     quote::quote! {
         BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {

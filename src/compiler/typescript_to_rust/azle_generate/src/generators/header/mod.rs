@@ -1,7 +1,7 @@
 mod ref_cells;
 mod use_statements;
 
-pub fn generate_header(main_js: &str) -> proc_macro2::TokenStream {
+pub fn generate(main_js: &str) -> proc_macro2::TokenStream {
     let use_statements = use_statements::generate_use_statements();
     let ref_cells = ref_cells::generate_ref_cells();
 

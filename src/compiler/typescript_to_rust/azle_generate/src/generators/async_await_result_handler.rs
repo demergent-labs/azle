@@ -4,7 +4,7 @@ use quote::quote;
 
 use crate::ts_keywords;
 
-pub fn generate_async_result_handler(canister_methods: &Vec<ActCanisterMethod>) -> TokenStream {
+pub fn generate(canister_methods: &Vec<ActCanisterMethod>) -> TokenStream {
     let match_arms = generate_match_arms(canister_methods);
     quote! {
         fn _azle_async_await_result_handler(

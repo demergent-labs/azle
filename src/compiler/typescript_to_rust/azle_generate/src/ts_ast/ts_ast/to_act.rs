@@ -5,7 +5,7 @@ use cdk_framework::{
 
 use super::TsAst;
 use crate::{
-    generators::{azle_specific_code, vm_value_conversion},
+    generators::{body, header, vm_value_conversion},
     ts_ast::{
         azle_program::HelperMethods,
         azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods,
@@ -15,6 +15,8 @@ use crate::{
 
 impl ToAct for TsAst {
     fn to_act(&self) -> AbstractCanisterTree {
+        let header = header::generate(&self.main_js);
+
         let keywords = ts_keywords::ts_keywords();
 
         // Collect AST Information
@@ -137,18 +139,16 @@ impl ToAct for TsAst {
         let try_into_vm_value_impls = vm_value_conversion::generate_try_into_vm_value_impls();
         let try_from_vm_value_impls = vm_value_conversion::generate_try_from_vm_value_impls();
 
-        let azle_specific_code = azle_specific_code::generate_azle_specific_code(
-            self,
-            query_and_update_canister_methods,
-            &external_canisters,
-        );
+        let body = body::generate(self, query_and_update_canister_methods, &external_canisters);
 
         // TODO Some of the things in this quote belong inside of the quote in AbstractCanisterTree
         AbstractCanisterTree {
-            cdk_name: "azle".to_string(),
             arrays,
+            body,
+            cdk_name: "azle".to_string(),
             external_canisters,
             funcs,
+            header,
             heartbeat_method,
             init_method,
             inspect_message_method,
@@ -159,7 +159,6 @@ impl ToAct for TsAst {
             primitives,
             query_methods,
             records,
-            rust_code: azle_specific_code,
             try_from_vm_value_impls,
             try_into_vm_value_impls,
             tuples,

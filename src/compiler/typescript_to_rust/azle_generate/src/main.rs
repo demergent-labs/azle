@@ -1,4 +1,4 @@
-use azle_generate::azle_generate;
+use azle_generate::generate_canister;
 
 // TODO I think we can just base64 encode our arguments and then decode them here as necessary
 // TODO the ts_file_names can be decoded appropriately
@@ -14,7 +14,7 @@ fn main() {
 
     let main_js = std::fs::read_to_string("src/main.js").unwrap();
 
-    let result = azle_generate(&ts_file_names, &main_js);
+    let result = generate_canister(&ts_file_names, main_js);
 
     println!("{}", result);
 }

@@ -1,8 +1,7 @@
 use cdk_framework::{ToAct, ToTokenStream};
 use proc_macro2::TokenStream;
-use quote::quote;
 
-use crate::{generators::header, ts_ast::TsAst};
+use crate::ts_ast::TsAst;
 
 pub use stable_b_tree_map_node::{AzleStableBTreeMapNode, StableBTreeMapNode};
 
@@ -13,15 +12,8 @@ mod ts_ast;
 mod ts_keywords;
 mod utils;
 
-pub fn azle_generate(ts_file_names: &Vec<&str>, main_js: &str) -> TokenStream {
-    let header = header::generate_header(main_js);
-
-    let canister_definition = TsAst::from_ts_file_names(&ts_file_names)
+pub fn generate_canister(ts_file_names: &Vec<&str>, main_js: String) -> TokenStream {
+    TsAst::new(&ts_file_names, main_js)
         .to_act()
-        .to_token_stream(());
-
-    quote! {
-        #header
-        #canister_definition
-    }
+        .to_token_stream(())
 }
