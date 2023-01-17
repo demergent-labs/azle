@@ -5,7 +5,10 @@ use cdk_framework::{
 
 use super::TsAst;
 use crate::{
-    generators::{body, header, vm_value_conversion},
+    generators::{
+        body, header,
+        vm_value_conversion::{try_from_vm_value_impls, try_into_vm_value_impls},
+    },
     ts_ast::{
         azle_program::HelperMethods,
         azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods,
@@ -136,8 +139,8 @@ impl ToAct for TsAst {
         let query_and_update_canister_methods: Vec<ActCanisterMethod> =
             vec![query_methods.clone(), update_methods.clone()].concat();
 
-        let try_into_vm_value_impls = vm_value_conversion::generate_try_into_vm_value_impls();
-        let try_from_vm_value_impls = vm_value_conversion::generate_try_from_vm_value_impls();
+        let try_into_vm_value_impls = try_into_vm_value_impls::generate();
+        let try_from_vm_value_impls = try_from_vm_value_impls::generate();
 
         let body = body::generate(self, query_and_update_canister_methods, &external_canisters);
 
