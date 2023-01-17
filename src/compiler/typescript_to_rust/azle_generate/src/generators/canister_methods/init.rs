@@ -1,8 +1,8 @@
-use proc_macro2::TokenStream;
-
 use crate::{generators::canister_methods::method_body, ts_ast::AzleFnDecl};
 
-pub fn generate_init_method_body(init_fn_decl_option: Option<&AzleFnDecl>) -> TokenStream {
+pub fn generate_init_method_body(
+    init_fn_decl_option: Option<&AzleFnDecl>,
+) -> proc_macro2::TokenStream {
     let function_name = match init_fn_decl_option {
         Some(init_fn_decl) => init_fn_decl.get_function_name(),
         None => "DOES_NOT_EXIST".to_string(),
