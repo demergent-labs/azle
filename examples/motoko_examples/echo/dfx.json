@@ -6,7 +6,7 @@
             "root": "canisters/azle",
             "ts": "canisters/azle/index.ts",
             "candid": "canisters/azle/index.did",
-            "wasm": "azle.wasm.gz",
+            "wasm": ".azle/azle.wasm.gz",
             "declarations": {
                 "output": "dfx_generated/azle"
             }
