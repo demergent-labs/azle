@@ -27,12 +27,6 @@ export type StableMap3InsertResult =
 export type StableMap4InsertResult =
     | { ok: [] | [number] }
     | { err: InsertError };
-export type StableMap5InsertResult =
-    | { ok: [] | [number] }
-    | { err: InsertError };
-export type StableMap6InsertResult =
-    | { ok: [] | [boolean] }
-    | { err: InsertError };
 export interface User {
     username: string;
     blog_posts: Array<BlogPost>;
@@ -89,28 +83,4 @@ export interface _SERVICE {
     stable_map_4_len: ActorMethod<[], bigint>;
     stable_map_4_remove: ActorMethod<[User], [] | [number]>;
     stable_map_4_values: ActorMethod<[], Array<number>>;
-    stable_map_5_contains_key: ActorMethod<[[] | [string]], boolean>;
-    stable_map_5_get: ActorMethod<[[] | [string]], [] | [number]>;
-    stable_map_5_insert: ActorMethod<
-        [[] | [string], number],
-        StableMap5InsertResult
-    >;
-    stable_map_5_is_empty: ActorMethod<[], boolean>;
-    stable_map_5_items: ActorMethod<[], Array<[[] | [string], number]>>;
-    stable_map_5_keys: ActorMethod<[], Array<[] | [string]>>;
-    stable_map_5_len: ActorMethod<[], bigint>;
-    stable_map_5_remove: ActorMethod<[[] | [string]], [] | [number]>;
-    stable_map_5_values: ActorMethod<[], Array<number>>;
-    stable_map_6_contains_key: ActorMethod<[BigUint64Array], boolean>;
-    stable_map_6_get: ActorMethod<[BigUint64Array], [] | [boolean]>;
-    stable_map_6_insert: ActorMethod<
-        [BigUint64Array, boolean],
-        StableMap6InsertResult
-    >;
-    stable_map_6_is_empty: ActorMethod<[], boolean>;
-    stable_map_6_items: ActorMethod<[], Array<[BigUint64Array, boolean]>>;
-    stable_map_6_keys: ActorMethod<[], Array<BigUint64Array>>;
-    stable_map_6_len: ActorMethod<[], bigint>;
-    stable_map_6_remove: ActorMethod<[BigUint64Array], [] | [boolean]>;
-    stable_map_6_values: ActorMethod<[], Array<boolean>>;
 }

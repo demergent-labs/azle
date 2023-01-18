@@ -23,6 +23,18 @@
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true
             }
+        },
+        "canister3": {
+            "type": "custom",
+            "build": "npx azle canister3",
+            "root": "src",
+            "ts": "src/canister3/index.ts",
+            "candid": "src/canister3/index.did",
+            "wasm": ".azle/canister3.wasm.gz",
+            "declarations": {
+                "output": "test/dfx_generated/canister3",
+                "node_compatibility": true
+            }
         }
     }
 }

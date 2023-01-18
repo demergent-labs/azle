@@ -30,14 +30,6 @@ export const idlFactory = ({ IDL }) => {
         ok: IDL.Opt(IDL.Float32),
         err: InsertError
     });
-    const StableMap5InsertResult = IDL.Variant({
-        ok: IDL.Opt(IDL.Float64),
-        err: InsertError
-    });
-    const StableMap6InsertResult = IDL.Variant({
-        ok: IDL.Opt(IDL.Bool),
-        err: InsertError
-    });
     return IDL.Service({
         stable_map_0_contains_key: IDL.Func([IDL.Nat8], [IDL.Bool], ['query']),
         stable_map_0_get: IDL.Func([IDL.Nat8], [IDL.Opt(IDL.Text)], ['query']),
@@ -135,73 +127,7 @@ export const idlFactory = ({ IDL }) => {
         stable_map_4_keys: IDL.Func([], [IDL.Vec(User)], ['query']),
         stable_map_4_len: IDL.Func([], [IDL.Nat64], ['query']),
         stable_map_4_remove: IDL.Func([User], [IDL.Opt(IDL.Float32)], []),
-        stable_map_4_values: IDL.Func([], [IDL.Vec(IDL.Float32)], ['query']),
-        stable_map_5_contains_key: IDL.Func(
-            [IDL.Opt(IDL.Text)],
-            [IDL.Bool],
-            ['query']
-        ),
-        stable_map_5_get: IDL.Func(
-            [IDL.Opt(IDL.Text)],
-            [IDL.Opt(IDL.Float64)],
-            ['query']
-        ),
-        stable_map_5_insert: IDL.Func(
-            [IDL.Opt(IDL.Text), IDL.Float64],
-            [StableMap5InsertResult],
-            []
-        ),
-        stable_map_5_is_empty: IDL.Func([], [IDL.Bool], ['query']),
-        stable_map_5_items: IDL.Func(
-            [],
-            [IDL.Vec(IDL.Tuple(IDL.Opt(IDL.Text), IDL.Float64))],
-            ['query']
-        ),
-        stable_map_5_keys: IDL.Func(
-            [],
-            [IDL.Vec(IDL.Opt(IDL.Text))],
-            ['query']
-        ),
-        stable_map_5_len: IDL.Func([], [IDL.Nat64], ['query']),
-        stable_map_5_remove: IDL.Func(
-            [IDL.Opt(IDL.Text)],
-            [IDL.Opt(IDL.Float64)],
-            []
-        ),
-        stable_map_5_values: IDL.Func([], [IDL.Vec(IDL.Float64)], ['query']),
-        stable_map_6_contains_key: IDL.Func(
-            [IDL.Vec(IDL.Nat64)],
-            [IDL.Bool],
-            ['query']
-        ),
-        stable_map_6_get: IDL.Func(
-            [IDL.Vec(IDL.Nat64)],
-            [IDL.Opt(IDL.Bool)],
-            ['query']
-        ),
-        stable_map_6_insert: IDL.Func(
-            [IDL.Vec(IDL.Nat64), IDL.Bool],
-            [StableMap6InsertResult],
-            []
-        ),
-        stable_map_6_is_empty: IDL.Func([], [IDL.Bool], ['query']),
-        stable_map_6_items: IDL.Func(
-            [],
-            [IDL.Vec(IDL.Tuple(IDL.Vec(IDL.Nat64), IDL.Bool))],
-            ['query']
-        ),
-        stable_map_6_keys: IDL.Func(
-            [],
-            [IDL.Vec(IDL.Vec(IDL.Nat64))],
-            ['query']
-        ),
-        stable_map_6_len: IDL.Func([], [IDL.Nat64], ['query']),
-        stable_map_6_remove: IDL.Func(
-            [IDL.Vec(IDL.Nat64)],
-            [IDL.Opt(IDL.Bool)],
-            []
-        ),
-        stable_map_6_values: IDL.Func([], [IDL.Vec(IDL.Bool)], ['query'])
+        stable_map_4_values: IDL.Func([], [IDL.Vec(IDL.Float32)], ['query'])
     });
 };
 export const init = ({ IDL }) => {

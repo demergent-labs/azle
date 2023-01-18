@@ -1,7 +1,9 @@
-import { deploy, run_tests, Test } from 'azle/test';
+import { run_tests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor as createActorCanister1 } from './dfx_generated/canister1';
 import { createActor as createActorCanister2 } from './dfx_generated/canister2';
+import { createActor as createActorCanister3 } from './dfx_generated/canister3';
+import { _SERVICE } from './dfx_generated/canister3/canister3.did';
 import {
     pre_redeploy_tests,
     post_redeploy_tests,
@@ -25,6 +27,14 @@ const stable_structures_canister_2 = createActorCanister2(
         }
     }
 );
+const stable_structures_canister_3 = createActorCanister3(
+    'r7inp-6aaaa-aaaaa-aaabq-cai',
+    {
+        agentOptions: {
+            host: 'http://127.0.0.1:8000'
+        }
+    }
+);
 
 const tests: Test[] = [
     {
@@ -40,24 +50,30 @@ const tests: Test[] = [
                 stdio: 'inherit'
             });
 
+            execSync(`dfx canister uninstall-code canister3 || true`, {
+                stdio: 'inherit'
+            });
+
             execSync(`dfx deploy`, {
                 stdio: 'inherit'
             });
         }
     },
-    ...pre_redeploy_tests(stable_structures_canister_1, 0, 6),
-    ...pre_redeploy_tests(stable_structures_canister_2, 7, 13),
+    ...pre_redeploy_tests(stable_structures_canister_1, 0, 4),
+    ...pre_redeploy_tests(stable_structures_canister_2, 5, 9),
+    ...pre_redeploy_tests(stable_structures_canister_3, 10, 13),
     {
         name: 'redeploy canisters',
         prep: async () => {
             execSync('dfx deploy', { stdio: 'inherit' });
         }
     },
-    ...post_redeploy_tests(stable_structures_canister_1, 0, 6),
-    ...post_redeploy_tests(stable_structures_canister_2, 7, 13),
+    ...post_redeploy_tests(stable_structures_canister_1, 0, 4),
+    ...post_redeploy_tests(stable_structures_canister_2, 5, 9),
+    ...post_redeploy_tests(stable_structures_canister_3, 10, 13),
     ...insert_error_tests(
         stable_structures_canister_1,
-        stable_structures_canister_2
+        stable_structures_canister_3
     )
 ];
 

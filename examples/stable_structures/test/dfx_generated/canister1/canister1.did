@@ -10,8 +10,6 @@ type StableMap1InsertResult = variant { ok : opt vec nat8; err : InsertError };
 type StableMap2InsertResult = variant { ok : opt nat; err : InsertError };
 type StableMap3InsertResult = variant { ok : opt int; err : InsertError };
 type StableMap4InsertResult = variant { ok : opt float32; err : InsertError };
-type StableMap5InsertResult = variant { ok : opt float64; err : InsertError };
-type StableMap6InsertResult = variant { ok : opt bool; err : InsertError };
 type User = record { username : text; blog_posts : vec BlogPost };
 service : () -> {
   stable_map_0_contains_key : (nat8) -> (bool) query;
@@ -59,22 +57,4 @@ service : () -> {
   stable_map_4_len : () -> (nat64) query;
   stable_map_4_remove : (User) -> (opt float32);
   stable_map_4_values : () -> (vec float32) query;
-  stable_map_5_contains_key : (opt text) -> (bool) query;
-  stable_map_5_get : (opt text) -> (opt float64) query;
-  stable_map_5_insert : (opt text, float64) -> (StableMap5InsertResult);
-  stable_map_5_is_empty : () -> (bool) query;
-  stable_map_5_items : () -> (vec record { opt text; float64 }) query;
-  stable_map_5_keys : () -> (vec opt text) query;
-  stable_map_5_len : () -> (nat64) query;
-  stable_map_5_remove : (opt text) -> (opt float64);
-  stable_map_5_values : () -> (vec float64) query;
-  stable_map_6_contains_key : (vec nat64) -> (bool) query;
-  stable_map_6_get : (vec nat64) -> (opt bool) query;
-  stable_map_6_insert : (vec nat64, bool) -> (StableMap6InsertResult);
-  stable_map_6_is_empty : () -> (bool) query;
-  stable_map_6_items : () -> (vec record { vec nat64; bool }) query;
-  stable_map_6_keys : () -> (vec vec nat64) query;
-  stable_map_6_len : () -> (nat64) query;
-  stable_map_6_remove : (vec nat64) -> (opt bool);
-  stable_map_6_values : () -> (vec bool) query;
 }

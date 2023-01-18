@@ -1,0 +1,53 @@
+type BlogPost = record { title : text };
+type InsertError = variant {
+  ValueTooLarge : KeyTooLarge;
+  KeyTooLarge : KeyTooLarge;
+};
+type KeyTooLarge = record { max : nat32; given : nat32 };
+type Reaction = variant { Sad; Happy };
+type StableMap10InsertResult = variant { ok : opt opt bool; err : InsertError };
+type StableMap11InsertResult = variant { ok : opt User; err : InsertError };
+type StableMap12InsertResult = variant { ok : opt Reaction; err : InsertError };
+type StableMap13InsertResult = variant {
+  ok : opt principal;
+  err : InsertError;
+};
+type User = record { username : text; blog_posts : vec BlogPost };
+service : () -> {
+  stable_map_10_contains_key : (float32) -> (bool) query;
+  stable_map_10_get : (float32) -> (opt opt bool) query;
+  stable_map_10_insert : (float32, opt bool) -> (StableMap10InsertResult);
+  stable_map_10_is_empty : () -> (bool) query;
+  stable_map_10_items : () -> (vec record { float32; opt bool }) query;
+  stable_map_10_keys : () -> (vec float32) query;
+  stable_map_10_len : () -> (nat64) query;
+  stable_map_10_remove : (float32) -> (opt opt bool);
+  stable_map_10_values : () -> (vec opt bool) query;
+  stable_map_11_contains_key : (nat) -> (bool) query;
+  stable_map_11_get : (nat) -> (opt User) query;
+  stable_map_11_insert : (nat, User) -> (StableMap11InsertResult);
+  stable_map_11_is_empty : () -> (bool) query;
+  stable_map_11_items : () -> (vec record { nat; User }) query;
+  stable_map_11_keys : () -> (vec nat) query;
+  stable_map_11_len : () -> (nat64) query;
+  stable_map_11_remove : (nat) -> (opt User);
+  stable_map_11_values : () -> (vec User) query;
+  stable_map_12_contains_key : (vec nat8) -> (bool) query;
+  stable_map_12_get : (vec nat8) -> (opt Reaction) query;
+  stable_map_12_insert : (vec nat8, Reaction) -> (StableMap12InsertResult);
+  stable_map_12_is_empty : () -> (bool) query;
+  stable_map_12_items : () -> (vec record { vec nat8; Reaction }) query;
+  stable_map_12_keys : () -> (vec vec nat8) query;
+  stable_map_12_len : () -> (nat64) query;
+  stable_map_12_remove : (vec nat8) -> (opt Reaction);
+  stable_map_12_values : () -> (vec Reaction) query;
+  stable_map_13_contains_key : (text) -> (bool) query;
+  stable_map_13_get : (text) -> (opt principal) query;
+  stable_map_13_insert : (text, principal) -> (StableMap13InsertResult);
+  stable_map_13_is_empty : () -> (bool) query;
+  stable_map_13_items : () -> (vec record { text; principal }) query;
+  stable_map_13_keys : () -> (vec text) query;
+  stable_map_13_len : () -> (nat64) query;
+  stable_map_13_remove : (text) -> (opt principal);
+  stable_map_13_values : () -> (vec principal) query;
+}
