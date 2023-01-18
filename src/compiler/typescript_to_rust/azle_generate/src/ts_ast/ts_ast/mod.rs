@@ -4,20 +4,19 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 use super::AzleProgram;
 
-mod async_result_handler;
 mod cross_canister_calls;
 mod errors;
-mod ic_object;
 mod stable_b_tree_map;
 mod system_canister_method_builder;
 mod to_act;
 
 pub struct TsAst {
     pub azle_programs: Vec<AzleProgram>,
+    pub main_js: String,
 }
 
 impl TsAst {
-    pub fn from_ts_file_names(ts_file_names: &Vec<&str>) -> Self {
+    pub fn new(ts_file_names: &Vec<&str>, main_js: String) -> Self {
         let azle_programs = ts_file_names
             .iter()
             .map(|ts_file_name| {
@@ -54,6 +53,9 @@ impl TsAst {
                 }
             })
             .collect();
-        Self { azle_programs }
+        Self {
+            azle_programs,
+            main_js,
+        }
     }
 }

@@ -1,13 +1,13 @@
 use cdk_framework::{
     self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
-    ActCanisterMethod, ActDataType, CanisterMethodType, RequestType, ToAct,
+    ActCanisterMethod, ActDataType, RequestType, ToAct,
 };
-use quote::quote;
 
 use super::TsAst;
 use crate::{
     generators::{
-        canister_methods, errors, ic_object::functions, stable_b_tree_map, vm_value_conversion,
+        body, header,
+        vm_value_conversion::{try_from_vm_value_impls, try_into_vm_value_impls},
     },
     ts_ast::{
         azle_program::HelperMethods,
@@ -18,27 +18,21 @@ use crate::{
 
 impl ToAct for TsAst {
     fn to_act(&self) -> AbstractCanisterTree {
+        let header = header::generate(&self.main_js);
+
         let keywords = ts_keywords::ts_keywords();
 
         // Collect AST Information
         let ast_type_alias_decls = &self.azle_programs.get_azle_type_alias_decls();
 
         // Separate function decls into queries and updates
-        let azle_fnc_decls_query = self
+        let query_methods = self
             .azle_programs
-            .get_azle_fn_decls_of_type(&CanisterMethodType::Query);
-        let azle_fnc_decls_update = self
-            .azle_programs
-            .get_azle_fn_decls_of_type(&CanisterMethodType::Update);
+            .build_canister_method_nodes(RequestType::Query);
 
-        let query_methods = canister_methods::build_canister_method_nodes(
-            &azle_fnc_decls_query,
-            RequestType::Query,
-        );
-        let update_methods = canister_methods::build_canister_method_nodes(
-            &azle_fnc_decls_update,
-            RequestType::Update,
-        );
+        let update_methods = self
+            .azle_programs
+            .build_canister_method_nodes(RequestType::Update);
 
         let query_method_type_acts =
             cdk_framework::nodes::act_canister_method::get_all_types_from_canister_method_acts(
@@ -139,38 +133,24 @@ impl ToAct for TsAst {
         let post_upgrade_method = self.build_post_upgrade_method();
         let pre_upgrade_method = self.build_pre_upgrade_method();
 
-        let stable_b_tree_map_nodes = self.stable_b_tree_map_nodes();
-
         let external_canisters = self.build_external_canisters();
 
         // TODO: Remove these clones
         let query_and_update_canister_methods: Vec<ActCanisterMethod> =
             vec![query_methods.clone(), update_methods.clone()].concat();
-        let ic_object_functions = functions::generate_ic_object_functions(
-            &query_and_update_canister_methods,
-            &external_canisters,
-            &stable_b_tree_map_nodes,
-        );
 
-        let try_into_vm_value_impls = vm_value_conversion::generate_try_into_vm_value_impls();
-        let try_from_vm_value_impls = vm_value_conversion::generate_try_from_vm_value_impls();
+        let try_into_vm_value_impls = try_into_vm_value_impls::generate();
+        let try_from_vm_value_impls = try_from_vm_value_impls::generate();
 
-        let _stable_b_tree_map_nodes = self.stable_b_tree_map_nodes();
+        let body = body::generate(self, query_and_update_canister_methods, &external_canisters);
 
-        let async_result_handler =
-            self.generate_async_result_handler(&query_and_update_canister_methods);
-
-        let boa_error_handler = errors::generate_error_handler();
-
-        let stable_b_tree_maps =
-            stable_b_tree_map::generate_stable_b_tree_map(&stable_b_tree_map_nodes);
-
-        // TODO Some of the things in this quote belong inside of the quote in AbstractCanisterTree
         AbstractCanisterTree {
-            cdk_name: "azle".to_string(),
             arrays,
+            body,
+            cdk_name: "azle".to_string(),
             external_canisters,
             funcs,
+            header,
             heartbeat_method,
             init_method,
             inspect_message_method,
@@ -181,12 +161,6 @@ impl ToAct for TsAst {
             primitives,
             query_methods,
             records,
-            rust_code: quote! {
-                #boa_error_handler
-                #ic_object_functions
-                #async_result_handler
-                #stable_b_tree_maps
-            },
             try_from_vm_value_impls,
             try_into_vm_value_impls,
             tuples,

@@ -1,12 +1,11 @@
 use crate::generators::cross_canister_calls::{
-    generate_post_await_state_management, generate_pre_await_state_management,
-    generate_promise_fulfillment,
+    post_await_state_management, pre_await_state_management, promise_fulfillment,
 };
 
-pub fn generate_ic_object_function_call_raw() -> proc_macro2::TokenStream {
-    let pre_await_state_management = generate_pre_await_state_management();
-    let post_await_state_management = generate_post_await_state_management();
-    let promise_fulfillment = generate_promise_fulfillment();
+pub fn generate() -> proc_macro2::TokenStream {
+    let pre_await_state_management = pre_await_state_management::generate();
+    let post_await_state_management = post_await_state_management::generate();
+    let promise_fulfillment = promise_fulfillment::generate();
 
     quote::quote! {
         fn _azle_ic_call_raw(

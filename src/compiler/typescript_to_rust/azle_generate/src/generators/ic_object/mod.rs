@@ -5,6 +5,7 @@ use quote::{format_ident, quote};
 use crate::ts_keywords;
 
 pub mod functions;
+pub mod register_function;
 
 pub fn generate_param_variables(method: &ActExternalCanisterMethod) -> Vec<TokenStream> {
     method.params
