@@ -40,7 +40,7 @@ function azle() {
     time(`\nBuilding canister ${green(canisterName)}`, 'default', () => {
         const canisterConfig = unwrap(getCanisterConfig(canisterName));
 
-        printFirstBuildWarning(canisterName);
+        printFirstBuildWarning();
         compileTypeScriptToRust(canisterName, canisterConfig, stdioType);
         generateCandidFile(
             canisterConfig.root,
@@ -85,47 +85,43 @@ function compileRustCode(
     candidPath: string,
     stdio: IOType
 ) {
-    time(
-        `[3/3] 🚧 Building Wasm binary...${getBuildWarning(canisterName)}`,
-        'inline',
-        () => {
-            execSync(
-                `cd .azle && ${GLOBAL_AZLE_BIN_DIR}/cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
-                {
-                    stdio,
-                    env: {
-                        ...process.env,
-                        CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
-                        CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
-                        RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
-                    }
+    time(`[3/3] 🚧 Building Wasm binary...`, 'inline', () => {
+        execSync(
+            `cd .azle && ${GLOBAL_AZLE_BIN_DIR}/cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
+            {
+                stdio,
+                env: {
+                    ...process.env,
+                    CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
+                    CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
+                    RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
                 }
-            );
+            }
+        );
 
-            const wasmFilePath = `${GLOBAL_AZLE_CONFIG_DIR}/target/wasm32-unknown-unknown/release/${canisterName}.wasm`;
+        const wasmFilePath = `${GLOBAL_AZLE_CONFIG_DIR}/target/wasm32-unknown-unknown/release/${canisterName}.wasm`;
 
-            // optimization, binary is too big to deploy without this
-            execSync(
-                `${GLOBAL_AZLE_BIN_DIR}/ic-cdk-optimizer ${wasmFilePath} -o ${wasmFilePath}`,
-                {
-                    stdio,
-                    env: {
-                        ...process.env,
-                        CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
-                        CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
-                        RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
-                    }
+        // optimization, binary is too big to deploy without this
+        execSync(
+            `${GLOBAL_AZLE_BIN_DIR}/ic-cdk-optimizer ${wasmFilePath} -o ${wasmFilePath}`,
+            {
+                stdio,
+                env: {
+                    ...process.env,
+                    CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
+                    CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
+                    RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
                 }
-            );
+            }
+        );
 
-            addCandidToWasmMetaData(candidPath, wasmFilePath);
+        addCandidToWasmMetaData(candidPath, wasmFilePath);
 
-            execSync(`gzip -f -k ${wasmFilePath}`, { stdio });
+        execSync(`gzip -f -k ${wasmFilePath}`, { stdio });
 
-            execSync(`cp ${wasmFilePath} .azle`);
-            execSync(`cp ${wasmFilePath}.gz .azle`);
-        }
-    );
+        execSync(`cp ${wasmFilePath} .azle`);
+        execSync(`cp ${wasmFilePath}.gz .azle`);
+    });
 }
 
 function compileTypeScriptToRust(
@@ -305,12 +301,6 @@ function getUsageInfo(): string {
     return `Usage: azle ${dim('[-v|--verbose]')} ${green('<canister_name>')}`;
 }
 
-function getBuildWarning(canisterName: string): string {
-    return isInitialCompile(canisterName)
-        ? ' (be patient, this will take a while)'
-        : '';
-}
-
 function getFileNames(tsPath: string): string[] {
     const program = tsc.createProgram([tsPath], {});
     const sourceFiles = program.getSourceFiles();
@@ -333,10 +323,8 @@ function isCliFlag(arg: string): boolean {
     return arg.startsWith('--') || arg.startsWith('-');
 }
 
-function isInitialCompile(canisterName: string): boolean {
-    // TODO We need to detect the .config/azle target dir for this to work...but I am not sure how we will know
-    // TODO when the build will actually take a long time
-    return !fs.existsSync(`.azle/${canisterName}.wasm.gz`);
+function isInitialCompile(): boolean {
+    return !fs.existsSync(GLOBAL_AZLE_TARGET_DIR);
 }
 
 function isTsCompilationError(error: unknown): error is TsCompilationError {
@@ -392,8 +380,8 @@ function parseHrTimeToSeconds(
     return seconds;
 }
 
-function printFirstBuildWarning(canisterName: string): void {
-    if (isInitialCompile(canisterName)) {
+function printFirstBuildWarning(): void {
+    if (isInitialCompile()) {
         console.info(
             yellow(
                 "\nInitial build takes a few minutes. Don't panic. Subsequent builds will be faster."

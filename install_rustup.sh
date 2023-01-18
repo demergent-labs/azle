@@ -9,7 +9,7 @@ export RUSTUP_HOME=~/.config/azle
 if [ -x "$(command -v ~/.config/azle/bin/rustup)" ]; then
     ~/.config/azle/bin/rustup update 1.66.0 &> ~/.config/azle/logs/rustup_update
 else
-    echo -e "Keep calm, this could take a few minutes\n"
+    echo -e "Keep calm, this could take a few minutes. Subsequent installs will be faster.\n"
 
     mkdir ~/.config/azle
     mkdir ~/.config/azle/logs
