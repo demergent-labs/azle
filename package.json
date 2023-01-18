@@ -1,11 +1,13 @@
 {
     "name": "azle",
     "version": "0.10.0",
+    "rust_version": "1.66.0",
     "description": "TypeScript CDK for the Internet Computer",
     "scripts": {
         "typecheck": "tsc --noEmit",
         "prepare": "husky install",
-        "test": "test/test.sh"
+        "test": "test/test.sh",
+        "postinstall": "./install_rustup.sh"
     },
     "bin": {
         "azle": "./bin.js"

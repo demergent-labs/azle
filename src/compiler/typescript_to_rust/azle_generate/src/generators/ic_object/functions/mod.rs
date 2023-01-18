@@ -13,7 +13,7 @@ mod candid_encode;
 mod canister_balance;
 mod canister_balance128;
 mod clear_timer;
-mod cross_canister_functions;
+mod cross_canister_calls;
 mod data_certificate;
 mod id;
 mod method_name;
@@ -23,9 +23,9 @@ mod msg_cycles_available;
 mod msg_cycles_available128;
 mod msg_cycles_refunded;
 mod msg_cycles_refunded128;
-mod notify_functions;
+mod notify;
 mod notify_raw;
-mod notify_with_payment128_functions;
+mod notify_with_payment128;
 mod performance_counter;
 mod print;
 mod reject;
@@ -49,69 +49,57 @@ mod stable_write;
 mod time;
 mod trap;
 
-pub fn generate_ic_object_functions(
+pub fn generate(
     canister_methods: &Vec<ActCanisterMethod>,
     external_canisters: &Vec<ActExternalCanister>,
     stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
 ) -> proc_macro2::TokenStream {
-    let accept_message = accept_message::generate_ic_object_function_accept_message();
-    let arg_data_raw = arg_data_raw::generate_ic_object_function_arg_data_raw();
-    let arg_data_raw_size = arg_data_raw_size::generate_ic_object_function_arg_data_raw_size();
-    let call_raw = call_raw::generate_ic_object_function_call_raw();
-    let call_raw128 = call_raw128::generate_ic_object_function_call_raw128();
-    let cross_canister_functions =
-        cross_canister_functions::generate_ic_object_cross_canister_functions(external_canisters);
-    let caller = caller::generate_ic_object_function_caller();
-    let candid_decode = candid_decode::generate_ic_object_function_candid_decode();
-    let candid_encode = candid_encode::generate_ic_object_function_candid_encode();
-    let canister_balance = canister_balance::generate_ic_object_function_canister_balance();
-    let canister_balance128 =
-        canister_balance128::generate_ic_object_function_canister_balance128();
-    let clear_timer = clear_timer::generate_ic_object_function_clear_timer();
-    let data_certificate = data_certificate::generate_ic_object_function_data_certificate();
-    let id = id::generate_ic_object_function_id();
-    let method_name = method_name::generate_ic_object_function_method_name();
-    let msg_cycles_accept = msg_cycles_accept::generate_ic_object_function_msg_cycles_accept();
-    let msg_cycles_accept128 =
-        msg_cycles_accept128::generate_ic_object_function_msg_cycles_accept128();
-    let msg_cycles_available =
-        msg_cycles_available::generate_ic_object_function_msg_cycles_available();
-    let msg_cycles_available128 =
-        msg_cycles_available128::generate_ic_object_function_msg_cycles_available128();
-    let msg_cycles_refunded =
-        msg_cycles_refunded::generate_ic_object_function_msg_cycles_refunded();
-    let msg_cycles_refunded128 =
-        msg_cycles_refunded128::generate_ic_object_function_msg_cycles_refunded128();
-    let notify_functions =
-        notify_functions::generate_ic_object_notify_functions(external_canisters);
-    let notify_with_payment128_functions =
-        notify_with_payment128_functions::generate_ic_object_notify_with_payment128_functions(
-            external_canisters,
-        );
-    let notify_raw = notify_raw::generate_ic_object_function_notify_raw();
-    let performance_counter =
-        performance_counter::generate_ic_object_function_performance_counter();
-    let print = print::generate_ic_object_function_print();
-    let reject = reject::generate_ic_object_function_reject();
-    let reject_code = reject_code::generate_ic_object_function_reject_code();
-    let reject_message = reject_message::generate_ic_object_function_reject_message();
-    let reply = reply::generate_ic_object_function_reply(canister_methods);
-    let reply_raw = reply_raw::generate_ic_object_function_reply_raw();
-    let set_certified_data = set_certified_data::generate_ic_object_function_set_certified_data();
-    let set_timer = set_timer::generate_ic_object_function_set_timer();
-    let set_timer_interval = set_timer_interval::generate_ic_object_function_set_timer_interval();
-    let stable64_grow = stable64_grow::generate_ic_object_function_stable64_grow();
-    let stable64_read = stable64_read::generate_ic_object_function_stable64_read();
-    let stable64_size = stable64_size::generate_ic_object_function_stable64_size();
-    let stable64_write = stable64_write::generate_ic_object_function_stable64_write();
-    let stable_bytes = stable_bytes::generate_ic_object_function_stable_bytes();
-    let stable_grow = stable_grow::generate_ic_object_function_stable_grow();
-    let stable_read = stable_read::generate_ic_object_function_stable_read();
-    let stable_size = stable_size::generate_ic_object_function_stable_size();
-    let stable_write = stable_write::generate_ic_object_function_stable_write();
-    let time = time::generate_ic_object_function_time();
-    let trap = trap::generate_ic_object_function_trap();
-    let stable_b_tree_map_functions = stable_b_tree_map::generate(stable_b_tree_map_nodes);
+    let accept_message = accept_message::generate();
+    let arg_data_raw = arg_data_raw::generate();
+    let arg_data_raw_size = arg_data_raw_size::generate();
+    let call_raw = call_raw::generate();
+    let call_raw128 = call_raw128::generate();
+    let cross_canister_calls = cross_canister_calls::generate(external_canisters);
+    let caller = caller::generate();
+    let candid_decode = candid_decode::generate();
+    let candid_encode = candid_encode::generate();
+    let canister_balance = canister_balance::generate();
+    let canister_balance128 = canister_balance128::generate();
+    let clear_timer = clear_timer::generate();
+    let data_certificate = data_certificate::generate();
+    let id = id::generate();
+    let method_name = method_name::generate();
+    let msg_cycles_accept = msg_cycles_accept::generate();
+    let msg_cycles_accept128 = msg_cycles_accept128::generate();
+    let msg_cycles_available = msg_cycles_available::generate();
+    let msg_cycles_available128 = msg_cycles_available128::generate();
+    let msg_cycles_refunded = msg_cycles_refunded::generate();
+    let msg_cycles_refunded128 = msg_cycles_refunded128::generate();
+    let notify = notify::generate(external_canisters);
+    let notify_with_payment128 = notify_with_payment128::generate(external_canisters);
+    let notify_raw = notify_raw::generate();
+    let performance_counter = performance_counter::generate();
+    let print = print::generate();
+    let reject = reject::generate();
+    let reject_code = reject_code::generate();
+    let reject_message = reject_message::generate();
+    let reply = reply::generate(canister_methods);
+    let reply_raw = reply_raw::generate();
+    let set_certified_data = set_certified_data::generate();
+    let set_timer = set_timer::generate();
+    let set_timer_interval = set_timer_interval::generate();
+    let stable64_grow = stable64_grow::generate();
+    let stable64_read = stable64_read::generate();
+    let stable64_size = stable64_size::generate();
+    let stable64_write = stable64_write::generate();
+    let stable_bytes = stable_bytes::generate();
+    let stable_grow = stable_grow::generate();
+    let stable_read = stable_read::generate();
+    let stable_size = stable_size::generate();
+    let stable_write = stable_write::generate();
+    let time = time::generate();
+    let trap = trap::generate();
+    let stable_b_tree_map = stable_b_tree_map::generate(stable_b_tree_map_nodes);
 
     quote::quote! {
         #accept_message
@@ -119,7 +107,7 @@ pub fn generate_ic_object_functions(
         #arg_data_raw_size
         #call_raw
         #call_raw128
-        #(#cross_canister_functions)*
+        #(#cross_canister_calls)*
         #caller
         #candid_decode
         #candid_encode
@@ -135,8 +123,8 @@ pub fn generate_ic_object_functions(
         #msg_cycles_available128
         #msg_cycles_refunded
         #msg_cycles_refunded128
-        #(#notify_functions)*
-        #(#notify_with_payment128_functions)*
+        #(#notify)*
+        #(#notify_with_payment128)*
         #notify_raw
         #performance_counter
         #print
@@ -148,7 +136,7 @@ pub fn generate_ic_object_functions(
         #set_certified_data
         #set_timer
         #set_timer_interval
-        #stable_b_tree_map_functions
+        #stable_b_tree_map
         #stable64_grow
         #stable64_read
         #stable64_size

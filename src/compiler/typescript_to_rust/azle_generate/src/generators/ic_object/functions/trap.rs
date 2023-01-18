@@ -1,4 +1,4 @@
-pub fn generate_ic_object_function_trap() -> proc_macro2::TokenStream {
+pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
         fn _azle_ic_trap(
             _this: &boa_engine::JsValue,

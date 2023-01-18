@@ -139,8 +139,6 @@ jobs:
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix:
-                # TODO perhaps we should start testing on different versions of dfx as well
-                rust: [stable]
                 include_npm:
                     # Only include npm in the matrix if you've pushed to main and the last commit was a merge of a release branch, or the base branch of the pull request is a release branch
                     - ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
@@ -162,22 +160,10 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               run: DFX_VERSION=0.12.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              name: Install Rust ${{ matrix.rust }}
-              uses: actions-rs/toolchain@v1
-              with:
-                  toolchain: ${{ matrix.rust }}
-                  profile: minimal
-                  override: true
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/cache@v3
               with:
-                  path: |
-                      ~/.cargo/bin/
-                      ~/.cargo/registry/index/
-                      ~/.cargo/registry/cache/
-                      ~/.cargo/git/db/
-                      ${{ matrix.example_directories }}/target/
-                  key: azle-cargo-${{ matrix.example_directories }}-${{ matrix.azle_source }}-${{ hashFiles('src/compiler/typescript_to_rust/generators/cargo_toml_files.ts') }}
+                  path: ~/.config/azle
+                  key: azle-cargo-${{ hashFiles('src/compiler/typescript_to_javascript/cargo_toml_files.ts') }}
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0} # TODO figure out why this is here and comment about it
               run: npm install

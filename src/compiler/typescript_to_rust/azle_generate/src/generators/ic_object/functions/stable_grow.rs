@@ -1,4 +1,4 @@
-pub fn generate_ic_object_function_stable_grow() -> proc_macro2::TokenStream {
+pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
         fn _azle_ic_stable_grow(
             _this: &boa_engine::JsValue,

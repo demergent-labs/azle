@@ -56,7 +56,6 @@ Most of Azle's documentation is currently found in this README. The Azle Book, s
 You should have the following installed on your system:
 
 -   [Node.js](#nodejs)
--   [Rust](#rust)
 -   [dfx 0.12.1](#dfx)
 
 After installing the prerequisites, you can [make a project and install Azle](#azle).
@@ -71,14 +70,6 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 # restart your terminal
 
 nvm install 18
-```
-
-#### Rust
-
-Run the following command to install Rust:
-
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
 #### dfx
@@ -138,7 +129,7 @@ You are now ready to deploy your application.
 
 #### Local Deployment
 
-Start up an IC replica and deploy. The first deploy will likely take multiple minutes as it downloads and compiles many Rust dependencies. Subsequent deploys should be much quicker:
+Start up an IC replica and deploy:
 
 ```bash
 # Open a terminal and navigate to your project's root directory, then run the following command to start a local IC replica
@@ -2979,7 +2970,6 @@ The following are the major blockers to 1.0/production-readiness:
 
 ### Gotchas and Caveats
 
--   Because Azle is built on Rust, to ensure the best compatibility use underscores to separate words in directory, file, and canister names
 -   You must use type names directly when importing them (TODO do an example)
 -   Varied missing TypeScript syntax or JavaScript features
 -   Imported npm packages may use unsupported syntax or APIs

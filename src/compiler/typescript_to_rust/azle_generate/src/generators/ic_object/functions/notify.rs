@@ -4,9 +4,7 @@ use quote::{format_ident, quote};
 
 use crate::generators::ic_object;
 
-pub fn generate_ic_object_notify_functions(
-    external_canisters: &Vec<ActExternalCanister>,
-) -> Vec<TokenStream> {
+pub fn generate(external_canisters: &Vec<ActExternalCanister>) -> Vec<TokenStream> {
     external_canisters.iter().map(|canister| {
         canister.methods.iter().map(|method| {
             let function_name_string = format!("_azle_notify_{}_{}", canister.name, method.name);

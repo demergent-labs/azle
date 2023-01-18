@@ -1,5 +1,5 @@
 use super::AzleFnDecl;
-use crate::{generators::canister_methods::method_body, ts_ast::azle_type::AzleType};
+use crate::{generators::canister_methods::query_and_update, ts_ast::azle_type::AzleType};
 use cdk_framework::{
     nodes::{ActCanisterMethod, ActFnParam, CanisterMethod},
     traits::CanisterMethodBuilder,
@@ -8,7 +8,7 @@ use cdk_framework::{
 
 impl<'a> CanisterMethodBuilder for AzleFnDecl<'a> {
     fn build_canister_method_node(&self, request_type: &RequestType) -> ActCanisterMethod {
-        let body = method_body::generate_canister_method_body(&self);
+        let body = query_and_update::generate_query_and_update_body(&self);
         let is_manual = self.is_manual();
         let is_promise = self.is_promise();
         let name = self.get_function_name();

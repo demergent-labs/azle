@@ -24,6 +24,13 @@ import * as tsc from 'typescript';
 import * as path from 'path';
 import { version } from '../package.json';
 
+const GLOBAL_AZLE_CONFIG_DIR = path.resolve(
+    require('os').homedir(),
+    `.config/azle/${version}`
+);
+const GLOBAL_AZLE_BIN_DIR = `${GLOBAL_AZLE_CONFIG_DIR}/bin`;
+const GLOBAL_AZLE_TARGET_DIR = `${GLOBAL_AZLE_CONFIG_DIR}/target`;
+
 azle();
 
 function azle() {
@@ -33,7 +40,7 @@ function azle() {
     time(`\nBuilding canister ${green(canisterName)}`, 'default', () => {
         const canisterConfig = unwrap(getCanisterConfig(canisterName));
 
-        printFirstBuildWarning(canisterName);
+        printFirstBuildWarning();
         compileTypeScriptToRust(canisterName, canisterConfig, stdioType);
         generateCandidFile(
             canisterConfig.root,
@@ -48,11 +55,11 @@ function azle() {
 
 function addCandidToWasmMetaData(candidPath: string, wasmPath: string): void {
     execSync(
-        `ic-wasm ${wasmPath} -o ${wasmPath} metadata candid:service -f ${candidPath} -v public`
+        `${GLOBAL_AZLE_BIN_DIR}/ic-wasm ${wasmPath} -o ${wasmPath} metadata candid:service -f ${candidPath} -v public`
     );
 
     execSync(
-        `ic-wasm ${wasmPath} -o ${wasmPath} metadata cdk -d "azle ${version}" -v public`
+        `${GLOBAL_AZLE_BIN_DIR}/ic-wasm ${wasmPath} -o ${wasmPath} metadata cdk -d "azle ${version}" -v public`
     );
 }
 
@@ -78,33 +85,43 @@ function compileRustCode(
     candidPath: string,
     stdio: IOType
 ) {
-    time(
-        `[3/3] 🚧 Building Wasm binary...${getBuildWarning(canisterName)}`,
-        'inline',
-        () => {
-            execSync(
-                `cd target/azle && CARGO_TARGET_DIR=.. cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
-                { stdio }
-            );
+    time(`[3/3] 🚧 Building Wasm binary...`, 'inline', () => {
+        execSync(
+            `cd .azle && ${GLOBAL_AZLE_BIN_DIR}/cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
+            {
+                stdio,
+                env: {
+                    ...process.env,
+                    CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
+                    CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
+                    RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
+                }
+            }
+        );
 
-            const wasmFileRelativePath = `./target/wasm32-unknown-unknown/release/${canisterName}.wasm`;
+        const wasmFilePath = `${GLOBAL_AZLE_CONFIG_DIR}/target/wasm32-unknown-unknown/release/${canisterName}.wasm`;
 
-            const cargo_bin_root =
-                process.env.CARGO_INSTALL_ROOT ??
-                process.env.CARGO_HOME ??
-                `$HOME/.cargo`;
+        // optimization, binary is too big to deploy without this
+        execSync(
+            `${GLOBAL_AZLE_BIN_DIR}/ic-cdk-optimizer ${wasmFilePath} -o ${wasmFilePath}`,
+            {
+                stdio,
+                env: {
+                    ...process.env,
+                    CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
+                    CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
+                    RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
+                }
+            }
+        );
 
-            // optimization, binary is too big to deploy without this
-            execSync(
-                `${cargo_bin_root}/bin/ic-cdk-optimizer ${wasmFileRelativePath} -o ${wasmFileRelativePath}`,
-                { stdio }
-            );
+        addCandidToWasmMetaData(candidPath, wasmFilePath);
 
-            addCandidToWasmMetaData(candidPath, wasmFileRelativePath);
+        execSync(`gzip -f -k ${wasmFilePath}`, { stdio });
 
-            execSync(`gzip -f -k ${wasmFileRelativePath}`, { stdio });
-        }
-    );
+        execSync(`cp ${wasmFilePath} .azle`);
+        execSync(`cp ${wasmFilePath}.gz .azle`);
+    });
 }
 
 function compileTypeScriptToRust(
@@ -136,10 +153,6 @@ function compileTypeScriptToRust(
             main_js
         );
 
-        // TODO: If our rust dependencies never change, maybe we shouldn't be
-        // reinstalling them every time we build.
-        installRustDependencies(stdioType);
-
         unwrap(generateRustCanister(fileNames, { rootPath }));
     });
 }
@@ -150,9 +163,17 @@ function generateCandidFile(
     stdio: IOType
 ) {
     time(`[2/3] 📝 Generating Candid file...`, 'inline', () => {
-        execSync(`cd target/azle/${rootPath} && cargo test`, { stdio });
+        execSync(`cd .azle/${rootPath} && ${GLOBAL_AZLE_BIN_DIR}/cargo test`, {
+            stdio,
+            env: {
+                ...process.env,
+                CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
+                CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
+                RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
+            }
+        });
 
-        execSync(`cp target/azle/${rootPath}/index.did ${candidPath}`, {
+        execSync(`cp .azle/${rootPath}/index.did ${candidPath}`, {
             stdio
         });
     });
@@ -172,7 +193,7 @@ function generateRustCanister(
 
     const unformattedLibFile = azleGenerateResult.ok;
 
-    fs.writeFileSync(`target/azle/${rootPath}/src/lib.rs`, unformattedLibFile);
+    fs.writeFileSync(`.azle/${rootPath}/src/lib.rs`, unformattedLibFile);
 
     const runRustFmtResult = runRustFmt(unformattedLibFile, {
         rootPath
@@ -184,11 +205,11 @@ function generateRustCanister(
 
     const formattedLibFile = runRustFmtResult.ok;
 
-    fs.writeFileSync(`target/azle/${rootPath}/src/lib.rs`, formattedLibFile);
+    fs.writeFileSync(`.azle/${rootPath}/src/lib.rs`, formattedLibFile);
 
     if (isVerboseMode()) {
         console.info(
-            `Wrote formatted lib.rs file to target/azle/${rootPath}/src/lib.rs\n`
+            `Wrote formatted lib.rs file to .azle/${rootPath}/src/lib.rs\n`
         );
     }
     return Ok(undefined);
@@ -280,12 +301,6 @@ function getUsageInfo(): string {
     return `Usage: azle ${dim('[-v|--verbose]')} ${green('<canister_name>')}`;
 }
 
-function getBuildWarning(canisterName: string): string {
-    return isInitialCompile(canisterName)
-        ? ' (be patient, this will take a while)'
-        : '';
-}
-
 function getFileNames(tsPath: string): string[] {
     const program = tsc.createProgram([tsPath], {});
     const sourceFiles = program.getSourceFiles();
@@ -304,31 +319,12 @@ function getStdIoType() {
     return isVerboseMode() ? 'inherit' : 'pipe';
 }
 
-function installRustDependencies(stdio: IOType) {
-    if (!fs.existsSync(`./target/azle`)) {
-        fs.mkdirSync(`target/azle`, { recursive: true });
-    }
-
-    execSync(`rustup target add wasm32-unknown-unknown`, { stdio });
-
-    execSync(`cargo install ic-cdk-optimizer --version 0.3.4 || true`, {
-        stdio: 'ignore'
-    });
-
-    execSync(`cargo install ic-wasm --version 0.3.0 || true`, {
-        stdio: 'ignore'
-    });
-}
-
 function isCliFlag(arg: string): boolean {
     return arg.startsWith('--') || arg.startsWith('-');
 }
 
-function isInitialCompile(canisterName: string): boolean {
-    // TODO: Consider a better detection method
-    return !fs.existsSync(
-        `target/wasm32-unknown-unknown/release/${canisterName}.wasm.gz`
-    );
+function isInitialCompile(): boolean {
+    return !fs.existsSync(GLOBAL_AZLE_TARGET_DIR);
 }
 
 function isTsCompilationError(error: unknown): error is TsCompilationError {
@@ -352,7 +348,7 @@ function isVerboseMode(): boolean {
 function logSuccess(canisterName: string): void {
     console.info(
         `\n🎉 Built canister ${green(canisterName)} ${dim(
-            `at ./target/wasm32-unknown-unknown/release/${canisterName}.wasm.gz`
+            `at .azle/${canisterName}.wasm.gz`
         )}`
     );
 }
@@ -384,8 +380,8 @@ function parseHrTimeToSeconds(
     return seconds;
 }
 
-function printFirstBuildWarning(canisterName: string): void {
-    if (isInitialCompile(canisterName)) {
+function printFirstBuildWarning(): void {
+    if (isInitialCompile()) {
         console.info(
             yellow(
                 "\nInitial build takes a few minutes. Don't panic. Subsequent builds will be faster."
@@ -402,11 +398,17 @@ function runAzleGenerate(
         console.info('running azle_generate');
     }
     const executionResult = spawnSync(
-        `cargo`,
+        `${GLOBAL_AZLE_BIN_DIR}/cargo`,
         ['run', '--', fileNames.join(',')],
         {
-            cwd: `target/azle/${rootPath}/azle_generate`,
-            stdio: 'pipe'
+            cwd: `.azle/${rootPath}/azle_generate`,
+            stdio: 'pipe',
+            env: {
+                ...process.env,
+                CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
+                CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
+                RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
+            }
         }
     );
 
@@ -488,11 +490,21 @@ function runRustFmt(
     input: Rust,
     { rootPath }: RunOptions
 ): Result<Rust, AzleError> {
-    const executionResult = spawnSync(`rustfmt`, ['--edition=2018'], {
-        cwd: `target/azle/${rootPath}/azle_generate`,
-        input,
-        stdio: 'pipe'
-    });
+    const executionResult = spawnSync(
+        `${GLOBAL_AZLE_BIN_DIR}/rustfmt`,
+        ['--edition=2018'],
+        {
+            cwd: `.azle/${rootPath}/azle_generate`,
+            input,
+            stdio: 'pipe',
+            env: {
+                ...process.env,
+                CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
+                CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
+                RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
+            }
+        }
+    );
     if (executionResult.status !== 0) {
         const error = executionResult.stderr.toString();
         return Err({
@@ -537,47 +549,43 @@ function writeCodeToFileSystem(
     libCargoToml: Toml,
     main_js: JavaScript
 ) {
-    if (!fs.existsSync(`./target/azle`)) {
-        fs.mkdirSync(`target/azle`, { recursive: true });
+    fs.rmSync(`.azle`, { recursive: true, force: true });
+    fs.mkdirSync(`.azle`);
+
+    fs.writeFileSync('.azle/Cargo.toml', workspaceCargoToml);
+    fs.writeFileSync('.azle/Cargo.lock', workspaceCargoLock);
+
+    if (!fs.existsSync(`.azle/${rootPath}`)) {
+        fs.mkdirSync(`.azle/${rootPath}`, { recursive: true });
     }
 
-    fs.writeFileSync('./target/azle/Cargo.toml', workspaceCargoToml);
-    fs.writeFileSync('./target/azle/Cargo.lock', workspaceCargoLock);
+    fs.writeFileSync(`.azle/${rootPath}/Cargo.toml`, libCargoToml);
 
-    if (!fs.existsSync(`./target/azle/${rootPath}`)) {
-        fs.mkdirSync(`target/azle/${rootPath}`, { recursive: true });
+    if (!fs.existsSync(`.azle/${rootPath}/src`)) {
+        fs.mkdirSync(`.azle/${rootPath}/src`);
     }
 
-    fs.writeFileSync(`./target/azle/${rootPath}/Cargo.toml`, libCargoToml);
-
-    if (!fs.existsSync(`./target/azle/${rootPath}/src`)) {
-        fs.mkdirSync(`./target/azle/${rootPath}/src`);
+    if (!fs.existsSync(`.azle/${rootPath}/src/lib.rs`)) {
+        fs.writeFileSync(`.azle/${rootPath}/src/lib.rs`, '');
     }
 
-    if (!fs.existsSync(`./target/azle/${rootPath}/src/lib.rs`)) {
-        fs.writeFileSync(`./target/azle/${rootPath}/src/lib.rs`, '');
-    }
-
-    if (!fs.existsSync(`./target/azle/${rootPath}/azle_vm_value_derive`)) {
-        fs.mkdirSync(`./target/azle/${rootPath}/azle_vm_value_derive`);
+    if (!fs.existsSync(`.azle/${rootPath}/azle_vm_value_derive`)) {
+        fs.mkdirSync(`.azle/${rootPath}/azle_vm_value_derive`);
     }
 
     fsExtra.copySync(
         `${__dirname}/compiler/typescript_to_rust/azle_vm_value_derive`,
-        `./target/azle/${rootPath}/azle_vm_value_derive`
+        `.azle/${rootPath}/azle_vm_value_derive`
     );
 
-    if (!fs.existsSync(`./target/azle/${rootPath}/azle_generate`)) {
-        fs.mkdirSync(`./target/azle/${rootPath}/azle_generate`);
+    if (!fs.existsSync(`.azle/${rootPath}/azle_generate`)) {
+        fs.mkdirSync(`.azle/${rootPath}/azle_generate`);
     }
 
     fsExtra.copySync(
         `${__dirname}/compiler/typescript_to_rust/azle_generate`,
-        `./target/azle/${rootPath}/azle_generate`
+        `.azle/${rootPath}/azle_generate`
     );
 
-    fs.writeFileSync(
-        `./target/azle/${rootPath}/azle_generate/src/main.js`,
-        main_js
-    );
+    fs.writeFileSync(`.azle/${rootPath}/azle_generate/src/main.js`, main_js);
 }
