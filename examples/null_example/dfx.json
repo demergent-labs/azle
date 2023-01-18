@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "src/null_example.ts",
             "candid": "src/null_example.did",
-            "wasm": "target/wasm32-unknown-unknown/release/null_example.wasm.gz",
+            "wasm": ".azle/null_example.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/null_example"
             }
