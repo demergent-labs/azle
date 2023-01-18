@@ -1,4 +1,4 @@
-import { ic, ok, Principal, Query, Update, UpdateManual } from 'azle';
+import { ic, Manual, ok, Principal, Query, Update } from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
@@ -38,7 +38,7 @@ export async function xkcd(): Promise<Update<HttpResponse>> {
     return http_result.ok;
 }
 
-export async function xkcd_raw(): Promise<UpdateManual<HttpResponse>> {
+export async function xkcd_raw(): Promise<Update<Manual<HttpResponse>>> {
     const max_response_bytes = 1_000n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
