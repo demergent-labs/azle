@@ -30,7 +30,7 @@
             "root": "src",
             "ts": "src/canister3/index.ts",
             "candid": "src/canister3/index.did",
-            "wasm": "target/wasm32-unknown-unknown/release/canister3.wasm.gz",
+            "wasm": ".azle/canister3.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/canister3",
                 "node_compatibility": true
