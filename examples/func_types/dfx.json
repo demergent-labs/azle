@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "canisters/func_types/func_types.ts",
             "candid": "canisters/func_types/func_types.did",
-            "wasm": "target/wasm32-unknown-unknown/release/func_types.wasm.gz",
+            "wasm": ".azle/func_types.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/func_types"
             }
@@ -17,7 +17,7 @@
             "root": "src",
             "ts": "canisters/notifiers/notifiers.ts",
             "candid": "canisters/notifiers/notifiers.did",
-            "wasm": "target/wasm32-unknown-unknown/release/notifiers.wasm.gz",
+            "wasm": ".azle/notifiers.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/notifiers"
             }

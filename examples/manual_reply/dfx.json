@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "src/manual_reply.ts",
             "candid": "src/manual_reply.did",
-            "wasm": "target/wasm32-unknown-unknown/release/manual_reply.wasm.gz",
+            "wasm": ".azle/manual_reply.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/manual_reply"
             }
