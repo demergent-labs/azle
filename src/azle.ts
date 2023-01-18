@@ -187,10 +187,6 @@ function generateRustCanister(
     fileNames: string[],
     { rootPath }: RunOptions
 ): Result<undefined, AzleError> {
-    if (!fs.existsSync(`.azle`)) {
-        fs.mkdirSync(`.azle`, { recursive: true });
-    }
-
     const azleGenerateResult = runAzleGenerate(fileNames, {
         rootPath
     });
@@ -565,9 +561,8 @@ function writeCodeToFileSystem(
     libCargoToml: Toml,
     main_js: JavaScript
 ) {
-    if (!fs.existsSync(`.azle`)) {
-        fs.mkdirSync(`.azle`, { recursive: true });
-    }
+    fs.rmSync(`.azle`, { recursive: true, force: true });
+    fs.mkdirSync(`.azle`);
 
     fs.writeFileSync('.azle/Cargo.toml', workspaceCargoToml);
     fs.writeFileSync('.azle/Cargo.lock', workspaceCargoLock);
