@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # TODO If we want to save a little bit of time we might be able to instruct rustup to not install some components initially, like clippy and docs
+# TODO we might want to implement all of this in Node.js in the future for platform-independence etc
 
-azle_version=$(node -p "require('./package.json').version")
-rust_version=$(node -p "require('./package.json').rust_version")
+azle_version=$1
+rust_version=$2
 
 global_azle_config_dir=~/.config/azle/$azle_version
 global_azle_bin_dir=$global_azle_config_dir/bin
