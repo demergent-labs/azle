@@ -40,9 +40,21 @@ impl AzleFnDecl<'_> {
         };
 
         if self.is_promise() {
-            outermost_type_ref.type_params.as_ref().unwrap().params[0]
-                .as_ts_type_ref()
-                .unwrap()
+            match &outermost_type_ref.type_params {
+                Some(type_param_instantiation) => match &*type_param_instantiation.params[0] {
+                    TsType::TsTypeRef(ts_type_ref) => ts_type_ref,
+                    _ => panic!("{}", self.build_non_type_ref_return_type_error_msg()),
+                },
+                None => {
+                    panic!(
+                        "{}",
+                        self.build_missing_return_type_error_msg(
+                            outermost_type_ref.span,
+                            "Promise"
+                        )
+                    )
+                }
+            }
         } else {
             outermost_type_ref
         }
@@ -56,9 +68,18 @@ impl AzleFnDecl<'_> {
                 let return_type = &*type_param_instantiation.params[0];
                 if self.is_manual() {
                     match return_type {
-                        TsType::TsTypeRef(ts_type_ref) => {
-                            &ts_type_ref.type_params.as_ref().unwrap().params[0]
-                        }
+                        TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_params {
+                            Some(type_param_instantiation) => &type_param_instantiation.params[0],
+                            None => {
+                                panic!(
+                                    "{}",
+                                    self.build_missing_return_type_error_msg(
+                                        ts_type_ref.span,
+                                        "Manual"
+                                    )
+                                )
+                            }
+                        },
                         _ => panic!("Manual types must specify an inner type"),
                     }
                 } else {
