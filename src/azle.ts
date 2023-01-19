@@ -92,7 +92,7 @@ function colorFormattedDfxJsonExample(canisterName: string): string {
                 ${red('"ts"')}: ${green('"src/index.ts"')},
                 ${red('"candid"')}: ${green('"src/index.did"')},
                 ${red('"wasm"')}: ${green(
-        `"target/wasm32-unknown-unknown/release/${canisterName}.wasm"`
+        `".azle/${canisterName}/${canisterName}.wasm.gz"`
     )},
             ${blue('}')}
         ${purple('}')}

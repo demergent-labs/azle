@@ -107,7 +107,7 @@ Your `dfx.json` file should look like this:
             "root": "src",
             "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": "target/wasm32-unknown-unknown/release/backend.wasm.gz"
+            "wasm": ".azle/backend/backend.wasm.gz"
         }
     }
 }
