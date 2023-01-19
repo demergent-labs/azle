@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "src/tuple_types.ts",
             "candid": "src/tuple_types.did",
-            "wasm": ".azle/tuple_types.wasm.gz",
+            "wasm": ".azle/tuple_types/tuple_types.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/tuple_types"
             }
