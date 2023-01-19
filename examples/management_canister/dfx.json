@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "src/management_canister.ts",
             "candid": "src/management_canister.did",
-            "wasm": ".azle/management_canister.wasm.gz",
+            "wasm": ".azle/management_canister/management_canister.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/management_canister"
             }

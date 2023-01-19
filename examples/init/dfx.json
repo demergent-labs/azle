@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "src/init.ts",
             "candid": "src/init.did",
-            "wasm": ".azle/init.wasm.gz",
+            "wasm": ".azle/init/init.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/init"
             }
