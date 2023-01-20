@@ -76,7 +76,7 @@ pub fn generate(canister_methods: &Vec<ActCanisterMethod>) -> TokenStream {
 fn generate_match_arms(canister_methods: &Vec<ActCanisterMethod>) -> Vec<TokenStream> {
     canister_methods
         .iter()
-        .filter(|canister_method| canister_method.is_promise())
+        .filter(|canister_method| canister_method.is_async())
         .map(|canister_method| generate_match_arm(canister_method))
         .collect()
 }
