@@ -9,9 +9,9 @@ type User1 = {
 };
 
 type Reaction = Variant<{
-    one?: null;
-    two?: null;
-    three?: {
+    one: null;
+    two: null;
+    three: {
         id: string;
     };
 }>;
@@ -37,12 +37,12 @@ type User = {
 };
 
 type UserVariant = Variant<{
-    prop1?: null;
+    prop1: null;
 }>;
 
 type TestVariant = Variant<{
-    prop1?: string;
-    prop2?: Test1;
+    prop1: string;
+    prop2: Test1;
 }>;
 
 export function inlineRecordReturnType(): Query<{
@@ -61,9 +61,9 @@ export function inlineRecordParam(param: { prop1: string }): Query<string> {
 
 export function inlineVariantReturnType(): Query<
     Variant<{
-        var1?: null;
-        var2?: null;
-        var3?: null;
+        var1: null;
+        var2: null;
+        var3: null;
     }>
 > {
     return {
@@ -72,8 +72,8 @@ export function inlineVariantReturnType(): Query<
 }
 
 export function inlineVariantParam(
-    param: Variant<{ var1?: null; var2?: null }>
-): Query<Variant<{ var1?: null; var2?: null }>> {
+    param: Variant<{ var1: null; var2: null }>
+): Query<Variant<{ var1: null; var2: null }>> {
     if (param.var1 === null) {
         return {
             var1: null
@@ -117,8 +117,8 @@ export function recordReferencingOtherTypesFromReturnType(): Query<{
 
 export function variantReferencingOtherTypesFromReturnType(): Query<
     Variant<{
-        prop1?: string;
-        prop2?: Bling;
+        prop1: string;
+        prop2: Bling;
     }>
 > {
     return {
@@ -145,29 +145,29 @@ export function recordReferencingVariantFromParam(param1: {
 }
 
 export function variantReferencingRecordFromParam(
-    param1: Variant<{ prop1?: User }>
+    param1: Variant<{ prop1: User }>
 ): Query<void> {}
 
 export function variantReferencingVariantFromParam(
-    param1: Variant<{ prop1?: UserVariant }>
+    param1: Variant<{ prop1: UserVariant }>
 ): Query<void> {}
 
 let stable_map = new StableBTreeMap<
     string,
     {
-        variant: Variant<{ var1?: null; var2?: TestVariant }>;
+        variant: Variant<{ var1: null; var2: TestVariant }>;
     }
 >(0, 100, 100);
 
 export function stable_map_insert(
     key: string,
     value: {
-        variant: Variant<{ var1?: null; var2?: TestVariant }>;
+        variant: Variant<{ var1: null; var2: TestVariant }>;
     }
 ): Update<
     Variant<{
         ok: Opt<{
-            variant: Variant<{ var1?: null; var2?: TestVariant }>;
+            variant: Variant<{ var1: null; var2: TestVariant }>;
         }>;
         err: InsertError;
     }>
@@ -177,7 +177,7 @@ export function stable_map_insert(
 
 export function stable_map_get(key: string): Query<
     Opt<{
-        variant: Variant<{ var1?: null; var2?: TestVariant }>;
+        variant: Variant<{ var1: null; var2: TestVariant }>;
     }>
 > {
     return stable_map.get(key);

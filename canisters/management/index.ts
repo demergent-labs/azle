@@ -127,9 +127,9 @@ export type CanisterStatusResult = {
 };
 
 export type CanisterStatus = Variant<{
-    running?: null;
-    stopping?: null;
-    stopped?: null;
+    running: null;
+    stopping: null;
+    stopped: null;
 }>;
 
 export type DeleteCanisterArgs = {

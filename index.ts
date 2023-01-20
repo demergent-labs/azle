@@ -171,8 +171,8 @@ export type Opt<T> = T | null;
 //     err?: V;
 // };
 // export type CallResult<T> = Variant<{
-//     ok?: T;
-//     err?: string;
+//     ok: T;
+//     err: string;
 // }>;
 export type CanisterResult<T> = {
     ok?: T;
