@@ -34,6 +34,8 @@ impl ToAct for TsAst {
             .azle_programs
             .build_canister_method_nodes(RequestType::Update);
 
+        let stable_b_tree_map_nodes = self.stable_b_tree_map_nodes();
+
         let query_method_type_acts =
             cdk_framework::nodes::act_canister_method::get_all_types_from_canister_method_acts(
                 &query_methods,
@@ -42,6 +44,16 @@ impl ToAct for TsAst {
             cdk_framework::nodes::act_canister_method::get_all_types_from_canister_method_acts(
                 &update_methods,
             );
+        let stable_b_tree_map_type_acts =
+            stable_b_tree_map_nodes
+                .iter()
+                .fold(vec![], |acc, stable_b_tree_map_node| {
+                    let inline_types = vec![
+                        stable_b_tree_map_node.key_type.clone(),
+                        stable_b_tree_map_node.value_type.clone(),
+                    ];
+                    vec![acc, inline_types].concat()
+                });
 
         let dependencies = self.azle_programs.get_dependent_types();
         let type_alias_acts = ast_type_alias_decls.build_type_alias_acts(&dependencies);
@@ -51,11 +63,14 @@ impl ToAct for TsAst {
             data_type_nodes::build_inline_type_acts(&query_method_type_acts);
         let update_method_inline_acts =
             data_type_nodes::build_inline_type_acts(&update_method_type_acts);
+        let stable_b_tree_map_inline_acts =
+            data_type_nodes::build_inline_type_acts(&stable_b_tree_map_type_acts);
 
         let all_inline_acts = vec![
             type_alias_inline_acts,
             query_method_inline_acts,
             update_method_inline_acts,
+            stable_b_tree_map_inline_acts,
         ]
         .concat();
         let all_inline_acts = data_type_nodes::deduplicate(all_inline_acts, &keywords);
@@ -142,7 +157,12 @@ impl ToAct for TsAst {
         let try_into_vm_value_impls = try_into_vm_value_impls::generate();
         let try_from_vm_value_impls = try_from_vm_value_impls::generate();
 
-        let body = body::generate(self, query_and_update_canister_methods, &external_canisters);
+        let body = body::generate(
+            self,
+            &query_and_update_canister_methods,
+            &external_canisters,
+            &stable_b_tree_map_nodes,
+        );
 
         AbstractCanisterTree {
             arrays,

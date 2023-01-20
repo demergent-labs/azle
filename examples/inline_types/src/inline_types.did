@@ -1,42 +1,60 @@
-type AzleInline10127915031264347897 = variant { prop1 : UserVariant };
-type AzleInline10834546925052033820 = variant { var1; var2; var3 };
-type AzleInline12853828385948924578 = record { prop1 : text; prop2 : text };
-type AzleInline15218571106764965672 = record { prop1 : text; prop2 : Thing };
-type AzleInline17762858968137841589 = record { test : Test };
-type AzleInline2705451830631252756 = variant { prop1 : Test };
-type AzleInline2818606678343492310 = record { prop1 : text };
-type AzleInline3762840849174695043 = variant { var1; var2 };
-type AzleInline9450124244376038531 = record { id : text; title : text };
-type AzleInline9732615453787353053 = record { testVariant : TestVariant };
+type AzleInline13423010507345434471 = variant { var1; var2 };
+type AzleInline13530079310912768182 = record { prop1 : text };
+type AzleInline14275466479066864989 = variant { var1; var2; var3 };
+type AzleInline14676384386632048218 = record { test : Test };
+type AzleInline15488147339429212320 = variant { prop1 : Test };
+type AzleInline156434819094452493 = variant { var1; var2 };
+type AzleInline15786395987032304672 = record { prop1 : text; prop2 : text };
+type AzleInline16638339814416658399 = variant {
+  ok : opt AzleInline1717034695179480952;
+  err : InsertError;
+};
+type AzleInline167177491712464616 = record { prop1 : text; prop2 : Thing };
+type AzleInline1717034695179480952 = record {
+  "variant" : AzleInline1777414534694048784;
+};
+type AzleInline1777414534694048784 = variant { var1; var2 : TestVariant };
+type AzleInline5249703271645679611 = record { testVariant : TestVariant };
+type AzleInline5397522723222631180 = record { id : text; title : text };
+type AzleInline963517276188767052 = variant { prop1 : UserVariant };
+type InsertError = variant {
+  ValueTooLarge : KeyTooLarge;
+  KeyTooLarge : KeyTooLarge;
+};
+type KeyTooLarge = record { max : nat32; given : nat32 };
 type Reaction = variant { one; two; three : Test };
 type Test = record { id : text };
 type TestVariant = variant { prop1 : text; prop2 : Test };
 type Thing = record { id : text };
-type User1 = record { id : text; job : AzleInline9450124244376038531 };
+type User1 = record { id : text; job : AzleInline5397522723222631180 };
 type UserVariant = variant { prop1 };
 service : () -> {
-  inlineRecordParam : (AzleInline2818606678343492310) -> (text) query;
-  inlineRecordReturnType : () -> (AzleInline12853828385948924578) query;
-  inlineVariantParam : (AzleInline3762840849174695043) -> (
-      AzleInline3762840849174695043,
+  inlineRecordParam : (AzleInline13530079310912768182) -> (text) query;
+  inlineRecordReturnType : () -> (AzleInline15786395987032304672) query;
+  inlineVariantParam : (AzleInline13423010507345434471) -> (
+      AzleInline156434819094452493,
     ) query;
-  inlineVariantReturnType : () -> (AzleInline10834546925052033820) query;
+  inlineVariantReturnType : () -> (AzleInline14275466479066864989) query;
   recordReferencingOtherTypesFromReturnType : () -> (
-      AzleInline15218571106764965672,
+      AzleInline167177491712464616,
     ) query;
-  recordReferencingRecordFromParam : (AzleInline17762858968137841589) -> (
+  recordReferencingRecordFromParam : (AzleInline14676384386632048218) -> (
       text,
     ) query;
-  recordReferencingVariantFromParam : (AzleInline9732615453787353053) -> (
+  recordReferencingVariantFromParam : (AzleInline5249703271645679611) -> (
       opt text,
     ) query;
   recordWithInlineFields : () -> (User1) query;
+  stable_map_get : (text) -> (opt AzleInline1717034695179480952) query;
+  stable_map_insert : (text, AzleInline1717034695179480952) -> (
+      AzleInline16638339814416658399,
+    );
   variantReferencingOtherTypesFromReturnType : () -> (TestVariant) query;
   variantReferencingRecordFromParam : (
-      AzleInline2705451830631252756,
+      AzleInline15488147339429212320,
     ) -> () query;
   variantReferencingVariantFromParam : (
-      AzleInline10127915031264347897,
+      AzleInline963517276188767052,
     ) -> () query;
   variantWithInlineFields : () -> (Reaction) query;
 }

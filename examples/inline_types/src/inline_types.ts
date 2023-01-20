@@ -1,4 +1,4 @@
-import { Query, Variant, Opt } from 'azle';
+import { InsertError, Query, Variant, Opt, StableBTreeMap, Update } from 'azle';
 
 type User1 = {
     id: string;
@@ -151,3 +151,34 @@ export function variantReferencingRecordFromParam(
 export function variantReferencingVariantFromParam(
     param1: Variant<{ prop1?: UserVariant }>
 ): Query<void> {}
+
+let stable_map = new StableBTreeMap<
+    string,
+    {
+        variant: Variant<{ var1?: null; var2?: TestVariant }>;
+    }
+>(0, 100, 100);
+
+export function stable_map_insert(
+    key: string,
+    value: {
+        variant: Variant<{ var1?: null; var2?: TestVariant }>;
+    }
+): Update<
+    Variant<{
+        ok: Opt<{
+            variant: Variant<{ var1?: null; var2?: TestVariant }>;
+        }>;
+        err: InsertError;
+    }>
+> {
+    return stable_map.insert(key, value);
+}
+
+export function stable_map_get(key: string): Query<
+    Opt<{
+        variant: Variant<{ var1?: null; var2?: TestVariant }>;
+    }>
+> {
+    return stable_map.get(key);
+}
