@@ -156,9 +156,8 @@ export type Heartbeat = void;
 export type Init = void;
 export type InspectMessage = void;
 export type Query<T> = T;
-export type QueryManual<T> = void;
+export type Manual<T> = void;
 export type Update<T> = T;
-export type UpdateManual<T> = void;
 export type Oneway = void;
 
 // TODO see if we can get the T here to have some more information, like the func type

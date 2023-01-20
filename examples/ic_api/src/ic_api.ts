@@ -3,13 +3,13 @@ import {
     empty,
     ic,
     int8,
+    Manual,
     nat,
     nat32,
     nat64,
     Opt,
     Principal,
     Query,
-    QueryManual,
     Update
 } from 'azle';
 
@@ -109,7 +109,7 @@ export function print(message: string): Query<boolean> {
     return true;
 }
 
-export function reject(message: string): QueryManual<empty> {
+export function reject(message: string): Query<Manual<empty>> {
     ic.reject(message);
 }
 

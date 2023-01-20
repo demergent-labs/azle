@@ -31,27 +31,32 @@ impl AzleFnDecl<'_> {
     }
 
     pub fn get_return_type_ref(&self) -> &TsTypeRef {
-        if self.is_promise() {
-            match &self.fn_decl.function.return_type {
-                Some(ts_type_ann) => match &*ts_type_ann.type_ann {
-                    TsType::TsTypeRef(type_ref) => {
-                        let type_params = &type_ref.type_params.as_ref().unwrap().params;
-                        let return_type_ref = type_params[0].as_ts_type_ref().unwrap();
+        let outermost_type_ref = match &self.fn_decl.function.return_type {
+            Some(ts_type_ann) => match &*ts_type_ann.type_ann {
+                TsType::TsTypeRef(type_ref) => type_ref,
+                _ => panic!("{}", self.build_non_type_ref_return_type_error_msg()),
+            },
+            None => panic!("{}", self.build_missing_return_annotation_error_msg()),
+        };
 
-                        return_type_ref
-                    }
+        if self.is_promise() {
+            match &outermost_type_ref.type_params {
+                Some(type_param_instantiation) => match &*type_param_instantiation.params[0] {
+                    TsType::TsTypeRef(ts_type_ref) => ts_type_ref,
                     _ => panic!("{}", self.build_non_type_ref_return_type_error_msg()),
                 },
-                None => panic!("{}", self.build_missing_return_annotation_error_msg()),
+                None => {
+                    panic!(
+                        "{}",
+                        self.build_missing_return_type_error_msg(
+                            outermost_type_ref.span,
+                            "Promise"
+                        )
+                    )
+                }
             }
         } else {
-            match &self.fn_decl.function.return_type {
-                Some(ts_type_ann) => match &*ts_type_ann.type_ann {
-                    TsType::TsTypeRef(type_ref) => &type_ref,
-                    _ => panic!("{}", self.build_non_type_ref_return_type_error_msg()),
-                },
-                None => panic!("{}", self.build_missing_return_annotation_error_msg()),
-            }
+            outermost_type_ref
         }
     }
 
@@ -61,7 +66,25 @@ impl AzleFnDecl<'_> {
         match &type_ref.type_params {
             Some(type_param_instantiation) => {
                 let return_type = &*type_param_instantiation.params[0];
-                return_type
+                if self.is_manual() {
+                    match return_type {
+                        TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_params {
+                            Some(type_param_instantiation) => &type_param_instantiation.params[0],
+                            None => {
+                                panic!(
+                                    "{}",
+                                    self.build_missing_return_type_error_msg(
+                                        ts_type_ref.span,
+                                        "Manual"
+                                    )
+                                )
+                            }
+                        },
+                        _ => panic!("Manual types must specify an inner type"),
+                    }
+                } else {
+                    return_type
+                }
             }
             None => {
                 let canister_method_type = self.get_canister_method_type();
@@ -149,12 +172,8 @@ impl AzleFnDecl<'_> {
                                 }
                                 CanisterMethodType::PostUpgrade => method_type == "PostUpgrade",
                                 CanisterMethodType::PreUpgrade => method_type == "PreUpgrade",
-                                CanisterMethodType::Query => {
-                                    method_type == "Query" || method_type == "QueryManual"
-                                }
-                                CanisterMethodType::Update => {
-                                    method_type == "Update" || method_type == "UpdateManual"
-                                }
+                                CanisterMethodType::Query => method_type == "Query",
+                                CanisterMethodType::Update => method_type == "Update",
                             }
                         }
                         TsEntityName::TsQualifiedName(_) => {
@@ -175,9 +194,29 @@ impl AzleFnDecl<'_> {
     }
 
     pub fn is_manual(&self) -> bool {
-        let canister_method_type = self.get_canister_method_type();
+        let return_type_ref = self.get_return_type_ref();
 
-        canister_method_type == "QueryManual" || canister_method_type == "UpdateManual"
+        match &return_type_ref.type_params {
+            Some(ts_type_param_instantiation) => {
+                match ts_type_param_instantiation.params.get(0) {
+                    Some(param) => {
+                        match &**param {
+                            TsType::TsTypeRef(ts_type_ref) => {
+                                match &ts_type_ref.type_name {
+                                    TsEntityName::Ident(ident) => {
+                                        ident.get_name() == "Manual"
+                                    },
+                                    TsEntityName::TsQualifiedName(_) => panic!("Namespace-qualified identifiers are not currently supported in canister methods"),
+                                }
+                            },
+                            _ => false
+                        }
+                    },
+                    None => false
+                }
+            }
+            None => false,
+        }
     }
 
     pub fn is_promise(&self) -> bool {
