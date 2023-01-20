@@ -583,7 +583,6 @@ function writeCodeToFileSystem(
     main_js: JavaScript
 ) {
     fs.rmSync(`.azle`, { recursive: true, force: true });
-    // fs.mkdirSync(`.azle`); // TODO check this
     fs.mkdirSync(canister_path, { recursive: true });
 
     fs.writeFileSync(`${canister_path}/Cargo.toml`, workspaceCargoToml);
