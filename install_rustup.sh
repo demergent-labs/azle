@@ -11,7 +11,6 @@ global_azle_bin_dir=$global_azle_config_dir/bin
 global_azle_cargo_bin=$global_azle_bin_dir/cargo
 global_azle_logs_dir=$global_azle_config_dir/logs
 global_azle_rustup_bin=$global_azle_bin_dir/rustup
-global_azle_target_dir=$global_azle_config_dir/target
 
 export CARGO_HOME=$global_azle_config_dir
 export RUSTUP_HOME=$global_azle_config_dir
