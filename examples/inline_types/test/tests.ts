@@ -1,4 +1,5 @@
-import { Test } from 'azle/test';
+import { ok, Test } from 'azle/test';
+import { execSync } from 'child_process';
 import { _SERVICE } from './dfx_generated/inline_types/inline_types.did';
 import { ActorSubclass } from '@dfinity/agent';
 
@@ -195,6 +196,59 @@ export function get_tests(
 
                 return {
                     ok: result === undefined
+                };
+            }
+        },
+        {
+            name: 'inserting into an inline-defined StableBTreeMap',
+            test: async () => {
+                const result = await inline_types_canister.stable_map_insert(
+                    'test_key',
+                    {
+                        variant: {
+                            var2: {
+                                prop1: 'test_value'
+                            }
+                        }
+                    }
+                );
+
+                if (!ok(result)) {
+                    if ('ValueTooLarge' in result.err) {
+                        return {
+                            err: `InsertError::ValueTooLarge Expected value to be <= ${result.err.ValueTooLarge.max} bytes but received value with ${result.err.ValueTooLarge.given} bytes.`
+                        };
+                    } else {
+                        return {
+                            err: `InsertError::KeyTooLarge Expected key to be <= ${result.err.KeyTooLarge.max} bytes but received key with ${result.err.KeyTooLarge.given} bytes.`
+                        };
+                    }
+                }
+
+                return {
+                    ok: Array.isArray(result.ok) && result.ok.length == 0
+                };
+            }
+        },
+        {
+            name: 'redeploy canister',
+            prep: async () => {
+                execSync('dfx deploy', { stdio: 'inherit' });
+            }
+        },
+        {
+            name: 'reading from an inline-defined StableBTreeMap (after redeploy)',
+            test: async () => {
+                const result = await inline_types_canister.stable_map_get(
+                    'test_key'
+                );
+
+                return {
+                    ok:
+                        result.length != 0 &&
+                        'var2' in result[0].variant &&
+                        'prop1' in result[0].variant.var2 &&
+                        result[0].variant.var2.prop1 === 'test_value'
                 };
             }
         }
