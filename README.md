@@ -2053,9 +2053,9 @@ Examples:
 -   [rejections](/examples/rejections)
 
 ```typescript
-import { empty, ic, QueryManual } from 'azle';
+import { empty, ic, Manual, Query } from 'azle';
 
-export function reject(message: string): QueryManual<empty> {
+export function reject(message: string): Query<Manual<empty>> {
     ic.reject(message);
 }
 ```
@@ -2120,9 +2120,9 @@ Examples:
 -   [manual_reply](/examples/manual_reply)
 
 ```typescript
-import { ic, UpdateManual } from 'azle';
+import { ic, Manual, Update } from 'azle';
 
-export function manual_update(message: string): UpdateManual<string> {
+export function manual_update(message: string): Update<Manual<string>> {
     if (message === 'reject') {
         ic.reject(message);
         return;
@@ -2139,7 +2139,7 @@ Examples:
 -   [manual_reply](/examples/manual_reply)
 
 ```typescript
-import { blob, ic, int, UpdateManual, Variant } from 'azle';
+import { blob, ic, int, Manual, Update, Variant } from 'azle';
 
 type RawReply = {
     int: int;
@@ -2155,7 +2155,7 @@ type Options = Variant<{
     Large: null;
 }>;
 
-export function reply_raw(): UpdateManual<RawReply> {
+export function reply_raw(): Update<Manual<RawReply>> {
     ic.reply_raw(
         ic.candid_encode(
             '(record { "int" = 42; "text" = "text"; "bool" = true; "blob" = blob "Surprise!"; "variant" = variant { Medium } })'
