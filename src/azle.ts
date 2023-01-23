@@ -34,10 +34,12 @@ const GLOBAL_AZLE_TARGET_DIR = `${GLOBAL_AZLE_CONFIG_DIR}/target`;
 azle();
 
 function azle() {
-    const install_rustup_path = path.resolve(__dirname, '../install_rustup.sh');
+    const install_rust_dependencies_path = path.resolve(
+        __dirname,
+        '../install_rust_dependencies.sh'
+    );
 
-    // TODO research exec vs spawn
-    execSync(`${install_rustup_path} ${version} ${rust_version}`, {
+    execSync(`${install_rust_dependencies_path} ${version} ${rust_version}`, {
         stdio: 'inherit'
     });
 
