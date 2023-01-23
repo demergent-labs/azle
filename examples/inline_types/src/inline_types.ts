@@ -1,49 +1,14 @@
 import { InsertError, Query, Variant, Opt, StableBTreeMap, Update } from 'azle';
-
-type User1 = {
-    id: string;
-    job: {
-        id: string;
-        title: string;
-    };
-};
-
-type Reaction = Variant<{
-    one: null;
-    two: null;
-    three: {
-        id: string;
-    };
-}>;
-
-type Thing = {
-    id: string;
-};
-
-type Bling = {
-    id: string;
-};
-
-type Test = {
-    id: string;
-};
-
-type Test1 = {
-    id: string;
-};
-
-type User = {
-    id: string;
-};
-
-type UserVariant = Variant<{
-    prop1: null;
-}>;
-
-type TestVariant = Variant<{
-    prop1: string;
-    prop2: Test1;
-}>;
+import {
+    Bling,
+    Reaction,
+    Test,
+    TestVariant,
+    Thing,
+    User,
+    User1,
+    UserVariant
+} from './types';
 
 export function inlineRecordReturnType(): Query<{
     prop1: string;

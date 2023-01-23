@@ -1,22 +1,21 @@
-type AzleInline12051163578112704447 = record { prop1 : text; prop2 : Thing };
-type AzleInline12546259048559943767 = variant { var1; var2; var3 };
-type AzleInline12804028688942122092 = variant {
-  ok : opt AzleInline373263002153451078;
+type AzleInline12027264980235183617 = record { test : Test };
+type AzleInline13207305530417216442 = variant { var1; var2 };
+type AzleInline15068382747121104294 = record { testVariant : TestVariant };
+type AzleInline1722587265122619445 = record { prop1 : text; prop2 : Thing };
+type AzleInline3119427109009543157 = record { prop1 : text };
+type AzleInline3333473639574545337 = record {
+  "variant" : AzleInline3496029368638115786;
+};
+type AzleInline3496029368638115786 = variant { var1; var2 : TestVariant };
+type AzleInline4702915494470617708 = variant { prop1 : Test };
+type AzleInline5319543782072270525 = variant { prop1 : UserVariant };
+type AzleInline5453235895825014183 = variant { var1; var2; var3 };
+type AzleInline5814354703745236355 = record { prop1 : text; prop2 : text };
+type AzleInline7827425047821939920 = record { id : text; title : text };
+type AzleInline9320590390450341269 = variant {
+  ok : opt AzleInline3333473639574545337;
   err : InsertError;
 };
-type AzleInline13886162961244778997 = variant { var1; var2 : TestVariant };
-type AzleInline14298344865008893771 = record { prop1 : text; prop2 : text };
-type AzleInline16615921561829387516 = variant { prop1 : UserVariant };
-type AzleInline17055684835156708150 = record { prop1 : text };
-type AzleInline1943660369683327361 = variant { var1; var2 : TestVariant };
-type AzleInline373263002153451078 = record {
-  "variant" : AzleInline1943660369683327361;
-};
-type AzleInline3855976482550131572 = record { testVariant : TestVariant };
-type AzleInline5397522723222631180 = record { id : text; title : text };
-type AzleInline6419198030766935545 = record { test : Test };
-type AzleInline8994053364550755069 = variant { var1; var2 };
-type AzleInline993801468751954008 = variant { prop1 : Test };
 type InsertError = variant {
   ValueTooLarge : KeyTooLarge;
   KeyTooLarge : KeyTooLarge;
@@ -26,35 +25,35 @@ type Reaction = variant { one; two; three : Test };
 type Test = record { id : text };
 type TestVariant = variant { prop1 : text; prop2 : Test };
 type Thing = record { id : text };
-type User1 = record { id : text; job : AzleInline5397522723222631180 };
+type User1 = record { id : text; job : AzleInline7827425047821939920 };
 type UserVariant = variant { prop1 };
 service : () -> {
-  inlineRecordParam : (AzleInline17055684835156708150) -> (text) query;
-  inlineRecordReturnType : () -> (AzleInline14298344865008893771) query;
-  inlineVariantParam : (AzleInline8994053364550755069) -> (
-      AzleInline8994053364550755069,
+  inlineRecordParam : (AzleInline3119427109009543157) -> (text) query;
+  inlineRecordReturnType : () -> (AzleInline5814354703745236355) query;
+  inlineVariantParam : (AzleInline13207305530417216442) -> (
+      AzleInline13207305530417216442,
     ) query;
-  inlineVariantReturnType : () -> (AzleInline12546259048559943767) query;
+  inlineVariantReturnType : () -> (AzleInline5453235895825014183) query;
   recordReferencingOtherTypesFromReturnType : () -> (
-      AzleInline12051163578112704447,
+      AzleInline1722587265122619445,
     ) query;
-  recordReferencingRecordFromParam : (AzleInline6419198030766935545) -> (
+  recordReferencingRecordFromParam : (AzleInline12027264980235183617) -> (
       text,
     ) query;
-  recordReferencingVariantFromParam : (AzleInline3855976482550131572) -> (
+  recordReferencingVariantFromParam : (AzleInline15068382747121104294) -> (
       opt text,
     ) query;
   recordWithInlineFields : () -> (User1) query;
-  stable_map_get : (text) -> (opt AzleInline373263002153451078) query;
-  stable_map_insert : (text, AzleInline373263002153451078) -> (
-      AzleInline12804028688942122092,
+  stable_map_get : (text) -> (opt AzleInline3333473639574545337) query;
+  stable_map_insert : (text, AzleInline3333473639574545337) -> (
+      AzleInline9320590390450341269,
     );
   variantReferencingOtherTypesFromReturnType : () -> (TestVariant) query;
   variantReferencingRecordFromParam : (
-      AzleInline993801468751954008,
+      AzleInline4702915494470617708,
     ) -> () query;
   variantReferencingVariantFromParam : (
-      AzleInline16615921561829387516,
+      AzleInline5319543782072270525,
     ) -> () query;
   variantWithInlineFields : () -> (Reaction) query;
 }
