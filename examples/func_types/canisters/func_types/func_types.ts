@@ -30,6 +30,7 @@ type Reaction = Variant<{
 type BasicFunc = Func<(param1: string) => Query<string>>;
 type ComplexFunc = Func<(user: User, reaction: Reaction) => Update<nat64>>;
 type StableFunc = Func<(param1: nat64, param2: string) => Query<void>>;
+type NullFunc = Func<(param1: nat64, param2: string) => Query<null>>;
 
 export function init(): Init {
     stable_storage.insert('stable_func', [
@@ -49,6 +50,10 @@ export function get_stable_func(): Query<StableFunc> {
 
 export function basic_func_param(basic_func: BasicFunc): Query<BasicFunc> {
     return basic_func;
+}
+
+export function null_func_param(null_func: NullFunc): Query<NullFunc> {
+    return null_func;
 }
 
 export function basic_func_param_array(

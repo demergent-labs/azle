@@ -67,4 +67,7 @@ service : () -> {
     ) query;
   get_notifier_from_notifiers_canister : () -> (ManualReply);
   get_stable_func : () -> (func (nat64, text) -> () query) query;
+  null_func_param : (func (nat64, text) -> (null) query) -> (
+      func (nat64, text) -> (null) query,
+    ) query;
 }

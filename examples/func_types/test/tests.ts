@@ -20,6 +20,21 @@ export function get_tests(
             }
         },
         {
+            name: 'get_null_func',
+            test: async () => {
+                const result = await func_types_canister.null_func_param([
+                    Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
+                    'return_null'
+                ]);
+
+                return {
+                    ok:
+                        result[0].toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai' &&
+                        result[1] === 'return_null'
+                };
+            }
+        },
+        {
             name: 'basic_func_param',
             test: async () => {
                 const result = await func_types_canister.basic_func_param([
