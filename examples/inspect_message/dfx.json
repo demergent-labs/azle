@@ -6,7 +6,7 @@
             "root": "src",
             "ts": "src/inspect_message.ts",
             "candid": "src/inspect_message.did",
-            "wasm": ".azle/inspect_message.wasm.gz",
+            "wasm": ".azle/inspect_message/inspect_message.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/inspect_message"
             }
