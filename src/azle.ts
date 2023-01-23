@@ -39,7 +39,7 @@ function azle() {
         '../install_rust_dependencies.sh'
     );
 
-    execSync(`${install_rust_dependencies_path} ${version} ${rust_version}`, {
+    execSync(`"${install_rust_dependencies_path}" ${version} ${rust_version}`, {
         stdio: 'inherit'
     });
 
