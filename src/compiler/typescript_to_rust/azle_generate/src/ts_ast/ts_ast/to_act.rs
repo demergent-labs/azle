@@ -34,70 +34,14 @@ impl ToAct for TsAst {
             &keywords,
         );
 
-        let arrays: Vec<ActDataType> = types
-            .iter()
-            .filter(|act| match act {
-                ActDataType::Array(_) => true,
-                _ => false,
-            })
-            .map(|act| act.clone())
-            .collect();
-        let funcs: Vec<ActDataType> = types
-            .iter()
-            .filter(|act| match act {
-                ActDataType::Func(_) => true,
-                _ => false,
-            })
-            .map(|act| act.clone())
-            .collect();
-        let options: Vec<ActDataType> = types
-            .iter()
-            .filter(|act| match act {
-                ActDataType::Option(_) => true,
-                _ => false,
-            })
-            .map(|act| act.clone())
-            .collect();
-        let primitives: Vec<ActDataType> = types
-            .iter()
-            .filter(|act| match act {
-                ActDataType::Primitive(_) => true,
-                _ => false,
-            })
-            .map(|act| act.clone())
-            .collect();
-        let records: Vec<ActDataType> = types
-            .iter()
-            .filter(|act| match act {
-                ActDataType::Record(_) => true,
-                _ => false,
-            })
-            .map(|act| act.clone())
-            .collect();
-        let tuples: Vec<ActDataType> = types
-            .iter()
-            .filter(|act| match act {
-                ActDataType::Tuple(_) => true,
-                _ => false,
-            })
-            .map(|act| act.clone())
-            .collect();
-        let type_refs: Vec<ActDataType> = types
-            .iter()
-            .filter(|act| match act {
-                ActDataType::TypeRef(_) => true,
-                _ => false,
-            })
-            .map(|act| act.clone())
-            .collect();
-        let variants: Vec<ActDataType> = types
-            .iter()
-            .filter(|act| match act {
-                ActDataType::Variant(_) => true,
-                _ => false,
-            })
-            .map(|act| act.clone())
-            .collect();
+        let arrays = filter_by_variant(&types, "Array");
+        let funcs = filter_by_variant(&types, "Func");
+        let options = filter_by_variant(&types, "Option");
+        let primitives = filter_by_variant(&types, "Primitive");
+        let records = filter_by_variant(&types, "Record");
+        let tuples = filter_by_variant(&types, "Tuple");
+        let type_refs = filter_by_variant(&types, "TypeRef");
+        let variants = filter_by_variant(&types, "Variant");
 
         let heartbeat_method = self.build_heartbeat_method();
         let init_method = self.build_init_method();
@@ -144,4 +88,21 @@ impl ToAct for TsAst {
             variants,
         }
     }
+}
+
+fn filter_by_variant(types: &Vec<ActDataType>, variant: &str) -> Vec<ActDataType> {
+    types
+        .iter()
+        .filter(|act| match act {
+            ActDataType::Array(_) => variant == "Array",
+            ActDataType::Func(_) => variant == "Func",
+            ActDataType::Option(_) => variant == "Option",
+            ActDataType::Primitive(_) => variant == "Primitive",
+            ActDataType::Record(_) => variant == "Record",
+            ActDataType::Tuple(_) => variant == "Tuple",
+            ActDataType::TypeRef(_) => variant == "TypeRef",
+            ActDataType::Variant(_) => variant == "Variant",
+        })
+        .cloned()
+        .collect()
 }
