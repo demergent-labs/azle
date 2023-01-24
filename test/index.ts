@@ -96,6 +96,34 @@ export async function run_tests(tests: Test[]) {
     }
 }
 
+export async function deploy_and_generate(
+    canister_name: string,
+    argument?: string
+) {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    execSync(`dfx canister create ${canister_name}`, {
+        stdio: 'inherit'
+    });
+
+    execSync(`dfx canister uninstall-code ${canister_name} || true`, {
+        stdio: 'inherit'
+    });
+
+    execSync(
+        `dfx deploy${
+            argument === undefined ? '' : ` --argument ${argument}`
+        } ${canister_name}`,
+        {
+            stdio: 'inherit'
+        }
+    );
+
+    execSync(`dfx generate`, {
+        stdio: 'inherit'
+    });
+}
+
 export function deploy(canister_name: string, argument?: string): Test[] {
     return [
         {

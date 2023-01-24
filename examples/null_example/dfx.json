@@ -8,7 +8,8 @@
             "candid": "src/null_example.did",
             "wasm": ".azle/null_example/null_example.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/null_example"
+                "output": "test/dfx_generated/null_example",
+                "node_compatibility": true
             }
         }
     }
