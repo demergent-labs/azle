@@ -18,7 +18,7 @@ impl TsAst {
         query_methods: &Vec<ActCanisterMethod>,
         update_methods: &Vec<ActCanisterMethod>,
         stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
-        _external_canisters: &Vec<ActExternalCanister>,
+        external_canisters: &Vec<ActExternalCanister>,
         keywords: &Vec<String>,
     ) -> Vec<ActDataType> {
         let ast_type_alias_decls = &self.azle_programs.get_azle_type_alias_decls();
@@ -43,8 +43,23 @@ impl TsAst {
                     ];
                     vec![acc, inline_types].concat()
                 });
-        // let external_canister_method_type_acts =
-        //     _external_canisters.iter().fold(vec![], |acc, canister| acc);
+        let external_canister_method_type_acts =
+            external_canisters.iter().fold(vec![], |acc, canister| {
+                let method_types = canister
+                    .methods
+                    .iter()
+                    .map(|method| {
+                        let params: Vec<ActDataType> = method
+                            .params
+                            .iter()
+                            .map(|param| param.data_type.clone())
+                            .collect();
+                        vec![params, vec![method.return_type.clone()]].concat()
+                    })
+                    .collect::<Vec<Vec<ActDataType>>>()
+                    .concat();
+                vec![acc, method_types].concat()
+            });
 
         // Recursively collect all dependent ACT Types
 
@@ -55,15 +70,15 @@ impl TsAst {
             data_type_nodes::build_inline_type_acts(&update_method_type_acts);
         let stable_b_tree_map_inline_acts =
             data_type_nodes::build_inline_type_acts(&stable_b_tree_map_type_acts);
-        // let external_canister_acts =
-        //     data_type_nodes::build_inline_type_acts(&external_canister_method_type_acts);
+        let external_canister_acts =
+            data_type_nodes::build_inline_type_acts(&external_canister_method_type_acts);
 
         let all_inline_acts = vec![
             type_alias_inline_acts,
             query_method_inline_acts,
             update_method_inline_acts,
             stable_b_tree_map_inline_acts,
-            // external_canister_acts,
+            external_canister_acts,
         ]
         .concat();
         let all_inline_acts = data_type_nodes::deduplicate(all_inline_acts, keywords);

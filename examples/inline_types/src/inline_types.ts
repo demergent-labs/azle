@@ -1,12 +1,4 @@
-import {
-    InsertError,
-    Query,
-    Variant,
-    Opt,
-    StableBTreeMap,
-    Update,
-    ok
-} from 'azle';
+import { InsertError, Query, Variant, Opt, StableBTreeMap, Update } from 'azle';
 import {
     Bling,
     Reaction,
@@ -157,20 +149,16 @@ export function stable_map_get(key: string): Query<
     return stable_map.get(key);
 }
 
-export function inlineRecordReturnTypeAsExternalCanisterCall(): Query<
-    Variant<{
-        ok: {
-            prop1: string;
-            prop2: string;
-        };
-        err: string;
-    }>
+export async function inlineRecordReturnTypeAsExternalCanisterCall(): Promise<
+    Update<
+        Variant<{
+            ok: {
+                prop1: string;
+                prop2: string;
+            };
+            err: string;
+        }>
+    >
 > {
-    const result = self.inlineRecordReturnType();
-
-    if (!ok(result)) {
-        return { err: result.err };
-    } else {
-        return { ok: result.ok };
-    }
+    return await self.inlineRecordReturnType().call();
 }
