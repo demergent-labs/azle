@@ -2,7 +2,14 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { _SERVICE, TimerIds } from './dfx_generated/timers/timers.did';
 
-let timer_ids: TimerIds = { single: 0n, inline: 0n, capture: 0n, repeat: 0n };
+let timer_ids: TimerIds = {
+    single: 0n,
+    inline: 0n,
+    capture: 0n,
+    repeat: 0n,
+    single_cross_canister: 0n,
+    repeat_cross_canister: 0n
+};
 
 export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
     const tests: Test[] = [
@@ -16,7 +23,9 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
                         result.single === false &&
                         result.inline === 0 &&
                         result.capture === '' &&
-                        result.repeat === 0
+                        result.repeat === 0 &&
+                        result.single_cross_canister.length === 0 &&
+                        result.repeat_cross_canister.length === 0
                 };
             }
         },
@@ -35,7 +44,7 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
             wait: 3500
         },
         {
-            name: 'check that only the repeated timer was called',
+            name: 'check that only the repeated timers were called',
             test: async () => {
                 const result = await timers_canister.status_report();
 
@@ -44,16 +53,18 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
                         result.single === false &&
                         result.inline === 0 &&
                         result.capture === '' &&
-                        result.repeat === 1
+                        result.repeat === 1 &&
+                        result.single_cross_canister.length === 0 &&
+                        result.repeat_cross_canister.length === 32
                 };
             }
         },
         {
             name: 'finish waiting for single timers to be called',
-            wait: 3000
+            wait: 3500
         },
         {
-            name: 'check that everything got called (and the repeated one a second time)',
+            name: 'check that everything got called (and the repeated timers a second time)',
             test: async () => {
                 const result = await timers_canister.status_report();
 
@@ -62,19 +73,26 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
                         result.single === true &&
                         result.inline === 1 &&
                         result.capture === '🚩' &&
-                        result.repeat === 2
+                        result.repeat === 2 &&
+                        result.single_cross_canister.length === 32 &&
+                        result.repeat_cross_canister.length === 64
                 };
             }
         },
         {
-            name: 'cancel the repeated timer',
+            name: 'cancel the repeated timers',
             test: async () => {
                 if (timer_ids.repeat === undefined) {
                     return { err: 'repeated_timer_id was never stored' };
                 }
 
-                const result = await timers_canister.clear_timer(
-                    timer_ids.repeat
+                if (timer_ids.repeat_cross_canister === undefined) {
+                    return { err: 'repeat_cross_canister_id was never stored' };
+                }
+
+                await timers_canister.clear_timer(timer_ids.repeat);
+                await timers_canister.clear_timer(
+                    timer_ids.repeat_cross_canister
                 );
 
                 return {
@@ -87,7 +105,7 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
             wait: 3000
         },
         {
-            name: 'check that the repeating timer stopped',
+            name: 'check that the repeating timers stopped',
             test: async () => {
                 const result = await timers_canister.status_report();
 
@@ -96,7 +114,9 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
                         result.single === true &&
                         result.inline === 1 &&
                         result.capture === '🚩' &&
-                        result.repeat === 2
+                        result.repeat === 2 &&
+                        result.single_cross_canister.length === 32 &&
+                        result.repeat_cross_canister.length === 96
                 };
             }
         }
