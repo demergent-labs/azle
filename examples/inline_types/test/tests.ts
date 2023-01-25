@@ -237,6 +237,52 @@ export function get_tests(
             }
         },
         {
+            name: 'crazy complex inline record',
+            test: async () => {
+                const result = await inline_types_canister.complex({
+                    primitive: 'text',
+                    opt: [
+                        {
+                            primitive: 0n,
+                            opt: ['text'],
+                            vec: ['item1'],
+                            record: { prop1: 'prop1' },
+                            variant: { v2: null },
+                            func: [Principal.from('aaaaa-aa'), 'raw_rand']
+                        }
+                    ],
+                    vec: [
+                        {
+                            primitive: 0n,
+                            opt: ['text'],
+                            vec: ['item1'],
+                            record: { prop1: 'prop1' },
+                            variant: { v2: null },
+                            func: [Principal.from('aaaaa-aa'), 'raw_rand']
+                        }
+                    ],
+                    record: {
+                        prop1: 'text',
+                        optional: [],
+                        variant: { v1: null }
+                    },
+                    variant: {
+                        v3: {
+                            prop1: 'text'
+                        }
+                    },
+                    func: [Principal.from('aaaaa-aa'), 'raw_rand']
+                });
+
+                return {
+                    ok:
+                        'v3' in result.variant &&
+                        result.variant.v3.prop1 == 'text' &&
+                        result.opt[0]?.record.prop1 == 'prop1'
+                };
+            }
+        },
+        {
             name: 'inserting into an inline-defined StableBTreeMap',
             test: async () => {
                 const result = await inline_types_canister.stable_map_insert(

@@ -1,32 +1,55 @@
 export const idlFactory = ({ IDL }) => {
-    const AzleInline4757617411424063700 = IDL.Variant({
+    const AzleInline2478082060372207463 = IDL.Variant({
         v1: IDL.Null,
         v2: IDL.Null
     });
-    const AzleInline5425011084426369860 = IDL.Record({ prop1: IDL.Text });
-    const AzleInline6749962461773081605 = IDL.Record({
+    const AzleInline907043620539468992 = IDL.Record({ prop1: IDL.Text });
+    const AzleInline8822280491885735901 = IDL.Record({
         opt: IDL.Opt(IDL.Text),
         vec: IDL.Vec(IDL.Text),
         primitive: IDL.Nat,
         func: IDL.Func([], [IDL.Text], []),
-        variant: AzleInline4757617411424063700,
-        record: AzleInline5425011084426369860
+        variant: AzleInline2478082060372207463,
+        record: AzleInline907043620539468992
     });
-    const AzleInline15295425182523572762 = IDL.Variant({
+    const AzleInline4158233300510321963 = IDL.Variant({
         v1: IDL.Null,
-        v2: AzleInline5425011084426369860
+        v2: AzleInline907043620539468992
+    });
+    const AzleInline532021583416376422 = IDL.Variant({
+        v1: IDL.Null,
+        v2: IDL.Null,
+        v3: AzleInline907043620539468992
+    });
+    const AzleInline4524627852665026661 = IDL.Record({
+        optional: IDL.Opt(IDL.Nat64),
+        prop1: IDL.Text,
+        variant: AzleInline2478082060372207463
+    });
+    const AzleInline5614132538524309630 = IDL.Record({
+        opt: IDL.Opt(AzleInline8822280491885735901),
+        vec: IDL.Vec(AzleInline8822280491885735901),
+        primitive: IDL.Text,
+        func: IDL.Func(
+            [],
+            [
+                IDL.Record({
+                    prop1: IDL.Text,
+                    variant: AzleInline4158233300510321963
+                })
+            ],
+            ['query']
+        ),
+        variant: AzleInline532021583416376422,
+        record: AzleInline4524627852665026661
     });
     const AzleInline827574703489418250 = IDL.Record({
         opt: IDL.Opt(IDL.Text),
         vec: IDL.Vec(IDL.Text),
         primitive: IDL.Nat,
         func: IDL.Func([], [IDL.Text], []),
-        variant: AzleInline4757617411424063700,
-        record: AzleInline5425011084426369860
-    });
-    const AzleInline3791267007330743508 = IDL.Variant({
-        v1: IDL.Null,
-        v2: AzleInline5425011084426369860
+        variant: AzleInline2478082060372207463,
+        record: AzleInline907043620539468992
     });
     const AzleInline10480804940496767436 = IDL.Record({
         prop1: IDL.Text,
@@ -89,29 +112,26 @@ export const idlFactory = ({ IDL }) => {
         three: Test
     });
     return IDL.Service({
+        complex: IDL.Func(
+            [AzleInline5614132538524309630],
+            [AzleInline5614132538524309630],
+            ['query']
+        ),
         inline_func: IDL.Func(
             [
                 IDL.Func(
                     [
                         IDL.Text,
-                        IDL.Opt(AzleInline6749962461773081605),
-                        IDL.Vec(AzleInline6749962461773081605),
-                        IDL.Record({
-                            optional: IDL.Opt(IDL.Nat64),
-                            prop1: IDL.Text,
-                            variant: AzleInline4757617411424063700
-                        }),
-                        IDL.Variant({
-                            v1: IDL.Null,
-                            v2: IDL.Null,
-                            v3: AzleInline5425011084426369860
-                        }),
+                        IDL.Opt(AzleInline8822280491885735901),
+                        IDL.Vec(AzleInline8822280491885735901),
+                        AzleInline4524627852665026661,
+                        AzleInline532021583416376422,
                         IDL.Func(
                             [],
                             [
                                 IDL.Record({
                                     prop1: IDL.Text,
-                                    variant: AzleInline15295425182523572762
+                                    variant: AzleInline4158233300510321963
                                 })
                             ],
                             ['query']
@@ -127,22 +147,14 @@ export const idlFactory = ({ IDL }) => {
                         IDL.Text,
                         IDL.Opt(AzleInline827574703489418250),
                         IDL.Vec(AzleInline827574703489418250),
-                        IDL.Record({
-                            optional: IDL.Opt(IDL.Nat64),
-                            prop1: IDL.Text,
-                            variant: AzleInline4757617411424063700
-                        }),
-                        IDL.Variant({
-                            v1: IDL.Null,
-                            v2: IDL.Null,
-                            v3: AzleInline5425011084426369860
-                        }),
+                        AzleInline4524627852665026661,
+                        AzleInline532021583416376422,
                         IDL.Func(
                             [],
                             [
                                 IDL.Record({
                                     prop1: IDL.Text,
-                                    variant: AzleInline3791267007330743508
+                                    variant: AzleInline4158233300510321963
                                 })
                             ],
                             ['query']
@@ -155,7 +167,7 @@ export const idlFactory = ({ IDL }) => {
             ['query']
         ),
         inline_record_param: IDL.Func(
-            [AzleInline5425011084426369860],
+            [AzleInline907043620539468992],
             [IDL.Text],
             ['query']
         ),

@@ -194,6 +194,67 @@ export type InlineTypes = Canister<{
             err: string;
         }>
     >;
+    complex(record: {
+        primitive: string;
+        opt: Opt<{
+            primitive: nat;
+            opt: Opt<string>;
+            vec: string[];
+            record: { prop1: string };
+            variant: Variant<{ v1: null; v2: null }>;
+            func: Func<() => Update<string>>;
+        }>;
+        vec: {
+            primitive: nat;
+            opt: Opt<string>;
+            vec: string[];
+            record: { prop1: string };
+            variant: Variant<{ v1: null; v2: null }>;
+            func: Func<() => Update<string>>;
+        }[];
+        record: {
+            prop1: string;
+            optional: Opt<nat64>;
+            variant: Variant<{ v1: null; v2: null }>;
+        };
+        variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>;
+        func: Func<
+            () => Query<{
+                prop1: string;
+                variant: Variant<{ v1: null; v2: { prop1: string } }>;
+            }>
+        >;
+    }): CanisterResult<{
+        primitive: string;
+        opt: Opt<{
+            primitive: nat;
+            opt: Opt<string>;
+            vec: string[];
+            record: { prop1: string };
+            variant: Variant<{ v1: null; v2: null }>;
+            func: Func<() => Update<string>>;
+        }>;
+        vec: {
+            primitive: nat;
+            opt: Opt<string>;
+            vec: string[];
+            record: { prop1: string };
+            variant: Variant<{ v1: null; v2: null }>;
+            func: Func<() => Update<string>>;
+        }[];
+        record: {
+            prop1: string;
+            optional: Opt<nat64>;
+            variant: Variant<{ v1: null; v2: null }>;
+        };
+        variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>;
+        func: Func<
+            () => Query<{
+                prop1: string;
+                variant: Variant<{ v1: null; v2: { prop1: string } }>;
+            }>
+        >;
+    }>;
 }>;
 
 export let self = ic.canisters.InlineTypes<InlineTypes>(
