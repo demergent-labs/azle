@@ -286,7 +286,11 @@ export function get_tests(
             name: 'inserting into an inline-defined StableBTreeMap',
             test: async () => {
                 const result = await inline_types_canister.stable_map_insert(
-                    'test_key',
+                    {
+                        prop1: ['test_key'],
+                        prop2: { var2: { prop1: 'test_key' } },
+                        prop3: [{ prop1: 0n }]
+                    },
                     {
                         variant: {
                             var2: {
@@ -322,9 +326,11 @@ export function get_tests(
         {
             name: 'reading from an inline-defined StableBTreeMap (after redeploy)',
             test: async () => {
-                const result = await inline_types_canister.stable_map_get(
-                    'test_key'
-                );
+                const result = await inline_types_canister.stable_map_get({
+                    prop1: ['test_key'],
+                    prop2: { var2: { prop1: 'test_key' } },
+                    prop3: [{ prop1: 0n }]
+                });
 
                 return {
                     ok:

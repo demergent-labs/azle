@@ -99,7 +99,11 @@ export type InlineTypes = Canister<{
         param1: Variant<{ prop1: UserVariant }>
     ): CanisterResult<void>;
     stable_map_insert(
-        key: string,
+        key: {
+            prop1: Opt<string>;
+            prop2: Variant<{ var1: null; var2: TestVariant }>;
+            prop3: Opt<{ prop1: nat }>;
+        },
         value: {
             variant: Variant<{ var1: null; var2: TestVariant }>;
         }
@@ -111,7 +115,11 @@ export type InlineTypes = Canister<{
             err: InsertError;
         }>
     >;
-    stable_map_get(key: string): CanisterResult<
+    stable_map_get(key: {
+        prop1: Opt<string>;
+        prop2: Variant<{ var1: null; var2: TestVariant }>;
+        prop3: Opt<{ prop1: nat }>;
+    }): CanisterResult<
         Opt<{
             variant: Variant<{ var1: null; var2: TestVariant }>;
         }>

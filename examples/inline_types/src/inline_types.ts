@@ -129,14 +129,22 @@ export function variant_referencing_variant_from_param(
 ): Query<void> {}
 
 let stable_map = new StableBTreeMap<
-    string,
+    {
+        prop1: Opt<string>;
+        prop2: Variant<{ var1: null; var2: TestVariant }>;
+        prop3: Opt<{ prop1: nat }>;
+    },
     {
         variant: Variant<{ var1: null; var2: TestVariant }>;
     }
 >(0, 100, 100);
 
 export function stable_map_insert(
-    key: string,
+    key: {
+        prop1: Opt<string>;
+        prop2: Variant<{ var1: null; var2: TestVariant }>;
+        prop3: Opt<{ prop1: nat }>;
+    },
     value: {
         variant: Variant<{ var1: null; var2: TestVariant }>;
     }
@@ -151,7 +159,11 @@ export function stable_map_insert(
     return stable_map.insert(key, value);
 }
 
-export function stable_map_get(key: string): Query<
+export function stable_map_get(key: {
+    prop1: Opt<string>;
+    prop2: Variant<{ var1: null; var2: TestVariant }>;
+    prop3: Opt<{ prop1: nat }>;
+}): Query<
     Opt<{
         variant: Variant<{ var1: null; var2: TestVariant }>;
     }>
