@@ -1,81 +1,167 @@
 export const idlFactory = ({ IDL }) => {
-    const AzleInline16809542106678444233 = IDL.Record({ prop1: IDL.Text });
-    const AzleInline16946487161134791485 = IDL.Record({
-        prop1: IDL.Text,
-        prop2: IDL.Text
+    const AzleInline4757617411424063700 = IDL.Variant({
+        v1: IDL.Null,
+        v2: IDL.Null
     });
-    const AzleInline6116640699850554434 = IDL.Record({
+    const AzleInline5425011084426369860 = IDL.Record({ prop1: IDL.Text });
+    const AzleInline6749962461773081605 = IDL.Record({
+        opt: IDL.Opt(IDL.Text),
+        vec: IDL.Vec(IDL.Text),
+        primitive: IDL.Nat,
+        func: IDL.Func([], [IDL.Text], []),
+        variant: AzleInline4757617411424063700,
+        record: AzleInline5425011084426369860
+    });
+    const AzleInline15295425182523572762 = IDL.Variant({
+        v1: IDL.Null,
+        v2: AzleInline5425011084426369860
+    });
+    const AzleInline827574703489418250 = IDL.Record({
+        opt: IDL.Opt(IDL.Text),
+        vec: IDL.Vec(IDL.Text),
+        primitive: IDL.Nat,
+        func: IDL.Func([], [IDL.Text], []),
+        variant: AzleInline4757617411424063700,
+        record: AzleInline5425011084426369860
+    });
+    const AzleInline3791267007330743508 = IDL.Variant({
+        v1: IDL.Null,
+        v2: AzleInline5425011084426369860
+    });
+    const AzleInline10480804940496767436 = IDL.Record({
         prop1: IDL.Text,
         prop2: IDL.Text
     });
     const ManualReply = IDL.Variant({
-        ok: AzleInline6116640699850554434,
+        ok: AzleInline10480804940496767436,
         err: IDL.Text
     });
-    const AzleInline2027142959786216826 = IDL.Variant({
+    const AzleInline3095728308414029725 = IDL.Variant({
         var1: IDL.Null,
         var2: IDL.Null
     });
-    const AzleInline14215406218807721013 = IDL.Variant({
+    const AzleInline2991347220123679547 = IDL.Variant({
         var1: IDL.Null,
         var2: IDL.Null,
         var3: IDL.Null
     });
     const Thing = IDL.Record({ id: IDL.Text });
-    const AzleInline11634736081576687661 = IDL.Record({
+    const AzleInline4640727576914707496 = IDL.Record({
         prop1: IDL.Text,
         prop2: Thing
     });
     const Test = IDL.Record({ id: IDL.Text });
-    const AzleInline7265323866845130613 = IDL.Record({ test: Test });
+    const AzleInline4325608397924534544 = IDL.Record({ test: Test });
     const TestVariant = IDL.Variant({ prop1: IDL.Text, prop2: Test });
-    const AzleInline15804798520274070628 = IDL.Record({
+    const AzleInline9021281505452364202 = IDL.Record({
         testVariant: TestVariant
     });
-    const AzleInline7827425047821939920 = IDL.Record({
+    const AzleInline16000916309646445968 = IDL.Record({
         id: IDL.Text,
         title: IDL.Text
     });
     const User1 = IDL.Record({
         id: IDL.Text,
-        job: AzleInline7827425047821939920
+        job: AzleInline16000916309646445968
     });
-    const AzleInline12153674455018255041 = IDL.Variant({
+    const AzleInline1117332675614598022 = IDL.Variant({
         var1: IDL.Null,
         var2: TestVariant
     });
-    const AzleInline15870045821780152702 = IDL.Record({
-        variant: AzleInline12153674455018255041
-    });
-    const AzleInline7786076823068419125 = IDL.Record({
-        variant: AzleInline12153674455018255041
+    const AzleInline8031342415594573560 = IDL.Record({
+        variant: AzleInline1117332675614598022
     });
     const KeyTooLarge = IDL.Record({ max: IDL.Nat32, given: IDL.Nat32 });
     const InsertError = IDL.Variant({
         ValueTooLarge: KeyTooLarge,
         KeyTooLarge: KeyTooLarge
     });
-    const AzleInline3802729132610108913 = IDL.Variant({
-        ok: IDL.Opt(AzleInline7786076823068419125),
+    const AzleInline2833490720777586675 = IDL.Variant({
+        ok: IDL.Opt(AzleInline8031342415594573560),
         err: InsertError
     });
-    const AzleInline5278805839780097963 = IDL.Variant({ prop1: Test });
+    const AzleInline8263140294912128486 = IDL.Variant({ prop1: Test });
     const UserVariant = IDL.Variant({ prop1: IDL.Null });
-    const AzleInline8195216860007363499 = IDL.Variant({ prop1: UserVariant });
+    const AzleInline12207366142299072665 = IDL.Variant({ prop1: UserVariant });
     const Reaction = IDL.Variant({
         one: IDL.Null,
         two: IDL.Null,
         three: Test
     });
     return IDL.Service({
+        inline_func: IDL.Func(
+            [
+                IDL.Func(
+                    [
+                        IDL.Text,
+                        IDL.Opt(AzleInline6749962461773081605),
+                        IDL.Vec(AzleInline6749962461773081605),
+                        IDL.Record({
+                            optional: IDL.Opt(IDL.Nat64),
+                            prop1: IDL.Text,
+                            variant: AzleInline4757617411424063700
+                        }),
+                        IDL.Variant({
+                            v1: IDL.Null,
+                            v2: IDL.Null,
+                            v3: AzleInline5425011084426369860
+                        }),
+                        IDL.Func(
+                            [],
+                            [
+                                IDL.Record({
+                                    prop1: IDL.Text,
+                                    variant: AzleInline15295425182523572762
+                                })
+                            ],
+                            ['query']
+                        )
+                    ],
+                    [],
+                    ['query']
+                )
+            ],
+            [
+                IDL.Func(
+                    [
+                        IDL.Text,
+                        IDL.Opt(AzleInline827574703489418250),
+                        IDL.Vec(AzleInline827574703489418250),
+                        IDL.Record({
+                            optional: IDL.Opt(IDL.Nat64),
+                            prop1: IDL.Text,
+                            variant: AzleInline4757617411424063700
+                        }),
+                        IDL.Variant({
+                            v1: IDL.Null,
+                            v2: IDL.Null,
+                            v3: AzleInline5425011084426369860
+                        }),
+                        IDL.Func(
+                            [],
+                            [
+                                IDL.Record({
+                                    prop1: IDL.Text,
+                                    variant: AzleInline3791267007330743508
+                                })
+                            ],
+                            ['query']
+                        )
+                    ],
+                    [],
+                    ['query']
+                )
+            ],
+            ['query']
+        ),
         inline_record_param: IDL.Func(
-            [AzleInline16809542106678444233],
+            [AzleInline5425011084426369860],
             [IDL.Text],
             ['query']
         ),
         inline_record_return_type: IDL.Func(
             [],
-            [AzleInline16946487161134791485],
+            [AzleInline10480804940496767436],
             ['query']
         ),
         inline_record_return_type_as_external_canister_call: IDL.Func(
@@ -84,39 +170,39 @@ export const idlFactory = ({ IDL }) => {
             []
         ),
         inline_variant_param: IDL.Func(
-            [AzleInline2027142959786216826],
-            [AzleInline2027142959786216826],
+            [AzleInline3095728308414029725],
+            [AzleInline3095728308414029725],
             ['query']
         ),
         inline_variant_return_type: IDL.Func(
             [],
-            [AzleInline14215406218807721013],
+            [AzleInline2991347220123679547],
             ['query']
         ),
         record_referencing_other_types_from_return_type: IDL.Func(
             [],
-            [AzleInline11634736081576687661],
+            [AzleInline4640727576914707496],
             ['query']
         ),
         record_referencing_record_from_param: IDL.Func(
-            [AzleInline7265323866845130613],
+            [AzleInline4325608397924534544],
             [IDL.Text],
             ['query']
         ),
         record_referencing_variant_from_param: IDL.Func(
-            [AzleInline15804798520274070628],
+            [AzleInline9021281505452364202],
             [IDL.Opt(IDL.Text)],
             ['query']
         ),
         record_with_inline_fields: IDL.Func([], [User1], ['query']),
         stable_map_get: IDL.Func(
             [IDL.Text],
-            [IDL.Opt(AzleInline15870045821780152702)],
+            [IDL.Opt(AzleInline8031342415594573560)],
             ['query']
         ),
         stable_map_insert: IDL.Func(
-            [IDL.Text, AzleInline7786076823068419125],
-            [AzleInline3802729132610108913],
+            [IDL.Text, AzleInline8031342415594573560],
+            [AzleInline2833490720777586675],
             []
         ),
         variant_referencing_other_types_from_return_type: IDL.Func(
@@ -125,12 +211,12 @@ export const idlFactory = ({ IDL }) => {
             ['query']
         ),
         variant_referencing_record_from_param: IDL.Func(
-            [AzleInline5278805839780097963],
+            [AzleInline8263140294912128486],
             [],
             ['query']
         ),
         variant_referencing_variant_from_param: IDL.Func(
-            [AzleInline8195216860007363499],
+            [AzleInline12207366142299072665],
             [],
             ['query']
         ),

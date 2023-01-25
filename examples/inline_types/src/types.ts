@@ -5,7 +5,12 @@ import {
     InsertError,
     Variant,
     Opt,
-    Principal
+    Principal,
+    Func,
+    nat,
+    Query,
+    nat64,
+    Update
 } from 'azle';
 
 export type User1 = {
@@ -110,6 +115,75 @@ export type InlineTypes = Canister<{
         Opt<{
             variant: Variant<{ var1: null; var2: TestVariant }>;
         }>
+    >;
+    inline_func(
+        callback: Func<
+            (
+                primitive: string,
+                opt: Opt<{
+                    primitive: nat;
+                    opt: Opt<string>;
+                    vec: string[];
+                    record: { prop1: string };
+                    variant: Variant<{ v1: null; v2: null }>;
+                    func: Func<() => Update<string>>;
+                }>,
+                vec: {
+                    primitive: nat;
+                    opt: Opt<string>;
+                    vec: string[];
+                    record: { prop1: string };
+                    variant: Variant<{ v1: null; v2: null }>;
+                    func: Func<() => Update<string>>;
+                }[],
+                record: {
+                    prop1: string;
+                    optional: Opt<nat64>;
+                    variant: Variant<{ v1: null; v2: null }>;
+                },
+                variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
+                func: Func<
+                    () => Query<{
+                        prop1: string;
+                        variant: Variant<{ v1: null; v2: { prop1: string } }>;
+                    }>
+                >
+            ) => Query<void>
+        >
+    ): CanisterResult<
+        Func<
+            (
+                primitive: string,
+                opt: Opt<{
+                    primitive: nat;
+                    opt: Opt<string>;
+                    vec: string[];
+                    record: { prop1: string };
+                    variant: Variant<{ v1: null; v2: null }>;
+                    func: Func<() => Update<string>>;
+                }>,
+                vec: {
+                    primitive: nat;
+                    opt: Opt<string>;
+                    vec: string[];
+                    record: { prop1: string };
+                    variant: Variant<{ v1: null; v2: null }>;
+                    func: Func<() => Update<string>>;
+                }[],
+                record: {
+                    prop1: string;
+                    optional: Opt<nat64>;
+                    variant: Variant<{ v1: null; v2: null }>;
+                },
+                variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
+                func: Func<
+                    () => Query<{
+                        prop1: string;
+                        variant: Variant<{ v1: null; v2: { prop1: string } }>;
+                    }>
+                >
+            ) => Query<void>
+        >
     >;
     inline_record_return_type_as_external_canister_call(): CanisterResult<
         Variant<{

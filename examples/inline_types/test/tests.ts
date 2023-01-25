@@ -2,6 +2,7 @@ import { ok, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { _SERVICE } from './dfx_generated/inline_types/inline_types.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
 
 export function get_tests(
     inline_types_canister: ActorSubclass<_SERVICE>
@@ -215,6 +216,23 @@ export function get_tests(
 
                 return {
                     ok: result.ok.prop1 == 'prop1' && result.ok.prop2 == 'prop2'
+                };
+            }
+        },
+        {
+            name: 'inline types in funcs',
+            test: async () => {
+                const principal_id = 'aaaaa-aa';
+                const method = 'raw_rand';
+                const result = await inline_types_canister.inline_func([
+                    Principal.from(principal_id),
+                    method
+                ]);
+
+                return {
+                    ok:
+                        result[0].toString() === principal_id &&
+                        result[1].toString() === method
                 };
             }
         },

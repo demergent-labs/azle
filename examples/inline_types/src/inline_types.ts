@@ -1,4 +1,14 @@
-import { InsertError, Query, Variant, Opt, StableBTreeMap, Update } from 'azle';
+import {
+    InsertError,
+    Query,
+    Variant,
+    Opt,
+    StableBTreeMap,
+    Update,
+    Func,
+    nat64,
+    nat
+} from 'azle';
 import {
     Bling,
     Reaction,
@@ -161,4 +171,76 @@ export async function inline_record_return_type_as_external_canister_call(): Pro
     >
 > {
     return await self.inline_record_return_type().call();
+}
+
+export function inline_func(
+    callback: Func<
+        (
+            primitive: string,
+            opt: Opt<{
+                primitive: nat;
+                opt: Opt<string>;
+                vec: string[];
+                record: { prop1: string };
+                variant: Variant<{ v1: null; v2: null }>;
+                func: Func<() => Update<string>>;
+            }>,
+            vec: {
+                primitive: nat;
+                opt: Opt<string>;
+                vec: string[];
+                record: { prop1: string };
+                variant: Variant<{ v1: null; v2: null }>;
+                func: Func<() => Update<string>>;
+            }[],
+            record: {
+                prop1: string;
+                optional: Opt<nat64>;
+                variant: Variant<{ v1: null; v2: null }>;
+            },
+            variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
+            func: Func<
+                () => Query<{
+                    prop1: string;
+                    variant: Variant<{ v1: null; v2: { prop1: string } }>;
+                }>
+            >
+        ) => Query<void>
+    >
+): Query<
+    Func<
+        (
+            primitive: string,
+            opt: Opt<{
+                primitive: nat;
+                opt: Opt<string>;
+                vec: string[];
+                record: { prop1: string };
+                variant: Variant<{ v1: null; v2: null }>;
+                func: Func<() => Update<string>>;
+            }>,
+            vec: {
+                primitive: nat;
+                opt: Opt<string>;
+                vec: string[];
+                record: { prop1: string };
+                variant: Variant<{ v1: null; v2: null }>;
+                func: Func<() => Update<string>>;
+            }[],
+            record: {
+                prop1: string;
+                optional: Opt<nat64>;
+                variant: Variant<{ v1: null; v2: null }>;
+            },
+            variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
+            func: Func<
+                () => Query<{
+                    prop1: string;
+                    variant: Variant<{ v1: null; v2: { prop1: string } }>;
+                }>
+            >
+        ) => Query<void>
+    >
+> {
+    return callback;
 }
