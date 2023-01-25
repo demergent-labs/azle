@@ -12,20 +12,29 @@ pub fn generate() -> proc_macro2::TokenStream {
             let func_js_value = _aargs.get(1).unwrap();
             let func_js_object = func_js_value.as_object().unwrap().clone();
 
-            let uuid = UUID_REF_CELL.with(|uuid_ref_cell| uuid_ref_cell.borrow().clone());
-            let method_name = METHOD_NAME_REF_CELL.with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
-
-            // TODO we can have multiple timers per call...so will this uuid work?
-            // TODO the uuid is very scary...can we somehow get rid of it?
-            // TODO think deeply about this
-            // TODO got this error: Panicked at 'called `Option::unwrap()` on a `None` value', src/src/lib.rs:6663:59
             let closure = move || {
-                // TODO I think we simply need to make a UUID in here?
-                // TODO each timer should have its own uuid
-                // TODO shouldn't each cross canister call promise get its own uuid? Why am I setting it at the beginning of the call?
-
                 BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
                     let mut _azle_boa_context = boa_context_ref_cell.borrow_mut();
+
+                    let uuid = uuid::Uuid::new_v4().to_string();
+
+                    UUID_REF_CELL.with(|uuid_ref_cell| {
+                        let mut uuid_mut = uuid_ref_cell.borrow_mut();
+
+                        *uuid_mut = uuid.clone();
+                    });
+
+                    METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                        let mut method_name_mut = method_name_ref_cell.borrow_mut();
+
+                        *method_name_mut = "TIMER".to_string();
+                    });
+
+                    MANUAL_REF_CELL.with(|manual_ref_cell| {
+                        let mut manual_mut = manual_ref_cell.borrow_mut();
+
+                        *manual_mut = false;
+                    });
 
                     let _azle_boa_return_value = _azle_handle_boa_result(
                         func_js_object.call(
@@ -40,8 +49,8 @@ pub fn generate() -> proc_macro2::TokenStream {
                         &mut _azle_boa_context,
                         &_azle_boa_return_value,
                         &uuid,
-                        &method_name,
-                        true
+                        "TIMER",
+                        false
                     );
                 });
             };

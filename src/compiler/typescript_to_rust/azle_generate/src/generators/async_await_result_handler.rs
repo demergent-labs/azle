@@ -39,7 +39,8 @@ pub fn generate(canister_methods: &Vec<ActCanisterMethod>) -> TokenStream {
 
                         match _azle_method_name {
                             #(#match_arms)*
-                            _ => {} // TODO is this dangerous to do? It's necessary for timer callbacks
+                            "TIMER" => {},
+                            _ => panic!("method name was not found")
                         };
 
                         return _azle_boa_return_value.clone();
