@@ -32,7 +32,7 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'set timers',
             test: async () => {
-                timer_ids = await timers_canister.set_timers(5n, 3n);
+                timer_ids = await timers_canister.set_timers(10n, 5n);
 
                 return {
                     ok: true
@@ -41,7 +41,7 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
         },
         {
             name: 'wait for repeated timer to be called once',
-            wait: 3500
+            wait: 7_000
         },
         {
             name: 'check that only the repeated timers were called',
@@ -61,7 +61,7 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
         },
         {
             name: 'finish waiting for single timers to be called',
-            wait: 3500
+            wait: 5_000
         },
         {
             name: 'check that everything got called (and the repeated timers a second time)',
@@ -102,7 +102,7 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
         },
         {
             name: 'wait the repeating call interval',
-            wait: 3000
+            wait: 5_000
         },
         {
             name: 'check that the repeating timers stopped',
@@ -116,7 +116,7 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
                         result.capture === '🚩' &&
                         result.repeat === 2 &&
                         result.single_cross_canister.length === 32 &&
-                        result.repeat_cross_canister.length === 96
+                        result.repeat_cross_canister.length === 64
                 };
             }
         }

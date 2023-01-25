@@ -85,8 +85,7 @@ function one_time_timer_callback(): void {
     console.log('one_time_timer_callback called');
 }
 
-// TODO explicitly type the promise return type
-async function single_cross_canister_timer_callback() {
+async function single_cross_canister_timer_callback(): Promise<void> {
     console.log('single_cross_canister_timer_callback');
 
     const result = await management_canister.raw_rand().call();
@@ -98,7 +97,7 @@ async function single_cross_canister_timer_callback() {
     status.single_cross_canister = result.ok;
 }
 
-async function repeat_cross_canister_timer_callback() {
+async function repeat_cross_canister_timer_callback(): Promise<void> {
     console.log('repeat_cross_canister_timer_callback');
 
     const result = await management_canister.raw_rand().call();

@@ -39,7 +39,7 @@ pub fn generate(canister_methods: &Vec<ActCanisterMethod>) -> TokenStream {
 
                         match _azle_method_name {
                             #(#match_arms)*
-                            _ => panic!("This cannot happen")
+                            _ => {} // TODO is this dangerous to do? It's necessary for timer callbacks
                         };
 
                         return _azle_boa_return_value.clone();

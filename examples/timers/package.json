@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "pretest": "cd .. && ts-node --transpile-only --ignore=false test/pretest.ts",
+        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
         "test": "ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
