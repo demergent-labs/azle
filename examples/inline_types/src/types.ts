@@ -54,41 +54,44 @@ export type TestVariant = Variant<{
 }>;
 
 export type InlineTypes = Canister<{
-    inlineRecordReturnType(): CanisterResult<{
+    inline_record_return_type(): CanisterResult<{
         prop1: string;
         prop2: string;
     }>;
-    inlineRecordParam(param: { prop1: string }): CanisterResult<string>;
-    inlineVariantReturnType(): CanisterResult<
+    inline_record_param(param: { prop1: string }): CanisterResult<string>;
+    inline_variant_return_type(): CanisterResult<
         Variant<{
             var1: null;
             var2: null;
             var3: null;
         }>
     >;
-    inlineVariantParam(
+    inline_variant_param(
         param: Variant<{ var1: null; var2: null }>
     ): CanisterResult<Variant<{ var1: null; var2: null }>>;
-    recordWithInlineFields(): CanisterResult<User1>;
-    variantWithInlineFields(): CanisterResult<Reaction>;
-    recordReferencingOtherTypesFromReturnType(): CanisterResult<{
+    record_with_inline_fields(): CanisterResult<User1>;
+    variant_with_inline_fields(): CanisterResult<Reaction>;
+    record_referencing_other_types_from_return_type(): CanisterResult<{
         prop1: string;
         prop2: Thing;
     }>;
-    variantReferencingOtherTypesFromReturnType(): CanisterResult<
+    variant_referencing_other_types_from_return_type(): CanisterResult<
         Variant<{
             prop1: string;
             prop2: Bling;
         }>
     >;
-    recordReferencingRecordFromParam(param1: {
+    record_referencing_record_from_param(param1: {
         test: Test;
     }): CanisterResult<string>;
-    recordReferencingVariantFromParam(param1: {
+    record_referencing_variant_from_param(param1: {
         testVariant: TestVariant;
     }): CanisterResult<Opt<string>>;
-    variantReferencingRecordFromParam(
+    variant_referencing_record_from_param(
         param1: Variant<{ prop1: User }>
+    ): CanisterResult<void>;
+    variant_referencing_variant_from_param(
+        param1: Variant<{ prop1: UserVariant }>
     ): CanisterResult<void>;
     stable_map_insert(
         key: string,
@@ -108,7 +111,7 @@ export type InlineTypes = Canister<{
             variant: Variant<{ var1: null; var2: TestVariant }>;
         }>
     >;
-    inlineRecordReturnTypeAsExternalCanisterCall(): CanisterResult<
+    inline_record_return_type_as_external_canister_call(): CanisterResult<
         Variant<{
             ok: {
                 prop1: string;

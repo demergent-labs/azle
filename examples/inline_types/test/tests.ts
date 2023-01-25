@@ -8,10 +8,10 @@ export function get_tests(
 ): Test[] {
     return [
         {
-            name: 'inlineRecordReturnType',
+            name: 'inline_record_return_type',
             test: async () => {
                 const result =
-                    await inline_types_canister.inlineRecordReturnType();
+                    await inline_types_canister.inline_record_return_type();
 
                 return {
                     ok: result.prop1 === 'prop1' && result.prop2 === 'prop2'
@@ -19,9 +19,9 @@ export function get_tests(
             }
         },
         {
-            name: 'inlineRecordParam',
+            name: 'inline_record_param',
             test: async () => {
-                const result = await inline_types_canister.inlineRecordParam({
+                const result = await inline_types_canister.inline_record_param({
                     prop1: 'prop1'
                 });
 
@@ -31,10 +31,10 @@ export function get_tests(
             }
         },
         {
-            name: 'inlineVariantReturnType',
+            name: 'inline_variant_return_type',
             test: async () => {
                 const result =
-                    await inline_types_canister.inlineVariantReturnType();
+                    await inline_types_canister.inline_variant_return_type();
 
                 return {
                     ok: 'var1' in result
@@ -42,11 +42,13 @@ export function get_tests(
             }
         },
         {
-            name: 'inlineRecordReturnType',
+            name: 'inline_record_return_type',
             test: async () => {
-                const result = await inline_types_canister.inlineVariantParam({
-                    var1: null
-                });
+                const result = await inline_types_canister.inline_variant_param(
+                    {
+                        var1: null
+                    }
+                );
 
                 return {
                     ok: 'var1' in result
@@ -54,11 +56,13 @@ export function get_tests(
             }
         },
         {
-            name: 'inlineVariantParam',
+            name: 'inline_variant_param',
             test: async () => {
-                const result = await inline_types_canister.inlineVariantParam({
-                    var2: null
-                });
+                const result = await inline_types_canister.inline_variant_param(
+                    {
+                        var2: null
+                    }
+                );
 
                 return {
                     ok: 'var2' in result
@@ -66,10 +70,10 @@ export function get_tests(
             }
         },
         {
-            name: 'recordWithInlineFields',
+            name: 'record_with_inline_fields',
             test: async () => {
                 const result =
-                    await inline_types_canister.recordWithInlineFields();
+                    await inline_types_canister.record_with_inline_fields();
 
                 return {
                     ok:
@@ -80,10 +84,10 @@ export function get_tests(
             }
         },
         {
-            name: 'variantWithInlineFields',
+            name: 'variant_with_inline_fields',
             test: async () => {
                 const result =
-                    await inline_types_canister.variantWithInlineFields();
+                    await inline_types_canister.variant_with_inline_fields();
 
                 return {
                     ok: 'three' in result && result.three.id === '0'
@@ -91,10 +95,10 @@ export function get_tests(
             }
         },
         {
-            name: 'recordReferencingOtherTypesFromReturnType',
+            name: 'record_referencing_other_types_from_return_type',
             test: async () => {
                 const result =
-                    await inline_types_canister.recordReferencingOtherTypesFromReturnType();
+                    await inline_types_canister.record_referencing_other_types_from_return_type();
 
                 return {
                     ok: result.prop1 === 'prop1' && result.prop2.id === '0'
@@ -102,10 +106,10 @@ export function get_tests(
             }
         },
         {
-            name: 'variantReferencingOtherTypesFromReturnType',
+            name: 'variant_referencing_other_types_from_return_type',
             test: async () => {
                 const result =
-                    await inline_types_canister.variantReferencingOtherTypesFromReturnType();
+                    await inline_types_canister.variant_referencing_other_types_from_return_type();
 
                 return {
                     ok: 'prop2' in result && result.prop2.id === '0'
@@ -113,10 +117,10 @@ export function get_tests(
             }
         },
         {
-            name: 'recordReferencingRecordFromParam',
+            name: 'record_referencing_record_from_param',
             test: async () => {
                 const result =
-                    await inline_types_canister.recordReferencingRecordFromParam(
+                    await inline_types_canister.record_referencing_record_from_param(
                         {
                             test: {
                                 id: '0'
@@ -130,10 +134,10 @@ export function get_tests(
             }
         },
         {
-            name: 'recordReferencingVariantFromParam',
+            name: 'record_referencing_variant_from_param',
             test: async () => {
                 const result =
-                    await inline_types_canister.recordReferencingVariantFromParam(
+                    await inline_types_canister.record_referencing_variant_from_param(
                         {
                             testVariant: {
                                 prop1: '0'
@@ -147,10 +151,10 @@ export function get_tests(
             }
         },
         {
-            name: 'recordReferencingVariantFromParam',
+            name: 'record_referencing_variant_from_param',
             test: async () => {
                 const result =
-                    await inline_types_canister.recordReferencingVariantFromParam(
+                    await inline_types_canister.record_referencing_variant_from_param(
                         {
                             testVariant: {
                                 prop2: {
@@ -166,10 +170,10 @@ export function get_tests(
             }
         },
         {
-            name: 'variantReferencingRecordFromParam',
+            name: 'variant_referencing_record_from_param',
             test: async () => {
                 const result =
-                    await inline_types_canister.variantReferencingRecordFromParam(
+                    await inline_types_canister.variant_referencing_record_from_param(
                         {
                             prop1: {
                                 id: '0'
@@ -183,10 +187,10 @@ export function get_tests(
             }
         },
         {
-            name: 'variantReferencingVariantFromParam',
+            name: 'variant_referencing_variant_from_param',
             test: async () => {
                 const result =
-                    await inline_types_canister.variantReferencingVariantFromParam(
+                    await inline_types_canister.variant_referencing_variant_from_param(
                         {
                             prop1: {
                                 prop1: null
@@ -196,6 +200,21 @@ export function get_tests(
 
                 return {
                     ok: result === undefined
+                };
+            }
+        },
+        {
+            name: 'inline types in external canister definitions',
+            test: async () => {
+                const result =
+                    await inline_types_canister.inline_record_return_type_as_external_canister_call();
+
+                if (!ok(result)) {
+                    return { err: result.err };
+                }
+
+                return {
+                    ok: result.ok.prop1 == 'prop1' && result.ok.prop2 == 'prop2'
                 };
             }
         },

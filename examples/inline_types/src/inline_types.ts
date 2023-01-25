@@ -11,7 +11,7 @@ import {
     UserVariant
 } from './types';
 
-export function inlineRecordReturnType(): Query<{
+export function inline_record_return_type(): Query<{
     prop1: string;
     prop2: string;
 }> {
@@ -21,11 +21,11 @@ export function inlineRecordReturnType(): Query<{
     };
 }
 
-export function inlineRecordParam(param: { prop1: string }): Query<string> {
+export function inline_record_param(param: { prop1: string }): Query<string> {
     return param.prop1;
 }
 
-export function inlineVariantReturnType(): Query<
+export function inline_variant_return_type(): Query<
     Variant<{
         var1: null;
         var2: null;
@@ -37,7 +37,7 @@ export function inlineVariantReturnType(): Query<
     };
 }
 
-export function inlineVariantParam(
+export function inline_variant_param(
     param: Variant<{ var1: null; var2: null }>
 ): Query<Variant<{ var1: null; var2: null }>> {
     if (param.var1 === null) {
@@ -51,7 +51,7 @@ export function inlineVariantParam(
     }
 }
 
-export function recordWithInlineFields(): Query<User1> {
+export function record_with_inline_fields(): Query<User1> {
     return {
         id: '0',
         job: {
@@ -61,7 +61,7 @@ export function recordWithInlineFields(): Query<User1> {
     };
 }
 
-export function variantWithInlineFields(): Query<Reaction> {
+export function variant_with_inline_fields(): Query<Reaction> {
     return {
         three: {
             id: '0'
@@ -69,7 +69,7 @@ export function variantWithInlineFields(): Query<Reaction> {
     };
 }
 
-export function recordReferencingOtherTypesFromReturnType(): Query<{
+export function record_referencing_other_types_from_return_type(): Query<{
     prop1: string;
     prop2: Thing;
 }> {
@@ -81,7 +81,7 @@ export function recordReferencingOtherTypesFromReturnType(): Query<{
     };
 }
 
-export function variantReferencingOtherTypesFromReturnType(): Query<
+export function variant_referencing_other_types_from_return_type(): Query<
     Variant<{
         prop1: string;
         prop2: Bling;
@@ -94,13 +94,13 @@ export function variantReferencingOtherTypesFromReturnType(): Query<
     };
 }
 
-export function recordReferencingRecordFromParam(param1: {
+export function record_referencing_record_from_param(param1: {
     test: Test;
 }): Query<string> {
     return param1.test.id;
 }
 
-export function recordReferencingVariantFromParam(param1: {
+export function record_referencing_variant_from_param(param1: {
     testVariant: TestVariant;
 }): Query<Opt<string>> {
     if (param1.testVariant.prop1 !== undefined) {
@@ -110,11 +110,11 @@ export function recordReferencingVariantFromParam(param1: {
     return null;
 }
 
-export function variantReferencingRecordFromParam(
+export function variant_referencing_record_from_param(
     param1: Variant<{ prop1: User }>
 ): Query<void> {}
 
-export function variantReferencingVariantFromParam(
+export function variant_referencing_variant_from_param(
     param1: Variant<{ prop1: UserVariant }>
 ): Query<void> {}
 
@@ -149,7 +149,7 @@ export function stable_map_get(key: string): Query<
     return stable_map.get(key);
 }
 
-export async function inlineRecordReturnTypeAsExternalCanisterCall(): Promise<
+export async function inline_record_return_type_as_external_canister_call(): Promise<
     Update<
         Variant<{
             ok: {
@@ -160,5 +160,5 @@ export async function inlineRecordReturnTypeAsExternalCanisterCall(): Promise<
         }>
     >
 > {
-    return await self.inlineRecordReturnType().call();
+    return await self.inline_record_return_type().call();
 }
