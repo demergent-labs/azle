@@ -90,10 +90,10 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
                     return { err: 'repeat_cross_canister_id was never stored' };
                 }
 
-                await timers_canister.clear_timer(timer_ids.repeat);
-                await timers_canister.clear_timer(
-                    timer_ids.repeat_cross_canister
-                );
+                await Promise.all([
+                    timers_canister.clear_timer(timer_ids.repeat),
+                    timers_canister.clear_timer(timer_ids.repeat_cross_canister)
+                ]);
 
                 return {
                     ok: true
@@ -102,7 +102,7 @@ export function get_tests(timers_canister: ActorSubclass<_SERVICE>): Test[] {
         },
         {
             name: 'wait the repeating call interval',
-            wait: 5_000
+            wait: 7_000
         },
         {
             name: 'check that the repeating timers stopped',
