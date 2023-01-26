@@ -3,7 +3,9 @@ use proc_macro2::TokenStream;
 use quote::quote;
 
 use crate::{
-    generators::{async_await_result_handler, boa_error_handlers, ic_object, stable_b_tree_map},
+    generators::{
+        async_await_result_handler, boa_error_handlers, ic_object, rng_seed, stable_b_tree_map,
+    },
     ts_ast::TsAst,
 };
 
@@ -24,6 +26,7 @@ pub fn generate(
     let register_ic_object_function = ic_object::register_function::generate(ts_ast);
 
     let stable_b_tree_maps = stable_b_tree_map::generate(&stable_b_tree_map_nodes);
+    let rng_seed = rng_seed::generate();
 
     quote! {
         #async_await_result_handler
@@ -31,5 +34,6 @@ pub fn generate(
         #ic_object_functions
         #register_ic_object_function
         #stable_b_tree_maps
+        #rng_seed
     }
 }
