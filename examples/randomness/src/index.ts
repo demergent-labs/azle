@@ -1,5 +1,5 @@
-import { Update, float64 } from 'azle';
+import { float64, Update } from 'azle';
 
-export function math_random(): Update<float64> {
+export function random_number(): Update<float64> {
     return Math.random();
 }

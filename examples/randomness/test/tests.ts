@@ -12,23 +12,23 @@ export function get_tests(
         {
             name: 'first round',
             test: async () => {
-                const math_random_call_0_result =
-                    await randomness_canister.math_random();
-                const math_random_call_1_result =
-                    await randomness_canister.math_random();
-                const math_random_call_2_result =
-                    await randomness_canister.math_random();
-                const math_random_call_3_result =
-                    await randomness_canister.math_random();
-                const math_random_call_4_result =
-                    await randomness_canister.math_random();
+                const random_number_call_0_result =
+                    await randomness_canister.random_number();
+                const random_number_call_1_result =
+                    await randomness_canister.random_number();
+                const random_number_call_2_result =
+                    await randomness_canister.random_number();
+                const random_number_call_3_result =
+                    await randomness_canister.random_number();
+                const random_number_call_4_result =
+                    await randomness_canister.random_number();
 
                 const results = [
-                    math_random_call_0_result.toString(),
-                    math_random_call_1_result.toString(),
-                    math_random_call_2_result.toString(),
-                    math_random_call_3_result.toString(),
-                    math_random_call_4_result.toString()
+                    random_number_call_0_result.toString(),
+                    random_number_call_1_result.toString(),
+                    random_number_call_2_result.toString(),
+                    random_number_call_3_result.toString(),
+                    random_number_call_4_result.toString()
                 ];
 
                 for (const result of results) {
@@ -49,23 +49,23 @@ export function get_tests(
         {
             name: 'second round',
             test: async () => {
-                const math_random_call_0_result =
-                    await randomness_canister.math_random();
-                const math_random_call_1_result =
-                    await randomness_canister.math_random();
-                const math_random_call_2_result =
-                    await randomness_canister.math_random();
-                const math_random_call_3_result =
-                    await randomness_canister.math_random();
-                const math_random_call_4_result =
-                    await randomness_canister.math_random();
+                const random_number_call_0_result =
+                    await randomness_canister.random_number();
+                const random_number_call_1_result =
+                    await randomness_canister.random_number();
+                const random_number_call_2_result =
+                    await randomness_canister.random_number();
+                const random_number_call_3_result =
+                    await randomness_canister.random_number();
+                const random_number_call_4_result =
+                    await randomness_canister.random_number();
 
                 const results = [
-                    math_random_call_0_result.toString(),
-                    math_random_call_1_result.toString(),
-                    math_random_call_2_result.toString(),
-                    math_random_call_3_result.toString(),
-                    math_random_call_4_result.toString()
+                    random_number_call_0_result.toString(),
+                    random_number_call_1_result.toString(),
+                    random_number_call_2_result.toString(),
+                    random_number_call_3_result.toString(),
+                    random_number_call_4_result.toString()
                 ];
 
                 for (const result of results) {

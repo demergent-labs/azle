@@ -1,1 +1,1 @@
-service : () -> { math_random : () -> (float64) }
+service : () -> { random_number : () -> (float64) }
