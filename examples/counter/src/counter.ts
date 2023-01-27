@@ -11,3 +11,23 @@ export function increment_count(): Update<nat64> {
 
     return count;
 }
+
+// class API
+
+import { query, update } from 'azle';
+
+export default class {
+    count: nat64 = 0n;
+
+    @query
+    read_count(): nat64 {
+        return this.count;
+    }
+
+    @update
+    increment_count(): nat64 {
+        this.count += 1n;
+
+        return this.count;
+    }
+}

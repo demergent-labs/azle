@@ -283,3 +283,15 @@ export type Stable64GrowResult = Variant<{
     ok: nat64;
     err: StableMemoryError;
 }>;
+
+export function query(
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+) {}
+
+export function update(
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+) {}

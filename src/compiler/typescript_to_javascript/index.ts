@@ -1,5 +1,6 @@
 import * as swc from '@swc/core';
 import * as tsc from 'typescript';
+import * as path from 'path';
 import { buildSync } from 'esbuild';
 import { JavaScript, TypeScript } from '../../types';
 import { Result } from '../../result';
@@ -21,6 +22,8 @@ export function compileTypeScriptToJavaScript(
             export * from './${ts_path}';
         `);
 
+        const ts_base_name = path.basename(ts_path, '.ts');
+
         const main_js: JavaScript = `
             // TODO we should centralize/standardize where we add global variables to the JS, we are doing this in multiple places (i.e. the exports variable is not here, found in init/post_upgrade)
             globalThis.console = {
@@ -33,6 +36,8 @@ export function compileTypeScriptToJavaScript(
             ${icCanisters}
 
             ${js_bundled_and_transpiled}
+
+            var _azle_default_class_instance = new ${ts_base_name}_default();
         `;
 
         return { ok: main_js };
