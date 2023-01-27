@@ -1,11 +1,15 @@
 type StatusReport = record {
+  single_cross_canister : vec nat8;
   repeat : int8;
+  repeat_cross_canister : vec nat8;
   inline : int8;
   capture : text;
   single : bool;
 };
 type TimerIds = record {
+  single_cross_canister : nat64;
   repeat : nat64;
+  repeat_cross_canister : nat64;
   inline : nat64;
   capture : nat64;
   single : nat64;
