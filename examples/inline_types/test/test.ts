@@ -1,4 +1,4 @@
-import { deploy, run_tests, Test } from 'azle/test';
+import { run_tests } from 'azle/test';
 import { createActor } from '../test/dfx_generated/inline_types';
 import { get_tests } from './tests';
 
@@ -8,9 +8,4 @@ const inline_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-const tests: Test[] = [
-    ...deploy('inline_types'),
-    ...get_tests(inline_types_canister)
-];
-
-run_tests(tests);
+run_tests(get_tests(inline_types_canister));

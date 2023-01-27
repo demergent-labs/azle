@@ -31,6 +31,8 @@ pub fn generate_post_upgrade_method_body(
             )), &mut _azle_boa_context);
 
             #call_to_post_upgrade_js_function
+
+            ic_cdk::timer::set_timer(core::time::Duration::new(0, 0), _azle_rng_seed);
         });
     }
 }

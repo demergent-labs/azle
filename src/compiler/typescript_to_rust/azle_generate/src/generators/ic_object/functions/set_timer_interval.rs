@@ -13,16 +13,44 @@ pub fn generate() -> proc_macro2::TokenStream {
             let func_js_object = func_js_value.as_object().unwrap().clone();
 
             let closure = move || {
-                BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
-                    let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
+                BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
+                    let mut _azle_boa_context = boa_context_ref_cell.borrow_mut();
 
-                    _azle_handle_boa_result(
+                    let uuid = uuid::Uuid::new_v4().to_string();
+
+                    UUID_REF_CELL.with(|uuid_ref_cell| {
+                        let mut uuid_mut = uuid_ref_cell.borrow_mut();
+
+                        *uuid_mut = uuid.clone();
+                    });
+
+                    METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                        let mut method_name_mut = method_name_ref_cell.borrow_mut();
+
+                        *method_name_mut = "_AZLE_TIMER".to_string();
+                    });
+
+                    MANUAL_REF_CELL.with(|manual_ref_cell| {
+                        let mut manual_mut = manual_ref_cell.borrow_mut();
+
+                        *manual_mut = false;
+                    });
+
+                    let _azle_boa_return_value = _azle_handle_boa_result(
                         func_js_object.call(
                             &boa_engine::JsValue::Null,
                             &[],
                             &mut *_azle_boa_context
                         ),
                         &mut *_azle_boa_context
+                    );
+
+                    _azle_async_await_result_handler(
+                        &mut _azle_boa_context,
+                        &_azle_boa_return_value,
+                        &uuid,
+                        "_AZLE_TIMER",
+                        false
                     );
                 });
             };

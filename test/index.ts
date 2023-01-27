@@ -5,21 +5,21 @@ export type Test = {
     skip?: boolean;
     wait?: number;
     prep?: () => Promise<any>;
-    test?: () => Promise<AzleResult<boolean>>;
+    test?: () => Promise<AzleResult<boolean, string>>;
 };
 
 export type Variant<T> = Partial<T>;
 
-export type AzleResult<T> = Variant<{
+export type AzleResult<T, E> = Variant<{
     ok: T;
-    err: string;
+    err: E;
 }>;
 
 export type Ok<T> = {
     ok: T;
 };
 
-export function ok<T>(azle_result: AzleResult<T>): azle_result is Ok<T> {
+export function ok<T, E>(azle_result: AzleResult<T, E>): azle_result is Ok<T> {
     if (azle_result.err === undefined) {
         return true;
     } else {
