@@ -9,3 +9,19 @@ export function candid_encode(candid_string: string): Query<blob> {
 export function candid_decode(candid_encoded: blob): Query<string> {
     return ic.candid_decode(candid_encoded);
 }
+
+// class API
+
+import { query } from 'azle';
+
+export default class {
+    @query
+    candid_encode(candid_string: string): blob {
+        return ic.candid_encode(candid_string);
+    }
+
+    @query
+    candid_decode(candid_encoded: blob): string {
+        return ic.candid_decode(candid_encoded);
+    }
+}
