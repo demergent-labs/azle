@@ -22,7 +22,11 @@ export function compileTypeScriptToJavaScript(
             export * from './${ts_path}';
         `);
 
-        const ts_base_name = path.basename(ts_path, '.ts');
+        const base_name = path.basename(ts_path, '.ts');
+        const ts_base_name =
+            base_name === 'index'
+                ? path.basename(path.dirname(ts_path))
+                : base_name;
 
         const main_js: JavaScript = `
             // TODO we should centralize/standardize where we add global variables to the JS, we are doing this in multiple places (i.e. the exports variable is not here, found in init/post_upgrade)

@@ -2,8 +2,8 @@ type PerfResult = record {
   wasm_body_only : nat64;
   wasm_including_prelude : nat64;
 };
-service : {
+service : () -> {
   get_current_message : () -> (text) query;
   get_perf_result : () -> (opt PerfResult) query;
-  update : (text) -> ();
+  simple_update : (text) -> ();
 }

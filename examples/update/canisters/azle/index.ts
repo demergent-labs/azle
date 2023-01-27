@@ -26,11 +26,34 @@ export function get_current_message(): Query<string> {
     return currentMessage;
 }
 
-export function update(message: string): Update<void> {
+export function simple_update(message: string): Update<void> {
     const perf_start = ic.performance_counter(0);
 
     currentMessage = message;
 
     const perf_end = ic.performance_counter(0);
     record_performance(perf_start, perf_end);
+}
+
+// class API
+
+import { query, update } from 'azle';
+
+export default class {
+    current_message: string = '';
+
+    @query
+    get_current_message(): string {
+        return this.current_message;
+    }
+
+    @update
+    simple_update(message: string): void {
+        const perf_start = ic.performance_counter(0);
+
+        this.current_message = message;
+
+        const perf_end = ic.performance_counter(0);
+        record_performance(perf_start, perf_end);
+    }
 }

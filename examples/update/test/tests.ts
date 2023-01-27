@@ -5,9 +5,11 @@ import { ActorSubclass } from '@dfinity/agent';
 export function get_tests(update_canister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'update',
+            name: 'simple_update',
             test: async () => {
-                const result = await update_canister.update('Why hello there');
+                const result = await update_canister.simple_update(
+                    'Why hello there'
+                );
 
                 return {
                     ok: result === undefined
