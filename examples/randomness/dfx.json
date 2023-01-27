@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "randomness": {
+            "type": "custom",
+            "build": "npx azle randomness",
+            "root": "src",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
+            "wasm": ".azle/randomness/randomness.wasm.gz",
+            "declarations": {
+                "output": "test/dfx_generated/randomness",
+                "node_compatibility": true
+            }
+        }
+    }
+}

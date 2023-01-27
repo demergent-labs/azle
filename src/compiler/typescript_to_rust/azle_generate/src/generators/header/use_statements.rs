@@ -10,5 +10,6 @@ pub fn generate() -> proc_macro2::TokenStream {
         };
         use slotmap::Key as AzleSlotMapKey; // Renamed to avoid clashes with user-defined types
         use std::str::FromStr;
+        use std::convert::TryInto;
     }
 }

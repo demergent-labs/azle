@@ -2524,10 +2524,6 @@ This section will describe various JS APIs that may need special explanation.
 
 You can see examples of how to use the JS Date object [here](/examples/date). Note that `Date.prototype.toLocaleDateString()` and `Date.prototype.toLocaleTimeString()` are [not yet implemented](https://github.com/boa-dev/boa/issues/1562). Also keep in mind that the local timezone of the canister will always be `UTC`.
 
-#### Math.random()
-
-[Math.random()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random) currently returns the same value every time it is called. There is an [issue open to address this](https://github.com/demergent-labs/azle/issues/247). If you need randomness you should use `raw_rand` on the [management canister](/examples/management_canister).
-
 ### npm packages
 
 Installing and running npm packages within your canister may or may not work, depending on the package. The most fundamental problem you are likely to face is an npm package that depends on an API that is not supported by the IC or Azle's underlying JS engine.
