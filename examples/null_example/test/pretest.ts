@@ -15,3 +15,5 @@ export async function pretest() {
         stdio: 'inherit'
     });
 }
+
+pretest();

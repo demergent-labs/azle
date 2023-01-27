@@ -1,8 +1,6 @@
 use cdk_framework::{
-    self,
-    nodes::{data_type_nodes, ActCanisterMethod},
-    traits::SystemCanisterMethodBuilder,
-    AbstractCanisterTree, ActDataType, RequestType, ToAct,
+    self, nodes::ActCanisterMethod, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
+    ActDataType, RequestType, ToAct,
 };
 
 use super::TsAst;
