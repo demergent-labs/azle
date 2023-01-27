@@ -17,7 +17,7 @@ export const ic: ic = globalThis.ic ?? {};
  * least it works.'
  * Note: make sure to use in conjunction with it's type on the IC type below
  */
-// ic.result = function <T>(canisterResult: AzleResult<T>): AzleResult<T> {
+// ic.result = function <T>(canisterResult: AzleResult<T, string>): AzleResult<T, string> {
 //     if ('NoError' in ic.reject_code()) {
 //         return {
 //             ok: canisterResult.ok
@@ -33,7 +33,7 @@ export const ic: ic = globalThis.ic ?? {};
  * doesn't work.
  * Note: make sure to use in conjunction with it's type on the IC type below
  */
-// ic.result = function <T>(): AzleResult<Array<T>> {
+// ic.result = function <T>(): AzleResult<Array<T>, string> {
 //     if ('NoError' in ic.reject_code()) {
 //         return {
 //             ok: ic.arg_data() // Currently errors out.
@@ -171,8 +171,8 @@ export type Opt<T> = T | null;
 //     err?: V;
 // };
 // export type CallResult<T> = Variant<{
-//     ok?: T;
-//     err?: string;
+//     ok: T;
+//     err: string;
 // }>;
 export type CanisterResult<T> = {
     ok?: T;
@@ -218,16 +218,16 @@ export type blob = Uint8Array;
 export type reserved = any;
 export type empty = never;
 
-type AzleResult<T> = Variant<{
+type AzleResult<T, E> = Variant<{
     ok: T;
-    err: string;
+    err: E;
 }>;
 
 type Ok<T> = {
     ok: NonNullable<T>;
 };
 
-export function ok<T>(azle_result: AzleResult<T>): azle_result is Ok<T> {
+export function ok<T, E>(azle_result: AzleResult<T, E>): azle_result is Ok<T> {
     if (azle_result.err === undefined) {
         return true;
     } else {
@@ -236,11 +236,13 @@ export function ok<T>(azle_result: AzleResult<T>): azle_result is Ok<T> {
 }
 
 // TODO working on turning the ok function into an assertion
-export function attempt<T>(callback: () => AzleResult<T>): AzleResult<T> {
+export function attempt<T, E>(
+    callback: () => AzleResult<T, E>
+): AzleResult<T, E> {
     try {
         return callback();
     } catch (error) {
-        return error as AzleResult<T>;
+        return error as AzleResult<T, E>;
     }
 }
 
