@@ -110,7 +110,10 @@ type ic = {
      * @param callback the function to invoke after the specified delay has passed.
      * @returns the ID of the created timer. Used to cancel the timer.
      */
-    set_timer: (delay: Duration, callback: () => void) => TimerId;
+    set_timer: (
+        delay: Duration,
+        callback: () => void | Promise<void>
+    ) => TimerId;
     /**
      * Sets callback to be executed every interval. Panics if `interval` + time() is more than 2^64 - 1.
      * To cancel the interval timer, pass the returned `TimerId` to `clear_timer`.
@@ -120,7 +123,10 @@ type ic = {
      * @param callback the function to invoke after the specified delay has passed.
      * @returns the ID of the created timer. Used to cancel the timer.
      */
-    set_timer_interval: (interval: Duration, callback: () => void) => TimerId;
+    set_timer_interval: (
+        interval: Duration,
+        callback: () => void | Promise<void>
+    ) => TimerId;
     // stable_b_tree_map_contains_key: <Key>(memory_id: nat8, key: Key) => boolean;
     // stable_b_tree_map_get: <Key, Value>(memory_id: nat8, key: Key) => Value;
     // stable_b_tree_map_insert: <Key, Value>(

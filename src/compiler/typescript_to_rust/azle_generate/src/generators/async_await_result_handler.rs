@@ -39,7 +39,7 @@ pub fn generate(canister_methods: &Vec<ActCanisterMethod>) -> TokenStream {
 
                         match _azle_method_name {
                             #(#match_arms)*
-                            "TIMER" => {},
+                            "_AZLE_TIMER" => {},
                             _ => panic!("method name was not found")
                         };
 

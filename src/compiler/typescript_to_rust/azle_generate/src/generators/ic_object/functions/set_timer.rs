@@ -27,7 +27,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                     METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
                         let mut method_name_mut = method_name_ref_cell.borrow_mut();
 
-                        *method_name_mut = "TIMER".to_string();
+                        *method_name_mut = "_AZLE_TIMER".to_string();
                     });
 
                     MANUAL_REF_CELL.with(|manual_ref_cell| {
@@ -49,7 +49,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                         &mut _azle_boa_context,
                         &_azle_boa_return_value,
                         &uuid,
-                        "TIMER",
+                        "_AZLE_TIMER",
                         false
                     );
                 });
