@@ -4,6 +4,7 @@ import {
     Init,
     nat64,
     ok,
+    Opt,
     Principal,
     Query,
     StableBTreeMap,
@@ -30,7 +31,15 @@ type Reaction = Variant<{
 type BasicFunc = Func<(param1: string) => Query<string>>;
 type ComplexFunc = Func<(user: User, reaction: Reaction) => Update<nat64>>;
 type StableFunc = Func<(param1: nat64, param2: string) => Query<void>>;
-type NullFunc = Func<(param1: nat64, param2: string) => Query<null>>;
+type NullFunc = Func<
+    (
+        param1: Opt<null>,
+        param2: null[],
+        param3: null,
+        param4: null[][],
+        param5: Opt<null>[]
+    ) => Query<null>
+>;
 
 export function init(): Init {
     stable_storage.insert('stable_func', [

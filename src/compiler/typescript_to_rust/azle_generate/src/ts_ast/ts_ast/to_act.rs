@@ -1,6 +1,8 @@
 use cdk_framework::{
-    self, nodes::data_type_nodes, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
-    ActCanisterMethod, ActDataType, RequestType, ToAct,
+    self,
+    nodes::{data_type_nodes, ActCanisterMethod},
+    traits::SystemCanisterMethodBuilder,
+    AbstractCanisterTree, ActDataType, RequestType, ToAct,
 };
 
 use super::TsAst;
@@ -167,6 +169,7 @@ impl ToAct for TsAst {
             type_refs,
             update_methods,
             variants,
+            function_guards: vec![],
         }
     }
 }

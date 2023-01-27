@@ -1,7 +1,17 @@
-import { deploy_and_generate } from 'azle/test';
+import { execSync } from 'child_process';
 
 export async function pretest() {
-    deploy_and_generate('null_example');
-}
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 
-pretest();
+    execSync(`dfx canister uninstall-code null_example || true`, {
+        stdio: 'inherit'
+    });
+
+    execSync(`dfx deploy`, {
+        stdio: 'inherit'
+    });
+
+    execSync(`dfx generate`, {
+        stdio: 'inherit'
+    });
+}
