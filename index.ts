@@ -295,3 +295,32 @@ export function update(
     propertyKey: string,
     descriptor: PropertyDescriptor
 ) {}
+
+export function method(target: any, name: string) {
+    Object.defineProperty(target, name, {
+        get() {
+            return (...args: any[]) => {
+                return {
+                    call: () => {
+                        return (ic as any)[
+                            `_azle_call_${target.constructor.name}Old_${name}`
+                        ](this.principal, args);
+                    },
+                    notify: () => {
+                        return (ic as any)[
+                            `_azle_notify_${target.constructor.name}Old_${name}`
+                        ](this.principal, args);
+                    }
+                };
+            };
+        }
+    });
+}
+
+export class ExternalCanister {
+    principal: Principal;
+
+    constructor(principal: Principal) {
+        this.principal = principal;
+    }
+}
