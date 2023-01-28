@@ -284,6 +284,12 @@ export type Stable64GrowResult = Variant<{
     err: StableMemoryError;
 }>;
 
+export function init(
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+) {}
+
 export function query(
     target: any,
     propertyKey: string,
