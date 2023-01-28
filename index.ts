@@ -350,7 +350,7 @@ export function method(target: any, name: string) {
 export class ExternalCanister {
     canister_id: Principal;
 
-    constructor(principal: Principal) {
-        this.canister_id = principal;
+    constructor(canister_id: Principal) {
+        this.canister_id = canister_id;
     }
 }

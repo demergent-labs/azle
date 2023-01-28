@@ -20,8 +20,10 @@ import {
     blob,
     Canister,
     CanisterResult,
+    ExternalCanister,
     Func,
     ic,
+    method,
     nat,
     nat64,
     Opt,
@@ -224,7 +226,7 @@ export type SignWithEcdsaResult = {
     signature: blob;
 };
 
-export type Management = Canister<{
+export type ManagementOld = Canister<{
     bitcoin_get_balance(args: GetBalanceArgs): CanisterResult<Satoshi>;
     bitcoin_get_current_fee_percentiles(
         args: GetCurrentFeePercentilesArgs
@@ -260,6 +262,84 @@ export type Management = Canister<{
     ): CanisterResult<SignWithEcdsaResult>;
 }>;
 
-export const management_canister: Management = ic.canisters.Management(
+export const management_canister_old: ManagementOld =
+    ic.canisters.ManagementOld(Principal.fromText('aaaaa-aa'));
+
+export class Management extends ExternalCanister {
+    @method
+    bitcoin_get_balance: (args: GetBalanceArgs) => CanisterResult<Satoshi>;
+
+    @method
+    bitcoin_get_current_fee_percentiles: (
+        args: GetCurrentFeePercentilesArgs
+    ) => CanisterResult<MillisatoshiPerByte[]>;
+
+    @method
+    bitcoin_get_utxos: (args: GetUtxosArgs) => CanisterResult<GetUtxosResult>;
+
+    @method
+    bitcoin_send_transaction: (
+        args: SendTransactionArgs
+    ) => CanisterResult<null>;
+
+    @method
+    create_canister: (
+        args: CreateCanisterArgs
+    ) => CanisterResult<CreateCanisterResult>;
+
+    @method
+    update_settings: (args: UpdateSettingsArgs) => CanisterResult<void>;
+
+    @method
+    install_code: (args: InstallCodeArgs) => CanisterResult<void>;
+
+    @method
+    uninstall_code: (args: UninstallCodeArgs) => CanisterResult<void>;
+
+    @method
+    start_canister: (args: StartCanisterArgs) => CanisterResult<void>;
+
+    @method
+    stop_canister: (args: StopCanisterArgs) => CanisterResult<void>;
+
+    @method
+    canister_status: (
+        args: CanisterStatusArgs
+    ) => CanisterResult<CanisterStatusResult>;
+
+    @method
+    delete_canister: (args: DeleteCanisterArgs) => CanisterResult<void>;
+
+    @method
+    deposit_cycles: (args: DepositCyclesArgs) => CanisterResult<void>;
+
+    @method
+    raw_rand: () => CanisterResult<blob>;
+
+    @method
+    http_request: (args: HttpRequestArgs) => CanisterResult<HttpResponse>;
+
+    @method
+    provisional_create_canister_with_cycles: (
+        args: ProvisionalCreateCanisterWithCyclesArgs
+    ) => CanisterResult<ProvisionalCreateCanisterWithCyclesResult>;
+
+    @method
+    provisional_top_up_canister: (
+        args: ProvisionalTopUpCanisterArgs
+    ) => CanisterResult<void>;
+
+    @method
+    ecdsa_public_key: (
+        args: EcdsaPublicKeyArgs
+    ) => CanisterResult<EcdsaPublicKeyResult>;
+
+    @method
+    sign_with_ecdsa: (
+        args: SignWithEcdsaArgs
+    ) => CanisterResult<SignWithEcdsaResult>;
+}
+
+export const management_canister = new Management(
     Principal.fromText('aaaaa-aa')
 );
