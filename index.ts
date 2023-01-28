@@ -304,12 +304,42 @@ export function method(target: any, name: string) {
                     call: () => {
                         return (ic as any)[
                             `_azle_call_${target.constructor.name}Old_${name}`
-                        ](this.principal, args);
+                        ](this.canister_id, args);
                     },
                     notify: () => {
                         return (ic as any)[
                             `_azle_notify_${target.constructor.name}Old_${name}`
-                        ](this.principal, args);
+                        ](this.canister_id, args);
+                    },
+                    cycles: (cycles: nat64) => {
+                        return {
+                            call: () => {
+                                return (ic as any)[
+                                    `_azle_call_with_payment_${target.constructor.name}Old_${name}`
+                                ](this.canister_id, [...args, cycles]);
+                            },
+                            notify: () => {
+                                // There is no notify_with_payment, there is only a notify_with_payment128
+                                return (ic as any)[
+                                    `_azle_notify_with_payment128_${target.constructor.name}Old_${name}`
+                                ](this.canister_id, args, cycles);
+                            }
+                        };
+                    },
+                    cycles128: (cycles: nat) => {
+                        return {
+                            notify: () => {
+                                // There is no notify_with_payment, there is only a notify_with_payment128
+                                return (ic as any)[
+                                    `_azle_notify_with_payment128_${target.constructor.name}Old_${name}`
+                                ](this.canister_id, args, cycles);
+                            },
+                            call: () => {
+                                return (ic as any)[
+                                    `_azle_call_with_payment128_${target.constructor.name}Old_${name}`
+                                ](this.canister_id, [...args, cycles]);
+                            }
+                        };
                     }
                 };
             };
@@ -318,9 +348,9 @@ export function method(target: any, name: string) {
 }
 
 export class ExternalCanister {
-    principal: Principal;
+    canister_id: Principal;
 
     constructor(principal: Principal) {
-        this.principal = principal;
+        this.canister_id = principal;
     }
 }

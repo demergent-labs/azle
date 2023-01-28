@@ -1,11 +1,4 @@
-import {
-    Canister,
-    CanisterResult,
-    ExternalCanister,
-    method,
-    nat64,
-    Opt
-} from 'azle';
+import { Canister, CanisterResult, nat64, Opt } from 'azle';
 
 // TODO start using principals instead of strings for ids
 export type State = {
@@ -32,6 +25,10 @@ export type Canister2Old = Canister<{
     trap(): CanisterResult<string>;
     receive_notification(message: string): CanisterResult<void>;
 }>;
+
+// class API
+
+import { ExternalCanister, method } from 'azle';
 
 export class Canister2 extends ExternalCanister {
     @method
