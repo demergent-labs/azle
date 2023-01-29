@@ -1,4 +1,4 @@
-import { deploy, run_tests, Test } from 'azle/test';
+import { run_tests } from 'azle/test';
 import { createActor } from './dfx_generated/outgoing_http_requests';
 import { get_tests } from './tests';
 
@@ -11,9 +11,4 @@ const outgoing_http_requests_canister = createActor(
     }
 );
 
-const tests: Test[] = [
-    ...deploy('outgoing_http_requests'),
-    ...get_tests(outgoing_http_requests_canister)
-];
-
-run_tests(tests);
+run_tests(get_tests(outgoing_http_requests_canister));
