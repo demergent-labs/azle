@@ -10,6 +10,15 @@ export type NatQueryResult = Variant<{
     err: string;
 }>;
 
-export type Canister1 = Canister<{
+export type Canister1Old = Canister<{
     inc_counter(): CanisterResult<nat>;
 }>;
+
+// class API
+
+import { ExternalCanister, method } from 'azle';
+
+export class Canister1 extends ExternalCanister {
+    @method
+    inc_counter: () => CanisterResult<nat>;
+}
