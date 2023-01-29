@@ -8,7 +8,8 @@
             "candid": "canisters/rejections/rejections.did",
             "wasm": ".azle/rejections/rejections.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/rejections"
+                "output": "test/dfx_generated/rejections",
+                "node_compatibility": true
             }
         },
         "some_service": {
@@ -19,7 +20,8 @@
             "candid": "canisters/some_service/some_service.did",
             "wasm": ".azle/some_service/some_service.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/some_service"
+                "output": "test/dfx_generated/some_service",
+                "node_compatibility": true
             }
         }
     }
