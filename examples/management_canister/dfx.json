@@ -8,7 +8,8 @@
             "candid": "src/management_canister.did",
             "wasm": ".azle/management_canister/management_canister.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/management_canister"
+                "output": "test/dfx_generated/management_canister",
+                "node_compatibility": true
             }
         }
     }
