@@ -8,7 +8,8 @@
             "candid": "src/index.did",
             "wasm": ".azle/bitcoin/bitcoin.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/bitcoin"
+                "output": "test/dfx_generated/bitcoin",
+                "node_compatibility": true
             }
         }
     },

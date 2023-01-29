@@ -4,6 +4,7 @@
         "bitcoin-cli": "bitcoin-cli -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin -rpcport=18443",
         "deploy": "scripts/deploy.sh bitcoin",
         "start": "dfx start --enable-bitcoin --clean",
+        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
         "test": "ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
