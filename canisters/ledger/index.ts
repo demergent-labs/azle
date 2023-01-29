@@ -2,7 +2,9 @@ import {
     blob,
     Canister,
     CanisterResult,
+    ExternalCanister,
     Func,
+    method,
     nat32,
     nat64,
     Opt,
@@ -255,7 +257,7 @@ export type DecimalsResult = {
 
 export type Address = string;
 
-export type Ledger = Canister<{
+export type LedgerOld = Canister<{
     // Transfers tokens from a subaccount of the caller to the destination address.
     // The source address is computed from the principal of the caller and the specified subaccount.
     // When successful, returns the index of the block containing the transaction.
@@ -286,6 +288,48 @@ export type Ledger = Canister<{
     // Returns the existing archive canisters information.
     archives(): CanisterResult<Archives>;
 }>;
+
+export class Ledger extends ExternalCanister {
+    // Transfers tokens from a subaccount of the caller to the destination address.
+    // The source address is computed from the principal of the caller and the specified subaccount.
+    // When successful, returns the index of the block containing the transaction.
+    @method
+    transfer: (transfer_args: TransferArgs) => CanisterResult<TransferResult>;
+
+    // Returns the amount of Tokens on the specified account.
+    @method
+    account_balance: (
+        accountBalanceArgs: AccountBalanceArgs
+    ) => CanisterResult<Tokens>;
+
+    // Returns the current transfer_fee.
+    @method
+    transfer_fee: (
+        transfer_fee_arg: TransferFeeArg
+    ) => CanisterResult<TransferFee>;
+
+    // Queries blocks in the specified range.
+    @method
+    query_blocks: (
+        get_blocks_args: GetBlocksArgs
+    ) => CanisterResult<QueryBlocksResponse>;
+
+    // Returns token symbol.
+    @method
+    symbol: () => CanisterResult<SymbolResult>;
+
+    // Returns token name.
+    @method
+    name: () => CanisterResult<NameResult>;
+
+    // Returns token decimals.
+    @method
+    decimals: () => CanisterResult<DecimalsResult>;
+
+    // Returns the existing archive canisters information.
+    @method
+    archives: () => CanisterResult<Archives>;
+}
 
 export {
     binary_address_from_address,

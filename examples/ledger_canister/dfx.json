@@ -8,7 +8,8 @@
             "candid": "canisters/ledger_canister/ledger_canister.did",
             "wasm": ".azle/ledger_canister/ledger_canister.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/ledger_canister"
+                "output": "test/dfx_generated/ledger_canister",
+                "node_compatibility": true
             }
         },
         "icp_ledger": {
