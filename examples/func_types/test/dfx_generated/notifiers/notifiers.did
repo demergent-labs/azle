@@ -1,5 +1,0 @@
-type NotifierFunc = func (blob) -> () query;
-
-service: {
-    "get_notifier": () -> (NotifierFunc) query;
-}
