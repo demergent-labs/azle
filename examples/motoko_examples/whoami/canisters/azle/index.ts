@@ -51,7 +51,7 @@ export function init_(somebody: Principal): Init {
 }
 
 // Manually re-save these variables after new deploys.
-export function postUpgrade(somebody: Principal): PostUpgrade {
+export function post_upgrade_(somebody: Principal): PostUpgrade {
     install = ic.caller();
     someone = somebody;
 }
@@ -152,14 +152,14 @@ export default class {
 
     // Manually save the calling principal and argument for later access.
     @init
-    init(somebody: Principal): Init {
+    init_(somebody: Principal): Init {
         this.install = ic.caller();
         this.someone = somebody;
     }
 
     // Manually re-save these variables after new deploys.
     @post_upgrade
-    post_upgrade(somebody: Principal) {
+    post_upgrade_(somebody: Principal) {
         this.install = ic.caller();
         this.someone = somebody;
     }
