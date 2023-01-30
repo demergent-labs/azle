@@ -1,4 +1,4 @@
-import { deploy, run_tests, Test } from 'azle/test';
+import { run_tests } from 'azle/test';
 import { createActor } from '../dfx_generated/azle/';
 import { get_tests } from './tests';
 
@@ -12,6 +12,4 @@ const tecdsa_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
 // any tecdsa requests, so we are skipping these tests until we can think of
 // an elegant way to run these tests only after the replica is ready to process
 // them, when we are no longer skipping the tests we can remove the dummy test
-const tests: Test[] = [...deploy('azle'), ...get_tests(tecdsa_canister)];
-
-run_tests(tests);
+run_tests(get_tests(tecdsa_canister));
