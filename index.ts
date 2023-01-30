@@ -296,6 +296,18 @@ export function init(
     descriptor: PropertyDescriptor
 ) {}
 
+export function post_upgrade(
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+) {}
+
+export function pre_upgrade(
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+) {}
+
 export function query(
     target: any,
     propertyKey: string,
