@@ -99,7 +99,7 @@ export default class {
 
     @query
     get_todos(): ToDo[] {
-        return Array.from(todos.values());
+        return Array.from(this.todos.values());
     }
 
     // Returns the ID that was given to the ToDo item
@@ -125,7 +125,7 @@ export default class {
     complete_todo(id: nat): void {
         const perf_start = ic.performance_counter(0);
 
-        let todo = todos.get(id);
+        let todo = this.todos.get(id);
 
         if (todo !== undefined) {
             this.todos.set(id, {

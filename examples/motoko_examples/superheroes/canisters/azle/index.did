@@ -9,5 +9,5 @@ service : () -> {
   delete_hero : (nat32) -> (bool);
   get_perf_result : () -> (opt PerfResult) query;
   read : (nat32) -> (opt Superhero) query;
-  update : (nat32, Superhero) -> (bool);
+  update_ : (nat32, Superhero) -> (bool);
 }

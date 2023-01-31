@@ -79,7 +79,7 @@ export function get_tests(
                         ]
                     ]
                 };
-                const result = await superheroes_canister.update(0, spiderman);
+                const result = await superheroes_canister.update_(0, spiderman);
 
                 return {
                     ok: result === true
@@ -93,7 +93,7 @@ export function get_tests(
                     name: 'Superman',
                     superpowers: []
                 };
-                const result = await superheroes_canister.update(1, superman);
+                const result = await superheroes_canister.update_(1, superman);
 
                 return {
                     ok: result === true
