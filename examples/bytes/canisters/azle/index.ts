@@ -22,3 +22,29 @@ export function get_bytes(bytes: blob): Update<blob> {
 
     return bytes;
 }
+
+// class API
+
+import { query, update } from 'azle';
+
+export default class {
+    perf_result: Opt<PerfResult> = null;
+
+    @query
+    get_perf_result(): Opt<PerfResult> {
+        return this.perf_result;
+    }
+
+    @update
+    get_bytes(bytes: blob): blob {
+        const perf_start = ic.performance_counter(0);
+        const perf_end = ic.performance_counter(0);
+
+        this.perf_result = {
+            wasm_body_only: perf_end - perf_start,
+            wasm_including_prelude: ic.performance_counter(0)
+        };
+
+        return bytes;
+    }
+}
