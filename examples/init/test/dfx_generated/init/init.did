@@ -1,7 +1,0 @@
-type Reaction = variant { Fire; Wave };
-type User = record { id : text };
-service : (User, Reaction, principal) -> {
-  get_owner : () -> (opt principal) query;
-  get_reaction : () -> (opt Reaction) query;
-  get_user : () -> (opt User) query;
-}
