@@ -1,78 +1,84 @@
-type AzleInline10480804940496767436 = record { prop1 : text; prop2 : text };
-type AzleInline11637258539398837877 = variant {
+type AzleInline13816623851176430973 = variant {
   v1;
   v2;
-  v3 : AzleInline9725125949122144507;
+  v3 : AzleInline572753878365893609;
 };
-type AzleInline1163890980639743417 = variant { var1; var2 : TestVariant };
-type AzleInline12207366142299072665 = variant { prop1 : UserVariant };
-type AzleInline13285137820947418013 = variant { v1; v2 };
-type AzleInline15398758148575751061 = record {
-  "opt" : opt AzleInline4643161801499757865;
-  "vec" : vec AzleInline4643161801499757865;
-  primitive : text;
-  "func" : func () -> (
-      record { prop1 : text; "variant" : AzleInline6138758509990916037 },
-    ) query;
-  "variant" : AzleInline6458473132858393052;
-  "record" : AzleInline6412155450030009946;
+type AzleInline14278949523830781263 = record {
+  "variant" : AzleInline6816196663154001218;
 };
+type AzleInline14966556152636491851 = variant { var1; var2; var3 };
+type AzleInline15340837539329043558 = variant { prop1 : Test };
+type AzleInline15527213364506807559 = variant { var1; var2 : TestVariant };
 type AzleInline16000916309646445968 = record { id : text; title : text };
-type AzleInline17126293883041814751 = variant {
-  v1;
-  v2 : AzleInline9725125949122144507;
-};
-type AzleInline18232191765166877985 = variant { var1; var2 : TestVariant };
-type AzleInline1939430463694549617 = record { prop1 : nat };
-type AzleInline2238400681068319580 = record {
-  "variant" : AzleInline1163890980639743417;
-};
-type AzleInline2991347220123679547 = variant { var1; var2; var3 };
-type AzleInline3095728308414029725 = variant { var1; var2 };
-type AzleInline4325608397924534544 = record { test : Test };
-type AzleInline4424995232504043183 = record {
+type AzleInline16183997797319575340 = record {
   prop1 : opt text;
-  prop2 : AzleInline1163890980639743417;
-  prop3 : opt AzleInline1939430463694549617;
+  prop2 : AzleInline6816196663154001218;
+  prop3 : opt AzleInline6445785063551525205;
 };
-type AzleInline456963289358357423 = record { prop1 : text };
-type AzleInline4640727576914707496 = record { prop1 : text; prop2 : Thing };
-type AzleInline4643161801499757865 = record {
+type AzleInline17567703860528056356 = record { prop1 : text; prop2 : text };
+type AzleInline17907358301909446383 = record {
   "opt" : opt text;
   "vec" : vec text;
   primitive : nat;
   "func" : func () -> (text);
-  "variant" : AzleInline8514246228651996091;
-  "record" : AzleInline456963289358357423;
+  "variant" : AzleInline9241933921164265557;
+  "record" : AzleInline572753878365893609;
 };
-type AzleInline6138758509990916037 = variant {
-  v1;
-  v2 : AzleInline456963289358357423;
-};
-type AzleInline6412155450030009946 = record {
-  optional : opt nat64;
-  prop1 : text;
-  "variant" : AzleInline8514246228651996091;
-};
-type AzleInline6458473132858393052 = variant {
-  v1;
-  v2;
-  v3 : AzleInline456963289358357423;
-};
-type AzleInline8263140294912128486 = variant { prop1 : Test };
-type AzleInline8514246228651996091 = variant { v1; v2 };
-type AzleInline9021281505452364202 = record { testVariant : TestVariant };
-type AzleInline9586185627735400883 = variant {
-  ok : opt AzleInline2238400681068319580;
+type AzleInline2410635511336064075 = variant {
+  ok : opt AzleInline3584559204500599042;
   err : InsertError;
 };
-type AzleInline9725125949122144507 = record { prop1 : text };
+type AzleInline331011266626255843 = record {
+  "opt" : opt AzleInline3438017788659025238;
+  "vec" : vec AzleInline3438017788659025238;
+  primitive : text;
+  "func" : func () -> (
+      record { prop1 : text; "variant" : AzleInline8104859290855916193 },
+    ) query;
+  "variant" : AzleInline3855657635693226142;
+  "record" : AzleInline9515936859421571254;
+};
+type AzleInline3438017788659025238 = record {
+  "opt" : opt text;
+  "vec" : vec text;
+  primitive : nat;
+  "func" : func () -> (text);
+  "variant" : AzleInline9241933921164265557;
+  "record" : AzleInline572753878365893609;
+};
+type AzleInline3570239491935533154 = record { testVariant : TestVariant };
+type AzleInline3584559204500599042 = record {
+  "variant" : AzleInline733321614567558724;
+};
+type AzleInline3602308432785958051 = record { prop1 : text; prop2 : Thing };
+type AzleInline3855657635693226142 = variant {
+  v1;
+  v2;
+  v3 : AzleInline572753878365893609;
+};
+type AzleInline5052124789438212370 = variant { prop1 : UserVariant };
+type AzleInline5715647345171371725 = record { test : Test };
+type AzleInline572753878365893609 = record { prop1 : text };
+type AzleInline637595233572856709 = variant { var1; var2 };
+type AzleInline6445785063551525205 = record { prop1 : nat };
+type AzleInline6816196663154001218 = variant { var1; var2 : TestVariant };
+type AzleInline733321614567558724 = variant { var1; var2 : TestVariant };
+type AzleInline8104859290855916193 = variant {
+  v1;
+  v2 : AzleInline572753878365893609;
+};
+type AzleInline9241933921164265557 = variant { v1; v2 };
+type AzleInline9515936859421571254 = record {
+  optional : opt nat64;
+  prop1 : text;
+  "variant" : AzleInline9241933921164265557;
+};
 type InsertError = variant {
   ValueTooLarge : KeyTooLarge;
   KeyTooLarge : KeyTooLarge;
 };
 type KeyTooLarge = record { max : nat32; given : nat32 };
-type ManualReply = variant { ok : AzleInline10480804940496767436; err : text };
+type ManualReply = variant { ok : AzleInline17567703860528056356; err : text };
 type Reaction = variant { one; two; three : Test };
 type Test = record { id : text };
 type TestVariant = variant { prop1 : text; prop2 : Test };
@@ -80,68 +86,68 @@ type Thing = record { id : text };
 type User1 = record { id : text; job : AzleInline16000916309646445968 };
 type UserVariant = variant { prop1 };
 service : () -> {
-  complex : (AzleInline15398758148575751061) -> (
-      AzleInline15398758148575751061,
+  complex : (AzleInline331011266626255843) -> (
+      AzleInline331011266626255843,
     ) query;
   inline_func : (
       func (
           text,
-          opt AzleInline4643161801499757865,
-          vec AzleInline4643161801499757865,
-          AzleInline6412155450030009946,
-          AzleInline6458473132858393052,
+          opt AzleInline3438017788659025238,
+          vec AzleInline3438017788659025238,
+          AzleInline9515936859421571254,
+          AzleInline3855657635693226142,
           func () -> (
               record {
                 prop1 : text;
-                "variant" : AzleInline6138758509990916037;
+                "variant" : AzleInline8104859290855916193;
               },
             ) query,
         ) -> () query,
     ) -> (
       func (
           text,
-          opt AzleInline4643161801499757865,
-          vec AzleInline4643161801499757865,
-          AzleInline6412155450030009946,
-          AzleInline6458473132858393052,
+          opt AzleInline3438017788659025238,
+          vec AzleInline3438017788659025238,
+          AzleInline9515936859421571254,
+          AzleInline3855657635693226142,
           func () -> (
               record {
                 prop1 : text;
-                "variant" : AzleInline6138758509990916037;
+                "variant" : AzleInline8104859290855916193;
               },
             ) query,
         ) -> () query,
     ) query;
-  inline_record_param : (AzleInline456963289358357423) -> (text) query;
-  inline_record_return_type : () -> (AzleInline10480804940496767436) query;
+  inline_record_param : (AzleInline572753878365893609) -> (text) query;
+  inline_record_return_type : () -> (AzleInline17567703860528056356) query;
   inline_record_return_type_as_external_canister_call : () -> (ManualReply);
-  inline_variant_param : (AzleInline3095728308414029725) -> (
-      AzleInline3095728308414029725,
+  inline_variant_param : (AzleInline637595233572856709) -> (
+      AzleInline637595233572856709,
     ) query;
-  inline_variant_return_type : () -> (AzleInline2991347220123679547) query;
+  inline_variant_return_type : () -> (AzleInline14966556152636491851) query;
   record_referencing_other_types_from_return_type : () -> (
-      AzleInline4640727576914707496,
+      AzleInline3602308432785958051,
     ) query;
-  record_referencing_record_from_param : (AzleInline4325608397924534544) -> (
+  record_referencing_record_from_param : (AzleInline5715647345171371725) -> (
       text,
     ) query;
-  record_referencing_variant_from_param : (AzleInline9021281505452364202) -> (
+  record_referencing_variant_from_param : (AzleInline3570239491935533154) -> (
       opt text,
     ) query;
   record_with_inline_fields : () -> (User1) query;
-  stable_map_get : (AzleInline4424995232504043183) -> (
-      opt AzleInline2238400681068319580,
+  stable_map_get : (AzleInline16183997797319575340) -> (
+      opt AzleInline14278949523830781263,
     ) query;
   stable_map_insert : (
-      AzleInline4424995232504043183,
-      AzleInline2238400681068319580,
-    ) -> (AzleInline9586185627735400883);
+      AzleInline16183997797319575340,
+      AzleInline14278949523830781263,
+    ) -> (AzleInline2410635511336064075);
   variant_referencing_other_types_from_return_type : () -> (TestVariant) query;
   variant_referencing_record_from_param : (
-      AzleInline8263140294912128486,
+      AzleInline15340837539329043558,
     ) -> () query;
   variant_referencing_variant_from_param : (
-      AzleInline12207366142299072665,
+      AzleInline5052124789438212370,
     ) -> () query;
   variant_with_inline_fields : () -> (Reaction) query;
 }

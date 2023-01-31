@@ -13,6 +13,7 @@ import {
     Bling,
     Reaction,
     self,
+    self_old,
     Test,
     TestVariant,
     Thing,
@@ -182,7 +183,7 @@ export async function inline_record_return_type_as_external_canister_call(): Pro
         }>
     >
 > {
-    return await self.inline_record_return_type().call();
+    return await self_old.inline_record_return_type().call();
 }
 
 export function inline_func(
@@ -319,4 +320,302 @@ export function complex(record: {
     >;
 }> {
     return record;
+}
+
+// class API
+
+import { query, update } from 'azle';
+
+export default class {
+    @query
+    inline_record_return_type(): {
+        prop1: string;
+        prop2: string;
+    } {
+        return {
+            prop1: 'prop1',
+            prop2: 'prop2'
+        };
+    }
+
+    @query
+    inline_record_param(param: { prop1: string }): string {
+        return param.prop1;
+    }
+
+    @query
+    inline_variant_return_type(): Variant<{
+        var1: null;
+        var2: null;
+        var3: null;
+    }> {
+        return {
+            var1: null
+        };
+    }
+
+    @query
+    inline_variant_param(
+        param: Variant<{ var1: null; var2: null }>
+    ): Variant<{ var1: null; var2: null }> {
+        if (param.var1 === null) {
+            return {
+                var1: null
+            };
+        } else {
+            return {
+                var2: null
+            };
+        }
+    }
+
+    @query
+    record_with_inline_fields(): User1 {
+        return {
+            id: '0',
+            job: {
+                id: '0',
+                title: 'Software Developer'
+            }
+        };
+    }
+
+    @query
+    variant_with_inline_fields(): Reaction {
+        return {
+            three: {
+                id: '0'
+            }
+        };
+    }
+
+    @query
+    record_referencing_other_types_from_return_type(): {
+        prop1: string;
+        prop2: Thing;
+    } {
+        return {
+            prop1: 'prop1',
+            prop2: {
+                id: '0'
+            }
+        };
+    }
+
+    @query
+    variant_referencing_other_types_from_return_type(): Variant<{
+        prop1: string;
+        prop2: Bling;
+    }> {
+        return {
+            prop2: {
+                id: '0'
+            }
+        };
+    }
+
+    @query
+    record_referencing_record_from_param(param1: { test: Test }): string {
+        return param1.test.id;
+    }
+
+    @query
+    record_referencing_variant_from_param(param1: {
+        testVariant: TestVariant;
+    }): Opt<string> {
+        if (param1.testVariant.prop1 !== undefined) {
+            return param1.testVariant.prop1;
+        }
+
+        return null;
+    }
+
+    @query
+    variant_referencing_record_from_param(
+        param1: Variant<{ prop1: User }>
+    ): void {}
+
+    @query
+    variant_referencing_variant_from_param(
+        param1: Variant<{ prop1: UserVariant }>
+    ): void {}
+
+    @update
+    stable_map_insert(
+        key: {
+            prop1: Opt<string>;
+            prop2: Variant<{ var1: null; var2: TestVariant }>;
+            prop3: Opt<{ prop1: nat }>;
+        },
+        value: {
+            variant: Variant<{ var1: null; var2: TestVariant }>;
+        }
+    ): Variant<{
+        ok: Opt<{
+            variant: Variant<{ var1: null; var2: TestVariant }>;
+        }>;
+        err: InsertError;
+    }> {
+        return stable_map.insert(key, value);
+    }
+
+    @query
+    stable_map_get(key: {
+        prop1: Opt<string>;
+        prop2: Variant<{ var1: null; var2: TestVariant }>;
+        prop3: Opt<{ prop1: nat }>;
+    }): Opt<{
+        variant: Variant<{ var1: null; var2: TestVariant }>;
+    }> {
+        return stable_map.get(key);
+    }
+
+    @update
+    async inline_record_return_type_as_external_canister_call(): Promise<
+        Variant<{
+            ok: {
+                prop1: string;
+                prop2: string;
+            };
+            err: string;
+        }>
+    > {
+        return await self.inline_record_return_type().call();
+    }
+
+    @query
+    inline_func(
+        callback: Func<
+            (
+                primitive: string,
+                opt: Opt<{
+                    primitive: nat;
+                    opt: Opt<string>;
+                    vec: string[];
+                    record: { prop1: string };
+                    variant: Variant<{ v1: null; v2: null }>;
+                    func: Func<() => Update<string>>;
+                }>,
+                vec: {
+                    primitive: nat;
+                    opt: Opt<string>;
+                    vec: string[];
+                    record: { prop1: string };
+                    variant: Variant<{ v1: null; v2: null }>;
+                    func: Func<() => Update<string>>;
+                }[],
+                record: {
+                    prop1: string;
+                    optional: Opt<nat64>;
+                    variant: Variant<{ v1: null; v2: null }>;
+                },
+                variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
+                func: Func<
+                    () => Query<{
+                        prop1: string;
+                        variant: Variant<{ v1: null; v2: { prop1: string } }>;
+                    }>
+                >
+            ) => Query<void>
+        >
+    ): Func<
+        (
+            primitive: string,
+            opt: Opt<{
+                primitive: nat;
+                opt: Opt<string>;
+                vec: string[];
+                record: { prop1: string };
+                variant: Variant<{ v1: null; v2: null }>;
+                func: Func<() => Update<string>>;
+            }>,
+            vec: {
+                primitive: nat;
+                opt: Opt<string>;
+                vec: string[];
+                record: { prop1: string };
+                variant: Variant<{ v1: null; v2: null }>;
+                func: Func<() => Update<string>>;
+            }[],
+            record: {
+                prop1: string;
+                optional: Opt<nat64>;
+                variant: Variant<{ v1: null; v2: null }>;
+            },
+            variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
+            func: Func<
+                () => Query<{
+                    prop1: string;
+                    variant: Variant<{ v1: null; v2: { prop1: string } }>;
+                }>
+            >
+        ) => Query<void>
+    > {
+        return callback;
+    }
+
+    @query
+    complex(record: {
+        primitive: string;
+        opt: Opt<{
+            primitive: nat;
+            opt: Opt<string>;
+            vec: string[];
+            record: { prop1: string };
+            variant: Variant<{ v1: null; v2: null }>;
+            func: Func<() => Update<string>>;
+        }>;
+        vec: {
+            primitive: nat;
+            opt: Opt<string>;
+            vec: string[];
+            record: { prop1: string };
+            variant: Variant<{ v1: null; v2: null }>;
+            func: Func<() => Update<string>>;
+        }[];
+        record: {
+            prop1: string;
+            optional: Opt<nat64>;
+            variant: Variant<{ v1: null; v2: null }>;
+        };
+        variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>;
+        func: Func<
+            () => Query<{
+                prop1: string;
+                variant: Variant<{ v1: null; v2: { prop1: string } }>;
+            }>
+        >;
+    }): {
+        primitive: string;
+        opt: Opt<{
+            primitive: nat;
+            opt: Opt<string>;
+            vec: string[];
+            record: { prop1: string };
+            variant: Variant<{ v1: null; v2: null }>;
+            func: Func<() => Update<string>>;
+        }>;
+        vec: {
+            primitive: nat;
+            opt: Opt<string>;
+            vec: string[];
+            record: { prop1: string };
+            variant: Variant<{ v1: null; v2: null }>;
+            func: Func<() => Update<string>>;
+        }[];
+        record: {
+            prop1: string;
+            optional: Opt<nat64>;
+            variant: Variant<{ v1: null; v2: null }>;
+        };
+        variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>;
+        func: Func<
+            () => Query<{
+                prop1: string;
+                variant: Variant<{ v1: null; v2: { prop1: string } }>;
+            }>
+        >;
+    } {
+        return record;
+    }
 }
