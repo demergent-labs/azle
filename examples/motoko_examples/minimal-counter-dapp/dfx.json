@@ -8,7 +8,8 @@
             "candid": "canisters/azle/index.did",
             "wasm": ".azle/azle/azle.wasm.gz",
             "declarations": {
-                "output": "dfx_generated/azle"
+                "output": "dfx_generated/azle",
+                "node_compatibility": true
             }
         },
         "minimal_dapp_assets": {
@@ -25,7 +26,8 @@
             "main": "canisters/motoko/Main.mo",
             "type": "motoko",
             "declarations": {
-                "output": "dfx_generated/motoko"
+                "output": "dfx_generated/motoko",
+                "node_compatibility": true
             }
         },
         "rust": {
@@ -33,7 +35,8 @@
             "package": "rust",
             "type": "rust",
             "declarations": {
-                "output": "dfx_generated/rust"
+                "output": "dfx_generated/rust",
+                "node_compatibility": true
             }
         }
     }

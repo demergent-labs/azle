@@ -47,3 +47,40 @@ export function reset(): Update<nat> {
 
     return counter;
 }
+
+// class API
+
+import { query, update } from 'azle';
+
+export default class {
+    counter: nat = 0n;
+
+    @update
+    count(): nat {
+        const perf_start = ic.performance_counter(0);
+
+        this.counter += 1n;
+
+        const perf_end = ic.performance_counter(0);
+        record_performance(perf_start, perf_end);
+
+        return this.counter;
+    }
+
+    @query
+    get_count(): nat {
+        return this.counter;
+    }
+
+    @update
+    reset(): nat {
+        const perf_start = ic.performance_counter(0);
+
+        this.counter = 0n;
+
+        const perf_end = ic.performance_counter(0);
+        record_performance(perf_start, perf_end);
+
+        return this.counter;
+    }
+}

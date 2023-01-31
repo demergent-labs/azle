@@ -31,3 +31,20 @@ export function sort(xs: int[]): Update<int[]> {
     record_performance(perf_start, perf_end);
     return sortedArray;
 }
+
+// class API
+
+import { update } from 'azle';
+
+export default class {
+    @update
+    sort(xs: int[]): int[] {
+        const perf_start = ic.performance_counter(0);
+
+        const sortedArray = Quicksort.sortBy(xs, Int.compare);
+
+        const perf_end = ic.performance_counter(0);
+        record_performance(perf_start, perf_end);
+        return sortedArray;
+    }
+}

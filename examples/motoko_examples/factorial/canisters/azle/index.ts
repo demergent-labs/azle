@@ -40,3 +40,22 @@ function go(m: nat): nat {
         return m * go(m - 1n);
     }
 }
+
+// class API
+
+import { update } from 'azle';
+
+export default class {
+    // Calculate the product of all positive integers less than or equal to `n`.
+    @update
+    fac(n: nat): nat {
+        const perf_start = ic.performance_counter(0);
+
+        const factorial = go(n);
+
+        const perf_end = ic.performance_counter(0);
+        record_performance(perf_start, perf_end);
+
+        return factorial;
+    }
+}

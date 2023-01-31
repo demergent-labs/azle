@@ -22,7 +22,7 @@ function record_performance(start: nat64, end: nat64): void {
 
 let stable_storage = new StableBTreeMap<string, nat>(0, 25, 1_000);
 
-export function init(): Init {
+export function init_(): Init {
     stable_storage.insert('counter', 0n);
 }
 
@@ -57,4 +57,53 @@ export function reset(): Update<nat> {
     record_performance(perf_start, perf_end);
 
     return result;
+}
+
+// class API
+
+import { init, query, update } from 'azle';
+
+export default class {
+    stable_storage = new StableBTreeMap<string, nat>(0, 25, 1_000);
+
+    @init
+    init_() {
+        this.stable_storage.insert('counter', 0n);
+    }
+
+    @update
+    increment(): nat {
+        const perf_start = ic.performance_counter(0);
+
+        this.stable_storage.insert(
+            'counter',
+            (this.stable_storage.get('counter') ?? 0n) + 1n
+        );
+        const result = this.stable_storage.get('counter') ?? 0n;
+
+        const perf_end = ic.performance_counter(0);
+
+        record_performance(perf_start, perf_end);
+
+        return result;
+    }
+
+    @query
+    get(): nat {
+        return this.stable_storage.get('counter') ?? 0n;
+    }
+
+    @update
+    reset(): nat {
+        const perf_start = ic.performance_counter(0);
+
+        this.stable_storage.insert('counter', 0n);
+        const result = this.stable_storage.get('counter') ?? 0n;
+
+        const perf_end = ic.performance_counter(0);
+
+        record_performance(perf_start, perf_end);
+
+        return result;
+    }
 }

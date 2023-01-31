@@ -40,3 +40,27 @@ export function insert(name: string, entry: Entry): Update<void> {
 export function lookup(name: string): Query<Opt<Entry>> {
     return phone_book.get(name) ?? null;
 }
+
+// class API
+
+import { query, update } from 'azle';
+
+export default class {
+    phone_book = new Map<string, Entry>();
+
+    @update
+    insert(name: string, entry: Entry): void {
+        const perf_start = ic.performance_counter(0);
+
+        this.phone_book.set(name, entry);
+
+        const perf_end = ic.performance_counter(0);
+
+        record_performance(perf_start, perf_end);
+    }
+
+    @query
+    lookup(name: string): Opt<Entry> {
+        return this.phone_book.get(name) ?? null;
+    }
+}
