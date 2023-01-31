@@ -7,9 +7,12 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy init`, {
-        stdio: 'inherit'
-    });
+    execSync(
+        `dfx deploy init --argument '(record { id = "0" }, variant { Fire }, principal "rrkah-fqaaa-aaaaa-aaaaq-cai")'`,
+        {
+            stdio: 'inherit'
+        }
+    );
 
     execSync(`dfx generate init`, {
         stdio: 'inherit'

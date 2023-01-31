@@ -45,11 +45,7 @@ export default class {
     owner: Opt<Principal> = null;
 
     @init
-    init_(
-        init_user: User,
-        init_reaction: Reaction,
-        init_owner: Principal
-    ): Init {
+    init_(init_user: User, init_reaction: Reaction, init_owner: Principal) {
         this.user = init_user;
         this.reaction = init_reaction;
         this.owner = init_owner;
