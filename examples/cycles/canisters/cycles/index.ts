@@ -1,23 +1,22 @@
-import { Canister, CanisterResult, ic, nat, nat64, Principal } from 'azle';
+import {
+    CanisterResult,
+    ExternalCanister,
+    nat,
+    nat64,
+    Principal,
+    update
+} from 'azle';
 
 export type CyclesOld = Canister<{
     receive_cycles(): CanisterResult<nat64>;
     receive_cycles128(): CanisterResult<nat>;
 }>;
 
-export const cycles_old_canister: CyclesOld = ic.canisters.CyclesOld(
-    Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
-);
-
-// class API
-
-import { ExternalCanister, method } from 'azle';
-
 export class Cycles extends ExternalCanister {
-    @method
+    @update
     receive_cycles: () => CanisterResult<nat64>;
 
-    @method
+    @update
     receive_cycles128: () => CanisterResult<nat>;
 }
 

@@ -192,13 +192,13 @@ export function attempt<T, E>(
     }
 }
 
-// TODO work on Func
-type Query<T extends (...args: any[]) => any> = (...args: any[]) => any;
-type Update<T> = (...args: any[]) => any;
-type Oneway = (...args: any) => void;
+// TODO rename these to Query, Update, and Oneway after the custom decorators refactor
+export type FuncQuery<T> = T;
+export type FuncUpdate<T> = T;
+export type FuncOneway<T> = T;
 
 // TODO type this more strictly
-export type Func<T extends Query<T> | Update<T> | Oneway> = [Principal, string];
+export type Func<T extends (...args: any[]) => any> = [Principal, string];
 
 export { Principal } from '@dfinity/principal';
 

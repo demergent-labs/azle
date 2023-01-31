@@ -1,16 +1,17 @@
 import {
     Func,
-    ic,
-    Init,
+    FuncQuery,
+    FuncUpdate,
+    $init,
     nat64,
     ok,
     Principal,
-    Query,
+    $query,
     StableBTreeMap,
-    Update,
+    $update,
     Variant
 } from 'azle';
-import { Notifier, NotifierOld, NotifierFunc } from '../notifiers/types';
+import { Notifier, NotifierFunc } from '../notifiers/types';
 
 let stable_storage = new StableBTreeMap<string, StableFunc>(0, 25, 1_000);
 
@@ -27,18 +28,20 @@ type Reaction = Variant<{
     ComplexFunc: ComplexFunc;
 }>;
 
-type BasicFunc = Func<(param1: string) => Query<string>>;
-type ComplexFunc = Func<(user: User, reaction: Reaction) => Update<nat64>>;
-type StableFunc = Func<(param1: nat64, param2: string) => Query<void>>;
+type BasicFunc = Func<FuncQuery<(param1: string) => string>>;
+type ComplexFunc = Func<FuncUpdate<(user: User, reaction: Reaction) => nat64>>;
+type StableFunc = Func<FuncQuery<(param1: nat64, param2: string) => void>>;
 
-export function init_(): Init {
+$init;
+export function init_() {
     stable_storage.insert('stable_func', [
         Principal.from('aaaaa-aa'),
         'start_canister'
     ]);
 }
 
-export function get_stable_func(): Query<StableFunc> {
+$query;
+export function get_stable_func(): StableFunc {
     return (
         stable_storage.get('stable_func') ?? [
             Principal.from('aaaaa-aa'),
@@ -47,21 +50,23 @@ export function get_stable_func(): Query<StableFunc> {
     );
 }
 
-export function basic_func_param(basic_func: BasicFunc): Query<BasicFunc> {
+$query;
+export function basic_func_param(basic_func: BasicFunc): BasicFunc {
     return basic_func;
 }
 
-export function basic_func_param_array(
-    basic_func: BasicFunc[]
-): Query<BasicFunc[]> {
+$query;
+export function basic_func_param_array(basic_func: BasicFunc[]): BasicFunc[] {
     return basic_func;
 }
 
-export function basic_func_return_type(): Query<BasicFunc> {
+$query;
+export function basic_func_return_type(): BasicFunc {
     return [Principal.fromText('aaaaa-aa'), 'create_canister'];
 }
 
-export function basic_func_return_type_array(): Query<BasicFunc[]> {
+$query;
+export function basic_func_return_type_array(): BasicFunc[] {
     return [
         [Principal.fromText('aaaaa-aa'), 'create_canister'],
         [Principal.fromText('aaaaa-aa'), 'update_settings'],
@@ -69,13 +74,13 @@ export function basic_func_return_type_array(): Query<BasicFunc[]> {
     ];
 }
 
-export function complex_func_param(
-    complex_func: ComplexFunc
-): Query<ComplexFunc> {
+$query;
+export function complex_func_param(complex_func: ComplexFunc): ComplexFunc {
     return complex_func;
 }
 
-export function complex_func_return_type(): Query<ComplexFunc> {
+$query;
+export function complex_func_return_type(): ComplexFunc {
     return [Principal.fromText('aaaaa-aa'), 'stop_canister'];
 }
 
@@ -84,10 +89,9 @@ type GetNotifierFromNotifiersCanisterResult = Variant<{
     err: string;
 }>;
 
-export async function get_notifier_from_notifiers_canister(): Promise<
-    Update<GetNotifierFromNotifiersCanisterResult>
-> {
-    const notifiers_canister: NotifierOld = ic.canisters.NotifierOld(
+$update;
+export async function get_notifier_from_notifiers_canister(): Promise<GetNotifierFromNotifiersCanisterResult> {
+    const notifiers_canister: Notifier = new Notifier(
         Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
     );
 
@@ -102,81 +106,4 @@ export async function get_notifier_from_notifiers_canister(): Promise<
     return {
         ok: result.ok
     };
-}
-
-// class API
-
-import { init, query, update } from 'azle';
-
-export default class {
-    @init
-    init_() {
-        stable_storage.insert('stable_func', [
-            Principal.from('aaaaa-aa'),
-            'start_canister'
-        ]);
-    }
-
-    @query
-    get_stable_func(): StableFunc {
-        return (
-            stable_storage.get('stable_func') ?? [
-                Principal.from('aaaaa-aa'),
-                'raw_rand'
-            ]
-        );
-    }
-
-    @update
-    basic_func_param(basic_func: BasicFunc): BasicFunc {
-        return basic_func;
-    }
-
-    @query
-    basic_func_param_array(basic_func: BasicFunc[]): BasicFunc[] {
-        return basic_func;
-    }
-
-    @query
-    basic_func_return_type(): BasicFunc {
-        return [Principal.fromText('aaaaa-aa'), 'create_canister'];
-    }
-
-    @query
-    basic_func_return_type_array(): BasicFunc[] {
-        return [
-            [Principal.fromText('aaaaa-aa'), 'create_canister'],
-            [Principal.fromText('aaaaa-aa'), 'update_settings'],
-            [Principal.fromText('aaaaa-aa'), 'install_code']
-        ];
-    }
-
-    @query
-    complex_func_param(complex_func: ComplexFunc): ComplexFunc {
-        return complex_func;
-    }
-
-    @query
-    complex_func_return_type(): ComplexFunc {
-        return [Principal.fromText('aaaaa-aa'), 'stop_canister'];
-    }
-
-    @update
-    async get_notifier_from_notifiers_canister(): Promise<GetNotifierFromNotifiersCanisterResult> {
-        const notifiers_canister = new Notifier(
-            Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
-        );
-
-        const result = await notifiers_canister.get_notifier().call();
-
-        if (!ok(result)) {
-            return {
-                err: result.err
-            };
-        }
-
-        return {
-            ok: result.ok
-        };
-    }
 }
