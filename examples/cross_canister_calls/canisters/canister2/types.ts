@@ -28,28 +28,28 @@ export type Canister2Old = Canister<{
 
 // class API
 
-import { ExternalCanister, method } from 'azle';
+import { ExternalCanister, query, update } from 'azle';
 
 export class Canister2 extends ExternalCanister {
-    @method
+    @update
     transfer: (
         from: string,
         to: string,
         amount: nat64
     ) => CanisterResult<nat64>;
 
-    @method
+    @query
     balance: (id: string) => CanisterResult<nat64>;
 
-    @method
+    @query
     account: (accountArgs: AccountArgs) => CanisterResult<Opt<Account>>;
 
-    @method
+    @query
     accounts: () => CanisterResult<Account[]>;
 
-    @method
+    @query
     trap: () => CanisterResult<string>;
 
-    @method
+    @update
     receive_notification: (message: string) => CanisterResult<void>;
 }

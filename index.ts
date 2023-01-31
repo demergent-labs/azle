@@ -384,3 +384,6 @@ export class ExternalCanister {
         this.canister_id = canister_id;
     }
 }
+
+export const $query = (options: { guard: string }) => 'Canister query method';
+export const $update = (options: { guard: string }) => 'Canister update method';

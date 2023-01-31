@@ -28,15 +28,15 @@ pub fn generate_call_to_js_function(fn_decl: &AzleFnDecl) -> TokenStream {
         .collect();
 
     quote! {
-        let _azle_default_class_instance_js_value = _azle_handle_boa_result(_azle_boa_context.eval("_azle_default_class_instance"), &mut _azle_boa_context);
-        let _azle_default_class_instance_js_object = _azle_default_class_instance_js_value.as_object().unwrap();
+        let _azle_exports_js_value = _azle_handle_boa_result(_azle_boa_context.eval("exports"), &mut _azle_boa_context);
+        let _azle_exports_js_object = _azle_exports_js_value.as_object().unwrap();
 
-        let _azle_function_js_value = _azle_default_class_instance_js_object.get(#function_name, &mut _azle_boa_context).unwrap();
+        let _azle_function_js_value = _azle_exports_js_object.get(#function_name, &mut _azle_boa_context).unwrap();
         let _azle_function_js_object = _azle_function_js_value.as_object().unwrap();
 
         let _azle_boa_return_value = _azle_handle_boa_result(
             _azle_function_js_object.call(
-                &_azle_default_class_instance_js_value,
+                &boa_engine::JsValue::Null,
                 &[
                     #(#param_name_idents.try_into_vm_value(&mut _azle_boa_context).unwrap()),*
                 ],
