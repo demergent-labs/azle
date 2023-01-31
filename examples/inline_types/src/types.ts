@@ -1,16 +1,17 @@
 import {
-    Canister,
     CanisterResult,
-    ic,
+    ExternalCanister,
     InsertError,
-    Variant,
+    Func,
+    FuncQuery,
+    FuncUpdate,
     Opt,
     Principal,
-    Func,
     nat,
-    Query,
     nat64,
-    Update
+    query,
+    update,
+    Variant
 } from 'azle';
 
 export type User1 = {
@@ -265,25 +266,17 @@ export type InlineTypesOld = Canister<{
     }>;
 }>;
 
-export let self_old: InlineTypesOld = ic.canisters.InlineTypesOld(
-    Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
-);
-
-// class API
-
-import { ExternalCanister, method } from 'azle';
-
 export class InlineTypes extends ExternalCanister {
-    @method
+    @query
     inline_record_return_type: () => CanisterResult<{
         prop1: string;
         prop2: string;
     }>;
 
-    @method
+    @query
     inline_record_param: (param: { prop1: string }) => CanisterResult<string>;
 
-    @method
+    @query
     inline_variant_return_type: () => CanisterResult<
         Variant<{
             var1: null;
@@ -292,24 +285,24 @@ export class InlineTypes extends ExternalCanister {
         }>
     >;
 
-    @method
+    @query
     inline_variant_param: (
         param: Variant<{ var1: null; var2: null }>
     ) => CanisterResult<Variant<{ var1: null; var2: null }>>;
 
-    @method
+    @query
     record_with_inline_fields: () => CanisterResult<User1>;
 
-    @method
+    @query
     variant_with_inline_fields: () => CanisterResult<Reaction>;
 
-    @method
+    @query
     record_referencing_other_types_from_return_type: () => CanisterResult<{
         prop1: string;
         prop2: Thing;
     }>;
 
-    @method
+    @query
     variant_referencing_other_types_from_return_type: () => CanisterResult<
         Variant<{
             prop1: string;
@@ -317,27 +310,27 @@ export class InlineTypes extends ExternalCanister {
         }>
     >;
 
-    @method
+    @query
     record_referencing_record_from_param: (param1: {
         test: Test;
     }) => CanisterResult<string>;
 
-    @method
+    @query
     record_referencing_variant_from_param: (param1: {
         testVariant: TestVariant;
     }) => CanisterResult<Opt<string>>;
 
-    @method
+    @query
     variant_referencing_record_from_param: (
         param1: Variant<{ prop1: User }>
     ) => CanisterResult<void>;
 
-    @method
+    @query
     variant_referencing_variant_from_param: (
         param1: Variant<{ prop1: UserVariant }>
     ) => CanisterResult<void>;
 
-    @method
+    @update
     stable_map_insert: (
         key: {
             prop1: Opt<string>;
@@ -356,7 +349,7 @@ export class InlineTypes extends ExternalCanister {
         }>
     >;
 
-    @method
+    @query
     stable_map_get: (key: {
         prop1: Opt<string>;
         prop2: Variant<{ var1: null; var2: TestVariant }>;
@@ -367,78 +360,100 @@ export class InlineTypes extends ExternalCanister {
         }>
     >;
 
-    @method
+    @query
     inline_func: (
         callback: Func<
-            (
-                primitive: string,
-                opt: Opt<{
-                    primitive: nat;
-                    opt: Opt<string>;
-                    vec: string[];
-                    record: { prop1: string };
-                    variant: Variant<{ v1: null; v2: null }>;
-                    func: Func<() => Update<string>>;
-                }>,
-                vec: {
-                    primitive: nat;
-                    opt: Opt<string>;
-                    vec: string[];
-                    record: { prop1: string };
-                    variant: Variant<{ v1: null; v2: null }>;
-                    func: Func<() => Update<string>>;
-                }[],
-                record: {
-                    prop1: string;
-                    optional: Opt<nat64>;
-                    variant: Variant<{ v1: null; v2: null }>;
-                },
-                variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
-                func: Func<
-                    () => Query<{
+            FuncQuery<
+                (
+                    primitive: string,
+                    opt: Opt<{
+                        primitive: nat;
+                        opt: Opt<string>;
+                        vec: string[];
+                        record: { prop1: string };
+                        variant: Variant<{ v1: null; v2: null }>;
+                        func: Func<FuncUpdate<() => string>>;
+                    }>,
+                    vec: {
+                        primitive: nat;
+                        opt: Opt<string>;
+                        vec: string[];
+                        record: { prop1: string };
+                        variant: Variant<{ v1: null; v2: null }>;
+                        func: Func<FuncUpdate<() => string>>;
+                    }[],
+                    record: {
                         prop1: string;
-                        variant: Variant<{ v1: null; v2: { prop1: string } }>;
-                    }>
-                >
-            ) => Query<void>
+                        optional: Opt<nat64>;
+                        variant: Variant<{ v1: null; v2: null }>;
+                    },
+                    variant: Variant<{
+                        v1: null;
+                        v2: null;
+                        v3: { prop1: string };
+                    }>,
+                    func: Func<
+                        FuncQuery<
+                            () => {
+                                prop1: string;
+                                variant: Variant<{
+                                    v1: null;
+                                    v2: { prop1: string };
+                                }>;
+                            }
+                        >
+                    >
+                ) => void
+            >
         >
     ) => CanisterResult<
         Func<
-            (
-                primitive: string,
-                opt: Opt<{
-                    primitive: nat;
-                    opt: Opt<string>;
-                    vec: string[];
-                    record: { prop1: string };
-                    variant: Variant<{ v1: null; v2: null }>;
-                    func: Func<() => Update<string>>;
-                }>,
-                vec: {
-                    primitive: nat;
-                    opt: Opt<string>;
-                    vec: string[];
-                    record: { prop1: string };
-                    variant: Variant<{ v1: null; v2: null }>;
-                    func: Func<() => Update<string>>;
-                }[],
-                record: {
-                    prop1: string;
-                    optional: Opt<nat64>;
-                    variant: Variant<{ v1: null; v2: null }>;
-                },
-                variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
-                func: Func<
-                    () => Query<{
+            FuncQuery<
+                (
+                    primitive: string,
+                    opt: Opt<{
+                        primitive: nat;
+                        opt: Opt<string>;
+                        vec: string[];
+                        record: { prop1: string };
+                        variant: Variant<{ v1: null; v2: null }>;
+                        func: Func<FuncUpdate<() => string>>;
+                    }>,
+                    vec: {
+                        primitive: nat;
+                        opt: Opt<string>;
+                        vec: string[];
+                        record: { prop1: string };
+                        variant: Variant<{ v1: null; v2: null }>;
+                        func: Func<FuncUpdate<() => string>>;
+                    }[],
+                    record: {
                         prop1: string;
-                        variant: Variant<{ v1: null; v2: { prop1: string } }>;
-                    }>
-                >
-            ) => Query<void>
+                        optional: Opt<nat64>;
+                        variant: Variant<{ v1: null; v2: null }>;
+                    },
+                    variant: Variant<{
+                        v1: null;
+                        v2: null;
+                        v3: { prop1: string };
+                    }>,
+                    func: Func<
+                        FuncQuery<
+                            () => {
+                                prop1: string;
+                                variant: Variant<{
+                                    v1: null;
+                                    v2: { prop1: string };
+                                }>;
+                            }
+                        >
+                    >
+                ) => void
+            >
         >
     >;
 
-    @method
+    @update
     inline_record_return_type_as_external_canister_call: () => CanisterResult<
         Variant<{
             ok: {
@@ -449,7 +464,7 @@ export class InlineTypes extends ExternalCanister {
         }>
     >;
 
-    @method
+    @query
     complex: (record: {
         primitive: string;
         opt: Opt<{
@@ -458,7 +473,7 @@ export class InlineTypes extends ExternalCanister {
             vec: string[];
             record: { prop1: string };
             variant: Variant<{ v1: null; v2: null }>;
-            func: Func<() => Update<string>>;
+            func: Func<FuncUpdate<() => string>>;
         }>;
         vec: {
             primitive: nat;
@@ -466,7 +481,7 @@ export class InlineTypes extends ExternalCanister {
             vec: string[];
             record: { prop1: string };
             variant: Variant<{ v1: null; v2: null }>;
-            func: Func<() => Update<string>>;
+            func: Func<FuncUpdate<() => string>>;
         }[];
         record: {
             prop1: string;
@@ -475,10 +490,12 @@ export class InlineTypes extends ExternalCanister {
         };
         variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>;
         func: Func<
-            () => Query<{
-                prop1: string;
-                variant: Variant<{ v1: null; v2: { prop1: string } }>;
-            }>
+            FuncQuery<
+                () => {
+                    prop1: string;
+                    variant: Variant<{ v1: null; v2: { prop1: string } }>;
+                }
+            >
         >;
     }) => CanisterResult<{
         primitive: string;
@@ -488,7 +505,7 @@ export class InlineTypes extends ExternalCanister {
             vec: string[];
             record: { prop1: string };
             variant: Variant<{ v1: null; v2: null }>;
-            func: Func<() => Update<string>>;
+            func: Func<FuncUpdate<() => string>>;
         }>;
         vec: {
             primitive: nat;
@@ -496,7 +513,7 @@ export class InlineTypes extends ExternalCanister {
             vec: string[];
             record: { prop1: string };
             variant: Variant<{ v1: null; v2: null }>;
-            func: Func<() => Update<string>>;
+            func: Func<FuncUpdate<() => string>>;
         }[];
         record: {
             prop1: string;
@@ -505,10 +522,12 @@ export class InlineTypes extends ExternalCanister {
         };
         variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>;
         func: Func<
-            () => Query<{
-                prop1: string;
-                variant: Variant<{ v1: null; v2: { prop1: string } }>;
-            }>
+            FuncQuery<
+                () => {
+                    prop1: string;
+                    variant: Variant<{ v1: null; v2: { prop1: string } }>;
+                }
+            >
         >;
     }>;
 }

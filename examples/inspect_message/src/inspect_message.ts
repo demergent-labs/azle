@@ -1,6 +1,7 @@
-import { ic, InspectMessage, Update } from 'azle';
+import { ic, $inspect_message, $update } from 'azle';
 
-export function inspect_message_(): InspectMessage {
+$inspect_message;
+export function inspect_message() {
     console.log('inspect_message called');
 
     if (ic.method_name() === 'accessible') {
@@ -15,51 +16,17 @@ export function inspect_message_(): InspectMessage {
     throw `Method "${ic.method_name()}" not allowed`;
 }
 
-export function accessible(): Update<boolean> {
+$update;
+export function accessible(): boolean {
     return true;
 }
 
-export function inaccessible(): Update<boolean> {
+$update;
+export function inaccessible(): boolean {
     return false;
 }
 
-export function also_inaccessible(): Update<boolean> {
+$update;
+export function also_inaccessible(): boolean {
     return false;
-}
-
-// class API
-
-import { inspect_message, update } from 'azle';
-
-export default class {
-    @inspect_message
-    inspect_message_() {
-        console.log('inspect_message called');
-
-        if (ic.method_name() === 'accessible') {
-            ic.accept_message();
-            return;
-        }
-
-        if (ic.method_name() === 'inaccessible') {
-            return;
-        }
-
-        throw `Method "${ic.method_name()}" not allowed`;
-    }
-
-    @update
-    accessible(): boolean {
-        return true;
-    }
-
-    @update
-    inaccessible(): boolean {
-        return false;
-    }
-
-    @update
-    also_inaccessible(): boolean {
-        return false;
-    }
 }

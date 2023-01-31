@@ -7,9 +7,9 @@ import {
     Manual,
     nat,
     nat8,
-    Query,
+    $query,
     reserved,
-    Update,
+    $update,
     Variant
 } from 'azle';
 
@@ -56,7 +56,8 @@ type Gas = Variant<{
 
 // Updates
 
-export function manual_update(message: string): Update<Manual<string>> {
+$update;
+export function manual_update(message: string): Manual<string> {
     if (message === 'reject') {
         ic.reject(message);
         return;
@@ -65,33 +66,39 @@ export function manual_update(message: string): Update<Manual<string>> {
     ic.reply(message);
 }
 
-export function update_blob(): Update<Manual<blob>> {
+$update;
+export function update_blob(): Manual<blob> {
     ic.reply(new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]));
 }
 
-export function update_float32(): Update<Manual<float32>> {
+$update;
+export function update_float32(): Manual<float32> {
     ic.reply(1245.678);
 }
 
 // TODO: Inline Types not currently supported.
 // See https://github.com/demergent-labs/azle/issues/474
-// export function update_inline_type(): Update<Manual<{ prop: string }>> {
+// export function update_inline_type(): Manual<{ prop: string }> {
 //     ic.reply({ prop: 'prop' });
 // }
 
-export function update_int8(): Update<Manual<int8>> {
+$update;
+export function update_int8(): Manual<int8> {
     ic.reply(-100);
 }
 
-export function update_nat(): Update<Manual<nat>> {
+$update;
+export function update_nat(): Manual<nat> {
     ic.reply(184467440737095516150n);
 }
 
-export function update_null(): Update<Manual<null>> {
+$update;
+export function update_null(): Manual<null> {
     ic.reply(null);
 }
 
-export function update_record(): Update<Manual<Element>> {
+$update;
+export function update_record(): Manual<Element> {
     const element: Element = {
         id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
         orbitals: [
@@ -111,90 +118,24 @@ export function update_record(): Update<Manual<Element>> {
     ic.reply(element);
 }
 
-export function update_reserved(): Update<Manual<reserved>> {
+$update;
+export function update_reserved(): Manual<reserved> {
     ic.reply(undefined);
 }
 
-export function update_string(): Update<Manual<string>> {
+$update;
+export function update_string(): Manual<string> {
     ic.reply('hello');
 }
 
-export function update_variant(): Update<Manual<Gas>> {
+$update;
+export function update_variant(): Manual<Gas> {
     const gas = { Toxic: null };
     ic.reply(gas);
 }
 
-// Queries
-
-export function manual_query(message: string): Query<Manual<string>> {
-    if (message === 'reject') {
-        ic.reject(message);
-        return;
-    }
-
-    ic.reply(message);
-}
-
-export function query_blob(): Query<Manual<blob>> {
-    ic.reply(new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]));
-}
-
-export function query_float32(): Query<Manual<float32>> {
-    ic.reply(1245.678);
-}
-
-// TODO: Inline Types not currently supported.
-// See https://github.com/demergent-labs/azle/issues/474
-// export function query_inline_type(): Query<Manual<{> prop: string }> {
-//     ic.reply({ prop: 'prop' });
-// }
-
-export function query_int8(): Query<Manual<int8>> {
-    ic.reply(-100);
-}
-
-export function query_nat(): Query<Manual<nat>> {
-    ic.reply(184_467_440_737_095_516_150n);
-}
-
-export function query_null(): Query<Manual<null>> {
-    ic.reply(null);
-}
-
-export function query_record(): Query<Manual<Element>> {
-    const element: Element = {
-        id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
-        orbitals: [
-            {
-                electrons: 2,
-                layer: 1
-            },
-            {
-                electrons: 8,
-                layer: 2
-            }
-        ],
-        state: {
-            Gas: { Elemental: null }
-        }
-    };
-    ic.reply(element);
-}
-
-export function query_reserved(): Query<Manual<reserved>> {
-    ic.reply(undefined);
-}
-
-export function query_string(): Query<Manual<string>> {
-    ic.reply('hello');
-}
-
-export function query_variant(): Query<Manual<Gas>> {
-    const gas = { Toxic: null };
-    ic.reply(gas);
-}
-
-export function reply_raw(): Update<Manual<RawReply>> {
+$update;
+export function reply_raw(): Manual<RawReply> {
     ic.reply_raw(
         ic.candid_encode(
             '(record { "int" = 42; "text" = "text"; "bool" = true; "blob" = blob "Surprise!"; "variant" = variant { Medium } })'
@@ -202,177 +143,82 @@ export function reply_raw(): Update<Manual<RawReply>> {
     );
 }
 
-// class API
+// Queries
 
-import { query, update } from 'azle';
-
-export default class {
-    // Updates
-
-    @update
-    manual_update(message: string): Manual<string> {
-        if (message === 'reject') {
-            ic.reject(message);
-            return;
-        }
-
-        ic.reply(message);
+$query;
+export function manual_query(message: string): Manual<string> {
+    if (message === 'reject') {
+        ic.reject(message);
+        return;
     }
 
-    @update
-    update_blob(): Manual<blob> {
-        ic.reply(new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]));
-    }
+    ic.reply(message);
+}
 
-    @update
-    update_float32(): Manual<float32> {
-        ic.reply(1245.678);
-    }
+$query;
+export function query_blob(): Manual<blob> {
+    ic.reply(new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]));
+}
 
-    // TODO: Inline Types not currently supported.
-    // See https://github.com/demergent-labs/azle/issues/474
-    // update_inline_type(): Update<Manual<{ prop: string }>> {
-    //     ic.reply({ prop: 'prop' });
-    // }
+$query;
+export function query_float32(): Manual<float32> {
+    ic.reply(1245.678);
+}
 
-    @update
-    update_int8(): Manual<int8> {
-        ic.reply(-100);
-    }
+// TODO: Inline Types not currently supported.
+// See https://github.com/demergent-labs/azle/issues/474
+// export function query_inline_type(): Manual<{> prop: string } {
+//     ic.reply({ prop: 'prop' });
+// }
 
-    @update
-    update_nat(): Manual<nat> {
-        ic.reply(184467440737095516150n);
-    }
+$query;
+export function query_int8(): Manual<int8> {
+    ic.reply(-100);
+}
 
-    @update
-    update_null(): Manual<null> {
-        ic.reply(null);
-    }
+$query;
+export function query_nat(): Manual<nat> {
+    ic.reply(184_467_440_737_095_516_150n);
+}
 
-    @update
-    update_record(): Manual<Element> {
-        const element: Element = {
-            id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
-            orbitals: [
-                {
-                    electrons: 2,
-                    layer: 1
-                },
-                {
-                    electrons: 8,
-                    layer: 2
-                }
-            ],
-            state: {
-                Gas: { Elemental: null }
+$query;
+export function query_null(): Manual<null> {
+    ic.reply(null);
+}
+
+$query;
+export function query_record(): Manual<Element> {
+    const element: Element = {
+        id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
+        orbitals: [
+            {
+                electrons: 2,
+                layer: 1
+            },
+            {
+                electrons: 8,
+                layer: 2
             }
-        };
-        ic.reply(element);
-    }
-
-    @update
-    update_reserved(): Manual<reserved> {
-        ic.reply(undefined);
-    }
-
-    @update
-    update_string(): Manual<string> {
-        ic.reply('hello');
-    }
-
-    @update
-    update_variant(): Manual<Gas> {
-        const gas = { Toxic: null };
-        ic.reply(gas);
-    }
-
-    // Queries
-
-    @query
-    manual_query(message: string): Manual<string> {
-        if (message === 'reject') {
-            ic.reject(message);
-            return;
+        ],
+        state: {
+            Gas: { Elemental: null }
         }
+    };
+    ic.reply(element);
+}
 
-        ic.reply(message);
-    }
+$query;
+export function query_reserved(): Manual<reserved> {
+    ic.reply(undefined);
+}
 
-    @query
-    query_blob(): Manual<blob> {
-        ic.reply(new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]));
-    }
+$query;
+export function query_string(): Manual<string> {
+    ic.reply('hello');
+}
 
-    @query
-    query_float32(): Manual<float32> {
-        ic.reply(1245.678);
-    }
-
-    // TODO: Inline Types not currently supported.
-    // See https://github.com/demergent-labs/azle/issues/474
-    // query_inline_type(): Query<Manual<{> prop: string }> {
-    //     ic.reply({ prop: 'prop' });
-    // }
-
-    @query
-    query_int8(): Manual<int8> {
-        ic.reply(-100);
-    }
-
-    @query
-    query_nat(): Manual<nat> {
-        ic.reply(184_467_440_737_095_516_150n);
-    }
-
-    @query
-    query_null(): Manual<null> {
-        ic.reply(null);
-    }
-
-    @query
-    query_record(): Manual<Element> {
-        const element: Element = {
-            id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
-            orbitals: [
-                {
-                    electrons: 2,
-                    layer: 1
-                },
-                {
-                    electrons: 8,
-                    layer: 2
-                }
-            ],
-            state: {
-                Gas: { Elemental: null }
-            }
-        };
-        ic.reply(element);
-    }
-
-    @query
-    query_reserved(): Manual<reserved> {
-        ic.reply(undefined);
-    }
-
-    @query
-    query_string(): Manual<string> {
-        ic.reply('hello');
-    }
-
-    @query
-    query_variant(): Manual<Gas> {
-        const gas = { Toxic: null };
-        ic.reply(gas);
-    }
-
-    @update
-    reply_raw(): Update<Manual<RawReply>> {
-        ic.reply_raw(
-            ic.candid_encode(
-                '(record { "int" = 42; "text" = "text"; "bool" = true; "blob" = blob "Surprise!"; "variant" = variant { Medium } })'
-            )
-        );
-    }
+$query;
+export function query_variant(): Manual<Gas> {
+    const gas = { Toxic: null };
+    ic.reply(gas);
 }

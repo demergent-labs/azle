@@ -1,4 +1,4 @@
-import { ic, nat64, Opt, Query, Update } from 'azle';
+import { ic, nat64, Opt, $query, $update } from 'azle';
 
 //#region Performance
 type PerfResult = {
@@ -8,7 +8,8 @@ type PerfResult = {
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -20,15 +21,15 @@ function record_performance(start: nat64, end: nat64): void {
 }
 //#endregion
 
-type Store = Map<string, string>;
-
 let store: Map<string, string> = new Map();
 
-export function get(key: string): Query<Opt<string>> {
+$query;
+export function get(key: string): Opt<string> {
     return store.get(key) ?? null;
 }
 
-export function set(key: string, value: string): Update<void> {
+$update;
+export function set(key: string, value: string): void {
     const perf_start = ic.performance_counter(0);
 
     store.set(key, value);
@@ -36,28 +37,4 @@ export function set(key: string, value: string): Update<void> {
     const perf_end = ic.performance_counter(0);
 
     record_performance(perf_start, perf_end);
-}
-
-// class API
-
-import { query, update } from 'azle';
-
-export default class {
-    store: Map<string, string> = new Map();
-
-    @query
-    get(key: string): Opt<string> {
-        return this.store.get(key) ?? null;
-    }
-
-    @update
-    set(key: string, value: string): void {
-        const perf_start = ic.performance_counter(0);
-
-        this.store.set(key, value);
-
-        const perf_end = ic.performance_counter(0);
-
-        record_performance(perf_start, perf_end);
-    }
 }
