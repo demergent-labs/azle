@@ -1,6 +1,4 @@
-import { deploy, run_tests, Test } from 'azle/test';
+import { run_tests } from 'azle/test';
 import { get_tests } from './tests';
 
-const tests: Test[] = [...deploy('http_counter'), ...get_tests()];
-
-run_tests(tests);
+run_tests(get_tests());

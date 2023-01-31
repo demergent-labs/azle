@@ -85,3 +85,80 @@ export function clearall(): Update<void> {
 
     record_performance(perf_start, perf_end);
 }
+
+// class API
+
+import { update } from 'azle';
+
+export default class {
+    cell: int = 0n;
+
+    @update
+    add(n: int): int {
+        const perf_start = ic.performance_counter(0);
+
+        this.cell += n;
+
+        const perf_end = ic.performance_counter(0);
+
+        record_performance(perf_start, perf_end);
+
+        return this.cell;
+    }
+
+    @update
+    sub(n: int): int {
+        const perf_start = ic.performance_counter(0);
+
+        this.cell -= n;
+
+        const perf_end = ic.performance_counter(0);
+
+        record_performance(perf_start, perf_end);
+
+        return this.cell;
+    }
+
+    @update
+    mul(n: int): int {
+        const perf_start = ic.performance_counter(0);
+
+        this.cell *= n;
+
+        const perf_end = ic.performance_counter(0);
+
+        record_performance(perf_start, perf_end);
+
+        return this.cell;
+    }
+
+    @update
+    div(n: int): Opt<int> {
+        const perf_start = ic.performance_counter(0);
+
+        let result: Opt<int>;
+        if (n === 0n) {
+            result = null;
+        } else {
+            this.cell /= n;
+            result = this.cell;
+        }
+
+        const perf_end = ic.performance_counter(0);
+
+        record_performance(perf_start, perf_end);
+
+        return result;
+    }
+
+    @update
+    clearall(): void {
+        const perf_start = ic.performance_counter(0);
+
+        this.cell = 0n;
+
+        const perf_end = ic.performance_counter(0);
+
+        record_performance(perf_start, perf_end);
+    }
+}

@@ -43,3 +43,35 @@ export function inc(): Update<void> {
     const perf_end = ic.performance_counter(0);
     record_performance(perf_start, perf_end);
 }
+
+// class API
+
+import { query, update } from 'azle';
+
+export default class {
+    counter: nat = 0n;
+
+    get(): nat {
+        return this.counter;
+    }
+
+    @update
+    set(n: nat): void {
+        const perf_start = ic.performance_counter(0);
+
+        this.counter = n;
+
+        const perf_end = ic.performance_counter(0);
+        record_performance(perf_start, perf_end);
+    }
+
+    @update
+    inc(): void {
+        const perf_start = ic.performance_counter(0);
+
+        this.counter += 1n;
+
+        const perf_end = ic.performance_counter(0);
+        record_performance(perf_start, perf_end);
+    }
+}
