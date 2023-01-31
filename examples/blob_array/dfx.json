@@ -8,7 +8,8 @@
             "candid": "canisters/azle/index.did",
             "wasm": ".azle/azle/azle.wasm.gz",
             "declarations": {
-                "output": "dfx_generated/azle"
+                "output": "dfx_generated/azle",
+                "node_compatibility": true
             }
         }
     }
