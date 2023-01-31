@@ -296,6 +296,12 @@ export function init(
     // descriptor: PropertyDescriptor
 ) {}
 
+export function inspect_message(
+    target: any,
+    name: string
+    // descriptor: PropertyDescriptor
+) {}
+
 export function post_upgrade(
     target: any,
     name: string

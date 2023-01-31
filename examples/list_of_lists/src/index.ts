@@ -179,3 +179,177 @@ export function list_of_blob(param: blob[]): Query<blob[]> {
 export function list_of_list_of_blob(param: blob[][]): Query<blob[][]> {
     return param;
 }
+
+// class API
+
+import { query } from 'azle';
+
+export default class {
+    @query
+    list_of_string_one(param: string[]): string[] {
+        return param;
+    }
+
+    @query
+    list_of_string_two(params: string[][]): string[][] {
+        return params;
+    }
+
+    @query
+    list_of_string_four(params: string[][][][]): string[][][][] {
+        return params;
+    }
+
+    @query
+    list_of_list_of_int8(): int8[][][][][][][] {
+        return [
+            [
+                [
+                    [
+                        [
+                            [[1], [2]],
+                            [
+                                [1, 2, 3],
+                                [4, 5, 6]
+                            ]
+                        ]
+                    ],
+                    [[[[1]]], [[[2]]]],
+                    [[[[3]]]]
+                ]
+            ],
+            [
+                [[[[[1]]]], [[[[2]]]]],
+                [[[[[3]]]], [[[[4]]]]]
+            ]
+        ];
+    }
+
+    @query
+    list_of_null(param: null[][][]): null[][][] {
+        return param;
+    }
+
+    @query
+    list_of_bool(param: boolean[][][]): boolean[][][] {
+        return param;
+    }
+
+    @query
+    list_of_string(param: string[][][]): string[][][] {
+        return param;
+    }
+
+    @query
+    list_of_option_string(param: Opt<string>[][][]): Opt<string>[][][] {
+        return param;
+    }
+
+    @query
+    list_of_empty(): empty[][][] {
+        throw new Error('Anything you want');
+    }
+
+    @query
+    list_of_reserved(): reserved[][][] {
+        return [
+            [['A'], ['n']],
+            [
+                ['y', 't', 'h'],
+                ['i', 'n', 'g']
+            ]
+        ];
+    }
+
+    @query
+    list_of_func(param: BasicFunc[][][]): BasicFunc[][][] {
+        return param;
+    }
+
+    @query
+    list_of_principal(param: Principal[][][]): Principal[][][] {
+        return param;
+    }
+
+    //TODO do I need to test Rejection Code
+
+    @query
+    list_of_f64(param: float64[][][]): float64[][][] {
+        return param;
+    }
+
+    @query
+    list_of_f32(param: float32[][][]): float32[][][] {
+        return param;
+    }
+
+    @query
+    list_of_int(param: int[][][]): int[][][] {
+        return param;
+    }
+
+    @query
+    list_of_int64(param: int64[][][]): int64[][][] {
+        return param;
+    }
+
+    @query
+    list_of_int32(param: int32[][][]): int32[][][] {
+        return param;
+    }
+
+    @query
+    list_of_int16(param: int16[][][]): int16[][][] {
+        return param;
+    }
+
+    @query
+    list_of_int8(param: int8[][][]): int8[][][] {
+        return param;
+    }
+
+    @query
+    list_of_nat(param: nat[][][]): nat[][][] {
+        return param;
+    }
+
+    @query
+    list_of_nat64(param: nat64[][][]): nat64[][][] {
+        return param;
+    }
+
+    @query
+    list_of_nat32(param: nat32[][][]): nat32[][][] {
+        return param;
+    }
+
+    @query
+    list_of_nat16(param: nat16[][][]): nat16[][][] {
+        return param;
+    }
+
+    @query
+    list_of_nat8(param: nat8[][][]): nat8[][][] {
+        return param;
+    }
+
+    @query
+    list_of_record(param: Person[][][]): Person[][][] {
+        return param;
+    }
+
+    @query
+    list_of_variant(param: State[][][]): State[][][] {
+        return param;
+    }
+
+    @query
+    list_of_blob(param: blob[]): blob[] {
+        return param;
+    }
+
+    @query
+    list_of_list_of_blob(param: blob[][]): blob[][] {
+        return param;
+    }
+}

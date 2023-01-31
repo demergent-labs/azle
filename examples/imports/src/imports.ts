@@ -17,3 +17,29 @@ export function getThree(): Query<string> {
 export function sha224Hash(message: string): Query<string> {
     return sha224.update(message).hex();
 }
+
+// class API
+
+import { query } from 'azle';
+
+export default class {
+    @query
+    getOne(): string {
+        return one();
+    }
+
+    @query
+    getTwo(): string {
+        return two();
+    }
+
+    @query
+    getThree(): string {
+        return three();
+    }
+
+    @query
+    sha224Hash(message: string): string {
+        return sha224.update(message).hex();
+    }
+}

@@ -37,3 +37,27 @@ export function set(key: string, value: string): Update<void> {
 
     record_performance(perf_start, perf_end);
 }
+
+// class API
+
+import { query, update } from 'azle';
+
+export default class {
+    store: Map<string, string> = new Map();
+
+    @query
+    get(key: string): Opt<string> {
+        return this.store.get(key) ?? null;
+    }
+
+    @update
+    set(key: string, value: string): void {
+        const perf_start = ic.performance_counter(0);
+
+        this.store.set(key, value);
+
+        const perf_end = ic.performance_counter(0);
+
+        record_performance(perf_start, perf_end);
+    }
+}

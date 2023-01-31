@@ -129,3 +129,100 @@ export function trap(message: string): Query<boolean> {
 
     return true;
 }
+
+// class API
+
+import { query, update } from 'azle';
+
+export default class {
+    // returns the argument data as bytes.
+    @query
+    arg_data_raw(arg1: blob, arg2: int8, arg3: boolean, arg4: string): blob {
+        return ic.arg_data_raw();
+    }
+
+    // returns the length of the argument data in bytes
+    @query
+    arg_data_raw_size(
+        arg1: blob,
+        arg2: int8,
+        arg3: boolean,
+        arg4: string
+    ): nat32 {
+        return ic.arg_data_raw_size();
+    }
+
+    // returns the principal of the identity that called this function
+    @query
+    caller(): Principal {
+        return ic.caller();
+    }
+
+    // returns the amount of cycles available in the canister
+    @query
+    canister_balance(): nat64 {
+        return ic.canister_balance();
+    }
+
+    // returns the amount of cycles available in the canister
+    @query
+    canister_balance128(): nat {
+        return ic.canister_balance128();
+    }
+
+    // When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if called not from a query call.
+    @query
+    data_certificate(): Opt<blob> {
+        return ic.data_certificate();
+    }
+
+    // When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if called not from a query call.
+    @update
+    data_certificate_null(): Opt<blob> {
+        return ic.data_certificate();
+    }
+
+    // returns this canister's id
+    @query
+    id(): Principal {
+        return ic.id();
+    }
+
+    @query
+    performance_counter(): nat64 {
+        return ic.performance_counter(0);
+    }
+
+    // prints a message through the local replica's output
+    @query
+    print(message: string): boolean {
+        ic.print(message);
+
+        return true;
+    }
+
+    @query
+    reject(message: string): Manual<empty> {
+        ic.reject(message);
+    }
+
+    // sets up to 32 bytes of certified data
+    @update
+    set_certified_data(data: blob): void {
+        ic.set_certified_data(data);
+    }
+
+    // returns the current timestamp
+    @query
+    time(): nat64 {
+        return ic.time();
+    }
+
+    // traps with a message, stopping execution and discarding all state within the call
+    @query
+    trap(message: string): boolean {
+        ic.trap(message);
+
+        return true;
+    }
+}
