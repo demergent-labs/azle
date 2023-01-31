@@ -1,5 +1,4 @@
 import { Principal } from '@dfinity/principal';
-// import { InsertResult } from './src/stable_b_tree_map';
 export {
     StableBTreeMap,
     InsertResult,
@@ -9,40 +8,6 @@ export {
 declare var globalThis: any;
 
 export const ic: ic = globalThis.ic ?? {};
-
-// TODO: See https://github.com/demergent-labs/azle/issues/496
-
-/**
- * Working declaration for `ic.result`. This is NOT the API we want, but at
- * least it works.'
- * Note: make sure to use in conjunction with it's type on the IC type below
- */
-// ic.result = function <T>(canisterResult: AzleResult<T, string>): AzleResult<T, string> {
-//     if ('NoError' in ic.reject_code()) {
-//         return {
-//             ok: canisterResult.ok
-//         };
-//     }
-//     return {
-//         err: ic.reject_message()
-//     };
-// };
-
-/**
- * Non-working declaration for `ic.result`. This is the API we want, but it
- * doesn't work.
- * Note: make sure to use in conjunction with it's type on the IC type below
- */
-// ic.result = function <T>(): AzleResult<Array<T>, string> {
-//     if ('NoError' in ic.reject_code()) {
-//         return {
-//             ok: ic.arg_data() // Currently errors out.
-//         };
-//     }
-//     return {
-//         err: ic.reject_message()
-//     };
-// };
 
 type ic = {
     accept_message: () => void;
@@ -96,10 +61,6 @@ type ic = {
     reject_message: () => string;
     reply: (reply: any) => void;
     reply_raw: (buf: blob) => void;
-    /** Working type declaration. Not the API we want though */
-    // result: <T>(canisterResult: AzleResult<T>) => AzleResult<T>;
-    /** Non-working type declaration. But API we want */
-    // result: <T>() => AzleResult<Array<T>>;
     set_certified_data: (data: blob) => void;
     /**
      * Sets callback to be executed later, after delay. Panics if `delay` + time() is more than 2^64 - 1.
@@ -156,30 +117,9 @@ type ic = {
     trap: (message: string) => never;
 };
 
-export type PreUpgrade = void;
-export type PostUpgrade = void;
-export type Heartbeat = void;
-export type Init = void;
-export type InspectMessage = void;
-export type Query<T> = T;
-export type Manual<T> = void;
-export type Update<T> = T;
-export type Oneway = void;
-
-// TODO see if we can get the T here to have some more information, like the func type
-// TODO we especially want to add the possibility of an optional cycle parameter and the notify method
-export type Canister<T> = T;
-
 export type Variant<T> = Partial<T>;
 export type Opt<T> = T | null;
-// export type Result<T, V> = {
-//     ok?: T;
-//     err?: V;
-// };
-// export type CallResult<T> = Variant<{
-//     ok: T;
-//     err: string;
-// }>;
+
 export type CanisterResult<T> = {
     ok?: T;
     err?: string;
@@ -252,10 +192,13 @@ export function attempt<T, E>(
     }
 }
 
+// TODO work on Func
+type Query<T extends (...args: any[]) => any> = (...args: any[]) => any;
+type Update<T> = (...args: any[]) => any;
+type Oneway = (...args: any) => void;
+
 // TODO type this more strictly
-export type Func<
-    T extends (...args: any[]) => Query<any> | Update<any> | Oneway
-> = [Principal, string];
+export type Func<T extends Query<T> | Update<T> | Oneway> = [Principal, string];
 
 export { Principal } from '@dfinity/principal';
 
@@ -284,49 +227,15 @@ export type Stable64GrowResult = Variant<{
     err: StableMemoryError;
 }>;
 
-export function heartbeat(
-    target: any,
-    name: string
-    // descriptor: PropertyDescriptor
-) {}
+export function query(target: any, name: string) {
+    external_canister_method_decoration(target, name);
+}
 
-export function init(
-    target: any,
-    name: string
-    // descriptor: PropertyDescriptor
-) {}
+export function update(target: any, name: string) {
+    external_canister_method_decoration(target, name);
+}
 
-export function inspect_message(
-    target: any,
-    name: string
-    // descriptor: PropertyDescriptor
-) {}
-
-export function post_upgrade(
-    target: any,
-    name: string
-    // descriptor: PropertyDescriptor
-) {}
-
-export function pre_upgrade(
-    target: any,
-    name: string
-    // descriptor: PropertyDescriptor
-) {}
-
-export function query(
-    target: any,
-    name: string
-    // descriptor: PropertyDescriptor
-) {}
-
-export function update(
-    target: any,
-    name: string
-    // descriptor: PropertyDescriptor
-) {}
-
-export function method(target: any, name: string) {
+function external_canister_method_decoration(target: any, name: string) {
     Object.defineProperty(target, name, {
         get() {
             return (...args: any[]) => {
@@ -385,5 +294,10 @@ export class ExternalCanister {
     }
 }
 
-export const $query = (options: { guard: string }) => 'Canister query method';
-export const $update = (options: { guard: string }) => 'Canister update method';
+export const $heartbeat = (options: { guard: string }) => {};
+export const $init = (options: { guard: string }) => {};
+export const $inspect_message = (options: { guard: string }) => {};
+export const $post_upgrade = (options: { guard: string }) => {};
+export const $pre_upgrade = (options: { guard: string }) => {};
+export const $query = (options: { guard: string }) => {};
+export const $update = (options: { guard: string }) => {};
