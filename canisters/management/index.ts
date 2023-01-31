@@ -18,17 +18,16 @@
 
 import {
     blob,
-    Canister,
     CanisterResult,
     ExternalCanister,
     Func,
     ic,
-    method,
     nat,
     nat64,
     Opt,
+    $query,
     Principal,
-    Query,
+    update,
     Variant
 } from '../../index';
 
@@ -170,6 +169,7 @@ export type HttpTransform = {
     context: blob;
 };
 
+$query;
 export type HttpTransformFunc = Func<
     (args: HttpTransformArgs) => Query<HttpResponse>
 >;
@@ -262,79 +262,76 @@ export type ManagementOld = Canister<{
     ): CanisterResult<SignWithEcdsaResult>;
 }>;
 
-export const management_canister_old: ManagementOld =
-    ic.canisters.ManagementOld(Principal.fromText('aaaaa-aa'));
-
 export class Management extends ExternalCanister {
-    @method
+    @update
     bitcoin_get_balance: (args: GetBalanceArgs) => CanisterResult<Satoshi>;
 
-    @method
+    @update
     bitcoin_get_current_fee_percentiles: (
         args: GetCurrentFeePercentilesArgs
     ) => CanisterResult<MillisatoshiPerByte[]>;
 
-    @method
+    @update
     bitcoin_get_utxos: (args: GetUtxosArgs) => CanisterResult<GetUtxosResult>;
 
-    @method
+    @update
     bitcoin_send_transaction: (
         args: SendTransactionArgs
     ) => CanisterResult<null>;
 
-    @method
+    @update
     create_canister: (
         args: CreateCanisterArgs
     ) => CanisterResult<CreateCanisterResult>;
 
-    @method
+    @update
     update_settings: (args: UpdateSettingsArgs) => CanisterResult<void>;
 
-    @method
+    @update
     install_code: (args: InstallCodeArgs) => CanisterResult<void>;
 
-    @method
+    @update
     uninstall_code: (args: UninstallCodeArgs) => CanisterResult<void>;
 
-    @method
+    @update
     start_canister: (args: StartCanisterArgs) => CanisterResult<void>;
 
-    @method
+    @update
     stop_canister: (args: StopCanisterArgs) => CanisterResult<void>;
 
-    @method
+    @update
     canister_status: (
         args: CanisterStatusArgs
     ) => CanisterResult<CanisterStatusResult>;
 
-    @method
+    @update
     delete_canister: (args: DeleteCanisterArgs) => CanisterResult<void>;
 
-    @method
+    @update
     deposit_cycles: (args: DepositCyclesArgs) => CanisterResult<void>;
 
-    @method
+    @update
     raw_rand: () => CanisterResult<blob>;
 
-    @method
+    @update
     http_request: (args: HttpRequestArgs) => CanisterResult<HttpResponse>;
 
-    @method
+    @update
     provisional_create_canister_with_cycles: (
         args: ProvisionalCreateCanisterWithCyclesArgs
     ) => CanisterResult<ProvisionalCreateCanisterWithCyclesResult>;
 
-    @method
+    @update
     provisional_top_up_canister: (
         args: ProvisionalTopUpCanisterArgs
     ) => CanisterResult<void>;
 
-    @method
+    @update
     ecdsa_public_key: (
         args: EcdsaPublicKeyArgs
     ) => CanisterResult<EcdsaPublicKeyResult>;
 
-    @method
+    @update
     sign_with_ecdsa: (
         args: SignWithEcdsaArgs
     ) => CanisterResult<SignWithEcdsaResult>;
