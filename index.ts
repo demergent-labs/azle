@@ -286,38 +286,38 @@ export type Stable64GrowResult = Variant<{
 
 export function heartbeat(
     target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
+    name: string
+    // descriptor: PropertyDescriptor
 ) {}
 
 export function init(
     target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
+    name: string
+    // descriptor: PropertyDescriptor
 ) {}
 
 export function post_upgrade(
     target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
+    name: string
+    // descriptor: PropertyDescriptor
 ) {}
 
 export function pre_upgrade(
     target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
+    name: string
+    // descriptor: PropertyDescriptor
 ) {}
 
 export function query(
     target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
+    name: string
+    // descriptor: PropertyDescriptor
 ) {}
 
 export function update(
     target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
+    name: string
+    // descriptor: PropertyDescriptor
 ) {}
 
 export function method(target: any, name: string) {

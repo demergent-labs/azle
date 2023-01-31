@@ -8,7 +8,8 @@
             "candid": "src/inspect_message.did",
             "wasm": ".azle/inspect_message/inspect_message.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/inspect_message"
+                "output": "test/dfx_generated/inspect_message",
+                "node_compatibility": true
             }
         }
     }

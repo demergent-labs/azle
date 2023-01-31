@@ -8,7 +8,8 @@
             "candid": "src/ic_api.did",
             "wasm": ".azle/ic_api/ic_api.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/ic_api"
+                "output": "test/dfx_generated/ic_api",
+                "node_compatibility": true
             }
         }
     }
