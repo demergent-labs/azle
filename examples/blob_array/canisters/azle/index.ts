@@ -1,30 +1,16 @@
-import { blob, Query } from 'azle';
+import { blob, $query } from 'azle';
 import encodeUtf8 from 'encode-utf8';
 
-export function get_blob(): Query<blob> {
+$query;
+export function get_blob(): blob {
     return string_to_blob('hello');
 }
 
-export function get_blobs(): Query<blob[]> {
+$query;
+export function get_blobs(): blob[] {
     return [string_to_blob('hello'), string_to_blob('world')];
 }
 
 function string_to_blob(string: string): blob {
     return new Uint8Array(encodeUtf8(string));
-}
-
-// class API
-
-import { query } from 'azle';
-
-export default class {
-    @query
-    get_blob(): blob {
-        return string_to_blob('hello');
-    }
-
-    @query
-    get_blobs(): blob[] {
-        return [string_to_blob('hello'), string_to_blob('world')];
-    }
 }

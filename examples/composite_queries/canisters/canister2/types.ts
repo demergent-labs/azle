@@ -1,4 +1,4 @@
-import { Canister, CanisterResult, nat } from 'azle';
+import { CanisterResult, ExternalCanister, nat, query, update } from 'azle';
 import { StringQueryResult } from '../canister1/types';
 
 export type Canister2Old = Canister<{
@@ -9,23 +9,19 @@ export type Canister2Old = Canister<{
     inc_counter(): CanisterResult<nat>;
 }>;
 
-// class API
-
-import { ExternalCanister, method } from 'azle';
-
 export class Canister2 extends ExternalCanister {
-    @method
+    @query
     simple_query: () => CanisterResult<string>;
 
-    @method
+    @query
     manual_query: () => CanisterResult<string>;
 
-    @method
+    @update
     update_query: () => CanisterResult<string>;
 
-    @method
+    @query
     deep_query: () => CanisterResult<StringQueryResult>;
 
-    @method
+    @query
     inc_counter: () => CanisterResult<nat>;
 }

@@ -301,3 +301,5 @@ export const $post_upgrade = (options: { guard: string }) => {};
 export const $pre_upgrade = (options: { guard: string }) => {};
 export const $query = (options: { guard: string }) => {};
 export const $update = (options: { guard: string }) => {};
+
+export type Manual<T> = void;

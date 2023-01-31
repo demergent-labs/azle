@@ -1,14 +1,10 @@
-import { Canister, CanisterResult } from 'azle';
+import { CanisterResult, ExternalCanister, query } from 'azle';
 
 export type Canister3Old = Canister<{
     deep_query(): CanisterResult<string>;
 }>;
 
-// class API
-
-import { ExternalCanister, method } from 'azle';
-
 export class Canister3 extends ExternalCanister {
-    @method
+    @query
     deep_query: () => CanisterResult<string>;
 }

@@ -1,11 +1,12 @@
-import { nat32, Query, Update } from 'azle';
+import { nat32, $query, $update } from 'azle';
 import { User } from './candid_types';
 import { get_post_from_state_post } from './posts';
 import { get_reaction_from_state_reaction } from './reactions';
 import { state, StateUser } from './state';
 import { get_thread_from_state_thread } from './threads';
 
-export function create_user(username: string, join_depth: nat32): Update<User> {
+$update;
+export function create_user(username: string, join_depth: nat32): User {
     const id = Object.keys(state.users).length.toString();
 
     const state_user: StateUser = {
@@ -23,7 +24,8 @@ export function create_user(username: string, join_depth: nat32): Update<User> {
     return user;
 }
 
-export function get_all_users(join_depth: nat32): Query<User[]> {
+$query;
+export function get_all_users(join_depth: nat32): User[] {
     return Object.values(state.users).map((state_user) =>
         get_user_from_state_user(state_user, join_depth)
     );
