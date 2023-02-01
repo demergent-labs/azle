@@ -14,7 +14,7 @@ pub struct AzleProgram {
 }
 
 impl AzleProgram {
-    fn get_ast_fn_decls(&self) -> Vec<AzleFnDecl> {
+    fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl> {
         match &self.program {
             Program::Module(module) => module.get_azle_fn_decls(&self.source_map),
             Program::Script(_) => vec![],

@@ -120,7 +120,7 @@ fn build_extraneous_decorator_error_message(
         "export function some_canister_method() {\n  // method body\n}";
 
     ErrorMessage {
-        title: "extraneous azle decorator".to_string(),
+        title: "extraneous annotation".to_string(),
         origin: source_map.get_origin(span),
         line_number: source_map.get_line_number(span),
         source: source_map.get_source(span),
