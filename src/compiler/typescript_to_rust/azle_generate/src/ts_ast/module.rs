@@ -1,9 +1,11 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::{ExportDecl, Module, ModuleDecl, Stmt};
+use swc_ecma_ast::{ExportDecl, ExprStmt, Module, ModuleDecl, Stmt};
 
-use crate::ts_ast::module_item::ModuleItemHelperMethods;
-
-use super::{AzleFnDecl, AzleTypeAliasDecl};
+use super::{source_map::GetSourceFileInfo, AzleFnDecl, AzleTypeAliasDecl};
+use crate::{
+    errors::{ErrorMessage, Suggestion},
+    ts_ast::module_item::ModuleItemHelperMethods,
+};
 
 pub trait ModuleHelperMethods {
     fn get_azle_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AzleFnDecl>;
@@ -32,8 +34,13 @@ impl ModuleHelperMethods for Module {
                             fn_decl: exported_fn_decl,
                             source_map,
                         }),
-                        // TODO: improve this error message
-                        None => panic!("All custom decorators must be immediately followed by an exported function declaration"),
+                        None => panic!(
+                            "{}",
+                            build_extraneous_decorator_error_message(
+                                custom_decorator_expr_stmt,
+                                source_map
+                            )
+                        ),
                     }
                 }
 
@@ -100,5 +107,36 @@ impl ModuleHelperMethods for Module {
             .collect();
 
         vec![stmt_azle_type_alias_decls, export_azle_type_alias_decls].concat()
+    }
+}
+
+fn build_extraneous_decorator_error_message(
+    custom_decorator_expr_stmt: ExprStmt,
+    source_map: &SourceMap,
+) -> ErrorMessage {
+    let span = custom_decorator_expr_stmt.span;
+    let range = source_map.get_range(span);
+    let example_function_declaration =
+        "export function some_canister_method() {\n  // method body\n}";
+
+    ErrorMessage {
+        title: "extraneous azle decorator".to_string(),
+        origin: source_map.get_origin(span),
+        line_number: source_map.get_line_number(span),
+        source: source_map.get_source(span),
+        range,
+        annotation: "expected this to be followed by an exported function declaration".to_string(),
+        suggestion: Some(Suggestion {
+            title: "Follow it with an exported function declaration or remove it. E.g.:"
+                .to_string(),
+            source: format!(
+                "{}\n{}",
+                source_map.get_source(span),
+                example_function_declaration
+            ),
+            range: (range.1 + 1, range.1 + example_function_declaration.len()),
+            annotation: None,
+            import_suggestion: None,
+        }),
     }
 }
