@@ -219,10 +219,6 @@ impl AzleFnDecl<'_> {
         }
     }
 
-    pub fn is_composite(&self) -> bool {
-        self.is_promise()
-    }
-
     pub fn is_promise(&self) -> bool {
         match &self.fn_decl.function.return_type {
             Some(ts_type_ann) => {
