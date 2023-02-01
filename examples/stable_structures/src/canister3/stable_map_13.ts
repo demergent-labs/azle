@@ -3,9 +3,9 @@ import {
     nat64,
     Opt,
     Principal,
-    Query,
+    $query,
     StableBTreeMap,
-    Update,
+    $update,
     Variant
 } from 'azle';
 
@@ -16,41 +16,50 @@ type StableMap13InsertResult = Variant<{
 
 let stable_map_13 = new StableBTreeMap<string, Principal>(13, 100, 1_000);
 
-export function stable_map_13_contains_key(key: string): Query<boolean> {
+$query;
+export function stable_map_13_contains_key(key: string): boolean {
     return stable_map_13.contains_key(key);
 }
 
-export function stable_map_13_get(key: string): Query<Opt<Principal>> {
+$query;
+export function stable_map_13_get(key: string): Opt<Principal> {
     return stable_map_13.get(key);
 }
 
+$update;
 export function stable_map_13_insert(
     key: string,
     value: Principal
-): Update<StableMap13InsertResult> {
+): StableMap13InsertResult {
     return stable_map_13.insert(key, value);
 }
 
-export function stable_map_13_is_empty(): Query<boolean> {
+$query;
+export function stable_map_13_is_empty(): boolean {
     return stable_map_13.is_empty();
 }
 
-export function stable_map_13_items(): Query<[string, Principal][]> {
+$query;
+export function stable_map_13_items(): [string, Principal][] {
     return stable_map_13.items();
 }
 
-export function stable_map_13_keys(): Query<string[]> {
+$query;
+export function stable_map_13_keys(): string[] {
     return stable_map_13.keys();
 }
 
-export function stable_map_13_len(): Query<nat64> {
+$query;
+export function stable_map_13_len(): nat64 {
     return stable_map_13.len();
 }
 
-export function stable_map_13_remove(key: string): Update<Opt<Principal>> {
+$update;
+export function stable_map_13_remove(key: string): Opt<Principal> {
     return stable_map_13.remove(key);
 }
 
-export function stable_map_13_values(): Query<Principal[]> {
+$query;
+export function stable_map_13_values(): Principal[] {
     return stable_map_13.values();
 }

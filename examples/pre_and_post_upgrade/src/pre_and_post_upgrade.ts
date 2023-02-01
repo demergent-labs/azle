@@ -1,11 +1,11 @@
 import {
-    Query,
-    Update,
-    Init,
-    PreUpgrade,
-    PostUpgrade,
+    $init,
     nat64,
-    StableBTreeMap
+    $post_upgrade,
+    $pre_upgrade,
+    $query,
+    StableBTreeMap,
+    $update
 } from 'azle';
 
 type Entry = {
@@ -19,13 +19,15 @@ let entries: {
     [key: string]: nat64;
 } = {};
 
-export function init(): Init {
+$init;
+export function init() {
     console.log('init');
 
     stable_storage.insert('entries', []);
 }
 
-export function pre_upgrade(): PreUpgrade {
+$pre_upgrade;
+export function pre_upgrade() {
     console.log('pre_upgrade');
 
     stable_storage.insert(
@@ -39,7 +41,8 @@ export function pre_upgrade(): PreUpgrade {
     );
 }
 
-export function post_upgrade(): PostUpgrade {
+$post_upgrade;
+export function post_upgrade() {
     console.log('post_upgrade');
 
     entries = (stable_storage.get('entries') ?? []).reduce((result, entry) => {
@@ -50,11 +53,13 @@ export function post_upgrade(): PostUpgrade {
     }, {});
 }
 
-export function set_entry(entry: Entry): Update<void> {
+$update;
+export function set_entry(entry: Entry): void {
     entries[entry.key] = entry.value;
 }
 
-export function get_entries(): Query<Entry[]> {
+$query;
+export function get_entries(): Entry[] {
     return Object.entries(entries).map((entry) => {
         return {
             key: entry[0],

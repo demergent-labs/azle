@@ -1,4 +1,10 @@
-import { Canister, CanisterResult, empty, ic, Principal } from 'azle';
+import {
+    CanisterResult,
+    ExternalCanister,
+    empty,
+    Principal,
+    query
+} from 'azle';
 
 export type SomeServiceOld = Canister<{
     reject(message: string): CanisterResult<empty>;
@@ -6,29 +12,14 @@ export type SomeServiceOld = Canister<{
     error(): CanisterResult<empty>;
 }>;
 
-export const some_service_old: SomeServiceOld = ic.canisters.SomeServiceOld(
-    Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
-);
-
-// Used by `ic.result` example.
-
-// export type Result = Variant<{
-//     ok: boolean;
-//     err: string;
-// }>;
-
-// class API
-
-import { ExternalCanister, method } from 'azle';
-
 export class SomeService extends ExternalCanister {
-    @method
+    @query
     reject: (message: string) => CanisterResult<empty>;
 
-    @method
+    @query
     accept: () => CanisterResult<boolean>;
 
-    @method
+    @query
     error: () => CanisterResult<empty>;
 }
 

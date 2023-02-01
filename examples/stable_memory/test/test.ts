@@ -1,5 +1,4 @@
-import { deploy, run_tests, Test } from 'azle/test';
-import { execSync } from 'child_process';
+import { run_tests } from 'azle/test';
 import { createActor } from './dfx_generated/stable_memory';
 import { get_tests } from './tests';
 
@@ -9,20 +8,4 @@ const stable_memory_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-const tests: Test[] = [
-    ...deploy('stable_memory'),
-    {
-        name: 'add cycles',
-        prep: async () => {
-            execSync(
-                `dfx ledger fabricate-cycles --canister stable_memory --cycles 100000000000000`,
-                {
-                    stdio: 'inherit'
-                }
-            );
-        }
-    },
-    ...get_tests(stable_memory_canister)
-];
-
-run_tests(tests);
+run_tests(get_tests(stable_memory_canister));

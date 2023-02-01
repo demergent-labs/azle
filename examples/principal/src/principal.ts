@@ -1,4 +1,4 @@
-import { blob, Principal, Query, Variant } from 'azle';
+import { blob, Principal, $query, Variant } from 'azle';
 
 type User = {
     id: Principal;
@@ -11,53 +11,62 @@ type Status = Variant<{
     Offline: null;
 }>;
 
-export function principal_return_type(): Query<Principal> {
+$query;
+export function principal_return_type(): Principal {
     return Principal.fromText('aaaaa-aa');
 }
 
-export function principal_param(principal: Principal): Query<Principal> {
+$query;
+export function principal_param(principal: Principal): Principal {
     return principal;
 }
 
-export function principal_in_record(): Query<User> {
+$query;
+export function principal_in_record(): User {
     return {
         id: Principal.fromText('aaaaa-aa'),
         username: 'lastmjs'
     };
 }
 
-export function principal_in_variant(): Query<Status> {
+$query;
+export function principal_in_variant(): Status {
     return {
         WaitingOn: Principal.fromText('aaaaa-aa')
     };
 }
 
-export function principal_from_hex(principal_hex: string): Query<Principal> {
+$query;
+export function principal_from_hex(principal_hex: string): Principal {
     return Principal.fromHex(principal_hex);
 }
 
-export function principal_from_text(principal_text: string): Query<Principal> {
+$query;
+export function principal_from_text(principal_text: string): Principal {
     return Principal.fromText(principal_text);
 }
 
-export function principal_from_blob(principal_bytes: blob): Query<Principal> {
+$query;
+export function principal_from_blob(principal_bytes: blob): Principal {
     return Principal.fromUint8Array(Uint8Array.from(principal_bytes));
 }
 
-export function principal_to_hex(principal: Principal): Query<string> {
+$query;
+export function principal_to_hex(principal: Principal): string {
     return principal.toHex();
 }
 
-export function principal_to_text(principal: Principal): Query<string> {
+$query;
+export function principal_to_text(principal: Principal): string {
     return principal.toText();
 }
 
-export function principal_to_blob(principal: Principal): Query<blob> {
+$query;
+export function principal_to_blob(principal: Principal): blob {
     return principal.toUint8Array();
 }
 
-export function principal_self_authenticating(
-    public_key: blob
-): Query<Principal> {
+$query;
+export function principal_self_authenticating(public_key: blob): Principal {
     return Principal.selfAuthenticating(public_key);
 }

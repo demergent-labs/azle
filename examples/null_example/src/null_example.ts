@@ -1,4 +1,4 @@
-import { int, Query, Update, Variant } from 'azle';
+import { int, $query, $update } from 'azle';
 
 type PartiallyNullRecord = {
     first_item: int;
@@ -17,11 +17,13 @@ type ThreeNullRecord = {
     third_item: null;
 };
 
-export function null_function(param: null): Query<null> {
+$query;
+export function null_function(param: null): null {
     return param;
 }
 
-export function get_partially_null_record(): Query<PartiallyNullRecord> {
+$query;
+export function get_partially_null_record(): PartiallyNullRecord {
     return {
         first_item: 1n,
         second_item: null,
@@ -29,26 +31,28 @@ export function get_partially_null_record(): Query<PartiallyNullRecord> {
     };
 }
 
+$update;
 export function set_partially_null_record(
     param: PartiallyNullRecord
-): Update<PartiallyNullRecord> {
+): PartiallyNullRecord {
     return param;
 }
 
-export function get_small_null_record(): Query<TwoNullRecord> {
+$query;
+export function get_small_null_record(): TwoNullRecord {
     return {
         first_item: null,
         second_item: null
     };
 }
 
-export function set_small_null_record(
-    param: TwoNullRecord
-): Update<TwoNullRecord> {
+$update;
+export function set_small_null_record(param: TwoNullRecord): TwoNullRecord {
     return param;
 }
 
-export function get_large_null_record(): Query<ThreeNullRecord> {
+$query;
+export function get_large_null_record(): ThreeNullRecord {
     return {
         first_item: null,
         second_item: null,
@@ -56,8 +60,7 @@ export function get_large_null_record(): Query<ThreeNullRecord> {
     };
 }
 
-export function set_large_null_record(
-    param: ThreeNullRecord
-): Update<ThreeNullRecord> {
+$update;
+export function set_large_null_record(param: ThreeNullRecord): ThreeNullRecord {
     return param;
 }

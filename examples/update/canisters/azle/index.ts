@@ -1,4 +1,4 @@
-import { ic, nat64, Opt, Query, Update } from 'azle';
+import { ic, nat64, Opt, $query, $update } from 'azle';
 
 //#region Performance
 type PerfResult = {
@@ -8,7 +8,8 @@ type PerfResult = {
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -22,38 +23,17 @@ function record_performance(start: nat64, end: nat64): void {
 
 let currentMessage: string = '';
 
-export function get_current_message(): Query<string> {
+$query;
+export function get_current_message(): string {
     return currentMessage;
 }
 
-export function simple_update(message: string): Update<void> {
+$update;
+export function simple_update(message: string): void {
     const perf_start = ic.performance_counter(0);
 
     currentMessage = message;
 
     const perf_end = ic.performance_counter(0);
     record_performance(perf_start, perf_end);
-}
-
-// class API
-
-import { query, update } from 'azle';
-
-export default class {
-    current_message: string = '';
-
-    @query
-    get_current_message(): string {
-        return this.current_message;
-    }
-
-    @update
-    simple_update(message: string): void {
-        const perf_start = ic.performance_counter(0);
-
-        this.current_message = message;
-
-        const perf_end = ic.performance_counter(0);
-        record_performance(perf_start, perf_end);
-    }
 }

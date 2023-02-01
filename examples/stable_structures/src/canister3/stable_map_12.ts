@@ -3,9 +3,9 @@ import {
     InsertError,
     nat64,
     Opt,
-    Query,
+    $query,
     StableBTreeMap,
-    Update,
+    $update,
     Variant
 } from 'azle';
 import { Reaction } from '../types';
@@ -17,41 +17,50 @@ type StableMap12InsertResult = Variant<{
 
 let stable_map_12 = new StableBTreeMap<blob, Reaction>(12, 100, 1_000);
 
-export function stable_map_12_contains_key(key: blob): Query<boolean> {
+$query;
+export function stable_map_12_contains_key(key: blob): boolean {
     return stable_map_12.contains_key(key);
 }
 
-export function stable_map_12_get(key: blob): Query<Opt<Reaction>> {
+$query;
+export function stable_map_12_get(key: blob): Opt<Reaction> {
     return stable_map_12.get(key);
 }
 
+$update;
 export function stable_map_12_insert(
     key: blob,
     value: Reaction
-): Update<StableMap12InsertResult> {
+): StableMap12InsertResult {
     return stable_map_12.insert(key, value);
 }
 
-export function stable_map_12_is_empty(): Query<boolean> {
+$query;
+export function stable_map_12_is_empty(): boolean {
     return stable_map_12.is_empty();
 }
 
-export function stable_map_12_items(): Query<[blob, Reaction][]> {
+$query;
+export function stable_map_12_items(): [blob, Reaction][] {
     return stable_map_12.items();
 }
 
-export function stable_map_12_keys(): Query<blob[]> {
+$query;
+export function stable_map_12_keys(): blob[] {
     return stable_map_12.keys();
 }
 
-export function stable_map_12_len(): Query<nat64> {
+$query;
+export function stable_map_12_len(): nat64 {
     return stable_map_12.len();
 }
 
-export function stable_map_12_remove(key: blob): Update<Opt<Reaction>> {
+$update;
+export function stable_map_12_remove(key: blob): Opt<Reaction> {
     return stable_map_12.remove(key);
 }
 
-export function stable_map_12_values(): Query<Reaction[]> {
+$query;
+export function stable_map_12_values(): Reaction[] {
     return stable_map_12.values();
 }

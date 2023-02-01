@@ -1,34 +1,16 @@
-import { empty, ic, Manual, Query } from 'azle';
+import { empty, ic, Manual, $query } from 'azle';
 
-export function accept(): Query<boolean> {
+$query;
+export function accept(): boolean {
     return true;
 }
 
-export function error(): Query<Manual<empty>> {
+$query;
+export function error(): Manual<empty> {
     // This errors because neither ic.reject nor ic.reply were called
 }
 
-export function reject(message: string): Query<Manual<empty>> {
+$query;
+export function reject(message: string): Manual<empty> {
     ic.reject(message);
-}
-
-// class API
-
-import { query } from 'azle';
-
-export default class {
-    @query
-    accept(): boolean {
-        return true;
-    }
-
-    @query
-    error(): Manual<empty> {
-        // This errors because neither ic.reject nor ic.reply were called
-    }
-
-    @query
-    reject(message: string): Manual<empty> {
-        ic.reject(message);
-    }
 }

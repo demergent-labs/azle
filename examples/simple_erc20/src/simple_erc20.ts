@@ -1,4 +1,4 @@
-import { nat64, Query, Update } from 'azle';
+import { nat64, $query, $update } from 'azle';
 
 type Account = {
     address: string;
@@ -21,12 +21,13 @@ let state: State = {
     total_supply: 0n
 };
 
+$update;
 export function initialize_supply(
     name: string,
     original_address: string,
     ticker: string,
     total_supply: nat64
-): Update<boolean> {
+): boolean {
     state = {
         ...state,
         accounts: {
@@ -43,11 +44,12 @@ export function initialize_supply(
     return true;
 }
 
+$update;
 export function transfer(
     from_address: string,
     to_address: string,
     amount: nat64
-): Update<boolean> {
+): boolean {
     if (state.accounts[to_address] === undefined) {
         state.accounts[to_address] = {
             address: to_address,
@@ -61,18 +63,22 @@ export function transfer(
     return true;
 }
 
-export function balance(address: string): Query<nat64> {
+$query;
+export function balance(address: string): nat64 {
     return state.accounts[address]?.balance ?? 0n;
 }
 
-export function ticker(): Query<string> {
+$query;
+export function ticker(): string {
     return state.ticker;
 }
 
-export function name(): Query<string> {
+$query;
+export function name(): string {
     return state.name;
 }
 
-export function total_supply(): Query<nat64> {
+$query;
+export function total_supply(): nat64 {
     return state.total_supply;
 }

@@ -3,9 +3,9 @@ import {
     int,
     nat64,
     Opt,
-    Query,
+    $query,
     StableBTreeMap,
-    Update,
+    $update,
     Variant
 } from 'azle';
 import { Reaction } from '../types';
@@ -17,41 +17,50 @@ type StableMap3InsertResult = Variant<{
 
 let stable_map_3 = new StableBTreeMap<Reaction, int>(3, 100, 1_000);
 
-export function stable_map_3_contains_key(key: Reaction): Query<boolean> {
+$query;
+export function stable_map_3_contains_key(key: Reaction): boolean {
     return stable_map_3.contains_key(key);
 }
 
-export function stable_map_3_get(key: Reaction): Query<Opt<int>> {
+$query;
+export function stable_map_3_get(key: Reaction): Opt<int> {
     return stable_map_3.get(key);
 }
 
+$update;
 export function stable_map_3_insert(
     key: Reaction,
     value: int
-): Update<StableMap3InsertResult> {
+): StableMap3InsertResult {
     return stable_map_3.insert(key, value);
 }
 
-export function stable_map_3_is_empty(): Query<boolean> {
+$query;
+export function stable_map_3_is_empty(): boolean {
     return stable_map_3.is_empty();
 }
 
-export function stable_map_3_items(): Query<[Reaction, int][]> {
+$query;
+export function stable_map_3_items(): [Reaction, int][] {
     return stable_map_3.items();
 }
 
-export function stable_map_3_keys(): Query<Reaction[]> {
+$query;
+export function stable_map_3_keys(): Reaction[] {
     return stable_map_3.keys();
 }
 
-export function stable_map_3_len(): Query<nat64> {
+$query;
+export function stable_map_3_len(): nat64 {
     return stable_map_3.len();
 }
 
-export function stable_map_3_remove(key: Reaction): Update<Opt<int>> {
+$update;
+export function stable_map_3_remove(key: Reaction): Opt<int> {
     return stable_map_3.remove(key);
 }
 
-export function stable_map_3_values(): Query<int[]> {
+$query;
+export function stable_map_3_values(): int[] {
     return stable_map_3.values();
 }

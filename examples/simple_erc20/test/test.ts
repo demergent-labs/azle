@@ -1,4 +1,4 @@
-import { deploy, run_tests, Test } from 'azle/test';
+import { run_tests } from 'azle/test';
 import { createActor } from '../test/dfx_generated/simple_erc20';
 import { get_tests } from './tests';
 
@@ -8,9 +8,4 @@ const simple_erc20_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-const tests: Test[] = [
-    ...deploy('simple_erc20'),
-    ...get_tests(simple_erc20_canister)
-];
-
-run_tests(tests);
+run_tests(get_tests(simple_erc20_canister));
