@@ -8,7 +8,8 @@
             "candid": "canisters/func_types/func_types.did",
             "wasm": ".azle/func_types/func_types.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/func_types"
+                "output": "test/dfx_generated/func_types",
+                "node_compatibility": true
             }
         },
         "notifiers": {
@@ -19,7 +20,8 @@
             "candid": "canisters/notifiers/notifiers.did",
             "wasm": ".azle/notifiers/notifiers.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/notifiers"
+                "output": "test/dfx_generated/notifiers",
+                "node_compatibility": true
             }
         }
     }

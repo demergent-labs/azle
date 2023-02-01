@@ -1,6 +1,6 @@
 use cdk_framework::{
-    nodes::{data_type_nodes, ActExternalCanister},
-    ActCanisterMethod, ActDataType,
+    nodes::{data_type_nodes, ActCanisterMethod, ActExternalCanister},
+    ActDataType,
 };
 
 use super::TsAst;

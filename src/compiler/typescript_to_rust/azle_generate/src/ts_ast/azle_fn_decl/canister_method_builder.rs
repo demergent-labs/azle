@@ -23,6 +23,7 @@ impl<'a> CanisterMethodBuilder for AzleFnDecl<'a> {
             params,
             return_type,
             cdk_name: "azle".to_string(),
+            function_guard_name: None,
         };
 
         match request_type {

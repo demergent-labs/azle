@@ -1,4 +1,4 @@
-use cdk_framework::{ActCanisterMethod, ToTokenStream};
+use cdk_framework::{nodes::ActCanisterMethod, ToTokenStream};
 use proc_macro2::TokenStream;
 use quote::quote;
 

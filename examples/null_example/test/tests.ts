@@ -17,6 +17,16 @@ export function get_tests(
             }
         },
         {
+            name: 'void function',
+            test: async () => {
+                const result = await null_example_canister.void_is_not_null();
+
+                return {
+                    ok: result === undefined
+                };
+            }
+        },
+        {
             name: 'get partially null record',
             test: async () => {
                 const result =

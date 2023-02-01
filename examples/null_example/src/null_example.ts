@@ -1,4 +1,4 @@
-import { int, Query, Update, Variant } from 'azle';
+import { ic, int, Query, Update, Variant } from 'azle';
 
 type PartiallyNullRecord = {
     first_item: int;
@@ -19,6 +19,12 @@ type ThreeNullRecord = {
 
 export function null_function(param: null): Query<null> {
     return param;
+}
+
+export function void_is_not_null(): Query<void> {
+    ic.print(
+        'Even though they are both None in Python, for Candid null and void are different.'
+    );
 }
 
 export function get_partially_null_record(): Query<PartiallyNullRecord> {
