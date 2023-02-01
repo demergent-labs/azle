@@ -22,7 +22,8 @@ import { Err, ok, Ok, Result, unwrap } from './result';
 import { red, yellow, green, blue, purple, dim } from './colors';
 import * as tsc from 'typescript';
 import * as path from 'path';
-import { version, rust_version } from '../package.json';
+import { version, dfx_version, rust_version } from '../package.json';
+import { generate_new_azle_project } from './new';
 
 const GLOBAL_AZLE_CONFIG_DIR = path.resolve(
     require('os').homedir(),
@@ -34,6 +35,11 @@ const GLOBAL_AZLE_TARGET_DIR = `${GLOBAL_AZLE_CONFIG_DIR}/target`;
 azle();
 
 function azle() {
+    if (process.argv[2] === 'new') {
+        generate_new_azle_project(version, dfx_version);
+        return;
+    }
+
     const install_rust_dependencies_path = path.resolve(
         __dirname,
         '../install_rust_dependencies.sh'
