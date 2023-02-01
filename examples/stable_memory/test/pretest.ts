@@ -3,15 +3,15 @@ import { execSync } from 'child_process';
 async function pretest() {
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
-    execSync(`dfx canister uninstall-code randomness || true`, {
+    execSync(`dfx canister uninstall-code stable_memory || true`, {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy randomness`, {
+    execSync(`dfx deploy stable_memory`, {
         stdio: 'inherit'
     });
 
-    execSync(`dfx generate randomness`, {
+    execSync(`dfx generate stable_memory`, {
         stdio: 'inherit'
     });
 }

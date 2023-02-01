@@ -8,7 +8,8 @@
             "candid": "src/pre_and_post_upgrade.did",
             "wasm": ".azle/pre_and_post_upgrade/pre_and_post_upgrade.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/pre_and_post_upgrade"
+                "output": "test/dfx_generated/pre_and_post_upgrade",
+                "node_compatibility": true
             }
         }
     }
