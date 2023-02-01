@@ -1,11 +1,15 @@
 use swc_ecma_ast::{Expr, ExprStmt, FnDecl, ModuleItem};
 
-use super::GetName;
+use crate::{
+    canister_method_annotation::{CanisterMethodAnnotation, CANISTER_METHOD_ANNOTATIONS},
+    ts_ast::GetName,
+};
 
 pub trait ModuleItemHelperMethods {
     fn is_custom_decorator(&self) -> bool;
     fn as_exported_fn_decl(&self) -> Option<FnDecl>;
     fn as_expr_stmt(&self) -> Option<ExprStmt>;
+    fn to_canister_method_annotation(&self) -> Option<CanisterMethodAnnotation>;
 }
 
 impl ModuleItemHelperMethods for ModuleItem {
@@ -36,17 +40,7 @@ impl ModuleItemHelperMethods for ModuleItem {
             _ => return false,
         };
 
-        let custom_decorators = [
-            "$heartbeat",
-            "$init",
-            "$inspect_message",
-            "$post_upgrade",
-            "$pre_upgrade",
-            "$query",
-            "$update",
-        ];
-
-        custom_decorators.contains(&ident.get_name())
+        CANISTER_METHOD_ANNOTATIONS.contains(&ident.get_name())
     }
 
     fn as_exported_fn_decl(&self) -> Option<FnDecl> {
@@ -61,5 +55,16 @@ impl ModuleItemHelperMethods for ModuleItem {
 
     fn as_expr_stmt(&self) -> Option<ExprStmt> {
         Some(self.as_stmt()?.as_expr()?.clone())
+    }
+
+    fn to_canister_method_annotation(&self) -> Option<CanisterMethodAnnotation> {
+        CanisterMethodAnnotation::from_str(
+            self.as_stmt()?
+                .as_expr()?
+                .expr
+                .as_ref()
+                .as_ident()?
+                .get_name(),
+        )
     }
 }

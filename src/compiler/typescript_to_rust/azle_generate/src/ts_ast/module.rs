@@ -1,5 +1,5 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::{ExportDecl, ExprStmt, Module, ModuleDecl, Stmt};
+use swc_ecma_ast::{ExportDecl, Module, ModuleDecl, ModuleItem, Stmt};
 
 use super::{source_map::GetSourceFileInfo, AzleFnDecl, AzleTypeAliasDecl};
 use crate::{
@@ -23,21 +23,22 @@ impl ModuleHelperMethods for Module {
             .enumerate()
             .fold(vec![], |mut acc, (i, module_item)| {
                 if previous_module_item_was_custom_decorator {
-                    let custom_decorator_expr_stmt =
-                        self.body.get(i - 1).unwrap().as_expr_stmt().unwrap();
+                    let custom_decorator_module_item = self.body.get(i - 1).unwrap();
 
                     let exported_fn_decl_option = module_item.as_exported_fn_decl();
 
                     match exported_fn_decl_option {
                         Some(exported_fn_decl) => acc.push(AzleFnDecl {
-                            custom_decorator: custom_decorator_expr_stmt,
+                            annotation: custom_decorator_module_item
+                                .to_canister_method_annotation()
+                                .unwrap(),
                             fn_decl: exported_fn_decl,
                             source_map,
                         }),
                         None => panic!(
                             "{}",
                             build_extraneous_decorator_error_message(
-                                custom_decorator_expr_stmt,
+                                custom_decorator_module_item,
                                 source_map
                             )
                         ),
@@ -111,16 +112,21 @@ impl ModuleHelperMethods for Module {
 }
 
 fn build_extraneous_decorator_error_message(
-    custom_decorator_expr_stmt: ExprStmt,
+    custom_decorator_module_item: &ModuleItem,
     source_map: &SourceMap,
 ) -> ErrorMessage {
+    let custom_decorator_expr_stmt = custom_decorator_module_item.as_expr_stmt().unwrap();
     let span = custom_decorator_expr_stmt.span;
+    let annotation_type = custom_decorator_module_item
+        .to_canister_method_annotation()
+        .unwrap()
+        .kind;
     let range = source_map.get_range(span);
     let example_function_declaration =
         "export function some_canister_method() {\n  // method body\n}";
 
     ErrorMessage {
-        title: "extraneous annotation".to_string(),
+        title: format!("extraneous {} annotation", annotation_type),
         origin: source_map.get_origin(span),
         line_number: source_map.get_line_number(span),
         source: source_map.get_source(span),
