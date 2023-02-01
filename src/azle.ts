@@ -178,6 +178,11 @@ function compileTypeScriptToRust(
         );
 
         unwrap(generateRustCanister(fileNames, canister_path, { rootPath }));
+
+        if (isCompileOnlyMode()) {
+            console.log('Compilation complete!');
+            process.exit(0);
+        }
     });
 }
 
@@ -375,6 +380,12 @@ function isTsCompilationError(error: unknown): error is TsCompilationError {
 
 function isVerboseMode(): boolean {
     return process.argv.includes('--verbose') || process.argv.includes('-v');
+}
+
+function isCompileOnlyMode(): boolean {
+    return (
+        process.argv.includes('--compile-only') || process.argv.includes('-c')
+    );
 }
 
 function logSuccess(canister_path: string, canisterName: string): void {
