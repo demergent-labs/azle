@@ -1,5 +1,5 @@
 use cdk_framework::{
-    traits::CanisterMethodBuilder, ActCanisterMethod, CanisterMethodType, RequestType,
+    nodes::ActCanisterMethod, traits::CanisterMethodBuilder, CanisterMethodType, RequestType,
     SystemStructureType,
 };
 use std::collections::{HashMap, HashSet};

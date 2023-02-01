@@ -1,4 +1,4 @@
-import { int, $query, $update } from 'azle';
+import { ic, int, $query, $update } from 'azle';
 
 type PartiallyNullRecord = {
     first_item: int;
@@ -20,6 +20,13 @@ type ThreeNullRecord = {
 $query;
 export function null_function(param: null): null {
     return param;
+}
+
+$query;
+export function void_is_not_null(): void {
+    ic.print(
+        'Even though they are both None in Python, for Candid null and void are different.'
+    );
 }
 
 $query;

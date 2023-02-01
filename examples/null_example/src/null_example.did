@@ -9,7 +9,7 @@ type ThreeNullRecord = record {
   second_item : null;
 };
 type TwoNullRecord = record { first_item : null; second_item : null };
-service : {
+service : () -> {
   get_large_null_record : () -> (ThreeNullRecord) query;
   get_partially_null_record : () -> (PartiallyNullRecord) query;
   get_small_null_record : () -> (TwoNullRecord) query;
@@ -17,4 +17,5 @@ service : {
   set_large_null_record : (ThreeNullRecord) -> (ThreeNullRecord);
   set_partially_null_record : (PartiallyNullRecord) -> (PartiallyNullRecord);
   set_small_null_record : (TwoNullRecord) -> (TwoNullRecord);
+  void_is_not_null : () -> () query;
 }

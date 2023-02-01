@@ -1,4 +1,4 @@
-use cdk_framework::{nodes::ActExternalCanister, ActCanisterMethod};
+use cdk_framework::nodes::{ActCanisterMethod, ActExternalCanister};
 
 use crate::StableBTreeMapNode;
 
