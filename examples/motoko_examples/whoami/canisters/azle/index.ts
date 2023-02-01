@@ -1,14 +1,16 @@
 import {
-    Canister,
     CanisterResult,
+    ExternalCanister,
     ic,
-    Init,
+    $init,
     nat64,
     Opt,
-    PostUpgrade,
+    $post_upgrade,
     Principal,
-    Query,
-    Update
+    query,
+    $query,
+    update,
+    $update
 } from 'azle';
 
 //#region Performance
@@ -19,7 +21,8 @@ type PerfResult = {
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -39,37 +42,59 @@ type WhoAmICanisterOld = Canister<{
     id_quick(): CanisterResult<Principal>;
 }>;
 
+class WhoAmICanister extends ExternalCanister {
+    @query
+    installer: () => CanisterResult<Principal>;
+
+    @query
+    argument: () => CanisterResult<Principal>;
+
+    @update
+    whoami: () => CanisterResult<Principal>;
+
+    @update
+    id: () => CanisterResult<Principal>;
+
+    @query
+    id_quick: () => CanisterResult<Principal>;
+}
+
 // Initialize the variables to ensure that they aren't `undefined`.
 // We use the zero principal but any principal could be used.
 let install: Principal = Principal.fromText('aaaaa-aa');
 let someone: Principal = Principal.fromText('aaaaa-aa');
 
 // Manually save the calling principal and argument for later access.
-export function init_(somebody: Principal): Init {
+$init;
+export function init(somebody: Principal) {
     install = ic.caller();
     someone = somebody;
 }
 
 // Manually re-save these variables after new deploys.
-export function post_upgrade_(somebody: Principal): PostUpgrade {
+$post_upgrade;
+export function post_upgrade(somebody: Principal) {
     install = ic.caller();
     someone = somebody;
 }
 
 // Return the principal identifier of the wallet canister that installed this
 // canister.
-export function installer(): Query<Principal> {
+$query;
+export function installer(): Principal {
     return install;
 }
 
 // Return the principal identifier that was provided as an installation
 // argument to this canister.
-export function argument(): Query<Principal> {
+$query;
+export function argument(): Principal {
     return someone;
 }
 
 // Return the principal identifier of the caller of this method.
-export function whoami(): Update<Principal> {
+$update;
+export function whoami(): Principal {
     const perf_start = ic.performance_counter(0);
 
     const caller = ic.caller();
@@ -81,12 +106,11 @@ export function whoami(): Update<Principal> {
 }
 
 // Return the principal identifier of this canister.
-export async function id(): Promise<Update<Principal>> {
+$update;
+export async function id(): Promise<Principal> {
     const pre_xnet_call_perf_start = ic.performance_counter(0);
 
-    const this_canister: WhoAmICanisterOld = ic.canisters.WhoAmICanisterOld(
-        ic.id()
-    );
+    const this_canister = new WhoAmICanister(ic.id());
 
     const pre_xnet_call_perf_end = ic.performance_counter(0);
     const result = await this_canister.whoami().call();
@@ -112,118 +136,7 @@ export async function id(): Promise<Update<Principal>> {
 // This is much quicker than `id()` above because it isn't making a cross-
 // canister call to itself. Additionally, it can now be a `Query` which means it
 // doesn't have to go through consensus.
-export function id_quick(): Query<Principal> {
+$query;
+export function id_quick(): Principal {
     return ic.id();
-}
-
-// class API
-
-import {
-    ExternalCanister,
-    init,
-    method,
-    post_upgrade,
-    query,
-    update
-} from 'azle';
-
-class WhoAmICanister extends ExternalCanister {
-    @method
-    installer: () => CanisterResult<Principal>;
-
-    @method
-    argument: () => CanisterResult<Principal>;
-
-    @method
-    whoami: () => CanisterResult<Principal>;
-
-    @method
-    id: () => CanisterResult<Principal>;
-
-    @method
-    id_quick: () => CanisterResult<Principal>;
-}
-
-export default class {
-    // Initialize the variables to ensure that they aren't `undefined`.
-    // We use the zero principal but any principal could be used.
-    install: Principal = Principal.fromText('aaaaa-aa');
-    someone: Principal = Principal.fromText('aaaaa-aa');
-
-    // Manually save the calling principal and argument for later access.
-    @init
-    init_(somebody: Principal): Init {
-        this.install = ic.caller();
-        this.someone = somebody;
-    }
-
-    // Manually re-save these variables after new deploys.
-    @post_upgrade
-    post_upgrade_(somebody: Principal) {
-        this.install = ic.caller();
-        this.someone = somebody;
-    }
-
-    // Return the principal identifier of the wallet canister that installed this
-    // canister.
-    @query
-    installer(): Principal {
-        return this.install;
-    }
-
-    // Return the principal identifier that was provided as an installation
-    // argument to this canister.
-    @query
-    argument(): Principal {
-        return this.someone;
-    }
-
-    // Return the principal identifier of the caller of this method.
-    @update
-    whoami(): Principal {
-        const perf_start = ic.performance_counter(0);
-
-        const caller = ic.caller();
-
-        const perf_end = ic.performance_counter(0);
-        record_performance(perf_start, perf_end);
-
-        return caller;
-    }
-
-    // Return the principal identifier of this canister.
-    @update
-    async id(): Promise<Principal> {
-        const pre_xnet_call_perf_start = ic.performance_counter(0);
-
-        const this_canister = new WhoAmICanister(ic.id());
-
-        const pre_xnet_call_perf_end = ic.performance_counter(0);
-        const result = await this_canister.whoami().call();
-        const post_xnet_call_perf_start = ic.performance_counter(0);
-
-        const response = result.ok ?? Principal.fromText('aaaaa-aa');
-
-        const post_xnet_call_perf_end = ic.performance_counter(0);
-        const pre_xnet_call_perf =
-            pre_xnet_call_perf_end - pre_xnet_call_perf_start;
-        const post_xnet_call_perf =
-            post_xnet_call_perf_end - post_xnet_call_perf_start;
-        const total_perf = pre_xnet_call_perf + post_xnet_call_perf;
-        perf_result = {
-            wasm_body_only: total_perf,
-            wasm_including_prelude: ic.performance_counter(0)
-        };
-
-        return response;
-    }
-
-    // Return the principal identifier of this canister via the global `ic` object.
-    // This is much quicker than `id()` above because it isn't making a cross-
-    // canister call to itself. Additionally, it can now be a `Query` which means it
-    // doesn't have to go through consensus.
-    @query
-    id_quick(): Principal {
-        return ic.id();
-    }
 }

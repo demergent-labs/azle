@@ -1,4 +1,4 @@
-import { ic, Query, Update, nat32, nat64, Opt } from 'azle';
+import { ic, nat32, nat64, Opt, $query, $update } from 'azle';
 
 //#region Performance
 type PerfResult = {
@@ -8,7 +8,8 @@ type PerfResult = {
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -46,7 +47,8 @@ let superheroes: Map<SuperheroId, Superhero> = new Map();
  */
 
 // Create a superhero.
-export function create(superhero: Superhero): Update<SuperheroId> {
+$update;
+export function create(superhero: Superhero): SuperheroId {
     const perf_start = ic.performance_counter(0);
 
     let superheroId = next;
@@ -60,17 +62,19 @@ export function create(superhero: Superhero): Update<SuperheroId> {
 }
 
 // Read a superhero.
-export function read(superheroId: SuperheroId): Query<Opt<Superhero>> {
+$query;
+export function read(superheroId: SuperheroId): Opt<Superhero> {
     let result = superheroes.get(superheroId) ?? null;
 
     return result;
 }
 
 // Update a superhero.
-export function update_(
+$update;
+export function update(
     superheroId: SuperheroId,
     superhero: Superhero
-): Update<boolean> {
+): boolean {
     const perf_start = ic.performance_counter(0);
 
     let result = superheroes.get(superheroId);
@@ -85,7 +89,8 @@ export function update_(
 }
 
 // Delete a superhero.
-export function delete_hero(superheroId: SuperheroId): Update<boolean> {
+$update;
+export function delete_hero(superheroId: SuperheroId): boolean {
     const perf_start = ic.performance_counter(0);
 
     let result = superheroes.get(superheroId);
@@ -96,78 +101,4 @@ export function delete_hero(superheroId: SuperheroId): Update<boolean> {
     const perf_end = ic.performance_counter(0);
     record_performance(perf_start, perf_end);
     return !!result;
-}
-
-// class API
-
-import { query, update } from 'azle';
-
-export default class {
-    /**
-     * Application State
-     */
-
-    // The next available superhero identifier.
-    next: SuperheroId = 0;
-
-    // The superhero data store.
-    superheroes: Map<SuperheroId, Superhero> = new Map();
-
-    /**
-     * High-Level API
-     */
-
-    // Create a superhero.
-    @update
-    create(superhero: Superhero): SuperheroId {
-        const perf_start = ic.performance_counter(0);
-
-        let superheroId = this.next;
-        this.next += 1;
-        this.superheroes.set(superheroId, superhero);
-
-        const perf_end = ic.performance_counter(0);
-        record_performance(perf_start, perf_end);
-
-        return superheroId;
-    }
-
-    // Read a superhero.
-    @query
-    read(superheroId: SuperheroId): Opt<Superhero> {
-        let result = this.superheroes.get(superheroId) ?? null;
-
-        return result;
-    }
-
-    // Update a superhero.
-    @update
-    update_(superheroId: SuperheroId, superhero: Superhero): boolean {
-        const perf_start = ic.performance_counter(0);
-
-        let result = this.superheroes.get(superheroId);
-        if (result) {
-            this.superheroes.set(superheroId, superhero);
-        }
-
-        const perf_end = ic.performance_counter(0);
-        record_performance(perf_start, perf_end);
-
-        return !!result;
-    }
-
-    // Delete a superhero.
-    @update
-    delete_hero(superheroId: SuperheroId): boolean {
-        const perf_start = ic.performance_counter(0);
-
-        let result = this.superheroes.get(superheroId);
-        if (result) {
-            this.superheroes.delete(superheroId);
-        }
-
-        const perf_end = ic.performance_counter(0);
-        record_performance(perf_start, perf_end);
-        return !!result;
-    }
 }

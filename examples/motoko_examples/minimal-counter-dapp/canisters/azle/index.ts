@@ -1,4 +1,4 @@
-import { ic, nat, nat64, Opt, Query, Update } from 'azle';
+import { ic, nat, nat64, Opt, $query, $update } from 'azle';
 
 //#region Performance
 type PerfResult = {
@@ -8,7 +8,8 @@ type PerfResult = {
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -22,7 +23,8 @@ function record_performance(start: nat64, end: nat64): void {
 
 let counter: nat = 0n;
 
-export function count(): Update<nat> {
+$update;
+export function count(): nat {
     const perf_start = ic.performance_counter(0);
 
     counter += 1n;
@@ -33,11 +35,13 @@ export function count(): Update<nat> {
     return counter;
 }
 
-export function get_count(): Query<nat> {
+$query;
+export function get_count(): nat {
     return counter;
 }
 
-export function reset(): Update<nat> {
+$update;
+export function reset(): nat {
     const perf_start = ic.performance_counter(0);
 
     counter = 0n;
@@ -46,41 +50,4 @@ export function reset(): Update<nat> {
     record_performance(perf_start, perf_end);
 
     return counter;
-}
-
-// class API
-
-import { query, update } from 'azle';
-
-export default class {
-    counter: nat = 0n;
-
-    @update
-    count(): nat {
-        const perf_start = ic.performance_counter(0);
-
-        this.counter += 1n;
-
-        const perf_end = ic.performance_counter(0);
-        record_performance(perf_start, perf_end);
-
-        return this.counter;
-    }
-
-    @query
-    get_count(): nat {
-        return this.counter;
-    }
-
-    @update
-    reset(): nat {
-        const perf_start = ic.performance_counter(0);
-
-        this.counter = 0n;
-
-        const perf_end = ic.performance_counter(0);
-        record_performance(perf_start, perf_end);
-
-        return this.counter;
-    }
 }

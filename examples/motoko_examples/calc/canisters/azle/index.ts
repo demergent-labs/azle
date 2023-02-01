@@ -1,4 +1,4 @@
-import { ic, int, nat64, Opt, Query, Update } from 'azle';
+import { ic, int, nat64, Opt, $query, $update } from 'azle';
 
 //#region Performance
 type PerfResult = {
@@ -8,7 +8,8 @@ type PerfResult = {
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -22,7 +23,8 @@ function record_performance(start: nat64, end: nat64): void {
 
 let cell: int = 0n;
 
-export function add(n: int): Update<int> {
+$update;
+export function add(n: int): int {
     const perf_start = ic.performance_counter(0);
 
     cell += n;
@@ -34,7 +36,8 @@ export function add(n: int): Update<int> {
     return cell;
 }
 
-export function sub(n: int): Update<int> {
+$update;
+export function sub(n: int): int {
     const perf_start = ic.performance_counter(0);
 
     cell -= n;
@@ -46,7 +49,8 @@ export function sub(n: int): Update<int> {
     return cell;
 }
 
-export function mul(n: int): Update<int> {
+$update;
+export function mul(n: int): int {
     const perf_start = ic.performance_counter(0);
 
     cell *= n;
@@ -58,7 +62,8 @@ export function mul(n: int): Update<int> {
     return cell;
 }
 
-export function div(n: int): Update<Opt<int>> {
+$update;
+export function div(n: int): Opt<int> {
     const perf_start = ic.performance_counter(0);
 
     let result: Opt<int>;
@@ -76,7 +81,8 @@ export function div(n: int): Update<Opt<int>> {
     return result;
 }
 
-export function clearall(): Update<void> {
+$update;
+export function clearall(): void {
     const perf_start = ic.performance_counter(0);
 
     cell = 0n;
@@ -84,81 +90,4 @@ export function clearall(): Update<void> {
     const perf_end = ic.performance_counter(0);
 
     record_performance(perf_start, perf_end);
-}
-
-// class API
-
-import { update } from 'azle';
-
-export default class {
-    cell: int = 0n;
-
-    @update
-    add(n: int): int {
-        const perf_start = ic.performance_counter(0);
-
-        this.cell += n;
-
-        const perf_end = ic.performance_counter(0);
-
-        record_performance(perf_start, perf_end);
-
-        return this.cell;
-    }
-
-    @update
-    sub(n: int): int {
-        const perf_start = ic.performance_counter(0);
-
-        this.cell -= n;
-
-        const perf_end = ic.performance_counter(0);
-
-        record_performance(perf_start, perf_end);
-
-        return this.cell;
-    }
-
-    @update
-    mul(n: int): int {
-        const perf_start = ic.performance_counter(0);
-
-        this.cell *= n;
-
-        const perf_end = ic.performance_counter(0);
-
-        record_performance(perf_start, perf_end);
-
-        return this.cell;
-    }
-
-    @update
-    div(n: int): Opt<int> {
-        const perf_start = ic.performance_counter(0);
-
-        let result: Opt<int>;
-        if (n === 0n) {
-            result = null;
-        } else {
-            this.cell /= n;
-            result = this.cell;
-        }
-
-        const perf_end = ic.performance_counter(0);
-
-        record_performance(perf_start, perf_end);
-
-        return result;
-    }
-
-    @update
-    clearall(): void {
-        const perf_start = ic.performance_counter(0);
-
-        this.cell = 0n;
-
-        const perf_end = ic.performance_counter(0);
-
-        record_performance(perf_start, perf_end);
-    }
 }

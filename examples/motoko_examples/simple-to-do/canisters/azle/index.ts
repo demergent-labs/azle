@@ -1,4 +1,4 @@
-import { Opt, Query, Update, ic, nat, nat16, nat64 } from 'azle';
+import { ic, nat, nat64, Opt, $query, $update } from 'azle';
 
 //#region Performance
 type PerfResult = {
@@ -8,7 +8,8 @@ type PerfResult = {
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -28,12 +29,14 @@ export type ToDo = {
 let todos: Map<nat, ToDo> = new Map();
 let nextId: nat = 0n;
 
-export function get_todos(): Query<ToDo[]> {
+$query;
+export function get_todos(): ToDo[] {
     return Array.from(todos.values());
 }
 
 // Returns the ID that was given to the ToDo item
-export function add_todo(description: string): Update<nat> {
+$update;
+export function add_todo(description: string): nat {
     const perf_start = ic.performance_counter(0);
 
     const id = nextId;
@@ -50,7 +53,8 @@ export function add_todo(description: string): Update<nat> {
     return id;
 }
 
-export function complete_todo(id: nat): Update<void> {
+$update;
+export function complete_todo(id: nat): void {
     const perf_start = ic.performance_counter(0);
 
     let todo = todos.get(id);
@@ -66,7 +70,8 @@ export function complete_todo(id: nat): Update<void> {
     record_performance(perf_start, perf_end);
 }
 
-export function show_todos(): Query<string> {
+$query;
+export function show_todos(): string {
     let output = '\n___TO-DOs___';
     for (const todo_entry of [...todos]) {
         output += `\n${todo_entry[1].description}`;
@@ -77,7 +82,8 @@ export function show_todos(): Query<string> {
     return output;
 }
 
-export function clear_completed(): Update<void> {
+$update;
+export function clear_completed(): void {
     const perf_start = ic.performance_counter(0);
 
     // TODO why doesn't this work? https://github.com/demergent-labs/azle/issues/574
@@ -87,81 +93,4 @@ export function clear_completed(): Update<void> {
     const perf_end = ic.performance_counter(0);
 
     record_performance(perf_start, perf_end);
-}
-
-// class API
-
-import { query, update } from 'azle';
-
-export default class {
-    todos: Map<nat, ToDo> = new Map();
-    nextId: nat = 0n;
-
-    @query
-    get_todos(): ToDo[] {
-        return Array.from(this.todos.values());
-    }
-
-    // Returns the ID that was given to the ToDo item
-    @update
-    add_todo(description: string): nat {
-        const perf_start = ic.performance_counter(0);
-
-        const id = this.nextId;
-        this.todos.set(id, {
-            description: description,
-            completed: false
-        });
-        this.nextId += 1n;
-
-        const perf_end = ic.performance_counter(0);
-
-        record_performance(perf_start, perf_end);
-
-        return id;
-    }
-
-    @update
-    complete_todo(id: nat): void {
-        const perf_start = ic.performance_counter(0);
-
-        let todo = this.todos.get(id);
-
-        if (todo !== undefined) {
-            this.todos.set(id, {
-                description: todo.description,
-                completed: true
-            });
-        }
-        const perf_end = ic.performance_counter(0);
-
-        record_performance(perf_start, perf_end);
-    }
-
-    @query
-    show_todos(): string {
-        let output = '\n___TO-DOs___';
-        for (const todo_entry of [...this.todos]) {
-            output += `\n${todo_entry[1].description}`;
-            if (todo_entry[1].completed) {
-                output += ' ✔';
-            }
-        }
-        return output;
-    }
-
-    @update
-    clear_completed(): void {
-        const perf_start = ic.performance_counter(0);
-
-        // TODO why doesn't this work? https://github.com/demergent-labs/azle/issues/574
-        // todos = new Map([...todos].filter(([key, value]) => !value.completed));
-        this.todos = new Map(
-            [...this.todos].filter((value) => !value[1].completed)
-        );
-
-        const perf_end = ic.performance_counter(0);
-
-        record_performance(perf_start, perf_end);
-    }
 }

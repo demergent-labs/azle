@@ -1,4 +1,4 @@
-import { ic, int, nat64, Opt, Query, Update } from 'azle';
+import { ic, int, nat64, Opt, $query, $update } from 'azle';
 import { Int } from './comparison';
 import * as Quicksort from './quicksort';
 
@@ -10,7 +10,8 @@ type PerfResult = {
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -22,7 +23,8 @@ function record_performance(start: nat64, end: nat64): void {
 }
 //#endregion
 
-export function sort(xs: int[]): Update<int[]> {
+$update;
+export function sort(xs: int[]): int[] {
     const perf_start = ic.performance_counter(0);
 
     const sortedArray = Quicksort.sortBy(xs, Int.compare);
@@ -30,21 +32,4 @@ export function sort(xs: int[]): Update<int[]> {
     const perf_end = ic.performance_counter(0);
     record_performance(perf_start, perf_end);
     return sortedArray;
-}
-
-// class API
-
-import { update } from 'azle';
-
-export default class {
-    @update
-    sort(xs: int[]): int[] {
-        const perf_start = ic.performance_counter(0);
-
-        const sortedArray = Quicksort.sortBy(xs, Int.compare);
-
-        const perf_end = ic.performance_counter(0);
-        record_performance(perf_start, perf_end);
-        return sortedArray;
-    }
 }

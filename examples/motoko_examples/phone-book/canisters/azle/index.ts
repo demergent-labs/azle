@@ -1,4 +1,4 @@
-import { ic, nat64, Opt, Query, Update } from 'azle';
+import { ic, nat64, Opt, $query, $update } from 'azle';
 
 //#region Performance
 type PerfResult = {
@@ -8,7 +8,8 @@ type PerfResult = {
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -27,7 +28,8 @@ export type Entry = {
 
 let phone_book = new Map<string, Entry>();
 
-export function insert(name: string, entry: Entry): Update<void> {
+$update;
+export function insert(name: string, entry: Entry): void {
     const perf_start = ic.performance_counter(0);
 
     phone_book.set(name, entry);
@@ -37,30 +39,7 @@ export function insert(name: string, entry: Entry): Update<void> {
     record_performance(perf_start, perf_end);
 }
 
-export function lookup(name: string): Query<Opt<Entry>> {
+$query;
+export function lookup(name: string): Opt<Entry> {
     return phone_book.get(name) ?? null;
-}
-
-// class API
-
-import { query, update } from 'azle';
-
-export default class {
-    phone_book = new Map<string, Entry>();
-
-    @update
-    insert(name: string, entry: Entry): void {
-        const perf_start = ic.performance_counter(0);
-
-        this.phone_book.set(name, entry);
-
-        const perf_end = ic.performance_counter(0);
-
-        record_performance(perf_start, perf_end);
-    }
-
-    @query
-    lookup(name: string): Opt<Entry> {
-        return this.phone_book.get(name) ?? null;
-    }
 }

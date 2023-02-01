@@ -1,16 +1,6 @@
-import { Query } from 'azle';
+import { $query } from 'azle';
 
-export function main(): Query<void> {
+$query;
+export function main(): void {
     console.log('Hello World!');
-}
-
-// class API
-
-import { query } from 'azle';
-
-export default class {
-    @query
-    main(): void {
-        console.log('Hello World!');
-    }
 }

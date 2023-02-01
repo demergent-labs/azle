@@ -1,4 +1,4 @@
-import { ic, nat, nat64, Opt, Query, Update } from 'azle';
+import { ic, nat, nat64, Opt, $query, $update } from 'azle';
 
 //#region Performance
 type PerfResult = {
@@ -8,7 +8,8 @@ type PerfResult = {
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -21,7 +22,8 @@ function record_performance(start: nat64, end: nat64): void {
 //#endregion
 
 // Calculate the product of all positive integers less than or equal to `n`.
-export function fac(n: nat): Update<nat> {
+$update;
+export function fac(n: nat): nat {
     const perf_start = ic.performance_counter(0);
 
     const factorial = go(n);
@@ -38,24 +40,5 @@ function go(m: nat): nat {
         return 1n;
     } else {
         return m * go(m - 1n);
-    }
-}
-
-// class API
-
-import { update } from 'azle';
-
-export default class {
-    // Calculate the product of all positive integers less than or equal to `n`.
-    @update
-    fac(n: nat): nat {
-        const perf_start = ic.performance_counter(0);
-
-        const factorial = go(n);
-
-        const perf_end = ic.performance_counter(0);
-        record_performance(perf_start, perf_end);
-
-        return factorial;
     }
 }
