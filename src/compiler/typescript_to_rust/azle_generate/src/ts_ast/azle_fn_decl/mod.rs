@@ -1,7 +1,7 @@
 use cdk_framework::CanisterMethodType;
 use quote::format_ident;
 use swc_common::SourceMap;
-use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType, TsTypeRef};
+use swc_ecma_ast::{BindingIdent, ExprStmt, FnDecl, Pat, TsEntityName, TsType, TsTypeRef};
 use syn::Ident;
 
 use crate::ts_ast::GetName;
@@ -12,6 +12,7 @@ pub mod get_dependencies;
 
 #[derive(Clone)]
 pub struct AzleFnDecl<'a> {
+    pub custom_decorator: ExprStmt,
     pub fn_decl: FnDecl,
     pub source_map: &'a SourceMap,
 }

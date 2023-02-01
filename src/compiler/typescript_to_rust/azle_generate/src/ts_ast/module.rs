@@ -1,15 +1,47 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::{ExportDecl, Module, ModuleDecl, Stmt};
 
-use super::AzleTypeAliasDecl;
+use crate::ts_ast::module_item::ModuleItemHelperMethods;
+
+use super::{AzleFnDecl, AzleTypeAliasDecl};
 
 pub trait ModuleHelperMethods {
+    fn get_azle_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AzleFnDecl>;
     fn get_export_decls(&self) -> Vec<ExportDecl>;
     fn get_azle_type_alias_decls<'a>(&'a self, source_map: &'a SourceMap)
         -> Vec<AzleTypeAliasDecl>;
 }
 
 impl ModuleHelperMethods for Module {
+    fn get_azle_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AzleFnDecl> {
+        let mut previous_module_item_was_custom_decorator = false;
+
+        self.body
+            .iter()
+            .enumerate()
+            .fold(vec![], |mut acc, (i, module_item)| {
+                if previous_module_item_was_custom_decorator {
+                    let custom_decorator_expr_stmt =
+                        self.body.get(i - 1).unwrap().as_expr_stmt().unwrap();
+
+                    let exported_fn_decl_option = module_item.as_exported_fn_decl();
+
+                    match exported_fn_decl_option {
+                        Some(exported_fn_decl) => acc.push(AzleFnDecl {
+                            custom_decorator: custom_decorator_expr_stmt,
+                            fn_decl: exported_fn_decl,
+                            source_map,
+                        }),
+                        // TODO: improve this error message
+                        None => panic!("All custom decorators must be immediately followed by an exported function declaration"),
+                    }
+                }
+
+                previous_module_item_was_custom_decorator = module_item.is_custom_decorator();
+                acc
+            })
+    }
+
     fn get_export_decls(&self) -> Vec<ExportDecl> {
         let module_decls: Vec<ModuleDecl> = self
             .body

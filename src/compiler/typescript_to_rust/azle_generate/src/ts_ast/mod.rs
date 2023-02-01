@@ -31,4 +31,5 @@ pub mod azle_method_signature;
 pub mod azle_program;
 pub mod azle_type;
 pub mod azle_type_alias_decls;
+pub mod module_item;
 pub mod param;
