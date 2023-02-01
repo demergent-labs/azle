@@ -145,53 +145,7 @@ impl AzleFnDecl<'_> {
     /// type because it is called to filter all fn_decls, including those that
     /// aren't canister methods.
     pub fn is_canister_method_type(&self, canister_method_type: &CanisterMethodType) -> bool {
-        match &self.fn_decl.function.return_type {
-            Some(ts_type_ann) => match &*ts_type_ann.type_ann {
-                TsType::TsTypeRef(type_ref) => {
-                    let type_ref = if self.is_promise() {
-                        let type_params = &type_ref.type_params.as_ref().unwrap().params;
-                        let return_type_ref = type_params[0].as_ts_type_ref().unwrap();
-
-                        return_type_ref
-                    } else {
-                        type_ref
-                    };
-
-                    match &type_ref.type_name {
-                        TsEntityName::Ident(ident) => {
-                            let method_type = ident.get_name();
-                            match canister_method_type {
-                                // TODO: Consider that these names may not come from azle. For example:
-                                // ```
-                                // import { Query } from 'not_azle';
-                                // export function example(): Query<string> {...}
-                                // ```
-                                CanisterMethodType::Heartbeat => method_type == "Heartbeat",
-                                CanisterMethodType::Init => method_type == "Init",
-                                CanisterMethodType::InspectMessage => {
-                                    method_type == "InspectMessage"
-                                }
-                                CanisterMethodType::PostUpgrade => method_type == "PostUpgrade",
-                                CanisterMethodType::PreUpgrade => method_type == "PreUpgrade",
-                                CanisterMethodType::Query => method_type == "Query",
-                                CanisterMethodType::Update => method_type == "Update",
-                            }
-                        }
-                        TsEntityName::TsQualifiedName(_) => {
-                            // TODO: Consider that azle may have been imported with a wildcard import
-                            // and should still be valid. For example:
-                            // ```
-                            // import * as Azle from 'azle';
-                            // export function example(): Azle.Query<string> {...}
-                            // ```
-                            false
-                        }
-                    }
-                }
-                _ => false,
-            },
-            None => false,
-        }
+        &self.annotation.kind == canister_method_type
     }
 
     pub fn is_manual(&self) -> bool {
