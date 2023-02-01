@@ -1,6 +1,0 @@
-type User = record { id : text; username : text };
-service : () -> {
-  create_user : (text) -> (User);
-  get_all_users : () -> (vec User) query;
-  get_user_by_id : (text) -> (opt User) query;
-}
