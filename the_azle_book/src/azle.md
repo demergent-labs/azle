@@ -117,17 +117,62 @@ All of this together provides the foundation for a very simple persistence exper
 
 ### Drawbacks
 
--   Azle Beta security risks
--   High latencies
--   Lack of mature tooling
+It's important to note that both Azle and the IC are early-stage projects. The IC officially launched in May of 2021, and Azle reached beta in April of 2022.
+
+#### Azle
+
+Some of Azle's main drawbacks can be summarized as follows:
+
+-   [Beta](#beta)
+-   [Security risks](#security-risks)
+-   [High cycle usage](#high-cycle-usage)
+-   [Missing APIs](#missing-apis)
+-   [Missing JavaScript features](#missing-javascript-features)
+
+##### Beta
+
+Azle is in beta. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2023. The following are the major blockers to 1.0:
+
+-   Extensive automated property testing (~Q1 2023)
+-   Multiple independent security reviews/audits (~Q1/Q2 2023)
+-   Performance improvements if necessary (~Q1/Q2 2023)
+-   Boa production-ready, JS engine swapout, or risks accepted (~2023)
+
+##### Security risks
+
+Things to keep in mind:
+
+-   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
+-   Azle does not yet have extensive automated property tests
+-   Azle does not yet have multiple independent security reviews/audits
+-   Azle heavily relies on Boa which is [self-proclaimed to be experimental](https://github.com/boa-dev/boa)
+
+##### High cycle usage
+
+We have done some preliminary benchmarking, and based on that our rough heuristic is that Azle will cost 2-4x more cycles than the equivalent project in Motoko or Rust. The performance of your application depends on many factors, and this should just be a rough estimate.
+
+There is evidence to support a possible 30x improvement in performance is possible in our [underlying JS engine](https://github.com/boa-dev/boa).
+
+##### Missing APIs
+
+Azle is not Node.js nor is it V8 running in a web browser. It is using a new JavaScript interpreter running in a very new and very different environment. APIs from the Node.js and web browser ecosystems may not be present in Azle. Our goal is to support as many of these APIs as possible over time.
+
+##### Missing JavaScript features
+
+There may be some missing JavaScript language features. You can track our language feature support based on [Boa's conformance with the ECMAScript test suite](https://boa-dev.github.io/boa/test262/). We also use multiple underlying compilers and bundlers before we execute your JavaScript, thus we may support more language features than the test suite conformance shows.
+
+#### IC
+
+Some of the IC's main drawbacks can be summarized as follows:
+
+-   Early in its lifetime
+-   High latency
 -   Limited compute resources
 -   Expensive compute, storage, and network resources
--   Unproven track record of Azle and the IC
--   Lack of APIs from an environment you're used to (Node.js and web APIs)
--   Lack of some npm packages
+-   Unproven track record
+-   Lack of mature tooling
 -   Lack of privacy
--   Being associated with anything that's running?
--   NNS centralization risks
+-   NNS risk
 
 On the path to a decentralized world computer, certain trade-offs must be made, at least at this time. Currently not all npm packages are available for use with Azle. Latencies are high for certain operations (like http requests, which take multiple seconds to complete). The heap is capped at 4GiB, and no robust general-purpose database solutions (like MySQL, Postgres, MongoDB, etc) currently exist (though Demergent Labs is building one called Sudograph).
 

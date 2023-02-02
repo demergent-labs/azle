@@ -227,18 +227,50 @@
 <p>If a canister upgrades its code, swapping out its Wasm binary, then the heap must be cleared. To overcome this limitation, there is a special area of memory called stable memory that persists across these canister upgrades. Special stable data structures provide a familiar API that allows writing into stable memory directly.</p>
 <p>All of this together provides the foundation for a very simple persistence experience for the developer. The persistence tools now available and coming to the IC may be simpler than their equivalents on traditional cloud infrastructure.</p>
 <h3 id="drawbacks"><a class="header" href="#drawbacks">Drawbacks</a></h3>
+<p>It's important to note that both Azle and the IC are early-stage projects. The IC officially launched in May of 2021, and Azle reached beta in April of 2022.</p>
+<h4 id="azle"><a class="header" href="#azle">Azle</a></h4>
+<p>Some of Azle's main drawbacks can be summarized as follows:</p>
 <ul>
-<li>Azle Beta security risks</li>
-<li>High latencies</li>
-<li>Lack of mature tooling</li>
+<li><a href="azle.html#beta">Beta</a></li>
+<li><a href="azle.html#security-risks">Security risks</a></li>
+<li><a href="azle.html#high-cycle-usage">High cycle usage</a></li>
+<li><a href="azle.html#missing-apis">Missing APIs</a></li>
+<li><a href="azle.html#missing-javascript-features">Missing JavaScript features</a></li>
+</ul>
+<h5 id="beta"><a class="header" href="#beta">Beta</a></h5>
+<p>Azle is in beta. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2023. The following are the major blockers to 1.0:</p>
+<ul>
+<li>Extensive automated property testing (~Q1 2023)</li>
+<li>Multiple independent security reviews/audits (~Q1/Q2 2023)</li>
+<li>Performance improvements if necessary (~Q1/Q2 2023)</li>
+<li>Boa production-ready, JS engine swapout, or risks accepted (~2023)</li>
+</ul>
+<h5 id="security-risks"><a class="header" href="#security-risks">Security risks</a></h5>
+<p>Things to keep in mind:</p>
+<ul>
+<li>Azle does not yet have many live, successful, continuously operating applications deployed to the IC</li>
+<li>Azle does not yet have extensive automated property tests</li>
+<li>Azle does not yet have multiple independent security reviews/audits</li>
+<li>Azle heavily relies on Boa which is <a href="https://github.com/boa-dev/boa">self-proclaimed to be experimental</a></li>
+</ul>
+<h5 id="high-cycle-usage"><a class="header" href="#high-cycle-usage">High cycle usage</a></h5>
+<p>We have done some preliminary benchmarking, and based on that our rough heuristic is that Azle will cost 2-4x more cycles than the equivalent project in Motoko or Rust. The performance of your application depends on many factors, and this should just be a rough estimate.</p>
+<p>There is evidence to support a possible 30x improvement in performance is possible in our <a href="https://github.com/boa-dev/boa">underlying JS engine</a>.</p>
+<h5 id="missing-apis"><a class="header" href="#missing-apis">Missing APIs</a></h5>
+<p>Azle is not Node.js nor is it V8 running in a web browser. It is using a new JavaScript interpreter running in a very new and very different environment. APIs from the Node.js and web browser ecosystems may not be present in Azle. Our goal is to support as many of these APIs as possible over time.</p>
+<h5 id="missing-javascript-features"><a class="header" href="#missing-javascript-features">Missing JavaScript features</a></h5>
+<p>There may be some missing JavaScript language features. You can track our language feature support based on <a href="https://boa-dev.github.io/boa/test262/">Boa's conformance with the ECMAScript test suite</a>. We also use multiple underlying compilers and bundlers before we execute your JavaScript, thus we may support more language features than the test suite conformance shows.</p>
+<h4 id="ic"><a class="header" href="#ic">IC</a></h4>
+<p>Some of the IC's main drawbacks can be summarized as follows:</p>
+<ul>
+<li>Early in its lifetime</li>
+<li>High latency</li>
 <li>Limited compute resources</li>
 <li>Expensive compute, storage, and network resources</li>
-<li>Unproven track record of Azle and the IC</li>
-<li>Lack of APIs from an environment you're used to (Node.js and web APIs)</li>
-<li>Lack of some npm packages</li>
+<li>Unproven track record</li>
+<li>Lack of mature tooling</li>
 <li>Lack of privacy</li>
-<li>Being associated with anything that's running?</li>
-<li>NNS centralization risks</li>
+<li>NNS risk</li>
 </ul>
 <p>On the path to a decentralized world computer, certain trade-offs must be made, at least at this time. Currently not all npm packages are available for use with Azle. Latencies are high for certain operations (like http requests, which take multiple seconds to complete). The heap is capped at 4GiB, and no robust general-purpose database solutions (like MySQL, Postgres, MongoDB, etc) currently exist (though Demergent Labs is building one called Sudograph).</p>
 <p>Keep in mind that the IC ecosystem is young but maturing. There are various problems that must be resolved along the path to a fully decentralized world computer, and latency of various operations, including missing APIs that you might be used to from a traditional OS or browser environment might be common.</p>
