@@ -23,65 +23,87 @@ Azle intends to be a full TypeScript/JavaScript environment for the IC (a decent
 
 One of the core benefits of Azle is that it allows web developers to bring their TypeScript/JavaScript skills to the IC. For example, Azle allows the use of various npm packages and VS Code intellisense.
 
-As for the IC, at the highest level we believe that it is best suited for building applications that desire the following:
+As for the IC, we believe its main benefits can be broken down into the following categories:
+
+-   [Ownership](#ownership)
+-   [Security](#security)
+-   [Developer Experience](#developer-experience)
+
+Most of these benefits stem from the decentralized nature of the IC, though the IC is best thought of as a progressively decentralizing cloud platform. As opposed to traditional cloud platforms, its goal is to be owned and controlled by many independent entities.
+
+#### Ownership
 
 -   [Full-stack group ownership](#full-stack-group-ownership)
 -   [Autonomous ownership](#autonomous-ownership)
 -   [Permanent APIs](#permanent-apis)
--   [Credible neutrality](#credibly-neutrality)
+-   [Credible neutrality](#credible-neutrality)
 -   [Reduced platform risk](#reduced-platform-risk)
--   [Blockchain integration](#blockchain-integration)
--   [High transparency](#high-transparency)
--   [Built-in security](#built-in-security)
--   [Built-in devops](#built-in-devops)
 
-Most of these benefits stem from the decentralized nature of the IC, though the IC is best thought of as a progressively decentralizing cloud platform. As opposed to traditional cloud platforms, its goal is to be owned and controlled by many independent entities.
-
-#### Full-stack group ownership
+##### Full-stack group ownership
 
 The IC allows you to build applications that are controlled directly and only (with some caveats) by a group of people. This is in opposition to most cloud applications written today, which must be under the control of a very limited number of people and often a single legal entity that answers directly to a cloud provider, which itself is a single legal entity.
 
 In the blockchain world, group-owned applications are known as [DAOs](https://en.wikipedia.org/wiki/Decentralized_autonomous_organization). As opposed to DAOs built on most blockchains, the IC allows full-stack applications to be controlled by groups. This means that the group fully controls the running instances of the frontend and the backend code.
 
-#### Autonomous ownership
+##### Autonomous ownership
 
 In addition to allowing applications to be owned by groups of people, the IC also allows applications to be owned by no one. This essentially creates autonomous applications or everlasting processes that execute indefinitely. The IC will allow such an application to run until it depletes its balance of cycles, or until the [NNS](https://internetcomputer.org/nns) votes to shut it down.
 
-#### Permanent APIs
+##### Permanent APIs
 
-Because most web APIs are owned and operated by individual entities, their fate is tied to that of their owners. If their owners go out of business, then those APIs may cease to exist. If their owners decide that they do not like or agree with you, they may restrict your access. In the end, they may decide to shut down or restrict access for arbitrary reasons.
+Because most web APIs are owned and operated by individual entities, their fate is tied to that of their owners. If their owners go out of business, then those APIs may cease to exist. If their owners decide that they do not like or agree with certain users, they may restrict their access. In the end, they may decide to shut down or restrict access for arbitrary reasons.
 
 Because the IC allows for group and autonomous ownership of cloud software, the IC is able to produce potentially permanent web APIs. A decentralized group of independent entities will find it difficult to censor API consumers or shut down an API. An autonomous API would take those difficulties to the extreme, as it would continue operating as long as consumers were willing to pay for it.
 
-#### Credible neutrality
+##### Credible neutrality
 
-Applications that require coordination between various parties that do not trust each other, might be best suited for the IC. Examples of these types of applications are app stores and ecommerce marketplaces. The merchants need a trusted platform to enforce fair conduct, but often we see that the marketplace begins to act in its own self-interest, and not the interests of the interacting parties. If they had a credibly neutral platform to codify their rules into, they could offload those risks and costs to this autonomous platform and profit.
+Group and autonomous ownership makes it is possible to build neutral cloud software on the IC. This type of software would allow independent parties to coordinate with reduced trust in each other or a single third-party coordinator.
 
-The IC is an ideal platform for building credibly neutral systems. The applications can be built to be autonomous (owned by no one) or by groups of people, as discussed above. A decentralized group of independent parties could ensure that a credibly neutral platform remains so. No one interest would be above the rest.
+This removes the risk of the third-party coordinator acting in its own self-interest against the interests of the coordinating participants. The coordinating participants would also find it difficult to implement changes that would benefit themselves to the detriment of other participants.
 
-Because the IC is not owned or controlled by any one entity or individual, the risk of being deplatformed is possibly reduced. There are various ways that an application can be censored, but to truly take it down requires a vote from the entire NNS community. Being deplatformed for political or religious reasons is highly unlikely.
+Examples could include mobile app stores, ecommerce marketplaces, and podcast directories.
 
-The IC is an ideal platform for building systems that must remain credibly neutral. It's possible to build software controlled by a large and diverse set of individuals, and no individuals at all.
+##### Reduced platform risk
 
-#### High transparency
+Because the IC is not owned or controlled by any one entity or individual, the risk of being deplatformed is reduced. This is in opposition to most cloud platforms, where the cloud provider itself generally has the power to arbitrarily remove users from its platform. While deplatforming can still occur on the IC, the only endongenous means of forcefully taking down an application is through an NNS vote.
 
-The IC allows you to build applications with verifiable source code. This means that the source code can be compiled into a Wasm binary, and a hash of the binary can be checked against the running hash to ensure that the code running on the IC does what the source code says it does.
+#### Security
 
-You can also build into these applications endpoints that return the current state of information, allowing anyone to audit what is going on.
+-   [Built-in replication](#built-in-replication)
+-   [Verifiable source code](#verifiable-source-code)
+-   [Blockchain integration](#blockchain-integration)
 
-#### Built-in security
+##### Built-in replication
 
-Because of built-in replication and the distribution of replica machines around the world, individual canisters are highly secure against various attack vectors. IC applications are distributed and replicated applications which use Byzantine Fault Tolerance to provide a high level of security and availability against various attack vectors.
+Replication has many benefits that stem from reducing various central points of failure.
 
-#### Reduced platform risk
+The IC is at its core a [Byzantine Fault Tolerant](https://en.wikipedia.org/wiki/Byzantine_fault) replicated compute environment. Applications are deployed to subnets which are composed of nodes running replicas. Each replica is an independent replicated state machine that executes an application's state transitions (usually initiated with HTTP requests) and persists the results.
 
-Because the IC is not owned or controlled by any one entity or individual, the risk of being deplatformed is possibly reduced. There are various ways that an application can be censored, but to truly take it down requires a vote from the entire NNS community. Being deplatformed for political or religious reasons is highly unlikely.
+This replication provides a high level of security out-of-the-box. It is also the foundation of a number of protocols that provide threshold cryptographic operations to IC applications.
 
-#### Blockchain integration
+##### Verifiable source code
 
-The IC has direct integration with the Bitcoin blockchain, and the IC hosts ICP and many NFT projects. Ethereum integration is possible now and a deeper/more native integration is possibly coming in the future.
+IC applications (canisters) are compiled into Wasm and deployed to the IC as Wasm modules. The IC hashes each canister's Wasm binary and stores it for public retrieval. The Wasm binary hash can be retrieved and compared with the hash of an independently compiled Wasm binary derived from available source code. If the hashes match, then one can know with a high degree of certainty that the application is executing the Wasm binary that was compiled from that source code.
 
-If you want to integrate with cryptocurrencies and other blockchain tokens, the IC provides unique benefits.
+##### Blockchain integration
+
+When compared with web APIs built for the same purpose, the IC provides a high degree of security when integrating with various other blockchains. It has a direct client integration with Bitcoin, allowing applications to query its state with BFT guarantees. A similar integration is coming for Ethereum.
+
+In addition to these blockchain client integrations, a [threshold ECDSA protocol](https://internetcomputer.org/docs/current/developer-docs/integrations/t-ecdsa/) (tECDSA) allows the IC to create keys and sign transactions on various [ECDSA chains](http://ethanfast.com/top-crypto.html). These chains include Bitcoin and Ethereum, and in the future the protocol may be extended to allow interaction with various [EdDSA chains](http://ethanfast.com/top-crypto.html). These direct integrations combined with tECDSA provide a much more secure way to provide blockchain functionality to end users than creating and storing their private keys on traditional cloud infrastructure.
+
+#### Developer experience
+
+-   [Developer experience](#developer-experience)
+-   [Built-in devops](#built-in-devops)
+-   uptime
+-   scalability
+-   built-in authentication
+
+##### Built-in authentication
+
+IC client tooling makes it easy to sign and send messages to the IC. The IC will automatically authenticate these messages by checking that they are signed by a public key. A compact representation of that public key, called a principal, is automatically available to applications through an API for each call.
+
+This makes life
 
 #### Built-in devops
 
