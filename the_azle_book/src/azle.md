@@ -93,23 +93,27 @@ In addition to these blockchain client integrations, a [threshold ECDSA protocol
 
 #### Developer experience
 
--   [Developer experience](#developer-experience)
 -   [Built-in devops](#built-in-devops)
--   uptime
--   scalability
--   built-in authentication
+-   [Built-in authentication](#built-in-authentication)
+-   [Orthogonal persistence](#orthogonal-persistence)
+
+##### Built-in devops
+
+The IC provides many devops benefits automatically. Though currently limited in its scalability, the protocol attempts to remove the need for developers to concern themselves with concepts such as autoscaling, load balancing, uptime, sandboxing, and firewalls.
+
+Correctly constructed canisters have a simple deploy process and automatically inherit these devops capabilities up unto the current scaling limits of the IC. DFINITY engineers are constantly working to remove scalability bottlenecks.
 
 ##### Built-in authentication
 
-IC client tooling makes it easy to sign and send messages to the IC. The IC will automatically authenticate these messages by checking that they are signed by a public key. A compact representation of that public key, called a principal, is automatically available to applications through an API for each call.
+IC client tooling makes it easy to sign and send messages to the IC, and [Internet Identity](https://internetcomputer.org/docs/current/tokenomics/identity-auth/what-is-ic-identity) provides a novel approach to self-custody of private keys. The IC automatically authenticates messages with the public key of the signer, and provides a compact representation of that public key, called a principal, to the application. The principal can be used for authorization purposes. This removes many authentication concerns from the developer.
 
-This makes life
+##### Orthogonal persistence
 
-#### Built-in devops
+The IC automatically persists its heap. This creates an extremely convenient way for developers to store application state, by simply writing into global variables in their programming language of choice. This is a great way to get started.
 
-The IC seeks to build into it many devops concepts, such as load balancing, autoscaling, redundancy, firewalls, etc. This provides a very simple backend/devops developer experience.
+If a canister upgrades its code, swapping out its Wasm binary, then the heap must be cleared. To overcome this limitation, there is a special area of memory called stable memory that persists across these canister upgrades. Special stable data structures provide a familiar API that allows writing into stable memory directly.
 
-Because the Internet Computer Protocol (ICP) seeks to build into it decentralization, distribution, security, etc, the developer experience is quite simple. With a few commands, one can deploy an application that takes advantage of the properties of ICP without having to go through the complicated configuration that would ensure on a traditional cloud platform. SaaS providers attempt to give you a similar DX but also bring with them the downsides of centralization.
+All of this together provides the foundation for a very simple persistence experience for the developer. The persistence tools now available and coming to the IC may be simpler than their equivalents on traditional cloud infrastructure.
 
 ### Drawbacks
 
