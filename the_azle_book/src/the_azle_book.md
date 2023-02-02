@@ -8,8 +8,10 @@ Chapter 20 is an in-depth reference of the APIs available to Azle canisters.
 
 Our intention is for new developers to use this book as a tutorial or course, starting at chapter 1 and working through chapter 19, using chapter 20 as a reference.
 
-There is also a companion video series on YouTube. Each chapter here will begin with the video companion as soon as it is available.
+There will also be a companion video series on YouTube. Each chapter here will begin with the video companion as soon as it is available.
 
 You should expect this book and its companion video series to continue to grow and change over time, as its authors and the IC grow and change.
 
-![Azle Logo](https://github.com/demergent-labs/azle/blob/main/logo/logo.svg)
+<div style="display: flex; justify-content: center">
+    <img src="logo.svg" alt="The Azle Logo" height="250px" />
+</div>

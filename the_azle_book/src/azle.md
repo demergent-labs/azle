@@ -13,40 +13,55 @@ Demergent Labs' [vision](https://github.com/demergent-labs/blog/blob/main/demerg
 
 ## Benefits and drawbacks
 
-Azle and the IC provide unique benefits and drawbacks, and the IC is not currently suitable for all application use-cases.
+Azle and the IC provide unique benefits and drawbacks, and both are not currently suitable for all application use-cases.
 
 The following information will help you to determine when Azle and the IC might be beneficial for your use-case.
 
 ### Benefits
 
-Azle allows web developers to bring their TypeScript/JavaScript skills to the IC (a decentralized cloud platform). It allows the use of various npm packages, VS Code intellisense, and much of what the TypeScript/JavaScript community has to offer.
+Azle intends to be a full TypeScript/JavaScript environment for the IC (a decentralized cloud platform), with support for all of the TypeScript/JavaScript language and as many relevant host APIs as possible. These host APIs will be similar to those available in the Node.js and web browser environments.
 
-As for the IC, at the highest level we believe that it is best suited for building applications that require the following:
+One of the core benefits of Azle is that it allows web developers to bring their TypeScript/JavaScript skills to the IC. For example, Azle allows the use of various npm packages and VS Code intellisense.
 
--   [Full-stack community ownership](#full-stack-community-ownership)
--   [Credible neutrality](#credibly-neutrality)
+As for the IC, at the highest level we believe that it is best suited for building applications that desire the following:
+
+-   [Full-stack group ownership](#full-stack-group-ownership)
+-   [Autonomous ownership](#autonomous-ownership)
 -   [Permanent APIs](#permanent-apis)
+-   [Credible neutrality](#credibly-neutrality)
+-   [Reduced platform risk](#reduced-platform-risk)
+-   [Blockchain integration](#blockchain-integration)
 -   [High transparency](#high-transparency)
 -   [Built-in security](#built-in-security)
--   [Reduced platform risk](#reduced-platform-risk)
--   [Integration with cryptocurrencies and blockchain tokens](#integration-with-cryptocurrencies-and-blockchain-tokens)
 -   [Built-in devops](#built-in-devops)
 
 Most of these benefits stem from the decentralized nature of the IC, though the IC is best thought of as a progressively decentralizing cloud platform. As opposed to traditional cloud platforms, its goal is to be owned and controlled by many independent entities.
 
-#### Full-stack community ownership
+#### Full-stack group ownership
 
-The IC allows you to build applications that are controlled directly by a group of people. In the blockchain world, these types of applications are known as [DAOs](https://en.wikipedia.org/wiki/Decentralized_autonomous_organization). As opposed to DAOs built on most blockchains, the IC allows full-stack applications to be controlled by groups. This means that the frontend and the backend code can only be updated by the group.
+The IC allows you to build applications that are controlled directly and only (with some caveats) by a group of people. This is in opposition to most cloud applications written today, which must be under the control of a very limited number of people and often a single legal entity that answers directly to a cloud provider, which itself is a single legal entity.
+
+In the blockchain world, group-owned applications are known as [DAOs](https://en.wikipedia.org/wiki/Decentralized_autonomous_organization). As opposed to DAOs built on most blockchains, the IC allows full-stack applications to be controlled by groups. This means that the group fully controls the running instances of the frontend and the backend code.
+
+#### Autonomous ownership
+
+In addition to allowing applications to be owned by groups of people, the IC also allows applications to be owned by no one. This essentially creates autonomous applications or everlasting processes that execute indefinitely. The IC will allow such an application to run until it depletes its balance of cycles, or until the [NNS](https://internetcomputer.org/nns) votes to shut it down.
+
+#### Permanent APIs
+
+Because most web APIs are owned and operated by individual entities, their fate is tied to that of their owners. If their owners go out of business, then those APIs may cease to exist. If their owners decide that they do not like or agree with you, they may restrict your access. In the end, they may decide to shut down or restrict access for arbitrary reasons.
+
+Because the IC allows for group and autonomous ownership of cloud software, the IC is able to produce potentially permanent web APIs. A decentralized group of independent entities will find it difficult to censor API consumers or shut down an API. An autonomous API would take those difficulties to the extreme, as it would continue operating as long as consumers were willing to pay for it.
 
 #### Credible neutrality
+
+Applications that require coordination between various parties that do not trust each other, might be best suited for the IC. Examples of these types of applications are app stores and ecommerce marketplaces. The merchants need a trusted platform to enforce fair conduct, but often we see that the marketplace begins to act in its own self-interest, and not the interests of the interacting parties. If they had a credibly neutral platform to codify their rules into, they could offload those risks and costs to this autonomous platform and profit.
+
+The IC is an ideal platform for building credibly neutral systems. The applications can be built to be autonomous (owned by no one) or by groups of people, as discussed above. A decentralized group of independent parties could ensure that a credibly neutral platform remains so. No one interest would be above the rest.
 
 Because the IC is not owned or controlled by any one entity or individual, the risk of being deplatformed is possibly reduced. There are various ways that an application can be censored, but to truly take it down requires a vote from the entire NNS community. Being deplatformed for political or religious reasons is highly unlikely.
 
 The IC is an ideal platform for building systems that must remain credibly neutral. It's possible to build software controlled by a large and diverse set of individuals, and no individuals at all.
-
-#### Permanent APIs
-
-It is possible to build APIs that are credibly neutral and not owned by any one group or entity. This allows for the creation of APIs that are essentially permanent, that only need to have their computations paid for to keep running. These APIs can be verified to execute in a certain way, and only need to be topped up to keep alive.
 
 #### High transparency
 
@@ -62,7 +77,7 @@ Because of built-in replication and the distribution of replica machines around 
 
 Because the IC is not owned or controlled by any one entity or individual, the risk of being deplatformed is possibly reduced. There are various ways that an application can be censored, but to truly take it down requires a vote from the entire NNS community. Being deplatformed for political or religious reasons is highly unlikely.
 
-#### Integration with cryptocurrencies and blockchain tokens
+#### Blockchain integration
 
 The IC has direct integration with the Bitcoin blockchain, and the IC hosts ICP and many NFT projects. Ethereum integration is possible now and a deeper/more native integration is possibly coming in the future.
 

@@ -36,7 +36,7 @@ export function generate_new_azle_project(
     writeFileSync(`${project_name}/src/index.ts`, index_ts);
     writeFileSync(`${project_name}/README.md`, readme_md);
 
-    execSync(`git init`);
+    execSync(`cd ${project_name} && git init`);
 }
 
 function generate_tsconfig(): string {
