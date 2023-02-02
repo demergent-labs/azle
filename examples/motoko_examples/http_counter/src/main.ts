@@ -1,12 +1,12 @@
 import {
     blob,
     Func,
-    FuncQuery,
     ic,
     nat,
     nat16,
     Opt,
     $query,
+    Query,
     StableBTreeMap,
     $update,
     Variant
@@ -28,7 +28,7 @@ type CallbackStrategy = {
     token: Token;
 };
 
-type Callback = Func<FuncQuery<(t: Token) => StreamingCallbackHttpResponse>>;
+type Callback = Func<(t: Token) => Query<StreamingCallbackHttpResponse>>;
 
 type StreamingStrategy = Variant<{
     Callback: CallbackStrategy;
