@@ -1917,11 +1917,11 @@
                             >
                         </h5>
                         <p>
-                            Azle is in beta. It's an immature project that may
-                            have unforeseen bugs and other issues. We're working
-                            constantly to improve it. We hope to get to a
-                            production-ready 1.0 in 2023. The following are the
-                            major blockers to 1.0:
+                            Azle reached beta in April of 2022. It's an immature
+                            project that may have unforeseen bugs and other
+                            issues. We're working constantly to improve it. We
+                            hope to get to a production-ready 1.0 in 2023. The
+                            following are the major blockers to 1.0:
                         </p>
                         <ul>
                             <li>
@@ -2038,50 +2038,120 @@
                             follows:
                         </p>
                         <ul>
-                            <li>Early in its lifetime</li>
-                            <li>High latency</li>
-                            <li>Limited compute resources</li>
+                            <li><a href="#early">Early</a></li>
                             <li>
-                                Expensive compute, storage, and network
-                                resources
+                                <a href="#high-latencies">High latencies</a>
                             </li>
-                            <li>Unproven track record</li>
-                            <li>Lack of mature tooling</li>
-                            <li>Lack of privacy</li>
-                            <li>NNS risk</li>
+                            <li>
+                                <a
+                                    href="#limited-and-expensive-compute-resources"
+                                    >Limited and expensive compute resources</a
+                                >
+                            </li>
+                            <li>
+                                <a href="#limited-scalability"
+                                    >Limited scalability</a
+                                >
+                            </li>
+                            <li>
+                                <a href="#lack-of-privacy">Lack of privacy</a>
+                            </li>
+                            <li><a href="#nns-risk">NNS risk</a></li>
                         </ul>
+                        <h5 id="early">
+                            <a
+                                class="header"
+                                href="#early"
+                                >Early</a
+                            >
+                        </h5>
                         <p>
-                            On the path to a decentralized world computer,
-                            certain trade-offs must be made, at least at this
-                            time. Currently not all npm packages are available
-                            for use with Azle. Latencies are high for certain
-                            operations (like http requests, which take multiple
-                            seconds to complete). The heap is capped at 4GiB,
-                            and no robust general-purpose database solutions
-                            (like MySQL, Postgres, MongoDB, etc) currently exist
-                            (though Demergent Labs is building one called
-                            Sudograph).
+                            The IC launched officially in May of 2021. As a
+                            relatively new project with an extremely ambitious
+                            vision, you can expect a small community, immature
+                            tooling, and an unproven track record. Much has been
+                            delivered, but many promises are yet to be
+                            fulfilled.
                         </p>
+                        <h5 id="high-latencies">
+                            <a
+                                class="header"
+                                href="#high-latencies"
+                                >High latencies</a
+                            >
+                        </h5>
                         <p>
-                            Keep in mind that the IC ecosystem is young but
-                            maturing. There are various problems that must be
-                            resolved along the path to a fully decentralized
-                            world computer, and latency of various operations,
-                            including missing APIs that you might be used to
-                            from a traditional OS or browser environment might
-                            be common.
+                            Any requests that change state on the IC must go
+                            through consensus, thus you can expect latencies of
+                            a few seconds for these types of requests. When
+                            canisters need to communicate with each other across
+                            subnets, these latencies can be even longer. Also
+                            cross-canister request latencies build up linearly.
+                            If canister A calls canister B calls canister C,
+                            then you can multiply the latency by the total
+                            number of calls.
                         </p>
+                        <h5 id="limited-and-expensive-compute-resources">
+                            <a
+                                class="header"
+                                href="#limited-and-expensive-compute-resources"
+                                >Limited and expensive compute resources</a
+                            >
+                        </h5>
                         <p>
-                            Azle is also currently in beta. It is currently
-                            being subjected to in-depth property-based tests,
-                            but those have not been completed. There are many
-                            example-based tests, but relatively few live
-                            applications. Azle is also built on the Boa engine
-                            which is not yet production-ready. It's important to
-                            keep these things in mind while developing Azle
-                            applications, it is your responsibility to
-                            understand the risks involved with deploying an Azle
-                            application to the IC.
+                            CPU usage, data storage, and network usage may be
+                            more expensive than the equivalent usage on
+                            traditional cloud platforms. Combining these costs
+                            with the high latencies explained above, it becomes
+                            readily apparent that the IC is currently not built
+                            for high-performance computing.
+                        </p>
+                        <h5 id="limited-scalability">
+                            <a
+                                class="header"
+                                href="#limited-scalability"
+                                >Limited scalability</a
+                            >
+                        </h5>
+                        <p>
+                            The IC might not be able to scale to the needs of
+                            your application. It is constantly seeking to
+                            improve scalability bottlenecks, but it will
+                            probably not be able to onboard millions of users to
+                            your traditional web application.
+                        </p>
+                        <h5 id="lack-of-privacy">
+                            <a
+                                class="header"
+                                href="#lack-of-privacy"
+                                >Lack of privacy</a
+                            >
+                        </h5>
+                        <p>
+                            You should assume that all of your application data
+                            is accessible to multiple third-parties with no
+                            direct relationship and limited commitment to you.
+                            Currently all canister state sits unencrypted on
+                            node operator's machines. Application-layer access
+                            controls for data are possible, but motivated node
+                            operators will have an easy time getting access to
+                            your data.
+                        </p>
+                        <h5 id="nns-risk">
+                            <a
+                                class="header"
+                                href="#nns-risk"
+                                >NNS risk</a
+                            >
+                        </h5>
+                        <p>
+                            The NNS has the ability to uninstall any canister
+                            and can generally change anything about the IC. As
+                            of the time of this writing, DFINITY effectively
+                            controls much of the NNS through its follower
+                            relationships. The NNS must mature and decentralize
+                            to provide practical and realistic guarantees to
+                            canisters and their users.
                         </p>
                     </main>
 

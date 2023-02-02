@@ -131,7 +131,7 @@ Some of Azle's main drawbacks can be summarized as follows:
 
 ##### Beta
 
-Azle is in beta. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2023. The following are the major blockers to 1.0:
+Azle reached beta in April of 2022. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2023. The following are the major blockers to 1.0:
 
 -   Extensive automated property testing (~Q1 2023)
 -   Multiple independent security reviews/audits (~Q1/Q2 2023)
@@ -165,17 +165,33 @@ There may be some missing JavaScript language features. You can track our langua
 
 Some of the IC's main drawbacks can be summarized as follows:
 
--   Early in its lifetime
--   High latency
--   Limited compute resources
--   Expensive compute, storage, and network resources
--   Unproven track record
--   Lack of mature tooling
--   Lack of privacy
--   NNS risk
+-   [Early](#early)
+-   [High latencies](#high-latencies)
+-   [Limited and expensive compute resources](#limited-and-expensive-compute-resources)
+-   [Limited scalability](#limited-scalability)
+-   [Lack of privacy](#lack-of-privacy)
+-   [NNS risk](#nns-risk)
 
-On the path to a decentralized world computer, certain trade-offs must be made, at least at this time. Currently not all npm packages are available for use with Azle. Latencies are high for certain operations (like http requests, which take multiple seconds to complete). The heap is capped at 4GiB, and no robust general-purpose database solutions (like MySQL, Postgres, MongoDB, etc) currently exist (though Demergent Labs is building one called Sudograph).
+##### Early
 
-Keep in mind that the IC ecosystem is young but maturing. There are various problems that must be resolved along the path to a fully decentralized world computer, and latency of various operations, including missing APIs that you might be used to from a traditional OS or browser environment might be common.
+The IC launched officially in May of 2021. As a relatively new project with an extremely ambitious vision, you can expect a small community, immature tooling, and an unproven track record. Much has been delivered, but many promises are yet to be fulfilled.
 
-Azle is also currently in beta. It is currently being subjected to in-depth property-based tests, but those have not been completed. There are many example-based tests, but relatively few live applications. Azle is also built on the Boa engine which is not yet production-ready. It's important to keep these things in mind while developing Azle applications, it is your responsibility to understand the risks involved with deploying an Azle application to the IC.
+##### High latencies
+
+Any requests that change state on the IC must go through consensus, thus you can expect latencies of a few seconds for these types of requests. When canisters need to communicate with each other across subnets, these latencies can be even longer. Also cross-canister request latencies build up linearly. If canister A calls canister B calls canister C, then you can multiply the latency by the total number of calls.
+
+##### Limited and expensive compute resources
+
+CPU usage, data storage, and network usage may be more expensive than the equivalent usage on traditional cloud platforms. Combining these costs with the high latencies explained above, it becomes readily apparent that the IC is currently not built for high-performance computing.
+
+##### Limited scalability
+
+The IC might not be able to scale to the needs of your application. It is constantly seeking to improve scalability bottlenecks, but it will probably not be able to onboard millions of users to your traditional web application.
+
+##### Lack of privacy
+
+You should assume that all of your application data is accessible to multiple third-parties with no direct relationship and limited commitment to you. Currently all canister state sits unencrypted on node operator's machines. Application-layer access controls for data are possible, but motivated node operators will have an easy time getting access to your data.
+
+##### NNS risk
+
+The NNS has the ability to uninstall any canister and can generally change anything about the IC. As of the time of this writing, DFINITY effectively controls much of the NNS through its follower relationships. The NNS must mature and decentralize to provide practical and realistic guarantees to canisters and their users.
