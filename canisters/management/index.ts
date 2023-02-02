@@ -169,7 +169,6 @@ export type HttpTransform = {
     context: blob;
 };
 
-$query;
 export type HttpTransformFunc = Func<
     (args: HttpTransformArgs) => Query<HttpResponse>
 >;
