@@ -1,3 +1,4 @@
+use cdk_framework::CanisterMethodType;
 use swc_common::SourceMap;
 use swc_ecma_ast::{ExportDecl, Module, ModuleDecl, ModuleItem, Stmt};
 
@@ -43,6 +44,13 @@ impl ModuleHelperMethods for Module {
                             )
                         ),
                     }
+                }
+
+                if i + 1 == self.body.len() && module_item.is_custom_decorator() {
+                    panic!(
+                        "{}",
+                        build_extraneous_decorator_error_message(module_item, source_map)
+                    )
                 }
 
                 previous_module_item_was_custom_decorator = module_item.is_custom_decorator();
@@ -117,10 +125,19 @@ fn build_extraneous_decorator_error_message(
 ) -> ErrorMessage {
     let custom_decorator_expr_stmt = custom_decorator_module_item.as_expr_stmt().unwrap();
     let span = custom_decorator_expr_stmt.span;
-    let annotation_type = custom_decorator_module_item
+    let annotation_type = match custom_decorator_module_item
         .to_canister_method_annotation()
         .unwrap()
-        .kind;
+        .kind
+    {
+        CanisterMethodType::Heartbeat => "$heartbeat",
+        CanisterMethodType::Init => "$init",
+        CanisterMethodType::InspectMessage => "$inspect_message",
+        CanisterMethodType::PostUpgrade => "$post_upgrade",
+        CanisterMethodType::PreUpgrade => "$pre_upgrade",
+        CanisterMethodType::Query => "$query",
+        CanisterMethodType::Update => "$update",
+    };
     let range = source_map.get_range(span);
     let example_function_declaration =
         "export function some_canister_method() {\n  // method body\n}";
