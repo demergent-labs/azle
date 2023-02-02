@@ -32,11 +32,15 @@ impl ModuleItemHelperMethods for ModuleItem {
                     return false;
                 }
 
-                // TODO: Note, I'm not sure how the ident wouldn't be there so I'm just
-                // unwrapping it. We should probably understand/handle this better
-                call_expr.callee.as_expr().unwrap().clone().ident().unwrap()
+                match &call_expr.callee {
+                    swc_ecma_ast::Callee::Expr(expr) => match &**expr {
+                        Expr::Ident(ident) => ident,
+                        _ => return false,
+                    },
+                    _ => return false,
+                }
             }
-            Expr::Ident(ident) => ident.clone(),
+            Expr::Ident(ident) => ident,
             _ => return false,
         };
 
