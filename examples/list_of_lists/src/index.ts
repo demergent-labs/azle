@@ -5,7 +5,6 @@ import {
     float32,
     float64,
     Func,
-    FuncQuery,
     int,
     int16,
     int32,
@@ -17,6 +16,7 @@ import {
     nat64,
     nat8,
     Opt,
+    Query,
     $query,
     reserved,
     Variant
@@ -33,7 +33,7 @@ type State = Variant<{
     gas: null;
 }>;
 
-type BasicFunc = Func<FuncQuery<(param1: string) => string>>;
+type BasicFunc = Func<(param1: string) => Query<string>>;
 
 $query;
 export function list_of_string_one(param: string[]): string[] {

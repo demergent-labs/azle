@@ -1,5 +1,5 @@
 use cdk_framework::{
-    self, traits::SystemCanisterMethodBuilder, AbstractCanisterTree, ActCanisterMethod,
+    self, nodes::ActCanisterMethod, traits::SystemCanisterMethodBuilder, AbstractCanisterTree,
     ActDataType, RequestType, ToAct,
 };
 
@@ -86,6 +86,7 @@ impl ToAct for TsAst {
             type_refs,
             update_methods,
             variants,
+            function_guards: vec![],
         }
     }
 }

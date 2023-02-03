@@ -1,15 +1,16 @@
 import {
     Func,
-    FuncQuery,
-    FuncUpdate,
     $init,
     nat64,
     ok,
+    Opt,
     Principal,
     $query,
     StableBTreeMap,
     $update,
-    Variant
+    Variant,
+    Query,
+    Update
 } from 'azle';
 import { Notifier, NotifierFunc } from '../notifiers/types';
 
@@ -28,9 +29,18 @@ type Reaction = Variant<{
     ComplexFunc: ComplexFunc;
 }>;
 
-type BasicFunc = Func<FuncQuery<(param1: string) => string>>;
-type ComplexFunc = Func<FuncUpdate<(user: User, reaction: Reaction) => nat64>>;
-type StableFunc = Func<FuncQuery<(param1: nat64, param2: string) => void>>;
+type BasicFunc = Func<(param1: string) => Query<string>>;
+type ComplexFunc = Func<(user: User, reaction: Reaction) => Update<nat64>>;
+type StableFunc = Func<(param1: nat64, param2: string) => Query<void>>;
+type NullFunc = Func<
+    (
+        param1: Opt<null>,
+        param2: null[],
+        param3: null,
+        param4: null[][],
+        param5: Opt<null>[]
+    ) => Query<null>
+>;
 
 $init;
 export function init_() {
@@ -53,6 +63,11 @@ export function get_stable_func(): StableFunc {
 $query;
 export function basic_func_param(basic_func: BasicFunc): BasicFunc {
     return basic_func;
+}
+
+$query;
+export function null_func_param(null_func: NullFunc): NullFunc {
+    return null_func;
 }
 
 $query;

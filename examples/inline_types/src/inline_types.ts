@@ -1,14 +1,14 @@
 import {
     Func,
-    FuncQuery,
-    FuncUpdate,
     InsertError,
     nat,
     nat64,
     Opt,
     $query,
+    Query,
     StableBTreeMap,
     $update,
+    Update,
     Variant
 } from 'azle';
 import {
@@ -195,47 +195,6 @@ export async function inline_record_return_type_as_external_canister_call(): Pro
 $query;
 export function inline_func(
     callback: Func<
-        FuncQuery<
-            (
-                primitive: string,
-                opt: Opt<{
-                    primitive: nat;
-                    opt: Opt<string>;
-                    vec: string[];
-                    record: { prop1: string };
-                    variant: Variant<{ v1: null; v2: null }>;
-                    func: Func<FuncUpdate<() => string>>;
-                }>,
-                vec: {
-                    primitive: nat;
-                    opt: Opt<string>;
-                    vec: string[];
-                    record: { prop1: string };
-                    variant: Variant<{ v1: null; v2: null }>;
-                    func: Func<FuncUpdate<() => string>>;
-                }[],
-                record: {
-                    prop1: string;
-                    optional: Opt<nat64>;
-                    variant: Variant<{ v1: null; v2: null }>;
-                },
-                variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
-                func: Func<
-                    FuncQuery<
-                        () => {
-                            prop1: string;
-                            variant: Variant<{
-                                v1: null;
-                                v2: { prop1: string };
-                            }>;
-                        }
-                    >
-                >
-            ) => void
-        >
-    >
-): Func<
-    FuncQuery<
         (
             primitive: string,
             opt: Opt<{
@@ -244,7 +203,7 @@ export function inline_func(
                 vec: string[];
                 record: { prop1: string };
                 variant: Variant<{ v1: null; v2: null }>;
-                func: Func<FuncUpdate<() => string>>;
+                func: Func<() => Update<string>>;
             }>,
             vec: {
                 primitive: nat;
@@ -252,7 +211,7 @@ export function inline_func(
                 vec: string[];
                 record: { prop1: string };
                 variant: Variant<{ v1: null; v2: null }>;
-                func: Func<FuncUpdate<() => string>>;
+                func: Func<() => Update<string>>;
             }[],
             record: {
                 prop1: string;
@@ -261,18 +220,51 @@ export function inline_func(
             },
             variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
             func: Func<
-                FuncQuery<
-                    () => {
-                        prop1: string;
-                        variant: Variant<{
-                            v1: null;
-                            v2: { prop1: string };
-                        }>;
-                    }
-                >
+                () => Query<{
+                    prop1: string;
+                    variant: Variant<{
+                        v1: null;
+                        v2: { prop1: string };
+                    }>;
+                }>
             >
-        ) => void
+        ) => Query<void>
     >
+): Func<
+    (
+        primitive: string,
+        opt: Opt<{
+            primitive: nat;
+            opt: Opt<string>;
+            vec: string[];
+            record: { prop1: string };
+            variant: Variant<{ v1: null; v2: null }>;
+            func: Func<() => Update<string>>;
+        }>,
+        vec: {
+            primitive: nat;
+            opt: Opt<string>;
+            vec: string[];
+            record: { prop1: string };
+            variant: Variant<{ v1: null; v2: null }>;
+            func: Func<() => Update<string>>;
+        }[],
+        record: {
+            prop1: string;
+            optional: Opt<nat64>;
+            variant: Variant<{ v1: null; v2: null }>;
+        },
+        variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
+        func: Func<
+            () => Query<{
+                prop1: string;
+                variant: Variant<{
+                    v1: null;
+                    v2: { prop1: string };
+                }>;
+            }>
+        >
+    ) => Query<void>
 > {
     return callback;
 }
@@ -286,7 +278,7 @@ export function complex(record: {
         vec: string[];
         record: { prop1: string };
         variant: Variant<{ v1: null; v2: null }>;
-        func: Func<FuncUpdate<() => string>>;
+        func: Func<() => Update<string>>;
     }>;
     vec: {
         primitive: nat;
@@ -294,7 +286,7 @@ export function complex(record: {
         vec: string[];
         record: { prop1: string };
         variant: Variant<{ v1: null; v2: null }>;
-        func: Func<FuncUpdate<() => string>>;
+        func: Func<() => Update<string>>;
     }[];
     record: {
         prop1: string;
@@ -303,12 +295,10 @@ export function complex(record: {
     };
     variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>;
     func: Func<
-        FuncQuery<
-            () => {
-                prop1: string;
-                variant: Variant<{ v1: null; v2: { prop1: string } }>;
-            }
-        >
+        () => Query<{
+            prop1: string;
+            variant: Variant<{ v1: null; v2: { prop1: string } }>;
+        }>
     >;
 }): {
     primitive: string;
@@ -318,7 +308,7 @@ export function complex(record: {
         vec: string[];
         record: { prop1: string };
         variant: Variant<{ v1: null; v2: null }>;
-        func: Func<FuncUpdate<() => string>>;
+        func: Func<() => Update<string>>;
     }>;
     vec: {
         primitive: nat;
@@ -326,7 +316,7 @@ export function complex(record: {
         vec: string[];
         record: { prop1: string };
         variant: Variant<{ v1: null; v2: null }>;
-        func: Func<FuncUpdate<() => string>>;
+        func: Func<() => Update<string>>;
     }[];
     record: {
         prop1: string;
@@ -335,12 +325,10 @@ export function complex(record: {
     };
     variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>;
     func: Func<
-        FuncQuery<
-            () => {
-                prop1: string;
-                variant: Variant<{ v1: null; v2: { prop1: string } }>;
-            }
-        >
+        () => Query<{
+            prop1: string;
+            variant: Variant<{ v1: null; v2: { prop1: string } }>;
+        }>
     >;
 } {
     return record;
