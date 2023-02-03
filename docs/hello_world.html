@@ -1401,15 +1401,250 @@
                             >
                         </h1>
                         <p>
-                            TODO I wonder if I should create a simple
-                            stand-alone repository that has this example in
-                            it...yes, then they can just look at that repo and
-                            figure everything out from there!!!
+                            Let's build your first application (canister) with
+                            Azle!
                         </p>
                         <p>
-                            Use this:
-                            https://github.com/demergent-labs/azle_hello_world
+                            Before embarking please ensure you've followed all
+                            of
+                            <a href="./installation.html"
+                                >the installation instructions</a
+                            >.
                         </p>
+                        <p>
+                            We'll build a simple
+                            <code>Hello World</code> canister that shows the
+                            basics of importing Azle, exposing a query method,
+                            exposing an update method, and storing some state in
+                            a global variable. We'll then interact with it from
+                            the command line and from our web browser.
+                        </p>
+                        <p>
+                            If you'd like to skip all of the steps we're about
+                            to go through and instead get going on your own
+                            instantly, assuming you have
+                            <a href="./installation.html#nodejs"
+                                >Node.js/npm installed</a
+                            >, just run this command in your terminal:
+                        </p>
+                        <pre><code class="language-bash">npx azle new azle_hello_world
+</code></pre>
+                        <p>
+                            This will create the
+                            <code>Hello World</code> project found in
+                            <a
+                                href="https://github.com/demergent-labs/azle_hello_world"
+                                >this GitHub repo</a
+                            >. You can then peruse the code and follow the
+                            instructions in the <code>README.md</code> or
+                            continue here.
+                        </p>
+                        <h2 id="the-project-directory-and-file-structure">
+                            <a
+                                class="header"
+                                href="#the-project-directory-and-file-structure"
+                                >The project directory and file structure</a
+                            >
+                        </h2>
+                        <p>
+                            Assuming you're starting completely from scratch,
+                            run these commands to setup your project's directory
+                            and file structure:
+                        </p>
+                        <pre><code class="language-bash">mkdir azle_hello_world
+cd azle_hello_world
+
+mkdir src
+
+touch src/index.ts
+touch tsconfig.json
+touch dfx.json
+</code></pre>
+                        <p>
+                            Now install Azle, which will create your
+                            <code>package.json</code> and
+                            <code>package-lock.json</code> files:
+                        </p>
+                        <pre><code class="language-bash">npm install azle
+</code></pre>
+                        <p>
+                            Open up <code>azle_hello_world</code> in your text
+                            editor (we recommend
+                            <a href="https://code.visualstudio.com/">VS Code</a
+                            >).
+                        </p>
+                        <h2 id="indexts">
+                            <a
+                                class="header"
+                                href="#indexts"
+                                >index.ts</a
+                            >
+                        </h2>
+                        <p>
+                            Here's the main code of the project, which you
+                            should put in the
+                            <code>azle_hello_world/src/index.ts</code> file of
+                            your canister:
+                        </p>
+                        <pre><code class="language-typescript">import { $query, $update } from 'azle';
+
+// This is a global variable that is stored on the heap
+let message: string = '';
+
+// Query calls complete quickly because they do not go through consensus
+$query;
+export function get_message(): string {
+    return message;
+}
+
+// Update calls take a few seconds to complete
+// This is because they persist state changes and go through consensus
+$update;
+export function set_message(new_message: string) {
+    message = new_message; // This change will be persisted
+}
+</code></pre>
+                        <p>Let's discuss each section of the code.</p>
+                        <pre><code class="language-typescript">import { $query, $update } from 'azle';
+</code></pre>
+                        <p>
+                            The code starts off by importing the
+                            <code>$query</code> and
+                            <code>$update</code> annotations from
+                            <code>azle</code>. The <code>azle</code> module
+                            provides most of the Internet Computer (IC) APIs for
+                            your canister.
+                        </p>
+                        <pre><code class="language-typescript">// This is a global variable that is stored on the heap
+let message: string = '';
+</code></pre>
+                        <p>
+                            We have created a global variable to store the state
+                            of our application. This variable is in scope to all
+                            of the functions defined in this module. We have
+                            annotated it with a type and set it equal to an
+                            empty string.
+                        </p>
+                        <pre><code class="language-typescript">// Query calls complete quickly because they do not go through consensus
+$query;
+export function get_message(): string {
+    return message;
+}
+</code></pre>
+                        <p>
+                            We are exposing a canister query method here. When
+                            query methods are called they execute quickly
+                            because they do not have to go through consensus.
+                            This method simply returns our global
+                            <code>message</code> variable.
+                        </p>
+                        <pre><code class="language-typescript">// Update calls take a few seconds to complete
+// This is because they persist state changes and go through consensus
+$update;
+export function set_message(new_message: string) {
+    message = new_message; // This change will be persisted
+}
+</code></pre>
+                        <p>
+                            We are exposing an update method here. When update
+                            methods are called they take a few seconds to
+                            complete. This is because they persist changes and
+                            go through consensus. A majority of nodes in a
+                            subnet must agree on all state changes introduced in
+                            calls to update methods. This method accepts a
+                            <code>string</code> from the caller and will store
+                            it in our global <code>message</code> variable.
+                        </p>
+                        <p>
+                            That's it! We've created a very simple getter/setter
+                            <code>Hello World</code> application. But no
+                            <code>Hello World</code> project is complete without
+                            actually yelling <code>Hello world</code>!
+                        </p>
+                        <p>
+                            To do that, we'll need to setup the rest of our
+                            project.
+                        </p>
+                        <h2 id="tsconfigjson">
+                            <a
+                                class="header"
+                                href="#tsconfigjson"
+                                >tsconfig.json</a
+                            >
+                        </h2>
+                        <p>
+                            Create the following in
+                            <code>azle_hello_world/tsconfig.json</code>:
+                        </p>
+                        <pre><code class="language-json">{
+    &quot;compilerOptions&quot;: {
+        &quot;strict&quot;: true,
+        &quot;target&quot;: &quot;ES2020&quot;,
+        &quot;experimentalDecorators&quot;: true,
+        &quot;strictPropertyInitialization&quot;: false,
+        &quot;moduleResolution&quot;: &quot;node&quot;,
+        &quot;allowJs&quot;: true,
+        &quot;outDir&quot;: &quot;HACK_BECAUSE_OF_ALLOW_JS&quot;
+    }
+}
+</code></pre>
+                        <h3 id="dfxjson">
+                            <a
+                                class="header"
+                                href="#dfxjson"
+                                >dfx.json</a
+                            >
+                        </h3>
+                        <p>
+                            Create the following in
+                            <code>azle_hello_world/dfx.json</code>:
+                        </p>
+                        <pre><code class="language-json">{
+    &quot;canisters&quot;: {
+        &quot;azle_hello_world&quot;: {
+            &quot;type&quot;: &quot;custom&quot;,
+            &quot;build&quot;: &quot;npx azle azle_hello_world&quot;,
+            &quot;root&quot;: &quot;src&quot;,
+            &quot;ts&quot;: &quot;src/index.ts&quot;,
+            &quot;candid&quot;: &quot;src/index.did&quot;,
+            &quot;wasm&quot;: &quot;.azle/azle_hello_world/azle_hello_world.wasm.gz&quot;
+        }
+    }
+}
+</code></pre>
+                        <h2 id="local-deployment">
+                            <a
+                                class="header"
+                                href="#local-deployment"
+                                >Local deployment</a
+                            >
+                        </h2>
+                        <p>Let's deploy to our local replica.</p>
+                        <p>First startup the replica:</p>
+                        <pre><code class="language-bash">dfx start --background
+</code></pre>
+                        <p>Then deploy the canister:</p>
+                        <pre><code class="language-bash">dfx deploy
+</code></pre>
+                        <p>Once we've deployed we can ask for our message:</p>
+                        <pre><code class="language-bash">dfx canister call azle_hello_world get_message
+</code></pre>
+                        <p>
+                            We should see
+                            <code>(&quot;&quot;)</code> representing an empty
+                            message.
+                        </p>
+                        <p>Now let's yell <code>Hello World!</code>:</p>
+                        <pre><code class="language-bash">dfx canister call set_message '(&quot;Hello World!&quot;)'
+</code></pre>
+                        <p>Retrieve the message:</p>
+                        <pre><code class="language-bash">dfx canister call get_message
+</code></pre>
+                        <p>
+                            We should see
+                            <code>(&quot;Hello World!&quot;)</code>.
+                        </p>
+                        <p>You did it!</p>
                     </main>
 
                     <nav

@@ -69,6 +69,8 @@ Because the IC is not owned or controlled by any one entity or individual, the r
 
 #### Security
 
+TODO add in sandboxing, firewalls, certified variables/certification in general/threshold protocols
+
 -   [Built-in replication](#built-in-replication)
 -   [Verifiable source code](#verifiable-source-code)
 -   [Blockchain integration](#blockchain-integration)
@@ -99,7 +101,7 @@ In addition to these blockchain client integrations, a [threshold ECDSA protocol
 
 ##### Built-in devops
 
-The IC provides many devops benefits automatically. Though currently limited in its scalability, the protocol attempts to remove the need for developers to concern themselves with concepts such as autoscaling, load balancing, uptime, sandboxing, and firewalls.
+The IC provides many devops benefits automatically. Though currently limited in its scalability, the protocol attempts to remove the need for developers to concern themselves with concepts such as autoscaling, load balancing, uptime, sandboxing, and firewalls (TODO maybe sandboxing and firewalls and authentication should be under security).
 
 Correctly constructed canisters have a simple deploy process and automatically inherit these devops capabilities up unto the current scaling limits of the IC. DFINITY engineers are constantly working to remove scalability bottlenecks.
 

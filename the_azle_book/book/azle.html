@@ -186,6 +186,7 @@
 <h5 id="reduced-platform-risk"><a class="header" href="#reduced-platform-risk">Reduced platform risk</a></h5>
 <p>Because the IC is not owned or controlled by any one entity or individual, the risk of being deplatformed is reduced. This is in opposition to most cloud platforms, where the cloud provider itself generally has the power to arbitrarily remove users from its platform. While deplatforming can still occur on the IC, the only endongenous means of forcefully taking down an application is through an NNS vote.</p>
 <h4 id="security"><a class="header" href="#security">Security</a></h4>
+<p>TODO add in sandboxing, firewalls, certified variables/certification in general/threshold protocols</p>
 <ul>
 <li><a href="#built-in-replication">Built-in replication</a></li>
 <li><a href="#verifiable-source-code">Verifiable source code</a></li>
@@ -207,7 +208,7 @@
 <li><a href="#orthogonal-persistence">Orthogonal persistence</a></li>
 </ul>
 <h5 id="built-in-devops"><a class="header" href="#built-in-devops">Built-in devops</a></h5>
-<p>The IC provides many devops benefits automatically. Though currently limited in its scalability, the protocol attempts to remove the need for developers to concern themselves with concepts such as autoscaling, load balancing, uptime, sandboxing, and firewalls.</p>
+<p>The IC provides many devops benefits automatically. Though currently limited in its scalability, the protocol attempts to remove the need for developers to concern themselves with concepts such as autoscaling, load balancing, uptime, sandboxing, and firewalls (TODO maybe sandboxing and firewalls and authentication should be under security).</p>
 <p>Correctly constructed canisters have a simple deploy process and automatically inherit these devops capabilities up unto the current scaling limits of the IC. DFINITY engineers are constantly working to remove scalability bottlenecks.</p>
 <h5 id="built-in-authentication"><a class="header" href="#built-in-authentication">Built-in authentication</a></h5>
 <p>IC client tooling makes it easy to sign and send messages to the IC, and <a href="https://internetcomputer.org/docs/current/tokenomics/identity-auth/what-is-ic-identity">Internet Identity</a> provides a novel approach to self-custody of private keys. The IC automatically authenticates messages with the public key of the signer, and provides a compact representation of that public key, called a principal, to the application. The principal can be used for authorization purposes. This removes many authentication concerns from the developer.</p>

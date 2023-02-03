@@ -1,5 +1,179 @@
 # Hello World
 
-TODO I wonder if I should create a simple stand-alone repository that has this example in it...yes, then they can just look at that repo and figure everything out from there!!!
+Let's build your first application (canister) with Azle!
 
-Use this: https://github.com/demergent-labs/azle_hello_world
+Before embarking please ensure you've followed all of [the installation instructions](./installation.md).
+
+We'll build a simple `Hello World` canister that shows the basics of importing Azle, exposing a query method, exposing an update method, and storing some state in a global variable. We'll then interact with it from the command line and from our web browser.
+
+If you'd like to skip all of the steps we're about to go through and instead get going on your own instantly, assuming you have [Node.js/npm installed](./installation.md#nodejs), just run this command in your terminal:
+
+```bash
+npx azle new azle_hello_world
+```
+
+This will create the `Hello World` project found in [this GitHub repo](https://github.com/demergent-labs/azle_hello_world). You can then peruse the code and follow the instructions in the `README.md` or continue here.
+
+## The project directory and file structure
+
+Assuming you're starting completely from scratch, run these commands to setup your project's directory and file structure:
+
+```bash
+mkdir azle_hello_world
+cd azle_hello_world
+
+mkdir src
+
+touch src/index.ts
+touch tsconfig.json
+touch dfx.json
+```
+
+Now install Azle, which will create your `package.json` and `package-lock.json` files:
+
+```bash
+npm install azle
+```
+
+Open up `azle_hello_world` in your text editor (we recommend [VS Code](https://code.visualstudio.com/)).
+
+## index.ts
+
+Here's the main code of the project, which you should put in the `azle_hello_world/src/index.ts` file of your canister:
+
+```typescript
+import { $query, $update } from 'azle';
+
+// This is a global variable that is stored on the heap
+let message: string = '';
+
+// Query calls complete quickly because they do not go through consensus
+$query;
+export function get_message(): string {
+    return message;
+}
+
+// Update calls take a few seconds to complete
+// This is because they persist state changes and go through consensus
+$update;
+export function set_message(new_message: string) {
+    message = new_message; // This change will be persisted
+}
+```
+
+Let's discuss each section of the code.
+
+```typescript
+import { $query, $update } from 'azle';
+```
+
+The code starts off by importing the `$query` and `$update` annotations from `azle`. The `azle` module provides most of the Internet Computer (IC) APIs for your canister.
+
+```typescript
+// This is a global variable that is stored on the heap
+let message: string = '';
+```
+
+We have created a global variable to store the state of our application. This variable is in scope to all of the functions defined in this module. We have annotated it with a type and set it equal to an empty string.
+
+```typescript
+// Query calls complete quickly because they do not go through consensus
+$query;
+export function get_message(): string {
+    return message;
+}
+```
+
+We are exposing a canister query method here. When query methods are called they execute quickly because they do not have to go through consensus. This method simply returns our global `message` variable.
+
+```typescript
+// Update calls take a few seconds to complete
+// This is because they persist state changes and go through consensus
+$update;
+export function set_message(new_message: string) {
+    message = new_message; // This change will be persisted
+}
+```
+
+We are exposing an update method here. When update methods are called they take a few seconds to complete. This is because they persist changes and go through consensus. A majority of nodes in a subnet must agree on all state changes introduced in calls to update methods. This method accepts a `string` from the caller and will store it in our global `message` variable.
+
+That's it! We've created a very simple getter/setter `Hello World` application. But no `Hello World` project is complete without actually yelling `Hello world`!
+
+To do that, we'll need to setup the rest of our project.
+
+## tsconfig.json
+
+Create the following in `azle_hello_world/tsconfig.json`:
+
+```json
+{
+    "compilerOptions": {
+        "strict": true,
+        "target": "ES2020",
+        "experimentalDecorators": true,
+        "strictPropertyInitialization": false,
+        "moduleResolution": "node",
+        "allowJs": true,
+        "outDir": "HACK_BECAUSE_OF_ALLOW_JS"
+    }
+}
+```
+
+### dfx.json
+
+Create the following in `azle_hello_world/dfx.json`:
+
+```json
+{
+    "canisters": {
+        "azle_hello_world": {
+            "type": "custom",
+            "build": "npx azle azle_hello_world",
+            "root": "src",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
+            "wasm": ".azle/azle_hello_world/azle_hello_world.wasm.gz"
+        }
+    }
+}
+```
+
+## Local deployment
+
+Let's deploy to our local replica.
+
+First startup the replica:
+
+```bash
+dfx start --background
+```
+
+Then deploy the canister:
+
+```bash
+dfx deploy
+```
+
+Once we've deployed we can ask for our message:
+
+```bash
+dfx canister call azle_hello_world get_message
+```
+
+We should see `("")` representing an empty message.
+
+Now let's yell `Hello World!`:
+
+```bash
+dfx canister call set_message '("Hello World!")'
+```
+
+Retrieve the message:
+
+```bash
+dfx canister call get_message
+```
+
+We should see `("Hello World!")`.
+
+You did it!
