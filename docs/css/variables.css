@@ -1,3 +1,4 @@
+
 /* Globals */
 
 :root {
@@ -5,9 +6,8 @@
     --page-padding: 15px;
     --content-max-width: 750px;
     --menu-bar-height: 50px;
-    --mono-font: 'Source Code Pro', Consolas, 'Ubuntu Mono', Menlo,
-        'DejaVu Sans Mono', monospace, monospace;
-    --code-font-size: 0.875em; /* please adjust the ace font size accordingly in editor.js */
+    --mono-font: "Source Code Pro", Consolas, "Ubuntu Mono", Menlo, "DejaVu Sans Mono", monospace, monospace;
+    --code-font-size: 0.875em /* please adjust the ace font size accordingly in editor.js */
 }
 
 /* Themes */
@@ -102,7 +102,7 @@
     --sidebar-active: #1f1fff;
     --sidebar-spacer: #f4f4f4;
 
-    --scrollbar: #8f8f8f;
+    --scrollbar: #8F8F8F;
 
     --icons: #747474;
     --icons-hover: #000000;
