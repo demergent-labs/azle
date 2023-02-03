@@ -2428,6 +2428,44 @@ nvm install 18
                                 >Hello World</a
                             >
                         </h1>
+                        <ul>
+                            <li>
+                                <a
+                                    href="hello_world.html#the-project-directory-and-file-structure"
+                                    >The project directory and file structure</a
+                                >
+                            </li>
+                            <li>
+                                <a href="hello_world.html#indexts">index.ts</a>
+                            </li>
+                            <li>
+                                <a href="hello_world.html#tsconfigjson"
+                                    >tsconfig.json</a
+                                >
+                            </li>
+                            <li>
+                                <a href="hello_world.html#dfxjson">dfx.json</a>
+                            </li>
+                            <li>
+                                <a href="hello_world.html#local-deployment"
+                                    >Local deployment</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="hello_world.html#interacting-with-your-canister-from-the-command-line"
+                                    >Interacting with your canister from the
+                                    command line</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="hello_world.html#interacting-with-your-canister-from-the-web-ui"
+                                    >Interacting with your canister from the web
+                                    UI</a
+                                >
+                            </li>
+                        </ul>
                         <p>
                             Let's build your first application (canister) with
                             Azle!
@@ -2616,13 +2654,13 @@ export function set_message(new_message: string) {
     }
 }
 </code></pre>
-                        <h3 id="dfxjson">
+                        <h2 id="dfxjson">
                             <a
                                 class="header"
                                 href="#dfxjson"
                                 >dfx.json</a
                             >
-                        </h3>
+                        </h2>
                         <p>
                             Create the following in
                             <code>azle_hello_world/dfx.json</code>:
@@ -2654,6 +2692,16 @@ export function set_message(new_message: string) {
                         <p>Then deploy the canister:</p>
                         <pre><code class="language-bash">dfx deploy
 </code></pre>
+                        <h2
+                            id="interacting-with-your-canister-from-the-command-line"
+                        >
+                            <a
+                                class="header"
+                                href="#interacting-with-your-canister-from-the-command-line"
+                                >Interacting with your canister from the command
+                                line</a
+                            >
+                        </h2>
                         <p>Once we've deployed we can ask for our message:</p>
                         <pre><code class="language-bash">dfx canister call azle_hello_world get_message
 </code></pre>
@@ -2672,7 +2720,32 @@ export function set_message(new_message: string) {
                             We should see
                             <code>(&quot;Hello World!&quot;)</code>.
                         </p>
-                        <p>You did it!</p>
+                        <h2 id="interacting-with-your-canister-from-the-web-ui">
+                            <a
+                                class="header"
+                                href="#interacting-with-your-canister-from-the-web-ui"
+                                >Interacting with your canister from the web
+                                UI</a
+                            >
+                        </h2>
+                        <p>
+                            After deploying your canister, you should see output
+                            similar to the following in your terminal:
+                        </p>
+                        <pre><code class="language-bash">Deployed canisters.
+URLs:
+  Backend canister via Candid interface:
+    azle_hello_world: http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai
+</code></pre>
+                        <p>
+                            Open up
+                            <a
+                                href="http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai"
+                                >http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai</a
+                            >
+                            to access the web UI and interact with your
+                            canister.
+                        </p>
                         <div
                             style="
                                 break-before: page;
@@ -2686,32 +2759,282 @@ export function set_message(new_message: string) {
                                 >Deployment</a
                             >
                         </h1>
-                        <h2 id="common-installation-issues">
+                        <ul>
+                            <li>
+                                <a
+                                    href="deployment.html#starting-the-local-replica"
+                                    >Starting the local replica</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="deployment.html#deploying-to-the-local-replica"
+                                    >Deploying to the local replica</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="deployment.html#interacting-with-your-canister"
+                                    >Interacting with your canister</a
+                                >
+                            </li>
+                            <li>
+                                <a href="deployment.html#deploying-to-mainnet"
+                                    >Deploying to mainnet</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="deployment.html#common-deployment-issues"
+                                    >Common deployment issues</a
+                                >
+                            </li>
+                        </ul>
+                        <p>
+                            There are two main Internet Computer (IC)
+                            environments that you will generally interact with:
+                            the local replica and mainnet.
+                        </p>
+                        <p>
+                            When developing on your local machine, our
+                            recommended flow is to start up a local replica in
+                            your project's root directoy and then deploy to it
+                            for local testing.
+                        </p>
+                        <h2 id="starting-the-local-replica">
                             <a
                                 class="header"
-                                href="#common-installation-issues"
-                                >Common Installation Issues</a
+                                href="#starting-the-local-replica"
+                                >Starting the local replica</a
                             >
                         </h2>
                         <p>
-                            I think these issues come during the first deploy
-                            and not on installation
+                            Open a terminal and navigate to your project's root
+                            directory:
+                        </p>
+                        <pre><code class="language-bash">dfx start
+</code></pre>
+                        <p>
+                            Alternatively you can start the local replica as a
+                            background process:
+                        </p>
+                        <pre><code class="language-bash">dfx start --background
+</code></pre>
+                        <p>
+                            If you want to stop a local replica running in the
+                            background:
+                        </p>
+                        <pre><code class="language-bash">dfx stop
+</code></pre>
+                        <p>
+                            If you ever see this error after
+                            <code>dfx stop</code>:
+                        </p>
+                        <pre><code class="language-bash">Error: Failed to kill all processes.  Remaining: 627221 626923 627260
+</code></pre>
+                        <p>Then try this:</p>
+                        <pre><code class="language-bash">sudo kill -9 627221
+sudo kill -9 626923
+sudo kill -9 627260
+</code></pre>
+                        <p>
+                            If your replica starts behaving strangely, we
+                            recommend starting the replica clean, which will
+                            clean the <code>dfx</code> state of your project:
+                        </p>
+                        <pre><code class="language-bash">dfx start --clean
+</code></pre>
+                        <h2 id="deploying-to-the-local-replica">
+                            <a
+                                class="header"
+                                href="#deploying-to-the-local-replica"
+                                >Deploying to the local replica</a
+                            >
+                        </h2>
+                        <p>
+                            To deploy all canisters defined in your
+                            <code>dfx.json</code>:
+                        </p>
+                        <pre><code class="language-bash">dfx deploy
+</code></pre>
+                        <p>To deploy an individual canister:</p>
+                        <pre><code class="language-bash">dfx deploy canister_name
+</code></pre>
+                        <h2 id="interacting-with-your-canister">
+                            <a
+                                class="header"
+                                href="#interacting-with-your-canister"
+                                >Interacting with your canister</a
+                            >
+                        </h2>
+                        <p>
+                            As a developer you can generally interact with your
+                            canister in three ways:
                         </p>
                         <ul>
                             <li>
-                                Ubuntu
-                                <ul>
-                                    <li>
-                                        error: linker cc not found (sudo apt
-                                        install build-essential)
-                                    </li>
-                                    <li>
-                                        is cmake not installed? (sudo apt
-                                        install cmake)
-                                    </li>
-                                </ul>
+                                <a href="deployment.html#dfx-command-line"
+                                    >dfx command line</a
+                                >
+                            </li>
+                            <li>
+                                <a href="deployment.html#dfx-web-ui"
+                                    >dfx web UI</a
+                                >
+                            </li>
+                            <li>
+                                <a href="deployment.html#dfinityagent"
+                                    >@dfinity/agent</a
+                                >
                             </li>
                         </ul>
+                        <h3 id="dfx-command-line">
+                            <a
+                                class="header"
+                                href="#dfx-command-line"
+                                >dfx command line</a
+                            >
+                        </h3>
+                        <p>
+                            You can see a more complete reference
+                            <a
+                                href="https://internetcomputer.org/docs/current/references/cli-reference/"
+                                >here</a
+                            >.
+                        </p>
+                        <p>
+                            The commands you are likely to use most frequently
+                            are:
+                        </p>
+                        <pre><code class="language-bash"># assume a canister named my_canister
+
+# builds and deploys all canisters specified in dfx.json
+dfx deploy
+
+# builds all canisters specified in dfx.json
+dfx build
+
+# builds and deploys my_canister
+dfx deploy my_canister
+
+# builds my_canister
+dfx build my_canister
+
+# removes the Wasm binary and state of my_canister
+dfx uninstall-code my_canister
+
+# calls the method_name method on my_canister with a string argument
+dfx canister call my_canister method_name '(&quot;This is a Candid string argument&quot;)'
+</code></pre>
+                        <h3 id="dfx-web-ui">
+                            <a
+                                class="header"
+                                href="#dfx-web-ui"
+                                >dfx web UI</a
+                            >
+                        </h3>
+                        <p>
+                            After deploying your canister, you should see output
+                            similar to the following in your terminal:
+                        </p>
+                        <pre><code class="language-bash">Deployed canisters.
+URLs:
+  Backend canister via Candid interface:
+    my_canister: http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai
+</code></pre>
+                        <p>
+                            Open up
+                            <a
+                                href="http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai"
+                                >http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai</a
+                            >
+                            to access the web UI.
+                        </p>
+                        <h3 id="dfinityagent">
+                            <a
+                                class="header"
+                                href="#dfinityagent"
+                                >@dfinity/agent</a
+                            >
+                        </h3>
+                        <p>
+                            <a
+                                href="https://www.npmjs.com/package/@dfinity/agent"
+                                >@dfinity/agent</a
+                            >
+                            is the TypeScript/JavaScript client library for
+                            interacting with canisters on the IC. If you are
+                            building a client web application, this is probably
+                            what you'll want to use.
+                        </p>
+                        <p>
+                            There are other agents for other languages as well:
+                        </p>
+                        <ul>
+                            <li>
+                                <a href="https://github.com/ic4j/ic4j-agent"
+                                    >Java</a
+                                >
+                            </li>
+                            <li>
+                                <a href="https://github.com/rocklabs-io/ic-py"
+                                    >Python</a
+                                >
+                            </li>
+                            <li>
+                                <a href="https://crates.io/crates/ic-agent"
+                                    >Rust</a
+                                >
+                            </li>
+                        </ul>
+                        <h2 id="deploying-to-mainnet">
+                            <a
+                                class="header"
+                                href="#deploying-to-mainnet"
+                                >Deploying to mainnet</a
+                            >
+                        </h2>
+                        <p>
+                            Assuming you have
+                            <a
+                                href="https://internetcomputer.org/docs/current/developer-docs/quickstart/network-quickstart"
+                                >created a cycles wallet</a
+                            >
+                            and funded it with cycles, then you are ready to
+                            deploy to mainnet.
+                        </p>
+                        <p>To deploy all canisters defined in your dfx.json:</p>
+                        <pre><code class="language-bash">dfx deploy --network ic
+</code></pre>
+                        <p>To deploy an individual canister:</p>
+                        <pre><code class="language-bash">dfx deploy --network ic canister_name
+</code></pre>
+                        <h2 id="common-deployment-issues">
+                            <a
+                                class="header"
+                                href="#common-deployment-issues"
+                                >Common deployment issues</a
+                            >
+                        </h2>
+                        <h3 id="ubuntu">
+                            <a
+                                class="header"
+                                href="#ubuntu"
+                                >Ubuntu</a
+                            >
+                        </h3>
+                        <p>Error:</p>
+                        <pre><code class="language-bash">linker cc not found
+</code></pre>
+                        <p>Resolution:</p>
+                        <pre><code class="language-bash">sudo apt install build-essential
+</code></pre>
+                        <p>Error:</p>
+                        <pre><code class="language-bash">is cmake not installed?
+</code></pre>
+                        <p>Resolution:</p>
+                        <pre><code class="language-bash">sudo apt install cmake
+</code></pre>
                         <div
                             style="
                                 break-before: page;

@@ -1,5 +1,13 @@
 # Hello World
 
+-   [The project directory and file structure](#the-project-directory-and-file-structure)
+-   [index.ts](#indexts)
+-   [tsconfig.json](#tsconfigjson)
+-   [dfx.json](#dfxjson)
+-   [Local deployment](#local-deployment)
+-   [Interacting with your canister from the command line](#interacting-with-your-canister-from-the-command-line)
+-   [Interacting with your canister from the web UI](#interacting-with-your-canister-from-the-web-ui)
+
 Let's build your first application (canister) with Azle!
 
 Before embarking please ensure you've followed all of [the installation instructions](./installation.md).
@@ -119,7 +127,7 @@ Create the following in `azle_hello_world/tsconfig.json`:
 }
 ```
 
-### dfx.json
+## dfx.json
 
 Create the following in `azle_hello_world/dfx.json`:
 
@@ -154,6 +162,8 @@ Then deploy the canister:
 dfx deploy
 ```
 
+## Interacting with your canister from the command line
+
 Once we've deployed we can ask for our message:
 
 ```bash
@@ -176,4 +186,15 @@ dfx canister call get_message
 
 We should see `("Hello World!")`.
 
-You did it!
+## Interacting with your canister from the web UI
+
+After deploying your canister, you should see output similar to the following in your terminal:
+
+```bash
+Deployed canisters.
+URLs:
+  Backend canister via Candid interface:
+    azle_hello_world: http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&id=rrkah-fqaaa-aaaaa-aaaaq-cai
+```
+
+Open up [http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&id=rrkah-fqaaa-aaaaa-aaaaq-cai](http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&id=rrkah-fqaaa-aaaaa-aaaaq-cai) to access the web UI and interact with your canister.
