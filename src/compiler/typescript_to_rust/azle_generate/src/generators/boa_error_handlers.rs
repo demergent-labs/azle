@@ -3,7 +3,7 @@ use quote::quote;
 
 pub fn generate() -> TokenStream {
     quote! {
-        pub fn _azle_handle_boa_result(
+        pub fn _azle_unwrap_boa_result(
             boa_result: boa_engine::JsResult<boa_engine::JsValue>,
             context: &mut boa_engine::Context
         ) -> boa_engine::JsValue {

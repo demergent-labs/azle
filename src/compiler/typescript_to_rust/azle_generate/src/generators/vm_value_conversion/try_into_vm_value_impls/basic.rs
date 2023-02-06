@@ -41,7 +41,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk::export::Principal {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                let exports_js_value = _azle_handle_boa_result(context.eval("exports"), context);
+                let exports_js_value = _azle_unwrap_boa_result(context.eval("exports"), context);
                 let exports_js_object = exports_js_value.as_object().unwrap();
 
                 let principal_class_js_value = exports_js_object.get("Principal", context).unwrap();
@@ -50,7 +50,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 let from_text_js_value = principal_class_js_object.get("fromText", context).unwrap();
                 let from_text_js_object = from_text_js_value.as_object().unwrap();
 
-                let principal_js_value = _azle_handle_boa_result(from_text_js_object.call(&principal_class_js_value, &[self.to_text().into()], context), context);
+                let principal_js_value = _azle_unwrap_boa_result(from_text_js_object.call(&principal_class_js_value, &[self.to_text().into()], context), context);
 
                 Ok(principal_js_value)
             }
