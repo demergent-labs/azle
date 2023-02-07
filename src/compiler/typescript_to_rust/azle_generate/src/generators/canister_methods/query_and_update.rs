@@ -67,48 +67,28 @@ fn generate_return_expression(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream 
 
     let return_type = fn_decl.get_return_ts_type();
 
-    if type_is_null(return_type) {
-        return quote! {
-            if !_azle_final_return_value.is_null() {
-                ic_cdk::api::trap("TypeError: value is not of type 'null'");
-            }
-            _azle_final_return_value.try_from_vm_value(&mut *_azle_boa_context).unwrap()
-        };
-    }
-
-    if type_is_void(return_type) {
-        return quote! {
-            if !_azle_final_return_value.is_undefined() {
-                ic_cdk::api::trap("TypeError: value is not of type 'void'");
-            }
-            _azle_final_return_value.try_from_vm_value(&mut *_azle_boa_context).unwrap()
-        };
-    }
+    let null_and_void_handler = match return_type {
+        TsType::TsKeywordType(keyword) => match keyword.kind {
+            TsNullKeyword => quote! {
+                if !_azle_final_return_value.is_null() {
+                    ic_cdk::api::trap("TypeError: value is not of type 'null'");
+                }
+            },
+            TsVoidKeyword => quote! {
+                if !_azle_final_return_value.is_undefined() {
+                    ic_cdk::api::trap("TypeError: value is not of type 'void'");
+                }
+            },
+            _ => quote! {},
+        },
+        _ => quote! {},
+    };
 
     quote! {
+        #null_and_void_handler
         match _azle_final_return_value.try_from_vm_value(&mut *_azle_boa_context) {
             Ok(return_value) => return_value,
             Err(e) => ic_cdk::api::trap(&format!("TypeError: {}",&e.0))
         }
-    }
-}
-
-fn type_is_null(ts_type: &TsType) -> bool {
-    match ts_type {
-        TsType::TsKeywordType(keyword) => match keyword.kind {
-            TsNullKeyword => true,
-            _ => false,
-        },
-        _ => false,
-    }
-}
-
-fn type_is_void(ts_type: &TsType) -> bool {
-    match ts_type {
-        TsType::TsKeywordType(keyword) => match keyword.kind {
-            TsVoidKeyword => true,
-            _ => false,
-        },
-        _ => false,
     }
 }
