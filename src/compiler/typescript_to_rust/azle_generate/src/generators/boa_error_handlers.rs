@@ -12,7 +12,7 @@ pub fn generate() -> TokenStream {
                 Err(_azle_boa_error) => {
                     let error_message = _azle_js_value_to_string(_azle_boa_error.to_opaque(context), context);
 
-                    panic!("Azle runtime error: {}", error_message);
+                    ic_cdk::api::trap(&format!("Uncaught {}", error_message));
                 },
             }
         }

@@ -57,7 +57,7 @@ pub fn generate(canister_methods: &Vec<ActCanisterMethod>) -> TokenStream {
 
                     let error_message = _azle_js_value_to_string(js_value.clone(), _azle_boa_context);
 
-                    panic!("Azle runtime error: {}", error_message);
+                    ic_cdk::api::trap(&format!("Uncaught {}", error_message));
                 },
                 boa_engine::builtins::promise::PromiseState::Pending => {
                     PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
