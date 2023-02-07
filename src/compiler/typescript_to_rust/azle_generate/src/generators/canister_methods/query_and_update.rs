@@ -67,23 +67,46 @@ fn generate_return_expression(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream 
 
     let return_type = fn_decl.get_return_ts_type();
 
-    if type_is_null_or_void(return_type) {
+    if type_is_null(return_type) {
         return quote! {
-            return;
+            if !_azle_final_return_value.is_null() {
+                ic_cdk::api::trap("TypeError: value is not of type 'null'");
+            }
+            _azle_final_return_value.try_from_vm_value(&mut *_azle_boa_context).unwrap()
+        };
+    }
+
+    if type_is_void(return_type) {
+        return quote! {
+            if !_azle_final_return_value.is_undefined() {
+                ic_cdk::api::trap("TypeError: value is not of type 'void'");
+            }
+            _azle_final_return_value.try_from_vm_value(&mut *_azle_boa_context).unwrap()
         };
     }
 
     quote! {
-        _azle_final_return_value.try_from_vm_value(&mut *_azle_boa_context).unwrap()
+        match _azle_final_return_value.try_from_vm_value(&mut *_azle_boa_context) {
+            Ok(return_value) => return_value,
+            Err(e) => ic_cdk::api::trap(&format!("TypeError: {}",&e.0))
+        }
     }
 }
 
-/// Returns true if the return type is `null`, or `void`. Otherwise returns false.
-fn type_is_null_or_void(ts_type: &TsType) -> bool {
+fn type_is_null(ts_type: &TsType) -> bool {
     match ts_type {
         TsType::TsKeywordType(keyword) => match keyword.kind {
-            // TODO: Consider handling `TsNeverKeyword` and `TsUndefinedKeyword`
-            TsNullKeyword | TsVoidKeyword => true,
+            TsNullKeyword => true,
+            _ => false,
+        },
+        _ => false,
+    }
+}
+
+fn type_is_void(ts_type: &TsType) -> bool {
+    match ts_type {
+        TsType::TsKeywordType(keyword) => match keyword.kind {
+            TsVoidKeyword => true,
             _ => false,
         },
         _ => false,
