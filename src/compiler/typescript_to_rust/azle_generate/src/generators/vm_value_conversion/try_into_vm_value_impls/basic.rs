@@ -20,7 +20,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk::export::candid::Empty {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                panic!("Empty cannot be converted into JsValue");
+                Err(CdkActTryIntoVmValueError("Empty cannot be converted into JsValue".to_string()))
             }
         }
 
