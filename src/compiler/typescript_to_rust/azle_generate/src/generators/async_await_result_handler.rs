@@ -55,7 +55,7 @@ pub fn generate(canister_methods: &Vec<ActCanisterMethod>) -> TokenStream {
                         promise_map.remove(_azle_uuid);
                     });
 
-                    let error_message = _azle_handle_boa_error(js_value.clone(), _azle_boa_context);
+                    let error_message = _azle_js_value_to_string(js_value.clone(), _azle_boa_context);
 
                     panic!("Azle runtime error: {}", error_message);
                 },

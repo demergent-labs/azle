@@ -10,14 +10,14 @@ pub fn generate() -> TokenStream {
             match boa_result {
                 Ok(_azle_boa_return_value) => _azle_boa_return_value,
                 Err(_azle_boa_error) => {
-                    let error_message = _azle_handle_boa_error(_azle_boa_error.to_opaque(context), context);
+                    let error_message = _azle_js_value_to_string(_azle_boa_error.to_opaque(context), context);
 
                     panic!("Azle runtime error: {}", error_message);
                 },
             }
         }
 
-        fn _azle_handle_boa_error(error_value: boa_engine::JsValue, context: &mut boa_engine::Context) -> String {
+        fn _azle_js_value_to_string(error_value: boa_engine::JsValue, context: &mut boa_engine::Context) -> String {
             match &error_value {
                 boa_engine::JsValue::BigInt(bigint) => bigint.to_string(),
                 boa_engine::JsValue::Boolean(boolean) => boolean.to_string(),
