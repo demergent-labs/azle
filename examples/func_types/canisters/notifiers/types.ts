@@ -1,14 +1,13 @@
 import {
     blob,
-    Canister,
     CanisterResult,
     ExternalCanister,
     Func,
-    Oneway,
+    FuncOneway,
     query
 } from 'azle';
 
-export type NotifierFunc = Func<(message: blob) => Oneway>;
+export type NotifierFunc = Func<FuncOneway<(message: blob) => void>>;
 
 export type NotifierOld = Canister<{
     get_notifier(): CanisterResult<NotifierFunc>;

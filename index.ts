@@ -117,20 +117,6 @@ type ic = {
     trap: (message: string) => never;
 };
 
-export type PreUpgrade = void;
-export type PostUpgrade = void;
-export type Heartbeat = void;
-export type Init = void;
-export type InspectMessage = void;
-export type Query<T> = T;
-export type Manual<T> = void;
-export type Update<T> = T;
-export type Oneway = void;
-
-// TODO see if we can get the T here to have some more information, like the func type
-// TODO we especially want to add the possibility of an optional cycle parameter and the notify method
-export type Canister<T> = T;
-
 export type Variant<T> = Partial<T>;
 export type Opt<T> = T | null;
 
@@ -206,10 +192,13 @@ export function attempt<T, E>(
     }
 }
 
+// TODO rename these to Query, Update, and Oneway after the custom decorators refactor
+export type FuncQuery<T> = T;
+export type FuncUpdate<T> = T;
+export type FuncOneway<T> = T;
+
 // TODO type this more strictly
-export type Func<
-    T extends (...args: any[]) => Query<any> | Update<any> | Oneway
-> = [Principal, string];
+export type Func<T extends (...args: any[]) => any> = [Principal, string];
 
 export { Principal } from '@dfinity/principal';
 
@@ -312,3 +301,5 @@ export const $post_upgrade = (options: { guard: string }) => {};
 export const $pre_upgrade = (options: { guard: string }) => {};
 export const $query = (options: { guard: string }) => {};
 export const $update = (options: { guard: string }) => {};
+
+export type Manual<T> = void;
