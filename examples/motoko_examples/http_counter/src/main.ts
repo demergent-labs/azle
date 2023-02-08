@@ -1,7 +1,7 @@
 import {
     blob,
     Func,
-    FuncQuery,
+    Query,
     ic,
     nat,
     nat16,
@@ -28,7 +28,7 @@ type CallbackStrategy = {
     token: Token;
 };
 
-type Callback = Func<FuncQuery<(t: Token) => StreamingCallbackHttpResponse>>;
+type Callback = Func<Query<(t: Token) => StreamingCallbackHttpResponse>>;
 
 type StreamingStrategy = Variant<{
     Callback: CallbackStrategy;

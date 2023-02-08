@@ -1,7 +1,7 @@
 import {
     Func,
-    FuncQuery,
-    FuncUpdate,
+    Query,
+    Update,
     $init,
     nat64,
     ok,
@@ -29,11 +29,11 @@ type Reaction = Variant<{
     ComplexFunc: ComplexFunc;
 }>;
 
-type BasicFunc = Func<FuncQuery<(param1: string) => string>>;
-type ComplexFunc = Func<FuncUpdate<(user: User, reaction: Reaction) => nat64>>;
-type StableFunc = Func<FuncQuery<(param1: nat64, param2: string) => void>>;
+type BasicFunc = Func<Query<(param1: string) => string>>;
+type ComplexFunc = Func<Update<(user: User, reaction: Reaction) => nat64>>;
+type StableFunc = Func<Query<(param1: nat64, param2: string) => void>>;
 type NullFunc = Func<
-    FuncQuery<
+    Query<
         (
             param1: Opt<null>,
             param2: null[],
