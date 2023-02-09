@@ -196,12 +196,12 @@ export function attempt<T, E>(
     }
 }
 
-export type Query<T> = T;
-export type Update<T> = T;
-export type Oneway<T> = T;
+// TODO type these more strictly
+export type Query<T extends (...args: any[]) => any> = [Principal, string];
+export type Update<T extends (...args: any[]) => any> = [Principal, string];
+export type Oneway<T extends (...args: any[]) => any> = [Principal, string];
 
-// TODO type this more strictly
-export type Func<T extends (...args: any[]) => any> = [Principal, string];
+export type Func<T> = T;
 
 export { Principal } from '@dfinity/principal';
 
