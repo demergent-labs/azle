@@ -1,4 +1,4 @@
-use swc_common::Span;
+use swc_common::{source_map::Pos, Span};
 
 use super::AzleTypeRef;
 use crate::{
@@ -211,27 +211,37 @@ impl AzleTypeRef<'_> {
     }
 
     fn func_wrong_enclosed_type_error(&self) -> ErrorMessage {
-        let example_func = self.generate_example_func();
-        let modified_source = self
-            .source_map
-            .generate_modified_source(self.get_enclosed_span(), &example_func);
-        let suggestion = Some(Suggestion {
-            title: "Funcs must have a function as the enclosed type.".to_string(),
-            range: self
-                .source_map
-                .generate_modified_range(self.get_enclosed_span(), &example_func),
-            source: modified_source,
-            annotation: Some("Did you mean to have that type as a parameter?".to_string()),
-            import_suggestion: None,
-        });
+        let example_func = "<Update<() => void>".to_string();
+
+        let absolute_range = (self.ts_type_ref.span.lo, self.ts_type_ref.span.hi);
+        let source = self.source_map.get_source_from_range(absolute_range);
+
+        let offset = self.ts_type_ref.span.lo.to_usize() - self.get_range().0;
+        let range = (
+            self.get_range().0,
+            self.ts_type_ref.span.hi.to_usize() - offset,
+        );
+
         ErrorMessage {
-            title: "Invalid Func".to_string(),
+            title: "Invalid Func declaration".to_string(),
             origin: self.get_origin(),
             line_number: self.get_line_number(),
-            source: self.get_source(),
-            range: self.source_map.get_range(self.get_enclosed_span()),
-            annotation: "Must have a function enclosed here.".to_string(),
-            suggestion,
+            source,
+            range,
+            annotation: "invalid inner type here".to_string(),
+            suggestion: Some(Suggestion {
+                title:
+                    "Funcs must have either Query, Update, or Oneway as the enclosed type. E.g.:"
+                        .to_string(),
+                range: self
+                    .source_map
+                    .generate_modified_range(self.get_enclosed_span(), &example_func),
+                source: self
+                    .source_map
+                    .generate_modified_source(self.ts_type_ref.span, &example_func),
+                annotation: Some("Did you mean to have that type as a parameter?".to_string()),
+                import_suggestion: None,
+            }),
         }
     }
 
@@ -261,7 +271,7 @@ impl AzleTypeRef<'_> {
 
     fn generate_example_func(&self) -> String {
         if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
-            "Func<() => Update<void>>".to_string()
+            "Update<() => void".to_string()
         } else {
             let enclosed_types = self
                 .ts_type_ref
@@ -273,7 +283,7 @@ impl AzleTypeRef<'_> {
                     format!("{}param_name{}: {}, ", acc, index, source_text)
                 });
             let enclosed_types = enclosed_types[..enclosed_types.len() - 2].to_string();
-            format!("<({}) => Update<void>>", enclosed_types)
+            format!("<Update<({}) => void>", enclosed_types)
         }
     }
 
