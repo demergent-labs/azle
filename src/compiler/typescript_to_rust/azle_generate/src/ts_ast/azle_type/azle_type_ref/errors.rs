@@ -220,7 +220,7 @@ impl AzleTypeRef<'_> {
     // the wrong name, we should only modify the name in the example, (rather
     // than nuking their function signature).
     fn func_wrong_enclosed_type_error(&self) -> ErrorMessage {
-        let example_func = "Update<() => void".to_string();
+        let example_func = "Update<() => void>".to_string();
 
         let type_params_absolute_range = (self.get_enclosed_span().lo, self.get_enclosed_span().hi);
         let source = self
@@ -236,7 +236,7 @@ impl AzleTypeRef<'_> {
             "{}{}{}",
             source[..start_pos + 1].to_string(),
             example_func,
-            source[end_pos..].to_string()
+            source[end_pos - 1..].to_string()
         );
 
         ErrorMessage {
