@@ -32,9 +32,12 @@ impl GetDependencies for AzleTypeRef<'_> {
             "Opt" => self
                 .get_enclosed_azle_type()
                 .get_dependent_types(type_alias_lookup, found_type_names),
-            "Func" => self
-                .get_enclosed_azle_type()
-                .get_dependent_types(type_alias_lookup, found_type_names),
+            "Func" => {
+                let request_type_type_ref =
+                    self.get_enclosed_azle_type().as_azle_type_ref().unwrap();
+                let azle_fn_type = request_type_type_ref.get_enclosed_azle_type();
+                azle_fn_type.get_dependent_types(type_alias_lookup, found_type_names)
+            }
             "Variant" => self
                 .get_enclosed_azle_type()
                 .get_dependent_types(type_alias_lookup, found_type_names),

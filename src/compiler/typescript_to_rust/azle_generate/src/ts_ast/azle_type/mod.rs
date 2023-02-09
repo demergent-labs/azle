@@ -39,6 +39,13 @@ impl<'a> AzleType<'a> {
         }
     }
 
+    pub fn as_azle_type_ref(self) -> Option<AzleTypeRef<'a>> {
+        match self {
+            AzleType::AzleTypeRef(azle_type_ref) => Some(azle_type_ref),
+            _ => None,
+        }
+    }
+
     // It seems like these would be useful, but we aren't using them right now,
     // but they can hang out here until we are done that way if we need them
     // they are here. though its not like they are that hard to write up from
@@ -47,13 +54,6 @@ impl<'a> AzleType<'a> {
     //     match self {
     //         AzleType::AzleTypeLit(_) => true,
     //         _ => false,
-    //     }
-    // }
-    //
-    // pub fn as_azle_type_ref(self) -> Option<AzleTypeRef<'a>> {
-    //     match self {
-    //         AzleType::AzleTypeRef(azle_type_ref) => Some(azle_type_ref),
-    //         _ => None,
     //     }
     // }
     //
