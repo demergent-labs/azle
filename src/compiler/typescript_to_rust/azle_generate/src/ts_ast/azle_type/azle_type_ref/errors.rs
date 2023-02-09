@@ -210,16 +210,33 @@ impl AzleTypeRef<'_> {
         }
     }
 
+    // TODO: 2 ways to improve this:
+    //
+    // 1. If the enclosed type is a TsFunc type, suggest that they wrap it in
+    // `Oneway`, `Query`, or `Update` and show them what that would look like in
+    // the example.
+    //
+    // 2. If the enclosed type is a TypeRef that contains a TsFunc, just with
+    // the wrong name, we should only modify the name in the example, (rather
+    // than nuking their function signature).
     fn func_wrong_enclosed_type_error(&self) -> ErrorMessage {
-        let example_func = "<Update<() => void>".to_string();
+        let example_func = "Update<() => void".to_string();
 
-        let absolute_range = (self.ts_type_ref.span.lo, self.ts_type_ref.span.hi);
-        let source = self.source_map.get_source_from_range(absolute_range);
+        let type_params_absolute_range = (self.get_enclosed_span().lo, self.get_enclosed_span().hi);
+        let source = self
+            .source_map
+            .get_source_from_range(type_params_absolute_range);
 
-        let offset = self.ts_type_ref.span.lo.to_usize() - self.get_range().0;
-        let range = (
-            self.get_range().0,
-            self.ts_type_ref.span.hi.to_usize() - offset,
+        let start_pos = self.source_map.get_range(self.get_enclosed_span()).0;
+        let offset = type_params_absolute_range.0.to_usize() - start_pos;
+        let end_pos = self.get_enclosed_span().hi.to_usize() - offset;
+        let range = (start_pos, end_pos);
+
+        let modified_source = format!(
+            "{}{}{}",
+            source[..start_pos + 1].to_string(),
+            example_func,
+            source[end_pos..].to_string()
         );
 
         ErrorMessage {
@@ -228,18 +245,14 @@ impl AzleTypeRef<'_> {
             line_number: self.get_line_number(),
             source,
             range,
-            annotation: "invalid inner type here".to_string(),
+            annotation: "the type params here are invalid".to_string(),
             suggestion: Some(Suggestion {
                 title:
                     "Funcs must have either Query, Update, or Oneway as the enclosed type. E.g.:"
                         .to_string(),
-                range: self
-                    .source_map
-                    .generate_modified_range(self.get_enclosed_span(), &example_func),
-                source: self
-                    .source_map
-                    .generate_modified_source(self.ts_type_ref.span, &example_func),
-                annotation: Some("Did you mean to have that type as a parameter?".to_string()),
+                range: (start_pos + 1, start_pos + 1 + example_func.len()),
+                source: modified_source,
+                annotation: None,
                 import_suggestion: None,
             }),
         }
@@ -271,7 +284,7 @@ impl AzleTypeRef<'_> {
 
     fn generate_example_func(&self) -> String {
         if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
-            "Update<() => void".to_string()
+            "Func<Update<() => void>>".to_string()
         } else {
             let enclosed_types = self
                 .ts_type_ref

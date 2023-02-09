@@ -12,8 +12,8 @@ use super::AzleTypeRef;
 use crate::{
     generators::func,
     ts_ast::{
-        azle_type::AzleType, AzleFnOrConstructorType, FunctionAndMethodTypeHelperMethods,
-        GenerateInlineName, GetName,
+        ast_traits::GetTsType, azle_type::AzleType, AzleFnOrConstructorType,
+        FunctionAndMethodTypeHelperMethods, GenerateInlineName, GetName,
     },
 };
 
@@ -46,19 +46,27 @@ impl ToActDataType for AzleTypeRef<'_> {
 
 impl AzleTypeRef<'_> {
     fn to_func(&self, func_name_option: &Option<&String>) -> ActDataType {
-        let azle_fn_type = match self.get_enclosed_azle_type() {
+        let request_type_type_ref = match self.get_enclosed_azle_type() {
+            AzleType::AzleTypeRef(azle_type_ref) => azle_type_ref,
+            _ => panic!("{}", self.wrong_enclosed_type_error()),
+        };
+
+        let mode = request_type_type_ref.get_name();
+        if !(mode == "Query" || mode == "Update" || mode == "Oneway") {
+            panic!("{}", self.wrong_enclosed_type_error())
+        };
+        let azle_fn_type = match request_type_type_ref.get_enclosed_azle_type() {
             AzleType::AzleFnOrConstructorType(fn_or_const) => match fn_or_const {
                 AzleFnOrConstructorType::AzleFnType(ts_fn_type) => ts_fn_type,
             },
             _ => panic!("{}", self.wrong_enclosed_type_error()),
         };
-        let return_type = match azle_fn_type.get_return_type() {
-            Some(ts_type) => {
-                let azle_type = AzleType::from_ts_type(ts_type, self.source_map);
-                Some(azle_type.to_act_data_type(&None))
-            }
-            None => None,
-        };
+
+        let return_type = AzleType::from_ts_type(
+            azle_fn_type.get_ts_type_ann().get_ts_type(),
+            self.source_map,
+        )
+        .to_act_data_type(&None);
         let param_types: Vec<ActDataType> = azle_fn_type
             .get_param_types()
             .iter()
@@ -67,7 +75,6 @@ impl AzleTypeRef<'_> {
                 azle_param.to_act_data_type(&None)
             })
             .collect();
-        let func_mode = azle_fn_type.get_func_mode();
 
         let func_name = if let Some(func_name) = func_name_option {
             (**func_name).clone()
@@ -84,8 +91,8 @@ impl AzleTypeRef<'_> {
         let func = Func {
             name: func_name,
             params: param_types,
-            return_type: Box::from(return_type),
-            mode: func_mode,
+            return_type: Box::from(Some(return_type)),
+            mode: mode.to_string(),
             to_vm_value,
             list_to_vm_value,
             from_vm_value,

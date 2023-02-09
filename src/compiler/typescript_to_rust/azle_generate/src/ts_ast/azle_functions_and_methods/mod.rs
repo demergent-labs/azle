@@ -1,6 +1,6 @@
 mod ts_fn_param;
 
-use swc_ecma_ast::{TsEntityName, TsFnParam, TsType, TsTypeAnn};
+use swc_ecma_ast::{TsFnParam, TsType, TsTypeAnn};
 
 use super::{GetName, GetTsType};
 
@@ -16,43 +16,6 @@ pub trait FunctionAndMethodTypeHelperMethods {
     }
 
     fn get_return_type(&self) -> Option<TsType> {
-        let mode = self.get_func_mode();
-        if mode == "Oneway" {
-            None
-        } else {
-            let ts_type = self.get_ts_type_ann().get_ts_type();
-            let ts_type_ref = ts_type.as_ts_type_ref().unwrap();
-            match &ts_type_ref.type_params {
-                Some(type_param_inst) => {
-                    if type_param_inst.params.len() != 1 {
-                        panic!("Func must specify exactly one return type")
-                    }
-                    match type_param_inst.params.get(0) {
-                        Some(param) => {
-                            let ts_type = &**param;
-                            Some(ts_type.clone())
-                        }
-                        None => panic!("Func must specify exactly one return type"),
-                    }
-                }
-                None => panic!("Func must specify a return type"),
-            }
-        }
-    }
-
-    fn get_func_mode(&self) -> String {
-        match self.get_ts_type_ann().get_ts_type() {
-            TsType::TsTypeRef(type_reference) => match &type_reference.type_name {
-                TsEntityName::TsQualifiedName(_) => panic!("Unsupported qualified name. Func return type must directly be Query, Update, or Oneway"),
-                TsEntityName::Ident(identifier) => {
-                let mode = identifier.get_name();
-                if !self.get_valid_return_types().contains(&mode) {
-                    panic!("Return type must be one of {:?}", self.get_valid_return_types())
-                }
-                mode.to_string()
-            }
-            },
-            _ => panic!("Return type must be one of {:?}", self.get_valid_return_types()),
-        }
+        Some(self.get_ts_type_ann().get_ts_type())
     }
 }
