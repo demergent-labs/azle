@@ -1,11 +1,11 @@
 use cdk_framework::CanisterMethodType;
 use swc_common::SourceMap;
-use swc_ecma_ast::{ExportDecl, Module, ModuleDecl, ModuleItem, Stmt};
+use swc_ecma_ast::{ClassDecl, ExportDecl, Module, ModuleDecl, ModuleItem, Stmt};
 
-use super::{source_map::GetSourceFileInfo, AzleFnDecl, AzleTypeAliasDecl};
+use super::{source_map::GetSourceFileInfo, AzleFnDecl, AzleTypeAliasDecl, GetName};
 use crate::{
     errors::{ErrorMessage, Suggestion},
-    ts_ast::module_item::ModuleItemHelperMethods,
+    ts_ast::{module_item::ModuleItemHelperMethods, Mapped},
 };
 
 pub trait ModuleHelperMethods {
@@ -13,6 +13,10 @@ pub trait ModuleHelperMethods {
     fn get_export_decls(&self) -> Vec<ExportDecl>;
     fn get_azle_type_alias_decls<'a>(&'a self, source_map: &'a SourceMap)
         -> Vec<AzleTypeAliasDecl>;
+    fn get_external_canister_class_declarations<'a>(
+        &'a self,
+        source_map: &'a SourceMap,
+    ) -> Vec<Mapped<ClassDecl>>;
 }
 
 impl ModuleHelperMethods for Module {
@@ -116,6 +120,41 @@ impl ModuleHelperMethods for Module {
             .collect();
 
         vec![stmt_azle_type_alias_decls, export_azle_type_alias_decls].concat()
+    }
+
+    fn get_external_canister_class_declarations<'a>(
+        &'a self,
+        source_map: &'a SourceMap,
+    ) -> Vec<Mapped<ClassDecl>> {
+        self.body.iter().fold(vec![], |mut acc, module_item| {
+            let decl_opt = match module_item {
+                ModuleItem::ModuleDecl(decl) => match decl {
+                    ModuleDecl::ExportDecl(export_decl) => Some(export_decl.decl),
+                    _ => None,
+                },
+                ModuleItem::Stmt(stmt) => match stmt {
+                    Stmt::Decl(decl) => Some(*decl),
+                    _ => None,
+                },
+            };
+
+            if let Some(decl) = decl_opt {
+                match decl {
+                    swc_ecma_ast::Decl::Class(class_decl) => {
+                        if let Some(super_class) = class_decl.class.super_class {
+                            if let swc_ecma_ast::Expr::Ident(ident) = *super_class {
+                                if ident.get_name() == "ExternalCanister" {
+                                    acc.push(Mapped::new(class_decl, *source_map))
+                                }
+                            }
+                        }
+                    }
+                    _ => (),
+                }
+            }
+
+            acc
+        })
     }
 }
 

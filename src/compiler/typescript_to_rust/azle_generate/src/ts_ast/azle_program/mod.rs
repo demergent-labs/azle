@@ -1,7 +1,7 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::Program;
+use swc_ecma_ast::{ClassDecl, Program};
 
-use crate::ts_ast::{module::ModuleHelperMethods, AzleFnDecl, AzleTypeAliasDecl};
+use crate::ts_ast::{module::ModuleHelperMethods, AzleFnDecl, AzleTypeAliasDecl, Mapped};
 
 pub use helper_methods::HelperMethods;
 
@@ -24,6 +24,15 @@ impl AzleProgram {
     fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl> {
         match &self.program {
             Program::Module(module) => module.get_azle_type_alias_decls(&self.source_map),
+            Program::Script(_) => vec![],
+        }
+    }
+
+    fn get_external_canister_class_declarations(&self) -> Vec<Mapped<ClassDecl>> {
+        match &self.program {
+            Program::Module(module) => {
+                module.get_external_canister_class_declarations(&self.source_map)
+            }
             Program::Script(_) => vec![],
         }
     }

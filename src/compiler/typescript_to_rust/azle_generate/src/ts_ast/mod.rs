@@ -12,6 +12,7 @@ pub use azle_fn_decl::AzleFnDecl;
 pub use azle_new_expr::AzleNewExpr;
 pub use azle_program::AzleProgram;
 pub use azle_type_alias_decls::AzleTypeAliasDecl;
+pub use mapped::Mapped;
 pub use ts_ast::TsAst;
 
 mod azle_binding_ident;
@@ -31,5 +32,7 @@ pub mod azle_method_signature;
 pub mod azle_program;
 pub mod azle_type;
 pub mod azle_type_alias_decls;
+pub mod class_decl;
+pub mod mapped;
 pub mod module_item;
 pub mod param;
