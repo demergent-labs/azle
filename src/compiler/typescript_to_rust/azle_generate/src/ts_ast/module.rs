@@ -129,11 +129,11 @@ impl ModuleHelperMethods for Module {
         self.body.iter().fold(vec![], |mut acc, module_item| {
             let decl_opt = match module_item {
                 ModuleItem::ModuleDecl(decl) => match decl {
-                    ModuleDecl::ExportDecl(export_decl) => Some(export_decl.decl),
+                    ModuleDecl::ExportDecl(export_decl) => Some(&export_decl.decl),
                     _ => None,
                 },
                 ModuleItem::Stmt(stmt) => match stmt {
-                    Stmt::Decl(decl) => Some(*decl),
+                    Stmt::Decl(decl) => Some(decl),
                     _ => None,
                 },
             };
@@ -141,10 +141,10 @@ impl ModuleHelperMethods for Module {
             if let Some(decl) = decl_opt {
                 match decl {
                     swc_ecma_ast::Decl::Class(class_decl) => {
-                        if let Some(super_class) = class_decl.class.super_class {
-                            if let swc_ecma_ast::Expr::Ident(ident) = *super_class {
+                        if let Some(super_class) = &class_decl.class.super_class {
+                            if let swc_ecma_ast::Expr::Ident(ident) = &**super_class {
                                 if ident.get_name() == "ExternalCanister" {
-                                    acc.push(Mapped::new(class_decl, *source_map))
+                                    acc.push(Mapped::new(class_decl, source_map))
                                 }
                             }
                         }

@@ -3,7 +3,7 @@ use swc_ecma_ast::ClassDecl;
 
 use crate::ts_ast::Mapped;
 
-impl Mapped<ClassDecl> {
+impl Mapped<'_, ClassDecl> {
     pub fn to_act_external_canister(&self) -> ActExternalCanister {
         // TODO: Implement This
 
