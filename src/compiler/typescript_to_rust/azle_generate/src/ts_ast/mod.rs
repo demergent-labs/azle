@@ -33,6 +33,7 @@ pub mod azle_program;
 pub mod azle_type;
 pub mod azle_type_alias_decls;
 pub mod class_decl;
+pub mod class_prop;
 pub mod mapped;
 pub mod module_item;
 pub mod param;

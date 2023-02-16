@@ -1,6 +1,6 @@
 use cdk_framework::CanisterMethodType;
 use swc_common::SourceMap;
-use swc_ecma_ast::{ClassDecl, ExportDecl, Module, ModuleDecl, ModuleItem, Stmt};
+use swc_ecma_ast::{ClassDecl, Decl, ExportDecl, Expr, Module, ModuleDecl, ModuleItem, Stmt};
 
 use super::{source_map::GetSourceFileInfo, AzleFnDecl, AzleTypeAliasDecl, GetName};
 use crate::{
@@ -139,17 +139,14 @@ impl ModuleHelperMethods for Module {
             };
 
             if let Some(decl) = decl_opt {
-                match decl {
-                    swc_ecma_ast::Decl::Class(class_decl) => {
-                        if let Some(super_class) = &class_decl.class.super_class {
-                            if let swc_ecma_ast::Expr::Ident(ident) = &**super_class {
-                                if ident.get_name() == "ExternalCanister" {
-                                    acc.push(Mapped::new(class_decl, source_map))
-                                }
+                if let Decl::Class(class_decl) = decl {
+                    if let Some(super_class) = &class_decl.class.super_class {
+                        if let Expr::Ident(ident) = &**super_class {
+                            if ident.get_name() == "ExternalCanister" {
+                                acc.push(Mapped::new(class_decl, source_map))
                             }
                         }
                     }
-                    _ => (),
                 }
             }
 
