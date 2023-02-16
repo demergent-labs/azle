@@ -245,25 +245,25 @@ function external_canister_method_decoration(target: any, name: string) {
                 return {
                     call: () => {
                         return (ic as any)[
-                            `_azle_call_${target.constructor.name}Old_${name}`
+                            `_azle_call_${target.constructor.name}_${name}`
                         ](this.canister_id, args);
                     },
                     notify: () => {
                         return (ic as any)[
-                            `_azle_notify_${target.constructor.name}Old_${name}`
+                            `_azle_notify_${target.constructor.name}_${name}`
                         ](this.canister_id, args);
                     },
                     cycles: (cycles: nat64) => {
                         return {
                             call: () => {
                                 return (ic as any)[
-                                    `_azle_call_with_payment_${target.constructor.name}Old_${name}`
+                                    `_azle_call_with_payment_${target.constructor.name}_${name}`
                                 ](this.canister_id, [...args, cycles]);
                             },
                             notify: () => {
                                 // There is no notify_with_payment, there is only a notify_with_payment128
                                 return (ic as any)[
-                                    `_azle_notify_with_payment128_${target.constructor.name}Old_${name}`
+                                    `_azle_notify_with_payment128_${target.constructor.name}_${name}`
                                 ](this.canister_id, args, cycles);
                             }
                         };
@@ -273,12 +273,12 @@ function external_canister_method_decoration(target: any, name: string) {
                             notify: () => {
                                 // There is no notify_with_payment, there is only a notify_with_payment128
                                 return (ic as any)[
-                                    `_azle_notify_with_payment128_${target.constructor.name}Old_${name}`
+                                    `_azle_notify_with_payment128_${target.constructor.name}_${name}`
                                 ](this.canister_id, args, cycles);
                             },
                             call: () => {
                                 return (ic as any)[
-                                    `_azle_call_with_payment128_${target.constructor.name}Old_${name}`
+                                    `_azle_call_with_payment128_${target.constructor.name}_${name}`
                                 ](this.canister_id, [...args, cycles]);
                             }
                         };
