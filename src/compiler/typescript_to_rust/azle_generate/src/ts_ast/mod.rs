@@ -23,6 +23,8 @@ mod ident;
 mod module;
 mod source_map;
 mod ts_ast;
+mod ts_fn_param;
+mod ts_fn_type;
 mod ts_type;
 mod ts_type_ann;
 

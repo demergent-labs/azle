@@ -23,9 +23,9 @@ impl SourceMapped<'_, ClassDecl> {
             .iter()
             .fold(vec![], |mut acc, class_member| {
                 if let ClassMember::ClassProp(class_prop) = class_member {
-                    let mapped_class_prop = SourceMapped::new(class_prop, self.source_map);
+                    let class_prop_with_source_map = SourceMapped::new(class_prop, self.source_map);
                     let possible_canister_method =
-                        mapped_class_prop.to_act_external_canister_method();
+                        class_prop_with_source_map.to_act_external_canister_method();
                     if let Some(canister_method) = possible_canister_method {
                         acc.push(canister_method);
                     }
