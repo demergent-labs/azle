@@ -1,1 +1,0 @@
-# Canister Methods
