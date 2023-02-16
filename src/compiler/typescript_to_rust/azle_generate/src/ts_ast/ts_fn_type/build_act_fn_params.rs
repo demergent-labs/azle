@@ -1,9 +1,9 @@
 use cdk_framework::{nodes::ActFnParam, ToActDataType};
 use swc_ecma_ast::{TsFnParam, TsFnType};
 
-use crate::ts_ast::{azle_type::AzleType, source_map::SourceMapped, GetName};
-
-use super::ast_traits::GetTsType;
+use crate::ts_ast::{
+    ast_traits::GetTsType, azle_type::AzleType, source_map::SourceMapped, GetName,
+};
 
 impl SourceMapped<'_, TsFnType> {
     pub fn build_act_fn_params(&self) -> Vec<ActFnParam> {
