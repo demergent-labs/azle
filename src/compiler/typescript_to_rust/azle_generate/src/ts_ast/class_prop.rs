@@ -1,10 +1,12 @@
 use cdk_framework::{
     nodes::{ActExternalCanisterMethod, ActFnParam},
-    ActDataType,
+    ActDataType, ToActDataType,
 };
 use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnType, TsType};
 
 use crate::ts_ast::{source_map::SourceMapped, GetName};
+
+use super::azle_type::AzleType;
 
 impl SourceMapped<'_, ClassProp> {
     pub fn to_act_external_canister_method(&self) -> Option<ActExternalCanisterMethod> {
@@ -28,7 +30,34 @@ impl SourceMapped<'_, ClassProp> {
     }
 
     fn build_return_type(&self) -> ActDataType {
-        self.ts_fn_type().build_return_type()
+        let ts_fn_type = self.ts_fn_type();
+        match &*ts_fn_type.type_ann.type_ann {
+            TsType::TsTypeRef(ts_type_ref) => {
+                let name = match &ts_type_ref.type_name {
+                    swc_ecma_ast::TsEntityName::TsQualifiedName(_) => panic!("InvalidExternalCanisterDeclaration: qualified names in member return types are not currently supported. Try importing the type directly."),
+                    swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name().to_string(),
+                };
+
+                if name != "CanisterResult" {
+                    panic!("InvalidExternalCanisterDeclaration: return type of property \"{}\" is not a CanisterResult. External canister methods must wrap their return types in the CanisterResult<T> generic type.", self.name())
+                }
+
+                match &ts_type_ref.type_params {
+                    Some(ts_type_param_inst) => {
+                        if ts_type_param_inst.params.len() != 1 {
+                            panic!("InvalidExternalCanisterDeclaration: incorrect number of type arguments to generic type CanisterResult<T> for property \"{}\".", self.name())
+                        }
+
+                        let inner_type = &**ts_type_param_inst.params.get(0).unwrap();
+                        let azle_type =
+                            AzleType::from_ts_type(inner_type.clone(), self.source_map);
+                        azle_type.to_act_data_type(&None)
+                    },
+                    None => panic!("InvalidExternalCanisterDeclaration: missing type argument to generic return type CanisterResult<T> for property \"{}\".", self.name())
+                }
+            },
+            _ => panic!("InvalidExternalCanisterDeclaration: return type of property \"{}\" is not a CanisterResult. External canister methods must wrap their return types in the CanisterResult<T> generic type.", self.name())
+        }
     }
 
     fn contains_decorator(&self, name: &str) -> bool {
