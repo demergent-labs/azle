@@ -1,9 +1,9 @@
 use cdk_framework::nodes::{ActExternalCanister, ActExternalCanisterMethod};
 use swc_ecma_ast::{ClassDecl, ClassMember};
 
-use crate::ts_ast::{GetName, Mapped};
+use crate::ts_ast::{source_map::SourceMapped, GetName};
 
-impl Mapped<'_, ClassDecl> {
+impl SourceMapped<'_, ClassDecl> {
     pub fn to_act_external_canister(&self) -> ActExternalCanister {
         let methods = self.build_external_canister_methods();
 
@@ -23,7 +23,7 @@ impl Mapped<'_, ClassDecl> {
             .iter()
             .fold(vec![], |mut acc, class_member| {
                 if let ClassMember::ClassProp(class_prop) = class_member {
-                    let mapped_class_prop = Mapped::new(class_prop, self.source_map);
+                    let mapped_class_prop = SourceMapped::new(class_prop, self.source_map);
                     let possible_canister_method =
                         mapped_class_prop.to_act_external_canister_method();
                     if let Some(canister_method) = possible_canister_method {

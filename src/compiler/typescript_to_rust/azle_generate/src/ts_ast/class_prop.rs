@@ -1,11 +1,13 @@
 use cdk_framework::nodes::ActExternalCanisterMethod;
 use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsType};
 
-use crate::ts_ast::{azle_functions_and_methods::ts_fn_param::ToActFnParam, Mapped};
+use crate::ts_ast::{
+    azle_functions_and_methods::ts_fn_param::ToActFnParam, source_map::SourceMapped,
+};
 
 use super::GetName;
 
-impl Mapped<'_, ClassProp> {
+impl SourceMapped<'_, ClassProp> {
     pub fn to_act_external_canister_method(&self) -> Option<ActExternalCanisterMethod> {
         if !self.contains_decorator("query") && self.contains_decorator("update") {
             return None;

@@ -5,7 +5,7 @@ use swc_ecma_ast::{ClassDecl, Decl, ExportDecl, Expr, Module, ModuleDecl, Module
 use super::{source_map::GetSourceFileInfo, AzleFnDecl, AzleTypeAliasDecl, GetName};
 use crate::{
     errors::{ErrorMessage, Suggestion},
-    ts_ast::{module_item::ModuleItemHelperMethods, Mapped},
+    ts_ast::{module_item::ModuleItemHelperMethods, source_map::SourceMapped},
 };
 
 pub trait ModuleHelperMethods {
@@ -16,7 +16,7 @@ pub trait ModuleHelperMethods {
     fn get_external_canister_class_declarations<'a>(
         &'a self,
         source_map: &'a SourceMap,
-    ) -> Vec<Mapped<ClassDecl>>;
+    ) -> Vec<SourceMapped<ClassDecl>>;
 }
 
 impl ModuleHelperMethods for Module {
@@ -125,7 +125,7 @@ impl ModuleHelperMethods for Module {
     fn get_external_canister_class_declarations<'a>(
         &'a self,
         source_map: &'a SourceMap,
-    ) -> Vec<Mapped<ClassDecl>> {
+    ) -> Vec<SourceMapped<ClassDecl>> {
         self.body.iter().fold(vec![], |mut acc, module_item| {
             let decl_opt = match module_item {
                 ModuleItem::ModuleDecl(decl) => match decl {
@@ -143,7 +143,7 @@ impl ModuleHelperMethods for Module {
                     if let Some(super_class) = &class_decl.class.super_class {
                         if let Expr::Ident(ident) = &**super_class {
                             if ident.get_name() == "ExternalCanister" {
-                                acc.push(Mapped::new(class_decl, source_map))
+                                acc.push(SourceMapped::new(class_decl, source_map))
                             }
                         }
                     }

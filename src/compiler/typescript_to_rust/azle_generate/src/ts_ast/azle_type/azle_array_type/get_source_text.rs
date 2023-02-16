@@ -1,5 +1,5 @@
 use super::AzleArrayType;
-use crate::ts_ast::source_map::source_map::GetSourceFileInfo;
+use crate::ts_ast::source_map::get_source_file_info::GetSourceFileInfo;
 use crate::ts_ast::GetSourceText;
 
 impl GetSourceText for AzleArrayType<'_> {

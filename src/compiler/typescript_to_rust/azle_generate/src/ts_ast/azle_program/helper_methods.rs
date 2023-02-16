@@ -10,7 +10,8 @@ use crate::ts_ast::{
     azle_type_alias_decls::azle_type_alias_decl::{
         AzleTypeAliasListHelperMethods, TsTypeAliasHelperMethods,
     },
-    AzleFnDecl, AzleProgram, AzleTypeAliasDecl, Mapped,
+    source_map::SourceMapped,
+    AzleFnDecl, AzleProgram, AzleTypeAliasDecl,
 };
 
 pub trait HelperMethods {
@@ -20,7 +21,7 @@ pub trait HelperMethods {
         &self,
         system_structure_type: &SystemStructureType,
     ) -> Vec<AzleTypeAliasDecl>;
-    fn get_external_canister_class_declarations(&self) -> Vec<Mapped<ClassDecl>>;
+    fn get_external_canister_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>>;
     fn get_azle_fn_decls_of_type(
         &self,
         canister_method_type: &CanisterMethodType,
@@ -77,7 +78,7 @@ impl HelperMethods for Vec<AzleProgram> {
             .collect()
     }
 
-    fn get_external_canister_class_declarations(&self) -> Vec<Mapped<ClassDecl>> {
+    fn get_external_canister_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
         self.into_iter()
             .flat_map(|azle_program| azle_program.get_external_canister_class_declarations())
             .collect()
