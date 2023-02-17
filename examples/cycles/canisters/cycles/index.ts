@@ -7,11 +7,6 @@ import {
     update
 } from 'azle';
 
-export type CyclesOld = Canister<{
-    receive_cycles(): CanisterResult<nat64>;
-    receive_cycles128(): CanisterResult<nat>;
-}>;
-
 export class Cycles extends ExternalCanister {
     @update
     receive_cycles: () => CanisterResult<nat64>;

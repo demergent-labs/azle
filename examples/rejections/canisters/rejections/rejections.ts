@@ -9,10 +9,6 @@ import {
 } from 'azle';
 import { some_service } from '../some_service';
 
-export type NonexistentOld = Canister<{
-    method(): CanisterResult<void>;
-}>;
-
 class Nonexistent extends ExternalCanister {
     @update
     method: () => CanisterResult<void>;

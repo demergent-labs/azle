@@ -13,10 +13,6 @@ import {
 type CanisterTuple1 = [string, nat64];
 type CanisterTuple2 = [string, CanisterTuple1];
 
-type TestCanisterOld = Canister<{
-    test(param: CanisterTuple1): CanisterResult<CanisterTuple2>;
-}>;
-
 class TestCanister extends ExternalCanister {
     @update
     test: (param: CanisterTuple1) => CanisterResult<CanisterTuple2>;

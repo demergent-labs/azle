@@ -24,15 +24,6 @@ export type AccountArgs = {
     id: string;
 };
 
-export type Canister2Old = Canister<{
-    transfer(from: string, to: string, amount: nat64): CanisterResult<nat64>;
-    balance(id: string): CanisterResult<nat64>;
-    account(accountArgs: AccountArgs): CanisterResult<Opt<Account>>;
-    accounts(): CanisterResult<Account[]>;
-    trap(): CanisterResult<string>;
-    receive_notification(message: string): CanisterResult<void>;
-}>;
-
 export class Canister2 extends ExternalCanister {
     @update
     transfer: (
