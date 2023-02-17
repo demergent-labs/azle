@@ -178,6 +178,11 @@ function compileTypeScriptToRust(
         );
 
         unwrap(generateRustCanister(fileNames, canister_path, { rootPath }));
+
+        if (isCompileOnlyMode()) {
+            console.log('Compilation complete!');
+            process.exit(0);
+        }
     });
 }
 
@@ -377,6 +382,12 @@ function isVerboseMode(): boolean {
     return process.argv.includes('--verbose') || process.argv.includes('-v');
 }
 
+function isCompileOnlyMode(): boolean {
+    return (
+        process.argv.includes('--compile-only') || process.argv.includes('-c')
+    );
+}
+
 function logSuccess(canister_path: string, canisterName: string): void {
     console.info(
         `\n🎉 Built canister ${green(canisterName)} ${dim(
@@ -514,6 +525,24 @@ function runAzleGenerate(
     }
 
     if (isVerboseMode()) {
+        const rawStdErr = executionResult.stderr.toString();
+
+        const startOfFileNamesMarker = '     Running `';
+        const fileNamesStartIndex = rawStdErr.indexOf(startOfFileNamesMarker);
+        const stdErrBeforeFileNames = rawStdErr.substring(
+            0,
+            fileNamesStartIndex
+        );
+
+        const endOfFileNamesMarker = '#AZLE_GENERATE_START';
+        const fileNamesEndIndex = rawStdErr.indexOf(endOfFileNamesMarker);
+        const stdErrAfterFileNames = rawStdErr.substring(
+            fileNamesEndIndex + endOfFileNamesMarker.length
+        );
+
+        const stdErrWithoutFileNames =
+            stdErrBeforeFileNames + stdErrAfterFileNames;
+        console.log(stdErrWithoutFileNames);
         console.info('Generated unformatted lib.rs file');
     }
     return Ok(executionResult.stdout.toString());

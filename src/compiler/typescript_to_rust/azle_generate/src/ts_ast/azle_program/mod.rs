@@ -14,26 +14,10 @@ pub struct AzleProgram {
 }
 
 impl AzleProgram {
-    fn get_ast_fn_decls(&self) -> Vec<AzleFnDecl> {
+    fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl> {
         match &self.program {
-            Program::Module(module) => {
-                let export_decls = module.get_export_decls();
-
-                let fn_decls: Vec<AzleFnDecl> = export_decls
-                    .iter()
-                    .filter(|export_decl| export_decl.decl.is_fn_decl())
-                    .map(|export_decl| export_decl.decl.as_fn_decl().unwrap().clone())
-                    .map(|fn_decl| AzleFnDecl {
-                        fn_decl,
-                        source_map: &self.source_map,
-                    })
-                    .collect();
-
-                fn_decls
-            }
-            Program::Script(_) => {
-                vec![]
-            }
+            Program::Module(module) => module.get_azle_fn_decls(&self.source_map),
+            Program::Script(_) => vec![],
         }
     }
 

@@ -117,6 +117,10 @@ type ic = {
     trap: (message: string) => never;
 };
 
+// TODO see if we can get the T here to have some more information, like the func type
+// TODO we especially want to add the possibility of an optional cycle parameter and the notify method
+export type Canister<T> = T;
+
 export type Variant<T> = Partial<T>;
 export type Opt<T> = T | null;
 
@@ -192,13 +196,12 @@ export function attempt<T, E>(
     }
 }
 
-// TODO rename these to Query, Update, and Oneway after the custom decorators refactor
-export type FuncQuery<T> = T;
-export type FuncUpdate<T> = T;
-export type FuncOneway<T> = T;
+// TODO type these more strictly
+export type Query<T extends (...args: any[]) => any> = [Principal, string];
+export type Update<T extends (...args: any[]) => any> = [Principal, string];
+export type Oneway<T extends (...args: any[]) => any> = [Principal, string];
 
-// TODO type this more strictly
-export type Func<T extends (...args: any[]) => any> = [Principal, string];
+export type Func<T> = T;
 
 export { Principal } from '@dfinity/principal';
 

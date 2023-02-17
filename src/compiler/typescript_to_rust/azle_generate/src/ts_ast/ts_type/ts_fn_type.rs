@@ -1,6 +1,8 @@
-use swc_ecma_ast::{TsFnParam, TsFnType, TsTypeAnn};
+use swc_ecma_ast::{TsFnParam, TsFnType, TsType, TsTypeAnn};
 
-use crate::ts_ast::{FunctionAndMethodTypeHelperMethods, GenerateInlineName};
+use crate::ts_ast::{
+    ast_traits::GetTsType, FunctionAndMethodTypeHelperMethods, GenerateInlineName,
+};
 
 impl FunctionAndMethodTypeHelperMethods for TsFnType {
     fn get_ts_fn_params(&self) -> Vec<TsFnParam> {
@@ -13,6 +15,10 @@ impl FunctionAndMethodTypeHelperMethods for TsFnType {
 
     fn get_valid_return_types(&self) -> Vec<&str> {
         vec!["Oneway", "Update", "Query"]
+    }
+
+    fn get_return_type(&self) -> Option<TsType> {
+        Some(self.get_ts_type_ann().get_ts_type())
     }
 }
 

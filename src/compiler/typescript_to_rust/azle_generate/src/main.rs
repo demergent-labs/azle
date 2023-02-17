@@ -6,6 +6,7 @@ use azle_generate::generate_canister;
 // TODO Will we run into too many problems trying to send a large amount of data as a parameter on the commandline?
 // TODO maybe we should save the ts_file_names to file
 fn main() {
+    eprintln!("#AZLE_GENERATE_START");
     let args: Vec<String> = std::env::args().collect();
 
     // TODO base64 might be better here?

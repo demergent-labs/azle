@@ -21,10 +21,10 @@ import {
     CanisterResult,
     ExternalCanister,
     Func,
-    ic,
     nat,
     nat64,
     Opt,
+    Query,
     $query,
     Principal,
     update,
@@ -169,9 +169,8 @@ export type HttpTransform = {
     context: blob;
 };
 
-$query;
 export type HttpTransformFunc = Func<
-    (args: HttpTransformArgs) => Query<HttpResponse>
+    Query<(args: HttpTransformArgs) => HttpResponse>
 >;
 
 export type HttpTransformArgs = {

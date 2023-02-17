@@ -1,10 +1,10 @@
 use cdk_framework::CanisterMethodType;
 use quote::format_ident;
 use swc_common::SourceMap;
-use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType, TsTypeRef};
+use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};
 use syn::Ident;
 
-use crate::ts_ast::GetName;
+use crate::{canister_method_annotation::CanisterMethodAnnotation, ts_ast::GetName};
 
 pub mod canister_method_builder;
 pub mod errors;
@@ -12,86 +12,52 @@ pub mod get_dependencies;
 
 #[derive(Clone)]
 pub struct AzleFnDecl<'a> {
+    pub annotation: CanisterMethodAnnotation,
     pub fn_decl: FnDecl,
     pub source_map: &'a SourceMap,
 }
 
 impl AzleFnDecl<'_> {
-    pub fn get_canister_method_type(&self) -> &str {
-        let return_type_ref = self.get_return_type_ref();
-        match &return_type_ref.type_name {
-            TsEntityName::Ident(ident) => ident.get_name(),
-            TsEntityName::TsQualifiedName(_) => {
-                panic!(
-                    "{}",
-                    self.build_qualified_type_error_msg(return_type_ref.span)
-                )
-            }
-        }
-    }
-
-    pub fn get_return_type_ref(&self) -> &TsTypeRef {
-        let outermost_type_ref = match &self.fn_decl.function.return_type {
-            Some(ts_type_ann) => match &*ts_type_ann.type_ann {
-                TsType::TsTypeRef(type_ref) => type_ref,
-                _ => panic!("{}", self.build_non_type_ref_return_type_error_msg()),
-            },
-            None => panic!("{}", self.build_missing_return_annotation_error_msg()),
-        };
-
-        if self.is_promise() {
-            match &outermost_type_ref.type_params {
-                Some(type_param_instantiation) => match &*type_param_instantiation.params[0] {
-                    TsType::TsTypeRef(ts_type_ref) => ts_type_ref,
-                    _ => panic!("{}", self.build_non_type_ref_return_type_error_msg()),
-                },
-                None => {
-                    panic!(
-                        "{}",
-                        self.build_missing_return_type_error_msg(
-                            outermost_type_ref.span,
-                            "Promise"
-                        )
-                    )
-                }
-            }
-        } else {
-            outermost_type_ref
-        }
-    }
-
     pub fn get_return_ts_type(&self) -> &TsType {
-        let type_ref = &self.get_return_type_ref();
+        match &self.fn_decl.function.return_type {
+            Some(ts_type_ann) => {
+                let return_type = &*ts_type_ann.type_ann;
 
-        match &type_ref.type_params {
-            Some(type_param_instantiation) => {
-                let return_type = &*type_param_instantiation.params[0];
-                if self.is_manual() {
-                    match return_type {
-                        TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_params {
-                            Some(type_param_instantiation) => &type_param_instantiation.params[0],
-                            None => {
-                                panic!(
-                                    "{}",
-                                    self.build_missing_return_type_error_msg(
-                                        ts_type_ref.span,
-                                        "Manual"
-                                    )
-                                )
-                            }
-                        },
-                        _ => panic!("Manual types must specify an inner type"),
+                let promise_unwrapped_return_type = if self.is_promise() {
+                    let type_ref = return_type.as_ts_type_ref().unwrap();
+                    match &type_ref.type_params {
+                        Some(type_param_instantiation) => &*type_param_instantiation.params[0],
+                        None => {
+                            panic!(
+                                "{}",
+                                self.build_missing_return_type_error_msg(type_ref.span, "Promise")
+                            )
+                        }
                     }
                 } else {
                     return_type
-                }
+                };
+
+                let manual_unwrapped_return_type = if self.is_manual() {
+                    let inner_type_ref = promise_unwrapped_return_type.as_ts_type_ref().unwrap();
+                    match &inner_type_ref.type_params {
+                        Some(type_param_instantiation) => &type_param_instantiation.params[0],
+                        None => {
+                            panic!(
+                                "{}",
+                                self.build_missing_return_type_error_msg(
+                                    inner_type_ref.span,
+                                    "Manual"
+                                )
+                            )
+                        }
+                    }
+                } else {
+                    promise_unwrapped_return_type
+                };
+                manual_unwrapped_return_type
             }
-            None => {
-                let canister_method_type = self.get_canister_method_type();
-                let error_message =
-                    self.build_missing_return_type_error_msg(type_ref.span, canister_method_type);
-                panic!("{}", error_message)
-            }
+            None => panic!("{}", self.build_missing_return_annotation_error_msg()), //TODO: Improve this error message
         }
     }
 
@@ -144,108 +110,44 @@ impl AzleFnDecl<'_> {
     /// type because it is called to filter all fn_decls, including those that
     /// aren't canister methods.
     pub fn is_canister_method_type(&self, canister_method_type: &CanisterMethodType) -> bool {
-        match &self.fn_decl.function.return_type {
-            Some(ts_type_ann) => match &*ts_type_ann.type_ann {
-                TsType::TsTypeRef(type_ref) => {
-                    let type_ref = if self.is_promise() {
-                        let type_params = &type_ref.type_params.as_ref().unwrap().params;
-                        let return_type_ref = type_params[0].as_ts_type_ref().unwrap();
-
-                        return_type_ref
-                    } else {
-                        type_ref
-                    };
-
-                    match &type_ref.type_name {
-                        TsEntityName::Ident(ident) => {
-                            let method_type = ident.get_name();
-                            match canister_method_type {
-                                // TODO: Consider that these names may not come from azle. For example:
-                                // ```
-                                // import { Query } from 'not_azle';
-                                // export function example(): Query<string> {...}
-                                // ```
-                                CanisterMethodType::Heartbeat => method_type == "Heartbeat",
-                                CanisterMethodType::Init => method_type == "Init",
-                                CanisterMethodType::InspectMessage => {
-                                    method_type == "InspectMessage"
-                                }
-                                CanisterMethodType::PostUpgrade => method_type == "PostUpgrade",
-                                CanisterMethodType::PreUpgrade => method_type == "PreUpgrade",
-                                CanisterMethodType::Query => method_type == "Query",
-                                CanisterMethodType::Update => method_type == "Update",
-                            }
-                        }
-                        TsEntityName::TsQualifiedName(_) => {
-                            // TODO: Consider that azle may have been imported with a wildcard import
-                            // and should still be valid. For example:
-                            // ```
-                            // import * as Azle from 'azle';
-                            // export function example(): Azle.Query<string> {...}
-                            // ```
-                            false
-                        }
-                    }
-                }
-                _ => false,
-            },
-            None => false,
-        }
+        &self.annotation.kind == canister_method_type
     }
 
     pub fn is_manual(&self) -> bool {
-        let return_type_ref = self.get_return_type_ref();
+        let return_type = match &self.fn_decl.function.return_type {
+            Some(ts_type_ann) => match self.is_promise() {
+                true => match &ts_type_ann.type_ann.as_ts_type_ref().unwrap().type_params {
+                    Some(type_param_instantiation) => &type_param_instantiation.params[0],
+                    None => return false,
+                },
+                false => &*ts_type_ann.type_ann,
+            },
+            None => return false,
+        };
 
-        match &return_type_ref.type_params {
-            Some(ts_type_param_instantiation) => {
-                match ts_type_param_instantiation.params.get(0) {
-                    Some(param) => {
-                        match &**param {
-                            TsType::TsTypeRef(ts_type_ref) => {
-                                match &ts_type_ref.type_name {
-                                    TsEntityName::Ident(ident) => {
-                                        ident.get_name() == "Manual"
-                                    },
-                                    TsEntityName::TsQualifiedName(_) => panic!("Namespace-qualified identifiers are not currently supported in canister methods"),
-                                }
-                            },
-                            _ => false
-                        }
-                    },
-                    None => false
+        match return_type {
+            TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
+                TsEntityName::Ident(ident) => ident.get_name() == "Manual",
+                TsEntityName::TsQualifiedName(_) => {
+                    panic!("{}", self.build_qualified_type_error_msg(ts_type_ref.span))
                 }
-            }
-            None => false,
+            },
+            _ => false,
         }
-    }
-
-    pub fn is_composite(&self) -> bool {
-        self.is_promise()
     }
 
     pub fn is_promise(&self) -> bool {
         match &self.fn_decl.function.return_type {
-            Some(ts_type_ann) => {
-                match &*ts_type_ann.type_ann {
-                    TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_params {
-                        Some(ts_type_param_instantiation) => match &ts_type_ref.type_name {
-                            TsEntityName::Ident(ident) => {
-                                ident.get_name() == "Promise"
-                                    && ts_type_param_instantiation.params[0].is_ts_type_ref()
-                                // TODO this needs to be a bit more in-depth, it also needs to be one of the canister types
-                                // TODO the problem is that other dependencies might use Promise<T> as a return type
-                            }
-                            _ => false,
-                        },
-                        None => false,
-                    },
-                    _ => false,
-                }
-            }
-            None => {
-                eprintln!("definitely false");
-                false
-            }
+            Some(ts_type_ann) => match &*ts_type_ann.type_ann {
+                TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
+                    TsEntityName::Ident(ident) => ident.get_name() == "Promise",
+                    TsEntityName::TsQualifiedName(_) => {
+                        panic!("{}", self.build_qualified_type_error_msg(ts_type_ref.span))
+                    }
+                },
+                _ => false,
+            },
+            None => false,
         }
     }
 }

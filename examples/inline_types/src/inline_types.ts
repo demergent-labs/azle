@@ -1,7 +1,7 @@
 import {
     Func,
-    FuncQuery,
-    FuncUpdate,
+    Query,
+    Update,
     InsertError,
     nat,
     nat64,
@@ -195,7 +195,7 @@ export async function inline_record_return_type_as_external_canister_call(): Pro
 $query;
 export function inline_func(
     callback: Func<
-        FuncQuery<
+        Query<
             (
                 primitive: string,
                 opt: Opt<{
@@ -204,7 +204,7 @@ export function inline_func(
                     vec: string[];
                     record: { prop1: string };
                     variant: Variant<{ v1: null; v2: null }>;
-                    func: Func<FuncUpdate<() => string>>;
+                    func: Func<Update<() => string>>;
                 }>,
                 vec: {
                     primitive: nat;
@@ -212,7 +212,7 @@ export function inline_func(
                     vec: string[];
                     record: { prop1: string };
                     variant: Variant<{ v1: null; v2: null }>;
-                    func: Func<FuncUpdate<() => string>>;
+                    func: Func<Update<() => string>>;
                 }[],
                 record: {
                     prop1: string;
@@ -221,7 +221,7 @@ export function inline_func(
                 },
                 variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
                 func: Func<
-                    FuncQuery<
+                    Query<
                         () => {
                             prop1: string;
                             variant: Variant<{
@@ -235,7 +235,7 @@ export function inline_func(
         >
     >
 ): Func<
-    FuncQuery<
+    Query<
         (
             primitive: string,
             opt: Opt<{
@@ -244,7 +244,7 @@ export function inline_func(
                 vec: string[];
                 record: { prop1: string };
                 variant: Variant<{ v1: null; v2: null }>;
-                func: Func<FuncUpdate<() => string>>;
+                func: Func<Update<() => string>>;
             }>,
             vec: {
                 primitive: nat;
@@ -252,7 +252,7 @@ export function inline_func(
                 vec: string[];
                 record: { prop1: string };
                 variant: Variant<{ v1: null; v2: null }>;
-                func: Func<FuncUpdate<() => string>>;
+                func: Func<Update<() => string>>;
             }[],
             record: {
                 prop1: string;
@@ -261,7 +261,7 @@ export function inline_func(
             },
             variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
             func: Func<
-                FuncQuery<
+                Query<
                     () => {
                         prop1: string;
                         variant: Variant<{
@@ -286,7 +286,7 @@ export function complex(record: {
         vec: string[];
         record: { prop1: string };
         variant: Variant<{ v1: null; v2: null }>;
-        func: Func<FuncUpdate<() => string>>;
+        func: Func<Update<() => string>>;
     }>;
     vec: {
         primitive: nat;
@@ -294,7 +294,7 @@ export function complex(record: {
         vec: string[];
         record: { prop1: string };
         variant: Variant<{ v1: null; v2: null }>;
-        func: Func<FuncUpdate<() => string>>;
+        func: Func<Update<() => string>>;
     }[];
     record: {
         prop1: string;
@@ -303,7 +303,7 @@ export function complex(record: {
     };
     variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>;
     func: Func<
-        FuncQuery<
+        Query<
             () => {
                 prop1: string;
                 variant: Variant<{ v1: null; v2: { prop1: string } }>;
@@ -318,7 +318,7 @@ export function complex(record: {
         vec: string[];
         record: { prop1: string };
         variant: Variant<{ v1: null; v2: null }>;
-        func: Func<FuncUpdate<() => string>>;
+        func: Func<Update<() => string>>;
     }>;
     vec: {
         primitive: nat;
@@ -326,7 +326,7 @@ export function complex(record: {
         vec: string[];
         record: { prop1: string };
         variant: Variant<{ v1: null; v2: null }>;
-        func: Func<FuncUpdate<() => string>>;
+        func: Func<Update<() => string>>;
     }[];
     record: {
         prop1: string;
@@ -335,7 +335,7 @@ export function complex(record: {
     };
     variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>;
     func: Func<
-        FuncQuery<
+        Query<
             () => {
                 prop1: string;
                 variant: Variant<{ v1: null; v2: { prop1: string } }>;

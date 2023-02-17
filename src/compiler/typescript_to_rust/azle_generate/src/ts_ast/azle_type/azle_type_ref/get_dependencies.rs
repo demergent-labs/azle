@@ -4,7 +4,10 @@ use std::{
 };
 
 use super::AzleTypeRef;
-use crate::ts_ast::{AzleTypeAliasDecl, GetDependencies, GetName};
+use crate::ts_ast::{
+    azle_type::{AzleFnOrConstructorType, AzleType},
+    AzleTypeAliasDecl, GetDependencies, GetName,
+};
 
 impl GetDependencies for AzleTypeRef<'_> {
     fn get_dependent_types(
@@ -32,9 +35,24 @@ impl GetDependencies for AzleTypeRef<'_> {
             "Opt" => self
                 .get_enclosed_azle_type()
                 .get_dependent_types(type_alias_lookup, found_type_names),
-            "Func" => self
-                .get_enclosed_azle_type()
-                .get_dependent_types(type_alias_lookup, found_type_names),
+            "Func" => {
+                let request_type_type_ref = match self.get_enclosed_azle_type() {
+                    AzleType::AzleTypeRef(azle_type_ref) => azle_type_ref,
+                    _ => panic!("{}", self.wrong_enclosed_type_error()),
+                };
+
+                let mode = request_type_type_ref.get_name();
+                if !(mode == "Query" || mode == "Update" || mode == "Oneway") {
+                    panic!("{}", self.wrong_enclosed_type_error())
+                };
+                let azle_fn_type = match request_type_type_ref.get_enclosed_azle_type() {
+                    AzleType::AzleFnOrConstructorType(fn_or_const) => match fn_or_const {
+                        AzleFnOrConstructorType::AzleFnType(ts_fn_type) => ts_fn_type,
+                    },
+                    _ => panic!("{}", self.wrong_enclosed_type_error()),
+                };
+                azle_fn_type.get_dependent_types(type_alias_lookup, found_type_names)
+            }
             "Variant" => self
                 .get_enclosed_azle_type()
                 .get_dependent_types(type_alias_lookup, found_type_names),

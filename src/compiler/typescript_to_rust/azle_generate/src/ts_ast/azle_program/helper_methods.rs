@@ -47,7 +47,7 @@ impl HelperMethods for Vec<AzleProgram> {
 
     fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl> {
         self.iter().fold(vec![], |acc, azle_program| {
-            let azle_fn_decls = azle_program.get_ast_fn_decls();
+            let azle_fn_decls = azle_program.get_azle_fn_decls();
 
             vec![acc, azle_fn_decls].concat()
         })
