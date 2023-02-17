@@ -8,6 +8,7 @@ import {
     Opt,
     Principal,
     query,
+    Query,
     update,
     Variant
 } from '../../index';
@@ -182,7 +183,7 @@ export type QueryArchiveResult = Variant<{
 
 // A function that is used for fetching archived ledger blocks.
 type QueryArchiveFn = Func<
-    (get_blocks_args: GetBlocksArgs) => Query<QueryArchiveResult>
+    Query<(get_blocks_args: GetBlocksArgs) => QueryArchiveResult>
 >;
 
 // The result of a "query_blocks" call.
