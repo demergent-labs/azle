@@ -227,7 +227,7 @@ export type Stable64GrowResult = Variant<{
 }>;
 
 /**
- * A decorator for annotating query methods on external canisters. Can only be
+ * A decorator for marking query methods on external canisters. Can only be
  * used on class properties with a return type of (args: any[]) =>
  * CanisterResult<T>.
  *
@@ -235,7 +235,7 @@ export type Stable64GrowResult = Variant<{
  * ```ts
  * export class SomeOtherCanister extends ExternalCanister {
  *   @query
- *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
+ *   some_canister_method: (some_param: SomeParamType) => CanisterResult<SomeReturnType>;
  * }
  * ```
  */
@@ -244,7 +244,7 @@ export function query(target: any, name: string) {
 }
 
 /**
- * A decorator for annotating update methods on external canisters. Can only be
+ * A decorator for marking update methods on external canisters. Can only be
  * used on class properties with a return type of (args: any[]) =>
  * CanisterResult<T>.
  *
@@ -252,7 +252,7 @@ export function query(target: any, name: string) {
  * ```ts
  * export class SomeOtherCanister extends ExternalCanister {
  *   @update
- *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
+ *   some_canister_method: (some_param: SomeParamType) => CanisterResult<SomeReturnType>;
  * }
  * ```
  */
@@ -318,7 +318,7 @@ function external_canister_method_decoration(target: any, name: string) {
  * ```ts
  * export class SomeOtherCanister extends ExternalCanister {
  *   @query
- *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
+ *   some_canister_method: (some_param: SomeParamType) => CanisterResult<SomeReturnType>;
  * }
  * ```
  *
@@ -329,7 +329,7 @@ function external_canister_method_decoration(target: any, name: string) {
  *   Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
  * );
  *
- * const result = await canister.someCanisterMethod().call();
+ * const result = await canister.some_canister_method().call();
  * ```
  */
 export class ExternalCanister {

@@ -2,7 +2,7 @@ use swc_common::{Loc, SourceMap, Span};
 
 use crate::ts_ast::source_map::get_source_file_info::GetSourceFileInfo;
 
-pub(super) trait PrivateGetSourceFileInfo {
+pub trait PrivateGetSourceFileInfo {
     fn get_loc(&self, span: Span) -> Loc;
     fn get_start_col(&self, span: Span) -> usize;
     fn get_end_col(&self, span: Span) -> usize;
