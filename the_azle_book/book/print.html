@@ -575,15 +575,132 @@ URLs:
 <p>State changes must go through a process called consensus. The consensus process ensures that state changes are <a href="https://en.wikipedia.org/wiki/Byzantine_fault">Byzantine Fault Tolerant</a>. This process takes a few seconds to complete.</p>
 <p>Operations on canister state are exposed to users through canister methods. These methods can be invoked through HTTP requests. Query methods allow state to be read and are low-latency. Update methods allow state to be changed and are higher-latency. Update methods take a few seconds to complete because of the consensus process.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="query-methods"><a class="header" href="#query-methods">Query Methods</a></h1>
-<p>You'll notice that <code>$query</code> and <code>$update</code> are not the traditional decorators that you might expect e.g. <code>@query</code> and <code>@update</code>. We are dealing with a limitation in TypeScript/JavaScript decorators which does not allow them to be used on functions, basically only within classes. We do not think introducing classes with their many drawbacks is worth it to the Azle API, and so we have come up with this interim solution. If in the future TypeScript/JavaScript introduce function decorators, it will be a quick and easy change for Azle projects.</p>
-<p>TODO consider if we should have a chapter on scalability/performance metrics. I think a lot of people will want to know max update/s, query/s, and cycle costs for common operations.</p>
-<p><a href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6?u=lastmjs">~36k per second in the best case</a></p>
+<h2 id="tldr"><a class="header" href="#tldr">TLDR</a></h2>
+<ul>
+<li>Annotate functions with <code>$query</code></li>
+<li>Read-only</li>
+<li>Executed on a single node</li>
+<li>No consensus</li>
+<li>Latency on the order of ~100 milliseconds</li>
+<li>5 billion Wasm instruction limit</li>
+<li>~32k queries per second per canister TODO double-check this</li>
+</ul>
+<p>The most basic way to expose your canister's functionality publicly is through a query method. Here's an example of a simple query method:</p>
+<pre><code class="language-typescript">import { $query } from 'azle';
+
+$query;
+export function get_string(): string {
+    return 'This is a query method!';
+}
+</code></pre>
+<p><code>get_string</code> can be called from the outside world through the IC's HTTP API. You'll usually invoke this API from the <a href="./deployment.html#interacting-with-your-canister"><code>dfx command line</code>, <code>dfx web UI</code>, or an agent</a>.</p>
+<p>From the <code>dfx command line</code> you can call it like this:</p>
+<pre><code class="language-bash">dfx canister call my_canister get_string
+</code></pre>
+<p>Query methods are read-only. They do not persist any state changes. Take a look at the following example:</p>
+<pre><code class="language-typescript">import { $query } from 'azle';
+
+let db = {};
+
+$query;
+export function set(key: string, value: string): void {
+    db[key] = value;
+}
+</code></pre>
+<p>Calling <code>set</code> will perform the operation of setting the <code>key</code> property on the <code>db</code> object to <code>value</code>, but after the call finishes that change will be discarded.</p>
+<p>This is because query methods are executed on a single node machine and do not go through consensus. This results in lower latencies, perhaps on the order of 100 milliseconds.</p>
+<p>There is a limit to how much computation can be done in a single call to a query method. The current query call limit is <a href="https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits">5 billion Wasm instructions</a>. Here's an example of a query method that runs the risk of reaching the limit:</p>
+<pre><code class="language-typescript">import { nat32, $query } from 'azle';
+
+$query;
+export function pyramid(levels: nat32): string {
+    return new Array(levels).fill(0).reduce((acc, _, index) =&gt; {
+        const asterisks = new Array(index + 1).fill('*').join('');
+        return `${acc}${asterisks}\n`;
+    }, '');
+}
+</code></pre>
+<p>From the <code>dfx command line</code> you can call <code>pyramid</code> like this:</p>
+<pre><code class="language-bash">dfx canister call pyramid '(600)'
+</code></pre>
+<p>With an argument of <code>600</code>, <code>pyramid</code> will fail with an error <code>...exceeded the instruction limit for single message execution</code>.</p>
+<p>In terms of query performance, an individual canister <a href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6">probably has an upper bound of ~36k queries per second</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="update-methods"><a class="header" href="#update-methods">Update Methods</a></h1>
 <p><a href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6?u=lastmjs">~900 update calls per second in the best case</a>.</p>
+<pre><code class="language-typescript">import { nat64, Opt, $query, $update } from 'azle';
+
+type Db = {
+    last_id: number;
+    users: {
+        [key: string]: User;
+    };
+};
+
+type User = {
+    id: string;
+    username: string;
+};
+
+let db: Db = {
+    last_id: 0,
+    users: {}
+};
+
+// TODO I am trying to fill up the database but I am struggling to fill it up and to reach the query limit
+
+$query;
+export function get_user_by_username(username: string): Opt&lt;User&gt; {
+    const db_values: User[] = Object.values(db.users);
+    const user: User | undefined = db_values.find(
+        (user) =&gt; user.username === username
+    );
+
+    return user ?? null;
+}
+
+$query;
+export function get_users(): User[] {
+    return Object.values(db.users);
+}
+
+$update;
+export function seed_users(num_users: nat64): void {
+    for (let i = 0; i &lt; num_users; i++) {
+        const last_id: number = db.last_id;
+        const next_id: number = last_id + 1;
+        const id: string = next_id.toString();
+        const user: User = {
+            id,
+            username: `user${id}`
+        };
+
+        db.users[id] = user;
+        db.last_id = next_id;
+    }
+}
+
+$update;
+export function create_user(username: string): User {
+    const last_id: number = db.last_id;
+    const next_id: number = last_id + 1;
+    const id: string = next_id.toString();
+    const user: User = {
+        id: Object.keys(db.users).length.toString(),
+        username
+    };
+
+    db.users[id] = user;
+    db.last_id = next_id;
+
+    return user;
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="candid"><a class="header" href="#candid">Candid</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-structures"><a class="header" href="#stable-structures">Stable Structures</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cycles"><a class="header" href="#cycles">Cycles</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cross-canister"><a class="header" href="#cross-canister">Cross Canister</a></h1>
+<p>We need to explain the difference between queries and composite queries, or at least explain how to do async queries.</p>
+<p>We need to explain cross canister updates and queries, replicated mode, etc</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="management-canister"><a class="header" href="#management-canister">Management Canister</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="http"><a class="header" href="#http">HTTP</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister-lifecycle"><a class="header" href="#canister-lifecycle">Canister Lifecycle</a></h1>
