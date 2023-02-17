@@ -150,7 +150,8 @@
 <li>No consensus</li>
 <li>Latency on the order of ~100 milliseconds</li>
 <li>5 billion Wasm instruction limit</li>
-<li>~32k queries per second per canister TODO double-check this</li>
+<li>4 GiB heap limit</li>
+<li>~32k queries per second per canister</li>
 </ul>
 <p>The most basic way to expose your canister's functionality publicly is through a query method. Here's an example of a simple query method:</p>
 <pre><code class="language-typescript">import { $query } from 'azle';
@@ -175,7 +176,7 @@ export function set(key: string, value: string): void {
 }
 </code></pre>
 <p>Calling <code>set</code> will perform the operation of setting the <code>key</code> property on the <code>db</code> object to <code>value</code>, but after the call finishes that change will be discarded.</p>
-<p>This is because query methods are executed on a single node machine and do not go through consensus. This results in lower latencies, perhaps on the order of 100 milliseconds.</p>
+<p>This is because query methods are executed on a single node machine and do not go through <a href="https://internetcomputer.org/how-it-works/consensus/">consensus</a>. This results in lower latencies, perhaps on the order of 100 milliseconds.</p>
 <p>There is a limit to how much computation can be done in a single call to a query method. The current query call limit is <a href="https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits">5 billion Wasm instructions</a>. Here's an example of a query method that runs the risk of reaching the limit:</p>
 <pre><code class="language-typescript">import { nat32, $query } from 'azle';
 
@@ -188,10 +189,11 @@ export function pyramid(levels: nat32): string {
 }
 </code></pre>
 <p>From the <code>dfx command line</code> you can call <code>pyramid</code> like this:</p>
-<pre><code class="language-bash">dfx canister call pyramid '(600)'
+<pre><code class="language-bash">dfx canister call my_canister pyramid '(600)'
 </code></pre>
 <p>With an argument of <code>600</code>, <code>pyramid</code> will fail with an error <code>...exceeded the instruction limit for single message execution</code>.</p>
-<p>In terms of query performance, an individual canister <a href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6">probably has an upper bound of ~36k queries per second</a>.</p>
+<p>Keep in mind that each query method invocation has up to 4 GiB of heap available.</p>
+<p>In terms of query scalability, an individual canister <a href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6">likely has an upper bound of ~36k queries per second</a>.</p>
 
                     </main>
 
