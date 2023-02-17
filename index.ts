@@ -226,10 +226,36 @@ export type Stable64GrowResult = Variant<{
     err: StableMemoryError;
 }>;
 
+/**
+ * A decorator for annotating query methods on external canisters. Can only be
+ * used on class properties with a return type of (args: any[]) =>
+ * CanisterResult<T>.
+ *
+ * @example
+ * ```ts
+ * export class SomeOtherCanister extends ExternalCanister {
+ *   @query
+ *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
+ * }
+ * ```
+ */
 export function query(target: any, name: string) {
     external_canister_method_decoration(target, name);
 }
 
+/**
+ * A decorator for annotating update methods on external canisters. Can only be
+ * used on class properties with a return type of (args: any[]) =>
+ * CanisterResult<T>.
+ *
+ * @example
+ * ```ts
+ * export class SomeOtherCanister extends ExternalCanister {
+ *   @update
+ *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
+ * }
+ * ```
+ */
 export function update(target: any, name: string) {
     external_canister_method_decoration(target, name);
 }
@@ -285,6 +311,27 @@ function external_canister_method_decoration(target: any, name: string) {
     });
 }
 
+/**
+ * Parent class for creating Canister definitions. To create an external
+ * canister extend this class.
+ * @example
+ * ```ts
+ * export class SomeOtherCanister extends ExternalCanister {
+ *   @query
+ *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
+ * }
+ * ```
+ *
+ * You can then call a method on that canister like this:
+ *
+ * ```ts
+ * const canister = new SomeOtherCanister(
+ *   Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
+ * );
+ *
+ * const result = await canister.someCanisterMethod().call();
+ * ```
+ */
 export class ExternalCanister {
     canister_id: Principal;
 
