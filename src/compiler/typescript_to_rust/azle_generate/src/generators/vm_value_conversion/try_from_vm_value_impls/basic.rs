@@ -32,7 +32,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         impl CdkActTryFromVmValue<ic_cdk::export::candid::Empty, &mut boa_engine::Context> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::export::candid::Empty, CdkActTryFromVmValueError> {
-                panic!("JsValue cannot be converted into Empty");
+                Err(CdkActTryFromVmValueError("JsValue cannot be converted into type 'empty'".to_string()))
             }
         }
 

@@ -6,12 +6,6 @@ import {
     query
 } from 'azle';
 
-export type SomeServiceOld = Canister<{
-    reject(message: string): CanisterResult<empty>;
-    accept(): CanisterResult<boolean>;
-    error(): CanisterResult<empty>;
-}>;
-
 export class SomeService extends ExternalCanister {
     @query
     reject: (message: string) => CanisterResult<empty>;

@@ -117,20 +117,6 @@ type ic = {
     trap: (message: string) => never;
 };
 
-export type PreUpgrade = void;
-export type PostUpgrade = void;
-export type Heartbeat = void;
-export type Init = void;
-export type InspectMessage = void;
-export type Query<T> = T;
-export type Manual<T> = void;
-export type Update<T> = T;
-export type Oneway = void;
-
-// TODO see if we can get the T here to have some more information, like the func type
-// TODO we especially want to add the possibility of an optional cycle parameter and the notify method
-export type Canister<T> = T;
-
 export type Variant<T> = Partial<T>;
 export type Opt<T> = T | null;
 
@@ -206,10 +192,12 @@ export function attempt<T, E>(
     }
 }
 
-// TODO type this more strictly
-export type Func<
-    T extends (...args: any[]) => Query<any> | Update<any> | Oneway
-> = [Principal, string];
+// TODO type these more strictly
+export type Query<T extends (...args: any[]) => any> = [Principal, string];
+export type Update<T extends (...args: any[]) => any> = [Principal, string];
+export type Oneway<T extends (...args: any[]) => any> = [Principal, string];
+
+export type Func<T> = T;
 
 export { Principal } from '@dfinity/principal';
 
@@ -238,10 +226,36 @@ export type Stable64GrowResult = Variant<{
     err: StableMemoryError;
 }>;
 
+/**
+ * A decorator for annotating query methods on external canisters. Can only be
+ * used on class properties with a return type of (args: any[]) =>
+ * CanisterResult<T>.
+ *
+ * @example
+ * ```ts
+ * export class SomeOtherCanister extends ExternalCanister {
+ *   @query
+ *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
+ * }
+ * ```
+ */
 export function query(target: any, name: string) {
     external_canister_method_decoration(target, name);
 }
 
+/**
+ * A decorator for annotating update methods on external canisters. Can only be
+ * used on class properties with a return type of (args: any[]) =>
+ * CanisterResult<T>.
+ *
+ * @example
+ * ```ts
+ * export class SomeOtherCanister extends ExternalCanister {
+ *   @update
+ *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
+ * }
+ * ```
+ */
 export function update(target: any, name: string) {
     external_canister_method_decoration(target, name);
 }
@@ -253,25 +267,25 @@ function external_canister_method_decoration(target: any, name: string) {
                 return {
                     call: () => {
                         return (ic as any)[
-                            `_azle_call_${target.constructor.name}Old_${name}`
+                            `_azle_call_${target.constructor.name}_${name}`
                         ](this.canister_id, args);
                     },
                     notify: () => {
                         return (ic as any)[
-                            `_azle_notify_${target.constructor.name}Old_${name}`
+                            `_azle_notify_${target.constructor.name}_${name}`
                         ](this.canister_id, args);
                     },
                     cycles: (cycles: nat64) => {
                         return {
                             call: () => {
                                 return (ic as any)[
-                                    `_azle_call_with_payment_${target.constructor.name}Old_${name}`
+                                    `_azle_call_with_payment_${target.constructor.name}_${name}`
                                 ](this.canister_id, [...args, cycles]);
                             },
                             notify: () => {
                                 // There is no notify_with_payment, there is only a notify_with_payment128
                                 return (ic as any)[
-                                    `_azle_notify_with_payment128_${target.constructor.name}Old_${name}`
+                                    `_azle_notify_with_payment128_${target.constructor.name}_${name}`
                                 ](this.canister_id, args, cycles);
                             }
                         };
@@ -281,12 +295,12 @@ function external_canister_method_decoration(target: any, name: string) {
                             notify: () => {
                                 // There is no notify_with_payment, there is only a notify_with_payment128
                                 return (ic as any)[
-                                    `_azle_notify_with_payment128_${target.constructor.name}Old_${name}`
+                                    `_azle_notify_with_payment128_${target.constructor.name}_${name}`
                                 ](this.canister_id, args, cycles);
                             },
                             call: () => {
                                 return (ic as any)[
-                                    `_azle_call_with_payment128_${target.constructor.name}Old_${name}`
+                                    `_azle_call_with_payment128_${target.constructor.name}_${name}`
                                 ](this.canister_id, [...args, cycles]);
                             }
                         };
@@ -297,6 +311,27 @@ function external_canister_method_decoration(target: any, name: string) {
     });
 }
 
+/**
+ * Parent class for creating Canister definitions. To create an external
+ * canister extend this class.
+ * @example
+ * ```ts
+ * export class SomeOtherCanister extends ExternalCanister {
+ *   @query
+ *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
+ * }
+ * ```
+ *
+ * You can then call a method on that canister like this:
+ *
+ * ```ts
+ * const canister = new SomeOtherCanister(
+ *   Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
+ * );
+ *
+ * const result = await canister.someCanisterMethod().call();
+ * ```
+ */
 export class ExternalCanister {
     canister_id: Principal;
 
@@ -312,3 +347,5 @@ export const $post_upgrade = (options: { guard: string }) => {};
 export const $pre_upgrade = (options: { guard: string }) => {};
 export const $query = (options: { guard: string }) => {};
 export const $update = (options: { guard: string }) => {};
+
+export type Manual<T> = void;

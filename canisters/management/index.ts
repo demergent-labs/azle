@@ -21,10 +21,10 @@ import {
     CanisterResult,
     ExternalCanister,
     Func,
-    ic,
     nat,
     nat64,
     Opt,
+    Query,
     $query,
     Principal,
     update,
@@ -170,7 +170,7 @@ export type HttpTransform = {
 };
 
 export type HttpTransformFunc = Func<
-    (args: HttpTransformArgs) => Query<HttpResponse>
+    Query<(args: HttpTransformArgs) => HttpResponse>
 >;
 
 export type HttpTransformArgs = {
@@ -224,42 +224,6 @@ export type EcdsaPublicKeyResult = {
 export type SignWithEcdsaResult = {
     signature: blob;
 };
-
-export type ManagementOld = Canister<{
-    bitcoin_get_balance(args: GetBalanceArgs): CanisterResult<Satoshi>;
-    bitcoin_get_current_fee_percentiles(
-        args: GetCurrentFeePercentilesArgs
-    ): CanisterResult<MillisatoshiPerByte[]>;
-    bitcoin_get_utxos(args: GetUtxosArgs): CanisterResult<GetUtxosResult>;
-    bitcoin_send_transaction(args: SendTransactionArgs): CanisterResult<null>;
-    create_canister(
-        args: CreateCanisterArgs
-    ): CanisterResult<CreateCanisterResult>;
-    update_settings(args: UpdateSettingsArgs): CanisterResult<void>;
-    install_code(args: InstallCodeArgs): CanisterResult<void>;
-    uninstall_code(args: UninstallCodeArgs): CanisterResult<void>;
-    start_canister(args: StartCanisterArgs): CanisterResult<void>;
-    stop_canister(args: StopCanisterArgs): CanisterResult<void>;
-    canister_status(
-        args: CanisterStatusArgs
-    ): CanisterResult<CanisterStatusResult>;
-    delete_canister(args: DeleteCanisterArgs): CanisterResult<void>;
-    deposit_cycles(args: DepositCyclesArgs): CanisterResult<void>;
-    raw_rand(): CanisterResult<blob>;
-    http_request(args: HttpRequestArgs): CanisterResult<HttpResponse>;
-    provisional_create_canister_with_cycles(
-        args: ProvisionalCreateCanisterWithCyclesArgs
-    ): CanisterResult<ProvisionalCreateCanisterWithCyclesResult>;
-    provisional_top_up_canister(
-        args: ProvisionalTopUpCanisterArgs
-    ): CanisterResult<void>;
-    ecdsa_public_key(
-        args: EcdsaPublicKeyArgs
-    ): CanisterResult<EcdsaPublicKeyResult>;
-    sign_with_ecdsa(
-        args: SignWithEcdsaArgs
-    ): CanisterResult<SignWithEcdsaResult>;
-}>;
 
 export class Management extends ExternalCanister {
     @update

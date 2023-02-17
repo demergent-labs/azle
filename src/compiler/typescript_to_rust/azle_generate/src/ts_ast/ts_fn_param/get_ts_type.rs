@@ -1,17 +1,6 @@
 use swc_ecma_ast::{TsFnParam, TsType};
 
-use super::{GetName, GetTsType};
-
-impl GetName for TsFnParam {
-    fn get_name(&self) -> &str {
-        match self {
-            TsFnParam::Ident(identifier) => identifier.id.get_name(),
-            TsFnParam::Array(_) => todo!(),
-            TsFnParam::Rest(_) => todo!(),
-            TsFnParam::Object(_) => todo!(),
-        }
-    }
-}
+use crate::ts_ast::GetTsType;
 
 impl GetTsType for TsFnParam {
     fn get_ts_type(&self) -> TsType {

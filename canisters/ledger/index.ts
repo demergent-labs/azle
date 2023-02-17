@@ -8,6 +8,7 @@ import {
     Opt,
     Principal,
     query,
+    Query,
     update,
     Variant
 } from '../../index';
@@ -182,7 +183,7 @@ export type QueryArchiveResult = Variant<{
 
 // A function that is used for fetching archived ledger blocks.
 type QueryArchiveFn = Func<
-    (get_blocks_args: GetBlocksArgs) => Query<QueryArchiveResult>
+    Query<(get_blocks_args: GetBlocksArgs) => QueryArchiveResult>
 >;
 
 // The result of a "query_blocks" call.
@@ -255,38 +256,6 @@ export type DecimalsResult = {
 };
 
 export type Address = string;
-
-export type LedgerOld = Canister<{
-    // Transfers tokens from a subaccount of the caller to the destination address.
-    // The source address is computed from the principal of the caller and the specified subaccount.
-    // When successful, returns the index of the block containing the transaction.
-    transfer(transfer_args: TransferArgs): CanisterResult<TransferResult>;
-
-    // Returns the amount of Tokens on the specified account.
-    account_balance(
-        accountBalanceArgs: AccountBalanceArgs
-    ): CanisterResult<Tokens>;
-
-    // Returns the current transfer_fee.
-    transfer_fee(transfer_fee_arg: TransferFeeArg): CanisterResult<TransferFee>;
-
-    // Queries blocks in the specified range.
-    query_blocks(
-        get_blocks_args: GetBlocksArgs
-    ): CanisterResult<QueryBlocksResponse>;
-
-    // Returns token symbol.
-    symbol(): CanisterResult<SymbolResult>;
-
-    // Returns token name.
-    name(): CanisterResult<NameResult>;
-
-    // Returns token decimals.
-    decimals(): CanisterResult<DecimalsResult>;
-
-    // Returns the existing archive canisters information.
-    archives(): CanisterResult<Archives>;
-}>;
 
 export class Ledger extends ExternalCanister {
     // Transfers tokens from a subaccount of the caller to the destination address.

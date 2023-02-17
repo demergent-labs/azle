@@ -34,14 +34,6 @@ function record_performance(start: nat64, end: nat64): void {
 }
 //#endregion
 
-type WhoAmICanisterOld = Canister<{
-    installer(): CanisterResult<Principal>;
-    argument(): CanisterResult<Principal>;
-    whoami(): CanisterResult<Principal>;
-    id(): CanisterResult<Principal>;
-    id_quick(): CanisterResult<Principal>;
-}>;
-
 class WhoAmICanister extends ExternalCanister {
     @query
     installer: () => CanisterResult<Principal>;

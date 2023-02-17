@@ -23,7 +23,7 @@ pub fn generate_init_method_body(
 
             _azle_register_ic_object(&mut _azle_boa_context);
 
-            _azle_handle_boa_result(_azle_boa_context.eval(format!(
+            _azle_unwrap_boa_result(_azle_boa_context.eval(format!(
                 "let exports = {{}}; {compiled_js}",
                 compiled_js = MAIN_JS
             )), &mut _azle_boa_context);

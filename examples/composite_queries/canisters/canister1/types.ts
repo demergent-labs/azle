@@ -10,10 +10,6 @@ export type NatQueryResult = Variant<{
     err: string;
 }>;
 
-export type Canister1Old = Canister<{
-    inc_counter(): CanisterResult<nat>;
-}>;
-
 export class Canister1 extends ExternalCanister {
     @query
     inc_counter: () => CanisterResult<nat>;
