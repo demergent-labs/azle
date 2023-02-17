@@ -15,61 +15,60 @@ pub fn generate(canister_methods: &Vec<ActCanisterMethod>) -> TokenStream {
             _azle_manual: bool
         ) -> boa_engine::JsValue {
             if
-                _azle_boa_return_value.is_object() == true &&
-                _azle_boa_return_value.as_object().unwrap().is_promise() == true
+                !_azle_boa_return_value.is_object() ||
+                !_azle_boa_return_value.as_object().unwrap().is_promise()
             {
-                // This runs all pending promises to completion
-                // TODO use the better Boa API once it's available
-                _azle_boa_context.eval("");
-
-                let object = _azle_boa_return_value.as_object().unwrap().borrow();
-                let promise = object.as_promise().unwrap();
-
-                return match &promise.promise_state {
-                    boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
-                        PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
-                            let mut promise_map = promise_map_ref_cell.borrow_mut();
-
-                            promise_map.remove(_azle_uuid);
-                        });
-
-                        if _azle_manual == true {
-                            return _azle_boa_return_value.clone();
-                        }
-
-                        match _azle_method_name {
-                            #(#match_arms)*
-                            "_AZLE_TIMER" => {},
-                            _ => panic!("method name was not found")
-                        };
-
-                        return _azle_boa_return_value.clone();
-                    },
-                    boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
-                        PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
-                            let mut promise_map = promise_map_ref_cell.borrow_mut();
-
-                            promise_map.remove(_azle_uuid);
-                        });
-
-                        let error_message = _azle_handle_boa_error(js_value.clone(), _azle_boa_context);
-
-                        panic!("Azle runtime error: {}", error_message);
-                    },
-                    boa_engine::builtins::promise::PromiseState::Pending => {
-                        PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
-                            let mut promise_map = promise_map_ref_cell.borrow_mut();
-
-                            promise_map.insert(_azle_uuid.to_string(), _azle_boa_return_value.clone());
-                        });
-
-                        return _azle_boa_return_value.clone();
-                    }
-                };
-            }
-            else {
                 return _azle_boa_return_value.clone();
             }
+
+            // This runs all pending promises to completion
+            // TODO use the better Boa API once it's available
+            _azle_boa_context.eval("");
+
+            let object = _azle_boa_return_value.as_object().unwrap().borrow();
+            let promise = object.as_promise().unwrap();
+
+            return match &promise.promise_state {
+                boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
+                    PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+                        let mut promise_map = promise_map_ref_cell.borrow_mut();
+
+                        promise_map.remove(_azle_uuid);
+                    });
+
+                    if _azle_manual == true {
+                        return _azle_boa_return_value.clone();
+                    }
+
+                    match _azle_method_name {
+                        #(#match_arms)*
+                        "_AZLE_TIMER" => {},
+                        _ => panic!("method name was not found")
+                    };
+
+                    return _azle_boa_return_value.clone();
+                },
+                boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
+                    PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+                        let mut promise_map = promise_map_ref_cell.borrow_mut();
+
+                        promise_map.remove(_azle_uuid);
+                    });
+
+                    let error_message = _azle_js_value_to_string(js_value.clone(), _azle_boa_context);
+
+                    ic_cdk::api::trap(&format!("Uncaught {}", error_message));
+                },
+                boa_engine::builtins::promise::PromiseState::Pending => {
+                    PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+                        let mut promise_map = promise_map_ref_cell.borrow_mut();
+
+                        promise_map.insert(_azle_uuid.to_string(), _azle_boa_return_value.clone());
+                    });
+
+                    return _azle_boa_return_value.clone();
+                }
+            };
         }
     }
 }

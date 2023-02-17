@@ -91,8 +91,8 @@ impl AzleTypeAliasListHelperMethods for Vec<AzleTypeAliasDecl<'_>> {
     fn generate_type_alias_lookup(&self) -> HashMap<String, AzleTypeAliasDecl> {
         self.iter()
             .fold(HashMap::new(), |mut acc, azle_type_alias| {
-                let type_alias_names = azle_type_alias.ts_type_alias_decl.id.get_name().to_string();
-                acc.insert(type_alias_names, azle_type_alias.clone());
+                let type_alias_name = azle_type_alias.ts_type_alias_decl.id.get_name().to_string();
+                acc.insert(type_alias_name, azle_type_alias.clone());
                 acc
             })
     }
@@ -130,7 +130,7 @@ impl AzleTypeAliasListHelperMethods for Vec<AzleTypeAliasDecl<'_>> {
 
         type_names.iter().fold(vec![], |acc, dependant_type_name| {
             let type_alias_decl = type_alias_lookup.get(dependant_type_name);
-            let token_stream = match type_alias_decl {
+            let act_data_type = match type_alias_decl {
                 Some(azle_type_alias) => azle_type_alias.to_act_node(),
                 None => {
                     panic!(
@@ -139,7 +139,7 @@ impl AzleTypeAliasListHelperMethods for Vec<AzleTypeAliasDecl<'_>> {
                     )
                 }
             };
-            vec![acc, vec![token_stream]].concat()
+            vec![acc, vec![act_data_type]].concat()
         })
     }
 }
