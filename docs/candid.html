@@ -142,6 +142,822 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="candid"><a class="header" href="#candid">Candid</a></h1>
+<p>TODO fix record type with new Record</p>
+<p>TODO make sure to fix Record type everywhere</p>
+<p><a href="https://internetcomputer.org/docs/current/developer-docs/backend/candid/">Candid</a> is an interface description language created by <a href="https://dfinity.org/">DFINITY</a>. It can be used to define interfaces between services (canisters), allowing canisters and clients written in various languages to easily interact with each other.</p>
+<p>Azle allows you to express Candid types through a combination of native and Azle-provided TypeScript types. These types will be necessary in various places as you define your canister. For example, Candid types must be used when defining the parameters and return types of your query and update methods.</p>
+<p>It's important to note that the Candid types are represented at runtime using specific JavaScript data structures that may differ in behavior from the description of the actual Candid type. For example, a <code>float32</code> Candid type is a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a>, a <code>nat64</code> is a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a>, and an <code>int</code> is also a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a>.</p>
+<p>Keep this in mind as it may result in unexpected behavior. Each Candid type and its equivalent JavaScript runtime value is explained in more detail in this chapter.</p>
+<p>A reference of all Candid types available on the Internet Computer (IC) can be found <a href="https://internetcomputer.org/docs/current/references/candid-ref">here</a>.</p>
+<p>The following is a simple example showing how to import and use most of the Candid types available in Azle:</p>
+<pre><code class="language-typescript">import {
+    blob,
+    nat,
+    nat64,
+    nat32,
+    nat16,
+    nat8,
+    int,
+    int64,
+    int32,
+    int16,
+    int8,
+    float64,
+    float32,
+    Opt,
+    Variant,
+    Func,
+    Principal,
+    $query,
+    Query
+} from 'azle';
+
+type Candid = {
+    text: string;
+    blob: blob;
+    nat: nat;
+    nat64: nat64;
+    nat32: nat32;
+    nat16: nat16;
+    nat8: nat8;
+    int: int;
+    int64: int64;
+    int32: int32;
+    int16: int16;
+    int8: int8;
+    float64: float64;
+    float32: float32;
+    bool: boolean;
+    opt: Opt&lt;nat&gt;;
+    record: {
+        first_name: string;
+        last_name: string;
+        age: nat8;
+    };
+    variant: Variant&lt;{
+        Tag1: null;
+        Tag2: null;
+        Tag3: int;
+    }&gt;;
+    func: Func&lt;() =&gt; Candid&gt;;
+    principal: Principal;
+};
+
+$query;
+export function candid_types(): Candid {
+    return {
+        text: 'text',
+        blob: Uint8Array.from([]),
+        nat: 340_282_366_920_938_463_463_374_607_431_768_211_455n,
+        nat64: 18_446_744_073_709_551_615n,
+        nat32: 4_294_967_295,
+        nat16: 65_535,
+        nat8: 255,
+        int: 170_141_183_460_469_231_731_687_303_715_884_105_727n,
+        int64: 9_223_372_036_854_775_807n,
+        int32: 2_147_483_647,
+        int16: 32_767,
+        int8: 127,
+        float64: Math.E,
+        float32: Math.PI,
+        bool: true,
+        opt: null,
+        record: {
+            first_name: 'John',
+            last_name: 'Doe',
+            age: 35
+        },
+        variant: {
+            Tag1: null
+        },
+        func: [
+            Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
+            'candid_types'
+        ],
+        principal: Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
+    };
+}
+</code></pre>
+<p>Calling <code>candid_types</code> with <code>dfx</code> will return:</p>
+<pre><code>(
+  record {
+    &quot;int&quot; = 170_141_183_460_469_231_731_687_303_715_884_105_727 : int;
+    &quot;nat&quot; = 340_282_366_920_938_463_463_374_607_431_768_211_455 : nat;
+    &quot;opt&quot; = null;
+    &quot;principal&quot; = principal &quot;ryjl3-tyaaa-aaaaa-aaaba-cai&quot;;
+    &quot;blob&quot; = vec {};
+    &quot;func&quot; = func &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;.candid_types;
+    &quot;int8&quot; = 127 : int8;
+    &quot;nat8&quot; = 255 : nat8;
+    &quot;nat16&quot; = 65_535 : nat16;
+    &quot;nat32&quot; = 4_294_967_295 : nat32;
+    &quot;nat64&quot; = 18_446_744_073_709_551_615 : nat64;
+    &quot;int16&quot; = 32_767 : int16;
+    &quot;int32&quot; = 2_147_483_647 : int32;
+    &quot;int64&quot; = 9_223_372_036_854_775_807 : int64;
+    &quot;variant&quot; = variant { Tag1 };
+    &quot;float32&quot; = 3.1415927 : float32;
+    &quot;float64&quot; = 2.718281828459045 : float64;
+  },
+)
+</code></pre>
+<h2 id="candid-types"><a class="header" href="#candid-types">Candid types</a></h2>
+<ul>
+<li><a href="#text">text</a></li>
+<li><a href="#blob">blob</a></li>
+<li><a href="#nat">nat</a></li>
+<li><a href="#nat64">nat64</a></li>
+<li><a href="#nat32">nat32</a></li>
+<li><a href="#nat16">nat16</a></li>
+<li><a href="#nat8">nat8</a></li>
+<li><a href="#int">int</a></li>
+<li><a href="#int64">int64</a></li>
+<li><a href="#int32">int32</a></li>
+<li><a href="#int16">int16</a></li>
+<li><a href="#int8">int8</a></li>
+<li><a href="#float64">float64</a></li>
+<li><a href="#float32">float32</a></li>
+<li><a href="#bool">bool</a></li>
+<li><a href="#null">null</a></li>
+<li><a href="#vec">vec</a></li>
+<li><a href="#opt">opt</a></li>
+<li><a href="#record">record</a></li>
+<li><a href="#variant">variant</a></li>
+<li><a href="#func">func</a></li>
+<li><a href="#service">service</a></li>
+<li><a href="#principal">principal</a></li>
+<li><a href="#reserved">reserved</a></li>
+<li><a href="#empty">empty</a></li>
+</ul>
+<h3 id="text"><a class="header" href="#text">text</a></h3>
+<p>The TypeScript type <code>string</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-text">Candid type text</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript String</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { $query } from 'azle';
+
+$query;
+export function get_string(): string {
+    return 'Hello world!';
+}
+
+$query;
+export function print_string(string: string): string {
+    console.log(typeof string);
+    return string;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_string : () -&gt; (text) query;
+    print_string : (text) -&gt; (text) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_string '(&quot;Hello world!&quot;)'
+(&quot;Hello world!&quot;)
+</code></pre>
+<h3 id="blob"><a class="header" href="#blob">blob</a></h3>
+<p>The Azle type <code>blob</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-blob">Candid type blob</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array">JavaScript Uint8Array</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { blob, $query } from 'azle';
+
+$query;
+export function get_blob(): blob {
+    return Uint8Array.from([68, 73, 68, 76, 0, 0]);
+}
+
+$query;
+export function print_blob(blob: blob): blob {
+    console.log(typeof blob);
+    return blob;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_blob : () -&gt; (vec nat8) query;
+    print_blob : (vec nat8) -&gt; (vec nat8) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_blob '(vec { 68; 73; 68; 76; 0; 0; })'
+(blob &quot;DIDL\00\00&quot;)
+
+dfx canister call candid_canister print_blob '(blob &quot;DIDL\00\00&quot;)'
+(blob &quot;DIDL\00\00&quot;)
+</code></pre>
+<h3 id="nat"><a class="header" href="#nat">nat</a></h3>
+<p>The Azle type <code>nat</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-nat">Candid type nat</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { nat, $query } from 'azle';
+
+$query;
+export function get_nat(): nat {
+    return 340_282_366_920_938_463_463_374_607_431_768_211_455n;
+}
+
+$query;
+export function print_nat(nat: nat): nat {
+    console.log(typeof nat);
+    return nat;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_nat : () -&gt; (nat) query;
+    print_nat : (nat) -&gt; (nat) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_nat '(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)'
+(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)
+</code></pre>
+<h3 id="nat64"><a class="header" href="#nat64">nat64</a></h3>
+<p>The Azle type <code>nat64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { nat64, $query } from 'azle';
+
+$query;
+export function get_nat64(): nat64 {
+    return 18_446_744_073_709_551_615n;
+}
+
+$query;
+export function print_nat64(nat64: nat64): nat64 {
+    console.log(typeof nat64);
+    return nat64;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_nat64 : () -&gt; (nat64) query;
+    print_nat64 : (nat64) -&gt; (nat64) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_nat64 '(18_446_744_073_709_551_615 : nat64)'
+(18_446_744_073_709_551_615 : nat64)
+</code></pre>
+<h3 id="nat32"><a class="header" href="#nat32">nat32</a></h3>
+<p>The Azle type <code>nat32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat32</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { nat32, $query } from 'azle';
+
+$query;
+export function get_nat32(): nat32 {
+    return 4_294_967_295;
+}
+
+$query;
+export function print_nat32(nat32: nat32): nat32 {
+    console.log(typeof nat32);
+    return nat32;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_nat32 : () -&gt; (nat32) query;
+    print_nat32 : (nat32) -&gt; (nat32) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_nat32 '(4_294_967_295 : nat32)'
+(4_294_967_295 : nat32)
+</code></pre>
+<h3 id="nat16"><a class="header" href="#nat16">nat16</a></h3>
+<p>The Azle type <code>nat16</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat16</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { nat16, $query } from 'azle';
+
+$query;
+export function get_nat16(): nat16 {
+    return 65_535;
+}
+
+$query;
+export function print_nat16(nat16: nat16): nat16 {
+    console.log(typeof nat16);
+    return nat16;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_nat16 : () -&gt; (nat16) query;
+    print_nat16 : (nat16) -&gt; (nat16) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_nat16 '(65_535 : nat16)'
+(65_535 : nat16)
+</code></pre>
+<h3 id="nat8"><a class="header" href="#nat8">nat8</a></h3>
+<p>The Azle type <code>nat8</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat8</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { nat8, $query } from 'azle';
+
+$query;
+export function get_nat8(): nat8 {
+    return 255;
+}
+
+$query;
+export function print_nat8(nat8: nat8): nat8 {
+    console.log(typeof nat8);
+    return nat8;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_nat8 : () -&gt; (nat8) query;
+    print_nat8 : (nat8) -&gt; (nat8) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_nat8 '(255 : nat8)'
+(255 : nat8)
+</code></pre>
+<h3 id="int"><a class="header" href="#int">int</a></h3>
+<p>The Azle type <code>int</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-int">Candid type int</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { int, $query } from 'azle';
+
+$query;
+export function get_int(): int {
+    return 170_141_183_460_469_231_731_687_303_715_884_105_727n;
+}
+
+$query;
+export function print_int(int: int): int {
+    console.log(typeof int);
+    return int;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_int : () -&gt; (int) query;
+    print_int : (int) -&gt; (int) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_int '(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)'
+(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)
+</code></pre>
+<h3 id="int64"><a class="header" href="#int64">int64</a></h3>
+<p>The Azle type <code>int64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { int64, $query } from 'azle';
+
+$query;
+export function get_int64(): int64 {
+    return 9_223_372_036_854_775_807n;
+}
+
+$query;
+export function print_int64(int64: int64): int64 {
+    console.log(typeof int64);
+    return int64;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_int64 : () -&gt; (int64) query;
+    print_int64 : (int64) -&gt; (int64) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_int64 '(9_223_372_036_854_775_807 : int64)'
+(9_223_372_036_854_775_807 : int64)
+</code></pre>
+<h3 id="int32"><a class="header" href="#int32">int32</a></h3>
+<p>The Azle type <code>int32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int32</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { int32, $query } from 'azle';
+
+$query;
+export function get_int32(): int32 {
+    return 2_147_483_647;
+}
+
+$query;
+export function print_int32(int32: int32): int32 {
+    console.log(typeof int32);
+    return int32;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_int32 : () -&gt; (int32) query;
+    print_int32 : (int32) -&gt; (int32) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_int32 '(2_147_483_647 : int32)'
+(2_147_483_647 : int32)
+</code></pre>
+<h3 id="int16"><a class="header" href="#int16">int16</a></h3>
+<p>The Azle type <code>int16</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int16</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { int16, $query } from 'azle';
+
+$query;
+export function get_int16(): int16 {
+    return 32_767;
+}
+
+$query;
+export function print_int16(int16: int16): int16 {
+    console.log(typeof int16);
+    return int16;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_int16 : () -&gt; (int16) query;
+    print_int16 : (int16) -&gt; (int16) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_int16 '(32_767 : int16)'
+(32_767 : int16)
+</code></pre>
+<h3 id="int8"><a class="header" href="#int8">int8</a></h3>
+<p>The Azle type <code>int8</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int8</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { int8, $query } from 'azle';
+
+$query;
+export function get_int8(): int8 {
+    return 127;
+}
+
+$query;
+export function print_int8(int8: int8): int8 {
+    console.log(typeof int8);
+    return int8;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_int8 : () -&gt; (int8) query;
+    print_int8 : (int8) -&gt; (int8) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_int8 '(127 : int8)'
+(127 : int8)
+</code></pre>
+<h3 id="float64"><a class="header" href="#float64">float64</a></h3>
+<p>The Azle type <code>float64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { float64, $query } from 'azle';
+
+$query;
+export function get_float64(): float64 {
+    return Math.E;
+}
+
+$query;
+export function print_float64(float64: float64): float64 {
+    console.log(typeof float64);
+    return float64;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_float64 : () -&gt; (float64) query;
+    print_float64 : (float64) -&gt; (float64) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_float64 '(2.718281828459045 : float64)'
+(2.718281828459045 : float64)
+</code></pre>
+<h3 id="float32"><a class="header" href="#float32">float32</a></h3>
+<p>The Azle type <code>float32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float32</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { float32, $query } from 'azle';
+
+$query;
+export function get_float32(): float32 {
+    return Math.PI;
+}
+
+$query;
+export function print_float32(float32: float32): float32 {
+    console.log(typeof float32);
+    return float32;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_float32 : () -&gt; (float32) query;
+    print_float32 : (float32) -&gt; (float32) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_float32 '(3.1415927 : float32)'
+(3.1415927 : float32)
+</code></pre>
+<h3 id="bool"><a class="header" href="#bool">bool</a></h3>
+<p>The TypeScript type <code>boolean</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-bool">Candid type bool</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">JavaScript Boolean</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { $query } from 'azle';
+
+$query;
+export function get_bool(): boolean {
+    return true;
+}
+
+$query;
+export function print_bool(bool: boolean): boolean {
+    console.log(typeof bool);
+    return bool;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_bool : () -&gt; (bool) query;
+    print_bool : (bool) -&gt; (bool) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_bool '(true)'
+(true)
+</code></pre>
+<h3 id="null"><a class="header" href="#null">null</a></h3>
+<p>The TypeScript type <code>null</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-null">Candid type null</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null">JavaScript null</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { $query } from 'azle';
+
+$query;
+export function get_null(): null {
+    return null;
+}
+
+$query;
+export function print_null(null_: null): null {
+    console.log(typeof null_);
+    return null_;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_null : () -&gt; (null) query;
+    print_null : (null) -&gt; (null) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_null '(null)'
+(null : null)
+</code></pre>
+<h3 id="vec"><a class="header" href="#vec">vec</a></h3>
+<p>TypeScript <code>[]</code> array syntax corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t">Candid type vec</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> of the specified type at runtime (except for <code>nat8[]</code> which will become a <code>Uint8Array</code>, thus it is recommended to use the <code>blob</code> type instead of <code>nat8[]</code>). Only the <code>[]</code> array syntax is supported at this time (i.e. not <code>Array</code> or <code>ReadonlyArray</code> etc).</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { int32, $query } from 'azle';
+
+$query;
+export function get_numbers(): int32[] {
+    return [0, 1, 2, 3];
+}
+
+$query;
+export function print_numbers(numbers: int32[]): int32[] {
+    console.log(typeof numbers);
+    return numbers;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_numbers : () -&gt; (vec int32) query;
+    print_numbers : (vec int32) -&gt; (vec int32) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_numbers '(vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })'
+(vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })
+</code></pre>
+<h3 id="opt"><a class="header" href="#opt">opt</a></h3>
+<p>The Azle type <code>Opt</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t">Candid type opt</a> and will become the enclosed JavaScript type or null at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { Opt, $query } from 'azle';
+
+$query;
+export function get_opt_some(): Opt&lt;boolean&gt; {
+    return true;
+}
+
+$query;
+export function get_opt_none(): Opt&lt;boolean&gt; {
+    return null;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_opt_none : () -&gt; (opt bool) query;
+    get_opt_some : () -&gt; (opt bool) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister get_opt_some
+(opt true)
+
+dfx canister call candid_canister get_opt_none
+(null)
+</code></pre>
+<h3 id="record"><a class="header" href="#record">record</a></h3>
+<p>TypeScript type aliases referring to object literals wrapped in the <code>Record</code> Azle type correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-record--n--t--">Candid record type</a> and will become <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { Principal, $query, Record } from 'azle';
+
+type User = Record&lt;{
+    id: Principal;
+    username: string;
+}&gt;;
+
+$query;
+export function get_user(): User {
+    return {
+        id: Principal.fromUint8Array(Uint8Array.from([0])),
+        username: 'lastmjs'
+    };
+}
+
+$query;
+export function print_user(user: User): User {
+    console.log(typeof user);
+    return user;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>type User = record { id : principal; username : text };
+service : () -&gt; {
+    get_user : () -&gt; (User) query;
+    print_user : (User) -&gt; (User) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_user '(record { id = principal &quot;2ibo7-dia&quot;; username = &quot;lastmjs&quot; })'
+(record { id = principal &quot;2ibo7-dia&quot;; username = &quot;lastmjs&quot; })
+</code></pre>
+<h3 id="variant"><a class="header" href="#variant">variant</a></h3>
+<p>TypeScript type aliases referring to object literals wrapped in the <code>Variant</code> Azle type correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--">Candid variant type</a> and will become <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { $query, Variant } from 'azle';
+
+type Reaction = Variant&lt;{
+    Fire: null;
+    ThumbsUp: null;
+    Emotion: Emotion;
+}&gt;;
+
+type Emotion = Variant&lt;{
+    Happy: null;
+    Indifferent: null;
+    Sad: null;
+}&gt;;
+
+$query;
+export function get_reaction(): Reaction {
+    return {
+        Fire: null
+    };
+}
+
+$query;
+export function print_reaction(reaction: Reaction): Reaction {
+    console.log(typeof reaction);
+    return reaction;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>type Emotion = variant { Sad; Indifferent; Happy };
+type Reaction = variant { Emotion : Emotion; Fire; ThumbsUp };
+service : () -&gt; {
+    get_reaction : () -&gt; (Reaction) query;
+    print_reaction : (Reaction) -&gt; (Reaction) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_reaction '(variant { Fire })'
+(variant { Fire })
+</code></pre>
+<h3 id="func"><a class="header" href="#func">func</a></h3>
+<p>The Azle type <code>func</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-func---">Candid type func</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> with two elements at runtime.</p>
+<p>The first element is an <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal</a> and the second is a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript string</a>. The <code>@dfinity/principal</code> represents the <code>principal</code> of the canister/service where the function exists, and the <code>string</code> represents the function's name.</p>
+<p>A <code>func</code> acts as a callback, allowing the <code>func</code> receiver to know which canister instance and method must be used to call back.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { Func, Principal, $query, Query } from 'azle';
+
+type BasicFunc = Func&lt;Query&lt;(param1: string) =&gt; string&gt;&gt;;
+
+$query;
+export function get_basic_func(): BasicFunc {
+    return [
+        Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
+        'get_basic_func'
+    ];
+}
+
+$query;
+export function print_basic_func(basic_func: BasicFunc): BasicFunc {
+    console.log(typeof basic_func);
+    return basic_func;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_basic_func : () -&gt; (func (text) -&gt; (text) query) query;
+    print_basic_func : (func (text) -&gt; (text) query) -&gt; (
+        func (text) -&gt; (text) query,
+      ) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_basic_func '(func &quot;r7inp-6aaaa-aaaaa-aaabq-cai&quot;.get_basic_func)'
+(func &quot;r7inp-6aaaa-aaaaa-aaabq-cai&quot;.get_basic_func)
+</code></pre>
+<h3 id="service"><a class="header" href="#service">service</a></h3>
+<p><a href="https://github.com/demergent-labs/azle/issues/445">Not yet implemented.</a></p>
+<h3 id="principal"><a class="header" href="#principal">principal</a></h3>
+<p>The Azle type <code>Principal</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-principal">Candid type principal</a> and will become an <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { Principal, $query } from 'azle';
+
+$query;
+export function get_principal(): Principal {
+    return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
+}
+
+$query;
+export function print_principal(principal: Principal): Principal {
+    console.log(typeof principal);
+    return principal;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_principal : () -&gt; (principal) query;
+    print_principal : (principal) -&gt; (principal) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_principal '(principal &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;)'
+(principal &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;)
+</code></pre>
+<h3 id="reserved"><a class="header" href="#reserved">reserved</a></h3>
+<p>The Azle type <code>reserved</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-reserved">Candid type reserved</a>, is the TypeScript type <code>any</code>, and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null">JavaScript null</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { $query, reserved } from 'azle';
+
+$query;
+export function get_reserved(): reserved {
+    return 'anything';
+}
+
+$query;
+export function print_reserved(reserved: reserved): reserved {
+    console.log(typeof reserved);
+    return reserved;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_reserved : () -&gt; (reserved) query;
+    print_reserved : (reserved) -&gt; (reserved) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_reserved '(null)'
+(null : reserved)
+</code></pre>
+<h3 id="empty"><a class="header" href="#empty">empty</a></h3>
+<p>The Azle type <code>empty</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-empty">Candid type empty</a> and has no JavaScript value at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { empty, $query } from 'azle';
+
+$query;
+export function get_empty(): empty {
+    throw 'Anything you want';
+}
+
+// Note: It is impossible to call this function because it requires an argument
+// but there is no way to pass an &quot;empty&quot; value as an argument.
+$query;
+export function print_empty(empty: empty): empty {
+    console.log(typeof empty);
+    throw 'Anything you want';
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_empty : () -&gt; (empty) query;
+    print_empty : (empty) -&gt; (empty) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_empty '(&quot;You can put anything here&quot;)'
+Error: Failed to create argument blob.
+Caused by: Failed to create argument blob.
+  Invalid data: Unable to serialize Candid values: type mismatch: &quot;You can put anything here&quot; cannot be of type empty
+</code></pre>
 
                     </main>
 
