@@ -29,7 +29,6 @@ mod ts_type;
 mod ts_type_ann;
 
 pub mod ast_traits;
-pub mod azle_method_signature;
 pub mod azle_program;
 pub mod azle_type;
 pub mod azle_type_alias_decls;

@@ -25,8 +25,8 @@ import {
     nat64,
     Opt,
     Query,
-    $query,
     Principal,
+    Record,
     update,
     Variant
 } from '../../index';
@@ -173,10 +173,10 @@ export type HttpTransformFunc = Func<
     Query<(args: HttpTransformArgs) => HttpResponse>
 >;
 
-export type HttpTransformArgs = {
+export type HttpTransformArgs = Record<{
     response: HttpResponse;
     context: blob;
-};
+}>;
 
 export type HttpMethod = Variant<{
     get: null;
@@ -189,11 +189,11 @@ export type HttpHeader = {
     value: string;
 };
 
-export type HttpResponse = {
+export type HttpResponse = Record<{
     status: nat;
     headers: HttpHeader[];
     body: blob;
-};
+}>;
 
 export type KeyId = {
     curve: EcdsaCurve;

@@ -4,6 +4,7 @@ import {
     nat64,
     Opt,
     query,
+    Record,
     update
 } from 'azle';
 
@@ -15,14 +16,14 @@ export type State = {
     notification: string;
 };
 
-export type Account = {
+export type Account = Record<{
     id: string;
     balance: nat64;
-};
+}>;
 
-export type AccountArgs = {
+export type AccountArgs = Record<{
     id: string;
-};
+}>;
 
 export class Canister2 extends ExternalCanister {
     @update

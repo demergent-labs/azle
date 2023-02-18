@@ -39,6 +39,7 @@ impl ToActDataType for AzleTypeRef<'_> {
             "Opt" => self.to_option(alias_name),
             "Func" => self.to_func(alias_name),
             "Variant" => self.to_variant(alias_name),
+            "Record" => self.to_record(alias_name),
             _ => self.get_name().to_string().to_act_data_type(alias_name),
         }
     }
@@ -132,5 +133,13 @@ impl AzleTypeRef<'_> {
             None => panic!("{}", self.wrong_enclosed_type_error()),
         }
         .to_variant(variant_name)
+    }
+
+    fn to_record(&self, variant_name: &Option<&String>) -> ActDataType {
+        match self.get_enclosed_azle_type().as_azle_type_lit() {
+            Some(ts_type_lit) => ts_type_lit,
+            None => panic!("{}", self.wrong_enclosed_type_error()),
+        }
+        .to_record(variant_name)
     }
 }

@@ -1,5 +1,4 @@
 type AzleInline10606854607571099350 = record { prop1 : text; prop2 : text };
-type AzleInline11103238129438584416 = record { id : text; title : text };
 type AzleInline12201226198168570047 = record {
   "variant" : AzleInline40647362636145945;
 };
@@ -20,6 +19,7 @@ type AzleInline13053209677524063143 = variant { var1; var2; var3 };
 type AzleInline13321669397179536235 = record { prop1 : nat };
 type AzleInline13533271542184586027 = record { prop1 : text; prop2 : Thing };
 type AzleInline14349533676526529706 = record { prop1 : text };
+type AzleInline14750490505214830154 = record { id : text; title : text };
 type AzleInline15632156002574315610 = variant {
   v1;
   v2;
@@ -89,7 +89,7 @@ type Reaction = variant { one; two; three : Test };
 type Test = record { id : text };
 type TestVariant = variant { prop1 : text; prop2 : Test };
 type Thing = record { id : text };
-type User1 = record { id : text; job : AzleInline11103238129438584416 };
+type User1 = record { id : text; job : AzleInline14750490505214830154 };
 type UserVariant = variant { prop1 };
 service : () -> {
   complex : (AzleInline17634699056210974936) -> (

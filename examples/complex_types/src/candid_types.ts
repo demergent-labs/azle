@@ -1,21 +1,21 @@
 // TODO it would be cool to add timestamps
 
-import { Variant } from 'azle';
+import { Record, Variant } from 'azle';
 
-export type Post = {
+export type Post = Record<{
     id: string;
     author: User;
     reactions: Reaction[];
     text: string;
     thread: Thread;
-};
+}>;
 
-export type Reaction = {
+export type Reaction = Record<{
     id: string;
     author: User;
     post: Post;
     reaction_type: ReactionType;
-};
+}>;
 
 export type ReactionType = Variant<{
     Fire: null;
@@ -23,17 +23,17 @@ export type ReactionType = Variant<{
     ThumbsDown: null;
 }>;
 
-export type Thread = {
+export type Thread = Record<{
     id: string;
     author: User;
     posts: Post[];
     title: string;
-};
+}>;
 
-export type User = {
+export type User = Record<{
     id: string;
     posts: Post[];
     reactions: Reaction[];
     threads: Thread[];
     username: string;
-};
+}>;

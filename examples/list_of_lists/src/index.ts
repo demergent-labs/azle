@@ -18,14 +18,15 @@ import {
     nat8,
     Opt,
     $query,
+    Record,
     reserved,
     Variant
 } from 'azle';
 
-type Person = {
+type Person = Record<{
     name: string;
     age: nat8;
-};
+}>;
 
 type State = Variant<{
     solid: null;

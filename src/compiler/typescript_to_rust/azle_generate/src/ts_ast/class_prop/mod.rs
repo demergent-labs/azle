@@ -8,6 +8,8 @@ use crate::ts_ast::{source_map::SourceMapped, GetName};
 
 use super::azle_type::AzleType;
 
+mod get_dependent_types;
+
 impl SourceMapped<'_, ClassProp> {
     pub fn to_act_external_canister_method(&self) -> Option<ActExternalCanisterMethod> {
         if !self.has_azle_decorator() {
@@ -30,34 +32,9 @@ impl SourceMapped<'_, ClassProp> {
     }
 
     fn build_return_type(&self) -> ActDataType {
-        let ts_fn_type = self.ts_fn_type();
-        match &*ts_fn_type.type_ann.type_ann {
-            TsType::TsTypeRef(ts_type_ref) => {
-                let name = match &ts_type_ref.type_name {
-                    swc_ecma_ast::TsEntityName::TsQualifiedName(_) => panic!("InvalidExternalCanisterDeclaration: qualified names in member return types are not currently supported. Try importing the type directly."),
-                    swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name().to_string(),
-                };
-
-                if name != "CanisterResult" {
-                    panic!("InvalidExternalCanisterDeclaration: return type of property \"{}\" is not a CanisterResult. External canister methods must wrap their return types in the CanisterResult<T> generic type.", self.name())
-                }
-
-                match &ts_type_ref.type_params {
-                    Some(ts_type_param_inst) => {
-                        if ts_type_param_inst.params.len() != 1 {
-                            panic!("InvalidExternalCanisterDeclaration: incorrect number of type arguments to generic type CanisterResult<T> for property \"{}\".", self.name())
-                        }
-
-                        let inner_type = &**ts_type_param_inst.params.get(0).unwrap();
-                        let azle_type =
-                            AzleType::from_ts_type(inner_type.clone(), self.source_map);
-                        azle_type.to_act_data_type(&None)
-                    },
-                    None => panic!("InvalidExternalCanisterDeclaration: missing type argument to generic return type CanisterResult<T> for property \"{}\".", self.name())
-                }
-            },
-            _ => panic!("InvalidExternalCanisterDeclaration: return type of property \"{}\" is not a CanisterResult. External canister methods must wrap their return types in the CanisterResult<T> generic type.", self.name())
-        }
+        let return_ts_type = self.return_ts_type();
+        let azle_type = AzleType::from_ts_type(return_ts_type, self.source_map);
+        azle_type.to_act_data_type(&None)
     }
 
     fn contains_decorator(&self, name: &str) -> bool {
@@ -97,6 +74,39 @@ impl SourceMapped<'_, ClassProp> {
             swc_ecma_ast::PropName::Num(num) => num.value.to_string(),
             swc_ecma_ast::PropName::Computed(_) => panic!("InvalidExternalCanisterDeclaration: contains a computed method name which isn't currently supported"),
             swc_ecma_ast::PropName::BigInt(big_int) => big_int.value.to_string(),
+        }
+    }
+
+    fn param_ts_types(&self) -> Vec<TsType> {
+        self.ts_fn_type().get_param_ts_types()
+    }
+
+    fn return_ts_type(&self) -> TsType {
+        let ts_fn_type = self.ts_fn_type();
+        match &*ts_fn_type.type_ann.type_ann {
+            TsType::TsTypeRef(ts_type_ref) => {
+                let name = match &ts_type_ref.type_name {
+                    swc_ecma_ast::TsEntityName::TsQualifiedName(_) => panic!("InvalidExternalCanisterDeclaration: qualified names in member return types are not currently supported. Try importing the type directly."),
+                    swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name().to_string(),
+                };
+
+                if name != "CanisterResult" {
+                    panic!("InvalidExternalCanisterDeclaration: return type of property \"{}\" is not a CanisterResult. External canister methods must wrap their return types in the CanisterResult<T> generic type.", self.name())
+                }
+
+                match &ts_type_ref.type_params {
+                    Some(ts_type_param_inst) => {
+                        if ts_type_param_inst.params.len() != 1 {
+                            panic!("InvalidExternalCanisterDeclaration: incorrect number of type arguments to generic type CanisterResult<T> for property \"{}\".", self.name())
+                        }
+
+                        let inner_type = &**ts_type_param_inst.params.get(0).unwrap();
+                        inner_type.clone()
+                    },
+                    None => panic!("InvalidExternalCanisterDeclaration: missing type argument to generic return type CanisterResult<T> for property \"{}\".", self.name())
+                }
+            },
+            _ => panic!("InvalidExternalCanisterDeclaration: return type of property \"{}\" is not a CanisterResult. External canister methods must wrap their return types in the CanisterResult<T> generic type.", self.name())
         }
     }
 
