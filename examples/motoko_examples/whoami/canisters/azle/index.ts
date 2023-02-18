@@ -9,15 +9,16 @@ import {
     Principal,
     query,
     $query,
+    Record,
     update,
     $update
 } from 'azle';
 
 //#region Performance
-type PerfResult = {
+type PerfResult = Record<{
     wasm_body_only: nat64;
     wasm_including_prelude: nat64;
-};
+}>;
 
 let perf_result: Opt<PerfResult> = null;
 

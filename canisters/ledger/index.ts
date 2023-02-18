@@ -9,19 +9,20 @@ import {
     Principal,
     query,
     Query,
+    Record,
     update,
     Variant
 } from '../../index';
 
 // Amount of tokens, measured in 10^-8 of a token.
-export type Tokens = {
+export type Tokens = Record<{
     e8s: nat64;
-};
+}>;
 
 // Number of nanoseconds from the UNIX epoch in UTC timezone.
-export type TimeStamp = {
+export type TimeStamp = Record<{
     timestamp_nanos: nat64;
-};
+}>;
 
 // AccountIdentifier is a 32-byte array.
 // The first 4 bytes is big-endian encoding of a CRC32 checksum of the last 28 bytes.
@@ -40,7 +41,7 @@ export type BlockIndex = nat64;
 export type Memo = nat64;
 
 // Arguments for the `transfer` call.
-export type TransferArgs = {
+export type TransferArgs = Record<{
     // Transaction memo.
     // See comments for the `Memo` type.
     memo: Memo;
@@ -59,32 +60,40 @@ export type TransferArgs = {
     // The point in time when the caller created this request.
     // If null, the ledger uses current IC time as the timestamp.
     created_at_time: Opt<TimeStamp>;
-};
+}>;
+
+type BadFee = Record<{
+    expected_fee: Tokens;
+}>;
+
+type InsufficientFunds = Record<{
+    balance: Tokens;
+}>;
+
+type TxTooOld = Record<{
+    allowed_window_nanos: nat64;
+}>;
+
+type TxDuplicate = Record<{
+    duplicate_of: BlockIndex;
+}>;
 
 export type TransferError = Variant<{
     // The fee that the caller specified in the transfer request was not the one that ledger expects.
     // The caller can change the transfer fee to the `expected_fee` and retry the request.
-    BadFee: {
-        expected_fee: Tokens;
-    };
+    BadFee: BadFee;
     // The account specified by the caller doesn't have enough funds.
-    InsufficientFunds: {
-        balance: Tokens;
-    };
+    InsufficientFunds: InsufficientFunds;
     // The request is too old.
     // The ledger only accepts requests created within 24 hours window.
     // This is a non-recoverable error.
-    TxTooOld: {
-        allowed_window_nanos: nat64;
-    };
+    TxTooOld: TxTooOld;
     // The caller specified `created_at_time` that is too far in future.
     // The caller can retry the request later.
     TxCreatedInFuture: null;
     // The ledger has already executed the request.
     // `duplicate_of` field is equal to the index of the block containing the original transaction.
-    TxDuplicate: {
-        duplicate_of: BlockIndex;
-    };
+    TxDuplicate: TxDuplicate;
 }>;
 
 export type TransferResult = Variant<{
@@ -93,55 +102,61 @@ export type TransferResult = Variant<{
 }>;
 
 // Arguments for the `account_balance` call.
-export type AccountBalanceArgs = {
+export type AccountBalanceArgs = Record<{
     account: AccountIdentifier;
-};
+}>;
 
-export type TransferFeeArg = {};
+export type TransferFeeArg = Record<{}>;
 
-export type TransferFee = {
+export type TransferFee = Record<{
     // The fee to pay to perform a transfer
     transfer_fee: Tokens;
-};
+}>;
 
-export type GetBlocksArgs = {
+export type GetBlocksArgs = Record<{
     // The index of the first block to fetch.
     start: BlockIndex;
     // Max number of blocks to fetch.
     length: nat64;
-};
-
-export type Operation = Variant<{
-    Mint: {
-        to: AccountIdentifier;
-        amount: Tokens;
-    };
-    Burn: {
-        from: AccountIdentifier;
-        amount: Tokens;
-    };
-    Transfer: {
-        from: AccountIdentifier;
-        to: AccountIdentifier;
-        amount: Tokens;
-        fee: Tokens;
-    };
 }>;
 
-export type Transaction = {
+type Mint = Record<{
+    to: AccountIdentifier;
+    amount: Tokens;
+}>;
+
+type Burn = Record<{
+    from: AccountIdentifier;
+    amount: Tokens;
+}>;
+
+type Transfer = Record<{
+    from: AccountIdentifier;
+    to: AccountIdentifier;
+    amount: Tokens;
+    fee: Tokens;
+}>;
+
+export type Operation = Variant<{
+    Mint: Mint;
+    Burn: Burn;
+    Transfer: Transfer;
+}>;
+
+export type Transaction = Record<{
     memo: Memo;
     operation: Opt<Operation>;
     created_at_time: TimeStamp;
-};
+}>;
 
-export type Block = {
+export type Block = Record<{
     parent_hash: Opt<blob>;
     transaction: Transaction;
     timestamp: TimeStamp;
-};
+}>;
 
 // A prefix of the block range specified in the [GetBlocksArgs] request.
-export type BlockRange = {
+export type BlockRange = Record<{
     // A prefix of the requested block range.
     // The index of the first block is equal to [GetBlocksArgs.from].
     //
@@ -156,22 +171,25 @@ export type BlockRange = {
     // 1. [GetBlocksArgs.len] was zero.
     // 2. [GetBlocksArgs.from] was larger than the last block known to the canister.
     blocks: Block[];
-};
+}>;
+
+type BadFirstBlockIndexError = Record<{
+    requested_index: BlockIndex;
+    first_valid_index: BlockIndex;
+}>;
+type OtherError = Record<{
+    error_code: nat64;
+    error_message: string;
+}>;
 
 // An error indicating that the arguments passed to [QueryArchiveFn] were invalid.
 export type QueryArchiveError = Variant<{
     // [GetBlocksArgs.from] argument was smaller than the first block
     // served by the canister that received the request.
-    BadFirstBlockIndex: {
-        requested_index: BlockIndex;
-        first_valid_index: BlockIndex;
-    };
+    BadFirstBlockIndex: BadFirstBlockIndexError;
 
     // Reserved for future use.
-    Other: {
-        error_code: nat64;
-        error_message: string;
-    };
+    Other: OtherError;
 }>;
 
 export type QueryArchiveResult = Variant<{
@@ -186,6 +204,19 @@ type QueryArchiveFn = Func<
     Query<(get_blocks_args: GetBlocksArgs) => QueryArchiveResult>
 >;
 
+type ArchivedBlock = Record<{
+    // The index of the first archived block that can be fetched using the callback.
+    start: BlockIndex;
+
+    // The number of blocks that can be fetch using the callback.
+    length: nat64;
+
+    // The function that should be called to fetch the archived blocks.
+    // The range of the blocks accessible using this function is given by [from]
+    // and [len] fields above.
+    callback: QueryArchiveFn;
+}>;
+
 // The result of a "query_blocks" call.
 //
 // The structure of the result is somewhat complicated because the main ledger canister might
@@ -194,7 +225,7 @@ type QueryArchiveFn = Func<
 //
 // Note: as of Q4 2021 when this interface is authored, the IC doesn't support making nested
 // query calls within a query call.
-export type QueryBlocksResponse = {
+export type QueryBlocksResponse = Record<{
     // The total number of blocks in the chain.
     // If the chain length is positive, the index of the last block is `chain_len - 1`.
     chain_length: nat64;
@@ -221,39 +252,28 @@ export type QueryBlocksResponse = {
     //
     // For each entry `e` in [archived_blocks], `[e.from, e.from + len)` is a sub-range
     // of the originally requested block range.
-    archived_blocks: {
-        // The index of the first archived block that can be fetched using the callback.
-        start: BlockIndex;
+    archived_blocks: ArchivedBlock[];
+}>;
 
-        // The number of blocks that can be fetch using the callback.
-        length: nat64;
-
-        // The function that should be called to fetch the archived blocks.
-        // The range of the blocks accessible using this function is given by [from]
-        // and [len] fields above.
-        callback: QueryArchiveFn;
-    }[];
-};
-
-export type Archive = {
+export type Archive = Record<{
     canister_id: Principal;
-};
+}>;
 
-export type Archives = {
+export type Archives = Record<{
     archives: Archive[];
-};
+}>;
 
-export type SymbolResult = {
+export type SymbolResult = Record<{
     symbol: string;
-};
+}>;
 
-export type NameResult = {
+export type NameResult = Record<{
     name: string;
-};
+}>;
 
-export type DecimalsResult = {
+export type DecimalsResult = Record<{
     decimals: nat32;
-};
+}>;
 
 export type Address = string;
 

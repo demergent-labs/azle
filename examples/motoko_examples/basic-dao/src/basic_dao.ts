@@ -11,7 +11,9 @@ import {
     PostUpgrade,
     CanisterResult,
     Variant,
-    ok
+    ok,
+    $post_upgrade,
+    $pre_upgrade
 } from 'azle';
 
 import {
@@ -380,7 +382,8 @@ function updateProposalState(proposal: Proposal, state: ProposalState) {
     proposalPut(proposal.id, updated);
 }
 
-export function preUpgrade(): PreUpgrade {
+$pre_upgrade;
+export function preUpgrade(): void {
     ic.stable_storage<StableStorage>().installer = installer;
     ic.stable_storage<StableStorage>().accounts = Object.entries(accounts).map(
         (entry) => {
@@ -402,7 +405,8 @@ export function preUpgrade(): PreUpgrade {
     ic.stable_storage<StableStorage>().systemParams = systemParams;
 }
 
-export function postUpgrade(): PostUpgrade {
+$post_upgrade;
+export function postUpgrade(): void {
     installer = ic.stable_storage<StableStorage>().installer;
     accounts = ic
         .stable_storage<StableStorage>()

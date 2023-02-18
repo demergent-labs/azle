@@ -7,26 +7,27 @@ import {
     nat16,
     Opt,
     $query,
+    Record,
     StableBTreeMap,
     $update,
     Variant
 } from 'azle';
 import encodeUtf8 from 'encode-utf8';
 
-type StreamingCallbackHttpResponse = {
+type StreamingCallbackHttpResponse = Record<{
     body: blob;
     token: Opt<Token>;
-};
+}>;
 
-type Token = {
+type Token = Record<{
     // add whatever fields you'd like
     arbitrary_data: string;
-};
+}>;
 
-type CallbackStrategy = {
+type CallbackStrategy = Record<{
     callback: Callback;
     token: Token;
-};
+}>;
 
 type Callback = Func<Query<(t: Token) => StreamingCallbackHttpResponse>>;
 
@@ -36,20 +37,20 @@ type StreamingStrategy = Variant<{
 
 type HeaderField = [string, string];
 
-type HttpResponse = {
+type HttpResponse = Record<{
     status_code: nat16;
     headers: HeaderField[];
     body: blob;
     streaming_strategy: Opt<StreamingStrategy>;
     upgrade: Opt<boolean>;
-};
+}>;
 
-type HttpRequest = {
+type HttpRequest = Record<{
     method: string;
     url: string;
     headers: HeaderField[];
     body: blob;
-};
+}>;
 
 let stable_storage = new StableBTreeMap<string, nat>(0, 25, 1_000);
 

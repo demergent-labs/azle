@@ -14,6 +14,7 @@ import {
 import {
     Bling,
     Reaction,
+    Record,
     self,
     Test,
     TestVariant,
@@ -24,10 +25,10 @@ import {
 } from './types';
 
 $query;
-export function inline_record_return_type(): {
+export function inline_record_return_type(): Record<{
     prop1: string;
     prop2: string;
-} {
+}> {
     return {
         prop1: 'prop1',
         prop2: 'prop2'
@@ -35,7 +36,7 @@ export function inline_record_return_type(): {
 }
 
 $query;
-export function inline_record_param(param: { prop1: string }): string {
+export function inline_record_param(param: Record<{ prop1: string }>): string {
     return param.prop1;
 }
 
@@ -86,10 +87,10 @@ export function variant_with_inline_fields(): Reaction {
 }
 
 $query;
-export function record_referencing_other_types_from_return_type(): {
+export function record_referencing_other_types_from_return_type(): Record<{
     prop1: string;
     prop2: Thing;
-} {
+}> {
     return {
         prop1: 'prop1',
         prop2: {
@@ -111,16 +112,20 @@ export function variant_referencing_other_types_from_return_type(): Variant<{
 }
 
 $query;
-export function record_referencing_record_from_param(param1: {
-    test: Test;
-}): string {
+export function record_referencing_record_from_param(
+    param1: Record<{
+        test: Test;
+    }>
+): string {
     return param1.test.id;
 }
 
 $query;
-export function record_referencing_variant_from_param(param1: {
-    testVariant: TestVariant;
-}): Opt<string> {
+export function record_referencing_variant_from_param(
+    param1: Record<{
+        testVariant: TestVariant;
+    }>
+): Opt<string> {
     if (param1.testVariant.prop1 !== undefined) {
         return param1.testVariant.prop1;
     }
@@ -139,53 +144,59 @@ export function variant_referencing_variant_from_param(
 ): void {}
 
 let stable_map = new StableBTreeMap<
-    {
+    Record<{
         prop1: Opt<string>;
         prop2: Variant<{ var1: null; var2: TestVariant }>;
-        prop3: Opt<{ prop1: nat }>;
-    },
-    {
+        prop3: Opt<Record<{ prop1: nat }>>;
+    }>,
+    Record<{
         variant: Variant<{ var1: null; var2: TestVariant }>;
-    }
+    }>
 >(0, 100, 100);
 
 $update;
 export function stable_map_insert(
-    key: {
+    key: Record<{
         prop1: Opt<string>;
         prop2: Variant<{ var1: null; var2: TestVariant }>;
-        prop3: Opt<{ prop1: nat }>;
-    },
-    value: {
+        prop3: Opt<Record<{ prop1: nat }>>;
+    }>,
+    value: Record<{
         variant: Variant<{ var1: null; var2: TestVariant }>;
-    }
+    }>
 ): Variant<{
-    ok: Opt<{
-        variant: Variant<{ var1: null; var2: TestVariant }>;
-    }>;
+    ok: Opt<
+        Record<{
+            variant: Variant<{ var1: null; var2: TestVariant }>;
+        }>
+    >;
     err: InsertError;
 }> {
     return stable_map.insert(key, value);
 }
 
 $query;
-export function stable_map_get(key: {
-    prop1: Opt<string>;
-    prop2: Variant<{ var1: null; var2: TestVariant }>;
-    prop3: Opt<{ prop1: nat }>;
-}): Opt<{
-    variant: Variant<{ var1: null; var2: TestVariant }>;
-}> {
+export function stable_map_get(
+    key: Record<{
+        prop1: Opt<string>;
+        prop2: Variant<{ var1: null; var2: TestVariant }>;
+        prop3: Opt<Record<{ prop1: nat }>>;
+    }>
+): Opt<
+    Record<{
+        variant: Variant<{ var1: null; var2: TestVariant }>;
+    }>
+> {
     return stable_map.get(key);
 }
 
 $update;
 export async function inline_record_return_type_as_external_canister_call(): Promise<
     Variant<{
-        ok: {
+        ok: Record<{
             prop1: string;
             prop2: string;
-        };
+        }>;
         err: string;
     }>
 > {
@@ -198,37 +209,43 @@ export function inline_func(
         Query<
             (
                 primitive: string,
-                opt: Opt<{
+                opt: Opt<
+                    Record<{
+                        primitive: nat;
+                        opt: Opt<string>;
+                        vec: string[];
+                        record: Record<{ prop1: string }>;
+                        variant: Variant<{ v1: null; v2: null }>;
+                        func: Func<Update<() => string>>;
+                    }>
+                >,
+                vec: Record<{
                     primitive: nat;
                     opt: Opt<string>;
                     vec: string[];
-                    record: { prop1: string };
+                    record: Record<{ prop1: string }>;
                     variant: Variant<{ v1: null; v2: null }>;
                     func: Func<Update<() => string>>;
-                }>,
-                vec: {
-                    primitive: nat;
-                    opt: Opt<string>;
-                    vec: string[];
-                    record: { prop1: string };
-                    variant: Variant<{ v1: null; v2: null }>;
-                    func: Func<Update<() => string>>;
-                }[],
-                record: {
+                }>[],
+                record: Record<{
                     prop1: string;
                     optional: Opt<nat64>;
                     variant: Variant<{ v1: null; v2: null }>;
-                },
-                variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
+                }>,
+                variant: Variant<{
+                    v1: null;
+                    v2: null;
+                    v3: Record<{ prop1: string }>;
+                }>,
                 func: Func<
                     Query<
-                        () => {
+                        () => Record<{
                             prop1: string;
                             variant: Variant<{
                                 v1: null;
-                                v2: { prop1: string };
+                                v2: Record<{ prop1: string }>;
                             }>;
-                        }
+                        }>
                     >
                 >
             ) => void
@@ -238,37 +255,43 @@ export function inline_func(
     Query<
         (
             primitive: string,
-            opt: Opt<{
+            opt: Opt<
+                Record<{
+                    primitive: nat;
+                    opt: Opt<string>;
+                    vec: string[];
+                    record: Record<{ prop1: string }>;
+                    variant: Variant<{ v1: null; v2: null }>;
+                    func: Func<Update<() => string>>;
+                }>
+            >,
+            vec: Record<{
                 primitive: nat;
                 opt: Opt<string>;
                 vec: string[];
-                record: { prop1: string };
+                record: Record<{ prop1: string }>;
                 variant: Variant<{ v1: null; v2: null }>;
                 func: Func<Update<() => string>>;
-            }>,
-            vec: {
-                primitive: nat;
-                opt: Opt<string>;
-                vec: string[];
-                record: { prop1: string };
-                variant: Variant<{ v1: null; v2: null }>;
-                func: Func<Update<() => string>>;
-            }[],
-            record: {
+            }>[],
+            record: Record<{
                 prop1: string;
                 optional: Opt<nat64>;
                 variant: Variant<{ v1: null; v2: null }>;
-            },
-            variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>,
+            }>,
+            variant: Variant<{
+                v1: null;
+                v2: null;
+                v3: Record<{ prop1: string }>;
+            }>,
             func: Func<
                 Query<
-                    () => {
+                    () => Record<{
                         prop1: string;
                         variant: Variant<{
                             v1: null;
-                            v2: { prop1: string };
+                            v2: Record<{ prop1: string }>;
                         }>;
-                    }
+                    }>
                 >
             >
         ) => void
@@ -278,70 +301,79 @@ export function inline_func(
 }
 
 $query;
-export function complex(record: {
+export function complex(
+    record: Record<{
+        primitive: string;
+        opt: Opt<
+            Record<{
+                primitive: nat;
+                opt: Opt<string>;
+                vec: string[];
+                record: Record<{ prop1: string }>;
+                variant: Variant<{ v1: null; v2: null }>;
+                func: Func<Update<() => string>>;
+            }>
+        >;
+        vec: Record<{
+            primitive: nat;
+            opt: Opt<string>;
+            vec: string[];
+            record: Record<{ prop1: string }>;
+            variant: Variant<{ v1: null; v2: null }>;
+            func: Func<Update<() => string>>;
+        }>[];
+        record: Record<{
+            prop1: string;
+            optional: Opt<nat64>;
+            variant: Variant<{ v1: null; v2: null }>;
+        }>;
+        variant: Variant<{ v1: null; v2: null; v3: Record<{ prop1: string }> }>;
+        func: Func<
+            Query<
+                () => Record<{
+                    prop1: string;
+                    variant: Variant<{
+                        v1: null;
+                        v2: Record<{ prop1: string }>;
+                    }>;
+                }>
+            >
+        >;
+    }>
+): Record<{
     primitive: string;
-    opt: Opt<{
+    opt: Opt<
+        Record<{
+            primitive: nat;
+            opt: Opt<string>;
+            vec: string[];
+            record: Record<{ prop1: string }>;
+            variant: Variant<{ v1: null; v2: null }>;
+            func: Func<Update<() => string>>;
+        }>
+    >;
+    vec: Record<{
         primitive: nat;
         opt: Opt<string>;
         vec: string[];
-        record: { prop1: string };
+        record: Record<{ prop1: string }>;
         variant: Variant<{ v1: null; v2: null }>;
         func: Func<Update<() => string>>;
-    }>;
-    vec: {
-        primitive: nat;
-        opt: Opt<string>;
-        vec: string[];
-        record: { prop1: string };
-        variant: Variant<{ v1: null; v2: null }>;
-        func: Func<Update<() => string>>;
-    }[];
-    record: {
+    }>[];
+    record: Record<{
         prop1: string;
         optional: Opt<nat64>;
         variant: Variant<{ v1: null; v2: null }>;
-    };
-    variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>;
-    func: Func<
-        Query<
-            () => {
-                prop1: string;
-                variant: Variant<{ v1: null; v2: { prop1: string } }>;
-            }
-        >
-    >;
-}): {
-    primitive: string;
-    opt: Opt<{
-        primitive: nat;
-        opt: Opt<string>;
-        vec: string[];
-        record: { prop1: string };
-        variant: Variant<{ v1: null; v2: null }>;
-        func: Func<Update<() => string>>;
     }>;
-    vec: {
-        primitive: nat;
-        opt: Opt<string>;
-        vec: string[];
-        record: { prop1: string };
-        variant: Variant<{ v1: null; v2: null }>;
-        func: Func<Update<() => string>>;
-    }[];
-    record: {
-        prop1: string;
-        optional: Opt<nat64>;
-        variant: Variant<{ v1: null; v2: null }>;
-    };
-    variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>;
+    variant: Variant<{ v1: null; v2: null; v3: Record<{ prop1: string }> }>;
     func: Func<
         Query<
-            () => {
+            () => Record<{
                 prop1: string;
-                variant: Variant<{ v1: null; v2: { prop1: string } }>;
-            }
+                variant: Variant<{ v1: null; v2: Record<{ prop1: string }> }>;
+            }>
         >
     >;
-} {
+}> {
     return record;
 }

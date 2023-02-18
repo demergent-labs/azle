@@ -1,10 +1,10 @@
-import { ic, nat, nat64, Opt, $query, $update } from 'azle';
+import { ic, nat, nat64, Opt, $query, Record, $update } from 'azle';
 
 //#region Performance
-type PerfResult = {
+type PerfResult = Record<{
     wasm_body_only: nat64;
     wasm_including_prelude: nat64;
-};
+}>;
 
 let perf_result: Opt<PerfResult> = null;
 
@@ -21,10 +21,10 @@ function record_performance(start: nat64, end: nat64): void {
 }
 //#endregion
 
-export type ToDo = {
+export type ToDo = Record<{
     description: string;
     completed: boolean;
-};
+}>;
 
 let todos: Map<nat, ToDo> = new Map();
 let nextId: nat = 0n;

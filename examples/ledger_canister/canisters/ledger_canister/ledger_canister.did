@@ -1,42 +1,26 @@
 type Archive = record { canister_id : principal };
-type Archives = record { archives : vec Archive };
-type AzleInline1024916547623195358 = record {
-  error_message : text;
-  error_code : nat64;
-};
-type AzleInline10810669052720712708 = record {
+type ArchivedBlock = record {
   callback : func (GetBlocksArgs) -> (
       variant { Ok : BlockRange; Err : QueryArchiveError },
     ) query;
   start : nat64;
   length : nat64;
 };
-type AzleInline12201563578848828201 = record { balance : Tokens };
-type AzleInline13171261185820360266 = record { expected_fee : Tokens };
-type AzleInline13933693492898651142 = record {
-  to : vec nat8;
-  fee : Tokens;
-  from : vec nat8;
-  amount : Tokens;
-};
-type AzleInline17641498296392355396 = record { duplicate_of : nat64 };
-type AzleInline17854187746260238814 = record {
+type Archives = record { archives : vec Archive };
+type BadFee = record { expected_fee : Tokens };
+type BadFirstBlockIndexError = record {
   requested_index : nat64;
   first_valid_index : nat64;
 };
-type AzleInline1951518463672259693 = record {
-  from : vec nat8;
-  amount : Tokens;
-};
-type AzleInline7480326519109902374 = record { allowed_window_nanos : nat64 };
-type AzleInline8043724687507266772 = record { to : vec nat8; amount : Tokens };
 type Block = record {
   transaction : Transaction;
   timestamp : TimeStamp;
   parent_hash : opt vec nat8;
 };
 type BlockRange = record { blocks : vec Block };
+type Burn = record { from : vec nat8; amount : Tokens };
 type GetBlocksArgs = record { start : nat64; length : nat64 };
+type InsufficientFunds = record { balance : Tokens };
 type ManualReply = variant { ok : TransferResult; err : text };
 type ManualReply_1 = variant { ok : Tokens; err : text };
 type ManualReply_2 = variant { ok : Archives; err : text };
@@ -44,21 +28,19 @@ type ManualReply_3 = variant { ok : QueryBlocksResponse; err : text };
 type ManualReply_4 = variant { ok : nat32; err : text };
 type ManualReply_5 = variant { ok : text; err : text };
 type ManualReply_6 = variant { ok : TransferFee; err : text };
-type Operation = variant {
-  Burn : AzleInline1951518463672259693;
-  Mint : AzleInline8043724687507266772;
-  Transfer : AzleInline13933693492898651142;
-};
+type Mint = record { to : vec nat8; amount : Tokens };
+type Operation = variant { Burn : Burn; Mint : Mint; Transfer : Transfer };
+type OtherError = record { error_message : text; error_code : nat64 };
 type QueryArchiveError = variant {
-  BadFirstBlockIndex : AzleInline17854187746260238814;
-  Other : AzleInline1024916547623195358;
+  BadFirstBlockIndex : BadFirstBlockIndexError;
+  Other : OtherError;
 };
 type QueryBlocksResponse = record {
   certificate : opt vec nat8;
   blocks : vec Block;
   chain_length : nat64;
   first_block_index : nat64;
-  archived_blocks : vec AzleInline10810669052720712708;
+  archived_blocks : vec ArchivedBlock;
 };
 type TimeStamp = record { timestamp_nanos : nat64 };
 type Tokens = record { e8s : nat64 };
@@ -67,15 +49,23 @@ type Transaction = record {
   operation : opt Operation;
   created_at_time : TimeStamp;
 };
+type Transfer = record {
+  to : vec nat8;
+  fee : Tokens;
+  from : vec nat8;
+  amount : Tokens;
+};
 type TransferError = variant {
-  TxTooOld : AzleInline7480326519109902374;
-  BadFee : AzleInline13171261185820360266;
-  TxDuplicate : AzleInline17641498296392355396;
+  TxTooOld : TxTooOld;
+  BadFee : BadFee;
+  TxDuplicate : TxDuplicate;
   TxCreatedInFuture;
-  InsufficientFunds : AzleInline12201563578848828201;
+  InsufficientFunds : InsufficientFunds;
 };
 type TransferFee = record { transfer_fee : Tokens };
 type TransferResult = variant { Ok : nat64; Err : TransferError };
+type TxDuplicate = record { duplicate_of : nat64 };
+type TxTooOld = record { allowed_window_nanos : nat64 };
 service : () -> {
   execute_transfer : (text, nat64, nat64, opt nat64) -> (ManualReply);
   get_account_balance : (text) -> (ManualReply_1);
