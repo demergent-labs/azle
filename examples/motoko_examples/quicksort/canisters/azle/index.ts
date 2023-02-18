@@ -1,12 +1,12 @@
-import { ic, int, nat64, Opt, $query, $update } from 'azle';
+import { ic, int, nat64, Opt, $query, Record, $update } from 'azle';
 import { Int } from './comparison';
 import * as Quicksort from './quicksort';
 
 //#region Performance
-type PerfResult = {
+type PerfResult = Record<{
     wasm_body_only: nat64;
     wasm_including_prelude: nat64;
-};
+}>;
 
 let perf_result: Opt<PerfResult> = null;
 

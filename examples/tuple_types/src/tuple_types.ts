@@ -4,6 +4,7 @@ import {
     nat64,
     Principal,
     $query,
+    Record,
     update,
     Variant
 } from 'azle';
@@ -18,10 +19,10 @@ class TestCanister extends ExternalCanister {
     test: (param: CanisterTuple1) => CanisterResult<CanisterTuple2>;
 }
 
-type User = {
+type User = Record<{
     id: string;
     primitive_two_tuple: PrimitiveTwoTuple;
-};
+}>;
 
 type Reaction = Variant<{
     Good: null;
@@ -38,9 +39,9 @@ type ComplexThreeTuple = [PrimitiveTwoTuple, User, Reaction];
 
 type Header = [string, string];
 
-type HttpResponse = {
+type HttpResponse = Record<{
     headers: Header[];
-};
+}>;
 
 type StreamingCallbackType = Variant<{
     with_headers: Header[];
@@ -277,7 +278,7 @@ export function tuple_array_variant_field(): StreamingCallbackType {
 
 $query;
 export function two_tuple_with_inline_records(
-    param: [{ hello: nat64 }, { goodbye: nat64 }]
-): [{ hello: nat64 }, { goodbye: nat64 }] {
+    param: [Record<{ hello: nat64 }>, Record<{ goodbye: nat64 }>]
+): [Record<{ hello: nat64 }>, Record<{ goodbye: nat64 }>] {
     return param;
 }

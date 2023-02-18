@@ -1,4 +1,4 @@
-import { Opt, $query, $update } from 'azle';
+import { Opt, $query, Record, $update } from 'azle';
 
 type Db = {
     users: {
@@ -6,10 +6,10 @@ type Db = {
     };
 };
 
-type User = {
+type User = Record<{
     id: string;
     username: string;
-};
+}>;
 
 let db: Db = {
     users: {}

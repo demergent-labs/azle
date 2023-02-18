@@ -1,13 +1,13 @@
-import { blob, ic, ok, $update, Variant } from 'azle';
+import { blob, ic, ok, Record, $update, Variant } from 'azle';
 import { management_canister } from 'azle/canisters/management';
 
 type PublicKeyResult = Variant<{
-    ok: { public_key: blob };
+    ok: Record<{ public_key: blob }>;
     err: string;
 }>;
 
 type SignResult = Variant<{
-    ok: { signature: blob };
+    ok: Record<{ signature: blob }>;
     err: string;
 }>;
 

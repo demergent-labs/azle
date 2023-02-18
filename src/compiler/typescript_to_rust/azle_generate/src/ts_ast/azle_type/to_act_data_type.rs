@@ -1,3 +1,5 @@
+use crate::ts_ast::ast_traits::GetSourceInfo;
+
 use super::AzleType;
 use cdk_framework::{ActDataType, ToActDataType};
 
@@ -11,7 +13,14 @@ impl ToActDataType for AzleType<'_> {
             AzleType::AzleArrayType(azle_array_type) => {
                 azle_array_type.to_act_data_type(alias_name)
             }
-            AzleType::AzleTypeLit(azle_type_lit) => azle_type_lit.to_record(alias_name),
+            AzleType::AzleTypeLit(_) => {
+                let origin = self.get_origin();
+                let line_number = self.get_line_number();
+                let range = self.get_range();
+                let column_number = range.0 + 1;
+
+                panic!("Unexpected TsTypeLiteral\n     at {}:{}:{}\n\nHelp: Try wrapping this with either Record or Variant", origin, line_number, column_number)
+            }
             AzleType::AzleTupleType(azle_tuple_type) => {
                 azle_tuple_type.to_act_data_type(alias_name)
             }

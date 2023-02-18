@@ -1,8 +1,8 @@
-type AzleInline16174808946472882177 = record { signature : vec nat8 };
-type AzleInline2467553441912073818 = record { public_key : vec nat8 };
-type ManualReply = variant { ok : AzleInline2467553441912073818; err : text };
+type AzleInline15818142902355683212 = record { signature : vec nat8 };
+type AzleInline4990570356003228042 = record { public_key : vec nat8 };
+type ManualReply = variant { ok : AzleInline4990570356003228042; err : text };
 type ManualReply_1 = variant {
-  ok : AzleInline16174808946472882177;
+  ok : AzleInline15818142902355683212;
   err : text;
 };
 service : () -> {

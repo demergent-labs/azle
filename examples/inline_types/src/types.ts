@@ -17,18 +17,18 @@ import {
 
 export type User1 = Record<{
     id: string;
-    job: {
+    job: Record<{
         id: string;
         title: string;
-    };
+    }>;
 }>;
 
 export type Reaction = Variant<{
     one: null;
     two: null;
-    three: {
+    three: Record<{
         id: string;
-    };
+    }>;
 }>;
 
 export type Thing = Record<{
@@ -62,13 +62,17 @@ export type TestVariant = Variant<{
 
 export class InlineTypes extends ExternalCanister {
     @query
-    inline_record_return_type: () => CanisterResult<{
-        prop1: string;
-        prop2: string;
-    }>;
+    inline_record_return_type: () => CanisterResult<
+        Record<{
+            prop1: string;
+            prop2: string;
+        }>
+    >;
 
     @query
-    inline_record_param: (param: { prop1: string }) => CanisterResult<string>;
+    inline_record_param: (
+        param: Record<{ prop1: string }>
+    ) => CanisterResult<string>;
 
     @query
     inline_variant_return_type: () => CanisterResult<
@@ -91,10 +95,12 @@ export class InlineTypes extends ExternalCanister {
     variant_with_inline_fields: () => CanisterResult<Reaction>;
 
     @query
-    record_referencing_other_types_from_return_type: () => CanisterResult<{
-        prop1: string;
-        prop2: Thing;
-    }>;
+    record_referencing_other_types_from_return_type: () => CanisterResult<
+        Record<{
+            prop1: string;
+            prop2: Thing;
+        }>
+    >;
 
     @query
     variant_referencing_other_types_from_return_type: () => CanisterResult<
@@ -105,14 +111,18 @@ export class InlineTypes extends ExternalCanister {
     >;
 
     @query
-    record_referencing_record_from_param: (param1: {
-        test: Test;
-    }) => CanisterResult<string>;
+    record_referencing_record_from_param: (
+        param1: Record<{
+            test: Test;
+        }>
+    ) => CanisterResult<string>;
 
     @query
-    record_referencing_variant_from_param: (param1: {
-        testVariant: TestVariant;
-    }) => CanisterResult<Opt<string>>;
+    record_referencing_variant_from_param: (
+        param1: Record<{
+            testVariant: TestVariant;
+        }>
+    ) => CanisterResult<Opt<string>>;
 
     @query
     variant_referencing_record_from_param: (
@@ -126,32 +136,38 @@ export class InlineTypes extends ExternalCanister {
 
     @update
     stable_map_insert: (
-        key: {
+        key: Record<{
             prop1: Opt<string>;
             prop2: Variant<{ var1: null; var2: TestVariant }>;
-            prop3: Opt<{ prop1: nat }>;
-        },
-        value: {
+            prop3: Opt<Record<{ prop1: nat }>>;
+        }>,
+        value: Record<{
             variant: Variant<{ var1: null; var2: TestVariant }>;
-        }
+        }>
     ) => CanisterResult<
         Variant<{
-            ok: Opt<{
-                variant: Variant<{ var1: null; var2: TestVariant }>;
-            }>;
+            ok: Opt<
+                Record<{
+                    variant: Variant<{ var1: null; var2: TestVariant }>;
+                }>
+            >;
             err: InsertError;
         }>
     >;
 
     @query
-    stable_map_get: (key: {
-        prop1: Opt<string>;
-        prop2: Variant<{ var1: null; var2: TestVariant }>;
-        prop3: Opt<{ prop1: nat }>;
-    }) => CanisterResult<
-        Opt<{
-            variant: Variant<{ var1: null; var2: TestVariant }>;
+    stable_map_get: (
+        key: Record<{
+            prop1: Opt<string>;
+            prop2: Variant<{ var1: null; var2: TestVariant }>;
+            prop3: Opt<Record<{ prop1: nat }>>;
         }>
+    ) => CanisterResult<
+        Opt<
+            Record<{
+                variant: Variant<{ var1: null; var2: TestVariant }>;
+            }>
+        >
     >;
 
     @query
@@ -160,41 +176,43 @@ export class InlineTypes extends ExternalCanister {
             Query<
                 (
                     primitive: string,
-                    opt: Opt<{
+                    opt: Opt<
+                        Record<{
+                            primitive: nat;
+                            opt: Opt<string>;
+                            vec: string[];
+                            record: Record<{ prop1: string }>;
+                            variant: Variant<{ v1: null; v2: null }>;
+                            func: Func<Update<() => string>>;
+                        }>
+                    >,
+                    vec: Record<{
                         primitive: nat;
                         opt: Opt<string>;
                         vec: string[];
-                        record: { prop1: string };
+                        record: Record<{ prop1: string }>;
                         variant: Variant<{ v1: null; v2: null }>;
                         func: Func<Update<() => string>>;
-                    }>,
-                    vec: {
-                        primitive: nat;
-                        opt: Opt<string>;
-                        vec: string[];
-                        record: { prop1: string };
-                        variant: Variant<{ v1: null; v2: null }>;
-                        func: Func<Update<() => string>>;
-                    }[],
-                    record: {
+                    }>[],
+                    record: Record<{
                         prop1: string;
                         optional: Opt<nat64>;
                         variant: Variant<{ v1: null; v2: null }>;
-                    },
+                    }>,
                     variant: Variant<{
                         v1: null;
                         v2: null;
-                        v3: { prop1: string };
+                        v3: Record<{ prop1: string }>;
                     }>,
                     func: Func<
                         Query<
-                            () => {
+                            () => Record<{
                                 prop1: string;
                                 variant: Variant<{
                                     v1: null;
-                                    v2: { prop1: string };
+                                    v2: Record<{ prop1: string }>;
                                 }>;
-                            }
+                            }>
                         >
                     >
                 ) => void
@@ -205,41 +223,43 @@ export class InlineTypes extends ExternalCanister {
             Query<
                 (
                     primitive: string,
-                    opt: Opt<{
+                    opt: Opt<
+                        Record<{
+                            primitive: nat;
+                            opt: Opt<string>;
+                            vec: string[];
+                            record: Record<{ prop1: string }>;
+                            variant: Variant<{ v1: null; v2: null }>;
+                            func: Func<Update<() => string>>;
+                        }>
+                    >,
+                    vec: Record<{
                         primitive: nat;
                         opt: Opt<string>;
                         vec: string[];
-                        record: { prop1: string };
+                        record: Record<{ prop1: string }>;
                         variant: Variant<{ v1: null; v2: null }>;
                         func: Func<Update<() => string>>;
-                    }>,
-                    vec: {
-                        primitive: nat;
-                        opt: Opt<string>;
-                        vec: string[];
-                        record: { prop1: string };
-                        variant: Variant<{ v1: null; v2: null }>;
-                        func: Func<Update<() => string>>;
-                    }[],
-                    record: {
+                    }>[],
+                    record: Record<{
                         prop1: string;
                         optional: Opt<nat64>;
                         variant: Variant<{ v1: null; v2: null }>;
-                    },
+                    }>,
                     variant: Variant<{
                         v1: null;
                         v2: null;
-                        v3: { prop1: string };
+                        v3: Record<{ prop1: string }>;
                     }>,
                     func: Func<
                         Query<
-                            () => {
+                            () => Record<{
                                 prop1: string;
                                 variant: Variant<{
                                     v1: null;
-                                    v2: { prop1: string };
+                                    v2: Record<{ prop1: string }>;
                                 }>;
-                            }
+                            }>
                         >
                     >
                 ) => void
@@ -250,80 +270,102 @@ export class InlineTypes extends ExternalCanister {
     @update
     inline_record_return_type_as_external_canister_call: () => CanisterResult<
         Variant<{
-            ok: {
+            ok: Record<{
                 prop1: string;
                 prop2: string;
-            };
+            }>;
             err: string;
         }>
     >;
 
     @query
-    complex: (record: {
-        primitive: string;
-        opt: Opt<{
-            primitive: nat;
-            opt: Opt<string>;
-            vec: string[];
-            record: { prop1: string };
-            variant: Variant<{ v1: null; v2: null }>;
-            func: Func<Update<() => string>>;
-        }>;
-        vec: {
-            primitive: nat;
-            opt: Opt<string>;
-            vec: string[];
-            record: { prop1: string };
-            variant: Variant<{ v1: null; v2: null }>;
-            func: Func<Update<() => string>>;
-        }[];
-        record: {
-            prop1: string;
-            optional: Opt<nat64>;
-            variant: Variant<{ v1: null; v2: null }>;
-        };
-        variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>;
-        func: Func<
-            Query<
-                () => {
-                    prop1: string;
-                    variant: Variant<{ v1: null; v2: { prop1: string } }>;
-                }
-            >
-        >;
-    }) => CanisterResult<{
-        primitive: string;
-        opt: Opt<{
-            primitive: nat;
-            opt: Opt<string>;
-            vec: string[];
-            record: { prop1: string };
-            variant: Variant<{ v1: null; v2: null }>;
-            func: Func<Update<() => string>>;
-        }>;
-        vec: {
-            primitive: nat;
-            opt: Opt<string>;
-            vec: string[];
-            record: { prop1: string };
-            variant: Variant<{ v1: null; v2: null }>;
-            func: Func<Update<() => string>>;
-        }[];
-        record: {
-            prop1: string;
-            optional: Opt<nat64>;
-            variant: Variant<{ v1: null; v2: null }>;
-        };
-        variant: Variant<{ v1: null; v2: null; v3: { prop1: string } }>;
-        func: Func<
-            Query<
-                () => {
-                    prop1: string;
-                    variant: Variant<{ v1: null; v2: { prop1: string } }>;
-                }
-            >
-        >;
-    }>;
+    complex: (
+        record: Record<{
+            primitive: string;
+            opt: Opt<
+                Record<{
+                    primitive: nat;
+                    opt: Opt<string>;
+                    vec: string[];
+                    record: Record<{ prop1: string }>;
+                    variant: Variant<{ v1: null; v2: null }>;
+                    func: Func<Update<() => string>>;
+                }>
+            >;
+            vec: Record<{
+                primitive: nat;
+                opt: Opt<string>;
+                vec: string[];
+                record: Record<{ prop1: string }>;
+                variant: Variant<{ v1: null; v2: null }>;
+                func: Func<Update<() => string>>;
+            }>[];
+            record: Record<{
+                prop1: string;
+                optional: Opt<nat64>;
+                variant: Variant<{ v1: null; v2: null }>;
+            }>;
+            variant: Variant<{
+                v1: null;
+                v2: null;
+                v3: Record<{ prop1: string }>;
+            }>;
+            func: Func<
+                Query<
+                    () => Record<{
+                        prop1: string;
+                        variant: Variant<{
+                            v1: null;
+                            v2: Record<{ prop1: string }>;
+                        }>;
+                    }>
+                >
+            >;
+        }>
+    ) => CanisterResult<
+        Record<{
+            primitive: string;
+            opt: Opt<
+                Record<{
+                    primitive: nat;
+                    opt: Opt<string>;
+                    vec: string[];
+                    record: Record<{ prop1: string }>;
+                    variant: Variant<{ v1: null; v2: null }>;
+                    func: Func<Update<() => string>>;
+                }>
+            >;
+            vec: Record<{
+                primitive: nat;
+                opt: Opt<string>;
+                vec: string[];
+                record: Record<{ prop1: string }>;
+                variant: Variant<{ v1: null; v2: null }>;
+                func: Func<Update<() => string>>;
+            }>[];
+            record: Record<{
+                prop1: string;
+                optional: Opt<nat64>;
+                variant: Variant<{ v1: null; v2: null }>;
+            }>;
+            variant: Variant<{
+                v1: null;
+                v2: null;
+                v3: Record<{ prop1: string }>;
+            }>;
+            func: Func<
+                Query<
+                    () => Record<{
+                        prop1: string;
+                        variant: Variant<{
+                            v1: null;
+                            v2: Record<{ prop1: string }>;
+                        }>;
+                    }>
+                >
+            >;
+        }>
+    >;
 }
 
 export let self = new InlineTypes(
