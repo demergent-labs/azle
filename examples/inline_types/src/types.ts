@@ -10,17 +10,18 @@ import {
     nat,
     nat64,
     query,
+    Record,
     update,
     Variant
 } from 'azle';
 
-export type User1 = {
+export type User1 = Record<{
     id: string;
     job: {
         id: string;
         title: string;
     };
-};
+}>;
 
 export type Reaction = Variant<{
     one: null;
@@ -30,25 +31,25 @@ export type Reaction = Variant<{
     };
 }>;
 
-export type Thing = {
+export type Thing = Record<{
     id: string;
-};
+}>;
 
-export type Bling = {
+export type Bling = Record<{
     id: string;
-};
+}>;
 
-export type Test = {
+export type Test = Record<{
     id: string;
-};
+}>;
 
-type Test1 = {
+type Test1 = Record<{
     id: string;
-};
+}>;
 
-export type User = {
+export type User = Record<{
     id: string;
-};
+}>;
 
 export type UserVariant = Variant<{
     prop1: null;

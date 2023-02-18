@@ -1,21 +1,21 @@
-import { ic, int, $query, $update } from 'azle';
+import { ic, int, $query, Record, $update } from 'azle';
 
-type PartiallyNullRecord = {
+type PartiallyNullRecord = Record<{
     first_item: int;
     second_item: null;
     third_item: int;
-};
+}>;
 
-type TwoNullRecord = {
+type TwoNullRecord = Record<{
     first_item: null;
     second_item: null;
-};
+}>;
 
-type ThreeNullRecord = {
+type ThreeNullRecord = Record<{
     first_item: null;
     second_item: null;
     third_item: null;
-};
+}>;
 
 $query;
 export function null_function(param: null): null {

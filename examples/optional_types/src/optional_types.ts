@@ -1,18 +1,18 @@
 // TODO let's add more examples here, really test it out
 
-import { Opt, $query } from 'azle';
+import { Opt, $query, Record } from 'azle';
 
-type Html = {
+type Html = Record<{
     head: Opt<Head>;
-};
+}>;
 
-type Head = {
+type Head = Record<{
     elements: Element[];
-};
+}>;
 
-type Element = {
+type Element = Record<{
     id: string;
-};
+}>;
 
 $query;
 export function get_html(): Html {

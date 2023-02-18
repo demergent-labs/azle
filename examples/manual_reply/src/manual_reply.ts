@@ -8,6 +8,7 @@ import {
     nat,
     nat8,
     $query,
+    Record,
     reserved,
     $update,
     Variant
@@ -19,24 +20,24 @@ type Options = Variant<{
     Large: null;
 }>;
 
-type RawReply = {
+type RawReply = Record<{
     int: int;
     text: string;
     bool: boolean;
     blob: blob;
     variant: Options;
-};
+}>;
 
-type Element = {
+type Element = Record<{
     id: string;
     orbitals: Orbital[];
     state: State;
-};
+}>;
 
-type Orbital = {
+type Orbital = Record<{
     layer: nat8;
     electrons: nat8;
-};
+}>;
 
 type State = Variant<{
     Gas: Gas;
@@ -44,9 +45,9 @@ type State = Variant<{
     Solid: Solid;
 }>;
 
-type Solid = {
+type Solid = Record<{
     element: string;
-};
+}>;
 
 type Gas = Variant<{
     Elemental: null;
