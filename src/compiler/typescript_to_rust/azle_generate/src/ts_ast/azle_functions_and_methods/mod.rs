@@ -1,8 +1,6 @@
-mod ts_fn_param;
-
 use swc_ecma_ast::{TsFnParam, TsType, TsTypeAnn};
 
-use super::{GetName, GetTsType};
+use super::GetTsType;
 
 pub trait FunctionAndMethodTypeHelperMethods {
     fn get_ts_type_ann(&self) -> TsTypeAnn;
