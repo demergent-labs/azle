@@ -117,6 +117,10 @@ type ic = {
     trap: (message: string) => never;
 };
 
+/**
+ * Used to mark an object as a Candid record.
+ */
+export type Record<T> = T;
 export type Variant<T> = Partial<T>;
 export type Opt<T> = T | null;
 
