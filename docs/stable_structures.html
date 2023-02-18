@@ -142,6 +142,108 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="stable-structures"><a class="header" href="#stable-structures">Stable Structures</a></h1>
+<h2 id="tldr"><a class="header" href="#tldr">TLDR</a></h2>
+<ul>
+<li>48 GiB of stable memory</li>
+<li>Familiar native language data structure API</li>
+<li>max key size</li>
+<li>max value size</li>
+<li>memory id</li>
+<li>no current way to upgrade/migrate a deployed memory id</li>
+</ul>
+<p>TODO let's show how to make an actually useful database
+TODO start with a simple user, and then build up all of the CRUD around it
+TODO maybe we should use something besides a user though, since that is a common example
+TODO maybe a blog post, or maybe a podcast app or something</p>
+<p>Stable structures are data structures with familiar APIs that allow access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 48 GiB of storage. Stable memory also persists automatically across upgrades.</p>
+<p>It's important to understand that when a canister is upgraded (see the canister lifecycle later, basically you can initialize, upgrade, and uninstall a canister TODO look into the exact lifecycle and explain it simply here) its heap is wiped. That means that all data you have stored on the heap, such as global variables, will be erased. But anything stored in stable memory will be preserved. Writing and readin to and from stable memory can be done with a low-level byte API, but it is much easier to use stable structures.</p>
+<p>Azle currently provides one stable structure called <code>StableBTreeMap</code>. It's essentially a map like you would find in JavaScript, similar to <code>Map</code> or just an object. You can <code>insert</code>, <code>read</code>, <code>remove</code> etc. You don't have to do anything when upgrading your canister, the <code>StableBTreeMap</code> will automatically retain its data.</p>
+<p>This is currently the recommended way to store your data because of its persistence across upgrades and its large storage capacity.</p>
+<p>It's important to note that you cannot recover a memory id once allocated to a <code>StableBTreeMap</code>. This is a current limitation and will be removed later. So keep in mind, once a <code>StableBTreeMap</code> is created with a certain memory id, you should not change it. You can remove items to reduce the memory consumption of that <code>StableBTreeMap</code>, but you cannot reuse the memory id for another <code>StableBTreeMap</code> and you cannot change the type of the <code>StableBTreeMap</code> associated with that memory location.</p>
+<p>See this issue for migration information: https://github.com/demergent-labs/azle/issues/843</p>
+<p>TODO explain how to whittle your way down to the correct number of bytes
+TODO if each principal is 38 bytes then 100,000 would give you about 2630 recordings</p>
+<h2 id="definition"><a class="header" href="#definition">Definition</a></h2>
+<p>Here's how to define a simple <code>StableBTreeMap</code>:</p>
+<pre><code class="language-typescript">import { nat8, StableBTreeMap } from 'azle';
+
+let map = new StableBTreeMap&lt;nat8, string&gt;(0, 1_000, 1_000);
+</code></pre>
+<p>This is a <code>StableBTreeMap</code> with a key of type <code>string</code> and a value of type <code>nat64</code>.</p>
+<h2 id="memory-id"><a class="header" href="#memory-id">memory id</a></h2>
+<h2 id="max-key-size"><a class="header" href="#max-key-size">max key size</a></h2>
+<p>TODO show how to experiment with the size</p>
+<h2 id="max-value-size"><a class="header" href="#max-value-size">max value size</a></h2>
+<p>TODO show how to experiment with the size</p>
+<h2 id="show-all-operations"><a class="header" href="#show-all-operations">show all operations</a></h2>
+<p>Here's a basic example of how to do all of the operations:</p>
+<pre><code class="language-typescript">import {
+    InsertError,
+    nat64,
+    nat8,
+    Opt,
+    $query,
+    StableBTreeMap,
+    $update,
+    Variant
+} from 'azle';
+
+type Key = nat8;
+type Value = string;
+
+type InsertResult = Variant&lt;{
+    ok: Opt&lt;Value&gt;;
+    err: InsertError;
+}&gt;;
+
+let map = new StableBTreeMap&lt;Key, Value&gt;(0, 100, 100);
+
+$query;
+export function contains_key(key: Key): boolean {
+    return map.contains_key(key);
+}
+
+$query;
+export function get(key: Key): Opt&lt;Value&gt; {
+    return map.get(key);
+}
+
+$update;
+export function insert(key: Key, value: Value): InsertResult {
+    return map.insert(key, value);
+}
+
+$query;
+export function is_empty(): boolean {
+    return map.is_empty();
+}
+
+$query;
+export function items(): [Key, Value][] {
+    return map.items();
+}
+
+$query;
+export function keys(): Key[] {
+    return map.keys();
+}
+
+$query;
+export function len(): nat64 {
+    return map.len();
+}
+
+$update;
+export function remove(key: Key): Opt&lt;Value&gt; {
+    return map.remove(key);
+}
+
+$query;
+export function values(): Value[] {
+    return map.values();
+}
+</code></pre>
+<p>TODO also build a simple database with all CRUD operations</p>
 
                     </main>
 

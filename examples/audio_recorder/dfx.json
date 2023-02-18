@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "audio_recorder": {
+            "type": "custom",
+            "build": "npx azle audio_recorder",
+            "root": "src",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
+            "wasm": ".azle/audio_recorder/audio_recorder.wasm.gz",
+            "declarations": {
+                "output": "test/dfx_generated/audio_recorder",
+                "node_compatibility": true
+            }
+        }
+    }
+}
