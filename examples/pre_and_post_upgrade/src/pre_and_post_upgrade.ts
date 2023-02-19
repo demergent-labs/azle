@@ -4,14 +4,15 @@ import {
     $post_upgrade,
     $pre_upgrade,
     $query,
+    Record,
     StableBTreeMap,
     $update
 } from 'azle';
 
-type Entry = {
+type Entry = Record<{
     key: string;
     value: nat64;
-};
+}>;
 
 let stable_storage = new StableBTreeMap<string, Entry[]>(0, 25, 1_000);
 

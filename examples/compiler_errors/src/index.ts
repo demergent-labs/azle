@@ -1,9 +1,9 @@
-import { empty, Func, Opt, Query, Update, Variant } from 'azle';
+import { empty, Func, Opt, Query, Record, Update, Variant } from 'azle';
 import { int } from 'azle';
 
-type User = {
+type User = Record<{
     id: string;
-};
+}>;
 type VariantNotProperties = Variant<{}>;
 // export function qualified_name(param: azle.query.values.int): Query<void> {}
 

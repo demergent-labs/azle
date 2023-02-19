@@ -8,7 +8,8 @@
             "candid": "src/index.did",
             "wasm": ".azle/compiler_errors/compiler_errors.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/compiler_errors"
+                "output": "test/dfx_generated/compiler_errors",
+                "node_compatibility": true
             }
         }
     }

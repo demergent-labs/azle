@@ -8,6 +8,7 @@ import {
     Opt,
     Principal,
     $query,
+    Record,
     StableBTreeMap,
     $update,
     Variant
@@ -16,11 +17,11 @@ import { Notifier, NotifierFunc } from '../notifiers/types';
 
 let stable_storage = new StableBTreeMap<string, StableFunc>(0, 25, 1_000);
 
-type User = {
+type User = Record<{
     id: string;
     basic_func: BasicFunc;
     complex_func: ComplexFunc;
-};
+}>;
 
 type Reaction = Variant<{
     Good: null;

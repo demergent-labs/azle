@@ -1,30 +1,30 @@
-import { blob, nat32, nat64, Opt, Variant } from '../../index';
+import { blob, nat32, nat64, Opt, Record, Variant } from '../../index';
 
 export type BitcoinAddress = string;
 export type BlockHash = blob;
 
-export type GetBalanceArgs = {
+export type GetBalanceArgs = Record<{
     address: BitcoinAddress;
     min_confirmations: Opt<nat32>;
     network: BitcoinNetwork;
-};
+}>;
 
-export type GetCurrentFeePercentilesArgs = {
+export type GetCurrentFeePercentilesArgs = Record<{
     network: BitcoinNetwork;
-};
+}>;
 
-export type GetUtxosArgs = {
+export type GetUtxosArgs = Record<{
     address: BitcoinAddress;
     filter: Opt<UtxosFilter>;
     network: BitcoinNetwork;
-};
+}>;
 
-export type GetUtxosResult = {
+export type GetUtxosResult = Record<{
     next_page: Opt<Page>;
     tip_block_hash: BlockHash;
     tip_height: nat32;
     utxos: Utxo[];
-};
+}>;
 
 export type MillisatoshiPerByte = nat64;
 
@@ -40,18 +40,18 @@ export type BitcoinNetwork = Variant<{
     Testnet: null;
 }>;
 
-export type Outpoint = {
+export type Outpoint = Record<{
     txid: blob;
     vout: nat32;
-};
+}>;
 
 export type Page = blob;
 
-export type Utxo = {
+export type Utxo = Record<{
     height: nat32;
     outpoint: Outpoint;
     value: Satoshi;
-};
+}>;
 
 export type UtxosFilter = Variant<{
     MinConfirmations: nat32;
@@ -60,10 +60,10 @@ export type UtxosFilter = Variant<{
 
 export type Satoshi = nat64;
 
-export type SendTransactionArgs = {
+export type SendTransactionArgs = Record<{
     transaction: blob;
     network: BitcoinNetwork;
-};
+}>;
 
 export type SendTransactionError = Variant<{
     MalformedTransaction: null;

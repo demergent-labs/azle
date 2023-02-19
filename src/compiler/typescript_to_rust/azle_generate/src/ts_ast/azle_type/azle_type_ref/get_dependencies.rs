@@ -56,6 +56,9 @@ impl GetDependencies for AzleTypeRef<'_> {
             "Variant" => self
                 .get_enclosed_azle_type()
                 .get_dependent_types(type_alias_lookup, found_type_names),
+            "Record" => self
+                .get_enclosed_azle_type()
+                .get_dependent_types(type_alias_lookup, found_type_names),
             "Canister" => self
                 .get_enclosed_azle_type()
                 .get_dependent_types(type_alias_lookup, found_type_names),

@@ -1,10 +1,10 @@
-import { ic, nat32, nat64, Opt, $query, $update } from 'azle';
+import { ic, nat32, nat64, Opt, $query, Record, $update } from 'azle';
 
 //#region Performance
-type PerfResult = {
+type PerfResult = Record<{
     wasm_body_only: nat64;
     wasm_including_prelude: nat64;
-};
+}>;
 
 let perf_result: Opt<PerfResult> = null;
 
@@ -25,10 +25,10 @@ function record_performance(start: nat64, end: nat64): void {
 export type SuperheroId = nat32;
 
 // The type of a superhero.
-export type Superhero = {
+export type Superhero = Record<{
     name: string;
     superpowers?: Opt<List>;
-};
+}>;
 
 export type List = [string, Opt<List>];
 

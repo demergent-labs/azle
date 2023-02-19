@@ -117,7 +117,11 @@ type ic = {
     trap: (message: string) => never;
 };
 
-export type Variant<T> = Partial<T>;
+/**
+ * Used to mark an object as a Candid record.
+ */
+export type Record<T extends object> = T;
+export type Variant<T extends object> = Partial<T>;
 export type Opt<T> = T | null;
 
 export type CanisterResult<T> = {

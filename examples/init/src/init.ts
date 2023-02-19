@@ -1,8 +1,8 @@
-import { $init, Opt, $query, Variant, Principal } from 'azle';
+import { $init, Opt, Principal, $query, Record, Variant } from 'azle';
 
-type User = {
+type User = Record<{
     id: string;
-};
+}>;
 
 type Reaction = Variant<{
     Fire: null;

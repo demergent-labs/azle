@@ -1,10 +1,10 @@
-import { ic, nat64, Opt, $query, $update } from 'azle';
+import { ic, nat64, Opt, $query, Record, $update } from 'azle';
 
 //#region Performance
-type PerfResult = {
+type PerfResult = Record<{
     wasm_body_only: nat64;
     wasm_including_prelude: nat64;
-};
+}>;
 
 let perf_result: Opt<PerfResult> = null;
 
@@ -21,10 +21,10 @@ function record_performance(start: nat64, end: nat64): void {
 }
 //#endregion
 
-export type Entry = {
+export type Entry = Record<{
     desc: string;
     phone: string;
-};
+}>;
 
 let phone_book = new Map<string, Entry>();
 

@@ -1,9 +1,9 @@
-import { blob, Principal, $query, Variant } from 'azle';
+import { blob, Principal, $query, Record, Variant } from 'azle';
 
-type User = {
+type User = Record<{
     id: Principal;
     username: string;
-};
+}>;
 
 type Status = Variant<{
     WaitingOn: Principal;

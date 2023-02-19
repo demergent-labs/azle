@@ -14,28 +14,29 @@ import {
     Opt,
     Principal,
     Query,
-    Update,
-    empty,
-    int,
-    reserved,
     Variant,
-    Func
+    Func,
+    $query,
+    Record,
+    $update
 } from 'azle';
 
-type InlineExample = {
-    first_field: { one: boolean; two: string };
-    second_field: { one: boolean; two: { thing: string } };
-    third_field: { one: boolean; two: string };
-};
+type InlineExample = Record<{
+    first_field: Record<{ one: boolean; two: string }>;
+    second_field: Record<{ one: boolean; two: Record<{ thing: string }> }>;
+    third_field: Record<{ one: boolean; two: string }>;
+}>;
 
-export function inline_query(param: InlineExample): Query<void> {}
+$query;
+export function inline_query(param: InlineExample): void {}
 
+$query;
 export function simple_query(
     number: Opt<nat64>,
     string: string,
     otherthing: nat,
     boolThing: boolean
-): Query<string> {
+): string {
     return 'This is a query function';
 }
 
@@ -49,10 +50,10 @@ type Boolean3 = Boolean2;
 
 type BooleanArray = Boolean[];
 
-type SimpleRecord = {
+type SimpleRecord = Record<{
     one: boolean;
     other: BooleanArray;
-};
+}>;
 
 type Unused3 = boolean;
 
@@ -62,58 +63,62 @@ type Unused = Unused2;
 
 type UsedType = Unused;
 
-type DeepInlineRecords = {
-    one: { thing: boolean };
-    six: { one: string; two: SimpleRecord };
-};
+type DeepInlineRecords = Record<{
+    one: Record<{ thing: boolean }>;
+    six: Record<{ one: string; two: SimpleRecord }>;
+}>;
 
-type RecordWithoutDirectInlineRecords = {
+type RecordWithoutDirectInlineRecords = Record<{
     one: DeepInlineRecords;
-};
+}>;
 
-type TypeAliasOnlyUsedInline = {
+type TypeAliasOnlyUsedInline = Record<{
     one: boolean;
-};
+}>;
 
-type ComplexRecord = {
+type ComplexRecord = Record<{
     one: nat16;
     two: boolean;
     three: SimpleTypeAlias;
     four: Boolean[];
     five: SimpleRecord[];
-    six: { one: string; two: SimpleRecord };
+    six: Record<{ one: string; two: SimpleRecord }>;
     seven: RecordWithoutDirectInlineRecords;
-};
+}>;
 
+$query;
 export function complex_record_test(
     param: ComplexRecord,
     simple: SimpleRecord,
     other: UsedType,
-    inline_test1: {
+    inline_test1: Record<{
         one: string;
         two: SimpleRecord;
         three: UsedType;
-    },
-    other_inline_test2: {
+    }>,
+    other_inline_test2: Record<{
         one: boolean;
         two: nat16;
         three: ComplexRecord;
-    },
-    inline_test: {
+    }>,
+    inline_test: Record<{
         one: string;
         two: SimpleRecord;
-        three: { sub_one: boolean; sub_two: UsedType };
-        four: { sub_one: boolean; sub_two: { sub_three: UsedType } };
-    },
-    other_inline_test: {
-        one: { one_inline: boolean };
-        two: { two_inline: nat16 };
-        three: { three_inline: ComplexRecord };
-    },
-    inline_with_type_alias_dependency: {
+        three: Record<{ sub_one: boolean; sub_two: UsedType }>;
+        four: Record<{
+            sub_one: boolean;
+            sub_two: Record<{ sub_three: UsedType }>;
+        }>;
+    }>,
+    other_inline_test: Record<{
+        one: Record<{ one_inline: boolean }>;
+        two: Record<{ two_inline: nat16 }>;
+        three: Record<{ three_inline: ComplexRecord }>;
+    }>,
+    inline_with_type_alias_dependency: Record<{
         one: TypeAliasOnlyUsedInline;
-    }
-): Query<TypeAliasOfATypeRef> {
+    }>
+): TypeAliasOfATypeRef {
     return 1;
 }
 
@@ -122,11 +127,13 @@ type Fun = Variant<{
     cool?: null;
 }>;
 
-export function one_variant(thing: Fun): Query<void> {
+$query;
+export function one_variant(thing: Fun): void {
     one_variant({ cool: null, id: null });
 }
 
-export function various_variants(thing: Yes, thing2: Reaction): Query<string> {
+$query;
+export function various_variants(thing: Yes, thing2: Reaction): string {
     return 'hello';
 }
 
@@ -148,17 +155,18 @@ type SelfReferencingVariant = Variant<{
 
 type SelfReferencingTuple = [string, SelfReferencingTuple];
 
-type SelfReferencingRecord = {
+type SelfReferencingRecord = Record<{
     one: SelfReferencingRecord;
     two: string;
-};
+}>;
 
+$query;
 export function self_reference(
     variant: SelfReferencingVariant,
     record: SelfReferencingRecord,
     tuple: SelfReferencingTuple
     // func: SelfReferencingFunc
-): Query<void> {}
+): void {}
 
 type Reaction = Variant<{
     Fire: null;
@@ -167,13 +175,19 @@ type Reaction = Variant<{
     Fun: Fun;
 }>;
 
-type Good = {
+type Good = Record<{
     id: string;
-};
+}>;
 
-export function in_line(param: { one: nat16; two: nat16 }): Query<{
+$query;
+export function in_line(param: Record<{ one: nat16; two: nat16 }>): Record<{
     one: string;
-    two: { two_a: { two_a_i: nat16 }; two_b: boolean };
+    two: Record<{
+        two_a: Record<{
+            two_a_i: nat16;
+        }>;
+        two_b: boolean;
+    }>;
 }> {
     return {
         one: 'hello',
@@ -186,6 +200,7 @@ export function in_line(param: { one: nat16; two: nat16 }): Query<{
     };
 }
 
+$update;
 export function not_so_simple(
     one: int8[],
     two: int16,
@@ -200,107 +215,123 @@ export function not_so_simple(
     eleven: float64,
     twelve: Principal,
     thirteen: null,
-    fourteen: { thing: string }
-): Update<void> {}
+    fourteen: Record<{ thing: string }>
+): void {}
 
 // TODO Why can't we do 2d arrays of principals??
-// export function getPrincipals(principal_lists: Principal[][]): Update<void> {}
+// $update;
+// export function getPrincipals(principal_lists: Principal[][]): void {}
 
-type RecordWithInline = {
-    inline_record: { one: boolean; two: boolean; three: boolean };
+type RecordWithInline = Record<{
+    inline_record: Record<{ one: boolean; two: boolean; three: boolean }>;
     inline_variant: Variant<{ one: string; two: null; three: boolean }>;
-    inline_func: Func<(param1: string) => Query<string>>;
-};
+    inline_func: Func<Query<(param1: string) => string>>;
+}>;
 
 type VariantWithInline = Variant<{
     thing: null;
-    inline_record: { one: boolean; two: boolean; three: boolean };
+    inline_record: Record<{ one: boolean; two: boolean; three: boolean }>;
     inline_variant: Variant<{ one: string; two: null; three: boolean }>;
-    inline_func: Func<(param1: string) => Query<string>>;
+    inline_func: Func<Query<(param1: string) => string>>;
 }>;
 
 type FuncWithInline = Func<
-    (
-        inline_record: { one: boolean; two: boolean; three: boolean },
-        inline_variant: Variant<{ one: string; two: null; three: boolean }>,
-        inline_func: Func<(param1: string) => Query<string>>
-    ) => Query<string>
+    Query<
+        (
+            inline_record: Record<{
+                one: boolean;
+                two: boolean;
+                three: boolean;
+            }>,
+            inline_variant: Variant<{ one: string; two: null; three: boolean }>,
+            inline_func: Func<Query<(param1: string) => string>>
+        ) => string
+    >
 >;
 
+$update;
 export function everything_inline(
     record: RecordWithInline,
     variant: VariantWithInline,
     func: FuncWithInline
-): Update<void> {}
+): void {}
 
-type StructWithInlineArray = {
+type StructWithInlineArray = Record<{
     name: string;
-    not_array: { thing: boolean; thing2: boolean };
-    array: { thing: boolean; thing2: boolean }[];
-};
+    not_array: Record<{ thing: boolean; thing2: boolean }>;
+    array: Record<{ thing: boolean; thing2: boolean }>[];
+}>;
 
+$query;
 export function inline_vec(
-    array: { thing: string; thing2: boolean }[],
+    array: Record<{ thing: string; thing2: boolean }>[],
     struct_thing: StructWithInlineArray
-): Query<void> {}
+): void {}
 type CanisterOnly = boolean;
 
 type CanisterTuple1 = [
     string,
     nat64,
-    { tuple_inline: boolean; tuple_inline2: string },
+    Record<{ tuple_inline: boolean; tuple_inline2: string }>,
     CanisterOnly
 ];
 
-export function tuple_test(tup: CanisterTuple1): Query<void> {}
+$query;
+export function tuple_test(tup: CanisterTuple1): void {}
 
 type OptionAlias = Opt<Boolean>;
-type InlineOptionAlias = Opt<{ inline_bool: boolean }>;
-type InlineOptionStruct = {
-    opt: Opt<{ inline_string: String }>;
-};
+type InlineOptionAlias = Opt<Record<{ inline_bool: boolean }>>;
+type InlineOptionStruct = Record<{
+    opt: Opt<Record<{ inline_string: String }>>;
+}>;
 
+$update;
 export function option_test(
     opt: OptionAlias,
-    inline_opt: Opt<{ thing: String }>,
+    inline_opt: Opt<Record<{ thing: String }>>,
     inline_alias: InlineOptionAlias,
     struct_with_option: InlineOptionStruct,
-    inline_struct_with_array: { arr: Opt<{ inline_number: nat16 }> }
-): Update<void> {}
+    inline_struct_with_array: Record<{
+        arr: Opt<Record<{ inline_number: nat16 }>>;
+    }>
+): void {}
 
 type ArrayAlias = Boolean[];
-type InlineArrayAlias = { inline_bool: boolean }[];
-type InlineArrayStruct = {
-    arr: { inline_string: String }[];
-};
+type InlineArrayAlias = Record<{ inline_bool: boolean }>[];
+type InlineArrayStruct = Record<{
+    arr: Record<{ inline_string: String }>[];
+}>;
 
+$update;
 export function array_test(
     opt: ArrayAlias,
-    inline_array: { thing: String }[],
+    inline_array: Record<{ thing: String }>[],
     inline_alias: InlineArrayAlias,
     struct_with_array: InlineArrayStruct,
-    inline_struct_with_array: { arr: { inline_number: nat16 }[] }
-): Update<void> {}
+    inline_struct_with_array: Record<{
+        arr: Record<{ inline_number: nat16 }>[];
+    }>
+): void {}
 
-type UltimateSelfRef = {
+type UltimateSelfRef = Record<{
     pen_ultimate: PenultimateSelfRef;
-};
+}>;
 
-type PenultimateSelfRef = {
+type PenultimateSelfRef = Record<{
     antepenultimate: AntepenultimateSelfRef;
-};
+}>;
 
-type AntepenultimateSelfRef = {
+type AntepenultimateSelfRef = Record<{
     ultimate: UltimateSelfRef;
-};
+}>;
 
-export function ultimate_self_reference_test(
-    self_ref: UltimateSelfRef
-): Update<void> {}
+$update;
+export function ultimate_self_reference_test(self_ref: UltimateSelfRef): void {}
 
+$update;
 export function hash_duplication_test(
-    record: { one: boolean; two: boolean; three: boolean },
+    record: Record<{ one: boolean; two: boolean; three: boolean }>,
     variant: Variant<{ one: boolean; two: boolean; three: boolean }>,
-    record2: { one: boolean; two: boolean; three: boolean },
+    record2: Record<{ one: boolean; two: boolean; three: boolean }>,
     variant2: Variant<{ one: boolean; two: boolean; three: boolean }>
-): Update<void> {}
+): void {}

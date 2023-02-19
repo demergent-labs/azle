@@ -25,8 +25,8 @@ import {
     nat64,
     Opt,
     Query,
-    $query,
     Principal,
+    Record,
     update,
     Variant
 } from '../../index';
@@ -63,39 +63,39 @@ export type CanisterId = Principal;
 export type UserId = Principal;
 export type WasmModule = blob;
 
-export type CanisterSettings = {
+export type CanisterSettings = Record<{
     controllers: Opt<Principal[]>;
     compute_allocation: Opt<nat>;
     memory_allocation: Opt<nat>;
     freezing_threshold: Opt<nat>;
-};
+}>;
 
-export type DefiniteCanisterSettings = {
+export type DefiniteCanisterSettings = Record<{
     controllers: Principal[];
     compute_allocation: nat;
     memory_allocation: nat;
     freezing_threshold: nat;
-};
+}>;
 
-export type CreateCanisterArgs = {
+export type CreateCanisterArgs = Record<{
     settings: Opt<CanisterSettings>;
-};
+}>;
 
-export type CreateCanisterResult = {
+export type CreateCanisterResult = Record<{
     canister_id: CanisterId;
-};
+}>;
 
-export type UpdateSettingsArgs = {
+export type UpdateSettingsArgs = Record<{
     canister_id: Principal;
     settings: CanisterSettings;
-};
+}>;
 
-export type InstallCodeArgs = {
+export type InstallCodeArgs = Record<{
     mode: InstallCodeMode;
     canister_id: CanisterId;
     wasm_module: WasmModule;
     arg: blob;
-};
+}>;
 
 export type InstallCodeMode = Variant<{
     install: null;
@@ -103,29 +103,29 @@ export type InstallCodeMode = Variant<{
     upgrade: null;
 }>;
 
-export type UninstallCodeArgs = {
+export type UninstallCodeArgs = Record<{
     canister_id: CanisterId;
-};
+}>;
 
-export type StartCanisterArgs = {
+export type StartCanisterArgs = Record<{
     canister_id: CanisterId;
-};
+}>;
 
-export type StopCanisterArgs = {
+export type StopCanisterArgs = Record<{
     canister_id: CanisterId;
-};
+}>;
 
-export type CanisterStatusArgs = {
+export type CanisterStatusArgs = Record<{
     canister_id: Principal;
-};
+}>;
 
-export type CanisterStatusResult = {
+export type CanisterStatusResult = Record<{
     status: CanisterStatus;
     settings: DefiniteCanisterSettings;
     module_hash: Opt<blob>;
     memory_size: nat;
     cycles: nat;
-};
+}>;
 
 export type CanisterStatus = Variant<{
     running: null;
@@ -133,50 +133,50 @@ export type CanisterStatus = Variant<{
     stopped: null;
 }>;
 
-export type DeleteCanisterArgs = {
+export type DeleteCanisterArgs = Record<{
     canister_id: CanisterId;
-};
+}>;
 
-export type DepositCyclesArgs = {
+export type DepositCyclesArgs = Record<{
     canister_id: CanisterId;
-};
+}>;
 
-export type ProvisionalCreateCanisterWithCyclesArgs = {
+export type ProvisionalCreateCanisterWithCyclesArgs = Record<{
     amount: Opt<nat>;
     settings: Opt<CanisterSettings>;
-};
+}>;
 
-export type ProvisionalCreateCanisterWithCyclesResult = {
+export type ProvisionalCreateCanisterWithCyclesResult = Record<{
     canister_id: CanisterId;
-};
+}>;
 
-export type ProvisionalTopUpCanisterArgs = {
+export type ProvisionalTopUpCanisterArgs = Record<{
     canister_id: CanisterId;
     amount: nat;
-};
+}>;
 
-export type HttpRequestArgs = {
+export type HttpRequestArgs = Record<{
     url: string;
     max_response_bytes: Opt<nat64>;
     method: HttpMethod;
     headers: HttpHeader[];
     body: Opt<blob>;
     transform: Opt<HttpTransform>;
-};
+}>;
 
-export type HttpTransform = {
+export type HttpTransform = Record<{
     function: HttpTransformFunc;
     context: blob;
-};
+}>;
 
 export type HttpTransformFunc = Func<
     Query<(args: HttpTransformArgs) => HttpResponse>
 >;
 
-export type HttpTransformArgs = {
+export type HttpTransformArgs = Record<{
     response: HttpResponse;
     context: blob;
-};
+}>;
 
 export type HttpMethod = Variant<{
     get: null;
@@ -184,46 +184,46 @@ export type HttpMethod = Variant<{
     post: null;
 }>;
 
-export type HttpHeader = {
+export type HttpHeader = Record<{
     name: string;
     value: string;
-};
+}>;
 
-export type HttpResponse = {
+export type HttpResponse = Record<{
     status: nat;
     headers: HttpHeader[];
     body: blob;
-};
+}>;
 
-export type KeyId = {
+export type KeyId = Record<{
     curve: EcdsaCurve;
     name: string;
-};
+}>;
 
 export type EcdsaCurve = Variant<{
     secp256k1: null;
 }>;
 
-export type EcdsaPublicKeyArgs = {
+export type EcdsaPublicKeyArgs = Record<{
     canister_id: Opt<Principal>;
     derivation_path: blob[];
     key_id: KeyId;
-};
+}>;
 
-export type SignWithEcdsaArgs = {
+export type SignWithEcdsaArgs = Record<{
     message_hash: blob;
     derivation_path: blob[];
     key_id: KeyId;
-};
+}>;
 
-export type EcdsaPublicKeyResult = {
+export type EcdsaPublicKeyResult = Record<{
     public_key: blob;
     chain_code: blob;
-};
+}>;
 
-export type SignWithEcdsaResult = {
+export type SignWithEcdsaResult = Record<{
     signature: blob;
-};
+}>;
 
 export class Management extends ExternalCanister {
     @update

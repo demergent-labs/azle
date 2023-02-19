@@ -1,23 +1,33 @@
-import { blob, Duration, ic, int8, ok, $query, TimerId, $update } from 'azle';
+import {
+    blob,
+    Duration,
+    ic,
+    int8,
+    ok,
+    $query,
+    Record,
+    TimerId,
+    $update
+} from 'azle';
 import { management_canister } from 'azle/canisters/management';
 
-type StatusReport = {
+type StatusReport = Record<{
     single: boolean;
     inline: int8;
     capture: string;
     repeat: int8;
     single_cross_canister: blob;
     repeat_cross_canister: blob;
-};
+}>;
 
-type TimerIds = {
+type TimerIds = Record<{
     single: TimerId;
     inline: TimerId;
     capture: TimerId;
     repeat: TimerId;
     single_cross_canister: TimerId;
     repeat_cross_canister: TimerId;
-};
+}>;
 
 let status: StatusReport = {
     single: false,

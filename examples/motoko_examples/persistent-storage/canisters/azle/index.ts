@@ -5,15 +5,16 @@ import {
     nat64,
     Opt,
     $query,
+    Record,
     StableBTreeMap,
     $update
 } from 'azle';
 
 //#region Performance
-type PerfResult = {
+type PerfResult = Record<{
     wasm_body_only: nat64;
     wasm_including_prelude: nat64;
-};
+}>;
 
 let perf_result: Opt<PerfResult> = null;
 
