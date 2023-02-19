@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-export async function pretest() {
+async function pretest() {
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
     execSync(`dfx canister uninstall-code null_example || true`, {

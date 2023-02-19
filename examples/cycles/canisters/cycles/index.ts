@@ -1,10 +1,20 @@
-import { Canister, CanisterResult, ic, nat, nat64, Principal } from 'azle';
+import {
+    CanisterResult,
+    ExternalCanister,
+    nat,
+    nat64,
+    Principal,
+    update
+} from 'azle';
 
-export type Cycles = Canister<{
-    receive_cycles(): CanisterResult<nat64>;
-    receive_cycles128(): CanisterResult<nat>;
-}>;
+export class Cycles extends ExternalCanister {
+    @update
+    receive_cycles: () => CanisterResult<nat64>;
 
-export const cycles_canister: Cycles = ic.canisters.Cycles(
+    @update
+    receive_cycles128: () => CanisterResult<nat>;
+}
+
+export const cycles_canister = new Cycles(
     Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
 );

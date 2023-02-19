@@ -1,33 +1,35 @@
 import {
     blob,
     Func,
+    Query,
     ic,
     nat,
     nat16,
     Opt,
-    Query,
+    $query,
+    Record,
     StableBTreeMap,
-    Update,
+    $update,
     Variant
 } from 'azle';
 import encodeUtf8 from 'encode-utf8';
 
-type StreamingCallbackHttpResponse = {
+type StreamingCallbackHttpResponse = Record<{
     body: blob;
     token: Opt<Token>;
-};
+}>;
 
-type Token = {
+type Token = Record<{
     // add whatever fields you'd like
     arbitrary_data: string;
-};
+}>;
 
-type CallbackStrategy = {
+type CallbackStrategy = Record<{
     callback: Callback;
     token: Token;
-};
+}>;
 
-type Callback = Func<(t: Token) => Query<StreamingCallbackHttpResponse>>;
+type Callback = Func<Query<(t: Token) => StreamingCallbackHttpResponse>>;
 
 type StreamingStrategy = Variant<{
     Callback: CallbackStrategy;
@@ -35,20 +37,20 @@ type StreamingStrategy = Variant<{
 
 type HeaderField = [string, string];
 
-type HttpResponse = {
+type HttpResponse = Record<{
     status_code: nat16;
     headers: HeaderField[];
     body: blob;
     streaming_strategy: Opt<StreamingStrategy>;
     upgrade: Opt<boolean>;
-};
+}>;
 
-type HttpRequest = {
+type HttpRequest = Record<{
     method: string;
     url: string;
     headers: HeaderField[];
     body: blob;
-};
+}>;
 
 let stable_storage = new StableBTreeMap<string, nat>(0, 25, 1_000);
 
@@ -65,7 +67,8 @@ function encode(string: string): blob {
     return new Uint8Array(encodeUtf8(string));
 }
 
-export function http_request(req: HttpRequest): Query<HttpResponse> {
+$query;
+export function http_request(req: HttpRequest): HttpResponse {
     console.log('Hello from http_request');
 
     if (req.method === 'GET') {
@@ -138,7 +141,8 @@ export function http_request(req: HttpRequest): Query<HttpResponse> {
     };
 }
 
-export function http_request_update(req: HttpRequest): Update<HttpResponse> {
+$update;
+export function http_request_update(req: HttpRequest): HttpResponse {
     if (req.method === 'POST') {
         stable_storage.insert(
             'counter',
@@ -188,9 +192,8 @@ export function http_request_update(req: HttpRequest): Update<HttpResponse> {
     };
 }
 
-export function http_streaming(
-    token: Token
-): Query<StreamingCallbackHttpResponse> {
+$query;
+export function http_streaming(token: Token): StreamingCallbackHttpResponse {
     console.log('Hello from http_streaming');
     switch (token.arbitrary_data) {
         case 'start': {

@@ -6,8 +6,6 @@ use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 use crate::ts_ast::{azle_type::AzleType, GetDependencies, GetName, GetTsType};
 use cdk_framework::{ActDataType, Actable, SystemStructureType, ToActDataType};
 
-use super::AzleCanisterDecl;
-
 #[derive(Clone)]
 pub struct AzleTypeAliasDecl<'a> {
     pub ts_type_alias_decl: TsTypeAliasDecl,
@@ -25,7 +23,6 @@ pub trait TsTypeAliasHelperMethods {
 pub trait AzleTypeAliasListHelperMethods {
     fn generate_type_alias_lookup(&self) -> HashMap<String, AzleTypeAliasDecl>;
     fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<ActDataType>;
-    fn get_ast_ts_canister_decls(&self) -> Vec<AzleCanisterDecl>;
     fn get_azle_type_aliases_by_type_ref_name(&self, type_ref_name: &str)
         -> Vec<AzleTypeAliasDecl>;
 }
@@ -91,19 +88,10 @@ impl AzleTypeAliasListHelperMethods for Vec<AzleTypeAliasDecl<'_>> {
     fn generate_type_alias_lookup(&self) -> HashMap<String, AzleTypeAliasDecl> {
         self.iter()
             .fold(HashMap::new(), |mut acc, azle_type_alias| {
-                let type_alias_names = azle_type_alias.ts_type_alias_decl.id.get_name().to_string();
-                acc.insert(type_alias_names, azle_type_alias.clone());
+                let type_alias_name = azle_type_alias.ts_type_alias_decl.id.get_name().to_string();
+                acc.insert(type_alias_name, azle_type_alias.clone());
                 acc
             })
-    }
-
-    fn get_ast_ts_canister_decls(&self) -> Vec<AzleCanisterDecl> {
-        self.get_azle_type_aliases_by_type_ref_name("Canister")
-            .iter()
-            .map(|decl| AzleCanisterDecl {
-                azle_type_alias: decl.clone(),
-            })
-            .collect()
     }
 
     fn get_azle_type_aliases_by_type_ref_name(
@@ -130,7 +118,7 @@ impl AzleTypeAliasListHelperMethods for Vec<AzleTypeAliasDecl<'_>> {
 
         type_names.iter().fold(vec![], |acc, dependant_type_name| {
             let type_alias_decl = type_alias_lookup.get(dependant_type_name);
-            let token_stream = match type_alias_decl {
+            let act_data_type = match type_alias_decl {
                 Some(azle_type_alias) => azle_type_alias.to_act_node(),
                 None => {
                     panic!(
@@ -139,7 +127,7 @@ impl AzleTypeAliasListHelperMethods for Vec<AzleTypeAliasDecl<'_>> {
                     )
                 }
             };
-            vec![acc, vec![token_stream]].concat()
+            vec![acc, vec![act_data_type]].concat()
         })
     }
 }

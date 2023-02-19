@@ -1,14 +1,15 @@
-import { nat32, Query, Update } from 'azle';
+import { nat32, $query, $update } from 'azle';
 import { Thread } from './candid_types';
 import { get_post_from_state_post } from './posts';
 import { state, StateThread, StateUser } from './state';
 import { get_user_from_state_user } from './users';
 
+$update;
 export function create_thread(
     title: string,
     author_id: string,
     join_depth: nat32
-): Update<Thread> {
+): Thread {
     const id = Object.keys(state.threads).length.toString();
 
     const state_thread: StateThread = {
@@ -30,7 +31,8 @@ export function create_thread(
     return thread;
 }
 
-export function get_all_threads(join_depth: nat32): Query<Thread[]> {
+$query;
+export function get_all_threads(join_depth: nat32): Thread[] {
     return Object.values(state.threads).map((state_thread) =>
         get_thread_from_state_thread(state_thread, join_depth)
     );

@@ -1,13 +1,4 @@
-import {
-    Query,
-    Heartbeat,
-    Init,
-    PreUpgrade,
-    PostUpgrade,
-    ic,
-    InspectMessage,
-    Update
-} from 'azle';
+import { $heartbeat, ic, $inspect_message, $query, $update } from 'azle';
 
 // throw 'Uncomment this to test that errors are handled during the eval process.';
 
@@ -17,52 +8,64 @@ class CustomClass {
     };
 }
 
-export function throw_bigint(): Query<void> {
+$query;
+export function throw_bigint(): void {
     throw 3n;
 }
 
-export function throw_boolean(): Query<void> {
+$query;
+export function throw_boolean(): void {
     throw false;
 }
 
-export function throw_class(): Query<void> {
+$query;
+export function throw_class(): void {
     throw new CustomClass();
 }
 
-export function throw_custom_error(): Query<void> {
+$query;
+export function throw_custom_error(): void {
     throw Error('This is a custom error');
 }
 
-export function throw_int(): Query<void> {
+$query;
+export function throw_int(): void {
     throw 3;
 }
 
-export function throw_null(): Query<void> {
+$query;
+export function throw_null(): void {
     throw null;
 }
 
-export function throw_null_reference(): Query<void> {
+$query;
+export function throw_null_reference(): void {
     const null_object: any = null;
     null_object.first_field;
 }
 
-export function throw_object(): Query<void> {
+$query;
+export function throw_object(): void {
     throw { thing: 1 };
 }
 
-export function throw_rational(): Query<void> {
+$query;
+export function throw_rational(): void {
     throw 3.14;
 }
 
-export function throw_string(): Query<void> {
+$query;
+export function throw_string(): void {
     throw 'Hello World';
 }
 
-export function throw_symbol(): Query<void> {
+$query;
+export function throw_symbol(): void {
     throw Symbol();
 }
 
-export function throw_undefined(): Query<void> {
+$query;
+export function throw_undefined(): void {
     throw undefined;
 }
 
@@ -73,16 +76,19 @@ export function throw_undefined(): Query<void> {
 let inititalized = false;
 let heartbeating = false;
 
-export function get_initialized(): Query<boolean> {
+$query;
+export function get_initialized(): boolean {
     return inititalized;
 }
 
-export function heartbeat(): Heartbeat {
+$heartbeat;
+export function heartbeat() {
     heartbeating = true;
     throw 'We are throwing in the heartbeat';
 }
 
-export function inspect_message(): InspectMessage {
+$inspect_message;
+export function inspect_message() {
     console.log('inspect_message called');
 
     if (
@@ -100,15 +106,18 @@ export function inspect_message(): InspectMessage {
     throw `Method "${ic.method_name()}" not allowed`;
 }
 
-export function accessible(): Update<boolean> {
+$update;
+export function accessible(): boolean {
     return true;
 }
 
-export function inaccessible(): Update<boolean> {
+$update;
+export function inaccessible(): boolean {
     return false;
 }
 
-export function also_inaccessible(): Update<boolean> {
+$update;
+export function also_inaccessible(): boolean {
     return false;
 }
 

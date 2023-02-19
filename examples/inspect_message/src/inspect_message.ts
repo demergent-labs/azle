@@ -1,6 +1,7 @@
-import { ic, InspectMessage, Update } from 'azle';
+import { ic, $inspect_message, $update } from 'azle';
 
-export function inspect_message(): InspectMessage {
+$inspect_message;
+export function inspect_message() {
     console.log('inspect_message called');
 
     if (ic.method_name() === 'accessible') {
@@ -15,14 +16,17 @@ export function inspect_message(): InspectMessage {
     throw `Method "${ic.method_name()}" not allowed`;
 }
 
-export function accessible(): Update<boolean> {
+$update;
+export function accessible(): boolean {
     return true;
 }
 
-export function inaccessible(): Update<boolean> {
+$update;
+export function inaccessible(): boolean {
     return false;
 }
 
-export function also_inaccessible(): Update<boolean> {
+$update;
+export function also_inaccessible(): boolean {
     return false;
 }

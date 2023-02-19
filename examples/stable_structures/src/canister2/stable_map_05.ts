@@ -3,9 +3,9 @@ import {
     InsertError,
     nat64,
     Opt,
-    Query,
+    $query,
     StableBTreeMap,
-    Update,
+    $update,
     Variant
 } from 'azle';
 
@@ -16,41 +16,50 @@ type StableMap5InsertResult = Variant<{
 
 let stable_map_5 = new StableBTreeMap<Opt<String>, float64>(5, 100, 1_000);
 
-export function stable_map_5_contains_key(key: Opt<String>): Query<boolean> {
+$query;
+export function stable_map_5_contains_key(key: Opt<String>): boolean {
     return stable_map_5.contains_key(key);
 }
 
-export function stable_map_5_get(key: Opt<String>): Query<Opt<float64>> {
+$query;
+export function stable_map_5_get(key: Opt<String>): Opt<float64> {
     return stable_map_5.get(key);
 }
 
+$update;
 export function stable_map_5_insert(
     key: Opt<String>,
     value: float64
-): Update<StableMap5InsertResult> {
+): StableMap5InsertResult {
     return stable_map_5.insert(key, value);
 }
 
-export function stable_map_5_is_empty(): Query<boolean> {
+$query;
+export function stable_map_5_is_empty(): boolean {
     return stable_map_5.is_empty();
 }
 
-export function stable_map_5_items(): Query<[Opt<String>, float64][]> {
+$query;
+export function stable_map_5_items(): [Opt<String>, float64][] {
     return stable_map_5.items();
 }
 
-export function stable_map_5_keys(): Query<Opt<String>[]> {
+$query;
+export function stable_map_5_keys(): Opt<String>[] {
     return stable_map_5.keys();
 }
 
-export function stable_map_5_len(): Query<nat64> {
+$query;
+export function stable_map_5_len(): nat64 {
     return stable_map_5.len();
 }
 
-export function stable_map_5_remove(key: Opt<String>): Update<Opt<float64>> {
+$update;
+export function stable_map_5_remove(key: Opt<String>): Opt<float64> {
     return stable_map_5.remove(key);
 }
 
-export function stable_map_5_values(): Query<float64[]> {
+$query;
+export function stable_map_5_values(): float64[] {
     return stable_map_5.values();
 }

@@ -1,4 +1,0 @@
-service: {
-    "candid_encode": (text) -> (blob) query;
-    "candid_decode": (blob) -> (text) query;
-}

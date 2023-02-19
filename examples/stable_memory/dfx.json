@@ -8,7 +8,8 @@
             "candid": "src/stable_memory.did",
             "wasm": ".azle/stable_memory/stable_memory.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/stable_memory"
+                "output": "test/dfx_generated/stable_memory",
+                "node_compatibility": true
             }
         }
     }

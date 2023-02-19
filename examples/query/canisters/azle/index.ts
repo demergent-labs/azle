@@ -1,5 +1,6 @@
-import { Query } from 'azle';
+import { $query } from 'azle';
 
-export function simple_query(): Query<string> {
+$query;
+export function simple_query(): string {
     return 'This is a query function';
 }

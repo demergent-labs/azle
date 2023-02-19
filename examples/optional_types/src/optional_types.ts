@@ -1,32 +1,35 @@
 // TODO let's add more examples here, really test it out
 
-import { Opt, Query } from 'azle';
+import { Opt, $query, Record } from 'azle';
 
-type Html = {
+type Html = Record<{
     head: Opt<Head>;
-};
+}>;
 
-type Head = {
+type Head = Record<{
     elements: Element[];
-};
+}>;
 
-type Element = {
+type Element = Record<{
     id: string;
-};
+}>;
 
-export function get_html(): Query<Html> {
+$query;
+export function get_html(): Html {
     return {
         head: null
     };
 }
 
-export function get_head(): Query<Opt<Head>> {
+$query;
+export function get_head(): Opt<Head> {
     return {
         elements: []
     };
 }
 
-export function get_head_with_elements(): Query<Opt<Head>> {
+$query;
+export function get_head_with_elements(): Opt<Head> {
     return {
         elements: [
             {
@@ -36,8 +39,7 @@ export function get_head_with_elements(): Query<Opt<Head>> {
     };
 }
 
-export function get_element(
-    element: Opt<Opt<Element>>
-): Query<Opt<Opt<Element>>> {
+$query;
+export function get_element(element: Opt<Opt<Element>>): Opt<Opt<Element>> {
     return element;
 }

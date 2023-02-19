@@ -1,7 +1,9 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::Program;
+use swc_ecma_ast::{ClassDecl, Program};
 
-use crate::ts_ast::{module::ModuleHelperMethods, AzleFnDecl, AzleTypeAliasDecl};
+use crate::ts_ast::{
+    module::ModuleHelperMethods, source_map::SourceMapped, AzleFnDecl, AzleTypeAliasDecl,
+};
 
 pub use helper_methods::HelperMethods;
 
@@ -14,32 +16,25 @@ pub struct AzleProgram {
 }
 
 impl AzleProgram {
-    fn get_ast_fn_decls(&self) -> Vec<AzleFnDecl> {
+    fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl> {
         match &self.program {
-            Program::Module(module) => {
-                let export_decls = module.get_export_decls();
-
-                let fn_decls: Vec<AzleFnDecl> = export_decls
-                    .iter()
-                    .filter(|export_decl| export_decl.decl.is_fn_decl())
-                    .map(|export_decl| export_decl.decl.as_fn_decl().unwrap().clone())
-                    .map(|fn_decl| AzleFnDecl {
-                        fn_decl,
-                        source_map: &self.source_map,
-                    })
-                    .collect();
-
-                fn_decls
-            }
-            Program::Script(_) => {
-                vec![]
-            }
+            Program::Module(module) => module.get_azle_fn_decls(&self.source_map),
+            Program::Script(_) => vec![],
         }
     }
 
     fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl> {
         match &self.program {
             Program::Module(module) => module.get_azle_type_alias_decls(&self.source_map),
+            Program::Script(_) => vec![],
+        }
+    }
+
+    fn get_external_canister_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
+        match &self.program {
+            Program::Module(module) => {
+                module.get_external_canister_class_declarations(&self.source_map)
+            }
             Program::Script(_) => vec![],
         }
     }

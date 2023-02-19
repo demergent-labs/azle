@@ -1,4 +1,4 @@
-import { Opt, Query, Update } from 'azle';
+import { Opt, $query, Record, $update } from 'azle';
 
 type Db = {
     users: {
@@ -6,26 +6,29 @@ type Db = {
     };
 };
 
-type User = {
+type User = Record<{
     id: string;
     username: string;
-};
+}>;
 
 let db: Db = {
     users: {}
 };
 
-export function get_user_by_id(id: string): Query<Opt<User>> {
+$query;
+export function get_user_by_id(id: string): Opt<User> {
     const user = db.users[id] ?? null;
 
     return user;
 }
 
-export function get_all_users(): Query<User[]> {
+$query;
+export function get_all_users(): User[] {
     return Object.values(db.users);
 }
 
-export function create_user(username: string): Update<User> {
+$update;
+export function create_user(username: string): User {
     const id = Object.keys(db.users).length.toString();
 
     const user = {

@@ -8,7 +8,8 @@
             "candid": "canisters/cycles/cycles.did",
             "wasm": ".azle/cycles/cycles.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/cycles"
+                "output": "test/dfx_generated/cycles",
+                "node_compatibility": true
             }
         },
         "intermediary": {
@@ -19,7 +20,8 @@
             "candid": "canisters/intermediary/intermediary.did",
             "wasm": ".azle/intermediary/intermediary.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/intermediary"
+                "output": "test/dfx_generated/intermediary",
+                "node_compatibility": true
             }
         }
     }

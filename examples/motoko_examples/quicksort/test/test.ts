@@ -1,4 +1,4 @@
-import { deploy, run_tests, Test } from 'azle/test';
+import { run_tests } from 'azle/test';
 import { createActor } from '../dfx_generated/azle';
 import { get_tests } from './tests';
 
@@ -8,6 +8,4 @@ const quicksort_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-const tests: Test[] = [...deploy('azle'), ...get_tests(quicksort_canister)];
-
-run_tests(tests);
+run_tests(get_tests(quicksort_canister));

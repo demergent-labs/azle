@@ -8,7 +8,8 @@
             "candid": "src/index.did",
             "wasm": ".azle/run_time_errors/run_time_errors.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/run_time_errors"
+                "output": "test/dfx_generated/run_time_errors",
+                "node_compatibility": true
             }
         }
     }

@@ -1,12 +1,14 @@
-import { Query, Heartbeat } from 'azle';
+import { $heartbeat, $query } from 'azle';
 
 let initialized = false;
 
-export function heartbeat(): Heartbeat {
+$heartbeat;
+export function heartbeat() {
     initialized = true;
     console.log('heartbeat initialized', initialized);
 }
 
-export function get_initialized(): Query<boolean> {
+$query;
+export function get_initialized(): boolean {
     return initialized;
 }

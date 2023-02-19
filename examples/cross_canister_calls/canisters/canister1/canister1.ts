@@ -1,4 +1,4 @@
-import { Update, ic, nat64, NotifyResult, Opt, Principal, Variant } from 'azle';
+import { nat64, NotifyResult, Opt, Principal, $update, Variant } from 'azle';
 import { Account, AccountArgs, Canister2 } from '../canister2/types';
 
 type TransferResult = Variant<{
@@ -26,36 +26,40 @@ type TrapResult = Variant<{
     err: string;
 }>;
 
-let canister2 = ic.canisters.Canister2<Canister2>(
+const canister2 = new Canister2(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
+$update;
 export async function transfer(
     from: string,
     to: string,
     amount: nat64
-): Promise<Update<TransferResult>> {
+): Promise<TransferResult> {
     return await canister2.transfer(from, to, amount).call();
 }
 
-export async function balance(id: string): Promise<Update<BalanceResult>> {
+$update;
+export async function balance(id: string): Promise<BalanceResult> {
     return await canister2.balance(id).call();
 }
 
-export async function account(
-    args: AccountArgs
-): Promise<Update<AccountResult>> {
+$update;
+export async function account(args: AccountArgs): Promise<AccountResult> {
     return await canister2.account(args).call();
 }
 
-export async function accounts(): Promise<Update<AccountsResult>> {
+$update;
+export async function accounts(): Promise<AccountsResult> {
     return await canister2.accounts().call();
 }
 
-export async function trap(): Promise<Update<TrapResult>> {
+$update;
+export async function trap(): Promise<TrapResult> {
     return await canister2.trap().call();
 }
 
-export function send_notification(): Update<NotifyResult> {
+$update;
+export function send_notification(): NotifyResult {
     return canister2.receive_notification('This is the notification').notify();
 }

@@ -1,4 +1,4 @@
-import { Canister, CanisterResult, nat, Variant } from 'azle';
+import { CanisterResult, ExternalCanister, nat, query, Variant } from 'azle';
 
 export type StringQueryResult = Variant<{
     ok: string;
@@ -10,6 +10,7 @@ export type NatQueryResult = Variant<{
     err: string;
 }>;
 
-export type Canister1 = Canister<{
-    inc_counter(): CanisterResult<nat>;
-}>;
+export class Canister1 extends ExternalCanister {
+    @query
+    inc_counter: () => CanisterResult<nat>;
+}

@@ -1,4 +1,4 @@
-import { ic, Init, nat32, ok, Query, StableBTreeMap, Update } from 'azle';
+import { ic, $init, nat32, ok, $query, StableBTreeMap, $update } from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
@@ -11,13 +11,13 @@ type JSON = string;
 
 let stable_storage = new StableBTreeMap<string, string>(0, 25, 1_000);
 
-export function init(ethereum_url: string): Init {
+$init;
+export function init(ethereum_url: string) {
     stable_storage.insert('ethereum_url', ethereum_url);
 }
 
-export async function eth_get_balance(
-    ethereum_address: string
-): Promise<Update<JSON>> {
+$update;
+export async function eth_get_balance(ethereum_address: string): Promise<JSON> {
     const max_response_bytes = 200n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
@@ -59,9 +59,8 @@ export async function eth_get_balance(
     return decodeUtf8(Uint8Array.from(http_result.ok.body));
 }
 
-export async function eth_get_block_by_number(
-    number: nat32
-): Promise<Update<JSON>> {
+$update;
+export async function eth_get_block_by_number(number: nat32): Promise<JSON> {
     const max_response_bytes = 2_000n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
@@ -103,7 +102,8 @@ export async function eth_get_block_by_number(
     return decodeUtf8(Uint8Array.from(http_result.ok.body));
 }
 
-export function eth_transform(args: HttpTransformArgs): Query<HttpResponse> {
+$query;
+export function eth_transform(args: HttpTransformArgs): HttpResponse {
     return {
         ...args.response,
         headers: []

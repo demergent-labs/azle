@@ -23,12 +23,16 @@ mod ident;
 mod module;
 mod source_map;
 mod ts_ast;
+mod ts_fn_param;
+mod ts_fn_type;
 mod ts_type;
 mod ts_type_ann;
 
 pub mod ast_traits;
-pub mod azle_method_signature;
 pub mod azle_program;
 pub mod azle_type;
 pub mod azle_type_alias_decls;
+pub mod class_decl;
+pub mod class_prop;
+pub mod module_item;
 pub mod param;

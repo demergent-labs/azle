@@ -1,5 +1,6 @@
-import { float64, Update } from 'azle';
+import { float64, $update } from 'azle';
 
-export function random_number(): Update<float64> {
+$update;
+export function random_number(): float64 {
     return Math.random();
 }

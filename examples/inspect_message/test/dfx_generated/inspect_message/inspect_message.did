@@ -1,5 +1,0 @@
-service : () -> {
-  accessible : () -> (bool);
-  also_inaccessible : () -> (bool);
-  inaccessible : () -> (bool);
-}

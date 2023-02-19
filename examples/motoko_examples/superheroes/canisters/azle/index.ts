@@ -1,14 +1,15 @@
-import { ic, Query, Update, nat32, nat64, Opt } from 'azle';
+import { ic, nat32, nat64, Opt, $query, Record, $update } from 'azle';
 
 //#region Performance
-type PerfResult = {
+type PerfResult = Record<{
     wasm_body_only: nat64;
     wasm_including_prelude: nat64;
-};
+}>;
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -21,14 +22,13 @@ function record_performance(start: nat64, end: nat64): void {
 //#endregion
 
 // Note: This won't be reflected in the candid until
-// https://github.com/demergent-labs/azle/issues/235 is implemented
 export type SuperheroId = nat32;
 
 // The type of a superhero.
-export type Superhero = {
+export type Superhero = Record<{
     name: string;
     superpowers?: Opt<List>;
-};
+}>;
 
 export type List = [string, Opt<List>];
 
@@ -47,7 +47,8 @@ let superheroes: Map<SuperheroId, Superhero> = new Map();
  */
 
 // Create a superhero.
-export function create(superhero: Superhero): Update<SuperheroId> {
+$update;
+export function create(superhero: Superhero): SuperheroId {
     const perf_start = ic.performance_counter(0);
 
     let superheroId = next;
@@ -61,17 +62,19 @@ export function create(superhero: Superhero): Update<SuperheroId> {
 }
 
 // Read a superhero.
-export function read(superheroId: SuperheroId): Query<Opt<Superhero>> {
+$query;
+export function read(superheroId: SuperheroId): Opt<Superhero> {
     let result = superheroes.get(superheroId) ?? null;
 
     return result;
 }
 
 // Update a superhero.
+$update;
 export function update(
     superheroId: SuperheroId,
     superhero: Superhero
-): Update<boolean> {
+): boolean {
     const perf_start = ic.performance_counter(0);
 
     let result = superheroes.get(superheroId);
@@ -86,7 +89,8 @@ export function update(
 }
 
 // Delete a superhero.
-export function delete_hero(superheroId: SuperheroId): Update<boolean> {
+$update;
+export function delete_hero(superheroId: SuperheroId): boolean {
     const perf_start = ic.performance_counter(0);
 
     let result = superheroes.get(superheroId);

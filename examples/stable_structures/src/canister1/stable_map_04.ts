@@ -3,9 +3,9 @@ import {
     InsertError,
     nat64,
     Opt,
-    Query,
+    $query,
     StableBTreeMap,
-    Update,
+    $update,
     Variant
 } from 'azle';
 import { User } from '../types';
@@ -17,41 +17,50 @@ type StableMap4InsertResult = Variant<{
 
 let stable_map_4 = new StableBTreeMap<User, float32>(4, 100, 1_000);
 
-export function stable_map_4_contains_key(key: User): Query<boolean> {
+$query;
+export function stable_map_4_contains_key(key: User): boolean {
     return stable_map_4.contains_key(key);
 }
 
-export function stable_map_4_get(key: User): Query<Opt<float32>> {
+$query;
+export function stable_map_4_get(key: User): Opt<float32> {
     return stable_map_4.get(key);
 }
 
+$update;
 export function stable_map_4_insert(
     key: User,
     value: float32
-): Update<StableMap4InsertResult> {
+): StableMap4InsertResult {
     return stable_map_4.insert(key, value);
 }
 
-export function stable_map_4_is_empty(): Query<boolean> {
+$query;
+export function stable_map_4_is_empty(): boolean {
     return stable_map_4.is_empty();
 }
 
-export function stable_map_4_items(): Query<[User, float32][]> {
+$query;
+export function stable_map_4_items(): [User, float32][] {
     return stable_map_4.items();
 }
 
-export function stable_map_4_keys(): Query<User[]> {
+$query;
+export function stable_map_4_keys(): User[] {
     return stable_map_4.keys();
 }
 
-export function stable_map_4_len(): Query<nat64> {
+$query;
+export function stable_map_4_len(): nat64 {
     return stable_map_4.len();
 }
 
-export function stable_map_4_remove(key: User): Update<Opt<float32>> {
+$update;
+export function stable_map_4_remove(key: User): Opt<float32> {
     return stable_map_4.remove(key);
 }
 
-export function stable_map_4_values(): Query<float32[]> {
+$query;
+export function stable_map_4_values(): float32[] {
     return stable_map_4.values();
 }

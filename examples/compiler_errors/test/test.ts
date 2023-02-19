@@ -1,5 +1,6 @@
-import { deploy, run_tests, Test } from 'azle/test';
+import { run_tests } from 'azle/test';
 import { createActor } from './dfx_generated/compiler_errors';
+import { get_tests } from './tests';
 
 const error_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -7,16 +8,4 @@ const error_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-const tests: Test[] = [
-    ...deploy('compiler_errors'),
-    {
-        name: 'blank test',
-        test: async () => {
-            return {
-                ok: true
-            };
-        }
-    }
-];
-
-run_tests(tests);
+run_tests(get_tests(error_canister));

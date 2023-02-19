@@ -36,7 +36,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                         *manual_mut = false;
                     });
 
-                    let _azle_boa_return_value = _azle_handle_boa_result(
+                    let _azle_boa_return_value = _azle_unwrap_boa_result(
                         func_js_object.call(
                             &boa_engine::JsValue::Null,
                             &[],

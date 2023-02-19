@@ -1,85 +1,22 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { deploy, ok, Test } from 'azle/test';
+import { ok, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { _SERVICE } from './dfx_generated/ledger_canister/ledger_canister.did';
 
-export function get_tests(
-    ledger_canister: ActorSubclass<_SERVICE>,
-    icp_ledger_path: string
-): Test[] {
-    const test_setups = get_test_setups(icp_ledger_path);
+export function get_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
     const simple_tests = get_simple_tests(ledger_canister);
     const transfer_error_tests = get_transfer_error_tests(ledger_canister);
     const address_from_principal_tests =
         get_address_from_principal_tests(ledger_canister);
 
     const tests = [
-        ...test_setups,
         ...simple_tests,
         ...transfer_error_tests,
         ...address_from_principal_tests
     ];
 
     return tests;
-}
-
-function get_test_setups(icp_ledger_path: string): Test[] {
-    return [
-        {
-            name: 'clear icp_ledger canister memory',
-            prep: async () => {
-                execSync(`dfx canister uninstall-code icp_ledger || true`, {
-                    stdio: 'inherit'
-                });
-            }
-        },
-        {
-            name: 'icp_ledger setup',
-            prep: async () => {
-                execSync(`mkdir -p ${icp_ledger_path}`, {
-                    stdio: 'inherit'
-                });
-
-                execSync(
-                    `cd ${icp_ledger_path} && curl -o ledger.wasm.gz https://download.dfinity.systems/ic/dfdba729414d3639b2a6c269600bbbd689b35385/canisters/ledger-canister_notify-method.wasm.gz`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-
-                execSync(`cd ${icp_ledger_path} && gunzip -f ledger.wasm.gz`, {
-                    stdio: 'inherit'
-                });
-
-                execSync(
-                    `cd ${icp_ledger_path} && curl -o ledger.private.did https://raw.githubusercontent.com/dfinity/ic/dfdba729414d3639b2a6c269600bbbd689b35385/rs/rosetta-api/ledger.did`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-
-                execSync(
-                    `cd ${icp_ledger_path} && curl -o ledger.public.did https://raw.githubusercontent.com/dfinity/ic/dfdba729414d3639b2a6c269600bbbd689b35385/rs/rosetta-api/ledger_canister/ledger.did`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-            }
-        },
-        ...deploy('ledger_canister'),
-        {
-            name: 'deploy icp_ledger',
-            prep: async () => {
-                execSync(
-                    `dfx deploy icp_ledger --argument='(record {minting_account = "'$(dfx ledger account-id)'"; initial_values = vec { record { "'$(dfx ledger account-id --of-canister ledger_canister)'"; record { e8s=100_000_000_000 } }; }; send_whitelist = vec {}})'`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-            }
-        }
-    ];
 }
 
 function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {

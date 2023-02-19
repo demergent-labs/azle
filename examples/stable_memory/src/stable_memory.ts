@@ -3,44 +3,53 @@ import {
     ic,
     nat32,
     nat64,
-    Query,
-    Update,
+    $query,
     StableGrowResult,
-    Stable64GrowResult
+    Stable64GrowResult,
+    $update
 } from 'azle';
 
-export function stable_size(): Query<nat32> {
+$query;
+export function stable_size(): nat32 {
     return ic.stable_size();
 }
 
-export function stable64_size(): Query<nat64> {
+$query;
+export function stable64_size(): nat64 {
     return ic.stable64_size();
 }
 
-export function stable_grow(new_pages: nat32): Update<StableGrowResult> {
+$update;
+export function stable_grow(new_pages: nat32): StableGrowResult {
     return ic.stable_grow(new_pages);
 }
 
-export function stable64_grow(new_pages: nat64): Update<Stable64GrowResult> {
+$update;
+export function stable64_grow(new_pages: nat64): Stable64GrowResult {
     return ic.stable64_grow(new_pages);
 }
 
-export function stable_write(offset: nat32, buf: blob): Update<void> {
+$update;
+export function stable_write(offset: nat32, buf: blob): void {
     ic.stable_write(offset, buf);
 }
 
-export function stable64_write(offset: nat64, buf: blob): Update<void> {
+$update;
+export function stable64_write(offset: nat64, buf: blob): void {
     ic.stable64_write(offset, buf);
 }
 
-export function stable_read(offset: nat32, length: nat32): Query<blob> {
+$query;
+export function stable_read(offset: nat32, length: nat32): blob {
     return ic.stable_read(offset, length);
 }
 
-export function stable64_read(offset: nat64, length: nat64): Query<blob> {
+$query;
+export function stable64_read(offset: nat64, length: nat64): blob {
     return ic.stable64_read(offset, length);
 }
 
-export function stable_bytes(): Query<blob> {
+$query;
+export function stable_bytes(): blob {
     return ic.stable_bytes();
 }

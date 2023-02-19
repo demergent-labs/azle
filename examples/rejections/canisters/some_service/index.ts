@@ -1,18 +1,22 @@
-import { Canister, CanisterResult, empty, ic, Principal } from 'azle';
+import {
+    CanisterResult,
+    ExternalCanister,
+    empty,
+    Principal,
+    query
+} from 'azle';
 
-export type SomeService = Canister<{
-    reject(message: string): CanisterResult<empty>;
-    accept(): CanisterResult<boolean>;
-    error(): CanisterResult<empty>;
-}>;
+export class SomeService extends ExternalCanister {
+    @query
+    reject: (message: string) => CanisterResult<empty>;
 
-export const some_service = ic.canisters.SomeService<SomeService>(
+    @query
+    accept: () => CanisterResult<boolean>;
+
+    @query
+    error: () => CanisterResult<empty>;
+}
+
+export const some_service = new SomeService(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
-
-// Used by `ic.result` example.
-
-// export type Result = Variant<{
-//     ok: boolean;
-//     err: string;
-// }>;

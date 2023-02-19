@@ -1,14 +1,25 @@
-import { ic, Init, nat, nat64, Opt, Query, StableBTreeMap, Update } from 'azle';
+import {
+    ic,
+    $init,
+    nat,
+    nat64,
+    Opt,
+    $query,
+    Record,
+    StableBTreeMap,
+    $update
+} from 'azle';
 
 //#region Performance
-type PerfResult = {
+type PerfResult = Record<{
     wasm_body_only: nat64;
     wasm_including_prelude: nat64;
-};
+}>;
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -22,11 +33,13 @@ function record_performance(start: nat64, end: nat64): void {
 
 let stable_storage = new StableBTreeMap<string, nat>(0, 25, 1_000);
 
-export function init(): Init {
+$init;
+export function init() {
     stable_storage.insert('counter', 0n);
 }
 
-export function increment(): Update<nat> {
+$update;
+export function increment(): nat {
     const perf_start = ic.performance_counter(0);
 
     stable_storage.insert(
@@ -42,11 +55,13 @@ export function increment(): Update<nat> {
     return result;
 }
 
-export function get(): Query<nat> {
+$query;
+export function get(): nat {
     return stable_storage.get('counter') ?? 0n;
 }
 
-export function reset(): Update<nat> {
+$update;
+export function reset(): nat {
     const perf_start = ic.performance_counter(0);
 
     stable_storage.insert('counter', 0n);

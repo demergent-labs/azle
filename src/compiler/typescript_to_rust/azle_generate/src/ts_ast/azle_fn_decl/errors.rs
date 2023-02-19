@@ -74,10 +74,6 @@ impl AzleFnDecl<'_> {
         }
     }
 
-    pub(super) fn build_non_type_ref_return_type_error_msg(&self) -> String {
-        "Canister method return types must be one of: Init, InspectMessage, Oneway, PostUpgrade, PreUpgrade, Promise, Query, Update".to_string()
-    }
-
     pub(super) fn build_object_destructure_error_msg(&self, param: &Param) -> ErrorMessage {
         let object_pat = param.pat.as_object().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
 

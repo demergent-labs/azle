@@ -1,9 +1,10 @@
-import { blob, ok, Query, Heartbeat } from 'azle';
+import { blob, $heartbeat, ok, $query } from 'azle';
 import { management_canister } from 'azle/canisters/management';
 
 let initialized: blob = Uint8Array.from([]);
 
-export async function heartbeat(): Promise<Heartbeat> {
+$heartbeat;
+export async function heartbeat(): Promise<void> {
     const randomness_result = await management_canister.raw_rand().call();
 
     if (ok(randomness_result)) {
@@ -12,6 +13,7 @@ export async function heartbeat(): Promise<Heartbeat> {
     }
 }
 
-export function get_initialized(): Query<blob> {
+$query;
+export function get_initialized(): blob {
     return initialized;
 }

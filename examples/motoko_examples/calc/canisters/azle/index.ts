@@ -1,14 +1,15 @@
-import { ic, int, nat64, Opt, Query, Update } from 'azle';
+import { ic, int, nat64, Opt, $query, Record, $update } from 'azle';
 
 //#region Performance
-type PerfResult = {
+type PerfResult = Record<{
     wasm_body_only: nat64;
     wasm_including_prelude: nat64;
-};
+}>;
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -22,7 +23,8 @@ function record_performance(start: nat64, end: nat64): void {
 
 let cell: int = 0n;
 
-export function add(n: int): Update<int> {
+$update;
+export function add(n: int): int {
     const perf_start = ic.performance_counter(0);
 
     cell += n;
@@ -34,7 +36,8 @@ export function add(n: int): Update<int> {
     return cell;
 }
 
-export function sub(n: int): Update<int> {
+$update;
+export function sub(n: int): int {
     const perf_start = ic.performance_counter(0);
 
     cell -= n;
@@ -46,7 +49,8 @@ export function sub(n: int): Update<int> {
     return cell;
 }
 
-export function mul(n: int): Update<int> {
+$update;
+export function mul(n: int): int {
     const perf_start = ic.performance_counter(0);
 
     cell *= n;
@@ -58,7 +62,8 @@ export function mul(n: int): Update<int> {
     return cell;
 }
 
-export function div(n: int): Update<Opt<int>> {
+$update;
+export function div(n: int): Opt<int> {
     const perf_start = ic.performance_counter(0);
 
     let result: Opt<int>;
@@ -76,7 +81,8 @@ export function div(n: int): Update<Opt<int>> {
     return result;
 }
 
-export function clearall(): Update<void> {
+$update;
+export function clearall(): void {
     const perf_start = ic.performance_counter(0);
 
     cell = 0n;

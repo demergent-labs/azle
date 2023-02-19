@@ -1,8 +1,8 @@
-import { Init, Opt, Query, Variant, Principal } from 'azle';
+import { $init, Opt, Principal, $query, Record, Variant } from 'azle';
 
-type User = {
+type User = Record<{
     id: string;
-};
+}>;
 
 type Reaction = Variant<{
     Fire: null;
@@ -13,24 +13,28 @@ let user: Opt<User> = null;
 let reaction: Opt<Reaction> = null;
 let owner: Opt<Principal> = null;
 
+$init;
 export function init(
     initUser: User,
     initReaction: Reaction,
     initOwner: Principal
-): Init {
+) {
     user = initUser;
     reaction = initReaction;
     owner = initOwner;
 }
 
-export function get_user(): Query<Opt<User>> {
+$query;
+export function get_user(): Opt<User> {
     return user;
 }
 
-export function get_reaction(): Query<Opt<Reaction>> {
+$query;
+export function get_reaction(): Opt<Reaction> {
     return reaction;
 }
 
-export function get_owner(): Query<Opt<Principal>> {
+$query;
+export function get_owner(): Opt<Principal> {
     return owner;
 }

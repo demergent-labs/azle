@@ -31,7 +31,10 @@ impl TsAst {
                 };
 
                 let lexer = Lexer::new(
-                    Syntax::Typescript(TsConfig::default()),
+                    Syntax::Typescript(TsConfig {
+                        decorators: true,
+                        ..TsConfig::default()
+                    }),
                     Default::default(),
                     StringInput::from(&*fm),
                     None,

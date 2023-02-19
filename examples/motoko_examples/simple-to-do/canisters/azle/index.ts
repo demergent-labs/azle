@@ -1,14 +1,15 @@
-import { Opt, Query, Update, ic, nat, nat16, nat64 } from 'azle';
+import { ic, nat, nat64, Opt, $query, Record, $update } from 'azle';
 
 //#region Performance
-type PerfResult = {
+type PerfResult = Record<{
     wasm_body_only: nat64;
     wasm_including_prelude: nat64;
-};
+}>;
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -20,20 +21,22 @@ function record_performance(start: nat64, end: nat64): void {
 }
 //#endregion
 
-export type ToDo = {
+export type ToDo = Record<{
     description: string;
     completed: boolean;
-};
+}>;
 
 let todos: Map<nat, ToDo> = new Map();
 let nextId: nat = 0n;
 
-export function get_todos(): Query<ToDo[]> {
+$query;
+export function get_todos(): ToDo[] {
     return Array.from(todos.values());
 }
 
 // Returns the ID that was given to the ToDo item
-export function add_todo(description: string): Update<nat> {
+$update;
+export function add_todo(description: string): nat {
     const perf_start = ic.performance_counter(0);
 
     const id = nextId;
@@ -50,7 +53,8 @@ export function add_todo(description: string): Update<nat> {
     return id;
 }
 
-export function complete_todo(id: nat): Update<void> {
+$update;
+export function complete_todo(id: nat): void {
     const perf_start = ic.performance_counter(0);
 
     let todo = todos.get(id);
@@ -66,7 +70,8 @@ export function complete_todo(id: nat): Update<void> {
     record_performance(perf_start, perf_end);
 }
 
-export function show_todos(): Query<string> {
+$query;
+export function show_todos(): string {
     let output = '\n___TO-DOs___';
     for (const todo_entry of [...todos]) {
         output += `\n${todo_entry[1].description}`;
@@ -77,7 +82,8 @@ export function show_todos(): Query<string> {
     return output;
 }
 
-export function clear_completed(): Update<void> {
+$update;
+export function clear_completed(): void {
     const perf_start = ic.performance_counter(0);
 
     // TODO why doesn't this work? https://github.com/demergent-labs/azle/issues/574

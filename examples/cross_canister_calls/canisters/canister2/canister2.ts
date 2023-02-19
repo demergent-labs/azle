@@ -1,4 +1,4 @@
-import { Query, Update, nat64, Opt, ic } from 'azle';
+import { ic, nat64, Opt, $query, $update } from 'azle';
 import { State, Account, AccountArgs } from './types';
 
 let state: State = {
@@ -11,11 +11,8 @@ let state: State = {
     notification: ''
 };
 
-export function transfer(
-    from: string,
-    to: string,
-    amount: nat64
-): Update<nat64> {
+$update;
+export function transfer(from: string, to: string, amount: nat64): nat64 {
     const from_account: Account | undefined = state.accounts[from];
 
     if (from_account === undefined) {
@@ -46,27 +43,33 @@ export function transfer(
     return amount;
 }
 
-export function balance(id: string): Query<nat64> {
+$query;
+export function balance(id: string): nat64 {
     return state.accounts[id]?.balance ?? 0n;
 }
 
-export function account(accountArgs: AccountArgs): Query<Opt<Account>> {
+$query;
+export function account(accountArgs: AccountArgs): Opt<Account> {
     return state.accounts[accountArgs.id] ?? null;
 }
 
-export function accounts(): Query<Account[]> {
+$query;
+export function accounts(): Account[] {
     return Object.values(state.accounts);
 }
 
-export function trap(): Query<string> {
+$query;
+export function trap(): string {
     ic.trap('hahahaha');
     return 'You will never get here';
 }
 
-export function receive_notification(message: string): Update<void> {
+$update;
+export function receive_notification(message: string): void {
     state.notification = message;
 }
 
-export function get_notification(): Query<string> {
+$query;
+export function get_notification(): string {
     return state.notification;
 }

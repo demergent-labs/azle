@@ -1,14 +1,14 @@
-import { ic, nat8, nat32, nat64, Opt, Variant } from '../index';
+import { ic, nat8, nat32, nat64, Opt, Record, Variant } from '../index';
 
-type KeyTooLarge = {
+type KeyTooLarge = Record<{
     given: nat32;
     max: nat32;
-};
+}>;
 
-type ValueTooLarge = {
+type ValueTooLarge = Record<{
     given: nat32;
     max: nat32;
-};
+}>;
 
 export type InsertError = Variant<{
     KeyTooLarge: KeyTooLarge;

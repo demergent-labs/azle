@@ -1,4 +1,4 @@
-import { deploy, ok, run_tests, Test } from 'azle/test';
+import { ok, run_tests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/bitcoin';
 import { wallets } from './wallets';
 import { impure_setup, while_running_bitcoin_daemon } from './setup';
@@ -20,7 +20,10 @@ export type State = {
 
 const tests: Test[] = [
     ...impure_setup(wallets, state),
-    ...deploy('bitcoin'),
+    {
+        name: 'wait for blockchain balance to reflect',
+        wait: 30_000
+    },
     ...test_canister_functionality()
 ];
 
@@ -90,7 +93,7 @@ function test_canister_functionality() {
                 const tx_bytes = hex_string_to_bytes(state.signed_tx_hex);
 
                 const result = await bitcoin_canister.send_transaction(
-                    Array.from(tx_bytes)
+                    tx_bytes
                 );
 
                 if (!ok(result)) {

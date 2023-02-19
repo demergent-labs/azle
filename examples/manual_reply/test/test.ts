@@ -1,4 +1,4 @@
-import { deploy, run_tests, Test } from 'azle/test';
+import { run_tests } from 'azle/test';
 import { createActor } from './dfx_generated/manual_reply';
 import { get_tests } from './tests';
 
@@ -8,9 +8,4 @@ const manual_reply_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-const tests: Test[] = [
-    ...deploy('manual_reply'),
-    ...get_tests(manual_reply_canister)
-];
-
-run_tests(tests);
+run_tests(get_tests(manual_reply_canister));

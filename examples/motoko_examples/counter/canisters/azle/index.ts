@@ -1,14 +1,15 @@
-import { ic, Query, Update, nat, nat64, Opt } from 'azle';
+import { ic, nat, nat64, Opt, $query, Record, $update } from 'azle';
 
 //#region Performance
-type PerfResult = {
+type PerfResult = Record<{
     wasm_body_only: nat64;
     wasm_including_prelude: nat64;
-};
+}>;
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -22,11 +23,13 @@ function record_performance(start: nat64, end: nat64): void {
 
 let counter: nat = 0n;
 
-export function get(): Query<nat> {
+$query;
+export function get(): nat {
     return counter;
 }
 
-export function set(n: nat): Update<void> {
+$update;
+export function set(n: nat): void {
     const perf_start = ic.performance_counter(0);
 
     counter = n;
@@ -35,7 +38,8 @@ export function set(n: nat): Update<void> {
     record_performance(perf_start, perf_end);
 }
 
-export function inc(): Update<void> {
+$update;
+export function inc(): void {
     const perf_start = ic.performance_counter(0);
 
     counter += 1n;

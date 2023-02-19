@@ -1,4 +1,0 @@
-service: {
-    "get_blob": () -> (blob) query;
-    "get_blobs": () -> (vec blob) query;
-}

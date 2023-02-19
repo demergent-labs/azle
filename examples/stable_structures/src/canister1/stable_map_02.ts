@@ -4,9 +4,9 @@ import {
     nat32,
     nat64,
     Opt,
-    Query,
+    $query,
     StableBTreeMap,
-    Update,
+    $update,
     Variant
 } from 'azle';
 
@@ -17,41 +17,50 @@ type StableMap2InsertResult = Variant<{
 
 let stable_map_2 = new StableBTreeMap<nat32, nat>(2, 100, 1_000);
 
-export function stable_map_2_contains_key(key: nat32): Query<boolean> {
+$query;
+export function stable_map_2_contains_key(key: nat32): boolean {
     return stable_map_2.contains_key(key);
 }
 
-export function stable_map_2_get(key: nat32): Query<Opt<nat>> {
+$query;
+export function stable_map_2_get(key: nat32): Opt<nat> {
     return stable_map_2.get(key);
 }
 
+$update;
 export function stable_map_2_insert(
     key: nat32,
     value: nat
-): Update<StableMap2InsertResult> {
+): StableMap2InsertResult {
     return stable_map_2.insert(key, value);
 }
 
-export function stable_map_2_is_empty(): Query<boolean> {
+$query;
+export function stable_map_2_is_empty(): boolean {
     return stable_map_2.is_empty();
 }
 
-export function stable_map_2_items(): Query<[nat32, nat][]> {
+$query;
+export function stable_map_2_items(): [nat32, nat][] {
     return stable_map_2.items();
 }
 
-export function stable_map_2_keys(): Query<nat32[]> {
+$query;
+export function stable_map_2_keys(): nat32[] {
     return stable_map_2.keys();
 }
 
-export function stable_map_2_len(): Query<nat64> {
+$query;
+export function stable_map_2_len(): nat64 {
     return stable_map_2.len();
 }
 
-export function stable_map_2_remove(key: nat32): Update<Opt<nat>> {
+$update;
+export function stable_map_2_remove(key: nat32): Opt<nat> {
     return stable_map_2.remove(key);
 }
 
-export function stable_map_2_values(): Query<nat[]> {
+$query;
+export function stable_map_2_values(): nat[] {
     return stable_map_2.values();
 }

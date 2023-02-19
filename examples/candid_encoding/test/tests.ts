@@ -313,7 +313,7 @@ export function get_tests(
 
                 const candid_decoded_result =
                     await candid_encoding_canister.candid_decode(
-                        candid_encoded_byte_array
+                        Uint8Array.from(candid_encoded_byte_array)
                     );
 
                 return {
@@ -352,7 +352,7 @@ export function get_tests(
 
                 const candid_decoded_result =
                     await candid_encoding_canister.candid_decode(
-                        candid_encoded_byte_array
+                        Uint8Array.from(candid_encoded_byte_array)
                     );
 
                 return {
@@ -429,7 +429,7 @@ export function get_tests(
 async function candid_encode_test(
     candid_encoding_canister: ActorSubclass<_SERVICE>,
     candid_string: string
-): Promise<AzleResult<boolean>> {
+): Promise<AzleResult<boolean, string>> {
     const candid_encoded_hex_string = execSync(`didc encode '${candid_string}'`)
         .toString()
         .trim();
@@ -452,7 +452,7 @@ async function candid_encode_test(
 async function candid_decode_test(
     candid_encoding_canister: ActorSubclass<_SERVICE>,
     candid_string: string
-): Promise<AzleResult<boolean>> {
+): Promise<AzleResult<boolean, string>> {
     const candid_encoded_hex_string = execSync(`didc encode '${candid_string}'`)
         .toString()
         .trim();
@@ -462,7 +462,7 @@ async function candid_decode_test(
             ?.map((x) => parseInt(x, 16)) ?? [];
 
     const result = await candid_encoding_canister.candid_decode(
-        candid_encoded_byte_array
+        Uint8Array.from(candid_encoded_byte_array)
     );
 
     return {

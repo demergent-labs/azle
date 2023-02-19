@@ -8,7 +8,8 @@
             "candid": "src/init.did",
             "wasm": ".azle/init/init.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/init"
+                "output": "test/dfx_generated/init",
+                "node_compatibility": true
             }
         }
     }

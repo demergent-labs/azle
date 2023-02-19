@@ -1,4 +1,4 @@
-import { run_tests, Test } from 'azle/test';
+import { run_tests } from 'azle/test';
 import { createActor } from './dfx_generated/func_types';
 import { get_tests } from './tests';
 

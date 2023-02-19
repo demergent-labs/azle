@@ -7,11 +7,11 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy`, {
+    execSync(`dfx deploy randomness`, {
         stdio: 'inherit'
     });
 
-    execSync(`dfx generate`, {
+    execSync(`dfx generate randomness`, {
         stdio: 'inherit'
     });
 }

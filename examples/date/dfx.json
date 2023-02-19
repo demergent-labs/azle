@@ -8,7 +8,8 @@
             "candid": "src/index.did",
             "wasm": ".azle/date/date.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/date"
+                "output": "test/dfx_generated/date",
+                "node_compatibility": true
             }
         }
     }

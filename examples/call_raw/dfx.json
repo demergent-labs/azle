@@ -8,7 +8,8 @@
             "candid": "src/call_raw.did",
             "wasm": ".azle/call_raw/call_raw.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/call_raw"
+                "output": "test/dfx_generated/call_raw",
+                "node_compatibility": true
             }
         }
     }

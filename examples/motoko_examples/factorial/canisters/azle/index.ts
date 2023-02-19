@@ -1,14 +1,15 @@
-import { ic, nat, nat64, Opt, Query, Update } from 'azle';
+import { ic, nat, nat64, Opt, $query, Record, $update } from 'azle';
 
 //#region Performance
-type PerfResult = {
+type PerfResult = Record<{
     wasm_body_only: nat64;
     wasm_including_prelude: nat64;
-};
+}>;
 
 let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
@@ -21,7 +22,8 @@ function record_performance(start: nat64, end: nat64): void {
 //#endregion
 
 // Calculate the product of all positive integers less than or equal to `n`.
-export function fac(n: nat): Update<nat> {
+$update;
+export function fac(n: nat): nat {
     const perf_start = ic.performance_counter(0);
 
     const factorial = go(n);

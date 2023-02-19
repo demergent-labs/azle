@@ -1,11 +1,13 @@
-import { Query, Update } from 'azle';
+import { $query, $update } from 'azle';
 
 let notified: boolean = false;
 
-export function receive_notification(): Update<void> {
+$update;
+export function receive_notification(): void {
     notified = true;
 }
 
-export function get_notified(): Query<boolean> {
+$query;
+export function get_notified(): boolean {
     return notified;
 }

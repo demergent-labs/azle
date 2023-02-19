@@ -1,4 +1,5 @@
 .azle
 .dfx
-node_modules
 dist
+dfx_generated
+node_modules

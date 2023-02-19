@@ -1,17 +1,19 @@
-import { blob, ic, nat64, Opt, Query, Update } from 'azle';
+import { blob, ic, nat64, Opt, $query, Record, $update } from 'azle';
 
-type PerfResult = {
+type PerfResult = Record<{
     wasm_body_only: nat64;
     wasm_including_prelude: nat64;
-};
+}>;
 
 export let perf_result: Opt<PerfResult> = null;
 
-export function get_perf_result(): Query<Opt<PerfResult>> {
+$query;
+export function get_perf_result(): Opt<PerfResult> {
     return perf_result;
 }
 
-export function get_bytes(bytes: blob): Update<blob> {
+$update;
+export function get_bytes(bytes: blob): blob {
     const perf_start = ic.performance_counter(0);
     const perf_end = ic.performance_counter(0);
 

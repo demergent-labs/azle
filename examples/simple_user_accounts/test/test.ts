@@ -1,4 +1,4 @@
-import { deploy, run_tests, Test } from 'azle/test';
+import { run_tests } from 'azle/test';
 import { createActor } from '../test/dfx_generated/simple_user_accounts';
 import { get_tests } from './tests';
 
@@ -11,9 +11,4 @@ const simple_user_accounts_canister = createActor(
     }
 );
 
-const tests: Test[] = [
-    ...deploy('simple_user_accounts'),
-    ...get_tests(simple_user_accounts_canister)
-];
-
-run_tests(tests);
+run_tests(get_tests(simple_user_accounts_canister));

@@ -1,23 +1,33 @@
-import { blob, Duration, ic, int8, ok, Query, TimerId, Update } from 'azle';
+import {
+    blob,
+    Duration,
+    ic,
+    int8,
+    ok,
+    $query,
+    Record,
+    TimerId,
+    $update
+} from 'azle';
 import { management_canister } from 'azle/canisters/management';
 
-type StatusReport = {
+type StatusReport = Record<{
     single: boolean;
     inline: int8;
     capture: string;
     repeat: int8;
     single_cross_canister: blob;
     repeat_cross_canister: blob;
-};
+}>;
 
-type TimerIds = {
+type TimerIds = Record<{
     single: TimerId;
     inline: TimerId;
     capture: TimerId;
     repeat: TimerId;
     single_cross_canister: TimerId;
     repeat_cross_canister: TimerId;
-};
+}>;
 
 let status: StatusReport = {
     single: false,
@@ -28,15 +38,14 @@ let status: StatusReport = {
     repeat_cross_canister: Uint8Array.from([])
 };
 
-export function clear_timer(timer_id: TimerId): Update<void> {
+$update;
+export function clear_timer(timer_id: TimerId): void {
     ic.clear_timer(timer_id);
     console.log(`timer ${timer_id} cancelled`);
 }
 
-export function set_timers(
-    delay: Duration,
-    interval: Duration
-): Update<TimerIds> {
+$update;
+export function set_timers(delay: Duration, interval: Duration): TimerIds {
     const captured_value = '🚩';
 
     const single_id = ic.set_timer(delay, one_time_timer_callback);
@@ -76,7 +85,8 @@ export function set_timers(
     };
 }
 
-export function status_report(): Query<StatusReport> {
+$query;
+export function status_report(): StatusReport {
     return status;
 }
 

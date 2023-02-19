@@ -8,7 +8,8 @@
             "candid": "src/index.did",
             "wasm": ".azle/outgoing_http_requests/outgoing_http_requests.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/outgoing_http_requests"
+                "output": "test/dfx_generated/outgoing_http_requests",
+                "node_compatibility": true
             }
         }
     }

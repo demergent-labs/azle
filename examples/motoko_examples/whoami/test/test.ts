@@ -1,11 +1,6 @@
-import { deploy, run_tests, Test } from 'azle/test';
+import { run_tests } from 'azle/test';
 import { createActor } from '../dfx_generated/azle';
-import {
-    callingIdentity,
-    canisterId,
-    get_tests,
-    someonePrincipal
-} from './tests';
+import { callingIdentity, canisterId, get_tests } from './tests';
 
 const whoami_canister = createActor(canisterId, {
     agentOptions: {
@@ -14,9 +9,4 @@ const whoami_canister = createActor(canisterId, {
     }
 });
 
-const tests: Test[] = [
-    ...deploy('azle', `'(principal "${someonePrincipal}")'`),
-    ...get_tests(whoami_canister)
-];
-
-run_tests(tests);
+run_tests(get_tests(whoami_canister));

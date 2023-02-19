@@ -8,7 +8,8 @@
             "candid": "src/manual_reply.did",
             "wasm": ".azle/manual_reply/manual_reply.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/manual_reply"
+                "output": "test/dfx_generated/manual_reply",
+                "node_compatibility": true
             }
         }
     }

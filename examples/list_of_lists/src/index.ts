@@ -5,6 +5,7 @@ import {
     float32,
     float64,
     Func,
+    Query,
     int,
     int16,
     int32,
@@ -16,15 +17,16 @@ import {
     nat64,
     nat8,
     Opt,
-    Query,
+    $query,
+    Record,
     reserved,
     Variant
 } from 'azle';
 
-type Person = {
+type Person = Record<{
     name: string;
     age: nat8;
-};
+}>;
 
 type State = Variant<{
     solid: null;
@@ -32,23 +34,25 @@ type State = Variant<{
     gas: null;
 }>;
 
-type BasicFunc = Func<(param1: string) => Query<string>>;
+type BasicFunc = Func<Query<(param1: string) => string>>;
 
-export function list_of_string_one(param: string[]): Query<string[]> {
+$query;
+export function list_of_string_one(param: string[]): string[] {
     return param;
 }
 
-export function list_of_string_two(params: string[][]): Query<string[][]> {
+$query;
+export function list_of_string_two(params: string[][]): string[][] {
     return params;
 }
 
-export function list_of_string_four(
-    params: string[][][][]
-): Query<string[][][][]> {
+$query;
+export function list_of_string_four(params: string[][][][]): string[][][][] {
     return params;
 }
 
-export function list_of_list_of_int8(): Query<int8[][][][][][][]> {
+$query;
+export function list_of_list_of_int8(): int8[][][][][][][] {
     return [
         [
             [
@@ -72,29 +76,35 @@ export function list_of_list_of_int8(): Query<int8[][][][][][][]> {
     ];
 }
 
-export function list_of_null(param: null[][][]): Query<null[][][]> {
+$query;
+export function list_of_null(param: null[][][]): null[][][] {
     return param;
 }
 
-export function list_of_bool(param: boolean[][][]): Query<boolean[][][]> {
+$query;
+export function list_of_bool(param: boolean[][][]): boolean[][][] {
     return param;
 }
 
-export function list_of_string(param: string[][][]): Query<string[][][]> {
+$query;
+export function list_of_string(param: string[][][]): string[][][] {
     return param;
 }
 
+$query;
 export function list_of_option_string(
     param: Opt<string>[][][]
-): Query<Opt<string>[][][]> {
+): Opt<string>[][][] {
     return param;
 }
 
-export function list_of_empty(): Query<empty[][][]> {
+$query;
+export function list_of_empty(): empty[][][] {
     throw new Error('Anything you want');
 }
 
-export function list_of_reserved(): Query<reserved[][][]> {
+$query;
+export function list_of_reserved(): reserved[][][] {
     return [
         [['A'], ['n']],
         [
@@ -104,78 +114,108 @@ export function list_of_reserved(): Query<reserved[][][]> {
     ];
 }
 
-export function list_of_func(param: BasicFunc[][][]): Query<BasicFunc[][][]> {
+$query;
+export function list_of_func(param: BasicFunc[][][]): BasicFunc[][][] {
     return param;
 }
 
-export function list_of_principal(
-    param: Principal[][][]
-): Query<Principal[][][]> {
+$query;
+export function list_of_principal(param: Principal[][][]): Principal[][][] {
     return param;
 }
 
 //TODO do I need to test Rejection Code
 
-export function list_of_f64(param: float64[][][]): Query<float64[][][]> {
+$query;
+export function list_of_f64(param: float64[][][]): float64[][][] {
     return param;
 }
 
-export function list_of_f32(param: float32[][][]): Query<float32[][][]> {
+$query;
+export function list_of_f32(param: float32[][][]): float32[][][] {
     return param;
 }
 
-export function list_of_int(param: int[][][]): Query<int[][][]> {
+$query;
+
+export function list_of_int(param: int[][][]): int[][][] {
     return param;
 }
 
-export function list_of_int64(param: int64[][][]): Query<int64[][][]> {
+$query;
+
+export function list_of_int64(param: int64[][][]): int64[][][] {
     return param;
 }
 
-export function list_of_int32(param: int32[][][]): Query<int32[][][]> {
+$query;
+
+export function list_of_int32(param: int32[][][]): int32[][][] {
     return param;
 }
 
-export function list_of_int16(param: int16[][][]): Query<int16[][][]> {
+$query;
+
+export function list_of_int16(param: int16[][][]): int16[][][] {
     return param;
 }
 
-export function list_of_int8(param: int8[][][]): Query<int8[][][]> {
+$query;
+
+export function list_of_int8(param: int8[][][]): int8[][][] {
     return param;
 }
 
-export function list_of_nat(param: nat[][][]): Query<nat[][][]> {
+$query;
+
+export function list_of_nat(param: nat[][][]): nat[][][] {
     return param;
 }
 
-export function list_of_nat64(param: nat64[][][]): Query<nat64[][][]> {
+$query;
+
+export function list_of_nat64(param: nat64[][][]): nat64[][][] {
     return param;
 }
 
-export function list_of_nat32(param: nat32[][][]): Query<nat32[][][]> {
+$query;
+
+export function list_of_nat32(param: nat32[][][]): nat32[][][] {
     return param;
 }
 
-export function list_of_nat16(param: nat16[][][]): Query<nat16[][][]> {
+$query;
+
+export function list_of_nat16(param: nat16[][][]): nat16[][][] {
     return param;
 }
 
-export function list_of_nat8(param: nat8[][][]): Query<nat8[][][]> {
+$query;
+
+export function list_of_nat8(param: nat8[][][]): nat8[][][] {
     return param;
 }
 
-export function list_of_record(param: Person[][][]): Query<Person[][][]> {
+$query;
+
+export function list_of_record(param: Person[][][]): Person[][][] {
     return param;
 }
 
-export function list_of_variant(param: State[][][]): Query<State[][][]> {
+$query;
+
+export function list_of_variant(param: State[][][]): State[][][] {
     return param;
 }
 
-export function list_of_blob(param: blob[]): Query<blob[]> {
+$query;
+
+export function list_of_blob(param: blob[]): blob[] {
     return param;
 }
 
-export function list_of_list_of_blob(param: blob[][]): Query<blob[][]> {
+$query;
+
+export function list_of_list_of_blob(param: blob[][]): blob[][] {
     return param;
 }

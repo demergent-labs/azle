@@ -9,8 +9,8 @@ import {
     nat64,
     Opt,
     Principal,
-    Query,
-    Update
+    $query,
+    $update
 } from 'azle';
 
 // TODO: See https://github.com/demergent-labs/azle/issues/496
@@ -22,12 +22,12 @@ import {
 // };
 
 // // returns the argument data as an array.
-// export function arg_data_zero_params(): Query<null[]> {
+// export function arg_data_zero_params(): null[] {
 //     return ic.arg_data();
 // }
 //
 // // returns the argument data as an array.
-// export function arg_data_one_param(arg: boolean): Query<boolean> {
+// export function arg_data_one_param(arg: boolean): boolean {
 //     const arg_data = ic.arg_data();
 //     return arg_data[0];
 // }
@@ -38,7 +38,7 @@ import {
 //     arg2: int8,
 //     arg3: boolean,
 //     arg4: string
-// ): Query<ArgDataMultipleParamsResult> {
+// ): ArgDataMultipleParamsResult {
 //     const arg_data = ic.arg_data();
 //     return {
 //         blob: Uint8Array.from(arg_data[0]),
@@ -49,82 +49,96 @@ import {
 // }
 
 // returns the argument data as bytes.
+$query;
 export function arg_data_raw(
     arg1: blob,
     arg2: int8,
     arg3: boolean,
     arg4: string
-): Query<blob> {
+): blob {
     return ic.arg_data_raw();
 }
 
 // returns the length of the argument data in bytes
+$query;
 export function arg_data_raw_size(
     arg1: blob,
     arg2: int8,
     arg3: boolean,
     arg4: string
-): Query<nat32> {
+): nat32 {
     return ic.arg_data_raw_size();
 }
 
 // returns the principal of the identity that called this function
-export function caller(): Query<Principal> {
+$query;
+export function caller(): Principal {
     return ic.caller();
 }
 
 // returns the amount of cycles available in the canister
-export function canister_balance(): Query<nat64> {
+$query;
+export function canister_balance(): nat64 {
     return ic.canister_balance();
 }
 
 // returns the amount of cycles available in the canister
-export function canister_balance128(): Query<nat> {
+$query;
+export function canister_balance128(): nat {
     return ic.canister_balance128();
 }
 
 // When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if called not from a query call.
-export function data_certificate(): Query<Opt<blob>> {
+$query;
+export function data_certificate(): Opt<blob> {
     return ic.data_certificate();
 }
 
 // When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if called not from a query call.
-export function data_certificate_null(): Update<Opt<blob>> {
+$update;
+export function data_certificate_null(): Opt<blob> {
     return ic.data_certificate();
 }
 
 // returns this canister's id
-export function id(): Query<Principal> {
+$query;
+export function id(): Principal {
     return ic.id();
 }
 
-export function performance_counter(): Query<nat64> {
+$query;
+export function performance_counter(): nat64 {
     return ic.performance_counter(0);
 }
 
 // prints a message through the local replica's output
-export function print(message: string): Query<boolean> {
+$query;
+export function print(message: string): boolean {
     ic.print(message);
 
     return true;
 }
 
-export function reject(message: string): Query<Manual<empty>> {
+$query;
+export function reject(message: string): Manual<empty> {
     ic.reject(message);
 }
 
 // sets up to 32 bytes of certified data
-export function set_certified_data(data: blob): Update<void> {
+$update;
+export function set_certified_data(data: blob): void {
     ic.set_certified_data(data);
 }
 
 // returns the current timestamp
-export function time(): Query<nat64> {
+$query;
+export function time(): nat64 {
     return ic.time();
 }
 
 // traps with a message, stopping execution and discarding all state within the call
-export function trap(message: string): Query<boolean> {
+$query;
+export function trap(message: string): boolean {
     ic.trap(message);
 
     return true;

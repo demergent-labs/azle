@@ -8,7 +8,8 @@
             "candid": "src/main.did",
             "wasm": ".azle/http_counter/http_counter.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/http_counter"
+                "output": "test/dfx_generated/http_counter",
+                "node_compatibility": true
             }
         }
     }

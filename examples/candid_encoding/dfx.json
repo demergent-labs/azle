@@ -8,7 +8,8 @@
             "candid": "src/index.did",
             "wasm": ".azle/candid_encoding/candid_encoding.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/candid_encoding"
+                "output": "test/dfx_generated/candid_encoding",
+                "node_compatibility": true
             }
         }
     }

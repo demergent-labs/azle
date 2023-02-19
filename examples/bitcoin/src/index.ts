@@ -1,4 +1,4 @@
-import { blob, Update } from 'azle';
+import { blob, $update } from 'azle';
 import { BitcoinNetwork, management_canister } from 'azle/canisters/management';
 import {
     ExecuteGetBalanceResult,
@@ -11,9 +11,10 @@ const BITCOIN_API_CYCLE_COST = 100_000_000n;
 const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;
 const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 
+$update;
 export async function get_balance(
     address: string
-): Promise<Update<ExecuteGetBalanceResult>> {
+): Promise<ExecuteGetBalanceResult> {
     const canister_result = await management_canister
         .bitcoin_get_balance({
             address,
@@ -26,9 +27,8 @@ export async function get_balance(
     return canister_result;
 }
 
-export async function get_current_fee_percentiles(): Promise<
-    Update<ExecuteGetCurrentFeePercentiles>
-> {
+$update;
+export async function get_current_fee_percentiles(): Promise<ExecuteGetCurrentFeePercentiles> {
     const canister_result = await management_canister
         .bitcoin_get_current_fee_percentiles({
             network: BitcoinNetwork.Regtest
@@ -39,9 +39,10 @@ export async function get_current_fee_percentiles(): Promise<
     return canister_result;
 }
 
+$update;
 export async function get_utxos(
     address: string
-): Promise<Update<ExecuteGetUtxosResult>> {
+): Promise<ExecuteGetUtxosResult> {
     const canister_result = await management_canister
         .bitcoin_get_utxos({
             address,
@@ -54,9 +55,10 @@ export async function get_utxos(
     return canister_result;
 }
 
+$update;
 export async function send_transaction(
     transaction: blob
-): Promise<Update<ExecuteSendTransactionResult>> {
+): Promise<ExecuteSendTransactionResult> {
     const transaction_fee =
         BITCOIN_BASE_TRANSACTION_COST +
         BigInt(transaction.length) * BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;

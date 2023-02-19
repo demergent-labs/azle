@@ -1,16 +1,18 @@
 use super::TsAst;
 use crate::ts_ast::azle_program::HelperMethods;
-use cdk_framework::{nodes::ActExternalCanister, SystemStructureType};
+use cdk_framework::nodes::ActExternalCanister;
 
 impl TsAst {
     pub fn build_external_canisters(&self) -> Vec<ActExternalCanister> {
-        let canister_type_alias_decls = self
+        let external_canister_class_declarations = self
             .azle_programs
-            .get_azle_type_alias_decls_for_system_structure_type(&SystemStructureType::Canister);
+            .get_external_canister_class_declarations();
 
-        canister_type_alias_decls
+        external_canister_class_declarations
             .iter()
-            .map(|canister_type_alias_decl| canister_type_alias_decl.to_act_external_canister())
+            .map(|external_canister_class_decl| {
+                external_canister_class_decl.to_act_external_canister()
+            })
             .collect()
     }
 }
