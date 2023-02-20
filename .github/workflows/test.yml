@@ -58,6 +58,7 @@ jobs:
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
                     "examples/async_await",
+                    "examples/audio_recorder",
                     "examples/bitcoin",
                     "examples/blob_array",
                     "examples/bytes",

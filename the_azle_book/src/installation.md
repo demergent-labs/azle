@@ -6,7 +6,6 @@ You should be using a \*nix environment (Linux, Mac OS, [WSL if using Windows](h
 
 -   Node.js 18
 -   dfx 0.12.1
--   Rust latest
 
 ## Node.js
 
@@ -26,18 +25,4 @@ Run the following command to install dfx 0.12.1:
 
 ```bash
 DFX_VERSION=0.12.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-```
-
-## Rust
-
-Run the following command to install the latest Rust:
-
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
-If you have already installed Rust like this before, run the following to make sure you are using the latest version:
-
-```bash
-rustup update
 ```

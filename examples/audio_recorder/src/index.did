@@ -1,0 +1,53 @@
+type AzleInline11353287906691632594 = variant {
+  InsertError : InsertError;
+  UserDoesNotExist : principal;
+};
+type AzleInline13401049363656383260 = variant { ok : User; err : InsertError };
+type AzleInline13433800688009538833 = variant {
+  ok : User;
+  err : AzleInline13933539390981386975;
+};
+type AzleInline13933539390981386975 = variant { UserDoesNotExist : principal };
+type AzleInline13945808284444015687 = variant {
+  RecordingDoesNotExist : principal;
+  InsertError : InsertError;
+  UserDoesNotExist : principal;
+};
+type AzleInline5698150622317580288 = variant {
+  ok : Recording;
+  err : AzleInline11353287906691632594;
+};
+type AzleInline9249661780820840727 = variant {
+  ok : Recording;
+  err : AzleInline13945808284444015687;
+};
+type InsertError = variant {
+  ValueTooLarge : KeyTooLarge;
+  KeyTooLarge : KeyTooLarge;
+};
+type KeyTooLarge = record { max : nat32; given : nat32 };
+type Recording = record {
+  id : principal;
+  audio : vec nat8;
+  name : text;
+  created_at : nat64;
+  user_id : principal;
+};
+type User = record {
+  id : principal;
+  recording_ids : vec principal;
+  username : text;
+  created_at : nat64;
+};
+service : () -> {
+  create_recording : (vec nat8, text, principal) -> (
+      AzleInline5698150622317580288,
+    );
+  create_user : (text) -> (AzleInline13401049363656383260);
+  delete_recording : (principal) -> (AzleInline9249661780820840727);
+  delete_user : (principal) -> (AzleInline13433800688009538833);
+  read_recording_by_id : (principal) -> (opt Recording) query;
+  read_recordings : () -> (vec Recording) query;
+  read_user_by_id : (principal) -> (opt User) query;
+  read_users : () -> (vec User) query;
+}
