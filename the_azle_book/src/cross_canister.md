@@ -257,7 +257,7 @@ export async function query_some_canister(): Promise<
 }
 ```
 
-You can expect cross-canister calls within the same subnet to take ~2-5 seconds to complete, and cross-canister calls across subnets [to take 2x that time to complete](https://forum.dfinity.org/t/can-i-run-multiple-inter-canister-update-calls-in-parallel/13115/6).
+You can expect cross-canister calls within the same subnet to take up to a few seconds to complete, and cross-canister calls across subnets [take about double that time](https://forum.dfinity.org/t/can-i-run-multiple-inter-canister-update-calls-in-parallel/13115/6).
 
 If you don't need to wait for your cross-canister call to return, you can use `notify`:
 
