@@ -96,12 +96,12 @@ Traps can be useful for ensuring that multiple operations are either all complet
 Here's an example of how to trap and ensure atomic changes to your database:
 
 ```typescript
-import { ic, ok, Opt, $query, StableBTreeMap, $update } from 'azle';
+import { ic, ok, Opt, $query, Record, StableBTreeMap, $update } from 'azle';
 
-type Entry = {
+type Entry = Record<{
     key: string;
     value: string;
-};
+}>;
 
 let db = new StableBTreeMap<string, string>(0, 10, 10);
 

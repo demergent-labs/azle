@@ -2,6 +2,7 @@
 
 -   [The Azle Book](./the_azle_book.md)
 -   [Azle (Beta)](./azle.md)
+-   [Quick Start](./quick_start.md)
 -   [Examples](./examples.md)
 -   [Installation](./installation.md)
 -   [Hello World](./hello_world.md)

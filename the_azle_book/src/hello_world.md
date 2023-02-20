@@ -14,14 +14,6 @@ Before embarking please ensure you've followed all of [the installation instruct
 
 We'll build a simple `Hello World` canister that shows the basics of importing Azle, exposing a query method, exposing an update method, and storing some state in a global variable. We'll then interact with it from the command line and from our web browser.
 
-If you'd like to skip all of the steps we're about to go through and instead get going on your own instantly, assuming you have [Node.js/npm installed](./installation.md#nodejs), just run this command in your terminal:
-
-```bash
-npx azle new azle_hello_world
-```
-
-This will create the `Hello World` project found in [this GitHub repo](https://github.com/demergent-labs/azle_hello_world). You can then peruse the code and follow the instructions in the `README.md` or continue here.
-
 ## The project directory and file structure
 
 Assuming you're starting completely from scratch, run these commands to setup your project's directory and file structure:

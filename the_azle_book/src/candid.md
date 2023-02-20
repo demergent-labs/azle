@@ -1,9 +1,5 @@
 # Candid
 
-TODO fix record type with new Record
-
-TODO make sure to fix Record type everywhere
-
 [Candid](https://internetcomputer.org/docs/current/developer-docs/backend/candid/) is an interface description language created by [DFINITY](https://dfinity.org/). It can be used to define interfaces between services (canisters), allowing canisters and clients written in various languages to easily interact with each other.
 
 Azle allows you to express Candid types through a combination of native and Azle-provided TypeScript types. These types will be necessary in various places as you define your canister. For example, Candid types must be used when defining the parameters and return types of your query and update methods.
