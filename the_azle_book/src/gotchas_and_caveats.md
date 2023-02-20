@@ -1,5 +1,7 @@
 # Gotchas and Caveats
 
+This chapter is a work in progress.
+
 -   You must use type names directly when importing them (TODO do an example)
 -   Varied missing TypeScript syntax or JavaScript features
 -   Imported npm packages may use unsupported syntax or APIs
