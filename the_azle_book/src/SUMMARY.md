@@ -1,7 +1,7 @@
 # Summary
 
 -   [The Azle Book](./the_azle_book.md)
--   [Azle](./azle.md)
+-   [Azle (Beta)](./azle.md)
 -   [Examples](./examples.md)
 -   [Installation](./installation.md)
 -   [Hello World](./hello_world.md)
@@ -12,12 +12,12 @@
 -   [Update Methods](./update_methods.md)
 -   [Candid](./candid.md)
 -   [Stable Structures](./stable_structures.md)
--   [Cycles](./cycles.md)
 -   [Cross Canister](./cross_canister.md)
--   [Management Canister](./management_canister.md)
 -   [HTTP](./http.md)
+-   [Management Canister](./management_canister.md)
 -   [Canister Lifecycle](./canister_lifecycle.md)
 -   [Timers](./timers.md)
+-   [Cycles](./cycles.md)
 -   [Gotchas and Caveats](./gotchas_and_caveats.md)
 -   [Reference](./reference/reference.md)
     -   [Call APIs](./reference/call_apis/call_apis.md)
