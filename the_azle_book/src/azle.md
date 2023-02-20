@@ -5,6 +5,15 @@ Azle is a [TypeScript](https://www.typescriptlang.org/) [Canister Development Ki
 -   [GitHub repo](https://github.com/demergent-labs/azle)
 -   [npm package](https://www.npmjs.com/package/azle)
 
+## Disclaimer
+
+Things to keep in mind:
+
+-   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
+-   Azle does not yet have extensive automated property tests
+-   Azle does not yet have multiple independent security reviews/audits
+-   Azle heavily relies on Boa which is [self-proclaimed to be experimental](https://github.com/boa-dev/boa#boa)
+
 ## Demergent Labs
 
 Azle is currently developed by [Demergent Labs](https://github.com/demergent-labs), a for-profit company with a grant from [DFINITY](https://dfinity.org/).

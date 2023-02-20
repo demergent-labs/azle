@@ -13,7 +13,7 @@
 -   [Update Methods](./update_methods.md)
 -   [Candid](./candid.md)
 -   [Stable Structures](./stable_structures.md)
--   [Cross Canister](./cross_canister.md)
+-   [Cross-canister](./cross_canister.md)
 -   [HTTP](./http.md)
 -   [Management Canister](./management_canister.md)
 -   [Canister Lifecycle](./canister_lifecycle.md)

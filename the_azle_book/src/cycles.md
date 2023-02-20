@@ -1,5 +1,7 @@
 # Cycles
 
+This chapter is a work in progress.
+
 Cycles are essentially units of computational resources such as bandwidth, memory, and CPU instructions. Costs are generally metered on the Internet Computer (IC) by cycles. You can see a breakdown of all cycle costs here: https://internetcomputer.org/docs/current/developer-docs/production/computation-and-storage-costs
 
 Currently queries do not have any cycle costs.
