@@ -26,13 +26,13 @@ Things to keep in mind:
 -   Azle does not yet have multiple independent security reviews/audits
 -   Azle heavily relies on Boa which is [self-proclaimed to be experimental](https://github.com/boa-dev/boa#boa)
 
-## Discussion
-
-Feel free to open issues or join us in the [Discord channel](https://discord.gg/5Hb6rM2QUM).
-
 ## Documentation
 
 See [The Azle Book](https://demergent-labs.github.io/azle/).
+
+## Discussion
+
+Feel free to open issues or join us in the [Discord channel](https://discord.gg/5Hb6rM2QUM).
 
 ## Quick Start
 
@@ -45,7 +45,7 @@ npm run dfx_install
 npm run replica_start
 npm run canister_deploy_local
 
-npm run canister_call_set_message '("Hello world!")'
+npm run canister_call_set_message
 npm run canister_call_get_message
 ```
 
