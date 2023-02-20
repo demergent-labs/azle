@@ -62,38 +62,30 @@ export type TransferArgs = Record<{
     created_at_time: Opt<TimeStamp>;
 }>;
 
-type BadFee = Record<{
-    expected_fee: Tokens;
-}>;
-
-type InsufficientFunds = Record<{
-    balance: Tokens;
-}>;
-
-type TxTooOld = Record<{
-    allowed_window_nanos: nat64;
-}>;
-
-type TxDuplicate = Record<{
-    duplicate_of: BlockIndex;
-}>;
-
 export type TransferError = Variant<{
     // The fee that the caller specified in the transfer request was not the one that ledger expects.
     // The caller can change the transfer fee to the `expected_fee` and retry the request.
-    BadFee: BadFee;
+    BadFee: Record<{
+        expected_fee: Tokens;
+    }>;
     // The account specified by the caller doesn't have enough funds.
-    InsufficientFunds: InsufficientFunds;
+    InsufficientFunds: Record<{
+        balance: Tokens;
+    }>;
     // The request is too old.
     // The ledger only accepts requests created within 24 hours window.
     // This is a non-recoverable error.
-    TxTooOld: TxTooOld;
+    TxTooOld: Record<{
+        allowed_window_nanos: nat64;
+    }>;
     // The caller specified `created_at_time` that is too far in future.
     // The caller can retry the request later.
     TxCreatedInFuture: null;
     // The ledger has already executed the request.
     // `duplicate_of` field is equal to the index of the block containing the original transaction.
-    TxDuplicate: TxDuplicate;
+    TxDuplicate: Record<{
+        duplicate_of: BlockIndex;
+    }>;
 }>;
 
 export type TransferResult = Variant<{
@@ -120,27 +112,21 @@ export type GetBlocksArgs = Record<{
     length: nat64;
 }>;
 
-type Mint = Record<{
-    to: AccountIdentifier;
-    amount: Tokens;
-}>;
-
-type Burn = Record<{
-    from: AccountIdentifier;
-    amount: Tokens;
-}>;
-
-type Transfer = Record<{
-    from: AccountIdentifier;
-    to: AccountIdentifier;
-    amount: Tokens;
-    fee: Tokens;
-}>;
-
 export type Operation = Variant<{
-    Mint: Mint;
-    Burn: Burn;
-    Transfer: Transfer;
+    Mint: Record<{
+        to: AccountIdentifier;
+        amount: Tokens;
+    }>;
+    Burn: Record<{
+        from: AccountIdentifier;
+        amount: Tokens;
+    }>;
+    Transfer: Record<{
+        from: AccountIdentifier;
+        to: AccountIdentifier;
+        amount: Tokens;
+        fee: Tokens;
+    }>;
 }>;
 
 export type Transaction = Record<{
@@ -173,23 +159,20 @@ export type BlockRange = Record<{
     blocks: Block[];
 }>;
 
-type BadFirstBlockIndexError = Record<{
-    requested_index: BlockIndex;
-    first_valid_index: BlockIndex;
-}>;
-type OtherError = Record<{
-    error_code: nat64;
-    error_message: string;
-}>;
-
 // An error indicating that the arguments passed to [QueryArchiveFn] were invalid.
 export type QueryArchiveError = Variant<{
     // [GetBlocksArgs.from] argument was smaller than the first block
     // served by the canister that received the request.
-    BadFirstBlockIndex: BadFirstBlockIndexError;
+    BadFirstBlockIndex: Record<{
+        requested_index: BlockIndex;
+        first_valid_index: BlockIndex;
+    }>;
 
     // Reserved for future use.
-    Other: OtherError;
+    Other: Record<{
+        error_code: nat64;
+        error_message: string;
+    }>;
 }>;
 
 export type QueryArchiveResult = Variant<{
@@ -203,19 +186,6 @@ export type QueryArchiveResult = Variant<{
 type QueryArchiveFn = Func<
     Query<(get_blocks_args: GetBlocksArgs) => QueryArchiveResult>
 >;
-
-type ArchivedBlock = Record<{
-    // The index of the first archived block that can be fetched using the callback.
-    start: BlockIndex;
-
-    // The number of blocks that can be fetch using the callback.
-    length: nat64;
-
-    // The function that should be called to fetch the archived blocks.
-    // The range of the blocks accessible using this function is given by [from]
-    // and [len] fields above.
-    callback: QueryArchiveFn;
-}>;
 
 // The result of a "query_blocks" call.
 //
@@ -252,7 +222,18 @@ export type QueryBlocksResponse = Record<{
     //
     // For each entry `e` in [archived_blocks], `[e.from, e.from + len)` is a sub-range
     // of the originally requested block range.
-    archived_blocks: ArchivedBlock[];
+    archived_blocks: Record<{
+        // The index of the first archived block that can be fetched using the callback.
+        start: BlockIndex;
+
+        // The number of blocks that can be fetch using the callback.
+        length: nat64;
+
+        // The function that should be called to fetch the archived blocks.
+        // The range of the blocks accessible using this function is given by [from]
+        // and [len] fields above.
+        callback: QueryArchiveFn;
+    }>[];
 }>;
 
 export type Archive = Record<{
