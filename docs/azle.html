@@ -142,7 +142,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="azle-beta"><a class="header" href="#azle-beta">Azle (Beta)</a></h1>
-<p>Azle is a <a href="https://www.typescriptlang.org/">TypeScript</a> <a href="https://internetcomputer.org/docs/current/developer-docs/build/cdks/">Canister Development Kit</a> (CDK) for the <a href="https://internetcomputer.org/">Internet Computer</a> (IC). In other words, it's a TypeScript/JavaScript runtime for building applications (<a href="https://internetcomputer.org/docs/current/concepts/canisters-code">canisters</a>) on the IC.</p>
+<p>Azle is a <a href="https://www.typescriptlang.org/">TypeScript</a> <a href="https://internetcomputer.org/docs/current/developer-docs/backend/choosing-language">Canister Development Kit</a> (CDK) for the <a href="https://internetcomputer.org/">Internet Computer</a> (IC). In other words, it's a TypeScript/JavaScript runtime for building applications (<a href="https://internetcomputer.org/docs/current/concepts/canisters-code">canisters</a>) on the IC.</p>
 <ul>
 <li><a href="https://github.com/demergent-labs/azle">GitHub repo</a></li>
 <li><a href="https://www.npmjs.com/package/azle">npm package</a></li>
@@ -156,7 +156,7 @@
 <li>Azle heavily relies on Boa which is <a href="https://github.com/boa-dev/boa#boa">self-proclaimed to be experimental</a></li>
 </ul>
 <h2 id="demergent-labs"><a class="header" href="#demergent-labs">Demergent Labs</a></h2>
-<p>Azle is currently developed by <a href="https://github.com/demergent-labs">Demergent Labs</a>, a for-profit company with a grant from <a href="https://dfinity.org/">DFINITY</a>.</p>
+<p>Azle is currently developed by <a href="https://github.com/demergent-labs">Demergent Labs</a>, a for-profit company with a <a href="https://dfinity.org/grants">grant</a> from <a href="https://dfinity.org/">DFINITY</a>.</p>
 <p>Demergent Labs' <a href="https://github.com/demergent-labs/blog/blob/main/demergent-labs-grand-plan-part-1.md">vision</a> is to accelerate the adoption of Web3, the Internet Computer, and sustainable open source.</p>
 <h2 id="benefits-and-drawbacks"><a class="header" href="#benefits-and-drawbacks">Benefits and drawbacks</a></h2>
 <p>Azle and the IC provide unique benefits and drawbacks, and both are not currently suitable for all application use-cases.</p>
@@ -194,9 +194,12 @@
 <h5 id="reduced-platform-risk"><a class="header" href="#reduced-platform-risk">Reduced platform risk</a></h5>
 <p>Because the IC is not owned or controlled by any one entity or individual, the risk of being deplatformed is reduced. This is in opposition to most cloud platforms, where the cloud provider itself generally has the power to arbitrarily remove users from its platform. While deplatforming can still occur on the IC, the only endongenous means of forcefully taking down an application is through an NNS vote.</p>
 <h4 id="security"><a class="header" href="#security">Security</a></h4>
-<p>TODO add in sandboxing, firewalls, certified variables/certification in general/threshold protocols</p>
 <ul>
 <li><a href="#built-in-replication">Built-in replication</a></li>
+<li><a href="#built-in-authentication">Built-in authentication</a></li>
+<li><a href="#built-in-firewallport-management">Built-in firewall/port management</a></li>
+<li><a href="#built-in-sandboxing">Built-in sandboxing</a></li>
+<li><a href="#threshold-protocols">Threshold protocols</a></li>
 <li><a href="#verifiable-source-code">Verifiable source code</a></li>
 <li><a href="#blockchain-integration">Blockchain integration</a></li>
 </ul>
@@ -204,6 +207,14 @@
 <p>Replication has many benefits that stem from reducing various central points of failure.</p>
 <p>The IC is at its core a <a href="https://en.wikipedia.org/wiki/Byzantine_fault">Byzantine Fault Tolerant</a> replicated compute environment. Applications are deployed to subnets which are composed of nodes running replicas. Each replica is an independent replicated state machine that executes an application's state transitions (usually initiated with HTTP requests) and persists the results.</p>
 <p>This replication provides a high level of security out-of-the-box. It is also the foundation of a number of protocols that provide threshold cryptographic operations to IC applications.</p>
+<h5 id="built-in-authentication"><a class="header" href="#built-in-authentication">Built-in authentication</a></h5>
+<p>IC client tooling makes it easy to sign and send messages to the IC, and <a href="https://internetcomputer.org/docs/current/tokenomics/identity-auth/what-is-ic-identity">Internet Identity</a> provides a novel approach to self-custody of private keys. The IC automatically authenticates messages with the public key of the signer, and provides a compact representation of that public key, called a principal, to the application. The principal can be used for authorization purposes. This removes many authentication concerns from the developer.</p>
+<h5 id="built-in-firewallport-management"><a class="header" href="#built-in-firewallport-management">Built-in firewall/port management</a></h5>
+<p>The concept of ports and various other low-level network infrastructure on the IC is abstracted away from the developer. This can greatly reduce application complexity thus minimizing the chance of introducing vulnerabilities through incorrect configurations. Canisters expose endpoints through various methods, usually query or update methods. Because authentication is also built-in, much of the remaining vulnerability surface area is minimized to implementing correct authorization rules in the canister method endpoints.</p>
+<h5 id="built-in-sandboxing"><a class="header" href="#built-in-sandboxing">Built-in sandboxing</a></h5>
+<p>Canisters have at least two layers of sandboxing to protect colocated canisters from each other. All canisters are at their core Wasm modules and thus inherit the built-in Wasm sandbox. In case there is any bug in the underlying implementation of the Wasm execution environment (or a vulnerability in the imported host functionality), there is also an OS-level sandbox. Developers need not do anything to take advantage of these sandboxes.</p>
+<h5 id="threshold-protocols"><a class="header" href="#threshold-protocols">Threshold protocols</a></h5>
+<p>The IC provides a number of threshold protocols that allow groups of independent nodes to perform cryptographic operations. These protocols remove central points of failure while providing familiar and useful cryptographic operations to developers. Included are <a href="https://internetcomputer.org/docs/current/developer-docs/integrations/t-ecdsa">ECDSA</a>, <a href="https://internetcomputer.org/how-it-works/response-certification/">BLS</a>, <a href="https://internetcomputer.org/how-it-works/chain-key-technology/">VRF-like</a>, and in the future <a href="https://forum.dfinity.org/t/threshold-key-derivation-privacy-on-the-ic/16560">threshold key derivation</a>.</p>
 <h5 id="verifiable-source-code"><a class="header" href="#verifiable-source-code">Verifiable source code</a></h5>
 <p>IC applications (canisters) are compiled into Wasm and deployed to the IC as Wasm modules. The IC hashes each canister's Wasm binary and stores it for public retrieval. The Wasm binary hash can be retrieved and compared with the hash of an independently compiled Wasm binary derived from available source code. If the hashes match, then one can know with a high degree of certainty that the application is executing the Wasm binary that was compiled from that source code.</p>
 <h5 id="blockchain-integration"><a class="header" href="#blockchain-integration">Blockchain integration</a></h5>
@@ -212,14 +223,11 @@
 <h4 id="developer-experience"><a class="header" href="#developer-experience">Developer experience</a></h4>
 <ul>
 <li><a href="#built-in-devops">Built-in devops</a></li>
-<li><a href="#built-in-authentication">Built-in authentication</a></li>
 <li><a href="#orthogonal-persistence">Orthogonal persistence</a></li>
 </ul>
 <h5 id="built-in-devops"><a class="header" href="#built-in-devops">Built-in devops</a></h5>
-<p>The IC provides many devops benefits automatically. Though currently limited in its scalability, the protocol attempts to remove the need for developers to concern themselves with concepts such as autoscaling, load balancing, uptime, sandboxing, and firewalls (TODO maybe sandboxing and firewalls and authentication should be under security).</p>
+<p>The IC provides many devops benefits automatically. Though currently limited in its scalability, the protocol attempts to remove the need for developers to concern themselves with concepts such as autoscaling, load balancing, uptime, sandboxing, and firewalls/port management.</p>
 <p>Correctly constructed canisters have a simple deploy process and automatically inherit these devops capabilities up unto the current scaling limits of the IC. DFINITY engineers are constantly working to remove scalability bottlenecks.</p>
-<h5 id="built-in-authentication"><a class="header" href="#built-in-authentication">Built-in authentication</a></h5>
-<p>IC client tooling makes it easy to sign and send messages to the IC, and <a href="https://internetcomputer.org/docs/current/tokenomics/identity-auth/what-is-ic-identity">Internet Identity</a> provides a novel approach to self-custody of private keys. The IC automatically authenticates messages with the public key of the signer, and provides a compact representation of that public key, called a principal, to the application. The principal can be used for authorization purposes. This removes many authentication concerns from the developer.</p>
 <h5 id="orthogonal-persistence"><a class="header" href="#orthogonal-persistence">Orthogonal persistence</a></h5>
 <p>The IC automatically persists its heap. This creates an extremely convenient way for developers to store application state, by simply writing into global variables in their programming language of choice. This is a great way to get started.</p>
 <p>If a canister upgrades its code, swapping out its Wasm binary, then the heap must be cleared. To overcome this limitation, there is a special area of memory called stable memory that persists across these canister upgrades. Special stable data structures provide a familiar API that allows writing into stable memory directly.</p>
@@ -239,21 +247,21 @@
 <p>Azle reached beta in April of 2022. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2023. The following are the major blockers to 1.0:</p>
 <ul>
 <li>Extensive automated property testing (~Q1 2023)</li>
-<li>Multiple independent security reviews/audits (~Q1/Q2 2023)</li>
-<li>Performance improvements if necessary (~Q1/Q2 2023)</li>
-<li>Boa production-ready, JS engine swapout, or risks accepted (~2023)</li>
+<li>Performance improvements if necessary (~Q2 2023)</li>
+<li>Boa production-ready, JS Engine swapout, or risks accepted (~Q2 2023)</li>
+<li>Multiple independent security reviews/audits (~Q2 2023)</li>
 </ul>
 <h5 id="security-risks"><a class="header" href="#security-risks">Security risks</a></h5>
-<p>Things to keep in mind:</p>
+<p>As discussed earlier, these are some things to keep in mind:</p>
 <ul>
 <li>Azle does not yet have many live, successful, continuously operating applications deployed to the IC</li>
 <li>Azle does not yet have extensive automated property tests</li>
 <li>Azle does not yet have multiple independent security reviews/audits</li>
-<li>Azle heavily relies on Boa which is <a href="https://github.com/boa-dev/boa">self-proclaimed to be experimental</a></li>
+<li>Azle heavily relies on Boa which is <a href="https://github.com/boa-dev/boa#boa">self-proclaimed to be experimental</a></li>
 </ul>
 <h5 id="high-cycle-usage"><a class="header" href="#high-cycle-usage">High cycle usage</a></h5>
 <p>We have done some preliminary benchmarking, and based on that our rough heuristic is that Azle will cost 2-4x more cycles than the equivalent project in Motoko or Rust. The performance of your application depends on many factors, and this should just be a rough estimate.</p>
-<p>There is evidence to support a possible 30x improvement in performance is possible in our <a href="https://github.com/boa-dev/boa">underlying JS engine</a>.</p>
+<p>There is evidence to suggest that a 30x improvement in performance is possible in our <a href="https://github.com/boa-dev/boa">underlying JS engine</a>.</p>
 <h5 id="missing-apis"><a class="header" href="#missing-apis">Missing APIs</a></h5>
 <p>Azle is not Node.js nor is it V8 running in a web browser. It is using a new JavaScript interpreter running in a very new and very different environment. APIs from the Node.js and web browser ecosystems may not be present in Azle. Our goal is to support as many of these APIs as possible over time.</p>
 <h5 id="missing-javascript-features"><a class="header" href="#missing-javascript-features">Missing JavaScript features</a></h5>
