@@ -20,12 +20,17 @@ impl SourceMapped<'_, ClassDecl> {
             .fold(vec![], |mut acc, class_member| match class_member {
                 ClassMember::ClassProp(class_prop) => {
                     let class_prop_with_source_map = SourceMapped::new(class_prop, self.source_map);
-                    let possible_canister_method =
+
+                    let canister_method_result =
                         class_prop_with_source_map.to_act_external_canister_method();
-                    if let Some(canister_method) = possible_canister_method {
-                        acc.push(canister_method);
+
+                    match canister_method_result {
+                        Ok(canister_method) => {
+                            acc.push(canister_method);
+                            acc
+                        }
+                        Err(e) => panic!("{} at", e.error_message()),
                     }
-                    acc
                 }
                 _ => panic!(
                     "{}",
