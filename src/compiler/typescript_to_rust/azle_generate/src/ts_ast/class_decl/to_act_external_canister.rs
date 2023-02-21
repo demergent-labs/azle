@@ -29,7 +29,10 @@ impl SourceMapped<'_, ClassDecl> {
                             acc.push(canister_method);
                             acc
                         }
-                        Err(e) => panic!("{} at", e.error_message()),
+                        Err(e) => panic!(
+                            "{}",
+                            self.build_invalid_class_prop_error_message(class_prop, e)
+                        ),
                     }
                 }
                 _ => panic!(

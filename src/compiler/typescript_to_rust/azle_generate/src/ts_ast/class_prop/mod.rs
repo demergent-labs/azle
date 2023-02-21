@@ -16,10 +16,11 @@ mod get_dependent_types;
 impl SourceMapped<'_, ClassProp> {
     pub fn to_act_external_canister_method(&self) -> Result<ActExternalCanisterMethod, ParseError> {
         if !self.has_azle_decorator() {
-            return Err(ParseError::MissingDecorator("Property is missing a decorator. It must be decorated with either @query, @update, or @oneway".to_string()));
+            return Err(ParseError::MissingDecorator);
         }
 
         let name = self.name()?;
+        let _mode = self.mode()?;
         let params = self.build_act_fn_params()?;
         let return_type = self.build_return_type()?;
 
@@ -56,10 +57,7 @@ impl SourceMapped<'_, ClassProp> {
 
     fn mode(&self) -> Result<String, ParseError> {
         if self.decorators.len() != 1 {
-            return Err(ParseError::MultipleDecorators(
-                "InvalidExternalCanisterDeclaration: child property specifies multiple decorators."
-                    .to_string(),
-            ));
+            return Err(ParseError::MultipleDecorators);
         };
 
         let mode = self
@@ -80,7 +78,7 @@ impl SourceMapped<'_, ClassProp> {
             swc_ecma_ast::PropName::Ident(ident) => ident.get_name().to_string(),
             swc_ecma_ast::PropName::Str(str) => str.value.to_string(),
             swc_ecma_ast::PropName::Num(num) => num.value.to_string(),
-            swc_ecma_ast::PropName::Computed(_) => return Err(ParseError::InvalidMethodName("InvalidExternalCanisterDeclaration: contains a computed method name which isn't currently supported".to_string())),
+            swc_ecma_ast::PropName::Computed(_) => return Err(ParseError::InvalidMethodName),
             swc_ecma_ast::PropName::BigInt(big_int) => big_int.value.to_string(),
         };
 
@@ -97,41 +95,28 @@ impl SourceMapped<'_, ClassProp> {
             TsType::TsTypeRef(ts_type_ref) => {
                 let name = match &ts_type_ref.type_name {
                     swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
-                        return Err(ParseError::QualifiedNameError(
-                            "InvalidExternalCanisterDeclaration: qualified names in member return types are not currently supported. Try importing the type directly.".to_string()
-                        ))
+                        return Err(ParseError::NamespaceQualifiedType)
                     }
                     swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name().to_string(),
                 };
 
                 if name != "CanisterResult" {
-                    return Err(ParseError::MissingCanisterResultAnnotation(format!(
-                        "InvalidExternalCanisterDeclaration: return type of property \"{}\" is not a CanisterResult. External canister methods must wrap their return types in the CanisterResult<T> generic type.", self.name()?
-                    )))
+                    return Err(ParseError::MissingCanisterResultAnnotation);
                 }
 
                 match &ts_type_ref.type_params {
                     Some(ts_type_param_inst) => {
                         if ts_type_param_inst.params.len() != 1 {
-                            return Err(ParseError::IncorrectTypeArgumentsToCanisterResult(format!(
-                                "InvalidExternalCanisterDeclaration: incorrect number of type arguments to generic type CanisterResult<T> for property \"{}\".", self.name()?
-                            )))
+                            return Err(ParseError::IncorrectTypeArgumentsToCanisterResult);
                         }
 
                         let inner_type = &**ts_type_param_inst.params.get(0).unwrap();
                         Ok(inner_type.clone())
-                    },
-                    None => {
-                        return Err(ParseError::IncorrectTypeArgumentsToCanisterResult(format!(
-                            "InvalidExternalCanisterDeclaration: missing type argument to generic return type CanisterResult<T> for property \"{}\".", self.name()?
-                        )))
-
                     }
+                    None => return Err(ParseError::MissingTypeArgument),
                 }
-            },
-            _ => return Err(ParseError::MissingCanisterResultAnnotation(format!(
-                "InvalidExternalCanisterDeclaration: return type of property \"{}\" is not a CanisterResult. External canister methods must wrap their return types in the CanisterResult<T> generic type.", self.name()?
-            )))
+            }
+            _ => return Err(ParseError::MissingCanisterResultAnnotation),
         }
     }
 
@@ -140,15 +125,17 @@ impl SourceMapped<'_, ClassProp> {
             Some(type_ann) => match &*type_ann.type_ann {
                 TsType::TsFnOrConstructorType(fn_or_constructor_type) => {
                     match fn_or_constructor_type {
-                        TsFnOrConstructorType::TsFnType(ts_fn_type) => Ok(SourceMapped::new(ts_fn_type, self.source_map)),
-                        TsFnOrConstructorType::TsConstructorType(_) => return Err(ParseError::InvalidDecorator(format!("InvalidExternalCanisterDeclaration: Decorator \"@{}\" not allowed on constructor", self.mode()?))),
+                        TsFnOrConstructorType::TsFnType(ts_fn_type) => {
+                            Ok(SourceMapped::new(ts_fn_type, self.source_map))
+                        }
+                        TsFnOrConstructorType::TsConstructorType(_) => {
+                            return Err(ParseError::InvalidDecorator)
+                        }
                     }
                 }
-                _ => return Err(ParseError::InvalidReturnType(format!(
-                    "InvalidExternalCanisterDeclaration: method \"{}\" has an invalid return type. Only function return types are permitted", self.name()?
-                ))),
+                _ => return Err(ParseError::InvalidReturnType),
             },
-            None => return Err(ParseError::MissingTypeAnnotation(format!("InvalidExternalCanisterDeclaration: method \"{}\" is missing a type annotation", self.name()?))),
+            None => return Err(ParseError::MissingTypeAnnotation),
         }
     }
 }
