@@ -1,6 +1,6 @@
 # Azle (Beta)
 
-Azle is a [TypeScript](https://www.typescriptlang.org/) [Canister Development Kit](https://internetcomputer.org/docs/current/developer-docs/build/cdks/) (CDK) for the [Internet Computer](https://internetcomputer.org/) (IC). In other words, it's a TypeScript/JavaScript runtime for building applications ([canisters](https://internetcomputer.org/docs/current/concepts/canisters-code)) on the IC.
+Azle is a [TypeScript](https://www.typescriptlang.org/) [Canister Development Kit](https://internetcomputer.org/docs/current/developer-docs/backend/choosing-language) (CDK) for the [Internet Computer](https://internetcomputer.org/) (IC). In other words, it's a TypeScript/JavaScript runtime for building applications ([canisters](https://internetcomputer.org/docs/current/concepts/canisters-code)) on the IC.
 
 -   [GitHub repo](https://github.com/demergent-labs/azle)
 -   [npm package](https://www.npmjs.com/package/azle)
@@ -16,7 +16,7 @@ Things to keep in mind:
 
 ## Demergent Labs
 
-Azle is currently developed by [Demergent Labs](https://github.com/demergent-labs), a for-profit company with a grant from [DFINITY](https://dfinity.org/).
+Azle is currently developed by [Demergent Labs](https://github.com/demergent-labs), a for-profit company with a [grant](https://dfinity.org/grants) from [DFINITY](https://dfinity.org/).
 
 Demergent Labs' [vision](https://github.com/demergent-labs/blog/blob/main/demergent-labs-grand-plan-part-1.md) is to accelerate the adoption of Web3, the Internet Computer, and sustainable open source.
 
@@ -78,9 +78,11 @@ Because the IC is not owned or controlled by any one entity or individual, the r
 
 #### Security
 
-TODO add in sandboxing, firewalls, certified variables/certification in general/threshold protocols
-
 -   [Built-in replication](#built-in-replication)
+-   [Built-in authentication](#built-in-authentication)
+-   [Built-in firewall/port management](#built-in-firewallport-management)
+-   [Built-in sandboxing](#built-in-sandboxing)
+-   [Threshold protocols](#threshold-protocols)
 -   [Verifiable source code](#verifiable-source-code)
 -   [Blockchain integration](#blockchain-integration)
 
@@ -91,6 +93,22 @@ Replication has many benefits that stem from reducing various central points of 
 The IC is at its core a [Byzantine Fault Tolerant](https://en.wikipedia.org/wiki/Byzantine_fault) replicated compute environment. Applications are deployed to subnets which are composed of nodes running replicas. Each replica is an independent replicated state machine that executes an application's state transitions (usually initiated with HTTP requests) and persists the results.
 
 This replication provides a high level of security out-of-the-box. It is also the foundation of a number of protocols that provide threshold cryptographic operations to IC applications.
+
+##### Built-in authentication
+
+IC client tooling makes it easy to sign and send messages to the IC, and [Internet Identity](https://internetcomputer.org/docs/current/tokenomics/identity-auth/what-is-ic-identity) provides a novel approach to self-custody of private keys. The IC automatically authenticates messages with the public key of the signer, and provides a compact representation of that public key, called a principal, to the application. The principal can be used for authorization purposes. This removes many authentication concerns from the developer.
+
+##### Built-in firewall/port management
+
+The concept of ports and various other low-level network infrastructure on the IC is abstracted away from the developer. This can greatly reduce application complexity thus minimizing the chance of introducing vulnerabilities through incorrect configurations. Canisters expose endpoints through various methods, usually query or update methods. Because authentication is also built-in, much of the remaining vulnerability surface area is minimized to implementing correct authorization rules in the canister method endpoints.
+
+##### Built-in sandboxing
+
+Canisters have at least two layers of sandboxing to protect colocated canisters from each other. All canisters are at their core Wasm modules and thus inherit the built-in Wasm sandbox. In case there is any bug in the underlying implementation of the Wasm execution environment (or a vulnerability in the imported host functionality), there is also an OS-level sandbox. Developers need not do anything to take advantage of these sandboxes.
+
+##### Threshold protocols
+
+The IC provides a number of threshold protocols that allow groups of independent nodes to perform cryptographic operations. These protocols remove central points of failure while providing familiar and useful cryptographic operations to developers. Included are [ECDSA](https://internetcomputer.org/docs/current/developer-docs/integrations/t-ecdsa), [BLS](https://internetcomputer.org/how-it-works/response-certification/), [VRF-like](https://internetcomputer.org/how-it-works/chain-key-technology/), and in the future [threshold key derivation](https://forum.dfinity.org/t/threshold-key-derivation-privacy-on-the-ic/16560).
 
 ##### Verifiable source code
 
@@ -105,18 +123,13 @@ In addition to these blockchain client integrations, a [threshold ECDSA protocol
 #### Developer experience
 
 -   [Built-in devops](#built-in-devops)
--   [Built-in authentication](#built-in-authentication)
 -   [Orthogonal persistence](#orthogonal-persistence)
 
 ##### Built-in devops
 
-The IC provides many devops benefits automatically. Though currently limited in its scalability, the protocol attempts to remove the need for developers to concern themselves with concepts such as autoscaling, load balancing, uptime, sandboxing, and firewalls (TODO maybe sandboxing and firewalls and authentication should be under security).
+The IC provides many devops benefits automatically. Though currently limited in its scalability, the protocol attempts to remove the need for developers to concern themselves with concepts such as autoscaling, load balancing, uptime, sandboxing, and firewalls/port management.
 
 Correctly constructed canisters have a simple deploy process and automatically inherit these devops capabilities up unto the current scaling limits of the IC. DFINITY engineers are constantly working to remove scalability bottlenecks.
-
-##### Built-in authentication
-
-IC client tooling makes it easy to sign and send messages to the IC, and [Internet Identity](https://internetcomputer.org/docs/current/tokenomics/identity-auth/what-is-ic-identity) provides a novel approach to self-custody of private keys. The IC automatically authenticates messages with the public key of the signer, and provides a compact representation of that public key, called a principal, to the application. The principal can be used for authorization purposes. This removes many authentication concerns from the developer.
 
 ##### Orthogonal persistence
 
@@ -145,24 +158,24 @@ Some of Azle's main drawbacks can be summarized as follows:
 Azle reached beta in April of 2022. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2023. The following are the major blockers to 1.0:
 
 -   Extensive automated property testing (~Q1 2023)
--   Multiple independent security reviews/audits (~Q1/Q2 2023)
--   Performance improvements if necessary (~Q1/Q2 2023)
--   Boa production-ready, JS engine swapout, or risks accepted (~2023)
+-   Performance improvements if necessary (~Q2 2023)
+-   Boa production-ready, JS Engine swapout, or risks accepted (~Q2 2023)
+-   Multiple independent security reviews/audits (~Q2 2023)
 
 ##### Security risks
 
-Things to keep in mind:
+As discussed earlier, these are some things to keep in mind:
 
 -   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 -   Azle does not yet have extensive automated property tests
 -   Azle does not yet have multiple independent security reviews/audits
--   Azle heavily relies on Boa which is [self-proclaimed to be experimental](https://github.com/boa-dev/boa)
+-   Azle heavily relies on Boa which is [self-proclaimed to be experimental](https://github.com/boa-dev/boa#boa)
 
 ##### High cycle usage
 
 We have done some preliminary benchmarking, and based on that our rough heuristic is that Azle will cost 2-4x more cycles than the equivalent project in Motoko or Rust. The performance of your application depends on many factors, and this should just be a rough estimate.
 
-There is evidence to support a possible 30x improvement in performance is possible in our [underlying JS engine](https://github.com/boa-dev/boa).
+There is evidence to suggest that a 30x improvement in performance is possible in our [underlying JS engine](https://github.com/boa-dev/boa).
 
 ##### Missing APIs
 

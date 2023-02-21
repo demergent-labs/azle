@@ -56,7 +56,7 @@ export function get_message(): string {
 // Update calls take a few seconds to complete
 // This is because they persist state changes and go through consensus
 $update;
-export function set_message(new_message: string) {
+export function set_message(new_message: string): void {
     message = new_message; // This change will be persisted
 }
 ```
@@ -90,7 +90,7 @@ We are exposing a canister query method here. When query methods are called they
 // Update calls take a few seconds to complete
 // This is because they persist state changes and go through consensus
 $update;
-export function set_message(new_message: string) {
+export function set_message(new_message: string): void {
     message = new_message; // This change will be persisted
 }
 ```
