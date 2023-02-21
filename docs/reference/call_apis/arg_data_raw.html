@@ -142,6 +142,24 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="arg-data-raw"><a class="header" href="#arg-data-raw">arg data raw</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/blob/main/examples/ic_api">ic_api</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, int8, $query } from 'azle';
+
+// returns the argument data as bytes.
+$query;
+export function arg_data_raw(
+    arg1: blob,
+    arg2: int8,
+    arg3: boolean,
+    arg4: string
+): blob {
+    return ic.arg_data_raw();
+}
+</code></pre>
 
                     </main>
 

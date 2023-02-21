@@ -1,20 +1,23 @@
-import { blob, $update } from 'azle';
-import { BitcoinNetwork, management_canister } from 'azle/canisters/management';
+import { blob, $update, Variant } from 'azle';
 import {
-    ExecuteGetBalanceResult,
-    ExecuteGetCurrentFeePercentiles,
-    ExecuteGetUtxosResult,
-    ExecuteSendTransactionResult
-} from './types';
+    BitcoinNetwork,
+    GetUtxosResult,
+    management_canister,
+    MillisatoshiPerByte,
+    Satoshi
+} from 'azle/canisters/management';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;
 const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 
 $update;
-export async function get_balance(
-    address: string
-): Promise<ExecuteGetBalanceResult> {
+export async function get_balance(address: string): Promise<
+    Variant<{
+        ok: Satoshi;
+        err: string;
+    }>
+> {
     const canister_result = await management_canister
         .bitcoin_get_balance({
             address,
@@ -28,7 +31,12 @@ export async function get_balance(
 }
 
 $update;
-export async function get_current_fee_percentiles(): Promise<ExecuteGetCurrentFeePercentiles> {
+export async function get_current_fee_percentiles(): Promise<
+    Variant<{
+        ok: MillisatoshiPerByte[];
+        err: string;
+    }>
+> {
     const canister_result = await management_canister
         .bitcoin_get_current_fee_percentiles({
             network: BitcoinNetwork.Regtest
@@ -40,9 +48,12 @@ export async function get_current_fee_percentiles(): Promise<ExecuteGetCurrentFe
 }
 
 $update;
-export async function get_utxos(
-    address: string
-): Promise<ExecuteGetUtxosResult> {
+export async function get_utxos(address: string): Promise<
+    Variant<{
+        ok: GetUtxosResult;
+        err: string;
+    }>
+> {
     const canister_result = await management_canister
         .bitcoin_get_utxos({
             address,
@@ -56,9 +67,12 @@ export async function get_utxos(
 }
 
 $update;
-export async function send_transaction(
-    transaction: blob
-): Promise<ExecuteSendTransactionResult> {
+export async function send_transaction(transaction: blob): Promise<
+    Variant<{
+        ok: null;
+        err: string;
+    }>
+> {
     const transaction_fee =
         BITCOIN_BASE_TRANSACTION_COST +
         BigInt(transaction.length) * BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;

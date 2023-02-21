@@ -142,6 +142,36 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="notify-raw"><a class="header" href="#notify-raw">notify raw</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/notify_raw">notify_raw</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, Principal, RejectionCode, $update, Variant } from 'azle';
+
+$update;
+export function send_notification(): Variant&lt;{
+    ok: boolean;
+    err: RejectionCode;
+}&gt; {
+    const result = ic.notify_raw(
+        Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'),
+        'receive_notification',
+        Uint8Array.from(ic.candid_encode('()')),
+        0n
+    );
+
+    if ('err' in result) {
+        return {
+            err: result.err
+        };
+    }
+
+    return {
+        ok: true
+    };
+}
+</code></pre>
 
                     </main>
 

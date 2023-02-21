@@ -142,6 +142,36 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="msg-cycles-refunded-128"><a class="header" href="#msg-cycles-refunded-128">msg cycles refunded 128</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, nat, ok, $update, Variant } from 'azle';
+import { cycles_canister } from '../cycles';
+
+// Reports the number of cycles returned from the Cycles canister
+$update;
+export async function send_cycles128(): Promise&lt;
+    Variant&lt;{
+        ok: nat;
+        err: string;
+    }&gt;
+&gt; {
+    const result = await cycles_canister
+        .receive_cycles128()
+        .cycles128(1_000_000n)
+        .call();
+
+    if (!ok(result)) {
+        return { err: result.err };
+    }
+
+    return {
+        ok: ic.msg_cycles_refunded128()
+    };
+}
+</code></pre>
 
                     </main>
 

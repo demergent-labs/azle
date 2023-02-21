@@ -142,6 +142,27 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="notify"><a class="header" href="#notify">notify</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cross_canister_calls">cross_canister_calls</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
+</ul>
+<pre><code class="language-typescript">import { Principal, RejectionCode, $update, Variant } from 'azle';
+import { Canister2 } from '../canister2/types';
+
+const canister2 = new Canister2(
+    Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
+);
+
+$update;
+export function send_notification(): Variant&lt;{
+    ok: null;
+    err: RejectionCode;
+}&gt; {
+    return canister2.receive_notification('This is the notification').notify();
+}
+</code></pre>
 
                     </main>
 
