@@ -142,6 +142,19 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="data-certificate"><a class="header" href="#data-certificate">data certificate</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, Opt, $query } from 'azle';
+
+// When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if not called from a query call.
+$query;
+export function data_certificate(): Opt&lt;blob&gt; {
+    return ic.data_certificate();
+}
+</code></pre>
 
                     </main>
 

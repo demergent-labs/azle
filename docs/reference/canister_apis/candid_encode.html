@@ -142,6 +142,23 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="candid-encode"><a class="header" href="#candid-encode">candid encode</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/call_raw">call_raw</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/candid_encoding">candid_encoding</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/manual_reply">manual_reply</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/notify_raw">notify_raw</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, $query } from 'azle';
+
+// encodes a Candid string to Candid bytes
+$query;
+export function candid_encode(candid_string: string): blob {
+    return ic.candid_encode(candid_string);
+}
+</code></pre>
 
                     </main>
 

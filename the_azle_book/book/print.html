@@ -4057,15 +4057,167 @@ export function print_numbers(numbers: int32[]): int32[] {
 <li><a href="reference/canister_apis/./trap.html">trap</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="candid-decode"><a class="header" href="#candid-decode">candid decode</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/call_raw">call_raw</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/candid_encoding">candid_encoding</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, $query } from 'azle';
+
+// decodes Candid bytes to a Candid string
+$query;
+export function candid_decode(candid_encoded: blob): string {
+    return ic.candid_decode(candid_encoded);
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="candid-encode"><a class="header" href="#candid-encode">candid encode</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/call_raw">call_raw</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/candid_encoding">candid_encoding</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/manual_reply">manual_reply</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/notify_raw">notify_raw</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, $query } from 'azle';
+
+// encodes a Candid string to Candid bytes
+$query;
+export function candid_encode(candid_string: string): blob {
+    return ic.candid_encode(candid_string);
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister-balance"><a class="header" href="#canister-balance">canister balance</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, nat64, $query } from 'azle';
+
+// returns the amount of cycles available in the canister
+$query;
+export function canister_balance(): nat64 {
+    return ic.canister_balance();
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister-balance-128"><a class="header" href="#canister-balance-128">canister balance 128</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, nat, $query } from 'azle';
+
+// returns the amount of cycles available in the canister
+$query;
+export function canister_balance128(): nat {
+    return ic.canister_balance128();
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister-id"><a class="header" href="#canister-id">canister id</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ethereum_json_rpc">ethereum_json_rpc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/http_counter">http_counter</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami">whoami</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, Principal, $query } from 'azle';
+
+// returns this canister's id
+$query;
+export function id(): Principal {
+    return ic.id();
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="data-certificate"><a class="header" href="#data-certificate">data certificate</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, Opt, $query } from 'azle';
+
+// When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if not called from a query call.
+$query;
+export function data_certificate(): Opt&lt;blob&gt; {
+    return ic.data_certificate();
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="print"><a class="header" href="#print">print</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/null_example">null_example</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, $query } from 'azle';
+
+// prints a message through the local replica's output
+$query;
+export function print(message: string): boolean {
+    ic.print(message);
+
+    return true;
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="set-certified-data"><a class="header" href="#set-certified-data">set certified data</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, $update } from 'azle';
+
+// sets up to 32 bytes of certified data
+$update;
+export function set_certified_data(data: blob): void {
+    ic.set_certified_data(data);
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="time"><a class="header" href="#time">time</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/audio_recorder">audio_recorder</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, nat64, $query } from 'azle';
+
+// returns the current timestamp
+$query;
+export function time(): nat64 {
+    return ic.time();
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="trap"><a class="header" href="#trap">trap</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cross_canister_calls">cross_canister_calls</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ethereum_json_rpc">ethereum_json_rpc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/http_counter">http_counter</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa">threshold_ecdsa</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, $query } from 'azle';
+
+// traps with a message, stopping execution and discarding all state within the call
+$query;
+export function trap(message: string): boolean {
+    ic.trap(message);
+
+    return true;
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister-methods"><a class="header" href="#canister-methods">Canister Methods</a></h1>
 <ul>
 <li><a href="reference/canister_methods/./heartbeat.html">heartbeat</a></li>
@@ -4079,14 +4231,41 @@ export function print_numbers(numbers: int32[]): int32[] {
 <li><a href="reference/canister_methods/./update.html">update</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="heartbeat"><a class="header" href="#heartbeat">heartbeat</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="http_request"><a class="header" href="#http_request">http_request</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="http_request_update"><a class="header" href="#http_request_update">http_request_update</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="init"><a class="header" href="#init">init</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="inspect-message"><a class="header" href="#inspect-message">inspect message</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="post-upgrade"><a class="header" href="#post-upgrade">post upgrade</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="pre-upgrade"><a class="header" href="#pre-upgrade">pre upgrade</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="query"><a class="header" href="#query">query</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="update"><a class="header" href="#update">update</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="management-canister-1"><a class="header" href="#management-canister-1">Management Canister</a></h1>
 <ul>
 <li><a href="reference/management_canister/./bitcoin_get_balance.html">bitcoin_get_balance</a></li>
@@ -4142,15 +4321,45 @@ export function print_numbers(numbers: int32[]): int32[] {
 <li><a href="reference/stable_memory/./stable64_write.html">stable64 write</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-structures-1"><a class="header" href="#stable-structures-1">stable structures</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-bytes"><a class="header" href="#stable-bytes">stable bytes</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-grow"><a class="header" href="#stable-grow">stable grow</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-read"><a class="header" href="#stable-read">stable read</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-size"><a class="header" href="#stable-size">stable size</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-write"><a class="header" href="#stable-write">stable write</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable64-grow"><a class="header" href="#stable64-grow">stable64 grow</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable64-read"><a class="header" href="#stable64-read">stable64 read</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable64-size"><a class="header" href="#stable64-size">stable64 size</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable64-write"><a class="header" href="#stable64-write">stable64 write</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="timers-1"><a class="header" href="#timers-1">Timers</a></h1>
 <ul>
 <li><a href="reference/timers/./clear_timer.html">clear timer</a></li>
@@ -4158,8 +4367,17 @@ export function print_numbers(numbers: int32[]): int32[] {
 <li><a href="reference/timers/./set_timer_interval.html">set timer interval</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="clear-timer"><a class="header" href="#clear-timer">clear timer</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="set-timer"><a class="header" href="#set-timer">set timer</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="set-timer-interval"><a class="header" href="#set-timer-interval">set timer interval</a></h1>
+<p>This section is a work in progress.</p>
+<pre><code class="language-typescript">
+</code></pre>
 
                     </main>
 

@@ -142,6 +142,23 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="canister-id"><a class="header" href="#canister-id">canister id</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ethereum_json_rpc">ethereum_json_rpc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/http_counter">http_counter</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami">whoami</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, Principal, $query } from 'azle';
+
+// returns this canister's id
+$query;
+export function id(): Principal {
+    return ic.id();
+}
+</code></pre>
 
                     </main>
 
