@@ -142,6 +142,36 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="bitcoin_send_transaction"><a class="header" href="#bitcoin_send_transaction">bitcoin_send_transaction</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<pre><code class="language-typescript">import { blob, $update, Variant } from 'azle';
+import { BitcoinNetwork, management_canister } from 'azle/canisters/management';
+
+const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;
+const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
+
+$update;
+export async function send_transaction(transaction: blob): Promise&lt;
+    Variant&lt;{
+        ok: null;
+        err: string;
+    }&gt;
+&gt; {
+    const transaction_fee =
+        BITCOIN_BASE_TRANSACTION_COST +
+        BigInt(transaction.length) * BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;
+
+    const canister_result = await management_canister
+        .bitcoin_send_transaction({
+            transaction,
+            network: BitcoinNetwork.Regtest
+        })
+        .cycles(transaction_fee)
+        .call();
+
+    return canister_result;
+}
+</code></pre>
 
                     </main>
 

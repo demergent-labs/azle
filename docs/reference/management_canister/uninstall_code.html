@@ -142,6 +142,38 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="uninstall_code"><a class="header" href="#uninstall_code">uninstall_code</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">import { ok, Principal, $update, Variant } from 'azle';
+import { management_canister } from 'azle/canisters/management';
+
+$update;
+export async function execute_uninstall_code(canister_id: Principal): Promise&lt;
+    Variant&lt;{
+        ok: boolean;
+        err: string;
+    }&gt;
+&gt; {
+    const canister_result = await management_canister
+        .uninstall_code({
+            canister_id
+        })
+        .call();
+
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
+    }
+
+    return {
+        ok: true
+    };
+}
+</code></pre>
 
                     </main>
 

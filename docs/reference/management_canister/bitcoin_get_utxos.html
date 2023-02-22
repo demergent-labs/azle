@@ -142,6 +142,39 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="bitcoin_get_utxos"><a class="header" href="#bitcoin_get_utxos">bitcoin_get_utxos</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
+</ul>
+<pre><code class="language-typescript">import { $update, Variant } from 'azle';
+import {
+    BitcoinNetwork,
+    GetUtxosResult,
+    management_canister
+} from 'azle/canisters/management';
+
+const BITCOIN_API_CYCLE_COST = 100_000_000n;
+
+$update;
+export async function get_utxos(address: string): Promise&lt;
+    Variant&lt;{
+        ok: GetUtxosResult;
+        err: string;
+    }&gt;
+&gt; {
+    const canister_result = await management_canister
+        .bitcoin_get_utxos({
+            address,
+            filter: null,
+            network: BitcoinNetwork.Regtest
+        })
+        .cycles(BITCOIN_API_CYCLE_COST)
+        .call();
+
+    return canister_result;
+}
+</code></pre>
 
                     </main>
 

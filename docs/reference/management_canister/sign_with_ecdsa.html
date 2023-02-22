@@ -142,6 +142,43 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="sign_with_ecdsa"><a class="header" href="#sign_with_ecdsa">sign_with_ecdsa</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, ok, Record, $update, Variant } from 'azle';
+import { management_canister } from 'azle/canisters/management';
+
+$update;
+export async function sign(message_hash: blob): Promise&lt;
+    Variant&lt;{
+        ok: Record&lt;{ signature: blob }&gt;;
+        err: string;
+    }&gt;
+&gt; {
+    if (message_hash.length !== 32) {
+        ic.trap('message_hash must be 32 bytes');
+    }
+
+    const caller = ic.caller().toUint8Array();
+
+    const signature_result = await management_canister
+        .sign_with_ecdsa({
+            message_hash,
+            derivation_path: [caller],
+            key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
+        })
+        .cycles(10_000_000_000n)
+        .call();
+
+    if (!ok(signature_result)) {
+        return { err: signature_result.err };
+    }
+
+    return { ok: { signature: signature_result.ok.signature } };
+}
+</code></pre>
 
                     </main>
 

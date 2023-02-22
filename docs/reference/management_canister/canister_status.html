@@ -142,6 +142,44 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="canister_status"><a class="header" href="#canister_status">canister_status</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">import { $update, Variant } from 'azle';
+import {
+    CanisterStatusArgs,
+    CanisterStatusResult,
+    management_canister
+} from 'azle/canisters/management';
+
+$update;
+export async function get_canister_status(args: CanisterStatusArgs): Promise&lt;
+    Variant&lt;{
+        ok: CanisterStatusResult;
+        err: string;
+    }&gt;
+&gt; {
+    const canister_status_result_canister_result = await management_canister
+        .canister_status({
+            canister_id: args.canister_id
+        })
+        .call();
+
+    if (canister_status_result_canister_result.ok === undefined) {
+        return {
+            err: canister_status_result_canister_result.err
+        };
+    }
+
+    const canister_status_result = canister_status_result_canister_result.ok;
+
+    return {
+        ok: canister_status_result
+    };
+}
+</code></pre>
 
                     </main>
 

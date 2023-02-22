@@ -4489,24 +4489,648 @@ export function set_message(new_message): void {
 <li><a href="reference/management_canister/./update_settings.html">update_settings</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="bitcoin_get_balance"><a class="header" href="#bitcoin_get_balance">bitcoin_get_balance</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
+</ul>
+<pre><code class="language-typescript">import { $update, Variant } from 'azle';
+import {
+    BitcoinNetwork,
+    management_canister,
+    Satoshi
+} from 'azle/canisters/management';
+
+const BITCOIN_API_CYCLE_COST = 100_000_000n;
+
+$update;
+export async function get_balance(address: string): Promise&lt;
+    Variant&lt;{
+        ok: Satoshi;
+        err: string;
+    }&gt;
+&gt; {
+    const canister_result = await management_canister
+        .bitcoin_get_balance({
+            address,
+            min_confirmations: null,
+            network: BitcoinNetwork.Regtest
+        })
+        .cycles(BITCOIN_API_CYCLE_COST)
+        .call();
+
+    return canister_result;
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="bitcoin_get_current_fee_percentiles"><a class="header" href="#bitcoin_get_current_fee_percentiles">bitcoin_get_current_fee_percentiles</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
+</ul>
+<pre><code class="language-typescript">import { $update, Variant } from 'azle';
+import {
+    BitcoinNetwork,
+    management_canister,
+    MillisatoshiPerByte
+} from 'azle/canisters/management';
+
+const BITCOIN_API_CYCLE_COST = 100_000_000n;
+
+$update;
+export async function get_current_fee_percentiles(): Promise&lt;
+    Variant&lt;{
+        ok: MillisatoshiPerByte[];
+        err: string;
+    }&gt;
+&gt; {
+    const canister_result = await management_canister
+        .bitcoin_get_current_fee_percentiles({
+            network: BitcoinNetwork.Regtest
+        })
+        .cycles(BITCOIN_API_CYCLE_COST)
+        .call();
+
+    return canister_result;
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="bitcoin_get_utxos"><a class="header" href="#bitcoin_get_utxos">bitcoin_get_utxos</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
+</ul>
+<pre><code class="language-typescript">import { $update, Variant } from 'azle';
+import {
+    BitcoinNetwork,
+    GetUtxosResult,
+    management_canister
+} from 'azle/canisters/management';
+
+const BITCOIN_API_CYCLE_COST = 100_000_000n;
+
+$update;
+export async function get_utxos(address: string): Promise&lt;
+    Variant&lt;{
+        ok: GetUtxosResult;
+        err: string;
+    }&gt;
+&gt; {
+    const canister_result = await management_canister
+        .bitcoin_get_utxos({
+            address,
+            filter: null,
+            network: BitcoinNetwork.Regtest
+        })
+        .cycles(BITCOIN_API_CYCLE_COST)
+        .call();
+
+    return canister_result;
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="bitcoin_send_transaction"><a class="header" href="#bitcoin_send_transaction">bitcoin_send_transaction</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<pre><code class="language-typescript">import { blob, $update, Variant } from 'azle';
+import { BitcoinNetwork, management_canister } from 'azle/canisters/management';
+
+const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;
+const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
+
+$update;
+export async function send_transaction(transaction: blob): Promise&lt;
+    Variant&lt;{
+        ok: null;
+        err: string;
+    }&gt;
+&gt; {
+    const transaction_fee =
+        BITCOIN_BASE_TRANSACTION_COST +
+        BigInt(transaction.length) * BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;
+
+    const canister_result = await management_canister
+        .bitcoin_send_transaction({
+            transaction,
+            network: BitcoinNetwork.Regtest
+        })
+        .cycles(transaction_fee)
+        .call();
+
+    return canister_result;
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister_status"><a class="header" href="#canister_status">canister_status</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">import { $update, Variant } from 'azle';
+import {
+    CanisterStatusArgs,
+    CanisterStatusResult,
+    management_canister
+} from 'azle/canisters/management';
+
+$update;
+export async function get_canister_status(args: CanisterStatusArgs): Promise&lt;
+    Variant&lt;{
+        ok: CanisterStatusResult;
+        err: string;
+    }&gt;
+&gt; {
+    const canister_status_result_canister_result = await management_canister
+        .canister_status({
+            canister_id: args.canister_id
+        })
+        .call();
+
+    if (canister_status_result_canister_result.ok === undefined) {
+        return {
+            err: canister_status_result_canister_result.err
+        };
+    }
+
+    const canister_status_result = canister_status_result_canister_result.ok;
+
+    return {
+        ok: canister_status_result
+    };
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="create_canister"><a class="header" href="#create_canister">create_canister</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">import { ok, $update, Variant } from 'azle';
+import {
+    CreateCanisterResult,
+    management_canister
+} from 'azle/canisters/management';
+
+$update;
+export async function execute_create_canister(): Promise&lt;
+    Variant&lt;{
+        ok: CreateCanisterResult;
+        err: string;
+    }&gt;
+&gt; {
+    const create_canister_result_canister_result = await management_canister
+        .create_canister({
+            settings: null
+        })
+        .cycles(50_000_000_000_000n)
+        .call();
+
+    if (!ok(create_canister_result_canister_result)) {
+        return {
+            err: create_canister_result_canister_result.err
+        };
+    }
+
+    const create_canister_result = create_canister_result_canister_result.ok;
+
+    state.created_canister_id = create_canister_result.canister_id;
+
+    return {
+        ok: create_canister_result
+    };
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="delete_canister"><a class="header" href="#delete_canister">delete_canister</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">import { ok, Principal, $update, Variant } from 'azle';
+import { management_canister } from 'azle/canisters/management';
+
+$update;
+export async function execute_delete_canister(canister_id: Principal): Promise&lt;
+    Variant&lt;{
+        ok: boolean;
+        err: string;
+    }&gt;
+&gt; {
+    const canister_result = await management_canister
+        .delete_canister({
+            canister_id
+        })
+        .call();
+
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
+    }
+
+    return {
+        ok: true
+    };
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="deposit_cycles"><a class="header" href="#deposit_cycles">deposit_cycles</a></h1>
+<p>This section is a work in progress.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="ecdsa_public_key"><a class="header" href="#ecdsa_public_key">ecdsa_public_key</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa">threshold_ecdsa</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, ok, Record, $update, Variant } from 'azle';
+import { management_canister } from 'azle/canisters/management';
+
+$update;
+export async function public_key(): Promise&lt;
+    Variant&lt;{
+        ok: Record&lt;{ public_key: blob }&gt;;
+        err: string;
+    }&gt;
+&gt; {
+    const caller = ic.caller().toUint8Array();
+    const public_key_result = await management_canister
+        .ecdsa_public_key({
+            canister_id: null,
+            derivation_path: [caller],
+            key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
+        })
+        .call();
+
+    if (!ok(public_key_result)) {
+        return { err: public_key_result.err };
+    }
+
+    return { ok: { public_key: public_key_result.ok.public_key } };
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="http_request-1"><a class="header" href="#http_request-1">http_request</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ethereum_json_rpc">ethereum_json_rpc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, ok, $query, $update } from 'azle';
+import {
+    HttpResponse,
+    HttpTransformArgs,
+    management_canister
+} from 'azle/canisters/management';
+
+$update;
+export async function xkcd(): Promise&lt;HttpResponse&gt; {
+    const max_response_bytes = 1_000n;
+
+    // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
+    const cycle_cost_base = 400_000_000n;
+    const cycle_cost_per_byte = 300_000n; // TODO not sure on this exact cost
+    const cycle_cost_total =
+        cycle_cost_base + cycle_cost_per_byte * max_response_bytes;
+
+    const http_result = await management_canister
+        .http_request({
+            url: `https://xkcd.com/642/info.0.json`,
+            max_response_bytes,
+            method: {
+                get: null
+            },
+            headers: [],
+            body: null,
+            transform: {
+                function: [ic.id(), 'xkcd_transform'],
+                context: Uint8Array.from([])
+            }
+        })
+        .cycles(cycle_cost_total)
+        .call();
+
+    if (!ok(http_result)) {
+        ic.trap(http_result.err ?? 'http_result had an error');
+    }
+
+    return http_result.ok;
+}
+
+$query;
+export function xkcd_transform(args: HttpTransformArgs): HttpResponse {
+    return {
+        ...args.response,
+        headers: []
+    };
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="install_code"><a class="header" href="#install_code">install_code</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ok, Principal, $update } from 'azle';
+import { management_canister } from 'azle/canisters/management';
+
+$update;
+export async function execute_install_code(
+    canister_id: Principal,
+    wasm_module: blob
+): Promise&lt;
+    Variant&lt;{
+        ok: boolean;
+        err: string;
+    }&gt;
+&gt; {
+    const canister_result = await management_canister
+        .install_code({
+            mode: {
+                install: null
+            },
+            canister_id,
+            wasm_module,
+            arg: Uint8Array.from([])
+        })
+        .cycles(100_000_000_000n)
+        .call();
+
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
+    }
+
+    return {
+        ok: true
+    };
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="provisional_create_canister_with_cycles"><a class="header" href="#provisional_create_canister_with_cycles">provisional_create_canister_with_cycles</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">import { ok, $update, Variant } from 'azle';
+import {
+    CreateCanisterResult,
+    management_canister
+} from 'azle/canisters/management';
+
+$update;
+export async function provisional_create_canister_with_cycles(): Promise&lt;
+    Variant&lt;{
+        ok: CreateCanisterResult;
+        err: string;
+    }&gt;
+&gt; {
+    const canister_result = await management_canister
+        .provisional_create_canister_with_cycles({
+            amount: null,
+            settings: null
+        })
+        .call();
+
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
+    }
+
+    const provisional_create_canister_with_cycles_result = canister_result.ok;
+
+    return {
+        ok: provisional_create_canister_with_cycles_result
+    };
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="provisional_top_up_canister"><a class="header" href="#provisional_top_up_canister">provisional_top_up_canister</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">$update;
+export async function provisional_top_up_canister(
+    canister_id: Principal,
+    amount: nat
+): Promise&lt;DefaultResult&gt; {
+    const canister_result = await management_canister
+        .provisional_top_up_canister({
+            canister_id,
+            amount
+        })
+        .call();
+
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
+    }
+
+    return {
+        ok: true
+    };
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="raw_rand"><a class="header" href="#raw_rand">raw_rand</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/async_await">async/await</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/heartbeat">heartbeat</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/timers">timers</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ok, $update } from 'azle';
+import { management_canister } from 'azle/canisters/management';
+
+$update;
+export async function get_randomness(): Promise&lt;blob&gt; {
+    const randomness_result = await management_canister.raw_rand().call();
+
+    if (!ok(randomness_result)) {
+        return Uint8Array.from([]);
+    }
+
+    return randomness_result.ok;
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="sign_with_ecdsa"><a class="header" href="#sign_with_ecdsa">sign_with_ecdsa</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, ok, Record, $update, Variant } from 'azle';
+import { management_canister } from 'azle/canisters/management';
+
+$update;
+export async function sign(message_hash: blob): Promise&lt;
+    Variant&lt;{
+        ok: Record&lt;{ signature: blob }&gt;;
+        err: string;
+    }&gt;
+&gt; {
+    if (message_hash.length !== 32) {
+        ic.trap('message_hash must be 32 bytes');
+    }
+
+    const caller = ic.caller().toUint8Array();
+
+    const signature_result = await management_canister
+        .sign_with_ecdsa({
+            message_hash,
+            derivation_path: [caller],
+            key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
+        })
+        .cycles(10_000_000_000n)
+        .call();
+
+    if (!ok(signature_result)) {
+        return { err: signature_result.err };
+    }
+
+    return { ok: { signature: signature_result.ok.signature } };
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="start_canister"><a class="header" href="#start_canister">start_canister</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">import { ok, Principal, $update, Variant } from 'azle';
+import { management_canister } from 'azle/canisters/management';
+
+$update;
+export async function execute_start_canister(canister_id: Principal): Promise&lt;
+    Variant&lt;{
+        ok: boolean;
+        err: string;
+    }&gt;
+&gt; {
+    const canister_result = await management_canister
+        .start_canister({
+            canister_id
+        })
+        .call();
+
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
+    }
+
+    return {
+        ok: true
+    };
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stop_canister"><a class="header" href="#stop_canister">stop_canister</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">import { ok, Principal, $update, Variant } from 'azle';
+import { management_canister } from 'azle/canisters/management';
+
+$update;
+export async function execute_stop_canister(canister_id: Principal): Promise&lt;
+    Variant&lt;{
+        ok: boolean;
+        err: string;
+    }&gt;
+&gt; {
+    const canister_result = await management_canister
+        .stop_canister({
+            canister_id
+        })
+        .call();
+
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
+    }
+
+    return {
+        ok: true
+    };
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="uninstall_code"><a class="header" href="#uninstall_code">uninstall_code</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">import { ok, Principal, $update, Variant } from 'azle';
+import { management_canister } from 'azle/canisters/management';
+
+$update;
+export async function execute_uninstall_code(canister_id: Principal): Promise&lt;
+    Variant&lt;{
+        ok: boolean;
+        err: string;
+    }&gt;
+&gt; {
+    const canister_result = await management_canister
+        .uninstall_code({
+            canister_id
+        })
+        .call();
+
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
+    }
+
+    return {
+        ok: true
+    };
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="update_settings"><a class="header" href="#update_settings">update_settings</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">import { ok, Principal, $update, Variant } from 'azle';
+import { management_canister } from 'azle/canisters/management';
+
+$update;
+export async function execute_update_settings(canister_id: Principal): Promise&lt;
+    Variant&lt;{
+        ok: boolean;
+        err: string;
+    }&gt;
+&gt; {
+    const canister_result = await management_canister
+        .update_settings({
+            canister_id,
+            settings: {
+                controllers: null,
+                compute_allocation: 1n,
+                memory_allocation: 3_000_000n,
+                freezing_threshold: 2_000_000n
+            }
+        })
+        .call();
+
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
+    }
+
+    return {
+        ok: true
+    };
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-memory"><a class="header" href="#stable-memory">Stable Memory</a></h1>
 <ul>
 <li><a href="reference/stable_memory/./stable_structures.html">stable structures</a></li>

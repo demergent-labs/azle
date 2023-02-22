@@ -142,6 +142,28 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="raw_rand"><a class="header" href="#raw_rand">raw_rand</a></h1>
+<p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/async_await">async/await</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/heartbeat">heartbeat</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/timers">timers</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ok, $update } from 'azle';
+import { management_canister } from 'azle/canisters/management';
+
+$update;
+export async function get_randomness(): Promise&lt;blob&gt; {
+    const randomness_result = await management_canister.raw_rand().call();
+
+    if (!ok(randomness_result)) {
+        return Uint8Array.from([]);
+    }
+
+    return randomness_result.ok;
+}
+</code></pre>
 
                     </main>
 
