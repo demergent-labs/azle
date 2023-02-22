@@ -143,7 +143,16 @@
                     <main>
                         <h1 id="pre-upgrade"><a class="header" href="#pre-upgrade">pre upgrade</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/pre_and_post_upgrade">pre_and_post_upgrade</a></li>
+</ul>
+<pre><code class="language-typescript">import { $pre_upgrade } from 'azle';
+
+$pre_upgrade;
+export function pre_upgrade() {
+    console.log('This runs before every canister upgrade');
+}
 </code></pre>
 
                     </main>

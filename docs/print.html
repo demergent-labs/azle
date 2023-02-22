@@ -4232,39 +4232,239 @@ export function trap(message: string): boolean {
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="heartbeat"><a class="header" href="#heartbeat">heartbeat</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/heartbeat">heartbeat</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/run_time_errors">run_time_errors</a></li>
+</ul>
+<pre><code class="language-typescript">import { $heartbeat } from 'azle';
+
+$heartbeat;
+export function heartbeat() {
+    console.log('this runs ~1 time per second');
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="http_request"><a class="header" href="#http_request">http_request</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/http_counter">http_counter</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, Func, nat16, Opt, $query, Query, Record, Variant } from 'azle';
+
+type HttpRequest = Record&lt;{
+    method: string;
+    url: string;
+    headers: Header[];
+    body: blob;
+}&gt;;
+
+type HttpResponse = Record&lt;{
+    status_code: nat16;
+    headers: Header[];
+    body: blob;
+    streaming_strategy: Opt&lt;StreamingStrategy&gt;;
+    upgrade: Opt&lt;boolean&gt;;
+}&gt;;
+
+type Header = [string, string];
+
+type StreamingStrategy = Variant&lt;{
+    Callback: CallbackStrategy;
+}&gt;;
+
+type CallbackStrategy = Record&lt;{
+    callback: Callback;
+    token: Token;
+}&gt;;
+
+type Callback = Func&lt;Query&lt;(t: Token) =&gt; StreamingCallbackHttpResponse&gt;&gt;;
+
+type StreamingCallbackHttpResponse = Record&lt;{
+    body: blob;
+    token: Opt&lt;Token&gt;;
+}&gt;;
+
+type Token = Record&lt;{
+    arbitrary_data: string;
+}&gt;;
+
+$query;
+export function http_request(req: HttpRequest): HttpResponse {
+    return {
+        status_code: 200,
+        headers: [],
+        body: Uint8Array.from([]),
+        streaming_strategy: null,
+        upgrade: false
+    };
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="http_request_update"><a class="header" href="#http_request_update">http_request_update</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/http_counter">http_counter</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, Func, nat16, Opt, Query, Record, $update, Variant } from 'azle';
+
+type HttpRequest = Record&lt;{
+    method: string;
+    url: string;
+    headers: Header[];
+    body: blob;
+}&gt;;
+
+type HttpResponse = Record&lt;{
+    status_code: nat16;
+    headers: Header[];
+    body: blob;
+    streaming_strategy: Opt&lt;StreamingStrategy&gt;;
+    upgrade: Opt&lt;boolean&gt;;
+}&gt;;
+
+type Header = [string, string];
+
+type StreamingStrategy = Variant&lt;{
+    Callback: CallbackStrategy;
+}&gt;;
+
+type CallbackStrategy = Record&lt;{
+    callback: Callback;
+    token: Token;
+}&gt;;
+
+type Callback = Func&lt;Query&lt;(t: Token) =&gt; StreamingCallbackHttpResponse&gt;&gt;;
+
+type StreamingCallbackHttpResponse = Record&lt;{
+    body: blob;
+    token: Opt&lt;Token&gt;;
+}&gt;;
+
+type Token = Record&lt;{
+    arbitrary_data: string;
+}&gt;;
+
+$update;
+export function http_request_update(req: HttpRequest): HttpResponse {
+    return {
+        status_code: 200,
+        headers: [],
+        body: Uint8Array.from([]),
+        streaming_strategy: null,
+        upgrade: false
+    };
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="init"><a class="header" href="#init">init</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ethereum_json_rpc">ethereum_json_rpc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/func_types">func_types</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/init">init</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/persistent-storage">persistent-storage</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/pre_and_post_upgrade">pre_and_post_upgrade</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami">whoami</a></li>
+</ul>
+<pre><code class="language-typescript">import { $init } from 'azle';
+
+$init;
+export function init() {
+    console.log('This runs once when the canister is first initialized');
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="inspect-message"><a class="header" href="#inspect-message">inspect message</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/inspect_message">inspect_message</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/run_time_errors">run_time_errors</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, $inspect_message, $update } from 'azle';
+
+$inspect_message;
+export function inspect_message() {
+    console.log('inspect_message called');
+
+    if (ic.method_name() === 'accessible') {
+        ic.accept_message();
+        return;
+    }
+
+    if (ic.method_name() === 'inaccessible') {
+        return;
+    }
+
+    throw `Method &quot;${ic.method_name()}&quot; not allowed`;
+}
+
+$update;
+export function accessible(): boolean {
+    return true;
+}
+
+$update;
+export function inaccessible(): boolean {
+    return false;
+}
+
+$update;
+export function also_inaccessible(): boolean {
+    return false;
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="post-upgrade"><a class="header" href="#post-upgrade">post upgrade</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/pre_and_post_upgrade">pre_and_post_upgrade</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami">whoami</a></li>
+</ul>
+<pre><code class="language-typescript">import { $post_upgrade } from 'azle';
+
+$post_upgrade;
+export function post_upgrade() {
+    console.log('This runs after every canister upgrade');
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="pre-upgrade"><a class="header" href="#pre-upgrade">pre upgrade</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/pre_and_post_upgrade">pre_and_post_upgrade</a></li>
+</ul>
+<pre><code class="language-typescript">import { $pre_upgrade } from 'azle';
+
+$pre_upgrade;
+export function pre_upgrade() {
+    console.log('This runs before every canister upgrade');
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="query"><a class="header" href="#query">query</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<pre><code class="language-typescript">import { $query } from 'azle';
+
+$query;
+export function simple_query(): string {
+    return 'This is a query method';
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="update"><a class="header" href="#update">update</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<pre><code class="language-typescript">import { $query, $update } from 'azle';
+
+let message = '';
+
+$query;
+export function get_message(): string {
+    return mesage;
+}
+
+$update;
+export function set_message(new_message): void {
+    message = new_message;
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="management-canister-1"><a class="header" href="#management-canister-1">Management Canister</a></h1>
 <ul>
