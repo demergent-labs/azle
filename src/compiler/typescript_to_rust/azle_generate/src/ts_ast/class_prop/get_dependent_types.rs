@@ -8,8 +8,8 @@ impl GetDependencies for SourceMapped<'_, ClassProp> {
         type_alias_lookup: &std::collections::HashMap<String, crate::ts_ast::AzleTypeAliasDecl>,
         found_type_names: &std::collections::HashSet<String>,
     ) -> std::collections::HashSet<String> {
-        let return_types = self.return_ts_type();
-        let param_types = self.param_ts_types();
+        let return_types = self.return_ts_type().unwrap(); // Considering unwrap safe because errors should have been caught when parsing the nodes, not the dependencies
+        let param_types = self.param_ts_types().unwrap(); // Considering unwrap safe because errors should have been caught when parsing the nodes, not the dependencies
         let ts_types = vec![vec![return_types], param_types].concat();
 
         ts_types
