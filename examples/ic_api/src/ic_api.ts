@@ -88,7 +88,7 @@ export function canister_balance128(): nat {
     return ic.canister_balance128();
 }
 
-// When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if called not from a query call.
+// When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if not called from a query call.
 $query;
 export function data_certificate(): Opt<blob> {
     return ic.data_certificate();

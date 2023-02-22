@@ -207,24 +207,27 @@ export async function execute_delete_canister(
     };
 }
 
-// TODO see https://forum.dfinity.org/t/question-about-deposit-cycles/12693
-// TODO this method won't work until we implement call_with_payment and/or call_with_payment128
-// TODO we will need to implement the ability to send payments with our cross canister calls
-// export function* execute_deposit_cycles(canister_id: Principal): DefaultResult {
-//     const canister_result: CanisterResult<void> = yield ManagementCanister.deposit_cycles({
-//         canister_id
-//     });
+$update;
+export async function execute_deposit_cycles(
+    canister_id: Principal
+): Promise<DefaultResult> {
+    const canister_result = await management_canister
+        .deposit_cycles({
+            canister_id
+        })
+        .cycles(1_000_000n)
+        .call();
 
-//     if (!ok(canister_result)) {
-//         return {
-//             err: canister_result.err
-//         };
-//     }
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
+    }
 
-//     return {
-//         ok: true
-//     };
-// }
+    return {
+        ok: true
+    };
+}
 
 $update;
 export async function get_raw_rand(): Promise<RawRandResult> {
@@ -245,7 +248,7 @@ export async function get_raw_rand(): Promise<RawRandResult> {
     };
 }
 
-// TODO we will test these once we can measure cycles better locally
+// TODO we should test this like we test deposit_cycles
 $update;
 export async function provisional_create_canister_with_cycles(): Promise<ExecuteProvisionalCreateCanisterWithCyclesResult> {
     const canister_result = await management_canister
@@ -268,7 +271,7 @@ export async function provisional_create_canister_with_cycles(): Promise<Execute
     };
 }
 
-// TODO we will test these once we can measure cycles better locally
+// TODO we should test this like we test deposit_cycles
 $update;
 export async function provisional_top_up_canister(
     canister_id: Principal,

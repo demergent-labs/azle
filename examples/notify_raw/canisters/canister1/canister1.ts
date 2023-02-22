@@ -1,12 +1,10 @@
 import { ic, Principal, RejectionCode, $update, Variant } from 'azle';
 
-type SendNotificationResult = Variant<{
+$update;
+export function send_notification(): Variant<{
     ok: boolean;
     err: RejectionCode;
-}>;
-
-$update;
-export function send_notification(): SendNotificationResult {
+}> {
     const result = ic.notify_raw(
         Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'),
         'receive_notification',

@@ -1,17 +1,17 @@
 import { ic, nat, nat64, ok, Principal, $update, Variant } from 'azle';
 
-type ExecuteCallRawResult = Variant<{
-    ok: string;
-    err: string;
-}>;
-
 $update;
 export async function execute_call_raw(
     canister_id: Principal,
     method: string,
     candid_args: string,
     payment: nat64
-): Promise<ExecuteCallRawResult> {
+): Promise<
+    Variant<{
+        ok: string;
+        err: string;
+    }>
+> {
     const canister_result = await ic.call_raw(
         canister_id,
         method,
@@ -30,18 +30,18 @@ export async function execute_call_raw(
     };
 }
 
-type ExecuteCallRaw128Result = Variant<{
-    ok: string;
-    err: string;
-}>;
-
 $update;
 export async function execute_call_raw128(
     canister_id: Principal,
     method: string,
     candid_args: string,
     payment: nat
-): Promise<ExecuteCallRaw128Result> {
+): Promise<
+    Variant<{
+        ok: string;
+        err: string;
+    }>
+> {
     const canister_result = await ic.call_raw128(
         canister_id,
         method,

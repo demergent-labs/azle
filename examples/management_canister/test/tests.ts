@@ -91,6 +91,56 @@ export function get_tests(
             }
         },
         {
+            name: 'execute_deposit_cycles',
+            test: async () => {
+                const canister_id =
+                    await management_canister.get_created_canister_id();
+
+                const status_before_result =
+                    await management_canister.get_canister_status({
+                        canister_id: canister_id
+                    });
+
+                if (!ok(status_before_result)) {
+                    return {
+                        err: status_before_result.err
+                    };
+                }
+
+                const status_before = status_before_result.ok;
+                const cycles_before = status_before.cycles;
+
+                const deposit_cycles_result =
+                    await management_canister.execute_deposit_cycles(
+                        canister_id
+                    );
+
+                if (!ok(deposit_cycles_result)) {
+                    return {
+                        err: deposit_cycles_result.err
+                    };
+                }
+
+                const status_after_result =
+                    await management_canister.get_canister_status({
+                        canister_id: canister_id
+                    });
+
+                if (!ok(status_after_result)) {
+                    return {
+                        err: status_after_result.err
+                    };
+                }
+
+                const status_after = status_after_result.ok;
+                const cycles_after = status_after.cycles;
+
+                return {
+                    ok: cycles_after >= cycles_before + 1_000_000n
+                };
+            }
+        },
+        {
             name: 'execute_uninstall_code',
             test: async () => {
                 const canister_id =

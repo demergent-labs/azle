@@ -1,5 +1,7 @@
 # accept message
 
+This section is a work in progress.
+
 Examples:
 
 -   [inspect_message](https://github.com/demergent-labs/azle/blob/main/examples/inspect_message/src/inspect_message.ts)
