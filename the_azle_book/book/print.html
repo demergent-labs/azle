@@ -4724,15 +4724,66 @@ export function stable64_write(offset: nat64, buf: blob): void {
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="clear-timer"><a class="header" href="#clear-timer">clear timer</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/timers">timers</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, TimerId, $update } from 'azle';
+
+$update;
+export function clear_timer(timer_id: TimerId): void {
+    ic.clear_timer(timer_id);
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="set-timer"><a class="header" href="#set-timer">set timer</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/timers">timers</a></li>
+</ul>
+<pre><code class="language-typescript">import { Duration, ic, TimerId, $update } from 'azle';
+
+$update;
+export function set_timers(delay: Duration): [TimerId, TimerId] {
+    const function_timer_id = ic.set_timer(delay, callback);
+
+    const captured_value = '🚩';
+
+    const closure_timer_id = ic.set_timer(delay, () =&gt; {
+        console.log(`closure called and captured value ${captured_value}`);
+    });
+
+    return [function_timer_id, closure_timer_id];
+}
+
+function callback(): void {
+    console.log('callback called');
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="set-timer-interval"><a class="header" href="#set-timer-interval">set timer interval</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/timers">timers</a></li>
+</ul>
+<pre><code class="language-typescript">import { Duration, ic, TimerId, $update } from 'azle';
+
+$update;
+export function set_timer_intervals(interval: Duration): [TimerId, TimerId] {
+    const function_timer_id = ic.set_timer_interval(interval, callback);
+
+    const captured_value = '🚩';
+
+    const closure_timer_id = ic.set_timer_interval(interval, () =&gt; {
+        console.log(`closure called and captured value ${captured_value}`);
+    });
+
+    return [function_timer_id, closure_timer_id];
+}
+
+function callback(): void {
+    console.log('callback called');
+}
 </code></pre>
 
                     </main>
