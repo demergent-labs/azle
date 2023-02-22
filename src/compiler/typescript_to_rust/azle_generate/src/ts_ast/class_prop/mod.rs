@@ -15,8 +15,12 @@ mod get_dependent_types;
 
 impl SourceMapped<'_, ClassProp> {
     pub fn to_act_external_canister_method(&self) -> Result<ActExternalCanisterMethod, ParseError> {
-        if !self.has_azle_decorator() {
+        if self.decorators.len() == 0 {
             return Err(ParseError::MissingDecorator);
+        }
+
+        if !self.has_azle_decorator() {
+            return Err(ParseError::InvalidDecorator);
         }
 
         let name = self.name()?;
@@ -78,7 +82,9 @@ impl SourceMapped<'_, ClassProp> {
             swc_ecma_ast::PropName::Ident(ident) => ident.get_name().to_string(),
             swc_ecma_ast::PropName::Str(str) => str.value.to_string(),
             swc_ecma_ast::PropName::Num(num) => num.value.to_string(),
-            swc_ecma_ast::PropName::Computed(_) => return Err(ParseError::InvalidMethodName),
+            swc_ecma_ast::PropName::Computed(_) => {
+                return Err(ParseError::UnallowedComputedProperty)
+            }
             swc_ecma_ast::PropName::BigInt(big_int) => big_int.value.to_string(),
         };
 
@@ -107,7 +113,7 @@ impl SourceMapped<'_, ClassProp> {
                 match &ts_type_ref.type_params {
                     Some(ts_type_param_inst) => {
                         if ts_type_param_inst.params.len() != 1 {
-                            return Err(ParseError::IncorrectTypeArgumentsToCanisterResult);
+                            return Err(ParseError::TooManyReturnTypes);
                         }
 
                         let inner_type = &**ts_type_param_inst.params.get(0).unwrap();
@@ -129,7 +135,7 @@ impl SourceMapped<'_, ClassProp> {
                             Ok(SourceMapped::new(ts_fn_type, self.source_map))
                         }
                         TsFnOrConstructorType::TsConstructorType(_) => {
-                            return Err(ParseError::InvalidDecorator)
+                            return Err(ParseError::InvalidReturnType)
                         }
                     }
                 }

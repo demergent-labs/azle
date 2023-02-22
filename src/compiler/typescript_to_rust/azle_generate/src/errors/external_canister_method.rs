@@ -1,8 +1,6 @@
 #[derive(Clone, Debug)]
 pub enum ParseError {
-    IncorrectTypeArgumentsToCanisterResult,
     InvalidDecorator,
-    InvalidMethodName,
     InvalidReturnType,
     MissingCanisterResultAnnotation,
     MissingDecorator,
@@ -10,21 +8,23 @@ pub enum ParseError {
     MissingTypeArgument,
     MultipleDecorators,
     NamespaceQualifiedType,
+    TooManyReturnTypes,
+    UnallowedComputedProperty,
 }
 
 impl ParseError {
     pub fn error_message(&self) -> String {
         let str = match self {
-            Self::IncorrectTypeArgumentsToCanisterResult => "Incorrect number of type arguments to generic type CanisterResult<T>.",
-            Self::InvalidDecorator => "Decorator not allowed on constructor",
-            Self::InvalidMethodName => "Contains a computed method name which isn't currently supported",
-            Self::InvalidReturnType => "Method has an invalid return type. Only function return types are permitted",
-            Self::MissingCanisterResultAnnotation => "Return type of property is not a CanisterResult. External canister methods must wrap their return types in the CanisterResult<T> generic type.",
-            Self::MissingDecorator => "Property is missing a decorator. It must be decorated with either @query, or @update",
-            Self::MissingTypeAnnotation => "Method is missing a type annotation",
-            Self::MissingTypeArgument => "Missing type argument to generic return type CanisterResult<T>.",
-            Self::MultipleDecorators => "Child property specifies multiple decorators.",
-            Self::NamespaceQualifiedType => "Qualified names in member return types are not currently supported. Try importing the type directly.",
+            Self::InvalidDecorator => "Invalid decorator. Only @query and @update are permitted.",
+            Self::InvalidReturnType => "Method has an invalid return type. Only function return types are permitted.",
+            Self::MissingCanisterResultAnnotation => "Invalid return type. External canister methods must wrap their return types in the CanisterResult<T> generic type.",
+            Self::MissingDecorator => "Missing decorator. External canister methods must be decorated with either @query or @update.",
+            Self::MissingTypeAnnotation => "Missing type annotation. External canister methods must specify a return type.",
+            Self::MissingTypeArgument => "Missing type argument. Generic type CanisterResult requires 1 type argument.",
+            Self::MultipleDecorators => "Too many decorators. External canister methods can only specify one decorator: @query or @update.",
+            Self::NamespaceQualifiedType => "Unsupported data type. Qualified types are not currently supported. Try importing the type directly.",
+            Self::TooManyReturnTypes => "Too many return types. Generic type CanisterResult requires 1 type argument.",
+            Self::UnallowedComputedProperty => "Unallowed computed property. Computed properties in external canister definitions aren't currently supported.",
         };
         str.to_string()
     }
