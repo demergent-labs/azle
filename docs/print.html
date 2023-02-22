@@ -817,6 +817,33 @@ export function set_many(num_entries: nat64): void {
 <p>With an argument of <code>100_000</code>, <code>set_many</code> will fail with an error <code>...exceeded the instruction limit for single message execution</code>.</p>
 <p>In terms of update scalability, an individual canister <a href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6">likely has an upper bound of ~900 updates per second</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="candid"><a class="header" href="#candid">Candid</a></h1>
+<ul>
+<li><a href="candid.html#text">text</a></li>
+<li><a href="candid.html#blob">blob</a></li>
+<li><a href="candid.html#nat">nat</a></li>
+<li><a href="candid.html#nat64">nat64</a></li>
+<li><a href="candid.html#nat32">nat32</a></li>
+<li><a href="candid.html#nat16">nat16</a></li>
+<li><a href="candid.html#nat8">nat8</a></li>
+<li><a href="candid.html#int">int</a></li>
+<li><a href="candid.html#int64">int64</a></li>
+<li><a href="candid.html#int32">int32</a></li>
+<li><a href="candid.html#int16">int16</a></li>
+<li><a href="candid.html#int8">int8</a></li>
+<li><a href="candid.html#float64">float64</a></li>
+<li><a href="candid.html#float32">float32</a></li>
+<li><a href="candid.html#bool">bool</a></li>
+<li><a href="candid.html#null">null</a></li>
+<li><a href="candid.html#vec">vec</a></li>
+<li><a href="candid.html#opt">opt</a></li>
+<li><a href="candid.html#record">record</a></li>
+<li><a href="candid.html#variant">variant</a></li>
+<li><a href="candid.html#func">func</a></li>
+<li><a href="candid.html#service">service</a></li>
+<li><a href="candid.html#principal">principal</a></li>
+<li><a href="candid.html#reserved">reserved</a></li>
+<li><a href="candid.html#empty">empty</a></li>
+</ul>
 <p><a href="https://internetcomputer.org/docs/current/developer-docs/backend/candid/">Candid</a> is an interface description language created by <a href="https://dfinity.org/">DFINITY</a>. It can be used to define interfaces between services (canisters), allowing canisters and clients written in various languages to easily interact with each other.</p>
 <p>Azle allows you to express Candid types through a combination of native and Azle-provided TypeScript types. These types will be necessary in various places as you define your canister. For example, Candid types must be used when defining the parameters and return types of your query and update methods.</p>
 <p>It's important to note that the Candid types are represented at runtime using specific JavaScript data structures that may differ in behavior from the description of the actual Candid type. For example, a <code>float32</code> Candid type is a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a>, a <code>nat64</code> is a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a>, and an <code>int</code> is also a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a>.</p>
@@ -934,34 +961,6 @@ export function candid_types(): Candid {
   },
 )
 </code></pre>
-<h2 id="candid-types"><a class="header" href="#candid-types">Candid types</a></h2>
-<ul>
-<li><a href="candid.html#text">text</a></li>
-<li><a href="candid.html#blob">blob</a></li>
-<li><a href="candid.html#nat">nat</a></li>
-<li><a href="candid.html#nat64">nat64</a></li>
-<li><a href="candid.html#nat32">nat32</a></li>
-<li><a href="candid.html#nat16">nat16</a></li>
-<li><a href="candid.html#nat8">nat8</a></li>
-<li><a href="candid.html#int">int</a></li>
-<li><a href="candid.html#int64">int64</a></li>
-<li><a href="candid.html#int32">int32</a></li>
-<li><a href="candid.html#int16">int16</a></li>
-<li><a href="candid.html#int8">int8</a></li>
-<li><a href="candid.html#float64">float64</a></li>
-<li><a href="candid.html#float32">float32</a></li>
-<li><a href="candid.html#bool">bool</a></li>
-<li><a href="candid.html#null">null</a></li>
-<li><a href="candid.html#vec">vec</a></li>
-<li><a href="candid.html#opt">opt</a></li>
-<li><a href="candid.html#record">record</a></li>
-<li><a href="candid.html#variant">variant</a></li>
-<li><a href="candid.html#func">func</a></li>
-<li><a href="candid.html#service">service</a></li>
-<li><a href="candid.html#principal">principal</a></li>
-<li><a href="candid.html#reserved">reserved</a></li>
-<li><a href="candid.html#empty">empty</a></li>
-</ul>
 <h3 id="text"><a class="header" href="#text">text</a></h3>
 <p>The TypeScript type <code>string</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-text">Candid type text</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript String</a> at runtime.</p>
 <p>TypeScript:</p>
@@ -3181,31 +3180,146 @@ export function send_notification(): Variant&lt;{
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="notify-with-payment-128"><a class="header" href="#notify-with-payment-128">notify with payment 128</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, nat, $update, Variant } from 'azle';
+import { cycles_canister } from '../cycles';
+
+// Reports the number of cycles returned from the Cycles canister
+$update;
+export async function send_cycles128(): Promise&lt;Variant&lt;{
+    ok: nat;
+    err: string;
+}&gt;;&gt; {
+    const result = await cycles_canister
+        .receive_cycles128()
+        .cycles128(1_000_000n)
+        .call();
+
+    if (!ok(result)) {
+        return { err: result.err };
+    }
+
+    return {
+        ok: ic.msg_cycles_refunded128()
+    };
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="performance-counter"><a class="header" href="#performance-counter">performance counter</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, nat64, $query } from 'azle';
+
+$query;
+export function performance_counter(): nat64 {
+    return ic.performance_counter(0);
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reject"><a class="header" href="#reject">reject</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/manual_reply">manual_reply</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/rejections">rejections</a></li>
+</ul>
+<pre><code class="language-typescript">import { empty, ic, Manual, $query } from 'azle';
+
+$query;
+export function reject(message: string): Manual&lt;empty&gt; {
+    ic.reject(message);
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reject-code"><a class="header" href="#reject-code">reject code</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/rejections">rejections</a></li>
+</ul>
+<pre><code class="language-typescript">import {
+    CanisterResult,
+    ExternalCanister,
+    ic,
+    Principal,
+    RejectionCode,
+    update,
+    $update
+} from 'azle';
+
+class Nonexistent extends ExternalCanister {
+    @update
+    method: () =&gt; CanisterResult&lt;void&gt;;
+}
+
+export const nonexistent_canister = new Nonexistent(
+    Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
+);
+
+$update;
+export async function get_rejection_code_destination_invalid(): Promise&lt;RejectionCode&gt; {
+    await nonexistent_canister.method().call();
+    return ic.reject_code();
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reject-message"><a class="header" href="#reject-message">reject message</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/rejections">rejections</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, $update } from 'azle';
+import { some_service } from '../some_service';
+
+$update;
+export async function get_rejection_message(message: string): Promise&lt;string&gt; {
+    await some_service.reject(message).call();
+    return ic.reject_message();
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reply"><a class="header" href="#reply">reply</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/composite_queries">composite_queries</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/manual_reply">manual_reply</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, Manual, $update } from 'azle';
+
+$update;
+export function update_blob(): Manual&lt;blob&gt; {
+    ic.reply(new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]));
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reply-raw"><a class="header" href="#reply-raw">reply raw</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/manual_reply">manual_reply</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, Manual, $update } from 'azle';
+
+$update;
+export function reply_raw(): Manual&lt;
+    Record&lt;{
+        int: int;
+        text: string;
+        bool: boolean;
+        blob: blob;
+        variant: Options;
+    }&gt;
+&gt; {
+    ic.reply_raw(
+        ic.candid_encode(
+            '(record { &quot;int&quot; = 42; &quot;text&quot; = &quot;text&quot;; &quot;bool&quot; = true; &quot;blob&quot; = blob &quot;Surprise!&quot;; &quot;variant&quot; = variant { Medium } })'
+        )
+    );
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="candid-1"><a class="header" href="#candid-1">Candid</a></h1>
 <ul>

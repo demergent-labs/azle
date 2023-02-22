@@ -143,7 +143,34 @@
                     <main>
                         <h1 id="reject-code"><a class="header" href="#reject-code">reject code</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/rejections">rejections</a></li>
+</ul>
+<pre><code class="language-typescript">import {
+    CanisterResult,
+    ExternalCanister,
+    ic,
+    Principal,
+    RejectionCode,
+    update,
+    $update
+} from 'azle';
+
+class Nonexistent extends ExternalCanister {
+    @update
+    method: () =&gt; CanisterResult&lt;void&gt;;
+}
+
+export const nonexistent_canister = new Nonexistent(
+    Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
+);
+
+$update;
+export async function get_rejection_code_destination_invalid(): Promise&lt;RejectionCode&gt; {
+    await nonexistent_canister.method().call();
+    return ic.reject_code();
+}
 </code></pre>
 
                     </main>

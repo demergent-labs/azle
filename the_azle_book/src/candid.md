@@ -1,5 +1,31 @@
 # Candid
 
+-   [text](#text)
+-   [blob](#blob)
+-   [nat](#nat)
+-   [nat64](#nat64)
+-   [nat32](#nat32)
+-   [nat16](#nat16)
+-   [nat8](#nat8)
+-   [int](#int)
+-   [int64](#int64)
+-   [int32](#int32)
+-   [int16](#int16)
+-   [int8](#int8)
+-   [float64](#float64)
+-   [float32](#float32)
+-   [bool](#bool)
+-   [null](#null)
+-   [vec](#vec)
+-   [opt](#opt)
+-   [record](#record)
+-   [variant](#variant)
+-   [func](#func)
+-   [service](#service)
+-   [principal](#principal)
+-   [reserved](#reserved)
+-   [empty](#empty)
+
 [Candid](https://internetcomputer.org/docs/current/developer-docs/backend/candid/) is an interface description language created by [DFINITY](https://dfinity.org/). It can be used to define interfaces between services (canisters), allowing canisters and clients written in various languages to easily interact with each other.
 
 Azle allows you to express Candid types through a combination of native and Azle-provided TypeScript types. These types will be necessary in various places as you define your canister. For example, Candid types must be used when defining the parameters and return types of your query and update methods.
@@ -127,34 +153,6 @@ Calling `candid_types` with `dfx` will return:
   },
 )
 ```
-
-## Candid types
-
--   [text](#text)
--   [blob](#blob)
--   [nat](#nat)
--   [nat64](#nat64)
--   [nat32](#nat32)
--   [nat16](#nat16)
--   [nat8](#nat8)
--   [int](#int)
--   [int64](#int64)
--   [int32](#int32)
--   [int16](#int16)
--   [int8](#int8)
--   [float64](#float64)
--   [float32](#float32)
--   [bool](#bool)
--   [null](#null)
--   [vec](#vec)
--   [opt](#opt)
--   [record](#record)
--   [variant](#variant)
--   [func](#func)
--   [service](#service)
--   [principal](#principal)
--   [reserved](#reserved)
--   [empty](#empty)
 
 ### text
 
