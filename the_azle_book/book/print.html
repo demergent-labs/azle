@@ -4522,43 +4522,199 @@ export function set_message(new_message): void {
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-structures-1"><a class="header" href="#stable-structures-1">stable structures</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/audio_recorder">audio_recorder</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ethereum_json_rpc">ethereum_json_rpc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/func_types">func_types</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/http_counter">http_counter</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/inline_types">inline_types</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/persistent-storage">persistent-storage</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/pre_and_post_upgrade">pre_and_post_upgrade</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_structures">stable_structures</a></li>
+</ul>
+<pre><code class="language-typescript">import {
+    InsertError,
+    nat64,
+    nat8,
+    Opt,
+    $query,
+    StableBTreeMap,
+    $update,
+    Variant
+} from 'azle';
+
+type Key = nat8;
+type Value = string;
+
+type InsertResult = Variant&lt;{
+    ok: Opt&lt;Value&gt;;
+    err: InsertError;
+}&gt;;
+
+let map = new StableBTreeMap&lt;Key, Value&gt;(0, 100, 1_000);
+
+$query;
+export function contains_key(key: Key): boolean {
+    return map.contains_key(key);
+}
+
+$query;
+export function get(key: Key): Opt&lt;Value&gt; {
+    return map.get(key);
+}
+
+$update;
+export function insert(key: Key, value: Value): InsertResult {
+    return map.insert(key, value);
+}
+
+$query;
+export function is_empty(): boolean {
+    return map.is_empty();
+}
+
+$query;
+export function items(): [Key, Value][] {
+    return map.items();
+}
+
+$query;
+export function keys(): Key[] {
+    return map.keys();
+}
+
+$query;
+export function len(): nat64 {
+    return map.len();
+}
+
+$update;
+export function remove(key: Key): Opt&lt;Value&gt; {
+    return map.remove(key);
+}
+
+$query;
+export function values(): Value[] {
+    return map.values();
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-bytes"><a class="header" href="#stable-bytes">stable bytes</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, $query } from 'azle';
+
+$query;
+export function stable_bytes(): blob {
+    return ic.stable_bytes();
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-grow"><a class="header" href="#stable-grow">stable grow</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, nat32, StableGrowResult, $update } from 'azle';
+
+$update;
+export function stable_grow(new_pages: nat32): StableGrowResult {
+    return ic.stable_grow(new_pages);
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-read"><a class="header" href="#stable-read">stable read</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, nat32, $query } from 'azle';
+
+$query;
+export function stable_read(offset: nat32, length: nat32): blob {
+    return ic.stable_read(offset, length);
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-size"><a class="header" href="#stable-size">stable size</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, nat32, $query } from 'azle';
+
+$query;
+export function stable_size(): nat32 {
+    return ic.stable_size();
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-write"><a class="header" href="#stable-write">stable write</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, nat32, $update } from 'azle';
+
+$update;
+export function stable_write(offset: nat32, buf: blob): void {
+    ic.stable_write(offset, buf);
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable64-grow"><a class="header" href="#stable64-grow">stable64 grow</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, nat64, Stable64GrowResult, $update } from 'azle';
+
+$update;
+export function stable_grow(new_pages: nat64): Stable64GrowResult {
+    return ic.stable_grow(new_pages);
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable64-read"><a class="header" href="#stable64-read">stable64 read</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, nat64, $query } from 'azle';
+
+$query;
+export function stable64_read(offset: nat64, length: nat64): blob {
+    return ic.stable64_read(offset, length);
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable64-size"><a class="header" href="#stable64-size">stable64 size</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
+</ul>
+<pre><code class="language-typescript">import { ic, nat64, $query } from 'azle';
+
+$query;
+export function stable64_size(): nat64 {
+    return ic.stable64_size();
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable64-write"><a class="header" href="#stable64-write">stable64 write</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
+</ul>
+<pre><code class="language-typescript">import { blob, ic, nat64, $update } from 'azle';
+
+$update;
+export function stable64_write(offset: nat64, buf: blob): void {
+    ic.stable64_write(offset, buf);
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="timers-1"><a class="header" href="#timers-1">Timers</a></h1>
 <ul>

@@ -143,7 +143,82 @@
                     <main>
                         <h1 id="stable-structures"><a class="header" href="#stable-structures">stable structures</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/audio_recorder">audio_recorder</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ethereum_json_rpc">ethereum_json_rpc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/func_types">func_types</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/http_counter">http_counter</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/inline_types">inline_types</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/persistent-storage">persistent-storage</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/pre_and_post_upgrade">pre_and_post_upgrade</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_structures">stable_structures</a></li>
+</ul>
+<pre><code class="language-typescript">import {
+    InsertError,
+    nat64,
+    nat8,
+    Opt,
+    $query,
+    StableBTreeMap,
+    $update,
+    Variant
+} from 'azle';
+
+type Key = nat8;
+type Value = string;
+
+type InsertResult = Variant&lt;{
+    ok: Opt&lt;Value&gt;;
+    err: InsertError;
+}&gt;;
+
+let map = new StableBTreeMap&lt;Key, Value&gt;(0, 100, 1_000);
+
+$query;
+export function contains_key(key: Key): boolean {
+    return map.contains_key(key);
+}
+
+$query;
+export function get(key: Key): Opt&lt;Value&gt; {
+    return map.get(key);
+}
+
+$update;
+export function insert(key: Key, value: Value): InsertResult {
+    return map.insert(key, value);
+}
+
+$query;
+export function is_empty(): boolean {
+    return map.is_empty();
+}
+
+$query;
+export function items(): [Key, Value][] {
+    return map.items();
+}
+
+$query;
+export function keys(): Key[] {
+    return map.keys();
+}
+
+$query;
+export function len(): nat64 {
+    return map.len();
+}
+
+$update;
+export function remove(key: Key): Opt&lt;Value&gt; {
+    return map.remove(key);
+}
+
+$query;
+export function values(): Value[] {
+    return map.values();
+}
 </code></pre>
 
                     </main>
