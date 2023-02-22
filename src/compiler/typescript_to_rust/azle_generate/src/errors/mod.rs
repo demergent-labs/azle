@@ -4,6 +4,8 @@ use annotate_snippets::{
 };
 use std::fmt;
 
+pub mod external_canister_method;
+
 pub struct Suggestion {
     pub title: String,
     pub source: String,
