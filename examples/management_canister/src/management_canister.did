@@ -21,6 +21,7 @@ type ManualReply_3 = variant { ok : vec nat8; err : text };
 service : () -> {
   execute_create_canister : () -> (ManualReply);
   execute_delete_canister : (principal) -> (ManualReply_1);
+  execute_deposit_cycles : (principal) -> (ManualReply_1);
   execute_install_code : (principal, vec nat8) -> (ManualReply_1);
   execute_start_canister : (principal) -> (ManualReply_1);
   execute_stop_canister : (principal) -> (ManualReply_1);

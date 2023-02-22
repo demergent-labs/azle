@@ -143,6 +143,38 @@
                     <main>
                         <h1 id="deposit_cycles"><a class="header" href="#deposit_cycles">deposit_cycles</a></h1>
 <p>This section is a work in progress.</p>
+<p>Examples:</p>
+<ul>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+</ul>
+<pre><code class="language-typescript">import { ok, Principal, $update, Variant } from 'azle';
+import { management_canister } from 'azle/canisters/management';
+
+$update;
+export async function execute_deposit_cycles(canister_id: Principal): Promise&lt;
+    Variant&lt;{
+        ok: boolean;
+        err: string;
+    }&gt;
+&gt; {
+    const canister_result = await management_canister
+        .deposit_cycles({
+            canister_id
+        })
+        .cycles(1_000_000n)
+        .call();
+
+    if (!ok(canister_result)) {
+        return {
+            err: canister_result.err
+        };
+    }
+
+    return {
+        ok: true
+    };
+}
+</code></pre>
 
                     </main>
 
