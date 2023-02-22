@@ -142,6 +142,32 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="vec"><a class="header" href="#vec">vec</a></h1>
+<p>This section is a work in progress.</p>
+<p>TypeScript <code>[]</code> array syntax corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t">Candid type vec</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> of the specified type at runtime (except for <code>nat8[]</code> which will become a <code>Uint8Array</code>, thus it is recommended to use the <code>blob</code> type instead of <code>nat8[]</code>). Only the <code>[]</code> array syntax is supported at this time (i.e. not <code>Array</code> or <code>ReadonlyArray</code> etc).</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { int32, $query } from 'azle';
+
+$query;
+export function get_numbers(): int32[] {
+    return [0, 1, 2, 3];
+}
+
+$query;
+export function print_numbers(numbers: int32[]): int32[] {
+    console.log(typeof numbers);
+    return numbers;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_numbers : () -&gt; (vec int32) query;
+    print_numbers : (vec int32) -&gt; (vec int32) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_numbers '(vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })'
+(vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })
+</code></pre>
 
                     </main>
 

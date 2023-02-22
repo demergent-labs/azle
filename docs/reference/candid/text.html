@@ -142,6 +142,32 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="text"><a class="header" href="#text">text</a></h1>
+<p>This section is a work in progress.</p>
+<p>The TypeScript type <code>string</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-text">Candid type text</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript String</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { $query } from 'azle';
+
+$query;
+export function get_string(): string {
+    return 'Hello world!';
+}
+
+$query;
+export function print_string(string: string): string {
+    console.log(typeof string);
+    return string;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_string : () -&gt; (text) query;
+    print_string : (text) -&gt; (text) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_string '(&quot;Hello world!&quot;)'
+(&quot;Hello world!&quot;)
+</code></pre>
 
                     </main>
 

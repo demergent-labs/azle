@@ -142,6 +142,32 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="nat16"><a class="header" href="#nat16">nat16</a></h1>
+<p>This section is a work in progress.</p>
+<p>The Azle type <code>nat16</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat16</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { nat16, $query } from 'azle';
+
+$query;
+export function get_nat16(): nat16 {
+    return 65_535;
+}
+
+$query;
+export function print_nat16(nat16: nat16): nat16 {
+    console.log(typeof nat16);
+    return nat16;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_nat16 : () -&gt; (nat16) query;
+    print_nat16 : (nat16) -&gt; (nat16) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_nat16 '(65_535 : nat16)'
+(65_535 : nat16)
+</code></pre>
 
                     </main>
 

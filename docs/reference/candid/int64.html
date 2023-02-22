@@ -142,6 +142,32 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="int64"><a class="header" href="#int64">int64</a></h1>
+<p>This section is a work in progress.</p>
+<p>The Azle type <code>int64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { int64, $query } from 'azle';
+
+$query;
+export function get_int64(): int64 {
+    return 9_223_372_036_854_775_807n;
+}
+
+$query;
+export function print_int64(int64: int64): int64 {
+    console.log(typeof int64);
+    return int64;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_int64 : () -&gt; (int64) query;
+    print_int64 : (int64) -&gt; (int64) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_int64 '(9_223_372_036_854_775_807 : int64)'
+(9_223_372_036_854_775_807 : int64)
+</code></pre>
 
                     </main>
 

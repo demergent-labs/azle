@@ -142,6 +142,32 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="nat8"><a class="header" href="#nat8">nat8</a></h1>
+<p>This section is a work in progress.</p>
+<p>The Azle type <code>nat8</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat8</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { nat8, $query } from 'azle';
+
+$query;
+export function get_nat8(): nat8 {
+    return 255;
+}
+
+$query;
+export function print_nat8(nat8: nat8): nat8 {
+    console.log(typeof nat8);
+    return nat8;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_nat8 : () -&gt; (nat8) query;
+    print_nat8 : (nat8) -&gt; (nat8) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_nat8 '(255 : nat8)'
+(255 : nat8)
+</code></pre>
 
                     </main>
 

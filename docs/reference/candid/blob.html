@@ -142,6 +142,35 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="blob"><a class="header" href="#blob">blob</a></h1>
+<p>This section is a work in progress.</p>
+<p>The Azle type <code>blob</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-blob">Candid type blob</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array">JavaScript Uint8Array</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { blob, $query } from 'azle';
+
+$query;
+export function get_blob(): blob {
+    return Uint8Array.from([68, 73, 68, 76, 0, 0]);
+}
+
+$query;
+export function print_blob(blob: blob): blob {
+    console.log(typeof blob);
+    return blob;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_blob : () -&gt; (vec nat8) query;
+    print_blob : (vec nat8) -&gt; (vec nat8) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_blob '(vec { 68; 73; 68; 76; 0; 0; })'
+(blob &quot;DIDL\00\00&quot;)
+
+dfx canister call candid_canister print_blob '(blob &quot;DIDL\00\00&quot;)'
+(blob &quot;DIDL\00\00&quot;)
+</code></pre>
 
                     </main>
 

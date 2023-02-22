@@ -142,6 +142,41 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="record"><a class="header" href="#record">record</a></h1>
+<p>This section is a work in progress.</p>
+<p>TypeScript type aliases referring to object literals wrapped in the <code>Record</code> Azle type correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-record--n--t--">Candid record type</a> and will become <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { Principal, $query, Record } from 'azle';
+
+type User = Record&lt;{
+    id: Principal;
+    username: string;
+}&gt;;
+
+$query;
+export function get_user(): User {
+    return {
+        id: Principal.fromUint8Array(Uint8Array.from([0])),
+        username: 'lastmjs'
+    };
+}
+
+$query;
+export function print_user(user: User): User {
+    console.log(typeof user);
+    return user;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>type User = record { id : principal; username : text };
+service : () -&gt; {
+    get_user : () -&gt; (User) query;
+    print_user : (User) -&gt; (User) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_user '(record { id = principal &quot;2ibo7-dia&quot;; username = &quot;lastmjs&quot; })'
+(record { id = principal &quot;2ibo7-dia&quot;; username = &quot;lastmjs&quot; })
+</code></pre>
 
                     </main>
 

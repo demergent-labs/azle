@@ -142,6 +142,32 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="bool"><a class="header" href="#bool">bool</a></h1>
+<p>This section is a work in progress.</p>
+<p>The TypeScript type <code>boolean</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-bool">Candid type bool</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">JavaScript Boolean</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { $query } from 'azle';
+
+$query;
+export function get_bool(): boolean {
+    return true;
+}
+
+$query;
+export function print_bool(bool: boolean): boolean {
+    console.log(typeof bool);
+    return bool;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_bool : () -&gt; (bool) query;
+    print_bool : (bool) -&gt; (bool) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_bool '(true)'
+(true)
+</code></pre>
 
                     </main>
 

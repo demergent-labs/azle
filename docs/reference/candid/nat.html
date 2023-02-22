@@ -142,6 +142,32 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="nat"><a class="header" href="#nat">nat</a></h1>
+<p>This section is a work in progress.</p>
+<p>The Azle type <code>nat</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-nat">Candid type nat</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import { nat, $query } from 'azle';
+
+$query;
+export function get_nat(): nat {
+    return 340_282_366_920_938_463_463_374_607_431_768_211_455n;
+}
+
+$query;
+export function print_nat(nat: nat): nat {
+    console.log(typeof nat);
+    return nat;
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>service : () -&gt; {
+    get_nat : () -&gt; (nat) query;
+    print_nat : (nat) -&gt; (nat) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister print_nat '(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)'
+(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)
+</code></pre>
 
                     </main>
 
