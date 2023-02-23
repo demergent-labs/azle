@@ -167,13 +167,13 @@ We should see `("")` representing an empty message.
 Now let's yell `Hello World!`:
 
 ```bash
-dfx canister call set_message '("Hello World!")'
+dfx canister call azle_hello_world set_message '("Hello World!")'
 ```
 
 Retrieve the message:
 
 ```bash
-dfx canister call get_message
+dfx canister call azle_hello_world get_message
 ```
 
 We should see `("Hello World!")`.
@@ -189,4 +189,4 @@ URLs:
     azle_hello_world: http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&id=rrkah-fqaaa-aaaaa-aaaaq-cai
 ```
 
-Open up [http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&id=rrkah-fqaaa-aaaaa-aaaaq-cai](http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&id=rrkah-fqaaa-aaaaa-aaaaq-cai) to access the web UI and interact with your canister.
+Open up [http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&id=rrkah-fqaaa-aaaaa-aaaaq-cai](http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&id=rrkah-fqaaa-aaaaa-aaaaq-cai) or the equivalent URL from your terminal to access the web UI and interact with your canister.
