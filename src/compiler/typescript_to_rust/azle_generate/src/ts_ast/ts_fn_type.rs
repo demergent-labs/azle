@@ -1,4 +1,4 @@
-use cdk_framework::{nodes::ActFnParam, ToActDataType};
+use cdk_framework::act::node::{to_node::ToDataType, Param};
 use swc_ecma_ast::{TsFnParam, TsFnType, TsType};
 
 use crate::ts_ast::{
@@ -6,21 +6,21 @@ use crate::ts_ast::{
 };
 
 impl SourceMapped<'_, TsFnType> {
-    pub fn build_act_fn_params(&self) -> Vec<ActFnParam> {
+    pub fn build_act_fn_params(&self) -> Vec<Param> {
         self.params
             .iter()
             .map(|param| match param {
                 TsFnParam::Ident(identifier) => {
                     let name = identifier.get_name().to_string();
-                    let data_type = match &identifier.type_ann {
+                    let type_ = match &identifier.type_ann {
                         Some(ts_type_ann) => {
                             let azle_type =
                                 AzleType::from_ts_type(ts_type_ann.get_ts_type(), self.source_map);
-                            azle_type.to_act_data_type(&None)
+                            azle_type.to_data_type()
                         }
                         None => panic!("Function parameters must have a type"),
                     };
-                    ActFnParam { name, data_type }
+                    Param { name, type_ }
                 }
                 TsFnParam::Array(_) => {
                     panic!("Array destructuring in parameters is unsupported at this time")

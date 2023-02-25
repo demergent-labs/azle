@@ -1,12 +1,11 @@
-use super::AzleFnOrConstructorType;
-use cdk_framework::ToActDataType;
+use cdk_framework::act::node::{to_node::ToDataType, DataType};
 
-impl ToActDataType for AzleFnOrConstructorType<'_> {
-    fn to_act_data_type(&self, alias_name: &Option<&String>) -> cdk_framework::ActDataType {
+use super::AzleFnOrConstructorType;
+
+impl ToDataType for AzleFnOrConstructorType<'_> {
+    fn to_data_type(&self) -> DataType {
         match self {
-            AzleFnOrConstructorType::AzleFnType(azle_fn_type) => {
-                azle_fn_type.to_act_data_type(alias_name)
-            }
+            AzleFnOrConstructorType::AzleFnType(azle_fn_type) => azle_fn_type.to_data_type(),
         }
     }
 }

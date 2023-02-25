@@ -1,4 +1,3 @@
-use cdk_framework::ToTokenStream;
 use quote::quote;
 
 use crate::{generators::stable_b_tree_map, StableBTreeMapNode};

@@ -2,11 +2,13 @@ use crate::{
     generators::canister_methods::inspect_message,
     ts_ast::{azle_program::HelperMethods, ts_ast::errors, TsAst},
 };
-use cdk_framework::{nodes::ActInspectMessageMethod, CanisterMethodType};
+use cdk_framework::act::node::{
+    canister_method::CanisterMethodType, canister_method::InspectMessageMethod,
+};
 
 pub fn build_canister_method_system_inspect_message(
     ts_ast: &TsAst,
-) -> Option<ActInspectMessageMethod> {
+) -> Option<InspectMessageMethod> {
     let inspect_message_fn_decls = ts_ast
         .azle_programs
         .get_azle_fn_decls_of_type(&CanisterMethodType::InspectMessage);
@@ -25,7 +27,7 @@ pub fn build_canister_method_system_inspect_message(
     if let Some(inspect_message_fn_decl) = inspect_message_fn_decl_option {
         let body = inspect_message::generate_inspect_message_method_body(inspect_message_fn_decl);
 
-        Some(ActInspectMessageMethod { body })
+        Some(InspectMessageMethod { body })
     } else {
         None
     }

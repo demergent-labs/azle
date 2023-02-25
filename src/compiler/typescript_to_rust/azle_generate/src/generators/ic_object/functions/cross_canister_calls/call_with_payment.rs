@@ -1,12 +1,12 @@
-use cdk_framework::nodes::{ActExternalCanister, ActExternalCanisterMethod};
+use cdk_framework::act::node::{ExternalCanister, ExternalCanisterMethod};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
 use crate::generators::ic_object;
 
 pub fn generate(
-    canister: &ActExternalCanister,
-    method: &ActExternalCanisterMethod,
+    canister: &ExternalCanister,
+    method: &ExternalCanisterMethod,
     pre_await_state_management: &TokenStream,
     post_await_state_management: &TokenStream,
     promise_fulfillment: &TokenStream,

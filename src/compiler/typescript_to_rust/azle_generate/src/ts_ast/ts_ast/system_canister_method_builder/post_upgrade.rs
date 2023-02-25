@@ -1,13 +1,11 @@
-use cdk_framework::{
-    nodes::ActPostUpgradeMethod, traits::CanisterMethodBuilder, CanisterMethodType,
-};
+use cdk_framework::act::node::canister_method::{CanisterMethodType, PostUpgradeMethod};
 
 use crate::{
     generators::canister_methods::post_upgrade,
     ts_ast::{azle_program::HelperMethods, ts_ast::errors, TsAst},
 };
 
-pub fn build_canister_method_system_post_upgrade(ts_ast: &TsAst) -> ActPostUpgradeMethod {
+pub fn build_canister_method_system_post_upgrade(ts_ast: &TsAst) -> PostUpgradeMethod {
     let post_upgrade_fn_decls = ts_ast
         .azle_programs
         .get_azle_fn_decls_of_type(&CanisterMethodType::PostUpgrade);
@@ -31,5 +29,5 @@ pub fn build_canister_method_system_post_upgrade(ts_ast: &TsAst) -> ActPostUpgra
 
     let body = post_upgrade::generate_post_upgrade_method_body(post_upgrade_fn_decl_option);
 
-    ActPostUpgradeMethod { body, params }
+    PostUpgradeMethod { body, params }
 }

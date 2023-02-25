@@ -1,5 +1,5 @@
 use cdk_framework::{
-    nodes::ActCanisterMethod, traits::CanisterMethodBuilder, CanisterMethodType, RequestType,
+    act::node::canister_method::{CanisterMethod, CanisterMethodType},
     SystemStructureType,
 };
 use std::collections::{HashMap, HashSet};
@@ -32,7 +32,7 @@ pub trait HelperMethods {
         found_type_names: &HashSet<String>,
     ) -> HashSet<String>;
     fn get_dependent_types(&self) -> HashSet<String>;
-    fn build_canister_method_nodes(&self, request_type: RequestType) -> Vec<ActCanisterMethod>;
+    fn build_canister_method_nodes(&self, request_type: CanisterMethodType) -> Vec<CanisterMethod>;
 }
 
 impl HelperMethods for Vec<AzleProgram> {
@@ -153,16 +153,14 @@ impl HelperMethods for Vec<AzleProgram> {
         dependencies
     }
 
-    fn build_canister_method_nodes(&self, request_type: RequestType) -> Vec<ActCanisterMethod> {
-        let canister_method_type = match request_type {
-            RequestType::Query => CanisterMethodType::Query,
-            RequestType::Update => CanisterMethodType::Update,
-        };
-
+    fn build_canister_method_nodes(
+        &self,
+        canister_method_type: CanisterMethodType,
+    ) -> Vec<CanisterMethod> {
         let azle_fnc_decls = self.get_azle_fn_decls_of_type(&canister_method_type);
 
         azle_fnc_decls.iter().fold(vec![], |acc, fn_decl| {
-            let canister_method_node = fn_decl.build_canister_method_node(&request_type);
+            let canister_method_node = fn_decl.build_canister_method_node(&canister_method_type);
             vec![acc, vec![canister_method_node]].concat()
         })
     }

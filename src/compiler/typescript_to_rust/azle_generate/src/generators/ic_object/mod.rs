@@ -1,4 +1,4 @@
-use cdk_framework::{nodes::ActExternalCanisterMethod, ToTokenStream};
+use cdk_framework::act::node::ExternalCanisterMethod;
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 
@@ -7,7 +7,7 @@ use crate::ts_keywords;
 pub mod functions;
 pub mod register_function;
 
-pub fn generate_param_variables(method: &ActExternalCanisterMethod) -> Vec<TokenStream> {
+pub fn generate_param_variables(method: &ExternalCanisterMethod) -> Vec<TokenStream> {
     method.params
         .iter()
         .enumerate()
@@ -24,7 +24,7 @@ pub fn generate_param_variables(method: &ActExternalCanisterMethod) -> Vec<Token
     .collect()
 }
 
-pub fn generate_args_list(method: &ActExternalCanisterMethod) -> TokenStream {
+pub fn generate_args_list(method: &ExternalCanisterMethod) -> TokenStream {
     let param_names: Vec<Ident> = method
         .params
         .iter()

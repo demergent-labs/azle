@@ -1,15 +1,7 @@
+use cdk_framework::act::node::data_type::{record, variant, Record, Variant};
+
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeLit;
-
-use crate::ts_ast::ast_traits::generate_inline_name::GenerateInlineName;
-use cdk_framework::{
-    nodes::data_type_nodes::{
-        act_record::{Record, RecordLiteral, RecordTypeAlias},
-        act_variants::{Variant, VariantLiteral, VariantTypeAlias},
-        ActRecord, ActRecordMember, ActVariant, ActVariantMember, LiteralOrTypeAlias,
-    },
-    ActDataType,
-};
 
 pub use azle_type_element::AzleTypeElement;
 
@@ -26,8 +18,8 @@ pub struct AzleTypeLit<'a> {
 }
 
 impl AzleTypeLit<'_> {
-    pub(super) fn to_record(&self, record_name: &Option<&String>) -> ActDataType {
-        let members: Vec<ActRecordMember> = self
+    pub(super) fn to_record(&self) -> Record {
+        let members: Vec<record::Member> = self
             .ts_type_lit
             .members
             .iter()
@@ -38,27 +30,14 @@ impl AzleTypeLit<'_> {
             })
             .collect();
 
-        ActDataType::Record(match record_name {
-            Some(record_name) => ActRecord {
-                act_type: LiteralOrTypeAlias::TypeAlias(RecordTypeAlias {
-                    record: Record {
-                        name: record_name.clone().clone(),
-                        members,
-                    },
-                }),
-            },
-            None => ActRecord {
-                act_type: LiteralOrTypeAlias::Literal(RecordLiteral {
-                    record: Record {
-                        name: self.ts_type_lit.generate_inline_name(),
-                        members,
-                    },
-                }),
-            },
-        })
+        Record {
+            name: None,
+            members,
+        }
     }
-    pub(super) fn to_variant(&self, variant_name: &Option<&String>) -> ActDataType {
-        let members: Vec<ActVariantMember> = self
+
+    pub(super) fn to_variant(&self) -> Variant {
+        let members: Vec<variant::Member> = self
             .ts_type_lit
             .members
             .iter()
@@ -69,23 +48,9 @@ impl AzleTypeLit<'_> {
             })
             .collect();
 
-        ActDataType::Variant(match variant_name {
-            Some(record_name) => ActVariant {
-                act_type: LiteralOrTypeAlias::TypeAlias(VariantTypeAlias {
-                    variant: Variant {
-                        name: record_name.clone().clone(),
-                        members,
-                    },
-                }),
-            },
-            None => ActVariant {
-                act_type: LiteralOrTypeAlias::Literal(VariantLiteral {
-                    variant: Variant {
-                        name: self.ts_type_lit.generate_inline_name(),
-                        members,
-                    },
-                }),
-            },
-        })
+        Variant {
+            name: None,
+            members,
+        }
     }
 }

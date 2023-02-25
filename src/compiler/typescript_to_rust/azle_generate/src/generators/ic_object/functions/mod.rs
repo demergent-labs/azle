@@ -1,4 +1,4 @@
-use cdk_framework::nodes::{ActCanisterMethod, ActExternalCanister};
+use cdk_framework::act::node::{CanisterMethod, ExternalCanister};
 
 use crate::StableBTreeMapNode;
 
@@ -50,8 +50,8 @@ mod time;
 mod trap;
 
 pub fn generate(
-    canister_methods: &Vec<ActCanisterMethod>,
-    external_canisters: &Vec<ActExternalCanister>,
+    canister_methods: &Vec<CanisterMethod>,
+    external_canisters: &Vec<ExternalCanister>,
     stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
 ) -> proc_macro2::TokenStream {
     let accept_message = accept_message::generate();

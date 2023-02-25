@@ -1,4 +1,4 @@
-use cdk_framework::nodes::ActExternalCanister;
+use cdk_framework::act::node::ExternalCanister;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
@@ -77,7 +77,7 @@ pub fn generate(ts_ast: &TsAst) -> TokenStream {
     }
 }
 
-fn generate_notify_functions(external_canisters: &Vec<ActExternalCanister>) -> Vec<TokenStream> {
+fn generate_notify_functions(external_canisters: &Vec<ExternalCanister>) -> Vec<TokenStream> {
     external_canisters.iter().map(|canister| {
         canister.methods.iter().map(|method| {
             let notify_function_name_string = format!("_azle_notify_{}_{}", canister.name, method.name);
@@ -95,7 +95,7 @@ fn generate_notify_functions(external_canisters: &Vec<ActExternalCanister>) -> V
 }
 
 fn generate_cross_canister_functions(
-    external_canisters: &Vec<ActExternalCanister>,
+    external_canisters: &Vec<ExternalCanister>,
 ) -> Vec<TokenStream> {
     external_canisters
         .iter()

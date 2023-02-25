@@ -1,6 +1,6 @@
 use cdk_framework::{
-    nodes::{ActExternalCanisterMethod, ActFnParam},
-    ActDataType, ToActDataType,
+    act::node::{DataType, ExternalCanisterMethod, Param},
+    ToDataType,
 };
 use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnType, TsType};
 
@@ -14,7 +14,7 @@ use super::azle_type::AzleType;
 mod get_dependent_types;
 
 impl SourceMapped<'_, ClassProp> {
-    pub fn to_act_external_canister_method(&self) -> Result<ActExternalCanisterMethod, ParseError> {
+    pub fn to_act_external_canister_method(&self) -> Result<ExternalCanisterMethod, ParseError> {
         if self.decorators.len() == 0 {
             return Err(ParseError::MissingDecorator);
         }
@@ -28,21 +28,21 @@ impl SourceMapped<'_, ClassProp> {
         let params = self.build_act_fn_params()?;
         let return_type = self.build_return_type()?;
 
-        Ok(ActExternalCanisterMethod {
+        Ok(ExternalCanisterMethod {
             name,
             params,
             return_type,
         })
     }
 
-    fn build_act_fn_params(&self) -> Result<Vec<ActFnParam>, ParseError> {
+    fn build_act_fn_params(&self) -> Result<Vec<Param>, ParseError> {
         Ok(self.ts_fn_type()?.build_act_fn_params())
     }
 
-    fn build_return_type(&self) -> Result<ActDataType, ParseError> {
+    fn build_return_type(&self) -> Result<DataType, ParseError> {
         let return_ts_type = self.return_ts_type()?;
         let azle_type = AzleType::from_ts_type(return_ts_type, self.source_map);
-        let act_data_type = azle_type.to_act_data_type(&None);
+        let act_data_type = azle_type.to_data_type();
         Ok(act_data_type)
     }
 

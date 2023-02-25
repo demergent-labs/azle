@@ -1,11 +1,11 @@
-use cdk_framework::{nodes::ActPreUpgradeMethod, CanisterMethodType};
+use cdk_framework::act::node::canister_method::{CanisterMethodType, PreUpgradeMethod};
 
 use crate::{
     generators::canister_methods::pre_upgrade,
     ts_ast::{azle_program::HelperMethods, ts_ast::errors, TsAst},
 };
 
-pub fn build_canister_method_system_pre_upgrade(ts_ast: &TsAst) -> ActPreUpgradeMethod {
+pub fn build_canister_method_system_pre_upgrade(ts_ast: &TsAst) -> PreUpgradeMethod {
     let pre_upgrade_fn_decls = ts_ast
         .azle_programs
         .get_azle_fn_decls_of_type(&CanisterMethodType::PreUpgrade);
@@ -23,5 +23,5 @@ pub fn build_canister_method_system_pre_upgrade(ts_ast: &TsAst) -> ActPreUpgrade
 
     let body = pre_upgrade::generate_pre_upgrade_method_body(pre_upgrade_fn_decl_option);
 
-    ActPreUpgradeMethod { body }
+    PreUpgradeMethod { body }
 }

@@ -1,4 +1,3 @@
-use cdk_framework::{ToAct, ToTokenStream};
 use proc_macro2::TokenStream;
 
 use crate::ts_ast::TsAst;
@@ -16,5 +15,5 @@ mod utils;
 pub fn generate_canister(ts_file_names: &Vec<&str>, main_js: String) -> TokenStream {
     TsAst::new(&ts_file_names, main_js)
         .to_act()
-        .to_token_stream(())
+        .to_token_stream()
 }

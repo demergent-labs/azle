@@ -1,11 +1,11 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 
-use cdk_framework::{nodes::ActCanisterMethod, ToTokenStream};
+use cdk_framework::act::node::CanisterMethod;
 
 use crate::ts_keywords;
 
-pub fn generate(canister_methods: &Vec<ActCanisterMethod>) -> TokenStream {
+pub fn generate(canister_methods: &Vec<CanisterMethod>) -> TokenStream {
     let match_arms = generate_match_arms(canister_methods);
     quote! {
         fn _azle_ic_reply(
@@ -23,7 +23,7 @@ pub fn generate(canister_methods: &Vec<ActCanisterMethod>) -> TokenStream {
     }
 }
 
-fn generate_match_arms(canister_methods: &Vec<ActCanisterMethod>) -> Vec<TokenStream> {
+fn generate_match_arms(canister_methods: &Vec<CanisterMethod>) -> Vec<TokenStream> {
     canister_methods
         .iter()
         .filter(|canister_method| canister_method.is_manual())
@@ -31,7 +31,7 @@ fn generate_match_arms(canister_methods: &Vec<ActCanisterMethod>) -> Vec<TokenSt
         .collect()
 }
 
-fn generate_match_arm(canister_method: &ActCanisterMethod) -> TokenStream {
+fn generate_match_arm(canister_method: &CanisterMethod) -> TokenStream {
     let name = &canister_method.get_name();
     let return_type = &canister_method
         .get_return_type()

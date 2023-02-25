@@ -1,4 +1,3 @@
-use ast_traits::GenerateInlineName;
 use ast_traits::GetDependencies;
 use ast_traits::GetSourceText;
 use ast_traits::GetTsType;

@@ -4,7 +4,10 @@ use swc_common::SourceMap;
 use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
 use crate::ts_ast::{azle_type::AzleType, GetDependencies, GetName, GetTsType};
-use cdk_framework::{ActDataType, Actable, SystemStructureType, ToActDataType};
+use cdk_framework::{
+    act::node::{data_type::TypeAlias, to_node::ToDataType, DataType},
+    SystemStructureType,
+};
 
 #[derive(Clone)]
 pub struct AzleTypeAliasDecl<'a> {
@@ -22,18 +25,28 @@ pub trait TsTypeAliasHelperMethods {
 
 pub trait AzleTypeAliasListHelperMethods {
     fn generate_type_alias_lookup(&self) -> HashMap<String, AzleTypeAliasDecl>;
-    fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<ActDataType>;
+    fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<DataType>;
     fn get_azle_type_aliases_by_type_ref_name(&self, type_ref_name: &str)
         -> Vec<AzleTypeAliasDecl>;
 }
 
-impl Actable for AzleTypeAliasDecl<'_> {
-    fn to_act_node(&self) -> ActDataType {
-        let ts_type_name = self.get_name().to_string();
+impl ToDataType for AzleTypeAliasDecl<'_> {
+    fn to_data_type(&self) -> DataType {
+        // TODO: This should probably look ahead for Records, Funcs, Opts, etc.
+        // and make those types directly rather than making a type alias to those types.
+        // For example:
+        // type SomeType = Record<{}>
+        // should be parsed into a Record, rather than a type alias to an anonymous
+        // record. It just ads messiness to the generated candid file.
+
+        let name = self.get_name().to_string();
 
         let azle_type = AzleType::from_ts_type(self.get_ts_type(), self.source_map);
 
-        azle_type.to_act_data_type(&Some(&ts_type_name))
+        DataType::TypeAlias(TypeAlias {
+            name,
+            aliased_type: Box::from(azle_type.to_data_type()),
+        })
     }
 }
 
@@ -113,13 +126,13 @@ impl AzleTypeAliasListHelperMethods for Vec<AzleTypeAliasDecl<'_>> {
             .collect()
     }
 
-    fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<ActDataType> {
+    fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<DataType> {
         let type_alias_lookup = self.generate_type_alias_lookup();
 
         type_names.iter().fold(vec![], |acc, dependant_type_name| {
             let type_alias_decl = type_alias_lookup.get(dependant_type_name);
             let act_data_type = match type_alias_decl {
-                Some(azle_type_alias) => azle_type_alias.to_act_node(),
+                Some(azle_type_alias) => azle_type_alias.to_data_type(),
                 None => {
                     panic!(
                         "ERROR: Dependant Type [{}] not found in TS program!",

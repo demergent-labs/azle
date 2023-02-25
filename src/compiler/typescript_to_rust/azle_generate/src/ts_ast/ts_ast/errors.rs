@@ -2,7 +2,7 @@ use annotate_snippets::{
     display_list::{DisplayList, FormatOptions},
     snippet::{Annotation, AnnotationType, Slice, Snippet, SourceAnnotation},
 };
-use cdk_framework::CanisterMethodType;
+use cdk_framework::act::node::canister_method::CanisterMethodType;
 use swc_common::{source_map::Pos, Span};
 
 use crate::ts_ast::{source_map::GetSourceFileInfo, AzleFnDecl};

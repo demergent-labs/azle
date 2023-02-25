@@ -1,4 +1,4 @@
-use cdk_framework::CanisterMethodType;
+use cdk_framework::act::node::canister_method::CanisterMethodType;
 
 pub const CANISTER_METHOD_ANNOTATIONS: [&str; 7] = [
     "$heartbeat",

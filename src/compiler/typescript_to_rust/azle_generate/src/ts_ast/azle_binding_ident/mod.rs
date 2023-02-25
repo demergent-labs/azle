@@ -1,4 +1,4 @@
-use cdk_framework::{ActDataType, ToActDataType};
+use cdk_framework::{act::node::DataType, ToDataType};
 use proc_macro2::Ident;
 use quote::format_ident;
 use swc_common::SourceMap;
@@ -21,9 +21,9 @@ impl AzleBindingIdent<'_> {
         format_ident!("{}", param_name)
     }
 
-    pub fn data_type(&self) -> ActDataType {
+    pub fn data_type(&self) -> DataType {
         let param_ts_type = &*self.binding_ident.type_ann.as_ref().unwrap().type_ann; // TODO: Properly handle this unwrap. Combine with duplicate code above
         let param_azle_type = AzleType::from_ts_type(param_ts_type.clone(), self.source_map);
-        param_azle_type.to_act_data_type(&None)
+        param_azle_type.to_data_type()
     }
 }

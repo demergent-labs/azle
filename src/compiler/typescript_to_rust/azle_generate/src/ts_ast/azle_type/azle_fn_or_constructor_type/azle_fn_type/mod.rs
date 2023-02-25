@@ -6,7 +6,7 @@ mod function_and_method_type_helper_methods;
 mod get_dependencies;
 mod get_source_info;
 mod get_source_text;
-mod to_act_data_type;
+mod to_data_type;
 
 #[derive(Clone)]
 pub struct AzleFnType<'a> {

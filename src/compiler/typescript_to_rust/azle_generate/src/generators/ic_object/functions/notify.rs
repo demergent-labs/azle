@@ -1,10 +1,10 @@
-use cdk_framework::nodes::ActExternalCanister;
+use cdk_framework::act::node::ExternalCanister;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
 use crate::generators::ic_object;
 
-pub fn generate(external_canisters: &Vec<ActExternalCanister>) -> Vec<TokenStream> {
+pub fn generate(external_canisters: &Vec<ExternalCanister>) -> Vec<TokenStream> {
     external_canisters.iter().map(|canister| {
         canister.methods.iter().map(|method| {
             let function_name_string = format!("_azle_notify_{}_{}", canister.name, method.name);
