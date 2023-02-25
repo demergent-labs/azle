@@ -1,4 +1,4 @@
-use cdk_framework::act::node::{to_node::ToDataType, DataType};
+use cdk_framework::{act::node::DataType, traits::ToDataType};
 use std::collections::{HashMap, HashSet};
 use swc_common::SourceMap;
 use swc_ecma_ast::TsType;

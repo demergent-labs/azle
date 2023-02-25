@@ -5,7 +5,8 @@ use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
 use crate::ts_ast::{azle_type::AzleType, GetDependencies, GetName, GetTsType};
 use cdk_framework::{
-    act::node::{data_type::TypeAlias, to_node::ToDataType, DataType},
+    act::node::{data_type::TypeAlias, DataType},
+    traits::ToDataType,
     SystemStructureType,
 };
 

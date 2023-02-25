@@ -1,10 +1,9 @@
 use cdk_framework::{
     act::node::{
         data_type::{func::Mode, Func, Opt, Primitive, Record, TypeRef, Variant},
-        to_node::ToDataType,
         DataType,
     },
-    traits::ToIdent,
+    traits::{ToDataType, ToIdent},
 };
 use quote::ToTokens;
 

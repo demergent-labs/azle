@@ -1,4 +1,4 @@
-use cdk_framework::act::node::{to_node::ToDataType, DataType};
+use cdk_framework::{act::node::DataType, traits::ToDataType};
 
 use super::AzleFnOrConstructorType;
 

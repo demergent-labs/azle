@@ -1,7 +1,10 @@
 use swc_ecma_ast::TsKeywordTypeKind;
 
 use super::AzleKeywordType;
-use cdk_framework::act::node::{data_type::Primitive, to_node::ToDataType, DataType};
+use cdk_framework::{
+    act::node::{data_type::Primitive, DataType},
+    traits::ToDataType,
+};
 
 impl ToDataType for AzleKeywordType<'_> {
     fn to_data_type(&self) -> DataType {

@@ -1,4 +1,7 @@
-use cdk_framework::act::node::{data_type::Array, to_node::ToDataType, DataType};
+use cdk_framework::{
+    act::node::{data_type::Array, DataType},
+    traits::ToDataType,
+};
 
 use crate::ts_ast::AzleArrayType;
 

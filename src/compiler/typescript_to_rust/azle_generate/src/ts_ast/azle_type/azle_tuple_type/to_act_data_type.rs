@@ -1,4 +1,7 @@
-use cdk_framework::act::node::{data_type::Tuple, to_node::ToDataType, DataType};
+use cdk_framework::{
+    act::node::{data_type::Tuple, DataType},
+    traits::ToDataType,
+};
 
 use super::AzleTupleType;
 
