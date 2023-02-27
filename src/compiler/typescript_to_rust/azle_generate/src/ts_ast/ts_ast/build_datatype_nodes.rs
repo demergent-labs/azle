@@ -1,7 +1,7 @@
 use cdk_framework::act::{
     node::{
         canister_method::{QueryMethod, UpdateMethod},
-        DataType, ExternalCanister,
+        CanisterMethod, DataType, ExternalCanister,
     },
     DataTypes,
 };
@@ -18,43 +18,52 @@ use crate::{
 impl TsAst {
     pub fn build_data_types(
         &self,
-        query_methods: &Vec<QueryMethod>,
-        update_methods: &Vec<UpdateMethod>,
+        query_methods: &Vec<CanisterMethod>,
+        update_methods: &Vec<CanisterMethod>,
         stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
         external_canisters: &Vec<ExternalCanister>,
         keywords: &Vec<String>,
     ) -> DataTypes {
-        let ast_type_alias_decls = &self.azle_programs.get_azle_type_alias_decls();
-        let all_types = ast_type_alias_decls.build_type_alias_acts();
+        // let ast_type_alias_decls = &self.azle_programs.get_azle_type_alias_decls();
+        // let all_types = ast_type_alias_decls.build_type_alias_acts();
 
-        let func_data_types = filter_by_variant(&all_types, "Func");
-        let funcs: Vec<_> = func_data_types
-            .iter()
-            .map(|t| t.as_func().unwrap().clone())
-            .collect();
+        // let func_data_types = filter_by_variant(&all_types, "Func");
+        // let funcs: Vec<_> = func_data_types
+        //     .iter()
+        //     .map(|t| t.as_func().unwrap().clone())
+        //     .collect();
 
-        let record_data_types = filter_by_variant(&all_types, "Record");
-        let records: Vec<_> = record_data_types
-            .iter()
-            .map(|t| t.as_record().unwrap().clone())
-            .collect();
-        let tuple_data_types = filter_by_variant(&all_types, "Tuple");
-        let tuples: Vec<_> = tuple_data_types
-            .iter()
-            .map(|t| t.as_tuple().unwrap().clone())
-            .collect();
-        let variant_data_types = filter_by_variant(&all_types, "Variant");
-        let variants: Vec<_> = variant_data_types
-            .iter()
-            .map(|t| t.as_variant().unwrap().clone())
-            .collect();
+        // let record_data_types = filter_by_variant(&all_types, "Record");
+        // let records: Vec<_> = record_data_types
+        //     .iter()
+        //     .map(|t| t.as_record().unwrap().clone())
+        //     .collect();
+        // let tuple_data_types = filter_by_variant(&all_types, "Tuple");
+        // let tuples: Vec<_> = tuple_data_types
+        //     .iter()
+        //     .map(|t| t.as_tuple().unwrap().clone())
+        //     .collect();
+        // let variant_data_types = filter_by_variant(&all_types, "Variant");
+        // let variants: Vec<_> = variant_data_types
+        //     .iter()
+        //     .map(|t| t.as_variant().unwrap().clone())
+        //     .collect();
 
+        // DataTypes {
+        //     funcs,
+        //     records,
+        //     tuples,
+        //     type_aliases: todo!(),
+        //     variants,
+        // }
+
+        // TODO: Flesh this out
         DataTypes {
-            funcs,
-            records,
-            tuples,
+            funcs: todo!(),
+            records: todo!(),
+            tuples: todo!(),
             type_aliases: todo!(),
-            variants,
+            variants: todo!(),
         }
     }
 }

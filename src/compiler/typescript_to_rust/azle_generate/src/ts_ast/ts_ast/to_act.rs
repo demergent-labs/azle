@@ -1,5 +1,8 @@
 use cdk_framework::{
-    act::{node::canister_method::CanisterMethodType, CanisterMethods},
+    act::{
+        node::canister_method::{CanisterMethod, CanisterMethodType},
+        CanisterMethods,
+    },
     AbstractCanisterTree,
 };
 
@@ -16,18 +19,36 @@ impl TsAst {
     pub fn to_act(&self) -> AbstractCanisterTree {
         let header = header::generate(&self.main_js);
         let keywords = ts_keywords::ts_keywords();
-        let query_methods = self
+        let query_canister_methods = self
             .azle_programs
             .build_canister_method_nodes(CanisterMethodType::Query);
-        let update_methods = self
+        let query_methods =
+            query_canister_methods
+                .iter()
+                .fold(vec![], |mut acc, canister_method| {
+                    if let CanisterMethod::Query(query_method) = canister_method {
+                        acc.push(query_method.clone());
+                    }
+                    acc
+                });
+        let update_canister_methods = self
             .azle_programs
             .build_canister_method_nodes(CanisterMethodType::Update);
+        let update_methods =
+            update_canister_methods
+                .iter()
+                .fold(vec![], |mut acc, canister_method| {
+                    if let CanisterMethod::Update(update_method) = canister_method {
+                        acc.push(update_method.clone());
+                    }
+                    acc
+                });
         let stable_b_tree_map_nodes = self.stable_b_tree_map_nodes();
         let external_canisters = self.build_external_canisters();
 
         let data_types = self.build_data_types(
-            &query_methods,
-            &update_methods,
+            &query_canister_methods,
+            &update_canister_methods,
             &stable_b_tree_map_nodes,
             &external_canisters,
             &keywords,
@@ -42,7 +63,8 @@ impl TsAst {
         let try_into_vm_value_impls = try_into_vm_value_impls::generate();
         let try_from_vm_value_impls = try_from_vm_value_impls::generate();
 
-        let query_and_update_methods = vec![query_methods, update_methods].concat();
+        let query_and_update_methods =
+            vec![query_canister_methods, update_canister_methods].concat();
 
         let body = body::generate(
             self,

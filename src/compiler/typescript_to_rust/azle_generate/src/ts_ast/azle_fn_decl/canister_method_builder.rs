@@ -1,7 +1,10 @@
 use super::AzleFnDecl;
 use crate::{generators::canister_methods::query_and_update, ts_ast::azle_type::AzleType};
 use cdk_framework::{
-    act::node::{canister_method::CanisterMethodType, CanisterMethod, DataType, Param},
+    act::node::{
+        canister_method::{CanisterMethodType, QueryMethod, UpdateMethod},
+        CanisterMethod, DataType, Param,
+    },
     ToDataType,
 };
 
@@ -18,7 +21,7 @@ impl<'a> AzleFnDecl<'a> {
         let return_type = self.build_return_type();
 
         match canister_method_type {
-            CanisterMethodType::Query => CanisterMethod::QueryMethod {
+            CanisterMethodType::Query => CanisterMethod::Query(QueryMethod {
                 body,
                 is_manual,
                 is_async,
@@ -26,9 +29,9 @@ impl<'a> AzleFnDecl<'a> {
                 params,
                 return_type,
                 cdk_name: "azle".to_string(),
-                function_guard_name: None,
-            },
-            CanisterMethodType::Update => CanisterMethod::UpdateMethod {
+                guard_function_name: None,
+            }),
+            CanisterMethodType::Update => CanisterMethod::Update(UpdateMethod {
                 body,
                 is_manual,
                 is_async,
@@ -36,8 +39,8 @@ impl<'a> AzleFnDecl<'a> {
                 params,
                 return_type,
                 cdk_name: "azle".to_string(),
-                function_guard_name: None,
-            },
+                guard_function_name: None,
+            }),
             _ => panic!("TODO: YOU SHOULDN'T BE TRYING TO PARSE NON QUERY/UPDATE METHODS HERE!"),
         }
     }

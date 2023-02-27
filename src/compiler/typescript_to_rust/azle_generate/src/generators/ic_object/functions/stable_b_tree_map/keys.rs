@@ -1,4 +1,5 @@
-use quote::quote;
+// use cdk_framework::act::node::data_type::type_annotation::ToTypeAnnotation;
+use quote::{format_ident, quote};
 
 use crate::{generators::stable_b_tree_map, StableBTreeMapNode};
 
@@ -28,7 +29,16 @@ fn generate_match_arms(
         .iter()
         .map(|stable_b_tree_map_node| {
             let memory_id = stable_b_tree_map_node.memory_id;
-            let key_type = stable_b_tree_map_node.key_type.to_token_stream(&vec![]); // TODO do we need the keyword lists?
+
+            // let key_type = stable_b_tree_map_node.key_type.to_type_annotation(
+            //     &ts_keywords::ts_keywords(),
+            //     format!("StableBTreeMap{}Value", memory_id),
+            // );
+
+            // TODO: I'm thinking that maybe Rust can figure out the type as long as we tell it
+            // that it's collecting into a vec below. So we can just have it deduce the type with
+            // "_"
+            let key_type = format_ident!("_");
             let stable_b_tree_map_ref_cell =
                 stable_b_tree_map::ref_cell_ident::generate(stable_b_tree_map_node.memory_id);
 
