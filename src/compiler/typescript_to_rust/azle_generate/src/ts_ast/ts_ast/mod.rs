@@ -6,6 +6,8 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 use crate::ts_ast::{source_map::SourceMapped, AzleProgram};
 
 mod build_datatype_nodes;
+mod build_query_methods;
+mod build_update_methods;
 mod cross_canister_calls;
 mod errors;
 mod stable_b_tree_map;

@@ -1,29 +1,24 @@
-use cdk_framework::act::{
-    node::{
-        canister_method::{QueryMethod, UpdateMethod},
-        CanisterMethod, DataType, ExternalCanister,
-    },
-    DataTypes,
-};
+use cdk_framework::act::{node::data_type::Func, DataTypes};
 
 use super::TsAst;
-use crate::{
-    ts_ast::{
-        azle_program::HelperMethods,
-        azle_type_alias_decls::azle_type_alias_decl::AzleTypeAliasListHelperMethods,
-    },
-    StableBTreeMapNode,
-};
 
 impl TsAst {
-    pub fn build_data_types(
-        &self,
-        query_methods: &Vec<CanisterMethod>,
-        update_methods: &Vec<CanisterMethod>,
-        stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
-        external_canisters: &Vec<ExternalCanister>,
-        keywords: &Vec<String>,
-    ) -> DataTypes {
+    pub fn build_data_types(&self) -> DataTypes {
+        // let funcs: Vec<Func> = self
+        //     .module_items()
+        //     .iter()
+        //     .map(|_source_mapped_module_item| Func {
+        //         name: todo!(),
+        //         params: todo!(),
+        //         return_type: todo!(),
+        //         mode: todo!(),
+        //         to_vm_value: todo!(),
+        //         list_to_vm_value: todo!(),
+        //         from_vm_value: todo!(),
+        //         list_from_vm_value: todo!(),
+        //     })
+        //     .collect();
+
         // let ast_type_alias_decls = &self.azle_programs.get_azle_type_alias_decls();
         // let all_types = ast_type_alias_decls.build_type_alias_acts();
 
