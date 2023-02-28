@@ -68,19 +68,20 @@ impl TsAst {
     }
 }
 
-fn filter_by_variant(types: &Vec<DataType>, variant: &str) -> Vec<DataType> {
-    types
-        .iter()
-        .filter(|act| match act {
-            DataType::Array(_) => variant == "Array",
-            DataType::Func(_) => variant == "Func",
-            DataType::Opt(_) => variant == "Option",
-            DataType::Primitive(_) => variant == "Primitive",
-            DataType::Record(_) => variant == "Record",
-            DataType::Tuple(_) => variant == "Tuple",
-            DataType::TypeRef(_) => variant == "TypeRef",
-            DataType::Variant(_) => variant == "Variant",
-        })
-        .cloned()
-        .collect()
-}
+// fn filter_by_variant(types: &Vec<DataType>, variant: &str) -> Vec<DataType> {
+//     types
+//         .iter()
+//         .filter(|data_type| match data_type {
+//             DataType::Array(_) => variant == "Array",
+//             DataType::Func(_) => variant == "Func",
+//             DataType::Opt(_) => variant == "Option",
+//             DataType::Primitive(_) => variant == "Primitive",
+//             DataType::Record(_) => variant == "Record",
+//             DataType::Tuple(_) => variant == "Tuple",
+//             DataType::TypeRef(_) => variant == "TypeRef",
+//             DataType::Variant(_) => variant == "Variant",
+//             DataType::TypeAlias(_) => variant == "TypeAlias",
+//         })
+//         .cloned()
+//         .collect()
+// }

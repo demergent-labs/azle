@@ -1,4 +1,4 @@
-use cdk_framework::act::node::{CanisterMethod, ExternalCanister};
+use cdk_framework::act::node::{canister_method::QueryOrUpdateMethod, ExternalCanister};
 use proc_macro2::TokenStream;
 use quote::quote;
 
@@ -12,15 +12,14 @@ use crate::{
 
 pub fn generate(
     ts_ast: &TsAst,
-    query_and_update_canister_methods: &Vec<CanisterMethod>,
+    query_and_update_methods: &Vec<QueryOrUpdateMethod>,
     external_canisters: &Vec<ExternalCanister>,
     stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
 ) -> TokenStream {
-    let async_await_result_handler =
-        async_await_result_handler::generate(query_and_update_canister_methods);
+    let async_await_result_handler = async_await_result_handler::generate(query_and_update_methods);
     let boa_error_handlers = boa_error_handlers::generate();
     let ic_object_functions = ic_object::functions::generate(
-        query_and_update_canister_methods,
+        query_and_update_methods,
         external_canisters,
         stable_b_tree_map_nodes,
     );

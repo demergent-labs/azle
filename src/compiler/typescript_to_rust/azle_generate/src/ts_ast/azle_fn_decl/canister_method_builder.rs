@@ -1,12 +1,13 @@
-use super::AzleFnDecl;
-use crate::{generators::canister_methods::query_and_update, ts_ast::azle_type::AzleType};
 use cdk_framework::{
     act::node::{
-        canister_method::{CanisterMethodType, QueryMethod, UpdateMethod},
+        canister_method::{CanisterMethodType, QueryMethod, QueryOrUpdateDefinition, UpdateMethod},
         CanisterMethod, DataType, Param,
     },
     ToDataType,
 };
+
+use super::AzleFnDecl;
+use crate::{generators::canister_methods::query_and_update, ts_ast::azle_type::AzleType};
 
 impl<'a> AzleFnDecl<'a> {
     pub fn build_canister_method_node(
@@ -22,24 +23,28 @@ impl<'a> AzleFnDecl<'a> {
 
         match canister_method_type {
             CanisterMethodType::Query => CanisterMethod::Query(QueryMethod {
-                body,
-                is_manual,
-                is_async,
-                name,
-                params,
-                return_type,
-                cdk_name: "azle".to_string(),
-                guard_function_name: None,
+                definition: QueryOrUpdateDefinition {
+                    body,
+                    is_manual,
+                    is_async,
+                    name,
+                    params,
+                    return_type,
+                    cdk_name: "azle".to_string(),
+                    guard_function_name: None,
+                },
             }),
             CanisterMethodType::Update => CanisterMethod::Update(UpdateMethod {
-                body,
-                is_manual,
-                is_async,
-                name,
-                params,
-                return_type,
-                cdk_name: "azle".to_string(),
-                guard_function_name: None,
+                definition: QueryOrUpdateDefinition {
+                    body,
+                    is_manual,
+                    is_async,
+                    name,
+                    params,
+                    return_type,
+                    cdk_name: "azle".to_string(),
+                    guard_function_name: None,
+                },
             }),
             _ => panic!("TODO: YOU SHOULDN'T BE TRYING TO PARSE NON QUERY/UPDATE METHODS HERE!"),
         }

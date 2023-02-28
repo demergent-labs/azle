@@ -1,6 +1,6 @@
 use cdk_framework::{
     act::{
-        node::canister_method::{CanisterMethod, CanisterMethodType},
+        node::canister_method::{CanisterMethod, CanisterMethodType, QueryOrUpdateMethod},
         CanisterMethods,
     },
     AbstractCanisterTree,
@@ -19,6 +19,7 @@ impl TsAst {
     pub fn to_act(&self) -> AbstractCanisterTree {
         let header = header::generate(&self.main_js);
         let keywords = ts_keywords::ts_keywords();
+
         let query_canister_methods = self
             .azle_programs
             .build_canister_method_nodes(CanisterMethodType::Query);
@@ -31,6 +32,11 @@ impl TsAst {
                     }
                     acc
                 });
+        let query_query_or_update_methods: Vec<_> = query_methods
+            .iter()
+            .map(|query_method| QueryOrUpdateMethod::Query(query_method.clone()))
+            .collect();
+
         let update_canister_methods = self
             .azle_programs
             .build_canister_method_nodes(CanisterMethodType::Update);
@@ -43,6 +49,11 @@ impl TsAst {
                     }
                     acc
                 });
+        let update_query_or_update_methods: Vec<_> = query_methods
+            .iter()
+            .map(|query_method| QueryOrUpdateMethod::Query(query_method.clone()))
+            .collect();
+
         let stable_b_tree_map_nodes = self.stable_b_tree_map_nodes();
         let external_canisters = self.build_external_canisters();
 
@@ -63,8 +74,11 @@ impl TsAst {
         let try_into_vm_value_impls = try_into_vm_value_impls::generate();
         let try_from_vm_value_impls = try_from_vm_value_impls::generate();
 
-        let query_and_update_methods =
-            vec![query_canister_methods, update_canister_methods].concat();
+        let query_and_update_methods = vec![
+            query_query_or_update_methods,
+            update_query_or_update_methods,
+        ]
+        .concat();
 
         let body = body::generate(
             self,

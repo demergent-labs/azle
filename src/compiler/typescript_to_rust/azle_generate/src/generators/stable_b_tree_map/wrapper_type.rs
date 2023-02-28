@@ -1,13 +1,19 @@
-use cdk_framework::act::node::DataType;
+use cdk_framework::act::node::{data_type::type_annotation::ToTypeAnnotation, DataType};
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
+
+use crate::ts_keywords;
 
 pub fn generate(
     act_data_type: &DataType,
     memory_id: u8,
     key_or_value: &str,
 ) -> (Ident, TokenStream) {
-    let inner_type = &act_data_type.to_token_stream(&vec![]); // TODO do we need the keyword lists?
+    // TODO We need to pass the parent name in here
+    let inner_type = &act_data_type.to_type_annotation(
+        &ts_keywords::ts_keywords(),
+        "TodoNeedParentTypeInfoHereInStableBTreeMapWrapperType".to_string(),
+    );
     let wrapper_struct_name = format_ident!("StableBTreeMap{}{}Type", memory_id, key_or_value);
 
     (

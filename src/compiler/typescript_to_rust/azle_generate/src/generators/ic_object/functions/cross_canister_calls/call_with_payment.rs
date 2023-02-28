@@ -17,7 +17,7 @@ pub fn generate(
         format_ident!("{}", call_with_payment_function_name_string);
     let call_with_payment_wrapper_fn_name =
         format_ident!("{}_wrapper", call_with_payment_function_name_string);
-    let param_variables = ic_object::generate_param_variables(method, canister.name);
+    let param_variables = ic_object::generate_param_variables(method, &canister.name);
     let args = ic_object::generate_args_list(method);
 
     let index_string = param_variables.len().to_string();

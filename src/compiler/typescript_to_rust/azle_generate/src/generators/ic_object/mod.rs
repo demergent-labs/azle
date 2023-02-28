@@ -11,7 +11,7 @@ pub mod register_function;
 
 pub fn generate_param_variables(
     method: &ExternalCanisterMethod,
-    canister_name: String,
+    canister_name: &String,
 ) -> Vec<TokenStream> {
     method.params
         .iter()
