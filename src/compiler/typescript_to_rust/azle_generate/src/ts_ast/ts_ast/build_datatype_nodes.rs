@@ -59,11 +59,11 @@ impl TsAst {
 
         // TODO: Flesh this out
         DataTypes {
-            funcs: todo!(),
-            records: todo!(),
-            tuples: todo!(),
-            type_aliases: todo!(),
-            variants: todo!(),
+            funcs: vec![],
+            records: vec![],
+            tuples: vec![],
+            type_aliases: vec![],
+            variants: vec![],
         }
     }
 }
