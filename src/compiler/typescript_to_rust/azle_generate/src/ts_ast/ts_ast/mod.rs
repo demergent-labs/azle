@@ -1,8 +1,9 @@
 use std::path::Path;
 use swc_common::{sync::Lrc, SourceMap};
+use swc_ecma_ast::{ModuleItem, Program};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
-use super::AzleProgram;
+use crate::ts_ast::{source_map::SourceMapped, AzleProgram};
 
 mod build_datatype_nodes;
 mod cross_canister_calls;
@@ -57,9 +58,32 @@ impl TsAst {
                 }
             })
             .collect();
+
         Self {
             azle_programs,
             main_js,
         }
+    }
+
+    pub fn module_items(&self) -> Vec<SourceMapped<ModuleItem>> {
+        self.azle_programs
+            .iter()
+            .fold(vec![], |mut acc, azle_program| {
+                match &azle_program.program {
+                    Program::Module(module) => {
+                        let source_mapped_module_items: Vec<_> = module
+                            .body
+                            .iter()
+                            .map(|module_item| {
+                                SourceMapped::new(module_item, &azle_program.source_map)
+                            })
+                            .collect();
+
+                        acc.extend(source_mapped_module_items);
+                        acc
+                    }
+                    Program::Script(_) => acc,
+                }
+            })
     }
 }
