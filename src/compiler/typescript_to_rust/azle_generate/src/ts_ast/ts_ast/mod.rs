@@ -72,52 +72,84 @@ impl TsAst {
         self.azle_programs
             .iter()
             .fold(vec![], |mut acc, azle_program| {
-                match &azle_program.program {
-                    Program::Module(module) => {
-                        let source_mapped_module_items: Vec<_> = module
-                            .body
-                            .iter()
-                            .map(|module_item| {
-                                SourceMapped::new(module_item, &azle_program.source_map)
-                            })
-                            .collect();
+                if let Program::Module(module) = &azle_program.program {
+                    let source_mapped_module_items: Vec<_> = module
+                        .body
+                        .iter()
+                        .map(|module_item| SourceMapped::new(module_item, &azle_program.source_map))
+                        .collect();
 
-                        acc.extend(source_mapped_module_items);
-                        acc
-                    }
-                    Program::Script(_) => acc,
+                    acc.extend(source_mapped_module_items);
                 }
+                acc
             })
     }
 
     pub fn decls(&self) -> Vec<SourceMapped<Decl>> {
-        self.module_items()
+        self.azle_programs
             .iter()
-            .fold(vec![], |mut acc, module_item| {
-                let decl_opt = match &**module_item {
-                    ModuleItem::ModuleDecl(decl) => match decl {
-                        ModuleDecl::ExportDecl(export_decl) => Some(&export_decl.decl),
-                        _ => None,
-                    },
-                    ModuleItem::Stmt(stmt) => match stmt {
-                        Stmt::Decl(decl) => Some(decl),
-                        _ => None,
-                    },
-                };
-
-                if let Some(decl) = decl_opt {
-                    acc.push(SourceMapped::new(decl, module_item.source_map));
+            .fold(vec![], |mut acc, azle_program| {
+                if let Program::Module(module) = &azle_program.program {
+                    module
+                        .body
+                        .iter()
+                        .for_each(|module_item| match module_item {
+                            ModuleItem::ModuleDecl(decl) => match decl {
+                                ModuleDecl::ExportDecl(export_decl) => {
+                                    acc.push(SourceMapped::new(
+                                        &export_decl.decl,
+                                        &azle_program.source_map,
+                                    ));
+                                }
+                                _ => (),
+                            },
+                            ModuleItem::Stmt(stmt) => match stmt {
+                                Stmt::Decl(decl) => {
+                                    acc.push(SourceMapped::new(decl, &azle_program.source_map));
+                                }
+                                _ => (),
+                            },
+                        })
                 }
-
                 acc
             })
     }
 
     pub fn ts_type_alias_decls(&self) -> Vec<SourceMapped<TsTypeAliasDecl>> {
-        self.decls()
+        self.azle_programs
             .iter()
-            .filter(|decl| decl.is_ts_type_alias())
-            .map(|decl| SourceMapped::new(decl.as_ts_type_alias().unwrap(), decl.source_map))
-            .collect()
+            .fold(vec![], |mut acc, azle_program| {
+                if let Program::Module(module) = &azle_program.program {
+                    module
+                        .body
+                        .iter()
+                        .for_each(|module_item| match module_item {
+                            ModuleItem::ModuleDecl(decl) => match decl {
+                                ModuleDecl::ExportDecl(export_decl) => {
+                                    let decl = &export_decl.decl;
+                                    if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
+                                        acc.push(SourceMapped::new(
+                                            ts_type_alias_decl,
+                                            &azle_program.source_map,
+                                        ));
+                                    }
+                                }
+                                _ => (),
+                            },
+                            ModuleItem::Stmt(stmt) => match stmt {
+                                Stmt::Decl(decl) => {
+                                    if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
+                                        acc.push(SourceMapped::new(
+                                            ts_type_alias_decl,
+                                            &azle_program.source_map,
+                                        ));
+                                    }
+                                }
+                                _ => (),
+                            },
+                        })
+                }
+                acc
+            })
     }
 }

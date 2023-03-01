@@ -20,7 +20,6 @@ impl TsAst {
         // TODO: Flesh this out
         DataTypes {
             funcs,
-            // funcs: vec![],
             records: vec![],
             tuples: vec![],
             type_aliases: vec![],
