@@ -1,6 +1,6 @@
 use std::path::Path;
 use swc_common::{sync::Lrc, SourceMap};
-use swc_ecma_ast::{ModuleItem, Program};
+use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Program, Stmt, TsTypeAliasDecl};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 use crate::ts_ast::{source_map::SourceMapped, AzleProgram};
@@ -88,5 +88,36 @@ impl TsAst {
                     Program::Script(_) => acc,
                 }
             })
+    }
+
+    pub fn decls(&self) -> Vec<SourceMapped<Decl>> {
+        self.module_items()
+            .iter()
+            .fold(vec![], |mut acc, module_item| {
+                let decl_opt = match &**module_item {
+                    ModuleItem::ModuleDecl(decl) => match decl {
+                        ModuleDecl::ExportDecl(export_decl) => Some(&export_decl.decl),
+                        _ => None,
+                    },
+                    ModuleItem::Stmt(stmt) => match stmt {
+                        Stmt::Decl(decl) => Some(decl),
+                        _ => None,
+                    },
+                };
+
+                if let Some(decl) = decl_opt {
+                    acc.push(SourceMapped::new(decl, module_item.source_map));
+                }
+
+                acc
+            })
+    }
+
+    pub fn ts_type_alias_decls(&self) -> Vec<SourceMapped<TsTypeAliasDecl>> {
+        self.decls()
+            .iter()
+            .filter(|decl| decl.is_ts_type_alias())
+            .map(|decl| SourceMapped::new(decl.as_ts_type_alias().unwrap(), decl.source_map))
+            .collect()
     }
 }
