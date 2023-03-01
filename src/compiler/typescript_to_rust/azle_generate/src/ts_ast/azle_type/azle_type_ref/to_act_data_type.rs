@@ -45,7 +45,7 @@ impl ToDataType for AzleTypeRef<'_> {
 }
 
 impl AzleTypeRef<'_> {
-    fn to_func(&self) -> Func {
+    pub fn to_func(&self) -> Func {
         let request_type_type_ref = match self.get_enclosed_azle_type() {
             AzleType::AzleTypeRef(azle_type_ref) => azle_type_ref,
             _ => panic!("{}", self.wrong_enclosed_type_error()),
