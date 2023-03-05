@@ -2,12 +2,15 @@ use swc_common::SourceMap;
 use swc_ecma_ast::TsTupleType;
 
 use super::AzleType;
-use cdk_framework::{act::node::data_type::tuple::Member, traits::ToDataType};
+use cdk_framework::{
+    act::node::data_type::{tuple::Member, Tuple},
+    traits::ToDataType,
+};
 
 mod get_dependencies;
 mod get_source_info;
 mod get_source_text;
-mod to_act_data_type;
+mod to_data_type;
 
 #[derive(Clone)]
 pub struct AzleTupleType<'a> {
@@ -28,5 +31,12 @@ impl AzleTupleType<'_> {
                 }
             })
             .collect()
+    }
+
+    pub fn to_tuple(&self) -> Tuple {
+        Tuple {
+            name: None,
+            members: self.get_elem_types(),
+        }
     }
 }

@@ -124,6 +124,8 @@ export type Record<T extends object> = T;
 export type Variant<T extends object> = Partial<T>;
 export type Opt<T> = T | null;
 
+export type Alias<T> = T;
+
 export type CanisterResult<T> = {
     ok?: T;
     err?: string;

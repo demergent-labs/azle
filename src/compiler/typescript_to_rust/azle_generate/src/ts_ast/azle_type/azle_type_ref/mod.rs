@@ -8,7 +8,7 @@ mod get_dependencies;
 mod get_name;
 mod get_source_info;
 mod get_source_text;
-mod to_act_data_type;
+mod to_data_type;
 
 #[derive(Clone)]
 pub struct AzleTypeRef<'a> {
@@ -17,7 +17,7 @@ pub struct AzleTypeRef<'a> {
 }
 
 impl AzleTypeRef<'_> {
-    pub(self) fn get_enclosed_azle_type(&self) -> AzleType {
+    pub fn get_enclosed_azle_type(&self) -> AzleType {
         match &self.ts_type_ref.type_params {
             Some(params) => {
                 if params.params.len() != 1 {

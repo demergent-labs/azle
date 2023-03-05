@@ -24,15 +24,25 @@ impl TsAst {
                     acc
                 });
 
-        // let tuples =
-        //     self.ts_type_alias_decls()
-        //         .iter()
-        //         .fold(vec![], |mut acc, ts_type_alias_decl| {
-        //             if let Some(tuple) = ts_type_alias_decl.to_tuple() {
-        //                 acc.push(tuple)
-        //             }
-        //             acc
-        //         });
+        let tuples =
+            self.ts_type_alias_decls()
+                .iter()
+                .fold(vec![], |mut acc, ts_type_alias_decl| {
+                    if let Some(tuple) = ts_type_alias_decl.to_tuple() {
+                        acc.push(tuple)
+                    }
+                    acc
+                });
+
+        let type_aliases =
+            self.ts_type_alias_decls()
+                .iter()
+                .fold(vec![], |mut acc, ts_type_alias_decl| {
+                    if let Some(type_alias) = ts_type_alias_decl.to_type_alias() {
+                        acc.push(type_alias)
+                    }
+                    acc
+                });
 
         let variants =
             self.ts_type_alias_decls()
@@ -47,8 +57,8 @@ impl TsAst {
         DataTypes {
             funcs,
             records,
-            tuples: vec![],
-            type_aliases: vec![],
+            tuples,
+            type_aliases,
             variants,
         }
     }
