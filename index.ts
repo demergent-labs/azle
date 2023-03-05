@@ -1,9 +1,5 @@
 import { Principal } from '@dfinity/principal';
-export {
-    StableBTreeMap,
-    InsertResult,
-    InsertError
-} from './src/stable_b_tree_map';
+export { StableBTreeMap, InsertError } from './src/stable_b_tree_map';
 
 declare var globalThis: any;
 
@@ -170,7 +166,7 @@ export type blob = Uint8Array;
 export type reserved = any;
 export type empty = never;
 
-type AzleResult<T, E> = Variant<{
+type AzleResult<T, E> = Partial<{
     ok: T;
     err: E;
 }>;

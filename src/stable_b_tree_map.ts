@@ -15,11 +15,6 @@ export type InsertError = Variant<{
     ValueTooLarge: ValueTooLarge;
 }>;
 
-export type InsertResult<T> = Variant<{
-    ok: T;
-    err: InsertError;
-}>;
-
 /**
  * A Map based on a self-balancing tree that persists across
  * canister upgrades.
@@ -67,7 +62,13 @@ export class StableBTreeMap<Key, Value> {
      * @param value the value to insert.
      * @returns the previous value of the key, if present.
      */
-    insert(key: Key, value: Value): InsertResult<Opt<Value>> {
+    insert(
+        key: Key,
+        value: Value
+    ): Variant<{
+        ok: Opt<Value>;
+        err: InsertError;
+    }> {
         // @ts-ignore
         return ic.stable_b_tree_map_insert(this.memory_id, key, value);
     }
