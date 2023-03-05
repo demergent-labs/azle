@@ -1,7 +1,4 @@
-use cdk_framework::{
-    act::node::{DataType, ExternalCanisterMethod, Param},
-    ToDataType,
-};
+use cdk_framework::act::node::{DataType, ExternalCanisterMethod, Param};
 use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnType, TsType};
 
 use crate::{

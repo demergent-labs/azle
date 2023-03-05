@@ -3,7 +3,7 @@ use cdk_framework::{
         data_type::{func::Mode, Func, Opt, Primitive, Record, TypeRef, Variant},
         DataType,
     },
-    traits::{ToDataType, ToIdent},
+    traits::ToIdent,
 };
 use quote::ToTokens;
 
@@ -16,25 +16,25 @@ use crate::{
     },
 };
 
-impl ToDataType for AzleTypeRef<'_> {
-    fn to_data_type(&self) -> DataType {
+impl AzleTypeRef<'_> {
+    pub fn to_data_type(&self) -> DataType {
         match self.get_name() {
-            "blob" => Primitive::Blob.to_data_type(),
-            "float32" => Primitive::Float32.to_data_type(),
-            "float64" => Primitive::Float64.to_data_type(),
-            "int" => Primitive::Int.to_data_type(),
-            "int8" => Primitive::Int8.to_data_type(),
-            "int16" => Primitive::Int16.to_data_type(),
-            "int32" => Primitive::Int32.to_data_type(),
-            "int64" => Primitive::Int64.to_data_type(),
-            "nat" => Primitive::Nat.to_data_type(),
-            "nat8" => Primitive::Nat8.to_data_type(),
-            "nat16" => Primitive::Nat16.to_data_type(),
-            "nat32" => Primitive::Nat32.to_data_type(),
-            "nat64" => Primitive::Nat64.to_data_type(),
-            "Principal" => Primitive::Principal.to_data_type(),
-            "empty" => Primitive::Empty.to_data_type(),
-            "reserved" => Primitive::Reserved.to_data_type(),
+            "blob" => DataType::Primitive(Primitive::Blob),
+            "float32" => DataType::Primitive(Primitive::Float32),
+            "float64" => DataType::Primitive(Primitive::Float64),
+            "int" => DataType::Primitive(Primitive::Int),
+            "int8" => DataType::Primitive(Primitive::Int8),
+            "int16" => DataType::Primitive(Primitive::Int16),
+            "int32" => DataType::Primitive(Primitive::Int32),
+            "int64" => DataType::Primitive(Primitive::Int64),
+            "nat" => DataType::Primitive(Primitive::Nat),
+            "nat8" => DataType::Primitive(Primitive::Nat8),
+            "nat16" => DataType::Primitive(Primitive::Nat16),
+            "nat32" => DataType::Primitive(Primitive::Nat32),
+            "nat64" => DataType::Primitive(Primitive::Nat64),
+            "Principal" => DataType::Primitive(Primitive::Principal),
+            "empty" => DataType::Primitive(Primitive::Empty),
+            "reserved" => DataType::Primitive(Primitive::Reserved),
             "Opt" => DataType::Opt(self.to_option()),
             "Func" => DataType::Func(self.to_func()),
             "Variant" => DataType::Variant(self.to_variant()),

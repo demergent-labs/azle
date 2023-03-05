@@ -6,7 +6,6 @@ use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 use crate::ts_ast::{azle_type::AzleType, GetDependencies, GetName, GetTsType};
 use cdk_framework::{
     act::node::{data_type::TypeAlias, DataType},
-    traits::ToDataType,
     SystemStructureType,
 };
 
@@ -31,8 +30,8 @@ pub trait AzleTypeAliasListHelperMethods {
         -> Vec<AzleTypeAliasDecl>;
 }
 
-impl ToDataType for AzleTypeAliasDecl<'_> {
-    fn to_data_type(&self) -> DataType {
+impl AzleTypeAliasDecl<'_> {
+    pub fn to_data_type(&self) -> DataType {
         // TODO: This should probably look ahead for Records, Funcs, Opts, etc.
         // and make those types directly rather than making a type alias to those types.
         // For example:

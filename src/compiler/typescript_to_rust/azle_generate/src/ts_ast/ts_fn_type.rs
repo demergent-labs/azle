@@ -1,4 +1,4 @@
-use cdk_framework::{act::node::Param, traits::ToDataType};
+use cdk_framework::act::node::Param;
 use swc_ecma_ast::{TsFnParam, TsFnType, TsType};
 
 use crate::ts_ast::{

@@ -1,9 +1,6 @@
-use cdk_framework::{
-    act::node::{
-        canister_method::{CanisterMethodType, QueryMethod, QueryOrUpdateDefinition, UpdateMethod},
-        CanisterMethod, DataType, Param,
-    },
-    ToDataType,
+use cdk_framework::act::node::{
+    canister_method::{CanisterMethodType, QueryMethod, QueryOrUpdateDefinition, UpdateMethod},
+    CanisterMethod, DataType, Param,
 };
 
 use super::AzleFnDecl;
