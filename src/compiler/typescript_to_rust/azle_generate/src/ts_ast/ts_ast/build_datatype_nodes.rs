@@ -14,16 +14,42 @@ impl TsAst {
                     acc
                 });
 
-        // let ast_type_alias_decls = &self.azle_programs.get_azle_type_alias_decls();
-        // let all_types = ast_type_alias_decls.build_type_alias_acts();
+        let records =
+            self.ts_type_alias_decls()
+                .iter()
+                .fold(vec![], |mut acc, ts_type_alias_decl| {
+                    if let Some(record) = ts_type_alias_decl.to_record() {
+                        acc.push(record)
+                    }
+                    acc
+                });
 
-        // TODO: Flesh this out
+        // let tuples =
+        //     self.ts_type_alias_decls()
+        //         .iter()
+        //         .fold(vec![], |mut acc, ts_type_alias_decl| {
+        //             if let Some(tuple) = ts_type_alias_decl.to_tuple() {
+        //                 acc.push(tuple)
+        //             }
+        //             acc
+        //         });
+
+        let variants =
+            self.ts_type_alias_decls()
+                .iter()
+                .fold(vec![], |mut acc, ts_type_alias_decl| {
+                    if let Some(variant) = ts_type_alias_decl.to_variant() {
+                        acc.push(variant)
+                    }
+                    acc
+                });
+
         DataTypes {
             funcs,
-            records: vec![],
+            records,
             tuples: vec![],
             type_aliases: vec![],
-            variants: vec![],
+            variants,
         }
     }
 }

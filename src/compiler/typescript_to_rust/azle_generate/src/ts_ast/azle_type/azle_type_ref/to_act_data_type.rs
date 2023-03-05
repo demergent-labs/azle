@@ -108,7 +108,7 @@ impl AzleTypeRef<'_> {
         }
     }
 
-    fn to_variant(&self) -> Variant {
+    pub fn to_variant(&self) -> Variant {
         match self.get_enclosed_azle_type().as_azle_type_lit() {
             Some(ts_type_lit) => ts_type_lit,
             None => panic!("{}", self.wrong_enclosed_type_error()),
@@ -116,7 +116,7 @@ impl AzleTypeRef<'_> {
         .to_variant()
     }
 
-    fn to_record(&self) -> Record {
+    pub fn to_record(&self) -> Record {
         match self.get_enclosed_azle_type().as_azle_type_lit() {
             Some(ts_type_lit) => ts_type_lit,
             None => panic!("{}", self.wrong_enclosed_type_error()),
