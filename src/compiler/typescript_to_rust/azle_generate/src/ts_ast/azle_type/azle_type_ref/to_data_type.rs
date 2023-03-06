@@ -6,6 +6,8 @@ use cdk_framework::{
     traits::ToIdent,
 };
 use quote::ToTokens;
+use std::hash::Hasher;
+use std::{collections::hash_map::DefaultHasher, hash::Hash};
 
 use super::AzleTypeRef;
 use crate::{
@@ -65,6 +67,11 @@ impl AzleTypeRef<'_> {
             _ => panic!("{}", self.wrong_enclosed_type_error()),
         };
 
+        let mut s = DefaultHasher::new();
+        azle_fn_type.ts_fn_type.hash(&mut s);
+        let name = format!("AzleInlineFunc{}", format!("{}", s.finish()).to_string());
+        let name_token_stream = name.to_identifier().to_token_stream();
+
         let params: Vec<DataType> = azle_fn_type
             .get_param_types()
             .iter()
@@ -80,17 +87,13 @@ impl AzleTypeRef<'_> {
         )
         .to_data_type();
 
-        let type_alias_name = "TODOChangeToNewFuncs"
-            .to_string()
-            .to_identifier()
-            .to_token_stream();
-        let to_vm_value = func::generate_into_vm_value_impl(&type_alias_name);
-        let list_to_vm_value = func::generate_list_into_vm_value_impl(&type_alias_name);
-        let from_vm_value = func::generate_from_vm_value_impl(&type_alias_name);
-        let list_from_vm_value = func::generate_list_from_vm_value_impl(&type_alias_name);
+        let to_vm_value = func::generate_into_vm_value_impl(&name_token_stream);
+        let list_to_vm_value = func::generate_list_into_vm_value_impl(&name_token_stream);
+        let from_vm_value = func::generate_from_vm_value_impl(&name_token_stream);
+        let list_from_vm_value = func::generate_list_from_vm_value_impl(&name_token_stream);
 
         Func {
-            name: None,
+            name: Some(name),
             params,
             return_type: Box::from(return_type),
             mode,

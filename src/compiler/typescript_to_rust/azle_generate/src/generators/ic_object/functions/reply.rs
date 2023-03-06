@@ -1,10 +1,7 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 
-use cdk_framework::act::node::{
-    canister_method::QueryOrUpdateMethod, data_type::type_annotation::ToTypeAnnotation,
-    traits::HasReturnValue,
-};
+use cdk_framework::act::node::{canister_method::QueryOrUpdateMethod, traits::HasReturnValue};
 
 use crate::ts_keywords;
 
