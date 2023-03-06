@@ -3,6 +3,7 @@ use quote::quote;
 
 use cdk_framework::act::node::{
     canister_method::QueryOrUpdateMethod, data_type::type_annotation::ToTypeAnnotation,
+    traits::HasReturnValue,
 };
 
 use crate::ts_keywords;
@@ -35,11 +36,8 @@ fn generate_match_arms(methods: &Vec<QueryOrUpdateMethod>) -> Vec<TokenStream> {
 
 fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
     let name = &method.name;
-    // TODO We need to pass the parent name in here
-    let return_type = &method.return_type.to_type_annotation(
-        &ts_keywords::ts_keywords(),
-        "TodoNeedParentNameHereInIcObjectReply".to_string(),
-    );
+    let return_type = method.create_return_type_annotation(&ts_keywords::ts_keywords(), name);
+
     quote!(
         #name => {
             let reply_value: #return_type = _aargs.get(0).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
