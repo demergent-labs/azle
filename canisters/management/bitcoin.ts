@@ -1,7 +1,7 @@
-import { blob, nat32, nat64, Opt, Record, Variant } from '../../index';
+import { Alias, blob, nat32, nat64, Opt, Record, Variant } from '../../index';
 
-export type BitcoinAddress = string;
-export type BlockHash = blob;
+export type BitcoinAddress = Alias<string>;
+export type BlockHash = Alias<blob>;
 
 export type GetBalanceArgs = Record<{
     address: BitcoinAddress;
@@ -26,7 +26,7 @@ export type GetUtxosResult = Record<{
     utxos: Utxo[];
 }>;
 
-export type MillisatoshiPerByte = nat64;
+export type MillisatoshiPerByte = Alias<nat64>;
 
 export const BitcoinNetwork = {
     Mainnet: { Mainnet: null },
@@ -45,7 +45,7 @@ export type Outpoint = Record<{
     vout: nat32;
 }>;
 
-export type Page = blob;
+export type Page = Alias<blob>;
 
 export type Utxo = Record<{
     height: nat32;
@@ -58,7 +58,7 @@ export type UtxosFilter = Variant<{
     Page: Page;
 }>;
 
-export type Satoshi = nat64;
+export type Satoshi = Alias<nat64>;
 
 export type SendTransactionArgs = Record<{
     transaction: blob;
