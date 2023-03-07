@@ -38,7 +38,7 @@ impl AzleTypeRef<'_> {
             "empty" => DataType::Primitive(Primitive::Empty),
             "reserved" => DataType::Primitive(Primitive::Reserved),
             "Opt" => DataType::Opt(self.to_option()),
-            "Func" => DataType::Func(self.to_func()),
+            "Func" => DataType::Func(self.to_func(None)),
             "Variant" => DataType::Variant(self.to_variant()),
             "Record" => DataType::Record(self.to_record()),
             _ => DataType::TypeRef(self.to_type_ref()),
@@ -47,7 +47,7 @@ impl AzleTypeRef<'_> {
 }
 
 impl AzleTypeRef<'_> {
-    pub fn to_func(&self) -> Func {
+    pub fn to_func(&self, name: Option<String>) -> Func {
         let request_type_type_ref = match self.get_enclosed_azle_type() {
             AzleType::AzleTypeRef(azle_type_ref) => azle_type_ref,
             _ => panic!("{}", self.wrong_enclosed_type_error()),
@@ -67,9 +67,15 @@ impl AzleTypeRef<'_> {
             _ => panic!("{}", self.wrong_enclosed_type_error()),
         };
 
-        let mut s = DefaultHasher::new();
-        azle_fn_type.ts_fn_type.hash(&mut s);
-        let name = format!("AzleInlineFunc{}", format!("{}", s.finish()).to_string());
+        let name = match name {
+            Some(name) => name,
+            None => {
+                let mut s = DefaultHasher::new();
+                azle_fn_type.ts_fn_type.hash(&mut s);
+                format!("AzleInlineFunc{}", format!("{}", s.finish()).to_string())
+            }
+        };
+
         let name_token_stream = name.to_identifier().to_token_stream();
 
         let params: Vec<DataType> = azle_fn_type

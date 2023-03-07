@@ -17,8 +17,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
                             ts_type_ref: ts_type_ref.clone(),
                             source_map: self.source_map,
                         };
-                        let mut func = azle_type_ref.to_func();
-                        func.name = Some(name);
+                        let func = azle_type_ref.to_func(Some(name));
 
                         Some(func)
                     } else {
