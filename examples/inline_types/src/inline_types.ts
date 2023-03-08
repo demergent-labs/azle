@@ -1,20 +1,20 @@
 import {
+    $query,
+    $update,
     Func,
-    Query,
-    Update,
     InsertError,
     nat,
     nat64,
     Opt,
-    $query,
+    Query,
+    Record,
     StableBTreeMap,
-    $update,
+    Update,
     Variant
 } from 'azle';
 import {
     Bling,
     Reaction,
-    Record,
     self,
     Test,
     TestVariant,
