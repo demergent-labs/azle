@@ -15,5 +15,23 @@ pub fn generate(main_js: &str) -> proc_macro2::TokenStream {
         #ref_cells
 
         static MAIN_JS: &'static str = #main_js;
+
+        // TODO move all of this into the CDK framework once we know it works the same way in Kybra
+        // Heavily inspired by https://stackoverflow.com/a/47676844
+        use std::ffi::CString;
+        use std::os::raw::c_char;
+
+        #[no_mangle]
+        pub fn get_candid_pointer() -> *mut c_char {
+            let c_string = CString::new(__export_service()).unwrap();
+
+            c_string.into_raw()
+        }
+
+        #[no_mangle]
+        pub fn get_candid_length() -> usize {
+            __export_service().len()
+        }
+        // TODO move all of this into the CDK framework once we know it works the same way in Kybra
     }
 }

@@ -63,18 +63,13 @@ function azle() {
             canisterConfig,
             stdioType
         );
-        generateCandidFile(
-            canisterConfig.root,
-            canisterConfig.candid,
-            canister_path,
-            stdioType
-        );
         compileRustCode(
             canisterName,
             canister_path,
             canisterConfig.candid,
             stdioType
         );
+        generateCandidFile(canisterConfig.candid, canister_path, canisterName);
     });
 
     logSuccess(canister_path, canisterName);
@@ -113,7 +108,9 @@ function compileRustCode(
     candidPath: string,
     stdio: IOType
 ) {
-    time(`[3/3] 🚧 Building Wasm binary...`, 'inline', () => {
+    const wasmFilePath = `${GLOBAL_AZLE_CONFIG_DIR}/target/wasm32-unknown-unknown/release/${canisterName}.wasm`;
+
+    time(`[2/3] 🚧 Building Wasm binary...`, 'inline', () => {
         execSync(
             `cd ${canister_path} && ${GLOBAL_AZLE_BIN_DIR}/cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
             {
@@ -126,9 +123,9 @@ function compileRustCode(
                 }
             }
         );
+    });
 
-        const wasmFilePath = `${GLOBAL_AZLE_CONFIG_DIR}/target/wasm32-unknown-unknown/release/${canisterName}.wasm`;
-
+    time(`[3/3] 🚀 Optimizing Wasm binary...`, 'inline', () => {
         // optimization, binary is too big to deploy without this
         execSync(
             `${GLOBAL_AZLE_BIN_DIR}/ic-cdk-optimizer ${wasmFilePath} -o ${wasmFilePath}`,
@@ -146,10 +143,10 @@ function compileRustCode(
         addCandidToWasmMetaData(candidPath, wasmFilePath);
 
         execSync(`gzip -f -k ${wasmFilePath}`, { stdio });
-
-        execSync(`cp ${wasmFilePath} ${canister_path}`);
-        execSync(`cp ${wasmFilePath}.gz ${canister_path}`);
     });
+
+    execSync(`cp ${wasmFilePath} ${canister_path}`);
+    execSync(`cp ${wasmFilePath}.gz ${canister_path}`);
 }
 
 function compileTypeScriptToRust(
@@ -193,26 +190,74 @@ function compileTypeScriptToRust(
 }
 
 function generateCandidFile(
-    rootPath: string,
-    candidPath: string,
+    candid_path: string,
     canister_path: string,
-    stdio: IOType
+    canister_name: string
 ) {
-    time(`[2/3] 📝 Generating Candid file...`, 'inline', () => {
-        execSync(`cd ${canister_path} && ${GLOBAL_AZLE_BIN_DIR}/cargo test`, {
-            stdio,
-            env: {
-                ...process.env,
-                CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
-                CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
-                RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
-            }
-        });
+    const wasm_file_path = `${canister_path}/${canister_name}.wasm`;
+    const wasm_buffer = fs.readFileSync(wasm_file_path);
 
-        execSync(`cp ${canister_path}/${rootPath}/index.did ${candidPath}`, {
-            stdio
-        });
+    const wasm_module = new WebAssembly.Module(wasm_buffer);
+    const wasm_instance = new WebAssembly.Instance(wasm_module, {
+        ic0: {
+            msg_reply: () => {},
+            stable_size: () => {},
+            stable64_size: () => {},
+            stable_write: () => {},
+            stable_read: () => {},
+            debug_print: () => {},
+            trap: () => {},
+            time: () => {},
+            msg_caller_size: () => {},
+            msg_caller_copy: () => {},
+            canister_self_size: () => {},
+            canister_self_copy: () => {},
+            canister_cycle_balance: () => {},
+            canister_cycle_balance128: () => {},
+            certified_data_set: () => {},
+            data_certificate_present: () => {},
+            data_certificate_size: () => {},
+            data_certificate_copy: () => {},
+            msg_reply_data_append: () => {},
+            call_cycles_add128: () => {},
+            call_new: () => {},
+            call_data_append: () => {},
+            call_perform: () => {},
+            call_cycles_add: () => {},
+            call_on_cleanup: () => {},
+            msg_reject_code: () => {},
+            msg_reject_msg_size: () => {},
+            msg_reject_msg_copy: () => {},
+            msg_reject: () => {},
+            msg_cycles_available: () => {},
+            msg_cycles_refunded: () => {},
+            msg_cycles_refunded128: () => {},
+            msg_cycles_accept: () => {},
+            msg_cycles_accept128: () => {},
+            msg_arg_data_size: () => {},
+            msg_arg_data_copy: () => {},
+            accept_message: () => {},
+            msg_method_name_size: () => {},
+            msg_method_name_copy: () => {},
+            performance_counter: () => {},
+            stable_grow: () => {},
+            stable64_grow: () => {},
+            stable64_write: () => {},
+            stable64_read: () => {},
+            global_timer_set: () => {}
+        }
     });
+
+    const candid_pointer = (wasm_instance.exports as any).get_candid_pointer();
+    const candid_length = (wasm_instance.exports as any).get_candid_length();
+
+    const buffer = Buffer.from(
+        (wasm_instance.exports.memory as any).buffer,
+        candid_pointer,
+        candid_length
+    );
+
+    fs.writeFileSync(candid_path, buffer);
 }
 
 function generateRustCanister(
