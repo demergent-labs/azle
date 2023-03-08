@@ -194,10 +194,11 @@
     Func,
     Principal,
     $query,
-    Query
+    Query,
+    Record
 } from 'azle';
 
-type Candid = {
+type Candid = Record&lt;{
     text: string;
     blob: blob;
     nat: nat;
@@ -214,19 +215,19 @@ type Candid = {
     float32: float32;
     bool: boolean;
     opt: Opt&lt;nat&gt;;
-    record: {
+    record: Record&lt;{
         first_name: string;
         last_name: string;
         age: nat8;
-    };
+    }&gt;;
     variant: Variant&lt;{
         Tag1: null;
         Tag2: null;
         Tag3: int;
     }&gt;;
-    func: Func&lt;() =&gt; Candid&gt;;
+    func: Func&lt;Query&lt;() =&gt; Candid&gt;&gt;;
     principal: Principal;
-};
+}&gt;;
 
 $query;
 export function candid_types(): Candid {
@@ -271,9 +272,11 @@ export function candid_types(): Candid {
     &quot;opt&quot; = null;
     &quot;principal&quot; = principal &quot;ryjl3-tyaaa-aaaaa-aaaba-cai&quot;;
     &quot;blob&quot; = vec {};
+    &quot;bool&quot; = true;
     &quot;func&quot; = func &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;.candid_types;
     &quot;int8&quot; = 127 : int8;
     &quot;nat8&quot; = 255 : nat8;
+    &quot;text&quot; = &quot;text&quot;;
     &quot;nat16&quot; = 65_535 : nat16;
     &quot;nat32&quot; = 4_294_967_295 : nat32;
     &quot;nat64&quot; = 18_446_744_073_709_551_615 : nat64;
@@ -281,8 +284,13 @@ export function candid_types(): Candid {
     &quot;int32&quot; = 2_147_483_647 : int32;
     &quot;int64&quot; = 9_223_372_036_854_775_807 : int64;
     &quot;variant&quot; = variant { Tag1 };
-    &quot;float32&quot; = 3.1415927 : float32;
-    &quot;float64&quot; = 2.718281828459045 : float64;
+    &quot;float32&quot; = 0 : float32;
+    &quot;float64&quot; = 0 : float64;
+    &quot;record&quot; = record {
+      age = 35 : nat8;
+      first_name = &quot;John&quot;;
+      last_name = &quot;Doe&quot;;
+    };
   },
 )
 </code></pre>

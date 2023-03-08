@@ -161,7 +161,7 @@
 
 let map = new StableBTreeMap&lt;nat8, string&gt;(0, 100, 1_000);
 </code></pre>
-<p>This is a <code>StableBTreeMap</code> with a key of type <code>nat8</code> and a value of type <code>string</code>. Key and value types can be any <a href="http://localhost:3000/candid.html#candid-types">Candid type</a>.</p>
+<p>This is a <code>StableBTreeMap</code> with a key of type <code>nat8</code> and a value of type <code>string</code>. Key and value types can be any <a href="candid.html">Candid type</a>.</p>
 <p>This <code>StableBTreeMap</code> also has a <code>memory id</code> of <code>0</code>, a maximum key size of <code>100</code> bytes and a maximum value size of <code>1_000</code> bytes. You must statically specify the <code>memory id</code>, maximum key size, and maximum value sizes (they cannot be variables).</p>
 <p>Each <code>StableBTreeMap</code> instance must have a unique <code>memory id</code>. Once a <code>memory id</code> is allocated, it cannot be used with a different <code>StableBTreeMap</code>. This means you can't create another <code>StableBTreeMap</code> using the same <code>memory id</code>, and you can't change the key or value types of an existing <code>StableBTreeMap</code>. <a href="https://github.com/demergent-labs/azle/issues/843">This problem will be addressed</a>.</p>
 <p>Here's an example showing all of the basic <code>StableBTreeMap</code> operations:</p>

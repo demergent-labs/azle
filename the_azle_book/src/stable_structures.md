@@ -26,7 +26,7 @@ import { nat8, StableBTreeMap } from 'azle';
 let map = new StableBTreeMap<nat8, string>(0, 100, 1_000);
 ```
 
-This is a `StableBTreeMap` with a key of type `nat8` and a value of type `string`. Key and value types can be any [Candid type](http://localhost:3000/candid.html#candid-types).
+This is a `StableBTreeMap` with a key of type `nat8` and a value of type `string`. Key and value types can be any [Candid type](candid.md).
 
 This `StableBTreeMap` also has a `memory id` of `0`, a maximum key size of `100` bytes and a maximum value size of `1_000` bytes. You must statically specify the `memory id`, maximum key size, and maximum value sizes (they cannot be variables).
 

@@ -257,10 +257,10 @@ export function set_message(new_message: string): void {
 </code></pre>
 <p>We should see <code>(&quot;&quot;)</code> representing an empty message.</p>
 <p>Now let's yell <code>Hello World!</code>:</p>
-<pre><code class="language-bash">dfx canister call set_message '(&quot;Hello World!&quot;)'
+<pre><code class="language-bash">dfx canister call azle_hello_world set_message '(&quot;Hello World!&quot;)'
 </code></pre>
 <p>Retrieve the message:</p>
-<pre><code class="language-bash">dfx canister call get_message
+<pre><code class="language-bash">dfx canister call azle_hello_world get_message
 </code></pre>
 <p>We should see <code>(&quot;Hello World!&quot;)</code>.</p>
 <h2 id="interacting-with-your-canister-from-the-web-ui"><a class="header" href="#interacting-with-your-canister-from-the-web-ui">Interacting with your canister from the web UI</a></h2>
@@ -270,7 +270,7 @@ URLs:
   Backend canister via Candid interface:
     azle_hello_world: http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai
 </code></pre>
-<p>Open up <a href="http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai">http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai</a> to access the web UI and interact with your canister.</p>
+<p>Open up <a href="http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai">http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai</a> or the equivalent URL from your terminal to access the web UI and interact with your canister.</p>
 
                     </main>
 

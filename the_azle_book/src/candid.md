@@ -58,10 +58,11 @@ import {
     Func,
     Principal,
     $query,
-    Query
+    Query,
+    Record
 } from 'azle';
 
-type Candid = {
+type Candid = Record<{
     text: string;
     blob: blob;
     nat: nat;
@@ -78,19 +79,19 @@ type Candid = {
     float32: float32;
     bool: boolean;
     opt: Opt<nat>;
-    record: {
+    record: Record<{
         first_name: string;
         last_name: string;
         age: nat8;
-    };
+    }>;
     variant: Variant<{
         Tag1: null;
         Tag2: null;
         Tag3: int;
     }>;
-    func: Func<() => Candid>;
+    func: Func<Query<() => Candid>>;
     principal: Principal;
-};
+}>;
 
 $query;
 export function candid_types(): Candid {
@@ -138,9 +139,11 @@ Calling `candid_types` with `dfx` will return:
     "opt" = null;
     "principal" = principal "ryjl3-tyaaa-aaaaa-aaaba-cai";
     "blob" = vec {};
+    "bool" = true;
     "func" = func "rrkah-fqaaa-aaaaa-aaaaq-cai".candid_types;
     "int8" = 127 : int8;
     "nat8" = 255 : nat8;
+    "text" = "text";
     "nat16" = 65_535 : nat16;
     "nat32" = 4_294_967_295 : nat32;
     "nat64" = 18_446_744_073_709_551_615 : nat64;
@@ -148,8 +151,13 @@ Calling `candid_types` with `dfx` will return:
     "int32" = 2_147_483_647 : int32;
     "int64" = 9_223_372_036_854_775_807 : int64;
     "variant" = variant { Tag1 };
-    "float32" = 3.1415927 : float32;
-    "float64" = 2.718281828459045 : float64;
+    "float32" = 0 : float32;
+    "float64" = 0 : float64;
+    "record" = record {
+      age = 35 : nat8;
+      first_name = "John";
+      last_name = "Doe";
+    };
   },
 )
 ```
