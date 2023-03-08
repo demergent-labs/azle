@@ -1,12 +1,12 @@
-use cdk_framework::act::node::{data_type::Tuple, DataType};
+use cdk_framework::act::node::{candid::Tuple, CandidType};
 
 use super::AzleTupleType;
 
 impl AzleTupleType<'_> {
-    pub fn to_data_type(&self) -> DataType {
-        DataType::Tuple(Tuple {
+    pub fn to_data_type(&self) -> CandidType {
+        CandidType::Tuple(Tuple {
             name: None,
-            members: self.get_elem_types(),
+            elems: self.get_elem_types(),
         })
     }
 }

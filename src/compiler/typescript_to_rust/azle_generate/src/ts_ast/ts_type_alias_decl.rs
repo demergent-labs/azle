@@ -1,4 +1,4 @@
-use cdk_framework::act::node::data_type::{Func, Record, Tuple, TypeAlias, Variant};
+use cdk_framework::act::node::candid::{Func, Record, Tuple, TypeAlias, Variant};
 use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
 use crate::ts_ast::{azle_type::AzleTypeRef, source_map::SourceMapped, GetName};

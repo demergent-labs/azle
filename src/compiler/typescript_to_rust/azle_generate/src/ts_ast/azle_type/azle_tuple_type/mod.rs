@@ -2,7 +2,7 @@ use swc_common::SourceMap;
 use swc_ecma_ast::TsTupleType;
 
 use super::AzleType;
-use cdk_framework::act::node::data_type::{tuple::Member, Tuple};
+use cdk_framework::act::node::candid::{tuple::Elem, Tuple};
 
 mod get_dependencies;
 mod get_source_info;
@@ -16,15 +16,15 @@ pub struct AzleTupleType<'a> {
 }
 
 impl AzleTupleType<'_> {
-    fn get_elem_types(&self) -> Vec<Member> {
+    fn get_elem_types(&self) -> Vec<Elem> {
         self.ts_tuple_type
             .elem_types
             .iter()
             .map(|elem| {
                 let ts_type = elem.ty.clone();
                 let azle_type = AzleType::from_ts_type(ts_type, self.source_map);
-                Member {
-                    type_: azle_type.to_data_type(),
+                Elem {
+                    candid_type: azle_type.to_data_type(),
                 }
             })
             .collect()
@@ -33,7 +33,7 @@ impl AzleTupleType<'_> {
     pub fn to_tuple(&self) -> Tuple {
         Tuple {
             name: None,
-            members: self.get_elem_types(),
+            elems: self.get_elem_types(),
         }
     }
 }

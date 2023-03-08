@@ -1,7 +1,7 @@
 use cdk_framework::{
     act::node::{
-        data_type::{func::Mode, Func, Opt, Primitive, Record, TypeRef, Variant},
-        DataType,
+        candid::{func::Mode, Func, Opt, Primitive, Record, TypeRef, Variant},
+        CandidType,
     },
     traits::ToIdent,
 };
@@ -19,29 +19,29 @@ use crate::{
 };
 
 impl AzleTypeRef<'_> {
-    pub fn to_data_type(&self) -> DataType {
+    pub fn to_data_type(&self) -> CandidType {
         match self.get_name() {
-            "blob" => DataType::Primitive(Primitive::Blob),
-            "float32" => DataType::Primitive(Primitive::Float32),
-            "float64" => DataType::Primitive(Primitive::Float64),
-            "int" => DataType::Primitive(Primitive::Int),
-            "int8" => DataType::Primitive(Primitive::Int8),
-            "int16" => DataType::Primitive(Primitive::Int16),
-            "int32" => DataType::Primitive(Primitive::Int32),
-            "int64" => DataType::Primitive(Primitive::Int64),
-            "nat" => DataType::Primitive(Primitive::Nat),
-            "nat8" => DataType::Primitive(Primitive::Nat8),
-            "nat16" => DataType::Primitive(Primitive::Nat16),
-            "nat32" => DataType::Primitive(Primitive::Nat32),
-            "nat64" => DataType::Primitive(Primitive::Nat64),
-            "Principal" => DataType::Primitive(Primitive::Principal),
-            "empty" => DataType::Primitive(Primitive::Empty),
-            "reserved" => DataType::Primitive(Primitive::Reserved),
-            "Opt" => DataType::Opt(self.to_option()),
-            "Func" => DataType::Func(self.to_func(None)),
-            "Variant" => DataType::Variant(self.to_variant()),
-            "Record" => DataType::Record(self.to_record()),
-            _ => DataType::TypeRef(self.to_type_ref()),
+            "blob" => CandidType::Primitive(Primitive::Blob),
+            "float32" => CandidType::Primitive(Primitive::Float32),
+            "float64" => CandidType::Primitive(Primitive::Float64),
+            "int" => CandidType::Primitive(Primitive::Int),
+            "int8" => CandidType::Primitive(Primitive::Int8),
+            "int16" => CandidType::Primitive(Primitive::Int16),
+            "int32" => CandidType::Primitive(Primitive::Int32),
+            "int64" => CandidType::Primitive(Primitive::Int64),
+            "nat" => CandidType::Primitive(Primitive::Nat),
+            "nat8" => CandidType::Primitive(Primitive::Nat8),
+            "nat16" => CandidType::Primitive(Primitive::Nat16),
+            "nat32" => CandidType::Primitive(Primitive::Nat32),
+            "nat64" => CandidType::Primitive(Primitive::Nat64),
+            "Principal" => CandidType::Primitive(Primitive::Principal),
+            "empty" => CandidType::Primitive(Primitive::Empty),
+            "reserved" => CandidType::Primitive(Primitive::Reserved),
+            "Opt" => CandidType::Opt(self.to_option()),
+            "Func" => CandidType::Func(self.to_func(None)),
+            "Variant" => CandidType::Variant(self.to_variant()),
+            "Record" => CandidType::Record(self.to_record()),
+            _ => CandidType::TypeRef(self.to_type_ref()),
         }
     }
 }
@@ -76,9 +76,7 @@ impl AzleTypeRef<'_> {
             }
         };
 
-        let name_token_stream = name.to_identifier().to_token_stream();
-
-        let params: Vec<DataType> = azle_fn_type
+        let params: Vec<CandidType> = azle_fn_type
             .get_param_types()
             .iter()
             .map(|param| {
@@ -93,10 +91,10 @@ impl AzleTypeRef<'_> {
         )
         .to_data_type();
 
-        let to_vm_value = func::generate_into_vm_value_impl(&name_token_stream);
-        let list_to_vm_value = func::generate_list_into_vm_value_impl(&name_token_stream);
-        let from_vm_value = func::generate_from_vm_value_impl(&name_token_stream);
-        let list_from_vm_value = func::generate_list_from_vm_value_impl(&name_token_stream);
+        let to_vm_value = |name: String| func::generate_into_vm_value_impl(name);
+        let list_to_vm_value = |name: String| func::generate_list_into_vm_value_impl(name);
+        let from_vm_value = |name: String| func::generate_from_vm_value_impl(name);
+        let list_from_vm_value = |name: String| func::generate_list_from_vm_value_impl(name);
 
         Func {
             name: Some(name),

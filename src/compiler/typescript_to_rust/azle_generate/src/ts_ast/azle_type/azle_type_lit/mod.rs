@@ -1,4 +1,4 @@
-use cdk_framework::act::node::data_type::{record, variant, Record, Variant};
+use cdk_framework::act::node::candid::{record, variant, Record, Variant};
 
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeLit;

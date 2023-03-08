@@ -1,6 +1,6 @@
 use cdk_framework::act::node::{
     canister_method::{CanisterMethodType, QueryMethod, QueryOrUpdateDefinition, UpdateMethod},
-    CanisterMethod, DataType, Param,
+    CandidType, CanisterMethod, Param,
 };
 
 use super::AzleFnDecl;
@@ -55,12 +55,12 @@ impl<'a> AzleFnDecl<'a> {
             .enumerate()
             .map(|(i, name)| Param {
                 name: name.clone().to_string(),
-                type_: types[i].clone(),
+                candid_type: types[i].clone(),
             })
             .collect()
     }
 
-    fn build_return_type(&self) -> DataType {
+    fn build_return_type(&self) -> CandidType {
         let return_ts_type = self.get_return_ts_type();
         let return_azle_type = AzleType::from_ts_type(return_ts_type.clone(), self.source_map);
         return_azle_type.to_data_type()
@@ -70,7 +70,7 @@ impl<'a> AzleFnDecl<'a> {
 // TODO why isn't this on the trait? and for that matter why is it separated
 // from the get name. It would be much simpler imho to get the names and the
 // params all in the same pass
-fn build_param_types(azle_fn_decl: &AzleFnDecl) -> Vec<DataType> {
+fn build_param_types(azle_fn_decl: &AzleFnDecl) -> Vec<CandidType> {
     azle_fn_decl
         .get_param_ts_types()
         .iter()

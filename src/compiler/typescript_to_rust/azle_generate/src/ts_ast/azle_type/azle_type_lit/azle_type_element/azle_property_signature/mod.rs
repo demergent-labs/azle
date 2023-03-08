@@ -3,8 +3,8 @@ use swc_ecma_ast::TsPropertySignature;
 
 use crate::ts_ast::{azle_type::AzleType, traits::GetTsType, GetName};
 use cdk_framework::act::node::{
-    data_type::{record, variant},
-    DataType,
+    candid::{record, variant},
+    CandidType,
 };
 
 mod errors;
@@ -21,14 +21,14 @@ impl AzlePropertySignature<'_> {
     pub(super) fn to_record_member(&self) -> record::Member {
         record::Member {
             name: self.get_member_name(),
-            type_: self.get_act_data_type(),
+            candid_type: self.get_act_data_type(),
         }
     }
 
     pub(super) fn to_variant_member(&self) -> variant::Member {
         variant::Member {
             name: self.get_member_name(),
-            type_: self.get_act_data_type(),
+            candid_type: self.get_act_data_type(),
         }
     }
 
@@ -41,7 +41,7 @@ impl AzlePropertySignature<'_> {
             .to_string()
     }
 
-    fn get_act_data_type(&self) -> DataType {
+    fn get_act_data_type(&self) -> CandidType {
         let ts_type = match &self.ts_property_signature.type_ann {
             Some(ts_type_ann) => ts_type_ann.get_ts_type(),
             None => panic!("{}", self.no_type_annotation_error()),

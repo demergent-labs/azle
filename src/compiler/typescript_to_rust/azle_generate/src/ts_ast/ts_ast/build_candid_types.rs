@@ -1,9 +1,9 @@
-use cdk_framework::act::DataTypes;
+use cdk_framework::act::CandidTypes;
 
 use super::TsAst;
 
 impl TsAst {
-    pub fn build_data_types(&self) -> DataTypes {
+    pub fn build_candid_types(&self) -> CandidTypes {
         let funcs =
             self.ts_type_alias_decls()
                 .iter()
@@ -54,7 +54,7 @@ impl TsAst {
                     acc
                 });
 
-        DataTypes {
+        CandidTypes {
             funcs,
             records,
             tuples,

@@ -1,4 +1,4 @@
-use cdk_framework::act::node::{canister_method::QueryOrUpdateMethod, traits::HasReturnValue};
+use cdk_framework::{act::node::canister_method::QueryOrUpdateMethod, traits::HasReturnValue};
 use proc_macro2::TokenStream;
 use quote::quote;
 
@@ -83,7 +83,7 @@ fn generate_match_arms(methods: &Vec<QueryOrUpdateMethod>) -> Vec<TokenStream> {
 
 fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
     let name = &method.name;
-    let return_type = method.create_return_type_annotation(&ts_keywords::ts_keywords(), name);
+    let return_type = method.create_return_type_annotation(name, &ts_keywords::ts_keywords());
     quote!(
         #name => {
             let reply_value: #return_type = js_value.clone().try_from_vm_value(&mut *_azle_boa_context).unwrap();

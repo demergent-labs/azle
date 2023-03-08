@@ -1,7 +1,4 @@
-use cdk_framework::{
-    act::node::canister_method::{CanisterMethod, CanisterMethodType},
-    SystemStructureType,
-};
+use cdk_framework::act::node::canister_method::{CanisterMethod, CanisterMethodType};
 use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::ClassDecl;
 
@@ -17,10 +14,7 @@ use crate::ts_ast::{
 pub trait HelperMethods {
     fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl>;
     fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
-    fn get_azle_type_alias_decls_for_system_structure_type(
-        &self,
-        system_structure_type: &SystemStructureType,
-    ) -> Vec<AzleTypeAliasDecl>;
+    fn get_canister_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
     fn get_external_canister_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>>;
     fn get_azle_fn_decls_of_type(
         &self,
@@ -64,17 +58,12 @@ impl HelperMethods for Vec<AzleProgram> {
         })
     }
 
-    fn get_azle_type_alias_decls_for_system_structure_type(
-        &self,
-        system_structure_type: &SystemStructureType,
-    ) -> Vec<AzleTypeAliasDecl> {
+    fn get_canister_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl> {
         let type_alias_decls = self.get_azle_type_alias_decls();
 
         type_alias_decls
             .into_iter()
-            .filter(|type_alias_decl| {
-                type_alias_decl.is_type_alias_decl_system_structure_type(system_structure_type)
-            })
+            .filter(|type_alias_decl| type_alias_decl.is_canister_type_alias_decl())
             .collect()
     }
 

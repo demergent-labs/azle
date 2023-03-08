@@ -1,4 +1,4 @@
-use cdk_framework::act::node::{DataType, ExternalCanisterMethod, Param};
+use cdk_framework::act::node::{external_canister::Method, CandidType, Param};
 use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnType, TsType};
 
 use crate::{
@@ -11,7 +11,7 @@ use super::azle_type::AzleType;
 mod get_dependent_types;
 
 impl SourceMapped<'_, ClassProp> {
-    pub fn to_act_external_canister_method(&self) -> Result<ExternalCanisterMethod, ParseError> {
+    pub fn to_act_external_canister_method(&self) -> Result<Method, ParseError> {
         if self.decorators.len() == 0 {
             return Err(ParseError::MissingDecorator);
         }
@@ -25,7 +25,7 @@ impl SourceMapped<'_, ClassProp> {
         let params = self.build_act_fn_params()?;
         let return_type = self.build_return_type()?;
 
-        Ok(ExternalCanisterMethod {
+        Ok(Method {
             name,
             params,
             return_type,
@@ -36,7 +36,7 @@ impl SourceMapped<'_, ClassProp> {
         Ok(self.ts_fn_type()?.build_act_fn_params())
     }
 
-    fn build_return_type(&self) -> Result<DataType, ParseError> {
+    fn build_return_type(&self) -> Result<CandidType, ParseError> {
         let return_ts_type = self.return_ts_type()?;
         let azle_type = AzleType::from_ts_type(return_ts_type, self.source_map);
         let act_data_type = azle_type.to_data_type();

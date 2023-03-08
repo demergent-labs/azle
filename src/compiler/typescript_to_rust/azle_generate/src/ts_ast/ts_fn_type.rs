@@ -10,7 +10,7 @@ impl SourceMapped<'_, TsFnType> {
             .map(|param| match param {
                 TsFnParam::Ident(identifier) => {
                     let name = identifier.get_name().to_string();
-                    let type_ = match &identifier.type_ann {
+                    let candid_type = match &identifier.type_ann {
                         Some(ts_type_ann) => {
                             let azle_type =
                                 AzleType::from_ts_type(ts_type_ann.get_ts_type(), self.source_map);
@@ -18,7 +18,7 @@ impl SourceMapped<'_, TsFnType> {
                         }
                         None => panic!("Function parameters must have a type"),
                     };
-                    Param { name, type_ }
+                    Param { name, candid_type }
                 }
                 TsFnParam::Array(_) => {
                     panic!("Array destructuring in parameters is unsupported at this time")

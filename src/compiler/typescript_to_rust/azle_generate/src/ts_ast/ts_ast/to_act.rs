@@ -1,10 +1,7 @@
 use cdk_framework::AbstractCanisterTree;
 
 use crate::{
-    generators::{
-        body, header,
-        vm_value_conversion::{try_from_vm_value_impls, try_into_vm_value_impls},
-    },
+    generators::{body, header},
     ts_ast::TsAst,
     ts_keywords,
 };
@@ -22,24 +19,22 @@ impl TsAst {
             &stable_b_tree_map_nodes,
         );
         let cdk_name = "azle".to_string();
-        let data_types = self.build_data_types();
+        let candid_types = self.build_candid_types();
         let header = header::generate(&self.main_js);
         let guard_functions = vec![]; // TODO: See https://github.com/demergent-labs/azle/issues/859
         let keywords = ts_keywords::ts_keywords();
-        let try_into_vm_value_impls = try_into_vm_value_impls::generate();
-        let try_from_vm_value_impls = try_from_vm_value_impls::generate();
+        let vm_value_conversion = self.build_vm_value_conversion();
 
         AbstractCanisterTree {
             body,
             canister_methods,
             cdk_name,
-            data_types,
+            candid_types,
             external_canisters,
             guard_functions,
             header,
             keywords,
-            try_from_vm_value_impls,
-            try_into_vm_value_impls,
+            vm_value_conversion,
         }
     }
 }

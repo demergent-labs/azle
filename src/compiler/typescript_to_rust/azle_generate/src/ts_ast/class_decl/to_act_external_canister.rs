@@ -1,19 +1,17 @@
-use cdk_framework::act::node::{ExternalCanister, ExternalCanisterMethod};
+use cdk_framework::act::node::{external_canister::Method, ExternalCanister};
 use swc_ecma_ast::{ClassDecl, ClassMember};
 
 use crate::ts_ast::{source_map::SourceMapped, GetName};
 
 impl SourceMapped<'_, ClassDecl> {
     pub fn to_act_external_canister(&self) -> ExternalCanister {
+        let name = self.ident.get_name().to_string();
         let methods = self.build_external_canister_methods();
 
-        ExternalCanister {
-            name: self.ident.get_name().to_string(),
-            methods,
-        }
+        ExternalCanister { name, methods }
     }
 
-    fn build_external_canister_methods(&self) -> Vec<ExternalCanisterMethod> {
+    fn build_external_canister_methods(&self) -> Vec<Method> {
         self.class
             .body
             .iter()

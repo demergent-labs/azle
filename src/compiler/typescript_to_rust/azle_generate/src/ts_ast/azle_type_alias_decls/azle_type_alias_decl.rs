@@ -4,10 +4,7 @@ use swc_common::SourceMap;
 use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
 use crate::ts_ast::{azle_type::AzleType, GetDependencies, GetName, GetTsType};
-use cdk_framework::{
-    act::node::{data_type::TypeAlias, DataType},
-    SystemStructureType,
-};
+use cdk_framework::act::node::{candid::TypeAlias, CandidType};
 
 #[derive(Clone)]
 pub struct AzleTypeAliasDecl<'a> {
@@ -17,21 +14,18 @@ pub struct AzleTypeAliasDecl<'a> {
 
 // TODO I am not super happy with this function... but that might be because I don't understand the system structure stuff
 pub trait TsTypeAliasHelperMethods {
-    fn is_type_alias_decl_system_structure_type(
-        &self,
-        system_structure_type: &SystemStructureType,
-    ) -> bool;
+    fn is_canister_type_alias_decl(&self) -> bool;
 }
 
 pub trait AzleTypeAliasListHelperMethods {
     fn generate_type_alias_lookup(&self) -> HashMap<String, AzleTypeAliasDecl>;
-    fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<DataType>;
+    fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<CandidType>;
     fn get_azle_type_aliases_by_type_ref_name(&self, type_ref_name: &str)
         -> Vec<AzleTypeAliasDecl>;
 }
 
 impl AzleTypeAliasDecl<'_> {
-    pub fn to_data_type(&self) -> DataType {
+    pub fn to_data_type(&self) -> CandidType {
         // TODO: This should probably look ahead for Records, Funcs, Opts, etc.
         // and make those types directly rather than making a type alias to those types.
         // For example:
@@ -43,7 +37,7 @@ impl AzleTypeAliasDecl<'_> {
 
         let azle_type = AzleType::from_ts_type(self.get_ts_type(), self.source_map);
 
-        DataType::TypeAlias(TypeAlias {
+        CandidType::TypeAlias(TypeAlias {
             name,
             aliased_type: Box::from(azle_type.to_data_type()),
         })
@@ -75,25 +69,18 @@ impl GetName for AzleTypeAliasDecl<'_> {
 }
 
 impl TsTypeAliasHelperMethods for AzleTypeAliasDecl<'_> {
-    fn is_type_alias_decl_system_structure_type(
-        &self,
-        system_structure_type: &SystemStructureType,
-    ) -> bool {
-        match system_structure_type {
-            SystemStructureType::Canister => {
-                self.ts_type_alias_decl.type_ann.is_ts_type_ref()
-                    && &*self
-                        .ts_type_alias_decl
-                        .type_ann
-                        .as_ts_type_ref()
-                        .unwrap()
-                        .type_name
-                        .as_ident()
-                        .unwrap()
-                        .get_name()
-                        == "Canister"
-            }
-        }
+    fn is_canister_type_alias_decl(&self) -> bool {
+        self.ts_type_alias_decl.type_ann.is_ts_type_ref()
+            && &*self
+                .ts_type_alias_decl
+                .type_ann
+                .as_ts_type_ref()
+                .unwrap()
+                .type_name
+                .as_ident()
+                .unwrap()
+                .get_name()
+                == "Canister"
     }
 }
 
@@ -126,7 +113,7 @@ impl AzleTypeAliasListHelperMethods for Vec<AzleTypeAliasDecl<'_>> {
             .collect()
     }
 
-    fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<DataType> {
+    fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<CandidType> {
         let type_alias_lookup = self.generate_type_alias_lookup();
 
         type_names.iter().fold(vec![], |acc, dependant_type_name| {

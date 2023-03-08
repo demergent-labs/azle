@@ -1,4 +1,4 @@
-use cdk_framework::act::node::DataType;
+use cdk_framework::act::node::CandidType;
 use std::collections::{HashMap, HashSet};
 use swc_common::SourceMap;
 use swc_ecma_ast::TsType;
@@ -8,8 +8,8 @@ use crate::ts_ast::{azle_type::AzleType, traits::GetDependencies, AzleTypeAliasD
 #[derive(Clone, Debug)]
 pub struct StableBTreeMapNode {
     pub memory_id: u8,
-    pub key_type: DataType,
-    pub value_type: DataType,
+    pub key_type: CandidType,
+    pub value_type: CandidType,
     pub max_key_size: u32,
     pub max_value_size: u32,
 }

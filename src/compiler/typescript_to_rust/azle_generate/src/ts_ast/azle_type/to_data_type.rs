@@ -1,10 +1,10 @@
-use cdk_framework::act::node::DataType;
+use cdk_framework::act::node::CandidType;
 
 use super::AzleType;
 use crate::ts_ast::traits::GetSourceInfo;
 
 impl AzleType<'_> {
-    pub fn to_data_type(&self) -> DataType {
+    pub fn to_data_type(&self) -> CandidType {
         match self {
             AzleType::AzleKeywordType(azle_keyword_type) => azle_keyword_type.to_data_type(),
             AzleType::AzleTypeRef(azle_type_ref) => azle_type_ref.to_data_type(),

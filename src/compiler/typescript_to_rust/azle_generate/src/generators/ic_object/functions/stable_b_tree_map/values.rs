@@ -1,4 +1,4 @@
-// use cdk_framework::act::node::data_type::type_annotation::ToTypeAnnotation;
+// use cdk_framework::act::node::candid::type_annotation::ToTypeAnnotation;
 use quote::{format_ident, quote};
 
 use crate::{generators::stable_b_tree_map, StableBTreeMapNode};
