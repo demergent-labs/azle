@@ -5,8 +5,8 @@ use super::AzleTypeElement;
 use crate::{
     errors::{ErrorMessage, Suggestion},
     ts_ast::{
-        ast_traits::{GetSourceInfo, GetSpan, TypeToString},
         source_map::GetSourceFileInfo,
+        traits::{GetSourceInfo, GetSpan, TypeToString},
     },
 };
 

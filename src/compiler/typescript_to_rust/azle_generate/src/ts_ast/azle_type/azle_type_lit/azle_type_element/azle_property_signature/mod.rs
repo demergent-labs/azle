@@ -1,7 +1,7 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsPropertySignature;
 
-use crate::ts_ast::{ast_traits::GetTsType, azle_type::AzleType, GetName};
+use crate::ts_ast::{azle_type::AzleType, traits::GetTsType, GetName};
 use cdk_framework::act::node::{
     data_type::{record, variant},
     DataType,

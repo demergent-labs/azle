@@ -13,7 +13,7 @@ use super::AzleTypeRef;
 use crate::{
     generators::func,
     ts_ast::{
-        ast_traits::GetTsType, azle_type::AzleType, AzleFnOrConstructorType,
+        azle_type::AzleType, traits::GetTsType, AzleFnOrConstructorType,
         FunctionAndMethodTypeHelperMethods, GetName,
     },
 };

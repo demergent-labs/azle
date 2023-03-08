@@ -6,11 +6,11 @@ use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::ClassDecl;
 
 use crate::ts_ast::{
-    ast_traits::GetDependencies,
     azle_type_alias_decls::azle_type_alias_decl::{
         AzleTypeAliasListHelperMethods, TsTypeAliasHelperMethods,
     },
     source_map::SourceMapped,
+    traits::GetDependencies,
     AzleFnDecl, AzleProgram, AzleTypeAliasDecl,
 };
 

@@ -1,8 +1,8 @@
 use swc_common::Span;
 use swc_ecma_ast::TsTypeElement;
 
-use crate::ts_ast::ast_traits::GetSpan;
-use crate::ts_ast::ast_traits::TypeToString;
+use crate::ts_ast::traits::GetSpan;
+use crate::ts_ast::traits::TypeToString;
 
 impl GetSpan for TsTypeElement {
     fn get_span(&self) -> Span {

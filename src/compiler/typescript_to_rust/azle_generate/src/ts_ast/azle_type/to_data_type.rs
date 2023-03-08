@@ -1,7 +1,7 @@
 use cdk_framework::act::node::DataType;
 
 use super::AzleType;
-use crate::ts_ast::ast_traits::GetSourceInfo;
+use crate::ts_ast::traits::GetSourceInfo;
 
 impl AzleType<'_> {
     pub fn to_data_type(&self) -> DataType {

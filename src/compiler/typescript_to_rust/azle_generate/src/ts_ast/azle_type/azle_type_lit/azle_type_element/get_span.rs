@@ -1,4 +1,4 @@
-use crate::ts_ast::ast_traits::GetSpan;
+use crate::ts_ast::traits::GetSpan;
 
 use super::AzleTypeElement;
 

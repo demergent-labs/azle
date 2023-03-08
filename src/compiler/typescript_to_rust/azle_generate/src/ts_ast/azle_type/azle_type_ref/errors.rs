@@ -4,7 +4,7 @@ use super::AzleTypeRef;
 use crate::{
     errors::{ErrorMessage, Suggestion},
     ts_ast::{
-        ast_traits::GetSourceInfo, ast_traits::GetSpan, source_map::GetSourceFileInfo,
+        source_map::GetSourceFileInfo, traits::GetSourceInfo, traits::GetSpan,
         ts_type::ts_type_ref::GetEnclosedTsTypes, GetName, GetSourceText,
     },
 };

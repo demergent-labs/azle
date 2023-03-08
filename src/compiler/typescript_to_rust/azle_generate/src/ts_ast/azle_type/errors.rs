@@ -4,8 +4,8 @@ use swc_ecma_ast::TsType;
 use crate::{
     errors::ErrorMessage,
     ts_ast::{
-        ast_traits::{GetSpan, TypeToString},
         source_map::GetSourceFileInfo,
+        traits::{GetSpan, TypeToString},
     },
 };
 

@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
 use super::AzleFnDecl;
-use crate::ts_ast::{ast_traits::GetDependencies, azle_type::AzleType, AzleTypeAliasDecl};
+use crate::ts_ast::{azle_type::AzleType, traits::GetDependencies, AzleTypeAliasDecl};
 
 impl GetDependencies for Vec<AzleFnDecl<'_>> {
     fn get_dependent_types(

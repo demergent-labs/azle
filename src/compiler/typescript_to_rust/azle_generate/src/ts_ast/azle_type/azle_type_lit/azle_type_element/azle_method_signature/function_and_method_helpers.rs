@@ -2,7 +2,7 @@ use swc_ecma_ast::{TsEntityName, TsFnParam, TsType, TsTypeAnn};
 
 use super::AzleMethodSignature;
 use crate::ts_ast::{
-    ast_traits::GetTsType, azle_functions_and_methods::FunctionAndMethodTypeHelperMethods, GetName,
+    azle_functions_and_methods::FunctionAndMethodTypeHelperMethods, traits::GetTsType, GetName,
 };
 
 impl FunctionAndMethodTypeHelperMethods for AzleMethodSignature<'_> {

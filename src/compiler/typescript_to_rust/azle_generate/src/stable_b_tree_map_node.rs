@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet};
 use swc_common::SourceMap;
 use swc_ecma_ast::TsType;
 
-use crate::ts_ast::{ast_traits::GetDependencies, azle_type::AzleType, AzleTypeAliasDecl};
+use crate::ts_ast::{azle_type::AzleType, traits::GetDependencies, AzleTypeAliasDecl};
 
 #[derive(Clone, Debug)]
 pub struct StableBTreeMapNode {
