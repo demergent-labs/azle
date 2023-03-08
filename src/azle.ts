@@ -49,39 +49,40 @@ function azle() {
         stdio: 'inherit'
     });
 
-    const stdioType = getStdIoType();
-    const canisterName = unwrap(getCanisterName(process.argv));
-    const canister_path = `.azle/${canisterName}`;
+    const stdio_type = getStdIoType();
+    const canister_name = unwrap(getCanisterName(process.argv));
+    const canister_path = `.azle/${canister_name}`;
+    const wasm_file_path = `${canister_path}/${canister_name}.wasm`;
 
-    time(`\nBuilding canister ${green(canisterName)}`, 'default', () => {
-        const canisterConfig = unwrap(getCanisterConfig(canisterName));
+    time(`\nBuilding canister ${green(canister_name)}`, 'default', () => {
+        const canister_config = unwrap(getCanisterConfig(canister_name));
+        const candid_path = canister_config.candid;
 
         printFirstBuildWarning();
         compileTypeScriptToRust(
-            canisterName,
+            canister_name,
             canister_path,
-            canisterConfig,
-            stdioType
+            canister_config.root,
+            canister_config.ts
         );
-        compileRustCode(
-            canisterName,
-            canister_path,
-            canisterConfig.candid,
-            stdioType
-        );
-        generateCandidFile(canisterConfig.candid, canister_path, canisterName);
+        compileRustCode(canister_name, canister_path, stdio_type);
+        generateCandidFile(candid_path, wasm_file_path);
+        optimize_rust_code(wasm_file_path, candid_path, stdio_type);
     });
 
-    logSuccess(canister_path, canisterName);
+    logSuccess(canister_path, canister_name);
 }
 
-function addCandidToWasmMetaData(candidPath: string, wasmPath: string): void {
+function addCandidToWasmMetaData(
+    candid_path: string,
+    wasm_file_path: string
+): void {
     execSync(
-        `${GLOBAL_AZLE_BIN_DIR}/ic-wasm ${wasmPath} -o ${wasmPath} metadata candid:service -f ${candidPath} -v public`
+        `${GLOBAL_AZLE_BIN_DIR}/ic-wasm ${wasm_file_path} -o ${wasm_file_path} metadata candid:service -f ${candid_path} -v public`
     );
 
     execSync(
-        `${GLOBAL_AZLE_BIN_DIR}/ic-wasm ${wasmPath} -o ${wasmPath} metadata cdk -d "azle ${version}" -v public`
+        `${GLOBAL_AZLE_BIN_DIR}/ic-wasm ${wasm_file_path} -o ${wasm_file_path} metadata cdk -d "azle ${version}" -v public`
     );
 }
 
@@ -103,16 +104,13 @@ function colorFormattedDfxJsonExample(canisterName: string): string {
 }
 
 function compileRustCode(
-    canisterName: string,
+    canister_name: string,
     canister_path: string,
-    candidPath: string,
     stdio: IOType
 ) {
-    const wasmFilePath = `${GLOBAL_AZLE_CONFIG_DIR}/target/wasm32-unknown-unknown/release/${canisterName}.wasm`;
-
     time(`[2/3] 🚧 Building Wasm binary...`, 'inline', () => {
         execSync(
-            `cd ${canister_path} && ${GLOBAL_AZLE_BIN_DIR}/cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
+            `cd ${canister_path} && ${GLOBAL_AZLE_BIN_DIR}/cargo build --target wasm32-unknown-unknown --package ${canister_name} --release`,
             {
                 stdio,
                 env: {
@@ -123,12 +121,22 @@ function compileRustCode(
                 }
             }
         );
-    });
 
+        const wasm_target_file_path = `${GLOBAL_AZLE_CONFIG_DIR}/target/wasm32-unknown-unknown/release/${canister_name}.wasm`;
+
+        execSync(`cp ${wasm_target_file_path} ${canister_path}`);
+    });
+}
+
+function optimize_rust_code(
+    wasm_file_path: string,
+    candid_path: string,
+    stdio: IOType
+) {
     time(`[3/3] 🚀 Optimizing Wasm binary...`, 'inline', () => {
         // optimization, binary is too big to deploy without this
         execSync(
-            `${GLOBAL_AZLE_BIN_DIR}/ic-cdk-optimizer ${wasmFilePath} -o ${wasmFilePath}`,
+            `${GLOBAL_AZLE_BIN_DIR}/ic-cdk-optimizer ${wasm_file_path} -o ${wasm_file_path}`,
             {
                 stdio,
                 env: {
@@ -140,23 +148,20 @@ function compileRustCode(
             }
         );
 
-        addCandidToWasmMetaData(candidPath, wasmFilePath);
+        addCandidToWasmMetaData(candid_path, wasm_file_path);
 
-        execSync(`gzip -f -k ${wasmFilePath}`, { stdio });
+        execSync(`gzip -f -k ${wasm_file_path}`, { stdio });
     });
-
-    execSync(`cp ${wasmFilePath} ${canister_path}`);
-    execSync(`cp ${wasmFilePath}.gz ${canister_path}`);
 }
 
 function compileTypeScriptToRust(
-    canisterName: string,
+    canister_name: string,
     canister_path: string,
-    { root: rootPath, ts: tsPath }: JSCanisterConfig,
-    stdioType: IOType
+    root_path: string,
+    ts_path: string
 ): void | never {
     time('\n[1/3] 🔨 Compiling TypeScript...', 'inline', () => {
-        const compilationResult = compileTypeScriptToJavaScript(tsPath);
+        const compilationResult = compileTypeScriptToJavaScript(ts_path);
 
         if (!ok(compilationResult)) {
             const azleErrorResult = compilationErrorToAzleErrorResult(
@@ -166,13 +171,13 @@ function compileTypeScriptToRust(
         }
 
         const main_js = compilationResult.ok;
-        const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
+        const workspaceCargoToml: Toml = generateWorkspaceCargoToml(root_path);
         const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
-        const libCargoToml: Toml = generateLibCargoToml(canisterName);
-        const fileNames = getFileNames(tsPath);
+        const libCargoToml: Toml = generateLibCargoToml(canister_name);
+        const fileNames = getFileNames(ts_path);
 
         writeCodeToFileSystem(
-            rootPath,
+            root_path,
             canister_path,
             workspaceCargoToml,
             workspaceCargoLock,
@@ -180,7 +185,7 @@ function compileTypeScriptToRust(
             main_js as any
         );
 
-        unwrap(generateRustCanister(fileNames, canister_path, { rootPath }));
+        unwrap(generateRustCanister(fileNames, canister_path, { root_path }));
 
         if (isCompileOnlyMode()) {
             console.log('Compilation complete!');
@@ -189,12 +194,7 @@ function compileTypeScriptToRust(
     });
 }
 
-function generateCandidFile(
-    candid_path: string,
-    canister_path: string,
-    canister_name: string
-) {
-    const wasm_file_path = `${canister_path}/${canister_name}.wasm`;
+function generateCandidFile(candid_path: string, wasm_file_path: string) {
     const wasm_buffer = fs.readFileSync(wasm_file_path);
 
     const wasm_module = new WebAssembly.Module(wasm_buffer);
@@ -263,10 +263,10 @@ function generateCandidFile(
 function generateRustCanister(
     fileNames: string[],
     canister_path: string,
-    { rootPath }: RunOptions
+    { root_path }: RunOptions
 ): Result<undefined, AzleError> {
     const azleGenerateResult = runAzleGenerate(fileNames, canister_path, {
-        rootPath
+        root_path
     });
 
     if (!ok(azleGenerateResult)) {
@@ -276,12 +276,12 @@ function generateRustCanister(
     const unformattedLibFile = azleGenerateResult.ok;
 
     fs.writeFileSync(
-        `${canister_path}/${rootPath}/src/lib.rs`,
+        `${canister_path}/${root_path}/src/lib.rs`,
         unformattedLibFile
     );
 
     const runRustFmtResult = runRustFmt(unformattedLibFile, canister_path, {
-        rootPath
+        root_path
     });
 
     if (!ok(runRustFmtResult)) {
@@ -291,13 +291,13 @@ function generateRustCanister(
     const formattedLibFile = runRustFmtResult.ok;
 
     fs.writeFileSync(
-        `${canister_path}/${rootPath}/src/lib.rs`,
+        `${canister_path}/${root_path}/src/lib.rs`,
         formattedLibFile
     );
 
     if (isVerboseMode()) {
         console.info(
-            `Wrote formatted lib.rs file to ${canister_path}/${rootPath}/src/lib.rs\n`
+            `Wrote formatted lib.rs file to ${canister_path}/${root_path}/src/lib.rs\n`
         );
     }
     return Ok(undefined);
@@ -487,7 +487,7 @@ function printFirstBuildWarning(): void {
 function runAzleGenerate(
     fileNames: string[],
     canister_path: string,
-    { rootPath }: RunOptions
+    { root_path }: RunOptions
 ): Result<Rust, AzleError> {
     if (isVerboseMode()) {
         console.info('running azle_generate');
@@ -496,7 +496,7 @@ function runAzleGenerate(
         `${GLOBAL_AZLE_BIN_DIR}/cargo`,
         ['run', '--', fileNames.join(',')],
         {
-            cwd: `${canister_path}/${rootPath}/azle_generate`,
+            cwd: `${canister_path}/${root_path}/azle_generate`,
             stdio: 'pipe',
             env: {
                 ...process.env,
@@ -602,13 +602,13 @@ function runAzleGenerate(
 function runRustFmt(
     input: Rust,
     canister_path: string,
-    { rootPath }: RunOptions
+    { root_path }: RunOptions
 ): Result<Rust, AzleError> {
     const executionResult = spawnSync(
         `${GLOBAL_AZLE_BIN_DIR}/rustfmt`,
         ['--edition=2018'],
         {
-            cwd: `${canister_path}/${rootPath}/azle_generate`,
+            cwd: `${canister_path}/${root_path}/azle_generate`,
             input,
             stdio: 'pipe',
             env: {
