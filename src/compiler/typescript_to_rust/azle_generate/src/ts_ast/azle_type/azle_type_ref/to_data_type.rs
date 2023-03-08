@@ -1,11 +1,7 @@
-use cdk_framework::{
-    act::node::{
-        candid::{func::Mode, Func, Opt, Primitive, Record, TypeRef, Variant},
-        CandidType,
-    },
-    traits::ToIdent,
+use cdk_framework::act::node::{
+    candid::{func::Mode, Func, Opt, Primitive, Record, TypeRef, Variant},
+    CandidType,
 };
-use quote::ToTokens;
 use std::hash::Hasher;
 use std::{collections::hash_map::DefaultHasher, hash::Hash};
 
