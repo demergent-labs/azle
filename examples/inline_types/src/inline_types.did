@@ -4,7 +4,7 @@ type InsertError = variant {
 };
 type KeyTooLarge = record { max : nat32; given : nat32 };
 type ManualReply = variant {
-  ok : _InlineRecordReturnTypeReturnType;
+  ok : _InlineInlineRecordReturnTypeReturnType;
   err : text;
 };
 type Reaction = variant { one; two; three : Test };
@@ -54,7 +54,12 @@ type _InlineComplexRecordVariant = variant {
   v2;
   v3 : _InlineComplexRecordOptRecord;
 };
-type _InlineRecordParamParam = record { prop1 : text };
+type _InlineInlineRecordReturnTypeReturnType = record {
+  prop1 : text;
+  prop2 : text;
+};
+type _InlineInlineVariantParamParam = variant { var1; var2 };
+type _InlineInlineVariantReturnTypeReturnType = variant { var1; var2; var3 };
 type _InlineRecordReferencingOtherTypesFromReturnTypeReturnType = record {
   prop1 : text;
   prop2 : Thing;
@@ -63,7 +68,6 @@ type _InlineRecordReferencingRecordFromParamParam1 = record { test : Test };
 type _InlineRecordReferencingVariantFromParamParam1 = record {
   testVariant : TestVariant;
 };
-type _InlineRecordReturnTypeReturnType = record { prop1 : text; prop2 : text };
 type _InlineStableMapGetKey = record {
   prop1 : opt text;
   prop2 : _InlineStableMapGetKeyProp2;
@@ -82,12 +86,10 @@ type _InlineStableMapInsertValue = record {
   "variant" : _InlineStableMapGetKeyProp2;
 };
 type _InlineUser1Job = record { id : text; title : text };
-type _InlineVariantParamParam = variant { var1; var2 };
 type _InlineVariantReferencingRecordFromParamParam1 = variant { prop1 : Test };
 type _InlineVariantReferencingVariantFromParamParam1 = variant {
   prop1 : UserVariant;
 };
-type _InlineVariantReturnTypeReturnType = variant { var1; var2; var3 };
 service : () -> {
   complex : (_InlineComplexRecord) -> (_InlineComplexRecord) query;
   inline_func : (
@@ -119,13 +121,17 @@ service : () -> {
             ) query,
         ) -> () query,
     ) query;
-  inline_record_param : (_InlineRecordParamParam) -> (text) query;
-  inline_record_return_type : () -> (_InlineRecordReturnTypeReturnType) query;
-  inline_record_return_type_as_external_canister_call : () -> (ManualReply);
-  inline_variant_param : (_InlineVariantParamParam) -> (
-      _InlineVariantParamParam,
+  inline_record_param : (_InlineComplexRecordOptRecord) -> (text) query;
+  inline_record_return_type : () -> (
+      _InlineInlineRecordReturnTypeReturnType,
     ) query;
-  inline_variant_return_type : () -> (_InlineVariantReturnTypeReturnType) query;
+  inline_record_return_type_as_external_canister_call : () -> (ManualReply);
+  inline_variant_param : (_InlineInlineVariantParamParam) -> (
+      _InlineInlineVariantParamParam,
+    ) query;
+  inline_variant_return_type : () -> (
+      _InlineInlineVariantReturnTypeReturnType,
+    ) query;
   record_referencing_other_types_from_return_type : () -> (
       _InlineRecordReferencingOtherTypesFromReturnTypeReturnType,
     ) query;
