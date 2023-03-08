@@ -1,4 +1,4 @@
-import { ic, nat32, nat64, Opt, $query, Record, $update } from 'azle';
+import { Alias, ic, nat32, nat64, Opt, $query, Record, $update } from 'azle';
 
 //#region Performance
 type PerfResult = Record<{
@@ -22,7 +22,7 @@ function record_performance(start: nat64, end: nat64): void {
 //#endregion
 
 // Note: This won't be reflected in the candid until
-export type SuperheroId = nat32;
+export type SuperheroId = Alias<nat32>;
 
 // The type of a superhero.
 export type Superhero = Record<{

@@ -1,4 +1,13 @@
-import { ic, $init, nat32, ok, $query, StableBTreeMap, $update } from 'azle';
+import {
+    Alias,
+    ic,
+    $init,
+    nat32,
+    ok,
+    $query,
+    StableBTreeMap,
+    $update
+} from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
@@ -7,7 +16,7 @@ import {
 import decodeUtf8 from 'decode-utf8';
 import encodeUtf8 from 'encode-utf8';
 
-type JSON = string;
+type JSON = Alias<string>;
 
 let stable_storage = new StableBTreeMap<string, string>(0, 25, 1_000);
 
