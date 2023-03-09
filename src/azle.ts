@@ -248,8 +248,12 @@ function generateCandidFile(candid_path: string, wasm_file_path: string) {
         }
     });
 
-    const candid_pointer = (wasm_instance.exports as any).get_candid_pointer();
-    const candid_length = (wasm_instance.exports as any).get_candid_length();
+    const candid_pointer = (
+        wasm_instance.exports as any
+    )._cdk_get_candid_pointer();
+    const candid_length = (
+        wasm_instance.exports as any
+    )._cdk_get_candid_length();
 
     const buffer = Buffer.from(
         (wasm_instance.exports.memory as any).buffer,
