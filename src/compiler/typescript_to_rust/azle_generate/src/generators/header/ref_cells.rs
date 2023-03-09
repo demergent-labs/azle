@@ -12,8 +12,6 @@ pub fn generate() -> proc_macro2::TokenStream {
                 std::cell::RefCell::new("".to_string());
             static MANUAL_REF_CELL: std::cell::RefCell<bool> =
                 std::cell::RefCell::new(false);
-            static RNG_REF_CELL: std::cell::RefCell<StdRng> =
-                std::cell::RefCell::new(SeedableRng::from_seed([0u8; 32]));
         }
     }
 }
