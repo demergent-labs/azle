@@ -92,16 +92,16 @@ impl AzleTypeRef<'_> {
         let from_vm_value = |name: String| func::generate_from_vm_value_impl(name);
         let list_from_vm_value = |name: String| func::generate_list_from_vm_value_impl(name);
 
-        Func {
-            name: Some(name),
+        Func::new(
+            Some(name),
             params,
-            return_type: Box::from(return_type),
+            return_type,
             mode,
             to_vm_value,
             list_to_vm_value,
             from_vm_value,
             list_from_vm_value,
-        }
+        )
     }
 
     fn to_option(&self) -> Opt {

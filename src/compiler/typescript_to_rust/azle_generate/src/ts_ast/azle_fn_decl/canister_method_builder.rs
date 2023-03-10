@@ -20,28 +20,28 @@ impl<'a> AzleFnDecl<'a> {
 
         match canister_method_type {
             CanisterMethodType::Query => CanisterMethod::Query(QueryMethod {
-                definition: QueryOrUpdateDefinition {
-                    body,
-                    is_manual,
+                definition: QueryOrUpdateDefinition::new(
                     is_async,
+                    is_manual,
+                    None,
                     name,
                     params,
                     return_type,
-                    cdk_name: "azle".to_string(),
-                    guard_function_name: None,
-                },
+                    body,
+                    "azle".to_string(),
+                ),
             }),
             CanisterMethodType::Update => CanisterMethod::Update(UpdateMethod {
-                definition: QueryOrUpdateDefinition {
-                    body,
-                    is_manual,
+                definition: QueryOrUpdateDefinition::new(
                     is_async,
+                    is_manual,
+                    None,
                     name,
                     params,
                     return_type,
-                    cdk_name: "azle".to_string(),
-                    guard_function_name: None,
-                },
+                    body,
+                    "azle".to_string(),
+                ),
             }),
             _ => panic!("TODO: YOU SHOULDN'T BE TRYING TO PARSE NON QUERY/UPDATE METHODS HERE!"),
         }
