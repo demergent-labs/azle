@@ -1,26 +1,3 @@
-type AzleInline11353287906691632594 = variant {
-  InsertError : InsertError;
-  UserDoesNotExist : principal;
-};
-type AzleInline13401049363656383260 = variant { ok : User; err : InsertError };
-type AzleInline13433800688009538833 = variant {
-  ok : User;
-  err : AzleInline13933539390981386975;
-};
-type AzleInline13933539390981386975 = variant { UserDoesNotExist : principal };
-type AzleInline13945808284444015687 = variant {
-  RecordingDoesNotExist : principal;
-  InsertError : InsertError;
-  UserDoesNotExist : principal;
-};
-type AzleInline5698150622317580288 = variant {
-  ok : Recording;
-  err : AzleInline11353287906691632594;
-};
-type AzleInline9249661780820840727 = variant {
-  ok : Recording;
-  err : AzleInline13945808284444015687;
-};
 type InsertError = variant {
   ValueTooLarge : KeyTooLarge;
   KeyTooLarge : KeyTooLarge;
@@ -39,13 +16,36 @@ type User = record {
   username : text;
   created_at : nat64;
 };
+type _InlineCreateRecordingReturnType = variant {
+  ok : Recording;
+  err : _InlineCreateRecordingReturnTypeErr;
+};
+type _InlineCreateRecordingReturnTypeErr = variant {
+  InsertError : InsertError;
+  UserDoesNotExist : principal;
+};
+type _InlineCreateUserReturnType = variant { ok : User; err : InsertError };
+type _InlineDeleteRecordingReturnType = variant {
+  ok : Recording;
+  err : _InlineDeleteRecordingReturnTypeErr;
+};
+type _InlineDeleteRecordingReturnTypeErr = variant {
+  RecordingDoesNotExist : principal;
+  InsertError : InsertError;
+  UserDoesNotExist : principal;
+};
+type _InlineDeleteUserReturnType = variant {
+  ok : User;
+  err : _InlineDeleteUserReturnTypeErr;
+};
+type _InlineDeleteUserReturnTypeErr = variant { UserDoesNotExist : principal };
 service : () -> {
   create_recording : (vec nat8, text, principal) -> (
-      AzleInline5698150622317580288,
+      _InlineCreateRecordingReturnType,
     );
-  create_user : (text) -> (AzleInline13401049363656383260);
-  delete_recording : (principal) -> (AzleInline9249661780820840727);
-  delete_user : (principal) -> (AzleInline13433800688009538833);
+  create_user : (text) -> (_InlineCreateUserReturnType);
+  delete_recording : (principal) -> (_InlineDeleteRecordingReturnType);
+  delete_user : (principal) -> (_InlineDeleteUserReturnType);
   read_recording_by_id : (principal) -> (opt Recording) query;
   read_recordings : () -> (vec Recording) query;
   read_user_by_id : (principal) -> (opt User) query;

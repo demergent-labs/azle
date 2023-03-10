@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 
-use cdk_framework::{act::node::canister_method::QueryOrUpdateMethod, traits::HasReturnValue};
+use cdk_framework::{act::node::canister_method::QueryOrUpdateMethod, traits::ToTypeAnnotation};
 
 use crate::ts_keywords;
 
@@ -33,7 +33,9 @@ fn generate_match_arms(methods: &Vec<QueryOrUpdateMethod>) -> Vec<TokenStream> {
 
 fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
     let name = &method.name;
-    let return_type = method.create_return_type_annotation(name, &ts_keywords::ts_keywords());
+    let return_type = method
+        .return_type
+        .to_type_annotation(&ts_keywords::ts_keywords(), name.clone());
 
     quote!(
         #name => {

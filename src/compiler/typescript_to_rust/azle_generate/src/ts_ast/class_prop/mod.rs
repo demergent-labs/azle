@@ -25,11 +25,7 @@ impl SourceMapped<'_, ClassProp> {
         let params = self.build_act_fn_params()?;
         let return_type = self.build_return_type()?;
 
-        Ok(Method {
-            name,
-            params,
-            return_type,
-        })
+        Ok(Method::new(name, params, return_type))
     }
 
     fn build_act_fn_params(&self) -> Result<Vec<Param>, ParseError> {

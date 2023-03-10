@@ -30,7 +30,7 @@ pub fn generate_init_method_body(
 
             #call_to_init_js_function
 
-            ic_cdk::timer::set_timer(core::time::Duration::new(0, 0), _azle_rng_seed);
+            ic_cdk::timer::set_timer(core::time::Duration::new(0, 0), _cdk_rng_seed);
         });
     }
 }
