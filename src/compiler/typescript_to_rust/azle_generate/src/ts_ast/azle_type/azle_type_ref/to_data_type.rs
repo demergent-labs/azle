@@ -2,8 +2,6 @@ use cdk_framework::act::node::{
     candid::{func::Mode, Func, Opt, Primitive, Record, TypeRef, Variant},
     CandidType,
 };
-use std::hash::Hasher;
-use std::{collections::hash_map::DefaultHasher, hash::Hash};
 
 use super::AzleTypeRef;
 use crate::{
@@ -63,15 +61,6 @@ impl AzleTypeRef<'_> {
             _ => panic!("{}", self.wrong_enclosed_type_error()),
         };
 
-        let name = match name {
-            Some(name) => name,
-            None => {
-                let mut s = DefaultHasher::new();
-                azle_fn_type.ts_fn_type.hash(&mut s);
-                format!("AzleInlineFunc{}", format!("{}", s.finish()).to_string())
-            }
-        };
-
         let params: Vec<CandidType> = azle_fn_type
             .get_param_types()
             .iter()
@@ -93,7 +82,7 @@ impl AzleTypeRef<'_> {
         let list_from_vm_value = |name: String| func::generate_list_from_vm_value_impl(name);
 
         Func::new(
-            Some(name),
+            name,
             params,
             return_type,
             mode,
