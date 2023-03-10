@@ -13,6 +13,20 @@ export function get_tests(
 
                 return { ok: result === true };
             }
+        },
+        {
+            name: 'tightly guarded function',
+            test: async () => {
+                try {
+                    const result =
+                        await guard_functions_canister.tightly_guarded();
+                    return {
+                        err: 'Expected tightly_guarded function to throw'
+                    };
+                } catch (error) {
+                    return { ok: true };
+                }
+            }
         }
     ];
 }
