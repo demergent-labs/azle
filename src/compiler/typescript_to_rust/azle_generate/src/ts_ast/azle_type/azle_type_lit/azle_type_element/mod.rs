@@ -1,7 +1,7 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeElement;
 
-use cdk_framework::nodes::data_type_nodes::{ActRecordMember, ActVariantMember};
+use cdk_framework::act::node::candid::{record, variant};
 
 use self::{
     azle_method_signature::AzleMethodSignature, azle_property_signature::AzlePropertySignature,
@@ -46,7 +46,7 @@ impl AzleTypeElement<'_> {
         }
     }
 
-    pub(super) fn to_record_member(&self) -> ActRecordMember {
+    pub(super) fn to_record_member(&self) -> record::Member {
         let ts_property_signature = match self.as_azle_property_signature() {
             Some(ts_property_signature) => ts_property_signature,
             None => panic!("{}", self.record_property_signature_error()),
@@ -54,7 +54,7 @@ impl AzleTypeElement<'_> {
         ts_property_signature.to_record_member()
     }
 
-    pub(super) fn to_variant_member(&self) -> ActVariantMember {
+    pub(super) fn to_variant_member(&self) -> variant::Member {
         let ts_property_signature = match self.as_azle_property_signature() {
             Some(ts_property_signature) => ts_property_signature,
             None => panic!("{}", self.variant_property_signature_error()),

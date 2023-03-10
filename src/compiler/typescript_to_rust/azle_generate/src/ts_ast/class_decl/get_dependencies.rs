@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::{ClassDecl, ClassMember};
 
-use crate::ts_ast::{ast_traits::GetDependencies, source_map::SourceMapped, AzleTypeAliasDecl};
+use crate::ts_ast::{source_map::SourceMapped, traits::GetDependencies, AzleTypeAliasDecl};
 
 impl GetDependencies for Vec<SourceMapped<'_, ClassDecl>> {
     fn get_dependent_types(

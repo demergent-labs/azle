@@ -1,10 +1,10 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsPropertySignature;
 
-use crate::ts_ast::{ast_traits::GetTsType, azle_type::AzleType, GetName};
-use cdk_framework::{
-    nodes::data_type_nodes::{ActRecordMember, ActVariantMember},
-    ActDataType, ToActDataType,
+use crate::ts_ast::{azle_type::AzleType, traits::GetTsType, GetName};
+use cdk_framework::act::node::{
+    candid::{record, variant},
+    CandidType,
 };
 
 mod errors;
@@ -18,17 +18,17 @@ pub struct AzlePropertySignature<'a> {
 }
 
 impl AzlePropertySignature<'_> {
-    pub(super) fn to_record_member(&self) -> ActRecordMember {
-        ActRecordMember {
-            member_name: self.get_member_name(),
-            member_type: self.get_act_data_type(),
+    pub(super) fn to_record_member(&self) -> record::Member {
+        record::Member {
+            name: self.get_member_name(),
+            candid_type: self.get_act_data_type(),
         }
     }
 
-    pub(super) fn to_variant_member(&self) -> ActVariantMember {
-        ActVariantMember {
-            member_name: self.get_member_name(),
-            member_type: self.get_act_data_type(),
+    pub(super) fn to_variant_member(&self) -> variant::Member {
+        variant::Member {
+            name: self.get_member_name(),
+            candid_type: self.get_act_data_type(),
         }
     }
 
@@ -41,12 +41,12 @@ impl AzlePropertySignature<'_> {
             .to_string()
     }
 
-    fn get_act_data_type(&self) -> ActDataType {
+    fn get_act_data_type(&self) -> CandidType {
         let ts_type = match &self.ts_property_signature.type_ann {
             Some(ts_type_ann) => ts_type_ann.get_ts_type(),
             None => panic!("{}", self.no_type_annotation_error()),
         };
         let azle_type = AzleType::from_ts_type(ts_type, self.source_map);
-        azle_type.to_act_data_type(&None)
+        azle_type.to_data_type()
     }
 }

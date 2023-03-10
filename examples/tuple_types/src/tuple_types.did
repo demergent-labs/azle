@@ -1,5 +1,3 @@
-type AzleInline1599200123260964566 = record { goodbye : nat64 };
-type AzleInline6168693319471597726 = record { hello : nat64 };
 type Box = variant {
   Bad : record {
     record { text; nat64 };
@@ -18,6 +16,8 @@ type StreamingCallbackType = variant {
   with_headers : vec record { text; text };
 };
 type User = record { id : text; primitive_two_tuple : record { text; nat64 } };
+type _InlineTwoTupleWithInlineRecordsParam0 = record { hello : nat64 };
+type _InlineTwoTupleWithInlineRecordsParam1 = record { goodbye : nat64 };
 service : () -> {
   complex_one_tuple_inline_param : (record { record { text; nat64 } }) -> (
       record { record { text; nat64 } },
@@ -87,8 +87,14 @@ service : () -> {
   tuple_array_record_field : () -> (HttpResponse) query;
   tuple_array_variant_field : () -> (StreamingCallbackType) query;
   two_tuple_with_inline_records : (
-      record { AzleInline6168693319471597726; AzleInline1599200123260964566 },
+      record {
+        _InlineTwoTupleWithInlineRecordsParam0;
+        _InlineTwoTupleWithInlineRecordsParam1;
+      },
     ) -> (
-      record { AzleInline6168693319471597726; AzleInline1599200123260964566 },
+      record {
+        _InlineTwoTupleWithInlineRecordsParam0;
+        _InlineTwoTupleWithInlineRecordsParam1;
+      },
     ) query;
 }

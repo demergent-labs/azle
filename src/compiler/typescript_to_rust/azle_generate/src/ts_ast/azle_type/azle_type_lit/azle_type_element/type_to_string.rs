@@ -1,5 +1,5 @@
 use super::AzleTypeElement;
-use crate::ts_ast::ast_traits::TypeToString;
+use crate::ts_ast::traits::TypeToString;
 
 impl TypeToString for AzleTypeElement<'_> {
     fn type_to_string(&self) -> String {

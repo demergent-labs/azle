@@ -1,7 +1,7 @@
 use super::AzleFnType;
 use crate::{
     errors::{ErrorMessage, Suggestion},
-    ts_ast::{ast_traits::GetSourceInfo, source_map::GetSourceFileInfo, GetSourceText},
+    ts_ast::{source_map::GetSourceFileInfo, traits::GetSourceInfo, GetSourceText},
 };
 
 impl AzleFnType<'_> {

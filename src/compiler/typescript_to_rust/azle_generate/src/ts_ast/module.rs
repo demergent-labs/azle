@@ -1,4 +1,4 @@
-use cdk_framework::CanisterMethodType;
+use cdk_framework::act::node::canister_method::CanisterMethodType;
 use swc_common::SourceMap;
 use swc_ecma_ast::{ClassDecl, Decl, ExportDecl, Expr, Module, ModuleDecl, ModuleItem, Stmt};
 

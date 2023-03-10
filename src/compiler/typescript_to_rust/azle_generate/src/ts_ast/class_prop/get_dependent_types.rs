@@ -1,6 +1,6 @@
 use swc_ecma_ast::ClassProp;
 
-use crate::ts_ast::{ast_traits::GetDependencies, azle_type::AzleType, source_map::SourceMapped};
+use crate::ts_ast::{azle_type::AzleType, source_map::SourceMapped, traits::GetDependencies};
 
 impl GetDependencies for SourceMapped<'_, ClassProp> {
     fn get_dependent_types(

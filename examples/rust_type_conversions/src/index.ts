@@ -1,4 +1,5 @@
 import {
+    Alias,
     blob,
     float32,
     float64,
@@ -40,28 +41,28 @@ export function simple_query(
     return 'This is a query function';
 }
 
-type TypeAliasOfATypeRef = nat8;
+type TypeAliasOfATypeRef = Alias<nat8>;
 
-type SimpleTypeAlias = boolean;
+type SimpleTypeAlias = Alias<boolean>;
 
-type Boolean = boolean;
-type Boolean2 = Boolean;
-type Boolean3 = Boolean2;
+type Boolean = Alias<boolean>;
+type Boolean2 = Alias<Boolean>;
+type Boolean3 = Alias<Boolean2>;
 
-type BooleanArray = Boolean[];
+type BooleanArray = Alias<Boolean[]>;
 
 type SimpleRecord = Record<{
     one: boolean;
     other: BooleanArray;
 }>;
 
-type Unused3 = boolean;
+type Unused3 = Alias<boolean>;
 
-type Unused2 = Unused3;
+type Unused2 = Alias<Unused3>;
 
-type Unused = Unused2;
+type Unused = Alias<Unused2>;
 
-type UsedType = Unused;
+type UsedType = Alias<Unused>;
 
 type DeepInlineRecords = Record<{
     one: Record<{ thing: boolean }>;
@@ -144,7 +145,7 @@ type Yes = Variant<{
 }>;
 
 type SelfReferencingVariant = Variant<{
-    One: SelfReferencingVariant;
+    // One: SelfReferencingVariant; //TODO: We should fix this in the CDK Framework
     Two: null;
 }>;
 
@@ -267,7 +268,7 @@ export function inline_vec(
     array: Record<{ thing: string; thing2: boolean }>[],
     struct_thing: StructWithInlineArray
 ): void {}
-type CanisterOnly = boolean;
+type CanisterOnly = Alias<boolean>;
 
 type CanisterTuple1 = [
     string,
@@ -279,8 +280,8 @@ type CanisterTuple1 = [
 $query;
 export function tuple_test(tup: CanisterTuple1): void {}
 
-type OptionAlias = Opt<Boolean>;
-type InlineOptionAlias = Opt<Record<{ inline_bool: boolean }>>;
+type OptionAlias = Alias<Opt<Boolean>>;
+type InlineOptionAlias = Alias<Opt<Record<{ inline_bool: boolean }>>>;
 type InlineOptionStruct = Record<{
     opt: Opt<Record<{ inline_string: String }>>;
 }>;
@@ -296,8 +297,8 @@ export function option_test(
     }>
 ): void {}
 
-type ArrayAlias = Boolean[];
-type InlineArrayAlias = Record<{ inline_bool: boolean }>[];
+type ArrayAlias = Alias<Boolean[]>;
+type InlineArrayAlias = Alias<Record<{ inline_bool: boolean }>[]>;
 type InlineArrayStruct = Record<{
     arr: Record<{ inline_string: String }>[];
 }>;

@@ -1,26 +1,20 @@
-use cdk_framework::{
-    nodes::ActCanisterMethod, traits::CanisterMethodBuilder, CanisterMethodType, RequestType,
-    SystemStructureType,
-};
+use cdk_framework::act::node::canister_method::{CanisterMethod, CanisterMethodType};
 use std::collections::{HashMap, HashSet};
 use swc_ecma_ast::ClassDecl;
 
 use crate::ts_ast::{
-    ast_traits::GetDependencies,
     azle_type_alias_decls::azle_type_alias_decl::{
         AzleTypeAliasListHelperMethods, TsTypeAliasHelperMethods,
     },
     source_map::SourceMapped,
+    traits::GetDependencies,
     AzleFnDecl, AzleProgram, AzleTypeAliasDecl,
 };
 
 pub trait HelperMethods {
     fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl>;
     fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
-    fn get_azle_type_alias_decls_for_system_structure_type(
-        &self,
-        system_structure_type: &SystemStructureType,
-    ) -> Vec<AzleTypeAliasDecl>;
+    fn get_canister_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
     fn get_external_canister_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>>;
     fn get_azle_fn_decls_of_type(
         &self,
@@ -32,7 +26,7 @@ pub trait HelperMethods {
         found_type_names: &HashSet<String>,
     ) -> HashSet<String>;
     fn get_dependent_types(&self) -> HashSet<String>;
-    fn build_canister_method_nodes(&self, request_type: RequestType) -> Vec<ActCanisterMethod>;
+    fn build_canister_method_nodes(&self, request_type: CanisterMethodType) -> Vec<CanisterMethod>;
 }
 
 impl HelperMethods for Vec<AzleProgram> {
@@ -64,17 +58,12 @@ impl HelperMethods for Vec<AzleProgram> {
         })
     }
 
-    fn get_azle_type_alias_decls_for_system_structure_type(
-        &self,
-        system_structure_type: &SystemStructureType,
-    ) -> Vec<AzleTypeAliasDecl> {
+    fn get_canister_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl> {
         let type_alias_decls = self.get_azle_type_alias_decls();
 
         type_alias_decls
             .into_iter()
-            .filter(|type_alias_decl| {
-                type_alias_decl.is_type_alias_decl_system_structure_type(system_structure_type)
-            })
+            .filter(|type_alias_decl| type_alias_decl.is_canister_type_alias_decl())
             .collect()
     }
 
@@ -153,16 +142,14 @@ impl HelperMethods for Vec<AzleProgram> {
         dependencies
     }
 
-    fn build_canister_method_nodes(&self, request_type: RequestType) -> Vec<ActCanisterMethod> {
-        let canister_method_type = match request_type {
-            RequestType::Query => CanisterMethodType::Query,
-            RequestType::Update => CanisterMethodType::Update,
-        };
-
+    fn build_canister_method_nodes(
+        &self,
+        canister_method_type: CanisterMethodType,
+    ) -> Vec<CanisterMethod> {
         let azle_fnc_decls = self.get_azle_fn_decls_of_type(&canister_method_type);
 
         azle_fnc_decls.iter().fold(vec![], |acc, fn_decl| {
-            let canister_method_node = fn_decl.build_canister_method_node(&request_type);
+            let canister_method_node = fn_decl.build_canister_method_node(&canister_method_type);
             vec![acc, vec![canister_method_node]].concat()
         })
     }

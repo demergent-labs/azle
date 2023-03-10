@@ -2,9 +2,9 @@ use crate::{
     generators::canister_methods::heartbeat,
     ts_ast::{azle_program::HelperMethods, ts_ast::errors, TsAst},
 };
-use cdk_framework::{nodes::ActHeartbeatMethod, CanisterMethodType};
+use cdk_framework::act::node::canister_method::{CanisterMethodType, HeartbeatMethod};
 
-pub fn build_canister_method_system_heartbeat(ts_ast: &TsAst) -> Option<ActHeartbeatMethod> {
+pub fn build_canister_method_system_heartbeat(ts_ast: &TsAst) -> Option<HeartbeatMethod> {
     let heartbeat_fn_decls = ts_ast
         .azle_programs
         .get_azle_fn_decls_of_type(&CanisterMethodType::Heartbeat);
@@ -22,7 +22,7 @@ pub fn build_canister_method_system_heartbeat(ts_ast: &TsAst) -> Option<ActHeart
 
     if let Some(heartbeat_fn_decl) = heartbeat_fn_decl_option {
         let body = heartbeat::generate_heartbeat_method_body(heartbeat_fn_decl);
-        Some(ActHeartbeatMethod { body })
+        Some(HeartbeatMethod { body })
     } else {
         None
     }

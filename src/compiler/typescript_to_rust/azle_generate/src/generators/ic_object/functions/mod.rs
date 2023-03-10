@@ -1,4 +1,4 @@
-use cdk_framework::nodes::{ActCanisterMethod, ActExternalCanister};
+use cdk_framework::act::node::{canister_method::QueryOrUpdateMethod, ExternalCanister};
 
 use crate::StableBTreeMapNode;
 
@@ -50,8 +50,8 @@ mod time;
 mod trap;
 
 pub fn generate(
-    canister_methods: &Vec<ActCanisterMethod>,
-    external_canisters: &Vec<ActExternalCanister>,
+    query_and_update_methods: &Vec<QueryOrUpdateMethod>,
+    external_canisters: &Vec<ExternalCanister>,
     stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
 ) -> proc_macro2::TokenStream {
     let accept_message = accept_message::generate();
@@ -83,7 +83,7 @@ pub fn generate(
     let reject = reject::generate();
     let reject_code = reject_code::generate();
     let reject_message = reject_message::generate();
-    let reply = reply::generate(canister_methods);
+    let reply = reply::generate(query_and_update_methods);
     let reply_raw = reply_raw::generate();
     let set_certified_data = set_certified_data::generate();
     let set_timer = set_timer::generate();

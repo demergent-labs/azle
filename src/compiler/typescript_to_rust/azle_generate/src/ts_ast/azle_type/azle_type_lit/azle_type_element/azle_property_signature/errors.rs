@@ -1,4 +1,4 @@
-use crate::{errors::ErrorMessage, ts_ast::ast_traits::GetSourceInfo};
+use crate::{errors::ErrorMessage, ts_ast::traits::GetSourceInfo};
 
 use super::AzlePropertySignature;
 

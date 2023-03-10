@@ -1,4 +1,4 @@
-use cdk_framework::CanisterMethodType;
+use cdk_framework::act::node::canister_method::CanisterMethodType;
 use quote::format_ident;
 use swc_common::SourceMap;
 use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};

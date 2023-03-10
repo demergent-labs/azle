@@ -19,7 +19,7 @@ mod errors;
 mod get_dependent_types;
 mod get_source_info;
 mod get_source_text;
-mod to_act_data_type;
+mod to_data_type;
 
 #[derive(Clone)]
 pub enum AzleType<'a> {

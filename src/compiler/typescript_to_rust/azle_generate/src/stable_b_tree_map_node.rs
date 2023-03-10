@@ -1,15 +1,15 @@
-use cdk_framework::{ActDataType, ToActDataType};
+use cdk_framework::act::node::CandidType;
 use std::collections::{HashMap, HashSet};
 use swc_common::SourceMap;
 use swc_ecma_ast::TsType;
 
-use crate::ts_ast::{ast_traits::GetDependencies, azle_type::AzleType, AzleTypeAliasDecl};
+use crate::ts_ast::{azle_type::AzleType, traits::GetDependencies, AzleTypeAliasDecl};
 
 #[derive(Clone, Debug)]
 pub struct StableBTreeMapNode {
     pub memory_id: u8,
-    pub key_type: ActDataType,
-    pub value_type: ActDataType,
+    pub key_type: CandidType,
+    pub value_type: CandidType,
     pub max_key_size: u32,
     pub max_value_size: u32,
 }
@@ -25,11 +25,9 @@ pub struct AzleStableBTreeMapNode {
 
 impl AzleStableBTreeMapNode {
     pub fn to_stable_b_tree_map_node(&self, source_map: &SourceMap) -> StableBTreeMapNode {
-        let key_type =
-            AzleType::from_ts_type(self.key_type.clone(), source_map).to_act_data_type(&None);
+        let key_type = AzleType::from_ts_type(self.key_type.clone(), source_map).to_data_type();
 
-        let value_type =
-            AzleType::from_ts_type(self.value_type.clone(), source_map).to_act_data_type(&None);
+        let value_type = AzleType::from_ts_type(self.value_type.clone(), source_map).to_data_type();
 
         StableBTreeMapNode {
             memory_id: self.memory_id,

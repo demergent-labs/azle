@@ -17,6 +17,7 @@
 // Taken in part from: https://github.com/dfinity/interface-spec/blob/master/spec/ic.did
 
 import {
+    Alias,
     blob,
     CanisterResult,
     ExternalCanister,
@@ -59,9 +60,9 @@ export {
     UtxosFilter
 } from './bitcoin';
 
-export type CanisterId = Principal;
-export type UserId = Principal;
-export type WasmModule = blob;
+export type CanisterId = Alias<Principal>;
+export type UserId = Alias<Principal>;
+export type WasmModule = Alias<blob>;
 
 export type CanisterSettings = Record<{
     controllers: Opt<Principal[]>;

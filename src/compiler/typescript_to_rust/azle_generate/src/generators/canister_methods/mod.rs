@@ -1,4 +1,3 @@
-use cdk_framework::traits::CanisterMethodBuilder;
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 
@@ -24,7 +23,7 @@ pub fn generate_call_to_js_function(fn_decl: &AzleFnDecl) -> TokenStream {
     let param_name_idents: Vec<Ident> = fn_decl
         .build_params()
         .iter()
-        .map(|param| format_ident!("{}", param.prefixed_name()))
+        .map(|param| format_ident!("{}", param.get_prefixed_name()))
         .collect();
 
     quote! {

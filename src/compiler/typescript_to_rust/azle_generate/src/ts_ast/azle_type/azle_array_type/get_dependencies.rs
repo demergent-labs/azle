@@ -9,7 +9,7 @@ impl GetDependencies for AzleArrayType<'_> {
         type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
         found_type_names: &HashSet<String>,
     ) -> HashSet<String> {
-        self.get_azle_elem()
+        self.get_elem_type()
             .get_dependent_types(type_alias_lookup, found_type_names)
     }
 }

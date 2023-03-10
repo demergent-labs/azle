@@ -1,7 +1,7 @@
 use super::{to_stable_b_tree_map::ArgName, AzleNewExpr};
 use crate::{
     errors::{ErrorMessage, Suggestion},
-    ts_ast::ast_traits::GetSourceInfo,
+    ts_ast::traits::GetSourceInfo,
 };
 
 impl AzleNewExpr<'_> {

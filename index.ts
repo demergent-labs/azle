@@ -1,9 +1,5 @@
 import { Principal } from '@dfinity/principal';
-export {
-    StableBTreeMap,
-    InsertResult,
-    InsertError
-} from './src/stable_b_tree_map';
+export { StableBTreeMap, InsertError } from './src/stable_b_tree_map';
 
 declare var globalThis: any;
 
@@ -124,6 +120,8 @@ export type Record<T extends object> = T;
 export type Variant<T extends object> = Partial<T>;
 export type Opt<T> = T | null;
 
+export type Alias<T> = T;
+
 export type CanisterResult<T> = {
     ok?: T;
     err?: string;
@@ -141,12 +139,12 @@ export type NotifyResult = Variant<{
 /**
  * Type returned by the `ic.set_timer` and `ic.set_timer_interval` functions. Pass to `ic.clear_timer` to remove the timer.
  */
-export type TimerId = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
+export type TimerId = Alias<nat64>; // TODO: Consider modeling this after the corresponding struct in Rust
 
 /**
  * Represents a duration of time in seconds.
  */
-export type Duration = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
+export type Duration = Alias<nat64>; // TODO: Consider modeling this after the corresponding struct in Rust
 
 export type int = bigint;
 export type int64 = bigint;
@@ -168,7 +166,7 @@ export type blob = Uint8Array;
 export type reserved = any;
 export type empty = never;
 
-type AzleResult<T, E> = Variant<{
+type AzleResult<T, E> = Partial<{
     ok: T;
     err: E;
 }>;

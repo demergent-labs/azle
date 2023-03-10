@@ -1,33 +1,46 @@
-use cdk_framework::nodes::{ActCanisterMethod, ActExternalCanister};
+use cdk_framework::act::node::{
+    canister_method::{QueryMethod, QueryOrUpdateMethod, UpdateMethod},
+    ExternalCanister,
+};
 use proc_macro2::TokenStream;
 use quote::quote;
 
 use crate::{
-    generators::{
-        async_await_result_handler, boa_error_handlers, ic_object, rng_seed, stable_b_tree_map,
-    },
+    generators::{async_await_result_handler, boa_error_handlers, ic_object, stable_b_tree_map},
     ts_ast::TsAst,
     StableBTreeMapNode,
 };
 
 pub fn generate(
     ts_ast: &TsAst,
-    query_and_update_canister_methods: &Vec<ActCanisterMethod>,
-    external_canisters: &Vec<ActExternalCanister>,
+    query_methods: &Vec<QueryMethod>,
+    update_methods: &Vec<UpdateMethod>,
+    external_canisters: &Vec<ExternalCanister>,
     stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
 ) -> TokenStream {
+    let query_and_update_methods = vec![
+        query_methods
+            .iter()
+            .map(|query_method| QueryOrUpdateMethod::Query(query_method.clone()))
+            .collect::<Vec<_>>(),
+        update_methods
+            .iter()
+            .map(|update_methods| QueryOrUpdateMethod::Update(update_methods.clone()))
+            .collect::<Vec<_>>(),
+    ]
+    .concat();
+
     let async_await_result_handler =
-        async_await_result_handler::generate(query_and_update_canister_methods);
+        async_await_result_handler::generate(&query_and_update_methods);
     let boa_error_handlers = boa_error_handlers::generate();
     let ic_object_functions = ic_object::functions::generate(
-        query_and_update_canister_methods,
+        &query_and_update_methods,
         external_canisters,
         stable_b_tree_map_nodes,
     );
     let register_ic_object_function = ic_object::register_function::generate(ts_ast);
 
     let stable_b_tree_maps = stable_b_tree_map::generate(stable_b_tree_map_nodes);
-    let rng_seed = rng_seed::generate();
 
     quote! {
         #async_await_result_handler
@@ -35,6 +48,5 @@ pub fn generate(
         #ic_object_functions
         #register_ic_object_function
         #stable_b_tree_maps
-        #rng_seed
     }
 }

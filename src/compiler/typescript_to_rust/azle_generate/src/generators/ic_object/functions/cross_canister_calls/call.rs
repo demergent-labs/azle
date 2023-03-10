@@ -1,12 +1,12 @@
-use cdk_framework::nodes::{ActExternalCanister, ActExternalCanisterMethod};
+use cdk_framework::act::node::{external_canister::Method, ExternalCanister};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
 use crate::generators::ic_object;
 
 pub fn generate(
-    canister: &ActExternalCanister,
-    method: &ActExternalCanisterMethod,
+    canister: &ExternalCanister,
+    method: &Method,
     pre_await_state_management: &TokenStream,
     post_await_state_management: &TokenStream,
     promise_fulfillment: &TokenStream,
@@ -14,7 +14,7 @@ pub fn generate(
     let call_function_name_string = format!("_azle_call_{}_{}", canister.name, method.name);
     let call_function_name_ident = format_ident!("{}", call_function_name_string);
     let call_wrapper_fn_name = format_ident!("{}_wrapper", call_function_name_string);
-    let param_variables = ic_object::generate_param_variables(method);
+    let param_variables = ic_object::generate_param_variables(method, &canister.name);
     let args = ic_object::generate_args_list(method);
 
     quote! {

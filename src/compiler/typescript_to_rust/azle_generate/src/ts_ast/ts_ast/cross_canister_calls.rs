@@ -1,9 +1,9 @@
 use super::TsAst;
 use crate::ts_ast::azle_program::HelperMethods;
-use cdk_framework::nodes::ActExternalCanister;
+use cdk_framework::act::node::ExternalCanister;
 
 impl TsAst {
-    pub fn build_external_canisters(&self) -> Vec<ActExternalCanister> {
+    pub fn build_external_canisters(&self) -> Vec<ExternalCanister> {
         let external_canister_class_declarations = self
             .azle_programs
             .get_external_canister_class_declarations();
