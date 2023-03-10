@@ -28,7 +28,7 @@ type _InlineComplexRecord = record {
 };
 type _InlineComplexRecordFuncReturnTypeVariant = variant {
   v1;
-  v2 : _InlineInlineFuncCallback4V3;
+  v2 : _InlineComplexRecordOptRecord;
 };
 type _InlineComplexRecordOpt = record {
   "opt" : opt text;
@@ -36,7 +36,7 @@ type _InlineComplexRecordOpt = record {
   primitive : nat;
   "func" : func () -> (text);
   "variant" : _InlineComplexRecordOptVariant;
-  "record" : _InlineInlineFuncCallback4V3;
+  "record" : _InlineComplexRecordOptRecord;
 };
 type _InlineComplexRecordOptRecord = record { prop1 : text };
 type _InlineComplexRecordOptVariant = variant { v1; v2 };
@@ -48,9 +48,8 @@ type _InlineComplexRecordRecord = record {
 type _InlineComplexRecordVariant = variant {
   v1;
   v2;
-  v3 : _InlineInlineFuncCallback4V3;
+  v3 : _InlineComplexRecordOptRecord;
 };
-type _InlineInlineFuncCallback4V3 = record { prop1 : text };
 type _InlineInlineRecordReturnTypeReturnType = record {
   prop1 : text;
   prop2 : text;
@@ -118,7 +117,7 @@ service : () -> {
             ) query,
         ) -> () query,
     ) query;
-  inline_record_param : (_InlineInlineFuncCallback4V3) -> (text) query;
+  inline_record_param : (_InlineComplexRecordOptRecord) -> (text) query;
   inline_record_return_type : () -> (
       _InlineInlineRecordReturnTypeReturnType,
     ) query;
