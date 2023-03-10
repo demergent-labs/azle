@@ -490,10 +490,10 @@ export function set_message(new_message: string): void {
 </code></pre>
 <p>We should see <code>(&quot;&quot;)</code> representing an empty message.</p>
 <p>Now let's yell <code>Hello World!</code>:</p>
-<pre><code class="language-bash">dfx canister call set_message '(&quot;Hello World!&quot;)'
+<pre><code class="language-bash">dfx canister call azle_hello_world set_message '(&quot;Hello World!&quot;)'
 </code></pre>
 <p>Retrieve the message:</p>
-<pre><code class="language-bash">dfx canister call get_message
+<pre><code class="language-bash">dfx canister call azle_hello_world get_message
 </code></pre>
 <p>We should see <code>(&quot;Hello World!&quot;)</code>.</p>
 <h2 id="interacting-with-your-canister-from-the-web-ui"><a class="header" href="#interacting-with-your-canister-from-the-web-ui">Interacting with your canister from the web UI</a></h2>
@@ -503,7 +503,7 @@ URLs:
   Backend canister via Candid interface:
     azle_hello_world: http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai
 </code></pre>
-<p>Open up <a href="http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai">http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai</a> to access the web UI and interact with your canister.</p>
+<p>Open up <a href="http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai">http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai</a> or the equivalent URL from your terminal to access the web UI and interact with your canister.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="deployment"><a class="header" href="#deployment">Deployment</a></h1>
 <ul>
 <li><a href="deployment.html#starting-the-local-replica">Starting the local replica</a></li>
@@ -869,10 +869,11 @@ export function set_many(num_entries: nat64): void {
     Func,
     Principal,
     $query,
-    Query
+    Query,
+    Record
 } from 'azle';
 
-type Candid = {
+type Candid = Record&lt;{
     text: string;
     blob: blob;
     nat: nat;
@@ -889,19 +890,19 @@ type Candid = {
     float32: float32;
     bool: boolean;
     opt: Opt&lt;nat&gt;;
-    record: {
+    record: Record&lt;{
         first_name: string;
         last_name: string;
         age: nat8;
-    };
+    }&gt;;
     variant: Variant&lt;{
         Tag1: null;
         Tag2: null;
         Tag3: int;
     }&gt;;
-    func: Func&lt;() =&gt; Candid&gt;;
+    func: Func&lt;Query&lt;() =&gt; Candid&gt;&gt;;
     principal: Principal;
-};
+}&gt;;
 
 $query;
 export function candid_types(): Candid {
@@ -946,9 +947,11 @@ export function candid_types(): Candid {
     &quot;opt&quot; = null;
     &quot;principal&quot; = principal &quot;ryjl3-tyaaa-aaaaa-aaaba-cai&quot;;
     &quot;blob&quot; = vec {};
+    &quot;bool&quot; = true;
     &quot;func&quot; = func &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;.candid_types;
     &quot;int8&quot; = 127 : int8;
     &quot;nat8&quot; = 255 : nat8;
+    &quot;text&quot; = &quot;text&quot;;
     &quot;nat16&quot; = 65_535 : nat16;
     &quot;nat32&quot; = 4_294_967_295 : nat32;
     &quot;nat64&quot; = 18_446_744_073_709_551_615 : nat64;
@@ -956,8 +959,13 @@ export function candid_types(): Candid {
     &quot;int32&quot; = 2_147_483_647 : int32;
     &quot;int64&quot; = 9_223_372_036_854_775_807 : int64;
     &quot;variant&quot; = variant { Tag1 };
-    &quot;float32&quot; = 3.1415927 : float32;
-    &quot;float64&quot; = 2.718281828459045 : float64;
+    &quot;float32&quot; = 0 : float32;
+    &quot;float64&quot; = 0 : float64;
+    &quot;record&quot; = record {
+      age = 35 : nat8;
+      first_name = &quot;John&quot;;
+      last_name = &quot;Doe&quot;;
+    };
   },
 )
 </code></pre>
@@ -1650,7 +1658,7 @@ Caused by: Failed to create argument blob.
 
 let map = new StableBTreeMap&lt;nat8, string&gt;(0, 100, 1_000);
 </code></pre>
-<p>This is a <code>StableBTreeMap</code> with a key of type <code>nat8</code> and a value of type <code>string</code>. Key and value types can be any <a href="http://localhost:3000/candid.html#candid-types">Candid type</a>.</p>
+<p>This is a <code>StableBTreeMap</code> with a key of type <code>nat8</code> and a value of type <code>string</code>. Key and value types can be any <a href="candid.html">Candid type</a>.</p>
 <p>This <code>StableBTreeMap</code> also has a <code>memory id</code> of <code>0</code>, a maximum key size of <code>100</code> bytes and a maximum value size of <code>1_000</code> bytes. You must statically specify the <code>memory id</code>, maximum key size, and maximum value sizes (they cannot be variables).</p>
 <p>Each <code>StableBTreeMap</code> instance must have a unique <code>memory id</code>. Once a <code>memory id</code> is allocated, it cannot be used with a different <code>StableBTreeMap</code>. This means you can't create another <code>StableBTreeMap</code> using the same <code>memory id</code>, and you can't change the key or value types of an existing <code>StableBTreeMap</code>. <a href="https://github.com/demergent-labs/azle/issues/843">This problem will be addressed</a>.</p>
 <p>Here's an example showing all of the basic <code>StableBTreeMap</code> operations:</p>
@@ -2250,7 +2258,7 @@ const some_canister = new SomeCanister(
 );
 
 $update;
-export function receive_notification(): Variant&lt;{
+export function send_notification(): Variant&lt;{
     ok: null;
     err: RejectionCode;
 }&gt; {
@@ -2278,7 +2286,7 @@ const some_canister = new SomeCanister(
 );
 
 $update;
-export function receive_notification(): Variant&lt;{
+export function send_notification(): Variant&lt;{
     ok: null;
     err: RejectionCode;
 }&gt; {

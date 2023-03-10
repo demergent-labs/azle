@@ -282,7 +282,7 @@ const some_canister = new SomeCanister(
 );
 
 $update;
-export function receive_notification(): Variant<{
+export function send_notification(): Variant<{
     ok: null;
     err: RejectionCode;
 }> {
@@ -313,7 +313,7 @@ const some_canister = new SomeCanister(
 );
 
 $update;
-export function receive_notification(): Variant<{
+export function send_notification(): Variant<{
     ok: null;
     err: RejectionCode;
 }> {
