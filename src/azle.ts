@@ -251,17 +251,17 @@ function generateCandidFile(candid_path: string, wasm_file_path: string) {
     const candid_pointer = (
         wasm_instance.exports as any
     )._cdk_get_candid_pointer();
-    const candid_length = (
-        wasm_instance.exports as any
-    )._cdk_get_candid_length();
 
-    const buffer = Buffer.from(
-        (wasm_instance.exports.memory as any).buffer,
-        candid_pointer,
-        candid_length
-    );
+    const memory = new Uint8Array((wasm_instance.exports.memory as any).buffer);
 
-    fs.writeFileSync(candid_path, buffer);
+    let candid_bytes = [];
+    let i = candid_pointer;
+    while (memory[i] !== 0) {
+        candid_bytes.push(memory[i]);
+        i += 1;
+    }
+
+    fs.writeFileSync(candid_path, Buffer.from(candid_bytes));
 }
 
 function generateRustCanister(
