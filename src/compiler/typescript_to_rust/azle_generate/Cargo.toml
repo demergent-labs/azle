@@ -12,5 +12,5 @@ swc_ecma_parser = "0.117.4"
 derive-syn-parse = "0.1.5"
 swc_ecma_ast = "0.90.10"
 annotate-snippets = "0.9.1"
-cdk_framework = { git = "https://github.com/demergent-labs/cdk_framework", rev = "c361eda0baa32b07dccb4fbd56e89927a235009f" }
+cdk_framework = { git = "https://github.com/demergent-labs/cdk_framework", rev = "a6125f35e0ea90cf78003d5f0c6c61038745a752" }
 # cdk_framework = { path = "/home/cdk_framework" }

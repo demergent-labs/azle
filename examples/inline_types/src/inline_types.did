@@ -13,14 +13,6 @@ type TestVariant = variant { prop1 : text; prop2 : Test };
 type Thing = record { id : text };
 type User1 = record { id : text; job : _InlineUser1Job };
 type UserVariant = variant { prop1 };
-type _InlineAzleInlineFunc16044853667032657176ReturnTypeVariant = variant {
-  v1;
-  v2 : _InlineComplexRecordOptRecord;
-};
-type _InlineAzleInlineFunc39862844798036995ReturnTypeVariant = variant {
-  v1;
-  v2 : _InlineComplexRecordOptRecord;
-};
 type _InlineComplexRecord = record {
   "opt" : opt _InlineComplexRecordOpt;
   "vec" : vec _InlineComplexRecordOpt;
@@ -28,11 +20,15 @@ type _InlineComplexRecord = record {
   "func" : func () -> (
       record {
         prop1 : text;
-        "variant" : _InlineAzleInlineFunc16044853667032657176ReturnTypeVariant;
+        "variant" : _InlineComplexRecordFuncReturnTypeVariant;
       },
     ) query;
   "variant" : _InlineComplexRecordVariant;
   "record" : _InlineComplexRecordRecord;
+};
+type _InlineComplexRecordFuncReturnTypeVariant = variant {
+  v1;
+  v2 : _InlineInlineFuncCallback4V3;
 };
 type _InlineComplexRecordOpt = record {
   "opt" : opt text;
@@ -40,7 +36,7 @@ type _InlineComplexRecordOpt = record {
   primitive : nat;
   "func" : func () -> (text);
   "variant" : _InlineComplexRecordOptVariant;
-  "record" : _InlineComplexRecordOptRecord;
+  "record" : _InlineInlineFuncCallback4V3;
 };
 type _InlineComplexRecordOptRecord = record { prop1 : text };
 type _InlineComplexRecordOptVariant = variant { v1; v2 };
@@ -52,8 +48,9 @@ type _InlineComplexRecordRecord = record {
 type _InlineComplexRecordVariant = variant {
   v1;
   v2;
-  v3 : _InlineComplexRecordOptRecord;
+  v3 : _InlineInlineFuncCallback4V3;
 };
+type _InlineInlineFuncCallback4V3 = record { prop1 : text };
 type _InlineInlineRecordReturnTypeReturnType = record {
   prop1 : text;
   prop2 : text;
@@ -102,7 +99,7 @@ service : () -> {
           func () -> (
               record {
                 prop1 : text;
-                "variant" : _InlineAzleInlineFunc39862844798036995ReturnTypeVariant;
+                "variant" : _InlineComplexRecordFuncReturnTypeVariant;
               },
             ) query,
         ) -> () query,
@@ -116,12 +113,12 @@ service : () -> {
           func () -> (
               record {
                 prop1 : text;
-                "variant" : _InlineAzleInlineFunc39862844798036995ReturnTypeVariant;
+                "variant" : _InlineComplexRecordFuncReturnTypeVariant;
               },
             ) query,
         ) -> () query,
     ) query;
-  inline_record_param : (_InlineComplexRecordOptRecord) -> (text) query;
+  inline_record_param : (_InlineInlineFuncCallback4V3) -> (text) query;
   inline_record_return_type : () -> (
       _InlineInlineRecordReturnTypeReturnType,
     ) query;
