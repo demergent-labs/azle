@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "guard_functions": {
+            "type": "custom",
+            "build": "npx azle guard_functions",
+            "root": "src",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
+            "wasm": ".azle/guard_functions/guard_functions.wasm.gz",
+            "declarations": {
+                "output": "test/dfx_generated/guard_functions",
+                "node_compatibility": true
+            }
+        }
+    }
+}
