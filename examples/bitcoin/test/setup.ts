@@ -42,7 +42,6 @@ export function install_bitcoin() {
         `tar xzf ${tarball} --overwrite  --strip-components=1 --directory=.bitcoin/ bitcoin-23.0/bin/`,
         { stdio: 'inherit' }
     );
-    execSync(`rm ${tarball}`, { stdio: 'inherit' });
 }
 
 export async function while_running_bitcoin_daemon(
