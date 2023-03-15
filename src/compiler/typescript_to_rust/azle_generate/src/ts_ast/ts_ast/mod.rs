@@ -173,9 +173,9 @@ fn to_azle_program(ts_file_name: &str) -> AzleProgram {
 fn to_items(ts_file_name: &str) -> Vec<Item> {
     let filepath = Path::new(ts_file_name).to_path_buf();
 
-    let cm: Lrc<SourceMap> = Default::default();
+    let reference_counted_source_map: Lrc<SourceMap> = Default::default();
 
-    let fm = match cm.load_file(&filepath) {
+    let fm = match reference_counted_source_map.load_file(&filepath) {
         Ok(rc_source_file) => rc_source_file,
         Err(err) => panic!("Error: Unable to load file {}\n{}", ts_file_name, err),
     };
@@ -195,17 +195,18 @@ fn to_items(ts_file_name: &str) -> Vec<Item> {
     let parse_result = parser.parse_program();
     match parse_result {
         Ok(program) => match program {
-            Program::Module(module) => match std::rc::Rc::try_unwrap(cm) {
-                Ok(source_map) => module
-                    .body
-                    .into_iter()
-                    .map(|module_item| Item {
-                        module_item,
-                        source_map,
-                    })
-                    .collect(),
-                Err(_) => panic!("Unreachable"),
-            },
+            Program::Module(module) => module
+                .body
+                .into_iter()
+                .map(|module_item| {
+                    let source_map =
+                        match std::rc::Rc::try_unwrap(reference_counted_source_map.clone()) {
+                            Ok(source_map) => source_map,
+                            Err(_) => panic!("Unreachable"),
+                        };
+                    Item::new(module_item, source_map)
+                })
+                .collect(),
             Program::Script(_) => vec![],
         },
         Err(error) => panic!("{}: Syntax Error: {}", ts_file_name, error.kind().msg()),
