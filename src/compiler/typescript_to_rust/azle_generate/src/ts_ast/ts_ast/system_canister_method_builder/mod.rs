@@ -1,20 +1,15 @@
 use cdk_framework::act::node::canister_method::{
-    HeartbeatMethod, InitMethod, InspectMessageMethod, PostUpgradeMethod, PreUpgradeMethod,
+    InitMethod, InspectMessageMethod, PostUpgradeMethod, PreUpgradeMethod,
 };
 
 use super::TsAst;
 
-mod heartbeat;
 mod init;
 mod inspect_message;
 mod post_upgrade;
 mod pre_upgrade;
 
 impl TsAst {
-    pub fn build_heartbeat_method(&self) -> Option<HeartbeatMethod> {
-        heartbeat::build_canister_method_system_heartbeat(self)
-    }
-
     pub fn build_init_method(&self) -> InitMethod {
         init::build_canister_method_system_init(self)
     }

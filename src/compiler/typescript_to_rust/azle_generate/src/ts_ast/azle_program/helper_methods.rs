@@ -18,7 +18,7 @@ pub trait HelperMethods {
     fn get_external_canister_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>>;
     fn get_azle_fn_decls_of_type(
         &self,
-        canister_method_type: &CanisterMethodType,
+        canister_method_type: CanisterMethodType,
     ) -> Vec<AzleFnDecl>;
     fn get_stable_b_tree_map_node_dependencies(
         &self,
@@ -32,13 +32,15 @@ pub trait HelperMethods {
 impl HelperMethods for Vec<AzleProgram> {
     fn get_azle_fn_decls_of_type(
         &self,
-        canister_method_type: &CanisterMethodType,
+        canister_method_type: CanisterMethodType,
     ) -> Vec<AzleFnDecl> {
         let azle_fn_decls = self.get_azle_fn_decls();
 
         azle_fn_decls
             .into_iter()
-            .filter(|azle_fn_decl| azle_fn_decl.is_canister_method_type(canister_method_type))
+            .filter(|azle_fn_decl| {
+                azle_fn_decl.is_canister_method_type(canister_method_type.clone())
+            })
             .collect()
     }
 
@@ -107,8 +109,8 @@ impl HelperMethods for Vec<AzleProgram> {
         let external_canister_class_declarations = self.get_external_canister_class_declarations();
 
         // Separate function decls into queries and updates
-        let azle_fnc_decls_query = self.get_azle_fn_decls_of_type(&CanisterMethodType::Query);
-        let azle_fnc_decls_update = self.get_azle_fn_decls_of_type(&CanisterMethodType::Update);
+        let azle_fnc_decls_query = self.get_azle_fn_decls_of_type(CanisterMethodType::Query);
+        let azle_fnc_decls_update = self.get_azle_fn_decls_of_type(CanisterMethodType::Update);
 
         // Determine which type aliases must be present for the functions to work and save them for later parsing
         let found_type_names = HashSet::new();
@@ -146,7 +148,7 @@ impl HelperMethods for Vec<AzleProgram> {
         &self,
         canister_method_type: CanisterMethodType,
     ) -> Vec<CanisterMethod> {
-        let azle_fnc_decls = self.get_azle_fn_decls_of_type(&canister_method_type);
+        let azle_fnc_decls = self.get_azle_fn_decls_of_type(canister_method_type.clone());
 
         azle_fnc_decls.iter().fold(vec![], |acc, fn_decl| {
             let canister_method_node = fn_decl.build_canister_method_node(&canister_method_type);

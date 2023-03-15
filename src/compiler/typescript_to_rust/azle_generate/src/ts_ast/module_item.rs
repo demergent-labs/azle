@@ -62,13 +62,13 @@ impl ModuleItemHelperMethods for ModuleItem {
     }
 
     fn to_canister_method_annotation(&self) -> Option<CanisterMethodAnnotation> {
-        CanisterMethodAnnotation::from_str(
-            self.as_stmt()?
-                .as_expr()?
-                .expr
-                .as_ref()
-                .as_ident()?
-                .get_name(),
-        )
+        let method_type = self
+            .as_stmt()?
+            .as_expr()?
+            .expr
+            .as_ref()
+            .as_ident()?
+            .get_name();
+        CanisterMethodAnnotation::new(method_type, None).ok()
     }
 }

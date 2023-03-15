@@ -1,6 +1,6 @@
 use crate::{generators::canister_methods, ts_ast::AzleFnDecl};
 
-pub fn generate_heartbeat_method_body(heartbeat_fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
+pub fn generate(heartbeat_fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
     let call_to_heartbeat_js_function =
         canister_methods::generate_call_to_js_function(heartbeat_fn_decl);
 

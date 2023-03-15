@@ -164,7 +164,7 @@ fn build_extraneous_decorator_error_message(
     let annotation_type = match custom_decorator_module_item
         .to_canister_method_annotation()
         .unwrap()
-        .kind
+        .method_type
     {
         CanisterMethodType::Heartbeat => "$heartbeat",
         CanisterMethodType::Init => "$init",
