@@ -1,9 +1,11 @@
 import {
+    $query,
     CanisterResult,
     ExternalCanister,
+    int,
     nat64,
+    nat8,
     Principal,
-    $query,
     Record,
     update,
     Variant
@@ -280,5 +282,12 @@ $query;
 export function two_tuple_with_inline_records(
     param: [Record<{ hello: nat64 }>, Record<{ goodbye: nat64 }>]
 ): [Record<{ hello: nat64 }>, Record<{ goodbye: nat64 }>] {
+    return param;
+}
+
+$query;
+export function nested_tuple_query(
+    param: [[string, [nat8, nat8]], int]
+): [[string, [nat8, nat8]], int] {
     return param;
 }

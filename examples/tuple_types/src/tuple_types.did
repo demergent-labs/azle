@@ -55,6 +55,9 @@ service : () -> {
   complex_two_tuple_return_type : () -> (
       record { record { text; nat64 }; User },
     ) query;
+  nested_tuple_query : (
+      record { record { text; record { nat8; nat8 } }; int },
+    ) -> (record { record { text; record { nat8; nat8 } }; int }) query;
   primitive_one_tuple_inline_param : (record { text }) -> (
       record { text },
     ) query;

@@ -495,6 +495,26 @@ export function get_tests(
                     ok: result[0].hello === 0n && result[1].goodbye === 1n
                 };
             }
+        },
+        {
+            name: 'nested tuple test',
+            test: async () => {
+                const expected_result: [[string, [number, number]], bigint] = [
+                    ['hello', [5, 10]],
+                    123n
+                ];
+                const result = await tuple_types_canister.nested_tuple_query(
+                    expected_result
+                );
+
+                return {
+                    ok:
+                        result[1] == expected_result[1] &&
+                        result[0][0] == expected_result[0][0] &&
+                        result[0][1][0] == expected_result[0][1][0] &&
+                        result[0][1][1] == expected_result[0][1][1]
+                };
+            }
         }
     ];
 }
