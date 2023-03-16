@@ -3,8 +3,8 @@ import {
     Query,
     Update,
     $init,
+    match,
     nat64,
-    ok,
     Opt,
     Principal,
     $query,
@@ -115,13 +115,8 @@ export async function get_notifier_from_notifiers_canister(): Promise<GetNotifie
 
     const result = await notifiers_canister.get_notifier().call();
 
-    if (!ok(result)) {
-        return {
-            err: result.err
-        };
-    }
-
-    return {
-        ok: result.ok
-    };
+    return match(result, {
+        ok: (ok) => ({ ok }),
+        err: (err) => ({ err })
+    });
 }

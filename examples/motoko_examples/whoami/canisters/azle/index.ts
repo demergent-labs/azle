@@ -3,6 +3,7 @@ import {
     ExternalCanister,
     ic,
     $init,
+    match,
     nat64,
     Opt,
     $post_upgrade,
@@ -109,7 +110,10 @@ export async function id(): Promise<Principal> {
     const result = await this_canister.whoami().call();
     const post_xnet_call_perf_start = ic.performance_counter(0);
 
-    const response = result.ok ?? Principal.fromText('aaaaa-aa');
+    const response = match(result, {
+        ok: (ok) => ok,
+        err: () => Principal.fromText('aaaaa-aa')
+    });
 
     const post_xnet_call_perf_end = ic.performance_counter(0);
     const pre_xnet_call_perf =

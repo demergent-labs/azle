@@ -1,4 +1,4 @@
-import { ic, Manual, nat, ok, Principal, $query, $update } from 'azle';
+import { ic, Manual, match, nat, Principal, $query, $update } from 'azle';
 import { Canister1 } from '../canister1/types';
 import { Canister2 } from '../canister2/types';
 import { NatQueryResult, StringQueryResult } from './types';
@@ -36,21 +36,16 @@ export async function totally_manual_query(): Promise<
 // Composite query calling another composite query
 $query;
 export async function deep_query(): Promise<StringQueryResult> {
-    const result = await canister2.deep_query().call();
-    if (!ok(result)) {
-        return {
-            err: result.err
-        };
-    }
-    if (!ok(result.ok)) {
-        return {
-            err: result.ok.err
-        };
-    }
+    const canister_result = await canister2.deep_query().call();
 
-    return {
-        ok: result.ok.ok
-    };
+    return match(canister_result, {
+        ok: (string_query_result) =>
+            match(string_query_result, {
+                ok: (string_query) => ({ ok: string_query }),
+                err: (err) => ({ err })
+            }),
+        err: (err) => ({ err })
+    });
 }
 
 // Composite query calling an update method. SHOULDN'T WORK
@@ -68,21 +63,16 @@ export async function simple_query(): Promise<StringQueryResult> {
 // Composite query being called by an update method. SHOULDN'T WORK
 $update;
 export async function simple_update(): Promise<StringQueryResult> {
-    const result = await canister2.deep_query().call();
-    if (!ok(result)) {
-        return {
-            err: result.err
-        };
-    }
-    if (!ok(result.ok)) {
-        return {
-            err: result.ok.err
-        };
-    }
+    const canister_result = await canister2.deep_query().call();
 
-    return {
-        ok: result.ok.ok
-    };
+    return match(canister_result, {
+        ok: (string_query_result) =>
+            match(string_query_result, {
+                ok: (string_query) => ({ ok: string_query }),
+                err: (err) => ({ err })
+            }),
+        err: (err) => ({ err })
+    });
 }
 
 // Composite query that modifies the state. Should revert after the call is done
@@ -98,29 +88,20 @@ export async function inc_canister1(): Promise<NatQueryResult> {
     counter += 1n;
 
     const canister1_a_result = await canister1.inc_counter().call();
-    if (!ok(canister1_a_result))
-        return {
-            err: canister1_a_result.err
-        };
 
-    const canister1_b_result = await canister1.inc_counter().call();
-    if (!ok(canister1_b_result))
-        return {
-            err: canister1_b_result.err
-        };
+    return match(canister1_a_result, {
+        ok: async (canister1_a_ok) => {
+            const canister1_b_result = await canister1.inc_counter().call();
 
-    if (
-        canister1_a_result.ok === undefined ||
-        canister1_b_result.ok === undefined
-    ) {
-        return {
-            err: 'One of the increments was unsuccessful'
-        };
-    }
-
-    return {
-        ok: counter + canister1_a_result.ok + canister1_b_result.ok
-    };
+            return match(canister1_b_result, {
+                ok: (canister1_b_ok) => ({
+                    ok: counter + canister1_a_ok + canister1_b_ok
+                }),
+                err: (err) => ({ err })
+            });
+        },
+        err: (err) => ({ err })
+    });
 }
 
 // Composite query calling queries that modify the state
@@ -129,27 +110,18 @@ export async function inc_canister2(): Promise<NatQueryResult> {
     counter += 1n;
 
     const canister2_a_result = await canister2.inc_counter().call();
-    if (!ok(canister2_a_result))
-        return {
-            err: canister2_a_result.err
-        };
 
-    const canister2_b_result = await canister2.inc_counter().call();
-    if (!ok(canister2_b_result))
-        return {
-            err: canister2_b_result.err
-        };
+    return match(canister2_a_result, {
+        ok: async (canister2_a_ok) => {
+            const canister2_b_result = await canister2.inc_counter().call();
 
-    if (
-        canister2_a_result.ok === undefined ||
-        canister2_b_result.ok === undefined
-    ) {
-        return {
-            err: 'One of the increments was unsuccessful'
-        };
-    }
-
-    return {
-        ok: counter + canister2_a_result.ok + canister2_b_result.ok
-    };
+            return match(canister2_b_result, {
+                ok: (canister2_b_ok) => ({
+                    ok: counter + canister2_a_ok + canister2_b_ok
+                }),
+                err: (err) => ({ err })
+            });
+        },
+        err: (err) => ({ err })
+    });
 }

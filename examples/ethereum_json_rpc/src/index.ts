@@ -2,8 +2,8 @@ import {
     Alias,
     ic,
     $init,
+    match,
     nat32,
-    ok,
     $query,
     StableBTreeMap,
     $update
@@ -61,11 +61,10 @@ export async function eth_get_balance(ethereum_address: string): Promise<JSON> {
         .cycles(cycle_cost_total)
         .call();
 
-    if (!ok(http_result)) {
-        ic.trap(http_result.err ?? 'http_result had an error');
-    }
-
-    return decodeUtf8(Uint8Array.from(http_result.ok.body));
+    return match(http_result, {
+        ok: (http_response) => decodeUtf8(Uint8Array.from(http_response.body)),
+        err: (err) => ic.trap(err ?? 'http_result had an error')
+    });
 }
 
 $update;
@@ -104,11 +103,10 @@ export async function eth_get_block_by_number(number: nat32): Promise<JSON> {
         .cycles(cycle_cost_total)
         .call();
 
-    if (!ok(http_result)) {
-        ic.trap(http_result.err ?? 'http_result had an error');
-    }
-
-    return decodeUtf8(Uint8Array.from(http_result.ok.body));
+    return match(http_result, {
+        ok: (http_response) => decodeUtf8(Uint8Array.from(http_response.body)),
+        err: (err) => ic.trap(err ?? 'http_result had an error')
+    });
 }
 
 $query;

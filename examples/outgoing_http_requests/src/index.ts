@@ -1,4 +1,4 @@
-import { ic, Manual, ok, Principal, $query, $update } from 'azle';
+import { ic, Manual, match, Principal, $query, $update } from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
@@ -32,11 +32,10 @@ export async function xkcd(): Promise<HttpResponse> {
         .cycles(cycle_cost_total)
         .call();
 
-    if (!ok(http_result)) {
-        ic.trap(http_result.err ?? 'http_result had an error');
-    }
-
-    return http_result.ok;
+    return match(http_result, {
+        ok: (http_response) => http_response,
+        err: (err) => ic.trap(http_result.err ?? 'http_result had an error')
+    });
 }
 
 $update;
@@ -69,11 +68,10 @@ export async function xkcd_raw(): Promise<Manual<HttpResponse>> {
         cycle_cost_total
     );
 
-    if (!ok(http_result)) {
-        ic.trap(http_result.err ?? 'http_result had an error');
-    }
-
-    ic.reply_raw(http_result.ok);
+    match(http_result, {
+        ok: (http_response) => ic.reply_raw(http_response),
+        err: (err) => ic.trap(err ?? 'http_result had an error')
+    });
 }
 
 $query;
