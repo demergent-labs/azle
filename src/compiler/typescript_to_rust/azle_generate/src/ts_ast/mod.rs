@@ -7,7 +7,6 @@ pub use azle_new_expr::AzleNewExpr;
 pub use azle_program::AzleProgram;
 pub use azle_type_alias_decls::AzleTypeAliasDecl;
 pub use traits::GetName;
-pub use ts_ast::item::Item;
 pub use ts_ast::TsAst;
 
 mod azle_fn_decl;

@@ -1,13 +1,16 @@
 use cdk_framework::act::node::canister_method::CanisterMethodType;
+use swc_common::SourceMap;
+use swc_ecma_ast::ModuleItem;
 
 use crate::{
     canister_method_annotation::CanisterMethodAnnotation,
     errors::{ErrorMessage, Suggestion},
-    ts_ast::{module_item::ModuleItemHelperMethods, source_map::GetSourceFileInfo, Item},
+    ts_ast::{module_item::ModuleItemHelperMethods, source_map::GetSourceFileInfo},
 };
 
 pub fn build_extraneous_decorator_error_message(
-    custom_decorator_module_item: &Item,
+    custom_decorator_module_item: &ModuleItem,
+    source_map: &SourceMap,
 ) -> ErrorMessage {
     let span = custom_decorator_module_item.as_expr_stmt().unwrap().span;
 
@@ -21,19 +24,17 @@ pub fn build_extraneous_decorator_error_message(
             CanisterMethodType::Query => "$query",
             CanisterMethodType::Update => "$update",
         },
-        Err(err) => panic!(err.error_message()),
+        Err(err) => panic!("{}", err.error_message()),
     };
-    let range = custom_decorator_module_item.source_map.get_range(span);
+    let range = source_map.get_range(span);
     let example_function_declaration =
         "export function some_canister_method() {\n  // method body\n}";
 
     ErrorMessage {
         title: format!("extraneous {} annotation", annotation_type),
-        origin: custom_decorator_module_item.source_map.get_origin(span),
-        line_number: custom_decorator_module_item
-            .source_map
-            .get_line_number(span),
-        source: custom_decorator_module_item.source_map.get_source(span),
+        origin: source_map.get_origin(span),
+        line_number: source_map.get_line_number(span),
+        source: source_map.get_source(span),
         range,
         annotation: "expected this to be followed by an exported function declaration".to_string(),
         suggestion: Some(Suggestion {
@@ -41,7 +42,7 @@ pub fn build_extraneous_decorator_error_message(
                 .to_string(),
             source: format!(
                 "{}\n{}",
-                custom_decorator_module_item.source_map.get_source(span),
+                source_map.get_source(span),
                 example_function_declaration
             ),
             range: (range.1 + 1, range.1 + example_function_declaration.len()),

@@ -1,11 +1,7 @@
-use std::ops::Deref;
-
 use cdk_framework::act::node::canister_method::CanisterMethodType;
+use swc_ecma_ast::ModuleItem;
 
-use crate::{
-    canister_method::ParseError,
-    ts_ast::{GetName, Item},
-};
+use crate::{canister_method::ParseError, ts_ast::GetName};
 
 pub const CANISTER_METHOD_ANNOTATIONS: [&str; 7] = [
     "$heartbeat",
@@ -44,8 +40,8 @@ impl CanisterMethodAnnotation {
         Ok(Self { method_type, guard })
     }
 
-    pub fn from_item(item: &Item) -> Result<Self, ParseError> {
-        let call_expr = match item.deref() {
+    pub fn from_item(item: &ModuleItem) -> Result<Self, ParseError> {
+        let call_expr = match item {
             swc_ecma_ast::ModuleItem::Stmt(stmt) => match stmt {
                 swc_ecma_ast::Stmt::Expr(expr) => &*expr.expr,
                 _ => return Err(ParseError::InvalidModuleItem),

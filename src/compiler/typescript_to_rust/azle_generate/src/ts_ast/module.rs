@@ -1,10 +1,9 @@
-use cdk_framework::act::node::canister_method::CanisterMethodType;
 use swc_common::SourceMap;
 use swc_ecma_ast::{ClassDecl, Decl, ExportDecl, Expr, Module, ModuleDecl, ModuleItem, Stmt};
 
-use super::{source_map::GetSourceFileInfo, AzleFnDecl, AzleTypeAliasDecl, GetName};
+use super::{AzleFnDecl, AzleTypeAliasDecl, GetName};
 use crate::{
-    errors::{ErrorMessage, Suggestion},
+    canister_method::errors,
     ts_ast::{module_item::ModuleItemHelperMethods, source_map::SourceMapped},
 };
 
@@ -33,16 +32,22 @@ impl ModuleHelperMethods for Module {
                     let exported_fn_decl_option = module_item.as_exported_fn_decl();
 
                     match exported_fn_decl_option {
-                        Some(exported_fn_decl) => acc.push(AzleFnDecl {
-                            annotation: custom_decorator_module_item
+                        Some(fn_decl) => {
+                            let annotation = match custom_decorator_module_item
                                 .to_canister_method_annotation()
-                                .unwrap(),
-                            fn_decl: exported_fn_decl,
-                            source_map,
-                        }),
+                            {
+                                Some(annotation) => annotation,
+                                None => panic!("Unable to parse a custom azle decorator"),
+                            };
+                            acc.push(AzleFnDecl {
+                                annotation,
+                                fn_decl,
+                                source_map,
+                            })
+                        }
                         None => panic!(
                             "{}",
-                            build_extraneous_decorator_error_message(
+                            errors::build_extraneous_decorator_error_message(
                                 custom_decorator_module_item,
                                 source_map
                             )
@@ -53,7 +58,7 @@ impl ModuleHelperMethods for Module {
                 if i + 1 == self.body.len() && module_item.is_custom_decorator() {
                     panic!(
                         "{}",
-                        build_extraneous_decorator_error_message(module_item, source_map)
+                        errors::build_extraneous_decorator_error_message(module_item, source_map)
                     )
                 }
 
@@ -152,50 +157,5 @@ impl ModuleHelperMethods for Module {
 
             acc
         })
-    }
-}
-
-fn build_extraneous_decorator_error_message(
-    custom_decorator_module_item: &ModuleItem,
-    source_map: &SourceMap,
-) -> ErrorMessage {
-    let custom_decorator_expr_stmt = custom_decorator_module_item.as_expr_stmt().unwrap();
-    let span = custom_decorator_expr_stmt.span;
-    let annotation_type = match custom_decorator_module_item
-        .to_canister_method_annotation()
-        .unwrap()
-        .method_type
-    {
-        CanisterMethodType::Heartbeat => "$heartbeat",
-        CanisterMethodType::Init => "$init",
-        CanisterMethodType::InspectMessage => "$inspect_message",
-        CanisterMethodType::PostUpgrade => "$post_upgrade",
-        CanisterMethodType::PreUpgrade => "$pre_upgrade",
-        CanisterMethodType::Query => "$query",
-        CanisterMethodType::Update => "$update",
-    };
-    let range = source_map.get_range(span);
-    let example_function_declaration =
-        "export function some_canister_method() {\n  // method body\n}";
-
-    ErrorMessage {
-        title: format!("extraneous {} annotation", annotation_type),
-        origin: source_map.get_origin(span),
-        line_number: source_map.get_line_number(span),
-        source: source_map.get_source(span),
-        range,
-        annotation: "expected this to be followed by an exported function declaration".to_string(),
-        suggestion: Some(Suggestion {
-            title: "Follow it with an exported function declaration or remove it. E.g.:"
-                .to_string(),
-            source: format!(
-                "{}\n{}",
-                source_map.get_source(span),
-                example_function_declaration
-            ),
-            range: (range.1 + 1, range.1 + example_function_declaration.len()),
-            annotation: None,
-            import_suggestion: None,
-        }),
     }
 }

@@ -3,10 +3,7 @@ use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Program, Stmt, TsTypeAliasDecl};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
-use crate::ts_ast::{
-    ts_ast::item::Item,
-    {source_map::SourceMapped, AzleProgram},
-};
+use crate::ts_ast::{source_map::SourceMapped, AzleProgram};
 
 mod build_candid_types;
 mod build_query_methods;
@@ -17,10 +14,7 @@ mod stable_b_tree_map;
 mod system_canister_method_builder;
 mod to_act;
 
-pub mod item;
-
 pub struct TsAst {
-    pub items: Vec<Item>,
     pub azle_programs: Vec<AzleProgram>,
     pub main_js: String,
 }
@@ -32,13 +26,7 @@ impl TsAst {
             .map(|ts_file_name| to_azle_program(ts_file_name))
             .collect();
 
-        let ts_files = ts_file_names.iter().fold(vec![], |mut acc, ts_file_name| {
-            acc.extend(to_items(ts_file_name));
-            acc
-        });
-
         Self {
-            items: ts_files,
             azle_programs,
             main_js,
         }
@@ -166,49 +154,6 @@ fn to_azle_program(ts_file_name: &str) -> AzleProgram {
             };
             panic!("Unreachable");
         }
-        Err(error) => panic!("{}: Syntax Error: {}", ts_file_name, error.kind().msg()),
-    }
-}
-
-fn to_items(ts_file_name: &str) -> Vec<Item> {
-    let filepath = Path::new(ts_file_name).to_path_buf();
-
-    let reference_counted_source_map: Lrc<SourceMap> = Default::default();
-
-    let fm = match reference_counted_source_map.load_file(&filepath) {
-        Ok(rc_source_file) => rc_source_file,
-        Err(err) => panic!("Error: Unable to load file {}\n{}", ts_file_name, err),
-    };
-
-    let lexer = Lexer::new(
-        Syntax::Typescript(TsConfig {
-            decorators: true,
-            ..TsConfig::default()
-        }),
-        Default::default(),
-        StringInput::from(&*fm),
-        None,
-    );
-
-    let mut parser = Parser::new_from(lexer);
-
-    let parse_result = parser.parse_program();
-    match parse_result {
-        Ok(program) => match program {
-            Program::Module(module) => module
-                .body
-                .into_iter()
-                .map(|module_item| {
-                    let source_map =
-                        match std::rc::Rc::try_unwrap(reference_counted_source_map.clone()) {
-                            Ok(source_map) => source_map,
-                            Err(_) => panic!("Unreachable"),
-                        };
-                    Item::new(module_item, source_map)
-                })
-                .collect(),
-            Program::Script(_) => vec![],
-        },
         Err(error) => panic!("{}: Syntax Error: {}", ts_file_name, error.kind().msg()),
     }
 }
