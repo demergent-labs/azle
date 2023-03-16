@@ -2,8 +2,8 @@ import {
     blob,
     ic,
     InsertError,
+    match,
     nat64,
-    ok,
     Opt,
     Principal,
     $query,
@@ -46,15 +46,10 @@ export function create_user(username: string): Variant<{
 
     const result = users.insert(user.id, user);
 
-    if (!ok(result)) {
-        return {
-            err: result.err
-        };
-    }
-
-    return {
-        ok: user
-    };
+    return match(result, {
+        ok: () => ({ ok: user }),
+        err: (err) => ({ err })
+    });
 }
 
 $query;
@@ -128,32 +123,34 @@ export function create_recording(
 
     const create_recording_result = recordings.insert(recording.id, recording);
 
-    if (!ok(create_recording_result)) {
-        return {
+    return match(create_recording_result, {
+        ok: () => {
+            const updated_user: User = {
+                ...user,
+                recording_ids: [...user.recording_ids, recording.id]
+            };
+            const update_user_result = users.insert(
+                updated_user.id,
+                updated_user
+            );
+
+            return match(update_user_result, {
+                ok: () => ({
+                    ok: recording
+                }),
+                err: (err) => ({
+                    err: {
+                        InsertError: err
+                    }
+                })
+            });
+        },
+        err: (err) => ({
             err: {
-                InsertError: create_recording_result.err
+                InsertError: err
             }
-        };
-    }
-
-    const updated_user: User = {
-        ...user,
-        recording_ids: [...user.recording_ids, recording.id]
-    };
-
-    const update_user_result = users.insert(updated_user.id, updated_user);
-
-    if (!ok(update_user_result)) {
-        return {
-            err: {
-                InsertError: update_user_result.err
-            }
-        };
-    }
-
-    return {
-        ok: recording
-    };
+        })
+    });
 }
 
 $query;
@@ -204,19 +201,20 @@ export function delete_recording(id: Principal): Variant<{
 
     const update_user_result = users.insert(updated_user.id, updated_user);
 
-    if (!ok(update_user_result)) {
-        return {
+    return match(update_user_result, {
+        ok: () => {
+            recordings.remove(id);
+
+            return {
+                ok: recording
+            };
+        },
+        err: (err) => ({
             err: {
-                InsertError: update_user_result.err
+                InsertError: err
             }
-        };
-    }
-
-    recordings.remove(id);
-
-    return {
-        ok: recording
-    };
+        })
+    });
 }
 
 function generate_id(): Principal {

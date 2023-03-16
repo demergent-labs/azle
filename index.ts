@@ -1,5 +1,9 @@
 import { Principal } from '@dfinity/principal';
+import { RequireExactlyOne, Variant } from './variant';
+
 export { StableBTreeMap, InsertError } from './src/stable_b_tree_map';
+export { Variant } from './variant';
+export { match } from './variant';
 
 declare var globalThis: any;
 
@@ -117,19 +121,21 @@ type ic = {
  * Used to mark an object as a Candid record.
  */
 export type Record<T extends object> = T;
-export type Variant<T extends object> = Partial<T>;
 export type Opt<T> = T | null;
 
 export type Alias<T> = T;
 
 export type CanisterResult<T> = {
-    ok?: T;
-    err?: string;
-    call: () => Promise<CanisterResult<T>>;
+    call: () => Promise<FinalCanisterResult<T>>;
     notify: () => NotifyResult;
-    cycles: (cycles: nat64) => CanisterResult<T>;
-    cycles128: (cycles: nat) => CanisterResult<T>;
+    cycles: (cycles: nat64) => FinalCanisterResult<T>;
+    cycles128: (cycles: nat) => FinalCanisterResult<T>;
 };
+
+export type FinalCanisterResult<T> = RequireExactlyOne<{
+    ok: T;
+    err: string;
+}>;
 
 export type NotifyResult = Variant<{
     ok: null;
@@ -170,18 +176,6 @@ type AzleResult<T, E> = Partial<{
     ok: T;
     err: E;
 }>;
-
-type Ok<T> = {
-    ok: NonNullable<T>;
-};
-
-export function ok<T, E>(azle_result: AzleResult<T, E>): azle_result is Ok<T> {
-    if (azle_result.err === undefined) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 // TODO working on turning the ok function into an assertion
 export function attempt<T, E>(

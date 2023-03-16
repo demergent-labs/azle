@@ -1,4 +1,4 @@
-import { ic, Principal, RejectionCode, $update, Variant } from 'azle';
+import { ic, match, Principal, RejectionCode, $update, Variant } from 'azle';
 
 $update;
 export function send_notification(): Variant<{
@@ -12,13 +12,12 @@ export function send_notification(): Variant<{
         0n
     );
 
-    if ('err' in result) {
-        return {
-            err: result.err
-        };
-    }
-
-    return {
-        ok: true
-    };
+    return match(result, {
+        ok: () => ({
+            ok: true
+        }),
+        err: (err) => ({
+            err
+        })
+    });
 }
