@@ -499,7 +499,7 @@ export function get_tests(
         {
             name: 'nested tuple test',
             test: async () => {
-                let expected_result: [[string, [number, number]], bigint] = [
+                const expected_result: [[string, [number, number]], bigint] = [
                     ['hello', [5, 10]],
                     123n
                 ];
