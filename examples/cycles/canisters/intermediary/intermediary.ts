@@ -1,9 +1,9 @@
 import {
     ic,
+    match,
     nat,
     nat64,
     NotifyResult,
-    ok,
     $query,
     $update,
     Variant
@@ -28,13 +28,10 @@ export async function send_cycles(): Promise<SendCyclesResult> {
         .cycles(1_000_000n)
         .call();
 
-    if (!ok(result)) {
-        return { err: result.err };
-    }
-
-    return {
-        ok: ic.msg_cycles_refunded()
-    };
+    return match(result, {
+        ok: () => ({ ok: ic.msg_cycles_refunded() }),
+        err: (err) => ({ err })
+    });
 }
 
 $update;
@@ -50,13 +47,10 @@ export async function send_cycles128(): Promise<SendCyclesResult128> {
         .cycles128(1_000_000n)
         .call();
 
-    if (!ok(result)) {
-        return { err: result.err };
-    }
-
-    return {
-        ok: ic.msg_cycles_refunded128()
-    };
+    return match(result, {
+        ok: () => ({ ok: ic.msg_cycles_refunded128() }),
+        err: (err) => ({ err })
+    });
 }
 
 $update;

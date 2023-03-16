@@ -19,13 +19,13 @@ type ic = {
         method: string,
         args_raw: blob,
         payment: nat64
-    ) => Promise<CanisterResult<blob>>;
+    ) => Promise<FinalCanisterResult<blob>>;
     call_raw128: (
         canister_id: Principal,
         method: string,
         args_raw: blob,
         payment: nat
-    ) => Promise<CanisterResult<blob>>;
+    ) => Promise<FinalCanisterResult<blob>>;
     caller: () => Principal;
     candid_decode: (candid_encoded: blob) => string;
     candid_encode: (candid_string: string) => blob;
@@ -128,8 +128,8 @@ export type Alias<T> = T;
 export type CanisterResult<T> = {
     call: () => Promise<FinalCanisterResult<T>>;
     notify: () => NotifyResult;
-    cycles: (cycles: nat64) => FinalCanisterResult<T>;
-    cycles128: (cycles: nat) => FinalCanisterResult<T>;
+    cycles: (cycles: nat64) => CanisterResult<T>;
+    cycles128: (cycles: nat) => CanisterResult<T>;
 };
 
 export type FinalCanisterResult<T> = RequireExactlyOne<{

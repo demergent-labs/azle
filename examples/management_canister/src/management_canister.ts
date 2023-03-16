@@ -1,6 +1,6 @@
 // TODO once the Bitcoin integration is live, add the methods and tests
 
-import { blob, nat, ok, Principal, $query, $update } from 'azle';
+import { blob, match, nat, Principal, $query, $update } from 'azle';
 import {
     CanisterStatusArgs,
     management_canister
@@ -30,19 +30,16 @@ export async function execute_create_canister(): Promise<ExecuteCreateCanisterRe
         .cycles(50_000_000_000_000n)
         .call();
 
-    if (!ok(create_canister_result_canister_result)) {
-        return {
-            err: create_canister_result_canister_result.err
-        };
-    }
+    return match(create_canister_result_canister_result, {
+        ok: (create_canister_result) => {
+            state.created_canister_id = create_canister_result.canister_id;
 
-    const create_canister_result = create_canister_result_canister_result.ok;
-
-    state.created_canister_id = create_canister_result.canister_id;
-
-    return {
-        ok: create_canister_result
-    };
+            return {
+                ok: create_canister_result
+            };
+        },
+        err: (err) => ({ err })
+    });
 }
 
 $update;
@@ -61,15 +58,10 @@ export async function execute_update_settings(
         })
         .call();
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    return {
-        ok: true
-    };
+    return match(canister_result, {
+        ok: () => ({ ok: true }),
+        err: (err) => ({ err })
+    });
 }
 
 $update;
@@ -89,15 +81,10 @@ export async function execute_install_code(
         .cycles(100_000_000_000n)
         .call();
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    return {
-        ok: true
-    };
+    return match(canister_result, {
+        ok: () => ({ ok: true }),
+        err: (err) => ({ err })
+    });
 }
 
 $update;
@@ -110,15 +97,10 @@ export async function execute_uninstall_code(
         })
         .call();
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    return {
-        ok: true
-    };
+    return match(canister_result, {
+        ok: () => ({ ok: true }),
+        err: (err) => ({ err })
+    });
 }
 
 $update;
@@ -131,15 +113,10 @@ export async function execute_start_canister(
         })
         .call();
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    return {
-        ok: true
-    };
+    return match(canister_result, {
+        ok: () => ({ ok: true }),
+        err: (err) => ({ err })
+    });
 }
 
 $update;
@@ -152,15 +129,10 @@ export async function execute_stop_canister(
         })
         .call();
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    return {
-        ok: true
-    };
+    return match(canister_result, {
+        ok: () => ({ ok: true }),
+        err: (err) => ({ err })
+    });
 }
 
 $update;
@@ -173,17 +145,10 @@ export async function get_canister_status(
         })
         .call();
 
-    if (canister_status_result_canister_result.ok === undefined) {
-        return {
-            err: canister_status_result_canister_result.err
-        };
-    }
-
-    const canister_status_result = canister_status_result_canister_result.ok;
-
-    return {
-        ok: canister_status_result
-    };
+    return match(canister_status_result_canister_result, {
+        ok: (canister_status_result) => ({ ok: canister_status_result }),
+        err: (err) => ({ err })
+    });
 }
 
 $update;
@@ -196,15 +161,10 @@ export async function execute_delete_canister(
         })
         .call();
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    return {
-        ok: true
-    };
+    return match(canister_result, {
+        ok: () => ({ ok: true }),
+        err: (err) => ({ err })
+    });
 }
 
 $update;
@@ -218,15 +178,10 @@ export async function execute_deposit_cycles(
         .cycles(1_000_000n)
         .call();
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    return {
-        ok: true
-    };
+    return match(canister_result, {
+        ok: () => ({ ok: true }),
+        err: (err) => ({ err })
+    });
 }
 
 $update;
@@ -235,17 +190,10 @@ export async function get_raw_rand(): Promise<RawRandResult> {
         .raw_rand()
         .call();
 
-    if (!ok(raw_rand_canister_result)) {
-        return {
-            err: raw_rand_canister_result.err
-        };
-    }
-
-    const randomness = raw_rand_canister_result.ok;
-
-    return {
-        ok: randomness
-    };
+    return match(raw_rand_canister_result, {
+        ok: (raw_randomness) => ({ ok: raw_randomness }),
+        err: (err) => ({ err })
+    });
 }
 
 // TODO we should test this like we test deposit_cycles
@@ -258,17 +206,12 @@ export async function provisional_create_canister_with_cycles(): Promise<Execute
         })
         .call();
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    const provisional_create_canister_with_cycles_result = canister_result.ok;
-
-    return {
-        ok: provisional_create_canister_with_cycles_result
-    };
+    return match(canister_result, {
+        ok: (provisional_create_canister_with_cycles_result) => ({
+            ok: provisional_create_canister_with_cycles_result
+        }),
+        err: (err) => ({ err })
+    });
 }
 
 // TODO we should test this like we test deposit_cycles
@@ -284,15 +227,10 @@ export async function provisional_top_up_canister(
         })
         .call();
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    return {
-        ok: true
-    };
+    return match(canister_result, {
+        ok: () => ({ ok: true }),
+        err: (err) => ({ err })
+    });
 }
 
 $query;

@@ -11,17 +11,17 @@ export async function get_randomness_directly(): Promise<blob> {
     const randomness_result = await management_canister.raw_rand().call();
 
     return match(randomness_result, {
-        ok: (ok) => ok,
+        ok: (randomness) => randomness,
         err: () => Uint8Array.from([])
     });
 }
 
 $update;
 export async function get_randomness_indirectly(): Promise<blob> {
-    const indirect_randomness = await get_randomness();
+    const indirect_randomness_result = await get_randomness();
 
-    return match(indirect_randomness, {
-        ok: (ok) => ok,
+    return match(indirect_randomness_result, {
+        ok: (indirect_randomness) => indirect_randomness,
         err: () => Uint8Array.from([])
     });
 }

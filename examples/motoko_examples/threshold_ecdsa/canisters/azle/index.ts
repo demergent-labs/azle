@@ -1,4 +1,4 @@
-import { blob, ic, ok, Record, $update, Variant } from 'azle';
+import { blob, ic, match, Record, $update, Variant } from 'azle';
 import { management_canister } from 'azle/canisters/management';
 
 type PublicKeyResult = Variant<{
@@ -22,11 +22,14 @@ export async function public_key(): Promise<PublicKeyResult> {
         })
         .call();
 
-    if (!ok(public_key_result)) {
-        return { err: public_key_result.err };
-    }
-
-    return { ok: { public_key: public_key_result.ok.public_key } };
+    return match(public_key_result, {
+        ok: (ecdsa_public_key_result) => ({
+            ok: {
+                public_key: ecdsa_public_key_result.public_key
+            }
+        }),
+        err: (err) => ({ err })
+    });
 }
 
 $update;
@@ -46,9 +49,12 @@ export async function sign(message_hash: blob): Promise<SignResult> {
         .cycles(10_000_000_000n)
         .call();
 
-    if (!ok(signature_result)) {
-        return { err: signature_result.err };
-    }
-
-    return { ok: { signature: signature_result.ok.signature } };
+    return match(signature_result, {
+        ok: (sign_with_ecdsa_result) => ({
+            ok: {
+                signature: sign_with_ecdsa_result.signature
+            }
+        }),
+        err: (err) => ({ err })
+    });
 }

@@ -3,7 +3,7 @@ import {
     Duration,
     ic,
     int8,
-    ok,
+    match,
     $query,
     Record,
     TimerId,
@@ -100,11 +100,12 @@ async function single_cross_canister_timer_callback(): Promise<void> {
 
     const result = await management_canister.raw_rand().call();
 
-    if (!ok(result)) {
-        return;
-    }
-
-    status.single_cross_canister = result.ok;
+    match(result, {
+        ok: (ok) => {
+            status.single_cross_canister = ok;
+        },
+        err: (err) => ic.trap(err)
+    });
 }
 
 async function repeat_cross_canister_timer_callback(): Promise<void> {
@@ -112,12 +113,13 @@ async function repeat_cross_canister_timer_callback(): Promise<void> {
 
     const result = await management_canister.raw_rand().call();
 
-    if (!ok(result)) {
-        return;
-    }
-
-    status.repeat_cross_canister = Uint8Array.from([
-        ...status.repeat_cross_canister,
-        ...result.ok
-    ]);
+    match(result, {
+        ok: (ok) => {
+            status.repeat_cross_canister = Uint8Array.from([
+                ...status.repeat_cross_canister,
+                ...ok
+            ]);
+        },
+        err: (err) => ic.trap(err)
+    });
 }

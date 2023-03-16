@@ -1,4 +1,4 @@
-import { ic, nat, nat64, ok, Principal, $update, Variant } from 'azle';
+import { ic, match, nat, nat64, Principal, $update, Variant } from 'azle';
 
 $update;
 export async function execute_call_raw(
@@ -19,15 +19,12 @@ export async function execute_call_raw(
         payment
     );
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    return {
-        ok: ic.candid_decode(canister_result.ok)
-    };
+    return match(canister_result, {
+        ok: (ok) => ({
+            ok: ic.candid_decode(ok)
+        }),
+        err: (err) => ({ err })
+    });
 }
 
 $update;
@@ -49,13 +46,10 @@ export async function execute_call_raw128(
         payment
     );
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    return {
-        ok: ic.candid_decode(canister_result.ok)
-    };
+    return match(canister_result, {
+        ok: (ok) => ({
+            ok: ic.candid_decode(ok)
+        }),
+        err: (err) => ({ err })
+    });
 }
