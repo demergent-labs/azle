@@ -77,7 +77,7 @@ export async function run_tests(tests: Test[]) {
                 process.exit(1);
             }
 
-            if (result.Ok === false) {
+            if (result.Ok !== true) {
                 console.log('\x1b[31m', `test: ${test.name} failed`);
                 console.log('\x1b[0m');
 

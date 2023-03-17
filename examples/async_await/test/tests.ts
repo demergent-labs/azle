@@ -10,10 +10,10 @@ export function get_tests(
             name: 'get_randomness_directly',
             test: async () => {
                 const result =
-                    await async_await_canister.get_randomness_directly();
+                    await async_await_canister.getRandomnessDirectly();
 
                 return {
-                    ok: result.length === 32
+                    Ok: result.length === 32
                 };
             }
         },
@@ -21,10 +21,10 @@ export function get_tests(
             name: 'get_randomness_indirectly',
             test: async () => {
                 const result =
-                    await async_await_canister.get_randomness_indirectly();
+                    await async_await_canister.getRandomnessIndirectly();
 
                 return {
-                    ok: result.length === 32
+                    Ok: result.length === 32
                 };
             }
         },
@@ -32,10 +32,10 @@ export function get_tests(
             name: 'get_randomness_super_indirectly',
             test: async () => {
                 const result =
-                    await async_await_canister.get_randomness_super_indirectly();
+                    await async_await_canister.getRandomnessSuperIndirectly();
 
                 return {
-                    ok: result.length === 96
+                    Ok: result.length === 96
                 };
             }
         }

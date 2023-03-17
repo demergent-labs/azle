@@ -15,32 +15,32 @@ import {
 
 type User = Record<{
     id: Principal;
-    created_at: nat64;
-    recording_ids: Principal[];
+    createdAt: nat64;
+    recordingIds: Principal[];
     username: string;
 }>;
 
 type Recording = Record<{
     id: Principal;
     audio: blob;
-    created_at: nat64;
+    createdAt: nat64;
     name: string;
-    user_id: Principal;
+    userId: Principal;
 }>;
 
 let users = new StableBTreeMap<Principal, User>(0, 38, 100_000);
 let recordings = new StableBTreeMap<Principal, Recording>(1, 38, 5_000_000);
 
 $update;
-export function create_user(username: string): Variant<{
+export function createUser(username: string): Variant<{
     Ok: User;
     Err: InsertError;
 }> {
-    const id = generate_id();
+    const id = generateId();
     const user: User = {
         id,
-        created_at: ic.time(),
-        recording_ids: [],
+        createdAt: ic.time(),
+        recordingIds: [],
         username
     };
 
@@ -53,17 +53,17 @@ export function create_user(username: string): Variant<{
 }
 
 $query;
-export function read_users(): User[] {
+export function readUsers(): User[] {
     return users.values();
 }
 
 $query;
-export function read_user_by_id(id: Principal): Opt<User> {
+export function readUserById(id: Principal): Opt<User> {
     return users.get(id);
 }
 
 $update;
-export function delete_user(id: Principal): Variant<{
+export function deleteUser(id: Principal): Variant<{
     Ok: User;
     Err: Variant<{
         UserDoesNotExist: Principal;
@@ -79,8 +79,8 @@ export function delete_user(id: Principal): Variant<{
         };
     }
 
-    user.recording_ids.forEach((recording_id) => {
-        recordings.remove(recording_id);
+    user.recordingIds.forEach((recordingId) => {
+        recordings.remove(recordingId);
     });
 
     users.remove(user.id);
@@ -91,10 +91,10 @@ export function delete_user(id: Principal): Variant<{
 }
 
 $update;
-export function create_recording(
+export function createRecording(
     audio: blob,
     name: string,
-    user_id: Principal
+    userId: Principal
 ): Variant<{
     Ok: Recording;
     Err: Variant<{
@@ -102,39 +102,36 @@ export function create_recording(
         UserDoesNotExist: Principal;
     }>;
 }> {
-    const user = users.get(user_id);
+    const user = users.get(userId);
 
     if (user === null) {
         return {
             Err: {
-                UserDoesNotExist: user_id
+                UserDoesNotExist: userId
             }
         };
     }
 
-    const id = generate_id();
+    const id = generateId();
     const recording: Recording = {
         id,
         audio,
-        created_at: ic.time(),
+        createdAt: ic.time(),
         name,
-        user_id
+        userId
     };
 
-    const create_recording_result = recordings.insert(recording.id, recording);
+    const createRecordingResult = recordings.insert(recording.id, recording);
 
-    return match(create_recording_result, {
+    return match(createRecordingResult, {
         Ok: () => {
-            const updated_user: User = {
+            const updatedUser: User = {
                 ...user,
-                recording_ids: [...user.recording_ids, recording.id]
+                recordingIds: [...user.recordingIds, recording.id]
             };
-            const update_user_result = users.insert(
-                updated_user.id,
-                updated_user
-            );
+            const updateUserResult = users.insert(updatedUser.id, updatedUser);
 
-            return match(update_user_result, {
+            return match(updateUserResult, {
                 Ok: () => ({
                     Ok: recording
                 }),
@@ -154,12 +151,12 @@ export function create_recording(
 }
 
 $query;
-export function read_recordings(): Recording[] {
+export function readRecordings(): Recording[] {
     return recordings.values();
 }
 
 $query;
-export function read_recording_by_id(id: Principal): Opt<Recording> {
+export function readRecordingById(id: Principal): Opt<Recording> {
     return recordings.get(id);
 }
 
