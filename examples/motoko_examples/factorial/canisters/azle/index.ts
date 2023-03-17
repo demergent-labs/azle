@@ -16,7 +16,7 @@ export function get_perf_result(): Opt<PerfResult> {
 function record_performance(start: nat64, end: nat64): void {
     perf_result = {
         wasm_body_only: end - start,
-        wasm_including_prelude: ic.performance_counter(0)
+        wasm_including_prelude: ic.performanceCounter(0)
     };
 }
 //#endregion
@@ -24,11 +24,11 @@ function record_performance(start: nat64, end: nat64): void {
 // Calculate the product of all positive integers less than or equal to `n`.
 $update;
 export function fac(n: nat): nat {
-    const perf_start = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
 
     const factorial = go(n);
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
     record_performance(perf_start, perf_end);
 
     return factorial;

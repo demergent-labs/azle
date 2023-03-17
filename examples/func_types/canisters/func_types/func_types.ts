@@ -103,8 +103,8 @@ export function complex_func_return_type(): ComplexFunc {
 }
 
 type GetNotifierFromNotifiersCanisterResult = Variant<{
-    ok: NotifierFunc;
-    err: string;
+    Ok: NotifierFunc;
+    Err: string;
 }>;
 
 $update;
@@ -116,7 +116,7 @@ export async function get_notifier_from_notifiers_canister(): Promise<GetNotifie
     const result = await notifiers_canister.get_notifier().call();
 
     return match(result, {
-        ok: (ok) => ({ ok }),
-        err: (err) => ({ err })
+        Ok: (ok) => ({ Ok: ok }),
+        Err: (err) => ({ Err: err })
     });
 }

@@ -6,7 +6,7 @@ import {
     match,
     nat64,
     Opt,
-    $post_upgrade,
+    $postUpgrade,
     Principal,
     query,
     $query,
@@ -31,7 +31,7 @@ export function get_perf_result(): Opt<PerfResult> {
 function record_performance(start: nat64, end: nat64): void {
     perf_result = {
         wasm_body_only: end - start,
-        wasm_including_prelude: ic.performance_counter(0)
+        wasm_including_prelude: ic.performanceCounter(0)
     };
 }
 //#endregion
@@ -66,7 +66,7 @@ export function init(somebody: Principal) {
 }
 
 // Manually re-save these variables after new deploys.
-$post_upgrade;
+$postUpgrade;
 export function post_upgrade(somebody: Principal) {
     install = ic.caller();
     someone = somebody;
@@ -89,11 +89,11 @@ export function argument(): Principal {
 // Return the principal identifier of the caller of this method.
 $update;
 export function whoami(): Principal {
-    const perf_start = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
 
     const caller = ic.caller();
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
     record_performance(perf_start, perf_end);
 
     return caller;
@@ -102,20 +102,20 @@ export function whoami(): Principal {
 // Return the principal identifier of this canister.
 $update;
 export async function id(): Promise<Principal> {
-    const pre_xnet_call_perf_start = ic.performance_counter(0);
+    const pre_xnet_call_perf_start = ic.performanceCounter(0);
 
     const this_canister = new WhoAmICanister(ic.id());
 
-    const pre_xnet_call_perf_end = ic.performance_counter(0);
+    const pre_xnet_call_perf_end = ic.performanceCounter(0);
     const result = await this_canister.whoami().call();
-    const post_xnet_call_perf_start = ic.performance_counter(0);
+    const post_xnet_call_perf_start = ic.performanceCounter(0);
 
     const response = match(result, {
-        ok: (ok) => ok,
-        err: () => Principal.fromText('aaaaa-aa')
+        Ok: (ok) => ok,
+        Err: () => Principal.fromText('aaaaa-aa')
     });
 
-    const post_xnet_call_perf_end = ic.performance_counter(0);
+    const post_xnet_call_perf_end = ic.performanceCounter(0);
     const pre_xnet_call_perf =
         pre_xnet_call_perf_end - pre_xnet_call_perf_start;
     const post_xnet_call_perf =
@@ -123,7 +123,7 @@ export async function id(): Promise<Principal> {
     const total_perf = pre_xnet_call_perf + post_xnet_call_perf;
     perf_result = {
         wasm_body_only: total_perf,
-        wasm_including_prelude: ic.performance_counter(0)
+        wasm_including_prelude: ic.performanceCounter(0)
     };
 
     return response;

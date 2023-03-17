@@ -1,4 +1,4 @@
-import { $heartbeat, ic, $inspect_message, $query, $update } from 'azle';
+import { $heartbeat, ic, $inspectMessage, $query, $update } from 'azle';
 
 // throw 'Uncomment this to test that errors are handled during the eval process.';
 
@@ -87,23 +87,23 @@ export function heartbeat() {
     throw 'We are throwing in the heartbeat';
 }
 
-$inspect_message;
+$inspectMessage;
 export function inspect_message() {
     console.log('inspect_message called');
 
     if (
-        ic.method_name() !== 'inaccessible' ||
-        ic.method_name() !== 'also_inaccessible'
+        ic.methodName() !== 'inaccessible' ||
+        ic.methodName() !== 'also_inaccessible'
     ) {
-        ic.accept_message();
+        ic.acceptMessage();
         return;
     }
 
-    if (ic.method_name() === 'inaccessible') {
+    if (ic.methodName() === 'inaccessible') {
         return;
     }
 
-    throw `Method "${ic.method_name()}" not allowed`;
+    throw `Method "${ic.methodName()}" not allowed`;
 }
 
 $update;

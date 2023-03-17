@@ -193,11 +193,11 @@ export function stable_map_get(
 $update;
 export async function inline_record_return_type_as_external_canister_call(): Promise<
     Variant<{
-        ok: Record<{
+        Ok: Record<{
             prop1: string;
             prop2: string;
         }>;
-        err: string;
+        Err: string;
     }>
 > {
     return await self.inline_record_return_type().call();

@@ -10,109 +10,93 @@ declare var globalThis: any;
 export const ic: ic = globalThis.ic ?? {};
 
 type ic = {
-    accept_message: () => void;
-    // arg_data: () => any[]; // TODO: See https://github.com/demergent-labs/azle/issues/496
-    arg_data_raw: () => blob;
-    arg_data_raw_size: () => nat32;
-    call_raw: (
-        canister_id: Principal,
+    acceptMessage: () => void;
+    // argData: () => any[]; // TODO: See https://github.com/demergent-labs/azle/issues/496
+    argDataRaw: () => blob;
+    argDataRawSize: () => nat32;
+    callRaw: (
+        canisterId: Principal,
         method: string,
-        args_raw: blob,
+        argsRaw: blob,
         payment: nat64
     ) => Promise<FinalCanisterResult<blob>>;
-    call_raw128: (
-        canister_id: Principal,
+    callRaw128: (
+        canisterId: Principal,
         method: string,
-        args_raw: blob,
+        argsRaw: blob,
         payment: nat
     ) => Promise<FinalCanisterResult<blob>>;
     caller: () => Principal;
-    candid_decode: (candid_encoded: blob) => string;
-    candid_encode: (candid_string: string) => blob;
+    candidDecode: (candidEncoded: blob) => string;
+    candidEncode: (candidString: string) => blob;
     canisters: {
         [canisterName: string]: <T>(canisterId: Principal) => T;
     };
-    canister_balance: () => nat64;
-    canister_balance128: () => nat;
+    canisterBalance: () => nat64;
+    canisterBalance128: () => nat;
     /**
      * Cancels an existing timer. Does nothing if the timer has already been canceled.
      * @param id The ID of the timer to be cancelled.
      */
-    clear_timer: (id: TimerId) => void;
-    data_certificate: () => Opt<blob>;
+    clearTimer: (id: TimerId) => void;
+    dataCertificate: () => Opt<blob>;
     id: () => Principal;
-    method_name: () => string;
-    msg_cycles_accept: (max_amount: nat64) => nat64;
-    msg_cycles_accept128: (max_amount: nat) => nat;
-    msg_cycles_available: () => nat64;
-    msg_cycles_available128: () => nat;
-    msg_cycles_refunded: () => nat64;
-    msg_cycles_refunded128: () => nat;
-    notify_raw: (
-        canister_id: Principal,
+    methodName: () => string;
+    msgCyclesAccept: (maxAmount: nat64) => nat64;
+    msgCyclesAccept128: (maxAmount: nat) => nat;
+    msgCyclesAvailable: () => nat64;
+    msgCyclesAvailable128: () => nat;
+    msgCyclesRefunded: () => nat64;
+    msgCyclesRefunded128: () => nat;
+    notifyRaw: (
+        canisterId: Principal,
         method: string,
-        args_raw: blob,
+        argsRaw: blob,
         payment: nat
     ) => NotifyResult;
-    performance_counter: (counter_type: nat32) => nat64;
+    performanceCounter: (counterType: nat32) => nat64;
     print: (...args: any) => void;
     reject: (message: string) => void;
-    reject_code: () => RejectionCode;
-    reject_message: () => string;
+    rejectCode: () => RejectionCode;
+    rejectMessage: () => string;
     reply: (reply: any) => void;
-    reply_raw: (buf: blob) => void;
-    set_certified_data: (data: blob) => void;
+    replyRaw: (buf: blob) => void;
+    setCertifiedData: (data: blob) => void;
     /**
      * Sets callback to be executed later, after delay. Panics if `delay` + time() is more than 2^64 - 1.
-     * To cancel the timer before it executes, pass the returned `TimerId` to `clear_timer`.
+     * To cancel the timer before it executes, pass the returned `TimerId` to `clearTimer`.
      * Note that timers are not persisted across canister upgrades.
      *
      * @param delay The time (in seconds) to wait before executing the provided callback.
      * @param callback the function to invoke after the specified delay has passed.
      * @returns the ID of the created timer. Used to cancel the timer.
      */
-    set_timer: (
+    setTimer: (
         delay: Duration,
         callback: () => void | Promise<void>
     ) => TimerId;
     /**
      * Sets callback to be executed every interval. Panics if `interval` + time() is more than 2^64 - 1.
-     * To cancel the interval timer, pass the returned `TimerId` to `clear_timer`.
+     * To cancel the interval timer, pass the returned `TimerId` to `clearTimer`.
      * Note that timers are not persisted across canister upgrades.
      *
      * @param interval The interval (in seconds) between each callback execution.
      * @param callback the function to invoke after the specified delay has passed.
      * @returns the ID of the created timer. Used to cancel the timer.
      */
-    set_timer_interval: (
+    setTimerInterval: (
         interval: Duration,
         callback: () => void | Promise<void>
     ) => TimerId;
-    // stable_b_tree_map_contains_key: <Key>(memory_id: nat8, key: Key) => boolean;
-    // stable_b_tree_map_get: <Key, Value>(memory_id: nat8, key: Key) => Value;
-    // stable_b_tree_map_insert: <Key, Value>(
-    //     memory_id: nat8,
-    //     key: Key,
-    //     value: Value
-    // ) => InsertResult<Opt<Value>>;
-    // stable_b_tree_map_is_empty: (memory_id: nat8) => boolean;
-    // stable_b_tree_map_items: <Key, Value>(memory_id: nat8) => [Key, Value][];
-    // stable_b_tree_map_keys: <Key>(memory_id: nat8) => Key[];
-    // stable_b_tree_map_len: (memory_id: nat8) => nat64;
-    // stable_b_tree_map_remove: <Key, Value>(
-    //     memory_id: nat8,
-    //     key: Key
-    // ) => Opt<Value>;
-    // stable_b_tree_map_values: <Value>(memory_id: nat8) => Value[];
-    stable_bytes: () => blob;
-    stable_grow: (new_pages: nat32) => StableGrowResult;
-    stable_read: (offset: nat32, length: nat32) => blob;
-    stable_size: () => nat32;
-    stable_write: (offset: nat32, buf: blob) => void;
-    stable64_grow: (new_pages: nat64) => Stable64GrowResult;
-    stable64_read: (offset: nat64, length: nat64) => blob;
-    stable64_size: () => nat64;
-    stable64_write: (offset: nat64, buffer: blob) => void;
+    stableBytes: () => blob;
+    stableGrow: (newPages: nat32) => StableGrowResult;
+    stableRead: (offset: nat32, length: nat32) => blob;
+    stableSize: () => nat32;
+    stableWrite: (offset: nat32, buf: blob) => void;
+    stable64Grow: (newPages: nat64) => Stable64GrowResult;
+    stable64Read: (offset: nat64, length: nat64) => blob;
+    stable64Size: () => nat64;
+    stable64Write: (offset: nat64, buffer: blob) => void;
     time: () => nat64;
     trap: (message: string) => never;
 };
@@ -133,17 +117,17 @@ export type CanisterResult<T> = {
 };
 
 export type FinalCanisterResult<T> = RequireExactlyOne<{
-    ok: T;
-    err: string;
+    Ok: T;
+    Err: string;
 }>;
 
 export type NotifyResult = Variant<{
-    ok: null;
-    err: RejectionCode;
+    Ok: null;
+    Err: RejectionCode;
 }>;
 
 /**
- * Type returned by the `ic.set_timer` and `ic.set_timer_interval` functions. Pass to `ic.clear_timer` to remove the timer.
+ * Type returned by the `ic.setTimer` and `ic.setTimerInterval` functions. Pass to `ic.clearTimer` to remove the timer.
  */
 export type TimerId = Alias<nat64>; // TODO: Consider modeling this after the corresponding struct in Rust
 
@@ -173,8 +157,8 @@ export type reserved = any;
 export type empty = never;
 
 type AzleResult<T, E> = Partial<{
-    ok: T;
-    err: E;
+    Ok: T;
+    Err: E;
 }>;
 
 // TODO working on turning the ok function into an assertion
@@ -213,13 +197,13 @@ export type StableMemoryError = Variant<{
 }>;
 
 export type StableGrowResult = Variant<{
-    ok: nat32;
-    err: StableMemoryError;
+    Ok: nat32;
+    Err: StableMemoryError;
 }>;
 
 export type Stable64GrowResult = Variant<{
-    ok: nat64;
-    err: StableMemoryError;
+    Ok: nat64;
+    Err: StableMemoryError;
 }>;
 
 /**
@@ -231,12 +215,12 @@ export type Stable64GrowResult = Variant<{
  * ```ts
  * export class SomeOtherCanister extends ExternalCanister {
  *   @query
- *   some_canister_method: (some_param: SomeParamType) => CanisterResult<SomeReturnType>;
+ *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
  * }
  * ```
  */
 export function query(target: any, name: string) {
-    external_canister_method_decoration(target, name);
+    externalCanisterMethodDecoration(target, name);
 }
 
 /**
@@ -248,15 +232,15 @@ export function query(target: any, name: string) {
  * ```ts
  * export class SomeOtherCanister extends ExternalCanister {
  *   @update
- *   some_canister_method: (some_param: SomeParamType) => CanisterResult<SomeReturnType>;
+ *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
  * }
  * ```
  */
 export function update(target: any, name: string) {
-    external_canister_method_decoration(target, name);
+    externalCanisterMethodDecoration(target, name);
 }
 
-function external_canister_method_decoration(target: any, name: string) {
+function externalCanisterMethodDecoration(target: any, name: string) {
     Object.defineProperty(target, name, {
         get() {
             return (...args: any[]) => {
@@ -264,40 +248,40 @@ function external_canister_method_decoration(target: any, name: string) {
                     call: () => {
                         return (ic as any)[
                             `_azle_call_${target.constructor.name}_${name}`
-                        ](this.canister_id, args);
+                        ](this.canisterId, args);
                     },
                     notify: () => {
                         return (ic as any)[
                             `_azle_notify_${target.constructor.name}_${name}`
-                        ](this.canister_id, args);
+                        ](this.canisterId, args);
                     },
                     cycles: (cycles: nat64) => {
                         return {
                             call: () => {
                                 return (ic as any)[
                                     `_azle_call_with_payment_${target.constructor.name}_${name}`
-                                ](this.canister_id, [...args, cycles]);
+                                ](this.canisterId, [...args, cycles]);
                             },
                             notify: () => {
-                                // There is no notify_with_payment, there is only a notify_with_payment128
+                                // There is no notifyWithPayment, there is only a notifyWithPayment128
                                 return (ic as any)[
                                     `_azle_notify_with_payment128_${target.constructor.name}_${name}`
-                                ](this.canister_id, args, cycles);
+                                ](this.canisterId, args, cycles);
                             }
                         };
                     },
                     cycles128: (cycles: nat) => {
                         return {
                             notify: () => {
-                                // There is no notify_with_payment, there is only a notify_with_payment128
+                                // There is no notifyWithPayment, there is only a notifyWithPayment128
                                 return (ic as any)[
                                     `_azle_notify_with_payment128_${target.constructor.name}_${name}`
-                                ](this.canister_id, args, cycles);
+                                ](this.canisterId, args, cycles);
                             },
                             call: () => {
                                 return (ic as any)[
                                     `_azle_call_with_payment128_${target.constructor.name}_${name}`
-                                ](this.canister_id, [...args, cycles]);
+                                ](this.canisterId, [...args, cycles]);
                             }
                         };
                     }
@@ -314,7 +298,7 @@ function external_canister_method_decoration(target: any, name: string) {
  * ```ts
  * export class SomeOtherCanister extends ExternalCanister {
  *   @query
- *   some_canister_method: (some_param: SomeParamType) => CanisterResult<SomeReturnType>;
+ *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
  * }
  * ```
  *
@@ -325,22 +309,22 @@ function external_canister_method_decoration(target: any, name: string) {
  *   Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
  * );
  *
- * const result = await canister.some_canister_method().call();
+ * const result = await canister.someCanisterMethod().call();
  * ```
  */
 export class ExternalCanister {
-    canister_id: Principal;
+    canisterId: Principal;
 
-    constructor(canister_id: Principal) {
-        this.canister_id = canister_id;
+    constructor(canisterId: Principal) {
+        this.canisterId = canisterId;
     }
 }
 
 export const $heartbeat = (options: { guard: string }) => {};
 export const $init = (options: { guard: string }) => {};
-export const $inspect_message = (options: { guard: string }) => {};
-export const $post_upgrade = (options: { guard: string }) => {};
-export const $pre_upgrade = (options: { guard: string }) => {};
+export const $inspectMessage = (options: { guard: string }) => {};
+export const $postUpgrade = (options: { guard: string }) => {};
+export const $preUpgrade = (options: { guard: string }) => {};
 export const $query = (options: { guard: string }) => {};
 export const $update = (options: { guard: string }) => {};
 

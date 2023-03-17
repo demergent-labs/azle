@@ -39,12 +39,12 @@ export async function deep_query(): Promise<StringQueryResult> {
     const canister_result = await canister2.deep_query().call();
 
     return match(canister_result, {
-        ok: (string_query_result) =>
-            match(string_query_result, {
-                ok: (string_query) => ({ ok: string_query }),
-                err: (err) => ({ err })
+        Ok: (stringQueryResult) =>
+            match(stringQueryResult, {
+                Ok: (stringQuery) => ({ Ok: stringQuery }),
+                Err: (err) => ({ Err: err })
             }),
-        err: (err) => ({ err })
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -66,12 +66,12 @@ export async function simple_update(): Promise<StringQueryResult> {
     const canister_result = await canister2.deep_query().call();
 
     return match(canister_result, {
-        ok: (string_query_result) =>
-            match(string_query_result, {
-                ok: (string_query) => ({ ok: string_query }),
-                err: (err) => ({ err })
+        Ok: (stringQueryResult) =>
+            match(stringQueryResult, {
+                Ok: (stringQuery) => ({ Ok: stringQuery }),
+                Err: (err) => ({ Err: err })
             }),
-        err: (err) => ({ err })
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -90,17 +90,17 @@ export async function inc_canister1(): Promise<NatQueryResult> {
     const canister1_a_result = await canister1.inc_counter().call();
 
     return match(canister1_a_result, {
-        ok: async (canister1_a_ok) => {
+        Ok: async (canister1_a_ok) => {
             const canister1_b_result = await canister1.inc_counter().call();
 
             return match(canister1_b_result, {
-                ok: (canister1_b_ok) => ({
-                    ok: counter + canister1_a_ok + canister1_b_ok
+                Ok: (canister1_b_ok) => ({
+                    Ok: counter + canister1_a_ok + canister1_b_ok
                 }),
-                err: (err) => ({ err })
+                Err: (err) => ({ Err: err })
             });
         },
-        err: (err) => ({ err })
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -112,16 +112,16 @@ export async function inc_canister2(): Promise<NatQueryResult> {
     const canister2_a_result = await canister2.inc_counter().call();
 
     return match(canister2_a_result, {
-        ok: async (canister2_a_ok) => {
+        Ok: async (canister2_a_ok) => {
             const canister2_b_result = await canister2.inc_counter().call();
 
             return match(canister2_b_result, {
-                ok: (canister2_b_ok) => ({
-                    ok: counter + canister2_a_ok + canister2_b_ok
+                Ok: (canister2_b_ok) => ({
+                    Ok: counter + canister2_a_ok + canister2_b_ok
                 }),
-                err: (err) => ({ err })
+                Err: (err) => ({ Err: err })
             });
         },
-        err: (err) => ({ err })
+        Err: (err) => ({ Err: err })
     });
 }

@@ -56,7 +56,7 @@ export function arg_data_raw(
     arg3: boolean,
     arg4: string
 ): blob {
-    return ic.arg_data_raw();
+    return ic.argDataRaw();
 }
 
 // returns the length of the argument data in bytes
@@ -67,7 +67,7 @@ export function arg_data_raw_size(
     arg3: boolean,
     arg4: string
 ): nat32 {
-    return ic.arg_data_raw_size();
+    return ic.argDataRawSize();
 }
 
 // returns the principal of the identity that called this function
@@ -79,25 +79,25 @@ export function caller(): Principal {
 // returns the amount of cycles available in the canister
 $query;
 export function canister_balance(): nat64 {
-    return ic.canister_balance();
+    return ic.canisterBalance();
 }
 
 // returns the amount of cycles available in the canister
 $query;
 export function canister_balance128(): nat {
-    return ic.canister_balance128();
+    return ic.canisterBalance128();
 }
 
 // When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if not called from a query call.
 $query;
 export function data_certificate(): Opt<blob> {
-    return ic.data_certificate();
+    return ic.dataCertificate();
 }
 
 // When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if called not from a query call.
 $update;
 export function data_certificate_null(): Opt<blob> {
-    return ic.data_certificate();
+    return ic.dataCertificate();
 }
 
 // returns this canister's id
@@ -108,7 +108,7 @@ export function id(): Principal {
 
 $query;
 export function performance_counter(): nat64 {
-    return ic.performance_counter(0);
+    return ic.performanceCounter(0);
 }
 
 // prints a message through the local replica's output
@@ -127,7 +127,7 @@ export function reject(message: string): Manual<empty> {
 // sets up to 32 bytes of certified data
 $update;
 export function set_certified_data(data: blob): void {
-    ic.set_certified_data(data);
+    ic.setCertifiedData(data);
 }
 
 // returns the current timestamp

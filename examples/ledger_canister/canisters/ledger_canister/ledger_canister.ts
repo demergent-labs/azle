@@ -28,8 +28,8 @@ const icpCanister = new Ledger(
 );
 
 type ExecuteTransferResult = Variant<{
-    ok: TransferResult;
-    err: string;
+    Ok: TransferResult;
+    Err: string;
 }>;
 
 $update;
@@ -61,8 +61,8 @@ export async function execute_transfer(
 }
 
 type GetAccountBalanceResult = Variant<{
-    ok: Tokens;
-    err: string;
+    Ok: Tokens;
+    Err: string;
 }>;
 
 $update;
@@ -77,8 +77,8 @@ export async function get_account_balance(
 }
 
 type GetTransferFeeResult = Variant<{
-    ok: TransferFee;
-    err: string;
+    Ok: TransferFee;
+    Err: string;
 }>;
 
 $update;
@@ -87,8 +87,8 @@ export async function get_transfer_fee(): Promise<GetTransferFeeResult> {
 }
 
 type GetBlocksResult = Variant<{
-    ok: QueryBlocksResponse;
-    err: string;
+    Ok: QueryBlocksResponse;
+    Err: string;
 }>;
 
 $update;
@@ -99,8 +99,8 @@ export async function get_blocks(
 }
 
 type GetSymbolResult = Variant<{
-    ok: string;
-    err: string;
+    Ok: string;
+    Err: string;
 }>;
 
 $update;
@@ -108,14 +108,14 @@ export async function get_symbol(): Promise<GetSymbolResult> {
     const symbol_result_canister_result = await icpCanister.symbol().call();
 
     return match(symbol_result_canister_result, {
-        ok: (symbol_result) => ({ ok: symbol_result.symbol }),
-        err: (err) => ({ err })
+        Ok: (symbol_result) => ({ Ok: symbol_result.symbol }),
+        Err: (err) => ({ Err: err })
     });
 }
 
 type GetNameResult = Variant<{
-    ok: string;
-    err: string;
+    Ok: string;
+    Err: string;
 }>;
 
 $update;
@@ -123,14 +123,14 @@ export async function get_name(): Promise<GetNameResult> {
     const name_result_canister_result = await icpCanister.name().call();
 
     return match(name_result_canister_result, {
-        ok: (name_result) => ({ ok: name_result.name }),
-        err: (err) => ({ err })
+        Ok: (name_result) => ({ Ok: name_result.name }),
+        Err: (err) => ({ Err: err })
     });
 }
 
 type GetDecimalsResult = Variant<{
-    ok: nat32;
-    err: string;
+    Ok: nat32;
+    Err: string;
 }>;
 
 $update;
@@ -138,14 +138,14 @@ export async function get_decimals(): Promise<GetDecimalsResult> {
     const decimals_result_canister_result = await icpCanister.decimals().call();
 
     return match(decimals_result_canister_result, {
-        ok: (decimals_result) => ({ ok: decimals_result.decimals }),
-        err: (err) => ({ err })
+        Ok: (decimals_result) => ({ Ok: decimals_result.decimals }),
+        Err: (err) => ({ Err: err })
     });
 }
 
 type GetArchivesResult = Variant<{
-    ok: Archives;
-    err: string;
+    Ok: Archives;
+    Err: string;
 }>;
 
 $update;

@@ -16,7 +16,7 @@ export function get_perf_result(): Opt<PerfResult> {
 function record_performance(start: nat64, end: nat64): void {
     perf_result = {
         wasm_body_only: end - start,
-        wasm_including_prelude: ic.performance_counter(0)
+        wasm_including_prelude: ic.performanceCounter(0)
     };
 }
 //#endregion
@@ -49,13 +49,13 @@ let superheroes: Map<SuperheroId, Superhero> = new Map();
 // Create a superhero.
 $update;
 export function create(superhero: Superhero): SuperheroId {
-    const perf_start = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
 
     let superheroId = next;
     next += 1;
     superheroes.set(superheroId, superhero);
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
     record_performance(perf_start, perf_end);
 
     return superheroId;
@@ -75,14 +75,14 @@ export function update(
     superheroId: SuperheroId,
     superhero: Superhero
 ): boolean {
-    const perf_start = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
 
     let result = superheroes.get(superheroId);
     if (result) {
         superheroes.set(superheroId, superhero);
     }
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
     record_performance(perf_start, perf_end);
 
     return !!result;
@@ -91,14 +91,14 @@ export function update(
 // Delete a superhero.
 $update;
 export function delete_hero(superheroId: SuperheroId): boolean {
-    const perf_start = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
 
     let result = superheroes.get(superheroId);
     if (result) {
         superheroes.delete(superheroId);
     }
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
     record_performance(perf_start, perf_end);
     return !!result;
 }

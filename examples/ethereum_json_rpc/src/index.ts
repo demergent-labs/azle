@@ -62,8 +62,8 @@ export async function eth_get_balance(ethereum_address: string): Promise<JSON> {
         .call();
 
     return match(http_result, {
-        ok: (http_response) => decodeUtf8(Uint8Array.from(http_response.body)),
-        err: (err) => ic.trap(err ?? 'http_result had an error')
+        Ok: (http_response) => decodeUtf8(Uint8Array.from(http_response.body)),
+        Err: (err) => ic.trap(err ?? 'http_result had an error')
     });
 }
 
@@ -104,8 +104,8 @@ export async function eth_get_block_by_number(number: nat32): Promise<JSON> {
         .call();
 
     return match(http_result, {
-        ok: (http_response) => decodeUtf8(Uint8Array.from(http_response.body)),
-        err: (err) => ic.trap(err ?? 'http_result had an error')
+        Ok: (http_response) => decodeUtf8(Uint8Array.from(http_response.body)),
+        Err: (err) => ic.trap(err ?? 'http_result had an error')
     });
 }
 

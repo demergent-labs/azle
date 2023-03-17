@@ -16,7 +16,7 @@ export function get_perf_result(): Opt<PerfResult> {
 function record_performance(start: nat64, end: nat64): void {
     perf_result = {
         wasm_body_only: end - start,
-        wasm_including_prelude: ic.performance_counter(0)
+        wasm_including_prelude: ic.performanceCounter(0)
     };
 }
 //#endregion
@@ -30,11 +30,11 @@ let phone_book = new Map<string, Entry>();
 
 $update;
 export function insert(name: string, entry: Entry): void {
-    const perf_start = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
 
     phone_book.set(name, entry);
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
 
     record_performance(perf_start, perf_end);
 }

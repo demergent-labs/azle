@@ -8,22 +8,22 @@ export async function execute_call_raw(
     payment: nat64
 ): Promise<
     Variant<{
-        ok: string;
-        err: string;
+        Ok: string;
+        Err: string;
     }>
 > {
-    const canister_result = await ic.call_raw(
+    const canister_result = await ic.callRaw(
         canister_id,
         method,
-        ic.candid_encode(candid_args),
+        ic.candidEncode(candid_args),
         payment
     );
 
     return match(canister_result, {
-        ok: (ok) => ({
-            ok: ic.candid_decode(ok)
+        Ok: (ok) => ({
+            Ok: ic.candidDecode(ok)
         }),
-        err: (err) => ({ err })
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -35,21 +35,21 @@ export async function execute_call_raw128(
     payment: nat
 ): Promise<
     Variant<{
-        ok: string;
-        err: string;
+        Ok: string;
+        Err: string;
     }>
 > {
-    const canister_result = await ic.call_raw128(
+    const canister_result = await ic.callRaw128(
         canister_id,
         method,
-        ic.candid_encode(candid_args),
+        ic.candidEncode(candid_args),
         payment
     );
 
     return match(canister_result, {
-        ok: (ok) => ({
-            ok: ic.candid_decode(ok)
+        Ok: (ok) => ({
+            Ok: ic.candidDecode(ok)
         }),
-        err: (err) => ({ err })
+        Err: (err) => ({ Err: err })
     });
 }

@@ -19,7 +19,7 @@ let stable_map_2 = new StableBTreeMap<nat32, nat>(2, 100, 1_000);
 
 $query;
 export function stable_map_2_contains_key(key: nat32): boolean {
-    return stable_map_2.contains_key(key);
+    return stable_map_2.containsKey(key);
 }
 
 $query;
@@ -37,7 +37,7 @@ export function stable_map_2_insert(
 
 $query;
 export function stable_map_2_is_empty(): boolean {
-    return stable_map_2.is_empty();
+    return stable_map_2.isEmpty();
 }
 
 $query;

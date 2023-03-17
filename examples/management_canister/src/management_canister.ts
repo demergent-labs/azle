@@ -31,14 +31,14 @@ export async function execute_create_canister(): Promise<ExecuteCreateCanisterRe
         .call();
 
     return match(create_canister_result_canister_result, {
-        ok: (create_canister_result) => {
+        Ok: (create_canister_result) => {
             state.created_canister_id = create_canister_result.canister_id;
 
             return {
-                ok: create_canister_result
+                Ok: create_canister_result
             };
         },
-        err: (err) => ({ err })
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -59,8 +59,8 @@ export async function execute_update_settings(
         .call();
 
     return match(canister_result, {
-        ok: () => ({ ok: true }),
-        err: (err) => ({ err })
+        Ok: () => ({ Ok: true }),
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -82,8 +82,8 @@ export async function execute_install_code(
         .call();
 
     return match(canister_result, {
-        ok: () => ({ ok: true }),
-        err: (err) => ({ err })
+        Ok: () => ({ Ok: true }),
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -98,8 +98,8 @@ export async function execute_uninstall_code(
         .call();
 
     return match(canister_result, {
-        ok: () => ({ ok: true }),
-        err: (err) => ({ err })
+        Ok: () => ({ Ok: true }),
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -114,8 +114,8 @@ export async function execute_start_canister(
         .call();
 
     return match(canister_result, {
-        ok: () => ({ ok: true }),
-        err: (err) => ({ err })
+        Ok: () => ({ Ok: true }),
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -130,8 +130,8 @@ export async function execute_stop_canister(
         .call();
 
     return match(canister_result, {
-        ok: () => ({ ok: true }),
-        err: (err) => ({ err })
+        Ok: () => ({ Ok: true }),
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -146,8 +146,8 @@ export async function get_canister_status(
         .call();
 
     return match(canister_status_result_canister_result, {
-        ok: (canister_status_result) => ({ ok: canister_status_result }),
-        err: (err) => ({ err })
+        Ok: (canister_status_result) => ({ Ok: canister_status_result }),
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -162,8 +162,8 @@ export async function execute_delete_canister(
         .call();
 
     return match(canister_result, {
-        ok: () => ({ ok: true }),
-        err: (err) => ({ err })
+        Ok: () => ({ Ok: true }),
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -179,8 +179,8 @@ export async function execute_deposit_cycles(
         .call();
 
     return match(canister_result, {
-        ok: () => ({ ok: true }),
-        err: (err) => ({ err })
+        Ok: () => ({ Ok: true }),
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -191,8 +191,8 @@ export async function get_raw_rand(): Promise<RawRandResult> {
         .call();
 
     return match(raw_rand_canister_result, {
-        ok: (raw_randomness) => ({ ok: raw_randomness }),
-        err: (err) => ({ err })
+        Ok: (raw_randomness) => ({ Ok: raw_randomness }),
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -207,10 +207,10 @@ export async function provisional_create_canister_with_cycles(): Promise<Execute
         .call();
 
     return match(canister_result, {
-        ok: (provisional_create_canister_with_cycles_result) => ({
-            ok: provisional_create_canister_with_cycles_result
+        Ok: (provisional_create_canister_with_cycles_result) => ({
+            Ok: provisional_create_canister_with_cycles_result
         }),
-        err: (err) => ({ err })
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -228,8 +228,8 @@ export async function provisional_top_up_canister(
         .call();
 
     return match(canister_result, {
-        ok: () => ({ ok: true }),
-        err: (err) => ({ err })
+        Ok: () => ({ Ok: true }),
+        Err: (err) => ({ Err: err })
     });
 }
 

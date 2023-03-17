@@ -21,29 +21,29 @@ export const nonexistent_canister = new Nonexistent(
 $update;
 export async function get_rejection_code_no_error(): Promise<RejectionCode> {
     await some_service.accept().call();
-    return ic.reject_code();
+    return ic.rejectCode();
 }
 
 $update;
 export async function get_rejection_code_destination_invalid(): Promise<RejectionCode> {
     await nonexistent_canister.method().call();
-    return ic.reject_code();
+    return ic.rejectCode();
 }
 
 $update;
 export async function get_rejection_code_canister_reject(): Promise<RejectionCode> {
     await some_service.reject('reject').call();
-    return ic.reject_code();
+    return ic.rejectCode();
 }
 
 $update;
 export async function get_rejection_code_canister_error(): Promise<RejectionCode> {
     await some_service.error().call();
-    return ic.reject_code();
+    return ic.rejectCode();
 }
 
 $update;
 export async function get_rejection_message(message: string): Promise<string> {
     await some_service.reject(message).call();
-    return ic.reject_message();
+    return ic.rejectMessage();
 }

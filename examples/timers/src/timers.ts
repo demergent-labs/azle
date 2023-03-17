@@ -40,7 +40,7 @@ let status: StatusReport = {
 
 $update;
 export function clear_timer(timer_id: TimerId): void {
-    ic.clear_timer(timer_id);
+    ic.clearTimer(timer_id);
     console.log(`timer ${timer_id} cancelled`);
 }
 
@@ -48,29 +48,29 @@ $update;
 export function set_timers(delay: Duration, interval: Duration): TimerIds {
     const captured_value = '🚩';
 
-    const single_id = ic.set_timer(delay, one_time_timer_callback);
+    const single_id = ic.setTimer(delay, one_time_timer_callback);
 
-    const inline_id = ic.set_timer(delay, () => {
+    const inline_id = ic.setTimer(delay, () => {
         status.inline = 1;
         console.log('Inline timer called');
     });
 
-    const capture_id = ic.set_timer(delay, () => {
+    const capture_id = ic.setTimer(delay, () => {
         status.capture = captured_value;
         console.log(`Timer captured value ${captured_value}`);
     });
 
-    const repeat_id = ic.set_timer_interval(interval, () => {
+    const repeat_id = ic.setTimerInterval(interval, () => {
         status.repeat++;
         console.log(`Repeating timer. Call ${status.repeat}`);
     });
 
-    const single_cross_canister_id = ic.set_timer(
+    const single_cross_canister_id = ic.setTimer(
         delay,
         single_cross_canister_timer_callback
     );
 
-    const repeat_cross_canister_id = ic.set_timer_interval(
+    const repeat_cross_canister_id = ic.setTimerInterval(
         interval,
         repeat_cross_canister_timer_callback
     );
@@ -101,10 +101,10 @@ async function single_cross_canister_timer_callback(): Promise<void> {
     const result = await management_canister.raw_rand().call();
 
     match(result, {
-        ok: (ok) => {
+        Ok: (ok) => {
             status.single_cross_canister = ok;
         },
-        err: (err) => ic.trap(err)
+        Err: (err) => ic.trap(err)
     });
 }
 
@@ -114,12 +114,12 @@ async function repeat_cross_canister_timer_callback(): Promise<void> {
     const result = await management_canister.raw_rand().call();
 
     match(result, {
-        ok: (ok) => {
+        Ok: (ok) => {
             status.repeat_cross_canister = Uint8Array.from([
                 ...status.repeat_cross_canister,
                 ...ok
             ]);
         },
-        err: (err) => ic.trap(err)
+        Err: (err) => ic.trap(err)
     });
 }

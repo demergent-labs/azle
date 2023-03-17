@@ -5,26 +5,26 @@ import {
 } from 'azle/canisters/management';
 
 export type DefaultResult = Variant<{
-    ok: boolean;
-    err: string;
+    Ok: boolean;
+    Err: string;
 }>;
 
 export type ExecuteCreateCanisterResult = Variant<{
-    ok: CreateCanisterResult;
-    err: string;
+    Ok: CreateCanisterResult;
+    Err: string;
 }>;
 
 export type ExecuteProvisionalCreateCanisterWithCyclesResult = Variant<{
-    ok: CreateCanisterResult;
-    err: string;
+    Ok: CreateCanisterResult;
+    Err: string;
 }>;
 
 export type GetCanisterStatusResult = Variant<{
-    ok: CanisterStatusResult;
-    err: string;
+    Ok: CanisterStatusResult;
+    Err: string;
 }>;
 
 export type RawRandResult = Variant<{
-    ok: blob;
-    err: string;
+    Ok: blob;
+    Err: string;
 }>;

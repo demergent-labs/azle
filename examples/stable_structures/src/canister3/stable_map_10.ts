@@ -18,7 +18,7 @@ let stable_map_10 = new StableBTreeMap<float32, Opt<boolean>>(10, 100, 1_000);
 
 $query;
 export function stable_map_10_contains_key(key: float32): boolean {
-    return stable_map_10.contains_key(key);
+    return stable_map_10.containsKey(key);
 }
 
 $query;
@@ -36,7 +36,7 @@ export function stable_map_10_insert(
 
 $query;
 export function stable_map_10_is_empty(): boolean {
-    return stable_map_10.is_empty();
+    return stable_map_10.isEmpty();
 }
 
 $query;

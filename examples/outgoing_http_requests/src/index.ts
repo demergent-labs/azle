@@ -33,8 +33,8 @@ export async function xkcd(): Promise<HttpResponse> {
         .call();
 
     return match(http_result, {
-        ok: (http_response) => http_response,
-        err: (err) => ic.trap(http_result.err ?? 'http_result had an error')
+        Ok: (http_response) => http_response,
+        Err: (err) => ic.trap(err ?? 'http_result had an error')
     });
 }
 
@@ -48,10 +48,10 @@ export async function xkcd_raw(): Promise<Manual<HttpResponse>> {
     const cycle_cost_total =
         cycle_cost_base + cycle_cost_per_byte * max_response_bytes;
 
-    const http_result = await ic.call_raw(
+    const http_result = await ic.callRaw(
         Principal.fromText('aaaaa-aa'),
         'http_request',
-        ic.candid_encode(`
+        ic.candidEncode(`
             (
                 record {
                     url = "https://xkcd.com/642/info.0.json";
@@ -69,8 +69,8 @@ export async function xkcd_raw(): Promise<Manual<HttpResponse>> {
     );
 
     match(http_result, {
-        ok: (http_response) => ic.reply_raw(http_response),
-        err: (err) => ic.trap(err ?? 'http_result had an error')
+        Ok: (http_response) => ic.replyRaw(http_response),
+        Err: (err) => ic.trap(err ?? 'http_result had an error')
     });
 }
 
