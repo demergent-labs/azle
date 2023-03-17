@@ -9,6 +9,7 @@ mod canister_method_annotation;
 mod errors;
 mod generators;
 mod stable_b_tree_map_node;
+mod to_act;
 mod ts_ast;
 mod ts_keywords;
 mod utils;
