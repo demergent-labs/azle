@@ -7,6 +7,12 @@ export function identifier_annotation(): boolean {
     return true;
 }
 
+$query();
+export function call_expression_without_options_object(): boolean {
+    console.log('call_expression_without_options_object was called');
+    return true;
+}
+
 $query({});
 export function call_expression_with_empty_options_object(): boolean {
     console.log('call_expression_with_empty_options_object was called');

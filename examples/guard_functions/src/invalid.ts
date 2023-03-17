@@ -17,39 +17,35 @@ $query;
 console.log('Something between annotation and function declaration');
 export function fn1(): void {}
 
-// 2. Call expression without arguments
-$query();
-export function fn2(): void {}
-
-// 3. Spreading the options object
+// 2. Spreading the options object
 $query(...array_containing_options_object);
 export function fn3(): void {}
 
-// 4. Spreading inside the options object
+// 3. Spreading inside the options object
 $query({ ...options_subset });
 export function fn4(): void {}
 
-// 5. Too many arguments
+// 4. Too many arguments
 $query({}, true);
 export function fn5(): void {}
 
-// 6. Too many options
+// 5. Too many options
 $query({ guard: guard_function, anything_else: true, 4: true });
 export function fn6(): void {}
 
-// 7. Invalid option
+// 6. Invalid option
 $query({ anything_else: false });
 export function fn7(): void {}
 
 let computed_prop_name = 'guard';
 
-// 8. Computed guard key name
+// 7. Computed guard key name
 $query({ [computed_prop_name]: guard_function });
 export function fn8(): void {}
 
-// 9. Non exported function
+// 8. Non exported function
 $query;
 function fn9(): void {}
 
-// 10. Dangling guard un-followed by exported function
+// 9. Dangling guard un-followed by exported function
 $query;

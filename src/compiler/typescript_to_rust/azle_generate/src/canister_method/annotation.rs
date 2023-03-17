@@ -65,7 +65,7 @@ impl Annotation {
                 }
 
                 if call_expr.args.len() == 0 {
-                    return Err(ParseError::MissingOptionsObject);
+                    return Self::new(method_type, None);
                 }
 
                 let options_object = {

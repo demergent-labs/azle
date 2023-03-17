@@ -344,12 +344,12 @@ export class ExternalCanister {
     }
 }
 
-export const $heartbeat = (options: { guard?: () => GuardResult }) => {};
-export const $init = (options: { guard?: () => GuardResult }) => {};
-export const $inspect_message = (options: { guard?: () => GuardResult }) => {};
-export const $post_upgrade = (options: { guard?: () => GuardResult }) => {};
-export const $pre_upgrade = (options: { guard?: () => GuardResult }) => {};
-export const $query = (options: { guard?: () => GuardResult }) => {};
-export const $update = (options: { guard?: () => GuardResult }) => {};
+export const $heartbeat = (options?: { guard?: () => GuardResult }) => {};
+export const $init = (options?: { guard?: () => GuardResult }) => {};
+export const $inspect_message = (options?: { guard?: () => GuardResult }) => {};
+export const $post_upgrade = (options?: { guard?: () => GuardResult }) => {};
+export const $pre_upgrade = (options?: { guard?: () => GuardResult }) => {};
+export const $query = (options?: { guard?: () => GuardResult }) => {};
+export const $update = (options?: { guard?: () => GuardResult }) => {};
 
 export type Manual<T> = void;

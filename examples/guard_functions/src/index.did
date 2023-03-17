@@ -1,5 +1,6 @@
 service : () -> {
   call_expression_with_empty_options_object : () -> (bool) query;
+  call_expression_without_options_object : () -> (bool) query;
   custom_error_guarded : () -> (bool) query;
   error_string_guarded : () -> (bool) query;
   identifier_annotation : () -> (bool) query;
