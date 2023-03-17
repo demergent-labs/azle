@@ -2,12 +2,12 @@ import { blob, ic, $query } from 'azle';
 
 // encodes a Candid string to Candid bytes
 $query;
-export function candid_encode(candid_string: string): blob {
-    return ic.candidEncode(candid_string);
+export function candidEncode(candidString: string): blob {
+    return ic.candidEncode(candidString);
 }
 
 // decodes Candid bytes to a Candid string
 $query;
-export function candid_decode(candid_encoded: blob): string {
-    return ic.candidDecode(candid_encoded);
+export function candidDecode(candidEncoded: blob): string {
+    return ic.candidDecode(candidEncoded);
 }

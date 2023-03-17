@@ -161,7 +161,7 @@ export function readRecordingById(id: Principal): Opt<Recording> {
 }
 
 $update;
-export function delete_recording(id: Principal): Variant<{
+export function deleteRecording(id: Principal): Variant<{
     Ok: Recording;
     Err: Variant<{
         InsertError: InsertError;
@@ -179,26 +179,26 @@ export function delete_recording(id: Principal): Variant<{
         };
     }
 
-    const user = users.get(recording.user_id);
+    const user = users.get(recording.userId);
 
     if (user === null) {
         return {
             Err: {
-                UserDoesNotExist: recording.user_id
+                UserDoesNotExist: recording.userId
             }
         };
     }
 
-    const updated_user: User = {
+    const updatedUser: User = {
         ...user,
-        recording_ids: user.recording_ids.filter(
-            (recording_id) => recording_id.toText() !== recording.id.toText()
+        recordingIds: user.recordingIds.filter(
+            (recordingId) => recordingId.toText() !== recording.id.toText()
         )
     };
 
-    const update_user_result = users.insert(updated_user.id, updated_user);
+    const updateUserResult = users.insert(updatedUser.id, updatedUser);
 
-    return match(update_user_result, {
+    return match(updateUserResult, {
         Ok: () => {
             recordings.remove(id);
 
@@ -214,10 +214,10 @@ export function delete_recording(id: Principal): Variant<{
     });
 }
 
-function generate_id(): Principal {
-    const random_bytes = new Array(29)
+function generateId(): Principal {
+    const randomBytes = new Array(29)
         .fill(0)
         .map((_) => Math.floor(Math.random() * 256));
 
-    return Principal.fromUint8Array(Uint8Array.from(random_bytes));
+    return Principal.fromUint8Array(Uint8Array.from(randomBytes));
 }

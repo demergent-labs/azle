@@ -2,15 +2,15 @@ import { blob, $query } from 'azle';
 import encodeUtf8 from 'encode-utf8';
 
 $query;
-export function get_blob(): blob {
-    return string_to_blob('hello');
+export function getBlob(): blob {
+    return stringToBlob('hello');
 }
 
 $query;
-export function get_blobs(): blob[] {
-    return [string_to_blob('hello'), string_to_blob('world')];
+export function getBlobs(): blob[] {
+    return [stringToBlob('hello'), stringToBlob('world')];
 }
 
-function string_to_blob(string: string): blob {
+function stringToBlob(string: string): blob {
     return new Uint8Array(encodeUtf8(string));
 }

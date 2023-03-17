@@ -2,7 +2,7 @@ import { blob, $update, Variant } from 'azle';
 import {
     BitcoinNetwork,
     GetUtxosResult,
-    management_canister,
+    managementCanister,
     MillisatoshiPerByte,
     Satoshi
 } from 'azle/canisters/management';
@@ -18,7 +18,7 @@ export async function get_balance(address: string): Promise<
         Err: string;
     }>
 > {
-    return await management_canister
+    return await managementCanister
         .bitcoin_get_balance({
             address,
             min_confirmations: null,
@@ -35,7 +35,7 @@ export async function get_current_fee_percentiles(): Promise<
         Err: string;
     }>
 > {
-    return await management_canister
+    return await managementCanister
         .bitcoin_get_current_fee_percentiles({
             network: BitcoinNetwork.Regtest
         })
@@ -50,7 +50,7 @@ export async function get_utxos(address: string): Promise<
         Err: string;
     }>
 > {
-    return await management_canister
+    return await managementCanister
         .bitcoin_get_utxos({
             address,
             filter: null,
@@ -67,15 +67,15 @@ export async function send_transaction(transaction: blob): Promise<
         Err: string;
     }>
 > {
-    const transaction_fee =
+    const transactionFee =
         BITCOIN_BASE_TRANSACTION_COST +
         BigInt(transaction.length) * BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;
 
-    return await management_canister
+    return await managementCanister
         .bitcoin_send_transaction({
             transaction,
             network: BitcoinNetwork.Regtest
         })
-        .cycles(transaction_fee)
+        .cycles(transactionFee)
         .call();
 }

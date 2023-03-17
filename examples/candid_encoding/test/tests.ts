@@ -31,18 +31,18 @@ export function get_tests(
 
                 if (!ok(candid_encoded)) {
                     return {
-                        err: candid_encoded.err
+                        Err: candid_encoded.Err
                     };
                 }
 
                 if (!ok(candid_decoded)) {
                     return {
-                        err: candid_decoded.err
+                        Err: candid_decoded.Err
                     };
                 }
 
                 return {
-                    ok: candid_encoded.ok === true && candid_decoded.ok === true
+                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
                 };
             }
         },
@@ -61,18 +61,18 @@ export function get_tests(
 
                 if (!ok(candid_encoded)) {
                     return {
-                        err: candid_encoded.err
+                        Err: candid_encoded.Err
                     };
                 }
 
                 if (!ok(candid_decoded)) {
                     return {
-                        err: candid_decoded.err
+                        Err: candid_decoded.Err
                     };
                 }
 
                 return {
-                    ok: candid_encoded.ok === true && candid_decoded.ok === true
+                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
                 };
             }
         },
@@ -91,18 +91,18 @@ export function get_tests(
 
                 if (!ok(candid_encoded)) {
                     return {
-                        err: candid_encoded.err
+                        Err: candid_encoded.Err
                     };
                 }
 
                 if (!ok(candid_decoded)) {
                     return {
-                        err: candid_decoded.err
+                        Err: candid_decoded.Err
                     };
                 }
 
                 return {
-                    ok: candid_encoded.ok === true && candid_decoded.ok === true
+                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
                 };
             }
         },
@@ -121,18 +121,18 @@ export function get_tests(
 
                 if (!ok(candid_encoded)) {
                     return {
-                        err: candid_encoded.err
+                        Err: candid_encoded.Err
                     };
                 }
 
                 if (!ok(candid_decoded)) {
                     return {
-                        err: candid_decoded.err
+                        Err: candid_decoded.Err
                     };
                 }
 
                 return {
-                    ok: candid_encoded.ok === true && candid_decoded.ok === true
+                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
                 };
             }
         },
@@ -151,18 +151,18 @@ export function get_tests(
 
                 if (!ok(candid_encoded)) {
                     return {
-                        err: candid_encoded.err
+                        Err: candid_encoded.Err
                     };
                 }
 
                 if (!ok(candid_decoded)) {
                     return {
-                        err: candid_decoded.err
+                        Err: candid_decoded.Err
                     };
                 }
 
                 return {
-                    ok: candid_encoded.ok === true && candid_decoded.ok === true
+                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
                 };
             }
         },
@@ -181,18 +181,18 @@ export function get_tests(
 
                 if (!ok(candid_encoded)) {
                     return {
-                        err: candid_encoded.err
+                        Err: candid_encoded.Err
                     };
                 }
 
                 if (!ok(candid_decoded)) {
                     return {
-                        err: candid_decoded.err
+                        Err: candid_decoded.Err
                     };
                 }
 
                 return {
-                    ok: candid_encoded.ok === true && candid_decoded.ok === true
+                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
                 };
             }
         },
@@ -211,18 +211,18 @@ export function get_tests(
 
                 if (!ok(candid_encoded)) {
                     return {
-                        err: candid_encoded.err
+                        Err: candid_encoded.Err
                     };
                 }
 
                 if (!ok(candid_decoded)) {
                     return {
-                        err: candid_decoded.err
+                        Err: candid_decoded.Err
                     };
                 }
 
                 return {
-                    ok: candid_encoded.ok === true && candid_decoded.ok === true
+                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
                 };
             }
         },
@@ -241,18 +241,18 @@ export function get_tests(
 
                 if (!ok(candid_encoded)) {
                     return {
-                        err: candid_encoded.err
+                        Err: candid_encoded.Err
                     };
                 }
 
                 if (!ok(candid_decoded)) {
                     return {
-                        err: candid_decoded.err
+                        Err: candid_decoded.Err
                     };
                 }
 
                 return {
-                    ok: candid_encoded.ok === true && candid_decoded.ok === true
+                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
                 };
             }
         },
@@ -271,18 +271,18 @@ export function get_tests(
 
                 if (!ok(candid_encoded)) {
                     return {
-                        err: candid_encoded.err
+                        Err: candid_encoded.Err
                     };
                 }
 
                 if (!ok(candid_decoded)) {
                     return {
-                        err: candid_decoded.err
+                        Err: candid_decoded.Err
                     };
                 }
 
                 return {
-                    ok: candid_encoded.ok === true && candid_decoded.ok === true
+                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
                 };
             }
         },
@@ -297,7 +297,7 @@ export function get_tests(
 
                 if (!ok(candid_encoded)) {
                     return {
-                        err: candid_encoded.err
+                        Err: candid_encoded.Err
                     };
                 }
 
@@ -312,13 +312,13 @@ export function get_tests(
                         ?.map((x) => parseInt(x, 16)) ?? [];
 
                 const candid_decoded_result =
-                    await candid_encoding_canister.candid_decode(
+                    await candid_encoding_canister.candidDecode(
                         Uint8Array.from(candid_encoded_byte_array)
                     );
 
                 return {
-                    ok:
-                        candid_encoded.ok === true &&
+                    Ok:
+                        candid_encoded.Ok === true &&
                         candid_decoded_result.includes('record') &&
                         candid_decoded_result.includes('John') &&
                         candid_decoded_result.includes('Doe')
@@ -336,7 +336,7 @@ export function get_tests(
 
                 if (!ok(candid_encoded)) {
                     return {
-                        err: candid_encoded.err
+                        Err: candid_encoded.Err
                     };
                 }
 
@@ -351,13 +351,13 @@ export function get_tests(
                         ?.map((x) => parseInt(x, 16)) ?? [];
 
                 const candid_decoded_result =
-                    await candid_encoding_canister.candid_decode(
+                    await candid_encoding_canister.candidDecode(
                         Uint8Array.from(candid_encoded_byte_array)
                     );
 
                 return {
-                    ok:
-                        candid_encoded.ok === true &&
+                    Ok:
+                        candid_encoded.Ok === true &&
                         candid_decoded_result.includes('variant') &&
                         candid_decoded_result.includes('= true')
                 };
@@ -378,18 +378,18 @@ export function get_tests(
 
                 if (!ok(candid_encoded)) {
                     return {
-                        err: candid_encoded.err
+                        Err: candid_encoded.Err
                     };
                 }
 
                 if (!ok(candid_decoded)) {
                     return {
-                        err: candid_decoded.err
+                        Err: candid_decoded.Err
                     };
                 }
 
                 return {
-                    ok: candid_encoded.ok === true && candid_decoded.ok === true
+                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
                 };
             }
         },
@@ -408,18 +408,18 @@ export function get_tests(
 
                 if (!ok(candid_encoded)) {
                     return {
-                        err: candid_encoded.err
+                        Err: candid_encoded.Err
                     };
                 }
 
                 if (!ok(candid_decoded)) {
                     return {
-                        err: candid_decoded.err
+                        Err: candid_decoded.Err
                     };
                 }
 
                 return {
-                    ok: candid_encoded.ok === true && candid_decoded.ok === true
+                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
                 };
             }
         }
@@ -438,10 +438,10 @@ async function candid_encode_test(
             .match(/.{1,2}/g)
             ?.map((x) => parseInt(x, 16)) ?? [];
 
-    const result = await candid_encoding_canister.candid_encode(candid_string);
+    const result = await candid_encoding_canister.candidEncode(candid_string);
 
     return {
-        ok:
+        Ok:
             result.length === candid_encoded_byte_array.length &&
             result.every(
                 (element, index) => element === candid_encoded_byte_array[index]
@@ -461,11 +461,11 @@ async function candid_decode_test(
             .match(/.{1,2}/g)
             ?.map((x) => parseInt(x, 16)) ?? [];
 
-    const result = await candid_encoding_canister.candid_decode(
+    const result = await candid_encoding_canister.candidDecode(
         Uint8Array.from(candid_encoded_byte_array)
     );
 
     return {
-        ok: result === candid_string
+        Ok: result === candid_string
     };
 }

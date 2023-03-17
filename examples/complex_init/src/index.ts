@@ -14,6 +14,6 @@ export function init(tuple: [string, User]) {
 }
 
 $query;
-export function greet_user(): string {
+export function greetUser(): string {
     return `${greeting} ${user?.id ?? '??'}`;
 }

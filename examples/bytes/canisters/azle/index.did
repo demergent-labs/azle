@@ -1,8 +1,5 @@
-type PerfResult = record {
-  wasm_body_only : nat64;
-  wasm_including_prelude : nat64;
-};
+type PerfResult = record { wasmBodyOnly : nat64; wasmIncludingPrelude : nat64 };
 service : () -> {
-  get_bytes : (vec nat8) -> (vec nat8);
-  get_perf_result : () -> (opt PerfResult) query;
+  getBytes : (vec nat8) -> (vec nat8);
+  getPerfResult : () -> (opt PerfResult) query;
 }

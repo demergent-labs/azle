@@ -9,10 +9,10 @@ export function get_tests(
         {
             name: 'get_user',
             test: async () => {
-                const result = await complex_init_canister.greet_user();
+                const result = await complex_init_canister.greetUser();
 
                 return {
-                    ok: result === 'Oh hello there user 1'
+                    Ok: result === 'Oh hello there user 1'
                 };
             }
         }

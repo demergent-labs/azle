@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/azle/azle.did';
+import { _SERVICE } from '../dfx_generated/azle/azle.did.d';
 import { readFileSync } from 'fs';
 
 export function get_tests(bytes_canister: ActorSubclass<_SERVICE>): Test[] {
@@ -12,10 +12,10 @@ export function get_tests(bytes_canister: ActorSubclass<_SERVICE>): Test[] {
                     readFileSync('./test/example_files/example_1_kb.txt')
                 );
 
-                const result = await bytes_canister.get_bytes(file);
+                const result = await bytes_canister.getBytes(file as any);
 
                 return {
-                    ok: result.length === 1_000
+                    Ok: result.length === 1_000
                 };
             }
         },
@@ -26,10 +26,10 @@ export function get_tests(bytes_canister: ActorSubclass<_SERVICE>): Test[] {
                     readFileSync('./test/example_files/example_10_kb.txt')
                 );
 
-                const result = await bytes_canister.get_bytes(file);
+                const result = await bytes_canister.getBytes(file as any);
 
                 return {
-                    ok: result.length === 10_000
+                    Ok: result.length === 10_000
                 };
             }
         },
@@ -40,10 +40,10 @@ export function get_tests(bytes_canister: ActorSubclass<_SERVICE>): Test[] {
                     readFileSync('./test/example_files/example_100_kb.txt')
                 );
 
-                const result = await bytes_canister.get_bytes(file);
+                const result = await bytes_canister.getBytes(file as any);
 
                 return {
-                    ok: result.length === 100_000
+                    Ok: result.length === 100_000
                 };
             }
         },
@@ -54,10 +54,10 @@ export function get_tests(bytes_canister: ActorSubclass<_SERVICE>): Test[] {
                     readFileSync('./test/example_files/example_1000_kb.txt')
                 );
 
-                const result = await bytes_canister.get_bytes(file);
+                const result = await bytes_canister.getBytes(file as any);
 
                 return {
-                    ok: result.length === 1_000_000
+                    Ok: result.length === 1_000_000
                 };
             }
         },
@@ -68,10 +68,10 @@ export function get_tests(bytes_canister: ActorSubclass<_SERVICE>): Test[] {
                     readFileSync('./test/example_files/example_2000_kb.txt')
                 );
 
-                const result = await bytes_canister.get_bytes(file);
+                const result = await bytes_canister.getBytes(file as any);
 
                 return {
-                    ok: result.length === 2_000_000
+                    Ok: result.length === 2_000_000
                 };
             }
         }

@@ -7,50 +7,50 @@ export function get_tests(counter_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'read_count',
             test: async () => {
-                const result = await counter_canister.read_count();
+                const result = await counter_canister.readCount();
 
                 return {
-                    ok: result === 0n
+                    Ok: result === 0n
                 };
             }
         },
         {
             name: 'increment_count',
             test: async () => {
-                const result = await counter_canister.increment_count();
+                const result = await counter_canister.incrementCount();
 
                 return {
-                    ok: result === 1n
+                    Ok: result === 1n
                 };
             }
         },
         {
             name: 'increment_count',
             test: async () => {
-                const result = await counter_canister.increment_count();
+                const result = await counter_canister.incrementCount();
 
                 return {
-                    ok: result === 2n
+                    Ok: result === 2n
                 };
             }
         },
         {
             name: 'increment_count',
             test: async () => {
-                const result = await counter_canister.increment_count();
+                const result = await counter_canister.incrementCount();
 
                 return {
-                    ok: result === 3n
+                    Ok: result === 3n
                 };
             }
         },
         {
             name: 'read_count',
             test: async () => {
-                const result = await counter_canister.read_count();
+                const result = await counter_canister.readCount();
 
                 return {
-                    ok: result === 3n
+                    Ok: result === 3n
                 };
             }
         }
