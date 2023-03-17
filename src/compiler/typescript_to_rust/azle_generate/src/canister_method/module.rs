@@ -1,13 +1,11 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::{ClassDecl, Decl, ExportDecl, Expr, Module, ModuleDecl, ModuleItem, Stmt};
 
-use super::{AzleFnDecl, AzleTypeAliasDecl, GetName};
 use crate::{
-    canister_method::errors,
-    canister_method_annotation::CanisterMethodAnnotation,
+    canister_method::{errors, module_item::ModuleItemHelperMethods, Annotation},
     ts_ast::{
-        module_item::ModuleItemHelperMethods,
         source_map::{GetSourceFileInfo, SourceMapped},
+        AzleFnDecl, AzleTypeAliasDecl, GetName,
     },
 };
 
@@ -42,19 +40,18 @@ impl ModuleHelperMethods for Module {
 
                     match module_item.as_exported_fn_decl() {
                         Some(fn_decl) => {
-                            let annotation = match CanisterMethodAnnotation::from_item(
-                                custom_decorator_module_item,
-                            ) {
-                                Ok(annotation) => annotation,
-                                Err(err) => panic!(
-                                    "{}",
-                                    errors::build_parse_error_message(
-                                        err,
-                                        custom_decorator_module_item,
-                                        source_map
-                                    )
-                                ),
-                            };
+                            let annotation =
+                                match Annotation::from_module_item(custom_decorator_module_item) {
+                                    Ok(annotation) => annotation,
+                                    Err(err) => panic!(
+                                        "{}",
+                                        errors::build_parse_error_message(
+                                            err,
+                                            custom_decorator_module_item,
+                                            source_map
+                                        )
+                                    ),
+                                };
 
                             acc.push(AzleFnDecl {
                                 annotation,

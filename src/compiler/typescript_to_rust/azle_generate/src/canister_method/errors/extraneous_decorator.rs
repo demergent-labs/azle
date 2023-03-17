@@ -3,9 +3,9 @@ use swc_common::SourceMap;
 use swc_ecma_ast::ModuleItem;
 
 use crate::{
-    canister_method_annotation::CanisterMethodAnnotation,
+    canister_method::{module_item::ModuleItemHelperMethods, Annotation},
     errors::{ErrorMessage, Suggestion},
-    ts_ast::{module_item::ModuleItemHelperMethods, source_map::GetSourceFileInfo},
+    ts_ast::source_map::GetSourceFileInfo,
 };
 
 pub fn build_extraneous_decorator_error_message(
@@ -14,7 +14,7 @@ pub fn build_extraneous_decorator_error_message(
 ) -> ErrorMessage {
     let span = custom_decorator_module_item.as_expr_stmt().unwrap().span;
 
-    let annotation_type = match CanisterMethodAnnotation::from_item(custom_decorator_module_item) {
+    let annotation_type = match Annotation::from_module_item(custom_decorator_module_item) {
         Ok(annotation) => match annotation.method_type {
             CanisterMethodType::Heartbeat => "$heartbeat",
             CanisterMethodType::Init => "$init",

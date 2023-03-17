@@ -8,7 +8,6 @@ use crate::ts_ast::{source_map::SourceMapped, AzleProgram};
 mod build_candid_types;
 mod build_vm_value_conversion;
 mod cross_canister_calls;
-mod stable_b_tree_map;
 
 pub struct TsAst {
     pub azle_programs: Vec<AzleProgram>,

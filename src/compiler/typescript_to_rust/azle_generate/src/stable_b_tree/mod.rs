@@ -3,7 +3,9 @@ use std::collections::{HashMap, HashSet};
 use swc_common::SourceMap;
 use swc_ecma_ast::TsType;
 
-use crate::ts_ast::{azle_type::AzleType, traits::GetDependencies, AzleTypeAliasDecl};
+use crate::ts_ast::{azle_type::AzleType, traits::GetDependencies, AzleTypeAliasDecl, TsAst};
+
+mod stable_b_tree_maps;
 
 #[derive(Clone, Debug)]
 pub struct StableBTreeMapNode {
@@ -55,5 +57,19 @@ impl AzleStableBTreeMapNode {
                     .cloned()
                     .collect()
             })
+    }
+}
+
+impl TsAst {
+    pub fn stable_b_tree_map_nodes(&self) -> Vec<StableBTreeMapNode> {
+        self.azle_programs.iter().fold(vec![], |acc, azle_program| {
+            let azle_stable_maps = azle_program.azle_stable_b_tree_map_nodes();
+            let stable_maps = azle_stable_maps
+                .iter()
+                .map(|azle_node| azle_node.to_stable_b_tree_map_node(&azle_program.source_map))
+                .collect();
+
+            vec![acc, stable_maps].concat()
+        })
     }
 }

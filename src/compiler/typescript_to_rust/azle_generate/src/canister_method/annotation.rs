@@ -14,12 +14,12 @@ pub const CANISTER_METHOD_ANNOTATIONS: [&str; 7] = [
 ];
 
 #[derive(Clone)]
-pub struct CanisterMethodAnnotation {
+pub struct Annotation {
     pub method_type: CanisterMethodType,
     pub guard: Option<String>,
 }
 
-impl CanisterMethodAnnotation {
+impl Annotation {
     pub fn new(name: &str, guard: Option<&str>) -> Result<Self, ParseError> {
         let method_type = match name {
             "$heartbeat" => CanisterMethodType::Heartbeat,
@@ -40,8 +40,8 @@ impl CanisterMethodAnnotation {
         Ok(Self { method_type, guard })
     }
 
-    pub fn from_item(item: &ModuleItem) -> Result<Self, ParseError> {
-        let call_expr = match item {
+    pub fn from_module_item(module_item: &ModuleItem) -> Result<Self, ParseError> {
+        let call_expr = match module_item {
             swc_ecma_ast::ModuleItem::Stmt(stmt) => match stmt {
                 swc_ecma_ast::Stmt::Expr(expr) => &*expr.expr,
                 _ => return Err(ParseError::InvalidModuleItem),

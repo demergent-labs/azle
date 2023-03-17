@@ -2,13 +2,12 @@ use proc_macro2::TokenStream;
 
 use ts_ast::TsAst;
 
-pub use stable_b_tree_map_node::{AzleStableBTreeMapNode, StableBTreeMapNode};
+pub use stable_b_tree::{AzleStableBTreeMapNode, StableBTreeMapNode};
 
 mod canister_method;
-mod canister_method_annotation;
 mod errors;
 mod generators;
-mod stable_b_tree_map_node;
+mod stable_b_tree;
 mod to_act;
 mod ts_ast;
 mod ts_keywords;

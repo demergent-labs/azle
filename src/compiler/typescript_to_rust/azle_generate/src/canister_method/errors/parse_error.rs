@@ -2,8 +2,8 @@ use swc_common::SourceMap;
 use swc_ecma_ast::ModuleItem;
 
 use crate::{
-    errors::ErrorMessage,
-    ts_ast::{module_item::ModuleItemHelperMethods, source_map::GetSourceFileInfo},
+    canister_method::module_item::ModuleItemHelperMethods, errors::ErrorMessage,
+    ts_ast::source_map::GetSourceFileInfo,
 };
 
 #[derive(Clone, Debug)]

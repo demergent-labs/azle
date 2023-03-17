@@ -4,14 +4,14 @@ use quote::format_ident;
 use swc_common::SourceMap;
 use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};
 
-use crate::{canister_method_annotation::CanisterMethodAnnotation, ts_ast::GetName};
+use crate::{canister_method::Annotation, ts_ast::GetName};
 
 pub mod errors;
 pub mod get_dependencies;
 
 #[derive(Clone)]
 pub struct AzleFnDecl<'a> {
-    pub annotation: CanisterMethodAnnotation,
+    pub annotation: Annotation,
     pub fn_decl: FnDecl,
     pub source_map: &'a SourceMap,
 }

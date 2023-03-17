@@ -1,9 +1,8 @@
 use swc_ecma_ast::{Decl, Expr, ModuleItem, Program, Stmt};
 
-use super::AzleProgram;
 use crate::{
-    stable_b_tree_map_node::AzleStableBTreeMapNode,
-    ts_ast::{AzleNewExpr, GetName},
+    stable_b_tree::AzleStableBTreeMapNode,
+    ts_ast::{AzleNewExpr, AzleProgram, GetName},
 };
 
 impl AzleProgram {

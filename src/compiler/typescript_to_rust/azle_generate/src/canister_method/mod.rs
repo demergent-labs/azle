@@ -8,11 +8,15 @@ use cdk_framework::act::{
 
 use crate::ts_ast::{azle_type::AzleType, AzleFnDecl, TsAst};
 
+pub use annotation::Annotation;
 pub use errors::ParseError;
 
+mod annotation;
 mod heartbeat;
 mod init;
 mod inspect_message;
+pub mod module;
+mod module_item;
 mod post_upgrade;
 mod pre_upgrade;
 mod query_and_update;

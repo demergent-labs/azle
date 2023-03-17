@@ -1,14 +1,14 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::{ClassDecl, Program};
 
-use crate::ts_ast::{
-    module::ModuleHelperMethods, source_map::SourceMapped, AzleFnDecl, AzleTypeAliasDecl,
+use crate::{
+    canister_method::module::ModuleHelperMethods,
+    ts_ast::{source_map::SourceMapped, AzleFnDecl, AzleTypeAliasDecl},
 };
 
 pub use helper_methods::HelperMethods;
 
 mod helper_methods;
-mod stable_b_tree_maps;
 
 pub struct AzleProgram {
     pub program: swc_ecma_ast::Program,
