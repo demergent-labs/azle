@@ -11,8 +11,8 @@ import {
 import { User } from '../types';
 
 type StableMap11InsertResult = Variant<{
-    ok: Opt<User>;
-    err: InsertError;
+    Ok: Opt<User>;
+    Err: InsertError;
 }>;
 
 let stable_map_11 = new StableBTreeMap<nat, User>(11, 100, 1_000);

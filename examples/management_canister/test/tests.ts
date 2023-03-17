@@ -15,14 +15,14 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok:
-                        result.ok.canister_id !== undefined &&
-                        result.ok.canister_id !== null
+                    Ok:
+                        result.Ok.canister_id !== undefined &&
+                        result.Ok.canister_id !== null
                 };
             }
         },
@@ -39,7 +39,7 @@ export function get_tests(
 
                 if (!ok(execute_update_settings_result)) {
                     return {
-                        err: execute_update_settings_result.err
+                        Err: execute_update_settings_result.Err
                     };
                 }
 
@@ -50,15 +50,15 @@ export function get_tests(
 
                 if (!ok(get_canister_status_result)) {
                     return {
-                        err: get_canister_status_result.err
+                        Err: get_canister_status_result.Err
                     };
                 }
 
                 const canister_settings =
-                    get_canister_status_result.ok.settings;
+                    get_canister_status_result.Ok.settings;
 
                 return {
-                    ok:
+                    Ok:
                         canister_settings.compute_allocation === 1n &&
                         canister_settings.memory_allocation === 3_000_000n &&
                         canister_settings.freezing_threshold === 2_000_000n
@@ -76,17 +76,17 @@ export function get_tests(
 
                 const result = await management_canister.execute_install_code(
                     canister_id,
-                    wasm_module
+                    wasm_module as any
                 );
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: true
+                    Ok: true
                 };
             }
         },
@@ -103,11 +103,11 @@ export function get_tests(
 
                 if (!ok(status_before_result)) {
                     return {
-                        err: status_before_result.err
+                        Err: status_before_result.Err
                     };
                 }
 
-                const status_before = status_before_result.ok;
+                const status_before = status_before_result.Ok;
                 const cycles_before = status_before.cycles;
 
                 const deposit_cycles_result =
@@ -117,7 +117,7 @@ export function get_tests(
 
                 if (!ok(deposit_cycles_result)) {
                     return {
-                        err: deposit_cycles_result.err
+                        Err: deposit_cycles_result.Err
                     };
                 }
 
@@ -128,15 +128,15 @@ export function get_tests(
 
                 if (!ok(status_after_result)) {
                     return {
-                        err: status_after_result.err
+                        Err: status_after_result.Err
                     };
                 }
 
-                const status_after = status_after_result.ok;
+                const status_after = status_after_result.Ok;
                 const cycles_after = status_after.cycles;
 
                 return {
-                    ok: cycles_after >= cycles_before + 1_000_000n
+                    Ok: cycles_after >= cycles_before + 1_000_000n
                 };
             }
         },
@@ -153,7 +153,7 @@ export function get_tests(
 
                 if (!ok(execute_uninstall_code_result)) {
                     return {
-                        err: execute_uninstall_code_result.err
+                        Err: execute_uninstall_code_result.Err
                     };
                 }
 
@@ -164,14 +164,14 @@ export function get_tests(
 
                 if (!ok(get_canister_status_result)) {
                     return {
-                        err: get_canister_status_result.err
+                        Err: get_canister_status_result.Err
                     };
                 }
 
-                const canister_status = get_canister_status_result.ok;
+                const canister_status = get_canister_status_result.Ok;
 
                 return {
-                    ok: canister_status.module_hash.length === 0
+                    Ok: canister_status.module_hash.length === 0
                 };
             }
         },
@@ -188,7 +188,7 @@ export function get_tests(
 
                 if (!ok(execute_stop_canister_result)) {
                     return {
-                        err: execute_stop_canister_result.err
+                        Err: execute_stop_canister_result.Err
                     };
                 }
 
@@ -199,14 +199,14 @@ export function get_tests(
 
                 if (!ok(get_canister_status_result)) {
                     return {
-                        err: get_canister_status_result.err
+                        Err: get_canister_status_result.Err
                     };
                 }
 
-                const canister_status = get_canister_status_result.ok;
+                const canister_status = get_canister_status_result.Ok;
 
                 return {
-                    ok: 'stopped' in canister_status.status
+                    Ok: 'stopped' in canister_status.status
                 };
             }
         },
@@ -223,16 +223,16 @@ export function get_tests(
 
                 if (!ok(get_canister_status_before_result)) {
                     return {
-                        err: get_canister_status_before_result.err
+                        Err: get_canister_status_before_result.Err
                     };
                 }
 
                 const canister_status_before =
-                    get_canister_status_before_result.ok;
+                    get_canister_status_before_result.Ok;
 
                 if ('stopped' in canister_status_before.status === false) {
                     return {
-                        ok: false
+                        Ok: false
                     };
                 }
 
@@ -243,7 +243,7 @@ export function get_tests(
 
                 if (!ok(execute_start_canister_result)) {
                     return {
-                        err: execute_start_canister_result.err
+                        Err: execute_start_canister_result.Err
                     };
                 }
 
@@ -254,15 +254,15 @@ export function get_tests(
 
                 if (!ok(get_canister_status_after_result)) {
                     return {
-                        err: get_canister_status_after_result.err
+                        Err: get_canister_status_after_result.Err
                     };
                 }
 
                 const canister_status_after =
-                    get_canister_status_after_result.ok;
+                    get_canister_status_after_result.Ok;
 
                 return {
-                    ok: 'running' in canister_status_after.status
+                    Ok: 'running' in canister_status_after.status
                 };
             }
         },
@@ -279,14 +279,14 @@ export function get_tests(
 
                 if (!ok(get_canister_status_result)) {
                     return {
-                        err: get_canister_status_result.err
+                        Err: get_canister_status_result.Err
                     };
                 }
 
-                const canister_status = get_canister_status_result.ok;
+                const canister_status = get_canister_status_result.Ok;
 
                 return {
-                    ok:
+                    Ok:
                         'running' in canister_status.status &&
                         canister_status.memory_size === 0n &&
                         canister_status.cycles >= 800_000_000_000n &&
@@ -313,7 +313,7 @@ export function get_tests(
 
                 if (!ok(execute_stop_canister_result)) {
                     return {
-                        err: execute_stop_canister_result.err
+                        Err: execute_stop_canister_result.Err
                     };
                 }
 
@@ -324,12 +324,12 @@ export function get_tests(
 
                 if (!ok(execute_delete_canister_result)) {
                     return {
-                        err: execute_delete_canister_result.err
+                        Err: execute_delete_canister_result.Err
                     };
                 }
 
                 return {
-                    ok: true
+                    Ok: true
                 };
             }
         },
@@ -340,12 +340,12 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok.length === 32
+                    Ok: result.Ok.length === 32
                 };
             }
         }

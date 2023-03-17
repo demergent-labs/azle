@@ -9,8 +9,8 @@ import {
 } from 'azle';
 
 type StableMap7InsertResult = Variant<{
-    ok: Opt<null>;
-    err: InsertError;
+    Ok: Opt<null>;
+    Err: InsertError;
 }>;
 
 let stable_map_7 = new StableBTreeMap<null, null>(7, 100, 1_000);

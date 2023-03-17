@@ -3,10 +3,10 @@ type InsertError = variant {
   KeyTooLarge : KeyTooLarge;
 };
 type KeyTooLarge = record { max : nat32; given : nat32 };
-type StableMap5InsertResult = variant { ok : opt float64; err : InsertError };
-type StableMap6InsertResult = variant { ok : opt bool; err : InsertError };
-type StableMap7InsertResult = variant { ok : opt null; err : InsertError };
-type StableMap9InsertResult = variant { ok : opt vec text; err : InsertError };
+type StableMap5InsertResult = variant { Ok : opt float64; Err : InsertError };
+type StableMap6InsertResult = variant { Ok : opt bool; Err : InsertError };
+type StableMap7InsertResult = variant { Ok : opt null; Err : InsertError };
+type StableMap9InsertResult = variant { Ok : opt vec text; Err : InsertError };
 service : () -> {
   stable_map_5_contains_key : (opt text) -> (bool) query;
   stable_map_5_get : (opt text) -> (opt float64) query;

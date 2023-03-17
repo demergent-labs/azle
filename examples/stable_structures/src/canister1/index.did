@@ -5,11 +5,11 @@ type InsertError = variant {
 };
 type KeyTooLarge = record { max : nat32; given : nat32 };
 type Reaction = variant { Sad; Happy };
-type StableMap0InsertResult = variant { ok : opt text; err : InsertError };
-type StableMap1InsertResult = variant { ok : opt vec nat8; err : InsertError };
-type StableMap2InsertResult = variant { ok : opt nat; err : InsertError };
-type StableMap3InsertResult = variant { ok : opt int; err : InsertError };
-type StableMap4InsertResult = variant { ok : opt float32; err : InsertError };
+type StableMap0InsertResult = variant { Ok : opt text; Err : InsertError };
+type StableMap1InsertResult = variant { Ok : opt vec nat8; Err : InsertError };
+type StableMap2InsertResult = variant { Ok : opt nat; Err : InsertError };
+type StableMap3InsertResult = variant { Ok : opt int; Err : InsertError };
+type StableMap4InsertResult = variant { Ok : opt float32; Err : InsertError };
 type User = record { username : text; blog_posts : vec BlogPost };
 service : () -> {
   stable_map_0_contains_key : (nat8) -> (bool) query;

@@ -11,8 +11,8 @@ import {
 } from 'azle';
 
 type StableMap1InsertResult = Variant<{
-    ok: Opt<blob>;
-    err: InsertError;
+    Ok: Opt<blob>;
+    Err: InsertError;
 }>;
 
 let stable_map_1 = new StableBTreeMap<nat16, blob>(1, 100, 1_000);

@@ -10,8 +10,8 @@ import {
 } from 'azle';
 
 type StableMap5InsertResult = Variant<{
-    ok: Opt<float64>;
-    err: InsertError;
+    Ok: Opt<float64>;
+    Err: InsertError;
 }>;
 
 let stable_map_5 = new StableBTreeMap<Opt<String>, float64>(5, 100, 1_000);

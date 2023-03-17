@@ -5,12 +5,12 @@ type InsertError = variant {
 };
 type KeyTooLarge = record { max : nat32; given : nat32 };
 type Reaction = variant { Sad; Happy };
-type StableMap10InsertResult = variant { ok : opt opt bool; err : InsertError };
-type StableMap11InsertResult = variant { ok : opt User; err : InsertError };
-type StableMap12InsertResult = variant { ok : opt Reaction; err : InsertError };
+type StableMap10InsertResult = variant { Ok : opt opt bool; Err : InsertError };
+type StableMap11InsertResult = variant { Ok : opt User; Err : InsertError };
+type StableMap12InsertResult = variant { Ok : opt Reaction; Err : InsertError };
 type StableMap13InsertResult = variant {
-  ok : opt principal;
-  err : InsertError;
+  Ok : opt principal;
+  Err : InsertError;
 };
 type User = record { username : text; blog_posts : vec BlogPost };
 service : () -> {

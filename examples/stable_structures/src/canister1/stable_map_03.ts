@@ -11,8 +11,8 @@ import {
 import { Reaction } from '../types';
 
 type StableMap3InsertResult = Variant<{
-    ok: Opt<int>;
-    err: InsertError;
+    Ok: Opt<int>;
+    Err: InsertError;
 }>;
 
 let stable_map_3 = new StableBTreeMap<Reaction, int>(3, 100, 1_000);
