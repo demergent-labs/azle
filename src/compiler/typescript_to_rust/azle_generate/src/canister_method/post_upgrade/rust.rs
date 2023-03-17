@@ -1,12 +1,10 @@
 use proc_macro2::TokenStream;
 
-use crate::{generators::canister_methods, ts_ast::AzleFnDecl};
+use crate::{canister_method::rust, ts_ast::AzleFnDecl};
 
-pub fn generate_post_upgrade_method_body(
-    post_upgrade_fn_decl_option: Option<&AzleFnDecl>,
-) -> TokenStream {
+pub fn generate(post_upgrade_fn_decl_option: Option<&AzleFnDecl>) -> TokenStream {
     let call_to_post_upgrade_js_function =
-        canister_methods::maybe_generate_call_to_js_function(&post_upgrade_fn_decl_option);
+        rust::maybe_generate_call_to_js_function(&post_upgrade_fn_decl_option);
 
     let function_name = match post_upgrade_fn_decl_option {
         Some(post_upgrade_fn_decl) => post_upgrade_fn_decl.get_function_name(),

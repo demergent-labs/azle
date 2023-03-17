@@ -4,10 +4,13 @@ use swc_ecma_ast::{
     TsType,
 };
 
-use crate::{generators::canister_methods, ts_ast::AzleFnDecl};
+use crate::{canister_method::rust, ts_ast::AzleFnDecl};
+
+mod query;
+mod update;
 
 pub fn generate_query_and_update_body(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
-    let call_to_js_function = canister_methods::generate_call_to_js_function(fn_decl);
+    let call_to_js_function = rust::generate_call_to_js_function(fn_decl);
     let return_expression = generate_return_expression(fn_decl);
     let function_name = fn_decl.get_function_name();
     let manual = fn_decl.is_manual();

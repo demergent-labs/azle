@@ -3,12 +3,6 @@ use quote::{format_ident, quote};
 
 use crate::ts_ast::AzleFnDecl;
 
-pub mod init;
-pub mod inspect_message;
-pub mod post_upgrade;
-pub mod pre_upgrade;
-pub mod query_and_update;
-
 pub fn maybe_generate_call_to_js_function(fn_decl_option: &Option<&AzleFnDecl>) -> TokenStream {
     if let Some(azle_fn_decl) = fn_decl_option {
         generate_call_to_js_function(azle_fn_decl)

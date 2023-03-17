@@ -1,8 +1,8 @@
 use cdk_framework::act::node::canister_method::{CanisterMethodType, HeartbeatMethod};
 
-mod rust;
-
 use crate::{canister_method::errors, ts_ast::azle_program::HelperMethods, TsAst};
+
+mod rust;
 
 impl TsAst {
     pub fn build_heartbeat_method(&self) -> Option<HeartbeatMethod> {

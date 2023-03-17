@@ -1,10 +1,8 @@
-use crate::{generators::canister_methods, ts_ast::AzleFnDecl};
+use crate::{canister_method::rust, ts_ast::AzleFnDecl};
 
-pub fn generate_inspect_message_method_body(
-    inspect_message_fn_decl: &AzleFnDecl,
-) -> proc_macro2::TokenStream {
+pub fn generate(inspect_message_fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
     let call_to_inspect_message_js_function =
-        canister_methods::generate_call_to_js_function(inspect_message_fn_decl);
+        rust::generate_call_to_js_function(inspect_message_fn_decl);
 
     let function_name = inspect_message_fn_decl.get_function_name();
 
