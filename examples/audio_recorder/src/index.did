@@ -17,17 +17,17 @@ type User = record {
   created_at : nat64;
 };
 type _InlineCreateRecordingReturnType = variant {
-  ok : Recording;
-  err : _InlineCreateRecordingReturnTypeErr;
+  Ok : Recording;
+  Err : _InlineCreateRecordingReturnTypeErr;
 };
 type _InlineCreateRecordingReturnTypeErr = variant {
   InsertError : InsertError;
   UserDoesNotExist : principal;
 };
-type _InlineCreateUserReturnType = variant { ok : User; err : InsertError };
+type _InlineCreateUserReturnType = variant { Ok : User; Err : InsertError };
 type _InlineDeleteRecordingReturnType = variant {
-  ok : Recording;
-  err : _InlineDeleteRecordingReturnTypeErr;
+  Ok : Recording;
+  Err : _InlineDeleteRecordingReturnTypeErr;
 };
 type _InlineDeleteRecordingReturnTypeErr = variant {
   RecordingDoesNotExist : principal;
@@ -35,8 +35,8 @@ type _InlineDeleteRecordingReturnTypeErr = variant {
   UserDoesNotExist : principal;
 };
 type _InlineDeleteUserReturnType = variant {
-  ok : User;
-  err : _InlineDeleteUserReturnTypeErr;
+  Ok : User;
+  Err : _InlineDeleteUserReturnTypeErr;
 };
 type _InlineDeleteUserReturnTypeErr = variant { UserDoesNotExist : principal };
 service : () -> {

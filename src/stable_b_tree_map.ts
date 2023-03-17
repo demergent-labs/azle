@@ -66,8 +66,8 @@ export class StableBTreeMap<Key, Value> {
         key: Key,
         value: Value
     ): Variant<{
-        ok: Opt<Value>;
-        err: InsertError;
+        Ok: Opt<Value>;
+        Err: InsertError;
     }> {
         // @ts-ignore
         return ic.stableBTreeMapInsert(this.memoryId, key, value);

@@ -33,8 +33,8 @@ let recordings = new StableBTreeMap<Principal, Recording>(1, 38, 5_000_000);
 
 $update;
 export function create_user(username: string): Variant<{
-    ok: User;
-    err: InsertError;
+    Ok: User;
+    Err: InsertError;
 }> {
     const id = generate_id();
     const user: User = {
@@ -47,8 +47,8 @@ export function create_user(username: string): Variant<{
     const result = users.insert(user.id, user);
 
     return match(result, {
-        ok: () => ({ ok: user }),
-        err: (err) => ({ err })
+        Ok: () => ({ Ok: user }),
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -64,8 +64,8 @@ export function read_user_by_id(id: Principal): Opt<User> {
 
 $update;
 export function delete_user(id: Principal): Variant<{
-    ok: User;
-    err: Variant<{
+    Ok: User;
+    Err: Variant<{
         UserDoesNotExist: Principal;
     }>;
 }> {
@@ -73,7 +73,7 @@ export function delete_user(id: Principal): Variant<{
 
     if (user === null) {
         return {
-            err: {
+            Err: {
                 UserDoesNotExist: id
             }
         };
@@ -86,7 +86,7 @@ export function delete_user(id: Principal): Variant<{
     users.remove(user.id);
 
     return {
-        ok: user
+        Ok: user
     };
 }
 
@@ -96,8 +96,8 @@ export function create_recording(
     name: string,
     user_id: Principal
 ): Variant<{
-    ok: Recording;
-    err: Variant<{
+    Ok: Recording;
+    Err: Variant<{
         InsertError: InsertError;
         UserDoesNotExist: Principal;
     }>;
@@ -106,7 +106,7 @@ export function create_recording(
 
     if (user === null) {
         return {
-            err: {
+            Err: {
                 UserDoesNotExist: user_id
             }
         };
@@ -124,7 +124,7 @@ export function create_recording(
     const create_recording_result = recordings.insert(recording.id, recording);
 
     return match(create_recording_result, {
-        ok: () => {
+        Ok: () => {
             const updated_user: User = {
                 ...user,
                 recording_ids: [...user.recording_ids, recording.id]
@@ -135,18 +135,18 @@ export function create_recording(
             );
 
             return match(update_user_result, {
-                ok: () => ({
-                    ok: recording
+                Ok: () => ({
+                    Ok: recording
                 }),
-                err: (err) => ({
-                    err: {
+                Err: (err) => ({
+                    Err: {
                         InsertError: err
                     }
                 })
             });
         },
-        err: (err) => ({
-            err: {
+        Err: (err) => ({
+            Err: {
                 InsertError: err
             }
         })
@@ -165,8 +165,8 @@ export function read_recording_by_id(id: Principal): Opt<Recording> {
 
 $update;
 export function delete_recording(id: Principal): Variant<{
-    ok: Recording;
-    err: Variant<{
+    Ok: Recording;
+    Err: Variant<{
         InsertError: InsertError;
         RecordingDoesNotExist: Principal;
         UserDoesNotExist: Principal;
@@ -176,7 +176,7 @@ export function delete_recording(id: Principal): Variant<{
 
     if (recording === null) {
         return {
-            err: {
+            Err: {
                 RecordingDoesNotExist: id
             }
         };
@@ -186,7 +186,7 @@ export function delete_recording(id: Principal): Variant<{
 
     if (user === null) {
         return {
-            err: {
+            Err: {
                 UserDoesNotExist: recording.user_id
             }
         };
@@ -202,15 +202,15 @@ export function delete_recording(id: Principal): Variant<{
     const update_user_result = users.insert(updated_user.id, updated_user);
 
     return match(update_user_result, {
-        ok: () => {
+        Ok: () => {
             recordings.remove(id);
 
             return {
-                ok: recording
+                Ok: recording
             };
         },
-        err: (err) => ({
-            err: {
+        Err: (err) => ({
+            Err: {
                 InsertError: err
             }
         })
