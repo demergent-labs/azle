@@ -29,14 +29,14 @@ impl ParseError {
             Self::InvalidModuleItem => "Invalid module item. Expected an identifier or call expression.",
             Self::InvalidCallee => "Invalid callee. Callee cannot be from super or import.",
             Self::InvalidExpression => "Invalid expression. Expected an identifier.",
-            Self::TooManyArguments => "Invalid arguments. Expected only one argument.",
-            Self::MissingOptionsObject => "Missing options object. Either pass an options object or remove the invocation parens",
+            Self::TooManyArguments => "Too many arguments. Expected only one argument, an options object.",
+            Self::MissingOptionsObject => "Missing options object. Either pass an options object or remove the invocation parens.",
             Self::InvalidSpreadUsage => "Spread operation is unsupported in canister method annotations at this time.",
             Self::TypeError => "TypeError. Expected options to be an object literal.",
-            Self::TooManyProperties => "Invalid properties. Expected only one property.",
+            Self::TooManyProperties => "Too many properties. Expected only one property, \"guard\".",
             Self::InvalidPropertyDeclaration => "Invalid property declaration. Expected a key value pair. Shorthand, Assign, Getter, Setter, and Method are unsupported.",
-            Self::InvalidOption => "Invalid option. Expected option \"guard\" as an identifier or string literal",
-            Self::InvalidOptionValue => "Invalid option value. Guard must be an identifier literal referring to a guard function",
+            Self::InvalidOption => "Invalid option. Expected option \"guard\" as an identifier or string literal.",
+            Self::InvalidOptionValue => "Invalid option value. Guard must be an identifier literal referring to a guard function.",
         };
         str.to_string()
     }

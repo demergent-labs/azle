@@ -3,13 +3,18 @@
 
 import { $query, GuardResult } from 'azle';
 
+const array_containing_options_object = [
+    { guard: 'this is not a function declaration' }
+];
+const options_subset = { guard: 'this is not a function declaration' };
+
 function guard_function(): GuardResult {
     return { ok: null };
 }
 
 // 1. Custom annotation not directly followed by a function declaration
 $query;
-let invalid = ['this is not a function declaration'];
+console.log('Something between annotation and function declaration');
 export function fn1(): void {}
 
 // 2. Call expression without arguments
@@ -17,11 +22,11 @@ $query();
 export function fn2(): void {}
 
 // 3. Spreading the options object
-$query(...invalid);
+$query(...array_containing_options_object);
 export function fn3(): void {}
 
 // 4. Spreading inside the options object
-$query({ ...invalid });
+$query({ ...options_subset });
 export function fn4(): void {}
 
 // 5. Too many arguments
@@ -46,4 +51,5 @@ export function fn8(): void {}
 $query;
 function fn9(): void {}
 
-$query; // Dangling guard un-followed by exported function
+// 10. Dangling guard un-followed by exported function
+$query;
