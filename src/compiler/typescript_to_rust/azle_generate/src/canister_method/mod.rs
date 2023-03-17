@@ -12,10 +12,10 @@ pub use annotation::Annotation;
 pub use errors::ParseError;
 
 mod annotation;
+mod guard_function;
 mod heartbeat;
 mod init;
 mod inspect_message;
-pub mod module;
 mod module_item;
 mod post_upgrade;
 mod pre_upgrade;
@@ -23,6 +23,7 @@ mod query_and_update;
 mod rust;
 
 pub mod errors;
+pub mod module;
 
 impl TsAst {
     pub fn build_canister_methods(&self) -> CanisterMethods {

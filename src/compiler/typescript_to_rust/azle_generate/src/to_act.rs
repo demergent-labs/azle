@@ -21,7 +21,7 @@ impl TsAst {
         let cdk_name = "azle".to_string();
         let candid_types = self.build_candid_types();
         let header = header::generate(&self.main_js);
-        let guard_functions = vec![]; // TODO: See https://github.com/demergent-labs/azle/issues/859
+        let guard_functions = self.build_guard_functions(&canister_methods);
         let keywords = ts_keywords::ts_keywords();
         let vm_value_conversion = self.build_vm_value_conversion();
 
