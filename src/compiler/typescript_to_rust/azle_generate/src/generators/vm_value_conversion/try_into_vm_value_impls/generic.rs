@@ -43,7 +43,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
                         let result_js_object = boa_engine::object::ObjectInitializer::new(context)
                             .property(
-                                "ok",
+                                "Ok",
                                 ok_js_value,
                                 boa_engine::property::Attribute::all()
                             )
@@ -58,7 +58,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
                         let result_js_object = boa_engine::object::ObjectInitializer::new(context)
                             .property(
-                                "err",
+                                "Err",
                                 err_js_value,
                                 boa_engine::property::Attribute::all()
                             )

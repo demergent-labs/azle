@@ -9,7 +9,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
                     let canister_result_js_object = boa_engine::object::ObjectInitializer::new(&mut *_azle_boa_context)
                         .property(
-                            "ok",
+                            "Ok",
                             js_value,
                             boa_engine::property::Attribute::all()
                         )
@@ -24,7 +24,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
                     let canister_result_js_object = boa_engine::object::ObjectInitializer::new(&mut *_azle_boa_context)
                         .property(
-                            "err",
+                            "Err",
                             js_value,
                             boa_engine::property::Attribute::all()
                         )
