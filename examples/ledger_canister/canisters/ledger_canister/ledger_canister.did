@@ -7,13 +7,13 @@ type Block = record {
 };
 type BlockRange = record { blocks : vec Block };
 type GetBlocksArgs = record { start : nat64; length : nat64 };
-type ManualReply = variant { ok : TransferResult; err : text };
-type ManualReply_1 = variant { ok : Tokens; err : text };
-type ManualReply_2 = variant { ok : Archives; err : text };
-type ManualReply_3 = variant { ok : QueryBlocksResponse; err : text };
-type ManualReply_4 = variant { ok : nat32; err : text };
-type ManualReply_5 = variant { ok : text; err : text };
-type ManualReply_6 = variant { ok : TransferFee; err : text };
+type ManualReply = variant { Ok : TransferResult; Err : text };
+type ManualReply_1 = variant { Ok : Tokens; Err : text };
+type ManualReply_2 = variant { Ok : Archives; Err : text };
+type ManualReply_3 = variant { Ok : QueryBlocksResponse; Err : text };
+type ManualReply_4 = variant { Ok : nat32; Err : text };
+type ManualReply_5 = variant { Ok : text; Err : text };
+type ManualReply_6 = variant { Ok : TransferFee; Err : text };
 type Operation = variant {
   Burn : _InlineOperationBurn;
   Mint : _InlineOperationMint;

@@ -1,10 +1,10 @@
 type Account = record { id : text; balance : nat64 };
 type AccountArgs = record { id : text };
-type ManualReply = variant { ok : opt Account; err : text };
-type ManualReply_1 = variant { ok : vec Account; err : text };
-type ManualReply_2 = variant { ok : nat64; err : text };
-type ManualReply_3 = variant { ok : text; err : text };
-type NotifyResult = variant { ok; err : RejectionCode };
+type ManualReply = variant { Ok : opt Account; Err : text };
+type ManualReply_1 = variant { Ok : vec Account; Err : text };
+type ManualReply_2 = variant { Ok : nat64; Err : text };
+type ManualReply_3 = variant { Ok : text; Err : text };
+type NotifyResult = variant { Ok; Err : RejectionCode };
 type RejectionCode = variant {
   NoError;
   CanisterError;

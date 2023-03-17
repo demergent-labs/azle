@@ -15,7 +15,7 @@ export function get_tests(
                     await inline_types_canister.inline_record_return_type();
 
                 return {
-                    ok: result.prop1 === 'prop1' && result.prop2 === 'prop2'
+                    Ok: result.prop1 === 'prop1' && result.prop2 === 'prop2'
                 };
             }
         },
@@ -27,7 +27,7 @@ export function get_tests(
                 });
 
                 return {
-                    ok: result === 'prop1'
+                    Ok: result === 'prop1'
                 };
             }
         },
@@ -38,7 +38,7 @@ export function get_tests(
                     await inline_types_canister.inline_variant_return_type();
 
                 return {
-                    ok: 'var1' in result
+                    Ok: 'var1' in result
                 };
             }
         },
@@ -52,7 +52,7 @@ export function get_tests(
                 );
 
                 return {
-                    ok: 'var1' in result
+                    Ok: 'var1' in result
                 };
             }
         },
@@ -66,7 +66,7 @@ export function get_tests(
                 );
 
                 return {
-                    ok: 'var2' in result
+                    Ok: 'var2' in result
                 };
             }
         },
@@ -77,7 +77,7 @@ export function get_tests(
                     await inline_types_canister.record_with_inline_fields();
 
                 return {
-                    ok:
+                    Ok:
                         result.id === '0' &&
                         result.job.id === '0' &&
                         result.job.title === 'Software Developer'
@@ -91,7 +91,7 @@ export function get_tests(
                     await inline_types_canister.variant_with_inline_fields();
 
                 return {
-                    ok: 'three' in result && result.three.id === '0'
+                    Ok: 'three' in result && result.three.id === '0'
                 };
             }
         },
@@ -102,7 +102,7 @@ export function get_tests(
                     await inline_types_canister.record_referencing_other_types_from_return_type();
 
                 return {
-                    ok: result.prop1 === 'prop1' && result.prop2.id === '0'
+                    Ok: result.prop1 === 'prop1' && result.prop2.id === '0'
                 };
             }
         },
@@ -113,7 +113,7 @@ export function get_tests(
                     await inline_types_canister.variant_referencing_other_types_from_return_type();
 
                 return {
-                    ok: 'prop2' in result && result.prop2.id === '0'
+                    Ok: 'prop2' in result && result.prop2.id === '0'
                 };
             }
         },
@@ -130,7 +130,7 @@ export function get_tests(
                     );
 
                 return {
-                    ok: result === '0'
+                    Ok: result === '0'
                 };
             }
         },
@@ -147,7 +147,7 @@ export function get_tests(
                     );
 
                 return {
-                    ok: result.length === 1 && result[0] === '0'
+                    Ok: result.length === 1 && result[0] === '0'
                 };
             }
         },
@@ -166,7 +166,7 @@ export function get_tests(
                     );
 
                 return {
-                    ok: result.length === 0
+                    Ok: result.length === 0
                 };
             }
         },
@@ -183,7 +183,7 @@ export function get_tests(
                     );
 
                 return {
-                    ok: result === undefined
+                    Ok: result === undefined
                 };
             }
         },
@@ -200,7 +200,7 @@ export function get_tests(
                     );
 
                 return {
-                    ok: result === undefined
+                    Ok: result === undefined
                 };
             }
         },
@@ -211,11 +211,11 @@ export function get_tests(
                     await inline_types_canister.inline_record_return_type_as_external_canister_call();
 
                 if (!ok(result)) {
-                    return { err: result.err };
+                    return { Err: result.Err };
                 }
 
                 return {
-                    ok: result.ok.prop1 == 'prop1' && result.ok.prop2 == 'prop2'
+                    Ok: result.Ok.prop1 == 'prop1' && result.Ok.prop2 == 'prop2'
                 };
             }
         },
@@ -230,7 +230,7 @@ export function get_tests(
                 ]);
 
                 return {
-                    ok:
+                    Ok:
                         result[0].toString() === principal_id &&
                         result[1].toString() === method
                 };
@@ -275,7 +275,7 @@ export function get_tests(
                 });
 
                 return {
-                    ok:
+                    Ok:
                         'v3' in result.variant &&
                         result.variant.v3.prop1 == 'text' &&
                         result.opt[0]?.record.prop1 == 'prop1'
@@ -301,19 +301,19 @@ export function get_tests(
                 );
 
                 if (!ok(result)) {
-                    if ('ValueTooLarge' in result.err) {
+                    if ('ValueTooLarge' in result.Err) {
                         return {
-                            err: `InsertError::ValueTooLarge Expected value to be <= ${result.err.ValueTooLarge.max} bytes but received value with ${result.err.ValueTooLarge.given} bytes.`
+                            Err: `InsertError::ValueTooLarge Expected value to be <= ${result.Err.ValueTooLarge.max} bytes but received value with ${result.Err.ValueTooLarge.given} bytes.`
                         };
                     } else {
                         return {
-                            err: `InsertError::KeyTooLarge Expected key to be <= ${result.err.KeyTooLarge.max} bytes but received key with ${result.err.KeyTooLarge.given} bytes.`
+                            Err: `InsertError::KeyTooLarge Expected key to be <= ${result.Err.KeyTooLarge.max} bytes but received key with ${result.Err.KeyTooLarge.given} bytes.`
                         };
                     }
                 }
 
                 return {
-                    ok: Array.isArray(result.ok) && result.ok.length == 0
+                    Ok: Array.isArray(result.Ok) && result.Ok.length == 0
                 };
             }
         },
@@ -333,7 +333,7 @@ export function get_tests(
                 });
 
                 return {
-                    ok:
+                    Ok:
                         result.length != 0 &&
                         'var2' in result[0].variant &&
                         'prop1' in result[0].variant.var2 &&

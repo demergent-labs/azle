@@ -4,10 +4,10 @@ type GetUtxosResult = record {
   tip_block_hash : vec nat8;
   utxos : vec Utxo;
 };
-type ManualReply = variant { ok : nat64; err : text };
-type ManualReply_1 = variant { ok : vec nat64; err : text };
-type ManualReply_2 = variant { ok : GetUtxosResult; err : text };
-type ManualReply_3 = variant { ok; err : text };
+type ManualReply = variant { Ok : nat64; Err : text };
+type ManualReply_1 = variant { Ok : vec nat64; Err : text };
+type ManualReply_2 = variant { Ok : GetUtxosResult; Err : text };
+type ManualReply_3 = variant { Ok; Err : text };
 type Outpoint = record { txid : vec nat8; vout : nat32 };
 type Utxo = record { height : nat32; value : nat64; outpoint : Outpoint };
 service : () -> {

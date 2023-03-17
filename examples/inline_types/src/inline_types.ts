@@ -165,12 +165,12 @@ export function stable_map_insert(
         variant: Variant<{ var1: null; var2: TestVariant }>;
     }>
 ): Variant<{
-    ok: Opt<
+    Ok: Opt<
         Record<{
             variant: Variant<{ var1: null; var2: TestVariant }>;
         }>
     >;
-    err: InsertError;
+    Err: InsertError;
 }> {
     return stable_map.insert(key, value);
 }

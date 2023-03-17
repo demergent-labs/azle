@@ -1,3 +1,4 @@
+import { Variant } from '../index';
 import { execSync } from 'child_process';
 
 export type Test = {
@@ -8,7 +9,7 @@ export type Test = {
     test?: () => Promise<AzleResult<boolean, string>>;
 };
 
-export type Variant<T> = Partial<T>;
+// export type Variant<T> = Partial<T>;
 
 export type AzleResult<T, E> = Variant<{
     Ok: T;

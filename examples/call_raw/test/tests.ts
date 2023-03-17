@@ -17,12 +17,12 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok.includes('blob')
+                    Ok: result.Ok.includes('blob')
                 };
             }
         },
@@ -38,14 +38,14 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok:
-                        result.ok.includes('record') &&
-                        result.ok.includes('principal')
+                    Ok:
+                        result.Ok.includes('record') &&
+                        result.Ok.includes('principal')
                 };
             }
         },
@@ -61,12 +61,12 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok.includes('blob')
+                    Ok: result.Ok.includes('blob')
                 };
             }
         },
@@ -82,14 +82,14 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok:
-                        result.ok.includes('record') &&
-                        result.ok.includes('principal')
+                    Ok:
+                        result.Ok.includes('record') &&
+                        result.Ok.includes('principal')
                 };
             }
         }
