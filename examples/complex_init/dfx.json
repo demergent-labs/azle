@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "complex_init": {
+            "type": "custom",
+            "build": "npx azle complex_init",
+            "root": "src",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
+            "wasm": ".azle/complex_init/complex_init.wasm.gz",
+            "declarations": {
+                "output": "test/dfx_generated/complex_init",
+                "node_compatibility": true
+            }
+        }
+    }
+}

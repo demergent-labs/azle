@@ -1,18 +1,17 @@
 use cdk_framework::act::node::canister_method::CanisterMethodType;
+use proc_macro2::Ident;
 use quote::format_ident;
 use swc_common::SourceMap;
 use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};
-use syn::Ident;
 
-use crate::{canister_method_annotation::CanisterMethodAnnotation, ts_ast::GetName};
+use crate::{canister_method::Annotation, ts_ast::GetName};
 
-pub mod canister_method_builder;
 pub mod errors;
 pub mod get_dependencies;
 
 #[derive(Clone)]
 pub struct AzleFnDecl<'a> {
-    pub annotation: CanisterMethodAnnotation,
+    pub annotation: Annotation,
     pub fn_decl: FnDecl,
     pub source_map: &'a SourceMap,
 }
@@ -109,8 +108,8 @@ impl AzleFnDecl<'_> {
     /// **Note:** This method shouldn't panic even if it is missing a return
     /// type because it is called to filter all fn_decls, including those that
     /// aren't canister methods.
-    pub fn is_canister_method_type(&self, canister_method_type: &CanisterMethodType) -> bool {
-        &self.annotation.kind == canister_method_type
+    pub fn is_canister_method_type(&self, canister_method_type: CanisterMethodType) -> bool {
+        self.annotation.method_type == canister_method_type
     }
 
     pub fn is_manual(&self) -> bool {

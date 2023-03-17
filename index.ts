@@ -121,6 +121,14 @@ export type FinalCanisterResult<T> = RequireExactlyOne<{
     Err: string;
 }>;
 
+/** The return type of a guard function. Used to indicate whether the guarded function should halt or proceed. */
+export type GuardResult = RequireExactlyOne<{
+    /** Allows the guarded function to proceed. */
+    ok: null;
+    /** Prevents the guarded function from proceeding. */
+    err: string;
+}>;
+
 export type NotifyResult = Variant<{
     Ok: null;
     Err: RejectionCode;
@@ -320,12 +328,12 @@ export class ExternalCanister {
     }
 }
 
-export const $heartbeat = (options: { guard: string }) => {};
-export const $init = (options: { guard: string }) => {};
-export const $inspectMessage = (options: { guard: string }) => {};
-export const $postUpgrade = (options: { guard: string }) => {};
-export const $preUpgrade = (options: { guard: string }) => {};
-export const $query = (options: { guard: string }) => {};
-export const $update = (options: { guard: string }) => {};
+export const $heartbeat = (options?: { guard?: () => GuardResult }) => {};
+export const $init = (options?: { guard?: () => GuardResult }) => {};
+export const $inspectMessage = (options?: { guard?: () => GuardResult }) => {};
+export const $postUpgrade = (options?: { guard?: () => GuardResult }) => {};
+export const $preUpgrade = (options?: { guard?: () => GuardResult }) => {};
+export const $query = (options?: { guard?: () => GuardResult }) => {};
+export const $update = (options?: { guard?: () => GuardResult }) => {};
 
 export type Manual<T> = void;
