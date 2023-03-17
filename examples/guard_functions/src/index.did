@@ -1,1 +1,10 @@
-service : () -> { loosely_guarded : () -> (bool) query }
+service : () -> {
+  call_expression_with_empty_options_object : () -> (bool) query;
+  custom_error_guarded : () -> (bool) query;
+  error_string_guarded : () -> (bool) query;
+  identifier_annotation : () -> (bool) query;
+  invalid_return_type_guarded : () -> (bool) query;
+  loosely_guarded : () -> (bool) query;
+  loosely_guarded_with_guard_option_key_as_string : () -> (bool) query;
+  tightly_guarded : () -> (bool) query;
+}

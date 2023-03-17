@@ -4,7 +4,11 @@ use swc_ecma_ast::{ClassDecl, Decl, ExportDecl, Expr, Module, ModuleDecl, Module
 use super::{AzleFnDecl, AzleTypeAliasDecl, GetName};
 use crate::{
     canister_method::errors,
-    ts_ast::{module_item::ModuleItemHelperMethods, source_map::SourceMapped},
+    canister_method_annotation::CanisterMethodAnnotation,
+    ts_ast::{
+        module_item::ModuleItemHelperMethods,
+        source_map::{GetSourceFileInfo, SourceMapped},
+    },
 };
 
 pub trait ModuleHelperMethods {
@@ -20,6 +24,9 @@ pub trait ModuleHelperMethods {
 
 impl ModuleHelperMethods for Module {
     fn get_azle_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AzleFnDecl> {
+        // TODO: Consider changing this algorithm from being backward looking
+        // to being forward looking
+
         let mut previous_module_item_was_custom_decorator = false;
 
         self.body
@@ -29,16 +36,26 @@ impl ModuleHelperMethods for Module {
                 if previous_module_item_was_custom_decorator {
                     let custom_decorator_module_item = self.body.get(i - 1).unwrap();
 
-                    let exported_fn_decl_option = module_item.as_exported_fn_decl();
+                    let line_number = source_map
+                        .get_line_number(custom_decorator_module_item.as_expr_stmt().unwrap().span);
+                    eprintln!("On iteration {i}, module_item was on line {line_number}");
 
-                    match exported_fn_decl_option {
+                    match module_item.as_exported_fn_decl() {
                         Some(fn_decl) => {
-                            let annotation = match custom_decorator_module_item
-                                .to_canister_method_annotation()
-                            {
-                                Some(annotation) => annotation,
-                                None => panic!("Unable to parse a custom azle decorator"),
+                            let annotation = match CanisterMethodAnnotation::from_item(
+                                custom_decorator_module_item,
+                            ) {
+                                Ok(annotation) => annotation,
+                                Err(err) => panic!(
+                                    "{}",
+                                    errors::build_parse_error_message(
+                                        err,
+                                        custom_decorator_module_item,
+                                        source_map
+                                    )
+                                ),
                             };
+
                             acc.push(AzleFnDecl {
                                 annotation,
                                 fn_decl,

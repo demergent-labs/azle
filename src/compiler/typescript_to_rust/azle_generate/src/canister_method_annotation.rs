@@ -90,29 +90,29 @@ impl CanisterMethodAnnotation {
                     return Self::new(method_type, None);
                 }
 
-                let option_property = match options_object.props.get(1).unwrap() {
+                let option_property = match options_object.props.get(0).unwrap() {
                     swc_ecma_ast::PropOrSpread::Spread(_) => {
                         return Err(ParseError::InvalidSpreadUsage)
                     }
                     swc_ecma_ast::PropOrSpread::Prop(prop) => match &**prop {
                         swc_ecma_ast::Prop::KeyValue(key_value_prop) => key_value_prop,
-                        _ => return Err(ParseError::InvalidPropertyType),
+                        _ => return Err(ParseError::InvalidPropertyDeclaration),
                     },
                 };
 
                 let key = match &option_property.key {
                     swc_ecma_ast::PropName::Ident(ident) => ident.get_name().to_string(),
                     swc_ecma_ast::PropName::Str(str) => str.value.to_string(),
-                    _ => return Err(ParseError::InvalidGuardKey),
+                    _ => return Err(ParseError::InvalidOption),
                 };
 
-                if key != "Guard".to_string() {
-                    return Err(ParseError::InvalidGuardKey);
+                if key != "guard".to_string() {
+                    return Err(ParseError::InvalidOption);
                 }
 
                 let guard_fn_name = match &*option_property.value {
                     swc_ecma_ast::Expr::Ident(ident) => Some(ident.get_name()),
-                    _ => return Err(ParseError::InvalidGuardValue),
+                    _ => return Err(ParseError::InvalidOptionValue),
                 };
 
                 Self::new(method_type, guard_fn_name)

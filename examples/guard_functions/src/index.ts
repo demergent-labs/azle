@@ -2,8 +2,8 @@ import { $query, GuardResult } from 'azle';
 
 // #region Guarded functions are called
 $query;
-export function non_callable_annotation(): boolean {
-    console.log('non_callable_annotation was called');
+export function identifier_annotation(): boolean {
+    console.log('identifier_annotation was called');
     return true;
 }
 

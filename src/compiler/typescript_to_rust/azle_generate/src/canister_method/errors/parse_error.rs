@@ -1,3 +1,11 @@
+use swc_common::SourceMap;
+use swc_ecma_ast::ModuleItem;
+
+use crate::{
+    errors::ErrorMessage,
+    ts_ast::{module_item::ModuleItemHelperMethods, source_map::GetSourceFileInfo},
+};
+
 #[derive(Clone, Debug)]
 pub enum ParseError {
     InvalidMethodType,
@@ -9,9 +17,9 @@ pub enum ParseError {
     InvalidSpreadUsage,
     TypeError,
     TooManyProperties,
-    InvalidPropertyType,
-    InvalidGuardKey,
-    InvalidGuardValue,
+    InvalidPropertyDeclaration,
+    InvalidOption,
+    InvalidOptionValue,
 }
 
 impl ParseError {
@@ -26,10 +34,29 @@ impl ParseError {
             Self::InvalidSpreadUsage => "Spread operation is unsupported in canister method annotations at this time.",
             Self::TypeError => "TypeError. Expected options to be an object literal.",
             Self::TooManyProperties => "Invalid properties. Expected only one property.",
-            Self::InvalidPropertyType => "Invalid property type. Expected a key value pair. Shorthand, Assign, Getter, Setter, and Method are unsupported.",
-            Self::InvalidGuardKey => "Invalid property key. Expected guard option to be provided as an identifier or string literal",
-            Self::InvalidGuardValue => "Invalid guard value. Guard must be an identifier literal referring to a guard function",
+            Self::InvalidPropertyDeclaration => "Invalid property declaration. Expected a key value pair. Shorthand, Assign, Getter, Setter, and Method are unsupported.",
+            Self::InvalidOption => "Invalid option. Expected option \"guard\" as an identifier or string literal",
+            Self::InvalidOptionValue => "Invalid option value. Guard must be an identifier literal referring to a guard function",
         };
         str.to_string()
+    }
+}
+
+pub fn build_parse_error_message(
+    parse_error: ParseError,
+    supposed_decorator: &ModuleItem,
+    source_map: &SourceMap,
+) -> ErrorMessage {
+    let span = supposed_decorator.as_expr_stmt().unwrap().span;
+    let range = source_map.get_range(span);
+
+    ErrorMessage {
+        title: parse_error.error_message(),
+        origin: source_map.get_origin(span),
+        line_number: source_map.get_line_number(span),
+        source: source_map.get_source(span),
+        range,
+        annotation: "here".to_string(),
+        suggestion: None,
     }
 }
