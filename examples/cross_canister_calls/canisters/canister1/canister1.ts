@@ -60,6 +60,6 @@ export async function trap(): Promise<TrapResult> {
 }
 
 $update;
-export function send_notification(): NotifyResult {
-    return canister2.receive_notification('This is the notification').notify();
+export function sendNotification(): NotifyResult {
+    return canister2.receiveNotification('This is the notification').notify();
 }

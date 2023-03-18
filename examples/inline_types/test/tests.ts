@@ -4,15 +4,13 @@ import { _SERVICE } from './dfx_generated/inline_types/inline_types.did';
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 
-export function get_tests(
-    inline_types_canister: ActorSubclass<_SERVICE>
-): Test[] {
+export function getTests(inlineTypesCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'inline_record_return_type',
+            name: 'inlineRecordReturnType',
             test: async () => {
                 const result =
-                    await inline_types_canister.inline_record_return_type();
+                    await inlineTypesCanister.inlineRecordReturnType();
 
                 return {
                     Ok: result.prop1 === 'prop1' && result.prop2 === 'prop2'
@@ -20,9 +18,9 @@ export function get_tests(
             }
         },
         {
-            name: 'inline_record_param',
+            name: 'inlineRecordParam',
             test: async () => {
-                const result = await inline_types_canister.inline_record_param({
+                const result = await inlineTypesCanister.inlineRecordParam({
                     prop1: 'prop1'
                 });
 
@@ -32,10 +30,10 @@ export function get_tests(
             }
         },
         {
-            name: 'inline_variant_return_type',
+            name: 'inlineVariantReturnType',
             test: async () => {
                 const result =
-                    await inline_types_canister.inline_variant_return_type();
+                    await inlineTypesCanister.inlineVariantReturnType();
 
                 return {
                     Ok: 'var1' in result
@@ -43,13 +41,11 @@ export function get_tests(
             }
         },
         {
-            name: 'inline_record_return_type',
+            name: 'inlineRecordReturnType',
             test: async () => {
-                const result = await inline_types_canister.inline_variant_param(
-                    {
-                        var1: null
-                    }
-                );
+                const result = await inlineTypesCanister.inlineVariantParam({
+                    var1: null
+                });
 
                 return {
                     Ok: 'var1' in result
@@ -57,13 +53,11 @@ export function get_tests(
             }
         },
         {
-            name: 'inline_variant_param',
+            name: 'inlineVariantParam',
             test: async () => {
-                const result = await inline_types_canister.inline_variant_param(
-                    {
-                        var2: null
-                    }
-                );
+                const result = await inlineTypesCanister.inlineVariantParam({
+                    var2: null
+                });
 
                 return {
                     Ok: 'var2' in result
@@ -71,10 +65,10 @@ export function get_tests(
             }
         },
         {
-            name: 'record_with_inline_fields',
+            name: 'recordWithInlineFields',
             test: async () => {
                 const result =
-                    await inline_types_canister.record_with_inline_fields();
+                    await inlineTypesCanister.recordWithInlineFields();
 
                 return {
                     Ok:
@@ -85,10 +79,10 @@ export function get_tests(
             }
         },
         {
-            name: 'variant_with_inline_fields',
+            name: 'variantWithInlineFields',
             test: async () => {
                 const result =
-                    await inline_types_canister.variant_with_inline_fields();
+                    await inlineTypesCanister.variantWithInlineFields();
 
                 return {
                     Ok: 'three' in result && result.three.id === '0'
@@ -96,10 +90,10 @@ export function get_tests(
             }
         },
         {
-            name: 'record_referencing_other_types_from_return_type',
+            name: 'recordReferencingOtherTypesFromReturnType',
             test: async () => {
                 const result =
-                    await inline_types_canister.record_referencing_other_types_from_return_type();
+                    await inlineTypesCanister.recordReferencingOtherTypesFromReturnType();
 
                 return {
                     Ok: result.prop1 === 'prop1' && result.prop2.id === '0'
@@ -107,10 +101,10 @@ export function get_tests(
             }
         },
         {
-            name: 'variant_referencing_other_types_from_return_type',
+            name: 'variantReferencingOtherTypesFromReturnType',
             test: async () => {
                 const result =
-                    await inline_types_canister.variant_referencing_other_types_from_return_type();
+                    await inlineTypesCanister.variantReferencingOtherTypesFromReturnType();
 
                 return {
                     Ok: 'prop2' in result && result.prop2.id === '0'
@@ -118,16 +112,14 @@ export function get_tests(
             }
         },
         {
-            name: 'record_referencing_record_from_param',
+            name: 'recordReferencingRecordFromParam',
             test: async () => {
                 const result =
-                    await inline_types_canister.record_referencing_record_from_param(
-                        {
-                            test: {
-                                id: '0'
-                            }
+                    await inlineTypesCanister.recordReferencingRecordFromParam({
+                        test: {
+                            id: '0'
                         }
-                    );
+                    });
 
                 return {
                     Ok: result === '0'
@@ -135,10 +127,10 @@ export function get_tests(
             }
         },
         {
-            name: 'record_referencing_variant_from_param',
+            name: 'recordReferencingVariantFromParam',
             test: async () => {
                 const result =
-                    await inline_types_canister.record_referencing_variant_from_param(
+                    await inlineTypesCanister.recordReferencingVariantFromParam(
                         {
                             testVariant: {
                                 prop1: '0'
@@ -152,10 +144,10 @@ export function get_tests(
             }
         },
         {
-            name: 'record_referencing_variant_from_param',
+            name: 'recordReferencingVariantFromParam',
             test: async () => {
                 const result =
-                    await inline_types_canister.record_referencing_variant_from_param(
+                    await inlineTypesCanister.recordReferencingVariantFromParam(
                         {
                             testVariant: {
                                 prop2: {
@@ -171,10 +163,10 @@ export function get_tests(
             }
         },
         {
-            name: 'variant_referencing_record_from_param',
+            name: 'variantReferencingRecordFromParam',
             test: async () => {
                 const result =
-                    await inline_types_canister.variant_referencing_record_from_param(
+                    await inlineTypesCanister.variantReferencingRecordFromParam(
                         {
                             prop1: {
                                 id: '0'
@@ -188,10 +180,10 @@ export function get_tests(
             }
         },
         {
-            name: 'variant_referencing_variant_from_param',
+            name: 'variantReferencingVariantFromParam',
             test: async () => {
                 const result =
-                    await inline_types_canister.variant_referencing_variant_from_param(
+                    await inlineTypesCanister.variantReferencingVariantFromParam(
                         {
                             prop1: {
                                 prop1: null
@@ -208,7 +200,7 @@ export function get_tests(
             name: 'inline types in external canister definitions',
             test: async () => {
                 const result =
-                    await inline_types_canister.inline_record_return_type_as_external_canister_call();
+                    await inlineTypesCanister.inlineRecordReturnTypeAsExternalCanisterCall();
 
                 if (!ok(result)) {
                     return { Err: result.Err };
@@ -222,16 +214,16 @@ export function get_tests(
         {
             name: 'inline types in funcs',
             test: async () => {
-                const principal_id = 'aaaaa-aa';
-                const method = 'raw_rand';
-                const result = await inline_types_canister.inline_func([
-                    Principal.from(principal_id),
+                const principalId = 'aaaaa-aa';
+                const method = 'rawRand';
+                const result = await inlineTypesCanister.inlineFunc([
+                    Principal.from(principalId),
                     method
                 ]);
 
                 return {
                     Ok:
-                        result[0].toString() === principal_id &&
+                        result[0].toString() === principalId &&
                         result[1].toString() === method
                 };
             }
@@ -239,7 +231,7 @@ export function get_tests(
         {
             name: 'crazy complex inline record',
             test: async () => {
-                const result = await inline_types_canister.complex({
+                const result = await inlineTypesCanister.complex({
                     primitive: 'text',
                     opt: [
                         {
@@ -248,7 +240,7 @@ export function get_tests(
                             vec: ['item1'],
                             record: { prop1: 'prop1' },
                             variant: { v2: null },
-                            func: [Principal.from('aaaaa-aa'), 'raw_rand']
+                            func: [Principal.from('aaaaa-aa'), 'rawRand']
                         }
                     ],
                     vec: [
@@ -258,7 +250,7 @@ export function get_tests(
                             vec: ['item1'],
                             record: { prop1: 'prop1' },
                             variant: { v2: null },
-                            func: [Principal.from('aaaaa-aa'), 'raw_rand']
+                            func: [Principal.from('aaaaa-aa'), 'rawRand']
                         }
                     ],
                     record: {
@@ -271,7 +263,7 @@ export function get_tests(
                             prop1: 'text'
                         }
                     },
-                    func: [Principal.from('aaaaa-aa'), 'raw_rand']
+                    func: [Principal.from('aaaaa-aa'), 'rawRand']
                 });
 
                 return {
@@ -285,16 +277,16 @@ export function get_tests(
         {
             name: 'inserting into an inline-defined StableBTreeMap',
             test: async () => {
-                const result = await inline_types_canister.stable_map_insert(
+                const result = await inlineTypesCanister.stableMapInsert(
                     {
-                        prop1: ['test_key'],
-                        prop2: { var2: { prop1: 'test_key' } },
+                        prop1: ['testKey'],
+                        prop2: { var2: { prop1: 'testKey' } },
                         prop3: [{ prop1: 0n }]
                     },
                     {
                         variant: {
                             var2: {
-                                prop1: 'test_value'
+                                prop1: 'testValue'
                             }
                         }
                     }
@@ -326,9 +318,9 @@ export function get_tests(
         {
             name: 'reading from an inline-defined StableBTreeMap (after redeploy)',
             test: async () => {
-                const result = await inline_types_canister.stable_map_get({
-                    prop1: ['test_key'],
-                    prop2: { var2: { prop1: 'test_key' } },
+                const result = await inlineTypesCanister.stableMapGet({
+                    prop1: ['testKey'],
+                    prop2: { var2: { prop1: 'testKey' } },
                     prop3: [{ prop1: 0n }]
                 });
 
@@ -337,7 +329,7 @@ export function get_tests(
                         result.length != 0 &&
                         'var2' in result[0].variant &&
                         'prop1' in result[0].variant.var2 &&
-                        result[0].variant.var2.prop1 === 'test_value'
+                        result[0].variant.var2.prop1 === 'testValue'
                 };
             }
         }

@@ -3,7 +3,7 @@ import { execSync } from 'child_process';
 import { _SERVICE } from './dfx_generated/ic_api/ic_api.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
+export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'install didc',
@@ -15,27 +15,27 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         // {
-        //     name: 'arg_data with zero params',
+        //     name: 'argData with zero params',
         //     test: async () => {
-        //         const result = await ic_api_canister.arg_data_zero_params();
+        //         const result = await icApiCanister.argDataZeroParams();
 
         //         return {
-        //             ok: Array.isArray(result) && result.length === 0
+        //             Ok: Array.isArray(result) && result.length === 0
         //         };
         //     }
         // },
         // {
-        //     name: 'arg_data with a single param',
+        //     name: 'argData with a single param',
         //     test: async () => {
-        //         const result = await ic_api_canister.arg_data_one_param(true);
+        //         const result = await icApiCanister.argDataOneParam(true);
 
         //         return {
-        //             ok: result === true
+        //             Ok: result === true
         //         };
         //     }
         // },
         // {
-        //     name: 'arg_data with multiple params',
+        //     name: 'argData with multiple params',
         //     test: async () => {
         //         const blobString = 'Surprise!';
         //         const blob = blobString.split('').map((char) => char.charCodeAt(0));
@@ -43,7 +43,7 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
         //         const bool = true;
         //         const string = 'test';
 
-        //         const result = await ic_api_canister.arg_data_multiple_params(
+        //         const result = await icApiCanister.argDataMultipleParams(
         //             blob,
         //             int,
         //             bool,
@@ -51,7 +51,7 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
         //         );
 
         //         return {
-        //             ok:
+        //             Ok:
         //                 result.blob.length === blob.length &&
         //                 result.blob.every((byte, i) => blob[i] === byte) &&
         //                 result.int === int &&
@@ -61,7 +61,7 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
         //     }
         // },
         {
-            name: 'arg_data_raw',
+            name: 'argDataRaw',
             test: async () => {
                 const blobString = 'Surprise!';
                 const blob = Uint8Array.from(
@@ -72,7 +72,7 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
                 const string = 'test';
                 const candidString = `(blob "${blobString}", ${int} : int8, ${bool}, "${string}")`;
 
-                const resultBytes = await ic_api_canister.arg_data_raw(
+                const resultBytes = await icApiCanister.argDataRaw(
                     blob,
                     int,
                     bool,
@@ -81,12 +81,12 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result = candidDecode(resultBytes);
 
                 return {
-                    ok: result === candidString
+                    Ok: result === candidString
                 };
             }
         },
         {
-            name: 'arg_data_raw_size',
+            name: 'argDataRawSize',
             test: async () => {
                 const blobString = 'Surprise!';
                 const blob = Uint8Array.from(
@@ -96,15 +96,14 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
                 const bool = true;
                 const string = 'test';
 
-                const resultArgDataRawSize =
-                    await ic_api_canister.arg_data_raw_size(
-                        blob,
-                        int,
-                        bool,
-                        string
-                    );
+                const resultArgDataRawSize = await icApiCanister.argDataRawSize(
+                    blob,
+                    int,
+                    bool,
+                    string
+                );
 
-                const resultArgDataRaw = await ic_api_canister.arg_data_raw(
+                const resultArgDataRaw = await icApiCanister.argDataRaw(
                     blob,
                     int,
                     bool,
@@ -112,95 +111,95 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
                 );
 
                 return {
-                    ok: resultArgDataRawSize === resultArgDataRaw.length
+                    Ok: resultArgDataRawSize === resultArgDataRaw.length
                 };
             }
         },
         {
             name: 'caller',
             test: async () => {
-                const result = await ic_api_canister.caller();
+                const result = await icApiCanister.caller();
 
                 return {
-                    ok: result.toText() === '2vxsx-fae'
+                    Ok: result.toText() === '2vxsx-fae'
                 };
             }
         },
         {
-            name: 'canister_balance',
+            name: 'canisterBalance',
             test: async () => {
-                const result = await ic_api_canister.canister_balance();
+                const result = await icApiCanister.canisterBalance();
 
                 return {
-                    ok:
+                    Ok:
                         result > 2_000_000_000_000n &&
                         result < 4_000_000_000_000n
                 };
             }
         },
         {
-            name: 'canister_balance128',
+            name: 'canisterBalance128',
             test: async () => {
-                const result = await ic_api_canister.canister_balance128();
+                const result = await icApiCanister.canisterBalance128();
 
                 return {
-                    ok:
+                    Ok:
                         result > 2_000_000_000_000n &&
                         result < 4_000_000_000_000n
                 };
             }
         },
         {
-            name: 'data_certificate from a query call',
+            name: 'dataCertificate from a query call',
             test: async () => {
-                const result = await ic_api_canister.data_certificate();
+                const result = await icApiCanister.dataCertificate();
 
                 return {
-                    ok: result[0] !== undefined && result[0].length > 0
+                    Ok: result[0] !== undefined && result[0].length > 0
                 };
             }
         },
         {
-            name: 'data_certificate from an update call',
+            name: 'dataCertificate from an update call',
             test: async () => {
-                const result = await ic_api_canister.data_certificate_null();
+                const result = await icApiCanister.dataCertificateNull();
 
                 return {
-                    ok: is_none(result)
+                    Ok: isNone(result)
                 };
             }
         },
         {
             name: 'id',
             test: async () => {
-                const ic_api_canister_id = execSync(`dfx canister id ic_api`)
+                const icApiCanisterId = execSync(`dfx canister id icApi`)
                     .toString()
                     .trim();
 
-                const result = await ic_api_canister.id();
+                const result = await icApiCanister.id();
 
                 return {
-                    ok: result.toText() === ic_api_canister_id
+                    Ok: result.toText() === icApiCanisterId
                 };
             }
         },
         {
-            name: 'performance_counter',
+            name: 'performanceCounter',
             test: async () => {
-                const result = await ic_api_canister.performance_counter();
+                const result = await icApiCanister.performanceCounter();
 
                 return {
-                    ok: result >= 150_000n && result <= 275_000n
+                    Ok: result >= 150_000n && result <= 275_000n
                 };
             }
         },
         {
             name: 'print',
             test: async () => {
-                const result = await ic_api_canister.print('Hello World!');
+                const result = await icApiCanister.print('Hello World!');
 
                 return {
-                    ok: result === true
+                    Ok: result === true
                 };
             }
         },
@@ -209,14 +208,14 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const rejectionMessage = 'Rejected!';
                 try {
-                    await ic_api_canister.reject(rejectionMessage);
+                    await icApiCanister.reject(rejectionMessage);
 
                     return {
-                        ok: false
+                        Ok: false
                     };
                 } catch (error) {
                     return {
-                        ok:
+                        Ok:
                             (error as any).props.Code === 'CanisterReject' &&
                             (error as any).props.Message === rejectionMessage
                     };
@@ -224,30 +223,30 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'set_data_certificate',
+            name: 'setDataCertificate',
             test: async () => {
-                const result = await ic_api_canister.set_certified_data(
+                const result = await icApiCanister.setCertifiedData(
                     Uint8Array.from([83, 117, 114, 112, 114, 105, 115, 101, 33])
                 );
                 return {
-                    ok: result === undefined
+                    Ok: result === undefined
                 };
             }
         },
         {
             name: 'time',
             test: async () => {
-                const node_time_in_nanoseconds =
+                const nodeTimeInNanoseconds =
                     BigInt(new Date().getTime()) * 1000000n;
-                const canister_time = await ic_api_canister.time();
+                const canisterTime = await icApiCanister.time();
 
-                const difference = canister_time - node_time_in_nanoseconds;
-                const positive_difference =
+                const difference = canisterTime - nodeTimeInNanoseconds;
+                const positiveDifference =
                     difference < 0 ? difference * -1n : difference;
 
                 // The idea is to just check that the two times are within 5 seconds of each other
                 return {
-                    ok: positive_difference < 5 * 1_000_000_000
+                    Ok: positiveDifference < 5 * 1_000_000_000
                 };
             }
         },
@@ -255,16 +254,16 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'trap',
             test: async () => {
                 try {
-                    const result = await ic_api_canister.trap(
+                    const result = await icApiCanister.trap(
                         'here is the message'
                     );
 
                     return {
-                        ok: result
+                        Ok: result
                     };
                 } catch (error) {
                     return {
-                        ok:
+                        Ok:
                             (error as any).props.Message ===
                             'IC0503: Canister rrkah-fqaaa-aaaaa-aaaaq-cai trapped explicitly: here is the message'
                     };
@@ -274,7 +273,7 @@ export function get_tests(ic_api_canister: ActorSubclass<_SERVICE>): Test[] {
     ];
 }
 
-function is_none<T>(option: [] | T[]): boolean {
+function isNone<T>(option: [] | T[]): boolean {
     return option.length === 0;
 }
 

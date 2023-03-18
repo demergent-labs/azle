@@ -27,6 +27,6 @@ export function inaccessible(): boolean {
 }
 
 $update;
-export function also_inaccessible(): boolean {
+export function alsoInaccessible(): boolean {
     return false;
 }

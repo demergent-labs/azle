@@ -46,5 +46,5 @@ export class Canister2 extends ExternalCanister {
     trap: () => CanisterResult<string>;
 
     @update
-    receive_notification: (message: string) => CanisterResult<void>;
+    receiveNotification: (message: string) => CanisterResult<void>;
 }

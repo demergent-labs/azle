@@ -1,6 +1,6 @@
 import { $query } from 'azle';
 
 $query;
-export function deep_query(): string {
+export function deepQuery(): string {
     return 'Hello from Canister 3';
 }

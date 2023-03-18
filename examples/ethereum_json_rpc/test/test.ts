@@ -2,7 +2,7 @@
 
 import { run_tests } from 'azle/test';
 import { createActor } from './dfx_generated/ethereum_json_rpc';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
 if (process.env.ETHEREUM_URL === undefined) {
     throw new Error(
@@ -16,4 +16,4 @@ const ethereum_json_rpc_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(get_tests(ethereum_json_rpc_canister));
+run_tests(getTests(ethereum_json_rpc_canister));

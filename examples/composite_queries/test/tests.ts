@@ -7,63 +7,63 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'simple_composite_query test',
             test: async () => {
-                const result = await canister1.simple_composite_query();
+                const result = await canister1.simpleCompositeQuery();
                 return {
-                    ok: 'ok' in result && result.ok === 'Hello from Canister 2'
+                    Ok: 'Ok' in result && result.Ok === 'Hello from Canister 2'
                 };
             }
         },
         {
             name: 'manual_query test',
             test: async () => {
-                const result = await canister1.manual_query();
+                const result = await canister1.manualQuery();
                 return {
-                    ok:
-                        'ok' in result &&
-                        result.ok === 'Hello from Canister 2 manual_query'
+                    Ok:
+                        'Ok' in result &&
+                        result.Ok === 'Hello from Canister 2 manualQuery'
                 };
             }
         },
         {
             name: 'totally manual_query test',
             test: async () => {
-                const result = await canister1.totally_manual_query();
+                const result = await canister1.totallyManualQuery();
                 return {
-                    ok:
-                        'ok' in result &&
-                        result.ok === 'Hello from Canister 2 manual_query'
+                    Ok:
+                        'Ok' in result &&
+                        result.Ok === 'Hello from Canister 2 manualQuery'
                 };
             }
         },
         {
             name: 'deep_query test',
             test: async () => {
-                const result = await canister1.deep_query();
+                const result = await canister1.deepQuery();
                 return {
-                    ok: 'ok' in result && result.ok === 'Hello from Canister 3'
+                    Ok: 'Ok' in result && result.Ok === 'Hello from Canister 3'
                 };
             }
         },
         {
             name: 'update_query test',
             test: async () => {
-                const result = await canister1.update_query();
+                const result = await canister1.updateQuery();
                 return {
-                    ok:
-                        'err' in result &&
-                        result.err ===
-                            "Rejection code 3, Canister ryjl3-tyaaa-aaaaa-aaaba-cai has no query method 'update_query'"
+                    Ok:
+                        'Err' in result &&
+                        result.Err ===
+                            "Rejection code 3, Canister ryjl3-tyaaa-aaaaa-aaaba-cai has no query method 'updateQuery'"
                 };
             }
         },
         {
             name: 'simple_update test',
             test: async () => {
-                const result = await canister1.simple_update();
+                const result = await canister1.simpleUpdate();
                 return {
-                    ok:
-                        'err' in result &&
-                        result.err ===
+                    Ok:
+                        'Err' in result &&
+                        result.Err ===
                             'Rejection code 5, IC0527: Composite query cannot be called in replicated mode'
                 };
             }
@@ -72,25 +72,25 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
             name: 'inc_canister1 test',
             test: async () => {
                 try {
-                    const result = await canister1.inc_canister1();
+                    const result = await canister1.incCanister1();
                 } catch (err: any) {
                     return {
-                        ok:
+                        Ok:
                             err?.result?.reject_message ===
                             'IC0517: Loop detected.  MVP inter-canister queries do not support loops.'
                     };
                 }
                 return {
-                    ok: false
+                    Ok: false
                 };
             }
         },
         {
             name: 'inc_canister2 test',
             test: async () => {
-                const result = await canister1.inc_canister2();
+                const result = await canister1.incCanister2();
                 return {
-                    ok: 'ok' in result && result.ok === 3n
+                    Ok: 'Ok' in result && result.Ok === 3n
                 };
             }
         }

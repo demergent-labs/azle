@@ -22,35 +22,35 @@ import {
 // };
 
 // // returns the argument data as an array.
-// export function arg_data_zero_params(): null[] {
-//     return ic.arg_data();
+// export function argDataZeroParams(): null[] {
+//     return ic.argData();
 // }
 //
 // // returns the argument data as an array.
-// export function arg_data_one_param(arg: boolean): boolean {
-//     const arg_data = ic.arg_data();
-//     return arg_data[0];
+// export function argDataOneParam(arg: boolean): boolean {
+//     const argData = ic.argData();
+//     return argData[0];
 // }
 //
 // // returns the argument data as an array.
-// export function arg_data_multiple_params(
+// export function argDataMultipleParams(
 //     arg1: blob,
 //     arg2: int8,
 //     arg3: boolean,
 //     arg4: string
 // ): ArgDataMultipleParamsResult {
-//     const arg_data = ic.arg_data();
+//     const argData = ic.argData();
 //     return {
-//         blob: Uint8Array.from(arg_data[0]),
-//         int: arg_data[1],
-//         boolean: arg_data[2],
-//         string: arg_data[3]
+//         blob: Uint8Array.from(argData[0]),
+//         int: argData[1],
+//         boolean: argData[2],
+//         string: argData[3]
 //     };
 // }
 
 // returns the argument data as bytes.
 $query;
-export function arg_data_raw(
+export function argDataRaw(
     arg1: blob,
     arg2: int8,
     arg3: boolean,
@@ -61,7 +61,7 @@ export function arg_data_raw(
 
 // returns the length of the argument data in bytes
 $query;
-export function arg_data_raw_size(
+export function argDataRawSize(
     arg1: blob,
     arg2: int8,
     arg3: boolean,
@@ -78,25 +78,25 @@ export function caller(): Principal {
 
 // returns the amount of cycles available in the canister
 $query;
-export function canister_balance(): nat64 {
+export function canisterBalance(): nat64 {
     return ic.canisterBalance();
 }
 
 // returns the amount of cycles available in the canister
 $query;
-export function canister_balance128(): nat {
+export function canisterBalance128(): nat {
     return ic.canisterBalance128();
 }
 
-// When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if not called from a query call.
+// When called from a query call, returns the data certificate authenticating certified data set by this canister. Returns None if not called from a query call.
 $query;
-export function data_certificate(): Opt<blob> {
+export function dataCertificate(): Opt<blob> {
     return ic.dataCertificate();
 }
 
-// When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if called not from a query call.
+// When called from a query call, returns the data certificate authenticating certified data set by this canister. Returns None if called not from a query call.
 $update;
-export function data_certificate_null(): Opt<blob> {
+export function dataCertificateNull(): Opt<blob> {
     return ic.dataCertificate();
 }
 
@@ -107,7 +107,7 @@ export function id(): Principal {
 }
 
 $query;
-export function performance_counter(): nat64 {
+export function performanceCounter(): nat64 {
     return ic.performanceCounter(0);
 }
 
@@ -126,7 +126,7 @@ export function reject(message: string): Manual<empty> {
 
 // sets up to 32 bytes of certified data
 $update;
-export function set_certified_data(data: blob): void {
+export function setCertifiedData(data: blob): void {
     ic.setCertifiedData(data);
 }
 

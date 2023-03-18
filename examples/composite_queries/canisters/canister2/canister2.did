@@ -1,8 +1,8 @@
-type ManualReply = variant { ok : text; err : text };
+type ManualReply = variant { Ok : text; Err : text };
 service : () -> {
-  deep_query : () -> (ManualReply) query;
-  inc_counter : () -> (nat) query;
-  manual_query : () -> (text) query;
-  simple_query : () -> (text) query;
-  update_query : () -> (text);
+  deepQuery : () -> (ManualReply) query;
+  incCounter : () -> (nat) query;
+  manualQuery : () -> (text) query;
+  simpleQuery : () -> (text) query;
+  updateQuery : () -> (text);
 }

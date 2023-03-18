@@ -11,34 +11,33 @@ import {
 import {
     HttpResponse,
     HttpTransformArgs,
-    management_canister
+    managementCanister
 } from 'azle/canisters/management';
 import decodeUtf8 from 'decode-utf8';
 import encodeUtf8 from 'encode-utf8';
 
 type JSON = Alias<string>;
 
-let stable_storage = new StableBTreeMap<string, string>(0, 25, 1_000);
+let stableStorage = new StableBTreeMap<string, string>(0, 25, 1_000);
 
 $init;
-export function init(ethereum_url: string) {
-    stable_storage.insert('ethereum_url', ethereum_url);
+export function init(ethereumUrl: string) {
+    stableStorage.insert('ethereumUrl', ethereumUrl);
 }
 
 $update;
-export async function eth_get_balance(ethereum_address: string): Promise<JSON> {
-    const max_response_bytes = 200n;
+export async function ethGetBalance(ethereumAddress: string): Promise<JSON> {
+    const maxResponseBytes = 200n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
-    const cycle_cost_base = 400_000_000n;
-    const cycle_cost_per_byte = 300_000n; // TODO not sure on this exact cost
-    const cycle_cost_total =
-        cycle_cost_base + cycle_cost_per_byte * max_response_bytes;
+    const cycleCostBase = 400_000_000n;
+    const cycleCostPerByte = 300_000n; // TODO not sure on this exact cost
+    const cycleCostTotal = cycleCostBase + cycleCostPerByte * maxResponseBytes;
 
-    const http_result = await management_canister
+    const httpResult = await managementCanister
         .http_request({
-            url: stable_storage.get('ethereum_url') ?? '',
-            max_response_bytes,
+            url: stableStorage.get('ethereumUrl') ?? '',
+            max_response_bytes: maxResponseBytes,
             method: {
                 post: null
             },
@@ -47,40 +46,39 @@ export async function eth_get_balance(ethereum_address: string): Promise<JSON> {
                 encodeUtf8(
                     JSON.stringify({
                         jsonrpc: '2.0',
-                        method: 'eth_getBalance',
-                        params: [ethereum_address, 'earliest'],
+                        method: 'ethGetBalance',
+                        params: [ethereumAddress, 'earliest'],
                         id: 1
                     })
                 )
             ),
             transform: {
-                function: [ic.id(), 'eth_transform'],
+                function: [ic.id(), 'ethTransform'],
                 context: Uint8Array.from([])
             }
         })
-        .cycles(cycle_cost_total)
+        .cycles(cycleCostTotal)
         .call();
 
-    return match(http_result, {
-        Ok: (http_response) => decodeUtf8(Uint8Array.from(http_response.body)),
-        Err: (err) => ic.trap(err ?? 'http_result had an error')
+    return match(httpResult, {
+        Ok: (httpResponse) => decodeUtf8(Uint8Array.from(httpResponse.body)),
+        Err: (err) => ic.trap(err ?? 'httpResult had an error')
     });
 }
 
 $update;
-export async function eth_get_block_by_number(number: nat32): Promise<JSON> {
-    const max_response_bytes = 2_000n;
+export async function ethGetBlockByNumber(number: nat32): Promise<JSON> {
+    const maxResponseBytes = 2_000n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
-    const cycle_cost_base = 400_000_000n;
-    const cycle_cost_per_byte = 300_000n; // TODO not sure on this exact cost
-    const cycle_cost_total =
-        cycle_cost_base + cycle_cost_per_byte * max_response_bytes;
+    const cycleCostBase = 400_000_000n;
+    const cycleCostPerByte = 300_000n; // TODO not sure on this exact cost
+    const cycleCostTotal = cycleCostBase + cycleCostPerByte * maxResponseBytes;
 
-    const http_result = await management_canister
+    const httpResult = await managementCanister
         .http_request({
-            url: stable_storage.get('ethereum_url') ?? '',
-            max_response_bytes,
+            url: stableStorage.get('ethereumUrl') ?? '',
+            max_response_bytes: maxResponseBytes,
             method: {
                 post: null
             },
@@ -89,28 +87,28 @@ export async function eth_get_block_by_number(number: nat32): Promise<JSON> {
                 encodeUtf8(
                     JSON.stringify({
                         jsonrpc: '2.0',
-                        method: 'eth_getBlockByNumber',
+                        method: 'ethGetBlockByNumber',
                         params: [`0x${number.toString(16)}`, false],
                         id: 1
                     })
                 )
             ),
             transform: {
-                function: [ic.id(), 'eth_transform'],
+                function: [ic.id(), 'ethTransform'],
                 context: Uint8Array.from([])
             }
         })
-        .cycles(cycle_cost_total)
+        .cycles(cycleCostTotal)
         .call();
 
-    return match(http_result, {
-        Ok: (http_response) => decodeUtf8(Uint8Array.from(http_response.body)),
-        Err: (err) => ic.trap(err ?? 'http_result had an error')
+    return match(httpResult, {
+        Ok: (httpResponse) => decodeUtf8(Uint8Array.from(httpResponse.body)),
+        Err: (err) => ic.trap(err ?? 'httpResult had an error')
     });
 }
 
 $query;
-export function eth_transform(args: HttpTransformArgs): HttpResponse {
+export function ethTransform(args: HttpTransformArgs): HttpResponse {
     return {
         ...args.response,
         headers: []

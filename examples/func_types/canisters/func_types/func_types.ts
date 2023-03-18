@@ -15,12 +15,12 @@ import {
 } from 'azle';
 import { Notifier, NotifierFunc } from '../notifiers/types';
 
-let stable_storage = new StableBTreeMap<string, StableFunc>(0, 25, 1_000);
+let stableStorage = new StableBTreeMap<string, StableFunc>(0, 25, 1_000);
 
 type User = Record<{
     id: string;
-    basic_func: BasicFunc;
-    complex_func: ComplexFunc;
+    basicFunc: BasicFunc;
+    complexFunc: ComplexFunc;
 }>;
 
 type Reaction = Variant<{
@@ -47,16 +47,16 @@ type NullFunc = Func<
 
 $init;
 export function init_() {
-    stable_storage.insert('stable_func', [
+    stableStorage.insert('stableFunc', [
         Principal.from('aaaaa-aa'),
         'start_canister'
     ]);
 }
 
 $query;
-export function get_stable_func(): StableFunc {
+export function getStableFunc(): StableFunc {
     return (
-        stable_storage.get('stable_func') ?? [
+        stableStorage.get('stableFunc') ?? [
             Principal.from('aaaaa-aa'),
             'raw_rand'
         ]
@@ -64,27 +64,27 @@ export function get_stable_func(): StableFunc {
 }
 
 $query;
-export function basic_func_param(basic_func: BasicFunc): BasicFunc {
-    return basic_func;
+export function basicFuncParam(basicFunc: BasicFunc): BasicFunc {
+    return basicFunc;
 }
 
 $query;
-export function null_func_param(null_func: NullFunc): NullFunc {
-    return null_func;
+export function nullFuncParam(nullFunc: NullFunc): NullFunc {
+    return nullFunc;
 }
 
 $query;
-export function basic_func_param_array(basic_func: BasicFunc[]): BasicFunc[] {
-    return basic_func;
+export function basicFuncParamArray(basicFunc: BasicFunc[]): BasicFunc[] {
+    return basicFunc;
 }
 
 $query;
-export function basic_func_return_type(): BasicFunc {
+export function basicFuncReturnType(): BasicFunc {
     return [Principal.fromText('aaaaa-aa'), 'create_canister'];
 }
 
 $query;
-export function basic_func_return_type_array(): BasicFunc[] {
+export function basicFuncReturnTypeArray(): BasicFunc[] {
     return [
         [Principal.fromText('aaaaa-aa'), 'create_canister'],
         [Principal.fromText('aaaaa-aa'), 'update_settings'],
@@ -93,12 +93,12 @@ export function basic_func_return_type_array(): BasicFunc[] {
 }
 
 $query;
-export function complex_func_param(complex_func: ComplexFunc): ComplexFunc {
-    return complex_func;
+export function complexFuncParam(complexFunc: ComplexFunc): ComplexFunc {
+    return complexFunc;
 }
 
 $query;
-export function complex_func_return_type(): ComplexFunc {
+export function complexFuncReturnType(): ComplexFunc {
     return [Principal.fromText('aaaaa-aa'), 'stop_canister'];
 }
 
@@ -108,12 +108,12 @@ type GetNotifierFromNotifiersCanisterResult = Variant<{
 }>;
 
 $update;
-export async function get_notifier_from_notifiers_canister(): Promise<GetNotifierFromNotifiersCanisterResult> {
-    const notifiers_canister: Notifier = new Notifier(
+export async function getNotifierFromNotifiersCanister(): Promise<GetNotifierFromNotifiersCanisterResult> {
+    const notifiersCanister: Notifier = new Notifier(
         Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
     );
 
-    const result = await notifiers_canister.get_notifier().call();
+    const result = await notifiersCanister.getNotifier().call();
 
     return match(result, {
         Ok: (ok) => ({ Ok: ok }),

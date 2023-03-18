@@ -1,626 +1,618 @@
 import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/date/date.did';
+import { _SERVICE } from './dfx_generated/date/date.did.d';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(date_canister: ActorSubclass<_SERVICE>): Test[] {
+export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'get_date',
+            name: 'getDate',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_date(date.toISOString());
+                const result = await dateCanister.getDate(date.toISOString());
                 const expected = date.getDate();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_day',
+            name: 'getDay',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_day(date.toISOString());
+                const result = await dateCanister.getDay(date.toISOString());
                 const expected = date.getDay();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_full_year',
+            name: 'getFullYear',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_full_year(
+                const result = await dateCanister.getFullYear(
                     date.toISOString()
                 );
                 const expected = date.getFullYear();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_hours',
+            name: 'getHours',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_hours(
-                    date.toISOString()
-                );
+                const result = await dateCanister.getHours(date.toISOString());
                 const expected = date.getUTCHours(); // The canister's local time is UTC, thus we check with getUTCHours
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_milliseconds',
+            name: 'getMilliseconds',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_milliseconds(
+                const result = await dateCanister.getMilliseconds(
                     date.toISOString()
                 );
                 const expected = date.getMilliseconds();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_minutes',
+            name: 'getMinutes',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_minutes(
+                const result = await dateCanister.getMinutes(
                     date.toISOString()
                 );
                 const expected = date.getMinutes();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_month',
+            name: 'getMonth',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_month(
-                    date.toISOString()
-                );
+                const result = await dateCanister.getMonth(date.toISOString());
                 const expected = date.getMonth();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_seconds',
+            name: 'getSeconds',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_seconds(
+                const result = await dateCanister.getSeconds(
                     date.toISOString()
                 );
                 const expected = date.getSeconds();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_time',
+            name: 'getTime',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_time(date.toISOString());
+                const result = await dateCanister.getTime(date.toISOString());
                 const expected = BigInt(date.getTime());
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_timezone_offset',
+            name: 'getTimezoneOffset',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_timezone_offset(
+                const result = await dateCanister.getTimezoneOffset(
                     date.toISOString()
                 );
                 const expected =
                     date.getTimezoneOffset() - date.getTimezoneOffset(); // The canister's local time is UTC, thus the timezone offset should be 0
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_utc_date',
+            name: 'getUtcDate',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_utc_date(
+                const result = await dateCanister.getUtcDate(
                     date.toISOString()
                 );
                 const expected = date.getUTCDate();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_utc_day',
+            name: 'getUtcDay',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_utc_day(
-                    date.toISOString()
-                );
+                const result = await dateCanister.getUtcDay(date.toISOString());
                 const expected = date.getUTCDay();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_utc_full_year',
+            name: 'getUtcFullYear',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_utc_full_year(
+                const result = await dateCanister.getUtcFullYear(
                     date.toISOString()
                 );
                 const expected = date.getUTCFullYear();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_utc_hours',
+            name: 'getUtcHours',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_utc_hours(
+                const result = await dateCanister.getUtcHours(
                     date.toISOString()
                 );
                 const expected = date.getUTCHours();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_utc_minutes',
+            name: 'getUtcMinutes',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_utc_minutes(
+                const result = await dateCanister.getUtcMinutes(
                     date.toISOString()
                 );
                 const expected = date.getUTCMinutes();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_utc_month',
+            name: 'getUtcMonth',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_utc_month(
+                const result = await dateCanister.getUtcMonth(
                     date.toISOString()
                 );
                 const expected = date.getUTCMonth();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'get_utc_seconds',
+            name: 'getUtcSeconds',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.get_utc_seconds(
+                const result = await dateCanister.getUtcSeconds(
                     date.toISOString()
                 );
                 const expected = date.getUTCSeconds();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'set_date',
+            name: 'setDate',
             test: async () => {
                 let date = new Date();
 
-                const new_date = 0;
+                const newDate = 0;
 
-                const result = await date_canister.set_date(
+                const result = await dateCanister.setDate(
                     date.toISOString(),
-                    new_date
+                    newDate
                 );
 
-                date.setDate(new_date);
+                date.setDate(newDate);
 
                 const expected = date.getDate();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'set_full_year',
+            name: 'setFullYear',
             test: async () => {
                 let date = new Date();
 
-                const new_full_year = 1996;
+                const newFullYear = 1996;
 
-                const result = await date_canister.set_full_year(
+                const result = await dateCanister.setFullYear(
                     date.toISOString(),
-                    new_full_year
+                    newFullYear
                 );
 
-                date.setFullYear(new_full_year);
+                date.setFullYear(newFullYear);
 
                 const expected = date.getFullYear();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'set_hours',
+            name: 'setHours',
             test: async () => {
                 let date = new Date();
 
-                const new_hours = 22;
+                const newHours = 22;
 
-                const result = await date_canister.set_hours(
+                const result = await dateCanister.setHours(
                     date.toISOString(),
-                    new_hours
+                    newHours
                 );
 
-                date.setHours(new_hours);
+                date.setHours(newHours);
 
                 const expected = date.getHours();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'set_milliseconds',
+            name: 'setMilliseconds',
             test: async () => {
                 let date = new Date();
 
-                const new_milliseconds = 500;
+                const newMilliseconds = 500;
 
-                const result = await date_canister.set_milliseconds(
+                const result = await dateCanister.setMilliseconds(
                     date.toISOString(),
-                    new_milliseconds
+                    newMilliseconds
                 );
 
-                date.setMilliseconds(new_milliseconds);
+                date.setMilliseconds(newMilliseconds);
 
                 const expected = date.getMilliseconds();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'set_minutes',
+            name: 'setMinutes',
             test: async () => {
                 let date = new Date();
 
-                const new_minutes = 46;
+                const newMinutes = 46;
 
-                const result = await date_canister.set_minutes(
+                const result = await dateCanister.setMinutes(
                     date.toISOString(),
-                    new_minutes
+                    newMinutes
                 );
 
-                date.setMinutes(new_minutes);
+                date.setMinutes(newMinutes);
 
                 const expected = date.getMinutes();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'set_month',
+            name: 'setMonth',
             test: async () => {
                 let date = new Date();
 
-                const new_month = 11;
+                const newMonth = 11;
 
-                const result = await date_canister.set_month(
+                const result = await dateCanister.setMonth(
                     date.toISOString(),
-                    new_month
+                    newMonth
                 );
 
-                date.setMonth(new_month);
+                date.setMonth(newMonth);
 
                 const expected = date.getMonth();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'set_seconds',
+            name: 'setSeconds',
             test: async () => {
                 let date = new Date();
 
-                const new_seconds = 32;
+                const newSeconds = 32;
 
-                const result = await date_canister.set_seconds(
+                const result = await dateCanister.setSeconds(
                     date.toISOString(),
-                    new_seconds
+                    newSeconds
                 );
 
-                date.setSeconds(new_seconds);
+                date.setSeconds(newSeconds);
 
                 const expected = date.getSeconds();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'set_time',
+            name: 'setTime',
             test: async () => {
                 let date = new Date();
 
-                const new_time = 1_658_863_501_294;
+                const newTime = 1_658_863_501_294;
 
-                const result = await date_canister.set_time(
+                const result = await dateCanister.setTime(
                     date.toISOString(),
-                    BigInt(new_time)
+                    BigInt(newTime)
                 );
 
-                date.setTime(new_time);
+                date.setTime(newTime);
 
                 const expected = date.getTime();
 
                 return {
-                    ok: Number(result) === expected
+                    Ok: Number(result) === expected
                 };
             }
         },
         {
-            name: 'set_utc_date',
+            name: 'setUtcDate',
             test: async () => {
                 let date = new Date();
 
-                const new_utc_date = 1;
+                const newUtcDate = 1;
 
-                const result = await date_canister.set_utc_date(
+                const result = await dateCanister.setUtcDate(
                     date.toISOString(),
-                    new_utc_date
+                    newUtcDate
                 );
 
-                date.setUTCDate(new_utc_date);
+                date.setUTCDate(newUtcDate);
 
                 const expected = date.getUTCDate();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'set_utc_full_year',
+            name: 'setUtcFullYear',
             test: async () => {
                 let date = new Date();
 
-                const new_utc_full_year = 1987;
+                const newUtcFullYear = 1987;
 
-                const result = await date_canister.set_utc_full_year(
+                const result = await dateCanister.setUtcFullYear(
                     date.toISOString(),
-                    new_utc_full_year
+                    newUtcFullYear
                 );
 
-                date.setUTCFullYear(new_utc_full_year);
+                date.setUTCFullYear(newUtcFullYear);
 
                 const expected = date.getUTCFullYear();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'set_utc_hours',
+            name: 'setUtcHours',
             test: async () => {
                 let date = new Date();
 
-                const new_utc_hours = 14;
+                const newUtcHours = 14;
 
-                const result = await date_canister.set_utc_hours(
+                const result = await dateCanister.setUtcHours(
                     date.toISOString(),
-                    new_utc_hours
+                    newUtcHours
                 );
 
-                date.setUTCHours(new_utc_hours);
+                date.setUTCHours(newUtcHours);
 
                 const expected = date.getUTCHours();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'set_utc_milliseconds',
+            name: 'setUtcMilliseconds',
             test: async () => {
                 let date = new Date();
 
-                const new_utc_milliseconds = 900;
+                const newUtcMilliseconds = 900;
 
-                const result = await date_canister.set_utc_milliseconds(
+                const result = await dateCanister.setUtcMilliseconds(
                     date.toISOString(),
-                    new_utc_milliseconds
+                    newUtcMilliseconds
                 );
 
-                date.setUTCMilliseconds(new_utc_milliseconds);
+                date.setUTCMilliseconds(newUtcMilliseconds);
 
                 const expected = date.getUTCMilliseconds();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'set_utc_minutes',
+            name: 'setUtcMinutes',
             test: async () => {
                 let date = new Date();
 
-                const new_utc_minutes = 23;
+                const newUtcMinutes = 23;
 
-                const result = await date_canister.set_utc_minutes(
+                const result = await dateCanister.setUtcMinutes(
                     date.toISOString(),
-                    new_utc_minutes
+                    newUtcMinutes
                 );
 
-                date.setUTCMinutes(new_utc_minutes);
+                date.setUTCMinutes(newUtcMinutes);
 
                 const expected = date.getUTCMinutes();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'set_utc_month',
+            name: 'setUtcMonth',
             test: async () => {
                 let date = new Date();
 
-                const new_utc_month = 6;
+                const newUtcMonth = 6;
 
-                const result = await date_canister.set_utc_month(
+                const result = await dateCanister.setUtcMonth(
                     date.toISOString(),
-                    new_utc_month
+                    newUtcMonth
                 );
 
-                date.setUTCMonth(new_utc_month);
+                date.setUTCMonth(newUtcMonth);
 
                 const expected = date.getUTCMonth();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'set_utc_seconds',
+            name: 'setUtcSeconds',
             test: async () => {
                 let date = new Date();
 
-                const new_utc_seconds = 55;
+                const newUtcSeconds = 55;
 
-                const result = await date_canister.set_utc_seconds(
+                const result = await dateCanister.setUtcSeconds(
                     date.toISOString(),
-                    new_utc_seconds
+                    newUtcSeconds
                 );
 
-                date.setUTCSeconds(new_utc_seconds);
+                date.setUTCSeconds(newUtcSeconds);
 
                 const expected = date.getUTCSeconds();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'to_date_string',
+            name: 'toDateString',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.to_date_string(
+                const result = await dateCanister.toDateString(
                     date.toISOString()
                 );
                 const expected = date.toDateString();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'to_iso_string',
+            name: 'toIsoString',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.to_iso_string(
+                const result = await dateCanister.toISOString(
                     date.toISOString()
                 );
                 const expected = date.toISOString();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'to_json',
+            name: 'toJson',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.to_json(date.toISOString());
+                const result = await dateCanister.toJSON(date.toISOString());
                 const expected = date.toJSON();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
-            name: 'to_string',
+            name: 'toString',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.to_string(
-                    date.toISOString()
-                );
-                const result_substring = result.substring(
+                const result = await dateCanister.toString(date.toISOString());
+                const resultSubstring = result.substring(
                     0,
                     result.indexOf(' GMT')
                 );
@@ -628,26 +620,26 @@ export function get_tests(date_canister: ActorSubclass<_SERVICE>): Test[] {
                 const expected = new Date(
                     date.getTime() + date.getTimezoneOffset() * 60_000
                 ); // the canister uses UTC time, thus we do a conversion
-                const expected_string = expected.toString();
-                const expected_substring = expected_string.substring(
+                const expectedString = expected.toString();
+                const expectedSubstring = expectedString.substring(
                     0,
-                    expected_string.indexOf(' GMT')
+                    expectedString.indexOf(' GMT')
                 );
 
                 return {
-                    ok: result_substring === expected_substring
+                    Ok: resultSubstring === expectedSubstring
                 };
             }
         },
         {
-            name: 'to_time_string',
+            name: 'toTimeString',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.to_time_string(
+                const result = await dateCanister.toTimeString(
                     date.toISOString()
                 );
-                const result_substring = result.substring(
+                const resultSubstring = result.substring(
                     0,
                     result.indexOf(' GMT')
                 );
@@ -655,43 +647,43 @@ export function get_tests(date_canister: ActorSubclass<_SERVICE>): Test[] {
                 const expected = new Date(
                     date.getTime() + date.getTimezoneOffset() * 60_000
                 ); // the canister uses UTC time, thus we do a conversion
-                const expected_string = expected.toTimeString();
-                const expected_substring = expected_string.substring(
+                const expectedString = expected.toTimeString();
+                const expectedSubstring = expectedString.substring(
                     0,
-                    expected_string.indexOf(' GMT')
+                    expectedString.indexOf(' GMT')
                 );
 
                 return {
-                    ok: result_substring === expected_substring
+                    Ok: resultSubstring === expectedSubstring
                 };
             }
         },
         {
-            name: 'to_utc_string',
+            name: 'toUtcString',
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.to_utc_string(
+                const result = await dateCanister.toUtcString(
                     date.toISOString()
                 );
                 const expected = date.toUTCString();
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
             name: 'now',
             test: async () => {
-                const time_before = new Date().getTime();
-                const result = await date_canister.now();
-                const time_after = new Date().getTime();
+                const timeBefore = new Date().getTime();
+                const result = await dateCanister.now();
+                const timeAfter = new Date().getTime();
 
                 return {
-                    ok:
-                        result >= BigInt(time_before - 30_000) &&
-                        result <= BigInt(time_after + 30_000)
+                    Ok:
+                        result >= BigInt(timeBefore - 30_000) &&
+                        result <= BigInt(timeAfter + 30_000)
                 };
             }
         },
@@ -700,22 +692,22 @@ export function get_tests(date_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const date = new Date();
 
-                const result = await date_canister.parse(date.toISOString());
+                const result = await dateCanister.parse(date.toISOString());
                 const expected = BigInt(Date.parse(date.toISOString()));
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         },
         {
             name: 'utc',
             test: async () => {
-                const result = await date_canister.utc(2002, 4);
+                const result = await dateCanister.utc(2002, 4);
                 const expected = BigInt(Date.UTC(2002, 4));
 
                 return {
-                    ok: result === expected
+                    Ok: result === expected
                 };
             }
         }

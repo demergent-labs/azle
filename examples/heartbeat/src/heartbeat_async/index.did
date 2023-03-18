@@ -1,1 +1,1 @@
-service : () -> { get_initialized : () -> (vec nat8) query }
+service : () -> { getInitialized : () -> (vec nat8) query }

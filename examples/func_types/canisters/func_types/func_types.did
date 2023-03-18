@@ -1,8 +1,8 @@
 type ComplexFunc = func (
     record {
       id : text;
-      basic_func : func (text) -> (text) query;
-      complex_func : ComplexFunc;
+      complexFunc : ComplexFunc;
+      basicFunc : func (text) -> (text) query;
     },
     variant {
       Bad;
@@ -11,22 +11,22 @@ type ComplexFunc = func (
       BasicFunc : func (text) -> (text) query;
     },
   ) -> (nat64);
-type ManualReply = variant { ok : func (vec nat8) -> () oneway; err : text };
+type ManualReply = variant { Ok : func (vec nat8) -> () oneway; Err : text };
 service : () -> {
-  basic_func_param : (func (text) -> (text) query) -> (
+  basicFuncParam : (func (text) -> (text) query) -> (
       func (text) -> (text) query,
     ) query;
-  basic_func_param_array : (vec func (text) -> (text) query) -> (
+  basicFuncParamArray : (vec func (text) -> (text) query) -> (
       vec func (text) -> (text) query,
     ) query;
-  basic_func_return_type : () -> (func (text) -> (text) query) query;
-  basic_func_return_type_array : () -> (vec func (text) -> (text) query) query;
-  complex_func_param : (
+  basicFuncReturnType : () -> (func (text) -> (text) query) query;
+  basicFuncReturnTypeArray : () -> (vec func (text) -> (text) query) query;
+  complexFuncParam : (
       func (
           record {
             id : text;
-            basic_func : func (text) -> (text) query;
-            complex_func : ComplexFunc;
+            complexFunc : ComplexFunc;
+            basicFunc : func (text) -> (text) query;
           },
           variant {
             Bad;
@@ -39,8 +39,8 @@ service : () -> {
       func (
           record {
             id : text;
-            basic_func : func (text) -> (text) query;
-            complex_func : ComplexFunc;
+            complexFunc : ComplexFunc;
+            basicFunc : func (text) -> (text) query;
           },
           variant {
             Bad;
@@ -50,12 +50,12 @@ service : () -> {
           },
         ) -> (nat64),
     ) query;
-  complex_func_return_type : () -> (
+  complexFuncReturnType : () -> (
       func (
           record {
             id : text;
-            basic_func : func (text) -> (text) query;
-            complex_func : ComplexFunc;
+            complexFunc : ComplexFunc;
+            basicFunc : func (text) -> (text) query;
           },
           variant {
             Bad;
@@ -65,9 +65,9 @@ service : () -> {
           },
         ) -> (nat64),
     ) query;
-  get_notifier_from_notifiers_canister : () -> (ManualReply);
-  get_stable_func : () -> (func (nat64, text) -> () query) query;
-  null_func_param : (
+  getNotifierFromNotifiersCanister : () -> (ManualReply);
+  getStableFunc : () -> (func (nat64, text) -> () query) query;
+  nullFuncParam : (
       func (opt null, vec null, null, vec vec null, vec opt null) -> (
           null,
         ) query,

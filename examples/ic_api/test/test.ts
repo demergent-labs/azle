@@ -1,6 +1,6 @@
 import { run_tests } from 'azle/test';
-import { createActor } from '../test/dfx_generated/ic_api';
-import { get_tests } from './tests';
+import { createActor } from './dfx_generated/ic_api';
+import { getTests } from './tests';
 
 const ic_api_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -8,4 +8,4 @@ const ic_api_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(get_tests(ic_api_canister as any));
+run_tests(getTests(ic_api_canister as any));

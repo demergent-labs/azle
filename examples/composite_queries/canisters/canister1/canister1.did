@@ -1,14 +1,14 @@
-type ManualReply = variant { ok : text; err : text };
-type ManualReply_1 = variant { ok : nat; err : text };
+type ManualReply = variant { Ok : text; Err : text };
+type ManualReply_1 = variant { Ok : nat; Err : text };
 service : () -> {
-  deep_query : () -> (ManualReply) query;
-  inc_canister1 : () -> (ManualReply_1) query;
-  inc_canister2 : () -> (ManualReply_1) query;
-  inc_counter : () -> (nat) query;
-  manual_query : () -> (ManualReply) query;
-  simple_composite_query : () -> (ManualReply) query;
-  simple_query : () -> (ManualReply) query;
-  simple_update : () -> (ManualReply);
-  totally_manual_query : () -> (ManualReply) query;
-  update_query : () -> (ManualReply) query;
+  deepQuery : () -> (ManualReply) query;
+  incCanister1 : () -> (ManualReply_1) query;
+  incCanister2 : () -> (ManualReply_1) query;
+  incCounter : () -> (nat) query;
+  manualQuery : () -> (ManualReply) query;
+  simpleCompositeQuery : () -> (ManualReply) query;
+  simpleQuery : () -> (ManualReply) query;
+  simpleUpdate : () -> (ManualReply);
+  totallyManualQuery : () -> (ManualReply) query;
+  updateQuery : () -> (ManualReply) query;
 }

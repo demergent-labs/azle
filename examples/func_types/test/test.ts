@@ -1,6 +1,6 @@
 import { run_tests } from 'azle/test';
 import { createActor } from './dfx_generated/func_types';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
 const func_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -8,4 +8,4 @@ const func_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(get_tests(func_types_canister));
+run_tests(getTests(func_types_canister));

@@ -3,7 +3,7 @@
 import { run_tests } from 'azle/test';
 import { createActor as createCyclesActor } from './dfx_generated/cycles';
 import { createActor as createIntermediaryActor } from './dfx_generated/intermediary';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
 const cycles_canister = createCyclesActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -20,4 +20,4 @@ const intermediary_canister = createIntermediaryActor(
     }
 );
 
-run_tests(get_tests(cycles_canister, intermediary_canister));
+run_tests(getTests(cycles_canister, intermediary_canister));
