@@ -11,34 +11,34 @@ type State = {
     };
     name: string;
     ticker: string;
-    total_supply: nat64;
+    totalSupply: nat64;
 };
 
 let state: State = {
     accounts: {},
     name: '',
     ticker: '',
-    total_supply: 0n
+    totalSupply: 0n
 };
 
 $update;
-export function initialize_supply(
+export function initializeSupply(
     name: string,
-    original_address: string,
+    originalAddress: string,
     ticker: string,
-    total_supply: nat64
+    totalSupply: nat64
 ): boolean {
     state = {
         ...state,
         accounts: {
-            [original_address]: {
-                address: original_address,
-                balance: total_supply
+            [originalAddress]: {
+                address: originalAddress,
+                balance: totalSupply
             }
         },
         name,
         ticker,
-        total_supply
+        totalSupply
     };
 
     return true;
@@ -46,19 +46,19 @@ export function initialize_supply(
 
 $update;
 export function transfer(
-    from_address: string,
-    to_address: string,
+    fromAddress: string,
+    toAddress: string,
     amount: nat64
 ): boolean {
-    if (state.accounts[to_address] === undefined) {
-        state.accounts[to_address] = {
-            address: to_address,
+    if (state.accounts[toAddress] === undefined) {
+        state.accounts[toAddress] = {
+            address: toAddress,
             balance: 0n
         };
     }
 
-    state.accounts[from_address].balance -= amount;
-    state.accounts[to_address].balance += amount;
+    state.accounts[fromAddress].balance -= amount;
+    state.accounts[toAddress].balance += amount;
 
     return true;
 }
@@ -79,6 +79,6 @@ export function name(): string {
 }
 
 $query;
-export function total_supply(): nat64 {
-    return state.total_supply;
+export function totalSupply(): nat64 {
+    return state.totalSupply;
 }

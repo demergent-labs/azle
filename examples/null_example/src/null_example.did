@@ -1,21 +1,21 @@
 type PartiallyNullRecord = record {
-  first_item : int;
-  third_item : int;
-  second_item : null;
+  thirdItem : int;
+  secondItem : null;
+  firstItem : int;
 };
 type ThreeNullRecord = record {
-  first_item : null;
-  third_item : null;
-  second_item : null;
+  thirdItem : null;
+  secondItem : null;
+  firstItem : null;
 };
-type TwoNullRecord = record { first_item : null; second_item : null };
+type TwoNullRecord = record { secondItem : null; firstItem : null };
 service : () -> {
-  get_large_null_record : () -> (ThreeNullRecord) query;
-  get_partially_null_record : () -> (PartiallyNullRecord) query;
-  get_small_null_record : () -> (TwoNullRecord) query;
-  null_function : (null) -> (null) query;
-  set_large_null_record : (ThreeNullRecord) -> (ThreeNullRecord);
-  set_partially_null_record : (PartiallyNullRecord) -> (PartiallyNullRecord);
-  set_small_null_record : (TwoNullRecord) -> (TwoNullRecord);
-  void_is_not_null : () -> () query;
+  getLargeNullRecord : () -> (ThreeNullRecord) query;
+  getPartiallyNullRecord : () -> (PartiallyNullRecord) query;
+  getSmallNullRecord : () -> (TwoNullRecord) query;
+  nullFunction : (null) -> (null) query;
+  setLargeNullRecord : (ThreeNullRecord) -> (ThreeNullRecord);
+  setPartiallyNullRecord : (PartiallyNullRecord) -> (PartiallyNullRecord);
+  setSmallNullRecord : (TwoNullRecord) -> (TwoNullRecord);
+  voidIsNotNull : () -> () query;
 }

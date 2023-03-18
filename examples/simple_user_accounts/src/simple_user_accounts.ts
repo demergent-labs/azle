@@ -16,19 +16,19 @@ let db: Db = {
 };
 
 $query;
-export function get_user_by_id(id: string): Opt<User> {
+export function getUserById(id: string): Opt<User> {
     const user = db.users[id] ?? null;
 
     return user;
 }
 
 $query;
-export function get_all_users(): User[] {
+export function getAllUsers(): User[] {
     return Object.values(db.users);
 }
 
 $update;
-export function create_user(username: string): User {
+export function createUser(username: string): User {
     const id = Object.keys(db.users).length.toString();
 
     const user = {

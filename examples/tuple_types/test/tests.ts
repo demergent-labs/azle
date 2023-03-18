@@ -3,115 +3,112 @@ import { Principal } from '@dfinity/principal';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/tuple_types/tuple_types.did';
 
-export function get_tests(
-    tuple_types_canister: ActorSubclass<_SERVICE>
-): Test[] {
+export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'primitive_one_tuple_return_type',
+            name: 'primitiveOneTupleReturnType',
             test: async () => {
                 const result =
-                    await tuple_types_canister.primitive_one_tuple_return_type();
+                    await tupleTypesCanister.primitiveOneTupleReturnType();
 
                 return {
-                    ok: result[0] === 'Hello'
+                    Ok: result[0] === 'Hello'
                 };
             }
         },
         {
-            name: 'primitive_one_tuple_param',
+            name: 'primitiveOneTupleParam',
+            test: async () => {
+                const result = await tupleTypesCanister.primitiveOneTupleParam([
+                    'Yes'
+                ]);
+
+                return {
+                    Ok: result[0] === 'Yes'
+                };
+            }
+        },
+        {
+            name: 'primitiveOneTupleInlineReturnType',
             test: async () => {
                 const result =
-                    await tuple_types_canister.primitive_one_tuple_param([
-                        'Yes'
+                    await tupleTypesCanister.primitiveOneTupleInlineReturnType();
+
+                return {
+                    Ok: result[0] === 'Greenland'
+                };
+            }
+        },
+        {
+            name: 'primitiveOneTupleInlineParam',
+            test: async () => {
+                const result =
+                    await tupleTypesCanister.primitiveOneTupleInlineParam([
+                        'Rocks'
                     ]);
 
                 return {
-                    ok: result[0] === 'Yes'
+                    Ok: result[0] === 'Rocks'
                 };
             }
         },
         {
-            name: 'primitive_one_tuple_inline_return_type',
+            name: 'primitiveTwoTupleReturnType',
             test: async () => {
                 const result =
-                    await tuple_types_canister.primitive_one_tuple_inline_return_type();
+                    await tupleTypesCanister.primitiveTwoTupleReturnType();
 
                 return {
-                    ok: result[0] === 'Greenland'
+                    Ok: result[0] === 'Content-Type' && result[1] === 64n
                 };
             }
         },
         {
-            name: 'primitive_one_tuple_inline_param',
+            name: 'primitiveTwoTupleParam',
             test: async () => {
-                const result =
-                    await tuple_types_canister.primitive_one_tuple_inline_param(
-                        ['Rocks']
-                    );
+                const result = await tupleTypesCanister.primitiveTwoTupleParam([
+                    'Folly',
+                    6_433n
+                ]);
 
                 return {
-                    ok: result[0] === 'Rocks'
+                    Ok: result[0] === 'Folly' && result[1] === 6433n
                 };
             }
         },
         {
-            name: 'primitive_two_tuple_return_type',
+            name: 'primitiveTwoTupleInlineReturnType',
             test: async () => {
                 const result =
-                    await tuple_types_canister.primitive_two_tuple_return_type();
+                    await tupleTypesCanister.primitiveTwoTupleInlineReturnType();
 
                 return {
-                    ok: result[0] === 'Content-Type' && result[1] === 64n
+                    Ok: result[0] === 'Fun' && result[1] === 'Times'
                 };
             }
         },
         {
-            name: 'primitive_two_tuple_param',
+            name: 'primitiveTwoTupleInlineParam',
             test: async () => {
                 const result =
-                    await tuple_types_canister.primitive_two_tuple_param([
-                        'Folly',
-                        6_433n
+                    await tupleTypesCanister.primitiveTwoTupleInlineParam([
+                        'Great',
+                        'Days'
                     ]);
 
                 return {
-                    ok: result[0] === 'Folly' && result[1] === 6433n
+                    Ok: result[0] === 'Great' && result[1] === 'Days'
                 };
             }
         },
         {
-            name: 'primitive_two_tuple_inline_return_type',
+            name: 'primitiveThreeTupleReturnType',
             test: async () => {
                 const result =
-                    await tuple_types_canister.primitive_two_tuple_inline_return_type();
+                    await tupleTypesCanister.primitiveThreeTupleReturnType();
 
                 return {
-                    ok: result[0] === 'Fun' && result[1] === 'Times'
-                };
-            }
-        },
-        {
-            name: 'primitive_two_tuple_inline_param',
-            test: async () => {
-                const result =
-                    await tuple_types_canister.primitive_two_tuple_inline_param(
-                        ['Great', 'Days']
-                    );
-
-                return {
-                    ok: result[0] === 'Great' && result[1] === 'Days'
-                };
-            }
-        },
-        {
-            name: 'primitive_three_tuple_return_type',
-            test: async () => {
-                const result =
-                    await tuple_types_canister.primitive_three_tuple_return_type();
-
-                return {
-                    ok:
+                    Ok:
                         result[0] === 'Good' &&
                         result[1] === 454n &&
                         result[2].toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
@@ -119,17 +116,17 @@ export function get_tests(
             }
         },
         {
-            name: 'primitive_three_tuple_param',
+            name: 'primitiveThreeTupleParam',
             test: async () => {
                 const result =
-                    await tuple_types_canister.primitive_three_tuple_param([
+                    await tupleTypesCanister.primitiveThreeTupleParam([
                         'Antarctica',
                         41_415n,
                         Principal.fromText('aaaaa-aa')
                     ]);
 
                 return {
-                    ok:
+                    Ok:
                         result[0] === 'Antarctica' &&
                         result[1] === 41_415n &&
                         result[2].toText() === 'aaaaa-aa'
@@ -137,13 +134,13 @@ export function get_tests(
             }
         },
         {
-            name: 'primitive_three_tuple_inline_return_type',
+            name: 'primitiveThreeTupleInlineReturnType',
             test: async () => {
                 const result =
-                    await tuple_types_canister.primitive_three_tuple_inline_return_type();
+                    await tupleTypesCanister.primitiveThreeTupleInlineReturnType();
 
                 return {
-                    ok:
+                    Ok:
                         result[0] === 'Fun' &&
                         result[1] === 101n &&
                         result[2].toText() === 'aaaaa-aa'
@@ -151,15 +148,17 @@ export function get_tests(
             }
         },
         {
-            name: 'primitive_three_tuple_inline_param',
+            name: 'primitiveThreeTupleInlineParam',
             test: async () => {
                 const result =
-                    await tuple_types_canister.primitive_three_tuple_inline_param(
-                        ['Great', 300n, Principal.fromText('aaaaa-aa')]
-                    );
+                    await tupleTypesCanister.primitiveThreeTupleInlineParam([
+                        'Great',
+                        300n,
+                        Principal.fromText('aaaaa-aa')
+                    ]);
 
                 return {
-                    ok:
+                    Ok:
                         result[0] === 'Great' &&
                         result[1] === 300n &&
                         result[2].toText() === 'aaaaa-aa'
@@ -167,169 +166,232 @@ export function get_tests(
             }
         },
         {
-            name: 'complex_one_tuple_return_type',
+            name: 'complexOneTupleReturnType',
             test: async () => {
                 const result =
-                    await tuple_types_canister.complex_one_tuple_return_type();
+                    await tupleTypesCanister.complexOneTupleReturnType();
 
                 return {
-                    ok: result[0][0] === 'Hello' && result[0][1] === 0n
+                    Ok: result[0][0] === 'Hello' && result[0][1] === 0n
                 };
             }
         },
         {
-            name: 'complex_one_tuple_param',
+            name: 'complexOneTupleParam',
             test: async () => {
-                const result =
-                    await tuple_types_canister.complex_one_tuple_param([
-                        ['Goodbye', 1n]
-                    ]);
+                const result = await tupleTypesCanister.complexOneTupleParam([
+                    ['Goodbye', 1n]
+                ]);
 
                 return {
-                    ok: result[0][0] === 'Goodbye' && result[0][1] === 1n
+                    Ok: result[0][0] === 'Goodbye' && result[0][1] === 1n
                 };
             }
         },
         {
-            name: 'complex_one_tuple_inline_return_type',
+            name: 'complexOneTupleInlineReturnType',
             test: async () => {
                 const result =
-                    await tuple_types_canister.complex_one_tuple_inline_return_type();
+                    await tupleTypesCanister.complexOneTupleInlineReturnType();
 
                 return {
-                    ok: result[0][0] === 'Candy' && result[0][1] === 56n
+                    Ok: result[0][0] === 'Candy' && result[0][1] === 56n
                 };
             }
         },
         {
-            name: 'complex_one_tuple_inline_param',
+            name: 'complexOneTupleInlineParam',
             test: async () => {
                 const result =
-                    await tuple_types_canister.complex_one_tuple_inline_param([
+                    await tupleTypesCanister.complexOneTupleInlineParam([
                         ['Mountain', 76n]
                     ]);
 
                 return {
-                    ok: result[0][0] === 'Mountain' && result[0][1] === 76n
+                    Ok: result[0][0] === 'Mountain' && result[0][1] === 76n
                 };
             }
         },
         {
-            name: 'complex_two_tuple_return_type',
+            name: 'complexTwoTupleReturnType',
             test: async () => {
                 const result =
-                    await tuple_types_canister.complex_two_tuple_return_type();
+                    await tupleTypesCanister.complexTwoTupleReturnType();
 
                 return {
-                    ok:
+                    Ok:
                         result[0][0] === 'Content-Type' &&
                         result[0][1] === 64n &&
                         result[1].id === '0' &&
-                        result[1].primitive_two_tuple[0] === 'Content-Type' &&
-                        result[1].primitive_two_tuple[1] === 64n
+                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
+                        result[1].primitiveTwoTuple[1] === 64n
                 };
             }
         },
         {
-            name: 'complex_two_tuple_param',
+            name: 'complexTwoTupleParam',
             test: async () => {
-                const result =
-                    await tuple_types_canister.complex_two_tuple_param([
-                        ['Content-Length', 6_422n],
-                        {
-                            id: '1',
-                            primitive_two_tuple: ['Content-Type', 64n]
-                        }
-                    ]);
+                const result = await tupleTypesCanister.complexTwoTupleParam([
+                    ['Content-Length', 6_422n],
+                    {
+                        id: '1',
+                        primitiveTwoTuple: ['Content-Type', 64n]
+                    }
+                ]);
 
                 return {
-                    ok:
+                    Ok:
                         result[0][0] === 'Content-Length' &&
                         result[0][1] === 6_422n &&
                         result[1].id === '1' &&
-                        result[1].primitive_two_tuple[0] === 'Content-Type' &&
-                        result[1].primitive_two_tuple[1] === 64n
+                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
+                        result[1].primitiveTwoTuple[1] === 64n
                 };
             }
         },
         {
-            name: 'complex_two_tuple_inline_return_type',
+            name: 'complexTwoTupleInlineReturnType',
             test: async () => {
                 const result =
-                    await tuple_types_canister.complex_two_tuple_inline_return_type();
+                    await tupleTypesCanister.complexTwoTupleInlineReturnType();
 
                 return {
-                    ok:
+                    Ok:
                         result[0][0] === 'Content-Type' &&
                         result[0][1] === 644n &&
                         result[1].id === '444' &&
-                        result[1].primitive_two_tuple[0] === 'Content-Type' &&
-                        result[1].primitive_two_tuple[1] === 6_422n
+                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
+                        result[1].primitiveTwoTuple[1] === 6_422n
                 };
             }
         },
         {
-            name: 'complex_two_tuple_inline_param',
+            name: 'complexTwoTupleInlineParam',
             test: async () => {
                 const result =
-                    await tuple_types_canister.complex_two_tuple_inline_param([
+                    await tupleTypesCanister.complexTwoTupleInlineParam([
                         ['Content-Length', 6_422n],
                         {
                             id: '133',
-                            primitive_two_tuple: ['Content-Type', 6_224n]
+                            primitiveTwoTuple: ['Content-Type', 6_224n]
                         }
                     ]);
 
                 return {
-                    ok:
+                    Ok:
                         result[0][0] === 'Content-Length' &&
                         result[0][1] === 6_422n &&
                         result[1].id === '133' &&
-                        result[1].primitive_two_tuple[0] === 'Content-Type' &&
-                        result[1].primitive_two_tuple[1] === 6_224n
+                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
+                        result[1].primitiveTwoTuple[1] === 6_224n
                 };
             }
         },
         {
-            name: 'complex_three_tuple_return_type',
+            name: 'complexThreeTupleReturnType',
             test: async () => {
                 const result =
-                    await tuple_types_canister.complex_three_tuple_return_type();
+                    await tupleTypesCanister.complexThreeTupleReturnType();
 
                 return {
-                    ok:
+                    Ok:
                         result[0][0] === 'Content-Type' &&
                         result[0][1] === 64n &&
                         result[1].id === '0' &&
-                        result[1].primitive_two_tuple[0] === 'Content-Type' &&
-                        result[1].primitive_two_tuple[1] === 64n &&
+                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
+                        result[1].primitiveTwoTuple[1] === 64n &&
                         'Bad' in result[2] &&
                         result[2].Bad[0][0] === 'Content-Type' &&
                         result[2].Bad[0][1] === 64n &&
                         result[2].Bad[1].id === '1' &&
-                        result[2].Bad[1].primitive_two_tuple[0] ===
+                        result[2].Bad[1].primitiveTwoTuple[0] ===
                             'Content-Type' &&
-                        result[2].Bad[1].primitive_two_tuple[1] === 64n &&
+                        result[2].Bad[1].primitiveTwoTuple[1] === 64n &&
                         'Good' in result[2].Bad[2]
                 };
             }
         },
         {
-            name: 'complex_three_tuple_param',
+            name: 'complexThreeTupleParam',
+            test: async () => {
+                const result = await tupleTypesCanister.complexThreeTupleParam([
+                    ['Content-Type', 64n],
+                    {
+                        id: '0',
+                        primitiveTwoTuple: ['Content-Type', 64n]
+                    },
+                    {
+                        Bad: [
+                            ['Content-Type', 64n],
+                            {
+                                id: '1',
+                                primitiveTwoTuple: ['Content-Type', 64n]
+                            },
+                            {
+                                Good: null
+                            }
+                        ]
+                    }
+                ]);
+
+                return {
+                    Ok:
+                        result[0][0] === 'Content-Type' &&
+                        result[0][1] === 64n &&
+                        result[1].id === '0' &&
+                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
+                        result[1].primitiveTwoTuple[1] === 64n &&
+                        'Bad' in result[2] &&
+                        result[2].Bad[0][0] === 'Content-Type' &&
+                        result[2].Bad[0][1] === 64n &&
+                        result[2].Bad[1].id === '1' &&
+                        result[2].Bad[1].primitiveTwoTuple[0] ===
+                            'Content-Type' &&
+                        result[2].Bad[1].primitiveTwoTuple[1] === 64n &&
+                        'Good' in result[2].Bad[2]
+                };
+            }
+        },
+        {
+            name: 'complexThreeTupleInlineReturnType',
             test: async () => {
                 const result =
-                    await tuple_types_canister.complex_three_tuple_param([
+                    await tupleTypesCanister.complexThreeTupleInlineReturnType();
+
+                return {
+                    Ok:
+                        result[0][0] === 'Content-Type' &&
+                        result[0][1] === 64n &&
+                        result[1].id === '0' &&
+                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
+                        result[1].primitiveTwoTuple[1] === 64n &&
+                        'Bad' in result[2] &&
+                        result[2].Bad[0][0] === 'Content-Type' &&
+                        result[2].Bad[0][1] === 64n &&
+                        result[2].Bad[1].id === '1' &&
+                        result[2].Bad[1].primitiveTwoTuple[0] ===
+                            'Content-Type' &&
+                        result[2].Bad[1].primitiveTwoTuple[1] === 64n &&
+                        'Good' in result[2].Bad[2]
+                };
+            }
+        },
+        {
+            name: 'complexThreeTupleInlineParam',
+            test: async () => {
+                const result =
+                    await tupleTypesCanister.complexThreeTupleInlineParam([
                         ['Content-Type', 64n],
                         {
                             id: '0',
-                            primitive_two_tuple: ['Content-Type', 64n]
+                            primitiveTwoTuple: ['Content-Type', 64n]
                         },
                         {
                             Bad: [
                                 ['Content-Type', 64n],
                                 {
                                     id: '1',
-                                    primitive_two_tuple: ['Content-Type', 64n]
+                                    primitiveTwoTuple: ['Content-Type', 64n]
                                 },
                                 {
                                     Good: null
@@ -339,107 +401,34 @@ export function get_tests(
                     ]);
 
                 return {
-                    ok:
+                    Ok:
                         result[0][0] === 'Content-Type' &&
                         result[0][1] === 64n &&
                         result[1].id === '0' &&
-                        result[1].primitive_two_tuple[0] === 'Content-Type' &&
-                        result[1].primitive_two_tuple[1] === 64n &&
+                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
+                        result[1].primitiveTwoTuple[1] === 64n &&
                         'Bad' in result[2] &&
                         result[2].Bad[0][0] === 'Content-Type' &&
                         result[2].Bad[0][1] === 64n &&
                         result[2].Bad[1].id === '1' &&
-                        result[2].Bad[1].primitive_two_tuple[0] ===
+                        result[2].Bad[1].primitiveTwoTuple[0] ===
                             'Content-Type' &&
-                        result[2].Bad[1].primitive_two_tuple[1] === 64n &&
+                        result[2].Bad[1].primitiveTwoTuple[1] === 64n &&
                         'Good' in result[2].Bad[2]
                 };
             }
         },
         {
-            name: 'complex_three_tuple_inline_return_type',
+            name: 'tupleArrayParamsAndReturnType',
             test: async () => {
                 const result =
-                    await tuple_types_canister.complex_three_tuple_inline_return_type();
+                    await tupleTypesCanister.tupleArrayParamsAndReturnType([
+                        ['Content-Type', 'application/json'],
+                        ['Accept-Ranges', 'bytes']
+                    ]);
 
                 return {
-                    ok:
-                        result[0][0] === 'Content-Type' &&
-                        result[0][1] === 64n &&
-                        result[1].id === '0' &&
-                        result[1].primitive_two_tuple[0] === 'Content-Type' &&
-                        result[1].primitive_two_tuple[1] === 64n &&
-                        'Bad' in result[2] &&
-                        result[2].Bad[0][0] === 'Content-Type' &&
-                        result[2].Bad[0][1] === 64n &&
-                        result[2].Bad[1].id === '1' &&
-                        result[2].Bad[1].primitive_two_tuple[0] ===
-                            'Content-Type' &&
-                        result[2].Bad[1].primitive_two_tuple[1] === 64n &&
-                        'Good' in result[2].Bad[2]
-                };
-            }
-        },
-        {
-            name: 'complex_three_tuple_inline_param',
-            test: async () => {
-                const result =
-                    await tuple_types_canister.complex_three_tuple_inline_param(
-                        [
-                            ['Content-Type', 64n],
-                            {
-                                id: '0',
-                                primitive_two_tuple: ['Content-Type', 64n]
-                            },
-                            {
-                                Bad: [
-                                    ['Content-Type', 64n],
-                                    {
-                                        id: '1',
-                                        primitive_two_tuple: [
-                                            'Content-Type',
-                                            64n
-                                        ]
-                                    },
-                                    {
-                                        Good: null
-                                    }
-                                ]
-                            }
-                        ]
-                    );
-
-                return {
-                    ok:
-                        result[0][0] === 'Content-Type' &&
-                        result[0][1] === 64n &&
-                        result[1].id === '0' &&
-                        result[1].primitive_two_tuple[0] === 'Content-Type' &&
-                        result[1].primitive_two_tuple[1] === 64n &&
-                        'Bad' in result[2] &&
-                        result[2].Bad[0][0] === 'Content-Type' &&
-                        result[2].Bad[0][1] === 64n &&
-                        result[2].Bad[1].id === '1' &&
-                        result[2].Bad[1].primitive_two_tuple[0] ===
-                            'Content-Type' &&
-                        result[2].Bad[1].primitive_two_tuple[1] === 64n &&
-                        'Good' in result[2].Bad[2]
-                };
-            }
-        },
-        {
-            name: 'tuple_array_params_and_return_type',
-            test: async () => {
-                const result =
-                    await tuple_types_canister.tuple_array_params_and_return_type(
-                        [
-                            ['Content-Type', 'application/json'],
-                            ['Accept-Ranges', 'bytes']
-                        ]
-                    );
-
-                return {
-                    ok:
+                    Ok:
                         result[0][0] === 'Content-Type' &&
                         result[0][1] === 'application/json' &&
                         result[1][0] === 'Accept-Ranges' &&
@@ -448,13 +437,12 @@ export function get_tests(
             }
         },
         {
-            name: 'tuple_array_record_field',
+            name: 'tupleArrayRecordField',
             test: async () => {
-                const result =
-                    await tuple_types_canister.tuple_array_record_field();
+                const result = await tupleTypesCanister.tupleArrayRecordField();
 
                 return {
-                    ok:
+                    Ok:
                         result.headers[0][0] === 'Content-Type' &&
                         result.headers[0][1] === 'application/json' &&
                         result.headers[1][0] === 'Accept-Ranges' &&
@@ -463,26 +451,26 @@ export function get_tests(
             }
         },
         {
-            name: 'tuple_array_variant_field',
+            name: 'tupleArrayVariantField',
             test: async () => {
                 const result =
-                    await tuple_types_canister.tuple_array_variant_field();
+                    await tupleTypesCanister.tupleArrayVariantField();
 
                 return {
-                    ok:
-                        'with_headers' in result &&
-                        result.with_headers[0][0] === 'Content-Type' &&
-                        result.with_headers[0][1] === 'application/json' &&
-                        result.with_headers[1][0] === 'Accept-Ranges' &&
-                        result.with_headers[1][1] === 'bytes'
+                    Ok:
+                        'withHeaders' in result &&
+                        result.withHeaders[0][0] === 'Content-Type' &&
+                        result.withHeaders[0][1] === 'application/json' &&
+                        result.withHeaders[1][0] === 'Accept-Ranges' &&
+                        result.withHeaders[1][1] === 'bytes'
                 };
             }
         },
         {
-            name: 'two_tuple_with_inline_records',
+            name: 'twoTupleWithInlineRecords',
             test: async () => {
                 const result =
-                    await tuple_types_canister.two_tuple_with_inline_records([
+                    await tupleTypesCanister.twoTupleWithInlineRecords([
                         {
                             hello: 0n
                         },
@@ -492,27 +480,27 @@ export function get_tests(
                     ]);
 
                 return {
-                    ok: result[0].hello === 0n && result[1].goodbye === 1n
+                    Ok: result[0].hello === 0n && result[1].goodbye === 1n
                 };
             }
         },
         {
             name: 'nested tuple test',
             test: async () => {
-                const expected_result: [[string, [number, number]], bigint] = [
+                const expectedResult: [[string, [number, number]], bigint] = [
                     ['hello', [5, 10]],
                     123n
                 ];
-                const result = await tuple_types_canister.nested_tuple_query(
-                    expected_result
+                const result = await tupleTypesCanister.nestedTupleQuery(
+                    expectedResult
                 );
 
                 return {
-                    ok:
-                        result[1] == expected_result[1] &&
-                        result[0][0] == expected_result[0][0] &&
-                        result[0][1][0] == expected_result[0][1][0] &&
-                        result[0][1][1] == expected_result[0][1][1]
+                    Ok:
+                        result[1] == expectedResult[1] &&
+                        result[0][0] == expectedResult[0][0] &&
+                        result[0][1][0] == expectedResult[0][1][0] &&
+                        result[0][1][1] == expectedResult[0][1][1]
                 };
             }
         }
