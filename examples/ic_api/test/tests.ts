@@ -172,7 +172,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'id',
             test: async () => {
-                const icApiCanisterId = execSync(`dfx canister id icApi`)
+                const icApiCanisterId = execSync(`dfx canister id ic_api`)
                     .toString()
                     .trim();
 

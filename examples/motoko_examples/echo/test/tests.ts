@@ -2,16 +2,16 @@ import { Test } from 'azle/test';
 import { _SERVICE } from '../dfx_generated/azle/azle.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(echo_canister: ActorSubclass<_SERVICE>): Test[] {
+export function getTests(echoCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'say',
             test: async () => {
                 const phrase = 'This is a test.';
-                const result = await echo_canister.say(phrase);
+                const result = await echoCanister.say(phrase);
 
                 return {
-                    ok: result === phrase
+                    Ok: result === phrase
                 };
             }
         },
@@ -19,10 +19,10 @@ export function get_tests(echo_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'say nothing',
             test: async () => {
                 const phrase = '';
-                const result = await echo_canister.say(phrase);
+                const result = await echoCanister.say(phrase);
 
                 return {
-                    ok: result === phrase
+                    Ok: result === phrase
                 };
             }
         },
@@ -38,10 +38,10 @@ export function get_tests(echo_canister: ActorSubclass<_SERVICE>): Test[] {
                 nulla pariatur. Excepteur sint occaecat cupidatat non proident,
                 sunt in culpa qui officia deserunt mollit anim id est laborum.
             `;
-                const result = await echo_canister.say(phrase);
+                const result = await echoCanister.say(phrase);
 
                 return {
-                    ok: result === phrase
+                    Ok: result === phrase
                 };
             }
         }

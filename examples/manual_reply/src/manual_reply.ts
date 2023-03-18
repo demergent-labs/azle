@@ -58,7 +58,7 @@ type Gas = Variant<{
 // Updates
 
 $update;
-export function manual_update(message: string): Manual<string> {
+export function manualUpdate(message: string): Manual<string> {
     if (message === 'reject') {
         ic.reject(message);
         return;
@@ -68,38 +68,38 @@ export function manual_update(message: string): Manual<string> {
 }
 
 $update;
-export function update_blob(): Manual<blob> {
+export function updateBlob(): Manual<blob> {
     ic.reply(new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]));
 }
 
 $update;
-export function update_float32(): Manual<float32> {
+export function updateFloat32(): Manual<float32> {
     ic.reply(1245.678);
 }
 
 // TODO: Inline Types not currently supported.
 // See https://github.com/demergent-labs/azle/issues/474
-// export function update_inline_type(): Manual<{ prop: string }> {
+// export function updateInlineType(): Manual<{ prop: string }> {
 //     ic.reply({ prop: 'prop' });
 // }
 
 $update;
-export function update_int8(): Manual<int8> {
+export function updateInt8(): Manual<int8> {
     ic.reply(-100);
 }
 
 $update;
-export function update_nat(): Manual<nat> {
+export function updateNat(): Manual<nat> {
     ic.reply(184467440737095516150n);
 }
 
 $update;
-export function update_null(): Manual<null> {
+export function updateNull(): Manual<null> {
     ic.reply(null);
 }
 
 $update;
-export function update_record(): Manual<Element> {
+export function updateRecord(): Manual<Element> {
     const element: Element = {
         id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
         orbitals: [
@@ -120,23 +120,23 @@ export function update_record(): Manual<Element> {
 }
 
 $update;
-export function update_reserved(): Manual<reserved> {
+export function updateReserved(): Manual<reserved> {
     ic.reply(undefined);
 }
 
 $update;
-export function update_string(): Manual<string> {
+export function updateString(): Manual<string> {
     ic.reply('hello');
 }
 
 $update;
-export function update_variant(): Manual<Gas> {
+export function updateVariant(): Manual<Gas> {
     const gas = { Toxic: null };
     ic.reply(gas);
 }
 
 $update;
-export function reply_raw(): Manual<RawReply> {
+export function replyRaw(): Manual<RawReply> {
     ic.replyRaw(
         ic.candidEncode(
             '(record { "int" = 42; "text" = "text"; "bool" = true; "blob" = blob "Surprise!"; "variant" = variant { Medium } })'
@@ -147,7 +147,7 @@ export function reply_raw(): Manual<RawReply> {
 // Queries
 
 $query;
-export function manual_query(message: string): Manual<string> {
+export function manualQuery(message: string): Manual<string> {
     if (message === 'reject') {
         ic.reject(message);
         return;
@@ -157,38 +157,38 @@ export function manual_query(message: string): Manual<string> {
 }
 
 $query;
-export function query_blob(): Manual<blob> {
+export function queryBlob(): Manual<blob> {
     ic.reply(new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]));
 }
 
 $query;
-export function query_float32(): Manual<float32> {
+export function queryFloat32(): Manual<float32> {
     ic.reply(1245.678);
 }
 
 // TODO: Inline Types not currently supported.
 // See https://github.com/demergent-labs/azle/issues/474
-// export function query_inline_type(): Manual<{> prop: string } {
+// export function queryInlineType(): Manual<{> prop: string } {
 //     ic.reply({ prop: 'prop' });
 // }
 
 $query;
-export function query_int8(): Manual<int8> {
+export function queryInt8(): Manual<int8> {
     ic.reply(-100);
 }
 
 $query;
-export function query_nat(): Manual<nat> {
+export function queryNat(): Manual<nat> {
     ic.reply(184_467_440_737_095_516_150n);
 }
 
 $query;
-export function query_null(): Manual<null> {
+export function queryNull(): Manual<null> {
     ic.reply(null);
 }
 
 $query;
-export function query_record(): Manual<Element> {
+export function queryRecord(): Manual<Element> {
     const element: Element = {
         id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
         orbitals: [
@@ -209,17 +209,17 @@ export function query_record(): Manual<Element> {
 }
 
 $query;
-export function query_reserved(): Manual<reserved> {
+export function queryReserved(): Manual<reserved> {
     ic.reply(undefined);
 }
 
 $query;
-export function query_string(): Manual<string> {
+export function queryString(): Manual<string> {
     ic.reply('hello');
 }
 
 $query;
-export function query_variant(): Manual<Gas> {
+export function queryVariant(): Manual<Gas> {
     const gas = { Toxic: null };
     ic.reply(gas);
 }

@@ -8,19 +8,17 @@ const TEST_PHONE_BOOK_RECORD: Entry = {
     phone: '555-555-5555'
 };
 
-export function get_tests(
-    phone_book_canister: ActorSubclass<_SERVICE>
-): Test[] {
+export function getTests(phoneBookCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'insert',
             test: async () => {
-                const result = await phone_book_canister.insert(
+                const result = await phoneBookCanister.insert(
                     'Test',
                     TEST_PHONE_BOOK_RECORD
                 );
                 return {
-                    ok: result === undefined
+                    Ok: result === undefined
                 };
             }
         },
@@ -28,10 +26,10 @@ export function get_tests(
             name: 'look up',
             test: async () => {
                 const result: Entry | undefined = (
-                    await phone_book_canister.lookup('Test')
+                    await phoneBookCanister.lookup('Test')
                 )[0];
                 return {
-                    ok:
+                    Ok:
                         result !== undefined &&
                         result.desc === TEST_PHONE_BOOK_RECORD.desc &&
                         result.phone === TEST_PHONE_BOOK_RECORD.phone

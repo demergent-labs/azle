@@ -25,7 +25,7 @@ pub enum ParseError {
 impl ParseError {
     pub fn error_message(&self) -> String {
         let str = match self {
-            Self::InvalidMethodType => "Invalid method type. Expected one of [$heartbeat, $init, $inspect_message, $post_upgrade, $query, $update].",
+            Self::InvalidMethodType => "Invalid method type. Expected one of [$heartbeat, $init, $inspectMessage, $postUpgrade, $query, $update].", // TODO should $preUpgrade not be here?
             Self::InvalidModuleItem => "Invalid module item. Expected an identifier or call expression.",
             Self::InvalidCallee => "Invalid callee. Callee cannot be from super or import.",
             Self::InvalidExpression => "Invalid expression. Expected an identifier.",

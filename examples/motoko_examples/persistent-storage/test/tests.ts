@@ -2,34 +2,34 @@ import { Test } from 'azle/test';
 import { _SERVICE } from '../dfx_generated/azle/azle.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(
-    persistentStorage_canister: ActorSubclass<_SERVICE>
+export function getTests(
+    persistentStorageCanister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
         {
             name: 'increment',
             test: async () => {
-                const result = await persistentStorage_canister.increment();
+                const result = await persistentStorageCanister.increment();
                 return {
-                    ok: result === 1n
+                    Ok: result === 1n
                 };
             }
         },
         {
             name: 'reset',
             test: async () => {
-                const result = await persistentStorage_canister.reset();
+                const result = await persistentStorageCanister.reset();
                 return {
-                    ok: result === 0n
+                    Ok: result === 0n
                 };
             }
         },
         {
             name: 'increment',
             test: async () => {
-                const result = await persistentStorage_canister.increment();
+                const result = await persistentStorageCanister.increment();
                 return {
-                    ok: result === 1n
+                    Ok: result === 1n
                 };
             }
         },
@@ -45,9 +45,9 @@ export function get_tests(
         {
             name: 'get',
             test: async () => {
-                const result = await persistentStorage_canister.get();
+                const result = await persistentStorageCanister.get();
                 return {
-                    ok: result === 1n
+                    Ok: result === 1n
                 };
             }
         }

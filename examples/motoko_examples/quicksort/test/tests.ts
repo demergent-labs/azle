@@ -3,7 +3,7 @@ import { int } from 'azle';
 import { _SERVICE } from '../dfx_generated/azle/azle.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(quicksort_canister: ActorSubclass<_SERVICE>): Test[] {
+export function getTests(quicksortCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'sort - with values from the motoko repo',
@@ -12,7 +12,7 @@ export function get_tests(quicksort_canister: ActorSubclass<_SERVICE>): Test[] {
                 const expectedValues = [0n, 1n, 2n, 3n, 4n, 5n, 6n, 7n, 8n, 9n];
 
                 return await arrayIsSorted(
-                    quicksort_canister,
+                    quicksortCanister,
                     input,
                     expectedValues
                 );
@@ -25,7 +25,7 @@ export function get_tests(quicksort_canister: ActorSubclass<_SERVICE>): Test[] {
                 const expectedValues: int[] = [];
 
                 return await arrayIsSorted(
-                    quicksort_canister,
+                    quicksortCanister,
                     input,
                     expectedValues
                 );
@@ -38,7 +38,7 @@ export function get_tests(quicksort_canister: ActorSubclass<_SERVICE>): Test[] {
                 const expectedValues = [1n];
 
                 return await arrayIsSorted(
-                    quicksort_canister,
+                    quicksortCanister,
                     input,
                     expectedValues
                 );
@@ -51,7 +51,7 @@ export function get_tests(quicksort_canister: ActorSubclass<_SERVICE>): Test[] {
                 const expectedValues = [-3n, -2n, -1n, 0n, 1n, 2n, 3n];
 
                 return await arrayIsSorted(
-                    quicksort_canister,
+                    quicksortCanister,
                     input,
                     expectedValues
                 );
@@ -61,16 +61,16 @@ export function get_tests(quicksort_canister: ActorSubclass<_SERVICE>): Test[] {
 }
 
 async function arrayIsSorted(
-    quicksort_canister: ActorSubclass<_SERVICE>,
+    quicksortCanister: ActorSubclass<_SERVICE>,
     input: int[],
     expectedValues: int[]
 ): Promise<Ok<boolean>> {
-    const result = await quicksort_canister.sort(input);
+    const result = await quicksortCanister.sort(input);
     const elementIsOrderedCorrectly = (element: int, index: number) => {
         return element === expectedValues[index];
     };
 
     return {
-        ok: result.every(elementIsOrderedCorrectly)
+        Ok: result.every(elementIsOrderedCorrectly)
     };
 }

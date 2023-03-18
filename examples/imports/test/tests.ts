@@ -2,7 +2,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/imports/imports.did';
 
-export function get_tests(imports_canister: ActorSubclass<_SERVICE>): Test[] {
+export function getTests(imports_canister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'getOne',

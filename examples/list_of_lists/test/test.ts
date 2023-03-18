@@ -1,6 +1,6 @@
 import { run_tests } from 'azle/test';
 import { createActor } from '../dfx_generated/list_of_lists';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
 const list_of_lists_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -8,4 +8,4 @@ const list_of_lists_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(get_tests(list_of_lists_canister));
+run_tests(getTests(list_of_lists_canister));

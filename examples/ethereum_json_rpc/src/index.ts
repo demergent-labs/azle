@@ -46,7 +46,7 @@ export async function ethGetBalance(ethereumAddress: string): Promise<JSON> {
                 encodeUtf8(
                     JSON.stringify({
                         jsonrpc: '2.0',
-                        method: 'ethGetBalance',
+                        method: 'eth_getBalance',
                         params: [ethereumAddress, 'earliest'],
                         id: 1
                     })
@@ -87,7 +87,7 @@ export async function ethGetBlockByNumber(number: nat32): Promise<JSON> {
                 encodeUtf8(
                     JSON.stringify({
                         jsonrpc: '2.0',
-                        method: 'ethGetBlockByNumber',
+                        method: 'eth_getBlockByNumber',
                         params: [`0x${number.toString(16)}`, false],
                         id: 1
                     })

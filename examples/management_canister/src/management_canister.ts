@@ -3,7 +3,7 @@
 import { blob, match, nat, Principal, $query, $update } from 'azle';
 import {
     CanisterStatusArgs,
-    management_canister
+    managementCanister
 } from 'azle/canisters/management';
 import {
     DefaultResult,
@@ -14,28 +14,28 @@ import {
 } from './types';
 
 type State = {
-    created_canister_id: Principal;
+    createdCanisterId: Principal;
 };
 
 let state: State = {
-    created_canister_id: Principal.fromText('aaaaa-aa')
+    createdCanisterId: Principal.fromText('aaaaa-aa')
 };
 
 $update;
-export async function execute_create_canister(): Promise<ExecuteCreateCanisterResult> {
-    const create_canister_result_canister_result = await management_canister
+export async function executeCreateCanister(): Promise<ExecuteCreateCanisterResult> {
+    const createCanisterResultCanisterResult = await managementCanister
         .create_canister({
             settings: null
         })
         .cycles(50_000_000_000_000n)
         .call();
 
-    return match(create_canister_result_canister_result, {
-        Ok: (create_canister_result) => {
-            state.created_canister_id = create_canister_result.canister_id;
+    return match(createCanisterResultCanisterResult, {
+        Ok: (createCanisterResult) => {
+            state.createdCanisterId = createCanisterResult.canister_id;
 
             return {
-                Ok: create_canister_result
+                Ok: createCanisterResult
             };
         },
         Err: (err) => ({ Err: err })
@@ -43,12 +43,12 @@ export async function execute_create_canister(): Promise<ExecuteCreateCanisterRe
 }
 
 $update;
-export async function execute_update_settings(
-    canister_id: Principal
+export async function executeUpdateSettings(
+    canisterId: Principal
 ): Promise<DefaultResult> {
-    const canister_result = await management_canister
+    const canisterResult = await managementCanister
         .update_settings({
-            canister_id,
+            canister_id: canisterId,
             settings: {
                 controllers: null,
                 compute_allocation: 1n,
@@ -58,182 +58,180 @@ export async function execute_update_settings(
         })
         .call();
 
-    return match(canister_result, {
+    return match(canisterResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
 }
 
 $update;
-export async function execute_install_code(
-    canister_id: Principal,
-    wasm_module: blob
+export async function executeInstallCode(
+    canisterId: Principal,
+    wasmModule: blob
 ): Promise<DefaultResult> {
-    const canister_result = await management_canister
+    const canisterResult = await managementCanister
         .install_code({
             mode: {
                 install: null
             },
-            canister_id,
-            wasm_module,
+            canister_id: canisterId,
+            wasm_module: wasmModule,
             arg: Uint8Array.from([])
         })
         .cycles(100_000_000_000n)
         .call();
 
-    return match(canister_result, {
+    return match(canisterResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
 }
 
 $update;
-export async function execute_uninstall_code(
-    canister_id: Principal
+export async function executeUninstallCode(
+    canisterId: Principal
 ): Promise<DefaultResult> {
-    const canister_result = await management_canister
+    const canisterResult = await managementCanister
         .uninstall_code({
-            canister_id
+            canister_id: canisterId
         })
         .call();
 
-    return match(canister_result, {
+    return match(canisterResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
 }
 
 $update;
-export async function execute_start_canister(
-    canister_id: Principal
+export async function executeStartCanister(
+    canisterId: Principal
 ): Promise<DefaultResult> {
-    const canister_result = await management_canister
+    const canisterResult = await managementCanister
         .start_canister({
-            canister_id
+            canister_id: canisterId
         })
         .call();
 
-    return match(canister_result, {
+    return match(canisterResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
 }
 
 $update;
-export async function execute_stop_canister(
-    canister_id: Principal
+export async function executeStopCanister(
+    canisterId: Principal
 ): Promise<DefaultResult> {
-    const canister_result = await management_canister
+    const canisterResult = await managementCanister
         .stop_canister({
-            canister_id
+            canister_id: canisterId
         })
         .call();
 
-    return match(canister_result, {
+    return match(canisterResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
 }
 
 $update;
-export async function get_canister_status(
+export async function getCanisterStatus(
     args: CanisterStatusArgs
 ): Promise<GetCanisterStatusResult> {
-    const canister_status_result_canister_result = await management_canister
+    const canisterStatusResultCanisterResult = await managementCanister
         .canister_status({
             canister_id: args.canister_id
         })
         .call();
 
-    return match(canister_status_result_canister_result, {
-        Ok: (canister_status_result) => ({ Ok: canister_status_result }),
+    return match(canisterStatusResultCanisterResult, {
+        Ok: (canisterStatusResult) => ({ Ok: canisterStatusResult }),
         Err: (err) => ({ Err: err })
     });
 }
 
 $update;
-export async function execute_delete_canister(
-    canister_id: Principal
+export async function executeDeleteCanister(
+    canisterId: Principal
 ): Promise<DefaultResult> {
-    const canister_result = await management_canister
+    const canisterResult = await managementCanister
         .delete_canister({
-            canister_id
+            canister_id: canisterId
         })
         .call();
 
-    return match(canister_result, {
+    return match(canisterResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
 }
 
 $update;
-export async function execute_deposit_cycles(
-    canister_id: Principal
+export async function executeDepositCycles(
+    canisterId: Principal
 ): Promise<DefaultResult> {
-    const canister_result = await management_canister
+    const canisterResult = await managementCanister
         .deposit_cycles({
-            canister_id
+            canister_id: canisterId
         })
         .cycles(1_000_000n)
         .call();
 
-    return match(canister_result, {
+    return match(canisterResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
 }
 
 $update;
-export async function get_raw_rand(): Promise<RawRandResult> {
-    const raw_rand_canister_result = await management_canister
-        .raw_rand()
-        .call();
+export async function getRawRand(): Promise<RawRandResult> {
+    const rawRandCanisterResult = await managementCanister.raw_rand().call();
 
-    return match(raw_rand_canister_result, {
-        Ok: (raw_randomness) => ({ Ok: raw_randomness }),
+    return match(rawRandCanisterResult, {
+        Ok: (rawRandomness) => ({ Ok: rawRandomness }),
         Err: (err) => ({ Err: err })
     });
 }
 
-// TODO we should test this like we test deposit_cycles
+// TODO we should test this like we test depositCycles
 $update;
-export async function provisional_create_canister_with_cycles(): Promise<ExecuteProvisionalCreateCanisterWithCyclesResult> {
-    const canister_result = await management_canister
+export async function provisionalCreateCanisterWithCycles(): Promise<ExecuteProvisionalCreateCanisterWithCyclesResult> {
+    const canisterResult = await managementCanister
         .provisional_create_canister_with_cycles({
             amount: null,
             settings: null
         })
         .call();
 
-    return match(canister_result, {
-        Ok: (provisional_create_canister_with_cycles_result) => ({
-            Ok: provisional_create_canister_with_cycles_result
+    return match(canisterResult, {
+        Ok: (provisionalCreateCanisterWithCyclesResult) => ({
+            Ok: provisionalCreateCanisterWithCyclesResult
         }),
         Err: (err) => ({ Err: err })
     });
 }
 
-// TODO we should test this like we test deposit_cycles
+// TODO we should test this like we test depositCycles
 $update;
-export async function provisional_top_up_canister(
-    canister_id: Principal,
+export async function provisionalTopUpCanister(
+    canisterId: Principal,
     amount: nat
 ): Promise<DefaultResult> {
-    const canister_result = await management_canister
+    const canisterResult = await managementCanister
         .provisional_top_up_canister({
-            canister_id,
+            canister_id: canisterId,
             amount
         })
         .call();
 
-    return match(canister_result, {
+    return match(canisterResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
 }
 
 $query;
-export function get_created_canister_id(): Principal {
-    return state.created_canister_id;
+export function getCreatedCanisterId(): Principal {
+    return state.createdCanisterId;
 }

@@ -1,6 +1,6 @@
 import { run_tests } from 'azle/test';
 import { createActor } from '../dfx_generated/azle';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
 const key_value_store_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -8,4 +8,4 @@ const key_value_store_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(get_tests(key_value_store_canister));
+run_tests(getTests(key_value_store_canister));

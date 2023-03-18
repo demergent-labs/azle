@@ -13,9 +13,9 @@ import {
 import {
     Address,
     Archives,
-    binary_address_from_address,
+    binaryAddressFromAddress,
     GetBlocksArgs,
-    hex_address_from_principal,
+    hexAddressFromPrincipal,
     Ledger,
     QueryBlocksResponse,
     Tokens,
@@ -33,11 +33,11 @@ type ExecuteTransferResult = Variant<{
 }>;
 
 $update;
-export async function execute_transfer(
+export async function executeTransfer(
     to: Address,
     amount: nat64,
     fee: nat64,
-    created_at_time: Opt<nat64>
+    createdAtTime: Opt<nat64>
 ): Promise<ExecuteTransferResult> {
     return await icpCanister
         .transfer({
@@ -49,12 +49,12 @@ export async function execute_transfer(
                 e8s: fee
             },
             from_subaccount: null,
-            to: binary_address_from_address(to),
+            to: binaryAddressFromAddress(to),
             created_at_time:
-                created_at_time === null
+                createdAtTime === null
                     ? null
                     : {
-                          timestamp_nanos: created_at_time
+                          timestamp_nanos: createdAtTime
                       }
         })
         .call();
@@ -66,12 +66,12 @@ type GetAccountBalanceResult = Variant<{
 }>;
 
 $update;
-export async function get_account_balance(
+export async function getAccountBalance(
     address: Address
 ): Promise<GetAccountBalanceResult> {
     return await icpCanister
         .account_balance({
-            account: binary_address_from_address(address)
+            account: binaryAddressFromAddress(address)
         })
         .call();
 }
@@ -82,7 +82,7 @@ type GetTransferFeeResult = Variant<{
 }>;
 
 $update;
-export async function get_transfer_fee(): Promise<GetTransferFeeResult> {
+export async function getTransferFee(): Promise<GetTransferFeeResult> {
     return await icpCanister.transfer_fee({}).call();
 }
 
@@ -92,10 +92,10 @@ type GetBlocksResult = Variant<{
 }>;
 
 $update;
-export async function get_blocks(
-    get_blocks_args: GetBlocksArgs
+export async function getBlocks(
+    getBlocksArgs: GetBlocksArgs
 ): Promise<GetBlocksResult> {
-    return await icpCanister.query_blocks(get_blocks_args).call();
+    return await icpCanister.query_blocks(getBlocksArgs).call();
 }
 
 type GetSymbolResult = Variant<{
@@ -104,11 +104,11 @@ type GetSymbolResult = Variant<{
 }>;
 
 $update;
-export async function get_symbol(): Promise<GetSymbolResult> {
-    const symbol_result_canister_result = await icpCanister.symbol().call();
+export async function getSymbol(): Promise<GetSymbolResult> {
+    const symbolResultCanisterResult = await icpCanister.symbol().call();
 
-    return match(symbol_result_canister_result, {
-        Ok: (symbol_result) => ({ Ok: symbol_result.symbol }),
+    return match(symbolResultCanisterResult, {
+        Ok: (symbolResult) => ({ Ok: symbolResult.symbol }),
         Err: (err) => ({ Err: err })
     });
 }
@@ -119,11 +119,11 @@ type GetNameResult = Variant<{
 }>;
 
 $update;
-export async function get_name(): Promise<GetNameResult> {
-    const name_result_canister_result = await icpCanister.name().call();
+export async function getName(): Promise<GetNameResult> {
+    const nameResultCanisterResult = await icpCanister.name().call();
 
-    return match(name_result_canister_result, {
-        Ok: (name_result) => ({ Ok: name_result.name }),
+    return match(nameResultCanisterResult, {
+        Ok: (nameResult) => ({ Ok: nameResult.name }),
         Err: (err) => ({ Err: err })
     });
 }
@@ -134,11 +134,11 @@ type GetDecimalsResult = Variant<{
 }>;
 
 $update;
-export async function get_decimals(): Promise<GetDecimalsResult> {
-    const decimals_result_canister_result = await icpCanister.decimals().call();
+export async function getDecimals(): Promise<GetDecimalsResult> {
+    const decimalsResultCanisterResult = await icpCanister.decimals().call();
 
-    return match(decimals_result_canister_result, {
-        Ok: (decimals_result) => ({ Ok: decimals_result.decimals }),
+    return match(decimalsResultCanisterResult, {
+        Ok: (decimalsResult) => ({ Ok: decimalsResult.decimals }),
         Err: (err) => ({ Err: err })
     });
 }
@@ -149,11 +149,11 @@ type GetArchivesResult = Variant<{
 }>;
 
 $update;
-export async function get_archives(): Promise<GetArchivesResult> {
+export async function getArchives(): Promise<GetArchivesResult> {
     return await icpCanister.archives().call();
 }
 
 $query;
-export function get_address_from_principal(principal: Principal): string {
-    return hex_address_from_principal(principal, 0);
+export function getAddressFromPrincipal(principal: Principal): string {
+    return hexAddressFromPrincipal(principal, 0);
 }

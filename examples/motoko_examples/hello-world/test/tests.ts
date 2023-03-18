@@ -2,7 +2,7 @@ import { Test } from 'azle/test';
 import { _SERVICE } from '../dfx_generated/azle/azle.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(
+export function getTests(
     hello_world_canister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
@@ -12,7 +12,7 @@ export function get_tests(
                 const result = await hello_world_canister.main();
 
                 return {
-                    ok: result === undefined
+                    Ok: result === undefined
                 };
             }
         }

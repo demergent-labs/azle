@@ -1,6 +1,6 @@
 import { run_tests } from 'azle/test';
 import { createActor } from '../test/dfx_generated/ledger_canister';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
 const ledger_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -8,4 +8,4 @@ const ledger_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(get_tests(ledger_canister));
+run_tests(getTests(ledger_canister));

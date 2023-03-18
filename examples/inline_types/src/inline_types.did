@@ -88,7 +88,7 @@ type _InlineVariantReferencingVariantFromParamParam1 = variant {
 };
 service : () -> {
   complex : (_InlineComplexRecord) -> (_InlineComplexRecord) query;
-  inline_func : (
+  inlineFunc : (
       func (
           text,
           opt _InlineComplexRecordOpt,
@@ -117,39 +117,39 @@ service : () -> {
             ) query,
         ) -> () query,
     ) query;
-  inline_record_param : (_InlineComplexRecordOptRecord) -> (text) query;
-  inline_record_return_type : () -> (
+  inlineRecordParam : (_InlineComplexRecordOptRecord) -> (text) query;
+  inlineRecordReturnType : () -> (
       _InlineInlineRecordReturnTypeReturnType,
     ) query;
-  inline_record_return_type_as_external_canister_call : () -> (ManualReply);
-  inline_variant_param : (_InlineInlineVariantParamParam) -> (
+  inlineRecordReturnTypeAsExternalCanisterCall : () -> (ManualReply);
+  inlineVariantParam : (_InlineInlineVariantParamParam) -> (
       _InlineInlineVariantParamParam,
     ) query;
-  inline_variant_return_type : () -> (
+  inlineVariantReturnType : () -> (
       _InlineInlineVariantReturnTypeReturnType,
     ) query;
-  record_referencing_other_types_from_return_type : () -> (
+  recordReferencingOtherTypesFromReturnType : () -> (
       _InlineRecordReferencingOtherTypesFromReturnTypeReturnType,
     ) query;
-  record_referencing_record_from_param : (
+  recordReferencingRecordFromParam : (
       _InlineRecordReferencingRecordFromParamParam1,
     ) -> (text) query;
-  record_referencing_variant_from_param : (
+  recordReferencingVariantFromParam : (
       _InlineRecordReferencingVariantFromParamParam1,
     ) -> (opt text) query;
-  record_with_inline_fields : () -> (User1) query;
-  stable_map_get : (_InlineStableMapGetKey) -> (
+  recordWithInlineFields : () -> (User1) query;
+  stableMapGet : (_InlineStableMapGetKey) -> (
       opt _InlineStableMapGetReturnType,
     ) query;
-  stable_map_insert : (_InlineStableMapGetKey, _InlineStableMapInsertValue) -> (
+  stableMapInsert : (_InlineStableMapGetKey, _InlineStableMapInsertValue) -> (
       _InlineStableMapInsertReturnType,
     );
-  variant_referencing_other_types_from_return_type : () -> (TestVariant) query;
-  variant_referencing_record_from_param : (
+  variantReferencingOtherTypesFromReturnType : () -> (TestVariant) query;
+  variantReferencingRecordFromParam : (
       _InlineVariantReferencingRecordFromParamParam1,
     ) -> () query;
-  variant_referencing_variant_from_param : (
+  variantReferencingVariantFromParam : (
       _InlineVariantReferencingVariantFromParamParam1,
     ) -> () query;
-  variant_with_inline_fields : () -> (Reaction) query;
+  variantWithInlineFields : () -> (Reaction) query;
 }
