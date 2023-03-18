@@ -48,7 +48,7 @@ export async function xkcdRaw(): Promise<Manual<HttpResponse>> {
 
     const httpResult = await ic.callRaw(
         Principal.fromText('aaaaa-aa'),
-        'httpRequest',
+        'http_request',
         ic.candidEncode(`
             (
                 record {

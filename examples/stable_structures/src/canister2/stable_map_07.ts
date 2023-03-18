@@ -13,52 +13,52 @@ type StableMap7InsertResult = Variant<{
     Err: InsertError;
 }>;
 
-let stable_map_7 = new StableBTreeMap<null, null>(7, 100, 1_000);
+let stableMap7 = new StableBTreeMap<null, null>(7, 100, 1_000);
 
 $query;
-export function stable_map_7_contains_key(key: null): boolean {
-    return stable_map_7.containsKey(key);
+export function stableMap7ContainsKey(key: null): boolean {
+    return stableMap7.containsKey(key);
 }
 
 $query;
-export function stable_map_7_get(key: null): Opt<null> {
-    return stable_map_7.get(key);
+export function stableMap7Get(key: null): Opt<null> {
+    return stableMap7.get(key);
 }
 
 $update;
-export function stable_map_7_insert(
+export function stableMap7Insert(
     key: null,
     value: null
 ): StableMap7InsertResult {
-    return stable_map_7.insert(key, value);
+    return stableMap7.insert(key, value);
 }
 
 $query;
-export function stable_map_7_is_empty(): boolean {
-    return stable_map_7.isEmpty();
+export function stableMap7IsEmpty(): boolean {
+    return stableMap7.isEmpty();
 }
 
 $query;
-export function stable_map_7_items(): [null, null][] {
-    return stable_map_7.items();
+export function stableMap7Items(): [null, null][] {
+    return stableMap7.items();
 }
 
 $query;
-export function stable_map_7_keys(): null[] {
-    return stable_map_7.keys();
+export function stableMap7Keys(): null[] {
+    return stableMap7.keys();
 }
 
 $query;
-export function stable_map_7_len(): nat64 {
-    return stable_map_7.len();
+export function stableMap7Len(): nat64 {
+    return stableMap7.len();
 }
 
 $update;
-export function stable_map_7_remove(key: null): Opt<null> {
-    return stable_map_7.remove(key);
+export function stableMap7Remove(key: null): Opt<null> {
+    return stableMap7.remove(key);
 }
 
 $query;
-export function stable_map_7_values(): null[] {
-    return stable_map_7.values();
+export function stableMap7Values(): null[] {
+    return stableMap7.values();
 }

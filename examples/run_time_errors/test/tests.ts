@@ -139,7 +139,7 @@ async function getErrorMessage(errorFunc: () => Promise<void>): Promise<any> {
 function checkErrorMessage(actualError: any, expectedError: string) {
     return (
         'result' in actualError &&
-        'rejectMessage' in actualError.result &&
-        actualError.result.rejectMessage.includes(`Uncaught ${expectedError}`)
+        'reject_message' in actualError.result &&
+        actualError.result.reject_message.includes(`Uncaught ${expectedError}`)
     );
 }

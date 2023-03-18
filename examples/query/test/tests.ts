@@ -10,7 +10,7 @@ export function getTests(query_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await query_canister.simpleQuery();
 
                 return {
-                    ok: result === 'This is a query function'
+                    Ok: result === 'This is a query function'
                 };
             }
         }

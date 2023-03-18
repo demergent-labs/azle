@@ -1,60 +1,58 @@
-import { ok, Test } from 'azle/test';
+import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/rejections/rejections.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(
-    rejections_canister: ActorSubclass<_SERVICE>
-): Test[] {
+export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'reject code NO_ERROR',
+            name: 'reject code NOERROR',
             test: async () => {
                 const result =
-                    await rejections_canister.get_rejection_code_no_error();
+                    await rejectionsCanister.getRejectionCodeNoError();
                 return {
-                    ok: 'NoError' in result
+                    Ok: 'NoError' in result
                 };
             }
         },
         {
-            name: 'reject code DESTINATION_INVALID',
+            name: 'reject code DESTINATIONINVALID',
             test: async () => {
                 const result =
-                    await rejections_canister.get_rejection_code_destination_invalid();
+                    await rejectionsCanister.getRejectionCodeDestinationInvalid();
                 return {
-                    ok: 'DestinationInvalid' in result
+                    Ok: 'DestinationInvalid' in result
                 };
             }
         },
         {
-            name: 'reject code CANISTER_REJECT',
+            name: 'reject code CANISTERREJECT',
             test: async () => {
                 const result =
-                    await rejections_canister.get_rejection_code_canister_reject();
+                    await rejectionsCanister.getRejectionCodeCanisterReject();
                 return {
-                    ok: 'CanisterReject' in result
+                    Ok: 'CanisterReject' in result
                 };
             }
         },
         {
-            name: 'reject code CANISTER_ERROR',
+            name: 'reject code CANISTERERROR',
             test: async () => {
                 const result =
-                    await rejections_canister.get_rejection_code_canister_error();
+                    await rejectionsCanister.getRejectionCodeCanisterError();
                 return {
-                    ok: 'CanisterError' in result
+                    Ok: 'CanisterError' in result
                 };
             }
         },
         {
             name: 'reject message',
             test: async () => {
-                const rejection_message = 'custom rejection message';
-                const result = await rejections_canister.get_rejection_message(
-                    rejection_message
+                const rejectionMessage = 'custom rejection message';
+                const result = await rejectionsCanister.getRejectionMessage(
+                    rejectionMessage
                 );
                 return {
-                    ok: result === rejection_message
+                    Ok: result === rejectionMessage
                 };
             }
         }
@@ -62,7 +60,7 @@ export function get_tests(
         //     name: 'result with an accept',
         //     test: async () => {
         //         const rejectionMessage = 'custom rejection message';
-        //         const result = await rejections_canister.getResult(
+        //         const result = await rejectionsCanister.getResult(
         //             { Accept: null },
         //             rejectionMessage
         //         );
@@ -73,7 +71,7 @@ export function get_tests(
         //         }
 
         //         return {
-        //             ok: result.ok === null
+        //             Ok: result.ok === null
         //         };
         //     }
         // },
@@ -82,19 +80,19 @@ export function get_tests(
         //     test: async () => {
         //         const rejectionMessage = 'custom rejection message';
 
-        //         const result = await rejections_canister.getResult(
+        //         const result = await rejectionsCanister.getResult(
         //             { Reject: null },
         //             rejectionMessage
         //         );
 
         //         if (ok(result)) {
         //             return {
-        //                 ok: false
+        //                 Ok: false
         //             };
         //         }
 
         //         return {
-        //             ok: result.err === rejectionMessage
+        //             Ok: result.err === rejectionMessage
         //         };
         //     }
         // }

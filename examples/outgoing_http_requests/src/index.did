@@ -12,6 +12,6 @@ type ManualReply = record {
 };
 service : () -> {
   xkcd : () -> (ManualReply);
-  xkcd_raw : () -> (ManualReply);
-  xkcd_transform : (HttpTransformArgs) -> (HttpResponse) query;
+  xkcdRaw : () -> (ManualReply);
+  xkcdTransform : (HttpTransformArgs) -> (HttpResponse) query;
 }

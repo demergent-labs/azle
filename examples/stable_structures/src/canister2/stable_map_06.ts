@@ -13,52 +13,52 @@ type StableMap6InsertResult = Variant<{
     Err: InsertError;
 }>;
 
-let stable_map_6 = new StableBTreeMap<nat64[], boolean>(6, 100, 1_000);
+let stableMap6 = new StableBTreeMap<nat64[], boolean>(6, 100, 1_000);
 
 $query;
-export function stable_map_6_contains_key(key: nat64[]): boolean {
-    return stable_map_6.containsKey(key);
+export function stableMap6ContainsKey(key: nat64[]): boolean {
+    return stableMap6.containsKey(key);
 }
 
 $query;
-export function stable_map_6_get(key: nat64[]): Opt<boolean> {
-    return stable_map_6.get(key);
+export function stableMap6Get(key: nat64[]): Opt<boolean> {
+    return stableMap6.get(key);
 }
 
 $update;
-export function stable_map_6_insert(
+export function stableMap6Insert(
     key: nat64[],
     value: boolean
 ): StableMap6InsertResult {
-    return stable_map_6.insert(key, value);
+    return stableMap6.insert(key, value);
 }
 
 $query;
-export function stable_map_6_is_empty(): boolean {
-    return stable_map_6.isEmpty();
+export function stableMap6IsEmpty(): boolean {
+    return stableMap6.isEmpty();
 }
 
 $query;
-export function stable_map_6_items(): [nat64[], boolean][] {
-    return stable_map_6.items();
+export function stableMap6Items(): [nat64[], boolean][] {
+    return stableMap6.items();
 }
 
 $query;
-export function stable_map_6_keys(): nat64[][] {
-    return stable_map_6.keys();
+export function stableMap6Keys(): nat64[][] {
+    return stableMap6.keys();
 }
 
 $query;
-export function stable_map_6_len(): nat64 {
-    return stable_map_6.len();
+export function stableMap6Len(): nat64 {
+    return stableMap6.len();
 }
 
 $update;
-export function stable_map_6_remove(key: nat64[]): Opt<boolean> {
-    return stable_map_6.remove(key);
+export function stableMap6Remove(key: nat64[]): Opt<boolean> {
+    return stableMap6.remove(key);
 }
 
 $query;
-export function stable_map_6_values(): boolean[] {
-    return stable_map_6.values();
+export function stableMap6Values(): boolean[] {
+    return stableMap6.values();
 }

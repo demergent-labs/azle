@@ -15,52 +15,52 @@ type StableMap11InsertResult = Variant<{
     Err: InsertError;
 }>;
 
-let stable_map_11 = new StableBTreeMap<nat, User>(11, 100, 1_000);
+let stableMap11 = new StableBTreeMap<nat, User>(11, 100, 1_000);
 
 $query;
-export function stable_map_11_contains_key(key: nat): boolean {
-    return stable_map_11.containsKey(key);
+export function stableMap11ContainsKey(key: nat): boolean {
+    return stableMap11.containsKey(key);
 }
 
 $query;
-export function stable_map_11_get(key: nat): Opt<User> {
-    return stable_map_11.get(key);
+export function stableMap11Get(key: nat): Opt<User> {
+    return stableMap11.get(key);
 }
 
 $update;
-export function stable_map_11_insert(
+export function stableMap11Insert(
     key: nat,
     value: User
 ): StableMap11InsertResult {
-    return stable_map_11.insert(key, value);
+    return stableMap11.insert(key, value);
 }
 
 $query;
-export function stable_map_11_is_empty(): boolean {
-    return stable_map_11.isEmpty();
+export function stableMap11IsEmpty(): boolean {
+    return stableMap11.isEmpty();
 }
 
 $query;
-export function stable_map_11_items(): [nat, User][] {
-    return stable_map_11.items();
+export function stableMap11Items(): [nat, User][] {
+    return stableMap11.items();
 }
 
 $query;
-export function stable_map_11_keys(): nat[] {
-    return stable_map_11.keys();
+export function stableMap11Keys(): nat[] {
+    return stableMap11.keys();
 }
 
 $query;
-export function stable_map_11_len(): nat64 {
-    return stable_map_11.len();
+export function stableMap11Len(): nat64 {
+    return stableMap11.len();
 }
 
 $update;
-export function stable_map_11_remove(key: nat): Opt<User> {
-    return stable_map_11.remove(key);
+export function stableMap11Remove(key: nat): Opt<User> {
+    return stableMap11.remove(key);
 }
 
 $query;
-export function stable_map_11_values(): User[] {
-    return stable_map_11.values();
+export function stableMap11Values(): User[] {
+    return stableMap11.values();
 }

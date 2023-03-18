@@ -14,52 +14,52 @@ type StableMap5InsertResult = Variant<{
     Err: InsertError;
 }>;
 
-let stable_map_5 = new StableBTreeMap<Opt<String>, float64>(5, 100, 1_000);
+let stableMap5 = new StableBTreeMap<Opt<String>, float64>(5, 100, 1_000);
 
 $query;
-export function stable_map_5_contains_key(key: Opt<String>): boolean {
-    return stable_map_5.containsKey(key);
+export function stableMap5ContainsKey(key: Opt<String>): boolean {
+    return stableMap5.containsKey(key);
 }
 
 $query;
-export function stable_map_5_get(key: Opt<String>): Opt<float64> {
-    return stable_map_5.get(key);
+export function stableMap5Get(key: Opt<String>): Opt<float64> {
+    return stableMap5.get(key);
 }
 
 $update;
-export function stable_map_5_insert(
+export function stableMap5Insert(
     key: Opt<String>,
     value: float64
 ): StableMap5InsertResult {
-    return stable_map_5.insert(key, value);
+    return stableMap5.insert(key, value);
 }
 
 $query;
-export function stable_map_5_is_empty(): boolean {
-    return stable_map_5.isEmpty();
+export function stableMap5IsEmpty(): boolean {
+    return stableMap5.isEmpty();
 }
 
 $query;
-export function stable_map_5_items(): [Opt<String>, float64][] {
-    return stable_map_5.items();
+export function stableMap5Items(): [Opt<String>, float64][] {
+    return stableMap5.items();
 }
 
 $query;
-export function stable_map_5_keys(): Opt<String>[] {
-    return stable_map_5.keys();
+export function stableMap5Keys(): Opt<String>[] {
+    return stableMap5.keys();
 }
 
 $query;
-export function stable_map_5_len(): nat64 {
-    return stable_map_5.len();
+export function stableMap5Len(): nat64 {
+    return stableMap5.len();
 }
 
 $update;
-export function stable_map_5_remove(key: Opt<String>): Opt<float64> {
-    return stable_map_5.remove(key);
+export function stableMap5Remove(key: Opt<String>): Opt<float64> {
+    return stableMap5.remove(key);
 }
 
 $query;
-export function stable_map_5_values(): float64[] {
-    return stable_map_5.values();
+export function stableMap5Values(): float64[] {
+    return stableMap5.values();
 }

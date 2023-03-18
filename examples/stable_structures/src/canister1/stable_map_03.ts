@@ -15,52 +15,52 @@ type StableMap3InsertResult = Variant<{
     Err: InsertError;
 }>;
 
-let stable_map_3 = new StableBTreeMap<Reaction, int>(3, 100, 1_000);
+let stableMap3 = new StableBTreeMap<Reaction, int>(3, 100, 1_000);
 
 $query;
-export function stable_map_3_contains_key(key: Reaction): boolean {
-    return stable_map_3.containsKey(key);
+export function stableMap3ContainsKey(key: Reaction): boolean {
+    return stableMap3.containsKey(key);
 }
 
 $query;
-export function stable_map_3_get(key: Reaction): Opt<int> {
-    return stable_map_3.get(key);
+export function stableMap3Get(key: Reaction): Opt<int> {
+    return stableMap3.get(key);
 }
 
 $update;
-export function stable_map_3_insert(
+export function stableMap3Insert(
     key: Reaction,
     value: int
 ): StableMap3InsertResult {
-    return stable_map_3.insert(key, value);
+    return stableMap3.insert(key, value);
 }
 
 $query;
-export function stable_map_3_is_empty(): boolean {
-    return stable_map_3.isEmpty();
+export function stableMap3IsEmpty(): boolean {
+    return stableMap3.isEmpty();
 }
 
 $query;
-export function stable_map_3_items(): [Reaction, int][] {
-    return stable_map_3.items();
+export function stableMap3Items(): [Reaction, int][] {
+    return stableMap3.items();
 }
 
 $query;
-export function stable_map_3_keys(): Reaction[] {
-    return stable_map_3.keys();
+export function stableMap3Keys(): Reaction[] {
+    return stableMap3.keys();
 }
 
 $query;
-export function stable_map_3_len(): nat64 {
-    return stable_map_3.len();
+export function stableMap3Len(): nat64 {
+    return stableMap3.len();
 }
 
 $update;
-export function stable_map_3_remove(key: Reaction): Opt<int> {
-    return stable_map_3.remove(key);
+export function stableMap3Remove(key: Reaction): Opt<int> {
+    return stableMap3.remove(key);
 }
 
 $query;
-export function stable_map_3_values(): int[] {
-    return stable_map_3.values();
+export function stableMap3Values(): int[] {
+    return stableMap3.values();
 }

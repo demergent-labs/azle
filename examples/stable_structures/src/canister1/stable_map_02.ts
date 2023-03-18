@@ -15,52 +15,52 @@ type StableMap2InsertResult = Variant<{
     Err: InsertError;
 }>;
 
-let stable_map_2 = new StableBTreeMap<nat32, nat>(2, 100, 1_000);
+let stableMap2 = new StableBTreeMap<nat32, nat>(2, 100, 1_000);
 
 $query;
-export function stable_map_2_contains_key(key: nat32): boolean {
-    return stable_map_2.containsKey(key);
+export function stableMap2ContainsKey(key: nat32): boolean {
+    return stableMap2.containsKey(key);
 }
 
 $query;
-export function stable_map_2_get(key: nat32): Opt<nat> {
-    return stable_map_2.get(key);
+export function stableMap2Get(key: nat32): Opt<nat> {
+    return stableMap2.get(key);
 }
 
 $update;
-export function stable_map_2_insert(
+export function stableMap2Insert(
     key: nat32,
     value: nat
 ): StableMap2InsertResult {
-    return stable_map_2.insert(key, value);
+    return stableMap2.insert(key, value);
 }
 
 $query;
-export function stable_map_2_is_empty(): boolean {
-    return stable_map_2.isEmpty();
+export function stableMap2IsEmpty(): boolean {
+    return stableMap2.isEmpty();
 }
 
 $query;
-export function stable_map_2_items(): [nat32, nat][] {
-    return stable_map_2.items();
+export function stableMap2Items(): [nat32, nat][] {
+    return stableMap2.items();
 }
 
 $query;
-export function stable_map_2_keys(): nat32[] {
-    return stable_map_2.keys();
+export function stableMap2Keys(): nat32[] {
+    return stableMap2.keys();
 }
 
 $query;
-export function stable_map_2_len(): nat64 {
-    return stable_map_2.len();
+export function stableMap2Len(): nat64 {
+    return stableMap2.len();
 }
 
 $update;
-export function stable_map_2_remove(key: nat32): Opt<nat> {
-    return stable_map_2.remove(key);
+export function stableMap2Remove(key: nat32): Opt<nat> {
+    return stableMap2.remove(key);
 }
 
 $query;
-export function stable_map_2_values(): nat[] {
-    return stable_map_2.values();
+export function stableMap2Values(): nat[] {
+    return stableMap2.values();
 }

@@ -14,52 +14,52 @@ type StableMap9InsertResult = Variant<{
     Err: InsertError;
 }>;
 
-let stable_map_9 = new StableBTreeMap<float64, string[]>(9, 100, 1_000);
+let stableMap9 = new StableBTreeMap<float64, string[]>(9, 100, 1_000);
 
 $query;
-export function stable_map_9_contains_key(key: float64): boolean {
-    return stable_map_9.containsKey(key);
+export function stableMap9ContainsKey(key: float64): boolean {
+    return stableMap9.containsKey(key);
 }
 
 $query;
-export function stable_map_9_get(key: float64): Opt<string[]> {
-    return stable_map_9.get(key);
+export function stableMap9Get(key: float64): Opt<string[]> {
+    return stableMap9.get(key);
 }
 
 $update;
-export function stable_map_9_insert(
+export function stableMap9Insert(
     key: float64,
     value: string[]
 ): StableMap9InsertResult {
-    return stable_map_9.insert(key, value);
+    return stableMap9.insert(key, value);
 }
 
 $query;
-export function stable_map_9_is_empty(): boolean {
-    return stable_map_9.isEmpty();
+export function stableMap9IsEmpty(): boolean {
+    return stableMap9.isEmpty();
 }
 
 $query;
-export function stable_map_9_items(): [float64, string[]][] {
-    return stable_map_9.items();
+export function stableMap9Items(): [float64, string[]][] {
+    return stableMap9.items();
 }
 
 $query;
-export function stable_map_9_keys(): float64[] {
-    return stable_map_9.keys();
+export function stableMap9Keys(): float64[] {
+    return stableMap9.keys();
 }
 
 $query;
-export function stable_map_9_len(): nat64 {
-    return stable_map_9.len();
+export function stableMap9Len(): nat64 {
+    return stableMap9.len();
 }
 
 $update;
-export function stable_map_9_remove(key: float64): Opt<string[]> {
-    return stable_map_9.remove(key);
+export function stableMap9Remove(key: float64): Opt<string[]> {
+    return stableMap9.remove(key);
 }
 
 $query;
-export function stable_map_9_values(): string[][] {
-    return stable_map_9.values();
+export function stableMap9Values(): string[][] {
+    return stableMap9.values();
 }

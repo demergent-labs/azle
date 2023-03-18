@@ -63,16 +63,16 @@ export function getTests(
                 );
                 const newSize = await stableMemoryCanister.stable64Size();
 
-                if ('err' in result) {
+                if ('Err' in result) {
                     return {
-                        err: JSON.stringify(result.err)
+                        Err: JSON.stringify(result.Err)
                     };
                 }
 
                 return {
                     Ok:
-                        'ok' in result &&
-                        result.ok === oldSize &&
+                        'Ok' in result &&
+                        result.Ok === oldSize &&
                         newPages + oldSize === newSize
                 };
             }
@@ -210,16 +210,16 @@ export function getTests(
                 const result = await stableMemoryCanister.stableGrow(newPages);
                 const newSize = await stableMemoryCanister.stableSize();
 
-                if ('err' in result) {
+                if ('Err' in result) {
                     return {
-                        err: JSON.stringify(result.err)
+                        Err: JSON.stringify(result.Err)
                     };
                 }
 
                 return {
                     Ok:
-                        'ok' in result &&
-                        result.ok === oldSize &&
+                        'Ok' in result &&
+                        result.Ok === oldSize &&
                         newPages + oldSize === newSize
                 };
             }
@@ -230,7 +230,7 @@ export function getTests(
                 const result = await stableMemoryCanister.stableGrow(1);
 
                 return {
-                    Ok: 'err' in result && 'OutOfMemory' in result.err
+                    Ok: 'Err' in result && 'OutOfMemory' in result.Err
                 };
             }
         },
@@ -244,16 +244,16 @@ export function getTests(
                 );
                 const newSize = await stableMemoryCanister.stable64Size();
 
-                if ('err' in result) {
+                if ('Err' in result) {
                     return {
-                        err: JSON.stringify(result.err)
+                        Err: JSON.stringify(result.Err)
                     };
                 }
 
                 return {
                     Ok:
-                        'ok' in result &&
-                        result.ok === oldSize &&
+                        'Ok' in result &&
+                        result.Ok === oldSize &&
                         newPages + oldSize === newSize
                 };
             }
@@ -264,7 +264,7 @@ export function getTests(
                 const result = await stableMemoryCanister.stable64Grow(1n);
 
                 return {
-                    Ok: 'err' in result && 'OutOfMemory' in result.err
+                    Ok: 'Err' in result && 'OutOfMemory' in result.Err
                 };
             }
         }
