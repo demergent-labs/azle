@@ -5,7 +5,7 @@ import { ActorSubclass } from '@dfinity/agent';
 export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'reject code NOERROR',
+            name: 'reject code NO_ERROR',
             test: async () => {
                 const result =
                     await rejectionsCanister.getRejectionCodeNoError();
@@ -15,7 +15,7 @@ export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'reject code DESTINATIONINVALID',
+            name: 'reject code DESTINATION_INVALID',
             test: async () => {
                 const result =
                     await rejectionsCanister.getRejectionCodeDestinationInvalid();
@@ -25,7 +25,7 @@ export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'reject code CANISTERREJECT',
+            name: 'reject code CANISTER_REJECT',
             test: async () => {
                 const result =
                     await rejectionsCanister.getRejectionCodeCanisterReject();
@@ -35,7 +35,7 @@ export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'reject code CANISTERERROR',
+            name: 'reject code CANISTER_ERROR',
             test: async () => {
                 const result =
                     await rejectionsCanister.getRejectionCodeCanisterError();

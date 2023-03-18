@@ -474,7 +474,7 @@ export function insertErrorTests(
 
                 return {
                     Ok:
-                        'err' in result &&
+                        'Err' in result &&
                         'KeyTooLarge' in result.Err &&
                         result.Err.KeyTooLarge.given === 109 &&
                         result.Err.KeyTooLarge.max === 100
@@ -493,7 +493,7 @@ export function insertErrorTests(
 
                 return {
                     Ok:
-                        'err' in result &&
+                        'Err' in result &&
                         'ValueTooLarge' in result.Err &&
                         result.Err.ValueTooLarge.given === 109 &&
                         result.Err.ValueTooLarge.max === 100
