@@ -6,34 +6,34 @@ import { ActorSubclass } from '@dfinity/agent';
 const FIRST_TODO_DESCRIPTION = 'Write tests for the simple to do list example';
 const SECOND_TODO_DESCRIPTION = 'Mark this todo as complete';
 
-export function get_tests(todo_canister: ActorSubclass<_SERVICE>): Test[] {
+export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'add todo',
             test: async () => {
-                const result = await todo_canister.add_todo(
+                const result = await todoCanister.addTodo(
                     FIRST_TODO_DESCRIPTION
                 );
-                const expected_result: ToDo[] = [
+                const expectedResult: ToDo[] = [
                     {
                         description: FIRST_TODO_DESCRIPTION,
                         completed: false
                     }
                 ];
-                const todos = await todo_canister.get_todos();
+                const todos = await todoCanister.getTodos();
 
                 return {
-                    ok: result === 0n && equal_todo_list(todos, expected_result)
+                    Ok: result === 0n && equalTodoList(todos, expectedResult)
                 };
             }
         },
         {
             name: 'add second todo',
             test: async () => {
-                const result = await todo_canister.add_todo(
+                const result = await todoCanister.addTodo(
                     SECOND_TODO_DESCRIPTION
                 );
-                const expected_result: ToDo[] = [
+                const expectedResult: ToDo[] = [
                     {
                         description: FIRST_TODO_DESCRIPTION,
                         completed: false
@@ -43,28 +43,28 @@ export function get_tests(todo_canister: ActorSubclass<_SERVICE>): Test[] {
                         completed: false
                     }
                 ];
-                const todos = await todo_canister.get_todos();
+                const todos = await todoCanister.getTodos();
 
                 return {
-                    ok: result === 1n && equal_todo_list(todos, expected_result)
+                    Ok: result === 1n && equalTodoList(todos, expectedResult)
                 };
             }
         },
         {
             name: 'show todos',
             test: async () => {
-                const expected_result: string = `\n___TO-DOs___\n${FIRST_TODO_DESCRIPTION}\n${SECOND_TODO_DESCRIPTION}`;
-                const todos = await todo_canister.show_todos();
+                const expectedResult: string = `\n__TO-DOs___\n${FIRST_TODO_DESCRIPTION}\n${SECOND_TODO_DESCRIPTION}`;
+                const todos = await todoCanister.showTodos();
                 return {
-                    ok: todos === expected_result
+                    Ok: todos === expectedResult
                 };
             }
         },
         {
             name: 'complete todo',
             test: async () => {
-                const result = await todo_canister.complete_todo(1n);
-                const expected_result: ToDo[] = [
+                const result = await todoCanister.completeTodo(1n);
+                const expectedResult: ToDo[] = [
                     {
                         description: FIRST_TODO_DESCRIPTION,
                         completed: false
@@ -74,87 +74,87 @@ export function get_tests(todo_canister: ActorSubclass<_SERVICE>): Test[] {
                         completed: true
                     }
                 ];
-                const todos = await todo_canister.get_todos();
+                const todos = await todoCanister.getTodos();
 
                 return {
-                    ok:
+                    Ok:
                         result === undefined &&
-                        equal_todo_list(todos, expected_result)
+                        equalTodoList(todos, expectedResult)
                 };
             }
         },
         {
             name: 'show completed todos',
             test: async () => {
-                const expected_result: string = `\n___TO-DOs___\n${FIRST_TODO_DESCRIPTION}\n${SECOND_TODO_DESCRIPTION} ✔`;
-                const todos = await todo_canister.show_todos();
+                const expectedResult: string = `\n__TO-DOs___\n${FIRST_TODO_DESCRIPTION}\n${SECOND_TODO_DESCRIPTION} ✔`;
+                const todos = await todoCanister.showTodos();
                 return {
-                    ok: todos === expected_result
+                    Ok: todos === expectedResult
                 };
             }
         },
         {
             name: 'clear completed todos',
             test: async () => {
-                const result = await todo_canister.clear_completed();
-                const expected_result: ToDo[] = [
+                const result = await todoCanister.clearCompleted();
+                const expectedResult: ToDo[] = [
                     {
                         description: FIRST_TODO_DESCRIPTION,
                         completed: false
                     }
                 ];
-                const todos = await todo_canister.get_todos();
+                const todos = await todoCanister.getTodos();
 
                 return {
-                    ok:
+                    Ok:
                         result === undefined &&
-                        equal_todo_list(todos, expected_result)
+                        equalTodoList(todos, expectedResult)
                 };
             }
         },
         {
             name: 'complete todo',
             test: async () => {
-                const result = await todo_canister.complete_todo(0n);
-                const expected_result: ToDo[] = [
+                const result = await todoCanister.completeTodo(0n);
+                const expectedResult: ToDo[] = [
                     {
                         description: FIRST_TODO_DESCRIPTION,
                         completed: true
                     }
                 ];
-                const todos = await todo_canister.get_todos();
+                const todos = await todoCanister.getTodos();
 
                 return {
-                    ok:
+                    Ok:
                         result === undefined &&
-                        equal_todo_list(todos, expected_result)
+                        equalTodoList(todos, expectedResult)
                 };
             }
         },
         {
             name: 'clear completed todos',
             test: async () => {
-                const result = await todo_canister.clear_completed();
-                const todos = await todo_canister.get_todos();
+                const result = await todoCanister.clearCompleted();
+                const todos = await todoCanister.getTodos();
 
                 return {
-                    ok: result === undefined && todos.length === 0
+                    Ok: result === undefined && todos.length === 0
                 };
             }
         }
     ];
 }
 
-function equal_todo_list(list_a: ToDo[], list_b: ToDo[]): boolean {
+function equalTodoList(listA: ToDo[], listB: ToDo[]): boolean {
     return (
-        list_a.length === list_b.length &&
-        list_a.every((item, index) => equal_todo(item, list_b[index]))
+        listA.length === listB.length &&
+        listA.every((item, index) => equalTodo(item, listB[index]))
     );
 }
 
-function equal_todo(todo_a: ToDo, todo_b: ToDo): boolean {
+function equalTodo(todoA: ToDo, todoB: ToDo): boolean {
     return (
-        todo_a.description === todo_b.description &&
-        todo_a.completed === todo_b.completed
+        todoA.description === todoB.description &&
+        todoA.completed === todoB.completed
     );
 }

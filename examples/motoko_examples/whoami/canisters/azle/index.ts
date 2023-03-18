@@ -17,21 +17,21 @@ import {
 
 //#region Performance
 type PerfResult = Record<{
-    wasm_body_only: nat64;
-    wasm_including_prelude: nat64;
+    wasmBodyOnly: nat64;
+    wasmIncludingPrelude: nat64;
 }>;
 
-let perf_result: Opt<PerfResult> = null;
+let perfResult: Opt<PerfResult> = null;
 
 $query;
-export function get_perf_result(): Opt<PerfResult> {
-    return perf_result;
+export function getPerfResult(): Opt<PerfResult> {
+    return perfResult;
 }
 
-function record_performance(start: nat64, end: nat64): void {
-    perf_result = {
-        wasm_body_only: end - start,
-        wasm_including_prelude: ic.performanceCounter(0)
+function recordPerformance(start: nat64, end: nat64): void {
+    perfResult = {
+        wasmBodyOnly: end - start,
+        wasmIncludingPrelude: ic.performanceCounter(0)
     };
 }
 //#endregion
@@ -50,7 +50,7 @@ class WhoAmICanister extends ExternalCanister {
     id: () => CanisterResult<Principal>;
 
     @query
-    id_quick: () => CanisterResult<Principal>;
+    idQuick: () => CanisterResult<Principal>;
 }
 
 // Initialize the variables to ensure that they aren't `undefined`.
@@ -67,7 +67,7 @@ export function init(somebody: Principal) {
 
 // Manually re-save these variables after new deploys.
 $postUpgrade;
-export function post_upgrade(somebody: Principal) {
+export function postUpgrade(somebody: Principal) {
     install = ic.caller();
     someone = somebody;
 }
@@ -89,12 +89,12 @@ export function argument(): Principal {
 // Return the principal identifier of the caller of this method.
 $update;
 export function whoami(): Principal {
-    const perf_start = ic.performanceCounter(0);
+    const perfStart = ic.performanceCounter(0);
 
     const caller = ic.caller();
 
-    const perf_end = ic.performanceCounter(0);
-    record_performance(perf_start, perf_end);
+    const perfEnd = ic.performanceCounter(0);
+    recordPerformance(perfStart, perfEnd);
 
     return caller;
 }
@@ -102,28 +102,26 @@ export function whoami(): Principal {
 // Return the principal identifier of this canister.
 $update;
 export async function id(): Promise<Principal> {
-    const pre_xnet_call_perf_start = ic.performanceCounter(0);
+    const preXnetCallPerfStart = ic.performanceCounter(0);
 
-    const this_canister = new WhoAmICanister(ic.id());
+    const thisCanister = new WhoAmICanister(ic.id());
 
-    const pre_xnet_call_perf_end = ic.performanceCounter(0);
-    const result = await this_canister.whoami().call();
-    const post_xnet_call_perf_start = ic.performanceCounter(0);
+    const preXnetCallPerfEnd = ic.performanceCounter(0);
+    const result = await thisCanister.whoami().call();
+    const postXnetCallPerfStart = ic.performanceCounter(0);
 
     const response = match(result, {
         Ok: (ok) => ok,
         Err: () => Principal.fromText('aaaaa-aa')
     });
 
-    const post_xnet_call_perf_end = ic.performanceCounter(0);
-    const pre_xnet_call_perf =
-        pre_xnet_call_perf_end - pre_xnet_call_perf_start;
-    const post_xnet_call_perf =
-        post_xnet_call_perf_end - post_xnet_call_perf_start;
-    const total_perf = pre_xnet_call_perf + post_xnet_call_perf;
-    perf_result = {
-        wasm_body_only: total_perf,
-        wasm_including_prelude: ic.performanceCounter(0)
+    const postXnetCallPerfEnd = ic.performanceCounter(0);
+    const preXnetCallPerf = preXnetCallPerfEnd - preXnetCallPerfStart;
+    const postXnetCallPerf = postXnetCallPerfEnd - postXnetCallPerfStart;
+    const totalPerf = preXnetCallPerf + postXnetCallPerf;
+    perfResult = {
+        wasmBodyOnly: totalPerf,
+        wasmIncludingPrelude: ic.performanceCounter(0)
     };
 
     return response;
@@ -134,6 +132,6 @@ export async function id(): Promise<Principal> {
 // canister call to itself. Additionally, it can now be a `Query` which means it
 // doesn't have to go through consensus.
 $query;
-export function id_quick(): Principal {
+export function idQuick(): Principal {
     return ic.id();
 }

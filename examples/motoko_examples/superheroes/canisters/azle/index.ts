@@ -2,21 +2,21 @@ import { Alias, ic, nat32, nat64, Opt, $query, Record, $update } from 'azle';
 
 //#region Performance
 type PerfResult = Record<{
-    wasm_body_only: nat64;
-    wasm_including_prelude: nat64;
+    wasmBodyOnly: nat64;
+    wasmIncludingPrelude: nat64;
 }>;
 
-let perf_result: Opt<PerfResult> = null;
+let perfResult: Opt<PerfResult> = null;
 
 $query;
-export function get_perf_result(): Opt<PerfResult> {
-    return perf_result;
+export function getPerfResult(): Opt<PerfResult> {
+    return perfResult;
 }
 
-function record_performance(start: nat64, end: nat64): void {
-    perf_result = {
-        wasm_body_only: end - start,
-        wasm_including_prelude: ic.performanceCounter(0)
+function recordPerformance(start: nat64, end: nat64): void {
+    perfResult = {
+        wasmBodyOnly: end - start,
+        wasmIncludingPrelude: ic.performanceCounter(0)
     };
 }
 //#endregion
@@ -49,14 +49,14 @@ let superheroes: Map<SuperheroId, Superhero> = new Map();
 // Create a superhero.
 $update;
 export function create(superhero: Superhero): SuperheroId {
-    const perf_start = ic.performanceCounter(0);
+    const perfStart = ic.performanceCounter(0);
 
     let superheroId = next;
     next += 1;
     superheroes.set(superheroId, superhero);
 
-    const perf_end = ic.performanceCounter(0);
-    record_performance(perf_start, perf_end);
+    const perfEnd = ic.performanceCounter(0);
+    recordPerformance(perfStart, perfEnd);
 
     return superheroId;
 }
@@ -75,30 +75,30 @@ export function update(
     superheroId: SuperheroId,
     superhero: Superhero
 ): boolean {
-    const perf_start = ic.performanceCounter(0);
+    const perfStart = ic.performanceCounter(0);
 
     let result = superheroes.get(superheroId);
     if (result) {
         superheroes.set(superheroId, superhero);
     }
 
-    const perf_end = ic.performanceCounter(0);
-    record_performance(perf_start, perf_end);
+    const perfEnd = ic.performanceCounter(0);
+    recordPerformance(perfStart, perfEnd);
 
     return !!result;
 }
 
 // Delete a superhero.
 $update;
-export function delete_hero(superheroId: SuperheroId): boolean {
-    const perf_start = ic.performanceCounter(0);
+export function deleteHero(superheroId: SuperheroId): boolean {
+    const perfStart = ic.performanceCounter(0);
 
     let result = superheroes.get(superheroId);
     if (result) {
         superheroes.delete(superheroId);
     }
 
-    const perf_end = ic.performanceCounter(0);
-    record_performance(perf_start, perf_end);
+    const perfEnd = ic.performanceCounter(0);
+    recordPerformance(perfStart, perfEnd);
     return !!result;
 }
