@@ -1,13 +1,13 @@
 import { Test } from 'azle/test';
 import { execSync } from 'child_process';
 
-export function get_tests(): Test[] {
+export function getTests(): Test[] {
     return [
         {
             name: 'init get count',
             test: async () => {
                 return {
-                    ok: getCount() === getExpectedGetCountResult(0)
+                    Ok: getCount() === getExpectedGetCountResult(0)
                 };
             }
         },
@@ -15,7 +15,7 @@ export function get_tests(): Test[] {
             name: 'first increment',
             test: async () => {
                 return {
-                    ok: count() === getExpectedCountResult(1)
+                    Ok: count() === getExpectedCountResult(1)
                 };
             }
         },
@@ -23,7 +23,7 @@ export function get_tests(): Test[] {
             name: 'second increment',
             test: async () => {
                 return {
-                    ok: count() === getExpectedCountResult(2)
+                    Ok: count() === getExpectedCountResult(2)
                 };
             }
         },
@@ -31,7 +31,7 @@ export function get_tests(): Test[] {
             name: 'get count',
             test: async () => {
                 return {
-                    ok: getCount() === getExpectedGetCountResult(2)
+                    Ok: getCount() === getExpectedGetCountResult(2)
                 };
             }
         },
@@ -39,7 +39,7 @@ export function get_tests(): Test[] {
             name: 'gzipped increment',
             test: async () => {
                 return {
-                    ok: countGzip() === 'update'
+                    Ok: countGzip() === 'update'
                 };
             }
         },
@@ -47,7 +47,7 @@ export function get_tests(): Test[] {
             name: 'get gzipped count',
             test: async () => {
                 return {
-                    ok: getCountGzip() === 'query'
+                    Ok: getCountGzip() === 'query'
                 };
             }
         },
@@ -55,7 +55,7 @@ export function get_tests(): Test[] {
             name: 'get streaming count',
             test: async () => {
                 return {
-                    ok: getCountStream() === getExpectedGetCountStreamResult(3)
+                    Ok: getCountStream() === getExpectedGetCountStreamResult(3)
                 };
             }
         },
@@ -63,7 +63,7 @@ export function get_tests(): Test[] {
             name: 'final get count',
             test: async () => {
                 return {
-                    ok: getCount() === getExpectedGetCountResult(3)
+                    Ok: getCount() === getExpectedGetCountResult(3)
                 };
             }
         }

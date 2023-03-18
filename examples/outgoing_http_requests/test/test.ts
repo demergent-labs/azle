@@ -1,8 +1,8 @@
 import { run_tests } from 'azle/test';
 import { createActor } from './dfx_generated/outgoing_http_requests';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
-const outgoing_http_requests_canister = createActor(
+const outgoingHttpRequestsCanister = createActor(
     'rrkah-fqaaa-aaaaa-aaaaq-cai',
     {
         agentOptions: {
@@ -11,4 +11,4 @@ const outgoing_http_requests_canister = createActor(
     }
 );
 
-run_tests(get_tests(outgoing_http_requests_canister));
+run_tests(getTests(outgoingHttpRequestsCanister));

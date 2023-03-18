@@ -1,13 +1,10 @@
-type PerfResult = record {
-  wasm_body_only : nat64;
-  wasm_including_prelude : nat64;
-};
+type PerfResult = record { wasmBodyOnly : nat64; wasmIncludingPrelude : nat64 };
 type ToDo = record { completed : bool; description : text };
 service : () -> {
-  add_todo : (text) -> (nat);
-  clear_completed : () -> ();
-  complete_todo : (nat) -> ();
-  get_perf_result : () -> (opt PerfResult) query;
-  get_todos : () -> (vec ToDo) query;
-  show_todos : () -> (text) query;
+  addTodo : (text) -> (nat);
+  clearCompleted : () -> ();
+  completeTodo : (nat) -> ();
+  getPerfResult : () -> (opt PerfResult) query;
+  getTodos : () -> (vec ToDo) query;
+  showTodos : () -> (text) query;
 }

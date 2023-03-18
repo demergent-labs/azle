@@ -1,4 +1,4 @@
 import { run_tests } from 'azle/test';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
-run_tests(get_tests());
+run_tests(getTests());

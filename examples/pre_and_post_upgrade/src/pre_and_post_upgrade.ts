@@ -14,7 +14,7 @@ type Entry = Record<{
     value: nat64;
 }>;
 
-let stable_storage = new StableBTreeMap<string, Entry[]>(0, 25, 1_000);
+let stableStorage = new StableBTreeMap<string, Entry[]>(0, 25, 1_000);
 
 let entries: {
     [key: string]: nat64;
@@ -24,14 +24,14 @@ $init;
 export function init() {
     console.log('init');
 
-    stable_storage.insert('entries', []);
+    stableStorage.insert('entries', []);
 }
 
 $preUpgrade;
-export function pre_upgrade() {
-    console.log('pre_upgrade');
+export function preUpgrade() {
+    console.log('preUpgrade');
 
-    stable_storage.insert(
+    stableStorage.insert(
         'entries',
         Object.entries(entries).map((entry) => {
             return {
@@ -43,10 +43,10 @@ export function pre_upgrade() {
 }
 
 $postUpgrade;
-export function post_upgrade() {
-    console.log('post_upgrade');
+export function postUpgrade() {
+    console.log('postUpgrade');
 
-    entries = (stable_storage.get('entries') ?? []).reduce((result, entry) => {
+    entries = (stableStorage.get('entries') ?? []).reduce((result, entry) => {
         return {
             ...result,
             [entry.key]: entry.value
@@ -55,12 +55,12 @@ export function post_upgrade() {
 }
 
 $update;
-export function set_entry(entry: Entry): void {
+export function setEntry(entry: Entry): void {
     entries[entry.key] = entry.value;
 }
 
 $query;
-export function get_entries(): Entry[] {
+export function getEntries(): Entry[] {
     return Object.entries(entries).map((entry) => {
         return {
             key: entry[0],

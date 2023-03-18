@@ -1,8 +1,8 @@
-type ManualReply = variant { ok : _InlinePublicKeyResultOk; err : text };
-type ManualReply_1 = variant { ok : _InlineSignResultOk; err : text };
-type _InlinePublicKeyResultOk = record { public_key : vec nat8 };
+type ManualReply = variant { Ok : _InlinePublicKeyResultOk; Err : text };
+type ManualReply_1 = variant { Ok : _InlineSignResultOk; Err : text };
+type _InlinePublicKeyResultOk = record { publicKey : vec nat8 };
 type _InlineSignResultOk = record { signature : vec nat8 };
 service : () -> {
-  public_key : () -> (ManualReply);
+  publicKey : () -> (ManualReply);
   sign : (vec nat8) -> (ManualReply_1);
 }

@@ -1,11 +1,11 @@
 import { run_tests } from 'azle/test';
 import { createActor } from './dfx_generated/randomness';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
-const randomness_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+const randomnessCanister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-run_tests(get_tests(randomness_canister));
+run_tests(getTests(randomnessCanister));

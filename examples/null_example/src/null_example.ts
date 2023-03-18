@@ -1,73 +1,73 @@
 import { ic, int, $query, Record, $update } from 'azle';
 
 type PartiallyNullRecord = Record<{
-    first_item: int;
-    second_item: null;
-    third_item: int;
+    firstItem: int;
+    secondItem: null;
+    thirdItem: int;
 }>;
 
 type TwoNullRecord = Record<{
-    first_item: null;
-    second_item: null;
+    firstItem: null;
+    secondItem: null;
 }>;
 
 type ThreeNullRecord = Record<{
-    first_item: null;
-    second_item: null;
-    third_item: null;
+    firstItem: null;
+    secondItem: null;
+    thirdItem: null;
 }>;
 
 $query;
-export function null_function(param: null): null {
+export function nullFunction(param: null): null {
     return param;
 }
 
 $query;
-export function void_is_not_null(): void {
+export function voidIsNotNull(): void {
     ic.print(
         'Even though they are both None in Python, for Candid null and void are different.'
     );
 }
 
 $query;
-export function get_partially_null_record(): PartiallyNullRecord {
+export function getPartiallyNullRecord(): PartiallyNullRecord {
     return {
-        first_item: 1n,
-        second_item: null,
-        third_item: 3n
+        firstItem: 1n,
+        secondItem: null,
+        thirdItem: 3n
     };
 }
 
 $update;
-export function set_partially_null_record(
+export function setPartiallyNullRecord(
     param: PartiallyNullRecord
 ): PartiallyNullRecord {
     return param;
 }
 
 $query;
-export function get_small_null_record(): TwoNullRecord {
+export function getSmallNullRecord(): TwoNullRecord {
     return {
-        first_item: null,
-        second_item: null
+        firstItem: null,
+        secondItem: null
     };
 }
 
 $update;
-export function set_small_null_record(param: TwoNullRecord): TwoNullRecord {
+export function setSmallNullRecord(param: TwoNullRecord): TwoNullRecord {
     return param;
 }
 
 $query;
-export function get_large_null_record(): ThreeNullRecord {
+export function getLargeNullRecord(): ThreeNullRecord {
     return {
-        first_item: null,
-        second_item: null,
-        third_item: null
+        firstItem: null,
+        secondItem: null,
+        thirdItem: null
     };
 }
 
 $update;
-export function set_large_null_record(param: ThreeNullRecord): ThreeNullRecord {
+export function setLargeNullRecord(param: ThreeNullRecord): ThreeNullRecord {
     return param;
 }
