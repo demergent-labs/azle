@@ -32,7 +32,7 @@ impl SourceMapped<'_, FnDecl> {
         match &self.function.return_type {
             Some(ts_type_ann) => match &*ts_type_ann.type_ann {
                 swc_ecma_ast::TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-                    swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name() != "GuardResult",
+                    swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name() == "GuardResult",
                     swc_ecma_ast::TsEntityName::TsQualifiedName(_) => false,
                 },
                 _ => false,
