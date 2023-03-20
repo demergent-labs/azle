@@ -52,17 +52,17 @@ export function getTests(
             }
         },
         {
-            name: 'guardedModifyState',
+            name: 'modifyStateGuarded',
             test: async () => {
                 const stateBefore = await guardFunctionsCanister.getState();
-                const executionContinued =
-                    await guardFunctionsCanister.guardedModifyState();
+                const methodExecuted =
+                    await guardFunctionsCanister.modifyStateGuarded();
                 const stateAfter = await guardFunctionsCanister.getState();
 
                 return {
                     ok:
                         stateBefore.counter === 0 &&
-                        executionContinued &&
+                        methodExecuted &&
                         stateAfter.counter === 1
                 };
             }

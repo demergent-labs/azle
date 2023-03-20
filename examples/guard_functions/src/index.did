@@ -1,4 +1,4 @@
-type State = record { counter : int32 };
+type State = record { counter : int32; lastCalledMethod : text };
 service : () -> {
   badObjectGuarded : () -> (bool) query;
   callExpressionWithEmptyOptionsObject : () -> (bool) query;
@@ -6,11 +6,11 @@ service : () -> {
   customErrorGuarded : () -> (bool) query;
   errorStringGuarded : () -> (bool) query;
   getState : () -> (State) query;
-  guardedModifyState : () -> (int32);
   identifierAnnotation : () -> (bool) query;
   invalidReturnTypeGuarded : () -> (bool) query;
   looselyGuarded : () -> (bool) query;
   looselyGuardedWithGuardOptionKeyAsString : () -> (bool) query;
+  modifyStateGuarded : () -> (bool);
   nonNullOkValueGuarded : () -> (bool) query;
   nonStringErrValueGuarded : () -> (bool) query;
   tightlyGuarded : () -> (bool) query;
