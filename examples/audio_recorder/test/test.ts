@@ -1,4 +1,4 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor } from '../test/dfx_generated/audio_recorder';
 import { get_tests } from './tests';
 
@@ -8,4 +8,4 @@ const audio_recorder_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(get_tests(audio_recorder_canister));
+runTests(get_tests(audio_recorder_canister));

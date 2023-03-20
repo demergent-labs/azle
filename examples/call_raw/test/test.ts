@@ -1,4 +1,4 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor } from '../test/dfx_generated/call_raw';
 import { get_tests } from './tests';
 
@@ -8,4 +8,4 @@ const call_raw_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(get_tests(call_raw_canister));
+runTests(get_tests(call_raw_canister));

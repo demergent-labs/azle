@@ -1,4 +1,4 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor } from '../test/dfx_generated/pre_and_post_upgrade';
 import { getTests } from './tests';
 
@@ -8,4 +8,4 @@ const preAndPostUpgradeCanister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(getTests(preAndPostUpgradeCanister));
+runTests(getTests(preAndPostUpgradeCanister));

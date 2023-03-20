@@ -1,4 +1,4 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor } from './dfx_generated/date';
 import { getTests } from './tests';
 
@@ -8,4 +8,4 @@ const date_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(getTests(date_canister));
+runTests(getTests(date_canister));

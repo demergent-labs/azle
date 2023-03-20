@@ -1,4 +1,4 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor } from './dfx_generated/null_example';
 import { getTests } from './tests';
 
@@ -8,4 +8,4 @@ const nullExampleCanister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(getTests(nullExampleCanister));
+runTests(getTests(nullExampleCanister));

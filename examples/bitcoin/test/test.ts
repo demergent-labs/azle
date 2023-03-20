@@ -1,4 +1,4 @@
-import { ok, run_tests, Test } from 'azle/test';
+import { ok, runTests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/bitcoin';
 import { wallets } from './wallets';
 import { impure_setup, while_running_bitcoin_daemon } from './setup';
@@ -27,7 +27,7 @@ const tests: Test[] = [
     ...test_canister_functionality()
 ];
 
-while_running_bitcoin_daemon(() => run_tests(tests));
+while_running_bitcoin_daemon(() => runTests(tests));
 
 function test_canister_functionality() {
     return [

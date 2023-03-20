@@ -1,4 +1,4 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor } from './dfx_generated/candid_encoding';
 import { get_tests } from './tests';
 
@@ -8,4 +8,4 @@ const candid_encoding_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(get_tests(candid_encoding_canister));
+runTests(get_tests(candid_encoding_canister));

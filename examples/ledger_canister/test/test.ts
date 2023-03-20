@@ -1,4 +1,4 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor } from '../test/dfx_generated/ledger_canister';
 import { getTests } from './tests';
 
@@ -8,4 +8,4 @@ const ledger_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(getTests(ledger_canister));
+runTests(getTests(ledger_canister));

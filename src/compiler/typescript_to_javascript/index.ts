@@ -4,15 +4,15 @@ import { JavaScript, TypeScript } from '../../types';
 import { Result } from '../../result';
 
 export function compileTypeScriptToJavaScript(
-    ts_path: string
+    tsPath: string
 ): Result<JavaScript, unknown> {
     try {
-        const js_bundled_and_transpiled = bundle_and_transpile_ts(`
+        const jsBundledAndTranspiled = bundleAndTranspileJs(`
             export { Principal } from '@dfinity/principal';
-            export * from './${ts_path}';
+            export * from './${tsPath}';
         `);
 
-        const main_js: JavaScript = `
+        const mainJs: JavaScript = `
             // TODO we should centralize/standardize where we add global variables to the JS, we are doing this in multiple places (i.e. the exports variable is not here, found in init/post_upgrade)
             globalThis.console = {
                 ...globalThis.console,
@@ -21,33 +21,33 @@ export function compileTypeScriptToJavaScript(
                 }
             };
 
-            ${js_bundled_and_transpiled}
+            ${jsBundledAndTranspiled}
         `;
 
-        return { ok: main_js };
+        return { ok: mainJs };
     } catch (err) {
         return { err };
     }
 }
 
-export function bundle_and_transpile_ts(ts: TypeScript): JavaScript {
-    const js_bundled: JavaScript = bundle_from_string(ts);
-    const js_transpiled: JavaScript = transpile(js_bundled);
+export function bundleAndTranspileJs(ts: TypeScript): JavaScript {
+    const jsBundled: JavaScript = bundleFromString(ts);
+    const jsTranspiled: JavaScript = transpile(jsBundled);
 
     // TODO enabling strict mode is causing lots of issues
     // TODO it would be nice if I could remove strict mode code in esbuild or swc
     // TODO look into the implications of this, but since we are trying to transpile to es3 to cope with missing features in boa, I do not think we need strict mode
-    const js_strict_mode_removed: JavaScript = js_transpiled.replace(
+    const jsStrictModeRemoved: JavaScript = jsTranspiled.replace(
         /"use strict";/g,
         ''
     );
 
-    return js_strict_mode_removed;
+    return jsStrictModeRemoved;
 }
 
 // TODO there is a lot of minification/transpiling etc we could do with esbuild or with swc
 // TODO we need to decide which to use for what
-export function bundle_from_string(ts: TypeScript): JavaScript {
+export function bundleFromString(ts: TypeScript): JavaScript {
     // TODO tree-shaking does not seem to work with stdin. I have learned this from sad experience
     const buildResult = buildSync({
         stdin: {
@@ -70,12 +70,12 @@ export function bundle_from_string(ts: TypeScript): JavaScript {
     return bundleString;
 }
 
-// TODO I have left the code for bundle_from_path
-// TODO We might run into the situation again where we need to use bundle_from_path
-// TODO there are some issues with tree-shaking and possibly some others in bundle_from_string, so I will just leave the code here for now until the project is more mature
-// function bundle_from_path(ts_path: string): JavaScript {
+// TODO I have left the code for bundleFromPath
+// TODO We might run into the situation again where we need to use bundleFromPath
+// TODO there are some issues with tree-shaking and possibly some others in bundleFromString, so I will just leave the code here for now until the project is more mature
+// function bundleFromPath(tsPath: string): JavaScript {
 //     const buildResult = buildSync({
-//         entryPoints: [ts_path],
+//         entryPoints: [tsPath],
 //         format: 'esm',
 //         bundle: true,
 //         treeShaking: true,

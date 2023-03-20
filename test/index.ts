@@ -31,7 +31,7 @@ export function ok<T, E>(azle_result: AzleResult<T, E>): azle_result is Ok<T> {
 
 // TODO should this just return a boolean?
 // TODO then the function calling can decide to throw or not
-export async function run_tests(tests: Test[]) {
+export async function runTests(tests: Test[]) {
     for (let i = 0; i < tests.length; i++) {
         const test = tests[i];
 
@@ -98,7 +98,7 @@ export async function run_tests(tests: Test[]) {
     }
 }
 
-export function deploy(canister_name: string, argument?: string): Test[] {
+export function deploy(canisterName: string, argument?: string): Test[] {
     return [
         {
             // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
@@ -106,9 +106,9 @@ export function deploy(canister_name: string, argument?: string): Test[] {
             wait: 5000
         },
         {
-            name: `create canister ${canister_name}`,
+            name: `create canister ${canisterName}`,
             prep: async () => {
-                execSync(`dfx canister create ${canister_name}`, {
+                execSync(`dfx canister create ${canisterName}`, {
                     stdio: 'inherit'
                 });
             }
@@ -117,7 +117,7 @@ export function deploy(canister_name: string, argument?: string): Test[] {
             name: 'clear canister memory',
             prep: async () => {
                 execSync(
-                    `dfx canister uninstall-code ${canister_name} || true`,
+                    `dfx canister uninstall-code ${canisterName} || true`,
                     {
                         stdio: 'inherit'
                     }
@@ -125,12 +125,12 @@ export function deploy(canister_name: string, argument?: string): Test[] {
             }
         },
         {
-            name: `deploy canister ${canister_name}`,
+            name: `deploy canister ${canisterName}`,
             prep: async () => {
                 execSync(
                     `dfx deploy${
                         argument === undefined ? '' : ` --argument ${argument}`
-                    } ${canister_name}`,
+                    } ${canisterName}`,
                     {
                         stdio: 'inherit'
                     }

@@ -1,4 +1,4 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor } from '../dfx_generated/azle';
 import { get_tests } from './tests';
 
@@ -8,4 +8,4 @@ const bytes_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(get_tests(bytes_canister));
+runTests(get_tests(bytes_canister));

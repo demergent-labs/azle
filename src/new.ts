@@ -1,45 +1,45 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { execSync } from 'child_process';
 
-export function generate_new_azle_project(
-    azle_version: string,
-    dfx_version: string
+export function generateNewAzleProject(
+    azleVersion: string,
+    dfxVersion: string
 ) {
     if (process.argv[3] === undefined) {
         console.error('You must provide a name for your Azle project');
         return;
     }
 
-    const project_name = process.argv[3];
+    const projectName = process.argv[3];
 
-    const tsconfig = generate_tsconfig();
-    const package_json = generate_package_json(
-        azle_version,
-        dfx_version,
-        project_name
+    const tsconfig = generateTsconfig();
+    const packageJson = generatePackageJson(
+        azleVersion,
+        dfxVersion,
+        projectName
     );
-    const dfx_json = generate_dfx_json(project_name);
-    const gitignore = generate_gitignore();
-    const index_ts = generate_index_ts();
-    const readme_md = generate_readme_md(project_name);
+    const dfxJson = generateDfxJson(projectName);
+    const gitignore = generateGitignore();
+    const indexTs = generateIndexTs();
+    const readmeMd = generateReadmeMd(projectName);
 
-    if (!existsSync(`${project_name}/src`)) {
-        mkdirSync(`${project_name}/src`, {
+    if (!existsSync(`${projectName}/src`)) {
+        mkdirSync(`${projectName}/src`, {
             recursive: true
         });
     }
 
-    writeFileSync(`${project_name}/tsconfig.json`, tsconfig);
-    writeFileSync(`${project_name}/package.json`, package_json);
-    writeFileSync(`${project_name}/dfx.json`, dfx_json);
-    writeFileSync(`${project_name}/.gitignore`, gitignore);
-    writeFileSync(`${project_name}/src/index.ts`, index_ts);
-    writeFileSync(`${project_name}/README.md`, readme_md);
+    writeFileSync(`${projectName}/tsconfig.json`, tsconfig);
+    writeFileSync(`${projectName}/package.json`, packageJson);
+    writeFileSync(`${projectName}/dfx.json`, dfxJson);
+    writeFileSync(`${projectName}/.gitignore`, gitignore);
+    writeFileSync(`${projectName}/src/index.ts`, indexTs);
+    writeFileSync(`${projectName}/README.md`, readmeMd);
 
-    execSync(`cd ${project_name} && git init`);
+    execSync(`cd ${projectName} && git init`);
 }
 
-function generate_tsconfig(): string {
+function generateTsconfig(): string {
     return `{
     "compilerOptions": {
         "strict": true,
@@ -55,24 +55,24 @@ function generate_tsconfig(): string {
 `;
 }
 
-function generate_package_json(
-    azle_version: string,
-    dfx_version: string,
-    project_name: string
+function generatePackageJson(
+    azleVersion: string,
+    dfxVersion: string,
+    projectName: string
 ): string {
     return `{
     "scripts": {
-        "dfx_install": "DFX_VERSION=${dfx_version} sh -ci \\\"$(curl -fsSL https://sdk.dfinity.org/install.sh)\\\"",
+        "dfx_install": "DFX_VERSION=${dfxVersion} sh -ci \\\"$(curl -fsSL https://sdk.dfinity.org/install.sh)\\\"",
         "replica_start": "dfx start --background",
         "replica_stop": "dfx stop",
-        "canister_deploy_local": "dfx deploy ${project_name}",
-        "canister_deploy_mainnet": "dfx deploy --network ic ${project_name}",
-        "canister_uninstall": "dfx canister uninstall-code ${project_name}",
-        "canister_call_get_message": "dfx canister call ${project_name} get_message",
-        "canister_call_set_message": "dfx canister call ${project_name} set_message '(\\\"Hello world!\\\")'"
+        "canister_deploy_local": "dfx deploy ${projectName}",
+        "canister_deploy_mainnet": "dfx deploy --network ic ${projectName}",
+        "canister_uninstall": "dfx canister uninstall-code ${projectName}",
+        "canister_call_get_message": "dfx canister call ${projectName} getMessage",
+        "canister_call_set_message": "dfx canister call ${projectName} setMessage '(\\\"Hello world!\\\")'"
     },
     "dependencies": {
-        "azle": "${azle_version}"
+        "azle": "${azleVersion}"
     }
 }
 
@@ -80,16 +80,16 @@ function generate_package_json(
 `;
 }
 
-function generate_dfx_json(project_name: string): string {
+function generateDfxJson(projectName: string): string {
     return `{
     "canisters": {
-        "${project_name}": {
+        "${projectName}": {
             "type": "custom",
-            "build": "npx azle ${project_name}",
+            "build": "npx azle ${projectName}",
             "root": "src",
             "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/${project_name}/${project_name}.wasm.gz"
+            "wasm": ".azle/${projectName}/${projectName}.wasm.gz"
         }
     }
 }
@@ -97,7 +97,7 @@ function generate_dfx_json(project_name: string): string {
 `;
 }
 
-function generate_gitignore(): string {
+function generateGitignore(): string {
     return `.azle
 .dfx
 dfx_generated
@@ -106,7 +106,7 @@ node_modules
 `;
 }
 
-function generate_index_ts(): string {
+function generateIndexTs(): string {
     return `import { $query, $update } from 'azle';
 
 // This is a global variable that is stored on the heap
@@ -114,22 +114,22 @@ let message: string = '';
 
 // Query calls complete quickly because they do not go through consensus
 $query;
-export function get_message(): string {
+export function getMessage(): string {
     return message;
 }
 
 // Update calls take a few seconds to complete
 // This is because they persist state changes and go through consensus
 $update;
-export function set_message(new_message: string): void {
-    message = new_message; // This change will be persisted
+export function setMessage(newMessage: string): void {
+    message = newMessage; // This change will be persisted
 }
 
 `;
 }
 
-function generate_readme_md(project_name: string): string {
-    return `# ${project_name}
+function generateReadmeMd(projectName: string): string {
+    return `# ${projectName}
 
 Welcome to your first Azle project! This example project will help you to deploy your first canister (application) to the Internet Computer (IC) decentralized cloud. It is a simple getter/setter canister.
 

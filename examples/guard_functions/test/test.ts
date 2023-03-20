@@ -1,4 +1,4 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor } from './dfx_generated/guard_functions';
 import { get_tests } from './tests';
 
@@ -8,4 +8,4 @@ const guard_functions_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(get_tests(guard_functions_canister));
+runTests(get_tests(guard_functions_canister));

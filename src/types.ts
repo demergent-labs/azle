@@ -24,7 +24,7 @@ export type JSCanisterConfig = Readonly<{
 }>;
 
 export type RunOptions = {
-    root_path: string;
+    rootPath: string;
 };
 
 export type Rust = string;

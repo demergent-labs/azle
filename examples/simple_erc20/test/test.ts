@@ -1,4 +1,4 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor } from '../test/dfx_generated/simple_erc20';
 import { getTests } from './tests';
 
@@ -8,4 +8,4 @@ const simpleErc20Canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(getTests(simpleErc20Canister));
+runTests(getTests(simpleErc20Canister));

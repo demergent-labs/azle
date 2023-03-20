@@ -1,4 +1,4 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor as create_actor_heartbeat_async } from './dfx_generated/heartbeat_async';
 import { createActor as create_actor_heartbeat_sync } from './dfx_generated/heartbeat_sync';
 import { getTests } from './tests';
@@ -21,4 +21,4 @@ const heartbeat_sync_canister = create_actor_heartbeat_sync(
     }
 );
 
-run_tests(getTests(heartbeat_async_canister, heartbeat_sync_canister));
+runTests(getTests(heartbeat_async_canister, heartbeat_sync_canister));

@@ -1,4 +1,4 @@
-import { run_tests, Test } from 'azle/test';
+import { runTests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor as createActorCanister1 } from './dfx_generated/canister1';
 import { createActor as createActorCanister2 } from './dfx_generated/canister2';
@@ -48,4 +48,4 @@ const tests: Test[] = [
     ...insertErrorTests(stableStructuresCanister_1, stableStructuresCanister_3)
 ];
 
-run_tests(tests);
+runTests(tests);

@@ -1,4 +1,4 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor } from '../dfx_generated/azle';
 import { callingIdentity, canisterId, getTests } from './tests';
 
@@ -9,4 +9,4 @@ const whoami_canister = createActor(canisterId, {
     }
 });
 
-run_tests(getTests(whoami_canister));
+runTests(getTests(whoami_canister));

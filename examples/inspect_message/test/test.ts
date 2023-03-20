@@ -1,4 +1,4 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor } from './dfx_generated/inspect_message';
 import { getTests } from './tests';
 
@@ -8,4 +8,4 @@ const inspect_message_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(getTests(inspect_message_canister));
+runTests(getTests(inspect_message_canister));
