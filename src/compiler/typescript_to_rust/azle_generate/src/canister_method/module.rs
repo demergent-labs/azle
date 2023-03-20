@@ -1,5 +1,7 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::{ClassDecl, Decl, ExportDecl, Expr, Module, ModuleDecl, ModuleItem, Stmt};
+use swc_ecma_ast::{
+    ClassDecl, Decl, ExportDecl, Expr, FnDecl, Module, ModuleDecl, ModuleItem, Stmt,
+};
 
 use crate::{
     canister_method::{errors, module_item::ModuleItemHelperMethods, Annotation},
@@ -11,6 +13,7 @@ use crate::{
 
 pub trait ModuleHelperMethods {
     fn get_azle_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AzleFnDecl>;
+    fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>>;
     fn get_export_decls(&self) -> Vec<ExportDecl>;
     fn get_azle_type_alias_decls<'a>(&'a self, source_map: &'a SourceMap)
         -> Vec<AzleTypeAliasDecl>;
@@ -78,6 +81,21 @@ impl ModuleHelperMethods for Module {
 
                 previous_module_item_was_custom_decorator = module_item.is_custom_decorator();
                 acc
+            })
+    }
+
+    fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>> {
+        self.body
+            .iter()
+            .fold(vec![], |mut acc, module_item| match module_item.as_decl() {
+                Some(decl) => match decl {
+                    Decl::Fn(fn_decl) => {
+                        acc.push(SourceMapped::new(&fn_decl, source_map));
+                        acc
+                    }
+                    _ => acc,
+                },
+                None => acc,
             })
     }
 
@@ -171,5 +189,24 @@ impl ModuleHelperMethods for Module {
 
             acc
         })
+    }
+}
+
+trait AsDecl {
+    fn as_decl(&self) -> Option<&Decl>;
+}
+
+impl AsDecl for ModuleItem {
+    fn as_decl(&self) -> Option<&Decl> {
+        match self {
+            ModuleItem::ModuleDecl(decl) => match decl {
+                ModuleDecl::ExportDecl(export_decl) => Some(&export_decl.decl),
+                _ => None,
+            },
+            ModuleItem::Stmt(stmt) => match stmt {
+                Stmt::Decl(decl) => Some(decl),
+                _ => None,
+            },
+        }
     }
 }

@@ -8,7 +8,7 @@ use crate::{
 mod rust;
 
 impl TsAst {
-    pub fn build_pre_upgrade_method(&self) -> PreUpgradeMethod {
+    pub fn build_pre_upgrade_method(&self) -> Option<PreUpgradeMethod> {
         let pre_upgrade_fn_decls = self
             .azle_programs
             .get_azle_fn_decls_of_type(CanisterMethodType::PreUpgrade);
@@ -25,8 +25,16 @@ impl TsAst {
 
         let pre_upgrade_fn_decl_option = pre_upgrade_fn_decls.get(0);
 
-        let body = rust::generate(pre_upgrade_fn_decl_option);
+        if let Some(pre_upgrade_fn_decl) = pre_upgrade_fn_decl_option {
+            let body = rust::generate(pre_upgrade_fn_decl);
+            let guard_function_name = pre_upgrade_fn_decl.annotation.guard.clone();
 
-        PreUpgradeMethod { body }
+            Some(PreUpgradeMethod {
+                body,
+                guard_function_name,
+            })
+        } else {
+            None
+        }
     }
 }

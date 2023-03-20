@@ -1,6 +1,6 @@
 use cdk_framework::act::node::canister_method::{CanisterMethod, CanisterMethodType};
 use std::collections::{HashMap, HashSet};
-use swc_ecma_ast::ClassDecl;
+use swc_ecma_ast::{ClassDecl, FnDecl};
 
 use crate::ts_ast::{
     azle_type_alias_decls::azle_type_alias_decl::{
@@ -13,6 +13,7 @@ use crate::ts_ast::{
 
 pub trait HelperMethods {
     fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl>;
+    fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>>;
     fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
     fn get_canister_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
     fn get_external_canister_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>>;
@@ -49,6 +50,13 @@ impl HelperMethods for Vec<AzleProgram> {
             let azle_fn_decls = azle_program.get_azle_fn_decls();
 
             vec![acc, azle_fn_decls].concat()
+        })
+    }
+
+    fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>> {
+        self.iter().fold(vec![], |mut acc, azle_program| {
+            acc.extend(azle_program.get_fn_decls());
+            acc
         })
     }
 

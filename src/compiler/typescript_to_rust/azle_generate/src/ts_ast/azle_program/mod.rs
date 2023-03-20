@@ -1,5 +1,5 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::{ClassDecl, Program};
+use swc_ecma_ast::{ClassDecl, FnDecl, Program};
 
 use crate::{
     canister_method::module::ModuleHelperMethods,
@@ -35,6 +35,13 @@ impl AzleProgram {
             Program::Module(module) => {
                 module.get_external_canister_class_declarations(&self.source_map)
             }
+            Program::Script(_) => vec![],
+        }
+    }
+
+    fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>> {
+        match &self.program {
+            Program::Module(module) => module.get_fn_decls(&self.source_map),
             Program::Script(_) => vec![],
         }
     }

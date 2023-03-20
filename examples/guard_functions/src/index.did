@@ -1,4 +1,5 @@
 service : () -> {
+  bad_object_guarded : () -> (bool) query;
   call_expression_with_empty_options_object : () -> (bool) query;
   call_expression_without_options_object : () -> (bool) query;
   custom_error_guarded : () -> (bool) query;
@@ -7,5 +8,7 @@ service : () -> {
   invalid_return_type_guarded : () -> (bool) query;
   loosely_guarded : () -> (bool) query;
   loosely_guarded_with_guard_option_key_as_string : () -> (bool) query;
+  non_null_ok_value_guarded : () -> (bool) query;
+  non_string_err_value_guarded : () -> (bool) query;
   tightly_guarded : () -> (bool) query;
 }

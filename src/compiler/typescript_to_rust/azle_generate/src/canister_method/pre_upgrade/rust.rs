@@ -1,13 +1,9 @@
 use crate::{canister_method::rust, ts_ast::AzleFnDecl};
 
-pub fn generate(pre_upgrade_fn_decl_option: Option<&AzleFnDecl>) -> proc_macro2::TokenStream {
-    let call_to_pre_upgrade_js_function =
-        rust::maybe_generate_call_to_js_function(&pre_upgrade_fn_decl_option);
+pub fn generate(pre_upgrade_fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
+    let call_to_pre_upgrade_js_function = rust::generate_call_to_js_function(&pre_upgrade_fn_decl);
 
-    let function_name = match pre_upgrade_fn_decl_option {
-        Some(pre_upgrade_fn_decl) => pre_upgrade_fn_decl.get_function_name(),
-        None => "DOES_NOT_EXIST".to_string(),
-    };
+    let function_name = pre_upgrade_fn_decl.get_function_name();
 
     quote::quote! {
         BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {

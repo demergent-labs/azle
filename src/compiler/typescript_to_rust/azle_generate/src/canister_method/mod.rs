@@ -31,7 +31,7 @@ impl TsAst {
         let init_method = Some(self.build_init_method());
         let inspect_message_method = self.build_inspect_message_method();
         let post_upgrade_method = Some(self.build_post_upgrade_method());
-        let pre_upgrade_method = Some(self.build_pre_upgrade_method());
+        let pre_upgrade_method = self.build_pre_upgrade_method();
         let query_methods = self.build_query_methods();
         let update_methods = self.build_update_methods();
 
@@ -53,8 +53,9 @@ impl<'a> AzleFnDecl<'a> {
         canister_method_type: &CanisterMethodType,
     ) -> CanisterMethod {
         let body = query_and_update::generate_query_and_update_body(&self);
-        let is_manual = self.is_manual();
         let is_async = self.is_promise();
+        let is_manual = self.is_manual();
+        let guard_function_name = self.annotation.guard.clone();
         let name = self.get_function_name();
         let params = self.build_params();
         let return_type = self.build_return_type();
@@ -64,7 +65,7 @@ impl<'a> AzleFnDecl<'a> {
                 definition: QueryOrUpdateDefinition::new(
                     is_async,
                     is_manual,
-                    None,
+                    guard_function_name,
                     name,
                     params,
                     return_type,
@@ -76,7 +77,7 @@ impl<'a> AzleFnDecl<'a> {
                 definition: QueryOrUpdateDefinition::new(
                     is_async,
                     is_manual,
-                    None,
+                    guard_function_name,
                     name,
                     params,
                     return_type,
