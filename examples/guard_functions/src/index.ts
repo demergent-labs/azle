@@ -19,7 +19,7 @@ export function call_expression_with_empty_options_object(): boolean {
     return true;
 }
 
-export function allow_all(): GuardResult {
+function allow_all(): GuardResult {
     console.log('allow_all called');
     return { ok: null };
 }
@@ -38,7 +38,7 @@ export function loosely_guarded_with_guard_option_key_as_string(): boolean {
 // #endregion Guarded function are called
 
 // #region Execution halted by guard function
-export function allow_none(): GuardResult {
+function allow_none(): GuardResult {
     console.log('allow_none called');
     return { err: 'Execution halted by "allow_none" guard function' };
 }
@@ -49,7 +49,7 @@ export function tightly_guarded(): boolean {
     return true;
 }
 
-export function throw_string(): GuardResult {
+function throw_string(): GuardResult {
     console.log('throw_string called');
     throw 'Execution halted by "throw_string" guard function';
 }
@@ -66,7 +66,7 @@ class CustomError extends Error {
     }
 }
 
-export function throw_custom_error(): GuardResult {
+function throw_custom_error(): GuardResult {
     console.log('throw_custom_error called');
     throw new CustomError(
         'Execution halted by "throw_custom_error" guard function'
@@ -81,7 +81,7 @@ export function custom_error_guarded(): boolean {
 // #endregion Execution halted by guard functions
 
 // #region Execution halted by runtime error
-export function return_invalid_type(): GuardResult {
+function return_invalid_type(): GuardResult {
     console.log('return_invalid_type called');
     return 'Something other than a guard result';
 }
@@ -92,7 +92,7 @@ export function invalid_return_type_guarded(): boolean {
     return true;
 }
 
-export function return_non_guard_result_object(): GuardResult {
+function return_non_guard_result_object(): GuardResult {
     console.log('return_non_guard_result_object called');
     return { bad_prop: 'Something other than a guard result' };
 }
@@ -103,7 +103,7 @@ export function bad_object_guarded(): boolean {
     return true;
 }
 
-export function non_null_ok_value(): GuardResult {
+function non_null_ok_value(): GuardResult {
     console.log('non_null_ok_value called');
     return { ok: 'Something other than null' };
 }
@@ -114,7 +114,7 @@ export function non_null_ok_value_guarded(): boolean {
     return true;
 }
 
-export function non_string_err_value(): GuardResult {
+function non_string_err_value(): GuardResult {
     console.log('non_string_err_value called');
     return { err: { bad_prop: 'Something other than a string' } };
 }
