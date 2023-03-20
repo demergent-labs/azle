@@ -1,14 +1,17 @@
+type State = record { counter : int32 };
 service : () -> {
-  bad_object_guarded : () -> (bool) query;
-  call_expression_with_empty_options_object : () -> (bool) query;
-  call_expression_without_options_object : () -> (bool) query;
-  custom_error_guarded : () -> (bool) query;
-  error_string_guarded : () -> (bool) query;
-  identifier_annotation : () -> (bool) query;
-  invalid_return_type_guarded : () -> (bool) query;
-  loosely_guarded : () -> (bool) query;
-  loosely_guarded_with_guard_option_key_as_string : () -> (bool) query;
-  non_null_ok_value_guarded : () -> (bool) query;
-  non_string_err_value_guarded : () -> (bool) query;
-  tightly_guarded : () -> (bool) query;
+  badObjectGuarded : () -> (bool) query;
+  callExpressionWithEmptyOptionsObject : () -> (bool) query;
+  callExpressionWithoutOptionsObject : () -> (bool) query;
+  customErrorGuarded : () -> (bool) query;
+  errorStringGuarded : () -> (bool) query;
+  getState : () -> (State) query;
+  guardedModifyState : () -> (int32);
+  identifierAnnotation : () -> (bool) query;
+  invalidReturnTypeGuarded : () -> (bool) query;
+  looselyGuarded : () -> (bool) query;
+  looselyGuardedWithGuardOptionKeyAsString : () -> (bool) query;
+  nonNullOkValueGuarded : () -> (bool) query;
+  nonStringErrValueGuarded : () -> (bool) query;
+  tightlyGuarded : () -> (bool) query;
 }
