@@ -55,6 +55,10 @@ impl HelperMethods for Vec<AzleProgram> {
 
     fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>> {
         self.iter().fold(vec![], |mut acc, azle_program| {
+            // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
+            // necessary to do something like:
+            // vec![acc, vec![azle_program.get_fn_decls()]].concat()
+
             acc.extend(azle_program.get_fn_decls());
             acc
         })

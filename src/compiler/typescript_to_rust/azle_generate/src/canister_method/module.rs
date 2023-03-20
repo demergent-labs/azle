@@ -90,6 +90,10 @@ impl ModuleHelperMethods for Module {
             .fold(vec![], |mut acc, module_item| match module_item.as_decl() {
                 Some(decl) => match decl {
                     Decl::Fn(fn_decl) => {
+                        // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
+                        // necessary to do something like:
+                        // vec![acc, vec![SourceMapped::new(&fn_decl, source_map)]].concat()
+
                         acc.push(SourceMapped::new(&fn_decl, source_map));
                         acc
                     }
@@ -164,6 +168,10 @@ impl ModuleHelperMethods for Module {
         source_map: &'a SourceMap,
     ) -> Vec<SourceMapped<ClassDecl>> {
         self.body.iter().fold(vec![], |mut acc, module_item| {
+            // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
+            // necessary to do something like:
+            // return vec![acc, vec![SourceMapped::new(class_decl, source_map)]].concat();
+
             let decl_opt = match module_item {
                 ModuleItem::ModuleDecl(decl) => match decl {
                     ModuleDecl::ExportDecl(export_decl) => Some(&export_decl.decl),

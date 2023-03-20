@@ -101,6 +101,17 @@ impl TsAst {
                             ModuleItem::Stmt(stmt) => match stmt {
                                 Stmt::Decl(decl) => {
                                     if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
+                                        // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
+                                        // necessary to do something like:
+                                        // return vec![
+                                        //     acc,
+                                        //     vec![SourceMapped::new(
+                                        //         ts_type_alias_decl,
+                                        //         &azle_program.source_map,
+                                        //     )],
+                                        // ]
+                                        // .concat();
+
                                         acc.push(SourceMapped::new(
                                             ts_type_alias_decl,
                                             &azle_program.source_map,
