@@ -11,7 +11,10 @@ pub fn generate(function_name: &String) -> TokenStream {
             let exports_js_object = exports_js_value.as_object().unwrap();
 
             let guard_fn_js_value = exports_js_object.get(#function_name, &mut boa_context).unwrap();
-            let guard_fn_js_object = guard_fn_js_value.as_object().unwrap();
+            let guard_fn_js_object = match guard_fn_js_value.as_object() {
+                Some(js_value) => js_value,
+                None => ic_cdk::api::trap(&format!("ReferenceError: {} is not on the global exports object", #function_name.to_string()))
+            };
 
             let js_guard_fn_return_value = _azle_unwrap_boa_result(
                 guard_fn_js_object.call(&boa_engine::JsValue::Null, &[], &mut boa_context),
