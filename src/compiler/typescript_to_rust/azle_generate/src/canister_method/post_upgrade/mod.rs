@@ -32,7 +32,12 @@ impl TsAst {
         };
 
         let body = rust::generate(post_upgrade_fn_decl_option);
+        let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
 
-        PostUpgradeMethod { body, params }
+        PostUpgradeMethod {
+            body,
+            params,
+            guard_function_name,
+        }
     }
 }

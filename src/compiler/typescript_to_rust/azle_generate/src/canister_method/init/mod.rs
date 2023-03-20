@@ -32,7 +32,12 @@ impl TsAst {
         };
 
         let body = rust::generate(init_fn_decl_option);
+        let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
 
-        InitMethod { params, body }
+        InitMethod {
+            params,
+            body,
+            guard_function_name,
+        }
     }
 }
