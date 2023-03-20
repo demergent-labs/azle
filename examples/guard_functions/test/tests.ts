@@ -68,6 +68,24 @@ export function getTests(
             }
         },
         {
+            name: 'unallowedMethod',
+            test: async () => {
+                try {
+                    const result =
+                        await guardFunctionsCanister.unallowedMethod();
+                    return {
+                        err: 'Expected unallowedMethod function to throw'
+                    };
+                } catch (error) {
+                    return {
+                        ok: (error as AgentError).message.includes(
+                            'Code: 403 (Forbidden)'
+                        )
+                    };
+                }
+            }
+        },
+        {
             name: 'tightlyGuarded',
             test: async () => {
                 try {
