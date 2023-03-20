@@ -5,23 +5,13 @@ import { ActorSubclass } from '@dfinity/agent';
 export function get_tests(tecdsa_canister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'dummy test',
-            test: async () => {
-                await tecdsa_canister.public_key();
-                return {
-                    ok: true
-                };
-            }
-        },
-        {
             name: 'public key',
             test: async () => {
                 const result = await tecdsa_canister.public_key();
                 return {
                     ok: 'ok' in result && result.ok.public_key.length === 33
                 };
-            },
-            skip: true
+            }
         },
         {
             name: 'sign message',
@@ -34,8 +24,7 @@ export function get_tests(tecdsa_canister: ActorSubclass<_SERVICE>): Test[] {
                 return {
                     ok: 'ok' in result && result.ok.signature.length === 64
                 };
-            },
-            skip: true
+            }
         }
     ];
 }
