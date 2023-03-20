@@ -1,8 +1,8 @@
 import { $inspect_message, $query, $update, ic, int32, Record } from 'azle';
 import {
-    logMethodNameAndAllowAll,
+    allowModifyStateGuarded,
     allowAll,
-    modifyStateAndAllowAll,
+    incrementCounterAndAllowAll,
     allowNone,
     throwString,
     throwCustomError,
@@ -19,10 +19,16 @@ export function getState(): State {
 }
 
 // #region Guarded functions are called
-$inspect_message({ guard: logMethodNameAndAllowAll });
+$inspect_message({ guard: allowModifyStateGuarded });
 export function inspectMessage(): void {
     console.log('inspectMessage called');
-    ic.accept_message();
+
+    if (ic.method_name() === 'modifyStateGuarded') {
+        console.log(`Method ${ic.method_name()} allowed by inspectMessage`);
+        ic.accept_message();
+    } else {
+        console.log(`Method ${ic.method_name()} rejected by inspectMessage`);
+    }
 }
 
 $query;
@@ -55,8 +61,14 @@ export function looselyGuardedWithGuardOptionKeyAsString(): boolean {
     return true;
 }
 
-$update({ guard: modifyStateAndAllowAll });
+$update({ guard: incrementCounterAndAllowAll });
 export function modifyStateGuarded(): boolean {
+    console.log('modifyStateGuarded called');
+    return true;
+}
+
+$update({ guard: incrementCounterAndAllowAll });
+export function unallowedMethod(): boolean {
     console.log('modifyStateGuarded called');
     return true;
 }

@@ -1,4 +1,4 @@
-type State = record { counter : int32; lastCalledMethod : text };
+type State = record { counter : int32 };
 service : () -> {
   badObjectGuarded : () -> (bool) query;
   callExpressionWithEmptyOptionsObject : () -> (bool) query;
@@ -14,4 +14,5 @@ service : () -> {
   nonNullOkValueGuarded : () -> (bool) query;
   nonStringErrValueGuarded : () -> (bool) query;
   tightlyGuarded : () -> (bool) query;
+  unallowedMethod : () -> (bool);
 }

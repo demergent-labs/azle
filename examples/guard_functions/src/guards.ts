@@ -1,9 +1,18 @@
 import { ic, GuardResult } from 'azle';
 import { state } from './state';
 
-export function logMethodNameAndAllowAll(): GuardResult {
-    console.log('logMethodName called');
-    state.lastCalledMethod = ic.method_name();
+export function allowModifyStateGuarded(): GuardResult {
+    console.log('allowModifyStateGuarded called');
+    if (ic.method_name() === 'modifyStateGuarded') {
+        console.log(
+            `Method ${ic.method_name()} allowed by inspectMessage's guard function: allowModifyStateGuarded`
+        );
+    } else {
+        console.log(
+            `Method ${ic.method_name()} would be rejected by inspectMessage's guard function... but we are in inspect message mode so doing so would be a contract violation. Therefore, proceeding.`
+        );
+    }
+
     return { ok: null };
 }
 
@@ -12,8 +21,8 @@ export function allowAll(): GuardResult {
     return { ok: null };
 }
 
-export function modifyStateAndAllowAll(): GuardResult {
-    console.log('modifyStateAndAllowAll called');
+export function incrementCounterAndAllowAll(): GuardResult {
+    console.log('incrementCounterAndAllowAll called');
     state.counter++;
     return { ok: null };
 }
