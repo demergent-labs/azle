@@ -8,7 +8,10 @@ pub fn generate() -> proc_macro2::TokenStream {
                             Ok(has_err_value) => {
                                 if has_err_value {
                                     match js_object.get("err", context) {
-                                        Ok(err_value) => return Ok(Err(err_value.try_from_vm_value(context).unwrap())),
+                                        Ok(err_value) => match err_value.try_from_vm_value(context) {
+                                            Ok(err_string) => return Ok(Err(err_string)),
+                                            Err(_) => return Err(CdkActTryFromVmValueError("value is not a string".to_string()))
+                                        },
                                         Err(err) => return Err(CdkActTryFromVmValueError(err.to_string()))
                                     }
                                 }
@@ -24,7 +27,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                                                 return Ok(Ok(()))
                                             }
                                             else {
-                                                return Err(CdkActTryFromVmValueError("JsValue is not null".to_string()))
+                                                return Err(CdkActTryFromVmValueError("value is not null".to_string()))
                                             }
                                         },
                                         Err(err) => return Err(CdkActTryFromVmValueError(err.to_string()))
@@ -34,9 +37,9 @@ pub fn generate() -> proc_macro2::TokenStream {
                             Err(err) => return Err(CdkActTryFromVmValueError(err.to_string()))
                         }
 
-                        Err(CdkActTryFromVmValueError("JsValue is not a GuardResult".to_string()))
+                        Err(CdkActTryFromVmValueError("value is not a GuardResult".to_string()))
                     },
-                    None => Err(CdkActTryFromVmValueError("JsValue is not an object".to_string())),
+                    None => Err(CdkActTryFromVmValueError("value is not a GuardResult".to_string())),
                 }
             }
         }
