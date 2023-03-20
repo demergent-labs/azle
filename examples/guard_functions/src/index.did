@@ -1,4 +1,4 @@
-type State = record { counter : int32 };
+type State = record { counter : int32; heartbeatTick : int32 };
 service : () -> {
   badObjectGuarded : () -> (bool) query;
   callExpressionWithEmptyOptionsObject : () -> (bool) query;

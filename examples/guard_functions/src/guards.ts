@@ -21,6 +21,16 @@ export function allowAll(): GuardResult {
     return { ok: null };
 }
 
+export function acceptAllThenRejectAll(): GuardResult {
+    console.log('acceptAllThenRejectAll called');
+    if (++state.heartbeatTick > 10) {
+        console.log(`Heartbeat suppressed`);
+        return { err: 'This error message will never be seen' };
+    }
+    console.log(`Accepted heartbeat tick #${state.heartbeatTick}`);
+    return { ok: null };
+}
+
 export function incrementCounterAndAllowAll(): GuardResult {
     console.log('incrementCounterAndAllowAll called');
     state.counter++;

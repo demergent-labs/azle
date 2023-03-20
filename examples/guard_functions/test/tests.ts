@@ -8,6 +8,20 @@ export function getTests(
 ): Test[] {
     return [
         {
+            name: 'heartbeat guard',
+            test: async () => {
+                const initialState = await guardFunctionsCanister.getState();
+                await sleep(5000);
+                const stateAfterRest = await guardFunctionsCanister.getState();
+
+                return {
+                    ok:
+                        initialState.heartbeatTick < 10 &&
+                        stateAfterRest.heartbeatTick === 10
+                };
+            }
+        },
+        {
             name: 'identifierAnnotation',
             test: async () => {
                 const result =
@@ -214,4 +228,8 @@ export function getTests(
             }
         }
     ];
+}
+
+function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }

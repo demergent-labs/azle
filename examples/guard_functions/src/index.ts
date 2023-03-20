@@ -1,15 +1,24 @@
-import { $inspect_message, $query, $update, ic, int32, Record } from 'azle';
 import {
-    allowModifyStateGuarded,
+    $heartbeat,
+    $inspect_message,
+    $query,
+    $update,
+    ic,
+    int32,
+    Record
+} from 'azle';
+import {
+    acceptAllThenRejectAll,
     allowAll,
-    incrementCounterAndAllowAll,
+    allowModifyStateGuarded,
     allowNone,
-    throwString,
-    throwCustomError,
+    incrementCounterAndAllowAll,
     returnInvalidType,
     returnNonGuardResultObject,
     returnNonNullOkValue,
-    returnNonStringErrValue
+    returnNonStringErrValue,
+    throwCustomError,
+    throwString
 } from './guards';
 import { State, state } from './state';
 
@@ -29,6 +38,12 @@ export function inspectMessage(): void {
     } else {
         console.log(`Method ${ic.method_name()} rejected by inspectMessage`);
     }
+}
+
+$heartbeat({ guard: acceptAllThenRejectAll });
+export function heartbeat() {
+    console.log('heartbeat called');
+    return true;
 }
 
 $query;
