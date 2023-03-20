@@ -56,7 +56,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk::timer::TimerId {
+        impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk_timers::TimerId {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 let timer_id_as_u64 = self.data().as_ffi();
                 Ok(boa_engine::JsValue::BigInt(timer_id_as_u64.into()))

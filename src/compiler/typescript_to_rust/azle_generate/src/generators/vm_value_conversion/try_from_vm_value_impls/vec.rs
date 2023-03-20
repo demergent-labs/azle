@@ -9,7 +9,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         impl AzleTryFromVec for ic_cdk::export::candid::Reserved {}
         impl AzleTryFromVec for ic_cdk::export::candid::Func {}
         impl AzleTryFromVec for ic_cdk::export::Principal {}
-        impl AzleTryFromVec for ic_cdk::timer::TimerId {}
+        impl AzleTryFromVec for ic_cdk_timers::TimerId {}
         impl AzleTryFromVec for f64 {}
         impl AzleTryFromVec for f32 {}
         impl AzleTryFromVec for ic_cdk::export::candid::Int {}

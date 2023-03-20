@@ -12,6 +12,17 @@ type ComplexFunc = func (
     },
   ) -> (nat64);
 type ManualReply = variant { Ok : func (vec nat8) -> () oneway; Err : text };
+type Reaction = variant {
+  Bad;
+  ComplexFunc : ComplexFunc;
+  Good;
+  BasicFunc : func (text) -> (text) query;
+};
+type User = record {
+  id : text;
+  complexFunc : ComplexFunc;
+  basicFunc : func (text) -> (text) query;
+};
 service : () -> {
   basicFuncParam : (func (text) -> (text) query) -> (
       func (text) -> (text) query,
@@ -21,50 +32,10 @@ service : () -> {
     ) query;
   basicFuncReturnType : () -> (func (text) -> (text) query) query;
   basicFuncReturnTypeArray : () -> (vec func (text) -> (text) query) query;
-  complexFuncParam : (
-      func (
-          record {
-            id : text;
-            complexFunc : ComplexFunc;
-            basicFunc : func (text) -> (text) query;
-          },
-          variant {
-            Bad;
-            ComplexFunc : ComplexFunc;
-            Good;
-            BasicFunc : func (text) -> (text) query;
-          },
-        ) -> (nat64),
-    ) -> (
-      func (
-          record {
-            id : text;
-            complexFunc : ComplexFunc;
-            basicFunc : func (text) -> (text) query;
-          },
-          variant {
-            Bad;
-            ComplexFunc : ComplexFunc;
-            Good;
-            BasicFunc : func (text) -> (text) query;
-          },
-        ) -> (nat64),
+  complexFuncParam : (func (User, Reaction) -> (nat64)) -> (
+      func (User, Reaction) -> (nat64),
     ) query;
-  complexFuncReturnType : () -> (
-      func (
-          record {
-            id : text;
-            complexFunc : ComplexFunc;
-            basicFunc : func (text) -> (text) query;
-          },
-          variant {
-            Bad;
-            ComplexFunc : ComplexFunc;
-            Good;
-            BasicFunc : func (text) -> (text) query;
-          },
-        ) -> (nat64),
-    ) query;
+  complexFuncReturnType : () -> (func (User, Reaction) -> (nat64)) query;
   getNotifierFromNotifiersCanister : () -> (ManualReply);
   getStableFunc : () -> (func (nat64, text) -> () query) query;
   nullFuncParam : (

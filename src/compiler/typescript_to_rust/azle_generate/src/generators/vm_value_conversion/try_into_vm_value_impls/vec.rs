@@ -16,7 +16,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         impl AzleTryIntoVec for ic_cdk::export::Principal {}
 
-        impl AzleTryIntoVec for ic_cdk::timer::TimerId {}
+        impl AzleTryIntoVec for ic_cdk_timers::TimerId {}
 
         impl AzleTryIntoVec for ic_cdk::api::call::RejectionCode {}
 
