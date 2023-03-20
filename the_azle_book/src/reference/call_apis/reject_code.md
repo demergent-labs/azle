@@ -22,13 +22,13 @@ class Nonexistent extends ExternalCanister {
     method: () => CanisterResult<void>;
 }
 
-export const nonexistent_canister = new Nonexistent(
+export const nonexistentCanister = new Nonexistent(
     Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
 );
 
 $update;
-export async function get_rejection_code_destination_invalid(): Promise<RejectionCode> {
-    await nonexistent_canister.method().call();
-    return ic.reject_code();
+export async function getRejectionCodeDestinationInvalid(): Promise<RejectionCode> {
+    await nonexistentCanister.method().call();
+    return ic.rejectCode();
 }
 ```

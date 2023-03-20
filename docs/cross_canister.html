@@ -173,11 +173,11 @@ $update;
 export function transfer(to: Principal, amount: nat64): nat64 {
     const from = ic.caller();
 
-    const from_balance = accounts.get(from) ?? 0n;
-    const to_balance = accounts.get(to) ?? 0n;
+    const fromBalance = accounts.get(from) ?? 0n;
+    const toBalance = accounts.get(to) ?? 0n;
 
-    accounts.insert(from, from_balance - amount);
-    accounts.insert(to, to_balance + amount);
+    accounts.insert(from, fromBalance - amount);
+    accounts.insert(to, toBalance + amount);
 
     return amount;
 }
@@ -198,7 +198,7 @@ class TokenCanister extends ExternalCanister {
 </code></pre>
 <p>Once you have a canister definition you can instantiate it with the canister's <code>Principal</code> and then invoke its methods.</p>
 <p>Here's how to instantiate <code>TokenCanister</code>:</p>
-<pre><code class="language-typescript">const token_canister = new TokenCanister(
+<pre><code class="language-typescript">const tokenCanister = new TokenCanister(
     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
 );
 </code></pre>
@@ -218,7 +218,7 @@ class TokenCanister extends ExternalCanister {
     transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
 }
 
-const token_canister = new TokenCanister(
+const tokenCanister = new TokenCanister(
     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
 );
 
@@ -228,11 +228,11 @@ export async function payout(
     amount: nat64
 ): Promise&lt;
     Variant&lt;{
-        ok: nat64;
-        err: string;
+        Ok: nat64;
+        Err: string;
     }&gt;
 &gt; {
-    return await token_canister.transfer(to, amount).call();
+    return await tokenCanister.transfer(to, amount).call();
 }
 </code></pre>
 <p>Notice that the <code>token_canister.transfer</code> method, because it is a cross-canister method, returns a <code>CanisterResult</code>. All cross-canister calls return <code>CanisterResult</code>, which has an <code>ok</code> or <code>err</code> property depending on if the cross-canister call was successful or not.</p>
@@ -248,30 +248,30 @@ export function transfer(
     to: Principal,
     amount: nat64
 ): Variant&lt;{
-    ok: nat64;
-    err: Variant&lt;{
+    Ok: nat64;
+    Err: Variant&lt;{
         InsufficientBalance: nat64;
     }&gt;;
 }&gt; {
     const from = ic.caller();
 
-    const from_balance = accounts.get(from) ?? 0n;
+    const fromBalance = accounts.get(from) ?? 0n;
 
-    if (from_balance &lt; amount) {
+    if (fromBalance &lt; amount) {
         return {
-            err: {
-                InsufficientBalance: from_balance
+            Err: {
+                InsufficientBalance: fromBalance
             }
         };
     }
 
-    const to_balance = accounts.get(to) ?? 0n;
+    const toBalance = accounts.get(to) ?? 0n;
 
-    accounts.insert(from, from_balance - amount);
-    accounts.insert(to, to_balance + amount);
+    accounts.insert(from, fromBalance - amount);
+    accounts.insert(to, toBalance + amount);
 
     return {
-        ok: amount
+        Ok: amount
     };
 }
 </code></pre>
@@ -279,8 +279,8 @@ export function transfer(
 <pre><code class="language-typescript">import {
     CanisterResult,
     ExternalCanister,
+    match,
     nat64,
-    ok,
     Principal,
     $update,
     update,
@@ -294,15 +294,15 @@ class TokenCanister extends ExternalCanister {
         amount: nat64
     ) =&gt; CanisterResult&lt;
         Variant&lt;{
-            ok: nat64;
-            err: Variant&lt;{
+            Ok: nat64;
+            Err: Variant&lt;{
                 InsufficientBalance: nat64;
             }&gt;;
         }&gt;
     &gt;;
 }
 
-const token_canister = new TokenCanister(
+const tokenCanister = new TokenCanister(
     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
 );
 
@@ -312,32 +312,23 @@ export async function payout(
     amount: nat64
 ): Promise&lt;
     Variant&lt;{
-        ok: nat64;
-        err: string;
+        Ok: nat64;
+        Err: string;
     }&gt;
 &gt; {
-    const canister_result = await token_canister.transfer(to, amount).call();
+    const canisterResult = await tokenCanister.transfer(to, amount).call();
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    const transfer_result = canister_result.ok;
-
-    if (!ok(transfer_result)) {
-        return {
-            err: JSON.stringify(transfer_result.err)
-        };
-    }
-
-    return {
-        ok: transfer_result.ok
-    };
+    return match(canisterResult, {
+        Ok: (transferResult) =&gt;
+            match(transferResult, {
+                Ok: (ok) =&gt; ({ Ok: ok }),
+                Err: (err) =&gt; ({ Err: JSON.stringify(err) })
+            }),
+        Err: (err) =&gt; ({ Err: err })
+    });
 }
 </code></pre>
-<p>Azle provides an <code>ok</code> function that will help you determine if a result is <code>ok</code> or not. This provides some benefits over using <code>in</code>, such as <code>if ('err' in result)</code> or <code>if ('ok' in result)</code>. There are other ways to check for the <code>ok</code> or <code>err</code> properties as well, feel free to experiment with the way that you prefer. They all have trade-offs.</p>
+<p>Azle provides a <code>match</code> function that will help you handle variant branches. This provides some benefits over using <code>in</code>, such as <code>if ('Err' in result)</code> or <code>if ('Ok' in result)</code>. There are other ways to check for the <code>Ok</code> or <code>Err</code> properties as well, feel free to experiment with the way that you prefer. They all have trade-offs.</p>
 <p>So far we have only shown a cross-canister call from an update method. Update methods can call other update methods or query methods (but not composite query methods as discussed below). If an update method calls a query method, that query method will be called in replicated mode. Replicated mode engages the consensus process, but for queries the state will still be discarded.</p>
 <p>Cross-canister calls can also be initiated from query methods (not yet live on IC mainnet but this works locally). These are known as composite queries, and in Azle they are simply <code>async</code> query methods. Composite queries can call other composite query methods and regular query methods. Composite queries cannot call update methods.</p>
 <p>Here's an example of a composite query method:</p>
@@ -352,21 +343,21 @@ export async function payout(
 
 class SomeCanister extends ExternalCanister {
     @query
-    query_for_boolean: () =&gt; CanisterResult&lt;boolean&gt;;
+    queryForBoolean: () =&gt; CanisterResult&lt;boolean&gt;;
 }
 
-const some_canister = new SomeCanister(
+const someCanister = new SomeCanister(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
 $query;
-export async function query_some_canister(): Promise&lt;
+export async function querySomeCanister(): Promise&lt;
     Variant&lt;{
-        ok: boolean;
-        err: string;
+        Ok: boolean;
+        Err: string;
     }&gt;
 &gt; {
-    return await some_canister.query_for_boolean().call();
+    return await someCanister.queryForBoolean().call();
 }
 </code></pre>
 <p>You can expect cross-canister calls within the same subnet to take up to a few seconds to complete, and cross-canister calls across subnets <a href="https://forum.dfinity.org/t/can-i-run-multiple-inter-canister-update-calls-in-parallel/13115/6">take about double that time</a>.</p>
@@ -383,19 +374,19 @@ export async function query_some_canister(): Promise&lt;
 
 class SomeCanister extends ExternalCanister {
     @update
-    receive_notification: () =&gt; CanisterResult&lt;void&gt;;
+    receiveNotification: () =&gt; CanisterResult&lt;void&gt;;
 }
 
-const some_canister = new SomeCanister(
+const someCanister = new SomeCanister(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
 $update;
-export function send_notification(): Variant&lt;{
-    ok: null;
-    err: RejectionCode;
+export function sendNotification(): Variant&lt;{
+    Ok: null;
+    Err: RejectionCode;
 }&gt; {
-    return some_canister.receive_notification().notify();
+    return someCanister.receiveNotification().notify();
 }
 </code></pre>
 <p>If you need to send cycles with your cross-canister call, you can call <code>cycles</code> before calling <code>call</code> or <code>notify</code>:</p>
@@ -411,19 +402,19 @@ export function send_notification(): Variant&lt;{
 
 class SomeCanister extends ExternalCanister {
     @update
-    receive_notification: () =&gt; CanisterResult&lt;void&gt;;
+    receiveNotification: () =&gt; CanisterResult&lt;void&gt;;
 }
 
-const some_canister = new SomeCanister(
+const someCanister = new SomeCanister(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
 $update;
-export function send_notification(): Variant&lt;{
-    ok: null;
-    err: RejectionCode;
+export function sendNotification(): Variant&lt;{
+    Ok: null;
+    Err: RejectionCode;
 }&gt; {
-    return some_canister.receive_notification().cycles(1_000_000n).notify();
+    return someCanister.receiveNotification().cycles(1_000_000n).notify();
 }
 </code></pre>
 

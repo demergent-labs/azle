@@ -10,12 +10,12 @@ TypeScript:
 import { $query, reserved } from 'azle';
 
 $query;
-export function get_reserved(): reserved {
+export function getReserved(): reserved {
     return 'anything';
 }
 
 $query;
-export function print_reserved(reserved: reserved): reserved {
+export function printReserved(reserved: reserved): reserved {
     console.log(typeof reserved);
     return reserved;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_reserved : () -> (reserved) query;
-    print_reserved : (reserved) -> (reserved) query;
+    getReserved : () -> (reserved) query;
+    printReserved : (reserved) -> (reserved) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_reserved '(null)'
+dfx canister call candid_canister printReserved '(null)'
 (null : reserved)
 ```

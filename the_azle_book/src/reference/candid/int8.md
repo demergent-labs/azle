@@ -10,12 +10,12 @@ TypeScript:
 import { int8, $query } from 'azle';
 
 $query;
-export function get_int8(): int8 {
+export function getInt8(): int8 {
     return 127;
 }
 
 $query;
-export function print_int8(int8: int8): int8 {
+export function printInt8(int8: int8): int8 {
     console.log(typeof int8);
     return int8;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_int8 : () -> (int8) query;
-    print_int8 : (int8) -> (int8) query;
+    getInt8 : () -> (int8) query;
+    printInt8 : (int8) -> (int8) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_int8 '(127 : int8)'
+dfx canister call candid_canister printInt8 '(127 : int8)'
 (127 : int8)
 ```

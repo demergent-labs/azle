@@ -12,7 +12,7 @@ const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;
 const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 
 $update;
-export async function get_balance(address: string): Promise<
+export async function getBalance(address: string): Promise<
     Variant<{
         Ok: Satoshi;
         Err: string;
@@ -29,7 +29,7 @@ export async function get_balance(address: string): Promise<
 }
 
 $update;
-export async function get_current_fee_percentiles(): Promise<
+export async function getCurrentFeePercentiles(): Promise<
     Variant<{
         Ok: MillisatoshiPerByte[];
         Err: string;
@@ -44,7 +44,7 @@ export async function get_current_fee_percentiles(): Promise<
 }
 
 $update;
-export async function get_utxos(address: string): Promise<
+export async function getUtxos(address: string): Promise<
     Variant<{
         Ok: GetUtxosResult;
         Err: string;
@@ -61,7 +61,7 @@ export async function get_utxos(address: string): Promise<
 }
 
 $update;
-export async function send_transaction(transaction: blob): Promise<
+export async function sendTransaction(transaction: blob): Promise<
     Variant<{
         Ok: null;
         Err: string;

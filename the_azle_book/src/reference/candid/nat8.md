@@ -10,12 +10,12 @@ TypeScript:
 import { nat8, $query } from 'azle';
 
 $query;
-export function get_nat8(): nat8 {
+export function getNat8(): nat8 {
     return 255;
 }
 
 $query;
-export function print_nat8(nat8: nat8): nat8 {
+export function printNat8(nat8: nat8): nat8 {
     console.log(typeof nat8);
     return nat8;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_nat8 : () -> (nat8) query;
-    print_nat8 : (nat8) -> (nat8) query;
+    getNat8 : () -> (nat8) query;
+    printNat8 : (nat8) -> (nat8) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_nat8 '(255 : nat8)'
+dfx canister call candid_canister printNat8 '(255 : nat8)'
 (255 : nat8)
 ```

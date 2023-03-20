@@ -11,7 +11,7 @@ Examples:
 import { ic, Manual, $update } from 'azle';
 
 $update;
-export function update_blob(): Manual<blob> {
+export function updateBlob(): Manual<blob> {
     ic.reply(new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]));
 }
 ```

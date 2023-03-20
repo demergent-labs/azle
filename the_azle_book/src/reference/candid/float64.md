@@ -10,12 +10,12 @@ TypeScript:
 import { float64, $query } from 'azle';
 
 $query;
-export function get_float64(): float64 {
+export function getFloat64(): float64 {
     return Math.E;
 }
 
 $query;
-export function print_float64(float64: float64): float64 {
+export function printFloat64(float64: float64): float64 {
     console.log(typeof float64);
     return float64;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_float64 : () -> (float64) query;
-    print_float64 : (float64) -> (float64) query;
+    getFloat64 : () -> (float64) query;
+    printFloat64 : (float64) -> (float64) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_float64 '(2.718281828459045 : float64)'
+dfx canister call candid_canister printFloat64 '(2.718281828459045 : float64)'
 (2.718281828459045 : float64)
 ```

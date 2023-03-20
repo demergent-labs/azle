@@ -153,7 +153,7 @@ type User = Record&lt;{
 }&gt;;
 
 $query;
-export function get_user(): User {
+export function getUser(): User {
     return {
         id: Principal.fromUint8Array(Uint8Array.from([0])),
         username: 'lastmjs'
@@ -161,7 +161,7 @@ export function get_user(): User {
 }
 
 $query;
-export function print_user(user: User): User {
+export function printUser(user: User): User {
     console.log(typeof user);
     return user;
 }
@@ -169,12 +169,12 @@ export function print_user(user: User): User {
 <p>Candid:</p>
 <pre><code>type User = record { id : principal; username : text };
 service : () -&gt; {
-    get_user : () -&gt; (User) query;
-    print_user : (User) -&gt; (User) query;
+    getUser : () -&gt; (User) query;
+    printUser : (User) -&gt; (User) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_user '(record { id = principal &quot;2ibo7-dia&quot;; username = &quot;lastmjs&quot; })'
+<pre><code class="language-bash">dfx canister call candid_canister printUser '(record { id = principal &quot;2ibo7-dia&quot;; username = &quot;lastmjs&quot; })'
 (record { id = principal &quot;2ibo7-dia&quot;; username = &quot;lastmjs&quot; })
 </code></pre>
 

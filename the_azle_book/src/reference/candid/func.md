@@ -16,15 +16,12 @@ import { Func, Principal, $query, Query } from 'azle';
 type BasicFunc = Func<Query<(param1: string) => string>>;
 
 $query;
-export function get_basic_func(): BasicFunc {
-    return [
-        Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
-        'get_basic_func'
-    ];
+export function getBasicFunc(): BasicFunc {
+    return [Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'), 'getBasicFunc'];
 }
 
 $query;
-export function print_basic_func(basic_func: BasicFunc): BasicFunc {
+export function printBasicFunc(basic_func: BasicFunc): BasicFunc {
     console.log(typeof basic_func);
     return basic_func;
 }
@@ -34,8 +31,8 @@ Candid:
 
 ```
 service : () -> {
-    get_basic_func : () -> (func (text) -> (text) query) query;
-    print_basic_func : (func (text) -> (text) query) -> (
+    getBasicFunc : () -> (func (text) -> (text) query) query;
+    printBasicFunc : (func (text) -> (text) query) -> (
         func (text) -> (text) query,
       ) query;
 }
@@ -44,6 +41,6 @@ service : () -> {
 dfx:
 
 ```bash
-dfx canister call candid_canister print_basic_func '(func "r7inp-6aaaa-aaaaa-aaabq-cai".get_basic_func)'
-(func "r7inp-6aaaa-aaaaa-aaabq-cai".get_basic_func)
+dfx canister call candid_canister printBasicFunc '(func "r7inp-6aaaa-aaaaa-aaabq-cai".getBasicFunc)'
+(func "r7inp-6aaaa-aaaaa-aaabq-cai".getBasicFunc)
 ```

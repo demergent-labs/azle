@@ -16,10 +16,10 @@ const canister2 = new Canister2(
 );
 
 $update;
-export function send_notification(): Variant<{
-    ok: null;
-    err: RejectionCode;
+export function sendNotification(): Variant<{
+    Ok: null;
+    Err: RejectionCode;
 }> {
-    return canister2.receive_notification('This is the notification').notify();
+    return canister2.receiveNotification('This is the notification').notify();
 }
 ```

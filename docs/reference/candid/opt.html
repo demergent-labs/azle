@@ -148,26 +148,26 @@
 <pre><code class="language-typescript">import { Opt, $query } from 'azle';
 
 $query;
-export function get_opt_some(): Opt&lt;boolean&gt; {
+export function getOptSome(): Opt&lt;boolean&gt; {
     return true;
 }
 
 $query;
-export function get_opt_none(): Opt&lt;boolean&gt; {
+export function getOptNone(): Opt&lt;boolean&gt; {
     return null;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_opt_none : () -&gt; (opt bool) query;
-    get_opt_some : () -&gt; (opt bool) query;
+    getOptNone : () -&gt; (opt bool) query;
+    getOptSome : () -&gt; (opt bool) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister get_opt_some
+<pre><code class="language-bash">dfx canister call candid_canister getOptSome
 (opt true)
 
-dfx canister call candid_canister get_opt_none
+dfx canister call candid_canister getOptNone
 (null)
 </code></pre>
 

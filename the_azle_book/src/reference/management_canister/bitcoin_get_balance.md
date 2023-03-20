@@ -10,20 +10,20 @@ Examples:
 import { $update, Variant } from 'azle';
 import {
     BitcoinNetwork,
-    management_canister,
+    managementCanister,
     Satoshi
 } from 'azle/canisters/management';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
 $update;
-export async function get_balance(address: string): Promise<
+export async function getBalance(address: string): Promise<
     Variant<{
-        ok: Satoshi;
-        err: string;
+        Ok: Satoshi;
+        Err: string;
     }>
 > {
-    const canister_result = await management_canister
+    return await managementCanister
         .bitcoin_get_balance({
             address,
             min_confirmations: null,
@@ -31,7 +31,5 @@ export async function get_balance(address: string): Promise<
         })
         .cycles(BITCOIN_API_CYCLE_COST)
         .call();
-
-    return canister_result;
 }
 ```

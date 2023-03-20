@@ -8,10 +8,10 @@ Examples:
 -   [whoami](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami)
 
 ```typescript
-import { $post_upgrade } from 'azle';
+import { $postUpgrade } from 'azle';
 
-$post_upgrade;
-export function post_upgrade() {
+$postUpgrade;
+export function postUpgrade() {
     console.log('This runs after every canister upgrade');
 }
 ```

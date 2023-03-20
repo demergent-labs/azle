@@ -10,12 +10,12 @@ TypeScript:
 import { nat64, $query } from 'azle';
 
 $query;
-export function get_nat64(): nat64 {
+export function getNat64(): nat64 {
     return 18_446_744_073_709_551_615n;
 }
 
 $query;
-export function print_nat64(nat64: nat64): nat64 {
+export function printNat64(nat64: nat64): nat64 {
     console.log(typeof nat64);
     return nat64;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_nat64 : () -> (nat64) query;
-    print_nat64 : (nat64) -> (nat64) query;
+    getNat64 : () -> (nat64) query;
+    printNat64 : (nat64) -> (nat64) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_nat64 '(18_446_744_073_709_551_615 : nat64)'
+dfx canister call candid_canister printNat64 '(18_446_744_073_709_551_615 : nat64)'
 (18_446_744_073_709_551_615 : nat64)
 ```

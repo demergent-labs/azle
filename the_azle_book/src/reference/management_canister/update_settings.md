@@ -7,19 +7,19 @@ Examples:
 -   [management_canister](https://github.com/demergent-labs/azle/tree/main/examples/management_canister)
 
 ```typescript
-import { ok, Principal, $update, Variant } from 'azle';
-import { management_canister } from 'azle/canisters/management';
+import { match, Principal, $update, Variant } from 'azle';
+import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function execute_update_settings(canister_id: Principal): Promise<
+export async function executeUpdateSettings(canisterId: Principal): Promise<
     Variant<{
-        ok: boolean;
-        err: string;
+        Ok: boolean;
+        Err: string;
     }>
 > {
-    const canister_result = await management_canister
+    const canisterResult = await managementCanister
         .update_settings({
-            canister_id,
+            canister_id: canisterId,
             settings: {
                 controllers: null,
                 compute_allocation: 1n,
@@ -29,14 +29,9 @@ export async function execute_update_settings(canister_id: Principal): Promise<
         })
         .call();
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    return {
-        ok: true
-    };
+    return match(canisterResult, {
+        Ok: () => ({ Ok: true }),
+        Err: (err) => ({ Err: err })
+    });
 }
 ```

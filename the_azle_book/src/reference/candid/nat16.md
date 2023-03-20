@@ -10,12 +10,12 @@ TypeScript:
 import { nat16, $query } from 'azle';
 
 $query;
-export function get_nat16(): nat16 {
+export function getNat16(): nat16 {
     return 65_535;
 }
 
 $query;
-export function print_nat16(nat16: nat16): nat16 {
+export function printNat16(nat16: nat16): nat16 {
     console.log(typeof nat16);
     return nat16;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_nat16 : () -> (nat16) query;
-    print_nat16 : (nat16) -> (nat16) query;
+    getNat16 : () -> (nat16) query;
+    printNat16 : (nat16) -> (nat16) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_nat16 '(65_535 : nat16)'
+dfx canister call candid_canister printNat16 '(65_535 : nat16)'
 (65_535 : nat16)
 ```

@@ -151,7 +151,7 @@
 <pre><code class="language-typescript">import { ic, Manual, $update } from 'azle';
 
 $update;
-export function reply_raw(): Manual&lt;
+export function replyRaw(): Manual&lt;
     Record&lt;{
         int: int;
         text: string;
@@ -160,8 +160,8 @@ export function reply_raw(): Manual&lt;
         variant: Options;
     }&gt;
 &gt; {
-    ic.reply_raw(
-        ic.candid_encode(
+    ic.replyRaw(
+        ic.candidEncode(
             '(record { &quot;int&quot; = 42; &quot;text&quot; = &quot;text&quot;; &quot;bool&quot; = true; &quot;blob&quot; = blob &quot;Surprise!&quot;; &quot;variant&quot; = variant { Medium } })'
         )
     );

@@ -11,12 +11,12 @@ import { blob, ic, int8, $query } from 'azle';
 
 // returns the argument data as bytes.
 $query;
-export function arg_data_raw(
+export function argDataRaw(
     arg1: blob,
     arg2: int8,
     arg3: boolean,
     arg4: string
 ): blob {
-    return ic.arg_data_raw();
+    return ic.argDataRaw();
 }
 ```

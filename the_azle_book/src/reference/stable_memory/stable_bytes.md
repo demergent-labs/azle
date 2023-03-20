@@ -10,7 +10,7 @@ Examples:
 import { blob, ic, $query } from 'azle';
 
 $query;
-export function stable_bytes(): blob {
-    return ic.stable_bytes();
+export function stableBytes(): blob {
+    return ic.stableBytes();
 }
 ```

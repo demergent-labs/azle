@@ -148,24 +148,24 @@
 <pre><code class="language-typescript">import { nat16, $query } from 'azle';
 
 $query;
-export function get_nat16(): nat16 {
+export function getNat16(): nat16 {
     return 65_535;
 }
 
 $query;
-export function print_nat16(nat16: nat16): nat16 {
+export function printNat16(nat16: nat16): nat16 {
     console.log(typeof nat16);
     return nat16;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_nat16 : () -&gt; (nat16) query;
-    print_nat16 : (nat16) -&gt; (nat16) query;
+    getNat16 : () -&gt; (nat16) query;
+    printNat16 : (nat16) -&gt; (nat16) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_nat16 '(65_535 : nat16)'
+<pre><code class="language-bash">dfx canister call candid_canister printNat16 '(65_535 : nat16)'
 (65_535 : nat16)
 </code></pre>
 

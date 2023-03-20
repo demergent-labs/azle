@@ -10,12 +10,12 @@ TypeScript:
 import { $query } from 'azle';
 
 $query;
-export function get_null(): null {
+export function getNull(): null {
     return null;
 }
 
 $query;
-export function print_null(null_: null): null {
+export function printNull(null_: null): null {
     console.log(typeof null_);
     return null_;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_null : () -> (null) query;
-    print_null : (null) -> (null) query;
+    getNull : () -> (null) query;
+    printNull : (null) -> (null) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_null '(null)'
+dfx canister call candid_canister printNull '(null)'
 (null : null)
 ```

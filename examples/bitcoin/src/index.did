@@ -11,8 +11,8 @@ type ManualReply_3 = variant { Ok; Err : text };
 type Outpoint = record { txid : vec nat8; vout : nat32 };
 type Utxo = record { height : nat32; value : nat64; outpoint : Outpoint };
 service : () -> {
-  get_balance : (text) -> (ManualReply);
-  get_current_fee_percentiles : () -> (ManualReply_1);
-  get_utxos : (text) -> (ManualReply_2);
-  send_transaction : (vec nat8) -> (ManualReply_3);
+  getBalance : (text) -> (ManualReply);
+  getCurrentFeePercentiles : () -> (ManualReply_1);
+  getUtxos : (text) -> (ManualReply_2);
+  sendTransaction : (vec nat8) -> (ManualReply_3);
 }

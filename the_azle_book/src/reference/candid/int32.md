@@ -10,12 +10,12 @@ TypeScript:
 import { int32, $query } from 'azle';
 
 $query;
-export function get_int32(): int32 {
+export function getInt32(): int32 {
     return 2_147_483_647;
 }
 
 $query;
-export function print_int32(int32: int32): int32 {
+export function printInt32(int32: int32): int32 {
     console.log(typeof int32);
     return int32;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_int32 : () -> (int32) query;
-    print_int32 : (int32) -> (int32) query;
+    getInt32 : () -> (int32) query;
+    printInt32 : (int32) -> (int32) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_int32 '(2_147_483_647 : int32)'
+dfx canister call candid_canister printInt32 '(2_147_483_647 : int32)'
 (2_147_483_647 : int32)
 ```

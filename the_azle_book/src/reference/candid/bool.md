@@ -10,12 +10,12 @@ TypeScript:
 import { $query } from 'azle';
 
 $query;
-export function get_bool(): boolean {
+export function getBool(): boolean {
     return true;
 }
 
 $query;
-export function print_bool(bool: boolean): boolean {
+export function printBool(bool: boolean): boolean {
     console.log(typeof bool);
     return bool;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_bool : () -> (bool) query;
-    print_bool : (bool) -> (bool) query;
+    getBool : () -> (bool) query;
+    printBool : (bool) -> (bool) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_bool '(true)'
+dfx canister call candid_canister printBool '(true)'
 (true)
 ```

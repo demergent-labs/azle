@@ -150,27 +150,25 @@
 <pre><code class="language-typescript">import { $update, Variant } from 'azle';
 import {
     BitcoinNetwork,
-    management_canister,
+    managementCanister,
     MillisatoshiPerByte
 } from 'azle/canisters/management';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
 $update;
-export async function get_current_fee_percentiles(): Promise&lt;
+export async function getCurrentFeePercentiles(): Promise&lt;
     Variant&lt;{
-        ok: MillisatoshiPerByte[];
-        err: string;
+        Ok: MillisatoshiPerByte[];
+        Err: string;
     }&gt;
 &gt; {
-    const canister_result = await management_canister
+    return await managementCanister
         .bitcoin_get_current_fee_percentiles({
             network: BitcoinNetwork.Regtest
         })
         .cycles(BITCOIN_API_CYCLE_COST)
         .call();
-
-    return canister_result;
 }
 </code></pre>
 

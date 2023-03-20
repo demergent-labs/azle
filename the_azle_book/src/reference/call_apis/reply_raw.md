@@ -11,7 +11,7 @@ Examples:
 import { ic, Manual, $update } from 'azle';
 
 $update;
-export function reply_raw(): Manual<
+export function replyRaw(): Manual<
     Record<{
         int: int;
         text: string;
@@ -20,8 +20,8 @@ export function reply_raw(): Manual<
         variant: Options;
     }>
 > {
-    ic.reply_raw(
-        ic.candid_encode(
+    ic.replyRaw(
+        ic.candidEncode(
             '(record { "int" = 42; "text" = "text"; "bool" = true; "blob" = blob "Surprise!"; "variant" = variant { Medium } })'
         )
     );

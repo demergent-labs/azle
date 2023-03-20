@@ -10,7 +10,7 @@ Examples:
 import { ic, nat32, StableGrowResult, $update } from 'azle';
 
 $update;
-export function stable_grow(new_pages: nat32): StableGrowResult {
-    return ic.stable_grow(new_pages);
+export function stableGrow(newPages: nat32): StableGrowResult {
+    return ic.stableGrow(newPages);
 }
 ```

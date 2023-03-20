@@ -12,7 +12,7 @@ import { blob, ic, $query } from 'azle';
 
 // decodes Candid bytes to a Candid string
 $query;
-export function candid_decode(candid_encoded: blob): string {
-    return ic.candid_decode(candid_encoded);
+export function candidDecode(candidEncoded: blob): string {
+    return ic.candidDecode(candidEncoded);
 }
 ```

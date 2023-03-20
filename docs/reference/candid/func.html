@@ -152,30 +152,27 @@
 type BasicFunc = Func&lt;Query&lt;(param1: string) =&gt; string&gt;&gt;;
 
 $query;
-export function get_basic_func(): BasicFunc {
-    return [
-        Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
-        'get_basic_func'
-    ];
+export function getBasicFunc(): BasicFunc {
+    return [Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'), 'getBasicFunc'];
 }
 
 $query;
-export function print_basic_func(basic_func: BasicFunc): BasicFunc {
+export function printBasicFunc(basic_func: BasicFunc): BasicFunc {
     console.log(typeof basic_func);
     return basic_func;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_basic_func : () -&gt; (func (text) -&gt; (text) query) query;
-    print_basic_func : (func (text) -&gt; (text) query) -&gt; (
+    getBasicFunc : () -&gt; (func (text) -&gt; (text) query) query;
+    printBasicFunc : (func (text) -&gt; (text) query) -&gt; (
         func (text) -&gt; (text) query,
       ) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_basic_func '(func &quot;r7inp-6aaaa-aaaaa-aaabq-cai&quot;.get_basic_func)'
-(func &quot;r7inp-6aaaa-aaaaa-aaabq-cai&quot;.get_basic_func)
+<pre><code class="language-bash">dfx canister call candid_canister printBasicFunc '(func &quot;r7inp-6aaaa-aaaaa-aaabq-cai&quot;.getBasicFunc)'
+(func &quot;r7inp-6aaaa-aaaaa-aaabq-cai&quot;.getBasicFunc)
 </code></pre>
 
                     </main>

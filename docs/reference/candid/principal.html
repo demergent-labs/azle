@@ -148,24 +148,24 @@
 <pre><code class="language-typescript">import { Principal, $query } from 'azle';
 
 $query;
-export function get_principal(): Principal {
+export function getPrincipal(): Principal {
     return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
 }
 
 $query;
-export function print_principal(principal: Principal): Principal {
+export function printPrincipal(principal: Principal): Principal {
     console.log(typeof principal);
     return principal;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_principal : () -&gt; (principal) query;
-    print_principal : (principal) -&gt; (principal) query;
+    getPrincipal : () -&gt; (principal) query;
+    printPrincipal : (principal) -&gt; (principal) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_principal '(principal &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;)'
+<pre><code class="language-bash">dfx canister call candid_canister printPrincipal '(principal &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;)'
 (principal &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;)
 </code></pre>
 

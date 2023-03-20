@@ -10,12 +10,12 @@ TypeScript:
 import { Principal, $query } from 'azle';
 
 $query;
-export function get_principal(): Principal {
+export function getPrincipal(): Principal {
     return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
 }
 
 $query;
-export function print_principal(principal: Principal): Principal {
+export function printPrincipal(principal: Principal): Principal {
     console.log(typeof principal);
     return principal;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_principal : () -> (principal) query;
-    print_principal : (principal) -> (principal) query;
+    getPrincipal : () -> (principal) query;
+    printPrincipal : (principal) -> (principal) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_principal '(principal "rrkah-fqaaa-aaaaa-aaaaq-cai")'
+dfx canister call candid_canister printPrincipal '(principal "rrkah-fqaaa-aaaaa-aaaaq-cai")'
 (principal "rrkah-fqaaa-aaaaa-aaaaq-cai")
 ```

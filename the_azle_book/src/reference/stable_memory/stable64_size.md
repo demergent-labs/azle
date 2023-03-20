@@ -10,7 +10,7 @@ Examples:
 import { ic, nat64, $query } from 'azle';
 
 $query;
-export function stable64_size(): nat64 {
-    return ic.stable64_size();
+export function stable64Size(): nat64 {
+    return ic.stable64Size();
 }
 ```

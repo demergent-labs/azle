@@ -145,16 +145,16 @@
 <p>This chapter is a work in progress.</p>
 <p>You can access the management canister like this:</p>
 <pre><code class="language-typescript">import { blob, $update, Variant } from 'azle';
-import { management_canister } from 'azle/canisters/management';
+import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function random_bytes(): Promise&lt;
+export async function randomBytes(): Promise&lt;
     Variant&lt;{
-        ok: blob;
-        err: string;
+        Ok: blob;
+        Err: string;
     }&gt;
 &gt; {
-    return await management_canister.raw_rand().call();
+    return await managementCanister.raw_rand().call();
 }
 </code></pre>
 <p>See the <a href="https://github.com/demergent-labs/azle/blob/main/canisters/management/index.ts">management canister types</a> for all methods and their parameter and return types.</p>

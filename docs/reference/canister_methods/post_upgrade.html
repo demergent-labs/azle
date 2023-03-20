@@ -148,10 +148,10 @@
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/pre_and_post_upgrade">pre_and_post_upgrade</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami">whoami</a></li>
 </ul>
-<pre><code class="language-typescript">import { $post_upgrade } from 'azle';
+<pre><code class="language-typescript">import { $postUpgrade } from 'azle';
 
-$post_upgrade;
-export function post_upgrade() {
+$postUpgrade;
+export function postUpgrade() {
     console.log('This runs after every canister upgrade');
 }
 </code></pre>

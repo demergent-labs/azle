@@ -148,24 +148,24 @@
 <pre><code class="language-typescript">import { int, $query } from 'azle';
 
 $query;
-export function get_int(): int {
+export function getInt(): int {
     return 170_141_183_460_469_231_731_687_303_715_884_105_727n;
 }
 
 $query;
-export function print_int(int: int): int {
+export function printInt(int: int): int {
     console.log(typeof int);
     return int;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_int : () -&gt; (int) query;
-    print_int : (int) -&gt; (int) query;
+    getInt : () -&gt; (int) query;
+    printInt : (int) -&gt; (int) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_int '(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)'
+<pre><code class="language-bash">dfx canister call candid_canister printInt '(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)'
 (170_141_183_460_469_231_731_687_303_715_884_105_727 : int)
 </code></pre>
 

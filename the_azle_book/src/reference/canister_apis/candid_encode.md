@@ -15,7 +15,7 @@ import { blob, ic, $query } from 'azle';
 
 // encodes a Candid string to Candid bytes
 $query;
-export function candid_encode(candid_string: string): blob {
-    return ic.candid_encode(candid_string);
+export function candidEncode(candidString: string): blob {
+    return ic.candidEncode(candidString);
 }
 ```

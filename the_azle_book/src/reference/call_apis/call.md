@@ -38,7 +38,7 @@ class TokenCanister extends ExternalCanister {
     transfer: (to: Principal, amount: nat64) => CanisterResult<nat64>;
 }
 
-const token_canister = new TokenCanister(
+const tokenCanister = new TokenCanister(
     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
 );
 
@@ -48,10 +48,10 @@ export async function payout(
     amount: nat64
 ): Promise<
     Variant<{
-        ok: nat64;
-        err: string;
+        Ok: nat64;
+        Err: string;
     }>
 > {
-    return await token_canister.transfer(to, amount).call();
+    return await tokenCanister.transfer(to, amount).call();
 }
 ```

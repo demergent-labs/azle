@@ -148,24 +148,24 @@
 <pre><code class="language-typescript">import { int8, $query } from 'azle';
 
 $query;
-export function get_int8(): int8 {
+export function getInt8(): int8 {
     return 127;
 }
 
 $query;
-export function print_int8(int8: int8): int8 {
+export function printInt8(int8: int8): int8 {
     console.log(typeof int8);
     return int8;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_int8 : () -&gt; (int8) query;
-    print_int8 : (int8) -&gt; (int8) query;
+    getInt8 : () -&gt; (int8) query;
+    printInt8 : (int8) -&gt; (int8) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_int8 '(127 : int8)'
+<pre><code class="language-bash">dfx canister call candid_canister printInt8 '(127 : int8)'
 (127 : int8)
 </code></pre>
 

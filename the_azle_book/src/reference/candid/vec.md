@@ -10,12 +10,12 @@ TypeScript:
 import { int32, $query } from 'azle';
 
 $query;
-export function get_numbers(): int32[] {
+export function getNumbers(): int32[] {
     return [0, 1, 2, 3];
 }
 
 $query;
-export function print_numbers(numbers: int32[]): int32[] {
+export function printNumbers(numbers: int32[]): int32[] {
     console.log(typeof numbers);
     return numbers;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_numbers : () -> (vec int32) query;
-    print_numbers : (vec int32) -> (vec int32) query;
+    getNumbers : () -> (vec int32) query;
+    printNumbers : (vec int32) -> (vec int32) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_numbers '(vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })'
+dfx canister call candid_canister printNumbers '(vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })'
 (vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })
 ```

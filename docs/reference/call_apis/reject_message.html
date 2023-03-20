@@ -148,12 +148,12 @@
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/rejections">rejections</a></li>
 </ul>
 <pre><code class="language-typescript">import { ic, $update } from 'azle';
-import { some_service } from '../some_service';
+import { someService } from '../some_service';
 
 $update;
-export async function get_rejection_message(message: string): Promise&lt;string&gt; {
-    await some_service.reject(message).call();
-    return ic.reject_message();
+export async function getRejectionMessage(message: string): Promise&lt;string&gt; {
+    await someService.reject(message).call();
+    return ic.rejectMessage();
 }
 </code></pre>
 

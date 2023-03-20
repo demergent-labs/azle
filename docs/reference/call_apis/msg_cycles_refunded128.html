@@ -148,28 +148,20 @@
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
 <pre><code class="language-typescript">import { ic, nat, ok, $update, Variant } from 'azle';
-import { cycles_canister } from '../cycles';
+import { cyclesCanister } from '../cycles';
 
 // Reports the number of cycles returned from the Cycles canister
 $update;
-export async function send_cycles128(): Promise&lt;
-    Variant&lt;{
-        ok: nat;
-        err: string;
-    }&gt;
-&gt; {
-    const result = await cycles_canister
-        .receive_cycles128()
+export async function sendCycles128(): Promise&lt;SendCyclesResult128&gt; {
+    const result = await cyclesCanister
+        .receiveCycles128()
         .cycles128(1_000_000n)
         .call();
 
-    if (!ok(result)) {
-        return { err: result.err };
-    }
-
-    return {
-        ok: ic.msg_cycles_refunded128()
-    };
+    return match(result, {
+        Ok: () =&gt; ({ Ok: ic.msgCyclesRefunded128() }),
+        Err: (err) =&gt; ({ Err: err })
+    });
 }
 </code></pre>
 

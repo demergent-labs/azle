@@ -148,26 +148,26 @@
 <pre><code class="language-typescript">import { empty, $query } from 'azle';
 
 $query;
-export function get_empty(): empty {
+export function getEmpty(): empty {
     throw 'Anything you want';
 }
 
 // Note: It is impossible to call this function because it requires an argument
 // but there is no way to pass an &quot;empty&quot; value as an argument.
 $query;
-export function print_empty(empty: empty): empty {
+export function printEmpty(empty: empty): empty {
     console.log(typeof empty);
     throw 'Anything you want';
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_empty : () -&gt; (empty) query;
-    print_empty : (empty) -&gt; (empty) query;
+    getEmpty : () -&gt; (empty) query;
+    printEmpty : (empty) -&gt; (empty) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_empty '(&quot;You can put anything here&quot;)'
+<pre><code class="language-bash">dfx canister call candid_canister printEmpty '(&quot;You can put anything here&quot;)'
 Error: Failed to create argument blob.
 Caused by: Failed to create argument blob.
   Invalid data: Unable to serialize Candid values: type mismatch: &quot;You can put anything here&quot; cannot be of type empty

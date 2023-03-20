@@ -148,24 +148,24 @@
 <pre><code class="language-typescript">import { $query } from 'azle';
 
 $query;
-export function get_string(): string {
+export function getString(): string {
     return 'Hello world!';
 }
 
 $query;
-export function print_string(string: string): string {
+export function printString(string: string): string {
     console.log(typeof string);
     return string;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_string : () -&gt; (text) query;
-    print_string : (text) -&gt; (text) query;
+    getString : () -&gt; (text) query;
+    printString : (text) -&gt; (text) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_string '(&quot;Hello world!&quot;)'
+<pre><code class="language-bash">dfx canister call candid_canister printString '(&quot;Hello world!&quot;)'
 (&quot;Hello world!&quot;)
 </code></pre>
 

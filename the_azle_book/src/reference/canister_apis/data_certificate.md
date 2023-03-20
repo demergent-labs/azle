@@ -11,7 +11,7 @@ import { blob, ic, Opt, $query } from 'azle';
 
 // When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if not called from a query call.
 $query;
-export function data_certificate(): Opt<blob> {
-    return ic.data_certificate();
+export function dataCertificate(): Opt<blob> {
+    return ic.dataCertificate();
 }
 ```

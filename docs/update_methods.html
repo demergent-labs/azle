@@ -172,16 +172,16 @@ export function increment(): nat64 {
 let message = '';
 
 $query;
-export function get_message(): string {
+export function getMessage(): string {
     return message;
 }
 
 $update;
-export function set_message(new_message: string): void {
-    message = new_message;
+export function setMessage(newMessage: string): void {
+    message = newMessage;
 }
 </code></pre>
-<p>You'll notice that we use an update method, <code>set_message</code>, only to perform the change to the global <code>message</code> variable. We use <code>get_message</code>, a query method, to read the message.</p>
+<p>You'll notice that we use an update method, <code>setMessage</code>, only to perform the change to the global <code>message</code> variable. We use <code>getMessage</code>, a query method, to read the message.</p>
 <p>Keep in mind that the heap is limited to 4 GiB, and thus there is an upper bound to global variable storage capacity. You can imagine how a simple database like the following would eventually run out of memory with too many entries:</p>
 <pre><code class="language-typescript">import { Opt, $query, $update } from 'azle';
 
@@ -239,7 +239,7 @@ export function set(key: string, value: string): void {
 }
 
 $update;
-export function set_many(entries: Entry[]): void {
+export function setMany(entries: Entry[]): void {
     entries.forEach((entry) =&gt; {
         const result = db.insert(entry.key, entry.value);
 
@@ -266,8 +266,8 @@ export function set(key: string, value: string): void {
 }
 
 $update;
-export function set_many(num_entries: nat64): void {
-    for (let i = 0; i &lt; num_entries; i++) {
+export function setMany(numEntries: nat64): void {
+    for (let i = 0; i &lt; numEntries; i++) {
         const result = db.insert(i.toString(), i.toString());
 
         if (!ok(result)) {
@@ -276,10 +276,10 @@ export function set_many(num_entries: nat64): void {
     }
 }
 </code></pre>
-<p>From the <code>dfx command line</code> you can call <code>set_many</code> like this:</p>
-<pre><code class="language-bash">dfx canister call my_canister set_many '(100_000)'
+<p>From the <code>dfx command line</code> you can call <code>setMany</code> like this:</p>
+<pre><code class="language-bash">dfx canister call my_canister setMany '(100_000)'
 </code></pre>
-<p>With an argument of <code>100_000</code>, <code>set_many</code> will fail with an error <code>...exceeded the instruction limit for single message execution</code>.</p>
+<p>With an argument of <code>100_000</code>, <code>setMany</code> will fail with an error <code>...exceeded the instruction limit for single message execution</code>.</p>
 <p>In terms of update scalability, an individual canister <a href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6">likely has an upper bound of ~900 updates per second</a>.</p>
 
                     </main>
