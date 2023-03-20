@@ -1,11 +1,10 @@
 import {
     $heartbeat,
     $inspect_message,
+    $pre_upgrade,
     $query,
     $update,
-    ic,
-    int32,
-    Record
+    ic
 } from 'azle';
 import {
     acceptAllThenRejectAll,
@@ -13,6 +12,7 @@ import {
     allowModifyStateGuarded,
     allowNone,
     incrementCounterAndAllowAll,
+    preventUpgrades,
     returnInvalidType,
     returnNonGuardResultObject,
     returnNonNullOkValue,
@@ -43,7 +43,11 @@ export function inspectMessage(): void {
 $heartbeat({ guard: acceptAllThenRejectAll });
 export function heartbeat() {
     console.log('heartbeat called');
-    return true;
+}
+
+$pre_upgrade({ guard: preventUpgrades });
+export function preUpgrade() {
+    console.log('preUpgrade called');
 }
 
 $query;

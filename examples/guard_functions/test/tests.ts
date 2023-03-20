@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import { ActorSubclass } from '@dfinity/agent';
 import { AgentError } from '@dfinity/agent/lib/cjs/errors';
 import { Test } from 'azle/test';
@@ -16,8 +17,8 @@ export function getTests(
 
                 return {
                     ok:
-                        initialState.heartbeatTick < 10 &&
-                        stateAfterRest.heartbeatTick === 10
+                        initialState.heartbeatTick < 15 &&
+                        stateAfterRest.heartbeatTick === 15
                 };
             }
         },
@@ -224,6 +225,17 @@ export function getTests(
                             `TypeError: value is not a string`
                         )
                     };
+                }
+            }
+        },
+        {
+            name: 'preventUpgrades',
+            test: async () => {
+                try {
+                    execSync('dfx deploy');
+                    return { err: "Guard function didn't prevent upgrades" };
+                } catch (error) {
+                    return { ok: true };
                 }
             }
         }

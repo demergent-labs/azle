@@ -23,7 +23,7 @@ export function allowAll(): GuardResult {
 
 export function acceptAllThenRejectAll(): GuardResult {
     console.log('acceptAllThenRejectAll called');
-    if (++state.heartbeatTick > 10) {
+    if (++state.heartbeatTick > 15) {
         console.log(`Heartbeat suppressed`);
         return { err: 'This error message will never be seen' };
     }
@@ -58,6 +58,11 @@ export function throwCustomError(): GuardResult {
     throw new CustomError(
         'Execution halted by "throwCustomError" guard function'
     );
+}
+
+export function preventUpgrades(): GuardResult {
+    console.log('preventUpgrades called');
+    return { err: 'Upgrades to this canister are disabled' };
 }
 
 export function returnInvalidType(): GuardResult {
