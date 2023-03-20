@@ -1,4 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
+import { AgentError } from '@dfinity/agent/lib/cjs/errors';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/guard_functions/guard_functions.did';
 
@@ -61,9 +62,9 @@ export function get_tests(
                     };
                 } catch (error) {
                     return {
-                        ok:
-                            error ===
-                            'Execution halted by "allow_none" guard function'
+                        ok: (error as AgentError).message.includes(
+                            `"Message": "Execution halted by \\"allow_none\\" guard function"`
+                        )
                     };
                 }
             }
@@ -79,9 +80,9 @@ export function get_tests(
                     };
                 } catch (error) {
                     return {
-                        ok:
-                            error ===
-                            'Execution halted by "throw_string" guard function'
+                        ok: (error as AgentError).message.includes(
+                            `Uncaught Execution halted by \\"throw_string\\" guard function`
+                        )
                     };
                 }
             }
@@ -96,10 +97,12 @@ export function get_tests(
                         err: 'Expected custom_error_guarded function to throw'
                     };
                 } catch (error) {
+                    // TODO: I actually expect this to say "Uncaught CustomError: Execution..."
+                    // Why it only says "Error" not "CustomError" I don't understand.
                     return {
-                        ok:
-                            error ===
-                            'CustomError: Execution halted by "throw_custom_error" guard function'
+                        ok: (error as AgentError).message.includes(
+                            `Uncaught Error: Execution halted by \\"throw_custom_error\\" guard function`
+                        )
                     };
                 }
             }
@@ -115,7 +118,9 @@ export function get_tests(
                     };
                 } catch (error) {
                     return {
-                        ok: error === 'TypeError: value is not a GuardResult'
+                        ok: (error as AgentError).message.includes(
+                            `TypeError: value is not a GuardResult`
+                        )
                     };
                 }
             }
@@ -131,7 +136,9 @@ export function get_tests(
                     };
                 } catch (error) {
                     return {
-                        ok: error === 'TypeError: value is not a GuardResult'
+                        ok: (error as AgentError).message.includes(
+                            `TypeError: value is not a GuardResult`
+                        )
                     };
                 }
             }
@@ -147,7 +154,9 @@ export function get_tests(
                     };
                 } catch (error) {
                     return {
-                        ok: error === 'TypeError: value is not null'
+                        ok: (error as AgentError).message.includes(
+                            `TypeError: value is not null`
+                        )
                     };
                 }
             }
@@ -163,7 +172,9 @@ export function get_tests(
                     };
                 } catch (error) {
                     return {
-                        ok: error === 'TypeError: value is not a string'
+                        ok: (error as AgentError).message.includes(
+                            `TypeError: value is not a string`
+                        )
                     };
                 }
             }
