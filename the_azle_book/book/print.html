@@ -411,15 +411,15 @@ let message: string = '';
 
 // Query calls complete quickly because they do not go through consensus
 $query;
-export function get_message(): string {
+export function getMessage(): string {
     return message;
 }
 
 // Update calls take a few seconds to complete
 // This is because they persist state changes and go through consensus
 $update;
-export function set_message(new_message: string): void {
-    message = new_message; // This change will be persisted
+export function setMessage(newMessage: string): void {
+    message = newMessage; // This change will be persisted
 }
 </code></pre>
 <p>Let's discuss each section of the code.</p>
@@ -432,7 +432,7 @@ let message: string = '';
 <p>We have created a global variable to store the state of our application. This variable is in scope to all of the functions defined in this module. We have annotated it with a type and set it equal to an empty string.</p>
 <pre><code class="language-typescript">// Query calls complete quickly because they do not go through consensus
 $query;
-export function get_message(): string {
+export function getMessage(): string {
     return message;
 }
 </code></pre>
@@ -440,8 +440,8 @@ export function get_message(): string {
 <pre><code class="language-typescript">// Update calls take a few seconds to complete
 // This is because they persist state changes and go through consensus
 $update;
-export function set_message(new_message: string): void {
-    message = new_message; // This change will be persisted
+export function setMessage(newMessage: string): void {
+    message = newMessage; // This change will be persisted
 }
 </code></pre>
 <p>We are exposing an update method here. When update methods are called they take a few seconds to complete. This is because they persist changes and go through consensus. A majority of nodes in a subnet must agree on all state changes introduced in calls to update methods. This method accepts a <code>string</code> from the caller and will store it in our global <code>message</code> variable.</p>
@@ -486,14 +486,14 @@ export function set_message(new_message: string): void {
 </code></pre>
 <h2 id="interacting-with-your-canister-from-the-command-line"><a class="header" href="#interacting-with-your-canister-from-the-command-line">Interacting with your canister from the command line</a></h2>
 <p>Once we've deployed we can ask for our message:</p>
-<pre><code class="language-bash">dfx canister call azle_hello_world get_message
+<pre><code class="language-bash">dfx canister call azle_hello_world getMessage
 </code></pre>
 <p>We should see <code>(&quot;&quot;)</code> representing an empty message.</p>
 <p>Now let's yell <code>Hello World!</code>:</p>
-<pre><code class="language-bash">dfx canister call set_message '(&quot;Hello World!&quot;)'
+<pre><code class="language-bash">dfx canister call azle_hello_world setMessage '(&quot;Hello World!&quot;)'
 </code></pre>
 <p>Retrieve the message:</p>
-<pre><code class="language-bash">dfx canister call get_message
+<pre><code class="language-bash">dfx canister call azle_hello_world getMessage
 </code></pre>
 <p>We should see <code>(&quot;Hello World!&quot;)</code>.</p>
 <h2 id="interacting-with-your-canister-from-the-web-ui"><a class="header" href="#interacting-with-your-canister-from-the-web-ui">Interacting with your canister from the web UI</a></h2>
@@ -503,7 +503,7 @@ URLs:
   Backend canister via Candid interface:
     azle_hello_world: http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai
 </code></pre>
-<p>Open up <a href="http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai">http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai</a> to access the web UI and interact with your canister.</p>
+<p>Open up <a href="http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai">http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&amp;id=rrkah-fqaaa-aaaaa-aaaaq-cai</a> or the equivalent URL from your terminal to access the web UI and interact with your canister.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="deployment"><a class="header" href="#deployment">Deployment</a></h1>
 <ul>
 <li><a href="deployment.html#starting-the-local-replica">Starting the local replica</a></li>
@@ -569,8 +569,8 @@ dfx build my_canister
 # removes the Wasm binary and state of my_canister
 dfx uninstall-code my_canister
 
-# calls the method_name method on my_canister with a string argument
-dfx canister call my_canister method_name '(&quot;This is a Candid string argument&quot;)'
+# calls the methodName method on my_canister with a string argument
+dfx canister call my_canister methodName '(&quot;This is a Candid string argument&quot;)'
 </code></pre>
 <h3 id="dfx-web-ui"><a class="header" href="#dfx-web-ui">dfx web UI</a></h3>
 <p>After deploying your canister, you should see output similar to the following in your terminal:</p>
@@ -639,13 +639,13 @@ URLs:
 <pre><code class="language-typescript">import { $query } from 'azle';
 
 $query;
-export function get_string(): string {
+export function getString(): string {
     return 'This is a query method!';
 }
 </code></pre>
-<p><code>get_string</code> can be called from the outside world through the IC's HTTP API. You'll usually invoke this API from the <a href="./deployment.html#interacting-with-your-canister"><code>dfx command line</code>, <code>dfx web UI</code>, or an agent</a>.</p>
+<p><code>getString</code> can be called from the outside world through the IC's HTTP API. You'll usually invoke this API from the <a href="./deployment.html#interacting-with-your-canister"><code>dfx command line</code>, <code>dfx web UI</code>, or an agent</a>.</p>
 <p>From the <code>dfx command line</code> you can call it like this:</p>
-<pre><code class="language-bash">dfx canister call my_canister get_string
+<pre><code class="language-bash">dfx canister call my_canister getString
 </code></pre>
 <p>Query methods are read-only. They do not persist any state changes. Take a look at the following example:</p>
 <pre><code class="language-typescript">import { $query } from 'azle';
@@ -707,16 +707,16 @@ export function increment(): nat64 {
 let message = '';
 
 $query;
-export function get_message(): string {
+export function getMessage(): string {
     return message;
 }
 
 $update;
-export function set_message(new_message: string): void {
-    message = new_message;
+export function setMessage(newMessage: string): void {
+    message = newMessage;
 }
 </code></pre>
-<p>You'll notice that we use an update method, <code>set_message</code>, only to perform the change to the global <code>message</code> variable. We use <code>get_message</code>, a query method, to read the message.</p>
+<p>You'll notice that we use an update method, <code>setMessage</code>, only to perform the change to the global <code>message</code> variable. We use <code>getMessage</code>, a query method, to read the message.</p>
 <p>Keep in mind that the heap is limited to 4 GiB, and thus there is an upper bound to global variable storage capacity. You can imagine how a simple database like the following would eventually run out of memory with too many entries:</p>
 <pre><code class="language-typescript">import { Opt, $query, $update } from 'azle';
 
@@ -774,7 +774,7 @@ export function set(key: string, value: string): void {
 }
 
 $update;
-export function set_many(entries: Entry[]): void {
+export function setMany(entries: Entry[]): void {
     entries.forEach((entry) =&gt; {
         const result = db.insert(entry.key, entry.value);
 
@@ -801,8 +801,8 @@ export function set(key: string, value: string): void {
 }
 
 $update;
-export function set_many(num_entries: nat64): void {
-    for (let i = 0; i &lt; num_entries; i++) {
+export function setMany(numEntries: nat64): void {
+    for (let i = 0; i &lt; numEntries; i++) {
         const result = db.insert(i.toString(), i.toString());
 
         if (!ok(result)) {
@@ -811,10 +811,10 @@ export function set_many(num_entries: nat64): void {
     }
 }
 </code></pre>
-<p>From the <code>dfx command line</code> you can call <code>set_many</code> like this:</p>
-<pre><code class="language-bash">dfx canister call my_canister set_many '(100_000)'
+<p>From the <code>dfx command line</code> you can call <code>setMany</code> like this:</p>
+<pre><code class="language-bash">dfx canister call my_canister setMany '(100_000)'
 </code></pre>
-<p>With an argument of <code>100_000</code>, <code>set_many</code> will fail with an error <code>...exceeded the instruction limit for single message execution</code>.</p>
+<p>With an argument of <code>100_000</code>, <code>setMany</code> will fail with an error <code>...exceeded the instruction limit for single message execution</code>.</p>
 <p>In terms of update scalability, an individual canister <a href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6">likely has an upper bound of ~900 updates per second</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="candid"><a class="header" href="#candid">Candid</a></h1>
 <ul>
@@ -869,10 +869,11 @@ export function set_many(num_entries: nat64): void {
     Func,
     Principal,
     $query,
-    Query
+    Query,
+    Record
 } from 'azle';
 
-type Candid = {
+type Candid = Record&lt;{
     text: string;
     blob: blob;
     nat: nat;
@@ -889,22 +890,22 @@ type Candid = {
     float32: float32;
     bool: boolean;
     opt: Opt&lt;nat&gt;;
-    record: {
-        first_name: string;
-        last_name: string;
+    record: Record&lt;{
+        firstName: string;
+        lastName: string;
         age: nat8;
-    };
+    }&gt;;
     variant: Variant&lt;{
         Tag1: null;
         Tag2: null;
         Tag3: int;
     }&gt;;
-    func: Func&lt;() =&gt; Candid&gt;;
+    func: Func&lt;Query&lt;() =&gt; Candid&gt;&gt;;
     principal: Principal;
-};
+}&gt;;
 
 $query;
-export function candid_types(): Candid {
+export function candidTypes(): Candid {
     return {
         text: 'text',
         blob: Uint8Array.from([]),
@@ -923,8 +924,8 @@ export function candid_types(): Candid {
         bool: true,
         opt: null,
         record: {
-            first_name: 'John',
-            last_name: 'Doe',
+            firstName: 'John',
+            lastName: 'Doe',
             age: 35
         },
         variant: {
@@ -932,13 +933,13 @@ export function candid_types(): Candid {
         },
         func: [
             Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
-            'candid_types'
+            'candidTypes'
         ],
         principal: Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
     };
 }
 </code></pre>
-<p>Calling <code>candid_types</code> with <code>dfx</code> will return:</p>
+<p>Calling <code>candidTypes</code> with <code>dfx</code> will return:</p>
 <pre><code>(
   record {
     &quot;int&quot; = 170_141_183_460_469_231_731_687_303_715_884_105_727 : int;
@@ -946,9 +947,11 @@ export function candid_types(): Candid {
     &quot;opt&quot; = null;
     &quot;principal&quot; = principal &quot;ryjl3-tyaaa-aaaaa-aaaba-cai&quot;;
     &quot;blob&quot; = vec {};
-    &quot;func&quot; = func &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;.candid_types;
+    &quot;bool&quot; = true;
+    &quot;func&quot; = func &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;.candidTypes;
     &quot;int8&quot; = 127 : int8;
     &quot;nat8&quot; = 255 : nat8;
+    &quot;text&quot; = &quot;text&quot;;
     &quot;nat16&quot; = 65_535 : nat16;
     &quot;nat32&quot; = 4_294_967_295 : nat32;
     &quot;nat64&quot; = 18_446_744_073_709_551_615 : nat64;
@@ -956,8 +959,13 @@ export function candid_types(): Candid {
     &quot;int32&quot; = 2_147_483_647 : int32;
     &quot;int64&quot; = 9_223_372_036_854_775_807 : int64;
     &quot;variant&quot; = variant { Tag1 };
-    &quot;float32&quot; = 3.1415927 : float32;
-    &quot;float64&quot; = 2.718281828459045 : float64;
+    &quot;float32&quot; = 0 : float32;
+    &quot;float64&quot; = 0 : float64;
+    &quot;record&quot; = record {
+      age = 35 : nat8;
+      firstName = &quot;John&quot;;
+      lastName = &quot;Doe&quot;;
+    };
   },
 )
 </code></pre>
@@ -967,24 +975,24 @@ export function candid_types(): Candid {
 <pre><code class="language-typescript">import { $query } from 'azle';
 
 $query;
-export function get_string(): string {
+export function getString(): string {
     return 'Hello world!';
 }
 
 $query;
-export function print_string(string: string): string {
+export function printString(string: string): string {
     console.log(typeof string);
     return string;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_string : () -&gt; (text) query;
-    print_string : (text) -&gt; (text) query;
+    getString : () -&gt; (text) query;
+    printString : (text) -&gt; (text) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_string '(&quot;Hello world!&quot;)'
+<pre><code class="language-bash">dfx canister call candid_canister printString '(&quot;Hello world!&quot;)'
 (&quot;Hello world!&quot;)
 </code></pre>
 <h3 id="blob"><a class="header" href="#blob">blob</a></h3>
@@ -993,27 +1001,27 @@ export function print_string(string: string): string {
 <pre><code class="language-typescript">import { blob, $query } from 'azle';
 
 $query;
-export function get_blob(): blob {
+export function getBlob(): blob {
     return Uint8Array.from([68, 73, 68, 76, 0, 0]);
 }
 
 $query;
-export function print_blob(blob: blob): blob {
+export function printBlob(blob: blob): blob {
     console.log(typeof blob);
     return blob;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_blob : () -&gt; (vec nat8) query;
-    print_blob : (vec nat8) -&gt; (vec nat8) query;
+    getBlob : () -&gt; (vec nat8) query;
+    printBlob : (vec nat8) -&gt; (vec nat8) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_blob '(vec { 68; 73; 68; 76; 0; 0; })'
+<pre><code class="language-bash">dfx canister call candid_canister printBlob '(vec { 68; 73; 68; 76; 0; 0; })'
 (blob &quot;DIDL\00\00&quot;)
 
-dfx canister call candid_canister print_blob '(blob &quot;DIDL\00\00&quot;)'
+dfx canister call candid_canister printBlob '(blob &quot;DIDL\00\00&quot;)'
 (blob &quot;DIDL\00\00&quot;)
 </code></pre>
 <h3 id="nat"><a class="header" href="#nat">nat</a></h3>
@@ -1022,24 +1030,24 @@ dfx canister call candid_canister print_blob '(blob &quot;DIDL\00\00&quot;)'
 <pre><code class="language-typescript">import { nat, $query } from 'azle';
 
 $query;
-export function get_nat(): nat {
+export function getNat(): nat {
     return 340_282_366_920_938_463_463_374_607_431_768_211_455n;
 }
 
 $query;
-export function print_nat(nat: nat): nat {
+export function printNat(nat: nat): nat {
     console.log(typeof nat);
     return nat;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_nat : () -&gt; (nat) query;
-    print_nat : (nat) -&gt; (nat) query;
+    getNat : () -&gt; (nat) query;
+    printNat : (nat) -&gt; (nat) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_nat '(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)'
+<pre><code class="language-bash">dfx canister call candid_canister printNat '(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)'
 (340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)
 </code></pre>
 <h3 id="nat64"><a class="header" href="#nat64">nat64</a></h3>
@@ -1048,24 +1056,24 @@ export function print_nat(nat: nat): nat {
 <pre><code class="language-typescript">import { nat64, $query } from 'azle';
 
 $query;
-export function get_nat64(): nat64 {
+export function getNat64(): nat64 {
     return 18_446_744_073_709_551_615n;
 }
 
 $query;
-export function print_nat64(nat64: nat64): nat64 {
+export function printNat64(nat64: nat64): nat64 {
     console.log(typeof nat64);
     return nat64;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_nat64 : () -&gt; (nat64) query;
-    print_nat64 : (nat64) -&gt; (nat64) query;
+    getNat64 : () -&gt; (nat64) query;
+    printNat64 : (nat64) -&gt; (nat64) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_nat64 '(18_446_744_073_709_551_615 : nat64)'
+<pre><code class="language-bash">dfx canister call candid_canister printNat64 '(18_446_744_073_709_551_615 : nat64)'
 (18_446_744_073_709_551_615 : nat64)
 </code></pre>
 <h3 id="nat32"><a class="header" href="#nat32">nat32</a></h3>
@@ -1074,24 +1082,24 @@ export function print_nat64(nat64: nat64): nat64 {
 <pre><code class="language-typescript">import { nat32, $query } from 'azle';
 
 $query;
-export function get_nat32(): nat32 {
+export function getNat32(): nat32 {
     return 4_294_967_295;
 }
 
 $query;
-export function print_nat32(nat32: nat32): nat32 {
+export function printNat32(nat32: nat32): nat32 {
     console.log(typeof nat32);
     return nat32;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_nat32 : () -&gt; (nat32) query;
-    print_nat32 : (nat32) -&gt; (nat32) query;
+    getNat32 : () -&gt; (nat32) query;
+    printNat32 : (nat32) -&gt; (nat32) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_nat32 '(4_294_967_295 : nat32)'
+<pre><code class="language-bash">dfx canister call candid_canister printNat32 '(4_294_967_295 : nat32)'
 (4_294_967_295 : nat32)
 </code></pre>
 <h3 id="nat16"><a class="header" href="#nat16">nat16</a></h3>
@@ -1100,24 +1108,24 @@ export function print_nat32(nat32: nat32): nat32 {
 <pre><code class="language-typescript">import { nat16, $query } from 'azle';
 
 $query;
-export function get_nat16(): nat16 {
+export function getNat16(): nat16 {
     return 65_535;
 }
 
 $query;
-export function print_nat16(nat16: nat16): nat16 {
+export function printNat16(nat16: nat16): nat16 {
     console.log(typeof nat16);
     return nat16;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_nat16 : () -&gt; (nat16) query;
-    print_nat16 : (nat16) -&gt; (nat16) query;
+    getNat16 : () -&gt; (nat16) query;
+    printNat16 : (nat16) -&gt; (nat16) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_nat16 '(65_535 : nat16)'
+<pre><code class="language-bash">dfx canister call candid_canister printNat16 '(65_535 : nat16)'
 (65_535 : nat16)
 </code></pre>
 <h3 id="nat8"><a class="header" href="#nat8">nat8</a></h3>
@@ -1126,24 +1134,24 @@ export function print_nat16(nat16: nat16): nat16 {
 <pre><code class="language-typescript">import { nat8, $query } from 'azle';
 
 $query;
-export function get_nat8(): nat8 {
+export function getNat8(): nat8 {
     return 255;
 }
 
 $query;
-export function print_nat8(nat8: nat8): nat8 {
+export function printNat8(nat8: nat8): nat8 {
     console.log(typeof nat8);
     return nat8;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_nat8 : () -&gt; (nat8) query;
-    print_nat8 : (nat8) -&gt; (nat8) query;
+    getNat8 : () -&gt; (nat8) query;
+    printNat8 : (nat8) -&gt; (nat8) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_nat8 '(255 : nat8)'
+<pre><code class="language-bash">dfx canister call candid_canister printNat8 '(255 : nat8)'
 (255 : nat8)
 </code></pre>
 <h3 id="int"><a class="header" href="#int">int</a></h3>
@@ -1152,24 +1160,24 @@ export function print_nat8(nat8: nat8): nat8 {
 <pre><code class="language-typescript">import { int, $query } from 'azle';
 
 $query;
-export function get_int(): int {
+export function getInt(): int {
     return 170_141_183_460_469_231_731_687_303_715_884_105_727n;
 }
 
 $query;
-export function print_int(int: int): int {
+export function printInt(int: int): int {
     console.log(typeof int);
     return int;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_int : () -&gt; (int) query;
-    print_int : (int) -&gt; (int) query;
+    getInt : () -&gt; (int) query;
+    printInt : (int) -&gt; (int) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_int '(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)'
+<pre><code class="language-bash">dfx canister call candid_canister printInt '(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)'
 (170_141_183_460_469_231_731_687_303_715_884_105_727 : int)
 </code></pre>
 <h3 id="int64"><a class="header" href="#int64">int64</a></h3>
@@ -1178,24 +1186,24 @@ export function print_int(int: int): int {
 <pre><code class="language-typescript">import { int64, $query } from 'azle';
 
 $query;
-export function get_int64(): int64 {
+export function getInt64(): int64 {
     return 9_223_372_036_854_775_807n;
 }
 
 $query;
-export function print_int64(int64: int64): int64 {
+export function printInt64(int64: int64): int64 {
     console.log(typeof int64);
     return int64;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_int64 : () -&gt; (int64) query;
-    print_int64 : (int64) -&gt; (int64) query;
+    getInt64 : () -&gt; (int64) query;
+    printInt64 : (int64) -&gt; (int64) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_int64 '(9_223_372_036_854_775_807 : int64)'
+<pre><code class="language-bash">dfx canister call candid_canister printInt64 '(9_223_372_036_854_775_807 : int64)'
 (9_223_372_036_854_775_807 : int64)
 </code></pre>
 <h3 id="int32"><a class="header" href="#int32">int32</a></h3>
@@ -1204,24 +1212,24 @@ export function print_int64(int64: int64): int64 {
 <pre><code class="language-typescript">import { int32, $query } from 'azle';
 
 $query;
-export function get_int32(): int32 {
+export function getInt32(): int32 {
     return 2_147_483_647;
 }
 
 $query;
-export function print_int32(int32: int32): int32 {
+export function printInt32(int32: int32): int32 {
     console.log(typeof int32);
     return int32;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_int32 : () -&gt; (int32) query;
-    print_int32 : (int32) -&gt; (int32) query;
+    getInt32 : () -&gt; (int32) query;
+    printInt32 : (int32) -&gt; (int32) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_int32 '(2_147_483_647 : int32)'
+<pre><code class="language-bash">dfx canister call candid_canister printInt32 '(2_147_483_647 : int32)'
 (2_147_483_647 : int32)
 </code></pre>
 <h3 id="int16"><a class="header" href="#int16">int16</a></h3>
@@ -1230,24 +1238,24 @@ export function print_int32(int32: int32): int32 {
 <pre><code class="language-typescript">import { int16, $query } from 'azle';
 
 $query;
-export function get_int16(): int16 {
+export function getInt16(): int16 {
     return 32_767;
 }
 
 $query;
-export function print_int16(int16: int16): int16 {
+export function printInt16(int16: int16): int16 {
     console.log(typeof int16);
     return int16;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_int16 : () -&gt; (int16) query;
-    print_int16 : (int16) -&gt; (int16) query;
+    getInt16 : () -&gt; (int16) query;
+    printInt16 : (int16) -&gt; (int16) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_int16 '(32_767 : int16)'
+<pre><code class="language-bash">dfx canister call candid_canister printInt16 '(32_767 : int16)'
 (32_767 : int16)
 </code></pre>
 <h3 id="int8"><a class="header" href="#int8">int8</a></h3>
@@ -1256,24 +1264,24 @@ export function print_int16(int16: int16): int16 {
 <pre><code class="language-typescript">import { int8, $query } from 'azle';
 
 $query;
-export function get_int8(): int8 {
+export function getInt8(): int8 {
     return 127;
 }
 
 $query;
-export function print_int8(int8: int8): int8 {
+export function printInt8(int8: int8): int8 {
     console.log(typeof int8);
     return int8;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_int8 : () -&gt; (int8) query;
-    print_int8 : (int8) -&gt; (int8) query;
+    getInt8 : () -&gt; (int8) query;
+    printInt8 : (int8) -&gt; (int8) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_int8 '(127 : int8)'
+<pre><code class="language-bash">dfx canister call candid_canister printInt8 '(127 : int8)'
 (127 : int8)
 </code></pre>
 <h3 id="float64"><a class="header" href="#float64">float64</a></h3>
@@ -1282,24 +1290,24 @@ export function print_int8(int8: int8): int8 {
 <pre><code class="language-typescript">import { float64, $query } from 'azle';
 
 $query;
-export function get_float64(): float64 {
+export function getFloat64(): float64 {
     return Math.E;
 }
 
 $query;
-export function print_float64(float64: float64): float64 {
+export function printFloat64(float64: float64): float64 {
     console.log(typeof float64);
     return float64;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_float64 : () -&gt; (float64) query;
-    print_float64 : (float64) -&gt; (float64) query;
+    getFloat64 : () -&gt; (float64) query;
+    printFloat64 : (float64) -&gt; (float64) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_float64 '(2.718281828459045 : float64)'
+<pre><code class="language-bash">dfx canister call candid_canister printFloat64 '(2.718281828459045 : float64)'
 (2.718281828459045 : float64)
 </code></pre>
 <h3 id="float32"><a class="header" href="#float32">float32</a></h3>
@@ -1308,24 +1316,24 @@ export function print_float64(float64: float64): float64 {
 <pre><code class="language-typescript">import { float32, $query } from 'azle';
 
 $query;
-export function get_float32(): float32 {
+export function getFloat32(): float32 {
     return Math.PI;
 }
 
 $query;
-export function print_float32(float32: float32): float32 {
+export function printFloat32(float32: float32): float32 {
     console.log(typeof float32);
     return float32;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_float32 : () -&gt; (float32) query;
-    print_float32 : (float32) -&gt; (float32) query;
+    getFloat32 : () -&gt; (float32) query;
+    printFloat32 : (float32) -&gt; (float32) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_float32 '(3.1415927 : float32)'
+<pre><code class="language-bash">dfx canister call candid_canister printFloat32 '(3.1415927 : float32)'
 (3.1415927 : float32)
 </code></pre>
 <h3 id="bool"><a class="header" href="#bool">bool</a></h3>
@@ -1334,24 +1342,24 @@ export function print_float32(float32: float32): float32 {
 <pre><code class="language-typescript">import { $query } from 'azle';
 
 $query;
-export function get_bool(): boolean {
+export function getBool(): boolean {
     return true;
 }
 
 $query;
-export function print_bool(bool: boolean): boolean {
+export function printBool(bool: boolean): boolean {
     console.log(typeof bool);
     return bool;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_bool : () -&gt; (bool) query;
-    print_bool : (bool) -&gt; (bool) query;
+    getBool : () -&gt; (bool) query;
+    printBool : (bool) -&gt; (bool) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_bool '(true)'
+<pre><code class="language-bash">dfx canister call candid_canister printBool '(true)'
 (true)
 </code></pre>
 <h3 id="null"><a class="header" href="#null">null</a></h3>
@@ -1360,24 +1368,24 @@ export function print_bool(bool: boolean): boolean {
 <pre><code class="language-typescript">import { $query } from 'azle';
 
 $query;
-export function get_null(): null {
+export function getNull(): null {
     return null;
 }
 
 $query;
-export function print_null(null_: null): null {
+export function printNull(null_: null): null {
     console.log(typeof null_);
     return null_;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_null : () -&gt; (null) query;
-    print_null : (null) -&gt; (null) query;
+    getNull : () -&gt; (null) query;
+    printNull : (null) -&gt; (null) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_null '(null)'
+<pre><code class="language-bash">dfx canister call candid_canister printNull '(null)'
 (null : null)
 </code></pre>
 <h3 id="vec"><a class="header" href="#vec">vec</a></h3>
@@ -1386,24 +1394,24 @@ export function print_null(null_: null): null {
 <pre><code class="language-typescript">import { int32, $query } from 'azle';
 
 $query;
-export function get_numbers(): int32[] {
+export function getNumbers(): int32[] {
     return [0, 1, 2, 3];
 }
 
 $query;
-export function print_numbers(numbers: int32[]): int32[] {
+export function printNumbers(numbers: int32[]): int32[] {
     console.log(typeof numbers);
     return numbers;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_numbers : () -&gt; (vec int32) query;
-    print_numbers : (vec int32) -&gt; (vec int32) query;
+    getNumbers : () -&gt; (vec int32) query;
+    printNumbers : (vec int32) -&gt; (vec int32) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_numbers '(vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })'
+<pre><code class="language-bash">dfx canister call candid_canister printNumbers '(vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })'
 (vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })
 </code></pre>
 <h3 id="opt"><a class="header" href="#opt">opt</a></h3>
@@ -1412,26 +1420,26 @@ export function print_numbers(numbers: int32[]): int32[] {
 <pre><code class="language-typescript">import { Opt, $query } from 'azle';
 
 $query;
-export function get_opt_some(): Opt&lt;boolean&gt; {
+export function getOptSome(): Opt&lt;boolean&gt; {
     return true;
 }
 
 $query;
-export function get_opt_none(): Opt&lt;boolean&gt; {
+export function getOptNone(): Opt&lt;boolean&gt; {
     return null;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_opt_none : () -&gt; (opt bool) query;
-    get_opt_some : () -&gt; (opt bool) query;
+    getOptNone : () -&gt; (opt bool) query;
+    getOptSome : () -&gt; (opt bool) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister get_opt_some
+<pre><code class="language-bash">dfx canister call candid_canister getOptSome
 (opt true)
 
-dfx canister call candid_canister get_opt_none
+dfx canister call candid_canister getOptNone
 (null)
 </code></pre>
 <h3 id="record"><a class="header" href="#record">record</a></h3>
@@ -1445,7 +1453,7 @@ type User = Record&lt;{
 }&gt;;
 
 $query;
-export function get_user(): User {
+export function getUser(): User {
     return {
         id: Principal.fromUint8Array(Uint8Array.from([0])),
         username: 'lastmjs'
@@ -1453,7 +1461,7 @@ export function get_user(): User {
 }
 
 $query;
-export function print_user(user: User): User {
+export function printUser(user: User): User {
     console.log(typeof user);
     return user;
 }
@@ -1461,12 +1469,12 @@ export function print_user(user: User): User {
 <p>Candid:</p>
 <pre><code>type User = record { id : principal; username : text };
 service : () -&gt; {
-    get_user : () -&gt; (User) query;
-    print_user : (User) -&gt; (User) query;
+    getUser : () -&gt; (User) query;
+    printUser : (User) -&gt; (User) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_user '(record { id = principal &quot;2ibo7-dia&quot;; username = &quot;lastmjs&quot; })'
+<pre><code class="language-bash">dfx canister call candid_canister printUser '(record { id = principal &quot;2ibo7-dia&quot;; username = &quot;lastmjs&quot; })'
 (record { id = principal &quot;2ibo7-dia&quot;; username = &quot;lastmjs&quot; })
 </code></pre>
 <h3 id="variant"><a class="header" href="#variant">variant</a></h3>
@@ -1487,14 +1495,14 @@ type Emotion = Variant&lt;{
 }&gt;;
 
 $query;
-export function get_reaction(): Reaction {
+export function getReaction(): Reaction {
     return {
         Fire: null
     };
 }
 
 $query;
-export function print_reaction(reaction: Reaction): Reaction {
+export function printReaction(reaction: Reaction): Reaction {
     console.log(typeof reaction);
     return reaction;
 }
@@ -1503,12 +1511,12 @@ export function print_reaction(reaction: Reaction): Reaction {
 <pre><code>type Emotion = variant { Sad; Indifferent; Happy };
 type Reaction = variant { Emotion : Emotion; Fire; ThumbsUp };
 service : () -&gt; {
-    get_reaction : () -&gt; (Reaction) query;
-    print_reaction : (Reaction) -&gt; (Reaction) query;
+    getReaction : () -&gt; (Reaction) query;
+    printReaction : (Reaction) -&gt; (Reaction) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_reaction '(variant { Fire })'
+<pre><code class="language-bash">dfx canister call candid_canister printReaction '(variant { Fire })'
 (variant { Fire })
 </code></pre>
 <h3 id="func"><a class="header" href="#func">func</a></h3>
@@ -1521,30 +1529,27 @@ service : () -&gt; {
 type BasicFunc = Func&lt;Query&lt;(param1: string) =&gt; string&gt;&gt;;
 
 $query;
-export function get_basic_func(): BasicFunc {
-    return [
-        Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
-        'get_basic_func'
-    ];
+export function getBasicFunc(): BasicFunc {
+    return [Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'), 'getBasicFunc'];
 }
 
 $query;
-export function print_basic_func(basic_func: BasicFunc): BasicFunc {
-    console.log(typeof basic_func);
-    return basic_func;
+export function printBasicFunc(basicFunc: BasicFunc): BasicFunc {
+    console.log(typeof basicFunc);
+    return basicFunc;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_basic_func : () -&gt; (func (text) -&gt; (text) query) query;
-    print_basic_func : (func (text) -&gt; (text) query) -&gt; (
+    getBasicFunc : () -&gt; (func (text) -&gt; (text) query) query;
+    printBasicFunc : (func (text) -&gt; (text) query) -&gt; (
         func (text) -&gt; (text) query,
       ) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_basic_func '(func &quot;r7inp-6aaaa-aaaaa-aaabq-cai&quot;.get_basic_func)'
-(func &quot;r7inp-6aaaa-aaaaa-aaabq-cai&quot;.get_basic_func)
+<pre><code class="language-bash">dfx canister call candid_canister printBasicFunc '(func &quot;r7inp-6aaaa-aaaaa-aaabq-cai&quot;.getBasicFunc)'
+(func &quot;r7inp-6aaaa-aaaaa-aaabq-cai&quot;.getBasicFunc)
 </code></pre>
 <h3 id="service"><a class="header" href="#service">service</a></h3>
 <p><a href="https://github.com/demergent-labs/azle/issues/445">Not yet implemented.</a></p>
@@ -1554,24 +1559,24 @@ export function print_basic_func(basic_func: BasicFunc): BasicFunc {
 <pre><code class="language-typescript">import { Principal, $query } from 'azle';
 
 $query;
-export function get_principal(): Principal {
+export function getPrincipal(): Principal {
     return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
 }
 
 $query;
-export function print_principal(principal: Principal): Principal {
+export function printPrincipal(principal: Principal): Principal {
     console.log(typeof principal);
     return principal;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_principal : () -&gt; (principal) query;
-    print_principal : (principal) -&gt; (principal) query;
+    getPrincipal : () -&gt; (principal) query;
+    printPrincipal : (principal) -&gt; (principal) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_principal '(principal &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;)'
+<pre><code class="language-bash">dfx canister call candid_canister printPrincipal '(principal &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;)'
 (principal &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;)
 </code></pre>
 <h3 id="reserved"><a class="header" href="#reserved">reserved</a></h3>
@@ -1580,24 +1585,24 @@ export function print_principal(principal: Principal): Principal {
 <pre><code class="language-typescript">import { $query, reserved } from 'azle';
 
 $query;
-export function get_reserved(): reserved {
+export function getReserved(): reserved {
     return 'anything';
 }
 
 $query;
-export function print_reserved(reserved: reserved): reserved {
+export function printReserved(reserved: reserved): reserved {
     console.log(typeof reserved);
     return reserved;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_reserved : () -&gt; (reserved) query;
-    print_reserved : (reserved) -&gt; (reserved) query;
+    getReserved : () -&gt; (reserved) query;
+    printReserved : (reserved) -&gt; (reserved) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_reserved '(null)'
+<pre><code class="language-bash">dfx canister call candid_canister printReserved '(null)'
 (null : reserved)
 </code></pre>
 <h3 id="empty"><a class="header" href="#empty">empty</a></h3>
@@ -1606,26 +1611,26 @@ export function print_reserved(reserved: reserved): reserved {
 <pre><code class="language-typescript">import { empty, $query } from 'azle';
 
 $query;
-export function get_empty(): empty {
+export function getEmpty(): empty {
     throw 'Anything you want';
 }
 
 // Note: It is impossible to call this function because it requires an argument
 // but there is no way to pass an &quot;empty&quot; value as an argument.
 $query;
-export function print_empty(empty: empty): empty {
+export function printEmpty(empty: empty): empty {
     console.log(typeof empty);
     throw 'Anything you want';
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_empty : () -&gt; (empty) query;
-    print_empty : (empty) -&gt; (empty) query;
+    getEmpty : () -&gt; (empty) query;
+    printEmpty : (empty) -&gt; (empty) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_empty '(&quot;You can put anything here&quot;)'
+<pre><code class="language-bash">dfx canister call candid_canister printEmpty '(&quot;You can put anything here&quot;)'
 Error: Failed to create argument blob.
 Caused by: Failed to create argument blob.
   Invalid data: Unable to serialize Candid values: type mismatch: &quot;You can put anything here&quot; cannot be of type empty
@@ -1650,7 +1655,7 @@ Caused by: Failed to create argument blob.
 
 let map = new StableBTreeMap&lt;nat8, string&gt;(0, 100, 1_000);
 </code></pre>
-<p>This is a <code>StableBTreeMap</code> with a key of type <code>nat8</code> and a value of type <code>string</code>. Key and value types can be any <a href="http://localhost:3000/candid.html#candid-types">Candid type</a>.</p>
+<p>This is a <code>StableBTreeMap</code> with a key of type <code>nat8</code> and a value of type <code>string</code>. Key and value types can be any <a href="candid.html">Candid type</a>.</p>
 <p>This <code>StableBTreeMap</code> also has a <code>memory id</code> of <code>0</code>, a maximum key size of <code>100</code> bytes and a maximum value size of <code>1_000</code> bytes. You must statically specify the <code>memory id</code>, maximum key size, and maximum value sizes (they cannot be variables).</p>
 <p>Each <code>StableBTreeMap</code> instance must have a unique <code>memory id</code>. Once a <code>memory id</code> is allocated, it cannot be used with a different <code>StableBTreeMap</code>. This means you can't create another <code>StableBTreeMap</code> using the same <code>memory id</code>, and you can't change the key or value types of an existing <code>StableBTreeMap</code>. <a href="https://github.com/demergent-labs/azle/issues/843">This problem will be addressed</a>.</p>
 <p>Here's an example showing all of the basic <code>StableBTreeMap</code> operations:</p>
@@ -1669,15 +1674,15 @@ type Key = nat8;
 type Value = string;
 
 type InsertResult = Variant&lt;{
-    ok: Opt&lt;Value&gt;;
-    err: InsertError;
+    Ok: Opt&lt;Value&gt;;
+    Err: InsertError;
 }&gt;;
 
 let map = new StableBTreeMap&lt;Key, Value&gt;(0, 100, 1_000);
 
 $query;
-export function contains_key(key: Key): boolean {
-    return map.contains_key(key);
+export function containsKey(key: Key): boolean {
+    return map.containsKey(key);
 }
 
 $query;
@@ -1691,8 +1696,8 @@ export function insert(key: Key, value: Value): InsertResult {
 }
 
 $query;
-export function is_empty(): boolean {
-    return map.is_empty();
+export function isEmpty(): boolean {
+    return map.isEmpty();
 }
 
 $query;
@@ -1725,8 +1730,8 @@ export function values(): Value[] {
     blob,
     ic,
     InsertError,
+    match,
     nat64,
-    ok,
     Opt,
     Principal,
     $query,
@@ -1738,62 +1743,57 @@ export function values(): Value[] {
 
 type User = Record&lt;{
     id: Principal;
-    created_at: nat64;
-    recording_ids: Principal[];
+    createdAt: nat64;
+    recordingIds: Principal[];
     username: string;
 }&gt;;
 
 type Recording = Record&lt;{
     id: Principal;
     audio: blob;
-    created_at: nat64;
+    createdAt: nat64;
     name: string;
-    user_id: Principal;
+    userId: Principal;
 }&gt;;
 
 let users = new StableBTreeMap&lt;Principal, User&gt;(0, 38, 100_000);
 let recordings = new StableBTreeMap&lt;Principal, Recording&gt;(1, 38, 5_000_000);
 
 $update;
-export function create_user(username: string): Variant&lt;{
-    ok: User;
-    err: InsertError;
+export function createUser(username: string): Variant&lt;{
+    Ok: User;
+    Err: InsertError;
 }&gt; {
-    const id = generate_id();
+    const id = generateId();
     const user: User = {
         id,
-        created_at: ic.time(),
-        recording_ids: [],
+        createdAt: ic.time(),
+        recordingIds: [],
         username
     };
 
     const result = users.insert(user.id, user);
 
-    if (!ok(result)) {
-        return {
-            err: result.err
-        };
-    }
-
-    return {
-        ok: user
-    };
+    return match(result, {
+        Ok: () =&gt; ({ Ok: user }),
+        Err: (err) =&gt; ({ Err: err })
+    });
 }
 
 $query;
-export function read_users(): User[] {
+export function readUsers(): User[] {
     return users.values();
 }
 
 $query;
-export function read_user_by_id(id: Principal): Opt&lt;User&gt; {
+export function readUserById(id: Principal): Opt&lt;User&gt; {
     return users.get(id);
 }
 
 $update;
-export function delete_user(id: Principal): Variant&lt;{
-    ok: User;
-    err: Variant&lt;{
+export function deleteUser(id: Principal): Variant&lt;{
+    Ok: User;
+    Err: Variant&lt;{
         UserDoesNotExist: Principal;
     }&gt;;
 }&gt; {
@@ -1801,98 +1801,97 @@ export function delete_user(id: Principal): Variant&lt;{
 
     if (user === null) {
         return {
-            err: {
+            Err: {
                 UserDoesNotExist: id
             }
         };
     }
 
-    user.recording_ids.forEach((recording_id) =&gt; {
-        recordings.remove(recording_id);
+    user.recordingIds.forEach((recordingId) =&gt; {
+        recordings.remove(recordingId);
     });
 
     users.remove(user.id);
 
     return {
-        ok: user
+        Ok: user
     };
 }
 
 $update;
-export function create_recording(
+export function createRecording(
     audio: blob,
     name: string,
-    user_id: Principal
+    userId: Principal
 ): Variant&lt;{
-    ok: Recording;
-    err: Variant&lt;{
+    Ok: Recording;
+    Err: Variant&lt;{
         InsertError: InsertError;
         UserDoesNotExist: Principal;
     }&gt;;
 }&gt; {
-    const user = users.get(user_id);
+    const user = users.get(userId);
 
     if (user === null) {
         return {
-            err: {
-                UserDoesNotExist: user_id
+            Err: {
+                UserDoesNotExist: userId
             }
         };
     }
 
-    const id = generate_id();
+    const id = generateId();
     const recording: Recording = {
         id,
         audio,
-        created_at: ic.time(),
+        createdAt: ic.time(),
         name,
-        user_id
+        userId
     };
 
-    const create_recording_result = recordings.insert(recording.id, recording);
+    const createRecordingResult = recordings.insert(recording.id, recording);
 
-    if (!ok(create_recording_result)) {
-        return {
-            err: {
-                InsertError: create_recording_result.err
+    return match(createRecordingResult, {
+        Ok: () =&gt; {
+            const updatedUser: User = {
+                ...user,
+                recordingIds: [...user.recordingIds, recording.id]
+            };
+            const updateUserResult = users.insert(updatedUser.id, updatedUser);
+
+            return match(updateUserResult, {
+                Ok: () =&gt; ({
+                    Ok: recording
+                }),
+                Err: (err) =&gt; ({
+                    Err: {
+                        InsertError: err
+                    }
+                })
+            });
+        },
+        Err: (err) =&gt; ({
+            Err: {
+                InsertError: err
             }
-        };
-    }
-
-    const updated_user: User = {
-        ...user,
-        recording_ids: [...user.recording_ids, recording.id]
-    };
-
-    const update_user_result = users.insert(updated_user.id, updated_user);
-
-    if (!ok(update_user_result)) {
-        return {
-            err: {
-                InsertError: update_user_result.err
-            }
-        };
-    }
-
-    return {
-        ok: recording
-    };
+        })
+    });
 }
 
 $query;
-export function read_recordings(): Recording[] {
+export function readRecordings(): Recording[] {
     return recordings.values();
 }
 
 $query;
-export function read_recording_by_id(id: Principal): Opt&lt;Recording&gt; {
+export function readRecordingById(id: Principal): Opt&lt;Recording&gt; {
     return recordings.get(id);
 }
 
 $update;
-export function delete_recording(id: Principal): Variant&lt;{
-    ok: Recording;
-    err: Variant&lt;{
+export function deleteRecording(id: Principal): Variant&lt;{
+    Ok: Recording;
+    Err: Variant&lt;{
         InsertError: InsertError;
         RecordingDoesNotExist: Principal;
         UserDoesNotExist: Principal;
@@ -1902,52 +1901,53 @@ export function delete_recording(id: Principal): Variant&lt;{
 
     if (recording === null) {
         return {
-            err: {
+            Err: {
                 RecordingDoesNotExist: id
             }
         };
     }
 
-    const user = users.get(recording.user_id);
+    const user = users.get(recording.userId);
 
     if (user === null) {
         return {
-            err: {
-                UserDoesNotExist: recording.user_id
+            Err: {
+                UserDoesNotExist: recording.userId
             }
         };
     }
 
-    const updated_user: User = {
+    const updatedUser: User = {
         ...user,
-        recording_ids: user.recording_ids.filter(
-            (recording_id) =&gt; recording_id.toText() !== recording.id.toText()
+        recordingIds: user.recordingIds.filter(
+            (recordingId) =&gt; recordingId.toText() !== recording.id.toText()
         )
     };
 
-    const update_user_result = users.insert(updated_user.id, updated_user);
+    const updateUserResult = users.insert(updatedUser.id, updatedUser);
 
-    if (!ok(update_user_result)) {
-        return {
-            err: {
-                InsertError: update_user_result.err
+    return match(updateUserResult, {
+        Ok: () =&gt; {
+            recordings.remove(id);
+
+            return {
+                Ok: recording
+            };
+        },
+        Err: (err) =&gt; ({
+            Err: {
+                InsertError: err
             }
-        };
-    }
-
-    recordings.remove(id);
-
-    return {
-        ok: recording
-    };
+        })
+    });
 }
 
-function generate_id(): Principal {
-    const random_bytes = new Array(29)
+function generateId(): Principal {
+    const randomBytes = new Array(29)
         .fill(0)
         .map((_) =&gt; Math.floor(Math.random() * 256));
 
-    return Principal.fromUint8Array(Uint8Array.from(random_bytes));
+    return Principal.fromUint8Array(Uint8Array.from(randomBytes));
 }
 </code></pre>
 <p>The example above shows a very basic audio recording backend application. There are two types of entities that need to be stored, <code>User</code> and <code>Recording</code>. These are represented as <code>Candid</code> records.</p>
@@ -1956,17 +1956,17 @@ function generate_id(): Principal {
 
 type User = Record&lt;{
     id: Principal;
-    created_at: nat64;
-    recording_ids: Principal[];
+    createdAt: nat64;
+    recordingIds: Principal[];
     username: string;
 }&gt;;
 
 type Recording = Record&lt;{
     id: Principal;
     audio: blob;
-    created_at: nat64;
+    createdAt: nat64;
     name: string;
-    user_id: Principal;
+    userId: Principal;
 }&gt;;
 
 let users = new StableBTreeMap&lt;Principal, User&gt;(0, 38, 100_000);
@@ -1975,8 +1975,8 @@ let recordings = new StableBTreeMap&lt;Principal, Recording&gt;(1, 38, 5_000_000
 <p>Notice that each <code>StableBTreeMap</code> has a unique <code>memory id</code>. The maximum key and value sizes are also set according to the expected application usage.</p>
 <p>You can figure out the appropriate maximum key and value sizes by reasoning about your application and engaging in some trial and error using the <code>insert</code> method. Calling <code>insert</code> on a <code>StableBTreeMap</code> returns an <code>InsertResult</code> variant that looks like this:</p>
 <pre><code class="language-typescript">type InsertResult&lt;T&gt; = Variant&lt;{
-    ok: T;
-    err: InsertError;
+    Ok: T;
+    Err: InsertError;
 }&gt;;
 
 type InsertError = Variant&lt;{
@@ -1996,7 +1996,7 @@ type ValueTooLarge = Record&lt;{
 </code></pre>
 <p>The <code>InsertError</code> variant will in some cases have the information that you need to determine the maximum key or value size. If you attempt to insert a key or value that is too large, the <code>KeyTooLarge</code> and <code>ValueTooLarge</code> records will show you the size of the value that you attempted to insert. You can increase the maximum key or value size based on the information you receive from the <code>KeyTooLarge</code> and <code>ValueTooLarge</code> records and try inserting again.</p>
 <p>Thus through some trial and error you can whittle your way to a correct solution. In some cases all of your values will have an obvious static maximum size. In the audio recording example, trial and error revealed that <code>Principal</code> is most likely always 38 bytes, thus the maximum key size is set to 38.</p>
-<p>Maximum value sizes can be more tricky to figure out, especially if the values are records or variants with dynamic fields such as arrays. <code>User</code> has one such dynamic field, <code>recording_ids</code>. Since each recording id is a Principal, we know that each will take up 38 bytes. The other fields on <code>User</code> shouldn't take up too many bytes so we'll ignore them for our analysis.</p>
+<p>Maximum value sizes can be more tricky to figure out, especially if the values are records or variants with dynamic fields such as arrays. <code>User</code> has one such dynamic field, <code>recordingIds</code>. Since each recording id is a Principal, we know that each will take up 38 bytes. The other fields on <code>User</code> shouldn't take up too many bytes so we'll ignore them for our analysis.</p>
 <p>We've set the maximum value size of <code>User</code> to be 100_000 bytes. If we divide 100_00 by 38, we get ~2_631. This will result in each user being able to store around that many recordings. That's acceptable for our example, and so we'll go with it.</p>
 <p>As for <code>Recording</code>, the largest dynamic field is <code>audio</code>, which will be the actual bytes of the audio recording. We've set the maximum value size here to 5_000_000, which should allow for recordings of ~5 MB in size. That seems reasonable for our example, and so we'll go with it.</p>
 <p>As you can see, finding the correct maximum key and value sizes is a bit of an art right now. Combining some trial and error with reasoning about your specific application should get you a working solution in most cases. It's our hope that the need to specify maximum key and value sizes will be removed in the future.</p>
@@ -2032,11 +2032,11 @@ $update;
 export function transfer(to: Principal, amount: nat64): nat64 {
     const from = ic.caller();
 
-    const from_balance = accounts.get(from) ?? 0n;
-    const to_balance = accounts.get(to) ?? 0n;
+    const fromBalance = accounts.get(from) ?? 0n;
+    const toBalance = accounts.get(to) ?? 0n;
 
-    accounts.insert(from, from_balance - amount);
-    accounts.insert(to, to_balance + amount);
+    accounts.insert(from, fromBalance - amount);
+    accounts.insert(to, toBalance + amount);
 
     return amount;
 }
@@ -2057,7 +2057,7 @@ class TokenCanister extends ExternalCanister {
 </code></pre>
 <p>Once you have a canister definition you can instantiate it with the canister's <code>Principal</code> and then invoke its methods.</p>
 <p>Here's how to instantiate <code>TokenCanister</code>:</p>
-<pre><code class="language-typescript">const token_canister = new TokenCanister(
+<pre><code class="language-typescript">const tokenCanister = new TokenCanister(
     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
 );
 </code></pre>
@@ -2077,7 +2077,7 @@ class TokenCanister extends ExternalCanister {
     transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
 }
 
-const token_canister = new TokenCanister(
+const tokenCanister = new TokenCanister(
     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
 );
 
@@ -2087,11 +2087,11 @@ export async function payout(
     amount: nat64
 ): Promise&lt;
     Variant&lt;{
-        ok: nat64;
-        err: string;
+        Ok: nat64;
+        Err: string;
     }&gt;
 &gt; {
-    return await token_canister.transfer(to, amount).call();
+    return await tokenCanister.transfer(to, amount).call();
 }
 </code></pre>
 <p>Notice that the <code>token_canister.transfer</code> method, because it is a cross-canister method, returns a <code>CanisterResult</code>. All cross-canister calls return <code>CanisterResult</code>, which has an <code>ok</code> or <code>err</code> property depending on if the cross-canister call was successful or not.</p>
@@ -2107,30 +2107,30 @@ export function transfer(
     to: Principal,
     amount: nat64
 ): Variant&lt;{
-    ok: nat64;
-    err: Variant&lt;{
+    Ok: nat64;
+    Err: Variant&lt;{
         InsufficientBalance: nat64;
     }&gt;;
 }&gt; {
     const from = ic.caller();
 
-    const from_balance = accounts.get(from) ?? 0n;
+    const fromBalance = accounts.get(from) ?? 0n;
 
-    if (from_balance &lt; amount) {
+    if (fromBalance &lt; amount) {
         return {
-            err: {
-                InsufficientBalance: from_balance
+            Err: {
+                InsufficientBalance: fromBalance
             }
         };
     }
 
-    const to_balance = accounts.get(to) ?? 0n;
+    const toBalance = accounts.get(to) ?? 0n;
 
-    accounts.insert(from, from_balance - amount);
-    accounts.insert(to, to_balance + amount);
+    accounts.insert(from, fromBalance - amount);
+    accounts.insert(to, toBalance + amount);
 
     return {
-        ok: amount
+        Ok: amount
     };
 }
 </code></pre>
@@ -2138,8 +2138,8 @@ export function transfer(
 <pre><code class="language-typescript">import {
     CanisterResult,
     ExternalCanister,
+    match,
     nat64,
-    ok,
     Principal,
     $update,
     update,
@@ -2153,15 +2153,15 @@ class TokenCanister extends ExternalCanister {
         amount: nat64
     ) =&gt; CanisterResult&lt;
         Variant&lt;{
-            ok: nat64;
-            err: Variant&lt;{
+            Ok: nat64;
+            Err: Variant&lt;{
                 InsufficientBalance: nat64;
             }&gt;;
         }&gt;
     &gt;;
 }
 
-const token_canister = new TokenCanister(
+const tokenCanister = new TokenCanister(
     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
 );
 
@@ -2171,32 +2171,23 @@ export async function payout(
     amount: nat64
 ): Promise&lt;
     Variant&lt;{
-        ok: nat64;
-        err: string;
+        Ok: nat64;
+        Err: string;
     }&gt;
 &gt; {
-    const canister_result = await token_canister.transfer(to, amount).call();
+    const canisterResult = await tokenCanister.transfer(to, amount).call();
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    const transfer_result = canister_result.ok;
-
-    if (!ok(transfer_result)) {
-        return {
-            err: JSON.stringify(transfer_result.err)
-        };
-    }
-
-    return {
-        ok: transfer_result.ok
-    };
+    return match(canisterResult, {
+        Ok: (transferResult) =&gt;
+            match(transferResult, {
+                Ok: (ok) =&gt; ({ Ok: ok }),
+                Err: (err) =&gt; ({ Err: JSON.stringify(err) })
+            }),
+        Err: (err) =&gt; ({ Err: err })
+    });
 }
 </code></pre>
-<p>Azle provides an <code>ok</code> function that will help you determine if a result is <code>ok</code> or not. This provides some benefits over using <code>in</code>, such as <code>if ('err' in result)</code> or <code>if ('ok' in result)</code>. There are other ways to check for the <code>ok</code> or <code>err</code> properties as well, feel free to experiment with the way that you prefer. They all have trade-offs.</p>
+<p>Azle provides a <code>match</code> function that will help you handle variant branches. This provides some benefits over using <code>in</code>, such as <code>if ('Err' in result)</code> or <code>if ('Ok' in result)</code>. There are other ways to check for the <code>Ok</code> or <code>Err</code> properties as well, feel free to experiment with the way that you prefer. They all have trade-offs.</p>
 <p>So far we have only shown a cross-canister call from an update method. Update methods can call other update methods or query methods (but not composite query methods as discussed below). If an update method calls a query method, that query method will be called in replicated mode. Replicated mode engages the consensus process, but for queries the state will still be discarded.</p>
 <p>Cross-canister calls can also be initiated from query methods (not yet live on IC mainnet but this works locally). These are known as composite queries, and in Azle they are simply <code>async</code> query methods. Composite queries can call other composite query methods and regular query methods. Composite queries cannot call update methods.</p>
 <p>Here's an example of a composite query method:</p>
@@ -2211,21 +2202,21 @@ export async function payout(
 
 class SomeCanister extends ExternalCanister {
     @query
-    query_for_boolean: () =&gt; CanisterResult&lt;boolean&gt;;
+    queryForBoolean: () =&gt; CanisterResult&lt;boolean&gt;;
 }
 
-const some_canister = new SomeCanister(
+const someCanister = new SomeCanister(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
 $query;
-export async function query_some_canister(): Promise&lt;
+export async function querySomeCanister(): Promise&lt;
     Variant&lt;{
-        ok: boolean;
-        err: string;
+        Ok: boolean;
+        Err: string;
     }&gt;
 &gt; {
-    return await some_canister.query_for_boolean().call();
+    return await someCanister.queryForBoolean().call();
 }
 </code></pre>
 <p>You can expect cross-canister calls within the same subnet to take up to a few seconds to complete, and cross-canister calls across subnets <a href="https://forum.dfinity.org/t/can-i-run-multiple-inter-canister-update-calls-in-parallel/13115/6">take about double that time</a>.</p>
@@ -2242,19 +2233,19 @@ export async function query_some_canister(): Promise&lt;
 
 class SomeCanister extends ExternalCanister {
     @update
-    receive_notification: () =&gt; CanisterResult&lt;void&gt;;
+    receiveNotification: () =&gt; CanisterResult&lt;void&gt;;
 }
 
-const some_canister = new SomeCanister(
+const someCanister = new SomeCanister(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
 $update;
-export function receive_notification(): Variant&lt;{
-    ok: null;
-    err: RejectionCode;
+export function sendNotification(): Variant&lt;{
+    Ok: null;
+    Err: RejectionCode;
 }&gt; {
-    return some_canister.receive_notification().notify();
+    return someCanister.receiveNotification().notify();
 }
 </code></pre>
 <p>If you need to send cycles with your cross-canister call, you can call <code>cycles</code> before calling <code>call</code> or <code>notify</code>:</p>
@@ -2270,19 +2261,19 @@ export function receive_notification(): Variant&lt;{
 
 class SomeCanister extends ExternalCanister {
     @update
-    receive_notification: () =&gt; CanisterResult&lt;void&gt;;
+    receiveNotification: () =&gt; CanisterResult&lt;void&gt;;
 }
 
-const some_canister = new SomeCanister(
+const someCanister = new SomeCanister(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
 $update;
-export function receive_notification(): Variant&lt;{
-    ok: null;
-    err: RejectionCode;
+export function sendNotification(): Variant&lt;{
+    Ok: null;
+    Err: RejectionCode;
 }&gt; {
-    return some_canister.receive_notification().cycles(1_000_000n).notify();
+    return someCanister.receiveNotification().cycles(1_000_000n).notify();
 }
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="http"><a class="header" href="#http">HTTP</a></h1>
@@ -2348,38 +2339,46 @@ export function http_request(req: HttpRequest): HttpResponse {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ethereum_json_rpc">ethereum_json_rpc</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, $init, nat32, ok, $query, StableBTreeMap, $update } from 'azle';
+<pre><code class="language-typescript">import {
+    Alias,
+    ic,
+    $init,
+    match,
+    nat32,
+    $query,
+    StableBTreeMap,
+    $update
+} from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
-    management_canister
+    managementCanister
 } from 'azle/canisters/management';
 import decodeUtf8 from 'decode-utf8';
 import encodeUtf8 from 'encode-utf8';
 
-type JSON = string;
+type JSON = Alias&lt;string&gt;;
 
-let stable_storage = new StableBTreeMap&lt;string, string&gt;(0, 25, 1_000);
+let stableStorage = new StableBTreeMap&lt;string, string&gt;(0, 25, 1_000);
 
 $init;
-export function init(ethereum_url: string) {
-    stable_storage.insert('ethereum_url', ethereum_url);
+export function init(ethereumUrl: string) {
+    stableStorage.insert('ethereumUrl', ethereumUrl);
 }
 
 $update;
-export async function eth_get_balance(ethereum_address: string): Promise&lt;JSON&gt; {
-    const max_response_bytes = 200n;
+export async function ethGetBalance(ethereumAddress: string): Promise&lt;JSON&gt; {
+    const maxResponseBytes = 200n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
-    const cycle_cost_base = 400_000_000n;
-    const cycle_cost_per_byte = 300_000n; // TODO not sure on this exact cost
-    const cycle_cost_total =
-        cycle_cost_base + cycle_cost_per_byte * max_response_bytes;
+    const cycleCostBase = 400_000_000n;
+    const cycleCostPerByte = 300_000n; // TODO not sure on this exact cost
+    const cycleCostTotal = cycleCostBase + cycleCostPerByte * maxResponseBytes;
 
-    const http_result = await management_canister
+    const httpResult = await managementCanister
         .http_request({
-            url: stable_storage.get('ethereum_url') ?? '',
-            max_response_bytes,
+            url: stableStorage.get('ethereumUrl') ?? '',
+            max_response_bytes: maxResponseBytes,
             method: {
                 post: null
             },
@@ -2389,40 +2388,38 @@ export async function eth_get_balance(ethereum_address: string): Promise&lt;JSON
                     JSON.stringify({
                         jsonrpc: '2.0',
                         method: 'eth_getBalance',
-                        params: [ethereum_address, 'earliest'],
+                        params: [ethereumAddress, 'earliest'],
                         id: 1
                     })
                 )
             ),
             transform: {
-                function: [ic.id(), 'eth_transform'],
+                function: [ic.id(), 'ethTransform'],
                 context: Uint8Array.from([])
             }
         })
-        .cycles(cycle_cost_total)
+        .cycles(cycleCostTotal)
         .call();
 
-    if (!ok(http_result)) {
-        ic.trap(http_result.err ?? 'http_result had an error');
-    }
-
-    return decodeUtf8(Uint8Array.from(http_result.ok.body));
+    return match(httpResult, {
+        Ok: (httpResponse) =&gt; decodeUtf8(Uint8Array.from(httpResponse.body)),
+        Err: (err) =&gt; ic.trap(err ?? 'httpResult had an error')
+    });
 }
 
 $update;
-export async function eth_get_block_by_number(number: nat32): Promise&lt;JSON&gt; {
-    const max_response_bytes = 2_000n;
+export async function ethGetBlockByNumber(number: nat32): Promise&lt;JSON&gt; {
+    const maxResponseBytes = 2_000n;
 
     // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
-    const cycle_cost_base = 400_000_000n;
-    const cycle_cost_per_byte = 300_000n; // TODO not sure on this exact cost
-    const cycle_cost_total =
-        cycle_cost_base + cycle_cost_per_byte * max_response_bytes;
+    const cycleCostBase = 400_000_000n;
+    const cycleCostPerByte = 300_000n; // TODO not sure on this exact cost
+    const cycleCostTotal = cycleCostBase + cycleCostPerByte * maxResponseBytes;
 
-    const http_result = await management_canister
+    const httpResult = await managementCanister
         .http_request({
-            url: stable_storage.get('ethereum_url') ?? '',
-            max_response_bytes,
+            url: stableStorage.get('ethereumUrl') ?? '',
+            max_response_bytes: maxResponseBytes,
             method: {
                 post: null
             },
@@ -2438,22 +2435,21 @@ export async function eth_get_block_by_number(number: nat32): Promise&lt;JSON&gt
                 )
             ),
             transform: {
-                function: [ic.id(), 'eth_transform'],
+                function: [ic.id(), 'ethTransform'],
                 context: Uint8Array.from([])
             }
         })
-        .cycles(cycle_cost_total)
+        .cycles(cycleCostTotal)
         .call();
 
-    if (!ok(http_result)) {
-        ic.trap(http_result.err ?? 'http_result had an error');
-    }
-
-    return decodeUtf8(Uint8Array.from(http_result.ok.body));
+    return match(httpResult, {
+        Ok: (httpResponse) =&gt; decodeUtf8(Uint8Array.from(httpResponse.body)),
+        Err: (err) =&gt; ic.trap(err ?? 'httpResult had an error')
+    });
 }
 
 $query;
-export function eth_transform(args: HttpTransformArgs): HttpResponse {
+export function ethTransform(args: HttpTransformArgs): HttpResponse {
     return {
         ...args.response,
         headers: []
@@ -2464,35 +2460,35 @@ export function eth_transform(args: HttpTransformArgs): HttpResponse {
 <p>This chapter is a work in progress.</p>
 <p>You can access the management canister like this:</p>
 <pre><code class="language-typescript">import { blob, $update, Variant } from 'azle';
-import { management_canister } from 'azle/canisters/management';
+import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function random_bytes(): Promise&lt;
+export async function randomBytes(): Promise&lt;
     Variant&lt;{
-        ok: blob;
-        err: string;
+        Ok: blob;
+        Err: string;
     }&gt;
 &gt; {
-    return await management_canister.raw_rand().call();
+    return await managementCanister.raw_rand().call();
 }
 </code></pre>
 <p>See the <a href="https://github.com/demergent-labs/azle/blob/main/canisters/management/index.ts">management canister types</a> for all methods and their parameter and return types.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister-lifecycle"><a class="header" href="#canister-lifecycle">Canister Lifecycle</a></h1>
 <p>This chapter is a work in progress.</p>
-<pre><code class="language-typescript">import { $init, $post_upgrade, $pre_upgrade } from 'azle';
+<pre><code class="language-typescript">import { $init, $postUpgrade, $preUpgrade } from 'azle';
 
 $init;
 export function init() {
     console.log('runs on first canister install');
 }
 
-$pre_upgrade;
-export function pre_upgrade() {
+$preUpgrade;
+export function preUpgrade() {
     console.log('runs before canister upgrade');
 }
 
-$post_upgrade;
-export function post_upgrade() {
+$postUpgrade;
+export function postUpgrade() {
     console.log('runs after canister upgrade');
 }
 </code></pre>
@@ -2503,21 +2499,21 @@ export function post_upgrade() {
     Duration,
     ic,
     int8,
-    ok,
+    match,
     $query,
     Record,
     TimerId,
     $update
 } from 'azle';
-import { management_canister } from 'azle/canisters/management';
+import { managementCanister } from 'azle/canisters/management';
 
 type StatusReport = Record&lt;{
     single: boolean;
     inline: int8;
     capture: string;
     repeat: int8;
-    single_cross_canister: blob;
-    repeat_cross_canister: blob;
+    singleCrossCanister: blob;
+    repeatCrossCanister: blob;
 }&gt;;
 
 type TimerIds = Record&lt;{
@@ -2525,8 +2521,8 @@ type TimerIds = Record&lt;{
     inline: TimerId;
     capture: TimerId;
     repeat: TimerId;
-    single_cross_canister: TimerId;
-    repeat_cross_canister: TimerId;
+    singleCrossCanister: TimerId;
+    repeatCrossCanister: TimerId;
 }&gt;;
 
 let status: StatusReport = {
@@ -2534,92 +2530,94 @@ let status: StatusReport = {
     inline: 0,
     capture: '',
     repeat: 0,
-    single_cross_canister: Uint8Array.from([]),
-    repeat_cross_canister: Uint8Array.from([])
+    singleCrossCanister: Uint8Array.from([]),
+    repeatCrossCanister: Uint8Array.from([])
 };
 
 $update;
-export function clear_timer(timer_id: TimerId): void {
-    ic.clear_timer(timer_id);
-    console.log(`timer ${timer_id} cancelled`);
+export function clearTimer(timerId: TimerId): void {
+    ic.clearTimer(timerId);
+    console.log(`timer ${timerId} cancelled`);
 }
 
 $update;
-export function set_timers(delay: Duration, interval: Duration): TimerIds {
-    const captured_value = '🚩';
+export function setTimers(delay: Duration, interval: Duration): TimerIds {
+    const capturedValue = '🚩';
 
-    const single_id = ic.set_timer(delay, one_time_timer_callback);
+    const singleId = ic.setTimer(delay, oneTimeTimerCallback);
 
-    const inline_id = ic.set_timer(delay, () =&gt; {
+    const inlineId = ic.setTimer(delay, () =&gt; {
         status.inline = 1;
         console.log('Inline timer called');
     });
 
-    const capture_id = ic.set_timer(delay, () =&gt; {
-        status.capture = captured_value;
-        console.log(`Timer captured value ${captured_value}`);
+    const captureId = ic.setTimer(delay, () =&gt; {
+        status.capture = capturedValue;
+        console.log(`Timer captured value ${capturedValue}`);
     });
 
-    const repeat_id = ic.set_timer_interval(interval, () =&gt; {
+    const repeatId = ic.setTimerInterval(interval, () =&gt; {
         status.repeat++;
         console.log(`Repeating timer. Call ${status.repeat}`);
     });
 
-    const single_cross_canister_id = ic.set_timer(
+    const singleCrossCanisterId = ic.setTimer(
         delay,
-        single_cross_canister_timer_callback
+        singleCrossCanisterTimerCallback
     );
 
-    const repeat_cross_canister_id = ic.set_timer_interval(
+    const repeatCrossCanisterId = ic.setTimerInterval(
         interval,
-        repeat_cross_canister_timer_callback
+        repeatCrossCanisterTimerCallback
     );
 
     return {
-        single: single_id,
-        inline: inline_id,
-        capture: capture_id,
-        repeat: repeat_id,
-        single_cross_canister: single_cross_canister_id,
-        repeat_cross_canister: repeat_cross_canister_id
+        single: singleId,
+        inline: inlineId,
+        capture: captureId,
+        repeat: repeatId,
+        singleCrossCanister: singleCrossCanisterId,
+        repeatCrossCanister: repeatCrossCanisterId
     };
 }
 
 $query;
-export function status_report(): StatusReport {
+export function statusReport(): StatusReport {
     return status;
 }
 
-function one_time_timer_callback(): void {
+function oneTimeTimerCallback(): void {
     status.single = true;
-    console.log('one_time_timer_callback called');
+    console.log('oneTimeTimerCallback called');
 }
 
-async function single_cross_canister_timer_callback(): Promise&lt;void&gt; {
-    console.log('single_cross_canister_timer_callback');
+async function singleCrossCanisterTimerCallback(): Promise&lt;void&gt; {
+    console.log('singleCrossCanisterTimerCallback');
 
-    const result = await management_canister.raw_rand().call();
+    const result = await managementCanister.raw_rand().call();
 
-    if (!ok(result)) {
-        return;
-    }
-
-    status.single_cross_canister = result.ok;
+    match(result, {
+        Ok: (ok) =&gt; {
+            status.singleCrossCanister = ok;
+        },
+        Err: (err) =&gt; ic.trap(err)
+    });
 }
 
-async function repeat_cross_canister_timer_callback(): Promise&lt;void&gt; {
-    console.log('repeat_cross_canister_timer_callback');
+async function repeatCrossCanisterTimerCallback(): Promise&lt;void&gt; {
+    console.log('repeatCrossCanisterTimerCallback');
 
-    const result = await management_canister.raw_rand().call();
+    const result = await managementCanister.raw_rand().call();
 
-    if (!ok(result)) {
-        return;
-    }
-
-    status.repeat_cross_canister = Uint8Array.from([
-        ...status.repeat_cross_canister,
-        ...result.ok
-    ]);
+    match(result, {
+        Ok: (ok) =&gt; {
+            status.repeatCrossCanister = Uint8Array.from([
+                ...status.repeatCrossCanister,
+                ...ok
+            ]);
+        },
+        Err: (err) =&gt; ic.trap(err)
+    });
 }
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cycles"><a class="header" href="#cycles">Cycles</a></h1>

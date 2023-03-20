@@ -96,8 +96,8 @@ dfx build my_canister
 # removes the Wasm binary and state of my_canister
 dfx uninstall-code my_canister
 
-# calls the method_name method on my_canister with a string argument
-dfx canister call my_canister method_name '("This is a Candid string argument")'
+# calls the methodName method on my_canister with a string argument
+dfx canister call my_canister methodName '("This is a Candid string argument")'
 ```
 
 ### dfx web UI

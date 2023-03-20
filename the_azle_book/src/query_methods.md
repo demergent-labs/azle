@@ -17,17 +17,17 @@ The most basic way to expose your canister's functionality publicly is through a
 import { $query } from 'azle';
 
 $query;
-export function get_string(): string {
+export function getString(): string {
     return 'This is a query method!';
 }
 ```
 
-`get_string` can be called from the outside world through the IC's HTTP API. You'll usually invoke this API from the [`dfx command line`, `dfx web UI`, or an agent](./deployment.md#interacting-with-your-canister).
+`getString` can be called from the outside world through the IC's HTTP API. You'll usually invoke this API from the [`dfx command line`, `dfx web UI`, or an agent](./deployment.md#interacting-with-your-canister).
 
 From the `dfx command line` you can call it like this:
 
 ```bash
-dfx canister call my_canister get_string
+dfx canister call my_canister getString
 ```
 
 Query methods are read-only. They do not persist any state changes. Take a look at the following example:

@@ -49,15 +49,15 @@ let message: string = '';
 
 // Query calls complete quickly because they do not go through consensus
 $query;
-export function get_message(): string {
+export function getMessage(): string {
     return message;
 }
 
 // Update calls take a few seconds to complete
 // This is because they persist state changes and go through consensus
 $update;
-export function set_message(new_message: string): void {
-    message = new_message; // This change will be persisted
+export function setMessage(newMessage: string): void {
+    message = newMessage; // This change will be persisted
 }
 ```
 
@@ -79,7 +79,7 @@ We have created a global variable to store the state of our application. This va
 ```typescript
 // Query calls complete quickly because they do not go through consensus
 $query;
-export function get_message(): string {
+export function getMessage(): string {
     return message;
 }
 ```
@@ -90,8 +90,8 @@ We are exposing a canister query method here. When query methods are called they
 // Update calls take a few seconds to complete
 // This is because they persist state changes and go through consensus
 $update;
-export function set_message(new_message: string): void {
-    message = new_message; // This change will be persisted
+export function setMessage(newMessage: string): void {
+    message = newMessage; // This change will be persisted
 }
 ```
 
@@ -159,7 +159,7 @@ dfx deploy
 Once we've deployed we can ask for our message:
 
 ```bash
-dfx canister call azle_hello_world get_message
+dfx canister call azle_hello_world getMessage
 ```
 
 We should see `("")` representing an empty message.
@@ -167,13 +167,13 @@ We should see `("")` representing an empty message.
 Now let's yell `Hello World!`:
 
 ```bash
-dfx canister call azle_hello_world set_message '("Hello World!")'
+dfx canister call azle_hello_world setMessage '("Hello World!")'
 ```
 
 Retrieve the message:
 
 ```bash
-dfx canister call azle_hello_world get_message
+dfx canister call azle_hello_world getMessage
 ```
 
 We should see `("Hello World!")`.

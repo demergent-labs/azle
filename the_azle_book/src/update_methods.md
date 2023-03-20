@@ -37,17 +37,17 @@ import { $query, $update } from 'azle';
 let message = '';
 
 $query;
-export function get_message(): string {
+export function getMessage(): string {
     return message;
 }
 
 $update;
-export function set_message(new_message: string): void {
-    message = new_message;
+export function setMessage(newMessage: string): void {
+    message = newMessage;
 }
 ```
 
-You'll notice that we use an update method, `set_message`, only to perform the change to the global `message` variable. We use `get_message`, a query method, to read the message.
+You'll notice that we use an update method, `setMessage`, only to perform the change to the global `message` variable. We use `getMessage`, a query method, to read the message.
 
 Keep in mind that the heap is limited to 4 GiB, and thus there is an upper bound to global variable storage capacity. You can imagine how a simple database like the following would eventually run out of memory with too many entries:
 
@@ -116,7 +116,7 @@ export function set(key: string, value: string): void {
 }
 
 $update;
-export function set_many(entries: Entry[]): void {
+export function setMany(entries: Entry[]): void {
     entries.forEach((entry) => {
         const result = db.insert(entry.key, entry.value);
 
@@ -147,8 +147,8 @@ export function set(key: string, value: string): void {
 }
 
 $update;
-export function set_many(num_entries: nat64): void {
-    for (let i = 0; i < num_entries; i++) {
+export function setMany(numEntries: nat64): void {
+    for (let i = 0; i < numEntries; i++) {
         const result = db.insert(i.toString(), i.toString());
 
         if (!ok(result)) {
@@ -158,12 +158,12 @@ export function set_many(num_entries: nat64): void {
 }
 ```
 
-From the `dfx command line` you can call `set_many` like this:
+From the `dfx command line` you can call `setMany` like this:
 
 ```bash
-dfx canister call my_canister set_many '(100_000)'
+dfx canister call my_canister setMany '(100_000)'
 ```
 
-With an argument of `100_000`, `set_many` will fail with an error `...exceeded the instruction limit for single message execution`.
+With an argument of `100_000`, `setMany` will fail with an error `...exceeded the instruction limit for single message execution`.
 
 In terms of update scalability, an individual canister [likely has an upper bound of ~900 updates per second](https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6).
