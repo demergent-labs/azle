@@ -124,9 +124,9 @@ export type FinalCanisterResult<T> = RequireExactlyOne<{
 /** The return type of a guard function. Used to indicate whether the guarded function should halt or proceed. */
 export type GuardResult = Variant<{
     /** Allows the guarded function to proceed. */
-    ok: null;
+    Ok: null;
     /** Prevents the guarded function from proceeding. */
-    err: string;
+    Err: string;
 }>;
 
 export type NotifyResult = Variant<{

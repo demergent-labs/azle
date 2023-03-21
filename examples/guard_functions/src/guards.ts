@@ -3,43 +3,43 @@ import { state } from './state';
 
 export function allowModifyStateGuarded(): GuardResult {
     console.log('allowModifyStateGuarded called');
-    if (ic.method_name() === 'modifyStateGuarded') {
+    if (ic.methodName() === 'modifyStateGuarded') {
         console.log(
-            `Method ${ic.method_name()} allowed by inspectMessage's guard function: allowModifyStateGuarded`
+            `Method ${ic.methodName()} allowed by inspectMessage's guard function: allowModifyStateGuarded`
         );
     } else {
         console.log(
-            `Method ${ic.method_name()} would be rejected by inspectMessage's guard function... but we are in inspect message mode so doing so would be a contract violation. Therefore, proceeding.`
+            `Method ${ic.methodName()} would be rejected by inspectMessage's guard function... but we are in inspect message mode so doing so would be a contract violation. Therefore, proceeding.`
         );
     }
 
-    return { ok: null };
+    return { Ok: null };
 }
 
 export function allowAll(): GuardResult {
     console.log('allowAll called');
-    return { ok: null };
+    return { Ok: null };
 }
 
 export function acceptAllThenRejectAll(): GuardResult {
     console.log('acceptAllThenRejectAll called');
     if (++state.heartbeatTick > 15) {
         console.log(`Heartbeat suppressed`);
-        return { err: 'This error message will never be seen' };
+        return { Err: 'This error message will never be seen' };
     }
     console.log(`Accepted heartbeat tick #${state.heartbeatTick}`);
-    return { ok: null };
+    return { Ok: null };
 }
 
 export function incrementCounterAndAllowAll(): GuardResult {
     console.log('incrementCounterAndAllowAll called');
     state.counter++;
-    return { ok: null };
+    return { Ok: null };
 }
 
 export function allowNone(): GuardResult {
     console.log('allowNone called');
-    return { err: 'Execution halted by "allowNone" guard function' };
+    return { Err: 'Execution halted by "allowNone" guard function' };
 }
 
 export function throwString(): GuardResult {
@@ -62,7 +62,7 @@ export function throwCustomError(): GuardResult {
 
 export function preventUpgrades(): GuardResult {
     console.log('preventUpgrades called');
-    return { err: 'Upgrades to this canister are disabled' };
+    return { Err: 'Upgrades to this canister are disabled' };
 }
 
 export function returnInvalidType(): GuardResult {
@@ -77,10 +77,10 @@ export function returnNonGuardResultObject(): GuardResult {
 
 export function returnNonNullOkValue(): GuardResult {
     console.log('nonNullOkValue called');
-    return { ok: 'Something other than null' };
+    return { Ok: 'Something other than null' };
 }
 
 export function returnNonStringErrValue(): GuardResult {
     console.log('nonStringErrValue called');
-    return { err: { badProp: 'Something other than a string' } };
+    return { Err: { badProp: 'Something other than a string' } };
 }
