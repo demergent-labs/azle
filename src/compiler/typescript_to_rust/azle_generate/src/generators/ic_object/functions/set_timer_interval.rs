@@ -55,7 +55,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 });
             };
 
-            let timer_id = ic_cdk::timer::set_timer_interval(interval, closure);
+            let timer_id = ic_cdk_timers::set_timer_interval(interval, closure);
 
             Ok(timer_id.try_into_vm_value(_context).unwrap())
         }

@@ -29,8 +29,8 @@ pub fn generate_from_vm_value_impl(function_name: String) -> TokenStream {
     quote! {
         impl CdkActTryFromVmValue<#function_name, &mut boa_engine::Context> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<#function_name, CdkActTryFromVmValueError> {
-                let candid_func: candid::Func = self.try_from_vm_value(context).unwrap();
-                Ok(candid_func.into())
+                let candid_func: ic_cdk::export::candid::Func = self.try_from_vm_value(context).unwrap();
+                Ok(#function_name::new(candid_func.principal, candid_func.method))
             }
         }
     }

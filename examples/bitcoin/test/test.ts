@@ -110,7 +110,7 @@ function test_canister_functionality() {
 
                 return {
                     Ok:
-                        result.Ok === null &&
+                        result.Ok === true &&
                         balance_before_transaction === 0 &&
                         balance_after_transaction === 1
                 };
