@@ -16,43 +16,41 @@ type arr =
     | Uint32Array
     | BigUint64Array;
 
-export function get_tests(
-    list_of_lists_canister: ActorSubclass<_SERVICE>
-): Test[] {
+export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'list_of_string_one test',
+            name: 'listOfStringOne test',
             test: async () => {
-                const expected_result = ['hello', 'world'];
-                const result = await list_of_lists_canister.list_of_string_one(
-                    expected_result
+                const expectedResult = ['hello', 'world'];
+                const result = await listOfListsCanister.listOfStringOne(
+                    expectedResult
                 );
 
                 return {
-                    ok: deepEqual(result, expected_result)
+                    Ok: deepEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_string_two test',
+            name: 'listOfStringTwo test',
             test: async () => {
-                const expected_result = [
+                const expectedResult = [
                     ['hello', 'world'],
                     ['hi', 'earth']
                 ];
-                const result = await list_of_lists_canister.list_of_string_two(
-                    expected_result
+                const result = await listOfListsCanister.listOfStringTwo(
+                    expectedResult
                 );
 
                 return {
-                    ok: deepEqual(result, expected_result)
+                    Ok: deepEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_string_four test',
+            name: 'listOfStringFour test',
             test: async () => {
-                const expected_result = [
+                const expectedResult = [
                     [
                         [
                             ['hello', 'world'],
@@ -74,19 +72,19 @@ export function get_tests(
                         ]
                     ]
                 ];
-                const result = await list_of_lists_canister.list_of_string_four(
-                    expected_result
+                const result = await listOfListsCanister.listOfStringFour(
+                    expectedResult
                 );
 
                 return {
-                    ok: deepEqual(result, expected_result)
+                    Ok: deepEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_list_of_int8',
+            name: 'listOfListOfInt8',
             test: async () => {
-                const expected_result = [
+                const expectedResult = [
                     [
                         [
                             [
@@ -107,142 +105,140 @@ export function get_tests(
                         [[[[new Int8Array([3])]]], [[[new Int8Array([4])]]]]
                     ]
                 ];
-                const result =
-                    await list_of_lists_canister.list_of_list_of_int8();
+                const result = await listOfListsCanister.listOfListOfInt8();
 
                 return {
-                    ok: arrEqual(result, expected_result)
+                    Ok: arrEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_null test',
+            name: 'listOfNull test',
             test: async () => {
-                const expected_result = [
+                const expectedResult = [
                     [[null], [null]],
                     [
                         [null, null, null],
                         [null, null, null]
                     ]
                 ];
-                const result = await list_of_lists_canister.list_of_null(
-                    expected_result
+                const result = await listOfListsCanister.listOfNull(
+                    expectedResult
                 );
 
                 return {
-                    ok: deepEqual(result, expected_result)
+                    Ok: deepEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_bool test',
+            name: 'listOfBool test',
             test: async () => {
-                const expected_result = [[[false]]];
-                const result = await list_of_lists_canister.list_of_bool(
-                    expected_result
+                const expectedResult = [[[false]]];
+                const result = await listOfListsCanister.listOfBool(
+                    expectedResult
                 );
 
                 return {
-                    ok: deepEqual(result, expected_result)
+                    Ok: deepEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_string test',
+            name: 'listOfString test',
             test: async () => {
-                const expected_result = [[['hello']]];
-                const result = await list_of_lists_canister.list_of_string(
-                    expected_result
+                const expectedResult = [[['hello']]];
+                const result = await listOfListsCanister.listOfString(
+                    expectedResult
                 );
 
                 return {
-                    ok: deepEqual(result, expected_result)
+                    Ok: deepEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_option_string test',
+            name: 'listOfOptionString test',
             test: async () => {
-                const expected_result: ([] | [string])[][][] = [
+                const expectedResult: ([] | [string])[][][] = [
                     [[['hello'], []], [[], [], []], [['world']]]
                 ];
-                const result =
-                    await list_of_lists_canister.list_of_option_string(
-                        expected_result
-                    );
+                const result = await listOfListsCanister.listOfOptionString(
+                    expectedResult
+                );
 
                 return {
-                    ok: deepEqual(result, expected_result)
+                    Ok: deepEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_empty test',
+            name: 'listOfEmpty test',
             test: async () => {
                 try {
-                    const result = await list_of_lists_canister.list_of_empty();
+                    const result = await listOfListsCanister.listOfEmpty();
                 } catch (error) {
                     return {
-                        ok: (error as any).message.startsWith('Call failed')
+                        Ok: (error as any).message.startsWith('Call failed')
                     };
                 }
 
                 return {
-                    ok: false
+                    Ok: false
                 };
             }
         },
         {
-            name: 'list_of_reserved test',
+            name: 'listOfReserved test',
             test: async () => {
-                const expected_result = [
+                const expectedResult = [
                     [[null], [null]],
                     [
                         [null, null, null],
                         [null, null, null]
                     ]
                 ];
-                const result = await list_of_lists_canister.list_of_reserved();
+                const result = await listOfListsCanister.listOfReserved();
 
                 return {
-                    ok: deepEqual(result, expected_result)
+                    Ok: deepEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_func test',
+            name: 'listOfFunc test',
             test: async () => {
-                const expected_result: [Principal, string][][][] = [
+                const expectedResult: [Principal, string][][][] = [
                     [
                         [
-                            [Principal.fromText('aaaaa-aa'), 'create_canister'],
-                            [Principal.fromText('aaaaa-aa'), 'install_code']
+                            [Principal.fromText('aaaaa-aa'), 'createCanister'],
+                            [Principal.fromText('aaaaa-aa'), 'installCode']
                         ]
                     ]
                 ];
-                const result = await list_of_lists_canister.list_of_func(
-                    expected_result
+                const result = await listOfListsCanister.listOfFunc(
+                    expectedResult
                 );
 
                 return {
-                    ok:
-                        expected_result[0][0][0][0].toText() ===
+                    Ok:
+                        expectedResult[0][0][0][0].toText() ===
                             result[0][0][0][0].toText() &&
-                        expected_result[0][0][0][1] === result[0][0][0][1] &&
-                        expected_result[0][0][1][0].toText() ===
+                        expectedResult[0][0][0][1] === result[0][0][0][1] &&
+                        expectedResult[0][0][1][0].toText() ===
                             result[0][0][1][0].toText() &&
-                        expected_result[0][0][1][1] === result[0][0][1][1]
+                        expectedResult[0][0][1][1] === result[0][0][1][1]
                 };
             }
         },
         {
-            name: 'list_of_principal test',
+            name: 'listOfPrincipal test',
             test: async () => {
-                const expected_result = [[[Principal.fromText('aaaaa-aa')]]];
-                const result = await list_of_lists_canister.list_of_principal(
-                    expected_result
+                const expectedResult = [[[Principal.fromText('aaaaa-aa')]]];
+                const result = await listOfListsCanister.listOfPrincipal(
+                    expectedResult
                 );
-                const principal_eq = (a: any, b: any) => {
+                const principalEq = (a: any, b: any) => {
                     return (
                         'toText' in a &&
                         'toText' in b &&
@@ -251,180 +247,180 @@ export function get_tests(
                 };
 
                 return {
-                    ok:
+                    Ok:
                         result[0][0][0].toText() ===
-                        expected_result[0][0][0].toText()
+                        expectedResult[0][0][0].toText()
                 };
             }
         },
         {
-            name: 'list_of_f64 test',
+            name: 'listOfF64 test',
             test: async () => {
-                const expected_result = [[[1.234]]];
-                const result = await list_of_lists_canister.list_of_f64(
-                    expected_result
+                const expectedResult = [[[1.234]]];
+                const result = await listOfListsCanister.listOfF64(
+                    expectedResult
                 );
 
                 return {
-                    ok: deepEqual(result, expected_result)
+                    Ok: deepEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_f32 test',
+            name: 'listOfF32 test',
             test: async () => {
-                const expected_result = [[[1.234]]];
-                const result = await list_of_lists_canister.list_of_f32(
-                    expected_result
+                const expectedResult = [[[1.234]]];
+                const result = await listOfListsCanister.listOfF32(
+                    expectedResult
                 );
 
                 return {
-                    ok:
-                        Math.round(expected_result[0][0][0]) ===
+                    Ok:
+                        Math.round(expectedResult[0][0][0]) ===
                         Math.round(result[0][0][0])
                 };
             }
         },
         {
-            name: 'list_of_int test',
+            name: 'listOfInt test',
             test: async () => {
-                const expected_result = [
+                const expectedResult = [
                     [[1n], [2n]],
                     [
                         [1n, 2n, 3n],
                         [4n, 5n, 6n]
                     ]
                 ];
-                const result = await list_of_lists_canister.list_of_int(
-                    expected_result
+                const result = await listOfListsCanister.listOfInt(
+                    expectedResult
                 );
 
                 return {
-                    ok: deepEqual(result, expected_result)
+                    Ok: deepEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_int64 test',
+            name: 'listOfInt64 test',
             test: async () => {
-                const expected_result = [[new BigInt64Array([1n])]];
-                const result = await list_of_lists_canister.list_of_int64(
-                    expected_result
+                const expectedResult = [[new BigInt64Array([1n])]];
+                const result = await listOfListsCanister.listOfInt64(
+                    expectedResult
                 );
 
                 return {
-                    ok: arrEqual(result, expected_result)
+                    Ok: arrEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_int32 test',
+            name: 'listOfInt32 test',
             test: async () => {
-                const expected_result = [[new Int32Array([1])]];
-                const result = await list_of_lists_canister.list_of_int32(
-                    expected_result
+                const expectedResult = [[new Int32Array([1])]];
+                const result = await listOfListsCanister.listOfInt32(
+                    expectedResult
                 );
 
                 return {
-                    ok: arrEqual(result, expected_result)
+                    Ok: arrEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_int16 test',
+            name: 'listOfInt16 test',
             test: async () => {
-                const expected_result = [[new Int16Array([1])]];
-                const result = await list_of_lists_canister.list_of_int16(
-                    expected_result
+                const expectedResult = [[new Int16Array([1])]];
+                const result = await listOfListsCanister.listOfInt16(
+                    expectedResult
                 );
 
                 return {
-                    ok: arrEqual(result, expected_result)
+                    Ok: arrEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_int8 test',
+            name: 'listOfInt8 test',
             test: async () => {
-                const expected_result = [[new Int8Array([1])]];
-                const result = await list_of_lists_canister.list_of_int8(
-                    expected_result
+                const expectedResult = [[new Int8Array([1])]];
+                const result = await listOfListsCanister.listOfInt8(
+                    expectedResult
                 );
 
                 return {
-                    ok: arrEqual(result, expected_result)
+                    Ok: arrEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_nat test',
+            name: 'listOfNat test',
             test: async () => {
-                const expected_result = [[[1n]]];
-                const result = await list_of_lists_canister.list_of_nat(
-                    expected_result
+                const expectedResult = [[[1n]]];
+                const result = await listOfListsCanister.listOfNat(
+                    expectedResult
                 );
 
                 return {
-                    ok: deepEqual(result, expected_result)
+                    Ok: deepEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_nat64 test',
+            name: 'listOfNat64 test',
             test: async () => {
-                const expected_result = [[new BigUint64Array([1n])]];
-                const result = await list_of_lists_canister.list_of_nat64(
-                    expected_result
+                const expectedResult = [[new BigUint64Array([1n])]];
+                const result = await listOfListsCanister.listOfNat64(
+                    expectedResult
                 );
 
                 return {
-                    ok: arrEqual(result, expected_result)
+                    Ok: arrEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_nat32 test',
+            name: 'listOfNat32 test',
             test: async () => {
-                const expected_result = [[new Uint32Array([1])]];
-                const result = await list_of_lists_canister.list_of_nat32(
-                    expected_result
+                const expectedResult = [[new Uint32Array([1])]];
+                const result = await listOfListsCanister.listOfNat32(
+                    expectedResult
                 );
 
                 return {
-                    ok: arrEqual(result, expected_result)
+                    Ok: arrEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_nat16 test',
+            name: 'listOfNat16 test',
             test: async () => {
-                const expected_result = [[new Uint16Array([1])]];
-                const result = await list_of_lists_canister.list_of_nat16(
-                    expected_result
+                const expectedResult = [[new Uint16Array([1])]];
+                const result = await listOfListsCanister.listOfNat16(
+                    expectedResult
                 );
 
                 return {
-                    ok: arrEqual(result, expected_result)
+                    Ok: arrEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_nat8 test',
+            name: 'listOfNat8 test',
             test: async () => {
-                const expected_result = [[new Uint8Array([1])]];
-                const result = await list_of_lists_canister.list_of_nat8(
-                    expected_result
+                const expectedResult = [[new Uint8Array([1])]];
+                const result = await listOfListsCanister.listOfNat8(
+                    expectedResult
                 );
 
                 return {
-                    ok: arrEqual(result, expected_result)
+                    Ok: arrEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_record test',
+            name: 'listOfRecord test',
             test: async () => {
-                const expected_result = [
+                const expectedResult = [
                     [
                         [{ name: 'Turing', age: 41 }],
                         [{ name: 'Hopper', age: 85 }],
@@ -441,63 +437,62 @@ export function get_tests(
                         [{ name: 'Phong', age: 32 }]
                     ]
                 ];
-                const result = await list_of_lists_canister.list_of_record(
-                    expected_result
+                const result = await listOfListsCanister.listOfRecord(
+                    expectedResult
                 );
 
                 return {
-                    ok: deepEqual(result, expected_result)
+                    Ok: deepEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_variant test',
+            name: 'listOfVariant test',
             test: async () => {
-                const expected_result = [
+                const expectedResult = [
                     [[{ solid: null }], [{ solid: null }]],
                     [
                         [{ solid: null }, { liquid: null }, { gas: null }],
                         [{ liquid: null }, { gas: null }, { gas: null }]
                     ]
                 ];
-                const result = await list_of_lists_canister.list_of_variant(
-                    expected_result
+                const result = await listOfListsCanister.listOfVariant(
+                    expectedResult
                 );
 
                 return {
-                    ok: deepEqual(result, expected_result)
+                    Ok: deepEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_blob test',
+            name: 'listOfBlob test',
             test: async () => {
-                const expected_result = [
+                const expectedResult = [
                     new Uint8Array([104, 101, 108, 108, 111])
                 ];
-                const result = await list_of_lists_canister.list_of_blob(
-                    expected_result
+                const result = await listOfListsCanister.listOfBlob(
+                    expectedResult
                 );
 
                 return {
-                    ok: arrEqual(result, expected_result)
+                    Ok: arrEqual(result, expectedResult)
                 };
             }
         },
         {
-            name: 'list_of_list_of_blob test',
+            name: 'listOfListOfBlob test',
             test: async () => {
-                const expected_result = [
+                const expectedResult = [
                     [new Uint8Array([104, 101, 108, 108, 111])],
                     [new Uint8Array([119, 111, 114, 108, 100])]
                 ];
-                const result =
-                    await list_of_lists_canister.list_of_list_of_blob(
-                        expected_result
-                    );
+                const result = await listOfListsCanister.listOfListOfBlob(
+                    expectedResult
+                );
 
                 return {
-                    ok: arrEqual(result, expected_result)
+                    Ok: arrEqual(result, expectedResult)
                 };
             }
         }

@@ -1,4 +1,4 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor as createActorCanister1 } from './dfx_generated/canister1';
 import { createActor as createActorCanister2 } from './dfx_generated/canister2';
 import { get_tests } from './tests';
@@ -15,4 +15,4 @@ const canister2 = createActorCanister2('ryjl3-tyaaa-aaaaa-aaaba-cai', {
     }
 });
 
-run_tests(get_tests(canister1, canister2));
+runTests(get_tests(canister1, canister2));

@@ -10,12 +10,12 @@ TypeScript:
 import { Opt, $query } from 'azle';
 
 $query;
-export function get_opt_some(): Opt<boolean> {
+export function getOptSome(): Opt<boolean> {
     return true;
 }
 
 $query;
-export function get_opt_none(): Opt<boolean> {
+export function getOptNone(): Opt<boolean> {
     return null;
 }
 ```
@@ -24,17 +24,17 @@ Candid:
 
 ```
 service : () -> {
-    get_opt_none : () -> (opt bool) query;
-    get_opt_some : () -> (opt bool) query;
+    getOptNone : () -> (opt bool) query;
+    getOptSome : () -> (opt bool) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister get_opt_some
+dfx canister call candid_canister getOptSome
 (opt true)
 
-dfx canister call candid_canister get_opt_none
+dfx canister call candid_canister getOptNone
 (null)
 ```

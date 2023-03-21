@@ -74,13 +74,13 @@ type _InlineTransferErrorInsufficientFunds = record { balance : Tokens };
 type _InlineTransferErrorTxDuplicate = record { duplicate_of : nat64 };
 type _InlineTransferErrorTxTooOld = record { allowed_window_nanos : nat64 };
 service : () -> {
-  execute_transfer : (text, nat64, nat64, opt nat64) -> (ManualReply);
-  get_account_balance : (text) -> (ManualReply_1);
-  get_address_from_principal : (principal) -> (text) query;
-  get_archives : () -> (ManualReply_2);
-  get_blocks : (GetBlocksArgs) -> (ManualReply_3);
-  get_decimals : () -> (ManualReply_4);
-  get_name : () -> (ManualReply_5);
-  get_symbol : () -> (ManualReply_5);
-  get_transfer_fee : () -> (ManualReply_6);
+  executeTransfer : (text, nat64, nat64, opt nat64) -> (ManualReply);
+  getAccountBalance : (text) -> (ManualReply_1);
+  getAddressFromPrincipal : (principal) -> (text) query;
+  getArchives : () -> (ManualReply_2);
+  getBlocks : (GetBlocksArgs) -> (ManualReply_3);
+  getDecimals : () -> (ManualReply_4);
+  getName : () -> (ManualReply_5);
+  getSymbol : () -> (ManualReply_5);
+  getTransferFee : () -> (ManualReply_6);
 }

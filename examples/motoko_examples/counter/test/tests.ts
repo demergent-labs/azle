@@ -2,55 +2,55 @@ import { Test } from 'azle/test';
 import { _SERVICE } from '../dfx_generated/azle/azle.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(counter_canister: ActorSubclass<_SERVICE>): Test[] {
+export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'get',
             test: async () => {
-                const result = await counter_canister.get();
+                const result = await counterCanister.get();
 
                 return {
-                    ok: result === 0n
+                    Ok: result === 0n
                 };
             }
         },
         {
             name: 'set',
             test: async () => {
-                const result = await counter_canister.set(10n);
+                const result = await counterCanister.set(10n);
 
                 return {
-                    ok: result === undefined
+                    Ok: result === undefined
                 };
             }
         },
         {
             name: 'inc',
             test: async () => {
-                const result = await counter_canister.inc();
+                const result = await counterCanister.inc();
 
                 return {
-                    ok: result === undefined
+                    Ok: result === undefined
                 };
             }
         },
         {
             name: 'inc',
             test: async () => {
-                const result = await counter_canister.inc();
+                const result = await counterCanister.inc();
 
                 return {
-                    ok: result === undefined
+                    Ok: result === undefined
                 };
             }
         },
         {
             name: 'get',
             test: async () => {
-                const result = await counter_canister.get();
+                const result = await counterCanister.get();
 
                 return {
-                    ok: result === 12n
+                    Ok: result === 12n
                 };
             }
         }

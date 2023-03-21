@@ -2,7 +2,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/imports/imports.did';
 
-export function get_tests(imports_canister: ActorSubclass<_SERVICE>): Test[] {
+export function getTests(imports_canister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'getOne',
@@ -10,7 +10,7 @@ export function get_tests(imports_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await imports_canister.getOne();
 
                 return {
-                    ok: result === 'one'
+                    Ok: result === 'one'
                 };
             }
         },
@@ -20,7 +20,7 @@ export function get_tests(imports_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await imports_canister.getTwo();
 
                 return {
-                    ok: result === 'two'
+                    Ok: result === 'two'
                 };
             }
         },
@@ -30,7 +30,7 @@ export function get_tests(imports_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await imports_canister.getThree();
 
                 return {
-                    ok: result === 'three'
+                    Ok: result === 'three'
                 };
             }
         },
@@ -40,7 +40,7 @@ export function get_tests(imports_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await imports_canister.sha224Hash('hello');
 
                 return {
-                    ok:
+                    Ok:
                         result ===
                         'ea09ae9cc6768c50fcee903ed054556e5bfc8347907f12598aa24193'
                 };

@@ -17,6 +17,6 @@ export class SomeService extends ExternalCanister {
     error: () => CanisterResult<empty>;
 }
 
-export const some_service = new SomeService(
+export const someService = new SomeService(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );

@@ -50,15 +50,15 @@ type Key = nat8;
 type Value = string;
 
 type InsertResult = Variant<{
-    ok: Opt<Value>;
-    err: InsertError;
+    Ok: Opt<Value>;
+    Err: InsertError;
 }>;
 
 let map = new StableBTreeMap<Key, Value>(0, 100, 1_000);
 
 $query;
-export function contains_key(key: Key): boolean {
-    return map.contains_key(key);
+export function containsKey(key: Key): boolean {
+    return map.containsKey(key);
 }
 
 $query;
@@ -72,8 +72,8 @@ export function insert(key: Key, value: Value): InsertResult {
 }
 
 $query;
-export function is_empty(): boolean {
-    return map.is_empty();
+export function isEmpty(): boolean {
+    return map.isEmpty();
 }
 
 $query;
@@ -109,8 +109,8 @@ import {
     blob,
     ic,
     InsertError,
+    match,
     nat64,
-    ok,
     Opt,
     Principal,
     $query,
@@ -122,62 +122,57 @@ import {
 
 type User = Record<{
     id: Principal;
-    created_at: nat64;
-    recording_ids: Principal[];
+    createdAt: nat64;
+    recordingIds: Principal[];
     username: string;
 }>;
 
 type Recording = Record<{
     id: Principal;
     audio: blob;
-    created_at: nat64;
+    createdAt: nat64;
     name: string;
-    user_id: Principal;
+    userId: Principal;
 }>;
 
 let users = new StableBTreeMap<Principal, User>(0, 38, 100_000);
 let recordings = new StableBTreeMap<Principal, Recording>(1, 38, 5_000_000);
 
 $update;
-export function create_user(username: string): Variant<{
-    ok: User;
-    err: InsertError;
+export function createUser(username: string): Variant<{
+    Ok: User;
+    Err: InsertError;
 }> {
-    const id = generate_id();
+    const id = generateId();
     const user: User = {
         id,
-        created_at: ic.time(),
-        recording_ids: [],
+        createdAt: ic.time(),
+        recordingIds: [],
         username
     };
 
     const result = users.insert(user.id, user);
 
-    if (!ok(result)) {
-        return {
-            err: result.err
-        };
-    }
-
-    return {
-        ok: user
-    };
+    return match(result, {
+        Ok: () => ({ Ok: user }),
+        Err: (err) => ({ Err: err })
+    });
 }
 
 $query;
-export function read_users(): User[] {
+export function readUsers(): User[] {
     return users.values();
 }
 
 $query;
-export function read_user_by_id(id: Principal): Opt<User> {
+export function readUserById(id: Principal): Opt<User> {
     return users.get(id);
 }
 
 $update;
-export function delete_user(id: Principal): Variant<{
-    ok: User;
-    err: Variant<{
+export function deleteUser(id: Principal): Variant<{
+    Ok: User;
+    Err: Variant<{
         UserDoesNotExist: Principal;
     }>;
 }> {
@@ -185,98 +180,97 @@ export function delete_user(id: Principal): Variant<{
 
     if (user === null) {
         return {
-            err: {
+            Err: {
                 UserDoesNotExist: id
             }
         };
     }
 
-    user.recording_ids.forEach((recording_id) => {
-        recordings.remove(recording_id);
+    user.recordingIds.forEach((recordingId) => {
+        recordings.remove(recordingId);
     });
 
     users.remove(user.id);
 
     return {
-        ok: user
+        Ok: user
     };
 }
 
 $update;
-export function create_recording(
+export function createRecording(
     audio: blob,
     name: string,
-    user_id: Principal
+    userId: Principal
 ): Variant<{
-    ok: Recording;
-    err: Variant<{
+    Ok: Recording;
+    Err: Variant<{
         InsertError: InsertError;
         UserDoesNotExist: Principal;
     }>;
 }> {
-    const user = users.get(user_id);
+    const user = users.get(userId);
 
     if (user === null) {
         return {
-            err: {
-                UserDoesNotExist: user_id
+            Err: {
+                UserDoesNotExist: userId
             }
         };
     }
 
-    const id = generate_id();
+    const id = generateId();
     const recording: Recording = {
         id,
         audio,
-        created_at: ic.time(),
+        createdAt: ic.time(),
         name,
-        user_id
+        userId
     };
 
-    const create_recording_result = recordings.insert(recording.id, recording);
+    const createRecordingResult = recordings.insert(recording.id, recording);
 
-    if (!ok(create_recording_result)) {
-        return {
-            err: {
-                InsertError: create_recording_result.err
+    return match(createRecordingResult, {
+        Ok: () => {
+            const updatedUser: User = {
+                ...user,
+                recordingIds: [...user.recordingIds, recording.id]
+            };
+            const updateUserResult = users.insert(updatedUser.id, updatedUser);
+
+            return match(updateUserResult, {
+                Ok: () => ({
+                    Ok: recording
+                }),
+                Err: (err) => ({
+                    Err: {
+                        InsertError: err
+                    }
+                })
+            });
+        },
+        Err: (err) => ({
+            Err: {
+                InsertError: err
             }
-        };
-    }
-
-    const updated_user: User = {
-        ...user,
-        recording_ids: [...user.recording_ids, recording.id]
-    };
-
-    const update_user_result = users.insert(updated_user.id, updated_user);
-
-    if (!ok(update_user_result)) {
-        return {
-            err: {
-                InsertError: update_user_result.err
-            }
-        };
-    }
-
-    return {
-        ok: recording
-    };
+        })
+    });
 }
 
 $query;
-export function read_recordings(): Recording[] {
+export function readRecordings(): Recording[] {
     return recordings.values();
 }
 
 $query;
-export function read_recording_by_id(id: Principal): Opt<Recording> {
+export function readRecordingById(id: Principal): Opt<Recording> {
     return recordings.get(id);
 }
 
 $update;
-export function delete_recording(id: Principal): Variant<{
-    ok: Recording;
-    err: Variant<{
+export function deleteRecording(id: Principal): Variant<{
+    Ok: Recording;
+    Err: Variant<{
         InsertError: InsertError;
         RecordingDoesNotExist: Principal;
         UserDoesNotExist: Principal;
@@ -286,52 +280,53 @@ export function delete_recording(id: Principal): Variant<{
 
     if (recording === null) {
         return {
-            err: {
+            Err: {
                 RecordingDoesNotExist: id
             }
         };
     }
 
-    const user = users.get(recording.user_id);
+    const user = users.get(recording.userId);
 
     if (user === null) {
         return {
-            err: {
-                UserDoesNotExist: recording.user_id
+            Err: {
+                UserDoesNotExist: recording.userId
             }
         };
     }
 
-    const updated_user: User = {
+    const updatedUser: User = {
         ...user,
-        recording_ids: user.recording_ids.filter(
-            (recording_id) => recording_id.toText() !== recording.id.toText()
+        recordingIds: user.recordingIds.filter(
+            (recordingId) => recordingId.toText() !== recording.id.toText()
         )
     };
 
-    const update_user_result = users.insert(updated_user.id, updated_user);
+    const updateUserResult = users.insert(updatedUser.id, updatedUser);
 
-    if (!ok(update_user_result)) {
-        return {
-            err: {
-                InsertError: update_user_result.err
+    return match(updateUserResult, {
+        Ok: () => {
+            recordings.remove(id);
+
+            return {
+                Ok: recording
+            };
+        },
+        Err: (err) => ({
+            Err: {
+                InsertError: err
             }
-        };
-    }
-
-    recordings.remove(id);
-
-    return {
-        ok: recording
-    };
+        })
+    });
 }
 
-function generate_id(): Principal {
-    const random_bytes = new Array(29)
+function generateId(): Principal {
+    const randomBytes = new Array(29)
         .fill(0)
         .map((_) => Math.floor(Math.random() * 256));
 
-    return Principal.fromUint8Array(Uint8Array.from(random_bytes));
+    return Principal.fromUint8Array(Uint8Array.from(randomBytes));
 }
 ```
 
@@ -344,17 +339,17 @@ import { blob, nat64, Principal, Record, StableBTreeMap } from 'azle';
 
 type User = Record<{
     id: Principal;
-    created_at: nat64;
-    recording_ids: Principal[];
+    createdAt: nat64;
+    recordingIds: Principal[];
     username: string;
 }>;
 
 type Recording = Record<{
     id: Principal;
     audio: blob;
-    created_at: nat64;
+    createdAt: nat64;
     name: string;
-    user_id: Principal;
+    userId: Principal;
 }>;
 
 let users = new StableBTreeMap<Principal, User>(0, 38, 100_000);
@@ -367,8 +362,8 @@ You can figure out the appropriate maximum key and value sizes by reasoning abou
 
 ```typescript
 type InsertResult<T> = Variant<{
-    ok: T;
-    err: InsertError;
+    Ok: T;
+    Err: InsertError;
 }>;
 
 type InsertError = Variant<{
@@ -391,7 +386,7 @@ The `InsertError` variant will in some cases have the information that you need 
 
 Thus through some trial and error you can whittle your way to a correct solution. In some cases all of your values will have an obvious static maximum size. In the audio recording example, trial and error revealed that `Principal` is most likely always 38 bytes, thus the maximum key size is set to 38.
 
-Maximum value sizes can be more tricky to figure out, especially if the values are records or variants with dynamic fields such as arrays. `User` has one such dynamic field, `recording_ids`. Since each recording id is a Principal, we know that each will take up 38 bytes. The other fields on `User` shouldn't take up too many bytes so we'll ignore them for our analysis.
+Maximum value sizes can be more tricky to figure out, especially if the values are records or variants with dynamic fields such as arrays. `User` has one such dynamic field, `recordingIds`. Since each recording id is a Principal, we know that each will take up 38 bytes. The other fields on `User` shouldn't take up too many bytes so we'll ignore them for our analysis.
 
 We've set the maximum value size of `User` to be 100_000 bytes. If we divide 100_00 by 38, we get ~2_631. This will result in each user being able to store around that many recordings. That's acceptable for our example, and so we'll go with it.
 

@@ -7,35 +7,32 @@ Examples:
 -   [call_raw](https://github.com/demergent-labs/azle/tree/main/examples/call_raw)
 
 ```typescript
-import { ic, nat, ok, Principal, $update, Variant } from 'azle';
+import { ic, match, nat, Principal, $update, Variant } from 'azle';
 
 $update;
-export async function execute_call_raw128(
-    canister_id: Principal,
+export async function executeCallRaw128(
+    canisterId: Principal,
     method: string,
-    candid_args: string,
+    candidArgs: string,
     payment: nat
 ): Promise<
     Variant<{
-        ok: string;
-        err: string;
+        Ok: string;
+        Err: string;
     }>
 > {
-    const canister_result = await ic.call_raw128(
-        canister_id,
+    const canisterResult = await ic.callRaw128(
+        canisterId,
         method,
-        ic.candid_encode(candid_args),
+        ic.candidEncode(candidArgs),
         payment
     );
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    return {
-        ok: ic.candid_decode(canister_result.ok)
-    };
+    return match(canisterResult, {
+        Ok: (ok) => ({
+            Ok: ic.candidDecode(ok)
+        }),
+        Err: (err) => ({ Err: err })
+    });
 }
 ```

@@ -3,377 +3,373 @@ import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/primitive_types/primitive_types.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(
-    primitive_types_canister: ActorSubclass<_SERVICE>
+export function getTests(
+    primitiveTypesCanister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
         {
-            name: 'get_int',
+            name: 'getInt',
             test: async () => {
-                const result = await primitive_types_canister.get_int();
+                const result = await primitiveTypesCanister.getInt();
 
                 return {
-                    ok:
+                    Ok:
                         result ===
                         170_141_183_460_469_231_731_687_303_715_884_105_727n
                 };
             }
         },
         {
-            name: 'print_int',
+            name: 'printInt',
             test: async () => {
-                const result = await primitive_types_canister.print_int(
+                const result = await primitiveTypesCanister.printInt(
                     170_141_183_460_469_231_731_687_303_715_884_105_727n
                 );
 
                 return {
-                    ok:
+                    Ok:
                         result ===
                         170_141_183_460_469_231_731_687_303_715_884_105_727n
                 };
             }
         },
         {
-            name: 'get_int64',
+            name: 'getInt64',
             test: async () => {
-                const result = await primitive_types_canister.get_int64();
+                const result = await primitiveTypesCanister.getInt64();
 
                 return {
-                    ok: result === 9_223_372_036_854_775_807n
+                    Ok: result === 9_223_372_036_854_775_807n
                 };
             }
         },
         {
-            name: 'print_int64',
+            name: 'printInt64',
             test: async () => {
-                const result = await primitive_types_canister.print_int(
+                const result = await primitiveTypesCanister.printInt(
                     9_223_372_036_854_775_807n
                 );
 
                 return {
-                    ok: result === 9_223_372_036_854_775_807n
+                    Ok: result === 9_223_372_036_854_775_807n
                 };
             }
         },
         {
-            name: 'get_int32',
+            name: 'getInt32',
             test: async () => {
-                const result = await primitive_types_canister.get_int32();
+                const result = await primitiveTypesCanister.getInt32();
 
                 return {
-                    ok: result === 2_147_483_647
+                    Ok: result === 2_147_483_647
                 };
             }
         },
         {
-            name: 'print_int32',
+            name: 'printInt32',
             test: async () => {
-                const result = await primitive_types_canister.print_int32(
+                const result = await primitiveTypesCanister.printInt32(
                     2_147_483_647
                 );
 
                 return {
-                    ok: result === 2_147_483_647
+                    Ok: result === 2_147_483_647
                 };
             }
         },
         {
-            name: 'get_int16',
+            name: 'getInt16',
             test: async () => {
-                const result = await primitive_types_canister.get_int16();
+                const result = await primitiveTypesCanister.getInt16();
 
                 return {
-                    ok: result === 32_767
+                    Ok: result === 32_767
                 };
             }
         },
         {
-            name: 'print_int16',
+            name: 'printInt16',
             test: async () => {
-                const result = await primitive_types_canister.print_int16(
-                    32_767
-                );
+                const result = await primitiveTypesCanister.printInt16(32_767);
 
                 return {
-                    ok: result === 32_767
+                    Ok: result === 32_767
                 };
             }
         },
         {
-            name: 'get_int8',
+            name: 'getInt8',
             test: async () => {
-                const result = await primitive_types_canister.get_int8();
+                const result = await primitiveTypesCanister.getInt8();
 
                 return {
-                    ok: result === 127
+                    Ok: result === 127
                 };
             }
         },
         {
-            name: 'print_int8',
+            name: 'printInt8',
             test: async () => {
-                const result = await primitive_types_canister.print_int8(127);
+                const result = await primitiveTypesCanister.printInt8(127);
 
                 return {
-                    ok: result === 127
+                    Ok: result === 127
                 };
             }
         },
         {
-            name: 'get_nat',
+            name: 'getNat',
             test: async () => {
-                const result = await primitive_types_canister.get_nat();
+                const result = await primitiveTypesCanister.getNat();
 
                 return {
-                    ok:
+                    Ok:
                         result ===
                         340_282_366_920_938_463_463_374_607_431_768_211_455n
                 };
             }
         },
         {
-            name: 'print_nat',
+            name: 'printNat',
             test: async () => {
-                const result = await primitive_types_canister.print_nat(
+                const result = await primitiveTypesCanister.printNat(
                     340_282_366_920_938_463_463_374_607_431_768_211_455n
                 );
 
                 return {
-                    ok:
+                    Ok:
                         result ===
                         340_282_366_920_938_463_463_374_607_431_768_211_455n
                 };
             }
         },
         {
-            name: 'get_nat64',
+            name: 'getNat64',
             test: async () => {
-                const result = await primitive_types_canister.get_nat64();
+                const result = await primitiveTypesCanister.getNat64();
 
                 return {
-                    ok: result === 18_446_744_073_709_551_615n
+                    Ok: result === 18_446_744_073_709_551_615n
                 };
             }
         },
         {
-            name: 'print_nat64',
+            name: 'printNat64',
             test: async () => {
-                const result = await primitive_types_canister.print_nat64(
+                const result = await primitiveTypesCanister.printNat64(
                     18_446_744_073_709_551_615n
                 );
 
                 return {
-                    ok: result === 18_446_744_073_709_551_615n
+                    Ok: result === 18_446_744_073_709_551_615n
                 };
             }
         },
         {
-            name: 'get_nat32',
+            name: 'getNat32',
             test: async () => {
-                const result = await primitive_types_canister.get_nat32();
+                const result = await primitiveTypesCanister.getNat32();
 
                 return {
-                    ok: result === 4_294_967_295
+                    Ok: result === 4_294_967_295
                 };
             }
         },
         {
-            name: 'print_nat32',
+            name: 'printNat32',
             test: async () => {
-                const result = await primitive_types_canister.print_nat32(
+                const result = await primitiveTypesCanister.printNat32(
                     4_294_967_295
                 );
 
                 return {
-                    ok: result === 4_294_967_295
+                    Ok: result === 4_294_967_295
                 };
             }
         },
         {
-            name: 'get_nat16',
+            name: 'getNat16',
             test: async () => {
-                const result = await primitive_types_canister.get_nat16();
+                const result = await primitiveTypesCanister.getNat16();
 
                 return {
-                    ok: result === 65_535
+                    Ok: result === 65_535
                 };
             }
         },
         {
-            name: 'print_nat16',
+            name: 'printNat16',
             test: async () => {
-                const result = await primitive_types_canister.print_nat16(
-                    65_535
-                );
+                const result = await primitiveTypesCanister.printNat16(65_535);
 
                 return {
-                    ok: result === 65_535
+                    Ok: result === 65_535
                 };
             }
         },
         {
-            name: 'get_nat8',
+            name: 'getNat8',
             test: async () => {
-                const result = await primitive_types_canister.get_nat8();
+                const result = await primitiveTypesCanister.getNat8();
 
                 return {
-                    ok: result === 255
+                    Ok: result === 255
                 };
             }
         },
         {
-            name: 'print_nat8',
+            name: 'printNat8',
             test: async () => {
-                const result = await primitive_types_canister.print_nat8(255);
+                const result = await primitiveTypesCanister.printNat8(255);
 
                 return {
-                    ok: result === 255
+                    Ok: result === 255
                 };
             }
         },
         {
-            name: 'get_float64',
+            name: 'getFloat64',
             test: async () => {
-                const result = await primitive_types_canister.get_float64();
+                const result = await primitiveTypesCanister.getFloat64();
 
                 return {
-                    ok: result.toString() === '2.718281828459045'
+                    Ok: result.toString() === '2.718281828459045'
                 };
             }
         },
         {
-            name: 'print_float64',
+            name: 'printFloat64',
             test: async () => {
-                const result = await primitive_types_canister.print_float64(
+                const result = await primitiveTypesCanister.printFloat64(
                     2.718281828459045
                 );
 
                 return {
-                    ok: result.toString() === '2.718281828459045'
+                    Ok: result.toString() === '2.718281828459045'
                 };
             }
         },
         {
-            name: 'get_float32',
+            name: 'getFloat32',
             test: async () => {
-                const result = await primitive_types_canister.get_float32();
+                const result = await primitiveTypesCanister.getFloat32();
 
                 return {
-                    // ok: result.toString() === '3.1415927' // TODO on the command line this is returned
-                    ok: result.toString() === '3.1415927410125732'
+                    // Ok: result.toString() === '3.1415927' // TODO on the command line this is returned
+                    Ok: result.toString() === '3.1415927410125732'
                 };
             }
         },
         {
-            name: 'print_float32',
+            name: 'printFloat32',
             test: async () => {
-                const result = await primitive_types_canister.print_float32(
+                const result = await primitiveTypesCanister.printFloat32(
                     3.1415927
                 );
 
                 return {
-                    // ok: result.toString() === '3.1415927' // TODO on the command line this is returned
-                    ok: result.toString() === '3.1415927410125732'
+                    // Ok: result.toString() === '3.1415927' // TODO on the command line this is returned
+                    Ok: result.toString() === '3.1415927410125732'
                 };
             }
         },
         {
-            name: 'get_principal',
+            name: 'getPrincipal',
             test: async () => {
-                const result = await primitive_types_canister.get_principal();
+                const result = await primitiveTypesCanister.getPrincipal();
 
                 return {
-                    ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
+                    Ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 };
             }
         },
         {
-            name: 'print_principal',
+            name: 'printPrincipal',
             test: async () => {
-                const result = await primitive_types_canister.print_principal(
+                const result = await primitiveTypesCanister.printPrincipal(
                     Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
                 );
 
                 return {
-                    ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
+                    Ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 };
             }
         },
         {
-            name: 'get_null',
+            name: 'getNull',
             test: async () => {
-                const result = await primitive_types_canister.get_null();
+                const result = await primitiveTypesCanister.getNull();
 
                 return {
-                    ok: result === null
+                    Ok: result === null
                 };
             }
         },
         {
-            name: 'print_null',
+            name: 'printNull',
             test: async () => {
-                const result = await primitive_types_canister.print_null(null);
+                const result = await primitiveTypesCanister.printNull(null);
 
                 return {
-                    ok: result === null
+                    Ok: result === null
                 };
             }
         },
         {
-            name: 'get_reserved',
+            name: 'getReserved',
             test: async () => {
-                const result = await primitive_types_canister.get_reserved();
+                const result = await primitiveTypesCanister.getReserved();
 
                 return {
-                    ok: result === null
+                    Ok: result === null
                 };
             }
         },
         {
-            name: 'print_reserved',
+            name: 'printReserved',
             test: async () => {
-                const result = await primitive_types_canister.print_reserved(
+                const result = await primitiveTypesCanister.printReserved(
                     Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
                 );
 
                 return {
-                    ok: result === null
+                    Ok: result === null
                 };
             }
         },
         {
-            name: 'get_empty',
+            name: 'getEmpty',
             test: async () => {
                 try {
-                    const result = await primitive_types_canister.get_empty();
+                    const result = await primitiveTypesCanister.getEmpty();
                 } catch (error) {
                     return {
-                        ok: (error as any).message.startsWith('Call failed')
+                        Ok: (error as any).message.startsWith('Call failed')
                     };
                 }
 
                 return {
-                    ok: false
+                    Ok: false
                 };
             }
         },
         {
-            name: 'print_empty',
+            name: 'printEmpty',
             test: async () => {
                 try {
-                    const result = await primitive_types_canister.print_empty(
+                    const result = await primitiveTypesCanister.printEmpty(
                         undefined as never
                     );
                 } catch (error) {
                     return {
-                        ok:
+                        Ok:
                             (error as any).message ===
                             'Invalid empty argument: undefined'
                     };
                 }
 
                 return {
-                    ok: false
+                    Ok: false
                 };
             }
         }

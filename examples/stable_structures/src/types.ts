@@ -2,7 +2,7 @@ import { Record, Variant } from 'azle';
 
 export type User = Record<{
     username: string;
-    blog_posts: BlogPost[];
+    blogPosts: BlogPost[];
 }>;
 
 export type BlogPost = Record<{

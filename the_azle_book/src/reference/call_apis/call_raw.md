@@ -8,35 +8,32 @@ Examples:
 -   [outgoing_http_requests](https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests)
 
 ```typescript
-import { ic, nat64, ok, Principal, $update, Variant } from 'azle';
+import { ic, match, nat64, Principal, $update, Variant } from 'azle';
 
 $update;
-export async function execute_call_raw(
-    canister_id: Principal,
+export async function executeCallRaw(
+    canisterId: Principal,
     method: string,
-    candid_args: string,
+    candidArgs: string,
     payment: nat64
 ): Promise<
     Variant<{
-        ok: string;
-        err: string;
+        Ok: string;
+        Err: string;
     }>
 > {
-    const canister_result = await ic.call_raw(
-        canister_id,
+    const canisterResult = await ic.callRaw(
+        canisterId,
         method,
-        ic.candid_encode(candid_args),
+        ic.candidEncode(candidArgs),
         payment
     );
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    return {
-        ok: ic.candid_decode(canister_result.ok)
-    };
+    return match(canisterResult, {
+        Ok: (ok) => ({
+            Ok: ic.candidDecode(ok)
+        }),
+        Err: (err) => ({ Err: err })
+    });
 }
 ```

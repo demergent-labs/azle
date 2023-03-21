@@ -1,10 +1,10 @@
 import { ic, match, nat, nat64, Principal, $update, Variant } from 'azle';
 
 $update;
-export async function execute_call_raw(
-    canister_id: Principal,
+export async function executeCallRaw(
+    canisterId: Principal,
     method: string,
-    candid_args: string,
+    candidArgs: string,
     payment: nat64
 ): Promise<
     Variant<{
@@ -12,14 +12,14 @@ export async function execute_call_raw(
         Err: string;
     }>
 > {
-    const canister_result = await ic.callRaw(
-        canister_id,
+    const canisterResult = await ic.callRaw(
+        canisterId,
         method,
-        ic.candidEncode(candid_args),
+        ic.candidEncode(candidArgs),
         payment
     );
 
-    return match(canister_result, {
+    return match(canisterResult, {
         Ok: (ok) => ({
             Ok: ic.candidDecode(ok)
         }),
@@ -28,10 +28,10 @@ export async function execute_call_raw(
 }
 
 $update;
-export async function execute_call_raw128(
-    canister_id: Principal,
+export async function executeCallRaw128(
+    canisterId: Principal,
     method: string,
-    candid_args: string,
+    candidArgs: string,
     payment: nat
 ): Promise<
     Variant<{
@@ -39,14 +39,14 @@ export async function execute_call_raw128(
         Err: string;
     }>
 > {
-    const canister_result = await ic.callRaw128(
-        canister_id,
+    const canisterResult = await ic.callRaw128(
+        canisterId,
         method,
-        ic.candidEncode(candid_args),
+        ic.candidEncode(candidArgs),
         payment
     );
 
-    return match(canister_result, {
+    return match(canisterResult, {
         Ok: (ok) => ({
             Ok: ic.candidDecode(ok)
         }),

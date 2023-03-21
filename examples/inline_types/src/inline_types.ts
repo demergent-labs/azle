@@ -25,7 +25,7 @@ import {
 } from './types';
 
 $query;
-export function inline_record_return_type(): Record<{
+export function inlineRecordReturnType(): Record<{
     prop1: string;
     prop2: string;
 }> {
@@ -36,12 +36,12 @@ export function inline_record_return_type(): Record<{
 }
 
 $query;
-export function inline_record_param(param: Record<{ prop1: string }>): string {
+export function inlineRecordParam(param: Record<{ prop1: string }>): string {
     return param.prop1;
 }
 
 $query;
-export function inline_variant_return_type(): Variant<{
+export function inlineVariantReturnType(): Variant<{
     var1: null;
     var2: null;
     var3: null;
@@ -52,7 +52,7 @@ export function inline_variant_return_type(): Variant<{
 }
 
 $query;
-export function inline_variant_param(
+export function inlineVariantParam(
     param: Variant<{ var1: null; var2: null }>
 ): Variant<{ var1: null; var2: null }> {
     if (param.var1 === null) {
@@ -67,7 +67,7 @@ export function inline_variant_param(
 }
 
 $query;
-export function record_with_inline_fields(): User1 {
+export function recordWithInlineFields(): User1 {
     return {
         id: '0',
         job: {
@@ -78,7 +78,7 @@ export function record_with_inline_fields(): User1 {
 }
 
 $query;
-export function variant_with_inline_fields(): Reaction {
+export function variantWithInlineFields(): Reaction {
     return {
         three: {
             id: '0'
@@ -87,7 +87,7 @@ export function variant_with_inline_fields(): Reaction {
 }
 
 $query;
-export function record_referencing_other_types_from_return_type(): Record<{
+export function recordReferencingOtherTypesFromReturnType(): Record<{
     prop1: string;
     prop2: Thing;
 }> {
@@ -100,7 +100,7 @@ export function record_referencing_other_types_from_return_type(): Record<{
 }
 
 $query;
-export function variant_referencing_other_types_from_return_type(): Variant<{
+export function variantReferencingOtherTypesFromReturnType(): Variant<{
     prop1: string;
     prop2: Bling;
 }> {
@@ -112,7 +112,7 @@ export function variant_referencing_other_types_from_return_type(): Variant<{
 }
 
 $query;
-export function record_referencing_record_from_param(
+export function recordReferencingRecordFromParam(
     param1: Record<{
         test: Test;
     }>
@@ -121,7 +121,7 @@ export function record_referencing_record_from_param(
 }
 
 $query;
-export function record_referencing_variant_from_param(
+export function recordReferencingVariantFromParam(
     param1: Record<{
         testVariant: TestVariant;
     }>
@@ -134,16 +134,16 @@ export function record_referencing_variant_from_param(
 }
 
 $query;
-export function variant_referencing_record_from_param(
+export function variantReferencingRecordFromParam(
     param1: Variant<{ prop1: User }>
 ): void {}
 
 $query;
-export function variant_referencing_variant_from_param(
+export function variantReferencingVariantFromParam(
     param1: Variant<{ prop1: UserVariant }>
 ): void {}
 
-let stable_map = new StableBTreeMap<
+let stableMap = new StableBTreeMap<
     Record<{
         prop1: Opt<string>;
         prop2: Variant<{ var1: null; var2: TestVariant }>;
@@ -155,7 +155,7 @@ let stable_map = new StableBTreeMap<
 >(0, 100, 100);
 
 $update;
-export function stable_map_insert(
+export function stableMapInsert(
     key: Record<{
         prop1: Opt<string>;
         prop2: Variant<{ var1: null; var2: TestVariant }>;
@@ -172,11 +172,11 @@ export function stable_map_insert(
     >;
     Err: InsertError;
 }> {
-    return stable_map.insert(key, value);
+    return stableMap.insert(key, value);
 }
 
 $query;
-export function stable_map_get(
+export function stableMapGet(
     key: Record<{
         prop1: Opt<string>;
         prop2: Variant<{ var1: null; var2: TestVariant }>;
@@ -187,11 +187,11 @@ export function stable_map_get(
         variant: Variant<{ var1: null; var2: TestVariant }>;
     }>
 > {
-    return stable_map.get(key);
+    return stableMap.get(key);
 }
 
 $update;
-export async function inline_record_return_type_as_external_canister_call(): Promise<
+export async function inlineRecordReturnTypeAsExternalCanisterCall(): Promise<
     Variant<{
         Ok: Record<{
             prop1: string;
@@ -200,11 +200,11 @@ export async function inline_record_return_type_as_external_canister_call(): Pro
         Err: string;
     }>
 > {
-    return await self.inline_record_return_type().call();
+    return await self.inlineRecordReturnType().call();
 }
 
 $query;
-export function inline_func(
+export function inlineFunc(
     callback: Func<
         Query<
             (

@@ -9,12 +9,12 @@ import {
 
 export class Cycles extends ExternalCanister {
     @update
-    receive_cycles: () => CanisterResult<nat64>;
+    receiveCycles: () => CanisterResult<nat64>;
 
     @update
-    receive_cycles128: () => CanisterResult<nat>;
+    receiveCycles128: () => CanisterResult<nat>;
 }
 
-export const cycles_canister = new Cycles(
+export const cyclesCanister = new Cycles(
     Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
 );

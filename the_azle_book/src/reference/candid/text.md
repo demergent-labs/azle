@@ -10,12 +10,12 @@ TypeScript:
 import { $query } from 'azle';
 
 $query;
-export function get_string(): string {
+export function getString(): string {
     return 'Hello world!';
 }
 
 $query;
-export function print_string(string: string): string {
+export function printString(string: string): string {
     console.log(typeof string);
     return string;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_string : () -> (text) query;
-    print_string : (text) -> (text) query;
+    getString : () -> (text) query;
+    printString : (text) -> (text) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_string '("Hello world!")'
+dfx canister call candid_canister printString '("Hello world!")'
 ("Hello world!")
 ```

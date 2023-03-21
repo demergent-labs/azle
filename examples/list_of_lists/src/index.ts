@@ -37,22 +37,22 @@ type State = Variant<{
 type BasicFunc = Func<Query<(param1: string) => string>>;
 
 $query;
-export function list_of_string_one(param: string[]): string[] {
+export function listOfStringOne(param: string[]): string[] {
     return param;
 }
 
 $query;
-export function list_of_string_two(params: string[][]): string[][] {
+export function listOfStringTwo(params: string[][]): string[][] {
     return params;
 }
 
 $query;
-export function list_of_string_four(params: string[][][][]): string[][][][] {
+export function listOfStringFour(params: string[][][][]): string[][][][] {
     return params;
 }
 
 $query;
-export function list_of_list_of_int8(): int8[][][][][][][] {
+export function listOfListOfInt8(): int8[][][][][][][] {
     return [
         [
             [
@@ -77,34 +77,34 @@ export function list_of_list_of_int8(): int8[][][][][][][] {
 }
 
 $query;
-export function list_of_null(param: null[][][]): null[][][] {
+export function listOfNull(param: null[][][]): null[][][] {
     return param;
 }
 
 $query;
-export function list_of_bool(param: boolean[][][]): boolean[][][] {
+export function listOfBool(param: boolean[][][]): boolean[][][] {
     return param;
 }
 
 $query;
-export function list_of_string(param: string[][][]): string[][][] {
+export function listOfString(param: string[][][]): string[][][] {
     return param;
 }
 
 $query;
-export function list_of_option_string(
+export function listOfOptionString(
     param: Opt<string>[][][]
 ): Opt<string>[][][] {
     return param;
 }
 
 $query;
-export function list_of_empty(): empty[][][] {
+export function listOfEmpty(): empty[][][] {
     throw new Error('Anything you want');
 }
 
 $query;
-export function list_of_reserved(): reserved[][][] {
+export function listOfReserved(): reserved[][][] {
     return [
         [['A'], ['n']],
         [
@@ -115,107 +115,107 @@ export function list_of_reserved(): reserved[][][] {
 }
 
 $query;
-export function list_of_func(param: BasicFunc[][][]): BasicFunc[][][] {
+export function listOfFunc(param: BasicFunc[][][]): BasicFunc[][][] {
     return param;
 }
 
 $query;
-export function list_of_principal(param: Principal[][][]): Principal[][][] {
+export function listOfPrincipal(param: Principal[][][]): Principal[][][] {
     return param;
 }
 
 //TODO do I need to test Rejection Code
 
 $query;
-export function list_of_f64(param: float64[][][]): float64[][][] {
+export function listOfF64(param: float64[][][]): float64[][][] {
     return param;
 }
 
 $query;
-export function list_of_f32(param: float32[][][]): float32[][][] {
-    return param;
-}
-
-$query;
-
-export function list_of_int(param: int[][][]): int[][][] {
+export function listOfF32(param: float32[][][]): float32[][][] {
     return param;
 }
 
 $query;
 
-export function list_of_int64(param: int64[][][]): int64[][][] {
+export function listOfInt(param: int[][][]): int[][][] {
     return param;
 }
 
 $query;
 
-export function list_of_int32(param: int32[][][]): int32[][][] {
+export function listOfInt64(param: int64[][][]): int64[][][] {
     return param;
 }
 
 $query;
 
-export function list_of_int16(param: int16[][][]): int16[][][] {
+export function listOfInt32(param: int32[][][]): int32[][][] {
     return param;
 }
 
 $query;
 
-export function list_of_int8(param: int8[][][]): int8[][][] {
+export function listOfInt16(param: int16[][][]): int16[][][] {
     return param;
 }
 
 $query;
 
-export function list_of_nat(param: nat[][][]): nat[][][] {
+export function listOfInt8(param: int8[][][]): int8[][][] {
     return param;
 }
 
 $query;
 
-export function list_of_nat64(param: nat64[][][]): nat64[][][] {
+export function listOfNat(param: nat[][][]): nat[][][] {
     return param;
 }
 
 $query;
 
-export function list_of_nat32(param: nat32[][][]): nat32[][][] {
+export function listOfNat64(param: nat64[][][]): nat64[][][] {
     return param;
 }
 
 $query;
 
-export function list_of_nat16(param: nat16[][][]): nat16[][][] {
+export function listOfNat32(param: nat32[][][]): nat32[][][] {
     return param;
 }
 
 $query;
 
-export function list_of_nat8(param: nat8[][][]): nat8[][][] {
+export function listOfNat16(param: nat16[][][]): nat16[][][] {
     return param;
 }
 
 $query;
 
-export function list_of_record(param: Person[][][]): Person[][][] {
+export function listOfNat8(param: nat8[][][]): nat8[][][] {
     return param;
 }
 
 $query;
 
-export function list_of_variant(param: State[][][]): State[][][] {
+export function listOfRecord(param: Person[][][]): Person[][][] {
     return param;
 }
 
 $query;
 
-export function list_of_blob(param: blob[]): blob[] {
+export function listOfVariant(param: State[][][]): State[][][] {
     return param;
 }
 
 $query;
 
-export function list_of_list_of_blob(param: blob[][]): blob[][] {
+export function listOfBlob(param: blob[]): blob[] {
+    return param;
+}
+
+$query;
+
+export function listOfListOfBlob(param: blob[][]): blob[][] {
     return param;
 }

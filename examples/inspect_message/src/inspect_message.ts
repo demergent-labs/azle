@@ -1,8 +1,8 @@
 import { ic, $inspectMessage, $update } from 'azle';
 
 $inspectMessage;
-export function inspect_message() {
-    console.log('inspect_message called');
+export function inspectMessage() {
+    console.log('inspectMessage called');
 
     if (ic.methodName() === 'accessible') {
         ic.acceptMessage();
@@ -27,6 +27,6 @@ export function inaccessible(): boolean {
 }
 
 $update;
-export function also_inaccessible(): boolean {
+export function alsoInaccessible(): boolean {
     return false;
 }

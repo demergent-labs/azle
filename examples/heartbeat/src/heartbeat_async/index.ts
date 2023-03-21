@@ -1,13 +1,13 @@
 import { blob, $heartbeat, match, $query } from 'azle';
-import { management_canister } from 'azle/canisters/management';
+import { managementCanister } from 'azle/canisters/management';
 
 let initialized: blob = Uint8Array.from([]);
 
 $heartbeat;
 export async function heartbeat(): Promise<void> {
-    const randomness_result = await management_canister.raw_rand().call();
+    const randomnessResult = await managementCanister.raw_rand().call();
 
-    match(randomness_result, {
+    match(randomnessResult, {
         Ok: (randomness) => {
             initialized = randomness;
             console.log('heartbeat initialized', randomness.length);
@@ -17,6 +17,6 @@ export async function heartbeat(): Promise<void> {
 }
 
 $query;
-export function get_initialized(): blob {
+export function getInitialized(): blob {
     return initialized;
 }

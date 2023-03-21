@@ -3,17 +3,17 @@ import { StringQueryResult } from '../canister1/types';
 
 export class Canister2 extends ExternalCanister {
     @query
-    simple_query: () => CanisterResult<string>;
+    simpleQuery: () => CanisterResult<string>;
 
     @query
-    manual_query: () => CanisterResult<string>;
+    manualQuery: () => CanisterResult<string>;
 
     @update
-    update_query: () => CanisterResult<string>;
+    updateQuery: () => CanisterResult<string>;
 
     @query
-    deep_query: () => CanisterResult<StringQueryResult>;
+    deepQuery: () => CanisterResult<StringQueryResult>;
 
     @query
-    inc_counter: () => CanisterResult<nat>;
+    incCounter: () => CanisterResult<nat>;
 }

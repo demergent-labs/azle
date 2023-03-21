@@ -1,5 +1,5 @@
 import { blob, match, $update, Variant } from 'azle';
-import { management_canister } from 'azle/canisters/management';
+import { managementCanister } from 'azle/canisters/management';
 
 type RawRandResult = Variant<{
     Ok: blob;
@@ -7,38 +7,38 @@ type RawRandResult = Variant<{
 }>;
 
 $update;
-export async function get_randomness_directly(): Promise<blob> {
-    const randomness_result = await management_canister.raw_rand().call();
+export async function getRandomnessDirectly(): Promise<blob> {
+    const randomnessResult = await managementCanister.raw_rand().call();
 
-    return match(randomness_result, {
+    return match(randomnessResult, {
         Ok: (randomness) => randomness,
         Err: () => Uint8Array.from([])
     });
 }
 
 $update;
-export async function get_randomness_indirectly(): Promise<blob> {
-    const indirect_randomness_result = await get_randomness();
+export async function getRandomnessIndirectly(): Promise<blob> {
+    const indirectRandomnessResult = await getRandomness();
 
-    return match(indirect_randomness_result, {
-        Ok: (indirect_randomness) => indirect_randomness,
+    return match(indirectRandomnessResult, {
+        Ok: (indirectRandomness) => indirectRandomness,
         Err: () => Uint8Array.from([])
     });
 }
 
 $update;
-export async function get_randomness_super_indirectly(): Promise<blob> {
-    const randomness_result0 = await get_randomness_level0();
+export async function getRandomnessSuperIndirectly(): Promise<blob> {
+    const randomnessResult0 = await getRandomnessLevel0();
 
-    return match(randomness_result0, {
+    return match(randomnessResult0, {
         Ok: async (randomness0) => {
-            const randomness_result1 = await get_randomness_level1();
+            const randomnessResult1 = await getRandomnessLevel1();
 
-            return match(randomness_result1, {
+            return match(randomnessResult1, {
                 Ok: async (randomness1) => {
-                    const randomness_result2 = await get_randomness_level2();
+                    const randomnessResult2 = await getRandomnessLevel2();
 
-                    return match(randomness_result2, {
+                    return match(randomnessResult2, {
                         Ok: (randomness2) => {
                             return Uint8Array.from([
                                 ...randomness0,
@@ -56,18 +56,18 @@ export async function get_randomness_super_indirectly(): Promise<blob> {
     });
 }
 
-async function get_randomness_level0(): Promise<RawRandResult> {
-    return await get_randomness_level1();
+async function getRandomnessLevel0(): Promise<RawRandResult> {
+    return await getRandomnessLevel1();
 }
 
-async function get_randomness_level1(): Promise<RawRandResult> {
-    return await get_randomness_level2();
+async function getRandomnessLevel1(): Promise<RawRandResult> {
+    return await getRandomnessLevel2();
 }
 
-async function get_randomness_level2(): Promise<RawRandResult> {
-    return await get_randomness();
+async function getRandomnessLevel2(): Promise<RawRandResult> {
+    return await getRandomness();
 }
 
-async function get_randomness(): Promise<RawRandResult> {
-    return await management_canister.raw_rand().call();
+async function getRandomness(): Promise<RawRandResult> {
+    return await managementCanister.raw_rand().call();
 }

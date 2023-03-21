@@ -15,52 +15,52 @@ type StableMap4InsertResult = Variant<{
     Err: InsertError;
 }>;
 
-let stable_map_4 = new StableBTreeMap<User, float32>(4, 100, 1_000);
+let stableMap4 = new StableBTreeMap<User, float32>(4, 100, 1_000);
 
 $query;
-export function stable_map_4_contains_key(key: User): boolean {
-    return stable_map_4.containsKey(key);
+export function stableMap4ContainsKey(key: User): boolean {
+    return stableMap4.containsKey(key);
 }
 
 $query;
-export function stable_map_4_get(key: User): Opt<float32> {
-    return stable_map_4.get(key);
+export function stableMap4Get(key: User): Opt<float32> {
+    return stableMap4.get(key);
 }
 
 $update;
-export function stable_map_4_insert(
+export function stableMap4Insert(
     key: User,
     value: float32
 ): StableMap4InsertResult {
-    return stable_map_4.insert(key, value);
+    return stableMap4.insert(key, value);
 }
 
 $query;
-export function stable_map_4_is_empty(): boolean {
-    return stable_map_4.isEmpty();
+export function stableMap4IsEmpty(): boolean {
+    return stableMap4.isEmpty();
 }
 
 $query;
-export function stable_map_4_items(): [User, float32][] {
-    return stable_map_4.items();
+export function stableMap4Items(): [User, float32][] {
+    return stableMap4.items();
 }
 
 $query;
-export function stable_map_4_keys(): User[] {
-    return stable_map_4.keys();
+export function stableMap4Keys(): User[] {
+    return stableMap4.keys();
 }
 
 $query;
-export function stable_map_4_len(): nat64 {
-    return stable_map_4.len();
+export function stableMap4Len(): nat64 {
+    return stableMap4.len();
 }
 
 $update;
-export function stable_map_4_remove(key: User): Opt<float32> {
-    return stable_map_4.remove(key);
+export function stableMap4Remove(key: User): Opt<float32> {
+    return stableMap4.remove(key);
 }
 
 $query;
-export function stable_map_4_values(): float32[] {
-    return stable_map_4.values();
+export function stableMap4Values(): float32[] {
+    return stableMap4.values();
 }

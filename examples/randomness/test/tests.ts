@@ -3,40 +3,38 @@ import { Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { _SERVICE } from './dfx_generated/randomness/randomness.did';
 
-let global_results: Set<string> = new Set();
+let globalResults: Set<string> = new Set();
 
-export function get_tests(
-    randomness_canister: ActorSubclass<_SERVICE>
-): Test[] {
+export function getTests(randomnessCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'first round',
             test: async () => {
-                const random_number_call_0_result =
-                    await randomness_canister.random_number();
-                const random_number_call_1_result =
-                    await randomness_canister.random_number();
-                const random_number_call_2_result =
-                    await randomness_canister.random_number();
-                const random_number_call_3_result =
-                    await randomness_canister.random_number();
-                const random_number_call_4_result =
-                    await randomness_canister.random_number();
+                const randomNumberCall_0Result =
+                    await randomnessCanister.randomNumber();
+                const randomNumberCall_1Result =
+                    await randomnessCanister.randomNumber();
+                const randomNumberCall_2Result =
+                    await randomnessCanister.randomNumber();
+                const randomNumberCall_3Result =
+                    await randomnessCanister.randomNumber();
+                const randomNumberCall_4Result =
+                    await randomnessCanister.randomNumber();
 
                 const results = [
-                    random_number_call_0_result.toString(),
-                    random_number_call_1_result.toString(),
-                    random_number_call_2_result.toString(),
-                    random_number_call_3_result.toString(),
-                    random_number_call_4_result.toString()
+                    randomNumberCall_0Result.toString(),
+                    randomNumberCall_1Result.toString(),
+                    randomNumberCall_2Result.toString(),
+                    randomNumberCall_3Result.toString(),
+                    randomNumberCall_4Result.toString()
                 ];
 
                 for (const result of results) {
-                    global_results.add(result);
+                    globalResults.add(result);
                 }
 
                 return {
-                    ok: global_results.size === 5
+                    Ok: globalResults.size === 5
                 };
             }
         },
@@ -49,31 +47,31 @@ export function get_tests(
         {
             name: 'second round',
             test: async () => {
-                const random_number_call_0_result =
-                    await randomness_canister.random_number();
-                const random_number_call_1_result =
-                    await randomness_canister.random_number();
-                const random_number_call_2_result =
-                    await randomness_canister.random_number();
-                const random_number_call_3_result =
-                    await randomness_canister.random_number();
-                const random_number_call_4_result =
-                    await randomness_canister.random_number();
+                const randomNumberCall_0Result =
+                    await randomnessCanister.randomNumber();
+                const randomNumberCall_1Result =
+                    await randomnessCanister.randomNumber();
+                const randomNumberCall_2Result =
+                    await randomnessCanister.randomNumber();
+                const randomNumberCall_3Result =
+                    await randomnessCanister.randomNumber();
+                const randomNumberCall_4Result =
+                    await randomnessCanister.randomNumber();
 
                 const results = [
-                    random_number_call_0_result.toString(),
-                    random_number_call_1_result.toString(),
-                    random_number_call_2_result.toString(),
-                    random_number_call_3_result.toString(),
-                    random_number_call_4_result.toString()
+                    randomNumberCall_0Result.toString(),
+                    randomNumberCall_1Result.toString(),
+                    randomNumberCall_2Result.toString(),
+                    randomNumberCall_3Result.toString(),
+                    randomNumberCall_4Result.toString()
                 ];
 
                 for (const result of results) {
-                    global_results.add(result);
+                    globalResults.add(result);
                 }
 
                 return {
-                    ok: global_results.size === 10
+                    Ok: globalResults.size === 10
                 };
             }
         }

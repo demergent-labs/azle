@@ -1,6 +1,6 @@
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor } from './dfx_generated/manual_reply';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
 const manual_reply_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     agentOptions: {
@@ -8,4 +8,4 @@ const manual_reply_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(get_tests(manual_reply_canister));
+runTests(getTests(manual_reply_canister));

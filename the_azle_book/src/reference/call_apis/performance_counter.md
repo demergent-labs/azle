@@ -10,7 +10,7 @@ Examples:
 import { ic, nat64, $query } from 'azle';
 
 $query;
-export function performance_counter(): nat64 {
-    return ic.performance_counter(0);
+export function performanceCounter(): nat64 {
+    return ic.performanceCounter(0);
 }
 ```

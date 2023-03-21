@@ -148,24 +148,24 @@
 <pre><code class="language-typescript">import { int32, $query } from 'azle';
 
 $query;
-export function get_numbers(): int32[] {
+export function getNumbers(): int32[] {
     return [0, 1, 2, 3];
 }
 
 $query;
-export function print_numbers(numbers: int32[]): int32[] {
+export function printNumbers(numbers: int32[]): int32[] {
     console.log(typeof numbers);
     return numbers;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_numbers : () -&gt; (vec int32) query;
-    print_numbers : (vec int32) -&gt; (vec int32) query;
+    getNumbers : () -&gt; (vec int32) query;
+    printNumbers : (vec int32) -&gt; (vec int32) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_numbers '(vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })'
+<pre><code class="language-bash">dfx canister call candid_canister printNumbers '(vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })'
 (vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })
 </code></pre>
 

@@ -157,13 +157,13 @@
 <pre><code class="language-typescript">import { $query } from 'azle';
 
 $query;
-export function get_string(): string {
+export function getString(): string {
     return 'This is a query method!';
 }
 </code></pre>
-<p><code>get_string</code> can be called from the outside world through the IC's HTTP API. You'll usually invoke this API from the <a href="./deployment.html#interacting-with-your-canister"><code>dfx command line</code>, <code>dfx web UI</code>, or an agent</a>.</p>
+<p><code>getString</code> can be called from the outside world through the IC's HTTP API. You'll usually invoke this API from the <a href="./deployment.html#interacting-with-your-canister"><code>dfx command line</code>, <code>dfx web UI</code>, or an agent</a>.</p>
 <p>From the <code>dfx command line</code> you can call it like this:</p>
-<pre><code class="language-bash">dfx canister call my_canister get_string
+<pre><code class="language-bash">dfx canister call my_canister getString
 </code></pre>
 <p>Query methods are read-only. They do not persist any state changes. Take a look at the following example:</p>
 <pre><code class="language-typescript">import { $query } from 'azle';

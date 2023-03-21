@@ -10,12 +10,12 @@ TypeScript:
 import { float32, $query } from 'azle';
 
 $query;
-export function get_float32(): float32 {
+export function getFloat32(): float32 {
     return Math.PI;
 }
 
 $query;
-export function print_float32(float32: float32): float32 {
+export function printFloat32(float32: float32): float32 {
     console.log(typeof float32);
     return float32;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_float32 : () -> (float32) query;
-    print_float32 : (float32) -> (float32) query;
+    getFloat32 : () -> (float32) query;
+    printFloat32 : (float32) -> (float32) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_float32 '(3.1415927 : float32)'
+dfx canister call candid_canister printFloat32 '(3.1415927 : float32)'
 (3.1415927 : float32)
 ```

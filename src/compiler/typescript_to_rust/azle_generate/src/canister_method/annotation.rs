@@ -6,9 +6,9 @@ use crate::{canister_method::ParseError, ts_ast::GetName};
 pub const CANISTER_METHOD_ANNOTATIONS: [&str; 7] = [
     "$heartbeat",
     "$init",
-    "$inspect_message",
-    "$post_upgrade",
-    "$pre_upgrade",
+    "$inspectMessage",
+    "$postUpgrade",
+    "$preUpgrade",
     "$query",
     "$update",
 ];
@@ -24,9 +24,9 @@ impl Annotation {
         let method_type = match name {
             "$heartbeat" => CanisterMethodType::Heartbeat,
             "$init" => CanisterMethodType::Init,
-            "$inspect_message" => CanisterMethodType::InspectMessage,
-            "$post_upgrade" => CanisterMethodType::PostUpgrade,
-            "$pre_upgrade" => CanisterMethodType::PreUpgrade,
+            "$inspectMessage" => CanisterMethodType::InspectMessage,
+            "$postUpgrade" => CanisterMethodType::PostUpgrade,
+            "$preUpgrade" => CanisterMethodType::PreUpgrade,
             "$query" => CanisterMethodType::Query,
             "$update" => CanisterMethodType::Update,
             _ => return Err(ParseError::InvalidMethodType),

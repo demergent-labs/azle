@@ -10,7 +10,7 @@ Examples:
 import { ic, nat32, $query } from 'azle';
 
 $query;
-export function stable_size(): nat32 {
-    return ic.stable_size();
+export function stableSize(): nat32 {
+    return ic.stableSize();
 }
 ```

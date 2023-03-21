@@ -178,15 +178,15 @@ let message: string = '';
 
 // Query calls complete quickly because they do not go through consensus
 $query;
-export function get_message(): string {
+export function getMessage(): string {
     return message;
 }
 
 // Update calls take a few seconds to complete
 // This is because they persist state changes and go through consensus
 $update;
-export function set_message(new_message: string): void {
-    message = new_message; // This change will be persisted
+export function setMessage(newMessage: string): void {
+    message = newMessage; // This change will be persisted
 }
 </code></pre>
 <p>Let's discuss each section of the code.</p>
@@ -199,7 +199,7 @@ let message: string = '';
 <p>We have created a global variable to store the state of our application. This variable is in scope to all of the functions defined in this module. We have annotated it with a type and set it equal to an empty string.</p>
 <pre><code class="language-typescript">// Query calls complete quickly because they do not go through consensus
 $query;
-export function get_message(): string {
+export function getMessage(): string {
     return message;
 }
 </code></pre>
@@ -207,8 +207,8 @@ export function get_message(): string {
 <pre><code class="language-typescript">// Update calls take a few seconds to complete
 // This is because they persist state changes and go through consensus
 $update;
-export function set_message(new_message: string): void {
-    message = new_message; // This change will be persisted
+export function setMessage(newMessage: string): void {
+    message = newMessage; // This change will be persisted
 }
 </code></pre>
 <p>We are exposing an update method here. When update methods are called they take a few seconds to complete. This is because they persist changes and go through consensus. A majority of nodes in a subnet must agree on all state changes introduced in calls to update methods. This method accepts a <code>string</code> from the caller and will store it in our global <code>message</code> variable.</p>
@@ -253,14 +253,14 @@ export function set_message(new_message: string): void {
 </code></pre>
 <h2 id="interacting-with-your-canister-from-the-command-line"><a class="header" href="#interacting-with-your-canister-from-the-command-line">Interacting with your canister from the command line</a></h2>
 <p>Once we've deployed we can ask for our message:</p>
-<pre><code class="language-bash">dfx canister call azle_hello_world get_message
+<pre><code class="language-bash">dfx canister call azle_hello_world getMessage
 </code></pre>
 <p>We should see <code>(&quot;&quot;)</code> representing an empty message.</p>
 <p>Now let's yell <code>Hello World!</code>:</p>
-<pre><code class="language-bash">dfx canister call azle_hello_world set_message '(&quot;Hello World!&quot;)'
+<pre><code class="language-bash">dfx canister call azle_hello_world setMessage '(&quot;Hello World!&quot;)'
 </code></pre>
 <p>Retrieve the message:</p>
-<pre><code class="language-bash">dfx canister call azle_hello_world get_message
+<pre><code class="language-bash">dfx canister call azle_hello_world getMessage
 </code></pre>
 <p>We should see <code>(&quot;Hello World!&quot;)</code>.</p>
 <h2 id="interacting-with-your-canister-from-the-web-ui"><a class="header" href="#interacting-with-your-canister-from-the-web-ui">Interacting with your canister from the web UI</a></h2>

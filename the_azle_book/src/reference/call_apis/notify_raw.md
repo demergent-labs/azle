@@ -7,28 +7,27 @@ Examples:
 -   [notify_raw](https://github.com/demergent-labs/azle/tree/main/examples/notify_raw)
 
 ```typescript
-import { ic, Principal, RejectionCode, $update, Variant } from 'azle';
+import { ic, match, Principal, RejectionCode, $update, Variant } from 'azle';
 
 $update;
-export function send_notification(): Variant<{
-    ok: boolean;
-    err: RejectionCode;
+export function sendNotification(): Variant<{
+    Ok: boolean;
+    Err: RejectionCode;
 }> {
-    const result = ic.notify_raw(
+    const result = ic.notifyRaw(
         Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'),
-        'receive_notification',
-        Uint8Array.from(ic.candid_encode('()')),
+        'receiveNotification',
+        Uint8Array.from(ic.candidEncode('()')),
         0n
     );
 
-    if ('err' in result) {
-        return {
-            err: result.err
-        };
-    }
-
-    return {
-        ok: true
-    };
+    return match(result, {
+        Ok: () => ({
+            Ok: true
+        }),
+        Err: (err) => ({
+            Err: err
+        })
+    });
 }
 ```

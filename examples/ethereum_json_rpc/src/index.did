@@ -6,7 +6,7 @@ type HttpResponse = record {
 };
 type HttpTransformArgs = record { context : vec nat8; response : HttpResponse };
 service : (text) -> {
-  eth_get_balance : (text) -> (text);
-  eth_get_block_by_number : (nat32) -> (text);
-  eth_transform : (HttpTransformArgs) -> (HttpResponse) query;
+  ethGetBalance : (text) -> (text);
+  ethGetBlockByNumber : (nat32) -> (text);
+  ethTransform : (HttpTransformArgs) -> (HttpResponse) query;
 }

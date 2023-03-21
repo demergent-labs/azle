@@ -8,9 +8,9 @@ type ManualReply = variant {
   CanisterReject;
 };
 service : () -> {
-  get_rejection_code_canister_error : () -> (ManualReply);
-  get_rejection_code_canister_reject : () -> (ManualReply);
-  get_rejection_code_destination_invalid : () -> (ManualReply);
-  get_rejection_code_no_error : () -> (ManualReply);
-  get_rejection_message : (text) -> (text);
+  getRejectionCodeCanisterError : () -> (ManualReply);
+  getRejectionCodeCanisterReject : () -> (ManualReply);
+  getRejectionCodeDestinationInvalid : () -> (ManualReply);
+  getRejectionCodeNoError : () -> (ManualReply);
+  getRejectionMessage : (text) -> (text);
 }

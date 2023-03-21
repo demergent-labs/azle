@@ -47,7 +47,7 @@ const STABLE_MAP_KEYS: [
     },
     {
         username: 'username',
-        blog_posts: [
+        blogPosts: [
             {
                 title: 'MyBlogPost'
             }
@@ -64,7 +64,7 @@ const STABLE_MAP_KEYS: [
     'hello'
 ];
 
-const STABLE_MAP_KEYS_COMPS: [
+const STABLE_MAP_KEYSCOMPS: [
     (a: nat8 | undefined, b: nat8) => boolean,
     (a: nat16 | undefined, b: nat16) => boolean,
     (a: nat32 | undefined, b: nat32) => boolean,
@@ -80,9 +80,9 @@ const STABLE_MAP_KEYS_COMPS: [
     (a: blob | undefined, b: blob) => boolean,
     (a: string | undefined, b: string) => boolean
 ] = [
-    simple_equals,
-    simple_equals,
-    simple_equals,
+    simpleEquals,
+    simpleEquals,
+    simpleEquals,
     (a, b) =>
         a !== undefined &&
         Object.keys(a).every((value) => Object.keys(b).includes(value)),
@@ -91,16 +91,16 @@ const STABLE_MAP_KEYS_COMPS: [
         Object.keys(a).every((value) => Object.keys(b).includes(value)),
     (a, b) => a !== undefined && a.every((value, index) => value === b[index]),
     (a, b) => a !== undefined && a.every((value, index) => value === b[index]),
-    simple_equals,
-    simple_equals,
-    simple_equals,
+    simpleEquals,
+    simpleEquals,
+    simpleEquals,
     (a, b) => a?.toFixed(2) === b.toFixed(2),
-    simple_equals,
+    simpleEquals,
     (a, b) => a !== undefined && a.every((value, index) => value === b[index]),
-    simple_equals
+    simpleEquals
 ];
 
-const STABLE_MAP_VALUES: [
+const STABLEMAPVALUES: [
     string,
     blob,
     nat,
@@ -129,7 +129,7 @@ const STABLE_MAP_VALUES: [
     [true],
     {
         username: 'username2',
-        blog_posts: [
+        blogPosts: [
             {
                 title: 'BlagPost'
             }
@@ -139,7 +139,7 @@ const STABLE_MAP_VALUES: [
     Principal.fromText('aaaaa-aa')
 ];
 
-const STABLE_MAP_VALUE_COMPS: [
+const STABLEMAPVALUECOMPS: [
     (a: string | undefined, b: string) => boolean,
     (a: blob | undefined, b: blob) => boolean,
     (a: nat | undefined, b: nat) => boolean,
@@ -155,13 +155,13 @@ const STABLE_MAP_VALUE_COMPS: [
     (a: Reaction | undefined, b: Reaction) => boolean,
     (a: Principal | undefined, b: Principal) => boolean
 ] = [
-    simple_equals,
+    simpleEquals,
     (a, b) => a !== undefined && a.every((value, index) => value === b[index]),
-    simple_equals,
-    simple_equals,
-    simple_equals,
-    simple_equals,
-    simple_equals,
+    simpleEquals,
+    simpleEquals,
+    simpleEquals,
+    simpleEquals,
+    simpleEquals,
     (a, b) => (a === undefined ? true : a === b), // See https://github.com/demergent-labs/azle/issues/847
     (a, b) => (a === undefined ? true : a === b), // See https://github.com/demergent-labs/azle/issues/847
     (a, b) => a !== undefined && a.every((value, index) => value === b[index]),
@@ -169,14 +169,14 @@ const STABLE_MAP_VALUE_COMPS: [
     (a, b) =>
         a !== undefined &&
         a.username === b.username &&
-        a.blog_posts[0].title === b.blog_posts[0].title,
+        a.blogPosts[0].title === b.blogPosts[0].title,
     (a, b) =>
         a !== undefined &&
         Object.keys(a).every((value) => Object.keys(b).includes(value)),
     (a, b) => a !== undefined && a.toText() === b.toText()
 ];
 
-export function pre_redeploy_tests(
+export function preRedeployTests(
     canister: ActorSubclass<_SERVICE>,
     start: number,
     end: number
@@ -184,27 +184,27 @@ export function pre_redeploy_tests(
     const range = (_: Test, index: number) => index >= start && index <= end;
 
     return [
-        ...get_returns_empty(canister).filter(range),
-        ...is_empty_returns(true, 'before insert', canister).filter(range),
-        ...len_returns(0n, 'before insert', canister).filter(range),
-        ...contains_key_returns(false, 'before insert', canister).filter(range),
-        ...keys_is_length(0, 'before insert', canister).filter(range),
-        ...values_is_length(0, 'before insert', canister).filter(range),
-        ...items_is_length(0, 'before insert', canister).filter(range),
+        ...getReturnsEmpty(canister).filter(range),
+        ...isEmptyReturns(true, 'before insert', canister).filter(range),
+        ...lenReturns(0n, 'before insert', canister).filter(range),
+        ...containsKeyReturns(false, 'before insert', canister).filter(range),
+        ...keysIsLength(0, 'before insert', canister).filter(range),
+        ...valuesIsLength(0, 'before insert', canister).filter(range),
+        ...itemsIsLength(0, 'before insert', canister).filter(range),
 
         ...insert(canister).filter(range),
 
-        ...contains_key_returns(true, 'after insert', canister).filter(range),
-        ...is_empty_returns(false, 'after insert', canister).filter(range),
-        ...len_returns(1n, 'after insert', canister).filter(range),
-        ...get_returns_expected_value('after insert', canister).filter(range),
-        ...keys_is_length(1, 'after insert', canister).filter(range),
-        ...values_is_length(1, 'after insert', canister).filter(range),
-        ...items_is_length(1, 'after insert', canister).filter(range)
+        ...containsKeyReturns(true, 'after insert', canister).filter(range),
+        ...isEmptyReturns(false, 'after insert', canister).filter(range),
+        ...lenReturns(1n, 'after insert', canister).filter(range),
+        ...getReturnsExpectedValue('after insert', canister).filter(range),
+        ...keysIsLength(1, 'after insert', canister).filter(range),
+        ...valuesIsLength(1, 'after insert', canister).filter(range),
+        ...itemsIsLength(1, 'after insert', canister).filter(range)
     ];
 }
 
-export function post_redeploy_tests(
+export function postRedeployTests(
     canister: ActorSubclass<_SERVICE>,
     start: number,
     end: number
@@ -212,149 +212,149 @@ export function post_redeploy_tests(
     const range = (_: Test, index: number) => index >= start && index <= end;
 
     return [
-        ...get_returns_expected_value('post redeploy', canister).filter(range),
-        ...keys_is_length(1, 'after insert', canister).filter(range),
-        ...values_is_length(1, 'after insert', canister).filter(range),
-        ...items_is_length(1, 'after insert', canister).filter(range),
+        ...getReturnsExpectedValue('post redeploy', canister).filter(range),
+        ...keysIsLength(1, 'after insert', canister).filter(range),
+        ...valuesIsLength(1, 'after insert', canister).filter(range),
+        ...itemsIsLength(1, 'after insert', canister).filter(range),
         ...remove(canister).filter(range),
-        ...contains_key_returns(false, 'after remove', canister).filter(range)
+        ...containsKeyReturns(false, 'after remove', canister).filter(range)
     ];
 }
 
-function contains_key_returns(
-    should_contain: boolean,
+function containsKeyReturns(
+    shouldContain: boolean,
     suffix: string,
-    stable_structures_canister: ActorSubclass<_SERVICE>
+    stableStructuresCanister: ActorSubclass<_SERVICE>
 ): Test[] {
-    return STABLE_MAP_KEYS.map((stable_map_key, index) => {
+    return STABLE_MAP_KEYS.map((stableMapKey, index) => {
         return {
-            name: `stable_map_${index}.contains_key(), ${suffix}, returns ${should_contain}`,
+            name: `stableMap${index}.containsKey(), ${suffix}, returns ${shouldContain}`,
             test: async () => {
-                const set_result = await (stable_structures_canister as any)[
-                    `stable_map_${index}_contains_key`
-                ](stable_map_key);
+                const setResult = await (stableStructuresCanister as any)[
+                    `stableMap${index}ContainsKey`
+                ](stableMapKey);
 
                 return {
-                    ok: set_result === should_contain
+                    Ok: setResult === shouldContain
                 };
             }
         };
     });
 }
 
-function get_returns_empty(
-    stable_structures_canister: ActorSubclass<_SERVICE>
+function getReturnsEmpty(
+    stableStructuresCanister: ActorSubclass<_SERVICE>
 ): Test[] {
-    return STABLE_MAP_KEYS.map((stable_map_key, index) => {
+    return STABLE_MAP_KEYS.map((stableMapKey, index) => {
         return {
-            name: `stable_map_${index}.get() returns an empty Opt`,
+            name: `stableMap${index}.get() returns an empty Opt`,
             test: async () => {
-                const get_result = await (stable_structures_canister as any)[
-                    `stable_map_${index}_get`
-                ](stable_map_key);
+                const getResult = await (stableStructuresCanister as any)[
+                    `stableMap${index}Get`
+                ](stableMapKey);
 
                 return {
-                    ok: is_empty_opt(get_result)
+                    Ok: isEmptyOpt(getResult)
                 };
             }
         };
     });
 }
 
-function get_returns_expected_value(
+function getReturnsExpectedValue(
     suffix: string,
-    stable_structures_canister: ActorSubclass<_SERVICE>
+    stableStructuresCanister: ActorSubclass<_SERVICE>
 ): Test[] {
-    return STABLE_MAP_KEYS.map((stable_map_key, index) => {
-        const value_comp: (a: any, b: any) => boolean =
-            STABLE_MAP_VALUE_COMPS[index];
+    return STABLE_MAP_KEYS.map((stableMapKey, index) => {
+        const valueComp: (a: any, b: any) => boolean =
+            STABLEMAPVALUECOMPS[index];
         return {
-            name: `stable_map_${index}.get(), ${suffix}, contains the expected value`,
+            name: `stableMap${index}.get(), ${suffix}, contains the expected value`,
             test: async () => {
-                const get_result = await (stable_structures_canister as any)[
-                    `stable_map_${index}_get`
-                ](stable_map_key);
+                const getResult = await (stableStructuresCanister as any)[
+                    `stableMap${index}Get`
+                ](stableMapKey);
 
                 return {
-                    ok: value_comp(get_result[0], STABLE_MAP_VALUES[index])
+                    Ok: valueComp(getResult[0], STABLEMAPVALUES[index])
                 };
             }
         };
     });
 }
 
-function insert(stable_structures_canister: ActorSubclass<_SERVICE>): Test[] {
+function insert(stableStructuresCanister: ActorSubclass<_SERVICE>): Test[] {
     return STABLE_MAP_KEYS.map((key, index) => {
         return {
-            name: `stable_map_${index}.insert() doesn't error out, and returns an empty Opt`,
+            name: `stableMap${index}.insert() doesn't error out, and returns an empty Opt`,
             test: async () => {
-                const set_result = await (stable_structures_canister as any)[
-                    `stable_map_${index}_insert`
-                ](key, STABLE_MAP_VALUES[index]);
+                const setResult = await (stableStructuresCanister as any)[
+                    `stableMap${index}Insert`
+                ](key, STABLEMAPVALUES[index]);
 
-                if (!ok(set_result)) {
-                    return { err: set_result.err };
+                if (!ok(setResult)) {
+                    return { Err: setResult.Err };
                 }
 
                 return {
-                    ok: is_empty_opt(set_result.ok)
+                    Ok: isEmptyOpt(setResult.Ok)
                 };
             }
         };
     });
 }
 
-function is_empty_returns(
-    should_be_empty: boolean,
+function isEmptyReturns(
+    shouldBeEmpty: boolean,
     suffix: string,
-    stable_structures_canister: ActorSubclass<_SERVICE>
+    stableStructuresCanister: ActorSubclass<_SERVICE>
 ): Test[] {
-    return STABLE_MAP_KEYS.map((_value, index) => {
+    return STABLE_MAP_KEYS.map((Value, index) => {
         return {
-            name: `stable_map_${index}.is_empty(), ${suffix}, returns ${should_be_empty}`,
+            name: `stableMap${index}.isEmpty(), ${suffix}, returns ${shouldBeEmpty}`,
             test: async () => {
-                const result = await (stable_structures_canister as any)[
-                    `stable_map_${index}_is_empty`
+                const result = await (stableStructuresCanister as any)[
+                    `stableMap${index}IsEmpty`
                 ]();
 
                 return {
-                    ok: result === should_be_empty
+                    Ok: result === shouldBeEmpty
                 };
             }
         };
     });
 }
 
-function items_is_length(
+function itemsIsLength(
     length: number,
     suffix: string,
-    stable_structures_canister: ActorSubclass<_SERVICE>
+    stableStructuresCanister: ActorSubclass<_SERVICE>
 ): Test[] {
     return STABLE_MAP_KEYS.map((key, index) => {
         return {
-            name: `stable_map_${index}.items(), ${suffix}, returns ${length} ${
+            name: `stableMap${index}.items(), ${suffix}, returns ${length} ${
                 length === 1 ? 'item' : 'items'
             }`,
             test: async () => {
-                let key_comp: (a: any, b: any) => boolean =
-                    STABLE_MAP_KEYS_COMPS[index];
-                let value_comp: (a: any, b: any) => boolean =
-                    STABLE_MAP_VALUE_COMPS[index];
-                const items_result = await (stable_structures_canister as any)[
-                    `stable_map_${index}_items`
+                let keyComp: (a: any, b: any) => boolean =
+                    STABLE_MAP_KEYSCOMPS[index];
+                let valueComp: (a: any, b: any) => boolean =
+                    STABLEMAPVALUECOMPS[index];
+                const itemsResult = await (stableStructuresCanister as any)[
+                    `stableMap${index}Items`
                 ]();
 
                 return {
-                    ok:
-                        (length === 0 && is_empty_array(items_result)) ||
+                    Ok:
+                        (length === 0 && isEmptyArray(itemsResult)) ||
                         (length === 1 &&
-                            key_comp(
-                                items_result[0][0],
+                            keyComp(
+                                itemsResult[0][0],
                                 STABLE_MAP_KEYS[index]
                             ) &&
-                            value_comp(
-                                items_result[0][1],
-                                STABLE_MAP_VALUES[index]
+                            valueComp(
+                                itemsResult[0][1],
+                                STABLEMAPVALUES[index]
                             ))
                 };
             }
@@ -362,106 +362,102 @@ function items_is_length(
     });
 }
 
-function keys_is_length(
+function keysIsLength(
     length: number,
     suffix: string,
-    stable_structures_canister: ActorSubclass<_SERVICE>
+    stableStructuresCanister: ActorSubclass<_SERVICE>
 ): Test[] {
     return STABLE_MAP_KEYS.map((key, index) => {
         return {
-            name: `stable_map_${index}.keys(), ${suffix}, returns ${length} ${
+            name: `stableMap${index}.keys(), ${suffix}, returns ${length} ${
                 length === 1 ? 'key' : 'keys'
             }`,
             test: async () => {
-                let key_comp: (a: any, b: any) => boolean =
-                    STABLE_MAP_KEYS_COMPS[index];
-                const keys_result = await (stable_structures_canister as any)[
-                    `stable_map_${index}_keys`
+                let keyComp: (a: any, b: any) => boolean =
+                    STABLE_MAP_KEYSCOMPS[index];
+                const keysResult = await (stableStructuresCanister as any)[
+                    `stableMap${index}Keys`
                 ]();
 
                 return {
-                    ok:
-                        (length === 0 && is_empty_array(keys_result)) ||
+                    Ok:
+                        (length === 0 && isEmptyArray(keysResult)) ||
                         (length === 1 &&
-                            key_comp(keys_result[0], STABLE_MAP_KEYS[index]))
+                            keyComp(keysResult[0], STABLE_MAP_KEYS[index]))
                 };
             }
         };
     });
 }
 
-function len_returns(
-    expected_len: nat64,
+function lenReturns(
+    expectedLen: nat64,
     suffix: string,
-    stable_structures_canister: ActorSubclass<_SERVICE>
+    stableStructuresCanister: ActorSubclass<_SERVICE>
 ): Test[] {
-    return STABLE_MAP_KEYS.map((_value, index) => {
+    return STABLE_MAP_KEYS.map((Value, index) => {
         return {
-            name: `stable_map_${index}.len(), ${suffix}, returns ${expected_len}`,
+            name: `stableMap${index}.len(), ${suffix}, returns ${expectedLen}`,
             test: async () => {
-                const result = await (stable_structures_canister as any)[
-                    `stable_map_${index}_len`
+                const result = await (stableStructuresCanister as any)[
+                    `stableMap${index}Len`
                 ]();
 
                 return {
-                    ok: result === expected_len
+                    Ok: result === expectedLen
                 };
             }
         };
     });
 }
 
-function remove(stable_structures_canister: ActorSubclass<_SERVICE>): Test[] {
-    return STABLE_MAP_KEYS.map((stable_map_keys, index) => {
-        let value_comp: (a: any, b: any) => boolean =
-            STABLE_MAP_VALUE_COMPS[index];
+function remove(stableStructuresCanister: ActorSubclass<_SERVICE>): Test[] {
+    return STABLE_MAP_KEYS.map((stableMapKeys, index) => {
+        let valueComp: (a: any, b: any) => boolean = STABLEMAPVALUECOMPS[index];
         return {
-            name: `stable_map_${index}.remove() returns the previously stored value`,
+            name: `stableMap${index}.remove() returns the previously stored value`,
             test: async () => {
-                const get_result = await (stable_structures_canister as any)[
-                    `stable_map_${index}_remove`
-                ](stable_map_keys);
+                const getResult = await (stableStructuresCanister as any)[
+                    `stableMap${index}Remove`
+                ](stableMapKeys);
 
                 return {
-                    ok: value_comp(get_result[0], STABLE_MAP_VALUES[index])
+                    Ok: valueComp(getResult[0], STABLEMAPVALUES[index])
                 };
             }
         };
     });
 }
 
-function values_is_length(
+function valuesIsLength(
     length: number,
     suffix: string,
-    stable_structures_canister: ActorSubclass<_SERVICE>
+    stableStructuresCanister: ActorSubclass<_SERVICE>
 ): Test[] {
-    return STABLE_MAP_VALUES.map((key, index) => {
+    return STABLEMAPVALUES.map((key, index) => {
         return {
-            name: `stable_map_${index}.values(), ${suffix}, returns ${length} ${
+            name: `stableMap${index}.values(), ${suffix}, returns ${length} ${
                 length === 1 ? 'value' : 'values'
             }`,
             test: async () => {
-                let value_comp: (a: any, b: any) => boolean =
-                    STABLE_MAP_VALUE_COMPS[index];
-                const values_result = await (stable_structures_canister as any)[
-                    `stable_map_${index}_values`
+                let valueComp: (a: any, b: any) => boolean =
+                    STABLEMAPVALUECOMPS[index];
+                const valuesResult = await (stableStructuresCanister as any)[
+                    `stableMap${index}Values`
                 ]();
 
                 return {
-                    ok:
-                        (length === 0 && is_empty_array(values_result)) ||
+                    Ok:
+                        (length === 0 && isEmptyArray(valuesResult)) ||
                         (length === 1 &&
-                            value_comp(
-                                values_result[0],
-                                STABLE_MAP_VALUES[index]
-                            ))
+                            valueComp(valuesResult[0], STABLEMAPVALUES[index]))
                 };
             }
         };
     });
 }
 
-export function insert_error_tests(
+export function insertErrorTests(
     canister1: ActorSubclass<CANISTER1_SERVICE>,
     canister3: ActorSubclass<CANISTER3_SERVICE>
 ): Test[] {
@@ -469,38 +465,38 @@ export function insert_error_tests(
         {
             name: 'insert() returns a KeyTooLarge error if the key is too large',
             test: async () => {
-                const key_over_100_bytes =
+                const keyOver_100Bytes =
                     '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
-                const result = await canister3.stable_map_13_insert(
-                    key_over_100_bytes,
+                const result = await canister3.stableMap13Insert(
+                    keyOver_100Bytes,
                     Principal.fromText('aaaaa-aa')
                 );
 
                 return {
-                    ok:
-                        'err' in result &&
-                        'KeyTooLarge' in result.err &&
-                        result.err.KeyTooLarge.given === 109 &&
-                        result.err.KeyTooLarge.max === 100
+                    Ok:
+                        'Err' in result &&
+                        'KeyTooLarge' in result.Err &&
+                        result.Err.KeyTooLarge.given === 109 &&
+                        result.Err.KeyTooLarge.max === 100
                 };
             }
         },
         {
             name: 'insert() returns a ValueTooLarge error if the value is too large',
             test: async () => {
-                const value_over_100_bytes =
+                const valueOver_100Bytes =
                     '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
-                const result = await canister1.stable_map_0_insert(
+                const result = await canister1.stableMap0Insert(
                     1,
-                    value_over_100_bytes
+                    valueOver_100Bytes
                 );
 
                 return {
-                    ok:
-                        'err' in result &&
-                        'ValueTooLarge' in result.err &&
-                        result.err.ValueTooLarge.given === 109 &&
-                        result.err.ValueTooLarge.max === 100
+                    Ok:
+                        'Err' in result &&
+                        'ValueTooLarge' in result.Err &&
+                        result.Err.ValueTooLarge.given === 109 &&
+                        result.Err.ValueTooLarge.max === 100
                 };
             }
         }
@@ -512,7 +508,7 @@ export function insert_error_tests(
  * @param value the value to test.
  * @returns `true` if the provided value is an empty array, `false` otherwise.
  */
-function is_empty_array(value: any): boolean {
+function isEmptyArray(value: any): boolean {
     return (
         (Array.isArray(value) ||
             value instanceof Uint8Array ||
@@ -528,10 +524,10 @@ function is_empty_array(value: any): boolean {
  * @param value the value to test.
  * @returns `true` if the provided value is an empty Opt<T>, `false` otherwise.
  */
-function is_empty_opt(value: any): boolean {
-    return is_empty_array(value);
+function isEmptyOpt(value: any): boolean {
+    return isEmptyArray(value);
 }
 
-function simple_equals(a: any, b: any): boolean {
+function simpleEquals(a: any, b: any): boolean {
     return a === b;
 }

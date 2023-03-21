@@ -10,7 +10,7 @@ Examples:
 import { blob, ic, nat64, $update } from 'azle';
 
 $update;
-export function stable64_write(offset: nat64, buf: blob): void {
-    ic.stable64_write(offset, buf);
+export function stable64Write(offset: nat64, buf: blob): void {
+    ic.stable64Write(offset, buf);
 }
 ```

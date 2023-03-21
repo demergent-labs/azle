@@ -1,28 +1,26 @@
 import { Test } from 'azle/test';
 import {
-    Element,
+    ManualReply,
     _SERVICE
 } from './dfx_generated/manual_reply/manual_reply.did';
 import { ActorSubclass } from '@dfinity/agent';
 import { execSync } from 'child_process';
 
-export function get_tests(
-    manual_reply_canister: ActorSubclass<_SERVICE>
-): Test[] {
+export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'manual_update when calling ic.reject',
+            name: 'manualUpdate when calling ic.reject',
             test: async () => {
                 const rejectionMessage = 'reject';
                 try {
-                    await manual_reply_canister.manual_update(rejectionMessage);
+                    await manualReplyCanister.manualUpdate(rejectionMessage);
 
                     return {
-                        ok: false
+                        Ok: false
                     };
                 } catch (error) {
                     return {
-                        ok:
+                        Ok:
                             (error as Error).message.includes(
                                 'Reject code: 4'
                             ) &&
@@ -34,82 +32,80 @@ export function get_tests(
             }
         },
         {
-            name: 'manual_update when calling ic.reply',
+            name: 'manualUpdate when calling ic.reply',
             test: async () => {
-                const result = await manual_reply_canister.manual_update(
-                    'accept'
-                );
+                const result = await manualReplyCanister.manualUpdate('accept');
 
                 return {
-                    ok: result === 'accept'
+                    Ok: result === 'accept'
                 };
             }
         },
         {
             name: 'update reply with blob',
             test: async () => {
-                const result = await manual_reply_canister.update_blob();
+                const result = await manualReplyCanister.updateBlob();
                 const expectedResult = [
                     83, 117, 114, 112, 114, 105, 115, 101, 33
                 ];
 
                 return {
-                    ok: result.every((byte, i) => byte === expectedResult[i])
+                    Ok: result.every((byte, i) => byte === expectedResult[i])
                 };
             }
         },
         {
             name: 'update reply with float32',
             test: async () => {
-                // const result = await manual_reply_canister.update_float32();
+                // const result = await manualReplyCanister.updateFloat32();
                 // Note: The JS agent doesn't handle floats correctly.
                 // See https://github.com/dfinity/agent-js/issues/589
                 const result = execSync(
-                    'dfx canister call manual_reply update_float32'
+                    'dfx canister call manual_reply updateFloat32'
                 )
                     .toString()
                     .trim();
 
                 return {
-                    ok: result === '(1245.678 : float32)'
+                    Ok: result === '(1245.678 : float32)'
                 };
             }
         },
         {
             name: 'update reply with int8',
             test: async () => {
-                const result = await manual_reply_canister.update_int8();
+                const result = await manualReplyCanister.updateInt8();
 
                 return {
-                    ok: result === -100
+                    Ok: result === -100
                 };
             }
         },
         {
             name: 'update reply with nat',
             test: async () => {
-                const result = await manual_reply_canister.update_nat();
+                const result = await manualReplyCanister.updateNat();
 
                 return {
-                    ok: result === 184_467_440_737_095_516_150n
+                    Ok: result === 184_467_440_737_095_516_150n
                 };
             }
         },
         {
             name: 'update reply with null',
             test: async () => {
-                const result = await manual_reply_canister.update_null();
+                const result = await manualReplyCanister.updateNull();
 
                 return {
-                    ok: result === null
+                    Ok: result === null
                 };
             }
         },
         {
             name: 'update reply with record',
             test: async () => {
-                const result = await manual_reply_canister.update_record();
-                const expectedResult: Element = {
+                const result = await manualReplyCanister.updateRecord();
+                const expectedResult: ManualReply = {
                     id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
                     orbitals: [
                         {
@@ -127,7 +123,7 @@ export function get_tests(
                 };
 
                 return {
-                    ok:
+                    Ok:
                         JSON.stringify(result) ===
                         JSON.stringify(expectedResult)
                 };
@@ -136,46 +132,46 @@ export function get_tests(
         {
             name: 'update reply with reserved',
             test: async () => {
-                const result = await manual_reply_canister.update_reserved();
+                const result = await manualReplyCanister.updateReserved();
 
                 return {
-                    ok: result === null
+                    Ok: result === null
                 };
             }
         },
         {
             name: 'update reply with string',
             test: async () => {
-                const result = await manual_reply_canister.update_string();
+                const result = await manualReplyCanister.updateString();
 
                 return {
-                    ok: result === 'hello'
+                    Ok: result === 'hello'
                 };
             }
         },
         {
             name: 'update reply with variant',
             test: async () => {
-                const result = await manual_reply_canister.update_variant();
+                const result = await manualReplyCanister.updateVariant();
 
                 return {
-                    ok: 'Toxic' in result
+                    Ok: 'Toxic' in result
                 };
             }
         },
         {
-            name: 'manual_query when calling ic.reject',
+            name: 'manualQuery when calling ic.reject',
             test: async () => {
                 const rejectionMessage = 'reject';
                 try {
-                    await manual_reply_canister.manual_query(rejectionMessage);
+                    await manualReplyCanister.manualQuery(rejectionMessage);
 
                     return {
-                        ok: false
+                        Ok: false
                     };
                 } catch (error) {
                     return {
-                        ok:
+                        Ok:
                             (error as any).props.Code === 'CanisterReject' &&
                             (error as any).props.Message === rejectionMessage
                     };
@@ -183,82 +179,80 @@ export function get_tests(
             }
         },
         {
-            name: 'manual_query when calling ic.reply',
+            name: 'manualQuery when calling ic.reply',
             test: async () => {
-                const result = await manual_reply_canister.manual_query(
-                    'accept'
-                );
+                const result = await manualReplyCanister.manualQuery('accept');
 
                 return {
-                    ok: result === 'accept'
+                    Ok: result === 'accept'
                 };
             }
         },
         {
             name: 'query reply with blob',
             test: async () => {
-                const result = await manual_reply_canister.query_blob();
+                const result = await manualReplyCanister.queryBlob();
                 const expectedResult = [
                     83, 117, 114, 112, 114, 105, 115, 101, 33
                 ];
 
                 return {
-                    ok: result.every((byte, i) => byte === expectedResult[i])
+                    Ok: result.every((byte, i) => byte === expectedResult[i])
                 };
             }
         },
         {
             name: 'query reply with float32',
             test: async () => {
-                // const result = await manual_reply_canister.update_float32();
+                // const result = await manualReplyCanister.updateFloat32();
                 // Note: The JS agent doesn't handle floats correctly.
                 // See https://github.com/dfinity/agent-js/issues/589
                 const result = execSync(
-                    'dfx canister call manual_reply query_float32'
+                    'dfx canister call manual_reply queryFloat32'
                 )
                     .toString()
                     .trim();
 
                 return {
-                    ok: result === '(1245.678 : float32)'
+                    Ok: result === '(1245.678 : float32)'
                 };
             }
         },
         {
             name: 'query reply with int8',
             test: async () => {
-                const result = await manual_reply_canister.query_int8();
+                const result = await manualReplyCanister.queryInt8();
 
                 return {
-                    ok: result === -100
+                    Ok: result === -100
                 };
             }
         },
         {
             name: 'query reply with nat',
             test: async () => {
-                const result = await manual_reply_canister.query_nat();
+                const result = await manualReplyCanister.queryNat();
 
                 return {
-                    ok: result === 184_467_440_737_095_516_150n
+                    Ok: result === 184_467_440_737_095_516_150n
                 };
             }
         },
         {
             name: 'query reply with null',
             test: async () => {
-                const result = await manual_reply_canister.query_null();
+                const result = await manualReplyCanister.queryNull();
 
                 return {
-                    ok: result === null
+                    Ok: result === null
                 };
             }
         },
         {
             name: 'query reply with record',
             test: async () => {
-                const result = await manual_reply_canister.query_record();
-                const expectedResult: Element = {
+                const result = await manualReplyCanister.queryRecord();
+                const expectedResult: ManualReply = {
                     id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
                     orbitals: [
                         {
@@ -276,7 +270,7 @@ export function get_tests(
                 };
 
                 return {
-                    ok:
+                    Ok:
                         JSON.stringify(result) ===
                         JSON.stringify(expectedResult)
                 };
@@ -285,43 +279,43 @@ export function get_tests(
         {
             name: 'query reply with reserved',
             test: async () => {
-                const result = await manual_reply_canister.query_reserved();
+                const result = await manualReplyCanister.queryReserved();
 
                 return {
-                    ok: result === null
+                    Ok: result === null
                 };
             }
         },
         {
             name: 'query reply with string',
             test: async () => {
-                const result = await manual_reply_canister.query_string();
+                const result = await manualReplyCanister.queryString();
 
                 return {
-                    ok: result === 'hello'
+                    Ok: result === 'hello'
                 };
             }
         },
         {
             name: 'query reply with variant',
             test: async () => {
-                const result = await manual_reply_canister.query_variant();
+                const result = await manualReplyCanister.queryVariant();
 
                 return {
-                    ok: 'Toxic' in result
+                    Ok: 'Toxic' in result
                 };
             }
         },
         {
-            name: 'reply_raw',
+            name: 'replyRaw',
             test: async () => {
-                const record = await manual_reply_canister.reply_raw();
+                const record = await manualReplyCanister.replyRaw();
                 const blob = 'Surprise!'
                     .split('')
                     .map((char) => char.charCodeAt(0));
 
                 return {
-                    ok:
+                    Ok:
                         record.int === 42n &&
                         record.text === 'text' &&
                         record.bool === true &&

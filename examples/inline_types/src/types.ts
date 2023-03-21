@@ -62,7 +62,7 @@ export type TestVariant = Variant<{
 
 export class InlineTypes extends ExternalCanister {
     @query
-    inline_record_return_type: () => CanisterResult<
+    inlineRecordReturnType: () => CanisterResult<
         Record<{
             prop1: string;
             prop2: string;
@@ -70,12 +70,12 @@ export class InlineTypes extends ExternalCanister {
     >;
 
     @query
-    inline_record_param: (
+    inlineRecordParam: (
         param: Record<{ prop1: string }>
     ) => CanisterResult<string>;
 
     @query
-    inline_variant_return_type: () => CanisterResult<
+    inlineVariantReturnType: () => CanisterResult<
         Variant<{
             var1: null;
             var2: null;
@@ -84,18 +84,18 @@ export class InlineTypes extends ExternalCanister {
     >;
 
     @query
-    inline_variant_param: (
+    inlineVariantParam: (
         param: Variant<{ var1: null; var2: null }>
     ) => CanisterResult<Variant<{ var1: null; var2: null }>>;
 
     @query
-    record_with_inline_fields: () => CanisterResult<User1>;
+    recordWithInlineFields: () => CanisterResult<User1>;
 
     @query
-    variant_with_inline_fields: () => CanisterResult<Reaction>;
+    variantWithInlineFields: () => CanisterResult<Reaction>;
 
     @query
-    record_referencing_other_types_from_return_type: () => CanisterResult<
+    recordReferencingOtherTypesFromReturnType: () => CanisterResult<
         Record<{
             prop1: string;
             prop2: Thing;
@@ -103,7 +103,7 @@ export class InlineTypes extends ExternalCanister {
     >;
 
     @query
-    variant_referencing_other_types_from_return_type: () => CanisterResult<
+    variantReferencingOtherTypesFromReturnType: () => CanisterResult<
         Variant<{
             prop1: string;
             prop2: Bling;
@@ -111,31 +111,31 @@ export class InlineTypes extends ExternalCanister {
     >;
 
     @query
-    record_referencing_record_from_param: (
+    recordReferencingRecordFromParam: (
         param1: Record<{
             test: Test;
         }>
     ) => CanisterResult<string>;
 
     @query
-    record_referencing_variant_from_param: (
+    recordReferencingVariantFromParam: (
         param1: Record<{
             testVariant: TestVariant;
         }>
     ) => CanisterResult<Opt<string>>;
 
     @query
-    variant_referencing_record_from_param: (
+    variantReferencingRecordFromParam: (
         param1: Variant<{ prop1: User }>
     ) => CanisterResult<void>;
 
     @query
-    variant_referencing_variant_from_param: (
+    variantReferencingVariantFromParam: (
         param1: Variant<{ prop1: UserVariant }>
     ) => CanisterResult<void>;
 
     @update
-    stable_map_insert: (
+    stableMapInsert: (
         key: Record<{
             prop1: Opt<string>;
             prop2: Variant<{ var1: null; var2: TestVariant }>;
@@ -156,7 +156,7 @@ export class InlineTypes extends ExternalCanister {
     >;
 
     @query
-    stable_map_get: (
+    stableMapGet: (
         key: Record<{
             prop1: Opt<string>;
             prop2: Variant<{ var1: null; var2: TestVariant }>;
@@ -171,7 +171,7 @@ export class InlineTypes extends ExternalCanister {
     >;
 
     @query
-    inline_func: (
+    inlineFunc: (
         callback: Func<
             Query<
                 (
@@ -268,7 +268,7 @@ export class InlineTypes extends ExternalCanister {
     >;
 
     @update
-    inline_record_return_type_as_external_canister_call: () => CanisterResult<
+    inlineRecordReturnTypeAsExternalCanisterCall: () => CanisterResult<
         Variant<{
             ok: Record<{
                 prop1: string;

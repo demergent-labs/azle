@@ -1,82 +1,74 @@
 import { nat32, $query, $update } from 'azle';
 import { Thread } from './candid_types';
-import { get_post_from_state_post } from './posts';
+import { getPostFromStatePost } from './posts';
 import { state, StateThread, StateUser } from './state';
-import { get_user_from_state_user } from './users';
+import { getUserFromStateUser } from './users';
 
 $update;
-export function create_thread(
+export function createThread(
     title: string,
-    author_id: string,
-    join_depth: nat32
+    authorId: string,
+    joinDepth: nat32
 ): Thread {
     const id = Object.keys(state.threads).length.toString();
 
-    const state_thread: StateThread = {
+    const stateThread: StateThread = {
         id,
-        author_id,
-        post_ids: [],
+        authorId,
+        postIds: [],
         title
     };
-    const updated_state_author = get_updated_state_author(
-        author_id,
-        state_thread.id
-    );
+    const updatedStateAuthor = getUpdatedStateAuthor(authorId, stateThread.id);
 
-    state.threads[id] = state_thread;
-    state.users[author_id] = updated_state_author;
+    state.threads[id] = stateThread;
+    state.users[authorId] = updatedStateAuthor;
 
-    const thread = get_thread_from_state_thread(state_thread, join_depth);
+    const thread = getThreadFromStateThread(stateThread, joinDepth);
 
     return thread;
 }
 
 $query;
-export function get_all_threads(join_depth: nat32): Thread[] {
-    return Object.values(state.threads).map((state_thread) =>
-        get_thread_from_state_thread(state_thread, join_depth)
+export function getAllThreads(joinDepth: nat32): Thread[] {
+    return Object.values(state.threads).map((stateThread) =>
+        getThreadFromStateThread(stateThread, joinDepth)
     );
 }
 
-export function get_thread_from_state_thread(
-    state_thread: StateThread,
-    join_depth: nat32
+export function getThreadFromStateThread(
+    stateThread: StateThread,
+    joinDepth: nat32
 ): Thread {
-    const state_author = state.users[state_thread.author_id];
-    const author = get_user_from_state_user(state_author, join_depth);
+    const stateAuthor = state.users[stateThread.authorId];
+    const author = getUserFromStateUser(stateAuthor, joinDepth);
 
-    if (join_depth === 0) {
+    if (joinDepth === 0) {
         return {
-            id: state_thread.id,
+            id: stateThread.id,
             author,
             posts: [],
-            title: state_thread.title
+            title: stateThread.title
         };
     } else {
-        const posts = state_thread.post_ids
-            .map((post_id) => state.posts[post_id])
-            .map((state_post) =>
-                get_post_from_state_post(state_post, join_depth - 1)
-            );
+        const posts = stateThread.postIds
+            .map((postId) => state.posts[postId])
+            .map((statePost) => getPostFromStatePost(statePost, joinDepth - 1));
 
         return {
-            id: state_thread.id,
+            id: stateThread.id,
             author,
             posts,
-            title: state_thread.title
+            title: stateThread.title
         };
     }
 }
 
-function get_updated_state_author(
-    author_id: string,
-    thread_id: string
-): StateUser {
-    const state_author = state.users[author_id];
-    const updated_state_author: StateUser = {
-        ...state_author,
-        thread_ids: [...state_author.thread_ids, thread_id]
+function getUpdatedStateAuthor(authorId: string, threadId: string): StateUser {
+    const stateAuthor = state.users[authorId];
+    const updatedStateAuthor: StateUser = {
+        ...stateAuthor,
+        threadIds: [...stateAuthor.threadIds, threadId]
     };
 
-    return updated_state_author;
+    return updatedStateAuthor;
 }

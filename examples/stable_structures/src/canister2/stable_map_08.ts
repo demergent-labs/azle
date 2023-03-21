@@ -13,52 +13,52 @@ type StableMap8InsertResult = Variant<{
     Err: InsertError;
 }>;
 
-let stable_map_8 = new StableBTreeMap<boolean, null>(8, 100, 1_000);
+let stableMap8 = new StableBTreeMap<boolean, null>(8, 100, 1_000);
 
 $query;
-export function stable_map_8_contains_key(key: boolean): boolean {
-    return stable_map_8.containsKey(key);
+export function stableMap8ContainsKey(key: boolean): boolean {
+    return stableMap8.containsKey(key);
 }
 
 $query;
-export function stable_map_8_get(key: boolean): Opt<null> {
-    return stable_map_8.get(key);
+export function stableMap8Get(key: boolean): Opt<null> {
+    return stableMap8.get(key);
 }
 
 $update;
-export function stable_map_8_insert(
+export function stableMap8Insert(
     key: boolean,
     value: null
 ): StableMap8InsertResult {
-    return stable_map_8.insert(key, value);
+    return stableMap8.insert(key, value);
 }
 
 $query;
-export function stable_map_8_is_empty(): boolean {
-    return stable_map_8.isEmpty();
+export function stableMap8IsEmpty(): boolean {
+    return stableMap8.isEmpty();
 }
 
 $query;
-export function stable_map_8_items(): [boolean, null][] {
-    return stable_map_8.items();
+export function stableMap8Items(): [boolean, null][] {
+    return stableMap8.items();
 }
 
 $query;
-export function stable_map_8_keys(): boolean[] {
-    return stable_map_8.keys();
+export function stableMap8Keys(): boolean[] {
+    return stableMap8.keys();
 }
 
 $query;
-export function stable_map_8_len(): nat64 {
-    return stable_map_8.len();
+export function stableMap8Len(): nat64 {
+    return stableMap8.len();
 }
 
 $update;
-export function stable_map_8_remove(key: boolean): Opt<null> {
-    return stable_map_8.remove(key);
+export function stableMap8Remove(key: boolean): Opt<null> {
+    return stableMap8.remove(key);
 }
 
 $query;
-export function stable_map_8_values(): null[] {
-    return stable_map_8.values();
+export function stableMap8Values(): null[] {
+    return stableMap8.values();
 }

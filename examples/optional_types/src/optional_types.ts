@@ -15,21 +15,21 @@ type Element = Record<{
 }>;
 
 $query;
-export function get_html(): Html {
+export function getHtml(): Html {
     return {
         head: null
     };
 }
 
 $query;
-export function get_head(): Opt<Head> {
+export function getHead(): Opt<Head> {
     return {
         elements: []
     };
 }
 
 $query;
-export function get_head_with_elements(): Opt<Head> {
+export function getHeadWithElements(): Opt<Head> {
     return {
         elements: [
             {
@@ -40,6 +40,6 @@ export function get_head_with_elements(): Opt<Head> {
 }
 
 $query;
-export function get_element(element: Opt<Opt<Element>>): Opt<Opt<Element>> {
+export function getElement(element: Opt<Opt<Element>>): Opt<Opt<Element>> {
     return element;
 }

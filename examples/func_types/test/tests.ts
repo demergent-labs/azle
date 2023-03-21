@@ -3,65 +3,61 @@ import { Principal } from '@dfinity/principal';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/func_types/func_types.did';
 
-export function get_tests(
-    func_types_canister: ActorSubclass<_SERVICE>
-): Test[] {
+export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'get_stable_func',
+            name: 'getStableFunc',
             test: async () => {
-                const result = await func_types_canister.get_stable_func();
+                const result = await funcTypesCanister.getStableFunc();
 
                 return {
-                    ok:
+                    Ok:
                         result[0].toText() === 'aaaaa-aa' &&
                         result[1] === 'start_canister'
                 };
             }
         },
         {
-            name: 'get_null_func',
+            name: 'getNullFunc',
             test: async () => {
-                const result = await func_types_canister.null_func_param([
+                const result = await funcTypesCanister.nullFuncParam([
                     Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
-                    'return_null'
+                    'returnNull'
                 ]);
 
                 return {
-                    ok:
+                    Ok:
                         result[0].toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai' &&
-                        result[1] === 'return_null'
+                        result[1] === 'returnNull'
                 };
             }
         },
         {
-            name: 'basic_func_param',
+            name: 'basicFuncParam',
             test: async () => {
-                const result = await func_types_canister.basic_func_param([
+                const result = await funcTypesCanister.basicFuncParam([
                     Principal.fromText('aaaaa-aa'),
                     'create_canister'
                 ]);
 
                 return {
-                    ok:
+                    Ok:
                         result[0].toText() === 'aaaaa-aa' &&
                         result[1] === 'create_canister'
                 };
             }
         },
         {
-            name: 'basic_func_param_array',
+            name: 'basicFuncParamArray',
             test: async () => {
-                const result = await func_types_canister.basic_func_param_array(
-                    [
-                        [Principal.fromText('aaaaa-aa'), 'create_canister'],
-                        [Principal.fromText('aaaaa-aa'), 'update_settings'],
-                        [Principal.fromText('aaaaa-aa'), 'install_code']
-                    ]
-                );
+                const result = await funcTypesCanister.basicFuncParamArray([
+                    [Principal.fromText('aaaaa-aa'), 'create_canister'],
+                    [Principal.fromText('aaaaa-aa'), 'update_settings'],
+                    [Principal.fromText('aaaaa-aa'), 'install_code']
+                ]);
 
                 return {
-                    ok:
+                    Ok:
                         result[0][0].toText() === 'aaaaa-aa' &&
                         result[0][1] === 'create_canister' &&
                         result[1][0].toText() === 'aaaaa-aa' &&
@@ -72,26 +68,25 @@ export function get_tests(
             }
         },
         {
-            name: 'basic_func_return_type',
+            name: 'basicFuncReturnType',
             test: async () => {
-                const result =
-                    await func_types_canister.basic_func_return_type();
+                const result = await funcTypesCanister.basicFuncReturnType();
 
                 return {
-                    ok:
+                    Ok:
                         result[0].toText() === 'aaaaa-aa' &&
                         result[1] === 'create_canister'
                 };
             }
         },
         {
-            name: 'basic_func_return_type_array',
+            name: 'basicFuncReturnTypeArray',
             test: async () => {
                 const result =
-                    await func_types_canister.basic_func_return_type_array();
+                    await funcTypesCanister.basicFuncReturnTypeArray();
 
                 return {
-                    ok:
+                    Ok:
                         result[0][0].toText() === 'aaaaa-aa' &&
                         result[0][1] === 'create_canister' &&
                         result[1][0].toText() === 'aaaaa-aa' &&
@@ -102,46 +97,45 @@ export function get_tests(
             }
         },
         {
-            name: 'complex_func_param',
+            name: 'complexFuncParam',
             test: async () => {
-                const result = await func_types_canister.complex_func_param([
+                const result = await funcTypesCanister.complexFuncParam([
                     Principal.fromText('aaaaa-aa'),
                     'stop_canister'
                 ]);
 
                 return {
-                    ok:
+                    Ok:
                         result[0].toText() === 'aaaaa-aa' &&
                         result[1] === 'stop_canister'
                 };
             }
         },
         {
-            name: 'complex_func_return_type',
+            name: 'complexFuncReturnType',
             test: async () => {
-                const result =
-                    await func_types_canister.complex_func_return_type();
+                const result = await funcTypesCanister.complexFuncReturnType();
 
                 return {
-                    ok:
+                    Ok:
                         result[0].toText() === 'aaaaa-aa' &&
                         result[1] === 'stop_canister'
                 };
             }
         },
         {
-            name: 'get_notifier_from_notifiers_canister',
+            name: 'getNotifierFromNotifiersCanister',
             test: async () => {
                 // TODO agent-js seems to be creating incorrect types here: https://github.com/dfinity/agent-js/issues/583
                 const result: any =
-                    await func_types_canister.get_notifier_from_notifiers_canister();
+                    await funcTypesCanister.getNotifierFromNotifiersCanister();
 
                 return {
-                    ok:
-                        'ok' in result &&
-                        result.ok[0].toText() ===
+                    Ok:
+                        'Ok' in result &&
+                        result.Ok[0].toText() ===
                             'ryjl3-tyaaa-aaaaa-aaaba-cai' &&
-                        result.ok[1] === 'notify'
+                        result.Ok[1] === 'notify'
                 };
             }
         }

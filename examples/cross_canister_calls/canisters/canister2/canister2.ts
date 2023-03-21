@@ -13,24 +13,24 @@ let state: State = {
 
 $update;
 export function transfer(from: string, to: string, amount: nat64): nat64 {
-    const from_account: Account | undefined = state.accounts[from];
+    const fromAccount: Account | undefined = state.accounts[from];
 
-    if (from_account === undefined) {
+    if (fromAccount === undefined) {
         state.accounts[from] = {
             id: from,
             balance: 0n
         };
     }
 
-    const from_balance = state.accounts[from].balance;
+    const fromBalance = state.accounts[from].balance;
 
-    if (from_balance < amount) {
+    if (fromBalance < amount) {
         return 0n;
     }
 
-    const to_balance: nat64 | undefined = state.accounts[to]?.balance;
+    const toBalance: nat64 | undefined = state.accounts[to]?.balance;
 
-    if (to_balance === undefined) {
+    if (toBalance === undefined) {
         state.accounts[to] = {
             id: to,
             balance: 0n
@@ -65,11 +65,11 @@ export function trap(): string {
 }
 
 $update;
-export function receive_notification(message: string): void {
+export function receiveNotification(message: string): void {
     state.notification = message;
 }
 
 $query;
-export function get_notification(): string {
+export function getNotification(): string {
     return state.notification;
 }

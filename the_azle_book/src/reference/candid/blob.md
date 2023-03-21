@@ -10,12 +10,12 @@ TypeScript:
 import { blob, $query } from 'azle';
 
 $query;
-export function get_blob(): blob {
+export function getBlob(): blob {
     return Uint8Array.from([68, 73, 68, 76, 0, 0]);
 }
 
 $query;
-export function print_blob(blob: blob): blob {
+export function printBlob(blob: blob): blob {
     console.log(typeof blob);
     return blob;
 }
@@ -25,17 +25,17 @@ Candid:
 
 ```
 service : () -> {
-    get_blob : () -> (vec nat8) query;
-    print_blob : (vec nat8) -> (vec nat8) query;
+    getBlob : () -> (vec nat8) query;
+    printBlob : (vec nat8) -> (vec nat8) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_blob '(vec { 68; 73; 68; 76; 0; 0; })'
+dfx canister call candid_canister printBlob '(vec { 68; 73; 68; 76; 0; 0; })'
 (blob "DIDL\00\00")
 
-dfx canister call candid_canister print_blob '(blob "DIDL\00\00")'
+dfx canister call candid_canister printBlob '(blob "DIDL\00\00")'
 (blob "DIDL\00\00")
 ```

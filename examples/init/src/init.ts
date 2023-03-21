@@ -25,16 +25,16 @@ export function init(
 }
 
 $query;
-export function get_user(): Opt<User> {
+export function getUser(): Opt<User> {
     return user;
 }
 
 $query;
-export function get_reaction(): Opt<Reaction> {
+export function getReaction(): Opt<Reaction> {
     return reaction;
 }
 
 $query;
-export function get_owner(): Opt<Principal> {
+export function getOwner(): Opt<Principal> {
     return owner;
 }

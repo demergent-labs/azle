@@ -11,7 +11,7 @@ import { blob, ic, $update } from 'azle';
 
 // sets up to 32 bytes of certified data
 $update;
-export function set_certified_data(data: blob): void {
-    ic.set_certified_data(data);
+export function setCertifiedData(data: blob): void {
+    ic.setCertifiedData(data);
 }
 ```

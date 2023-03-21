@@ -4,34 +4,34 @@ import { ok, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { _SERVICE } from './dfx_generated/ledger_canister/ledger_canister.did';
 
-export function get_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
-    const simple_tests = get_simple_tests(ledger_canister);
-    const transfer_error_tests = get_transfer_error_tests(ledger_canister);
-    const address_from_principal_tests =
-        get_address_from_principal_tests(ledger_canister);
+export function getTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
+    const simpleTests = getSimpleTests(ledgerCanister);
+    const transferErrorTests = getTransferErrorTests(ledgerCanister);
+    const addressFromPrincipalTests =
+        getAddressFromPrincipalTests(ledgerCanister);
 
     const tests = [
-        ...simple_tests,
-        ...transfer_error_tests,
-        ...address_from_principal_tests
+        ...simpleTests,
+        ...transferErrorTests,
+        ...addressFromPrincipalTests
     ];
 
     return tests;
 }
 
-function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
+function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'get_account_balance',
+            name: 'getAccountBalance',
             test: async () => {
-                const ledger_canister_address = execSync(
+                const ledgerCanisterAddress = execSync(
                     `dfx ledger account-id --of-canister ledger_canister`
                 )
                     .toString()
                     .trim();
 
-                const result = await ledger_canister.get_account_balance(
-                    ledger_canister_address
+                const result = await ledgerCanister.getAccountBalance(
+                    ledgerCanisterAddress
                 );
 
                 if (!ok(result)) {
@@ -46,9 +46,9 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'get_transfer_fee',
+            name: 'getTransferFee',
             test: async () => {
-                const result = await ledger_canister.get_transfer_fee();
+                const result = await ledgerCanister.getTransferFee();
 
                 if (!ok(result)) {
                     return {
@@ -62,29 +62,29 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'get_blocks',
+            name: 'getBlocks',
             test: async () => {
-                const ledger_canister_address = execSync(
+                const ledgerCanisterAddress = execSync(
                     `dfx ledger account-id --of-canister ledger_canister`
                 )
                     .toString()
                     .trim();
 
-                await ledger_canister.execute_transfer(
-                    ledger_canister_address,
+                await ledgerCanister.executeTransfer(
+                    ledgerCanisterAddress,
                     2_000_000n,
                     10_000n,
                     []
                 );
 
-                await ledger_canister.execute_transfer(
-                    ledger_canister_address,
+                await ledgerCanister.executeTransfer(
+                    ledgerCanisterAddress,
                     3_000_000n,
                     10_000n,
                     []
                 );
 
-                const result = await ledger_canister.get_blocks({
+                const result = await ledgerCanister.getBlocks({
                     start: 0n,
                     length: 100n
                 });
@@ -114,9 +114,9 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'get_symbol',
+            name: 'getSymbol',
             test: async () => {
-                const result = await ledger_canister.get_symbol();
+                const result = await ledgerCanister.getSymbol();
 
                 if (!ok(result)) {
                     return {
@@ -130,9 +130,9 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'get_name',
+            name: 'getName',
             test: async () => {
-                const result = await ledger_canister.get_name();
+                const result = await ledgerCanister.getName();
 
                 if (!ok(result)) {
                     return {
@@ -146,9 +146,9 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'get_decimals',
+            name: 'getDecimals',
             test: async () => {
-                const result = await ledger_canister.get_decimals();
+                const result = await ledgerCanister.getDecimals();
 
                 if (!ok(result)) {
                     return {
@@ -162,9 +162,9 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'get_archives',
+            name: 'getArchives',
             test: async () => {
-                const result = await ledger_canister.get_archives();
+                const result = await ledgerCanister.getArchives();
 
                 if (!ok(result)) {
                     return {
@@ -178,16 +178,16 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'execute_transfer',
+            name: 'executeTransfer',
             test: async () => {
-                const ledger_canister_address = execSync(
+                const ledgerCanisterAddress = execSync(
                     `dfx ledger account-id --of-canister ledger_canister`
                 )
                     .toString()
                     .trim();
 
-                const result = await ledger_canister.execute_transfer(
-                    ledger_canister_address,
+                const result = await ledgerCanister.executeTransfer(
+                    ledgerCanisterAddress,
                     4_000_000n,
                     10_000n,
                     []
@@ -205,16 +205,16 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'get_account_balance',
+            name: 'getAccountBalance',
             test: async () => {
-                const ledger_canister_address = execSync(
+                const ledgerCanisterAddress = execSync(
                     `dfx ledger account-id --of-canister ledger_canister`
                 )
                     .toString()
                     .trim();
 
-                const result = await ledger_canister.get_account_balance(
-                    ledger_canister_address
+                const result = await ledgerCanister.getAccountBalance(
+                    ledgerCanisterAddress
                 );
 
                 if (!ok(result)) {
@@ -231,8 +231,8 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
     ];
 }
 
-function get_transfer_error_tests(
-    ledger_canister: ActorSubclass<_SERVICE>
+function getTransferErrorTests(
+    ledgerCanister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
         {
@@ -244,7 +244,7 @@ function get_transfer_error_tests(
             }
         },
         {
-            name: 'deploy icp_ledger',
+            name: 'deploy icpLedger',
             prep: async () => {
                 execSync(
                     `dfx deploy icp_ledger --argument=\'(record {minting_account = "\'$(dfx ledger account-id)\'"; initial_values = vec {}; send_whitelist = vec {}})\'`,
@@ -257,14 +257,14 @@ function get_transfer_error_tests(
         {
             name: 'BadFee',
             test: async () => {
-                const ledger_canister_address = execSync(
+                const ledgerCanisterAddress = execSync(
                     `dfx ledger account-id --of-canister ledger_canister`
                 )
                     .toString()
                     .trim();
 
-                const result = await ledger_canister.execute_transfer(
-                    ledger_canister_address,
+                const result = await ledgerCanister.executeTransfer(
+                    ledgerCanisterAddress,
                     1_000_000n,
                     0n,
                     []
@@ -287,14 +287,14 @@ function get_transfer_error_tests(
         {
             name: 'InsufficientFunds',
             test: async () => {
-                const ledger_canister_address = execSync(
+                const ledgerCanisterAddress = execSync(
                     `dfx ledger account-id --of-canister ledger_canister`
                 )
                     .toString()
                     .trim();
 
-                const result = await ledger_canister.execute_transfer(
-                    ledger_canister_address,
+                const result = await ledgerCanister.executeTransfer(
+                    ledgerCanisterAddress,
                     1_000_000n,
                     10_000n,
                     []
@@ -323,7 +323,7 @@ function get_transfer_error_tests(
             }
         },
         {
-            name: 'deploy icp_ledger',
+            name: 'deploy icpLedger',
             prep: async () => {
                 execSync(
                     `dfx deploy icp_ledger --argument=\'(record {minting_account = "\'$(dfx ledger account-id)\'"; initial_values = vec { record { "\'$(dfx ledger account-id --of-canister ledger_canister)\'"; record { e8s=100_000_000_000 } }; }; send_whitelist = vec {}})\'`,
@@ -336,14 +336,14 @@ function get_transfer_error_tests(
         {
             name: 'TxTooOld',
             test: async () => {
-                const ledger_canister_address = execSync(
+                const ledgerCanisterAddress = execSync(
                     `dfx ledger account-id --of-canister ledger_canister`
                 )
                     .toString()
                     .trim();
 
-                const result = await ledger_canister.execute_transfer(
-                    ledger_canister_address,
+                const result = await ledgerCanister.executeTransfer(
+                    ledgerCanisterAddress,
                     1_000_000n,
                     10_000n,
                     [
@@ -370,14 +370,14 @@ function get_transfer_error_tests(
         {
             name: 'TxCreatedInFuture',
             test: async () => {
-                const ledger_canister_address = execSync(
+                const ledgerCanisterAddress = execSync(
                     `dfx ledger account-id --of-canister ledger_canister`
                 )
                     .toString()
                     .trim();
 
-                const result = await ledger_canister.execute_transfer(
-                    ledger_canister_address,
+                const result = await ledgerCanister.executeTransfer(
+                    ledgerCanisterAddress,
                     1_000_000n,
                     10_000n,
                     [
@@ -411,14 +411,14 @@ function get_transfer_error_tests(
     ];
 }
 
-function get_address_from_principal_tests(
-    ledger_canister: ActorSubclass<_SERVICE>
+function getAddressFromPrincipalTests(
+    ledgerCanister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
         {
-            name: 'get_address_from_principal rrkah-fqaaa-aaaaa-aaaaq-cai',
+            name: 'getAddressFromPrincipal rrkah-fqaaa-aaaaa-aaaaq-cai',
             test: async () => {
-                const result = await ledger_canister.get_address_from_principal(
+                const result = await ledgerCanister.getAddressFromPrincipal(
                     Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
                 );
                 const address = execSync(
@@ -433,9 +433,9 @@ function get_address_from_principal_tests(
             }
         },
         {
-            name: 'get_address_from_principal ryjl3-tyaaa-aaaaa-aaaba-cai',
+            name: 'getAddressFromPrincipal ryjl3-tyaaa-aaaaa-aaaba-cai',
             test: async () => {
-                const result = await ledger_canister.get_address_from_principal(
+                const result = await ledgerCanister.getAddressFromPrincipal(
                     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
                 );
                 const address = execSync(
@@ -450,9 +450,9 @@ function get_address_from_principal_tests(
             }
         },
         {
-            name: 'get_address_from_principal rno2w-sqaaa-aaaaa-aaacq-cai',
+            name: 'getAddressFromPrincipal rno2w-sqaaa-aaaaa-aaacq-cai',
             test: async () => {
-                const result = await ledger_canister.get_address_from_principal(
+                const result = await ledgerCanister.getAddressFromPrincipal(
                     Principal.fromText('rno2w-sqaaa-aaaaa-aaacq-cai')
                 );
                 const address = execSync(
@@ -467,9 +467,9 @@ function get_address_from_principal_tests(
             }
         },
         {
-            name: 'get_address_from_principal rkp4c-7iaaa-aaaaa-aaaca-cai',
+            name: 'getAddressFromPrincipal rkp4c-7iaaa-aaaaa-aaaca-cai',
             test: async () => {
-                const result = await ledger_canister.get_address_from_principal(
+                const result = await ledgerCanister.getAddressFromPrincipal(
                     Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
                 );
                 const address = execSync(
@@ -484,9 +484,9 @@ function get_address_from_principal_tests(
             }
         },
         {
-            name: 'get_address_from_principal r7inp-6aaaa-aaaaa-aaabq-cai',
+            name: 'getAddressFromPrincipal r7inp-6aaaa-aaaaa-aaabq-cai',
             test: async () => {
-                const result = await ledger_canister.get_address_from_principal(
+                const result = await ledgerCanister.getAddressFromPrincipal(
                     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
                 );
                 const address = execSync(
@@ -501,9 +501,9 @@ function get_address_from_principal_tests(
             }
         },
         {
-            name: 'get_address_from_principal rwlgt-iiaaa-aaaaa-aaaaa-cai',
+            name: 'getAddressFromPrincipal rwlgt-iiaaa-aaaaa-aaaaa-cai',
             test: async () => {
-                const result = await ledger_canister.get_address_from_principal(
+                const result = await ledgerCanister.getAddressFromPrincipal(
                     Principal.fromText('rwlgt-iiaaa-aaaaa-aaaaa-cai')
                 );
                 const address = execSync(
@@ -518,9 +518,9 @@ function get_address_from_principal_tests(
             }
         },
         {
-            name: 'get_address_from_principal 3zjeh-xtbtx-mwebn-37a43-7nbck-qgquk-xtrny-42ujn-gzaxw-ncbzw-kqe',
+            name: 'getAddressFromPrincipal 3zjeh-xtbtx-mwebn-37a43-7nbck-qgquk-xtrny-42ujn-gzaxw-ncbzw-kqe',
             test: async () => {
-                const result = await ledger_canister.get_address_from_principal(
+                const result = await ledgerCanister.getAddressFromPrincipal(
                     Principal.fromText(
                         '3zjeh-xtbtx-mwebn-37a43-7nbck-qgquk-xtrny-42ujn-gzaxw-ncbzw-kqe'
                     )
@@ -537,9 +537,9 @@ function get_address_from_principal_tests(
             }
         },
         {
-            name: 'get_address_from_principal o2ivq-5dsz3-nba5d-pwbk2-hdd3i-vybeq-qfz35-rqg27-lyesf-xghzc-3ae',
+            name: 'getAddressFromPrincipal o2ivq-5dsz3-nba5d-pwbk2-hdd3i-vybeq-qfz35-rqg27-lyesf-xghzc-3ae',
             test: async () => {
-                const result = await ledger_canister.get_address_from_principal(
+                const result = await ledgerCanister.getAddressFromPrincipal(
                     Principal.fromText(
                         'o2ivq-5dsz3-nba5d-pwbk2-hdd3i-vybeq-qfz35-rqg27-lyesf-xghzc-3ae'
                     )
@@ -556,9 +556,9 @@ function get_address_from_principal_tests(
             }
         },
         {
-            name: 'get_address_from_principal cb53b-qsf7f-isr4v-tco56-pu475-66ehq-cfkko-doax3-xrnjh-pdo57-zae',
+            name: 'getAddressFromPrincipal cb53b-qsf7f-isr4v-tco56-pu475-66ehq-cfkko-doax3-xrnjh-pdo57-zae',
             test: async () => {
-                const result = await ledger_canister.get_address_from_principal(
+                const result = await ledgerCanister.getAddressFromPrincipal(
                     Principal.fromText(
                         'cb53b-qsf7f-isr4v-tco56-pu475-66ehq-cfkko-doax3-xrnjh-pdo57-zae'
                     )
@@ -575,9 +575,9 @@ function get_address_from_principal_tests(
             }
         },
         {
-            name: 'get_address_from_principal fhzp2-mb4kr-hm4io-32js7-oketg-gdi73-4pqb4-6jyxp-ajbhd-tuiwt-bqe',
+            name: 'getAddressFromPrincipal fhzp2-mb4kr-hm4io-32js7-oketg-gdi73-4pqb4-6jyxp-ajbhd-tuiwt-bqe',
             test: async () => {
-                const result = await ledger_canister.get_address_from_principal(
+                const result = await ledgerCanister.getAddressFromPrincipal(
                     Principal.fromText(
                         'fhzp2-mb4kr-hm4io-32js7-oketg-gdi73-4pqb4-6jyxp-ajbhd-tuiwt-bqe'
                     )

@@ -10,12 +10,12 @@ TypeScript:
 import { int, $query } from 'azle';
 
 $query;
-export function get_int(): int {
+export function getInt(): int {
     return 170_141_183_460_469_231_731_687_303_715_884_105_727n;
 }
 
 $query;
-export function print_int(int: int): int {
+export function printInt(int: int): int {
     console.log(typeof int);
     return int;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_int : () -> (int) query;
-    print_int : (int) -> (int) query;
+    getInt : () -> (int) query;
+    printInt : (int) -> (int) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_int '(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)'
+dfx canister call candid_canister printInt '(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)'
 (170_141_183_460_469_231_731_687_303_715_884_105_727 : int)
 ```

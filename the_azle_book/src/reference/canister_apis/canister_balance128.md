@@ -12,7 +12,7 @@ import { ic, nat, $query } from 'azle';
 
 // returns the amount of cycles available in the canister
 $query;
-export function canister_balance128(): nat {
-    return ic.canister_balance128();
+export function canisterBalance128(): nat {
+    return ic.canisterBalance128();
 }
 ```

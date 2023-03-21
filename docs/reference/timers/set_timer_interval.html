@@ -150,16 +150,16 @@
 <pre><code class="language-typescript">import { Duration, ic, TimerId, $update } from 'azle';
 
 $update;
-export function set_timer_intervals(interval: Duration): [TimerId, TimerId] {
-    const function_timer_id = ic.set_timer_interval(interval, callback);
+export function setTimerIntervals(interval: Duration): [TimerId, TimerId] {
+    const functionTimerId = ic.setTimerInterval(interval, callback);
 
-    const captured_value = '🚩';
+    const capturedValue = '🚩';
 
-    const closure_timer_id = ic.set_timer_interval(interval, () =&gt; {
-        console.log(`closure called and captured value ${captured_value}`);
+    const closureTimerId = ic.setTimerInterval(interval, () =&gt; {
+        console.log(`closure called and captured value ${capturedValue}`);
     });
 
-    return [function_timer_id, closure_timer_id];
+    return [functionTimerId, closureTimerId];
 }
 
 function callback(): void {

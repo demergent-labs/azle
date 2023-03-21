@@ -1,273 +1,267 @@
 import { nat32, nat64, $query } from 'azle';
 
 $query;
-export function get_date(iso_string: string): nat32 {
-    return new Date(iso_string).getDate();
+export function getDate(isoString: string): nat32 {
+    return new Date(isoString).getDate();
 }
 
 $query;
-export function get_day(iso_string: string): nat32 {
-    return new Date(iso_string).getDay();
+export function getDay(isoString: string): nat32 {
+    return new Date(isoString).getDay();
 }
 
 $query;
-export function get_full_year(iso_string: string): nat32 {
-    return new Date(iso_string).getFullYear();
+export function getFullYear(isoString: string): nat32 {
+    return new Date(isoString).getFullYear();
 }
 
 $query;
-export function get_hours(iso_string: string): nat32 {
-    return new Date(iso_string).getHours();
+export function getHours(isoString: string): nat32 {
+    return new Date(isoString).getHours();
 }
 
 $query;
-export function get_milliseconds(iso_string: string): nat32 {
-    return new Date(iso_string).getMilliseconds();
+export function getMilliseconds(isoString: string): nat32 {
+    return new Date(isoString).getMilliseconds();
 }
 
 $query;
-export function get_minutes(iso_string: string): nat32 {
-    return new Date(iso_string).getMinutes();
+export function getMinutes(isoString: string): nat32 {
+    return new Date(isoString).getMinutes();
 }
 
 $query;
-export function get_month(iso_string: string): nat32 {
-    return new Date(iso_string).getMonth();
+export function getMonth(isoString: string): nat32 {
+    return new Date(isoString).getMonth();
 }
 
 $query;
-export function get_seconds(iso_string: string): nat32 {
-    return new Date(iso_string).getSeconds();
+export function getSeconds(isoString: string): nat32 {
+    return new Date(isoString).getSeconds();
 }
 
 $query;
-export function get_time(iso_string: string): nat64 {
-    return BigInt(new Date(iso_string).getTime());
+export function getTime(isoString: string): nat64 {
+    return BigInt(new Date(isoString).getTime());
 }
 
 $query;
-export function get_timezone_offset(iso_string: string): nat32 {
-    return new Date(iso_string).getTimezoneOffset();
+export function getTimezoneOffset(isoString: string): nat32 {
+    return new Date(isoString).getTimezoneOffset();
 }
 
 $query;
-export function get_utc_date(iso_string: string): nat32 {
-    return new Date(iso_string).getUTCDate();
+export function getUtcDate(isoString: string): nat32 {
+    return new Date(isoString).getUTCDate();
 }
 
 $query;
-export function get_utc_day(iso_string: string): nat32 {
-    return new Date(iso_string).getUTCDay();
+export function getUtcDay(isoString: string): nat32 {
+    return new Date(isoString).getUTCDay();
 }
 
 $query;
-export function get_utc_full_year(iso_string: string): nat32 {
-    return new Date(iso_string).getUTCFullYear();
+export function getUtcFullYear(isoString: string): nat32 {
+    return new Date(isoString).getUTCFullYear();
 }
 
 $query;
-export function get_utc_hours(iso_string: string): nat32 {
-    return new Date(iso_string).getUTCHours();
+export function getUtcHours(isoString: string): nat32 {
+    return new Date(isoString).getUTCHours();
 }
 
 $query;
-export function get_utc_milliseconds(iso_string: string): nat32 {
-    return new Date(iso_string).getUTCMilliseconds();
+export function getUtcMilliseconds(isoString: string): nat32 {
+    return new Date(isoString).getUTCMilliseconds();
 }
 
 $query;
-export function get_utc_minutes(iso_string: string): nat32 {
-    return new Date(iso_string).getUTCMinutes();
+export function getUtcMinutes(isoString: string): nat32 {
+    return new Date(isoString).getUTCMinutes();
 }
 
 $query;
-export function get_utc_month(iso_string: string): nat32 {
-    return new Date(iso_string).getUTCMonth();
+export function getUtcMonth(isoString: string): nat32 {
+    return new Date(isoString).getUTCMonth();
 }
 
 $query;
-export function get_utc_seconds(iso_string: string): nat32 {
-    return new Date(iso_string).getUTCSeconds();
+export function getUtcSeconds(isoString: string): nat32 {
+    return new Date(isoString).getUTCSeconds();
 }
 
 $query;
-export function set_date(iso_string: string, new_date: nat32): nat32 {
-    let date = new Date(iso_string);
+export function setDate(isoString: string, newDate: nat32): nat32 {
+    let date = new Date(isoString);
 
-    date.setDate(new_date);
+    date.setDate(newDate);
 
     return date.getDate();
 }
 
 $query;
-export function set_full_year(iso_string: string, new_full_year: nat32): nat32 {
-    let date = new Date(iso_string);
+export function setFullYear(isoString: string, newFullYear: nat32): nat32 {
+    let date = new Date(isoString);
 
-    date.setFullYear(new_full_year);
+    date.setFullYear(newFullYear);
 
     return date.getFullYear();
 }
 
 $query;
-export function set_hours(iso_string: string, new_hours: nat32): nat32 {
-    let date = new Date(iso_string);
+export function setHours(isoString: string, newHours: nat32): nat32 {
+    let date = new Date(isoString);
 
-    date.setHours(new_hours);
+    date.setHours(newHours);
 
     return date.getHours();
 }
 
 $query;
-export function set_milliseconds(
-    iso_string: string,
-    new_milliseconds: nat32
+export function setMilliseconds(
+    isoString: string,
+    newMilliseconds: nat32
 ): nat32 {
-    let date = new Date(iso_string);
+    let date = new Date(isoString);
 
-    date.setMilliseconds(new_milliseconds);
+    date.setMilliseconds(newMilliseconds);
 
     return date.getMilliseconds();
 }
 
 $query;
-export function set_minutes(iso_string: string, new_minutes: nat32): nat32 {
-    let date = new Date(iso_string);
+export function setMinutes(isoString: string, newMinutes: nat32): nat32 {
+    let date = new Date(isoString);
 
-    date.setMinutes(new_minutes);
+    date.setMinutes(newMinutes);
 
     return date.getMinutes();
 }
 
 $query;
-export function set_month(iso_string: string, new_month: nat32): nat32 {
-    let date = new Date(iso_string);
+export function setMonth(isoString: string, newMonth: nat32): nat32 {
+    let date = new Date(isoString);
 
-    date.setMonth(new_month);
+    date.setMonth(newMonth);
 
     return date.getMonth();
 }
 
 $query;
-export function set_seconds(iso_string: string, new_seconds: nat32): nat32 {
-    let date = new Date(iso_string);
+export function setSeconds(isoString: string, newSeconds: nat32): nat32 {
+    let date = new Date(isoString);
 
-    date.setSeconds(new_seconds);
+    date.setSeconds(newSeconds);
 
     return date.getSeconds();
 }
 
 $query;
-export function set_time(iso_string: string, new_time: nat64): nat64 {
-    let date = new Date(iso_string);
+export function setTime(isoString: string, newTime: nat64): nat64 {
+    let date = new Date(isoString);
 
-    date.setTime(Number(new_time));
+    date.setTime(Number(newTime));
 
     return BigInt(date.getTime());
 }
 
 $query;
-export function set_utc_date(iso_string: string, new_utc_date: nat32): nat32 {
-    let date = new Date(iso_string);
+export function setUtcDate(isoString: string, newUtcDate: nat32): nat32 {
+    let date = new Date(isoString);
 
-    date.setUTCDate(new_utc_date);
+    date.setUTCDate(newUtcDate);
 
     return date.getUTCDate();
 }
 
 $query;
-export function set_utc_full_year(
-    iso_string: string,
-    new_utc_full_year: nat32
+export function setUtcFullYear(
+    isoString: string,
+    newUtcFullYear: nat32
 ): nat32 {
-    let date = new Date(iso_string);
+    let date = new Date(isoString);
 
-    date.setUTCFullYear(new_utc_full_year);
+    date.setUTCFullYear(newUtcFullYear);
 
     return date.getUTCFullYear();
 }
 
 $query;
-export function set_utc_hours(iso_string: string, new_utc_hours: nat32): nat32 {
-    let date = new Date(iso_string);
+export function setUtcHours(isoString: string, newUtcHours: nat32): nat32 {
+    let date = new Date(isoString);
 
-    date.setUTCHours(new_utc_hours);
+    date.setUTCHours(newUtcHours);
 
     return date.getUTCHours();
 }
 
 $query;
-export function set_utc_milliseconds(
-    iso_string: string,
-    new_utc_milliseconds: nat32
+export function setUtcMilliseconds(
+    isoString: string,
+    newUtcMilliseconds: nat32
 ): nat32 {
-    let date = new Date(iso_string);
+    let date = new Date(isoString);
 
-    date.setUTCMilliseconds(new_utc_milliseconds);
+    date.setUTCMilliseconds(newUtcMilliseconds);
 
     return date.getUTCMilliseconds();
 }
 
 $query;
-export function set_utc_minutes(
-    iso_string: string,
-    new_utc_minutes: nat32
-): nat32 {
-    let date = new Date(iso_string);
+export function setUtcMinutes(isoString: string, newUtcMinutes: nat32): nat32 {
+    let date = new Date(isoString);
 
-    date.setUTCMinutes(new_utc_minutes);
+    date.setUTCMinutes(newUtcMinutes);
 
     return date.getUTCMinutes();
 }
 
 $query;
-export function set_utc_month(iso_string: string, new_utc_month: nat32): nat32 {
-    let date = new Date(iso_string);
+export function setUtcMonth(isoString: string, newUtcMonth: nat32): nat32 {
+    let date = new Date(isoString);
 
-    date.setUTCMonth(new_utc_month);
+    date.setUTCMonth(newUtcMonth);
 
     return date.getUTCMonth();
 }
 
 $query;
-export function set_utc_seconds(
-    iso_string: string,
-    new_utc_seconds: nat32
-): nat32 {
-    let date = new Date(iso_string);
+export function setUtcSeconds(isoString: string, newUtcSeconds: nat32): nat32 {
+    let date = new Date(isoString);
 
-    date.setUTCSeconds(new_utc_seconds);
+    date.setUTCSeconds(newUtcSeconds);
 
     return date.getUTCSeconds();
 }
 
 $query;
-export function to_date_string(iso_string: string): string {
-    return new Date(iso_string).toDateString();
+export function toDateString(isoString: string): string {
+    return new Date(isoString).toDateString();
 }
 
 $query;
-export function to_iso_string(iso_string: string): string {
-    return new Date(iso_string).toISOString();
+export function toISOString(isoString: string): string {
+    return new Date(isoString).toISOString();
 }
 
 $query;
-export function to_json(iso_string: string): string {
-    return new Date(iso_string).toJSON();
+export function toJSON(isoString: string): string {
+    return new Date(isoString).toJSON();
 }
 
 $query;
-export function to_string(iso_string: string): string {
-    return new Date(iso_string).toString();
+export function toString(isoString: string): string {
+    return new Date(isoString).toString();
 }
 
 $query;
-export function to_time_string(iso_string: string): string {
-    return new Date(iso_string).toTimeString();
+export function toTimeString(isoString: string): string {
+    return new Date(isoString).toTimeString();
 }
 
 $query;
-export function to_utc_string(iso_string: string): string {
-    return new Date(iso_string).toUTCString();
+export function toUtcString(isoString: string): string {
+    return new Date(isoString).toUTCString();
 }
 
 $query;
@@ -276,8 +270,8 @@ export function now(): nat64 {
 }
 
 $query;
-export function parse(iso_string: string): nat64 {
-    return BigInt(Date.parse(iso_string));
+export function parse(isoString: string): nat64 {
+    return BigInt(Date.parse(isoString));
 }
 
 $query;

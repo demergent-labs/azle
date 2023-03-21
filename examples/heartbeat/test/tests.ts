@@ -3,9 +3,9 @@ import { _SERVICE as _SERVICE_HEARTBEAT_ASYNC } from './dfx_generated/heartbeat_
 import { _SERVICE as _SERVICE_HEARTBEAT_SYNC } from './dfx_generated/heartbeat_sync/heartbeat_sync.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(
-    heartbeat_async_canister: ActorSubclass<_SERVICE_HEARTBEAT_ASYNC>,
-    heartbeat_sync_canister: ActorSubclass<_SERVICE_HEARTBEAT_SYNC>
+export function getTests(
+    heartbeatAsyncCanister: ActorSubclass<_SERVICE_HEARTBEAT_ASYNC>,
+    heartbeatSyncCanister: ActorSubclass<_SERVICE_HEARTBEAT_SYNC>
 ): Test[] {
     return [
         {
@@ -13,22 +13,22 @@ export function get_tests(
             wait: 10_000
         },
         {
-            name: 'get_initialized heartbeat_async',
+            name: 'getInitialized heartbeatSsync',
             test: async () => {
-                const result = await heartbeat_async_canister.get_initialized();
+                const result = await heartbeatAsyncCanister.getInitialized();
 
                 return {
-                    ok: result.length === 32
+                    Ok: result.length === 32
                 };
             }
         },
         {
-            name: 'get_initialized heartbeat_sync',
+            name: 'getInitialized heartbeat_sync',
             test: async () => {
-                const result = await heartbeat_sync_canister.get_initialized();
+                const result = await heartbeatSyncCanister.getInitialized();
 
                 return {
-                    ok: result
+                    Ok: result
                 };
             }
         }

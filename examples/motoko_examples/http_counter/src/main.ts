@@ -52,9 +52,9 @@ type HttpRequest = Record<{
     body: blob;
 }>;
 
-let stable_storage = new StableBTreeMap<string, nat>(0, 25, 1_000);
+let stableStorage = new StableBTreeMap<string, nat>(0, 25, 1_000);
 
-stable_storage.insert('counter', 0n);
+stableStorage.insert('counter', 0n);
 
 function isGzip(x: HeaderField): boolean {
     return (
@@ -93,7 +93,7 @@ export function http_request(req: HttpRequest): HttpResponse {
                 status_code: 200,
                 headers: [['content-type', 'text/plain']],
                 body: encode(
-                    `Counter is ${stable_storage.get('counter') ?? 0n}\n${
+                    `Counter is ${stableStorage.get('counter') ?? 0n}\n${
                         req.url
                     }\n`
                 ),
@@ -144,9 +144,9 @@ export function http_request(req: HttpRequest): HttpResponse {
 $update;
 export function http_request_update(req: HttpRequest): HttpResponse {
     if (req.method === 'POST') {
-        stable_storage.insert(
+        stableStorage.insert(
             'counter',
-            (stable_storage.get('counter') ?? 0n) + 1n
+            (stableStorage.get('counter') ?? 0n) + 1n
         );
 
         if (req.headers.find(isGzip) === undefined) {
@@ -154,9 +154,7 @@ export function http_request_update(req: HttpRequest): HttpResponse {
                 status_code: 201,
                 headers: [['content-type', 'text/plain']],
                 body: encode(
-                    `Counter updated to ${
-                        stable_storage.get('counter') ?? 0n
-                    }\n`
+                    `Counter updated to ${stableStorage.get('counter') ?? 0n}\n`
                 ),
                 streaming_strategy: null,
                 upgrade: null
@@ -204,7 +202,7 @@ export function http_streaming(token: Token): StreamingCallbackHttpResponse {
         }
         case 'next': {
             return {
-                body: encode(`${stable_storage.get('counter') ?? 0n}`),
+                body: encode(`${stableStorage.get('counter') ?? 0n}`),
                 token: { arbitrary_data: 'last' }
             };
         }

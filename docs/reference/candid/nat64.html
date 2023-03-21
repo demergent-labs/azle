@@ -148,24 +148,24 @@
 <pre><code class="language-typescript">import { nat64, $query } from 'azle';
 
 $query;
-export function get_nat64(): nat64 {
+export function getNat64(): nat64 {
     return 18_446_744_073_709_551_615n;
 }
 
 $query;
-export function print_nat64(nat64: nat64): nat64 {
+export function printNat64(nat64: nat64): nat64 {
     console.log(typeof nat64);
     return nat64;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_nat64 : () -&gt; (nat64) query;
-    print_nat64 : (nat64) -&gt; (nat64) query;
+    getNat64 : () -&gt; (nat64) query;
+    printNat64 : (nat64) -&gt; (nat64) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_nat64 '(18_446_744_073_709_551_615 : nat64)'
+<pre><code class="language-bash">dfx canister call candid_canister printNat64 '(18_446_744_073_709_551_615 : nat64)'
 (18_446_744_073_709_551_615 : nat64)
 </code></pre>
 

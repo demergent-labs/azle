@@ -2,38 +2,37 @@ import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/inspect_message/inspect_message.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(
-    inspect_message_canister: ActorSubclass<_SERVICE>
+export function getTests(
+    inspectMessageCanister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
         {
-            name: 'calling `ic.accept_message` in inspect_message',
+            name: 'calling `ic.acceptMessage` in inspectMessage',
             test: async () => {
                 try {
-                    const result = await inspect_message_canister.accessible();
+                    const result = await inspectMessageCanister.accessible();
                     return {
-                        ok: result === true
+                        Ok: result === true
                     };
                 } catch (error) {
                     console.error(error);
                     return {
-                        ok: false
+                        Ok: false
                     };
                 }
             }
         },
         {
-            name: 'not calling `ic.accept_message` in inspect_message',
+            name: 'not calling `ic.acceptMessage` in inspectMessage',
             test: async () => {
                 try {
-                    const result =
-                        await inspect_message_canister.inaccessible();
+                    const result = await inspectMessageCanister.inaccessible();
                     return {
-                        ok: false
+                        Ok: false
                     };
                 } catch (error) {
                     return {
-                        ok: ((error as any).message as string).includes(
+                        Ok: ((error as any).message as string).includes(
                             'Code: 403'
                         )
                     };
@@ -41,18 +40,18 @@ export function get_tests(
             }
         },
         {
-            name: 'throwing in `inspect_message`',
+            name: 'throwing in `inspectMessage`',
             test: async () => {
                 try {
                     const result =
-                        await inspect_message_canister.also_inaccessible();
+                        await inspectMessageCanister.alsoInaccessible();
 
                     return {
-                        ok: false
+                        Ok: false
                     };
                 } catch (error) {
                     return {
-                        ok: ((error as any).message as string).includes(
+                        Ok: ((error as any).message as string).includes(
                             'Code: 500'
                         )
                     };

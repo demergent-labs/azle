@@ -22,55 +22,55 @@ const callingPrincipal = callingIdentity.getPrincipal().toString();
 const someoneIdentity = createIdentity(2);
 export const someonePrincipal = someoneIdentity.getPrincipal().toString();
 
-export function get_tests(whoami_canister: ActorSubclass<_SERVICE>): Test[] {
+export function getTests(whoamiCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'installer',
             test: async () => {
-                const result = await whoami_canister.installer();
+                const result = await whoamiCanister.installer();
 
                 return {
-                    ok: result.toString() === installationPrincipal
+                    Ok: result.toString() === installationPrincipal
                 };
             }
         },
         {
             name: 'argument',
             test: async () => {
-                const result = await whoami_canister.argument();
+                const result = await whoamiCanister.argument();
 
                 return {
-                    ok: result.toString() === someonePrincipal
+                    Ok: result.toString() === someonePrincipal
                 };
             }
         },
         {
             name: 'whoami',
             test: async () => {
-                const result = await whoami_canister.whoami();
+                const result = await whoamiCanister.whoami();
 
                 return {
-                    ok: result.toString() === callingPrincipal
+                    Ok: result.toString() === callingPrincipal
                 };
             }
         },
         {
             name: 'id',
             test: async () => {
-                const result = await whoami_canister.id();
+                const result = await whoamiCanister.id();
 
                 return {
-                    ok: result.toString() === canisterId
+                    Ok: result.toString() === canisterId
                 };
             }
         },
         {
-            name: 'id_quick',
+            name: 'idQuick',
             test: async () => {
-                const result = await whoami_canister.id_quick();
+                const result = await whoamiCanister.idQuick();
 
                 return {
-                    ok: result.toString() === canisterId
+                    Ok: result.toString() === canisterId
                 };
             }
         },
@@ -88,15 +88,15 @@ export function get_tests(whoami_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'updated argument',
             test: async () => {
-                const result = await whoami_canister.argument();
+                const result = await whoamiCanister.argument();
 
                 return {
-                    ok: result.toString() === callingPrincipal
+                    Ok: result.toString() === callingPrincipal
                 };
             }
         }
         // TODO: To make this test really robust, we would use a different identity
         // when re-deploying the canister. Then we would assert that
-        // `whoami_canister.installer()` returns the new installer's principal.
+        // `whoamiCanister.installer()` returns the new installer's principal.
     ];
 }

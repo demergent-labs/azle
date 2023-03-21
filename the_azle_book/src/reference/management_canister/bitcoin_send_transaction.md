@@ -6,30 +6,28 @@ Examples:
 
 ```typescript
 import { blob, $update, Variant } from 'azle';
-import { BitcoinNetwork, management_canister } from 'azle/canisters/management';
+import { BitcoinNetwork, managementCanister } from 'azle/canisters/management';
 
 const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;
 const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 
 $update;
-export async function send_transaction(transaction: blob): Promise<
+export async function sendTransaction(transaction: blob): Promise<
     Variant<{
-        ok: null;
-        err: string;
+        Ok: null;
+        Err: string;
     }>
 > {
-    const transaction_fee =
+    const transactionFee =
         BITCOIN_BASE_TRANSACTION_COST +
         BigInt(transaction.length) * BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;
 
-    const canister_result = await management_canister
+    return await managementCanister
         .bitcoin_send_transaction({
             transaction,
             network: BitcoinNetwork.Regtest
         })
-        .cycles(transaction_fee)
+        .cycles(transactionFee)
         .call();
-
-    return canister_result;
 }
 ```

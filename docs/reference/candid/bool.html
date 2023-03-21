@@ -148,24 +148,24 @@
 <pre><code class="language-typescript">import { $query } from 'azle';
 
 $query;
-export function get_bool(): boolean {
+export function getBool(): boolean {
     return true;
 }
 
 $query;
-export function print_bool(bool: boolean): boolean {
+export function printBool(bool: boolean): boolean {
     console.log(typeof bool);
     return bool;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_bool : () -&gt; (bool) query;
-    print_bool : (bool) -&gt; (bool) query;
+    getBool : () -&gt; (bool) query;
+    printBool : (bool) -&gt; (bool) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_bool '(true)'
+<pre><code class="language-bash">dfx canister call candid_canister printBool '(true)'
 (true)
 </code></pre>
 

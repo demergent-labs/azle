@@ -7,35 +7,38 @@ Examples:
 -   [management_canister](https://github.com/demergent-labs/azle/tree/main/examples/management_canister)
 
 ```typescript
-import { blob, ic, ok, Record, $update, Variant } from 'azle';
-import { management_canister } from 'azle/canisters/management';
+import { blob, ic, match, Record, $update, Variant } from 'azle';
+import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function sign(message_hash: blob): Promise<
+export async function sign(messageHash: blob): Promise<
     Variant<{
-        ok: Record<{ signature: blob }>;
-        err: string;
+        Ok: Record<{ signature: blob }>;
+        Err: string;
     }>
 > {
-    if (message_hash.length !== 32) {
-        ic.trap('message_hash must be 32 bytes');
+    if (messageHash.length !== 32) {
+        ic.trap('messageHash must be 32 bytes');
     }
 
     const caller = ic.caller().toUint8Array();
 
-    const signature_result = await management_canister
+    const signatureResult = await managementCanister
         .sign_with_ecdsa({
-            message_hash,
+            message_hash: messageHash,
             derivation_path: [caller],
-            key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
+            key_id: { curve: { secp256k1: null }, name: 'dfxTestKey' }
         })
         .cycles(10_000_000_000n)
         .call();
 
-    if (!ok(signature_result)) {
-        return { err: signature_result.err };
-    }
-
-    return { ok: { signature: signature_result.ok.signature } };
+    return match(signatureResult, {
+        Ok: (signWithEcdsaResult) => ({
+            Ok: {
+                signature: signWithEcdsaResult.signature
+            }
+        }),
+        Err: (err) => ({ Err: err })
+    });
 }
 ```

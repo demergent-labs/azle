@@ -8,27 +8,19 @@ Examples:
 
 ```typescript
 import { ic, nat, ok, $update, Variant } from 'azle';
-import { cycles_canister } from '../cycles';
+import { cyclesCanister } from '../cycles';
 
 // Reports the number of cycles returned from the Cycles canister
 $update;
-export async function send_cycles128(): Promise<
-    Variant<{
-        ok: nat;
-        err: string;
-    }>
-> {
-    const result = await cycles_canister
-        .receive_cycles128()
+export async function sendCycles128(): Promise<SendCyclesResult128> {
+    const result = await cyclesCanister
+        .receiveCycles128()
         .cycles128(1_000_000n)
         .call();
 
-    if (!ok(result)) {
-        return { err: result.err };
-    }
-
-    return {
-        ok: ic.msg_cycles_refunded128()
-    };
+    return match(result, {
+        Ok: () => ({ Ok: ic.msgCyclesRefunded128() }),
+        Err: (err) => ({ Err: err })
+    });
 }
 ```

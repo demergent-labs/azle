@@ -10,26 +10,24 @@ Examples:
 import { $update, Variant } from 'azle';
 import {
     BitcoinNetwork,
-    management_canister,
+    managementCanister,
     MillisatoshiPerByte
 } from 'azle/canisters/management';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
 $update;
-export async function get_current_fee_percentiles(): Promise<
+export async function getCurrentFeePercentiles(): Promise<
     Variant<{
-        ok: MillisatoshiPerByte[];
-        err: string;
+        Ok: MillisatoshiPerByte[];
+        Err: string;
     }>
 > {
-    const canister_result = await management_canister
+    return await managementCanister
         .bitcoin_get_current_fee_percentiles({
             network: BitcoinNetwork.Regtest
         })
         .cycles(BITCOIN_API_CYCLE_COST)
         .call();
-
-    return canister_result;
 }
 ```

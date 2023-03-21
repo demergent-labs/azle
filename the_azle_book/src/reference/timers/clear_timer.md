@@ -10,7 +10,7 @@ Examples:
 import { ic, TimerId, $update } from 'azle';
 
 $update;
-export function clear_timer(timer_id: TimerId): void {
-    ic.clear_timer(timer_id);
+export function clearTimer(timerId: TimerId): void {
+    ic.clearTimer(timerId);
 }
 ```

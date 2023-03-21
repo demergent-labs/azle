@@ -2,8 +2,8 @@ import { execSync } from 'child_process';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { SignIdentity } from '@dfinity/agent';
 
-const someoneIdentity = create_identity(2);
-export const someone_principal = someoneIdentity.getPrincipal().toString();
+const someoneIdentity = createIdentity(2);
+export const someonePrincipal = someoneIdentity.getPrincipal().toString();
 
 async function pretest() {
     await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -12,12 +12,9 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(
-        `dfx deploy azle --argument '(principal "${someone_principal}")'`,
-        {
-            stdio: 'inherit'
-        }
-    );
+    execSync(`dfx deploy azle --argument '(principal "${someonePrincipal}")'`, {
+        stdio: 'inherit'
+    });
 
     execSync(`dfx generate azle`, {
         stdio: 'inherit'
@@ -26,7 +23,7 @@ async function pretest() {
 
 pretest();
 
-function create_identity(seed: number): SignIdentity {
+function createIdentity(seed: number): SignIdentity {
     const seed1 = [seed, ...new Array(31).fill(0)];
     return Ed25519KeyIdentity.generate(Uint8Array.from(seed1));
 }

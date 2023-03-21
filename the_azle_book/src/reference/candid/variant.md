@@ -22,14 +22,14 @@ type Emotion = Variant<{
 }>;
 
 $query;
-export function get_reaction(): Reaction {
+export function getReaction(): Reaction {
     return {
         Fire: null
     };
 }
 
 $query;
-export function print_reaction(reaction: Reaction): Reaction {
+export function printReaction(reaction: Reaction): Reaction {
     console.log(typeof reaction);
     return reaction;
 }
@@ -41,14 +41,14 @@ Candid:
 type Emotion = variant { Sad; Indifferent; Happy };
 type Reaction = variant { Emotion : Emotion; Fire; ThumbsUp };
 service : () -> {
-    get_reaction : () -> (Reaction) query;
-    print_reaction : (Reaction) -> (Reaction) query;
+    getReaction : () -> (Reaction) query;
+    printReaction : (Reaction) -> (Reaction) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_reaction '(variant { Fire })'
+dfx canister call candid_canister printReaction '(variant { Fire })'
 (variant { Fire })
 ```

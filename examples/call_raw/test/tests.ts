@@ -8,7 +8,7 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'execute_call_raw raw_rand',
             test: async () => {
-                const result = await call_raw_canister.execute_call_raw(
+                const result = await call_raw_canister.executeCallRaw(
                     Principal.fromText('aaaaa-aa'),
                     'raw_rand',
                     '()',
@@ -29,7 +29,7 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'execute_call_raw create_canister',
             test: async () => {
-                const result = await call_raw_canister.execute_call_raw(
+                const result = await call_raw_canister.executeCallRaw(
                     Principal.fromText('aaaaa-aa'),
                     'create_canister',
                     '(record { settings = null })',
@@ -52,7 +52,7 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'execute_call_raw128 raw_rand',
             test: async () => {
-                const result = await call_raw_canister.execute_call_raw128(
+                const result = await call_raw_canister.executeCallRaw128(
                     Principal.fromText('aaaaa-aa'),
                     'raw_rand',
                     '()',
@@ -73,7 +73,7 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'execute_call_raw128 create_canister',
             test: async () => {
-                const result = await call_raw_canister.execute_call_raw128(
+                const result = await call_raw_canister.executeCallRaw128(
                     Principal.fromText('aaaaa-aa'),
                     'create_canister',
                     '(record { settings = null })',

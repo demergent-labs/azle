@@ -10,12 +10,12 @@ TypeScript:
 import { int16, $query } from 'azle';
 
 $query;
-export function get_int16(): int16 {
+export function getInt16(): int16 {
     return 32_767;
 }
 
 $query;
-export function print_int16(int16: int16): int16 {
+export function printInt16(int16: int16): int16 {
     console.log(typeof int16);
     return int16;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_int16 : () -> (int16) query;
-    print_int16 : (int16) -> (int16) query;
+    getInt16 : () -> (int16) query;
+    printInt16 : (int16) -> (int16) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_int16 '(32_767 : int16)'
+dfx canister call candid_canister printInt16 '(32_767 : int16)'
 (32_767 : int16)
 ```

@@ -1,16 +1,12 @@
-import { run_tests, Test } from 'azle/test';
+import { runTests, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { createActor as createActorCanister1 } from './dfx_generated/canister1';
 import { createActor as createActorCanister2 } from './dfx_generated/canister2';
 import { createActor as createActorCanister3 } from './dfx_generated/canister3';
 import { _SERVICE } from './dfx_generated/canister3/canister3.did';
-import {
-    pre_redeploy_tests,
-    post_redeploy_tests,
-    insert_error_tests
-} from './tests';
+import { preRedeployTests, postRedeployTests, insertErrorTests } from './tests';
 
-const stable_structures_canister_1 = createActorCanister1(
+const stableStructuresCanister_1 = createActorCanister1(
     'rrkah-fqaaa-aaaaa-aaaaq-cai',
     {
         agentOptions: {
@@ -19,7 +15,7 @@ const stable_structures_canister_1 = createActorCanister1(
     }
 );
 
-const stable_structures_canister_2 = createActorCanister2(
+const stableStructuresCanister_2 = createActorCanister2(
     'ryjl3-tyaaa-aaaaa-aaaba-cai',
     {
         agentOptions: {
@@ -27,7 +23,7 @@ const stable_structures_canister_2 = createActorCanister2(
         }
     }
 );
-const stable_structures_canister_3 = createActorCanister3(
+const stableStructuresCanister_3 = createActorCanister3(
     'r7inp-6aaaa-aaaaa-aaabq-cai',
     {
         agentOptions: {
@@ -37,22 +33,19 @@ const stable_structures_canister_3 = createActorCanister3(
 );
 
 const tests: Test[] = [
-    ...pre_redeploy_tests(stable_structures_canister_1, 0, 4),
-    ...pre_redeploy_tests(stable_structures_canister_2, 5, 9),
-    ...pre_redeploy_tests(stable_structures_canister_3, 10, 13),
+    ...preRedeployTests(stableStructuresCanister_1, 0, 4),
+    ...preRedeployTests(stableStructuresCanister_2, 5, 9),
+    ...preRedeployTests(stableStructuresCanister_3, 10, 13),
     {
         name: 'redeploy canisters',
         prep: async () => {
             execSync('dfx deploy', { stdio: 'inherit' });
         }
     },
-    ...post_redeploy_tests(stable_structures_canister_1, 0, 4),
-    ...post_redeploy_tests(stable_structures_canister_2, 5, 9),
-    ...post_redeploy_tests(stable_structures_canister_3, 10, 13),
-    ...insert_error_tests(
-        stable_structures_canister_1,
-        stable_structures_canister_3
-    )
+    ...postRedeployTests(stableStructuresCanister_1, 0, 4),
+    ...postRedeployTests(stableStructuresCanister_2, 5, 9),
+    ...postRedeployTests(stableStructuresCanister_3, 10, 13),
+    ...insertErrorTests(stableStructuresCanister_1, stableStructuresCanister_3)
 ];
 
-run_tests(tests);
+runTests(tests);

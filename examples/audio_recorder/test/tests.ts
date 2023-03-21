@@ -18,13 +18,13 @@ export function get_tests(
         {
             name: 'create_user',
             test: async () => {
-                const result = await audio_recorder_canister.create_user(
+                const result = await audio_recorder_canister.createUser(
                     'lastmjs'
                 );
 
                 if (!ok(result)) {
                     return {
-                        err: JSON.stringify(result.Err, null, 2)
+                        Err: JSON.stringify(result.Err, null, 2)
                     };
                 }
 
@@ -35,14 +35,14 @@ export function get_tests(
                 return {
                     Ok:
                         user.username === 'lastmjs' &&
-                        user.recording_ids.length === 0
+                        user.recordingIds.length === 0
                 };
             }
         },
         {
             name: 'create_recording',
             test: async () => {
-                const result = await audio_recorder_canister.create_recording(
+                const result = await audio_recorder_canister.createRecording(
                     Uint8Array.from([0, 1, 2, 3, 4]),
                     'First recording',
                     global_user.id
@@ -50,7 +50,7 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: JSON.stringify(result.Err, null, 2)
+                        Err: JSON.stringify(result.Err, null, 2)
                     };
                 }
 
@@ -62,14 +62,14 @@ export function get_tests(
                     Ok:
                         recording.audio.length === 5 &&
                         recording.name === 'First recording' &&
-                        recording.user_id.toText() === global_user.id.toText()
+                        recording.userId.toText() === global_user.id.toText()
                 };
             }
         },
         {
             name: 'read_users',
             test: async () => {
-                const result = await audio_recorder_canister.read_users();
+                const result = await audio_recorder_canister.readUsers();
                 const user = result[0];
 
                 global_user = user;
@@ -78,7 +78,7 @@ export function get_tests(
                     Ok:
                         result.length === 1 &&
                         user.id.toText() === global_user.id.toText() &&
-                        user.created_at === global_user.created_at &&
+                        user.createdAt === global_user.createdAt &&
                         user.username === global_user.username
                 };
             }
@@ -86,7 +86,7 @@ export function get_tests(
         {
             name: 'read_recordings',
             test: async () => {
-                const result = await audio_recorder_canister.read_recordings();
+                const result = await audio_recorder_canister.readRecordings();
                 const recording = result[0];
 
                 return {
@@ -94,24 +94,24 @@ export function get_tests(
                         result.length === 1 &&
                         recording.id.toText() ===
                             global_recording.id.toText() &&
-                        recording.created_at === global_recording.created_at &&
+                        recording.createdAt === global_recording.createdAt &&
                         recording.name === global_recording.name &&
-                        recording.user_id.toText() ===
-                            global_recording.user_id.toText()
+                        recording.userId.toText() ===
+                            global_recording.userId.toText()
                 };
             }
         },
         {
             name: 'read_user_by_id',
             test: async () => {
-                const result = await audio_recorder_canister.read_user_by_id(
+                const result = await audio_recorder_canister.readUserById(
                     global_user.id
                 );
                 const user = result[0];
 
                 if (user === undefined) {
                     return {
-                        err: 'User not found'
+                        Err: 'User not found'
                     };
                 }
 
@@ -119,26 +119,25 @@ export function get_tests(
                     Ok:
                         result.length === 1 &&
                         user.id.toText() === global_user.id.toText() &&
-                        user.created_at === global_user.created_at &&
+                        user.createdAt === global_user.createdAt &&
                         user.username === global_user.username &&
-                        user.recording_ids.length === 1 &&
-                        user.recording_ids[0].toText() ===
-                            global_user.recording_ids[0].toText()
+                        user.recordingIds.length === 1 &&
+                        user.recordingIds[0].toText() ===
+                            global_user.recordingIds[0].toText()
                 };
             }
         },
         {
             name: 'read_recording_by_id',
             test: async () => {
-                const result =
-                    await audio_recorder_canister.read_recording_by_id(
-                        global_recording.id
-                    );
+                const result = await audio_recorder_canister.readRecordingById(
+                    global_recording.id
+                );
                 const recording = result[0];
 
                 if (recording === undefined) {
                     return {
-                        err: 'Recording not found'
+                        Err: 'Recording not found'
                     };
                 }
 
@@ -147,10 +146,10 @@ export function get_tests(
                         result.length === 1 &&
                         recording.id.toText() ===
                             global_recording.id.toText() &&
-                        recording.created_at === global_recording.created_at &&
+                        recording.createdAt === global_recording.createdAt &&
                         recording.name === global_recording.name &&
-                        recording.user_id.toText() ===
-                            global_recording.user_id.toText()
+                        recording.userId.toText() ===
+                            global_recording.userId.toText()
                 };
             }
         },
@@ -158,7 +157,7 @@ export function get_tests(
             name: 'delete_recording',
             test: async () => {
                 const delete_recording_result =
-                    await audio_recorder_canister.delete_recording(
+                    await audio_recorder_canister.deleteRecording(
                         global_recording.id
                     );
 
@@ -173,14 +172,14 @@ export function get_tests(
                 }
 
                 const read_recordings_result =
-                    await audio_recorder_canister.read_recordings();
+                    await audio_recorder_canister.readRecordings();
                 const read_users_result =
-                    await audio_recorder_canister.read_users();
+                    await audio_recorder_canister.readUsers();
 
                 return {
-                    ok:
+                    Ok:
                         read_recordings_result.length === 0 &&
-                        read_users_result[0].recording_ids.length === 0
+                        read_users_result[0].recordingIds.length === 0
                 };
             }
         },
@@ -188,7 +187,7 @@ export function get_tests(
             name: 'delete_user',
             test: async () => {
                 const create_recording_result =
-                    await audio_recorder_canister.create_recording(
+                    await audio_recorder_canister.createRecording(
                         Uint8Array.from([]),
                         'second recording',
                         global_user.id
@@ -201,12 +200,12 @@ export function get_tests(
                 }
 
                 const read_users_before_result =
-                    await audio_recorder_canister.read_users();
+                    await audio_recorder_canister.readUsers();
                 const read_recordings_before_result =
-                    await audio_recorder_canister.read_recordings();
+                    await audio_recorder_canister.readRecordings();
 
                 const delete_user_result =
-                    await audio_recorder_canister.delete_user(global_user.id);
+                    await audio_recorder_canister.deleteUser(global_user.id);
 
                 if (!ok(delete_user_result)) {
                     return {
@@ -215,15 +214,14 @@ export function get_tests(
                 }
 
                 const read_users_after_result =
-                    await audio_recorder_canister.read_users();
+                    await audio_recorder_canister.readUsers();
                 const read_recordings_after_result =
-                    await audio_recorder_canister.read_recordings();
+                    await audio_recorder_canister.readRecordings();
 
                 return {
                     Ok:
-                        read_users_before_result[0].recording_ids.length ===
-                            1 &&
-                        read_recordings_before_result[0].user_id.toText() ===
+                        read_users_before_result[0].recordingIds.length === 1 &&
+                        read_recordings_before_result[0].userId.toText() ===
                             global_user.id.toText() &&
                         read_users_after_result.length === 0 &&
                         read_recordings_after_result.length === 0

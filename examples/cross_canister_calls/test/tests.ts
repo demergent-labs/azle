@@ -225,7 +225,7 @@ export function get_tests(
         {
             name: 'canister2 get_notification empty',
             test: async () => {
-                const result = await canister2.get_notification();
+                const result = await canister2.getNotification();
 
                 return {
                     Ok: result === ''
@@ -235,7 +235,7 @@ export function get_tests(
         {
             name: 'canister1 send_notification',
             test: async () => {
-                const result = await canister1.send_notification();
+                const result = await canister1.sendNotification();
 
                 return {
                     Ok: 'Ok' in result && result.Ok === null
@@ -245,7 +245,7 @@ export function get_tests(
         {
             name: 'canister2 get_notification',
             test: async () => {
-                const result = await canister2.get_notification();
+                const result = await canister2.getNotification();
 
                 return {
                     Ok: result === 'This is the notification'

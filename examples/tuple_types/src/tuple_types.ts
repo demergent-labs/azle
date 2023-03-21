@@ -23,7 +23,7 @@ class TestCanister extends ExternalCanister {
 
 type User = Record<{
     id: string;
-    primitive_two_tuple: PrimitiveTwoTuple;
+    primitiveTwoTuple: PrimitiveTwoTuple;
 }>;
 
 type Reaction = Variant<{
@@ -46,70 +46,70 @@ type HttpResponse = Record<{
 }>;
 
 type StreamingCallbackType = Variant<{
-    with_headers: Header[];
-    without_headers: null;
+    withHeaders: Header[];
+    withoutHeaders: null;
 }>;
 
 $query;
-export function primitive_one_tuple_return_type(): PrimitiveOneTuple {
+export function primitiveOneTupleReturnType(): PrimitiveOneTuple {
     return ['Hello'];
 }
 
 $query;
-export function primitive_one_tuple_param(
+export function primitiveOneTupleParam(
     param: PrimitiveOneTuple
 ): PrimitiveOneTuple {
     return param;
 }
 
 $query;
-export function primitive_one_tuple_inline_return_type(): [string] {
+export function primitiveOneTupleInlineReturnType(): [string] {
     return ['Greenland'];
 }
 
 $query;
-export function primitive_one_tuple_inline_param(param: [string]): [string] {
+export function primitiveOneTupleInlineParam(param: [string]): [string] {
     return param;
 }
 
 $query;
-export function primitive_two_tuple_return_type(): PrimitiveTwoTuple {
+export function primitiveTwoTupleReturnType(): PrimitiveTwoTuple {
     return ['Content-Type', 64n];
 }
 
 $query;
-export function primitive_two_tuple_param(
+export function primitiveTwoTupleParam(
     param: PrimitiveTwoTuple
 ): PrimitiveTwoTuple {
     return param;
 }
 
 $query;
-export function primitive_two_tuple_inline_return_type(): [string, string] {
+export function primitiveTwoTupleInlineReturnType(): [string, string] {
     return ['Fun', 'Times'];
 }
 
 $query;
-export function primitive_two_tuple_inline_param(
+export function primitiveTwoTupleInlineParam(
     param: [string, string]
 ): [string, string] {
     return param;
 }
 
 $query;
-export function primitive_three_tuple_return_type(): PrimitiveThreeTuple {
+export function primitiveThreeTupleReturnType(): PrimitiveThreeTuple {
     return ['Good', 454n, Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')];
 }
 
 $query;
-export function primitive_three_tuple_param(
+export function primitiveThreeTupleParam(
     param: PrimitiveThreeTuple
 ): PrimitiveThreeTuple {
     return param;
 }
 
 $query;
-export function primitive_three_tuple_inline_return_type(): [
+export function primitiveThreeTupleInlineReturnType(): [
     string,
     nat64,
     Principal
@@ -118,89 +118,82 @@ export function primitive_three_tuple_inline_return_type(): [
 }
 
 $query;
-export function primitive_three_tuple_inline_param(
+export function primitiveThreeTupleInlineParam(
     param: [string, nat64, Principal]
 ): [string, nat64, Principal] {
     return param;
 }
 
 $query;
-export function complex_one_tuple_return_type(): ComplexOneTuple {
+export function complexOneTupleReturnType(): ComplexOneTuple {
     return [['Hello', 0n]];
 }
 
 $query;
-export function complex_one_tuple_param(
-    param: ComplexOneTuple
-): ComplexOneTuple {
+export function complexOneTupleParam(param: ComplexOneTuple): ComplexOneTuple {
     return param;
 }
 
 $query;
-export function complex_one_tuple_inline_return_type(): [PrimitiveTwoTuple] {
+export function complexOneTupleInlineReturnType(): [PrimitiveTwoTuple] {
     return [['Candy', 56n]];
 }
 
 $query;
-export function complex_one_tuple_inline_param(
+export function complexOneTupleInlineParam(
     param: [PrimitiveTwoTuple]
 ): [PrimitiveTwoTuple] {
     return param;
 }
 
 $query;
-export function complex_two_tuple_return_type(): ComplexTwoTuple {
+export function complexTwoTupleReturnType(): ComplexTwoTuple {
     return [
         ['Content-Type', 64n],
         {
             id: '0',
-            primitive_two_tuple: ['Content-Type', 64n]
+            primitiveTwoTuple: ['Content-Type', 64n]
         }
     ];
 }
 
 $query;
-export function complex_two_tuple_param(
-    param: ComplexTwoTuple
-): ComplexTwoTuple {
+export function complexTwoTupleParam(param: ComplexTwoTuple): ComplexTwoTuple {
     return param;
 }
 
 $query;
-export function complex_two_tuple_inline_return_type(): [
-    PrimitiveTwoTuple,
-    User
-] {
+export function complexTwoTupleInlineReturnType(): [PrimitiveTwoTuple, User] {
     return [
         ['Content-Type', 644n],
         {
             id: '444',
-            primitive_two_tuple: ['Content-Type', 6_422n]
+            primitiveTwoTuple: ['Content-Type', 6_422n]
         }
     ];
 }
 
 $query;
-export function complex_two_tuple_inline_param(
+export function complexTwoTupleInlineParam(
     param: [PrimitiveTwoTuple, User]
 ): [PrimitiveTwoTuple, User] {
     return param;
 }
 
 $query;
-export function complex_three_tuple_return_type(): ComplexThreeTuple {
+export function complexThreeTupleReturnType(): ComplexThreeTuple {
     return [
         ['Content-Type', 64n],
         {
             id: '0',
-            primitive_two_tuple: ['Content-Type', 64n]
+            primitiveTwoTuple: ['Content-Type', 64n]
         },
         {
             Bad: [
                 ['Content-Type', 64n],
                 {
                     id: '1',
-                    primitive_two_tuple: ['Content-Type', 64n]
+                    primitiveTwoTuple: ['Content-Type', 64n]
                 },
                 {
                     Good: null
@@ -211,14 +204,14 @@ export function complex_three_tuple_return_type(): ComplexThreeTuple {
 }
 
 $query;
-export function complex_three_tuple_param(
+export function complexThreeTupleParam(
     param: ComplexThreeTuple
 ): ComplexThreeTuple {
     return param;
 }
 
 $query;
-export function complex_three_tuple_inline_return_type(): [
+export function complexThreeTupleInlineReturnType(): [
     PrimitiveTwoTuple,
     User,
     Reaction
@@ -227,14 +220,14 @@ export function complex_three_tuple_inline_return_type(): [
         ['Content-Type', 64n],
         {
             id: '0',
-            primitive_two_tuple: ['Content-Type', 64n]
+            primitiveTwoTuple: ['Content-Type', 64n]
         },
         {
             Bad: [
                 ['Content-Type', 64n],
                 {
                     id: '1',
-                    primitive_two_tuple: ['Content-Type', 64n]
+                    primitiveTwoTuple: ['Content-Type', 64n]
                 },
                 {
                     Good: null
@@ -245,21 +238,19 @@ export function complex_three_tuple_inline_return_type(): [
 }
 
 $query;
-export function complex_three_tuple_inline_param(
+export function complexThreeTupleInlineParam(
     param: [PrimitiveTwoTuple, User, Reaction]
 ): [PrimitiveTwoTuple, User, Reaction] {
     return param;
 }
 
 $query;
-export function tuple_array_params_and_return_type(
-    headers: Header[]
-): Header[] {
+export function tupleArrayParamsAndReturnType(headers: Header[]): Header[] {
     return headers;
 }
 
 $query;
-export function tuple_array_record_field(): HttpResponse {
+export function tupleArrayRecordField(): HttpResponse {
     return {
         headers: [
             ['Content-Type', 'application/json'],
@@ -269,9 +260,9 @@ export function tuple_array_record_field(): HttpResponse {
 }
 
 $query;
-export function tuple_array_variant_field(): StreamingCallbackType {
+export function tupleArrayVariantField(): StreamingCallbackType {
     return {
-        with_headers: [
+        withHeaders: [
             ['Content-Type', 'application/json'],
             ['Accept-Ranges', 'bytes']
         ]
@@ -279,14 +270,14 @@ export function tuple_array_variant_field(): StreamingCallbackType {
 }
 
 $query;
-export function two_tuple_with_inline_records(
+export function twoTupleWithInlineRecords(
     param: [Record<{ hello: nat64 }>, Record<{ goodbye: nat64 }>]
 ): [Record<{ hello: nat64 }>, Record<{ goodbye: nat64 }>] {
     return param;
 }
 
 $query;
-export function nested_tuple_query(
+export function nestedTupleQuery(
     param: [[string, [nat8, nat8]], int]
 ): [[string, [nat8, nat8]], int] {
     return param;

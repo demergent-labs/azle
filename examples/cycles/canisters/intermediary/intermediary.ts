@@ -8,7 +8,7 @@ import {
     $update,
     Variant
 } from 'azle';
-import { cycles_canister } from '../cycles';
+import { cyclesCanister } from '../cycles';
 
 type SendCyclesResult = Variant<{
     Ok: nat64;
@@ -22,9 +22,9 @@ type SendCyclesResult128 = Variant<{
 
 // Reports the number of cycles returned from the Cycles canister
 $update;
-export async function send_cycles(): Promise<SendCyclesResult> {
-    const result = await cycles_canister
-        .receive_cycles()
+export async function sendCycles(): Promise<SendCyclesResult> {
+    const result = await cyclesCanister
+        .receiveCycles()
         .cycles(1_000_000n)
         .call();
 
@@ -35,15 +35,15 @@ export async function send_cycles(): Promise<SendCyclesResult> {
 }
 
 $update;
-export function send_cycles_notify(): NotifyResult {
-    return cycles_canister.receive_cycles().cycles(1_000_000n).notify();
+export function sendCyclesNotify(): NotifyResult {
+    return cyclesCanister.receiveCycles().cycles(1_000_000n).notify();
 }
 
 // Reports the number of cycles returned from the Cycles canister
 $update;
-export async function send_cycles128(): Promise<SendCyclesResult128> {
-    const result = await cycles_canister
-        .receive_cycles128()
+export async function sendCycles128(): Promise<SendCyclesResult128> {
+    const result = await cyclesCanister
+        .receiveCycles128()
         .cycles128(1_000_000n)
         .call();
 
@@ -54,16 +54,16 @@ export async function send_cycles128(): Promise<SendCyclesResult128> {
 }
 
 $update;
-export function send_cycles128_notify(): NotifyResult {
-    return cycles_canister.receive_cycles128().cycles128(1_000_000n).notify();
+export function sendCycles128Notify(): NotifyResult {
+    return cyclesCanister.receiveCycles128().cycles128(1_000_000n).notify();
 }
 
 $query;
-export function get_canister_balance(): nat64 {
+export function getCanisterBalance(): nat64 {
     return ic.canisterBalance();
 }
 
 $query;
-export function get_canister_balance128(): nat {
+export function getCanisterBalance128(): nat {
     return ic.canisterBalance128();
 }

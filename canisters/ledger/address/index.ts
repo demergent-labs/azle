@@ -4,24 +4,24 @@ import { sha224 } from 'js-sha256';
 import { Address } from '../index';
 
 // TODO we need to review these heavily
-export function hex_address_from_principal(
+export function hexAddressFromPrincipal(
     principal: Principal,
     subaccount: number
 ): Address {
-    return address_from_principal(principal, subaccount);
+    return addressFromPrincipal(principal, subaccount);
 }
 
-export function binary_address_from_principal(
+export function binaryAddressFromPrincipal(
     principal: Principal,
     subaccount: number
 ): blob {
-    const address = address_from_principal(principal, subaccount);
+    const address = addressFromPrincipal(principal, subaccount);
     return Uint8Array.from(
         address.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? []
     );
 }
 
-export function binary_address_from_address(address: Address): blob {
+export function binaryAddressFromAddress(address: Address): blob {
     return Uint8Array.from(
         address.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? []
     );
@@ -39,7 +39,7 @@ export function binary_address_from_address(address: Address): blob {
 // The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-function address_from_principal(
+function addressFromPrincipal(
     principal: Principal,
     subaccount: number
 ): Address {

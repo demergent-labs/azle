@@ -11,7 +11,7 @@ import { ic, nat, $update } from 'azle';
 
 // Moves all transferred cycles to the canister
 $update;
-export function receive_cycles128(): nat {
-    return ic.msg_cycles_accept128(ic.msg_cycles_available128() / 2n);
+export function receiveCycles128(): nat {
+    return ic.msgCyclesAccept128(ic.msgCyclesAvailable128() / 2n);
 }
 ```

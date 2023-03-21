@@ -9,63 +9,63 @@ class CustomClass {
 }
 
 $query;
-export function throw_bigint(): void {
+export function throwBigint(): void {
     throw 3n;
 }
 
 $query;
-export function throw_boolean(): void {
+export function throwBoolean(): void {
     throw false;
 }
 
 $query;
-export function throw_class(): void {
+export function throwClass(): void {
     throw new CustomClass();
 }
 
 $query;
-export function throw_custom_error(): void {
+export function throwCustomError(): void {
     throw Error('This is a custom error');
 }
 
 $query;
-export function throw_int(): void {
+export function throwInt(): void {
     throw 3;
 }
 
 $query;
-export function throw_null(): void {
+export function throwNull(): void {
     throw null;
 }
 
 $query;
-export function throw_null_reference(): void {
-    const null_object: any = null;
-    null_object.first_field;
+export function throwNullReference(): void {
+    const nullObject: any = null;
+    nullObject.firstField;
 }
 
 $query;
-export function throw_object(): void {
+export function throwObject(): void {
     throw { thing: 1 };
 }
 
 $query;
-export function throw_rational(): void {
+export function throwRational(): void {
     throw 3.14;
 }
 
 $query;
-export function throw_string(): void {
+export function throwString(): void {
     throw 'Hello World';
 }
 
 $query;
-export function throw_symbol(): void {
+export function throwSymbol(): void {
     throw Symbol();
 }
 
 $query;
-export function throw_undefined(): void {
+export function throwUndefined(): void {
     throw undefined;
 }
 
@@ -77,7 +77,7 @@ let inititalized = false;
 let heartbeating = false;
 
 $query;
-export function get_initialized(): boolean {
+export function getInitialized(): boolean {
     return inititalized;
 }
 
@@ -88,12 +88,12 @@ export function heartbeat() {
 }
 
 $inspectMessage;
-export function inspect_message() {
-    console.log('inspect_message called');
+export function inspectMessage() {
+    console.log('inspectMessage called');
 
     if (
         ic.methodName() !== 'inaccessible' ||
-        ic.methodName() !== 'also_inaccessible'
+        ic.methodName() !== 'alsoInaccessible'
     ) {
         ic.acceptMessage();
         return;
@@ -117,7 +117,7 @@ export function inaccessible(): boolean {
 }
 
 $update;
-export function also_inaccessible(): boolean {
+export function alsoInaccessible(): boolean {
     return false;
 }
 
@@ -131,12 +131,12 @@ export function also_inaccessible(): boolean {
 //     throw 'We are throwing in the init';
 // }
 
-// export function pre_upgrade(): PreUpgrade {
-//     console.log('pre_upgrade');
+// export function preUpgrade(): PreUpgrade {
+//     console.log('preUpgrade');
 //     throw 'We are throwing in the pre-upgrade';
 // }
 
-// export function post_upgrade(): PostUpgrade {
-//     console.log('post_upgrade');
+// export function postUpgrade(): PostUpgrade {
+//     console.log('postUpgrade');
 //     throw 'We are throwing in the post-upgrade';
 // }

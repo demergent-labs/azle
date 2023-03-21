@@ -7,86 +7,84 @@ const MAX_STABLE_MEM_PAGES = 65_536;
 const MAX_STABLE64_MEM_PAGES = 524_288n;
 const STABLE_BYTES_SIZE = 655_360;
 
-export function get_tests(
-    stable_memory_canister: ActorSubclass<_SERVICE>
+export function getTests(
+    stableMemoryCanister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
         {
             name: 'stable size',
             test: async () => {
-                const result = await stable_memory_canister.stable_size();
+                const result = await stableMemoryCanister.stableSize();
 
                 return {
-                    ok: result === 0
+                    Ok: result === 0
                 };
             }
         },
         {
             name: 'stable64 size',
             test: async () => {
-                const result = await stable_memory_canister.stable64_size();
+                const result = await stableMemoryCanister.stable64Size();
 
                 return {
-                    ok: result === 0n
+                    Ok: result === 0n
                 };
             }
         },
         {
             name: 'stable grow',
             test: async () => {
-                const old_size = await stable_memory_canister.stable_size();
-                const new_pages = 5;
-                const result = await stable_memory_canister.stable_grow(
-                    new_pages
-                );
-                const new_size = await stable_memory_canister.stable_size();
+                const oldSize = await stableMemoryCanister.stableSize();
+                const newPages = 5;
+                const result = await stableMemoryCanister.stableGrow(newPages);
+                const newSize = await stableMemoryCanister.stableSize();
 
-                if ('err' in result) {
+                if ('Err' in result) {
                     return {
-                        err: JSON.stringify(result.err)
+                        Err: JSON.stringify(result.Err)
                     };
                 }
 
                 return {
-                    ok:
-                        'ok' in result &&
-                        result.ok === old_size &&
-                        new_pages + old_size === new_size
+                    Ok:
+                        'Ok' in result &&
+                        result.Ok === oldSize &&
+                        newPages + oldSize === newSize
                 };
             }
         },
         {
             name: 'stable64 grow',
             test: async () => {
-                const old_size = await stable_memory_canister.stable64_size();
-                const new_pages = 5n;
-                const result = await stable_memory_canister.stable64_grow(
-                    new_pages
+                const oldSize = await stableMemoryCanister.stable64Size();
+                const newPages = 5n;
+                const result = await stableMemoryCanister.stable64Grow(
+                    newPages
                 );
-                const new_size = await stable_memory_canister.stable64_size();
+                const newSize = await stableMemoryCanister.stable64Size();
 
-                if ('err' in result) {
+                if ('Err' in result) {
                     return {
-                        err: JSON.stringify(result.err)
+                        Err: JSON.stringify(result.Err)
                     };
                 }
 
                 return {
-                    ok:
-                        'ok' in result &&
-                        result.ok === old_size &&
-                        new_pages + old_size === new_size
+                    Ok:
+                        'Ok' in result &&
+                        result.Ok === oldSize &&
+                        newPages + oldSize === newSize
                 };
             }
         },
         {
             name: 'stable bytes',
             test: async () => {
-                const result = await stable_memory_canister.stable_bytes();
-                const expected_bytes = new Array(STABLE_BYTES_SIZE).fill(0);
+                const result = await stableMemoryCanister.stableBytes();
+                const expectedBytes = new Array(STABLE_BYTES_SIZE).fill(0);
 
                 return {
-                    ok: arrayEquals(expected_bytes, result)
+                    Ok: arrayEquals(expectedBytes, result)
                 };
             }
         },
@@ -96,15 +94,15 @@ export function get_tests(
                 const offset = 0;
                 const buffer = [0, 1, 2, 3, 4, 5];
 
-                await stable_memory_canister.stable_write(offset, buffer);
+                await stableMemoryCanister.stableWrite(offset, buffer);
 
-                const result = await stable_memory_canister.stable_read(
+                const result = await stableMemoryCanister.stableRead(
                     offset,
                     buffer.length
                 );
 
                 return {
-                    ok: arrayEquals(buffer, result)
+                    Ok: arrayEquals(buffer, result)
                 };
             }
         },
@@ -114,15 +112,15 @@ export function get_tests(
                 const offset = 5;
                 const buffer = [0, 1, 2, 3, 4, 5];
 
-                await stable_memory_canister.stable_write(offset, buffer);
+                await stableMemoryCanister.stableWrite(offset, buffer);
 
-                const result = await stable_memory_canister.stable_read(
+                const result = await stableMemoryCanister.stableRead(
                     offset,
                     buffer.length
                 );
 
                 return {
-                    ok: arrayEquals(buffer, result)
+                    Ok: arrayEquals(buffer, result)
                 };
             }
         },
@@ -133,17 +131,17 @@ export function get_tests(
                 const buffer = [0, 1, 2, 3, 4, 5, 6];
 
                 try {
-                    await stable_memory_canister.stable_write(offset, buffer);
+                    await stableMemoryCanister.stableWrite(offset, buffer);
                 } catch (error) {
                     return {
-                        ok: (error as any)
+                        Ok: (error as any)
                             .toString()
                             .includes('stable memory out of bounds')
                     };
                 }
 
                 return {
-                    ok: false
+                    Ok: false
                 };
             }
         },
@@ -153,15 +151,15 @@ export function get_tests(
                 const offset = 0n;
                 const buffer = [0, 1, 2, 3, 4, 5];
 
-                await stable_memory_canister.stable64_write(offset, buffer);
+                await stableMemoryCanister.stable64Write(offset, buffer);
 
-                const result = await stable_memory_canister.stable64_read(
+                const result = await stableMemoryCanister.stable64Read(
                     offset,
                     BigInt(buffer.length)
                 );
 
                 return {
-                    ok: arrayEquals(buffer, result)
+                    Ok: arrayEquals(buffer, result)
                 };
             }
         },
@@ -171,15 +169,15 @@ export function get_tests(
                 const offset = 5n;
                 const buffer = [0, 1, 2, 3, 4, 5];
 
-                await stable_memory_canister.stable64_write(offset, buffer);
+                await stableMemoryCanister.stable64Write(offset, buffer);
 
-                const result = await stable_memory_canister.stable64_read(
+                const result = await stableMemoryCanister.stable64Read(
                     offset,
                     BigInt(buffer.length)
                 );
 
                 return {
-                    ok: arrayEquals(buffer, result)
+                    Ok: arrayEquals(buffer, result)
                 };
             }
         },
@@ -190,85 +188,83 @@ export function get_tests(
                 const buffer = [0, 1, 2, 3, 4, 5, 6];
 
                 try {
-                    await stable_memory_canister.stable64_write(offset, buffer);
+                    await stableMemoryCanister.stable64Write(offset, buffer);
                 } catch (error) {
                     return {
-                        ok: (error as any)
+                        Ok: (error as any)
                             .toString()
                             .includes('stable memory out of bounds')
                     };
                 }
 
                 return {
-                    ok: false
+                    Ok: false
                 };
             }
         },
         {
             name: 'stable grow to max',
             test: async () => {
-                const old_size = await stable_memory_canister.stable_size();
-                const new_pages = MAX_STABLE_MEM_PAGES - old_size;
-                const result = await stable_memory_canister.stable_grow(
-                    new_pages
-                );
-                const new_size = await stable_memory_canister.stable_size();
+                const oldSize = await stableMemoryCanister.stableSize();
+                const newPages = MAX_STABLE_MEM_PAGES - oldSize;
+                const result = await stableMemoryCanister.stableGrow(newPages);
+                const newSize = await stableMemoryCanister.stableSize();
 
-                if ('err' in result) {
+                if ('Err' in result) {
                     return {
-                        err: JSON.stringify(result.err)
+                        Err: JSON.stringify(result.Err)
                     };
                 }
 
                 return {
-                    ok:
-                        'ok' in result &&
-                        result.ok === old_size &&
-                        new_pages + old_size === new_size
+                    Ok:
+                        'Ok' in result &&
+                        result.Ok === oldSize &&
+                        newPages + oldSize === newSize
                 };
             }
         },
         {
             name: 'stable grow out of memory',
             test: async () => {
-                const result = await stable_memory_canister.stable_grow(1);
+                const result = await stableMemoryCanister.stableGrow(1);
 
                 return {
-                    ok: 'err' in result && 'OutOfMemory' in result.err
+                    Ok: 'Err' in result && 'OutOfMemory' in result.Err
                 };
             }
         },
         {
             name: 'stable64 grow to max',
             test: async () => {
-                const old_size = await stable_memory_canister.stable64_size();
-                const new_pages = MAX_STABLE64_MEM_PAGES - old_size;
-                const result = await stable_memory_canister.stable64_grow(
-                    new_pages
+                const oldSize = await stableMemoryCanister.stable64Size();
+                const newPages = MAX_STABLE64_MEM_PAGES - oldSize;
+                const result = await stableMemoryCanister.stable64Grow(
+                    newPages
                 );
-                const new_size = await stable_memory_canister.stable64_size();
+                const newSize = await stableMemoryCanister.stable64Size();
 
-                if ('err' in result) {
+                if ('Err' in result) {
                     return {
-                        err: JSON.stringify(result.err)
+                        Err: JSON.stringify(result.Err)
                     };
                 }
 
                 return {
-                    ok:
-                        'ok' in result &&
-                        result.ok === old_size &&
-                        new_pages + old_size === new_size
+                    Ok:
+                        'Ok' in result &&
+                        result.Ok === oldSize &&
+                        newPages + oldSize === newSize
                 };
             }
         },
         {
             name: 'stable64 grow out of memory',
             test: async () => {
-                const result = await stable_memory_canister.stable64_grow(1n);
+                const result = await stableMemoryCanister.stable64Grow(1n);
 
                 return {
-                    ok: 'err' in result && 'OutOfMemory' in result.err
+                    Ok: 'Err' in result && 'OutOfMemory' in result.Err
                 };
             }
         }

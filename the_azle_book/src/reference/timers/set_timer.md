@@ -10,16 +10,16 @@ Examples:
 import { Duration, ic, TimerId, $update } from 'azle';
 
 $update;
-export function set_timers(delay: Duration): [TimerId, TimerId] {
-    const function_timer_id = ic.set_timer(delay, callback);
+export function setTimers(delay: Duration): [TimerId, TimerId] {
+    const functionTimerId = ic.setTimer(delay, callback);
 
-    const captured_value = '🚩';
+    const capturedValue = '🚩';
 
-    const closure_timer_id = ic.set_timer(delay, () => {
-        console.log(`closure called and captured value ${captured_value}`);
+    const closureTimerId = ic.setTimer(delay, () => {
+        console.log(`closure called and captured value ${capturedValue}`);
     });
 
-    return [function_timer_id, closure_timer_id];
+    return [functionTimerId, closureTimerId];
 }
 
 function callback(): void {

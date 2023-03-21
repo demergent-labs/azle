@@ -301,6 +301,6 @@ export class Management extends ExternalCanister {
     ) => CanisterResult<SignWithEcdsaResult>;
 }
 
-export const management_canister = new Management(
+export const managementCanister = new Management(
     Principal.fromText('aaaaa-aa')
 );

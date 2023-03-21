@@ -2,7 +2,7 @@ import { Test } from 'azle/test';
 import { _SERVICE } from '../dfx_generated/azle/azle.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(hello_canister: ActorSubclass<_SERVICE>): Test[] {
+export function getTests(hello_canister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'greet',
@@ -10,7 +10,7 @@ export function get_tests(hello_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await hello_canister.greet('everyone');
 
                 return {
-                    ok: result === 'Hello, everyone!'
+                    Ok: result === 'Hello, everyone!'
                 };
             }
         },
@@ -20,7 +20,7 @@ export function get_tests(hello_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await hello_canister.greet('');
 
                 return {
-                    ok: result === 'Hello, !'
+                    Ok: result === 'Hello, !'
                 };
             }
         }

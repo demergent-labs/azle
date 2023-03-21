@@ -148,24 +148,24 @@
 <pre><code class="language-typescript">import { $query } from 'azle';
 
 $query;
-export function get_null(): null {
+export function getNull(): null {
     return null;
 }
 
 $query;
-export function print_null(null_: null): null {
+export function printNull(null_: null): null {
     console.log(typeof null_);
     return null_;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_null : () -&gt; (null) query;
-    print_null : (null) -&gt; (null) query;
+    getNull : () -&gt; (null) query;
+    printNull : (null) -&gt; (null) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_null '(null)'
+<pre><code class="language-bash">dfx canister call candid_canister printNull '(null)'
 (null : null)
 </code></pre>
 

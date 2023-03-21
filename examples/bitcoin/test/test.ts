@@ -1,4 +1,4 @@
-import { ok, run_tests, Test } from 'azle/test';
+import { ok, runTests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/bitcoin';
 import { wallets } from './wallets';
 import { impure_setup, while_running_bitcoin_daemon } from './setup';
@@ -27,14 +27,14 @@ const tests: Test[] = [
     ...test_canister_functionality()
 ];
 
-while_running_bitcoin_daemon(() => run_tests(tests));
+while_running_bitcoin_daemon(() => runTests(tests));
 
 function test_canister_functionality() {
     return [
         {
-            name: 'get_balance',
+            name: 'getBalance',
             test: async () => {
-                const result = await bitcoin_canister.get_balance(
+                const result = await bitcoin_canister.getBalance(
                     wallets.alice.p2wpkh
                 );
 
@@ -52,9 +52,9 @@ function test_canister_functionality() {
             }
         },
         {
-            name: 'get_utxos',
+            name: 'getUtxos',
             test: async () => {
-                const result = await bitcoin_canister.get_utxos(
+                const result = await bitcoin_canister.getUtxos(
                     wallets.alice.p2wpkh
                 );
 
@@ -70,10 +70,10 @@ function test_canister_functionality() {
             }
         },
         {
-            name: 'get_current_fee_percentiles',
+            name: 'getCurrentFeePercentiles',
             test: async () => {
                 const result =
-                    await bitcoin_canister.get_current_fee_percentiles();
+                    await bitcoin_canister.getCurrentFeePercentiles();
 
                 if (!ok(result)) {
                     return { Err: result.Err };
@@ -85,16 +85,14 @@ function test_canister_functionality() {
             }
         },
         {
-            name: 'send transaction',
+            name: 'sendTransaction',
             test: async () => {
                 const balance_before_transaction =
                     bitcoin_cli.get_received_by_address(wallets.bob.p2wpkh);
 
                 const tx_bytes = hex_string_to_bytes(state.signed_tx_hex);
 
-                const result = await bitcoin_canister.send_transaction(
-                    tx_bytes
-                );
+                const result = await bitcoin_canister.sendTransaction(tx_bytes);
 
                 if (!ok(result)) {
                     return {

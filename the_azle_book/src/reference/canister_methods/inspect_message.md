@@ -8,22 +8,22 @@ Examples:
 -   [run_time_errors](https://github.com/demergent-labs/azle/tree/main/examples/run_time_errors)
 
 ```typescript
-import { ic, $inspect_message, $update } from 'azle';
+import { ic, $inspectMessage, $update } from 'azle';
 
-$inspect_message;
-export function inspect_message() {
-    console.log('inspect_message called');
+$inspectMessage;
+export function inspectMessage() {
+    console.log('inspectMessage called');
 
-    if (ic.method_name() === 'accessible') {
-        ic.accept_message();
+    if (ic.methodName() === 'accessible') {
+        ic.acceptMessage();
         return;
     }
 
-    if (ic.method_name() === 'inaccessible') {
+    if (ic.methodName() === 'inaccessible') {
         return;
     }
 
-    throw `Method "${ic.method_name()}" not allowed`;
+    throw `Method "${ic.methodName()}" not allowed`;
 }
 
 $update;
@@ -37,7 +37,7 @@ export function inaccessible(): boolean {
 }
 
 $update;
-export function also_inaccessible(): boolean {
+export function alsoInaccessible(): boolean {
     return false;
 }
 ```

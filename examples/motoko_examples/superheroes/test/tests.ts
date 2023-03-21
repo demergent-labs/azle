@@ -1,11 +1,8 @@
 import { Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/azle/azle.did';
-import { Superhero } from '../dfx_generated/azle/azle.did';
+import { _SERVICE, Superhero } from '../dfx_generated/azle/azle.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-export function get_tests(
-    superheroes_canister: ActorSubclass<_SERVICE>
-): Test[] {
+export function getTests(superheroesCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'create hero without powers',
@@ -14,10 +11,10 @@ export function get_tests(
                     name: 'Spiderman',
                     superpowers: []
                 };
-                const result = await superheroes_canister.create(spiderman);
+                const result = await superheroesCanister.create(spiderman);
 
                 return {
-                    ok: result === 0
+                    Ok: result === 0
                 };
             }
         },
@@ -33,20 +30,20 @@ export function get_tests(
                         ]
                     ]
                 };
-                const result = await superheroes_canister.create(superman);
+                const result = await superheroesCanister.create(superman);
 
                 return {
-                    ok: result === 1
+                    Ok: result === 1
                 };
             }
         },
         {
             name: 'read with a valid id',
             test: async () => {
-                const result = await superheroes_canister.read(0);
+                const result = await superheroesCanister.read(0);
 
                 return {
-                    ok:
+                    Ok:
                         result[0] !== undefined &&
                         result[0].name === 'Spiderman'
                 };
@@ -55,10 +52,10 @@ export function get_tests(
         {
             name: 'read with an invalid id',
             test: async () => {
-                const result = await superheroes_canister.read(99);
+                const result = await superheroesCanister.read(99);
 
                 return {
-                    ok: result.length === 0
+                    Ok: result.length === 0
                 };
             }
         },
@@ -79,10 +76,10 @@ export function get_tests(
                         ]
                     ]
                 };
-                const result = await superheroes_canister.update(0, spiderman);
+                const result = await superheroesCanister.update(0, spiderman);
 
                 return {
-                    ok: result === true
+                    Ok: result === true
                 };
             }
         },
@@ -93,30 +90,30 @@ export function get_tests(
                     name: 'Superman',
                     superpowers: []
                 };
-                const result = await superheroes_canister.update(1, superman);
+                const result = await superheroesCanister.update(1, superman);
 
                 return {
-                    ok: result === true
+                    Ok: result === true
                 };
             }
         },
         {
             name: 'delete with a valid id',
             test: async () => {
-                const result = await superheroes_canister.delete_hero(0);
+                const result = await superheroesCanister.deleteHero(0);
 
                 return {
-                    ok: result === true
+                    Ok: result === true
                 };
             }
         },
         {
             name: 'delete with an invalid id',
             test: async () => {
-                const result = await superheroes_canister.delete_hero(99);
+                const result = await superheroesCanister.deleteHero(99);
 
                 return {
-                    ok: result === false
+                    Ok: result === false
                 };
             }
         }

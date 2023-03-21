@@ -11,5 +11,5 @@ export type NotifierFunc = Func<Oneway<(message: blob) => void>>;
 
 export class Notifier extends ExternalCanister {
     @query
-    get_notifier: () => CanisterResult<NotifierFunc>;
+    getNotifier: () => CanisterResult<NotifierFunc>;
 }

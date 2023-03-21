@@ -10,27 +10,27 @@ let counter: nat = 0n;
 
 // TODO is this supposed to be a query?
 $query;
-export async function inc_counter(): Promise<nat> {
+export async function incCounter(): Promise<nat> {
     counter += 1n;
     return counter;
 }
 
 $query;
-export function simple_query(): string {
+export function simpleQuery(): string {
     return 'Hello from Canister 2';
 }
 
 $update;
-export function update_query(): string {
+export function updateQuery(): string {
     return 'Hello from a Canister 2 update';
 }
 
 $query;
-export function manual_query(): Manual<string> {
-    ic.reply('Hello from Canister 2 manual_query');
+export function manualQuery(): Manual<string> {
+    ic.reply('Hello from Canister 2 manualQuery');
 }
 
 $query;
-export async function deep_query(): Promise<StringQueryResult> {
-    return await canister3.deep_query().call();
+export async function deepQuery(): Promise<StringQueryResult> {
+    return await canister3.deepQuery().call();
 }

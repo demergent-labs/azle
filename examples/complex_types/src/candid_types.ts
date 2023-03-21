@@ -14,7 +14,7 @@ export type Reaction = Record<{
     id: string;
     author: User;
     post: Post;
-    reaction_type: ReactionType;
+    reactionType: ReactionType;
 }>;
 
 export type ReactionType = Variant<{

@@ -2,35 +2,35 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/init/init.did';
 
-export function get_tests(init_canister: ActorSubclass<_SERVICE>): Test[] {
+export function getTests(initCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'get_user',
+            name: 'getUser',
             test: async () => {
-                const result = await init_canister.get_user();
+                const result = await initCanister.getUser();
 
                 return {
-                    ok: result.length === 1 && result[0].id === '0'
+                    Ok: result.length === 1 && result[0].id === '0'
                 };
             }
         },
         {
-            name: 'get_reaction',
+            name: 'getReaction',
             test: async () => {
-                const result = await init_canister.get_reaction();
+                const result = await initCanister.getReaction();
 
                 return {
-                    ok: result.length === 1 && 'Fire' in result[0]
+                    Ok: result.length === 1 && 'Fire' in result[0]
                 };
             }
         },
         {
-            name: 'get_owner',
+            name: 'getOwner',
             test: async () => {
-                const result = await init_canister.get_owner();
+                const result = await initCanister.getOwner();
 
                 return {
-                    ok:
+                    Ok:
                         result.length === 1 &&
                         result[0].toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 };

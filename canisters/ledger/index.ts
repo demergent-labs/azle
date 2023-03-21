@@ -302,7 +302,7 @@ export class Ledger extends ExternalCanister {
 }
 
 export {
-    binary_address_from_address,
-    binary_address_from_principal,
-    hex_address_from_principal
+    binaryAddressFromAddress,
+    binaryAddressFromPrincipal,
+    hexAddressFromPrincipal
 } from './address';

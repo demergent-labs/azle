@@ -202,7 +202,7 @@ The IC launched officially in May of 2021. As a relatively new project with an e
 
 ##### High latencies
 
-Any requests that change state on the IC must go through consensus, thus you can expect latencies of a few seconds for these types of requests. When canisters need to communicate with each other across subnets, these latencies can be even longer. Also cross-canister request latencies build up linearly. If canister A calls canister B calls canister C, then you can multiply the latency by the total number of calls.
+Any requests that change state on the IC must go through consensus, thus you can expect latencies of a few seconds for these types of requests. When canisters need to communicate with each other across subnets or under heavy load, these latencies can be even longer. Under these circumstances, in the worst case latencies will build up linearly. For example, if canister A calls canister B calls canister C, and these canisters are all on different subnets or under heavy load, then you might need to multiply the latency by the total number of calls.
 
 ##### Limited and expensive compute resources
 

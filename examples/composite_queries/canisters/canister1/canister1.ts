@@ -15,30 +15,28 @@ let counter: nat = 0n;
 
 // Composite query calling a query
 $query;
-export async function simple_composite_query(): Promise<StringQueryResult> {
-    return await canister2.simple_query().call();
+export async function simpleCompositeQuery(): Promise<StringQueryResult> {
+    return await canister2.simpleQuery().call();
 }
 
 // Composite query calling a manual query
 $query;
-export async function manual_query(): Promise<StringQueryResult> {
-    return await canister2.manual_query().call();
+export async function manualQuery(): Promise<StringQueryResult> {
+    return await canister2.manualQuery().call();
 }
 
 // Manual composite query calling a manual query
 $query;
-export async function totally_manual_query(): Promise<
-    Manual<StringQueryResult>
-> {
-    ic.reply(await canister2.manual_query().call());
+export async function totallyManualQuery(): Promise<Manual<StringQueryResult>> {
+    ic.reply(await canister2.manualQuery().call());
 }
 
 // Composite query calling another composite query
 $query;
-export async function deep_query(): Promise<StringQueryResult> {
-    const canister_result = await canister2.deep_query().call();
+export async function deepQuery(): Promise<StringQueryResult> {
+    const canisterResult = await canister2.deepQuery().call();
 
-    return match(canister_result, {
+    return match(canisterResult, {
         Ok: (stringQueryResult) =>
             match(stringQueryResult, {
                 Ok: (stringQuery) => ({ Ok: stringQuery }),
@@ -50,22 +48,22 @@ export async function deep_query(): Promise<StringQueryResult> {
 
 // Composite query calling an update method. SHOULDN'T WORK
 $query;
-export async function update_query(): Promise<StringQueryResult> {
-    return await canister2.update_query().call();
+export async function updateQuery(): Promise<StringQueryResult> {
+    return await canister2.updateQuery().call();
 }
 
 // Composite query being called by a query method. SHOULDN'T WORK
 $query;
-export async function simple_query(): Promise<StringQueryResult> {
-    return await canister2.simple_query().call();
+export async function simpleQuery(): Promise<StringQueryResult> {
+    return await canister2.simpleQuery().call();
 }
 
 // Composite query being called by an update method. SHOULDN'T WORK
 $update;
-export async function simple_update(): Promise<StringQueryResult> {
-    const canister_result = await canister2.deep_query().call();
+export async function simpleUpdate(): Promise<StringQueryResult> {
+    const canisterResult = await canister2.deepQuery().call();
 
-    return match(canister_result, {
+    return match(canisterResult, {
         Ok: (stringQueryResult) =>
             match(stringQueryResult, {
                 Ok: (stringQuery) => ({ Ok: stringQuery }),
@@ -77,25 +75,25 @@ export async function simple_update(): Promise<StringQueryResult> {
 
 // Composite query that modifies the state. Should revert after the call is done
 $query;
-export async function inc_counter(): Promise<nat> {
+export async function incCounter(): Promise<nat> {
     counter += 1n;
     return counter;
 }
 
 // Composite query calling queries on the same canister. SHOULDN'T WORK
 $query;
-export async function inc_canister1(): Promise<NatQueryResult> {
+export async function incCanister1(): Promise<NatQueryResult> {
     counter += 1n;
 
-    const canister1_a_result = await canister1.inc_counter().call();
+    const canister1AResult = await canister1.incCounter().call();
 
-    return match(canister1_a_result, {
-        Ok: async (canister1_a_ok) => {
-            const canister1_b_result = await canister1.inc_counter().call();
+    return match(canister1AResult, {
+        Ok: async (canister1AOk) => {
+            const canister1BResult = await canister1.incCounter().call();
 
-            return match(canister1_b_result, {
-                Ok: (canister1_b_ok) => ({
-                    Ok: counter + canister1_a_ok + canister1_b_ok
+            return match(canister1BResult, {
+                Ok: (canister1BOk) => ({
+                    Ok: counter + canister1AOk + canister1BOk
                 }),
                 Err: (err) => ({ Err: err })
             });
@@ -106,18 +104,18 @@ export async function inc_canister1(): Promise<NatQueryResult> {
 
 // Composite query calling queries that modify the state
 $query;
-export async function inc_canister2(): Promise<NatQueryResult> {
+export async function incCanister2(): Promise<NatQueryResult> {
     counter += 1n;
 
-    const canister2_a_result = await canister2.inc_counter().call();
+    const canister2AResult = await canister2.incCounter().call();
 
-    return match(canister2_a_result, {
-        Ok: async (canister2_a_ok) => {
-            const canister2_b_result = await canister2.inc_counter().call();
+    return match(canister2AResult, {
+        Ok: async (canister2AOk) => {
+            const canister2BResult = await canister2.incCounter().call();
 
-            return match(canister2_b_result, {
-                Ok: (canister2_b_ok) => ({
-                    Ok: counter + canister2_a_ok + canister2_b_ok
+            return match(canister2BResult, {
+                Ok: (canister2BOk) => ({
+                    Ok: counter + canister2AOk + canister2BOk
                 }),
                 Err: (err) => ({ Err: err })
             });

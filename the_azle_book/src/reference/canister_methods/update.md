@@ -8,12 +8,12 @@ import { $query, $update } from 'azle';
 let message = '';
 
 $query;
-export function get_message(): string {
+export function getMessage(): string {
     return mesage;
 }
 
 $update;
-export function set_message(new_message): void {
-    message = new_message;
+export function setMessage(newMessage): void {
+    message = newMessage;
 }
 ```

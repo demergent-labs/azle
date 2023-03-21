@@ -150,18 +150,17 @@
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/timers">timers</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ok, $update } from 'azle';
-import { management_canister } from 'azle/canisters/management';
+<pre><code class="language-typescript">import { blob, match, $update } from 'azle';
+import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function get_randomness(): Promise&lt;blob&gt; {
-    const randomness_result = await management_canister.raw_rand().call();
+export async function getRandomness(): Promise&lt;blob&gt; {
+    const randomnessResult = await managementCanister.raw_rand().call();
 
-    if (!ok(randomness_result)) {
-        return Uint8Array.from([]);
-    }
-
-    return randomness_result.ok;
+    return match(randomnessResult, {
+        Ok: (randomness) =&gt; randomness,
+        Err: () =&gt; Uint8Array.from([])
+    });
 }
 </code></pre>
 

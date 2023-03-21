@@ -2,27 +2,25 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/null_example/null_example.did';
 
-export function get_tests(
-    null_example_canister: ActorSubclass<_SERVICE>
-): Test[] {
+export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'null function',
             test: async () => {
-                const result = await null_example_canister.null_function(null);
+                const result = await nullExampleCanister.nullFunction(null);
 
                 return {
-                    ok: result === null
+                    Ok: result === null
                 };
             }
         },
         {
             name: 'void function',
             test: async () => {
-                const result = await null_example_canister.void_is_not_null();
+                const result = await nullExampleCanister.voidIsNotNull();
 
                 return {
-                    ok: result === undefined
+                    Ok: result === undefined
                 };
             }
         },
@@ -30,19 +28,19 @@ export function get_tests(
             name: 'get partially null record',
             test: async () => {
                 const result =
-                    await null_example_canister.get_partially_null_record();
+                    await nullExampleCanister.getPartiallyNullRecord();
 
                 const record = {
-                    first_item: 1n,
-                    second_item: null,
-                    third_item: 3n
+                    firstItem: 1n,
+                    secondItem: null,
+                    thirdItem: 3n
                 };
 
                 return {
-                    ok:
-                        result.first_item === record.first_item &&
-                        result.second_item === record.second_item &&
-                        result.third_item === record.third_item
+                    Ok:
+                        result.firstItem === record.firstItem &&
+                        result.secondItem === record.secondItem &&
+                        result.thirdItem === record.thirdItem
                 };
             }
         },
@@ -50,37 +48,35 @@ export function get_tests(
             name: 'set partially null record',
             test: async () => {
                 const record = {
-                    first_item: 5n,
-                    second_item: null,
-                    third_item: 15n
+                    firstItem: 5n,
+                    secondItem: null,
+                    thirdItem: 15n
                 };
-                const result =
-                    await null_example_canister.set_partially_null_record(
-                        record
-                    );
+                const result = await nullExampleCanister.setPartiallyNullRecord(
+                    record
+                );
 
                 return {
-                    ok:
-                        result.first_item === record.first_item &&
-                        result.second_item === record.second_item &&
-                        result.third_item === record.third_item
+                    Ok:
+                        result.firstItem === record.firstItem &&
+                        result.secondItem === record.secondItem &&
+                        result.thirdItem === record.thirdItem
                 };
             }
         },
         {
             name: 'get small null record',
             test: async () => {
-                const result =
-                    await null_example_canister.get_small_null_record();
+                const result = await nullExampleCanister.getSmallNullRecord();
                 const record = {
-                    first_item: null,
-                    second_item: null
+                    firstItem: null,
+                    secondItem: null
                 };
 
                 return {
-                    ok:
-                        result.first_item === record.first_item &&
-                        result.second_item === record.second_item
+                    Ok:
+                        result.firstItem === record.firstItem &&
+                        result.secondItem === record.secondItem
                 };
             }
         },
@@ -88,35 +84,35 @@ export function get_tests(
             name: 'set small null record',
             test: async () => {
                 const record = {
-                    first_item: null,
-                    second_item: null
+                    firstItem: null,
+                    secondItem: null
                 };
-                const result =
-                    await null_example_canister.set_small_null_record(record);
+                const result = await nullExampleCanister.setSmallNullRecord(
+                    record
+                );
 
                 return {
-                    ok:
-                        result.first_item === record.first_item &&
-                        result.second_item === record.second_item
+                    Ok:
+                        result.firstItem === record.firstItem &&
+                        result.secondItem === record.secondItem
                 };
             }
         },
         {
             name: 'get large null record',
             test: async () => {
-                const result =
-                    await null_example_canister.get_large_null_record();
+                const result = await nullExampleCanister.getLargeNullRecord();
                 const record = {
-                    first_item: null,
-                    second_item: null,
-                    third_item: null
+                    firstItem: null,
+                    secondItem: null,
+                    thirdItem: null
                 };
 
                 return {
-                    ok:
-                        result.first_item === record.first_item &&
-                        result.second_item === record.second_item &&
-                        result.third_item === record.third_item
+                    Ok:
+                        result.firstItem === record.firstItem &&
+                        result.secondItem === record.secondItem &&
+                        result.thirdItem === record.thirdItem
                 };
             }
         },
@@ -124,18 +120,19 @@ export function get_tests(
             name: 'set large null record',
             test: async () => {
                 const record = {
-                    first_item: null,
-                    second_item: null,
-                    third_item: null
+                    firstItem: null,
+                    secondItem: null,
+                    thirdItem: null
                 };
-                const result =
-                    await null_example_canister.set_large_null_record(record);
+                const result = await nullExampleCanister.setLargeNullRecord(
+                    record
+                );
 
                 return {
-                    ok:
-                        result.first_item === record.first_item &&
-                        result.second_item === record.second_item &&
-                        result.third_item === record.third_item
+                    Ok:
+                        result.firstItem === record.firstItem &&
+                        result.secondItem === record.secondItem &&
+                        result.thirdItem === record.thirdItem
                 };
             }
         }

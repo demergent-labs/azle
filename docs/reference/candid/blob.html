@@ -148,27 +148,27 @@
 <pre><code class="language-typescript">import { blob, $query } from 'azle';
 
 $query;
-export function get_blob(): blob {
+export function getBlob(): blob {
     return Uint8Array.from([68, 73, 68, 76, 0, 0]);
 }
 
 $query;
-export function print_blob(blob: blob): blob {
+export function printBlob(blob: blob): blob {
     console.log(typeof blob);
     return blob;
 }
 </code></pre>
 <p>Candid:</p>
 <pre><code>service : () -&gt; {
-    get_blob : () -&gt; (vec nat8) query;
-    print_blob : (vec nat8) -&gt; (vec nat8) query;
+    getBlob : () -&gt; (vec nat8) query;
+    printBlob : (vec nat8) -&gt; (vec nat8) query;
 }
 </code></pre>
 <p>dfx:</p>
-<pre><code class="language-bash">dfx canister call candid_canister print_blob '(vec { 68; 73; 68; 76; 0; 0; })'
+<pre><code class="language-bash">dfx canister call candid_canister printBlob '(vec { 68; 73; 68; 76; 0; 0; })'
 (blob &quot;DIDL\00\00&quot;)
 
-dfx canister call candid_canister print_blob '(blob &quot;DIDL\00\00&quot;)'
+dfx canister call candid_canister printBlob '(blob &quot;DIDL\00\00&quot;)'
 (blob &quot;DIDL\00\00&quot;)
 </code></pre>
 

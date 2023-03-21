@@ -10,18 +10,18 @@ export function get_tests(blob_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'get blob',
             test: async () => {
-                const result = await blob_canister.get_blob();
+                const result = await blob_canister.getBlob();
                 return {
-                    ok: blob_equals(result, HELLO_BYTES)
+                    Ok: blob_equals(result, HELLO_BYTES)
                 };
             }
         },
         {
             name: 'get blobs',
             test: async () => {
-                const result = await blob_canister.get_blobs();
+                const result = await blob_canister.getBlobs();
                 return {
-                    ok: blob_array_equals(result, [HELLO_BYTES, WORLD_BYTES])
+                    Ok: blob_array_equals(result, [HELLO_BYTES, WORLD_BYTES])
                 };
             }
         }

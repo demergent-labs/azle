@@ -3,589 +3,579 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/principal/principal.did';
 
-export function get_tests(principal_canister: ActorSubclass<_SERVICE>): Test[] {
-    const from_hex_tests = get_from_hex_tests(principal_canister);
-    const from_text_tests = get_from_text_tests(principal_canister);
-    const from_blob_tests = get_from_blob_tests(principal_canister);
-    const to_hex_tests = get_to_hex_tests(principal_canister);
-    const to_text_tests = get_to_text_tests(principal_canister);
-    const to_blob_tests = get_to_blob_tests(principal_canister);
-    const self_authenticating_tests =
-        get_self_authenticating_tests(principal_canister);
+export function getTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
+    const fromHexTests = getFromHexTests(principalCanister);
+    const fromTextTests = getFromTextTests(principalCanister);
+    const fromBlobTests = getFromBlobTests(principalCanister);
+    const toHexTests = getToHexTests(principalCanister);
+    const toTextTests = getToTextTests(principalCanister);
+    const toBlobTests = getToBlobTests(principalCanister);
+    const selfAuthenticatingTests =
+        getSelfAuthenticatingTests(principalCanister);
 
     return [
         {
-            name: 'principal_return_type',
+            name: 'principalReturnType',
             test: async () => {
-                const result = await principal_canister.principal_return_type();
+                const result = await principalCanister.principalReturnType();
 
                 return {
-                    ok: result.toText() === 'aaaaa-aa'
+                    Ok: result.toText() === 'aaaaa-aa'
                 };
             }
         },
         {
-            name: 'principal_param',
+            name: 'principalParam',
             test: async () => {
-                const result = await principal_canister.principal_param(
+                const result = await principalCanister.principalParam(
                     Principal.fromText('aaaaa-aa')
                 );
 
                 return {
-                    ok: result.toText() === 'aaaaa-aa'
+                    Ok: result.toText() === 'aaaaa-aa'
                 };
             }
         },
         {
-            name: 'principal_in_record',
+            name: 'principalInRecord',
             test: async () => {
-                const result = await principal_canister.principal_in_record();
+                const result = await principalCanister.principalInRecord();
 
                 return {
-                    ok: result.id.toText() === 'aaaaa-aa'
+                    Ok: result.id.toText() === 'aaaaa-aa'
                 };
             }
         },
         {
-            name: 'principal_in_variant',
+            name: 'principalInVariant',
             test: async () => {
-                const result = await principal_canister.principal_in_variant();
+                const result = await principalCanister.principalInVariant();
 
                 return {
-                    ok:
+                    Ok:
                         'WaitingOn' in result &&
                         result.WaitingOn.toText() === 'aaaaa-aa'
                 };
             }
         },
-        ...from_hex_tests,
-        ...from_text_tests,
-        ...from_blob_tests,
-        ...to_hex_tests,
-        ...to_text_tests,
-        ...to_blob_tests,
-        ...self_authenticating_tests
+        ...fromHexTests,
+        ...fromTextTests,
+        ...fromBlobTests,
+        ...toHexTests,
+        ...toTextTests,
+        ...toBlobTests,
+        ...selfAuthenticatingTests
     ];
 }
 
-function get_from_hex_tests(
-    principal_canister: ActorSubclass<_SERVICE>
-): Test[] {
+function getFromHexTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
     return [
         {
-            name: 'principal_from_hex aaaaa-aa',
+            name: 'principalFromHex aaaaa-aa',
             test: async () => {
                 const principal = Principal.fromText('aaaaa-aa');
 
-                const result = await principal_canister.principal_from_hex(
+                const result = await principalCanister.principalFromHex(
                     principal.toHex()
                 );
 
                 return {
-                    ok: result.toHex() === principal.toHex()
+                    Ok: result.toHex() === principal.toHex()
                 };
             }
         },
         {
-            name: 'principal_from_hex rrkah-fqaaa-aaaaa-aaaaq-cai',
+            name: 'principalFromHex rrkah-fqaaa-aaaaa-aaaaq-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 );
 
-                const result = await principal_canister.principal_from_hex(
+                const result = await principalCanister.principalFromHex(
                     principal.toHex()
                 );
 
                 return {
-                    ok: result.toHex() === principal.toHex()
+                    Ok: result.toHex() === principal.toHex()
                 };
             }
         },
         {
-            name: 'principal_from_hex ryjl3-tyaaa-aaaaa-aaaba-cai',
+            name: 'principalFromHex ryjl3-tyaaa-aaaaa-aaaba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'ryjl3-tyaaa-aaaaa-aaaba-cai'
                 );
 
-                const result = await principal_canister.principal_from_hex(
+                const result = await principalCanister.principalFromHex(
                     principal.toHex()
                 );
 
                 return {
-                    ok: result.toHex() === principal.toHex()
+                    Ok: result.toHex() === principal.toHex()
                 };
             }
         },
         {
-            name: 'principal_from_hex jiyou-fiaaa-aaaam-aad6q-cai',
+            name: 'principalFromHex jiyou-fiaaa-aaaam-aad6q-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jiyou-fiaaa-aaaam-aad6q-cai'
                 );
 
-                const result = await principal_canister.principal_from_hex(
+                const result = await principalCanister.principalFromHex(
                     principal.toHex()
                 );
 
                 return {
-                    ok: result.toHex() === principal.toHex()
+                    Ok: result.toHex() === principal.toHex()
                 };
             }
         },
         {
-            name: 'principal_from_hex jqklt-hiaaa-aaaam-aaeba-cai',
+            name: 'principalFromHex jqklt-hiaaa-aaaam-aaeba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jqklt-hiaaa-aaaam-aaeba-cai'
                 );
 
-                const result = await principal_canister.principal_from_hex(
+                const result = await principalCanister.principalFromHex(
                     principal.toHex()
                 );
 
                 return {
-                    ok: result.toHex() === principal.toHex()
+                    Ok: result.toHex() === principal.toHex()
                 };
             }
         },
         {
-            name: 'principal_from_hex qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            name: 'principalFromHex qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
             test: async () => {
                 const principal = Principal.fromText(
                     'qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe'
                 );
 
-                const result = await principal_canister.principal_from_hex(
+                const result = await principalCanister.principalFromHex(
                     principal.toHex()
                 );
 
                 return {
-                    ok: result.toHex() === principal.toHex()
+                    Ok: result.toHex() === principal.toHex()
                 };
             }
         }
     ];
 }
 
-function get_from_text_tests(
-    principal_canister: ActorSubclass<_SERVICE>
-): Test[] {
+function getFromTextTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
     return [
         {
-            name: 'principal_from_text aaaaa-aa',
+            name: 'principalFromText aaaaa-aa',
             test: async () => {
                 const principal = Principal.fromText('aaaaa-aa');
 
-                const result = await principal_canister.principal_from_text(
+                const result = await principalCanister.principalFromText(
                     principal.toText()
                 );
 
                 return {
-                    ok: result.toText() === principal.toText()
+                    Ok: result.toText() === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_from_text rrkah-fqaaa-aaaaa-aaaaq-cai',
+            name: 'principalFromText rrkah-fqaaa-aaaaa-aaaaq-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 );
 
-                const result = await principal_canister.principal_from_text(
+                const result = await principalCanister.principalFromText(
                     principal.toText()
                 );
 
                 return {
-                    ok: result.toText() === principal.toText()
+                    Ok: result.toText() === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_from_text ryjl3-tyaaa-aaaaa-aaaba-cai',
+            name: 'principalFromText ryjl3-tyaaa-aaaaa-aaaba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'ryjl3-tyaaa-aaaaa-aaaba-cai'
                 );
 
-                const result = await principal_canister.principal_from_text(
+                const result = await principalCanister.principalFromText(
                     principal.toText()
                 );
 
                 return {
-                    ok: result.toText() === principal.toText()
+                    Ok: result.toText() === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_from_text jiyou-fiaaa-aaaam-aad6q-cai',
+            name: 'principalFromText jiyou-fiaaa-aaaam-aad6q-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jiyou-fiaaa-aaaam-aad6q-cai'
                 );
 
-                const result = await principal_canister.principal_from_text(
+                const result = await principalCanister.principalFromText(
                     principal.toText()
                 );
 
                 return {
-                    ok: result.toText() === principal.toText()
+                    Ok: result.toText() === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_from_text jqklt-hiaaa-aaaam-aaeba-cai',
+            name: 'principalFromText jqklt-hiaaa-aaaam-aaeba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jqklt-hiaaa-aaaam-aaeba-cai'
                 );
 
-                const result = await principal_canister.principal_from_text(
+                const result = await principalCanister.principalFromText(
                     principal.toText()
                 );
 
                 return {
-                    ok: result.toText() === principal.toText()
+                    Ok: result.toText() === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_from_text qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            name: 'principalFromText qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
             test: async () => {
                 const principal = Principal.fromText(
                     'qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe'
                 );
 
-                const result = await principal_canister.principal_from_text(
+                const result = await principalCanister.principalFromText(
                     principal.toText()
                 );
 
                 return {
-                    ok: result.toText() === principal.toText()
+                    Ok: result.toText() === principal.toText()
                 };
             }
         }
     ];
 }
 
-function get_from_blob_tests(
-    principal_canister: ActorSubclass<_SERVICE>
-): Test[] {
+function getFromBlobTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
     return [
         {
-            name: 'principal_from_blob aaaaa-aa',
+            name: 'principalFromBlob aaaaa-aa',
             test: async () => {
                 const principal = Principal.fromText('aaaaa-aa');
 
-                const result = await principal_canister.principal_from_blob(
+                const result = await principalCanister.principalFromBlob(
                     principal.toUint8Array()
                 );
 
                 return {
-                    ok: result.toText() === principal.toText()
+                    Ok: result.toText() === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_from_blob rrkah-fqaaa-aaaaa-aaaaq-cai',
+            name: 'principalFromBlob rrkah-fqaaa-aaaaa-aaaaq-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 );
 
-                const result = await principal_canister.principal_from_blob(
+                const result = await principalCanister.principalFromBlob(
                     principal.toUint8Array()
                 );
 
                 return {
-                    ok: result.toText() === principal.toText()
+                    Ok: result.toText() === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_from_blob ryjl3-tyaaa-aaaaa-aaaba-cai',
+            name: 'principalFromBlob ryjl3-tyaaa-aaaaa-aaaba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'ryjl3-tyaaa-aaaaa-aaaba-cai'
                 );
 
-                const result = await principal_canister.principal_from_blob(
+                const result = await principalCanister.principalFromBlob(
                     principal.toUint8Array()
                 );
 
                 return {
-                    ok: result.toText() === principal.toText()
+                    Ok: result.toText() === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_from_blob jiyou-fiaaa-aaaam-aad6q-cai',
+            name: 'principalFromBlob jiyou-fiaaa-aaaam-aad6q-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jiyou-fiaaa-aaaam-aad6q-cai'
                 );
 
-                const result = await principal_canister.principal_from_blob(
+                const result = await principalCanister.principalFromBlob(
                     principal.toUint8Array()
                 );
 
                 return {
-                    ok: result.toText() === principal.toText()
+                    Ok: result.toText() === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_from_blob jqklt-hiaaa-aaaam-aaeba-cai',
+            name: 'principalFromBlob jqklt-hiaaa-aaaam-aaeba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jqklt-hiaaa-aaaam-aaeba-cai'
                 );
 
-                const result = await principal_canister.principal_from_blob(
+                const result = await principalCanister.principalFromBlob(
                     principal.toUint8Array()
                 );
 
                 return {
-                    ok: result.toText() === principal.toText()
+                    Ok: result.toText() === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_from_blob qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            name: 'principalFromBlob qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
             test: async () => {
                 const principal = Principal.fromText(
                     'qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe'
                 );
 
-                const result = await principal_canister.principal_from_blob(
+                const result = await principalCanister.principalFromBlob(
                     principal.toUint8Array()
                 );
 
                 return {
-                    ok: result.toText() === principal.toText()
+                    Ok: result.toText() === principal.toText()
                 };
             }
         }
     ];
 }
 
-function get_to_hex_tests(principal_canister: ActorSubclass<_SERVICE>): Test[] {
+function getToHexTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
     return [
         {
-            name: 'principal_to_hex aaaaa-aa',
+            name: 'principalToHex aaaaa-aa',
             test: async () => {
                 const principal = Principal.fromText('aaaaa-aa');
 
-                const result = await principal_canister.principal_to_hex(
+                const result = await principalCanister.principalToHex(
                     principal
                 );
 
                 return {
-                    ok: result === principal.toHex()
+                    Ok: result === principal.toHex()
                 };
             }
         },
         {
-            name: 'principal_to_hex rrkah-fqaaa-aaaaa-aaaaq-cai',
+            name: 'principalToHex rrkah-fqaaa-aaaaa-aaaaq-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 );
 
-                const result = await principal_canister.principal_to_hex(
+                const result = await principalCanister.principalToHex(
                     principal
                 );
 
                 return {
-                    ok: result === principal.toHex()
+                    Ok: result === principal.toHex()
                 };
             }
         },
         {
-            name: 'principal_to_hex ryjl3-tyaaa-aaaaa-aaaba-cai',
+            name: 'principalToHex ryjl3-tyaaa-aaaaa-aaaba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'ryjl3-tyaaa-aaaaa-aaaba-cai'
                 );
 
-                const result = await principal_canister.principal_to_hex(
+                const result = await principalCanister.principalToHex(
                     principal
                 );
 
                 return {
-                    ok: result === principal.toHex()
+                    Ok: result === principal.toHex()
                 };
             }
         },
         {
-            name: 'principal_to_hex jiyou-fiaaa-aaaam-aad6q-cai',
+            name: 'principalToHex jiyou-fiaaa-aaaam-aad6q-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jiyou-fiaaa-aaaam-aad6q-cai'
                 );
 
-                const result = await principal_canister.principal_to_hex(
+                const result = await principalCanister.principalToHex(
                     principal
                 );
 
                 return {
-                    ok: result === principal.toHex()
+                    Ok: result === principal.toHex()
                 };
             }
         },
         {
-            name: 'principal_to_hex jqklt-hiaaa-aaaam-aaeba-cai',
+            name: 'principalToHex jqklt-hiaaa-aaaam-aaeba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jqklt-hiaaa-aaaam-aaeba-cai'
                 );
 
-                const result = await principal_canister.principal_to_hex(
+                const result = await principalCanister.principalToHex(
                     principal
                 );
 
                 return {
-                    ok: result === principal.toHex()
+                    Ok: result === principal.toHex()
                 };
             }
         },
         {
-            name: 'principal_to_hex qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            name: 'principalToHex qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
             test: async () => {
                 const principal = Principal.fromText(
                     'qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe'
                 );
 
-                const result = await principal_canister.principal_to_hex(
+                const result = await principalCanister.principalToHex(
                     principal
                 );
 
                 return {
-                    ok: result === principal.toHex()
+                    Ok: result === principal.toHex()
                 };
             }
         }
     ];
 }
 
-function get_to_text_tests(
-    principal_canister: ActorSubclass<_SERVICE>
-): Test[] {
+function getToTextTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
     return [
         {
-            name: 'principal_to_text aaaaa-aa',
+            name: 'principalToText aaaaa-aa',
             test: async () => {
                 const principal = Principal.fromText('aaaaa-aa');
 
-                const result = await principal_canister.principal_to_text(
+                const result = await principalCanister.principalToText(
                     principal
                 );
 
                 return {
-                    ok: result === principal.toText()
+                    Ok: result === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_to_text rrkah-fqaaa-aaaaa-aaaaq-cai',
+            name: 'principalToText rrkah-fqaaa-aaaaa-aaaaq-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 );
 
-                const result = await principal_canister.principal_to_text(
+                const result = await principalCanister.principalToText(
                     principal
                 );
 
                 return {
-                    ok: result === principal.toText()
+                    Ok: result === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_to_text ryjl3-tyaaa-aaaaa-aaaba-cai',
+            name: 'principalToText ryjl3-tyaaa-aaaaa-aaaba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'ryjl3-tyaaa-aaaaa-aaaba-cai'
                 );
 
-                const result = await principal_canister.principal_to_text(
+                const result = await principalCanister.principalToText(
                     principal
                 );
 
                 return {
-                    ok: result === principal.toText()
+                    Ok: result === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_to_text jiyou-fiaaa-aaaam-aad6q-cai',
+            name: 'principalToText jiyou-fiaaa-aaaam-aad6q-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jiyou-fiaaa-aaaam-aad6q-cai'
                 );
 
-                const result = await principal_canister.principal_to_text(
+                const result = await principalCanister.principalToText(
                     principal
                 );
 
                 return {
-                    ok: result === principal.toText()
+                    Ok: result === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_to_text jqklt-hiaaa-aaaam-aaeba-cai',
+            name: 'principalToText jqklt-hiaaa-aaaam-aaeba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jqklt-hiaaa-aaaam-aaeba-cai'
                 );
 
-                const result = await principal_canister.principal_to_text(
+                const result = await principalCanister.principalToText(
                     principal
                 );
 
                 return {
-                    ok: result === principal.toText()
+                    Ok: result === principal.toText()
                 };
             }
         },
         {
-            name: 'principal_to_text qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            name: 'principalToText qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
             test: async () => {
                 const principal = Principal.fromText(
                     'qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe'
                 );
 
-                const result = await principal_canister.principal_to_text(
+                const result = await principalCanister.principalToText(
                     principal
                 );
 
                 return {
-                    ok: result === principal.toText()
+                    Ok: result === principal.toText()
                 };
             }
         }
     ];
 }
 
-function get_to_blob_tests(
-    principal_canister: ActorSubclass<_SERVICE>
-): Test[] {
+function getToBlobTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
     return [
         {
-            name: 'principal_to_blob aaaaa-aa',
+            name: 'principalToBlob aaaaa-aa',
             test: async () => {
                 const principal = Principal.fromText('aaaaa-aa');
 
-                const result = await principal_canister.principal_to_blob(
+                const result = await principalCanister.principalToBlob(
                     principal
                 );
 
                 return {
-                    ok:
+                    Ok:
                         Principal.fromUint8Array(
                             Uint8Array.from(result)
                         ).toText() === principal.toText()
@@ -593,18 +583,18 @@ function get_to_blob_tests(
             }
         },
         {
-            name: 'principal_to_blob rrkah-fqaaa-aaaaa-aaaaq-cai',
+            name: 'principalToBlob rrkah-fqaaa-aaaaa-aaaaq-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 );
 
-                const result = await principal_canister.principal_to_blob(
+                const result = await principalCanister.principalToBlob(
                     principal
                 );
 
                 return {
-                    ok:
+                    Ok:
                         Principal.fromUint8Array(
                             Uint8Array.from(result)
                         ).toText() === principal.toText()
@@ -612,18 +602,18 @@ function get_to_blob_tests(
             }
         },
         {
-            name: 'principal_to_blob ryjl3-tyaaa-aaaaa-aaaba-cai',
+            name: 'principalToBlob ryjl3-tyaaa-aaaaa-aaaba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'ryjl3-tyaaa-aaaaa-aaaba-cai'
                 );
 
-                const result = await principal_canister.principal_to_blob(
+                const result = await principalCanister.principalToBlob(
                     principal
                 );
 
                 return {
-                    ok:
+                    Ok:
                         Principal.fromUint8Array(
                             Uint8Array.from(result)
                         ).toText() === principal.toText()
@@ -631,18 +621,18 @@ function get_to_blob_tests(
             }
         },
         {
-            name: 'principal_to_blob jiyou-fiaaa-aaaam-aad6q-cai',
+            name: 'principalToBlob jiyou-fiaaa-aaaam-aad6q-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jiyou-fiaaa-aaaam-aad6q-cai'
                 );
 
-                const result = await principal_canister.principal_to_blob(
+                const result = await principalCanister.principalToBlob(
                     principal
                 );
 
                 return {
-                    ok:
+                    Ok:
                         Principal.fromUint8Array(
                             Uint8Array.from(result)
                         ).toText() === principal.toText()
@@ -650,18 +640,18 @@ function get_to_blob_tests(
             }
         },
         {
-            name: 'principal_to_blob jqklt-hiaaa-aaaam-aaeba-cai',
+            name: 'principalToBlob jqklt-hiaaa-aaaam-aaeba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jqklt-hiaaa-aaaam-aaeba-cai'
                 );
 
-                const result = await principal_canister.principal_to_blob(
+                const result = await principalCanister.principalToBlob(
                     principal
                 );
 
                 return {
-                    ok:
+                    Ok:
                         Principal.fromUint8Array(
                             Uint8Array.from(result)
                         ).toText() === principal.toText()
@@ -669,18 +659,18 @@ function get_to_blob_tests(
             }
         },
         {
-            name: 'principal_to_blob qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            name: 'principalToBlob qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
             test: async () => {
                 const principal = Principal.fromText(
                     'qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe'
                 );
 
-                const result = await principal_canister.principal_to_blob(
+                const result = await principalCanister.principalToBlob(
                     principal
                 );
 
                 return {
-                    ok:
+                    Ok:
                         Principal.fromUint8Array(
                             Uint8Array.from(result)
                         ).toText() === principal.toText()
@@ -690,117 +680,117 @@ function get_to_blob_tests(
     ];
 }
 
-function get_self_authenticating_tests(
-    principal_canister: ActorSubclass<_SERVICE>
+function getSelfAuthenticatingTests(
+    principalCanister: ActorSubclass<SERVICE>
 ): Test[] {
     return [
         {
-            name: 'principal_self_authenticating aaaaa-aa',
+            name: 'principalSelfAuthenticating aaaaa-aa',
             test: async () => {
                 const principal = Principal.fromText('aaaaa-aa');
 
                 const result =
-                    await principal_canister.principal_self_authenticating(
+                    await principalCanister.principalSelfAuthenticating(
                         principal.toUint8Array()
                     );
 
                 return {
-                    ok:
+                    Ok:
                         result.toText() ===
                         'o2x4y-ywrji-biykr-2fpeu-oyicx-muien-gecwr-lah4c-r2tcv-rnt4q-xqe'
                 };
             }
         },
         {
-            name: 'principal_self_authenticating rrkah-fqaaa-aaaaa-aaaaq-cai',
+            name: 'principalSelfAuthenticating rrkah-fqaaa-aaaaa-aaaaq-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 );
 
                 const result =
-                    await principal_canister.principal_self_authenticating(
+                    await principalCanister.principalSelfAuthenticating(
                         principal.toUint8Array()
                     );
 
                 return {
-                    ok:
+                    Ok:
                         result.toText() ===
                         '5lxmd-uwt2d-ectu2-srh3d-l4np5-n6w32-3ctg2-pdf5v-vg5vu-do25a-oae'
                 };
             }
         },
         {
-            name: 'principal_self_authenticating ryjl3-tyaaa-aaaaa-aaaba-cai',
+            name: 'principalSelfAuthenticating ryjl3-tyaaa-aaaaa-aaaba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'ryjl3-tyaaa-aaaaa-aaaba-cai'
                 );
 
                 const result =
-                    await principal_canister.principal_self_authenticating(
+                    await principalCanister.principalSelfAuthenticating(
                         principal.toUint8Array()
                     );
 
                 return {
-                    ok:
+                    Ok:
                         result.toText() ===
                         'w2hw6-vz32b-dpt2b-afpwq-2ip32-hki4g-tbzcp-7zifb-suydo-jad42-5ae'
                 };
             }
         },
         {
-            name: 'principal_self_authenticating jiyou-fiaaa-aaaam-aad6q-cai',
+            name: 'principalSelfAuthenticating jiyou-fiaaa-aaaam-aad6q-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jiyou-fiaaa-aaaam-aad6q-cai'
                 );
 
                 const result =
-                    await principal_canister.principal_self_authenticating(
+                    await principalCanister.principalSelfAuthenticating(
                         principal.toUint8Array()
                     );
 
                 return {
-                    ok:
+                    Ok:
                         result.toText() ===
                         'vagij-vhj5f-jmcqm-6sfyr-onklf-d6rjs-oikld-4jlr6-jnf4k-a25k7-bae'
                 };
             }
         },
         {
-            name: 'principal_self_authenticating jqklt-hiaaa-aaaam-aaeba-cai',
+            name: 'principalSelfAuthenticating jqklt-hiaaa-aaaam-aaeba-cai',
             test: async () => {
                 const principal = Principal.fromText(
                     'jqklt-hiaaa-aaaam-aaeba-cai'
                 );
 
                 const result =
-                    await principal_canister.principal_self_authenticating(
+                    await principalCanister.principalSelfAuthenticating(
                         principal.toUint8Array()
                     );
 
                 return {
-                    ok:
+                    Ok:
                         result.toText() ===
                         'hp4bt-rgpk2-27zh7-4bhef-fz4v7-zwrfd-3tbnz-wgy2i-pzjui-os54t-5ae'
                 };
             }
         },
         {
-            name: 'principal_self_authenticating qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
+            name: 'principalSelfAuthenticating qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe',
             test: async () => {
                 const principal = Principal.fromText(
                     'qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe'
                 );
 
                 const result =
-                    await principal_canister.principal_self_authenticating(
+                    await principalCanister.principalSelfAuthenticating(
                         principal.toUint8Array()
                     );
 
                 return {
-                    ok:
+                    Ok:
                         result.toText() ===
                         'e5rvd-hgfjt-aclta-o3few-2p3fo-txhpm-ypb2i-ex56n-l6brh-jnvja-4ae'
                 };

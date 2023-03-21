@@ -11,32 +11,25 @@ import { $update, Variant } from 'azle';
 import {
     CanisterStatusArgs,
     CanisterStatusResult,
-    management_canister
+    managementCanister
 } from 'azle/canisters/management';
 
 $update;
-export async function get_canister_status(args: CanisterStatusArgs): Promise<
+export async function getCanisterStatus(args: CanisterStatusArgs): Promise<
     Variant<{
-        ok: CanisterStatusResult;
-        err: string;
+        Ok: CanisterStatusResult;
+        Err: string;
     }>
 > {
-    const canister_status_result_canister_result = await management_canister
+    const canisterStatusResultCanisterResult = await managementCanister
         .canister_status({
             canister_id: args.canister_id
         })
         .call();
 
-    if (canister_status_result_canister_result.ok === undefined) {
-        return {
-            err: canister_status_result_canister_result.err
-        };
-    }
-
-    const canister_status_result = canister_status_result_canister_result.ok;
-
-    return {
-        ok: canister_status_result
-    };
+    return match(canisterStatusResultCanisterResult, {
+        Ok: (canisterStatusResult) => ({ Ok: canisterStatusResult }),
+        Err: (err) => ({ Err: err })
+    });
 }
 ```

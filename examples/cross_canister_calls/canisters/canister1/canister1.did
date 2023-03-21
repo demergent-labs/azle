@@ -18,7 +18,7 @@ service : () -> {
   account : (AccountArgs) -> (ManualReply);
   accounts : () -> (ManualReply_1);
   balance : (text) -> (ManualReply_2);
-  send_notification : () -> (NotifyResult);
+  sendNotification : () -> (NotifyResult);
   transfer : (text, text, nat64) -> (ManualReply_2);
   trap : () -> (ManualReply_3);
 }

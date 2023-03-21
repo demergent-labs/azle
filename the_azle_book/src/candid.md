@@ -80,8 +80,8 @@ type Candid = Record<{
     bool: boolean;
     opt: Opt<nat>;
     record: Record<{
-        first_name: string;
-        last_name: string;
+        firstName: string;
+        lastName: string;
         age: nat8;
     }>;
     variant: Variant<{
@@ -94,7 +94,7 @@ type Candid = Record<{
 }>;
 
 $query;
-export function candid_types(): Candid {
+export function candidTypes(): Candid {
     return {
         text: 'text',
         blob: Uint8Array.from([]),
@@ -113,8 +113,8 @@ export function candid_types(): Candid {
         bool: true,
         opt: null,
         record: {
-            first_name: 'John',
-            last_name: 'Doe',
+            firstName: 'John',
+            lastName: 'Doe',
             age: 35
         },
         variant: {
@@ -122,14 +122,14 @@ export function candid_types(): Candid {
         },
         func: [
             Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
-            'candid_types'
+            'candidTypes'
         ],
         principal: Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
     };
 }
 ```
 
-Calling `candid_types` with `dfx` will return:
+Calling `candidTypes` with `dfx` will return:
 
 ```
 (
@@ -140,7 +140,7 @@ Calling `candid_types` with `dfx` will return:
     "principal" = principal "ryjl3-tyaaa-aaaaa-aaaba-cai";
     "blob" = vec {};
     "bool" = true;
-    "func" = func "rrkah-fqaaa-aaaaa-aaaaq-cai".candid_types;
+    "func" = func "rrkah-fqaaa-aaaaa-aaaaq-cai".candidTypes;
     "int8" = 127 : int8;
     "nat8" = 255 : nat8;
     "text" = "text";
@@ -155,8 +155,8 @@ Calling `candid_types` with `dfx` will return:
     "float64" = 0 : float64;
     "record" = record {
       age = 35 : nat8;
-      first_name = "John";
-      last_name = "Doe";
+      firstName = "John";
+      lastName = "Doe";
     };
   },
 )
@@ -172,12 +172,12 @@ TypeScript:
 import { $query } from 'azle';
 
 $query;
-export function get_string(): string {
+export function getString(): string {
     return 'Hello world!';
 }
 
 $query;
-export function print_string(string: string): string {
+export function printString(string: string): string {
     console.log(typeof string);
     return string;
 }
@@ -187,15 +187,15 @@ Candid:
 
 ```
 service : () -> {
-    get_string : () -> (text) query;
-    print_string : (text) -> (text) query;
+    getString : () -> (text) query;
+    printString : (text) -> (text) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_string '("Hello world!")'
+dfx canister call candid_canister printString '("Hello world!")'
 ("Hello world!")
 ```
 
@@ -209,12 +209,12 @@ TypeScript:
 import { blob, $query } from 'azle';
 
 $query;
-export function get_blob(): blob {
+export function getBlob(): blob {
     return Uint8Array.from([68, 73, 68, 76, 0, 0]);
 }
 
 $query;
-export function print_blob(blob: blob): blob {
+export function printBlob(blob: blob): blob {
     console.log(typeof blob);
     return blob;
 }
@@ -224,18 +224,18 @@ Candid:
 
 ```
 service : () -> {
-    get_blob : () -> (vec nat8) query;
-    print_blob : (vec nat8) -> (vec nat8) query;
+    getBlob : () -> (vec nat8) query;
+    printBlob : (vec nat8) -> (vec nat8) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_blob '(vec { 68; 73; 68; 76; 0; 0; })'
+dfx canister call candid_canister printBlob '(vec { 68; 73; 68; 76; 0; 0; })'
 (blob "DIDL\00\00")
 
-dfx canister call candid_canister print_blob '(blob "DIDL\00\00")'
+dfx canister call candid_canister printBlob '(blob "DIDL\00\00")'
 (blob "DIDL\00\00")
 ```
 
@@ -249,12 +249,12 @@ TypeScript:
 import { nat, $query } from 'azle';
 
 $query;
-export function get_nat(): nat {
+export function getNat(): nat {
     return 340_282_366_920_938_463_463_374_607_431_768_211_455n;
 }
 
 $query;
-export function print_nat(nat: nat): nat {
+export function printNat(nat: nat): nat {
     console.log(typeof nat);
     return nat;
 }
@@ -264,15 +264,15 @@ Candid:
 
 ```
 service : () -> {
-    get_nat : () -> (nat) query;
-    print_nat : (nat) -> (nat) query;
+    getNat : () -> (nat) query;
+    printNat : (nat) -> (nat) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_nat '(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)'
+dfx canister call candid_canister printNat '(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)'
 (340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)
 ```
 
@@ -286,12 +286,12 @@ TypeScript:
 import { nat64, $query } from 'azle';
 
 $query;
-export function get_nat64(): nat64 {
+export function getNat64(): nat64 {
     return 18_446_744_073_709_551_615n;
 }
 
 $query;
-export function print_nat64(nat64: nat64): nat64 {
+export function printNat64(nat64: nat64): nat64 {
     console.log(typeof nat64);
     return nat64;
 }
@@ -301,15 +301,15 @@ Candid:
 
 ```
 service : () -> {
-    get_nat64 : () -> (nat64) query;
-    print_nat64 : (nat64) -> (nat64) query;
+    getNat64 : () -> (nat64) query;
+    printNat64 : (nat64) -> (nat64) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_nat64 '(18_446_744_073_709_551_615 : nat64)'
+dfx canister call candid_canister printNat64 '(18_446_744_073_709_551_615 : nat64)'
 (18_446_744_073_709_551_615 : nat64)
 ```
 
@@ -323,12 +323,12 @@ TypeScript:
 import { nat32, $query } from 'azle';
 
 $query;
-export function get_nat32(): nat32 {
+export function getNat32(): nat32 {
     return 4_294_967_295;
 }
 
 $query;
-export function print_nat32(nat32: nat32): nat32 {
+export function printNat32(nat32: nat32): nat32 {
     console.log(typeof nat32);
     return nat32;
 }
@@ -338,15 +338,15 @@ Candid:
 
 ```
 service : () -> {
-    get_nat32 : () -> (nat32) query;
-    print_nat32 : (nat32) -> (nat32) query;
+    getNat32 : () -> (nat32) query;
+    printNat32 : (nat32) -> (nat32) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_nat32 '(4_294_967_295 : nat32)'
+dfx canister call candid_canister printNat32 '(4_294_967_295 : nat32)'
 (4_294_967_295 : nat32)
 ```
 
@@ -360,12 +360,12 @@ TypeScript:
 import { nat16, $query } from 'azle';
 
 $query;
-export function get_nat16(): nat16 {
+export function getNat16(): nat16 {
     return 65_535;
 }
 
 $query;
-export function print_nat16(nat16: nat16): nat16 {
+export function printNat16(nat16: nat16): nat16 {
     console.log(typeof nat16);
     return nat16;
 }
@@ -375,15 +375,15 @@ Candid:
 
 ```
 service : () -> {
-    get_nat16 : () -> (nat16) query;
-    print_nat16 : (nat16) -> (nat16) query;
+    getNat16 : () -> (nat16) query;
+    printNat16 : (nat16) -> (nat16) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_nat16 '(65_535 : nat16)'
+dfx canister call candid_canister printNat16 '(65_535 : nat16)'
 (65_535 : nat16)
 ```
 
@@ -397,12 +397,12 @@ TypeScript:
 import { nat8, $query } from 'azle';
 
 $query;
-export function get_nat8(): nat8 {
+export function getNat8(): nat8 {
     return 255;
 }
 
 $query;
-export function print_nat8(nat8: nat8): nat8 {
+export function printNat8(nat8: nat8): nat8 {
     console.log(typeof nat8);
     return nat8;
 }
@@ -412,15 +412,15 @@ Candid:
 
 ```
 service : () -> {
-    get_nat8 : () -> (nat8) query;
-    print_nat8 : (nat8) -> (nat8) query;
+    getNat8 : () -> (nat8) query;
+    printNat8 : (nat8) -> (nat8) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_nat8 '(255 : nat8)'
+dfx canister call candid_canister printNat8 '(255 : nat8)'
 (255 : nat8)
 ```
 
@@ -434,12 +434,12 @@ TypeScript:
 import { int, $query } from 'azle';
 
 $query;
-export function get_int(): int {
+export function getInt(): int {
     return 170_141_183_460_469_231_731_687_303_715_884_105_727n;
 }
 
 $query;
-export function print_int(int: int): int {
+export function printInt(int: int): int {
     console.log(typeof int);
     return int;
 }
@@ -449,15 +449,15 @@ Candid:
 
 ```
 service : () -> {
-    get_int : () -> (int) query;
-    print_int : (int) -> (int) query;
+    getInt : () -> (int) query;
+    printInt : (int) -> (int) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_int '(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)'
+dfx canister call candid_canister printInt '(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)'
 (170_141_183_460_469_231_731_687_303_715_884_105_727 : int)
 ```
 
@@ -471,12 +471,12 @@ TypeScript:
 import { int64, $query } from 'azle';
 
 $query;
-export function get_int64(): int64 {
+export function getInt64(): int64 {
     return 9_223_372_036_854_775_807n;
 }
 
 $query;
-export function print_int64(int64: int64): int64 {
+export function printInt64(int64: int64): int64 {
     console.log(typeof int64);
     return int64;
 }
@@ -486,15 +486,15 @@ Candid:
 
 ```
 service : () -> {
-    get_int64 : () -> (int64) query;
-    print_int64 : (int64) -> (int64) query;
+    getInt64 : () -> (int64) query;
+    printInt64 : (int64) -> (int64) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_int64 '(9_223_372_036_854_775_807 : int64)'
+dfx canister call candid_canister printInt64 '(9_223_372_036_854_775_807 : int64)'
 (9_223_372_036_854_775_807 : int64)
 ```
 
@@ -508,12 +508,12 @@ TypeScript:
 import { int32, $query } from 'azle';
 
 $query;
-export function get_int32(): int32 {
+export function getInt32(): int32 {
     return 2_147_483_647;
 }
 
 $query;
-export function print_int32(int32: int32): int32 {
+export function printInt32(int32: int32): int32 {
     console.log(typeof int32);
     return int32;
 }
@@ -523,15 +523,15 @@ Candid:
 
 ```
 service : () -> {
-    get_int32 : () -> (int32) query;
-    print_int32 : (int32) -> (int32) query;
+    getInt32 : () -> (int32) query;
+    printInt32 : (int32) -> (int32) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_int32 '(2_147_483_647 : int32)'
+dfx canister call candid_canister printInt32 '(2_147_483_647 : int32)'
 (2_147_483_647 : int32)
 ```
 
@@ -545,12 +545,12 @@ TypeScript:
 import { int16, $query } from 'azle';
 
 $query;
-export function get_int16(): int16 {
+export function getInt16(): int16 {
     return 32_767;
 }
 
 $query;
-export function print_int16(int16: int16): int16 {
+export function printInt16(int16: int16): int16 {
     console.log(typeof int16);
     return int16;
 }
@@ -560,15 +560,15 @@ Candid:
 
 ```
 service : () -> {
-    get_int16 : () -> (int16) query;
-    print_int16 : (int16) -> (int16) query;
+    getInt16 : () -> (int16) query;
+    printInt16 : (int16) -> (int16) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_int16 '(32_767 : int16)'
+dfx canister call candid_canister printInt16 '(32_767 : int16)'
 (32_767 : int16)
 ```
 
@@ -582,12 +582,12 @@ TypeScript:
 import { int8, $query } from 'azle';
 
 $query;
-export function get_int8(): int8 {
+export function getInt8(): int8 {
     return 127;
 }
 
 $query;
-export function print_int8(int8: int8): int8 {
+export function printInt8(int8: int8): int8 {
     console.log(typeof int8);
     return int8;
 }
@@ -597,15 +597,15 @@ Candid:
 
 ```
 service : () -> {
-    get_int8 : () -> (int8) query;
-    print_int8 : (int8) -> (int8) query;
+    getInt8 : () -> (int8) query;
+    printInt8 : (int8) -> (int8) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_int8 '(127 : int8)'
+dfx canister call candid_canister printInt8 '(127 : int8)'
 (127 : int8)
 ```
 
@@ -619,12 +619,12 @@ TypeScript:
 import { float64, $query } from 'azle';
 
 $query;
-export function get_float64(): float64 {
+export function getFloat64(): float64 {
     return Math.E;
 }
 
 $query;
-export function print_float64(float64: float64): float64 {
+export function printFloat64(float64: float64): float64 {
     console.log(typeof float64);
     return float64;
 }
@@ -634,15 +634,15 @@ Candid:
 
 ```
 service : () -> {
-    get_float64 : () -> (float64) query;
-    print_float64 : (float64) -> (float64) query;
+    getFloat64 : () -> (float64) query;
+    printFloat64 : (float64) -> (float64) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_float64 '(2.718281828459045 : float64)'
+dfx canister call candid_canister printFloat64 '(2.718281828459045 : float64)'
 (2.718281828459045 : float64)
 ```
 
@@ -656,12 +656,12 @@ TypeScript:
 import { float32, $query } from 'azle';
 
 $query;
-export function get_float32(): float32 {
+export function getFloat32(): float32 {
     return Math.PI;
 }
 
 $query;
-export function print_float32(float32: float32): float32 {
+export function printFloat32(float32: float32): float32 {
     console.log(typeof float32);
     return float32;
 }
@@ -671,15 +671,15 @@ Candid:
 
 ```
 service : () -> {
-    get_float32 : () -> (float32) query;
-    print_float32 : (float32) -> (float32) query;
+    getFloat32 : () -> (float32) query;
+    printFloat32 : (float32) -> (float32) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_float32 '(3.1415927 : float32)'
+dfx canister call candid_canister printFloat32 '(3.1415927 : float32)'
 (3.1415927 : float32)
 ```
 
@@ -693,12 +693,12 @@ TypeScript:
 import { $query } from 'azle';
 
 $query;
-export function get_bool(): boolean {
+export function getBool(): boolean {
     return true;
 }
 
 $query;
-export function print_bool(bool: boolean): boolean {
+export function printBool(bool: boolean): boolean {
     console.log(typeof bool);
     return bool;
 }
@@ -708,15 +708,15 @@ Candid:
 
 ```
 service : () -> {
-    get_bool : () -> (bool) query;
-    print_bool : (bool) -> (bool) query;
+    getBool : () -> (bool) query;
+    printBool : (bool) -> (bool) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_bool '(true)'
+dfx canister call candid_canister printBool '(true)'
 (true)
 ```
 
@@ -730,12 +730,12 @@ TypeScript:
 import { $query } from 'azle';
 
 $query;
-export function get_null(): null {
+export function getNull(): null {
     return null;
 }
 
 $query;
-export function print_null(null_: null): null {
+export function printNull(null_: null): null {
     console.log(typeof null_);
     return null_;
 }
@@ -745,15 +745,15 @@ Candid:
 
 ```
 service : () -> {
-    get_null : () -> (null) query;
-    print_null : (null) -> (null) query;
+    getNull : () -> (null) query;
+    printNull : (null) -> (null) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_null '(null)'
+dfx canister call candid_canister printNull '(null)'
 (null : null)
 ```
 
@@ -767,12 +767,12 @@ TypeScript:
 import { int32, $query } from 'azle';
 
 $query;
-export function get_numbers(): int32[] {
+export function getNumbers(): int32[] {
     return [0, 1, 2, 3];
 }
 
 $query;
-export function print_numbers(numbers: int32[]): int32[] {
+export function printNumbers(numbers: int32[]): int32[] {
     console.log(typeof numbers);
     return numbers;
 }
@@ -782,15 +782,15 @@ Candid:
 
 ```
 service : () -> {
-    get_numbers : () -> (vec int32) query;
-    print_numbers : (vec int32) -> (vec int32) query;
+    getNumbers : () -> (vec int32) query;
+    printNumbers : (vec int32) -> (vec int32) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_numbers '(vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })'
+dfx canister call candid_canister printNumbers '(vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })'
 (vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })
 ```
 
@@ -804,12 +804,12 @@ TypeScript:
 import { Opt, $query } from 'azle';
 
 $query;
-export function get_opt_some(): Opt<boolean> {
+export function getOptSome(): Opt<boolean> {
     return true;
 }
 
 $query;
-export function get_opt_none(): Opt<boolean> {
+export function getOptNone(): Opt<boolean> {
     return null;
 }
 ```
@@ -818,18 +818,18 @@ Candid:
 
 ```
 service : () -> {
-    get_opt_none : () -> (opt bool) query;
-    get_opt_some : () -> (opt bool) query;
+    getOptNone : () -> (opt bool) query;
+    getOptSome : () -> (opt bool) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister get_opt_some
+dfx canister call candid_canister getOptSome
 (opt true)
 
-dfx canister call candid_canister get_opt_none
+dfx canister call candid_canister getOptNone
 (null)
 ```
 
@@ -848,7 +848,7 @@ type User = Record<{
 }>;
 
 $query;
-export function get_user(): User {
+export function getUser(): User {
     return {
         id: Principal.fromUint8Array(Uint8Array.from([0])),
         username: 'lastmjs'
@@ -856,7 +856,7 @@ export function get_user(): User {
 }
 
 $query;
-export function print_user(user: User): User {
+export function printUser(user: User): User {
     console.log(typeof user);
     return user;
 }
@@ -867,15 +867,15 @@ Candid:
 ```
 type User = record { id : principal; username : text };
 service : () -> {
-    get_user : () -> (User) query;
-    print_user : (User) -> (User) query;
+    getUser : () -> (User) query;
+    printUser : (User) -> (User) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_user '(record { id = principal "2ibo7-dia"; username = "lastmjs" })'
+dfx canister call candid_canister printUser '(record { id = principal "2ibo7-dia"; username = "lastmjs" })'
 (record { id = principal "2ibo7-dia"; username = "lastmjs" })
 ```
 
@@ -901,14 +901,14 @@ type Emotion = Variant<{
 }>;
 
 $query;
-export function get_reaction(): Reaction {
+export function getReaction(): Reaction {
     return {
         Fire: null
     };
 }
 
 $query;
-export function print_reaction(reaction: Reaction): Reaction {
+export function printReaction(reaction: Reaction): Reaction {
     console.log(typeof reaction);
     return reaction;
 }
@@ -920,15 +920,15 @@ Candid:
 type Emotion = variant { Sad; Indifferent; Happy };
 type Reaction = variant { Emotion : Emotion; Fire; ThumbsUp };
 service : () -> {
-    get_reaction : () -> (Reaction) query;
-    print_reaction : (Reaction) -> (Reaction) query;
+    getReaction : () -> (Reaction) query;
+    printReaction : (Reaction) -> (Reaction) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_reaction '(variant { Fire })'
+dfx canister call candid_canister printReaction '(variant { Fire })'
 (variant { Fire })
 ```
 
@@ -948,17 +948,14 @@ import { Func, Principal, $query, Query } from 'azle';
 type BasicFunc = Func<Query<(param1: string) => string>>;
 
 $query;
-export function get_basic_func(): BasicFunc {
-    return [
-        Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
-        'get_basic_func'
-    ];
+export function getBasicFunc(): BasicFunc {
+    return [Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'), 'getBasicFunc'];
 }
 
 $query;
-export function print_basic_func(basic_func: BasicFunc): BasicFunc {
-    console.log(typeof basic_func);
-    return basic_func;
+export function printBasicFunc(basicFunc: BasicFunc): BasicFunc {
+    console.log(typeof basicFunc);
+    return basicFunc;
 }
 ```
 
@@ -966,8 +963,8 @@ Candid:
 
 ```
 service : () -> {
-    get_basic_func : () -> (func (text) -> (text) query) query;
-    print_basic_func : (func (text) -> (text) query) -> (
+    getBasicFunc : () -> (func (text) -> (text) query) query;
+    printBasicFunc : (func (text) -> (text) query) -> (
         func (text) -> (text) query,
       ) query;
 }
@@ -976,8 +973,8 @@ service : () -> {
 dfx:
 
 ```bash
-dfx canister call candid_canister print_basic_func '(func "r7inp-6aaaa-aaaaa-aaabq-cai".get_basic_func)'
-(func "r7inp-6aaaa-aaaaa-aaabq-cai".get_basic_func)
+dfx canister call candid_canister printBasicFunc '(func "r7inp-6aaaa-aaaaa-aaabq-cai".getBasicFunc)'
+(func "r7inp-6aaaa-aaaaa-aaabq-cai".getBasicFunc)
 ```
 
 ### service
@@ -994,12 +991,12 @@ TypeScript:
 import { Principal, $query } from 'azle';
 
 $query;
-export function get_principal(): Principal {
+export function getPrincipal(): Principal {
     return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
 }
 
 $query;
-export function print_principal(principal: Principal): Principal {
+export function printPrincipal(principal: Principal): Principal {
     console.log(typeof principal);
     return principal;
 }
@@ -1009,15 +1006,15 @@ Candid:
 
 ```
 service : () -> {
-    get_principal : () -> (principal) query;
-    print_principal : (principal) -> (principal) query;
+    getPrincipal : () -> (principal) query;
+    printPrincipal : (principal) -> (principal) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_principal '(principal "rrkah-fqaaa-aaaaa-aaaaq-cai")'
+dfx canister call candid_canister printPrincipal '(principal "rrkah-fqaaa-aaaaa-aaaaq-cai")'
 (principal "rrkah-fqaaa-aaaaa-aaaaq-cai")
 ```
 
@@ -1031,12 +1028,12 @@ TypeScript:
 import { $query, reserved } from 'azle';
 
 $query;
-export function get_reserved(): reserved {
+export function getReserved(): reserved {
     return 'anything';
 }
 
 $query;
-export function print_reserved(reserved: reserved): reserved {
+export function printReserved(reserved: reserved): reserved {
     console.log(typeof reserved);
     return reserved;
 }
@@ -1046,15 +1043,15 @@ Candid:
 
 ```
 service : () -> {
-    get_reserved : () -> (reserved) query;
-    print_reserved : (reserved) -> (reserved) query;
+    getReserved : () -> (reserved) query;
+    printReserved : (reserved) -> (reserved) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_reserved '(null)'
+dfx canister call candid_canister printReserved '(null)'
 (null : reserved)
 ```
 
@@ -1068,14 +1065,14 @@ TypeScript:
 import { empty, $query } from 'azle';
 
 $query;
-export function get_empty(): empty {
+export function getEmpty(): empty {
     throw 'Anything you want';
 }
 
 // Note: It is impossible to call this function because it requires an argument
 // but there is no way to pass an "empty" value as an argument.
 $query;
-export function print_empty(empty: empty): empty {
+export function printEmpty(empty: empty): empty {
     console.log(typeof empty);
     throw 'Anything you want';
 }
@@ -1085,15 +1082,15 @@ Candid:
 
 ```
 service : () -> {
-    get_empty : () -> (empty) query;
-    print_empty : (empty) -> (empty) query;
+    getEmpty : () -> (empty) query;
+    printEmpty : (empty) -> (empty) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_empty '("You can put anything here")'
+dfx canister call candid_canister printEmpty '("You can put anything here")'
 Error: Failed to create argument blob.
 Caused by: Failed to create argument blob.
   Invalid data: Unable to serialize Candid values: type mismatch: "You can put anything here" cannot be of type empty

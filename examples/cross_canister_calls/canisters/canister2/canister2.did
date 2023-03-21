@@ -4,8 +4,8 @@ service : () -> {
   account : (AccountArgs) -> (opt Account) query;
   accounts : () -> (vec Account) query;
   balance : (text) -> (nat64) query;
-  get_notification : () -> (text) query;
-  receive_notification : (text) -> ();
+  getNotification : () -> (text) query;
+  receiveNotification : (text) -> ();
   transfer : (text, text, nat64) -> (nat64);
   trap : () -> (text) query;
 }

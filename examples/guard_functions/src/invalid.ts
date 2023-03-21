@@ -9,7 +9,7 @@ const array_containing_options_object = [
 const options_subset = { guard: 'this is not a function declaration' };
 
 function guard_function(): GuardResult {
-    return { ok: null };
+    return { Ok: null };
 }
 
 // 1. Custom annotation not directly followed by a function declaration

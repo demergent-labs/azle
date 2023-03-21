@@ -14,52 +14,52 @@ type StableMap10InsertResult = Variant<{
     Err: InsertError;
 }>;
 
-let stable_map_10 = new StableBTreeMap<float32, Opt<boolean>>(10, 100, 1_000);
+let stableMap10 = new StableBTreeMap<float32, Opt<boolean>>(10, 100, 1_000);
 
 $query;
-export function stable_map_10_contains_key(key: float32): boolean {
-    return stable_map_10.containsKey(key);
+export function stableMap10ContainsKey(key: float32): boolean {
+    return stableMap10.containsKey(key);
 }
 
 $query;
-export function stable_map_10_get(key: float32): Opt<Opt<boolean>> {
-    return stable_map_10.get(key);
+export function stableMap10Get(key: float32): Opt<Opt<boolean>> {
+    return stableMap10.get(key);
 }
 
 $update;
-export function stable_map_10_insert(
+export function stableMap10Insert(
     key: float32,
     value: Opt<boolean>
 ): StableMap10InsertResult {
-    return stable_map_10.insert(key, value);
+    return stableMap10.insert(key, value);
 }
 
 $query;
-export function stable_map_10_is_empty(): boolean {
-    return stable_map_10.isEmpty();
+export function stableMap10IsEmpty(): boolean {
+    return stableMap10.isEmpty();
 }
 
 $query;
-export function stable_map_10_items(): [float32, Opt<boolean>][] {
-    return stable_map_10.items();
+export function stableMap10Items(): [float32, Opt<boolean>][] {
+    return stableMap10.items();
 }
 
 $query;
-export function stable_map_10_keys(): float32[] {
-    return stable_map_10.keys();
+export function stableMap10Keys(): float32[] {
+    return stableMap10.keys();
 }
 
 $query;
-export function stable_map_10_len(): nat64 {
-    return stable_map_10.len();
+export function stableMap10Len(): nat64 {
+    return stableMap10.len();
 }
 
 $update;
-export function stable_map_10_remove(key: float32): Opt<Opt<boolean>> {
-    return stable_map_10.remove(key);
+export function stableMap10Remove(key: float32): Opt<Opt<boolean>> {
+    return stableMap10.remove(key);
 }
 
 $query;
-export function stable_map_10_values(): Opt<boolean>[] {
-    return stable_map_10.values();
+export function stableMap10Values(): Opt<boolean>[] {
+    return stableMap10.values();
 }

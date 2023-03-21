@@ -10,12 +10,12 @@ TypeScript:
 import { int64, $query } from 'azle';
 
 $query;
-export function get_int64(): int64 {
+export function getInt64(): int64 {
     return 9_223_372_036_854_775_807n;
 }
 
 $query;
-export function print_int64(int64: int64): int64 {
+export function printInt64(int64: int64): int64 {
     console.log(typeof int64);
     return int64;
 }
@@ -25,14 +25,14 @@ Candid:
 
 ```
 service : () -> {
-    get_int64 : () -> (int64) query;
-    print_int64 : (int64) -> (int64) query;
+    getInt64 : () -> (int64) query;
+    printInt64 : (int64) -> (int64) query;
 }
 ```
 
 dfx:
 
 ```bash
-dfx canister call candid_canister print_int64 '(9_223_372_036_854_775_807 : int64)'
+dfx canister call candid_canister printInt64 '(9_223_372_036_854_775_807 : int64)'
 (9_223_372_036_854_775_807 : int64)
 ```

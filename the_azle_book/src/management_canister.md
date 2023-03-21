@@ -6,16 +6,16 @@ You can access the management canister like this:
 
 ```typescript
 import { blob, $update, Variant } from 'azle';
-import { management_canister } from 'azle/canisters/management';
+import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function random_bytes(): Promise<
+export async function randomBytes(): Promise<
     Variant<{
-        ok: blob;
-        err: string;
+        Ok: blob;
+        Err: string;
     }>
 > {
-    return await management_canister.raw_rand().call();
+    return await managementCanister.raw_rand().call();
 }
 ```
 

@@ -151,19 +151,19 @@
 import {
     BitcoinNetwork,
     GetUtxosResult,
-    management_canister
+    managementCanister
 } from 'azle/canisters/management';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
 $update;
-export async function get_utxos(address: string): Promise&lt;
+export async function getUtxos(address: string): Promise&lt;
     Variant&lt;{
-        ok: GetUtxosResult;
-        err: string;
+        Ok: GetUtxosResult;
+        Err: string;
     }&gt;
 &gt; {
-    const canister_result = await management_canister
+    return await managementCanister
         .bitcoin_get_utxos({
             address,
             filter: null,
@@ -171,8 +171,6 @@ export async function get_utxos(address: string): Promise&lt;
         })
         .cycles(BITCOIN_API_CYCLE_COST)
         .call();
-
-    return canister_result;
 }
 </code></pre>
 

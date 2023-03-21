@@ -8,11 +8,11 @@ Examples:
 
 ```typescript
 import { ic, $update } from 'azle';
-import { some_service } from '../some_service';
+import { someService } from '../some_service';
 
 $update;
-export async function get_rejection_message(message: string): Promise<string> {
-    await some_service.reject(message).call();
-    return ic.reject_message();
+export async function getRejectionMessage(message: string): Promise<string> {
+    await someService.reject(message).call();
+    return ic.rejectMessage();
 }
 ```

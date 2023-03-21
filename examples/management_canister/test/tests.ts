@@ -3,15 +3,12 @@ import { ok, Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/management_canister/management_canister.did';
 import { readFileSync } from 'fs';
 
-export function get_tests(
-    management_canister: ActorSubclass<_SERVICE>
-): Test[] {
+export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'execute_create_canister',
+            name: 'executeCreateCanister',
             test: async () => {
-                const result =
-                    await management_canister.execute_create_canister();
+                const result = await managementCanister.executeCreateCanister();
 
                 if (!ok(result)) {
                     return {
@@ -27,56 +24,53 @@ export function get_tests(
             }
         },
         {
-            name: 'execute_update_settings',
+            name: 'executeUpdateSettings',
             test: async () => {
-                const canister_id =
-                    await management_canister.get_created_canister_id();
+                const canisterId =
+                    await managementCanister.getCreatedCanisterId();
 
-                const execute_update_settings_result =
-                    await management_canister.execute_update_settings(
-                        canister_id
-                    );
+                const executeUpdateSettingsResult =
+                    await managementCanister.executeUpdateSettings(canisterId);
 
-                if (!ok(execute_update_settings_result)) {
+                if (!ok(executeUpdateSettingsResult)) {
                     return {
-                        Err: execute_update_settings_result.Err
+                        Err: executeUpdateSettingsResult.Err
                     };
                 }
 
-                const get_canister_status_result =
-                    await management_canister.get_canister_status({
-                        canister_id: canister_id
+                const getCanisterStatusResult =
+                    await managementCanister.getCanisterStatus({
+                        canister_id: canisterId
                     });
 
-                if (!ok(get_canister_status_result)) {
+                if (!ok(getCanisterStatusResult)) {
                     return {
-                        Err: get_canister_status_result.Err
+                        Err: getCanisterStatusResult.Err
                     };
                 }
 
-                const canister_settings =
-                    get_canister_status_result.Ok.settings;
+                const canisterSettings = getCanisterStatusResult.Ok.settings;
 
                 return {
                     Ok:
-                        canister_settings.compute_allocation === 1n &&
-                        canister_settings.memory_allocation === 3_000_000n &&
-                        canister_settings.freezing_threshold === 2_000_000n
+                        canisterSettings.compute_allocation === 1n &&
+                        canisterSettings.memory_allocation === 3_000_000n &&
+                        canisterSettings.freezing_threshold === 2_000_000n
                 };
             }
         },
         {
-            name: 'execute_install_code',
+            name: 'executeInstallCode',
             test: async () => {
-                const canister_id =
-                    await management_canister.get_created_canister_id();
+                const canisterId =
+                    await managementCanister.getCreatedCanisterId();
 
                 // this Wasm module is for a simple canister written in Motoko that has one query method called hello that returns a string
-                const wasm_module = Array.from(readFileSync('src/test.wasm'));
+                const wasmModule = Array.from(readFileSync('src/test.wasm'));
 
-                const result = await management_canister.execute_install_code(
-                    canister_id,
-                    wasm_module as any
+                const result = await managementCanister.executeInstallCode(
+                    canisterId,
+                    wasmModule as any
                 );
 
                 if (!ok(result)) {
@@ -91,240 +85,226 @@ export function get_tests(
             }
         },
         {
-            name: 'execute_deposit_cycles',
+            name: 'executeDepositCycles',
             test: async () => {
-                const canister_id =
-                    await management_canister.get_created_canister_id();
+                const canisterId =
+                    await managementCanister.getCreatedCanisterId();
 
-                const status_before_result =
-                    await management_canister.get_canister_status({
-                        canister_id: canister_id
+                const statusBeforeResult =
+                    await managementCanister.getCanisterStatus({
+                        canister_id: canisterId
                     });
 
-                if (!ok(status_before_result)) {
+                if (!ok(statusBeforeResult)) {
                     return {
-                        Err: status_before_result.Err
+                        Err: statusBeforeResult.Err
                     };
                 }
 
-                const status_before = status_before_result.Ok;
-                const cycles_before = status_before.cycles;
+                const statusBefore = statusBeforeResult.Ok;
+                const cyclesBefore = statusBefore.cycles;
 
-                const deposit_cycles_result =
-                    await management_canister.execute_deposit_cycles(
-                        canister_id
-                    );
+                const depositCyclesResult =
+                    await managementCanister.executeDepositCycles(canisterId);
 
-                if (!ok(deposit_cycles_result)) {
+                if (!ok(depositCyclesResult)) {
                     return {
-                        Err: deposit_cycles_result.Err
+                        Err: depositCyclesResult.Err
                     };
                 }
 
-                const status_after_result =
-                    await management_canister.get_canister_status({
-                        canister_id: canister_id
+                const statusAfterResult =
+                    await managementCanister.getCanisterStatus({
+                        canister_id: canisterId
                     });
 
-                if (!ok(status_after_result)) {
+                if (!ok(statusAfterResult)) {
                     return {
-                        Err: status_after_result.Err
+                        Err: statusAfterResult.Err
                     };
                 }
 
-                const status_after = status_after_result.Ok;
-                const cycles_after = status_after.cycles;
+                const statusAfter = statusAfterResult.Ok;
+                const cyclesAfter = statusAfter.cycles;
 
                 return {
-                    Ok: cycles_after >= cycles_before + 1_000_000n
+                    Ok: cyclesAfter >= cyclesBefore + 1_000_000n
                 };
             }
         },
         {
-            name: 'execute_uninstall_code',
+            name: 'executeUninstallCode',
             test: async () => {
-                const canister_id =
-                    await management_canister.get_created_canister_id();
+                const canisterId =
+                    await managementCanister.getCreatedCanisterId();
 
-                const execute_uninstall_code_result =
-                    await management_canister.execute_uninstall_code(
-                        canister_id
-                    );
+                const executeUninstallCodeResult =
+                    await managementCanister.executeUninstallCode(canisterId);
 
-                if (!ok(execute_uninstall_code_result)) {
+                if (!ok(executeUninstallCodeResult)) {
                     return {
-                        Err: execute_uninstall_code_result.Err
+                        Err: executeUninstallCodeResult.Err
                     };
                 }
 
-                const get_canister_status_result =
-                    await management_canister.get_canister_status({
-                        canister_id: canister_id
+                const getCanisterStatusResult =
+                    await managementCanister.getCanisterStatus({
+                        canister_id: canisterId
                     });
 
-                if (!ok(get_canister_status_result)) {
+                if (!ok(getCanisterStatusResult)) {
                     return {
-                        Err: get_canister_status_result.Err
+                        Err: getCanisterStatusResult.Err
                     };
                 }
 
-                const canister_status = get_canister_status_result.Ok;
+                const canisterStatus = getCanisterStatusResult.Ok;
 
                 return {
-                    Ok: canister_status.module_hash.length === 0
+                    Ok: canisterStatus.module_hash.length === 0
                 };
             }
         },
         {
-            name: 'execute_stop_canister',
+            name: 'executeStopCanister',
             test: async () => {
-                const canister_id =
-                    await management_canister.get_created_canister_id();
+                const canisterId =
+                    await managementCanister.getCreatedCanisterId();
 
-                const execute_stop_canister_result =
-                    await management_canister.execute_stop_canister(
-                        canister_id
-                    );
+                const executeStopCanisterResult =
+                    await managementCanister.executeStopCanister(canisterId);
 
-                if (!ok(execute_stop_canister_result)) {
+                if (!ok(executeStopCanisterResult)) {
                     return {
-                        Err: execute_stop_canister_result.Err
+                        Err: executeStopCanisterResult.Err
                     };
                 }
 
-                const get_canister_status_result =
-                    await management_canister.get_canister_status({
-                        canister_id: canister_id
+                const getCanisterStatusResult =
+                    await managementCanister.getCanisterStatus({
+                        canister_id: canisterId
                     });
 
-                if (!ok(get_canister_status_result)) {
+                if (!ok(getCanisterStatusResult)) {
                     return {
-                        Err: get_canister_status_result.Err
+                        Err: getCanisterStatusResult.Err
                     };
                 }
 
-                const canister_status = get_canister_status_result.Ok;
+                const canisterStatus = getCanisterStatusResult.Ok;
 
                 return {
-                    Ok: 'stopped' in canister_status.status
+                    Ok: 'stopped' in canisterStatus.status
                 };
             }
         },
         {
-            name: 'execute_start_canister',
+            name: 'executeStartCanister',
             test: async () => {
-                const canister_id =
-                    await management_canister.get_created_canister_id();
+                const canisterId =
+                    await managementCanister.getCreatedCanisterId();
 
-                const get_canister_status_before_result =
-                    await management_canister.get_canister_status({
-                        canister_id: canister_id
+                const getCanisterStatusBeforeResult =
+                    await managementCanister.getCanisterStatus({
+                        canister_id: canisterId
                     });
 
-                if (!ok(get_canister_status_before_result)) {
+                if (!ok(getCanisterStatusBeforeResult)) {
                     return {
-                        Err: get_canister_status_before_result.Err
+                        Err: getCanisterStatusBeforeResult.Err
                     };
                 }
 
-                const canister_status_before =
-                    get_canister_status_before_result.Ok;
+                const canisterStatusBefore = getCanisterStatusBeforeResult.Ok;
 
-                if ('stopped' in canister_status_before.status === false) {
+                if ('stopped' in canisterStatusBefore.status === false) {
                     return {
                         Ok: false
                     };
                 }
 
-                const execute_start_canister_result =
-                    await management_canister.execute_start_canister(
-                        canister_id
-                    );
+                const executeStartCanisterResult =
+                    await managementCanister.executeStartCanister(canisterId);
 
-                if (!ok(execute_start_canister_result)) {
+                if (!ok(executeStartCanisterResult)) {
                     return {
-                        Err: execute_start_canister_result.Err
+                        Err: executeStartCanisterResult.Err
                     };
                 }
 
-                const get_canister_status_after_result =
-                    await management_canister.get_canister_status({
-                        canister_id: canister_id
+                const getCanisterStatusAfterResult =
+                    await managementCanister.getCanisterStatus({
+                        canister_id: canisterId
                     });
 
-                if (!ok(get_canister_status_after_result)) {
+                if (!ok(getCanisterStatusAfterResult)) {
                     return {
-                        Err: get_canister_status_after_result.Err
+                        Err: getCanisterStatusAfterResult.Err
                     };
                 }
 
-                const canister_status_after =
-                    get_canister_status_after_result.Ok;
+                const canisterStatusAfter = getCanisterStatusAfterResult.Ok;
 
                 return {
-                    Ok: 'running' in canister_status_after.status
+                    Ok: 'running' in canisterStatusAfter.status
                 };
             }
         },
         {
-            name: 'get_canister_status',
+            name: 'getCanisterStatus',
             test: async () => {
-                const canister_id =
-                    await management_canister.get_created_canister_id();
+                const canisterId =
+                    await managementCanister.getCreatedCanisterId();
 
-                const get_canister_status_result =
-                    await management_canister.get_canister_status({
-                        canister_id: canister_id
+                const getCanisterStatusResult =
+                    await managementCanister.getCanisterStatus({
+                        canister_id: canisterId
                     });
 
-                if (!ok(get_canister_status_result)) {
+                if (!ok(getCanisterStatusResult)) {
                     return {
-                        Err: get_canister_status_result.Err
+                        Err: getCanisterStatusResult.Err
                     };
                 }
 
-                const canister_status = get_canister_status_result.Ok;
+                const canisterStatus = getCanisterStatusResult.Ok;
 
                 return {
                     Ok:
-                        'running' in canister_status.status &&
-                        canister_status.memory_size === 0n &&
-                        canister_status.cycles >= 800_000_000_000n &&
-                        canister_status.settings.freezing_threshold ===
+                        'running' in canisterStatus.status &&
+                        canisterStatus.memory_size === 0n &&
+                        canisterStatus.cycles >= 800_000_000_000n &&
+                        canisterStatus.settings.freezing_threshold ===
                             2_000_000n &&
-                        canister_status.settings.controllers.length === 1 &&
-                        canister_status.settings.memory_allocation ===
+                        canisterStatus.settings.controllers.length === 1 &&
+                        canisterStatus.settings.memory_allocation ===
                             3_000_000n &&
-                        canister_status.settings.compute_allocation === 1n &&
-                        canister_status.module_hash.length === 0
+                        canisterStatus.settings.compute_allocation === 1n &&
+                        canisterStatus.module_hash.length === 0
                 };
             }
         },
         {
-            name: 'execute_delete_canister',
+            name: 'executeDeleteCanister',
             test: async () => {
-                const canister_id =
-                    await management_canister.get_created_canister_id();
+                const canisterId =
+                    await managementCanister.getCreatedCanisterId();
 
-                const execute_stop_canister_result =
-                    await management_canister.execute_stop_canister(
-                        canister_id
-                    );
+                const executeStopCanisterResult =
+                    await managementCanister.executeStopCanister(canisterId);
 
-                if (!ok(execute_stop_canister_result)) {
+                if (!ok(executeStopCanisterResult)) {
                     return {
-                        Err: execute_stop_canister_result.Err
+                        Err: executeStopCanisterResult.Err
                     };
                 }
 
-                const execute_delete_canister_result =
-                    await management_canister.execute_delete_canister(
-                        canister_id
-                    );
+                const executeDeleteCanisterResult =
+                    await managementCanister.executeDeleteCanister(canisterId);
 
-                if (!ok(execute_delete_canister_result)) {
+                if (!ok(executeDeleteCanisterResult)) {
                     return {
-                        Err: execute_delete_canister_result.Err
+                        Err: executeDeleteCanisterResult.Err
                     };
                 }
 
@@ -334,9 +314,9 @@ export function get_tests(
             }
         },
         {
-            name: 'get_raw_rand',
+            name: 'getRawRand',
             test: async () => {
-                const result = await management_canister.get_raw_rand();
+                const result = await managementCanister.getRawRand();
 
                 if (!ok(result)) {
                     return {

@@ -9,6 +9,6 @@ export function heartbeat() {
 }
 
 $query;
-export function get_initialized(): boolean {
+export function getInitialized(): boolean {
     return initialized;
 }

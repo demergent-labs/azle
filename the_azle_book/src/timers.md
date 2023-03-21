@@ -8,21 +8,21 @@ import {
     Duration,
     ic,
     int8,
-    ok,
+    match,
     $query,
     Record,
     TimerId,
     $update
 } from 'azle';
-import { management_canister } from 'azle/canisters/management';
+import { managementCanister } from 'azle/canisters/management';
 
 type StatusReport = Record<{
     single: boolean;
     inline: int8;
     capture: string;
     repeat: int8;
-    single_cross_canister: blob;
-    repeat_cross_canister: blob;
+    singleCrossCanister: blob;
+    repeatCrossCanister: blob;
 }>;
 
 type TimerIds = Record<{
@@ -30,8 +30,8 @@ type TimerIds = Record<{
     inline: TimerId;
     capture: TimerId;
     repeat: TimerId;
-    single_cross_canister: TimerId;
-    repeat_cross_canister: TimerId;
+    singleCrossCanister: TimerId;
+    repeatCrossCanister: TimerId;
 }>;
 
 let status: StatusReport = {
@@ -39,91 +39,93 @@ let status: StatusReport = {
     inline: 0,
     capture: '',
     repeat: 0,
-    single_cross_canister: Uint8Array.from([]),
-    repeat_cross_canister: Uint8Array.from([])
+    singleCrossCanister: Uint8Array.from([]),
+    repeatCrossCanister: Uint8Array.from([])
 };
 
 $update;
-export function clear_timer(timer_id: TimerId): void {
-    ic.clear_timer(timer_id);
-    console.log(`timer ${timer_id} cancelled`);
+export function clearTimer(timerId: TimerId): void {
+    ic.clearTimer(timerId);
+    console.log(`timer ${timerId} cancelled`);
 }
 
 $update;
-export function set_timers(delay: Duration, interval: Duration): TimerIds {
-    const captured_value = '🚩';
+export function setTimers(delay: Duration, interval: Duration): TimerIds {
+    const capturedValue = '🚩';
 
-    const single_id = ic.set_timer(delay, one_time_timer_callback);
+    const singleId = ic.setTimer(delay, oneTimeTimerCallback);
 
-    const inline_id = ic.set_timer(delay, () => {
+    const inlineId = ic.setTimer(delay, () => {
         status.inline = 1;
         console.log('Inline timer called');
     });
 
-    const capture_id = ic.set_timer(delay, () => {
-        status.capture = captured_value;
-        console.log(`Timer captured value ${captured_value}`);
+    const captureId = ic.setTimer(delay, () => {
+        status.capture = capturedValue;
+        console.log(`Timer captured value ${capturedValue}`);
     });
 
-    const repeat_id = ic.set_timer_interval(interval, () => {
+    const repeatId = ic.setTimerInterval(interval, () => {
         status.repeat++;
         console.log(`Repeating timer. Call ${status.repeat}`);
     });
 
-    const single_cross_canister_id = ic.set_timer(
+    const singleCrossCanisterId = ic.setTimer(
         delay,
-        single_cross_canister_timer_callback
+        singleCrossCanisterTimerCallback
     );
 
-    const repeat_cross_canister_id = ic.set_timer_interval(
+    const repeatCrossCanisterId = ic.setTimerInterval(
         interval,
-        repeat_cross_canister_timer_callback
+        repeatCrossCanisterTimerCallback
     );
 
     return {
-        single: single_id,
-        inline: inline_id,
-        capture: capture_id,
-        repeat: repeat_id,
-        single_cross_canister: single_cross_canister_id,
-        repeat_cross_canister: repeat_cross_canister_id
+        single: singleId,
+        inline: inlineId,
+        capture: captureId,
+        repeat: repeatId,
+        singleCrossCanister: singleCrossCanisterId,
+        repeatCrossCanister: repeatCrossCanisterId
     };
 }
 
 $query;
-export function status_report(): StatusReport {
+export function statusReport(): StatusReport {
     return status;
 }
 
-function one_time_timer_callback(): void {
+function oneTimeTimerCallback(): void {
     status.single = true;
-    console.log('one_time_timer_callback called');
+    console.log('oneTimeTimerCallback called');
 }
 
-async function single_cross_canister_timer_callback(): Promise<void> {
-    console.log('single_cross_canister_timer_callback');
+async function singleCrossCanisterTimerCallback(): Promise<void> {
+    console.log('singleCrossCanisterTimerCallback');
 
-    const result = await management_canister.raw_rand().call();
+    const result = await managementCanister.raw_rand().call();
 
-    if (!ok(result)) {
-        return;
-    }
-
-    status.single_cross_canister = result.ok;
+    match(result, {
+        Ok: (ok) => {
+            status.singleCrossCanister = ok;
+        },
+        Err: (err) => ic.trap(err)
+    });
 }
 
-async function repeat_cross_canister_timer_callback(): Promise<void> {
-    console.log('repeat_cross_canister_timer_callback');
+async function repeatCrossCanisterTimerCallback(): Promise<void> {
+    console.log('repeatCrossCanisterTimerCallback');
 
-    const result = await management_canister.raw_rand().call();
+    const result = await managementCanister.raw_rand().call();
 
-    if (!ok(result)) {
-        return;
-    }
-
-    status.repeat_cross_canister = Uint8Array.from([
-        ...status.repeat_cross_canister,
-        ...result.ok
-    ]);
+    match(result, {
+        Ok: (ok) => {
+            status.repeatCrossCanister = Uint8Array.from([
+                ...status.repeatCrossCanister,
+                ...ok
+            ]);
+        },
+        Err: (err) => ic.trap(err)
+    });
 }
 ```

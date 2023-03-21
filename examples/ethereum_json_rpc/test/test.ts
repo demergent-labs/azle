@@ -1,8 +1,8 @@
 // Ethereum genesis block balances taken from: https://raw.githubusercontent.com/lastmjs/eth-total-supply/master/nethermind-foundation.json
 
-import { run_tests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { createActor } from './dfx_generated/ethereum_json_rpc';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
 if (process.env.ETHEREUM_URL === undefined) {
     throw new Error(
@@ -16,4 +16,4 @@ const ethereum_json_rpc_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
     }
 });
 
-run_tests(get_tests(ethereum_json_rpc_canister));
+runTests(getTests(ethereum_json_rpc_canister));

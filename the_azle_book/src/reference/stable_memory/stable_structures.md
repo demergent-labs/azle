@@ -29,15 +29,15 @@ type Key = nat8;
 type Value = string;
 
 type InsertResult = Variant<{
-    ok: Opt<Value>;
-    err: InsertError;
+    Ok: Opt<Value>;
+    Err: InsertError;
 }>;
 
 let map = new StableBTreeMap<Key, Value>(0, 100, 1_000);
 
 $query;
-export function contains_key(key: Key): boolean {
-    return map.contains_key(key);
+export function containsKey(key: Key): boolean {
+    return map.containsKey(key);
 }
 
 $query;
@@ -51,8 +51,8 @@ export function insert(key: Key, value: Value): InsertResult {
 }
 
 $query;
-export function is_empty(): boolean {
-    return map.is_empty();
+export function isEmpty(): boolean {
+    return map.isEmpty();
 }
 
 $query;

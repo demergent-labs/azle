@@ -2,38 +2,38 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/optional_types/optional_types.did';
 
-export function get_tests(
-    optional_types_canister: ActorSubclass<_SERVICE>
+export function getTests(
+    optionalTypesCanister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
         {
-            name: 'get_html',
+            name: 'getHtml',
             test: async () => {
-                const result = await optional_types_canister.get_html();
+                const result = await optionalTypesCanister.getHtml();
 
                 return {
-                    ok: result.head.length === 0
+                    Ok: result.head.length === 0
                 };
             }
         },
         {
-            name: 'get_head',
+            name: 'getHead',
             test: async () => {
-                const result = await optional_types_canister.get_head();
+                const result = await optionalTypesCanister.getHead();
 
                 return {
-                    ok: result.length === 1 && result[0].elements.length === 0
+                    Ok: result.length === 1 && result[0].elements.length === 0
                 };
             }
         },
         {
-            name: 'get_head_with_elements',
+            name: 'getHeadWithElements',
             test: async () => {
                 const result =
-                    await optional_types_canister.get_head_with_elements();
+                    await optionalTypesCanister.getHeadWithElements();
 
                 return {
-                    ok:
+                    Ok:
                         result.length === 1 &&
                         result[0].elements.length === 1 &&
                         result[0].elements[0].id === '0'
@@ -41,34 +41,34 @@ export function get_tests(
             }
         },
         {
-            name: 'get_element',
+            name: 'getElement',
             test: async () => {
-                const result = await optional_types_canister.get_element([]);
+                const result = await optionalTypesCanister.getElement([]);
 
                 return {
-                    ok: result.length === 0
+                    Ok: result.length === 0
                 };
             }
         },
         {
-            name: 'get_element',
+            name: 'getElement',
             test: async () => {
-                const result = await optional_types_canister.get_element([[]]);
+                const result = await optionalTypesCanister.getElement([[]]);
 
                 return {
-                    ok: result.length === 0
+                    Ok: result.length === 0
                 };
             }
         },
         {
-            name: 'get_element',
+            name: 'getElement',
             test: async () => {
-                const result = await optional_types_canister.get_element([
+                const result = await optionalTypesCanister.getElement([
                     [{ id: '0' }]
                 ]);
 
                 return {
-                    ok:
+                    Ok:
                         result.length === 1 &&
                         result[0].length === 1 &&
                         result[0][0].id === '0'

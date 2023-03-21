@@ -18,9 +18,9 @@ pub fn build_extraneous_decorator_error_message(
         Ok(annotation) => match annotation.method_type {
             CanisterMethodType::Heartbeat => "$heartbeat",
             CanisterMethodType::Init => "$init",
-            CanisterMethodType::InspectMessage => "$inspect_message",
-            CanisterMethodType::PostUpgrade => "$post_upgrade",
-            CanisterMethodType::PreUpgrade => "$pre_upgrade",
+            CanisterMethodType::InspectMessage => "$inspectMessage",
+            CanisterMethodType::PostUpgrade => "$postUpgrade",
+            CanisterMethodType::PreUpgrade => "$preUpgrade",
             CanisterMethodType::Query => "$query",
             CanisterMethodType::Update => "$update",
         },

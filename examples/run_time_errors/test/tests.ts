@@ -2,13 +2,13 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/run_time_errors/run_time_errors.did';
 
-export function get_tests(error_canister: ActorSubclass<_SERVICE>): Test[] {
+export function getTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'throw big int',
             test: async () => {
                 return {
-                    ok: await test_throw(error_canister.throw_bigint, '3')
+                    Ok: await testThrow(errorCanister.throwBigint, '3')
                 };
             }
         },
@@ -16,7 +16,7 @@ export function get_tests(error_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'throw boolean',
             test: async () => {
                 return {
-                    ok: await test_throw(error_canister.throw_boolean, 'false')
+                    Ok: await testThrow(errorCanister.throwBoolean, 'false')
                 };
             }
         },
@@ -24,8 +24,8 @@ export function get_tests(error_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'throw class',
             test: async () => {
                 return {
-                    ok: await test_throw(
-                        error_canister.throw_class,
+                    Ok: await testThrow(
+                        errorCanister.throwClass,
                         'CustomClass toString'
                     )
                 };
@@ -35,8 +35,8 @@ export function get_tests(error_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'throw custom error',
             test: async () => {
                 return {
-                    ok: await test_throw(
-                        error_canister.throw_custom_error,
+                    Ok: await testThrow(
+                        errorCanister.throwCustomError,
                         'Error: This is a custom error'
                     )
                 };
@@ -46,7 +46,7 @@ export function get_tests(error_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'throw int',
             test: async () => {
                 return {
-                    ok: await test_throw(error_canister.throw_int, '3')
+                    Ok: await testThrow(errorCanister.throwInt, '3')
                 };
             }
         },
@@ -54,7 +54,7 @@ export function get_tests(error_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'throw null',
             test: async () => {
                 return {
-                    ok: await test_throw(error_canister.throw_null, 'null')
+                    Ok: await testThrow(errorCanister.throwNull, 'null')
                 };
             }
         },
@@ -62,8 +62,8 @@ export function get_tests(error_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'throw null reference',
             test: async () => {
                 return {
-                    ok: await test_throw(
-                        error_canister.throw_null_reference,
+                    Ok: await testThrow(
+                        errorCanister.throwNullReference,
                         "TypeError: cannot convert 'null' or 'undefined' to object"
                     )
                 };
@@ -73,8 +73,8 @@ export function get_tests(error_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'throw object',
             test: async () => {
                 return {
-                    ok: await test_throw(
-                        error_canister.throw_object,
+                    Ok: await testThrow(
+                        errorCanister.throwObject,
                         '[object Object]'
                     )
                 };
@@ -84,7 +84,7 @@ export function get_tests(error_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'throw rational',
             test: async () => {
                 return {
-                    ok: await test_throw(error_canister.throw_rational, '3.14')
+                    Ok: await testThrow(errorCanister.throwRational, '3.14')
                 };
             }
         },
@@ -92,8 +92,8 @@ export function get_tests(error_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'throw string',
             test: async () => {
                 return {
-                    ok: await test_throw(
-                        error_canister.throw_string,
+                    Ok: await testThrow(
+                        errorCanister.throwString,
                         'Hello World'
                     )
                 };
@@ -103,10 +103,7 @@ export function get_tests(error_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'throw symbol',
             test: async () => {
                 return {
-                    ok: await test_throw(
-                        error_canister.throw_symbol,
-                        'Symbol()'
-                    )
+                    Ok: await testThrow(errorCanister.throwSymbol, 'Symbol()')
                 };
             }
         },
@@ -114,8 +111,8 @@ export function get_tests(error_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'throw undefined',
             test: async () => {
                 return {
-                    ok: await test_throw(
-                        error_canister.throw_undefined,
+                    Ok: await testThrow(
+                        errorCanister.throwUndefined,
                         'undefined'
                     )
                 };
@@ -124,32 +121,25 @@ export function get_tests(error_canister: ActorSubclass<_SERVICE>): Test[] {
     ];
 }
 
-async function test_throw(
-    error_func: () => Promise<void>,
-    expected_error: string
+async function testThrow(
+    errorFunc: () => Promise<void>,
+    expectedError: string
 ): Promise<boolean> {
-    return check_error_message(
-        await get_error_message(error_func),
-        expected_error
-    );
+    return checkErrorMessage(await getErrorMessage(errorFunc), expectedError);
 }
 
-async function get_error_message(
-    error_func: () => Promise<void>
-): Promise<any> {
+async function getErrorMessage(errorFunc: () => Promise<void>): Promise<any> {
     try {
-        await error_func();
+        await errorFunc();
     } catch (err) {
         return err;
     }
 }
 
-function check_error_message(actual_error: any, expected_error: string) {
+function checkErrorMessage(actualError: any, expectedError: string) {
     return (
-        'result' in actual_error &&
-        'reject_message' in actual_error.result &&
-        actual_error.result.reject_message.includes(
-            `Uncaught ${expected_error}`
-        )
+        'result' in actualError &&
+        'reject_message' in actualError.result &&
+        actualError.result.reject_message.includes(`Uncaught ${expectedError}`)
     );
 }

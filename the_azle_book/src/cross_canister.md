@@ -35,11 +35,11 @@ $update;
 export function transfer(to: Principal, amount: nat64): nat64 {
     const from = ic.caller();
 
-    const from_balance = accounts.get(from) ?? 0n;
-    const to_balance = accounts.get(to) ?? 0n;
+    const fromBalance = accounts.get(from) ?? 0n;
+    const toBalance = accounts.get(to) ?? 0n;
 
-    accounts.insert(from, from_balance - amount);
-    accounts.insert(to, to_balance + amount);
+    accounts.insert(from, fromBalance - amount);
+    accounts.insert(to, toBalance + amount);
 
     return amount;
 }
@@ -67,7 +67,7 @@ Once you have a canister definition you can instantiate it with the canister's `
 Here's how to instantiate `TokenCanister`:
 
 ```typescript
-const token_canister = new TokenCanister(
+const tokenCanister = new TokenCanister(
     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
 );
 ```
@@ -90,7 +90,7 @@ class TokenCanister extends ExternalCanister {
     transfer: (to: Principal, amount: nat64) => CanisterResult<nat64>;
 }
 
-const token_canister = new TokenCanister(
+const tokenCanister = new TokenCanister(
     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
 );
 
@@ -100,11 +100,11 @@ export async function payout(
     amount: nat64
 ): Promise<
     Variant<{
-        ok: nat64;
-        err: string;
+        Ok: nat64;
+        Err: string;
     }>
 > {
-    return await token_canister.transfer(to, amount).call();
+    return await tokenCanister.transfer(to, amount).call();
 }
 ```
 
@@ -126,30 +126,30 @@ export function transfer(
     to: Principal,
     amount: nat64
 ): Variant<{
-    ok: nat64;
-    err: Variant<{
+    Ok: nat64;
+    Err: Variant<{
         InsufficientBalance: nat64;
     }>;
 }> {
     const from = ic.caller();
 
-    const from_balance = accounts.get(from) ?? 0n;
+    const fromBalance = accounts.get(from) ?? 0n;
 
-    if (from_balance < amount) {
+    if (fromBalance < amount) {
         return {
-            err: {
-                InsufficientBalance: from_balance
+            Err: {
+                InsufficientBalance: fromBalance
             }
         };
     }
 
-    const to_balance = accounts.get(to) ?? 0n;
+    const toBalance = accounts.get(to) ?? 0n;
 
-    accounts.insert(from, from_balance - amount);
-    accounts.insert(to, to_balance + amount);
+    accounts.insert(from, fromBalance - amount);
+    accounts.insert(to, toBalance + amount);
 
     return {
-        ok: amount
+        Ok: amount
     };
 }
 ```
@@ -160,8 +160,8 @@ export function transfer(
 import {
     CanisterResult,
     ExternalCanister,
+    match,
     nat64,
-    ok,
     Principal,
     $update,
     update,
@@ -175,15 +175,15 @@ class TokenCanister extends ExternalCanister {
         amount: nat64
     ) => CanisterResult<
         Variant<{
-            ok: nat64;
-            err: Variant<{
+            Ok: nat64;
+            Err: Variant<{
                 InsufficientBalance: nat64;
             }>;
         }>
     >;
 }
 
-const token_canister = new TokenCanister(
+const tokenCanister = new TokenCanister(
     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
 );
 
@@ -193,33 +193,24 @@ export async function payout(
     amount: nat64
 ): Promise<
     Variant<{
-        ok: nat64;
-        err: string;
+        Ok: nat64;
+        Err: string;
     }>
 > {
-    const canister_result = await token_canister.transfer(to, amount).call();
+    const canisterResult = await tokenCanister.transfer(to, amount).call();
 
-    if (!ok(canister_result)) {
-        return {
-            err: canister_result.err
-        };
-    }
-
-    const transfer_result = canister_result.ok;
-
-    if (!ok(transfer_result)) {
-        return {
-            err: JSON.stringify(transfer_result.err)
-        };
-    }
-
-    return {
-        ok: transfer_result.ok
-    };
+    return match(canisterResult, {
+        Ok: (transferResult) =>
+            match(transferResult, {
+                Ok: (ok) => ({ Ok: ok }),
+                Err: (err) => ({ Err: JSON.stringify(err) })
+            }),
+        Err: (err) => ({ Err: err })
+    });
 }
 ```
 
-Azle provides an `ok` function that will help you determine if a result is `ok` or not. This provides some benefits over using `in`, such as `if ('err' in result)` or `if ('ok' in result)`. There are other ways to check for the `ok` or `err` properties as well, feel free to experiment with the way that you prefer. They all have trade-offs.
+Azle provides a `match` function that will help you handle variant branches. This provides some benefits over using `in`, such as `if ('Err' in result)` or `if ('Ok' in result)`. There are other ways to check for the `Ok` or `Err` properties as well, feel free to experiment with the way that you prefer. They all have trade-offs.
 
 So far we have only shown a cross-canister call from an update method. Update methods can call other update methods or query methods (but not composite query methods as discussed below). If an update method calls a query method, that query method will be called in replicated mode. Replicated mode engages the consensus process, but for queries the state will still be discarded.
 
@@ -239,21 +230,21 @@ import {
 
 class SomeCanister extends ExternalCanister {
     @query
-    query_for_boolean: () => CanisterResult<boolean>;
+    queryForBoolean: () => CanisterResult<boolean>;
 }
 
-const some_canister = new SomeCanister(
+const someCanister = new SomeCanister(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
 $query;
-export async function query_some_canister(): Promise<
+export async function querySomeCanister(): Promise<
     Variant<{
-        ok: boolean;
-        err: string;
+        Ok: boolean;
+        Err: string;
     }>
 > {
-    return await some_canister.query_for_boolean().call();
+    return await someCanister.queryForBoolean().call();
 }
 ```
 
@@ -274,19 +265,19 @@ import {
 
 class SomeCanister extends ExternalCanister {
     @update
-    receive_notification: () => CanisterResult<void>;
+    receiveNotification: () => CanisterResult<void>;
 }
 
-const some_canister = new SomeCanister(
+const someCanister = new SomeCanister(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
 $update;
-export function send_notification(): Variant<{
-    ok: null;
-    err: RejectionCode;
+export function sendNotification(): Variant<{
+    Ok: null;
+    Err: RejectionCode;
 }> {
-    return some_canister.receive_notification().notify();
+    return someCanister.receiveNotification().notify();
 }
 ```
 
@@ -305,18 +296,18 @@ import {
 
 class SomeCanister extends ExternalCanister {
     @update
-    receive_notification: () => CanisterResult<void>;
+    receiveNotification: () => CanisterResult<void>;
 }
 
-const some_canister = new SomeCanister(
+const someCanister = new SomeCanister(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
 $update;
-export function send_notification(): Variant<{
-    ok: null;
-    err: RejectionCode;
+export function sendNotification(): Variant<{
+    Ok: null;
+    Err: RejectionCode;
 }> {
-    return some_canister.receive_notification().cycles(1_000_000n).notify();
+    return someCanister.receiveNotification().cycles(1_000_000n).notify();
 }
 ```

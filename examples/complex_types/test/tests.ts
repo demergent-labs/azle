@@ -1,5 +1,5 @@
 import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/complex_types/complex_types.did';
+import { _SERVICE } from './dfx_generated/complex_types/complex_types.did.d';
 import { ActorSubclass } from '@dfinity/agent';
 
 export function get_tests(
@@ -9,23 +9,23 @@ export function get_tests(
         {
             name: 'get_all_users',
             test: async () => {
-                const result = await complex_types_canister.get_all_users(0);
+                const result = await complex_types_canister.getAllUsers(0);
 
                 return {
-                    ok: result.length === 0
+                    Ok: result.length === 0
                 };
             }
         },
         {
             name: 'create_user',
             test: async () => {
-                const result = await complex_types_canister.create_user(
+                const result = await complex_types_canister.createUser(
                     'user1',
                     0
                 );
 
                 return {
-                    ok:
+                    Ok:
                         result.id === '0' &&
                         result.username === 'user1' &&
                         result.threads.length === 0 &&
@@ -37,10 +37,10 @@ export function get_tests(
         {
             name: 'get_all_users',
             test: async () => {
-                const result = await complex_types_canister.get_all_users(0);
+                const result = await complex_types_canister.getAllUsers(0);
 
                 return {
-                    ok:
+                    Ok:
                         result.length === 1 &&
                         result[0].id === '0' &&
                         result[0].username === 'user1' &&
