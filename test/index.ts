@@ -140,22 +140,13 @@ export function deploy(canisterName: string, argument?: string): Test[] {
     ];
 }
 
-export function createSnakeCaseProxy(target: any) {
+export function createSnakeCaseProxy<T extends object>(target: T): T {
     return new Proxy(target, {
         get(obj, prop) {
             const snakeCaseProp = camelToSnakeCase(prop as string);
-            return obj[snakeCaseProp];
+            return (obj as any)[snakeCaseProp];
         }
-        // get(obj, prop) {
-        //     if (typeof obj[prop] === 'function') {
-        //         return (...args: any[]) => {
-        //             const snakeCaseProp = camelToSnakeCase(prop as string);
-        //             return obj[snakeCaseProp].apply(obj, args);
-        //         };
-        //     }
-        //     return obj[prop];
-        // }
-    });
+    }) as any;
 }
 
 function camelToSnakeCase(str: string) {
