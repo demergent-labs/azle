@@ -143,10 +143,8 @@ export function deploy(canisterName: string, argument?: string): Test[] {
 export function createSnakeCaseProxy(target: any) {
     return new Proxy(target, {
         get(obj, prop) {
-            return (...args: any[]) => {
-                const snakeCaseProp = camelToSnakeCase(prop as string);
-                return obj[snakeCaseProp].apply(obj, args);
-            };
+            const snakeCaseProp = camelToSnakeCase(prop as string);
+            return obj[snakeCaseProp];
         }
         // get(obj, prop) {
         //     if (typeof obj[prop] === 'function') {
