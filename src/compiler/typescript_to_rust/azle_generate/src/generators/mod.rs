@@ -1,7 +1,6 @@
 pub mod async_await_result_handler;
 pub mod boa_error_handlers;
 pub mod body;
-pub mod canister_methods;
 pub mod cross_canister_calls;
 pub mod func;
 pub mod header;

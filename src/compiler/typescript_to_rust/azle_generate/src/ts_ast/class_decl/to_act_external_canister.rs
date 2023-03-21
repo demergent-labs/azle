@@ -15,7 +15,7 @@ impl SourceMapped<'_, ClassDecl> {
         self.class
             .body
             .iter()
-            .fold(vec![], |mut acc, class_member| match class_member {
+            .fold(vec![], |acc, class_member| match class_member {
                 ClassMember::ClassProp(class_prop) => {
                     let class_prop_with_source_map = SourceMapped::new(class_prop, self.source_map);
 
@@ -23,10 +23,7 @@ impl SourceMapped<'_, ClassDecl> {
                         class_prop_with_source_map.to_act_external_canister_method();
 
                     match canister_method_result {
-                        Ok(canister_method) => {
-                            acc.push(canister_method);
-                            acc
-                        }
+                        Ok(canister_method) => vec![acc, vec![canister_method]].concat(),
                         Err(e) => panic!(
                             "{}",
                             self.build_invalid_class_prop_error_message(class_prop, e)

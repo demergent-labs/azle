@@ -1,0 +1,18 @@
+type State = record { counter : int32; heartbeatTick : int32 };
+service : () -> {
+  badObjectGuarded : () -> (bool) query;
+  callExpressionWithEmptyOptionsObject : () -> (bool) query;
+  callExpressionWithoutOptionsObject : () -> (bool) query;
+  customErrorGuarded : () -> (bool) query;
+  errorStringGuarded : () -> (bool) query;
+  getState : () -> (State) query;
+  identifierAnnotation : () -> (bool) query;
+  invalidReturnTypeGuarded : () -> (bool) query;
+  looselyGuarded : () -> (bool) query;
+  looselyGuardedWithGuardOptionKeyAsString : () -> (bool) query;
+  modifyStateGuarded : () -> (bool);
+  nonNullOkValueGuarded : () -> (bool) query;
+  nonStringErrValueGuarded : () -> (bool) query;
+  tightlyGuarded : () -> (bool) query;
+  unallowedMethod : () -> (bool);
+}
