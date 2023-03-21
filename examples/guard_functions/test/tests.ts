@@ -16,7 +16,7 @@ export function getTests(
                 const stateAfterRest = await guardFunctionsCanister.getState();
 
                 return {
-                    ok:
+                    Ok:
                         initialState.heartbeatTick < 15 &&
                         stateAfterRest.heartbeatTick === 15
                 };
@@ -28,7 +28,7 @@ export function getTests(
                 const result =
                     await guardFunctionsCanister.identifierAnnotation();
 
-                return { ok: result };
+                return { Ok: result };
             }
         },
         {
@@ -37,7 +37,7 @@ export function getTests(
                 const result =
                     await guardFunctionsCanister.callExpressionWithoutOptionsObject();
 
-                return { ok: result };
+                return { Ok: result };
             }
         },
         {
@@ -46,7 +46,7 @@ export function getTests(
                 const result =
                     await guardFunctionsCanister.callExpressionWithEmptyOptionsObject();
 
-                return { ok: result };
+                return { Ok: result };
             }
         },
         {
@@ -54,7 +54,7 @@ export function getTests(
             test: async () => {
                 const result = await guardFunctionsCanister.looselyGuarded();
 
-                return { ok: result };
+                return { Ok: result };
             }
         },
         {
@@ -63,7 +63,7 @@ export function getTests(
                 const result =
                     await guardFunctionsCanister.looselyGuardedWithGuardOptionKeyAsString();
 
-                return { ok: result };
+                return { Ok: result };
             }
         },
         {
@@ -75,7 +75,7 @@ export function getTests(
                 const stateAfter = await guardFunctionsCanister.getState();
 
                 return {
-                    ok:
+                    Ok:
                         stateBefore.counter === 0 &&
                         methodExecuted &&
                         stateAfter.counter === 1
@@ -89,11 +89,11 @@ export function getTests(
                     const result =
                         await guardFunctionsCanister.unallowedMethod();
                     return {
-                        err: 'Expected unallowedMethod function to throw'
+                        Err: 'Expected unallowedMethod function to throw'
                     };
                 } catch (error) {
                     return {
-                        ok: (error as AgentError).message.includes(
+                        Ok: (error as AgentError).message.includes(
                             'Code: 403 (Forbidden)'
                         )
                     };
@@ -107,11 +107,11 @@ export function getTests(
                     const result =
                         await guardFunctionsCanister.tightlyGuarded();
                     return {
-                        err: 'Expected tightlyGuarded function to throw'
+                        Err: 'Expected tightlyGuarded function to throw'
                     };
                 } catch (error) {
                     return {
-                        ok: (error as AgentError).message.includes(
+                        Ok: (error as AgentError).message.includes(
                             `"Message": "Execution halted by \\"allowNone\\" guard function"`
                         )
                     };
@@ -125,11 +125,11 @@ export function getTests(
                     const result =
                         await guardFunctionsCanister.errorStringGuarded();
                     return {
-                        err: 'Expected errorStringGuarded function to throw'
+                        Err: 'Expected errorStringGuarded function to throw'
                     };
                 } catch (error) {
                     return {
-                        ok: (error as AgentError).message.includes(
+                        Ok: (error as AgentError).message.includes(
                             `Uncaught Execution halted by \\"throwString\\" guard function`
                         )
                     };
@@ -143,13 +143,13 @@ export function getTests(
                     const result =
                         await guardFunctionsCanister.customErrorGuarded();
                     return {
-                        err: 'Expected customErrorGuarded function to throw'
+                        Err: 'Expected customErrorGuarded function to throw'
                     };
                 } catch (error) {
                     // TODO: I actually expect this to say "Uncaught CustomError: Execution..."
                     // Why it only says "Error" not "CustomError" I don't understand.
                     return {
-                        ok: (error as AgentError).message.includes(
+                        Ok: (error as AgentError).message.includes(
                             `Uncaught Error: Execution halted by \\"throwCustomError\\" guard function`
                         )
                     };
@@ -163,11 +163,11 @@ export function getTests(
                     const result =
                         await guardFunctionsCanister.invalidReturnTypeGuarded();
                     return {
-                        err: 'Expected invalidReturnTypeGuarded function to throw'
+                        Err: 'Expected invalidReturnTypeGuarded function to throw'
                     };
                 } catch (error) {
                     return {
-                        ok: (error as AgentError).message.includes(
+                        Ok: (error as AgentError).message.includes(
                             `TypeError: value is not a GuardResult`
                         )
                     };
@@ -181,11 +181,11 @@ export function getTests(
                     const result =
                         await guardFunctionsCanister.badObjectGuarded();
                     return {
-                        err: 'Expected badObjectGuarded function to throw'
+                        Err: 'Expected badObjectGuarded function to throw'
                     };
                 } catch (error) {
                     return {
-                        ok: (error as AgentError).message.includes(
+                        Ok: (error as AgentError).message.includes(
                             `TypeError: value is not a GuardResult`
                         )
                     };
@@ -199,11 +199,11 @@ export function getTests(
                     const result =
                         await guardFunctionsCanister.nonNullOkValueGuarded();
                     return {
-                        err: 'Expected nonNullOkValueGuarded function to throw'
+                        Err: 'Expected nonNullOkValueGuarded function to throw'
                     };
                 } catch (error) {
                     return {
-                        ok: (error as AgentError).message.includes(
+                        Ok: (error as AgentError).message.includes(
                             `TypeError: value is not null`
                         )
                     };
@@ -217,11 +217,11 @@ export function getTests(
                     const result =
                         await guardFunctionsCanister.nonStringErrValueGuarded();
                     return {
-                        err: 'Expected nonStringErrValueGuarded function to throw'
+                        Err: 'Expected nonStringErrValueGuarded function to throw'
                     };
                 } catch (error) {
                     return {
-                        ok: (error as AgentError).message.includes(
+                        Ok: (error as AgentError).message.includes(
                             `TypeError: value is not a string`
                         )
                     };
@@ -233,9 +233,9 @@ export function getTests(
             test: async () => {
                 try {
                     execSync('dfx deploy');
-                    return { err: "Guard function didn't prevent upgrades" };
+                    return { Err: "Guard function didn't prevent upgrades" };
                 } catch (error) {
-                    return { ok: true };
+                    return { Ok: true };
                 }
             }
         }
