@@ -1,13 +1,14 @@
 pub fn generate() -> proc_macro2::TokenStream {
+    // TODO: This really should be in generic.rs and should be a generic result handler...
     quote::quote! {
         impl CdkActTryFromVmValue<Result<(), String>, &mut boa_engine::Context> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Result<(), String>, CdkActTryFromVmValueError> {
                 match self.as_object() {
                     Some(js_object) => {
-                        match js_object.has_own_property("err", context) {
+                        match js_object.has_own_property("Err", context) {
                             Ok(has_err_value) => {
                                 if has_err_value {
-                                    match js_object.get("err", context) {
+                                    match js_object.get("Err", context) {
                                         Ok(err_value) => match err_value.try_from_vm_value(context) {
                                             Ok(err_string) => return Ok(Err(err_string)),
                                             Err(_) => return Err(CdkActTryFromVmValueError("value is not a string".to_string()))
@@ -18,10 +19,10 @@ pub fn generate() -> proc_macro2::TokenStream {
                             },
                             Err(err) => return Err(CdkActTryFromVmValueError(err.to_string()))
                         }
-                        match js_object.has_own_property("ok", context) {
+                        match js_object.has_own_property("Ok", context) {
                             Ok(has_ok_value) => {
                                 if has_ok_value {
-                                    match js_object.get("ok", context) {
+                                    match js_object.get("Ok", context) {
                                         Ok(ok_value) => {
                                             if ok_value.is_null() {
                                                 return Ok(Ok(()))
