@@ -14,10 +14,10 @@ type DefiniteCanisterSettings = record {
   memory_allocation : nat;
   compute_allocation : nat;
 };
-type ManualReply = variant { ok : CanisterStatusArgs; err : text };
-type ManualReply_1 = variant { ok : bool; err : text };
-type ManualReply_2 = variant { ok : CanisterStatusResult; err : text };
-type ManualReply_3 = variant { ok : vec nat8; err : text };
+type ManualReply = variant { Ok : CanisterStatusArgs; Err : text };
+type ManualReply_1 = variant { Ok : bool; Err : text };
+type ManualReply_2 = variant { Ok : CanisterStatusResult; Err : text };
+type ManualReply_3 = variant { Ok : vec nat8; Err : text };
 service : () -> {
   execute_create_canister : () -> (ManualReply);
   execute_delete_canister : (principal) -> (ManualReply_1);

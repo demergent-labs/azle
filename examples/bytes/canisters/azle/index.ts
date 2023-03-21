@@ -14,12 +14,12 @@ export function get_perf_result(): Opt<PerfResult> {
 
 $update;
 export function get_bytes(bytes: blob): blob {
-    const perf_start = ic.performance_counter(0);
-    const perf_end = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
+    const perf_end = ic.performanceCounter(0);
 
     perf_result = {
         wasm_body_only: perf_end - perf_start,
-        wasm_including_prelude: ic.performance_counter(0)
+        wasm_including_prelude: ic.performanceCounter(0)
     };
 
     return bytes;

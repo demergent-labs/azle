@@ -11,15 +11,15 @@ import {
 import { User } from '../types';
 
 type StableMap11InsertResult = Variant<{
-    ok: Opt<User>;
-    err: InsertError;
+    Ok: Opt<User>;
+    Err: InsertError;
 }>;
 
 let stable_map_11 = new StableBTreeMap<nat, User>(11, 100, 1_000);
 
 $query;
 export function stable_map_11_contains_key(key: nat): boolean {
-    return stable_map_11.contains_key(key);
+    return stable_map_11.containsKey(key);
 }
 
 $query;
@@ -37,7 +37,7 @@ export function stable_map_11_insert(
 
 $query;
 export function stable_map_11_is_empty(): boolean {
-    return stable_map_11.is_empty();
+    return stable_map_11.isEmpty();
 }
 
 $query;

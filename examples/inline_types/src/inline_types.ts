@@ -165,12 +165,12 @@ export function stable_map_insert(
         variant: Variant<{ var1: null; var2: TestVariant }>;
     }>
 ): Variant<{
-    ok: Opt<
+    Ok: Opt<
         Record<{
             variant: Variant<{ var1: null; var2: TestVariant }>;
         }>
     >;
-    err: InsertError;
+    Err: InsertError;
 }> {
     return stable_map.insert(key, value);
 }
@@ -193,11 +193,11 @@ export function stable_map_get(
 $update;
 export async function inline_record_return_type_as_external_canister_call(): Promise<
     Variant<{
-        ok: Record<{
+        Ok: Record<{
             prop1: string;
             prop2: string;
         }>;
-        err: string;
+        Err: string;
     }>
 > {
     return await self.inline_record_return_type().call();

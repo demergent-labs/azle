@@ -137,8 +137,8 @@ export function update_variant(): Manual<Gas> {
 
 $update;
 export function reply_raw(): Manual<RawReply> {
-    ic.reply_raw(
-        ic.candid_encode(
+    ic.replyRaw(
+        ic.candidEncode(
             '(record { "int" = 42; "text" = "text"; "bool" = true; "blob" = blob "Surprise!"; "variant" = variant { Medium } })'
         )
     );

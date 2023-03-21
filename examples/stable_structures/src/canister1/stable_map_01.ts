@@ -11,15 +11,15 @@ import {
 } from 'azle';
 
 type StableMap1InsertResult = Variant<{
-    ok: Opt<blob>;
-    err: InsertError;
+    Ok: Opt<blob>;
+    Err: InsertError;
 }>;
 
 let stable_map_1 = new StableBTreeMap<nat16, blob>(1, 100, 1_000);
 
 $query;
 export function stable_map_1_contains_key(key: nat16): boolean {
-    return stable_map_1.contains_key(key);
+    return stable_map_1.containsKey(key);
 }
 
 $query;
@@ -37,7 +37,7 @@ export function stable_map_1_insert(
 
 $query;
 export function stable_map_1_is_empty(): boolean {
-    return stable_map_1.is_empty();
+    return stable_map_1.isEmpty();
 }
 
 $query;

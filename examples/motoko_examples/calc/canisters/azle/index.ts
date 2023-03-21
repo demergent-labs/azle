@@ -16,7 +16,7 @@ export function get_perf_result(): Opt<PerfResult> {
 function record_performance(start: nat64, end: nat64): void {
     perf_result = {
         wasm_body_only: end - start,
-        wasm_including_prelude: ic.performance_counter(0)
+        wasm_including_prelude: ic.performanceCounter(0)
     };
 }
 //#endregion
@@ -25,11 +25,11 @@ let cell: int = 0n;
 
 $update;
 export function add(n: int): int {
-    const perf_start = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
 
     cell += n;
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
 
     record_performance(perf_start, perf_end);
 
@@ -38,11 +38,11 @@ export function add(n: int): int {
 
 $update;
 export function sub(n: int): int {
-    const perf_start = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
 
     cell -= n;
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
 
     record_performance(perf_start, perf_end);
 
@@ -51,11 +51,11 @@ export function sub(n: int): int {
 
 $update;
 export function mul(n: int): int {
-    const perf_start = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
 
     cell *= n;
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
 
     record_performance(perf_start, perf_end);
 
@@ -64,7 +64,7 @@ export function mul(n: int): int {
 
 $update;
 export function div(n: int): Opt<int> {
-    const perf_start = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
 
     let result: Opt<int>;
     if (n === 0n) {
@@ -74,7 +74,7 @@ export function div(n: int): Opt<int> {
         result = cell;
     }
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
 
     record_performance(perf_start, perf_end);
 
@@ -83,11 +83,11 @@ export function div(n: int): Opt<int> {
 
 $update;
 export function clearall(): void {
-    const perf_start = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
 
     cell = 0n;
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
 
     record_performance(perf_start, perf_end);
 }

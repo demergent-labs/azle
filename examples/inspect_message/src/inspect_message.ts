@@ -1,19 +1,19 @@
-import { ic, $inspect_message, $update } from 'azle';
+import { ic, $inspectMessage, $update } from 'azle';
 
-$inspect_message;
+$inspectMessage;
 export function inspect_message() {
     console.log('inspect_message called');
 
-    if (ic.method_name() === 'accessible') {
-        ic.accept_message();
+    if (ic.methodName() === 'accessible') {
+        ic.acceptMessage();
         return;
     }
 
-    if (ic.method_name() === 'inaccessible') {
+    if (ic.methodName() === 'inaccessible') {
         return;
     }
 
-    throw `Method "${ic.method_name()}" not allowed`;
+    throw `Method "${ic.methodName()}" not allowed`;
 }
 
 $update;

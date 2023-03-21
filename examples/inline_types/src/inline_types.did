@@ -4,8 +4,8 @@ type InsertError = variant {
 };
 type KeyTooLarge = record { max : nat32; given : nat32 };
 type ManualReply = variant {
-  ok : _InlineInlineRecordReturnTypeReturnType;
-  err : text;
+  Ok : _InlineInlineRecordReturnTypeReturnType;
+  Err : text;
 };
 type Reaction = variant { one; two; three : Test };
 type Test = record { id : text };
@@ -75,8 +75,8 @@ type _InlineStableMapGetReturnType = record {
   "variant" : _InlineStableMapGetKeyProp2;
 };
 type _InlineStableMapInsertReturnType = variant {
-  ok : opt _InlineStableMapInsertValue;
-  err : InsertError;
+  Ok : opt _InlineStableMapInsertValue;
+  Err : InsertError;
 };
 type _InlineStableMapInsertValue = record {
   "variant" : _InlineStableMapGetKeyProp2;

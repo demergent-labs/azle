@@ -39,7 +39,7 @@ function test_canister_functionality() {
                 );
 
                 if (!ok(result)) {
-                    return { err: result.err };
+                    return { Err: result.Err };
                 }
 
                 const block_reward = 5_000_000_000n;
@@ -47,7 +47,7 @@ function test_canister_functionality() {
                 const expected_balance = block_reward * blocks_mined_in_setup;
 
                 return {
-                    ok: result.ok === expected_balance
+                    Ok: result.Ok === expected_balance
                 };
             }
         },
@@ -59,13 +59,13 @@ function test_canister_functionality() {
                 );
 
                 if (!ok(result)) {
-                    return { err: result.err };
+                    return { Err: result.Err };
                 }
 
                 return {
-                    ok:
-                        result.ok.tip_height === 101 &&
-                        result.ok.utxos.length === 101
+                    Ok:
+                        result.Ok.tip_height === 101 &&
+                        result.Ok.utxos.length === 101
                 };
             }
         },
@@ -76,11 +76,11 @@ function test_canister_functionality() {
                     await bitcoin_canister.get_current_fee_percentiles();
 
                 if (!ok(result)) {
-                    return { err: result.err };
+                    return { Err: result.Err };
                 }
 
                 return {
-                    ok: result.ok.length === 0 // TODO: This should have entries
+                    Ok: result.Ok.length === 0 // TODO: This should have entries
                 };
             }
         },
@@ -98,7 +98,7 @@ function test_canister_functionality() {
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
@@ -111,8 +111,8 @@ function test_canister_functionality() {
                     bitcoin_cli.get_received_by_address(wallets.bob.p2wpkh, 0);
 
                 return {
-                    ok:
-                        result.ok === null &&
+                    Ok:
+                        result.Ok === null &&
                         balance_before_transaction === 0 &&
                         balance_after_transaction === 1
                 };

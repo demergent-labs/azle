@@ -11,13 +11,13 @@ import {
 import { cycles_canister } from '../cycles';
 
 type SendCyclesResult = Variant<{
-    ok: nat64;
-    err: string;
+    Ok: nat64;
+    Err: string;
 }>;
 
 type SendCyclesResult128 = Variant<{
-    ok: nat;
-    err: string;
+    Ok: nat;
+    Err: string;
 }>;
 
 // Reports the number of cycles returned from the Cycles canister
@@ -29,8 +29,8 @@ export async function send_cycles(): Promise<SendCyclesResult> {
         .call();
 
     return match(result, {
-        ok: () => ({ ok: ic.msg_cycles_refunded() }),
-        err: (err) => ({ err })
+        Ok: () => ({ Ok: ic.msgCyclesRefunded() }),
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -48,8 +48,8 @@ export async function send_cycles128(): Promise<SendCyclesResult128> {
         .call();
 
     return match(result, {
-        ok: () => ({ ok: ic.msg_cycles_refunded128() }),
-        err: (err) => ({ err })
+        Ok: () => ({ Ok: ic.msgCyclesRefunded128() }),
+        Err: (err) => ({ Err: err })
     });
 }
 
@@ -60,10 +60,10 @@ export function send_cycles128_notify(): NotifyResult {
 
 $query;
 export function get_canister_balance(): nat64 {
-    return ic.canister_balance();
+    return ic.canisterBalance();
 }
 
 $query;
 export function get_canister_balance128(): nat {
-    return ic.canister_balance128();
+    return ic.canisterBalance128();
 }

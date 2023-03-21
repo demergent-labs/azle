@@ -24,16 +24,16 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: JSON.stringify(result.err, null, 2)
+                        err: JSON.stringify(result.Err, null, 2)
                     };
                 }
 
-                const user = result.ok;
+                const user = result.Ok;
 
                 global_user = user;
 
                 return {
-                    ok:
+                    Ok:
                         user.username === 'lastmjs' &&
                         user.recording_ids.length === 0
                 };
@@ -50,16 +50,16 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: JSON.stringify(result.err, null, 2)
+                        err: JSON.stringify(result.Err, null, 2)
                     };
                 }
 
-                const recording = result.ok;
+                const recording = result.Ok;
 
                 global_recording = recording;
 
                 return {
-                    ok:
+                    Ok:
                         recording.audio.length === 5 &&
                         recording.name === 'First recording' &&
                         recording.user_id.toText() === global_user.id.toText()
@@ -75,7 +75,7 @@ export function get_tests(
                 global_user = user;
 
                 return {
-                    ok:
+                    Ok:
                         result.length === 1 &&
                         user.id.toText() === global_user.id.toText() &&
                         user.created_at === global_user.created_at &&
@@ -90,7 +90,7 @@ export function get_tests(
                 const recording = result[0];
 
                 return {
-                    ok:
+                    Ok:
                         result.length === 1 &&
                         recording.id.toText() ===
                             global_recording.id.toText() &&
@@ -116,7 +116,7 @@ export function get_tests(
                 }
 
                 return {
-                    ok:
+                    Ok:
                         result.length === 1 &&
                         user.id.toText() === global_user.id.toText() &&
                         user.created_at === global_user.created_at &&
@@ -143,7 +143,7 @@ export function get_tests(
                 }
 
                 return {
-                    ok:
+                    Ok:
                         result.length === 1 &&
                         recording.id.toText() ===
                             global_recording.id.toText() &&
@@ -164,8 +164,8 @@ export function get_tests(
 
                 if (!ok(delete_recording_result)) {
                     return {
-                        err: JSON.stringify(
-                            delete_recording_result.err,
+                        Err: JSON.stringify(
+                            delete_recording_result.Err,
                             null,
                             2
                         )
@@ -196,7 +196,7 @@ export function get_tests(
 
                 if (!ok(create_recording_result)) {
                     return {
-                        err: JSON.stringify(create_recording_result, null, 2)
+                        Err: JSON.stringify(create_recording_result, null, 2)
                     };
                 }
 
@@ -210,7 +210,7 @@ export function get_tests(
 
                 if (!ok(delete_user_result)) {
                     return {
-                        err: JSON.stringify(delete_user_result, null, 2)
+                        Err: JSON.stringify(delete_user_result, null, 2)
                     };
                 }
 
@@ -220,7 +220,7 @@ export function get_tests(
                     await audio_recorder_canister.read_recordings();
 
                 return {
-                    ok:
+                    Ok:
                         read_users_before_result[0].recording_ids.length ===
                             1 &&
                         read_recordings_before_result[0].user_id.toText() ===

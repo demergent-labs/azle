@@ -2,22 +2,22 @@ import { ic, match, Principal, RejectionCode, $update, Variant } from 'azle';
 
 $update;
 export function send_notification(): Variant<{
-    ok: boolean;
-    err: RejectionCode;
+    Ok: boolean;
+    Err: RejectionCode;
 }> {
-    const result = ic.notify_raw(
+    const result = ic.notifyRaw(
         Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'),
         'receive_notification',
-        Uint8Array.from(ic.candid_encode('()')),
+        Uint8Array.from(ic.candidEncode('()')),
         0n
     );
 
     return match(result, {
-        ok: () => ({
-            ok: true
+        Ok: () => ({
+            Ok: true
         }),
-        err: (err) => ({
-            err
+        Err: (err) => ({
+            Err: err
         })
     });
 }

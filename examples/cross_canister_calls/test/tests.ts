@@ -15,12 +15,12 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok === 100n
+                    Ok: result.Ok === 100n
                 };
             }
         },
@@ -33,15 +33,15 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok:
-                        result.ok.length === 1 &&
-                        result.ok[0].id === '0' &&
-                        result.ok[0].balance === 100n
+                    Ok:
+                        result.Ok.length === 1 &&
+                        result.Ok[0].id === '0' &&
+                        result.Ok[0].balance === 100n
                 };
             }
         },
@@ -52,12 +52,12 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok === 0n
+                    Ok: result.Ok === 0n
                 };
             }
         },
@@ -70,12 +70,12 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok.length === 0
+                    Ok: result.Ok.length === 0
                 };
             }
         },
@@ -86,15 +86,15 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok:
-                        result.ok.length === 1 &&
-                        result.ok[0].id === '0' &&
-                        result.ok[0].balance === 100n
+                    Ok:
+                        result.Ok.length === 1 &&
+                        result.Ok[0].id === '0' &&
+                        result.Ok[0].balance === 100n
                 };
             }
         },
@@ -105,12 +105,12 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok === 34n
+                    Ok: result.Ok === 34n
                 };
             }
         },
@@ -121,12 +121,12 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok === 66n
+                    Ok: result.Ok === 66n
                 };
             }
         },
@@ -139,15 +139,15 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok:
-                        result.ok.length === 1 &&
-                        result.ok[0].id === '0' &&
-                        result.ok[0].balance === 66n
+                    Ok:
+                        result.Ok.length === 1 &&
+                        result.Ok[0].id === '0' &&
+                        result.Ok[0].balance === 66n
                 };
             }
         },
@@ -158,12 +158,12 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok === 34n
+                    Ok: result.Ok === 34n
                 };
             }
         },
@@ -176,15 +176,15 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok:
-                        result.ok.length === 1 &&
-                        result.ok[0].id === '1' &&
-                        result.ok[0].balance === 34n
+                    Ok:
+                        result.Ok.length === 1 &&
+                        result.Ok[0].id === '1' &&
+                        result.Ok[0].balance === 34n
                 };
             }
         },
@@ -195,17 +195,17 @@ export function get_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok:
-                        result.ok.length === 2 &&
-                        result.ok[0].id === '0' &&
-                        result.ok[0].balance === 66n &&
-                        result.ok[1].id === '1' &&
-                        result.ok[1].balance === 34n
+                    Ok:
+                        result.Ok.length === 2 &&
+                        result.Ok[0].id === '0' &&
+                        result.Ok[0].balance === 66n &&
+                        result.Ok[1].id === '1' &&
+                        result.Ok[1].balance === 34n
                 };
             }
         },
@@ -215,9 +215,9 @@ export function get_tests(
                 const result = await canister1.trap();
 
                 return {
-                    ok:
-                        'err' in result &&
-                        result.err ===
+                    Ok:
+                        'Err' in result &&
+                        result.Err ===
                             'Rejection code 5, IC0503: Canister ryjl3-tyaaa-aaaaa-aaaba-cai trapped explicitly: hahahaha'
                 };
             }
@@ -228,7 +228,7 @@ export function get_tests(
                 const result = await canister2.get_notification();
 
                 return {
-                    ok: result === ''
+                    Ok: result === ''
                 };
             }
         },
@@ -238,7 +238,7 @@ export function get_tests(
                 const result = await canister1.send_notification();
 
                 return {
-                    ok: 'ok' in result && result.ok === null
+                    Ok: 'Ok' in result && result.Ok === null
                 };
             }
         },
@@ -248,7 +248,7 @@ export function get_tests(
                 const result = await canister2.get_notification();
 
                 return {
-                    ok: result === 'This is the notification'
+                    Ok: result === 'This is the notification'
                 };
             }
         }

@@ -1,7 +1,7 @@
 import {
     $heartbeat,
-    $inspect_message,
-    $pre_upgrade,
+    $inspectMessage,
+    $preUpgrade,
     $query,
     $update,
     ic
@@ -28,15 +28,15 @@ export function getState(): State {
 }
 
 // #region Guarded functions are called
-$inspect_message({ guard: allowModifyStateGuarded });
+$inspectMessage({ guard: allowModifyStateGuarded });
 export function inspectMessage(): void {
     console.log('inspectMessage called');
 
-    if (ic.method_name() === 'modifyStateGuarded') {
-        console.log(`Method ${ic.method_name()} allowed by inspectMessage`);
-        ic.accept_message();
+    if (ic.methodName() === 'modifyStateGuarded') {
+        console.log(`Method ${ic.methodName()} allowed by inspectMessage`);
+        ic.acceptMessage();
     } else {
-        console.log(`Method ${ic.method_name()} rejected by inspectMessage`);
+        console.log(`Method ${ic.methodName()} rejected by inspectMessage`);
     }
 }
 
@@ -45,7 +45,7 @@ export function heartbeat() {
     console.log('heartbeat called');
 }
 
-$pre_upgrade({ guard: preventUpgrades });
+$preUpgrade({ guard: preventUpgrades });
 export function preUpgrade() {
     console.log('preUpgrade called');
 }
@@ -74,7 +74,7 @@ export function looselyGuarded(): boolean {
     return true;
 }
 
-$query({ "guard": allowAll });
+$query({ guard: allowAll });
 export function looselyGuardedWithGuardOptionKeyAsString(): boolean {
     console.log('looselyGuardedWithGuardOptionKeyAsString called');
     return true;

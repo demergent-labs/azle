@@ -8,11 +8,11 @@ export async function heartbeat(): Promise<void> {
     const randomness_result = await management_canister.raw_rand().call();
 
     match(randomness_result, {
-        ok: (randomness) => {
+        Ok: (randomness) => {
             initialized = randomness;
             console.log('heartbeat initialized', randomness.length);
         },
-        err: () => {}
+        Err: () => {}
     });
 }
 

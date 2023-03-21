@@ -36,12 +36,12 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok.e8s === 100_000_000_000n
+                    Ok: result.Ok.e8s === 100_000_000_000n
                 };
             }
         },
@@ -52,12 +52,12 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok.transfer_fee.e8s === 10_000n
+                    Ok: result.Ok.transfer_fee.e8s === 10_000n
                 };
             }
         },
@@ -91,16 +91,16 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
-                const transfer_1 = result.ok.blocks[0].transaction.operation[0];
-                const transfer_2 = result.ok.blocks[1].transaction.operation[0];
-                const transfer_3 = result.ok.blocks[2].transaction.operation[0];
+                const transfer_1 = result.Ok.blocks[0].transaction.operation[0];
+                const transfer_2 = result.Ok.blocks[1].transaction.operation[0];
+                const transfer_3 = result.Ok.blocks[2].transaction.operation[0];
 
                 return {
-                    ok:
+                    Ok:
                         transfer_1 !== undefined &&
                         'Mint' in transfer_1 &&
                         transfer_1.Mint.amount.e8s === 100_000_000_000n &&
@@ -120,12 +120,12 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok === 'ICP'
+                    Ok: result.Ok === 'ICP'
                 };
             }
         },
@@ -136,12 +136,12 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok === 'Internet Computer'
+                    Ok: result.Ok === 'Internet Computer'
                 };
             }
         },
@@ -152,12 +152,12 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok === 8
+                    Ok: result.Ok === 8
                 };
             }
         },
@@ -168,12 +168,12 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok.archives.length === 0
+                    Ok: result.Ok.archives.length === 0
                 };
             }
         },
@@ -195,12 +195,12 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: 'Ok' in result.ok && result.ok.Ok === 3n
+                    Ok: 'Ok' in result.Ok && result.Ok.Ok === 3n
                 };
             }
         },
@@ -219,12 +219,12 @@ function get_simple_tests(ledger_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok: result.ok.e8s === 99_999_970_000n
+                    Ok: result.Ok.e8s === 99_999_970_000n
                 };
             }
         }
@@ -272,15 +272,15 @@ function get_transfer_error_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok:
-                        'Err' in result.ok &&
-                        'BadFee' in result.ok.Err &&
-                        result.ok.Err.BadFee.expected_fee.e8s === 10_000n
+                    Ok:
+                        'Err' in result.Ok &&
+                        'BadFee' in result.Ok.Err &&
+                        result.Ok.Err.BadFee.expected_fee.e8s === 10_000n
                 };
             }
         },
@@ -302,15 +302,15 @@ function get_transfer_error_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok:
-                        'Err' in result.ok &&
-                        'InsufficientFunds' in result.ok.Err &&
-                        result.ok.Err.InsufficientFunds.balance.e8s === 0n
+                    Ok:
+                        'Err' in result.Ok &&
+                        'InsufficientFunds' in result.Ok.Err &&
+                        result.Ok.Err.InsufficientFunds.balance.e8s === 0n
                 };
             }
         },
@@ -354,15 +354,15 @@ function get_transfer_error_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok:
-                        'Err' in result.ok &&
-                        'TxTooOld' in result.ok.Err &&
-                        result.ok.Err.TxTooOld.allowed_window_nanos ===
+                    Ok:
+                        'Err' in result.Ok &&
+                        'TxTooOld' in result.Ok.Err &&
+                        result.Ok.Err.TxTooOld.allowed_window_nanos ===
                             86_400_000_000_000n
                 };
             }
@@ -388,14 +388,14 @@ function get_transfer_error_tests(
 
                 if (!ok(result)) {
                     return {
-                        err: result.err
+                        Err: result.Err
                     };
                 }
 
                 return {
-                    ok:
-                        'Err' in result.ok &&
-                        'TxCreatedInFuture' in result.ok.Err
+                    Ok:
+                        'Err' in result.Ok &&
+                        'TxCreatedInFuture' in result.Ok.Err
                 };
             }
         }
@@ -404,7 +404,7 @@ function get_transfer_error_tests(
         //     name: 'TxDuplicate',
         //     test: async () => {
         //         return {
-        //             ok: false
+        //             Ok: false
         //         };
         //     }
         // }
@@ -428,7 +428,7 @@ function get_address_from_principal_tests(
                     .trim();
 
                 return {
-                    ok: result === address
+                    Ok: result === address
                 };
             }
         },
@@ -445,7 +445,7 @@ function get_address_from_principal_tests(
                     .trim();
 
                 return {
-                    ok: result === address
+                    Ok: result === address
                 };
             }
         },
@@ -462,7 +462,7 @@ function get_address_from_principal_tests(
                     .trim();
 
                 return {
-                    ok: result === address
+                    Ok: result === address
                 };
             }
         },
@@ -479,7 +479,7 @@ function get_address_from_principal_tests(
                     .trim();
 
                 return {
-                    ok: result === address
+                    Ok: result === address
                 };
             }
         },
@@ -496,7 +496,7 @@ function get_address_from_principal_tests(
                     .trim();
 
                 return {
-                    ok: result === address
+                    Ok: result === address
                 };
             }
         },
@@ -513,7 +513,7 @@ function get_address_from_principal_tests(
                     .trim();
 
                 return {
-                    ok: result === address
+                    Ok: result === address
                 };
             }
         },
@@ -532,7 +532,7 @@ function get_address_from_principal_tests(
                     .trim();
 
                 return {
-                    ok: result === address
+                    Ok: result === address
                 };
             }
         },
@@ -551,7 +551,7 @@ function get_address_from_principal_tests(
                     .trim();
 
                 return {
-                    ok: result === address
+                    Ok: result === address
                 };
             }
         },
@@ -570,7 +570,7 @@ function get_address_from_principal_tests(
                     .trim();
 
                 return {
-                    ok: result === address
+                    Ok: result === address
                 };
             }
         },
@@ -589,7 +589,7 @@ function get_address_from_principal_tests(
                     .trim();
 
                 return {
-                    ok: result === address
+                    Ok: result === address
                 };
             }
         }

@@ -1,13 +1,13 @@
 import { CanisterResult, ExternalCanister, nat, query, Variant } from 'azle';
 
 export type StringQueryResult = Variant<{
-    ok: string;
-    err: string;
+    Ok: string;
+    Err: string;
 }>;
 
 export type NatQueryResult = Variant<{
-    ok: nat;
-    err: string;
+    Ok: nat;
+    Err: string;
 }>;
 
 export class Canister1 extends ExternalCanister {

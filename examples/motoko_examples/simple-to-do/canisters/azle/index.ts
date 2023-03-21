@@ -16,7 +16,7 @@ export function get_perf_result(): Opt<PerfResult> {
 function record_performance(start: nat64, end: nat64): void {
     perf_result = {
         wasm_body_only: end - start,
-        wasm_including_prelude: ic.performance_counter(0)
+        wasm_including_prelude: ic.performanceCounter(0)
     };
 }
 //#endregion
@@ -37,7 +37,7 @@ export function get_todos(): ToDo[] {
 // Returns the ID that was given to the ToDo item
 $update;
 export function add_todo(description: string): nat {
-    const perf_start = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
 
     const id = nextId;
     todos.set(id, {
@@ -46,7 +46,7 @@ export function add_todo(description: string): nat {
     });
     nextId += 1n;
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
 
     record_performance(perf_start, perf_end);
 
@@ -55,7 +55,7 @@ export function add_todo(description: string): nat {
 
 $update;
 export function complete_todo(id: nat): void {
-    const perf_start = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
 
     let todo = todos.get(id);
 
@@ -65,7 +65,7 @@ export function complete_todo(id: nat): void {
             completed: true
         });
     }
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
 
     record_performance(perf_start, perf_end);
 }
@@ -84,13 +84,13 @@ export function show_todos(): string {
 
 $update;
 export function clear_completed(): void {
-    const perf_start = ic.performance_counter(0);
+    const perf_start = ic.performanceCounter(0);
 
     // TODO why doesn't this work? https://github.com/demergent-labs/azle/issues/574
     // todos = new Map([...todos].filter(([key, value]) => !value.completed));
     todos = new Map([...todos].filter((value) => !value[1].completed));
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
 
     record_performance(perf_start, perf_end);
 }

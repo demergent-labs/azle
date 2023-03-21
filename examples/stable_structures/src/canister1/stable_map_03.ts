@@ -11,15 +11,15 @@ import {
 import { Reaction } from '../types';
 
 type StableMap3InsertResult = Variant<{
-    ok: Opt<int>;
-    err: InsertError;
+    Ok: Opt<int>;
+    Err: InsertError;
 }>;
 
 let stable_map_3 = new StableBTreeMap<Reaction, int>(3, 100, 1_000);
 
 $query;
 export function stable_map_3_contains_key(key: Reaction): boolean {
-    return stable_map_3.contains_key(key);
+    return stable_map_3.containsKey(key);
 }
 
 $query;
@@ -37,7 +37,7 @@ export function stable_map_3_insert(
 
 $query;
 export function stable_map_3_is_empty(): boolean {
-    return stable_map_3.is_empty();
+    return stable_map_3.isEmpty();
 }
 
 $query;

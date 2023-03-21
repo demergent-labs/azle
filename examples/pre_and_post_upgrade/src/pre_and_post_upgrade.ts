@@ -1,8 +1,8 @@
 import {
     $init,
     nat64,
-    $post_upgrade,
-    $pre_upgrade,
+    $postUpgrade,
+    $preUpgrade,
     $query,
     Record,
     StableBTreeMap,
@@ -27,7 +27,7 @@ export function init() {
     stable_storage.insert('entries', []);
 }
 
-$pre_upgrade;
+$preUpgrade;
 export function pre_upgrade() {
     console.log('pre_upgrade');
 
@@ -42,7 +42,7 @@ export function pre_upgrade() {
     );
 }
 
-$post_upgrade;
+$postUpgrade;
 export function post_upgrade() {
     console.log('post_upgrade');
 

@@ -1,3 +1,4 @@
+import { Variant } from '../index';
 import { execSync } from 'child_process';
 
 export type Test = {
@@ -8,19 +9,20 @@ export type Test = {
     test?: () => Promise<AzleResult<boolean, string>>;
 };
 
-export type Variant<T> = Partial<T>;
+// export type Variant<T> = Partial<T>;
 
 export type AzleResult<T, E> = Variant<{
-    ok: T;
-    err: E;
+    Ok: T;
+    Err: E;
 }>;
 
 export type Ok<T> = {
-    ok: T;
+    Ok: T;
 };
 
+// TODO let's get rid of this function in all tests and use match instead
 export function ok<T, E>(azle_result: AzleResult<T, E>): azle_result is Ok<T> {
-    if (azle_result.err === undefined) {
+    if (azle_result.Err === undefined) {
         return true;
     } else {
         return false;
@@ -64,18 +66,18 @@ export async function run_tests(tests: Test[]) {
                 test.test !== undefined
                     ? await test.test()
                     : {
-                          err: 'test is not defined'
+                          Err: 'test is not defined'
                       };
 
             if (!ok(result)) {
                 console.log('\x1b[31m', `test: ${test.name} failed`);
-                console.log('\x1b[31m', `${result.err}`);
+                console.log('\x1b[31m', `${result.Err}`);
                 console.log('\x1b[0m');
 
                 process.exit(1);
             }
 
-            if (result.ok === false) {
+            if (result.Ok === false) {
                 console.log('\x1b[31m', `test: ${test.name} failed`);
                 console.log('\x1b[0m');
 

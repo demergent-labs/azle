@@ -2,28 +2,28 @@ import { nat64, NotifyResult, Opt, Principal, $update, Variant } from 'azle';
 import { Account, AccountArgs, Canister2 } from '../canister2/types';
 
 type TransferResult = Variant<{
-    ok: nat64;
-    err: string;
+    Ok: nat64;
+    Err: string;
 }>;
 
 type BalanceResult = Variant<{
-    ok: nat64;
-    err: string;
+    Ok: nat64;
+    Err: string;
 }>;
 
 type AccountResult = Variant<{
-    ok: Opt<Account>;
-    err: string;
+    Ok: Opt<Account>;
+    Err: string;
 }>;
 
 type AccountsResult = Variant<{
-    ok: Account[];
-    err: string;
+    Ok: Account[];
+    Err: string;
 }>;
 
 type TrapResult = Variant<{
-    ok: string;
-    err: string;
+    Ok: string;
+    Err: string;
 }>;
 
 const canister2 = new Canister2(
