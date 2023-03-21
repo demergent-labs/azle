@@ -8,6 +8,48 @@ export function getTests(
 ): Test[] {
     return [
         {
+            name: 'getString',
+            test: async () => {
+                const result = await primitiveTypesCanister.getString();
+
+                return {
+                    Ok: result === 'string'
+                };
+            }
+        },
+        {
+            name: 'printString',
+            test: async () => {
+                const result = await primitiveTypesCanister.printString(
+                    'string'
+                );
+
+                return {
+                    Ok: result === 'string'
+                };
+            }
+        },
+        {
+            name: 'getText',
+            test: async () => {
+                const result = await primitiveTypesCanister.getText();
+
+                return {
+                    Ok: result === 'text'
+                };
+            }
+        },
+        {
+            name: 'printText',
+            test: async () => {
+                const result = await primitiveTypesCanister.printText('text');
+
+                return {
+                    Ok: result === 'text'
+                };
+            }
+        },
+        {
             name: 'getInt',
             test: async () => {
                 const result = await primitiveTypesCanister.getInt();

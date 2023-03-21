@@ -32,6 +32,7 @@ impl GetDependencies for AzleTypeRef<'_> {
             "Principal" => HashSet::new(),
             "empty" => HashSet::new(),
             "reserved" => HashSet::new(),
+            "text" => HashSet::new(),
             "Opt" => self
                 .get_enclosed_azle_type()
                 .get_dependent_types(type_alias_lookup, found_type_names),

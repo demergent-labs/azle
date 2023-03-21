@@ -144,6 +144,8 @@ export type TimerId = Alias<nat64>; // TODO: Consider modeling this after the co
  */
 export type Duration = Alias<nat64>; // TODO: Consider modeling this after the corresponding struct in Rust
 
+export type text = string;
+
 export type int = bigint;
 export type int64 = bigint;
 export type int32 = number;
