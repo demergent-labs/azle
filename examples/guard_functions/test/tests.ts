@@ -1,124 +1,173 @@
+import { execSync } from 'child_process';
 import { ActorSubclass } from '@dfinity/agent';
 import { AgentError } from '@dfinity/agent/lib/cjs/errors';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/guard_functions/guard_functions.did';
 
-export function get_tests(
-    guard_functions_canister: ActorSubclass<_SERVICE>
+export function getTests(
+    guardFunctionsCanister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
         {
-            name: 'identifier_annotation',
+            name: 'heartbeat guard',
+            test: async () => {
+                const initialState = await guardFunctionsCanister.getState();
+                await sleep(8000);
+                const stateAfterRest = await guardFunctionsCanister.getState();
+
+                return {
+                    Ok:
+                        initialState.heartbeatTick < 15 &&
+                        stateAfterRest.heartbeatTick === 15
+                };
+            }
+        },
+        {
+            name: 'identifierAnnotation',
             test: async () => {
                 const result =
-                    await guard_functions_canister.identifier_annotation();
+                    await guardFunctionsCanister.identifierAnnotation();
 
-                return { ok: result };
+                return { Ok: result };
             }
         },
         {
-            name: 'call_expression_without_options_object',
+            name: 'callExpressionWithoutOptionsObject',
             test: async () => {
                 const result =
-                    await guard_functions_canister.call_expression_without_options_object();
+                    await guardFunctionsCanister.callExpressionWithoutOptionsObject();
 
-                return { ok: result };
+                return { Ok: result };
             }
         },
         {
-            name: 'call_expression_with_empty_options_object',
+            name: 'callExpressionWithEmptyOptionsObject',
             test: async () => {
                 const result =
-                    await guard_functions_canister.call_expression_with_empty_options_object();
+                    await guardFunctionsCanister.callExpressionWithEmptyOptionsObject();
 
-                return { ok: result };
+                return { Ok: result };
             }
         },
         {
-            name: 'loosely_guarded',
+            name: 'looselyGuarded',
             test: async () => {
-                const result = await guard_functions_canister.loosely_guarded();
+                const result = await guardFunctionsCanister.looselyGuarded();
 
-                return { ok: result };
+                return { Ok: result };
             }
         },
         {
-            name: 'loosely_guarded_with_guard_option_key_as_string',
+            name: 'looselyGuardedWithGuardOptionKeyAsString',
             test: async () => {
                 const result =
-                    await guard_functions_canister.loosely_guarded_with_guard_option_key_as_string();
+                    await guardFunctionsCanister.looselyGuardedWithGuardOptionKeyAsString();
 
-                return { ok: result };
+                return { Ok: result };
             }
         },
         {
-            name: 'tightly_guarded',
+            name: 'modifyStateGuarded',
+            test: async () => {
+                const stateBefore = await guardFunctionsCanister.getState();
+                const methodExecuted =
+                    await guardFunctionsCanister.modifyStateGuarded();
+                const stateAfter = await guardFunctionsCanister.getState();
+
+                return {
+                    Ok:
+                        stateBefore.counter === 0 &&
+                        methodExecuted &&
+                        stateAfter.counter === 1
+                };
+            }
+        },
+        {
+            name: 'unallowedMethod',
             test: async () => {
                 try {
                     const result =
-                        await guard_functions_canister.tightly_guarded();
+                        await guardFunctionsCanister.unallowedMethod();
                     return {
-                        err: 'Expected tightly_guarded function to throw'
+                        Err: 'Expected unallowedMethod function to throw'
                     };
                 } catch (error) {
                     return {
-                        ok: (error as AgentError).message.includes(
-                            `"Message": "Execution halted by \\"allow_none\\" guard function"`
+                        Ok: (error as AgentError).message.includes(
+                            'Code: 403 (Forbidden)'
                         )
                     };
                 }
             }
         },
         {
-            name: 'error_string_guarded',
+            name: 'tightlyGuarded',
             test: async () => {
                 try {
                     const result =
-                        await guard_functions_canister.error_string_guarded();
+                        await guardFunctionsCanister.tightlyGuarded();
                     return {
-                        err: 'Expected error_string_guarded function to throw'
+                        Err: 'Expected tightlyGuarded function to throw'
                     };
                 } catch (error) {
                     return {
-                        ok: (error as AgentError).message.includes(
-                            `Uncaught Execution halted by \\"throw_string\\" guard function`
+                        Ok: (error as AgentError).message.includes(
+                            `"Message": "Execution halted by \\"allowNone\\" guard function"`
                         )
                     };
                 }
             }
         },
         {
-            name: 'custom_error_guarded',
+            name: 'errorStringGuarded',
             test: async () => {
                 try {
                     const result =
-                        await guard_functions_canister.custom_error_guarded();
+                        await guardFunctionsCanister.errorStringGuarded();
                     return {
-                        err: 'Expected custom_error_guarded function to throw'
+                        Err: 'Expected errorStringGuarded function to throw'
+                    };
+                } catch (error) {
+                    return {
+                        Ok: (error as AgentError).message.includes(
+                            `Uncaught Execution halted by \\"throwString\\" guard function`
+                        )
+                    };
+                }
+            }
+        },
+        {
+            name: 'customErrorGuarded',
+            test: async () => {
+                try {
+                    const result =
+                        await guardFunctionsCanister.customErrorGuarded();
+                    return {
+                        Err: 'Expected customErrorGuarded function to throw'
                     };
                 } catch (error) {
                     // TODO: I actually expect this to say "Uncaught CustomError: Execution..."
                     // Why it only says "Error" not "CustomError" I don't understand.
                     return {
-                        ok: (error as AgentError).message.includes(
-                            `Uncaught Error: Execution halted by \\"throw_custom_error\\" guard function`
+                        Ok: (error as AgentError).message.includes(
+                            `Uncaught Error: Execution halted by \\"throwCustomError\\" guard function`
                         )
                     };
                 }
             }
         },
         {
-            name: 'invalid_return_type_guarded',
+            name: 'invalidReturnTypeGuarded',
             test: async () => {
                 try {
                     const result =
-                        await guard_functions_canister.invalid_return_type_guarded();
+                        await guardFunctionsCanister.invalidReturnTypeGuarded();
                     return {
-                        err: 'Expected invalid_return_type_guarded function to throw'
+                        Err: 'Expected invalidReturnTypeGuarded function to throw'
                     };
                 } catch (error) {
                     return {
-                        ok: (error as AgentError).message.includes(
+                        Ok: (error as AgentError).message.includes(
                             `TypeError: value is not a GuardResult`
                         )
                     };
@@ -126,17 +175,17 @@ export function get_tests(
             }
         },
         {
-            name: 'bad_object_guarded',
+            name: 'badObjectGuarded',
             test: async () => {
                 try {
                     const result =
-                        await guard_functions_canister.bad_object_guarded();
+                        await guardFunctionsCanister.badObjectGuarded();
                     return {
-                        err: 'Expected bad_object_guarded function to throw'
+                        Err: 'Expected badObjectGuarded function to throw'
                     };
                 } catch (error) {
                     return {
-                        ok: (error as AgentError).message.includes(
+                        Ok: (error as AgentError).message.includes(
                             `TypeError: value is not a GuardResult`
                         )
                     };
@@ -144,17 +193,17 @@ export function get_tests(
             }
         },
         {
-            name: 'non_null_ok_value_guarded',
+            name: 'nonNullOkValueGuarded',
             test: async () => {
                 try {
                     const result =
-                        await guard_functions_canister.non_null_ok_value_guarded();
+                        await guardFunctionsCanister.nonNullOkValueGuarded();
                     return {
-                        err: 'Expected non_null_ok_value_guarded function to throw'
+                        Err: 'Expected nonNullOkValueGuarded function to throw'
                     };
                 } catch (error) {
                     return {
-                        ok: (error as AgentError).message.includes(
+                        Ok: (error as AgentError).message.includes(
                             `TypeError: value is not null`
                         )
                     };
@@ -162,22 +211,37 @@ export function get_tests(
             }
         },
         {
-            name: 'non_string_err_value_guarded',
+            name: 'nonStringErrValueGuarded',
             test: async () => {
                 try {
                     const result =
-                        await guard_functions_canister.non_string_err_value_guarded();
+                        await guardFunctionsCanister.nonStringErrValueGuarded();
                     return {
-                        err: 'Expected non_string_err_value_guarded function to throw'
+                        Err: 'Expected nonStringErrValueGuarded function to throw'
                     };
                 } catch (error) {
                     return {
-                        ok: (error as AgentError).message.includes(
+                        Ok: (error as AgentError).message.includes(
                             `TypeError: value is not a string`
                         )
                     };
                 }
             }
+        },
+        {
+            name: 'preventUpgrades',
+            test: async () => {
+                try {
+                    execSync('dfx deploy');
+                    return { Err: "Guard function didn't prevent upgrades" };
+                } catch (error) {
+                    return { Ok: true };
+                }
+            }
         }
     ];
+}
+
+function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
