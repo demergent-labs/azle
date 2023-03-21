@@ -139,3 +139,27 @@ export function deploy(canisterName: string, argument?: string): Test[] {
         }
     ];
 }
+
+export function createSnakeCaseProxy(target: any) {
+    return new Proxy(target, {
+        get(obj, prop) {
+            return (...args: any[]) => {
+                const snakeCaseProp = camelToSnakeCase(prop as string);
+                return obj[snakeCaseProp].apply(obj, args);
+            };
+        }
+        // get(obj, prop) {
+        //     if (typeof obj[prop] === 'function') {
+        //         return (...args: any[]) => {
+        //             const snakeCaseProp = camelToSnakeCase(prop as string);
+        //             return obj[snakeCaseProp].apply(obj, args);
+        //         };
+        //     }
+        //     return obj[prop];
+        // }
+    });
+}
+
+function camelToSnakeCase(str: string) {
+    return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+}
