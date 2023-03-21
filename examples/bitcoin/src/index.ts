@@ -1,4 +1,4 @@
-import { blob, $update, Variant } from 'azle';
+import { blob, match, $update, Variant } from 'azle';
 import {
     BitcoinNetwork,
     GetUtxosResult,
@@ -63,7 +63,7 @@ export async function getUtxos(address: string): Promise<
 $update;
 export async function sendTransaction(transaction: blob): Promise<
     Variant<{
-        Ok: null;
+        Ok: boolean;
         Err: string;
     }>
 > {
@@ -71,11 +71,16 @@ export async function sendTransaction(transaction: blob): Promise<
         BITCOIN_BASE_TRANSACTION_COST +
         BigInt(transaction.length) * BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;
 
-    return await managementCanister
+    const canisterResult = await managementCanister
         .bitcoin_send_transaction({
             transaction,
             network: BitcoinNetwork.Regtest
         })
         .cycles(transactionFee)
         .call();
+
+    return match(canisterResult, {
+        Ok: () => ({ Ok: true }),
+        Err: (err) => ({ Err: err })
+    });
 }

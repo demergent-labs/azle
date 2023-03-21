@@ -241,7 +241,7 @@ export class Management extends ExternalCanister {
     @update
     bitcoin_send_transaction: (
         args: SendTransactionArgs
-    ) => CanisterResult<null>;
+    ) => CanisterResult<void>;
 
     @update
     create_canister: (

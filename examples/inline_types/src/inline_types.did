@@ -17,14 +17,13 @@ type _InlineComplexRecord = record {
   "opt" : opt _InlineComplexRecordOpt;
   "vec" : vec _InlineComplexRecordOpt;
   primitive : text;
-  "func" : func () -> (
-      record {
-        prop1 : text;
-        "variant" : _InlineComplexRecordFuncReturnTypeVariant;
-      },
-    ) query;
+  "func" : func () -> (_InlineComplexRecordFuncReturnType) query;
   "variant" : _InlineComplexRecordVariant;
   "record" : _InlineComplexRecordRecord;
+};
+type _InlineComplexRecordFuncReturnType = record {
+  prop1 : text;
+  "variant" : _InlineComplexRecordFuncReturnTypeVariant;
 };
 type _InlineComplexRecordFuncReturnTypeVariant = variant {
   v1;
@@ -95,12 +94,7 @@ service : () -> {
           vec _InlineComplexRecordOpt,
           _InlineComplexRecordRecord,
           _InlineComplexRecordVariant,
-          func () -> (
-              record {
-                prop1 : text;
-                "variant" : _InlineComplexRecordFuncReturnTypeVariant;
-              },
-            ) query,
+          func () -> (_InlineComplexRecordFuncReturnType) query,
         ) -> () query,
     ) -> (
       func (
@@ -109,12 +103,7 @@ service : () -> {
           vec _InlineComplexRecordOpt,
           _InlineComplexRecordRecord,
           _InlineComplexRecordVariant,
-          func () -> (
-              record {
-                prop1 : text;
-                "variant" : _InlineComplexRecordFuncReturnTypeVariant;
-              },
-            ) query,
+          func () -> (_InlineComplexRecordFuncReturnType) query,
         ) -> () query,
     ) query;
   inlineRecordParam : (_InlineComplexRecordOptRecord) -> (text) query;
