@@ -122,7 +122,7 @@ export type FinalCanisterResult<T> = RequireExactlyOne<{
 }>;
 
 /** The return type of a guard function. Used to indicate whether the guarded function should halt or proceed. */
-export type GuardResult = RequireExactlyOne<{
+export type GuardResult = Variant<{
     /** Allows the guarded function to proceed. */
     ok: null;
     /** Prevents the guarded function from proceeding. */
@@ -329,9 +329,9 @@ export class ExternalCanister {
 }
 
 export const $heartbeat = (options?: { guard?: () => GuardResult }) => {};
-export const $init = (options?: { guard?: () => GuardResult }) => {};
+export const $init = () => {}; // TODO: See https://github.com/demergent-labs/azle/issues/954
 export const $inspectMessage = (options?: { guard?: () => GuardResult }) => {};
-export const $postUpgrade = (options?: { guard?: () => GuardResult }) => {};
+export const $postUpgrade = () => {}; // TODO: See https://github.com/demergent-labs/azle/issues/954
 export const $preUpgrade = (options?: { guard?: () => GuardResult }) => {};
 export const $query = (options?: { guard?: () => GuardResult }) => {};
 export const $update = (options?: { guard?: () => GuardResult }) => {};

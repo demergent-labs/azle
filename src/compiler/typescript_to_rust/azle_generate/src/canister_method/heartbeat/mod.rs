@@ -23,7 +23,11 @@ impl TsAst {
 
         if let Some(heartbeat_fn_decl) = heartbeat_fn_decl_option {
             let body = rust::generate(heartbeat_fn_decl);
-            Some(HeartbeatMethod { body })
+            let guard_function_name = heartbeat_fn_decl.annotation.guard.clone();
+            Some(HeartbeatMethod {
+                body,
+                guard_function_name,
+            })
         } else {
             None
         }

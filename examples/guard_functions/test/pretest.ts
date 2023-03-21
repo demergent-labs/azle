@@ -7,10 +7,6 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(`dfx canister uninstall-code notifiers || true`, {
-        stdio: 'inherit'
-    });
-
     execSync(`dfx deploy`, {
         stdio: 'inherit'
     });

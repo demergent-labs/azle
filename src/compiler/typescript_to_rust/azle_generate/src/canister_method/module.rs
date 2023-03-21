@@ -1,5 +1,7 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::{ClassDecl, Decl, ExportDecl, Expr, Module, ModuleDecl, ModuleItem, Stmt};
+use swc_ecma_ast::{
+    ClassDecl, Decl, ExportDecl, Expr, FnDecl, Module, ModuleDecl, ModuleItem, Stmt,
+};
 
 use crate::{
     canister_method::{errors, module_item::ModuleItemHelperMethods, Annotation},
@@ -11,6 +13,7 @@ use crate::{
 
 pub trait ModuleHelperMethods {
     fn get_azle_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AzleFnDecl>;
+    fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>>;
     fn get_export_decls(&self) -> Vec<ExportDecl>;
     fn get_azle_type_alias_decls<'a>(&'a self, source_map: &'a SourceMap)
         -> Vec<AzleTypeAliasDecl>;
@@ -81,6 +84,25 @@ impl ModuleHelperMethods for Module {
             })
     }
 
+    fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>> {
+        self.body
+            .iter()
+            .fold(vec![], |mut acc, module_item| match module_item.as_decl() {
+                Some(decl) => match decl {
+                    Decl::Fn(fn_decl) => {
+                        // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
+                        // necessary to do something like:
+                        // vec![acc, vec![SourceMapped::new(&fn_decl, source_map)]].concat()
+
+                        acc.push(SourceMapped::new(&fn_decl, source_map));
+                        acc
+                    }
+                    _ => acc,
+                },
+                None => acc,
+            })
+    }
+
     fn get_export_decls(&self) -> Vec<ExportDecl> {
         let module_decls: Vec<ModuleDecl> = self
             .body
@@ -146,6 +168,10 @@ impl ModuleHelperMethods for Module {
         source_map: &'a SourceMap,
     ) -> Vec<SourceMapped<ClassDecl>> {
         self.body.iter().fold(vec![], |mut acc, module_item| {
+            // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
+            // necessary to do something like:
+            // return vec![acc, vec![SourceMapped::new(class_decl, source_map)]].concat();
+
             let decl_opt = match module_item {
                 ModuleItem::ModuleDecl(decl) => match decl {
                     ModuleDecl::ExportDecl(export_decl) => Some(&export_decl.decl),
@@ -171,5 +197,24 @@ impl ModuleHelperMethods for Module {
 
             acc
         })
+    }
+}
+
+trait AsDecl {
+    fn as_decl(&self) -> Option<&Decl>;
+}
+
+impl AsDecl for ModuleItem {
+    fn as_decl(&self) -> Option<&Decl> {
+        match self {
+            ModuleItem::ModuleDecl(decl) => match decl {
+                ModuleDecl::ExportDecl(export_decl) => Some(&export_decl.decl),
+                _ => None,
+            },
+            ModuleItem::Stmt(stmt) => match stmt {
+                Stmt::Decl(decl) => Some(decl),
+                _ => None,
+            },
+        }
     }
 }

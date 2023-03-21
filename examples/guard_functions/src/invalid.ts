@@ -47,5 +47,5 @@ export function fn8(): void {}
 $query;
 function fn9(): void {}
 
-// 9. Dangling guard un-followed by exported function
+// 9. Dangling guard without accompanying exported function
 $query;
