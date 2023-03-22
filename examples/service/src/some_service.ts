@@ -7,5 +7,5 @@ export function query1(): boolean {
 
 $update;
 export function update1(): string {
-    return 'MyService update1';
+    return 'SomeService update1';
 }

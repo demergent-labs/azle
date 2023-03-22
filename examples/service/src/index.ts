@@ -9,7 +9,7 @@ import {
     Variant
 } from 'azle';
 
-class ExternalService extends ExternalCanister {
+class SomeService extends ExternalCanister {
     @query
     query1: () => CanisterResult<boolean>;
 
@@ -18,25 +18,28 @@ class ExternalService extends ExternalCanister {
 }
 
 $query;
-export function serviceParam(
-    externalService: ExternalService
-): ExternalService {
-    return externalService;
+export function serviceParam(someService: SomeService): SomeService {
+    return someService;
 }
 
 $query;
-export function serviceReturnType(): ExternalService {
-    return new ExternalService(Principal.fromText('aaaaa-aa'));
+export function serviceReturnType(): SomeService {
+    return new SomeService(Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'));
+}
+
+$update;
+export function serviceList(someServices: SomeService[]): SomeService[] {
+    return someServices;
 }
 
 $update;
 export async function serviceCrossCanisterCall(
-    externalService: ExternalService
+    someService: SomeService
 ): Promise<
     Variant<{
         Ok: string;
         Err: string;
     }>
 > {
-    return await externalService.update1().call();
+    return await someService.update1().call();
 }

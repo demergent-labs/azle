@@ -1,5 +1,14 @@
+type ManualReply = variant { Ok : text; Err : text };
 service : () -> {
-  test : (service { method1 : () -> (text) query }) -> (
-      service { method1 : () -> (text) query },
+  serviceCrossCanisterCall : (
+      service { query1 : () -> (bool) query; update1 : () -> (text) },
+    ) -> (ManualReply);
+  serviceParam : (
+      service { query1 : () -> (bool) query; update1 : () -> (text) },
+    ) -> (
+      service { query1 : () -> (bool) query; update1 : () -> (text) },
+    ) query;
+  serviceReturnType : () -> (
+      service { query1 : () -> (bool) query; update1 : () -> (text) },
     ) query;
 }

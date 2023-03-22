@@ -12,15 +12,15 @@
                 "node_compatibility": true
             }
         },
-        "external_service": {
+        "some_service": {
             "type": "custom",
-            "build": "npx azle service",
+            "build": "npx azle some_service",
             "root": "src",
-            "ts": "src/external_service.ts",
-            "candid": "src/external_service.did",
-            "wasm": ".azle/service/external_service.wasm.gz",
+            "ts": "src/some_service.ts",
+            "candid": "src/some_service.did",
+            "wasm": ".azle/some_service/some_service.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/external_service",
+                "output": "test/dfx_generated/some_service",
                 "node_compatibility": true
             }
         }

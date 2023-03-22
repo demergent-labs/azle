@@ -662,52 +662,52 @@ function time(
 
 function writeCodeToFileSystem(
     rootPath: string,
-    canisterath: string,
+    canisterPath: string,
     workspaceCargoToml: Toml,
     workspaceCargoLock: Toml,
     libCargoToml: Toml,
     mainJs: JavaScript
 ) {
-    fs.rmSync(`.azle`, { recursive: true, force: true });
-    fs.mkdirSync(canisterath, { recursive: true });
+    fs.rmSync(canisterPath, { recursive: true, force: true });
+    fs.mkdirSync(canisterPath, { recursive: true });
 
-    fs.writeFileSync(`${canisterath}/Cargo.toml`, workspaceCargoToml);
-    fs.writeFileSync(`${canisterath}/Cargo.lock`, workspaceCargoLock);
+    fs.writeFileSync(`${canisterPath}/Cargo.toml`, workspaceCargoToml);
+    fs.writeFileSync(`${canisterPath}/Cargo.lock`, workspaceCargoLock);
 
-    if (!fs.existsSync(`${canisterath}/${rootPath}`)) {
-        fs.mkdirSync(`${canisterath}/${rootPath}`, { recursive: true });
+    if (!fs.existsSync(`${canisterPath}/${rootPath}`)) {
+        fs.mkdirSync(`${canisterPath}/${rootPath}`, { recursive: true });
     }
 
-    fs.writeFileSync(`${canisterath}/${rootPath}/Cargo.toml`, libCargoToml);
+    fs.writeFileSync(`${canisterPath}/${rootPath}/Cargo.toml`, libCargoToml);
 
-    if (!fs.existsSync(`${canisterath}/${rootPath}/src`)) {
-        fs.mkdirSync(`${canisterath}/${rootPath}/src`);
+    if (!fs.existsSync(`${canisterPath}/${rootPath}/src`)) {
+        fs.mkdirSync(`${canisterPath}/${rootPath}/src`);
     }
 
-    if (!fs.existsSync(`${canisterath}/${rootPath}/src/lib.rs`)) {
-        fs.writeFileSync(`${canisterath}/${rootPath}/src/lib.rs`, '');
+    if (!fs.existsSync(`${canisterPath}/${rootPath}/src/lib.rs`)) {
+        fs.writeFileSync(`${canisterPath}/${rootPath}/src/lib.rs`, '');
     }
 
-    if (!fs.existsSync(`${canisterath}/${rootPath}/azle_vm_value_derive`)) {
-        fs.mkdirSync(`${canisterath}/${rootPath}/azle_vm_value_derive`);
+    if (!fs.existsSync(`${canisterPath}/${rootPath}/azle_vm_value_derive`)) {
+        fs.mkdirSync(`${canisterPath}/${rootPath}/azle_vm_value_derive`);
     }
 
     fsExtra.copySync(
         `${__dirname}/compiler/typescript_to_rust/azle_vm_value_derive`,
-        `${canisterath}/${rootPath}/azle_vm_value_derive`
+        `${canisterPath}/${rootPath}/azle_vm_value_derive`
     );
 
-    if (!fs.existsSync(`${canisterath}/${rootPath}/azle_generate`)) {
-        fs.mkdirSync(`${canisterath}/${rootPath}/azle_generate`);
+    if (!fs.existsSync(`${canisterPath}/${rootPath}/azle_generate`)) {
+        fs.mkdirSync(`${canisterPath}/${rootPath}/azle_generate`);
     }
 
     fsExtra.copySync(
         `${__dirname}/compiler/typescript_to_rust/azle_generate`,
-        `${canisterath}/${rootPath}/azle_generate`
+        `${canisterPath}/${rootPath}/azle_generate`
     );
 
     fs.writeFileSync(
-        `${canisterath}/${rootPath}/azle_generate/src/main.js`,
+        `${canisterPath}/${rootPath}/azle_generate/src/main.js`,
         mainJs
     );
 }
