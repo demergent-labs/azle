@@ -141,7 +141,10 @@ export function deploy(canisterName: string, argument?: string): Test[] {
 }
 
 export function createSnakeCaseProxy<T extends object>(target: T): T {
-    if (target.constructor.name === 'Principal') {
+    if (
+        (typeof target !== 'object' && typeof target !== 'function') ||
+        target.constructor.name === 'Principal'
+    ) {
         return target;
     }
 
