@@ -1,4 +1,4 @@
-use cdk_framework::act::node::{external_canister::Method, CandidType, Param};
+use cdk_framework::act::node::{candid::func::Mode, external_canister::Method, CandidType, Param};
 use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnType, TsType};
 
 use crate::{
@@ -21,11 +21,15 @@ impl SourceMapped<'_, ClassProp> {
         }
 
         let name = self.name()?;
-        let _mode = self.mode()?;
+        let mode = match &self.mode()?[..] {
+            "query" => Mode::Query,
+            "update" => Mode::Update,
+            _ => panic!("this is not supported"),
+        };
         let params = self.build_act_fn_params()?;
         let return_type = self.build_return_type()?;
 
-        Ok(Method::new(name, params, return_type))
+        Ok(Method::new(name, mode, params, return_type))
     }
 
     fn build_act_fn_params(&self) -> Result<Vec<Param>, ParseError> {

@@ -1,0 +1,5 @@
+service : () -> {
+  test : (service { method1 : () -> (text) query }) -> (
+      service { method1 : () -> (text) query },
+    ) query;
+}
