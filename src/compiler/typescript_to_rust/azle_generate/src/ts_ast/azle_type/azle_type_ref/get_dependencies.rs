@@ -29,6 +29,7 @@ impl GetDependencies for AzleTypeRef<'_> {
             "nat16" => HashSet::new(),
             "nat32" => HashSet::new(),
             "nat64" => HashSet::new(),
+            "number" => HashSet::new(),
             "Principal" => HashSet::new(),
             "empty" => HashSet::new(),
             "reserved" => HashSet::new(),

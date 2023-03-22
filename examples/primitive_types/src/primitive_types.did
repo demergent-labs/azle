@@ -13,6 +13,7 @@ service : () -> {
   getNat64 : () -> (nat64) query;
   getNat8 : () -> (nat8) query;
   getNull : () -> (null) query;
+  getNumber : () -> (float64) query;
   getPrincipal : () -> (principal) query;
   getReserved : () -> (reserved) query;
   getString : () -> (text) query;
@@ -31,6 +32,7 @@ service : () -> {
   printNat64 : (nat64) -> (nat64) query;
   printNat8 : (nat8) -> (nat8) query;
   printNull : (null) -> (null) query;
+  printNumber : (float64) -> (float64) query;
   printPrincipal : (principal) -> (principal) query;
   printReserved : (reserved) -> (reserved) query;
   printString : (text) -> (text) query;

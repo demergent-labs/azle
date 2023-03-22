@@ -50,6 +50,28 @@ export function getTests(
             }
         },
         {
+            name: 'getNumber',
+            test: async () => {
+                const result = await primitiveTypesCanister.getNumber();
+
+                return {
+                    Ok: result.toString() === '9007199254740991'
+                };
+            }
+        },
+        {
+            name: 'printNumber',
+            test: async () => {
+                const result = await primitiveTypesCanister.printNumber(
+                    90071992547409.05
+                );
+
+                return {
+                    Ok: result.toString() === '90071992547409.05'
+                };
+            }
+        },
+        {
             name: 'getInt',
             test: async () => {
                 const result = await primitiveTypesCanister.getInt();

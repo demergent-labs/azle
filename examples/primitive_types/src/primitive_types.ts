@@ -41,6 +41,17 @@ export function printText(text: text): text {
 }
 
 $query;
+export function getNumber(): number {
+    return Number.MAX_SAFE_INTEGER;
+}
+
+$query;
+export function printNumber(number: number): number {
+    console.log(typeof number);
+    return number;
+}
+
+$query;
 export function getInt(): int {
     return 170_141_183_460_469_231_731_687_303_715_884_105_727n;
 }
