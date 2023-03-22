@@ -20,7 +20,7 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
                 return {
                     Ok:
                         'Ok' in result &&
-                        result.Ok === 'Hello from Canister 2 manualQuery'
+                        result.Ok === 'Hello from Canister 2 manual query'
                 };
             }
         },
@@ -31,7 +31,7 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
                 return {
                     Ok:
                         'Ok' in result &&
-                        result.Ok === 'Hello from Canister 2 manualQuery'
+                        result.Ok === 'Hello from Canister 2 manual query'
                 };
             }
         },
