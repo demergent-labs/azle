@@ -1,5 +1,5 @@
 use cdk_framework::{
-    act::node::{external_canister::Method, ExternalCanister},
+    act::node::{service::Method, Service},
     traits::ToIdent,
 };
 use quote::quote;
@@ -8,11 +8,11 @@ use swc_ecma_ast::{ClassDecl, ClassMember};
 use crate::ts_ast::{source_map::SourceMapped, GetName};
 
 impl SourceMapped<'_, ClassDecl> {
-    pub fn to_act_external_canister(&self) -> ExternalCanister {
+    pub fn to_act_service(&self) -> Service {
         let name = self.ident.get_name().to_string();
-        let methods = self.build_external_canister_methods();
+        let methods = self.build_service_methods();
 
-        ExternalCanister {
+        Service {
             name,
             methods,
             to_vm_value: |name| {
@@ -81,7 +81,7 @@ impl SourceMapped<'_, ClassDecl> {
         }
     }
 
-    fn build_external_canister_methods(&self) -> Vec<Method> {
+    fn build_service_methods(&self) -> Vec<Method> {
         self.class
             .body
             .iter()
@@ -89,11 +89,10 @@ impl SourceMapped<'_, ClassDecl> {
                 ClassMember::ClassProp(class_prop) => {
                     let class_prop_with_source_map = SourceMapped::new(class_prop, self.source_map);
 
-                    let canister_method_result =
-                        class_prop_with_source_map.to_act_external_canister_method();
+                    let service_method_result = class_prop_with_source_map.to_act_service_method();
 
-                    match canister_method_result {
-                        Ok(canister_method) => vec![acc, vec![canister_method]].concat(),
+                    match service_method_result {
+                        Ok(service_method) => vec![acc, vec![service_method]].concat(),
                         Err(e) => panic!(
                             "{}",
                             self.build_invalid_class_prop_error_message(class_prop, e)

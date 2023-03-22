@@ -1,6 +1,5 @@
 import {
     CanisterResult,
-    ExternalCanister,
     ic,
     $init,
     match,
@@ -8,10 +7,11 @@ import {
     Opt,
     $postUpgrade,
     Principal,
-    query,
     $query,
     Record,
-    update,
+    Service,
+    serviceQuery,
+    serviceUpdate,
     $update
 } from 'azle';
 
@@ -36,20 +36,20 @@ function recordPerformance(start: nat64, end: nat64): void {
 }
 //#endregion
 
-class WhoAmICanister extends ExternalCanister {
-    @query
+class WhoAmICanister extends Service {
+    @serviceQuery
     installer: () => CanisterResult<Principal>;
 
-    @query
+    @serviceQuery
     argument: () => CanisterResult<Principal>;
 
-    @update
+    @serviceUpdate
     whoami: () => CanisterResult<Principal>;
 
-    @update
+    @serviceUpdate
     id: () => CanisterResult<Principal>;
 
-    @query
+    @serviceQuery
     idQuick: () => CanisterResult<Principal>;
 }
 

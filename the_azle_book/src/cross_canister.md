@@ -48,16 +48,10 @@ export function transfer(to: Principal, amount: nat64): nat64 {
 Here's how you would create its external canister definition:
 
 ```typescript
-import {
-    CanisterResult,
-    ExternalCanister,
-    Principal,
-    nat64,
-    update
-} from 'azle';
+import { CanisterResult, Principal, nat64, Service, serviceUpdate } from 'azle';
 
-class TokenCanister extends ExternalCanister {
-    @update
+class TokenCanister extends Service {
+    @serviceUpdate
     transfer: (to: Principal, amount: nat64) => CanisterResult<nat64>;
 }
 ```
@@ -77,16 +71,16 @@ And here's a more complete example of a canister called `payout_canister` that p
 ```typescript
 import {
     CanisterResult,
-    ExternalCanister,
     nat64,
     Principal,
+    Service,
+    serviceUpdate,
     $update,
-    update,
     Variant
 } from 'azle';
 
-class TokenCanister extends ExternalCanister {
-    @update
+class TokenCanister extends Service {
+    @serviceUpdate
     transfer: (to: Principal, amount: nat64) => CanisterResult<nat64>;
 }
 
@@ -159,17 +153,17 @@ export function transfer(
 ```typescript
 import {
     CanisterResult,
-    ExternalCanister,
     match,
     nat64,
     Principal,
+    Service,
+    serviceUpdate,
     $update,
-    update,
     Variant
 } from 'azle';
 
-class TokenCanister extends ExternalCanister {
-    @update
+class TokenCanister extends Service {
+    @serviceUpdate
     transfer: (
         to: Principal,
         amount: nat64
@@ -221,15 +215,15 @@ Here's an example of a composite query method:
 ```typescript
 import {
     CanisterResult,
-    ExternalCanister,
     Principal,
     $query,
-    query,
+    Service,
+    serviceQuery,
     Variant
 } from 'azle';
 
-class SomeCanister extends ExternalCanister {
-    @query
+class SomeCanister extends Service {
+    @serviceQuery
     queryForBoolean: () => CanisterResult<boolean>;
 }
 
@@ -255,16 +249,16 @@ If you don't need to wait for your cross-canister call to return, you can use `n
 ```typescript
 import {
     CanisterResult,
-    ExternalCanister,
     Principal,
     RejectionCode,
+    Service,
+    serviceUpdate,
     $update,
-    update,
     Variant
 } from 'azle';
 
-class SomeCanister extends ExternalCanister {
-    @update
+class SomeCanister extends Service {
+    @serviceUpdate
     receiveNotification: () => CanisterResult<void>;
 }
 
@@ -286,16 +280,16 @@ If you need to send cycles with your cross-canister call, you can call `cycles` 
 ```typescript
 import {
     CanisterResult,
-    ExternalCanister,
     Principal,
     RejectionCode,
+    Service,
+    serviceUpdate,
     $update,
-    update,
     Variant
 } from 'azle';
 
-class SomeCanister extends ExternalCanister {
-    @update
+class SomeCanister extends Service {
+    @serviceUpdate
     receiveNotification: () => CanisterResult<void>;
 }
 

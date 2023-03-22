@@ -2,18 +2,18 @@ import {
     CanisterResult,
     $query,
     $update,
-    query,
-    update,
-    ExternalCanister,
     Principal,
+    Service,
+    serviceQuery,
+    serviceUpdate,
     Variant
 } from 'azle';
 
-class SomeService extends ExternalCanister {
-    @query
+class SomeService extends Service {
+    @serviceQuery
     query1: () => CanisterResult<boolean>;
 
-    @update
+    @serviceUpdate
     update1: () => CanisterResult<string>;
 }
 

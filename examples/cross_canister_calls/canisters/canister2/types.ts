@@ -1,11 +1,11 @@
 import {
     CanisterResult,
-    ExternalCanister,
     nat64,
     Opt,
-    query,
     Record,
-    update
+    Service,
+    serviceQuery,
+    serviceUpdate
 } from 'azle';
 
 // TODO start using principals instead of strings for ids
@@ -25,26 +25,26 @@ export type AccountArgs = Record<{
     id: string;
 }>;
 
-export class Canister2 extends ExternalCanister {
-    @update
+export class Canister2 extends Service {
+    @serviceUpdate
     transfer: (
         from: string,
         to: string,
         amount: nat64
     ) => CanisterResult<nat64>;
 
-    @query
+    @serviceQuery
     balance: (id: string) => CanisterResult<nat64>;
 
-    @query
+    @serviceQuery
     account: (accountArgs: AccountArgs) => CanisterResult<Opt<Account>>;
 
-    @query
+    @serviceQuery
     accounts: () => CanisterResult<Account[]>;
 
-    @query
+    @serviceQuery
     trap: () => CanisterResult<string>;
 
-    @update
+    @serviceUpdate
     receiveNotification: (message: string) => CanisterResult<void>;
 }

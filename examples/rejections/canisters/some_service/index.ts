@@ -1,19 +1,13 @@
-import {
-    CanisterResult,
-    ExternalCanister,
-    empty,
-    Principal,
-    query
-} from 'azle';
+import { CanisterResult, empty, Principal, Service, serviceQuery } from 'azle';
 
-export class SomeService extends ExternalCanister {
-    @query
+export class SomeService extends Service {
+    @serviceQuery
     reject: (message: string) => CanisterResult<empty>;
 
-    @query
+    @serviceQuery
     accept: () => CanisterResult<boolean>;
 
-    @query
+    @serviceQuery
     error: () => CanisterResult<empty>;
 }
 

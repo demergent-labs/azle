@@ -1,6 +1,5 @@
 import {
     CanisterResult,
-    ExternalCanister,
     InsertError,
     Func,
     Query,
@@ -9,9 +8,10 @@ import {
     Principal,
     nat,
     nat64,
-    query,
     Record,
-    update,
+    Service,
+    serviceQuery,
+    serviceUpdate,
     Variant
 } from 'azle';
 
@@ -60,8 +60,8 @@ export type TestVariant = Variant<{
     prop2: Test1;
 }>;
 
-export class InlineTypes extends ExternalCanister {
-    @query
+export class InlineTypes extends Service {
+    @serviceQuery
     inlineRecordReturnType: () => CanisterResult<
         Record<{
             prop1: string;
@@ -69,12 +69,12 @@ export class InlineTypes extends ExternalCanister {
         }>
     >;
 
-    @query
+    @serviceQuery
     inlineRecordParam: (
         param: Record<{ prop1: string }>
     ) => CanisterResult<string>;
 
-    @query
+    @serviceQuery
     inlineVariantReturnType: () => CanisterResult<
         Variant<{
             var1: null;
@@ -83,18 +83,18 @@ export class InlineTypes extends ExternalCanister {
         }>
     >;
 
-    @query
+    @serviceQuery
     inlineVariantParam: (
         param: Variant<{ var1: null; var2: null }>
     ) => CanisterResult<Variant<{ var1: null; var2: null }>>;
 
-    @query
+    @serviceQuery
     recordWithInlineFields: () => CanisterResult<User1>;
 
-    @query
+    @serviceQuery
     variantWithInlineFields: () => CanisterResult<Reaction>;
 
-    @query
+    @serviceQuery
     recordReferencingOtherTypesFromReturnType: () => CanisterResult<
         Record<{
             prop1: string;
@@ -102,7 +102,7 @@ export class InlineTypes extends ExternalCanister {
         }>
     >;
 
-    @query
+    @serviceQuery
     variantReferencingOtherTypesFromReturnType: () => CanisterResult<
         Variant<{
             prop1: string;
@@ -110,31 +110,31 @@ export class InlineTypes extends ExternalCanister {
         }>
     >;
 
-    @query
+    @serviceQuery
     recordReferencingRecordFromParam: (
         param1: Record<{
             test: Test;
         }>
     ) => CanisterResult<string>;
 
-    @query
+    @serviceQuery
     recordReferencingVariantFromParam: (
         param1: Record<{
             testVariant: TestVariant;
         }>
     ) => CanisterResult<Opt<string>>;
 
-    @query
+    @serviceQuery
     variantReferencingRecordFromParam: (
         param1: Variant<{ prop1: User }>
     ) => CanisterResult<void>;
 
-    @query
+    @serviceQuery
     variantReferencingVariantFromParam: (
         param1: Variant<{ prop1: UserVariant }>
     ) => CanisterResult<void>;
 
-    @update
+    @serviceUpdate
     stableMapInsert: (
         key: Record<{
             prop1: Opt<string>;
@@ -155,7 +155,7 @@ export class InlineTypes extends ExternalCanister {
         }>
     >;
 
-    @query
+    @serviceQuery
     stableMapGet: (
         key: Record<{
             prop1: Opt<string>;
@@ -170,7 +170,7 @@ export class InlineTypes extends ExternalCanister {
         >
     >;
 
-    @query
+    @serviceQuery
     inlineFunc: (
         callback: Func<
             Query<
@@ -267,7 +267,7 @@ export class InlineTypes extends ExternalCanister {
         >
     >;
 
-    @update
+    @serviceUpdate
     inlineRecordReturnTypeAsExternalCanisterCall: () => CanisterResult<
         Variant<{
             ok: Record<{
@@ -278,7 +278,7 @@ export class InlineTypes extends ExternalCanister {
         }>
     >;
 
-    @query
+    @serviceQuery
     complex: (
         record: Record<{
             primitive: string;

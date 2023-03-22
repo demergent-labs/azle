@@ -1,4 +1,4 @@
-use cdk_framework::act::{node::external_canister::Method, ToTypeAnnotation};
+use cdk_framework::act::{node::service::Method, ToTypeAnnotation};
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 

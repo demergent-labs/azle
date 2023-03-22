@@ -215,40 +215,40 @@ export type Stable64GrowResult = Variant<{
 }>;
 
 /**
- * A decorator for marking query methods on external canisters. Can only be
+ * A decorator for marking query methods on services. Can only be
  * used on class properties with a return type of (args: any[]) =>
  * CanisterResult<T>.
  *
  * @example
  * ```ts
- * export class SomeOtherCanister extends ExternalCanister {
+ * export class SomeOtherCanister extends Service {
  *   @query
  *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
  * }
  * ```
  */
-export function query(target: any, name: string) {
-    externalCanisterMethodDecoration(target, name);
+export function serviceQuery(target: any, name: string) {
+    serviceMethodDecoration(target, name);
 }
 
 /**
- * A decorator for marking update methods on external canisters. Can only be
+ * A decorator for marking update methods on services. Can only be
  * used on class properties with a return type of (args: any[]) =>
  * CanisterResult<T>.
  *
  * @example
  * ```ts
- * export class SomeOtherCanister extends ExternalCanister {
+ * export class SomeOtherCanister extends Service {
  *   @update
  *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
  * }
  * ```
  */
-export function update(target: any, name: string) {
-    externalCanisterMethodDecoration(target, name);
+export function serviceUpdate(target: any, name: string) {
+    serviceMethodDecoration(target, name);
 }
 
-function externalCanisterMethodDecoration(target: any, name: string) {
+function serviceMethodDecoration(target: any, name: string) {
     Object.defineProperty(target, name, {
         get() {
             return (...args: any[]) => {
@@ -300,11 +300,11 @@ function externalCanisterMethodDecoration(target: any, name: string) {
 }
 
 /**
- * Parent class for creating Canister definitions. To create an external
- * canister extend this class.
+ * Parent class for creating Service definitions. To create an service
+ * extend this class.
  * @example
  * ```ts
- * export class SomeOtherCanister extends ExternalCanister {
+ * export class SomeOtherCanister extends Service {
  *   @query
  *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
  * }
@@ -320,7 +320,7 @@ function externalCanisterMethodDecoration(target: any, name: string) {
  * const result = await canister.someCanisterMethod().call();
  * ```
  */
-export class ExternalCanister {
+export class Service {
     canisterId: Principal;
 
     constructor(canisterId: Principal) {

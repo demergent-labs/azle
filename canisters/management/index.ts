@@ -20,15 +20,15 @@ import {
     Alias,
     blob,
     CanisterResult,
-    ExternalCanister,
     Func,
     nat,
     nat64,
     Opt,
-    Query,
     Principal,
+    Query,
     Record,
-    update,
+    Service,
+    serviceUpdate,
     Variant
 } from '../../index';
 
@@ -226,76 +226,76 @@ export type SignWithEcdsaResult = Record<{
     signature: blob;
 }>;
 
-export class Management extends ExternalCanister {
-    @update
+export class Management extends Service {
+    @serviceUpdate
     bitcoin_get_balance: (args: GetBalanceArgs) => CanisterResult<Satoshi>;
 
-    @update
+    @serviceUpdate
     bitcoin_get_current_fee_percentiles: (
         args: GetCurrentFeePercentilesArgs
     ) => CanisterResult<MillisatoshiPerByte[]>;
 
-    @update
+    @serviceUpdate
     bitcoin_get_utxos: (args: GetUtxosArgs) => CanisterResult<GetUtxosResult>;
 
-    @update
+    @serviceUpdate
     bitcoin_send_transaction: (
         args: SendTransactionArgs
     ) => CanisterResult<void>;
 
-    @update
+    @serviceUpdate
     create_canister: (
         args: CreateCanisterArgs
     ) => CanisterResult<CreateCanisterResult>;
 
-    @update
+    @serviceUpdate
     update_settings: (args: UpdateSettingsArgs) => CanisterResult<void>;
 
-    @update
+    @serviceUpdate
     install_code: (args: InstallCodeArgs) => CanisterResult<void>;
 
-    @update
+    @serviceUpdate
     uninstall_code: (args: UninstallCodeArgs) => CanisterResult<void>;
 
-    @update
+    @serviceUpdate
     start_canister: (args: StartCanisterArgs) => CanisterResult<void>;
 
-    @update
+    @serviceUpdate
     stop_canister: (args: StopCanisterArgs) => CanisterResult<void>;
 
-    @update
+    @serviceUpdate
     canister_status: (
         args: CanisterStatusArgs
     ) => CanisterResult<CanisterStatusResult>;
 
-    @update
+    @serviceUpdate
     delete_canister: (args: DeleteCanisterArgs) => CanisterResult<void>;
 
-    @update
+    @serviceUpdate
     deposit_cycles: (args: DepositCyclesArgs) => CanisterResult<void>;
 
-    @update
+    @serviceUpdate
     raw_rand: () => CanisterResult<blob>;
 
-    @update
+    @serviceUpdate
     http_request: (args: HttpRequestArgs) => CanisterResult<HttpResponse>;
 
-    @update
+    @serviceUpdate
     provisional_create_canister_with_cycles: (
         args: ProvisionalCreateCanisterWithCyclesArgs
     ) => CanisterResult<ProvisionalCreateCanisterWithCyclesResult>;
 
-    @update
+    @serviceUpdate
     provisional_top_up_canister: (
         args: ProvisionalTopUpCanisterArgs
     ) => CanisterResult<void>;
 
-    @update
+    @serviceUpdate
     ecdsa_public_key: (
         args: EcdsaPublicKeyArgs
     ) => CanisterResult<EcdsaPublicKeyResult>;
 
-    @update
+    @serviceUpdate
     sign_with_ecdsa: (
         args: SignWithEcdsaArgs
     ) => CanisterResult<SignWithEcdsaResult>;

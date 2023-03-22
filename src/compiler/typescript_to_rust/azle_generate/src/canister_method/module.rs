@@ -17,7 +17,7 @@ pub trait ModuleHelperMethods {
     fn get_export_decls(&self) -> Vec<ExportDecl>;
     fn get_azle_type_alias_decls<'a>(&'a self, source_map: &'a SourceMap)
         -> Vec<AzleTypeAliasDecl>;
-    fn get_external_canister_class_declarations<'a>(
+    fn get_service_class_declarations<'a>(
         &'a self,
         source_map: &'a SourceMap,
     ) -> Vec<SourceMapped<ClassDecl>>;
@@ -163,7 +163,7 @@ impl ModuleHelperMethods for Module {
         vec![stmt_azle_type_alias_decls, export_azle_type_alias_decls].concat()
     }
 
-    fn get_external_canister_class_declarations<'a>(
+    fn get_service_class_declarations<'a>(
         &'a self,
         source_map: &'a SourceMap,
     ) -> Vec<SourceMapped<ClassDecl>> {
@@ -187,7 +187,7 @@ impl ModuleHelperMethods for Module {
                 if let Decl::Class(class_decl) = decl {
                     if let Some(super_class) = &class_decl.class.super_class {
                         if let Expr::Ident(ident) = &**super_class {
-                            if ident.get_name() == "ExternalCanister" {
+                            if ident.get_name() == "Service" {
                                 acc.push(SourceMapped::new(class_decl, source_map))
                             }
                         }

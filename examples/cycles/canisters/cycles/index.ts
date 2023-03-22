@@ -1,17 +1,17 @@
 import {
     CanisterResult,
-    ExternalCanister,
     nat,
     nat64,
     Principal,
-    update
+    Service,
+    serviceUpdate
 } from 'azle';
 
-export class Cycles extends ExternalCanister {
-    @update
+export class Cycles extends Service {
+    @serviceUpdate
     receiveCycles: () => CanisterResult<nat64>;
 
-    @update
+    @serviceUpdate
     receiveCycles128: () => CanisterResult<nat>;
 }
 

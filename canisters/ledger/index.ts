@@ -2,16 +2,16 @@ import {
     Alias,
     blob,
     CanisterResult,
-    ExternalCanister,
     Func,
     nat32,
     nat64,
     Opt,
     Principal,
-    query,
     Query,
     Record,
-    update,
+    Service,
+    serviceQuery,
+    serviceUpdate,
     Variant
 } from '../../index';
 
@@ -259,45 +259,45 @@ export type DecimalsResult = Record<{
 
 export type Address = Alias<string>;
 
-export class Ledger extends ExternalCanister {
+export class Ledger extends Service {
     // Transfers tokens from a subaccount of the caller to the destination address.
     // The source address is computed from the principal of the caller and the specified subaccount.
     // When successful, returns the index of the block containing the transaction.
-    @update
+    @serviceUpdate
     transfer: (transfer_args: TransferArgs) => CanisterResult<TransferResult>;
 
     // Returns the amount of Tokens on the specified account.
-    @query
+    @serviceQuery
     account_balance: (
         accountBalanceArgs: AccountBalanceArgs
     ) => CanisterResult<Tokens>;
 
     // Returns the current transfer_fee.
-    @query
+    @serviceQuery
     transfer_fee: (
         transfer_fee_arg: TransferFeeArg
     ) => CanisterResult<TransferFee>;
 
     // Queries blocks in the specified range.
-    @query
+    @serviceQuery
     query_blocks: (
         get_blocks_args: GetBlocksArgs
     ) => CanisterResult<QueryBlocksResponse>;
 
     // Returns token symbol.
-    @query
+    @serviceQuery
     symbol: () => CanisterResult<SymbolResult>;
 
     // Returns token name.
-    @query
+    @serviceQuery
     name: () => CanisterResult<NameResult>;
 
     // Returns token decimals.
-    @query
+    @serviceQuery
     decimals: () => CanisterResult<DecimalsResult>;
 
     // Returns the existing archive canisters information.
-    @query
+    @serviceQuery
     archives: () => CanisterResult<Archives>;
 }
 

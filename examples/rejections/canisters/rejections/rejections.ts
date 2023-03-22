@@ -1,16 +1,16 @@
 import {
     CanisterResult,
-    ExternalCanister,
     ic,
     Principal,
     RejectionCode,
-    update,
+    Service,
+    serviceUpdate,
     $update
 } from 'azle';
 import { someService } from '../some_service';
 
-class Nonexistent extends ExternalCanister {
-    @update
+class Nonexistent extends Service {
+    @serviceUpdate
     method: () => CanisterResult<void>;
 }
 

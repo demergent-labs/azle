@@ -9,13 +9,13 @@ use crate::{
 impl TsAst {
     pub fn to_act(&self) -> AbstractCanisterTree {
         let canister_methods = self.build_canister_methods();
-        let external_canisters = self.build_external_canisters();
+        let services = self.build_services();
         let stable_b_tree_map_nodes = self.stable_b_tree_map_nodes();
         let body = body::generate(
             self,
             &canister_methods.query_methods,
             &canister_methods.update_methods,
-            &external_canisters,
+            &services,
             &stable_b_tree_map_nodes,
         );
         let cdk_name = "azle".to_string();
@@ -30,7 +30,7 @@ impl TsAst {
             canister_methods,
             cdk_name,
             candid_types,
-            external_canisters,
+            services,
             guard_functions,
             header,
             keywords,

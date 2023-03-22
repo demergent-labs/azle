@@ -16,7 +16,7 @@ pub trait HelperMethods {
     fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>>;
     fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
     fn get_canister_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
-    fn get_external_canister_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>>;
+    fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>>;
     fn get_azle_fn_decls_of_type(
         &self,
         canister_method_type: CanisterMethodType,
@@ -81,9 +81,9 @@ impl HelperMethods for Vec<AzleProgram> {
             .collect()
     }
 
-    fn get_external_canister_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
+    fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
         self.into_iter()
-            .flat_map(|azle_program| azle_program.get_external_canister_class_declarations())
+            .flat_map(|azle_program| azle_program.get_service_class_declarations())
             .collect()
     }
 
@@ -118,7 +118,7 @@ impl HelperMethods for Vec<AzleProgram> {
         let ast_type_alias_decls = &self.get_azle_type_alias_decls();
 
         // Pull out canister decls
-        let external_canister_class_declarations = self.get_external_canister_class_declarations();
+        let external_canister_class_declarations = self.get_service_class_declarations();
 
         // Separate function decls into queries and updates
         let azle_fnc_decls_query = self.get_azle_fn_decls_of_type(CanisterMethodType::Query);
