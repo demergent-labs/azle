@@ -141,6 +141,10 @@ export function deploy(canisterName: string, argument?: string): Test[] {
 }
 
 export function createSnakeCaseProxy<T extends object>(target: T): T {
+    if (target.constructor.name === 'Principal') {
+        return target;
+    }
+
     return new Proxy(target, {
         get(obj, prop) {
             const snakeCaseProp =
