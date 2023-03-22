@@ -11,6 +11,18 @@
                 "output": "test/dfx_generated/service",
                 "node_compatibility": true
             }
+        },
+        "external_service": {
+            "type": "custom",
+            "build": "npx azle service",
+            "root": "src",
+            "ts": "src/external_service.ts",
+            "candid": "src/external_service.did",
+            "wasm": ".azle/service/external_service.wasm.gz",
+            "declarations": {
+                "output": "test/dfx_generated/external_service",
+                "node_compatibility": true
+            }
         }
     }
 }
