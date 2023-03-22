@@ -143,7 +143,7 @@ export function deploy(canisterName: string, argument?: string): Test[] {
 export function createSnakeCaseProxy<T extends object>(target: T): T {
     if (
         (typeof target !== 'object' && typeof target !== 'function') ||
-        target.constructor.name === 'Principal'
+        target?.constructor?.name === 'Principal'
     ) {
         return target;
     }
@@ -151,22 +151,32 @@ export function createSnakeCaseProxy<T extends object>(target: T): T {
     return new Proxy(target, {
         get(obj, prop) {
             const snakeCaseProp =
-                (prop as string)[0] === (prop as string)[0].toUpperCase()
+                (prop as string)[0] === (prop as string)[0]?.toUpperCase()
                     ? prop
                     : camelToSnakeCase(prop as string);
 
-            if (typeof (obj as any)[snakeCaseProp] === 'function') {
+            if (
+                typeof ((obj as any)[snakeCaseProp] ?? (obj as any)[prop]) ===
+                'function'
+            ) {
                 return async (...args: any[]) => {
-                    const result = await (obj as any)[snakeCaseProp](...args);
+                    const result = await (
+                        (obj as any)[snakeCaseProp] ?? (obj as any)[prop]
+                    )(...args);
                     return createSnakeCaseProxy(result);
                 };
             }
 
-            if (typeof (obj as any)[snakeCaseProp] === 'object') {
-                return createSnakeCaseProxy((obj as any)[snakeCaseProp]);
+            if (
+                typeof ((obj as any)[snakeCaseProp] ?? (obj as any)[prop]) ===
+                'object'
+            ) {
+                return createSnakeCaseProxy(
+                    (obj as any)[snakeCaseProp] ?? (obj as any)[prop]
+                );
             }
 
-            return (obj as any)[snakeCaseProp];
+            return (obj as any)[snakeCaseProp] ?? (obj as any)[prop];
         }
     }) as any;
 }
