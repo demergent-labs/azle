@@ -160,9 +160,12 @@ export function createSnakeCaseProxy<T extends object>(target: T): T {
                 'function'
             ) {
                 return async (...args: any[]) => {
+                    const new_args = args.map((value) => {
+                        return convertKeysToSnakeCase(value);
+                    });
                     const result = await (
                         (obj as any)[snakeCaseProp] ?? (obj as any)[prop]
-                    )(...args);
+                    )(...new_args);
                     return createSnakeCaseProxy(result);
                 };
             }
@@ -179,6 +182,24 @@ export function createSnakeCaseProxy<T extends object>(target: T): T {
             return (obj as any)[snakeCaseProp] ?? (obj as any)[prop];
         }
     }) as any;
+}
+
+function convertKeysToSnakeCase(obj) {
+    if (typeof obj !== 'object' || obj === null) {
+        return obj;
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map((element) => convertKeysToSnakeCase(element));
+    }
+
+    const newObj = {};
+    for (const key in obj) {
+        const snakeCaseKey = camelToSnakeCase(key);
+        newObj[snakeCaseKey] = convertKeysToSnakeCase(obj[key]);
+    }
+
+    return newObj;
 }
 
 function camelToSnakeCase(str: string) {
