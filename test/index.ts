@@ -144,6 +144,18 @@ export function createSnakeCaseProxy<T extends object>(target: T): T {
     return new Proxy(target, {
         get(obj, prop) {
             const snakeCaseProp = camelToSnakeCase(prop as string);
+
+            if (typeof (obj as any)[snakeCaseProp] === 'function') {
+                return async (...args: any[]) => {
+                    const result = await (obj as any)[snakeCaseProp](...args);
+                    return createSnakeCaseProxy(result);
+                };
+            }
+
+            if (typeof (obj as any)[snakeCaseProp] === 'object') {
+                return createSnakeCaseProxy((obj as any)[snakeCaseProp]);
+            }
+
             return (obj as any)[snakeCaseProp];
         }
     }) as any;
