@@ -458,11 +458,11 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 return {
                     Ok:
-                        'withHeaders' in result &&
-                        result.withHeaders[0][0] === 'Content-Type' &&
-                        result.withHeaders[0][1] === 'application/json' &&
-                        result.withHeaders[1][0] === 'Accept-Ranges' &&
-                        result.withHeaders[1][1] === 'bytes'
+                        'WithHeaders' in result &&
+                        result.WithHeaders[0][0] === 'Content-Type' &&
+                        result.WithHeaders[0][1] === 'application/json' &&
+                        result.WithHeaders[1][0] === 'Accept-Ranges' &&
+                        result.WithHeaders[1][1] === 'bytes'
                 };
             }
         },

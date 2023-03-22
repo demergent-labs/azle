@@ -185,7 +185,11 @@ export function createSnakeCaseProxy<T extends object>(target: T): T {
 }
 
 function convertKeysToSnakeCase(obj) {
-    if (typeof obj !== 'object' || obj === null) {
+    if (
+        typeof obj !== 'object' ||
+        obj === null ||
+        obj?.constructor?.name === 'Principal'
+    ) {
         return obj;
     }
 
@@ -195,7 +199,10 @@ function convertKeysToSnakeCase(obj) {
 
     const newObj = {};
     for (const key in obj) {
-        const snakeCaseKey = camelToSnakeCase(key);
+        const snakeCaseKey =
+            (key as string)[0] === (key as string)[0]?.toUpperCase()
+                ? key
+                : camelToSnakeCase(key as string);
         newObj[snakeCaseKey] = convertKeysToSnakeCase(obj[key]);
     }
 
