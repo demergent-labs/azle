@@ -153,9 +153,9 @@ export function createSnakeCaseProxy<T extends object>(
         target?.constructor?.name === 'Int32Array' ||
         target?.constructor?.name === 'Int16Array' ||
         target?.constructor?.name === 'Int8Array' ||
-        target?.constructor?.name === 'BigUInt64Array' ||
-        target?.constructor?.name === 'UInt32Array' ||
-        target?.constructor?.name === 'UInt16Array' ||
+        target?.constructor?.name === 'BigUint64Array' ||
+        target?.constructor?.name === 'Uint32Array' ||
+        target?.constructor?.name === 'Uint16Array' ||
         target?.constructor?.name === 'Uint8Array'
     ) {
         return target;
@@ -209,9 +209,9 @@ function convertKeysToSnakeCase(obj) {
         obj?.constructor?.name === 'Int32Array' ||
         obj?.constructor?.name === 'Int16Array' ||
         obj?.constructor?.name === 'Int8Array' ||
-        obj?.constructor?.name === 'BigUInt64Array' ||
-        obj?.constructor?.name === 'UInt32Array' ||
-        obj?.constructor?.name === 'UInt16Array' ||
+        obj?.constructor?.name === 'BigUint64Array' ||
+        obj?.constructor?.name === 'Uint32Array' ||
+        obj?.constructor?.name === 'Uint16Array' ||
         obj?.constructor?.name === 'Uint8Array'
     ) {
         return obj;
