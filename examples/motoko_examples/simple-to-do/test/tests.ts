@@ -23,9 +23,7 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
                 const todos = await todoCanister.getTodos();
 
                 return {
-                    Ok:
-                        result === 0n &&
-                        (await equalTodoList(todos, expectedResult))
+                    Ok: result === 0n && equalTodoList(todos, expectedResult)
                 };
             }
         },
@@ -48,9 +46,7 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
                 const todos = await todoCanister.getTodos();
 
                 return {
-                    Ok:
-                        result === 1n &&
-                        (await equalTodoList(todos, expectedResult))
+                    Ok: result === 1n && equalTodoList(todos, expectedResult)
                 };
             }
         },
@@ -83,7 +79,7 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
                 return {
                     Ok:
                         result === undefined &&
-                        (await equalTodoList(todos, expectedResult))
+                        equalTodoList(todos, expectedResult)
                 };
             }
         },
@@ -112,7 +108,7 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
                 return {
                     Ok:
                         result === undefined &&
-                        (await equalTodoList(todos, expectedResult))
+                        equalTodoList(todos, expectedResult)
                 };
             }
         },
@@ -131,7 +127,7 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
                 return {
                     Ok:
                         result === undefined &&
-                        (await equalTodoList(todos, expectedResult))
+                        equalTodoList(todos, expectedResult)
                 };
             }
         },

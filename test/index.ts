@@ -140,7 +140,10 @@ export function deploy(canisterName: string, argument?: string): Test[] {
     ];
 }
 
-export function createSnakeCaseProxy<T extends object>(target: T): T {
+export function createSnakeCaseProxy<T extends object>(
+    target: T,
+    async: boolean = true
+): T {
     if (
         target === null ||
         (typeof target !== 'object' && typeof target !== 'function') ||
@@ -158,19 +161,29 @@ export function createSnakeCaseProxy<T extends object>(target: T): T {
                     : camelToSnakeCase(prop as string);
 
             if (typeof (obj as any)[snakeCaseProp] === 'function') {
-                return async (...args: any[]) => {
-                    const new_args = args.map((value) => {
-                        return convertKeysToSnakeCase(value);
-                    });
-                    const result = await (obj as any)[snakeCaseProp](
-                        ...new_args
-                    );
-                    return createSnakeCaseProxy(result);
-                };
+                if (async) {
+                    return async (...args: any[]) => {
+                        const new_args = args.map((value) => {
+                            return convertKeysToSnakeCase(value);
+                        });
+                        const result = await (obj as any)[snakeCaseProp](
+                            ...new_args
+                        );
+                        return createSnakeCaseProxy(result, false);
+                    };
+                } else {
+                    return (...args: any[]) => {
+                        const new_args = args.map((value) => {
+                            return convertKeysToSnakeCase(value);
+                        });
+                        const result = (obj as any)[snakeCaseProp](...new_args);
+                        return createSnakeCaseProxy(result, false);
+                    };
+                }
             }
 
             if (typeof (obj as any)[snakeCaseProp] === 'object') {
-                return createSnakeCaseProxy((obj as any)[snakeCaseProp]);
+                return createSnakeCaseProxy((obj as any)[snakeCaseProp], false);
             }
 
             return (obj as any)[snakeCaseProp];
