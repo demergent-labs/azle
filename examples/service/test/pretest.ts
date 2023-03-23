@@ -7,11 +7,15 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy service`, {
+    execSync(`dfx canister uninstall-code some_service || true`, {
         stdio: 'inherit'
     });
 
-    execSync(`dfx generate service`, {
+    execSync(`dfx deploy`, {
+        stdio: 'inherit'
+    });
+
+    execSync(`dfx generate`, {
         stdio: 'inherit'
     });
 }
