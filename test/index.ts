@@ -149,6 +149,7 @@ export function createSnakeCaseProxy<T extends object>(
         (typeof target !== 'object' && typeof target !== 'function') ||
         target?.constructor?.name === 'Principal' ||
         target?.constructor?.name === 'BigInt' ||
+        target?.constructor?.name === 'BigInt64Array' ||
         target?.constructor?.name === 'Uint8Array'
     ) {
         return target;
@@ -198,6 +199,7 @@ function convertKeysToSnakeCase(obj) {
         obj === null ||
         obj?.constructor?.name === 'Principal' ||
         obj?.constructor?.name === 'BigInt' ||
+        obj?.constructor?.name === 'BigInt64Array' ||
         obj?.constructor?.name === 'Uint8Array'
     ) {
         return obj;
