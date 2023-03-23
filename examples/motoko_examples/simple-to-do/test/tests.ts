@@ -23,7 +23,9 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
                 const todos = await todoCanister.getTodos();
 
                 return {
-                    Ok: result === 0n && equalTodoList(todos, expectedResult)
+                    Ok:
+                        result === 0n &&
+                        (await equalTodoList(todos, expectedResult))
                 };
             }
         },
@@ -46,14 +48,16 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
                 const todos = await todoCanister.getTodos();
 
                 return {
-                    Ok: result === 1n && equalTodoList(todos, expectedResult)
+                    Ok:
+                        result === 1n &&
+                        (await equalTodoList(todos, expectedResult))
                 };
             }
         },
         {
             name: 'show todos',
             test: async () => {
-                const expectedResult: string = `\n__TO-DOs___\n${FIRST_TODO_DESCRIPTION}\n${SECOND_TODO_DESCRIPTION}`;
+                const expectedResult: string = `\n___TO-DOs___\n${FIRST_TODO_DESCRIPTION}\n${SECOND_TODO_DESCRIPTION}`;
                 const todos = await todoCanister.showTodos();
                 return {
                     Ok: todos === expectedResult
@@ -79,14 +83,14 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
                 return {
                     Ok:
                         result === undefined &&
-                        equalTodoList(todos, expectedResult)
+                        (await equalTodoList(todos, expectedResult))
                 };
             }
         },
         {
             name: 'show completed todos',
             test: async () => {
-                const expectedResult: string = `\n__TO-DOs___\n${FIRST_TODO_DESCRIPTION}\n${SECOND_TODO_DESCRIPTION} ✔`;
+                const expectedResult: string = `\n___TO-DOs___\n${FIRST_TODO_DESCRIPTION}\n${SECOND_TODO_DESCRIPTION} ✔`;
                 const todos = await todoCanister.showTodos();
                 return {
                     Ok: todos === expectedResult
@@ -108,7 +112,7 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
                 return {
                     Ok:
                         result === undefined &&
-                        equalTodoList(todos, expectedResult)
+                        (await equalTodoList(todos, expectedResult))
                 };
             }
         },
@@ -127,7 +131,7 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
                 return {
                     Ok:
                         result === undefined &&
-                        equalTodoList(todos, expectedResult)
+                        (await equalTodoList(todos, expectedResult))
                 };
             }
         },
