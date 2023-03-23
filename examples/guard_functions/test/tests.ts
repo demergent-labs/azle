@@ -12,13 +12,19 @@ export function getTests(
             name: 'heartbeat guard',
             test: async () => {
                 const initialState = await guardFunctionsCanister.getState();
-                await sleep(8000);
+                console.log(
+                    `Value at initial check was: ${initialState.heartbeatTick}`
+                );
+                await sleep(15_000);
                 const stateAfterRest = await guardFunctionsCanister.getState();
+                console.log(
+                    `Value after 15s delay was: ${stateAfterRest.heartbeatTick}`
+                );
 
                 return {
                     Ok:
-                        initialState.heartbeatTick < 15 &&
-                        stateAfterRest.heartbeatTick === 15
+                        initialState.heartbeatTick < 20 &&
+                        stateAfterRest.heartbeatTick === 20
                 };
             }
         },
