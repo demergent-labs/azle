@@ -12,7 +12,7 @@ export function getTests(
             name: 'heartbeat guard',
             test: async () => {
                 const initialState = await guardFunctionsCanister.getState();
-                await sleep(8000);
+                await sleep(10_000);
                 const stateAfterRest = await guardFunctionsCanister.getState();
 
                 return {
