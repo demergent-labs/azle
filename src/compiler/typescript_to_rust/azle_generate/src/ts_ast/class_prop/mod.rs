@@ -2,7 +2,7 @@ use cdk_framework::act::node::{candid::func::Mode, service::Method, CandidType, 
 use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnType, TsType};
 
 use crate::{
-    errors::external_canister_method::ParseError,
+    errors::service_method::ParseError,
     ts_ast::{source_map::SourceMapped, GetName},
 };
 

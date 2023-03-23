@@ -51,7 +51,7 @@ mod trap;
 
 pub fn generate(
     query_and_update_methods: &Vec<QueryOrUpdateMethod>,
-    external_canisters: &Vec<Service>,
+    services: &Vec<Service>,
     stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
 ) -> proc_macro2::TokenStream {
     let accept_message = accept_message::generate();
@@ -59,7 +59,7 @@ pub fn generate(
     let arg_data_raw_size = arg_data_raw_size::generate();
     let call_raw = call_raw::generate();
     let call_raw128 = call_raw128::generate();
-    let cross_canister_calls = cross_canister_calls::generate(external_canisters);
+    let cross_canister_calls = cross_canister_calls::generate(services);
     let caller = caller::generate();
     let candid_decode = candid_decode::generate();
     let candid_encode = candid_encode::generate();
@@ -75,8 +75,8 @@ pub fn generate(
     let msg_cycles_available128 = msg_cycles_available128::generate();
     let msg_cycles_refunded = msg_cycles_refunded::generate();
     let msg_cycles_refunded128 = msg_cycles_refunded128::generate();
-    let notify = notify::generate(external_canisters);
-    let notify_with_payment128 = notify_with_payment128::generate(external_canisters);
+    let notify = notify::generate(services);
+    let notify_with_payment128 = notify_with_payment128::generate(services);
     let notify_raw = notify_raw::generate();
     let performance_counter = performance_counter::generate();
     let print = print::generate();

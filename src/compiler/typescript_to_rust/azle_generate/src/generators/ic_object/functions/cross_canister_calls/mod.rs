@@ -9,8 +9,8 @@ mod call;
 mod call_with_payment;
 mod call_with_payment128;
 
-pub fn generate(external_canisters: &Vec<Service>) -> Vec<TokenStream> {
-    external_canisters
+pub fn generate(services: &Vec<Service>) -> Vec<TokenStream> {
+    services
         .iter()
         .map(|canister| {
             canister
