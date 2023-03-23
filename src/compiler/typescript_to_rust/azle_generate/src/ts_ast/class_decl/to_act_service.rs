@@ -21,13 +21,13 @@ impl SourceMapped<'_, ClassDecl> {
                 quote! {
                     impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for #service_name {
                         fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                            Ok(context.eval(
+                            Ok(_azle_unwrap_boa_result(context.eval(
                                 format!(
                                     "new {}(Principal.fromText(\"{}\"))",
                                     stringify!(#service_name),
                                     self.0.principal.to_string()
                                 )
-                            ).unwrap())
+                            ), context))
                         }
                     }
                 }
@@ -50,15 +50,15 @@ impl SourceMapped<'_, ClassDecl> {
                     impl CdkActTryFromVmValue<#service_name, &mut boa_engine::Context> for boa_engine::JsValue {
                         fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<#service_name, CdkActTryFromVmValueError> {
                             let js_object = self.as_object().unwrap();
-                            let canister_id_js_value = js_object.get("canisterId", context).unwrap();
+                            let canister_id_js_value = _azle_unwrap_boa_result(js_object.get("canisterId", context), context);
                             let canister_id_js_object = canister_id_js_value.as_object().unwrap();
-                            let canister_id_to_string_js_value = canister_id_js_object.get("toText", context).unwrap();
+                            let canister_id_to_string_js_value = _azle_unwrap_boa_result(canister_id_js_object.get("toText", context), context);
                             let canister_id_to_string_js_object = canister_id_to_string_js_value.as_object().unwrap();
-                            let canister_id_string_js_value = canister_id_to_string_js_object.call(
+                            let canister_id_string_js_value = _azle_unwrap_boa_result(canister_id_to_string_js_object.call(
                                 &canister_id_js_value,
                                 &[],
                                 context
-                            ).unwrap();
+                            ), context);
                             let canister_id_js_string = canister_id_string_js_value.to_string(context).unwrap();
                             let canister_id_string = canister_id_js_string.to_std_string_escaped();
 
