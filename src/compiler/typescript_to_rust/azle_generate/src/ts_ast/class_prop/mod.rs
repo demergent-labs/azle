@@ -1,6 +1,5 @@
 use cdk_framework::act::node::{
-    candid::{func::Mode, service::Method},
-    CandidType, Param,
+    candid::service::Method, node_parts::mode::Mode, CandidType, Param,
 };
 use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnType, TsType};
 
