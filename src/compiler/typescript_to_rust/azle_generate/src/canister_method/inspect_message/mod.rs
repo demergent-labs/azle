@@ -28,6 +28,8 @@ impl TsAst {
         let inspect_message_fn_decl_option = inspect_message_fn_decls.get(0);
 
         if let Some(inspect_message_fn_decl) = inspect_message_fn_decl_option {
+            inspect_message_fn_decl.assert_return_type_is_void();
+
             let body = rust::generate(inspect_message_fn_decl);
             let guard_function_name = inspect_message_fn_decl.annotation.guard.clone();
 

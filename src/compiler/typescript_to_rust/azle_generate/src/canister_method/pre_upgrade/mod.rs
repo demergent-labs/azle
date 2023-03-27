@@ -26,6 +26,8 @@ impl TsAst {
         let pre_upgrade_fn_decl_option = pre_upgrade_fn_decls.get(0);
 
         if let Some(pre_upgrade_fn_decl) = pre_upgrade_fn_decl_option {
+            pre_upgrade_fn_decl.assert_return_type_is_void();
+
             let body = rust::generate(pre_upgrade_fn_decl);
             let guard_function_name = pre_upgrade_fn_decl.annotation.guard.clone();
 

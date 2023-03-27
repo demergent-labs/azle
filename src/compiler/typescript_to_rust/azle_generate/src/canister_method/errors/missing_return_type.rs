@@ -30,7 +30,7 @@ pub fn build_missing_return_type_error_message(
     };
     let source = source_map.get_source(span);
 
-    let example_return_type = ": boolean".to_string();
+    let example_return_type = ": void".to_string();
     let adjusted_source = insert_return_type_into_source(&source, range.0, &example_return_type);
 
     ErrorMessage {

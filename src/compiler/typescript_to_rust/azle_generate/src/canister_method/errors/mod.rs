@@ -6,8 +6,10 @@ pub use extraneous_decorator::build_extraneous_decorator_error_message;
 pub use missing_return_type::build_missing_return_type_error_message;
 pub use parse_error::build_parse_error_message;
 pub use parse_error::ParseError;
+pub use void_return_type_required::build_void_return_type_required_error_message;
 
 mod duplicate_method_types;
 mod extraneous_decorator;
 mod missing_return_type;
 mod parse_error;
+mod void_return_type_required;

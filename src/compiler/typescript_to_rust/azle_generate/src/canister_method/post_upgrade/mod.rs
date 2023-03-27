@@ -26,6 +26,7 @@ impl TsAst {
         let post_upgrade_fn_decl_option = post_upgrade_fn_decls.get(0);
 
         let params = if let Some(fn_decl) = post_upgrade_fn_decl_option {
+            fn_decl.assert_return_type_is_void();
             fn_decl.build_params()
         } else {
             vec![]

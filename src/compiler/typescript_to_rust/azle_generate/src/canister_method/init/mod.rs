@@ -26,6 +26,7 @@ impl TsAst {
         let init_fn_decl_option = init_fn_decls.get(0);
 
         let params = if let Some(fn_decl) = init_fn_decl_option {
+            fn_decl.assert_return_type_is_void();
             fn_decl.build_params()
         } else {
             vec![]

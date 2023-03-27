@@ -117,4 +117,19 @@ impl<'a> AzleFnDecl<'a> {
             })
             .collect()
     }
+
+    fn assert_return_type_is_void(&self) {
+        let return_ts_type = self.get_return_ts_type();
+
+        if let swc_ecma_ast::TsType::TsKeywordType(keyword) = return_ts_type {
+            if let swc_ecma_ast::TsKeywordTypeKind::TsVoidKeyword = keyword.kind {
+                return;
+            }
+        }
+
+        panic!(
+            "{}",
+            errors::build_void_return_type_required_error_message(&self.fn_decl, self.source_map)
+        )
+    }
 }

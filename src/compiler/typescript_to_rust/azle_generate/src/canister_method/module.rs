@@ -5,10 +5,7 @@ use swc_ecma_ast::{
 
 use crate::{
     canister_method::{errors, module_item::ModuleItemHelperMethods, Annotation},
-    ts_ast::{
-        source_map::{GetSourceFileInfo, SourceMapped},
-        AzleFnDecl, AzleTypeAliasDecl, GetName,
-    },
+    ts_ast::{source_map::SourceMapped, AzleFnDecl, AzleTypeAliasDecl, GetName},
 };
 
 pub trait ModuleHelperMethods {

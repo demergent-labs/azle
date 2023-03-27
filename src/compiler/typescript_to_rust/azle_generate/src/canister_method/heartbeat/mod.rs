@@ -22,6 +22,8 @@ impl TsAst {
         let heartbeat_fn_decl_option = heartbeat_fn_decls.get(0);
 
         if let Some(heartbeat_fn_decl) = heartbeat_fn_decl_option {
+            heartbeat_fn_decl.assert_return_type_is_void();
+
             let body = rust::generate(heartbeat_fn_decl);
             let guard_function_name = heartbeat_fn_decl.annotation.guard.clone();
             Some(HeartbeatMethod {
