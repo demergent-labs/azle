@@ -22,7 +22,10 @@ const callingPrincipal = callingIdentity.getPrincipal().toString();
 const someoneIdentity = createIdentity(2);
 export const someonePrincipal = someoneIdentity.getPrincipal().toString();
 
-export function getTests(whoamiCanister: ActorSubclass<_SERVICE>): Test[] {
+export function getTests(
+    whoamiCanister: ActorSubclass<_SERVICE>,
+    canisterName: string
+): Test[] {
     return [
         {
             name: 'installer',
@@ -78,7 +81,7 @@ export function getTests(whoamiCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'redeploy',
             prep: async () => {
                 execSync(
-                    `dfx deploy azle --argument '(principal "${callingPrincipal}")'`,
+                    `dfx deploy ${canisterName} --argument '(principal "${callingPrincipal}")'`,
                     {
                         stdio: 'inherit'
                     }
