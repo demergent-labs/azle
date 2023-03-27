@@ -1,4 +1,5 @@
 import { ok, Test } from 'azle/test';
+import { execSync } from 'child_process';
 import {
     Reaction,
     User,
@@ -175,6 +176,31 @@ const STABLEMAPVALUECOMPS: [
         Object.keys(a).every((value) => Object.keys(b).includes(value)),
     (a, b) => a !== undefined && a.toText() === b.toText()
 ];
+
+export function getTests(
+    stableStructuresCanister_1: ActorSubclass<CANISTER1_SERVICE>,
+    stableStructuresCanister_2: ActorSubclass<CANISTER2_SERVICE>,
+    stableStructuresCanister_3: ActorSubclass<CANISTER3_SERVICE>
+): Test[] {
+    return [
+        ...preRedeployTests(stableStructuresCanister_1, 0, 4),
+        ...preRedeployTests(stableStructuresCanister_2, 5, 9),
+        ...preRedeployTests(stableStructuresCanister_3, 10, 13),
+        {
+            name: 'redeploy canisters',
+            prep: async () => {
+                execSync('dfx deploy', { stdio: 'inherit' });
+            }
+        },
+        ...postRedeployTests(stableStructuresCanister_1, 0, 4),
+        ...postRedeployTests(stableStructuresCanister_2, 5, 9),
+        ...postRedeployTests(stableStructuresCanister_3, 10, 13),
+        ...insertErrorTests(
+            stableStructuresCanister_1,
+            stableStructuresCanister_3
+        )
+    ];
+}
 
 export function preRedeployTests(
     canister: ActorSubclass<_SERVICE>,
