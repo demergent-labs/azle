@@ -12,7 +12,7 @@ type StableMap13InsertResult = variant {
   Ok : opt principal;
   Err : InsertError;
 };
-type User = record { username : text; blogPosts : vec BlogPost };
+type User = record { username : text; posts : vec BlogPost };
 service : () -> {
   stableMap10ContainsKey : (float32) -> (bool) query;
   stableMap10Get : (float32) -> (opt opt bool) query;

@@ -47,7 +47,7 @@ const STABLE_MAP_KEYS: [
     },
     {
         username: 'username',
-        blogPosts: [
+        posts: [
             {
                 title: 'MyBlogPost'
             }
@@ -129,7 +129,7 @@ const STABLEMAPVALUES: [
     [true],
     {
         username: 'username2',
-        blogPosts: [
+        posts: [
             {
                 title: 'BlagPost'
             }
@@ -169,7 +169,7 @@ const STABLEMAPVALUECOMPS: [
     (a, b) =>
         a !== undefined &&
         a.username === b.username &&
-        a.blogPosts[0].title === b.blogPosts[0].title,
+        a.posts[0].title === b.posts[0].title,
     (a, b) =>
         a !== undefined &&
         Object.keys(a).every((value) => Object.keys(b).includes(value)),
