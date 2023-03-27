@@ -1,3 +1,4 @@
+pub use async_not_allowed::build_async_not_allowed_error_message;
 pub use duplicate_method_types::{
     build_duplicate_method_types_error_message,
     build_duplicate_method_types_error_message_from_azle_fn_decl,
@@ -8,6 +9,7 @@ pub use parse_error::build_parse_error_message;
 pub use parse_error::ParseError;
 pub use void_return_type_required::build_void_return_type_required_error_message;
 
+mod async_not_allowed;
 mod duplicate_method_types;
 mod extraneous_decorator;
 mod missing_return_type;

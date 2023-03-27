@@ -82,13 +82,13 @@ export function getInitialized(): boolean {
 }
 
 $heartbeat;
-export function heartbeat() {
+export function heartbeat(): void {
     heartbeating = true;
     throw 'We are throwing in the heartbeat';
 }
 
 $inspectMessage;
-export function inspectMessage() {
+export function inspectMessage(): void {
     console.log('inspectMessage called');
 
     if (

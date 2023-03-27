@@ -41,12 +41,12 @@ export function inspectMessage(): void {
 }
 
 $heartbeat({ guard: acceptAllThenRejectAll });
-export function heartbeat() {
+export function heartbeat(): void {
     console.log('heartbeat called');
 }
 
 $preUpgrade({ guard: preventUpgrades });
-export function preUpgrade() {
+export function preUpgrade(): void {
     console.log('preUpgrade called');
 }
 
