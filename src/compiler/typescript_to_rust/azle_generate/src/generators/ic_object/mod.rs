@@ -1,4 +1,7 @@
-use cdk_framework::act::{node::external_canister::Method, ToTypeAnnotation};
+use cdk_framework::act::{
+    node::{candid::service::Method, Context},
+    ToTypeAnnotation,
+};
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 
@@ -14,7 +17,10 @@ pub fn generate_param_variables(method: &Method, canister_name: &String) -> Vec<
         .map(|(index, param)| {
             let param_name_js_value = format_ident!("{}_js_value", &param.get_prefixed_name());
             let param_name = format_ident!("{}", &param.get_prefixed_name());
-            let param_type = param.to_type_annotation(&ts_keywords::ts_keywords(), method.create_qualified_name(canister_name));
+            let param_type = param.to_type_annotation(&Context {
+                keyword_list: ts_keywords::ts_keywords(),
+                cdk_name: "azle".to_string(),
+            }, method.create_qualified_name(canister_name));
 
             quote! {
                 let #param_name_js_value = args_js_object.get(#index, _context).unwrap();

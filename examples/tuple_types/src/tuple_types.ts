@@ -1,13 +1,13 @@
 import {
     $query,
     CanisterResult,
-    ExternalCanister,
     int,
     nat64,
     nat8,
     Principal,
     Record,
-    update,
+    Service,
+    serviceUpdate,
     Variant
 } from 'azle';
 
@@ -16,8 +16,8 @@ import {
 type CanisterTuple1 = [string, nat64];
 type CanisterTuple2 = [string, CanisterTuple1];
 
-class TestCanister extends ExternalCanister {
-    @update
+class TestCanister extends Service {
+    @serviceUpdate
     test: (param: CanisterTuple1) => CanisterResult<CanisterTuple2>;
 }
 

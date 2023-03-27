@@ -1,12 +1,11 @@
+use cdk_framework::act::node::candid::Service;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
-use cdk_framework::act::node::ExternalCanister;
-
 use crate::generators::ic_object;
 
-pub fn generate(external_canisters: &Vec<ExternalCanister>) -> Vec<TokenStream> {
-    external_canisters.iter().map(|canister| {
+pub fn generate(services: &Vec<Service>) -> Vec<TokenStream> {
+    services.iter().map(|canister| {
         canister.methods.iter().map(|method| {
             let function_name_string = format!("_azle_notify_with_payment128_{}_{}", canister.name, method.name);
             let real_function_name = format_ident!("{}", function_name_string);

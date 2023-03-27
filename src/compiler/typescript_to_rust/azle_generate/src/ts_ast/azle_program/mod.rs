@@ -30,11 +30,9 @@ impl AzleProgram {
         }
     }
 
-    fn get_external_canister_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
+    fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
         match &self.program {
-            Program::Module(module) => {
-                module.get_external_canister_class_declarations(&self.source_map)
-            }
+            Program::Module(module) => module.get_service_class_declarations(&self.source_map),
             Program::Script(_) => vec![],
         }
     }

@@ -25,16 +25,16 @@ Examples:
 ```typescript
 import {
     CanisterResult,
-    ExternalCanister,
     nat64,
     Principal,
+    Service,
+    serviceUpdate,
     $update,
-    update,
     Variant
 } from 'azle';
 
-class TokenCanister extends ExternalCanister {
-    @update
+class TokenCanister extends Service {
+    @serviceUpdate
     transfer: (to: Principal, amount: nat64) => CanisterResult<nat64>;
 }
 

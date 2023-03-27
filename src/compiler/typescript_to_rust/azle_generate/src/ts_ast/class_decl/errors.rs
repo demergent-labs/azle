@@ -1,7 +1,7 @@
 use swc_ecma_ast::{ClassDecl, ClassMember, ClassProp};
 
 use crate::{
-    errors::external_canister_method::ParseError,
+    errors::service_method::ParseError,
     ts_ast::{
         source_map::{GetSourceFileInfo, SourceMapped},
         GetName,
@@ -32,7 +32,7 @@ impl SourceMapped<'_, ClassDecl> {
             ClassMember::StaticBlock(static_block) => static_block.span,
         };
 
-        let external_canister_class_name = self.ident.get_name().to_string();
+        let service_class_name = self.ident.get_name().to_string();
 
         let origin = self.source_map.get_origin(span);
         let line_number = self.source_map.get_line_number(span);
@@ -40,7 +40,7 @@ impl SourceMapped<'_, ClassDecl> {
 
         format!(
             "Invalid {} in class {}\nat {}:{}:{}\n\nHelp: Remove this member or make it a property",
-            member_type, external_canister_class_name, origin, line_number, column_number
+            member_type, service_class_name, origin, line_number, column_number
         )
     }
 
@@ -49,7 +49,7 @@ impl SourceMapped<'_, ClassDecl> {
         class_prop: &ClassProp,
         error_message: ParseError,
     ) -> String {
-        let external_canister_class_name = self.ident.get_name().to_string();
+        let service_class_name = self.ident.get_name().to_string();
 
         let origin = self.source_map.get_origin(class_prop.span);
         let line_number = self.source_map.get_line_number(class_prop.span);
@@ -59,7 +59,7 @@ impl SourceMapped<'_, ClassDecl> {
         format!(
             "{}\n\nin class {}\nat {}",
             error_message.error_message(),
-            external_canister_class_name,
+            service_class_name,
             location
         )
     }

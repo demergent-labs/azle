@@ -70,7 +70,6 @@ impl<'a> AzleFnDecl<'a> {
                     params,
                     return_type,
                     body,
-                    "azle".to_string(),
                 ),
             }),
             CanisterMethodType::Update => CanisterMethod::Update(UpdateMethod {
@@ -82,7 +81,6 @@ impl<'a> AzleFnDecl<'a> {
                     params,
                     return_type,
                     body,
-                    "azle".to_string(),
                 ),
             }),
             _ => panic!("TODO: YOU SHOULDN'T BE TRYING TO PARSE NON QUERY/UPDATE METHODS HERE!"),

@@ -24,6 +24,8 @@ impl TsAst {
                     acc
                 });
 
+        let services = self.build_services();
+
         let tuples =
             self.ts_type_alias_decls()
                 .iter()
@@ -57,6 +59,7 @@ impl TsAst {
         CandidTypes {
             funcs,
             records,
+            services,
             tuples,
             type_aliases,
             variants,

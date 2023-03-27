@@ -1,8 +1,10 @@
-use cdk_framework::act::node::{external_canister::Method, CandidType, Param};
+use cdk_framework::act::node::{
+    candid::service::Method, node_parts::mode::Mode, CandidType, Param,
+};
 use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnType, TsType};
 
 use crate::{
-    errors::external_canister_method::ParseError,
+    errors::service_method::ParseError,
     ts_ast::{source_map::SourceMapped, GetName},
 };
 
@@ -11,7 +13,7 @@ use super::azle_type::AzleType;
 mod get_dependent_types;
 
 impl SourceMapped<'_, ClassProp> {
-    pub fn to_act_external_canister_method(&self) -> Result<Method, ParseError> {
+    pub fn to_service_method(&self) -> Result<Method, ParseError> {
         if self.decorators.len() == 0 {
             return Err(ParseError::MissingDecorator);
         }
@@ -21,11 +23,15 @@ impl SourceMapped<'_, ClassProp> {
         }
 
         let name = self.name()?;
-        let _mode = self.mode()?;
+        let mode = match &self.mode()?[..] {
+            "serviceQuery" => Mode::Query,
+            "serviceUpdate" => Mode::Update,
+            _ => panic!("this is not supported"),
+        };
         let params = self.build_act_fn_params()?;
         let return_type = self.build_return_type()?;
 
-        Ok(Method::new(name, params, return_type))
+        Ok(Method::new(name, mode, params, return_type))
     }
 
     fn build_act_fn_params(&self) -> Result<Vec<Param>, ParseError> {
@@ -49,7 +55,7 @@ impl SourceMapped<'_, ClassProp> {
     }
 
     fn has_azle_decorator(&self) -> bool {
-        self.contains_decorator("query") || self.contains_decorator("update")
+        self.contains_decorator("serviceQuery") || self.contains_decorator("serviceUpdate")
     }
 
     fn mode(&self) -> Result<String, ParseError> {

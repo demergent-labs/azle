@@ -1,7 +1,7 @@
 use crate::generators::cross_canister_calls::{
     post_await_state_management, pre_await_state_management, promise_fulfillment,
 };
-use cdk_framework::act::node::ExternalCanister;
+use cdk_framework::act::node::candid::Service;
 use proc_macro2::TokenStream;
 use quote::quote;
 
@@ -9,8 +9,8 @@ mod call;
 mod call_with_payment;
 mod call_with_payment128;
 
-pub fn generate(external_canisters: &Vec<ExternalCanister>) -> Vec<TokenStream> {
-    external_canisters
+pub fn generate(services: &Vec<Service>) -> Vec<TokenStream> {
+    services
         .iter()
         .map(|canister| {
             canister

@@ -1,5 +1,6 @@
 use cdk_framework::act::node::{
-    candid::{func::Mode, Func, Opt, Primitive, Record, TypeRef, Variant},
+    candid::{Func, Opt, Primitive, Record, TypeRef, Variant},
+    node_parts::mode::Mode,
     CandidType,
 };
 

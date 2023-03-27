@@ -1,6 +1,6 @@
 use cdk_framework::act::node::{
+    candid::Service,
     canister_method::{QueryMethod, QueryOrUpdateMethod, UpdateMethod},
-    ExternalCanister,
 };
 use proc_macro2::TokenStream;
 use quote::quote;
@@ -15,7 +15,7 @@ pub fn generate(
     ts_ast: &TsAst,
     query_methods: &Vec<QueryMethod>,
     update_methods: &Vec<UpdateMethod>,
-    external_canisters: &Vec<ExternalCanister>,
+    services: &Vec<Service>,
     stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
 ) -> TokenStream {
     let query_and_update_methods = vec![
@@ -35,7 +35,7 @@ pub fn generate(
     let boa_error_handlers = boa_error_handlers::generate();
     let ic_object_functions = ic_object::functions::generate(
         &query_and_update_methods,
-        external_canisters,
+        services,
         stable_b_tree_map_nodes,
     );
     let register_ic_object_function = ic_object::register_function::generate(ts_ast);
