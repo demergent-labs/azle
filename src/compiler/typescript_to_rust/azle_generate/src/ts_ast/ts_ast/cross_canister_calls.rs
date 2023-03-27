@@ -9,7 +9,7 @@ impl TsAst {
 
         service_class_declarations
             .iter()
-            .map(|service_class_decl| service_class_decl.to_act_service())
+            .map(|service_class_decl| service_class_decl.to_service())
             .collect()
     }
 }

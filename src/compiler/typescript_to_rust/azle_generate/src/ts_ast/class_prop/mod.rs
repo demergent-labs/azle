@@ -13,7 +13,7 @@ use super::azle_type::AzleType;
 mod get_dependent_types;
 
 impl SourceMapped<'_, ClassProp> {
-    pub fn to_act_service_method(&self) -> Result<Method, ParseError> {
+    pub fn to_service_method(&self) -> Result<Method, ParseError> {
         if self.decorators.len() == 0 {
             return Err(ParseError::MissingDecorator);
         }
