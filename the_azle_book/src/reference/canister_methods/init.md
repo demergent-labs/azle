@@ -15,7 +15,7 @@ Examples:
 import { $init } from 'azle';
 
 $init;
-export function init() {
+export function init(): void {
     console.log('This runs once when the canister is first initialized');
 }
 ```

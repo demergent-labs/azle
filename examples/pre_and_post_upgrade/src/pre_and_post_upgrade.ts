@@ -21,14 +21,14 @@ let entries: {
 } = {};
 
 $init;
-export function init() {
+export function init(): void {
     console.log('init');
 
     stableStorage.insert('entries', []);
 }
 
 $preUpgrade;
-export function preUpgrade() {
+export function preUpgrade(): void {
     console.log('preUpgrade');
 
     stableStorage.insert(
@@ -43,7 +43,7 @@ export function preUpgrade() {
 }
 
 $postUpgrade;
-export function postUpgrade() {
+export function postUpgrade(): void {
     console.log('postUpgrade');
 
     entries = (stableStorage.get('entries') ?? []).reduce((result, entry) => {

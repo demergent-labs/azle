@@ -91,7 +91,7 @@ type JSON = Alias<string>;
 let stableStorage = new StableBTreeMap<string, string>(0, 25, 1_000);
 
 $init;
-export function init(ethereumUrl: string) {
+export function init(ethereumUrl: string): void {
     stableStorage.insert('ethereumUrl', ethereumUrl);
 }
 

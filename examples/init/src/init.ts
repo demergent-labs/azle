@@ -18,7 +18,7 @@ export function init(
     initUser: User,
     initReaction: Reaction,
     initOwner: Principal
-) {
+): void {
     user = initUser;
     reaction = initReaction;
     owner = initOwner;

@@ -10,7 +10,7 @@ Examples:
 import { $preUpgrade } from 'azle';
 
 $preUpgrade;
-export function preUpgrade() {
+export function preUpgrade(): void {
     console.log('This runs before every canister upgrade');
 }
 ```

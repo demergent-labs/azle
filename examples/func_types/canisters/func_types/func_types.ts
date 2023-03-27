@@ -46,7 +46,7 @@ type NullFunc = Func<
 >;
 
 $init;
-export function init_() {
+export function init_(): void {
     stableStorage.insert('stableFunc', [
         Principal.from('aaaaa-aa'),
         'start_canister'

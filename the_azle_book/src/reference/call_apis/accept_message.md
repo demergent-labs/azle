@@ -11,7 +11,7 @@ Examples:
 import { ic, $inspectMessage } from 'azle';
 
 $inspectMessage;
-export function inspectMessage() {
+export function inspectMessage(): void {
     ic.acceptMessage();
 }
 ```

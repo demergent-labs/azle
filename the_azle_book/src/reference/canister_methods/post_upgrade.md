@@ -11,7 +11,7 @@ Examples:
 import { $postUpgrade } from 'azle';
 
 $postUpgrade;
-export function postUpgrade() {
+export function postUpgrade(): void {
     console.log('This runs after every canister upgrade');
 }
 ```

@@ -60,14 +60,14 @@ let someone: Principal = Principal.fromText('aaaaa-aa');
 
 // Manually save the calling principal and argument for later access.
 $init;
-export function init(somebody: Principal) {
+export function init(somebody: Principal): void {
     install = ic.caller();
     someone = somebody;
 }
 
 // Manually re-save these variables after new deploys.
 $postUpgrade;
-export function postUpgrade(somebody: Principal) {
+export function postUpgrade(somebody: Principal): void {
     install = ic.caller();
     someone = somebody;
 }
