@@ -1,4 +1,4 @@
-use cdk_framework::act::node::{service::Method, Service};
+use cdk_framework::act::node::candid::{service::Method, Service};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 

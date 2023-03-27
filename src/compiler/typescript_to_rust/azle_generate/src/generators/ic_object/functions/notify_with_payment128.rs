@@ -1,7 +1,6 @@
+use cdk_framework::act::node::candid::Service;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-
-use cdk_framework::act::node::Service;
 
 use crate::generators::ic_object;
 

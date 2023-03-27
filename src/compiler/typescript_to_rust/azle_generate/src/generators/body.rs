@@ -1,6 +1,6 @@
 use cdk_framework::act::node::{
+    candid::Service,
     canister_method::{QueryMethod, QueryOrUpdateMethod, UpdateMethod},
-    Service,
 };
 use proc_macro2::TokenStream;
 use quote::quote;

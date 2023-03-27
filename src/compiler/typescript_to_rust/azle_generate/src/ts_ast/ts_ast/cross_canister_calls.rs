@@ -1,6 +1,7 @@
+use cdk_framework::act::node::candid::Service;
+
 use super::TsAst;
 use crate::ts_ast::azle_program::HelperMethods;
-use cdk_framework::act::node::Service;
 
 impl TsAst {
     pub fn build_services(&self) -> Vec<Service> {

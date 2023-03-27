@@ -1,4 +1,7 @@
-use cdk_framework::act::node::{candid::func::Mode, service::Method, CandidType, Param};
+use cdk_framework::act::node::{
+    candid::{func::Mode, service::Method},
+    CandidType, Param,
+};
 use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnType, TsType};
 
 use crate::{

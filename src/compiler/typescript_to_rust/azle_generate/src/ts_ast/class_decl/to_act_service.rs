@@ -1,5 +1,5 @@
 use cdk_framework::{
-    act::node::{service::Method, Service},
+    act::node::candid::{service::Method, Service},
     traits::ToIdent,
 };
 use quote::quote;

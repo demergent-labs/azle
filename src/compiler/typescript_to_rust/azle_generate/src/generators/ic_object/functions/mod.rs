@@ -1,4 +1,4 @@
-use cdk_framework::act::node::{canister_method::QueryOrUpdateMethod, Service};
+use cdk_framework::act::node::{candid::Service, canister_method::QueryOrUpdateMethod};
 
 use crate::StableBTreeMapNode;
 
