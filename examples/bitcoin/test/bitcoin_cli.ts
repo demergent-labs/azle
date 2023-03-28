@@ -35,14 +35,14 @@ export type SignedTransaction = {
 /**
  * A simple API for interacting with the bitcoin-cli
  */
-export const bitcoin_cli = {
-    create_raw_transaction,
-    create_wallet,
-    generate_to_address,
-    get_received_by_address,
-    import_private_key,
-    list_unspent,
-    sign_raw_transaction_with_wallet
+export const bitcoinCli = {
+    createRawTransaction,
+    createWallet,
+    generateToAddress,
+    getReceivedByAddress,
+    importPrivateKey,
+    listUnspent,
+    signRawTransactionWithWallet
 };
 
 /**
@@ -52,7 +52,7 @@ export const bitcoin_cli = {
  * @param outputs
  * @returns hex-encoded raw transaction
  */
-function create_raw_transaction(input: TxInput, outputs: TxOutputs): string {
+function createRawTransaction(input: TxInput, outputs: TxOutputs): string {
     return cli(
         `createrawtransaction '[${JSON.stringify(input)}]' '${JSON.stringify(
             outputs
@@ -63,14 +63,14 @@ function create_raw_transaction(input: TxInput, outputs: TxOutputs): string {
 /**
  * Creates a new bitcoin wallet and unlocks it for future operations
  * @param name The name for the wallet
- * @param pass_phrase The phrase used to encrypt the wallet
+ * @param passPhrase The phrase used to encrypt the wallet
  */
-function create_wallet(
+function createWallet(
     name: string = 'default',
-    pass_phrase: string = 'my pass phrase'
+    passPhrase: string = 'my pass phrase'
 ): void {
-    cli(`createwallet "${name}" false false "${pass_phrase}" false false true`);
-    cli(`walletpassphrase "${pass_phrase}" 1800`);
+    cli(`createwallet "${name}" false false "${passPhrase}" false false true`);
+    cli(`walletpassphrase "${passPhrase}" 1800`);
 }
 
 /**
@@ -78,7 +78,7 @@ function create_wallet(
  * @param nblocks The number of blocks to generate immediately
  * @param address The address to send the newly generated bitcoin to
  */
-async function generate_to_address(
+async function generateToAddress(
     nblocks: number,
     address: string
 ): Promise<void> {
@@ -99,9 +99,9 @@ async function generate_to_address(
  * @param minconf Only include transactions confirmed at least this many times
  * @returns
  */
-function get_received_by_address(address: string, minconf: number = 1): number {
-    const amount_string = cli(`getreceivedbyaddress ${address} ${minconf}`);
-    return parseFloat(amount_string);
+function getReceivedByAddress(address: string, minconf: number = 1): number {
+    const amountString = cli(`getreceivedbyaddress ${address} ${minconf}`);
+    return parseFloat(amountString);
 }
 
 /**
@@ -109,7 +109,7 @@ function get_received_by_address(address: string, minconf: number = 1): number {
  * @param wif A private key in wallet import format
  * @param label An optional label for identifying the private key
  */
-function import_private_key(wif: string, label?: string): void {
+function importPrivateKey(wif: string, label?: string): void {
     cli(`importprivkey ${wif} ${label}`);
 }
 
@@ -117,23 +117,21 @@ function import_private_key(wif: string, label?: string): void {
  * Returns array of unspent transaction outputs
  * @returns The utxos
  */
-function list_unspent(): Utxo[] {
-    const utxos_string = cli(`listunspent`);
-    const utxos: Utxo[] = JSON.parse(utxos_string);
+function listUnspent(): Utxo[] {
+    const utxosString = cli(`listunspent`);
+    const utxos: Utxo[] = JSON.parse(utxosString);
     return utxos;
 }
 
 /**
  * Sign inputs for raw transaction (serialized, hex-encoded).
- * @param hex_string The transaction hex string
+ * @param hexString The transaction hex string
  * @returns The signed transaction
  */
-function sign_raw_transaction_with_wallet(
-    hex_string: string
-): SignedTransaction {
-    const signed_tx_string = cli(`signrawtransactionwithwallet ${hex_string}`);
-    const signed_tx: SignedTransaction = JSON.parse(signed_tx_string);
-    return signed_tx;
+function signRawTransactionWithWallet(hexString: string): SignedTransaction {
+    const signedTxString = cli(`signrawtransactionwithwallet ${hexString}`);
+    const signedTx: SignedTransaction = JSON.parse(signedTxString);
+    return signedTx;
 }
 
 export function cli(command: string): string {
