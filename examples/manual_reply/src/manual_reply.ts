@@ -77,11 +77,10 @@ export function updateFloat32(): Manual<float32> {
     ic.reply(1245.678);
 }
 
-// TODO: Inline Types not currently supported.
-// See https://github.com/demergent-labs/azle/issues/474
-// export function updateInlineType(): Manual<{ prop: string }> {
-//     ic.reply({ prop: 'prop' });
-// }
+$update;
+export function updateInlineType(): Manual<Record<{ prop: string }>> {
+    ic.reply({ prop: 'prop' });
+}
 
 $update;
 export function updateInt8(): Manual<int8> {
