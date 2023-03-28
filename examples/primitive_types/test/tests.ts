@@ -338,6 +338,26 @@ export function getTests(
             }
         },
         {
+            name: 'getBool',
+            test: async () => {
+                const result = await primitiveTypesCanister.getBool();
+
+                return {
+                    Ok: result === true
+                };
+            }
+        },
+        {
+            name: 'printBool',
+            test: async () => {
+                const result = await primitiveTypesCanister.printBool(false);
+
+                return {
+                    Ok: result === false
+                };
+            }
+        },
+        {
             name: 'getPrincipal',
             test: async () => {
                 const result = await primitiveTypesCanister.getPrincipal();
