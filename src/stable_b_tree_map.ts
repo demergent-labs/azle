@@ -1,4 +1,4 @@
-import { ic, nat8, nat32, nat64, Opt, Record, Variant } from '../index';
+import { ic, nat8, nat32, nat64, Opt, Record, Variant } from './';
 
 type KeyTooLarge = Record<{
     given: nat32;

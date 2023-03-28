@@ -1,4 +1,4 @@
-import { blob, Principal } from '../../../index';
+import { blob, Principal } from '../../../src';
 import { getCrc32 } from '@dfinity/principal/lib/esm/utils/getCrc';
 import { sha224 } from 'js-sha256';
 import { Address } from '../index';

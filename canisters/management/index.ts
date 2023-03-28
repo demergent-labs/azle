@@ -31,7 +31,7 @@ import {
     serviceUpdate,
     Variant,
     Vec
-} from '../../index';
+} from '../../src';
 
 import {
     GetBalanceArgs,
