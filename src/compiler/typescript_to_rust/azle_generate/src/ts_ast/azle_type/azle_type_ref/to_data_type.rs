@@ -29,7 +29,6 @@ impl AzleTypeRef<'_> {
             "nat16" => CandidType::Primitive(Primitive::Nat16),
             "nat32" => CandidType::Primitive(Primitive::Nat32),
             "nat64" => CandidType::Primitive(Primitive::Nat64),
-            "number" => CandidType::Primitive(Primitive::Float64),
             "Principal" => CandidType::Primitive(Primitive::Principal),
             "empty" => CandidType::Primitive(Primitive::Empty),
             "reserved" => CandidType::Primitive(Primitive::Reserved),
