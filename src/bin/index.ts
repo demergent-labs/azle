@@ -1,12 +1,19 @@
 import { execSync, IOType, spawnSync } from 'child_process';
+import * as fs from 'fs';
+import * as fsExtra from 'fs-extra';
+import * as path from 'path';
+import * as tsc from 'typescript';
+
+import { version, dfx_version, rust_version } from '../../package.json';
 import { compileTypeScriptToJavaScript } from '../compiler/typescript_to_javascript';
 import {
     generateLibCargoToml,
     generateWorkspaceCargoLock,
     generateWorkspaceCargoToml
 } from '../compiler/typescript_to_javascript/cargo_toml_files';
-import * as fs from 'fs';
-import * as fsExtra from 'fs-extra';
+import { red, yellow, green, blue, purple, dim } from './colors';
+import { generateNewAzleProject } from './new';
+import { Err, ok, Ok, Result, unwrap } from './result';
 import {
     AzleError,
     DfxJson,
@@ -18,12 +25,6 @@ import {
     TsCompilationError,
     TsSyntaxErrorLocation
 } from './types';
-import { Err, ok, Ok, Result, unwrap } from './result';
-import { red, yellow, green, blue, purple, dim } from './colors';
-import * as tsc from 'typescript';
-import * as path from 'path';
-import { version, dfx_version, rust_version } from '../../package.json';
-import { generateNewAzleProject } from './new';
 
 const GLOBAL_AZLE_CONFIG_DIR = path.resolve(
     require('os').homedir(),
