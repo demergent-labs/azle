@@ -1,7 +1,7 @@
 import * as swc from '@swc/core';
 import { buildSync } from 'esbuild';
-import { JavaScript, TypeScript } from '../../types';
-import { Result } from '../../result';
+import { JavaScript, TypeScript } from '../../bin/types';
+import { Result } from '../../bin/result';
 
 export function compileTypeScriptToJavaScript(
     tsPath: string

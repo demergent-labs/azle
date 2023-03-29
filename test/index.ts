@@ -1,4 +1,4 @@
-import { Variant } from '../src';
+import { Variant } from '../src/lib';
 import { execSync } from 'child_process';
 
 export type Test = {

@@ -14,7 +14,7 @@ import {
     serviceUpdate,
     Variant,
     Vec
-} from '../../src';
+} from '../../src/lib';
 
 // Amount of tokens, measured in 10^-8 of a token.
 export type Tokens = Record<{

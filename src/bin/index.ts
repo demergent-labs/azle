@@ -1,10 +1,10 @@
 import { execSync, IOType, spawnSync } from 'child_process';
-import { compileTypeScriptToJavaScript } from './compiler/typescript_to_javascript';
+import { compileTypeScriptToJavaScript } from '../compiler/typescript_to_javascript';
 import {
     generateLibCargoToml,
     generateWorkspaceCargoLock,
     generateWorkspaceCargoToml
-} from './compiler/typescript_to_javascript/cargo_toml_files';
+} from '../compiler/typescript_to_javascript/cargo_toml_files';
 import * as fs from 'fs';
 import * as fsExtra from 'fs-extra';
 import {
@@ -22,7 +22,7 @@ import { Err, ok, Ok, Result, unwrap } from './result';
 import { red, yellow, green, blue, purple, dim } from './colors';
 import * as tsc from 'typescript';
 import * as path from 'path';
-import { version, dfx_version, rust_version } from '../package.json';
+import { version, dfx_version, rust_version } from '../../package.json';
 import { generateNewAzleProject } from './new';
 
 const GLOBAL_AZLE_CONFIG_DIR = path.resolve(
@@ -42,7 +42,7 @@ function azle() {
 
     const installRustDependenciesPath = path.resolve(
         __dirname,
-        '../install_rust_dependencies.sh'
+        '../../install_rust_dependencies.sh'
     );
 
     execSync(`"${installRustDependenciesPath}" ${version} ${rust_version}`, {
