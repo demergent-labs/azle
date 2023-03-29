@@ -8,6 +8,70 @@ export function getTests(
 ): Test[] {
     return [
         {
+            name: 'getString',
+            test: async () => {
+                const result = await primitiveTypesCanister.getString();
+
+                return {
+                    Ok: result === 'string'
+                };
+            }
+        },
+        {
+            name: 'printString',
+            test: async () => {
+                const result = await primitiveTypesCanister.printString(
+                    'string'
+                );
+
+                return {
+                    Ok: result === 'string'
+                };
+            }
+        },
+        {
+            name: 'getText',
+            test: async () => {
+                const result = await primitiveTypesCanister.getText();
+
+                return {
+                    Ok: result === 'text'
+                };
+            }
+        },
+        {
+            name: 'printText',
+            test: async () => {
+                const result = await primitiveTypesCanister.printText('text');
+
+                return {
+                    Ok: result === 'text'
+                };
+            }
+        },
+        {
+            name: 'getNumber',
+            test: async () => {
+                const result = await primitiveTypesCanister.getNumber();
+
+                return {
+                    Ok: result.toString() === '9007199254740991'
+                };
+            }
+        },
+        {
+            name: 'printNumber',
+            test: async () => {
+                const result = await primitiveTypesCanister.printNumber(
+                    90071992547409.05
+                );
+
+                return {
+                    Ok: result.toString() === '90071992547409.05'
+                };
+            }
+        },
+        {
             name: 'getInt',
             test: async () => {
                 const result = await primitiveTypesCanister.getInt();

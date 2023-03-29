@@ -32,6 +32,7 @@
 
     </head>
     <body>
+    <div id="body-container">
         <!-- Provide site root to javascript -->
         <script>
             var path_to_root = "";
@@ -69,10 +70,12 @@
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             var html = document.querySelector('html');
-            var sidebar = 'hidden';
+            var sidebar = null;
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -183,16 +186,10 @@ export function transfer(to: Principal, amount: nat64): nat64 {
 }
 </code></pre>
 <p>Here's how you would create its external canister definition:</p>
-<pre><code class="language-typescript">import {
-    CanisterResult,
-    ExternalCanister,
-    Principal,
-    nat64,
-    update
-} from 'azle';
+<pre><code class="language-typescript">import { CanisterResult, Principal, nat64, Service, serviceUpdate } from 'azle';
 
-class TokenCanister extends ExternalCanister {
-    @update
+class TokenCanister extends Service {
+    @serviceUpdate
     transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
 }
 </code></pre>
@@ -205,16 +202,16 @@ class TokenCanister extends ExternalCanister {
 <p>And here's a more complete example of a canister called <code>payout_canister</code> that performs a cross-canister call to <code>token_canister</code>:</p>
 <pre><code class="language-typescript">import {
     CanisterResult,
-    ExternalCanister,
     nat64,
     Principal,
+    Service,
+    serviceUpdate,
     $update,
-    update,
     Variant
 } from 'azle';
 
-class TokenCanister extends ExternalCanister {
-    @update
+class TokenCanister extends Service {
+    @serviceUpdate
     transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
 }
 
@@ -278,17 +275,17 @@ export function transfer(
 <p><code>payout_canister</code>:</p>
 <pre><code class="language-typescript">import {
     CanisterResult,
-    ExternalCanister,
     match,
     nat64,
     Principal,
+    Service,
+    serviceUpdate,
     $update,
-    update,
     Variant
 } from 'azle';
 
-class TokenCanister extends ExternalCanister {
-    @update
+class TokenCanister extends Service {
+    @serviceUpdate
     transfer: (
         to: Principal,
         amount: nat64
@@ -334,15 +331,15 @@ export async function payout(
 <p>Here's an example of a composite query method:</p>
 <pre><code class="language-typescript">import {
     CanisterResult,
-    ExternalCanister,
     Principal,
     $query,
-    query,
+    Service,
+    serviceQuery,
     Variant
 } from 'azle';
 
-class SomeCanister extends ExternalCanister {
-    @query
+class SomeCanister extends Service {
+    @serviceQuery
     queryForBoolean: () =&gt; CanisterResult&lt;boolean&gt;;
 }
 
@@ -364,16 +361,16 @@ export async function querySomeCanister(): Promise&lt;
 <p>If you don't need to wait for your cross-canister call to return, you can use <code>notify</code>:</p>
 <pre><code class="language-typescript">import {
     CanisterResult,
-    ExternalCanister,
     Principal,
     RejectionCode,
+    Service,
+    serviceUpdate,
     $update,
-    update,
     Variant
 } from 'azle';
 
-class SomeCanister extends ExternalCanister {
-    @update
+class SomeCanister extends Service {
+    @serviceUpdate
     receiveNotification: () =&gt; CanisterResult&lt;void&gt;;
 }
 
@@ -392,16 +389,16 @@ export function sendNotification(): Variant&lt;{
 <p>If you need to send cycles with your cross-canister call, you can call <code>cycles</code> before calling <code>call</code> or <code>notify</code>:</p>
 <pre><code class="language-typescript">import {
     CanisterResult,
-    ExternalCanister,
     Principal,
     RejectionCode,
+    Service,
+    serviceUpdate,
     $update,
-    update,
     Variant
 } from 'azle';
 
-class SomeCanister extends ExternalCanister {
-    @update
+class SomeCanister extends Service {
+    @serviceUpdate
     receiveNotification: () =&gt; CanisterResult&lt;void&gt;;
 }
 
@@ -466,5 +463,6 @@ export function sendNotification(): Variant&lt;{
         <!-- Custom JS scripts -->
 
 
+    </div>
     </body>
 </html>

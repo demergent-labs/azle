@@ -5,10 +5,7 @@ use swc_ecma_ast::{
 
 use crate::{
     canister_method::{errors, module_item::ModuleItemHelperMethods, Annotation},
-    ts_ast::{
-        source_map::{GetSourceFileInfo, SourceMapped},
-        AzleFnDecl, AzleTypeAliasDecl, GetName,
-    },
+    ts_ast::{source_map::SourceMapped, AzleFnDecl, AzleTypeAliasDecl, GetName},
 };
 
 pub trait ModuleHelperMethods {
@@ -37,10 +34,6 @@ impl ModuleHelperMethods for Module {
                 if previous_module_item_was_custom_decorator {
                     let custom_decorator_module_item = self.body.get(i - 1).unwrap();
 
-                    let line_number = source_map
-                        .get_line_number(custom_decorator_module_item.as_expr_stmt().unwrap().span);
-                    eprintln!("On iteration {i}, module_item was on line {line_number}");
-
                     match module_item.as_exported_fn_decl() {
                         Some(fn_decl) => {
                             let annotation =
@@ -55,6 +48,15 @@ impl ModuleHelperMethods for Module {
                                         )
                                     ),
                                 };
+
+                            if fn_decl.function.return_type.is_none() {
+                                panic!(
+                                    "{}",
+                                    errors::build_missing_return_type_error_message(
+                                        &fn_decl, source_map
+                                    )
+                                )
+                            }
 
                             acc.push(AzleFnDecl {
                                 annotation,

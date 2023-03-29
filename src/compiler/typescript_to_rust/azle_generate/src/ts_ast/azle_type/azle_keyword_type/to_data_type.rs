@@ -10,6 +10,7 @@ impl AzleKeywordType<'_> {
             TsKeywordTypeKind::TsStringKeyword => CandidType::Primitive(Primitive::String),
             TsKeywordTypeKind::TsVoidKeyword => CandidType::Primitive(Primitive::Void),
             TsKeywordTypeKind::TsNullKeyword => CandidType::Primitive(Primitive::Null),
+            TsKeywordTypeKind::TsNumberKeyword => CandidType::Primitive(Primitive::Float64),
             _ => panic!("{}", self.unsupported_type_error()),
         }
     }

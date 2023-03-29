@@ -5,6 +5,7 @@ use cdk_framework::act::{
     },
     CanisterMethods,
 };
+use swc_ecma_ast::TsType;
 
 use crate::ts_ast::{azle_type::AzleType, AzleFnDecl, TsAst};
 
@@ -116,5 +117,52 @@ impl<'a> AzleFnDecl<'a> {
                 azle_type.to_data_type()
             })
             .collect()
+    }
+
+    fn assert_return_type_is_void(&self) {
+        if self.annotation.method_type != CanisterMethodType::Heartbeat && self.is_promise() {
+            panic!(
+                "{}",
+                errors::build_void_return_type_required_error_message(
+                    &self.fn_decl,
+                    self.source_map
+                )
+            )
+        }
+
+        let return_ts_type = self.get_return_ts_type();
+
+        if let swc_ecma_ast::TsType::TsKeywordType(keyword) = return_ts_type {
+            if let swc_ecma_ast::TsKeywordTypeKind::TsVoidKeyword = keyword.kind {
+                return;
+            }
+        }
+
+        panic!(
+            "{}",
+            errors::build_void_return_type_required_error_message(&self.fn_decl, self.source_map)
+        )
+    }
+
+    fn assert_not_async(&self) {
+        if self.fn_decl.function.is_async {
+            panic!(
+                "{}",
+                errors::build_async_not_allowed_error_message(
+                    &self.fn_decl,
+                    self.source_map,
+                    &self.annotation.method_type
+                )
+            )
+        }
+
+        if let TsType::TsTypeRef(type_ref) =
+            &*self.fn_decl.function.return_type.as_ref().unwrap().type_ann
+        {
+            match type_ref.type_name {
+                swc_ecma_ast::TsEntityName::TsQualifiedName(_) => todo!(),
+                swc_ecma_ast::TsEntityName::Ident(_) => todo!(),
+            }
+        }
     }
 }

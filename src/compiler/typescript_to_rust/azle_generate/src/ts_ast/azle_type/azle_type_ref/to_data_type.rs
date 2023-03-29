@@ -32,6 +32,7 @@ impl AzleTypeRef<'_> {
             "Principal" => CandidType::Primitive(Primitive::Principal),
             "empty" => CandidType::Primitive(Primitive::Empty),
             "reserved" => CandidType::Primitive(Primitive::Reserved),
+            "text" => CandidType::Primitive(Primitive::String),
             "Opt" => CandidType::Opt(self.to_option()),
             "Func" => CandidType::Func(self.to_func(None)),
             "Variant" => CandidType::Variant(self.to_variant()),

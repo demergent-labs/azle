@@ -32,6 +32,7 @@
 
     </head>
     <body>
+    <div id="body-container">
         <!-- Provide site root to javascript -->
         <script>
             var path_to_root = "";
@@ -69,10 +70,12 @@
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             var html = document.querySelector('html');
-            var sidebar = 'hidden';
+            var sidebar = null;
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -227,7 +230,7 @@ type JSON = Alias&lt;string&gt;;
 let stableStorage = new StableBTreeMap&lt;string, string&gt;(0, 25, 1_000);
 
 $init;
-export function init(ethereumUrl: string) {
+export function init(ethereumUrl: string): void {
     stableStorage.insert('ethereumUrl', ethereumUrl);
 }
 
@@ -386,5 +389,6 @@ export function ethTransform(args: HttpTransformArgs): HttpResponse {
         <!-- Custom JS scripts -->
 
 
+    </div>
     </body>
 </html>

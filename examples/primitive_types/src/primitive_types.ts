@@ -14,8 +14,42 @@ import {
     nat8,
     Principal,
     $query,
-    reserved
+    reserved,
+    text
 } from 'azle';
+
+$query;
+export function getString(): string {
+    return 'string';
+}
+
+$query;
+export function printString(string: string): string {
+    console.log(typeof string);
+    return string;
+}
+
+$query;
+export function getText(): text {
+    return 'text';
+}
+
+$query;
+export function printText(text: text): text {
+    console.log(typeof text);
+    return text;
+}
+
+$query;
+export function getNumber(): number {
+    return Number.MAX_SAFE_INTEGER;
+}
+
+$query;
+export function printNumber(number: number): number {
+    console.log(typeof number);
+    return number;
+}
 
 $query;
 export function getInt(): int {

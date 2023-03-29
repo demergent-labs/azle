@@ -34,7 +34,7 @@ function recordPerformance(start: nat64, end: nat64): void {
 let stableStorage = new StableBTreeMap<string, nat>(0, 25, 1_000);
 
 $init;
-export function init() {
+export function init(): void {
     stableStorage.insert('counter', 0n);
 }
 

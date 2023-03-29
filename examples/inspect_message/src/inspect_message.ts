@@ -1,7 +1,7 @@
 import { ic, $inspectMessage, $update } from 'azle';
 
 $inspectMessage;
-export function inspectMessage() {
+export function inspectMessage(): void {
     console.log('inspectMessage called');
 
     if (ic.methodName() === 'accessible') {
