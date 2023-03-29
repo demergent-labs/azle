@@ -33,6 +33,7 @@
 
     </head>
     <body>
+    <div id="body-container">
         <!-- Provide site root to javascript -->
         <script>
             var path_to_root = "";
@@ -70,10 +71,12 @@
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             var html = document.querySelector('html');
-            var sidebar = 'hidden';
+            var sidebar = null;
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -2042,16 +2045,10 @@ export function transfer(to: Principal, amount: nat64): nat64 {
 }
 </code></pre>
 <p>Here's how you would create its external canister definition:</p>
-<pre><code class="language-typescript">import {
-    CanisterResult,
-    ExternalCanister,
-    Principal,
-    nat64,
-    update
-} from 'azle';
+<pre><code class="language-typescript">import { CanisterResult, Principal, nat64, Service, serviceUpdate } from 'azle';
 
-class TokenCanister extends ExternalCanister {
-    @update
+class TokenCanister extends Service {
+    @serviceUpdate
     transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
 }
 </code></pre>
@@ -2064,16 +2061,16 @@ class TokenCanister extends ExternalCanister {
 <p>And here's a more complete example of a canister called <code>payout_canister</code> that performs a cross-canister call to <code>token_canister</code>:</p>
 <pre><code class="language-typescript">import {
     CanisterResult,
-    ExternalCanister,
     nat64,
     Principal,
+    Service,
+    serviceUpdate,
     $update,
-    update,
     Variant
 } from 'azle';
 
-class TokenCanister extends ExternalCanister {
-    @update
+class TokenCanister extends Service {
+    @serviceUpdate
     transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
 }
 
@@ -2137,17 +2134,17 @@ export function transfer(
 <p><code>payout_canister</code>:</p>
 <pre><code class="language-typescript">import {
     CanisterResult,
-    ExternalCanister,
     match,
     nat64,
     Principal,
+    Service,
+    serviceUpdate,
     $update,
-    update,
     Variant
 } from 'azle';
 
-class TokenCanister extends ExternalCanister {
-    @update
+class TokenCanister extends Service {
+    @serviceUpdate
     transfer: (
         to: Principal,
         amount: nat64
@@ -2193,15 +2190,15 @@ export async function payout(
 <p>Here's an example of a composite query method:</p>
 <pre><code class="language-typescript">import {
     CanisterResult,
-    ExternalCanister,
     Principal,
     $query,
-    query,
+    Service,
+    serviceQuery,
     Variant
 } from 'azle';
 
-class SomeCanister extends ExternalCanister {
-    @query
+class SomeCanister extends Service {
+    @serviceQuery
     queryForBoolean: () =&gt; CanisterResult&lt;boolean&gt;;
 }
 
@@ -2223,16 +2220,16 @@ export async function querySomeCanister(): Promise&lt;
 <p>If you don't need to wait for your cross-canister call to return, you can use <code>notify</code>:</p>
 <pre><code class="language-typescript">import {
     CanisterResult,
-    ExternalCanister,
     Principal,
     RejectionCode,
+    Service,
+    serviceUpdate,
     $update,
-    update,
     Variant
 } from 'azle';
 
-class SomeCanister extends ExternalCanister {
-    @update
+class SomeCanister extends Service {
+    @serviceUpdate
     receiveNotification: () =&gt; CanisterResult&lt;void&gt;;
 }
 
@@ -2251,16 +2248,16 @@ export function sendNotification(): Variant&lt;{
 <p>If you need to send cycles with your cross-canister call, you can call <code>cycles</code> before calling <code>call</code> or <code>notify</code>:</p>
 <pre><code class="language-typescript">import {
     CanisterResult,
-    ExternalCanister,
     Principal,
     RejectionCode,
+    Service,
+    serviceUpdate,
     $update,
-    update,
     Variant
 } from 'azle';
 
-class SomeCanister extends ExternalCanister {
-    @update
+class SomeCanister extends Service {
+    @serviceUpdate
     receiveNotification: () =&gt; CanisterResult&lt;void&gt;;
 }
 
@@ -2362,7 +2359,7 @@ type JSON = Alias&lt;string&gt;;
 let stableStorage = new StableBTreeMap&lt;string, string&gt;(0, 25, 1_000);
 
 $init;
-export function init(ethereumUrl: string) {
+export function init(ethereumUrl: string): void {
     stableStorage.insert('ethereumUrl', ethereumUrl);
 }
 
@@ -2478,17 +2475,17 @@ export async function randomBytes(): Promise&lt;
 <pre><code class="language-typescript">import { $init, $postUpgrade, $preUpgrade } from 'azle';
 
 $init;
-export function init() {
+export function init(): void {
     console.log('runs on first canister install');
 }
 
 $preUpgrade;
-export function preUpgrade() {
+export function preUpgrade(): void {
     console.log('runs before canister upgrade');
 }
 
 $postUpgrade;
-export function postUpgrade() {
+export function postUpgrade(): void {
     console.log('runs after canister upgrade');
 }
 </code></pre>
@@ -2687,7 +2684,7 @@ async function repeatCrossCanisterTimerCallback(): Promise&lt;void&gt; {
 <pre><code class="language-typescript">import { ic, $inspectMessage } from 'azle';
 
 $inspectMessage;
-export function inspectMessage() {
+export function inspectMessage(): void {
     ic.acceptMessage();
 }
 </code></pre>
@@ -2753,16 +2750,16 @@ export function argDataRawSize(
 </ul>
 <pre><code class="language-typescript">import {
     CanisterResult,
-    ExternalCanister,
     nat64,
     Principal,
+    Service,
+    serviceUpdate,
     $update,
-    update,
     Variant
 } from 'azle';
 
-class TokenCanister extends ExternalCanister {
-    @update
+class TokenCanister extends Service {
+    @serviceUpdate
     transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
 }
 
@@ -2949,7 +2946,7 @@ export function caller(): Principal {
 <pre><code class="language-typescript">import { ic, $inspectMessage, $update } from 'azle';
 
 $inspectMessage;
-export function inspectMessage() {
+export function inspectMessage(): void {
     console.log('inspectMessage called');
 
     if (ic.methodName() === 'accessible') {
@@ -3181,16 +3178,16 @@ export function reject(message: string): Manual&lt;empty&gt; {
 </ul>
 <pre><code class="language-typescript">import {
     CanisterResult,
-    ExternalCanister,
     ic,
     Principal,
     RejectionCode,
-    update,
+    Service,
+    serviceUpdate,
     $update
 } from 'azle';
 
-class Nonexistent extends ExternalCanister {
-    @update
+class Nonexistent extends Service {
+    @serviceUpdate
     method: () =&gt; CanisterResult&lt;void&gt;;
 }
 
@@ -4175,7 +4172,7 @@ export function trap(message: string): boolean {
 <pre><code class="language-typescript">import { $heartbeat } from 'azle';
 
 $heartbeat;
-export function heartbeat() {
+export function heartbeat(): void {
     console.log('this runs ~1 time per second');
 }
 </code></pre>
@@ -4305,7 +4302,7 @@ export function http_request_update(req: HttpRequest): HttpResponse {
 <pre><code class="language-typescript">import { $init } from 'azle';
 
 $init;
-export function init() {
+export function init(): void {
     console.log('This runs once when the canister is first initialized');
 }
 </code></pre>
@@ -4319,7 +4316,7 @@ export function init() {
 <pre><code class="language-typescript">import { ic, $inspectMessage, $update } from 'azle';
 
 $inspectMessage;
-export function inspectMessage() {
+export function inspectMessage(): void {
     console.log('inspectMessage called');
 
     if (ic.methodName() === 'accessible') {
@@ -4359,7 +4356,7 @@ export function alsoInaccessible(): boolean {
 <pre><code class="language-typescript">import { $postUpgrade } from 'azle';
 
 $postUpgrade;
-export function postUpgrade() {
+export function postUpgrade(): void {
     console.log('This runs after every canister upgrade');
 }
 </code></pre>
@@ -4372,7 +4369,7 @@ export function postUpgrade() {
 <pre><code class="language-typescript">import { $preUpgrade } from 'azle';
 
 $preUpgrade;
-export function preUpgrade() {
+export function preUpgrade(): void {
     console.log('This runs before every canister upgrade');
 }
 </code></pre>
@@ -5366,5 +5363,6 @@ function callback(): void {
         });
         </script>
 
+    </div>
     </body>
 </html>
