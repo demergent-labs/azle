@@ -72,7 +72,7 @@ export function completeTodo(id: nat): void {
 
 $query;
 export function showTodos(): string {
-    let output = '\n__TO-DOs___';
+    let output = '\n___TO-DOs___';
     for (const todoEntry of [...todos]) {
         output += `\n${todoEntry[1].description}`;
         if (todoEntry[1].completed) {
