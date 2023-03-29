@@ -61,7 +61,7 @@ impl AzleStableBTreeMapNode {
 }
 
 impl TsAst {
-    pub fn stable_b_tree_map_nodes(&self) -> Vec<StableBTreeMapNode> {
+    pub fn build_stable_b_tree_map_nodes(&self) -> Vec<StableBTreeMapNode> {
         self.azle_programs.iter().fold(vec![], |acc, azle_program| {
             let azle_stable_maps = azle_program.azle_stable_b_tree_map_nodes();
             let stable_maps = azle_stable_maps

@@ -9,7 +9,7 @@ use crate::{
 impl TsAst {
     pub fn to_act(&self) -> AbstractCanisterTree {
         let canister_methods = self.build_canister_methods();
-        let stable_b_tree_map_nodes = self.stable_b_tree_map_nodes();
+        let stable_b_tree_map_nodes = self.build_stable_b_tree_map_nodes();
         let candid_types = self.build_candid_types();
         let body = body::generate(
             self,

@@ -1,7 +1,7 @@
 use swc_ecma_ast::{Decl, Expr, ModuleItem, Program, Stmt};
 
 use crate::{
-    stable_b_tree::AzleStableBTreeMapNode,
+    stable_b_tree_map::AzleStableBTreeMapNode,
     ts_ast::{AzleNewExpr, AzleProgram, GetName},
 };
 
