@@ -13,7 +13,7 @@ export function getTests(
             wait: 10_000
         },
         {
-            name: 'getInitialized heartbeatSsync',
+            name: 'getInitialized heartbeatAsync',
             test: async () => {
                 const result = await heartbeatAsyncCanister.getInitialized();
 
@@ -23,7 +23,7 @@ export function getTests(
             }
         },
         {
-            name: 'getInitialized heartbeat_sync',
+            name: 'getInitialized heartbeatSync',
             test: async () => {
                 const result = await heartbeatSyncCanister.getInitialized();
 

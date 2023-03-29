@@ -184,6 +184,17 @@ export function printFloat32(float32: float32): float32 {
 }
 
 $query;
+export function getBool(): boolean {
+    return true;
+}
+
+$query;
+export function printBool(boolean: boolean): boolean {
+    console.log(typeof boolean);
+    return boolean;
+}
+
+$query;
 export function getPrincipal(): Principal {
     return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
 }

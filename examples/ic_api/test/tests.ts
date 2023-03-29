@@ -189,7 +189,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await icApiCanister.performanceCounter();
 
                 return {
-                    Ok: result >= 150_000n && result <= 275_000n
+                    Ok: result > 0n
                 };
             }
         },

@@ -46,8 +46,8 @@ type HttpResponse = Record<{
 }>;
 
 type StreamingCallbackType = Variant<{
-    withHeaders: Header[];
-    withoutHeaders: null;
+    WithHeaders: Header[];
+    WithoutHeaders: null;
 }>;
 
 $query;
@@ -262,7 +262,7 @@ export function tupleArrayRecordField(): HttpResponse {
 $query;
 export function tupleArrayVariantField(): StreamingCallbackType {
     return {
-        withHeaders: [
+        WithHeaders: [
             ['Content-Type', 'application/json'],
             ['Accept-Ranges', 'bytes']
         ]

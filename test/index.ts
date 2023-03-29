@@ -139,3 +139,100 @@ export function deploy(canisterName: string, argument?: string): Test[] {
         }
     ];
 }
+
+export function createSnakeCaseProxy<T extends object>(
+    target: T,
+    async: boolean = true
+): T {
+    if (
+        target === null ||
+        (typeof target !== 'object' && typeof target !== 'function') ||
+        target?.constructor?.name === 'Principal' ||
+        target?.constructor?.name === 'BigInt' ||
+        target?.constructor?.name === 'BigInt64Array' ||
+        target?.constructor?.name === 'Int32Array' ||
+        target?.constructor?.name === 'Int16Array' ||
+        target?.constructor?.name === 'Int8Array' ||
+        target?.constructor?.name === 'BigUint64Array' ||
+        target?.constructor?.name === 'Uint32Array' ||
+        target?.constructor?.name === 'Uint16Array' ||
+        target?.constructor?.name === 'Uint8Array'
+    ) {
+        return target;
+    }
+
+    return new Proxy(target, {
+        get(obj, prop) {
+            const snakeCaseProp =
+                (prop as string)[0] === (prop as string)[0]?.toUpperCase()
+                    ? prop
+                    : camelToSnakeCase(prop as string);
+
+            if (typeof (obj as any)[snakeCaseProp] === 'function') {
+                if (async) {
+                    return async (...args: any[]) => {
+                        const new_args = args.map((value) => {
+                            return convertKeysToSnakeCase(value);
+                        });
+                        const result = await (obj as any)[snakeCaseProp](
+                            ...new_args
+                        );
+                        return createSnakeCaseProxy(result, false);
+                    };
+                } else {
+                    return (...args: any[]) => {
+                        const new_args = args.map((value) => {
+                            return convertKeysToSnakeCase(value);
+                        });
+                        const result = (obj as any)[snakeCaseProp](...new_args);
+                        return createSnakeCaseProxy(result, false);
+                    };
+                }
+            }
+
+            if (typeof (obj as any)[snakeCaseProp] === 'object') {
+                return createSnakeCaseProxy((obj as any)[snakeCaseProp], false);
+            }
+
+            return (obj as any)[snakeCaseProp];
+        }
+    }) as any;
+}
+
+function convertKeysToSnakeCase(obj) {
+    if (
+        typeof obj !== 'object' ||
+        obj === null ||
+        obj?.constructor?.name === 'Principal' ||
+        obj?.constructor?.name === 'BigInt' ||
+        obj?.constructor?.name === 'BigInt64Array' ||
+        obj?.constructor?.name === 'Int32Array' ||
+        obj?.constructor?.name === 'Int16Array' ||
+        obj?.constructor?.name === 'Int8Array' ||
+        obj?.constructor?.name === 'BigUint64Array' ||
+        obj?.constructor?.name === 'Uint32Array' ||
+        obj?.constructor?.name === 'Uint16Array' ||
+        obj?.constructor?.name === 'Uint8Array'
+    ) {
+        return obj;
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map((element) => convertKeysToSnakeCase(element));
+    }
+
+    const newObj = {};
+    for (const key in obj) {
+        const snakeCaseKey =
+            (key as string)[0] === (key as string)[0]?.toUpperCase()
+                ? key
+                : camelToSnakeCase(key as string);
+        newObj[snakeCaseKey] = convertKeysToSnakeCase(obj[key]);
+    }
+
+    return newObj;
+}
+
+function camelToSnakeCase(str: string) {
+    return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+}

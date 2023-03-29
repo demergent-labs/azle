@@ -53,7 +53,7 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'show todos',
             test: async () => {
-                const expectedResult: string = `\n__TO-DOs___\n${FIRST_TODO_DESCRIPTION}\n${SECOND_TODO_DESCRIPTION}`;
+                const expectedResult: string = `\n___TO-DOs___\n${FIRST_TODO_DESCRIPTION}\n${SECOND_TODO_DESCRIPTION}`;
                 const todos = await todoCanister.showTodos();
                 return {
                     Ok: todos === expectedResult
@@ -86,7 +86,7 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'show completed todos',
             test: async () => {
-                const expectedResult: string = `\n__TO-DOs___\n${FIRST_TODO_DESCRIPTION}\n${SECOND_TODO_DESCRIPTION} ✔`;
+                const expectedResult: string = `\n___TO-DOs___\n${FIRST_TODO_DESCRIPTION}\n${SECOND_TODO_DESCRIPTION} ✔`;
                 const todos = await todoCanister.showTodos();
                 return {
                     Ok: todos === expectedResult

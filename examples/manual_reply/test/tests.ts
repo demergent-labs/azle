@@ -4,7 +4,6 @@ import {
     _SERVICE
 } from './dfx_generated/manual_reply/manual_reply.did';
 import { ActorSubclass } from '@dfinity/agent';
-import { execSync } from 'child_process';
 
 export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
@@ -57,17 +56,10 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'update reply with float32',
             test: async () => {
-                // const result = await manualReplyCanister.updateFloat32();
-                // Note: The JS agent doesn't handle floats correctly.
-                // See https://github.com/dfinity/agent-js/issues/589
-                const result = execSync(
-                    'dfx canister call manual_reply updateFloat32'
-                )
-                    .toString()
-                    .trim();
+                const result = await manualReplyCanister.updateFloat32();
 
                 return {
-                    Ok: result === '(1245.678 : float32)'
+                    Ok: result.toString() === '1245.677978515625'
                 };
             }
         },
@@ -214,17 +206,10 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'query reply with float32',
             test: async () => {
-                // const result = await manualReplyCanister.updateFloat32();
-                // Note: The JS agent doesn't handle floats correctly.
-                // See https://github.com/dfinity/agent-js/issues/589
-                const result = execSync(
-                    'dfx canister call manual_reply queryFloat32'
-                )
-                    .toString()
-                    .trim();
+                const result = await manualReplyCanister.updateFloat32();
 
                 return {
-                    Ok: result === '(1245.678 : float32)'
+                    Ok: result.toString() === '1245.677978515625'
                 };
             }
         },

@@ -9,4 +9,4 @@ const whoami_canister = createActor(canisterId, {
     }
 });
 
-runTests(getTests(whoami_canister));
+runTests(getTests(whoami_canister, 'azle'));

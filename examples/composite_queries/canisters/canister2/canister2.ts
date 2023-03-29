@@ -27,7 +27,7 @@ export function updateQuery(): string {
 
 $query;
 export function manualQuery(): Manual<string> {
-    ic.reply('Hello from Canister 2 manualQuery');
+    ic.reply('Hello from Canister 2 manual query');
 }
 
 $query;

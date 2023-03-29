@@ -2,7 +2,7 @@ import { Test } from 'azle/test';
 import { ChildProcessWithoutNullStreams, execSync, spawn } from 'child_process';
 import { existsSync, rmSync } from 'fs-extra';
 
-import { bitcoin_cli, TxInput, TxOutputs, Utxo } from './bitcoin_cli';
+import { bitcoinCli, TxInput, TxOutputs, Utxo } from './bitcoin_cli';
 import { Wallets } from './wallets';
 import { State } from './test';
 
@@ -13,22 +13,22 @@ import { State } from './test';
  * @param state A mutable datastore for passing state between tests
  * @returns the preparation step to execute
  */
-export function impure_setup(wallets: Wallets, state: State): Test[] {
+export function impureSetup(wallets: Wallets, state: State): Test[] {
     return [
         {
             name: 'setup bitcoin',
             prep: async () => {
-                create_bitcoin_wallet(wallets);
-                await mine_101_blocks(wallets);
-                const utxo = get_earliest_utxo();
-                const raw_tx = create_transaction(utxo, wallets);
-                state.signed_tx_hex = sign_transaction(raw_tx);
+                createBitcoinWallet(wallets);
+                await mine101Blocks(wallets);
+                const utxo = getEarliestUtxo();
+                const rawTx = createTransaction(utxo, wallets);
+                state.signedTxHex = signTransaction(rawTx);
             }
         }
     ];
 }
 
-export function install_bitcoin() {
+export function installBitcoin() {
     const tarball = 'bitcoin.tar.gz';
     if (existsSync(`./${tarball}`)) {
         return;
@@ -44,65 +44,65 @@ export function install_bitcoin() {
     );
 }
 
-export async function while_running_bitcoin_daemon(
+export async function whileRunningBitcoinDaemon(
     callback: () => Promise<void> | void
 ) {
-    install_bitcoin();
-    const bitcoin_daemon = await start_bitcoin_daemon();
+    installBitcoin();
+    const bitcoinDaemon = await startBitcoinDaemon();
     await callback();
-    bitcoin_daemon.kill();
+    bitcoinDaemon.kill();
 }
 
-async function start_bitcoin_daemon(): Promise<ChildProcessWithoutNullStreams> {
+async function startBitcoinDaemon(): Promise<ChildProcessWithoutNullStreams> {
     if (existsSync(`.bitcoin/regtest`)) {
         rmSync('.bitcoin/regtest', { recursive: true, force: true });
     }
-    const bitcoin_daemon = spawn('.bitcoin/bin/bitcoind', [
+    const bitcoinDaemon = spawn('.bitcoin/bin/bitcoind', [
         `-conf=${process.cwd()}/.bitcoin.conf`,
         `-datadir=${process.cwd()}/.bitcoin`,
         '--port=18444'
     ]);
 
     process.on('uncaughtException', () => {
-        if (!bitcoin_daemon.killed) {
-            bitcoin_daemon.kill();
+        if (!bitcoinDaemon.killed) {
+            bitcoinDaemon.kill();
         }
     });
 
     process.on('exit', () => {
-        if (!bitcoin_daemon.killed) {
-            bitcoin_daemon.kill();
+        if (!bitcoinDaemon.killed) {
+            bitcoinDaemon.kill();
         }
     });
 
     console.log(`starting bitcoind...`);
     await new Promise((resolve) => setTimeout(resolve, 5000));
-    return bitcoin_daemon;
+    return bitcoinDaemon;
 }
 
-function create_bitcoin_wallet(wallets: Wallets): void {
+function createBitcoinWallet(wallets: Wallets): void {
     console.log(' - create bitcoin wallet');
-    bitcoin_cli.create_wallet();
+    bitcoinCli.createWallet();
     Object.entries(wallets).forEach(([name, wallet]) => {
-        bitcoin_cli.import_private_key(wallet.wif, name);
+        bitcoinCli.importPrivateKey(wallet.wif, name);
     });
 }
 
-async function mine_101_blocks(wallets: Wallets): Promise<void> {
+async function mine101Blocks(wallets: Wallets): Promise<void> {
     console.log(' - mine blocks');
-    await bitcoin_cli.generate_to_address(101, wallets.alice.p2wpkh);
+    await bitcoinCli.generateToAddress(101, wallets.alice.p2wpkh);
 }
 
-function get_earliest_utxo(): Utxo {
+function getEarliestUtxo(): Utxo {
     console.log(' - get earliest utxo');
-    const utxos = bitcoin_cli.list_unspent();
+    const utxos = bitcoinCli.listUnspent();
     if (utxos.length === 0) {
         throw "There aren't any UTXOs after mining 101 blocks. Something went wrong";
     }
     return utxos[utxos.length - 1];
 }
 
-function create_transaction(from: Utxo, wallets: Wallets): string {
+function createTransaction(from: Utxo, wallets: Wallets): string {
     console.log(' - get create transaction');
     const input: TxInput = {
         txid: from.txid,
@@ -112,10 +112,10 @@ function create_transaction(from: Utxo, wallets: Wallets): string {
         [wallets.bob.p2wpkh]: 1,
         [wallets.alice.p2wpkh]: 48.9999
     };
-    return bitcoin_cli.create_raw_transaction(input, outputs);
+    return bitcoinCli.createRawTransaction(input, outputs);
 }
 
-function sign_transaction(raw_transaction: string) {
+function signTransaction(rawTransaction: string) {
     console.log(' - sign transaction');
-    return bitcoin_cli.sign_raw_transaction_with_wallet(raw_transaction).hex;
+    return bitcoinCli.signRawTransactionWithWallet(rawTransaction).hex;
 }
