@@ -1,4 +1,4 @@
-use swc_ecma_ast::{Decl, Expr, ModuleItem, Program, Stmt};
+use swc_ecma_ast::{Decl, Expr, ModuleDecl, ModuleItem, Program, Stmt};
 
 use crate::{
     stable_b_tree_map::AzleStableBTreeMapNode,
@@ -20,14 +20,9 @@ impl AzleProgram {
 
     fn get_decl_from_module_item(module_item: &ModuleItem) -> Option<&Decl> {
         match module_item {
-            ModuleItem::Stmt(stmt) => match stmt {
-                Stmt::Decl(decl) => Some(decl),
-                _ => None,
-            },
-            ModuleItem::ModuleDecl(module_decl) => match module_decl {
-                swc_ecma_ast::ModuleDecl::ExportDecl(export_decl) => Some(&export_decl.decl),
-                _ => None,
-            },
+            ModuleItem::Stmt(Stmt::Decl(decl)) => Some(decl),
+            ModuleItem::ModuleDecl(ModuleDecl::ExportDecl(export_decl)) => Some(&export_decl.decl),
+            _ => None,
         }
     }
 
