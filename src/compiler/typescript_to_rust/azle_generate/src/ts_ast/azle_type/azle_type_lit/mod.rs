@@ -6,7 +6,6 @@ use swc_ecma_ast::TsTypeLit;
 pub use azle_type_element::AzleTypeElement;
 
 mod azle_type_element;
-mod get_dependencies;
 mod get_source_text;
 
 pub mod get_source_info;

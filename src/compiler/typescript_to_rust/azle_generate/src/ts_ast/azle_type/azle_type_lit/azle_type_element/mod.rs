@@ -10,7 +10,6 @@ use self::{
 mod azle_method_signature;
 mod azle_property_signature;
 mod errors;
-mod get_dependencies;
 mod get_source_info;
 mod get_source_text;
 mod get_span;

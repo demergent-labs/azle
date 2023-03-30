@@ -10,8 +10,6 @@ use crate::{
 
 use super::azle_type::AzleType;
 
-mod get_dependent_types;
-
 impl SourceMapped<'_, ClassProp> {
     pub fn to_service_method(&self) -> Result<Method, ParseError> {
         if self.decorators.len() == 0 {
@@ -88,10 +86,6 @@ impl SourceMapped<'_, ClassProp> {
         };
 
         return Ok(name);
-    }
-
-    fn param_ts_types(&self) -> Result<Vec<TsType>, ParseError> {
-        Ok(self.ts_fn_type()?.get_param_ts_types())
     }
 
     fn return_ts_type(&self) -> Result<TsType, ParseError> {

@@ -4,7 +4,6 @@ use swc_ecma_ast::TsTupleType;
 use super::AzleType;
 use cdk_framework::act::node::candid::{tuple::Elem, Tuple};
 
-mod get_dependencies;
 mod get_source_info;
 mod get_source_text;
 mod to_data_type;

@@ -4,7 +4,6 @@ use swc_ecma_ast::TsTypeRef;
 use super::AzleType;
 
 mod errors;
-mod get_dependencies;
 mod get_name;
 mod get_source_info;
 mod get_source_text;

@@ -1,11 +1,11 @@
 use azle_functions_and_methods::FunctionAndMethodTypeHelperMethods;
 use azle_type::{AzleArrayType, AzleFnOrConstructorType};
-use traits::{GetDependencies, GetSourceText, GetTsType};
+use traits::{GetSourceText, GetTsType};
 
 pub use azle_fn_decl::AzleFnDecl;
 pub use azle_new_expr::AzleNewExpr;
 pub use azle_program::AzleProgram;
-pub use azle_type_alias_decls::AzleTypeAliasDecl;
+pub use azle_type_alias_decl::AzleTypeAliasDecl;
 pub use traits::GetName;
 pub use ts_ast::TsAst;
 
@@ -23,7 +23,7 @@ mod ts_type_ann;
 
 pub mod azle_program;
 pub mod azle_type;
-pub mod azle_type_alias_decls;
+pub mod azle_type_alias_decl;
 pub mod class_decl;
 pub mod class_prop;
 pub mod param;

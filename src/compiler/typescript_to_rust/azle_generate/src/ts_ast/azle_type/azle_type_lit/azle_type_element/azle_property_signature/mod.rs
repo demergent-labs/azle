@@ -8,7 +8,6 @@ use cdk_framework::act::node::{
 };
 
 mod errors;
-mod get_dependencies;
 mod get_source_info;
 mod get_source_text;
 

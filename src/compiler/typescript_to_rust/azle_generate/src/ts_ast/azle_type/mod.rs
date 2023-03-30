@@ -16,7 +16,6 @@ mod azle_tuple_type;
 mod azle_type_lit;
 mod azle_type_ref;
 mod errors;
-mod get_dependent_types;
 mod get_source_info;
 mod get_source_text;
 mod to_data_type;

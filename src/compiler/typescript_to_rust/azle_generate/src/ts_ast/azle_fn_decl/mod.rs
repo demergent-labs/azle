@@ -7,7 +7,6 @@ use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};
 use crate::{canister_method::Annotation, ts_ast::GetName};
 
 pub mod errors;
-pub mod get_dependencies;
 
 #[derive(Clone)]
 pub struct AzleFnDecl<'a> {

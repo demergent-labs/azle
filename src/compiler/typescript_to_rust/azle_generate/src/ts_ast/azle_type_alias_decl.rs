@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet};
 use swc_common::SourceMap;
 use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
-use crate::ts_ast::{azle_type::AzleType, GetDependencies, GetName, GetTsType};
+use crate::ts_ast::{azle_type::AzleType, GetName, GetTsType};
 use cdk_framework::act::node::{candid::TypeAlias, CandidType};
 
 #[derive(Clone)]
@@ -47,18 +47,6 @@ impl AzleTypeAliasDecl<'_> {
 impl GetTsType for AzleTypeAliasDecl<'_> {
     fn get_ts_type(&self) -> TsType {
         *self.ts_type_alias_decl.type_ann.clone()
-    }
-}
-
-impl GetDependencies for AzleTypeAliasDecl<'_> {
-    fn get_dependent_types(
-        &self,
-        type_alias_lookup: &HashMap<String, AzleTypeAliasDecl>,
-        found_type_names: &HashSet<String>,
-    ) -> HashSet<String> {
-        let azle_type = AzleType::from_ts_type(self.get_ts_type(), self.source_map);
-
-        azle_type.get_dependent_types(type_alias_lookup, found_type_names)
     }
 }
 
