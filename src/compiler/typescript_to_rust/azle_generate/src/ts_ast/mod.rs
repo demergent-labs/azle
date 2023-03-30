@@ -1,6 +1,5 @@
 pub use azle_fn_decl::AzleFnDecl;
 pub use azle_functions_and_methods::FunctionAndMethodTypeHelperMethods;
-pub use azle_new_expr::AzleNewExpr;
 pub use azle_program::AzleProgram;
 pub use azle_type::{AzleArrayType, AzleFnOrConstructorType};
 pub use azle_type_alias_decl::AzleTypeAliasDecl;
@@ -10,7 +9,6 @@ pub use ts_ast::TsAst;
 
 mod azle_fn_decl;
 mod azle_functions_and_methods;
-mod azle_new_expr;
 mod expr;
 mod ident;
 mod ts_ast;

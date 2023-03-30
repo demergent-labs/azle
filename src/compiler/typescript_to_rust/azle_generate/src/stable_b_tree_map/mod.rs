@@ -2,6 +2,7 @@ use cdk_framework::act::node::CandidType;
 
 use crate::ts_ast::TsAst;
 
+mod new_expr;
 mod stable_b_tree_maps;
 
 #[derive(Clone, Debug)]
