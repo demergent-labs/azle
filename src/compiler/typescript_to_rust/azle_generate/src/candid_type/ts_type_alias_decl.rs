@@ -1,9 +1,11 @@
 use cdk_framework::act::node::candid::{Func, Record, Tuple, TypeAlias, Variant};
 use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
-use crate::ts_ast::{azle_type::AzleTypeRef, source_map::SourceMapped, GetName};
-
-use super::azle_type::AzleTupleType;
+use crate::ts_ast::{
+    azle_type::{AzleTupleType, AzleTypeRef},
+    source_map::SourceMapped,
+    GetName,
+};
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_func(&self) -> Option<Func> {
