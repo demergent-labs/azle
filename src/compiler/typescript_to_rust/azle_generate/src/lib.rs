@@ -3,7 +3,7 @@ use proc_macro2::TokenStream;
 
 use crate::ts_ast::TsAst;
 
-use stable_b_tree_map::{AzleStableBTreeMapNode, StableBTreeMapNode};
+use stable_b_tree_map::StableBTreeMapNode;
 
 mod body;
 mod candid_type;

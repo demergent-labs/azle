@@ -1,12 +1,12 @@
 use swc_ecma_ast::{Decl, Expr, ModuleDecl, ModuleItem, Program, Stmt};
 
 use crate::{
-    stable_b_tree_map::AzleStableBTreeMapNode,
+    stable_b_tree_map::StableBTreeMapNode,
     ts_ast::{AzleNewExpr, AzleProgram, GetName},
 };
 
 impl AzleProgram {
-    pub fn azle_stable_b_tree_map_nodes(&self) -> Vec<AzleStableBTreeMapNode> {
+    pub fn azle_stable_b_tree_map_nodes(&self) -> Vec<StableBTreeMapNode> {
         match &self.program {
             Program::Module(module) => module
                 .body
@@ -26,14 +26,14 @@ impl AzleProgram {
         }
     }
 
-    fn process_decl(&self, decl: &Decl) -> Vec<AzleStableBTreeMapNode> {
+    fn process_decl(&self, decl: &Decl) -> Vec<StableBTreeMapNode> {
         match decl {
             Decl::Var(var_decl) => self.process_var_decl(var_decl),
             _ => vec![],
         }
     }
 
-    fn process_var_decl(&self, var_decl: &swc_ecma_ast::VarDecl) -> Vec<AzleStableBTreeMapNode> {
+    fn process_var_decl(&self, var_decl: &swc_ecma_ast::VarDecl) -> Vec<StableBTreeMapNode> {
         var_decl
             .decls
             .iter()

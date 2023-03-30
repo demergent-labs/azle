@@ -1,8 +1,9 @@
 use super::AzleNewExpr;
 use crate::{
     errors::ErrorMessage,
+    ts_ast::azle_type::AzleType,
     utils::{ToU32, ToU8},
-    AzleStableBTreeMapNode,
+    StableBTreeMapNode,
 };
 
 pub enum ArgName {
@@ -12,15 +13,24 @@ pub enum ArgName {
 }
 
 impl AzleNewExpr<'_> {
-    pub fn to_azle_stable_b_tree_map_node(&self) -> Result<AzleStableBTreeMapNode, ErrorMessage> {
+    pub fn to_azle_stable_b_tree_map_node(&self) -> Result<StableBTreeMapNode, ErrorMessage> {
         match &self.new_expr.type_args {
             Some(type_args) => {
                 if type_args.params.len() != 2 {
                     return Err(self.build_incorrect_type_args_error_message());
                 }
 
-                let key_type = *type_args.params.get(0).unwrap().clone();
-                let value_type = *type_args.params.get(1).unwrap().clone();
+                let key_type = AzleType::from_ts_type(
+                    *type_args.params.get(0).unwrap().clone(),
+                    self.source_map,
+                )
+                .to_data_type();
+
+                let value_type = AzleType::from_ts_type(
+                    *type_args.params.get(1).unwrap().clone(),
+                    self.source_map,
+                )
+                .to_data_type();
 
                 match &self.new_expr.args {
                     Some(args) => {
@@ -63,7 +73,7 @@ impl AzleNewExpr<'_> {
                             }
                         };
 
-                        Ok(AzleStableBTreeMapNode {
+                        Ok(StableBTreeMapNode {
                             memory_id,
                             key_type,
                             max_key_size,
