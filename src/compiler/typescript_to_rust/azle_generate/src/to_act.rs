@@ -1,10 +1,6 @@
 use cdk_framework::AbstractCanisterTree;
 
-use crate::{
-    generators::{body, header},
-    ts_ast::TsAst,
-    ts_keywords,
-};
+use crate::{body, generators::header, ts_ast::TsAst, ts_keywords};
 
 impl TsAst {
     pub fn to_act(&self) -> AbstractCanisterTree {
