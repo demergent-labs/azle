@@ -3,7 +3,7 @@ use proc_macro2::TokenStream;
 
 use crate::ts_ast::TsAst;
 
-use stable_b_tree_map::StableBTreeMapNode;
+use body::stable_b_tree_map::StableBTreeMapNode;
 
 mod body;
 mod candid_type;
@@ -11,7 +11,6 @@ mod canister_method;
 mod errors;
 mod generators;
 mod header;
-mod stable_b_tree_map;
 mod ts_ast;
 mod ts_keywords;
 mod utils;
@@ -26,13 +25,11 @@ impl TsAst {
     pub fn to_act(&self) -> AbstractCanisterTree {
         let candid_types = self.build_candid_types();
         let canister_methods = self.build_canister_methods();
-        let stable_b_tree_map_nodes = self.build_stable_b_tree_map_nodes();
         let body = body::generate(
             self,
             &canister_methods.query_methods,
             &canister_methods.update_methods,
             &candid_types.services,
-            &stable_b_tree_map_nodes,
         );
         let cdk_name = "azle".to_string();
         let guard_functions = self.build_guard_functions();

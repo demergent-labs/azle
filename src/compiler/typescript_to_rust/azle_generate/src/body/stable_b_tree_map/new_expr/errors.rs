@@ -1,10 +1,12 @@
-use super::{to_stable_b_tree_map::ArgName, AzleNewExpr};
+use swc_ecma_ast::NewExpr;
+
+use super::ArgName;
 use crate::{
     errors::{ErrorMessage, Suggestion},
-    ts_ast::traits::GetSourceInfo,
+    ts_ast::{source_map::SourceMapped, traits::GetSourceInfo},
 };
 
-impl AzleNewExpr<'_> {
+impl SourceMapped<'_, NewExpr> {
     pub fn build_missing_type_args_error_message(&self) -> ErrorMessage {
         self.build_type_arg_error_message("missing type arguments".to_string())
     }

@@ -1,6 +1,6 @@
 use quote::quote;
 
-use crate::{generators::stable_b_tree_map, StableBTreeMapNode};
+use crate::{body::stable_b_tree_map, StableBTreeMapNode};
 
 pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro2::TokenStream {
     let match_arms = generate_match_arms(stable_b_tree_map_nodes);
@@ -31,14 +31,14 @@ fn generate_match_arms(
         .map(|stable_b_tree_map_node| {
             let memory_id = stable_b_tree_map_node.memory_id;
             let map_name_ident =
-                stable_b_tree_map::ref_cell_ident::generate(stable_b_tree_map_node.memory_id);
+                stable_b_tree_map::rust::ref_cell_ident::generate(stable_b_tree_map_node.memory_id);
 
-            let (key_wrapper_type_name, _) = stable_b_tree_map::wrapper_type::generate(
+            let (key_wrapper_type_name, _) = stable_b_tree_map::rust::wrapper_type::generate(
                 &stable_b_tree_map_node.key_type,
                 memory_id,
                 "Key",
             );
-            let (value_wrapper_type_name, _) = stable_b_tree_map::wrapper_type::generate(
+            let (value_wrapper_type_name, _) = stable_b_tree_map::rust::wrapper_type::generate(
                 &stable_b_tree_map_node.value_type,
                 memory_id,
                 "Value",

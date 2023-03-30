@@ -1,10 +1,14 @@
-use super::AzleNewExpr;
+use swc_ecma_ast::NewExpr;
+
 use crate::{
     errors::ErrorMessage,
-    ts_ast::azle_type::AzleType,
+    ts_ast::{azle_type::AzleType, source_map::SourceMapped},
     utils::{ToU32, ToU8},
     StableBTreeMapNode,
 };
+
+mod errors;
+mod get_source_info;
 
 pub enum ArgName {
     MessageId,
@@ -12,9 +16,9 @@ pub enum ArgName {
     MaxValueSize,
 }
 
-impl AzleNewExpr<'_> {
+impl SourceMapped<'_, NewExpr> {
     pub fn to_stable_b_tree_map_node(&self) -> Result<StableBTreeMapNode, ErrorMessage> {
-        match &self.new_expr.type_args {
+        match &self.type_args {
             Some(type_args) => {
                 if type_args.params.len() != 2 {
                     return Err(self.build_incorrect_type_args_error_message());
@@ -32,7 +36,7 @@ impl AzleNewExpr<'_> {
                 )
                 .to_data_type();
 
-                match &self.new_expr.args {
+                match &self.args {
                     Some(args) => {
                         if args.len() == 0 {
                             return Err(self.build_missing_args_error_message());

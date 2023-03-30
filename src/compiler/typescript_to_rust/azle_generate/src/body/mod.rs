@@ -6,18 +6,20 @@ use proc_macro2::TokenStream;
 use quote::quote;
 
 use crate::{
-    generators::{async_await_result_handler, boa_error_handlers, ic_object, stable_b_tree_map},
+    generators::{async_await_result_handler, boa_error_handlers, ic_object},
     ts_ast::TsAst,
-    StableBTreeMapNode,
 };
+
+pub mod stable_b_tree_map;
 
 pub fn generate(
     ts_ast: &TsAst,
     query_methods: &Vec<QueryMethod>,
     update_methods: &Vec<UpdateMethod>,
     services: &Vec<Service>,
-    stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
 ) -> TokenStream {
+    let stable_b_tree_map_nodes = ts_ast.build_stable_b_tree_map_nodes();
+
     let query_and_update_methods = vec![
         query_methods
             .iter()
@@ -36,11 +38,11 @@ pub fn generate(
     let ic_object_functions = ic_object::functions::generate(
         &query_and_update_methods,
         services,
-        stable_b_tree_map_nodes,
+        &stable_b_tree_map_nodes,
     );
     let register_ic_object_function = ic_object::register_function::generate(ts_ast);
 
-    let stable_b_tree_maps = stable_b_tree_map::generate(stable_b_tree_map_nodes);
+    let stable_b_tree_maps = stable_b_tree_map::rust::generate(&stable_b_tree_map_nodes);
 
     quote! {
         #async_await_result_handler

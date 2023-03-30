@@ -1,7 +1,7 @@
 // use cdk_framework::act::node::candid::type_annotation::ToTypeAnnotation;
 use quote::{format_ident, quote};
 
-use crate::{generators::stable_b_tree_map, StableBTreeMapNode};
+use crate::{body::stable_b_tree_map, StableBTreeMapNode};
 
 pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro2::TokenStream {
     let match_arms = generate_match_arms(stable_b_tree_map_nodes);
@@ -40,7 +40,7 @@ fn generate_match_arms(
             // "_"
             let key_type = format_ident!("_");
             let stable_b_tree_map_ref_cell =
-                stable_b_tree_map::ref_cell_ident::generate(stable_b_tree_map_node.memory_id);
+                stable_b_tree_map::rust::ref_cell_ident::generate(stable_b_tree_map_node.memory_id);
 
             quote! {
                 #memory_id => {
