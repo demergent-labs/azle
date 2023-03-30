@@ -13,7 +13,7 @@ pub enum ArgName {
 }
 
 impl AzleNewExpr<'_> {
-    pub fn to_azle_stable_b_tree_map_node(&self) -> Result<StableBTreeMapNode, ErrorMessage> {
+    pub fn to_stable_b_tree_map_node(&self) -> Result<StableBTreeMapNode, ErrorMessage> {
         match &self.new_expr.type_args {
             Some(type_args) => {
                 if type_args.params.len() != 2 {

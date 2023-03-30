@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl AzleProgram {
-    pub fn azle_stable_b_tree_map_nodes(&self) -> Vec<StableBTreeMapNode> {
+    pub fn build_stable_b_tree_map_nodes(&self) -> Vec<StableBTreeMapNode> {
         match &self.program {
             Program::Module(module) => module
                 .body
@@ -49,7 +49,7 @@ impl AzleProgram {
                             new_expr: new_expr.clone(),
                             source_map: &self.source_map,
                         };
-                        match azle_new_expr.to_azle_stable_b_tree_map_node() {
+                        match azle_new_expr.to_stable_b_tree_map_node() {
                             Ok(stable_b_tree_map_node) => Some(stable_b_tree_map_node),
                             Err(err) => panic!("{}", err),
                         }
