@@ -9,6 +9,7 @@ mod candid_type;
 mod canister_method;
 mod errors;
 mod generators;
+mod header;
 mod stable_b_tree_map;
 mod to_act;
 mod ts_ast;
