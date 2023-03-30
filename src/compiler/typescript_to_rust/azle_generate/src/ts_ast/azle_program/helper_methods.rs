@@ -1,5 +1,5 @@
 use cdk_framework::act::node::canister_method::{CanisterMethod, CanisterMethodType};
-use swc_ecma_ast::{ClassDecl, FnDecl};
+use swc_ecma_ast::FnDecl;
 
 use crate::ts_ast::{
     azle_type_alias_decl::TsTypeAliasHelperMethods, source_map::SourceMapped, AzleFnDecl,
@@ -11,7 +11,6 @@ pub trait HelperMethods {
     fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>>;
     fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
     fn get_canister_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
-    fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>>;
     fn get_azle_fn_decls_of_type(
         &self,
         canister_method_type: CanisterMethodType,
@@ -67,12 +66,6 @@ impl HelperMethods for Vec<AzleProgram> {
         type_alias_decls
             .into_iter()
             .filter(|type_alias_decl| type_alias_decl.is_canister_type_alias_decl())
-            .collect()
-    }
-
-    fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
-        self.into_iter()
-            .flat_map(|azle_program| azle_program.get_service_class_declarations())
             .collect()
     }
 
