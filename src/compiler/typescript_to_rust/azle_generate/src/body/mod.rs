@@ -5,7 +5,9 @@ use cdk_framework::act::node::{
 use proc_macro2::TokenStream;
 use quote::quote;
 
-use crate::{generators::ic_object, ts_ast::TsAst};
+use crate::ts_ast::TsAst;
+
+mod ic_object;
 
 pub mod async_await_result_handler;
 pub mod boa_error_handlers;

@@ -9,7 +9,6 @@ mod body;
 mod candid_type;
 mod canister_method;
 mod errors;
-mod generators;
 mod header;
 mod ts_ast;
 mod ts_keywords;
