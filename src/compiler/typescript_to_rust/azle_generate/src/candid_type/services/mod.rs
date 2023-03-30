@@ -3,6 +3,7 @@ use cdk_framework::act::node::candid::Service;
 use crate::ts_ast::TsAst;
 use get_service_class_decls::GetFlattenedServiceClassDecls;
 
+mod class_decl;
 mod get_service_class_decls;
 
 impl TsAst {

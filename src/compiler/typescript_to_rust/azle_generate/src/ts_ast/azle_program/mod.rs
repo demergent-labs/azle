@@ -1,5 +1,5 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::{ClassDecl, FnDecl, Program};
+use swc_ecma_ast::{FnDecl, Program};
 
 use crate::{
     canister_method::module::ModuleHelperMethods,

@@ -21,7 +21,6 @@ mod ts_type_ann;
 pub mod azle_program;
 pub mod azle_type;
 pub mod azle_type_alias_decl;
-pub mod class_decl;
 pub mod class_prop;
 pub mod param;
 pub mod source_map;
