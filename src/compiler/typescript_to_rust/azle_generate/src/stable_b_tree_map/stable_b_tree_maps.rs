@@ -6,6 +6,38 @@ use crate::{
 };
 
 impl AzleProgram {
+    pub fn azle_stable_b_tree_map_nodes(&self) -> Vec<AzleStableBTreeMapNode> {
+        match &self.program {
+            Program::Module(module) => module
+                .body
+                .iter()
+                .filter_map(Self::get_decl_from_module_item)
+                .flat_map(|decl| self.process_decl(decl).into_iter())
+                .collect(),
+            Program::Script(_) => vec![],
+        }
+    }
+
+    fn get_decl_from_module_item(module_item: &ModuleItem) -> Option<&Decl> {
+        match module_item {
+            ModuleItem::Stmt(stmt) => match stmt {
+                Stmt::Decl(decl) => Some(decl),
+                _ => None,
+            },
+            ModuleItem::ModuleDecl(module_decl) => match module_decl {
+                swc_ecma_ast::ModuleDecl::ExportDecl(export_decl) => Some(&export_decl.decl),
+                _ => None,
+            },
+        }
+    }
+
+    fn process_decl(&self, decl: &Decl) -> Vec<AzleStableBTreeMapNode> {
+        match decl {
+            Decl::Var(var_decl) => self.process_var_decl(var_decl),
+            _ => vec![],
+        }
+    }
+
     fn process_var_decl(&self, var_decl: &swc_ecma_ast::VarDecl) -> Vec<AzleStableBTreeMapNode> {
         var_decl
             .decls
@@ -40,42 +72,5 @@ impl AzleProgram {
                     None => inner_acc,
                 }
             })
-    }
-
-    pub fn azle_stable_b_tree_map_nodes(&self) -> Vec<AzleStableBTreeMapNode> {
-        match &self.program {
-            Program::Module(module) => {
-                module
-                    .body
-                    .iter()
-                    .fold(vec![], |acc, module_item| match module_item {
-                        ModuleItem::Stmt(stmt) => match stmt {
-                            Stmt::Decl(decl) => match decl {
-                                Decl::Var(var_decl) => {
-                                    let stable_maps_in_var_decl_decls =
-                                        self.process_var_decl(var_decl);
-                                    vec![acc, stable_maps_in_var_decl_decls].concat()
-                                }
-                                _ => acc,
-                            },
-                            _ => acc,
-                        },
-                        ModuleItem::ModuleDecl(module_decl) => match module_decl {
-                            swc_ecma_ast::ModuleDecl::ExportDecl(export_decl) => {
-                                match &export_decl.decl {
-                                    Decl::Var(var_decl) => {
-                                        let stable_maps_in_var_decl_decls =
-                                            self.process_var_decl(var_decl);
-                                        vec![acc, stable_maps_in_var_decl_decls].concat()
-                                    }
-                                    _ => acc,
-                                }
-                            }
-                            _ => acc,
-                        },
-                    })
-            }
-            Program::Script(_) => vec![],
-        }
     }
 }
