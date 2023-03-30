@@ -37,35 +37,27 @@ impl AzleProgram {
         var_decl
             .decls
             .iter()
-            .fold(vec![], |inner_acc, var_declarator| {
-                match &var_declarator.init {
-                    Some(init) => match &**init {
-                        Expr::New(new_expr) => match &*new_expr.callee {
-                            Expr::Ident(ident) => {
-                                if ident.get_name() == "StableBTreeMap" {
-                                    let azle_new_expr = AzleNewExpr {
-                                        new_expr: new_expr.clone(),
-                                        source_map: &self.source_map,
-                                    };
-
-                                    let stable_b_tree_map_node_option =
-                                        azle_new_expr.to_azle_stable_b_tree_map_node();
-                                    match stable_b_tree_map_node_option {
-                                        Ok(stable_b_tree_map_node) => {
-                                            vec![inner_acc, vec![stable_b_tree_map_node]].concat()
-                                        }
-                                        Err(err) => panic!("{}", err),
-                                    }
-                                } else {
-                                    inner_acc
-                                }
-                            }
-                            _ => inner_acc,
-                        },
-                        _ => inner_acc,
-                    },
-                    None => inner_acc,
-                }
+            .filter_map(|var_declarator| match &var_declarator.init {
+                Some(init) => match &**init {
+                    Expr::New(new_expr)
+                        if matches!(
+                            &*new_expr.callee,
+                            Expr::Ident(ident) if ident.get_name() == "StableBTreeMap"
+                        ) =>
+                    {
+                        let azle_new_expr = AzleNewExpr {
+                            new_expr: new_expr.clone(),
+                            source_map: &self.source_map,
+                        };
+                        match azle_new_expr.to_azle_stable_b_tree_map_node() {
+                            Ok(stable_b_tree_map_node) => Some(stable_b_tree_map_node),
+                            Err(err) => panic!("{}", err),
+                        }
+                    }
+                    _ => None,
+                },
+                _ => None,
             })
+            .collect()
     }
 }
