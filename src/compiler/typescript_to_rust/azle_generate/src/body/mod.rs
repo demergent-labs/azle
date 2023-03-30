@@ -5,11 +5,10 @@ use cdk_framework::act::node::{
 use proc_macro2::TokenStream;
 use quote::quote;
 
-use crate::{
-    generators::{async_await_result_handler, boa_error_handlers, ic_object},
-    ts_ast::TsAst,
-};
+use crate::{generators::ic_object, ts_ast::TsAst};
 
+pub mod async_await_result_handler;
+pub mod boa_error_handlers;
 pub mod stable_b_tree_map;
 
 pub fn generate(

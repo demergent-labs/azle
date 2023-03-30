@@ -5,8 +5,6 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 use crate::ts_ast::{source_map::SourceMapped, AzleProgram};
 
-mod build_vm_value_conversion;
-
 pub struct TsAst {
     pub azle_programs: Vec<AzleProgram>,
     pub main_js: String,
