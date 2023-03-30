@@ -1,4 +1,4 @@
-use crate::generators::cross_canister_calls::{
+use crate::candid_type::service::rust::{
     post_await_state_management, pre_await_state_management, promise_fulfillment,
 };
 use cdk_framework::act::node::candid::Service;
