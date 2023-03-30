@@ -9,54 +9,20 @@ use crate::ts_ast::{
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_func(&self) -> Option<Func> {
-        let name = self.id.get_name().to_string();
-        match &*self.type_ann {
-            TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-                swc_ecma_ast::TsEntityName::TsQualifiedName(_) => None,
-                swc_ecma_ast::TsEntityName::Ident(ident) => {
-                    if ident.get_name() == "Func" {
-                        let azle_type_ref = AzleTypeRef {
-                            ts_type_ref: ts_type_ref.clone(),
-                            source_map: self.source_map,
-                        };
-                        let func = azle_type_ref.to_func(Some(name));
-
-                        Some(func)
-                    } else {
-                        None
-                    }
-                }
-            },
-            _ => None,
-        }
+        self.process_ts_type_ref("Func", |azle_type_ref| {
+            azle_type_ref.to_func(Some(self.id.get_name().to_string()))
+        })
     }
 
     pub fn to_record(&self) -> Option<Record> {
-        let name = self.id.get_name().to_string();
-        match &*self.type_ann {
-            TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-                swc_ecma_ast::TsEntityName::TsQualifiedName(_) => None,
-                swc_ecma_ast::TsEntityName::Ident(ident) => {
-                    if ident.get_name() == "Record" {
-                        let azle_type_ref = AzleTypeRef {
-                            ts_type_ref: ts_type_ref.clone(),
-                            source_map: self.source_map,
-                        };
-                        let mut record = azle_type_ref.to_record();
-                        record.name = Some(name);
-
-                        Some(record)
-                    } else {
-                        None
-                    }
-                }
-            },
-            _ => None,
-        }
+        self.process_ts_type_ref("Record", |azle_type_ref| {
+            let mut record = azle_type_ref.to_record();
+            record.name = Some(self.id.get_name().to_string());
+            record
+        })
     }
 
     pub fn to_tuple(&self) -> Option<Tuple> {
-        let name = self.id.get_name().to_string();
         match &*self.type_ann {
             TsType::TsTupleType(ts_tuple_type) => {
                 let azle_tuple_type = AzleTupleType {
@@ -64,7 +30,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
                     source_map: self.source_map,
                 };
                 let mut tuple = azle_tuple_type.to_tuple();
-                tuple.name = Some(name);
+                tuple.name = Some(self.id.get_name().to_string());
 
                 Some(tuple)
             }
@@ -73,47 +39,38 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
     }
 
     pub fn to_type_alias(&self) -> Option<TypeAlias> {
-        let name = self.id.get_name().to_string();
-        match &*self.type_ann {
-            TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-                swc_ecma_ast::TsEntityName::TsQualifiedName(_) => None,
-                swc_ecma_ast::TsEntityName::Ident(ident) => {
-                    if ident.get_name() == "Alias" {
-                        let aliased_type = AzleTypeRef {
-                            ts_type_ref: ts_type_ref.clone(),
-                            source_map: self.source_map,
-                        }
-                        .get_enclosed_azle_type()
-                        .to_data_type();
+        self.process_ts_type_ref("Alias", |azle_type_ref| {
+            let aliased_type = azle_type_ref.get_enclosed_azle_type().to_data_type();
 
-                        Some(TypeAlias {
-                            name,
-                            aliased_type: Box::new(aliased_type),
-                        })
-                    } else {
-                        None
-                    }
-                }
-            },
-            _ => None,
-        }
+            TypeAlias {
+                name: self.id.get_name().to_string(),
+                aliased_type: Box::new(aliased_type),
+            }
+        })
     }
 
     pub fn to_variant(&self) -> Option<Variant> {
-        let name = self.id.get_name().to_string();
+        self.process_ts_type_ref("Variant", |azle_type_ref| {
+            let mut variant = azle_type_ref.to_variant();
+            variant.name = Some(self.id.get_name().to_string());
+            variant
+        })
+    }
+
+    fn process_ts_type_ref<F, T>(&self, type_name: &str, handler: F) -> Option<T>
+    where
+        F: Fn(AzleTypeRef) -> T,
+    {
         match &*self.type_ann {
             TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
                 swc_ecma_ast::TsEntityName::TsQualifiedName(_) => None,
                 swc_ecma_ast::TsEntityName::Ident(ident) => {
-                    if ident.get_name() == "Variant" {
+                    if ident.get_name() == type_name {
                         let azle_type_ref = AzleTypeRef {
                             ts_type_ref: ts_type_ref.clone(),
                             source_map: self.source_map,
                         };
-                        let mut variant = azle_type_ref.to_variant();
-                        variant.name = Some(name);
-
-                        Some(variant)
+                        Some(handler(azle_type_ref))
                     } else {
                         None
                     }
