@@ -2,10 +2,10 @@ use cdk_framework::act::node::candid::{service::Method, Service};
 use swc_ecma_ast::{ClassDecl, ClassMember};
 
 use crate::ts_ast::{source_map::SourceMapped, GetName};
+use vm_value_conversions::{from_vm_value, list_from_vm_value, list_to_vm_value, to_vm_value};
 
-use super::vm_value_conversions::{
-    from_vm_value, list_from_vm_value, list_to_vm_value, to_vm_value,
-};
+mod errors;
+mod vm_value_conversions;
 
 impl SourceMapped<'_, ClassDecl> {
     pub fn to_service(&self) -> Service {
