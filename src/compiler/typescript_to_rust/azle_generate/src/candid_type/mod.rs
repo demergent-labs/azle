@@ -1,60 +1,16 @@
 use cdk_framework::act::CandidTypes;
+use swc_ecma_ast::TsTypeAliasDecl;
 
-use super::TsAst;
+use crate::ts_ast::{source_map::SourceMapped, TsAst};
 
 impl TsAst {
     pub fn build_candid_types(&self) -> CandidTypes {
-        let funcs =
-            self.ts_type_alias_decls()
-                .iter()
-                .fold(vec![], |mut acc, ts_type_alias_decl| {
-                    if let Some(func) = ts_type_alias_decl.to_func() {
-                        acc.push(func)
-                    }
-                    acc
-                });
-
-        let records =
-            self.ts_type_alias_decls()
-                .iter()
-                .fold(vec![], |mut acc, ts_type_alias_decl| {
-                    if let Some(record) = ts_type_alias_decl.to_record() {
-                        acc.push(record)
-                    }
-                    acc
-                });
-
+        let funcs = self.extract_candid_types(|x| x.to_func());
+        let records = self.extract_candid_types(|x| x.to_record());
         let services = self.build_services();
-
-        let tuples =
-            self.ts_type_alias_decls()
-                .iter()
-                .fold(vec![], |mut acc, ts_type_alias_decl| {
-                    if let Some(tuple) = ts_type_alias_decl.to_tuple() {
-                        acc.push(tuple)
-                    }
-                    acc
-                });
-
-        let type_aliases =
-            self.ts_type_alias_decls()
-                .iter()
-                .fold(vec![], |mut acc, ts_type_alias_decl| {
-                    if let Some(type_alias) = ts_type_alias_decl.to_type_alias() {
-                        acc.push(type_alias)
-                    }
-                    acc
-                });
-
-        let variants =
-            self.ts_type_alias_decls()
-                .iter()
-                .fold(vec![], |mut acc, ts_type_alias_decl| {
-                    if let Some(variant) = ts_type_alias_decl.to_variant() {
-                        acc.push(variant)
-                    }
-                    acc
-                });
+        let tuples = self.extract_candid_types(|x| x.to_tuple());
+        let type_aliases = self.extract_candid_types(|x| x.to_type_alias());
+        let variants = self.extract_candid_types(|x| x.to_variant());
 
         CandidTypes {
             funcs,
@@ -64,5 +20,15 @@ impl TsAst {
             type_aliases,
             variants,
         }
+    }
+
+    fn extract_candid_types<F, T>(&self, extractor: F) -> Vec<T>
+    where
+        F: Fn(&SourceMapped<TsTypeAliasDecl>) -> Option<T>,
+    {
+        self.ts_type_alias_decls()
+            .iter()
+            .filter_map(|ts_type_alias_decl| extractor(ts_type_alias_decl))
+            .collect()
     }
 }
