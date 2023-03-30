@@ -3,6 +3,8 @@ use swc_ecma_ast::TsTypeAliasDecl;
 
 use crate::ts_ast::{source_map::SourceMapped, TsAst};
 
+mod ts_type_alias_decl;
+
 impl TsAst {
     pub fn build_candid_types(&self) -> CandidTypes {
         let funcs = self.extract_candid_types(|x| x.to_func());
