@@ -6,7 +6,7 @@ use cdk_framework::act::node::{
 
 use super::AzleTypeRef;
 use crate::{
-    generators::func,
+    candid_type::func,
     ts_ast::{
         azle_type::AzleType, traits::GetTsType, AzleFnOrConstructorType,
         FunctionAndMethodTypeHelperMethods, GetName,

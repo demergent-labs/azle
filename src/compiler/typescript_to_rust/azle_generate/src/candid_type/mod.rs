@@ -7,6 +7,7 @@ mod service;
 mod ts_type_alias_decl;
 
 pub mod azle_type_ref;
+pub mod func;
 
 impl TsAst {
     pub fn build_candid_types(&self) -> CandidTypes {
