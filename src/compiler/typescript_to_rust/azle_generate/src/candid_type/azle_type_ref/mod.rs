@@ -1,7 +1,7 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeRef;
 
-use super::AzleType;
+use crate::ts_ast::azle_type::AzleType;
 
 mod errors;
 mod get_name;
