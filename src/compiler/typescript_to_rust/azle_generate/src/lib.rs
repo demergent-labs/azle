@@ -4,6 +4,7 @@ use ts_ast::TsAst;
 
 pub use stable_b_tree_map::{AzleStableBTreeMapNode, StableBTreeMapNode};
 
+mod candid_type;
 mod canister_method;
 mod errors;
 mod generators;
