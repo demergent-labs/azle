@@ -3,6 +3,7 @@ use swc_ecma_ast::TsTypeAliasDecl;
 
 use crate::ts_ast::{source_map::SourceMapped, TsAst};
 
+pub mod azle_type_ref;
 mod ts_type_alias_decl;
 
 impl TsAst {
