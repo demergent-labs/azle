@@ -1,10 +1,11 @@
 use cdk_framework::act::CandidTypes;
-use swc_ecma_ast::TsTypeAliasDecl;
 
-use crate::ts_ast::{source_map::SourceMapped, TsAst};
+use crate::ts_ast::TsAst;
+
+mod ts_ast;
+mod ts_type_alias_decl;
 
 pub mod azle_type_ref;
-mod ts_type_alias_decl;
 
 impl TsAst {
     pub fn build_candid_types(&self) -> CandidTypes {
@@ -23,15 +24,5 @@ impl TsAst {
             type_aliases,
             variants,
         }
-    }
-
-    fn extract_candid_types<F, T>(&self, extractor: F) -> Vec<T>
-    where
-        F: Fn(&SourceMapped<TsTypeAliasDecl>) -> Option<T>,
-    {
-        self.ts_type_alias_decls()
-            .iter()
-            .filter_map(|ts_type_alias_decl| extractor(ts_type_alias_decl))
-            .collect()
     }
 }
