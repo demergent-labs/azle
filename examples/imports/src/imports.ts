@@ -1,4 +1,4 @@
-import { $query } from 'azle';
+import { $query, int } from 'azle';
 import { one, two, three } from './library';
 import { sha224 } from 'js-sha256';
 
@@ -20,4 +20,9 @@ export function getThree(): string {
 $query;
 export function sha224Hash(message: string): string {
     return sha224.update(message).hex();
+}
+
+$query;
+export function getMathMessage(): int {
+    return BigInt(Math.ceil(10.4));
 }
