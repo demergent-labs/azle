@@ -15,7 +15,7 @@ use crate::{
     },
 };
 
-use super::azle_type_ref::AzleTypeRef;
+use super::AzleTypeRef;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_record(&self) -> Option<Record> {

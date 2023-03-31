@@ -1,7 +1,7 @@
 use cdk_framework::act::node::{candid::Func, node_parts::mode::Mode, CandidType};
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use super::azle_type_ref::AzleTypeRef;
+use super::AzleTypeRef;
 use crate::ts_ast::{
     azle_type::AzleType, source_map::SourceMapped, traits::GetTsType, AzleFnOrConstructorType,
     FunctionAndMethodTypeHelperMethods, GetName,

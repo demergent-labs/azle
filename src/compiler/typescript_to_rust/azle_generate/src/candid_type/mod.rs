@@ -3,14 +3,16 @@ use swc_ecma_ast::TsTypeAliasDecl;
 
 use crate::ts_ast::{source_map::SourceMapped, TsAst};
 
-pub mod azle_type_ref;
 pub mod func;
 pub mod opt;
 pub mod record;
 pub mod service;
+pub mod ts_ast;
 pub mod tuple;
 pub mod type_alias;
 pub mod variant;
+
+pub use ts_ast::AzleTypeRef;
 
 impl TsAst {
     pub fn build_candid_types(&self) -> CandidTypes {

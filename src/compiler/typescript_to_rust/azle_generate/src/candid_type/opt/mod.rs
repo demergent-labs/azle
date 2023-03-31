@@ -1,6 +1,6 @@
 use cdk_framework::act::node::candid::Opt;
 
-use super::azle_type_ref::AzleTypeRef;
+use super::AzleTypeRef;
 
 impl AzleTypeRef<'_> {
     pub fn to_option(&self) -> Opt {

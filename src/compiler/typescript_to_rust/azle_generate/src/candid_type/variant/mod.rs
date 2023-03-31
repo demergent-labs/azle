@@ -1,8 +1,8 @@
 use cdk_framework::act::node::candid::{variant::Member, Variant};
 use swc_ecma_ast::TsTypeAliasDecl;
 
+use super::AzleTypeRef;
 use crate::{
-    candid_type::azle_type_ref::AzleTypeRef,
     errors::{ErrorMessage, Suggestion},
     ts_ast::{
         azle_type::azle_type_lit::{

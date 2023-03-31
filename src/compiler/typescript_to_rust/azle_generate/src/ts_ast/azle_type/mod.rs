@@ -1,7 +1,7 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsType;
 
-use crate::candid_type::{azle_type_ref::AzleTypeRef, tuple::AzleTupleType};
+use crate::candid_type::{tuple::AzleTupleType, AzleTypeRef};
 
 pub use azle_array_type::AzleArrayType;
 pub use azle_fn_or_constructor_type::AzleFnOrConstructorType;
