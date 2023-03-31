@@ -1,5 +1,5 @@
 use cdk_framework::act::node::{
-    candid::{Opt, Primitive, TypeRef},
+    candid::{Primitive, TypeRef},
     CandidType,
 };
 
@@ -31,15 +31,6 @@ impl AzleTypeRef<'_> {
             "Variant" => CandidType::Variant(self.to_variant()),
             "Record" => CandidType::Record(self.to_record()),
             _ => CandidType::TypeRef(self.to_type_ref()),
-        }
-    }
-}
-
-impl AzleTypeRef<'_> {
-    fn to_option(&self) -> Opt {
-        let enclosed_act_data_type = self.get_enclosed_azle_type().to_data_type();
-        Opt {
-            enclosed_type: Box::from(enclosed_act_data_type),
         }
     }
 
