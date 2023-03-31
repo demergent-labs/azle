@@ -13,7 +13,6 @@ pub use annotation::Annotation;
 pub use errors::ParseError;
 
 mod annotation;
-mod guard_function;
 mod heartbeat;
 mod init;
 mod inspect_message;
