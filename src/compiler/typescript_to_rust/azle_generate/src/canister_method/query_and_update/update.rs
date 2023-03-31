@@ -1,6 +1,6 @@
 use cdk_framework::act::node::canister_method::{CanisterMethod, CanisterMethodType, UpdateMethod};
 
-use super::BuildCanisterMethods;
+use super::shared::BuildCanisterMethods;
 use crate::TsAst;
 
 impl TsAst {
