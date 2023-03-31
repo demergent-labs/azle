@@ -1,28 +1,12 @@
-use cdk_framework::act::node::candid::{Tuple, TypeAlias};
+use cdk_framework::act::node::candid::TypeAlias;
 use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
 use crate::{
     candid_type::azle_type_ref::AzleTypeRef,
-    ts_ast::{azle_type::AzleTupleType, source_map::SourceMapped, GetName},
+    ts_ast::{source_map::SourceMapped, GetName},
 };
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
-    pub fn to_tuple(&self) -> Option<Tuple> {
-        match &*self.type_ann {
-            TsType::TsTupleType(ts_tuple_type) => {
-                let azle_tuple_type = AzleTupleType {
-                    ts_tuple_type: ts_tuple_type.clone(),
-                    source_map: self.source_map,
-                };
-                let mut tuple = azle_tuple_type.to_tuple();
-                tuple.name = Some(self.id.get_name().to_string());
-
-                Some(tuple)
-            }
-            _ => None,
-        }
-    }
-
     pub fn to_type_alias(&self) -> Option<TypeAlias> {
         self.process_ts_type_ref("Alias", |azle_type_ref| {
             let aliased_type = azle_type_ref.get_enclosed_azle_type().to_data_type();

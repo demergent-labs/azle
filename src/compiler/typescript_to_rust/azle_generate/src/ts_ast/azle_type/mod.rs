@@ -1,19 +1,17 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsType;
 
-use crate::candid_type::azle_type_ref::AzleTypeRef;
+use crate::candid_type::{azle_type_ref::AzleTypeRef, tuple::AzleTupleType};
 
 pub use azle_array_type::AzleArrayType;
 pub use azle_fn_or_constructor_type::AzleFnOrConstructorType;
 pub use azle_fn_or_constructor_type::AzleFnType;
 pub use azle_keyword_type::AzleKeywordType;
-pub use azle_tuple_type::AzleTupleType;
 pub use azle_type_lit::AzleTypeLit;
 
 mod azle_array_type;
 mod azle_fn_or_constructor_type;
 mod azle_keyword_type;
-mod azle_tuple_type;
 mod errors;
 mod get_source_info;
 mod get_source_text;
