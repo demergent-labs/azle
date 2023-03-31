@@ -3,16 +3,16 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
 pub fn generate(
-    canister: &Service,
+    service: &Service,
     method: &Method,
     pre_await_state_management: &TokenStream,
     post_await_state_management: &TokenStream,
     promise_fulfillment: &TokenStream,
 ) -> TokenStream {
-    let call_function_name_string = format!("_azle_call_{}_{}", canister.name, method.name);
+    let call_function_name_string = format!("_azle_call_{}_{}", service.name, method.name);
     let call_function_name_ident = format_ident!("{}", call_function_name_string);
     let call_wrapper_fn_name = format_ident!("{}_wrapper", call_function_name_string);
-    let param_variables = super::generate_param_variables(method, &canister.name);
+    let param_variables = super::generate_param_variables(method, &service.name);
     let args = super::generate_args_list(method);
 
     quote! {

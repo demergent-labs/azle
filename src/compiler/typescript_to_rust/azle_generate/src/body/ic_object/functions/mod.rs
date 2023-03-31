@@ -1,7 +1,6 @@
 use cdk_framework::act::node::{candid::Service, canister_method::QueryOrUpdateMethod};
 
 use crate::StableBTreeMapNode;
-use cross_canister_calls::{notify, notify_with_payment128};
 
 mod accept_message;
 mod arg_data_raw;
@@ -74,8 +73,6 @@ pub fn generate(
     let msg_cycles_available128 = msg_cycles_available128::generate();
     let msg_cycles_refunded = msg_cycles_refunded::generate();
     let msg_cycles_refunded128 = msg_cycles_refunded128::generate();
-    let notify = notify::generate(services);
-    let notify_with_payment128 = notify_with_payment128::generate(services);
     let notify_raw = notify_raw::generate();
     let performance_counter = performance_counter::generate();
     let print = print::generate();
@@ -122,8 +119,6 @@ pub fn generate(
         #msg_cycles_available128
         #msg_cycles_refunded
         #msg_cycles_refunded128
-        #(#notify)*
-        #(#notify_with_payment128)*
         #notify_raw
         #performance_counter
         #print

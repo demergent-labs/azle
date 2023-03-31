@@ -22,8 +22,8 @@ pub mod notify_with_payment128;
 pub fn generate(services: &Vec<Service>) -> Vec<TokenStream> {
     services
         .iter()
-        .map(|canister| {
-            canister
+        .map(|service| {
+            service
                 .methods
                 .iter()
                 .map(|method| {
@@ -32,31 +32,36 @@ pub fn generate(services: &Vec<Service>) -> Vec<TokenStream> {
                     let promise_fulfillment = promise_fulfillment::generate();
 
                     let call_function = call::generate(
-                        canister,
+                        service,
                         method,
                         &pre_await_state_management,
                         &post_await_state_management,
                         &promise_fulfillment,
                     );
                     let call_with_payment_function = call_with_payment::generate(
-                        canister,
+                        service,
                         method,
                         &pre_await_state_management,
                         &post_await_state_management,
                         &promise_fulfillment,
                     );
                     let call_with_payment128_function = call_with_payment128::generate(
-                        canister,
+                        service,
                         method,
                         &pre_await_state_management,
                         &post_await_state_management,
                         &promise_fulfillment,
                     );
+                    let notify_function = notify::generate(service, method);
+                    let notify_with_payment128_function =
+                        notify_with_payment128::generate(service, method);
 
                     quote! {
                         #call_function
                         #call_with_payment_function
                         #call_with_payment128_function
+                        #notify_function
+                        #notify_with_payment128_function
                     }
                 })
                 .collect()
