@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use cdk_framework::act::node::GuardFunction;
 use swc_ecma_ast::FnDecl;
 
@@ -26,15 +28,12 @@ impl TsAst {
 
 impl SourceMapped<'_, FnDecl> {
     pub fn has_guard_result_return_type(&self) -> bool {
-        match &self.function.return_type {
-            Some(ts_type_ann) => match &*ts_type_ann.type_ann {
-                swc_ecma_ast::TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-                    swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name() == "GuardResult",
-                    swc_ecma_ast::TsEntityName::TsQualifiedName(_) => false,
-                },
-                _ => false,
-            },
-            None => false,
-        }
+        self.function
+            .return_type
+            .as_ref()
+            .and_then(|ts_type_ann| ts_type_ann.type_ann.deref().as_ts_type_ref())
+            .and_then(|ts_type_ref| ts_type_ref.type_name.as_ident())
+            .map(|ident| ident.get_name() == "GuardResult")
+            .unwrap_or(false)
     }
 }
