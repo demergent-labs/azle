@@ -1,4 +1,4 @@
-use cdk_framework::act::node::candid::{Func, Tuple, TypeAlias, Variant};
+use cdk_framework::act::node::candid::{Tuple, TypeAlias};
 use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
 use crate::{
@@ -7,12 +7,6 @@ use crate::{
 };
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
-    pub fn to_func(&self) -> Option<Func> {
-        self.process_ts_type_ref("Func", |azle_type_ref| {
-            azle_type_ref.to_func(Some(self.id.get_name().to_string()))
-        })
-    }
-
     pub fn to_tuple(&self) -> Option<Tuple> {
         match &*self.type_ann {
             TsType::TsTupleType(ts_tuple_type) => {

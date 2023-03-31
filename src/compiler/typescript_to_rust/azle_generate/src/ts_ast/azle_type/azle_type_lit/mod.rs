@@ -1,5 +1,3 @@
-use cdk_framework::act::node::candid::{variant, Variant};
-
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeLit;
 
