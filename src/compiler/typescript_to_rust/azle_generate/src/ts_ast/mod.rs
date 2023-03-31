@@ -9,7 +9,6 @@ pub use ts_ast::TsAst;
 
 mod azle_fn_decl;
 mod azle_functions_and_methods;
-mod expr;
 mod ident;
 mod ts_ast;
 mod ts_fn_param;

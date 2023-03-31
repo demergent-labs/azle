@@ -1,6 +1,7 @@
 use cdk_framework::act::node::{candid::Service, canister_method::QueryOrUpdateMethod};
 
 use crate::StableBTreeMapNode;
+use cross_canister_calls::{notify, notify_with_payment128};
 
 mod accept_message;
 mod arg_data_raw;
@@ -23,9 +24,7 @@ mod msg_cycles_available;
 mod msg_cycles_available128;
 mod msg_cycles_refunded;
 mod msg_cycles_refunded128;
-mod notify;
 mod notify_raw;
-mod notify_with_payment128;
 mod performance_counter;
 mod print;
 mod reject;

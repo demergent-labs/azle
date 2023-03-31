@@ -2,8 +2,6 @@ use cdk_framework::act::node::candid::{service::Method, Service};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
-use crate::generators::ic_object;
-
 pub fn generate(
     canister: &Service,
     method: &Method,
@@ -19,8 +17,8 @@ pub fn generate(
         format_ident!("{}", call_with_payment128_function_name_string);
     let call_with_payment128_wrapper_fn_name =
         format_ident!("{}_wrapper", call_with_payment128_function_name_string);
-    let param_variables = ic_object::generate_param_variables(method, &canister.name);
-    let args = ic_object::generate_args_list(method);
+    let param_variables = super::generate_param_variables(method, &canister.name);
+    let args = super::generate_args_list(method);
 
     let index_string = param_variables.len().to_string();
 

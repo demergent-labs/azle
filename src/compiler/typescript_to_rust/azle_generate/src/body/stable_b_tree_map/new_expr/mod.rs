@@ -1,9 +1,9 @@
 use swc_ecma_ast::NewExpr;
 
+use super::expr::{ToU32, ToU8};
 use crate::{
     errors::ErrorMessage,
     ts_ast::{azle_type::AzleType, source_map::SourceMapped},
-    utils::{ToU32, ToU8},
     StableBTreeMapNode,
 };
 

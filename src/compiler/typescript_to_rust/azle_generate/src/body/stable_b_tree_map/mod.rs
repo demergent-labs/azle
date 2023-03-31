@@ -4,8 +4,10 @@ use swc_ecma_ast::{Decl, Expr, Program};
 use crate::ts_ast::{source_map::SourceMapped, AzleProgram, GetName, TsAst};
 use module_item::AsDecl;
 
+mod expr;
 mod module_item;
 mod new_expr;
+
 pub mod rust;
 
 #[derive(Clone, Debug)]
