@@ -1,6 +1,9 @@
 use cdk_framework::act::node::canister_method::{CanisterMethodType, HeartbeatMethod};
 
-use crate::{canister_method::errors, ts_ast::azle_program::HelperMethods, TsAst};
+use crate::{
+    canister_method::{errors, get_azle_fn_decls::GetProgramAzleFnDecls},
+    TsAst,
+};
 
 mod rust;
 

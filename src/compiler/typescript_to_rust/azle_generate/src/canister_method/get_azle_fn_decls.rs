@@ -1,14 +1,15 @@
 use cdk_framework::act::node::canister_method::{CanisterMethod, CanisterMethodType};
-use swc_ecma_ast::FnDecl;
+use swc_ecma_ast::Program;
 
-use crate::ts_ast::{
-    azle_type_alias_decl::TsTypeAliasHelperMethods, source_map::SourceMapped, AzleFnDecl,
-    AzleProgram, AzleTypeAliasDecl,
+use crate::{
+    canister_method::module::ModuleHelperMethods,
+    ts_ast::{AzleFnDecl, AzleProgram, AzleTypeAliasDecl},
 };
 
-pub trait HelperMethods {
+use crate::ts_ast::azle_type_alias_decl::TsTypeAliasHelperMethods;
+
+pub trait GetProgramAzleFnDecls {
     fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl>;
-    fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>>;
     fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
     fn get_canister_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
     fn get_azle_fn_decls_of_type(
@@ -18,7 +19,7 @@ pub trait HelperMethods {
     fn build_canister_method_nodes(&self, request_type: CanisterMethodType) -> Vec<CanisterMethod>;
 }
 
-impl HelperMethods for Vec<AzleProgram> {
+impl GetProgramAzleFnDecls for Vec<AzleProgram> {
     fn get_azle_fn_decls_of_type(
         &self,
         canister_method_type: CanisterMethodType,
@@ -38,17 +39,6 @@ impl HelperMethods for Vec<AzleProgram> {
             let azle_fn_decls = azle_program.get_azle_fn_decls();
 
             vec![acc, azle_fn_decls].concat()
-        })
-    }
-
-    fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>> {
-        self.iter().fold(vec![], |mut acc, azle_program| {
-            // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
-            // necessary to do something like:
-            // vec![acc, vec![azle_program.get_fn_decls()]].concat()
-
-            acc.extend(azle_program.get_fn_decls());
-            acc
         })
     }
 
@@ -79,5 +69,21 @@ impl HelperMethods for Vec<AzleProgram> {
             let canister_method_node = fn_decl.build_canister_method_node(&canister_method_type);
             vec![acc, vec![canister_method_node]].concat()
         })
+    }
+}
+
+impl AzleProgram {
+    fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl> {
+        match &self.program {
+            Program::Module(module) => module.get_azle_fn_decls(&self.source_map),
+            Program::Script(_) => vec![],
+        }
+    }
+
+    fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl> {
+        match &self.program {
+            Program::Module(module) => module.get_azle_type_alias_decls(&self.source_map),
+            Program::Script(_) => vec![],
+        }
     }
 }

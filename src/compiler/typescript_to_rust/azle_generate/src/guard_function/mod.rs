@@ -1,13 +1,14 @@
-use std::ops::Deref;
-
 use cdk_framework::act::node::GuardFunction;
+use std::ops::Deref;
 use swc_ecma_ast::FnDecl;
 
 use crate::{
-    ts_ast::{azle_program::HelperMethods, source_map::SourceMapped, GetName},
+    ts_ast::{source_map::SourceMapped, GetName},
     TsAst,
 };
+use get_fn_decls::GetProgramFnDecls;
 
+mod get_fn_decls;
 mod rust;
 
 impl TsAst {

@@ -13,6 +13,7 @@ pub use annotation::Annotation;
 pub use errors::ParseError;
 
 mod annotation;
+mod get_azle_fn_decls;
 mod heartbeat;
 mod init;
 mod inspect_message;
