@@ -22,9 +22,9 @@ Examples:
 
 Canisters are generally able to call the query or update methods of other canisters in any subnet. We refer to these types of calls as cross-canister calls.
 
-A cross-canister call begins with a definition of the canister to be called, referred to as an external canister.
+A cross-canister call begins with a definition of the canister to be called, referred to as a service.
 
-Imagine a simple external canister called `token_canister`:
+Imagine a simple service called `token_canister`:
 
 ```typescript
 import { ic, nat64, Principal, StableBTreeMap, $update } from 'azle';
@@ -45,7 +45,7 @@ export function transfer(to: Principal, amount: nat64): nat64 {
 }
 ```
 
-Here's how you would create its external canister definition:
+Here's how you would create its service definition:
 
 ```typescript
 import { CanisterResult, Principal, nat64, Service, serviceUpdate } from 'azle';
@@ -56,7 +56,7 @@ class TokenCanister extends Service {
 }
 ```
 
-Once you have a canister definition you can instantiate it with the canister's `Principal` and then invoke its methods.
+Once you have a service definition you can instantiate it with the canister's `Principal` and then invoke its methods.
 
 Here's how to instantiate `TokenCanister`:
 
@@ -102,7 +102,7 @@ export async function payout(
 }
 ```
 
-Notice that the `token_canister.transfer` method, because it is a cross-canister method, returns a `CanisterResult`. All cross-canister calls return `CanisterResult`, which has an `ok` or `err` property depending on if the cross-canister call was successful or not.
+Notice that the `token_canister.transfer` method, because it is a cross-canister method, returns a `CanisterResult`. All cross-canister calls return `CanisterResult`, which has an `Ok` or `Err` property depending on if the cross-canister call was successful or not.
 
 The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a `CanisterResult`. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a `try...catch` most likely won't do anything useful.
 

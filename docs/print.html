@@ -33,7 +33,6 @@
 
     </head>
     <body>
-    <div id="body-container">
         <!-- Provide site root to javascript -->
         <script>
             var path_to_root = "";
@@ -71,12 +70,10 @@
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             var html = document.querySelector('html');
-            var sidebar = null;
+            var sidebar = 'hidden';
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
-            } else {
-                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -653,7 +650,9 @@ export function getString(): string {
 <p>Query methods are read-only. They do not persist any state changes. Take a look at the following example:</p>
 <pre><code class="language-typescript">import { $query } from 'azle';
 
-let db = {};
+let db: {
+    [key: string]: string;
+} = {};
 
 $query;
 export function set(key: string, value: string): void {
@@ -757,7 +756,7 @@ export function set(key: string, value: string): void {
 <p>So far we have only seen how state changes can be persisted. State changes can also be discarded by implicit or explicit traps. A trap is an immediate stop to execution with the ability to provide a message to the execution environment.</p>
 <p>Traps can be useful for ensuring that multiple operations are either all completed or all disregarded, or in other words atomic. Keep in mind that these guarantees do not hold once cross-canister calls are introduced, but that's a more advanced topic <a href="./cross_canister.html">covered later</a>.</p>
 <p>Here's an example of how to trap and ensure atomic changes to your database:</p>
-<pre><code class="language-typescript">import { ic, ok, Opt, $query, Record, StableBTreeMap, $update } from 'azle';
+<pre><code class="language-typescript">import { ic, match, Opt, $query, Record, StableBTreeMap, $update } from 'azle';
 
 type Entry = Record&lt;{
     key: string;
@@ -781,15 +780,16 @@ export function setMany(entries: Entry[]): void {
     entries.forEach((entry) =&gt; {
         const result = db.insert(entry.key, entry.value);
 
-        if (!ok(result)) {
-            ic.trap(JSON.stringify(result.err));
-        }
+        match(result, {
+            Ok: () =&gt; {},
+            Err: (err) =&gt; ic.trap(JSON.stringify(err))
+        });
     });
 }
 </code></pre>
 <p>In addition to <code>ic.trap</code>, an explicit JavaScript <code>throw</code> or any unhandled exception will also trap.</p>
 <p>There is a limit to how much computation can be done in a single call to an update method. The current update call limit is <a href="https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits">20 billion Wasm instructions</a>. If we modify our database example, we can introduce an update method that runs the risk reaching the limit:</p>
-<pre><code class="language-typescript">import { ic, nat64, ok, Opt, $query, StableBTreeMap, $update } from 'azle';
+<pre><code class="language-typescript">import { ic, match, nat64, Opt, $query, StableBTreeMap, $update } from 'azle';
 
 let db = new StableBTreeMap&lt;string, string&gt;(0, 1_000, 1_000);
 
@@ -808,9 +808,10 @@ export function setMany(numEntries: nat64): void {
     for (let i = 0; i &lt; numEntries; i++) {
         const result = db.insert(i.toString(), i.toString());
 
-        if (!ok(result)) {
-            ic.trap(JSON.stringify(result.err));
-        }
+        match(result, {
+            Ok: () =&gt; {},
+            Err: (err) =&gt; ic.trap(JSON.stringify(err))
+        });
     }
 }
 </code></pre>
@@ -2025,8 +2026,8 @@ type ValueTooLarge = Record&lt;{
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami">whoami</a></li>
 </ul>
 <p>Canisters are generally able to call the query or update methods of other canisters in any subnet. We refer to these types of calls as cross-canister calls.</p>
-<p>A cross-canister call begins with a definition of the canister to be called, referred to as an external canister.</p>
-<p>Imagine a simple external canister called <code>token_canister</code>:</p>
+<p>A cross-canister call begins with a definition of the canister to be called, referred to as a service.</p>
+<p>Imagine a simple service called <code>token_canister</code>:</p>
 <pre><code class="language-typescript">import { ic, nat64, Principal, StableBTreeMap, $update } from 'azle';
 
 let accounts = new StableBTreeMap&lt;Principal, nat64&gt;(0, 38, 15);
@@ -2044,7 +2045,7 @@ export function transfer(to: Principal, amount: nat64): nat64 {
     return amount;
 }
 </code></pre>
-<p>Here's how you would create its external canister definition:</p>
+<p>Here's how you would create its service definition:</p>
 <pre><code class="language-typescript">import { CanisterResult, Principal, nat64, Service, serviceUpdate } from 'azle';
 
 class TokenCanister extends Service {
@@ -2052,7 +2053,7 @@ class TokenCanister extends Service {
     transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
 }
 </code></pre>
-<p>Once you have a canister definition you can instantiate it with the canister's <code>Principal</code> and then invoke its methods.</p>
+<p>Once you have a service definition you can instantiate it with the canister's <code>Principal</code> and then invoke its methods.</p>
 <p>Here's how to instantiate <code>TokenCanister</code>:</p>
 <pre><code class="language-typescript">const tokenCanister = new TokenCanister(
     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
@@ -2091,7 +2092,7 @@ export async function payout(
     return await tokenCanister.transfer(to, amount).call();
 }
 </code></pre>
-<p>Notice that the <code>token_canister.transfer</code> method, because it is a cross-canister method, returns a <code>CanisterResult</code>. All cross-canister calls return <code>CanisterResult</code>, which has an <code>ok</code> or <code>err</code> property depending on if the cross-canister call was successful or not.</p>
+<p>Notice that the <code>token_canister.transfer</code> method, because it is a cross-canister method, returns a <code>CanisterResult</code>. All cross-canister calls return <code>CanisterResult</code>, which has an <code>Ok</code> or <code>Err</code> property depending on if the cross-canister call was successful or not.</p>
 <p>The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a <code>CanisterResult</code>. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a <code>try...catch</code> most likely won't do anything useful.</p>
 <p>Let's add to our example code and explore adding some practical result-based error-handling to stop people from stealing tokens.</p>
 <p><code>token_canister</code>:</p>
@@ -5363,6 +5364,5 @@ function callback(): void {
         });
         </script>
 
-    </div>
     </body>
 </html>
