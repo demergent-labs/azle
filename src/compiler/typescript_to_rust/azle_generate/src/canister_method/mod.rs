@@ -2,7 +2,7 @@ use cdk_framework::act::CanisterMethods;
 
 use crate::ts_ast::TsAst;
 
-pub use annotated_fn_decl::{AnnotatedFnDecl, GetProgramAnnotatedFnDecls};
+pub use annotated_fn_decl::{AnnotatedFnDecl, GetAnnotatedFnDecls};
 pub use annotation::Annotation;
 pub use errors::ParseError;
 

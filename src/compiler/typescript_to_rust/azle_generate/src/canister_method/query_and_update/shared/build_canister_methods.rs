@@ -6,7 +6,7 @@ use cdk_framework::act::node::{
 };
 
 use crate::{
-    canister_method::{query_and_update, AnnotatedFnDecl, GetProgramAnnotatedFnDecls},
+    canister_method::{query_and_update, AnnotatedFnDecl, GetAnnotatedFnDecls},
     ts_ast::{azle_type::AzleType, AzleProgram},
 };
 

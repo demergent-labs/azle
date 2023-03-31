@@ -1,7 +1,7 @@
 use cdk_framework::act::node::canister_method::{CanisterMethodType, PreUpgradeMethod};
 
 use crate::{
-    canister_method::{errors, GetProgramAnnotatedFnDecls},
+    canister_method::{errors, GetAnnotatedFnDecls},
     TsAst,
 };
 

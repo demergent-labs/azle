@@ -6,7 +6,7 @@ use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};
 
 use crate::{canister_method::Annotation, ts_ast::GetName};
 
-pub use get_annotated_fn_decls::GetProgramAnnotatedFnDecls;
+pub use get_annotated_fn_decls::GetAnnotatedFnDecls;
 
 mod get_annotated_fn_decls;
 

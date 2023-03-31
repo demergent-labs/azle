@@ -8,7 +8,7 @@ use crate::{
 
 use crate::ts_ast::azle_type_alias_decl::TsTypeAliasHelperMethods;
 
-pub trait GetProgramAnnotatedFnDecls {
+pub trait GetAnnotatedFnDecls {
     fn get_annotated_fn_decls(&self) -> Vec<AnnotatedFnDecl>;
     fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
     fn get_canister_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
@@ -18,7 +18,7 @@ pub trait GetProgramAnnotatedFnDecls {
     ) -> Vec<AnnotatedFnDecl>;
 }
 
-impl GetProgramAnnotatedFnDecls for Vec<AzleProgram> {
+impl GetAnnotatedFnDecls for Vec<AzleProgram> {
     fn get_annotated_fn_decls_of_type(
         &self,
         canister_method_type: CanisterMethodType,
