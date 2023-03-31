@@ -1,13 +1,15 @@
 use cdk_framework::act::node::candid::{variant::Member, Variant};
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use super::AzleTypeRef;
 use crate::{
     errors::{ErrorMessage, Suggestion},
     ts_ast::{
-        azle_type::azle_type_lit::{
-            azle_type_element::azle_property_signature::AzlePropertySignature, AzleTypeElement,
-            AzleTypeLit,
+        azle_type::{
+            azle_type_lit::{
+                azle_type_element::azle_property_signature::AzlePropertySignature, AzleTypeElement,
+                AzleTypeLit,
+            },
+            AzleTypeRef,
         },
         source_map::{get_source_file_info::GetSourceFileInfo, SourceMapped},
         traits::{GetName, GetSourceInfo, GetSpan, TypeToString},

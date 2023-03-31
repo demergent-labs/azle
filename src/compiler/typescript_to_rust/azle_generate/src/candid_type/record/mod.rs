@@ -8,14 +8,12 @@ use crate::{
             azle_type_lit::{
                 azle_type_element::azle_property_signature::AzlePropertySignature, AzleTypeElement,
             },
-            AzleTypeLit,
+            AzleTypeLit, AzleTypeRef,
         },
         source_map::{get_source_file_info::GetSourceFileInfo, SourceMapped},
         traits::{GetName, GetSourceInfo, GetSpan, TypeToString},
     },
 };
-
-use super::AzleTypeRef;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_record(&self) -> Option<Record> {
