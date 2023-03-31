@@ -1,8 +1,8 @@
 use cdk_framework::act::node::canister_method::{CanisterMethodType, PostUpgradeMethod};
 
 use crate::{
-    canister_method::errors,
-    ts_ast::{azle_program::HelperMethods, TsAst},
+    canister_method::{errors, GetAnnotatedFnDecls},
+    TsAst,
 };
 
 mod rust;
@@ -11,11 +11,11 @@ impl TsAst {
     pub fn build_post_upgrade_method(&self) -> PostUpgradeMethod {
         let post_upgrade_fn_decls = self
             .azle_programs
-            .get_azle_fn_decls_of_type(CanisterMethodType::PostUpgrade);
+            .get_annotated_fn_decls_of_type(CanisterMethodType::PostUpgrade);
 
         if post_upgrade_fn_decls.len() > 1 {
             let error_message =
-                errors::build_duplicate_method_types_error_message_from_azle_fn_decl(
+                errors::build_duplicate_method_types_error_message_from_annotated_fn_decl(
                     post_upgrade_fn_decls,
                     CanisterMethodType::PostUpgrade,
                 );

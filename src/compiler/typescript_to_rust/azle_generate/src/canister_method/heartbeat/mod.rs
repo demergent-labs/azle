@@ -1,6 +1,9 @@
 use cdk_framework::act::node::canister_method::{CanisterMethodType, HeartbeatMethod};
 
-use crate::{canister_method::errors, ts_ast::azle_program::HelperMethods, TsAst};
+use crate::{
+    canister_method::{errors, GetAnnotatedFnDecls},
+    TsAst,
+};
 
 mod rust;
 
@@ -8,7 +11,7 @@ impl TsAst {
     pub fn build_heartbeat_method(&self) -> Option<HeartbeatMethod> {
         let heartbeat_fn_decls = self
             .azle_programs
-            .get_azle_fn_decls_of_type(CanisterMethodType::Heartbeat);
+            .get_annotated_fn_decls_of_type(CanisterMethodType::Heartbeat);
 
         if heartbeat_fn_decls.len() > 1 {
             let error_message = errors::build_duplicate_method_types_error_message(

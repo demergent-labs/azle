@@ -1,27 +1,21 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::{
-    ClassDecl, Decl, ExportDecl, Expr, FnDecl, Module, ModuleDecl, ModuleItem, Stmt,
-};
+use swc_ecma_ast::{Decl, ExportDecl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt};
 
 use crate::{
-    canister_method::{errors, module_item::ModuleItemHelperMethods, Annotation},
-    ts_ast::{source_map::SourceMapped, AzleFnDecl, AzleTypeAliasDecl, GetName},
+    canister_method::{errors, module_item::ModuleItemHelperMethods, AnnotatedFnDecl, Annotation},
+    ts_ast::{source_map::SourceMapped, AzleTypeAliasDecl},
 };
 
 pub trait ModuleHelperMethods {
-    fn get_azle_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AzleFnDecl>;
+    fn get_annotated_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AnnotatedFnDecl>;
     fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>>;
     fn get_export_decls(&self) -> Vec<ExportDecl>;
     fn get_azle_type_alias_decls<'a>(&'a self, source_map: &'a SourceMap)
         -> Vec<AzleTypeAliasDecl>;
-    fn get_service_class_declarations<'a>(
-        &'a self,
-        source_map: &'a SourceMap,
-    ) -> Vec<SourceMapped<ClassDecl>>;
 }
 
 impl ModuleHelperMethods for Module {
-    fn get_azle_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AzleFnDecl> {
+    fn get_annotated_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AnnotatedFnDecl> {
         // TODO: Consider changing this algorithm from being backward looking
         // to being forward looking
 
@@ -58,7 +52,7 @@ impl ModuleHelperMethods for Module {
                                 )
                             }
 
-                            acc.push(AzleFnDecl {
+                            acc.push(AnnotatedFnDecl {
                                 annotation,
                                 fn_decl,
                                 source_map,
@@ -163,42 +157,6 @@ impl ModuleHelperMethods for Module {
             .collect();
 
         vec![stmt_azle_type_alias_decls, export_azle_type_alias_decls].concat()
-    }
-
-    fn get_service_class_declarations<'a>(
-        &'a self,
-        source_map: &'a SourceMap,
-    ) -> Vec<SourceMapped<ClassDecl>> {
-        self.body.iter().fold(vec![], |mut acc, module_item| {
-            // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
-            // necessary to do something like:
-            // return vec![acc, vec![SourceMapped::new(class_decl, source_map)]].concat();
-
-            let decl_opt = match module_item {
-                ModuleItem::ModuleDecl(decl) => match decl {
-                    ModuleDecl::ExportDecl(export_decl) => Some(&export_decl.decl),
-                    _ => None,
-                },
-                ModuleItem::Stmt(stmt) => match stmt {
-                    Stmt::Decl(decl) => Some(decl),
-                    _ => None,
-                },
-            };
-
-            if let Some(decl) = decl_opt {
-                if let Decl::Class(class_decl) = decl {
-                    if let Some(super_class) = &class_decl.class.super_class {
-                        if let Expr::Ident(ident) = &**super_class {
-                            if ident.get_name() == "Service" {
-                                acc.push(SourceMapped::new(class_decl, source_map))
-                            }
-                        }
-                    }
-                }
-            }
-
-            acc
-        })
     }
 }
 

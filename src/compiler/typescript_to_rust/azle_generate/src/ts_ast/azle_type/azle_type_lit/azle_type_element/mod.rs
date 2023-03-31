@@ -1,20 +1,18 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::TsTypeElement;
 
-use cdk_framework::act::node::candid::{record, variant};
-
 use self::{
     azle_method_signature::AzleMethodSignature, azle_property_signature::AzlePropertySignature,
 };
 
 mod azle_method_signature;
-mod azle_property_signature;
 mod errors;
-mod get_dependencies;
 mod get_source_info;
 mod get_source_text;
 mod get_span;
 mod type_to_string;
+
+pub mod azle_property_signature;
 
 pub enum AzleTypeElement<'a> {
     AzlePropertySignature(AzlePropertySignature<'a>),
@@ -22,7 +20,7 @@ pub enum AzleTypeElement<'a> {
 }
 
 impl AzleTypeElement<'_> {
-    pub(super) fn from_ts_type_element(
+    pub fn from_ts_type_element(
         ts_type_element: TsTypeElement,
         source_map: &SourceMap,
     ) -> AzleTypeElement {
@@ -46,23 +44,7 @@ impl AzleTypeElement<'_> {
         }
     }
 
-    pub(super) fn to_record_member(&self) -> record::Member {
-        let ts_property_signature = match self.as_azle_property_signature() {
-            Some(ts_property_signature) => ts_property_signature,
-            None => panic!("{}", self.record_property_signature_error()),
-        };
-        ts_property_signature.to_record_member()
-    }
-
-    pub(super) fn to_variant_member(&self) -> variant::Member {
-        let ts_property_signature = match self.as_azle_property_signature() {
-            Some(ts_property_signature) => ts_property_signature,
-            None => panic!("{}", self.variant_property_signature_error()),
-        };
-        ts_property_signature.to_variant_member()
-    }
-
-    pub(self) fn get_source_map(&self) -> &SourceMap {
+    pub fn get_source_map(&self) -> &SourceMap {
         match self {
             AzleTypeElement::AzlePropertySignature(azle_property_signature) => {
                 azle_property_signature.source_map
@@ -73,7 +55,7 @@ impl AzleTypeElement<'_> {
         }
     }
 
-    fn as_azle_property_signature(&self) -> Option<&AzlePropertySignature> {
+    pub fn as_azle_property_signature(&self) -> Option<&AzlePropertySignature> {
         match self {
             AzleTypeElement::AzlePropertySignature(azle_property_signature) => {
                 Some(azle_property_signature)

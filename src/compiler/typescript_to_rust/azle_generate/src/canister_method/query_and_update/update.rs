@@ -1,6 +1,7 @@
 use cdk_framework::act::node::canister_method::{CanisterMethod, CanisterMethodType, UpdateMethod};
 
-use crate::{ts_ast::azle_program::HelperMethods, TsAst};
+use super::shared::BuildCanisterMethods;
+use crate::TsAst;
 
 impl TsAst {
     pub fn build_update_methods(&self) -> Vec<UpdateMethod> {

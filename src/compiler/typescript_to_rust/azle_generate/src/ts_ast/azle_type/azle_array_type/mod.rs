@@ -3,7 +3,6 @@ use swc_ecma_ast::TsArrayType;
 
 use super::AzleType;
 
-mod get_dependencies;
 mod get_source_info;
 mod get_source_text;
 mod to_data_type;

@@ -1,5 +1,5 @@
 use cdk_framework::act::node::Param;
-use swc_ecma_ast::{TsFnParam, TsFnType, TsType};
+use swc_ecma_ast::{TsFnParam, TsFnType};
 
 use crate::ts_ast::{azle_type::AzleType, source_map::SourceMapped, traits::GetTsType, GetName};
 
@@ -20,27 +20,6 @@ impl SourceMapped<'_, TsFnType> {
                     };
                     Param { name, candid_type }
                 }
-                TsFnParam::Array(_) => {
-                    panic!("Array destructuring in parameters is unsupported at this time")
-                }
-                TsFnParam::Rest(_) => {
-                    panic!("Rest parameters are not supported at this time")
-                }
-                TsFnParam::Object(_) => {
-                    panic!("Object destructuring in parameters is unsupported at this time")
-                }
-            })
-            .collect()
-    }
-
-    pub fn get_param_ts_types(&self) -> Vec<TsType> {
-        self.params
-            .iter()
-            .map(|param| match param {
-                TsFnParam::Ident(identifier) => match &identifier.type_ann {
-                    Some(ts_type_ann) => ts_type_ann.get_ts_type(),
-                    None => panic!("Function parameters must have a type"),
-                },
                 TsFnParam::Array(_) => {
                     panic!("Array destructuring in parameters is unsupported at this time")
                 }

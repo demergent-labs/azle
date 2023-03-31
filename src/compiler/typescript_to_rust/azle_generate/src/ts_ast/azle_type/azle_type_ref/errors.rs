@@ -20,7 +20,7 @@ impl AzleTypeRef<'_> {
         }
     }
 
-    pub(super) fn wrong_enclosed_type_error(&self) -> ErrorMessage {
+    pub fn wrong_enclosed_type_error(&self) -> ErrorMessage {
         match self.get_name() {
             "Variant" => self.variant_wrong_enclosed_type_error(),
             "Func" => self.func_wrong_enclosed_type_error(),
