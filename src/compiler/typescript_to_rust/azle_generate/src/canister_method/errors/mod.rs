@@ -1,7 +1,7 @@
 use cdk_framework::act::node::canister_method::CanisterMethodType;
 use swc_ecma_ast::TsType;
 
-use crate::ts_ast::AzleFnDecl;
+use crate::canister_method::AzleFnDecl;
 
 pub use async_not_allowed::build_async_not_allowed_error_message;
 pub use duplicate_method_types::{

@@ -4,7 +4,7 @@ use swc_ecma_ast::{
     TsType,
 };
 
-use crate::{canister_method::rust, ts_ast::AzleFnDecl};
+use crate::canister_method::{rust, AzleFnDecl};
 
 pub use super::build_canister_methods::BuildCanisterMethods;
 

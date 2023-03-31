@@ -1,7 +1,7 @@
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 
-use crate::ts_ast::AzleFnDecl;
+use crate::canister_method::AzleFnDecl;
 
 pub fn maybe_generate_call_to_js_function(fn_decl_option: &Option<&AzleFnDecl>) -> TokenStream {
     if let Some(azle_fn_decl) = fn_decl_option {

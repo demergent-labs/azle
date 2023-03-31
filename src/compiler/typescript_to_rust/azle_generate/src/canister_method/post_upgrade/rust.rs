@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 
-use crate::{canister_method::rust, ts_ast::AzleFnDecl};
+use crate::canister_method::{rust, AzleFnDecl};
 
 pub fn generate(post_upgrade_fn_decl_option: Option<&AzleFnDecl>) -> TokenStream {
     let call_to_post_upgrade_js_function =

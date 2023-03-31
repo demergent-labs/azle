@@ -2,8 +2,8 @@ use swc_common::SourceMap;
 use swc_ecma_ast::{Decl, ExportDecl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt};
 
 use crate::{
-    canister_method::{errors, module_item::ModuleItemHelperMethods, Annotation},
-    ts_ast::{source_map::SourceMapped, AzleFnDecl, AzleTypeAliasDecl},
+    canister_method::{errors, module_item::ModuleItemHelperMethods, Annotation, AzleFnDecl},
+    ts_ast::{source_map::SourceMapped, AzleTypeAliasDecl},
 };
 
 pub trait ModuleHelperMethods {

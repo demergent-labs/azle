@@ -1,4 +1,4 @@
-use crate::{canister_method::rust, ts_ast::AzleFnDecl};
+use crate::canister_method::{rust, AzleFnDecl};
 
 pub fn generate(init_fn_decl_option: Option<&AzleFnDecl>) -> proc_macro2::TokenStream {
     let function_name = match init_fn_decl_option {

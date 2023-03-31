@@ -3,9 +3,11 @@ use cdk_framework::act::CanisterMethods;
 use crate::ts_ast::TsAst;
 
 pub use annotation::Annotation;
+pub use azle_fn_decl::AzleFnDecl;
 pub use errors::ParseError;
 
 mod annotation;
+mod azle_fn_decl;
 mod get_azle_fn_decls;
 mod heartbeat;
 mod init;

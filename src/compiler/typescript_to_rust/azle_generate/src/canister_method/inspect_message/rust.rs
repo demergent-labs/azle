@@ -1,4 +1,4 @@
-use crate::{canister_method::rust, ts_ast::AzleFnDecl};
+use crate::canister_method::{rust, AzleFnDecl};
 
 pub fn generate(inspect_message_fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
     let call_to_inspect_message_js_function =

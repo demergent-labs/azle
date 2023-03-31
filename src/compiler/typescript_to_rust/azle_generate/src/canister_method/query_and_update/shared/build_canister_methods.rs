@@ -6,8 +6,8 @@ use cdk_framework::act::node::{
 };
 
 use crate::{
-    canister_method::{get_azle_fn_decls::GetProgramAzleFnDecls, query_and_update},
-    ts_ast::{azle_type::AzleType, AzleFnDecl, AzleProgram},
+    canister_method::{get_azle_fn_decls::GetProgramAzleFnDecls, query_and_update, AzleFnDecl},
+    ts_ast::{azle_type::AzleType, AzleProgram},
 };
 
 pub trait BuildCanisterMethods {

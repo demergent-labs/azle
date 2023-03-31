@@ -2,8 +2,8 @@ use cdk_framework::act::node::canister_method::CanisterMethodType;
 use swc_ecma_ast::Program;
 
 use crate::{
-    canister_method::module::ModuleHelperMethods,
-    ts_ast::{AzleFnDecl, AzleProgram, AzleTypeAliasDecl},
+    canister_method::{module::ModuleHelperMethods, AzleFnDecl},
+    ts_ast::{AzleProgram, AzleTypeAliasDecl},
 };
 
 use crate::ts_ast::azle_type_alias_decl::TsTypeAliasHelperMethods;
