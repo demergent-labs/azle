@@ -96,7 +96,7 @@ Traps can be useful for ensuring that multiple operations are either all complet
 Here's an example of how to trap and ensure atomic changes to your database:
 
 ```typescript
-import { ic, ok, Opt, $query, Record, StableBTreeMap, $update } from 'azle';
+import { ic, match, Opt, $query, Record, StableBTreeMap, $update } from 'azle';
 
 type Entry = Record<{
     key: string;
@@ -120,9 +120,10 @@ export function setMany(entries: Entry[]): void {
     entries.forEach((entry) => {
         const result = db.insert(entry.key, entry.value);
 
-        if (!ok(result)) {
-            ic.trap(JSON.stringify(result.err));
-        }
+        match(result, {
+            Ok: () => {},
+            Err: (err) => ic.trap(JSON.stringify(err))
+        });
     });
 }
 ```
@@ -132,7 +133,7 @@ In addition to `ic.trap`, an explicit JavaScript `throw` or any unhandled except
 There is a limit to how much computation can be done in a single call to an update method. The current update call limit is [20 billion Wasm instructions](https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits). If we modify our database example, we can introduce an update method that runs the risk reaching the limit:
 
 ```typescript
-import { ic, nat64, ok, Opt, $query, StableBTreeMap, $update } from 'azle';
+import { ic, match, nat64, Opt, $query, StableBTreeMap, $update } from 'azle';
 
 let db = new StableBTreeMap<string, string>(0, 1_000, 1_000);
 
@@ -151,9 +152,10 @@ export function setMany(numEntries: nat64): void {
     for (let i = 0; i < numEntries; i++) {
         const result = db.insert(i.toString(), i.toString());
 
-        if (!ok(result)) {
-            ic.trap(JSON.stringify(result.err));
-        }
+        match(result, {
+            Ok: () => {},
+            Err: (err) => ic.trap(JSON.stringify(err))
+        });
     }
 }
 ```

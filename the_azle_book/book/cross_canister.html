@@ -32,7 +32,6 @@
 
     </head>
     <body>
-    <div id="body-container">
         <!-- Provide site root to javascript -->
         <script>
             var path_to_root = "";
@@ -70,12 +69,10 @@
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             var html = document.querySelector('html');
-            var sidebar = null;
+            var sidebar = 'hidden';
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
-            } else {
-                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -166,8 +163,8 @@
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami">whoami</a></li>
 </ul>
 <p>Canisters are generally able to call the query or update methods of other canisters in any subnet. We refer to these types of calls as cross-canister calls.</p>
-<p>A cross-canister call begins with a definition of the canister to be called, referred to as an external canister.</p>
-<p>Imagine a simple external canister called <code>token_canister</code>:</p>
+<p>A cross-canister call begins with a definition of the canister to be called, referred to as a service.</p>
+<p>Imagine a simple service called <code>token_canister</code>:</p>
 <pre><code class="language-typescript">import { ic, nat64, Principal, StableBTreeMap, $update } from 'azle';
 
 let accounts = new StableBTreeMap&lt;Principal, nat64&gt;(0, 38, 15);
@@ -185,7 +182,7 @@ export function transfer(to: Principal, amount: nat64): nat64 {
     return amount;
 }
 </code></pre>
-<p>Here's how you would create its external canister definition:</p>
+<p>Here's how you would create its service definition:</p>
 <pre><code class="language-typescript">import { CanisterResult, Principal, nat64, Service, serviceUpdate } from 'azle';
 
 class TokenCanister extends Service {
@@ -193,7 +190,7 @@ class TokenCanister extends Service {
     transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
 }
 </code></pre>
-<p>Once you have a canister definition you can instantiate it with the canister's <code>Principal</code> and then invoke its methods.</p>
+<p>Once you have a service definition you can instantiate it with the canister's <code>Principal</code> and then invoke its methods.</p>
 <p>Here's how to instantiate <code>TokenCanister</code>:</p>
 <pre><code class="language-typescript">const tokenCanister = new TokenCanister(
     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
@@ -232,7 +229,7 @@ export async function payout(
     return await tokenCanister.transfer(to, amount).call();
 }
 </code></pre>
-<p>Notice that the <code>token_canister.transfer</code> method, because it is a cross-canister method, returns a <code>CanisterResult</code>. All cross-canister calls return <code>CanisterResult</code>, which has an <code>ok</code> or <code>err</code> property depending on if the cross-canister call was successful or not.</p>
+<p>Notice that the <code>token_canister.transfer</code> method, because it is a cross-canister method, returns a <code>CanisterResult</code>. All cross-canister calls return <code>CanisterResult</code>, which has an <code>Ok</code> or <code>Err</code> property depending on if the cross-canister call was successful or not.</p>
 <p>The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a <code>CanisterResult</code>. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a <code>try...catch</code> most likely won't do anything useful.</p>
 <p>Let's add to our example code and explore adding some practical result-based error-handling to stop people from stealing tokens.</p>
 <p><code>token_canister</code>:</p>
@@ -479,6 +476,5 @@ export function sendNotification(): Variant&lt;{
         <!-- Custom JS scripts -->
 
 
-    </div>
     </body>
 </html>

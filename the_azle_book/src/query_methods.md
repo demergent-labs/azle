@@ -35,7 +35,9 @@ Query methods are read-only. They do not persist any state changes. Take a look 
 ```typescript
 import { $query } from 'azle';
 
-let db = {};
+let db: {
+    [key: string]: string;
+} = {};
 
 $query;
 export function set(key: string, value: string): void {
