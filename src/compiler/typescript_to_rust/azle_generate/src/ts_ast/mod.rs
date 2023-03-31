@@ -8,8 +8,7 @@ use crate::ts_ast::source_map::SourceMapped;
 pub use azle_functions_and_methods::FunctionAndMethodTypeHelperMethods;
 pub use azle_type::{AzleArrayType, AzleFnOrConstructorType};
 pub use azle_type_alias_decl::AzleTypeAliasDecl;
-pub use traits::GetName;
-pub use traits::{GetSourceText, GetTsType};
+pub use traits::{GetName, GetSourceText, GetTsType};
 
 mod azle_functions_and_methods;
 mod ident;
