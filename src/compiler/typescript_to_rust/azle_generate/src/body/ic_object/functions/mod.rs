@@ -5,6 +5,7 @@ use crate::StableBTreeMapNode;
 mod accept_message;
 mod arg_data_raw;
 mod arg_data_raw_size;
+mod async_call;
 mod call_raw;
 mod call_raw128;
 mod caller;

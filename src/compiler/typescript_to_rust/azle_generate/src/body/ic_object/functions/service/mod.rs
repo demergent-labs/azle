@@ -6,18 +6,16 @@ use cdk_framework::act::{
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 
-use crate::{
-    candid_type::service::rust::{
-        post_await_state_management, pre_await_state_management, promise_fulfillment,
-    },
-    ts_keywords,
+use super::async_call::{
+    post_await_state_management, pre_await_state_management, promise_fulfillment,
 };
+use crate::ts_keywords;
 
 mod call;
 mod call_with_payment;
 mod call_with_payment128;
-pub mod notify;
-pub mod notify_with_payment128;
+mod notify;
+mod notify_with_payment128;
 
 pub fn generate(services: &Vec<Service>) -> Vec<TokenStream> {
     services

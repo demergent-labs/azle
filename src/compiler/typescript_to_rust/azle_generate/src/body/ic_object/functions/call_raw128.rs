@@ -1,4 +1,4 @@
-use crate::candid_type::service::rust::{
+use super::async_call::{
     post_await_state_management, pre_await_state_management, promise_fulfillment,
 };
 

@@ -6,8 +6,6 @@ use get_service_class_decls::GetFlattenedServiceClassDecls;
 mod get_service_class_decls;
 mod to_service;
 
-pub mod rust;
-
 impl TsAst {
     pub fn build_services(&self) -> Vec<Service> {
         let service_class_declarations = self.azle_programs.get_service_class_declarations();
