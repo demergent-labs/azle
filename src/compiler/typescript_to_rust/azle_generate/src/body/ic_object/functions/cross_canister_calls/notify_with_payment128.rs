@@ -2,16 +2,14 @@ use cdk_framework::act::node::candid::Service;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
-use crate::generators::ic_object;
-
 pub fn generate(services: &Vec<Service>) -> Vec<TokenStream> {
     services.iter().map(|canister| {
         canister.methods.iter().map(|method| {
             let function_name_string = format!("_azle_notify_with_payment128_{}_{}", canister.name, method.name);
             let real_function_name = format_ident!("{}", function_name_string);
             let wrapper_fn_name = format_ident!("{}_wrapper", function_name_string);
-            let param_variables = ic_object::generate_param_variables(method, &canister.name);
-            let args = ic_object::generate_args_list(method);
+            let param_variables = super::generate_param_variables(method, &canister.name);
+            let args = super::generate_args_list(method);
 
             quote!{
                 fn #wrapper_fn_name(

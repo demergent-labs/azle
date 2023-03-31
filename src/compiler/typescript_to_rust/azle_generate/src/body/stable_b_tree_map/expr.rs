@@ -1,6 +1,12 @@
 use swc_ecma_ast::{Expr, Lit};
 
-use crate::utils::{ToU32, ToU8};
+pub trait ToU8 {
+    fn to_u8(&self) -> Result<u8, String>;
+}
+
+pub trait ToU32 {
+    fn to_u32(&self) -> Result<u32, String>;
+}
 
 impl ToU8 for Expr {
     fn to_u8(&self) -> Result<u8, String> {
