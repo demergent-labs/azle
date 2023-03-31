@@ -2,10 +2,11 @@ use cdk_framework::act::CanisterMethods;
 
 use crate::ts_ast::TsAst;
 
+pub use annotated_fn_decl::{AnnotatedFnDecl, GetProgramAnnotatedFnDecls};
 pub use annotation::Annotation;
 pub use errors::ParseError;
-pub use source_mapped_fn_decl::{GetProgramSourceMappedFnDecls, SourceMappedFnDecl};
 
+mod annotated_fn_decl;
 mod annotation;
 mod heartbeat;
 mod init;
@@ -15,7 +16,6 @@ mod post_upgrade;
 mod pre_upgrade;
 mod query_and_update;
 mod rust;
-mod source_mapped_fn_decl;
 
 pub mod errors;
 pub mod module;

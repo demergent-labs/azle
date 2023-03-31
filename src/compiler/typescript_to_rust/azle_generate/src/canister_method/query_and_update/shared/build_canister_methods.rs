@@ -6,7 +6,7 @@ use cdk_framework::act::node::{
 };
 
 use crate::{
-    canister_method::{query_and_update, GetProgramSourceMappedFnDecls, SourceMappedFnDecl},
+    canister_method::{query_and_update, AnnotatedFnDecl, GetProgramAnnotatedFnDecls},
     ts_ast::{azle_type::AzleType, AzleProgram},
 };
 
@@ -19,7 +19,7 @@ impl BuildCanisterMethods for Vec<AzleProgram> {
         &self,
         canister_method_type: CanisterMethodType,
     ) -> Vec<CanisterMethod> {
-        let azle_fnc_decls = self.get_source_mapped_fn_decls_of_type(canister_method_type.clone());
+        let azle_fnc_decls = self.get_annotated_fn_decls_of_type(canister_method_type.clone());
 
         azle_fnc_decls.iter().fold(vec![], |acc, fn_decl| {
             let canister_method_node = fn_decl.build_canister_method_node(&canister_method_type);
@@ -28,7 +28,7 @@ impl BuildCanisterMethods for Vec<AzleProgram> {
     }
 }
 
-impl<'a> SourceMappedFnDecl<'a> {
+impl<'a> AnnotatedFnDecl<'a> {
     pub fn build_canister_method_node(
         &self,
         canister_method_type: &CanisterMethodType,

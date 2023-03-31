@@ -4,11 +4,11 @@ use swc_ecma_ast::{
     TsType,
 };
 
-use crate::canister_method::{rust, SourceMappedFnDecl};
+use crate::canister_method::{rust, AnnotatedFnDecl};
 
 pub use super::build_canister_methods::BuildCanisterMethods;
 
-pub fn generate(fn_decl: &SourceMappedFnDecl) -> proc_macro2::TokenStream {
+pub fn generate(fn_decl: &AnnotatedFnDecl) -> proc_macro2::TokenStream {
     let call_to_js_function = rust::generate_call_to_js_function(fn_decl);
     let return_expression = generate_return_expression(fn_decl);
     let function_name = fn_decl.get_function_name();
@@ -60,14 +60,14 @@ pub fn generate(fn_decl: &SourceMappedFnDecl) -> proc_macro2::TokenStream {
 /// * `_azle_final_return_value: boa_engine::JsValue` - The value to be returned
 ///    unless this is a ManualReply method.
 /// * `_azle_boa_context: &mut boa_engine::Context` - The current boa context
-fn generate_return_expression(fn_decl: &SourceMappedFnDecl) -> proc_macro2::TokenStream {
-    if fn_decl.is_manual() || fn_decl.is_promise() {
+fn generate_return_expression(annotated_fn_decl: &AnnotatedFnDecl) -> proc_macro2::TokenStream {
+    if annotated_fn_decl.is_manual() || annotated_fn_decl.is_promise() {
         return quote! {
             ic_cdk::api::call::ManualReply::empty()
         };
     }
 
-    let return_type = fn_decl.get_return_ts_type();
+    let return_type = annotated_fn_decl.get_return_ts_type();
 
     let null_and_void_handler = match return_type {
         TsType::TsKeywordType(keyword) => match keyword.kind {

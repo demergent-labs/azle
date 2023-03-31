@@ -2,17 +2,12 @@ use swc_common::SourceMap;
 use swc_ecma_ast::{Decl, ExportDecl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt};
 
 use crate::{
-    canister_method::{
-        errors, module_item::ModuleItemHelperMethods, Annotation, SourceMappedFnDecl,
-    },
+    canister_method::{errors, module_item::ModuleItemHelperMethods, AnnotatedFnDecl, Annotation},
     ts_ast::{source_map::SourceMapped, AzleTypeAliasDecl},
 };
 
 pub trait ModuleHelperMethods {
-    fn get_source_mapped_fn_decls<'a>(
-        &'a self,
-        source_map: &'a SourceMap,
-    ) -> Vec<SourceMappedFnDecl>;
+    fn get_annotated_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AnnotatedFnDecl>;
     fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>>;
     fn get_export_decls(&self) -> Vec<ExportDecl>;
     fn get_azle_type_alias_decls<'a>(&'a self, source_map: &'a SourceMap)
@@ -20,10 +15,7 @@ pub trait ModuleHelperMethods {
 }
 
 impl ModuleHelperMethods for Module {
-    fn get_source_mapped_fn_decls<'a>(
-        &'a self,
-        source_map: &'a SourceMap,
-    ) -> Vec<SourceMappedFnDecl> {
+    fn get_annotated_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AnnotatedFnDecl> {
         // TODO: Consider changing this algorithm from being backward looking
         // to being forward looking
 
@@ -60,7 +52,7 @@ impl ModuleHelperMethods for Module {
                                 )
                             }
 
-                            acc.push(SourceMappedFnDecl {
+                            acc.push(AnnotatedFnDecl {
                                 annotation,
                                 fn_decl,
                                 source_map,

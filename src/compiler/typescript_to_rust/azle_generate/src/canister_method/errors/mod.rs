@@ -1,12 +1,12 @@
 use cdk_framework::act::node::canister_method::CanisterMethodType;
 use swc_ecma_ast::TsType;
 
-use crate::canister_method::SourceMappedFnDecl;
+use crate::canister_method::AnnotatedFnDecl;
 
 pub use async_not_allowed::build_async_not_allowed_error_message;
 pub use duplicate_method_types::{
     build_duplicate_method_types_error_message,
-    build_duplicate_method_types_error_message_from_source_mapped_fn_decl,
+    build_duplicate_method_types_error_message_from_annotated_fn_decl,
 };
 pub use extraneous_decorator::build_extraneous_decorator_error_message;
 pub use missing_return_type::build_missing_return_type_error_message;
@@ -21,7 +21,7 @@ mod missing_return_type;
 mod parse_error;
 mod void_return_type_required;
 
-impl<'a> SourceMappedFnDecl<'a> {
+impl<'a> AnnotatedFnDecl<'a> {
     pub fn assert_return_type_is_void(&self) {
         if self.annotation.method_type != CanisterMethodType::Heartbeat && self.is_promise() {
             panic!(

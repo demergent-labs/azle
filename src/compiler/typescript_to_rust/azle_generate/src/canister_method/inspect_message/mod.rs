@@ -3,7 +3,7 @@ use cdk_framework::act::node::{
 };
 
 use crate::{
-    canister_method::{errors, GetProgramSourceMappedFnDecls},
+    canister_method::{errors, GetProgramAnnotatedFnDecls},
     TsAst,
 };
 
@@ -13,11 +13,11 @@ impl TsAst {
     pub fn build_inspect_message_method(&self) -> Option<InspectMessageMethod> {
         let inspect_message_fn_decls = self
             .azle_programs
-            .get_source_mapped_fn_decls_of_type(CanisterMethodType::InspectMessage);
+            .get_annotated_fn_decls_of_type(CanisterMethodType::InspectMessage);
 
         if inspect_message_fn_decls.len() > 1 {
             let error_message =
-                errors::build_duplicate_method_types_error_message_from_source_mapped_fn_decl(
+                errors::build_duplicate_method_types_error_message_from_annotated_fn_decl(
                     inspect_message_fn_decls,
                     CanisterMethodType::InspectMessage,
                 );

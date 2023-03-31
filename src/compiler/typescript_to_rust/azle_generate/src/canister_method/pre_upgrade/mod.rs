@@ -1,7 +1,7 @@
 use cdk_framework::act::node::canister_method::{CanisterMethodType, PreUpgradeMethod};
 
 use crate::{
-    canister_method::{errors, GetProgramSourceMappedFnDecls},
+    canister_method::{errors, GetProgramAnnotatedFnDecls},
     TsAst,
 };
 
@@ -11,11 +11,11 @@ impl TsAst {
     pub fn build_pre_upgrade_method(&self) -> Option<PreUpgradeMethod> {
         let pre_upgrade_fn_decls = self
             .azle_programs
-            .get_source_mapped_fn_decls_of_type(CanisterMethodType::PreUpgrade);
+            .get_annotated_fn_decls_of_type(CanisterMethodType::PreUpgrade);
 
         if pre_upgrade_fn_decls.len() > 1 {
             let error_message =
-                errors::build_duplicate_method_types_error_message_from_source_mapped_fn_decl(
+                errors::build_duplicate_method_types_error_message_from_annotated_fn_decl(
                     pre_upgrade_fn_decls,
                     CanisterMethodType::PreUpgrade,
                 );
