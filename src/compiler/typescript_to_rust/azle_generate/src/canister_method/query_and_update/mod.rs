@@ -6,8 +6,11 @@ use swc_ecma_ast::{
 
 use crate::{canister_method::rust, ts_ast::AzleFnDecl};
 
+mod build_canister_methods;
 mod query;
 mod update;
+
+pub use build_canister_methods::BuildCanisterMethods;
 
 pub fn generate_query_and_update_body(fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
     let call_to_js_function = rust::generate_call_to_js_function(fn_decl);

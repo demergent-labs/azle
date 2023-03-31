@@ -1,4 +1,4 @@
-use cdk_framework::act::node::canister_method::{CanisterMethod, CanisterMethodType};
+use cdk_framework::act::node::canister_method::CanisterMethodType;
 use swc_ecma_ast::Program;
 
 use crate::{
@@ -16,7 +16,6 @@ pub trait GetProgramAzleFnDecls {
         &self,
         canister_method_type: CanisterMethodType,
     ) -> Vec<AzleFnDecl>;
-    fn build_canister_method_nodes(&self, request_type: CanisterMethodType) -> Vec<CanisterMethod>;
 }
 
 impl GetProgramAzleFnDecls for Vec<AzleProgram> {
@@ -57,18 +56,6 @@ impl GetProgramAzleFnDecls for Vec<AzleProgram> {
             .into_iter()
             .filter(|type_alias_decl| type_alias_decl.is_canister_type_alias_decl())
             .collect()
-    }
-
-    fn build_canister_method_nodes(
-        &self,
-        canister_method_type: CanisterMethodType,
-    ) -> Vec<CanisterMethod> {
-        let azle_fnc_decls = self.get_azle_fn_decls_of_type(canister_method_type.clone());
-
-        azle_fnc_decls.iter().fold(vec![], |acc, fn_decl| {
-            let canister_method_node = fn_decl.build_canister_method_node(&canister_method_type);
-            vec![acc, vec![canister_method_node]].concat()
-        })
     }
 }
 

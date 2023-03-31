@@ -1,6 +1,7 @@
 use cdk_framework::act::node::canister_method::{CanisterMethod, CanisterMethodType, QueryMethod};
 
-use crate::{canister_method::get_azle_fn_decls::GetProgramAzleFnDecls, TsAst};
+use super::BuildCanisterMethods;
+use crate::TsAst;
 
 impl TsAst {
     pub fn build_query_methods(&self) -> Vec<QueryMethod> {
