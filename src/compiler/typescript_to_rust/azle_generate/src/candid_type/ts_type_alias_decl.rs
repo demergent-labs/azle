@@ -40,14 +40,6 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
         })
     }
 
-    pub fn to_variant(&self) -> Option<Variant> {
-        self.process_ts_type_ref("Variant", |azle_type_ref| {
-            let mut variant = azle_type_ref.to_variant();
-            variant.name = Some(self.id.get_name().to_string());
-            variant
-        })
-    }
-
     pub fn process_ts_type_ref<F, T>(&self, type_name: &str, handler: F) -> Option<T>
     where
         F: Fn(AzleTypeRef) -> T,

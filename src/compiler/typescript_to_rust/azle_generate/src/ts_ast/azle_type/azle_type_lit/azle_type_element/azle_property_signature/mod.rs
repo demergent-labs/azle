@@ -2,10 +2,7 @@ use swc_common::SourceMap;
 use swc_ecma_ast::TsPropertySignature;
 
 use crate::ts_ast::{azle_type::AzleType, traits::GetTsType, GetName};
-use cdk_framework::act::node::{
-    candid::{record, variant},
-    CandidType,
-};
+use cdk_framework::act::node::CandidType;
 
 mod errors;
 mod get_source_info;
@@ -17,13 +14,6 @@ pub struct AzlePropertySignature<'a> {
 }
 
 impl AzlePropertySignature<'_> {
-    pub(super) fn to_variant_member(&self) -> variant::Member {
-        variant::Member {
-            name: self.get_member_name(),
-            candid_type: self.get_act_data_type(),
-        }
-    }
-
     pub fn get_member_name(&self) -> String {
         self.ts_property_signature
             .key

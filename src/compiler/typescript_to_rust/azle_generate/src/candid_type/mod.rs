@@ -9,6 +9,7 @@ pub mod azle_type_ref;
 pub mod func;
 pub mod record;
 pub mod service;
+pub mod variant;
 
 impl TsAst {
     pub fn build_candid_types(&self) -> CandidTypes {

@@ -102,14 +102,6 @@ impl AzleTypeRef<'_> {
         }
     }
 
-    pub fn to_variant(&self) -> Variant {
-        match self.get_enclosed_azle_type().as_azle_type_lit() {
-            Some(ts_type_lit) => ts_type_lit,
-            None => panic!("{}", self.wrong_enclosed_type_error()),
-        }
-        .to_variant()
-    }
-
     fn to_type_ref(&self) -> TypeRef {
         TypeRef {
             name: self.get_name().to_string(),
