@@ -7,7 +7,6 @@ type ManualReply_1 = record {
   "text" : text;
   "variant" : Options;
 };
-type ManualReply_2 = record { prop : text };
 type Options = variant { Large; Small; Medium };
 type Orbital = record { electrons : nat8; layer : nat8 };
 type Solid = record { element : text };
@@ -27,7 +26,7 @@ service : () -> {
   replyRaw : () -> (ManualReply_1);
   updateBlob : () -> (vec nat8);
   updateFloat32 : () -> (float32);
-  updateInlineType : () -> (ManualReply_2);
+  updateInlineType : () -> (record { text; text });
   updateInt8 : () -> (int8);
   updateNat : () -> (nat);
   updateNull : () -> (null);

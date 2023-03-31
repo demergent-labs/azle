@@ -78,8 +78,8 @@ export function updateFloat32(): Manual<float32> {
 }
 
 $update;
-export function updateInlineType(): Manual<Record<{ prop: string }>> {
-    ic.reply({ prop: 'prop' });
+export function updateInlineType(): Manual<[string, string]> {
+    ic.reply(['Hello', 'World']);
 }
 
 $update;
