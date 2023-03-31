@@ -1,5 +1,5 @@
 use cdk_framework::act::node::{
-    candid::{Func, Opt, Primitive, Record, TypeRef, Variant},
+    candid::{Func, Opt, Primitive, TypeRef, Variant},
     node_parts::mode::Mode,
     CandidType,
 };
@@ -108,14 +108,6 @@ impl AzleTypeRef<'_> {
             None => panic!("{}", self.wrong_enclosed_type_error()),
         }
         .to_variant()
-    }
-
-    pub fn to_record(&self) -> Record {
-        match self.get_enclosed_azle_type().as_azle_type_lit() {
-            Some(ts_type_lit) => ts_type_lit,
-            None => panic!("{}", self.wrong_enclosed_type_error()),
-        }
-        .to_record()
     }
 
     fn to_type_ref(&self) -> TypeRef {

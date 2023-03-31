@@ -26,7 +26,7 @@ pub(super) fn unsupported_type_error(
 }
 
 impl AzleTypeElement<'_> {
-    pub(super) fn record_property_signature_error(&self) -> ErrorMessage {
+    pub fn record_property_signature_error(&self) -> ErrorMessage {
         let replacement = "property_name: boolean".to_string();
         ErrorMessage {
             title: "Invalid Record".to_string(),

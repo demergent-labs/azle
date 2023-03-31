@@ -17,13 +17,6 @@ pub struct AzlePropertySignature<'a> {
 }
 
 impl AzlePropertySignature<'_> {
-    pub(super) fn to_record_member(&self) -> record::Member {
-        record::Member {
-            name: self.get_member_name(),
-            candid_type: self.get_act_data_type(),
-        }
-    }
-
     pub(super) fn to_variant_member(&self) -> variant::Member {
         variant::Member {
             name: self.get_member_name(),
@@ -31,7 +24,7 @@ impl AzlePropertySignature<'_> {
         }
     }
 
-    fn get_member_name(&self) -> String {
+    pub fn get_member_name(&self) -> String {
         self.ts_property_signature
             .key
             .as_ident()
@@ -40,7 +33,7 @@ impl AzlePropertySignature<'_> {
             .to_string()
     }
 
-    fn get_act_data_type(&self) -> CandidType {
+    pub fn get_act_data_type(&self) -> CandidType {
         let ts_type = match &self.ts_property_signature.type_ann {
             Some(ts_type_ann) => ts_type_ann.get_ts_type(),
             None => panic!("{}", self.no_type_annotation_error()),

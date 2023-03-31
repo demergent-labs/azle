@@ -7,6 +7,7 @@ mod ts_type_alias_decl;
 
 pub mod azle_type_ref;
 pub mod func;
+pub mod record;
 pub mod service;
 
 impl TsAst {

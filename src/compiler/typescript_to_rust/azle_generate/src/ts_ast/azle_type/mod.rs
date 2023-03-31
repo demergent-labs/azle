@@ -14,11 +14,12 @@ mod azle_array_type;
 mod azle_fn_or_constructor_type;
 mod azle_keyword_type;
 mod azle_tuple_type;
-mod azle_type_lit;
 mod errors;
 mod get_source_info;
 mod get_source_text;
 mod to_data_type;
+
+pub mod azle_type_lit;
 
 #[derive(Clone)]
 pub enum AzleType<'a> {
