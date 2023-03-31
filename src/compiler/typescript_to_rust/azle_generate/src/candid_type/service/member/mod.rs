@@ -1,28 +1,13 @@
-use cdk_framework::act::node::candid::{service::Method, Service};
+use cdk_framework::act::node::candid::service::Method;
 use swc_ecma_ast::{ClassDecl, ClassMember};
 
-use crate::ts_ast::{source_map::SourceMapped, GetName};
-use vm_value_conversions::{from_vm_value, list_from_vm_value, list_to_vm_value, to_vm_value};
+use crate::ts_ast::source_map::SourceMapped;
 
 mod errors;
-mod vm_value_conversions;
+mod to_service_method;
 
 impl SourceMapped<'_, ClassDecl> {
-    pub fn to_service(&self) -> Service {
-        let name = self.ident.get_name().to_string();
-        let methods = self.build_service_methods();
-
-        Service {
-            name,
-            methods,
-            to_vm_value,
-            list_to_vm_value,
-            from_vm_value,
-            list_from_vm_value,
-        }
-    }
-
-    fn build_service_methods(&self) -> Vec<Method> {
+    pub fn build_service_methods(&self) -> Vec<Method> {
         self.class
             .body
             .iter()
