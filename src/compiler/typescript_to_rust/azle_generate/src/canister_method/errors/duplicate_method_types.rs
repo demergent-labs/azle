@@ -5,18 +5,18 @@ use annotate_snippets::{
 use cdk_framework::act::node::canister_method::CanisterMethodType;
 use swc_common::{source_map::Pos, Span};
 
-use crate::{canister_method::AzleFnDecl, ts_ast::source_map::GetSourceFileInfo};
+use crate::{canister_method::SourceMappedFnDecl, ts_ast::source_map::GetSourceFileInfo};
 
-pub fn build_duplicate_method_types_error_message_from_azle_fn_decl(
-    azle_fn_decls: Vec<AzleFnDecl>,
+pub fn build_duplicate_method_types_error_message_from_source_mapped_fn_decl(
+    source_mapped_fn_decls: Vec<SourceMappedFnDecl>,
     canister_method_type: CanisterMethodType,
 ) -> String {
-    let source_map = azle_fn_decls[0].source_map;
+    let source_map = source_mapped_fn_decls[0].source_map;
 
-    let return_type_spans: Vec<Span> = azle_fn_decls
+    let return_type_spans: Vec<Span> = source_mapped_fn_decls
         .iter()
-        .map(|azle_fn_decl| {
-            azle_fn_decl
+        .map(|source_mapped_fn_decl| {
+            source_mapped_fn_decl
                 .fn_decl
                 .function
                 .return_type
@@ -88,15 +88,15 @@ pub fn build_duplicate_method_types_error_message_from_azle_fn_decl(
 }
 
 pub fn build_duplicate_method_types_error_message(
-    annotated_fn_decls: Vec<AzleFnDecl>,
+    annotated_fn_decls: Vec<SourceMappedFnDecl>,
     canister_method_type: CanisterMethodType,
 ) -> String {
     let source_map = annotated_fn_decls[0].source_map;
 
     let return_type_spans: Vec<Span> = annotated_fn_decls
         .iter()
-        .map(|azle_fn_decl| {
-            azle_fn_decl
+        .map(|source_mapped_fn_decl| {
+            source_mapped_fn_decl
                 .fn_decl
                 .function
                 .return_type

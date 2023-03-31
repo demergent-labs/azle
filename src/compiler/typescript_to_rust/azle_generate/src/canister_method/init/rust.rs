@@ -1,6 +1,6 @@
-use crate::canister_method::{rust, AzleFnDecl};
+use crate::canister_method::{rust, SourceMappedFnDecl};
 
-pub fn generate(init_fn_decl_option: Option<&AzleFnDecl>) -> proc_macro2::TokenStream {
+pub fn generate(init_fn_decl_option: Option<&SourceMappedFnDecl>) -> proc_macro2::TokenStream {
     let function_name = match init_fn_decl_option {
         Some(init_fn_decl) => init_fn_decl.get_function_name(),
         None => "DOES_NOT_EXIST".to_string(),

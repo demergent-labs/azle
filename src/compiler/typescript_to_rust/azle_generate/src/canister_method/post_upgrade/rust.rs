@@ -1,8 +1,8 @@
 use proc_macro2::TokenStream;
 
-use crate::canister_method::{rust, AzleFnDecl};
+use crate::canister_method::{rust, SourceMappedFnDecl};
 
-pub fn generate(post_upgrade_fn_decl_option: Option<&AzleFnDecl>) -> TokenStream {
+pub fn generate(post_upgrade_fn_decl_option: Option<&SourceMappedFnDecl>) -> TokenStream {
     let call_to_post_upgrade_js_function =
         rust::maybe_generate_call_to_js_function(&post_upgrade_fn_decl_option);
 

@@ -1,13 +1,13 @@
 use swc_common::Span;
 use swc_ecma_ast::{AssignPat, BindingIdent, Param};
 
-use super::AzleFnDecl;
+use super::SourceMappedFnDecl;
 use crate::{
     errors::{ErrorMessage, Suggestion},
     ts_ast::{param::GetParamRange, source_map::GetSourceFileInfo},
 };
 
-impl AzleFnDecl<'_> {
+impl SourceMappedFnDecl<'_> {
     pub(super) fn build_array_destructure_error_msg(&self, param: &Param) -> ErrorMessage {
         let array_pat = param.pat.as_array().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
 

@@ -3,12 +3,10 @@ use cdk_framework::act::CanisterMethods;
 use crate::ts_ast::TsAst;
 
 pub use annotation::Annotation;
-pub use azle_fn_decl::AzleFnDecl;
 pub use errors::ParseError;
+pub use source_mapped_fn_decl::{GetProgramSourceMappedFnDecls, SourceMappedFnDecl};
 
 mod annotation;
-mod azle_fn_decl;
-mod get_azle_fn_decls;
 mod heartbeat;
 mod init;
 mod inspect_message;
@@ -17,6 +15,7 @@ mod post_upgrade;
 mod pre_upgrade;
 mod query_and_update;
 mod rust;
+mod source_mapped_fn_decl;
 
 pub mod errors;
 pub mod module;

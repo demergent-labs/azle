@@ -1,6 +1,6 @@
-use crate::canister_method::{rust, AzleFnDecl};
+use crate::canister_method::{rust, SourceMappedFnDecl};
 
-pub fn generate(pre_upgrade_fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
+pub fn generate(pre_upgrade_fn_decl: &SourceMappedFnDecl) -> proc_macro2::TokenStream {
     let call_to_pre_upgrade_js_function = rust::generate_call_to_js_function(&pre_upgrade_fn_decl);
 
     let function_name = pre_upgrade_fn_decl.get_function_name();

@@ -1,6 +1,6 @@
-use crate::canister_method::{rust, AzleFnDecl};
+use crate::canister_method::{rust, SourceMappedFnDecl};
 
-pub fn generate(inspect_message_fn_decl: &AzleFnDecl) -> proc_macro2::TokenStream {
+pub fn generate(inspect_message_fn_decl: &SourceMappedFnDecl) -> proc_macro2::TokenStream {
     let call_to_inspect_message_js_function =
         rust::generate_call_to_js_function(inspect_message_fn_decl);
 

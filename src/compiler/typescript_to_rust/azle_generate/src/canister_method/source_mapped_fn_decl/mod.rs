@@ -6,16 +6,20 @@ use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};
 
 use crate::{canister_method::Annotation, ts_ast::GetName};
 
+pub use get_source_mapped_fn_decls::GetProgramSourceMappedFnDecls;
+
+mod get_source_mapped_fn_decls;
+
 pub mod errors;
 
 #[derive(Clone)]
-pub struct AzleFnDecl<'a> {
+pub struct SourceMappedFnDecl<'a> {
     pub annotation: Annotation,
     pub fn_decl: FnDecl,
     pub source_map: &'a SourceMap,
 }
 
-impl AzleFnDecl<'_> {
+impl SourceMappedFnDecl<'_> {
     pub fn get_return_ts_type(&self) -> &TsType {
         match &self.fn_decl.function.return_type {
             Some(ts_type_ann) => {

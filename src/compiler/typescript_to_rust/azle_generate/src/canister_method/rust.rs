@@ -1,17 +1,19 @@
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 
-use crate::canister_method::AzleFnDecl;
+use crate::canister_method::SourceMappedFnDecl;
 
-pub fn maybe_generate_call_to_js_function(fn_decl_option: &Option<&AzleFnDecl>) -> TokenStream {
-    if let Some(azle_fn_decl) = fn_decl_option {
-        generate_call_to_js_function(azle_fn_decl)
+pub fn maybe_generate_call_to_js_function(
+    fn_decl_option: &Option<&SourceMappedFnDecl>,
+) -> TokenStream {
+    if let Some(source_mapped_fn_decl) = fn_decl_option {
+        generate_call_to_js_function(source_mapped_fn_decl)
     } else {
         quote!()
     }
 }
 
-pub fn generate_call_to_js_function(fn_decl: &AzleFnDecl) -> TokenStream {
+pub fn generate_call_to_js_function(fn_decl: &SourceMappedFnDecl) -> TokenStream {
     let function_name = fn_decl.get_function_name();
     let param_name_idents: Vec<Ident> = fn_decl
         .build_params()

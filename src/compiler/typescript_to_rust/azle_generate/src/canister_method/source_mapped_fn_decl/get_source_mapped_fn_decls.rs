@@ -2,42 +2,42 @@ use cdk_framework::act::node::canister_method::CanisterMethodType;
 use swc_ecma_ast::Program;
 
 use crate::{
-    canister_method::{module::ModuleHelperMethods, AzleFnDecl},
+    canister_method::{module::ModuleHelperMethods, SourceMappedFnDecl},
     ts_ast::{AzleProgram, AzleTypeAliasDecl},
 };
 
 use crate::ts_ast::azle_type_alias_decl::TsTypeAliasHelperMethods;
 
-pub trait GetProgramAzleFnDecls {
-    fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl>;
+pub trait GetProgramSourceMappedFnDecls {
+    fn get_source_mapped_fn_decls(&self) -> Vec<SourceMappedFnDecl>;
     fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
     fn get_canister_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
-    fn get_azle_fn_decls_of_type(
+    fn get_source_mapped_fn_decls_of_type(
         &self,
         canister_method_type: CanisterMethodType,
-    ) -> Vec<AzleFnDecl>;
+    ) -> Vec<SourceMappedFnDecl>;
 }
 
-impl GetProgramAzleFnDecls for Vec<AzleProgram> {
-    fn get_azle_fn_decls_of_type(
+impl GetProgramSourceMappedFnDecls for Vec<AzleProgram> {
+    fn get_source_mapped_fn_decls_of_type(
         &self,
         canister_method_type: CanisterMethodType,
-    ) -> Vec<AzleFnDecl> {
-        let azle_fn_decls = self.get_azle_fn_decls();
+    ) -> Vec<SourceMappedFnDecl> {
+        let source_mapped_fn_decls = self.get_source_mapped_fn_decls();
 
-        azle_fn_decls
+        source_mapped_fn_decls
             .into_iter()
-            .filter(|azle_fn_decl| {
-                azle_fn_decl.is_canister_method_type(canister_method_type.clone())
+            .filter(|source_mapped_fn_decl| {
+                source_mapped_fn_decl.is_canister_method_type(canister_method_type.clone())
             })
             .collect()
     }
 
-    fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl> {
+    fn get_source_mapped_fn_decls(&self) -> Vec<SourceMappedFnDecl> {
         self.iter().fold(vec![], |acc, azle_program| {
-            let azle_fn_decls = azle_program.get_azle_fn_decls();
+            let source_mapped_fn_decls = azle_program.get_source_mapped_fn_decls();
 
-            vec![acc, azle_fn_decls].concat()
+            vec![acc, source_mapped_fn_decls].concat()
         })
     }
 
@@ -60,9 +60,9 @@ impl GetProgramAzleFnDecls for Vec<AzleProgram> {
 }
 
 impl AzleProgram {
-    fn get_azle_fn_decls(&self) -> Vec<AzleFnDecl> {
+    fn get_source_mapped_fn_decls(&self) -> Vec<SourceMappedFnDecl> {
         match &self.program {
-            Program::Module(module) => module.get_azle_fn_decls(&self.source_map),
+            Program::Module(module) => module.get_source_mapped_fn_decls(&self.source_map),
             Program::Script(_) => vec![],
         }
     }
