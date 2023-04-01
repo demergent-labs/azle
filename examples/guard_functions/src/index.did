@@ -9,7 +9,6 @@ service : () -> {
   identifierAnnotation : () -> (bool) query;
   invalidReturnTypeGuarded : () -> (bool) query;
   looselyGuarded : () -> (bool) query;
-  looselyGuardedWithGuardOptionKeyAsString : () -> (bool) query;
   modifyStateGuarded : () -> (bool);
   nonNullOkValueGuarded : () -> (bool) query;
   nonStringErrValueGuarded : () -> (bool) query;

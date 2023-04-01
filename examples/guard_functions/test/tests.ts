@@ -118,7 +118,7 @@ export function getTests(
                 } catch (error) {
                     return {
                         Ok: (error as AgentError).message.includes(
-                            `"Message": "Execution halted by \\"allowNone\\" guard function"`
+                            `"Message": "Execution halted by \\"unpassable\\" guard function"`
                         )
                     };
                 }
@@ -136,7 +136,7 @@ export function getTests(
                 } catch (error) {
                     return {
                         Ok: (error as AgentError).message.includes(
-                            `Uncaught Execution halted by \\"throwString\\" guard function`
+                            `Uncaught Execution halted by \\"throw string\\" guard function`
                         )
                     };
                 }
@@ -156,7 +156,7 @@ export function getTests(
                     // Why it only says "Error" not "CustomError" I don't understand.
                     return {
                         Ok: (error as AgentError).message.includes(
-                            `Uncaught Error: Execution halted by \\"throwCustomError\\" guard function`
+                            `Uncaught Error: Execution halted by \\"throw custom error\\" guard function`
                         )
                     };
                 }

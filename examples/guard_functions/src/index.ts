@@ -10,7 +10,7 @@ import {
     acceptAllThenRejectAll,
     allowAll,
     allowModifyStateGuarded,
-    allowNone,
+    unpassable,
     incrementCounterAndAllowAll,
     preventUpgrades,
     returnInvalidType,
@@ -94,7 +94,7 @@ export function unallowedMethod(): boolean {
 // #endregion Guarded functions are called
 
 // #region Execution halted by guard function
-$query({ guard: allowNone });
+$query({ guard: unpassable });
 export function tightlyGuarded(): boolean {
     console.log('tightlyGuarded called');
     return true;
