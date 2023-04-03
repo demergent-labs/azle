@@ -2,12 +2,12 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/imports/imports.did';
 
-export function getTests(imports_canister: ActorSubclass<_SERVICE>): Test[] {
+export function getTests(importsCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'getOne',
             test: async () => {
-                const result = await imports_canister.getOne();
+                const result = await importsCanister.getOne();
 
                 return {
                     Ok: result === 'one'
@@ -17,7 +17,7 @@ export function getTests(imports_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'getTwo',
             test: async () => {
-                const result = await imports_canister.getTwo();
+                const result = await importsCanister.getTwo();
 
                 return {
                     Ok: result === 'two'
@@ -27,7 +27,7 @@ export function getTests(imports_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'getThree',
             test: async () => {
-                const result = await imports_canister.getThree();
+                const result = await importsCanister.getThree();
 
                 return {
                     Ok: result === 'three'
@@ -37,12 +37,22 @@ export function getTests(imports_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'sha224Hash',
             test: async () => {
-                const result = await imports_canister.sha224Hash('hello');
+                const result = await importsCanister.sha224Hash('hello');
 
                 return {
                     Ok:
                         result ===
                         'ea09ae9cc6768c50fcee903ed054556e5bfc8347907f12598aa24193'
+                };
+            }
+        },
+        {
+            name: 'getMathMessage',
+            test: async () => {
+                const result = await importsCanister.getMathMessage();
+
+                return {
+                    Ok: result === 11n
                 };
             }
         }

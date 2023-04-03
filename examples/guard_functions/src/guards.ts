@@ -37,14 +37,14 @@ export function incrementCounterAndAllowAll(): GuardResult {
     return { Ok: null };
 }
 
-export function allowNone(): GuardResult {
-    console.log('allowNone called');
-    return { Err: 'Execution halted by "allowNone" guard function' };
+export function unpassable(): GuardResult {
+    console.log('unpassable called');
+    return { Err: 'Execution halted by "unpassable" guard function' };
 }
 
 export function throwString(): GuardResult {
-    console.log('throwString called');
-    throw 'Execution halted by "throwString" guard function';
+    console.log('throw string called');
+    throw 'Execution halted by "throw string" guard function';
 }
 
 class CustomError extends Error {
@@ -56,7 +56,7 @@ class CustomError extends Error {
 export function throwCustomError(): GuardResult {
     console.log('throwCustomError called');
     throw new CustomError(
-        'Execution halted by "throwCustomError" guard function'
+        'Execution halted by "throw custom error" guard function'
     );
 }
 
