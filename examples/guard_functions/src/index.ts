@@ -74,7 +74,8 @@ export function looselyGuarded(): boolean {
     return true;
 }
 
-$query({ guard: allowAll });
+// prettier-ignore
+$query({ "guard": allowAll });
 export function looselyGuardedWithGuardOptionKeyAsString(): boolean {
     console.log('looselyGuardedWithGuardOptionKeyAsString called');
     return true;
