@@ -64,6 +64,15 @@ export function getTests(
             }
         },
         {
+            name: 'looselyGuardedManual',
+            test: async () => {
+                const result =
+                    await guardFunctionsCanister.looselyGuardedManual();
+
+                return { Ok: result };
+            }
+        },
+        {
             name: 'looselyGuardedWithGuardOptionKeyAsString',
             test: async () => {
                 const result =

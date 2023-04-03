@@ -4,7 +4,8 @@ import {
     $preUpgrade,
     $query,
     $update,
-    ic
+    ic,
+    Manual
 } from 'azle';
 import {
     acceptAllThenRejectAll,
@@ -72,6 +73,12 @@ $query({ guard: allowAll });
 export function looselyGuarded(): boolean {
     console.log('looselyGuarded called');
     return true;
+}
+
+$query({ guard: allowAll });
+export function looselyGuardedManual(): Manual<boolean> {
+    console.log('looselyGuardedManual called');
+    ic.reply(true);
 }
 
 // prettier-ignore
