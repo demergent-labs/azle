@@ -276,9 +276,9 @@ impl AzleTypeRef<'_> {
 
     fn generate_example_canister(&self) -> String {
         if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
-            "Canister<{method(): CanisterResult<void>}>".to_string()
+            "Canister<{method(): CallResult<void>}>".to_string()
         } else {
-            "<{method(): CanisterResult<void>}>".to_string()
+            "<{method(): CallResult<void>}>".to_string()
         }
     }
 

@@ -19,13 +19,13 @@ type ic = {
         method: string,
         argsRaw: blob,
         payment: nat64
-    ) => Promise<FinalCanisterResult<blob>>;
+    ) => Promise<FinalCallResult<blob>>;
     callRaw128: (
         canisterId: Principal,
         method: string,
         argsRaw: blob,
         payment: nat
-    ) => Promise<FinalCanisterResult<blob>>;
+    ) => Promise<FinalCallResult<blob>>;
     caller: () => Principal;
     candidDecode: (candidEncoded: blob) => string;
     candidEncode: (candidString: string) => blob;
@@ -109,14 +109,14 @@ export type Opt<T> = T | null;
 
 export type Alias<T> = T;
 
-export type CanisterResult<T> = {
-    call: () => Promise<FinalCanisterResult<T>>;
+export type CallResult<T> = {
+    call: () => Promise<FinalCallResult<T>>;
     notify: () => NotifyResult;
-    cycles: (cycles: nat64) => CanisterResult<T>;
-    cycles128: (cycles: nat) => CanisterResult<T>;
+    cycles: (cycles: nat64) => CallResult<T>;
+    cycles128: (cycles: nat) => CallResult<T>;
 };
 
-export type FinalCanisterResult<T> = RequireExactlyOne<{
+export type FinalCallResult<T> = RequireExactlyOne<{
     Ok: T;
     Err: string;
 }>;
@@ -219,13 +219,13 @@ export type Stable64GrowResult = Variant<{
 /**
  * A decorator for marking query methods on services. Can only be
  * used on class properties with a return type of (args: any[]) =>
- * CanisterResult<T>.
+ * CallResult<T>.
  *
  * @example
  * ```ts
  * export class SomeOtherCanister extends Service {
  *   @query
- *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
+ *   someCanisterMethod: (someParam: SomeParamType) => CallResult<SomeReturnType>;
  * }
  * ```
  */
@@ -236,13 +236,13 @@ export function serviceQuery(target: any, name: string) {
 /**
  * A decorator for marking update methods on services. Can only be
  * used on class properties with a return type of (args: any[]) =>
- * CanisterResult<T>.
+ * CallResult<T>.
  *
  * @example
  * ```ts
  * export class SomeOtherCanister extends Service {
  *   @update
- *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
+ *   someCanisterMethod: (someParam: SomeParamType) => CallResult<SomeReturnType>;
  * }
  * ```
  */
@@ -308,7 +308,7 @@ function serviceMethodDecoration(target: any, name: string) {
  * ```ts
  * export class SomeOtherCanister extends Service {
  *   @query
- *   someCanisterMethod: (someParam: SomeParamType) => CanisterResult<SomeReturnType>;
+ *   someCanisterMethod: (someParam: SomeParamType) => CallResult<SomeReturnType>;
  * }
  * ```
  *

@@ -105,9 +105,9 @@ type GetSymbolResult = Variant<{
 
 $update;
 export async function getSymbol(): Promise<GetSymbolResult> {
-    const symbolResultCanisterResult = await icpCanister.symbol().call();
+    const symbolResultCallResult = await icpCanister.symbol().call();
 
-    return match(symbolResultCanisterResult, {
+    return match(symbolResultCallResult, {
         Ok: (symbolResult) => ({ Ok: symbolResult.symbol }),
         Err: (err) => ({ Err: err })
     });
@@ -120,9 +120,9 @@ type GetNameResult = Variant<{
 
 $update;
 export async function getName(): Promise<GetNameResult> {
-    const nameResultCanisterResult = await icpCanister.name().call();
+    const nameResultCallResult = await icpCanister.name().call();
 
-    return match(nameResultCanisterResult, {
+    return match(nameResultCallResult, {
         Ok: (nameResult) => ({ Ok: nameResult.name }),
         Err: (err) => ({ Err: err })
     });
@@ -135,9 +135,9 @@ type GetDecimalsResult = Variant<{
 
 $update;
 export async function getDecimals(): Promise<GetDecimalsResult> {
-    const decimalsResultCanisterResult = await icpCanister.decimals().call();
+    const decimalsResultCallResult = await icpCanister.decimals().call();
 
-    return match(decimalsResultCanisterResult, {
+    return match(decimalsResultCallResult, {
         Ok: (decimalsResult) => ({ Ok: decimalsResult.decimals }),
         Err: (err) => ({ Err: err })
     });

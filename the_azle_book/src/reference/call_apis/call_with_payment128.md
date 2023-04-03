@@ -15,7 +15,7 @@ export async function executeInstallCode(
     canisterId: Principal,
     wasmModule: blob
 ): Promise<DefaultResult> {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .install_code({
             mode: {
                 install: null
@@ -27,7 +27,7 @@ export async function executeInstallCode(
         .cycles128(100_000_000_000n)
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });

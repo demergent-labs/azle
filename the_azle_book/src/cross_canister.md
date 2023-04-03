@@ -48,11 +48,11 @@ export function transfer(to: Principal, amount: nat64): nat64 {
 Here's how you would create its service definition:
 
 ```typescript
-import { CanisterResult, Principal, nat64, Service, serviceUpdate } from 'azle';
+import { CallResult, Principal, nat64, Service, serviceUpdate } from 'azle';
 
 class TokenCanister extends Service {
     @serviceUpdate
-    transfer: (to: Principal, amount: nat64) => CanisterResult<nat64>;
+    transfer: (to: Principal, amount: nat64) => CallResult<nat64>;
 }
 ```
 
@@ -70,7 +70,7 @@ And here's a more complete example of a canister called `payout_canister` that p
 
 ```typescript
 import {
-    CanisterResult,
+    CallResult,
     nat64,
     Principal,
     Service,
@@ -81,7 +81,7 @@ import {
 
 class TokenCanister extends Service {
     @serviceUpdate
-    transfer: (to: Principal, amount: nat64) => CanisterResult<nat64>;
+    transfer: (to: Principal, amount: nat64) => CallResult<nat64>;
 }
 
 const tokenCanister = new TokenCanister(
@@ -102,9 +102,9 @@ export async function payout(
 }
 ```
 
-Notice that the `token_canister.transfer` method, because it is a cross-canister method, returns a `CanisterResult`. All cross-canister calls return `CanisterResult`, which has an `Ok` or `Err` property depending on if the cross-canister call was successful or not.
+Notice that the `token_canister.transfer` method, because it is a cross-canister method, returns a `CallResult`. All cross-canister calls return `CallResult`, which has an `Ok` or `Err` property depending on if the cross-canister call was successful or not.
 
-The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a `CanisterResult`. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a `try...catch` most likely won't do anything useful.
+The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a `CallResult`. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a `try...catch` most likely won't do anything useful.
 
 Let's add to our example code and explore adding some practical result-based error-handling to stop people from stealing tokens.
 
@@ -152,7 +152,7 @@ export function transfer(
 
 ```typescript
 import {
-    CanisterResult,
+    CallResult,
     match,
     nat64,
     Principal,
@@ -167,7 +167,7 @@ class TokenCanister extends Service {
     transfer: (
         to: Principal,
         amount: nat64
-    ) => CanisterResult<
+    ) => CallResult<
         Variant<{
             Ok: nat64;
             Err: Variant<{
@@ -191,9 +191,9 @@ export async function payout(
         Err: string;
     }>
 > {
-    const canisterResult = await tokenCanister.transfer(to, amount).call();
+    const CallResult = await tokenCanister.transfer(to, amount).call();
 
-    return match(canisterResult, {
+    return match(CallResult, {
         Ok: (transferResult) =>
             match(transferResult, {
                 Ok: (ok) => ({ Ok: ok }),
@@ -214,7 +214,7 @@ Here's an example of a composite query method:
 
 ```typescript
 import {
-    CanisterResult,
+    CallResult,
     Principal,
     $query,
     Service,
@@ -224,7 +224,7 @@ import {
 
 class SomeCanister extends Service {
     @serviceQuery
-    queryForBoolean: () => CanisterResult<boolean>;
+    queryForBoolean: () => CallResult<boolean>;
 }
 
 const someCanister = new SomeCanister(
@@ -248,7 +248,7 @@ If you don't need to wait for your cross-canister call to return, you can use `n
 
 ```typescript
 import {
-    CanisterResult,
+    CallResult,
     Principal,
     RejectionCode,
     Service,
@@ -259,7 +259,7 @@ import {
 
 class SomeCanister extends Service {
     @serviceUpdate
-    receiveNotification: () => CanisterResult<void>;
+    receiveNotification: () => CallResult<void>;
 }
 
 const someCanister = new SomeCanister(
@@ -279,7 +279,7 @@ If you need to send cycles with your cross-canister call, you can call `cycles` 
 
 ```typescript
 import {
-    CanisterResult,
+    CallResult,
     Principal,
     RejectionCode,
     Service,
@@ -290,7 +290,7 @@ import {
 
 class SomeCanister extends Service {
     @serviceUpdate
-    receiveNotification: () => CanisterResult<void>;
+    receiveNotification: () => CallResult<void>;
 }
 
 const someCanister = new SomeCanister(

@@ -1,14 +1,14 @@
-import { CanisterResult, empty, Principal, Service, serviceQuery } from 'azle';
+import { CallResult, empty, Principal, Service, serviceQuery } from 'azle';
 
 export class SomeService extends Service {
     @serviceQuery
-    reject: (message: string) => CanisterResult<empty>;
+    reject: (message: string) => CallResult<empty>;
 
     @serviceQuery
-    accept: () => CanisterResult<boolean>;
+    accept: () => CallResult<boolean>;
 
     @serviceQuery
-    error: () => CanisterResult<empty>;
+    error: () => CallResult<empty>;
 }
 
 export const someService = new SomeService(

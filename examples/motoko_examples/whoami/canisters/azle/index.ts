@@ -1,5 +1,5 @@
 import {
-    CanisterResult,
+    CallResult,
     ic,
     $init,
     match,
@@ -38,19 +38,19 @@ function recordPerformance(start: nat64, end: nat64): void {
 
 class WhoAmICanister extends Service {
     @serviceQuery
-    installer: () => CanisterResult<Principal>;
+    installer: () => CallResult<Principal>;
 
     @serviceQuery
-    argument: () => CanisterResult<Principal>;
+    argument: () => CallResult<Principal>;
 
     @serviceUpdate
-    whoami: () => CanisterResult<Principal>;
+    whoami: () => CallResult<Principal>;
 
     @serviceUpdate
-    id: () => CanisterResult<Principal>;
+    id: () => CallResult<Principal>;
 
     @serviceQuery
-    idQuick: () => CanisterResult<Principal>;
+    idQuick: () => CallResult<Principal>;
 }
 
 // Initialize the variables to ensure that they aren't `undefined`.

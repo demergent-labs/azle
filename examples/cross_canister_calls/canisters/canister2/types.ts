@@ -1,5 +1,5 @@
 import {
-    CanisterResult,
+    CallResult,
     nat64,
     Opt,
     Record,
@@ -27,24 +27,20 @@ export type AccountArgs = Record<{
 
 export class Canister2 extends Service {
     @serviceUpdate
-    transfer: (
-        from: string,
-        to: string,
-        amount: nat64
-    ) => CanisterResult<nat64>;
+    transfer: (from: string, to: string, amount: nat64) => CallResult<nat64>;
 
     @serviceQuery
-    balance: (id: string) => CanisterResult<nat64>;
+    balance: (id: string) => CallResult<nat64>;
 
     @serviceQuery
-    account: (accountArgs: AccountArgs) => CanisterResult<Opt<Account>>;
+    account: (accountArgs: AccountArgs) => CallResult<Opt<Account>>;
 
     @serviceQuery
-    accounts: () => CanisterResult<Account[]>;
+    accounts: () => CallResult<Account[]>;
 
     @serviceQuery
-    trap: () => CanisterResult<string>;
+    trap: () => CallResult<string>;
 
     @serviceUpdate
-    receiveNotification: (message: string) => CanisterResult<void>;
+    receiveNotification: (message: string) => CallResult<void>;
 }

@@ -183,11 +183,11 @@ export function transfer(to: Principal, amount: nat64): nat64 {
 }
 </code></pre>
 <p>Here's how you would create its service definition:</p>
-<pre><code class="language-typescript">import { CanisterResult, Principal, nat64, Service, serviceUpdate } from 'azle';
+<pre><code class="language-typescript">import { CallResult, Principal, nat64, Service, serviceUpdate } from 'azle';
 
 class TokenCanister extends Service {
     @serviceUpdate
-    transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
+    transfer: (to: Principal, amount: nat64) =&gt; CallResult&lt;nat64&gt;;
 }
 </code></pre>
 <p>Once you have a service definition you can instantiate it with the canister's <code>Principal</code> and then invoke its methods.</p>
@@ -198,7 +198,7 @@ class TokenCanister extends Service {
 </code></pre>
 <p>And here's a more complete example of a canister called <code>payout_canister</code> that performs a cross-canister call to <code>token_canister</code>:</p>
 <pre><code class="language-typescript">import {
-    CanisterResult,
+    CallResult,
     nat64,
     Principal,
     Service,
@@ -209,7 +209,7 @@ class TokenCanister extends Service {
 
 class TokenCanister extends Service {
     @serviceUpdate
-    transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
+    transfer: (to: Principal, amount: nat64) =&gt; CallResult&lt;nat64&gt;;
 }
 
 const tokenCanister = new TokenCanister(
@@ -229,8 +229,8 @@ export async function payout(
     return await tokenCanister.transfer(to, amount).call();
 }
 </code></pre>
-<p>Notice that the <code>token_canister.transfer</code> method, because it is a cross-canister method, returns a <code>CanisterResult</code>. All cross-canister calls return <code>CanisterResult</code>, which has an <code>Ok</code> or <code>Err</code> property depending on if the cross-canister call was successful or not.</p>
-<p>The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a <code>CanisterResult</code>. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a <code>try...catch</code> most likely won't do anything useful.</p>
+<p>Notice that the <code>token_canister.transfer</code> method, because it is a cross-canister method, returns a <code>CallResult</code>. All cross-canister calls return <code>CallResult</code>, which has an <code>Ok</code> or <code>Err</code> property depending on if the cross-canister call was successful or not.</p>
+<p>The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a <code>CallResult</code>. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a <code>try...catch</code> most likely won't do anything useful.</p>
 <p>Let's add to our example code and explore adding some practical result-based error-handling to stop people from stealing tokens.</p>
 <p><code>token_canister</code>:</p>
 <pre><code class="language-typescript">import { ic, nat64, Principal, StableBTreeMap, $update, Variant } from 'azle';
@@ -271,7 +271,7 @@ export function transfer(
 </code></pre>
 <p><code>payout_canister</code>:</p>
 <pre><code class="language-typescript">import {
-    CanisterResult,
+    CallResult,
     match,
     nat64,
     Principal,
@@ -286,7 +286,7 @@ class TokenCanister extends Service {
     transfer: (
         to: Principal,
         amount: nat64
-    ) =&gt; CanisterResult&lt;
+    ) =&gt; CallResult&lt;
         Variant&lt;{
             Ok: nat64;
             Err: Variant&lt;{
@@ -310,9 +310,9 @@ export async function payout(
         Err: string;
     }&gt;
 &gt; {
-    const canisterResult = await tokenCanister.transfer(to, amount).call();
+    const CallResult = await tokenCanister.transfer(to, amount).call();
 
-    return match(canisterResult, {
+    return match(CallResult, {
         Ok: (transferResult) =&gt;
             match(transferResult, {
                 Ok: (ok) =&gt; ({ Ok: ok }),
@@ -327,7 +327,7 @@ export async function payout(
 <p>Cross-canister calls can also be initiated from query methods (not yet live on IC mainnet but this works locally). These are known as composite queries, and in Azle they are simply <code>async</code> query methods. Composite queries can call other composite query methods and regular query methods. Composite queries cannot call update methods.</p>
 <p>Here's an example of a composite query method:</p>
 <pre><code class="language-typescript">import {
-    CanisterResult,
+    CallResult,
     Principal,
     $query,
     Service,
@@ -337,7 +337,7 @@ export async function payout(
 
 class SomeCanister extends Service {
     @serviceQuery
-    queryForBoolean: () =&gt; CanisterResult&lt;boolean&gt;;
+    queryForBoolean: () =&gt; CallResult&lt;boolean&gt;;
 }
 
 const someCanister = new SomeCanister(
@@ -357,7 +357,7 @@ export async function querySomeCanister(): Promise&lt;
 <p>You can expect cross-canister calls within the same subnet to take up to a few seconds to complete, and cross-canister calls across subnets <a href="https://forum.dfinity.org/t/can-i-run-multiple-inter-canister-update-calls-in-parallel/13115/6">take about double that time</a>.</p>
 <p>If you don't need to wait for your cross-canister call to return, you can use <code>notify</code>:</p>
 <pre><code class="language-typescript">import {
-    CanisterResult,
+    CallResult,
     Principal,
     RejectionCode,
     Service,
@@ -368,7 +368,7 @@ export async function querySomeCanister(): Promise&lt;
 
 class SomeCanister extends Service {
     @serviceUpdate
-    receiveNotification: () =&gt; CanisterResult&lt;void&gt;;
+    receiveNotification: () =&gt; CallResult&lt;void&gt;;
 }
 
 const someCanister = new SomeCanister(
@@ -385,7 +385,7 @@ export function sendNotification(): Variant&lt;{
 </code></pre>
 <p>If you need to send cycles with your cross-canister call, you can call <code>cycles</code> before calling <code>call</code> or <code>notify</code>:</p>
 <pre><code class="language-typescript">import {
-    CanisterResult,
+    CallResult,
     Principal,
     RejectionCode,
     Service,
@@ -396,7 +396,7 @@ export function sendNotification(): Variant&lt;{
 
 class SomeCanister extends Service {
     @serviceUpdate
-    receiveNotification: () =&gt; CanisterResult&lt;void&gt;;
+    receiveNotification: () =&gt; CallResult&lt;void&gt;;
 }
 
 const someCanister = new SomeCanister(

@@ -1,5 +1,5 @@
 import {
-    CanisterResult,
+    CallResult,
     nat,
     nat64,
     Principal,
@@ -9,10 +9,10 @@ import {
 
 export class Cycles extends Service {
     @serviceUpdate
-    receiveCycles: () => CanisterResult<nat64>;
+    receiveCycles: () => CallResult<nat64>;
 
     @serviceUpdate
-    receiveCycles128: () => CanisterResult<nat>;
+    receiveCycles128: () => CallResult<nat>;
 }
 
 export const cyclesCanister = new Cycles(

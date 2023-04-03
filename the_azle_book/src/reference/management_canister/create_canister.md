@@ -20,14 +20,14 @@ export async function executeCreateCanister(): Promise<
         Err: string;
     }>
 > {
-    const createCanisterResultCanisterResult = await managementCanister
+    const createCanisterResultCallResult = await managementCanister
         .create_canister({
             settings: null
         })
         .cycles(50_000_000_000_000n)
         .call();
 
-    return match(createCanisterResultCanisterResult, {
+    return match(createCanisterResultCallResult, {
         Ok: (createCanisterResult) => {
             state.createdCanisterId = createCanisterResult.canister_id;
 

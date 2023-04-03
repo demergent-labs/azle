@@ -21,13 +21,13 @@ export async function getCanisterStatus(args: CanisterStatusArgs): Promise<
         Err: string;
     }>
 > {
-    const canisterStatusResultCanisterResult = await managementCanister
+    const canisterStatusResultCallResult = await managementCanister
         .canister_status({
             canister_id: args.canister_id
         })
         .call();
 
-    return match(canisterStatusResultCanisterResult, {
+    return match(canisterStatusResultCallResult, {
         Ok: (canisterStatusResult) => ({ Ok: canisterStatusResult }),
         Err: (err) => ({ Err: err })
     });

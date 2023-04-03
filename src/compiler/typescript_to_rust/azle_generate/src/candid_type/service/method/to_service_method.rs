@@ -97,8 +97,8 @@ impl SourceMapped<'_, ClassProp> {
                     swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name().to_string(),
                 };
 
-                if name != "CanisterResult" {
-                    return Err(ParseError::MissingCanisterResultAnnotation);
+                if name != "CallResult" {
+                    return Err(ParseError::MissingCallResultAnnotation);
                 }
 
                 match &ts_type_ref.type_params {
@@ -113,7 +113,7 @@ impl SourceMapped<'_, ClassProp> {
                     None => return Err(ParseError::MissingTypeArgument),
                 }
             }
-            _ => return Err(ParseError::MissingCanisterResultAnnotation),
+            _ => return Err(ParseError::MissingCallResultAnnotation),
         }
     }
 

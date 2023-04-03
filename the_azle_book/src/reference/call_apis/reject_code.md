@@ -8,7 +8,7 @@ Examples:
 
 ```typescript
 import {
-    CanisterResult,
+    CallResult,
     ic,
     Principal,
     RejectionCode,
@@ -19,7 +19,7 @@ import {
 
 class Nonexistent extends Service {
     @serviceUpdate
-    method: () => CanisterResult<void>;
+    method: () => CallResult<void>;
 }
 
 export const nonexistentCanister = new Nonexistent(

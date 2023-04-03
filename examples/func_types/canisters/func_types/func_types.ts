@@ -102,13 +102,13 @@ export function complexFuncReturnType(): ComplexFunc {
     return [Principal.fromText('aaaaa-aa'), 'stop_canister'];
 }
 
-type GetNotifierFromNotifiersCanisterResult = Variant<{
+type GetNotifierFromNotifiersCallResult = Variant<{
     Ok: NotifierFunc;
     Err: string;
 }>;
 
 $update;
-export async function getNotifierFromNotifiersCanister(): Promise<GetNotifierFromNotifiersCanisterResult> {
+export async function getNotifierFromNotifiersCanister(): Promise<GetNotifierFromNotifiersCallResult> {
     const notifiersCanister: Notifier = new Notifier(
         Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
     );

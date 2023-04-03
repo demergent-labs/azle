@@ -1,7 +1,7 @@
 import {
     Alias,
     blob,
-    CanisterResult,
+    CallResult,
     Func,
     nat32,
     nat64,
@@ -264,41 +264,39 @@ export class Ledger extends Service {
     // The source address is computed from the principal of the caller and the specified subaccount.
     // When successful, returns the index of the block containing the transaction.
     @serviceUpdate
-    transfer: (transfer_args: TransferArgs) => CanisterResult<TransferResult>;
+    transfer: (transfer_args: TransferArgs) => CallResult<TransferResult>;
 
     // Returns the amount of Tokens on the specified account.
     @serviceQuery
     account_balance: (
         accountBalanceArgs: AccountBalanceArgs
-    ) => CanisterResult<Tokens>;
+    ) => CallResult<Tokens>;
 
     // Returns the current transfer_fee.
     @serviceQuery
-    transfer_fee: (
-        transfer_fee_arg: TransferFeeArg
-    ) => CanisterResult<TransferFee>;
+    transfer_fee: (transfer_fee_arg: TransferFeeArg) => CallResult<TransferFee>;
 
     // Queries blocks in the specified range.
     @serviceQuery
     query_blocks: (
         get_blocks_args: GetBlocksArgs
-    ) => CanisterResult<QueryBlocksResponse>;
+    ) => CallResult<QueryBlocksResponse>;
 
     // Returns token symbol.
     @serviceQuery
-    symbol: () => CanisterResult<SymbolResult>;
+    symbol: () => CallResult<SymbolResult>;
 
     // Returns token name.
     @serviceQuery
-    name: () => CanisterResult<NameResult>;
+    name: () => CallResult<NameResult>;
 
     // Returns token decimals.
     @serviceQuery
-    decimals: () => CanisterResult<DecimalsResult>;
+    decimals: () => CallResult<DecimalsResult>;
 
     // Returns the existing archive canisters information.
     @serviceQuery
-    archives: () => CanisterResult<Archives>;
+    archives: () => CallResult<Archives>;
 }
 
 export {

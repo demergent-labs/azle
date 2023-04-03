@@ -1,6 +1,6 @@
 import {
     $query,
-    CanisterResult,
+    CallResult,
     int,
     nat64,
     nat8,
@@ -18,7 +18,7 @@ type CanisterTuple2 = [string, CanisterTuple1];
 
 class TestCanister extends Service {
     @serviceUpdate
-    test: (param: CanisterTuple1) => CanisterResult<CanisterTuple2>;
+    test: (param: CanisterTuple1) => CallResult<CanisterTuple2>;
 }
 
 type User = Record<{

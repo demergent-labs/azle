@@ -23,14 +23,14 @@ let state: State = {
 
 $update;
 export async function executeCreateCanister(): Promise<ExecuteCreateCanisterResult> {
-    const createCanisterResultCanisterResult = await managementCanister
+    const createCanisterResultCallResult = await managementCanister
         .create_canister({
             settings: null
         })
         .cycles(50_000_000_000_000n)
         .call();
 
-    return match(createCanisterResultCanisterResult, {
+    return match(createCanisterResultCallResult, {
         Ok: (createCanisterResult) => {
             state.createdCanisterId = createCanisterResult.canister_id;
 
@@ -46,7 +46,7 @@ $update;
 export async function executeUpdateSettings(
     canisterId: Principal
 ): Promise<DefaultResult> {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .update_settings({
             canister_id: canisterId,
             settings: {
@@ -58,7 +58,7 @@ export async function executeUpdateSettings(
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
@@ -69,7 +69,7 @@ export async function executeInstallCode(
     canisterId: Principal,
     wasmModule: blob
 ): Promise<DefaultResult> {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .install_code({
             mode: {
                 install: null
@@ -81,7 +81,7 @@ export async function executeInstallCode(
         .cycles(100_000_000_000n)
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
@@ -91,13 +91,13 @@ $update;
 export async function executeUninstallCode(
     canisterId: Principal
 ): Promise<DefaultResult> {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .uninstall_code({
             canister_id: canisterId
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
@@ -107,13 +107,13 @@ $update;
 export async function executeStartCanister(
     canisterId: Principal
 ): Promise<DefaultResult> {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .start_canister({
             canister_id: canisterId
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
@@ -123,13 +123,13 @@ $update;
 export async function executeStopCanister(
     canisterId: Principal
 ): Promise<DefaultResult> {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .stop_canister({
             canister_id: canisterId
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
@@ -139,13 +139,13 @@ $update;
 export async function getCanisterStatus(
     args: CanisterStatusArgs
 ): Promise<GetCanisterStatusResult> {
-    const canisterStatusResultCanisterResult = await managementCanister
+    const canisterStatusResultCallResult = await managementCanister
         .canister_status({
             canister_id: args.canister_id
         })
         .call();
 
-    return match(canisterStatusResultCanisterResult, {
+    return match(canisterStatusResultCallResult, {
         Ok: (canisterStatusResult) => ({ Ok: canisterStatusResult }),
         Err: (err) => ({ Err: err })
     });
@@ -155,13 +155,13 @@ $update;
 export async function executeDeleteCanister(
     canisterId: Principal
 ): Promise<DefaultResult> {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .delete_canister({
             canister_id: canisterId
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
@@ -171,14 +171,14 @@ $update;
 export async function executeDepositCycles(
     canisterId: Principal
 ): Promise<DefaultResult> {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .deposit_cycles({
             canister_id: canisterId
         })
         .cycles(1_000_000n)
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });
@@ -186,9 +186,9 @@ export async function executeDepositCycles(
 
 $update;
 export async function getRawRand(): Promise<RawRandResult> {
-    const rawRandCanisterResult = await managementCanister.raw_rand().call();
+    const rawRandcallResult = await managementCanister.raw_rand().call();
 
-    return match(rawRandCanisterResult, {
+    return match(rawRandcallResult, {
         Ok: (rawRandomness) => ({ Ok: rawRandomness }),
         Err: (err) => ({ Err: err })
     });
@@ -197,14 +197,14 @@ export async function getRawRand(): Promise<RawRandResult> {
 // TODO we should test this like we test depositCycles
 $update;
 export async function provisionalCreateCanisterWithCycles(): Promise<ExecuteProvisionalCreateCanisterWithCyclesResult> {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .provisional_create_canister_with_cycles({
             amount: null,
             settings: null
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: (provisionalCreateCanisterWithCyclesResult) => ({
             Ok: provisionalCreateCanisterWithCyclesResult
         }),
@@ -218,14 +218,14 @@ export async function provisionalTopUpCanister(
     canisterId: Principal,
     amount: nat
 ): Promise<DefaultResult> {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .provisional_top_up_canister({
             canister_id: canisterId,
             amount
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });

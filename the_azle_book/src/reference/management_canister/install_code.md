@@ -20,7 +20,7 @@ export async function executeInstallCode(
         Err: string;
     }>
 > {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .install_code({
             mode: {
                 install: null
@@ -32,7 +32,7 @@ export async function executeInstallCode(
         .cycles(100_000_000_000n)
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });

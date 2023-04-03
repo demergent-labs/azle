@@ -2046,11 +2046,11 @@ export function transfer(to: Principal, amount: nat64): nat64 {
 }
 </code></pre>
 <p>Here's how you would create its service definition:</p>
-<pre><code class="language-typescript">import { CanisterResult, Principal, nat64, Service, serviceUpdate } from 'azle';
+<pre><code class="language-typescript">import { CallResult, Principal, nat64, Service, serviceUpdate } from 'azle';
 
 class TokenCanister extends Service {
     @serviceUpdate
-    transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
+    transfer: (to: Principal, amount: nat64) =&gt; CallResult&lt;nat64&gt;;
 }
 </code></pre>
 <p>Once you have a service definition you can instantiate it with the canister's <code>Principal</code> and then invoke its methods.</p>
@@ -2061,7 +2061,7 @@ class TokenCanister extends Service {
 </code></pre>
 <p>And here's a more complete example of a canister called <code>payout_canister</code> that performs a cross-canister call to <code>token_canister</code>:</p>
 <pre><code class="language-typescript">import {
-    CanisterResult,
+    CallResult,
     nat64,
     Principal,
     Service,
@@ -2072,7 +2072,7 @@ class TokenCanister extends Service {
 
 class TokenCanister extends Service {
     @serviceUpdate
-    transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
+    transfer: (to: Principal, amount: nat64) =&gt; CallResult&lt;nat64&gt;;
 }
 
 const tokenCanister = new TokenCanister(
@@ -2092,8 +2092,8 @@ export async function payout(
     return await tokenCanister.transfer(to, amount).call();
 }
 </code></pre>
-<p>Notice that the <code>token_canister.transfer</code> method, because it is a cross-canister method, returns a <code>CanisterResult</code>. All cross-canister calls return <code>CanisterResult</code>, which has an <code>Ok</code> or <code>Err</code> property depending on if the cross-canister call was successful or not.</p>
-<p>The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a <code>CanisterResult</code>. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a <code>try...catch</code> most likely won't do anything useful.</p>
+<p>Notice that the <code>token_canister.transfer</code> method, because it is a cross-canister method, returns a <code>CallResult</code>. All cross-canister calls return <code>CallResult</code>, which has an <code>Ok</code> or <code>Err</code> property depending on if the cross-canister call was successful or not.</p>
+<p>The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a <code>CallResult</code>. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a <code>try...catch</code> most likely won't do anything useful.</p>
 <p>Let's add to our example code and explore adding some practical result-based error-handling to stop people from stealing tokens.</p>
 <p><code>token_canister</code>:</p>
 <pre><code class="language-typescript">import { ic, nat64, Principal, StableBTreeMap, $update, Variant } from 'azle';
@@ -2134,7 +2134,7 @@ export function transfer(
 </code></pre>
 <p><code>payout_canister</code>:</p>
 <pre><code class="language-typescript">import {
-    CanisterResult,
+    CallResult,
     match,
     nat64,
     Principal,
@@ -2149,7 +2149,7 @@ class TokenCanister extends Service {
     transfer: (
         to: Principal,
         amount: nat64
-    ) =&gt; CanisterResult&lt;
+    ) =&gt; CallResult&lt;
         Variant&lt;{
             Ok: nat64;
             Err: Variant&lt;{
@@ -2173,9 +2173,9 @@ export async function payout(
         Err: string;
     }&gt;
 &gt; {
-    const canisterResult = await tokenCanister.transfer(to, amount).call();
+    const CallResult = await tokenCanister.transfer(to, amount).call();
 
-    return match(canisterResult, {
+    return match(CallResult, {
         Ok: (transferResult) =&gt;
             match(transferResult, {
                 Ok: (ok) =&gt; ({ Ok: ok }),
@@ -2190,7 +2190,7 @@ export async function payout(
 <p>Cross-canister calls can also be initiated from query methods (not yet live on IC mainnet but this works locally). These are known as composite queries, and in Azle they are simply <code>async</code> query methods. Composite queries can call other composite query methods and regular query methods. Composite queries cannot call update methods.</p>
 <p>Here's an example of a composite query method:</p>
 <pre><code class="language-typescript">import {
-    CanisterResult,
+    CallResult,
     Principal,
     $query,
     Service,
@@ -2200,7 +2200,7 @@ export async function payout(
 
 class SomeCanister extends Service {
     @serviceQuery
-    queryForBoolean: () =&gt; CanisterResult&lt;boolean&gt;;
+    queryForBoolean: () =&gt; CallResult&lt;boolean&gt;;
 }
 
 const someCanister = new SomeCanister(
@@ -2220,7 +2220,7 @@ export async function querySomeCanister(): Promise&lt;
 <p>You can expect cross-canister calls within the same subnet to take up to a few seconds to complete, and cross-canister calls across subnets <a href="https://forum.dfinity.org/t/can-i-run-multiple-inter-canister-update-calls-in-parallel/13115/6">take about double that time</a>.</p>
 <p>If you don't need to wait for your cross-canister call to return, you can use <code>notify</code>:</p>
 <pre><code class="language-typescript">import {
-    CanisterResult,
+    CallResult,
     Principal,
     RejectionCode,
     Service,
@@ -2231,7 +2231,7 @@ export async function querySomeCanister(): Promise&lt;
 
 class SomeCanister extends Service {
     @serviceUpdate
-    receiveNotification: () =&gt; CanisterResult&lt;void&gt;;
+    receiveNotification: () =&gt; CallResult&lt;void&gt;;
 }
 
 const someCanister = new SomeCanister(
@@ -2248,7 +2248,7 @@ export function sendNotification(): Variant&lt;{
 </code></pre>
 <p>If you need to send cycles with your cross-canister call, you can call <code>cycles</code> before calling <code>call</code> or <code>notify</code>:</p>
 <pre><code class="language-typescript">import {
-    CanisterResult,
+    CallResult,
     Principal,
     RejectionCode,
     Service,
@@ -2259,7 +2259,7 @@ export function sendNotification(): Variant&lt;{
 
 class SomeCanister extends Service {
     @serviceUpdate
-    receiveNotification: () =&gt; CanisterResult&lt;void&gt;;
+    receiveNotification: () =&gt; CallResult&lt;void&gt;;
 }
 
 const someCanister = new SomeCanister(
@@ -2750,7 +2750,7 @@ export function argDataRawSize(
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami">whoami</a></li>
 </ul>
 <pre><code class="language-typescript">import {
-    CanisterResult,
+    CallResult,
     nat64,
     Principal,
     Service,
@@ -2761,7 +2761,7 @@ export function argDataRawSize(
 
 class TokenCanister extends Service {
     @serviceUpdate
-    transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
+    transfer: (to: Principal, amount: nat64) =&gt; CallResult&lt;nat64&gt;;
 }
 
 const tokenCanister = new TokenCanister(
@@ -2802,14 +2802,14 @@ export async function executeCallRaw(
         Err: string;
     }&gt;
 &gt; {
-    const canisterResult = await ic.callRaw(
+    const callResult = await ic.callRaw(
         canisterId,
         method,
         ic.candidEncode(candidArgs),
         payment
     );
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: (ok) =&gt; ({
             Ok: ic.candidDecode(ok)
         }),
@@ -2837,14 +2837,14 @@ export async function executeCallRaw128(
         Err: string;
     }&gt;
 &gt; {
-    const canisterResult = await ic.callRaw128(
+    const callResult = await ic.callRaw128(
         canisterId,
         method,
         ic.candidEncode(candidArgs),
         payment
     );
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: (ok) =&gt; ({
             Ok: ic.candidDecode(ok)
         }),
@@ -2871,7 +2871,7 @@ export async function executeInstallCode(
     canisterId: Principal,
     wasmModule: blob
 ): Promise&lt;DefaultResult&gt; {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .install_code({
             mode: {
                 install: null
@@ -2883,7 +2883,7 @@ export async function executeInstallCode(
         .cycles(100_000_000_000n)
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () =&gt; ({ Ok: true }),
         Err: (err) =&gt; ({ Err: err })
     });
@@ -2903,7 +2903,7 @@ export async function executeInstallCode(
     canisterId: Principal,
     wasmModule: blob
 ): Promise&lt;DefaultResult&gt; {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .install_code({
             mode: {
                 install: null
@@ -2915,7 +2915,7 @@ export async function executeInstallCode(
         .cycles128(100_000_000_000n)
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () =&gt; ({ Ok: true }),
         Err: (err) =&gt; ({ Err: err })
     });
@@ -3178,7 +3178,7 @@ export function reject(message: string): Manual&lt;empty&gt; {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/rejections">rejections</a></li>
 </ul>
 <pre><code class="language-typescript">import {
-    CanisterResult,
+    CallResult,
     ic,
     Principal,
     RejectionCode,
@@ -3189,7 +3189,7 @@ export function reject(message: string): Manual&lt;empty&gt; {
 
 class Nonexistent extends Service {
     @serviceUpdate
-    method: () =&gt; CanisterResult&lt;void&gt;;
+    method: () =&gt; CallResult&lt;void&gt;;
 }
 
 export const nonexistentCanister = new Nonexistent(
@@ -4564,13 +4564,13 @@ export async function getCanisterStatus(args: CanisterStatusArgs): Promise&lt;
         Err: string;
     }&gt;
 &gt; {
-    const canisterStatusResultCanisterResult = await managementCanister
+    const canisterStatusResultCallResult = await managementCanister
         .canister_status({
             canister_id: args.canister_id
         })
         .call();
 
-    return match(canisterStatusResultCanisterResult, {
+    return match(canisterStatusResultCallResult, {
         Ok: (canisterStatusResult) =&gt; ({ Ok: canisterStatusResult }),
         Err: (err) =&gt; ({ Err: err })
     });
@@ -4595,14 +4595,14 @@ export async function executeCreateCanister(): Promise&lt;
         Err: string;
     }&gt;
 &gt; {
-    const createCanisterResultCanisterResult = await managementCanister
+    const createCanisterResultCallResult = await managementCanister
         .create_canister({
             settings: null
         })
         .cycles(50_000_000_000_000n)
         .call();
 
-    return match(createCanisterResultCanisterResult, {
+    return match(createCanisterResultCallResult, {
         Ok: (createCanisterResult) =&gt; {
             state.createdCanisterId = createCanisterResult.canister_id;
 
@@ -4630,13 +4630,13 @@ export async function executeDeleteCanister(canisterId: Principal): Promise&lt;
         Err: string;
     }&gt;
 &gt; {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .delete_canister({
             canister_id: canisterId
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () =&gt; ({ Ok: true }),
         Err: (err) =&gt; ({ Err: err })
     });
@@ -4658,14 +4658,14 @@ export async function executeDepositCycles(canisterId: Principal): Promise&lt;
         Err: string;
     }&gt;
 &gt; {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .deposit_cycles({
             canister_id: canisterId
         })
         .cycles(1_000_000n)
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () =&gt; ({ Ok: true }),
         Err: (err) =&gt; ({ Err: err })
     });
@@ -4779,7 +4779,7 @@ export async function executeInstallCode(
         Err: string;
     }&gt;
 &gt; {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .install_code({
             mode: {
                 install: null
@@ -4791,7 +4791,7 @@ export async function executeInstallCode(
         .cycles(100_000_000_000n)
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () =&gt; ({ Ok: true }),
         Err: (err) =&gt; ({ Err: err })
     });
@@ -4816,14 +4816,14 @@ export async function provisionalCreateCanisterWithCycles(): Promise&lt;
         Err: string;
     }&gt;
 &gt; {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .provisional_create_canister_with_cycles({
             amount: null,
             settings: null
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: (provisionalCreateCanisterWithCyclesResult) =&gt; ({
             Ok: provisionalCreateCanisterWithCyclesResult
         }),
@@ -4850,14 +4850,14 @@ export async function provisionalTopUpCanister(
         Err: string;
     }&gt;
 &gt; {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .provisional_top_up_canister({
             canister_id: canisterId,
             amount
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () =&gt; ({ Ok: true }),
         Err: (err) =&gt; ({ Err: err })
     });
@@ -4942,13 +4942,13 @@ export async function executeStartCanister(canisterId: Principal): Promise&lt;
         Err: string;
     }&gt;
 &gt; {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .start_canister({
             canister_id: canisterId
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () =&gt; ({ Ok: true }),
         Err: (err) =&gt; ({ Err: err })
     });
@@ -4970,13 +4970,13 @@ export async function executeStopCanister(canisterId: Principal): Promise&lt;
         Err: string;
     }&gt;
 &gt; {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .stop_canister({
             canister_id: canisterId
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () =&gt; ({ Ok: true }),
         Err: (err) =&gt; ({ Err: err })
     });
@@ -4998,13 +4998,13 @@ export async function executeUninstallCode(canisterId: Principal): Promise&lt;
         Err: string;
     }&gt;
 &gt; {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .uninstall_code({
             canister_id: canisterId
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () =&gt; ({ Ok: true }),
         Err: (err) =&gt; ({ Err: err })
     });
@@ -5026,7 +5026,7 @@ export async function executeUpdateSettings(canisterId: Principal): Promise&lt;
         Err: string;
     }&gt;
 &gt; {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .update_settings({
             canister_id: canisterId,
             settings: {
@@ -5038,7 +5038,7 @@ export async function executeUpdateSettings(canisterId: Principal): Promise&lt;
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () =&gt; ({ Ok: true }),
         Err: (err) =&gt; ({ Err: err })
     });

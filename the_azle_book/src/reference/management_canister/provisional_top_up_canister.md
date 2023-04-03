@@ -20,14 +20,14 @@ export async function provisionalTopUpCanister(
         Err: string;
     }>
 > {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .provisional_top_up_canister({
             canister_id: canisterId,
             amount
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });

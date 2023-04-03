@@ -17,7 +17,7 @@ export async function executeUpdateSettings(canisterId: Principal): Promise<
         Err: string;
     }>
 > {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .update_settings({
             canister_id: canisterId,
             settings: {
@@ -29,7 +29,7 @@ export async function executeUpdateSettings(canisterId: Principal): Promise<
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });

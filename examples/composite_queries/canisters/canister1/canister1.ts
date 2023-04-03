@@ -34,9 +34,9 @@ export async function totallyManualQuery(): Promise<Manual<StringQueryResult>> {
 // Composite query calling another composite query
 $query;
 export async function deepQuery(): Promise<StringQueryResult> {
-    const canisterResult = await canister2.deepQuery().call();
+    const callResult = await canister2.deepQuery().call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: (stringQueryResult) =>
             match(stringQueryResult, {
                 Ok: (stringQuery) => ({ Ok: stringQuery }),
@@ -61,9 +61,9 @@ export async function simpleQuery(): Promise<StringQueryResult> {
 // Composite query being called by an update method. SHOULDN'T WORK
 $update;
 export async function simpleUpdate(): Promise<StringQueryResult> {
-    const canisterResult = await canister2.deepQuery().call();
+    const callResult = await canister2.deepQuery().call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: (stringQueryResult) =>
             match(stringQueryResult, {
                 Ok: (stringQuery) => ({ Ok: stringQuery }),
