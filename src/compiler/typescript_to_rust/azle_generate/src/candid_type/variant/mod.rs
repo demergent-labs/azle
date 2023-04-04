@@ -1,4 +1,7 @@
-use cdk_framework::act::node::candid::{variant::Member, TypeParam, Variant};
+use cdk_framework::{
+    act::node::candid::{variant::Member, TypeParam, Variant},
+    traits::ToIdent,
+};
 use quote::quote;
 use swc_ecma_ast::TsTypeAliasDecl;
 
@@ -30,6 +33,20 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
                     .iter()
                     .map(|type_param| TypeParam {
                         name: type_param.name.get_name().to_string(),
+                        try_into_vm_value_trait_bound: quote!(
+                            for<'a> CdkActTryIntoVmValue<
+                                &'a mut boa_engine::Context,
+                                boa_engine::JsValue,
+                            >
+                        ),
+                        try_from_vm_value_trait_bound: |name_string| {
+                            let name = name_string.to_ident();
+
+                            quote!(
+                                boa_engine::JsValue:
+                                    for<'a> CdkActTryFromVmValue<Box<#name>, &'a mut boa_engine::Context>
+                            )
+                        },
                     })
                     .collect()
             } else {
