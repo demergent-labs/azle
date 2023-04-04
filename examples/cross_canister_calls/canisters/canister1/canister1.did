@@ -4,7 +4,6 @@ type ManualReply = variant { Ok : opt Account; Err : text };
 type ManualReply_1 = variant { Ok : vec Account; Err : text };
 type ManualReply_2 = variant { Ok : nat64; Err : text };
 type ManualReply_3 = variant { Ok : text; Err : text };
-type NotifyResult = variant { Ok; Err : RejectionCode };
 type RejectionCode = variant {
   NoError;
   CanisterError;
@@ -14,11 +13,12 @@ type RejectionCode = variant {
   SysFatal;
   CanisterReject;
 };
+type _AzleResult = variant { Ok; Err : RejectionCode };
 service : () -> {
   account : (AccountArgs) -> (ManualReply);
   accounts : () -> (ManualReply_1);
   balance : (text) -> (ManualReply_2);
-  sendNotification : () -> (NotifyResult);
+  sendNotification : () -> (_AzleResult);
   transfer : (text, text, nat64) -> (ManualReply_2);
   trap : () -> (ManualReply_3);
 }

@@ -122,17 +122,9 @@ export type FinalCallResult<T> = RequireExactlyOne<{
 }>;
 
 /** The return type of a guard function. Used to indicate whether the guarded function should halt or proceed. */
-export type GuardResult = Variant<{
-    /** Allows the guarded function to proceed. */
-    Ok: null;
-    /** Prevents the guarded function from proceeding. */
-    Err: string;
-}>;
+export type GuardResult = Alias<Result<null, string>>;
 
-export type NotifyResult = Variant<{
-    Ok: null;
-    Err: RejectionCode;
-}>;
+export type NotifyResult = Alias<Result<null, RejectionCode>>;
 
 /**
  * Type returned by the `ic.setTimer` and `ic.setTimerInterval` functions. Pass to `ic.clearTimer` to remove the timer.
@@ -166,22 +158,6 @@ export type blob = Uint8Array;
 export type reserved = any;
 export type empty = never;
 
-type AzleResult<T, E> = Partial<{
-    Ok: T;
-    Err: E;
-}>;
-
-// TODO working on turning the ok function into an assertion
-export function attempt<T, E>(
-    callback: () => AzleResult<T, E>
-): AzleResult<T, E> {
-    try {
-        return callback();
-    } catch (error) {
-        return error as AzleResult<T, E>;
-    }
-}
-
 // TODO type these more strictly
 export type Query<T extends (...args: any[]) => any> = [Principal, string];
 export type Update<T extends (...args: any[]) => any> = [Principal, string];
@@ -206,15 +182,9 @@ export type StableMemoryError = Variant<{
     OutOfBounds: null;
 }>;
 
-export type StableGrowResult = Variant<{
-    Ok: nat32;
-    Err: StableMemoryError;
-}>;
+export type StableGrowResult = Alias<Result<nat32, StableMemoryError>>;
 
-export type Stable64GrowResult = Variant<{
-    Ok: nat64;
-    Err: StableMemoryError;
-}>;
+export type Stable64GrowResult = Alias<Result<nat64, StableMemoryError>>;
 
 /**
  * A decorator for marking query methods on services. Can only be
