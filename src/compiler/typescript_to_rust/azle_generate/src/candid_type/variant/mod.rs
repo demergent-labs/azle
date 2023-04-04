@@ -1,4 +1,5 @@
-use cdk_framework::act::node::candid::{variant::Member, Variant};
+use cdk_framework::act::node::candid::{variant::Member, TypeParam, Variant};
+use quote::quote;
 use swc_ecma_ast::TsTypeAliasDecl;
 
 use crate::{
@@ -20,7 +21,23 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_variant(&self) -> Option<Variant> {
         self.process_ts_type_ref("Variant", |azle_type_ref| {
             let mut variant = azle_type_ref.to_variant();
+
             variant.name = Some(self.id.get_name().to_string());
+
+            let type_params = if let Some(type_params) = &self.type_params {
+                type_params
+                    .params
+                    .iter()
+                    .map(|type_param| TypeParam {
+                        name: type_param.name.get_name().to_string(),
+                    })
+                    .collect()
+            } else {
+                vec![]
+            };
+
+            variant.type_params = type_params;
+
             variant
         })
     }
@@ -51,6 +68,7 @@ impl AzleTypeLit<'_> {
         Variant {
             name: None,
             members,
+            type_params: vec![],
         }
     }
 }

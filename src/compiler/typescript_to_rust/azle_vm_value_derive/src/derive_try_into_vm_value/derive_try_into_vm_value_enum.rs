@@ -1,25 +1,28 @@
 use proc_macro2::Ident;
 use quote::{format_ident, quote};
-use syn::{DataEnum, Field, Fields};
+use syn::{DataEnum, Field, Fields, Generics};
 
 pub fn derive_try_into_vm_value_enum(
     enum_name: &Ident,
     data_enum: &DataEnum,
+    generics: &Generics,
 ) -> proc_macro2::TokenStream {
     let variant_branches = derive_variant_branches(&enum_name, &data_enum);
 
+    // Capture generic parameters and their bounds
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+
     quote! {
-        impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for #enum_name {
-            fn try_into_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+        impl #impl_generics CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for #enum_name #ty_generics #where_clause {
+            fn try_into_vm_value(self, _azle_context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {
                     #(#variant_branches)*,
                 }
             }
         }
 
-        // TODO the body of this function is repeated in azle_into_js_value_trait.ts
-        impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<#enum_name> {
-            fn try_into_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+        impl #impl_generics CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<#enum_name #ty_generics> #where_clause {
+            fn try_into_vm_value(self, _azle_context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 let js_values = self.into_iter().map(|item| item.try_into_vm_value(_azle_context).unwrap()).collect::<Vec<boa_engine::JsValue>>();
                 Ok(boa_engine::object::builtins::JsArray::from_iter(js_values, _azle_context).into())
             }

@@ -1,4 +1,4 @@
-import { ic, match, nat, nat64, Principal, $update, Variant } from 'azle';
+import { ic, match, nat, nat64, Principal, Result, $update } from 'azle';
 
 $update;
 export async function executeCallRaw(
@@ -6,12 +6,7 @@ export async function executeCallRaw(
     method: string,
     candidArgs: string,
     payment: nat64
-): Promise<
-    Variant<{
-        Ok: string;
-        Err: string;
-    }>
-> {
+): Promise<Result<string, string>> {
     const callResult = await ic.callRaw(
         canisterId,
         method,
@@ -33,12 +28,7 @@ export async function executeCallRaw128(
     method: string,
     candidArgs: string,
     payment: nat
-): Promise<
-    Variant<{
-        Ok: string;
-        Err: string;
-    }>
-> {
+): Promise<Result<string, string>> {
     const callResult = await ic.callRaw128(
         canisterId,
         method,

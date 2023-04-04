@@ -1,37 +1,37 @@
 pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for () {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Ok(boa_engine::JsValue::Null)
             }
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for bool {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Ok(self.into())
             }
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for String {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Ok(self.into())
             }
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk::export::candid::Empty {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Err(CdkActTryIntoVmValueError("Empty cannot be converted into JsValue".to_string()))
             }
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk::export::candid::Reserved {
-            fn try_into_vm_value(self, _: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, _: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Ok(boa_engine::JsValue::Null)
             }
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk::export::candid::Func {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Ok(boa_engine::object::builtins::JsArray::from_iter([
                     self.principal.try_into_vm_value(context).unwrap(),
                     self.method.into()
@@ -40,7 +40,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk::export::Principal {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 let exports_js_value = _azle_unwrap_boa_result(context.eval("exports"), context);
                 let exports_js_object = exports_js_value.as_object().unwrap();
 
@@ -57,14 +57,14 @@ pub fn generate() -> proc_macro2::TokenStream {
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk_timers::TimerId {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 let timer_id_as_u64 = self.data().as_ffi();
                 Ok(boa_engine::JsValue::BigInt(timer_id_as_u64.into()))
             }
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk::api::stable::StableMemoryError {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {
                     ic_cdk::api::stable::StableMemoryError::OutOfMemory => {
                         Ok(boa_engine::object::ObjectInitializer::new(context)
@@ -91,7 +91,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_stable_structures::btreemap::InsertError {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {
                     ic_stable_structures::btreemap::InsertError::KeyTooLarge {given, max} => {
                         let given_js_value = given.try_into_vm_value(context).unwrap();
@@ -150,7 +150,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for ic_cdk::api::call::RejectionCode {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {
                     ic_cdk::api::call::RejectionCode::NoError => {
                         Ok(boa_engine::object::ObjectInitializer::new(context)

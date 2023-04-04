@@ -9,7 +9,7 @@ use crate::{
 };
 
 impl SourceMapped<'_, ClassProp> {
-    pub fn to_service_method(&self) -> Result<Method, ParseError> {
+    pub fn to_service_method(&self) -> std::result::Result<Method, ParseError> {
         if self.decorators.len() == 0 {
             return Err(ParseError::MissingDecorator);
         }
@@ -30,11 +30,11 @@ impl SourceMapped<'_, ClassProp> {
         Ok(Method::new(name, mode, params, return_type))
     }
 
-    fn build_act_fn_params(&self) -> Result<Vec<Param>, ParseError> {
+    fn build_act_fn_params(&self) -> std::result::Result<Vec<Param>, ParseError> {
         Ok(self.ts_fn_type()?.build_act_fn_params())
     }
 
-    fn build_return_type(&self) -> Result<CandidType, ParseError> {
+    fn build_return_type(&self) -> std::result::Result<CandidType, ParseError> {
         let return_ts_type = self.return_ts_type()?;
         let azle_type = AzleType::from_ts_type(return_ts_type, self.source_map);
         let act_data_type = azle_type.to_data_type();
@@ -54,7 +54,7 @@ impl SourceMapped<'_, ClassProp> {
         self.contains_decorator("serviceQuery") || self.contains_decorator("serviceUpdate")
     }
 
-    fn mode(&self) -> Result<String, ParseError> {
+    fn mode(&self) -> std::result::Result<String, ParseError> {
         if self.decorators.len() != 1 {
             return Err(ParseError::MultipleDecorators);
         };
@@ -72,7 +72,7 @@ impl SourceMapped<'_, ClassProp> {
         Ok(mode)
     }
 
-    fn name(&self) -> Result<String, ParseError> {
+    fn name(&self) -> std::result::Result<String, ParseError> {
         let name = match &self.key {
             swc_ecma_ast::PropName::Ident(ident) => ident.get_name().to_string(),
             swc_ecma_ast::PropName::Str(str) => str.value.to_string(),
@@ -86,7 +86,7 @@ impl SourceMapped<'_, ClassProp> {
         return Ok(name);
     }
 
-    fn return_ts_type(&self) -> Result<TsType, ParseError> {
+    fn return_ts_type(&self) -> std::result::Result<TsType, ParseError> {
         let ts_fn_type = self.ts_fn_type()?;
         match &*ts_fn_type.type_ann.type_ann {
             TsType::TsTypeRef(ts_type_ref) => {
@@ -117,7 +117,7 @@ impl SourceMapped<'_, ClassProp> {
         }
     }
 
-    fn ts_fn_type(&self) -> Result<SourceMapped<TsFnType>, ParseError> {
+    fn ts_fn_type(&self) -> std::result::Result<SourceMapped<TsFnType>, ParseError> {
         match &self.type_ann {
             Some(type_ann) => match &*type_ann.type_ann {
                 TsType::TsFnOrConstructorType(fn_or_constructor_type) => {

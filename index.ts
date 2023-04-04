@@ -339,3 +339,8 @@ export const $query = (options?: { guard?: () => GuardResult }) => {};
 export const $update = (options?: { guard?: () => GuardResult }) => {};
 
 export type Manual<T> = void;
+
+export type Result<Ok, Err> = Variant<{
+    Ok: Ok;
+    Err: Err;
+}>;
