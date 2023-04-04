@@ -33,7 +33,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
 
             return match &promise.promise_state {
                 boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
-                    PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+                    crate::ref_cells::PROMISE_MAP.with(|promise_map_ref_cell| {
                         let mut promise_map = promise_map_ref_cell.borrow_mut();
 
                         promise_map.remove(_azle_uuid);
@@ -52,7 +52,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                     return _azle_boa_return_value.clone();
                 },
                 boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
-                    PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+                    crate::ref_cells::PROMISE_MAP.with(|promise_map_ref_cell| {
                         let mut promise_map = promise_map_ref_cell.borrow_mut();
 
                         promise_map.remove(_azle_uuid);
@@ -63,7 +63,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                     ic_cdk::api::trap(&format!("Uncaught {}", error_message));
                 },
                 boa_engine::builtins::promise::PromiseState::Pending => {
-                    PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+                    crate::ref_cells::PROMISE_MAP.with(|promise_map_ref_cell| {
                         let mut promise_map = promise_map_ref_cell.borrow_mut();
 
                         promise_map.insert(_azle_uuid.to_string(), _azle_boa_return_value.clone());

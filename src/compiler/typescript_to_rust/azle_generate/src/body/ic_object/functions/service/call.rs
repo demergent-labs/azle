@@ -9,8 +9,8 @@ pub fn generate(
     post_await_state_management: &TokenStream,
     promise_fulfillment: &TokenStream,
 ) -> TokenStream {
-    let call_function_name_string = format!("_azle_call_{}_{}", service.name, method.name);
-    let call_function_name_ident = format_ident!("{}", call_function_name_string);
+    let call_function_name_string = format!("call_{}_{}", service.name, method.name);
+    let call_function_name_ident = format_ident!("_azle_{}", call_function_name_string);
     let call_wrapper_fn_name = format_ident!("{}_wrapper", call_function_name_string);
     let param_variables = super::generate_param_variables(method, &service.name);
     let args = super::generate_args_list(method);
@@ -36,7 +36,7 @@ pub fn generate(
             ic_cdk::spawn(async move {
                 #pre_await_state_management
 
-                let call_result = #call_function_name_ident(
+                let call_result = crate::#call_function_name_ident(
                     canister_id_principal,
                     #args
                 ).await;

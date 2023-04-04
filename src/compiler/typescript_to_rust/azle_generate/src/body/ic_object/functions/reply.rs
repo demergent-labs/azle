@@ -11,12 +11,12 @@ use crate::ts_keywords;
 pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
     let match_arms = generate_match_arms(methods);
     quote! {
-        fn _azle_ic_reply(
+        fn reply(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let method_name = METHOD_NAME_REF_CELL.with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
+            let method_name = crate::ref_cells::get_method_name();
 
             match &method_name[..] {
                 #(#match_arms)*

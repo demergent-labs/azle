@@ -8,7 +8,7 @@ pub fn generate() -> proc_macro2::TokenStream {
     let promise_fulfillment = promise_fulfillment::generate();
 
     quote::quote! {
-        fn _azle_ic_call_raw128(
+        fn call_raw128(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
@@ -21,7 +21,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             let args_raw: Vec<u8> = _aargs.get(2).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
             let payment: u128 = _aargs.get(3).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
 
-            _azle_ic_call_raw128_spawn(
+            call_raw128_spawn(
                 &promise_js_value,
                 canister_id,
                 method,
@@ -32,7 +32,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             Ok(promise_js_value)
         }
 
-        fn _azle_ic_call_raw128_spawn(
+        fn call_raw128_spawn(
             promise_js_value: &boa_engine::JsValue,
             canister_id: ic_cdk::export::Principal,
             method: String,

@@ -1,6 +1,6 @@
 pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
-        fn _azle_ic_set_timer(
+        fn set_timer(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
@@ -13,39 +13,23 @@ pub fn generate() -> proc_macro2::TokenStream {
             let func_js_object = func_js_value.as_object().unwrap().clone();
 
             let closure = move || {
-                BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
+                crate::ref_cells::BOA_CONTEXT.with(|boa_context_ref_cell| {
                     let mut _azle_boa_context = boa_context_ref_cell.borrow_mut();
 
                     let uuid = uuid::Uuid::new_v4().to_string();
 
-                    UUID_REF_CELL.with(|uuid_ref_cell| {
-                        let mut uuid_mut = uuid_ref_cell.borrow_mut();
+                    crate::ref_cells::set_uuid(&uuid);
+                    crate::ref_cells::set_method_name(&"_AZLE_TIMER".to_string());
+                    crate::ref_cells::set_is_manual(false);
 
-                        *uuid_mut = uuid.clone();
-                    });
-
-                    METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
-                        let mut method_name_mut = method_name_ref_cell.borrow_mut();
-
-                        *method_name_mut = "_AZLE_TIMER".to_string();
-                    });
-
-                    MANUAL_REF_CELL.with(|manual_ref_cell| {
-                        let mut manual_mut = manual_ref_cell.borrow_mut();
-
-                        *manual_mut = false;
-                    });
-
-                    let _azle_boa_return_value = _azle_unwrap_boa_result(
-                        func_js_object.call(
-                            &boa_engine::JsValue::Null,
-                            &[],
-                            &mut *_azle_boa_context
-                        ),
+                    let _azle_boa_return_value = func_js_object.call(
+                        &boa_engine::JsValue::Null,
+                        &[],
                         &mut *_azle_boa_context
-                    );
+                    )
+                    .or_trap(&mut *_azle_boa_context);
 
-                    _azle_async_await_result_handler(
+                    crate::_azle_async_await_result_handler(
                         &mut _azle_boa_context,
                         &_azle_boa_return_value,
                         &uuid,

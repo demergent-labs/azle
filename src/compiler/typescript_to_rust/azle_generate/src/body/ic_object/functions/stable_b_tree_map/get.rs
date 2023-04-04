@@ -6,7 +6,7 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
     let match_arms = generate_match_arms(stable_b_tree_map_nodes);
 
     quote::quote! {
-        fn _azle_ic_stable_b_tree_map_get(
+        fn stable_b_tree_map_get(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
@@ -40,9 +40,9 @@ fn generate_match_arms(
 
             quote! {
                 #memory_id => {
-                    match #map_name_ident.with(|p| {
+                    match crate::ref_cells::#map_name_ident.with(|p| {
                         p.borrow().get(
-                            &#key_wrapper_type_name(
+                            &crate::#key_wrapper_type_name(
                                 key_js_value.try_from_vm_value(&mut *_context).unwrap()
                             )
                         )

@@ -4,11 +4,11 @@ use quote::quote;
 pub fn generate(function_name: &String) -> TokenStream {
     let function_call = format!("{function_name}()");
     quote! {
-        BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
-            let mut boa_context = box_context_ref_cell.borrow_mut();
+        crate::ref_cells::BOA_CONTEXT.with(|boa_context_ref_cell| {
+            let mut boa_context = boa_context_ref_cell.borrow_mut();
 
             let js_guard_fn_return_value =
-                _azle_unwrap_boa_result(boa_context.eval(#function_call), &mut boa_context);
+                boa_context.eval(#function_call).or_trap(&mut boa_context);
 
             match js_guard_fn_return_value.try_from_vm_value(&mut *boa_context) {
                 Ok(return_value) => return_value,

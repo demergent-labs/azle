@@ -10,6 +10,8 @@ pub fn generate() -> proc_macro2::TokenStream {
     let vec_impls = vec::generate();
 
     quote::quote! {
+        use crate::OrTrap;
+
         #basic_impls
         #generic_impls
         #numeric_impls

@@ -1,7 +1,7 @@
 pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
-        BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
-            let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
+        crate::ref_cells::BOA_CONTEXT.with(|boa_context_ref_cell| {
+            let mut _azle_boa_context = boa_context_ref_cell.borrow_mut();
 
             let call_result_js_value = match call_result {
                 Ok(value) => {
@@ -42,7 +42,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
             promise.fulfill_promise(&call_result_js_value, &mut *_azle_boa_context);
 
-            let main_promise = PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+            let main_promise = crate::ref_cells::PROMISE_MAP.with(|promise_map_ref_cell| {
                 let promise_map = promise_map_ref_cell.borrow().clone();
 
                 let main_promise = promise_map.get(&uuid).unwrap();
@@ -50,7 +50,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 main_promise.clone()
             });
 
-            _azle_async_await_result_handler(&mut *_azle_boa_context, &main_promise, &uuid, &method_name, manual);
+            crate::_azle_async_await_result_handler(&mut *_azle_boa_context, &main_promise, &uuid, &method_name, manual);
         });
     }
 }

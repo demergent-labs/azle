@@ -7,20 +7,20 @@ use quote::quote;
 
 use crate::ts_ast::TsAst;
 
+use self::stable_b_tree_map::StableBTreeMapNode;
+
 mod ic_object;
 
-pub mod async_await_result_handler;
-pub mod boa_error_handlers;
 pub mod stable_b_tree_map;
+pub mod utils;
 
 pub fn generate(
     ts_ast: &TsAst,
     query_methods: &Vec<QueryMethod>,
     update_methods: &Vec<UpdateMethod>,
     services: &Vec<Service>,
+    stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
 ) -> TokenStream {
-    let stable_b_tree_map_nodes = ts_ast.build_stable_b_tree_map_nodes();
-
     let query_and_update_methods = vec![
         query_methods
             .iter()
@@ -33,23 +33,19 @@ pub fn generate(
     ]
     .concat();
 
-    let async_await_result_handler =
-        async_await_result_handler::generate(&query_and_update_methods);
-    let boa_error_handlers = boa_error_handlers::generate();
-    let ic_object_functions = ic_object::functions::generate(
+    let utils = utils::generate(&query_and_update_methods);
+    let ic_object_module = ic_object::generate_module(
+        ts_ast,
         &query_and_update_methods,
         services,
         &stable_b_tree_map_nodes,
     );
-    let register_ic_object_function = ic_object::register_function::generate(ts_ast);
 
     let stable_b_tree_maps = stable_b_tree_map::rust::generate(&stable_b_tree_map_nodes);
 
     quote! {
-        #async_await_result_handler
-        #boa_error_handlers
-        #ic_object_functions
-        #register_ic_object_function
+        #utils
+        #ic_object_module
         #stable_b_tree_maps
     }
 }

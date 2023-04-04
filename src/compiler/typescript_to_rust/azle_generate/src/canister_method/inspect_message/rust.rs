@@ -7,14 +7,10 @@ pub fn generate(inspect_message_fn_decl: &AnnotatedFnDecl) -> proc_macro2::Token
     let function_name = inspect_message_fn_decl.get_function_name();
 
     quote::quote! {
-        BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
-            let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
+        crate::ref_cells::BOA_CONTEXT.with(|boa_context_ref_cell| {
+            let mut _azle_boa_context = boa_context_ref_cell.borrow_mut();
 
-            METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
-                let mut method_name_mut = method_name_ref_cell.borrow_mut();
-
-                *method_name_mut = #function_name.to_string()
-            });
+            crate::ref_cells::set_method_name(&#function_name.to_string());
 
             #call_to_inspect_message_js_function
         });

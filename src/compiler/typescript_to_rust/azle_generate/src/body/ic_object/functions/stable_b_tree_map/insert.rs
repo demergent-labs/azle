@@ -6,7 +6,7 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
     let match_arms = generate_match_arms(stable_b_tree_map_nodes);
 
     quote::quote! {
-        fn _azle_ic_stable_b_tree_map_insert(
+        fn stable_b_tree_map_insert(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
@@ -47,14 +47,14 @@ fn generate_match_arms(
             // TODO the return value here might need a little work like in get
             quote! {
                 #memory_id => {
-                    let key = #key_wrapper_type_name(
+                    let key = crate::#key_wrapper_type_name(
                         key_js_value.try_from_vm_value(&mut *_context).unwrap()
                     );
-                    let value = #value_wrapper_type_name(
+                    let value = crate::#value_wrapper_type_name(
                         value_js_value.try_from_vm_value(&mut *_context).unwrap()
                     );
 
-                    let insert_result = #map_name_ident.with(|p| {
+                    let insert_result = crate::ref_cells::#map_name_ident.with(|p| {
                         p.borrow_mut().insert(key, value)
                     });
 

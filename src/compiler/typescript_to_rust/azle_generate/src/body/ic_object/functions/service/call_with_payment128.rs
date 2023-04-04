@@ -9,12 +9,10 @@ pub fn generate(
     post_await_state_management: &TokenStream,
     promise_fulfillment: &TokenStream,
 ) -> TokenStream {
-    let call_with_payment128_function_name_string = format!(
-        "_azle_call_with_payment128_{}_{}",
-        service.name, method.name
-    );
+    let call_with_payment128_function_name_string =
+        format!("call_with_payment128_{}_{}", service.name, method.name);
     let call_with_payment128_function_name_ident =
-        format_ident!("{}", call_with_payment128_function_name_string);
+        format_ident!("_azle_{}", call_with_payment128_function_name_string);
     let call_with_payment128_wrapper_fn_name =
         format_ident!("{}_wrapper", call_with_payment128_function_name_string);
     let param_variables = super::generate_param_variables(method, &service.name);
@@ -46,7 +44,7 @@ pub fn generate(
             ic_cdk::spawn(async move {
                 #pre_await_state_management
 
-                let call_result = #call_with_payment128_function_name_ident(
+                let call_result = crate::#call_with_payment128_function_name_ident(
                     canister_id_principal,
                     #args,
                     cycles

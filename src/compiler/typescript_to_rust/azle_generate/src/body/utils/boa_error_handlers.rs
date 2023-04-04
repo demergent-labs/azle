@@ -3,17 +3,19 @@ use quote::quote;
 
 pub fn generate() -> TokenStream {
     quote! {
-        pub fn _azle_unwrap_boa_result(
-            boa_result: boa_engine::JsResult<boa_engine::JsValue>,
-            context: &mut boa_engine::Context
-        ) -> boa_engine::JsValue {
-            match boa_result {
-                Ok(_azle_boa_return_value) => _azle_boa_return_value,
-                Err(_azle_boa_error) => {
-                    let error_message = _azle_js_value_to_string(_azle_boa_error.to_opaque(context), context);
+        pub trait OrTrap {
+            fn or_trap(self, context: &mut boa_engine::Context) -> boa_engine::JsValue;
+        }
 
-                    ic_cdk::api::trap(&format!("Uncaught {}", error_message));
-                },
+        impl OrTrap for boa_engine::JsResult<boa_engine::JsValue> {
+            fn or_trap(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                match self {
+                    Ok(_azle_boa_return_value) => _azle_boa_return_value,
+                    Err(_azle_boa_error) => {
+                        let error_message = _azle_js_value_to_string(_azle_boa_error.to_opaque(context), context);
+                        ic_cdk::api::trap(&format!("Uncaught {}", error_message));
+                    }
+                }
             }
         }
 

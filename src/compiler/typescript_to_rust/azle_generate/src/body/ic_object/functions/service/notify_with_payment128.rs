@@ -3,11 +3,8 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
 pub fn generate(service: &Service, method: &Method) -> TokenStream {
-    let function_name_string = format!(
-        "_azle_notify_with_payment128_{}_{}",
-        service.name, method.name
-    );
-    let real_function_name = format_ident!("{}", function_name_string);
+    let function_name_string = format!("notify_with_payment128_{}_{}", service.name, method.name);
+    let real_function_name = format_ident!("_azle_{}", function_name_string);
     let wrapper_fn_name = format_ident!("{}_wrapper", function_name_string);
     let param_variables = super::generate_param_variables(method, &service.name);
     let args = super::generate_args_list(method);
@@ -29,7 +26,7 @@ pub fn generate(service: &Service, method: &Method) -> TokenStream {
             let cycles_js_value = _aargs.get(2).unwrap().clone();
             let cycles: u128 = cycles_js_value.try_from_vm_value(&mut *_context).unwrap();
 
-            let notify_result = #real_function_name(
+            let notify_result = crate::#real_function_name(
                 canister_id_principal,
                 #args,
                 cycles,

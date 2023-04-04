@@ -6,7 +6,7 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
     let match_arms = generate_match_arms(stable_b_tree_map_nodes);
 
     quote! {
-        fn _azle_ic_stable_b_tree_map_remove(
+        fn stable_b_tree_map_remove(
             _this: &boa_engine::JsValue,
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
@@ -40,9 +40,9 @@ fn generate_match_arms(
 
             quote! {
                 #memory_id => {
-                    let key = #key_wrapper_type_name(key_js_value.try_from_vm_value(&mut *_context).unwrap());
+                    let key = crate::#key_wrapper_type_name(key_js_value.try_from_vm_value(&mut *_context).unwrap());
 
-                    match #map_name_ident.with(|p| p.borrow_mut().remove(&key)) {
+                    match crate::ref_cells::#map_name_ident.with(|p| p.borrow_mut().remove(&key)) {
                         Some(value) => Ok(value.0.try_into_vm_value(&mut *_context).unwrap()),
                         None => Ok(().try_into_vm_value(&mut *_context).unwrap())
                     }
