@@ -4,15 +4,10 @@ import {
     nat64,
     Opt,
     $query,
+    Result,
     StableBTreeMap,
-    $update,
-    Variant
+    $update
 } from 'azle';
-
-type StableMap10InsertResult = Variant<{
-    Ok: Opt<Opt<boolean>>;
-    Err: InsertError;
-}>;
 
 let stableMap10 = new StableBTreeMap<float32, Opt<boolean>>(10, 100, 1_000);
 
@@ -30,7 +25,7 @@ $update;
 export function stableMap10Insert(
     key: float32,
     value: Opt<boolean>
-): StableMap10InsertResult {
+): Result<Opt<Opt<boolean>>, InsertError> {
     return stableMap10.insert(key, value);
 }
 

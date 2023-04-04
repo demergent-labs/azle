@@ -16,36 +16,36 @@ type User = record {
   recordingIds : vec principal;
   createdAt : nat64;
 };
-type _InlineCreateRecordingReturnType = variant {
+type _AzleResult = variant {
   Ok : Recording;
-  Err : _InlineCreateRecordingReturnTypeErr;
+  Err : _InlineCreateRecordingReturnTypeTypeArg1;
 };
-type _InlineCreateRecordingReturnTypeErr = variant {
+type _AzleResult_1 = variant { Ok : User; Err : InsertError };
+type _AzleResult_2 = variant {
+  Ok : Recording;
+  Err : _InlineDeleteRecordingReturnTypeTypeArg1;
+};
+type _AzleResult_3 = variant {
+  Ok : User;
+  Err : _InlineDeleteUserReturnTypeTypeArg1;
+};
+type _InlineCreateRecordingReturnTypeTypeArg1 = variant {
   InsertError : InsertError;
   UserDoesNotExist : principal;
 };
-type _InlineCreateUserReturnType = variant { Ok : User; Err : InsertError };
-type _InlineDeleteRecordingReturnType = variant {
-  Ok : Recording;
-  Err : _InlineDeleteRecordingReturnTypeErr;
-};
-type _InlineDeleteRecordingReturnTypeErr = variant {
+type _InlineDeleteRecordingReturnTypeTypeArg1 = variant {
   RecordingDoesNotExist : principal;
   InsertError : InsertError;
   UserDoesNotExist : principal;
 };
-type _InlineDeleteUserReturnType = variant {
-  Ok : User;
-  Err : _InlineDeleteUserReturnTypeErr;
+type _InlineDeleteUserReturnTypeTypeArg1 = variant {
+  UserDoesNotExist : principal;
 };
-type _InlineDeleteUserReturnTypeErr = variant { UserDoesNotExist : principal };
 service : () -> {
-  createRecording : (vec nat8, text, principal) -> (
-      _InlineCreateRecordingReturnType,
-    );
-  createUser : (text) -> (_InlineCreateUserReturnType);
-  deleteRecording : (principal) -> (_InlineDeleteRecordingReturnType);
-  deleteUser : (principal) -> (_InlineDeleteUserReturnType);
+  createRecording : (vec nat8, text, principal) -> (_AzleResult);
+  createUser : (text) -> (_AzleResult_1);
+  deleteRecording : (principal) -> (_AzleResult_2);
+  deleteUser : (principal) -> (_AzleResult_3);
   readRecordingById : (principal) -> (opt Recording) query;
   readRecordings : () -> (vec Recording) query;
   readUserById : (principal) -> (opt User) query;

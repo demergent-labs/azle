@@ -1,10 +1,5 @@
-import { blob, match, $update, Variant } from 'azle';
+import { blob, match, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
-
-type RawRandResult = Variant<{
-    Ok: blob;
-    Err: string;
-}>;
 
 $update;
 export async function getRandomnessDirectly(): Promise<blob> {
@@ -56,18 +51,18 @@ export async function getRandomnessSuperIndirectly(): Promise<blob> {
     });
 }
 
-async function getRandomnessLevel0(): Promise<RawRandResult> {
+async function getRandomnessLevel0(): Promise<Result<blob, string>> {
     return await getRandomnessLevel1();
 }
 
-async function getRandomnessLevel1(): Promise<RawRandResult> {
+async function getRandomnessLevel1(): Promise<Result<blob, string>> {
     return await getRandomnessLevel2();
 }
 
-async function getRandomnessLevel2(): Promise<RawRandResult> {
+async function getRandomnessLevel2(): Promise<Result<blob, string>> {
     return await getRandomness();
 }
 
-async function getRandomness(): Promise<RawRandResult> {
+async function getRandomness(): Promise<Result<blob, string>> {
     return await managementCanister.raw_rand().call();
 }

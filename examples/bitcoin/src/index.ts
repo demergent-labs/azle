@@ -1,4 +1,4 @@
-import { blob, match, $update, Variant } from 'azle';
+import { blob, match, Result, $update } from 'azle';
 import {
     BitcoinNetwork,
     GetUtxosResult,
@@ -12,12 +12,9 @@ const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;
 const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 
 $update;
-export async function getBalance(address: string): Promise<
-    Variant<{
-        Ok: Satoshi;
-        Err: string;
-    }>
-> {
+export async function getBalance(
+    address: string
+): Promise<Result<Satoshi, string>> {
     return await managementCanister
         .bitcoin_get_balance({
             address,
@@ -30,10 +27,7 @@ export async function getBalance(address: string): Promise<
 
 $update;
 export async function getCurrentFeePercentiles(): Promise<
-    Variant<{
-        Ok: MillisatoshiPerByte[];
-        Err: string;
-    }>
+    Result<MillisatoshiPerByte[], string>
 > {
     return await managementCanister
         .bitcoin_get_current_fee_percentiles({
@@ -44,12 +38,9 @@ export async function getCurrentFeePercentiles(): Promise<
 }
 
 $update;
-export async function getUtxos(address: string): Promise<
-    Variant<{
-        Ok: GetUtxosResult;
-        Err: string;
-    }>
-> {
+export async function getUtxos(
+    address: string
+): Promise<Result<GetUtxosResult, string>> {
     return await managementCanister
         .bitcoin_get_utxos({
             address,
@@ -61,12 +52,9 @@ export async function getUtxos(address: string): Promise<
 }
 
 $update;
-export async function sendTransaction(transaction: blob): Promise<
-    Variant<{
-        Ok: boolean;
-        Err: string;
-    }>
-> {
+export async function sendTransaction(
+    transaction: blob
+): Promise<Result<boolean, string>> {
     const transactionFee =
         BITCOIN_BASE_TRANSACTION_COST +
         BigInt(transaction.length) * BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;

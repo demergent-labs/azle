@@ -1,5 +1,4 @@
-import { ic, Manual, nat, Principal, $query, $update } from 'azle';
-import { StringQueryResult } from '../canister1/types';
+import { ic, Manual, nat, Principal, $query, Result, $update } from 'azle';
 import { Canister3 } from '../canister3/types';
 
 const canister3 = new Canister3(
@@ -31,6 +30,6 @@ export function manualQuery(): Manual<string> {
 }
 
 $query;
-export async function deepQuery(): Promise<StringQueryResult> {
+export async function deepQuery(): Promise<Result<string, string>> {
     return await canister3.deepQuery().call();
 }

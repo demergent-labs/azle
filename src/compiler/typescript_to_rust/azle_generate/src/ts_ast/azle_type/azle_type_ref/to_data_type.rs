@@ -4,10 +4,10 @@ use cdk_framework::act::node::{
 };
 
 use super::AzleTypeRef;
-use crate::ts_ast::traits::GetName;
+use crate::ts_ast::{azle_type::AzleType, traits::GetName};
 
 impl AzleTypeRef<'_> {
-    pub fn to_data_type(&self) -> CandidType {
+    pub fn to_candid_type(&self) -> CandidType {
         match self.get_name() {
             "blob" => CandidType::Primitive(Primitive::Blob),
             "float32" => CandidType::Primitive(Primitive::Float32),
@@ -35,8 +35,29 @@ impl AzleTypeRef<'_> {
     }
 
     fn to_type_ref(&self) -> TypeRef {
+        let type_arguments = if let Some(type_params) = &self.ts_type_ref.type_params {
+            type_params
+                .params
+                .iter()
+                .map(|param| {
+                    // TODO is this the right source map to pass in?
+                    let return_azle_type = AzleType::from_ts_type(*param.clone(), self.source_map);
+                    return_azle_type.to_data_type()
+                })
+                .collect()
+        } else {
+            vec![]
+        };
+
+        let name_string = self.get_name().to_string();
+
         TypeRef {
-            name: self.get_name().to_string(),
+            name: if name_string == "Result" {
+                "_AzleResult".to_string()
+            } else {
+                name_string
+            },
+            type_arguments,
         }
     }
 }

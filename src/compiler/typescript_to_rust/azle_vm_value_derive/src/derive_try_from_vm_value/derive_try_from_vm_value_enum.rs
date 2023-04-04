@@ -1,6 +1,6 @@
 use proc_macro2::Ident;
 use quote::{format_ident, quote};
-use syn::{DataEnum, Field, Fields};
+use syn::{DataEnum, Field, Fields, Generics};
 
 trait TryGetEnumVariantFieldIdent {
     fn try_get_ident(&self, enum_name: &Ident, variant_name: &Ident) -> &Ident;
@@ -19,12 +19,15 @@ impl TryGetEnumVariantFieldIdent for Field {
 pub fn derive_try_from_vm_value_enum(
     enum_name: &Ident,
     data_enum: &DataEnum,
+    generics: &Generics,
 ) -> proc_macro2::TokenStream {
     let properties = derive_properties(enum_name, data_enum);
 
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+
     quote! {
-        impl CdkActTryFromVmValue<#enum_name, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<#enum_name, CdkActTryFromVmValueError> {
+        impl #impl_generics CdkActTryFromVmValue<#enum_name #ty_generics, &mut boa_engine::Context> for boa_engine::JsValue #where_clause {
+            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> std::result::Result<#enum_name #ty_generics, CdkActTryFromVmValueError> {
                 let object_option = self.as_object();
 
                 if let Some(object) = object_option {
@@ -38,9 +41,8 @@ pub fn derive_try_from_vm_value_enum(
             }
         }
 
-        // TODO the body of this function is repeated in try_from_vm_value_trait.ts
-        impl CdkActTryFromVmValue<Vec<#enum_name>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<Vec<#enum_name>, CdkActTryFromVmValueError> {
+        impl #impl_generics CdkActTryFromVmValue<Vec<#enum_name #ty_generics>, &mut boa_engine::Context> for boa_engine::JsValue #where_clause {
+            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> std::result::Result<Vec<#enum_name #ty_generics>, CdkActTryFromVmValueError> {
                 match self.as_object() {
                     Some(js_object) => {
                         if js_object.is_array() {

@@ -1,30 +1,5 @@
-import { nat64, NotifyResult, Opt, Principal, $update, Variant } from 'azle';
+import { nat64, NotifyResult, Opt, Principal, Result, $update } from 'azle';
 import { Account, AccountArgs, Canister2 } from '../canister2/types';
-
-type TransferResult = Variant<{
-    Ok: nat64;
-    Err: string;
-}>;
-
-type BalanceResult = Variant<{
-    Ok: nat64;
-    Err: string;
-}>;
-
-type AccountResult = Variant<{
-    Ok: Opt<Account>;
-    Err: string;
-}>;
-
-type AccountsResult = Variant<{
-    Ok: Account[];
-    Err: string;
-}>;
-
-type TrapResult = Variant<{
-    Ok: string;
-    Err: string;
-}>;
 
 const canister2 = new Canister2(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
@@ -35,27 +10,29 @@ export async function transfer(
     from: string,
     to: string,
     amount: nat64
-): Promise<TransferResult> {
+): Promise<Result<nat64, string>> {
     return await canister2.transfer(from, to, amount).call();
 }
 
 $update;
-export async function balance(id: string): Promise<BalanceResult> {
+export async function balance(id: string): Promise<Result<nat64, string>> {
     return await canister2.balance(id).call();
 }
 
 $update;
-export async function account(args: AccountArgs): Promise<AccountResult> {
+export async function account(
+    args: AccountArgs
+): Promise<Result<Opt<Account>, string>> {
     return await canister2.account(args).call();
 }
 
 $update;
-export async function accounts(): Promise<AccountsResult> {
+export async function accounts(): Promise<Result<Account[], string>> {
     return await canister2.accounts().call();
 }
 
 $update;
-export async function trap(): Promise<TrapResult> {
+export async function trap(): Promise<Result<string, string>> {
     return await canister2.trap().call();
 }
 

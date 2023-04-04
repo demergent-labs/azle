@@ -1,7 +1,15 @@
-import { ic, Manual, match, nat, Principal, $query, $update } from 'azle';
+import {
+    ic,
+    Manual,
+    match,
+    nat,
+    Principal,
+    $query,
+    Result,
+    $update
+} from 'azle';
 import { Canister1 } from '../canister1/types';
 import { Canister2 } from '../canister2/types';
-import { NatQueryResult, StringQueryResult } from './types';
 
 const canister1 = new Canister1(
     Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
@@ -15,25 +23,27 @@ let counter: nat = 0n;
 
 // Composite query calling a query
 $query;
-export async function simpleCompositeQuery(): Promise<StringQueryResult> {
+export async function simpleCompositeQuery(): Promise<Result<string, string>> {
     return await canister2.simpleQuery().call();
 }
 
 // Composite query calling a manual query
 $query;
-export async function manualQuery(): Promise<StringQueryResult> {
+export async function manualQuery(): Promise<Result<string, string>> {
     return await canister2.manualQuery().call();
 }
 
 // Manual composite query calling a manual query
 $query;
-export async function totallyManualQuery(): Promise<Manual<StringQueryResult>> {
+export async function totallyManualQuery(): Promise<
+    Manual<Result<string, string>>
+> {
     ic.reply(await canister2.manualQuery().call());
 }
 
 // Composite query calling another composite query
 $query;
-export async function deepQuery(): Promise<StringQueryResult> {
+export async function deepQuery(): Promise<Result<string, string>> {
     const callResult = await canister2.deepQuery().call();
 
     return match(callResult, {
@@ -48,19 +58,19 @@ export async function deepQuery(): Promise<StringQueryResult> {
 
 // Composite query calling an update method. SHOULDN'T WORK
 $query;
-export async function updateQuery(): Promise<StringQueryResult> {
+export async function updateQuery(): Promise<Result<string, string>> {
     return await canister2.updateQuery().call();
 }
 
 // Composite query being called by a query method. SHOULDN'T WORK
 $query;
-export async function simpleQuery(): Promise<StringQueryResult> {
+export async function simpleQuery(): Promise<Result<string, string>> {
     return await canister2.simpleQuery().call();
 }
 
 // Composite query being called by an update method. SHOULDN'T WORK
 $update;
-export async function simpleUpdate(): Promise<StringQueryResult> {
+export async function simpleUpdate(): Promise<Result<string, string>> {
     const callResult = await canister2.deepQuery().call();
 
     return match(callResult, {
@@ -82,7 +92,7 @@ export async function incCounter(): Promise<nat> {
 
 // Composite query calling queries on the same canister. SHOULDN'T WORK
 $query;
-export async function incCanister1(): Promise<NatQueryResult> {
+export async function incCanister1(): Promise<Result<nat, string>> {
     counter += 1n;
 
     const canister1AResult = await canister1.incCounter().call();
@@ -104,7 +114,7 @@ export async function incCanister1(): Promise<NatQueryResult> {
 
 // Composite query calling queries that modify the state
 $query;
-export async function incCanister2(): Promise<NatQueryResult> {
+export async function incCanister2(): Promise<Result<nat, string>> {
     counter += 1n;
 
     const canister2AResult = await canister2.incCounter().call();

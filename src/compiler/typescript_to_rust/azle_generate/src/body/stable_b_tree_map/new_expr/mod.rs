@@ -17,7 +17,9 @@ pub enum ArgName {
 }
 
 impl SourceMapped<'_, NewExpr> {
-    pub fn to_stable_b_tree_map_node(&self) -> Result<StableBTreeMapNode, ErrorMessage> {
+    pub fn to_stable_b_tree_map_node(
+        &self,
+    ) -> std::result::Result<StableBTreeMapNode, ErrorMessage> {
         match &self.type_args {
             Some(type_args) => {
                 if type_args.params.len() != 2 {
