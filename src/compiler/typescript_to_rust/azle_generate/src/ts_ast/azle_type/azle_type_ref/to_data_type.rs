@@ -49,8 +49,14 @@ impl AzleTypeRef<'_> {
             vec![]
         };
 
+        let name_string = self.get_name().to_string();
+
         TypeRef {
-            name: self.get_name().to_string(),
+            name: if name_string == "Result" {
+                "_AzleResult".to_string()
+            } else {
+                name_string
+            },
             type_arguments,
         }
     }
