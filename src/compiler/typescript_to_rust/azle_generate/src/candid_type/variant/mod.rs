@@ -25,7 +25,9 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
         self.process_ts_type_ref("Variant", |azle_type_ref| {
             let mut variant = azle_type_ref.to_variant();
 
-            variant.name = Some(self.id.get_name().to_string());
+            let name_string = self.id.get_name().to_string();
+
+            variant.name = Some(if name_string == "Result" { "_AzleResult".to_string() } else { name_string } );
 
             let type_params = if let Some(type_params) = &self.type_params {
                 type_params
