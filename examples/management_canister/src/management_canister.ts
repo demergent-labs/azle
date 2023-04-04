@@ -1,17 +1,12 @@
 // TODO once the Bitcoin integration is live, add the methods and tests
 
-import { blob, match, nat, Principal, $query, $update } from 'azle';
+import { blob, match, nat, Principal, $query, Result, $update } from 'azle';
 import {
     CanisterStatusArgs,
+    CanisterStatusResult,
+    CreateCanisterResult,
     managementCanister
 } from 'azle/canisters/management';
-import {
-    DefaultResult,
-    ExecuteCreateCanisterResult,
-    ExecuteProvisionalCreateCanisterWithCyclesResult,
-    GetCanisterStatusResult,
-    RawRandResult
-} from './types';
 
 type State = {
     createdCanisterId: Principal;
@@ -22,7 +17,9 @@ let state: State = {
 };
 
 $update;
-export async function executeCreateCanister(): Promise<ExecuteCreateCanisterResult> {
+export async function executeCreateCanister(): Promise<
+    Result<CreateCanisterResult, string>
+> {
     const createCanisterResultCallResult = await managementCanister
         .create_canister({
             settings: null
@@ -45,7 +42,7 @@ export async function executeCreateCanister(): Promise<ExecuteCreateCanisterResu
 $update;
 export async function executeUpdateSettings(
     canisterId: Principal
-): Promise<DefaultResult> {
+): Promise<Result<boolean, string>> {
     const callResult = await managementCanister
         .update_settings({
             canister_id: canisterId,
@@ -68,7 +65,7 @@ $update;
 export async function executeInstallCode(
     canisterId: Principal,
     wasmModule: blob
-): Promise<DefaultResult> {
+): Promise<Result<boolean, string>> {
     const callResult = await managementCanister
         .install_code({
             mode: {
@@ -90,7 +87,7 @@ export async function executeInstallCode(
 $update;
 export async function executeUninstallCode(
     canisterId: Principal
-): Promise<DefaultResult> {
+): Promise<Result<boolean, string>> {
     const callResult = await managementCanister
         .uninstall_code({
             canister_id: canisterId
@@ -106,7 +103,7 @@ export async function executeUninstallCode(
 $update;
 export async function executeStartCanister(
     canisterId: Principal
-): Promise<DefaultResult> {
+): Promise<Result<boolean, string>> {
     const callResult = await managementCanister
         .start_canister({
             canister_id: canisterId
@@ -122,7 +119,7 @@ export async function executeStartCanister(
 $update;
 export async function executeStopCanister(
     canisterId: Principal
-): Promise<DefaultResult> {
+): Promise<Result<boolean, string>> {
     const callResult = await managementCanister
         .stop_canister({
             canister_id: canisterId
@@ -138,7 +135,7 @@ export async function executeStopCanister(
 $update;
 export async function getCanisterStatus(
     args: CanisterStatusArgs
-): Promise<GetCanisterStatusResult> {
+): Promise<Result<CanisterStatusResult, string>> {
     const canisterStatusResultCallResult = await managementCanister
         .canister_status({
             canister_id: args.canister_id
@@ -154,7 +151,7 @@ export async function getCanisterStatus(
 $update;
 export async function executeDeleteCanister(
     canisterId: Principal
-): Promise<DefaultResult> {
+): Promise<Result<boolean, string>> {
     const callResult = await managementCanister
         .delete_canister({
             canister_id: canisterId
@@ -170,7 +167,7 @@ export async function executeDeleteCanister(
 $update;
 export async function executeDepositCycles(
     canisterId: Principal
-): Promise<DefaultResult> {
+): Promise<Result<boolean, string>> {
     const callResult = await managementCanister
         .deposit_cycles({
             canister_id: canisterId
@@ -185,7 +182,7 @@ export async function executeDepositCycles(
 }
 
 $update;
-export async function getRawRand(): Promise<RawRandResult> {
+export async function getRawRand(): Promise<Result<blob, string>> {
     const rawRandcallResult = await managementCanister.raw_rand().call();
 
     return match(rawRandcallResult, {
@@ -196,7 +193,9 @@ export async function getRawRand(): Promise<RawRandResult> {
 
 // TODO we should test this like we test depositCycles
 $update;
-export async function provisionalCreateCanisterWithCycles(): Promise<ExecuteProvisionalCreateCanisterWithCyclesResult> {
+export async function provisionalCreateCanisterWithCycles(): Promise<
+    Result<CreateCanisterResult, string>
+> {
     const callResult = await managementCanister
         .provisional_create_canister_with_cycles({
             amount: null,
@@ -217,7 +216,7 @@ $update;
 export async function provisionalTopUpCanister(
     canisterId: Principal,
     amount: nat
-): Promise<DefaultResult> {
+): Promise<Result<boolean, string>> {
     const callResult = await managementCanister
         .provisional_top_up_canister({
             canister_id: canisterId,

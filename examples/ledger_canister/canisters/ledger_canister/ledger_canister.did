@@ -23,6 +23,7 @@ type QueryArchiveError = variant {
   BadFirstBlockIndex : _InlineQueryArchiveErrorBadFirstBlockIndex;
   Other : _InlineQueryArchiveErrorOther;
 };
+type QueryArchiveResult = variant { Ok : BlockRange; Err : QueryArchiveError };
 type QueryBlocksResponse = record {
   certificate : opt vec nat8;
   blocks : vec Block;
@@ -63,9 +64,7 @@ type _InlineQueryArchiveErrorOther = record {
   error_code : nat64;
 };
 type _InlineQueryBlocksResponseArchivedBlocks = record {
-  callback : func (GetBlocksArgs) -> (
-      variant { Ok : BlockRange; Err : QueryArchiveError },
-    ) query;
+  callback : func (GetBlocksArgs) -> (QueryArchiveResult) query;
   start : nat64;
   length : nat64;
 };

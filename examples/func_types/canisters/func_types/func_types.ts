@@ -9,6 +9,7 @@ import {
     Principal,
     $query,
     Record,
+    Result,
     StableBTreeMap,
     $update,
     Variant
@@ -102,13 +103,10 @@ export function complexFuncReturnType(): ComplexFunc {
     return [Principal.fromText('aaaaa-aa'), 'stop_canister'];
 }
 
-type GetNotifierFromNotifiersCallResult = Variant<{
-    Ok: NotifierFunc;
-    Err: string;
-}>;
-
 $update;
-export async function getNotifierFromNotifiersCanister(): Promise<GetNotifierFromNotifiersCallResult> {
+export async function getNotifierFromNotifiersCanister(): Promise<
+    Result<NotifierFunc, string>
+> {
     const notifiersCanister: Notifier = new Notifier(
         Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
     );

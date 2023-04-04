@@ -4,15 +4,10 @@ import {
     Opt,
     Principal,
     $query,
+    Result,
     StableBTreeMap,
-    $update,
-    Variant
+    $update
 } from 'azle';
-
-type StableMap13InsertResult = Variant<{
-    Ok: Opt<Principal>;
-    Err: InsertError;
-}>;
 
 let stableMap13 = new StableBTreeMap<string, Principal>(13, 100, 1_000);
 
@@ -30,7 +25,7 @@ $update;
 export function stableMap13Insert(
     key: string,
     value: Principal
-): StableMap13InsertResult {
+): Result<Opt<Principal>, InsertError> {
     return stableMap13.insert(key, value);
 }
 

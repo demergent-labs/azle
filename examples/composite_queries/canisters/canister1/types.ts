@@ -1,14 +1,4 @@
-import { CallResult, nat, Service, serviceQuery, Variant } from 'azle';
-
-export type StringQueryResult = Variant<{
-    Ok: string;
-    Err: string;
-}>;
-
-export type NatQueryResult = Variant<{
-    Ok: nat;
-    Err: string;
-}>;
+import { CallResult, nat, Service, serviceQuery } from 'azle';
 
 export class Canister1 extends Service {
     @serviceQuery

@@ -1,18 +1,10 @@
-import { blob, ic, match, Record, $update, Variant } from 'azle';
+import { blob, ic, match, Record, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-type PublicKeyResult = Variant<{
-    Ok: Record<{ publicKey: blob }>;
-    Err: string;
-}>;
-
-type SignResult = Variant<{
-    Ok: Record<{ signature: blob }>;
-    Err: string;
-}>;
-
 $update;
-export async function publicKey(): Promise<PublicKeyResult> {
+export async function publicKey(): Promise<
+    Result<Record<{ publicKey: blob }>, string>
+> {
     const caller = ic.caller().toUint8Array();
     const publicKeyResult = await managementCanister
         .ecdsa_public_key({
@@ -33,7 +25,9 @@ export async function publicKey(): Promise<PublicKeyResult> {
 }
 
 $update;
-export async function sign(messageHash: blob): Promise<SignResult> {
+export async function sign(
+    messageHash: blob
+): Promise<Result<Record<{ signature: blob }>, string>> {
     if (messageHash.length !== 32) {
         ic.trap('messageHash must be 32 bytes');
     }

@@ -4,16 +4,11 @@ import {
     nat64,
     Opt,
     $query,
+    Result,
     StableBTreeMap,
-    $update,
-    Variant
+    $update
 } from 'azle';
 import { Reaction } from '../types';
-
-type StableMap3InsertResult = Variant<{
-    Ok: Opt<int>;
-    Err: InsertError;
-}>;
 
 let stableMap3 = new StableBTreeMap<Reaction, int>(3, 100, 1_000);
 
@@ -31,7 +26,7 @@ $update;
 export function stableMap3Insert(
     key: Reaction,
     value: int
-): StableMap3InsertResult {
+): Result<Opt<int>, InsertError> {
     return stableMap3.insert(key, value);
 }
 

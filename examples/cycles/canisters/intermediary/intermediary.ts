@@ -5,24 +5,14 @@ import {
     nat64,
     NotifyResult,
     $query,
-    $update,
-    Variant
+    Result,
+    $update
 } from 'azle';
 import { cyclesCanister } from '../cycles';
 
-type SendCyclesResult = Variant<{
-    Ok: nat64;
-    Err: string;
-}>;
-
-type SendCyclesResult128 = Variant<{
-    Ok: nat;
-    Err: string;
-}>;
-
 // Reports the number of cycles returned from the Cycles canister
 $update;
-export async function sendCycles(): Promise<SendCyclesResult> {
+export async function sendCycles(): Promise<Result<nat64, string>> {
     const result = await cyclesCanister
         .receiveCycles()
         .cycles(1_000_000n)
@@ -41,7 +31,7 @@ export function sendCyclesNotify(): NotifyResult {
 
 // Reports the number of cycles returned from the Cycles canister
 $update;
-export async function sendCycles128(): Promise<SendCyclesResult128> {
+export async function sendCycles128(): Promise<Result<nat, string>> {
     const result = await cyclesCanister
         .receiveCycles128()
         .cycles128(1_000_000n)

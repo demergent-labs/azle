@@ -7,8 +7,8 @@ import {
     Opt,
     Principal,
     $query,
-    $update,
-    Variant
+    Result,
+    $update
 } from 'azle';
 import {
     Address,
@@ -27,18 +27,13 @@ const icpCanister = new Ledger(
     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
 );
 
-type ExecuteTransferResult = Variant<{
-    Ok: TransferResult;
-    Err: string;
-}>;
-
 $update;
 export async function executeTransfer(
     to: Address,
     amount: nat64,
     fee: nat64,
     createdAtTime: Opt<nat64>
-): Promise<ExecuteTransferResult> {
+): Promise<Result<TransferResult, string>> {
     return await icpCanister
         .transfer({
             memo: 0n,
@@ -60,15 +55,10 @@ export async function executeTransfer(
         .call();
 }
 
-type GetAccountBalanceResult = Variant<{
-    Ok: Tokens;
-    Err: string;
-}>;
-
 $update;
 export async function getAccountBalance(
     address: Address
-): Promise<GetAccountBalanceResult> {
+): Promise<Result<Tokens, string>> {
     return await icpCanister
         .account_balance({
             account: binaryAddressFromAddress(address)
@@ -76,35 +66,20 @@ export async function getAccountBalance(
         .call();
 }
 
-type GetTransferFeeResult = Variant<{
-    Ok: TransferFee;
-    Err: string;
-}>;
-
 $update;
-export async function getTransferFee(): Promise<GetTransferFeeResult> {
+export async function getTransferFee(): Promise<Result<TransferFee, string>> {
     return await icpCanister.transfer_fee({}).call();
 }
-
-type GetBlocksResult = Variant<{
-    Ok: QueryBlocksResponse;
-    Err: string;
-}>;
 
 $update;
 export async function getBlocks(
     getBlocksArgs: GetBlocksArgs
-): Promise<GetBlocksResult> {
+): Promise<Result<QueryBlocksResponse, string>> {
     return await icpCanister.query_blocks(getBlocksArgs).call();
 }
 
-type GetSymbolResult = Variant<{
-    Ok: string;
-    Err: string;
-}>;
-
 $update;
-export async function getSymbol(): Promise<GetSymbolResult> {
+export async function getSymbol(): Promise<Result<string, string>> {
     const symbolResultCallResult = await icpCanister.symbol().call();
 
     return match(symbolResultCallResult, {
@@ -113,13 +88,8 @@ export async function getSymbol(): Promise<GetSymbolResult> {
     });
 }
 
-type GetNameResult = Variant<{
-    Ok: string;
-    Err: string;
-}>;
-
 $update;
-export async function getName(): Promise<GetNameResult> {
+export async function getName(): Promise<Result<string, string>> {
     const nameResultCallResult = await icpCanister.name().call();
 
     return match(nameResultCallResult, {
@@ -128,13 +98,8 @@ export async function getName(): Promise<GetNameResult> {
     });
 }
 
-type GetDecimalsResult = Variant<{
-    Ok: nat32;
-    Err: string;
-}>;
-
 $update;
-export async function getDecimals(): Promise<GetDecimalsResult> {
+export async function getDecimals(): Promise<Result<nat32, string>> {
     const decimalsResultCallResult = await icpCanister.decimals().call();
 
     return match(decimalsResultCallResult, {
@@ -143,13 +108,8 @@ export async function getDecimals(): Promise<GetDecimalsResult> {
     });
 }
 
-type GetArchivesResult = Variant<{
-    Ok: Archives;
-    Err: string;
-}>;
-
 $update;
-export async function getArchives(): Promise<GetArchivesResult> {
+export async function getArchives(): Promise<Result<Archives, string>> {
     return await icpCanister.archives().call();
 }
 
