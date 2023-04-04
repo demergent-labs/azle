@@ -18,7 +18,7 @@ impl FunctionAndMethodTypeHelperMethods for AzleMethodSignature<'_> {
     }
 
     fn get_valid_return_types(&self) -> Vec<&str> {
-        vec!["Oneway", "Update", "Query", "CanisterResult"]
+        vec!["Oneway", "Update", "Query", "CallResult"]
     }
 
     fn get_return_type(&self) -> Option<TsType> {

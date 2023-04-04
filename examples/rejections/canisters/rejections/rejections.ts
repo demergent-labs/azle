@@ -1,5 +1,5 @@
 import {
-    CanisterResult,
+    CallResult,
     ic,
     Principal,
     RejectionCode,
@@ -11,7 +11,7 @@ import { someService } from '../some_service';
 
 class Nonexistent extends Service {
     @serviceUpdate
-    method: () => CanisterResult<void>;
+    method: () => CallResult<void>;
 }
 
 export const nonexistentCanister = new Nonexistent(

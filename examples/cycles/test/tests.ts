@@ -11,9 +11,9 @@ export function getTests(
         {
             name: 'initial getCanisterBalance',
             test: async () => {
-                const intermediaryCanisterResult =
+                const intermediaryCallResult =
                     await intermediaryCanister.getCanisterBalance();
-                const cyclesCanisterResult =
+                const cyclesCallResult =
                     await cyclesCanister.getCanisterBalance();
 
                 const intermediaryCanister128Result =
@@ -23,10 +23,10 @@ export function getTests(
 
                 return {
                     Ok:
-                        intermediaryCanisterResult > 2_500_000_000_000n &&
-                        intermediaryCanisterResult < 4_000_000_000_000n &&
-                        cyclesCanisterResult > 2_500_000_000_000n &&
-                        cyclesCanisterResult < 4_000_000_000_000n &&
+                        intermediaryCallResult > 2_500_000_000_000n &&
+                        intermediaryCallResult < 4_000_000_000_000n &&
+                        cyclesCallResult > 2_500_000_000_000n &&
+                        cyclesCallResult < 4_000_000_000_000n &&
                         intermediaryCanister128Result > 2_500_000_000_000n &&
                         intermediaryCanister128Result < 4_000_000_000_000n &&
                         cyclesCanister128Result > 2_500_000_000_000n &&
@@ -64,9 +64,9 @@ export function getTests(
                 }
 
                 // TODO It would be a bit messy and difficult to try and do this
-                // const intermediaryCanisterResult =
+                // const intermediaryCallResult =
                 //     await intermediaryCanister.getCanisterBalance();
-                // const cyclesCanisterResult =
+                // const cyclesCallResult =
                 //     await cyclesCanister.getCanisterBalance();
 
                 // const intermediaryCanister128Result =
@@ -76,8 +76,8 @@ export function getTests(
 
                 return {
                     Ok: refundResult.Ok === 500_000n
-                    // intermediaryCanisterResult === 3_999_999_500_000n &&
-                    // cyclesCanisterResult === 4_000_000_500_000n &&
+                    // intermediaryCallResult === 3_999_999_500_000n &&
+                    // cyclesCallResult === 4_000_000_500_000n &&
                     // intermediaryCanister128Result === 3_999_999_500_000n &&
                     // cyclesCanister128Result === 4_000_000_500_000n
                 };
@@ -93,9 +93,9 @@ export function getTests(
                 }
 
                 // TODO It would be a bit messy and difficult to try and do this
-                // const intermediaryCanisterResult =
+                // const intermediaryCallResult =
                 //     await intermediaryCanister.getCanisterBalance();
-                // const cyclesCanisterResult =
+                // const cyclesCallResult =
                 //     await cyclesCanister.getCanisterBalance();
 
                 // const intermediaryCanister128Result =
@@ -105,8 +105,8 @@ export function getTests(
 
                 return {
                     Ok: refundResult.Ok === 500_000n
-                    // intermediaryCanisterResult === 3_999_999_000_000n &&
-                    // cyclesCanisterResult === 4_000_001_000_000n &&
+                    // intermediaryCallResult === 3_999_999_000_000n &&
+                    // cyclesCallResult === 4_000_001_000_000n &&
                     // intermediaryCanister128Result === 3_999_999_000_000n &&
                     // cyclesCanister128Result === 4_000_001_000_000n
                 };
@@ -125,9 +125,9 @@ export function getTests(
                 }
 
                 // TODO It would be a bit messy and difficult to try and do this
-                // const intermediaryCanisterResult =
+                // const intermediaryCallResult =
                 //     await intermediaryCanister.getCanisterBalance();
-                // const cyclesCanisterResult =
+                // const cyclesCallResult =
                 //     await cyclesCanister.getCanisterBalance();
 
                 // const intermediaryCanister128Result =
@@ -137,8 +137,8 @@ export function getTests(
 
                 return {
                     Ok: sendCyclesNotifyResult.Ok === null
-                    // intermediaryCanisterResult === 3_999_998_500_000n &&
-                    // cyclesCanisterResult === 4_000_001_500_000n &&
+                    // intermediaryCallResult === 3_999_998_500_000n &&
+                    // cyclesCallResult === 4_000_001_500_000n &&
                     // intermediaryCanister128Result === 3_999_998_500_000n &&
                     // cyclesCanister128Result === 4_000_001_500_000n
                 };
@@ -157,9 +157,9 @@ export function getTests(
                 }
 
                 // TODO It would be a bit messy and difficult to try and do this
-                // const intermediaryCanisterResult =
+                // const intermediaryCallResult =
                 //     await intermediaryCanister.getCanisterBalance();
-                // const cyclesCanisterResult =
+                // const cyclesCallResult =
                 //     await cyclesCanister.getCanisterBalance();
 
                 // const intermediaryCanister128Result =
@@ -169,8 +169,8 @@ export function getTests(
 
                 return {
                     Ok: sendCycles128NotifyResult.Ok === null
-                    // intermediaryCanisterResult === 3_999_998_000_000n &&
-                    // cyclesCanisterResult === 4_000_002_000_000n &&
+                    // intermediaryCallResult === 3_999_998_000_000n &&
+                    // cyclesCallResult === 4_000_002_000_000n &&
                     // intermediaryCanister128Result === 3_999_998_000_000n &&
                     // cyclesCanister128Result === 4_000_002_000_000n
                 };

@@ -19,7 +19,7 @@
 import {
     Alias,
     blob,
-    CanisterResult,
+    CallResult,
     Func,
     nat,
     nat64,
@@ -228,77 +228,75 @@ export type SignWithEcdsaResult = Record<{
 
 export class Management extends Service {
     @serviceUpdate
-    bitcoin_get_balance: (args: GetBalanceArgs) => CanisterResult<Satoshi>;
+    bitcoin_get_balance: (args: GetBalanceArgs) => CallResult<Satoshi>;
 
     @serviceUpdate
     bitcoin_get_current_fee_percentiles: (
         args: GetCurrentFeePercentilesArgs
-    ) => CanisterResult<MillisatoshiPerByte[]>;
+    ) => CallResult<MillisatoshiPerByte[]>;
 
     @serviceUpdate
-    bitcoin_get_utxos: (args: GetUtxosArgs) => CanisterResult<GetUtxosResult>;
+    bitcoin_get_utxos: (args: GetUtxosArgs) => CallResult<GetUtxosResult>;
 
     @serviceUpdate
-    bitcoin_send_transaction: (
-        args: SendTransactionArgs
-    ) => CanisterResult<void>;
+    bitcoin_send_transaction: (args: SendTransactionArgs) => CallResult<void>;
 
     @serviceUpdate
     create_canister: (
         args: CreateCanisterArgs
-    ) => CanisterResult<CreateCanisterResult>;
+    ) => CallResult<CreateCanisterResult>;
 
     @serviceUpdate
-    update_settings: (args: UpdateSettingsArgs) => CanisterResult<void>;
+    update_settings: (args: UpdateSettingsArgs) => CallResult<void>;
 
     @serviceUpdate
-    install_code: (args: InstallCodeArgs) => CanisterResult<void>;
+    install_code: (args: InstallCodeArgs) => CallResult<void>;
 
     @serviceUpdate
-    uninstall_code: (args: UninstallCodeArgs) => CanisterResult<void>;
+    uninstall_code: (args: UninstallCodeArgs) => CallResult<void>;
 
     @serviceUpdate
-    start_canister: (args: StartCanisterArgs) => CanisterResult<void>;
+    start_canister: (args: StartCanisterArgs) => CallResult<void>;
 
     @serviceUpdate
-    stop_canister: (args: StopCanisterArgs) => CanisterResult<void>;
+    stop_canister: (args: StopCanisterArgs) => CallResult<void>;
 
     @serviceUpdate
     canister_status: (
         args: CanisterStatusArgs
-    ) => CanisterResult<CanisterStatusResult>;
+    ) => CallResult<CanisterStatusResult>;
 
     @serviceUpdate
-    delete_canister: (args: DeleteCanisterArgs) => CanisterResult<void>;
+    delete_canister: (args: DeleteCanisterArgs) => CallResult<void>;
 
     @serviceUpdate
-    deposit_cycles: (args: DepositCyclesArgs) => CanisterResult<void>;
+    deposit_cycles: (args: DepositCyclesArgs) => CallResult<void>;
 
     @serviceUpdate
-    raw_rand: () => CanisterResult<blob>;
+    raw_rand: () => CallResult<blob>;
 
     @serviceUpdate
-    http_request: (args: HttpRequestArgs) => CanisterResult<HttpResponse>;
+    http_request: (args: HttpRequestArgs) => CallResult<HttpResponse>;
 
     @serviceUpdate
     provisional_create_canister_with_cycles: (
         args: ProvisionalCreateCanisterWithCyclesArgs
-    ) => CanisterResult<ProvisionalCreateCanisterWithCyclesResult>;
+    ) => CallResult<ProvisionalCreateCanisterWithCyclesResult>;
 
     @serviceUpdate
     provisional_top_up_canister: (
         args: ProvisionalTopUpCanisterArgs
-    ) => CanisterResult<void>;
+    ) => CallResult<void>;
 
     @serviceUpdate
     ecdsa_public_key: (
         args: EcdsaPublicKeyArgs
-    ) => CanisterResult<EcdsaPublicKeyResult>;
+    ) => CallResult<EcdsaPublicKeyResult>;
 
     @serviceUpdate
     sign_with_ecdsa: (
         args: SignWithEcdsaArgs
-    ) => CanisterResult<SignWithEcdsaResult>;
+    ) => CallResult<SignWithEcdsaResult>;
 }
 
 export const managementCanister = new Management(

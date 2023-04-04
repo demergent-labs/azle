@@ -1,6 +1,6 @@
-import { CanisterResult, Service, serviceQuery } from 'azle';
+import { CallResult, Service, serviceQuery } from 'azle';
 
 export class Canister3 extends Service {
     @serviceQuery
-    deepQuery: () => CanisterResult<string>;
+    deepQuery: () => CallResult<string>;
 }

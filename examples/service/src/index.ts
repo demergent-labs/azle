@@ -1,5 +1,5 @@
 import {
-    CanisterResult,
+    CallResult,
     $query,
     $update,
     Principal,
@@ -11,10 +11,10 @@ import {
 
 class SomeService extends Service {
     @serviceQuery
-    query1: () => CanisterResult<boolean>;
+    query1: () => CallResult<boolean>;
 
     @serviceUpdate
-    update1: () => CanisterResult<string>;
+    update1: () => CallResult<string>;
 }
 
 $query;

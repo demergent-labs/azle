@@ -21,14 +21,14 @@ export async function executeCallRaw128(
         Err: string;
     }>
 > {
-    const canisterResult = await ic.callRaw128(
+    const callResult = await ic.callRaw128(
         canisterId,
         method,
         ic.candidEncode(candidArgs),
         payment
     );
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: (ok) => ({
             Ok: ic.candidDecode(ok)
         }),

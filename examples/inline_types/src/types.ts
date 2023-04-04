@@ -1,5 +1,5 @@
 import {
-    CanisterResult,
+    CallResult,
     InsertError,
     Func,
     Query,
@@ -62,7 +62,7 @@ export type TestVariant = Variant<{
 
 export class InlineTypes extends Service {
     @serviceQuery
-    inlineRecordReturnType: () => CanisterResult<
+    inlineRecordReturnType: () => CallResult<
         Record<{
             prop1: string;
             prop2: string;
@@ -70,12 +70,10 @@ export class InlineTypes extends Service {
     >;
 
     @serviceQuery
-    inlineRecordParam: (
-        param: Record<{ prop1: string }>
-    ) => CanisterResult<string>;
+    inlineRecordParam: (param: Record<{ prop1: string }>) => CallResult<string>;
 
     @serviceQuery
-    inlineVariantReturnType: () => CanisterResult<
+    inlineVariantReturnType: () => CallResult<
         Variant<{
             var1: null;
             var2: null;
@@ -86,16 +84,16 @@ export class InlineTypes extends Service {
     @serviceQuery
     inlineVariantParam: (
         param: Variant<{ var1: null; var2: null }>
-    ) => CanisterResult<Variant<{ var1: null; var2: null }>>;
+    ) => CallResult<Variant<{ var1: null; var2: null }>>;
 
     @serviceQuery
-    recordWithInlineFields: () => CanisterResult<User1>;
+    recordWithInlineFields: () => CallResult<User1>;
 
     @serviceQuery
-    variantWithInlineFields: () => CanisterResult<Reaction>;
+    variantWithInlineFields: () => CallResult<Reaction>;
 
     @serviceQuery
-    recordReferencingOtherTypesFromReturnType: () => CanisterResult<
+    recordReferencingOtherTypesFromReturnType: () => CallResult<
         Record<{
             prop1: string;
             prop2: Thing;
@@ -103,7 +101,7 @@ export class InlineTypes extends Service {
     >;
 
     @serviceQuery
-    variantReferencingOtherTypesFromReturnType: () => CanisterResult<
+    variantReferencingOtherTypesFromReturnType: () => CallResult<
         Variant<{
             prop1: string;
             prop2: Bling;
@@ -115,24 +113,24 @@ export class InlineTypes extends Service {
         param1: Record<{
             test: Test;
         }>
-    ) => CanisterResult<string>;
+    ) => CallResult<string>;
 
     @serviceQuery
     recordReferencingVariantFromParam: (
         param1: Record<{
             testVariant: TestVariant;
         }>
-    ) => CanisterResult<Opt<string>>;
+    ) => CallResult<Opt<string>>;
 
     @serviceQuery
     variantReferencingRecordFromParam: (
         param1: Variant<{ prop1: User }>
-    ) => CanisterResult<void>;
+    ) => CallResult<void>;
 
     @serviceQuery
     variantReferencingVariantFromParam: (
         param1: Variant<{ prop1: UserVariant }>
-    ) => CanisterResult<void>;
+    ) => CallResult<void>;
 
     @serviceUpdate
     stableMapInsert: (
@@ -144,7 +142,7 @@ export class InlineTypes extends Service {
         value: Record<{
             variant: Variant<{ var1: null; var2: TestVariant }>;
         }>
-    ) => CanisterResult<
+    ) => CallResult<
         Variant<{
             ok: Opt<
                 Record<{
@@ -162,7 +160,7 @@ export class InlineTypes extends Service {
             prop2: Variant<{ var1: null; var2: TestVariant }>;
             prop3: Opt<Record<{ prop1: nat }>>;
         }>
-    ) => CanisterResult<
+    ) => CallResult<
         Opt<
             Record<{
                 variant: Variant<{ var1: null; var2: TestVariant }>;
@@ -218,7 +216,7 @@ export class InlineTypes extends Service {
                 ) => void
             >
         >
-    ) => CanisterResult<
+    ) => CallResult<
         Func<
             Query<
                 (
@@ -268,7 +266,7 @@ export class InlineTypes extends Service {
     >;
 
     @serviceUpdate
-    inlineRecordReturnTypeAsExternalCanisterCall: () => CanisterResult<
+    inlineRecordReturnTypeAsExternalCanisterCall: () => CallResult<
         Variant<{
             ok: Record<{
                 prop1: string;
@@ -322,7 +320,7 @@ export class InlineTypes extends Service {
                 >
             >;
         }>
-    ) => CanisterResult<
+    ) => CallResult<
         Record<{
             primitive: string;
             opt: Opt<

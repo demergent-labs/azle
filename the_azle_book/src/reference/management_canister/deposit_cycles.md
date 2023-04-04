@@ -17,14 +17,14 @@ export async function executeDepositCycles(canisterId: Principal): Promise<
         Err: string;
     }>
 > {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .deposit_cycles({
             canister_id: canisterId
         })
         .cycles(1_000_000n)
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });

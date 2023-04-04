@@ -24,7 +24,7 @@ Examples:
 
 ```typescript
 import {
-    CanisterResult,
+    CallResult,
     nat64,
     Principal,
     Service,
@@ -35,7 +35,7 @@ import {
 
 class TokenCanister extends Service {
     @serviceUpdate
-    transfer: (to: Principal, amount: nat64) => CanisterResult<nat64>;
+    transfer: (to: Principal, amount: nat64) => CallResult<nat64>;
 }
 
 const tokenCanister = new TokenCanister(

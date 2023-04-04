@@ -1,4 +1,4 @@
-import { CanisterResult, nat, Service, serviceQuery, Variant } from 'azle';
+import { CallResult, nat, Service, serviceQuery, Variant } from 'azle';
 
 export type StringQueryResult = Variant<{
     Ok: string;
@@ -12,5 +12,5 @@ export type NatQueryResult = Variant<{
 
 export class Canister1 extends Service {
     @serviceQuery
-    incCounter: () => CanisterResult<nat>;
+    incCounter: () => CallResult<nat>;
 }

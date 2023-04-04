@@ -20,14 +20,14 @@ export async function provisionalCreateCanisterWithCycles(): Promise<
         Err: string;
     }>
 > {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .provisional_create_canister_with_cycles({
             amount: null,
             settings: null
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: (provisionalCreateCanisterWithCyclesResult) => ({
             Ok: provisionalCreateCanisterWithCyclesResult
         }),

@@ -17,13 +17,13 @@ export async function executeUninstallCode(canisterId: Principal): Promise<
         Err: string;
     }>
 > {
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .uninstall_code({
             canister_id: canisterId
         })
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });

@@ -148,7 +148,7 @@
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/rejections">rejections</a></li>
 </ul>
 <pre><code class="language-typescript">import {
-    CanisterResult,
+    CallResult,
     ic,
     Principal,
     RejectionCode,
@@ -159,7 +159,7 @@
 
 class Nonexistent extends Service {
     @serviceUpdate
-    method: () =&gt; CanisterResult&lt;void&gt;;
+    method: () =&gt; CallResult&lt;void&gt;;
 }
 
 export const nonexistentCanister = new Nonexistent(

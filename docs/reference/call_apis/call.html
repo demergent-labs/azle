@@ -164,7 +164,7 @@
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami">whoami</a></li>
 </ul>
 <pre><code class="language-typescript">import {
-    CanisterResult,
+    CallResult,
     nat64,
     Principal,
     Service,
@@ -175,7 +175,7 @@
 
 class TokenCanister extends Service {
     @serviceUpdate
-    transfer: (to: Principal, amount: nat64) =&gt; CanisterResult&lt;nat64&gt;;
+    transfer: (to: Principal, amount: nat64) =&gt; CallResult&lt;nat64&gt;;
 }
 
 const tokenCanister = new TokenCanister(

@@ -71,7 +71,7 @@ export async function sendTransaction(transaction: blob): Promise<
         BITCOIN_BASE_TRANSACTION_COST +
         BigInt(transaction.length) * BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;
 
-    const canisterResult = await managementCanister
+    const callResult = await managementCanister
         .bitcoin_send_transaction({
             transaction,
             network: BitcoinNetwork.Regtest
@@ -79,7 +79,7 @@ export async function sendTransaction(transaction: blob): Promise<
         .cycles(transactionFee)
         .call();
 
-    return match(canisterResult, {
+    return match(callResult, {
         Ok: () => ({ Ok: true }),
         Err: (err) => ({ Err: err })
     });

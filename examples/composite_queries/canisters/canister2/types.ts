@@ -1,25 +1,19 @@
-import {
-    CanisterResult,
-    nat,
-    Service,
-    serviceQuery,
-    serviceUpdate
-} from 'azle';
+import { CallResult, nat, Service, serviceQuery, serviceUpdate } from 'azle';
 import { StringQueryResult } from '../canister1/types';
 
 export class Canister2 extends Service {
     @serviceQuery
-    simpleQuery: () => CanisterResult<string>;
+    simpleQuery: () => CallResult<string>;
 
     @serviceQuery
-    manualQuery: () => CanisterResult<string>;
+    manualQuery: () => CallResult<string>;
 
     @serviceUpdate
-    updateQuery: () => CanisterResult<string>;
+    updateQuery: () => CallResult<string>;
 
     @serviceQuery
-    deepQuery: () => CanisterResult<StringQueryResult>;
+    deepQuery: () => CallResult<StringQueryResult>;
 
     @serviceQuery
-    incCounter: () => CanisterResult<nat>;
+    incCounter: () => CallResult<nat>;
 }
