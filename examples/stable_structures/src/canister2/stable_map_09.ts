@@ -1,13 +1,5 @@
-import {
-    float64,
-    InsertError,
-    nat64,
-    Opt,
-    $query,
-    Result,
-    StableBTreeMap,
-    $update
-} from 'azle';
+import { float64, nat64, Opt, $query, StableBTreeMap, $update } from 'azle';
+import { InsertResult } from '../types';
 
 let stableMap9 = new StableBTreeMap<float64, string[]>(9, 100, 1_000);
 
@@ -25,7 +17,7 @@ $update;
 export function stableMap9Insert(
     key: float64,
     value: string[]
-): Result<Opt<string[]>, InsertError> {
+): InsertResult<string[]> {
     return stableMap9.insert(key, value);
 }
 

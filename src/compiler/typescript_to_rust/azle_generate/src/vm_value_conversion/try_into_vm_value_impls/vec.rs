@@ -61,19 +61,19 @@ pub fn generate() -> proc_macro2::TokenStream {
             T: AzleTryIntoVec,
             T: for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>
         {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 try_into_vm_value_generic_array(self, context)
             }
         }
 
         // TODO in the future maybe the other number types can be optimized like this (optimization implementation is currently in boa From trait impl)
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<u8> {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Ok(self.into())
             }
         }
 
-        fn try_into_vm_value_generic_array<T>(generic_array: Vec<T>, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError>
+        fn try_into_vm_value_generic_array<T>(generic_array: Vec<T>, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError>
         where
             T:  for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>
         {

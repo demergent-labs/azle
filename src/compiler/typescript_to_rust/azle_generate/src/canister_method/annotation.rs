@@ -20,7 +20,7 @@ pub struct Annotation {
 }
 
 impl Annotation {
-    pub fn new(name: &str, guard: Option<&str>) -> std::result::Result<Self, ParseError> {
+    pub fn new(name: &str, guard: Option<&str>) -> Result<Self, ParseError> {
         let method_type = match name {
             "$heartbeat" => CanisterMethodType::Heartbeat,
             "$init" => CanisterMethodType::Init,
@@ -40,7 +40,7 @@ impl Annotation {
         Ok(Self { method_type, guard })
     }
 
-    pub fn from_module_item(module_item: &ModuleItem) -> std::result::Result<Self, ParseError> {
+    pub fn from_module_item(module_item: &ModuleItem) -> Result<Self, ParseError> {
         let call_expr = match module_item {
             swc_ecma_ast::ModuleItem::Stmt(stmt) => match stmt {
                 swc_ecma_ast::Stmt::Expr(expr) => &*expr.expr,
