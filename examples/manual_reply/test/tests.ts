@@ -69,7 +69,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await manualReplyCanister.updateInlineType();
 
                 return {
-                    Ok: result.prop === 'prop'
+                    Ok: result[0] === 'Hello' && result[1] === 'World'
                 };
             }
         },

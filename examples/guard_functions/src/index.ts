@@ -4,13 +4,14 @@ import {
     $preUpgrade,
     $query,
     $update,
-    ic
+    ic,
+    Manual
 } from 'azle';
 import {
     acceptAllThenRejectAll,
     allowAll,
     allowModifyStateGuarded,
-    allowNone,
+    unpassable,
     incrementCounterAndAllowAll,
     preventUpgrades,
     returnInvalidType,
@@ -75,6 +76,13 @@ export function looselyGuarded(): boolean {
 }
 
 $query({ guard: allowAll });
+export function looselyGuardedManual(): Manual<boolean> {
+    console.log('looselyGuardedManual called');
+    ic.reply(true);
+}
+
+// prettier-ignore
+$query({ "guard": allowAll });
 export function looselyGuardedWithGuardOptionKeyAsString(): boolean {
     console.log('looselyGuardedWithGuardOptionKeyAsString called');
     return true;
@@ -94,7 +102,7 @@ export function unallowedMethod(): boolean {
 // #endregion Guarded functions are called
 
 // #region Execution halted by guard function
-$query({ guard: allowNone });
+$query({ guard: unpassable });
 export function tightlyGuarded(): boolean {
     console.log('tightlyGuarded called');
     return true;
