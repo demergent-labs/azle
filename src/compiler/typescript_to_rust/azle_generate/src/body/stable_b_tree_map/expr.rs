@@ -1,15 +1,15 @@
 use swc_ecma_ast::{Expr, Lit};
 
 pub trait ToU8 {
-    fn to_u8(&self) -> std::result::Result<u8, String>;
+    fn to_u8(&self) -> Result<u8, String>;
 }
 
 pub trait ToU32 {
-    fn to_u32(&self) -> std::result::Result<u32, String>;
+    fn to_u32(&self) -> Result<u32, String>;
 }
 
 impl ToU8 for Expr {
-    fn to_u8(&self) -> std::result::Result<u8, String> {
+    fn to_u8(&self) -> Result<u8, String> {
         let error_message = format!("Unable to convert Expr to u8");
         match self {
             Expr::Lit(lit) => match lit {
@@ -31,7 +31,7 @@ impl ToU8 for Expr {
 }
 
 impl ToU32 for Expr {
-    fn to_u32(&self) -> std::result::Result<u32, String> {
+    fn to_u32(&self) -> Result<u32, String> {
         let error_message = format!("Unable to convert Expr to u32");
         match self {
             Expr::Lit(lit) => match lit {

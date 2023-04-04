@@ -1,8 +1,4 @@
-use cdk_framework::{
-    act::node::candid::{variant::Member, TypeParam, Variant},
-    traits::ToIdent,
-};
-use quote::quote;
+use cdk_framework::act::node::candid::{variant::Member, Variant};
 use swc_ecma_ast::TsTypeAliasDecl;
 
 use crate::{
@@ -27,33 +23,14 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
             let name_string = self.id.get_name().to_string();
 
-            variant.name = Some(if name_string == "Result" { "_AzleResult".to_string() } else { name_string } );
-
-            let type_params = if let Some(type_params) = &self.type_params {
-                type_params
-                    .params
-                    .iter()
-                    .map(|type_param| TypeParam {
-                        name: type_param.name.get_name().to_string(),
-                        try_into_vm_value_trait_bound: quote!(
-                            for<'a> CdkActTryIntoVmValue<
-                                &'a mut boa_engine::Context,
-                                boa_engine::JsValue,
-                            >
-                        ),
-                        try_from_vm_value_trait_bound: |name_string| {
-                            let name = name_string.to_ident();
-
-                            quote!(
-                                boa_engine::JsValue:
-                                    for<'a> CdkActTryFromVmValue<Box<#name>, &'a mut boa_engine::Context>
-                            )
-                        },
-                    })
-                    .collect()
+            // TODO this should be undone once we put all user-defined types in their own module
+            variant.name = Some(if name_string == "Result" {
+                "_AzleResult".to_string()
             } else {
-                vec![]
-            };
+                name_string
+            });
+
+            let type_params = self.get_type_params();
 
             variant.type_params = type_params;
 

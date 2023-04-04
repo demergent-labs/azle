@@ -8,9 +8,12 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
         self.process_ts_type_ref("Alias", |azle_type_ref| {
             let aliased_type = azle_type_ref.get_enclosed_azle_type().to_data_type();
 
+            let type_params = self.get_type_params();
+
             TypeAlias {
                 name: self.id.get_name().to_string(),
                 aliased_type: Box::new(aliased_type),
+                type_params,
             }
         })
     }

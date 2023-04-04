@@ -22,7 +22,7 @@ pub fn derive_try_from_vm_value_struct(
 
     quote! {
         impl CdkActTryFromVmValue<#struct_name, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> std::result::Result<#struct_name, CdkActTryFromVmValueError> {
+            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<#struct_name, CdkActTryFromVmValueError> {
                 let object_option = self.as_object();
 
                 if let Some(object) = object_option {
@@ -54,7 +54,7 @@ pub fn derive_try_from_vm_value_struct(
 
         // TODO the body of this function is repeated in try_from_vm_value_trait.ts
         impl CdkActTryFromVmValue<Vec<#struct_name>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> std::result::Result<Vec<#struct_name>, CdkActTryFromVmValueError> {
+            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<Vec<#struct_name>, CdkActTryFromVmValueError> {
                 match self.as_object() {
                     Some(js_object) => {
                         if js_object.is_array() {

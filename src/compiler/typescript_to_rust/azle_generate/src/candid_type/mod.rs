@@ -9,6 +9,7 @@ pub mod record;
 pub mod service;
 pub mod tuple;
 pub mod type_alias;
+pub mod type_param;
 pub mod variant;
 
 impl TsAst {

@@ -40,6 +40,7 @@ impl AzleTypeAliasDecl<'_> {
         CandidType::TypeAlias(TypeAlias {
             name,
             aliased_type: Box::from(azle_type.to_data_type()),
+            type_params: vec![],
         })
     }
 }

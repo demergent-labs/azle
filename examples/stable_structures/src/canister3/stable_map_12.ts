@@ -1,14 +1,5 @@
-import {
-    blob,
-    InsertError,
-    nat64,
-    Opt,
-    $query,
-    Result,
-    StableBTreeMap,
-    $update
-} from 'azle';
-import { Reaction } from '../types';
+import { blob, nat64, Opt, $query, StableBTreeMap, $update } from 'azle';
+import { InsertResult, Reaction } from '../types';
 
 let stableMap12 = new StableBTreeMap<blob, Reaction>(12, 100, 1_000);
 
@@ -26,7 +17,7 @@ $update;
 export function stableMap12Insert(
     key: blob,
     value: Reaction
-): Result<Opt<Reaction>, InsertError> {
+): InsertResult<Reaction> {
     return stableMap12.insert(key, value);
 }
 

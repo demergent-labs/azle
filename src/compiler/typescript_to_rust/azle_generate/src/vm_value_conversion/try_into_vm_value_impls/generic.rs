@@ -4,7 +4,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         where
             T : for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>,
         {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Ok(self.0.try_into_vm_value(context).unwrap())
             }
         }
@@ -13,7 +13,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         where
             T : for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>,
         {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Ok((*self).try_into_vm_value(context).unwrap())
             }
         }
@@ -23,7 +23,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         where
             T: for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>
         {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {
                     Some(value) => Ok(value.try_into_vm_value(context).unwrap()),
                     None => Ok(boa_engine::JsValue::Null)
@@ -31,12 +31,12 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl<T, K> CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for std::result::Result<T, K>
+        impl<T, K> CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Result<T, K>
         where
             T: for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>,
             K: for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>
         {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {
                     Ok(ok) => {
                         let ok_js_value = ok.try_into_vm_value(context).unwrap();

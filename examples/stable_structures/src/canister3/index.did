@@ -5,18 +5,15 @@ type InsertError = variant {
 };
 type KeyTooLarge = record { max : nat32; given : nat32 };
 type Reaction = variant { Sad; Happy };
-type StableMap10InsertResult = variant { Ok : opt opt bool; Err : InsertError };
-type StableMap11InsertResult = variant { Ok : opt User; Err : InsertError };
-type StableMap12InsertResult = variant { Ok : opt Reaction; Err : InsertError };
-type StableMap13InsertResult = variant {
-  Ok : opt principal;
-  Err : InsertError;
-};
 type User = record { username : text; posts : vec BlogPost };
+type _AzleResult = variant { Ok : opt opt bool; Err : InsertError };
+type _AzleResult_1 = variant { Ok : opt User; Err : InsertError };
+type _AzleResult_2 = variant { Ok : opt Reaction; Err : InsertError };
+type _AzleResult_3 = variant { Ok : opt principal; Err : InsertError };
 service : () -> {
   stableMap10ContainsKey : (float32) -> (bool) query;
   stableMap10Get : (float32) -> (opt opt bool) query;
-  stableMap10Insert : (float32, opt bool) -> (StableMap10InsertResult);
+  stableMap10Insert : (float32, opt bool) -> (_AzleResult);
   stableMap10IsEmpty : () -> (bool) query;
   stableMap10Items : () -> (vec record { float32; opt bool }) query;
   stableMap10Keys : () -> (vec float32) query;
@@ -25,7 +22,7 @@ service : () -> {
   stableMap10Values : () -> (vec opt bool) query;
   stableMap11ContainsKey : (nat) -> (bool) query;
   stableMap11Get : (nat) -> (opt User) query;
-  stableMap11Insert : (nat, User) -> (StableMap11InsertResult);
+  stableMap11Insert : (nat, User) -> (_AzleResult_1);
   stableMap11IsEmpty : () -> (bool) query;
   stableMap11Items : () -> (vec record { nat; User }) query;
   stableMap11Keys : () -> (vec nat) query;
@@ -34,7 +31,7 @@ service : () -> {
   stableMap11Values : () -> (vec User) query;
   stableMap12ContainsKey : (vec nat8) -> (bool) query;
   stableMap12Get : (vec nat8) -> (opt Reaction) query;
-  stableMap12Insert : (vec nat8, Reaction) -> (StableMap12InsertResult);
+  stableMap12Insert : (vec nat8, Reaction) -> (_AzleResult_2);
   stableMap12IsEmpty : () -> (bool) query;
   stableMap12Items : () -> (vec record { vec nat8; Reaction }) query;
   stableMap12Keys : () -> (vec vec nat8) query;
@@ -43,7 +40,7 @@ service : () -> {
   stableMap12Values : () -> (vec Reaction) query;
   stableMap13ContainsKey : (text) -> (bool) query;
   stableMap13Get : (text) -> (opt principal) query;
-  stableMap13Insert : (text, principal) -> (StableMap13InsertResult);
+  stableMap13Insert : (text, principal) -> (_AzleResult_3);
   stableMap13IsEmpty : () -> (bool) query;
   stableMap13Items : () -> (vec record { text; principal }) query;
   stableMap13Keys : () -> (vec text) query;

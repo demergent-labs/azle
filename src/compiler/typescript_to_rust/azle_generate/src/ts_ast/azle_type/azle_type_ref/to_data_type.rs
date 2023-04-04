@@ -1,5 +1,5 @@
 use cdk_framework::act::node::{
-    candid::{Primitive, TypeRef},
+    candid::{Primitive, TypeArg, TypeRef},
     CandidType,
 };
 
@@ -40,9 +40,8 @@ impl AzleTypeRef<'_> {
                 .params
                 .iter()
                 .map(|param| {
-                    // TODO is this the right source map to pass in?
                     let return_azle_type = AzleType::from_ts_type(*param.clone(), self.source_map);
-                    return_azle_type.to_data_type()
+                    TypeArg(return_azle_type.to_data_type())
                 })
                 .collect()
         } else {

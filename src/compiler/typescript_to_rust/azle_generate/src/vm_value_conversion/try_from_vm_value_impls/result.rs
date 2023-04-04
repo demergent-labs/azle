@@ -1,8 +1,8 @@
 pub fn generate() -> proc_macro2::TokenStream {
     // TODO: This really should be in generic.rs and should be a generic result handler...
     quote::quote! {
-        impl CdkActTryFromVmValue<std::result::Result<(), String>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> std::result::Result<std::result::Result<(), String>, CdkActTryFromVmValueError> {
+        impl CdkActTryFromVmValue<Result<(), String>, &mut boa_engine::Context> for boa_engine::JsValue {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Result<(), String>, CdkActTryFromVmValueError> {
                 match self.as_object() {
                     Some(js_object) => {
                         match js_object.has_own_property("Err", context) {

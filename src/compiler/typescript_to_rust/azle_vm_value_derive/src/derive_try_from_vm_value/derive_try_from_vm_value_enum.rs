@@ -27,7 +27,7 @@ pub fn derive_try_from_vm_value_enum(
 
     quote! {
         impl #impl_generics CdkActTryFromVmValue<#enum_name #ty_generics, &mut boa_engine::Context> for boa_engine::JsValue #where_clause {
-            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> std::result::Result<#enum_name #ty_generics, CdkActTryFromVmValueError> {
+            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<#enum_name #ty_generics, CdkActTryFromVmValueError> {
                 let object_option = self.as_object();
 
                 if let Some(object) = object_option {
@@ -42,7 +42,7 @@ pub fn derive_try_from_vm_value_enum(
         }
 
         impl #impl_generics CdkActTryFromVmValue<Vec<#enum_name #ty_generics>, &mut boa_engine::Context> for boa_engine::JsValue #where_clause {
-            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> std::result::Result<Vec<#enum_name #ty_generics>, CdkActTryFromVmValueError> {
+            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<Vec<#enum_name #ty_generics>, CdkActTryFromVmValueError> {
                 match self.as_object() {
                     Some(js_object) => {
                         if js_object.is_array() {

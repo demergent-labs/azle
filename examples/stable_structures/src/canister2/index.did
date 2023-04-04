@@ -3,14 +3,14 @@ type InsertError = variant {
   KeyTooLarge : KeyTooLarge;
 };
 type KeyTooLarge = record { max : nat32; given : nat32 };
-type StableMap5InsertResult = variant { Ok : opt float64; Err : InsertError };
-type StableMap6InsertResult = variant { Ok : opt bool; Err : InsertError };
-type StableMap7InsertResult = variant { Ok : opt null; Err : InsertError };
-type StableMap9InsertResult = variant { Ok : opt vec text; Err : InsertError };
+type _AzleResult = variant { Ok : opt opt float64; Err : InsertError };
+type _AzleResult_1 = variant { Ok : opt bool; Err : InsertError };
+type _AzleResult_2 = variant { Ok : opt null; Err : InsertError };
+type _AzleResult_3 = variant { Ok : opt vec text; Err : InsertError };
 service : () -> {
   stableMap5ContainsKey : (opt text) -> (bool) query;
   stableMap5Get : (opt text) -> (opt float64) query;
-  stableMap5Insert : (opt text, float64) -> (StableMap5InsertResult);
+  stableMap5Insert : (opt text, float64) -> (_AzleResult);
   stableMap5IsEmpty : () -> (bool) query;
   stableMap5Items : () -> (vec record { opt text; float64 }) query;
   stableMap5Keys : () -> (vec opt text) query;
@@ -19,7 +19,7 @@ service : () -> {
   stableMap5Values : () -> (vec float64) query;
   stableMap6ContainsKey : (vec nat64) -> (bool) query;
   stableMap6Get : (vec nat64) -> (opt bool) query;
-  stableMap6Insert : (vec nat64, bool) -> (StableMap6InsertResult);
+  stableMap6Insert : (vec nat64, bool) -> (_AzleResult_1);
   stableMap6IsEmpty : () -> (bool) query;
   stableMap6Items : () -> (vec record { vec nat64; bool }) query;
   stableMap6Keys : () -> (vec vec nat64) query;
@@ -28,7 +28,7 @@ service : () -> {
   stableMap6Values : () -> (vec bool) query;
   stableMap7ContainsKey : (null) -> (bool) query;
   stableMap7Get : (null) -> (opt null) query;
-  stableMap7Insert : (null, null) -> (StableMap7InsertResult);
+  stableMap7Insert : (null, null) -> (_AzleResult_2);
   stableMap7IsEmpty : () -> (bool) query;
   stableMap7Items : () -> (vec record { null; null }) query;
   stableMap7Keys : () -> (vec null) query;
@@ -37,7 +37,7 @@ service : () -> {
   stableMap7Values : () -> (vec null) query;
   stableMap8ContainsKey : (bool) -> (bool) query;
   stableMap8Get : (bool) -> (opt null) query;
-  stableMap8Insert : (bool, null) -> (StableMap7InsertResult);
+  stableMap8Insert : (bool, null) -> (_AzleResult_2);
   stableMap8IsEmpty : () -> (bool) query;
   stableMap8Items : () -> (vec record { bool; null }) query;
   stableMap8Keys : () -> (vec bool) query;
@@ -46,7 +46,7 @@ service : () -> {
   stableMap8Values : () -> (vec null) query;
   stableMap9ContainsKey : (float64) -> (bool) query;
   stableMap9Get : (float64) -> (opt vec text) query;
-  stableMap9Insert : (float64, vec text) -> (StableMap9InsertResult);
+  stableMap9Insert : (float64, vec text) -> (_AzleResult_3);
   stableMap9IsEmpty : () -> (bool) query;
   stableMap9Items : () -> (vec record { float64; vec text }) query;
   stableMap9Keys : () -> (vec float64) query;

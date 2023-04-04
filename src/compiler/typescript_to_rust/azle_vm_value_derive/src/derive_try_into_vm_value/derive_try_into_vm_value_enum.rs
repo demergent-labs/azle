@@ -14,7 +14,7 @@ pub fn derive_try_into_vm_value_enum(
 
     quote! {
         impl #impl_generics CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for #enum_name #ty_generics #where_clause {
-            fn try_into_vm_value(self, _azle_context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {
                     #(#variant_branches)*,
                 }
@@ -22,7 +22,7 @@ pub fn derive_try_into_vm_value_enum(
         }
 
         impl #impl_generics CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<#enum_name #ty_generics> #where_clause {
-            fn try_into_vm_value(self, _azle_context: &mut boa_engine::Context) -> std::result::Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 let js_values = self.into_iter().map(|item| item.try_into_vm_value(_azle_context).unwrap()).collect::<Vec<boa_engine::JsValue>>();
                 Ok(boa_engine::object::builtins::JsArray::from_iter(js_values, _azle_context).into())
             }
