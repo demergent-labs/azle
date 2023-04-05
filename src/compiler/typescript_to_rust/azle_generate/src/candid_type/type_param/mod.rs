@@ -23,7 +23,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
                     quote!(
                         boa_engine::JsValue:
-                            for<'a> CdkActTryFromVmValue<Box<#name>, &'a mut boa_engine::Context>
+                        for<'a> CdkActTryFromVmValue<#name, &'a mut boa_engine::Context> + for<'a> CdkActTryFromVmValue<Box<#name>, &'a mut boa_engine::Context>
                     )
                 },
             })

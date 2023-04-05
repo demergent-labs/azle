@@ -1,0 +1,40 @@
+type GenericAliasVariant = variant { Arm1 : text; Arm2 : KeyValuePair };
+type GenericVariant = variant {
+  Arm1 : _InlineInlineTypesGenericVariantReturnTypeTypeArg0;
+  Arm2 : vec bool;
+  Arm3 : record { float64; text };
+};
+type KeyValuePair = variant { Key : text; Value : nat64 };
+type MyVariant = variant { Arm1 : text; Arm2 : nat64 };
+type OneGenericTypeParamVariant = variant { A : text; B : float64 };
+type ThreeGenericTypeParamsVariant = variant {
+  A : text;
+  B : float64;
+  C : bool;
+};
+type _AzleResult = variant { Ok : float64; Err : text };
+type _AzleResult_1 = variant { Ok : text; Err : bool };
+type _AzleResult_2 = variant {
+  Ok : bool;
+  Err : _InlineResultInlineTypeArgumentsReturnTypeTypeArg1;
+};
+type _AzleResult_3 = variant { Ok : text; Err : float64 };
+type _InlineInlineTypesGenericVariantReturnTypeTypeArg0 = record {
+  id : float64;
+  name : text;
+};
+type _InlineResultInlineTypeArgumentsReturnTypeTypeArg1 = record {
+  error : text;
+};
+service : () -> {
+  genericAliasVariantAlias : () -> (GenericAliasVariant) query;
+  genericResultAlias : () -> (_AzleResult) query;
+  inlineTypesGenericVariant : () -> (GenericVariant) query;
+  myVariantAlias : () -> (MyVariant) query;
+  nonGenericResultAlias : () -> (_AzleResult_1) query;
+  oneGenericTypeParamVariant : () -> (OneGenericTypeParamVariant) query;
+  resultInlineTypeArguments : () -> (_AzleResult_2) query;
+  simpleResult : () -> (_AzleResult_3) query;
+  threeGenericTypeParamsVariant : () -> (ThreeGenericTypeParamsVariant) query;
+  twoGenericTypeParamsVariant : () -> (OneGenericTypeParamVariant) query;
+}
