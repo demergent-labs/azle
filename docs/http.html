@@ -148,7 +148,17 @@
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/http_counter">http_counter</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, Func, nat16, Opt, $query, Query, Record, Variant } from 'azle';
+<pre><code class="language-typescript">import {
+    blob,
+    Func,
+    nat16,
+    Opt,
+    $query,
+    Query,
+    Record,
+    Tuple,
+    Variant
+} from 'azle';
 
 type HttpRequest = Record&lt;{
     method: string;
@@ -165,7 +175,7 @@ type HttpResponse = Record&lt;{
     upgrade: Opt&lt;boolean&gt;;
 }&gt;;
 
-type Header = [string, string];
+type Header = Tuple&lt;[string, string]&gt;;
 
 type StreamingStrategy = Variant&lt;{
     Callback: CallbackStrategy;
