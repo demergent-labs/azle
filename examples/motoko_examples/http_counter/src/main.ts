@@ -9,6 +9,7 @@ import {
     $query,
     Record,
     StableBTreeMap,
+    Tuple,
     $update,
     Variant
 } from 'azle';
@@ -35,7 +36,7 @@ type StreamingStrategy = Variant<{
     Callback: CallbackStrategy;
 }>;
 
-type HeaderField = [string, string];
+type HeaderField = Tuple<[string, string]>;
 
 type HttpResponse = Record<{
     status_code: nat16;

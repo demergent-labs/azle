@@ -1,8 +1,6 @@
 type CallbackStrategy = record {
   token : Token;
-  callback : func (Token) -> (
-      record { token : opt Token; body : vec nat8 },
-    ) query;
+  callback : func (Token) -> (StreamingCallbackHttpResponse) query;
 };
 type HttpRequest = record {
   url : text;
