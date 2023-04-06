@@ -295,3 +295,20 @@ export function inlineTypesGenericVec(): OneGenericTypeParamVec<
 > {
     return [{ id: 1, name: 'John Doe' }];
 }
+
+type ThreeInlinesGenericVariant<T, K, V> = Variant<{
+    Arm1: T;
+    Arm2: K;
+    Arm3: V;
+}>;
+
+$query;
+export function threeInlinesGenericVariant(): ThreeInlinesGenericVariant<
+    Record<{ prop1: string; prop2: number; prop3: boolean }>,
+    Variant<{ Arm1: string }>,
+    Tuple<[string]>
+> {
+    return {
+        Arm3: ['It did work']
+    };
+}

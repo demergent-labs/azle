@@ -328,6 +328,19 @@ export function getTests(genericsCanister: ActorSubclass<_SERVICE>): Test[] {
                         result[0].name === 'John Doe'
                 };
             }
+        },
+        {
+            name: 'threeInlinesGenericVariant',
+            test: async () => {
+                const result =
+                    await genericsCanister.threeInlinesGenericVariant();
+                return {
+                    Ok:
+                        'Arm3' in result &&
+                        Array.isArray(result.Arm3) &&
+                        result.Arm3[0] === 'It did work'
+                };
+            }
         }
     ];
 }

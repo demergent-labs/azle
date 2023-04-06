@@ -22,6 +22,11 @@ type ThreeGenericTypeParamsVariant = variant {
   B : float64;
   C : bool;
 };
+type ThreeInlinesGenericVariant = variant {
+  Arm1 : _InlineThreeInlinesGenericVariantReturnTypeTypeArg0;
+  Arm2 : _InlineThreeInlinesGenericVariantReturnTypeTypeArg1;
+  Arm3 : record { text };
+};
 type _AzleResult = variant { Ok : float64; Err : text };
 type _AzleResult_1 = variant { Ok : text; Err : bool };
 type _AzleResult_2 = variant {
@@ -43,6 +48,14 @@ type _InlineInlineTypesGenericVecReturnTypeTypeArg0 = record {
 };
 type _InlineResultInlineTypeArgumentsReturnTypeTypeArg1 = record {
   error : text;
+};
+type _InlineThreeInlinesGenericVariantReturnTypeTypeArg0 = record {
+  prop1 : text;
+  prop2 : float64;
+  prop3 : bool;
+};
+type _InlineThreeInlinesGenericVariantReturnTypeTypeArg1 = variant {
+  Arm1 : text;
 };
 service : () -> {
   genericAliasRecordAlias : () -> (GenericAliasRecord) query;
@@ -77,6 +90,7 @@ service : () -> {
   threeGenericTypeParamsRecord : () -> (ThreeGenericTypeParamsRecord) query;
   threeGenericTypeParamsTuple : () -> (record { text; float64; bool }) query;
   threeGenericTypeParamsVariant : () -> (ThreeGenericTypeParamsVariant) query;
+  threeInlinesGenericVariant : () -> (ThreeInlinesGenericVariant) query;
   twoGenericTypeParamsRecord : () -> (OneGenericTypeParamRecord) query;
   twoGenericTypeParamsTuple : () -> (record { text; float64 }) query;
   twoGenericTypeParamsVariant : () -> (OneGenericTypeParamVariant) query;

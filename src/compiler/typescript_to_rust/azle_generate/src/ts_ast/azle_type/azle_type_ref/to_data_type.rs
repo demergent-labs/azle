@@ -30,6 +30,7 @@ impl AzleTypeRef<'_> {
             "Func" => CandidType::Func(self.to_func(None)),
             "Variant" => CandidType::Variant(self.to_variant()),
             "Record" => CandidType::Record(self.to_record()),
+            "Tuple" => CandidType::Tuple(self.to_tuple()),
             _ => CandidType::TypeRef(self.to_type_ref()),
         }
     }
