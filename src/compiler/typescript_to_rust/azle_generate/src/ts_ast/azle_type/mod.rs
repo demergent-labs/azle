@@ -39,6 +39,13 @@ impl<'a> AzleType<'a> {
         }
     }
 
+    pub fn as_azle_tuple_type(self) -> Option<AzleTupleType<'a>> {
+        match self {
+            AzleType::AzleTupleType(azle_tuple_type) => Some(azle_tuple_type),
+            _ => None,
+        }
+    }
+
     // pub fn as_azle_type_ref(self) -> Option<AzleTypeRef<'a>> {
     //     match self {
     //         AzleType::AzleTypeRef(azle_type_ref) => Some(azle_type_ref),

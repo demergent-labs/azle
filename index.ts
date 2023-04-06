@@ -158,6 +158,8 @@ export type blob = Uint8Array;
 export type reserved = any;
 export type empty = never;
 
+export type Tuple<T extends unknown[]> = T;
+
 // TODO type these more strictly
 export type Query<T extends (...args: any[]) => any> = [Principal, string];
 export type Update<T extends (...args: any[]) => any> = [Principal, string];

@@ -13,7 +13,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
             TypeAlias {
                 name: self.id.get_name().to_string(),
                 aliased_type: Box::new(aliased_type),
-                type_params,
+                type_params: type_params.into(),
             }
         })
     }

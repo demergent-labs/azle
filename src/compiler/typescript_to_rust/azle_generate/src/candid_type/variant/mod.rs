@@ -32,7 +32,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
             let type_params = self.get_type_params();
 
-            variant.type_params = type_params;
+            variant.type_params = type_params.into();
 
             variant
         })
@@ -64,7 +64,7 @@ impl AzleTypeLit<'_> {
         Variant {
             name: None,
             members,
-            type_params: vec![],
+            type_params: vec![].into(),
         }
     }
 }

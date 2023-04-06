@@ -23,7 +23,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
             let type_params = self.get_type_params();
 
-            record.type_params = type_params;
+            record.type_params = type_params.into();
 
             record
         })
@@ -55,7 +55,7 @@ impl AzleTypeLit<'_> {
         Record {
             name: None,
             members,
-            type_params: vec![],
+            type_params: vec![].into(),
         }
     }
 }

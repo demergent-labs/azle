@@ -6,7 +6,7 @@ type GenericRecord = record {
   arm3 : record { float64; text };
 };
 type GenericVariant = variant {
-  Arm1 : _InlineInlineTypesGenericRecordReturnTypeTypeArg0;
+  Arm1 : _InlineInlineTypesGenericTupleReturnTypeTypeArg0;
   Arm2 : vec bool;
   Arm3 : record { float64; text };
 };
@@ -33,24 +33,51 @@ type _InlineInlineTypesGenericRecordReturnTypeTypeArg0 = record {
   id : float64;
   name : text;
 };
+type _InlineInlineTypesGenericTupleReturnTypeTypeArg0 = record {
+  id : float64;
+  name : text;
+};
+type _InlineInlineTypesGenericVecReturnTypeTypeArg0 = record {
+  id : float64;
+  name : text;
+};
 type _InlineResultInlineTypeArgumentsReturnTypeTypeArg1 = record {
   error : text;
 };
 service : () -> {
   genericAliasRecordAlias : () -> (GenericAliasRecord) query;
+  genericAliasTupleAlias : () -> (
+      record { text; record { text; nat64 } },
+    ) query;
   genericAliasVariantAlias : () -> (GenericAliasVariant) query;
   genericResultAlias : () -> (_AzleResult) query;
   inlineTypesGenericRecord : () -> (GenericRecord) query;
+  inlineTypesGenericTuple : () -> (
+      record {
+        _InlineInlineTypesGenericTupleReturnTypeTypeArg0;
+        vec bool;
+        record { float64; text };
+      },
+    ) query;
   inlineTypesGenericVariant : () -> (GenericVariant) query;
+  inlineTypesGenericVec : () -> (
+      vec _InlineInlineTypesGenericVecReturnTypeTypeArg0,
+    ) query;
   myRecordAlias : () -> (MyRecord) query;
+  myTupleAlias : () -> (record { text; nat64 }) query;
   myVariantAlias : () -> (MyVariant) query;
+  myVecAlias : () -> (vec text) query;
   nonGenericResultAlias : () -> (_AzleResult_1) query;
   oneGenericTypeParamRecord : () -> (OneGenericTypeParamRecord) query;
+  oneGenericTypeParamTuple : () -> (record { text; float64 }) query;
   oneGenericTypeParamVariant : () -> (OneGenericTypeParamVariant) query;
+  oneGenericTypeParamVec : () -> (vec text) query;
   resultInlineTypeArguments : () -> (_AzleResult_2) query;
   simpleResult : () -> (_AzleResult_3) query;
   threeGenericTypeParamsRecord : () -> (ThreeGenericTypeParamsRecord) query;
+  threeGenericTypeParamsTuple : () -> (record { text; float64; bool }) query;
   threeGenericTypeParamsVariant : () -> (ThreeGenericTypeParamsVariant) query;
   twoGenericTypeParamsRecord : () -> (OneGenericTypeParamRecord) query;
+  twoGenericTypeParamsTuple : () -> (record { text; float64 }) query;
   twoGenericTypeParamsVariant : () -> (OneGenericTypeParamVariant) query;
 }
