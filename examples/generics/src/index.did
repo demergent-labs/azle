@@ -1,12 +1,22 @@
+type GenericAliasRecord = record { arm1 : text; arm2 : KeyValuePairRecord };
 type GenericAliasVariant = variant { Arm1 : text; Arm2 : KeyValuePair };
+type GenericRecord = record {
+  arm1 : _InlineInlineTypesGenericRecordReturnTypeTypeArg0;
+  arm2 : vec bool;
+  arm3 : record { float64; text };
+};
 type GenericVariant = variant {
-  Arm1 : _InlineInlineTypesGenericVariantReturnTypeTypeArg0;
+  Arm1 : _InlineInlineTypesGenericRecordReturnTypeTypeArg0;
   Arm2 : vec bool;
   Arm3 : record { float64; text };
 };
 type KeyValuePair = variant { Key : text; Value : nat64 };
+type KeyValuePairRecord = record { key : text; value : nat64 };
+type MyRecord = record { prop1 : text; prop2 : nat64 };
 type MyVariant = variant { Arm1 : text; Arm2 : nat64 };
+type OneGenericTypeParamRecord = record { a : text; b : float64 };
 type OneGenericTypeParamVariant = variant { A : text; B : float64 };
+type ThreeGenericTypeParamsRecord = record { a : text; b : float64; c : bool };
 type ThreeGenericTypeParamsVariant = variant {
   A : text;
   B : float64;
@@ -19,7 +29,7 @@ type _AzleResult_2 = variant {
   Err : _InlineResultInlineTypeArgumentsReturnTypeTypeArg1;
 };
 type _AzleResult_3 = variant { Ok : text; Err : float64 };
-type _InlineInlineTypesGenericVariantReturnTypeTypeArg0 = record {
+type _InlineInlineTypesGenericRecordReturnTypeTypeArg0 = record {
   id : float64;
   name : text;
 };
@@ -27,14 +37,20 @@ type _InlineResultInlineTypeArgumentsReturnTypeTypeArg1 = record {
   error : text;
 };
 service : () -> {
+  genericAliasRecordAlias : () -> (GenericAliasRecord) query;
   genericAliasVariantAlias : () -> (GenericAliasVariant) query;
   genericResultAlias : () -> (_AzleResult) query;
+  inlineTypesGenericRecord : () -> (GenericRecord) query;
   inlineTypesGenericVariant : () -> (GenericVariant) query;
+  myRecordAlias : () -> (MyRecord) query;
   myVariantAlias : () -> (MyVariant) query;
   nonGenericResultAlias : () -> (_AzleResult_1) query;
+  oneGenericTypeParamRecord : () -> (OneGenericTypeParamRecord) query;
   oneGenericTypeParamVariant : () -> (OneGenericTypeParamVariant) query;
   resultInlineTypeArguments : () -> (_AzleResult_2) query;
   simpleResult : () -> (_AzleResult_3) query;
+  threeGenericTypeParamsRecord : () -> (ThreeGenericTypeParamsRecord) query;
   threeGenericTypeParamsVariant : () -> (ThreeGenericTypeParamsVariant) query;
+  twoGenericTypeParamsRecord : () -> (OneGenericTypeParamRecord) query;
   twoGenericTypeParamsVariant : () -> (OneGenericTypeParamVariant) query;
 }

@@ -1,6 +1,6 @@
 import { Alias, nat64, $query, Record, Result, Variant } from 'azle';
 
-// TODO let's do the same for records
+// TODO don't forget tuples
 
 type SimpleResult = Alias<Result<string, number>>;
 
@@ -122,3 +122,97 @@ export function inlineTypesGenericVariant(): GenericVariant<
 > {
     return { Arm1: { id: 1, name: 'John Doe' } };
 }
+
+type OneGenericTypeParamRecord<T> = Record<{
+    a: T;
+    b: number;
+}>;
+
+$query;
+export function oneGenericTypeParamRecord(): OneGenericTypeParamRecord<string> {
+    return { a: 'One generic type parameter', b: 456 };
+}
+
+type TwoGenericTypeParamsRecord<T, U> = Record<{
+    a: T;
+    b: U;
+}>;
+
+$query;
+export function twoGenericTypeParamsRecord(): TwoGenericTypeParamsRecord<
+    string,
+    number
+> {
+    return { a: 'two generic type params record', b: 42 };
+}
+
+type ThreeGenericTypeParamsRecord<T, U, V> = Record<{
+    a: T;
+    b: U;
+    c: V;
+}>;
+
+$query;
+export function threeGenericTypeParamsRecord(): ThreeGenericTypeParamsRecord<
+    string,
+    number,
+    boolean
+> {
+    return { a: 'property a', b: 432, c: true };
+}
+
+type MyRecord<T> = Record<{
+    prop1: T;
+    prop2: nat64;
+}>;
+
+type MyRecordAlias<T> = Alias<MyRecord<T>>;
+
+$query;
+export function myRecordAlias(): MyRecordAlias<string> {
+    return { prop1: 'Hello, world!', prop2: 211n };
+}
+
+type KeyValuePairRecord<K, V> = Record<{
+    key: K;
+    value: V;
+}>;
+
+type GenericAliasRecord<T> = Record<{
+    arm1: string;
+    arm2: KeyValuePairRecord<T, nat64>;
+}>;
+
+type GenericAliasRecordAlias<T> = Alias<GenericAliasRecord<T>>;
+
+$query;
+export function genericAliasRecordAlias(): GenericAliasRecordAlias<string> {
+    return { arm1: 'Why yes', arm2: { key: 'example', value: 0n } };
+}
+
+type GenericRecord<T, U, V> = Record<{
+    arm1: T;
+    arm2: U;
+    arm3: V;
+}>;
+
+$query;
+export function inlineTypesGenericRecord(): GenericRecord<
+    Record<{ id: number; name: string }>,
+    boolean[],
+    [number, string]
+> {
+    return {
+        arm1: { id: 1, name: 'John Doe' },
+        arm2: [true, false, false],
+        arm3: [665, 'oh yeah']
+    };
+}
+
+// TODO working on tuples
+// type OneGenericTypeParamTuple<T> = [T, number];
+
+// $query;
+// export function oneGenericTypeParamTuple(): OneGenericTypeParamTuple<string> {
+//     return ['One generic type parameter', 456];
+// }

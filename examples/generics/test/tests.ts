@@ -108,6 +108,101 @@ export function getTests(genericsCanister: ActorSubclass<_SERVICE>): Test[] {
                         result.Arm1.name === 'John Doe'
                 };
             }
+        },
+        {
+            name: 'oneGenericTypeParamRecord',
+            test: async () => {
+                const result =
+                    await genericsCanister.oneGenericTypeParamRecord();
+                return {
+                    Ok:
+                        'a' in result &&
+                        result.a === 'One generic type parameter' &&
+                        'b' in result &&
+                        result.b === 456
+                };
+            }
+        },
+        {
+            name: 'twoGenericTypeParamsRecord',
+            test: async () => {
+                const result =
+                    await genericsCanister.twoGenericTypeParamsRecord();
+                return {
+                    Ok:
+                        'a' in result &&
+                        result.a === 'two generic type params record' &&
+                        'b' in result &&
+                        result.b === 42
+                };
+            }
+        },
+        {
+            name: 'threeGenericTypeParamsRecord',
+            test: async () => {
+                const result =
+                    await genericsCanister.threeGenericTypeParamsRecord();
+                return {
+                    Ok:
+                        'a' in result &&
+                        result.a === 'property a' &&
+                        'b' in result &&
+                        result.b === 432 &&
+                        'c' in result &&
+                        result.c === true
+                };
+            }
+        },
+        {
+            name: 'myRecordAlias',
+            test: async () => {
+                const result = await genericsCanister.myRecordAlias();
+                return {
+                    Ok:
+                        'prop1' in result &&
+                        result.prop1 === 'Hello, world!' &&
+                        'prop2' in result &&
+                        result.prop2 === 211n
+                };
+            }
+        },
+        {
+            name: 'genericAliasRecordAlias',
+            test: async () => {
+                const result = await genericsCanister.genericAliasRecordAlias();
+                return {
+                    Ok:
+                        'arm1' in result &&
+                        result.arm1 === 'Why yes' &&
+                        'arm2' in result &&
+                        'key' in result.arm2 &&
+                        result.arm2.key === 'example' &&
+                        'value' in result.arm2 &&
+                        result.arm2.value === 0n
+                };
+            }
+        },
+        {
+            name: 'inlineTypesGenericRecord',
+            test: async () => {
+                const result =
+                    await genericsCanister.inlineTypesGenericRecord();
+                return {
+                    Ok:
+                        'arm1' in result &&
+                        'id' in result.arm1 &&
+                        result.arm1.id === 1 &&
+                        'name' in result.arm1 &&
+                        result.arm1.name === 'John Doe' &&
+                        'arm2' in result &&
+                        result.arm2[0] === true &&
+                        result.arm2[1] === false &&
+                        result.arm2[2] === false &&
+                        'arm3' in result &&
+                        result.arm3[0] === 665 &&
+                        result.arm3[1] === 'oh yeah'
+                };
+            }
         }
     ];
 }

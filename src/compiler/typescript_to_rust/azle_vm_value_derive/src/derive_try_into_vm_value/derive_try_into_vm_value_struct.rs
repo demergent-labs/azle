@@ -1,16 +1,20 @@
 use proc_macro2::Ident;
 use quote::{format_ident, quote};
-use syn::{DataStruct, Fields, Index};
+use syn::{DataStruct, Fields, Generics, Index};
 
 pub fn derive_try_into_vm_value_struct(
     struct_name: &Ident,
     data_struct: &DataStruct,
+    generics: &Generics,
 ) -> proc_macro2::TokenStream {
     let variable_definitions = derive_struct_fields_variable_definitions(data_struct);
     let property_definitions = derive_struct_fields_property_definitions(data_struct);
 
+    // Capture generic parameters and their bounds
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+
     quote! {
-        impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for #struct_name {
+        impl #impl_generics CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for #struct_name #ty_generics #where_clause {
             fn try_into_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 #(#variable_definitions)*
 
@@ -23,7 +27,7 @@ pub fn derive_try_into_vm_value_struct(
         }
 
         // TODO the body of this function is repeated in azle_into_js_value_trait.ts
-        impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<#struct_name> {
+        impl #impl_generics CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<#struct_name #ty_generics> #where_clause {
             fn try_into_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 let js_values = self.into_iter().map(|item| item.try_into_vm_value(_azle_context).unwrap()).collect::<Vec<boa_engine::JsValue>>();
                 Ok(boa_engine::object::builtins::JsArray::from_iter(js_values, _azle_context).into())
