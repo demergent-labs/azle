@@ -17,15 +17,10 @@ use crate::{
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_record(&self) -> Option<Record> {
-        self.process_ts_type_ref("Record", |azle_type_ref| {
-            let mut record = azle_type_ref.to_record();
-            record.name = Some(self.id.get_name().to_string());
-
-            let type_params = self.get_type_params();
-
-            record.type_params = type_params;
-
-            record
+        self.process_ts_type_ref("Record", |azle_type_ref| Record {
+            name: Some(self.id.get_name().to_string()),
+            type_params: self.get_type_params().into(),
+            ..azle_type_ref.to_record()
         })
     }
 }
@@ -55,7 +50,7 @@ impl AzleTypeLit<'_> {
         Record {
             name: None,
             members,
-            type_params: vec![],
+            type_params: vec![].into(),
         }
     }
 }

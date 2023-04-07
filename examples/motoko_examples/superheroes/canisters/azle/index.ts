@@ -1,4 +1,14 @@
-import { Alias, ic, nat32, nat64, Opt, $query, Record, $update } from 'azle';
+import {
+    Alias,
+    ic,
+    nat32,
+    nat64,
+    Opt,
+    $query,
+    Record,
+    Tuple,
+    $update
+} from 'azle';
 
 //#region Performance
 type PerfResult = Record<{
@@ -30,7 +40,7 @@ export type Superhero = Record<{
     superpowers?: Opt<List>;
 }>;
 
-export type List = [string, Opt<List>];
+export type List = Tuple<[string, Opt<List>]>;
 
 /**
  * Application State

@@ -8,13 +8,14 @@ import {
     Record,
     Service,
     serviceUpdate,
+    Tuple,
     Variant
 } from 'azle';
 
 // TODO maybe we should write tests for canister and stable storage?
 // TODO for now we at least know the canister compiles
-type CanisterTuple1 = [string, nat64];
-type CanisterTuple2 = [string, CanisterTuple1];
+type CanisterTuple1 = Tuple<[string, nat64]>;
+type CanisterTuple2 = Tuple<[string, CanisterTuple1]>;
 
 class TestCanister extends Service {
     @serviceUpdate
@@ -31,15 +32,15 @@ type Reaction = Variant<{
     Bad: ComplexThreeTuple;
 }>;
 
-type PrimitiveOneTuple = [string];
-type PrimitiveTwoTuple = [string, nat64];
-type PrimitiveThreeTuple = [string, nat64, Principal];
+type PrimitiveOneTuple = Tuple<[string]>;
+type PrimitiveTwoTuple = Tuple<[string, nat64]>;
+type PrimitiveThreeTuple = Tuple<[string, nat64, Principal]>;
 
-type ComplexOneTuple = [PrimitiveTwoTuple];
-type ComplexTwoTuple = [PrimitiveTwoTuple, User];
-type ComplexThreeTuple = [PrimitiveTwoTuple, User, Reaction];
+type ComplexOneTuple = Tuple<[PrimitiveTwoTuple]>;
+type ComplexTwoTuple = Tuple<[PrimitiveTwoTuple, User]>;
+type ComplexThreeTuple = Tuple<[PrimitiveTwoTuple, User, Reaction]>;
 
-type Header = [string, string];
+type Header = Tuple<[string, string]>;
 
 type HttpResponse = Record<{
     headers: Header[];

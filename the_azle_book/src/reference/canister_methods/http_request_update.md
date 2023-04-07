@@ -7,7 +7,17 @@ Examples:
 -   [http_counter](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/http_counter)
 
 ```typescript
-import { blob, Func, nat16, Opt, Query, Record, $update, Variant } from 'azle';
+import {
+    blob,
+    Func,
+    nat16,
+    Opt,
+    Query,
+    Record,
+    Tuple,
+    $update,
+    Variant
+} from 'azle';
 
 type HttpRequest = Record<{
     method: string;
@@ -24,7 +34,7 @@ type HttpResponse = Record<{
     upgrade: Opt<boolean>;
 }>;
 
-type Header = [string, string];
+type Header = Tuple<[string, string]>;
 
 type StreamingStrategy = Variant<{
     Callback: CallbackStrategy;

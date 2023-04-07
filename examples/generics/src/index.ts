@@ -1,6 +1,4 @@
-import { Alias, nat64, $query, Record, Result, Variant } from 'azle';
-
-// TODO don't forget tuples
+import { Alias, nat64, $query, Record, Result, Tuple, Variant } from 'azle';
 
 type SimpleResult = Alias<Result<string, number>>;
 
@@ -209,10 +207,108 @@ export function inlineTypesGenericRecord(): GenericRecord<
     };
 }
 
-// TODO working on tuples
-// type OneGenericTypeParamTuple<T> = [T, number];
+type OneGenericTypeParamTuple<T> = Tuple<[T, number]>;
 
-// $query;
-// export function oneGenericTypeParamTuple(): OneGenericTypeParamTuple<string> {
-//     return ['One generic type parameter', 456];
-// }
+$query;
+export function oneGenericTypeParamTuple(): OneGenericTypeParamTuple<string> {
+    return ['One generic type parameter', 456];
+}
+
+type TwoGenericTypeParamsTuple<T, U> = Tuple<[T, U]>;
+
+$query;
+export function twoGenericTypeParamsTuple(): TwoGenericTypeParamsTuple<
+    string,
+    number
+> {
+    return ['two generic type params tuple', 42];
+}
+
+type ThreeGenericTypeParamsTuple<T, U, V> = Tuple<[T, U, V]>;
+
+$query;
+export function threeGenericTypeParamsTuple(): ThreeGenericTypeParamsTuple<
+    string,
+    number,
+    boolean
+> {
+    return ['property a', 432, true];
+}
+
+type MyTuple<T> = Tuple<[T, nat64]>;
+
+type MyTupleAlias<T> = Alias<MyTuple<T>>;
+
+$query;
+export function myTupleAlias(): MyTupleAlias<string> {
+    return ['Hello, world!', 211n];
+}
+
+type KeyValuePairTuple<K, V> = Tuple<[K, V]>;
+
+type GenericAliasTuple<T> = Tuple<[string, KeyValuePairTuple<T, nat64>]>;
+
+type GenericAliasTupleAlias<T> = Alias<GenericAliasTuple<T>>;
+
+$query;
+export function genericAliasTupleAlias(): GenericAliasTupleAlias<string> {
+    return ['Why yes', ['example', 0n]];
+}
+
+type GenericTuple<T, U, V> = Tuple<[T, U, V]>;
+
+$query;
+export function inlineTypesGenericTuple(): GenericTuple<
+    Record<{ id: number; name: string }>,
+    boolean[],
+    [number, string]
+> {
+    return [
+        { id: 1, name: 'John Doe' },
+        [true, false, false],
+        [665, 'oh yeah']
+    ];
+}
+
+type OneGenericTypeParamVec<T> = Alias<T[]>;
+
+$query;
+export function oneGenericTypeParamVec(): OneGenericTypeParamVec<string> {
+    return ['One generic type parameter', 'example 1'];
+}
+
+type MyVec<T> = Alias<T[]>;
+
+type MyVecAlias<T> = Alias<MyVec<T>>;
+
+$query;
+export function myVecAlias(): MyVecAlias<string> {
+    return ['Hello, world!', 'example 4'];
+}
+
+$query;
+export function inlineTypesGenericVec(): OneGenericTypeParamVec<
+    Record<{
+        id: number;
+        name: string;
+    }>
+> {
+    return [{ id: 1, name: 'John Doe' }];
+}
+
+type ThreeInlinesGenericVariant<T, K, V> = Variant<{
+    Arm1: T;
+    Arm2: K;
+    Arm3: V;
+}>;
+
+$query;
+export function threeInlinesGenericVariant(): ThreeInlinesGenericVariant<
+    Record<{ prop1: string; prop2: number; prop3: boolean }>,
+    Variant<{ Arm1: string }>,
+    Tuple<[string]>
+> {
+    return {
+        Arm3: ['It did work']
+    };
+}

@@ -12,8 +12,8 @@ type Reaction = variant {
   Good;
 };
 type StreamingCallbackType = variant {
-  withoutHeaders;
-  withHeaders : vec record { text; text };
+  WithHeaders : vec record { text; text };
+  WithoutHeaders;
 };
 type User = record { id : text; primitiveTwoTuple : record { text; nat64 } };
 type _InlineTwoTupleWithInlineRecordsParam0 = record { hello : nat64 };

@@ -19,22 +19,19 @@ use crate::{
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_variant(&self) -> Option<Variant> {
         self.process_ts_type_ref("Variant", |azle_type_ref| {
-            let mut variant = azle_type_ref.to_variant();
-
-            let name_string = self.id.get_name().to_string();
-
             // TODO this should be undone once we put all user-defined types in their own module
-            variant.name = Some(if name_string == "Result" {
+            let name_string = self.id.get_name().to_string();
+            let name = Some(if name_string == "Result" {
                 "_AzleResult".to_string()
             } else {
                 name_string
             });
 
-            let type_params = self.get_type_params();
-
-            variant.type_params = type_params;
-
-            variant
+            Variant {
+                name,
+                type_params: self.get_type_params().into(),
+                ..azle_type_ref.to_variant()
+            }
         })
     }
 }
@@ -64,7 +61,7 @@ impl AzleTypeLit<'_> {
         Variant {
             name: None,
             members,
-            type_params: vec![],
+            type_params: vec![].into(),
         }
     }
 }

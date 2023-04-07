@@ -3,29 +3,31 @@ use cdk_framework::act::node::{
     CandidType,
 };
 use swc_common::SourceMap;
-use swc_ecma_ast::{TsTupleType, TsType, TsTypeAliasDecl};
+use swc_ecma_ast::{TsTupleType, TsTypeAliasDecl};
 
 use crate::ts_ast::{
-    azle_type::AzleType,
+    azle_type::{AzleType, AzleTypeRef},
     source_map::{GetSourceFileInfo, SourceMapped},
     traits::{GetName, GetSourceInfo, GetSourceText},
 };
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_tuple(&self) -> Option<Tuple> {
-        match &*self.type_ann {
-            TsType::TsTupleType(ts_tuple_type) => {
-                let azle_tuple_type = AzleTupleType {
-                    ts_tuple_type: ts_tuple_type.clone(),
-                    source_map: self.source_map,
-                };
-                let mut tuple = azle_tuple_type.to_tuple();
-                tuple.name = Some(self.id.get_name().to_string());
+        self.process_ts_type_ref("Tuple", |azle_type_ref| Tuple {
+            name: Some(self.id.get_name().to_string()),
+            type_params: self.get_type_params().into(),
+            ..azle_type_ref.to_tuple()
+        })
+    }
+}
 
-                Some(tuple)
-            }
-            _ => None,
+impl AzleTypeRef<'_> {
+    pub fn to_tuple(&self) -> Tuple {
+        match self.get_enclosed_azle_type().as_azle_tuple_type() {
+            Some(ts_type_lit) => ts_type_lit,
+            None => panic!("{}", self.wrong_enclosed_type_error()),
         }
+        .to_tuple()
     }
 }
 
@@ -40,6 +42,7 @@ impl AzleTupleType<'_> {
         CandidType::Tuple(Tuple {
             name: None,
             elems: self.get_elem_types(),
+            type_params: vec![].into(),
         })
     }
 
@@ -47,6 +50,7 @@ impl AzleTupleType<'_> {
         Tuple {
             name: None,
             elems: self.get_elem_types(),
+            type_params: vec![].into(),
         }
     }
 

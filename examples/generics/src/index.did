@@ -6,7 +6,7 @@ type GenericRecord = record {
   arm3 : record { float64; text };
 };
 type GenericVariant = variant {
-  Arm1 : _InlineInlineTypesGenericRecordReturnTypeTypeArg0;
+  Arm1 : _InlineInlineTypesGenericTupleReturnTypeTypeArg0;
   Arm2 : vec bool;
   Arm3 : record { float64; text };
 };
@@ -22,6 +22,11 @@ type ThreeGenericTypeParamsVariant = variant {
   B : float64;
   C : bool;
 };
+type ThreeInlinesGenericVariant = variant {
+  Arm1 : _InlineThreeInlinesGenericVariantReturnTypeTypeArg0;
+  Arm2 : _InlineThreeInlinesGenericVariantReturnTypeTypeArg1;
+  Arm3 : record { text };
+};
 type _AzleResult = variant { Ok : float64; Err : text };
 type _AzleResult_1 = variant { Ok : text; Err : bool };
 type _AzleResult_2 = variant {
@@ -33,24 +38,60 @@ type _InlineInlineTypesGenericRecordReturnTypeTypeArg0 = record {
   id : float64;
   name : text;
 };
+type _InlineInlineTypesGenericTupleReturnTypeTypeArg0 = record {
+  id : float64;
+  name : text;
+};
+type _InlineInlineTypesGenericVecReturnTypeTypeArg0 = record {
+  id : float64;
+  name : text;
+};
 type _InlineResultInlineTypeArgumentsReturnTypeTypeArg1 = record {
   error : text;
 };
+type _InlineThreeInlinesGenericVariantReturnTypeTypeArg0 = record {
+  prop1 : text;
+  prop2 : float64;
+  prop3 : bool;
+};
+type _InlineThreeInlinesGenericVariantReturnTypeTypeArg1 = variant {
+  Arm1 : text;
+};
 service : () -> {
   genericAliasRecordAlias : () -> (GenericAliasRecord) query;
+  genericAliasTupleAlias : () -> (
+      record { text; record { text; nat64 } },
+    ) query;
   genericAliasVariantAlias : () -> (GenericAliasVariant) query;
   genericResultAlias : () -> (_AzleResult) query;
   inlineTypesGenericRecord : () -> (GenericRecord) query;
+  inlineTypesGenericTuple : () -> (
+      record {
+        _InlineInlineTypesGenericTupleReturnTypeTypeArg0;
+        vec bool;
+        record { float64; text };
+      },
+    ) query;
   inlineTypesGenericVariant : () -> (GenericVariant) query;
+  inlineTypesGenericVec : () -> (
+      vec _InlineInlineTypesGenericVecReturnTypeTypeArg0,
+    ) query;
   myRecordAlias : () -> (MyRecord) query;
+  myTupleAlias : () -> (record { text; nat64 }) query;
   myVariantAlias : () -> (MyVariant) query;
+  myVecAlias : () -> (vec text) query;
   nonGenericResultAlias : () -> (_AzleResult_1) query;
   oneGenericTypeParamRecord : () -> (OneGenericTypeParamRecord) query;
+  oneGenericTypeParamTuple : () -> (record { text; float64 }) query;
   oneGenericTypeParamVariant : () -> (OneGenericTypeParamVariant) query;
+  oneGenericTypeParamVec : () -> (vec text) query;
   resultInlineTypeArguments : () -> (_AzleResult_2) query;
   simpleResult : () -> (_AzleResult_3) query;
   threeGenericTypeParamsRecord : () -> (ThreeGenericTypeParamsRecord) query;
+  threeGenericTypeParamsTuple : () -> (record { text; float64; bool }) query;
   threeGenericTypeParamsVariant : () -> (ThreeGenericTypeParamsVariant) query;
+  threeInlinesGenericVariant : () -> (ThreeInlinesGenericVariant) query;
   twoGenericTypeParamsRecord : () -> (OneGenericTypeParamRecord) query;
+  twoGenericTypeParamsTuple : () -> (record { text; float64 }) query;
   twoGenericTypeParamsVariant : () -> (OneGenericTypeParamVariant) query;
 }

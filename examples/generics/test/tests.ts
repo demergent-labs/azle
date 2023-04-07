@@ -203,6 +203,144 @@ export function getTests(genericsCanister: ActorSubclass<_SERVICE>): Test[] {
                         result.arm3[1] === 'oh yeah'
                 };
             }
+        },
+        {
+            name: 'oneGenericTypeParamTuple',
+            test: async () => {
+                const result =
+                    await genericsCanister.oneGenericTypeParamTuple();
+                return {
+                    Ok:
+                        Array.isArray(result) &&
+                        result[0] === 'One generic type parameter' &&
+                        result[1] === 456
+                };
+            }
+        },
+        {
+            name: 'twoGenericTypeParamsTuple',
+            test: async () => {
+                const result =
+                    await genericsCanister.twoGenericTypeParamsTuple();
+                return {
+                    Ok:
+                        Array.isArray(result) &&
+                        result[0] === 'two generic type params tuple' &&
+                        result[1] === 42
+                };
+            }
+        },
+        {
+            name: 'threeGenericTypeParamsTuple',
+            test: async () => {
+                const result =
+                    await genericsCanister.threeGenericTypeParamsTuple();
+                return {
+                    Ok:
+                        Array.isArray(result) &&
+                        result[0] === 'property a' &&
+                        result[1] === 432 &&
+                        result[2] === true
+                };
+            }
+        },
+        {
+            name: 'myTupleAlias',
+            test: async () => {
+                const result = await genericsCanister.myTupleAlias();
+                return {
+                    Ok:
+                        Array.isArray(result) &&
+                        result[0] === 'Hello, world!' &&
+                        result[1] === 211n
+                };
+            }
+        },
+        {
+            name: 'genericAliasTupleAlias',
+            test: async () => {
+                const result = await genericsCanister.genericAliasTupleAlias();
+                return {
+                    Ok:
+                        Array.isArray(result) &&
+                        result[0] === 'Why yes' &&
+                        Array.isArray(result[1]) &&
+                        result[1][0] === 'example' &&
+                        result[1][1] === 0n
+                };
+            }
+        },
+        {
+            name: 'inlineTypesGenericTuple',
+            test: async () => {
+                const result = await genericsCanister.inlineTypesGenericTuple();
+                return {
+                    Ok:
+                        Array.isArray(result) &&
+                        typeof result[0] === 'object' &&
+                        result[0].id === 1 &&
+                        result[0].name === 'John Doe' &&
+                        Array.isArray(result[1]) &&
+                        result[1][0] === true &&
+                        result[1][1] === false &&
+                        result[1][2] === false &&
+                        Array.isArray(result[2]) &&
+                        result[2][0] === 665 &&
+                        result[2][1] === 'oh yeah'
+                };
+            }
+        },
+        {
+            name: 'oneGenericTypeParamVec',
+            test: async () => {
+                const result = await genericsCanister.oneGenericTypeParamVec();
+                return {
+                    Ok:
+                        Array.isArray(result) &&
+                        result.length === 2 &&
+                        result[0] === 'One generic type parameter' &&
+                        result[1] === 'example 1'
+                };
+            }
+        },
+        {
+            name: 'myVecAlias',
+            test: async () => {
+                const result = await genericsCanister.myVecAlias();
+                return {
+                    Ok:
+                        Array.isArray(result) &&
+                        result.length === 2 &&
+                        result[0] === 'Hello, world!' &&
+                        result[1] === 'example 4'
+                };
+            }
+        },
+        {
+            name: 'inlineTypesGenericVec',
+            test: async () => {
+                const result = await genericsCanister.inlineTypesGenericVec();
+                return {
+                    Ok:
+                        Array.isArray(result) &&
+                        result.length === 1 &&
+                        result[0].id === 1 &&
+                        result[0].name === 'John Doe'
+                };
+            }
+        },
+        {
+            name: 'threeInlinesGenericVariant',
+            test: async () => {
+                const result =
+                    await genericsCanister.threeInlinesGenericVariant();
+                return {
+                    Ok:
+                        'Arm3' in result &&
+                        Array.isArray(result.Arm3) &&
+                        result.Arm3[0] === 'It did work'
+                };
+            }
         }
     ];
 }
