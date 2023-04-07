@@ -106,6 +106,7 @@ type ic = {
  */
 export type Record<T extends object> = T;
 export type Opt<T> = T | null;
+export type Vec<T> = T[];
 
 export type Alias<T> = T;
 

@@ -8,7 +8,6 @@ impl AzleType<'_> {
         match self {
             AzleType::AzleKeywordType(azle_keyword_type) => azle_keyword_type.to_data_type(),
             AzleType::AzleTypeRef(azle_type_ref) => azle_type_ref.to_candid_type(),
-            AzleType::AzleArrayType(azle_array_type) => azle_array_type.to_data_type(),
             AzleType::AzleTypeLit(_) => {
                 let origin = self.get_origin();
                 let line_number = self.get_line_number();

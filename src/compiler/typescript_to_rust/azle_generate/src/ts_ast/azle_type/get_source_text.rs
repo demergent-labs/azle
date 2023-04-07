@@ -11,7 +11,6 @@ impl GetSourceText for AzleType<'_> {
                 fn_or_const_type.get_source_text()
             }
             AzleType::AzleTupleType(tuple_type) => tuple_type.get_source_text(),
-            AzleType::AzleArrayType(array_type) => array_type.get_source_text(),
         }
     }
 }
