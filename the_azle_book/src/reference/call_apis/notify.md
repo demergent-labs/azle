@@ -8,7 +8,7 @@ Examples:
 -   [cycles](https://github.com/demergent-labs/azle/tree/main/examples/cycles)
 
 ```typescript
-import { Principal, RejectionCode, $update, Variant } from 'azle';
+import { NotifyResult, Principal, $update } from 'azle';
 import { Canister2 } from '../canister2/types';
 
 const canister2 = new Canister2(
@@ -16,10 +16,7 @@ const canister2 = new Canister2(
 );
 
 $update;
-export function sendNotification(): Variant<{
-    Ok: null;
-    Err: RejectionCode;
-}> {
+export function sendNotification(): NotifyResult {
     return canister2.receiveNotification('This is the notification').notify();
 }
 ```

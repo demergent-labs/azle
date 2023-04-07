@@ -147,28 +147,16 @@
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/notify_raw">notify_raw</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, match, Principal, RejectionCode, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { ic, NotifyResult, Principal, $update } from 'azle';
 
 $update;
-export function sendNotification(): Variant&lt;{
-    Ok: boolean;
-    Err: RejectionCode;
-}&gt; {
-    const result = ic.notifyRaw(
+export function sendNotification(): NotifyResult {
+    return ic.notifyRaw(
         Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'),
         'receiveNotification',
         Uint8Array.from(ic.candidEncode('()')),
         0n
     );
-
-    return match(result, {
-        Ok: () =&gt; ({
-            Ok: true
-        }),
-        Err: (err) =&gt; ({
-            Err: err
-        })
-    });
 }
 </code></pre>
 

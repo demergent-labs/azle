@@ -27,10 +27,10 @@ import {
     CallResult,
     nat64,
     Principal,
+    Result,
     Service,
     serviceUpdate,
-    $update,
-    Variant
+    $update
 } from 'azle';
 
 class TokenCanister extends Service {
@@ -46,12 +46,7 @@ $update;
 export async function payout(
     to: Principal,
     amount: nat64
-): Promise<
-    Variant<{
-        Ok: nat64;
-        Err: string;
-    }>
-> {
+): Promise<Result<nat64, string>> {
     return await tokenCanister.transfer(to, amount).call();
 }
 ```

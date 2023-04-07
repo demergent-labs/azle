@@ -7,7 +7,7 @@ Examples:
 -   [management_canister](https://github.com/demergent-labs/azle/tree/main/examples/management_canister)
 
 ```typescript
-import { match, $update, Variant } from 'azle';
+import { match, Result, $update } from 'azle';
 import {
     CreateCanisterResult,
     managementCanister
@@ -15,10 +15,7 @@ import {
 
 $update;
 export async function executeCreateCanister(): Promise<
-    Variant<{
-        Ok: CreateCanisterResult;
-        Err: string;
-    }>
+    Result<CreateCanisterResult, string>
 > {
     const createCanisterResultCallResult = await managementCanister
         .create_canister({

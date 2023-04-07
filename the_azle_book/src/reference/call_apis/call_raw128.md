@@ -7,7 +7,7 @@ Examples:
 -   [call_raw](https://github.com/demergent-labs/azle/tree/main/examples/call_raw)
 
 ```typescript
-import { ic, match, nat, Principal, $update, Variant } from 'azle';
+import { ic, match, nat, Principal, Result, $update } from 'azle';
 
 $update;
 export async function executeCallRaw128(
@@ -15,12 +15,7 @@ export async function executeCallRaw128(
     method: string,
     candidArgs: string,
     payment: nat
-): Promise<
-    Variant<{
-        Ok: string;
-        Err: string;
-    }>
-> {
+): Promise<Result<string, string>> {
     const callResult = await ic.callRaw128(
         canisterId,
         method,

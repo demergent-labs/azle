@@ -1664,23 +1664,21 @@ let map = new StableBTreeMap&lt;nat8, string&gt;(0, 100, 1_000);
 <p>Each <code>StableBTreeMap</code> instance must have a unique <code>memory id</code>. Once a <code>memory id</code> is allocated, it cannot be used with a different <code>StableBTreeMap</code>. This means you can't create another <code>StableBTreeMap</code> using the same <code>memory id</code>, and you can't change the key or value types of an existing <code>StableBTreeMap</code>. <a href="https://github.com/demergent-labs/azle/issues/843">This problem will be addressed</a>.</p>
 <p>Here's an example showing all of the basic <code>StableBTreeMap</code> operations:</p>
 <pre><code class="language-typescript">import {
+    Alias,
     InsertError,
     nat64,
     nat8,
     Opt,
     $query,
+    Result,
     StableBTreeMap,
-    $update,
-    Variant
+    $update
 } from 'azle';
 
 type Key = nat8;
 type Value = string;
 
-type InsertResult = Variant&lt;{
-    Ok: Opt&lt;Value&gt;;
-    Err: InsertError;
-}&gt;;
+type InsertResult&lt;T&gt; = Alias&lt;Result&lt;Opt&lt;T&gt;, InsertError&gt;&gt;;
 
 let map = new StableBTreeMap&lt;Key, Value&gt;(0, 100, 1_000);
 
@@ -1695,7 +1693,7 @@ export function get(key: Key): Opt&lt;Value&gt; {
 }
 
 $update;
-export function insert(key: Key, value: Value): InsertResult {
+export function insert(key: Key, value: Value): InsertResult&lt;Value&gt; {
     return map.insert(key, value);
 }
 
@@ -1740,6 +1738,7 @@ export function values(): Value[] {
     Principal,
     $query,
     Record,
+    Result,
     StableBTreeMap,
     $update,
     Variant
@@ -1764,10 +1763,7 @@ let users = new StableBTreeMap&lt;Principal, User&gt;(0, 38, 100_000);
 let recordings = new StableBTreeMap&lt;Principal, Recording&gt;(1, 38, 5_000_000);
 
 $update;
-export function createUser(username: string): Variant&lt;{
-    Ok: User;
-    Err: InsertError;
-}&gt; {
+export function createUser(username: string): Result&lt;User, InsertError&gt; {
     const id = generateId();
     const user: User = {
         id,
@@ -1795,12 +1791,12 @@ export function readUserById(id: Principal): Opt&lt;User&gt; {
 }
 
 $update;
-export function deleteUser(id: Principal): Variant&lt;{
-    Ok: User;
-    Err: Variant&lt;{
+export function deleteUser(id: Principal): Result&lt;
+    User,
+    Variant&lt;{
         UserDoesNotExist: Principal;
-    }&gt;;
-}&gt; {
+    }&gt;
+&gt; {
     const user = users.get(id);
 
     if (user === null) {
@@ -1827,13 +1823,13 @@ export function createRecording(
     audio: blob,
     name: string,
     userId: Principal
-): Variant&lt;{
-    Ok: Recording;
-    Err: Variant&lt;{
+): Result&lt;
+    Recording,
+    Variant&lt;{
         InsertError: InsertError;
         UserDoesNotExist: Principal;
-    }&gt;;
-}&gt; {
+    }&gt;
+&gt; {
     const user = users.get(userId);
 
     if (user === null) {
@@ -1893,14 +1889,14 @@ export function readRecordingById(id: Principal): Opt&lt;Recording&gt; {
 }
 
 $update;
-export function deleteRecording(id: Principal): Variant&lt;{
-    Ok: Recording;
-    Err: Variant&lt;{
+export function deleteRecording(id: Principal): Result&lt;
+    Recording,
+    Variant&lt;{
         InsertError: InsertError;
         RecordingDoesNotExist: Principal;
         UserDoesNotExist: Principal;
-    }&gt;;
-}&gt; {
+    }&gt;
+&gt; {
     const recording = recordings.get(id);
 
     if (recording === null) {
@@ -1979,7 +1975,7 @@ let recordings = new StableBTreeMap&lt;Principal, Recording&gt;(1, 38, 5_000_000
 <p>Notice that each <code>StableBTreeMap</code> has a unique <code>memory id</code>. The maximum key and value sizes are also set according to the expected application usage.</p>
 <p>You can figure out the appropriate maximum key and value sizes by reasoning about your application and engaging in some trial and error using the <code>insert</code> method. Calling <code>insert</code> on a <code>StableBTreeMap</code> returns an <code>InsertResult</code> variant that looks like this:</p>
 <pre><code class="language-typescript">type InsertResult&lt;T&gt; = Variant&lt;{
-    Ok: T;
+    Ok: Opt&lt;T&gt;;
     Err: InsertError;
 }&gt;;
 
@@ -2064,10 +2060,10 @@ class TokenCanister extends Service {
     CallResult,
     nat64,
     Principal,
+    Result,
     Service,
     serviceUpdate,
-    $update,
-    Variant
+    $update
 } from 'azle';
 
 class TokenCanister extends Service {
@@ -2083,12 +2079,7 @@ $update;
 export async function payout(
     to: Principal,
     amount: nat64
-): Promise&lt;
-    Variant&lt;{
-        Ok: nat64;
-        Err: string;
-    }&gt;
-&gt; {
+): Promise&lt;Result&lt;nat64, string&gt;&gt; {
     return await tokenCanister.transfer(to, amount).call();
 }
 </code></pre>
@@ -2096,7 +2087,15 @@ export async function payout(
 <p>The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a <code>CallResult</code>. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a <code>try...catch</code> most likely won't do anything useful.</p>
 <p>Let's add to our example code and explore adding some practical result-based error-handling to stop people from stealing tokens.</p>
 <p><code>token_canister</code>:</p>
-<pre><code class="language-typescript">import { ic, nat64, Principal, StableBTreeMap, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import {
+    ic,
+    nat64,
+    Principal,
+    Result,
+    StableBTreeMap,
+    $update,
+    Variant
+} from 'azle';
 
 let accounts = new StableBTreeMap&lt;Principal, nat64&gt;(0, 38, 15);
 
@@ -2104,12 +2103,14 @@ $update;
 export function transfer(
     to: Principal,
     amount: nat64
-): Variant&lt;{
-    Ok: nat64;
-    Err: Variant&lt;{
-        InsufficientBalance: nat64;
-    }&gt;;
-}&gt; {
+): Variant&lt;
+    Result&lt;
+        nat64,
+        Variant&lt;{
+            InsufficientBalance: nat64;
+        }&gt;
+    &gt;
+&gt; {
     const from = ic.caller();
 
     const fromBalance = accounts.get(from) ?? 0n;
@@ -2138,6 +2139,7 @@ export function transfer(
     match,
     nat64,
     Principal,
+    Result,
     Service,
     serviceUpdate,
     $update,
@@ -2150,12 +2152,12 @@ class TokenCanister extends Service {
         to: Principal,
         amount: nat64
     ) =&gt; CallResult&lt;
-        Variant&lt;{
-            Ok: nat64;
-            Err: Variant&lt;{
+        Result&lt;
+            nat64,
+            Variant&lt;{
                 InsufficientBalance: nat64;
-            }&gt;;
-        }&gt;
+            }&gt;
+        &gt;
     &gt;;
 }
 
@@ -2167,12 +2169,7 @@ $update;
 export async function payout(
     to: Principal,
     amount: nat64
-): Promise&lt;
-    Variant&lt;{
-        Ok: nat64;
-        Err: string;
-    }&gt;
-&gt; {
+): Promise&lt;Result&lt;nat64, string&gt;&gt; {
     const CallResult = await tokenCanister.transfer(to, amount).call();
 
     return match(CallResult, {
@@ -2193,9 +2190,9 @@ export async function payout(
     CallResult,
     Principal,
     $query,
+    Result,
     Service,
-    serviceQuery,
-    Variant
+    serviceQuery
 } from 'azle';
 
 class SomeCanister extends Service {
@@ -2208,12 +2205,7 @@ const someCanister = new SomeCanister(
 );
 
 $query;
-export async function querySomeCanister(): Promise&lt;
-    Variant&lt;{
-        Ok: boolean;
-        Err: string;
-    }&gt;
-&gt; {
+export async function querySomeCanister(): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     return await someCanister.queryForBoolean().call();
 }
 </code></pre>
@@ -2223,10 +2215,10 @@ export async function querySomeCanister(): Promise&lt;
     CallResult,
     Principal,
     RejectionCode,
+    Result,
     Service,
     serviceUpdate,
-    $update,
-    Variant
+    $update
 } from 'azle';
 
 class SomeCanister extends Service {
@@ -2239,10 +2231,7 @@ const someCanister = new SomeCanister(
 );
 
 $update;
-export function sendNotification(): Variant&lt;{
-    Ok: null;
-    Err: RejectionCode;
-}&gt; {
+export function sendNotification(): Result&lt;null, RejectionCode&gt; {
     return someCanister.receiveNotification().notify();
 }
 </code></pre>
@@ -2251,10 +2240,10 @@ export function sendNotification(): Variant&lt;{
     CallResult,
     Principal,
     RejectionCode,
+    Result,
     Service,
     serviceUpdate,
-    $update,
-    Variant
+    $update
 } from 'azle';
 
 class SomeCanister extends Service {
@@ -2267,10 +2256,7 @@ const someCanister = new SomeCanister(
 );
 
 $update;
-export function sendNotification(): Variant&lt;{
-    Ok: null;
-    Err: RejectionCode;
-}&gt; {
+export function sendNotification(): Result&lt;null, RejectionCode&gt; {
     return someCanister.receiveNotification().cycles(1_000_000n).notify();
 }
 </code></pre>
@@ -2467,16 +2453,11 @@ export function ethTransform(args: HttpTransformArgs): HttpResponse {
 <div style="break-before: page; page-break-before: always;"></div><h1 id="management-canister"><a class="header" href="#management-canister">Management Canister</a></h1>
 <p>This chapter is a work in progress.</p>
 <p>You can access the management canister like this:</p>
-<pre><code class="language-typescript">import { blob, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { blob, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function randomBytes(): Promise&lt;
-    Variant&lt;{
-        Ok: blob;
-        Err: string;
-    }&gt;
-&gt; {
+export async function randomBytes(): Promise&lt;Result&lt;blob, string&gt;&gt; {
     return await managementCanister.raw_rand().call();
 }
 </code></pre>
@@ -2763,10 +2744,10 @@ export function argDataRawSize(
     CallResult,
     nat64,
     Principal,
+    Result,
     Service,
     serviceUpdate,
-    $update,
-    Variant
+    $update
 } from 'azle';
 
 class TokenCanister extends Service {
@@ -2782,12 +2763,7 @@ $update;
 export async function payout(
     to: Principal,
     amount: nat64
-): Promise&lt;
-    Variant&lt;{
-        Ok: nat64;
-        Err: string;
-    }&gt;
-&gt; {
+): Promise&lt;Result&lt;nat64, string&gt;&gt; {
     return await tokenCanister.transfer(to, amount).call();
 }
 </code></pre>
@@ -2798,7 +2774,7 @@ export async function payout(
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/call_raw">call_raw</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, match, nat64, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { ic, match, nat64, Principal, Result, $update } from 'azle';
 
 $update;
 export async function executeCallRaw(
@@ -2806,12 +2782,7 @@ export async function executeCallRaw(
     method: string,
     candidArgs: string,
     payment: nat64
-): Promise&lt;
-    Variant&lt;{
-        Ok: string;
-        Err: string;
-    }&gt;
-&gt; {
+): Promise&lt;Result&lt;string, string&gt;&gt; {
     const callResult = await ic.callRaw(
         canisterId,
         method,
@@ -2833,7 +2804,7 @@ export async function executeCallRaw(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/call_raw">call_raw</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, match, nat, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { ic, match, nat, Principal, Result, $update } from 'azle';
 
 $update;
 export async function executeCallRaw128(
@@ -2841,12 +2812,7 @@ export async function executeCallRaw128(
     method: string,
     candidArgs: string,
     payment: nat
-): Promise&lt;
-    Variant&lt;{
-        Ok: string;
-        Err: string;
-    }&gt;
-&gt; {
+): Promise&lt;Result&lt;string, string&gt;&gt; {
     const callResult = await ic.callRaw128(
         canisterId,
         method,
@@ -2873,14 +2839,14 @@ export async function executeCallRaw128(
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa">threshold_ecdsa</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ok, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { blob, Principal, Result, $update } from 'azle';
 import { management_canister } from 'azle/canisters/management';
 
 $update;
 export async function executeInstallCode(
     canisterId: Principal,
     wasmModule: blob
-): Promise&lt;DefaultResult&gt; {
+): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     const callResult = await managementCanister
         .install_code({
             mode: {
@@ -2905,14 +2871,14 @@ export async function executeInstallCode(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, match, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { blob, match, Principal, Result, $update } from 'azle';
 import { management_canister } from 'azle/canisters/management';
 
 $update;
 export async function executeInstallCode(
     canisterId: Principal,
     wasmModule: blob
-): Promise&lt;DefaultResult&gt; {
+): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     const callResult = await managementCanister
         .install_code({
             mode: {
@@ -3047,12 +3013,12 @@ export function receiveCycles128(): nat {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, match, nat64, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { ic, match, nat64, Result, $update } from 'azle';
 import { cyclesCanister } from '../cycles';
 
 // Reports the number of cycles returned from the Cycles canister
 $update;
-export async function sendCycles(): Promise&lt;SendCyclesResult&gt; {
+export async function sendCycles(): Promise&lt;Result&lt;nat64, string&gt;&gt; {
     const result = await cyclesCanister
         .receiveCycles()
         .cycles(1_000_000n)
@@ -3070,12 +3036,12 @@ export async function sendCycles(): Promise&lt;SendCyclesResult&gt; {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat, ok, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { ic, match, nat, Result, $update } from 'azle';
 import { cyclesCanister } from '../cycles';
 
 // Reports the number of cycles returned from the Cycles canister
 $update;
-export async function sendCycles128(): Promise&lt;SendCyclesResult128&gt; {
+export async function sendCycles128(): Promise&lt;Result&lt;nat, string&gt;&gt; {
     const result = await cyclesCanister
         .receiveCycles128()
         .cycles128(1_000_000n)
@@ -3094,7 +3060,7 @@ export async function sendCycles128(): Promise&lt;SendCyclesResult128&gt; {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cross_canister_calls">cross_canister_calls</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { Principal, RejectionCode, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { NotifyResult, Principal, $update } from 'azle';
 import { Canister2 } from '../canister2/types';
 
 const canister2 = new Canister2(
@@ -3102,10 +3068,7 @@ const canister2 = new Canister2(
 );
 
 $update;
-export function sendNotification(): Variant&lt;{
-    Ok: null;
-    Err: RejectionCode;
-}&gt; {
+export function sendNotification(): NotifyResult {
     return canister2.receiveNotification('This is the notification').notify();
 }
 </code></pre>
@@ -3115,28 +3078,16 @@ export function sendNotification(): Variant&lt;{
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/notify_raw">notify_raw</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, match, Principal, RejectionCode, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { ic, NotifyResult, Principal, $update } from 'azle';
 
 $update;
-export function sendNotification(): Variant&lt;{
-    Ok: boolean;
-    Err: RejectionCode;
-}&gt; {
-    const result = ic.notifyRaw(
+export function sendNotification(): NotifyResult {
+    return ic.notifyRaw(
         Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'),
         'receiveNotification',
         Uint8Array.from(ic.candidEncode('()')),
         0n
     );
-
-    return match(result, {
-        Ok: () =&gt; ({
-            Ok: true
-        }),
-        Err: (err) =&gt; ({
-            Err: err
-        })
-    });
 }
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="notify-with-payment-128"><a class="header" href="#notify-with-payment-128">notify with payment 128</a></h1>
@@ -4457,7 +4408,7 @@ export function setMessage(newMessage): void {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
 </ul>
-<pre><code class="language-typescript">import { $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { Result, $update } from 'azle';
 import {
     BitcoinNetwork,
     managementCanister,
@@ -4467,12 +4418,9 @@ import {
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
 $update;
-export async function getBalance(address: string): Promise&lt;
-    Variant&lt;{
-        Ok: Satoshi;
-        Err: string;
-    }&gt;
-&gt; {
+export async function getBalance(
+    address: string
+): Promise&lt;Result&lt;Satoshi, string&gt;&gt; {
     return await managementCanister
         .bitcoin_get_balance({
             address,
@@ -4489,7 +4437,7 @@ export async function getBalance(address: string): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
 </ul>
-<pre><code class="language-typescript">import { $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { Result, $update } from 'azle';
 import {
     BitcoinNetwork,
     managementCanister,
@@ -4500,10 +4448,7 @@ const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
 $update;
 export async function getCurrentFeePercentiles(): Promise&lt;
-    Variant&lt;{
-        Ok: MillisatoshiPerByte[];
-        Err: string;
-    }&gt;
+    Result&lt;MillisatoshiPerByte[], string&gt;
 &gt; {
     return await managementCanister
         .bitcoin_get_current_fee_percentiles({
@@ -4519,7 +4464,7 @@ export async function getCurrentFeePercentiles(): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
 </ul>
-<pre><code class="language-typescript">import { $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { Result, $update } from 'azle';
 import {
     BitcoinNetwork,
     GetUtxosResult,
@@ -4529,12 +4474,9 @@ import {
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
 $update;
-export async function getUtxos(address: string): Promise&lt;
-    Variant&lt;{
-        Ok: GetUtxosResult;
-        Err: string;
-    }&gt;
-&gt; {
+export async function getUtxos(
+    address: string
+): Promise&lt;Result&lt;GetUtxosResult, string&gt;&gt; {
     return await managementCanister
         .bitcoin_get_utxos({
             address,
@@ -4548,30 +4490,32 @@ export async function getUtxos(address: string): Promise&lt;
 <div style="break-before: page; page-break-before: always;"></div><h1 id="bitcoin_send_transaction"><a class="header" href="#bitcoin_send_transaction">bitcoin_send_transaction</a></h1>
 <p>This section is a work in progress.</p>
 <p>Examples:</p>
-<pre><code class="language-typescript">import { blob, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { blob, match, Result, $update } from 'azle';
 import { BitcoinNetwork, managementCanister } from 'azle/canisters/management';
 
 const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;
 const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 
 $update;
-export async function sendTransaction(transaction: blob): Promise&lt;
-    Variant&lt;{
-        Ok: null;
-        Err: string;
-    }&gt;
-&gt; {
+export async function sendTransaction(
+    transaction: blob
+): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     const transactionFee =
         BITCOIN_BASE_TRANSACTION_COST +
         BigInt(transaction.length) * BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;
 
-    return await managementCanister
+    const callResult = await managementCanister
         .bitcoin_send_transaction({
             transaction,
             network: BitcoinNetwork.Regtest
         })
         .cycles(transactionFee)
         .call();
+
+    return match(callResult, {
+        Ok: () =&gt; ({ Ok: true }),
+        Err: (err) =&gt; ({ Err: err })
+    });
 }
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister_status"><a class="header" href="#canister_status">canister_status</a></h1>
@@ -4580,7 +4524,7 @@ export async function sendTransaction(transaction: blob): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { match, Result, $update } from 'azle';
 import {
     CanisterStatusArgs,
     CanisterStatusResult,
@@ -4588,12 +4532,9 @@ import {
 } from 'azle/canisters/management';
 
 $update;
-export async function getCanisterStatus(args: CanisterStatusArgs): Promise&lt;
-    Variant&lt;{
-        Ok: CanisterStatusResult;
-        Err: string;
-    }&gt;
-&gt; {
+export async function getCanisterStatus(
+    args: CanisterStatusArgs
+): Promise&lt;Result&lt;CanisterStatusResult, string&gt;&gt; {
     const canisterStatusResultCallResult = await managementCanister
         .canister_status({
             canister_id: args.canister_id
@@ -4612,7 +4553,7 @@ export async function getCanisterStatus(args: CanisterStatusArgs): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { match, Result, $update } from 'azle';
 import {
     CreateCanisterResult,
     managementCanister
@@ -4620,10 +4561,7 @@ import {
 
 $update;
 export async function executeCreateCanister(): Promise&lt;
-    Variant&lt;{
-        Ok: CreateCanisterResult;
-        Err: string;
-    }&gt;
+    Result&lt;CreateCanisterResult, string&gt;
 &gt; {
     const createCanisterResultCallResult = await managementCanister
         .create_canister({
@@ -4650,16 +4588,13 @@ export async function executeCreateCanister(): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { match, Principal, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function executeDeleteCanister(canisterId: Principal): Promise&lt;
-    Variant&lt;{
-        Ok: boolean;
-        Err: string;
-    }&gt;
-&gt; {
+export async function executeDeleteCanister(
+    canisterId: Principal
+): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     const callResult = await managementCanister
         .delete_canister({
             canister_id: canisterId
@@ -4678,16 +4613,13 @@ export async function executeDeleteCanister(canisterId: Principal): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { match, Principal, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function executeDepositCycles(canisterId: Principal): Promise&lt;
-    Variant&lt;{
-        Ok: boolean;
-        Err: string;
-    }&gt;
-&gt; {
+export async function executeDepositCycles(
+    canisterId: Principal
+): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     const callResult = await managementCanister
         .deposit_cycles({
             canister_id: canisterId
@@ -4707,15 +4639,12 @@ export async function executeDepositCycles(canisterId: Principal): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa">threshold_ecdsa</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, match, Record, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { blob, ic, match, Record, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
 export async function publicKey(): Promise&lt;
-    Variant&lt;{
-        Ok: Record&lt;{ publicKey: blob }&gt;;
-        Err: string;
-    }&gt;
+    Result&lt;Record&lt;{ publicKey: blob }&gt;, string&gt;
 &gt; {
     const caller = ic.caller().toUint8Array();
     const publicKeyResult = await managementCanister
@@ -4796,19 +4725,14 @@ export function xkcdTransform(args: HttpTransformArgs): HttpResponse {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, match, Principal, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, match, Principal, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
 export async function executeInstallCode(
     canisterId: Principal,
     wasmModule: blob
-): Promise&lt;
-    Variant&lt;{
-        Ok: boolean;
-        Err: string;
-    }&gt;
-&gt; {
+): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     const callResult = await managementCanister
         .install_code({
             mode: {
@@ -4867,19 +4791,14 @@ export async function provisionalCreateCanisterWithCycles(): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, nat, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { match, nat, Principal, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
 export async function provisionalTopUpCanister(
     canisterId: Principal,
     amount: nat
-): Promise&lt;
-    Variant&lt;{
-        Ok: boolean;
-        Err: string;
-    }&gt;
-&gt; {
+): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     const callResult = await managementCanister
         .provisional_top_up_canister({
             canister_id: canisterId,
@@ -4921,16 +4840,13 @@ export async function getRandomness(): Promise&lt;blob&gt; {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, match, Record, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { blob, ic, match, Record, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function sign(messageHash: blob): Promise&lt;
-    Variant&lt;{
-        Ok: Record&lt;{ signature: blob }&gt;;
-        Err: string;
-    }&gt;
-&gt; {
+export async function sign(
+    messageHash: blob
+): Promise&lt;Result&lt;Record&lt;{ signature: blob }&gt;, string&gt;&gt; {
     if (messageHash.length !== 32) {
         ic.trap('messageHash must be 32 bytes');
     }
@@ -4962,16 +4878,13 @@ export async function sign(messageHash: blob): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { match, Principal, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function executeStartCanister(canisterId: Principal): Promise&lt;
-    Variant&lt;{
-        Ok: boolean;
-        Err: string;
-    }&gt;
-&gt; {
+export async function executeStartCanister(
+    canisterId: Principal
+): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     const callResult = await managementCanister
         .start_canister({
             canister_id: canisterId
@@ -4990,16 +4903,13 @@ export async function executeStartCanister(canisterId: Principal): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { match, Principal, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function executeStopCanister(canisterId: Principal): Promise&lt;
-    Variant&lt;{
-        Ok: boolean;
-        Err: string;
-    }&gt;
-&gt; {
+export async function executeStopCanister(
+    canisterId: Principal
+): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     const callResult = await managementCanister
         .stop_canister({
             canister_id: canisterId
@@ -5018,16 +4928,13 @@ export async function executeStopCanister(canisterId: Principal): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { match, Principal, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function executeUninstallCode(canisterId: Principal): Promise&lt;
-    Variant&lt;{
-        Ok: boolean;
-        Err: string;
-    }&gt;
-&gt; {
+export async function executeUninstallCode(
+    canisterId: Principal
+): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     const callResult = await managementCanister
         .uninstall_code({
             canister_id: canisterId
@@ -5046,16 +4953,13 @@ export async function executeUninstallCode(canisterId: Principal): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { match, Principal, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function executeUpdateSettings(canisterId: Principal): Promise&lt;
-    Variant&lt;{
-        Ok: boolean;
-        Err: string;
-    }&gt;
-&gt; {
+export async function executeUpdateSettings(
+    canisterId: Principal
+): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     const callResult = await managementCanister
         .update_settings({
             canister_id: canisterId,

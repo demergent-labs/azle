@@ -147,7 +147,7 @@
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
 </ul>
-<pre><code class="language-typescript">import { $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { Result, $update } from 'azle';
 import {
     BitcoinNetwork,
     GetUtxosResult,
@@ -157,12 +157,9 @@ import {
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
 $update;
-export async function getUtxos(address: string): Promise&lt;
-    Variant&lt;{
-        Ok: GetUtxosResult;
-        Err: string;
-    }&gt;
-&gt; {
+export async function getUtxos(
+    address: string
+): Promise&lt;Result&lt;GetUtxosResult, string&gt;&gt; {
     return await managementCanister
         .bitcoin_get_utxos({
             address,

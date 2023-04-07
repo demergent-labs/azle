@@ -166,23 +166,21 @@ let map = new StableBTreeMap&lt;nat8, string&gt;(0, 100, 1_000);
 <p>Each <code>StableBTreeMap</code> instance must have a unique <code>memory id</code>. Once a <code>memory id</code> is allocated, it cannot be used with a different <code>StableBTreeMap</code>. This means you can't create another <code>StableBTreeMap</code> using the same <code>memory id</code>, and you can't change the key or value types of an existing <code>StableBTreeMap</code>. <a href="https://github.com/demergent-labs/azle/issues/843">This problem will be addressed</a>.</p>
 <p>Here's an example showing all of the basic <code>StableBTreeMap</code> operations:</p>
 <pre><code class="language-typescript">import {
+    Alias,
     InsertError,
     nat64,
     nat8,
     Opt,
     $query,
+    Result,
     StableBTreeMap,
-    $update,
-    Variant
+    $update
 } from 'azle';
 
 type Key = nat8;
 type Value = string;
 
-type InsertResult = Variant&lt;{
-    Ok: Opt&lt;Value&gt;;
-    Err: InsertError;
-}&gt;;
+type InsertResult&lt;T&gt; = Alias&lt;Result&lt;Opt&lt;T&gt;, InsertError&gt;&gt;;
 
 let map = new StableBTreeMap&lt;Key, Value&gt;(0, 100, 1_000);
 
@@ -197,7 +195,7 @@ export function get(key: Key): Opt&lt;Value&gt; {
 }
 
 $update;
-export function insert(key: Key, value: Value): InsertResult {
+export function insert(key: Key, value: Value): InsertResult&lt;Value&gt; {
     return map.insert(key, value);
 }
 
@@ -242,6 +240,7 @@ export function values(): Value[] {
     Principal,
     $query,
     Record,
+    Result,
     StableBTreeMap,
     $update,
     Variant
@@ -266,10 +265,7 @@ let users = new StableBTreeMap&lt;Principal, User&gt;(0, 38, 100_000);
 let recordings = new StableBTreeMap&lt;Principal, Recording&gt;(1, 38, 5_000_000);
 
 $update;
-export function createUser(username: string): Variant&lt;{
-    Ok: User;
-    Err: InsertError;
-}&gt; {
+export function createUser(username: string): Result&lt;User, InsertError&gt; {
     const id = generateId();
     const user: User = {
         id,
@@ -297,12 +293,12 @@ export function readUserById(id: Principal): Opt&lt;User&gt; {
 }
 
 $update;
-export function deleteUser(id: Principal): Variant&lt;{
-    Ok: User;
-    Err: Variant&lt;{
+export function deleteUser(id: Principal): Result&lt;
+    User,
+    Variant&lt;{
         UserDoesNotExist: Principal;
-    }&gt;;
-}&gt; {
+    }&gt;
+&gt; {
     const user = users.get(id);
 
     if (user === null) {
@@ -329,13 +325,13 @@ export function createRecording(
     audio: blob,
     name: string,
     userId: Principal
-): Variant&lt;{
-    Ok: Recording;
-    Err: Variant&lt;{
+): Result&lt;
+    Recording,
+    Variant&lt;{
         InsertError: InsertError;
         UserDoesNotExist: Principal;
-    }&gt;;
-}&gt; {
+    }&gt;
+&gt; {
     const user = users.get(userId);
 
     if (user === null) {
@@ -395,14 +391,14 @@ export function readRecordingById(id: Principal): Opt&lt;Recording&gt; {
 }
 
 $update;
-export function deleteRecording(id: Principal): Variant&lt;{
-    Ok: Recording;
-    Err: Variant&lt;{
+export function deleteRecording(id: Principal): Result&lt;
+    Recording,
+    Variant&lt;{
         InsertError: InsertError;
         RecordingDoesNotExist: Principal;
         UserDoesNotExist: Principal;
-    }&gt;;
-}&gt; {
+    }&gt;
+&gt; {
     const recording = recordings.get(id);
 
     if (recording === null) {
@@ -481,7 +477,7 @@ let recordings = new StableBTreeMap&lt;Principal, Recording&gt;(1, 38, 5_000_000
 <p>Notice that each <code>StableBTreeMap</code> has a unique <code>memory id</code>. The maximum key and value sizes are also set according to the expected application usage.</p>
 <p>You can figure out the appropriate maximum key and value sizes by reasoning about your application and engaging in some trial and error using the <code>insert</code> method. Calling <code>insert</code> on a <code>StableBTreeMap</code> returns an <code>InsertResult</code> variant that looks like this:</p>
 <pre><code class="language-typescript">type InsertResult&lt;T&gt; = Variant&lt;{
-    Ok: T;
+    Ok: Opt&lt;T&gt;;
     Err: InsertError;
 }&gt;;
 

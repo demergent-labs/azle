@@ -147,7 +147,7 @@
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
 </ul>
-<pre><code class="language-typescript">import { $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { Result, $update } from 'azle';
 import {
     BitcoinNetwork,
     managementCanister,
@@ -158,10 +158,7 @@ const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
 $update;
 export async function getCurrentFeePercentiles(): Promise&lt;
-    Variant&lt;{
-        Ok: MillisatoshiPerByte[];
-        Err: string;
-    }&gt;
+    Result&lt;MillisatoshiPerByte[], string&gt;
 &gt; {
     return await managementCanister
         .bitcoin_get_current_fee_percentiles({

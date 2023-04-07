@@ -7,7 +7,7 @@ Examples:
 -   [bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/bitcoin)
 
 ```typescript
-import { $update, Variant } from 'azle';
+import { Result, $update } from 'azle';
 import {
     BitcoinNetwork,
     managementCanister,
@@ -17,12 +17,9 @@ import {
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
 $update;
-export async function getBalance(address: string): Promise<
-    Variant<{
-        Ok: Satoshi;
-        Err: string;
-    }>
-> {
+export async function getBalance(
+    address: string
+): Promise<Result<Satoshi, string>> {
     return await managementCanister
         .bitcoin_get_balance({
             address,

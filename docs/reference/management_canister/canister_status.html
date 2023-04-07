@@ -147,7 +147,7 @@
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { match, Result, $update } from 'azle';
 import {
     CanisterStatusArgs,
     CanisterStatusResult,
@@ -155,12 +155,9 @@ import {
 } from 'azle/canisters/management';
 
 $update;
-export async function getCanisterStatus(args: CanisterStatusArgs): Promise&lt;
-    Variant&lt;{
-        Ok: CanisterStatusResult;
-        Err: string;
-    }&gt;
-&gt; {
+export async function getCanisterStatus(
+    args: CanisterStatusArgs
+): Promise&lt;Result&lt;CanisterStatusResult, string&gt;&gt; {
     const canisterStatusResultCallResult = await managementCanister
         .canister_status({
             canister_id: args.canister_id

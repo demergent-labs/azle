@@ -147,15 +147,12 @@
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa">threshold_ecdsa</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, match, Record, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { blob, ic, match, Record, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
 export async function publicKey(): Promise&lt;
-    Variant&lt;{
-        Ok: Record&lt;{ publicKey: blob }&gt;;
-        Err: string;
-    }&gt;
+    Result&lt;Record&lt;{ publicKey: blob }&gt;, string&gt;
 &gt; {
     const caller = ic.caller().toUint8Array();
     const publicKeyResult = await managementCanister

@@ -147,16 +147,13 @@
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, match, Record, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { blob, ic, match, Record, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function sign(messageHash: blob): Promise&lt;
-    Variant&lt;{
-        Ok: Record&lt;{ signature: blob }&gt;;
-        Err: string;
-    }&gt;
-&gt; {
+export async function sign(
+    messageHash: blob
+): Promise&lt;Result&lt;Record&lt;{ signature: blob }&gt;, string&gt;&gt; {
     if (messageHash.length !== 32) {
         ic.trap('messageHash must be 32 bytes');
     }

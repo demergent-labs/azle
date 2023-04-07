@@ -147,12 +147,12 @@
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat, ok, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { ic, match, nat, Result, $update } from 'azle';
 import { cyclesCanister } from '../cycles';
 
 // Reports the number of cycles returned from the Cycles canister
 $update;
-export async function sendCycles128(): Promise&lt;SendCyclesResult128&gt; {
+export async function sendCycles128(): Promise&lt;Result&lt;nat, string&gt;&gt; {
     const result = await cyclesCanister
         .receiveCycles128()
         .cycles128(1_000_000n)

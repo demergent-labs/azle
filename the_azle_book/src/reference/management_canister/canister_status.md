@@ -7,7 +7,7 @@ Examples:
 -   [management_canister](https://github.com/demergent-labs/azle/tree/main/examples/management_canister)
 
 ```typescript
-import { $update, Variant } from 'azle';
+import { match, Result, $update } from 'azle';
 import {
     CanisterStatusArgs,
     CanisterStatusResult,
@@ -15,12 +15,9 @@ import {
 } from 'azle/canisters/management';
 
 $update;
-export async function getCanisterStatus(args: CanisterStatusArgs): Promise<
-    Variant<{
-        Ok: CanisterStatusResult;
-        Err: string;
-    }>
-> {
+export async function getCanisterStatus(
+    args: CanisterStatusArgs
+): Promise<Result<CanisterStatusResult, string>> {
     const canisterStatusResultCallResult = await managementCanister
         .canister_status({
             canister_id: args.canister_id
