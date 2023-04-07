@@ -19,7 +19,8 @@ import {
     Func,
     $query,
     Record,
-    $update
+    $update,
+    Vec
 } from 'azle';
 
 type InlineExample = Record<{
@@ -49,7 +50,7 @@ type Boolean = Alias<boolean>;
 type Boolean2 = Alias<Boolean>;
 type Boolean3 = Alias<Boolean2>;
 
-type BooleanArray = Alias<Boolean[]>;
+type BooleanArray = Alias<Vec<Boolean>>;
 
 type SimpleRecord = Record<{
     one: boolean;
@@ -81,8 +82,8 @@ type ComplexRecord = Record<{
     one: nat16;
     two: boolean;
     three: SimpleTypeAlias;
-    four: Boolean[];
-    five: SimpleRecord[];
+    four: Vec<Boolean>;
+    five: Vec<SimpleRecord>;
     six: Record<{ one: string; two: SimpleRecord }>;
     seven: RecordWithoutDirectInlineRecords;
 }>;
@@ -203,7 +204,7 @@ export function in_line(param: Record<{ one: nat16; two: nat16 }>): Record<{
 
 $update;
 export function not_so_simple(
-    one: int8[],
+    one: Vec<int8>,
     two: int16,
     three: int32,
     four: int64,
@@ -221,7 +222,7 @@ export function not_so_simple(
 
 // TODO Why can't we do 2d arrays of principals??
 // $update;
-// export function getPrincipals(principal_lists: Principal[][]): void {}
+// export function getPrincipals(principal_lists: Vec<Vec<Principal>>): void {}
 
 type RecordWithInline = Record<{
     inline_record: Record<{ one: boolean; two: boolean; three: boolean }>;
@@ -297,7 +298,7 @@ export function option_test(
     }>
 ): void {}
 
-type ArrayAlias = Alias<Boolean[]>;
+type ArrayAlias = Alias<Vec<Boolean>>;
 type InlineArrayAlias = Alias<Record<{ inline_bool: boolean }>[]>;
 type InlineArrayStruct = Record<{
     arr: Record<{ inline_string: String }>[];

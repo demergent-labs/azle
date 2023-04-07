@@ -1,4 +1,4 @@
-import { nat32, $query, $update } from 'azle';
+import { nat32, $query, $update, Vec } from 'azle';
 import { Thread } from './candid_types';
 import { getPostFromStatePost } from './posts';
 import { state, StateThread, StateUser } from './state';
@@ -29,7 +29,7 @@ export function createThread(
 }
 
 $query;
-export function getAllThreads(joinDepth: nat32): Thread[] {
+export function getAllThreads(joinDepth: nat32): Vec<Thread> {
     return Object.values(state.threads).map((stateThread) =>
         getThreadFromStateThread(stateThread, joinDepth)
     );

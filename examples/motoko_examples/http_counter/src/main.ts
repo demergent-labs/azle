@@ -11,7 +11,8 @@ import {
     StableBTreeMap,
     Tuple,
     $update,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 import encodeUtf8 from 'encode-utf8';
 
@@ -40,7 +41,7 @@ type HeaderField = Tuple<[string, string]>;
 
 type HttpResponse = Record<{
     status_code: nat16;
-    headers: HeaderField[];
+    headers: Vec<HeaderField>;
     body: blob;
     streaming_strategy: Opt<StreamingStrategy>;
     upgrade: Opt<boolean>;
@@ -49,7 +50,7 @@ type HttpResponse = Record<{
 type HttpRequest = Record<{
     method: string;
     url: string;
-    headers: HeaderField[];
+    headers: Vec<HeaderField>;
     body: blob;
 }>;
 

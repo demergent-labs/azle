@@ -1,4 +1,4 @@
-import { ic, nat, nat64, Opt, $query, Record, $update } from 'azle';
+import { ic, nat, nat64, Opt, $query, Record, $update, Vec } from 'azle';
 
 //#region Performance
 type PerfResult = Record<{
@@ -30,7 +30,7 @@ let todos: Map<nat, ToDo> = new Map();
 let nextId: nat = 0n;
 
 $query;
-export function getTodos(): ToDo[] {
+export function getTodos(): Vec<ToDo> {
     return Array.from(todos.values());
 }
 

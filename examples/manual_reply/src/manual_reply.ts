@@ -11,7 +11,8 @@ import {
     Record,
     reserved,
     $update,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 
 type Options = Variant<{
@@ -30,7 +31,7 @@ type RawReply = Record<{
 
 type Element = Record<{
     id: string;
-    orbitals: Orbital[];
+    orbitals: Vec<Orbital>;
     state: State;
 }>;
 

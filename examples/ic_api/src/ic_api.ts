@@ -22,7 +22,7 @@ import {
 // };
 
 // // returns the argument data as an array.
-// export function argDataZeroParams(): null[] {
+// export function argDataZeroParams(): Vec<null> {
 //     return ic.argData();
 // }
 //

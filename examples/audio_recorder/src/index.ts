@@ -11,13 +11,14 @@ import {
     Result,
     StableBTreeMap,
     $update,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 
 type User = Record<{
     id: Principal;
     createdAt: nat64;
-    recordingIds: Principal[];
+    recordingIds: Vec<Principal>;
     username: string;
 }>;
 
@@ -51,7 +52,7 @@ export function createUser(username: string): Result<User, InsertError> {
 }
 
 $query;
-export function readUsers(): User[] {
+export function readUsers(): Vec<User> {
     return users.values();
 }
 
@@ -149,7 +150,7 @@ export function createRecording(
 }
 
 $query;
-export function readRecordings(): Recording[] {
+export function readRecordings(): Vec<Recording> {
     return recordings.values();
 }
 

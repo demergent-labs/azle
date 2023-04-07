@@ -1,4 +1,12 @@
-import { nat64, NotifyResult, Opt, Principal, Result, $update } from 'azle';
+import {
+    nat64,
+    NotifyResult,
+    Opt,
+    Principal,
+    Result,
+    $update,
+    Vec
+} from 'azle';
 import { Account, AccountArgs, Canister2 } from '../canister2/types';
 
 const canister2 = new Canister2(
@@ -27,7 +35,7 @@ export async function account(
 }
 
 $update;
-export async function accounts(): Promise<Result<Account[], string>> {
+export async function accounts(): Promise<Result<Vec<Account>, string>> {
     return await canister2.accounts().call();
 }
 

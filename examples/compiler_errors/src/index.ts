@@ -1,4 +1,4 @@
-import { empty, Func, Opt, Query, Record, Update, Variant } from 'azle';
+import { empty, Func, Opt, Query, Record, Update, Variant, Vec } from 'azle';
 import { int } from 'azle';
 
 type User = Record<{
@@ -8,7 +8,7 @@ type VariantNotProperties = Variant<{}>;
 // export function qualified_name(param: azle.query.values.int): Query<void> {}
 
 // Variant tests
-// type VariantWithTooManyTypes = Variant<boolean, string, null, string[]>;
+// type VariantWithTooManyTypes = Variant<boolean, string, null, Vec<string>>;
 // export function bad_variant_one(param: VariantWithTooManyTypes): Query<void> {}
 // type VariantWithWrongType = Variant<string>;
 // export function bad_variant_two(param: VariantWithWrongType): Query<void> {}
@@ -26,7 +26,7 @@ type VariantNotProperties = Variant<{}>;
 // export function varMethod(variant: VariantWithMethod): Query<void> {}
 
 // // Function tests
-// type FuncWithTooManyTypes = Func<boolean, string, null, string[]>;
+// type FuncWithTooManyTypes = Func<boolean, string, null, Vec<string>>;
 // export function bad_func_one(param: FuncWithTooManyTypes): Query<void> {}
 // type FuncWithWrongType = Func<string>;
 // export function bad_func_two(param: FuncWithWrongType): Query<void> {}
@@ -40,7 +40,7 @@ type VariantNotProperties = Variant<{}>;
 // export function bad_func_six(param: FuncWithoutQuery): Query<void> {}
 
 // Option tests
-// type OptionWithTooManyTypes = Opt<boolean, string, null, string[]>;
+// type OptionWithTooManyTypes = Opt<boolean, string, null, Vec<string>>;
 // export function bad_option_one(param: OptionWithTooManyTypes): Query<void> {}
 // type OptWithNotEnoughTypes = Opt;
 // export function bad_option_three(param: OptWithNotEnoughTypes): Query<void> {}
@@ -131,7 +131,7 @@ type VariantNotProperties = Variant<{}>;
 // #region FnDecl Errors
 
 // export function array_destructure(
-//     [firstUser]: User[],
+//     [firstUser]: Vec<User>,
 //     user: User
 // ): Query<empty> {
 //     throw "This function uses array destructuring, which isn't currently supported";

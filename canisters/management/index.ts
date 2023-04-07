@@ -29,7 +29,8 @@ import {
     Record,
     Service,
     serviceUpdate,
-    Variant
+    Variant,
+    Vec
 } from '../../index';
 
 import {
@@ -65,14 +66,14 @@ export type UserId = Alias<Principal>;
 export type WasmModule = Alias<blob>;
 
 export type CanisterSettings = Record<{
-    controllers: Opt<Principal[]>;
+    controllers: Opt<Vec<Principal>>;
     compute_allocation: Opt<nat>;
     memory_allocation: Opt<nat>;
     freezing_threshold: Opt<nat>;
 }>;
 
 export type DefiniteCanisterSettings = Record<{
-    controllers: Principal[];
+    controllers: Vec<Principal>;
     compute_allocation: nat;
     memory_allocation: nat;
     freezing_threshold: nat;
@@ -160,7 +161,7 @@ export type HttpRequestArgs = Record<{
     url: string;
     max_response_bytes: Opt<nat64>;
     method: HttpMethod;
-    headers: HttpHeader[];
+    headers: Vec<HttpHeader>;
     body: Opt<blob>;
     transform: Opt<HttpTransform>;
 }>;
@@ -192,7 +193,7 @@ export type HttpHeader = Record<{
 
 export type HttpResponse = Record<{
     status: nat;
-    headers: HttpHeader[];
+    headers: Vec<HttpHeader>;
     body: blob;
 }>;
 
@@ -207,13 +208,13 @@ export type EcdsaCurve = Variant<{
 
 export type EcdsaPublicKeyArgs = Record<{
     canister_id: Opt<Principal>;
-    derivation_path: blob[];
+    derivation_path: Vec<blob>;
     key_id: KeyId;
 }>;
 
 export type SignWithEcdsaArgs = Record<{
     message_hash: blob;
-    derivation_path: blob[];
+    derivation_path: Vec<blob>;
     key_id: KeyId;
 }>;
 
@@ -233,7 +234,7 @@ export class Management extends Service {
     @serviceUpdate
     bitcoin_get_current_fee_percentiles: (
         args: GetCurrentFeePercentilesArgs
-    ) => CallResult<MillisatoshiPerByte[]>;
+    ) => CallResult<Vec<MillisatoshiPerByte>>;
 
     @serviceUpdate
     bitcoin_get_utxos: (args: GetUtxosArgs) => CallResult<GetUtxosResult>;

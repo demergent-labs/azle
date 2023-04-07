@@ -1,4 +1,4 @@
-import { ic, int, nat64, Opt, $query, Record, $update } from 'azle';
+import { ic, int, nat64, Opt, $query, Record, $update, Vec } from 'azle';
 import { Int } from './comparison';
 import * as Quicksort from './quicksort';
 
@@ -24,7 +24,7 @@ function recordPerformance(start: nat64, end: nat64): void {
 //#endregion
 
 $update;
-export function sort(xs: int[]): int[] {
+export function sort(xs: Vec<int>): Vec<int> {
     const perfStart = ic.performanceCounter(0);
 
     const sortedArray = Quicksort.sortBy(xs, Int.compare);

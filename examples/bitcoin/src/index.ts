@@ -1,4 +1,4 @@
-import { blob, match, Result, $update } from 'azle';
+import { blob, match, Result, $update, Vec } from 'azle';
 import {
     BitcoinNetwork,
     GetUtxosResult,
@@ -27,7 +27,7 @@ export async function getBalance(
 
 $update;
 export async function getCurrentFeePercentiles(): Promise<
-    Result<MillisatoshiPerByte[], string>
+    Result<Vec<MillisatoshiPerByte>, string>
 > {
     return await managementCanister
         .bitcoin_get_current_fee_percentiles({

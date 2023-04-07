@@ -10,7 +10,8 @@ import {
     Record,
     StableBTreeMap,
     Update,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 import {
     Bling,
@@ -213,7 +214,7 @@ export function inlineFunc(
                     Record<{
                         primitive: nat;
                         opt: Opt<string>;
-                        vec: string[];
+                        vec: Vec<string>;
                         record: Record<{ prop1: string }>;
                         variant: Variant<{ v1: null; v2: null }>;
                         func: Func<Update<() => string>>;
@@ -222,7 +223,7 @@ export function inlineFunc(
                 vec: Record<{
                     primitive: nat;
                     opt: Opt<string>;
-                    vec: string[];
+                    vec: Vec<string>;
                     record: Record<{ prop1: string }>;
                     variant: Variant<{ v1: null; v2: null }>;
                     func: Func<Update<() => string>>;
@@ -259,7 +260,7 @@ export function inlineFunc(
                 Record<{
                     primitive: nat;
                     opt: Opt<string>;
-                    vec: string[];
+                    vec: Vec<string>;
                     record: Record<{ prop1: string }>;
                     variant: Variant<{ v1: null; v2: null }>;
                     func: Func<Update<() => string>>;
@@ -268,7 +269,7 @@ export function inlineFunc(
             vec: Record<{
                 primitive: nat;
                 opt: Opt<string>;
-                vec: string[];
+                vec: Vec<string>;
                 record: Record<{ prop1: string }>;
                 variant: Variant<{ v1: null; v2: null }>;
                 func: Func<Update<() => string>>;
@@ -308,7 +309,7 @@ export function complex(
             Record<{
                 primitive: nat;
                 opt: Opt<string>;
-                vec: string[];
+                vec: Vec<string>;
                 record: Record<{ prop1: string }>;
                 variant: Variant<{ v1: null; v2: null }>;
                 func: Func<Update<() => string>>;
@@ -317,7 +318,7 @@ export function complex(
         vec: Record<{
             primitive: nat;
             opt: Opt<string>;
-            vec: string[];
+            vec: Vec<string>;
             record: Record<{ prop1: string }>;
             variant: Variant<{ v1: null; v2: null }>;
             func: Func<Update<() => string>>;
@@ -346,7 +347,7 @@ export function complex(
         Record<{
             primitive: nat;
             opt: Opt<string>;
-            vec: string[];
+            vec: Vec<string>;
             record: Record<{ prop1: string }>;
             variant: Variant<{ v1: null; v2: null }>;
             func: Func<Update<() => string>>;
@@ -355,7 +356,7 @@ export function complex(
     vec: Record<{
         primitive: nat;
         opt: Opt<string>;
-        vec: string[];
+        vec: Vec<string>;
         record: Record<{ prop1: string }>;
         variant: Variant<{ v1: null; v2: null }>;
         func: Func<Update<() => string>>;

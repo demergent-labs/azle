@@ -12,7 +12,8 @@ import {
     Service,
     serviceQuery,
     serviceUpdate,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 
 export type User1 = Record<{
@@ -178,7 +179,7 @@ export class InlineTypes extends Service {
                         Record<{
                             primitive: nat;
                             opt: Opt<string>;
-                            vec: string[];
+                            vec: Vec<string>;
                             record: Record<{ prop1: string }>;
                             variant: Variant<{ v1: null; v2: null }>;
                             func: Func<Update<() => string>>;
@@ -187,7 +188,7 @@ export class InlineTypes extends Service {
                     vec: Record<{
                         primitive: nat;
                         opt: Opt<string>;
-                        vec: string[];
+                        vec: Vec<string>;
                         record: Record<{ prop1: string }>;
                         variant: Variant<{ v1: null; v2: null }>;
                         func: Func<Update<() => string>>;
@@ -225,7 +226,7 @@ export class InlineTypes extends Service {
                         Record<{
                             primitive: nat;
                             opt: Opt<string>;
-                            vec: string[];
+                            vec: Vec<string>;
                             record: Record<{ prop1: string }>;
                             variant: Variant<{ v1: null; v2: null }>;
                             func: Func<Update<() => string>>;
@@ -234,7 +235,7 @@ export class InlineTypes extends Service {
                     vec: Record<{
                         primitive: nat;
                         opt: Opt<string>;
-                        vec: string[];
+                        vec: Vec<string>;
                         record: Record<{ prop1: string }>;
                         variant: Variant<{ v1: null; v2: null }>;
                         func: Func<Update<() => string>>;
@@ -284,7 +285,7 @@ export class InlineTypes extends Service {
                 Record<{
                     primitive: nat;
                     opt: Opt<string>;
-                    vec: string[];
+                    vec: Vec<string>;
                     record: Record<{ prop1: string }>;
                     variant: Variant<{ v1: null; v2: null }>;
                     func: Func<Update<() => string>>;
@@ -293,7 +294,7 @@ export class InlineTypes extends Service {
             vec: Record<{
                 primitive: nat;
                 opt: Opt<string>;
-                vec: string[];
+                vec: Vec<string>;
                 record: Record<{ prop1: string }>;
                 variant: Variant<{ v1: null; v2: null }>;
                 func: Func<Update<() => string>>;
@@ -327,7 +328,7 @@ export class InlineTypes extends Service {
                 Record<{
                     primitive: nat;
                     opt: Opt<string>;
-                    vec: string[];
+                    vec: Vec<string>;
                     record: Record<{ prop1: string }>;
                     variant: Variant<{ v1: null; v2: null }>;
                     func: Func<Update<() => string>>;
@@ -336,7 +337,7 @@ export class InlineTypes extends Service {
             vec: Record<{
                 primitive: nat;
                 opt: Opt<string>;
-                vec: string[];
+                vec: Vec<string>;
                 record: Record<{ prop1: string }>;
                 variant: Variant<{ v1: null; v2: null }>;
                 func: Func<Update<() => string>>;

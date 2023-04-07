@@ -6,7 +6,8 @@ import {
     Service,
     serviceQuery,
     serviceUpdate,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 
 class SomeService extends Service {
@@ -28,7 +29,7 @@ export function serviceReturnType(): SomeService {
 }
 
 $update;
-export function serviceList(someServices: SomeService[]): SomeService[] {
+export function serviceList(someServices: Vec<SomeService>): Vec<SomeService> {
     return someServices;
 }
 

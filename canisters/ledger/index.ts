@@ -12,7 +12,8 @@ import {
     Service,
     serviceQuery,
     serviceUpdate,
-    Variant
+    Variant,
+    Vec
 } from '../../index';
 
 // Amount of tokens, measured in 10^-8 of a token.
@@ -157,7 +158,7 @@ export type BlockRange = Record<{
     // NOTE: the list of blocks can be empty if:
     // 1. [GetBlocksArgs.len] was zero.
     // 2. [GetBlocksArgs.from] was larger than the last block known to the canister.
-    blocks: Block[];
+    blocks: Vec<Block>;
 }>;
 
 // An error indicating that the arguments passed to [QueryArchiveFn] were invalid.
@@ -212,7 +213,7 @@ export type QueryBlocksResponse = Record<{
     // [first_block_index] + len(blocks) - 1.
     //
     // The block range can be an arbitrary sub-range of the originally requested range.
-    blocks: Block[];
+    blocks: Vec<Block>;
 
     // The index of the first block in "blocks".
     // If the blocks vector is empty, the exact value of this field is not specified.
@@ -242,7 +243,7 @@ export type Archive = Record<{
 }>;
 
 export type Archives = Record<{
-    archives: Archive[];
+    archives: Vec<Archive>;
 }>;
 
 export type SymbolResult = Record<{

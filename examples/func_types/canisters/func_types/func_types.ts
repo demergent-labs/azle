@@ -12,7 +12,8 @@ import {
     Result,
     StableBTreeMap,
     $update,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 import { Notifier, NotifierFunc } from '../notifiers/types';
 
@@ -38,9 +39,9 @@ type NullFunc = Func<
     Query<
         (
             param1: Opt<null>,
-            param2: null[],
+            param2: Vec<null>,
             param3: null,
-            param4: null[][],
+            param4: Vec<Vec<null>>,
             param5: Opt<null>[]
         ) => null
     >
@@ -75,7 +76,7 @@ export function nullFuncParam(nullFunc: NullFunc): NullFunc {
 }
 
 $query;
-export function basicFuncParamArray(basicFunc: BasicFunc[]): BasicFunc[] {
+export function basicFuncParamArray(basicFunc: Vec<BasicFunc>): Vec<BasicFunc> {
     return basicFunc;
 }
 
@@ -85,7 +86,7 @@ export function basicFuncReturnType(): BasicFunc {
 }
 
 $query;
-export function basicFuncReturnTypeArray(): BasicFunc[] {
+export function basicFuncReturnTypeArray(): Vec<BasicFunc> {
     return [
         [Principal.fromText('aaaaa-aa'), 'create_canister'],
         [Principal.fromText('aaaaa-aa'), 'update_settings'],

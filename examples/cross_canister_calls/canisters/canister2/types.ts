@@ -5,7 +5,8 @@ import {
     Record,
     Service,
     serviceQuery,
-    serviceUpdate
+    serviceUpdate,
+    Vec
 } from 'azle';
 
 // TODO start using principals instead of strings for ids
@@ -36,7 +37,7 @@ export class Canister2 extends Service {
     account: (accountArgs: AccountArgs) => CallResult<Opt<Account>>;
 
     @serviceQuery
-    accounts: () => CallResult<Account[]>;
+    accounts: () => CallResult<Vec<Account>>;
 
     @serviceQuery
     trap: () => CallResult<string>;

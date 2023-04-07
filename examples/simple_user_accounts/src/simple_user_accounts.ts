@@ -1,4 +1,4 @@
-import { Opt, $query, Record, $update } from 'azle';
+import { Opt, $query, Record, $update, Vec } from 'azle';
 
 type Db = {
     users: {
@@ -23,7 +23,7 @@ export function getUserById(id: string): Opt<User> {
 }
 
 $query;
-export function getAllUsers(): User[] {
+export function getAllUsers(): Vec<User> {
     return Object.values(db.users);
 }
 
