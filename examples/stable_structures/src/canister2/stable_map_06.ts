@@ -1,21 +1,21 @@
-import { nat64, Opt, $query, StableBTreeMap, $update } from 'azle';
+import { nat64, Opt, $query, StableBTreeMap, $update, Vec } from 'azle';
 import { InsertResult } from '../types';
 
-let stableMap6 = new StableBTreeMap<nat64[], boolean>(6, 100, 1_000);
+let stableMap6 = new StableBTreeMap<Vec<nat64>, boolean>(6, 100, 1_000);
 
 $query;
-export function stableMap6ContainsKey(key: nat64[]): boolean {
+export function stableMap6ContainsKey(key: Vec<nat64>): boolean {
     return stableMap6.containsKey(key);
 }
 
 $query;
-export function stableMap6Get(key: nat64[]): Opt<boolean> {
+export function stableMap6Get(key: Vec<nat64>): Opt<boolean> {
     return stableMap6.get(key);
 }
 
 $update;
 export function stableMap6Insert(
-    key: nat64[],
+    key: Vec<nat64>,
     value: boolean
 ): InsertResult<boolean> {
     return stableMap6.insert(key, value);
@@ -27,12 +27,12 @@ export function stableMap6IsEmpty(): boolean {
 }
 
 $query;
-export function stableMap6Items(): [nat64[], boolean][] {
+export function stableMap6Items(): Vec<[Vec<nat64>, boolean]> {
     return stableMap6.items();
 }
 
 $query;
-export function stableMap6Keys(): nat64[][] {
+export function stableMap6Keys(): Vec<Vec<nat64>> {
     return stableMap6.keys();
 }
 
@@ -42,11 +42,11 @@ export function stableMap6Len(): nat64 {
 }
 
 $update;
-export function stableMap6Remove(key: nat64[]): Opt<boolean> {
+export function stableMap6Remove(key: Vec<nat64>): Opt<boolean> {
     return stableMap6.remove(key);
 }
 
 $query;
-export function stableMap6Values(): boolean[] {
+export function stableMap6Values(): Vec<boolean> {
     return stableMap6.values();
 }

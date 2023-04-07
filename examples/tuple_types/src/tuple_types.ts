@@ -9,7 +9,8 @@ import {
     Service,
     serviceUpdate,
     Tuple,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 
 // TODO maybe we should write tests for canister and stable storage?
@@ -43,11 +44,11 @@ type ComplexThreeTuple = Tuple<[PrimitiveTwoTuple, User, Reaction]>;
 type Header = Tuple<[string, string]>;
 
 type HttpResponse = Record<{
-    headers: Header[];
+    headers: Vec<Header>;
 }>;
 
 type StreamingCallbackType = Variant<{
-    WithHeaders: Header[];
+    WithHeaders: Vec<Header>;
     WithoutHeaders: null;
 }>;
 
@@ -246,7 +247,9 @@ export function complexThreeTupleInlineParam(
 }
 
 $query;
-export function tupleArrayParamsAndReturnType(headers: Header[]): Header[] {
+export function tupleArrayParamsAndReturnType(
+    headers: Vec<Header>
+): Vec<Header> {
     return headers;
 }
 

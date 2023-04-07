@@ -1,4 +1,12 @@
-import { float64, nat64, Opt, $query, StableBTreeMap, $update } from 'azle';
+import {
+    float64,
+    nat64,
+    Opt,
+    $query,
+    StableBTreeMap,
+    $update,
+    Vec
+} from 'azle';
 import { InsertResult } from '../types';
 
 let stableMap5 = new StableBTreeMap<Opt<String>, float64>(5, 100, 1_000);
@@ -47,6 +55,6 @@ export function stableMap5Remove(key: Opt<String>): Opt<float64> {
 }
 
 $query;
-export function stableMap5Values(): float64[] {
+export function stableMap5Values(): Vec<float64> {
     return stableMap5.values();
 }
