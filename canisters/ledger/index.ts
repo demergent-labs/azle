@@ -12,7 +12,8 @@ import {
     Service,
     serviceQuery,
     serviceUpdate,
-    Variant
+    Variant,
+    Vec
 } from '../../index';
 
 // Amount of tokens, measured in 10^-8 of a token.
@@ -157,7 +158,7 @@ export type BlockRange = Record<{
     // NOTE: the list of blocks can be empty if:
     // 1. [GetBlocksArgs.len] was zero.
     // 2. [GetBlocksArgs.from] was larger than the last block known to the canister.
-    blocks: Block[];
+    blocks: Vec<Block>;
 }>;
 
 // An error indicating that the arguments passed to [QueryArchiveFn] were invalid.
@@ -212,7 +213,7 @@ export type QueryBlocksResponse = Record<{
     // [first_block_index] + len(blocks) - 1.
     //
     // The block range can be an arbitrary sub-range of the originally requested range.
-    blocks: Block[];
+    blocks: Vec<Block>;
 
     // The index of the first block in "blocks".
     // If the blocks vector is empty, the exact value of this field is not specified.
@@ -223,18 +224,20 @@ export type QueryBlocksResponse = Record<{
     //
     // For each entry `e` in [archived_blocks], `[e.from, e.from + len)` is a sub-range
     // of the originally requested block range.
-    archived_blocks: Record<{
-        // The index of the first archived block that can be fetched using the callback.
-        start: BlockIndex;
+    archived_blocks: Vec<
+        Record<{
+            // The index of the first archived block that can be fetched using the callback.
+            start: BlockIndex;
 
-        // The number of blocks that can be fetch using the callback.
-        length: nat64;
+            // The number of blocks that can be fetch using the callback.
+            length: nat64;
 
-        // The function that should be called to fetch the archived blocks.
-        // The range of the blocks accessible using this function is given by [from]
-        // and [len] fields above.
-        callback: QueryArchiveFn;
-    }>[];
+            // The function that should be called to fetch the archived blocks.
+            // The range of the blocks accessible using this function is given by [from]
+            // and [len] fields above.
+            callback: QueryArchiveFn;
+        }>
+    >;
 }>;
 
 export type Archive = Record<{
@@ -242,7 +245,7 @@ export type Archive = Record<{
 }>;
 
 export type Archives = Record<{
-    archives: Archive[];
+    archives: Vec<Archive>;
 }>;
 
 export type SymbolResult = Record<{

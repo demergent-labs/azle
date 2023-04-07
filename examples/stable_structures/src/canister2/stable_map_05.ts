@@ -1,4 +1,13 @@
-import { float64, nat64, Opt, $query, StableBTreeMap, $update } from 'azle';
+import {
+    float64,
+    nat64,
+    Opt,
+    $query,
+    StableBTreeMap,
+    $update,
+    Tuple,
+    Vec
+} from 'azle';
 import { InsertResult } from '../types';
 
 let stableMap5 = new StableBTreeMap<Opt<String>, float64>(5, 100, 1_000);
@@ -27,12 +36,12 @@ export function stableMap5IsEmpty(): boolean {
 }
 
 $query;
-export function stableMap5Items(): [Opt<String>, float64][] {
+export function stableMap5Items(): Vec<Tuple<[Opt<String>, float64]>> {
     return stableMap5.items();
 }
 
 $query;
-export function stableMap5Keys(): Opt<String>[] {
+export function stableMap5Keys(): Vec<Opt<String>> {
     return stableMap5.keys();
 }
 
@@ -47,6 +56,6 @@ export function stableMap5Remove(key: Opt<String>): Opt<float64> {
 }
 
 $query;
-export function stableMap5Values(): float64[] {
+export function stableMap5Values(): Vec<float64> {
     return stableMap5.values();
 }

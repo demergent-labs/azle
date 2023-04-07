@@ -1,4 +1,13 @@
-import { float32, nat64, Opt, $query, StableBTreeMap, $update } from 'azle';
+import {
+    float32,
+    nat64,
+    Opt,
+    $query,
+    StableBTreeMap,
+    Tuple,
+    $update,
+    Vec
+} from 'azle';
 import { InsertResult } from '../types';
 
 let stableMap10 = new StableBTreeMap<float32, Opt<boolean>>(10, 100, 1_000);
@@ -27,12 +36,12 @@ export function stableMap10IsEmpty(): boolean {
 }
 
 $query;
-export function stableMap10Items(): [float32, Opt<boolean>][] {
+export function stableMap10Items(): Vec<Tuple<[float32, Opt<boolean>]>> {
     return stableMap10.items();
 }
 
 $query;
-export function stableMap10Keys(): float32[] {
+export function stableMap10Keys(): Vec<float32> {
     return stableMap10.keys();
 }
 
@@ -47,6 +56,6 @@ export function stableMap10Remove(key: float32): Opt<Opt<boolean>> {
 }
 
 $query;
-export function stableMap10Values(): Opt<boolean>[] {
+export function stableMap10Values(): Vec<Opt<boolean>> {
     return stableMap10.values();
 }

@@ -1,11 +1,11 @@
 // TODO it would be cool to add timestamps
 
-import { Record, Variant } from 'azle';
+import { Record, Variant, Vec } from 'azle';
 
 export type Post = Record<{
     id: string;
     author: User;
-    reactions: Reaction[];
+    reactions: Vec<Reaction>;
     text: string;
     thread: Thread;
 }>;
@@ -26,14 +26,14 @@ export type ReactionType = Variant<{
 export type Thread = Record<{
     id: string;
     author: User;
-    posts: Post[];
+    posts: Vec<Post>;
     title: string;
 }>;
 
 export type User = Record<{
     id: string;
-    posts: Post[];
-    reactions: Reaction[];
-    threads: Thread[];
+    posts: Vec<Post>;
+    reactions: Vec<Reaction>;
+    threads: Vec<Thread>;
     username: string;
 }>;

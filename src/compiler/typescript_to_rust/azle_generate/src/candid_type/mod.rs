@@ -11,6 +11,7 @@ pub mod tuple;
 pub mod type_alias;
 pub mod type_param;
 pub mod variant;
+pub mod vec;
 
 impl TsAst {
     pub fn build_candid_types(&self) -> CandidTypes {

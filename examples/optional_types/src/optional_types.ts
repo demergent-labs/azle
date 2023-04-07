@@ -1,13 +1,13 @@
 // TODO let's add more examples here, really test it out
 
-import { Opt, $query, Record } from 'azle';
+import { Opt, $query, Record, Vec } from 'azle';
 
 type Html = Record<{
     head: Opt<Head>;
 }>;
 
 type Head = Record<{
-    elements: Element[];
+    elements: Vec<Element>;
 }>;
 
 type Element = Record<{

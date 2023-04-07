@@ -1,3 +1,4 @@
+import { Vec } from 'azle';
 import { ReactionType } from './candid_types';
 
 export let state: State = {
@@ -25,7 +26,7 @@ export type State = {
 export type StatePost = {
     id: string;
     authorId: string;
-    reactionIds: string[];
+    reactionIds: Vec<string>;
     text: string;
     threadId: string;
 };
@@ -40,14 +41,14 @@ export type StateReaction = {
 export type StateThread = {
     id: string;
     authorId: string;
-    postIds: string[];
+    postIds: Vec<string>;
     title: string;
 };
 
 export type StateUser = {
     id: string;
-    postIds: string[];
-    reactionIds: string[];
-    threadIds: string[];
+    postIds: Vec<string>;
+    reactionIds: Vec<string>;
+    threadIds: Vec<string>;
     username: string;
 };

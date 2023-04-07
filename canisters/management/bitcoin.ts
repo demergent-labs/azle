@@ -1,4 +1,13 @@
-import { Alias, blob, nat32, nat64, Opt, Record, Variant } from '../../index';
+import {
+    Alias,
+    blob,
+    nat32,
+    nat64,
+    Opt,
+    Record,
+    Variant,
+    Vec
+} from '../../index';
 
 export type BitcoinAddress = Alias<string>;
 export type BlockHash = Alias<blob>;
@@ -23,7 +32,7 @@ export type GetUtxosResult = Record<{
     next_page: Opt<Page>;
     tip_block_hash: BlockHash;
     tip_height: nat32;
-    utxos: Utxo[];
+    utxos: Vec<Utxo>;
 }>;
 
 export type MillisatoshiPerByte = Alias<nat64>;

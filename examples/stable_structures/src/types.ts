@@ -1,4 +1,4 @@
-import { Alias, InsertError, Opt, Record, Result, Variant } from 'azle';
+import { Alias, InsertError, Opt, Record, Result, Variant, Vec } from 'azle';
 
 export type BlogPost = Record<{
     title: string;
@@ -13,5 +13,5 @@ export type Reaction = Variant<{
 
 export type User = Record<{
     username: string;
-    posts: BlogPost[];
+    posts: Vec<BlogPost>;
 }>;

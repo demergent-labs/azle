@@ -10,7 +10,8 @@ import {
     Record,
     StableBTreeMap,
     Update,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 import {
     Bling,
@@ -213,20 +214,22 @@ export function inlineFunc(
                     Record<{
                         primitive: nat;
                         opt: Opt<string>;
-                        vec: string[];
+                        vec: Vec<string>;
                         record: Record<{ prop1: string }>;
                         variant: Variant<{ v1: null; v2: null }>;
                         func: Func<Update<() => string>>;
                     }>
                 >,
-                vec: Record<{
-                    primitive: nat;
-                    opt: Opt<string>;
-                    vec: string[];
-                    record: Record<{ prop1: string }>;
-                    variant: Variant<{ v1: null; v2: null }>;
-                    func: Func<Update<() => string>>;
-                }>[],
+                vec: Vec<
+                    Record<{
+                        primitive: nat;
+                        opt: Opt<string>;
+                        vec: Vec<string>;
+                        record: Record<{ prop1: string }>;
+                        variant: Variant<{ v1: null; v2: null }>;
+                        func: Func<Update<() => string>>;
+                    }>
+                >,
                 record: Record<{
                     prop1: string;
                     optional: Opt<nat64>;
@@ -259,20 +262,22 @@ export function inlineFunc(
                 Record<{
                     primitive: nat;
                     opt: Opt<string>;
-                    vec: string[];
+                    vec: Vec<string>;
                     record: Record<{ prop1: string }>;
                     variant: Variant<{ v1: null; v2: null }>;
                     func: Func<Update<() => string>>;
                 }>
             >,
-            vec: Record<{
-                primitive: nat;
-                opt: Opt<string>;
-                vec: string[];
-                record: Record<{ prop1: string }>;
-                variant: Variant<{ v1: null; v2: null }>;
-                func: Func<Update<() => string>>;
-            }>[],
+            vec: Vec<
+                Record<{
+                    primitive: nat;
+                    opt: Opt<string>;
+                    vec: Vec<string>;
+                    record: Record<{ prop1: string }>;
+                    variant: Variant<{ v1: null; v2: null }>;
+                    func: Func<Update<() => string>>;
+                }>
+            >,
             record: Record<{
                 prop1: string;
                 optional: Opt<nat64>;
@@ -308,20 +313,22 @@ export function complex(
             Record<{
                 primitive: nat;
                 opt: Opt<string>;
-                vec: string[];
+                vec: Vec<string>;
                 record: Record<{ prop1: string }>;
                 variant: Variant<{ v1: null; v2: null }>;
                 func: Func<Update<() => string>>;
             }>
         >;
-        vec: Record<{
-            primitive: nat;
-            opt: Opt<string>;
-            vec: string[];
-            record: Record<{ prop1: string }>;
-            variant: Variant<{ v1: null; v2: null }>;
-            func: Func<Update<() => string>>;
-        }>[];
+        vec: Vec<
+            Record<{
+                primitive: nat;
+                opt: Opt<string>;
+                vec: Vec<string>;
+                record: Record<{ prop1: string }>;
+                variant: Variant<{ v1: null; v2: null }>;
+                func: Func<Update<() => string>>;
+            }>
+        >;
         record: Record<{
             prop1: string;
             optional: Opt<nat64>;
@@ -346,20 +353,22 @@ export function complex(
         Record<{
             primitive: nat;
             opt: Opt<string>;
-            vec: string[];
+            vec: Vec<string>;
             record: Record<{ prop1: string }>;
             variant: Variant<{ v1: null; v2: null }>;
             func: Func<Update<() => string>>;
         }>
     >;
-    vec: Record<{
-        primitive: nat;
-        opt: Opt<string>;
-        vec: string[];
-        record: Record<{ prop1: string }>;
-        variant: Variant<{ v1: null; v2: null }>;
-        func: Func<Update<() => string>>;
-    }>[];
+    vec: Vec<
+        Record<{
+            primitive: nat;
+            opt: Opt<string>;
+            vec: Vec<string>;
+            record: Record<{ prop1: string }>;
+            variant: Variant<{ v1: null; v2: null }>;
+            func: Func<Update<() => string>>;
+        }>
+    >;
     record: Record<{
         prop1: string;
         optional: Opt<nat64>;

@@ -1,4 +1,4 @@
-import { blob, $query } from 'azle';
+import { blob, $query, Vec } from 'azle';
 import encodeUtf8 from 'encode-utf8';
 
 $query;
@@ -7,7 +7,7 @@ export function getBlob(): blob {
 }
 
 $query;
-export function getBlobs(): blob[] {
+export function getBlobs(): Vec<blob> {
     return [stringToBlob('hello'), stringToBlob('world')];
 }
 

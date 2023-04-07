@@ -1,7 +1,16 @@
-import { float64, nat64, Opt, $query, StableBTreeMap, $update } from 'azle';
+import {
+    float64,
+    nat64,
+    Opt,
+    $query,
+    StableBTreeMap,
+    Tuple,
+    $update,
+    Vec
+} from 'azle';
 import { InsertResult } from '../types';
 
-let stableMap9 = new StableBTreeMap<float64, string[]>(9, 100, 1_000);
+let stableMap9 = new StableBTreeMap<float64, Vec<string>>(9, 100, 1_000);
 
 $query;
 export function stableMap9ContainsKey(key: float64): boolean {
@@ -9,15 +18,15 @@ export function stableMap9ContainsKey(key: float64): boolean {
 }
 
 $query;
-export function stableMap9Get(key: float64): Opt<string[]> {
+export function stableMap9Get(key: float64): Opt<Vec<string>> {
     return stableMap9.get(key);
 }
 
 $update;
 export function stableMap9Insert(
     key: float64,
-    value: string[]
-): InsertResult<string[]> {
+    value: Vec<string>
+): InsertResult<Vec<string>> {
     return stableMap9.insert(key, value);
 }
 
@@ -26,13 +35,14 @@ export function stableMap9IsEmpty(): boolean {
     return stableMap9.isEmpty();
 }
 
+// TODO this should be breaking because of Tuple
 $query;
-export function stableMap9Items(): [float64, string[]][] {
+export function stableMap9Items(): Vec<Tuple<[float64, Vec<string>]>> {
     return stableMap9.items();
 }
 
 $query;
-export function stableMap9Keys(): float64[] {
+export function stableMap9Keys(): Vec<float64> {
     return stableMap9.keys();
 }
 
@@ -42,11 +52,11 @@ export function stableMap9Len(): nat64 {
 }
 
 $update;
-export function stableMap9Remove(key: float64): Opt<string[]> {
+export function stableMap9Remove(key: float64): Opt<Vec<string>> {
     return stableMap9.remove(key);
 }
 
 $query;
-export function stableMap9Values(): string[][] {
+export function stableMap9Values(): Vec<Vec<string>> {
     return stableMap9.values();
 }

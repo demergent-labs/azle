@@ -1,4 +1,4 @@
-import { ic, nat64, Opt, $query, $update } from 'azle';
+import { ic, nat64, Opt, $query, $update, Vec } from 'azle';
 import { State, Account, AccountArgs } from './types';
 
 let state: State = {
@@ -54,7 +54,7 @@ export function account(accountArgs: AccountArgs): Opt<Account> {
 }
 
 $query;
-export function accounts(): Account[] {
+export function accounts(): Vec<Account> {
     return Object.values(state.accounts);
 }
 

@@ -1,4 +1,13 @@
-import { blob, nat64, Opt, $query, StableBTreeMap, $update } from 'azle';
+import {
+    blob,
+    nat64,
+    Opt,
+    $query,
+    StableBTreeMap,
+    Tuple,
+    $update,
+    Vec
+} from 'azle';
 import { InsertResult, Reaction } from '../types';
 
 let stableMap12 = new StableBTreeMap<blob, Reaction>(12, 100, 1_000);
@@ -27,12 +36,12 @@ export function stableMap12IsEmpty(): boolean {
 }
 
 $query;
-export function stableMap12Items(): [blob, Reaction][] {
+export function stableMap12Items(): Vec<Tuple<[blob, Reaction]>> {
     return stableMap12.items();
 }
 
 $query;
-export function stableMap12Keys(): blob[] {
+export function stableMap12Keys(): Vec<blob> {
     return stableMap12.keys();
 }
 
@@ -47,6 +56,6 @@ export function stableMap12Remove(key: blob): Opt<Reaction> {
 }
 
 $query;
-export function stableMap12Values(): Reaction[] {
+export function stableMap12Values(): Vec<Reaction> {
     return stableMap12.values();
 }

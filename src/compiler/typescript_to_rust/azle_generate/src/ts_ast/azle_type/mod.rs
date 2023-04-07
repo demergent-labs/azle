@@ -3,14 +3,12 @@ use swc_ecma_ast::TsType;
 
 use crate::candid_type::tuple::AzleTupleType;
 
-pub use azle_array_type::AzleArrayType;
 pub use azle_fn_or_constructor_type::AzleFnOrConstructorType;
 pub use azle_fn_or_constructor_type::AzleFnType;
 pub use azle_keyword_type::AzleKeywordType;
 pub use azle_type_lit::AzleTypeLit;
 pub use azle_type_ref::AzleTypeRef;
 
-mod azle_array_type;
 mod azle_fn_or_constructor_type;
 mod azle_keyword_type;
 mod azle_type_ref;
@@ -26,7 +24,6 @@ pub enum AzleType<'a> {
     AzleKeywordType(AzleKeywordType<'a>),
     AzleTypeRef(AzleTypeRef<'a>),
     AzleTypeLit(AzleTypeLit<'a>),
-    AzleArrayType(AzleArrayType<'a>),
     AzleFnOrConstructorType(AzleFnOrConstructorType<'a>),
     AzleTupleType(AzleTupleType<'a>),
 }
@@ -93,10 +90,6 @@ impl AzleType<'_> {
             }),
             TsType::TsTypeLit(ts_type_lit) => AzleType::AzleTypeLit(AzleTypeLit {
                 ts_type_lit,
-                source_map,
-            }),
-            TsType::TsArrayType(ts_array_type) => AzleType::AzleArrayType(AzleArrayType {
-                ts_array_type,
                 source_map,
             }),
             TsType::TsTupleType(ts_tuple_type) => AzleType::AzleTupleType(AzleTupleType {

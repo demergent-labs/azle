@@ -1,4 +1,3 @@
-import { Principal } from '@dfinity/principal';
 import {
     blob,
     empty,
@@ -17,10 +16,12 @@ import {
     nat64,
     nat8,
     Opt,
+    Principal,
     $query,
     Record,
     reserved,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 
 type Person = Record<{
@@ -37,22 +38,24 @@ type State = Variant<{
 type BasicFunc = Func<Query<(param1: string) => string>>;
 
 $query;
-export function listOfStringOne(param: string[]): string[] {
+export function listOfStringOne(param: Vec<string>): Vec<string> {
     return param;
 }
 
 $query;
-export function listOfStringTwo(params: string[][]): string[][] {
+export function listOfStringTwo(params: Vec<Vec<string>>): Vec<Vec<string>> {
     return params;
 }
 
 $query;
-export function listOfStringFour(params: string[][][][]): string[][][][] {
+export function listOfStringFour(
+    params: Vec<Vec<Vec<Vec<string>>>>
+): Vec<Vec<Vec<Vec<string>>>> {
     return params;
 }
 
 $query;
-export function listOfListOfInt8(): int8[][][][][][][] {
+export function listOfListOfInt8(): Vec<Vec<Vec<Vec<Vec<Vec<Vec<int8>>>>>>> {
     return [
         [
             [
@@ -77,34 +80,38 @@ export function listOfListOfInt8(): int8[][][][][][][] {
 }
 
 $query;
-export function listOfNull(param: null[][][]): null[][][] {
+export function listOfNull(param: Vec<Vec<Vec<null>>>): Vec<Vec<Vec<null>>> {
     return param;
 }
 
 $query;
-export function listOfBool(param: boolean[][][]): boolean[][][] {
+export function listOfBool(
+    param: Vec<Vec<Vec<boolean>>>
+): Vec<Vec<Vec<boolean>>> {
     return param;
 }
 
 $query;
-export function listOfString(param: string[][][]): string[][][] {
+export function listOfString(
+    param: Vec<Vec<Vec<string>>>
+): Vec<Vec<Vec<string>>> {
     return param;
 }
 
 $query;
 export function listOfOptionString(
-    param: Opt<string>[][][]
-): Opt<string>[][][] {
+    param: Vec<Vec<Vec<Opt<string>>>>
+): Vec<Vec<Vec<Opt<string>>>> {
     return param;
 }
 
 $query;
-export function listOfEmpty(): empty[][][] {
+export function listOfEmpty(): Vec<Vec<Vec<empty>>> {
     throw new Error('Anything you want');
 }
 
 $query;
-export function listOfReserved(): reserved[][][] {
+export function listOfReserved(): Vec<Vec<Vec<reserved>>> {
     return [
         [['A'], ['n']],
         [
@@ -115,107 +122,103 @@ export function listOfReserved(): reserved[][][] {
 }
 
 $query;
-export function listOfFunc(param: BasicFunc[][][]): BasicFunc[][][] {
+export function listOfFunc(
+    param: Vec<Vec<Vec<BasicFunc>>>
+): Vec<Vec<Vec<BasicFunc>>> {
     return param;
 }
 
 $query;
-export function listOfPrincipal(param: Principal[][][]): Principal[][][] {
-    return param;
-}
-
-//TODO do I need to test Rejection Code
-
-$query;
-export function listOfF64(param: float64[][][]): float64[][][] {
+export function listOfPrincipal(
+    param: Vec<Vec<Vec<Principal>>>
+): Vec<Vec<Vec<Principal>>> {
     return param;
 }
 
 $query;
-export function listOfF32(param: float32[][][]): float32[][][] {
+export function listOfF64(
+    param: Vec<Vec<Vec<float64>>>
+): Vec<Vec<Vec<float64>>> {
     return param;
 }
 
 $query;
-
-export function listOfInt(param: int[][][]): int[][][] {
+export function listOfF32(
+    param: Vec<Vec<Vec<float32>>>
+): Vec<Vec<Vec<float32>>> {
     return param;
 }
 
 $query;
-
-export function listOfInt64(param: int64[][][]): int64[][][] {
+export function listOfInt(param: Vec<Vec<Vec<int>>>): Vec<Vec<Vec<int>>> {
     return param;
 }
 
 $query;
-
-export function listOfInt32(param: int32[][][]): int32[][][] {
+export function listOfInt64(param: Vec<Vec<Vec<int64>>>): Vec<Vec<Vec<int64>>> {
     return param;
 }
 
 $query;
-
-export function listOfInt16(param: int16[][][]): int16[][][] {
+export function listOfInt32(param: Vec<Vec<Vec<int32>>>): Vec<Vec<Vec<int32>>> {
     return param;
 }
 
 $query;
-
-export function listOfInt8(param: int8[][][]): int8[][][] {
+export function listOfInt16(param: Vec<Vec<Vec<int16>>>): Vec<Vec<Vec<int16>>> {
     return param;
 }
 
 $query;
-
-export function listOfNat(param: nat[][][]): nat[][][] {
+export function listOfInt8(param: Vec<Vec<Vec<int8>>>): Vec<Vec<Vec<int8>>> {
     return param;
 }
 
 $query;
-
-export function listOfNat64(param: nat64[][][]): nat64[][][] {
+export function listOfNat(param: Vec<Vec<Vec<nat>>>): Vec<Vec<Vec<nat>>> {
     return param;
 }
 
 $query;
-
-export function listOfNat32(param: nat32[][][]): nat32[][][] {
+export function listOfNat64(param: Vec<Vec<Vec<nat64>>>): Vec<Vec<Vec<nat64>>> {
     return param;
 }
 
 $query;
-
-export function listOfNat16(param: nat16[][][]): nat16[][][] {
+export function listOfNat32(param: Vec<Vec<Vec<nat32>>>): Vec<Vec<Vec<nat32>>> {
     return param;
 }
 
 $query;
-
-export function listOfNat8(param: nat8[][][]): nat8[][][] {
+export function listOfNat16(param: Vec<Vec<Vec<nat16>>>): Vec<Vec<Vec<nat16>>> {
     return param;
 }
 
 $query;
-
-export function listOfRecord(param: Person[][][]): Person[][][] {
+export function listOfNat8(param: Vec<Vec<Vec<nat8>>>): Vec<Vec<Vec<nat8>>> {
     return param;
 }
 
 $query;
-
-export function listOfVariant(param: State[][][]): State[][][] {
+export function listOfRecord(
+    param: Vec<Vec<Vec<Person>>>
+): Vec<Vec<Vec<Person>>> {
     return param;
 }
 
 $query;
-
-export function listOfBlob(param: blob[]): blob[] {
+export function listOfVariant(
+    param: Vec<Vec<Vec<State>>>
+): Vec<Vec<Vec<State>>> {
     return param;
 }
 
 $query;
+export function listOfBlob(param: Vec<blob>): Vec<blob> {
+    return param;
+}
 
-export function listOfListOfBlob(param: blob[][]): blob[][] {
+$query;
+export function listOfListOfBlob(param: Vec<Vec<blob>>): Vec<Vec<blob>> {
     return param;
 }

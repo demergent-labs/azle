@@ -1,4 +1,13 @@
-import { nat64, Opt, Principal, $query, StableBTreeMap, $update } from 'azle';
+import {
+    nat64,
+    Opt,
+    Principal,
+    $query,
+    StableBTreeMap,
+    Tuple,
+    $update,
+    Vec
+} from 'azle';
 import { InsertResult } from '../types';
 
 let stableMap13 = new StableBTreeMap<string, Principal>(13, 100, 1_000);
@@ -27,12 +36,12 @@ export function stableMap13IsEmpty(): boolean {
 }
 
 $query;
-export function stableMap13Items(): [string, Principal][] {
+export function stableMap13Items(): Vec<Tuple<[string, Principal]>> {
     return stableMap13.items();
 }
 
 $query;
-export function stableMap13Keys(): string[] {
+export function stableMap13Keys(): Vec<string> {
     return stableMap13.keys();
 }
 
@@ -47,6 +56,6 @@ export function stableMap13Remove(key: string): Opt<Principal> {
 }
 
 $query;
-export function stableMap13Values(): Principal[] {
+export function stableMap13Values(): Vec<Principal> {
     return stableMap13.values();
 }

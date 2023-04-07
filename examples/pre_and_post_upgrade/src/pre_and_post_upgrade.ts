@@ -6,7 +6,8 @@ import {
     $query,
     Record,
     StableBTreeMap,
-    $update
+    $update,
+    Vec
 } from 'azle';
 
 type Entry = Record<{
@@ -14,7 +15,7 @@ type Entry = Record<{
     value: nat64;
 }>;
 
-let stableStorage = new StableBTreeMap<string, Entry[]>(0, 25, 1_000);
+let stableStorage = new StableBTreeMap<string, Vec<Entry>>(0, 25, 1_000);
 
 let entries: {
     [key: string]: nat64;
@@ -60,7 +61,7 @@ export function setEntry(entry: Entry): void {
 }
 
 $query;
-export function getEntries(): Entry[] {
+export function getEntries(): Vec<Entry> {
     return Object.entries(entries).map((entry) => {
         return {
             key: entry[0],

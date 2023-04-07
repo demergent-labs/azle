@@ -1,1 +1,1 @@
-# Example for blob[]
+# Example for Vec<blob>

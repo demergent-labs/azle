@@ -1,4 +1,13 @@
-import { Alias, nat64, $query, Record, Result, Tuple, Variant } from 'azle';
+import {
+    Alias,
+    nat64,
+    $query,
+    Record,
+    Result,
+    Tuple,
+    Variant,
+    Vec
+} from 'azle';
 
 type SimpleResult = Alias<Result<string, number>>;
 
@@ -115,8 +124,8 @@ type GenericVariant<T, U, V> = Variant<{
 $query;
 export function inlineTypesGenericVariant(): GenericVariant<
     Record<{ id: number; name: string }>,
-    boolean[],
-    [number, string]
+    Vec<boolean>,
+    Tuple<[number, string]>
 > {
     return { Arm1: { id: 1, name: 'John Doe' } };
 }
@@ -197,8 +206,8 @@ type GenericRecord<T, U, V> = Record<{
 $query;
 export function inlineTypesGenericRecord(): GenericRecord<
     Record<{ id: number; name: string }>,
-    boolean[],
-    [number, string]
+    Vec<boolean>,
+    Tuple<[number, string]>
 > {
     return {
         arm1: { id: 1, name: 'John Doe' },
@@ -260,8 +269,8 @@ type GenericTuple<T, U, V> = Tuple<[T, U, V]>;
 $query;
 export function inlineTypesGenericTuple(): GenericTuple<
     Record<{ id: number; name: string }>,
-    boolean[],
-    [number, string]
+    Vec<boolean>,
+    Tuple<[number, string]>
 > {
     return [
         { id: 1, name: 'John Doe' },
@@ -270,14 +279,14 @@ export function inlineTypesGenericTuple(): GenericTuple<
     ];
 }
 
-type OneGenericTypeParamVec<T> = Alias<T[]>;
+type OneGenericTypeParamVec<T> = Alias<Vec<T>>;
 
 $query;
 export function oneGenericTypeParamVec(): OneGenericTypeParamVec<string> {
     return ['One generic type parameter', 'example 1'];
 }
 
-type MyVec<T> = Alias<T[]>;
+type MyVec<T> = Alias<Vec<T>>;
 
 type MyVecAlias<T> = Alias<MyVec<T>>;
 
