@@ -201,10 +201,10 @@ class TokenCanister extends Service {
     CallResult,
     nat64,
     Principal,
+    Result,
     Service,
     serviceUpdate,
-    $update,
-    Variant
+    $update
 } from 'azle';
 
 class TokenCanister extends Service {
@@ -220,12 +220,7 @@ $update;
 export async function payout(
     to: Principal,
     amount: nat64
-): Promise&lt;
-    Variant&lt;{
-        Ok: nat64;
-        Err: string;
-    }&gt;
-&gt; {
+): Promise&lt;Result&lt;nat64, string&gt;&gt; {
     return await tokenCanister.transfer(to, amount).call();
 }
 </code></pre>
@@ -233,7 +228,15 @@ export async function payout(
 <p>The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a <code>CallResult</code>. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a <code>try...catch</code> most likely won't do anything useful.</p>
 <p>Let's add to our example code and explore adding some practical result-based error-handling to stop people from stealing tokens.</p>
 <p><code>token_canister</code>:</p>
-<pre><code class="language-typescript">import { ic, nat64, Principal, StableBTreeMap, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import {
+    ic,
+    nat64,
+    Principal,
+    Result,
+    StableBTreeMap,
+    $update,
+    Variant
+} from 'azle';
 
 let accounts = new StableBTreeMap&lt;Principal, nat64&gt;(0, 38, 15);
 
@@ -241,12 +244,14 @@ $update;
 export function transfer(
     to: Principal,
     amount: nat64
-): Variant&lt;{
-    Ok: nat64;
-    Err: Variant&lt;{
-        InsufficientBalance: nat64;
-    }&gt;;
-}&gt; {
+): Variant&lt;
+    Result&lt;
+        nat64,
+        Variant&lt;{
+            InsufficientBalance: nat64;
+        }&gt;
+    &gt;
+&gt; {
     const from = ic.caller();
 
     const fromBalance = accounts.get(from) ?? 0n;
@@ -275,6 +280,7 @@ export function transfer(
     match,
     nat64,
     Principal,
+    Result,
     Service,
     serviceUpdate,
     $update,
@@ -287,12 +293,12 @@ class TokenCanister extends Service {
         to: Principal,
         amount: nat64
     ) =&gt; CallResult&lt;
-        Variant&lt;{
-            Ok: nat64;
-            Err: Variant&lt;{
+        Result&lt;
+            nat64,
+            Variant&lt;{
                 InsufficientBalance: nat64;
-            }&gt;;
-        }&gt;
+            }&gt;
+        &gt;
     &gt;;
 }
 
@@ -304,12 +310,7 @@ $update;
 export async function payout(
     to: Principal,
     amount: nat64
-): Promise&lt;
-    Variant&lt;{
-        Ok: nat64;
-        Err: string;
-    }&gt;
-&gt; {
+): Promise&lt;Result&lt;nat64, string&gt;&gt; {
     const CallResult = await tokenCanister.transfer(to, amount).call();
 
     return match(CallResult, {
@@ -330,9 +331,9 @@ export async function payout(
     CallResult,
     Principal,
     $query,
+    Result,
     Service,
-    serviceQuery,
-    Variant
+    serviceQuery
 } from 'azle';
 
 class SomeCanister extends Service {
@@ -345,12 +346,7 @@ const someCanister = new SomeCanister(
 );
 
 $query;
-export async function querySomeCanister(): Promise&lt;
-    Variant&lt;{
-        Ok: boolean;
-        Err: string;
-    }&gt;
-&gt; {
+export async function querySomeCanister(): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     return await someCanister.queryForBoolean().call();
 }
 </code></pre>
@@ -360,10 +356,10 @@ export async function querySomeCanister(): Promise&lt;
     CallResult,
     Principal,
     RejectionCode,
+    Result,
     Service,
     serviceUpdate,
-    $update,
-    Variant
+    $update
 } from 'azle';
 
 class SomeCanister extends Service {
@@ -376,10 +372,7 @@ const someCanister = new SomeCanister(
 );
 
 $update;
-export function sendNotification(): Variant&lt;{
-    Ok: null;
-    Err: RejectionCode;
-}&gt; {
+export function sendNotification(): Result&lt;null, RejectionCode&gt; {
     return someCanister.receiveNotification().notify();
 }
 </code></pre>
@@ -388,10 +381,10 @@ export function sendNotification(): Variant&lt;{
     CallResult,
     Principal,
     RejectionCode,
+    Result,
     Service,
     serviceUpdate,
-    $update,
-    Variant
+    $update
 } from 'azle';
 
 class SomeCanister extends Service {
@@ -404,10 +397,7 @@ const someCanister = new SomeCanister(
 );
 
 $update;
-export function sendNotification(): Variant&lt;{
-    Ok: null;
-    Err: RejectionCode;
-}&gt; {
+export function sendNotification(): Result&lt;null, RejectionCode&gt; {
     return someCanister.receiveNotification().cycles(1_000_000n).notify();
 }
 </code></pre>

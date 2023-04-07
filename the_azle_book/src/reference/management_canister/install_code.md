@@ -7,19 +7,14 @@ Examples:
 -   [management_canister](https://github.com/demergent-labs/azle/tree/main/examples/management_canister)
 
 ```typescript
-import { blob, match, Principal, $update } from 'azle';
+import { blob, match, Principal, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
 export async function executeInstallCode(
     canisterId: Principal,
     wasmModule: blob
-): Promise<
-    Variant<{
-        Ok: boolean;
-        Err: string;
-    }>
-> {
+): Promise<Result<boolean, string>> {
     const callResult = await managementCanister
         .install_code({
             mode: {

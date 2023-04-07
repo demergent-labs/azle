@@ -73,10 +73,10 @@ import {
     CallResult,
     nat64,
     Principal,
+    Result,
     Service,
     serviceUpdate,
-    $update,
-    Variant
+    $update
 } from 'azle';
 
 class TokenCanister extends Service {
@@ -92,12 +92,7 @@ $update;
 export async function payout(
     to: Principal,
     amount: nat64
-): Promise<
-    Variant<{
-        Ok: nat64;
-        Err: string;
-    }>
-> {
+): Promise<Result<nat64, string>> {
     return await tokenCanister.transfer(to, amount).call();
 }
 ```
@@ -111,7 +106,15 @@ Let's add to our example code and explore adding some practical result-based err
 `token_canister`:
 
 ```typescript
-import { ic, nat64, Principal, StableBTreeMap, $update, Variant } from 'azle';
+import {
+    ic,
+    nat64,
+    Principal,
+    Result,
+    StableBTreeMap,
+    $update,
+    Variant
+} from 'azle';
 
 let accounts = new StableBTreeMap<Principal, nat64>(0, 38, 15);
 
@@ -119,12 +122,14 @@ $update;
 export function transfer(
     to: Principal,
     amount: nat64
-): Variant<{
-    Ok: nat64;
-    Err: Variant<{
-        InsufficientBalance: nat64;
-    }>;
-}> {
+): Variant<
+    Result<
+        nat64,
+        Variant<{
+            InsufficientBalance: nat64;
+        }>
+    >
+> {
     const from = ic.caller();
 
     const fromBalance = accounts.get(from) ?? 0n;
@@ -156,6 +161,7 @@ import {
     match,
     nat64,
     Principal,
+    Result,
     Service,
     serviceUpdate,
     $update,
@@ -168,12 +174,12 @@ class TokenCanister extends Service {
         to: Principal,
         amount: nat64
     ) => CallResult<
-        Variant<{
-            Ok: nat64;
-            Err: Variant<{
+        Result<
+            nat64,
+            Variant<{
                 InsufficientBalance: nat64;
-            }>;
-        }>
+            }>
+        >
     >;
 }
 
@@ -185,12 +191,7 @@ $update;
 export async function payout(
     to: Principal,
     amount: nat64
-): Promise<
-    Variant<{
-        Ok: nat64;
-        Err: string;
-    }>
-> {
+): Promise<Result<nat64, string>> {
     const CallResult = await tokenCanister.transfer(to, amount).call();
 
     return match(CallResult, {
@@ -217,9 +218,9 @@ import {
     CallResult,
     Principal,
     $query,
+    Result,
     Service,
-    serviceQuery,
-    Variant
+    serviceQuery
 } from 'azle';
 
 class SomeCanister extends Service {
@@ -232,12 +233,7 @@ const someCanister = new SomeCanister(
 );
 
 $query;
-export async function querySomeCanister(): Promise<
-    Variant<{
-        Ok: boolean;
-        Err: string;
-    }>
-> {
+export async function querySomeCanister(): Promise<Result<boolean, string>> {
     return await someCanister.queryForBoolean().call();
 }
 ```
@@ -251,10 +247,10 @@ import {
     CallResult,
     Principal,
     RejectionCode,
+    Result,
     Service,
     serviceUpdate,
-    $update,
-    Variant
+    $update
 } from 'azle';
 
 class SomeCanister extends Service {
@@ -267,10 +263,7 @@ const someCanister = new SomeCanister(
 );
 
 $update;
-export function sendNotification(): Variant<{
-    Ok: null;
-    Err: RejectionCode;
-}> {
+export function sendNotification(): Result<null, RejectionCode> {
     return someCanister.receiveNotification().notify();
 }
 ```
@@ -282,10 +275,10 @@ import {
     CallResult,
     Principal,
     RejectionCode,
+    Result,
     Service,
     serviceUpdate,
-    $update,
-    Variant
+    $update
 } from 'azle';
 
 class SomeCanister extends Service {
@@ -298,10 +291,7 @@ const someCanister = new SomeCanister(
 );
 
 $update;
-export function sendNotification(): Variant<{
-    Ok: null;
-    Err: RejectionCode;
-}> {
+export function sendNotification(): Result<null, RejectionCode> {
     return someCanister.receiveNotification().cycles(1_000_000n).notify();
 }
 ```

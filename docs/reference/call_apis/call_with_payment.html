@@ -152,14 +152,14 @@
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa">threshold_ecdsa</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ok, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { blob, Principal, Result, $update } from 'azle';
 import { management_canister } from 'azle/canisters/management';
 
 $update;
 export async function executeInstallCode(
     canisterId: Principal,
     wasmModule: blob
-): Promise&lt;DefaultResult&gt; {
+): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     const callResult = await managementCanister
         .install_code({
             mode: {

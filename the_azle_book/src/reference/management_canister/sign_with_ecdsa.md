@@ -7,16 +7,13 @@ Examples:
 -   [management_canister](https://github.com/demergent-labs/azle/tree/main/examples/management_canister)
 
 ```typescript
-import { blob, ic, match, Record, $update, Variant } from 'azle';
+import { blob, ic, match, Record, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function sign(messageHash: blob): Promise<
-    Variant<{
-        Ok: Record<{ signature: blob }>;
-        Err: string;
-    }>
-> {
+export async function sign(
+    messageHash: blob
+): Promise<Result<Record<{ signature: blob }>, string>> {
     if (messageHash.length !== 32) {
         ic.trap('messageHash must be 32 bytes');
     }

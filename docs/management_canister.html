@@ -144,16 +144,11 @@
                         <h1 id="management-canister"><a class="header" href="#management-canister">Management Canister</a></h1>
 <p>This chapter is a work in progress.</p>
 <p>You can access the management canister like this:</p>
-<pre><code class="language-typescript">import { blob, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { blob, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function randomBytes(): Promise&lt;
-    Variant&lt;{
-        Ok: blob;
-        Err: string;
-    }&gt;
-&gt; {
+export async function randomBytes(): Promise&lt;Result&lt;blob, string&gt;&gt; {
     return await managementCanister.raw_rand().call();
 }
 </code></pre>

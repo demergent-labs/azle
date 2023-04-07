@@ -147,16 +147,13 @@
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { match, Principal, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
-export async function executeUpdateSettings(canisterId: Principal): Promise&lt;
-    Variant&lt;{
-        Ok: boolean;
-        Err: string;
-    }&gt;
-&gt; {
+export async function executeUpdateSettings(
+    canisterId: Principal
+): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     const callResult = await managementCanister
         .update_settings({
             canister_id: canisterId,

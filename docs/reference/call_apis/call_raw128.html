@@ -147,7 +147,7 @@
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/call_raw">call_raw</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, match, nat, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { ic, match, nat, Principal, Result, $update } from 'azle';
 
 $update;
 export async function executeCallRaw128(
@@ -155,12 +155,7 @@ export async function executeCallRaw128(
     method: string,
     candidArgs: string,
     payment: nat
-): Promise&lt;
-    Variant&lt;{
-        Ok: string;
-        Err: string;
-    }&gt;
-&gt; {
+): Promise&lt;Result&lt;string, string&gt;&gt; {
     const callResult = await ic.callRaw128(
         canisterId,
         method,

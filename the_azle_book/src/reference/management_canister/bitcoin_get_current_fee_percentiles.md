@@ -7,7 +7,7 @@ Examples:
 -   [bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/bitcoin)
 
 ```typescript
-import { $update, Variant } from 'azle';
+import { Result, $update } from 'azle';
 import {
     BitcoinNetwork,
     managementCanister,
@@ -18,10 +18,7 @@ const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
 $update;
 export async function getCurrentFeePercentiles(): Promise<
-    Variant<{
-        Ok: MillisatoshiPerByte[];
-        Err: string;
-    }>
+    Result<MillisatoshiPerByte[], string>
 > {
     return await managementCanister
         .bitcoin_get_current_fee_percentiles({

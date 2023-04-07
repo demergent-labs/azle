@@ -36,23 +36,21 @@ Here's an example showing all of the basic `StableBTreeMap` operations:
 
 ```typescript
 import {
+    Alias,
     InsertError,
     nat64,
     nat8,
     Opt,
     $query,
+    Result,
     StableBTreeMap,
-    $update,
-    Variant
+    $update
 } from 'azle';
 
 type Key = nat8;
 type Value = string;
 
-type InsertResult = Variant<{
-    Ok: Opt<Value>;
-    Err: InsertError;
-}>;
+type InsertResult<T> = Alias<Result<Opt<T>, InsertError>>;
 
 let map = new StableBTreeMap<Key, Value>(0, 100, 1_000);
 
@@ -67,7 +65,7 @@ export function get(key: Key): Opt<Value> {
 }
 
 $update;
-export function insert(key: Key, value: Value): InsertResult {
+export function insert(key: Key, value: Value): InsertResult<Value> {
     return map.insert(key, value);
 }
 
@@ -115,6 +113,7 @@ import {
     Principal,
     $query,
     Record,
+    Result,
     StableBTreeMap,
     $update,
     Variant
@@ -139,10 +138,7 @@ let users = new StableBTreeMap<Principal, User>(0, 38, 100_000);
 let recordings = new StableBTreeMap<Principal, Recording>(1, 38, 5_000_000);
 
 $update;
-export function createUser(username: string): Variant<{
-    Ok: User;
-    Err: InsertError;
-}> {
+export function createUser(username: string): Result<User, InsertError> {
     const id = generateId();
     const user: User = {
         id,
@@ -170,12 +166,12 @@ export function readUserById(id: Principal): Opt<User> {
 }
 
 $update;
-export function deleteUser(id: Principal): Variant<{
-    Ok: User;
-    Err: Variant<{
+export function deleteUser(id: Principal): Result<
+    User,
+    Variant<{
         UserDoesNotExist: Principal;
-    }>;
-}> {
+    }>
+> {
     const user = users.get(id);
 
     if (user === null) {
@@ -202,13 +198,13 @@ export function createRecording(
     audio: blob,
     name: string,
     userId: Principal
-): Variant<{
-    Ok: Recording;
-    Err: Variant<{
+): Result<
+    Recording,
+    Variant<{
         InsertError: InsertError;
         UserDoesNotExist: Principal;
-    }>;
-}> {
+    }>
+> {
     const user = users.get(userId);
 
     if (user === null) {
@@ -268,14 +264,14 @@ export function readRecordingById(id: Principal): Opt<Recording> {
 }
 
 $update;
-export function deleteRecording(id: Principal): Variant<{
-    Ok: Recording;
-    Err: Variant<{
+export function deleteRecording(id: Principal): Result<
+    Recording,
+    Variant<{
         InsertError: InsertError;
         RecordingDoesNotExist: Principal;
         UserDoesNotExist: Principal;
-    }>;
-}> {
+    }>
+> {
     const recording = recordings.get(id);
 
     if (recording === null) {
@@ -362,7 +358,7 @@ You can figure out the appropriate maximum key and value sizes by reasoning abou
 
 ```typescript
 type InsertResult<T> = Variant<{
-    Ok: T;
+    Ok: Opt<T>;
     Err: InsertError;
 }>;
 

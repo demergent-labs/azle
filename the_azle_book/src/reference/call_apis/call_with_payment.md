@@ -12,14 +12,14 @@ Examples:
 -   [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa)
 
 ```typescript
-import { blob, ok, Principal, $update, Variant } from 'azle';
+import { blob, Principal, Result, $update } from 'azle';
 import { management_canister } from 'azle/canisters/management';
 
 $update;
 export async function executeInstallCode(
     canisterId: Principal,
     wasmModule: blob
-): Promise<DefaultResult> {
+): Promise<Result<boolean, string>> {
     const callResult = await managementCanister
         .install_code({
             mode: {

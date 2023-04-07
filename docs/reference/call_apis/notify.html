@@ -148,7 +148,7 @@
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cross_canister_calls">cross_canister_calls</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { Principal, RejectionCode, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { NotifyResult, Principal, $update } from 'azle';
 import { Canister2 } from '../canister2/types';
 
 const canister2 = new Canister2(
@@ -156,10 +156,7 @@ const canister2 = new Canister2(
 );
 
 $update;
-export function sendNotification(): Variant&lt;{
-    Ok: null;
-    Err: RejectionCode;
-}&gt; {
+export function sendNotification(): NotifyResult {
     return canister2.receiveNotification('This is the notification').notify();
 }
 </code></pre>

@@ -147,14 +147,14 @@
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, match, Principal, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { blob, match, Principal, Result, $update } from 'azle';
 import { management_canister } from 'azle/canisters/management';
 
 $update;
 export async function executeInstallCode(
     canisterId: Principal,
     wasmModule: blob
-): Promise&lt;DefaultResult&gt; {
+): Promise&lt;Result&lt;boolean, string&gt;&gt; {
     const callResult = await managementCanister
         .install_code({
             mode: {

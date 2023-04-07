@@ -7,15 +7,12 @@ Examples:
 -   [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa)
 
 ```typescript
-import { blob, ic, match, Record, $update, Variant } from 'azle';
+import { blob, ic, match, Record, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
 export async function publicKey(): Promise<
-    Variant<{
-        Ok: Record<{ publicKey: blob }>;
-        Err: string;
-    }>
+    Result<Record<{ publicKey: blob }>, string>
 > {
     const caller = ic.caller().toUint8Array();
     const publicKeyResult = await managementCanister
