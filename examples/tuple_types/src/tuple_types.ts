@@ -65,12 +65,14 @@ export function primitiveOneTupleParam(
 }
 
 $query;
-export function primitiveOneTupleInlineReturnType(): [string] {
+export function primitiveOneTupleInlineReturnType(): Tuple<[string]> {
     return ['Greenland'];
 }
 
 $query;
-export function primitiveOneTupleInlineParam(param: [string]): [string] {
+export function primitiveOneTupleInlineParam(
+    param: Tuple<[string]>
+): Tuple<[string]> {
     return param;
 }
 
@@ -87,14 +89,14 @@ export function primitiveTwoTupleParam(
 }
 
 $query;
-export function primitiveTwoTupleInlineReturnType(): [string, string] {
+export function primitiveTwoTupleInlineReturnType(): Tuple<[string, string]> {
     return ['Fun', 'Times'];
 }
 
 $query;
 export function primitiveTwoTupleInlineParam(
-    param: [string, string]
-): [string, string] {
+    param: Tuple<[string, string]>
+): Tuple<[string, string]> {
     return param;
 }
 
@@ -111,18 +113,16 @@ export function primitiveThreeTupleParam(
 }
 
 $query;
-export function primitiveThreeTupleInlineReturnType(): [
-    string,
-    nat64,
-    Principal
-] {
+export function primitiveThreeTupleInlineReturnType(): Tuple<
+    [string, nat64, Principal]
+> {
     return ['Fun', 101n, Principal.fromText('aaaaa-aa')];
 }
 
 $query;
 export function primitiveThreeTupleInlineParam(
-    param: [string, nat64, Principal]
-): [string, nat64, Principal] {
+    param: Tuple<[string, nat64, Principal]>
+): Tuple<[string, nat64, Principal]> {
     return param;
 }
 
@@ -137,14 +137,14 @@ export function complexOneTupleParam(param: ComplexOneTuple): ComplexOneTuple {
 }
 
 $query;
-export function complexOneTupleInlineReturnType(): [PrimitiveTwoTuple] {
+export function complexOneTupleInlineReturnType(): Tuple<[PrimitiveTwoTuple]> {
     return [['Candy', 56n]];
 }
 
 $query;
 export function complexOneTupleInlineParam(
-    param: [PrimitiveTwoTuple]
-): [PrimitiveTwoTuple] {
+    param: Tuple<[PrimitiveTwoTuple]>
+): Tuple<[PrimitiveTwoTuple]> {
     return param;
 }
 
@@ -165,7 +165,9 @@ export function complexTwoTupleParam(param: ComplexTwoTuple): ComplexTwoTuple {
 }
 
 $query;
-export function complexTwoTupleInlineReturnType(): [PrimitiveTwoTuple, User] {
+export function complexTwoTupleInlineReturnType(): Tuple<
+    [PrimitiveTwoTuple, User]
+> {
     return [
         ['Content-Type', 644n],
         {
@@ -177,8 +179,8 @@ export function complexTwoTupleInlineReturnType(): [PrimitiveTwoTuple, User] {
 
 $query;
 export function complexTwoTupleInlineParam(
-    param: [PrimitiveTwoTuple, User]
-): [PrimitiveTwoTuple, User] {
+    param: Tuple<[PrimitiveTwoTuple, User]>
+): Tuple<[PrimitiveTwoTuple, User]> {
     return param;
 }
 
@@ -213,11 +215,9 @@ export function complexThreeTupleParam(
 }
 
 $query;
-export function complexThreeTupleInlineReturnType(): [
-    PrimitiveTwoTuple,
-    User,
-    Reaction
-] {
+export function complexThreeTupleInlineReturnType(): Tuple<
+    [PrimitiveTwoTuple, User, Reaction]
+> {
     return [
         ['Content-Type', 64n],
         {
@@ -241,8 +241,8 @@ export function complexThreeTupleInlineReturnType(): [
 
 $query;
 export function complexThreeTupleInlineParam(
-    param: [PrimitiveTwoTuple, User, Reaction]
-): [PrimitiveTwoTuple, User, Reaction] {
+    param: Tuple<[PrimitiveTwoTuple, User, Reaction]>
+): Tuple<[PrimitiveTwoTuple, User, Reaction]> {
     return param;
 }
 
@@ -275,14 +275,14 @@ export function tupleArrayVariantField(): StreamingCallbackType {
 
 $query;
 export function twoTupleWithInlineRecords(
-    param: [Record<{ hello: nat64 }>, Record<{ goodbye: nat64 }>]
-): [Record<{ hello: nat64 }>, Record<{ goodbye: nat64 }>] {
+    param: Tuple<[Record<{ hello: nat64 }>, Record<{ goodbye: nat64 }>]>
+): Tuple<[Record<{ hello: nat64 }>, Record<{ goodbye: nat64 }>]> {
     return param;
 }
 
 $query;
 export function nestedTupleQuery(
-    param: [[string, [nat8, nat8]], int]
-): [[string, [nat8, nat8]], int] {
+    param: Tuple<[Tuple<[string, Tuple<[nat8, nat8]>]>, int]>
+): Tuple<[Tuple<[string, Tuple<[nat8, nat8]>]>, int]> {
     return param;
 }
