@@ -42,7 +42,7 @@ type NullFunc = Func<
             param2: Vec<null>,
             param3: null,
             param4: Vec<Vec<null>>,
-            param5: Opt<null>[]
+            param5: Vec<Opt<null>>
         ) => null
     >
 >;

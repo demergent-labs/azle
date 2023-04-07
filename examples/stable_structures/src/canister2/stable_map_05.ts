@@ -35,12 +35,12 @@ export function stableMap5IsEmpty(): boolean {
 }
 
 $query;
-export function stableMap5Items(): [Opt<String>, float64][] {
+export function stableMap5Items(): Vec<[Opt<String>, float64]> {
     return stableMap5.items();
 }
 
 $query;
-export function stableMap5Keys(): Opt<String>[] {
+export function stableMap5Keys(): Vec<Opt<String>> {
     return stableMap5.keys();
 }
 

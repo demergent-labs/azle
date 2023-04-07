@@ -27,7 +27,7 @@ export function stableMap0IsEmpty(): boolean {
 }
 
 $query;
-export function stableMap0Items(): [nat8, string][] {
+export function stableMap0Items(): Vec<[nat8, string]> {
     return stableMap0.items();
 }
 

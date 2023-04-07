@@ -35,7 +35,7 @@ export function stableMap10IsEmpty(): boolean {
 }
 
 $query;
-export function stableMap10Items(): [float32, Opt<boolean>][] {
+export function stableMap10Items(): Vec<[float32, Opt<boolean>]> {
     return stableMap10.items();
 }
 
@@ -55,6 +55,6 @@ export function stableMap10Remove(key: float32): Opt<Opt<boolean>> {
 }
 
 $query;
-export function stableMap10Values(): Opt<boolean>[] {
+export function stableMap10Values(): Vec<Opt<boolean>> {
     return stableMap10.values();
 }
