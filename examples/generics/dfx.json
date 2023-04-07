@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "generics": {
+            "type": "custom",
+            "build": "npx azle generics",
+            "root": "src",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
+            "wasm": ".azle/generics/generics.wasm.gz",
+            "declarations": {
+                "output": "test/dfx_generated/generics",
+                "node_compatibility": true
+            }
+        }
+    }
+}

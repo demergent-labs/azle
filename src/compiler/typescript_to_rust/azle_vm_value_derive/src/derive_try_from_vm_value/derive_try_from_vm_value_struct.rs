@@ -1,10 +1,11 @@
 use proc_macro2::Ident;
 use quote::{format_ident, quote};
-use syn::{DataStruct, Fields, Index};
+use syn::{DataStruct, Fields, Generics, Index};
 
 pub fn derive_try_from_vm_value_struct(
     struct_name: &Ident,
     data_struct: &DataStruct,
+    generics: &Generics,
 ) -> proc_macro2::TokenStream {
     let field_js_value_result_variable_definitions =
         derive_field_js_value_result_variable_definitions(struct_name, data_struct);
@@ -20,9 +21,11 @@ pub fn derive_try_from_vm_value_struct(
     let struct_instantiation =
         derive_struct_instantiation(struct_name, data_struct, &field_initializers);
 
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+
     quote! {
-        impl CdkActTryFromVmValue<#struct_name, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<#struct_name, CdkActTryFromVmValueError> {
+        impl #impl_generics CdkActTryFromVmValue<#struct_name #ty_generics, &mut boa_engine::Context> for boa_engine::JsValue #where_clause {
+            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<#struct_name #ty_generics, CdkActTryFromVmValueError> {
                 let object_option = self.as_object();
 
                 if let Some(object) = object_option {
@@ -53,8 +56,8 @@ pub fn derive_try_from_vm_value_struct(
         }
 
         // TODO the body of this function is repeated in try_from_vm_value_trait.ts
-        impl CdkActTryFromVmValue<Vec<#struct_name>, &mut boa_engine::Context> for boa_engine::JsValue {
-            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<Vec<#struct_name>, CdkActTryFromVmValueError> {
+        impl #impl_generics CdkActTryFromVmValue<Vec<#struct_name #ty_generics>, &mut boa_engine::Context> for boa_engine::JsValue #where_clause {
+            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<Vec<#struct_name #ty_generics>, CdkActTryFromVmValueError> {
                 match self.as_object() {
                     Some(js_object) => {
                         if js_object.is_array() {
