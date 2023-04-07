@@ -24,7 +24,7 @@ export function stableMap11IsEmpty(): boolean {
 }
 
 $query;
-export function stableMap11Items(): [nat, User][] {
+export function stableMap11Items(): Vec<[nat, User]> {
     return stableMap11.items();
 }
 

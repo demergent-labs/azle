@@ -24,7 +24,7 @@ export function stableMap7IsEmpty(): boolean {
 }
 
 $query;
-export function stableMap7Items(): [null, null][] {
+export function stableMap7Items(): Vec<[null, null]> {
     return stableMap7.items();
 }
 

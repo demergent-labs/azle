@@ -125,7 +125,7 @@ $query;
 export function inlineTypesGenericVariant(): GenericVariant<
     Record<{ id: number; name: string }>,
     Vec<boolean>,
-    [number, string] // TODO this should break, Tuple wrapper type should be needed here
+    Tuple<[number, string]>
 > {
     return { Arm1: { id: 1, name: 'John Doe' } };
 }
@@ -207,7 +207,7 @@ $query;
 export function inlineTypesGenericRecord(): GenericRecord<
     Record<{ id: number; name: string }>,
     Vec<boolean>,
-    [number, string]
+    Tuple<[number, string]>
 > {
     return {
         arm1: { id: 1, name: 'John Doe' },
@@ -270,7 +270,7 @@ $query;
 export function inlineTypesGenericTuple(): GenericTuple<
     Record<{ id: number; name: string }>,
     Vec<boolean>,
-    [number, string]
+    Tuple<[number, string]>
 > {
     return [
         { id: 1, name: 'John Doe' },

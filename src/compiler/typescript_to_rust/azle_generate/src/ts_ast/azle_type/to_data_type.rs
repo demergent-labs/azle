@@ -16,7 +16,14 @@ impl AzleType<'_> {
 
                 panic!("Unexpected TsTypeLiteral\n     at {}:{}:{}\n\nHelp: Try wrapping this with either Record or Variant", origin, line_number, column_number)
             }
-            AzleType::AzleTupleType(azle_tuple_type) => azle_tuple_type.to_data_type(),
+            AzleType::AzleTupleType(_) => {
+                let origin = self.get_origin();
+                let line_number = self.get_line_number();
+                let range = self.get_range();
+                let column_number = range.0 + 1;
+
+                panic!("Unexpected TsTupleType\n     at {}:{}:{}\n\nHelp: Try wrapping this with Tuple", origin, line_number, column_number)
+            }
             AzleType::AzleFnOrConstructorType(azle_fn_or_constructor_type) => {
                 match azle_fn_or_constructor_type {
                     super::AzleFnOrConstructorType::AzleFnType(azle_fn_type) => {

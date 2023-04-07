@@ -24,7 +24,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 impl AzleTypeRef<'_> {
     pub fn to_tuple(&self) -> Tuple {
         match self.get_enclosed_azle_type().as_azle_tuple_type() {
-            Some(ts_type_lit) => ts_type_lit,
+            Some(ts_tuple_type) => ts_tuple_type,
             None => panic!("{}", self.wrong_enclosed_type_error()),
         }
         .to_tuple()
@@ -38,14 +38,6 @@ pub struct AzleTupleType<'a> {
 }
 
 impl AzleTupleType<'_> {
-    pub fn to_data_type(&self) -> CandidType {
-        CandidType::Tuple(Tuple {
-            name: None,
-            elems: self.get_elem_types(),
-            type_params: vec![].into(),
-        })
-    }
-
     pub fn to_tuple(&self) -> Tuple {
         Tuple {
             name: None,
