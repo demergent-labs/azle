@@ -4,6 +4,7 @@ import {
     Principal,
     $query,
     StableBTreeMap,
+    Tuple,
     $update,
     Vec
 } from 'azle';
@@ -35,7 +36,7 @@ export function stableMap13IsEmpty(): boolean {
 }
 
 $query;
-export function stableMap13Items(): [string, Principal][] {
+export function stableMap13Items(): Vec<Tuple<[string, Principal]>> {
     return stableMap13.items();
 }
 

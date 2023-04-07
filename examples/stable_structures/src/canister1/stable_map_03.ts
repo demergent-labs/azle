@@ -1,4 +1,13 @@
-import { int, nat64, Opt, $query, StableBTreeMap, $update, Vec } from 'azle';
+import {
+    int,
+    nat64,
+    Opt,
+    $query,
+    StableBTreeMap,
+    Tuple,
+    $update,
+    Vec
+} from 'azle';
 import { InsertResult, Reaction } from '../types';
 
 let stableMap3 = new StableBTreeMap<Reaction, int>(3, 100, 1_000);
@@ -24,7 +33,7 @@ export function stableMap3IsEmpty(): boolean {
 }
 
 $query;
-export function stableMap3Items(): [Reaction, int][] {
+export function stableMap3Items(): Vec<Tuple<[Reaction, int]>> {
     return stableMap3.items();
 }
 

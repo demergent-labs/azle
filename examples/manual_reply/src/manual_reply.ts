@@ -10,6 +10,7 @@ import {
     $query,
     Record,
     reserved,
+    Tuple,
     $update,
     Variant,
     Vec
@@ -79,7 +80,7 @@ export function updateFloat32(): Manual<float32> {
 }
 
 $update;
-export function updateInlineType(): Manual<[string, string]> {
+export function updateInlineType(): Manual<Tuple<[string, string]>> {
     ic.reply(['Hello', 'World']);
 }
 

@@ -4,6 +4,7 @@ import {
     Opt,
     $query,
     StableBTreeMap,
+    Tuple,
     $update,
     Vec
 } from 'azle';
@@ -35,7 +36,7 @@ export function stableMap10IsEmpty(): boolean {
 }
 
 $query;
-export function stableMap10Items(): Vec<[float32, Opt<boolean>]> {
+export function stableMap10Items(): Vec<Tuple<[float32, Opt<boolean>]>> {
     return stableMap10.items();
 }
 

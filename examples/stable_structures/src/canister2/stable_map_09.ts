@@ -4,6 +4,7 @@ import {
     Opt,
     $query,
     StableBTreeMap,
+    Tuple,
     $update,
     Vec
 } from 'azle';
@@ -36,7 +37,7 @@ export function stableMap9IsEmpty(): boolean {
 
 // TODO this should be breaking because of Tuple
 $query;
-export function stableMap9Items(): Vec<[float64, Vec<string>]> {
+export function stableMap9Items(): Vec<Tuple<[float64, Vec<string>]>> {
     return stableMap9.items();
 }
 

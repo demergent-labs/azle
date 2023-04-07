@@ -1,4 +1,13 @@
-import { nat64, nat8, Opt, $query, StableBTreeMap, $update, Vec } from 'azle';
+import {
+    nat64,
+    nat8,
+    Opt,
+    $query,
+    StableBTreeMap,
+    Tuple,
+    $update,
+    Vec
+} from 'azle';
 import { InsertResult } from '../types';
 
 let stableMap0 = new StableBTreeMap<nat8, string>(0, 100, 100);
@@ -27,7 +36,7 @@ export function stableMap0IsEmpty(): boolean {
 }
 
 $query;
-export function stableMap0Items(): Vec<[nat8, string]> {
+export function stableMap0Items(): Vec<Tuple<[nat8, string]>> {
     return stableMap0.items();
 }
 
