@@ -185,14 +185,16 @@ export class InlineTypes extends Service {
                             func: Func<Update<() => string>>;
                         }>
                     >,
-                    vec: Record<{
-                        primitive: nat;
-                        opt: Opt<string>;
-                        vec: Vec<string>;
-                        record: Record<{ prop1: string }>;
-                        variant: Variant<{ v1: null; v2: null }>;
-                        func: Func<Update<() => string>>;
-                    }>[],
+                    vec: Vec<
+                        Record<{
+                            primitive: nat;
+                            opt: Opt<string>;
+                            vec: Vec<string>;
+                            record: Record<{ prop1: string }>;
+                            variant: Variant<{ v1: null; v2: null }>;
+                            func: Func<Update<() => string>>;
+                        }>
+                    >,
                     record: Record<{
                         prop1: string;
                         optional: Opt<nat64>;
@@ -232,14 +234,16 @@ export class InlineTypes extends Service {
                             func: Func<Update<() => string>>;
                         }>
                     >,
-                    vec: Record<{
-                        primitive: nat;
-                        opt: Opt<string>;
-                        vec: Vec<string>;
-                        record: Record<{ prop1: string }>;
-                        variant: Variant<{ v1: null; v2: null }>;
-                        func: Func<Update<() => string>>;
-                    }>[],
+                    vec: Vec<
+                        Record<{
+                            primitive: nat;
+                            opt: Opt<string>;
+                            vec: Vec<string>;
+                            record: Record<{ prop1: string }>;
+                            variant: Variant<{ v1: null; v2: null }>;
+                            func: Func<Update<() => string>>;
+                        }>
+                    >,
                     record: Record<{
                         prop1: string;
                         optional: Opt<nat64>;
@@ -291,14 +295,16 @@ export class InlineTypes extends Service {
                     func: Func<Update<() => string>>;
                 }>
             >;
-            vec: Record<{
-                primitive: nat;
-                opt: Opt<string>;
-                vec: Vec<string>;
-                record: Record<{ prop1: string }>;
-                variant: Variant<{ v1: null; v2: null }>;
-                func: Func<Update<() => string>>;
-            }>[];
+            vec: Vec<
+                Record<{
+                    primitive: nat;
+                    opt: Opt<string>;
+                    vec: Vec<string>;
+                    record: Record<{ prop1: string }>;
+                    variant: Variant<{ v1: null; v2: null }>;
+                    func: Func<Update<() => string>>;
+                }>
+            >;
             record: Record<{
                 prop1: string;
                 optional: Opt<nat64>;
@@ -334,14 +340,16 @@ export class InlineTypes extends Service {
                     func: Func<Update<() => string>>;
                 }>
             >;
-            vec: Record<{
-                primitive: nat;
-                opt: Opt<string>;
-                vec: Vec<string>;
-                record: Record<{ prop1: string }>;
-                variant: Variant<{ v1: null; v2: null }>;
-                func: Func<Update<() => string>>;
-            }>[];
+            vec: Vec<
+                Record<{
+                    primitive: nat;
+                    opt: Opt<string>;
+                    vec: Vec<string>;
+                    record: Record<{ prop1: string }>;
+                    variant: Variant<{ v1: null; v2: null }>;
+                    func: Func<Update<() => string>>;
+                }>
+            >;
             record: Record<{
                 prop1: string;
                 optional: Opt<nat64>;

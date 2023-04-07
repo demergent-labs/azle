@@ -224,18 +224,20 @@ export type QueryBlocksResponse = Record<{
     //
     // For each entry `e` in [archived_blocks], `[e.from, e.from + len)` is a sub-range
     // of the originally requested block range.
-    archived_blocks: Record<{
-        // The index of the first archived block that can be fetched using the callback.
-        start: BlockIndex;
+    archived_blocks: Vec<
+        Record<{
+            // The index of the first archived block that can be fetched using the callback.
+            start: BlockIndex;
 
-        // The number of blocks that can be fetch using the callback.
-        length: nat64;
+            // The number of blocks that can be fetch using the callback.
+            length: nat64;
 
-        // The function that should be called to fetch the archived blocks.
-        // The range of the blocks accessible using this function is given by [from]
-        // and [len] fields above.
-        callback: QueryArchiveFn;
-    }>[];
+            // The function that should be called to fetch the archived blocks.
+            // The range of the blocks accessible using this function is given by [from]
+            // and [len] fields above.
+            callback: QueryArchiveFn;
+        }>
+    >;
 }>;
 
 export type Archive = Record<{
