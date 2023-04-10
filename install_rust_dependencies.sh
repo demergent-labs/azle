@@ -20,17 +20,32 @@ function run() {
     ic_wasm_already_installed=$(test -e "$global_azle_bin_dir"/ic-wasm; echo $?)
     ic_cdk_optimizer_already_installed=$(test -e "$global_azle_bin_dir"/ic-cdk-optimizer; echo $?)
 
-    if [ "$ic_wasm_already_installed" -eq 1 ] || [ "$ic_cdk_optimizer_already_installed" -eq 1 ]; then
+    previous_azle_version=$(ls ~/.config/azle | sort -V | awk -v azle_version="$azle_version" '$0 < azle_version { previous_version = $0 } END { print previous_version }')
+    previous_azle_config_dir=~/.config/azle/"$previous_azle_version"
+    previous_azle_logs_dir="$previous_azle_config_dir"/logs
+    previous_rust_version_file="$previous_azle_logs_dir"/rust_version
+
+    if [ -f "$previous_rust_version_file" ]; then
+        previous_rust_version=$(cat "$previous_rust_version_file")
+    else
+        previous_rust_version=""
+    fi
+
+    if [ "$rust_version" != "$previous_rust_version" ] && ([ "$ic_wasm_already_installed" -eq 1 ] || [ "$ic_cdk_optimizer_already_installed" -eq 1 ]); then
         echo -e "\nAzle "$azle_version" prerequisite installation (this may take a few minutes)\n"
 
         mkdir -p "$global_azle_config_dir"
         mkdir -p "$global_azle_logs_dir"
+
+        echo "$rust_version" > "$global_azle_logs_dir"/rust_version
 
         install_rustup
         install_wasm32_unknown_unknown
         install_ic_wasm "$ic_wasm_already_installed"
         install_ic_cdk_optimizer "$ic_cdk_optimizer_already_installed"
         echo -e "\n"
+    elif [ "$rust_version" == "$previous_rust_version" ]; then
+        mv "$previous_azle_config_dir" "$global_azle_config_dir"
     else
         update_rustup
     fi
