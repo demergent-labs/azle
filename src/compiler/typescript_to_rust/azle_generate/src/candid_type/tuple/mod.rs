@@ -1,7 +1,4 @@
-use cdk_framework::act::node::{
-    candid::{tuple::Elem, Tuple},
-    CandidType,
-};
+use cdk_framework::act::node::candid::{tuple::Elem, Tuple};
 use swc_common::SourceMap;
 use swc_ecma_ast::{TsTupleType, TsTypeAliasDecl};
 
