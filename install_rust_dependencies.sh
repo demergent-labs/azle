@@ -31,7 +31,15 @@ function run() {
         previous_rust_version=""
     fi
 
-    if [ "$rust_version" != "$previous_rust_version" ] && ([ "$ic_wasm_already_installed" -eq 1 ] || [ "$ic_cdk_optimizer_already_installed" -eq 1 ]); then
+    current_rust_version_file="$global_azle_logs_dir"/rust_version
+
+    if [ -f "$current_rust_version_file" ]; then
+        current_rust_version=$(cat "$current_rust_version_file")
+    else
+        current_rust_version=""
+    fi
+
+    if [ "$rust_version" != "$current_rust_version" ] || ([ "$rust_version" != "$previous_rust_version" ] && ([ "$ic_wasm_already_installed" -eq 1 ] || [ "$ic_cdk_optimizer_already_installed" -eq 1 ])); then
         echo -e "\nAzle "$azle_version" prerequisite installation (this may take a few minutes)\n"
 
         mkdir -p "$global_azle_config_dir"
