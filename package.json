@@ -1,6 +1,6 @@
 {
     "name": "azle",
-    "version": "0.13.2",
+    "version": "0.14.0",
     "rust_version": "1.66.0",
     "dfx_version": "0.12.1",
     "description": "TypeScript CDK for the Internet Computer",
