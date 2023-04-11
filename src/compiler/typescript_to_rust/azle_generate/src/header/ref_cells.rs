@@ -5,12 +5,12 @@ pub fn generate() -> proc_macro2::TokenStream {
                 // TODO leaking here is most likely not production-worthy
                 // TODO Boa needs to allow us to pass in a job queue that is owned by the context builder
                 // TODO once that happens we can remove this leak
-                let job_queue = Box::leak(Box::new(boa_engine::job::SimpleJobQueue::new()));
+                let job_queue = std::boxed::Box::leak(std::boxed::Box::new(boa_engine::job::SimpleJobQueue::new()));
                 let context = boa_engine::context::ContextBuilder::new()
                     .job_queue(job_queue)
                     .build()
                     .unwrap();
-                RefCell::new(context)
+                std::cell::RefCell::new(context)
             };
             static PROMISE_MAP_REF_CELL: std::cell::RefCell<
                 std::collections::HashMap<String, boa_engine::JsValue>,
