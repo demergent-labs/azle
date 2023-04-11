@@ -13,8 +13,8 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
     quote! {
         fn _azle_ic_reply(
             _this: &boa_engine::JsValue,
-            _aargs: &[boa_engine::JsValue],
-            _context: &mut boa_engine::Context
+            aargs: &[boa_engine::JsValue],
+            context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             let method_name = METHOD_NAME_REF_CELL.with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
 
@@ -46,8 +46,8 @@ fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
 
     quote!(
         #name => {
-            let reply_value: #return_type = _aargs.get(0).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
-            Ok(ic_cdk::api::call::reply((reply_value,)).try_into_vm_value(_context).unwrap())
+            let reply_value: #return_type = aargs.get(0).unwrap().clone().try_from_vm_value(&mut *context).unwrap();
+            Ok(ic_cdk::api::call::reply((reply_value,)).try_into_vm_value(context).unwrap())
         }
     )
 }
