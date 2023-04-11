@@ -13,33 +13,13 @@ pub fn generate() -> proc_macro2::TokenStream {
             _aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            // TODO make this promise in a better way once Boa allows it or you can figure it out
-            let promise_js_value = _context.eval_script(boa_engine::Source::from_bytes("new Promise(() => {})")).unwrap();
+            let (js_promise, js_promise_resolvers) = boa_engine::object::builtins::JsPromise::new_pending(_context);
+            let js_promise_cloned = js_promise.clone();
 
             let canister_id: ic_cdk::export::Principal = _aargs.get(0).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
             let method: String = _aargs.get(1).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
             let args_raw: Vec<u8> = _aargs.get(2).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
             let payment: u128 = _aargs.get(3).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
-
-            _azle_ic_call_raw128_spawn(
-                &promise_js_value,
-                canister_id,
-                method,
-                args_raw,
-                payment
-            );
-
-            Ok(promise_js_value)
-        }
-
-        fn _azle_ic_call_raw128_spawn(
-            promise_js_value: &boa_engine::JsValue,
-            canister_id: ic_cdk::export::Principal,
-            method: String,
-            args_raw: Vec<u8>,
-            payment: u128
-        ) {
-            let promise_js_value = promise_js_value.clone();
 
             ic_cdk::spawn(async move {
                 #pre_await_state_management
@@ -55,6 +35,8 @@ pub fn generate() -> proc_macro2::TokenStream {
 
                 #promise_fulfillment
             });
+
+            Ok(js_promise_cloned.into())
         }
     }
 }

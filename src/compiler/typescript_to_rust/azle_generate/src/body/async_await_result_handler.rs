@@ -24,14 +24,12 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                 return _azle_boa_return_value.clone();
             }
 
-            // This runs all pending promises to completion
-            // TODO use the better Boa API once it's available
-            _azle_boa_context.eval_script(boa_engine::Source::from_bytes("")).unwrap();
+            _azle_boa_context.run_jobs();
 
-            let object = _azle_boa_return_value.as_object().unwrap().borrow();
-            let promise = object.as_promise().unwrap();
+            let object = _azle_boa_return_value.as_object().unwrap();
+            let js_promise = boa_engine::object::builtins::JsPromise::from_object(object.clone()).unwrap();
 
-            return match &promise.promise_state {
+            return match &js_promise.state().unwrap() {
                 boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
                     PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                         let mut promise_map = promise_map_ref_cell.borrow_mut();

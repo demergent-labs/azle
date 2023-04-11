@@ -37,9 +37,7 @@ pub fn generate(
             let cycles_js_value = args_js_object.get(#index_string, _context).unwrap();
             let cycles: u64 = cycles_js_value.try_from_vm_value(&mut *_context).unwrap();
 
-            // TODO make this promise in a better way once Boa allows it or you can figure it out
-            let promise_js_value = _context.eval_script(boa_engine::Source::from_bytes("new Promise(() => {})")).unwrap();
-            let promise_js_value_cloned = promise_js_value.clone();
+            let (js_promise, js_promise_resolvers) = boa_engine::object::builtins::JsPromise::new_pending(_context);
 
             ic_cdk::spawn(async move {
                 #pre_await_state_management
@@ -55,7 +53,7 @@ pub fn generate(
                 #promise_fulfillment
             });
 
-            Ok(promise_js_value_cloned)
+            Ok(js_promise.clone().into())
         }
     }
 }

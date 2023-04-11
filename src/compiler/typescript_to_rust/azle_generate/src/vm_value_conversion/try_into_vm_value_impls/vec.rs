@@ -59,7 +59,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         impl<T> CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Vec<T>
         where
             T: AzleTryIntoVec,
-            T: for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context<'a>, boa_engine::JsValue>
+            T: for<'a, 'b> CdkActTryIntoVmValue<&'a mut boa_engine::Context<'b>, boa_engine::JsValue>
         {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 try_into_vm_value_generic_array(self, context)
@@ -82,7 +82,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         fn try_into_vm_value_generic_array<T>(generic_array: Vec<T>, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError>
         where
-            T:  for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context<'a>, boa_engine::JsValue>
+            T: for<'a, 'b> CdkActTryIntoVmValue<&'a mut boa_engine::Context<'b>, boa_engine::JsValue>
         {
             let js_values = generic_array.into_iter().map(|item| item.try_into_vm_value(context).unwrap()).collect::<Vec<boa_engine::JsValue>>();
             Ok(boa_engine::object::builtins::JsArray::from_iter(js_values, context).into())

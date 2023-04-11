@@ -13,8 +13,8 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
             .map(|type_param| TypeParam {
                 name: type_param.name.get_name().to_string(),
                 try_into_vm_value_trait_bound: quote!(
-                    for<'a> CdkActTryIntoVmValue<
-                        &'a mut boa_engine::Context<'a>,
+                    for<'a, 'b> CdkActTryIntoVmValue<
+                        &'a mut boa_engine::Context<'b>,
                         boa_engine::JsValue,
                     >
                 ),
@@ -23,7 +23,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
                     quote!(
                         boa_engine::JsValue:
-                        for<'a> CdkActTryFromVmValue<#name, &'a mut boa_engine::Context<'a>> + for<'a> CdkActTryFromVmValue<Box<#name>, &'a mut boa_engine::Context<'a>>
+                        for<'a, 'b> CdkActTryFromVmValue<#name, &'a mut boa_engine::Context<'b>> + for<'a, 'b> CdkActTryFromVmValue<Box<#name>, &'a mut boa_engine::Context<'b>>
                     )
                 },
             })
