@@ -87,8 +87,8 @@ fn generate_notify_functions(services: &Vec<Service>) -> Vec<TokenStream> {
             let notify_with_payment128_wrapper_function_name = format_ident!("{}_wrapper", notify_with_payment128_function_name_string);
 
             quote! {
-                .function(#notify_wrapper_function_name, #notify_function_name_string, 0)
-                .function(#notify_with_payment128_wrapper_function_name, #notify_with_payment128_function_name_string, 0)
+                .function(boa_engine::NativeFunction::from_fn_ptr(#notify_wrapper_function_name), #notify_function_name_string, 0)
+                .function(boa_engine::NativeFunction::from_fn_ptr(#notify_with_payment128_wrapper_function_name), #notify_with_payment128_function_name_string, 0)
             }
         }).collect()
     }).collect::<Vec<Vec<TokenStream>>>().concat()
@@ -118,9 +118,9 @@ fn generate_cross_canister_functions(services: &Vec<Service>) -> Vec<TokenStream
                         format_ident!("{}_wrapper", call_with_payment128_function_name_string);
 
                     quote! {
-                        .function(#call_wrapper_function_name, #call_function_name_string, 0)
-                        .function(#call_with_payment_wrapper_function_name, #call_with_payment_function_name_string, 0)
-                        .function(#call_with_payment128_wrapper_function_name, #call_with_payment128_function_name_string, 0)
+                        .function(boa_engine::NativeFunction::from_fn_ptr(#call_wrapper_function_name), #call_function_name_string, 0)
+                        .function(boa_engine::NativeFunction::from_fn_ptr(#call_with_payment_wrapper_function_name), #call_with_payment_function_name_string, 0)
+                        .function(boa_engine::NativeFunction::from_fn_ptr(#call_with_payment128_wrapper_function_name), #call_with_payment128_function_name_string, 0)
                     }
                 })
                 .collect()
