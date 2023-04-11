@@ -36,7 +36,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 }
             };
 
-            js_promise_resolvers.resolve.call(&js_promise.into(), &[call_result_js_value], &mut *_azle_boa_context).unwrap();
+            js_promise_resolvers.resolve.call(&boa_engine::JsValue::undefined(), &[call_result_js_value], &mut *_azle_boa_context).unwrap();
 
             let main_promise = PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                 let promise_map = promise_map_ref_cell.borrow().clone();
