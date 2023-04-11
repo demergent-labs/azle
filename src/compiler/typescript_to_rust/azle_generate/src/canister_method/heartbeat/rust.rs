@@ -7,7 +7,7 @@ pub fn generate(heartbeat_fn_decl: &AnnotatedFnDecl) -> proc_macro2::TokenStream
 
     quote::quote! {
         BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
-            let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
+            let mut boa_context = box_context_ref_cell.borrow_mut();
 
             let uuid = uuid::Uuid::new_v4().to_string();
 
@@ -32,8 +32,8 @@ pub fn generate(heartbeat_fn_decl: &AnnotatedFnDecl) -> proc_macro2::TokenStream
             #call_to_heartbeat_js_function
 
             _azle_async_await_result_handler(
-                &mut _azle_boa_context,
-                &_azle_boa_return_value,
+                &mut boa_context,
+                &boa_return_value,
                 &uuid,
                 #function_name,
                 true

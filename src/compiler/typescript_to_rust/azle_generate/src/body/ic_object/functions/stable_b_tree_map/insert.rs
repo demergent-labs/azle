@@ -8,12 +8,12 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
     quote::quote! {
         fn _azle_ic_stable_b_tree_map_insert(
             _this: &boa_engine::JsValue,
-            _aargs: &[boa_engine::JsValue],
-            _context: &mut boa_engine::Context
+            aargs: &[boa_engine::JsValue],
+            context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let memory_id: u8 = _aargs.get(0).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
-            let key_js_value = _aargs.get(1).unwrap().clone();
-            let value_js_value = _aargs.get(2).unwrap().clone();
+            let memory_id: u8 = aargs.get(0).unwrap().clone().try_from_vm_value(&mut *context).unwrap();
+            let key_js_value = aargs.get(1).unwrap().clone();
+            let value_js_value = aargs.get(2).unwrap().clone();
 
             match memory_id {
                 #(#match_arms)*
@@ -48,17 +48,17 @@ fn generate_match_arms(
             quote! {
                 #memory_id => {
                     let key = #key_wrapper_type_name(
-                        key_js_value.try_from_vm_value(&mut *_context).unwrap()
+                        key_js_value.try_from_vm_value(&mut *context).unwrap()
                     );
                     let value = #value_wrapper_type_name(
-                        value_js_value.try_from_vm_value(&mut *_context).unwrap()
+                        value_js_value.try_from_vm_value(&mut *context).unwrap()
                     );
 
-                    let insert_result = #map_name_ident.with(|p| {
-                        p.borrow_mut().insert(key, value)
+                    let insert_result = #map_name_ident.with(|stable_b_tree_map_ref_cell| {
+                        stable_b_tree_map_ref_cell.borrow_mut().insert(key, value)
                     });
 
-                    Ok(insert_result.try_into_vm_value(&mut *_context).unwrap())
+                    Ok(insert_result.try_into_vm_value(&mut *context).unwrap())
                 }
             }
         })

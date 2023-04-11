@@ -18,19 +18,19 @@ pub fn generate(
     quote! {
         fn #call_wrapper_fn_name(
             _this: &boa_engine::JsValue,
-            _aargs: &[boa_engine::JsValue],
-            _context: &mut boa_engine::Context
+            aargs: &[boa_engine::JsValue],
+            context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let canister_id_js_value = _aargs.get(0).unwrap().clone();
-            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.try_from_vm_value(&mut *_context).unwrap();
+            let canister_id_js_value = aargs.get(0).unwrap().clone();
+            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.try_from_vm_value(&mut *context).unwrap();
 
-            let args_js_value = _aargs.get(1).unwrap().clone();
+            let args_js_value = aargs.get(1).unwrap().clone();
             let args_js_object = args_js_value.as_object().unwrap();
 
             #(#param_variables)*
 
             // TODO make this promise in a better way once Boa allows it or you can figure it out
-            let promise_js_value = _context.eval("new Promise(() => {})").unwrap();
+            let promise_js_value = context.eval("new Promise(() => {})").unwrap();
             let promise_js_value_cloned = promise_js_value.clone();
 
             ic_cdk::spawn(async move {

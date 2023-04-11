@@ -10,16 +10,16 @@ pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
         fn _azle_ic_call_raw(
             _this: &boa_engine::JsValue,
-            _aargs: &[boa_engine::JsValue],
-            _context: &mut boa_engine::Context
+            aargs: &[boa_engine::JsValue],
+            context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             // TODO make this promise in a better way once Boa allows it or you can figure it out
-            let promise_js_value = _context.eval("new Promise(() => {})").unwrap();
+            let promise_js_value = context.eval("new Promise(() => {})").unwrap();
 
-            let canister_id: ic_cdk::export::Principal = _aargs.get(0).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
-            let method: String = _aargs.get(1).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
-            let args_raw: Vec<u8> = _aargs.get(2).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
-            let payment: u64 = _aargs.get(3).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
+            let canister_id: ic_cdk::export::Principal = aargs.get(0).unwrap().clone().try_from_vm_value(&mut *context).unwrap();
+            let method: String = aargs.get(1).unwrap().clone().try_from_vm_value(&mut *context).unwrap();
+            let args_raw: Vec<u8> = aargs.get(2).unwrap().clone().try_from_vm_value(&mut *context).unwrap();
+            let payment: u64 = aargs.get(3).unwrap().clone().try_from_vm_value(&mut *context).unwrap();
 
             _azle_ic_call_raw_spawn(
                 &promise_js_value,

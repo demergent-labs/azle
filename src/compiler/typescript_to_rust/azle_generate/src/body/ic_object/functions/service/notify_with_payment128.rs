@@ -15,19 +15,19 @@ pub fn generate(service: &Service, method: &Method) -> TokenStream {
     quote! {
         fn #wrapper_fn_name(
             _this: &boa_engine::JsValue,
-            _aargs: &[boa_engine::JsValue],
-            _context: &mut boa_engine::Context
+            aargs: &[boa_engine::JsValue],
+            context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let canister_id_js_value = _aargs.get(0).unwrap().clone();
-            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.try_from_vm_value(&mut *_context).unwrap();
+            let canister_id_js_value = aargs.get(0).unwrap().clone();
+            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.try_from_vm_value(&mut *context).unwrap();
 
-            let args_js_value = _aargs.get(1).unwrap().clone();
+            let args_js_value = aargs.get(1).unwrap().clone();
             let args_js_object = args_js_value.as_object().unwrap();
 
             #(#param_variables)*
 
-            let cycles_js_value = _aargs.get(2).unwrap().clone();
-            let cycles: u128 = cycles_js_value.try_from_vm_value(&mut *_context).unwrap();
+            let cycles_js_value = aargs.get(2).unwrap().clone();
+            let cycles: u128 = cycles_js_value.try_from_vm_value(&mut *context).unwrap();
 
             let notify_result = #real_function_name(
                 canister_id_principal,
@@ -35,7 +35,7 @@ pub fn generate(service: &Service, method: &Method) -> TokenStream {
                 cycles,
             );
 
-            Ok(notify_result.try_into_vm_value(_context).unwrap())
+            Ok(notify_result.try_into_vm_value(context).unwrap())
         }
     }
 }

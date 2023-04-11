@@ -8,10 +8,10 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
     quote! {
         fn _azle_ic_stable_b_tree_map_is_empty(
             _this: &boa_engine::JsValue,
-            _aargs: &[boa_engine::JsValue],
-            _context: &mut boa_engine::Context
+            aargs: &[boa_engine::JsValue],
+            context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let memory_id: u8 = _aargs.get(0).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
+            let memory_id: u8 = aargs.get(0).unwrap().clone().try_from_vm_value(&mut *context).unwrap();
 
             match memory_id {
                 #(#match_arms)*
@@ -33,9 +33,9 @@ fn generate_match_arms(
 
             quote! {
                 #memory_id => {
-                    Ok(#map_name_ident.with(|p| {
-                        p.borrow().is_empty()
-                    }).try_into_vm_value(&mut *_context).unwrap())
+                    Ok(#map_name_ident.with(|stable_b_tree_map_ref_cell| {
+                        stable_b_tree_map_ref_cell.borrow().is_empty()
+                    }).try_into_vm_value(&mut *context).unwrap())
                 }
             }
         })
