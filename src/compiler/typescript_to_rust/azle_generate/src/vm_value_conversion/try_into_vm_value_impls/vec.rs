@@ -66,13 +66,9 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        // TODO in the future maybe the other number types can be optimized like this (optimization implementation is currently in boa From trait impl)
+        // TODO in the future maybe the other number types can be optimized like this
         impl CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Vec<u8> {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                // Ok(self.into())
-                // TODO make sure this is efficient
-                // Ok(boa_engine::object::builtins::JsUint8Array::from_iter(self, context).unwrap().into())
-                // TODO we might want to test the efficient and innefficient ways to see if there is any difference with the performance counter or the bytes example
                 let js_array_buffer = boa_engine::object::builtins::JsArrayBuffer::from_byte_block(self, context).unwrap();
                 let js_uint8_array = boa_engine::object::builtins::JsUint8Array::from_array_buffer(js_array_buffer, context).unwrap();
 

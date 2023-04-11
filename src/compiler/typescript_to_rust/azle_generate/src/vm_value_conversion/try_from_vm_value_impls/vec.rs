@@ -36,10 +36,10 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        // TODO let's figure this one out
-        // TODO probably a better way to do this: https://github.com/boa-dev/boa/blob/main/boa_examples/src/bin/jsarraybuffer.rs#L24-L35
         impl CdkActTryFromVmValue<Vec<u8>, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<u8>, CdkActTryFromVmValueError> {
+                // TODO maybe a better way to do this, I had some issues: https://github.com/boa-dev/boa/blob/main/boa_examples/src/bin/jsarraybuffer.rs#L24-L35
+                // Ok(boa_engine::object::builtins::JsArrayBuffer::from_object(self.as_object().unwrap().clone()).unwrap().take().unwrap())
                 Ok(
                     self
                         .as_object()
