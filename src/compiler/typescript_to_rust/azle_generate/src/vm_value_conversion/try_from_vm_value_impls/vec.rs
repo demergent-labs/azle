@@ -26,17 +26,19 @@ pub fn generate() -> proc_macro2::TokenStream {
         impl<T> AzleTryFromVec for Option<T> {}
         impl<T> AzleTryFromVec for Vec<T> {}
 
-        impl<T> CdkActTryFromVmValue<Vec<T>, &mut boa_engine::Context> for boa_engine::JsValue
+        impl<T> CdkActTryFromVmValue<Vec<T>, &mut boa_engine::Context<'_>> for boa_engine::JsValue
         where
             T: AzleTryFromVec,
-            boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context>
+            boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context<'a>>
         {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<T>, CdkActTryFromVmValueError> {
                 try_from_vm_value_generic_array::<T>(self, context)
             }
         }
 
-        impl CdkActTryFromVmValue<Vec<u8>, &mut boa_engine::Context> for boa_engine::JsValue {
+        // TODO let's figure this one out
+        // TODO probably a better way to do this: https://github.com/boa-dev/boa/blob/main/boa_examples/src/bin/jsarraybuffer.rs#L24-L35
+        impl CdkActTryFromVmValue<Vec<u8>, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<u8>, CdkActTryFromVmValueError> {
                 Ok(
                     self
@@ -60,7 +62,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         // TODO this seems like such a messy and inefficient way to do it
         fn try_from_vm_value_generic_array<T>(js_value: boa_engine::JsValue, context: &mut boa_engine::Context) -> Result<Vec<T>, CdkActTryFromVmValueError>
         where
-            boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context>
+            boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context<'a>>
         {
             match js_value.as_object() {
                 Some(js_object) => {

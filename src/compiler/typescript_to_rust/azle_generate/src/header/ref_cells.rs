@@ -1,7 +1,7 @@
 pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
         thread_local! {
-            static BOA_CONTEXT_REF_CELL: std::cell::RefCell<boa_engine::Context> =
+            static BOA_CONTEXT_REF_CELL: std::cell::RefCell<boa_engine::Context<'static>> =
                 std::cell::RefCell::new(boa_engine::Context::default());
             static PROMISE_MAP_REF_CELL: std::cell::RefCell<
                 std::collections::HashMap<String, boa_engine::JsValue>,

@@ -8,11 +8,13 @@ pub fn to_vm_value(name: String) -> TokenStream {
     quote! {
         impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for #service_name {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                Ok(_azle_unwrap_boa_result(context.eval(
-                    format!(
-                        "new {}(Principal.fromText(\"{}\"))",
-                        stringify!(#service_name),
-                        self.0.principal.to_string()
+                Ok(_azle_unwrap_boa_result(context.eval_script(
+                    boa_engine::Source::from_bytes(
+                        format!(
+                            "new {}(Principal.fromText(\"{}\"))",
+                            stringify!(#service_name),
+                            self.0.principal.to_string()
+                        )
                     )
                 ), context))
             }

@@ -14,7 +14,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             _context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             // TODO make this promise in a better way once Boa allows it or you can figure it out
-            let promise_js_value = _context.eval("new Promise(() => {})").unwrap();
+            let promise_js_value = _context.eval_script(boa_engine::Source::from_bytes("new Promise(() => {})")).unwrap();
 
             let canister_id: ic_cdk::export::Principal = _aargs.get(0).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
             let method: String = _aargs.get(1).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();

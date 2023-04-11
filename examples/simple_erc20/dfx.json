@@ -2,7 +2,7 @@
     "canisters": {
         "simple_erc20": {
             "type": "custom",
-            "build": "npx azle simple_erc20",
+            "build": "npx azle --verbose simple_erc20",
             "root": "src",
             "ts": "src/simple_erc20.ts",
             "candid": "src/simple_erc20.did",

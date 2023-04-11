@@ -1,6 +1,6 @@
 pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
-        impl CdkActTryFromVmValue<f64, &mut boa_engine::Context> for boa_engine::JsValue {
+        impl CdkActTryFromVmValue<f64, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<f64, CdkActTryFromVmValueError> {
                 match self.as_number() {
                     Some(value) => Ok(value),
@@ -9,7 +9,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl CdkActTryFromVmValue<f32, &mut boa_engine::Context> for boa_engine::JsValue {
+        impl CdkActTryFromVmValue<f32, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<f32, CdkActTryFromVmValueError> {
                 match self.as_number() {
                     Some(value) => Ok(value as f32),
@@ -20,7 +20,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         // TODO it would probably be better to get the BigInt out of the JsValue and convert it more directly
         // TODO but we might run into problems with Nat and BigUint, thus I am doing a string conversion for now
-        impl CdkActTryFromVmValue<ic_cdk::export::candid::Int, &mut boa_engine::Context> for boa_engine::JsValue {
+        impl CdkActTryFromVmValue<ic_cdk::export::candid::Int, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::export::candid::Int, CdkActTryFromVmValueError> {
                 match self.as_bigint() {
                     Some(value) => Ok(ic_cdk::export::candid::Int::from_str(&value.to_string()).unwrap()), // TODO probably not the best conversion
@@ -29,7 +29,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl CdkActTryFromVmValue<i128, &mut boa_engine::Context> for boa_engine::JsValue {
+        impl CdkActTryFromVmValue<i128, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<i128, CdkActTryFromVmValueError> {
                 match self.as_bigint() {
                     Some(value) => {
@@ -47,7 +47,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         // TODO this might break since i64 may (will) not be a bigint
         // TODO probably need to implement my own conversion here until try_from_js_value is fixed
-        impl CdkActTryFromVmValue<i64, &mut boa_engine::Context> for boa_engine::JsValue {
+        impl CdkActTryFromVmValue<i64, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<i64, CdkActTryFromVmValueError> {
                 match self.as_bigint() {
                     Some(value) => {
@@ -63,7 +63,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl CdkActTryFromVmValue<i32, &mut boa_engine::Context> for boa_engine::JsValue {
+        impl CdkActTryFromVmValue<i32, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<i32, CdkActTryFromVmValueError> {
                 match self.as_number() {
                     Some(value) => Ok(value as i32),
@@ -72,7 +72,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl CdkActTryFromVmValue<i16, &mut boa_engine::Context> for boa_engine::JsValue {
+        impl CdkActTryFromVmValue<i16, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<i16, CdkActTryFromVmValueError> {
                 match self.as_number() {
                     Some(value) => Ok(value as i16),
@@ -81,7 +81,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl CdkActTryFromVmValue<i8, &mut boa_engine::Context> for boa_engine::JsValue {
+        impl CdkActTryFromVmValue<i8, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<i8, CdkActTryFromVmValueError> {
                 match self.as_number() {
                     Some(value) => Ok(value as i8),
@@ -90,7 +90,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl CdkActTryFromVmValue<ic_cdk::export::candid::Nat, &mut boa_engine::Context> for boa_engine::JsValue {
+        impl CdkActTryFromVmValue<ic_cdk::export::candid::Nat, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::export::candid::Nat, CdkActTryFromVmValueError> {
                 match self.as_bigint() {
                     Some(value) => Ok(ic_cdk::export::candid::Nat::from_str(&value.to_string()).unwrap()), // TODO probably not the best conversion
@@ -99,7 +99,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl CdkActTryFromVmValue<u128, &mut boa_engine::Context> for boa_engine::JsValue {
+        impl CdkActTryFromVmValue<u128, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<u128, CdkActTryFromVmValueError> {
                 match self.as_bigint() {
                     Some(value) => {
@@ -117,7 +117,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         // TODO this might break since i64 may (will) not be a bigint
         // TODO probably need to implement my own conversion here until try_from_js_value is fixed
-        impl CdkActTryFromVmValue<u64, &mut boa_engine::Context> for boa_engine::JsValue {
+        impl CdkActTryFromVmValue<u64, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<u64, CdkActTryFromVmValueError> {
                 match self.as_bigint() {
                     Some(value) => {
@@ -133,7 +133,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl CdkActTryFromVmValue<u32, &mut boa_engine::Context> for boa_engine::JsValue {
+        impl CdkActTryFromVmValue<u32, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<u32, CdkActTryFromVmValueError> {
                 match self.as_number() {
                     Some(value) => Ok(value as u32),
@@ -142,7 +142,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl CdkActTryFromVmValue<u16, &mut boa_engine::Context> for boa_engine::JsValue {
+        impl CdkActTryFromVmValue<u16, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<u16, CdkActTryFromVmValueError> {
                 match self.as_number() {
                     Some(value) => Ok(value as u16),
@@ -151,7 +151,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl CdkActTryFromVmValue<u8, &mut boa_engine::Context> for boa_engine::JsValue {
+        impl CdkActTryFromVmValue<u8, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<u8, CdkActTryFromVmValueError> {
                 match self.as_number() {
                     Some(value) => Ok(value as u8),

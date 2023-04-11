@@ -26,7 +26,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
 
             // This runs all pending promises to completion
             // TODO use the better Boa API once it's available
-            _azle_boa_context.eval("");
+            _azle_boa_context.eval_script(boa_engine::Source::from_bytes("")).unwrap();
 
             let object = _azle_boa_return_value.as_object().unwrap().borrow();
             let promise = object.as_promise().unwrap();

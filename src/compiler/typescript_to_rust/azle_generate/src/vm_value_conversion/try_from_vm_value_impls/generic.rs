@@ -1,17 +1,17 @@
 pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
-        impl<T> CdkActTryFromVmValue<(T,), &mut boa_engine::Context> for boa_engine::JsValue
+        impl<T> CdkActTryFromVmValue<(T,), &mut boa_engine::Context<'_>> for boa_engine::JsValue
         where
-            boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context>
+            boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context<'a>>
         {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<(T,), CdkActTryFromVmValueError> {
                 Ok((self.try_from_vm_value(context).unwrap(),))
             }
         }
 
-        impl<T> CdkActTryFromVmValue<Box<T>, &mut boa_engine::Context> for boa_engine::JsValue
+        impl<T> CdkActTryFromVmValue<Box<T>, &mut boa_engine::Context<'_>> for boa_engine::JsValue
         where
-            boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context>
+            boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context<'a>>
         {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Box<T>, CdkActTryFromVmValueError> {
                 match self.try_from_vm_value(context) {
@@ -21,9 +21,9 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl<T> CdkActTryFromVmValue<Option<T>, &mut boa_engine::Context> for boa_engine::JsValue
+        impl<T> CdkActTryFromVmValue<Option<T>, &mut boa_engine::Context<'_>> for boa_engine::JsValue
         where
-            boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context>
+            boa_engine::JsValue: for<'a> CdkActTryFromVmValue<T, &'a mut boa_engine::Context<'a>>
         {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Option<T>, CdkActTryFromVmValueError> {
                 if self.is_null() {
