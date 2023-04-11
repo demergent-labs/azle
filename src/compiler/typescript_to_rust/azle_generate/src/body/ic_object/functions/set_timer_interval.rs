@@ -14,7 +14,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
             let closure = move || {
                 BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
-                    let mut _azle_boa_context = boa_context_ref_cell.borrow_mut();
+                    let mut boa_context = boa_context_ref_cell.borrow_mut();
 
                     let uuid = uuid::Uuid::new_v4().to_string();
 
@@ -36,18 +36,18 @@ pub fn generate() -> proc_macro2::TokenStream {
                         *manual_mut = false;
                     });
 
-                    let _azle_boa_return_value = _azle_unwrap_boa_result(
+                    let boa_return_value = _azle_unwrap_boa_result(
                         func_js_object.call(
                             &boa_engine::JsValue::Null,
                             &[],
-                            &mut *_azle_boa_context
+                            &mut *boa_context
                         ),
-                        &mut *_azle_boa_context
+                        &mut *boa_context
                     );
 
                     _azle_async_await_result_handler(
-                        &mut _azle_boa_context,
-                        &_azle_boa_return_value,
+                        &mut boa_context,
+                        &boa_return_value,
                         &uuid,
                         "_AZLE_TIMER",
                         false

@@ -81,8 +81,8 @@ pub fn generate_param_variables(method: &Method, canister_name: &String) -> Vec<
             }, method.create_qualified_name(canister_name));
 
             quote! {
-                let #param_name_js_value = args_js_object.get(#index, _context).unwrap();
-                let #param_name: #param_type = #param_name_js_value.try_from_vm_value(&mut *_context).unwrap();
+                let #param_name_js_value = args_js_object.get(#index, context).unwrap();
+                let #param_name: #param_type = #param_name_js_value.try_from_vm_value(&mut *context).unwrap();
             }
         })
     .collect()

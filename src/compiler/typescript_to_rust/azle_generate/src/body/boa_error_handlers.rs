@@ -8,9 +8,9 @@ pub fn generate() -> TokenStream {
             context: &mut boa_engine::Context
         ) -> boa_engine::JsValue {
             match boa_result {
-                Ok(_azle_boa_return_value) => _azle_boa_return_value,
-                Err(_azle_boa_error) => {
-                    let error_message = _azle_js_value_to_string(_azle_boa_error.to_opaque(context), context);
+                Ok(boa_return_value) => boa_return_value,
+                Err(boa_error) => {
+                    let error_message = _azle_js_value_to_string(boa_error.to_opaque(context), context);
 
                     ic_cdk::api::trap(&format!("Uncaught {}", error_message));
                 },

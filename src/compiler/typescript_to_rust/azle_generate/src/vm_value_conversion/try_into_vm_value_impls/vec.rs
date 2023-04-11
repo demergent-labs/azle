@@ -62,7 +62,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             T: for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>
         {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                try_into_vm_value_generic_array(self, context)
+                _azle_try_into_vm_value_generic_array(self, context)
             }
         }
 
@@ -73,7 +73,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        fn try_into_vm_value_generic_array<T>(generic_array: Vec<T>, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError>
+        fn _azle_try_into_vm_value_generic_array<T>(generic_array: Vec<T>, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError>
         where
             T:  for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>
         {
