@@ -11,24 +11,24 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
     let match_arms = generate_match_arms(methods);
     quote! {
         fn _azle_async_await_result_handler(
-            _azle_boa_context: &mut boa_engine::Context,
-            _azle_boa_return_value: &boa_engine::JsValue,
-            _azle_uuid: &str,
-            _azle_method_name: &str,
-            _azle_manual: bool
+            boa_context: &mut boa_engine::Context,
+            boa_return_value: &boa_engine::JsValue,
+            uuid: &str,
+            method_name: &str,
+            manual: bool
         ) -> boa_engine::JsValue {
             if
-                !_azle_boa_return_value.is_object() ||
-                !_azle_boa_return_value.as_object().unwrap().is_promise()
+                !boa_return_value.is_object() ||
+                !boa_return_value.as_object().unwrap().is_promise()
             {
-                return _azle_boa_return_value.clone();
+                return boa_return_value.clone();
             }
 
             // This runs all pending promises to completion
             // TODO use the better Boa API once it's available
-            _azle_boa_context.eval("");
+            boa_context.eval("");
 
-            let object = _azle_boa_return_value.as_object().unwrap().borrow();
+            let object = boa_return_value.as_object().unwrap().borrow();
             let promise = object.as_promise().unwrap();
 
             return match &promise.promise_state {
@@ -36,29 +36,29 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                     PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                         let mut promise_map = promise_map_ref_cell.borrow_mut();
 
-                        promise_map.remove(_azle_uuid);
+                        promise_map.remove(uuid);
                     });
 
-                    if _azle_manual == true {
-                        return _azle_boa_return_value.clone();
+                    if manual == true {
+                        return boa_return_value.clone();
                     }
 
-                    match _azle_method_name {
+                    match method_name {
                         #(#match_arms)*
                         "_AZLE_TIMER" => {},
                         _ => panic!("method name was not found")
                     };
 
-                    return _azle_boa_return_value.clone();
+                    return boa_return_value.clone();
                 },
                 boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
                     PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                         let mut promise_map = promise_map_ref_cell.borrow_mut();
 
-                        promise_map.remove(_azle_uuid);
+                        promise_map.remove(uuid);
                     });
 
-                    let error_message = _azle_js_value_to_string(js_value.clone(), _azle_boa_context);
+                    let error_message = _azle_js_value_to_string(js_value.clone(), boa_context);
 
                     ic_cdk::api::trap(&format!("Uncaught {}", error_message));
                 },
@@ -66,10 +66,10 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                     PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                         let mut promise_map = promise_map_ref_cell.borrow_mut();
 
-                        promise_map.insert(_azle_uuid.to_string(), _azle_boa_return_value.clone());
+                        promise_map.insert(uuid.to_string(), boa_return_value.clone());
                     });
 
-                    return _azle_boa_return_value.clone();
+                    return boa_return_value.clone();
                 }
             };
         }
@@ -95,7 +95,7 @@ fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
     );
     quote!(
         #name => {
-            let reply_value: #return_type = js_value.clone().try_from_vm_value(&mut *_azle_boa_context).unwrap();
+            let reply_value: #return_type = js_value.clone().try_from_vm_value(&mut *boa_context).unwrap();
             ic_cdk::api::call::reply((reply_value,));
         }
     )
