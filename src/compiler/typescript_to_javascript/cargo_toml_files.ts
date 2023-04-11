@@ -36,8 +36,8 @@ export function generateLibCargoToml(canisterName: string): Toml {
         ic-cdk-timers = "0.1.2"
         ic-stable-structures = "0.3.0"
         candid = { version = "0.9.0-beta.2", features = ["parser"] }
-        # boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "8cd3b185eef881deac0c8a6500eef89b7e308863" }
-        boa_engine = { path = "/home/lastmjs/development/boa/boa_engine" }
+        boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "bf3e201ec30746291b94476eb71943ed918cb391" }
+        # boa_engine = { path = "/home/boa/boa_engine" }
         getrandom = { version = "0.2.3", features = ["custom"] }
         serde = "1.0.137"
         azle-vm-value-derive = { path = "./azle_vm_value_derive" }
