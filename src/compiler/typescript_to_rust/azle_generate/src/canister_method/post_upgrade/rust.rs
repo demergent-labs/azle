@@ -13,7 +13,7 @@ pub fn generate(post_upgrade_fn_decl_option: Option<&AnnotatedFnDecl>) -> TokenS
 
     quote::quote! {
         BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
-            let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
+            let mut boa_context = box_context_ref_cell.borrow_mut();
 
             METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
                 let mut method_name_mut = method_name_ref_cell.borrow_mut();
@@ -21,15 +21,15 @@ pub fn generate(post_upgrade_fn_decl_option: Option<&AnnotatedFnDecl>) -> TokenS
                 *method_name_mut = #function_name.to_string()
             });
 
-            _azle_register_ic_object(&mut _azle_boa_context);
+            _azle_register_ic_object(&mut boa_context);
 
-            _azle_unwrap_boa_result(_azle_boa_context.eval_script(boa_engine::Source::from_bytes(
+            _azle_unwrap_boa_result(boa_context.eval_script(boa_engine::Source::from_bytes(
                     &format!(
                         "let exports = {{}}; {compiled_js}",
                         compiled_js = MAIN_JS
                     )
                 )
-            ), &mut _azle_boa_context);
+            ), &mut boa_context);
 
             #call_to_post_upgrade_js_function
 

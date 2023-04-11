@@ -22,22 +22,10 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> TokenStrea
         .map(|stable_b_tree_map_and_impl| stable_b_tree_map_and_impl.1.clone())
         .collect();
 
-    // let storable_impls = generate_storable_impls(stable_b_tree_map_nodes);
-    // let bounded_storable_impls = generate_bounded_storable_impls(stable_b_tree_map_nodes);
-
     quote! {
-        use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
-        use ic_stable_structures::{BoundedStorable, DefaultMemoryImpl, StableBTreeMap, Storable};
-        use std::{borrow::Cow, cell::RefCell};
-        use candid::{CandidType, Decode, Deserialize, Encode};
-
-        // TODO prefix everything
-
-        type AzleMemory = VirtualMemory<DefaultMemoryImpl>;
-
         thread_local! {
-            static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>>
-                = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+            static MEMORY_MANAGER_REF_CELL: std::cell::RefCell<ic_stable_structures::memory_manager::MemoryManager<ic_stable_structures::DefaultMemoryImpl>>
+                = std::cell::RefCell::new(ic_stable_structures::memory_manager::MemoryManager::init(ic_stable_structures::DefaultMemoryImpl::default()));
 
             #(#stable_b_tree_maps)*
         }
@@ -78,10 +66,18 @@ fn generate_global_stable_b_tree_maps_and_impls(
 
             (
                 quote! {
-                    static #map_name_ident: RefCell<
-                        StableBTreeMap<AzleMemory, #key_wrapper_type_name, #value_wrapper_type_name>
-                    > = RefCell::new(StableBTreeMap::init(
-                        MEMORY_MANAGER_REF_CELL.with(|m| m.borrow().get(MemoryId::new(#memory_id))),
+                    static #map_name_ident: std::cell::RefCell<
+                        ic_stable_structures::StableBTreeMap<
+                            ic_stable_structures::memory_manager::VirtualMemory<
+                                ic_stable_structures::DefaultMemoryImpl
+                            >,
+                            #key_wrapper_type_name,
+                            #value_wrapper_type_name
+                        >
+                    > = std::cell::RefCell::new(ic_stable_structures::StableBTreeMap::init(
+                        MEMORY_MANAGER_REF_CELL.with(|m| {
+                            m.borrow().get(ic_stable_structures::memory_manager::MemoryId::new(#memory_id))
+                        }),
                     ));
                 },
                 quote! {

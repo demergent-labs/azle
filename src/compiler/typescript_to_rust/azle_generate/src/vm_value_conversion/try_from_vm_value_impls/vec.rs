@@ -32,7 +32,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             boa_engine::JsValue: for<'a, 'b> CdkActTryFromVmValue<T, &'a mut boa_engine::Context<'b>>
         {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<T>, CdkActTryFromVmValueError> {
-                try_from_vm_value_generic_array::<T>(self, context)
+                _azle_try_from_vm_value_generic_array::<T>(self, context)
             }
         }
 
@@ -60,7 +60,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         }
 
         // TODO this seems like such a messy and inefficient way to do it
-        fn try_from_vm_value_generic_array<T>(js_value: boa_engine::JsValue, context: &mut boa_engine::Context) -> Result<Vec<T>, CdkActTryFromVmValueError>
+        fn _azle_try_from_vm_value_generic_array<T>(js_value: boa_engine::JsValue, context: &mut boa_engine::Context) -> Result<Vec<T>, CdkActTryFromVmValueError>
         where
             boa_engine::JsValue: for<'a, 'b> CdkActTryFromVmValue<T, &'a mut boa_engine::Context<'b>>
         {

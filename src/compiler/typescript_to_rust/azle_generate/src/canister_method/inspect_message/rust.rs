@@ -8,7 +8,7 @@ pub fn generate(inspect_message_fn_decl: &AnnotatedFnDecl) -> proc_macro2::Token
 
     quote::quote! {
         BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
-            let mut _azle_boa_context = box_context_ref_cell.borrow_mut();
+            let mut boa_context = box_context_ref_cell.borrow_mut();
 
             METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
                 let mut method_name_mut = method_name_ref_cell.borrow_mut();

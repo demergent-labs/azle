@@ -8,11 +8,11 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
     quote::quote! {
         fn _azle_ic_stable_b_tree_map_get(
             _this: &boa_engine::JsValue,
-            _aargs: &[boa_engine::JsValue],
-            _context: &mut boa_engine::Context
+            aargs: &[boa_engine::JsValue],
+            context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let memory_id: u8 = _aargs.get(0).unwrap().clone().try_from_vm_value(&mut *_context).unwrap();
-            let key_js_value = _aargs.get(1).unwrap().clone();
+            let memory_id: u8 = aargs.get(0).unwrap().clone().try_from_vm_value(&mut *context).unwrap();
+            let key_js_value = aargs.get(1).unwrap().clone();
 
             match memory_id {
                 #(#match_arms)*
@@ -40,15 +40,15 @@ fn generate_match_arms(
 
             quote! {
                 #memory_id => {
-                    match #map_name_ident.with(|p| {
-                        p.borrow().get(
+                    match #map_name_ident.with(|stable_b_tree_map_ref_cell| {
+                        stable_b_tree_map_ref_cell.borrow().get(
                             &#key_wrapper_type_name(
-                                key_js_value.try_from_vm_value(&mut *_context).unwrap()
+                                key_js_value.try_from_vm_value(&mut *context).unwrap()
                             )
                         )
                     }) {
-                        Some(value) => Ok(value.0.try_into_vm_value(&mut *_context).unwrap()),
-                        None => Ok(().try_into_vm_value(&mut *_context).unwrap())
+                        Some(value) => Ok(value.0.try_into_vm_value(&mut *context).unwrap()),
+                        None => Ok(().try_into_vm_value(&mut *context).unwrap())
                     }
                 }
             }
