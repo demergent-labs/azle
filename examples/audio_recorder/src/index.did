@@ -1,8 +1,3 @@
-type InsertError = variant {
-  ValueTooLarge : KeyTooLarge;
-  KeyTooLarge : KeyTooLarge;
-};
-type KeyTooLarge = record { max : nat32; given : nat32 };
 type Recording = record {
   id : principal;
   audio : vec nat8;
@@ -20,22 +15,19 @@ type _AzleResult = variant {
   Ok : Recording;
   Err : _InlineCreateRecordingReturnTypeTypeArg1;
 };
-type _AzleResult_1 = variant { Ok : User; Err : InsertError };
-type _AzleResult_2 = variant {
+type _AzleResult_1 = variant {
   Ok : Recording;
   Err : _InlineDeleteRecordingReturnTypeTypeArg1;
 };
-type _AzleResult_3 = variant {
+type _AzleResult_2 = variant {
   Ok : User;
   Err : _InlineDeleteUserReturnTypeTypeArg1;
 };
 type _InlineCreateRecordingReturnTypeTypeArg1 = variant {
-  InsertError : InsertError;
   UserDoesNotExist : principal;
 };
 type _InlineDeleteRecordingReturnTypeTypeArg1 = variant {
   RecordingDoesNotExist : principal;
-  InsertError : InsertError;
   UserDoesNotExist : principal;
 };
 type _InlineDeleteUserReturnTypeTypeArg1 = variant {
@@ -43,9 +35,9 @@ type _InlineDeleteUserReturnTypeTypeArg1 = variant {
 };
 service : () -> {
   createRecording : (vec nat8, text, principal) -> (_AzleResult);
-  createUser : (text) -> (_AzleResult_1);
-  deleteRecording : (principal) -> (_AzleResult_2);
-  deleteUser : (principal) -> (_AzleResult_3);
+  createUser : (text) -> (User);
+  deleteRecording : (principal) -> (_AzleResult_1);
+  deleteUser : (principal) -> (_AzleResult_2);
   readRecordingById : (principal) -> (opt Recording) query;
   readRecordings : () -> (vec Recording) query;
   readUserById : (principal) -> (opt User) query;

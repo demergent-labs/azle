@@ -32,7 +32,7 @@ let users = new StableBTreeMap<Principal, User>(0, 38, 100_000);
 let recordings = new StableBTreeMap<Principal, Recording>(1, 38, 5_000_000);
 
 $update;
-export function createUser(username: string): Opt<User> {
+export function createUser(username: string): User {
     const id = generateId();
     const user: User = {
         id,
@@ -41,7 +41,9 @@ export function createUser(username: string): Opt<User> {
         username
     };
 
-    return users.insert(user.id, user);
+    users.insert(user.id, user);
+
+    return user;
 }
 
 $query;
