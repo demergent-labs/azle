@@ -8,7 +8,7 @@ import {
     $update,
     Vec
 } from 'azle';
-import { InsertResult, Reaction } from '../types';
+import { Reaction } from '../types';
 
 let stableMap12 = new StableBTreeMap<blob, Reaction>(12, 100, 1_000);
 
@@ -23,10 +23,7 @@ export function stableMap12Get(key: blob): Opt<Reaction> {
 }
 
 $update;
-export function stableMap12Insert(
-    key: blob,
-    value: Reaction
-): InsertResult<Reaction> {
+export function stableMap12Insert(key: blob, value: Reaction): Opt<Reaction> {
     return stableMap12.insert(key, value);
 }
 
