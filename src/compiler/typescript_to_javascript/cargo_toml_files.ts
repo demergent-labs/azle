@@ -1,4 +1,4 @@
-import { Toml } from '../../bin/types';
+import { Toml } from '../utils/types';
 
 export function generateWorkspaceCargoToml(rootPath: string): Toml {
     return `

@@ -8,4 +8,4 @@ require('ts-node').register({
         allowJs: true
     }
 });
-require('./src/bin/index.ts');
+require('./src/compiler/index.ts');
