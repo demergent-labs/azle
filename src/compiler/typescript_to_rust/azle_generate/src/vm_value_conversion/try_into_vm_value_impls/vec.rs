@@ -26,7 +26,11 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         impl AzleTryIntoVec for f64 {}
 
+        impl AzleTryIntoVec for _CdkFloat64 {}
+
         impl AzleTryIntoVec for f32 {}
+
+        impl AzleTryIntoVec for _CdkFloat32 {}
 
         impl AzleTryIntoVec for ic_cdk::export::candid::Int {}
 

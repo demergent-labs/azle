@@ -9,10 +9,28 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
+        impl CdkActTryFromVmValue<_CdkFloat64, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<_CdkFloat64, CdkActTryFromVmValueError> {
+                match self.as_number() {
+                    Some(value) => Ok(_CdkFloat64(value)),
+                    None => Err(CdkActTryFromVmValueError("JsValue is not a number".to_string()))
+                }
+            }
+        }
+
         impl CdkActTryFromVmValue<f32, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<f32, CdkActTryFromVmValueError> {
                 match self.as_number() {
                     Some(value) => Ok(value as f32),
+                    None => Err(CdkActTryFromVmValueError("JsValue is not a number".to_string()))
+                }
+            }
+        }
+
+        impl CdkActTryFromVmValue<_CdkFloat32, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<_CdkFloat32, CdkActTryFromVmValueError> {
+                match self.as_number() {
+                    Some(value) => Ok(_CdkFloat32(value as f32)),
                     None => Err(CdkActTryFromVmValueError("JsValue is not a number".to_string()))
                 }
             }

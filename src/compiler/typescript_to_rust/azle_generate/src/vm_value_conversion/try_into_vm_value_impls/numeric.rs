@@ -6,9 +6,21 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
+        impl CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for _CdkFloat64 {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+                Ok(self.0.into())
+            }
+        }
+
         impl CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for f32 {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Ok(self.into())
+            }
+        }
+
+        impl CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for _CdkFloat32 {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+                Ok(self.0.into())
             }
         }
 
