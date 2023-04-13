@@ -1,17 +1,5 @@
-type HttpHeader = record { value : text; name : text };
-type HttpResponse = record {
-  status : nat;
-  body : vec nat8;
-  headers : vec HttpHeader;
-};
-type HttpTransformArgs = record { context : vec nat8; response : HttpResponse };
-type ManualReply = record {
-  status : nat;
-  body : vec nat8;
-  headers : vec HttpHeader;
-};
+type MyRecord = record { prop1 : float64 };
 service : () -> {
-  xkcd : () -> (ManualReply);
-  xkcdRaw : () -> (ManualReply);
-  xkcdTransform : (HttpTransformArgs) -> (HttpResponse) query;
+  test1 : () -> (float64) query;
+  test2 : () -> (MyRecord) query;
 }
