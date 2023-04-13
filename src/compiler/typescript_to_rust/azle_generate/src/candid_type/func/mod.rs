@@ -1,5 +1,5 @@
 use cdk_framework::act::node::{candid::Func, node_parts::mode::Mode, CandidType};
-use swc_ecma_ast::TsTypeAliasDecl;
+use swc_ecma_ast::{TsTypeAliasDecl, TsTypeAnn};
 
 use crate::ts_ast::{
     azle_type::{AzleType, AzleTypeRef},
@@ -69,5 +69,11 @@ impl AzleTypeRef<'_> {
             from_vm_value,
             list_from_vm_value,
         )
+    }
+}
+
+impl GetTsType for TsTypeAnn {
+    fn get_ts_type(&self) -> swc_ecma_ast::TsType {
+        *self.type_ann.clone()
     }
 }

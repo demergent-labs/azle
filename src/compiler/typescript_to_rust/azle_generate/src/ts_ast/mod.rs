@@ -13,8 +13,6 @@ pub use traits::{GetName, GetSourceText, GetTsType};
 mod azle_functions_and_methods;
 mod ident;
 mod ts_fn_param;
-mod ts_fn_type;
-mod ts_type_ann;
 
 pub mod azle_type;
 pub mod azle_type_alias_decl;
