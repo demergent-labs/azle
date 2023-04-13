@@ -11,7 +11,6 @@ pub use azle_type_alias_decl::AzleTypeAliasDecl;
 pub use traits::{GetName, GetSourceText, GetTsType};
 
 mod azle_functions_and_methods;
-mod ts_fn_param;
 
 pub mod azle_type;
 pub mod azle_type_alias_decl;
