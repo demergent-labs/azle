@@ -11,12 +11,10 @@ pub use azle_type_alias_decl::AzleTypeAliasDecl;
 pub use traits::{GetName, GetSourceText, GetTsType};
 
 mod azle_functions_and_methods;
-mod ident;
 mod ts_fn_param;
 
 pub mod azle_type;
 pub mod azle_type_alias_decl;
-pub mod param;
 pub mod source_map;
 pub mod traits;
 pub mod ts_type;
