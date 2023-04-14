@@ -30,6 +30,7 @@ export async function xkcd(): Promise<HttpResponse> {
     });
 }
 
+// TODO the replica logs give some concerning output: https://forum.dfinity.org/t/fix-me-in-http-outcalls-call-raw/19435
 $update;
 export async function xkcdRaw(): Promise<Manual<HttpResponse>> {
     const httpResult = await ic.callRaw(
@@ -43,9 +44,9 @@ export async function xkcdRaw(): Promise<Manual<HttpResponse>> {
                     method = variant { get };
                     headers = vec {};
                     body = null;
-                    transform = opt record { function = record { principal "${ic
+                    transform = record { function = func "${ic
                         .id()
-                        .toString()}"; "xkcdTransform" }; context = vec {} };
+                        .toString()}".xkcdTransform; context = vec {} };
                 }
             )
         `),
