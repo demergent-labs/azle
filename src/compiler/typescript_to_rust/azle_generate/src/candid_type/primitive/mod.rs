@@ -1,10 +1,6 @@
-use cdk_framework::act::node::{
-    candid::{Primitive, TypeArg, TypeRef},
-    CandidType,
-};
+use cdk_framework::act::node::{candid::Primitive, CandidType};
 
-use super::AzleTypeRef;
-use crate::ts_ast::{azle_type::AzleType, traits::GetName};
+use crate::ts_ast::{azle_type::AzleTypeRef, traits::GetName};
 
 impl AzleTypeRef<'_> {
     pub fn to_candid_type(&self) -> CandidType {
@@ -33,32 +29,6 @@ impl AzleTypeRef<'_> {
             "Vec" => CandidType::Array(self.to_vec()),
             "Variant" => CandidType::Variant(self.to_variant()),
             _ => CandidType::TypeRef(self.to_type_ref()),
-        }
-    }
-
-    fn to_type_ref(&self) -> TypeRef {
-        let type_arguments = if let Some(type_params) = &self.ts_type_ref.type_params {
-            type_params
-                .params
-                .iter()
-                .map(|param| {
-                    let return_azle_type = AzleType::from_ts_type(*param.clone(), self.source_map);
-                    TypeArg(return_azle_type.to_candid_type())
-                })
-                .collect()
-        } else {
-            vec![]
-        };
-
-        let name_string = self.get_name().to_string();
-
-        TypeRef {
-            name: if name_string == "Result" {
-                "_AzleResult".to_string()
-            } else {
-                name_string
-            },
-            type_arguments,
         }
     }
 }

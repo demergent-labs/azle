@@ -7,7 +7,6 @@ mod errors;
 mod get_name;
 mod get_source_info;
 mod get_source_text;
-mod to_candid_type;
 
 #[derive(Clone)]
 pub struct AzleTypeRef<'a> {
