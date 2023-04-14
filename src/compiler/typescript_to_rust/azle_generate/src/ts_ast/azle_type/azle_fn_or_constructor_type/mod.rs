@@ -6,7 +6,6 @@ pub use azle_fn_type::AzleFnType;
 mod azle_fn_type;
 mod errors;
 mod get_source_info;
-mod get_source_text;
 
 #[derive(Clone)]
 pub enum AzleFnOrConstructorType<'a> {

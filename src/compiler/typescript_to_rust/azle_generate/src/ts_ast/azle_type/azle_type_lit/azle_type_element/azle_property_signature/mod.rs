@@ -6,7 +6,6 @@ use cdk_framework::act::node::CandidType;
 
 mod errors;
 mod get_source_info;
-mod get_source_text;
 
 pub struct AzlePropertySignature<'a> {
     pub ts_property_signature: TsPropertySignature,

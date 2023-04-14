@@ -8,7 +8,6 @@ use self::{
 mod azle_method_signature;
 mod errors;
 mod get_source_info;
-mod get_source_text;
 mod get_span;
 mod type_to_string;
 
