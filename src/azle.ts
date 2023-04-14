@@ -27,7 +27,7 @@ import { generateNewAzleProject } from './new';
 
 const GLOBAL_AZLE_CONFIG_DIR = path.resolve(
     require('os').homedir(),
-    `.config/azle/${version}`
+    `.config/azle/${rust_version}`
 );
 const GLOBAL_AZLE_BIN_DIR = `${GLOBAL_AZLE_CONFIG_DIR}/bin`;
 const GLOBAL_AZLE_TARGET_DIR = `${GLOBAL_AZLE_CONFIG_DIR}/target`;
