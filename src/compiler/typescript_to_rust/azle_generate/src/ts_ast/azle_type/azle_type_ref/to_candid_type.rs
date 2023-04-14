@@ -43,7 +43,7 @@ impl AzleTypeRef<'_> {
                 .iter()
                 .map(|param| {
                     let return_azle_type = AzleType::from_ts_type(*param.clone(), self.source_map);
-                    TypeArg(return_azle_type.to_data_type())
+                    TypeArg(return_azle_type.to_candid_type())
                 })
                 .collect()
         } else {

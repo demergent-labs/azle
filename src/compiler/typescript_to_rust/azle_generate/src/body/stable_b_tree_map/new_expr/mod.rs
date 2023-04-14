@@ -28,13 +28,13 @@ impl SourceMapped<'_, NewExpr> {
                     *type_args.params.get(0).unwrap().clone(),
                     self.source_map,
                 )
-                .to_data_type();
+                .to_candid_type();
 
                 let value_type = AzleType::from_ts_type(
                     *type_args.params.get(1).unwrap().clone(),
                     self.source_map,
                 )
-                .to_data_type();
+                .to_candid_type();
 
                 match &self.args {
                     Some(args) => {

@@ -15,7 +15,7 @@ mod azle_type_ref;
 mod errors;
 mod get_source_info;
 mod get_source_text;
-mod to_data_type;
+mod to_candid_type;
 
 pub mod azle_type_lit;
 

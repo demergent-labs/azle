@@ -41,7 +41,7 @@ impl SourceMapped<'_, ClassProp> {
     fn build_return_type(&self) -> Result<CandidType, ParseError> {
         let return_ts_type = self.return_ts_type()?;
         let azle_type = AzleType::from_ts_type(return_ts_type, self.source_map);
-        let act_data_type = azle_type.to_data_type();
+        let act_data_type = azle_type.to_candid_type();
         Ok(act_data_type)
     }
 
@@ -152,7 +152,7 @@ impl SourceMapped<'_, TsFnType> {
                         Some(ts_type_ann) => {
                             let azle_type =
                                 AzleType::from_ts_type(ts_type_ann.get_ts_type(), self.source_map);
-                            azle_type.to_data_type()
+                            azle_type.to_candid_type()
                         }
                         None => panic!("Function parameters must have a type"),
                     };

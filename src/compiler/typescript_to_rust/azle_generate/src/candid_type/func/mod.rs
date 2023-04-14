@@ -44,7 +44,7 @@ impl AzleTypeRef<'_> {
             .iter()
             .map(|param| {
                 let azle_param = AzleType::from_ts_type(param.clone(), self.source_map);
-                azle_param.to_data_type()
+                azle_param.to_candid_type()
             })
             .collect();
 
@@ -52,7 +52,7 @@ impl AzleTypeRef<'_> {
             azle_fn_type.get_ts_type_ann().get_ts_type(),
             self.source_map,
         )
-        .to_data_type();
+        .to_candid_type();
 
         let to_vm_value = |name: String| rust::generate_into_vm_value_impl(name);
         let list_to_vm_value = |name: String| rust::generate_list_into_vm_value_impl(name);

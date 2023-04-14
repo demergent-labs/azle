@@ -6,7 +6,7 @@ use crate::ts_ast::{azle_type::AzleTypeRef, source_map::SourceMapped, GetName};
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_type_alias(&self) -> Option<TypeAlias> {
         self.process_ts_type_ref("Alias", |azle_type_ref| {
-            let aliased_type = azle_type_ref.get_enclosed_azle_type().to_data_type();
+            let aliased_type = azle_type_ref.get_enclosed_azle_type().to_candid_type();
 
             let type_params = self.get_type_params();
 

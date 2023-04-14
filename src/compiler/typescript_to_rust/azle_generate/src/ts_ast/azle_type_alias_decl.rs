@@ -4,17 +4,8 @@ use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
 use crate::ts_ast::{azle_type::AzleType, source_map::SourceMapped, GetName, GetTsType};
 
-pub trait TypeAliasListHelpers {
-    fn generate_type_alias_lookup(&self) -> HashMap<String, SourceMapped<TsTypeAliasDecl>>;
-    fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<CandidType>;
-    fn get_type_aliases_by_type_ref_name(
-        &self,
-        type_ref_name: &str,
-    ) -> Vec<SourceMapped<TsTypeAliasDecl>>;
-}
-
 impl SourceMapped<'_, TsTypeAliasDecl> {
-    pub fn to_data_type(&self) -> CandidType {
+    pub fn to_candid_type(&self) -> CandidType {
         // TODO: This should probably look ahead for Records, Funcs, Opts, etc.
         // and make those types directly rather than making a type alias to those types.
         // For example:
@@ -28,7 +19,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
         CandidType::TypeAlias(TypeAlias {
             name,
-            aliased_type: Box::from(azle_type.to_data_type()),
+            aliased_type: Box::from(azle_type.to_candid_type()),
             type_params: vec![].into(),
         })
     }
@@ -59,6 +50,15 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
                 .get_name()
                 == "Canister"
     }
+}
+
+pub trait TypeAliasListHelpers {
+    fn generate_type_alias_lookup(&self) -> HashMap<String, SourceMapped<TsTypeAliasDecl>>;
+    fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<CandidType>;
+    fn get_type_aliases_by_type_ref_name(
+        &self,
+        type_ref_name: &str,
+    ) -> Vec<SourceMapped<TsTypeAliasDecl>>;
 }
 
 impl TypeAliasListHelpers for Vec<SourceMapped<'_, TsTypeAliasDecl>> {
@@ -103,7 +103,7 @@ impl TypeAliasListHelpers for Vec<SourceMapped<'_, TsTypeAliasDecl>> {
                             dependent_type_name
                         )
                     })
-                    .to_data_type()
+                    .to_candid_type()
             })
             .collect()
     }

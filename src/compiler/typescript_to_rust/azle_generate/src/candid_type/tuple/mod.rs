@@ -51,7 +51,7 @@ impl AzleTupleType<'_> {
                 let ts_type = elem.ty.clone();
                 let azle_type = AzleType::from_ts_type(ts_type, self.source_map);
                 Elem {
-                    candid_type: azle_type.to_data_type(),
+                    candid_type: azle_type.to_candid_type(),
                 }
             })
             .collect()

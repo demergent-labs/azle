@@ -84,7 +84,7 @@ impl<'a> AnnotatedFnDecl<'a> {
     fn build_return_type(&self) -> CandidType {
         let return_ts_type = self.get_return_ts_type();
         let return_azle_type = AzleType::from_ts_type(return_ts_type.clone(), self.source_map);
-        return_azle_type.to_data_type()
+        return_azle_type.to_candid_type()
     }
 
     // TODO why is this separated from get_name. It would be much simpler
@@ -94,7 +94,7 @@ impl<'a> AnnotatedFnDecl<'a> {
             .iter()
             .map(|ts_type| {
                 let azle_type = AzleType::from_ts_type(ts_type.clone().clone(), self.source_map);
-                azle_type.to_data_type()
+                azle_type.to_candid_type()
             })
             .collect()
     }

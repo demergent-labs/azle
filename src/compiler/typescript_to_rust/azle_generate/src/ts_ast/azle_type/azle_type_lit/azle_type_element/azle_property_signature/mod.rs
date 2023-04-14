@@ -29,6 +29,6 @@ impl AzlePropertySignature<'_> {
             None => panic!("{}", self.no_type_annotation_error()),
         };
         let azle_type = AzleType::from_ts_type(ts_type, self.source_map);
-        azle_type.to_data_type()
+        azle_type.to_candid_type()
     }
 }

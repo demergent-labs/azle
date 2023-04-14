@@ -4,7 +4,7 @@ use crate::ts_ast::azle_type::AzleTypeRef;
 
 impl AzleTypeRef<'_> {
     pub fn to_option(&self) -> Opt {
-        let enclosed_act_data_type = self.get_enclosed_azle_type().to_data_type();
+        let enclosed_act_data_type = self.get_enclosed_azle_type().to_candid_type();
         Opt {
             enclosed_type: Box::from(enclosed_act_data_type),
         }
