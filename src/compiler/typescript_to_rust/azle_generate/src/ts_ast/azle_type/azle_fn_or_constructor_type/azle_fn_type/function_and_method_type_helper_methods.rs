@@ -1,9 +1,9 @@
 use swc_ecma_ast::{TsFnParam, TsType, TsTypeAnn};
 
 use super::AzleFnType;
-use crate::ts_ast::{traits::GetTsType, FunctionAndMethodTypeHelperMethods};
+use crate::ts_ast::traits::{Callable, GetTsType};
 
-impl FunctionAndMethodTypeHelperMethods for AzleFnType<'_> {
+impl Callable for AzleFnType<'_> {
     fn get_ts_fn_params(&self) -> Vec<TsFnParam> {
         self.ts_fn_type.params.clone()
     }

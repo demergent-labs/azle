@@ -4,8 +4,8 @@ use swc_ecma_ast::{TsTypeAliasDecl, TsTypeAnn};
 use crate::ts_ast::{
     azle_type::{AzleType, AzleTypeRef},
     source_map::SourceMapped,
-    traits::GetTsType,
-    AzleFnOrConstructorType, FunctionAndMethodTypeHelperMethods, GetName,
+    traits::{Callable, GetTsType},
+    AzleFnOrConstructorType, GetName,
 };
 
 mod rust;

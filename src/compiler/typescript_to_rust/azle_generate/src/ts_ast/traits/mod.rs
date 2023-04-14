@@ -1,6 +1,10 @@
 use swc_common::Span;
 use swc_ecma_ast::{Ident, TsType};
 
+pub use callable::Callable;
+
+mod callable;
+
 pub trait GetName {
     fn get_name(&self) -> &str;
 }

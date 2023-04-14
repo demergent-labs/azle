@@ -1,11 +1,9 @@
 use swc_ecma_ast::{TsEntityName, TsFnParam, TsType, TsTypeAnn};
 
 use super::AzleMethodSignature;
-use crate::ts_ast::{
-    azle_functions_and_methods::FunctionAndMethodTypeHelperMethods, traits::GetTsType, GetName,
-};
+use crate::ts_ast::{traits::Callable, traits::GetTsType, GetName};
 
-impl FunctionAndMethodTypeHelperMethods for AzleMethodSignature<'_> {
+impl Callable for AzleMethodSignature<'_> {
     fn get_ts_fn_params(&self) -> Vec<TsFnParam> {
         self.ts_method_signature.params.clone()
     }

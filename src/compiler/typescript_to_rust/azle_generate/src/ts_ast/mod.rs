@@ -5,12 +5,9 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 use crate::ts_ast::source_map::SourceMapped;
 
-pub use azle_functions_and_methods::FunctionAndMethodTypeHelperMethods;
 pub use azle_type::AzleFnOrConstructorType;
 pub use azle_type_alias_decl::AzleTypeAliasDecl;
 pub use traits::{GetName, GetSourceText, GetTsType};
-
-mod azle_functions_and_methods;
 
 pub mod azle_type;
 pub mod azle_type_alias_decl;

@@ -2,7 +2,7 @@ use swc_ecma_ast::{TsFnParam, TsType, TsTypeAnn};
 
 use crate::ts_ast::traits::GetTsType;
 
-pub trait FunctionAndMethodTypeHelperMethods {
+pub trait Callable {
     fn get_ts_type_ann(&self) -> TsTypeAnn;
     fn get_ts_fn_params(&self) -> Vec<TsFnParam>;
     fn get_valid_return_types(&self) -> Vec<&str>;
