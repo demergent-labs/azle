@@ -1,30 +1,19 @@
+use cdk_framework::act::node::{candid::TypeAlias, CandidType};
 use std::collections::{HashMap, HashSet};
-
-use swc_common::SourceMap;
 use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
-use crate::ts_ast::{azle_type::AzleType, GetName, GetTsType};
-use cdk_framework::act::node::{candid::TypeAlias, CandidType};
+use crate::ts_ast::{azle_type::AzleType, source_map::SourceMapped, GetName, GetTsType};
 
-#[derive(Clone)]
-pub struct AzleTypeAliasDecl<'a> {
-    pub ts_type_alias_decl: TsTypeAliasDecl,
-    pub source_map: &'a SourceMap,
-}
-
-// TODO I am not super happy with this function... but that might be because I don't understand the system structure stuff
-pub trait TsTypeAliasHelperMethods {
-    fn is_canister_type_alias_decl(&self) -> bool;
-}
-
-pub trait AzleTypeAliasListHelperMethods {
-    fn generate_type_alias_lookup(&self) -> HashMap<String, AzleTypeAliasDecl>;
+pub trait TypeAliasListHelpers {
+    fn generate_type_alias_lookup(&self) -> HashMap<String, SourceMapped<TsTypeAliasDecl>>;
     fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<CandidType>;
-    fn get_azle_type_aliases_by_type_ref_name(&self, type_ref_name: &str)
-        -> Vec<AzleTypeAliasDecl>;
+    fn get_type_aliases_by_type_ref_name(
+        &self,
+        type_ref_name: &str,
+    ) -> Vec<SourceMapped<TsTypeAliasDecl>>;
 }
 
-impl AzleTypeAliasDecl<'_> {
+impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_data_type(&self) -> CandidType {
         // TODO: This should probably look ahead for Records, Funcs, Opts, etc.
         // and make those types directly rather than making a type alias to those types.
@@ -45,23 +34,22 @@ impl AzleTypeAliasDecl<'_> {
     }
 }
 
-impl GetTsType for AzleTypeAliasDecl<'_> {
+impl GetTsType for SourceMapped<'_, TsTypeAliasDecl> {
     fn get_ts_type(&self) -> TsType {
-        *self.ts_type_alias_decl.type_ann.clone()
+        *self.type_ann.clone()
     }
 }
 
-impl GetName for AzleTypeAliasDecl<'_> {
+impl GetName for SourceMapped<'_, TsTypeAliasDecl> {
     fn get_name(&self) -> &str {
-        self.ts_type_alias_decl.id.get_name()
+        self.id.get_name()
     }
 }
 
-impl TsTypeAliasHelperMethods for AzleTypeAliasDecl<'_> {
-    fn is_canister_type_alias_decl(&self) -> bool {
-        self.ts_type_alias_decl.type_ann.is_ts_type_ref()
+impl SourceMapped<'_, TsTypeAliasDecl> {
+    pub fn is_canister_type_alias_decl(&self) -> bool {
+        self.type_ann.is_ts_type_ref()
             && &*self
-                .ts_type_alias_decl
                 .type_ann
                 .as_ts_type_ref()
                 .unwrap()
@@ -73,31 +61,30 @@ impl TsTypeAliasHelperMethods for AzleTypeAliasDecl<'_> {
     }
 }
 
-impl AzleTypeAliasListHelperMethods for Vec<AzleTypeAliasDecl<'_>> {
-    fn generate_type_alias_lookup(&self) -> HashMap<String, AzleTypeAliasDecl> {
-        self.iter()
-            .fold(HashMap::new(), |mut acc, azle_type_alias| {
-                let type_alias_name = azle_type_alias.ts_type_alias_decl.id.get_name().to_string();
-                acc.insert(type_alias_name, azle_type_alias.clone());
-                acc
-            })
+impl TypeAliasListHelpers for Vec<SourceMapped<'_, TsTypeAliasDecl>> {
+    fn generate_type_alias_lookup(&self) -> HashMap<String, SourceMapped<TsTypeAliasDecl>> {
+        self.iter().fold(HashMap::new(), |mut acc, type_alias| {
+            let type_alias_name = type_alias.id.get_name().to_string();
+            acc.insert(
+                type_alias_name,
+                SourceMapped::new(type_alias, type_alias.source_map),
+            );
+            acc
+        })
     }
 
-    fn get_azle_type_aliases_by_type_ref_name(
+    fn get_type_aliases_by_type_ref_name(
         &self,
         type_ref_name: &str,
-    ) -> Vec<AzleTypeAliasDecl> {
+    ) -> Vec<SourceMapped<TsTypeAliasDecl>> {
         self.clone()
             .into_iter()
-            .filter(|azle_type_alias| {
-                azle_type_alias.ts_type_alias_decl.type_ann.is_ts_type_ref()
-                    && match azle_type_alias.ts_type_alias_decl.type_ann.as_ts_type_ref() {
-                        Some(ts_type_ref) => match ts_type_ref.type_name.as_ident() {
-                            Some(ident) => ident.get_name() == type_ref_name,
-                            None => false,
-                        },
-                        None => false,
-                    }
+            .filter(|type_alias| {
+                type_alias
+                    .type_ann
+                    .as_ts_type_ref()
+                    .and_then(|ts_type_ref| ts_type_ref.type_name.as_ident())
+                    .map_or(false, |ident| ident.get_name() == type_ref_name)
             })
             .collect()
     }
@@ -105,18 +92,19 @@ impl AzleTypeAliasListHelperMethods for Vec<AzleTypeAliasDecl<'_>> {
     fn build_type_alias_acts(&self, type_names: &HashSet<String>) -> Vec<CandidType> {
         let type_alias_lookup = self.generate_type_alias_lookup();
 
-        type_names.iter().fold(vec![], |acc, dependant_type_name| {
-            let type_alias_decl = type_alias_lookup.get(dependant_type_name);
-            let act_data_type = match type_alias_decl {
-                Some(azle_type_alias) => azle_type_alias.to_data_type(),
-                None => {
-                    panic!(
-                        "ERROR: Dependant Type [{}] not found in TS program!",
-                        dependant_type_name
-                    )
-                }
-            };
-            vec![acc, vec![act_data_type]].concat()
-        })
+        type_names
+            .iter()
+            .map(|dependent_type_name| {
+                type_alias_lookup
+                    .get(dependent_type_name)
+                    .unwrap_or_else(|| {
+                        panic!(
+                            "ERROR: Dependent Type [{}] not found in TS program!",
+                            dependent_type_name
+                        )
+                    })
+                    .to_data_type()
+            })
+            .collect()
     }
 }

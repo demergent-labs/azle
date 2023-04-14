@@ -1,17 +1,15 @@
 use cdk_framework::act::node::canister_method::CanisterMethodType;
-use swc_ecma_ast::Program;
+use swc_ecma_ast::{Program, TsTypeAliasDecl};
 
 use crate::{
     canister_method::{module::ModuleHelperMethods, AnnotatedFnDecl},
-    ts_ast::{AzleProgram, AzleTypeAliasDecl},
+    ts_ast::{source_map::SourceMapped, AzleProgram},
 };
-
-use crate::ts_ast::azle_type_alias_decl::TsTypeAliasHelperMethods;
 
 pub trait GetAnnotatedFnDecls {
     fn get_annotated_fn_decls(&self) -> Vec<AnnotatedFnDecl>;
-    fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
-    fn get_canister_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl>;
+    fn get_type_alias_decls(&self) -> Vec<SourceMapped<TsTypeAliasDecl>>;
+    fn get_canister_type_alias_decls(&self) -> Vec<SourceMapped<TsTypeAliasDecl>>;
     fn get_annotated_fn_decls_of_type(
         &self,
         canister_method_type: CanisterMethodType,
@@ -23,9 +21,7 @@ impl GetAnnotatedFnDecls for Vec<AzleProgram> {
         &self,
         canister_method_type: CanisterMethodType,
     ) -> Vec<AnnotatedFnDecl> {
-        let annotated_fn_decls = self.get_annotated_fn_decls();
-
-        annotated_fn_decls
+        self.get_annotated_fn_decls()
             .into_iter()
             .filter(|annotated_fn_decl| {
                 annotated_fn_decl.is_canister_method_type(canister_method_type.clone())
@@ -34,25 +30,19 @@ impl GetAnnotatedFnDecls for Vec<AzleProgram> {
     }
 
     fn get_annotated_fn_decls(&self) -> Vec<AnnotatedFnDecl> {
-        self.iter().fold(vec![], |acc, azle_program| {
-            let annotated_fn_decls = azle_program.get_annotated_fn_decls();
-
-            vec![acc, annotated_fn_decls].concat()
-        })
+        self.iter()
+            .flat_map(|azle_program| azle_program.get_annotated_fn_decls())
+            .collect()
     }
 
-    fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl> {
-        self.iter().fold(vec![], |acc, azle_program| {
-            let ast_type_alias_decls = azle_program.get_azle_type_alias_decls();
-
-            vec![acc, ast_type_alias_decls].concat()
-        })
+    fn get_type_alias_decls(&self) -> Vec<SourceMapped<TsTypeAliasDecl>> {
+        self.iter()
+            .flat_map(|azle_program| azle_program.get_type_alias_decls())
+            .collect()
     }
 
-    fn get_canister_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl> {
-        let type_alias_decls = self.get_azle_type_alias_decls();
-
-        type_alias_decls
+    fn get_canister_type_alias_decls(&self) -> Vec<SourceMapped<TsTypeAliasDecl>> {
+        self.get_type_alias_decls()
             .into_iter()
             .filter(|type_alias_decl| type_alias_decl.is_canister_type_alias_decl())
             .collect()
@@ -67,9 +57,9 @@ impl AzleProgram {
         }
     }
 
-    fn get_azle_type_alias_decls(&self) -> Vec<AzleTypeAliasDecl> {
+    fn get_type_alias_decls(&self) -> Vec<SourceMapped<TsTypeAliasDecl>> {
         match &self.program {
-            Program::Module(module) => module.get_azle_type_alias_decls(&self.source_map),
+            Program::Module(module) => module.get_type_alias_decls(&self.source_map),
             Program::Script(_) => vec![],
         }
     }

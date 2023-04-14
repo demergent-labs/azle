@@ -1,17 +1,21 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::{Decl, ExportDecl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt};
+use swc_ecma_ast::{
+    Decl, ExportDecl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl,
+};
 
 use crate::{
     canister_method::{errors, module_item::ModuleItemHelperMethods, AnnotatedFnDecl, Annotation},
-    ts_ast::{source_map::SourceMapped, AzleTypeAliasDecl},
+    ts_ast::source_map::SourceMapped,
 };
 
 pub trait ModuleHelperMethods {
     fn get_annotated_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AnnotatedFnDecl>;
     fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>>;
     fn get_export_decls(&self) -> Vec<ExportDecl>;
-    fn get_azle_type_alias_decls<'a>(&'a self, source_map: &'a SourceMap)
-        -> Vec<AzleTypeAliasDecl>;
+    fn get_type_alias_decls<'a>(
+        &'a self,
+        source_map: &'a SourceMap,
+    ) -> Vec<SourceMapped<TsTypeAliasDecl>>;
 }
 
 impl ModuleHelperMethods for Module {
@@ -116,47 +120,31 @@ impl ModuleHelperMethods for Module {
         export_decls
     }
 
-    fn get_azle_type_alias_decls<'a>(
+    fn get_type_alias_decls<'a>(
         &'a self,
         source_map: &'a SourceMap,
-    ) -> Vec<AzleTypeAliasDecl> {
-        let module_stmts: Vec<Stmt> = self
+    ) -> Vec<SourceMapped<TsTypeAliasDecl>> {
+        let type_alias_decls_iter = self
             .body
             .iter()
-            .filter(|module_item| module_item.is_stmt())
-            .map(|module_item| module_item.as_stmt().unwrap().clone())
-            .collect();
-
-        let stmt_azle_type_alias_decls: Vec<AzleTypeAliasDecl> = module_stmts
-            .iter()
-            .filter(|module_stmt| module_stmt.is_decl())
-            .map(|module_decl| module_decl.as_decl().unwrap().clone())
+            .filter_map(|module_item| module_item.as_stmt())
+            .filter_map(|stmt| stmt.as_decl())
             .filter(|decl| decl.is_ts_type_alias())
-            .map(|decl| AzleTypeAliasDecl {
-                ts_type_alias_decl: decl.as_ts_type_alias().unwrap().clone(),
-                source_map,
-            })
-            .collect();
+            .map(|decl| SourceMapped::new(decl.as_ts_type_alias().unwrap(), source_map));
 
-        let export_decls: Vec<ExportDecl> = self
+        let exported_type_alias_decls_iter = self
             .body
             .iter()
-            .filter(|module_item| module_item.is_module_decl())
-            .map(|module_item| module_item.as_module_decl().unwrap().clone())
-            .filter(|module_decl| module_decl.is_export_decl())
-            .map(|module_decl| module_decl.as_export_decl().unwrap().clone())
-            .collect();
-
-        let export_azle_type_alias_decls: Vec<AzleTypeAliasDecl> = export_decls
-            .iter()
+            .filter_map(|module_item| module_item.as_module_decl())
+            .filter_map(|module_decl| module_decl.as_export_decl())
             .filter(|export_decl| export_decl.decl.is_ts_type_alias())
-            .map(|export_decl| AzleTypeAliasDecl {
-                ts_type_alias_decl: export_decl.decl.as_ts_type_alias().unwrap().clone(),
-                source_map,
-            })
-            .collect();
+            .map(|export_decl| {
+                SourceMapped::new(export_decl.decl.as_ts_type_alias().unwrap(), source_map)
+            });
 
-        vec![stmt_azle_type_alias_decls, export_azle_type_alias_decls].concat()
+        type_alias_decls_iter
+            .chain(exported_type_alias_decls_iter)
+            .collect()
     }
 }
 

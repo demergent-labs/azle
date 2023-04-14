@@ -11,6 +11,15 @@ impl<'a, T> SourceMapped<'a, T> {
     }
 }
 
+impl<'a, T> Clone for SourceMapped<'a, T> {
+    fn clone(&self) -> Self {
+        Self {
+            inner: self.inner,
+            source_map: self.source_map,
+        }
+    }
+}
+
 impl<T> std::ops::Deref for SourceMapped<'_, T> {
     type Target = T;
 
