@@ -9,7 +9,6 @@ pub use azle_type::AzleFnOrConstructorType;
 pub use traits::{GetName, GetSourceText, GetTsType};
 
 pub mod azle_type;
-pub mod azle_type_alias_decl;
 pub mod source_map;
 pub mod traits;
 pub mod ts_type;

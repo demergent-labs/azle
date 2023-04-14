@@ -1,7 +1,5 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::{
-    Decl, ExportDecl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl,
-};
+use swc_ecma_ast::{Decl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt};
 
 use crate::{
     canister_method::{errors, module_item::ModuleItemHelperMethods, AnnotatedFnDecl, Annotation},
@@ -11,11 +9,6 @@ use crate::{
 pub trait ModuleHelperMethods {
     fn get_annotated_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AnnotatedFnDecl>;
     fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>>;
-    fn get_export_decls(&self) -> Vec<ExportDecl>;
-    fn get_type_alias_decls<'a>(
-        &'a self,
-        source_map: &'a SourceMap,
-    ) -> Vec<SourceMapped<TsTypeAliasDecl>>;
 }
 
 impl ModuleHelperMethods for Module {
@@ -101,50 +94,6 @@ impl ModuleHelperMethods for Module {
                 },
                 None => acc,
             })
-    }
-
-    fn get_export_decls(&self) -> Vec<ExportDecl> {
-        let module_decls: Vec<ModuleDecl> = self
-            .body
-            .iter()
-            .filter(|module_item| module_item.is_module_decl())
-            .map(|module_item| module_item.as_module_decl().unwrap().clone())
-            .collect();
-
-        let export_decls: Vec<ExportDecl> = module_decls
-            .iter()
-            .filter(|module_decl| module_decl.is_export_decl())
-            .map(|module_decl| module_decl.as_export_decl().unwrap().clone())
-            .collect();
-
-        export_decls
-    }
-
-    fn get_type_alias_decls<'a>(
-        &'a self,
-        source_map: &'a SourceMap,
-    ) -> Vec<SourceMapped<TsTypeAliasDecl>> {
-        let type_alias_decls_iter = self
-            .body
-            .iter()
-            .filter_map(|module_item| module_item.as_stmt())
-            .filter_map(|stmt| stmt.as_decl())
-            .filter(|decl| decl.is_ts_type_alias())
-            .map(|decl| SourceMapped::new(decl.as_ts_type_alias().unwrap(), source_map));
-
-        let exported_type_alias_decls_iter = self
-            .body
-            .iter()
-            .filter_map(|module_item| module_item.as_module_decl())
-            .filter_map(|module_decl| module_decl.as_export_decl())
-            .filter(|export_decl| export_decl.decl.is_ts_type_alias())
-            .map(|export_decl| {
-                SourceMapped::new(export_decl.decl.as_ts_type_alias().unwrap(), source_map)
-            });
-
-        type_alias_decls_iter
-            .chain(exported_type_alias_decls_iter)
-            .collect()
     }
 }
 
