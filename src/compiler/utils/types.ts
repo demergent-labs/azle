@@ -1,5 +1,3 @@
-import { IOType } from 'child_process';
-
 export type AzleError = {
     error?: string;
     suggestion?: string;

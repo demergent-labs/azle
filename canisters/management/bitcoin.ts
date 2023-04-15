@@ -7,7 +7,7 @@ import {
     Record,
     Variant,
     Vec
-} from '../../index';
+} from '../../src/lib';
 
 export type BitcoinAddress = Alias<string>;
 export type BlockHash = Alias<blob>;

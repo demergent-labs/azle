@@ -1,4 +1,4 @@
-import { ic, nat8, nat32, nat64, Opt } from '../index';
+import { ic, nat8, nat32, nat64, Opt } from './index';
 
 /**
  * A Map based on a self-balancing tree that persists across
