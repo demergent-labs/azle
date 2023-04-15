@@ -20,3 +20,14 @@ pub(super) fn constructor_not_supported_error(
         suggestion: None,
     }
 }
+
+impl GetSpan for TsFnOrConstructorType {
+    fn get_span(&self) -> swc_common::Span {
+        match self {
+            TsFnOrConstructorType::TsFnType(ts_fn_type) => ts_fn_type.span,
+            TsFnOrConstructorType::TsConstructorType(ts_constructor_type) => {
+                ts_constructor_type.span
+            }
+        }
+    }
+}

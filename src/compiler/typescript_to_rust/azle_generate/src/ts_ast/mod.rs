@@ -3,14 +3,13 @@ use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Program, Stmt, TsTypeAliasDecl};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
-use crate::ts_ast::source_map::SourceMapped;
+use crate::traits::GetName;
 
-use crate::traits::{GetName, GetSourceText};
 pub use azle_type::AzleFnOrConstructorType;
+pub use source_map::SourceMapped;
 
 pub mod azle_type;
 pub mod source_map;
-pub mod ts_type;
 pub mod ts_type_element;
 
 pub struct AzleProgram {

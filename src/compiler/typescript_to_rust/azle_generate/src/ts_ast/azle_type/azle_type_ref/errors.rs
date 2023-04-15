@@ -1,10 +1,10 @@
 use swc_common::{source_map::Pos, Span};
+use swc_ecma_ast::{TsType, TsTypeRef};
 
 use super::AzleTypeRef;
 use crate::{
     errors::{ErrorMessage, Suggestion},
-    traits::{GetSourceFileInfo, GetSourceInfo, GetSourceText, GetSpan},
-    ts_ast::{ts_type::ts_type_ref::GetEnclosedTsTypes, GetName},
+    traits::{GetName, GetSourceFileInfo, GetSourceInfo, GetSourceText, GetSpan},
 };
 
 impl AzleTypeRef<'_> {
@@ -322,6 +322,19 @@ impl AzleTypeRef<'_> {
         match &self.ts_type_ref.type_params {
             Some(type_params) => type_params.span,
             None => self.ts_type_ref.span,
+        }
+    }
+}
+
+pub trait GetEnclosedTsTypes {
+    fn get_enclosed_ts_types(&self) -> Vec<TsType>;
+}
+
+impl GetEnclosedTsTypes for TsTypeRef {
+    fn get_enclosed_ts_types(&self) -> Vec<TsType> {
+        match &self.type_params {
+            Some(params) => params.params.iter().map(|param| *param.clone()).collect(),
+            None => vec![],
         }
     }
 }
