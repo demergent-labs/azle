@@ -1,7 +1,7 @@
 use cdk_framework::act::node::CandidType;
 
 use super::AzleType;
-use crate::ts_ast::traits::GetSourceInfo;
+use crate::traits::GetSourceInfo;
 
 impl AzleType<'_> {
     pub fn to_candid_type(&self) -> CandidType {

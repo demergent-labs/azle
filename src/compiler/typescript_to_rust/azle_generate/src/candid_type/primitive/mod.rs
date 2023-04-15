@@ -1,6 +1,6 @@
 use cdk_framework::act::node::{candid::Primitive, CandidType};
 
-use crate::ts_ast::{azle_type::AzleTypeRef, traits::GetName};
+use crate::{traits::GetName, ts_ast::azle_type::AzleTypeRef};
 
 impl AzleTypeRef<'_> {
     pub fn to_candid_type(&self) -> CandidType {

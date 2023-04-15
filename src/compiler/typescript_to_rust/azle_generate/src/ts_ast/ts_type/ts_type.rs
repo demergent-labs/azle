@@ -1,7 +1,7 @@
 use swc_common::Span;
 use swc_ecma_ast::{TsFnOrConstructorType, TsType, TsUnionOrIntersectionType};
 
-use crate::ts_ast::traits::{GetSpan, TypeToString};
+use crate::traits::{GetSpan, TypeToString};
 
 impl GetSpan for TsType {
     fn get_span(&self) -> Span {

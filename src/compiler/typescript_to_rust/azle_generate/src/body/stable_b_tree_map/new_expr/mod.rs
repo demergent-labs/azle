@@ -8,7 +8,7 @@ use crate::{
 };
 
 mod errors;
-mod get_source_info;
+mod get_span;
 
 pub enum ArgName {
     MessageId,

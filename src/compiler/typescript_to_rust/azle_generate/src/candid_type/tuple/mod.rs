@@ -2,10 +2,12 @@ use cdk_framework::act::node::candid::{tuple::Elem, Tuple};
 use swc_common::SourceMap;
 use swc_ecma_ast::{TsTupleType, TsTypeAliasDecl};
 
-use crate::ts_ast::{
-    azle_type::{AzleType, AzleTypeRef},
-    source_map::{GetSourceFileInfo, SourceMapped},
-    traits::{GetName, GetSourceInfo, GetSourceText},
+use crate::{
+    traits::{GetName, GetSourceFileInfo, GetSourceInfo, GetSourceText},
+    ts_ast::{
+        azle_type::{AzleType, AzleTypeRef},
+        source_map::SourceMapped,
+    },
 };
 
 impl SourceMapped<'_, TsTypeAliasDecl> {

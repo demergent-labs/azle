@@ -1,8 +1,8 @@
 use cdk_framework::act::node::candid::{TypeArg, TypeRef};
 
-use crate::ts_ast::{
-    azle_type::{AzleType, AzleTypeRef},
+use crate::{
     traits::GetName,
+    ts_ast::azle_type::{AzleType, AzleTypeRef},
 };
 
 impl AzleTypeRef<'_> {

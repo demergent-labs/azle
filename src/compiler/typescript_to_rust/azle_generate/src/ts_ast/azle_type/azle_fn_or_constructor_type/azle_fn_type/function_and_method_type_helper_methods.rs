@@ -1,7 +1,7 @@
 use swc_ecma_ast::{TsFnParam, TsType, TsTypeAnn};
 
 use super::AzleFnType;
-use crate::ts_ast::traits::{Callable, GetTsType};
+use crate::traits::{Callable, GetTsType};
 
 impl Callable for AzleFnType<'_> {
     fn get_ts_fn_params(&self) -> Vec<TsFnParam> {

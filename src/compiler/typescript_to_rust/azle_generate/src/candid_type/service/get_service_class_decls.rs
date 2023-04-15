@@ -1,9 +1,10 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::{ClassDecl, Decl, Expr, Module, ModuleDecl, ModuleItem, Program, Stmt};
 
-use crate::ts_ast::GetName;
-
-use crate::ts_ast::{source_map::SourceMapped, AzleProgram};
+use crate::{
+    traits::GetName,
+    ts_ast::{source_map::SourceMapped, AzleProgram},
+};
 
 pub trait GetFlattenedServiceClassDecls {
     fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>>;

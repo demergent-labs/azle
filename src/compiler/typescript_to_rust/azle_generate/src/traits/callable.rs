@@ -1,6 +1,6 @@
 use swc_ecma_ast::{TsFnParam, TsType, TsTypeAnn};
 
-use crate::ts_ast::traits::GetTsType;
+use crate::traits::GetTsType;
 
 pub trait Callable {
     fn get_ts_type_ann(&self) -> TsTypeAnn;

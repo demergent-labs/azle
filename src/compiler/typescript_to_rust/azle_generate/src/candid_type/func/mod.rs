@@ -1,11 +1,13 @@
 use cdk_framework::act::node::{candid::Func, node_parts::mode::Mode, CandidType};
 use swc_ecma_ast::{TsTypeAliasDecl, TsTypeAnn};
 
-use crate::ts_ast::{
-    azle_type::{AzleType, AzleTypeRef},
-    source_map::SourceMapped,
-    traits::{Callable, GetTsType},
-    AzleFnOrConstructorType, GetName,
+use crate::{
+    traits::{Callable, GetName, GetTsType},
+    ts_ast::{
+        azle_type::{AzleType, AzleTypeRef},
+        source_map::SourceMapped,
+        AzleFnOrConstructorType,
+    },
 };
 
 mod rust;

@@ -1,5 +1,5 @@
 use super::AzleKeywordType;
-use crate::ts_ast::{source_map::GetSourceFileInfo, traits::GetSourceInfo};
+use crate::traits::{GetSourceFileInfo, GetSourceInfo};
 
 impl GetSourceInfo for AzleKeywordType<'_> {
     fn get_source(&self) -> String {

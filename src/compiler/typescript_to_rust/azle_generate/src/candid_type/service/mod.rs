@@ -1,8 +1,10 @@
 use cdk_framework::act::node::candid::Service;
 use swc_ecma_ast::ClassDecl;
 
-use crate::ts_ast::TsAst;
-use crate::ts_ast::{source_map::SourceMapped, GetName};
+use crate::{
+    traits::GetName,
+    ts_ast::{source_map::SourceMapped, TsAst},
+};
 use get_service_class_decls::GetFlattenedServiceClassDecls;
 use vm_value_conversions::{from_vm_value, list_from_vm_value, list_to_vm_value, to_vm_value};
 

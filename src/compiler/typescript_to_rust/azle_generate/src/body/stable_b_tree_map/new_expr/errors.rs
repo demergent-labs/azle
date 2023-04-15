@@ -3,7 +3,8 @@ use swc_ecma_ast::NewExpr;
 use super::ArgName;
 use crate::{
     errors::{ErrorMessage, Suggestion},
-    ts_ast::{source_map::SourceMapped, traits::GetSourceInfo},
+    traits::GetSourceInfo,
+    ts_ast::source_map::SourceMapped,
 };
 
 impl SourceMapped<'_, NewExpr> {

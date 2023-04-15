@@ -3,10 +3,8 @@ use swc_common::{source_map::Pos, Span};
 use super::AzleTypeRef;
 use crate::{
     errors::{ErrorMessage, Suggestion},
-    ts_ast::{
-        source_map::GetSourceFileInfo, traits::GetSourceInfo, traits::GetSpan,
-        ts_type::ts_type_ref::GetEnclosedTsTypes, GetName, GetSourceText,
-    },
+    traits::{GetSourceFileInfo, GetSourceInfo, GetSourceText, GetSpan},
+    ts_ast::{ts_type::ts_type_ref::GetEnclosedTsTypes, GetName},
 };
 
 impl AzleTypeRef<'_> {

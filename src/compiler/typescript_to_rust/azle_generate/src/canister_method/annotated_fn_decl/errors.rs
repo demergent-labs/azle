@@ -4,7 +4,8 @@ use swc_ecma_ast::{AssignPat, BindingIdent, Param, Pat};
 use super::AnnotatedFnDecl;
 use crate::{
     errors::{ErrorMessage, Suggestion},
-    ts_ast::source_map::{GetSourceFileInfo, Range},
+    traits::GetSourceFileInfo,
+    ts_ast::source_map::Range,
 };
 
 impl AnnotatedFnDecl<'_> {

@@ -1,6 +1,6 @@
 use swc_ecma_ast::TsTypeElement;
 
-use crate::ts_ast::traits::TypeToString;
+use crate::traits::TypeToString;
 
 impl TypeToString for TsTypeElement {
     fn type_to_string(&self) -> String {

@@ -1,7 +1,10 @@
 use cdk_framework::act::node::candid::TypeAlias;
 use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
-use crate::ts_ast::{azle_type::AzleTypeRef, source_map::SourceMapped, GetName};
+use crate::{
+    traits::GetName,
+    ts_ast::{azle_type::AzleTypeRef, source_map::SourceMapped},
+};
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_type_alias(&self) -> Option<TypeAlias> {

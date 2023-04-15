@@ -1,5 +1,5 @@
 use super::AzleTypeRef;
-use crate::ts_ast::{source_map::GetSourceFileInfo, traits::GetSourceInfo};
+use crate::traits::{GetSourceFileInfo, GetSourceInfo};
 
 impl GetSourceInfo for AzleTypeRef<'_> {
     fn get_source(&self) -> String {

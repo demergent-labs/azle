@@ -1,9 +1,8 @@
 use swc_ecma_ast::TsPropertySignature;
 
-use crate::ts_ast::{
-    azle_type::AzleType,
-    source_map::SourceMapped,
+use crate::{
     traits::{GetName, GetTsType},
+    ts_ast::{azle_type::AzleType, source_map::SourceMapped},
 };
 use cdk_framework::act::node::CandidType;
 

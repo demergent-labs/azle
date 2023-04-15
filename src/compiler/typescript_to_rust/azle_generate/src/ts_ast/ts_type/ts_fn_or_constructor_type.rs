@@ -1,6 +1,6 @@
 use swc_ecma_ast::TsFnOrConstructorType;
 
-use crate::ts_ast::traits::GetSpan;
+use crate::traits::GetSpan;
 
 impl GetSpan for TsFnOrConstructorType {
     fn get_span(&self) -> swc_common::Span {

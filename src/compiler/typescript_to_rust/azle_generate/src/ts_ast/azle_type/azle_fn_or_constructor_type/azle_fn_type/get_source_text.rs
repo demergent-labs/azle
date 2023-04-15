@@ -1,4 +1,7 @@
-use crate::ts_ast::{azle_type::AzleFnType, source_map::GetSourceFileInfo, GetSourceText};
+use crate::{
+    traits::{GetSourceFileInfo, GetSourceText},
+    ts_ast::azle_type::AzleFnType,
+};
 
 impl GetSourceText for AzleFnType<'_> {
     fn get_source_text(&self) -> String {

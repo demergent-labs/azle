@@ -1,8 +1,6 @@
 use swc_common::SourceMap;
 
-use crate::ts_ast::traits::{GetSourceInfo, GetSpan};
-
-use super::GetSourceFileInfo;
+use crate::traits::{GetSourceFileInfo, GetSourceInfo, GetSpan};
 
 pub struct SourceMapped<'a, T> {
     inner: &'a T,
@@ -41,7 +39,8 @@ where
     }
 
     fn get_source(&self) -> String {
-        self.source_map.get_source(self.get_span())
+        let span = self.get_span();
+        self.source_map.get_source_from_range((span.lo, span.hi))
     }
 
     fn get_origin(&self) -> String {

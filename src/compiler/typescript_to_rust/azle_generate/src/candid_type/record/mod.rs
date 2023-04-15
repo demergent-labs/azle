@@ -3,10 +3,10 @@ use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement};
 
 use crate::{
     errors::{ErrorMessage, Suggestion},
+    traits::{GetName, GetSourceFileInfo, GetSourceInfo, GetSpan, TypeToString},
     ts_ast::{
         azle_type::{AzleTypeLit, AzleTypeRef},
-        source_map::{get_source_file_info::GetSourceFileInfo, SourceMapped},
-        traits::{GetName, GetSourceInfo, GetSpan, TypeToString},
+        source_map::SourceMapped,
     },
 };
 

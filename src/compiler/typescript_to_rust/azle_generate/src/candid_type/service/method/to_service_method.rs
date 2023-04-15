@@ -5,11 +5,8 @@ use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnParam, TsFnType, 
 
 use crate::{
     errors::service_method::ParseError,
-    ts_ast::{
-        azle_type::AzleType,
-        source_map::SourceMapped,
-        traits::{GetName, GetTsType},
-    },
+    traits::{GetName, GetTsType},
+    ts_ast::{azle_type::AzleType, source_map::SourceMapped},
 };
 
 impl SourceMapped<'_, ClassProp> {

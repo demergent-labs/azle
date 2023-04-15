@@ -3,10 +3,7 @@ use swc_ecma_ast::TsType;
 
 use crate::{
     errors::ErrorMessage,
-    ts_ast::{
-        source_map::GetSourceFileInfo,
-        traits::{GetSpan, TypeToString},
-    },
+    traits::{GetSourceFileInfo, GetSpan, TypeToString},
 };
 
 // TODO we probably should specify that they can use these types in their code

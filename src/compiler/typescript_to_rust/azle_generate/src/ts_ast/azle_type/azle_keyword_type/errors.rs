@@ -3,7 +3,7 @@ use swc_ecma_ast::TsKeywordTypeKind;
 use super::AzleKeywordType;
 use crate::{
     errors::{ErrorMessage, Suggestion},
-    ts_ast::{source_map::GetSourceFileInfo, traits::GetSourceInfo, GetSourceText},
+    traits::{GetSourceFileInfo, GetSourceInfo, GetSourceText},
 };
 
 impl AzleKeywordType<'_> {

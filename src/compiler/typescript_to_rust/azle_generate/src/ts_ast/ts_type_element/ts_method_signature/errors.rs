@@ -1,8 +1,6 @@
 use swc_ecma_ast::TsMethodSignature;
 
-use crate::{
-    errors::ErrorMessage, ts_ast::source_map::SourceMapped, ts_ast::traits::GetSourceInfo,
-};
+use crate::{errors::ErrorMessage, traits::GetSourceInfo, ts_ast::source_map::SourceMapped};
 
 impl SourceMapped<'_, TsMethodSignature> {
     pub(super) fn no_type_annotation_error(&self) -> ErrorMessage {

@@ -1,6 +1,6 @@
 use swc_ecma_ast::{Expr, ExprStmt, FnDecl, ModuleItem};
 
-use crate::{canister_method::annotation::CANISTER_METHOD_ANNOTATIONS, ts_ast::GetName};
+use crate::{canister_method::annotation::CANISTER_METHOD_ANNOTATIONS, traits::GetName};
 
 pub trait ModuleItemHelperMethods {
     fn is_custom_decorator(&self) -> bool;

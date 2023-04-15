@@ -1,6 +1,9 @@
 use swc_ecma_ast::{TsEntityName, TsFnParam, TsMethodSignature, TsType, TsTypeAnn};
 
-use crate::ts_ast::{source_map::SourceMapped, traits::Callable, traits::GetTsType, GetName};
+use crate::{
+    traits::{Callable, GetName, GetTsType},
+    ts_ast::source_map::SourceMapped,
+};
 
 impl Callable for SourceMapped<'_, TsMethodSignature> {
     fn get_ts_fn_params(&self) -> Vec<TsFnParam> {

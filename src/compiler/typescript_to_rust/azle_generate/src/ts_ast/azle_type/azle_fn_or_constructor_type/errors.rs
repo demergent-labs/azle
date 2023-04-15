@@ -3,7 +3,7 @@ use swc_ecma_ast::TsFnOrConstructorType;
 
 use crate::{
     errors::ErrorMessage,
-    ts_ast::{source_map::GetSourceFileInfo, traits::GetSpan},
+    traits::{GetSourceFileInfo, GetSpan},
 };
 
 pub(super) fn constructor_not_supported_error(

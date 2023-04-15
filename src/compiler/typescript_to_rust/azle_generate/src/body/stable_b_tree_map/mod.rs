@@ -1,7 +1,10 @@
 use cdk_framework::act::node::CandidType;
 use swc_ecma_ast::{Decl, Expr, Program};
 
-use crate::ts_ast::{source_map::SourceMapped, AzleProgram, GetName, TsAst};
+use crate::{
+    traits::GetName,
+    ts_ast::{source_map::SourceMapped, AzleProgram, TsAst},
+};
 use module_item::AsDecl;
 
 mod expr;
