@@ -54,9 +54,7 @@ export function generateCandidFile(candidPath: string, wasmFilePath: string) {
         }
     });
 
-    const candidPointer = (
-        wasmInstance.exports as any
-    )._cdk_get_candid_pointer();
+    const candidPointer = (wasmInstance.exports as any).get_candid_pointer();
 
     const memory = new Uint8Array((wasmInstance.exports.memory as any).buffer);
 
