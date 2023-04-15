@@ -33,7 +33,7 @@ pub fn generate(post_upgrade_fn_decl_option: Option<&AnnotatedFnDecl>) -> TokenS
 
             #call_to_post_upgrade_js_function
 
-            ic_cdk_timers::set_timer(core::time::Duration::new(0, 0), _cdk_rng_seed);
+            ic_cdk_timers::set_timer(core::time::Duration::new(0, 0), rng_seed);
         });
     }
 }
