@@ -36,9 +36,11 @@ export function generateLibCargoToml(canisterName: string): Toml {
         ic-cdk-timers = "0.1.2"
         ic-stable-structures = "0.5.2"
         candid = { version = "0.9.0-beta.2", features = ["parser"] }
-        boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "2613202fdc2757691ba1a20e568e5b8740e0c233" }
+        boa_engine = { git = "https://github.com/boa-dev/boa", rev = "53bd4f86d48289d4d7a50168eb5e542a7e040e8f" }
+        # boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "2613202fdc2757691ba1a20e568e5b8740e0c233" }
         # boa_engine = { path = "/home/boa/boa_engine" }
         getrandom = { version = "0.2.3", features = ["custom"] }
+        chrono = { version = "0.4.24", default-features = false }
         serde = "1.0.137"
         azle-vm-value-derive = { path = "./azle_vm_value_derive" }
         uuid = { version = "1.2.2", features = ["v4"] }
@@ -274,7 +276,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_ast"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=2613202fdc2757691ba1a20e568e5b8740e0c233#2613202fdc2757691ba1a20e568e5b8740e0c233"
+        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
         dependencies = [
         "bitflags 2.1.0",
         "boa_interner",
@@ -286,7 +288,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_engine"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=2613202fdc2757691ba1a20e568e5b8740e0c233#2613202fdc2757691ba1a20e568e5b8740e0c233"
+        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
         dependencies = [
         "bitflags 2.1.0",
         "boa_ast",
@@ -298,7 +300,6 @@ export function generateWorkspaceCargoLock(): Toml {
         "chrono",
         "dashmap",
         "fast-float",
-        "ic-cdk 0.8.0-beta.0",
         "indexmap",
         "num-bigint",
         "num-integer",
@@ -323,7 +324,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_gc"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=2613202fdc2757691ba1a20e568e5b8740e0c233#2613202fdc2757691ba1a20e568e5b8740e0c233"
+        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
         dependencies = [
         "boa_macros",
         "boa_profiler",
@@ -333,7 +334,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_interner"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=2613202fdc2757691ba1a20e568e5b8740e0c233#2613202fdc2757691ba1a20e568e5b8740e0c233"
+        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
         dependencies = [
         "boa_macros",
         "hashbrown 0.13.2",
@@ -347,7 +348,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_macros"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=2613202fdc2757691ba1a20e568e5b8740e0c233#2613202fdc2757691ba1a20e568e5b8740e0c233"
+        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
         dependencies = [
         "proc-macro2",
         "quote",
@@ -358,7 +359,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_parser"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=2613202fdc2757691ba1a20e568e5b8740e0c233#2613202fdc2757691ba1a20e568e5b8740e0c233"
+        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
         dependencies = [
         "bitflags 2.1.0",
         "boa_ast",
@@ -376,12 +377,12 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_profiler"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=2613202fdc2757691ba1a20e568e5b8740e0c233#2613202fdc2757691ba1a20e568e5b8740e0c233"
+        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
         
         [[package]]
         name = "boa_unicode"
         version = "0.16.0"
-        source = "git+https://github.com/demergent-labs/boa?rev=2613202fdc2757691ba1a20e568e5b8740e0c233#2613202fdc2757691ba1a20e568e5b8740e0c233"
+        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
         dependencies = [
         "unicode-general-category",
         ]
@@ -479,24 +480,6 @@ export function generateWorkspaceCargoLock(): Toml {
         "proc-macro2",
         "quote",
         "syn 1.0.107",
-        ]
-        
-        [[package]]
-        name = "canister1"
-        version = "0.0.0"
-        dependencies = [
-        "azle-vm-value-derive",
-        "boa_engine",
-        "candid 0.9.0-beta.3",
-        "getrandom",
-        "ic-cdk 0.8.0-beta.0",
-        "ic-cdk-macros 0.6.10",
-        "ic-cdk-timers",
-        "ic-stable-structures",
-        "rand",
-        "serde",
-        "slotmap",
-        "uuid",
         ]
         
         [[package]]
