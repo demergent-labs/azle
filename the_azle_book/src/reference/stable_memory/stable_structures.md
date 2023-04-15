@@ -15,7 +15,6 @@ Examples:
 
 ```typescript
 import {
-    InsertError,
     nat64,
     nat8,
     Opt,
@@ -27,11 +26,6 @@ import {
 
 type Key = nat8;
 type Value = string;
-
-type InsertResult = Variant<{
-    Ok: Opt<Value>;
-    Err: InsertError;
-}>;
 
 let map = new StableBTreeMap<Key, Value>(0, 100, 1_000);
 
@@ -46,7 +40,7 @@ export function get(key: Key): Opt<Value> {
 }
 
 $update;
-export function insert(key: Key, value: Value): InsertResult {
+export function insert(key: Key, value: Value): Opt<Value> {
     return map.insert(key, value);
 }
 
