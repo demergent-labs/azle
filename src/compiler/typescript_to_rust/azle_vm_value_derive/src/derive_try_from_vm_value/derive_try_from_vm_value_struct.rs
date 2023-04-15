@@ -24,7 +24,7 @@ pub fn derive_try_from_vm_value_struct(
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
     quote! {
-        impl #impl_generics CdkActTryFromVmValue<#struct_name #ty_generics, &mut boa_engine::Context> for boa_engine::JsValue #where_clause {
+        impl #impl_generics CdkActTryFromVmValue<#struct_name #ty_generics, &mut boa_engine::Context<'_>> for boa_engine::JsValue #where_clause {
             fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<#struct_name #ty_generics, CdkActTryFromVmValueError> {
                 let object_option = self.as_object();
 
@@ -56,7 +56,7 @@ pub fn derive_try_from_vm_value_struct(
         }
 
         // TODO the body of this function is repeated in try_from_vm_value_trait.ts
-        impl #impl_generics CdkActTryFromVmValue<Vec<#struct_name #ty_generics>, &mut boa_engine::Context> for boa_engine::JsValue #where_clause {
+        impl #impl_generics CdkActTryFromVmValue<Vec<#struct_name #ty_generics>, &mut boa_engine::Context<'_>> for boa_engine::JsValue #where_clause {
             fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<Vec<#struct_name #ty_generics>, CdkActTryFromVmValueError> {
                 match self.as_object() {
                     Some(js_object) => {

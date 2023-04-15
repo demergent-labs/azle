@@ -18,17 +18,9 @@ export function get_tests(
         {
             name: 'create_user',
             test: async () => {
-                const result = await audio_recorder_canister.createUser(
+                const user = await audio_recorder_canister.createUser(
                     'lastmjs'
                 );
-
-                if (!ok(result)) {
-                    return {
-                        Err: JSON.stringify(result.Err, null, 2)
-                    };
-                }
-
-                const user = result.Ok;
 
                 global_user = user;
 

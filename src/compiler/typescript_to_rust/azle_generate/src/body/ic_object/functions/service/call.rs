@@ -29,9 +29,7 @@ pub fn generate(
 
             #(#param_variables)*
 
-            // TODO make this promise in a better way once Boa allows it or you can figure it out
-            let promise_js_value = context.eval("new Promise(() => {})").unwrap();
-            let promise_js_value_cloned = promise_js_value.clone();
+            let (js_promise, js_promise_resolvers) = boa_engine::object::builtins::JsPromise::new_pending(context);
 
             ic_cdk::spawn(async move {
                 #pre_await_state_management
@@ -46,7 +44,7 @@ pub fn generate(
                 #promise_fulfillment
             });
 
-            Ok(promise_js_value_cloned)
+            Ok(js_promise.clone().into())
         }
     }
 }

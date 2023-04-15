@@ -8,7 +8,6 @@ import {
     $update,
     Vec
 } from 'azle';
-import { InsertResult } from '../types';
 
 let stableMap9 = new StableBTreeMap<float64, Vec<string>>(9, 100, 1_000);
 
@@ -26,7 +25,7 @@ $update;
 export function stableMap9Insert(
     key: float64,
     value: Vec<string>
-): InsertResult<Vec<string>> {
+): Opt<Vec<string>> {
     return stableMap9.insert(key, value);
 }
 
@@ -35,7 +34,6 @@ export function stableMap9IsEmpty(): boolean {
     return stableMap9.isEmpty();
 }
 
-// TODO this should be breaking because of Tuple
 $query;
 export function stableMap9Items(): Vec<Tuple<[float64, Vec<string>]>> {
     return stableMap9.items();

@@ -8,7 +8,7 @@ import {
     $update,
     Vec
 } from 'azle';
-import { InsertResult, User } from '../types';
+import { User } from '../types';
 
 let stableMap4 = new StableBTreeMap<User, float32>(4, 100, 1_000);
 
@@ -23,10 +23,7 @@ export function stableMap4Get(key: User): Opt<float32> {
 }
 
 $update;
-export function stableMap4Insert(
-    key: User,
-    value: float32
-): InsertResult<float32> {
+export function stableMap4Insert(key: User, value: float32): Opt<float32> {
     return stableMap4.insert(key, value);
 }
 

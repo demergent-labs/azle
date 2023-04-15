@@ -4,7 +4,7 @@ import { ActorSubclass } from '@dfinity/agent';
 
 const PAGE_SIZE = 65_536;
 const MAX_STABLE_MEM_PAGES = 65_536;
-const MAX_STABLE64_MEM_PAGES = 524_288n;
+const MAX_STABLE64_MEM_PAGES = 786_432n;
 const STABLE_BYTES_SIZE = 655_360;
 
 export function getTests(

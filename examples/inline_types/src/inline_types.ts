@@ -2,7 +2,6 @@ import {
     $query,
     $update,
     Func,
-    InsertError,
     nat,
     nat64,
     Opt,
@@ -165,14 +164,11 @@ export function stableMapInsert(
     value: Record<{
         variant: Variant<{ var1: null; var2: TestVariant }>;
     }>
-): Variant<{
-    Ok: Opt<
-        Record<{
-            variant: Variant<{ var1: null; var2: TestVariant }>;
-        }>
-    >;
-    Err: InsertError;
-}> {
+): Opt<
+    Record<{
+        variant: Variant<{ var1: null; var2: TestVariant }>;
+    }>
+> {
     return stableMap.insert(key, value);
 }
 

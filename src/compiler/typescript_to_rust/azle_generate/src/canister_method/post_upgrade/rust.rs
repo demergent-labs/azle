@@ -23,10 +23,13 @@ pub fn generate(post_upgrade_fn_decl_option: Option<&AnnotatedFnDecl>) -> TokenS
 
             _azle_register_ic_object(&mut boa_context);
 
-            _azle_unwrap_boa_result(boa_context.eval(format!(
-                "let exports = {{}}; {compiled_js}",
-                compiled_js = MAIN_JS
-            )), &mut boa_context);
+            _azle_unwrap_boa_result(boa_context.eval_script(boa_engine::Source::from_bytes(
+                    &format!(
+                        "let exports = {{}}; {compiled_js}",
+                        compiled_js = MAIN_JS
+                    )
+                )
+            ), &mut boa_context);
 
             #call_to_post_upgrade_js_function
 

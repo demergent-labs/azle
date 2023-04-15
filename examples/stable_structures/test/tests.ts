@@ -318,12 +318,8 @@ function insert(stableStructuresCanister: ActorSubclass<_SERVICE>): Test[] {
                     `stableMap${index}Insert`
                 ](key, STABLEMAPVALUES[index]);
 
-                if (!ok(setResult)) {
-                    return { Err: setResult.Err };
-                }
-
                 return {
-                    Ok: isEmptyOpt(setResult.Ok)
+                    Ok: isEmptyOpt(setResult)
                 };
             }
         };
@@ -491,39 +487,47 @@ export function insertErrorTests(
         {
             name: 'insert() returns a KeyTooLarge error if the key is too large',
             test: async () => {
-                const keyOver_100Bytes =
-                    '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
-                const result = await canister3.stableMap13Insert(
-                    keyOver_100Bytes,
-                    Principal.fromText('aaaaa-aa')
-                );
+                try {
+                    const keyOver_100Bytes =
+                        '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
+                    await canister3.stableMap13Insert(
+                        keyOver_100Bytes,
+                        Principal.fromText('aaaaa-aa')
+                    );
 
-                return {
-                    Ok:
-                        'Err' in result &&
-                        'KeyTooLarge' in result.Err &&
-                        result.Err.KeyTooLarge.given === 109 &&
-                        result.Err.KeyTooLarge.max === 100
-                };
+                    return {
+                        Ok: false
+                    };
+                } catch (error) {
+                    return {
+                        Ok: (error as Error).message.includes(
+                            'Key is too large'
+                        )
+                    };
+                }
             }
         },
         {
             name: 'insert() returns a ValueTooLarge error if the value is too large',
             test: async () => {
-                const valueOver_100Bytes =
-                    '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
-                const result = await canister1.stableMap0Insert(
-                    1,
-                    valueOver_100Bytes
-                );
+                try {
+                    const valueOver_100Bytes =
+                        '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
+                    const result = await canister1.stableMap0Insert(
+                        1,
+                        valueOver_100Bytes
+                    );
 
-                return {
-                    Ok:
-                        'Err' in result &&
-                        'ValueTooLarge' in result.Err &&
-                        result.Err.ValueTooLarge.given === 109 &&
-                        result.Err.ValueTooLarge.max === 100
-                };
+                    return {
+                        Ok: false
+                    };
+                } catch (error) {
+                    return {
+                        Ok: (error as Error).message.includes(
+                            'Value is too large'
+                        )
+                    };
+                }
             }
         }
     ];

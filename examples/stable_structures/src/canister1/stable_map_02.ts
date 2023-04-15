@@ -9,7 +9,6 @@ import {
     $update,
     Vec
 } from 'azle';
-import { InsertResult } from '../types';
 
 let stableMap2 = new StableBTreeMap<nat32, nat>(2, 100, 1_000);
 
@@ -24,7 +23,7 @@ export function stableMap2Get(key: nat32): Opt<nat> {
 }
 
 $update;
-export function stableMap2Insert(key: nat32, value: nat): InsertResult<nat> {
+export function stableMap2Insert(key: nat32, value: nat): Opt<nat> {
     return stableMap2.insert(key, value);
 }
 
