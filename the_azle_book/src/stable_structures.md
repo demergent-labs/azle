@@ -37,7 +37,6 @@ Here's an example showing all of the basic `StableBTreeMap` operations:
 ```typescript
 import {
     Alias,
-    InsertError,
     nat64,
     nat8,
     Opt,
@@ -49,8 +48,6 @@ import {
 
 type Key = nat8;
 type Value = string;
-
-type InsertResult<T> = Alias<Result<Opt<T>, InsertError>>;
 
 let map = new StableBTreeMap<Key, Value>(0, 100, 1_000);
 
@@ -65,7 +62,7 @@ export function get(key: Key): Opt<Value> {
 }
 
 $update;
-export function insert(key: Key, value: Value): InsertResult<Value> {
+export function insert(key: Key, value: Value): Opt<Value> {
     return map.insert(key, value);
 }
 
@@ -106,8 +103,6 @@ With these basic operations you can build more complex CRUD database application
 import {
     blob,
     ic,
-    InsertError,
-    match,
     nat64,
     Opt,
     Principal,
@@ -116,13 +111,14 @@ import {
     Result,
     StableBTreeMap,
     $update,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 
 type User = Record<{
     id: Principal;
     createdAt: nat64;
-    recordingIds: Principal[];
+    recordingIds: Vec<Principal>;
     username: string;
 }>;
 
@@ -138,7 +134,7 @@ let users = new StableBTreeMap<Principal, User>(0, 38, 100_000);
 let recordings = new StableBTreeMap<Principal, Recording>(1, 38, 5_000_000);
 
 $update;
-export function createUser(username: string): Result<User, InsertError> {
+export function createUser(username: string): User {
     const id = generateId();
     const user: User = {
         id,
@@ -147,16 +143,13 @@ export function createUser(username: string): Result<User, InsertError> {
         username
     };
 
-    const result = users.insert(user.id, user);
+    users.insert(user.id, user);
 
-    return match(result, {
-        Ok: () => ({ Ok: user }),
-        Err: (err) => ({ Err: err })
-    });
+    return user;
 }
 
 $query;
-export function readUsers(): User[] {
+export function readUsers(): Vec<User> {
     return users.values();
 }
 
@@ -201,7 +194,6 @@ export function createRecording(
 ): Result<
     Recording,
     Variant<{
-        InsertError: InsertError;
         UserDoesNotExist: Principal;
     }>
 > {
@@ -224,37 +216,22 @@ export function createRecording(
         userId
     };
 
-    const createRecordingResult = recordings.insert(recording.id, recording);
+    recordings.insert(recording.id, recording);
 
-    return match(createRecordingResult, {
-        Ok: () => {
-            const updatedUser: User = {
-                ...user,
-                recordingIds: [...user.recordingIds, recording.id]
-            };
-            const updateUserResult = users.insert(updatedUser.id, updatedUser);
+    const updatedUser: User = {
+        ...user,
+        recordingIds: [...user.recordingIds, recording.id]
+    };
 
-            return match(updateUserResult, {
-                Ok: () => ({
-                    Ok: recording
-                }),
-                Err: (err) => ({
-                    Err: {
-                        InsertError: err
-                    }
-                })
-            });
-        },
-        Err: (err) => ({
-            Err: {
-                InsertError: err
-            }
-        })
-    });
+    users.insert(updatedUser.id, updatedUser);
+
+    return {
+        Ok: recording
+    };
 }
 
 $query;
-export function readRecordings(): Recording[] {
+export function readRecordings(): Vec<Recording> {
     return recordings.values();
 }
 
@@ -267,7 +244,6 @@ $update;
 export function deleteRecording(id: Principal): Result<
     Recording,
     Variant<{
-        InsertError: InsertError;
         RecordingDoesNotExist: Principal;
         UserDoesNotExist: Principal;
     }>
@@ -299,22 +275,13 @@ export function deleteRecording(id: Principal): Result<
         )
     };
 
-    const updateUserResult = users.insert(updatedUser.id, updatedUser);
+    users.insert(updatedUser.id, updatedUser);
 
-    return match(updateUserResult, {
-        Ok: () => {
-            recordings.remove(id);
+    recordings.remove(id);
 
-            return {
-                Ok: recording
-            };
-        },
-        Err: (err) => ({
-            Err: {
-                InsertError: err
-            }
-        })
-    });
+    return {
+        Ok: recording
+    };
 }
 
 function generateId(): Principal {
@@ -354,31 +321,9 @@ let recordings = new StableBTreeMap<Principal, Recording>(1, 38, 5_000_000);
 
 Notice that each `StableBTreeMap` has a unique `memory id`. The maximum key and value sizes are also set according to the expected application usage.
 
-You can figure out the appropriate maximum key and value sizes by reasoning about your application and engaging in some trial and error using the `insert` method. Calling `insert` on a `StableBTreeMap` returns an `InsertResult` variant that looks like this:
+You can figure out the appropriate maximum key and value sizes by reasoning about your application and engaging in some trial and error using the `insert` method. Calling `insert` on a `StableBTreeMap` will throw an error which in some cases will have the information that you need to determine the maximum key or value size.
 
-```typescript
-type InsertResult<T> = Variant<{
-    Ok: Opt<T>;
-    Err: InsertError;
-}>;
-
-type InsertError = Variant<{
-    KeyTooLarge: KeyTooLarge;
-    ValueTooLarge: ValueTooLarge;
-}>;
-
-type KeyTooLarge = Record<{
-    given: nat32;
-    max: nat32;
-}>;
-
-type ValueTooLarge = Record<{
-    given: nat32;
-    max: nat32;
-}>;
-```
-
-The `InsertError` variant will in some cases have the information that you need to determine the maximum key or value size. If you attempt to insert a key or value that is too large, the `KeyTooLarge` and `ValueTooLarge` records will show you the size of the value that you attempted to insert. You can increase the maximum key or value size based on the information you receive from the `KeyTooLarge` and `ValueTooLarge` records and try inserting again.
+If you attempt to insert a key or value that is too large, the `KeyTooLarge` and `ValueTooLarge` errors will show you the size of the value that you attempted to insert. You can increase the maximum key or value size based on the information you receive from the `KeyTooLarge` and `ValueTooLarge` errors and try inserting again.
 
 Thus through some trial and error you can whittle your way to a correct solution. In some cases all of your values will have an obvious static maximum size. In the audio recording example, trial and error revealed that `Principal` is most likely always 38 bytes, thus the maximum key size is set to 38.
 
@@ -389,3 +334,9 @@ We've set the maximum value size of `User` to be 100_000 bytes. If we divide 100
 As for `Recording`, the largest dynamic field is `audio`, which will be the actual bytes of the audio recording. We've set the maximum value size here to 5_000_000, which should allow for recordings of ~5 MB in size. That seems reasonable for our example, and so we'll go with it.
 
 As you can see, finding the correct maximum key and value sizes is a bit of an art right now. Combining some trial and error with reasoning about your specific application should get you a working solution in most cases. It's our hope that the need to specify maximum key and value sizes will be removed in the future.
+
+## Caveats
+
+### Keys
+
+You should be wary when using `float64`, `float32`, `service`, or `func` in any type that is a key for a stable structure. These types do not have the ability to be strictly ordered in all cases. `service` and `func` will have no order. `float64` and `float32` will treat `NaN` as less than any other type. These caveats may impact key performance.

@@ -19,7 +19,7 @@
 -   [Canister Lifecycle](./canister_lifecycle.md)
 -   [Timers](./timers.md)
 -   [Cycles](./cycles.md)
--   [Gotchas and Caveats](./gotchas_and_caveats.md)
+-   [Caveats](./caveats.md)
 -   [Reference](./reference/reference.md)
     -   [Call APIs](./reference/call_apis/call_apis.md)
         -   [accept message](./reference/call_apis/accept_message.md)

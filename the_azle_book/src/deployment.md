@@ -138,31 +138,3 @@ To deploy an individual canister:
 ```bash
 dfx deploy --network ic canister_name
 ```
-
-## Common deployment issues
-
-### Ubuntu
-
-Error:
-
-```bash
-linker cc not found
-```
-
-Resolution:
-
-```bash
-sudo apt install build-essential
-```
-
-Error:
-
-```bash
-is cmake not installed?
-```
-
-Resolution:
-
-```bash
-sudo apt install cmake
-```
