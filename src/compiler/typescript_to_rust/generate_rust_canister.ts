@@ -178,8 +178,8 @@ function runRustFmt(
             env: {
                 ...process.env,
                 CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
-                CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
-                RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
+                CARGO_HOME: GLOBAL_AZLE_RUST_DIR,
+                RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR
             }
         }
     );
