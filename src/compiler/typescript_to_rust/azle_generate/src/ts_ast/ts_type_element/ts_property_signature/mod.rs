@@ -8,7 +8,7 @@ use crate::ts_ast::{
 use cdk_framework::act::node::CandidType;
 
 mod errors;
-mod get_source_info;
+mod get_span;
 
 impl SourceMapped<'_, TsPropertySignature> {
     pub fn get_member_name(&self) -> String {

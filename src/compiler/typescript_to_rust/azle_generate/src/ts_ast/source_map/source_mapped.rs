@@ -1,5 +1,9 @@
 use swc_common::SourceMap;
 
+use crate::ts_ast::traits::{GetSourceInfo, GetSpan};
+
+use super::GetSourceFileInfo;
+
 pub struct SourceMapped<'a, T> {
     inner: &'a T,
     pub source_map: &'a SourceMap,
@@ -25,5 +29,26 @@ impl<T> std::ops::Deref for SourceMapped<'_, T> {
 
     fn deref(&self) -> &Self::Target {
         &self.inner
+    }
+}
+
+impl<T> GetSourceInfo for SourceMapped<'_, T>
+where
+    T: GetSpan,
+{
+    fn get_range(&self) -> (usize, usize) {
+        self.source_map.get_range(self.get_span())
+    }
+
+    fn get_source(&self) -> String {
+        self.source_map.get_source(self.get_span())
+    }
+
+    fn get_origin(&self) -> String {
+        self.source_map.get_origin(self.get_span())
+    }
+
+    fn get_line_number(&self) -> usize {
+        self.source_map.get_line_number(self.get_span())
     }
 }
