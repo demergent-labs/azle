@@ -36,11 +36,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 }
             };
 
-            let promise_js_object = promise_js_value.as_object().unwrap();
-            let mut promise_object = promise_js_object.borrow_mut();
-            let mut promise = promise_object.as_promise_mut().unwrap();
-
-            promise.fulfill_promise(&call_result_js_value, &mut *boa_context);
+            js_promise_resolvers.resolve.call(&boa_engine::JsValue::undefined(), &[call_result_js_value], &mut *boa_context).unwrap();
 
             let main_promise = PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                 let promise_map = promise_map_ref_cell.borrow().clone();

@@ -1,5 +1,4 @@
 import { nat64, Opt, $query, StableBTreeMap, Tuple, $update, Vec } from 'azle';
-import { InsertResult } from '../types';
 
 let stableMap6 = new StableBTreeMap<Vec<nat64>, boolean>(6, 100, 1_000);
 
@@ -17,7 +16,7 @@ $update;
 export function stableMap6Insert(
     key: Vec<nat64>,
     value: boolean
-): InsertResult<boolean> {
+): Opt<boolean> {
     return stableMap6.insert(key, value);
 }
 

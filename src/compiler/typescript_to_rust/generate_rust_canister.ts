@@ -3,6 +3,7 @@ import { writeFileSync } from 'fs';
 import {
     GLOBAL_AZLE_CONFIG_DIR,
     GLOBAL_AZLE_BIN_DIR,
+    GLOBAL_AZLE_RUST_DIR,
     GLOBAL_AZLE_TARGET_DIR
 } from '../utils';
 import { Err, ok, Ok, Result } from '../utils/result';
@@ -64,8 +65,8 @@ function runAzleGenerate(
             env: {
                 ...process.env,
                 CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
-                CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
-                RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
+                CARGO_HOME: GLOBAL_AZLE_RUST_DIR,
+                RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR
             }
         }
     );

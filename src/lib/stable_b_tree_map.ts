@@ -1,19 +1,4 @@
-import { ic, nat8, nat32, nat64, Opt, Record, Variant } from './';
-
-type KeyTooLarge = Record<{
-    given: nat32;
-    max: nat32;
-}>;
-
-type ValueTooLarge = Record<{
-    given: nat32;
-    max: nat32;
-}>;
-
-export type InsertError = Variant<{
-    KeyTooLarge: KeyTooLarge;
-    ValueTooLarge: ValueTooLarge;
-}>;
+import { ic, nat8, nat32, nat64, Opt } from './index';
 
 /**
  * A Map based on a self-balancing tree that persists across
@@ -62,13 +47,7 @@ export class StableBTreeMap<Key, Value> {
      * @param value the value to insert.
      * @returns the previous value of the key, if present.
      */
-    insert(
-        key: Key,
-        value: Value
-    ): Variant<{
-        Ok: Opt<Value>;
-        Err: InsertError;
-    }> {
+    insert(key: Key, value: Value): Opt<Value> {
         // @ts-ignore
         return ic.stableBTreeMapInsert(this.memoryId, key, value);
     }

@@ -7,17 +7,10 @@ import {
 
 $update;
 export async function xkcd(): Promise<HttpResponse> {
-    const maxResponseBytes = 1_000n;
-
-    // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
-    const cycleCostBase = 400_000_000n;
-    const cycleCostPerByte = 300_000n; // TODO not sure on this exact cost
-    const cycleCostTotal = cycleCostBase + cycleCostPerByte * maxResponseBytes;
-
     const httpResult = await managementCanister
         .http_request({
             url: `https://xkcd.com/642/info.0.json`,
-            max_response_bytes: maxResponseBytes,
+            max_response_bytes: 2_000n,
             method: {
                 get: null
             },
@@ -28,24 +21,18 @@ export async function xkcd(): Promise<HttpResponse> {
                 context: Uint8Array.from([])
             }
         })
-        .cycles(cycleCostTotal)
+        .cycles(50_000_000n)
         .call();
 
     return match(httpResult, {
         Ok: (httpResponse) => httpResponse,
-        Err: (err) => ic.trap(err ?? 'httpResult had an error')
+        Err: (err) => ic.trap(err)
     });
 }
 
+// TODO the replica logs give some concerning output: https://forum.dfinity.org/t/fix-me-in-http-outcalls-call-raw/19435
 $update;
 export async function xkcdRaw(): Promise<Manual<HttpResponse>> {
-    const maxResponseBytes = 1_000n;
-
-    // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
-    const cycleCostBase = 400_000_000n;
-    const cycleCostPerByte = 300_000n; // TODO not sure on this exact cost
-    const cycleCostTotal = cycleCostBase + cycleCostPerByte * maxResponseBytes;
-
     const httpResult = await ic.callRaw(
         Principal.fromText('aaaaa-aa'),
         'http_request',
@@ -53,22 +40,22 @@ export async function xkcdRaw(): Promise<Manual<HttpResponse>> {
             (
                 record {
                     url = "https://xkcd.com/642/info.0.json";
-                    max_response_bytes = ${maxResponseBytes} : nat64;
+                    max_response_bytes = 2_000 : nat64;
                     method = variant { get };
                     headers = vec {};
                     body = null;
-                    transform = opt record { function = record { principal "${ic
+                    transform = record { function = func "${ic
                         .id()
-                        .toString()}"; "xkcdTransform" }; context = vec {} };
+                        .toString()}".xkcdTransform; context = vec {} };
                 }
             )
         `),
-        cycleCostTotal
+        50_000_000n
     );
 
     match(httpResult, {
         Ok: (httpResponse) => ic.replyRaw(httpResponse),
-        Err: (err) => ic.trap(err ?? 'httpResult had an error')
+        Err: (err) => ic.trap(err)
     });
 }
 

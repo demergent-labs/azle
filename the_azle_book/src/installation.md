@@ -5,7 +5,7 @@ Follow the instructions exactly as stated below to avoid issues.
 You should be using a \*nix environment (Linux, Mac OS, [WSL if using Windows](https://learn.microsoft.com/en-us/windows/wsl/install)) with bash and have the following installed on your system:
 
 -   Node.js 18
--   dfx 0.12.1
+-   dfx 0.13.1
 
 ## Node.js
 
@@ -21,8 +21,8 @@ nvm install 18
 
 ## dfx
 
-Run the following command to install dfx 0.12.1:
+Run the following command to install dfx 0.13.1:
 
 ```bash
-DFX_VERSION=0.12.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+DFX_VERSION=0.13.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 ```

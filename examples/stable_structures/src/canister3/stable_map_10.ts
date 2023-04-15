@@ -8,7 +8,6 @@ import {
     $update,
     Vec
 } from 'azle';
-import { InsertResult } from '../types';
 
 let stableMap10 = new StableBTreeMap<float32, Opt<boolean>>(10, 100, 1_000);
 
@@ -26,7 +25,7 @@ $update;
 export function stableMap10Insert(
     key: float32,
     value: Opt<boolean>
-): InsertResult<Opt<boolean>> {
+): Opt<Opt<boolean>> {
     return stableMap10.insert(key, value);
 }
 

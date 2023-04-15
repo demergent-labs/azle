@@ -1,6 +1,5 @@
 import {
     CallResult,
-    InsertError,
     Func,
     Query,
     Update,
@@ -144,14 +143,11 @@ export class InlineTypes extends Service {
             variant: Variant<{ var1: null; var2: TestVariant }>;
         }>
     ) => CallResult<
-        Variant<{
-            ok: Opt<
-                Record<{
-                    variant: Variant<{ var1: null; var2: TestVariant }>;
-                }>
-            >;
-            err: InsertError;
-        }>
+        Opt<
+            Record<{
+                variant: Variant<{ var1: null; var2: TestVariant }>;
+            }>
+        >
     >;
 
     @serviceQuery
