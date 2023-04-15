@@ -2,7 +2,7 @@ use swc_ecma_ast::{TsEntityName, TsFnParam, TsMethodSignature, TsType, TsTypeAnn
 
 use crate::{
     traits::{Callable, GetName, GetTsType},
-    ts_ast::source_map::SourceMapped,
+    ts_ast::SourceMapped,
 };
 
 impl Callable for SourceMapped<'_, TsMethodSignature> {

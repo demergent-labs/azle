@@ -1,7 +1,7 @@
 use swc_common::SourceMap;
 use swc_ecma_ast::{Decl, FnDecl, Module, ModuleDecl, ModuleItem, Program, Stmt};
 
-use crate::ts_ast::{source_map::SourceMapped, AzleProgram};
+use crate::ts_ast::{AzleProgram, SourceMapped};
 
 pub trait GetProgramFnDecls {
     fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>>;

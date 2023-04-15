@@ -5,8 +5,7 @@ use crate::{
     traits::{Callable, GetName, GetTsType},
     ts_ast::{
         azle_type::{AzleType, AzleTypeRef},
-        source_map::SourceMapped,
-        AzleFnOrConstructorType,
+        AzleFnOrConstructorType, SourceMapped,
     },
 };
 

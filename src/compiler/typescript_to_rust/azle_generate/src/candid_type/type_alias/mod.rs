@@ -3,7 +3,7 @@ use swc_ecma_ast::{TsType, TsTypeAliasDecl};
 
 use crate::{
     traits::GetName,
-    ts_ast::{azle_type::AzleTypeRef, source_map::SourceMapped},
+    ts_ast::{azle_type::AzleTypeRef, SourceMapped},
 };
 
 impl SourceMapped<'_, TsTypeAliasDecl> {

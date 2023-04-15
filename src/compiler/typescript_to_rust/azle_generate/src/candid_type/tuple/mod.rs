@@ -6,7 +6,7 @@ use crate::{
     traits::{GetName, GetSourceFileInfo, GetSourceInfo, GetSourceText},
     ts_ast::{
         azle_type::{AzleType, AzleTypeRef},
-        source_map::SourceMapped,
+        SourceMapped,
     },
 };
 

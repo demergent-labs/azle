@@ -1,7 +1,7 @@
 use std::ops::Deref;
 use swc_ecma_ast::{TsPropertySignature, TsTypeElement};
 
-use crate::ts_ast::source_map::SourceMapped;
+use crate::ts_ast::SourceMapped;
 
 mod get_span;
 mod ts_method_signature;

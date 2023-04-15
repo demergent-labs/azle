@@ -1,6 +1,6 @@
 use swc_ecma_ast::TsPropertySignature;
 
-use crate::{errors::ErrorMessage, traits::GetSourceInfo, ts_ast::source_map::SourceMapped};
+use crate::{errors::ErrorMessage, traits::GetSourceInfo, ts_ast::SourceMapped};
 
 impl SourceMapped<'_, TsPropertySignature> {
     pub(super) fn no_type_annotation_error(&self) -> ErrorMessage {

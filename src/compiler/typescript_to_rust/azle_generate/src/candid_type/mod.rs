@@ -1,7 +1,7 @@
 use cdk_framework::act::CandidTypes;
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use crate::ts_ast::{source_map::SourceMapped, TsAst};
+use crate::ts_ast::{SourceMapped, TsAst};
 
 pub mod func;
 pub mod opt;

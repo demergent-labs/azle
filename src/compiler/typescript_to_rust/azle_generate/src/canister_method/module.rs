@@ -3,7 +3,7 @@ use swc_ecma_ast::{Decl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt};
 
 use crate::{
     canister_method::{errors, module_item::ModuleItemHelperMethods, AnnotatedFnDecl, Annotation},
-    ts_ast::source_map::SourceMapped,
+    ts_ast::SourceMapped,
 };
 
 pub trait ModuleHelperMethods {

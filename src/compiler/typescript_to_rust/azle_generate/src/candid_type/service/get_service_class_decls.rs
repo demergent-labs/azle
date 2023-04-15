@@ -3,7 +3,7 @@ use swc_ecma_ast::{ClassDecl, Decl, Expr, Module, ModuleDecl, ModuleItem, Progra
 
 use crate::{
     traits::GetName,
-    ts_ast::{source_map::SourceMapped, AzleProgram},
+    ts_ast::{AzleProgram, SourceMapped},
 };
 
 pub trait GetFlattenedServiceClassDecls {

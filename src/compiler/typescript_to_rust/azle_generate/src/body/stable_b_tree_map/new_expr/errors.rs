@@ -4,7 +4,7 @@ use super::ArgName;
 use crate::{
     errors::{ErrorMessage, Suggestion},
     traits::GetSourceInfo,
-    ts_ast::source_map::SourceMapped,
+    ts_ast::SourceMapped,
 };
 
 impl SourceMapped<'_, NewExpr> {

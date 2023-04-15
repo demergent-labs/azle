@@ -2,7 +2,7 @@ use cdk_framework::act::node::GuardFunction;
 use std::ops::Deref;
 use swc_ecma_ast::FnDecl;
 
-use crate::{traits::GetName, ts_ast::source_map::SourceMapped, TsAst};
+use crate::{traits::GetName, ts_ast::SourceMapped, TsAst};
 use get_fn_decls::GetProgramFnDecls;
 
 mod get_fn_decls;

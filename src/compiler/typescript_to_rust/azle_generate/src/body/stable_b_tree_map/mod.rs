@@ -3,7 +3,7 @@ use swc_ecma_ast::{Decl, Expr, Program};
 
 use crate::{
     traits::GetName,
-    ts_ast::{source_map::SourceMapped, AzleProgram, TsAst},
+    ts_ast::{AzleProgram, SourceMapped, TsAst},
 };
 use module_item::AsDecl;
 

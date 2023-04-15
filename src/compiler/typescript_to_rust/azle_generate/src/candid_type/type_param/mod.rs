@@ -1,7 +1,7 @@
 use cdk_framework::{act::node::candid::TypeParam, traits::ToIdent};
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use crate::{traits::GetName, ts_ast::source_map::SourceMapped};
+use crate::{traits::GetName, ts_ast::SourceMapped};
 use quote::quote;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {

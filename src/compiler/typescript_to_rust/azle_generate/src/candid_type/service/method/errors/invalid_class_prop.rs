@@ -3,7 +3,7 @@ use swc_ecma_ast::{ClassDecl, ClassProp};
 use crate::{
     errors::service_method::ParseError,
     traits::{GetName, GetSourceFileInfo},
-    ts_ast::source_map::SourceMapped,
+    ts_ast::SourceMapped,
 };
 
 impl SourceMapped<'_, ClassDecl> {

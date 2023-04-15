@@ -3,7 +3,7 @@ use swc_ecma_ast::ClassDecl;
 
 use crate::{
     traits::GetName,
-    ts_ast::{source_map::SourceMapped, TsAst},
+    ts_ast::{SourceMapped, TsAst},
 };
 use get_service_class_decls::GetFlattenedServiceClassDecls;
 use vm_value_conversions::{from_vm_value, list_from_vm_value, list_to_vm_value, to_vm_value};

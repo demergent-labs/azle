@@ -1,7 +1,7 @@
 use cdk_framework::act::node::candid::service::Method;
 use swc_ecma_ast::{ClassDecl, ClassMember};
 
-use crate::ts_ast::source_map::SourceMapped;
+use crate::ts_ast::SourceMapped;
 
 mod errors;
 mod to_service_method;
