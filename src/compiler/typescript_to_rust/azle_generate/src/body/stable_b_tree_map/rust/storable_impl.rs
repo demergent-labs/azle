@@ -7,7 +7,7 @@ pub fn generate(wrapper_type_name: &Ident) -> TokenStream {
                 std::borrow::Cow::Owned(candid::Encode!(self).unwrap())
             }
 
-            fn from_bytes(bytes: Vec<u8>) -> Self {
+            fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
                 candid::Decode!(&bytes, Self).unwrap()
             }
         }

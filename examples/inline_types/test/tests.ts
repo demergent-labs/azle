@@ -292,20 +292,8 @@ export function getTests(inlineTypesCanister: ActorSubclass<_SERVICE>): Test[] {
                     }
                 );
 
-                if (!ok(result)) {
-                    if ('ValueTooLarge' in result.Err) {
-                        return {
-                            Err: `InsertError::ValueTooLarge Expected value to be <= ${result.Err.ValueTooLarge.max} bytes but received value with ${result.Err.ValueTooLarge.given} bytes.`
-                        };
-                    } else {
-                        return {
-                            Err: `InsertError::KeyTooLarge Expected key to be <= ${result.Err.KeyTooLarge.max} bytes but received key with ${result.Err.KeyTooLarge.given} bytes.`
-                        };
-                    }
-                }
-
                 return {
-                    Ok: Array.isArray(result.Ok) && result.Ok.length == 0
+                    Ok: Array.isArray(result) && result.length == 0
                 };
             }
         },

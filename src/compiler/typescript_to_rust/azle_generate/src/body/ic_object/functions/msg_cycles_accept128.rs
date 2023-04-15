@@ -6,9 +6,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             let max_amount: u128 = aargs[0].clone().try_from_vm_value(context).unwrap();
-            // TODO: This extra conversion may not be necessary once
-            // https://github.com/boa-dev/boa/issues/1970 is implemented.
-            let return_value: boa_engine::bigint::JsBigInt = ic_cdk::api::call::msg_cycles_accept128(max_amount).into();
+            let return_value = boa_engine::bigint::JsBigInt::new(boa_engine::bigint::RawBigInt::from(ic_cdk::api::call::msg_cycles_accept128(max_amount)));
             Ok(return_value.into())
         }
     }

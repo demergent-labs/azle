@@ -1,27 +1,26 @@
 pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
-        impl<T> CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for (T,)
+        impl<T> CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for (T,)
         where
-            T : for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>,
+            T : for<'a, 'b> CdkActTryIntoVmValue<&'a mut boa_engine::Context<'b>, boa_engine::JsValue>,
         {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Ok(self.0.try_into_vm_value(context).unwrap())
             }
         }
 
-        impl<T> CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Box<T>
+        impl<T> CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Box<T>
         where
-            T : for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>,
+            T : for<'a, 'b> CdkActTryIntoVmValue<&'a mut boa_engine::Context<'b>, boa_engine::JsValue>,
         {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Ok((*self).try_into_vm_value(context).unwrap())
             }
         }
 
-        // TODO I wonder if we will have some problems with Option because of the type bound??
-        impl<T> CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Option<T>
+        impl<T> CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Option<T>
         where
-            T: for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>
+            T: for<'a, 'b> CdkActTryIntoVmValue<&'a mut boa_engine::Context<'b>, boa_engine::JsValue>
         {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {
@@ -31,10 +30,10 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl<T, K> CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Result<T, K>
+        impl<T, K> CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Result<T, K>
         where
-            T: for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>,
-            K: for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>
+            T: for<'a, 'b> CdkActTryIntoVmValue<&'a mut boa_engine::Context<'b>, boa_engine::JsValue>,
+            K: for<'a, 'b> CdkActTryIntoVmValue<&'a mut boa_engine::Context<'b>, boa_engine::JsValue>
         {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {

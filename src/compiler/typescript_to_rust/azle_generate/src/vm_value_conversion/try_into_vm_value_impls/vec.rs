@@ -26,7 +26,11 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         impl AzleTryIntoVec for f64 {}
 
+        impl AzleTryIntoVec for _CdkFloat64 {}
+
         impl AzleTryIntoVec for f32 {}
+
+        impl AzleTryIntoVec for _CdkFloat32 {}
 
         impl AzleTryIntoVec for ic_cdk::export::candid::Int {}
 
@@ -56,26 +60,29 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         impl<T> AzleTryIntoVec for Vec<T> {}
 
-        impl<T> CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<T>
+        impl<T> CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Vec<T>
         where
             T: AzleTryIntoVec,
-            T: for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>
+            T: for<'a, 'b> CdkActTryIntoVmValue<&'a mut boa_engine::Context<'b>, boa_engine::JsValue>
         {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 _azle_try_into_vm_value_generic_array(self, context)
             }
         }
 
-        // TODO in the future maybe the other number types can be optimized like this (optimization implementation is currently in boa From trait impl)
-        impl CdkActTryIntoVmValue<&mut boa_engine::Context, boa_engine::JsValue> for Vec<u8> {
+        // TODO in the future maybe the other number types can be optimized like this
+        impl CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Vec<u8> {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                Ok(self.into())
+                let js_array_buffer = boa_engine::object::builtins::JsArrayBuffer::from_byte_block(self, context).unwrap();
+                let js_uint8_array = boa_engine::object::builtins::JsUint8Array::from_array_buffer(js_array_buffer, context).unwrap();
+
+                Ok(js_uint8_array.into())
             }
         }
 
         fn _azle_try_into_vm_value_generic_array<T>(generic_array: Vec<T>, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError>
         where
-            T:  for<'a> CdkActTryIntoVmValue<&'a mut boa_engine::Context, boa_engine::JsValue>
+            T: for<'a, 'b> CdkActTryIntoVmValue<&'a mut boa_engine::Context<'b>, boa_engine::JsValue>
         {
             let js_values = generic_array.into_iter().map(|item| item.try_into_vm_value(context).unwrap()).collect::<Vec<boa_engine::JsValue>>();
             Ok(boa_engine::object::builtins::JsArray::from_iter(js_values, context).into())

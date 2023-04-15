@@ -7,14 +7,16 @@
 azle_version="$1"
 rust_version="$2"
 
-global_azle_config_dir=~/.config/azle/"$azle_version"
-global_azle_bin_dir="$global_azle_config_dir"/bin
+global_azle_config_dir=~/.config/azle
+global_azle_rust_dir="$global_azle_config_dir"/"$rust_version"
+global_azle_bin_dir="$global_azle_rust_dir"/bin
+global_azle_logs_dir="$global_azle_rust_dir"/logs
 global_azle_cargo_bin="$global_azle_bin_dir"/cargo
-global_azle_logs_dir="$global_azle_config_dir"/logs
 global_azle_rustup_bin="$global_azle_bin_dir"/rustup
 
-export CARGO_HOME="$global_azle_config_dir"
-export RUSTUP_HOME="$global_azle_config_dir"
+export CARGO_TARGET_DIR="$global_azle_config_dir"/target
+export CARGO_HOME="$global_azle_rust_dir"
+export RUSTUP_HOME="$global_azle_rust_dir"
 
 function run() {
     ic_wasm_already_installed=$(test -e "$global_azle_bin_dir"/ic-wasm; echo $?)
@@ -23,7 +25,7 @@ function run() {
     if [ "$ic_wasm_already_installed" -eq 1 ] || [ "$ic_cdk_optimizer_already_installed" -eq 1 ]; then
         echo -e "\nAzle "$azle_version" prerequisite installation (this may take a few minutes)\n"
 
-        mkdir -p "$global_azle_config_dir"
+        mkdir -p "$global_azle_rust_dir"
         mkdir -p "$global_azle_logs_dir"
 
         install_rustup

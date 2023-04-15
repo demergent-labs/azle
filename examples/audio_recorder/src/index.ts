@@ -1,8 +1,6 @@
 import {
     blob,
     ic,
-    InsertError,
-    match,
     nat64,
     Opt,
     Principal,
@@ -34,7 +32,7 @@ let users = new StableBTreeMap<Principal, User>(0, 38, 100_000);
 let recordings = new StableBTreeMap<Principal, Recording>(1, 38, 5_000_000);
 
 $update;
-export function createUser(username: string): Result<User, InsertError> {
+export function createUser(username: string): User {
     const id = generateId();
     const user: User = {
         id,
@@ -43,12 +41,9 @@ export function createUser(username: string): Result<User, InsertError> {
         username
     };
 
-    const result = users.insert(user.id, user);
+    users.insert(user.id, user);
 
-    return match(result, {
-        Ok: () => ({ Ok: user }),
-        Err: (err) => ({ Err: err })
-    });
+    return user;
 }
 
 $query;
@@ -97,7 +92,6 @@ export function createRecording(
 ): Result<
     Recording,
     Variant<{
-        InsertError: InsertError;
         UserDoesNotExist: Principal;
     }>
 > {
@@ -120,33 +114,18 @@ export function createRecording(
         userId
     };
 
-    const createRecordingResult = recordings.insert(recording.id, recording);
+    recordings.insert(recording.id, recording);
 
-    return match(createRecordingResult, {
-        Ok: () => {
-            const updatedUser: User = {
-                ...user,
-                recordingIds: [...user.recordingIds, recording.id]
-            };
-            const updateUserResult = users.insert(updatedUser.id, updatedUser);
+    const updatedUser: User = {
+        ...user,
+        recordingIds: [...user.recordingIds, recording.id]
+    };
 
-            return match(updateUserResult, {
-                Ok: () => ({
-                    Ok: recording
-                }),
-                Err: (err) => ({
-                    Err: {
-                        InsertError: err
-                    }
-                })
-            });
-        },
-        Err: (err) => ({
-            Err: {
-                InsertError: err
-            }
-        })
-    });
+    users.insert(updatedUser.id, updatedUser);
+
+    return {
+        Ok: recording
+    };
 }
 
 $query;
@@ -163,7 +142,6 @@ $update;
 export function deleteRecording(id: Principal): Result<
     Recording,
     Variant<{
-        InsertError: InsertError;
         RecordingDoesNotExist: Principal;
         UserDoesNotExist: Principal;
     }>
@@ -195,22 +173,13 @@ export function deleteRecording(id: Principal): Result<
         )
     };
 
-    const updateUserResult = users.insert(updatedUser.id, updatedUser);
+    users.insert(updatedUser.id, updatedUser);
 
-    return match(updateUserResult, {
-        Ok: () => {
-            recordings.remove(id);
+    recordings.remove(id);
 
-            return {
-                Ok: recording
-            };
-        },
-        Err: (err) => ({
-            Err: {
-                InsertError: err
-            }
-        })
-    });
+    return {
+        Ok: recording
+    };
 }
 
 function generateId(): Principal {

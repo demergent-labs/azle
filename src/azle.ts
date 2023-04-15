@@ -27,9 +27,10 @@ import { generateNewAzleProject } from './new';
 
 const GLOBAL_AZLE_CONFIG_DIR = path.resolve(
     require('os').homedir(),
-    `.config/azle/${version}`
+    `.config/azle`
 );
-const GLOBAL_AZLE_BIN_DIR = `${GLOBAL_AZLE_CONFIG_DIR}/bin`;
+const GLOBAL_AZLE_RUST_DIR = `${GLOBAL_AZLE_CONFIG_DIR}/${rust_version}`;
+const GLOBAL_AZLE_BIN_DIR = `${GLOBAL_AZLE_RUST_DIR}/bin`;
 const GLOBAL_AZLE_TARGET_DIR = `${GLOBAL_AZLE_CONFIG_DIR}/target`;
 
 azle();
@@ -116,13 +117,13 @@ function compileRustCode(
                 env: {
                     ...process.env,
                     CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
-                    CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
-                    RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
+                    CARGO_HOME: GLOBAL_AZLE_RUST_DIR,
+                    RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR
                 }
             }
         );
 
-        const wasmTargetFilePath = `${GLOBAL_AZLE_CONFIG_DIR}/target/wasm32-unknown-unknown/release/${canisterName}.wasm`;
+        const wasmTargetFilePath = `${GLOBAL_AZLE_TARGET_DIR}/wasm32-unknown-unknown/release/${canisterName}.wasm`;
 
         execSync(`cp ${wasmTargetFilePath} ${canisterPath}`);
     });
@@ -142,8 +143,8 @@ function optimize_rust_code(
                 env: {
                     ...process.env,
                     CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
-                    CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
-                    RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
+                    CARGO_HOME: GLOBAL_AZLE_RUST_DIR,
+                    RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR
                 }
             }
         );
@@ -505,8 +506,8 @@ function runAzleGenerate(
             env: {
                 ...process.env,
                 CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
-                CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
-                RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
+                CARGO_HOME: GLOBAL_AZLE_RUST_DIR,
+                RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR
             }
         }
     );
@@ -618,8 +619,8 @@ function runRustFmt(
             env: {
                 ...process.env,
                 CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
-                CARGO_HOME: GLOBAL_AZLE_CONFIG_DIR,
-                RUSTUP_HOME: GLOBAL_AZLE_CONFIG_DIR
+                CARGO_HOME: GLOBAL_AZLE_RUST_DIR,
+                RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR
             }
         }
     );

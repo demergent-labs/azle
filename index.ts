@@ -1,7 +1,7 @@
 import { Principal } from '@dfinity/principal';
 import { RequireExactlyOne, Variant } from './variant';
 
-export { StableBTreeMap, InsertError } from './src/stable_b_tree_map';
+export { StableBTreeMap } from './src/stable_b_tree_map';
 export { Variant } from './variant';
 export { match } from './variant';
 

@@ -68,11 +68,11 @@ fn generate_global_stable_b_tree_maps_and_impls(
                 quote! {
                     static #map_name_ident: std::cell::RefCell<
                         ic_stable_structures::StableBTreeMap<
+                            #key_wrapper_type_name,
+                            #value_wrapper_type_name,
                             ic_stable_structures::memory_manager::VirtualMemory<
                                 ic_stable_structures::DefaultMemoryImpl
-                            >,
-                            #key_wrapper_type_name,
-                            #value_wrapper_type_name
+                            >
                         >
                     > = std::cell::RefCell::new(ic_stable_structures::StableBTreeMap::init(
                         MEMORY_MANAGER_REF_CELL.with(|m| {
