@@ -7,8 +7,5 @@ type RejectionCode = variant {
   SysFatal;
   CanisterReject;
 };
-type _InlineSendNotificationReturnType = variant {
-  Ok : bool;
-  Err : RejectionCode;
-};
-service : () -> { sendNotification : () -> (_InlineSendNotificationReturnType) }
+type _AzleResult = variant { Ok; Err : RejectionCode };
+service : () -> { sendNotification : () -> (_AzleResult) }
