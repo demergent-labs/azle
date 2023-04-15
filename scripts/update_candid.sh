@@ -10,8 +10,9 @@ upgrade_candid()
 {
   npm install
   npm link azle
-  dfx canister create --all
-  dfx build
+  # dfx canister create --all # TODO we really only want to deploy the azle canisters
+  # dfx build
+  npm run pretest
 }
 
 upgrade_all()
@@ -19,7 +20,6 @@ upgrade_all()
 
 for dir in */; do
   echo "Looking at directory: $dir"
-  # check if dfx.json file exists in directory
   if [ -f "$dir/dfx.json" ]; then
     echo "Processing directory: $dir"
     cd $dir
