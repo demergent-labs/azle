@@ -36,7 +36,7 @@ export function generateLibCargoToml(canisterName: string): Toml {
         ic-cdk-timers = "0.1.2"
         ic-stable-structures = "0.5.2"
         candid = { version = "0.9.0-beta.3", features = ["parser"] }
-        boa_engine = { git = "https://github.com/boa-dev/boa", rev = "53bd4f86d48289d4d7a50168eb5e542a7e040e8f" }
+        boa_engine = { git = "https://github.com/boa-dev/boa", rev = "9dc4dd14100d82725453ef2d9f7a311aa4be6662" }
         # boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "2613202fdc2757691ba1a20e568e5b8740e0c233" }
         # boa_engine = { path = "/home/boa/boa_engine" }
         getrandom = { version = "0.2.3", features = ["custom"] }
@@ -276,7 +276,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_ast"
         version = "0.16.0"
-        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
+        source = "git+https://github.com/boa-dev/boa?rev=9dc4dd14100d82725453ef2d9f7a311aa4be6662#9dc4dd14100d82725453ef2d9f7a311aa4be6662"
         dependencies = [
         "bitflags 2.1.0",
         "boa_interner",
@@ -288,7 +288,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_engine"
         version = "0.16.0"
-        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
+        source = "git+https://github.com/boa-dev/boa?rev=9dc4dd14100d82725453ef2d9f7a311aa4be6662#9dc4dd14100d82725453ef2d9f7a311aa4be6662"
         dependencies = [
         "bitflags 2.1.0",
         "boa_ast",
@@ -324,7 +324,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_gc"
         version = "0.16.0"
-        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
+        source = "git+https://github.com/boa-dev/boa?rev=9dc4dd14100d82725453ef2d9f7a311aa4be6662#9dc4dd14100d82725453ef2d9f7a311aa4be6662"
         dependencies = [
         "boa_macros",
         "boa_profiler",
@@ -334,7 +334,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_interner"
         version = "0.16.0"
-        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
+        source = "git+https://github.com/boa-dev/boa?rev=9dc4dd14100d82725453ef2d9f7a311aa4be6662#9dc4dd14100d82725453ef2d9f7a311aa4be6662"
         dependencies = [
         "boa_macros",
         "hashbrown 0.13.2",
@@ -348,7 +348,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_macros"
         version = "0.16.0"
-        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
+        source = "git+https://github.com/boa-dev/boa?rev=9dc4dd14100d82725453ef2d9f7a311aa4be6662#9dc4dd14100d82725453ef2d9f7a311aa4be6662"
         dependencies = [
         "proc-macro2",
         "quote",
@@ -359,7 +359,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_parser"
         version = "0.16.0"
-        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
+        source = "git+https://github.com/boa-dev/boa?rev=9dc4dd14100d82725453ef2d9f7a311aa4be6662#9dc4dd14100d82725453ef2d9f7a311aa4be6662"
         dependencies = [
         "bitflags 2.1.0",
         "boa_ast",
@@ -377,12 +377,12 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "boa_profiler"
         version = "0.16.0"
-        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
+        source = "git+https://github.com/boa-dev/boa?rev=9dc4dd14100d82725453ef2d9f7a311aa4be6662#9dc4dd14100d82725453ef2d9f7a311aa4be6662"
         
         [[package]]
         name = "boa_unicode"
         version = "0.16.0"
-        source = "git+https://github.com/boa-dev/boa?rev=53bd4f86d48289d4d7a50168eb5e542a7e040e8f#53bd4f86d48289d4d7a50168eb5e542a7e040e8f"
+        source = "git+https://github.com/boa-dev/boa?rev=9dc4dd14100d82725453ef2d9f7a311aa4be6662#9dc4dd14100d82725453ef2d9f7a311aa4be6662"
         dependencies = [
         "unicode-general-category",
         ]
