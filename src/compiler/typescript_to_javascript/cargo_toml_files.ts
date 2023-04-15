@@ -35,7 +35,7 @@ export function generateLibCargoToml(canisterName: string): Toml {
         ic-cdk-macros = "0.6.10"
         ic-cdk-timers = "0.1.2"
         ic-stable-structures = "0.5.2"
-        candid = { version = "0.9.0-beta.2", features = ["parser"] }
+        candid = { version = "0.9.0-beta.3", features = ["parser"] }
         boa_engine = { git = "https://github.com/boa-dev/boa", rev = "53bd4f86d48289d4d7a50168eb5e542a7e040e8f" }
         # boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "2613202fdc2757691ba1a20e568e5b8740e0c233" }
         # boa_engine = { path = "/home/boa/boa_engine" }
@@ -491,7 +491,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "cdk_framework"
         version = "0.0.0"
-        source = "git+https://github.com/demergent-labs/cdk_framework?rev=61123bc8b4a94ae0fd80a4f710672d3cab3ca065#61123bc8b4a94ae0fd80a4f710672d3cab3ca065"
+        source = "git+https://github.com/demergent-labs/cdk_framework?rev=b45e239975d97a7d448ecda0e067f1aa6f8729cf#b45e239975d97a7d448ecda0e067f1aa6f8729cf"
         dependencies = [
         "proc-macro2",
         "quote",
