@@ -1,17 +1,11 @@
 use cdk_framework::act::node::candid::{variant::Member, Variant};
-use swc_ecma_ast::TsTypeAliasDecl;
+use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement};
 
 use crate::{
     errors::{ErrorMessage, Suggestion},
     ts_ast::{
-        azle_type::{
-            azle_type_lit::{
-                azle_type_element::azle_property_signature::AzlePropertySignature, AzleTypeElement,
-                AzleTypeLit,
-            },
-            AzleTypeRef,
-        },
-        source_map::{get_source_file_info::GetSourceFileInfo, SourceMapped},
+        azle_type::{azle_type_lit::AzleTypeLit, AzleTypeRef},
+        source_map::{GetSourceFileInfo, SourceMapped},
         traits::{GetName, GetSourceInfo, GetSpan, TypeToString},
     },
 };
@@ -52,10 +46,7 @@ impl AzleTypeLit<'_> {
             .ts_type_lit
             .members
             .iter()
-            .map(|member| {
-                AzleTypeElement::from_ts_type_element(member.clone(), self.source_map)
-                    .to_variant_member()
-            })
+            .map(|member| SourceMapped::new(member, self.source_map).to_variant_member())
             .collect();
 
         Variant {
@@ -66,9 +57,9 @@ impl AzleTypeLit<'_> {
     }
 }
 
-impl AzleTypeElement<'_> {
+impl SourceMapped<'_, TsTypeElement> {
     pub fn to_variant_member(&self) -> Member {
-        let ts_property_signature = match self.as_azle_property_signature() {
+        let ts_property_signature = match self.as_property_signature() {
             Some(ts_property_signature) => ts_property_signature,
             None => panic!("{}", self.variant_property_signature_error()),
         };
@@ -87,10 +78,10 @@ impl AzleTypeElement<'_> {
             suggestion: Some(Suggestion {
                 title: "Variant members must be properties".to_string(),
                 source: self
-                    .get_source_map()
+                    .source_map
                     .generate_modified_source(self.get_span(), &replacement),
                 range: self
-                    .get_source_map()
+                    .source_map
                     .generate_modified_range(self.get_span(), &replacement),
                 annotation: Some("For example".to_string()),
                 import_suggestion: None,
@@ -99,7 +90,7 @@ impl AzleTypeElement<'_> {
     }
 }
 
-impl AzlePropertySignature<'_> {
+impl SourceMapped<'_, TsPropertySignature> {
     pub(super) fn to_variant_member(&self) -> Member {
         Member {
             name: self.get_member_name(),

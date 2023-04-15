@@ -1,15 +1,14 @@
-use swc_ecma_ast::{TsEntityName, TsFnParam, TsType, TsTypeAnn};
+use swc_ecma_ast::{TsEntityName, TsFnParam, TsMethodSignature, TsType, TsTypeAnn};
 
-use super::AzleMethodSignature;
-use crate::ts_ast::{traits::Callable, traits::GetTsType, GetName};
+use crate::ts_ast::{source_map::SourceMapped, traits::Callable, traits::GetTsType, GetName};
 
-impl Callable for AzleMethodSignature<'_> {
+impl Callable for SourceMapped<'_, TsMethodSignature> {
     fn get_ts_fn_params(&self) -> Vec<TsFnParam> {
-        self.ts_method_signature.params.clone()
+        self.params.clone()
     }
 
     fn get_ts_type_ann(&self) -> TsTypeAnn {
-        match &self.ts_method_signature.type_ann {
+        match &self.type_ann {
             Some(type_ann) => type_ann.clone(),
             None => panic!("{}", self.no_type_annotation_error()),
         }

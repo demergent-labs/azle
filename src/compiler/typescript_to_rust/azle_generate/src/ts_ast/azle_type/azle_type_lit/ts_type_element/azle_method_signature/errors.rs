@@ -1,8 +1,10 @@
-use crate::{errors::ErrorMessage, ts_ast::traits::GetSourceInfo};
+use swc_ecma_ast::TsMethodSignature;
 
-use super::AzleMethodSignature;
+use crate::{
+    errors::ErrorMessage, ts_ast::source_map::SourceMapped, ts_ast::traits::GetSourceInfo,
+};
 
-impl AzleMethodSignature<'_> {
+impl SourceMapped<'_, TsMethodSignature> {
     pub(super) fn no_type_annotation_error(&self) -> ErrorMessage {
         ErrorMessage {
             title: "Type Annotation Needed".to_string(),
