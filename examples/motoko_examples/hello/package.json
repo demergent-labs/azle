@@ -18,7 +18,7 @@
         "test": "ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
-        "azle": "0.14.0"
+        "azle": "0.15.0"
     },
     "devDependencies": {
         "@dfinity/agent": "0.10.2",
