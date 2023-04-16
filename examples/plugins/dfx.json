@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "plugins": {
+            "type": "custom",
+            "build": "npx azle plugins",
+            "root": "src",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
+            "wasm": ".azle/plugins/plugins.wasm.gz",
+            "declarations": {
+                "output": "test/dfx_generated/plugins",
+                "node_compatibility": true
+            }
+        }
+    }
+}
