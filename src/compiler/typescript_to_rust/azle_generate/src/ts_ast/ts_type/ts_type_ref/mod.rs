@@ -7,6 +7,7 @@ use crate::ts_ast::SourceMapped;
 mod errors;
 mod get_name;
 mod get_span;
+mod to_candid_type;
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn get_ts_type(&self) -> SourceMapped<TsType> {
