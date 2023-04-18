@@ -5,8 +5,8 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 pub use source_map::SourceMapped;
 
-pub mod azle_type;
 pub mod source_map;
+pub mod ts_type;
 pub mod ts_type_element;
 
 pub struct AzleProgram {
