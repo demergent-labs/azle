@@ -1,6 +1,6 @@
 use swc_common::SourceMap;
 
-use crate::traits::{GetSourceFileInfo, GetSourceInfo, GetSpan};
+use crate::traits::{GetSourceFileInfo, GetSourceInfo, GetSourceText, GetSpan};
 
 pub struct SourceMapped<'a, T> {
     inner: &'a T,
@@ -49,5 +49,14 @@ where
 
     fn get_line_number(&self) -> usize {
         self.source_map.get_line_number(self.get_span())
+    }
+}
+
+impl<T> GetSourceText for SourceMapped<'_, T>
+where
+    T: GetSpan,
+{
+    fn get_source_text(&self) -> String {
+        self.source_map.get_text(self.get_span())
     }
 }

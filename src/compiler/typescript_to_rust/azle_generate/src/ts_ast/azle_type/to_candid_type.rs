@@ -1,7 +1,10 @@
+use std::ops::Deref;
+use swc_ecma_ast::TsFnOrConstructorType;
+
 use cdk_framework::act::node::CandidType;
 
 use super::AzleType;
-use crate::traits::GetSourceInfo;
+use crate::{traits::GetSourceInfo, ts_ast::SourceMapped};
 
 impl AzleType<'_> {
     pub fn to_candid_type(&self) -> CandidType {
@@ -24,11 +27,12 @@ impl AzleType<'_> {
 
                 panic!("Unexpected TsTupleType\n     at {}:{}:{}\n\nHelp: Try wrapping this with Tuple", origin, line_number, column_number)
             }
-            AzleType::AzleFnOrConstructorType(azle_fn_or_constructor_type) => {
-                match azle_fn_or_constructor_type {
-                    super::AzleFnOrConstructorType::AzleFnType(azle_fn_type) => {
-                        azle_fn_type.to_data_type()
+            AzleType::AzleFnOrConstructorType(fn_or_constructor) => {
+                match fn_or_constructor.deref() {
+                    TsFnOrConstructorType::TsFnType(ts_fn_type) => {
+                        SourceMapped::new(ts_fn_type, fn_or_constructor.source_map).to_candid_type()
                     }
+                    TsFnOrConstructorType::TsConstructorType(_) => todo!(),
                 }
             }
         }

@@ -1,15 +1,17 @@
-use swc_ecma_ast::{TsFnParam, TsType, TsTypeAnn};
+use swc_ecma_ast::{TsFnParam, TsFnType, TsType, TsTypeAnn};
 
-use super::AzleFnType;
-use crate::traits::{Callable, GetTsType};
+use crate::{
+    traits::{Callable, GetTsType},
+    ts_ast::SourceMapped,
+};
 
-impl Callable for AzleFnType<'_> {
+impl Callable for SourceMapped<'_, TsFnType> {
     fn get_ts_fn_params(&self) -> Vec<TsFnParam> {
-        self.ts_fn_type.params.clone()
+        self.params.clone()
     }
 
     fn get_ts_type_ann(&self) -> TsTypeAnn {
-        self.ts_fn_type.type_ann.clone()
+        self.type_ann.clone()
     }
 
     fn get_valid_return_types(&self) -> Vec<&str> {

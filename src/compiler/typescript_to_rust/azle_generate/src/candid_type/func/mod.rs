@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use cdk_framework::act::node::{candid::Func, node_parts::mode::Mode, CandidType};
 use swc_ecma_ast::{TsTypeAliasDecl, TsTypeAnn};
 
@@ -5,7 +7,7 @@ use crate::{
     traits::{Callable, GetName, GetTsType},
     ts_ast::{
         azle_type::{AzleType, AzleTypeRef},
-        AzleFnOrConstructorType, SourceMapped,
+        SourceMapped,
     },
 };
 
@@ -33,14 +35,17 @@ impl AzleTypeRef<'_> {
             _ => panic!("{}", self.wrong_enclosed_type_error()),
         };
 
-        let azle_fn_type = match request_type_type_ref.get_enclosed_azle_type() {
-            AzleType::AzleFnOrConstructorType(fn_or_const) => match fn_or_const {
-                AzleFnOrConstructorType::AzleFnType(ts_fn_type) => ts_fn_type,
+        let ts_fn_type = match request_type_type_ref.get_enclosed_azle_type() {
+            AzleType::AzleFnOrConstructorType(fn_or_const) => match fn_or_const.deref() {
+                swc_ecma_ast::TsFnOrConstructorType::TsFnType(ts_fn_type) => {
+                    SourceMapped::new(ts_fn_type, fn_or_const.source_map)
+                }
+                _ => panic!("{}", self.wrong_enclosed_type_error()), // TODO: Verify this is actually the correct error message
             },
             _ => panic!("{}", self.wrong_enclosed_type_error()),
         };
 
-        let params: Vec<CandidType> = azle_fn_type
+        let params: Vec<CandidType> = ts_fn_type
             .get_param_types()
             .iter()
             .map(|param| {
@@ -49,11 +54,9 @@ impl AzleTypeRef<'_> {
             })
             .collect();
 
-        let return_type = AzleType::from_ts_type(
-            azle_fn_type.get_ts_type_ann().get_ts_type(),
-            self.source_map,
-        )
-        .to_candid_type();
+        let return_type =
+            AzleType::from_ts_type(ts_fn_type.get_ts_type_ann().get_ts_type(), self.source_map)
+                .to_candid_type();
 
         let to_vm_value = |name: String| rust::generate_into_vm_value_impl(name);
         let list_to_vm_value = |name: String| rust::generate_list_into_vm_value_impl(name);
