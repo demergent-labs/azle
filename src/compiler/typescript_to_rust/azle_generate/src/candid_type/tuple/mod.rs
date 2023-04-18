@@ -9,10 +9,10 @@ use crate::{
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_tuple(&self) -> Option<Tuple> {
-        self.process_ts_type_ref("Tuple", |azle_type_ref| Tuple {
+        self.process_ts_type_ref("Tuple", |type_ref| Tuple {
             name: Some(self.id.get_name().to_string()),
             type_params: self.get_type_params().into(),
-            ..azle_type_ref.to_tuple()
+            ..type_ref.to_tuple()
         })
     }
 }

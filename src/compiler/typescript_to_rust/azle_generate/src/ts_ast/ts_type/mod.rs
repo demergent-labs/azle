@@ -1,16 +1,15 @@
 use std::ops::Deref;
-
-use swc_ecma_ast::{TsTupleType, TsType, TsTypeLit, TsTypeRef};
+use swc_ecma_ast::{TsTupleType, TsType, TsTypeLit};
 
 use crate::ts_ast::SourceMapped;
 
-mod errors;
+mod get_span;
 mod to_candid_type;
 mod ts_fn_or_constructor_type;
 mod ts_keyword_type;
+mod ts_type_lit;
 mod ts_type_ref;
-
-pub mod ts_type_lit;
+mod type_to_string;
 
 impl<'a> SourceMapped<'a, TsType> {
     pub fn as_ts_type_lit(&'a self) -> Option<SourceMapped<'a, TsTypeLit>> {
@@ -23,13 +22,6 @@ impl<'a> SourceMapped<'a, TsType> {
     pub fn as_ts_tuple_type(&'a self) -> Option<SourceMapped<'a, TsTupleType>> {
         match self.deref() {
             TsType::TsTupleType(tuple_type) => Some(SourceMapped::new(tuple_type, self.source_map)),
-            _ => None,
-        }
-    }
-
-    pub fn as_ts_type_ref(&'a self) -> Option<SourceMapped<'a, TsTypeRef>> {
-        match self.deref() {
-            TsType::TsTypeRef(type_ref) => Some(SourceMapped::new(type_ref, self.source_map)),
             _ => None,
         }
     }

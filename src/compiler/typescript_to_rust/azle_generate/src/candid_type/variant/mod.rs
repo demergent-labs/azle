@@ -9,7 +9,7 @@ use crate::{
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_variant(&self) -> Option<Variant> {
-        self.process_ts_type_ref("Variant", |azle_type_ref| {
+        self.process_ts_type_ref("Variant", |type_ref| {
             // TODO this should be undone once we put all user-defined types in their own module
             let name_string = self.id.get_name().to_string();
             let name = Some(if name_string == "Result" {
@@ -21,7 +21,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
             Variant {
                 name,
                 type_params: self.get_type_params().into(),
-                ..azle_type_ref.to_variant()
+                ..type_ref.to_variant()
             }
         })
     }

@@ -9,10 +9,10 @@ use crate::{
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_record(&self) -> Option<Record> {
-        self.process_ts_type_ref("Record", |azle_type_ref| Record {
+        self.process_ts_type_ref("Record", |type_ref| Record {
             name: Some(self.id.get_name().to_string()),
             type_params: self.get_type_params().into(),
-            ..azle_type_ref.to_record()
+            ..type_ref.to_record()
         })
     }
 }

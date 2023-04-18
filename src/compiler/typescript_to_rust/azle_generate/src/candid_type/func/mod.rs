@@ -1,6 +1,6 @@
 use cdk_framework::act::node::{candid::Func, node_parts::mode::Mode, CandidType};
 use std::ops::Deref;
-use swc_ecma_ast::{TsType, TsTypeAliasDecl, TsTypeAnn, TsTypeRef};
+use swc_ecma_ast::{TsFnOrConstructorType, TsType, TsTypeAliasDecl, TsTypeAnn, TsTypeRef};
 
 use crate::{
     traits::{Callable, GetName, GetTsType},
@@ -34,12 +34,9 @@ impl SourceMapped<'_, TsTypeRef> {
 
         let ts_type = request_type_type_ref.get_ts_type();
         let ts_fn_type = match ts_type.deref() {
-            TsType::TsFnOrConstructorType(fn_or_const) => match fn_or_const {
-                swc_ecma_ast::TsFnOrConstructorType::TsFnType(ts_fn_type) => {
-                    SourceMapped::new(ts_fn_type, self.source_map)
-                }
-                _ => panic!("{}", self.wrong_enclosed_type_error()), // TODO: Verify this is actually the correct error message
-            },
+            TsType::TsFnOrConstructorType(TsFnOrConstructorType::TsFnType(ts_fn_type)) => {
+                SourceMapped::new(ts_fn_type, self.source_map)
+            }
             _ => panic!("{}", self.wrong_enclosed_type_error()),
         };
 
