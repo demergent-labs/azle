@@ -1,13 +1,10 @@
 use cdk_framework::act::node::candid::{record::Member, Record};
-use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement};
+use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
 use crate::{
     errors::{ErrorMessage, Suggestion},
     traits::{GetName, GetSourceFileInfo, GetSourceInfo, GetSpan, TypeToString},
-    ts_ast::{
-        azle_type::{AzleTypeLit, AzleTypeRef},
-        SourceMapped,
-    },
+    ts_ast::SourceMapped,
 };
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
@@ -20,9 +17,9 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
     }
 }
 
-impl AzleTypeRef<'_> {
+impl SourceMapped<'_, TsTypeRef> {
     pub fn to_record(&self) -> Record {
-        match self.get_enclosed_azle_type().as_azle_type_lit() {
+        match self.get_enclosed_azle_type().as_ts_type_lit() {
             Some(ts_type_lit) => ts_type_lit,
             None => panic!("{}", self.wrong_enclosed_type_error()),
         }
@@ -30,10 +27,9 @@ impl AzleTypeRef<'_> {
     }
 }
 
-impl AzleTypeLit<'_> {
+impl SourceMapped<'_, TsTypeLit> {
     pub fn to_record(&self) -> Record {
         let members: Vec<Member> = self
-            .ts_type_lit
             .members
             .iter()
             .map(|member| SourceMapped::new(member, self.source_map).to_record_member())

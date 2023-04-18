@@ -1,11 +1,11 @@
-use swc_ecma_ast::TsKeywordTypeKind;
-
-use super::AzleKeywordType;
 use cdk_framework::act::node::{candid::Primitive, CandidType};
+use swc_ecma_ast::{TsKeywordType, TsKeywordTypeKind};
 
-impl AzleKeywordType<'_> {
-    pub fn to_data_type(&self) -> CandidType {
-        match self.ts_keyword_type.kind {
+use crate::ts_ast::SourceMapped;
+
+impl SourceMapped<'_, TsKeywordType> {
+    pub fn to_candid_type(&self) -> CandidType {
+        match self.kind {
             TsKeywordTypeKind::TsBooleanKeyword => CandidType::Primitive(Primitive::Bool),
             TsKeywordTypeKind::TsStringKeyword => CandidType::Primitive(Primitive::String),
             TsKeywordTypeKind::TsVoidKeyword => CandidType::Primitive(Primitive::Void),

@@ -1,14 +1,10 @@
-use std::ops::Deref;
-
 use cdk_framework::act::node::{candid::Func, node_parts::mode::Mode, CandidType};
-use swc_ecma_ast::{TsTypeAliasDecl, TsTypeAnn};
+use std::ops::Deref;
+use swc_ecma_ast::{TsTypeAliasDecl, TsTypeAnn, TsTypeRef};
 
 use crate::{
     traits::{Callable, GetName, GetTsType},
-    ts_ast::{
-        azle_type::{AzleType, AzleTypeRef},
-        SourceMapped,
-    },
+    ts_ast::{azle_type::AzleType, SourceMapped},
 };
 
 mod rust;
@@ -21,7 +17,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
     }
 }
 
-impl AzleTypeRef<'_> {
+impl SourceMapped<'_, TsTypeRef> {
     pub fn to_func(&self, name: Option<String>) -> Func {
         let request_type_type_ref = match self.get_enclosed_azle_type() {
             AzleType::AzleTypeRef(azle_type_ref) => azle_type_ref,

@@ -1,10 +1,7 @@
 use cdk_framework::act::node::candid::TypeAlias;
-use swc_ecma_ast::{TsType, TsTypeAliasDecl};
+use swc_ecma_ast::{TsType, TsTypeAliasDecl, TsTypeRef};
 
-use crate::{
-    traits::GetName,
-    ts_ast::{azle_type::AzleTypeRef, SourceMapped},
-};
+use crate::{traits::GetName, ts_ast::SourceMapped};
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_type_alias(&self) -> Option<TypeAlias> {
@@ -23,17 +20,14 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
     pub fn process_ts_type_ref<F, T>(&self, type_name: &str, handler: F) -> Option<T>
     where
-        F: Fn(AzleTypeRef) -> T,
+        F: Fn(SourceMapped<TsTypeRef>) -> T,
     {
         match &*self.type_ann {
             TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
                 swc_ecma_ast::TsEntityName::TsQualifiedName(_) => None,
                 swc_ecma_ast::TsEntityName::Ident(ident) => {
                     if ident.get_name() == type_name {
-                        let azle_type_ref = AzleTypeRef {
-                            ts_type_ref: ts_type_ref.clone(),
-                            source_map: self.source_map,
-                        };
+                        let azle_type_ref = SourceMapped::new(ts_type_ref, self.source_map);
                         Some(handler(azle_type_ref))
                     } else {
                         None

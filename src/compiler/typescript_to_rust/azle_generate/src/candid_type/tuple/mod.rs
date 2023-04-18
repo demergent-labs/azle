@@ -1,13 +1,10 @@
 use cdk_framework::act::node::candid::{tuple::Elem, Tuple};
 use swc_common::SourceMap;
-use swc_ecma_ast::{TsTupleType, TsTypeAliasDecl};
+use swc_ecma_ast::{TsTupleType, TsTypeAliasDecl, TsTypeRef};
 
 use crate::{
     traits::{GetName, GetSourceFileInfo, GetSourceInfo, GetSourceText},
-    ts_ast::{
-        azle_type::{AzleType, AzleTypeRef},
-        SourceMapped,
-    },
+    ts_ast::{azle_type::AzleType, SourceMapped},
 };
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
@@ -20,7 +17,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
     }
 }
 
-impl AzleTypeRef<'_> {
+impl SourceMapped<'_, TsTypeRef> {
     pub fn to_tuple(&self) -> Tuple {
         match self.get_enclosed_azle_type().as_azle_tuple_type() {
             Some(ts_tuple_type) => ts_tuple_type,

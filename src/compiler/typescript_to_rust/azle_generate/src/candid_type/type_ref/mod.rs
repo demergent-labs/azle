@@ -1,13 +1,14 @@
 use cdk_framework::act::node::candid::{TypeArg, TypeRef};
+use swc_ecma_ast::TsTypeRef;
 
 use crate::{
     traits::GetName,
-    ts_ast::azle_type::{AzleType, AzleTypeRef},
+    ts_ast::{azle_type::AzleType, SourceMapped},
 };
 
-impl AzleTypeRef<'_> {
+impl SourceMapped<'_, TsTypeRef> {
     pub fn to_type_ref(&self) -> TypeRef {
-        let type_arguments = if let Some(type_params) = &self.ts_type_ref.type_params {
+        let type_arguments = if let Some(type_params) = &self.type_params {
             type_params
                 .params
                 .iter()

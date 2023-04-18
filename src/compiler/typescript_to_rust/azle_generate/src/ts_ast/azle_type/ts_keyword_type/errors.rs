@@ -1,14 +1,14 @@
-use swc_ecma_ast::TsKeywordTypeKind;
+use swc_ecma_ast::{TsKeywordType, TsKeywordTypeKind};
 
-use super::AzleKeywordType;
 use crate::{
     errors::{ErrorMessage, Suggestion},
     traits::{GetSourceFileInfo, GetSourceInfo, GetSourceText},
+    ts_ast::SourceMapped,
 };
 
-impl AzleKeywordType<'_> {
+impl SourceMapped<'_, TsKeywordType> {
     pub(super) fn unsupported_type_error(&self) -> ErrorMessage {
-        match &self.ts_keyword_type.kind {
+        match &self.kind {
             TsKeywordTypeKind::TsBigIntKeyword => self.bigint_not_supported_error(),
             TsKeywordTypeKind::TsObjectKeyword => self.keyword_not_supported_error(),
             TsKeywordTypeKind::TsNeverKeyword => self.keyword_not_supported_error(),
@@ -25,8 +25,8 @@ impl AzleKeywordType<'_> {
         let replacement = "int".to_string();
         let suggestion = Some(Suggestion {
             title: "`int` will cover most everything that `bigint` does. For more number type options see: https://internetcomputer.org/docs/current/references/candid-ref/#type-nat".to_string(),
-            range: self.source_map.generate_modified_range(self.ts_keyword_type.span, &replacement),
-            source: self.source_map.generate_modified_source(self.ts_keyword_type.span, &replacement),
+            range: self.source_map.generate_modified_range(self.span, &replacement),
+            source: self.source_map.generate_modified_source(self.span, &replacement),
             annotation: Some("Try using `int` here.".to_string()),
             import_suggestion: Some("import { int } from 'azle';".to_string()),
         });

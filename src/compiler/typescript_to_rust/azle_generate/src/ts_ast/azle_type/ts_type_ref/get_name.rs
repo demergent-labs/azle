@@ -1,11 +1,10 @@
-use swc_ecma_ast::TsEntityName;
+use swc_ecma_ast::{TsEntityName, TsTypeRef};
 
-use super::AzleTypeRef;
-use crate::ts_ast::GetName;
+use crate::{traits::GetName, ts_ast::SourceMapped};
 
-impl GetName for AzleTypeRef<'_> {
+impl GetName for SourceMapped<'_, TsTypeRef> {
     fn get_name(&self) -> &str {
-        match &self.ts_type_ref.type_name {
+        match &self.type_name {
             TsEntityName::TsQualifiedName(ts_qualified_name) => {
                 // TODO: This could be improved for Qualified TypeRefs with type params.
                 // Currently we just drop the type params. It would be better if we

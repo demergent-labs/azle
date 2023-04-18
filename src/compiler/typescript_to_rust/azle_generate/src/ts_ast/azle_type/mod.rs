@@ -1,35 +1,32 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::TsFnOrConstructorType;
-use swc_ecma_ast::TsType;
+use swc_ecma_ast::{TsFnOrConstructorType, TsKeywordType, TsType, TsTypeLit, TsTypeRef};
 
 use crate::{candid_type::tuple::AzleTupleType, ts_ast::SourceMapped};
 
-pub use azle_keyword_type::AzleKeywordType;
-pub use azle_type_lit::AzleTypeLit;
-pub use azle_type_ref::AzleTypeRef;
-
-mod azle_keyword_type;
-mod azle_type_ref;
 mod errors;
 mod get_source_info;
 mod to_candid_type;
 mod ts_fn_or_constructor_type;
+mod ts_keyword_type;
+mod ts_type_ref;
 
-pub mod azle_type_lit;
+pub mod ts_type_lit;
 
 #[derive(Clone)]
 pub enum AzleType<'a> {
-    AzleKeywordType(AzleKeywordType<'a>),
-    AzleTypeRef(AzleTypeRef<'a>),
-    AzleTypeLit(AzleTypeLit<'a>),
+    AzleKeywordType(SourceMapped<'a, TsKeywordType>),
+    AzleTypeLit(SourceMapped<'a, TsTypeLit>),
+    AzleTypeRef(SourceMapped<'a, TsTypeRef>),
     AzleFnOrConstructorType(SourceMapped<'a, TsFnOrConstructorType>),
     AzleTupleType(AzleTupleType<'a>),
 }
 
 impl<'a> AzleType<'a> {
-    pub fn as_azle_type_lit(self) -> Option<AzleTypeLit<'a>> {
+    pub fn as_ts_type_lit(self) -> Option<SourceMapped<'a, TsTypeLit>> {
         match self {
-            AzleType::AzleTypeLit(azle_type_lit) => Some(azle_type_lit),
+            AzleType::AzleTypeLit(ts_type_lit) => {
+                Some(SourceMapped::new(&ts_type_lit, self.source_map))
+            }
             _ => None,
         }
     }
@@ -70,24 +67,21 @@ impl<'a> AzleType<'a> {
 impl AzleType<'_> {
     pub fn from_ts_type(ts_type: TsType, source_map: &SourceMap) -> AzleType {
         match ts_type {
-            TsType::TsKeywordType(ts_keyword_type) => AzleType::AzleKeywordType(AzleKeywordType {
-                ts_keyword_type,
-                source_map,
-            }),
+            TsType::TsKeywordType(ts_keyword_type) => {
+                AzleType::AzleKeywordType(SourceMapped::new(&ts_keyword_type, source_map))
+            }
             TsType::TsFnOrConstructorType(ts_fn_or_constructor_type) => {
                 AzleType::AzleFnOrConstructorType(SourceMapped::new(
                     &ts_fn_or_constructor_type,
                     source_map,
                 ))
             }
-            TsType::TsTypeRef(ts_type_ref) => AzleType::AzleTypeRef(AzleTypeRef {
-                ts_type_ref,
-                source_map,
-            }),
-            TsType::TsTypeLit(ts_type_lit) => AzleType::AzleTypeLit(AzleTypeLit {
-                ts_type_lit,
-                source_map,
-            }),
+            TsType::TsTypeRef(ts_type_ref) => {
+                AzleType::AzleTypeRef(SourceMapped::new(&ts_type_ref, source_map))
+            }
+            TsType::TsTypeLit(ts_type_lit) => {
+                AzleType::AzleTypeLit(SourceMapped::new(&ts_type_lit, source_map))
+            }
             TsType::TsTupleType(ts_tuple_type) => AzleType::AzleTupleType(AzleTupleType {
                 ts_tuple_type,
                 source_map,

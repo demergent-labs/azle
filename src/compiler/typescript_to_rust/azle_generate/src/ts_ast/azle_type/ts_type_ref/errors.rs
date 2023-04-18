@@ -1,13 +1,13 @@
 use swc_common::{source_map::Pos, Span};
 use swc_ecma_ast::{TsType, TsTypeRef};
 
-use super::AzleTypeRef;
 use crate::{
     errors::{ErrorMessage, Suggestion},
     traits::{GetName, GetSourceFileInfo, GetSourceInfo, GetSourceText, GetSpan},
+    ts_ast::SourceMapped,
 };
 
-impl AzleTypeRef<'_> {
+impl SourceMapped<'_, TsTypeRef> {
     pub(super) fn wrong_number_of_params_error(&self) -> ErrorMessage {
         match self.get_name() {
             "Canister" => self.canister_wrong_number_of_params_error(),
@@ -39,10 +39,10 @@ impl AzleTypeRef<'_> {
                     .to_string(),
                 source: self
                     .source_map
-                    .generate_modified_source(self.ts_type_ref.span, &unqualified_name),
+                    .generate_modified_source(self.span, &unqualified_name),
                 range: self
                     .source_map
-                    .generate_modified_range(self.ts_type_ref.span, &unqualified_name),
+                    .generate_modified_range(self.span, &unqualified_name),
                 annotation: Some("Use type directly here".to_string()),
                 import_suggestion: None,
             }),
@@ -54,7 +54,7 @@ impl AzleTypeRef<'_> {
         let modified_source = self
             .source_map
             .generate_modified_source(self.get_enclosed_span(), &example);
-        let annotation = if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
+        let annotation = if self.get_enclosed_ts_types().len() == 0 {
             "Needs to have an enclosed type here."
         } else {
             "Only one enclosed type allowed here."
@@ -84,12 +84,12 @@ impl AzleTypeRef<'_> {
         let modified_source = self
             .source_map
             .generate_modified_source(self.get_enclosed_span(), &example_func);
-        let annotation = if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
+        let annotation = if self.get_enclosed_ts_types().len() == 0 {
             "Needs to have an enclosed type here."
         } else {
             "Only one enclosed type allowed here."
         };
-        let suggestion_annotation = if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
+        let suggestion_annotation = if self.get_enclosed_ts_types().len() == 0 {
             "If the func has no parameters or return type then you could do this."
         } else {
             "Did you mean to have multiple parameters?"
@@ -119,12 +119,12 @@ impl AzleTypeRef<'_> {
         let modified_source = self
             .source_map
             .generate_modified_source(self.get_enclosed_span(), &example_option);
-        let annotation = if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
+        let annotation = if self.get_enclosed_ts_types().len() == 0 {
             "Needs to have an enclosed type here."
         } else {
             "Only one enclosed type allowed here."
         };
-        let suggestion_annotation = if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
+        let suggestion_annotation = if self.get_enclosed_ts_types().len() == 0 {
             "For example if you want an optional boolean value, enclose boolean with Opt"
         } else {
             "Try wrapping everything in a type literal"
@@ -154,12 +154,12 @@ impl AzleTypeRef<'_> {
         let modified_source = self
             .source_map
             .generate_modified_source(self.get_enclosed_span(), &example);
-        let annotation = if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
+        let annotation = if self.get_enclosed_ts_types().len() == 0 {
             "Needs to have an enclosed type here."
         } else {
             "Only one enclosed type allowed here."
         };
-        let suggestion_annotation = if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
+        let suggestion_annotation = if self.get_enclosed_ts_types().len() == 0 {
             "The simplest Variant is a type literal with a single member with type null"
         } else {
             "Try wrapping everything in a type literal"
@@ -257,23 +257,21 @@ impl AzleTypeRef<'_> {
     }
 
     fn generate_example_option(&self) -> String {
-        if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
+        if self.get_enclosed_ts_types().len() == 0 {
             return format!("{}<boolean>", self.get_name());
         }
-        let enclosed_types: String = self
-            .ts_type_ref
-            .get_enclosed_ts_types()
-            .iter()
-            .enumerate()
-            .fold(String::new(), |acc, (index, enclosed_type)| {
+        let enclosed_types: String = self.get_enclosed_ts_types().iter().enumerate().fold(
+            String::new(),
+            |acc, (index, enclosed_type)| {
                 let source_text = self.source_map.get_text(enclosed_type.get_span());
                 format!("{}    member_name{}: {},\n", acc, index, source_text)
-            });
+            },
+        );
         format!("<{{\n{}\n}}>", enclosed_types)
     }
 
     fn generate_example_canister(&self) -> String {
-        if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
+        if self.get_enclosed_ts_types().len() == 0 {
             "Canister<{method(): CallResult<void>}>".to_string()
         } else {
             "<{method(): CallResult<void>}>".to_string()
@@ -281,36 +279,32 @@ impl AzleTypeRef<'_> {
     }
 
     fn generate_example_func(&self) -> String {
-        if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
+        if self.get_enclosed_ts_types().len() == 0 {
             "Func<Update<() => void>>".to_string()
         } else {
-            let enclosed_types = self
-                .ts_type_ref
-                .get_enclosed_ts_types()
-                .iter()
-                .enumerate()
-                .fold(String::new(), |acc, (index, enclosed_type)| {
+            let enclosed_types = self.get_enclosed_ts_types().iter().enumerate().fold(
+                String::new(),
+                |acc, (index, enclosed_type)| {
                     let source_text = self.source_map.get_text(enclosed_type.get_span());
                     format!("{}param_name{}: {}, ", acc, index, source_text)
-                });
+                },
+            );
             let enclosed_types = enclosed_types[..enclosed_types.len() - 2].to_string();
             format!("<Update<({}) => void>", enclosed_types)
         }
     }
 
     fn generate_example_variant(&self) -> String {
-        if self.ts_type_ref.get_enclosed_ts_types().len() == 0 {
+        if self.get_enclosed_ts_types().len() == 0 {
             format!("{}<{{variant_name: null}}>", self.get_name())
         } else {
-            let enclosed_type = self
-                .ts_type_ref
-                .get_enclosed_ts_types()
-                .iter()
-                .enumerate()
-                .fold(String::new(), |acc, (index, enclosed_type)| {
+            let enclosed_type = self.get_enclosed_ts_types().iter().enumerate().fold(
+                String::new(),
+                |acc, (index, enclosed_type)| {
                     let source_text = self.source_map.get_text(enclosed_type.get_span());
                     format!("{}    variant_name{}: {},\n", acc, index, source_text)
-                });
+                },
+            );
             let enclosed_type = enclosed_type[..enclosed_type.len() - 2].to_string();
             format!("<{{\n{}\n}}>", enclosed_type)
         }
@@ -319,9 +313,9 @@ impl AzleTypeRef<'_> {
     /// Returns the span of the enclosed type if it exists, otherwise returns
     /// the span of the enclosing type
     fn get_enclosed_span(&self) -> Span {
-        match &self.ts_type_ref.type_params {
+        match &self.type_params {
             Some(type_params) => type_params.span,
-            None => self.ts_type_ref.span,
+            None => self.span,
         }
     }
 }

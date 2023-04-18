@@ -1,8 +1,9 @@
 use cdk_framework::act::node::{candid::Primitive, CandidType};
+use swc_ecma_ast::TsTypeRef;
 
-use crate::{traits::GetName, ts_ast::azle_type::AzleTypeRef};
+use crate::{traits::GetName, ts_ast::SourceMapped};
 
-impl AzleTypeRef<'_> {
+impl SourceMapped<'_, TsTypeRef> {
     pub fn to_candid_type(&self) -> CandidType {
         match self.get_name() {
             "blob" => CandidType::Primitive(Primitive::Blob),
