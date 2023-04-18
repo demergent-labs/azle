@@ -4,6 +4,7 @@ use proc_macro2::TokenStream;
 use crate::ts_ast::TsAst;
 
 use body::stable_b_tree_map::StableBTreeMapNode;
+use plugin::Plugin;
 
 mod body;
 mod candid_type;
@@ -11,12 +12,17 @@ mod canister_method;
 mod errors;
 mod guard_function;
 mod header;
+pub mod plugin;
 mod ts_ast;
 mod ts_keywords;
 mod vm_value_conversion;
 
-pub fn generate_canister(ts_file_names: &Vec<&str>, main_js: String) -> TokenStream {
-    TsAst::new(&ts_file_names, main_js)
+pub fn generate_canister(
+    ts_file_names: &Vec<String>,
+    main_js: String,
+    plugins: &Vec<Plugin>,
+) -> TokenStream {
+    TsAst::new(ts_file_names, main_js, plugins)
         .to_act()
         .to_token_stream()
 }
@@ -30,6 +36,7 @@ impl TsAst {
             &canister_methods.query_methods,
             &canister_methods.update_methods,
             &candid_types.services,
+            &self.plugins,
         );
         let cdk_name = "azle".to_string();
         let guard_functions = self.build_guard_functions();

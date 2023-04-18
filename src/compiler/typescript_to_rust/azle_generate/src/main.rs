@@ -1,21 +1,24 @@
-use azle_generate::generate_canister;
+use azle_generate::{generate_canister, plugin::Plugin};
+use serde::{Deserialize, Serialize};
 
-// TODO I think we can just base64 encode our arguments and then decode them here as necessary
-// TODO the ts_file_names can be decoded appropriately
+#[derive(Debug, Serialize, Deserialize)]
+struct CompilerInfo {
+    plugins: Vec<Plugin>,
+    file_names: Vec<String>,
+}
 
-// TODO Will we run into too many problems trying to send a large amount of data as a parameter on the commandline?
-// TODO maybe we should save the ts_file_names to file
 fn main() {
-    eprintln!("#AZLE_GENERATE_START");
     let args: Vec<String> = std::env::args().collect();
 
-    // TODO base64 might be better here?
-    let ts_file_names_string = &args[1];
-    let ts_file_names: Vec<&str> = ts_file_names_string.split(",").collect();
+    let compiler_info_path = &args[1];
+    let compiler_info_string = std::fs::read_to_string(compiler_info_path).unwrap();
+    let compiler_info: CompilerInfo = serde_json::from_str(&compiler_info_string).unwrap();
 
     let main_js = std::fs::read_to_string("src/main.js").unwrap();
 
-    let result = generate_canister(&ts_file_names, main_js);
+    let result = generate_canister(&compiler_info.file_names, main_js, &compiler_info.plugins);
 
+    // TODO let's fix this now too
+    // TODO let's really do this
     println!("{}", result);
 }

@@ -4,8 +4,9 @@ use cdk_framework::act::node::{
 };
 use proc_macro2::TokenStream;
 use quote::quote;
+use std::path::PathBuf;
 
-use crate::ts_ast::TsAst;
+use crate::{plugin::Plugin, ts_ast::TsAst};
 
 mod ic_object;
 
@@ -18,6 +19,7 @@ pub fn generate(
     query_methods: &Vec<QueryMethod>,
     update_methods: &Vec<UpdateMethod>,
     services: &Vec<Service>,
+    plugins: &Vec<Plugin>,
 ) -> TokenStream {
     let stable_b_tree_map_nodes = ts_ast.build_stable_b_tree_map_nodes();
 
@@ -45,11 +47,21 @@ pub fn generate(
 
     let stable_b_tree_maps = stable_b_tree_map::rust::generate(&stable_b_tree_map_nodes);
 
+    let plugins_code = plugins.iter().map(|plugin| {
+        let plugin_code =
+            std::fs::read_to_string(PathBuf::from(&plugin.path).join("src").join("lib.rs"))
+                .unwrap();
+
+        let token_stream: proc_macro2::TokenStream = syn::parse_str(&plugin_code).unwrap();
+        token_stream
+    });
+
     quote! {
         #async_await_result_handler
         #boa_error_handlers
         #ic_object_functions
         #register_ic_object_function
         #stable_b_tree_maps
+        #(#plugins_code)*
     }
 }

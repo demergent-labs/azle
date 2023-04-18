@@ -21,6 +21,11 @@ export type JSCanisterConfig = Readonly<{
     wasm: string;
 }>;
 
+export type Plugin = {
+    path: string;
+    register_function: string;
+};
+
 export type RunOptions = {
     rootPath: string;
 };

@@ -1,0 +1,4 @@
+[dependencies]
+ic-sqlite = "0.1.0"
+rusqlite = { package = "rusqlite-ic", version = "0.28", features = ["bundled", "serde_json"]}
+hex = "0.4.3"

@@ -47,7 +47,16 @@ export {
 export { Oneway, Query, Update } from './candid_types/func';
 export { match } from './candid_types/variant';
 export { serviceQuery, serviceUpdate } from './candid_types/service';
-export { CallResult, FinalCallResult, GuardResult } from './results';
+export { CallResult, FinalCallResult, GuardResult, Result } from './results';
 export { StableBTreeMap } from './stable_b_tree_map';
 
 export type Manual<T> = void;
+
+export function registerPlugin(props: {
+    globalObjectName?: string;
+    rustRegisterFunctionName: string;
+}) {
+    if (props.globalObjectName !== undefined) {
+        return (globalThis as any)[props.globalObjectName] ?? {};
+    }
+}

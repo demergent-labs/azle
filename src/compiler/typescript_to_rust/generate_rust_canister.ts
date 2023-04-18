@@ -1,24 +1,41 @@
 import { spawnSync } from 'child_process';
 import { writeFileSync } from 'fs';
+import { join } from 'path';
 import {
-    GLOBAL_AZLE_CONFIG_DIR,
     GLOBAL_AZLE_BIN_DIR,
     GLOBAL_AZLE_RUST_DIR,
     GLOBAL_AZLE_TARGET_DIR
 } from '../utils';
 import { Err, ok, Ok, Result } from '../utils/result';
-import { AzleError, RunOptions, Rust } from '../utils/types';
+import { AzleError, Plugin, RunOptions, Rust } from '../utils/types';
 import { isVerboseMode } from '../utils';
 import { red } from '../utils/colors';
 
 export function generateRustCanister(
     fileNames: string[],
+    plugins: Plugin[],
     canisterPath: string,
     { rootPath }: RunOptions
 ): Result<undefined, AzleError> {
-    const azleGenerateResult = runAzleGenerate(fileNames, canisterPath, {
+    const compilerInfo = {
+        plugins,
+        file_names: fileNames
+    };
+
+    const compilerInfoPath = join(
+        canisterPath,
+        rootPath,
+        'azle_generate',
+        'compiler_info.json'
+    );
+
+    writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
+
+    const azleGenerateResult = runAzleGenerate(
+        'compiler_info.json',
+        canisterPath,
         rootPath
-    });
+    );
 
     if (!ok(azleGenerateResult)) {
         return Err(azleGenerateResult.err);
@@ -49,16 +66,16 @@ export function generateRustCanister(
 }
 
 function runAzleGenerate(
-    fileNames: string[],
+    compilerInfoPath: string,
     canisterPath: string,
-    { rootPath }: RunOptions
+    rootPath: string
 ): Result<Rust, AzleError> {
     if (isVerboseMode()) {
         console.info('running azle_generate');
     }
     const executionResult = spawnSync(
         `${GLOBAL_AZLE_BIN_DIR}/cargo`,
-        ['run', '--', fileNames.join(',')],
+        ['run', '--', compilerInfoPath],
         {
             cwd: `${canisterPath}/${rootPath}/azle_generate`,
             stdio: 'pipe',

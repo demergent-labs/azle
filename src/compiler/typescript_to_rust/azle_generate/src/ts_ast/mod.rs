@@ -3,7 +3,7 @@ use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Program, Stmt, TsTypeAliasDecl};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
-use crate::ts_ast::source_map::SourceMapped;
+use crate::{plugin::Plugin, ts_ast::source_map::SourceMapped};
 
 pub use azle_functions_and_methods::FunctionAndMethodTypeHelperMethods;
 pub use azle_type::AzleFnOrConstructorType;
@@ -31,10 +31,11 @@ pub struct AzleProgram {
 pub struct TsAst {
     pub azle_programs: Vec<AzleProgram>,
     pub main_js: String,
+    pub plugins: Vec<Plugin>,
 }
 
 impl TsAst {
-    pub fn new(ts_file_names: &Vec<&str>, main_js: String) -> Self {
+    pub fn new(ts_file_names: &Vec<String>, main_js: String, plugins: &Vec<Plugin>) -> Self {
         let azle_programs = ts_file_names
             .iter()
             .map(|ts_file_name| to_azle_program(ts_file_name))
@@ -43,6 +44,7 @@ impl TsAst {
         Self {
             azle_programs,
             main_js,
+            plugins: plugins.to_vec(),
         }
     }
 
