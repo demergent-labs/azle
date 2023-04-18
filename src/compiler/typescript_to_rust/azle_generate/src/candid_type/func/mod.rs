@@ -3,7 +3,7 @@ use std::ops::Deref;
 use swc_ecma_ast::{TsFnOrConstructorType, TsType, TsTypeAliasDecl, TsTypeAnn, TsTypeRef};
 
 use crate::{
-    traits::{Callable, GetName, GetTsType},
+    traits::{GetName, GetTsType},
     ts_ast::SourceMapped,
 };
 
