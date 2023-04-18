@@ -2,7 +2,7 @@ use swc_ecma_ast::TsPropertySignature;
 
 use crate::{
     traits::{GetName, GetTsType},
-    ts_ast::{azle_type::AzleType, SourceMapped},
+    ts_ast::SourceMapped,
 };
 use cdk_framework::act::node::CandidType;
 
@@ -23,7 +23,7 @@ impl SourceMapped<'_, TsPropertySignature> {
             Some(ts_type_ann) => ts_type_ann.get_ts_type(),
             None => panic!("{}", self.no_type_annotation_error()),
         };
-        let azle_type = AzleType::from_ts_type(ts_type, self.source_map);
-        azle_type.to_candid_type()
+
+        SourceMapped::new(&ts_type, self.source_map).to_candid_type()
     }
 }

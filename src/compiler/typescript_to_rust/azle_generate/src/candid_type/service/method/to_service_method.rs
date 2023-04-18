@@ -6,7 +6,7 @@ use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnParam, TsFnType, 
 use crate::{
     errors::service_method::ParseError,
     traits::{GetName, GetTsType},
-    ts_ast::{azle_type::AzleType, SourceMapped},
+    ts_ast::SourceMapped,
 };
 
 impl SourceMapped<'_, ClassProp> {
@@ -37,9 +37,8 @@ impl SourceMapped<'_, ClassProp> {
 
     fn build_return_type(&self) -> Result<CandidType, ParseError> {
         let return_ts_type = self.return_ts_type()?;
-        let azle_type = AzleType::from_ts_type(return_ts_type, self.source_map);
-        let act_data_type = azle_type.to_candid_type();
-        Ok(act_data_type)
+        let candid_type = SourceMapped::new(&return_ts_type, self.source_map).to_candid_type();
+        Ok(candid_type)
     }
 
     fn contains_decorator(&self, name: &str) -> bool {
@@ -147,9 +146,8 @@ impl SourceMapped<'_, TsFnType> {
                     let name = identifier.get_name().to_string();
                     let candid_type = match &identifier.type_ann {
                         Some(ts_type_ann) => {
-                            let azle_type =
-                                AzleType::from_ts_type(ts_type_ann.get_ts_type(), self.source_map);
-                            azle_type.to_candid_type()
+                            SourceMapped::new(&ts_type_ann.get_ts_type(), self.source_map)
+                                .to_candid_type()
                         }
                         None => panic!("Function parameters must have a type"),
                     };

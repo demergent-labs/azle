@@ -29,7 +29,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_variant(&self) -> Variant {
-        match self.get_enclosed_azle_type().as_ts_type_lit() {
+        match self.get_ts_type().as_ts_type_lit() {
             Some(ts_type_lit) => ts_type_lit,
             None => panic!("{}", self.wrong_enclosed_type_error()),
         }

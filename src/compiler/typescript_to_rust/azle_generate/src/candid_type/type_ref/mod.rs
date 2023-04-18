@@ -1,10 +1,9 @@
+use std::ops::Deref;
+
 use cdk_framework::act::node::candid::{TypeArg, TypeRef};
 use swc_ecma_ast::TsTypeRef;
 
-use crate::{
-    traits::GetName,
-    ts_ast::{azle_type::AzleType, SourceMapped},
-};
+use crate::{traits::GetName, ts_ast::SourceMapped};
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_type_ref(&self) -> TypeRef {
@@ -13,8 +12,7 @@ impl SourceMapped<'_, TsTypeRef> {
                 .params
                 .iter()
                 .map(|param| {
-                    let return_azle_type = AzleType::from_ts_type(*param.clone(), self.source_map);
-                    TypeArg(return_azle_type.to_candid_type())
+                    TypeArg(SourceMapped::new(param.deref(), self.source_map).to_candid_type())
                 })
                 .collect()
         } else {

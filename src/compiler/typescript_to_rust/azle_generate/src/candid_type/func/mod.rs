@@ -1,26 +1,27 @@
 use cdk_framework::act::node::{candid::Func, node_parts::mode::Mode, CandidType};
 use std::ops::Deref;
-use swc_ecma_ast::{TsTypeAliasDecl, TsTypeAnn, TsTypeRef};
+use swc_ecma_ast::{TsType, TsTypeAliasDecl, TsTypeAnn, TsTypeRef};
 
 use crate::{
     traits::{Callable, GetName, GetTsType},
-    ts_ast::{azle_type::AzleType, SourceMapped},
+    ts_ast::SourceMapped,
 };
 
 mod rust;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_func(&self) -> Option<Func> {
-        self.process_ts_type_ref("Func", |azle_type_ref| {
-            azle_type_ref.to_func(Some(self.id.get_name().to_string()))
+        self.process_ts_type_ref("Func", |ts_type_ref| {
+            ts_type_ref.to_func(Some(self.id.get_name().to_string()))
         })
     }
 }
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_func(&self, name: Option<String>) -> Func {
-        let request_type_type_ref = match self.get_enclosed_azle_type() {
-            AzleType::AzleTypeRef(azle_type_ref) => azle_type_ref,
+        let request_type_ts_type = self.get_ts_type();
+        let request_type_type_ref = match request_type_ts_type.deref() {
+            TsType::TsTypeRef(ts_type_ref) => SourceMapped::new(ts_type_ref, self.source_map),
             _ => panic!("{}", self.wrong_enclosed_type_error()),
         };
 
@@ -31,10 +32,11 @@ impl SourceMapped<'_, TsTypeRef> {
             _ => panic!("{}", self.wrong_enclosed_type_error()),
         };
 
-        let ts_fn_type = match request_type_type_ref.get_enclosed_azle_type() {
-            AzleType::AzleFnOrConstructorType(fn_or_const) => match fn_or_const.deref() {
+        let ts_type = request_type_type_ref.get_ts_type();
+        let ts_fn_type = match ts_type.deref() {
+            TsType::TsFnOrConstructorType(fn_or_const) => match fn_or_const {
                 swc_ecma_ast::TsFnOrConstructorType::TsFnType(ts_fn_type) => {
-                    SourceMapped::new(ts_fn_type, fn_or_const.source_map)
+                    SourceMapped::new(ts_fn_type, self.source_map)
                 }
                 _ => panic!("{}", self.wrong_enclosed_type_error()), // TODO: Verify this is actually the correct error message
             },
@@ -44,14 +46,11 @@ impl SourceMapped<'_, TsTypeRef> {
         let params: Vec<CandidType> = ts_fn_type
             .get_param_types()
             .iter()
-            .map(|param| {
-                let azle_param = AzleType::from_ts_type(param.clone(), self.source_map);
-                azle_param.to_candid_type()
-            })
+            .map(|param| SourceMapped::new(param, self.source_map).to_candid_type())
             .collect();
 
         let return_type =
-            AzleType::from_ts_type(ts_fn_type.get_ts_type_ann().get_ts_type(), self.source_map)
+            SourceMapped::new(&ts_fn_type.get_ts_type_ann().get_ts_type(), self.source_map)
                 .to_candid_type();
 
         let to_vm_value = |name: String| rust::generate_into_vm_value_impl(name);

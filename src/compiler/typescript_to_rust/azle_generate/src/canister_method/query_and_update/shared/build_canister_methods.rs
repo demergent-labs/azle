@@ -7,7 +7,7 @@ use cdk_framework::act::node::{
 
 use crate::{
     canister_method::{query_and_update, AnnotatedFnDecl, GetAnnotatedFnDecls},
-    ts_ast::{azle_type::AzleType, AzleProgram},
+    ts_ast::{AzleProgram, SourceMapped},
 };
 
 pub trait BuildCanisterMethods {
@@ -82,20 +82,15 @@ impl<'a> AnnotatedFnDecl<'a> {
     }
 
     fn build_return_type(&self) -> CandidType {
-        let return_ts_type = self.get_return_ts_type();
-        let return_azle_type = AzleType::from_ts_type(return_ts_type.clone(), self.source_map);
-        return_azle_type.to_candid_type()
+        SourceMapped::new(self.get_return_ts_type(), self.source_map).to_candid_type()
     }
 
     // TODO why is this separated from get_name. It would be much simpler
     // imho to get the names and the params all in the same pass
     fn build_param_types(&self) -> Vec<CandidType> {
         self.get_param_ts_types()
-            .iter()
-            .map(|ts_type| {
-                let azle_type = AzleType::from_ts_type(ts_type.clone().clone(), self.source_map);
-                azle_type.to_candid_type()
-            })
+            .into_iter()
+            .map(|ts_type| SourceMapped::new(ts_type, self.source_map).to_candid_type())
             .collect()
     }
 }

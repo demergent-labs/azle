@@ -1,11 +1,9 @@
+use std::ops::Deref;
+
 use swc_ecma_ast::NewExpr;
 
 use super::expr::{ToU32, ToU8};
-use crate::{
-    errors::ErrorMessage,
-    ts_ast::{azle_type::AzleType, SourceMapped},
-    StableBTreeMapNode,
-};
+use crate::{errors::ErrorMessage, ts_ast::SourceMapped, StableBTreeMapNode};
 
 mod errors;
 mod get_span;
@@ -24,17 +22,13 @@ impl SourceMapped<'_, NewExpr> {
                     return Err(self.build_incorrect_type_args_error_message());
                 }
 
-                let key_type = AzleType::from_ts_type(
-                    *type_args.params.get(0).unwrap().clone(),
-                    self.source_map,
-                )
-                .to_candid_type();
+                let key_type =
+                    SourceMapped::new(type_args.params.get(0).unwrap().deref(), self.source_map)
+                        .to_candid_type();
 
-                let value_type = AzleType::from_ts_type(
-                    *type_args.params.get(1).unwrap().clone(),
-                    self.source_map,
-                )
-                .to_candid_type();
+                let value_type =
+                    SourceMapped::new(type_args.params.get(1).unwrap().deref(), self.source_map)
+                        .to_candid_type();
 
                 match &self.args {
                     Some(args) => {

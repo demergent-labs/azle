@@ -4,7 +4,7 @@ use swc_ecma_ast::{TsTupleType, TsTypeAliasDecl, TsTypeRef};
 
 use crate::{
     traits::{GetName, GetSpan},
-    ts_ast::{azle_type::AzleType, SourceMapped},
+    ts_ast::SourceMapped,
 };
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
@@ -19,11 +19,10 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_tuple(&self) -> Tuple {
-        match self.get_enclosed_azle_type().as_azle_tuple_type() {
-            Some(ts_tuple_type) => ts_tuple_type,
+        match self.get_ts_type().as_ts_tuple_type() {
+            Some(ts_tuple_type) => ts_tuple_type.to_tuple(),
             None => panic!("{}", self.wrong_enclosed_type_error()),
         }
-        .to_tuple()
     }
 }
 
@@ -40,11 +39,8 @@ impl SourceMapped<'_, TsTupleType> {
         self.elem_types
             .iter()
             .map(|elem| {
-                let ts_type = elem.ty.clone();
-                let azle_type = AzleType::from_ts_type(ts_type, self.source_map);
-                Elem {
-                    candid_type: azle_type.to_candid_type(),
-                }
+                let candid_type = SourceMapped::new(&elem.ty, self.source_map).to_candid_type();
+                Elem { candid_type }
             })
             .collect()
     }
