@@ -1,9 +1,9 @@
 use cdk_framework::act::node::candid::{tuple::Elem, Tuple};
-use swc_common::SourceMap;
+use swc_common::Span;
 use swc_ecma_ast::{TsTupleType, TsTypeAliasDecl, TsTypeRef};
 
 use crate::{
-    traits::{GetName, GetSourceFileInfo, GetSourceInfo, GetSourceText},
+    traits::{GetName, GetSpan},
     ts_ast::{azle_type::AzleType, SourceMapped},
 };
 
@@ -27,13 +27,7 @@ impl SourceMapped<'_, TsTypeRef> {
     }
 }
 
-#[derive(Clone)]
-pub struct AzleTupleType<'a> {
-    pub ts_tuple_type: TsTupleType,
-    pub source_map: &'a SourceMap,
-}
-
-impl AzleTupleType<'_> {
+impl SourceMapped<'_, TsTupleType> {
     pub fn to_tuple(&self) -> Tuple {
         Tuple {
             name: None,
@@ -43,8 +37,7 @@ impl AzleTupleType<'_> {
     }
 
     fn get_elem_types(&self) -> Vec<Elem> {
-        self.ts_tuple_type
-            .elem_types
+        self.elem_types
             .iter()
             .map(|elem| {
                 let ts_type = elem.ty.clone();
@@ -57,26 +50,8 @@ impl AzleTupleType<'_> {
     }
 }
 
-impl GetSourceText for AzleTupleType<'_> {
-    fn get_source_text(&self) -> String {
-        self.source_map.get_source(self.ts_tuple_type.span)
-    }
-}
-
-impl GetSourceInfo for AzleTupleType<'_> {
-    fn get_source(&self) -> String {
-        self.source_map.get_source(self.ts_tuple_type.span)
-    }
-
-    fn get_line_number(&self) -> usize {
-        self.source_map.get_line_number(self.ts_tuple_type.span)
-    }
-
-    fn get_origin(&self) -> String {
-        self.source_map.get_origin(self.ts_tuple_type.span)
-    }
-
-    fn get_range(&self) -> (usize, usize) {
-        self.source_map.get_range(self.ts_tuple_type.span)
+impl GetSpan for TsTupleType {
+    fn get_span(&self) -> Span {
+        self.span
     }
 }

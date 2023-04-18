@@ -1,7 +1,9 @@
 use swc_common::SourceMap;
-use swc_ecma_ast::{TsFnOrConstructorType, TsKeywordType, TsType, TsTypeLit, TsTypeRef};
+use swc_ecma_ast::{
+    TsFnOrConstructorType, TsKeywordType, TsTupleType, TsType, TsTypeLit, TsTypeRef,
+};
 
-use crate::{candid_type::tuple::AzleTupleType, ts_ast::SourceMapped};
+use crate::ts_ast::SourceMapped;
 
 mod errors;
 mod get_source_info;
@@ -18,7 +20,7 @@ pub enum AzleType<'a> {
     AzleTypeLit(SourceMapped<'a, TsTypeLit>),
     AzleTypeRef(SourceMapped<'a, TsTypeRef>),
     AzleFnOrConstructorType(SourceMapped<'a, TsFnOrConstructorType>),
-    AzleTupleType(AzleTupleType<'a>),
+    AzleTupleType(SourceMapped<'a, TsTupleType>),
 }
 
 impl<'a> AzleType<'a> {
@@ -31,9 +33,11 @@ impl<'a> AzleType<'a> {
         }
     }
 
-    pub fn as_azle_tuple_type(self) -> Option<AzleTupleType<'a>> {
+    pub fn as_azle_tuple_type(self) -> Option<SourceMapped<'a, TsTupleType>> {
         match self {
-            AzleType::AzleTupleType(azle_tuple_type) => Some(azle_tuple_type),
+            AzleType::AzleTupleType(ts_tuple_type) => {
+                Some(SourceMapped::new(&ts_tuple_type, self.source_map))
+            }
             _ => None,
         }
     }
@@ -82,10 +86,9 @@ impl AzleType<'_> {
             TsType::TsTypeLit(ts_type_lit) => {
                 AzleType::AzleTypeLit(SourceMapped::new(&ts_type_lit, source_map))
             }
-            TsType::TsTupleType(ts_tuple_type) => AzleType::AzleTupleType(AzleTupleType {
-                ts_tuple_type,
-                source_map,
-            }),
+            TsType::TsTupleType(ts_tuple_type) => {
+                AzleType::AzleTupleType(SourceMapped::new(&ts_tuple_type, source_map))
+            }
             _ => panic!("{}", errors::unsupported_type_error(ts_type, source_map)),
         }
     }
