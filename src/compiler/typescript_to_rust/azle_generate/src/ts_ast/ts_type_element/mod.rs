@@ -4,7 +4,6 @@ use swc_ecma_ast::{TsPropertySignature, TsTypeElement};
 use crate::ts_ast::SourceMapped;
 
 mod get_span;
-mod ts_method_signature;
 mod ts_property_signature;
 mod type_to_string;
 
