@@ -25,50 +25,43 @@ impl TsAst {
     // currently using them so I just commented them out for now.
 
     // pub fn module_items(&self) -> Vec<SourceMapped<ModuleItem>> {
-    //     self.azle_programs
-    //         .iter()
-    //         .fold(vec![], |mut acc, azle_program| {
-    //             if let Program::Module(module) = &azle_program.program {
-    //                 let source_mapped_module_items: Vec<_> = module
-    //                     .body
-    //                     .iter()
-    //                     .map(|module_item| SourceMapped::new(module_item, &azle_program.source_map))
-    //                     .collect();
+    //     self.programs.iter().fold(vec![], |mut acc, program| {
+    //         if let swc_ecma_ast::Program::Module(module) = program.deref() {
+    //             let source_mapped_module_items: Vec<_> = module
+    //                 .body
+    //                 .iter()
+    //                 .map(|module_item| SourceMapped::new(module_item, &program.source_map))
+    //                 .collect();
 
-    //                 acc.extend(source_mapped_module_items);
-    //             }
-    //             acc
-    //         })
+    //             acc.extend(source_mapped_module_items);
+    //         }
+    //         acc
+    //     })
     // }
 
     // pub fn decls(&self) -> Vec<SourceMapped<Decl>> {
-    //     self.azle_programs
-    //         .iter()
-    //         .fold(vec![], |mut acc, azle_program| {
-    //             if let Program::Module(module) = &azle_program.program {
-    //                 module
-    //                     .body
-    //                     .iter()
-    //                     .for_each(|module_item| match module_item {
-    //                         ModuleItem::ModuleDecl(decl) => match decl {
-    //                             ModuleDecl::ExportDecl(export_decl) => {
-    //                                 acc.push(SourceMapped::new(
-    //                                     &export_decl.decl,
-    //                                     &azle_program.source_map,
-    //                                 ));
-    //                             }
-    //                             _ => (),
-    //                         },
-    //                         ModuleItem::Stmt(stmt) => match stmt {
-    //                             Stmt::Decl(decl) => {
-    //                                 acc.push(SourceMapped::new(decl, &azle_program.source_map));
-    //                             }
-    //                             _ => (),
-    //                         },
-    //                     })
-    //             }
-    //             acc
-    //         })
+    //     self.programs.iter().fold(vec![], |mut acc, program| {
+    //         if let swc_ecma_ast::Program::Module(module) = program.deref() {
+    //             module
+    //                 .body
+    //                 .iter()
+    //                 .for_each(|module_item| match module_item {
+    //                     ModuleItem::ModuleDecl(decl) => match decl {
+    //                         ModuleDecl::ExportDecl(export_decl) => {
+    //                             acc.push(SourceMapped::new(&export_decl.decl, &program.source_map));
+    //                         }
+    //                         _ => (),
+    //                     },
+    //                     ModuleItem::Stmt(stmt) => match stmt {
+    //                         Stmt::Decl(decl) => {
+    //                             acc.push(SourceMapped::new(decl, &program.source_map));
+    //                         }
+    //                         _ => (),
+    //                     },
+    //                 })
+    //         }
+    //         acc
+    //     })
     // }
 
     pub fn ts_type_alias_decls(&self) -> Vec<SourceMapped<TsTypeAliasDecl>> {
@@ -99,7 +92,7 @@ impl TsAst {
                                     //     acc,
                                     //     vec![SourceMapped::new(
                                     //         ts_type_alias_decl,
-                                    //         &azle_program.source_map,
+                                    //         &program.source_map,
                                     //     )],
                                     // ]
                                     // .concat();

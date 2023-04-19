@@ -27,7 +27,7 @@ impl TsAst {
     pub fn build_stable_b_tree_map_nodes(&self) -> Vec<StableBTreeMapNode> {
         self.programs
             .iter()
-            .flat_map(|azle_program| azle_program.build_stable_b_tree_map_nodes())
+            .flat_map(|program| program.build_stable_b_tree_map_nodes())
             .collect()
     }
 }

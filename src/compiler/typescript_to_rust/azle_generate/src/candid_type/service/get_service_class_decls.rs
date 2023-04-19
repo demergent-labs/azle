@@ -14,7 +14,7 @@ pub trait GetFlattenedServiceClassDecls {
 impl GetFlattenedServiceClassDecls for Vec<Program> {
     fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
         self.into_iter()
-            .flat_map(|azle_program| azle_program.get_service_class_declarations())
+            .flat_map(|program| program.get_service_class_declarations())
             .collect()
     }
 }

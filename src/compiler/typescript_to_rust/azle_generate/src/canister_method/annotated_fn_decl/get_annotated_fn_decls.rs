@@ -29,7 +29,7 @@ impl GetAnnotatedFnDecls for Vec<Program> {
 
     fn get_annotated_fn_decls(&self) -> Vec<AnnotatedFnDecl> {
         self.iter()
-            .flat_map(|azle_program| azle_program.get_annotated_fn_decls())
+            .flat_map(|program| program.get_annotated_fn_decls())
             .collect()
     }
 }
