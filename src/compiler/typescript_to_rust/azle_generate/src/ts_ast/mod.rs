@@ -1,27 +1,13 @@
 use std::ops::Deref;
-use std::path::Path;
-use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl};
-use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
+pub use program::Program;
 pub use source_map::SourceMapped;
 
+pub mod program;
 pub mod source_map;
 pub mod ts_type;
 pub mod ts_type_element;
-
-pub struct Program {
-    program: swc_ecma_ast::Program,
-    pub source_map: SourceMap,
-}
-
-impl Deref for Program {
-    type Target = swc_ecma_ast::Program;
-
-    fn deref(&self) -> &Self::Target {
-        &self.program
-    }
-}
 
 pub struct TsAst {
     pub programs: Vec<Program>,
@@ -30,10 +16,7 @@ pub struct TsAst {
 
 impl TsAst {
     pub fn new(ts_file_names: &Vec<&str>, main_js: String) -> Self {
-        let programs = ts_file_names
-            .iter()
-            .map(|ts_file_name| to_program(ts_file_name))
-            .collect();
+        let programs = ts_file_names.iter().map(Program::from_file_name).collect();
 
         Self { programs, main_js }
     }
@@ -133,42 +116,5 @@ impl TsAst {
             }
             acc
         })
-    }
-}
-
-fn to_program(ts_file_name: &str) -> Program {
-    let filepath = Path::new(ts_file_name).to_path_buf();
-
-    let cm: Lrc<SourceMap> = Default::default();
-
-    let fm = match cm.load_file(&filepath) {
-        Ok(rc_source_file) => rc_source_file,
-        Err(err) => panic!("Error: Unable to load file {}\n{}", ts_file_name, err),
-    };
-
-    let lexer = Lexer::new(
-        Syntax::Typescript(TsConfig {
-            decorators: true,
-            ..TsConfig::default()
-        }),
-        Default::default(),
-        StringInput::from(&*fm),
-        None,
-    );
-
-    let mut parser = Parser::new_from(lexer);
-
-    let parse_result = parser.parse_program();
-    match parse_result {
-        Ok(program) => {
-            if let Ok(source_map) = std::rc::Rc::try_unwrap(cm) {
-                return Program {
-                    program,
-                    source_map,
-                };
-            };
-            panic!("Unreachable");
-        }
-        Err(error) => panic!("{}: Syntax Error: {}", ts_file_name, error.kind().msg()),
     }
 }
