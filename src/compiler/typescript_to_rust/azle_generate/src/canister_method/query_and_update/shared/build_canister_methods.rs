@@ -33,7 +33,7 @@ impl<'a> AnnotatedFnDecl<'a> {
         &self,
         canister_method_type: &CanisterMethodType,
     ) -> CanisterMethod {
-        let body = query_and_update::generate_query_and_update_body(&self);
+        let body = query_and_update::generate_body(&self);
         let is_async = self.is_promise();
         let is_manual = self.is_manual();
         let guard_function_name = self.annotation.guard.clone();
