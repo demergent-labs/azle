@@ -10,7 +10,7 @@ mod rust;
 
 impl TsAst {
     pub fn build_guard_functions(&self) -> Vec<GuardFunction> {
-        self.azle_programs
+        self.programs
             .get_fn_decls()
             .iter()
             .filter(|fn_decl| fn_decl.has_guard_result_return_type())

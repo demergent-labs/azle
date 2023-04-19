@@ -1,13 +1,14 @@
+use std::ops::Deref;
 use swc_common::SourceMap;
-use swc_ecma_ast::{Decl, FnDecl, Module, ModuleDecl, ModuleItem, Program, Stmt};
+use swc_ecma_ast::{Decl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt};
 
-use crate::ts_ast::{AzleProgram, SourceMapped};
+use crate::ts_ast::{Program, SourceMapped};
 
 pub trait GetProgramFnDecls {
     fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>>;
 }
 
-impl GetProgramFnDecls for Vec<AzleProgram> {
+impl GetProgramFnDecls for Vec<Program> {
     fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>> {
         self.iter().fold(vec![], |mut acc, azle_program| {
             // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
@@ -20,11 +21,11 @@ impl GetProgramFnDecls for Vec<AzleProgram> {
     }
 }
 
-impl AzleProgram {
+impl Program {
     fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>> {
-        match &self.program {
-            Program::Module(module) => module.get_fn_decls(&self.source_map),
-            Program::Script(_) => vec![],
+        match self.deref() {
+            swc_ecma_ast::Program::Module(module) => module.get_fn_decls(&self.source_map),
+            swc_ecma_ast::Program::Script(_) => vec![],
         }
     }
 }

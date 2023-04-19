@@ -14,7 +14,7 @@ mod vm_value_conversions;
 
 impl TsAst {
     pub fn build_services(&self) -> Vec<Service> {
-        let service_class_declarations = self.azle_programs.get_service_class_declarations();
+        let service_class_declarations = self.programs.get_service_class_declarations();
 
         service_class_declarations
             .iter()

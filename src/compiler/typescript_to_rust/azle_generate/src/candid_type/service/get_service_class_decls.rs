@@ -1,16 +1,17 @@
+use std::ops::Deref;
 use swc_common::SourceMap;
-use swc_ecma_ast::{ClassDecl, Decl, Expr, Module, ModuleDecl, ModuleItem, Program, Stmt};
+use swc_ecma_ast::{ClassDecl, Decl, Expr, Module, ModuleDecl, ModuleItem, Stmt};
 
 use crate::{
     traits::GetName,
-    ts_ast::{AzleProgram, SourceMapped},
+    ts_ast::{Program, SourceMapped},
 };
 
 pub trait GetFlattenedServiceClassDecls {
     fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>>;
 }
 
-impl GetFlattenedServiceClassDecls for Vec<AzleProgram> {
+impl GetFlattenedServiceClassDecls for Vec<Program> {
     fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
         self.into_iter()
             .flat_map(|azle_program| azle_program.get_service_class_declarations())
@@ -18,11 +19,13 @@ impl GetFlattenedServiceClassDecls for Vec<AzleProgram> {
     }
 }
 
-impl AzleProgram {
+impl Program {
     fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
-        match &self.program {
-            Program::Module(module) => module.get_service_class_declarations(&self.source_map),
-            Program::Script(_) => vec![],
+        match self.deref() {
+            swc_ecma_ast::Program::Module(module) => {
+                module.get_service_class_declarations(&self.source_map)
+            }
+            swc_ecma_ast::Program::Script(_) => vec![],
         }
     }
 }

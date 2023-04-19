@@ -6,7 +6,7 @@ use crate::TsAst;
 impl TsAst {
     pub fn build_query_methods(&self) -> Vec<QueryMethod> {
         let query_canister_methods = self
-            .azle_programs
+            .programs
             .build_canister_method_nodes(CanisterMethodType::Query);
         let query_methods =
             query_canister_methods

@@ -7,14 +7,14 @@ use cdk_framework::act::node::{
 
 use crate::{
     canister_method::{query_and_update, AnnotatedFnDecl, GetAnnotatedFnDecls},
-    ts_ast::{AzleProgram, SourceMapped},
+    ts_ast::{Program, SourceMapped},
 };
 
 pub trait BuildCanisterMethods {
     fn build_canister_method_nodes(&self, request_type: CanisterMethodType) -> Vec<CanisterMethod>;
 }
 
-impl BuildCanisterMethods for Vec<AzleProgram> {
+impl BuildCanisterMethods for Vec<Program> {
     fn build_canister_method_nodes(
         &self,
         canister_method_type: CanisterMethodType,

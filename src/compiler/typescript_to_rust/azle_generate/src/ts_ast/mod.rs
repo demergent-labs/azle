@@ -1,6 +1,7 @@
+use std::ops::Deref;
 use std::path::Path;
 use swc_common::{sync::Lrc, SourceMap};
-use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Program, Stmt, TsTypeAliasDecl};
+use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 pub use source_map::SourceMapped;
@@ -9,27 +10,32 @@ pub mod source_map;
 pub mod ts_type;
 pub mod ts_type_element;
 
-pub struct AzleProgram {
-    pub program: swc_ecma_ast::Program,
+pub struct Program {
+    program: swc_ecma_ast::Program,
     pub source_map: SourceMap,
 }
 
+impl Deref for Program {
+    type Target = swc_ecma_ast::Program;
+
+    fn deref(&self) -> &Self::Target {
+        &self.program
+    }
+}
+
 pub struct TsAst {
-    pub azle_programs: Vec<AzleProgram>,
+    pub programs: Vec<Program>,
     pub main_js: String,
 }
 
 impl TsAst {
     pub fn new(ts_file_names: &Vec<&str>, main_js: String) -> Self {
-        let azle_programs = ts_file_names
+        let programs = ts_file_names
             .iter()
-            .map(|ts_file_name| to_azle_program(ts_file_name))
+            .map(|ts_file_name| to_program(ts_file_name))
             .collect();
 
-        Self {
-            azle_programs,
-            main_js,
-        }
+        Self { programs, main_js }
     }
 
     // Note: Both module_items and decls seem like useful methods but we're not
@@ -83,56 +89,54 @@ impl TsAst {
     // }
 
     pub fn ts_type_alias_decls(&self) -> Vec<SourceMapped<TsTypeAliasDecl>> {
-        self.azle_programs
-            .iter()
-            .fold(vec![], |mut acc, azle_program| {
-                if let Program::Module(module) = &azle_program.program {
-                    module
-                        .body
-                        .iter()
-                        .for_each(|module_item| match module_item {
-                            ModuleItem::ModuleDecl(decl) => match decl {
-                                ModuleDecl::ExportDecl(export_decl) => {
-                                    let decl = &export_decl.decl;
-                                    if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
-                                        acc.push(SourceMapped::new(
-                                            ts_type_alias_decl,
-                                            &azle_program.source_map,
-                                        ));
-                                    }
+        self.programs.iter().fold(vec![], |mut acc, program| {
+            if let swc_ecma_ast::Program::Module(module) = program.deref() {
+                module
+                    .body
+                    .iter()
+                    .for_each(|module_item| match module_item {
+                        ModuleItem::ModuleDecl(decl) => match decl {
+                            ModuleDecl::ExportDecl(export_decl) => {
+                                let decl = &export_decl.decl;
+                                if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
+                                    acc.push(SourceMapped::new(
+                                        ts_type_alias_decl,
+                                        &program.source_map,
+                                    ));
                                 }
-                                _ => (),
-                            },
-                            ModuleItem::Stmt(stmt) => match stmt {
-                                Stmt::Decl(decl) => {
-                                    if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
-                                        // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
-                                        // necessary to do something like:
-                                        // return vec![
-                                        //     acc,
-                                        //     vec![SourceMapped::new(
-                                        //         ts_type_alias_decl,
-                                        //         &azle_program.source_map,
-                                        //     )],
-                                        // ]
-                                        // .concat();
+                            }
+                            _ => (),
+                        },
+                        ModuleItem::Stmt(stmt) => match stmt {
+                            Stmt::Decl(decl) => {
+                                if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
+                                    // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
+                                    // necessary to do something like:
+                                    // return vec![
+                                    //     acc,
+                                    //     vec![SourceMapped::new(
+                                    //         ts_type_alias_decl,
+                                    //         &azle_program.source_map,
+                                    //     )],
+                                    // ]
+                                    // .concat();
 
-                                        acc.push(SourceMapped::new(
-                                            ts_type_alias_decl,
-                                            &azle_program.source_map,
-                                        ));
-                                    }
+                                    acc.push(SourceMapped::new(
+                                        ts_type_alias_decl,
+                                        &program.source_map,
+                                    ));
                                 }
-                                _ => (),
-                            },
-                        })
-                }
-                acc
-            })
+                            }
+                            _ => (),
+                        },
+                    })
+            }
+            acc
+        })
     }
 }
 
-fn to_azle_program(ts_file_name: &str) -> AzleProgram {
+fn to_program(ts_file_name: &str) -> Program {
     let filepath = Path::new(ts_file_name).to_path_buf();
 
     let cm: Lrc<SourceMap> = Default::default();
@@ -158,7 +162,7 @@ fn to_azle_program(ts_file_name: &str) -> AzleProgram {
     match parse_result {
         Ok(program) => {
             if let Ok(source_map) = std::rc::Rc::try_unwrap(cm) {
-                return AzleProgram {
+                return Program {
                     program,
                     source_map,
                 };

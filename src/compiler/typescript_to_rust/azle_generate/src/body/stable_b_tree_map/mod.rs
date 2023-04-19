@@ -1,9 +1,10 @@
 use cdk_framework::act::node::CandidType;
-use swc_ecma_ast::{Decl, Expr, Program};
+use std::ops::Deref;
+use swc_ecma_ast::{Decl, Expr};
 
 use crate::{
     traits::GetName,
-    ts_ast::{AzleProgram, SourceMapped, TsAst},
+    ts_ast::{Program, SourceMapped, TsAst},
 };
 use module_item::AsDecl;
 
@@ -24,23 +25,23 @@ pub struct StableBTreeMapNode {
 
 impl TsAst {
     pub fn build_stable_b_tree_map_nodes(&self) -> Vec<StableBTreeMapNode> {
-        self.azle_programs
+        self.programs
             .iter()
             .flat_map(|azle_program| azle_program.build_stable_b_tree_map_nodes())
             .collect()
     }
 }
 
-impl AzleProgram {
+impl Program {
     pub fn build_stable_b_tree_map_nodes(&self) -> Vec<StableBTreeMapNode> {
-        match &self.program {
-            Program::Module(module) => module
+        match self.deref() {
+            swc_ecma_ast::Program::Module(module) => module
                 .body
                 .iter()
                 .filter_map(|module_item| module_item.as_decl())
                 .flat_map(|decl| self.process_decl(decl).into_iter())
                 .collect(),
-            Program::Script(_) => vec![],
+            swc_ecma_ast::Program::Script(_) => vec![],
         }
     }
 

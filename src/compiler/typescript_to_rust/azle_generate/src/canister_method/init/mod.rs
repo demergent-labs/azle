@@ -10,7 +10,7 @@ mod rust;
 impl TsAst {
     pub fn build_init_method(&self) -> InitMethod {
         let init_fn_decls = self
-            .azle_programs
+            .programs
             .get_annotated_fn_decls_of_type(CanisterMethodType::Init);
 
         if init_fn_decls.len() > 1 {
