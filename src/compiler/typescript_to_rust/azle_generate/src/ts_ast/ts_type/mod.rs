@@ -6,7 +6,6 @@ use crate::ts_ast::SourceMapped;
 mod get_span;
 mod to_candid_type;
 mod ts_fn_or_constructor_type;
-mod ts_type_lit;
 mod type_to_string;
 
 impl<'a> SourceMapped<'a, TsType> {
