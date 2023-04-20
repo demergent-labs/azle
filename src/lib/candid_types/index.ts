@@ -29,6 +29,13 @@ export type Opt<Value> = Variant<{
     None: null;
 }>;
 
+export const Opt = {
+    Some: <Value>(value: Value): Opt<Value> => ({
+        Some: value
+    }),
+    None: { None: null } as Opt<never>
+};
+
 /**
  * Used to mark an object as a Candid record.
  */
