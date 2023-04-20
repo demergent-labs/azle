@@ -7,6 +7,15 @@ export type Result<Ok, Err> = Variant<{
     Err: Err;
 }>;
 
+export const Result = {
+    Ok: <Ok, Err>(value: Ok): Result<Ok, Err> => ({
+        Ok: value
+    }),
+    Err: <Ok, Err>(value: Err): Result<Ok, Err> => ({
+        Err: value
+    })
+};
+
 export type CallResult<T> = {
     call: () => Promise<FinalCallResult<T>>;
     notify: () => NotifyResult;
