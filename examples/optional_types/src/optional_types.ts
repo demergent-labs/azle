@@ -45,7 +45,12 @@ export function getElement(element: Opt<Opt<Element>>): Opt<Opt<Element>> {
 }
 
 $query;
-export function returnOptNull(): Opt<string> {
+export function getNull(): null {
+    return null;
+}
+
+$query;
+export function getOptNull(): Opt<string> {
     return Opt.None;
 }
 
