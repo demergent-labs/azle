@@ -29,51 +29,43 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<Option<T>, CdkActTryFromVmValueError> {
-                match self.as_object() {
-                    Some(js_object) => {
-                        let has_none_property = match js_object.has_own_property("None", context) {
-                            Ok(has_none_property) => has_none_property,
-                            Err(err) => return Err(CdkActTryFromVmValueError(err.to_string())),
-                        };
-                        let has_some_property = match js_object.has_own_property("Some", context) {
-                            Ok(has_some_property) => has_some_property,
-                            Err(err) => return Err(CdkActTryFromVmValueError(err.to_string())),
-                        };
+                let err_msg = "TypeError: value is not an Opt".to_string();
+                let not_an_opt_err = CdkActTryFromVmValueError(err_msg.clone());
 
-                        if has_none_property && has_some_property {
-                            Err(CdkActTryFromVmValueError(
-                                "TypeError: value is not an Opt".to_string(),
-                            ))
-                        } else if has_none_property {
-                            match js_object.get("None", context) {
-                                Ok(none_value) => {
-                                    if none_value.is_null() {
-                                        Ok(None)
-                                    } else {
-                                        Err(CdkActTryFromVmValueError(
-                                            "TypeError: value is not null".to_string(),
-                                        ))
-                                    }
-                                }
-                                Err(err) => Err(CdkActTryFromVmValueError(err.to_string())),
-                            }
-                        } else if has_some_property {
-                            match js_object.get("Some", context) {
-                                Ok(some_value) => match some_value.try_from_vm_value(context) {
-                                    Ok(value) => Ok(Some(value)),
-                                    Err(err) => Err(err),
-                                },
-                                Err(err) => Err(CdkActTryFromVmValueError(err.to_string())),
-                            }
-                        } else {
-                            Err(CdkActTryFromVmValueError(
-                                "TypeError: value is not an Opt".to_string(),
-                            ))
-                        }
+                let js_object = self
+                    .as_object()
+                    .ok_or(CdkActTryFromVmValueError(err_msg.clone()))?;
+
+                let has_none_property = js_object
+                    .has_own_property("None", context)
+                    .map_err(|err| CdkActTryFromVmValueError(err.to_string()))?;
+
+                let has_some_property = js_object
+                    .has_own_property("Some", context)
+                    .map_err(|err| CdkActTryFromVmValueError(err.to_string()))?;
+
+                if has_none_property && has_some_property {
+                    return Err(not_an_opt_err);
+                }
+
+                if has_none_property {
+                    let none_value = js_object
+                        .get("None", context)
+                        .map_err(|err| CdkActTryFromVmValueError(err.to_string()))?;
+
+                    if none_value.is_null() {
+                        Ok(None)
+                    } else {
+                        Err(not_an_opt_err)
                     }
-                    None => Err(CdkActTryFromVmValueError(
-                        "TypeError: value is not an Opt".to_string(),
-                    )),
+                } else if has_some_property {
+                    let some_value = js_object
+                        .get("Some", context)
+                        .map_err(|err| CdkActTryFromVmValueError(err.to_string()))?;
+
+                    some_value.try_from_vm_value(context).map(Some)
+                } else {
+                    Err(not_an_opt_err)
                 }
             }
         }
