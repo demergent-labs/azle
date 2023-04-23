@@ -40,16 +40,13 @@ fn generate_match_arms(
 
             quote! {
                 #memory_id => {
-                    match #map_name_ident.with(|stable_b_tree_map_ref_cell| {
+                    Ok(#map_name_ident.with(|stable_b_tree_map_ref_cell| {
                         stable_b_tree_map_ref_cell.borrow().get(
                             &#key_wrapper_type_name(
                                 key_js_value.try_from_vm_value(&mut *context).unwrap()
                             )
                         )
-                    }) {
-                        Some(value) => Ok(value.0.try_into_vm_value(&mut *context).unwrap()),
-                        None => Ok(().try_into_vm_value(&mut *context).unwrap())
-                    }
+                    }).try_into_vm_value(&mut *context).unwrap())
                 }
             }
         })
