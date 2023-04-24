@@ -1,5 +1,6 @@
 import {
     $init,
+    match,
     nat64,
     $postUpgrade,
     $preUpgrade,
@@ -47,7 +48,10 @@ $postUpgrade;
 export function postUpgrade(): void {
     console.log('postUpgrade');
 
-    entries = (stableStorage.get('entries') ?? []).reduce((result, entry) => {
+    entries = match(stableStorage.get('entries'), {
+        Some: (x) => x,
+        None: () => [] as Vec<Entry>
+    }).reduce((result, entry) => {
         return {
             ...result,
             [entry.key]: entry.value

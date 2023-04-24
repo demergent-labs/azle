@@ -1,6 +1,7 @@
 import {
     ic,
     $init,
+    match,
     nat,
     nat64,
     Opt,
@@ -16,7 +17,7 @@ type PerfResult = Record<{
     wasmIncludingPrelude: nat64;
 }>;
 
-let perfResult: Opt<PerfResult> = null;
+let perfResult: Opt<PerfResult> = Opt.None;
 
 $query;
 export function getPerfResult(): Opt<PerfResult> {
@@ -24,10 +25,10 @@ export function getPerfResult(): Opt<PerfResult> {
 }
 
 function recordPerformance(start: nat64, end: nat64): void {
-    perfResult = {
+    perfResult = Opt.Some({
         wasmBodyOnly: end - start,
         wasmIncludingPrelude: ic.performanceCounter(0)
-    };
+    });
 }
 //#endregion
 
@@ -42,8 +43,17 @@ $update;
 export function increment(): nat {
     const perfStart = ic.performanceCounter(0);
 
-    stableStorage.insert('counter', (stableStorage.get('counter') ?? 0n) + 1n);
-    const result = stableStorage.get('counter') ?? 0n;
+    stableStorage.insert(
+        'counter',
+        match(stableStorage.get('counter'), {
+            Some: (x) => x,
+            None: () => 0n
+        }) + 1n
+    );
+    const result = match(stableStorage.get('counter'), {
+        Some: (x) => x,
+        None: () => 0n
+    });
 
     const perfEnd = ic.performanceCounter(0);
 
@@ -54,7 +64,10 @@ export function increment(): nat {
 
 $query;
 export function get(): nat {
-    return stableStorage.get('counter') ?? 0n;
+    return match(stableStorage.get('counter'), {
+        Some: (x) => x,
+        None: () => 0n
+    });
 }
 
 $update;
@@ -62,7 +75,10 @@ export function reset(): nat {
     const perfStart = ic.performanceCounter(0);
 
     stableStorage.insert('counter', 0n);
-    const result = stableStorage.get('counter') ?? 0n;
+    const result = match(stableStorage.get('counter'), {
+        Some: (x) => x,
+        None: () => 0n
+    });
 
     const perfEnd = ic.performanceCounter(0);
 

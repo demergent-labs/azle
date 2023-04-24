@@ -3,6 +3,7 @@ import {
     Func,
     Query,
     ic,
+    match,
     nat,
     nat16,
     Opt,
@@ -80,27 +81,28 @@ export function http_request(req: HttpRequest): HttpResponse {
                     status_code: 200,
                     headers: [['content-type', 'text/plain']],
                     body: encode('Counter'),
-                    streaming_strategy: {
+                    streaming_strategy: Opt.Some({
                         Callback: {
                             callback: [ic.id(), 'http_streaming'],
                             token: {
                                 arbitrary_data: 'start'
                             }
                         }
-                    },
-                    upgrade: false
+                    }),
+                    upgrade: Opt.Some(false)
                 };
             }
             return {
                 status_code: 200,
                 headers: [['content-type', 'text/plain']],
                 body: encode(
-                    `Counter is ${stableStorage.get('counter') ?? 0n}\n${
-                        req.url
-                    }\n`
+                    `Counter is ${match(stableStorage.get('counter'), {
+                        Some: (x) => x,
+                        None: () => 0n
+                    })}\n${req.url}\n`
                 ),
-                streaming_strategy: null,
-                upgrade: null
+                streaming_strategy: Opt.None,
+                upgrade: Opt.None
             };
         }
         return {
@@ -119,8 +121,8 @@ export function http_request(req: HttpRequest): HttpResponse {
                 31, 139, 8, 0, 152, 2, 27, 98, 0, 3, 43, 44, 77, 45, 170, 228,
                 2, 0, 214, 128, 43, 5, 6, 0, 0, 0
             ]),
-            streaming_strategy: null,
-            upgrade: null
+            streaming_strategy: Opt.None,
+            upgrade: Opt.None
         };
     }
 
@@ -129,8 +131,8 @@ export function http_request(req: HttpRequest): HttpResponse {
             status_code: 204,
             headers: [],
             body: encode(''),
-            streaming_strategy: null,
-            upgrade: true
+            streaming_strategy: Opt.None,
+            upgrade: Opt.Some(true)
         };
     }
 
@@ -138,28 +140,33 @@ export function http_request(req: HttpRequest): HttpResponse {
         status_code: 400,
         headers: [],
         body: encode('Invalid request'),
-        streaming_strategy: null,
-        upgrade: null
+        streaming_strategy: Opt.None,
+        upgrade: Opt.None
     };
 }
 
 $update;
 export function http_request_update(req: HttpRequest): HttpResponse {
     if (req.method === 'POST') {
-        stableStorage.insert(
-            'counter',
-            (stableStorage.get('counter') ?? 0n) + 1n
-        );
+        const counter = match(stableStorage.get('counter'), {
+            Some: (x) => x,
+            None: () => 0n
+        });
+
+        stableStorage.insert('counter', counter + 1n);
 
         if (req.headers.find(isGzip) === undefined) {
             return {
                 status_code: 201,
                 headers: [['content-type', 'text/plain']],
                 body: encode(
-                    `Counter updated to ${stableStorage.get('counter') ?? 0n}\n`
+                    `Counter updated to ${match(stableStorage.get('counter'), {
+                        Some: (x) => x,
+                        None: () => 0n
+                    })}\n`
                 ),
-                streaming_strategy: null,
-                upgrade: null
+                streaming_strategy: Opt.None,
+                upgrade: Opt.None
             };
         }
         return {
@@ -178,8 +185,8 @@ export function http_request_update(req: HttpRequest): HttpResponse {
                 31, 139, 8, 0, 55, 2, 27, 98, 0, 3, 43, 45, 72, 73, 44, 73, 229,
                 2, 0, 168, 218, 145, 108, 7, 0, 0, 0
             ]),
-            streaming_strategy: null,
-            upgrade: null
+            streaming_strategy: Opt.None,
+            upgrade: Opt.None
         };
     }
 
@@ -187,8 +194,8 @@ export function http_request_update(req: HttpRequest): HttpResponse {
         status_code: 400,
         headers: [],
         body: encode('Invalid Request'),
-        streaming_strategy: null,
-        upgrade: null
+        streaming_strategy: Opt.None,
+        upgrade: Opt.None
     };
 }
 
@@ -199,19 +206,24 @@ export function http_streaming(token: Token): StreamingCallbackHttpResponse {
         case 'start': {
             return {
                 body: encode(' is '),
-                token: { arbitrary_data: 'next' }
+                token: Opt.Some({ arbitrary_data: 'next' })
             };
         }
         case 'next': {
             return {
-                body: encode(`${stableStorage.get('counter') ?? 0n}`),
-                token: { arbitrary_data: 'last' }
+                body: encode(
+                    `${match(stableStorage.get('counter'), {
+                        Some: (x) => x,
+                        None: () => 0n
+                    })}`
+                ),
+                token: Opt.Some({ arbitrary_data: 'last' })
             };
         }
         case 'last': {
             return {
                 body: encode(' streaming\n'),
-                token: null
+                token: Opt.None
             };
         }
         default: {
