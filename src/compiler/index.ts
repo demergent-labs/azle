@@ -50,7 +50,7 @@ function azle() {
         );
         compileRustCode(canisterName, canisterPath, stdioType);
         generateCandidFile(candidPath, wasmFilePath);
-        optimizeRustCode(wasmFilePath, candidPath, stdioType);
+        optimizeRustCode(wasmFilePath, stdioType);
     });
 
     logSuccess(canisterPath, canisterName);
