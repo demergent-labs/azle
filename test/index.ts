@@ -236,3 +236,7 @@ function convertKeysToSnakeCase(obj) {
 function camelToSnakeCase(str: string) {
     return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 }
+
+export function getCanisterId(canisterName: string): string {
+    return execSync(`dfx canister id ${canisterName}`).toString().trim();
+}

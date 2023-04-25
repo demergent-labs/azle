@@ -7,6 +7,7 @@
             "ts": "src/canister1/index.ts",
             "candid": "src/canister1/index.did",
             "wasm": ".azle/canister1/canister1.wasm.gz",
+            "optimize": "size",
             "declarations": {
                 "output": "test/dfx_generated/canister1",
                 "node_compatibility": true
@@ -19,6 +20,7 @@
             "ts": "src/canister2/index.ts",
             "candid": "src/canister2/index.did",
             "wasm": ".azle/canister2/canister2.wasm.gz",
+            "optimize": "size",
             "declarations": {
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true
@@ -31,6 +33,7 @@
             "ts": "src/canister3/index.ts",
             "candid": "src/canister3/index.did",
             "wasm": ".azle/canister3/canister3.wasm.gz",
+            "optimize": "size",
             "declarations": {
                 "output": "test/dfx_generated/canister3",
                 "node_compatibility": true
