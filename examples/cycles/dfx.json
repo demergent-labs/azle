@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/cycles",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         },
         "intermediary": {
             "type": "custom",
@@ -22,7 +23,8 @@
             "declarations": {
                 "output": "test/dfx_generated/intermediary",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         }
     }
 }

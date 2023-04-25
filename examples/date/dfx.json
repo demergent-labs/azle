@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/date",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         }
     }
 }

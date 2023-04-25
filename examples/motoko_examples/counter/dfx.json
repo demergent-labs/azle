@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "dfx_generated/azle",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         },
         "motoko": {
             "main": "canisters/motoko/Main.mo",

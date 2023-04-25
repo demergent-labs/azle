@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/optional_types",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         }
     }
 }

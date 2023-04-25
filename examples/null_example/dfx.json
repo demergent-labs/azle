@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/null_example",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         }
     }
 }

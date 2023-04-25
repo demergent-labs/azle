@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/ic_api",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         }
     }
 }

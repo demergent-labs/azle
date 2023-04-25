@@ -7,11 +7,11 @@
             "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/audio_recorder/audio_recorder.wasm.gz",
-            "optimize": "size",
             "declarations": {
                 "output": "test/dfx_generated/audio_recorder",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         }
     }
 }

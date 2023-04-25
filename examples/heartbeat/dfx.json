@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/heartbeat_async",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         },
         "heartbeat_sync": {
             "type": "custom",
@@ -22,7 +23,8 @@
             "declarations": {
                 "output": "test/dfx_generated/heartbeat_sync",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         }
     }
 }

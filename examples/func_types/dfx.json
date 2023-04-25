@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/func_types",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         },
         "notifiers": {
             "type": "custom",
@@ -22,7 +23,8 @@
             "declarations": {
                 "output": "test/dfx_generated/notifiers",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         }
     }
 }

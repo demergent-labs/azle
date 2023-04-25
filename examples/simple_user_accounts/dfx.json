@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/simple_user_accounts",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         }
     }
 }

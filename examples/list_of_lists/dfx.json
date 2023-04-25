@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "dfx_generated/list_of_lists",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         }
     }
 }

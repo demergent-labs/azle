@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/guard_functions",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         }
     }
 }

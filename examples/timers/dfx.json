@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/timers",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         }
     }
 }

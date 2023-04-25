@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/http_counter",
                 "node_compatibility": true
-            }
+            },
+            "optimize": "size"
         }
     }
 }
