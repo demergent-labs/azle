@@ -1,8 +1,8 @@
-import { runTests } from 'azle/test';
+import { getCanisterId, runTests } from 'azle/test';
 import { createActor } from './dfx_generated/ic_api';
 import { getTests } from './tests';
 
-const ic_api_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+const ic_api_canister = createActor(getCanisterId('ic_api'), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }

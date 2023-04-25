@@ -1,8 +1,8 @@
-import { runTests } from 'azle/test';
+import { getCanisterId, runTests } from 'azle/test';
 import { createActor } from './dfx_generated/inspect_message';
 import { getTests } from './tests';
 
-const inspect_message_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+const inspect_message_canister = createActor(getCanisterId('inspect_message'), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
