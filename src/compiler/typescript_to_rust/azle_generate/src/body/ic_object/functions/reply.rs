@@ -11,7 +11,7 @@ use crate::ts_keywords;
 pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
     let match_arms = generate_match_arms(methods);
     quote! {
-        fn _azle_ic_reply(
+        fn reply(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
             context: &mut boa_engine::Context

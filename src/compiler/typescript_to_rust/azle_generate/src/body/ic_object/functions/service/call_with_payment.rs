@@ -10,7 +10,7 @@ pub fn generate(
     promise_fulfillment: &TokenStream,
 ) -> TokenStream {
     let call_with_payment_function_name_string =
-        format!("_azle_call_with_payment_{}_{}", service.name, method.name);
+        format!("call_with_payment_{}_{}", service.name, method.name);
     let call_with_payment_function_name_ident =
         format_ident!("{}", call_with_payment_function_name_string);
     let call_with_payment_wrapper_fn_name =
