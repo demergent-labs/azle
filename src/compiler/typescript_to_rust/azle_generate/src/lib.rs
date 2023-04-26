@@ -1,6 +1,8 @@
 use cdk_framework::AbstractCanisterTree;
+use errors::ParseError;
 use proc_macro2::TokenStream;
 
+pub use crate::errors::Error;
 use crate::ts_ast::TsAst;
 
 use body::stable_b_tree_map::StableBTreeMapNode;
@@ -23,10 +25,10 @@ pub fn generate_canister(
     main_js: String,
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
-) -> TokenStream {
-    TsAst::new(ts_file_names, main_js)
-        .to_act(plugins, environment_variables)
-        .to_token_stream()
+) -> Result<TokenStream, Vec<Error>> {
+    Ok(TsAst::new(ts_file_names, main_js)
+        .to_act(plugins, environment_variables)?
+        .to_token_stream())
 }
 
 impl TsAst {
@@ -34,7 +36,7 @@ impl TsAst {
         &self,
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
-    ) -> AbstractCanisterTree {
+    ) -> Result<AbstractCanisterTree, Vec<Error>> {
         let candid_types = self.build_candid_types();
         let canister_methods = self.build_canister_methods(plugins, environment_variables);
         let body = body::generate(
@@ -50,7 +52,9 @@ impl TsAst {
         let keywords = ts_keywords::ts_keywords();
         let vm_value_conversion = self.build_vm_value_conversion();
 
-        AbstractCanisterTree {
+        // return Err(vec![ParseError {}.into()]);
+
+        Ok(AbstractCanisterTree {
             body,
             canister_methods,
             cdk_name,
@@ -59,6 +63,6 @@ impl TsAst {
             header,
             keywords,
             vm_value_conversion,
-        }
+        })
     }
 }
