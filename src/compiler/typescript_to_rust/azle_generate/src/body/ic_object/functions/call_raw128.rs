@@ -8,7 +8,7 @@ pub fn generate() -> proc_macro2::TokenStream {
     let promise_fulfillment = promise_fulfillment::generate();
 
     quote::quote! {
-        fn _azle_ic_call_raw128(
+        fn call_raw128(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
             context: &mut boa_engine::Context

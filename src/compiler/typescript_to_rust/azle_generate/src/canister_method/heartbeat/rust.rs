@@ -31,7 +31,7 @@ pub fn generate(heartbeat_fn_decl: &AnnotatedFnDecl) -> proc_macro2::TokenStream
 
             #call_to_heartbeat_js_function
 
-            _azle_async_await_result_handler(
+            async_await_result_handler(
                 &mut boa_context,
                 &boa_return_value,
                 &uuid,

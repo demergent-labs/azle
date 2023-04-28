@@ -9,10 +9,8 @@ pub fn generate(
     post_await_state_management: &TokenStream,
     promise_fulfillment: &TokenStream,
 ) -> TokenStream {
-    let call_with_payment128_function_name_string = format!(
-        "_azle_call_with_payment128_{}_{}",
-        service.name, method.name
-    );
+    let call_with_payment128_function_name_string =
+        format!("call_with_payment128_{}_{}", service.name, method.name);
     let call_with_payment128_function_name_ident =
         format_ident!("{}", call_with_payment128_function_name_string);
     let call_with_payment128_wrapper_fn_name =

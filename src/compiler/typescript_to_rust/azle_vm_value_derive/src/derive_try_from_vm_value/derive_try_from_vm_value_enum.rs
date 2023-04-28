@@ -27,7 +27,7 @@ pub fn derive_try_from_vm_value_enum(
 
     quote! {
         impl #impl_generics CdkActTryFromVmValue<#enum_name #ty_generics, &mut boa_engine::Context<'_>> for boa_engine::JsValue #where_clause {
-            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<#enum_name #ty_generics, CdkActTryFromVmValueError> {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<#enum_name #ty_generics, CdkActTryFromVmValueError> {
                 let object_option = self.as_object();
 
                 if let Some(object) = object_option {
@@ -42,7 +42,7 @@ pub fn derive_try_from_vm_value_enum(
         }
 
         impl #impl_generics CdkActTryFromVmValue<Vec<#enum_name #ty_generics>, &mut boa_engine::Context<'_>> for boa_engine::JsValue #where_clause {
-            fn try_from_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<Vec<#enum_name #ty_generics>, CdkActTryFromVmValueError> {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<#enum_name #ty_generics>, CdkActTryFromVmValueError> {
                 match self.as_object() {
                     Some(js_object) => {
                         if js_object.is_array() {
@@ -52,13 +52,13 @@ pub fn derive_try_from_vm_value_enum(
                             let mut result = vec![];
 
                             while processing == true {
-                                match js_object.get(index, _azle_context) {
+                                match js_object.get(index, context) {
                                     Ok(js_value) => {
                                         if js_value.is_undefined() {
                                             processing = false;
                                         }
                                         else {
-                                            match js_value.try_from_vm_value(&mut *_azle_context) {
+                                            match js_value.try_from_vm_value(&mut *context) {
                                                 Ok(value) => {
                                                     result.push(value);
                                                     index += 1;
@@ -148,7 +148,7 @@ fn derive_property_for_named_fields(
         let variable_name = format_ident!("{}_js_value_result", field_name);
 
         quote! {
-            let #variable_name = #object_variant_js_value_var_name.as_object().unwrap().get(stringify!(#field_name), _azle_context);
+            let #variable_name = #object_variant_js_value_var_name.as_object().unwrap().get(stringify!(#field_name), context);
         }
     });
 
@@ -168,7 +168,7 @@ fn derive_property_for_named_fields(
         let named_field_js_value_variable_name = format_ident!("{}_js_value", field_name);
 
         quote! {
-            let #variable_name = #named_field_js_value_variable_name.try_from_vm_value(&mut *_azle_context);
+            let #variable_name = #named_field_js_value_variable_name.try_from_vm_value(&mut *context);
         }
     });
 
@@ -198,7 +198,7 @@ fn derive_property_for_named_fields(
     });
 
     quote! {
-        let #object_variant_js_value_result_var_name = object.get(stringify!(#variant_name), _azle_context);
+        let #object_variant_js_value_result_var_name = object.get(stringify!(#variant_name), context);
 
         if let Ok(#object_variant_js_value_var_name) = #object_variant_js_value_result_var_name {
             if #object_variant_js_value_var_name.is_undefined() == false {
@@ -237,7 +237,7 @@ fn derive_property_for_unnamed_fields(
 ) -> proc_macro2::TokenStream {
     if unnamed_fields.len() == 0 {
         quote! {
-            let #object_variant_js_value_result_var_name = object.get(stringify!(#variant_name), _azle_context);
+            let #object_variant_js_value_result_var_name = object.get(stringify!(#variant_name), context);
 
             if let Ok(#object_variant_js_value_var_name) = #object_variant_js_value_result_var_name {
                 if #object_variant_js_value_var_name.is_undefined() == false {
@@ -250,11 +250,11 @@ fn derive_property_for_unnamed_fields(
         let object_variant_var_name = format_ident!("object_{}", variant_name);
 
         quote! {
-            let #object_variant_js_value_result_var_name = object.get(stringify!(#variant_name), _azle_context);
+            let #object_variant_js_value_result_var_name = object.get(stringify!(#variant_name), context);
 
             if let Ok(#object_variant_js_value_var_name) = #object_variant_js_value_result_var_name {
                 if #object_variant_js_value_var_name.is_undefined() == false {
-                    let #object_variant_result_var_name = #object_variant_js_value_var_name.try_from_vm_value(&mut *_azle_context);
+                    let #object_variant_result_var_name = #object_variant_js_value_var_name.try_from_vm_value(&mut *context);
 
                     match #object_variant_result_var_name {
                         Ok(#object_variant_var_name) => {
