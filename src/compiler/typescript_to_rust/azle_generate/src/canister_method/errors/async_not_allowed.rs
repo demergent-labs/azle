@@ -4,7 +4,7 @@ use swc_ecma_ast::FnDecl;
 
 use crate::{
     errors::{ErrorMessage, Suggestion},
-    ts_ast::source_map::GetSourceFileInfo,
+    traits::GetSourceFileInfo,
 };
 
 pub fn build_async_not_allowed_error_message(

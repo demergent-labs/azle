@@ -6,7 +6,7 @@ use crate::TsAst;
 impl TsAst {
     pub fn build_update_methods(&self) -> Vec<UpdateMethod> {
         let update_canister_methods = self
-            .azle_programs
+            .programs
             .build_canister_method_nodes(CanisterMethodType::Update);
         let update_methods =
             update_canister_methods

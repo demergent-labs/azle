@@ -5,7 +5,7 @@ use annotate_snippets::{
 use cdk_framework::act::node::canister_method::CanisterMethodType;
 use swc_common::{source_map::Pos, Span};
 
-use crate::{canister_method::AnnotatedFnDecl, ts_ast::source_map::GetSourceFileInfo};
+use crate::{canister_method::AnnotatedFnDecl, traits::GetSourceFileInfo};
 
 pub fn build_duplicate_method_types_error_message_from_annotated_fn_decl(
     annotated_fn_decls: Vec<AnnotatedFnDecl>,

@@ -3,7 +3,7 @@ use swc_ecma_ast::ModuleItem;
 
 use crate::{
     canister_method::module_item::ModuleItemHelperMethods, errors::ErrorMessage,
-    ts_ast::source_map::GetSourceFileInfo,
+    traits::GetSourceFileInfo,
 };
 
 #[derive(Clone, Debug)]

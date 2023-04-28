@@ -15,6 +15,8 @@ mod ts_ast;
 mod ts_keywords;
 mod vm_value_conversion;
 
+pub mod traits;
+
 pub fn generate_canister(ts_file_names: &Vec<&str>, main_js: String) -> TokenStream {
     TsAst::new(&ts_file_names, main_js)
         .to_act()

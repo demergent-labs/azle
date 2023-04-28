@@ -7,21 +7,21 @@ use cdk_framework::act::node::{
 
 use crate::{
     canister_method::{query_and_update, AnnotatedFnDecl, GetAnnotatedFnDecls},
-    ts_ast::{azle_type::AzleType, AzleProgram},
+    ts_ast::{Program, SourceMapped},
 };
 
 pub trait BuildCanisterMethods {
     fn build_canister_method_nodes(&self, request_type: CanisterMethodType) -> Vec<CanisterMethod>;
 }
 
-impl BuildCanisterMethods for Vec<AzleProgram> {
+impl BuildCanisterMethods for Vec<Program> {
     fn build_canister_method_nodes(
         &self,
         canister_method_type: CanisterMethodType,
     ) -> Vec<CanisterMethod> {
-        let azle_fnc_decls = self.get_annotated_fn_decls_of_type(canister_method_type.clone());
+        let fnc_decls = self.get_annotated_fn_decls_of_type(canister_method_type.clone());
 
-        azle_fnc_decls.iter().fold(vec![], |acc, fn_decl| {
+        fnc_decls.iter().fold(vec![], |acc, fn_decl| {
             let canister_method_node = fn_decl.build_canister_method_node(&canister_method_type);
             vec![acc, vec![canister_method_node]].concat()
         })
@@ -33,7 +33,7 @@ impl<'a> AnnotatedFnDecl<'a> {
         &self,
         canister_method_type: &CanisterMethodType,
     ) -> CanisterMethod {
-        let body = query_and_update::generate_query_and_update_body(&self);
+        let body = query_and_update::generate_body(&self);
         let is_async = self.is_promise();
         let is_manual = self.is_manual();
         let guard_function_name = self.annotation.guard.clone();
@@ -82,20 +82,15 @@ impl<'a> AnnotatedFnDecl<'a> {
     }
 
     fn build_return_type(&self) -> CandidType {
-        let return_ts_type = self.get_return_ts_type();
-        let return_azle_type = AzleType::from_ts_type(return_ts_type.clone(), self.source_map);
-        return_azle_type.to_data_type()
+        SourceMapped::new(self.get_return_ts_type(), self.source_map).to_candid_type()
     }
 
     // TODO why is this separated from get_name. It would be much simpler
     // imho to get the names and the params all in the same pass
     fn build_param_types(&self) -> Vec<CandidType> {
         self.get_param_ts_types()
-            .iter()
-            .map(|ts_type| {
-                let azle_type = AzleType::from_ts_type(ts_type.clone().clone(), self.source_map);
-                azle_type.to_data_type()
-            })
+            .into_iter()
+            .map(|ts_type| SourceMapped::new(ts_type, self.source_map).to_candid_type())
             .collect()
     }
 }
