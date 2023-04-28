@@ -1,6 +1,14 @@
-use crate::canister_method::{rust, AnnotatedFnDecl};
+use crate::{
+    canister_method::{rust, AnnotatedFnDecl},
+    plugin::Plugin,
+};
+use cdk_framework::traits::ToIdent;
+use quote::quote;
 
-pub fn generate(init_fn_decl_option: Option<&AnnotatedFnDecl>) -> proc_macro2::TokenStream {
+pub fn generate(
+    init_fn_decl_option: Option<&AnnotatedFnDecl>,
+    plugins: &Vec<Plugin>,
+) -> proc_macro2::TokenStream {
     let function_name = match init_fn_decl_option {
         Some(init_fn_decl) => init_fn_decl.get_function_name(),
         None => "DOES_NOT_EXIST".to_string(),
@@ -8,7 +16,13 @@ pub fn generate(init_fn_decl_option: Option<&AnnotatedFnDecl>) -> proc_macro2::T
 
     let call_to_init_js_function = rust::maybe_generate_call_to_js_function(&init_fn_decl_option);
 
-    quote::quote! {
+    let register_plugins = plugins.iter().map(|plugin| {
+        let register_function_ident = plugin.register_function.to_ident();
+
+        quote!(#register_function_ident(&mut boa_context);)
+    });
+
+    quote! {
         BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
             let mut boa_context = box_context_ref_cell.borrow_mut();
 
@@ -19,6 +33,8 @@ pub fn generate(init_fn_decl_option: Option<&AnnotatedFnDecl>) -> proc_macro2::T
             });
 
             register_ic_object(&mut boa_context);
+
+            #(#register_plugins)*
 
             unwrap_boa_result(boa_context.eval_script(boa_engine::Source::from_bytes(
                     &format!(

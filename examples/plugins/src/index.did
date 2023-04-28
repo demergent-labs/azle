@@ -1,0 +1,11 @@
+type SQLiteCanisterError = record { message : text };
+type SQLiteError = variant {
+  CanisterError : SQLiteCanisterError;
+  InvalidCanister;
+};
+type _AzleResult = variant { Ok : text; Err : SQLiteError };
+type _AzleResult_1 = variant { Ok : vec vec text; Err : SQLiteError };
+service : () -> {
+  execute : (text) -> (_AzleResult);
+  "query" : (text) -> (_AzleResult_1) query;
+}

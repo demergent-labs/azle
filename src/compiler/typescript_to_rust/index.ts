@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { createProgram } from 'typescript';
+import { dirname, join } from 'path';
+import * as ts from 'typescript';
 
 import { compileTypeScriptToJavaScript } from './typescript_to_javascript';
 import {
@@ -12,12 +12,14 @@ import { generateRustCanister } from './generate_rust_canister';
 import { Err, ok, unwrap } from '../utils/result';
 import {
     AzleError,
+    Plugin,
     Toml,
     TsCompilationError,
     TsSyntaxErrorLocation
 } from '../utils/types';
 import { time } from '../utils';
 import { red, dim } from '../utils/colors';
+import { readFileSync } from 'fs';
 
 export function compileTypeScriptToRust(
     canisterName: string,
@@ -38,8 +40,26 @@ export function compileTypeScriptToRust(
         const mainJs = compilationResult.ok;
         const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
         const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
-        const libCargoToml: Toml = generateLibCargoToml(canisterName);
-        const fileNames = getFileNames(tsPath);
+
+        const { fileNames, plugins } = getFileNamesAndPlugins(tsPath);
+
+        const pluginsDependencies = plugins
+            .map((plugin) => {
+                const cargoTomlPath = join(plugin.path, 'Cargo.toml');
+
+                // TODO Toml parser
+                const cargoTomlString = readFileSync(cargoTomlPath)
+                    .toString()
+                    .replace('[dependencies]', '');
+
+                return cargoTomlString;
+            })
+            .join('');
+
+        const libCargoToml: Toml = generateLibCargoToml(
+            canisterName,
+            pluginsDependencies
+        );
 
         writeCodeToFileSystem(
             rootPath,
@@ -50,7 +70,9 @@ export function compileTypeScriptToRust(
             mainJs as any
         );
 
-        unwrap(generateRustCanister(fileNames, canisterPath, { rootPath }));
+        unwrap(
+            generateRustCanister(fileNames, plugins, canisterPath, { rootPath })
+        );
 
         if (isCompileOnlyMode()) {
             console.log('Compilation complete!');
@@ -115,8 +137,11 @@ function generateVisualDisplayOfErrorLocation(
     return `${preciseLocation}\n${previousLine}\n${offendingLine}\n${subsequentLine}`;
 }
 
-function getFileNames(tsPath: string): string[] {
-    const program = createProgram([tsPath], {});
+function getFileNamesAndPlugins(tsPath: string): {
+    fileNames: string[];
+    plugins: Plugin[];
+} {
+    const program = ts.createProgram([tsPath], {});
     const sourceFiles = program.getSourceFiles();
 
     const fileNames = sourceFiles.map((sourceFile) => {
@@ -126,5 +151,82 @@ function getFileNames(tsPath: string): string[] {
             return sourceFile.fileName;
         }
     });
-    return fileNames;
+
+    const registerPlugins = findRegisterPlugins(sourceFiles);
+
+    return {
+        fileNames,
+        plugins: registerPlugins.map((registerPlugin) => {
+            return {
+                path: dirname(registerPlugin.sourceFile.fileName),
+                register_function: getRustRegisterFunctionName(
+                    registerPlugin.node,
+                    registerPlugin.sourceFile
+                )
+            };
+        })
+    };
+}
+
+type RegisterPluginNodeInfo = {
+    node: ts.CallExpression;
+    sourceFile: ts.SourceFile;
+};
+
+function findRegisterPlugins(
+    sourceFiles: readonly ts.SourceFile[]
+): RegisterPluginNodeInfo[] {
+    return sourceFiles
+        .filter((sourceFile) => !sourceFile.isDeclarationFile)
+        .flatMap((sourceFile) => {
+            const registerPluginNodes = findRegisterPlugin(
+                sourceFile,
+                sourceFile
+            );
+            return registerPluginNodes.map((node) => ({ node, sourceFile }));
+        });
+}
+
+function findRegisterPlugin(
+    node: ts.Node,
+    sourceFile: ts.SourceFile
+): ts.CallExpression[] {
+    if (sourceFile === undefined) {
+        return [];
+    }
+
+    const childNodes = node
+        .getChildren(sourceFile)
+        .map((child) => findRegisterPlugin(child, sourceFile))
+        .reduce((acc, cur) => [...acc, ...cur], []);
+
+    return ts.isCallExpression(node) &&
+        node.expression.getText(sourceFile) === 'registerPlugin'
+        ? [node, ...childNodes]
+        : childNodes;
+}
+
+function getRustRegisterFunctionName(
+    node: ts.CallExpression,
+    sourceFile: ts.SourceFile
+): string {
+    const [arg] = node.arguments;
+    if (ts.isObjectLiteralExpression(arg)) {
+        const rustRegisterFunctionNameProperty = arg.properties.find(
+            (property) =>
+                ts.isPropertyAssignment(property) &&
+                property.name.getText(sourceFile) === 'rustRegisterFunctionName'
+        ) as ts.PropertyAssignment | undefined;
+
+        if (
+            rustRegisterFunctionNameProperty &&
+            ts.isStringLiteralLike(rustRegisterFunctionNameProperty.initializer)
+        ) {
+            return rustRegisterFunctionNameProperty.initializer.text;
+        }
+    }
+
+    throw new Error(
+        'registerPlugin function must have a rustRegisterFunctionName property with a string literal value'
+    );
 }

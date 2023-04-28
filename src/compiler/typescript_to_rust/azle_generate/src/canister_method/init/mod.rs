@@ -36,7 +36,7 @@ impl TsAst {
             vec![]
         };
 
-        let body = rust::generate(init_fn_decl_option);
+        let body = rust::generate(init_fn_decl_option, &self.plugins);
         let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
 
         InitMethod {

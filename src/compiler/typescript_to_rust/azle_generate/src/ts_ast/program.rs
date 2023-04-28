@@ -17,7 +17,7 @@ impl Deref for Program {
 }
 
 impl Program {
-    pub fn from_file_name(ts_file_name: &&str) -> Self {
+    pub fn from_file_name(ts_file_name: &str) -> Self {
         let filepath = Path::new(ts_file_name).to_path_buf();
 
         let cm: Lrc<SourceMap> = Default::default();

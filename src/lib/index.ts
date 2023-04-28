@@ -51,3 +51,12 @@ export { CallResult, FinalCallResult, GuardResult, Result } from './results';
 export { StableBTreeMap } from './stable_b_tree_map';
 
 export type Manual<T> = void;
+
+export function registerPlugin(props: {
+    globalObjectName?: string;
+    rustRegisterFunctionName: string;
+}) {
+    if (props.globalObjectName !== undefined) {
+        return (globalThis as any)[props.globalObjectName] ?? {};
+    }
+}

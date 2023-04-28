@@ -1,6 +1,7 @@
 use std::ops::Deref;
 use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl};
 
+use crate::plugin::Plugin;
 pub use program::Program;
 pub use source_map::SourceMapped;
 
@@ -12,13 +13,21 @@ pub mod ts_type_element;
 pub struct TsAst {
     pub programs: Vec<Program>,
     pub main_js: String,
+    pub plugins: Vec<Plugin>,
 }
 
 impl TsAst {
-    pub fn new(ts_file_names: &Vec<&str>, main_js: String) -> Self {
-        let programs = ts_file_names.iter().map(Program::from_file_name).collect();
+    pub fn new(ts_file_names: &Vec<String>, main_js: String, plugins: &Vec<Plugin>) -> Self {
+        let programs = ts_file_names
+            .iter()
+            .map(|ts_file_name| Program::from_file_name(ts_file_name))
+            .collect();
 
-        Self { programs, main_js }
+        Self {
+            programs,
+            main_js,
+            plugins: plugins.to_vec(),
+        }
     }
 
     // Note: Both module_items and decls seem like useful methods but we're not
