@@ -1,6 +1,6 @@
 pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
-        fn _azle_ic_msg_cycles_accept128(
+        fn msg_cycles_accept128(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
             context: &mut boa_engine::Context

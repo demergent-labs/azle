@@ -127,10 +127,10 @@ export function recordReferencingVariantFromParam(
     }>
 ): Opt<string> {
     if (param1.testVariant.prop1 !== undefined) {
-        return param1.testVariant.prop1;
+        return Opt.Some(param1.testVariant.prop1);
     }
 
-    return null;
+    return Opt.None;
 }
 
 $query;

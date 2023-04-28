@@ -1,3 +1,5 @@
+import { Variant } from './variant';
+
 export { Principal } from '@dfinity/principal';
 export { Func } from './func';
 export { Service } from './service';
@@ -22,7 +24,18 @@ export type nat32 = number;
 export type nat16 = number;
 export type nat8 = number;
 
-export type Opt<T> = T | null;
+export type Opt<Value> = Variant<{
+    Some: Value;
+    None: null;
+}>;
+
+export const Opt = {
+    Some: <Value>(value: Value): Opt<Value> => ({
+        Some: value
+    }),
+    None: { None: null } as Opt<never>
+};
+
 /**
  * Used to mark an object as a Candid record.
  */

@@ -41,7 +41,7 @@ export function getTests(
             }
         },
         {
-            name: 'getElement',
+            name: 'getElement(None)',
             test: async () => {
                 const result = await optionalTypesCanister.getElement([]);
 
@@ -51,17 +51,17 @@ export function getTests(
             }
         },
         {
-            name: 'getElement',
+            name: 'getElement(Some(None))',
             test: async () => {
                 const result = await optionalTypesCanister.getElement([[]]);
 
                 return {
-                    Ok: result.length === 0
+                    Ok: result.length === 1 && result[0].length === 0
                 };
             }
         },
         {
-            name: 'getElement',
+            name: 'getElement(Some(Some({ id: "0" })))',
             test: async () => {
                 const result = await optionalTypesCanister.getElement([
                     [{ id: '0' }]
@@ -72,6 +72,48 @@ export function getTests(
                         result.length === 1 &&
                         result[0].length === 1 &&
                         result[0][0].id === '0'
+                };
+            }
+        },
+        {
+            name: 'getNull',
+            test: async () => {
+                const result = await optionalTypesCanister.getNull();
+
+                return {
+                    Ok: result === null
+                };
+            }
+        },
+        {
+            name: 'getOptNull',
+            test: async () => {
+                const result = await optionalTypesCanister.getOptNull();
+
+                return {
+                    Ok: result.length === 0
+                };
+            }
+        },
+        {
+            name: 'stringToBoolean(Some("something"))',
+            test: async () => {
+                const result = await optionalTypesCanister.stringToBoolean([
+                    'something'
+                ]);
+
+                return {
+                    Ok: result
+                };
+            }
+        },
+        {
+            name: 'stringToBoolean(None)',
+            test: async () => {
+                const result = await optionalTypesCanister.stringToBoolean([]);
+
+                return {
+                    Ok: !result
                 };
             }
         }

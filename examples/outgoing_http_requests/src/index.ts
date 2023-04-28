@@ -1,4 +1,4 @@
-import { ic, Manual, match, Principal, $query, $update } from 'azle';
+import { ic, Manual, match, Opt, Principal, $query, $update } from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
@@ -10,16 +10,16 @@ export async function xkcd(): Promise<HttpResponse> {
     const httpResult = await managementCanister
         .http_request({
             url: `https://xkcd.com/642/info.0.json`,
-            max_response_bytes: 2_000n,
+            max_response_bytes: Opt.Some(2_000n),
             method: {
                 get: null
             },
             headers: [],
-            body: null,
-            transform: {
+            body: Opt.None,
+            transform: Opt.Some({
                 function: [ic.id(), 'xkcdTransform'],
                 context: Uint8Array.from([])
-            }
+            })
         })
         .cycles(50_000_000n)
         .call();

@@ -43,14 +43,12 @@ export async function executeTransfer(
             fee: {
                 e8s: fee
             },
-            from_subaccount: null,
+            from_subaccount: Opt.None,
             to: binaryAddressFromAddress(to),
-            created_at_time:
-                createdAtTime === null
-                    ? null
-                    : {
-                          timestamp_nanos: createdAtTime
-                      }
+            created_at_time: match(createdAtTime, {
+                Some: (time) => Opt.Some({ timestamp_nanos: time }),
+                None: () => Opt.None
+            })
         })
         .call();
 }

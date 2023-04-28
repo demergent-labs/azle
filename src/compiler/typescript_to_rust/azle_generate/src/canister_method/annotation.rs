@@ -1,7 +1,7 @@
 use cdk_framework::act::node::canister_method::CanisterMethodType;
 use swc_ecma_ast::ModuleItem;
 
-use crate::{canister_method::ParseError, ts_ast::GetName};
+use crate::{canister_method::ParseError, traits::GetName};
 
 pub const CANISTER_METHOD_ANNOTATIONS: [&str; 7] = [
     "$heartbeat",

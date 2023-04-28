@@ -8,7 +8,7 @@ pub fn to_vm_value(name: String) -> TokenStream {
     quote! {
         impl CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for #service_name {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                Ok(_azle_unwrap_boa_result(context.eval_script(
+                Ok(unwrap_boa_result(context.eval_script(
                     boa_engine::Source::from_bytes(
                         &format!(
                             "new {}(Principal.fromText(\"{}\"))",
@@ -28,7 +28,7 @@ pub fn list_to_vm_value(name: String) -> TokenStream {
     quote! {
         impl CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Vec<#service_name> {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                _azle_try_into_vm_value_generic_array(self, context)
+                try_into_vm_value_generic_array(self, context)
             }
         }
     }
@@ -41,11 +41,11 @@ pub fn from_vm_value(name: String) -> TokenStream {
         impl CdkActTryFromVmValue<#service_name, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<#service_name, CdkActTryFromVmValueError> {
                 let js_object = self.as_object().unwrap();
-                let canister_id_js_value = _azle_unwrap_boa_result(js_object.get("canisterId", context), context);
+                let canister_id_js_value = unwrap_boa_result(js_object.get("canisterId", context), context);
                 let canister_id_js_object = canister_id_js_value.as_object().unwrap();
-                let canister_id_to_string_js_value = _azle_unwrap_boa_result(canister_id_js_object.get("toText", context), context);
+                let canister_id_to_string_js_value = unwrap_boa_result(canister_id_js_object.get("toText", context), context);
                 let canister_id_to_string_js_object = canister_id_to_string_js_value.as_object().unwrap();
-                let canister_id_string_js_value = _azle_unwrap_boa_result(canister_id_to_string_js_object.call(
+                let canister_id_string_js_value = unwrap_boa_result(canister_id_to_string_js_object.call(
                     &canister_id_js_value,
                     &[],
                     context
@@ -65,7 +65,7 @@ pub fn list_from_vm_value(name: String) -> TokenStream {
     quote! {
         impl CdkActTryFromVmValue<Vec<#service_name>, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<#service_name>, CdkActTryFromVmValueError> {
-                _azle_try_from_vm_value_generic_array(self, context)
+                try_from_vm_value_generic_array(self, context)
             }
         }
     }

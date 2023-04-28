@@ -10,7 +10,7 @@ mod rust;
 impl TsAst {
     pub fn build_pre_upgrade_method(&self) -> Option<PreUpgradeMethod> {
         let pre_upgrade_fn_decls = self
-            .azle_programs
+            .programs
             .get_annotated_fn_decls_of_type(CanisterMethodType::PreUpgrade);
 
         if pre_upgrade_fn_decls.len() > 1 {

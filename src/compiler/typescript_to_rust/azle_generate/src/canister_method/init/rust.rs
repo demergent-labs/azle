@@ -32,11 +32,11 @@ pub fn generate(
                 *method_name_mut = #function_name.to_string()
             });
 
-            _azle_register_ic_object(&mut boa_context);
+            register_ic_object(&mut boa_context);
 
             #(#register_plugins)*
 
-            _azle_unwrap_boa_result(boa_context.eval_script(boa_engine::Source::from_bytes(
+            unwrap_boa_result(boa_context.eval_script(boa_engine::Source::from_bytes(
                     &format!(
                         "let exports = {{}}; {compiled_js}",
                         compiled_js = MAIN_JS

@@ -10,7 +10,7 @@ use crate::ts_keywords;
 pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
     let match_arms = generate_match_arms(methods);
     quote! {
-        fn _azle_async_await_result_handler(
+        fn async_await_result_handler(
             boa_context: &mut boa_engine::Context,
             boa_return_value: &boa_engine::JsValue,
             uuid: &str,
@@ -56,7 +56,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                         promise_map.remove(uuid);
                     });
 
-                    let error_message = _azle_js_value_to_string(js_value.clone(), boa_context);
+                    let error_message = js_value_to_string(js_value.clone(), boa_context);
 
                     ic_cdk::api::trap(&format!("Uncaught {}", error_message));
                 },

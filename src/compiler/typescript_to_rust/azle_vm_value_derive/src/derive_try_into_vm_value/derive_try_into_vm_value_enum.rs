@@ -14,7 +14,7 @@ pub fn derive_try_into_vm_value_enum(
 
     quote! {
         impl #impl_generics CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for #enum_name #ty_generics #where_clause {
-            fn try_into_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {
                     #(#variant_branches)*,
                 }
@@ -22,9 +22,9 @@ pub fn derive_try_into_vm_value_enum(
         }
 
         impl #impl_generics CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Vec<#enum_name #ty_generics> #where_clause {
-            fn try_into_vm_value(self, _azle_context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                let js_values = self.into_iter().map(|item| item.try_into_vm_value(_azle_context).unwrap()).collect::<Vec<boa_engine::JsValue>>();
-                Ok(boa_engine::object::builtins::JsArray::from_iter(js_values, _azle_context).into())
+            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+                let js_values = self.into_iter().map(|item| item.try_into_vm_value(context).unwrap()).collect::<Vec<boa_engine::JsValue>>();
+                Ok(boa_engine::object::builtins::JsArray::from_iter(js_values, context).into())
             }
         }
     }
@@ -82,7 +82,7 @@ fn derive_variant_branches_named_fields(
         let variable_name = format_ident!("{}_js_value", field_name);
 
         quote! {
-            let #variable_name = #field_name.try_into_vm_value(_azle_context).unwrap();
+            let #variable_name = #field_name.try_into_vm_value(context).unwrap();
         }
     });
 
@@ -105,11 +105,11 @@ fn derive_variant_branches_named_fields(
         #enum_name::#variant_name { #(#field_names),* } => {
             #(#named_field_variable_declarations)*
 
-            let #variant_object_variable_name = boa_engine::object::ObjectInitializer::new(_azle_context)
+            let #variant_object_variable_name = boa_engine::object::ObjectInitializer::new(context)
                 #(#named_field_property_definitions)*
                 .build();
 
-            let object = boa_engine::object::ObjectInitializer::new(_azle_context)
+            let object = boa_engine::object::ObjectInitializer::new(context)
                 .property(
                     stringify!(#variant_name),
                     #variant_object_variable_name,
@@ -130,7 +130,7 @@ fn derive_variant_branches_unnamed_fields(
     if unnamed_fields.len() == 0 {
         quote! {
             #enum_name::#variant_name => {
-                let object = boa_engine::object::ObjectInitializer::new(_azle_context)
+                let object = boa_engine::object::ObjectInitializer::new(context)
                     .property(
                         stringify!(#variant_name),
                         boa_engine::JsValue::Null,
@@ -144,9 +144,9 @@ fn derive_variant_branches_unnamed_fields(
     } else {
         quote! {
             #enum_name::#variant_name(value) => {
-                let js_value = value.try_into_vm_value(_azle_context).unwrap();
+                let js_value = value.try_into_vm_value(context).unwrap();
 
-                let object = boa_engine::object::ObjectInitializer::new(_azle_context)
+                let object = boa_engine::object::ObjectInitializer::new(context)
                     .property(
                         stringify!(#variant_name),
                         js_value,

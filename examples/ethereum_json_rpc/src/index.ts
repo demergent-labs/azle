@@ -6,7 +6,8 @@ import {
     nat32,
     $query,
     StableBTreeMap,
-    $update
+    $update,
+    Opt
 } from 'azle';
 import {
     HttpResponse,
@@ -29,26 +30,31 @@ $update;
 export async function ethGetBalance(ethereumAddress: string): Promise<JSON> {
     const httpResult = await managementCanister
         .http_request({
-            url: stableStorage.get('ethereumUrl') ?? '',
-            max_response_bytes: 2_000n,
+            url: match(stableStorage.get('ethereumUrl'), {
+                Some: (url) => url,
+                None: () => ''
+            }),
+            max_response_bytes: Opt.Some(2_000n),
             method: {
                 post: null
             },
             headers: [],
-            body: new Uint8Array(
-                encodeUtf8(
-                    JSON.stringify({
-                        jsonrpc: '2.0',
-                        method: 'eth_getBalance',
-                        params: [ethereumAddress, 'earliest'],
-                        id: 1
-                    })
+            body: Opt.Some(
+                new Uint8Array(
+                    encodeUtf8(
+                        JSON.stringify({
+                            jsonrpc: '2.0',
+                            method: 'eth_getBalance',
+                            params: [ethereumAddress, 'earliest'],
+                            id: 1
+                        })
+                    )
                 )
             ),
-            transform: {
+            transform: Opt.Some({
                 function: [ic.id(), 'ethTransform'],
                 context: Uint8Array.from([])
-            }
+            })
         })
         .cycles(50_000_000n)
         .call();
@@ -63,26 +69,31 @@ $update;
 export async function ethGetBlockByNumber(number: nat32): Promise<JSON> {
     const httpResult = await managementCanister
         .http_request({
-            url: stableStorage.get('ethereumUrl') ?? '',
-            max_response_bytes: 2_000n,
+            url: match(stableStorage.get('ethereumUrl'), {
+                Some: (url) => url,
+                None: () => ''
+            }),
+            max_response_bytes: Opt.Some(2_000n),
             method: {
                 post: null
             },
             headers: [],
-            body: new Uint8Array(
-                encodeUtf8(
-                    JSON.stringify({
-                        jsonrpc: '2.0',
-                        method: 'eth_getBlockByNumber',
-                        params: [`0x${number.toString(16)}`, false],
-                        id: 1
-                    })
+            body: Opt.Some(
+                new Uint8Array(
+                    encodeUtf8(
+                        JSON.stringify({
+                            jsonrpc: '2.0',
+                            method: 'eth_getBlockByNumber',
+                            params: [`0x${number.toString(16)}`, false],
+                            id: 1
+                        })
+                    )
                 )
             ),
-            transform: {
+            transform: Opt.Some({
                 function: [ic.id(), 'ethTransform'],
                 context: Uint8Array.from([])
-            }
+            })
         })
         .cycles(50_000_000n)
         .call();

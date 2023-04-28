@@ -46,7 +46,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 main_promise.clone()
             });
 
-            _azle_async_await_result_handler(&mut *boa_context, &main_promise, &uuid, &method_name, manual);
+            async_await_result_handler(&mut *boa_context, &main_promise, &uuid, &method_name, manual);
         });
     }
 }

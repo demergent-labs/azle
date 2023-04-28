@@ -10,7 +10,7 @@ mod rust;
 impl TsAst {
     pub fn build_post_upgrade_method(&self) -> PostUpgradeMethod {
         let post_upgrade_fn_decls = self
-            .azle_programs
+            .programs
             .get_annotated_fn_decls_of_type(CanisterMethodType::PostUpgrade);
 
         if post_upgrade_fn_decls.len() > 1 {

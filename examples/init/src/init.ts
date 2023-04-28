@@ -9,9 +9,9 @@ type Reaction = Variant<{
     Wave: null;
 }>;
 
-let user: Opt<User> = null;
-let reaction: Opt<Reaction> = null;
-let owner: Opt<Principal> = null;
+let user: Opt<User> = Opt.None;
+let reaction: Opt<Reaction> = Opt.None;
+let owner: Opt<Principal> = Opt.None;
 
 $init;
 export function init(
@@ -19,9 +19,9 @@ export function init(
     initReaction: Reaction,
     initOwner: Principal
 ): void {
-    user = initUser;
-    reaction = initReaction;
-    owner = initOwner;
+    user = Opt.Some(initUser);
+    reaction = Opt.Some(initReaction);
+    owner = Opt.Some(initOwner);
 }
 
 $query;

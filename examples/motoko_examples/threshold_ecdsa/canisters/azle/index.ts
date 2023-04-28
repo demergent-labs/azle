@@ -1,4 +1,4 @@
-import { blob, ic, match, Record, Result, $update } from 'azle';
+import { blob, ic, match, Opt, Record, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
@@ -8,7 +8,7 @@ export async function publicKey(): Promise<
     const caller = ic.caller().toUint8Array();
     const publicKeyResult = await managementCanister
         .ecdsa_public_key({
-            canister_id: null,
+            canister_id: Opt.None,
             derivation_path: [caller],
             key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
         })

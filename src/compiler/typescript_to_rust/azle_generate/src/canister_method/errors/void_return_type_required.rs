@@ -4,7 +4,7 @@ use swc_ecma_ast::FnDecl;
 use crate::{
     canister_method,
     errors::{ErrorMessage, Suggestion},
-    ts_ast::source_map::GetSourceFileInfo,
+    traits::GetSourceFileInfo,
 };
 
 pub fn build_void_return_type_required_error_message(
