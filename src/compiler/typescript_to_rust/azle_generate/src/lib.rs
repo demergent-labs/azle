@@ -1,12 +1,11 @@
 use cdk_framework::AbstractCanisterTree;
-use errors::ParseError;
 use proc_macro2::TokenStream;
 
-pub use crate::errors::Error;
+pub use crate::errors::{Error, GuardFunctionNotFound};
 use crate::ts_ast::TsAst;
-
 use body::stable_b_tree_map::StableBTreeMapNode;
 use plugin::Plugin;
+use traits::CollectResults;
 
 mod body;
 mod candid_type;
@@ -26,9 +25,10 @@ pub fn generate_canister(
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
 ) -> Result<TokenStream, Vec<Error>> {
-    Ok(TsAst::new(ts_file_names, main_js)
+    TsAst::new(ts_file_names, main_js)
         .to_act(plugins, environment_variables)?
-        .to_token_stream())
+        .to_token_stream()
+        .map_err(|cdkf_errors| cdkf_errors.into_iter().map(Error::from).collect())
 }
 
 impl TsAst {
@@ -37,22 +37,31 @@ impl TsAst {
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
     ) -> Result<AbstractCanisterTree, Vec<Error>> {
-        let candid_types = self.build_candid_types();
-        let canister_methods = self.build_canister_methods(plugins, environment_variables);
+        let (candid_types, canister_methods, guard_functions, stable_b_tree_maps) = (
+            self.build_candid_types(),
+            self.build_canister_methods(plugins, environment_variables),
+            self.build_guard_functions(),
+            self.build_stable_b_tree_map_nodes(),
+        )
+            .collect_results()?;
+
         let body = body::generate(
             self,
             &canister_methods.query_methods,
             &canister_methods.update_methods,
             &candid_types.services,
+            &stable_b_tree_maps,
             plugins,
         );
         let cdk_name = "azle".to_string();
-        let guard_functions = self.build_guard_functions();
         let header = header::generate(&self.main_js);
         let keywords = ts_keywords::ts_keywords();
         let vm_value_conversion = self.build_vm_value_conversion();
 
-        // return Err(vec![ParseError {}.into()]);
+        // return Err(vec![GuardFunctionNotFound {
+        //     name: "Bob".to_string(),
+        // }
+        // .into()]);
 
         Ok(AbstractCanisterTree {
             body,

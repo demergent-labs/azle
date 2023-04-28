@@ -5,6 +5,7 @@ use swc_ecma_ast::{Decl, Expr};
 use crate::{
     traits::GetName,
     ts_ast::{Program, SourceMapped, TsAst},
+    Error,
 };
 use module_item::AsDecl;
 
@@ -24,11 +25,12 @@ pub struct StableBTreeMapNode {
 }
 
 impl TsAst {
-    pub fn build_stable_b_tree_map_nodes(&self) -> Vec<StableBTreeMapNode> {
-        self.programs
+    pub fn build_stable_b_tree_map_nodes(&self) -> Result<Vec<StableBTreeMapNode>, Vec<Error>> {
+        Ok(self
+            .programs
             .iter()
             .flat_map(|program| program.build_stable_b_tree_map_nodes())
-            .collect()
+            .collect())
     }
 }
 

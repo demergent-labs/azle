@@ -8,6 +8,8 @@ use std::path::PathBuf;
 
 use crate::{plugin::Plugin, ts_ast::TsAst};
 
+use self::stable_b_tree_map::StableBTreeMapNode;
+
 mod ic_object;
 
 pub mod async_await_result_handler;
@@ -19,10 +21,9 @@ pub fn generate(
     query_methods: &Vec<QueryMethod>,
     update_methods: &Vec<UpdateMethod>,
     services: &Vec<Service>,
+    stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
     plugins: &Vec<Plugin>,
 ) -> TokenStream {
-    let stable_b_tree_map_nodes = ts_ast.build_stable_b_tree_map_nodes();
-
     let query_and_update_methods = vec![
         query_methods
             .iter()
