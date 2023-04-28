@@ -1,6 +1,15 @@
 // TODO once the Bitcoin integration is live, add the methods and tests
 
-import { blob, match, nat, Principal, $query, Result, $update } from 'azle';
+import {
+    blob,
+    match,
+    nat,
+    Opt,
+    Principal,
+    $query,
+    Result,
+    $update
+} from 'azle';
 import {
     CanisterStatusArgs,
     CanisterStatusResult,
@@ -22,7 +31,7 @@ export async function executeCreateCanister(): Promise<
 > {
     const createCanisterResultCallResult = await managementCanister
         .create_canister({
-            settings: null
+            settings: Opt.None
         })
         .cycles(50_000_000_000_000n)
         .call();
@@ -47,10 +56,10 @@ export async function executeUpdateSettings(
         .update_settings({
             canister_id: canisterId,
             settings: {
-                controllers: null,
-                compute_allocation: 1n,
-                memory_allocation: 3_000_000n,
-                freezing_threshold: 2_000_000n
+                controllers: Opt.None,
+                compute_allocation: Opt.Some(1n),
+                memory_allocation: Opt.Some(3_000_000n),
+                freezing_threshold: Opt.Some(2_000_000n)
             }
         })
         .call();
@@ -198,8 +207,8 @@ export async function provisionalCreateCanisterWithCycles(): Promise<
 > {
     const callResult = await managementCanister
         .provisional_create_canister_with_cycles({
-            amount: null,
-            settings: null
+            amount: Opt.None,
+            settings: Opt.None
         })
         .call();
 

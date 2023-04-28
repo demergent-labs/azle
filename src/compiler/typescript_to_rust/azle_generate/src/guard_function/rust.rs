@@ -12,7 +12,7 @@ pub fn generate(function_name: &String) -> TokenStream {
 
             match js_guard_fn_return_value.try_from_vm_value(&mut *boa_context) {
                 Ok(return_value) => return_value,
-                Err(e) => ic_cdk::api::trap(&format!("TypeError: {}",&e.0))
+                Err(e) => ic_cdk::api::trap(&format!("Uncaught TypeError: {}",&e.0))
             }
         })
     }

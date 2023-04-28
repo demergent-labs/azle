@@ -20,12 +20,35 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         impl<T> CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Option<T>
         where
-            T: for<'a, 'b> CdkActTryIntoVmValue<&'a mut boa_engine::Context<'b>, boa_engine::JsValue>
+            T: for<'a, 'b> CdkActTryIntoVmValue<&'a mut boa_engine::Context<'b>, boa_engine::JsValue>,
         {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+            fn try_into_vm_value(
+                self,
+                context: &mut boa_engine::Context,
+            ) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {
-                    Some(value) => Ok(value.try_into_vm_value(context).unwrap()),
-                    None => Ok(boa_engine::JsValue::Null)
+                    Some(value) => {
+                        let some_js_value = match value.try_into_vm_value(context) {
+                            Ok(js_value) => js_value,
+                            Err(err) => return Err(err),
+                        };
+                        Ok(boa_engine::object::ObjectInitializer::new(context)
+                            .property(
+                                "Some",
+                                some_js_value,
+                                boa_engine::property::Attribute::all(),
+                            )
+                            .build()
+                            .into())
+                    }
+                    None => Ok(boa_engine::object::ObjectInitializer::new(context)
+                        .property(
+                            "None",
+                            boa_engine::JsValue::Null,
+                            boa_engine::property::Attribute::all(),
+                        )
+                        .build()
+                        .into()),
                 }
             }
         }
