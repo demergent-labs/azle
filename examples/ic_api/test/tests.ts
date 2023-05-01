@@ -1,4 +1,4 @@
-import { Test } from 'azle/test';
+import { getCanisterId, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { _SERVICE } from './dfx_generated/ic_api/ic_api.did';
 import { ActorSubclass } from '@dfinity/agent';
@@ -265,7 +265,9 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
                     return {
                         Ok:
                             (error as any).props.Message ===
-                            'IC0503: Canister rrkah-fqaaa-aaaaa-aaaaq-cai trapped explicitly: here is the message'
+                            `IC0503: Canister ${getCanisterId(
+                                'ic_api'
+                            )} trapped explicitly: here is the message`
                     };
                 }
             }
