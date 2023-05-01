@@ -4,7 +4,7 @@ use quote::format_ident;
 use swc_common::SourceMap;
 use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};
 
-use crate::{canister_method::Annotation, ts_ast::GetName};
+use crate::{canister_method::Annotation, traits::GetName};
 
 pub use get_annotated_fn_decls::GetAnnotatedFnDecls;
 

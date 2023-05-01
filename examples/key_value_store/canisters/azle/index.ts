@@ -6,7 +6,7 @@ type PerfResult = Record<{
     wasmIncludingPrelude: nat64;
 }>;
 
-let perfResult: Opt<PerfResult> = null;
+let perfResult: Opt<PerfResult> = Opt.None;
 
 $query;
 export function getPerfResult(): Opt<PerfResult> {
@@ -14,10 +14,10 @@ export function getPerfResult(): Opt<PerfResult> {
 }
 
 function recordPerformance(start: nat64, end: nat64): void {
-    perfResult = {
+    perfResult = Opt.Some({
         wasmBodyOnly: end - start,
         wasmIncludingPrelude: ic.performanceCounter(0)
-    };
+    });
 }
 //#endregion
 
@@ -25,7 +25,9 @@ let store: Map<string, string> = new Map();
 
 $query;
 export function get(key: string): Opt<string> {
-    return store.get(key) ?? null;
+    const keyOrUndefined = store.get(key);
+
+    return keyOrUndefined ? Opt.Some(keyOrUndefined) : Opt.None;
 }
 
 $update;

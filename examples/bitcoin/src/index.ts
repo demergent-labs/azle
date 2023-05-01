@@ -1,4 +1,4 @@
-import { blob, match, Result, $update, Vec } from 'azle';
+import { blob, match, Opt, Result, $update, Vec } from 'azle';
 import {
     BitcoinNetwork,
     GetUtxosResult,
@@ -18,7 +18,7 @@ export async function getBalance(
     return await managementCanister
         .bitcoin_get_balance({
             address,
-            min_confirmations: null,
+            min_confirmations: Opt.None,
             network: BitcoinNetwork.Regtest
         })
         .cycles(BITCOIN_API_CYCLE_COST)
@@ -44,7 +44,7 @@ export async function getUtxos(
     return await managementCanister
         .bitcoin_get_utxos({
             address,
-            filter: null,
+            filter: Opt.None,
             network: BitcoinNetwork.Regtest
         })
         .cycles(BITCOIN_API_CYCLE_COST)

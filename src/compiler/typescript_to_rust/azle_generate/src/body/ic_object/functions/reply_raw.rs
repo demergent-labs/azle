@@ -3,7 +3,7 @@ use quote::quote;
 
 pub fn generate() -> TokenStream {
     quote! {
-        fn _azle_ic_reply_raw(
+        fn reply_raw(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
             context: &mut boa_engine::Context,

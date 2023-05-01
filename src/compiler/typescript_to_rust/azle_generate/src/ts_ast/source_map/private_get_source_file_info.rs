@@ -1,6 +1,6 @@
 use swc_common::{Loc, SourceMap, Span};
 
-use crate::ts_ast::source_map::get_source_file_info::GetSourceFileInfo;
+use crate::traits::GetSourceFileInfo;
 
 pub trait PrivateGetSourceFileInfo {
     fn get_loc(&self, span: Span) -> Loc;

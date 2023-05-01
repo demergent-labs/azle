@@ -3,7 +3,7 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
 pub fn generate(service: &Service, method: &Method) -> TokenStream {
-    let function_name_string = format!("_azle_notify_{}_{}", service.name, method.name);
+    let function_name_string = format!("notify_{}_{}", service.name, method.name);
     let real_function_name = format_ident!("{}", function_name_string);
     let wrapper_fn_name = format_ident!("{}_wrapper", function_name_string);
     let param_variables = super::generate_param_variables(method, &service.name);

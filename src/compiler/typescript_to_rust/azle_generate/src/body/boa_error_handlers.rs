@@ -3,21 +3,21 @@ use quote::quote;
 
 pub fn generate() -> TokenStream {
     quote! {
-        pub fn _azle_unwrap_boa_result(
+        pub fn unwrap_boa_result(
             boa_result: boa_engine::JsResult<boa_engine::JsValue>,
             context: &mut boa_engine::Context
         ) -> boa_engine::JsValue {
             match boa_result {
                 Ok(boa_return_value) => boa_return_value,
                 Err(boa_error) => {
-                    let error_message = _azle_js_value_to_string(boa_error.to_opaque(context), context);
+                    let error_message = js_value_to_string(boa_error.to_opaque(context), context);
 
                     ic_cdk::api::trap(&format!("Uncaught {}", error_message));
                 },
             }
         }
 
-        fn _azle_js_value_to_string(error_value: boa_engine::JsValue, context: &mut boa_engine::Context) -> String {
+        fn js_value_to_string(error_value: boa_engine::JsValue, context: &mut boa_engine::Context) -> String {
             match &error_value {
                 boa_engine::JsValue::BigInt(bigint) => bigint.to_string(),
                 boa_engine::JsValue::Boolean(boolean) => boolean.to_string(),

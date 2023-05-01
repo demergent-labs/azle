@@ -3,6 +3,11 @@ service : () -> {
   alsoInaccessible : () -> (bool);
   getInitialized : () -> (bool) query;
   inaccessible : () -> (bool);
+  returnBothSomeAndNone : () -> (opt text) query;
+  returnInvalidSomeValue : () -> (opt text) query;
+  returnNonNullNone : () -> (opt text) query;
+  returnNonObject : () -> (opt text) query;
+  returnObjectWithNeitherSomeNorNone : () -> (opt text) query;
   throwBigint : () -> () query;
   throwBoolean : () -> () query;
   throwClass : () -> () query;

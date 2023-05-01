@@ -5,7 +5,7 @@ use swc_ecma_ast::ModuleItem;
 use crate::{
     canister_method::{module_item::ModuleItemHelperMethods, Annotation},
     errors::{ErrorMessage, Suggestion},
-    ts_ast::source_map::GetSourceFileInfo,
+    traits::GetSourceFileInfo,
 };
 
 pub fn build_extraneous_decorator_error_message(

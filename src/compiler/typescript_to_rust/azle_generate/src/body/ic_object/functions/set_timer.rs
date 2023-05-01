@@ -1,6 +1,6 @@
 pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
-        fn _azle_ic_set_timer(
+        fn set_timer(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
             context: &mut boa_engine::Context
@@ -36,7 +36,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                         *manual_mut = false;
                     });
 
-                    let boa_return_value = _azle_unwrap_boa_result(
+                    let boa_return_value = unwrap_boa_result(
                         func_js_object.call(
                             &boa_engine::JsValue::Null,
                             &[],
@@ -45,7 +45,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                         &mut *boa_context
                     );
 
-                    _azle_async_await_result_handler(
+                    async_await_result_handler(
                         &mut boa_context,
                         &boa_return_value,
                         &uuid,

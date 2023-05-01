@@ -1,8 +1,8 @@
 use swc_ecma_ast::{ClassDecl, ClassMember};
 
-use crate::ts_ast::{
-    source_map::{GetSourceFileInfo, SourceMapped},
-    GetName,
+use crate::{
+    traits::{GetName, GetSourceFileInfo},
+    ts_ast::SourceMapped,
 };
 
 impl SourceMapped<'_, ClassDecl> {

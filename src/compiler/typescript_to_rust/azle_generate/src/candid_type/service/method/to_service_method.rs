@@ -1,11 +1,12 @@
 use cdk_framework::act::node::{
     candid::service::Method, node_parts::mode::Mode, CandidType, Param,
 };
-use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnType, TsType};
+use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnParam, TsFnType, TsType};
 
 use crate::{
     errors::service_method::ParseError,
-    ts_ast::{azle_type::AzleType, source_map::SourceMapped, GetName},
+    traits::{GetName, GetTsType},
+    ts_ast::SourceMapped,
 };
 
 impl SourceMapped<'_, ClassProp> {
@@ -36,9 +37,8 @@ impl SourceMapped<'_, ClassProp> {
 
     fn build_return_type(&self) -> Result<CandidType, ParseError> {
         let return_ts_type = self.return_ts_type()?;
-        let azle_type = AzleType::from_ts_type(return_ts_type, self.source_map);
-        let act_data_type = azle_type.to_data_type();
-        Ok(act_data_type)
+        let candid_type = SourceMapped::new(&return_ts_type, self.source_map).to_candid_type();
+        Ok(candid_type)
     }
 
     fn contains_decorator(&self, name: &str) -> bool {
@@ -134,5 +134,35 @@ impl SourceMapped<'_, ClassProp> {
             },
             None => return Err(ParseError::MissingTypeAnnotation),
         }
+    }
+}
+
+impl SourceMapped<'_, TsFnType> {
+    pub fn build_act_fn_params(&self) -> Vec<Param> {
+        self.params
+            .iter()
+            .map(|param| match param {
+                TsFnParam::Ident(identifier) => {
+                    let name = identifier.get_name().to_string();
+                    let candid_type = match &identifier.type_ann {
+                        Some(ts_type_ann) => {
+                            SourceMapped::new(&ts_type_ann.get_ts_type(), self.source_map)
+                                .to_candid_type()
+                        }
+                        None => panic!("Function parameters must have a type"),
+                    };
+                    Param { name, candid_type }
+                }
+                TsFnParam::Array(_) => {
+                    panic!("Array destructuring in parameters is unsupported at this time")
+                }
+                TsFnParam::Rest(_) => {
+                    panic!("Rest parameters are not supported at this time")
+                }
+                TsFnParam::Object(_) => {
+                    panic!("Object destructuring in parameters is unsupported at this time")
+                }
+            })
+            .collect()
     }
 }

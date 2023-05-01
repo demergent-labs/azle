@@ -1,4 +1,4 @@
-import { $heartbeat, ic, $inspectMessage, $query, $update } from 'azle';
+import { $heartbeat, ic, $inspectMessage, $query, $update, Opt } from 'azle';
 
 // throw 'Uncomment this to test that errors are handled during the eval process.';
 
@@ -140,3 +140,35 @@ export function alsoInaccessible(): boolean {
 //     console.log('postUpgrade');
 //     throw 'We are throwing in the post-upgrade';
 // }
+
+//#region invalid Opt return values
+$query;
+export function returnNonObject(): Opt<string> {
+    // @ts-expect-error: We want to test how this errors out
+    return true;
+}
+
+$query;
+export function returnBothSomeAndNone(): Opt<string> {
+    // @ts-expect-error
+    return { Some: 'string', None: null };
+}
+
+$query;
+export function returnObjectWithNeitherSomeNorNone(): Opt<string> {
+    // @ts-expect-error
+    return { Non: null };
+}
+
+$query;
+export function returnNonNullNone(): Opt<string> {
+    // @ts-expect-error
+    return { None: 'not null value' };
+}
+
+$query;
+export function returnInvalidSomeValue(): Opt<string> {
+    // @ts-expect-error
+    return { Some: null };
+}
+//#endregion

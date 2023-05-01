@@ -1,6 +1,6 @@
 pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
-        fn _azle_ic_print(
+        fn print(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
             _context: &mut boa_engine::Context

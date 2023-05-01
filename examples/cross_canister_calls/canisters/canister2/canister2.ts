@@ -50,7 +50,8 @@ export function balance(id: string): nat64 {
 
 $query;
 export function account(accountArgs: AccountArgs): Opt<Account> {
-    return state.accounts[accountArgs.id] ?? null;
+    const account = state.accounts[accountArgs.id];
+    return account ? Opt.Some(account) : Opt.None;
 }
 
 $query;

@@ -57,12 +57,10 @@ export function init(): void {
 
 $query;
 export function getStableFunc(): StableFunc {
-    return (
-        stableStorage.get('stableFunc') ?? [
-            Principal.from('aaaaa-aa'),
-            'raw_rand'
-        ]
-    );
+    return match(stableStorage.get('stableFunc'), {
+        Some: (func) => func,
+        None: () => [Principal.from('aaaaa-aa'), 'raw_rand'] as StableFunc
+    });
 }
 
 $query;

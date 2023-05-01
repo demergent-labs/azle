@@ -3,7 +3,7 @@ use swc_ecma_ast::FnDecl;
 
 use crate::{
     errors::{ErrorMessage, Suggestion},
-    ts_ast::source_map::GetSourceFileInfo,
+    traits::GetSourceFileInfo,
 };
 
 pub fn build_missing_return_type_error_message(

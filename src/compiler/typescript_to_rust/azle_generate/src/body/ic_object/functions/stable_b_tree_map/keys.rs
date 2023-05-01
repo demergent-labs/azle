@@ -7,7 +7,7 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
     let match_arms = generate_match_arms(stable_b_tree_map_nodes);
 
     quote! {
-        fn _azle_ic_stable_b_tree_map_keys(
+        fn stable_b_tree_map_keys(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
             context: &mut boa_engine::Context

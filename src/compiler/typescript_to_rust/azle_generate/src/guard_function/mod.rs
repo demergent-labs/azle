@@ -2,10 +2,7 @@ use cdk_framework::act::node::GuardFunction;
 use std::ops::Deref;
 use swc_ecma_ast::FnDecl;
 
-use crate::{
-    ts_ast::{source_map::SourceMapped, GetName},
-    TsAst,
-};
+use crate::{traits::GetName, ts_ast::SourceMapped, TsAst};
 use get_fn_decls::GetProgramFnDecls;
 
 mod get_fn_decls;
@@ -13,7 +10,7 @@ mod rust;
 
 impl TsAst {
     pub fn build_guard_functions(&self) -> Vec<GuardFunction> {
-        self.azle_programs
+        self.programs
             .get_fn_decls()
             .iter()
             .filter(|fn_decl| fn_decl.has_guard_result_return_type())

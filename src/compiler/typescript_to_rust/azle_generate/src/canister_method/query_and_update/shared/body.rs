@@ -40,7 +40,7 @@ pub fn generate(fn_decl: &AnnotatedFnDecl) -> proc_macro2::TokenStream {
 
             #call_to_js_function
 
-            let final_return_value = _azle_async_await_result_handler(
+            let final_return_value = async_await_result_handler(
                 &mut boa_context,
                 &boa_return_value,
                 &uuid,
@@ -73,12 +73,12 @@ fn generate_return_expression(annotated_fn_decl: &AnnotatedFnDecl) -> proc_macro
         TsType::TsKeywordType(keyword) => match keyword.kind {
             TsNullKeyword => quote! {
                 if !final_return_value.is_null() {
-                    ic_cdk::api::trap("TypeError: value is not of type 'null'");
+                    ic_cdk::api::trap("Uncaught TypeError: value is not of type 'null'");
                 }
             },
             TsVoidKeyword => quote! {
                 if !final_return_value.is_undefined() {
-                    ic_cdk::api::trap("TypeError: value is not of type 'void'");
+                    ic_cdk::api::trap("Uncaught TypeError: value is not of type 'void'");
                 }
             },
             _ => quote! {},
@@ -90,7 +90,7 @@ fn generate_return_expression(annotated_fn_decl: &AnnotatedFnDecl) -> proc_macro
         #null_and_void_handler
         match final_return_value.try_from_vm_value(&mut *boa_context) {
             Ok(return_value) => return_value,
-            Err(e) => ic_cdk::api::trap(&format!("TypeError: {}",&e.0))
+            Err(e) => ic_cdk::api::trap(&format!("Uncaught TypeError: {}",&e.0))
         }
     }
 }

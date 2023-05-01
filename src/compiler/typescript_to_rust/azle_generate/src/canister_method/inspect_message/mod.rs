@@ -12,7 +12,7 @@ mod rust;
 impl TsAst {
     pub fn build_inspect_message_method(&self) -> Option<InspectMessageMethod> {
         let inspect_message_fn_decls = self
-            .azle_programs
+            .programs
             .get_annotated_fn_decls_of_type(CanisterMethodType::InspectMessage);
 
         if inspect_message_fn_decls.len() > 1 {

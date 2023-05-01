@@ -17,9 +17,9 @@ let db: Db = {
 
 $query;
 export function getUserById(id: string): Opt<User> {
-    const user = db.users[id] ?? null;
+    const userOrUndefined = db.users[id];
 
-    return user;
+    return userOrUndefined ? Opt.Some(userOrUndefined) : Opt.None;
 }
 
 $query;

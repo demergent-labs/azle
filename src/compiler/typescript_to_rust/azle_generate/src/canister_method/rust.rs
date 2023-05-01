@@ -22,13 +22,13 @@ pub fn generate_call_to_js_function(annotated_fn_decl: &AnnotatedFnDecl) -> Toke
         .collect();
 
     quote! {
-        let exports_js_value = _azle_unwrap_boa_result(boa_context.eval_script(boa_engine::Source::from_bytes("exports")), &mut boa_context);
+        let exports_js_value = unwrap_boa_result(boa_context.eval_script(boa_engine::Source::from_bytes("exports")), &mut boa_context);
         let exports_js_object = exports_js_value.as_object().unwrap();
 
         let function_js_value = exports_js_object.get(#function_name, &mut boa_context).unwrap();
         let function_js_object = function_js_value.as_object().unwrap();
 
-        let boa_return_value = _azle_unwrap_boa_result(
+        let boa_return_value = unwrap_boa_result(
             function_js_object.call(
                 &boa_engine::JsValue::Null,
                 &[

@@ -13,6 +13,7 @@ mod errors;
 mod guard_function;
 mod header;
 pub mod plugin;
+pub mod traits;
 mod ts_ast;
 mod ts_keywords;
 mod vm_value_conversion;
