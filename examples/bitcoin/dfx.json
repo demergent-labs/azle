@@ -10,8 +10,7 @@
             "declarations": {
                 "output": "test/dfx_generated/bitcoin",
                 "node_compatibility": true
-            },
-            "optimize": "size"
+            }
         }
     },
     "networks": {

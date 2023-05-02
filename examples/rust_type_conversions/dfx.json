@@ -9,8 +9,7 @@
             "wasm": ".azle/rust_type_conversions/rust_type_conversions.wasm.gz",
             "declarations": {
                 "output": "dfx_generated"
-            },
-            "optimize": "size"
+            }
         }
     }
 }

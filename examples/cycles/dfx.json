@@ -10,8 +10,7 @@
             "declarations": {
                 "output": "test/dfx_generated/cycles",
                 "node_compatibility": true
-            },
-            "optimize": "size"
+            }
         },
         "intermediary": {
             "type": "custom",
@@ -24,7 +23,6 @@
                 "output": "test/dfx_generated/intermediary",
                 "node_compatibility": true
             },
-            "optimize": "size",
             "env": ["CYCLES_PRINCIPAL"]
         }
     }

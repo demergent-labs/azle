@@ -10,8 +10,7 @@
             "declarations": {
                 "output": "test/dfx_generated/run_time_errors",
                 "node_compatibility": true
-            },
-            "optimize": "size"
+            }
         }
     }
 }

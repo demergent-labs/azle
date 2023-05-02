@@ -10,8 +10,7 @@
             "declarations": {
                 "output": "test/dfx_generated/complex_init",
                 "node_compatibility": true
-            },
-            "optimize": "size"
+            }
         }
     }
 }

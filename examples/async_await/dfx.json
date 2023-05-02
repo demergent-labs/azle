@@ -10,8 +10,7 @@
             "declarations": {
                 "output": "test/dfx_generated/async_await",
                 "node_compatibility": true
-            },
-            "optimize": "size"
+            }
         }
     }
 }

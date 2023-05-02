@@ -10,8 +10,7 @@
             "declarations": {
                 "output": "dfx_generated/azle",
                 "node_compatibility": true
-            },
-            "optimize": "size"
+            }
         },
         "minimal_dapp_assets": {
             "frontend": {

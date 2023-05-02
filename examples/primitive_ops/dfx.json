@@ -9,8 +9,7 @@
             "wasm": ".azle/azle/azle.wasm.gz",
             "declarations": {
                 "output": "dfx_generated/azle"
-            },
-            "optimize": "size"
+            }
         },
         "motoko": {
             "type": "motoko",

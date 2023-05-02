@@ -10,8 +10,7 @@
             "declarations": {
                 "output": "test/dfx_generated/counter",
                 "node_compatibility": true
-            },
-            "optimize": "size"
+            }
         }
     }
 }

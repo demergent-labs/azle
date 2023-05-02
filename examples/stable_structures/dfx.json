@@ -10,8 +10,7 @@
             "declarations": {
                 "output": "test/dfx_generated/canister1",
                 "node_compatibility": true
-            },
-            "optimize": "size"
+            }
         },
         "canister2": {
             "type": "custom",
@@ -23,8 +22,7 @@
             "declarations": {
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true
-            },
-            "optimize": "size"
+            }
         },
         "canister3": {
             "type": "custom",
@@ -36,8 +34,7 @@
             "declarations": {
                 "output": "test/dfx_generated/canister3",
                 "node_compatibility": true
-            },
-            "optimize": "size"
+            }
         }
     }
 }

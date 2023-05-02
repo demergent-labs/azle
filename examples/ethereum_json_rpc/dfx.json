@@ -10,8 +10,7 @@
             "declarations": {
                 "output": "test/dfx_generated/ethereum_json_rpc",
                 "node_compatibility": true
-            },
-            "optimize": "size"
+            }
         }
     }
 }
