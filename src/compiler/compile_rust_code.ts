@@ -4,16 +4,16 @@ import {
     GLOBAL_AZLE_BIN_DIR,
     GLOBAL_AZLE_CONFIG_DIR,
     GLOBAL_AZLE_RUST_DIR,
-    GLOBAL_AZLE_TARGET_DIR
+    GLOBAL_AZLE_TARGET_DIR,
+    time
 } from './utils';
-import { time } from './utils';
 
 export function compileRustCode(
     canisterName: string,
     canisterPath: string,
     stdio: IOType
 ) {
-    time(`[2/3] 🚧 Building Wasm binary...`, 'inline', () => {
+    time(`[2/2] 🚧 Building Wasm binary...`, 'inline', () => {
         execSync(
             `cd ${canisterPath} && ${GLOBAL_AZLE_BIN_DIR}/cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
             {

@@ -27,7 +27,7 @@ export function compileTypeScriptToRust(
     canisterPath: string,
     canisterConfig: JSCanisterConfig
 ): void | never {
-    time('\n[1/3] 🔨 Compiling TypeScript...', 'inline', () => {
+    time('[1/2] 🔨 Compiling TypeScript...', 'inline', () => {
         const compilationResult = compileTypeScriptToJavaScript(
             canisterConfig.ts
         );

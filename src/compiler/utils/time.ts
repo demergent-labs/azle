@@ -1,13 +1,13 @@
 import { dim } from './colors';
 
-export function time(
+export function time<T>(
     label: string,
     mode: 'inline' | 'default',
-    callback: () => void | never
-): void | never {
+    callback: () => T
+): T {
     const startTime = process.hrtime();
     console.info(label);
-    callback();
+    const result = callback();
     const endTime = process.hrtime(startTime);
     const duration = parseHrTimeToSeconds(endTime);
 
@@ -18,6 +18,8 @@ export function time(
     } else {
         console.info(`\nDone in ${duration}s.`);
     }
+
+    return result;
 }
 
 function parseHrTimeToSeconds(

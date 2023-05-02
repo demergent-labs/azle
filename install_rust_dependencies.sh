@@ -20,8 +20,6 @@ function run() {
     if [ -e "$global_azle_rustup_bin" ] && $global_azle_rustup_bin target list | grep -q "wasm32-unknown-unknown (installed)"; then
         update_rustup
     else
-        echo -e "\nInstalling Azle "$azle_version" prerequisites...\n"
-
         mkdir -p "$global_azle_rust_dir"
         mkdir -p "$global_azle_logs_dir"
 

@@ -7,7 +7,7 @@ export function printFirstBuildWarning(): void {
     if (isInitialCompile()) {
         console.info(
             yellow(
-                "\nInitial build takes a few minutes. Don't panic. Subsequent builds will be faster."
+                "Initial build takes a few minutes. Don't panic. Subsequent builds will be faster.\n"
             )
         );
     }
