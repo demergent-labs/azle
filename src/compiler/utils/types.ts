@@ -20,7 +20,10 @@ export type JSCanisterConfig = Readonly<{
     candid: string;
     wasm: string;
     env: string[];
+    opt_level?: OptLevel;
 }>;
+
+export type OptLevel = '0' | '1' | '2' | '3' | '4';
 
 export type Plugin = {
     path: string;

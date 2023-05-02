@@ -41,7 +41,8 @@ export function compileTypeScriptToRust(
 
         const mainJs = compilationResult.ok;
         const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
-            canisterConfig.root
+            canisterConfig.root,
+            canisterConfig.opt_level ?? '0'
         );
         const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
 

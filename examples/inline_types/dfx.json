@@ -11,7 +11,7 @@
                 "output": "test/dfx_generated/inline_types",
                 "node_compatibility": true
             },
-            "optimize": "size"
+            "opt_level": "1"
         }
     }
 }
