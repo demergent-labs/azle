@@ -2,7 +2,7 @@ use cdk_framework::act::node::candid::{record::Member, Record};
 use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
 use crate::{
-    errors::{ErrorMessage, Suggestion},
+    errors::{CompilerOutput, Location, Suggestion},
     traits::{GetName, GetSourceFileInfo, GetSourceInfo, GetSpan, TypeToString},
     ts_ast::SourceMapped,
 };
@@ -52,14 +52,16 @@ impl SourceMapped<'_, TsTypeElement> {
         ts_property_signature.to_record_member()
     }
 
-    pub fn record_property_signature_error(&self) -> ErrorMessage {
+    pub fn record_property_signature_error(&self) -> CompilerOutput {
         let replacement = "property_name: boolean".to_string();
-        ErrorMessage {
+        CompilerOutput {
             title: "Invalid Record".to_string(),
-            origin: self.get_origin(),
-            line_number: self.get_line_number(),
-            source: self.get_source(),
-            range: self.get_range(),
+            location: Location {
+                origin: self.get_origin(),
+                line_number: self.get_line_number(),
+                source: self.get_source(),
+                range: self.get_range(),
+            },
             annotation: format!("{} is not allowed here.", self.type_to_string()),
             suggestion: Some(Suggestion {
                 title: "Variant members must be properties.".to_string(),

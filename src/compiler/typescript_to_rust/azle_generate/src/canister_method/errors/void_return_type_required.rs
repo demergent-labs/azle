@@ -3,14 +3,14 @@ use swc_ecma_ast::FnDecl;
 
 use crate::{
     canister_method,
-    errors::{ErrorMessage, Suggestion},
+    errors::{CompilerOutput, Location, Suggestion},
     traits::GetSourceFileInfo,
 };
 
 pub fn build_void_return_type_required_error_message(
     fn_decl: &FnDecl,
     source_map: &SourceMap,
-) -> ErrorMessage {
+) -> CompilerOutput {
     let span = match &fn_decl.function.return_type {
         Some(return_type) => return_type.span,
         None => {
@@ -27,6 +27,12 @@ pub fn build_void_return_type_required_error_message(
     let line_number = source_map.get_line_number(span);
     let source = source_map.get_source(span);
     let range = source_map.get_range(span);
+    let location = Location {
+        origin,
+        line_number,
+        source,
+        range,
+    };
     let annotation = "required here".to_string();
 
     let void_return_type = ": void".to_string();
@@ -38,12 +44,9 @@ pub fn build_void_return_type_required_error_message(
         import_suggestion: None,
     });
 
-    ErrorMessage {
+    CompilerOutput {
         title,
-        origin,
-        line_number,
-        source,
-        range,
+        location,
         annotation,
         suggestion,
     }

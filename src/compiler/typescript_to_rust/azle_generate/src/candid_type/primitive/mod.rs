@@ -3,7 +3,7 @@ use swc_common::Span;
 use swc_ecma_ast::{TsKeywordType, TsKeywordTypeKind};
 
 use crate::{
-    errors::{ErrorMessage, Suggestion},
+    errors::{CompilerOutput, Location, Suggestion},
     traits::{GetSourceFileInfo, GetSourceInfo, GetSourceText, GetSpan},
     ts_ast::SourceMapped,
 };
@@ -20,7 +20,7 @@ impl SourceMapped<'_, TsKeywordType> {
         }
     }
 
-    pub(super) fn unsupported_type_error(&self) -> ErrorMessage {
+    pub(super) fn unsupported_type_error(&self) -> CompilerOutput {
         match &self.kind {
             TsKeywordTypeKind::TsBigIntKeyword => self.bigint_not_supported_error(),
             TsKeywordTypeKind::TsObjectKeyword => self.keyword_not_supported_error(),
@@ -34,7 +34,7 @@ impl SourceMapped<'_, TsKeywordType> {
         }
     }
 
-    fn bigint_not_supported_error(&self) -> ErrorMessage {
+    fn bigint_not_supported_error(&self) -> CompilerOutput {
         let replacement = "int".to_string();
         let suggestion = Some(Suggestion {
             title: "`int` will cover most everything that `bigint` does. For more number type options see: https://internetcomputer.org/docs/current/references/candid-ref/#type-nat".to_string(),
@@ -43,24 +43,28 @@ impl SourceMapped<'_, TsKeywordType> {
             annotation: Some("Try using `int` here.".to_string()),
             import_suggestion: Some("import { int } from 'azle';".to_string()),
         });
-        ErrorMessage {
+        CompilerOutput {
             title: "Unsupported Type".to_string(),
-            origin: self.get_origin(),
-            line_number: self.get_line_number(),
-            source: self.get_source(),
-            range: self.get_range(),
+            location: Location {
+                origin: self.get_origin(),
+                line_number: self.get_line_number(),
+                source: self.get_source(),
+                range: self.get_range(),
+            },
             annotation: "bigint is not a supported type".to_string(),
             suggestion,
         }
     }
 
-    fn keyword_not_supported_error(&self) -> ErrorMessage {
-        ErrorMessage {
+    fn keyword_not_supported_error(&self) -> CompilerOutput {
+        CompilerOutput {
             title: "Unsupported Type".to_string(),
-            origin: self.get_origin(),
-            line_number: self.get_line_number(),
-            source: self.get_source(),
-            range: self.get_range(),
+            location: Location {
+                origin: self.get_origin(),
+                line_number: self.get_line_number(),
+                source: self.get_source(),
+                range: self.get_range(),
+            },
             annotation: format!("{} is not a supported type", self.get_source_text()),
             suggestion: None,
         }

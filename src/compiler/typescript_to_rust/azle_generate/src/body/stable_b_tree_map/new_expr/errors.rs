@@ -2,21 +2,21 @@ use swc_ecma_ast::NewExpr;
 
 use super::ArgName;
 use crate::{
-    errors::{ErrorMessage, Suggestion},
+    errors::{CompilerOutput, Location, Suggestion},
     traits::GetSourceInfo,
     ts_ast::SourceMapped,
 };
 
 impl SourceMapped<'_, NewExpr> {
-    pub fn build_missing_type_args_error_message(&self) -> ErrorMessage {
+    pub fn build_missing_type_args_error_message(&self) -> CompilerOutput {
         self.build_type_arg_error_message("missing type arguments".to_string())
     }
 
-    pub fn build_incorrect_type_args_error_message(&self) -> ErrorMessage {
+    pub fn build_incorrect_type_args_error_message(&self) -> CompilerOutput {
         self.build_type_arg_error_message("wrong number of type arguments".to_string())
     }
 
-    fn build_type_arg_error_message(&self, title: String) -> ErrorMessage {
+    fn build_type_arg_error_message(&self, title: String) -> CompilerOutput {
         let source = self.get_source();
         let range = (
             source.find("StableBTreeMap").unwrap() + "StableBTreeMap".len(),
@@ -29,7 +29,7 @@ impl SourceMapped<'_, NewExpr> {
         self.build_error_message(title, range, annotation, help, suggestion)
     }
 
-    pub fn build_arg_spread_error_message(&self) -> ErrorMessage {
+    pub fn build_arg_spread_error_message(&self) -> CompilerOutput {
         let title = "StableBTreeMap does not currently support argument spreading".to_string();
         let source = self.get_source();
         let range = (source.find("(").unwrap() + 1, source.find(")").unwrap());
@@ -40,15 +40,15 @@ impl SourceMapped<'_, NewExpr> {
         self.build_error_message(title, range, annotation, help, suggestion)
     }
 
-    pub fn build_missing_args_error_message(&self) -> ErrorMessage {
+    pub fn build_missing_args_error_message(&self) -> CompilerOutput {
         self.build_arg_error_message("missing arguments".to_string())
     }
 
-    pub fn build_incorrect_number_of_args_error_message(&self) -> ErrorMessage {
+    pub fn build_incorrect_number_of_args_error_message(&self) -> CompilerOutput {
         self.build_arg_error_message("incorrect arguments".to_string())
     }
 
-    pub fn build_arg_error_message(&self, title: String) -> ErrorMessage {
+    pub fn build_arg_error_message(&self, title: String) -> CompilerOutput {
         let source = self.get_source();
         let range = (source.find("(").unwrap() + 1, source.find(")").unwrap());
         let annotation = "expected exactly 3 arguments here".to_string();
@@ -59,7 +59,7 @@ impl SourceMapped<'_, NewExpr> {
         self.build_error_message(title, range, annotation, help, suggestion)
     }
 
-    pub fn build_invalid_arg_error_message(&self, arg_name: ArgName) -> ErrorMessage {
+    pub fn build_invalid_arg_error_message(&self, arg_name: ArgName) -> CompilerOutput {
         let max_size = match arg_name {
             ArgName::MessageId => "255".to_string(),
             ArgName::MaxKeySize => "4,294,967,295".to_string(),
@@ -132,7 +132,7 @@ impl SourceMapped<'_, NewExpr> {
         annotation: String,
         help: String,
         suggestion: String,
-    ) -> ErrorMessage {
+    ) -> CompilerOutput {
         let source = self.get_source();
         let adjusted_range = if range.0 == range.1 {
             (range.0, range.1 + 1)
@@ -149,12 +149,14 @@ impl SourceMapped<'_, NewExpr> {
 
         let suggestion_range = (range.0, range.0 + &suggestion.len());
 
-        ErrorMessage {
+        CompilerOutput {
             title,
-            origin: self.get_origin(),
-            line_number: self.get_line_number(),
-            source: self.get_source(),
-            range: adjusted_range,
+            location: Location {
+                origin: self.get_origin(),
+                line_number: self.get_line_number(),
+                source: self.get_source(),
+                range: adjusted_range,
+            },
             annotation,
             suggestion: Some(Suggestion {
                 title: help,

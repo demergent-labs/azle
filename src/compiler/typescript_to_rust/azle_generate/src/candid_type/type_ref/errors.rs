@@ -2,13 +2,13 @@ use swc_common::{source_map::Pos, Span};
 use swc_ecma_ast::{TsType, TsTypeRef};
 
 use crate::{
-    errors::{ErrorMessage, Suggestion},
+    errors::{CompilerOutput, Location, Suggestion},
     traits::{GetName, GetSourceFileInfo, GetSourceInfo, GetSourceText, GetSpan},
     ts_ast::SourceMapped,
 };
 
 impl SourceMapped<'_, TsTypeRef> {
-    pub(super) fn wrong_number_of_params_error(&self) -> ErrorMessage {
+    pub(super) fn wrong_number_of_params_error(&self) -> CompilerOutput {
         match self.get_name() {
             "Canister" => self.canister_wrong_number_of_params_error(),
             "Variant" => self.variant_wrong_number_of_params_error(),
@@ -18,7 +18,7 @@ impl SourceMapped<'_, TsTypeRef> {
         }
     }
 
-    pub fn wrong_enclosed_type_error(&self) -> ErrorMessage {
+    pub fn wrong_enclosed_type_error(&self) -> CompilerOutput {
         match self.get_name() {
             "Variant" => self.variant_wrong_enclosed_type_error(),
             "Func" => self.func_wrong_enclosed_type_error(),
@@ -26,13 +26,15 @@ impl SourceMapped<'_, TsTypeRef> {
         }
     }
 
-    pub(super) fn qualified_name_error(&self, unqualified_name: String) -> ErrorMessage {
-        ErrorMessage {
+    pub(super) fn qualified_name_error(&self, unqualified_name: String) -> CompilerOutput {
+        CompilerOutput {
             title: "Namespace-qualified types are not currently supported".to_string(),
-            origin: self.get_origin(),
-            line_number: self.get_line_number(),
-            source: self.get_source(),
-            range: self.get_range(),
+            location: Location {
+                origin: self.get_origin(),
+                line_number: self.get_line_number(),
+                source: self.get_source(),
+                range: self.get_range(),
+            },
             annotation: "qualified name here".to_string(),
             suggestion: Some(Suggestion {
                 title: "Either declare the type locally or import it without a wildcard"
@@ -49,7 +51,7 @@ impl SourceMapped<'_, TsTypeRef> {
         }
     }
 
-    fn canister_wrong_number_of_params_error(&self) -> ErrorMessage {
+    fn canister_wrong_number_of_params_error(&self) -> CompilerOutput {
         let example = self.generate_example_canister();
         let modified_source = self
             .source_map
@@ -68,18 +70,20 @@ impl SourceMapped<'_, TsTypeRef> {
             annotation: None,
             import_suggestion: None,
         });
-        ErrorMessage {
+        CompilerOutput {
             title: "Invalid Canister".to_string(),
-            origin: self.get_origin(),
-            line_number: self.get_line_number(),
-            source: self.get_source(),
-            range: self.source_map.get_range(self.get_enclosed_span()),
+            location: Location {
+                origin: self.get_origin(),
+                line_number: self.get_line_number(),
+                source: self.get_source(),
+                range: self.source_map.get_range(self.get_enclosed_span()),
+            },
             annotation: annotation.to_string(),
             suggestion,
         }
     }
 
-    fn func_wrong_number_of_params_error(&self) -> ErrorMessage {
+    fn func_wrong_number_of_params_error(&self) -> CompilerOutput {
         let example_func = self.generate_example_func();
         let modified_source = self
             .source_map
@@ -103,18 +107,20 @@ impl SourceMapped<'_, TsTypeRef> {
             annotation: Some(suggestion_annotation.to_string()),
             import_suggestion: None,
         });
-        ErrorMessage {
+        CompilerOutput {
             title: "Invalid Func".to_string(),
-            origin: self.get_origin(),
-            line_number: self.get_line_number(),
-            source: self.get_source(),
-            range: self.source_map.get_range(self.get_enclosed_span()),
+            location: Location {
+                origin: self.get_origin(),
+                line_number: self.get_line_number(),
+                source: self.get_source(),
+                range: self.source_map.get_range(self.get_enclosed_span()),
+            },
             annotation: annotation.to_string(),
             suggestion,
         }
     }
 
-    fn option_wrong_number_of_params_error(&self) -> ErrorMessage {
+    fn option_wrong_number_of_params_error(&self) -> CompilerOutput {
         let example_option = self.generate_example_option();
         let modified_source = self
             .source_map
@@ -138,18 +144,20 @@ impl SourceMapped<'_, TsTypeRef> {
             annotation: Some(suggestion_annotation.to_string()),
             import_suggestion: None,
         });
-        ErrorMessage {
+        CompilerOutput {
             title: "Invalid Opt".to_string(),
-            origin: self.get_origin(),
-            line_number: self.get_line_number(),
-            source: self.get_source(),
-            range: self.source_map.get_range(self.get_enclosed_span()),
+            location: Location {
+                origin: self.get_origin(),
+                line_number: self.get_line_number(),
+                source: self.get_source(),
+                range: self.source_map.get_range(self.get_enclosed_span()),
+            },
             annotation: annotation.to_string(),
             suggestion,
         }
     }
 
-    fn variant_wrong_number_of_params_error(&self) -> ErrorMessage {
+    fn variant_wrong_number_of_params_error(&self) -> CompilerOutput {
         let example = self.generate_example_variant();
         let modified_source = self
             .source_map
@@ -172,18 +180,20 @@ impl SourceMapped<'_, TsTypeRef> {
             annotation: Some(suggestion_annotation.to_string()),
             import_suggestion: None,
         });
-        ErrorMessage {
+        CompilerOutput {
             title: "Invalid Variant".to_string(),
-            origin: self.get_origin(),
-            line_number: self.get_line_number(),
-            source: self.get_source(),
-            range: self.source_map.get_range(self.get_enclosed_span()),
+            location: Location {
+                origin: self.get_origin(),
+                line_number: self.get_line_number(),
+                source: self.get_source(),
+                range: self.source_map.get_range(self.get_enclosed_span()),
+            },
             annotation: annotation.to_string(),
             suggestion,
         }
     }
 
-    fn variant_wrong_enclosed_type_error(&self) -> ErrorMessage {
+    fn variant_wrong_enclosed_type_error(&self) -> CompilerOutput {
         let example_variant = self.generate_example_variant();
         let modified_source = self
             .source_map
@@ -197,12 +207,14 @@ impl SourceMapped<'_, TsTypeRef> {
             annotation: Some("Try wrapping your value in a type literal.".to_string()),
             import_suggestion: None,
         });
-        ErrorMessage {
+        CompilerOutput {
             title: "Invalid Variant".to_string(),
-            origin: self.get_origin(),
-            line_number: self.get_line_number(),
-            source: self.get_source(),
-            range: self.source_map.get_range(self.get_enclosed_span()),
+            location: Location {
+                origin: self.get_origin(),
+                line_number: self.get_line_number(),
+                source: self.get_source(),
+                range: self.source_map.get_range(self.get_enclosed_span()),
+            },
             annotation: "Must have type literal enclosed here.".to_string(),
             suggestion,
         }
@@ -217,7 +229,7 @@ impl SourceMapped<'_, TsTypeRef> {
     // 2. If the enclosed type is a TypeRef that contains a TsFunc, just with
     // the wrong name, we should only modify the name in the example, (rather
     // than nuking their function signature).
-    fn func_wrong_enclosed_type_error(&self) -> ErrorMessage {
+    fn func_wrong_enclosed_type_error(&self) -> CompilerOutput {
         let example_func = "Update<() => void>".to_string();
 
         let type_params_absolute_range = (self.get_enclosed_span().lo, self.get_enclosed_span().hi);
@@ -237,12 +249,14 @@ impl SourceMapped<'_, TsTypeRef> {
             source[end_pos - 1..].to_string()
         );
 
-        ErrorMessage {
+        CompilerOutput {
             title: "Invalid Func declaration".to_string(),
-            origin: self.get_origin(),
-            line_number: self.get_line_number(),
-            source,
-            range,
+            location: Location {
+                origin: self.get_origin(),
+                line_number: self.get_line_number(),
+                source,
+                range,
+            },
             annotation: "the type params here are invalid".to_string(),
             suggestion: Some(Suggestion {
                 title:

@@ -2,10 +2,10 @@ use cdk_framework::AbstractCanisterTree;
 use proc_macro2::TokenStream;
 
 pub use crate::errors::{Error, GuardFunctionNotFound};
-use crate::ts_ast::TsAst;
-use body::stable_b_tree_map::StableBTreeMapNode;
-use plugin::Plugin;
-use traits::CollectResults;
+use crate::{
+    body::stable_b_tree_map::StableBTreeMapNode, plugin::Plugin, traits::CollectResults,
+    ts_ast::TsAst,
+};
 
 mod body;
 mod candid_type;

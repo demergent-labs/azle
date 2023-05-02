@@ -4,14 +4,14 @@ use swc_ecma_ast::ModuleItem;
 
 use crate::{
     canister_method::{module_item::ModuleItemHelperMethods, Annotation},
-    errors::{ErrorMessage, Suggestion},
+    errors::{CompilerOutput, Location, Suggestion},
     traits::GetSourceFileInfo,
 };
 
 pub fn build_extraneous_decorator_error_message(
     custom_decorator_module_item: &ModuleItem,
     source_map: &SourceMap,
-) -> ErrorMessage {
+) -> CompilerOutput {
     let span = custom_decorator_module_item.as_expr_stmt().unwrap().span;
 
     let annotation_type = match Annotation::from_module_item(custom_decorator_module_item) {
@@ -30,12 +30,14 @@ pub fn build_extraneous_decorator_error_message(
     let example_function_declaration =
         "export function some_canister_method() {\n  // method body\n}";
 
-    ErrorMessage {
+    CompilerOutput {
         title: format!("extraneous {} annotation", annotation_type),
-        origin: source_map.get_origin(span),
-        line_number: source_map.get_line_number(span),
-        source: source_map.get_source(span),
-        range,
+        location: Location {
+            origin: source_map.get_origin(span),
+            line_number: source_map.get_line_number(span),
+            source: source_map.get_source(span),
+            range,
+        },
         annotation: "expected this to be followed by an exported function declaration".to_string(),
         suggestion: Some(Suggestion {
             title: "Follow it with an exported function declaration or remove it. E.g.:"

@@ -2,7 +2,8 @@ use swc_common::SourceMap;
 use swc_ecma_ast::ModuleItem;
 
 use crate::{
-    canister_method::module_item::ModuleItemHelperMethods, errors::ErrorMessage,
+    canister_method::module_item::ModuleItemHelperMethods,
+    errors::{CompilerOutput, Location},
     traits::GetSourceFileInfo,
 };
 
@@ -44,16 +45,18 @@ pub fn build_parse_error_message(
     parse_error: ParseError,
     supposed_decorator: &ModuleItem,
     source_map: &SourceMap,
-) -> ErrorMessage {
+) -> CompilerOutput {
     let span = supposed_decorator.as_expr_stmt().unwrap().span;
     let range = source_map.get_range(span);
 
-    ErrorMessage {
+    CompilerOutput {
         title: parse_error.error_message(),
-        origin: source_map.get_origin(span),
-        line_number: source_map.get_line_number(span),
-        source: source_map.get_source(span),
-        range,
+        location: Location {
+            origin: source_map.get_origin(span),
+            line_number: source_map.get_line_number(span),
+            source: source_map.get_source(span),
+            range,
+        },
         annotation: "here".to_string(),
         suggestion: None,
     }

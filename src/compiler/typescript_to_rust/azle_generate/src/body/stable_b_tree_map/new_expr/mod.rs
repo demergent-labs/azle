@@ -3,7 +3,7 @@ use std::ops::Deref;
 use swc_ecma_ast::NewExpr;
 
 use super::expr::{ToU32, ToU8};
-use crate::{errors::ErrorMessage, ts_ast::SourceMapped, StableBTreeMapNode};
+use crate::{errors::CompilerOutput, ts_ast::SourceMapped, StableBTreeMapNode};
 
 mod errors;
 mod get_span;
@@ -15,7 +15,7 @@ pub enum ArgName {
 }
 
 impl SourceMapped<'_, NewExpr> {
-    pub fn to_stable_b_tree_map_node(&self) -> Result<StableBTreeMapNode, ErrorMessage> {
+    pub fn to_stable_b_tree_map_node(&self) -> Result<StableBTreeMapNode, CompilerOutput> {
         match &self.type_args {
             Some(type_args) => {
                 if type_args.params.len() != 2 {

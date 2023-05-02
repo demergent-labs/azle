@@ -1,11 +1,13 @@
 use cdk_framework::act::abstract_canister_tree::Error as CdkfError;
 
-mod error_message;
+mod compiler_output;
 mod errors;
+mod location;
 mod suggestion;
 
-pub use error_message::ErrorMessage;
+pub use compiler_output::CompilerOutput;
 pub use errors::{GuardFunctionNotFound, TypeNotFound};
+pub use location::Location;
 pub use suggestion::Suggestion;
 
 pub mod service_method;

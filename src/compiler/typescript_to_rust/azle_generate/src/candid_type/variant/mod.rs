@@ -2,7 +2,7 @@ use cdk_framework::act::node::candid::{variant::Member, Variant};
 use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
 use crate::{
-    errors::{ErrorMessage, Suggestion},
+    errors::{CompilerOutput, Location, Suggestion},
     traits::{GetName, GetSourceFileInfo, GetSourceInfo, GetSpan, TypeToString},
     ts_ast::SourceMapped,
 };
@@ -62,14 +62,16 @@ impl SourceMapped<'_, TsTypeElement> {
         ts_property_signature.to_variant_member()
     }
 
-    pub(super) fn variant_property_signature_error(&self) -> ErrorMessage {
+    pub(super) fn variant_property_signature_error(&self) -> CompilerOutput {
         let replacement = "property_name: null".to_string();
-        ErrorMessage {
+        CompilerOutput {
             title: "Invalid Variant".to_string(),
-            origin: self.get_origin(),
-            line_number: self.get_line_number(),
-            source: self.get_source(),
-            range: self.get_range(),
+            location: Location {
+                origin: self.get_origin(),
+                line_number: self.get_line_number(),
+                source: self.get_source(),
+                range: self.get_range(),
+            },
             annotation: format!("{} is not allowed here.", self.type_to_string()),
             suggestion: Some(Suggestion {
                 title: "Variant members must be properties".to_string(),

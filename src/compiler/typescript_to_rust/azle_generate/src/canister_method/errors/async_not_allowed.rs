@@ -3,7 +3,7 @@ use swc_common::SourceMap;
 use swc_ecma_ast::FnDecl;
 
 use crate::{
-    errors::{ErrorMessage, Suggestion},
+    errors::{CompilerOutput, Location, Suggestion},
     traits::GetSourceFileInfo,
 };
 
@@ -11,7 +11,7 @@ pub fn build_async_not_allowed_error_message(
     fn_decl: &FnDecl,
     source_map: &SourceMap,
     method_type: &CanisterMethodType,
-) -> ErrorMessage {
+) -> CompilerOutput {
     let custom_annotation = match method_type {
         CanisterMethodType::Heartbeat => "$heartbeat",
         CanisterMethodType::Init => "$init",
@@ -44,12 +44,14 @@ pub fn build_async_not_allowed_error_message(
         import_suggestion: None,
     });
 
-    ErrorMessage {
+    CompilerOutput {
         title,
-        origin,
-        line_number,
-        source,
-        range,
+        location: Location {
+            origin,
+            line_number,
+            source,
+            range,
+        },
         annotation,
         suggestion,
     }
