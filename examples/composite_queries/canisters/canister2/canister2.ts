@@ -2,7 +2,10 @@ import { ic, Manual, nat, Principal, $query, Result, $update } from 'azle';
 import { Canister3 } from '../canister3/types';
 
 const canister3 = new Canister3(
-    Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
+    Principal.fromText(
+        process.env.CANISTER3_PRINCIPAL ??
+            ic.trap('process.env.CANISTER3_PRINCIPAL is undefined')
+    )
 );
 
 let counter: nat = 0n;

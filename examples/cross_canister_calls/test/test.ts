@@ -9,7 +9,7 @@ const canister1 = createActorCanister1(getCanisterId('canister1'), {
     }
 });
 
-const canister2 = createActorCanister2(getCanisterId('canister1'), {
+const canister2 = createActorCanister2(getCanisterId('canister2'), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }

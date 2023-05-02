@@ -11,7 +11,8 @@
                 "output": "test/dfx_generated/canister1",
                 "node_compatibility": true
             },
-            "optimize": "size"
+            "optimize": "size",
+            "env": ["CANISTER1_PRINCIPAL", "CANISTER2_PRINCIPAL"]
         },
         "canister2": {
             "type": "custom",
@@ -24,7 +25,8 @@
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true
             },
-            "optimize": "size"
+            "optimize": "size",
+            "env": ["CANISTER3_PRINCIPAL"]
         },
         "canister3": {
             "type": "custom",
