@@ -11,7 +11,8 @@
                 "output": "test/dfx_generated/rejections",
                 "node_compatibility": true
             },
-            "optimize": "size"
+            "optimize": "size",
+            "env": ["SOME_SERVICE_PRINCIPAL"]
         },
         "some_service": {
             "type": "custom",

@@ -11,7 +11,8 @@
                 "output": "test/dfx_generated/func_types",
                 "node_compatibility": true
             },
-            "optimize": "size"
+            "optimize": "size",
+            "env": ["NOTIFIERS_PRINCIPAL"]
         },
         "notifiers": {
             "type": "custom",
@@ -24,7 +25,8 @@
                 "output": "test/dfx_generated/notifiers",
                 "node_compatibility": true
             },
-            "optimize": "size"
+            "optimize": "size",
+            "env": ["NOTIFIERS_PRINCIPAL"]
         }
     }
 }

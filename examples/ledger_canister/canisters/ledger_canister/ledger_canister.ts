@@ -1,6 +1,7 @@
 // TODO test all errors for query blocks
 
 import {
+    ic,
     match,
     nat32,
     nat64,
@@ -24,7 +25,10 @@ import {
 } from 'azle/canisters/ledger';
 
 const icpCanister = new Ledger(
-    Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
+    Principal.fromText(
+        process.env.ICP_CANISTER_PRINCIPAL ??
+            ic.trap('process.env.ICP_CANISTER_PRINCIPAL is undefined')
+    )
 );
 
 $update;

@@ -3,6 +3,7 @@ import {
     Query,
     Update,
     $init,
+    ic,
     match,
     nat64,
     Opt,
@@ -107,7 +108,10 @@ export async function getNotifierFromNotifiersCanister(): Promise<
     Result<NotifierFunc, string>
 > {
     const notifiersCanister: Notifier = new Notifier(
-        Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
+        Principal.fromText(
+            process.env.NOTIFIERS_PRINCIPAL ??
+                ic.trap('process.env.NOTIFIERS_PRINCIPAL is undefined')
+        )
     );
 
     const result = await notifiersCanister.getNotifier().call();
