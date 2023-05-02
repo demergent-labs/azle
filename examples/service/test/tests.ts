@@ -1,4 +1,4 @@
-import { Test } from 'azle/test';
+import { getCanisterId, Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/service/service.did';
 import { ActorSubclass } from '@dfinity/agent';
 import { execSync } from 'child_process';
@@ -34,7 +34,9 @@ export function getTests(serviceCanister: ActorSubclass<_SERVICE>): Test[] {
                 console.log(result);
 
                 return {
-                    Ok: result === '(service "ryjl3-tyaaa-aaaaa-aaaba-cai")'
+                    Ok:
+                        result ===
+                        `(service "${getCanisterId('some_service')}")`
                 };
             }
         },
@@ -65,7 +67,9 @@ export function getTests(serviceCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'serviceCrossCanisterCall',
             test: async () => {
                 const result = execSync(
-                    `dfx canister call service serviceCrossCanisterCall '(service "ryjl3-tyaaa-aaaaa-aaaba-cai")'`
+                    `dfx canister call service serviceCrossCanisterCall '(service "${getCanisterId(
+                        'some_service'
+                    )}")'`
                 )
                     .toString()
                     .trim();

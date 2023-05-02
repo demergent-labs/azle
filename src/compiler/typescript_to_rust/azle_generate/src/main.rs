@@ -14,9 +14,28 @@ fn main() {
     let compiler_info_string = std::fs::read_to_string(compiler_info_path).unwrap();
     let compiler_info: CompilerInfo = serde_json::from_str(&compiler_info_string).unwrap();
 
+    let environment_variables = if let Some(envs) = args.get(2) {
+        envs.split(',')
+            .filter(|env_var_name| env_var_name != &"")
+            .map(|env_var_name| {
+                (
+                    env_var_name.to_string(),
+                    std::env::var(env_var_name).unwrap(),
+                )
+            })
+            .collect()
+    } else {
+        vec![]
+    };
+
     let main_js = std::fs::read_to_string("src/main.js").unwrap();
 
-    let result = generate_canister(&compiler_info.file_names, main_js, &compiler_info.plugins);
+    let result = generate_canister(
+        &compiler_info.file_names,
+        main_js,
+        &compiler_info.plugins,
+        &environment_variables,
+    );
 
     // TODO let's fix this now too
     // TODO let's really do this

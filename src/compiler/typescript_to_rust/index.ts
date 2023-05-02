@@ -12,6 +12,7 @@ import { generateRustCanister } from './generate_rust_canister';
 import { Err, ok, unwrap } from '../utils/result';
 import {
     AzleError,
+    JSCanisterConfig,
     Plugin,
     Toml,
     TsCompilationError,
@@ -24,11 +25,12 @@ import { readFileSync } from 'fs';
 export function compileTypeScriptToRust(
     canisterName: string,
     canisterPath: string,
-    rootPath: string,
-    tsPath: string
+    canisterConfig: JSCanisterConfig
 ): void | never {
     time('\n[1/3] 🔨 Compiling TypeScript...', 'inline', () => {
-        const compilationResult = compileTypeScriptToJavaScript(tsPath);
+        const compilationResult = compileTypeScriptToJavaScript(
+            canisterConfig.ts
+        );
 
         if (!ok(compilationResult)) {
             const azleErrorResult = compilationErrorToAzleErrorResult(
@@ -38,10 +40,14 @@ export function compileTypeScriptToRust(
         }
 
         const mainJs = compilationResult.ok;
-        const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
+        const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
+            canisterConfig.root
+        );
         const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
 
-        const { fileNames, plugins } = getFileNamesAndPlugins(tsPath);
+        const { fileNames, plugins } = getFileNamesAndPlugins(
+            canisterConfig.ts
+        );
 
         const pluginsDependencies = plugins
             .map((plugin) => {
@@ -62,7 +68,7 @@ export function compileTypeScriptToRust(
         );
 
         writeCodeToFileSystem(
-            rootPath,
+            canisterConfig.root,
             canisterPath,
             workspaceCargoToml,
             workspaceCargoLock,
@@ -71,7 +77,12 @@ export function compileTypeScriptToRust(
         );
 
         unwrap(
-            generateRustCanister(fileNames, plugins, canisterPath, { rootPath })
+            generateRustCanister(
+                fileNames,
+                plugins,
+                canisterPath,
+                canisterConfig
+            )
         );
 
         if (isCompileOnlyMode()) {

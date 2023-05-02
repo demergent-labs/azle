@@ -40,3 +40,41 @@ pub fn generate_call_to_js_function(annotated_fn_decl: &AnnotatedFnDecl) -> Toke
         );
     }
 }
+
+pub fn generate_register_process_object(
+    environment_variables: &Vec<(String, String)>,
+) -> TokenStream {
+    let env_properties = environment_variables.iter().map(|environment_variable| {
+        let name = &environment_variable.0;
+        let value = &environment_variable.1;
+
+        quote! {
+            .property(
+                #name,
+                #value,
+                boa_engine::property::Attribute::all()
+            )
+        }
+    });
+
+    quote! {
+        let env = boa_engine::object::ObjectInitializer::new(&mut boa_context)
+            #(#env_properties)*
+            .build();
+
+
+        let process = boa_engine::object::ObjectInitializer::new(&mut boa_context)
+            .property(
+                "env",
+                env,
+                boa_engine::property::Attribute::all()
+            )
+            .build();
+
+        boa_context.register_global_property(
+            "process",
+            process,
+            boa_engine::property::Attribute::all(),
+        );
+    }
+}

@@ -7,7 +7,13 @@ import {
     GLOBAL_AZLE_TARGET_DIR
 } from '../utils';
 import { Err, ok, Ok, Result } from '../utils/result';
-import { AzleError, Plugin, RunOptions, Rust } from '../utils/types';
+import {
+    AzleError,
+    JSCanisterConfig,
+    Plugin,
+    RunOptions,
+    Rust
+} from '../utils/types';
 import { isVerboseMode } from '../utils';
 import { red } from '../utils/colors';
 
@@ -15,7 +21,7 @@ export function generateRustCanister(
     fileNames: string[],
     plugins: Plugin[],
     canisterPath: string,
-    { rootPath }: RunOptions
+    canisterConfig: JSCanisterConfig
 ): Result<undefined, AzleError> {
     const compilerInfo = {
         plugins,
@@ -24,7 +30,7 @@ export function generateRustCanister(
 
     const compilerInfoPath = join(
         canisterPath,
-        rootPath,
+        canisterConfig.root,
         'azle_generate',
         'compiler_info.json'
     );
@@ -34,7 +40,7 @@ export function generateRustCanister(
     const azleGenerateResult = runAzleGenerate(
         'compiler_info.json',
         canisterPath,
-        rootPath
+        canisterConfig
     );
 
     if (!ok(azleGenerateResult)) {
@@ -43,10 +49,13 @@ export function generateRustCanister(
 
     const unformattedLibFile = azleGenerateResult.ok;
 
-    writeFileSync(`${canisterPath}/${rootPath}/src/lib.rs`, unformattedLibFile);
+    writeFileSync(
+        `${canisterPath}/${canisterConfig.root}/src/lib.rs`,
+        unformattedLibFile
+    );
 
     const runRustFmtResult = runRustFmt(unformattedLibFile, canisterPath, {
-        rootPath
+        rootPath: canisterConfig.root
     });
 
     if (!ok(runRustFmtResult)) {
@@ -55,11 +64,14 @@ export function generateRustCanister(
 
     const formattedLibFile = runRustFmtResult.ok;
 
-    writeFileSync(`${canisterPath}/${rootPath}/src/lib.rs`, formattedLibFile);
+    writeFileSync(
+        `${canisterPath}/${canisterConfig.root}/src/lib.rs`,
+        formattedLibFile
+    );
 
     if (isVerboseMode()) {
         console.info(
-            `Wrote formatted lib.rs file to ${canisterPath}/${rootPath}/src/lib.rs\n`
+            `Wrote formatted lib.rs file to ${canisterPath}/${canisterConfig.root}/src/lib.rs\n`
         );
     }
     return Ok(undefined);
@@ -68,16 +80,16 @@ export function generateRustCanister(
 function runAzleGenerate(
     compilerInfoPath: string,
     canisterPath: string,
-    rootPath: string
+    canisterConfig: JSCanisterConfig
 ): Result<Rust, AzleError> {
     if (isVerboseMode()) {
         console.info('running azle_generate');
     }
     const executionResult = spawnSync(
         `${GLOBAL_AZLE_BIN_DIR}/cargo`,
-        ['run', '--', compilerInfoPath],
+        ['run', '--', compilerInfoPath, (canisterConfig.env ?? []).join(',')],
         {
-            cwd: `${canisterPath}/${rootPath}/azle_generate`,
+            cwd: `${canisterPath}/${canisterConfig.root}/azle_generate`,
             stdio: 'pipe',
             env: {
                 ...process.env,

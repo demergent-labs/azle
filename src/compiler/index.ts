@@ -42,12 +42,7 @@ function azle() {
         const candidPath = canisterConfig.candid;
 
         printFirstBuildWarning();
-        compileTypeScriptToRust(
-            canisterName,
-            canisterPath,
-            canisterConfig.root,
-            canisterConfig.ts
-        );
+        compileTypeScriptToRust(canisterName, canisterPath, canisterConfig);
         compileRustCode(canisterName, canisterPath, stdioType);
         generateCandidFile(candidPath, wasmFilePath);
         optimizeRustCode(wasmFilePath, stdioType);

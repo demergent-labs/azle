@@ -22,8 +22,9 @@ pub fn generate_canister(
     ts_file_names: &Vec<String>,
     main_js: String,
     plugins: &Vec<Plugin>,
+    environment_variables: &Vec<(String, String)>,
 ) -> TokenStream {
-    TsAst::new(ts_file_names, main_js, plugins)
+    TsAst::new(ts_file_names, main_js, plugins, environment_variables)
         .to_act()
         .to_token_stream()
 }

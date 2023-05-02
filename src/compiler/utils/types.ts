@@ -19,6 +19,7 @@ export type JSCanisterConfig = Readonly<{
     ts: string;
     candid: string;
     wasm: string;
+    env: string[];
 }>;
 
 export type Plugin = {

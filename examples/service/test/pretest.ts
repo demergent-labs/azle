@@ -1,4 +1,5 @@
 import { execSync } from 'child_process';
+import { getCanisterId } from 'azle/test';
 
 async function pretest() {
     await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -11,9 +12,16 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy`, {
+    execSync(`dfx canister create some_service || true`, {
         stdio: 'inherit'
     });
+
+    execSync(
+        `SOME_SERVICE_PRINCIPAL=${getCanisterId('some_service')} dfx deploy`,
+        {
+            stdio: 'inherit'
+        }
+    );
 
     execSync(`dfx generate`, {
         stdio: 'inherit'

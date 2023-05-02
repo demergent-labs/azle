@@ -10,6 +10,7 @@ use crate::{
 pub fn generate(
     post_upgrade_fn_decl_option: Option<&AnnotatedFnDecl>,
     plugins: &Vec<Plugin>,
+    environment_variables: &Vec<(String, String)>,
 ) -> TokenStream {
     let call_to_post_upgrade_js_function =
         rust::maybe_generate_call_to_js_function(&post_upgrade_fn_decl_option);
@@ -25,6 +26,8 @@ pub fn generate(
         quote!(#register_function_ident(&mut boa_context);)
     });
 
+    let register_process_object = rust::generate_register_process_object(environment_variables);
+
     quote! {
         BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
             let mut boa_context = box_context_ref_cell.borrow_mut();
@@ -36,6 +39,8 @@ pub fn generate(
             });
 
             register_ic_object(&mut boa_context);
+
+            #register_process_object
 
             #(#register_plugins)*
 
