@@ -1,5 +1,7 @@
 use azle_generate::{generate_canister, plugin::Plugin};
 use serde::{Deserialize, Serialize};
+use std::fs::File;
+use std::io::Write;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CompilerInfo {
@@ -30,14 +32,15 @@ fn main() {
 
     let main_js = std::fs::read_to_string("src/main.js").unwrap();
 
-    let result = generate_canister(
+    let lib_file = generate_canister(
         &compiler_info.file_names,
         main_js,
         &compiler_info.plugins,
         &environment_variables,
-    );
+    )
+    .to_string();
 
-    // TODO let's fix this now too
-    // TODO let's really do this
-    println!("{}", result);
+    let mut f = File::create("../src/lib.rs").expect("Unable to create file");
+    f.write_all(lib_file.as_bytes())
+        .expect("Unable to write data");
 }
