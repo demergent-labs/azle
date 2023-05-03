@@ -24,21 +24,25 @@ pub fn generate_canister(
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
 ) -> TokenStream {
-    TsAst::new(ts_file_names, main_js, plugins, environment_variables)
-        .to_act()
+    TsAst::new(ts_file_names, main_js)
+        .to_act(plugins, environment_variables)
         .to_token_stream()
 }
 
 impl TsAst {
-    pub fn to_act(&self) -> AbstractCanisterTree {
+    pub fn to_act(
+        &self,
+        plugins: &Vec<Plugin>,
+        environment_variables: &Vec<(String, String)>,
+    ) -> AbstractCanisterTree {
         let candid_types = self.build_candid_types();
-        let canister_methods = self.build_canister_methods();
+        let canister_methods = self.build_canister_methods(plugins, environment_variables);
         let body = body::generate(
             self,
             &canister_methods.query_methods,
             &canister_methods.update_methods,
             &candid_types.services,
-            &self.plugins,
+            plugins,
         );
         let cdk_name = "azle".to_string();
         let guard_functions = self.build_guard_functions();

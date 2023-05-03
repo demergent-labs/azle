@@ -33,13 +33,10 @@ export function generateRustCanister(
         'compiler_info.json'
     );
 
+    // TODO why not just write the dfx.json file here as well?
     writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
 
     runAzleGenerate('compiler_info.json', canisterPath, canisterConfig);
-
-    runRustFmt(canisterPath, {
-        rootPath: canisterConfig.root
-    });
 
     return Ok(undefined);
 }
@@ -97,26 +94,5 @@ function runAzleGenerate(
 
     if (runResult.status !== null && runResult.status !== 0) {
         process.exit(runResult.status);
-    }
-}
-
-function runRustFmt(canisterPath: string, { rootPath }: RunOptions) {
-    const result = spawnSync(
-        `${GLOBAL_AZLE_BIN_DIR}/rustfmt`,
-        ['--edition=2018', 'src/lib.rs'],
-        {
-            cwd: `${canisterPath}/${rootPath}`,
-            stdio: ['inherit', isVerboseMode() ? 'inherit' : 'pipe', 'inherit'],
-            env: {
-                ...process.env,
-                CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
-                CARGO_HOME: GLOBAL_AZLE_RUST_DIR,
-                RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR
-            }
-        }
-    );
-
-    if (result.status !== null && result.status !== 0) {
-        process.exit(result.status);
     }
 }

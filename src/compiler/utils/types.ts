@@ -19,7 +19,7 @@ export type JSCanisterConfig = Readonly<{
     ts: string;
     candid: string;
     wasm: string;
-    env: string[];
+    env?: string[];
     opt_level?: OptLevel;
 }>;
 

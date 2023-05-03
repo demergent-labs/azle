@@ -1,6 +1,6 @@
 use cdk_framework::act::CanisterMethods;
 
-use crate::ts_ast::TsAst;
+use crate::{plugin::Plugin, ts_ast::TsAst};
 
 pub use annotated_fn_decl::{AnnotatedFnDecl, GetAnnotatedFnDecls};
 pub use annotation::Annotation;
@@ -21,11 +21,16 @@ pub mod errors;
 pub mod module;
 
 impl TsAst {
-    pub fn build_canister_methods(&self) -> CanisterMethods {
+    pub fn build_canister_methods(
+        &self,
+        plugins: &Vec<Plugin>,
+        environment_variables: &Vec<(String, String)>,
+    ) -> CanisterMethods {
         let heartbeat_method = self.build_heartbeat_method();
-        let init_method = Some(self.build_init_method());
+        let init_method = Some(self.build_init_method(plugins, environment_variables));
         let inspect_message_method = self.build_inspect_message_method();
-        let post_upgrade_method = Some(self.build_post_upgrade_method());
+        let post_upgrade_method =
+            Some(self.build_post_upgrade_method(plugins, environment_variables));
         let pre_upgrade_method = self.build_pre_upgrade_method();
         let query_methods = self.build_query_methods();
         let update_methods = self.build_update_methods();

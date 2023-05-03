@@ -13,28 +13,16 @@ pub mod ts_type_element;
 pub struct TsAst {
     pub programs: Vec<Program>,
     pub main_js: String,
-    pub plugins: Vec<Plugin>,
-    pub environment_variables: Vec<(String, String)>,
 }
 
 impl TsAst {
-    pub fn new(
-        ts_file_names: &Vec<String>,
-        main_js: String,
-        plugins: &Vec<Plugin>,
-        environment_variables: &Vec<(String, String)>,
-    ) -> Self {
+    pub fn new(ts_file_names: &Vec<String>, main_js: String) -> Self {
         let programs = ts_file_names
             .iter()
             .map(|ts_file_name| Program::from_file_name(ts_file_name))
             .collect();
 
-        Self {
-            programs,
-            main_js,
-            plugins: plugins.to_vec(),
-            environment_variables: environment_variables.clone(),
-        }
+        Self { programs, main_js }
     }
 
     // Note: Both module_items and decls seem like useful methods but we're not

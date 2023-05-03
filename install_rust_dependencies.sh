@@ -24,7 +24,6 @@ function run() {
         mkdir -p "$global_azle_logs_dir"
 
         install_rustup
-        install_rust_fmt
         install_wasm32_unknown_unknown
     fi
 }
@@ -35,10 +34,6 @@ function install_rustup() {
 
 function update_rustup() {
     "$global_azle_rustup_bin" update "$rust_version" &> "$global_azle_logs_dir"/update_rustup
-}
-
-function install_rust_fmt() {
-    "$global_azle_rustup_bin" component add rustfmt &> "$global_azle_logs_dir"/install_rust_fmt
 }
 
 function install_wasm32_unknown_unknown() {
