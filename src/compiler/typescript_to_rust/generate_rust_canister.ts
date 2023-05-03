@@ -6,21 +6,18 @@ import {
     GLOBAL_AZLE_RUST_DIR,
     GLOBAL_AZLE_TARGET_DIR
 } from '../utils';
-import { Ok, Result } from '../utils/result';
-import {
-    AzleError,
-    JSCanisterConfig,
-    Plugin,
-    RunOptions
-} from '../utils/types';
+import { Result } from '../../lib';
+import { JSCanisterConfig, Plugin, SpawnSyncError } from '../utils/types';
 import { isVerboseMode } from '../utils';
 
+// TODO I think we should use the official Azle Result and match everywhere
+// TODO we should get rid of the custom ones created here
 export function generateRustCanister(
     fileNames: string[],
     plugins: Plugin[],
     canisterPath: string,
     canisterConfig: JSCanisterConfig
-): Result<undefined, AzleError> {
+): Result<null, SpawnSyncError> {
     const compilerInfo = {
         plugins,
         file_names: fileNames
@@ -36,16 +33,20 @@ export function generateRustCanister(
     // TODO why not just write the dfx.json file here as well?
     writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
 
-    runAzleGenerate('compiler_info.json', canisterPath, canisterConfig);
+    const result = runAzleGenerate(
+        'compiler_info.json',
+        canisterPath,
+        canisterConfig
+    );
 
-    return Ok(undefined);
+    return result;
 }
 
 function runAzleGenerate(
     compilerInfoPath: string,
     canisterPath: string,
     canisterConfig: JSCanisterConfig
-) {
+): Result<null, SpawnSyncError> {
     // TODO to cut the time in half here, if we can just generate the binary
     // TODO and then after that use the binary, that could work
     // TODO the problem is that this binary is stored in a global target dir
@@ -66,10 +67,22 @@ function runAzleGenerate(
         }
     });
 
-    // TODO should we handle presenting errors to the user somehow here?
-    // TODO maybe we should tell them to just rerun with verbose if the status code is not 0
+    if (buildResult.error) {
+        return Result.Err({
+            Error: buildResult.error.message
+        });
+    }
+
+    if (buildResult.signal) {
+        return Result.Err({
+            Signal: buildResult.signal
+        });
+    }
+
     if (buildResult.status !== null && buildResult.status !== 0) {
-        process.exit(buildResult.status);
+        return Result.Err({
+            Status: buildResult.status
+        });
     }
 
     // TODO right here let's copy the binary over to a special location in ~/.config/azle/azle_version
@@ -92,7 +105,23 @@ function runAzleGenerate(
         }
     );
 
-    if (runResult.status !== null && runResult.status !== 0) {
-        process.exit(runResult.status);
+    if (runResult.error) {
+        return Result.Err({
+            Error: runResult.error.message
+        });
     }
+
+    if (runResult.signal) {
+        return Result.Err({
+            Signal: runResult.signal
+        });
+    }
+
+    if (runResult.status !== null && runResult.status !== 0) {
+        return Result.Err({
+            Status: runResult.status
+        });
+    }
+
+    return Result.Ok(null);
 }

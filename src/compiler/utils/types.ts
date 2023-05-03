@@ -1,3 +1,5 @@
+import { Variant } from '../../lib';
+
 export type AzleError = {
     error?: string;
     suggestion?: string;
@@ -35,6 +37,12 @@ export type RunOptions = {
 };
 
 export type Rust = string;
+
+export type SpawnSyncError = Variant<{
+    Error: string;
+    Signal: NodeJS.Signals;
+    Status: number;
+}>;
 
 export type Toml = string;
 

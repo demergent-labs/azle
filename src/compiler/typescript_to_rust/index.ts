@@ -19,6 +19,7 @@ import {
     TsSyntaxErrorLocation
 } from '../utils/types';
 import { time } from '../utils';
+import { match } from '../../lib';
 import { red, dim } from '../utils/colors';
 import { readFileSync } from 'fs';
 
@@ -77,14 +78,35 @@ export function compileTypeScriptToRust(
             mainJs as any
         );
 
-        unwrap(
-            generateRustCanister(
-                fileNames,
-                plugins,
-                canisterPath,
-                canisterConfig
-            )
+        const generateRustCanisterResult = generateRustCanister(
+            fileNames,
+            plugins,
+            canisterPath,
+            canisterConfig
         );
+
+        match(generateRustCanisterResult, {
+            Err: (err) => {
+                match(err, {
+                    Error: (err) => {
+                        console.error(`Compilation failed: ${err}`);
+                    },
+                    Signal: (signal) => {
+                        console.error(
+                            `Compilation failed with signal: ${signal}`
+                        );
+                    },
+                    Status: (status) => {
+                        console.error(
+                            `Compilation failed with status: ${status}`
+                        );
+                    }
+                });
+
+                process.exit(1);
+            },
+            _: () => {}
+        });
 
         if (isCompileOnlyMode()) {
             console.log('Compilation complete!');
