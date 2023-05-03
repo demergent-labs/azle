@@ -4,10 +4,7 @@ use swc_ecma_ast::TsType;
 use crate::canister_method::AnnotatedFnDecl;
 
 pub use async_not_allowed::build_async_not_allowed_error_message;
-pub use duplicate_method_types::{
-    build_duplicate_method_types_error_message,
-    build_duplicate_method_types_error_message_from_annotated_fn_decl,
-};
+pub use duplicate_system_method::DuplicateSystemMethod;
 pub use extraneous_decorator::build_extraneous_decorator_error_message;
 pub use missing_return_type::build_missing_return_type_error_message;
 pub use parse_error::build_parse_error_message;
@@ -15,7 +12,7 @@ pub use parse_error::ParseError;
 pub use void_return_type_required::build_void_return_type_required_error_message;
 
 mod async_not_allowed;
-mod duplicate_method_types;
+mod duplicate_system_method;
 mod extraneous_decorator;
 mod missing_return_type;
 mod parse_error;

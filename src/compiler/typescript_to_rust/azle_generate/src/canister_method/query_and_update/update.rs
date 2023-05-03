@@ -1,10 +1,10 @@
 use cdk_framework::act::node::canister_method::{CanisterMethod, CanisterMethodType, UpdateMethod};
 
 use super::shared::BuildCanisterMethods;
-use crate::TsAst;
+use crate::{Error, TsAst};
 
 impl TsAst {
-    pub fn build_update_methods(&self) -> Vec<UpdateMethod> {
+    pub fn build_update_methods(&self) -> Result<Vec<UpdateMethod>, Vec<Error>> {
         let update_canister_methods = self
             .programs
             .build_canister_method_nodes(CanisterMethodType::Update);
@@ -17,6 +17,6 @@ impl TsAst {
                     }
                     acc
                 });
-        update_methods
+        Ok(update_methods)
     }
 }

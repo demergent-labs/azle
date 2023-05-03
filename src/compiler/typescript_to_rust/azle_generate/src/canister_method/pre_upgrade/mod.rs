@@ -1,26 +1,27 @@
 use cdk_framework::act::node::canister_method::{CanisterMethodType, PreUpgradeMethod};
 
 use crate::{
-    canister_method::{errors, GetAnnotatedFnDecls},
-    TsAst,
+    canister_method::{errors::DuplicateSystemMethod, GetAnnotatedFnDecls},
+    Error, TsAst,
 };
 
 mod rust;
 
 impl TsAst {
-    pub fn build_pre_upgrade_method(&self) -> Option<PreUpgradeMethod> {
+    pub fn build_pre_upgrade_method(&self) -> Result<Option<PreUpgradeMethod>, Vec<Error>> {
         let pre_upgrade_fn_decls = self
             .programs
             .get_annotated_fn_decls_of_type(CanisterMethodType::PreUpgrade);
 
         if pre_upgrade_fn_decls.len() > 1 {
-            let error_message =
-                errors::build_duplicate_method_types_error_message_from_annotated_fn_decl(
+            let duplicate_method_types_error: Error =
+                DuplicateSystemMethod::from_annotated_fn_decls(
                     pre_upgrade_fn_decls,
                     CanisterMethodType::PreUpgrade,
-                );
+                )
+                .into();
 
-            panic!("{}", error_message);
+            return Err(vec![duplicate_method_types_error]);
         }
 
         let pre_upgrade_fn_decl_option = pre_upgrade_fn_decls.get(0);
@@ -32,12 +33,12 @@ impl TsAst {
             let body = rust::generate(pre_upgrade_fn_decl);
             let guard_function_name = pre_upgrade_fn_decl.annotation.guard.clone();
 
-            Some(PreUpgradeMethod {
+            Ok(Some(PreUpgradeMethod {
                 body,
                 guard_function_name,
-            })
+            }))
         } else {
-            None
+            Ok(None)
         }
     }
 }

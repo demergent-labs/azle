@@ -58,11 +58,6 @@ impl TsAst {
         let keywords = ts_keywords::ts_keywords();
         let vm_value_conversion = self.build_vm_value_conversion();
 
-        // return Err(vec![GuardFunctionNotFound {
-        //     name: "Bob".to_string(),
-        // }
-        // .into()]);
-
         Ok(AbstractCanisterTree {
             body,
             canister_methods,

@@ -1,10 +1,10 @@
 use cdk_framework::act::node::canister_method::{CanisterMethod, CanisterMethodType, QueryMethod};
 
 use super::shared::BuildCanisterMethods;
-use crate::TsAst;
+use crate::{Error, TsAst};
 
 impl TsAst {
-    pub fn build_query_methods(&self) -> Vec<QueryMethod> {
+    pub fn build_query_methods(&self) -> Result<Vec<QueryMethod>, Vec<Error>> {
         let query_canister_methods = self
             .programs
             .build_canister_method_nodes(CanisterMethodType::Query);
@@ -17,6 +17,6 @@ impl TsAst {
                     }
                     acc
                 });
-        query_methods
+        Ok(query_methods)
     }
 }

@@ -1,9 +1,9 @@
 use cdk_framework::act::node::canister_method::{CanisterMethodType, InitMethod};
 
 use crate::{
-    canister_method::{errors, GetAnnotatedFnDecls},
+    canister_method::{errors::DuplicateSystemMethod, GetAnnotatedFnDecls},
     plugin::Plugin,
-    TsAst,
+    Error, TsAst,
 };
 
 mod rust;
@@ -13,19 +13,20 @@ impl TsAst {
         &self,
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
-    ) -> InitMethod {
+    ) -> Result<InitMethod, Vec<Error>> {
         let init_fn_decls = self
             .programs
             .get_annotated_fn_decls_of_type(CanisterMethodType::Init);
 
         if init_fn_decls.len() > 1 {
-            let error_message =
-                errors::build_duplicate_method_types_error_message_from_annotated_fn_decl(
+            let duplicate_method_types_error: Error =
+                DuplicateSystemMethod::from_annotated_fn_decls(
                     init_fn_decls,
                     CanisterMethodType::Init,
-                );
+                )
+                .into();
 
-            panic!("{}", error_message);
+            return Err(vec![duplicate_method_types_error]);
         }
 
         let init_fn_decl_option = init_fn_decls.get(0);
@@ -44,10 +45,10 @@ impl TsAst {
         let body = rust::generate(init_fn_decl_option, plugins, environment_variables);
         let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
 
-        InitMethod {
+        Ok(InitMethod {
             params,
             body,
             guard_function_name,
-        }
+        })
     }
 }

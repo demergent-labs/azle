@@ -1,6 +1,6 @@
 use cdk_framework::act::CanisterMethods;
 
-use crate::{plugin::Plugin, ts_ast::TsAst, Error};
+use crate::{plugin::Plugin, traits::CollectResults, ts_ast::TsAst, Error};
 
 pub use annotated_fn_decl::{AnnotatedFnDecl, GetAnnotatedFnDecls};
 pub use annotation::Annotation;
@@ -26,20 +26,30 @@ impl TsAst {
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
     ) -> Result<CanisterMethods, Vec<Error>> {
-        let heartbeat_method = self.build_heartbeat_method();
-        let init_method = Some(self.build_init_method(plugins, environment_variables));
-        let inspect_message_method = self.build_inspect_message_method();
-        let post_upgrade_method =
-            Some(self.build_post_upgrade_method(plugins, environment_variables));
-        let pre_upgrade_method = self.build_pre_upgrade_method();
-        let query_methods = self.build_query_methods();
-        let update_methods = self.build_update_methods();
-
-        Ok(CanisterMethods {
+        let (
             heartbeat_method,
             init_method,
             inspect_message_method,
             post_upgrade_method,
+            pre_upgrade_method,
+            query_methods,
+            update_methods,
+        ) = (
+            self.build_heartbeat_method(),
+            self.build_init_method(plugins, environment_variables),
+            self.build_inspect_message_method(),
+            self.build_post_upgrade_method(plugins, environment_variables),
+            self.build_pre_upgrade_method(),
+            self.build_query_methods(),
+            self.build_update_methods(),
+        )
+            .collect_results()?;
+
+        Ok(CanisterMethods {
+            heartbeat_method,
+            init_method: Some(init_method),
+            inspect_message_method,
+            post_upgrade_method: Some(post_upgrade_method),
             pre_upgrade_method,
             query_methods,
             update_methods,
