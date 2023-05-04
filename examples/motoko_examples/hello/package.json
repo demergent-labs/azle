@@ -14,8 +14,8 @@
         "start": "webpack serve --mode development --env development",
         "prestart": "npm run copy:types",
         "copy:types": "rsync -avr .dfx/$(echo ${DFX_NETWORK:-'**'})/canisters/** --exclude='assets/' --exclude='idl/' --exclude='*.wasm' --delete canisters/declarations",
-        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
-        "test": "ts-node --transpile-only --ignore=false test/test.ts"
+        "pretest": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/pretest.ts",
+        "test": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
         "azle": "0.15.0"

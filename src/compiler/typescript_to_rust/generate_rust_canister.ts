@@ -1,14 +1,16 @@
 import { spawnSync } from 'child_process';
-import { writeFileSync } from 'fs';
+import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import {
     GLOBAL_AZLE_BIN_DIR,
+    GLOBAL_AZLE_CONFIG_DIR,
     GLOBAL_AZLE_RUST_DIR,
     GLOBAL_AZLE_TARGET_DIR
 } from '../utils';
 import { Result } from '../../lib';
 import { JSCanisterConfig, Plugin, SpawnSyncError } from '../utils/types';
 import { isVerboseMode } from '../utils';
+import { version as azleVersion } from '../../../package.json';
 
 // TODO I think we should use the official Azle Result and match everywhere
 // TODO we should get rid of the custom ones created here
@@ -47,13 +49,57 @@ function runAzleGenerate(
     canisterPath: string,
     canisterConfig: JSCanisterConfig
 ): Result<null, SpawnSyncError> {
-    // TODO to cut the time in half here, if we can just generate the binary
-    // TODO and then after that use the binary, that could work
-    // TODO the problem is that this binary is stored in a global target dir
-    // TODO we might need to have an azle-version-specific dir for the azle_generate binary
-    // TODO maybe that's fine and easy though
+    const azleGenerateBinPath = join(
+        GLOBAL_AZLE_CONFIG_DIR,
+        'azle_generate',
+        azleVersion,
+        'azle_generate'
+    );
+    const azleGenerateBinPathDebug = join(
+        GLOBAL_AZLE_TARGET_DIR,
+        'debug',
+        'azle_generate'
+    );
+    const azleGenerateDir = join(
+        canisterPath,
+        canisterConfig.root,
+        'azle_generate'
+    );
+
+    const shouldRebuild =
+        !existsSync(azleGenerateBinPath) || process.env.AZLE_REBUILD === 'true';
+
+    if (shouldRebuild) {
+        const buildResult = buildBinary(
+            azleGenerateBinPath,
+            azleGenerateBinPathDebug,
+            azleGenerateDir
+        );
+
+        if (buildResult.Err !== undefined) {
+            return Result.Err(buildResult.Err);
+        }
+    }
+
+    return runBinary(
+        azleGenerateBinPath,
+        azleGenerateDir,
+        compilerInfoPath,
+        canisterConfig
+    );
+}
+
+function buildBinary(
+    azleGenerateBinPath: string,
+    azleGenerateBinPathDebug: string,
+    azleGenerateDir: string
+): Result<null, SpawnSyncError> {
+    mkdirSync(join(GLOBAL_AZLE_CONFIG_DIR, 'azle_generate', azleVersion), {
+        recursive: true
+    });
+
     const buildResult = spawnSync(`${GLOBAL_AZLE_BIN_DIR}/cargo`, ['build'], {
-        cwd: `${canisterPath}/${canisterConfig.root}/azle_generate`,
+        cwd: azleGenerateDir,
         stdio: [
             'inherit',
             isVerboseMode() ? 'inherit' : 'pipe',
@@ -85,16 +131,22 @@ function runAzleGenerate(
         });
     }
 
-    // TODO right here let's copy the binary over to a special location in ~/.config/azle/azle_version
-    // TODO if it isn't there, then we build and store it there
-    // TODO if it is there, then we just leave it there
-    // TODO but what about during development? We'll never get the binary to change if developing
+    copyFileSync(azleGenerateBinPathDebug, azleGenerateBinPath);
 
+    return Result.Ok(null);
+}
+
+function runBinary(
+    azleGenerateBinPath: string,
+    azleGenerateDir: string,
+    compilerInfoPath: string,
+    canisterConfig: JSCanisterConfig
+): Result<null, SpawnSyncError> {
     const runResult = spawnSync(
-        `${GLOBAL_AZLE_TARGET_DIR}/debug/azle_generate`,
+        azleGenerateBinPath,
         [compilerInfoPath, (canisterConfig.env ?? []).join(',')],
         {
-            cwd: `${canisterPath}/${canisterConfig.root}/azle_generate`,
+            cwd: azleGenerateDir,
             stdio: ['inherit', isVerboseMode() ? 'inherit' : 'pipe', 'inherit'],
             env: {
                 ...process.env,

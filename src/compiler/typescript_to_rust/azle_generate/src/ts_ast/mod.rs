@@ -1,7 +1,6 @@
 use std::ops::Deref;
 use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl};
 
-use crate::plugin::Plugin;
 pub use program::Program;
 pub use source_map::SourceMapped;
 
