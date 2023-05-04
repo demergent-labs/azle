@@ -1,11 +1,12 @@
 import {
     CallResult,
-    $query,
-    $update,
+    ic,
     Principal,
+    $query,
     Service,
     serviceQuery,
     serviceUpdate,
+    $update,
     Variant,
     Vec
 } from 'azle';
@@ -25,7 +26,12 @@ export function serviceParam(someService: SomeService): SomeService {
 
 $query;
 export function serviceReturnType(): SomeService {
-    return new SomeService(Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'));
+    return new SomeService(
+        Principal.fromText(
+            process.env.SOME_SERVICE_PRINCIPAL ??
+                ic.trap('process.env.SOME_SERVICE_PRINCIPAL is undefined')
+        )
+    );
 }
 
 $update;

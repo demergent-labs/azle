@@ -1,10 +1,10 @@
 // TODO this needs to be more thoroughly tested
 
-import { runTests } from 'azle/test';
+import { getCanisterId, runTests } from 'azle/test';
 import { createActor } from '../test/dfx_generated/complex_types';
 import { get_tests } from './tests';
 
-const complex_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+const complex_types_canister = createActor(getCanisterId('complex_types'), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }

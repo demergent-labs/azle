@@ -1,8 +1,8 @@
-import { runTests } from 'azle/test';
+import { getCanisterId, runTests } from 'azle/test';
 import { createActor } from './dfx_generated/manual_reply';
 import { getTests } from './tests';
 
-const manual_reply_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+const manual_reply_canister = createActor(getCanisterId('manual_reply'), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }

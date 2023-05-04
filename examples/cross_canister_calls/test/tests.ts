@@ -1,4 +1,4 @@
-import { ok, Test } from 'azle/test';
+import { getCanisterId, ok, Test } from 'azle/test';
 import { _SERVICE as CANISTER1_SERVICE } from './dfx_generated/canister1/canister1.did';
 import { _SERVICE as CANISTER2_SERVICE } from './dfx_generated/canister2/canister2.did';
 import { ActorSubclass } from '@dfinity/agent';
@@ -218,7 +218,9 @@ export function get_tests(
                     Ok:
                         'Err' in result &&
                         result.Err ===
-                            'Rejection code 5, IC0503: Canister ryjl3-tyaaa-aaaaa-aaaba-cai trapped explicitly: hahahaha'
+                            `Rejection code 5, IC0503: Canister ${getCanisterId(
+                                'canister2'
+                            )} trapped explicitly: hahahaha`
                 };
             }
         },

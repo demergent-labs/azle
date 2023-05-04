@@ -12,11 +12,17 @@ import { Canister1 } from '../canister1/types';
 import { Canister2 } from '../canister2/types';
 
 const canister1 = new Canister1(
-    Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
+    Principal.fromText(
+        process.env.CANISTER1_PRINCIPAL ??
+            ic.trap('process.env.CANISTER1_PRINCIPAL is undefined')
+    )
 );
 
 const canister2 = new Canister2(
-    Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
+    Principal.fromText(
+        process.env.CANISTER2_PRINCIPAL ??
+            ic.trap('process.env.CANISTER2_PRINCIPAL is undefined')
+    )
 );
 
 let counter: nat = 0n;

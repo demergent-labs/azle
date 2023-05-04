@@ -1,4 +1,4 @@
-import { CallResult, empty, Principal, Service, serviceQuery } from 'azle';
+import { CallResult, empty, ic, Principal, Service, serviceQuery } from 'azle';
 
 export class SomeService extends Service {
     @serviceQuery
@@ -12,5 +12,8 @@ export class SomeService extends Service {
 }
 
 export const someService = new SomeService(
-    Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
+    Principal.fromText(
+        process.env.SOME_SERVICE_PRINCIPAL ??
+            ic.trap('process.env.SOME_SERVICE_PRINCIPAL is undefined')
+    )
 );

@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/service",
                 "node_compatibility": true
-            }
+            },
+            "env": ["SOME_SERVICE_PRINCIPAL"]
         },
         "some_service": {
             "type": "custom",

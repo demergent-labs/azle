@@ -1,8 +1,8 @@
-import { runTests } from 'azle/test';
+import { getCanisterId, runTests } from 'azle/test';
 import { createActor } from '../test/dfx_generated/inline_types';
 import { getTests } from './tests';
 
-const inline_types_canister = createActor('rrkah-fqaaa-aaaaa-aaaaq-cai', {
+const inline_types_canister = createActor(getCanisterId('inline_types'), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }

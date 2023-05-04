@@ -1,10 +1,10 @@
 import {
     CallResult,
     Func,
+    ic,
     Query,
     Update,
     Opt,
-    Principal,
     nat,
     nat64,
     Record,
@@ -371,6 +371,4 @@ export class InlineTypes extends Service {
     >;
 }
 
-export let self = new InlineTypes(
-    Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
-);
+export let self = new InlineTypes(ic.id());

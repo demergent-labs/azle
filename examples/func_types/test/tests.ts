@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { Test } from 'azle/test';
+import { getCanisterId, Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/func_types/func_types.did';
 
 export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test[] {
@@ -133,8 +133,7 @@ export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test[] {
                 return {
                     Ok:
                         'Ok' in result &&
-                        result.Ok[0].toText() ===
-                            'ryjl3-tyaaa-aaaaa-aaaba-cai' &&
+                        result.Ok[0].toText() === getCanisterId('notifiers') &&
                         result.Ok[1] === 'notify'
                 };
             }

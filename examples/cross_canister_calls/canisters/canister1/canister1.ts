@@ -1,4 +1,5 @@
 import {
+    ic,
     nat64,
     NotifyResult,
     Opt,
@@ -10,7 +11,10 @@ import {
 import { Account, AccountArgs, Canister2 } from '../canister2/types';
 
 const canister2 = new Canister2(
-    Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
+    Principal.fromText(
+        process.env.CANISTER2_PRINCIPAL ??
+            ic.trap('process.env.CANISTER2_PRINCIPAL is undefined')
+    )
 );
 
 $update;

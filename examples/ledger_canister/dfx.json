@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/ledger_canister",
                 "node_compatibility": true
-            }
+            },
+            "env": ["ICP_CANISTER_PRINCIPAL"]
         },
         "icp_ledger": {
             "type": "custom",

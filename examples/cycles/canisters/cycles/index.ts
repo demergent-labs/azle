@@ -1,5 +1,6 @@
 import {
     CallResult,
+    ic,
     nat,
     nat64,
     Principal,
@@ -16,5 +17,8 @@ export class Cycles extends Service {
 }
 
 export const cyclesCanister = new Cycles(
-    Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
+    Principal.fromText(
+        process.env.CYCLES_PRINCIPAL ??
+            ic.trap('process.env.CYCLES_PRINCIPAL is undefined')
+    )
 );

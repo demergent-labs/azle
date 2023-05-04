@@ -1,3 +1,5 @@
+import { Variant } from '../../lib';
+
 export type AzleError = {
     error?: string;
     suggestion?: string;
@@ -19,7 +21,11 @@ export type JSCanisterConfig = Readonly<{
     ts: string;
     candid: string;
     wasm: string;
+    env?: string[];
+    opt_level?: OptLevel;
 }>;
+
+export type OptLevel = '0' | '1' | '2' | '3' | '4';
 
 export type Plugin = {
     path: string;
@@ -31,6 +37,12 @@ export type RunOptions = {
 };
 
 export type Rust = string;
+
+export type SpawnSyncError = Variant<{
+    Error: string;
+    Signal: NodeJS.Signals;
+    Status: number;
+}>;
 
 export type Toml = string;
 

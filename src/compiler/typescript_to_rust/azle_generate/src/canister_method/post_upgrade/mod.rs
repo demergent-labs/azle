@@ -2,13 +2,18 @@ use cdk_framework::act::node::canister_method::{CanisterMethodType, PostUpgradeM
 
 use crate::{
     canister_method::{errors, GetAnnotatedFnDecls},
+    plugin::Plugin,
     TsAst,
 };
 
 mod rust;
 
 impl TsAst {
-    pub fn build_post_upgrade_method(&self) -> PostUpgradeMethod {
+    pub fn build_post_upgrade_method(
+        &self,
+        plugins: &Vec<Plugin>,
+        environment_variables: &Vec<(String, String)>,
+    ) -> PostUpgradeMethod {
         let post_upgrade_fn_decls = self
             .programs
             .get_annotated_fn_decls_of_type(CanisterMethodType::PostUpgrade);
@@ -36,7 +41,7 @@ impl TsAst {
             vec![]
         };
 
-        let body = rust::generate(post_upgrade_fn_decl_option, &self.plugins);
+        let body = rust::generate(post_upgrade_fn_decl_option, plugins, environment_variables);
         let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
 
         PostUpgradeMethod {

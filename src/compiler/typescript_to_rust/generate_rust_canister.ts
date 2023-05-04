@@ -6,17 +6,18 @@ import {
     GLOBAL_AZLE_RUST_DIR,
     GLOBAL_AZLE_TARGET_DIR
 } from '../utils';
-import { Err, ok, Ok, Result } from '../utils/result';
-import { AzleError, Plugin, RunOptions, Rust } from '../utils/types';
+import { Result } from '../../lib';
+import { JSCanisterConfig, Plugin, SpawnSyncError } from '../utils/types';
 import { isVerboseMode } from '../utils';
-import { red } from '../utils/colors';
 
+// TODO I think we should use the official Azle Result and match everywhere
+// TODO we should get rid of the custom ones created here
 export function generateRustCanister(
     fileNames: string[],
     plugins: Plugin[],
     canisterPath: string,
-    { rootPath }: RunOptions
-): Result<undefined, AzleError> {
+    canisterConfig: JSCanisterConfig
+): Result<null, SpawnSyncError> {
     const compilerInfo = {
         plugins,
         file_names: fileNames
@@ -24,61 +25,77 @@ export function generateRustCanister(
 
     const compilerInfoPath = join(
         canisterPath,
-        rootPath,
+        canisterConfig.root,
         'azle_generate',
         'compiler_info.json'
     );
 
+    // TODO why not just write the dfx.json file here as well?
     writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
 
-    const azleGenerateResult = runAzleGenerate(
+    const result = runAzleGenerate(
         'compiler_info.json',
         canisterPath,
-        rootPath
+        canisterConfig
     );
 
-    if (!ok(azleGenerateResult)) {
-        return Err(azleGenerateResult.err);
-    }
-
-    const unformattedLibFile = azleGenerateResult.ok;
-
-    writeFileSync(`${canisterPath}/${rootPath}/src/lib.rs`, unformattedLibFile);
-
-    const runRustFmtResult = runRustFmt(unformattedLibFile, canisterPath, {
-        rootPath
-    });
-
-    if (!ok(runRustFmtResult)) {
-        return Err(runRustFmtResult.err);
-    }
-
-    const formattedLibFile = runRustFmtResult.ok;
-
-    writeFileSync(`${canisterPath}/${rootPath}/src/lib.rs`, formattedLibFile);
-
-    if (isVerboseMode()) {
-        console.info(
-            `Wrote formatted lib.rs file to ${canisterPath}/${rootPath}/src/lib.rs\n`
-        );
-    }
-    return Ok(undefined);
+    return result;
 }
 
 function runAzleGenerate(
     compilerInfoPath: string,
     canisterPath: string,
-    rootPath: string
-): Result<Rust, AzleError> {
-    if (isVerboseMode()) {
-        console.info('running azle_generate');
+    canisterConfig: JSCanisterConfig
+): Result<null, SpawnSyncError> {
+    // TODO to cut the time in half here, if we can just generate the binary
+    // TODO and then after that use the binary, that could work
+    // TODO the problem is that this binary is stored in a global target dir
+    // TODO we might need to have an azle-version-specific dir for the azle_generate binary
+    // TODO maybe that's fine and easy though
+    const buildResult = spawnSync(`${GLOBAL_AZLE_BIN_DIR}/cargo`, ['build'], {
+        cwd: `${canisterPath}/${canisterConfig.root}/azle_generate`,
+        stdio: [
+            'inherit',
+            isVerboseMode() ? 'inherit' : 'pipe',
+            isVerboseMode() ? 'inherit' : 'pipe'
+        ],
+        env: {
+            ...process.env,
+            CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
+            CARGO_HOME: GLOBAL_AZLE_RUST_DIR,
+            RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR
+        }
+    });
+
+    if (buildResult.error) {
+        return Result.Err({
+            Error: buildResult.error.message
+        });
     }
-    const executionResult = spawnSync(
-        `${GLOBAL_AZLE_BIN_DIR}/cargo`,
-        ['run', '--', compilerInfoPath],
+
+    if (buildResult.signal) {
+        return Result.Err({
+            Signal: buildResult.signal
+        });
+    }
+
+    if (buildResult.status !== null && buildResult.status !== 0) {
+        return Result.Err({
+            Status: buildResult.status
+        });
+    }
+
+    // TODO right here let's copy the binary over to a special location in ~/.config/azle/azle_version
+    // TODO if it isn't there, then we build and store it there
+    // TODO if it is there, then we just leave it there
+    // TODO but what about during development? We'll never get the binary to change if developing
+
+    const runResult = spawnSync(
+        `${GLOBAL_AZLE_TARGET_DIR}/debug/azle_generate`,
+        [compilerInfoPath, (canisterConfig.env ?? []).join(',')],
         {
-            cwd: `${canisterPath}/${rootPath}/azle_generate`,
-            stdio: 'pipe',
+            cwd: `${canisterPath}/${canisterConfig.root}/azle_generate`,
+            stdio: ['inherit', isVerboseMode() ? 'inherit' : 'pipe', 'inherit'],
             env: {
                 ...process.env,
                 CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
@@ -88,131 +105,23 @@ function runAzleGenerate(
         }
     );
 
-    const suggestion =
-        'If you are unable to decipher the error above, reach out in the #typescript\nchannel of the IC Developer Community discord:\nhttps://discord.gg/5Hb6rM2QUM';
-
-    if (executionResult.error) {
-        const exitCode = (executionResult.error as any).errno ?? 13;
-        return Err({
-            error: `Azle encountered an error: ${executionResult.error.message}`,
-            suggestion,
-            exitCode
+    if (runResult.error) {
+        return Result.Err({
+            Error: runResult.error.message
         });
     }
 
-    if (executionResult.status !== 0) {
-        const generalErrorMessage =
-            "Something about your TypeScript violates Azle's requirements";
-        const stdErr: string = executionResult.stderr.toString();
-        const longErrorMessage = `The underlying cause is likely at the bottom of the following output:\n\n${stdErr}`;
-        if (isVerboseMode()) {
-            return Err({
-                error: generalErrorMessage,
-                suggestion: `${longErrorMessage}\n${suggestion}`,
-                exitCode: 12
-            });
-        }
-
-        const stdErrLines = stdErr.split('\n');
-        const lineWhereErrorMessageStarts = stdErrLines.findIndex((line) =>
-            line.startsWith("thread 'main' panicked")
-        );
-        const startsWithQuoteCommaAndContainsAPathAndEndsWithLineAndColumnNumber =
-            /',\s.*\/.*\.rs:\d*:\d*/;
-        const lineWhereErrorMessageEnds = stdErrLines.findIndex((line) => {
-            return startsWithQuoteCommaAndContainsAPathAndEndsWithLineAndColumnNumber.test(
-                line
-            );
-        });
-        if (
-            lineWhereErrorMessageStarts === -1 ||
-            lineWhereErrorMessageEnds === -1
-        ) {
-            return Err({
-                error: generalErrorMessage,
-                suggestion: `${longErrorMessage}\n${suggestion}`,
-                exitCode: 11
-            });
-        }
-        let errorLines = stdErrLines.slice(
-            lineWhereErrorMessageStarts,
-            lineWhereErrorMessageEnds + 1
-        );
-        errorLines[0] = errorLines[0].replace(
-            "thread 'main' panicked at '",
-            ''
-        );
-        errorLines[errorLines.length - 1] = errorLines[
-            errorLines.length - 1
-        ].replace(
-            startsWithQuoteCommaAndContainsAPathAndEndsWithLineAndColumnNumber,
-            ''
-        );
-
-        return Err({
-            error: errorLines.join('\n'),
-            suggestion,
-            exitCode: 12
+    if (runResult.signal) {
+        return Result.Err({
+            Signal: runResult.signal
         });
     }
 
-    if (isVerboseMode()) {
-        const rawStdErr = executionResult.stderr.toString();
-
-        const startOfFileNamesMarker = '     Running `';
-        const fileNamesStartIndex = rawStdErr.indexOf(startOfFileNamesMarker);
-        const stdErrBeforeFileNames = rawStdErr.substring(
-            0,
-            fileNamesStartIndex
-        );
-
-        const endOfFileNamesMarker = '#AZLE_GENERATE_START';
-        const fileNamesEndIndex = rawStdErr.indexOf(endOfFileNamesMarker);
-        const stdErrAfterFileNames = rawStdErr.substring(
-            fileNamesEndIndex + endOfFileNamesMarker.length
-        );
-
-        const stdErrWithoutFileNames =
-            stdErrBeforeFileNames + stdErrAfterFileNames;
-        console.log(stdErrWithoutFileNames);
-        console.info('Generated unformatted lib.rs file');
-    }
-    return Ok(executionResult.stdout.toString());
-}
-
-function runRustFmt(
-    input: Rust,
-    canisterPath: string,
-    { rootPath }: RunOptions
-): Result<Rust, AzleError> {
-    const executionResult = spawnSync(
-        `${GLOBAL_AZLE_BIN_DIR}/rustfmt`,
-        ['--edition=2018'],
-        {
-            cwd: `${canisterPath}/${rootPath}/azle_generate`,
-            input,
-            stdio: 'pipe',
-            env: {
-                ...process.env,
-                CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
-                CARGO_HOME: GLOBAL_AZLE_RUST_DIR,
-                RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR
-            }
-        }
-    );
-    if (executionResult.status !== 0) {
-        const error = executionResult.stderr.toString();
-        return Err({
-            error: 'Azle has experienced an internal error while trying to\n   format your generated rust canister',
-            suggestion: `Please open an issue at https://github.com/demergent-labs/azle/issues/new\nincluding this message and the following error:\n\n${red(
-                error
-            )}`,
-            exitCode: 12
+    if (runResult.status !== null && runResult.status !== 0) {
+        return Result.Err({
+            Status: runResult.status
         });
     }
 
-    if (isVerboseMode()) {
-        console.info('Formatted lib.rs file');
-    }
-    return Ok(executionResult.stdout.toString());
+    return Result.Ok(null);
 }

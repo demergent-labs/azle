@@ -1,5 +1,5 @@
+import { getCanisterId, Test } from 'azle/test';
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/canister1/canister1.did';
 
 export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
@@ -48,11 +48,14 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
             name: 'update_query test',
             test: async () => {
                 const result = await canister1.updateQuery();
-                const regex =
-                    /Rejection code 3, Canister ryjl3-tyaaa-aaaaa-aaaba-cai has no query method 'update[_]?[qQ]uery'/;
-                const match_result = regex.test(result.Err);
                 return {
-                    Ok: 'Err' in result && regex.test(result.Err)
+                    Ok:
+                        'Err' in result &&
+                        result.Err.includes(
+                            `Rejection code 3, Canister ${getCanisterId(
+                                'canister2'
+                            )} has no query method`
+                        )
                 };
             }
         },

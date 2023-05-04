@@ -2,13 +2,18 @@ use cdk_framework::act::node::canister_method::{CanisterMethodType, InitMethod};
 
 use crate::{
     canister_method::{errors, GetAnnotatedFnDecls},
+    plugin::Plugin,
     TsAst,
 };
 
 mod rust;
 
 impl TsAst {
-    pub fn build_init_method(&self) -> InitMethod {
+    pub fn build_init_method(
+        &self,
+        plugins: &Vec<Plugin>,
+        environment_variables: &Vec<(String, String)>,
+    ) -> InitMethod {
         let init_fn_decls = self
             .programs
             .get_annotated_fn_decls_of_type(CanisterMethodType::Init);
@@ -36,7 +41,7 @@ impl TsAst {
             vec![]
         };
 
-        let body = rust::generate(init_fn_decl_option, &self.plugins);
+        let body = rust::generate(init_fn_decl_option, plugins, environment_variables);
         let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
 
         InitMethod {

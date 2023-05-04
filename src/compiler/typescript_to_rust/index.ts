@@ -12,23 +12,26 @@ import { generateRustCanister } from './generate_rust_canister';
 import { Err, ok, unwrap } from '../utils/result';
 import {
     AzleError,
+    JSCanisterConfig,
     Plugin,
     Toml,
     TsCompilationError,
     TsSyntaxErrorLocation
 } from '../utils/types';
 import { time } from '../utils';
+import { match } from '../../lib';
 import { red, dim } from '../utils/colors';
 import { readFileSync } from 'fs';
 
 export function compileTypeScriptToRust(
     canisterName: string,
     canisterPath: string,
-    rootPath: string,
-    tsPath: string
+    canisterConfig: JSCanisterConfig
 ): void | never {
-    time('\n[1/3] 🔨 Compiling TypeScript...', 'inline', () => {
-        const compilationResult = compileTypeScriptToJavaScript(tsPath);
+    time('[1/2] 🔨 Compiling TypeScript...', 'inline', () => {
+        const compilationResult = compileTypeScriptToJavaScript(
+            canisterConfig.ts
+        );
 
         if (!ok(compilationResult)) {
             const azleErrorResult = compilationErrorToAzleErrorResult(
@@ -38,10 +41,15 @@ export function compileTypeScriptToRust(
         }
 
         const mainJs = compilationResult.ok;
-        const workspaceCargoToml: Toml = generateWorkspaceCargoToml(rootPath);
+        const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
+            canisterConfig.root,
+            canisterConfig.opt_level ?? '0'
+        );
         const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
 
-        const { fileNames, plugins } = getFileNamesAndPlugins(tsPath);
+        const { fileNames, plugins } = getFileNamesAndPlugins(
+            canisterConfig.ts
+        );
 
         const pluginsDependencies = plugins
             .map((plugin) => {
@@ -62,7 +70,7 @@ export function compileTypeScriptToRust(
         );
 
         writeCodeToFileSystem(
-            rootPath,
+            canisterConfig.root,
             canisterPath,
             workspaceCargoToml,
             workspaceCargoLock,
@@ -70,9 +78,35 @@ export function compileTypeScriptToRust(
             mainJs as any
         );
 
-        unwrap(
-            generateRustCanister(fileNames, plugins, canisterPath, { rootPath })
+        const generateRustCanisterResult = generateRustCanister(
+            fileNames,
+            plugins,
+            canisterPath,
+            canisterConfig
         );
+
+        match(generateRustCanisterResult, {
+            Err: (err) => {
+                match(err, {
+                    Error: (err) => {
+                        console.error(`Compilation failed: ${err}`);
+                    },
+                    Signal: (signal) => {
+                        console.error(
+                            `Compilation failed with signal: ${signal}`
+                        );
+                    },
+                    Status: (status) => {
+                        console.error(
+                            `Compilation failed with status: ${status}`
+                        );
+                    }
+                });
+
+                process.exit(1);
+            },
+            _: () => {}
+        });
 
         if (isCompileOnlyMode()) {
             console.log('Compilation complete!');
