@@ -19,8 +19,8 @@ pub fn generate() -> proc_macro2::TokenStream {
                         chrono::NaiveDateTime::from_timestamp_opt((ic_cdk::api::time() / 1_000_000_000) as i64, 0).unwrap()
                     }
 
-                    fn tz_offset(&self) -> chrono::FixedOffset {
-                        chrono::FixedOffset::east_opt(0).unwrap()
+                    fn local_from_utc(&self, utc: chrono::NaiveDateTime) -> chrono::DateTime<chrono::FixedOffset> {
+                        chrono::DateTime::from_utc(utc, chrono::FixedOffset::east_opt(0).unwrap())
                     }
                 }
 

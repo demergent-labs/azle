@@ -61,7 +61,7 @@ export function generateLibCargoToml(
         ic-cdk-timers = "0.1.2"
         ic-stable-structures = "0.5.2"
         candid = { version = "0.9.0-beta.3", features = ["parser"] }
-        boa_engine = { git = "https://github.com/boa-dev/boa", rev = "9dc4dd14100d82725453ef2d9f7a311aa4be6662" }
+        boa_engine = { git = "https://github.com/boa-dev/boa", rev = "f01e312464106e0903b9775a63408d6eb21303b1" }
         # boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "2613202fdc2757691ba1a20e568e5b8740e0c233" }
         # boa_engine = { path = "/home/boa/boa_engine" }
         getrandom = { version = "0.2.3", features = ["custom"] }
