@@ -62,8 +62,8 @@ export function http_request_update(req: HttpRequest): HttpResponse {
         status_code: 200,
         headers: [],
         body: Uint8Array.from([]),
-        streaming_strategy: null,
-        upgrade: false
+        streaming_strategy: Opt.None,
+        upgrade: Opt.Some(false)
     };
 }
 ```

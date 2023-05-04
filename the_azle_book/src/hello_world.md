@@ -1,12 +1,14 @@
 # Hello World
 
--   [The project directory and file structure](#the-project-directory-and-file-structure)
--   [index.ts](#indexts)
--   [tsconfig.json](#tsconfigjson)
--   [dfx.json](#dfxjson)
--   [Local deployment](#local-deployment)
--   [Interacting with your canister from the command line](#interacting-with-your-canister-from-the-command-line)
--   [Interacting with your canister from the web UI](#interacting-with-your-canister-from-the-web-ui)
+-   [Quick start](#quick-start)
+-   [Methodical start](#slow-start)
+    -   [The project directory and file structure](#the-project-directory-and-file-structure)
+    -   [index.ts](#indexts)
+    -   [tsconfig.json](#tsconfigjson)
+    -   [dfx.json](#dfxjson)
+    -   [Local deployment](#local-deployment)
+    -   [Interacting with your canister from the command line](#interacting-with-your-canister-from-the-command-line)
+    -   [Interacting with your canister from the web UI](#interacting-with-your-canister-from-the-web-ui)
 
 Let's build your first application (canister) with Azle!
 
@@ -14,7 +16,26 @@ Before embarking please ensure you've followed all of [the installation instruct
 
 We'll build a simple `Hello World` canister that shows the basics of importing Azle, exposing a query method, exposing an update method, and storing some state in a global variable. We'll then interact with it from the command line and from our web browser.
 
-## The project directory and file structure
+## Quick Start
+
+```bash
+npx azle new hello_world
+cd hello_world
+
+npm install
+npm run dfx_install
+npm run replica_start
+npm run canister_deploy_local
+
+npm run canister_call_set_message
+npm run canister_call_get_message
+```
+
+See the official [azle_hello_world](https://github.com/demergent-labs/azle_hello_world) example for more information.
+
+## Methodical start
+
+### The project directory and file structure
 
 Assuming you're starting completely from scratch, run these commands to setup your project's directory and file structure:
 
@@ -37,7 +58,7 @@ npm install azle
 
 Open up `azle_hello_world` in your text editor (we recommend [VS Code](https://code.visualstudio.com/)).
 
-## index.ts
+### index.ts
 
 Here's the main code of the project, which you should put in the `azle_hello_world/src/index.ts` file of your canister:
 
@@ -101,7 +122,7 @@ That's it! We've created a very simple getter/setter `Hello World` application. 
 
 To do that, we'll need to setup the rest of our project.
 
-## tsconfig.json
+### tsconfig.json
 
 Create the following in `azle_hello_world/tsconfig.json`:
 
@@ -119,7 +140,7 @@ Create the following in `azle_hello_world/tsconfig.json`:
 }
 ```
 
-## dfx.json
+### dfx.json
 
 Create the following in `azle_hello_world/dfx.json`:
 
@@ -138,7 +159,7 @@ Create the following in `azle_hello_world/dfx.json`:
 }
 ```
 
-## Local deployment
+### Local deployment
 
 Let's deploy to our local replica.
 
@@ -154,7 +175,7 @@ Then deploy the canister:
 dfx deploy
 ```
 
-## Interacting with your canister from the command line
+### Interacting with your canister from the command line
 
 Once we've deployed we can ask for our message:
 
@@ -178,7 +199,7 @@ dfx canister call azle_hello_world getMessage
 
 We should see `("Hello World!")`.
 
-## Interacting with your canister from the web UI
+### Interacting with your canister from the web UI
 
 After deploying your canister, you should see output similar to the following in your terminal:
 

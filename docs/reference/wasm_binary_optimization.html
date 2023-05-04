@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Wasm Binary Optimization - The Azle Book</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = null;
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../the_azle_book.html"><strong aria-hidden="true">1.</strong> The Azle Book</a></li><li class="chapter-item expanded "><a href="../azle.html"><strong aria-hidden="true">2.</strong> Azle (Beta)</a></li><li class="chapter-item expanded "><a href="../installation.html"><strong aria-hidden="true">3.</strong> Installation</a></li><li class="chapter-item expanded "><a href="../hello_world.html"><strong aria-hidden="true">4.</strong> Hello World</a></li><li class="chapter-item expanded "><a href="../deployment.html"><strong aria-hidden="true">5.</strong> Deployment</a></li><li class="chapter-item expanded "><a href="../examples.html"><strong aria-hidden="true">6.</strong> Examples</a></li><li class="chapter-item expanded "><a href="../internet_computer_overview.html"><strong aria-hidden="true">7.</strong> Internet Computer Overview</a></li><li class="chapter-item expanded "><a href="../canisters_overview.html"><strong aria-hidden="true">8.</strong> Canisters Overview</a></li><li class="chapter-item expanded "><a href="../query_methods.html"><strong aria-hidden="true">9.</strong> Query Methods</a></li><li class="chapter-item expanded "><a href="../update_methods.html"><strong aria-hidden="true">10.</strong> Update Methods</a></li><li class="chapter-item expanded "><a href="../candid.html"><strong aria-hidden="true">11.</strong> Candid</a></li><li class="chapter-item expanded "><a href="../stable_structures.html"><strong aria-hidden="true">12.</strong> Stable Structures</a></li><li class="chapter-item expanded "><a href="../cross_canister.html"><strong aria-hidden="true">13.</strong> Cross-canister</a></li><li class="chapter-item expanded "><a href="../http.html"><strong aria-hidden="true">14.</strong> HTTP</a></li><li class="chapter-item expanded "><a href="../management_canister.html"><strong aria-hidden="true">15.</strong> Management Canister</a></li><li class="chapter-item expanded "><a href="../canister_lifecycle.html"><strong aria-hidden="true">16.</strong> Canister Lifecycle</a></li><li class="chapter-item expanded "><a href="../timers.html"><strong aria-hidden="true">17.</strong> Timers</a></li><li class="chapter-item expanded "><a href="../cycles.html"><strong aria-hidden="true">18.</strong> Cycles</a></li><li class="chapter-item expanded "><a href="../caveats.html"><strong aria-hidden="true">19.</strong> Caveats</a></li><li class="chapter-item expanded "><a href="../reference/reference.html"><strong aria-hidden="true">20.</strong> Reference</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reference/call_apis/call_apis.html"><strong aria-hidden="true">20.1.</strong> Call APIs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reference/call_apis/accept_message.html"><strong aria-hidden="true">20.1.1.</strong> accept message</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/arg_data_raw.html"><strong aria-hidden="true">20.1.2.</strong> arg data raw</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/arg_data_raw_size.html"><strong aria-hidden="true">20.1.3.</strong> arg data raw size</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/call.html"><strong aria-hidden="true">20.1.4.</strong> call</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/call_raw.html"><strong aria-hidden="true">20.1.5.</strong> call raw</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/call_raw128.html"><strong aria-hidden="true">20.1.6.</strong> call raw 128</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/call_with_payment.html"><strong aria-hidden="true">20.1.7.</strong> call with payment</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/call_with_payment128.html"><strong aria-hidden="true">20.1.8.</strong> call with payment 128</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/caller.html"><strong aria-hidden="true">20.1.9.</strong> caller</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/method_name.html"><strong aria-hidden="true">20.1.10.</strong> method name</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/msg_cycles_accept.html"><strong aria-hidden="true">20.1.11.</strong> msg cycles accept</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/msg_cycles_accept128.html"><strong aria-hidden="true">20.1.12.</strong> msg cycles accept 128</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/msg_cycles_available.html"><strong aria-hidden="true">20.1.13.</strong> msg cycles available</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/msg_cycles_available128.html"><strong aria-hidden="true">20.1.14.</strong> msg cycles available 128</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/msg_cycles_refunded.html"><strong aria-hidden="true">20.1.15.</strong> msg cycles refunded</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/msg_cycles_refunded128.html"><strong aria-hidden="true">20.1.16.</strong> msg cycles refunded 128</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/notify.html"><strong aria-hidden="true">20.1.17.</strong> notify</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/notify_raw.html"><strong aria-hidden="true">20.1.18.</strong> notify raw</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/notify_with_payment_128.html"><strong aria-hidden="true">20.1.19.</strong> notify with payment 128</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/performance_counter.html"><strong aria-hidden="true">20.1.20.</strong> performance counter</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/reject.html"><strong aria-hidden="true">20.1.21.</strong> reject</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/reject_code.html"><strong aria-hidden="true">20.1.22.</strong> reject code</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/reject_message.html"><strong aria-hidden="true">20.1.23.</strong> reject message</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/reply.html"><strong aria-hidden="true">20.1.24.</strong> reply</a></li><li class="chapter-item expanded "><a href="../reference/call_apis/reply_raw.html"><strong aria-hidden="true">20.1.25.</strong> reply raw</a></li></ol></li><li class="chapter-item expanded "><a href="../reference/candid/candid.html"><strong aria-hidden="true">20.2.</strong> Candid</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reference/candid/blob.html"><strong aria-hidden="true">20.2.1.</strong> blob</a></li><li class="chapter-item expanded "><a href="../reference/candid/bool.html"><strong aria-hidden="true">20.2.2.</strong> bool</a></li><li class="chapter-item expanded "><a href="../reference/candid/empty.html"><strong aria-hidden="true">20.2.3.</strong> empty</a></li><li class="chapter-item expanded "><a href="../reference/candid/float32.html"><strong aria-hidden="true">20.2.4.</strong> float32</a></li><li class="chapter-item expanded "><a href="../reference/candid/float64.html"><strong aria-hidden="true">20.2.5.</strong> float64</a></li><li class="chapter-item expanded "><a href="../reference/candid/func.html"><strong aria-hidden="true">20.2.6.</strong> func</a></li><li class="chapter-item expanded "><a href="../reference/candid/int.html"><strong aria-hidden="true">20.2.7.</strong> int</a></li><li class="chapter-item expanded "><a href="../reference/candid/int8.html"><strong aria-hidden="true">20.2.8.</strong> int8</a></li><li class="chapter-item expanded "><a href="../reference/candid/int16.html"><strong aria-hidden="true">20.2.9.</strong> int16</a></li><li class="chapter-item expanded "><a href="../reference/candid/int32.html"><strong aria-hidden="true">20.2.10.</strong> int32</a></li><li class="chapter-item expanded "><a href="../reference/candid/int64.html"><strong aria-hidden="true">20.2.11.</strong> int64</a></li><li class="chapter-item expanded "><a href="../reference/candid/nat.html"><strong aria-hidden="true">20.2.12.</strong> nat</a></li><li class="chapter-item expanded "><a href="../reference/candid/nat8.html"><strong aria-hidden="true">20.2.13.</strong> nat8</a></li><li class="chapter-item expanded "><a href="../reference/candid/nat16.html"><strong aria-hidden="true">20.2.14.</strong> nat16</a></li><li class="chapter-item expanded "><a href="../reference/candid/nat32.html"><strong aria-hidden="true">20.2.15.</strong> nat32</a></li><li class="chapter-item expanded "><a href="../reference/candid/nat64.html"><strong aria-hidden="true">20.2.16.</strong> nat64</a></li><li class="chapter-item expanded "><a href="../reference/candid/null.html"><strong aria-hidden="true">20.2.17.</strong> null</a></li><li class="chapter-item expanded "><a href="../reference/candid/opt.html"><strong aria-hidden="true">20.2.18.</strong> opt</a></li><li class="chapter-item expanded "><a href="../reference/candid/principal.html"><strong aria-hidden="true">20.2.19.</strong> principal</a></li><li class="chapter-item expanded "><a href="../reference/candid/record.html"><strong aria-hidden="true">20.2.20.</strong> record</a></li><li class="chapter-item expanded "><a href="../reference/candid/reserved.html"><strong aria-hidden="true">20.2.21.</strong> reserved</a></li><li class="chapter-item expanded "><a href="../reference/candid/service.html"><strong aria-hidden="true">20.2.22.</strong> service</a></li><li class="chapter-item expanded "><a href="../reference/candid/text.html"><strong aria-hidden="true">20.2.23.</strong> text</a></li><li class="chapter-item expanded "><a href="../reference/candid/variant.html"><strong aria-hidden="true">20.2.24.</strong> variant</a></li><li class="chapter-item expanded "><a href="../reference/candid/vec.html"><strong aria-hidden="true">20.2.25.</strong> vec</a></li></ol></li><li class="chapter-item expanded "><a href="../reference/canister_apis/canister_apis.html"><strong aria-hidden="true">20.3.</strong> Canister APIs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reference/canister_apis/candid_decode.html"><strong aria-hidden="true">20.3.1.</strong> candid decode</a></li><li class="chapter-item expanded "><a href="../reference/canister_apis/candid_encode.html"><strong aria-hidden="true">20.3.2.</strong> candid encode</a></li><li class="chapter-item expanded "><a href="../reference/canister_apis/canister_balance.html"><strong aria-hidden="true">20.3.3.</strong> canister balance</a></li><li class="chapter-item expanded "><a href="../reference/canister_apis/canister_balance128.html"><strong aria-hidden="true">20.3.4.</strong> canister balance 128</a></li><li class="chapter-item expanded "><a href="../reference/canister_apis/canister_id.html"><strong aria-hidden="true">20.3.5.</strong> canister id</a></li><li class="chapter-item expanded "><a href="../reference/canister_apis/data_certificate.html"><strong aria-hidden="true">20.3.6.</strong> data certificate</a></li><li class="chapter-item expanded "><a href="../reference/canister_apis/print.html"><strong aria-hidden="true">20.3.7.</strong> print</a></li><li class="chapter-item expanded "><a href="../reference/canister_apis/set_certified_data.html"><strong aria-hidden="true">20.3.8.</strong> set certified data</a></li><li class="chapter-item expanded "><a href="../reference/canister_apis/time.html"><strong aria-hidden="true">20.3.9.</strong> time</a></li><li class="chapter-item expanded "><a href="../reference/canister_apis/trap.html"><strong aria-hidden="true">20.3.10.</strong> trap</a></li></ol></li><li class="chapter-item expanded "><a href="../reference/canister_methods/canister_methods.html"><strong aria-hidden="true">20.4.</strong> Canister Methods</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reference/canister_methods/heartbeat.html"><strong aria-hidden="true">20.4.1.</strong> heartbeat</a></li><li class="chapter-item expanded "><a href="../reference/canister_methods/http_request.html"><strong aria-hidden="true">20.4.2.</strong> http_request</a></li><li class="chapter-item expanded "><a href="../reference/canister_methods/http_request_update.html"><strong aria-hidden="true">20.4.3.</strong> http_request_update</a></li><li class="chapter-item expanded "><a href="../reference/canister_methods/init.html"><strong aria-hidden="true">20.4.4.</strong> init</a></li><li class="chapter-item expanded "><a href="../reference/canister_methods/inspect_message.html"><strong aria-hidden="true">20.4.5.</strong> inspect message</a></li><li class="chapter-item expanded "><a href="../reference/canister_methods/post_upgrade.html"><strong aria-hidden="true">20.4.6.</strong> post upgrade</a></li><li class="chapter-item expanded "><a href="../reference/canister_methods/pre_upgrade.html"><strong aria-hidden="true">20.4.7.</strong> pre upgrade</a></li><li class="chapter-item expanded "><a href="../reference/canister_methods/query.html"><strong aria-hidden="true">20.4.8.</strong> query</a></li><li class="chapter-item expanded "><a href="../reference/canister_methods/update.html"><strong aria-hidden="true">20.4.9.</strong> update</a></li></ol></li><li class="chapter-item expanded "><a href="../reference/environment_variables.html"><strong aria-hidden="true">20.5.</strong> Environment Variables</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/management_canister.html"><strong aria-hidden="true">20.6.</strong> Management Canister</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reference/management_canister/bitcoin_get_balance.html"><strong aria-hidden="true">20.6.1.</strong> bitcoin_get_balance</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/bitcoin_get_current_fee_percentiles.html"><strong aria-hidden="true">20.6.2.</strong> bitcoin_get_current_fee_percentiles</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/bitcoin_get_utxos.html"><strong aria-hidden="true">20.6.3.</strong> bitcoin_get_utxos</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/bitcoin_send_transaction.html"><strong aria-hidden="true">20.6.4.</strong> bitcoin_send_transaction</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/canister_status.html"><strong aria-hidden="true">20.6.5.</strong> canister_status</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/create_canister.html"><strong aria-hidden="true">20.6.6.</strong> create_canister</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/delete_canister.html"><strong aria-hidden="true">20.6.7.</strong> delete_canister</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/deposit_cycles.html"><strong aria-hidden="true">20.6.8.</strong> deposit_cycles</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/ecdsa_public_key.html"><strong aria-hidden="true">20.6.9.</strong> ecdsa_public_key</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/http_request.html"><strong aria-hidden="true">20.6.10.</strong> http_request</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/install_code.html"><strong aria-hidden="true">20.6.11.</strong> install_code</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/provisional_create_canister_with_cycles.html"><strong aria-hidden="true">20.6.12.</strong> provisional_create_canister_with_cycles</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/provisional_top_up_canister.html"><strong aria-hidden="true">20.6.13.</strong> provisional_top_up_canister</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/raw_rand.html"><strong aria-hidden="true">20.6.14.</strong> raw_rand</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/sign_with_ecdsa.html"><strong aria-hidden="true">20.6.15.</strong> sign_with_ecdsa</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/start_canister.html"><strong aria-hidden="true">20.6.16.</strong> start_canister</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/stop_canister.html"><strong aria-hidden="true">20.6.17.</strong> stop_canister</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/uninstall_code.html"><strong aria-hidden="true">20.6.18.</strong> uninstall_code</a></li><li class="chapter-item expanded "><a href="../reference/management_canister/update_settings.html"><strong aria-hidden="true">20.6.19.</strong> update_settings</a></li></ol></li><li class="chapter-item expanded "><a href="../reference/plugins.html"><strong aria-hidden="true">20.7.</strong> Plugins</a></li><li class="chapter-item expanded "><a href="../reference/stable_memory/stable_memory.html"><strong aria-hidden="true">20.8.</strong> Stable Memory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reference/stable_memory/stable_structures.html"><strong aria-hidden="true">20.8.1.</strong> stable structures</a></li><li class="chapter-item expanded "><a href="../reference/stable_memory/stable_bytes.html"><strong aria-hidden="true">20.8.2.</strong> stable bytes</a></li><li class="chapter-item expanded "><a href="../reference/stable_memory/stable_grow.html"><strong aria-hidden="true">20.8.3.</strong> stable grow</a></li><li class="chapter-item expanded "><a href="../reference/stable_memory/stable_read.html"><strong aria-hidden="true">20.8.4.</strong> stable read</a></li><li class="chapter-item expanded "><a href="../reference/stable_memory/stable_size.html"><strong aria-hidden="true">20.8.5.</strong> stable size</a></li><li class="chapter-item expanded "><a href="../reference/stable_memory/stable_write.html"><strong aria-hidden="true">20.8.6.</strong> stable write</a></li><li class="chapter-item expanded "><a href="../reference/stable_memory/stable64_grow.html"><strong aria-hidden="true">20.8.7.</strong> stable64 grow</a></li><li class="chapter-item expanded "><a href="../reference/stable_memory/stable64_read.html"><strong aria-hidden="true">20.8.8.</strong> stable64 read</a></li><li class="chapter-item expanded "><a href="../reference/stable_memory/stable64_size.html"><strong aria-hidden="true">20.8.9.</strong> stable64 size</a></li><li class="chapter-item expanded "><a href="../reference/stable_memory/stable64_write.html"><strong aria-hidden="true">20.8.10.</strong> stable64 write</a></li></ol></li><li class="chapter-item expanded "><a href="../reference/timers/timers.html"><strong aria-hidden="true">20.9.</strong> Timers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reference/timers/clear_timer.html"><strong aria-hidden="true">20.9.1.</strong> clear timer</a></li><li class="chapter-item expanded "><a href="../reference/timers/set_timer.html"><strong aria-hidden="true">20.9.2.</strong> set timer</a></li><li class="chapter-item expanded "><a href="../reference/timers/set_timer_interval.html"><strong aria-hidden="true">20.9.3.</strong> set timer interval</a></li></ol></li><li class="chapter-item expanded "><a href="../reference/wasm_binary_optimization.html" class="active"><strong aria-hidden="true">20.10.</strong> Wasm Binary Optimization</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The Azle Book</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="wasm-binary-optimization"><a class="header" href="#wasm-binary-optimization">Wasm Binary Optimization</a></h1>
+<p>The IC currently limits Wasm binaries to a relatively small size of ~2MiB (with some caveats). You are likely to hit this limit as your Azle canisters grow in size. Azle provides some automatic optimizations to help you deal with this limit. It is hoped that the IC-imposed limit will be greatly increased sometime in 2023.</p>
+<p>To optimize the Wasm binary of an Azle canister, you can add the <code>opt_level</code> property to your <code>dfx.json</code> with the following options: <code>&quot;0&quot;</code>, <code>&quot;1&quot;</code>, <code>&quot;2&quot;</code>, <code>&quot;3&quot;</code>, or <code>&quot;4&quot;</code>. <code>&quot;0&quot;</code> is the default option if <code>opt_level</code> is not specified.</p>
+<p>Each option is intended to reduce the size of your Wasm binary as the value increases. Each option is likely to take longer to compile than the previous option. It is recommended to start at <code>&quot;1&quot;</code> and increase only as necessary.</p>
+<p>Here's an example using <code>opt_level</code> <code>&quot;1&quot;</code>:</p>
+<pre><code class="language-json">{
+    &quot;canisters&quot;: {
+        &quot;hello_world&quot;: {
+            &quot;type&quot;: &quot;custom&quot;,
+            &quot;build&quot;: &quot;npx azle hello_world&quot;,
+            &quot;root&quot;: &quot;src&quot;,
+            &quot;ts&quot;: &quot;src/index.ts&quot;,
+            &quot;candid&quot;: &quot;src/index.did&quot;,
+            &quot;wasm&quot;: &quot;.azle/hello_world/hello_world.wasm.gz&quot;,
+            &quot;opt_level&quot;: &quot;1&quot;
+        }
+    }
+}
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../reference/timers/set_timer_interval.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../reference/timers/set_timer_interval.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
