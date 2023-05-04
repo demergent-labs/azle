@@ -111,7 +111,7 @@ export function candidTypes(): Candid {
         float64: Math.E,
         float32: Math.PI,
         bool: true,
-        opt: null,
+        opt: Opt.None,
         record: {
             firstName: 'John',
             lastName: 'Doe',
@@ -805,12 +805,12 @@ import { Opt, $query } from 'azle';
 
 $query;
 export function getOptSome(): Opt<boolean> {
-    return true;
+    return Opt.Some(true);
 }
 
 $query;
 export function getOptNone(): Opt<boolean> {
-    return null;
+    return Opt.None;
 }
 ```
 

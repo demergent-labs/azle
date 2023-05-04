@@ -2,7 +2,7 @@
 
 This section is a work in progress.
 
-The Azle type `Opt` corresponds to the [Candid type opt](https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t) and will become the enclosed JavaScript type or null at runtime.
+The Azle type `Opt` corresponds to the [Candid type opt](https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t) and will become the Azle `Opt` variant at runtime.
 
 TypeScript:
 
@@ -11,12 +11,12 @@ import { Opt, $query } from 'azle';
 
 $query;
 export function getOptSome(): Opt<boolean> {
-    return true;
+    return Opt.Some(true);
 }
 
 $query;
 export function getOptNone(): Opt<boolean> {
-    return null;
+    return Opt.None;
 }
 ```
 
