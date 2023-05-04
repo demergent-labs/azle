@@ -44,3 +44,9 @@ impl From<CdkfError> for crate::Error {
         }
     }
 }
+
+impl From<Error> for Vec<Error> {
+    fn from(value: Error) -> Self {
+        vec![value]
+    }
+}
