@@ -217,13 +217,15 @@ export function generateWorkspaceCargoLock(): Toml {
         dependencies = [
         "annotate-snippets",
         "cdk_framework",
-        "derive-syn-parse",
+        "prettyplease",
         "proc-macro2",
         "quote",
+        "serde",
+        "serde_json",
         "swc_common",
         "swc_ecma_ast",
         "swc_ecma_parser",
-        "syn 1.0.107",
+        "syn 2.0.15",
         ]
         
         [[package]]
@@ -518,7 +520,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "cdk_framework"
         version = "0.0.0"
-        source = "git+https://github.com/demergent-labs/cdk_framework?rev=b45e239975d97a7d448ecda0e067f1aa6f8729cf#b45e239975d97a7d448ecda0e067f1aa6f8729cf"
+        source = "git+https://github.com/demergent-labs/cdk_framework?rev=13c4abdd72bdcfa6a5b1ddf7f08a4fd83eacb419#13c4abdd72bdcfa6a5b1ddf7f08a4fd83eacb419"
         dependencies = [
         "proc-macro2",
         "quote",
@@ -704,17 +706,6 @@ export function generateWorkspaceCargoLock(): Toml {
         checksum = "9a032eac705ca39214d169f83e3d3da290af06d8d1d344d1baad2fd002dca4b3"
         dependencies = [
         "unreachable",
-        ]
-        
-        [[package]]
-        name = "derive-syn-parse"
-        version = "0.1.5"
-        source = "registry+https://github.com/rust-lang/crates.io-index"
-        checksum = "e79116f119dd1dba1abf1f3405f03b9b0e79a27a3883864bfebded8a3dc768cd"
-        dependencies = [
-        "proc-macro2",
-        "quote",
-        "syn 1.0.107",
         ]
         
         [[package]]
@@ -1557,6 +1548,16 @@ export function generateWorkspaceCargoLock(): Toml {
         dependencies = [
         "arrayvec",
         "typed-arena",
+        ]
+        
+        [[package]]
+        name = "prettyplease"
+        version = "0.2.4"
+        source = "registry+https://github.com/rust-lang/crates.io-index"
+        checksum = "1ceca8aaf45b5c46ec7ed39fff75f57290368c1846d33d24a122ca81416ab058"
+        dependencies = [
+        "proc-macro2",
+        "syn 2.0.15",
         ]
         
         [[package]]
