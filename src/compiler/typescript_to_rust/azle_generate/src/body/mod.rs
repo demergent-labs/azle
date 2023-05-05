@@ -63,5 +63,11 @@ pub fn generate(
         #register_ic_object_function
         #stable_b_tree_maps
         #(#plugins_code)*
+
+        // TODO this is temporary until this issue is resolved: https://github.com/demergent-labs/azle/issues/1029
+        #[ic_cdk_macros::query]
+        fn __get_candid_interface_tmp_hack() -> String {
+            __export_service()
+        }
     }
 }
