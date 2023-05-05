@@ -33,13 +33,13 @@ use crate::{
 /// $init; // Not followed by exported function
 /// ```
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ExtraneousDecorator {
+pub struct ExtraneousCanisterMethodAnnotation {
     pub annotation: String,
     pub location: Location,
     pub suggested_source: String,
 }
 
-impl ExtraneousDecorator {
+impl ExtraneousCanisterMethodAnnotation {
     pub fn from_module_item(annotation: SourceMapped<ModuleItem>) -> Self {
         let annotation_type = match Annotation::from_module_item(&annotation) {
             Ok(annotation) => match annotation.method_type {
@@ -106,16 +106,16 @@ impl ExtraneousDecorator {
     }
 }
 
-impl std::error::Error for ExtraneousDecorator {}
+impl std::error::Error for ExtraneousCanisterMethodAnnotation {}
 
-impl std::fmt::Display for ExtraneousDecorator {
+impl std::fmt::Display for ExtraneousCanisterMethodAnnotation {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{}", self.to_string())
     }
 }
 
-impl From<ExtraneousDecorator> for crate::Error {
-    fn from(error: ExtraneousDecorator) -> Self {
-        Self::ExtraneousDecorator(error)
+impl From<ExtraneousCanisterMethodAnnotation> for crate::Error {
+    fn from(error: ExtraneousCanisterMethodAnnotation) -> Self {
+        Self::ExtraneousCanisterMethodAnnotation(error)
     }
 }

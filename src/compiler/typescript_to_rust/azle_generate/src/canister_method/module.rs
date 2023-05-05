@@ -3,7 +3,7 @@ use swc_ecma_ast::{Decl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt};
 
 use crate::{
     canister_method::{
-        errors::{self, ExtraneousDecorator},
+        errors::{self, ExtraneousCanisterMethodAnnotation},
         module_item::ModuleItemHelperMethods,
         AnnotatedFnDecl, Annotation,
     },
@@ -74,16 +74,19 @@ impl ModuleHelperMethods for Module {
                         }
                         None => {
                             acc.1.push(
-                                ExtraneousDecorator::from_module_item(sm_annotation_module_item)
-                                    .into(),
+                                ExtraneousCanisterMethodAnnotation::from_module_item(
+                                    sm_annotation_module_item,
+                                )
+                                .into(),
                             );
                         }
                     }
                 }
 
                 if i + 1 == self.body.len() && module_item.is_custom_decorator() {
-                    acc.1
-                        .push(ExtraneousDecorator::from_module_item(sm_module_item).into());
+                    acc.1.push(
+                        ExtraneousCanisterMethodAnnotation::from_module_item(sm_module_item).into(),
+                    );
                 }
 
                 previous_item_was_canister_method_annotation = module_item.is_custom_decorator();
