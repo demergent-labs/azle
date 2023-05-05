@@ -5,7 +5,7 @@ use crate::canister_method::AnnotatedFnDecl;
 
 pub use async_not_allowed::build_async_not_allowed_error_message;
 pub use duplicate_system_method::DuplicateSystemMethod;
-pub use extraneous_decorator::ExtraneousCanisterMethodAnnotation;
+pub use extraneous_canister_method_annotation::ExtraneousCanisterMethodAnnotation;
 pub use missing_return_type::build_missing_return_type_error_message;
 pub use parse_error::build_parse_error_message;
 pub use parse_error::ParseError;
@@ -13,7 +13,7 @@ pub use void_return_type_required::build_void_return_type_required_error_message
 
 mod async_not_allowed;
 mod duplicate_system_method;
-mod extraneous_decorator;
+mod extraneous_canister_method_annotation;
 mod missing_return_type;
 mod parse_error;
 mod void_return_type_required;
