@@ -8,7 +8,7 @@ use crate::{
     ts_ast::SourceMapped,
 };
 
-/// Returned when Azle detects a system method annotation without an
+/// Returned when Azle detects a canister method annotation without an
 /// accompanying exported function signature immediately after.
 ///
 /// # Examples
@@ -26,11 +26,11 @@ use crate::{
 /// 2. Trailing decorator at end of file
 ///
 /// ```ts
-/// import { $init } from 'azle';
+/// import { $query } from 'azle';
 ///
-/// export function init(): void {}
+/// //...
 ///
-/// $init; // Not followed by exported function
+/// $query; // Not followed by exported function
 /// ```
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExtraneousCanisterMethodAnnotation {
