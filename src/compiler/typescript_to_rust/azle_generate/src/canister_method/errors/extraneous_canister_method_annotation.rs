@@ -36,12 +36,11 @@ use crate::{
 pub struct ExtraneousCanisterMethodAnnotation {
     pub annotation: String,
     pub location: Location,
-    pub suggested_source: String,
 }
 
 impl ExtraneousCanisterMethodAnnotation {
-    pub fn from_module_item(annotation: SourceMapped<ModuleItem>) -> Self {
-        let annotation_type = match Annotation::from_module_item(&annotation) {
+    pub fn from_module_item(annotation_module_item: &SourceMapped<ModuleItem>) -> Self {
+        let annotation = match Annotation::from_module_item(annotation_module_item) {
             Ok(annotation) => match annotation.method_type {
                 CanisterMethodType::Heartbeat => "$heartbeat",
                 CanisterMethodType::Init => "$init",
@@ -52,38 +51,32 @@ impl ExtraneousCanisterMethodAnnotation {
                 CanisterMethodType::Update => "$update",
             },
             Err(err) => panic!("{}", err.error_message()),
-        };
+        }
+        .to_string();
 
-        let span = annotation.as_expr_stmt().unwrap().span;
-        let line_number = annotation.source_map.get_line_number(span);
-        let origin = annotation.source_map.get_origin(span);
-        let range = annotation.source_map.get_range(span);
-        let source = annotation.source_map.get_source(span);
-
-        let example_function_declaration =
-            "export function some_canister_method() {\n  // method body\n}";
-
-        let suggested_source = format!(
-            "{}\n{}",
-            annotation.source_map.get_source(span),
-            example_function_declaration
-        );
+        let span = annotation_module_item.as_expr_stmt().unwrap().span;
+        let line_number = annotation_module_item.source_map.get_line_number(span);
+        let origin = annotation_module_item.source_map.get_origin(span);
+        let range = annotation_module_item.source_map.get_range(span);
+        let source = annotation_module_item.source_map.get_source(span);
 
         Self {
-            annotation: annotation_type.to_string(),
+            annotation,
             location: Location {
                 line_number,
                 origin,
                 range,
                 source,
             },
-            suggested_source,
         }
     }
 
     pub fn to_string(&self) -> String {
         let example_function_declaration =
             "export function some_canister_method() {\n  // method body\n}";
+
+        let suggested_source =
+            format!("{}\n{}", self.location.source, example_function_declaration);
 
         CompilerOutput {
             title: format!("extraneous {} annotation", self.annotation),
@@ -93,7 +86,7 @@ impl ExtraneousCanisterMethodAnnotation {
             suggestion: Some(Suggestion {
                 title: "Follow it with an exported function declaration or remove it. E.g.:"
                     .to_string(),
-                source: self.suggested_source.clone(),
+                source: suggested_source,
                 range: (
                     self.location.range.1 + 1,
                     self.location.range.1 + example_function_declaration.len(),

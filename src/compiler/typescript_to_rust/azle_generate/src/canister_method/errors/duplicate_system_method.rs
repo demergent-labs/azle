@@ -73,9 +73,19 @@ impl DuplicateSystemMethod {
     }
 
     pub fn to_string(&self) -> String {
+        let canister_method_type = match self.canister_method_type {
+            CanisterMethodType::Heartbeat => "$heartbeat",
+            CanisterMethodType::Init => "$init",
+            CanisterMethodType::InspectMessage => "$inspectMessage",
+            CanisterMethodType::PostUpgrade => "$postUpgrade",
+            CanisterMethodType::PreUpgrade => "$preUpgrade",
+            CanisterMethodType::Query => "$query",
+            CanisterMethodType::Update => "$update",
+        };
+
         let error_message = format!(
             "duplicate {} canister method implementation",
-            &self.canister_method_type
+            canister_method_type
         );
 
         let annotations: Vec<SourceAnnotation> = self
@@ -93,7 +103,7 @@ impl DuplicateSystemMethod {
             })
             .collect();
 
-        let suggestion = format!("remove all but one {} method", &self.canister_method_type);
+        let suggestion = format!("remove all but one {} method", canister_method_type);
 
         let error_snippet = Snippet {
             title: Some(Annotation {

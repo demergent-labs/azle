@@ -6,7 +6,7 @@ use crate::canister_method::AnnotatedFnDecl;
 pub use async_not_allowed::build_async_not_allowed_error_message;
 pub use duplicate_system_method::DuplicateSystemMethod;
 pub use extraneous_canister_method_annotation::ExtraneousCanisterMethodAnnotation;
-pub use missing_return_type::build_missing_return_type_error_message;
+pub use missing_return_type::MissingReturnTypeAnnotation;
 pub use parse_error::build_parse_error_message;
 pub use parse_error::ParseError;
 pub use void_return_type_required::build_void_return_type_required_error_message;
@@ -21,10 +21,7 @@ mod void_return_type_required;
 impl<'a> AnnotatedFnDecl<'a> {
     pub fn assert_return_type_is_void(&self) {
         if self.annotation.method_type != CanisterMethodType::Heartbeat && self.is_promise() {
-            panic!(
-                "{}",
-                build_void_return_type_required_error_message(&self.fn_decl, self.source_map)
-            )
+            panic!("{}", build_void_return_type_required_error_message(self))
         }
 
         let return_ts_type = self.get_return_ts_type();
@@ -35,10 +32,7 @@ impl<'a> AnnotatedFnDecl<'a> {
             }
         }
 
-        panic!(
-            "{}",
-            build_void_return_type_required_error_message(&self.fn_decl, self.source_map)
-        )
+        panic!("{}", build_void_return_type_required_error_message(self))
     }
 
     pub fn assert_not_async(&self) {

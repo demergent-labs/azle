@@ -3,7 +3,7 @@ use swc_ecma_ast::{Decl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt};
 
 use crate::{
     canister_method::{
-        errors::{self, ExtraneousCanisterMethodAnnotation},
+        errors::{self, ExtraneousCanisterMethodAnnotation, MissingReturnTypeAnnotation},
         module_item::ModuleItemHelperMethods,
         AnnotatedFnDecl, Annotation,
     },
@@ -42,54 +42,56 @@ impl ModuleHelperMethods for Module {
                     let sm_annotation_module_item =
                         SourceMapped::new(annotation_module_item, source_map);
 
+                    // TODO: detect non-exported fn_decls and explain they have
+                    // to be exported... or just accept them.
                     match module_item.as_exported_fn_decl() {
                         Some(fn_decl) => {
-                            let annotation =
-                                match Annotation::from_module_item(&sm_annotation_module_item) {
-                                    Ok(annotation) => annotation,
-                                    Err(err) => panic!(
-                                        "{}",
-                                        errors::build_parse_error_message(
-                                            err,
-                                            annotation_module_item,
-                                            source_map
-                                        )
-                                    ),
-                                };
+                            match Annotation::from_module_item(&sm_annotation_module_item) {
+                                Ok(annotation) => {
+                                    let annotated_fn_decl = AnnotatedFnDecl {
+                                        annotation,
+                                        fn_decl: fn_decl.clone(),
+                                        source_map,
+                                    };
 
-                            if fn_decl.function.return_type.is_none() {
-                                panic!(
+                                    match &fn_decl.function.return_type {
+                                        Some(_) => acc.0.push(annotated_fn_decl),
+                                        None => acc.1.push(
+                                            MissingReturnTypeAnnotation::from_annotated_fn_decl(
+                                                &annotated_fn_decl,
+                                            )
+                                            .into(),
+                                        ),
+                                    }
+                                }
+                                Err(err) => panic!(
                                     "{}",
-                                    errors::build_missing_return_type_error_message(
-                                        &fn_decl, source_map
+                                    errors::build_parse_error_message(
+                                        err,
+                                        annotation_module_item,
+                                        source_map
                                     )
-                                )
+                                ),
                             }
-
-                            acc.0.push(AnnotatedFnDecl {
-                                annotation,
-                                fn_decl,
-                                source_map,
-                            })
                         }
-                        None => {
-                            acc.1.push(
-                                ExtraneousCanisterMethodAnnotation::from_module_item(
-                                    sm_annotation_module_item,
-                                )
-                                .into(),
-                            );
-                        }
+                        None => acc.1.push(
+                            ExtraneousCanisterMethodAnnotation::from_module_item(
+                                &sm_annotation_module_item,
+                            )
+                            .into(),
+                        ),
                     }
                 }
 
-                if i + 1 == self.body.len() && module_item.is_custom_decorator() {
+                if i + 1 == self.body.len() && module_item.is_canister_method_annotation() {
                     acc.1.push(
-                        ExtraneousCanisterMethodAnnotation::from_module_item(sm_module_item).into(),
-                    );
+                        ExtraneousCanisterMethodAnnotation::from_module_item(&sm_module_item)
+                            .into(),
+                    )
                 }
 
-                previous_item_was_canister_method_annotation = module_item.is_custom_decorator();
+                previous_item_was_canister_method_annotation =
+                    module_item.is_canister_method_annotation();
 
                 acc
             })

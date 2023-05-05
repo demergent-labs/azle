@@ -3,13 +3,13 @@ use swc_ecma_ast::{Expr, ExprStmt, FnDecl, ModuleItem};
 use crate::{canister_method::annotation::CANISTER_METHOD_ANNOTATIONS, traits::GetName};
 
 pub trait ModuleItemHelperMethods {
-    fn is_custom_decorator(&self) -> bool;
+    fn is_canister_method_annotation(&self) -> bool;
     fn as_exported_fn_decl(&self) -> Option<FnDecl>;
     fn as_expr_stmt(&self) -> Option<ExprStmt>;
 }
 
 impl ModuleItemHelperMethods for ModuleItem {
-    fn is_custom_decorator(&self) -> bool {
+    fn is_canister_method_annotation(&self) -> bool {
         if !self.is_stmt() {
             return false;
         }

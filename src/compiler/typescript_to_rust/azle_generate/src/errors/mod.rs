@@ -11,7 +11,9 @@ pub use self::{
     location::Location,
     suggestion::Suggestion,
 };
-use crate::canister_method::errors::{DuplicateSystemMethod, ExtraneousCanisterMethodAnnotation};
+use crate::canister_method::errors::{
+    DuplicateSystemMethod, ExtraneousCanisterMethodAnnotation, MissingReturnTypeAnnotation,
+};
 
 pub mod service_method;
 
@@ -21,6 +23,7 @@ pub enum Error {
     GuardFunctionNotFound(GuardFunctionNotFound),
     DuplicateSystemMethodImplementation(DuplicateSystemMethod),
     ExtraneousCanisterMethodAnnotation(ExtraneousCanisterMethodAnnotation),
+    MissingReturnTypeAnnotation(MissingReturnTypeAnnotation),
 }
 
 impl std::error::Error for Error {}
@@ -32,6 +35,7 @@ impl std::fmt::Display for Error {
             Error::GuardFunctionNotFound(e) => e.fmt(f),
             Error::DuplicateSystemMethodImplementation(e) => e.fmt(f),
             Error::ExtraneousCanisterMethodAnnotation(e) => e.fmt(f),
+            Error::MissingReturnTypeAnnotation(e) => e.fmt(f),
         }
     }
 }
