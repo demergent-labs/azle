@@ -1,8 +1,8 @@
 use cdk_framework::act::node::canister_method::CanisterMethodType;
 use std::ops::Deref;
-use swc_ecma_ast::ModuleItem;
+use swc_ecma_ast::{Callee, Expr, ModuleItem, Prop, PropName, PropOrSpread, Stmt};
 
-use crate::{canister_method::ParseError, traits::GetName, ts_ast::SourceMapped};
+use crate::{internal_error, traits::GetName, ts_ast::SourceMapped, Error};
 
 pub const CANISTER_METHOD_ANNOTATIONS: [&str; 7] = [
     "$heartbeat",
@@ -21,7 +21,7 @@ pub struct Annotation {
 }
 
 impl Annotation {
-    pub fn new(name: &str, guard: Option<&str>) -> Result<Self, ParseError> {
+    pub fn new(name: &str, guard: Option<&str>) -> Result<Self, Error> {
         let method_type = match name {
             "$heartbeat" => CanisterMethodType::Heartbeat,
             "$init" => CanisterMethodType::Init,
@@ -30,7 +30,7 @@ impl Annotation {
             "$preUpgrade" => CanisterMethodType::PreUpgrade,
             "$query" => CanisterMethodType::Query,
             "$update" => CanisterMethodType::Update,
-            _ => return Err(ParseError::InvalidMethodType),
+            _ => internal_error!(),
         };
 
         let guard = match guard {
@@ -41,28 +41,25 @@ impl Annotation {
         Ok(Self { method_type, guard })
     }
 
-    pub fn from_module_item(module_item: &SourceMapped<ModuleItem>) -> Result<Self, ParseError> {
-        let call_expr = match module_item.deref() {
-            swc_ecma_ast::ModuleItem::Stmt(stmt) => match stmt {
-                swc_ecma_ast::Stmt::Expr(expr) => &*expr.expr,
-                _ => return Err(ParseError::InvalidModuleItem),
-            },
-            swc_ecma_ast::ModuleItem::ModuleDecl(_) => return Err(ParseError::InvalidModuleItem),
+    pub fn from_module_item(module_item: &SourceMapped<ModuleItem>) -> Result<Self, Error> {
+        let expr = match module_item.deref() {
+            ModuleItem::Stmt(Stmt::Expr(expr)) => &*expr.expr,
+            _ => internal_error!(),
         };
 
-        match call_expr {
-            swc_ecma_ast::Expr::Ident(ident) => Self::new(ident.get_name(), None),
-            swc_ecma_ast::Expr::Call(call_expr) => {
+        match expr {
+            Expr::Ident(ident) => Self::new(ident.get_name(), None),
+            Expr::Call(call_expr) => {
                 let method_type = match &call_expr.callee {
-                    swc_ecma_ast::Callee::Expr(expr) => match &**expr {
-                        swc_ecma_ast::Expr::Ident(ident) => ident.get_name(),
-                        _ => return Err(ParseError::InvalidExpression),
+                    Callee::Expr(expr) => match &**expr {
+                        Expr::Ident(ident) => ident.get_name(),
+                        _ => internal_error!(),
                     },
-                    _ => return Err(ParseError::InvalidCallee),
+                    _ => internal_error!(),
                 };
 
                 if call_expr.args.len() > 1 {
-                    return Err(ParseError::TooManyArguments);
+                    return Err(Error::TooManyArguments);
                 }
 
                 if call_expr.args.len() == 0 {
@@ -72,16 +69,16 @@ impl Annotation {
                 let options_object = {
                     let expr_or_spread = call_expr.args.get(0).unwrap();
                     if expr_or_spread.spread.is_some() {
-                        return Err(ParseError::InvalidSpreadUsage);
+                        return Err(Error::InvalidSpreadUsage);
                     }
                     match &*expr_or_spread.expr {
-                        swc_ecma_ast::Expr::Object(object_literal) => object_literal,
-                        _ => return Err(ParseError::TypeError),
+                        Expr::Object(object_literal) => object_literal,
+                        _ => return Err(Error::TypeError),
                     }
                 };
 
                 if options_object.props.len() > 1 {
-                    return Err(ParseError::TooManyProperties);
+                    return Err(Error::TooManyProperties);
                 }
 
                 if options_object.props.len() == 0 {
@@ -92,33 +89,31 @@ impl Annotation {
                 }
 
                 let option_property = match options_object.props.get(0).unwrap() {
-                    swc_ecma_ast::PropOrSpread::Spread(_) => {
-                        return Err(ParseError::InvalidSpreadUsage)
-                    }
-                    swc_ecma_ast::PropOrSpread::Prop(prop) => match &**prop {
-                        swc_ecma_ast::Prop::KeyValue(key_value_prop) => key_value_prop,
-                        _ => return Err(ParseError::InvalidPropertyDeclaration),
+                    PropOrSpread::Spread(_) => return Err(Error::InvalidSpreadUsage),
+                    PropOrSpread::Prop(prop) => match &**prop {
+                        Prop::KeyValue(key_value_prop) => key_value_prop,
+                        _ => return Err(Error::InvalidPropertyDeclaration),
                     },
                 };
 
                 let key = match &option_property.key {
-                    swc_ecma_ast::PropName::Ident(ident) => ident.get_name().to_string(),
-                    swc_ecma_ast::PropName::Str(str) => str.value.to_string(),
-                    _ => return Err(ParseError::InvalidOption),
+                    PropName::Ident(ident) => ident.get_name().to_string(),
+                    PropName::Str(str) => str.value.to_string(),
+                    _ => return Err(Error::InvalidOption),
                 };
 
                 if key != "guard".to_string() {
-                    return Err(ParseError::InvalidOption);
+                    return Err(Error::InvalidOption);
                 }
 
                 let guard_fn_name = match &*option_property.value {
-                    swc_ecma_ast::Expr::Ident(ident) => Some(ident.get_name()),
-                    _ => return Err(ParseError::InvalidOptionValue),
+                    Expr::Ident(ident) => Some(ident.get_name()),
+                    _ => return Err(Error::InvalidOptionValue),
                 };
 
                 Self::new(method_type, guard_fn_name)
             }
-            _ => return Err(ParseError::InvalidModuleItem),
+            _ => internal_error!(),
         }
     }
 }

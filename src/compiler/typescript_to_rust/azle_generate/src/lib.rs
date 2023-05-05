@@ -13,6 +13,7 @@ mod canister_method;
 mod errors;
 mod guard_function;
 mod header;
+mod macros;
 pub mod plugin;
 pub mod traits;
 mod ts_ast;

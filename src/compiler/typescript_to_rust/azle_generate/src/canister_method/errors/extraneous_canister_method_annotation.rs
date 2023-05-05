@@ -50,7 +50,7 @@ impl ExtraneousCanisterMethodAnnotation {
                 CanisterMethodType::Query => "$query",
                 CanisterMethodType::Update => "$update",
             },
-            Err(err) => panic!("{}", err.error_message()),
+            Err(err) => panic!("{}", err),
         }
         .to_string();
 

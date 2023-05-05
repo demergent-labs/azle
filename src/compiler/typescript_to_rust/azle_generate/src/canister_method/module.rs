@@ -84,14 +84,7 @@ impl ModuleHelperMethods for Module {
                                                 }
                                             }
                                         }
-                                        Err(err) => panic!(
-                                            "{}",
-                                            errors::build_parse_error_message(
-                                                err,
-                                                &module_item,
-                                                source_map
-                                            )
-                                        ),
+                                        Err(err) => acc.errors.push(err),
                                     }
                                 }
                                 // There is an annotation not followed by an exported function (but not at end of file)

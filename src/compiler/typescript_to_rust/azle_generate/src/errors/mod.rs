@@ -7,7 +7,7 @@ mod suggestion;
 
 pub use self::{
     compiler_output::CompilerOutput,
-    errors::{GuardFunctionNotFound, TypeNotFound},
+    errors::{GuardFunctionNotFound, InternalError, TypeNotFound},
     location::Location,
     suggestion::Suggestion,
 };
@@ -24,6 +24,7 @@ pub enum Error {
     DuplicateSystemMethodImplementation(DuplicateSystemMethod),
     ExtraneousCanisterMethodAnnotation(ExtraneousCanisterMethodAnnotation),
     MissingReturnTypeAnnotation(MissingReturnTypeAnnotation),
+    InternalError(InternalError),
 }
 
 impl std::error::Error for Error {}
@@ -36,6 +37,7 @@ impl std::fmt::Display for Error {
             Error::DuplicateSystemMethodImplementation(e) => e.fmt(f),
             Error::ExtraneousCanisterMethodAnnotation(e) => e.fmt(f),
             Error::MissingReturnTypeAnnotation(e) => e.fmt(f),
+            Error::InternalError(e) => e.fmt(f),
         }
     }
 }
