@@ -1,11 +1,11 @@
 use cdk_framework::act::node::canister_method::CanisterMethodType;
-use swc_common::SourceMap;
 use swc_ecma_ast::ModuleItem;
 
 use crate::{
-    canister_method::{module_item::ModuleItemHelperMethods, AnnotatedFnDecl, Annotation},
+    canister_method::{module_item::ModuleItemHelperMethods, Annotation},
     errors::{CompilerOutput, Location, Suggestion},
     traits::GetSourceFileInfo,
+    ts_ast::SourceMapped,
 };
 
 /// Returned when Azle detects a system method annotation without an
@@ -34,23 +34,75 @@ use crate::{
 /// ```
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExtraneousDecorator {
-    pub canister_method_type: CanisterMethodType,
-    pub origin: String,
-    pub line_number: usize,
-    pub source: String,
-    pub ranges: Vec<(usize, usize)>,
+    pub annotation: String,
+    pub location: Location,
+    pub suggested_source: String,
 }
 
 impl ExtraneousDecorator {
-    pub fn from_annotated_fn_decls(
-        annotated_fn_decls: Vec<AnnotatedFnDecl>,
-        canister_method_type: CanisterMethodType,
-    ) -> Self {
-        todo!()
+    pub fn from_module_item(annotation: SourceMapped<ModuleItem>) -> Self {
+        let annotation_type = match Annotation::from_module_item(&annotation) {
+            Ok(annotation) => match annotation.method_type {
+                CanisterMethodType::Heartbeat => "$heartbeat",
+                CanisterMethodType::Init => "$init",
+                CanisterMethodType::InspectMessage => "$inspectMessage",
+                CanisterMethodType::PostUpgrade => "$postUpgrade",
+                CanisterMethodType::PreUpgrade => "$preUpgrade",
+                CanisterMethodType::Query => "$query",
+                CanisterMethodType::Update => "$update",
+            },
+            Err(err) => panic!("{}", err.error_message()),
+        };
+
+        let span = annotation.as_expr_stmt().unwrap().span;
+        let line_number = annotation.source_map.get_line_number(span);
+        let origin = annotation.source_map.get_origin(span);
+        let range = annotation.source_map.get_range(span);
+        let source = annotation.source_map.get_source(span);
+
+        let example_function_declaration =
+            "export function some_canister_method() {\n  // method body\n}";
+
+        let suggested_source = format!(
+            "{}\n{}",
+            annotation.source_map.get_source(span),
+            example_function_declaration
+        );
+
+        Self {
+            annotation: annotation_type.to_string(),
+            location: Location {
+                line_number,
+                origin,
+                range,
+                source,
+            },
+            suggested_source,
+        }
     }
 
     pub fn to_string(&self) -> String {
-        todo!()
+        let example_function_declaration =
+            "export function some_canister_method() {\n  // method body\n}";
+
+        CompilerOutput {
+            title: format!("extraneous {} annotation", self.annotation),
+            location: self.location.clone(),
+            annotation: "expected this to be followed by an exported function declaration"
+                .to_string(),
+            suggestion: Some(Suggestion {
+                title: "Follow it with an exported function declaration or remove it. E.g.:"
+                    .to_string(),
+                source: self.suggested_source.clone(),
+                range: (
+                    self.location.range.1 + 1,
+                    self.location.range.1 + example_function_declaration.len(),
+                ),
+                annotation: None,
+                import_suggestion: None,
+            }),
+        }
+        .to_string()
     }
 }
 
@@ -65,51 +117,5 @@ impl std::fmt::Display for ExtraneousDecorator {
 impl From<ExtraneousDecorator> for crate::Error {
     fn from(error: ExtraneousDecorator) -> Self {
         Self::ExtraneousDecorator(error)
-    }
-}
-
-pub fn build_extraneous_decorator_error_message(
-    custom_decorator_module_item: &ModuleItem,
-    source_map: &SourceMap,
-) -> CompilerOutput {
-    let span = custom_decorator_module_item.as_expr_stmt().unwrap().span;
-
-    let annotation_type = match Annotation::from_module_item(custom_decorator_module_item) {
-        Ok(annotation) => match annotation.method_type {
-            CanisterMethodType::Heartbeat => "$heartbeat",
-            CanisterMethodType::Init => "$init",
-            CanisterMethodType::InspectMessage => "$inspectMessage",
-            CanisterMethodType::PostUpgrade => "$postUpgrade",
-            CanisterMethodType::PreUpgrade => "$preUpgrade",
-            CanisterMethodType::Query => "$query",
-            CanisterMethodType::Update => "$update",
-        },
-        Err(err) => panic!("{}", err.error_message()),
-    };
-    let range = source_map.get_range(span);
-    let example_function_declaration =
-        "export function some_canister_method() {\n  // method body\n}";
-
-    CompilerOutput {
-        title: format!("extraneous {} annotation", annotation_type),
-        location: Location {
-            origin: source_map.get_origin(span),
-            line_number: source_map.get_line_number(span),
-            source: source_map.get_source(span),
-            range,
-        },
-        annotation: "expected this to be followed by an exported function declaration".to_string(),
-        suggestion: Some(Suggestion {
-            title: "Follow it with an exported function declaration or remove it. E.g.:"
-                .to_string(),
-            source: format!(
-                "{}\n{}",
-                source_map.get_source(span),
-                example_function_declaration
-            ),
-            range: (range.1 + 1, range.1 + example_function_declaration.len()),
-            annotation: None,
-            import_suggestion: None,
-        }),
     }
 }

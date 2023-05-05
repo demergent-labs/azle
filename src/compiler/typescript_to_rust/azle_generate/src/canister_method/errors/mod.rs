@@ -5,7 +5,6 @@ use crate::canister_method::AnnotatedFnDecl;
 
 pub use async_not_allowed::build_async_not_allowed_error_message;
 pub use duplicate_system_method::DuplicateSystemMethod;
-pub use extraneous_decorator::build_extraneous_decorator_error_message;
 pub use extraneous_decorator::ExtraneousDecorator;
 pub use missing_return_type::build_missing_return_type_error_message;
 pub use parse_error::build_parse_error_message;

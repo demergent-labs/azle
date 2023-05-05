@@ -1,3 +1,4 @@
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Location {
     pub origin: String,
     pub line_number: usize,

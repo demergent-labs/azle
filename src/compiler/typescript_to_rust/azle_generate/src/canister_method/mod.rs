@@ -26,16 +26,10 @@ impl TsAst {
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
     ) -> Result<CanisterMethods, Vec<Error>> {
-        let annotated_fn_decls = self.programs.get_annotated_fn_decls();
-        let (
-            heartbeat_method,
-            init_method,
-            inspect_message_method,
-            post_upgrade_method,
-            pre_upgrade_method,
-            query_methods,
-            update_methods,
-        ) = (
+        let (annotated_fn_decls, get_annotated_fn_decls_errors) =
+            self.programs.get_annotated_fn_decls();
+
+        let build_canister_methods_result = (
             self.build_heartbeat_method(&annotated_fn_decls),
             self.build_init_method(&annotated_fn_decls, plugins, environment_variables),
             self.build_inspect_message_method(&annotated_fn_decls),
@@ -44,16 +38,31 @@ impl TsAst {
             self.build_query_methods(&annotated_fn_decls),
             self.build_update_methods(&annotated_fn_decls),
         )
-            .collect_results()?;
+            .collect_results();
 
-        Ok(CanisterMethods {
-            heartbeat_method,
-            init_method: Some(init_method),
-            inspect_message_method,
-            post_upgrade_method: Some(post_upgrade_method),
-            pre_upgrade_method,
-            query_methods,
-            update_methods,
-        })
+        match build_canister_methods_result {
+            Ok(canister_methods) => {
+                let (
+                    heartbeat_method,
+                    init_method,
+                    inspect_message_method,
+                    post_upgrade_method,
+                    pre_upgrade_method,
+                    query_methods,
+                    update_methods,
+                ) = canister_methods;
+
+                Ok(CanisterMethods {
+                    heartbeat_method,
+                    init_method: Some(init_method),
+                    inspect_message_method,
+                    post_upgrade_method: Some(post_upgrade_method),
+                    pre_upgrade_method,
+                    query_methods,
+                    update_methods,
+                })
+            }
+            Err(errors) => Err(vec![get_annotated_fn_decls_errors, errors].concat()),
+        }
     }
 }
