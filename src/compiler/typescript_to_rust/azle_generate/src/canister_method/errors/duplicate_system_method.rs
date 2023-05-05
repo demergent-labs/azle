@@ -7,6 +7,24 @@ use swc_common::{source_map::Pos, Span};
 
 use crate::{canister_method::AnnotatedFnDecl, traits::GetSourceFileInfo};
 
+/// Returned when Azle detects multiple system canister method annotations
+/// of the same type.
+///
+/// # Example
+///
+/// ```ts
+/// import { $init } from 'azle';
+///
+/// $init;
+/// export function firstOccurrence(): void {
+///     console.log("First init method")
+/// }
+///
+/// $init;
+/// export function secondOccurrence(): void {
+///     console.log("Invalid second init method")
+/// }
+/// ```
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DuplicateSystemMethod {
     pub canister_method_type: CanisterMethodType,
@@ -18,7 +36,7 @@ pub struct DuplicateSystemMethod {
 
 impl DuplicateSystemMethod {
     pub fn from_annotated_fn_decls(
-        annotated_fn_decls: Vec<AnnotatedFnDecl>,
+        annotated_fn_decls: Vec<&AnnotatedFnDecl>,
         canister_method_type: CanisterMethodType,
     ) -> Self {
         let source_map = annotated_fn_decls[0].source_map;

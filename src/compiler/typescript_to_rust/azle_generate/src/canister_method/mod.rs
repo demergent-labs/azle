@@ -26,6 +26,7 @@ impl TsAst {
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
     ) -> Result<CanisterMethods, Vec<Error>> {
+        let annotated_fn_decls = self.programs.get_annotated_fn_decls();
         let (
             heartbeat_method,
             init_method,
@@ -35,13 +36,13 @@ impl TsAst {
             query_methods,
             update_methods,
         ) = (
-            self.build_heartbeat_method(),
-            self.build_init_method(plugins, environment_variables),
-            self.build_inspect_message_method(),
-            self.build_post_upgrade_method(plugins, environment_variables),
-            self.build_pre_upgrade_method(),
-            self.build_query_methods(),
-            self.build_update_methods(),
+            self.build_heartbeat_method(&annotated_fn_decls),
+            self.build_init_method(&annotated_fn_decls, plugins, environment_variables),
+            self.build_inspect_message_method(&annotated_fn_decls),
+            self.build_post_upgrade_method(&annotated_fn_decls, plugins, environment_variables),
+            self.build_pre_upgrade_method(&annotated_fn_decls),
+            self.build_query_methods(&annotated_fn_decls),
+            self.build_update_methods(&annotated_fn_decls),
         )
             .collect_results()?;
 

@@ -6,8 +6,6 @@ use swc_ecma_ast::{
 
 use crate::canister_method::{rust, AnnotatedFnDecl};
 
-pub use super::build_canister_methods::BuildCanisterMethods;
-
 pub fn generate(fn_decl: &AnnotatedFnDecl) -> proc_macro2::TokenStream {
     let call_to_js_function = rust::generate_call_to_js_function(fn_decl);
     let return_expression = generate_return_expression(fn_decl);

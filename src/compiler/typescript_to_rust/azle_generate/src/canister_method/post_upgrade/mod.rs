@@ -1,22 +1,23 @@
 use cdk_framework::act::node::canister_method::{CanisterMethodType, PostUpgradeMethod};
 
-use crate::{
-    canister_method::{errors::DuplicateSystemMethod, GetAnnotatedFnDecls},
-    plugin::Plugin,
-    Error, TsAst,
-};
+use super::AnnotatedFnDecl;
+use crate::{canister_method::errors::DuplicateSystemMethod, plugin::Plugin, Error, TsAst};
 
 mod rust;
 
 impl TsAst {
     pub fn build_post_upgrade_method(
         &self,
+        annotated_fn_decls: &Vec<AnnotatedFnDecl>,
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
     ) -> Result<PostUpgradeMethod, Vec<Error>> {
-        let post_upgrade_fn_decls = self
-            .programs
-            .get_annotated_fn_decls_of_type(CanisterMethodType::PostUpgrade);
+        let post_upgrade_fn_decls: Vec<_> = annotated_fn_decls
+            .iter()
+            .filter(|annotated_fn_decl| {
+                annotated_fn_decl.is_canister_method_type(CanisterMethodType::PostUpgrade)
+            })
+            .collect();
 
         if post_upgrade_fn_decls.len() > 1 {
             let duplicate_method_types_error: Error =
@@ -42,7 +43,11 @@ impl TsAst {
             vec![]
         };
 
-        let body = rust::generate(post_upgrade_fn_decl_option, plugins, environment_variables);
+        let body = rust::generate(
+            post_upgrade_fn_decl_option.copied(),
+            plugins,
+            environment_variables,
+        );
         let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
 
         Ok(PostUpgradeMethod {

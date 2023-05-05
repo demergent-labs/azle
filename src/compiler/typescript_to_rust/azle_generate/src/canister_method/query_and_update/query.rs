@@ -1,22 +1,19 @@
-use cdk_framework::act::node::canister_method::{CanisterMethod, CanisterMethodType, QueryMethod};
+use cdk_framework::act::node::canister_method::{CanisterMethodType, QueryMethod};
 
-use super::shared::BuildCanisterMethods;
-use crate::{Error, TsAst};
+use crate::{canister_method::AnnotatedFnDecl, Error, TsAst};
 
 impl TsAst {
-    pub fn build_query_methods(&self) -> Result<Vec<QueryMethod>, Vec<Error>> {
-        let query_canister_methods = self
-            .programs
-            .build_canister_method_nodes(CanisterMethodType::Query);
-        let query_methods =
-            query_canister_methods
-                .iter()
-                .fold(vec![], |mut acc, canister_method| {
-                    if let CanisterMethod::Query(query_method) = canister_method {
-                        acc.push(query_method.clone());
-                    }
-                    acc
-                });
+    pub fn build_query_methods(
+        &self,
+        annotated_fn_decls: &Vec<AnnotatedFnDecl>,
+    ) -> Result<Vec<QueryMethod>, Vec<Error>> {
+        let query_methods = annotated_fn_decls
+            .iter()
+            .filter(|fn_decl| fn_decl.is_canister_method_type(CanisterMethodType::Query))
+            .map(|query_fn_decl| query_fn_decl.to_definition())
+            .map(|definition| QueryMethod { definition })
+            .collect();
+
         Ok(query_methods)
     }
 }

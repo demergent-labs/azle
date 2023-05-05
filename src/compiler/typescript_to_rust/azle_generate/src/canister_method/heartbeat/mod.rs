@@ -1,17 +1,21 @@
 use cdk_framework::act::node::canister_method::{CanisterMethodType, HeartbeatMethod};
 
-use crate::{
-    canister_method::{errors::DuplicateSystemMethod, GetAnnotatedFnDecls},
-    Error, TsAst,
-};
+use super::AnnotatedFnDecl;
+use crate::{canister_method::errors::DuplicateSystemMethod, Error, TsAst};
 
 mod rust;
 
 impl TsAst {
-    pub fn build_heartbeat_method(&self) -> Result<Option<HeartbeatMethod>, Vec<Error>> {
-        let heartbeat_fn_decls = self
-            .programs
-            .get_annotated_fn_decls_of_type(CanisterMethodType::Heartbeat);
+    pub fn build_heartbeat_method(
+        &self,
+        annotated_fn_decls: &Vec<AnnotatedFnDecl>,
+    ) -> Result<Option<HeartbeatMethod>, Vec<Error>> {
+        let heartbeat_fn_decls: Vec<_> = annotated_fn_decls
+            .iter()
+            .filter(|annotated_fn_decl| {
+                annotated_fn_decl.is_canister_method_type(CanisterMethodType::Heartbeat)
+            })
+            .collect();
 
         if heartbeat_fn_decls.len() > 1 {
             let duplicate_method_types_error: Error =

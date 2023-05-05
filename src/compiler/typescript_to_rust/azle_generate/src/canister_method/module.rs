@@ -80,20 +80,13 @@ impl ModuleHelperMethods for Module {
     fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>> {
         self.body
             .iter()
-            .fold(vec![], |mut acc, module_item| match module_item.as_decl() {
-                Some(decl) => match decl {
-                    Decl::Fn(fn_decl) => {
-                        // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
-                        // necessary to do something like:
-                        // vec![acc, vec![SourceMapped::new(&fn_decl, source_map)]].concat()
-
-                        acc.push(SourceMapped::new(&fn_decl, source_map));
-                        acc
-                    }
-                    _ => acc,
-                },
-                None => acc,
+            .filter_map(|module_item| {
+                Some(SourceMapped::new(
+                    module_item.as_decl()?.as_fn_decl()?,
+                    source_map,
+                ))
             })
+            .collect()
     }
 }
 
