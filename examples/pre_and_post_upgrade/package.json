@@ -4,7 +4,7 @@
         "test": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
-        "azle": "0.16.1"
+        "azle": "0.16.2"
     },
     "devDependencies": {
         "@dfinity/agent": "0.11.1",
