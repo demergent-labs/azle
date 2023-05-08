@@ -19,7 +19,6 @@ struct CompilerInfo {
 }
 
 fn main() {
-    eprintln!("#AZLE_GENERATE_START");
     let args: Vec<String> = env::args().collect();
 
     if args.len() < 2 {
