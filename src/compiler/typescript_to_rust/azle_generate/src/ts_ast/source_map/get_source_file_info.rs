@@ -1,7 +1,7 @@
 use swc_common::{source_map::Pos, BytePos, SourceMap, Span};
 
 use super::{private_get_source_file_info::PrivateGetSourceFileInfo, Range};
-use crate::traits::GetSourceFileInfo;
+use crate::{errors::Location, traits::GetSourceFileInfo};
 
 impl GetSourceFileInfo for SourceMap {
     fn get_text(&self, span: Span) -> String {
@@ -134,5 +134,14 @@ impl GetSourceFileInfo for SourceMap {
     fn get_line_number(&self, span: Span) -> usize {
         let loc = self.get_loc(span);
         loc.line
+    }
+
+    fn get_location(&self, span: Span) -> Location {
+        Location {
+            origin: self.get_origin(span),
+            line_number: self.get_line_number(span),
+            source: self.get_source(span),
+            range: self.get_range(span),
+        }
     }
 }

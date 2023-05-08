@@ -5,7 +5,8 @@ export {
     $postUpgrade,
     $preUpgrade,
     $query,
-    $update
+    $update,
+    CanisterMethodOptions
 } from './annotations';
 export {
     Duration,

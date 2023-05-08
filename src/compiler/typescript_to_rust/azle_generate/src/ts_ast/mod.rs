@@ -4,6 +4,7 @@ use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl};
 pub use program::Program;
 pub use source_map::SourceMapped;
 
+pub mod expr;
 pub mod program;
 pub mod source_map;
 pub mod ts_type;

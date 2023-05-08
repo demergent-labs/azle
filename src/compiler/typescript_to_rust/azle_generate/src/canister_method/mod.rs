@@ -4,7 +4,6 @@ use crate::{plugin::Plugin, traits::CollectResults, ts_ast::TsAst, Error};
 
 pub use annotated_fn_decl::{AnnotatedFnDecl, GetAnnotatedFnDecls};
 pub use annotation::Annotation;
-pub use errors::ParseError;
 
 mod annotated_fn_decl;
 mod annotation;
@@ -42,6 +41,10 @@ impl TsAst {
 
         match build_canister_methods_result {
             Ok(canister_methods) => {
+                if !get_annotated_fn_decls_errors.is_empty() {
+                    return Err(get_annotated_fn_decls_errors);
+                }
+
                 let (
                     heartbeat_method,
                     init_method,

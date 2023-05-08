@@ -3,7 +3,7 @@ use swc_ecma_ast::{Decl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt};
 
 use crate::{
     canister_method::{
-        errors::{self, ExtraneousCanisterMethodAnnotation, MissingReturnTypeAnnotation},
+        errors::{ExtraneousCanisterMethodAnnotation, MissingReturnTypeAnnotation},
         module_item::ModuleItemHelperMethods,
         AnnotatedFnDecl, Annotation,
     },

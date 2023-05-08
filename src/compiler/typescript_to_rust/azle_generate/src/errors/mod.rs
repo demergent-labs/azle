@@ -7,7 +7,9 @@ mod suggestion;
 
 pub use self::{
     compiler_output::CompilerOutput,
-    errors::{GuardFunctionNotFound, InternalError, TypeNotFound},
+    errors::{
+        ArgumentError, GuardFunctionNotFound, InternalError, SyntaxError, TypeError, TypeNotFound,
+    },
     location::Location,
     suggestion::Suggestion,
 };
@@ -25,6 +27,9 @@ pub enum Error {
     ExtraneousCanisterMethodAnnotation(ExtraneousCanisterMethodAnnotation),
     MissingReturnTypeAnnotation(MissingReturnTypeAnnotation),
     InternalError(InternalError),
+    ArgumentError(ArgumentError),
+    TypeError(TypeError),
+    SyntaxError(SyntaxError),
 }
 
 impl std::error::Error for Error {}
@@ -32,12 +37,15 @@ impl std::error::Error for Error {}
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Error::TypeNotFound(e) => e.fmt(f),
-            Error::GuardFunctionNotFound(e) => e.fmt(f),
-            Error::DuplicateSystemMethodImplementation(e) => e.fmt(f),
-            Error::ExtraneousCanisterMethodAnnotation(e) => e.fmt(f),
-            Error::MissingReturnTypeAnnotation(e) => e.fmt(f),
-            Error::InternalError(e) => e.fmt(f),
+            Self::TypeNotFound(e) => e.fmt(f),
+            Self::GuardFunctionNotFound(e) => e.fmt(f),
+            Self::DuplicateSystemMethodImplementation(e) => e.fmt(f),
+            Self::ExtraneousCanisterMethodAnnotation(e) => e.fmt(f),
+            Self::MissingReturnTypeAnnotation(e) => e.fmt(f),
+            Self::InternalError(e) => e.fmt(f),
+            Self::ArgumentError(e) => e.fmt(f),
+            Self::TypeError(e) => e.fmt(f),
+            Self::SyntaxError(e) => e.fmt(f),
         }
     }
 }
