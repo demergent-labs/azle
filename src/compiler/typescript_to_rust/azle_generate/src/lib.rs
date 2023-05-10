@@ -10,15 +10,16 @@ use crate::{
 mod body;
 mod candid_type;
 mod canister_method;
-mod errors;
 mod guard_function;
 mod header;
 mod macros;
-pub mod plugin;
-pub mod traits;
 mod ts_ast;
 mod ts_keywords;
 mod vm_value_conversion;
+
+pub mod errors;
+pub mod plugin;
+pub mod traits;
 
 pub fn generate_canister(
     ts_file_names: &Vec<String>,

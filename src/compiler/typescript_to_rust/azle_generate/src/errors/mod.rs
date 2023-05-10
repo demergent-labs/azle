@@ -1,9 +1,10 @@
 use cdk_framework::act::abstract_canister_tree::Error as CdkfError;
 
 mod compiler_output;
-mod errors;
 mod location;
 mod suggestion;
+
+pub mod errors;
 
 pub use self::{
     compiler_output::CompilerOutput,
