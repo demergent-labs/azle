@@ -1,4 +1,6 @@
-use swc_ecma_ast::{Expr, ExprStmt, FnDecl, ModuleItem};
+use std::ops::Deref;
+
+use swc_ecma_ast::{Callee, Expr, ExprStmt, FnDecl, ModuleItem, Stmt};
 
 use crate::{canister_method::annotation::CANISTER_METHOD_ANNOTATIONS, traits::GetName};
 
@@ -10,37 +12,23 @@ pub trait ModuleItemHelperMethods {
 
 impl ModuleItemHelperMethods for ModuleItem {
     fn is_canister_method_annotation(&self) -> bool {
-        if !self.is_stmt() {
-            return false;
-        }
-
-        let statement = self.as_stmt().unwrap();
-
-        if !statement.is_expr() {
-            return false;
-        }
-
-        let expression = statement.as_expr().unwrap();
-
-        let ident = match &*expression.expr {
-            Expr::Call(call_expr) => {
-                if !call_expr.callee.is_expr() {
-                    return false;
-                }
-
-                match &call_expr.callee {
-                    swc_ecma_ast::Callee::Expr(expr) => match &**expr {
-                        Expr::Ident(ident) => ident,
+        match self {
+            ModuleItem::Stmt(Stmt::Expr(expr_stmt)) => {
+                let ident = match &*expr_stmt.expr {
+                    Expr::Call(call_expr) => match &call_expr.callee {
+                        Callee::Expr(box_expr) => match box_expr.deref() {
+                            Expr::Ident(ident) => ident,
+                            _ => return false,
+                        },
                         _ => return false,
                     },
+                    Expr::Ident(ident) => ident,
                     _ => return false,
-                }
+                };
+                CANISTER_METHOD_ANNOTATIONS.contains(&ident.get_name())
             }
-            Expr::Ident(ident) => ident,
-            _ => return false,
-        };
-
-        CANISTER_METHOD_ANNOTATIONS.contains(&ident.get_name())
+            _ => false,
+        }
     }
 
     fn as_exported_fn_decl(&self) -> Option<FnDecl> {
