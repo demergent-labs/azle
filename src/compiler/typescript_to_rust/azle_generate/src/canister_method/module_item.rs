@@ -2,19 +2,18 @@ use std::ops::Deref;
 
 use swc_ecma_ast::{ExprStmt, FnDecl, ModuleItem};
 
-use crate::{canister_method::annotation::CANISTER_METHOD_ANNOTATIONS, traits::GetName};
+use crate::{
+    canister_method::annotation::CANISTER_METHOD_ANNOTATIONS, traits::GetName,
+    ts_ast::SourceMapped, Error,
+};
 
-pub trait ModuleItemHelperMethods {
-    fn is_canister_method_annotation(&self) -> bool;
-    fn as_exported_fn_decl(&self) -> Option<FnDecl>;
-    fn as_expr_stmt(&self) -> Option<ExprStmt>;
-}
+use super::Annotation;
 
-impl ModuleItemHelperMethods for ModuleItem {
-    fn is_canister_method_annotation(&self) -> bool {
+impl SourceMapped<'_, ModuleItem> {
+    pub fn as_canister_method_annotation(&self) -> Option<Result<Annotation, Error>> {
         self.as_stmt()
             .and_then(|stmt| stmt.as_expr())
-            .map(|expr_stmt| {
+            .and_then(|expr_stmt| {
                 expr_stmt
                     .expr
                     .as_call()
@@ -22,13 +21,17 @@ impl ModuleItemHelperMethods for ModuleItem {
                     .and_then(|box_expr| box_expr.deref().as_ident())
                     .and_then(|ident| Some(ident))
                     .or(expr_stmt.expr.as_ident())
-                    .map(|ident| CANISTER_METHOD_ANNOTATIONS.contains(&ident.get_name()))
-                    .unwrap_or(false)
+                    .and_then(|ident| {
+                        if CANISTER_METHOD_ANNOTATIONS.contains(&ident.get_name()) {
+                            Some(Annotation::from_module_item(self))
+                        } else {
+                            None
+                        }
+                    })
             })
-            .unwrap_or(false)
     }
 
-    fn as_exported_fn_decl(&self) -> Option<FnDecl> {
+    pub fn as_exported_fn_decl(&self) -> Option<FnDecl> {
         Some(
             self.as_module_decl()?
                 .as_export_decl()?
@@ -38,7 +41,7 @@ impl ModuleItemHelperMethods for ModuleItem {
         )
     }
 
-    fn as_expr_stmt(&self) -> Option<ExprStmt> {
+    pub fn as_expr_stmt(&self) -> Option<ExprStmt> {
         Some(self.as_stmt()?.as_expr()?.clone())
     }
 }

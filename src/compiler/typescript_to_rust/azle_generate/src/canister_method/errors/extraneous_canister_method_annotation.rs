@@ -2,7 +2,7 @@ use cdk_framework::act::node::canister_method::CanisterMethodType;
 use swc_ecma_ast::ModuleItem;
 
 use crate::{
-    canister_method::{module_item::ModuleItemHelperMethods, Annotation},
+    canister_method::Annotation,
     errors::{CompilerOutput, Location, Suggestion},
     traits::GetSourceFileInfo,
     ts_ast::SourceMapped,

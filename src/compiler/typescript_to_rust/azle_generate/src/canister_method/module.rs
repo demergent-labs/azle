@@ -4,8 +4,7 @@ use swc_ecma_ast::{Decl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt};
 use crate::{
     canister_method::{
         errors::{ExtraneousCanisterMethodAnnotation, MissingReturnTypeAnnotation},
-        module_item::ModuleItemHelperMethods,
-        AnnotatedFnDecl, Annotation,
+        AnnotatedFnDecl,
     },
     ts_ast::SourceMapped,
     Error,
@@ -57,16 +56,14 @@ impl ModuleHelperMethods for Module {
             .iter()
             .enumerate()
             .fold(Accumulator::new(), |mut acc, (i, module_item)| {
-                // TODO: Change this to something like module_item.as_canister_method_annotation
-                if module_item.is_canister_method_annotation() {
-                    match source_mapped_body.get(i + 1) {
-                        Some(next_item) => {
-                            let next_item = SourceMapped::new(next_item, source_map);
-                            match next_item.as_exported_fn_decl() {
-                                Some(fn_decl) => {
-                                    // TODO: Change this to pop out up above when we check if is_canister_method_annotation
-                                    match Annotation::from_module_item(&module_item) {
-                                        Ok(annotation) => {
+                if let Some(result) = module_item.as_canister_method_annotation() {
+                    match result {
+                        Ok(annotation) => {
+                            match source_mapped_body.get(i + 1) {
+                                Some(next_item) => {
+                                    let next_item = SourceMapped::new(next_item, source_map);
+                                    match next_item.as_exported_fn_decl() {
+                                        Some(fn_decl) => {
                                             let annotated_fn_decl = AnnotatedFnDecl {
                                                 annotation,
                                                 fn_decl: fn_decl.clone(),
@@ -84,24 +81,24 @@ impl ModuleHelperMethods for Module {
                                                 }
                                             }
                                         }
-                                        Err(err) => acc.errors.push(err),
+                                        // There is an annotation not followed by an exported function (but not at end of file)
+                                        None => acc.errors.push(
+                                            ExtraneousCanisterMethodAnnotation::from_module_item(
+                                                &module_item,
+                                            )
+                                            .into(),
+                                        ),
                                     }
                                 }
-                                // There is an annotation not followed by an exported function (but not at end of file)
+                                // There is a dangling canister method annotation at the end of the file.
                                 None => acc.errors.push(
-                                    ExtraneousCanisterMethodAnnotation::from_module_item(
-                                        &module_item,
-                                    )
-                                    .into(),
+                                    ExtraneousCanisterMethodAnnotation::from_module_item(&module_item)
+                                        .into(),
                                 ),
-                            }
-                        }
-                        // There is a dangling canister method annotation at the end of the file.
-                        None => acc.errors.push(
-                            ExtraneousCanisterMethodAnnotation::from_module_item(&module_item)
-                                .into(),
-                        ),
-                    };
+                            };
+                        },
+                        Err(err) => acc.errors.push(err)
+                    }
                 }
 
                 acc
