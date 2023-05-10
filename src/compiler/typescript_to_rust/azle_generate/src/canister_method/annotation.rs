@@ -77,7 +77,7 @@ impl Annotation {
                 }
 
                 let options_object = {
-                    let expr_or_spread = call_expr.args.get(0).unwrap();
+                    let expr_or_spread = &call_expr.args[0];
                     if expr_or_spread.spread.is_some() {
                         return Err(
                             SyntaxError::error(
@@ -115,7 +115,7 @@ impl Annotation {
                     return Self::new(method_type, None);
                 }
 
-                let option_property = match options_object.props.get(0).unwrap() {
+                let option_property = match &options_object.props[0] {
                     PropOrSpread::Spread(spread_element) => return Err(
                         SyntaxError::error(
                             "spread operation is unsupported in canister method annotations at this time.".to_string(),
