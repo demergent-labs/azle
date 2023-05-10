@@ -83,16 +83,15 @@ impl ModuleHelperMethods for Module {
                                         }
                                         // There is an annotation not followed by an exported function (but not at end of file)
                                         None => acc.errors.push(
-                                            ExtraneousCanisterMethodAnnotation::from_module_item(
-                                                &module_item,
-                                            )
-                                            .into(),
-                                        ),
+                                            ExtraneousCanisterMethodAnnotation::from_annotation(
+                                                &SourceMapped::new(&annotation, module_item.source_map)
+                                            ).into()
+                                        )
                                     }
                                 }
                                 // There is a dangling canister method annotation at the end of the file.
                                 None => acc.errors.push(
-                                    ExtraneousCanisterMethodAnnotation::from_module_item(&module_item)
+                                    ExtraneousCanisterMethodAnnotation::from_annotation(&SourceMapped::new(&annotation, module_item.source_map))
                                         .into(),
                                 ),
                             };

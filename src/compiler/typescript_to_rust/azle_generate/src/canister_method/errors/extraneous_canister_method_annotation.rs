@@ -1,5 +1,6 @@
+use std::ops::Deref;
+
 use cdk_framework::act::node::canister_method::CanisterMethodType;
-use swc_ecma_ast::ModuleItem;
 
 use crate::{
     canister_method::Annotation,
@@ -39,26 +40,23 @@ pub struct ExtraneousCanisterMethodAnnotation {
 }
 
 impl ExtraneousCanisterMethodAnnotation {
-    pub fn from_module_item(annotation_module_item: &SourceMapped<ModuleItem>) -> Self {
-        let annotation = match Annotation::from_module_item(annotation_module_item) {
-            Ok(annotation) => match annotation.method_type {
-                CanisterMethodType::Heartbeat => "$heartbeat",
-                CanisterMethodType::Init => "$init",
-                CanisterMethodType::InspectMessage => "$inspectMessage",
-                CanisterMethodType::PostUpgrade => "$postUpgrade",
-                CanisterMethodType::PreUpgrade => "$preUpgrade",
-                CanisterMethodType::Query => "$query",
-                CanisterMethodType::Update => "$update",
-            },
-            Err(err) => panic!("{}", err),
+    pub fn from_annotation(sm_annotation: &SourceMapped<Annotation>) -> Self {
+        let annotation = match sm_annotation.method_type {
+            CanisterMethodType::Heartbeat => "$heartbeat",
+            CanisterMethodType::Init => "$init",
+            CanisterMethodType::InspectMessage => "$inspectMessage",
+            CanisterMethodType::PostUpgrade => "$postUpgrade",
+            CanisterMethodType::PreUpgrade => "$preUpgrade",
+            CanisterMethodType::Query => "$query",
+            CanisterMethodType::Update => "$update",
         }
         .to_string();
 
-        let span = annotation_module_item.as_expr_stmt().unwrap().span;
-        let line_number = annotation_module_item.source_map.get_line_number(span);
-        let origin = annotation_module_item.source_map.get_origin(span);
-        let range = annotation_module_item.source_map.get_range(span);
-        let source = annotation_module_item.source_map.get_source(span);
+        let span = sm_annotation.span;
+        let line_number = sm_annotation.source_map.get_line_number(span);
+        let origin = sm_annotation.source_map.get_origin(span);
+        let range = sm_annotation.source_map.get_range(span);
+        let source = sm_annotation.source_map.get_source(span);
 
         Self {
             annotation,

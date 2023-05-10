@@ -1,5 +1,6 @@
 use cdk_framework::act::node::canister_method::CanisterMethodType;
 use std::ops::Deref;
+use swc_common::Span;
 use swc_ecma_ast::{Callee, Expr, ModuleItem, Prop, PropName, PropOrSpread, Stmt};
 
 use crate::{
@@ -24,10 +25,11 @@ pub const CANISTER_METHOD_ANNOTATIONS: [&str; 7] = [
 pub struct Annotation {
     pub method_type: CanisterMethodType,
     pub guard: Option<String>,
+    pub span: Span,
 }
 
 impl Annotation {
-    pub fn new(name: &str, guard: Option<&str>) -> Result<Self, Error> {
+    pub fn new(name: &str, guard: Option<&str>, span: Span) -> Result<Self, Error> {
         let method_type = match name {
             "$heartbeat" => CanisterMethodType::Heartbeat,
             "$init" => CanisterMethodType::Init,
@@ -44,7 +46,11 @@ impl Annotation {
             None => None,
         };
 
-        Ok(Self { method_type, guard })
+        Ok(Self {
+            method_type,
+            guard,
+            span,
+        })
     }
 
     pub fn from_module_item(module_item: &SourceMapped<ModuleItem>) -> Result<Self, Error> {
@@ -54,7 +60,7 @@ impl Annotation {
         };
 
         match expr {
-            Expr::Ident(ident) => Self::new(ident.get_name(), None),
+            Expr::Ident(ident) => Self::new(ident.get_name(), None, ident.span),
             Expr::Call(call_expr) => {
                 let method_type = match &call_expr.callee {
                     Callee::Expr(expr) => match &**expr {
@@ -73,7 +79,7 @@ impl Annotation {
                 }
 
                 if call_expr.args.len() == 0 {
-                    return Self::new(method_type, None);
+                    return Self::new(method_type, None, call_expr.span);
                 }
 
                 let options_object = {
@@ -112,7 +118,7 @@ impl Annotation {
                     // TODO: Consider making this an error. If options object has no
                     // properties it should be removed and the annotation not invoked
 
-                    return Self::new(method_type, None);
+                    return Self::new(method_type, None, call_expr.span);
                 }
 
                 let option_property = match &options_object.props[0] {
@@ -207,7 +213,7 @@ impl Annotation {
                     )),
                 };
 
-                Self::new(method_type, guard_fn_name)
+                Self::new(method_type, guard_fn_name, call_expr.span)
             }
             _ => internal_error!(),
         }
