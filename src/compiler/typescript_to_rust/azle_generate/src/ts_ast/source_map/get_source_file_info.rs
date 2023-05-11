@@ -105,7 +105,7 @@ impl GetSourceFileInfo for SourceMap {
         source
             .chars()
             .take(range.0)
-            .chain(replacement.to_string().chars())
+            .chain(replacement.chars())
             .chain(source.chars().skip(range.1))
             .collect()
     }

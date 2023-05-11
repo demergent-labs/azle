@@ -1,13 +1,13 @@
 use cdk_framework::act::node::canister_method::CanisterMethodType;
-use swc_ecma_ast::TsType;
+use swc_ecma_ast::{TsKeywordTypeKind, TsType};
 
-use crate::canister_method::AnnotatedFnDecl;
+use crate::{canister_method::AnnotatedFnDecl, Error};
 
-pub use async_not_allowed::build_async_not_allowed_error_message;
+pub use async_not_allowed::AsyncNotAllowed;
 pub use duplicate_system_method::DuplicateSystemMethod;
 pub use extraneous_canister_method_annotation::ExtraneousCanisterMethodAnnotation;
 pub use missing_return_type::MissingReturnTypeAnnotation;
-pub use void_return_type_required::build_void_return_type_required_error_message;
+pub use void_return_type_required::VoidReturnTypeRequired;
 
 mod async_not_allowed;
 mod duplicate_system_method;
@@ -16,41 +16,19 @@ mod missing_return_type;
 mod void_return_type_required;
 
 impl<'a> AnnotatedFnDecl<'a> {
-    pub fn assert_return_type_is_void(&self) {
+    pub fn assert_return_type_is_void(&self) -> Result<(), Error> {
         if self.annotation.method_type != CanisterMethodType::Heartbeat && self.is_promise() {
-            panic!("{}", build_void_return_type_required_error_message(self))
+            return Err(VoidReturnTypeRequired::from_annotated_fn_decl(self).into());
         }
 
         let return_ts_type = self.get_return_ts_type();
 
-        if let swc_ecma_ast::TsType::TsKeywordType(keyword) = return_ts_type {
-            if let swc_ecma_ast::TsKeywordTypeKind::TsVoidKeyword = keyword.kind {
-                return;
+        if let TsType::TsKeywordType(keyword) = return_ts_type {
+            if let TsKeywordTypeKind::TsVoidKeyword = keyword.kind {
+                return Ok(());
             }
         }
 
-        panic!("{}", build_void_return_type_required_error_message(self))
-    }
-
-    pub fn assert_not_async(&self) {
-        if self.fn_decl.function.is_async {
-            panic!(
-                "{}",
-                build_async_not_allowed_error_message(
-                    &self.fn_decl,
-                    self.source_map,
-                    &self.annotation.method_type
-                )
-            )
-        }
-
-        if let TsType::TsTypeRef(type_ref) =
-            &*self.fn_decl.function.return_type.as_ref().unwrap().type_ann
-        {
-            match type_ref.type_name {
-                swc_ecma_ast::TsEntityName::TsQualifiedName(_) => todo!(),
-                swc_ecma_ast::TsEntityName::Ident(_) => todo!(),
-            }
-        }
+        return Err(VoidReturnTypeRequired::from_annotated_fn_decl(self).into());
     }
 }

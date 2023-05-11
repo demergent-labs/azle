@@ -36,9 +36,11 @@ pub struct DuplicateSystemMethod {
 
 impl DuplicateSystemMethod {
     pub fn from_annotated_fn_decls(
-        annotated_fn_decls: Vec<&AnnotatedFnDecl>,
+        annotated_fn_decls: &Vec<&AnnotatedFnDecl>,
         canister_method_type: CanisterMethodType,
     ) -> Self {
+        // TODO: Might this be a problem if the fn_decls come from different
+        // typescript files?
         let source_map = annotated_fn_decls[0].source_map;
 
         // TODO: Grab the span of the annotation

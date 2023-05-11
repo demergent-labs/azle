@@ -1,5 +1,3 @@
-use std::ops::Deref;
-
 use cdk_framework::act::node::canister_method::CanisterMethodType;
 
 use crate::{

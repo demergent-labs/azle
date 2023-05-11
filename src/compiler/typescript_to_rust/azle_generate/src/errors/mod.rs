@@ -15,7 +15,8 @@ pub use self::{
     suggestion::Suggestion,
 };
 use crate::canister_method::errors::{
-    DuplicateSystemMethod, ExtraneousCanisterMethodAnnotation, MissingReturnTypeAnnotation,
+    AsyncNotAllowed, DuplicateSystemMethod, ExtraneousCanisterMethodAnnotation,
+    MissingReturnTypeAnnotation, VoidReturnTypeRequired,
 };
 
 pub mod service_method;
@@ -31,6 +32,8 @@ pub enum Error {
     ArgumentError(ArgumentError),
     TypeError(TypeError),
     SyntaxError(SyntaxError),
+    VoidReturnTypeRequired(VoidReturnTypeRequired),
+    AsyncNotAllowed(AsyncNotAllowed),
 }
 
 impl std::error::Error for Error {}
@@ -47,6 +50,8 @@ impl std::fmt::Display for Error {
             Self::ArgumentError(e) => e.fmt(f),
             Self::TypeError(e) => e.fmt(f),
             Self::SyntaxError(e) => e.fmt(f),
+            Self::VoidReturnTypeRequired(e) => e.fmt(f),
+            Self::AsyncNotAllowed(e) => e.fmt(f),
         }
     }
 }

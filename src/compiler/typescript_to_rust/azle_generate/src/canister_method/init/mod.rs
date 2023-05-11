@@ -1,7 +1,11 @@
 use cdk_framework::act::node::canister_method::{CanisterMethodType, InitMethod};
 
 use super::AnnotatedFnDecl;
-use crate::{canister_method::errors::DuplicateSystemMethod, plugin::Plugin, Error, TsAst};
+use crate::{
+    canister_method::errors::{AsyncNotAllowed, DuplicateSystemMethod},
+    plugin::Plugin,
+    Error, TsAst,
+};
 
 mod rust;
 
@@ -12,6 +16,8 @@ impl TsAst {
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
     ) -> Result<InitMethod, Vec<Error>> {
+        let mut errors: Vec<Error> = vec![];
+
         let init_fn_decls: Vec<_> = annotated_fn_decls
             .iter()
             .filter(|annotated_fn_decl| {
@@ -22,19 +28,28 @@ impl TsAst {
         if init_fn_decls.len() > 1 {
             let duplicate_method_types_error: Error =
                 DuplicateSystemMethod::from_annotated_fn_decls(
-                    init_fn_decls,
+                    &init_fn_decls,
                     CanisterMethodType::Init,
                 )
                 .into();
 
-            return Err(vec![duplicate_method_types_error]);
+            errors.push(duplicate_method_types_error);
         }
 
         let init_fn_decl_option = init_fn_decls.get(0);
 
-        if let Some(fn_decl) = init_fn_decl_option {
-            fn_decl.assert_return_type_is_void();
-            fn_decl.assert_not_async();
+        if let Some(init_fn_decl) = init_fn_decl_option {
+            if let Err(err) = init_fn_decl.assert_return_type_is_void() {
+                errors.push(err);
+            }
+
+            if init_fn_decl.fn_decl.function.is_async {
+                errors.push(AsyncNotAllowed::from_annotated_fn_decl(init_fn_decl).into())
+            }
+        }
+
+        if errors.len() != 0 {
+            return Err(errors);
         }
 
         let params = if let Some(fn_decl) = init_fn_decl_option {

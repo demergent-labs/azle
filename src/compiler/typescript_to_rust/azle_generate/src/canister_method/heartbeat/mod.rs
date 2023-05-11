@@ -10,6 +10,8 @@ impl TsAst {
         &self,
         annotated_fn_decls: &Vec<AnnotatedFnDecl>,
     ) -> Result<Option<HeartbeatMethod>, Vec<Error>> {
+        let mut errors: Vec<Error> = vec![];
+
         let heartbeat_fn_decls: Vec<_> = annotated_fn_decls
             .iter()
             .filter(|annotated_fn_decl| {
@@ -20,18 +22,24 @@ impl TsAst {
         if heartbeat_fn_decls.len() > 1 {
             let duplicate_method_types_error: Error =
                 DuplicateSystemMethod::from_annotated_fn_decls(
-                    heartbeat_fn_decls,
+                    &heartbeat_fn_decls.clone(),
                     CanisterMethodType::Heartbeat,
                 )
                 .into();
 
-            return Err(vec![duplicate_method_types_error]);
+            errors.push(duplicate_method_types_error);
         }
 
         let heartbeat_fn_decl_option = heartbeat_fn_decls.get(0);
 
         if let Some(heartbeat_fn_decl) = heartbeat_fn_decl_option {
-            heartbeat_fn_decl.assert_return_type_is_void();
+            if let Err(err) = heartbeat_fn_decl.assert_return_type_is_void() {
+                errors.push(err);
+            }
+
+            if errors.len() != 0 {
+                return Err(errors);
+            }
 
             let body = rust::generate(heartbeat_fn_decl);
             let guard_function_name = heartbeat_fn_decl.annotation.guard.clone();
