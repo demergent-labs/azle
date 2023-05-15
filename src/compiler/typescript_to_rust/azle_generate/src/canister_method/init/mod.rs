@@ -39,7 +39,7 @@ impl TsAst {
         let init_fn_decl_option = init_fn_decls.get(0);
 
         if let Some(init_fn_decl) = init_fn_decl_option {
-            if let Err(err) = init_fn_decl.assert_return_type_is_void() {
+            if let Err(err) = init_fn_decl.is_void() {
                 errors.push(err);
             }
 

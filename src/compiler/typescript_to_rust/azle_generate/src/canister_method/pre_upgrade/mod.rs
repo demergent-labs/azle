@@ -31,7 +31,7 @@ impl TsAst {
         }
 
         if let Some(pre_upgrade_fn_decl) = pre_upgrade_fn_decls.get(0) {
-            if let Err(err) = pre_upgrade_fn_decl.assert_return_type_is_void() {
+            if let Err(err) = pre_upgrade_fn_decl.is_void() {
                 errors.push(err);
             }
 

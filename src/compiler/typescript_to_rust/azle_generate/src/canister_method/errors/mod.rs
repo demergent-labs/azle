@@ -1,7 +1,6 @@
-use cdk_framework::act::node::canister_method::CanisterMethodType;
 use swc_ecma_ast::{TsKeywordTypeKind, TsType};
 
-use crate::{canister_method::AnnotatedFnDecl, Error};
+use crate::canister_method::AnnotatedFnDecl;
 
 pub use async_not_allowed::AsyncNotAllowed;
 pub use duplicate_system_method::DuplicateSystemMethod;
@@ -16,19 +15,13 @@ mod missing_return_type;
 mod void_return_type_required;
 
 impl<'a> AnnotatedFnDecl<'a> {
-    pub fn assert_return_type_is_void(&self) -> Result<(), Error> {
-        if self.annotation.method_type != CanisterMethodType::Heartbeat && self.is_promise() {
-            return Err(VoidReturnTypeRequired::from_annotated_fn_decl(self).into());
-        }
-
-        let return_ts_type = self.get_return_ts_type();
-
-        if let TsType::TsKeywordType(keyword) = return_ts_type {
+    pub fn is_void(&self) -> bool {
+        if let TsType::TsKeywordType(keyword) = self.get_return_ts_type() {
             if let TsKeywordTypeKind::TsVoidKeyword = keyword.kind {
-                return Ok(());
+                return true;
             }
         }
 
-        return Err(VoidReturnTypeRequired::from_annotated_fn_decl(self).into());
+        return false;
     }
 }

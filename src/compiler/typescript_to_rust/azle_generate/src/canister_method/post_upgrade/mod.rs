@@ -35,7 +35,7 @@ impl TsAst {
         let post_upgrade_fn_decl_option = post_upgrade_fn_decls.get(0);
 
         if let Some(post_upgrade_fn_decl) = post_upgrade_fn_decl_option {
-            if let Err(err) = post_upgrade_fn_decl.assert_return_type_is_void() {
+            if let Err(err) = post_upgrade_fn_decl.is_void() {
                 errors.push(err);
             }
 
