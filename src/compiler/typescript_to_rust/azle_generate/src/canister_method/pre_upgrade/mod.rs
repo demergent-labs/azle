@@ -5,7 +5,7 @@ use cdk_framework::{
 
 use super::{
     errors::{AsyncNotAllowed, VoidReturnTypeRequired},
-    AnnotatedFnDecl, CheckLengthAndMapForAnnFnDecl,
+    AnnotatedFnDecl, CheckLengthAndMap,
 };
 use crate::{Error, TsAst};
 

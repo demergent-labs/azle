@@ -3,7 +3,7 @@ use cdk_framework::{
     traits::CollectResults,
 };
 
-use super::{errors::VoidReturnTypeRequired, AnnotatedFnDecl, CheckLengthAndMapForAnnFnDecl};
+use super::{errors::VoidReturnTypeRequired, AnnotatedFnDecl, CheckLengthAndMap};
 use crate::{Error, TsAst};
 
 mod rust;
