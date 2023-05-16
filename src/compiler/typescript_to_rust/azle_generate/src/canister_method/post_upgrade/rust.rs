@@ -8,14 +8,14 @@ use crate::{
 };
 
 pub fn generate(
-    post_upgrade_fn_decl_option: Option<&AnnotatedFnDecl>,
+    post_upgrade_fn_decl_option: Option<AnnotatedFnDecl>,
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
 ) -> TokenStream {
     let call_to_post_upgrade_js_function =
         rust::maybe_generate_call_to_js_function(&post_upgrade_fn_decl_option);
 
-    let function_name = match post_upgrade_fn_decl_option {
+    let function_name = match &post_upgrade_fn_decl_option {
         Some(post_upgrade_fn_decl) => post_upgrade_fn_decl.get_function_name(),
         None => "DOES_NOT_EXIST".to_string(),
     };

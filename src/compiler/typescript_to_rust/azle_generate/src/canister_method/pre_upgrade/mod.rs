@@ -1,10 +1,13 @@
-use cdk_framework::act::node::canister_method::{CanisterMethodType, PreUpgradeMethod};
+use cdk_framework::{
+    act::node::canister_method::{CanisterMethodType, PreUpgradeMethod},
+    traits::CollectResults,
+};
 
 use super::{
     errors::{AsyncNotAllowed, VoidReturnTypeRequired},
-    AnnotatedFnDecl,
+    AnnotatedFnDecl, CheckLengthAndMap,
 };
-use crate::{canister_method::errors::DuplicateSystemMethod, traits::PartitionMap, Error, TsAst};
+use crate::{Error, TsAst};
 
 mod rust;
 
@@ -13,73 +16,44 @@ impl TsAst {
         &self,
         annotated_fn_decls: &Vec<AnnotatedFnDecl>,
     ) -> Result<Option<PreUpgradeMethod>, Vec<Error>> {
-        let pre_upgrade_fn_decls: Vec<_> = annotated_fn_decls
+        let pre_upgrade_methods = annotated_fn_decls
             .iter()
             .filter(|annotated_fn_decl| {
                 annotated_fn_decl.is_canister_method_type(CanisterMethodType::PreUpgrade)
             })
-            .collect();
-
-        let (pre_upgrade_methods, individual_canister_method_errors) =
-            <Vec<&AnnotatedFnDecl> as PartitionMap<&AnnotatedFnDecl, Error>>::partition_map(
-                &pre_upgrade_fn_decls,
-                |pre_upgrade_fn_decl| -> Result<PreUpgradeMethod, Vec<Error>> {
-                    let errors = match pre_upgrade_fn_decl.is_void() {
-                        true => {
-                            vec![VoidReturnTypeRequired::from_annotated_fn_decl(
-                                pre_upgrade_fn_decl,
-                            )
-                            .into()]
-                        }
-                        false => vec![],
-                    };
-
-                    let errors = match pre_upgrade_fn_decl.fn_decl.function.is_async {
-                        true => vec![
-                            errors,
-                            vec![
-                                AsyncNotAllowed::from_annotated_fn_decl(pre_upgrade_fn_decl).into()
-                            ],
+            .check_length_and_map(CanisterMethodType::PreUpgrade, |pre_upgrade_fn_decl| {
+                let errors = match pre_upgrade_fn_decl.is_void() {
+                    true => {
+                        vec![
+                            VoidReturnTypeRequired::from_annotated_fn_decl(pre_upgrade_fn_decl)
+                                .into(),
                         ]
-                        .concat(),
-                        false => errors,
-                    };
-
-                    if !errors.is_empty() {
-                        return Err(errors);
                     }
+                    false => vec![],
+                };
 
-                    let body = rust::generate(pre_upgrade_fn_decl);
-                    let guard_function_name = pre_upgrade_fn_decl.annotation.guard.clone();
+                let errors = match pre_upgrade_fn_decl.fn_decl.function.is_async {
+                    true => vec![
+                        errors,
+                        vec![AsyncNotAllowed::from_annotated_fn_decl(pre_upgrade_fn_decl).into()],
+                    ]
+                    .concat(),
+                    false => errors,
+                };
 
-                    Ok(PreUpgradeMethod {
-                        body,
-                        guard_function_name,
-                    })
-                },
-            );
+                if !errors.is_empty() {
+                    return Err(errors);
+                }
 
-        let err_values = individual_canister_method_errors
-            .into_iter()
-            .flatten()
-            .collect();
+                let body = rust::generate(pre_upgrade_fn_decl);
+                let guard_function_name = pre_upgrade_fn_decl.annotation.guard.clone();
 
-        let all_errors = if pre_upgrade_fn_decls.len() > 1 {
-            let duplicate_method_types_error: Error =
-                DuplicateSystemMethod::from_annotated_fn_decls(
-                    &pre_upgrade_fn_decls.clone(),
-                    CanisterMethodType::Heartbeat,
-                )
-                .into();
-
-            vec![vec![duplicate_method_types_error], err_values].concat()
-        } else {
-            err_values
-        };
-
-        if all_errors.len() > 0 {
-            return Err(all_errors);
-        }
+                Ok(PreUpgradeMethod {
+                    body,
+                    guard_function_name,
+                })
+            })
+            .collect_results()?;
 
         Ok(pre_upgrade_methods.get(0).cloned())
     }

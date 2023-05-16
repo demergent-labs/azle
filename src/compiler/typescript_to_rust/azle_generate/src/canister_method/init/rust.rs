@@ -6,11 +6,11 @@ use cdk_framework::traits::ToIdent;
 use quote::quote;
 
 pub fn generate(
-    init_fn_decl_option: Option<&AnnotatedFnDecl>,
+    init_fn_decl_option: Option<AnnotatedFnDecl>,
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
 ) -> proc_macro2::TokenStream {
-    let function_name = match init_fn_decl_option {
+    let function_name = match &init_fn_decl_option {
         Some(init_fn_decl) => init_fn_decl.get_function_name(),
         None => "DOES_NOT_EXIST".to_string(),
     };

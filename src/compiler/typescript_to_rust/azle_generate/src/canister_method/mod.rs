@@ -1,12 +1,14 @@
-use cdk_framework::act::CanisterMethods;
+use cdk_framework::{act::CanisterMethods, traits::CollectResults};
 
-use crate::{plugin::Plugin, traits::CollectResults, ts_ast::TsAst, Error};
+use crate::{plugin::Plugin, ts_ast::TsAst, Error};
 
 pub use annotated_fn_decl::{AnnotatedFnDecl, GetAnnotatedFnDecls};
 pub use annotation::Annotation;
+pub use check_length_and_map::CheckLengthAndMap;
 
 mod annotated_fn_decl;
 mod annotation;
+mod check_length_and_map;
 mod heartbeat;
 mod init;
 mod inspect_message;

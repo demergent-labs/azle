@@ -1,12 +1,13 @@
-use cdk_framework::act::node::{
-    canister_method::CanisterMethodType, canister_method::InspectMessageMethod,
+use cdk_framework::{
+    act::node::{canister_method::CanisterMethodType, canister_method::InspectMessageMethod},
+    traits::CollectResults,
 };
 
 use super::{
-    errors::{AsyncNotAllowed, DuplicateSystemMethod, VoidReturnTypeRequired},
-    AnnotatedFnDecl,
+    errors::{AsyncNotAllowed, VoidReturnTypeRequired},
+    AnnotatedFnDecl, CheckLengthAndMap,
 };
-use crate::{traits::PartitionMap, Error, TsAst};
+use crate::{Error, TsAst};
 
 mod rust;
 
@@ -15,17 +16,14 @@ impl TsAst {
         &self,
         annotated_fn_decls: &Vec<AnnotatedFnDecl>,
     ) -> Result<Option<InspectMessageMethod>, Vec<Error>> {
-        let inspect_message_fn_decls: Vec<_> = annotated_fn_decls
+        let inspect_message_methods = annotated_fn_decls
             .iter()
             .filter(|annotated_fn_decl| {
                 annotated_fn_decl.is_canister_method_type(CanisterMethodType::InspectMessage)
             })
-            .collect();
-
-        let (inspect_message_methods, individual_canister_method_errors) =
-            <Vec<&AnnotatedFnDecl> as PartitionMap<&AnnotatedFnDecl, Error>>::partition_map(
-                &inspect_message_fn_decls,
-                |inspect_message_fn_decl| -> Result<InspectMessageMethod, Vec<Error>> {
+            .check_length_and_map(
+                CanisterMethodType::InspectMessage,
+                |inspect_message_fn_decl| {
                     let errors = match inspect_message_fn_decl.is_void() {
                         true => {
                             vec![VoidReturnTypeRequired::from_annotated_fn_decl(
@@ -60,29 +58,8 @@ impl TsAst {
                         guard_function_name,
                     })
                 },
-            );
-
-        let err_values = individual_canister_method_errors
-            .into_iter()
-            .flatten()
-            .collect();
-
-        let all_errors = if inspect_message_fn_decls.len() > 1 {
-            let duplicate_method_types_error: Error =
-                DuplicateSystemMethod::from_annotated_fn_decls(
-                    &inspect_message_fn_decls.clone(),
-                    CanisterMethodType::Heartbeat,
-                )
-                .into();
-
-            vec![vec![duplicate_method_types_error], err_values].concat()
-        } else {
-            err_values
-        };
-
-        if all_errors.len() > 0 {
-            return Err(all_errors);
-        }
+            )
+            .collect_results()?;
 
         Ok(inspect_message_methods.get(0).cloned())
     }

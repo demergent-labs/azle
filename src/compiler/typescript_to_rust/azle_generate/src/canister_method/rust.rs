@@ -4,9 +4,9 @@ use quote::{format_ident, quote};
 use crate::canister_method::AnnotatedFnDecl;
 
 pub fn maybe_generate_call_to_js_function(
-    annotated_fn_decl_option: &Option<&AnnotatedFnDecl>,
+    annotated_fn_decl_option: &Option<AnnotatedFnDecl>,
 ) -> TokenStream {
-    if let Some(annotated_fn_decl) = annotated_fn_decl_option {
+    if let Some(annotated_fn_decl) = &annotated_fn_decl_option {
         generate_call_to_js_function(annotated_fn_decl)
     } else {
         quote!()
