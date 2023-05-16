@@ -5,7 +5,7 @@ use cdk_framework::{
 
 use super::{
     errors::{AsyncNotAllowed, VoidReturnTypeRequired},
-    AnnotatedFnDecl, CheckLengthAndMap,
+    AnnotatedFnDecl, CheckLengthAndMapForAnnFnDecl,
 };
 use crate::{plugin::Plugin, Error, TsAst};
 
@@ -23,6 +23,7 @@ impl TsAst {
             .filter(|annotated_fn_decl| {
                 annotated_fn_decl.is_canister_method_type(CanisterMethodType::PostUpgrade)
             })
+            .collect::<Vec<_>>()
             .check_length_and_map(CanisterMethodType::PostUpgrade, |post_upgrade_fn_decl| {
                 let errors = match post_upgrade_fn_decl.is_void() {
                     true => {
@@ -47,24 +48,31 @@ impl TsAst {
                     return Err(errors);
                 }
 
-                Ok(post_upgrade_fn_decl.clone())
+                let params = post_upgrade_fn_decl.build_params();
+
+                let body =
+                    rust::generate(Some(post_upgrade_fn_decl), plugins, environment_variables);
+                let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
+
+                Ok(PostUpgradeMethod {
+                    body,
+                    params,
+                    guard_function_name,
+                })
             })
             .collect_results()?;
 
         let post_upgrade_fn_decl_option = valid_post_upgrade_fn_decls.get(0).cloned();
-        let params = if let Some(fn_decl) = &post_upgrade_fn_decl_option {
-            fn_decl.build_params()
-        } else {
-            vec![]
-        };
 
-        let body = rust::generate(post_upgrade_fn_decl_option, plugins, environment_variables);
-        let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
-
-        Ok(PostUpgradeMethod {
-            body,
-            params,
-            guard_function_name,
-        })
+        match post_upgrade_fn_decl_option {
+            Some(post_upgrade_method) => Ok(post_upgrade_method),
+            None => {
+                Ok(PostUpgradeMethod {
+                    params: vec![],
+                    body: rust::generate(None, plugins, environment_variables),
+                    guard_function_name: None, // Unsupported. See https://github.com/demergent-labs/azle/issues/954,
+                })
+            }
+        }
     }
 }

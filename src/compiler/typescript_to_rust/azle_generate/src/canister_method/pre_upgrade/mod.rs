@@ -5,7 +5,7 @@ use cdk_framework::{
 
 use super::{
     errors::{AsyncNotAllowed, VoidReturnTypeRequired},
-    AnnotatedFnDecl, CheckLengthAndMap,
+    AnnotatedFnDecl, CheckLengthAndMapForAnnFnDecl,
 };
 use crate::{Error, TsAst};
 
@@ -21,6 +21,7 @@ impl TsAst {
             .filter(|annotated_fn_decl| {
                 annotated_fn_decl.is_canister_method_type(CanisterMethodType::PreUpgrade)
             })
+            .collect::<Vec<_>>()
             .check_length_and_map(CanisterMethodType::PreUpgrade, |pre_upgrade_fn_decl| {
                 let errors = match pre_upgrade_fn_decl.is_void() {
                     true => {

@@ -8,7 +8,7 @@ use crate::{
 };
 
 pub fn generate(
-    post_upgrade_fn_decl_option: Option<AnnotatedFnDecl>,
+    post_upgrade_fn_decl_option: Option<&AnnotatedFnDecl>,
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
 ) -> TokenStream {

@@ -3,7 +3,7 @@ use cdk_framework::{
     traits::CollectResults,
 };
 
-use super::{errors::VoidReturnTypeRequired, AnnotatedFnDecl, CheckLengthAndMap};
+use super::{errors::VoidReturnTypeRequired, AnnotatedFnDecl, CheckLengthAndMapForAnnFnDecl};
 use crate::{Error, TsAst};
 
 mod rust;
@@ -18,6 +18,7 @@ impl TsAst {
             .filter(|annotated_fn_decl| {
                 annotated_fn_decl.is_canister_method_type(CanisterMethodType::Heartbeat)
             })
+            .collect::<Vec<_>>()
             .check_length_and_map(CanisterMethodType::Heartbeat, |heartbeat_fn_decl| {
                 if heartbeat_fn_decl.is_void() {
                     Err(vec![VoidReturnTypeRequired::from_annotated_fn_decl(

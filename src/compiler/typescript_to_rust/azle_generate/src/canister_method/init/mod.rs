@@ -3,7 +3,7 @@ use cdk_framework::{
     traits::CollectResults,
 };
 
-use super::{errors::VoidReturnTypeRequired, AnnotatedFnDecl, CheckLengthAndMap};
+use super::{errors::VoidReturnTypeRequired, AnnotatedFnDecl, CheckLengthAndMapForAnnFnDecl};
 use crate::{canister_method::errors::AsyncNotAllowed, plugin::Plugin, Error, TsAst};
 
 mod rust;
@@ -15,11 +15,14 @@ impl TsAst {
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
     ) -> Result<InitMethod, Vec<Error>> {
-        let valid_init_fn_decls = annotated_fn_decls
+        let intermediate: Vec<&AnnotatedFnDecl> = annotated_fn_decls
             .iter()
             .filter(|annotated_fn_decl| {
                 annotated_fn_decl.is_canister_method_type(CanisterMethodType::Init)
             })
+            .collect();
+
+        let valid_init_fn_decls = intermediate
             .check_length_and_map(CanisterMethodType::Init, |init_fn_decl| {
                 let errors = match init_fn_decl.is_void() {
                     true => {
@@ -41,23 +44,29 @@ impl TsAst {
                     return Err(errors);
                 }
 
-                Ok(init_fn_decl.clone()) // Clone the AnnotatedFnDecl here
+                let params = init_fn_decl.build_params();
+                let body = rust::generate(Some(init_fn_decl), plugins, environment_variables);
+                let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
+
+                Ok(InitMethod {
+                    params,
+                    body,
+                    guard_function_name,
+                })
             })
             .collect_results()?;
 
         let init_fn_decl_option = valid_init_fn_decls.get(0).cloned();
-        let params = if let Some(fn_decl) = &init_fn_decl_option {
-            fn_decl.build_params()
-        } else {
-            vec![]
-        };
-        let body = rust::generate(init_fn_decl_option, plugins, environment_variables);
-        let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
 
-        Ok(InitMethod {
-            params,
-            body,
-            guard_function_name,
-        })
+        match init_fn_decl_option {
+            Some(init_fn_decl) => Ok(init_fn_decl),
+            None => {
+                Ok(InitMethod {
+                    params: vec![],
+                    body: rust::generate(None, plugins, environment_variables),
+                    guard_function_name: None, // Unsupported. See https://github.com/demergent-labs/azle/issues/954
+                })
+            }
+        }
     }
 }
