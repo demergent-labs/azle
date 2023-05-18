@@ -45,12 +45,7 @@ impl SourceMapped<'_, TsKeywordType> {
         });
         CompilerOutput {
             title: "Unsupported Type".to_string(),
-            location: Location {
-                origin: self.get_origin(),
-                line_number: self.get_line_number(),
-                source: self.get_source(),
-                range: self.get_range(),
-            },
+            location: self.get_location(),
             annotation: "bigint is not a supported type".to_string(),
             suggestion,
         }
@@ -59,12 +54,7 @@ impl SourceMapped<'_, TsKeywordType> {
     fn keyword_not_supported_error(&self) -> CompilerOutput {
         CompilerOutput {
             title: "Unsupported Type".to_string(),
-            location: Location {
-                origin: self.get_origin(),
-                line_number: self.get_line_number(),
-                source: self.get_source(),
-                range: self.get_range(),
-            },
+            location: self.get_location(),
             annotation: format!("{} is not a supported type", self.get_source_text()),
             suggestion: None,
         }

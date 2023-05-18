@@ -56,12 +56,7 @@ impl SourceMapped<'_, TsTypeElement> {
         let replacement = "property_name: boolean".to_string();
         CompilerOutput {
             title: "Invalid Record".to_string(),
-            location: Location {
-                origin: self.get_origin(),
-                line_number: self.get_line_number(),
-                source: self.get_source(),
-                range: self.get_range(),
-            },
+            location: self.get_location(),
             annotation: format!("{} is not allowed here.", self.type_to_string()),
             suggestion: Some(Suggestion {
                 title: "Variant members must be properties.".to_string(),

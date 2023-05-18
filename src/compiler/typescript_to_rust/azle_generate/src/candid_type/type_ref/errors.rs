@@ -29,12 +29,7 @@ impl SourceMapped<'_, TsTypeRef> {
     pub(super) fn qualified_name_error(&self, unqualified_name: String) -> CompilerOutput {
         CompilerOutput {
             title: "Namespace-qualified types are not currently supported".to_string(),
-            location: Location {
-                origin: self.get_origin(),
-                line_number: self.get_line_number(),
-                source: self.get_source(),
-                range: self.get_range(),
-            },
+            location: self.get_location(),
             annotation: "qualified name here".to_string(),
             suggestion: Some(Suggestion {
                 title: "Either declare the type locally or import it without a wildcard"
