@@ -44,8 +44,7 @@ impl AsyncNotAllowed {
         let origin = annotated_fn_decl.source_map.get_origin(span);
         let line_number = annotated_fn_decl.source_map.get_line_number(span);
         let source = annotated_fn_decl.source_map.get_source(span);
-        let fn_range = annotated_fn_decl.source_map.get_range(span);
-        let range = (fn_range.0, fn_range.0 + "async".len());
+        let range = annotated_fn_decl.source_map.get_range(span);
 
         Self {
             annotation,
@@ -102,6 +101,6 @@ fn generate_source_with_range_replaced(location: &Location, replacement: &String
         .chars()
         .take(location.range.0)
         .chain(replacement.chars())
-        .chain(location.source.chars().skip(location.range.1 + 1))
+        .chain(location.source.chars().skip(location.range.1))
         .collect()
 }
