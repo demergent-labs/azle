@@ -26,13 +26,13 @@ impl TsAst {
                 CanisterMethodType::InspectMessage,
                 |inspect_message_fn_decl| {
                     let errors = match inspect_message_fn_decl.is_void() {
-                        true => {
+                        true => vec![],
+                        false => {
                             vec![VoidReturnTypeRequired::from_annotated_fn_decl(
                                 inspect_message_fn_decl,
                             )
                             .into()]
                         }
-                        false => vec![],
                     };
 
                     let errors = match inspect_message_fn_decl.fn_decl.function.is_async {

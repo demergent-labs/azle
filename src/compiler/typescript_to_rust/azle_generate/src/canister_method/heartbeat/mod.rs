@@ -20,7 +20,7 @@ impl TsAst {
             })
             .collect::<Vec<_>>()
             .check_length_and_map(CanisterMethodType::Heartbeat, |heartbeat_fn_decl| {
-                if heartbeat_fn_decl.is_void() {
+                if !heartbeat_fn_decl.is_void() {
                     Err(vec![VoidReturnTypeRequired::from_annotated_fn_decl(
                         heartbeat_fn_decl,
                     )

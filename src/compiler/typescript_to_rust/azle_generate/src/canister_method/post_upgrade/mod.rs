@@ -26,13 +26,13 @@ impl TsAst {
             .collect::<Vec<_>>()
             .check_length_and_map(CanisterMethodType::PostUpgrade, |post_upgrade_fn_decl| {
                 let errors = match post_upgrade_fn_decl.is_void() {
-                    true => {
+                    true => vec![],
+                    false => {
                         vec![
                             VoidReturnTypeRequired::from_annotated_fn_decl(post_upgrade_fn_decl)
                                 .into(),
                         ]
                     }
-                    false => vec![],
                 };
 
                 let errors = match post_upgrade_fn_decl.fn_decl.function.is_async {

@@ -15,20 +15,18 @@ impl TsAst {
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
     ) -> Result<InitMethod, Vec<Error>> {
-        let intermediate: Vec<&AnnotatedFnDecl> = annotated_fn_decls
+        let valid_init_fn_decls = annotated_fn_decls
             .iter()
             .filter(|annotated_fn_decl| {
                 annotated_fn_decl.is_canister_method_type(CanisterMethodType::Init)
             })
-            .collect();
-
-        let valid_init_fn_decls = intermediate
+            .collect::<Vec<_>>()
             .check_length_and_map(CanisterMethodType::Init, |init_fn_decl| {
                 let errors = match init_fn_decl.is_void() {
-                    true => {
+                    true => vec![],
+                    false => {
                         vec![VoidReturnTypeRequired::from_annotated_fn_decl(init_fn_decl).into()]
                     }
-                    false => vec![],
                 };
 
                 let errors = match init_fn_decl.fn_decl.function.is_async {
