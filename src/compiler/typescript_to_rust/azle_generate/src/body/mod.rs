@@ -6,7 +6,7 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use std::path::PathBuf;
 
-use crate::{plugin::Plugin, ts_ast::TsAst};
+use crate::{plugin::Plugin, ts_ast::TsAst, Error};
 
 use self::stable_b_tree_map::StableBTreeMapNode;
 
@@ -23,7 +23,7 @@ pub fn generate(
     services: &Vec<Service>,
     stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
     plugins: &Vec<Plugin>,
-) -> TokenStream {
+) -> Result<TokenStream, Vec<Error>> {
     let query_and_update_methods = vec![
         query_methods
             .iter()
@@ -44,7 +44,7 @@ pub fn generate(
         services,
         &stable_b_tree_map_nodes,
     );
-    let register_ic_object_function = ic_object::register_function::generate(ts_ast);
+    let register_ic_object_function = ic_object::register_function::generate(ts_ast)?;
 
     let stable_b_tree_maps = stable_b_tree_map::rust::generate(&stable_b_tree_map_nodes);
 
@@ -57,7 +57,7 @@ pub fn generate(
         token_stream
     });
 
-    quote! {
+    Ok(quote! {
         #async_await_result_handler
         #boa_error_handlers
         #ic_object_functions
@@ -70,5 +70,5 @@ pub fn generate(
         fn __get_candid_interface_tmp_hack() -> String {
             __export_service()
         }
-    }
+    })
 }

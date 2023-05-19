@@ -21,15 +21,15 @@ pub mod vec;
 
 impl TsAst {
     pub fn build_candid_types(&self) -> Result<CandidTypes, Vec<Error>> {
-        let (type_aliases, funcs, records, tuples, variants) = (
+        let (type_aliases, funcs, records, services, tuples, variants) = (
             self.extract_candid_types(|x| x.to_type_alias()),
             self.extract_candid_types(|x| x.to_func()),
             self.extract_candid_types(|x| x.to_record()),
+            self.build_services(),
             self.extract_candid_types(|x| x.to_tuple()),
             self.extract_candid_types(|x| x.to_variant()),
         )
             .collect_results()?;
-        let services = self.build_services();
 
         Ok(CandidTypes {
             funcs,

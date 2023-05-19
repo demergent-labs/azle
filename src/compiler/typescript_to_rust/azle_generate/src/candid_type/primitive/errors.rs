@@ -9,22 +9,22 @@ use crate::{
 };
 
 impl SourceMapped<'_, TsKeywordType> {
-    pub(super) fn unsupported_type_error(&self) -> Result<(), Error> {
+    pub(super) fn _unsupported_type_error(&self) -> Result<(), Error> {
         Err(match &self.kind {
-            TsKeywordTypeKind::TsBigIntKeyword => self.bigint_not_supported_error(),
-            TsKeywordTypeKind::TsObjectKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsNeverKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsSymbolKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsIntrinsicKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsUndefinedKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsUnknownKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsAnyKeyword => self.keyword_not_supported_error(),
+            TsKeywordTypeKind::TsBigIntKeyword => self._bigint_not_supported_error(),
+            TsKeywordTypeKind::TsObjectKeyword => self._keyword_not_supported_error(),
+            TsKeywordTypeKind::TsNeverKeyword => self._keyword_not_supported_error(),
+            TsKeywordTypeKind::TsSymbolKeyword => self._keyword_not_supported_error(),
+            TsKeywordTypeKind::TsIntrinsicKeyword => self._keyword_not_supported_error(),
+            TsKeywordTypeKind::TsUndefinedKeyword => self._keyword_not_supported_error(),
+            TsKeywordTypeKind::TsUnknownKeyword => self._keyword_not_supported_error(),
+            TsKeywordTypeKind::TsAnyKeyword => self._keyword_not_supported_error(),
             // _ => panic!("Unreachable: {} is supported", self.get_source_text()),
             _ => internal_error!(),
         })
     }
 
-    fn bigint_not_supported_error(&self) -> Error {
+    fn _bigint_not_supported_error(&self) -> Error {
         let replacement = "int".to_string();
         let suggestion = Some(Suggestion {
             title: "`int` will cover most everything that `bigint` does. For more number type options see: https://internetcomputer.org/docs/current/references/candid-ref/#type-nat".to_string(),
@@ -44,7 +44,7 @@ impl SourceMapped<'_, TsKeywordType> {
         )
     }
 
-    fn keyword_not_supported_error(&self) -> Error {
+    fn _keyword_not_supported_error(&self) -> Error {
         Error::NewError(
             CompilerOutput {
                 title: "Unsupported Type".to_string(),

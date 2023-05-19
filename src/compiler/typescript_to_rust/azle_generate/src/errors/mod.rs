@@ -48,6 +48,8 @@ pub enum Error {
     UnallowedComputedProperty,
     UnsupportedTypeError,
     RecordPropertySignature,
+    InvalidClassProp,
+    InvalidClassMember,
     NewError(String),
 }
 impl Error {
@@ -101,6 +103,7 @@ impl std::fmt::Display for Error {
             Error::UnsupportedTypeError => todo!(),
             Error::NewError(_) => todo!(),
             Error::RecordPropertySignature => todo!(),
+            _ => todo!(),
         }
     }
 }

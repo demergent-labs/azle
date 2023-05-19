@@ -51,7 +51,7 @@ impl TsAst {
             &candid_types.services,
             &stable_b_tree_maps,
             plugins,
-        );
+        )?;
         let cdk_name = "azle".to_string();
         let header = header::generate(&self.main_js);
         let keywords = ts_keywords::ts_keywords();

@@ -11,7 +11,7 @@ use crate::{
 pub struct WrongEnclosedType {}
 
 impl WrongEnclosedType {
-    pub fn from_ts_type_ref(sm_type_ref: &SourceMapped<TsTypeRef>) -> Self {
+    pub fn from_ts_type_ref(_: &SourceMapped<TsTypeRef>) -> Self {
         WrongEnclosedType {}
     }
 }
