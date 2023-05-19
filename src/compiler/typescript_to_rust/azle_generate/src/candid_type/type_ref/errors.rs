@@ -7,6 +7,29 @@ use crate::{
     ts_ast::SourceMapped,
 };
 
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub struct WrongEnclosedType {}
+
+impl WrongEnclosedType {
+    pub fn from_ts_type_ref(sm_type_ref: &SourceMapped<TsTypeRef>) -> Self {
+        WrongEnclosedType {}
+    }
+}
+
+impl std::error::Error for WrongEnclosedType {}
+
+impl std::fmt::Display for WrongEnclosedType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}", self.to_string())
+    }
+}
+
+impl From<WrongEnclosedType> for crate::Error {
+    fn from(error: WrongEnclosedType) -> Self {
+        Self::WrongEnclosedType(error)
+    }
+}
+
 impl SourceMapped<'_, TsTypeRef> {
     pub(super) fn wrong_number_of_params_error(&self) -> CompilerOutput {
         match self.get_name() {

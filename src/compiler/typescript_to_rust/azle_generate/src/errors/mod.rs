@@ -14,9 +14,12 @@ pub use self::{
     location::Location,
     suggestion::Suggestion,
 };
-use crate::canister_method::errors::{
-    AsyncNotAllowed, DuplicateSystemMethod, ExtraneousCanisterMethodAnnotation,
-    MissingReturnTypeAnnotation, VoidReturnTypeRequired,
+use crate::{
+    candid_type::type_ref::errors::WrongEnclosedType,
+    canister_method::errors::{
+        AsyncNotAllowed, DuplicateSystemMethod, ExtraneousCanisterMethodAnnotation,
+        MissingReturnTypeAnnotation, VoidReturnTypeRequired,
+    },
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -32,6 +35,7 @@ pub enum Error {
     SyntaxError(SyntaxError),
     VoidReturnTypeRequired(VoidReturnTypeRequired),
     AsyncNotAllowed(AsyncNotAllowed),
+    WrongEnclosedType(WrongEnclosedType),
     InvalidDecorator,
     InvalidReturnType,
     MissingCallResultAnnotation,
@@ -42,6 +46,8 @@ pub enum Error {
     NamespaceQualifiedType,
     TooManyReturnTypes,
     UnallowedComputedProperty,
+    UnsupportedTypeError,
+    RecordPropertySignature,
     NewError(String),
 }
 impl Error {
@@ -65,31 +71,36 @@ impl Error {
 
 impl std::error::Error for Error {}
 
+// TODO change these all back to Self:: instead of Error::
+// TODO ^ for some reason when I automatically add more options it adds everything again with Error:: so its going to be much easier to work with Error and change it back to Self later
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::TypeNotFound(e) => e.fmt(f),
-            Self::GuardFunctionNotFound(e) => e.fmt(f),
-            Self::DuplicateSystemMethodImplementation(e) => e.fmt(f),
-            Self::ExtraneousCanisterMethodAnnotation(e) => e.fmt(f),
-            Self::MissingReturnTypeAnnotation(e) => e.fmt(f),
-            Self::InternalError(e) => e.fmt(f),
-            Self::ArgumentError(e) => e.fmt(f),
-            Self::TypeError(e) => e.fmt(f),
-            Self::SyntaxError(e) => e.fmt(f),
-            Self::VoidReturnTypeRequired(e) => e.fmt(f),
-            Self::AsyncNotAllowed(e) => e.fmt(f),
-            Self::InvalidDecorator => todo!(),
-            Self::InvalidReturnType => todo!(),
-            Self::MissingCallResultAnnotation => todo!(),
-            Self::MissingDecorator => todo!(),
-            Self::MissingTypeAnnotation => todo!(),
-            Self::MissingTypeArgument => todo!(),
-            Self::MultipleDecorators => todo!(),
-            Self::NamespaceQualifiedType => todo!(),
-            Self::TooManyReturnTypes => todo!(),
-            Self::UnallowedComputedProperty => todo!(),
+            Error::TypeNotFound(e) => e.fmt(f),
+            Error::GuardFunctionNotFound(e) => e.fmt(f),
+            Error::DuplicateSystemMethodImplementation(e) => e.fmt(f),
+            Error::ExtraneousCanisterMethodAnnotation(e) => e.fmt(f),
+            Error::MissingReturnTypeAnnotation(e) => e.fmt(f),
+            Error::InternalError(e) => e.fmt(f),
+            Error::ArgumentError(e) => e.fmt(f),
+            Error::TypeError(e) => e.fmt(f),
+            Error::SyntaxError(e) => e.fmt(f),
+            Error::VoidReturnTypeRequired(e) => e.fmt(f),
+            Error::AsyncNotAllowed(e) => e.fmt(f),
+            Error::InvalidDecorator => todo!(),
+            Error::InvalidReturnType => todo!(),
+            Error::MissingCallResultAnnotation => todo!(),
+            Error::MissingDecorator => todo!(),
+            Error::MissingTypeAnnotation => todo!(),
+            Error::MissingTypeArgument => todo!(),
+            Error::MultipleDecorators => todo!(),
+            Error::NamespaceQualifiedType => todo!(),
+            Error::TooManyReturnTypes => todo!(),
+            Error::UnallowedComputedProperty => todo!(),
+            Error::WrongEnclosedType(e) => e.fmt(f),
+            Error::UnsupportedTypeError => todo!(),
             Error::NewError(_) => todo!(),
+            Error::RecordPropertySignature => todo!(),
         }
     }
 }

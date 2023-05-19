@@ -13,7 +13,7 @@ use crate::{
     Error,
 };
 
-mod errors;
+pub mod errors;
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn get_ts_type(&self) -> SourceMapped<TsType> {

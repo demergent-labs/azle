@@ -12,6 +12,8 @@ use crate::{
     Error,
 };
 
+use super::type_ref::errors::WrongEnclosedType;
+
 mod rust;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
@@ -27,14 +29,14 @@ impl SourceMapped<'_, TsTypeRef> {
         let request_type_ts_type = self.get_ts_type();
         let request_type_type_ref = match request_type_ts_type.deref() {
             TsType::TsTypeRef(ts_type_ref) => SourceMapped::new(ts_type_ref, self.source_map),
-            _ => panic!("{}", self.wrong_enclosed_type_error()),
+            _ => return Err(vec![WrongEnclosedType::from_ts_type_ref(self).into()]),
         };
 
         let mode = match request_type_type_ref.get_name() {
             "Query" => Mode::Query,
             "Update" => Mode::Update,
             "Oneway" => Mode::Oneway,
-            _ => panic!("{}", self.wrong_enclosed_type_error()),
+            _ => return Err(vec![WrongEnclosedType::from_ts_type_ref(self).into()]),
         };
 
         let ts_type = request_type_type_ref.get_ts_type();
@@ -42,7 +44,7 @@ impl SourceMapped<'_, TsTypeRef> {
             TsType::TsFnOrConstructorType(TsFnOrConstructorType::TsFnType(ts_fn_type)) => {
                 SourceMapped::new(ts_fn_type, self.source_map)
             }
-            _ => panic!("{}", self.wrong_enclosed_type_error()),
+            _ => return Err(vec![WrongEnclosedType::from_ts_type_ref(self).into()]),
         };
 
         let (params, return_type) = (
