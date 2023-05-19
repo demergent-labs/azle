@@ -25,8 +25,8 @@ impl std::fmt::Display for WrongEnclosedType {
 }
 
 impl From<WrongEnclosedType> for crate::Error {
-    fn from(error: WrongEnclosedType) -> Self {
-        Self::WrongEnclosedType(error)
+    fn from(_: WrongEnclosedType) -> Self {
+        Self::WrongEnclosedType
     }
 }
 

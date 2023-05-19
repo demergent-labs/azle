@@ -14,12 +14,9 @@ pub use self::{
     location::Location,
     suggestion::Suggestion,
 };
-use crate::{
-    candid_type::type_ref::errors::WrongEnclosedType,
-    canister_method::errors::{
-        AsyncNotAllowed, DuplicateSystemMethod, ExtraneousCanisterMethodAnnotation,
-        MissingReturnTypeAnnotation, VoidReturnTypeRequired,
-    },
+use crate::canister_method::errors::{
+    AsyncNotAllowed, DuplicateSystemMethod, ExtraneousCanisterMethodAnnotation,
+    MissingReturnTypeAnnotation, VoidReturnTypeRequired,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -35,7 +32,7 @@ pub enum Error {
     SyntaxError(SyntaxError),
     VoidReturnTypeRequired(VoidReturnTypeRequired),
     AsyncNotAllowed(AsyncNotAllowed),
-    WrongEnclosedType(WrongEnclosedType),
+    WrongEnclosedType,
     InvalidDecorator,
     InvalidReturnType,
     MissingCallResultAnnotation,
@@ -103,7 +100,6 @@ impl std::fmt::Display for Error {
             Error::NamespaceQualifiedType => todo!(),
             Error::TooManyReturnTypes => todo!(),
             Error::UnallowedComputedProperty => todo!(),
-            Error::WrongEnclosedType(e) => e.fmt(f),
             Error::UnsupportedTypeError => todo!(),
             Error::NewError(_) => todo!(),
             Error::RecordPropertySignature => todo!(),

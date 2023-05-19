@@ -24,7 +24,7 @@ impl SourceMapped<'_, TsTypeRef> {
     pub fn to_tuple(&self) -> Result<Tuple, Vec<Error>> {
         match self.get_ts_type().as_ts_tuple_type() {
             Some(ts_tuple_type) => ts_tuple_type.to_tuple(),
-            None => panic!("{}", self.wrong_enclosed_type_error()),
+            None => return Err(Error::WrongEnclosedType.into()),
         }
     }
 }
