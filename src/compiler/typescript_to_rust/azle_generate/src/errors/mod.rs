@@ -46,6 +46,7 @@ pub enum Error {
     UnallowedComputedProperty,
     UnsupportedTypeError,
     RecordPropertySignature,
+    VariantPropertySignature,
     InvalidClassProp,
     InvalidClassMember,
     FunctionParamsMustHaveType,

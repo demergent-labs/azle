@@ -1,12 +1,9 @@
+pub mod errors;
+
 use cdk_framework::act::node::candid::{variant::Member, Variant};
 use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
-use crate::{
-    errors::{CollectResults, CompilerOutput, Suggestion},
-    traits::{GetName, GetSourceFileInfo, GetSourceInfo, GetSpan, TypeToString},
-    ts_ast::SourceMapped,
-    Error,
-};
+use crate::{errors::CollectResults, traits::GetName, ts_ast::SourceMapped, Error};
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_variant(&self) -> Result<Option<Variant>, Vec<Error>> {
@@ -58,29 +55,9 @@ impl SourceMapped<'_, TsTypeElement> {
     pub fn to_variant_member(&self) -> Result<Member, Vec<Error>> {
         let ts_property_signature = match self.as_property_signature() {
             Some(ts_property_signature) => ts_property_signature,
-            None => panic!("{}", self.variant_property_signature_error()),
+            None => return Err(Error::VariantPropertySignature.into()),
         };
         ts_property_signature.to_variant_member()
-    }
-
-    pub(super) fn variant_property_signature_error(&self) -> CompilerOutput {
-        let replacement = "property_name: null".to_string();
-        CompilerOutput {
-            title: "Invalid Variant".to_string(),
-            location: self.get_location(),
-            annotation: format!("{} is not allowed here.", self.type_to_string()),
-            suggestion: Some(Suggestion {
-                title: "Variant members must be properties".to_string(),
-                source: self
-                    .source_map
-                    .generate_modified_source(self.get_span(), &replacement),
-                range: self
-                    .source_map
-                    .generate_modified_range(self.get_span(), &replacement),
-                annotation: Some("For example".to_string()),
-                import_suggestion: None,
-            }),
-        }
     }
 }
 

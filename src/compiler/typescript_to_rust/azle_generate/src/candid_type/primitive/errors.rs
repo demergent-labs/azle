@@ -19,7 +19,7 @@ impl SourceMapped<'_, TsKeywordType> {
             TsKeywordTypeKind::TsUndefinedKeyword => self._keyword_not_supported_error(),
             TsKeywordTypeKind::TsUnknownKeyword => self._keyword_not_supported_error(),
             TsKeywordTypeKind::TsAnyKeyword => self._keyword_not_supported_error(),
-            // _ => panic!("Unreachable: {} is supported", self.get_source_text()),
+            //TODO Unreachable: {} is supported", self.get_source_text()
             _ => internal_error!(),
         })
     }
