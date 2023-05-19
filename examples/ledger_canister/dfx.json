@@ -11,11 +11,11 @@
                 "output": "test/dfx_generated/ledger_canister",
                 "node_compatibility": true
             },
-            "env": ["ICP_CANISTER_PRINCIPAL"]
+            "env": ["ICP_CANISTER_PRINCIPAL"],
+            "opt_level": "1"
         },
         "icp_ledger": {
             "type": "custom",
-            "build": "",
             "candid": "canisters/icp_ledger/ledger.private.did",
             "wasm": "canisters/icp_ledger/ledger.wasm"
         }

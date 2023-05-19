@@ -17,7 +17,7 @@ async function pretest(icp_ledger_path: string) {
     });
 
     execSync(
-        `cd ${icp_ledger_path} && curl -o ledger.wasm.gz https://download.dfinity.systems/ic/dfdba729414d3639b2a6c269600bbbd689b35385/canisters/ledger-canister_notify-method.wasm.gz`,
+        `cd ${icp_ledger_path} && curl -o ledger.wasm.gz https://download.dfinity.systems/ic/d6d395a480cd6986b4788f4aafffc5c03a07e46e/canisters/ledger-canister_notify-method.wasm.gz`,
         {
             stdio: 'inherit'
         }
@@ -26,20 +26,6 @@ async function pretest(icp_ledger_path: string) {
     execSync(`cd ${icp_ledger_path} && gunzip -f ledger.wasm.gz`, {
         stdio: 'inherit'
     });
-
-    execSync(
-        `cd ${icp_ledger_path} && curl -o ledger.private.did https://raw.githubusercontent.com/dfinity/ic/dfdba729414d3639b2a6c269600bbbd689b35385/rs/rosetta-api/ledger.did`,
-        {
-            stdio: 'inherit'
-        }
-    );
-
-    execSync(
-        `cd ${icp_ledger_path} && curl -o ledger.public.did https://raw.githubusercontent.com/dfinity/ic/dfdba729414d3639b2a6c269600bbbd689b35385/rs/rosetta-api/ledger_canister/ledger.did`,
-        {
-            stdio: 'inherit'
-        }
-    );
 
     execSync(`dfx canister create ledger_canister || true`, {
         stdio: 'inherit'

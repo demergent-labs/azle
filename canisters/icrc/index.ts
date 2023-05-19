@@ -19,36 +19,36 @@ import {
 } from '../../src/lib';
 
 // Number of nanoseconds since the UNIX epoch in UTC timezone.
-export type Timestamp = Alias<nat64>;
+export type ICRCTimestamp = Alias<nat64>;
 
-export type Subaccount = Alias<blob>;
+export type ICRCSubaccount = Alias<blob>;
 
-export type Account = Record<{
+export type ICRCAccount = Record<{
     owner: Principal;
-    subaccount: Opt<Subaccount>;
+    subaccount: Opt<ICRCSubaccount>;
 }>;
 
-export type TransferArgs = Record<{
-    from_subaccount: Opt<Subaccount>;
-    to: Account;
+export type ICRCTransferArgs = Record<{
+    from_subaccount: Opt<ICRCSubaccount>;
+    to: ICRCAccount;
     amount: nat;
     fee: Opt<nat>;
     memo: Opt<blob>;
-    created_at_time: Opt<Timestamp>;
+    created_at_time: Opt<ICRCTimestamp>;
 }>;
 
-export type TransferError = Variant<{
+export type ICRCTransferError = Variant<{
     BadFee: Record<{ expected_fee: nat }>;
     BadBurn: Record<{ min_burn_amount: nat }>;
     InsufficientFunds: Record<{ balance: nat }>;
     TooOld: null;
-    CreatedInFuture: Record<{ ledger_time: Timestamp }>;
+    CreatedInFuture: Record<{ ledger_time: ICRCTimestamp }>;
     Duplicate: Record<{ duplicate_of: nat }>;
     TemporarilyUnavailable: null;
     GenericError: Record<{ error_code: nat; message: text }>;
 }>;
 
-export type Value = Variant<{
+export type ICRCValue = Variant<{
     Nat: nat;
     Int: int;
     Text: text;
@@ -57,7 +57,7 @@ export type Value = Variant<{
 
 export class ICRC extends Service {
     @serviceQuery
-    icrc1_metadata: () => CallResult<Vec<Tuple<[text, Value]>>>;
+    icrc1_metadata: () => CallResult<Vec<Tuple<[text, ICRCValue]>>>;
 
     @serviceQuery
     icrc1_name: () => CallResult<text>;
@@ -75,15 +75,15 @@ export class ICRC extends Service {
     icrc1_total_supply: () => CallResult<nat>;
 
     @serviceQuery
-    icrc1_minting_account: () => CallResult<Opt<Account>>;
+    icrc1_minting_account: () => CallResult<Opt<ICRCAccount>>;
 
     @serviceQuery
-    icrc1_balance_of: (account: Account) => CallResult<nat>;
+    icrc1_balance_of: (account: ICRCAccount) => CallResult<nat>;
 
     @serviceUpdate
     icrc1_transfer: (
-        transferArgs: TransferArgs
-    ) => CallResult<Variant<{ Ok: nat; Err: TransferError }>>;
+        transferArgs: ICRCTransferArgs
+    ) => CallResult<Variant<{ Ok: nat; Err: ICRCTransferError }>>;
 
     @serviceQuery
     icrc1_supported_standards: () => CallResult<
