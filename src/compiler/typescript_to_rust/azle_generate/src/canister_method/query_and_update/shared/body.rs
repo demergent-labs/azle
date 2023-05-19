@@ -4,15 +4,18 @@ use swc_ecma_ast::{
     TsType,
 };
 
-use crate::canister_method::{rust, AnnotatedFnDecl};
+use crate::{
+    canister_method::{rust, AnnotatedFnDecl},
+    Error,
+};
 
-pub fn generate(fn_decl: &AnnotatedFnDecl) -> proc_macro2::TokenStream {
-    let call_to_js_function = rust::generate_call_to_js_function(fn_decl);
+pub fn generate(fn_decl: &AnnotatedFnDecl) -> Result<proc_macro2::TokenStream, Vec<Error>> {
+    let call_to_js_function = rust::generate_call_to_js_function(fn_decl)?;
     let return_expression = generate_return_expression(fn_decl);
     let function_name = fn_decl.get_function_name();
     let manual = fn_decl.is_manual();
 
-    quote! {
+    Ok(quote! {
         BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
             let mut boa_context = box_context_ref_cell.borrow_mut();
 
@@ -48,7 +51,7 @@ pub fn generate(fn_decl: &AnnotatedFnDecl) -> proc_macro2::TokenStream {
 
             #return_expression
         })
-    }
+    })
 }
 
 /// Generates the return expression for a canister method body

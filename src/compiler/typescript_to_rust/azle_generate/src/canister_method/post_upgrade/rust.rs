@@ -5,15 +5,16 @@ use quote::quote;
 use crate::{
     canister_method::{rust, AnnotatedFnDecl},
     plugin::Plugin,
+    Error,
 };
 
 pub fn generate(
     post_upgrade_fn_decl_option: Option<&AnnotatedFnDecl>,
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
-) -> TokenStream {
+) -> Result<TokenStream, Vec<Error>> {
     let call_to_post_upgrade_js_function =
-        rust::maybe_generate_call_to_js_function(&post_upgrade_fn_decl_option);
+        rust::maybe_generate_call_to_js_function(&post_upgrade_fn_decl_option)?;
 
     let function_name = match &post_upgrade_fn_decl_option {
         Some(post_upgrade_fn_decl) => post_upgrade_fn_decl.get_function_name(),
@@ -28,7 +29,7 @@ pub fn generate(
 
     let register_process_object = rust::generate_register_process_object(environment_variables);
 
-    quote! {
+    Ok(quote! {
         BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
             let mut boa_context = box_context_ref_cell.borrow_mut();
 
@@ -56,5 +57,5 @@ pub fn generate(
 
             ic_cdk_timers::set_timer(core::time::Duration::new(0, 0), rng_seed);
         });
-    }
+    })
 }

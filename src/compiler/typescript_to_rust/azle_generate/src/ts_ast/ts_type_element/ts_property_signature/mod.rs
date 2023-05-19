@@ -3,6 +3,7 @@ use swc_ecma_ast::TsPropertySignature;
 use crate::{
     traits::{GetName, GetTsType},
     ts_ast::SourceMapped,
+    Error,
 };
 use cdk_framework::act::node::CandidType;
 
@@ -18,7 +19,7 @@ impl SourceMapped<'_, TsPropertySignature> {
             .to_string()
     }
 
-    pub fn get_act_data_type(&self) -> CandidType {
+    pub fn get_act_data_type(&self) -> Result<CandidType, Vec<Error>> {
         let ts_type = match &self.type_ann {
             Some(ts_type_ann) => ts_type_ann.get_ts_type(),
             None => panic!("{}", self.no_type_annotation_error()),

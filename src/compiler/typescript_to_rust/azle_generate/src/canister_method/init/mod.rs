@@ -42,8 +42,8 @@ impl TsAst {
                     return Err(errors);
                 }
 
-                let params = init_fn_decl.build_params();
-                let body = rust::generate(Some(init_fn_decl), plugins, environment_variables);
+                let params = init_fn_decl.build_params()?; // TODO collect these with the errors from above
+                let body = rust::generate(Some(init_fn_decl), plugins, environment_variables)?;
                 let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
 
                 Ok(InitMethod {
@@ -61,7 +61,7 @@ impl TsAst {
             None => {
                 Ok(InitMethod {
                     params: vec![],
-                    body: rust::generate(None, plugins, environment_variables),
+                    body: rust::generate(None, plugins, environment_variables)?,
                     guard_function_name: None, // Unsupported. See https://github.com/demergent-labs/azle/issues/954
                 })
             }

@@ -69,7 +69,7 @@ impl Program {
                         let new_expr = SourceMapped::new(new_expr, &self.source_map);
                         match new_expr.to_stable_b_tree_map_node() {
                             Ok(stable_b_tree_map_node) => Some(stable_b_tree_map_node),
-                            Err(err) => panic!("{}", err),
+                            Err(err) => panic!("{:#?}", err),
                         }
                     }
                     _ => None,

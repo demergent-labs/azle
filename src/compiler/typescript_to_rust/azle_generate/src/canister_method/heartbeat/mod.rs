@@ -26,7 +26,7 @@ impl TsAst {
                     )
                     .into()])
                 } else {
-                    let body = rust::generate(heartbeat_fn_decl);
+                    let body = rust::generate(heartbeat_fn_decl)?;
                     let guard_function_name = heartbeat_fn_decl.annotation.guard.clone();
                     Ok(HeartbeatMethod {
                         body,

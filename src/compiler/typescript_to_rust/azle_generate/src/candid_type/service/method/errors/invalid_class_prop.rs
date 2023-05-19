@@ -1,16 +1,16 @@
 use swc_ecma_ast::{ClassDecl, ClassProp};
 
 use crate::{
-    errors::service_method::ParseError,
     traits::{GetName, GetSourceFileInfo},
     ts_ast::SourceMapped,
+    Error,
 };
 
 impl SourceMapped<'_, ClassDecl> {
     pub fn build_invalid_class_prop_error_message(
         &self,
         class_prop: &ClassProp,
-        error_message: ParseError,
+        error_message: Vec<Error>,
     ) -> String {
         let service_class_name = self.ident.get_name().to_string();
 
@@ -21,7 +21,7 @@ impl SourceMapped<'_, ClassDecl> {
 
         format!(
             "{}\n\nin class {}\nat {}",
-            error_message.error_message(),
+            error_message.get(0).unwrap().error_message(),
             service_class_name,
             location
         )

@@ -51,7 +51,7 @@ impl TsAst {
                         return Err(errors);
                     }
 
-                    let body = rust::generate(inspect_message_fn_decl);
+                    let body = rust::generate(inspect_message_fn_decl)?;
                     let guard_function_name = inspect_message_fn_decl.annotation.guard.clone();
 
                     Ok(InspectMessageMethod {

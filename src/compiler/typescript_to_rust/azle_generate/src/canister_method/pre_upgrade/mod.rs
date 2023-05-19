@@ -46,7 +46,7 @@ impl TsAst {
                     return Err(errors);
                 }
 
-                let body = rust::generate(pre_upgrade_fn_decl);
+                let body = rust::generate(pre_upgrade_fn_decl)?;
                 let guard_function_name = pre_upgrade_fn_decl.annotation.guard.clone();
 
                 Ok(PreUpgradeMethod {

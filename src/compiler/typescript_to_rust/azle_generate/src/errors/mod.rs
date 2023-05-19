@@ -19,8 +19,6 @@ use crate::canister_method::errors::{
     MissingReturnTypeAnnotation, VoidReturnTypeRequired,
 };
 
-pub mod service_method;
-
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Error {
     TypeNotFound(TypeNotFound),
@@ -34,6 +32,35 @@ pub enum Error {
     SyntaxError(SyntaxError),
     VoidReturnTypeRequired(VoidReturnTypeRequired),
     AsyncNotAllowed(AsyncNotAllowed),
+    InvalidDecorator,
+    InvalidReturnType,
+    MissingCallResultAnnotation,
+    MissingDecorator,
+    MissingTypeAnnotation,
+    MissingTypeArgument,
+    MultipleDecorators,
+    NamespaceQualifiedType,
+    TooManyReturnTypes,
+    UnallowedComputedProperty,
+    NewError(String),
+}
+impl Error {
+    pub fn error_message(&self) -> String {
+        let str = match self {
+            Self::InvalidDecorator => "Invalid decorator. Only @query and @update are permitted.",
+            Self::InvalidReturnType => "Method has an invalid return type. Only function return types are permitted.",
+            Self::MissingCallResultAnnotation => "Invalid return type. External canister methods must wrap their return types in the CallResult<T> generic type.",
+            Self::MissingDecorator => "Missing decorator. External canister methods must be decorated with either @query or @update.",
+            Self::MissingTypeAnnotation => "Missing type annotation. External canister methods must specify a return type.",
+            Self::MissingTypeArgument => "Missing type argument. Generic type CallResult requires 1 type argument.",
+            Self::MultipleDecorators => "Too many decorators. External canister methods can only specify one decorator: @query or @update.",
+            Self::NamespaceQualifiedType => "Unsupported data type. Qualified types are not currently supported. Try importing the type directly.",
+            Self::TooManyReturnTypes => "Too many return types. Generic type CallResult requires 1 type argument.",
+            Self::UnallowedComputedProperty => "Unallowed computed property. Computed properties in external canister definitions aren't currently supported.",
+            _ => todo!()
+        };
+        str.to_string()
+    }
 }
 
 impl std::error::Error for Error {}
@@ -52,6 +79,17 @@ impl std::fmt::Display for Error {
             Self::SyntaxError(e) => e.fmt(f),
             Self::VoidReturnTypeRequired(e) => e.fmt(f),
             Self::AsyncNotAllowed(e) => e.fmt(f),
+            Self::InvalidDecorator => todo!(),
+            Self::InvalidReturnType => todo!(),
+            Self::MissingCallResultAnnotation => todo!(),
+            Self::MissingDecorator => todo!(),
+            Self::MissingTypeAnnotation => todo!(),
+            Self::MissingTypeArgument => todo!(),
+            Self::MultipleDecorators => todo!(),
+            Self::NamespaceQualifiedType => todo!(),
+            Self::TooManyReturnTypes => todo!(),
+            Self::UnallowedComputedProperty => todo!(),
+            Error::NewError(_) => todo!(),
         }
     }
 }
@@ -70,5 +108,30 @@ impl From<CdkfError> for crate::Error {
 impl From<Error> for Vec<Error> {
     fn from(value: Error) -> Self {
         vec![value]
+    }
+}
+
+pub trait CollectResults<T> {
+    fn collect_results(self) -> Result<Vec<T>, Vec<Error>>;
+}
+
+impl<I, T> CollectResults<T> for I
+where
+    I: Iterator<Item = Result<T, Vec<Error>>>,
+{
+    fn collect_results(self) -> Result<Vec<T>, Vec<Error>> {
+        let mut errors = Vec::new();
+        let mut ok_values = Vec::new();
+
+        self.for_each(|result| match result {
+            Ok(ok_value) => ok_values.push(ok_value),
+            Err(errs) => errors.extend(errs),
+        });
+
+        if errors.is_empty() {
+            Ok(ok_values)
+        } else {
+            Err(errors)
+        }
     }
 }

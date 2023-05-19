@@ -2,13 +2,14 @@ use cdk_framework::act::node::candid::{variant::Member, Variant};
 use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
 use crate::{
-    errors::{CompilerOutput, Location, Suggestion},
+    errors::{CollectResults, CompilerOutput, Suggestion},
     traits::{GetName, GetSourceFileInfo, GetSourceInfo, GetSpan, TypeToString},
     ts_ast::SourceMapped,
+    Error,
 };
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
-    pub fn to_variant(&self) -> Option<Variant> {
+    pub fn to_variant(&self) -> Result<Option<Variant>, Vec<Error>> {
         self.process_ts_type_ref("Variant", |type_ref| {
             // TODO this should be undone once we put all user-defined types in their own module
             let name_string = self.id.get_name().to_string();
@@ -18,17 +19,17 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
                 name_string
             });
 
-            Variant {
+            Ok(Variant {
                 name,
                 type_params: self.get_type_params().into(),
-                ..type_ref.to_variant()
-            }
+                ..type_ref.to_variant()?
+            })
         })
     }
 }
 
 impl SourceMapped<'_, TsTypeRef> {
-    pub fn to_variant(&self) -> Variant {
+    pub fn to_variant(&self) -> Result<Variant, Vec<Error>> {
         match self.get_ts_type().as_ts_type_lit() {
             Some(ts_type_lit) => ts_type_lit,
             None => panic!("{}", self.wrong_enclosed_type_error()),
@@ -38,23 +39,23 @@ impl SourceMapped<'_, TsTypeRef> {
 }
 
 impl SourceMapped<'_, TsTypeLit> {
-    pub fn to_variant(&self) -> Variant {
+    pub fn to_variant(&self) -> Result<Variant, Vec<Error>> {
         let members: Vec<Member> = self
             .members
             .iter()
             .map(|member| SourceMapped::new(member, self.source_map).to_variant_member())
-            .collect();
+            .collect_results()?;
 
-        Variant {
+        Ok(Variant {
             name: None,
             members,
             type_params: vec![].into(),
-        }
+        })
     }
 }
 
 impl SourceMapped<'_, TsTypeElement> {
-    pub fn to_variant_member(&self) -> Member {
+    pub fn to_variant_member(&self) -> Result<Member, Vec<Error>> {
         let ts_property_signature = match self.as_property_signature() {
             Some(ts_property_signature) => ts_property_signature,
             None => panic!("{}", self.variant_property_signature_error()),
@@ -84,10 +85,10 @@ impl SourceMapped<'_, TsTypeElement> {
 }
 
 impl SourceMapped<'_, TsPropertySignature> {
-    pub(super) fn to_variant_member(&self) -> Member {
-        Member {
+    pub(super) fn to_variant_member(&self) -> Result<Member, Vec<Error>> {
+        Ok(Member {
             name: self.get_member_name(),
-            candid_type: self.get_act_data_type(),
-        }
+            candid_type: self.get_act_data_type()?,
+        })
     }
 }

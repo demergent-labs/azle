@@ -48,10 +48,10 @@ impl TsAst {
                     return Err(errors);
                 }
 
-                let params = post_upgrade_fn_decl.build_params();
+                let params = post_upgrade_fn_decl.build_params()?; // TODO make sure these are collected with the above errors
 
                 let body =
-                    rust::generate(Some(post_upgrade_fn_decl), plugins, environment_variables);
+                    rust::generate(Some(post_upgrade_fn_decl), plugins, environment_variables)?;
                 let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
 
                 Ok(PostUpgradeMethod {
@@ -69,7 +69,7 @@ impl TsAst {
             None => {
                 Ok(PostUpgradeMethod {
                     params: vec![],
-                    body: rust::generate(None, plugins, environment_variables),
+                    body: rust::generate(None, plugins, environment_variables)?,
                     guard_function_name: None, // Unsupported. See https://github.com/demergent-labs/azle/issues/954,
                 })
             }

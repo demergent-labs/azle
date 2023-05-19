@@ -3,14 +3,16 @@ use swc_ecma_ast::{TsFnOrConstructorType, TsType};
 
 use cdk_framework::act::node::CandidType;
 
-use crate::{traits::GetSourceInfo, ts_ast::SourceMapped};
+use crate::{traits::GetSourceInfo, ts_ast::SourceMapped, Error};
 
 impl SourceMapped<'_, TsType> {
-    pub fn to_candid_type(&self) -> CandidType {
+    pub fn to_candid_type(&self) -> Result<CandidType, Vec<Error>> {
         match self.deref() {
-            TsType::TsKeywordType(x) => SourceMapped::new(x, self.source_map).to_candid_type(),
+            TsType::TsKeywordType(x) => Ok(CandidType::Primitive(
+                SourceMapped::new(x, self.source_map).to_primitive()?,
+            )),
             TsType::TsFnOrConstructorType(TsFnOrConstructorType::TsFnType(x)) => {
-                SourceMapped::new(x, self.source_map).to_candid_type()
+                return Err(SourceMapped::new(x, self.source_map).to_func().into())
             }
             TsType::TsTypeRef(x) => SourceMapped::new(x, self.source_map).to_candid_type(),
             TsType::TsTypeLit(_) => {

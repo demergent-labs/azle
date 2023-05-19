@@ -1,27 +1,29 @@
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 
-use crate::canister_method::AnnotatedFnDecl;
+use crate::{canister_method::AnnotatedFnDecl, Error};
 
 pub fn maybe_generate_call_to_js_function(
     annotated_fn_decl_option: &Option<&AnnotatedFnDecl>,
-) -> TokenStream {
+) -> Result<TokenStream, Vec<Error>> {
     if let Some(annotated_fn_decl) = &annotated_fn_decl_option {
         generate_call_to_js_function(annotated_fn_decl)
     } else {
-        quote!()
+        Ok(quote!())
     }
 }
 
-pub fn generate_call_to_js_function(annotated_fn_decl: &AnnotatedFnDecl) -> TokenStream {
+pub fn generate_call_to_js_function(
+    annotated_fn_decl: &AnnotatedFnDecl,
+) -> Result<TokenStream, Vec<Error>> {
     let function_name = annotated_fn_decl.get_function_name();
     let param_name_idents: Vec<Ident> = annotated_fn_decl
-        .build_params()
+        .build_params()?
         .iter()
         .map(|param| format_ident!("{}", param.get_prefixed_name()))
         .collect();
 
-    quote! {
+    Ok(quote! {
         let exports_js_value = unwrap_boa_result(boa_context.eval_script(boa_engine::Source::from_bytes("exports")), &mut boa_context);
         let exports_js_object = exports_js_value.as_object().unwrap();
 
@@ -38,7 +40,7 @@ pub fn generate_call_to_js_function(annotated_fn_decl: &AnnotatedFnDecl) -> Toke
             ),
             &mut boa_context
         );
-    }
+    })
 }
 
 pub fn generate_register_process_object(
