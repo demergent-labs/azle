@@ -9,7 +9,7 @@ use crate::{
 };
 
 impl AnnotatedFnDecl<'_> {
-    pub(super) fn build_array_destructure_error_msg(&self, param: &Param) -> CompilerOutput {
+    pub(super) fn _build_array_destructure_error_msg(&self, param: &Param) -> CompilerOutput {
         let array_pat = param.pat.as_array().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
 
         let range = param.get_destructure_range(self.source_map);
@@ -38,11 +38,11 @@ impl AnnotatedFnDecl<'_> {
         }
     }
 
-    pub(super) fn build_invalid_param_error_msg(&self) -> String {
+    pub(super) fn _build_invalid_param_error_msg(&self) -> String {
         "Something is impossibly wrong with your parameters. Please open an issue showing your canister methods and this error.".to_string()
     }
 
-    pub(super) fn build_missing_return_annotation_error_msg(&self) -> String {
+    pub(super) fn _build_missing_return_annotation_error_msg(&self) -> String {
         "Canister methods must specify a return type".to_string()
     }
 
@@ -79,7 +79,7 @@ impl AnnotatedFnDecl<'_> {
         }
     }
 
-    pub(super) fn build_object_destructure_error_msg(&self, param: &Param) -> CompilerOutput {
+    pub(super) fn _build_object_destructure_error_msg(&self, param: &Param) -> CompilerOutput {
         let object_pat = param.pat.as_object().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
 
         let range = param.get_destructure_range(self.source_map);
@@ -108,7 +108,7 @@ impl AnnotatedFnDecl<'_> {
         }
     }
 
-    pub(super) fn build_param_default_value_error_msg(
+    pub(super) fn _build_param_default_value_error_msg(
         &self,
         assign_pat: &AssignPat,
     ) -> CompilerOutput {
@@ -162,7 +162,7 @@ impl AnnotatedFnDecl<'_> {
         }
     }
 
-    pub(super) fn build_qualified_type_error_msg(&self, span: Span) -> CompilerOutput {
+    pub(super) fn _build_qualified_type_error_msg(&self, span: Span) -> CompilerOutput {
         CompilerOutput {
             title: "Namespace-qualified types are not currently supported".to_string(),
             location: Location {
@@ -176,7 +176,7 @@ impl AnnotatedFnDecl<'_> {
         }
     }
 
-    pub(super) fn build_rest_param_error_msg(&self, param: &Param) -> CompilerOutput {
+    pub(super) fn _build_rest_param_error_msg(&self, param: &Param) -> CompilerOutput {
         let rest_pat = param.pat.as_rest().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
 
         let range = param.get_destructure_range(self.source_map);
@@ -205,7 +205,7 @@ impl AnnotatedFnDecl<'_> {
         }
     }
 
-    pub(super) fn build_untyped_param_error_msg(
+    pub(super) fn _build_untyped_param_error_msg(
         &self,
         binding_ident: &BindingIdent,
     ) -> CompilerOutput {

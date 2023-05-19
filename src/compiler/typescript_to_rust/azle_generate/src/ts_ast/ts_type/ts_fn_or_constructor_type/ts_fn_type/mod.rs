@@ -1,6 +1,11 @@
 use swc_ecma_ast::{TsFnParam, TsFnType, TsType, TsTypeAnn};
 
-use crate::{traits::GetTsType, ts_ast::SourceMapped};
+use crate::{
+    errors::CollectResults,
+    traits::{GetTsType, GetTsTypeWithError},
+    ts_ast::SourceMapped,
+    Error,
+};
 
 mod errors;
 mod get_span;
@@ -15,27 +20,24 @@ impl SourceMapped<'_, TsFnType> {
         self.type_ann.clone()
     }
 
-    pub fn get_param_types(&self) -> Vec<TsType> {
-        self.get_ts_fn_params().iter().fold(vec![], |acc, param| {
-            vec![acc, vec![param.get_ts_type().clone()]].concat()
-        })
+    pub fn get_param_types(&self) -> Result<Vec<TsType>, Vec<Error>> {
+        self.get_ts_fn_params()
+            .iter()
+            .map(|param| param.get_ts_type().map_err(Into::<Vec<Error>>::into))
+            .collect_results()
     }
 }
 
-impl GetTsType for TsFnParam {
-    fn get_ts_type(&self) -> TsType {
+impl GetTsTypeWithError for TsFnParam {
+    fn get_ts_type(&self) -> Result<TsType, Error> {
         match self {
             TsFnParam::Ident(identifier) => match &identifier.type_ann {
-                Some(param_type) => param_type.get_ts_type(),
-                None => panic!("Function parameters must have a type"),
+                Some(param_type) => Ok(param_type.get_ts_type()),
+                None => Err(Error::FunctionParamsMustHaveType),
             },
-            TsFnParam::Array(_) => {
-                panic!("Array destructuring in parameters is unsupported at this time")
-            }
-            TsFnParam::Rest(_) => panic!("Rest parameters are not supported at this time"),
-            TsFnParam::Object(_) => {
-                panic!("Object destructuring in parameters is unsupported at this time")
-            }
+            TsFnParam::Array(_) => Err(Error::ArrayDestructuringInParamsNotSupported),
+            TsFnParam::Rest(_) => Err(Error::RestParametersNotSupported),
+            TsFnParam::Object(_) => Err(Error::ObjectDestructuringNotSupported),
         }
     }
 }

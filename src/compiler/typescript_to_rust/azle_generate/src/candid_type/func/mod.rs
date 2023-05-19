@@ -49,7 +49,7 @@ impl SourceMapped<'_, TsTypeRef> {
 
         let (params, return_type) = (
             ts_fn_type
-                .get_param_types()
+                .get_param_types()?
                 .iter()
                 .map(|param| SourceMapped::new(param, self.source_map).to_candid_type())
                 .collect_results(),

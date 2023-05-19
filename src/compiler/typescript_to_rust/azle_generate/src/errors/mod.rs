@@ -59,6 +59,7 @@ pub enum Error {
     ParamDefaultValue,
     InvalidParam,
     UntypedParam,
+    NotEnclosedInFunc,
     NewError(String),
 }
 impl Error {
