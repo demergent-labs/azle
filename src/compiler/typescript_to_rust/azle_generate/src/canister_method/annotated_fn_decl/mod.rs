@@ -4,9 +4,11 @@ use quote::format_ident;
 use swc_common::SourceMap;
 use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};
 
-use crate::{canister_method::Annotation, traits::GetName, Error};
+use crate::{canister_method::Annotation, errors::CollectResults, traits::GetName, Error};
 
 pub use get_annotated_fn_decls::GetAnnotatedFnDecls;
+
+use super::errors::MissingReturnTypeAnnotation;
 
 mod get_annotated_fn_decls;
 
@@ -25,7 +27,7 @@ impl AnnotatedFnDecl<'_> {
             Some(ts_type_ann) => {
                 let return_type = &*ts_type_ann.type_ann;
 
-                let promise_unwrapped_return_type = if self.is_promise() {
+                let promise_unwrapped_return_type = if self.is_promise()? {
                     let type_ref = return_type.as_ts_type_ref().unwrap();
                     match &type_ref.type_params {
                         Some(type_param_instantiation) => &*type_param_instantiation.params[0],
@@ -35,7 +37,7 @@ impl AnnotatedFnDecl<'_> {
                     return_type
                 };
 
-                let manual_unwrapped_return_type = if self.is_manual() {
+                let manual_unwrapped_return_type = if self.is_manual()? {
                     let inner_type_ref = promise_unwrapped_return_type.as_ts_type_ref().unwrap();
                     match &inner_type_ref.type_params {
                         Some(type_param_instantiation) => &type_param_instantiation.params[0],
@@ -46,7 +48,7 @@ impl AnnotatedFnDecl<'_> {
                 };
                 Ok(manual_unwrapped_return_type)
             }
-            None => panic!("{}", self.build_missing_return_annotation_error_msg()), //TODO: Improve this error message
+            None => return Err(MissingReturnTypeAnnotation::from_annotated_fn_decl(self).into()),
         }
     }
 
@@ -54,43 +56,46 @@ impl AnnotatedFnDecl<'_> {
         self.fn_decl.ident.get_name().to_string()
     }
 
-    pub fn get_param_name_idents(&self) -> Vec<Ident> {
-        let param_idents = self.get_param_binding_idents();
+    pub fn get_param_name_idents(&self) -> Result<Vec<Ident>, Vec<Error>> {
+        let param_idents = self.get_param_binding_idents()?;
 
-        param_idents
+        Ok(param_idents
             .iter()
             .map(|ident| format_ident!("{}", ident.get_name().to_string()))
-            .collect()
+            .collect())
     }
 
-    pub fn get_param_binding_idents(&self) -> Vec<&BindingIdent> {
+    pub fn get_param_binding_idents(&self) -> Result<Vec<&BindingIdent>, Vec<Error>> {
         self.fn_decl
             .function
             .params
             .iter()
             .map(|param| match &param.pat {
-                Pat::Ident(ident) => ident,
-                Pat::Array(_) => panic!("{}", self.build_array_destructure_error_msg(param)),
-                Pat::Rest(_) => panic!("{}", self.build_rest_param_error_msg(param)),
-                Pat::Object(_) => panic!("{}", self.build_object_destructure_error_msg(param)),
-                Pat::Assign(assign_pat) => {
-                    panic!("{}", self.build_param_default_value_error_msg(assign_pat))
-                }
-                Pat::Invalid(_) => panic!("{}", self.build_invalid_param_error_msg()),
-                Pat::Expr(_) => panic!("{}", self.build_invalid_param_error_msg()),
+                Pat::Ident(ident) => Ok(ident),
+                Pat::Array(_) => Err(Into::<Vec<Error>>::into(
+                    Error::ArrayDestructuringInParamsNotSupported,
+                )),
+                Pat::Rest(_) => Err(Into::<Vec<Error>>::into(Error::RestParametersNotSupported)),
+                Pat::Object(_) => Err(Into::<Vec<Error>>::into(
+                    Error::ObjectDestructuringNotSupported,
+                )),
+                Pat::Assign(_assign_pat) => Err(Into::<Vec<Error>>::into(Error::ParamDefaultValue)),
+                Pat::Invalid(_) => Err(Into::<Vec<Error>>::into(Error::InvalidParam)),
+                Pat::Expr(_) => Err(Into::<Vec<Error>>::into(Error::InvalidParam)),
             })
-            .collect()
+            .collect_results()
     }
 
-    pub fn get_param_ts_types(&self) -> Vec<&TsType> {
-        let param_idents = self.get_param_binding_idents();
+    pub fn get_param_ts_types(&self) -> Result<Vec<&TsType>, Vec<Error>> {
+        let param_idents = self.get_param_binding_idents()?;
 
         param_idents
             .iter()
-            .fold(vec![], |acc, ident| match &ident.type_ann {
-                Some(ts_type_ann) => vec![acc, vec![&ts_type_ann.type_ann]].concat(),
-                None => panic!("{}", self.build_untyped_param_error_msg(*ident)),
+            .map(|ident| match &ident.type_ann {
+                Some(ts_type_ann) => Ok(ts_type_ann.type_ann.as_ref()),
+                None => return Err(Error::UntypedParam.into()), // Called with *ident
             })
+            .collect_results()
     }
 
     /// Returns whether the fn_decl is of the provided type.
@@ -102,41 +107,37 @@ impl AnnotatedFnDecl<'_> {
         self.annotation.method_type == canister_method_type
     }
 
-    pub fn is_manual(&self) -> bool {
+    pub fn is_manual(&self) -> Result<bool, Error> {
         let return_type = match &self.fn_decl.function.return_type {
-            Some(ts_type_ann) => match self.is_promise() {
+            Some(ts_type_ann) => match self.is_promise()? {
                 true => match &ts_type_ann.type_ann.as_ts_type_ref().unwrap().type_params {
                     Some(type_param_instantiation) => &type_param_instantiation.params[0],
-                    None => return false,
+                    None => return Ok(false),
                 },
                 false => &*ts_type_ann.type_ann,
             },
-            None => return false,
+            None => return Ok(false),
         };
 
         match return_type {
             TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-                TsEntityName::Ident(ident) => ident.get_name() == "Manual",
-                TsEntityName::TsQualifiedName(_) => {
-                    panic!("{}", self.build_qualified_type_error_msg(ts_type_ref.span))
-                }
+                TsEntityName::Ident(ident) => Ok(ident.get_name() == "Manual"),
+                TsEntityName::TsQualifiedName(_) => return Err(Error::QualifiedType),
             },
-            _ => false,
+            _ => Ok(false),
         }
     }
 
-    pub fn is_promise(&self) -> bool {
+    pub fn is_promise(&self) -> Result<bool, Error> {
         match &self.fn_decl.function.return_type {
             Some(ts_type_ann) => match &*ts_type_ann.type_ann {
                 TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-                    TsEntityName::Ident(ident) => ident.get_name() == "Promise",
-                    TsEntityName::TsQualifiedName(_) => {
-                        panic!("{}", self.build_qualified_type_error_msg(ts_type_ref.span))
-                    }
+                    TsEntityName::Ident(ident) => Ok(ident.get_name() == "Promise"),
+                    TsEntityName::TsQualifiedName(_) => return Err(Error::QualifiedType),
                 },
-                _ => false,
+                _ => Ok(false),
             },
-            None => false,
+            None => Ok(false),
         }
     }
 }

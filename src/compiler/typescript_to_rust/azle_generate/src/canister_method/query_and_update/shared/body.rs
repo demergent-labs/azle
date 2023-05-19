@@ -13,7 +13,7 @@ pub fn generate(fn_decl: &AnnotatedFnDecl) -> Result<proc_macro2::TokenStream, V
     let call_to_js_function = rust::generate_call_to_js_function(fn_decl)?;
     let return_expression = generate_return_expression(fn_decl)?;
     let function_name = fn_decl.get_function_name();
-    let manual = fn_decl.is_manual();
+    let manual = fn_decl.is_manual()?;
 
     Ok(quote! {
         BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
@@ -64,7 +64,7 @@ pub fn generate(fn_decl: &AnnotatedFnDecl) -> Result<proc_macro2::TokenStream, V
 fn generate_return_expression(
     annotated_fn_decl: &AnnotatedFnDecl,
 ) -> Result<proc_macro2::TokenStream, Error> {
-    if annotated_fn_decl.is_manual() || annotated_fn_decl.is_promise() {
+    if annotated_fn_decl.is_manual()? || annotated_fn_decl.is_promise()? {
         return Ok(quote! {
             ic_cdk::api::call::ManualReply::empty()
         });

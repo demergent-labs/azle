@@ -55,6 +55,10 @@ pub enum Error {
     RestParametersNotSupported,
     ObjectDestructuringNotSupported,
     QualifiedName,
+    QualifiedType,
+    ParamDefaultValue,
+    InvalidParam,
+    UntypedParam,
     NewError(String),
 }
 impl Error {

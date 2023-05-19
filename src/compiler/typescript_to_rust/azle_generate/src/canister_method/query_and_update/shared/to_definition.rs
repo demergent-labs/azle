@@ -10,8 +10,8 @@ use crate::{
 impl<'a> AnnotatedFnDecl<'a> {
     pub fn to_definition(&self) -> Result<QueryOrUpdateDefinition, Vec<Error>> {
         let body = query_and_update::generate_body(&self)?;
-        let is_async = self.is_promise();
-        let is_manual = self.is_manual();
+        let is_async = self.is_promise()?;
+        let is_manual = self.is_manual()?;
         let guard_function_name = self.annotation.guard.clone();
         let name = self.get_function_name();
         let params = self.build_params()?;
@@ -29,7 +29,7 @@ impl<'a> AnnotatedFnDecl<'a> {
     }
 
     pub fn build_params(&self) -> Result<Vec<Param>, Vec<Error>> {
-        let names = self.get_param_name_idents();
+        let names = self.get_param_name_idents()?;
         let types = self.build_param_types()?;
         Ok(names
             .iter()
@@ -44,7 +44,7 @@ impl<'a> AnnotatedFnDecl<'a> {
     // TODO why is this separated from get_name. It would be much simpler
     // imho to get the names and the params all in the same pass
     fn build_param_types(&self) -> Result<Vec<CandidType>, Vec<Error>> {
-        self.get_param_ts_types()
+        self.get_param_ts_types()?
             .into_iter()
             .map(|ts_type| SourceMapped::new(ts_type, self.source_map).to_candid_type())
             .collect_results()
