@@ -40,6 +40,7 @@ pub enum Error {
     MissingDecorator,
     MissingTypeAnnotation,
     MissingTypeArgument,
+    MissingReturnType,
     MultipleDecorators,
     NamespaceQualifiedType,
     TooManyReturnTypes,

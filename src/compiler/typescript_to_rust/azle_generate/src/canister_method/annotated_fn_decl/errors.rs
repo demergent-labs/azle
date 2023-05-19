@@ -46,7 +46,7 @@ impl AnnotatedFnDecl<'_> {
         "Canister methods must specify a return type".to_string()
     }
 
-    pub(super) fn build_missing_return_type_error_msg(
+    pub(super) fn _build_missing_return_type_error_msg(
         &self,
         span: Span,
         canister_method_type: &str,

@@ -4,7 +4,7 @@ use quote::format_ident;
 use swc_common::SourceMap;
 use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};
 
-use crate::{canister_method::Annotation, traits::GetName};
+use crate::{canister_method::Annotation, traits::GetName, Error};
 
 pub use get_annotated_fn_decls::GetAnnotatedFnDecls;
 
@@ -20,7 +20,7 @@ pub struct AnnotatedFnDecl<'a> {
 }
 
 impl AnnotatedFnDecl<'_> {
-    pub fn get_return_ts_type(&self) -> &TsType {
+    pub fn get_return_ts_type(&self) -> Result<&TsType, Error> {
         match &self.fn_decl.function.return_type {
             Some(ts_type_ann) => {
                 let return_type = &*ts_type_ann.type_ann;
@@ -29,12 +29,7 @@ impl AnnotatedFnDecl<'_> {
                     let type_ref = return_type.as_ts_type_ref().unwrap();
                     match &type_ref.type_params {
                         Some(type_param_instantiation) => &*type_param_instantiation.params[0],
-                        None => {
-                            panic!(
-                                "{}",
-                                self.build_missing_return_type_error_msg(type_ref.span, "Promise")
-                            )
-                        }
+                        None => return Err(Error::MissingReturnType), // formerly called with (type_ref.span, "Promise")
                     }
                 } else {
                     return_type
@@ -44,20 +39,12 @@ impl AnnotatedFnDecl<'_> {
                     let inner_type_ref = promise_unwrapped_return_type.as_ts_type_ref().unwrap();
                     match &inner_type_ref.type_params {
                         Some(type_param_instantiation) => &type_param_instantiation.params[0],
-                        None => {
-                            panic!(
-                                "{}",
-                                self.build_missing_return_type_error_msg(
-                                    inner_type_ref.span,
-                                    "Manual"
-                                )
-                            )
-                        }
+                        None => return Err(Error::MissingReturnType), // formerly called with (inner_type_ref.span, "Manual")
                     }
                 } else {
                     promise_unwrapped_return_type
                 };
-                manual_unwrapped_return_type
+                Ok(manual_unwrapped_return_type)
             }
             None => panic!("{}", self.build_missing_return_annotation_error_msg()), //TODO: Improve this error message
         }

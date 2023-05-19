@@ -16,7 +16,7 @@ mod void_return_type_required;
 
 impl<'a> AnnotatedFnDecl<'a> {
     pub fn is_void(&self) -> bool {
-        if let TsType::TsKeywordType(keyword) = self.get_return_ts_type() {
+        if let Ok(TsType::TsKeywordType(keyword)) = self.get_return_ts_type() {
             if let TsKeywordTypeKind::TsVoidKeyword = keyword.kind {
                 return true;
             }

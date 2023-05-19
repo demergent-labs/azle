@@ -51,6 +51,6 @@ impl<'a> AnnotatedFnDecl<'a> {
     }
 
     fn build_return_type(&self) -> Result<CandidType, Vec<Error>> {
-        SourceMapped::new(self.get_return_ts_type(), self.source_map).to_candid_type()
+        SourceMapped::new(self.get_return_ts_type()?, self.source_map).to_candid_type()
     }
 }
