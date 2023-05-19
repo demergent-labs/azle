@@ -45,5 +45,4 @@ service : () -> {
   icrc1_symbol : () -> (text) query;
   icrc1_total_supply : () -> (nat) query;
   icrc1_transfer : (TransferArgs) -> (ManualReply);
-  test : () -> (text) query;
 }
