@@ -1,0 +1,49 @@
+type Account = record { owner : principal; subaccount : opt vec nat8 };
+type ManualReply = variant { Ok : nat; Err : TransferError };
+type TransferArgs = record {
+  to : Account;
+  fee : opt nat;
+  memo : opt vec nat8;
+  from_subaccount : opt vec nat8;
+  created_at_time : opt nat64;
+  amount : nat;
+};
+type TransferError = variant {
+  GenericError : _InlineTransferErrorGenericError;
+  TemporarilyUnavailable;
+  BadBurn : _InlineTransferErrorBadBurn;
+  Duplicate : _InlineTransferErrorDuplicate;
+  BadFee : _InlineTransferErrorBadFee;
+  CreatedInFuture : _InlineTransferErrorCreatedInFuture;
+  TooOld;
+  InsufficientFunds : _InlineTransferErrorInsufficientFunds;
+};
+type Value = variant { Int : int; Nat : nat; Blob : vec nat8; Text : text };
+type _InlineIcrc1SupportedStandardsReturnType = record {
+  url : text;
+  name : text;
+};
+type _InlineTransferErrorBadBurn = record { min_burn_amount : nat };
+type _InlineTransferErrorBadFee = record { expected_fee : nat };
+type _InlineTransferErrorCreatedInFuture = record { ledger_time : nat64 };
+type _InlineTransferErrorDuplicate = record { duplicate_of : nat };
+type _InlineTransferErrorGenericError = record {
+  message : text;
+  error_code : nat;
+};
+type _InlineTransferErrorInsufficientFunds = record { balance : nat };
+service : () -> {
+  icrc1_balance_of : (Account) -> (nat) query;
+  icrc1_decimals : () -> (nat8) query;
+  icrc1_fee : () -> (nat) query;
+  icrc1_metadata : () -> (vec record { text; Value }) query;
+  icrc1_minting_account : () -> (opt Account) query;
+  icrc1_name : () -> (text) query;
+  icrc1_supported_standards : () -> (
+      vec _InlineIcrc1SupportedStandardsReturnType,
+    ) query;
+  icrc1_symbol : () -> (text) query;
+  icrc1_total_supply : () -> (nat) query;
+  icrc1_transfer : (TransferArgs) -> (ManualReply);
+  test : () -> (text) query;
+}

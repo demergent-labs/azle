@@ -1,0 +1,21 @@
+{
+    "canisters": {
+        "proxy": {
+            "type": "custom",
+            "build": "npx azle proxy",
+            "root": "canisters/proxy",
+            "ts": "canisters/proxy/index.ts",
+            "candid": "canisters/proxy/index.did",
+            "wasm": ".azle/proxy/proxy.wasm.gz",
+            "declarations": {
+                "output": "test/dfx_generated/proxy",
+                "node_compatibility": true
+            },
+            "env": ["ICRC_PRINCIPAL"]
+        },
+        "icrc": {
+            "type": "motoko",
+            "main": "canisters/ICRC-1/ref/ICRC1.mo"
+        }
+    }
+}
