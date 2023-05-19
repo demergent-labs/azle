@@ -24,7 +24,7 @@ impl SourceMapped<'_, ClassProp> {
         let mode = match &self.mode()?[..] {
             "serviceQuery" => Mode::Query,
             "serviceUpdate" => Mode::Update,
-            _ => panic!("this is not supported"),
+            _ => return Err(Error::InvalidDecorator.into()),
         };
         let params = self.build_act_fn_params()?;
         let return_type = self.build_return_type()?;
@@ -150,19 +150,15 @@ impl SourceMapped<'_, TsFnType> {
                             SourceMapped::new(&ts_type_ann.get_ts_type(), self.source_map)
                                 .to_candid_type()?
                         }
-                        None => panic!("Function parameters must have a type"),
+                        None => return Err(Error::FunctionParamsMustHaveType.into()),
                     };
                     Ok(Param { name, candid_type })
                 }
                 TsFnParam::Array(_) => {
-                    panic!("Array destructuring in parameters is unsupported at this time")
+                    return Err(Error::ArrayDestructuringInParamsNotSupported.into())
                 }
-                TsFnParam::Rest(_) => {
-                    panic!("Rest parameters are not supported at this time")
-                }
-                TsFnParam::Object(_) => {
-                    panic!("Object destructuring in parameters is unsupported at this time")
-                }
+                TsFnParam::Rest(_) => return Err(Error::RestParametersNotSupported.into()),
+                TsFnParam::Object(_) => return Err(Error::ObjectDestructuringNotSupported.into()),
             })
             .collect_results()
     }

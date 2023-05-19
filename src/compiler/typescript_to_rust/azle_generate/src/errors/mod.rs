@@ -50,6 +50,10 @@ pub enum Error {
     RecordPropertySignature,
     InvalidClassProp,
     InvalidClassMember,
+    FunctionParamsMustHaveType,
+    ArrayDestructuringInParamsNotSupported,
+    RestParametersNotSupported,
+    ObjectDestructuringNotSupported,
     NewError(String),
 }
 impl Error {
