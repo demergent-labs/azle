@@ -6,9 +6,9 @@ use crate::{traits::GetName, ts_ast::SourceMapped, Error};
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_type_alias(&self) -> Result<Option<TypeAlias>, Vec<Error>> {
         self.process_ts_type_ref("Alias", |type_ref| {
-            let aliased_type = type_ref.get_ts_type().to_candid_type()?;
+            let aliased_type = type_ref.get_ts_type()?.to_candid_type()?;
 
-            let type_params = self.get_type_params();
+            let type_params = self.get_type_params()?;
 
             Ok(TypeAlias {
                 name: self.id.get_name().to_string(),

@@ -3,8 +3,10 @@ use swc_ecma_ast::{TsType, TsTypeRef};
 
 use crate::{
     errors::{CompilerOutput, Location, Suggestion},
-    traits::{GetName, GetSourceFileInfo, GetSourceInfo, GetSourceText, GetSpan},
+    internal_error,
+    traits::{GetNameWithError, GetSourceFileInfo, GetSourceInfo, GetSpan},
     ts_ast::SourceMapped,
+    Error,
 };
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -31,25 +33,31 @@ impl From<WrongEnclosedType> for crate::Error {
 }
 
 impl SourceMapped<'_, TsTypeRef> {
-    pub(super) fn wrong_number_of_params_error(&self) -> CompilerOutput {
-        match self.get_name() {
-            "Canister" => self.canister_wrong_number_of_params_error(),
-            "Variant" => self.variant_wrong_number_of_params_error(),
-            "Func" => self.func_wrong_number_of_params_error(),
-            "Opt" => self.option_wrong_number_of_params_error(),
-            _ => panic!("Unreachable: {} is not a valid type.\nFuncs, Variants, and Opts must have exactly one enclosed type.", self.get_source_text()),
-        }
+    pub(super) fn _wrong_number_of_params_error(&self) -> Result<(), Error> {
+        Err(Error::NewError(
+            match self.get_name()? {
+                "Canister" => self._canister_wrong_number_of_params_error(),
+                "Variant" => self._variant_wrong_number_of_params_error()?,
+                "Func" => self._func_wrong_number_of_params_error(),
+                "Opt" => self._option_wrong_number_of_params_error()?,
+                _ => internal_error!(),
+            }
+            .to_string(),
+        ))
     }
 
-    pub fn wrong_enclosed_type_error(&self) -> CompilerOutput {
-        match self.get_name() {
-            "Variant" => self.variant_wrong_enclosed_type_error(),
-            "Func" => self.func_wrong_enclosed_type_error(),
-            _ => panic!("Unreachable: {} is not a valid type.\nFuncs, Variants only support certain enclosed types.", self.get_source_text()),
-        }
+    pub fn wrong_enclosed_type_error(&self) -> Result<(), Error> {
+        Err(Error::NewError(
+            match self.get_name()? {
+                "Variant" => self.variant_wrong_enclosed_type_error()?,
+                "Func" => self.func_wrong_enclosed_type_error(),
+                _ => internal_error!(),
+            }
+            .to_string(),
+        ))
     }
 
-    pub(super) fn qualified_name_error(&self, unqualified_name: String) -> CompilerOutput {
+    pub(super) fn _qualified_name_error(&self, unqualified_name: String) -> CompilerOutput {
         CompilerOutput {
             title: "Namespace-qualified types are not currently supported".to_string(),
             location: self.get_location(),
@@ -69,8 +77,8 @@ impl SourceMapped<'_, TsTypeRef> {
         }
     }
 
-    fn canister_wrong_number_of_params_error(&self) -> CompilerOutput {
-        let example = self.generate_example_canister();
+    fn _canister_wrong_number_of_params_error(&self) -> CompilerOutput {
+        let example = self._generate_example_canister();
         let modified_source = self
             .source_map
             .generate_modified_source(self.get_enclosed_span(), &example);
@@ -101,8 +109,8 @@ impl SourceMapped<'_, TsTypeRef> {
         }
     }
 
-    fn func_wrong_number_of_params_error(&self) -> CompilerOutput {
-        let example_func = self.generate_example_func();
+    fn _func_wrong_number_of_params_error(&self) -> CompilerOutput {
+        let example_func = self._generate_example_func();
         let modified_source = self
             .source_map
             .generate_modified_source(self.get_enclosed_span(), &example_func);
@@ -138,8 +146,8 @@ impl SourceMapped<'_, TsTypeRef> {
         }
     }
 
-    fn option_wrong_number_of_params_error(&self) -> CompilerOutput {
-        let example_option = self.generate_example_option();
+    fn _option_wrong_number_of_params_error(&self) -> Result<CompilerOutput, Error> {
+        let example_option = self._generate_example_option()?;
         let modified_source = self
             .source_map
             .generate_modified_source(self.get_enclosed_span(), &example_option);
@@ -162,7 +170,7 @@ impl SourceMapped<'_, TsTypeRef> {
             annotation: Some(suggestion_annotation.to_string()),
             import_suggestion: None,
         });
-        CompilerOutput {
+        Ok(CompilerOutput {
             title: "Invalid Opt".to_string(),
             location: Location {
                 origin: self.get_origin(),
@@ -172,11 +180,11 @@ impl SourceMapped<'_, TsTypeRef> {
             },
             annotation: annotation.to_string(),
             suggestion,
-        }
+        })
     }
 
-    fn variant_wrong_number_of_params_error(&self) -> CompilerOutput {
-        let example = self.generate_example_variant();
+    fn _variant_wrong_number_of_params_error(&self) -> Result<CompilerOutput, Error> {
+        let example = self.generate_example_variant()?;
         let modified_source = self
             .source_map
             .generate_modified_source(self.get_enclosed_span(), &example);
@@ -198,7 +206,7 @@ impl SourceMapped<'_, TsTypeRef> {
             annotation: Some(suggestion_annotation.to_string()),
             import_suggestion: None,
         });
-        CompilerOutput {
+        Ok(CompilerOutput {
             title: "Invalid Variant".to_string(),
             location: Location {
                 origin: self.get_origin(),
@@ -208,11 +216,11 @@ impl SourceMapped<'_, TsTypeRef> {
             },
             annotation: annotation.to_string(),
             suggestion,
-        }
+        })
     }
 
-    fn variant_wrong_enclosed_type_error(&self) -> CompilerOutput {
-        let example_variant = self.generate_example_variant();
+    fn variant_wrong_enclosed_type_error(&self) -> Result<CompilerOutput, Error> {
+        let example_variant = self.generate_example_variant()?;
         let modified_source = self
             .source_map
             .generate_modified_source(self.get_enclosed_span(), &example_variant);
@@ -225,7 +233,7 @@ impl SourceMapped<'_, TsTypeRef> {
             annotation: Some("Try wrapping your value in a type literal.".to_string()),
             import_suggestion: None,
         });
-        CompilerOutput {
+        Ok(CompilerOutput {
             title: "Invalid Variant".to_string(),
             location: Location {
                 origin: self.get_origin(),
@@ -235,7 +243,7 @@ impl SourceMapped<'_, TsTypeRef> {
             },
             annotation: "Must have type literal enclosed here.".to_string(),
             suggestion,
-        }
+        })
     }
 
     // TODO: 2 ways to improve this:
@@ -288,9 +296,9 @@ impl SourceMapped<'_, TsTypeRef> {
         }
     }
 
-    fn generate_example_option(&self) -> String {
+    fn _generate_example_option(&self) -> Result<String, Error> {
         if self.get_enclosed_ts_types().len() == 0 {
-            return format!("{}<boolean>", self.get_name());
+            return Ok(format!("{}<boolean>", self.get_name()?));
         }
         let enclosed_types: String = self.get_enclosed_ts_types().iter().enumerate().fold(
             String::new(),
@@ -299,10 +307,10 @@ impl SourceMapped<'_, TsTypeRef> {
                 format!("{}    member_name{}: {},\n", acc, index, source_text)
             },
         );
-        format!("<{{\n{}\n}}>", enclosed_types)
+        Ok(format!("<{{\n{}\n}}>", enclosed_types))
     }
 
-    fn generate_example_canister(&self) -> String {
+    fn _generate_example_canister(&self) -> String {
         if self.get_enclosed_ts_types().len() == 0 {
             "Canister<{method(): CallResult<void>}>".to_string()
         } else {
@@ -310,7 +318,7 @@ impl SourceMapped<'_, TsTypeRef> {
         }
     }
 
-    fn generate_example_func(&self) -> String {
+    fn _generate_example_func(&self) -> String {
         if self.get_enclosed_ts_types().len() == 0 {
             "Func<Update<() => void>>".to_string()
         } else {
@@ -326,9 +334,9 @@ impl SourceMapped<'_, TsTypeRef> {
         }
     }
 
-    fn generate_example_variant(&self) -> String {
+    fn generate_example_variant(&self) -> Result<String, Error> {
         if self.get_enclosed_ts_types().len() == 0 {
-            format!("{}<{{variant_name: null}}>", self.get_name())
+            Ok(format!("{}<{{variant_name: null}}>", self.get_name()?))
         } else {
             let enclosed_type = self.get_enclosed_ts_types().iter().enumerate().fold(
                 String::new(),
@@ -338,7 +346,7 @@ impl SourceMapped<'_, TsTypeRef> {
                 },
             );
             let enclosed_type = enclosed_type[..enclosed_type.len() - 2].to_string();
-            format!("<{{\n{}\n}}>", enclosed_type)
+            Ok(format!("<{{\n{}\n}}>", enclosed_type))
         }
     }
 

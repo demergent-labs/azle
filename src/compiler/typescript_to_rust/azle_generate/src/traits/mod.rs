@@ -1,4 +1,5 @@
 pub use get_name::GetName;
+pub use get_name::GetNameWithError;
 pub use get_source_file_info::GetSourceFileInfo;
 pub use get_source_info::GetSourceInfo;
 pub use get_source_text::GetSourceText;

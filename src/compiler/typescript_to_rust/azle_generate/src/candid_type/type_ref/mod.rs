@@ -8,7 +8,7 @@ use swc_ecma_ast::{TsEntityName, TsType, TsTypeRef};
 
 use crate::{
     errors::CollectResults,
-    traits::{GetName, GetSpan},
+    traits::{GetName, GetNameWithError, GetSpan},
     ts_ast::SourceMapped,
     Error,
 };
@@ -16,16 +16,16 @@ use crate::{
 pub mod errors;
 
 impl SourceMapped<'_, TsTypeRef> {
-    pub fn get_ts_type(&self) -> SourceMapped<TsType> {
+    pub fn get_ts_type(&self) -> Result<SourceMapped<TsType>, Error> {
         match &self.type_params {
             Some(params) => {
                 if params.params.len() != 1 {
-                    panic!("{}", self.wrong_number_of_params_error())
+                    return Err(Error::WrongNumberOfParams);
                 }
                 let inner_type = params.params[0].deref();
-                SourceMapped::new(inner_type, self.source_map)
+                Ok(SourceMapped::new(inner_type, self.source_map))
             }
-            None => panic!("{}", self.wrong_number_of_params_error()),
+            None => return Err(Error::WrongNumberOfParams),
         }
     }
 
@@ -44,7 +44,7 @@ impl SourceMapped<'_, TsTypeRef> {
                 .map(|param| TypeArg(param))
                 .collect::<Vec<_>>();
 
-        let name_string = self.get_name().to_string();
+        let name_string = self.get_name()?.to_string();
 
         Ok(TypeRef {
             name: if name_string == "Result" {
@@ -56,8 +56,8 @@ impl SourceMapped<'_, TsTypeRef> {
         })
     }
 
-    pub fn as_primitive(&self) -> Option<Primitive> {
-        Some(match self.get_name() {
+    pub fn as_primitive(&self) -> Result<Option<Primitive>, Error> {
+        Ok(Some(match self.get_name()? {
             "blob" => Primitive::Blob,
             "float32" => Primitive::Float32,
             "float64" => Primitive::Float64,
@@ -75,15 +75,15 @@ impl SourceMapped<'_, TsTypeRef> {
             "empty" => Primitive::Empty,
             "reserved" => Primitive::Reserved,
             "text" => Primitive::String,
-            _ => return None,
-        })
+            _ => return Ok(None),
+        }))
     }
 
     pub fn to_candid_type(&self) -> Result<CandidType, Vec<Error>> {
-        if let Some(primitive) = self.as_primitive() {
+        if let Some(primitive) = self.as_primitive()? {
             return Ok(CandidType::Primitive(primitive));
         }
-        Ok(match self.get_name() {
+        Ok(match self.get_name()? {
             "Opt" => CandidType::Opt(self.to_option()?),
             "Func" => CandidType::Func(self.to_func(None)?),
             "Record" => CandidType::Record(self.to_record()?),
@@ -95,20 +95,17 @@ impl SourceMapped<'_, TsTypeRef> {
     }
 }
 
-impl GetName for SourceMapped<'_, TsTypeRef> {
-    fn get_name(&self) -> &str {
-        match &self.type_name {
-            TsEntityName::TsQualifiedName(ts_qualified_name) => {
+impl GetNameWithError for SourceMapped<'_, TsTypeRef> {
+    fn get_name(&self) -> Result<&str, Error> {
+        Ok(match &self.type_name {
+            TsEntityName::TsQualifiedName(_ts_qualified_name) => {
                 // TODO: This could be improved for Qualified TypeRefs with type params.
                 // Currently we just drop the type params. It would be better if we
                 // included them.
-                panic!(
-                    "{}",
-                    self.qualified_name_error(ts_qualified_name.right.get_name().to_string())
-                )
+                return Err(Error::QualifiedName);
             }
             TsEntityName::Ident(identifier) => identifier.get_name(),
-        }
+        })
     }
 }
 

@@ -33,6 +33,7 @@ pub enum Error {
     VoidReturnTypeRequired(VoidReturnTypeRequired),
     AsyncNotAllowed(AsyncNotAllowed),
     WrongEnclosedType,
+    WrongNumberOfParams,
     InvalidDecorator,
     InvalidReturnType,
     MissingCallResultAnnotation,
@@ -51,6 +52,7 @@ pub enum Error {
     ArrayDestructuringInParamsNotSupported,
     RestParametersNotSupported,
     ObjectDestructuringNotSupported,
+    QualifiedName,
     NewError(String),
 }
 impl Error {

@@ -7,7 +7,7 @@ use swc_ecma_ast::{TsFnOrConstructorType, TsType, TsTypeAliasDecl, TsTypeAnn, Ts
 
 use crate::{
     errors::CollectResults as OtherCollectResults,
-    traits::{GetName, GetTsType},
+    traits::{GetName, GetNameWithError, GetTsType},
     ts_ast::SourceMapped,
     Error,
 };
@@ -26,20 +26,20 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_func(&self, name: Option<String>) -> Result<Func, Vec<Error>> {
-        let request_type_ts_type = self.get_ts_type();
+        let request_type_ts_type = self.get_ts_type()?;
         let request_type_type_ref = match request_type_ts_type.deref() {
             TsType::TsTypeRef(ts_type_ref) => SourceMapped::new(ts_type_ref, self.source_map),
             _ => return Err(vec![WrongEnclosedType::from_ts_type_ref(self).into()]),
         };
 
-        let mode = match request_type_type_ref.get_name() {
+        let mode = match request_type_type_ref.get_name()? {
             "Query" => Mode::Query,
             "Update" => Mode::Update,
             "Oneway" => Mode::Oneway,
             _ => return Err(vec![WrongEnclosedType::from_ts_type_ref(self).into()]),
         };
 
-        let ts_type = request_type_type_ref.get_ts_type();
+        let ts_type = request_type_type_ref.get_ts_type()?;
         let ts_fn_type = match ts_type.deref() {
             TsType::TsFnOrConstructorType(TsFnOrConstructorType::TsFnType(ts_fn_type)) => {
                 SourceMapped::new(ts_fn_type, self.source_map)

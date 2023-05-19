@@ -21,7 +21,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
             Ok(Variant {
                 name,
-                type_params: self.get_type_params().into(),
+                type_params: self.get_type_params()?.into(),
                 ..type_ref.to_variant()?
             })
         })
@@ -30,9 +30,9 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_variant(&self) -> Result<Variant, Vec<Error>> {
-        match self.get_ts_type().as_ts_type_lit() {
+        match self.get_ts_type()?.as_ts_type_lit() {
             Some(ts_type_lit) => ts_type_lit,
-            None => panic!("{}", self.wrong_enclosed_type_error()),
+            None => return Err(Error::WrongEnclosedType.into()),
         }
         .to_variant()
     }

@@ -13,7 +13,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
         self.process_ts_type_ref("Tuple", |type_ref| {
             Ok(Tuple {
                 name: Some(self.id.get_name().to_string()),
-                type_params: self.get_type_params().into(),
+                type_params: self.get_type_params()?.into(),
                 ..type_ref.to_tuple()?
             })
         })
@@ -22,7 +22,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_tuple(&self) -> Result<Tuple, Vec<Error>> {
-        match self.get_ts_type().as_ts_tuple_type() {
+        match self.get_ts_type()?.as_ts_tuple_type() {
             Some(ts_tuple_type) => ts_tuple_type.to_tuple(),
             None => return Err(Error::WrongEnclosedType.into()),
         }
