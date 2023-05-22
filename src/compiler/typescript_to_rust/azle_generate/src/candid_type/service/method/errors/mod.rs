@@ -1,2 +1,12 @@
 mod invalid_class_member;
 mod invalid_class_prop;
+pub mod invalid_decorator;
+pub mod invalid_return_type;
+pub mod missing_call_result_annotation;
+pub mod missing_decorator;
+pub mod missing_type_annotation;
+pub mod missing_type_argument;
+pub mod multiple_decorators;
+pub mod namespace_qualified_type;
+pub mod too_many_return_types;
+pub mod unallowed_computed_property;

@@ -7,6 +7,7 @@ use crate::{
     Error,
 };
 
+pub mod errors;
 pub mod func;
 pub mod opt;
 pub mod primitive;

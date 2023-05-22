@@ -6,6 +6,8 @@ use crate::{
     Error,
 };
 
+struct InvalidClassProp {}
+
 impl SourceMapped<'_, ClassDecl> {
     pub fn build_invalid_class_prop_error_message(
         &self,

@@ -1,3 +1,6 @@
+pub mod variant_property_signature;
+pub mod wrong_number_of_params;
+
 use swc_ecma_ast::TsTypeElement;
 
 use crate::{

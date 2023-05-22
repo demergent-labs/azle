@@ -1,3 +1,5 @@
+pub mod not_enclosed_in_func;
+
 use swc_ecma_ast::TsFnType;
 
 use crate::{

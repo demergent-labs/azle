@@ -3,6 +3,7 @@ use swc_ecma_ast::{TsTupleType, TsType, TsTypeLit};
 
 use crate::ts_ast::SourceMapped;
 
+pub mod errors;
 mod get_span;
 mod to_candid_type;
 mod ts_fn_or_constructor_type;

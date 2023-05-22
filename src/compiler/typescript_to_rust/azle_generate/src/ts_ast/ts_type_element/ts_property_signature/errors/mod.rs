@@ -1,3 +1,5 @@
+pub mod no_type_annotation;
+
 use swc_ecma_ast::TsPropertySignature;
 
 use crate::{

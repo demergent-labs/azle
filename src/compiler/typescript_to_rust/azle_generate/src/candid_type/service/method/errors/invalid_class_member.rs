@@ -5,6 +5,8 @@ use crate::{
     ts_ast::SourceMapped,
 };
 
+struct InvalidClassMember {}
+
 impl SourceMapped<'_, ClassDecl> {
     pub fn build_invalid_class_member_error_message(&self, class_member: &ClassMember) -> String {
         let member_type = match class_member {

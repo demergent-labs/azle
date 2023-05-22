@@ -1,3 +1,5 @@
+pub mod record_property_signature;
+
 use swc_ecma_ast::TsTypeElement;
 
 use crate::{

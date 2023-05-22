@@ -1,3 +1,5 @@
+pub mod qualified_name;
+
 use swc_common::{source_map::Pos, Span};
 use swc_ecma_ast::{TsType, TsTypeRef};
 

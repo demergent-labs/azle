@@ -1,3 +1,9 @@
+pub mod invalid_param;
+pub mod missing_return_type;
+pub mod param_default_value;
+pub mod qualified_type;
+pub mod untyped_param;
+
 use swc_common::{SourceMap, Span};
 use swc_ecma_ast::{AssignPat, BindingIdent, Param, Pat};
 
