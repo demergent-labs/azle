@@ -60,6 +60,12 @@ pub enum Error {
     InvalidParam,
     UntypedParam,
     NotEnclosedInFunc,
+    NoTypeAnnotation,
+    UnexpectedTsTypeLiteral, // "Unexpected TsTypeLiteral\n     at {}:{}:{}\n\nHelp: Try wrapping this with either Record or Variant", origin, line_number, column_number
+    UnexpectedTsTupleType, // "Unexpected TsTupleType\n     at {}:{}:{}\n\nHelp: Try wrapping this with Tuple", origin, line_number, column_number
+    UnexpectedTsType,      // "Unexpected TsType\n     at {}:{}:{}\n\nHelp: Try removing this type",
+    UnableToLoadFile,      // "Error: Unable to load file {}\n{}", ts_file_name, err),
+    FileSyntaxError, // Err(error) => panic!("{}: Syntax Error: {}", ts_file_name, error.kind().msg()), TODO I don't know how to reconcile this with the above Syntax error
     NewError(String),
 }
 impl Error {

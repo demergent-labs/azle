@@ -22,7 +22,7 @@ impl SourceMapped<'_, TsPropertySignature> {
     pub fn get_act_data_type(&self) -> Result<CandidType, Vec<Error>> {
         let ts_type = match &self.type_ann {
             Some(ts_type_ann) => ts_type_ann.get_ts_type(),
-            None => panic!("{}", self.no_type_annotation_error()),
+            None => return Err(Error::NoTypeAnnotation.into()),
         };
 
         SourceMapped::new(&ts_type, self.source_map).to_candid_type()
