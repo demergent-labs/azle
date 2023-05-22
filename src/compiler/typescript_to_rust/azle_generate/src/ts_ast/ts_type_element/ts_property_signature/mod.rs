@@ -7,7 +7,9 @@ use crate::{
 };
 use cdk_framework::act::node::CandidType;
 
-mod errors;
+use self::errors::NoTypeAnnotation;
+
+pub mod errors;
 mod get_span;
 
 impl SourceMapped<'_, TsPropertySignature> {
@@ -22,7 +24,11 @@ impl SourceMapped<'_, TsPropertySignature> {
     pub fn get_act_data_type(&self) -> Result<CandidType, Vec<Error>> {
         let ts_type = match &self.type_ann {
             Some(ts_type_ann) => ts_type_ann.get_ts_type(),
-            None => return Err(Error::NoTypeAnnotation.into()),
+            None => {
+                return Err(vec![
+                    NoTypeAnnotation::from_ts_property_signature(self).into()
+                ])
+            }
         };
 
         SourceMapped::new(&ts_type, self.source_map).to_candid_type()

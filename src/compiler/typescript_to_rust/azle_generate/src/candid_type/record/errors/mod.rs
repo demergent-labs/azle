@@ -1,4 +1,4 @@
-pub mod record_property_signature;
+mod record_property_signature;
 
 use swc_ecma_ast::TsTypeElement;
 
@@ -7,6 +7,8 @@ use crate::{
     traits::{GetSourceFileInfo, GetSourceInfo, GetSpan, TypeToString},
     ts_ast::SourceMapped,
 };
+
+pub use record_property_signature::RecordPropertySignature;
 
 impl SourceMapped<'_, TsTypeElement> {
     pub fn record_property_signature_error(&self) -> CompilerOutput {

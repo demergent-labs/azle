@@ -1,4 +1,4 @@
-pub mod qualified_name;
+mod qualified_name;
 
 use swc_common::{source_map::Pos, Span};
 use swc_ecma_ast::{TsType, TsTypeRef};
@@ -10,6 +10,8 @@ use crate::{
     ts_ast::SourceMapped,
     Error,
 };
+
+pub use qualified_name::QualifiedName;
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct WrongEnclosedType {}

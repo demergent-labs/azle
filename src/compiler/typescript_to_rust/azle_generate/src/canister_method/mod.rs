@@ -6,7 +6,7 @@ pub use annotated_fn_decl::{AnnotatedFnDecl, GetAnnotatedFnDecls};
 pub use annotation::Annotation;
 pub use check_length_and_map::CheckLengthAndMap;
 
-mod annotated_fn_decl;
+pub mod annotated_fn_decl;
 mod annotation;
 mod check_length_and_map;
 mod heartbeat;

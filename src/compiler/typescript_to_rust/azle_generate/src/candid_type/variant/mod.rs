@@ -5,6 +5,8 @@ use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLi
 
 use crate::{errors::CollectResults, traits::GetName, ts_ast::SourceMapped, Error};
 
+use self::errors::VariantPropertySignature;
+
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_variant(&self) -> Result<Option<Variant>, Vec<Error>> {
         self.process_ts_type_ref("Variant", |type_ref| {
@@ -55,7 +57,11 @@ impl SourceMapped<'_, TsTypeElement> {
     pub fn to_variant_member(&self) -> Result<Member, Vec<Error>> {
         let ts_property_signature = match self.as_property_signature() {
             Some(ts_property_signature) => ts_property_signature,
-            None => return Err(Error::VariantPropertySignature.into()),
+            None => {
+                return Err(vec![
+                    VariantPropertySignature::from_ts_type_element(self).into()
+                ])
+            }
         };
         ts_property_signature.to_variant_member()
     }

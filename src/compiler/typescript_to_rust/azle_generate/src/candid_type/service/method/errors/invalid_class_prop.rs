@@ -6,7 +6,20 @@ use crate::{
     Error,
 };
 
-struct InvalidClassProp {}
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct InvalidClassProp {}
+
+impl InvalidClassProp {
+    pub fn from_class_prop(class_prop: &ClassProp) -> Self {
+        Self {}
+    }
+}
+
+impl From<InvalidClassProp> for crate::Error {
+    fn from(error: InvalidClassProp) -> Self {
+        Self::InvalidClassProp(error)
+    }
+}
 
 impl SourceMapped<'_, ClassDecl> {
     pub fn build_invalid_class_prop_error_message(

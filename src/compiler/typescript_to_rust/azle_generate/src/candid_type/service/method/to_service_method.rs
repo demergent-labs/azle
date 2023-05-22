@@ -4,27 +4,39 @@ use cdk_framework::act::node::{
 use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnParam, TsFnType, TsType};
 
 use crate::{
-    errors::CollectResults,
+    errors::{
+        errors::{
+            ArrayDestructuringInParamsNotSupported, FunctionParamsMustHaveType,
+            ObjectDestructuringNotSupported, RestParametersNotSupported,
+        },
+        CollectResults,
+    },
     traits::{GetName, GetTsType},
     ts_ast::SourceMapped,
     Error,
 };
 
+use super::errors::{
+    InvalidDecorator, InvalidReturnType, MissingCallResultAnnotation, MissingDecorator,
+    MissingTypeAnnotation, MissingTypeArguments, MultipleDecorators, NamespaceQualifiedType,
+    TooManyReturnTypes, UnallowedComputedProperty,
+};
+
 impl SourceMapped<'_, ClassProp> {
     pub fn to_service_method(&self) -> Result<Method, Vec<Error>> {
         if self.decorators.len() == 0 {
-            return Err(Error::MissingDecorator.into());
+            return Err(vec![MissingDecorator::from_class_prop(self).into()]);
         }
 
         if !self.has_azle_decorator() {
-            return Err(Error::InvalidDecorator.into());
+            return Err(vec![InvalidDecorator::from_class_prop(self).into()]);
         }
 
         let name = self.name()?;
         let mode = match &self.mode()?[..] {
             "serviceQuery" => Mode::Query,
             "serviceUpdate" => Mode::Update,
-            _ => return Err(Error::InvalidDecorator.into()),
+            _ => return Err(vec![InvalidDecorator::from_class_prop(self).into()]),
         };
         let params = self.build_act_fn_params()?;
         let return_type = self.build_return_type()?;
@@ -59,7 +71,7 @@ impl SourceMapped<'_, ClassProp> {
 
     fn mode(&self) -> Result<String, Error> {
         if self.decorators.len() != 1 {
-            return Err(Error::MultipleDecorators);
+            return Err(MultipleDecorators::from_class_prop(self).into());
         };
 
         let mode = self
@@ -80,7 +92,9 @@ impl SourceMapped<'_, ClassProp> {
             swc_ecma_ast::PropName::Ident(ident) => ident.get_name().to_string(),
             swc_ecma_ast::PropName::Str(str) => str.value.to_string(),
             swc_ecma_ast::PropName::Num(num) => num.value.to_string(),
-            swc_ecma_ast::PropName::Computed(_) => return Err(Error::UnallowedComputedProperty),
+            swc_ecma_ast::PropName::Computed(_) => {
+                return Err(UnallowedComputedProperty::from_class_prop(self).into())
+            }
             swc_ecma_ast::PropName::BigInt(big_int) => big_int.value.to_string(),
         };
 
@@ -93,28 +107,28 @@ impl SourceMapped<'_, ClassProp> {
             TsType::TsTypeRef(ts_type_ref) => {
                 let name = match &ts_type_ref.type_name {
                     swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
-                        return Err(Error::NamespaceQualifiedType)
+                        return Err(NamespaceQualifiedType::from_class_prop(self).into())
                     }
                     swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name().to_string(),
                 };
 
                 if name != "CallResult" {
-                    return Err(Error::MissingCallResultAnnotation);
+                    return Err(MissingCallResultAnnotation::from_class_prop(self).into());
                 }
 
                 match &ts_type_ref.type_params {
                     Some(ts_type_param_inst) => {
                         if ts_type_param_inst.params.len() != 1 {
-                            return Err(Error::TooManyReturnTypes);
+                            return Err(TooManyReturnTypes::from_class_prop(self).into());
                         }
 
                         let inner_type = &**ts_type_param_inst.params.get(0).unwrap();
                         Ok(inner_type.clone())
                     }
-                    None => return Err(Error::MissingTypeArgument),
+                    None => return Err(MissingTypeArguments::from_class_prop(self).into()),
                 }
             }
-            _ => return Err(Error::MissingCallResultAnnotation),
+            _ => return Err(MissingCallResultAnnotation::from_class_prop(self).into()),
         }
     }
 
@@ -127,13 +141,13 @@ impl SourceMapped<'_, ClassProp> {
                             Ok(SourceMapped::new(ts_fn_type, self.source_map))
                         }
                         TsFnOrConstructorType::TsConstructorType(_) => {
-                            return Err(Error::InvalidReturnType)
+                            return Err(InvalidReturnType::from_class_prop(self).into())
                         }
                     }
                 }
-                _ => return Err(Error::InvalidReturnType),
+                _ => return Err(InvalidReturnType::from_class_prop(self).into()),
             },
-            None => return Err(Error::MissingTypeAnnotation),
+            None => return Err(MissingTypeAnnotation::from_class_prop(self).into()),
         }
     }
 }
@@ -150,15 +164,29 @@ impl SourceMapped<'_, TsFnType> {
                             SourceMapped::new(&ts_type_ann.get_ts_type(), self.source_map)
                                 .to_candid_type()?
                         }
-                        None => return Err(Error::FunctionParamsMustHaveType.into()),
+                        None => {
+                            return Err(vec![Into::<Error>::into(
+                                FunctionParamsMustHaveType::from_ts_fn_type(self),
+                            )])
+                        }
                     };
                     Ok(Param { name, candid_type })
                 }
                 TsFnParam::Array(_) => {
-                    return Err(Error::ArrayDestructuringInParamsNotSupported.into())
+                    return Err(vec![Into::<Error>::into(
+                        ArrayDestructuringInParamsNotSupported::from_ts_fn_type(self),
+                    )])
                 }
-                TsFnParam::Rest(_) => return Err(Error::RestParametersNotSupported.into()),
-                TsFnParam::Object(_) => return Err(Error::ObjectDestructuringNotSupported.into()),
+                TsFnParam::Rest(_) => {
+                    return Err(vec![
+                        RestParametersNotSupported::from_ts_fn_type(self).into()
+                    ])
+                }
+                TsFnParam::Object(_) => {
+                    return Err(vec![
+                        ObjectDestructuringNotSupported::from_ts_fn_type(self).into()
+                    ])
+                }
             })
             .collect_results()
     }

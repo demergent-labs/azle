@@ -1,4 +1,4 @@
-pub mod no_type_annotation;
+mod no_type_annotation;
 
 use swc_ecma_ast::TsPropertySignature;
 
@@ -7,6 +7,8 @@ use crate::{
     traits::GetSourceInfo,
     ts_ast::SourceMapped,
 };
+
+pub use no_type_annotation::NoTypeAnnotation;
 
 impl SourceMapped<'_, TsPropertySignature> {
     pub(super) fn _no_type_annotation_error(&self) -> CompilerOutput {

@@ -1,4 +1,4 @@
-pub mod not_enclosed_in_func;
+mod not_enclosed_in_func;
 
 use swc_ecma_ast::TsFnType;
 
@@ -7,6 +7,8 @@ use crate::{
     traits::{GetSourceFileInfo, GetSourceInfo, GetSourceText},
     ts_ast::SourceMapped,
 };
+
+pub use not_enclosed_in_func::NotEnclosedInFunc;
 
 impl SourceMapped<'_, TsFnType> {
     pub(super) fn _not_enclosed_in_func_error(&self) -> CompilerOutput {

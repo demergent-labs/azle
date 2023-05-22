@@ -5,6 +5,8 @@ use cdk_framework::act::node::CandidType;
 
 use crate::{traits::GetSourceInfo, ts_ast::SourceMapped, Error};
 
+use super::errors::{UnexpectedTsTupleTypes, UnexpectedTsType, UnexpectedTsTypeLiteral};
+
 impl SourceMapped<'_, TsType> {
     pub fn to_candid_type(&self) -> Result<CandidType, Vec<Error>> {
         match self.deref() {
@@ -21,7 +23,7 @@ impl SourceMapped<'_, TsType> {
                 let range = self.get_range();
                 let _column_number = range.0 + 1;
 
-                return Err(Error::UnexpectedTsTypeLiteral.into());
+                return Err(vec![UnexpectedTsTypeLiteral::from_ts_type(self).into()]);
             }
             TsType::TsTupleType(_) => {
                 let _origin = self.get_origin();
@@ -29,7 +31,7 @@ impl SourceMapped<'_, TsType> {
                 let range = self.get_range();
                 let _column_number = range.0 + 1;
 
-                return Err(Error::UnexpectedTsTupleType.into());
+                return Err(vec![UnexpectedTsTupleTypes::from_ts_type(self).into()]);
             }
             _ => {
                 let _origin = self.get_origin();
@@ -37,7 +39,7 @@ impl SourceMapped<'_, TsType> {
                 let range = self.get_range();
                 let _column_number = range.0 + 1;
 
-                return Err(Error::UnexpectedTsType.into());
+                return Err(vec![UnexpectedTsType::from_ts_type(self).into()]);
             }
         }
     }

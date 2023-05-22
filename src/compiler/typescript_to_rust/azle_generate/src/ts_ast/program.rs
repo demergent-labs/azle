@@ -3,7 +3,10 @@ use std::path::Path;
 use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
-use crate::{internal_error, Error};
+use crate::{
+    errors::errors::{FileSyntaxError, UnableToLoadFile},
+    internal_error, Error,
+};
 
 pub struct Program {
     program: swc_ecma_ast::Program,
@@ -26,7 +29,7 @@ impl Program {
 
         let fm = cm
             .load_file(&filepath)
-            .map_err(|_| Error::UnableToLoadFile)?;
+            .map_err(|error| UnableToLoadFile::from_error(error))?;
 
         let lexer = Lexer::new(
             Syntax::Typescript(TsConfig {
@@ -51,7 +54,7 @@ impl Program {
                 };
                 internal_error!()
             }
-            Err(_error) => return Err(Error::FileSyntaxError),
+            Err(_error) => return Err(FileSyntaxError::from_file_name(ts_file_name).into()),
         }
     }
 }

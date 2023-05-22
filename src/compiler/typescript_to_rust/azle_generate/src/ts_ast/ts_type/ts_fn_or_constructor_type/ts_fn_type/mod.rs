@@ -1,13 +1,19 @@
 use swc_ecma_ast::{TsFnParam, TsFnType, TsType, TsTypeAnn};
 
 use crate::{
-    errors::CollectResults,
+    errors::{
+        errors::{
+            ArrayDestructuringInParamsNotSupported, FunctionParamsMustHaveType,
+            ObjectDestructuringNotSupported, RestParametersNotSupported,
+        },
+        CollectResults,
+    },
     traits::{GetTsType, GetTsTypeWithError},
     ts_ast::SourceMapped,
     Error,
 };
 
-mod errors;
+pub mod errors;
 mod get_span;
 mod to_candid_type;
 
@@ -33,11 +39,17 @@ impl GetTsTypeWithError for TsFnParam {
         match self {
             TsFnParam::Ident(identifier) => match &identifier.type_ann {
                 Some(param_type) => Ok(param_type.get_ts_type()),
-                None => Err(Error::FunctionParamsMustHaveType),
+                None => Err(Into::<Error>::into(
+                    FunctionParamsMustHaveType::from_ts_fn_param(self),
+                )),
             },
-            TsFnParam::Array(_) => Err(Error::ArrayDestructuringInParamsNotSupported),
-            TsFnParam::Rest(_) => Err(Error::RestParametersNotSupported),
-            TsFnParam::Object(_) => Err(Error::ObjectDestructuringNotSupported),
+            TsFnParam::Array(_) => {
+                Err(ArrayDestructuringInParamsNotSupported::from_ts_fn_param(self).into())
+            }
+            TsFnParam::Rest(_) => Err(RestParametersNotSupported::from_ts_fn_param(self).into()),
+            TsFnParam::Object(_) => {
+                Err(ObjectDestructuringNotSupported::from_ts_fn_param(self).into())
+            }
         }
     }
 }

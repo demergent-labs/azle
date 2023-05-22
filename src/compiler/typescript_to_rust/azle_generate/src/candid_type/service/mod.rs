@@ -11,7 +11,7 @@ use get_service_class_decls::GetFlattenedServiceClassDecls;
 use vm_value_conversions::{from_vm_value, list_from_vm_value, list_to_vm_value, to_vm_value};
 
 mod get_service_class_decls;
-mod method;
+pub mod method;
 mod vm_value_conversions;
 
 impl TsAst {

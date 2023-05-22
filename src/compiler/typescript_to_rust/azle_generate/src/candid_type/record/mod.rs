@@ -5,6 +5,8 @@ use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLi
 
 use crate::{errors::CollectResults, traits::GetName, ts_ast::SourceMapped, Error};
 
+use self::errors::RecordPropertySignature;
+
 use super::type_ref::errors::WrongEnclosedType;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
@@ -49,7 +51,11 @@ impl SourceMapped<'_, TsTypeElement> {
     pub fn to_record_member(&self) -> Result<Member, Vec<Error>> {
         let ts_property_signature = match self.as_property_signature() {
             Some(ts_property_signature) => ts_property_signature,
-            None => return Err(vec![Error::RecordPropertySignature]),
+            None => {
+                return Err(vec![
+                    RecordPropertySignature::from_ts_type_element(self).into()
+                ])
+            }
         };
         ts_property_signature.to_record_member()
     }

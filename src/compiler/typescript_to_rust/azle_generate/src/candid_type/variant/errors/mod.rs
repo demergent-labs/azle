@@ -1,5 +1,5 @@
-pub mod variant_property_signature;
-pub mod wrong_number_of_params;
+mod variant_property_signature;
+mod wrong_number_of_params;
 
 use swc_ecma_ast::TsTypeElement;
 
@@ -8,6 +8,9 @@ use crate::{
     traits::{GetSourceFileInfo, GetSourceInfo, GetSpan, TypeToString},
     ts_ast::SourceMapped,
 };
+
+pub use variant_property_signature::VariantPropertySignature;
+pub use wrong_number_of_params::WrongNumberOfParams;
 
 impl SourceMapped<'_, TsTypeElement> {
     pub(super) fn _variant_property_signature_error(&self) -> CompilerOutput {

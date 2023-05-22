@@ -5,7 +5,20 @@ use crate::{
     ts_ast::SourceMapped,
 };
 
-struct InvalidClassMember {}
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct InvalidClassMember {}
+
+impl InvalidClassMember {
+    pub fn from_class_member(class_member: &ClassMember) -> Self {
+        Self {}
+    }
+}
+
+impl From<InvalidClassMember> for crate::Error {
+    fn from(error: InvalidClassMember) -> Self {
+        Self::InvalidClassMember(error)
+    }
+}
 
 impl SourceMapped<'_, ClassDecl> {
     pub fn build_invalid_class_member_error_message(&self, class_member: &ClassMember) -> String {

@@ -1,8 +1,8 @@
-pub mod invalid_param;
-pub mod missing_return_type;
-pub mod param_default_value;
-pub mod qualified_type;
-pub mod untyped_param;
+mod invalid_param;
+mod missing_return_type;
+mod param_default_value;
+mod qualified_type;
+mod untyped_param;
 
 use swc_common::{SourceMap, Span};
 use swc_ecma_ast::{AssignPat, BindingIdent, Param, Pat};
@@ -13,6 +13,12 @@ use crate::{
     traits::GetSourceFileInfo,
     ts_ast::source_map::Range,
 };
+
+pub use invalid_param::InvalidParams;
+pub use missing_return_type::MissingReturnType;
+pub use param_default_value::ParamDefaultValue;
+pub use qualified_type::QualifiedType;
+pub use untyped_param::UntypedParam;
 
 impl AnnotatedFnDecl<'_> {
     pub(super) fn _build_array_destructure_error_msg(&self, param: &Param) -> CompilerOutput {

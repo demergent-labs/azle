@@ -3,7 +3,9 @@ use swc_ecma_ast::{ClassDecl, ClassMember};
 
 use crate::{errors::CollectResults, ts_ast::SourceMapped, Error};
 
-mod errors;
+use self::errors::{InvalidClassMember, InvalidClassProp};
+
+pub mod errors;
 mod to_service_method;
 
 impl SourceMapped<'_, ClassDecl> {
@@ -19,10 +21,12 @@ impl SourceMapped<'_, ClassDecl> {
 
                     match service_method_result {
                         Ok(service_method) => Ok(service_method),
-                        Err(_) => Err(vec![Error::InvalidClassProp]),
+                        Err(_) => Err(vec![InvalidClassProp::from_class_prop(class_prop).into()]),
                     }
                 }
-                _ => Err(vec![Error::InvalidClassMember]),
+                _ => Err(vec![
+                    InvalidClassMember::from_class_member(class_member).into()
+                ]),
             })
             .collect_results()
     }

@@ -6,6 +6,10 @@ mod suggestion;
 
 pub mod errors;
 
+use self::errors::{
+    ArrayDestructuringInParamsNotSupported, FileSyntaxError, FunctionParamsMustHaveType,
+    ObjectDestructuringNotSupported, RestParametersNotSupported, UnableToLoadFile,
+};
 pub use self::{
     compiler_output::CompilerOutput,
     errors::{
@@ -14,10 +18,37 @@ pub use self::{
     location::Location,
     suggestion::Suggestion,
 };
-use crate::canister_method::errors::{
-    AsyncNotAllowed, DuplicateSystemMethod, ExtraneousCanisterMethodAnnotation,
-    MissingReturnTypeAnnotation, VoidReturnTypeRequired,
+use crate::{
+    candid_type::{
+        record::errors::RecordPropertySignature,
+        service::method::errors::{
+            InvalidClassMember, InvalidClassProp, InvalidDecorator, InvalidReturnType,
+            MissingCallResultAnnotation, MissingDecorator, MissingTypeAnnotation,
+            MissingTypeArguments, MultipleDecorators, NamespaceQualifiedType, TooManyReturnTypes,
+            UnallowedComputedProperty,
+        },
+        type_ref::errors::QualifiedName,
+        variant::errors::{VariantPropertySignature, WrongNumberOfParams},
+    },
+    canister_method::{
+        annotated_fn_decl::errors::{
+            MissingReturnType, ParamDefaultValue, QualifiedType, UntypedParam,
+        },
+        errors::{
+            AsyncNotAllowed, DuplicateSystemMethod, ExtraneousCanisterMethodAnnotation,
+            MissingReturnTypeAnnotation, VoidReturnTypeRequired,
+        },
+    },
+    ts_ast::{
+        ts_type::{
+            errors::{UnexpectedTsTupleTypes, UnexpectedTsType, UnexpectedTsTypeLiteral},
+            ts_fn_or_constructor_type::ts_fn_type::errors::NotEnclosedInFunc,
+        },
+        ts_type_element::ts_property_signature::errors::NoTypeAnnotation,
+    },
 };
+
+use crate::canister_method::annotated_fn_decl::errors::InvalidParams;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Error {
@@ -32,57 +63,45 @@ pub enum Error {
     SyntaxError(SyntaxError),
     VoidReturnTypeRequired(VoidReturnTypeRequired),
     AsyncNotAllowed(AsyncNotAllowed),
-    ArrayDestructuringInParamsNotSupported,
-    FileSyntaxError, // Err(error) => panic!("{}: Syntax Error: {}", ts_file_name, error.kind().msg()), TODO I don't know how to reconcile this with the above Syntax error
-    FunctionParamsMustHaveType,
-    InvalidClassMember,
-    InvalidClassProp,
-    InvalidDecorator,
-    InvalidParam,
-    InvalidReturnType,
-    MissingCallResultAnnotation,
-    MissingDecorator,
-    MissingReturnType,
-    MissingTypeAnnotation,
-    MissingTypeArgument,
-    MultipleDecorators,
-    NamespaceQualifiedType,
-    NotEnclosedInFunc,
-    NoTypeAnnotation,
-    ObjectDestructuringNotSupported,
-    ParamDefaultValue,
-    QualifiedName,
-    QualifiedType,
-    RecordPropertySignature,
-    RestParametersNotSupported,
-    TooManyReturnTypes,
-    UnableToLoadFile, // "Error: Unable to load file {}\n{}", ts_file_name, err),
-    UnallowedComputedProperty,
-    UnexpectedTsTupleType, // "Unexpected TsTupleType\n     at {}:{}:{}\n\nHelp: Try wrapping this with Tuple", origin, line_number, column_number
-    UnexpectedTsType,      // "Unexpected TsType\n     at {}:{}:{}\n\nHelp: Try removing this type",
-    UnexpectedTsTypeLiteral, // "Unexpected TsTypeLiteral\n     at {}:{}:{}\n\nHelp: Try wrapping this with either Record or Variant", origin, line_number, column_number
+    ArrayDestructuringInParamsNotSupported(ArrayDestructuringInParamsNotSupported),
+    FileSyntaxError(FileSyntaxError),
+    FunctionParamsMustHaveType(FunctionParamsMustHaveType),
+    InvalidClassMember(InvalidClassMember),
+    InvalidClassProp(InvalidClassProp),
+    InvalidDecorator(InvalidDecorator),
+    InvalidParams(InvalidParams),
+    InvalidReturnType(InvalidReturnType),
+    MissingCallResultAnnotation(MissingCallResultAnnotation),
+    MissingDecorator(MissingDecorator),
+    MissingReturnType(MissingReturnType),
+    MissingTypeAnnotation(MissingTypeAnnotation),
+    MissingTypeArgument(MissingTypeArguments),
+    MultipleDecorators(MultipleDecorators),
+    NamespaceQualifiedType(NamespaceQualifiedType),
+    NotEnclosedInFunc(NotEnclosedInFunc),
+    NoTypeAnnotation(NoTypeAnnotation),
+    ObjectDestructuringNotSupported(ObjectDestructuringNotSupported),
+    ParamDefaultValue(ParamDefaultValue),
+    QualifiedName(QualifiedName),
+    QualifiedType(QualifiedType),
+    RecordPropertySignature(RecordPropertySignature),
+    RestParametersNotSupported(RestParametersNotSupported),
+    TooManyReturnTypes(TooManyReturnTypes),
+    UnableToLoadFile(UnableToLoadFile),
+    UnallowedComputedProperty(UnallowedComputedProperty),
+    UnexpectedTsTupleType(UnexpectedTsTupleTypes),
+    UnexpectedTsType(UnexpectedTsType),
+    UnexpectedTsTypeLiteral(UnexpectedTsTypeLiteral),
     UnsupportedType,
-    UntypedParam,
-    VariantPropertySignature,
+    UntypedParam(UntypedParam),
+    VariantPropertySignature(VariantPropertySignature),
     WrongEnclosedType,
-    WrongNumberOfParams,
+    WrongNumberOfParams(WrongNumberOfParams),
     NewError(String),
 }
 impl Error {
     pub fn error_message(&self) -> String {
-        let str = match self {
-            Self::InvalidReturnType => "Method has an invalid return type. Only function return types are permitted.",
-            Self::MissingCallResultAnnotation => "Invalid return type. External canister methods must wrap their return types in the CallResult<T> generic type.",
-            Self::MissingDecorator => "Missing decorator. External canister methods must be decorated with either @query or @update.",
-            Self::MissingTypeAnnotation => "Missing type annotation. External canister methods must specify a return type.",
-            Self::MissingTypeArgument => "Missing type argument. Generic type CallResult requires 1 type argument.",
-            Self::MultipleDecorators => "Too many decorators. External canister methods can only specify one decorator: @query or @update.",
-            Self::NamespaceQualifiedType => "Unsupported data type. Qualified types are not currently supported. Try importing the type directly.",
-            Self::TooManyReturnTypes => "Too many return types. Generic type CallResult requires 1 type argument.",
-            Self::UnallowedComputedProperty => "Unallowed computed property. Computed properties in external canister definitions aren't currently supported.",
-            _ => todo!()
-        };
-        str.to_string()
+        todo!()
     }
 }
 
@@ -104,19 +123,6 @@ impl std::fmt::Display for Error {
             Error::SyntaxError(e) => e.fmt(f),
             Error::VoidReturnTypeRequired(e) => e.fmt(f),
             Error::AsyncNotAllowed(e) => e.fmt(f),
-            Error::InvalidDecorator => todo!(),
-            Error::InvalidReturnType => todo!(),
-            Error::MissingCallResultAnnotation => todo!(),
-            Error::MissingDecorator => todo!(),
-            Error::MissingTypeAnnotation => todo!(),
-            Error::MissingTypeArgument => todo!(),
-            Error::MultipleDecorators => todo!(),
-            Error::NamespaceQualifiedType => todo!(),
-            Error::TooManyReturnTypes => todo!(),
-            Error::UnallowedComputedProperty => todo!(),
-            Error::UnsupportedType => todo!(),
-            Error::NewError(_) => todo!(),
-            Error::RecordPropertySignature => todo!(),
             _ => todo!(),
         }
     }
