@@ -1,0 +1,8 @@
+.azle
+.bitcoin
+.dfx
+*.wasm
+*.wasm.gz
+data
+dfx_generated
+node_modules
