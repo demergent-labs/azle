@@ -12,7 +12,7 @@ use crate::{
     Error,
 };
 
-use super::type_ref::errors::WrongEnclosedType;
+use super::errors::WrongEnclosedType;
 
 mod rust;
 

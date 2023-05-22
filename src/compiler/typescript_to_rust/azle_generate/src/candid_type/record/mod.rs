@@ -7,7 +7,7 @@ use crate::{errors::CollectResults, traits::GetName, ts_ast::SourceMapped, Error
 
 use self::errors::RecordPropertySignature;
 
-use super::type_ref::errors::WrongEnclosedType;
+use super::errors::WrongEnclosedType;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_record(&self) -> Result<Option<Record>, Vec<Error>> {

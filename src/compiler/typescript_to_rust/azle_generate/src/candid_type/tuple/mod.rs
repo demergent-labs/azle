@@ -8,6 +8,8 @@ use crate::{
     Error,
 };
 
+use super::errors::WrongEnclosedType;
+
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_tuple(&self) -> Result<Option<Tuple>, Vec<Error>> {
         self.process_ts_type_ref("Tuple", |type_ref| {
@@ -24,7 +26,7 @@ impl SourceMapped<'_, TsTypeRef> {
     pub fn to_tuple(&self) -> Result<Tuple, Vec<Error>> {
         match self.get_ts_type()?.as_ts_tuple_type() {
             Some(ts_tuple_type) => ts_tuple_type.to_tuple(),
-            None => return Err(Error::WrongEnclosedType.into()),
+            None => return Err(vec![WrongEnclosedType::from_ts_type_ref(self).into()]),
         }
     }
 }

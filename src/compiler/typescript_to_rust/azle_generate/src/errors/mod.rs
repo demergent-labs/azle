@@ -20,6 +20,7 @@ pub use self::{
 };
 use crate::{
     candid_type::{
+        errors::WrongEnclosedType,
         primitive::errors::UnsupportedType,
         record::errors::RecordPropertySignature,
         service::method::errors::{
@@ -96,7 +97,7 @@ pub enum Error {
     UnsupportedType(UnsupportedType),
     UntypedParam(UntypedParam),
     VariantPropertySignature(VariantPropertySignature),
-    WrongEnclosedType,
+    WrongEnclosedType(WrongEnclosedType),
     WrongNumberOfParams(WrongNumberOfParams),
     NewError(String),
 }

@@ -7,6 +7,8 @@ use crate::{errors::CollectResults, traits::GetName, ts_ast::SourceMapped, Error
 
 use self::errors::VariantPropertySignature;
 
+use super::errors::WrongEnclosedType;
+
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_variant(&self) -> Result<Option<Variant>, Vec<Error>> {
         self.process_ts_type_ref("Variant", |type_ref| {
@@ -31,7 +33,7 @@ impl SourceMapped<'_, TsTypeRef> {
     pub fn to_variant(&self) -> Result<Variant, Vec<Error>> {
         match self.get_ts_type()?.as_ts_type_lit() {
             Some(ts_type_lit) => ts_type_lit,
-            None => return Err(Error::WrongEnclosedType.into()),
+            None => return Err(vec![WrongEnclosedType::from_ts_type_ref(self).into()]),
         }
         .to_variant()
     }
