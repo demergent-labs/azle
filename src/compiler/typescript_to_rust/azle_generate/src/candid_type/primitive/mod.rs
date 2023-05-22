@@ -14,7 +14,7 @@ impl SourceMapped<'_, TsKeywordType> {
             TsKeywordTypeKind::TsVoidKeyword => Primitive::Void,
             TsKeywordTypeKind::TsNullKeyword => Primitive::Null,
             TsKeywordTypeKind::TsNumberKeyword => Primitive::Float64,
-            _ => return Err(vec![Error::UnsupportedTypeError]),
+            _ => return Err(vec![Error::UnsupportedType]),
         })
     }
 }

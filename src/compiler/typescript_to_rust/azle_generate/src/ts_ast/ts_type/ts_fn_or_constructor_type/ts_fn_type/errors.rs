@@ -7,7 +7,7 @@ use crate::{
 };
 
 impl SourceMapped<'_, TsFnType> {
-    pub(super) fn not_enclosed_in_func_error(&self) -> CompilerOutput {
+    pub(super) fn _not_enclosed_in_func_error(&self) -> CompilerOutput {
         let replacement_code = format!("Func<{}>", self.get_source_text());
         let modified_source = self
             .source_map

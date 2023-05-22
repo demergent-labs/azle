@@ -24,7 +24,7 @@ pub fn generate_canister(
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
 ) -> Result<TokenStream, Vec<Error>> {
-    TsAst::new(ts_file_names, main_js)
+    TsAst::new(ts_file_names, main_js)?
         .to_act(plugins, environment_variables)?
         .to_token_stream()
         .map_err(|cdkf_errors| cdkf_errors.into_iter().map(Error::from).collect())

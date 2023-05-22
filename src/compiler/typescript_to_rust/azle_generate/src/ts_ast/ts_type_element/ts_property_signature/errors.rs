@@ -7,7 +7,7 @@ use crate::{
 };
 
 impl SourceMapped<'_, TsPropertySignature> {
-    pub(super) fn no_type_annotation_error(&self) -> CompilerOutput {
+    pub(super) fn _no_type_annotation_error(&self) -> CompilerOutput {
         CompilerOutput {
             title: "Type Annotation Needed".to_string(),
             location: Location {
