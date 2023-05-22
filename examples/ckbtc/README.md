@@ -64,6 +64,12 @@ dfx deploy kyt --specified-id bkyz2-fmaaa-aaaaa-qaaaq-cai --argument "(variant {
 dfx canister call kyt set_api_key '(record { api_key = "" })'
 ```
 
+## wallet_backend
+
+```bash
+CK_BTC_PRINCIPAL=be2us-64aaa-aaaaa-qaabq-cai MINTER_PRINCIPAL=bd3sg-teaaa-aaaaa-qaaba-cai dfx deploy wallet_backend --specified-id 7ugoi-yiaaa-aaaaa-aabaa-cai
+```
+
 # Usage
 
 ## ckbtc minter canister

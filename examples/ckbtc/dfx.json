@@ -25,7 +25,8 @@
             "declarations": {
                 "output": "test/dfx_generated/wallet_backend",
                 "node_compatibility": true
-            }
+            },
+            "env": ["CK_BTC_PRINCIPAL", "MINTER_PRINCIPAL"]
         }
     }
 }
