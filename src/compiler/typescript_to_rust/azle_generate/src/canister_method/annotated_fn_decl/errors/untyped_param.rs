@@ -14,3 +14,9 @@ impl From<UntypedParam> for crate::Error {
         Self::UntypedParam(error)
     }
 }
+
+impl std::fmt::Display for UntypedParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

@@ -14,3 +14,9 @@ impl From<ParamDefaultValue> for crate::Error {
         Self::ParamDefaultValue(error)
     }
 }
+
+impl std::fmt::Display for ParamDefaultValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

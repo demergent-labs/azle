@@ -17,3 +17,9 @@ impl From<UnexpectedTsTupleTypes> for crate::Error {
         Self::UnexpectedTsTupleType(error)
     }
 }
+
+impl std::fmt::Display for UnexpectedTsTupleTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

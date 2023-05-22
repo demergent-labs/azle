@@ -14,3 +14,9 @@ impl From<InvalidParams> for crate::Error {
         Self::InvalidParams(error)
     }
 }
+
+impl std::fmt::Display for InvalidParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

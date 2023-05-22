@@ -14,3 +14,9 @@ impl From<MissingReturnType> for crate::Error {
         Self::MissingReturnType(error)
     }
 }
+
+impl std::fmt::Display for MissingReturnType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

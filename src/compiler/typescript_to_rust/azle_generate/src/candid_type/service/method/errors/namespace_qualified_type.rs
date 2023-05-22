@@ -15,3 +15,9 @@ impl From<NamespaceQualifiedType> for crate::Error {
         Self::NamespaceQualifiedType(error)
     }
 }
+
+impl std::fmt::Display for NamespaceQualifiedType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

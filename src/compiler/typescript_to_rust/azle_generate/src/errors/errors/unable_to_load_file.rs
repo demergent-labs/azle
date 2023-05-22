@@ -15,3 +15,9 @@ impl From<UnableToLoadFile> for crate::Error {
         Self::UnableToLoadFile(error)
     }
 }
+
+impl std::fmt::Display for UnableToLoadFile {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

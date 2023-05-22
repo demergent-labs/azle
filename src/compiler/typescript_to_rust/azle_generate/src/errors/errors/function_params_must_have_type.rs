@@ -20,3 +20,9 @@ impl From<FunctionParamsMustHaveType> for crate::Error {
         Self::FunctionParamsMustHaveType(error)
     }
 }
+
+impl std::fmt::Display for FunctionParamsMustHaveType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

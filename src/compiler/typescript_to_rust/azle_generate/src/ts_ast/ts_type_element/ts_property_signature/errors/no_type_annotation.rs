@@ -16,3 +16,9 @@ impl From<NoTypeAnnotation> for crate::Error {
         Self::NoTypeAnnotation(error)
     }
 }
+
+impl std::fmt::Display for NoTypeAnnotation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

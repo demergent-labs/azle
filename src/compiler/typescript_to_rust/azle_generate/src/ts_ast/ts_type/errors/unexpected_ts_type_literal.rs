@@ -17,3 +17,9 @@ impl From<UnexpectedTsTypeLiteral> for crate::Error {
         Self::UnexpectedTsTypeLiteral(error)
     }
 }
+
+impl std::fmt::Display for UnexpectedTsTypeLiteral {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

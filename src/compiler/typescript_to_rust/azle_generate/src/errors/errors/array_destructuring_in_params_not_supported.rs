@@ -24,3 +24,9 @@ impl From<ArrayDestructuringInParamsNotSupported> for crate::Error {
         Self::ArrayDestructuringInParamsNotSupported(error)
     }
 }
+
+impl std::fmt::Display for ArrayDestructuringInParamsNotSupported {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

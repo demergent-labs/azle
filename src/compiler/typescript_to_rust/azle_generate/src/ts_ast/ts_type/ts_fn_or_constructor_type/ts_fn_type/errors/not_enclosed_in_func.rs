@@ -16,3 +16,9 @@ impl From<NotEnclosedInFunc> for crate::Error {
         Self::NotEnclosedInFunc(error)
     }
 }
+
+impl std::fmt::Display for NotEnclosedInFunc {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

@@ -23,6 +23,12 @@ impl From<UnsupportedType> for crate::Error {
     }
 }
 
+impl std::fmt::Display for UnsupportedType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}
+
 impl SourceMapped<'_, TsKeywordType> {
     pub(super) fn _unsupported_type_error(&self) -> Result<(), Error> {
         Err(match &self.kind {

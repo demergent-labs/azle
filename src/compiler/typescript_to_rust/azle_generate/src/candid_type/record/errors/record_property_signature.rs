@@ -16,3 +16,9 @@ impl From<RecordPropertySignature> for crate::Error {
         Self::RecordPropertySignature(error)
     }
 }
+
+impl std::fmt::Display for RecordPropertySignature {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

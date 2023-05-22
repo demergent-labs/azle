@@ -15,3 +15,9 @@ impl From<MissingDecorator> for crate::Error {
         Self::MissingDecorator(error)
     }
 }
+
+impl std::fmt::Display for MissingDecorator {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

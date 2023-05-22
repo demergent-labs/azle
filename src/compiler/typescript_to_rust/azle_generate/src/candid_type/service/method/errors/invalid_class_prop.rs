@@ -21,6 +21,12 @@ impl From<InvalidClassProp> for crate::Error {
     }
 }
 
+impl std::fmt::Display for InvalidClassProp {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}
+
 impl SourceMapped<'_, ClassDecl> {
     pub fn build_invalid_class_prop_error_message(
         &self,
@@ -34,11 +40,6 @@ impl SourceMapped<'_, ClassDecl> {
         let column_number = self.source_map.get_range(class_prop.span).0 + 1;
         let location = format!("{}:{}:{}", origin, line_number, column_number);
 
-        format!(
-            "{}\n\nin class {}\nat {}",
-            error_message.get(0).unwrap().error_message(),
-            service_class_name,
-            location
-        )
+        format!("Error in class {}\nat {}", service_class_name, location)
     }
 }

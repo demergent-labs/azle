@@ -15,3 +15,9 @@ impl From<MultipleDecorators> for crate::Error {
         Self::MultipleDecorators(error)
     }
 }
+
+impl std::fmt::Display for MultipleDecorators {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

@@ -15,3 +15,9 @@ impl From<MissingCallResultAnnotation> for crate::Error {
         Self::MissingCallResultAnnotation(error)
     }
 }
+
+impl std::fmt::Display for MissingCallResultAnnotation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

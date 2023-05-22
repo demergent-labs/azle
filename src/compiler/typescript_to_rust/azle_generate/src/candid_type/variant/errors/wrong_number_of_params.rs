@@ -16,3 +16,9 @@ impl From<WrongNumberOfParams> for crate::Error {
         Self::WrongNumberOfParams(error)
     }
 }
+
+impl std::fmt::Display for WrongNumberOfParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

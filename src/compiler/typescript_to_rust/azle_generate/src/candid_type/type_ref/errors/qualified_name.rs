@@ -16,3 +16,9 @@ impl From<QualifiedName> for crate::Error {
         Self::QualifiedName(error)
     }
 }
+
+impl std::fmt::Display for QualifiedName {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

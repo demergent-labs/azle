@@ -15,3 +15,9 @@ impl From<MissingTypeAnnotation> for crate::Error {
         Self::MissingTypeAnnotation(error)
     }
 }
+
+impl std::fmt::Display for MissingTypeAnnotation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "TODO")
+    }
+}

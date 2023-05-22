@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use cdk_framework::act::abstract_canister_tree::Error as CdkfError;
 
 mod compiler_output;
@@ -101,11 +103,6 @@ pub enum Error {
     WrongNumberOfParams(WrongNumberOfParams),
     NewError(String),
 }
-impl Error {
-    pub fn error_message(&self) -> String {
-        todo!()
-    }
-}
 
 impl std::error::Error for Error {}
 
@@ -113,19 +110,55 @@ impl std::error::Error for Error {}
 // TODO ^ for some reason when I automatically add more options it adds everything again with Error:: so its going to be much easier to work with Error and change it back to Self later
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut format_error = |e: &dyn std::fmt::Display| e.fmt(f);
+
         match self {
-            Error::TypeNotFound(e) => e.fmt(f),
-            Error::GuardFunctionNotFound(e) => e.fmt(f),
-            Error::DuplicateSystemMethodImplementation(e) => e.fmt(f),
-            Error::ExtraneousCanisterMethodAnnotation(e) => e.fmt(f),
-            Error::MissingReturnTypeAnnotation(e) => e.fmt(f),
-            Error::InternalError(e) => e.fmt(f),
-            Error::ArgumentError(e) => e.fmt(f),
-            Error::TypeError(e) => e.fmt(f),
-            Error::SyntaxError(e) => e.fmt(f),
-            Error::VoidReturnTypeRequired(e) => e.fmt(f),
-            Error::AsyncNotAllowed(e) => e.fmt(f),
-            _ => todo!(),
+            Error::TypeNotFound(e) => format_error(e),
+            Error::GuardFunctionNotFound(e) => format_error(e),
+            Error::DuplicateSystemMethodImplementation(e) => format_error(e),
+            Error::ExtraneousCanisterMethodAnnotation(e) => format_error(e),
+            Error::MissingReturnTypeAnnotation(e) => format_error(e),
+            Error::InternalError(e) => format_error(e),
+            Error::ArgumentError(e) => format_error(e),
+            Error::TypeError(e) => format_error(e),
+            Error::SyntaxError(e) => format_error(e),
+            Error::VoidReturnTypeRequired(e) => format_error(e),
+            Error::AsyncNotAllowed(e) => format_error(e),
+            Error::ArrayDestructuringInParamsNotSupported(e) => format_error(e),
+            Error::FileSyntaxError(e) => format_error(e),
+            Error::FunctionParamsMustHaveType(e) => format_error(e),
+            Error::InvalidClassMember(e) => format_error(e),
+            Error::InvalidClassProp(e) => format_error(e),
+            Error::InvalidDecorator(e) => format_error(e),
+            Error::InvalidParams(e) => format_error(e),
+            Error::InvalidReturnType(e) => format_error(e),
+            Error::MissingCallResultAnnotation(e) => format_error(e),
+            Error::MissingDecorator(e) => format_error(e),
+            Error::MissingReturnType(e) => format_error(e),
+            Error::MissingTypeAnnotation(e) => format_error(e),
+            Error::MissingTypeArgument(e) => format_error(e),
+            Error::MultipleDecorators(e) => format_error(e),
+            Error::NamespaceQualifiedType(e) => format_error(e),
+            Error::NotEnclosedInFunc(e) => format_error(e),
+            Error::NoTypeAnnotation(e) => format_error(e),
+            Error::ObjectDestructuringNotSupported(e) => format_error(e),
+            Error::ParamDefaultValue(e) => format_error(e),
+            Error::QualifiedName(e) => format_error(e),
+            Error::QualifiedType(e) => format_error(e),
+            Error::RecordPropertySignature(e) => format_error(e),
+            Error::RestParametersNotSupported(e) => format_error(e),
+            Error::TooManyReturnTypes(e) => format_error(e),
+            Error::UnableToLoadFile(e) => format_error(e),
+            Error::UnallowedComputedProperty(e) => format_error(e),
+            Error::UnexpectedTsTupleType(e) => format_error(e),
+            Error::UnexpectedTsType(e) => format_error(e),
+            Error::UnexpectedTsTypeLiteral(e) => format_error(e),
+            Error::UnsupportedType(e) => format_error(e),
+            Error::UntypedParam(e) => format_error(e),
+            Error::VariantPropertySignature(e) => format_error(e),
+            Error::WrongEnclosedType(e) => format_error(e),
+            Error::WrongNumberOfParams(e) => format_error(e),
+            Error::NewError(e) => format_error(e),
         }
     }
 }
