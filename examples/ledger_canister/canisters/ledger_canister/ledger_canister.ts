@@ -1,5 +1,3 @@
-// TODO test all errors for query blocks
-
 import {
     ic,
     match,

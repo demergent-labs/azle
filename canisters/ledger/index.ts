@@ -3,6 +3,8 @@ import {
     blob,
     CallResult,
     Func,
+    nat,
+    nat8,
     nat32,
     nat64,
     Opt,
@@ -12,9 +14,17 @@ import {
     Service,
     serviceQuery,
     serviceUpdate,
+    text,
+    Tuple,
     Variant,
     Vec
 } from '../../src/lib';
+import {
+    ICRCAccount,
+    ICRCTransferArgs,
+    ICRCTransferError,
+    ICRCValue
+} from '../icrc';
 
 // Amount of tokens, measured in 10^-8 of a token.
 export type Tokens = Record<{
@@ -300,6 +310,40 @@ export class Ledger extends Service {
     // Returns the existing archive canisters information.
     @serviceQuery
     archives: () => CallResult<Archives>;
+
+    @serviceQuery
+    icrc1_metadata: () => CallResult<Vec<Tuple<[text, ICRCValue]>>>;
+
+    @serviceQuery
+    icrc1_name: () => CallResult<text>;
+
+    @serviceQuery
+    icrc1_symbol: () => CallResult<text>;
+
+    @serviceQuery
+    icrc1_decimals: () => CallResult<nat8>;
+
+    @serviceQuery
+    icrc1_fee: () => CallResult<nat>;
+
+    @serviceQuery
+    icrc1_total_supply: () => CallResult<nat>;
+
+    @serviceQuery
+    icrc1_minting_account: () => CallResult<Opt<ICRCAccount>>;
+
+    @serviceQuery
+    icrc1_balance_of: (account: ICRCAccount) => CallResult<nat>;
+
+    @serviceUpdate
+    icrc1_transfer: (
+        transferArgs: ICRCTransferArgs
+    ) => CallResult<Variant<{ Ok: nat; Err: ICRCTransferError }>>;
+
+    @serviceQuery
+    icrc1_supported_standards: () => CallResult<
+        Vec<Record<{ name: text; url: text }>>
+    >;
 }
 
 export {

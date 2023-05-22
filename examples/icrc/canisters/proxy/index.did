@@ -1,0 +1,48 @@
+type ICRCAccount = record { owner : principal; subaccount : opt vec nat8 };
+type ICRCTransferArgs = record {
+  to : ICRCAccount;
+  fee : opt nat;
+  memo : opt vec nat8;
+  from_subaccount : opt vec nat8;
+  created_at_time : opt nat64;
+  amount : nat;
+};
+type ICRCTransferError = variant {
+  GenericError : _InlineICRCTransferErrorGenericError;
+  TemporarilyUnavailable;
+  BadBurn : _InlineICRCTransferErrorBadBurn;
+  Duplicate : _InlineICRCTransferErrorDuplicate;
+  BadFee : _InlineICRCTransferErrorBadFee;
+  CreatedInFuture : _InlineICRCTransferErrorCreatedInFuture;
+  TooOld;
+  InsufficientFunds : _InlineICRCTransferErrorInsufficientFunds;
+};
+type ICRCValue = variant { Int : int; Nat : nat; Blob : vec nat8; Text : text };
+type ManualReply = variant { Ok : nat; Err : ICRCTransferError };
+type _InlineICRCTransferErrorBadBurn = record { min_burn_amount : nat };
+type _InlineICRCTransferErrorBadFee = record { expected_fee : nat };
+type _InlineICRCTransferErrorCreatedInFuture = record { ledger_time : nat64 };
+type _InlineICRCTransferErrorDuplicate = record { duplicate_of : nat };
+type _InlineICRCTransferErrorGenericError = record {
+  message : text;
+  error_code : nat;
+};
+type _InlineICRCTransferErrorInsufficientFunds = record { balance : nat };
+type _InlineIcrc1SupportedStandardsReturnType = record {
+  url : text;
+  name : text;
+};
+service : () -> {
+  icrc1_balance_of : (ICRCAccount) -> (nat) query;
+  icrc1_decimals : () -> (nat8) query;
+  icrc1_fee : () -> (nat) query;
+  icrc1_metadata : () -> (vec record { text; ICRCValue }) query;
+  icrc1_minting_account : () -> (opt ICRCAccount) query;
+  icrc1_name : () -> (text) query;
+  icrc1_supported_standards : () -> (
+      vec _InlineIcrc1SupportedStandardsReturnType,
+    ) query;
+  icrc1_symbol : () -> (text) query;
+  icrc1_total_supply : () -> (nat) query;
+  icrc1_transfer : (ICRCTransferArgs) -> (ManualReply);
+}

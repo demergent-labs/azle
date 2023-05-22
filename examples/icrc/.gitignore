@@ -1,5 +1,5 @@
 .azle
 .dfx
-canisters/icp_ledger/ledger.wasm
+canisters/ICRC-1
 dfx_generated
 node_modules
