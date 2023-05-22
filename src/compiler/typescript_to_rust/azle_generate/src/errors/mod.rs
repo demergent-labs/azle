@@ -20,6 +20,7 @@ pub use self::{
 };
 use crate::{
     candid_type::{
+        primitive::errors::UnsupportedType,
         record::errors::RecordPropertySignature,
         service::method::errors::{
             InvalidClassMember, InvalidClassProp, InvalidDecorator, InvalidReturnType,
@@ -92,7 +93,7 @@ pub enum Error {
     UnexpectedTsTupleType(UnexpectedTsTupleTypes),
     UnexpectedTsType(UnexpectedTsType),
     UnexpectedTsTypeLiteral(UnexpectedTsTypeLiteral),
-    UnsupportedType,
+    UnsupportedType(UnsupportedType),
     UntypedParam(UntypedParam),
     VariantPropertySignature(VariantPropertySignature),
     WrongEnclosedType,

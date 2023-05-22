@@ -6,6 +6,8 @@ use swc_ecma_ast::{TsKeywordType, TsKeywordTypeKind};
 
 use crate::{traits::GetSpan, ts_ast::SourceMapped, Error};
 
+use self::errors::UnsupportedType;
+
 impl SourceMapped<'_, TsKeywordType> {
     pub fn to_primitive(&self) -> Result<Primitive, Vec<Error>> {
         Ok(match self.kind {
@@ -14,7 +16,7 @@ impl SourceMapped<'_, TsKeywordType> {
             TsKeywordTypeKind::TsVoidKeyword => Primitive::Void,
             TsKeywordTypeKind::TsNullKeyword => Primitive::Null,
             TsKeywordTypeKind::TsNumberKeyword => Primitive::Float64,
-            _ => return Err(vec![Error::UnsupportedType]),
+            _ => return Err(vec![UnsupportedType::from_ts_keyword_type(self).into()]),
         })
     }
 }
