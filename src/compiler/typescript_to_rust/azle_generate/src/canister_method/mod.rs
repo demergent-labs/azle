@@ -8,7 +8,7 @@ pub use check_length_and_map::CheckLengthAndMap;
 
 pub mod annotated_fn_decl;
 mod annotation;
-mod check_length_and_map;
+pub mod check_length_and_map;
 mod heartbeat;
 mod init;
 mod inspect_message;

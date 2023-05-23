@@ -19,7 +19,9 @@ impl SourceMapped<'_, NewExpr> {
     fn build_type_arg_error_message(&self, title: String) -> CompilerOutput {
         let source = self.get_source();
         let range = (
+            // UNWRAP HERE
             source.find("StableBTreeMap").unwrap() + "StableBTreeMap".len(),
+            // UNWRAP HERE
             source.find("(").unwrap(),
         );
         let annotation = "expected exactly 2 type arguments here".to_string();
@@ -32,6 +34,7 @@ impl SourceMapped<'_, NewExpr> {
     pub fn build_arg_spread_error_message(&self) -> CompilerOutput {
         let title = "StableBTreeMap does not currently support argument spreading".to_string();
         let source = self.get_source();
+        // UNWRAP HERE // UNWRAP HERE
         let range = (source.find("(").unwrap() + 1, source.find(")").unwrap());
         let annotation = "attempted to spread arguments here".to_string();
         let help = "specify each argument individually. E.g.:".to_string();
@@ -50,6 +53,7 @@ impl SourceMapped<'_, NewExpr> {
 
     pub fn build_arg_error_message(&self, title: String) -> CompilerOutput {
         let source = self.get_source();
+        // UNWRAP HERE // UNWRAP HERE
         let range = (source.find("(").unwrap() + 1, source.find(")").unwrap());
         let annotation = "expected exactly 3 arguments here".to_string();
         let help =
@@ -71,17 +75,20 @@ impl SourceMapped<'_, NewExpr> {
         );
 
         let source = self.get_source();
+        // UNWRAP HERE
         let open_paren_index = source.find("(").unwrap();
 
         let message_id_start_index = source
             .char_indices()
             .find(|(i, c)| *i > open_paren_index && !c.is_whitespace())
             .map(|(i, _)| i)
+            // UNWRAP HERE
             .unwrap();
         let message_id_end_index = source
             .char_indices()
             .find(|(i, c)| *i > message_id_start_index && c == &',')
             .map(|(i, _)| i)
+            // UNWRAP HERE
             .unwrap();
         let message_id_range = (message_id_start_index, message_id_end_index);
 
@@ -89,11 +96,13 @@ impl SourceMapped<'_, NewExpr> {
             .char_indices()
             .find(|(i, c)| *i > message_id_end_index && !c.is_whitespace())
             .map(|(i, _)| i)
+            // UNWRAP HERE
             .unwrap();
         let max_key_size_end_index = source
             .char_indices()
             .find(|(i, c)| *i > max_key_size_start_index && c == &',')
             .map(|(i, _)| i)
+            // UNWRAP HERE
             .unwrap();
         let max_key_size_range = (max_key_size_start_index, max_key_size_end_index);
 
@@ -101,11 +110,13 @@ impl SourceMapped<'_, NewExpr> {
             .char_indices()
             .find(|(i, c)| *i > max_key_size_end_index && !c.is_whitespace())
             .map(|(i, _)| i)
+            // UNWRAP HERE
             .unwrap();
         let max_value_size_end_index = source
             .char_indices()
             .find(|(i, c)| *i > max_value_size_start_index && (c.is_whitespace() || c == &')'))
             .map(|(i, _)| i)
+            // UNWRAP HERE
             .unwrap();
         let max_value_size_range = (max_value_size_start_index, max_value_size_end_index);
 
@@ -141,8 +152,10 @@ impl SourceMapped<'_, NewExpr> {
         };
 
         let modified_source = [
+            // UNWRAP HERE
             source.get(..range.0).unwrap(),
             &suggestion,
+            // UNWRAP HERE
             source.get(range.1..).unwrap(),
         ]
         .join("");

@@ -3,6 +3,7 @@ use cdk_framework::act::node::{
 };
 use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnParam, TsFnType, TsType};
 
+pub use crate::canister_method::check_length_and_map::CheckLengthAndMapTwo;
 use crate::{
     errors::{
         errors::{
@@ -17,9 +18,9 @@ use crate::{
 };
 
 use super::errors::{
-    InvalidDecorator, InvalidReturnType, MissingCallResultAnnotation, MissingDecorator,
-    MissingTypeAnnotation, MissingTypeArguments, MultipleDecorators, NamespaceQualifiedType,
-    TooManyReturnTypes, UnallowedComputedProperty,
+    ComputedPropertyNotAllowed, InvalidDecorator, InvalidReturnType, MissingCallResultAnnotation,
+    MissingDecorator, MissingTypeAnnotation, MissingTypeArguments, NamespaceQualifiedType,
+    NotExactlyOneDecorator, TooManyReturnTypes,
 };
 
 impl SourceMapped<'_, ClassProp> {
@@ -69,22 +70,20 @@ impl SourceMapped<'_, ClassProp> {
         self.contains_decorator("serviceQuery") || self.contains_decorator("serviceUpdate")
     }
 
-    fn mode(&self) -> Result<String, Error> {
-        if self.decorators.len() != 1 {
-            return Err(MultipleDecorators::from_class_prop(self).into());
-        };
+    fn mode(&self) -> Result<String, Vec<Error>> {
+        self.decorators.check_length_is_one_and_map(
+            |decorators| NotExactlyOneDecorator::from_decorator_list(decorators).into(),
+            |decorator| {
+                let mode = match decorator.expr.as_ident() {
+                    Some(ident) => ident,
+                    None => return Err(vec![InvalidDecorator::from_class_prop(self).into()]),
+                }
+                .get_name()
+                .to_string();
 
-        let mode = self
-            .decorators
-            .get(0)
-            .unwrap()
-            .expr
-            .as_ident()
-            .unwrap()
-            .get_name()
-            .to_string();
-
-        Ok(mode)
+                Ok(mode)
+            },
+        )
     }
 
     fn name(&self) -> Result<String, Error> {
@@ -93,7 +92,7 @@ impl SourceMapped<'_, ClassProp> {
             swc_ecma_ast::PropName::Str(str) => str.value.to_string(),
             swc_ecma_ast::PropName::Num(num) => num.value.to_string(),
             swc_ecma_ast::PropName::Computed(_) => {
-                return Err(UnallowedComputedProperty::from_class_prop(self).into())
+                return Err(ComputedPropertyNotAllowed::from_class_prop(self).into())
             }
             swc_ecma_ast::PropName::BigInt(big_int) => big_int.value.to_string(),
         };
@@ -122,7 +121,7 @@ impl SourceMapped<'_, ClassProp> {
                             return Err(TooManyReturnTypes::from_class_prop(self).into());
                         }
 
-                        let inner_type = &**ts_type_param_inst.params.get(0).unwrap();
+                        let inner_type = &*ts_type_param_inst.params[0];
                         Ok(inner_type.clone())
                     }
                     None => return Err(MissingTypeArguments::from_class_prop(self).into()),

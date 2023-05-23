@@ -26,10 +26,12 @@ impl SourceMapped<'_, NewExpr> {
                 }
 
                 let key_type =
+                    // UNWRAP HERE
                     SourceMapped::new(type_args.params.get(0).unwrap().deref(), self.source_map)
                         .to_candid_type()?;
 
                 let value_type =
+                    // UNWRAP HERE
                     SourceMapped::new(type_args.params.get(1).unwrap().deref(), self.source_map)
                         .to_candid_type()?;
 
@@ -59,6 +61,7 @@ impl SourceMapped<'_, NewExpr> {
                             .into());
                         }
 
+                        // UNWRAP HERE
                         let memory_id = match &args.get(0).unwrap().expr.to_u8() {
                             Ok(value) => *value,
                             Err(_) => {
@@ -70,6 +73,7 @@ impl SourceMapped<'_, NewExpr> {
                             }
                         };
 
+                        // UNWRAP HERE
                         let max_key_size = match &args.get(1).unwrap().expr.to_u32() {
                             Ok(value) => *value,
                             Err(_) => {
@@ -81,6 +85,7 @@ impl SourceMapped<'_, NewExpr> {
                             }
                         };
 
+                        // UNWRAP HERE
                         let max_value_size = match &args.get(2).unwrap().expr.to_u32() {
                             Ok(value) => *value,
                             Err(_) => {

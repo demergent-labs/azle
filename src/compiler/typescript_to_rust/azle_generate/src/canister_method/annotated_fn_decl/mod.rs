@@ -43,6 +43,7 @@ impl AnnotatedFnDecl<'_> {
                 let return_type = &*ts_type_ann.type_ann;
 
                 let promise_unwrapped_return_type = if self.is_promise()? {
+                    // UNWRAP HERE
                     let type_ref = return_type.as_ts_type_ref().unwrap();
                     match &type_ref.type_params {
                         Some(type_param_instantiation) => &*type_param_instantiation.params[0],
@@ -53,6 +54,7 @@ impl AnnotatedFnDecl<'_> {
                 };
 
                 let manual_unwrapped_return_type = if self.is_manual()? {
+                    // UNWRAP HERE
                     let inner_type_ref = promise_unwrapped_return_type.as_ts_type_ref().unwrap();
                     match &inner_type_ref.type_params {
                         Some(type_param_instantiation) => &type_param_instantiation.params[0],
@@ -130,6 +132,7 @@ impl AnnotatedFnDecl<'_> {
     pub fn is_manual(&self) -> Result<bool, Error> {
         let return_type = match &self.fn_decl.function.return_type {
             Some(ts_type_ann) => match self.is_promise()? {
+                // UNWRAP HERE
                 true => match &ts_type_ann.type_ann.as_ts_type_ref().unwrap().type_params {
                     Some(type_param_instantiation) => &type_param_instantiation.params[0],
                     None => return Ok(false),

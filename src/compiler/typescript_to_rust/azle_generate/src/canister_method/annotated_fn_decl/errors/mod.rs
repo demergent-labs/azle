@@ -269,6 +269,7 @@ impl GetParamRange for Param {
                 if array_pat.type_ann.is_none() {
                     return full_param_span_range;
                 }
+                // UNWRAP HERE
                 let ts_type_ann = array_pat.type_ann.as_ref().unwrap();
                 let type_ann_range = source_map.get_range(ts_type_ann.span);
                 let range_without_type_annotation = (full_param_span_range.0, type_ann_range.0);
@@ -279,6 +280,7 @@ impl GetParamRange for Param {
                 if rest_pat.type_ann.is_none() {
                     return full_param_span_range;
                 }
+                // UNWRAP HERE
                 let ts_type_ann = rest_pat.type_ann.as_ref().unwrap();
                 let type_ann_range = source_map.get_range(ts_type_ann.span);
                 let range_without_type_annotation = (full_param_span_range.0, type_ann_range.0);
@@ -289,6 +291,7 @@ impl GetParamRange for Param {
                 if object_pat.type_ann.is_none() {
                     return full_param_span_range;
                 }
+                // UNWRAP HERE
                 let ts_type_ann = object_pat.type_ann.as_ref().unwrap();
                 let type_ann_range = source_map.get_range(ts_type_ann.span);
                 let range_without_type_annotation = (full_param_span_range.0, type_ann_range.0);
