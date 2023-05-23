@@ -1,15 +1,15 @@
-use swc_ecma_ast::{ClassProp, Decorator};
+use swc_ecma_ast::Decorator;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct NotExactlyOneDecorator {}
+pub struct NotExactlyOneDecorator {
+    decorators: Vec<Decorator>,
+}
 
 impl NotExactlyOneDecorator {
-    pub fn from_class_prop(class_prop: &ClassProp) -> Self {
-        // Self::MultipleDecorators => "Too many decorators. External canister methods can only specify one decorator: @query or @update.",
-        Self {}
-    }
-    pub fn from_decorator_list(decorator_list: &Vec<Decorator>) -> Self {
-        Self {}
+    pub fn from_decorator_list(decorators: &Vec<Decorator>) -> Self {
+        Self {
+            decorators: decorators.clone(),
+        }
     }
 }
 
@@ -21,6 +21,6 @@ impl From<NotExactlyOneDecorator> for crate::Error {
 
 impl std::fmt::Display for NotExactlyOneDecorator {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "TODO")
+        write!(f, "Too many decorators. Service methods can only specify one decorator: @serviceQuery or @serviceUpdate.")
     }
 }

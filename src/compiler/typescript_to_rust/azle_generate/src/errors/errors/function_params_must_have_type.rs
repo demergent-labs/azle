@@ -23,6 +23,6 @@ impl From<FunctionParamsMustHaveType> for crate::Error {
 
 impl std::fmt::Display for FunctionParamsMustHaveType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "TODO")
+        write!(f, "Function parameters must have a type")
     }
 }

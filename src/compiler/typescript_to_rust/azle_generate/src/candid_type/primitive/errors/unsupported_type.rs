@@ -1,7 +1,7 @@
 use swc_ecma_ast::{TsKeywordType, TsKeywordTypeKind};
 
 use crate::{
-    errors::{CompilerOutput, Suggestion},
+    errors::{CompilerOutput, InternalError, Suggestion},
     internal_error,
     traits::{GetSourceFileInfo, GetSourceInfo, GetSourceText},
     ts_ast::SourceMapped,
@@ -9,11 +9,26 @@ use crate::{
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct UnsupportedType {}
+pub struct UnsupportedType {
+    message: String,
+    sm_key_type: &SourceMapped<TsKeywordType>,
+}
 
 impl UnsupportedType {
-    pub fn from_ts_keyword_type(sm_ts_type_ref: &SourceMapped<TsKeywordType>) -> Self {
-        Self {}
+    pub fn from_ts_keyword_type(sm_keyword_type: &SourceMapped<TsKeywordType>) -> Self {
+        let message = match &sm_keyword_type.kind {
+            TsKeywordTypeKind::TsBigIntKeyword => sm_keyword_type.bigint_not_supported_error(),
+            TsKeywordTypeKind::TsObjectKeyword => sm_keyword_type.keyword_not_supported_error(),
+            TsKeywordTypeKind::TsNeverKeyword => sm_keyword_type.keyword_not_supported_error(),
+            TsKeywordTypeKind::TsSymbolKeyword => sm_keyword_type.keyword_not_supported_error(),
+            TsKeywordTypeKind::TsIntrinsicKeyword => sm_keyword_type.keyword_not_supported_error(),
+            TsKeywordTypeKind::TsUndefinedKeyword => sm_keyword_type.keyword_not_supported_error(),
+            TsKeywordTypeKind::TsUnknownKeyword => sm_keyword_type.keyword_not_supported_error(),
+            TsKeywordTypeKind::TsAnyKeyword => sm_keyword_type.keyword_not_supported_error(),
+            _ => Error::InternalError(InternalError {}), // TODO this is instead of the internal_error_macro
+        }
+        .to_string();
+        Self { message }
     }
 }
 
@@ -25,27 +40,27 @@ impl From<UnsupportedType> for crate::Error {
 
 impl std::fmt::Display for UnsupportedType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "TODO")
+        write!(f, "{}", self.message)
     }
 }
 
 impl SourceMapped<'_, TsKeywordType> {
     pub(super) fn _unsupported_type_error(&self) -> Result<(), Error> {
         Err(match &self.kind {
-            TsKeywordTypeKind::TsBigIntKeyword => self._bigint_not_supported_error(),
-            TsKeywordTypeKind::TsObjectKeyword => self._keyword_not_supported_error(),
-            TsKeywordTypeKind::TsNeverKeyword => self._keyword_not_supported_error(),
-            TsKeywordTypeKind::TsSymbolKeyword => self._keyword_not_supported_error(),
-            TsKeywordTypeKind::TsIntrinsicKeyword => self._keyword_not_supported_error(),
-            TsKeywordTypeKind::TsUndefinedKeyword => self._keyword_not_supported_error(),
-            TsKeywordTypeKind::TsUnknownKeyword => self._keyword_not_supported_error(),
-            TsKeywordTypeKind::TsAnyKeyword => self._keyword_not_supported_error(),
+            TsKeywordTypeKind::TsBigIntKeyword => self.bigint_not_supported_error(),
+            TsKeywordTypeKind::TsObjectKeyword => self.keyword_not_supported_error(),
+            TsKeywordTypeKind::TsNeverKeyword => self.keyword_not_supported_error(),
+            TsKeywordTypeKind::TsSymbolKeyword => self.keyword_not_supported_error(),
+            TsKeywordTypeKind::TsIntrinsicKeyword => self.keyword_not_supported_error(),
+            TsKeywordTypeKind::TsUndefinedKeyword => self.keyword_not_supported_error(),
+            TsKeywordTypeKind::TsUnknownKeyword => self.keyword_not_supported_error(),
+            TsKeywordTypeKind::TsAnyKeyword => self.keyword_not_supported_error(),
             //TODO Unreachable: {} is supported", self.get_source_text()
             _ => internal_error!(),
         })
     }
 
-    fn _bigint_not_supported_error(&self) -> Error {
+    fn bigint_not_supported_error(&self) -> Error {
         let replacement = "int".to_string();
         let suggestion = Some(Suggestion {
             title: "`int` will cover most everything that `bigint` does. For more number type options see: https://internetcomputer.org/docs/current/references/candid-ref/#type-nat".to_string(),
@@ -65,7 +80,7 @@ impl SourceMapped<'_, TsKeywordType> {
         )
     }
 
-    fn _keyword_not_supported_error(&self) -> Error {
+    fn keyword_not_supported_error(&self) -> Error {
         Error::NewError(
             CompilerOutput {
                 title: "Unsupported Type".to_string(),

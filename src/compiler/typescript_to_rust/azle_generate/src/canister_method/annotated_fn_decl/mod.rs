@@ -90,14 +90,14 @@ impl AnnotatedFnDecl<'_> {
             .map(|param| match &param.pat {
                 Pat::Ident(ident) => Ok(ident),
                 Pat::Array(_) => Err(vec![Into::<Error>::into(
-                    ArrayDestructuringInParamsNotSupported::from_annotated_fn_decl(self),
+                    ArrayDestructuringInParamsNotSupported::from_annotated_fn_decl(self, param),
                 )]),
                 Pat::Rest(_) => Err(vec![RestParametersNotSupported::from_annotated_fn_decl(
-                    self,
+                    self, param,
                 )
                 .into()]),
                 Pat::Object(_) => Err(vec![
-                    ObjectDestructuringNotSupported::from_annotated_fn_decl(self).into(),
+                    ObjectDestructuringNotSupported::from_annotated_fn_decl(self, param).into(),
                 ]),
                 Pat::Assign(_assign_pat) => {
                     Err(vec![ParamDefaultValue::from_annotated_fn_decl(self).into()])

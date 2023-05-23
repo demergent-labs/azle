@@ -21,35 +21,6 @@ pub use qualified_type::QualifiedType;
 pub use untyped_param::UntypedParam;
 
 impl AnnotatedFnDecl<'_> {
-    pub(super) fn _build_array_destructure_error_msg(&self, param: &Param) -> CompilerOutput {
-        let array_pat = param.pat.as_array().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
-
-        let range = param.get_destructure_range(self.source_map);
-        let replacement_name = "myParam".to_string(); // TODO: Come up with a better name from the ts_type_ann
-
-        CompilerOutput {
-            title: "Array destructuring in parameters is unsupported at this time".to_string(),
-            location: Location {
-                origin: self.source_map.get_origin(array_pat.span),
-                line_number: self.source_map.get_line_number(array_pat.span),
-                source: self.source_map.get_source(array_pat.span),
-                range,
-            },
-            annotation: "Attempted to destructure here".to_string(),
-            suggestion: Some(Suggestion {
-                title: "Remove destructuring in favor of a concrete name".to_string(),
-                source: self.source_map.generate_source_with_range_replaced(
-                    array_pat.span,
-                    range,
-                    &replacement_name,
-                ),
-                range: (range.0, range.0 + replacement_name.len()),
-                annotation: None,
-                import_suggestion: None,
-            }),
-        }
-    }
-
     pub(super) fn _build_invalid_param_error_msg(&self) -> String {
         "Something is impossibly wrong with your parameters. Please open an issue showing your canister methods and this error.".to_string()
     }
@@ -85,35 +56,6 @@ impl AnnotatedFnDecl<'_> {
                     .source_map
                     .generate_modified_source(span, &example_return_type),
                 range: (range.1, range.1 + example_type_param.len()),
-                annotation: None,
-                import_suggestion: None,
-            }),
-        }
-    }
-
-    pub(super) fn _build_object_destructure_error_msg(&self, param: &Param) -> CompilerOutput {
-        let object_pat = param.pat.as_object().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
-
-        let range = param.get_destructure_range(self.source_map);
-        let replacement_name = "myParam".to_string(); // TODO: Come up with a better name from the ts_type_ann
-
-        CompilerOutput {
-            title: "Object destructuring in parameters is unsupported at this time".to_string(),
-            location: Location {
-                origin: self.source_map.get_origin(object_pat.span),
-                line_number: self.source_map.get_line_number(object_pat.span),
-                source: self.source_map.get_source(object_pat.span),
-                range,
-            },
-            annotation: "Attempted to destructure here".to_string(),
-            suggestion: Some(Suggestion {
-                title: "Remove destructuring in favor of a concrete name".to_string(),
-                source: self.source_map.generate_source_with_range_replaced(
-                    object_pat.span,
-                    range,
-                    &replacement_name,
-                ),
-                range: (range.0, range.0 + replacement_name.len()),
                 annotation: None,
                 import_suggestion: None,
             }),
@@ -185,35 +127,6 @@ impl AnnotatedFnDecl<'_> {
             },
             annotation: "Namespace specified here".to_string(),
             suggestion: None, // This is caught first by src/compiler/typescript_to_rust/azle_generate/src/ts_ast/azle_type/azle_type_ref/errors.rs
-        }
-    }
-
-    pub(super) fn _build_rest_param_error_msg(&self, param: &Param) -> CompilerOutput {
-        let rest_pat = param.pat.as_rest().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
-
-        let range = param.get_destructure_range(self.source_map);
-        let replacement_name = "myParam".to_string(); // TODO: Come up with a better name from the ts_type_ann
-
-        CompilerOutput {
-            title: "Rest parameters are not supported in canister method signatures".to_string(),
-            location: Location {
-                origin: self.source_map.get_origin(rest_pat.span),
-                line_number: self.source_map.get_line_number(rest_pat.span),
-                source: self.source_map.get_source(rest_pat.span),
-                range,
-            },
-            annotation: "Attempted parameter spread here".to_string(),
-            suggestion: Some(Suggestion {
-                title: "Specify each parameter individually with a concrete type".to_string(),
-                source: self.source_map.generate_source_with_range_replaced(
-                    rest_pat.span,
-                    range,
-                    &replacement_name,
-                ),
-                range: (range.0, range.0 + replacement_name.len()),
-                annotation: None,
-                import_suggestion: None,
-            }),
         }
     }
 

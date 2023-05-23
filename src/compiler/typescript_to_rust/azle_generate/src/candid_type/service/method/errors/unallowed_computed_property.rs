@@ -5,7 +5,6 @@ pub struct ComputedPropertyNotAllowed {}
 
 impl ComputedPropertyNotAllowed {
     pub fn from_class_prop(class_prop: &ClassProp) -> Self {
-        // Self::UnallowedComputedProperty => "Unallowed computed property. Computed properties in external canister definitions aren't currently supported.",
         Self {}
     }
 }
@@ -18,6 +17,6 @@ impl From<ComputedPropertyNotAllowed> for crate::Error {
 
 impl std::fmt::Display for ComputedPropertyNotAllowed {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "TODO")
+        write!(f, "Computed property not allowed. Computed properties in service definitions aren't currently supported.")
     }
 }
