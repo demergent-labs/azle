@@ -5,15 +5,20 @@
             "candid": "ckbtc/ledger.did",
             "wasm": "ckbtc/ledger.wasm.gz"
         },
-        "minter": {
+        "internet_identity": {
             "type": "custom",
-            "candid": "minter/minter.did",
-            "wasm": "minter/minter.wasm.gz"
+            "candid": "internet_identity/internet_identity.did",
+            "wasm": "internet_identity/internet_identity_test.wasm.gz"
         },
         "kyt": {
             "type": "custom",
             "candid": "kyt/kyt.did",
             "wasm": "kyt/kyt.wasm.gz"
+        },
+        "minter": {
+            "type": "custom",
+            "candid": "minter/minter.did",
+            "wasm": "minter/minter.wasm.gz"
         },
         "wallet_backend": {
             "type": "custom",
@@ -23,10 +28,13 @@
             "candid": "wallet/backend/index.did",
             "wasm": ".azle/wallet_backend/wallet_backend.wasm.gz",
             "declarations": {
-                "output": "test/dfx_generated/wallet_backend",
-                "node_compatibility": true
+                "output": "wallet/frontend/dfx_generate/wallet_backend"
             },
             "env": ["CK_BTC_PRINCIPAL", "MINTER_PRINCIPAL"]
+        },
+        "wallet_frontend": {
+            "type": "assets",
+            "source": ["wallet/frontend/dist"]
         }
     }
 }
