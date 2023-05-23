@@ -96,6 +96,8 @@ dfx deploy minter --specified-id bd3sg-teaaa-aaaaa-qaaba-cai --argument '(varian
 
 ```bash
 CK_BTC_PRINCIPAL=be2us-64aaa-aaaaa-qaabq-cai MINTER_PRINCIPAL=bd3sg-teaaa-aaaaa-qaaba-cai dfx deploy wallet_backend --specified-id 7ugoi-yiaaa-aaaaa-aabaa-cai
+
+dfx generate wallet_backend
 ```
 
 ## wallet frontend
