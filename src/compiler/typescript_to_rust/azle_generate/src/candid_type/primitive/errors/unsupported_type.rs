@@ -11,7 +11,6 @@ use crate::{
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnsupportedType {
     message: String,
-    sm_key_type: &SourceMapped<TsKeywordType>,
 }
 
 impl UnsupportedType {
