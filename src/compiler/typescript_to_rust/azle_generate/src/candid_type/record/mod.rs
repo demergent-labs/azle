@@ -25,7 +25,7 @@ impl SourceMapped<'_, TsTypeRef> {
     pub fn to_record(&self) -> Result<Record, Vec<Error>> {
         match self.get_ts_type()?.as_ts_type_lit() {
             Some(ts_type_lit) => ts_type_lit,
-            None => return Err(vec![WrongEnclosedType::from_ts_type_ref(self).into()]),
+            None => return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
         }
         .to_record()
     }

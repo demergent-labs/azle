@@ -100,11 +100,11 @@ impl SourceMapped<'_, TsTypeRef> {
 impl GetNameWithError for SourceMapped<'_, TsTypeRef> {
     fn get_name(&self) -> Result<&str, Error> {
         Ok(match &self.type_name {
-            TsEntityName::TsQualifiedName(_ts_qualified_name) => {
+            TsEntityName::TsQualifiedName(ts_qualified_name) => {
                 // TODO: This could be improved for Qualified TypeRefs with type params.
                 // Currently we just drop the type params. It would be better if we
                 // included them.
-                return Err(QualifiedName::from_ts_type_ref(self).into());
+                return Err(QualifiedName::from_ts_type_ref(self, &**ts_qualified_name).into());
             }
             TsEntityName::Ident(identifier) => identifier.get_name(),
         })

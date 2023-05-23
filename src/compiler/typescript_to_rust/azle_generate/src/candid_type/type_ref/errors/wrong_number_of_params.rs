@@ -1,14 +1,13 @@
 use swc_ecma_ast::TsTypeRef;
 
 use crate::{
+    candid_type::errors::utils::GetEnclosedTsTypes,
     errors::{CompilerOutput, Location, Suggestion},
     internal_error,
     traits::{GetNameWithError, GetSourceFileInfo, GetSourceInfo},
     ts_ast::SourceMapped,
     Error,
 };
-
-use super::GetEnclosedTsTypes;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct WrongNumberOfParams {
@@ -35,7 +34,7 @@ impl From<WrongNumberOfParams> for crate::Error {
 
 impl std::fmt::Display for WrongNumberOfParams {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.compiler_output.to_string())
+        write!(f, "{}", self.compiler_output)
     }
 }
 impl SourceMapped<'_, TsTypeRef> {
@@ -50,7 +49,7 @@ impl SourceMapped<'_, TsTypeRef> {
     }
 
     fn canister_wrong_number_of_params_error(&self) -> CompilerOutput {
-        let example = self._generate_example_canister();
+        let example = self.generate_example_canister();
         let modified_source = self
             .source_map
             .generate_modified_source(self.get_enclosed_span(), &example);
@@ -118,7 +117,7 @@ impl SourceMapped<'_, TsTypeRef> {
     }
 
     fn func_wrong_number_of_params_error(&self) -> CompilerOutput {
-        let example_func = self._generate_example_func();
+        let example_func = self.generate_example_func();
         let modified_source = self
             .source_map
             .generate_modified_source(self.get_enclosed_span(), &example_func);
@@ -155,7 +154,7 @@ impl SourceMapped<'_, TsTypeRef> {
     }
 
     fn option_wrong_number_of_params_error(&self) -> Result<CompilerOutput, Error> {
-        let example_option = self._generate_example_option()?;
+        let example_option = self.generate_example_option()?;
         let modified_source = self
             .source_map
             .generate_modified_source(self.get_enclosed_span(), &example_option);
