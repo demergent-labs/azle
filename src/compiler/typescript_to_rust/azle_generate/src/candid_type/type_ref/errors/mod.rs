@@ -1,4 +1,5 @@
 mod qualified_name;
+mod wrong_number_of_params;
 
 use swc_common::{source_map::Pos, Span};
 use swc_ecma_ast::{TsType, TsTypeRef};
@@ -12,6 +13,7 @@ use crate::{
 };
 
 pub use qualified_name::QualifiedName;
+pub use wrong_number_of_params::WrongNumberOfParams;
 
 impl SourceMapped<'_, TsTypeRef> {
     pub(super) fn _wrong_number_of_params_error(&self) -> Result<(), Error> {

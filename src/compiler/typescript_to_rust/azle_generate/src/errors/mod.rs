@@ -31,8 +31,8 @@ use crate::{
             MissingTypeAnnotation, MissingTypeArguments, NamespaceQualifiedType,
             NotExactlyOneDecorator, TooManyReturnTypes,
         },
-        type_ref::errors::QualifiedName,
-        variant::errors::{VariantPropertySignature, WrongNumberOfParams},
+        type_ref::errors::{QualifiedName, WrongNumberOfParams},
+        variant::errors::VariantPropertySignature,
     },
     canister_method::{
         annotated_fn_decl::errors::{

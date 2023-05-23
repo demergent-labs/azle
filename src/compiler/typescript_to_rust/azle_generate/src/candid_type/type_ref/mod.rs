@@ -13,9 +13,7 @@ use crate::{
     Error,
 };
 
-use self::errors::QualifiedName;
-
-use super::variant::errors::WrongNumberOfParams;
+use self::errors::{QualifiedName, WrongNumberOfParams};
 
 pub mod errors;
 
