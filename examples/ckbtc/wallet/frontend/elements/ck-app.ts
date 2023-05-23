@@ -1,14 +1,18 @@
 import { LitElement, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { AuthClient } from '@dfinity/auth-client';
-import { Identity, HttpAgent } from '@dfinity/agent';
+import { ActorSubclass, HttpAgent, Identity } from '@dfinity/agent';
 import { createActor } from '../dfx_generate/wallet_backend';
+import { _SERVICE } from '../dfx_generate/wallet_backend/wallet_backend.did';
 import { nat, nat64 } from 'azle';
 
 @customElement('ck-app')
 export class CkApp extends LitElement {
     @state()
     identity: Identity | undefined;
+
+    @state()
+    walletBackend: ActorSubclass<_SERVICE> | undefined;
 
     @state()
     balance: nat64 | undefined;
@@ -25,12 +29,13 @@ export class CkApp extends LitElement {
     @state()
     transferAmount: nat = 0n;
 
+    @state()
+    transferring: boolean = false;
+
     async connectedCallback() {
         super.connectedCallback();
 
         await this.authenticate();
-        this.getBalance();
-        this.getBitcoinDepositAddress();
     }
 
     async authenticate() {
@@ -38,6 +43,8 @@ export class CkApp extends LitElement {
 
         if (await authClient.isAuthenticated()) {
             this.identity = authClient.getIdentity();
+
+            this.initialize();
         } else {
             await authClient.login({
                 identityProvider:
@@ -45,35 +52,62 @@ export class CkApp extends LitElement {
                 maxTimeToLive: BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000),
                 onSuccess: () => {
                     this.identity = authClient.getIdentity();
+
+                    this.initialize();
                 }
             });
         }
     }
 
-    async getBalance() {
+    initialize() {
+        this.createWalletBackend();
+
+        this.getBalance();
+        this.getBitcoinDepositAddress();
+    }
+
+    createWalletBackend() {
         const agent = new HttpAgent({
             identity: this.identity
         });
 
-        const walletBackend = createActor('7ugoi-yiaaa-aaaaa-aabaa-cai', {
-            agent
-        });
+        if (process.env['CANISTER_ID_WALLET_BACKEND'] === undefined) {
+            alert(`process.env['CANISTER_ID_WALLET_BACKEND'] is undefined`);
+            return;
+        }
 
-        const result = await walletBackend.getBalance();
+        const walletBackend = createActor(
+            process.env['CANISTER_ID_WALLET_BACKEND'],
+            {
+                agent
+            }
+        );
+
+        this.walletBackend = walletBackend;
+    }
+
+    async getBalance() {
+        if (this.walletBackend === undefined) {
+            alert(`walletBackend has not been initialized`);
+            return;
+        }
+
+        const result = await this.walletBackend.getBalance();
+
+        console.log('getBalance', result);
 
         this.balance = result;
     }
 
     async getBitcoinDepositAddress() {
-        const agent = new HttpAgent({
-            identity: this.identity
-        });
+        if (this.walletBackend === undefined) {
+            alert(`walletBackend has not been initialized`);
+            return;
+        }
 
-        const walletBackend = createActor('7ugoi-yiaaa-aaaaa-aabaa-cai', {
-            agent
-        });
+        const result = await this.walletBackend.getDepositAddress();
 
-        const result = await walletBackend.getDepositAddress();
+        console.log('getBitcoinDepositAddress', result);
 
         this.bitcoinDepositAddress = result;
     }
@@ -81,17 +115,14 @@ export class CkApp extends LitElement {
     async updateBalance() {
         this.updatingBalance = true;
 
-        const agent = new HttpAgent({
-            identity: this.identity
-        });
+        if (this.walletBackend === undefined) {
+            alert(`walletBackend has not been initialized`);
+            return;
+        }
 
-        const walletBackend = createActor('7ugoi-yiaaa-aaaaa-aabaa-cai', {
-            agent
-        });
+        const result = await this.walletBackend.updateBalance();
 
-        const result = await walletBackend.updateBalance();
-
-        console.log(result);
+        console.log('updateBalance', result);
 
         await this.getBalance();
 
@@ -99,33 +130,34 @@ export class CkApp extends LitElement {
     }
 
     async transfer() {
-        const agent = new HttpAgent({
-            identity: this.identity
-        });
+        this.transferring = true;
 
-        const walletBackend = createActor('7ugoi-yiaaa-aaaaa-aabaa-cai', {
-            agent
-        });
+        if (this.walletBackend === undefined) {
+            alert(`walletBackend has not been initialized`);
+            return;
+        }
 
         if (this.transferTo === '') {
             alert('Must enter a principal to transfer to');
             return;
         }
 
-        const result = await walletBackend.transfer(
+        const result = await this.walletBackend.transfer(
             this.transferTo,
             this.transferAmount
         );
 
-        console.log(result);
+        console.log('transfer', result);
 
         await this.getBalance();
+
+        this.transferring = false;
     }
 
     render() {
         const identityPrincipalString = this.identity
             ? this.identity.getPrincipal().toText()
-            : '';
+            : 'Loading...';
 
         const balanceString =
             this.balance === undefined || this.updatingBalance
@@ -136,8 +168,8 @@ export class CkApp extends LitElement {
 
         return html`
             <h1>ckBTC</h1>
-            <h2>${identityPrincipalString}</h2>
             <div>Bitcoin deposit address: ${depositAddressString}</div>
+            <div>ckBTC principal: ${identityPrincipalString}</div>
             <div>ckBTC balance: ${balanceString}</div>
             <div>
                 <button
@@ -152,18 +184,25 @@ export class CkApp extends LitElement {
                 <div>Transfer:</div>
                 To:
                 <input
+                    .disabled=${this.transferring}
                     type="text"
                     .value=${this.transferTo}
                     @input=${(e: any) => (this.transferTo = e.target.value)}
                 />
                 Amount:
                 <input
+                    .disabled=${this.transferring}
                     type="number"
                     .value=${this.transferAmount}
                     @input=${(e: any) =>
                         (this.transferAmount = BigInt(e.target.value))}
                 />
-                <button @click=${this.transfer}>Transfer</button>
+                <button
+                    .disabled=${this.transferring}
+                    @click=${this.transfer}
+                >
+                    Transfer
+                </button>
             </div>
         `;
     }
