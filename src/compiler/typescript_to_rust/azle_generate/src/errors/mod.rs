@@ -54,7 +54,7 @@ use crate::{
 
 use crate::canister_method::annotated_fn_decl::errors::InvalidParams;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Error {
     TypeNotFound(TypeNotFound),
     GuardFunctionNotFound(GuardFunctionNotFound),

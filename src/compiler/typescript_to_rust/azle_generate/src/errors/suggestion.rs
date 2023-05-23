@@ -1,3 +1,4 @@
+#[derive(Clone, Debug, PartialEq)]
 pub struct Suggestion {
     pub title: String,
     pub source: String,

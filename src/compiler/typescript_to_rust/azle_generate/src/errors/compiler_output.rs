@@ -6,6 +6,7 @@ use std::fmt;
 
 use super::{Location, Suggestion};
 
+#[derive(Clone, Debug, PartialEq)]
 pub struct CompilerOutput {
     pub title: String,
     pub annotation: String,

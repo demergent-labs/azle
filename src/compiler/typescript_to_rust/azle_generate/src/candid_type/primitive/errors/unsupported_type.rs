@@ -2,32 +2,40 @@ use swc_ecma_ast::{TsKeywordType, TsKeywordTypeKind};
 
 use crate::{
     errors::{CompilerOutput, InternalError, Suggestion},
-    internal_error,
     traits::{GetSourceFileInfo, GetSourceInfo, GetSourceText},
     ts_ast::SourceMapped,
     Error,
 };
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct UnsupportedType {
-    message: String,
+    compiler_output: CompilerOutput,
 }
 
+impl std::error::Error for UnsupportedType {}
+
 impl UnsupportedType {
-    pub fn from_ts_keyword_type(sm_keyword_type: &SourceMapped<TsKeywordType>) -> Self {
-        let message = match &sm_keyword_type.kind {
-            TsKeywordTypeKind::TsBigIntKeyword => sm_keyword_type.bigint_not_supported_error(),
-            TsKeywordTypeKind::TsObjectKeyword => sm_keyword_type.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsNeverKeyword => sm_keyword_type.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsSymbolKeyword => sm_keyword_type.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsIntrinsicKeyword => sm_keyword_type.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsUndefinedKeyword => sm_keyword_type.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsUnknownKeyword => sm_keyword_type.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsAnyKeyword => sm_keyword_type.keyword_not_supported_error(),
-            _ => Error::InternalError(InternalError {}), // TODO this is instead of the internal_error_macro
+    pub fn error_from_ts_keyword_type(sm_keyword_type: &SourceMapped<TsKeywordType>) -> Error {
+        let (suggestion, annotation) = match &sm_keyword_type.kind {
+            TsKeywordTypeKind::TsBigIntKeyword => sm_keyword_type.create_bigint_error(),
+            TsKeywordTypeKind::TsObjectKeyword => sm_keyword_type.create_not_supported_tuple(),
+            TsKeywordTypeKind::TsNeverKeyword => sm_keyword_type.create_not_supported_tuple(),
+            TsKeywordTypeKind::TsSymbolKeyword => sm_keyword_type.create_not_supported_tuple(),
+            TsKeywordTypeKind::TsIntrinsicKeyword => sm_keyword_type.create_not_supported_tuple(),
+            TsKeywordTypeKind::TsUndefinedKeyword => sm_keyword_type.create_not_supported_tuple(),
+            TsKeywordTypeKind::TsUnknownKeyword => sm_keyword_type.create_not_supported_tuple(),
+            TsKeywordTypeKind::TsAnyKeyword => sm_keyword_type.create_not_supported_tuple(),
+            _ => return Error::InternalError(InternalError {}),
+        };
+        Self {
+            compiler_output: CompilerOutput {
+                title: "Unsupported Type".to_string(),
+                annotation,
+                suggestion,
+                location: sm_keyword_type.get_location(),
+            },
         }
-        .to_string();
-        Self { message }
+        .into()
     }
 }
 
@@ -39,27 +47,12 @@ impl From<UnsupportedType> for crate::Error {
 
 impl std::fmt::Display for UnsupportedType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.message)
+        write!(f, "{}", self.compiler_output.to_string())
     }
 }
 
 impl SourceMapped<'_, TsKeywordType> {
-    pub(super) fn _unsupported_type_error(&self) -> Result<(), Error> {
-        Err(match &self.kind {
-            TsKeywordTypeKind::TsBigIntKeyword => self.bigint_not_supported_error(),
-            TsKeywordTypeKind::TsObjectKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsNeverKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsSymbolKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsIntrinsicKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsUndefinedKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsUnknownKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsAnyKeyword => self.keyword_not_supported_error(),
-            //TODO Unreachable: {} is supported", self.get_source_text()
-            _ => internal_error!(),
-        })
-    }
-
-    fn bigint_not_supported_error(&self) -> Error {
+    fn create_bigint_error(&self) -> (Option<Suggestion>, String) {
         let replacement = "int".to_string();
         let suggestion = Some(Suggestion {
             title: "`int` will cover most everything that `bigint` does. For more number type options see: https://internetcomputer.org/docs/current/references/candid-ref/#type-nat".to_string(),
@@ -68,26 +61,14 @@ impl SourceMapped<'_, TsKeywordType> {
             annotation: Some("Try using `int` here.".to_string()),
             import_suggestion: Some("import { int } from 'azle';".to_string()),
         });
-        Error::NewError(
-            CompilerOutput {
-                title: "Unsupported Type".to_string(),
-                location: self.get_location(),
-                annotation: "bigint is not a supported type".to_string(),
-                suggestion,
-            }
-            .to_string(),
-        )
+
+        (suggestion, "bigint is not a supported type".to_string())
     }
 
-    fn keyword_not_supported_error(&self) -> Error {
-        Error::NewError(
-            CompilerOutput {
-                title: "Unsupported Type".to_string(),
-                location: self.get_location(),
-                annotation: format!("{} is not a supported type", self.get_source_text()),
-                suggestion: None,
-            }
-            .to_string(),
+    fn create_not_supported_tuple(&self) -> (Option<Suggestion>, String) {
+        (
+            None,
+            format!("{} is not a supported type", self.get_source_text()),
         )
     }
 }
