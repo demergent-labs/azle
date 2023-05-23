@@ -22,12 +22,12 @@ impl SourceMapped<'_, TsTypeRef> {
         match &self.type_params {
             Some(params) => {
                 if params.params.len() != 1 {
-                    return Err(WrongNumberOfParams::from_ts_type_ref(self).into());
+                    return Err(WrongNumberOfParams::error_from_ts_type_ref(self).into());
                 }
                 let inner_type = params.params[0].deref();
                 Ok(SourceMapped::new(inner_type, self.source_map))
             }
-            None => return Err(WrongNumberOfParams::from_ts_type_ref(self).into()),
+            None => return Err(WrongNumberOfParams::error_from_ts_type_ref(self).into()),
         }
     }
 
