@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <script>
+            window.process = {
+                env: {
+                    CANISTER_ID_WALLET_BACKEND: '7ugoi-yiaaa-aaaaa-aabaa-cai'
+                }
+            };
+            window.global = globalThis;
+        </script>
+        <script
+            type="module"
+            src="elements/ck-app.ts"
+        ></script>
+    </head>
+
+    <body>
+        <ck-app></ck-app>
+    </body>
+</html>

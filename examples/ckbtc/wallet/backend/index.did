@@ -1,0 +1,58 @@
+type ICRCTransferError = variant {
+  GenericError : _InlineICRCTransferErrorGenericError;
+  TemporarilyUnavailable;
+  BadBurn : _InlineICRCTransferErrorBadBurn;
+  Duplicate : _InlineICRCTransferErrorDuplicate;
+  BadFee : _InlineICRCTransferErrorBadFee;
+  CreatedInFuture : _InlineICRCTransferErrorCreatedInFuture;
+  TooOld;
+  InsufficientFunds : _InlineICRCTransferErrorInsufficientFunds;
+};
+type ManualReply = variant { Ok : nat; Err : ICRCTransferError };
+type ManualReply_1 = variant { Ok : vec UtxoStatus; Err : UpdateBalanceError };
+type UpdateBalanceError = variant {
+  GenericError : _InlineUpdateBalanceErrorGenericError;
+  TemporarilyUnavailable : text;
+  AlreadyProcessing;
+  NoNewUtxos : _InlineUpdateBalanceErrorNoNewUtxos;
+};
+type Utxo = record {
+  height : nat32;
+  value : nat64;
+  outpoint : _InlineUtxoOutpoint;
+};
+type UtxoStatus = variant {
+  ValueTooSmall : Utxo;
+  Tainted : Utxo;
+  Minted : _InlineUtxoStatusMinted;
+  Checked : Utxo;
+};
+type _InlineICRCTransferErrorBadBurn = record { min_burn_amount : nat };
+type _InlineICRCTransferErrorBadFee = record { expected_fee : nat };
+type _InlineICRCTransferErrorCreatedInFuture = record { ledger_time : nat64 };
+type _InlineICRCTransferErrorDuplicate = record { duplicate_of : nat };
+type _InlineICRCTransferErrorGenericError = record {
+  message : text;
+  error_code : nat;
+};
+type _InlineICRCTransferErrorInsufficientFunds = record { balance : nat };
+type _InlineUpdateBalanceErrorGenericError = record {
+  error_message : text;
+  error_code : nat64;
+};
+type _InlineUpdateBalanceErrorNoNewUtxos = record {
+  required_confirmations : nat32;
+  current_confirmations : opt nat32;
+};
+type _InlineUtxoOutpoint = record { txid : vec nat8; vout : nat32 };
+type _InlineUtxoStatusMinted = record {
+  minted_amount : nat64;
+  block_index : nat64;
+  utxo : Utxo;
+};
+service : () -> {
+  getBalance : () -> (nat64);
+  getDepositAddress : () -> (text);
+  transfer : (text, nat) -> (ManualReply);
+  updateBalance : () -> (ManualReply_1);
+}

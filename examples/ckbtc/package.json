@@ -1,0 +1,15 @@
+{
+    "scripts": {
+        "pretest": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/pretest.ts",
+        "test": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/test.ts",
+        "build": "cd wallet/frontend && npm run build"
+    },
+    "dependencies": {
+        "azle": "0.16.2"
+    },
+    "devDependencies": {
+        "@dfinity/agent": "0.11.1",
+        "ts-node": "10.7.0",
+        "typescript": "4.6.3"
+    }
+}
