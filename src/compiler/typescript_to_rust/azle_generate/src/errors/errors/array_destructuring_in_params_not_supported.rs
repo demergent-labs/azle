@@ -1,9 +1,6 @@
 use swc_ecma_ast::{TsFnParam, TsFnType};
 
-use crate::{
-    canister_method::{annotated_fn_decl::errors::GetParamRange, AnnotatedFnDecl},
-    ts_ast::SourceMapped,
-};
+use crate::{canister_method::AnnotatedFnDecl, ts_ast::SourceMapped};
 
 use swc_ecma_ast::Param;
 
@@ -11,6 +8,8 @@ use crate::{
     errors::{CompilerOutput, Location, Suggestion},
     traits::GetSourceFileInfo,
 };
+
+use super::GetParamRange;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ArrayDestructuringInParamsNotSupported {

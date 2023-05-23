@@ -29,7 +29,7 @@ impl Program {
 
         let fm = cm
             .load_file(&filepath)
-            .map_err(|error| UnableToLoadFile::from_error(error))?;
+            .map_err(|error| UnableToLoadFile::from_error(error, ts_file_name))?;
 
         let lexer = Lexer::new(
             Syntax::Typescript(TsConfig {
@@ -54,7 +54,7 @@ impl Program {
                 };
                 internal_error!()
             }
-            Err(_error) => return Err(FileSyntaxError::from_file_name(ts_file_name).into()),
+            Err(_error) => return Err(FileSyntaxError::from_file_name(ts_file_name, _error).into()),
         }
     }
 }

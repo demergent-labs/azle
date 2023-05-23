@@ -11,20 +11,6 @@ use crate::{
 pub use no_type_annotation::NoTypeAnnotation;
 
 impl SourceMapped<'_, TsPropertySignature> {
-    pub(super) fn _no_type_annotation_error(&self) -> CompilerOutput {
-        CompilerOutput {
-            title: "Type Annotation Needed".to_string(),
-            location: Location {
-                origin: self.get_origin(),
-                line_number: self.get_line_number(),
-                source: self.get_source(),
-                range: self.get_range(),
-            },
-            annotation: "type annotation needed for this member".to_string(),
-            suggestion: None,
-        }
-    }
-
     /// Note: This shouldn't ever be hit because it is mostly likely caught by
     /// by the `unsupported_type_error` function in
     /// ts_ast/azle_type/azle_type_lit/azle_type_element/errors.rs

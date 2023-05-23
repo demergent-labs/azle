@@ -1,10 +1,17 @@
+use swc_ecma_parser::error::Error;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct FileSyntaxError {}
+pub struct FileSyntaxError {
+    ts_file_name: String,
+    error: String,
+}
 
 impl FileSyntaxError {
-    pub fn from_file_name(file_name: &str) -> Self {
-        Self {}
-        // Err(error) => panic!("{}: Syntax Error: {}", ts_file_name, error.kind().msg()), TODO I don't know how to reconcile this with the above Syntax error
+    pub fn from_file_name(file_name: &str, error: Error) -> Self {
+        Self {
+            ts_file_name: file_name.to_string(),
+            error: error.kind().msg().to_string(),
+        }
     }
 }
 
@@ -16,6 +23,6 @@ impl From<FileSyntaxError> for crate::Error {
 
 impl std::fmt::Display for FileSyntaxError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "TODO")
+        write!(f, "{}: Syntax Error: {}", self.ts_file_name, self.error)
     }
 }

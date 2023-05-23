@@ -4,8 +4,7 @@ use swc_ecma_ast::ClassProp;
 pub struct InvalidDecorator {}
 
 impl InvalidDecorator {
-    pub fn from_class_prop(class_prop: &ClassProp) -> Self {
-        // Self::InvalidDecorator => "Invalid decorator. Only @query and @update are permitted.",
+    pub fn from_class_prop(_: &ClassProp) -> Self {
         Self {}
     }
 }
@@ -18,6 +17,9 @@ impl From<InvalidDecorator> for crate::Error {
 
 impl std::fmt::Display for InvalidDecorator {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "TODO")
+        write!(
+            f,
+            "Invalid decorator. Only @query and @update are permitted."
+        )
     }
 }

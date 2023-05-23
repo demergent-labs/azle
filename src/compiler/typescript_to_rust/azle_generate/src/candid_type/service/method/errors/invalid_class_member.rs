@@ -6,11 +6,18 @@ use crate::{
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct InvalidClassMember {}
+pub struct InvalidClassMember {
+    message: String,
+}
 
 impl InvalidClassMember {
-    pub fn from_class_member(class_member: &ClassMember) -> Self {
-        Self {}
+    pub fn from_class_decl(
+        class_decl: &SourceMapped<ClassDecl>,
+        class_member: &ClassMember,
+    ) -> Self {
+        Self {
+            message: class_decl.build_invalid_class_member_error_message(class_member),
+        }
     }
 }
 
@@ -22,7 +29,7 @@ impl From<InvalidClassMember> for crate::Error {
 
 impl std::fmt::Display for InvalidClassMember {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "TODO")
+        write!(f, "{}", self.message)
     }
 }
 

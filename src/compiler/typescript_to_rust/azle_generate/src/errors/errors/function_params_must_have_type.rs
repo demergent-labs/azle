@@ -6,11 +6,11 @@ use crate::ts_ast::SourceMapped;
 pub struct FunctionParamsMustHaveType {}
 
 impl FunctionParamsMustHaveType {
-    pub fn from_ts_fn_type(sm_ts_fn_type: &SourceMapped<TsFnType>) -> Self {
+    pub fn from_ts_fn_type(_: &SourceMapped<TsFnType>) -> Self {
         Self {}
     }
 
-    pub fn from_ts_fn_param(ts_fn_param: &TsFnParam) -> Self {
+    pub fn from_ts_fn_param(_: &TsFnParam) -> Self {
         Self {}
     }
 }

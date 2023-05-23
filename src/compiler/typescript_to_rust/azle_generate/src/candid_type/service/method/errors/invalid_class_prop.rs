@@ -3,15 +3,18 @@ use swc_ecma_ast::{ClassDecl, ClassProp};
 use crate::{
     traits::{GetName, GetSourceFileInfo},
     ts_ast::SourceMapped,
-    Error,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct InvalidClassProp {}
+pub struct InvalidClassProp {
+    message: String,
+}
 
 impl InvalidClassProp {
-    pub fn from_class_prop(class_prop: &ClassProp) -> Self {
-        Self {}
+    pub fn from_class_decl(class_decl: &SourceMapped<ClassDecl>, class_prop: &ClassProp) -> Self {
+        Self {
+            message: class_decl.build_invalid_class_prop_error_message(class_prop),
+        }
     }
 }
 
@@ -23,16 +26,12 @@ impl From<InvalidClassProp> for crate::Error {
 
 impl std::fmt::Display for InvalidClassProp {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "TODO")
+        write!(f, "{}", self.message)
     }
 }
 
 impl SourceMapped<'_, ClassDecl> {
-    pub fn build_invalid_class_prop_error_message(
-        &self,
-        class_prop: &ClassProp,
-        error_message: Vec<Error>,
-    ) -> String {
+    pub fn build_invalid_class_prop_error_message(&self, class_prop: &ClassProp) -> String {
         let service_class_name = self.ident.get_name().to_string();
 
         let origin = self.source_map.get_origin(class_prop.span);

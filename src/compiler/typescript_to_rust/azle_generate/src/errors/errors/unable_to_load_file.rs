@@ -1,12 +1,18 @@
 use std::io::Error;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct UnableToLoadFile {}
-// UnableToLoadFile, // "Error: Unable to load file {}\n{}", ts_file_name, err),
+// TODO explore getting rid of the need for clone here so we can have the actual error
+#[derive(Debug, Clone, PartialEq)]
+pub struct UnableToLoadFile {
+    ts_file_name: String,
+    error: String,
+}
 
 impl UnableToLoadFile {
-    pub fn from_error(error: Error) -> Self {
-        Self {}
+    pub fn from_error(error: Error, ts_file_name: &str) -> Self {
+        Self {
+            ts_file_name: ts_file_name.to_string(),
+            error: error.to_string(),
+        }
     }
 }
 
@@ -18,6 +24,10 @@ impl From<UnableToLoadFile> for crate::Error {
 
 impl std::fmt::Display for UnableToLoadFile {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "TODO")
+        write!(
+            f,
+            "Error: Unable to load file {}\n{}",
+            self.ts_file_name, self.error
+        )
     }
 }

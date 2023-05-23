@@ -1,11 +1,13 @@
 use swc_ecma_ast::{Param, TsFnParam, TsFnType};
 
 use crate::{
-    canister_method::{annotated_fn_decl::errors::GetParamRange, AnnotatedFnDecl},
+    canister_method::AnnotatedFnDecl,
     errors::{CompilerOutput, Location, Suggestion},
     traits::GetSourceFileInfo,
     ts_ast::SourceMapped,
 };
+
+use super::GetParamRange;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ObjectDestructuringNotSupported {

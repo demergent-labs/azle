@@ -21,12 +21,16 @@ impl SourceMapped<'_, ClassDecl> {
 
                     match service_method_result {
                         Ok(service_method) => Ok(service_method),
-                        Err(_) => Err(vec![InvalidClassProp::from_class_prop(class_prop).into()]),
+                        Err(_) => Err(vec![
+                            InvalidClassProp::from_class_decl(self, class_prop).into()
+                        ]),
                     }
                 }
-                _ => Err(vec![
-                    InvalidClassMember::from_class_member(class_member).into()
-                ]),
+                _ => Err(vec![InvalidClassMember::from_class_decl(
+                    self,
+                    class_member,
+                )
+                .into()]),
             })
             .collect_results()
     }

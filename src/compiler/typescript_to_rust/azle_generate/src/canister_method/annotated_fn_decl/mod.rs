@@ -47,7 +47,12 @@ impl AnnotatedFnDecl<'_> {
                     let type_ref = return_type.as_ts_type_ref().unwrap();
                     match &type_ref.type_params {
                         Some(type_param_instantiation) => &*type_param_instantiation.params[0],
-                        None => return Err(MissingReturnType::from_annotated_fn_decl(self).into()), // formerly called with (type_ref.span, "Promise")
+                        None => {
+                            return Err(MissingReturnType::from_annotated_fn_decl(
+                                self, type_ref, "Promise",
+                            )
+                            .into())
+                        }
                     }
                 } else {
                     return_type
@@ -58,7 +63,14 @@ impl AnnotatedFnDecl<'_> {
                     let inner_type_ref = promise_unwrapped_return_type.as_ts_type_ref().unwrap();
                     match &inner_type_ref.type_params {
                         Some(type_param_instantiation) => &type_param_instantiation.params[0],
-                        None => return Err(MissingReturnType::from_annotated_fn_decl(self).into()), // formerly called with (inner_type_ref.span, "Manual")
+                        None => {
+                            return Err(MissingReturnType::from_annotated_fn_decl(
+                                self,
+                                inner_type_ref,
+                                "Manual",
+                            )
+                            .into())
+                        }
                     }
                 } else {
                     promise_unwrapped_return_type
@@ -99,9 +111,10 @@ impl AnnotatedFnDecl<'_> {
                 Pat::Object(_) => Err(vec![
                     ObjectDestructuringNotSupported::from_annotated_fn_decl(self, param).into(),
                 ]),
-                Pat::Assign(_assign_pat) => {
-                    Err(vec![ParamDefaultValue::from_annotated_fn_decl(self).into()])
-                }
+                Pat::Assign(assign_pat) => Err(vec![ParamDefaultValue::from_annotated_fn_decl(
+                    self, assign_pat,
+                )
+                .into()]),
                 Pat::Invalid(_) => Err(vec![InvalidParams::from_annotated_fn_decl(self).into()]),
                 Pat::Expr(_) => Err(vec![InvalidParams::from_annotated_fn_decl(self).into()]),
             })
@@ -115,7 +128,11 @@ impl AnnotatedFnDecl<'_> {
             .iter()
             .map(|ident| match &ident.type_ann {
                 Some(ts_type_ann) => Ok(ts_type_ann.type_ann.as_ref()),
-                None => return Err(vec![UntypedParam::from_annotated_fn_decl(self).into()]), // Called with *ident
+                None => {
+                    return Err(vec![
+                        UntypedParam::from_annotated_fn_decl(self, *ident).into()
+                    ])
+                }
             })
             .collect_results()
     }
@@ -146,7 +163,7 @@ impl AnnotatedFnDecl<'_> {
             TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
                 TsEntityName::Ident(ident) => Ok(ident.get_name() == "Manual"),
                 TsEntityName::TsQualifiedName(_) => {
-                    return Err(QualifiedType::from_annotated_fn_decl(self).into())
+                    return Err(QualifiedType::from_annotated_fn_decl(self, ts_type_ref).into())
                 }
             },
             _ => Ok(false),
@@ -159,7 +176,7 @@ impl AnnotatedFnDecl<'_> {
                 TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
                     TsEntityName::Ident(ident) => Ok(ident.get_name() == "Promise"),
                     TsEntityName::TsQualifiedName(_) => {
-                        return Err(QualifiedType::from_annotated_fn_decl(self).into())
+                        return Err(QualifiedType::from_annotated_fn_decl(self, ts_type_ref).into())
                     }
                 },
                 _ => Ok(false),

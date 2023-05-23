@@ -4,7 +4,7 @@ use swc_ecma_ast::ClassProp;
 pub struct ComputedPropertyNotAllowed {}
 
 impl ComputedPropertyNotAllowed {
-    pub fn from_class_prop(class_prop: &ClassProp) -> Self {
+    pub fn from_class_prop(_: &ClassProp) -> Self {
         Self {}
     }
 }
