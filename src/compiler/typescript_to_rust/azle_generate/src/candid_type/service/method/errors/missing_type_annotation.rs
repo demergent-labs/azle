@@ -9,6 +9,8 @@ impl MissingTypeAnnotation {
     }
 }
 
+impl std::error::Error for MissingTypeAnnotation {}
+
 impl From<MissingTypeAnnotation> for crate::Error {
     fn from(error: MissingTypeAnnotation) -> Self {
         Self::MissingTypeAnnotation(error)

@@ -21,6 +21,8 @@ impl InvalidClassMember {
     }
 }
 
+impl std::error::Error for InvalidClassMember {}
+
 impl From<InvalidClassMember> for crate::Error {
     fn from(error: InvalidClassMember) -> Self {
         Self::InvalidClassMember(error)

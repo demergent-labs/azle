@@ -9,6 +9,8 @@ impl NamespaceQualifiedType {
     }
 }
 
+impl std::error::Error for NamespaceQualifiedType {}
+
 impl From<NamespaceQualifiedType> for crate::Error {
     fn from(error: NamespaceQualifiedType) -> Self {
         Self::NamespaceQualifiedType(error)

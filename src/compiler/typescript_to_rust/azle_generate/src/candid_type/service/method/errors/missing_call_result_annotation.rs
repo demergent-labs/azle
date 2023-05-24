@@ -9,6 +9,8 @@ impl MissingCallResultAnnotation {
     }
 }
 
+impl std::error::Error for MissingCallResultAnnotation {}
+
 impl From<MissingCallResultAnnotation> for crate::Error {
     fn from(error: MissingCallResultAnnotation) -> Self {
         Self::MissingCallResultAnnotation(error)

@@ -36,6 +36,8 @@ impl ObjectDestructuringNotSupported {
     }
 }
 
+impl std::error::Error for ObjectDestructuringNotSupported {}
+
 impl From<ObjectDestructuringNotSupported> for crate::Error {
     fn from(error: ObjectDestructuringNotSupported) -> Self {
         Self::ObjectDestructuringNotSupported(error)

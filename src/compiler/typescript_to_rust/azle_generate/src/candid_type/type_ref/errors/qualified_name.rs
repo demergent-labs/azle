@@ -23,6 +23,8 @@ impl QualifiedName {
     }
 }
 
+impl std::error::Error for QualifiedName {}
+
 impl From<QualifiedName> for crate::Error {
     fn from(error: QualifiedName) -> Self {
         Self::QualifiedName(error)

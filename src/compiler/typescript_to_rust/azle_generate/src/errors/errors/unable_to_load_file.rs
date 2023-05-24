@@ -16,6 +16,8 @@ impl UnableToLoadFile {
     }
 }
 
+impl std::error::Error for UnableToLoadFile {}
+
 impl From<UnableToLoadFile> for crate::Error {
     fn from(error: UnableToLoadFile) -> Self {
         Self::UnableToLoadFile(error)

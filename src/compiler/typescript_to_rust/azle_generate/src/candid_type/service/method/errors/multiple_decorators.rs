@@ -13,6 +13,8 @@ impl NotExactlyOneDecorator {
     }
 }
 
+impl std::error::Error for NotExactlyOneDecorator {}
+
 impl From<NotExactlyOneDecorator> for crate::Error {
     fn from(error: NotExactlyOneDecorator) -> Self {
         Self::NotExactlyOneDecorator(error)

@@ -1,8 +1,6 @@
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct InternalError {}
 
-impl std::error::Error for InternalError {}
-
 impl std::fmt::Display for InternalError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -11,6 +9,8 @@ impl std::fmt::Display for InternalError {
         )
     }
 }
+
+impl std::error::Error for InternalError {}
 
 impl From<InternalError> for crate::Error {
     fn from(error: InternalError) -> Self {

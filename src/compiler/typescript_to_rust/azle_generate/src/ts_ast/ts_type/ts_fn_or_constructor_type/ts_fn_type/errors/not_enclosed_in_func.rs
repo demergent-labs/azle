@@ -19,6 +19,8 @@ impl NotEnclosedInFunc {
     }
 }
 
+impl std::error::Error for NotEnclosedInFunc {}
+
 impl From<NotEnclosedInFunc> for crate::Error {
     fn from(error: NotEnclosedInFunc) -> Self {
         Self::NotEnclosedInFunc(error)

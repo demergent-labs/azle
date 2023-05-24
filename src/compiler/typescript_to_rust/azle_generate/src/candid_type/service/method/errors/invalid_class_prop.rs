@@ -18,6 +18,8 @@ impl InvalidClassProp {
     }
 }
 
+impl std::error::Error for InvalidClassProp {}
+
 impl From<InvalidClassProp> for crate::Error {
     fn from(error: InvalidClassProp) -> Self {
         Self::InvalidClassProp(error)

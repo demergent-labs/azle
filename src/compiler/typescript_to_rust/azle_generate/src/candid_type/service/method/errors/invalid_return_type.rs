@@ -9,6 +9,8 @@ impl InvalidReturnType {
     }
 }
 
+impl std::error::Error for InvalidReturnType {}
+
 impl From<InvalidReturnType> for crate::Error {
     fn from(error: InvalidReturnType) -> Self {
         Self::InvalidReturnType(error)

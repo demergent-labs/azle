@@ -9,6 +9,8 @@ impl TooManyReturnTypes {
     }
 }
 
+impl std::error::Error for TooManyReturnTypes {}
+
 impl From<TooManyReturnTypes> for crate::Error {
     fn from(error: TooManyReturnTypes) -> Self {
         Self::TooManyReturnTypes(error)

@@ -15,6 +15,8 @@ impl UnexpectedTsType {
     }
 }
 
+impl std::error::Error for UnexpectedTsType {}
+
 impl From<UnexpectedTsType> for crate::Error {
     fn from(error: UnexpectedTsType) -> Self {
         Self::UnexpectedTsType(error)

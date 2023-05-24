@@ -15,6 +15,8 @@ impl UnexpectedTsTupleTypes {
     }
 }
 
+impl std::error::Error for UnexpectedTsTupleTypes {}
+
 impl From<UnexpectedTsTupleTypes> for crate::Error {
     fn from(error: UnexpectedTsTupleTypes) -> Self {
         Self::UnexpectedTsTupleType(error)

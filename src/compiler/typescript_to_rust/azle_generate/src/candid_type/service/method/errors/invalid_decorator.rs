@@ -9,6 +9,8 @@ impl InvalidDecorator {
     }
 }
 
+impl std::error::Error for InvalidDecorator {}
+
 impl From<InvalidDecorator> for crate::Error {
     fn from(error: InvalidDecorator) -> Self {
         Self::InvalidDecorator(error)

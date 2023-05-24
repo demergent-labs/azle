@@ -19,6 +19,8 @@ impl VariantPropertySignature {
     }
 }
 
+impl std::error::Error for VariantPropertySignature {}
+
 impl From<VariantPropertySignature> for crate::Error {
     fn from(error: VariantPropertySignature) -> Self {
         Self::VariantPropertySignature(error)

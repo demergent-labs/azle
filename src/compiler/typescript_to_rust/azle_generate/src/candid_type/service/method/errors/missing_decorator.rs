@@ -9,6 +9,8 @@ impl MissingDecorator {
     }
 }
 
+impl std::error::Error for MissingDecorator {}
+
 impl From<MissingDecorator> for crate::Error {
     fn from(error: MissingDecorator) -> Self {
         Self::MissingDecorator(error)

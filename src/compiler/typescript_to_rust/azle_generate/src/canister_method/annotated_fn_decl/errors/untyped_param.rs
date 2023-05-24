@@ -22,6 +22,8 @@ impl UntypedParam {
     }
 }
 
+impl std::error::Error for UntypedParam {}
+
 impl From<UntypedParam> for crate::Error {
     fn from(error: UntypedParam) -> Self {
         Self::UntypedParam(error)

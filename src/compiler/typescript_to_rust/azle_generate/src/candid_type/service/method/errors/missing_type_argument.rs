@@ -9,6 +9,8 @@ impl MissingTypeArguments {
     }
 }
 
+impl std::error::Error for MissingTypeArguments {}
+
 impl From<MissingTypeArguments> for crate::Error {
     fn from(error: MissingTypeArguments) -> Self {
         Self::MissingTypeArgument(error)

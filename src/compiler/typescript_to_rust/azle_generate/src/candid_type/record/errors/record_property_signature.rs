@@ -19,6 +19,8 @@ impl RecordPropertySignature {
     }
 }
 
+impl std::error::Error for RecordPropertySignature {}
+
 impl From<RecordPropertySignature> for crate::Error {
     fn from(error: RecordPropertySignature) -> Self {
         Self::RecordPropertySignature(error)

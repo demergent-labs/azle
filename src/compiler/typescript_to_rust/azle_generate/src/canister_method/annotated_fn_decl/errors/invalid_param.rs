@@ -9,6 +9,8 @@ impl InvalidParams {
     }
 }
 
+impl std::error::Error for InvalidParams {}
+
 impl From<InvalidParams> for crate::Error {
     fn from(error: InvalidParams) -> Self {
         Self::InvalidParams(error)

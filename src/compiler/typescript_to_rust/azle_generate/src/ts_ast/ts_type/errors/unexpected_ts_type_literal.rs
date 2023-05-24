@@ -15,6 +15,8 @@ impl UnexpectedTsTypeLiteral {
     }
 }
 
+impl std::error::Error for UnexpectedTsTypeLiteral {}
+
 impl From<UnexpectedTsTypeLiteral> for crate::Error {
     fn from(error: UnexpectedTsTypeLiteral) -> Self {
         Self::UnexpectedTsTypeLiteral(error)

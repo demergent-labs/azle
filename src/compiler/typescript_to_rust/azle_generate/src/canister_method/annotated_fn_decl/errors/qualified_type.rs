@@ -23,6 +23,8 @@ impl QualifiedType {
     }
 }
 
+impl std::error::Error for QualifiedType {}
+
 impl From<QualifiedType> for crate::Error {
     fn from(error: QualifiedType) -> Self {
         Self::QualifiedType(error)

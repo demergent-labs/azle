@@ -36,6 +36,8 @@ impl RestParametersNotSupported {
     }
 }
 
+impl std::error::Error for RestParametersNotSupported {}
+
 impl From<RestParametersNotSupported> for crate::Error {
     fn from(error: RestParametersNotSupported) -> Self {
         Self::RestParametersNotSupported(error)

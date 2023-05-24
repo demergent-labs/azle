@@ -9,6 +9,8 @@ impl ComputedPropertyNotAllowed {
     }
 }
 
+impl std::error::Error for ComputedPropertyNotAllowed {}
+
 impl From<ComputedPropertyNotAllowed> for crate::Error {
     fn from(error: ComputedPropertyNotAllowed) -> Self {
         Self::ComputedPropertyNotAllowed(error)

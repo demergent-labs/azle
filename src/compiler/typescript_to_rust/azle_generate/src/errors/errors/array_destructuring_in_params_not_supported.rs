@@ -38,6 +38,8 @@ impl ArrayDestructuringInParamsNotSupported {
     }
 }
 
+impl std::error::Error for ArrayDestructuringInParamsNotSupported {}
+
 impl From<ArrayDestructuringInParamsNotSupported> for crate::Error {
     fn from(error: ArrayDestructuringInParamsNotSupported) -> Self {
         Self::ArrayDestructuringInParamsNotSupported(error)

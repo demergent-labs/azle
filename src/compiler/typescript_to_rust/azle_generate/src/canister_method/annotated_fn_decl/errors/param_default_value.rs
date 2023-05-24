@@ -22,6 +22,8 @@ impl ParamDefaultValue {
     }
 }
 
+impl std::error::Error for ParamDefaultValue {}
+
 impl From<ParamDefaultValue> for crate::Error {
     fn from(error: ParamDefaultValue) -> Self {
         Self::ParamDefaultValue(error)

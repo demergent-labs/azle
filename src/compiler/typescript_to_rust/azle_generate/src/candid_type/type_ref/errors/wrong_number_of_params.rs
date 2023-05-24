@@ -26,6 +26,8 @@ impl WrongNumberOfParams {
     }
 }
 
+impl std::error::Error for WrongNumberOfParams {}
+
 impl From<WrongNumberOfParams> for crate::Error {
     fn from(error: WrongNumberOfParams) -> Self {
         Self::WrongNumberOfParams(error)

@@ -15,6 +15,8 @@ impl FunctionParamsMustHaveType {
     }
 }
 
+impl std::error::Error for FunctionParamsMustHaveType {}
+
 impl From<FunctionParamsMustHaveType> for crate::Error {
     fn from(error: FunctionParamsMustHaveType) -> Self {
         Self::FunctionParamsMustHaveType(error)

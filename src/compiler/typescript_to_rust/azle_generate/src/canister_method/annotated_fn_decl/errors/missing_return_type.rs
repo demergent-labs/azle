@@ -25,6 +25,8 @@ impl MissingReturnType {
     }
 }
 
+impl std::error::Error for MissingReturnType {}
+
 impl From<MissingReturnType> for crate::Error {
     fn from(error: MissingReturnType) -> Self {
         Self::MissingReturnType(error)

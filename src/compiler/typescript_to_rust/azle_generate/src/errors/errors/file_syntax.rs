@@ -15,6 +15,8 @@ impl FileSyntaxError {
     }
 }
 
+impl std::error::Error for FileSyntaxError {}
+
 impl From<FileSyntaxError> for crate::Error {
     fn from(error: FileSyntaxError) -> Self {
         Self::FileSyntaxError(error)

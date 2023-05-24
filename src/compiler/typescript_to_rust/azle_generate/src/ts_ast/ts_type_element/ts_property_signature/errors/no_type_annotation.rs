@@ -19,6 +19,8 @@ impl NoTypeAnnotation {
     }
 }
 
+impl std::error::Error for NoTypeAnnotation {}
+
 impl From<NoTypeAnnotation> for crate::Error {
     fn from(error: NoTypeAnnotation) -> Self {
         Self::NoTypeAnnotation(error)
