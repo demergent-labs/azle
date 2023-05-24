@@ -13,6 +13,7 @@ use crate::{
         },
         CollectResults,
     },
+    internal_error,
     traits::GetName,
     Error,
 };
@@ -42,9 +43,11 @@ impl AnnotatedFnDecl<'_> {
             Some(ts_type_ann) => {
                 let return_type = &*ts_type_ann.type_ann;
 
-                let promise_unwrapped_return_type = if self.is_promise()? {
-                    // UNWRAP HERE
-                    let type_ref = return_type.as_ts_type_ref().unwrap();
+                let promise_return_type = if self.is_promise()? {
+                    let type_ref = match return_type.as_ts_type_ref() {
+                        Some(type_ref) => type_ref,
+                        None => internal_error!(), // Since it is a promise we know it's a type_ref
+                    };
                     match &type_ref.type_params {
                         Some(type_param_instantiation) => &*type_param_instantiation.params[0],
                         None => {
@@ -58,9 +61,11 @@ impl AnnotatedFnDecl<'_> {
                     return_type
                 };
 
-                let manual_unwrapped_return_type = if self.is_manual()? {
-                    // UNWRAP HERE
-                    let inner_type_ref = promise_unwrapped_return_type.as_ts_type_ref().unwrap();
+                let manual_return_type = if self.is_manual()? {
+                    let inner_type_ref = match promise_return_type.as_ts_type_ref() {
+                        Some(inner_type_ref) => inner_type_ref,
+                        None => internal_error!(), // Since it is manual we know it's a type_ref
+                    };
                     match &inner_type_ref.type_params {
                         Some(type_param_instantiation) => &type_param_instantiation.params[0],
                         None => {
@@ -73,9 +78,9 @@ impl AnnotatedFnDecl<'_> {
                         }
                     }
                 } else {
-                    promise_unwrapped_return_type
+                    promise_return_type
                 };
-                Ok(manual_unwrapped_return_type)
+                Ok(manual_return_type)
             }
             None => return Err(MissingReturnTypeAnnotation::from_annotated_fn_decl(self).into()),
         }
@@ -149,9 +154,11 @@ impl AnnotatedFnDecl<'_> {
     pub fn is_manual(&self) -> Result<bool, Error> {
         let return_type = match &self.fn_decl.function.return_type {
             Some(ts_type_ann) => match self.is_promise()? {
-                // UNWRAP HERE
-                true => match &ts_type_ann.type_ann.as_ts_type_ref().unwrap().type_params {
-                    Some(type_param_instantiation) => &type_param_instantiation.params[0],
+                true => match &ts_type_ann.type_ann.as_ts_type_ref() {
+                    Some(ts_type_ref) => match &ts_type_ref.type_params {
+                        Some(type_param_instantiation) => &type_param_instantiation.params[0],
+                        None => return Ok(false),
+                    },
                     None => return Ok(false),
                 },
                 false => &*ts_type_ann.type_ann,

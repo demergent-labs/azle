@@ -3,6 +3,7 @@ use std::ops::Deref;
 use swc_ecma_ast::{Decl, Expr};
 
 use crate::{
+    errors::CollectResults,
     traits::GetName,
     ts_ast::{Program, SourceMapped, TsAst},
     Error,
@@ -26,35 +27,39 @@ pub struct StableBTreeMapNode {
 
 impl TsAst {
     pub fn build_stable_b_tree_map_nodes(&self) -> Result<Vec<StableBTreeMapNode>, Vec<Error>> {
-        Ok(self
-            .programs
+        self.programs
             .iter()
-            .flat_map(|program| program.build_stable_b_tree_map_nodes())
-            .collect())
+            .map(|program| program.build_stable_b_tree_map_nodes())
+            .collect_results()
+            .map(|vec_of_vec| vec_of_vec.into_iter().flatten().collect::<Vec<_>>())
     }
 }
 
 impl Program {
-    pub fn build_stable_b_tree_map_nodes(&self) -> Vec<StableBTreeMapNode> {
+    pub fn build_stable_b_tree_map_nodes(&self) -> Result<Vec<StableBTreeMapNode>, Vec<Error>> {
         match self.deref() {
             swc_ecma_ast::Program::Module(module) => module
                 .body
                 .iter()
                 .filter_map(|module_item| module_item.as_decl())
-                .flat_map(|decl| self.process_decl(decl).into_iter())
-                .collect(),
-            swc_ecma_ast::Program::Script(_) => vec![],
+                .map(|decl| self.process_decl(decl))
+                .collect_results()
+                .map(|vec_of_vec| vec_of_vec.into_iter().flatten().collect::<Vec<_>>()),
+            swc_ecma_ast::Program::Script(_) => Ok(vec![]),
         }
     }
 
-    fn process_decl(&self, decl: &Decl) -> Vec<StableBTreeMapNode> {
+    fn process_decl(&self, decl: &Decl) -> Result<Vec<StableBTreeMapNode>, Vec<Error>> {
         match decl {
             Decl::Var(var_decl) => self.process_var_decl(var_decl),
-            _ => vec![],
+            _ => Ok(vec![]),
         }
     }
 
-    fn process_var_decl(&self, var_decl: &swc_ecma_ast::VarDecl) -> Vec<StableBTreeMapNode> {
+    fn process_var_decl(
+        &self,
+        var_decl: &swc_ecma_ast::VarDecl,
+    ) -> Result<Vec<StableBTreeMapNode>, Vec<Error>> {
         var_decl
             .decls
             .iter()
@@ -66,11 +71,10 @@ impl Program {
                             Expr::Ident(ident) if ident.get_name() == "StableBTreeMap"
                         ) =>
                     {
-                        let new_expr = SourceMapped::new(new_expr, &self.source_map);
-                        match new_expr.to_stable_b_tree_map_node() {
-                            Ok(stable_b_tree_map_node) => Some(stable_b_tree_map_node),
-                            Err(err) => panic!("{:#?}", err),
-                        }
+                        Some(
+                            SourceMapped::new(new_expr, &self.source_map)
+                                .to_stable_b_tree_map_node(),
+                        )
                     }
                     _ => None,
                 },
