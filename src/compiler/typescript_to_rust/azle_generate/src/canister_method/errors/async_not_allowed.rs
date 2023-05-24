@@ -4,6 +4,7 @@ use crate::{
     canister_method::AnnotatedFnDecl,
     errors::{CompilerOutput, InternalError, Location, Suggestion},
     traits::GetSourceFileInfo,
+    Error,
 };
 
 /// Returned when a system canister method (other than heartbeat) is marked as async.
@@ -23,7 +24,7 @@ pub struct AsyncNotAllowed {
 }
 
 impl AsyncNotAllowed {
-    pub fn from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl) -> Self {
+    pub fn error_from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl) -> Error {
         let annotation = match annotated_fn_decl.annotation.method_type {
             CanisterMethodType::Heartbeat => "$heartbeat",
             CanisterMethodType::Init => "$init",
@@ -39,7 +40,7 @@ impl AsyncNotAllowed {
             Some(return_type) => return_type.span,
             // Return Types are guaranteed by a check in get_annotated_fn_decls:
             // src/compiler/typescript_to_rust/azle_generate/src/canister_method/module.rs
-            None => panic!("{}", InternalError {}.to_string()),
+            None => return Error::InternalError(InternalError {}),
         };
         let origin = annotated_fn_decl.source_map.get_origin(span);
         let line_number = annotated_fn_decl.source_map.get_line_number(span);
@@ -55,6 +56,7 @@ impl AsyncNotAllowed {
                 source,
             },
         }
+        .into()
     }
 
     pub fn to_string(&self) -> String {

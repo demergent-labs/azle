@@ -2,6 +2,7 @@ use crate::{
     canister_method::AnnotatedFnDecl,
     errors::{CompilerOutput, InternalError, Location, Suggestion},
     traits::GetSourceFileInfo,
+    Error,
 };
 
 /// Returned when a system canister method has a return type other than void
@@ -23,12 +24,12 @@ pub struct VoidReturnTypeRequired {
 }
 
 impl VoidReturnTypeRequired {
-    pub fn from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl) -> Self {
+    pub fn error_from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl) -> Error {
         let span = match &annotated_fn_decl.fn_decl.function.return_type {
             Some(return_type) => return_type.span,
             // Return Types are guaranteed by a check in get_annotated_fn_decls:
             // src/compiler/typescript_to_rust/azle_generate/src/canister_method/module.rs
-            None => panic!("{}", InternalError {}.to_string()),
+            None => return Error::InternalError(InternalError {}),
         };
         let line_number = annotated_fn_decl.source_map.get_line_number(span);
         let origin = annotated_fn_decl.source_map.get_origin(span);
@@ -43,6 +44,7 @@ impl VoidReturnTypeRequired {
                 source,
             },
         }
+        .into()
     }
 
     pub fn to_string(&self) -> String {

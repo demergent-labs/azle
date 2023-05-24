@@ -21,10 +21,10 @@ impl TsAst {
             .collect::<Vec<_>>()
             .check_length_and_map(CanisterMethodType::Heartbeat, |heartbeat_fn_decl| {
                 if !heartbeat_fn_decl.is_void() {
-                    Err(vec![VoidReturnTypeRequired::from_annotated_fn_decl(
-                        heartbeat_fn_decl,
+                    Err(
+                        VoidReturnTypeRequired::error_from_annotated_fn_decl(heartbeat_fn_decl)
+                            .into(),
                     )
-                    .into()])
                 } else {
                     let body = rust::generate(heartbeat_fn_decl)?;
                     let guard_function_name = heartbeat_fn_decl.annotation.guard.clone();

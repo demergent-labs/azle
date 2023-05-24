@@ -28,17 +28,15 @@ impl TsAst {
                 let errors = match post_upgrade_fn_decl.is_void() {
                     true => vec![],
                     false => {
-                        vec![
-                            VoidReturnTypeRequired::from_annotated_fn_decl(post_upgrade_fn_decl)
-                                .into(),
-                        ]
+                        VoidReturnTypeRequired::error_from_annotated_fn_decl(post_upgrade_fn_decl)
+                            .into()
                     }
                 };
 
                 let errors = match post_upgrade_fn_decl.fn_decl.function.is_async {
                     true => vec![
                         errors,
-                        vec![AsyncNotAllowed::from_annotated_fn_decl(post_upgrade_fn_decl).into()],
+                        AsyncNotAllowed::error_from_annotated_fn_decl(post_upgrade_fn_decl).into(),
                     ]
                     .concat(),
                     false => errors,

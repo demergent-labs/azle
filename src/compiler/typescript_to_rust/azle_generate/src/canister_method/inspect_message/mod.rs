@@ -27,21 +27,17 @@ impl TsAst {
                 |inspect_message_fn_decl| {
                     let errors = match inspect_message_fn_decl.is_void() {
                         true => vec![],
-                        false => {
-                            vec![VoidReturnTypeRequired::from_annotated_fn_decl(
-                                inspect_message_fn_decl,
-                            )
-                            .into()]
-                        }
+                        false => VoidReturnTypeRequired::error_from_annotated_fn_decl(
+                            inspect_message_fn_decl,
+                        )
+                        .into(),
                     };
 
                     let errors = match inspect_message_fn_decl.fn_decl.function.is_async {
                         true => vec![
                             errors,
-                            vec![
-                                AsyncNotAllowed::from_annotated_fn_decl(inspect_message_fn_decl)
-                                    .into(),
-                            ],
+                            AsyncNotAllowed::error_from_annotated_fn_decl(inspect_message_fn_decl)
+                                .into(),
                         ]
                         .concat(),
                         false => errors,
