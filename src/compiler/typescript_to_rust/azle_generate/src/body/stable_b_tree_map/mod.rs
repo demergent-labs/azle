@@ -11,7 +11,7 @@ use module_item::AsDecl;
 
 mod expr;
 mod module_item;
-mod new_expr;
+pub mod new_expr;
 
 pub mod rust;
 

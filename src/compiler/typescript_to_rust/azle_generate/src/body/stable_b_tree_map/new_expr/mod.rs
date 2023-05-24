@@ -2,10 +2,15 @@ use std::ops::Deref;
 
 use swc_ecma_ast::NewExpr;
 
-use super::expr::{ToU32, ToU8};
-use crate::{ts_ast::SourceMapped, Error, StableBTreeMapNode};
+use self::errors::{ArgSpread, IncorrectNumberOfArgs, IncorrectTypeArgs, InvalidArg, MissingArgs};
 
-mod errors;
+use super::expr::{ToU32, ToU8};
+use crate::{
+    candid_type::service::method::errors::MissingTypeArguments, ts_ast::SourceMapped, Error,
+    StableBTreeMapNode,
+};
+
+pub mod errors;
 mod get_span;
 
 pub enum ArgName {
@@ -19,10 +24,7 @@ impl SourceMapped<'_, NewExpr> {
         match &self.type_args {
             Some(type_args) => {
                 if type_args.params.len() != 2 {
-                    return Err(Error::NewError(
-                        self.build_incorrect_type_args_error_message().to_string(),
-                    )
-                    .into());
+                    return Err(vec![IncorrectTypeArgs::from_new_expr(self).into()]);
                 }
 
                 let key_type =
@@ -38,38 +40,28 @@ impl SourceMapped<'_, NewExpr> {
                 match &self.args {
                     Some(args) => {
                         if args.len() == 0 {
-                            return Err(Error::NewError(
-                                self.build_missing_args_error_message().to_string(),
-                            )
-                            .into());
+                            return Err(vec![MissingArgs::from_new_expr(self).into()]);
                         }
 
                         for arg in args {
                             if arg.spread.is_some() {
-                                return Err(Error::NewError(
-                                    self.build_arg_spread_error_message().to_string(),
-                                )
-                                .into());
+                                return Err(vec![ArgSpread::from_new_expr(self).into()]);
                             }
                         }
 
                         if args.len() != 3 {
-                            return Err(Error::NewError(
-                                self.build_incorrect_number_of_args_error_message()
-                                    .to_string(),
-                            )
-                            .into());
+                            return Err(vec![IncorrectNumberOfArgs::from_new_expr(self).into()]);
                         }
 
                         // UNWRAP HERE
                         let memory_id = match &args.get(0).unwrap().expr.to_u8() {
                             Ok(value) => *value,
                             Err(_) => {
-                                return Err(Error::NewError(
-                                    self.build_invalid_arg_error_message(ArgName::MessageId)
-                                        .to_string(),
+                                return Err(vec![InvalidArg::from_new_expr(
+                                    self,
+                                    ArgName::MessageId,
                                 )
-                                .into())
+                                .into()])
                             }
                         };
 
@@ -77,11 +69,11 @@ impl SourceMapped<'_, NewExpr> {
                         let max_key_size = match &args.get(1).unwrap().expr.to_u32() {
                             Ok(value) => *value,
                             Err(_) => {
-                                return Err(Error::NewError(
-                                    self.build_invalid_arg_error_message(ArgName::MaxKeySize)
-                                        .to_string(),
+                                return Err(vec![InvalidArg::from_new_expr(
+                                    self,
+                                    ArgName::MaxKeySize,
                                 )
-                                .into())
+                                .into()])
                             }
                         };
 
@@ -89,11 +81,11 @@ impl SourceMapped<'_, NewExpr> {
                         let max_value_size = match &args.get(2).unwrap().expr.to_u32() {
                             Ok(value) => *value,
                             Err(_) => {
-                                return Err(Error::NewError(
-                                    self.build_invalid_arg_error_message(ArgName::MaxValueSize)
-                                        .to_string(),
+                                return Err(vec![InvalidArg::from_new_expr(
+                                    self,
+                                    ArgName::MaxValueSize,
                                 )
-                                .into())
+                                .into()])
                             }
                         };
 
@@ -105,15 +97,10 @@ impl SourceMapped<'_, NewExpr> {
                             max_value_size,
                         })
                     }
-                    None => Err(Error::NewError(
-                        self.build_missing_args_error_message().to_string(),
-                    )
-                    .into()),
+                    None => Err(vec![MissingArgs::from_new_expr(self).into()]),
                 }
             }
-            None => Err(
-                Error::NewError(self.build_missing_type_args_error_message().to_string()).into(),
-            ),
+            None => Err(vec![MissingTypeArguments::from_new_expr(self).into()]),
         }
     }
 }

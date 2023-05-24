@@ -1,3 +1,9 @@
+mod arg_spread;
+mod incorrect_number_of_args;
+mod incorrect_type_args;
+mod invalid_arg;
+mod missing_args;
+
 use swc_ecma_ast::NewExpr;
 
 use super::ArgName;
@@ -7,135 +13,13 @@ use crate::{
     ts_ast::SourceMapped,
 };
 
+pub use arg_spread::ArgSpread;
+pub use incorrect_number_of_args::IncorrectNumberOfArgs;
+pub use incorrect_type_args::IncorrectTypeArgs;
+pub use invalid_arg::InvalidArg;
+pub use missing_args::MissingArgs;
+
 impl SourceMapped<'_, NewExpr> {
-    pub fn build_missing_type_args_error_message(&self) -> CompilerOutput {
-        self.build_type_arg_error_message("missing type arguments".to_string())
-    }
-
-    pub fn build_incorrect_type_args_error_message(&self) -> CompilerOutput {
-        self.build_type_arg_error_message("wrong number of type arguments".to_string())
-    }
-
-    fn build_type_arg_error_message(&self, title: String) -> CompilerOutput {
-        let source = self.get_source();
-        let range = (
-            // UNWRAP HERE
-            source.find("StableBTreeMap").unwrap() + "StableBTreeMap".len(),
-            // UNWRAP HERE
-            source.find("(").unwrap(),
-        );
-        let annotation = "expected exactly 2 type arguments here".to_string();
-        let help = "specify a key and value type. E.g.:".to_string();
-        let suggestion = "<KeyType, ValueType>".to_string();
-
-        self.build_error_message(title, range, annotation, help, suggestion)
-    }
-
-    pub fn build_arg_spread_error_message(&self) -> CompilerOutput {
-        let title = "StableBTreeMap does not currently support argument spreading".to_string();
-        let source = self.get_source();
-        // UNWRAP HERE // UNWRAP HERE
-        let range = (source.find("(").unwrap() + 1, source.find(")").unwrap());
-        let annotation = "attempted to spread arguments here".to_string();
-        let help = "specify each argument individually. E.g.:".to_string();
-        let suggestion = "memory_id, max_key_size, max_value_size".to_string();
-
-        self.build_error_message(title, range, annotation, help, suggestion)
-    }
-
-    pub fn build_missing_args_error_message(&self) -> CompilerOutput {
-        self.build_arg_error_message("missing arguments".to_string())
-    }
-
-    pub fn build_incorrect_number_of_args_error_message(&self) -> CompilerOutput {
-        self.build_arg_error_message("incorrect arguments".to_string())
-    }
-
-    pub fn build_arg_error_message(&self, title: String) -> CompilerOutput {
-        let source = self.get_source();
-        // UNWRAP HERE // UNWRAP HERE
-        let range = (source.find("(").unwrap() + 1, source.find(")").unwrap());
-        let annotation = "expected exactly 3 arguments here".to_string();
-        let help =
-            "specify a memory id, the max key size, and the max value size. E.g.:".to_string();
-        let suggestion = "memory_id, max_key_size, max_value_size".to_string();
-
-        self.build_error_message(title, range, annotation, help, suggestion)
-    }
-
-    pub fn build_invalid_arg_error_message(&self, arg_name: ArgName) -> CompilerOutput {
-        let max_size = match arg_name {
-            ArgName::MessageId => "255".to_string(),
-            ArgName::MaxKeySize => "4,294,967,295".to_string(),
-            ArgName::MaxValueSize => "4,294,967,295".to_string(),
-        };
-        let title = format!(
-            "invalid argument: must be an integer literal between 0 and {} inclusive",
-            max_size
-        );
-
-        let source = self.get_source();
-        // UNWRAP HERE
-        let open_paren_index = source.find("(").unwrap();
-
-        let message_id_start_index = source
-            .char_indices()
-            .find(|(i, c)| *i > open_paren_index && !c.is_whitespace())
-            .map(|(i, _)| i)
-            // UNWRAP HERE
-            .unwrap();
-        let message_id_end_index = source
-            .char_indices()
-            .find(|(i, c)| *i > message_id_start_index && c == &',')
-            .map(|(i, _)| i)
-            // UNWRAP HERE
-            .unwrap();
-        let message_id_range = (message_id_start_index, message_id_end_index);
-
-        let max_key_size_start_index = source
-            .char_indices()
-            .find(|(i, c)| *i > message_id_end_index && !c.is_whitespace())
-            .map(|(i, _)| i)
-            // UNWRAP HERE
-            .unwrap();
-        let max_key_size_end_index = source
-            .char_indices()
-            .find(|(i, c)| *i > max_key_size_start_index && c == &',')
-            .map(|(i, _)| i)
-            // UNWRAP HERE
-            .unwrap();
-        let max_key_size_range = (max_key_size_start_index, max_key_size_end_index);
-
-        let max_value_size_start_index = source
-            .char_indices()
-            .find(|(i, c)| *i > max_key_size_end_index && !c.is_whitespace())
-            .map(|(i, _)| i)
-            // UNWRAP HERE
-            .unwrap();
-        let max_value_size_end_index = source
-            .char_indices()
-            .find(|(i, c)| *i > max_value_size_start_index && (c.is_whitespace() || c == &')'))
-            .map(|(i, _)| i)
-            // UNWRAP HERE
-            .unwrap();
-        let max_value_size_range = (max_value_size_start_index, max_value_size_end_index);
-
-        let range = match arg_name {
-            ArgName::MessageId => message_id_range,
-            ArgName::MaxKeySize => max_key_size_range,
-            ArgName::MaxValueSize => max_value_size_range,
-        };
-        let annotation = "expected here".to_string();
-        let help = "use a valid integer literal. E.g.:".to_string();
-        let suggestion = match arg_name {
-            ArgName::MessageId => "0".to_string(),
-            ArgName::MaxKeySize => "100".to_string(),
-            ArgName::MaxValueSize => "1_000".to_string(),
-        };
-
-        self.build_error_message(title, range, annotation, help, suggestion)
-    }
-
     fn build_error_message(
         &self,
         title: String,
@@ -179,5 +63,32 @@ impl SourceMapped<'_, NewExpr> {
                 import_suggestion: None,
             }),
         }
+    }
+
+    pub fn build_arg_error_message(&self, title: String) -> CompilerOutput {
+        let source = self.get_source();
+        // UNWRAP HERE // UNWRAP HERE
+        let range = (source.find("(").unwrap() + 1, source.find(")").unwrap());
+        let annotation = "expected exactly 3 arguments here".to_string();
+        let help =
+            "specify a memory id, the max key size, and the max value size. E.g.:".to_string();
+        let suggestion = "memory_id, max_key_size, max_value_size".to_string();
+
+        self.build_error_message(title, range, annotation, help, suggestion)
+    }
+
+    pub fn build_type_arg_error_message(&self, title: String) -> CompilerOutput {
+        let source = self.get_source();
+        let range = (
+            // UNWRAP HERE
+            source.find("StableBTreeMap").unwrap() + "StableBTreeMap".len(),
+            // UNWRAP HERE
+            source.find("(").unwrap(),
+        );
+        let annotation = "expected exactly 2 type arguments here".to_string();
+        let help = "specify a key and value type. E.g.:".to_string();
+        let suggestion = "<KeyType, ValueType>".to_string();
+
+        self.build_error_message(title, range, annotation, help, suggestion)
     }
 }

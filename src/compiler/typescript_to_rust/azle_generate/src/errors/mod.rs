@@ -21,6 +21,9 @@ pub use self::{
     suggestion::Suggestion,
 };
 use crate::{
+    body::stable_b_tree_map::new_expr::errors::{
+        ArgSpread, IncorrectNumberOfArgs, IncorrectTypeArgs, InvalidArg, MissingArgs,
+    },
     candid_type::{
         errors::WrongEnclosedType,
         primitive::errors::UnsupportedType,
@@ -101,65 +104,73 @@ pub enum Error {
     VariantPropertySignature(VariantPropertySignature),
     WrongEnclosedType(WrongEnclosedType),
     WrongNumberOfParams(WrongNumberOfParams),
-    NewError(String),
+    ArgSpread(ArgSpread),
+    IncorrectNumberOfArgs(IncorrectNumberOfArgs),
+    IncorrectTypeArgs(IncorrectTypeArgs),
+    InvalidArg(InvalidArg),
+    MissingArgs(MissingArgs),
 }
 
 impl std::error::Error for Error {}
 
-// TODO change these all back to Self:: instead of Error::
-// TODO ^ for some reason when I automatically add more options it adds everything again with Error:: so its going to be much easier to work with Error and change it back to Self later
+fn get_error<'a>(error: &'a Error) -> &'a dyn std::error::Error {
+    match error {
+        Error::TypeNotFound(e) => e,
+        Error::GuardFunctionNotFound(e) => e,
+        Error::DuplicateSystemMethodImplementation(e) => e,
+        Error::ExtraneousCanisterMethodAnnotation(e) => e,
+        Error::MissingReturnTypeAnnotation(e) => e,
+        Error::InternalError(e) => e,
+        Error::ArgumentError(e) => e,
+        Error::TypeError(e) => e,
+        Error::SyntaxError(e) => e,
+        Error::VoidReturnTypeRequired(e) => e,
+        Error::AsyncNotAllowed(e) => e,
+        Error::ArrayDestructuringInParamsNotSupported(e) => e,
+        Error::ComputedPropertyNotAllowed(e) => e,
+        Error::FileSyntaxError(e) => e,
+        Error::FunctionParamsMustHaveType(e) => e,
+        Error::InvalidClassMember(e) => e,
+        Error::InvalidClassProp(e) => e,
+        Error::InvalidDecorator(e) => e,
+        Error::InvalidParams(e) => e,
+        Error::InvalidReturnType(e) => e,
+        Error::MissingCallResultAnnotation(e) => e,
+        Error::MissingDecorator(e) => e,
+        Error::MissingReturnType(e) => e,
+        Error::MissingTypeAnnotation(e) => e,
+        Error::MissingTypeArgument(e) => e,
+        Error::NamespaceQualifiedType(e) => e,
+        Error::NotEnclosedInFunc(e) => e,
+        Error::NotExactlyOneDecorator(e) => e,
+        Error::NoTypeAnnotation(e) => e,
+        Error::ObjectDestructuringNotSupported(e) => e,
+        Error::ParamDefaultValue(e) => e,
+        Error::QualifiedName(e) => e,
+        Error::QualifiedType(e) => e,
+        Error::RecordPropertySignature(e) => e,
+        Error::RestParametersNotSupported(e) => e,
+        Error::TooManyReturnTypes(e) => e,
+        Error::UnableToLoadFile(e) => e,
+        Error::UnexpectedTsTupleType(e) => e,
+        Error::UnexpectedTsType(e) => e,
+        Error::UnexpectedTsTypeLiteral(e) => e,
+        Error::UnsupportedType(e) => e,
+        Error::UntypedParam(e) => e,
+        Error::VariantPropertySignature(e) => e,
+        Error::WrongEnclosedType(e) => e,
+        Error::WrongNumberOfParams(e) => e,
+        Error::ArgSpread(e) => e,
+        Error::IncorrectNumberOfArgs(e) => e,
+        Error::IncorrectTypeArgs(e) => e,
+        Error::InvalidArg(e) => e,
+        Error::MissingArgs(e) => e,
+    }
+}
+
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut format_error = |e: &dyn std::fmt::Display| e.fmt(f);
-
-        match self {
-            Error::TypeNotFound(e) => format_error(e),
-            Error::GuardFunctionNotFound(e) => format_error(e),
-            Error::DuplicateSystemMethodImplementation(e) => format_error(e),
-            Error::ExtraneousCanisterMethodAnnotation(e) => format_error(e),
-            Error::MissingReturnTypeAnnotation(e) => format_error(e),
-            Error::InternalError(e) => format_error(e),
-            Error::ArgumentError(e) => format_error(e),
-            Error::TypeError(e) => format_error(e),
-            Error::SyntaxError(e) => format_error(e),
-            Error::VoidReturnTypeRequired(e) => format_error(e),
-            Error::AsyncNotAllowed(e) => format_error(e),
-            Error::ArrayDestructuringInParamsNotSupported(e) => format_error(e),
-            Error::FileSyntaxError(e) => format_error(e),
-            Error::FunctionParamsMustHaveType(e) => format_error(e),
-            Error::InvalidClassMember(e) => format_error(e),
-            Error::InvalidClassProp(e) => format_error(e),
-            Error::InvalidDecorator(e) => format_error(e),
-            Error::InvalidParams(e) => format_error(e),
-            Error::InvalidReturnType(e) => format_error(e),
-            Error::MissingCallResultAnnotation(e) => format_error(e),
-            Error::MissingDecorator(e) => format_error(e),
-            Error::MissingReturnType(e) => format_error(e),
-            Error::MissingTypeAnnotation(e) => format_error(e),
-            Error::MissingTypeArgument(e) => format_error(e),
-            Error::NotExactlyOneDecorator(e) => format_error(e),
-            Error::NamespaceQualifiedType(e) => format_error(e),
-            Error::NotEnclosedInFunc(e) => format_error(e),
-            Error::NoTypeAnnotation(e) => format_error(e),
-            Error::ObjectDestructuringNotSupported(e) => format_error(e),
-            Error::ParamDefaultValue(e) => format_error(e),
-            Error::QualifiedName(e) => format_error(e),
-            Error::QualifiedType(e) => format_error(e),
-            Error::RecordPropertySignature(e) => format_error(e),
-            Error::RestParametersNotSupported(e) => format_error(e),
-            Error::TooManyReturnTypes(e) => format_error(e),
-            Error::UnableToLoadFile(e) => format_error(e),
-            Error::ComputedPropertyNotAllowed(e) => format_error(e),
-            Error::UnexpectedTsTupleType(e) => format_error(e),
-            Error::UnexpectedTsType(e) => format_error(e),
-            Error::UnexpectedTsTypeLiteral(e) => format_error(e),
-            Error::UnsupportedType(e) => format_error(e),
-            Error::UntypedParam(e) => format_error(e),
-            Error::VariantPropertySignature(e) => format_error(e),
-            Error::WrongEnclosedType(e) => format_error(e),
-            Error::WrongNumberOfParams(e) => format_error(e),
-            Error::NewError(e) => format_error(e),
-        }
+        std::fmt::Display::fmt(&get_error(self), f)
     }
 }
 
