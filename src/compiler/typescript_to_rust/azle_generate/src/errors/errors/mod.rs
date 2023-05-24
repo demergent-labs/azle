@@ -1,6 +1,6 @@
 mod argument_error;
 mod array_destructuring_in_params_not_supported;
-mod file_syntax;
+mod file_syntax_error;
 mod function_params_must_have_type;
 mod guard_function_not_found;
 mod internal_error;
@@ -21,7 +21,7 @@ use crate::{
 
 pub use argument_error::ArgumentError;
 pub use array_destructuring_in_params_not_supported::ArrayDestructuringInParamsNotSupported;
-pub use file_syntax::FileSyntaxError;
+pub use file_syntax_error::FileSyntaxError;
 pub use function_params_must_have_type::FunctionParamsMustHaveType;
 pub use guard_function_not_found::GuardFunctionNotFound;
 pub use internal_error::InternalError;
