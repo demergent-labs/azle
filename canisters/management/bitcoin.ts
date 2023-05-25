@@ -1,3 +1,5 @@
+// TODO I am thinking we should use the same names as ic-btc-types
+
 import {
     Alias,
     blob,
