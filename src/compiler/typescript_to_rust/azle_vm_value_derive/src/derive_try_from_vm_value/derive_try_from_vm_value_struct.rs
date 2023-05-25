@@ -150,7 +150,7 @@ where
                 unnamed_field_closure(&field_name, index)
             })
             .collect(),
-        _ => panic!("Only named and unnamed fields supported for Structs"),
+        Fields::Unit => panic!("Only named and unnamed fields supported for Structs"),
     }
 }
 

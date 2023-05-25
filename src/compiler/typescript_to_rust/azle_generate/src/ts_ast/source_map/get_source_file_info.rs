@@ -34,17 +34,17 @@ impl GetSourceFileInfo for SourceMap {
     }
 
     fn get_source_from_range(&self, range: (BytePos, BytePos)) -> String {
-        if range.0.to_usize() > range.1.to_usize() {
-            panic!(
+        let (start, end) = if range.0.to_usize() > range.1.to_usize() {
+            println!(
                 "Invalid range {:?}. End value ({}) is less than start value ({})",
                 range,
                 range.0.to_usize(),
                 range.1.to_usize()
             );
-        }
-
-        let start = range.0;
-        let end = range.1;
+            (BytePos::from_usize(0), BytePos::from_usize(0)) // TODO make the ranges more robust
+        } else {
+            range
+        };
 
         let start_line_source_file_and_line = self
             .lookup_line(start)

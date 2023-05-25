@@ -7,7 +7,7 @@ use crate::{
     ts_ast::SourceMapped,
 };
 
-use super::GetParamRange;
+use super::GetDestructureRange;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ObjectDestructuringNotSupported {
@@ -54,7 +54,7 @@ impl AnnotatedFnDecl<'_> {
     fn build_object_destructure_error_msg(&self, param: &Param) -> CompilerOutput {
         let object_pat = param.pat.as_object().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
 
-        let range = param.get_destructure_range(self.source_map);
+        let range = object_pat.get_destructure_range(self.source_map);
         let replacement_name = "myParam".to_string(); // TODO: Come up with a better name from the ts_type_ann
 
         CompilerOutput {
