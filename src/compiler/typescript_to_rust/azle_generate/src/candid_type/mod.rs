@@ -1,8 +1,13 @@
-use cdk_framework::act::CandidTypes;
+use cdk_framework::{act::CandidTypes, traits::CollectResults};
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use crate::ts_ast::{SourceMapped, TsAst};
+use crate::{
+    errors::CollectResults as OtherCollectResults,
+    ts_ast::{SourceMapped, TsAst},
+    Error,
+};
 
+pub mod errors;
 pub mod func;
 pub mod opt;
 pub mod primitive;
@@ -16,31 +21,35 @@ pub mod variant;
 pub mod vec;
 
 impl TsAst {
-    pub fn build_candid_types(&self) -> CandidTypes {
-        let funcs = self.extract_candid_types(|x| x.to_func());
-        let records = self.extract_candid_types(|x| x.to_record());
-        let services = self.build_services();
-        let tuples = self.extract_candid_types(|x| x.to_tuple());
-        let type_aliases = self.extract_candid_types(|x| x.to_type_alias());
-        let variants = self.extract_candid_types(|x| x.to_variant());
+    pub fn build_candid_types(&self) -> Result<CandidTypes, Vec<Error>> {
+        let (type_aliases, funcs, records, services, tuples, variants) = (
+            self.extract_candid_types(|x| x.to_type_alias()),
+            self.extract_candid_types(|x| x.to_func()),
+            self.extract_candid_types(|x| x.to_record()),
+            self.build_services(),
+            self.extract_candid_types(|x| x.to_tuple()),
+            self.extract_candid_types(|x| x.to_variant()),
+        )
+            .collect_results()?;
 
-        CandidTypes {
+        Ok(CandidTypes {
             funcs,
             records,
             services,
             tuples,
             type_aliases,
             variants,
-        }
+        })
     }
 
-    pub fn extract_candid_types<F, T>(&self, extractor: F) -> Vec<T>
+    pub fn extract_candid_types<F, T>(&self, extractor: F) -> Result<Vec<T>, Vec<Error>>
     where
-        F: Fn(&SourceMapped<TsTypeAliasDecl>) -> Option<T>,
+        F: Fn(&SourceMapped<TsTypeAliasDecl>) -> Result<Option<T>, Vec<Error>>,
     {
         self.ts_type_alias_decls()
             .iter()
-            .filter_map(|ts_type_alias_decl| extractor(ts_type_alias_decl))
-            .collect()
+            .map(|ts_type_alias_decl| extractor(ts_type_alias_decl).transpose())
+            .flatten()
+            .collect_results()
     }
 }

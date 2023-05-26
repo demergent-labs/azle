@@ -1,10 +1,11 @@
-use cdk_framework::act::node::CandidType;
 use swc_ecma_ast::TsFnType;
 
-use crate::ts_ast::SourceMapped;
+use crate::{ts_ast::SourceMapped, Error};
+
+use super::errors::NotEnclosedInFunc;
 
 impl SourceMapped<'_, TsFnType> {
-    pub fn to_candid_type(&self) -> CandidType {
-        panic!("{}", self.not_enclosed_in_func_error());
+    pub fn to_func(&self) -> Error {
+        NotEnclosedInFunc::from_ts_fn_type(self).into()
     }
 }

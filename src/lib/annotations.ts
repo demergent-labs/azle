@@ -1,9 +1,11 @@
 import { GuardResult } from './results';
 
-export const $heartbeat = (options?: { guard?: () => GuardResult }) => {};
+export type CanisterMethodOptions = { guard?: () => GuardResult };
+
+export const $heartbeat = (options?: CanisterMethodOptions) => {};
 export const $init = () => {}; // TODO: See https://github.com/demergent-labs/azle/issues/954
-export const $inspectMessage = (options?: { guard?: () => GuardResult }) => {};
+export const $inspectMessage = (options?: CanisterMethodOptions) => {};
 export const $postUpgrade = () => {}; // TODO: See https://github.com/demergent-labs/azle/issues/954
-export const $preUpgrade = (options?: { guard?: () => GuardResult }) => {};
-export const $query = (options?: { guard?: () => GuardResult }) => {};
-export const $update = (options?: { guard?: () => GuardResult }) => {};
+export const $preUpgrade = (options?: CanisterMethodOptions) => {};
+export const $query = (options?: CanisterMethodOptions) => {};
+export const $update = (options?: CanisterMethodOptions) => {};

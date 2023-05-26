@@ -1,22 +1,21 @@
-use cdk_framework::act::node::canister_method::{CanisterMethod, CanisterMethodType, UpdateMethod};
+use cdk_framework::act::node::canister_method::{CanisterMethodType, UpdateMethod};
 
-use super::shared::BuildCanisterMethods;
-use crate::TsAst;
+use crate::{canister_method::AnnotatedFnDecl, errors::CollectResults, Error, TsAst};
 
 impl TsAst {
-    pub fn build_update_methods(&self) -> Vec<UpdateMethod> {
-        let update_canister_methods = self
-            .programs
-            .build_canister_method_nodes(CanisterMethodType::Update);
-        let update_methods =
-            update_canister_methods
-                .iter()
-                .fold(vec![], |mut acc, canister_method| {
-                    if let CanisterMethod::Update(update_method) = canister_method {
-                        acc.push(update_method.clone());
-                    }
-                    acc
-                });
-        update_methods
+    pub fn build_update_methods(
+        &self,
+        annotated_fn_decls: &Vec<AnnotatedFnDecl>,
+    ) -> Result<Vec<UpdateMethod>, Vec<Error>> {
+        let update_methods = annotated_fn_decls
+            .iter()
+            .filter(|fn_decl| fn_decl.is_canister_method_type(CanisterMethodType::Update))
+            .map(|update_fn_decl| update_fn_decl.to_definition())
+            .collect_results()?
+            .into_iter()
+            .map(|definition| UpdateMethod { definition })
+            .collect();
+
+        Ok(update_methods)
     }
 }

@@ -4,19 +4,17 @@ use annotate_snippets::{
 };
 use std::fmt;
 
-use super::Suggestion;
+use super::{Location, Suggestion};
 
-pub struct ErrorMessage {
+#[derive(Clone, Debug, PartialEq)]
+pub struct CompilerOutput {
     pub title: String,
-    pub origin: String,
-    pub line_number: usize,
-    pub source: String,
-    pub range: (usize, usize),
     pub annotation: String,
     pub suggestion: Option<Suggestion>,
+    pub location: Location,
 }
 
-impl ErrorMessage {
+impl CompilerOutput {
     fn to_string(&self) -> String {
         let error_snippet = Snippet {
             title: Some(Annotation {
@@ -26,14 +24,14 @@ impl ErrorMessage {
             }),
             footer: vec![],
             slices: vec![Slice {
-                source: &self.source,
-                line_start: self.line_number,
-                origin: Some(&self.origin),
+                source: &self.location.source,
+                line_start: self.location.line_number,
+                origin: Some(&self.location.origin),
                 fold: true,
                 annotations: vec![SourceAnnotation {
                     label: &self.annotation,
                     annotation_type: AnnotationType::Error,
-                    range: self.range,
+                    range: self.location.range,
                 }],
             }],
             opt: FormatOptions {
@@ -47,7 +45,7 @@ impl ErrorMessage {
             Some(suggestion) => {
                 let suggestion_slice = Slice {
                     source: &suggestion.source,
-                    line_start: self.line_number,
+                    line_start: self.location.line_number,
                     origin: None,
                     fold: false,
                     annotations: vec![SourceAnnotation {
@@ -97,7 +95,7 @@ impl ErrorMessage {
     }
 }
 
-impl fmt::Display for ErrorMessage {
+impl fmt::Display for CompilerOutput {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.to_string())
     }

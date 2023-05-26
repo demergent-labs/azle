@@ -4,6 +4,9 @@ use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl};
 pub use program::Program;
 pub use source_map::SourceMapped;
 
+use crate::{errors::CollectResults, Error};
+
+pub mod expr;
 pub mod program;
 pub mod source_map;
 pub mod ts_type;
@@ -15,13 +18,17 @@ pub struct TsAst {
 }
 
 impl TsAst {
-    pub fn new(ts_file_names: &Vec<String>, main_js: String) -> Self {
+    pub fn new(ts_file_names: &Vec<String>, main_js: String) -> Result<Self, Vec<Error>> {
         let programs = ts_file_names
             .iter()
-            .map(|ts_file_name| Program::from_file_name(ts_file_name))
-            .collect();
+            .map(|ts_file_name| {
+                let things =
+                    Program::from_file_name(ts_file_name).map_err(Into::<Vec<Error>>::into);
+                things
+            })
+            .collect_results()?;
 
-        Self { programs, main_js }
+        Ok(Self { programs, main_js })
     }
 
     // Note: Both module_items and decls seem like useful methods but we're not

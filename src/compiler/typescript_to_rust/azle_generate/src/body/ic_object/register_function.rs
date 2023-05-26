@@ -2,15 +2,15 @@ use cdk_framework::act::node::candid::Service;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
-use crate::ts_ast::TsAst;
+use crate::{ts_ast::TsAst, Error};
 
-pub fn generate(ts_ast: &TsAst) -> TokenStream {
-    let services = ts_ast.build_services();
+pub fn generate(ts_ast: &TsAst) -> Result<TokenStream, Vec<Error>> {
+    let services = ts_ast.build_services()?;
 
     let notify_functions = generate_notify_functions(&services);
     let cross_canister_functions = generate_cross_canister_functions(&services);
 
-    quote::quote! {
+    Ok(quote::quote! {
         fn register_ic_object(boa_context: &mut boa_engine::Context) {
             let ic = boa_engine::object::ObjectInitializer::new(boa_context)
                 .function(boa_engine::NativeFunction::from_fn_ptr(accept_message), "acceptMessage", 0)
@@ -74,7 +74,7 @@ pub fn generate(ts_ast: &TsAst) -> TokenStream {
                 boa_engine::property::Attribute::all(),
             );
         }
-    }
+    })
 }
 
 fn generate_notify_functions(services: &Vec<Service>) -> Vec<TokenStream> {

@@ -5,6 +5,36 @@ use crate::{
     ts_ast::SourceMapped,
 };
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct InvalidClassMember {
+    message: String,
+}
+
+impl InvalidClassMember {
+    pub fn from_class_decl(
+        class_decl: &SourceMapped<ClassDecl>,
+        class_member: &ClassMember,
+    ) -> Self {
+        Self {
+            message: class_decl.build_invalid_class_member_error_message(class_member),
+        }
+    }
+}
+
+impl std::error::Error for InvalidClassMember {}
+
+impl From<InvalidClassMember> for crate::Error {
+    fn from(error: InvalidClassMember) -> Self {
+        Self::InvalidClassMember(error)
+    }
+}
+
+impl std::fmt::Display for InvalidClassMember {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.message)
+    }
+}
+
 impl SourceMapped<'_, ClassDecl> {
     pub fn build_invalid_class_member_error_message(&self, class_member: &ClassMember) -> String {
         let member_type = match class_member {

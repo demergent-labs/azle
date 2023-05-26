@@ -1,53 +1,70 @@
-use cdk_framework::act::node::canister_method::{CanisterMethodType, InitMethod};
-
-use crate::{
-    canister_method::{errors, GetAnnotatedFnDecls},
-    plugin::Plugin,
-    TsAst,
+use cdk_framework::{
+    act::node::canister_method::{CanisterMethodType, InitMethod},
+    traits::CollectResults,
 };
+
+use super::{errors::VoidReturnTypeRequired, AnnotatedFnDecl, CheckLengthAndMap};
+use crate::{canister_method::errors::AsyncNotAllowed, plugin::Plugin, Error, TsAst};
 
 mod rust;
 
 impl TsAst {
     pub fn build_init_method(
         &self,
+        annotated_fn_decls: &Vec<AnnotatedFnDecl>,
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
-    ) -> InitMethod {
-        let init_fn_decls = self
-            .programs
-            .get_annotated_fn_decls_of_type(CanisterMethodType::Init);
+    ) -> Result<InitMethod, Vec<Error>> {
+        let valid_init_fn_decls = annotated_fn_decls
+            .iter()
+            .filter(|annotated_fn_decl| {
+                annotated_fn_decl.is_canister_method_type(CanisterMethodType::Init)
+            })
+            .collect::<Vec<_>>()
+            .check_length_and_map(CanisterMethodType::Init, |init_fn_decl| {
+                let errors = match init_fn_decl.is_void() {
+                    true => vec![],
+                    false => {
+                        VoidReturnTypeRequired::error_from_annotated_fn_decl(init_fn_decl).into()
+                    }
+                };
 
-        if init_fn_decls.len() > 1 {
-            let error_message =
-                errors::build_duplicate_method_types_error_message_from_annotated_fn_decl(
-                    init_fn_decls,
-                    CanisterMethodType::Init,
-                );
+                let errors = match init_fn_decl.fn_decl.function.is_async {
+                    true => vec![
+                        errors,
+                        AsyncNotAllowed::error_from_annotated_fn_decl(init_fn_decl).into(),
+                    ]
+                    .concat(),
+                    false => errors,
+                };
 
-            panic!("{}", error_message);
-        }
+                if !errors.is_empty() {
+                    return Err(errors);
+                }
 
-        let init_fn_decl_option = init_fn_decls.get(0);
+                let params = init_fn_decl.build_params()?; // TODO collect these with the errors from above
+                let body = rust::generate(Some(init_fn_decl), plugins, environment_variables)?;
+                let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
 
-        if let Some(fn_decl) = init_fn_decl_option {
-            fn_decl.assert_return_type_is_void();
-            fn_decl.assert_not_async();
-        }
+                Ok(InitMethod {
+                    params,
+                    body,
+                    guard_function_name,
+                })
+            })
+            .collect_results()?;
 
-        let params = if let Some(fn_decl) = init_fn_decl_option {
-            fn_decl.build_params()
-        } else {
-            vec![]
-        };
+        let init_fn_decl_option = valid_init_fn_decls.get(0).cloned();
 
-        let body = rust::generate(init_fn_decl_option, plugins, environment_variables);
-        let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
-
-        InitMethod {
-            params,
-            body,
-            guard_function_name,
+        match init_fn_decl_option {
+            Some(init_fn_decl) => Ok(init_fn_decl),
+            None => {
+                Ok(InitMethod {
+                    params: vec![],
+                    body: rust::generate(None, plugins, environment_variables)?,
+                    guard_function_name: None, // Unsupported. See https://github.com/demergent-labs/azle/issues/954
+                })
+            }
         }
     }
 }

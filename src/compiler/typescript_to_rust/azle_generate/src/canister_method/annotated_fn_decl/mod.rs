@@ -4,9 +4,27 @@ use quote::format_ident;
 use swc_common::SourceMap;
 use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};
 
-use crate::{canister_method::Annotation, traits::GetName};
+use crate::{
+    canister_method::Annotation,
+    errors::{
+        errors::{
+            ArrayDestructuringInParamsNotSupported, ObjectDestructuringNotSupported,
+            RestParametersNotSupported,
+        },
+        CollectResults,
+    },
+    internal_error,
+    traits::GetName,
+    Error,
+};
 
 pub use get_annotated_fn_decls::GetAnnotatedFnDecls;
+
+use self::errors::{
+    InvalidParams, MissingReturnType, ParamDefaultValue, QualifiedType, UntypedParam,
+};
+
+use super::errors::MissingReturnTypeAnnotation;
 
 mod get_annotated_fn_decls;
 
@@ -20,46 +38,51 @@ pub struct AnnotatedFnDecl<'a> {
 }
 
 impl AnnotatedFnDecl<'_> {
-    pub fn get_return_ts_type(&self) -> &TsType {
+    pub fn get_return_ts_type(&self) -> Result<&TsType, Error> {
         match &self.fn_decl.function.return_type {
             Some(ts_type_ann) => {
                 let return_type = &*ts_type_ann.type_ann;
 
-                let promise_unwrapped_return_type = if self.is_promise() {
-                    let type_ref = return_type.as_ts_type_ref().unwrap();
+                let promise_return_type = if self.is_promise()? {
+                    let type_ref = match return_type.as_ts_type_ref() {
+                        Some(type_ref) => type_ref,
+                        None => internal_error!(), // Since it is a promise we know it's a type_ref
+                    };
                     match &type_ref.type_params {
                         Some(type_param_instantiation) => &*type_param_instantiation.params[0],
                         None => {
-                            panic!(
-                                "{}",
-                                self.build_missing_return_type_error_msg(type_ref.span, "Promise")
+                            return Err(MissingReturnType::from_annotated_fn_decl(
+                                self, type_ref, "Promise",
                             )
+                            .into())
                         }
                     }
                 } else {
                     return_type
                 };
 
-                let manual_unwrapped_return_type = if self.is_manual() {
-                    let inner_type_ref = promise_unwrapped_return_type.as_ts_type_ref().unwrap();
+                let manual_return_type = if self.is_manual()? {
+                    let inner_type_ref = match promise_return_type.as_ts_type_ref() {
+                        Some(inner_type_ref) => inner_type_ref,
+                        None => internal_error!(), // Since it is manual we know it's a type_ref
+                    };
                     match &inner_type_ref.type_params {
                         Some(type_param_instantiation) => &type_param_instantiation.params[0],
                         None => {
-                            panic!(
-                                "{}",
-                                self.build_missing_return_type_error_msg(
-                                    inner_type_ref.span,
-                                    "Manual"
-                                )
+                            return Err(MissingReturnType::from_annotated_fn_decl(
+                                self,
+                                inner_type_ref,
+                                "Manual",
                             )
+                            .into())
                         }
                     }
                 } else {
-                    promise_unwrapped_return_type
+                    promise_return_type
                 };
-                manual_unwrapped_return_type
+                Ok(manual_return_type)
             }
-            None => panic!("{}", self.build_missing_return_annotation_error_msg()), //TODO: Improve this error message
+            None => return Err(MissingReturnTypeAnnotation::from_annotated_fn_decl(self).into()),
         }
     }
 
@@ -67,43 +90,59 @@ impl AnnotatedFnDecl<'_> {
         self.fn_decl.ident.get_name().to_string()
     }
 
-    pub fn get_param_name_idents(&self) -> Vec<Ident> {
-        let param_idents = self.get_param_binding_idents();
+    pub fn get_param_name_idents(&self) -> Result<Vec<Ident>, Vec<Error>> {
+        let param_idents = self.get_param_binding_idents()?;
 
-        param_idents
+        Ok(param_idents
             .iter()
             .map(|ident| format_ident!("{}", ident.get_name().to_string()))
-            .collect()
+            .collect())
     }
 
-    pub fn get_param_binding_idents(&self) -> Vec<&BindingIdent> {
+    pub fn get_param_binding_idents(&self) -> Result<Vec<&BindingIdent>, Vec<Error>> {
         self.fn_decl
             .function
             .params
             .iter()
             .map(|param| match &param.pat {
-                Pat::Ident(ident) => ident,
-                Pat::Array(_) => panic!("{}", self.build_array_destructure_error_msg(param)),
-                Pat::Rest(_) => panic!("{}", self.build_rest_param_error_msg(param)),
-                Pat::Object(_) => panic!("{}", self.build_object_destructure_error_msg(param)),
-                Pat::Assign(assign_pat) => {
-                    panic!("{}", self.build_param_default_value_error_msg(assign_pat))
+                Pat::Ident(ident) => Ok(ident),
+                Pat::Array(array_pat) => Err(vec![Into::<Error>::into(
+                    ArrayDestructuringInParamsNotSupported::from_annotated_fn_decl(self, array_pat),
+                )]),
+                Pat::Rest(rest_pat) => {
+                    Err(vec![RestParametersNotSupported::from_annotated_fn_decl(
+                        self, rest_pat,
+                    )
+                    .into()])
                 }
-                Pat::Invalid(_) => panic!("{}", self.build_invalid_param_error_msg()),
-                Pat::Expr(_) => panic!("{}", self.build_invalid_param_error_msg()),
+                Pat::Object(object_pat) => Err(vec![
+                    ObjectDestructuringNotSupported::from_annotated_fn_decl(self, object_pat)
+                        .into(),
+                ]),
+                Pat::Assign(assign_pat) => Err(vec![ParamDefaultValue::from_annotated_fn_decl(
+                    self, assign_pat,
+                )
+                .into()]),
+                Pat::Invalid(_) => Err(vec![InvalidParams::from_annotated_fn_decl(self).into()]),
+                Pat::Expr(_) => Err(vec![InvalidParams::from_annotated_fn_decl(self).into()]),
             })
-            .collect()
+            .collect_results()
     }
 
-    pub fn get_param_ts_types(&self) -> Vec<&TsType> {
-        let param_idents = self.get_param_binding_idents();
+    pub fn get_param_ts_types(&self) -> Result<Vec<&TsType>, Vec<Error>> {
+        let param_idents = self.get_param_binding_idents()?;
 
         param_idents
             .iter()
-            .fold(vec![], |acc, ident| match &ident.type_ann {
-                Some(ts_type_ann) => vec![acc, vec![&ts_type_ann.type_ann]].concat(),
-                None => panic!("{}", self.build_untyped_param_error_msg(*ident)),
+            .map(|ident| match &ident.type_ann {
+                Some(ts_type_ann) => Ok(ts_type_ann.type_ann.as_ref()),
+                None => {
+                    return Err(vec![
+                        UntypedParam::from_annotated_fn_decl(self, *ident).into()
+                    ])
+                }
             })
+            .collect_results()
     }
 
     /// Returns whether the fn_decl is of the provided type.
@@ -115,41 +154,44 @@ impl AnnotatedFnDecl<'_> {
         self.annotation.method_type == canister_method_type
     }
 
-    pub fn is_manual(&self) -> bool {
+    pub fn is_manual(&self) -> Result<bool, Error> {
         let return_type = match &self.fn_decl.function.return_type {
-            Some(ts_type_ann) => match self.is_promise() {
-                true => match &ts_type_ann.type_ann.as_ts_type_ref().unwrap().type_params {
-                    Some(type_param_instantiation) => &type_param_instantiation.params[0],
-                    None => return false,
+            Some(ts_type_ann) => match self.is_promise()? {
+                true => match &ts_type_ann.type_ann.as_ts_type_ref() {
+                    Some(ts_type_ref) => match &ts_type_ref.type_params {
+                        Some(type_param_instantiation) => &type_param_instantiation.params[0],
+                        None => return Ok(false),
+                    },
+                    None => return Ok(false),
                 },
                 false => &*ts_type_ann.type_ann,
             },
-            None => return false,
+            None => return Ok(false),
         };
 
         match return_type {
             TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-                TsEntityName::Ident(ident) => ident.get_name() == "Manual",
+                TsEntityName::Ident(ident) => Ok(ident.get_name() == "Manual"),
                 TsEntityName::TsQualifiedName(_) => {
-                    panic!("{}", self.build_qualified_type_error_msg(ts_type_ref.span))
+                    return Err(QualifiedType::from_annotated_fn_decl(self, ts_type_ref).into())
                 }
             },
-            _ => false,
+            _ => Ok(false),
         }
     }
 
-    pub fn is_promise(&self) -> bool {
+    pub fn is_promise(&self) -> Result<bool, Error> {
         match &self.fn_decl.function.return_type {
             Some(ts_type_ann) => match &*ts_type_ann.type_ann {
                 TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-                    TsEntityName::Ident(ident) => ident.get_name() == "Promise",
+                    TsEntityName::Ident(ident) => Ok(ident.get_name() == "Promise"),
                     TsEntityName::TsQualifiedName(_) => {
-                        panic!("{}", self.build_qualified_type_error_msg(ts_type_ref.span))
+                        return Err(QualifiedType::from_annotated_fn_decl(self, ts_type_ref).into())
                     }
                 },
-                _ => false,
+                _ => Ok(false),
             },
-            None => false,
+            None => Ok(false),
         }
     }
 }

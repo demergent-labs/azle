@@ -1,7 +1,7 @@
 use swc_common::{source_map::Pos, BytePos, SourceMap, Span};
 
 use super::{private_get_source_file_info::PrivateGetSourceFileInfo, Range};
-use crate::traits::GetSourceFileInfo;
+use crate::{errors::Location, traits::GetSourceFileInfo};
 
 impl GetSourceFileInfo for SourceMap {
     fn get_text(&self, span: Span) -> String {
@@ -34,17 +34,17 @@ impl GetSourceFileInfo for SourceMap {
     }
 
     fn get_source_from_range(&self, range: (BytePos, BytePos)) -> String {
-        if range.0.to_usize() > range.1.to_usize() {
-            panic!(
+        let (start, end) = if range.0.to_usize() > range.1.to_usize() {
+            println!(
                 "Invalid range {:?}. End value ({}) is less than start value ({})",
                 range,
                 range.0.to_usize(),
                 range.1.to_usize()
             );
-        }
-
-        let start = range.0;
-        let end = range.1;
+            (BytePos::from_usize(0), BytePos::from_usize(0)) // TODO make the ranges more robust
+        } else {
+            range
+        };
 
         let start_line_source_file_and_line = self
             .lookup_line(start)
@@ -105,7 +105,7 @@ impl GetSourceFileInfo for SourceMap {
         source
             .chars()
             .take(range.0)
-            .chain(replacement.to_string().chars())
+            .chain(replacement.chars())
             .chain(source.chars().skip(range.1))
             .collect()
     }
@@ -134,5 +134,14 @@ impl GetSourceFileInfo for SourceMap {
     fn get_line_number(&self, span: Span) -> usize {
         let loc = self.get_loc(span);
         loc.line
+    }
+
+    fn get_location(&self, span: Span) -> Location {
+        Location {
+            origin: self.get_origin(span),
+            line_number: self.get_line_number(span),
+            source: self.get_source(span),
+            range: self.get_range(span),
+        }
     }
 }

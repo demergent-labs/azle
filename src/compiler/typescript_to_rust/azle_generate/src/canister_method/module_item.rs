@@ -1,49 +1,37 @@
-use swc_ecma_ast::{Expr, ExprStmt, FnDecl, ModuleItem};
+use std::ops::Deref;
 
-use crate::{canister_method::annotation::CANISTER_METHOD_ANNOTATIONS, traits::GetName};
+use swc_ecma_ast::{ExprStmt, FnDecl, ModuleItem};
 
-pub trait ModuleItemHelperMethods {
-    fn is_custom_decorator(&self) -> bool;
-    fn as_exported_fn_decl(&self) -> Option<FnDecl>;
-    fn as_expr_stmt(&self) -> Option<ExprStmt>;
-}
+use crate::{
+    canister_method::annotation::CANISTER_METHOD_ANNOTATIONS, traits::GetName,
+    ts_ast::SourceMapped, Error,
+};
 
-impl ModuleItemHelperMethods for ModuleItem {
-    fn is_custom_decorator(&self) -> bool {
-        if !self.is_stmt() {
-            return false;
-        }
+use super::Annotation;
 
-        let statement = self.as_stmt().unwrap();
-
-        if !statement.is_expr() {
-            return false;
-        }
-
-        let expression = statement.as_expr().unwrap();
-
-        let ident = match &*expression.expr {
-            Expr::Call(call_expr) => {
-                if !call_expr.callee.is_expr() {
-                    return false;
-                }
-
-                match &call_expr.callee {
-                    swc_ecma_ast::Callee::Expr(expr) => match &**expr {
-                        Expr::Ident(ident) => ident,
-                        _ => return false,
-                    },
-                    _ => return false,
-                }
-            }
-            Expr::Ident(ident) => ident,
-            _ => return false,
-        };
-
-        CANISTER_METHOD_ANNOTATIONS.contains(&ident.get_name())
+impl SourceMapped<'_, ModuleItem> {
+    pub fn as_canister_method_annotation(&self) -> Option<Result<Annotation, Error>> {
+        self.as_stmt()
+            .and_then(|stmt| stmt.as_expr())
+            .and_then(|expr_stmt| {
+                expr_stmt
+                    .expr
+                    .as_call()
+                    .and_then(|call_expr| call_expr.callee.as_expr())
+                    .and_then(|box_expr| box_expr.deref().as_ident())
+                    .and_then(|ident| Some(ident))
+                    .or(expr_stmt.expr.as_ident())
+                    .and_then(|ident| {
+                        if CANISTER_METHOD_ANNOTATIONS.contains(&ident.get_name()) {
+                            Some(Annotation::from_module_item(self))
+                        } else {
+                            None
+                        }
+                    })
+            })
     }
 
-    fn as_exported_fn_decl(&self) -> Option<FnDecl> {
+    pub fn as_exported_fn_decl(&self) -> Option<FnDecl> {
         Some(
             self.as_module_decl()?
                 .as_export_decl()?
@@ -53,7 +41,7 @@ impl ModuleItemHelperMethods for ModuleItem {
         )
     }
 
-    fn as_expr_stmt(&self) -> Option<ExprStmt> {
+    pub fn as_expr_stmt(&self) -> Option<ExprStmt> {
         Some(self.as_stmt()?.as_expr()?.clone())
     }
 }

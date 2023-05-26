@@ -1,13 +1,14 @@
-use cdk_framework::act::CanisterMethods;
+use cdk_framework::{act::CanisterMethods, traits::CollectResults};
 
-use crate::{plugin::Plugin, ts_ast::TsAst};
+use crate::{plugin::Plugin, ts_ast::TsAst, Error};
 
 pub use annotated_fn_decl::{AnnotatedFnDecl, GetAnnotatedFnDecls};
 pub use annotation::Annotation;
-pub use errors::ParseError;
+pub use check_length_and_map::CheckLengthAndMap;
 
-mod annotated_fn_decl;
+pub mod annotated_fn_decl;
 mod annotation;
+pub mod check_length_and_map;
 mod heartbeat;
 mod init;
 mod inspect_message;
@@ -25,24 +26,48 @@ impl TsAst {
         &self,
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
-    ) -> CanisterMethods {
-        let heartbeat_method = self.build_heartbeat_method();
-        let init_method = Some(self.build_init_method(plugins, environment_variables));
-        let inspect_message_method = self.build_inspect_message_method();
-        let post_upgrade_method =
-            Some(self.build_post_upgrade_method(plugins, environment_variables));
-        let pre_upgrade_method = self.build_pre_upgrade_method();
-        let query_methods = self.build_query_methods();
-        let update_methods = self.build_update_methods();
+    ) -> Result<CanisterMethods, Vec<Error>> {
+        let (annotated_fn_decls, get_annotated_fn_decls_errors) =
+            self.programs.get_annotated_fn_decls();
 
-        CanisterMethods {
-            heartbeat_method,
-            init_method,
-            inspect_message_method,
-            post_upgrade_method,
-            pre_upgrade_method,
-            query_methods,
-            update_methods,
+        let build_canister_methods_result = (
+            self.build_heartbeat_method(&annotated_fn_decls),
+            self.build_init_method(&annotated_fn_decls, plugins, environment_variables),
+            self.build_inspect_message_method(&annotated_fn_decls),
+            self.build_post_upgrade_method(&annotated_fn_decls, plugins, environment_variables),
+            self.build_pre_upgrade_method(&annotated_fn_decls),
+            self.build_query_methods(&annotated_fn_decls),
+            self.build_update_methods(&annotated_fn_decls),
+        )
+            .collect_results();
+
+        match build_canister_methods_result {
+            Ok(canister_methods) => {
+                if !get_annotated_fn_decls_errors.is_empty() {
+                    return Err(get_annotated_fn_decls_errors);
+                }
+
+                let (
+                    heartbeat_method,
+                    init_method,
+                    inspect_message_method,
+                    post_upgrade_method,
+                    pre_upgrade_method,
+                    query_methods,
+                    update_methods,
+                ) = canister_methods;
+
+                Ok(CanisterMethods {
+                    heartbeat_method,
+                    init_method: Some(init_method),
+                    inspect_message_method,
+                    post_upgrade_method: Some(post_upgrade_method),
+                    pre_upgrade_method,
+                    query_methods,
+                    update_methods,
+                })
+            }
+            Err(errors) => Err(vec![get_annotated_fn_decls_errors, errors].concat()),
         }
     }
 }

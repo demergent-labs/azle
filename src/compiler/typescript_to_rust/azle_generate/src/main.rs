@@ -1,7 +1,20 @@
-use azle_generate::{generate_canister, plugin::Plugin};
 use serde::{Deserialize, Serialize};
-use std::fs::File;
-use std::io::Write;
+use std::{
+    env,
+    fs::{self, File},
+    io::Write,
+    process,
+};
+
+use azle_generate::{generate_canister, plugin::Plugin};
+
+const USAGE_ERROR: i32 = 1;
+const COMPILER_INFO_READ_ERROR: i32 = 2;
+const JSON_PARSE_ERROR: i32 = 3;
+const ENV_READ_ERROR: i32 = 4;
+const MAIN_JS_READ_ERROR: i32 = 5;
+const CANISTER_COMPILATION_ERROR: i32 = 6;
+const LIB_PARSE_ERROR: i32 = 7;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CompilerInfo {
@@ -10,25 +23,63 @@ struct CompilerInfo {
 }
 
 fn main() {
-    let args: Vec<String> = std::env::args().collect();
+    let args: Vec<String> = env::args().collect();
+
+    if args.len() < 2 {
+        let executable_name = &args[0];
+        eprintln!("Usage: {executable_name} <path/to/compiler_info.json> [env_vars_csv]");
+        process::exit(USAGE_ERROR);
+    }
 
     let compiler_info_path = &args[1];
-    let compiler_info_string = std::fs::read_to_string(compiler_info_path).unwrap();
-    let compiler_info: CompilerInfo = serde_json::from_str(&compiler_info_string).unwrap();
+    let compiler_info_string = match fs::read_to_string(compiler_info_path) {
+        Ok(compiler_info_string) => compiler_info_string,
+        Err(err) => {
+            eprintln!("Error reading {compiler_info_path}: {err}");
+            process::exit(COMPILER_INFO_READ_ERROR);
+        }
+    };
+    let compiler_info: CompilerInfo = match serde_json::from_str(&compiler_info_string) {
+        Ok(compiler_info) => compiler_info,
+        Err(err) => {
+            eprintln!("Error parsing {compiler_info_path}: {err}");
+            process::exit(JSON_PARSE_ERROR);
+        }
+    };
 
     let environment_variables = create_environment_variables(&args);
 
-    let main_js = std::fs::read_to_string("src/main.js").unwrap();
+    let main_js = match fs::read_to_string("src/main.js") {
+        Ok(content) => content,
+        Err(err) => {
+            eprintln!("Error reading src/main.js: {err}");
+            process::exit(MAIN_JS_READ_ERROR);
+        }
+    };
 
-    let lib_file = generate_canister(
+    let lib_file = match generate_canister(
         &compiler_info.file_names,
         main_js,
         &compiler_info.plugins,
         &environment_variables,
-    )
-    .to_string();
+    ) {
+        Ok(lib_file) => lib_file.to_string(),
+        Err(errors) => {
+            eprintln!("Canister compilation failed:");
+            for error in errors {
+                eprintln!("{}", error);
+            }
+            process::exit(CANISTER_COMPILATION_ERROR);
+        }
+    };
 
-    let syntax_tree = syn::parse_file(&lib_file).unwrap();
+    let syntax_tree = match syn::parse_file(&lib_file) {
+        Ok(syntax_tree) => syntax_tree,
+        Err(_) => {
+            eprintln!("{}", azle_generate::errors::InternalError {});
+            process::exit(LIB_PARSE_ERROR);
+        }
+    };
     let formatted = prettyplease::unparse(&syntax_tree);
 
     let mut f = File::create("../src/lib.rs").expect("Unable to create file");
@@ -44,7 +95,13 @@ fn create_environment_variables(args: &Vec<String>) -> Vec<(String, String)> {
             .map(|env_var_name| {
                 (
                     env_var_name.to_string(),
-                    std::env::var(env_var_name).unwrap(),
+                    match std::env::var(env_var_name) {
+                        Ok(env_var_value) => env_var_value,
+                        Err(err) => {
+                            eprintln!("Error reading env var {env_var_name}: {err}");
+                            process::exit(ENV_READ_ERROR)
+                        }
+                    },
                 )
             })
             .collect()

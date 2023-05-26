@@ -1,6 +1,7 @@
 use crate::{
     canister_method::{rust, AnnotatedFnDecl},
     plugin::Plugin,
+    Error,
 };
 use cdk_framework::traits::ToIdent;
 use quote::quote;
@@ -9,13 +10,13 @@ pub fn generate(
     init_fn_decl_option: Option<&AnnotatedFnDecl>,
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
-) -> proc_macro2::TokenStream {
-    let function_name = match init_fn_decl_option {
+) -> Result<proc_macro2::TokenStream, Vec<Error>> {
+    let function_name = match &init_fn_decl_option {
         Some(init_fn_decl) => init_fn_decl.get_function_name(),
         None => "DOES_NOT_EXIST".to_string(),
     };
 
-    let call_to_init_js_function = rust::maybe_generate_call_to_js_function(&init_fn_decl_option);
+    let call_to_init_js_function = rust::maybe_generate_call_to_js_function(&init_fn_decl_option)?;
 
     let register_plugins = plugins.iter().map(|plugin| {
         let register_function_ident = plugin.register_function.to_ident();
@@ -25,7 +26,7 @@ pub fn generate(
 
     let register_process_object = rust::generate_register_process_object(environment_variables);
 
-    quote! {
+    Ok(quote! {
         BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
             let mut boa_context = box_context_ref_cell.borrow_mut();
 
@@ -53,5 +54,5 @@ pub fn generate(
 
             ic_cdk_timers::set_timer(core::time::Duration::new(0, 0), rng_seed);
         });
-    }
+    })
 }

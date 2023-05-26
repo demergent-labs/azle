@@ -1,40 +1,41 @@
-use cdk_framework::act::node::canister_method::{CanisterMethodType, HeartbeatMethod};
-
-use crate::{
-    canister_method::{errors, GetAnnotatedFnDecls},
-    TsAst,
+use cdk_framework::{
+    act::node::canister_method::{CanisterMethodType, HeartbeatMethod},
+    traits::CollectResults,
 };
+
+use super::{errors::VoidReturnTypeRequired, AnnotatedFnDecl, CheckLengthAndMap};
+use crate::{Error, TsAst};
 
 mod rust;
 
 impl TsAst {
-    pub fn build_heartbeat_method(&self) -> Option<HeartbeatMethod> {
-        let heartbeat_fn_decls = self
-            .programs
-            .get_annotated_fn_decls_of_type(CanisterMethodType::Heartbeat);
-
-        if heartbeat_fn_decls.len() > 1 {
-            let error_message = errors::build_duplicate_method_types_error_message(
-                heartbeat_fn_decls,
-                CanisterMethodType::Heartbeat,
-            );
-
-            panic!("{}", error_message);
-        }
-
-        let heartbeat_fn_decl_option = heartbeat_fn_decls.get(0);
-
-        if let Some(heartbeat_fn_decl) = heartbeat_fn_decl_option {
-            heartbeat_fn_decl.assert_return_type_is_void();
-
-            let body = rust::generate(heartbeat_fn_decl);
-            let guard_function_name = heartbeat_fn_decl.annotation.guard.clone();
-            Some(HeartbeatMethod {
-                body,
-                guard_function_name,
+    pub fn build_heartbeat_method(
+        &self,
+        annotated_fn_decls: &Vec<AnnotatedFnDecl>,
+    ) -> Result<Option<HeartbeatMethod>, Vec<Error>> {
+        let heartbeat_methods = annotated_fn_decls
+            .iter()
+            .filter(|annotated_fn_decl| {
+                annotated_fn_decl.is_canister_method_type(CanisterMethodType::Heartbeat)
             })
-        } else {
-            None
-        }
+            .collect::<Vec<_>>()
+            .check_length_and_map(CanisterMethodType::Heartbeat, |heartbeat_fn_decl| {
+                if !heartbeat_fn_decl.is_void() {
+                    Err(
+                        VoidReturnTypeRequired::error_from_annotated_fn_decl(heartbeat_fn_decl)
+                            .into(),
+                    )
+                } else {
+                    let body = rust::generate(heartbeat_fn_decl)?;
+                    let guard_function_name = heartbeat_fn_decl.annotation.guard.clone();
+                    Ok(HeartbeatMethod {
+                        body,
+                        guard_function_name,
+                    })
+                }
+            })
+            .collect_results()?;
+
+        Ok(heartbeat_methods.get(0).cloned())
     }
 }

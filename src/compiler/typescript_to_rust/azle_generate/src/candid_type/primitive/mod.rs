@@ -1,69 +1,56 @@
-use cdk_framework::act::node::{candid::Primitive, CandidType};
+pub mod errors;
+
+use cdk_framework::act::node::candid::Primitive;
 use swc_common::Span;
-use swc_ecma_ast::{TsKeywordType, TsKeywordTypeKind};
+use swc_ecma_ast::{TsKeywordType, TsKeywordTypeKind, TsTypeRef};
 
 use crate::{
-    errors::{ErrorMessage, Suggestion},
-    traits::{GetSourceFileInfo, GetSourceInfo, GetSourceText, GetSpan},
+    traits::{GetNameWithError, GetSpan},
     ts_ast::SourceMapped,
+    Error,
 };
 
+use self::errors::UnsupportedType;
+
 impl SourceMapped<'_, TsKeywordType> {
-    pub fn to_candid_type(&self) -> CandidType {
-        match self.kind {
-            TsKeywordTypeKind::TsBooleanKeyword => CandidType::Primitive(Primitive::Bool),
-            TsKeywordTypeKind::TsStringKeyword => CandidType::Primitive(Primitive::String),
-            TsKeywordTypeKind::TsVoidKeyword => CandidType::Primitive(Primitive::Void),
-            TsKeywordTypeKind::TsNullKeyword => CandidType::Primitive(Primitive::Null),
-            TsKeywordTypeKind::TsNumberKeyword => CandidType::Primitive(Primitive::Float64),
-            _ => panic!("{}", self.unsupported_type_error()),
-        }
+    pub fn to_primitive(&self) -> Result<Primitive, Vec<Error>> {
+        Ok(match self.kind {
+            TsKeywordTypeKind::TsBooleanKeyword => Primitive::Bool,
+            TsKeywordTypeKind::TsStringKeyword => Primitive::String,
+            TsKeywordTypeKind::TsVoidKeyword => Primitive::Void,
+            TsKeywordTypeKind::TsNullKeyword => Primitive::Null,
+            TsKeywordTypeKind::TsNumberKeyword => Primitive::Float64,
+            _ => {
+                return Err(vec![
+                    UnsupportedType::error_from_ts_keyword_type(self).into()
+                ])
+            }
+        })
     }
+}
 
-    pub(super) fn unsupported_type_error(&self) -> ErrorMessage {
-        match &self.kind {
-            TsKeywordTypeKind::TsBigIntKeyword => self.bigint_not_supported_error(),
-            TsKeywordTypeKind::TsObjectKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsNeverKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsSymbolKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsIntrinsicKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsUndefinedKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsUnknownKeyword => self.keyword_not_supported_error(),
-            TsKeywordTypeKind::TsAnyKeyword => self.keyword_not_supported_error(),
-            _ => panic!("Unreachable: {} is supported", self.get_source_text()),
-        }
-    }
-
-    fn bigint_not_supported_error(&self) -> ErrorMessage {
-        let replacement = "int".to_string();
-        let suggestion = Some(Suggestion {
-            title: "`int` will cover most everything that `bigint` does. For more number type options see: https://internetcomputer.org/docs/current/references/candid-ref/#type-nat".to_string(),
-            range: self.source_map.generate_modified_range(self.span, &replacement),
-            source: self.source_map.generate_modified_source(self.span, &replacement),
-            annotation: Some("Try using `int` here.".to_string()),
-            import_suggestion: Some("import { int } from 'azle';".to_string()),
-        });
-        ErrorMessage {
-            title: "Unsupported Type".to_string(),
-            origin: self.get_origin(),
-            line_number: self.get_line_number(),
-            source: self.get_source(),
-            range: self.get_range(),
-            annotation: "bigint is not a supported type".to_string(),
-            suggestion,
-        }
-    }
-
-    fn keyword_not_supported_error(&self) -> ErrorMessage {
-        ErrorMessage {
-            title: "Unsupported Type".to_string(),
-            origin: self.get_origin(),
-            line_number: self.get_line_number(),
-            source: self.get_source(),
-            range: self.get_range(),
-            annotation: format!("{} is not a supported type", self.get_source_text()),
-            suggestion: None,
-        }
+impl SourceMapped<'_, TsTypeRef> {
+    pub fn to_primitive(&self) -> Result<Option<Primitive>, Error> {
+        Ok(Some(match self.get_name()? {
+            "blob" => Primitive::Blob,
+            "float32" => Primitive::Float32,
+            "float64" => Primitive::Float64,
+            "int" => Primitive::Int,
+            "int8" => Primitive::Int8,
+            "int16" => Primitive::Int16,
+            "int32" => Primitive::Int32,
+            "int64" => Primitive::Int64,
+            "nat" => Primitive::Nat,
+            "nat8" => Primitive::Nat8,
+            "nat16" => Primitive::Nat16,
+            "nat32" => Primitive::Nat32,
+            "nat64" => Primitive::Nat64,
+            "Principal" => Primitive::Principal,
+            "empty" => Primitive::Empty,
+            "reserved" => Primitive::Reserved,
+            "text" => Primitive::String,
+            _ => return Ok(None),
+        }))
     }
 }
 

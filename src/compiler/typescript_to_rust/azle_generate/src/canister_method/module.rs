@@ -2,98 +2,119 @@ use swc_common::SourceMap;
 use swc_ecma_ast::{Decl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt};
 
 use crate::{
-    canister_method::{errors, module_item::ModuleItemHelperMethods, AnnotatedFnDecl, Annotation},
+    canister_method::{
+        errors::{ExtraneousCanisterMethodAnnotation, MissingReturnTypeAnnotation},
+        AnnotatedFnDecl,
+    },
     ts_ast::SourceMapped,
+    Error,
 };
 
 pub trait ModuleHelperMethods {
-    fn get_annotated_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AnnotatedFnDecl>;
+    fn get_annotated_fn_decls<'a>(
+        &'a self,
+        source_map: &'a SourceMap,
+    ) -> (Vec<AnnotatedFnDecl>, Vec<Error>);
     fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>>;
 }
 
+struct Accumulator<'a> {
+    pub annotated_fn_decls: Vec<AnnotatedFnDecl<'a>>,
+    pub errors: Vec<Error>,
+}
+
+impl Accumulator<'_> {
+    pub fn new() -> Self {
+        Self {
+            annotated_fn_decls: Default::default(),
+            errors: Default::default(),
+        }
+    }
+}
+
+impl<'a> From<Accumulator<'a>> for (Vec<AnnotatedFnDecl<'a>>, Vec<Error>) {
+    fn from(acc: Accumulator<'a>) -> Self {
+        (acc.annotated_fn_decls, acc.errors)
+    }
+}
+
 impl ModuleHelperMethods for Module {
-    fn get_annotated_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<AnnotatedFnDecl> {
-        // TODO: Consider changing this algorithm from being backward looking
-        // to being forward looking
+    // TODO: This should be implemented on SourceMapped<Module>.
+    // Then you wouldn't need to pass the source_map in as a param.
+    // ideally body then would be a Vec<SourceMapped<ModuleItem>>
+    fn get_annotated_fn_decls<'a>(
+        &'a self,
+        source_map: &'a SourceMap,
+    ) -> (Vec<AnnotatedFnDecl>, Vec<Error>) {
+        let source_mapped_body: Vec<_> = self
+            .body
+            .iter()
+            .map(|module_item| SourceMapped::new(module_item, source_map))
+            .collect();
 
-        let mut previous_module_item_was_custom_decorator = false;
-
-        self.body
+        source_mapped_body
             .iter()
             .enumerate()
-            .fold(vec![], |mut acc, (i, module_item)| {
-                if previous_module_item_was_custom_decorator {
-                    let custom_decorator_module_item = self.body.get(i - 1).unwrap();
+            .fold(Accumulator::new(), |mut acc, (i, module_item)| {
+                if let Some(result) = module_item.as_canister_method_annotation() {
+                    match result {
+                        Ok(annotation) => {
+                            match source_mapped_body.get(i + 1) {
+                                Some(next_item) => {
+                                    let next_item = SourceMapped::new(next_item, source_map);
+                                    match next_item.as_exported_fn_decl() {
+                                        Some(fn_decl) => {
+                                            let annotated_fn_decl = AnnotatedFnDecl {
+                                                annotation,
+                                                fn_decl: fn_decl.clone(),
+                                                source_map,
+                                            };
 
-                    match module_item.as_exported_fn_decl() {
-                        Some(fn_decl) => {
-                            let annotation =
-                                match Annotation::from_module_item(custom_decorator_module_item) {
-                                    Ok(annotation) => annotation,
-                                    Err(err) => panic!(
-                                        "{}",
-                                        errors::build_parse_error_message(
-                                            err,
-                                            custom_decorator_module_item,
-                                            source_map
+                                            match &fn_decl.function.return_type {
+                                                Some(_) => {
+                                                    acc.annotated_fn_decls.push(annotated_fn_decl)
+                                                }
+                                                None => {
+                                                    let missing_return_type_annotation =
+                                                        MissingReturnTypeAnnotation::from_annotated_fn_decl(&annotated_fn_decl);
+                                                    acc.errors.push(missing_return_type_annotation.into())
+                                                }
+                                            }
+                                        }
+                                        // There is an annotation not followed by an exported function (but not at end of file)
+                                        None => acc.errors.push(
+                                            ExtraneousCanisterMethodAnnotation::from_annotation(
+                                                &SourceMapped::new(&annotation, module_item.source_map)
+                                            ).into()
                                         )
-                                    ),
-                                };
-
-                            if fn_decl.function.return_type.is_none() {
-                                panic!(
-                                    "{}",
-                                    errors::build_missing_return_type_error_message(
-                                        &fn_decl, source_map
-                                    )
-                                )
-                            }
-
-                            acc.push(AnnotatedFnDecl {
-                                annotation,
-                                fn_decl,
-                                source_map,
-                            })
-                        }
-                        None => panic!(
-                            "{}",
-                            errors::build_extraneous_decorator_error_message(
-                                custom_decorator_module_item,
-                                source_map
-                            )
-                        ),
+                                    }
+                                }
+                                // There is a dangling canister method annotation at the end of the file.
+                                None => acc.errors.push(
+                                    ExtraneousCanisterMethodAnnotation::from_annotation(&SourceMapped::new(&annotation, module_item.source_map))
+                                        .into(),
+                                ),
+                            };
+                        },
+                        Err(err) => acc.errors.push(err)
                     }
                 }
 
-                if i + 1 == self.body.len() && module_item.is_custom_decorator() {
-                    panic!(
-                        "{}",
-                        errors::build_extraneous_decorator_error_message(module_item, source_map)
-                    )
-                }
-
-                previous_module_item_was_custom_decorator = module_item.is_custom_decorator();
                 acc
             })
+            .into()
     }
 
     fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>> {
         self.body
             .iter()
-            .fold(vec![], |mut acc, module_item| match module_item.as_decl() {
-                Some(decl) => match decl {
-                    Decl::Fn(fn_decl) => {
-                        // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
-                        // necessary to do something like:
-                        // vec![acc, vec![SourceMapped::new(&fn_decl, source_map)]].concat()
-
-                        acc.push(SourceMapped::new(&fn_decl, source_map));
-                        acc
-                    }
-                    _ => acc,
-                },
-                None => acc,
+            .filter_map(|module_item| {
+                Some(SourceMapped::new(
+                    module_item.as_decl()?.as_fn_decl()?,
+                    source_map,
+                ))
             })
+            .collect()
     }
 }
 

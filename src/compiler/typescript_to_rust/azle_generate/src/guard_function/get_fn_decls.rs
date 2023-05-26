@@ -12,7 +12,6 @@ impl GetProgramFnDecls for Vec<Program> {
     fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>> {
         self.iter()
             .flat_map(|azle_program| azle_program.get_fn_decls())
-            .map(|sm_fn_decl| sm_fn_decl.clone())
             .collect()
     }
 }
