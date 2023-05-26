@@ -27,8 +27,6 @@ import {
 } from './bitcoin_plugin';
 import * as ecdsaApi from './ecdsa_api';
 
-const SIG_HASH_TYPE: BitcoinEcdsaSighashType = BitcoinEcdsaSighashType.All;
-
 /// Returns the P2PKH address of this canister at the given derivation path.
 export async function getP2PKHAddress(
     network: BitcoinNetwork,
@@ -253,7 +251,7 @@ async function signTransaction(
         const sighash = transaction.signature_hash!(
             index,
             ownAddress.script_pubkey(),
-            SIG_HASH_TYPE.to_u32!()
+            1
         );
 
         const signature = await signer(
@@ -265,10 +263,7 @@ async function signTransaction(
         // Convert signature to DER.
         const derSignature = sec1ToDer(signature);
 
-        const sigWithHashtype = Uint8Array.from([
-            ...derSignature,
-            SIG_HASH_TYPE.to_u32!()
-        ]);
+        const sigWithHashtype = Uint8Array.from([...derSignature, 1]);
 
         // TODO right here I think we'll need to make sure this gets set in Rust
         input.script_sig = BitcoinScriptBuilder.new()
