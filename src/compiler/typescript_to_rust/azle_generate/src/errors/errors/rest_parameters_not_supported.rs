@@ -1,4 +1,4 @@
-use swc_ecma_ast::{Param, TsFnParam, TsFnType};
+use swc_ecma_ast::{RestPat, TsFnParam, TsFnType};
 
 use crate::{
     canister_method::AnnotatedFnDecl,
@@ -21,10 +21,10 @@ impl RestParametersNotSupported {
         }
     }
 
-    pub fn from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl, param: &Param) -> Self {
+    pub fn from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl, rest_pat: &RestPat) -> Self {
         Self {
             message: annotated_fn_decl
-                .build_rest_param_error_msg(param)
+                .build_rest_param_error_msg(rest_pat)
                 .to_string(),
         }
     }
@@ -51,9 +51,7 @@ impl std::fmt::Display for RestParametersNotSupported {
 }
 
 impl AnnotatedFnDecl<'_> {
-    pub(super) fn build_rest_param_error_msg(&self, param: &Param) -> CompilerOutput {
-        let rest_pat = param.pat.as_rest().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
-
+    pub(super) fn build_rest_param_error_msg(&self, rest_pat: &RestPat) -> CompilerOutput {
         let range = rest_pat.get_destructure_range(self.source_map);
         let replacement_name = "myParam".to_string(); // TODO: Come up with a better name from the ts_type_ann
 

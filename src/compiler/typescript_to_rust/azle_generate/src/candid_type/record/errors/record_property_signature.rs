@@ -41,7 +41,7 @@ impl SourceMapped<'_, TsTypeElement> {
             location: self.get_location(),
             annotation: format!("{} is not allowed here.", self.type_to_string()),
             suggestion: Some(Suggestion {
-                title: "Variant members must be properties.".to_string(),
+                title: "Record members must be properties.".to_string(),
                 source: self
                     .source_map
                     .generate_modified_source(self.get_span(), &replacement),

@@ -64,7 +64,7 @@ impl SourceMapped<'_, TsTypeElement> {
 impl SourceMapped<'_, TsPropertySignature> {
     pub fn to_record_member(&self) -> Result<Member, Vec<Error>> {
         Ok(Member {
-            name: self.get_member_name(),
+            name: self.get_member_name()?,
             candid_type: self.get_act_data_type()?,
         })
     }

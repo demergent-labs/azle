@@ -1,8 +1,6 @@
-use swc_ecma_ast::{TsFnParam, TsFnType};
+use swc_ecma_ast::{ArrayPat, TsFnParam, TsFnType};
 
 use crate::{canister_method::AnnotatedFnDecl, ts_ast::SourceMapped};
-
-use swc_ecma_ast::Param;
 
 use crate::{
     errors::{CompilerOutput, Location, Suggestion},
@@ -23,10 +21,13 @@ impl ArrayDestructuringInParamsNotSupported {
         }
     }
 
-    pub fn from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl, param: &Param) -> Self {
+    pub fn from_annotated_fn_decl(
+        annotated_fn_decl: &AnnotatedFnDecl,
+        array_pat: &ArrayPat,
+    ) -> Self {
         Self {
             message: annotated_fn_decl
-                .build_array_destructure_error_message(param)
+                .build_array_destructure_error_message(array_pat)
                 .to_string(),
         }
     }
@@ -53,9 +54,7 @@ impl std::fmt::Display for ArrayDestructuringInParamsNotSupported {
 }
 
 impl AnnotatedFnDecl<'_> {
-    fn build_array_destructure_error_message(&self, param: &Param) -> CompilerOutput {
-        let array_pat = param.pat.as_array().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
-
+    fn build_array_destructure_error_message(&self, array_pat: &ArrayPat) -> CompilerOutput {
         let range = array_pat.get_destructure_range(self.source_map);
         let replacement_name = "myParam".to_string(); // TODO: Come up with a better name from the ts_type_ann
 

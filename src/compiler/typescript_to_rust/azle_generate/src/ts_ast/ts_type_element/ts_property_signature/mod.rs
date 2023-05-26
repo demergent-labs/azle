@@ -7,18 +7,19 @@ use crate::{
 };
 use cdk_framework::act::node::CandidType;
 
-use self::errors::NoTypeAnnotation;
+use self::errors::{NoTypeAnnotation, UnsupportedMemberName};
 
 pub mod errors;
 mod get_span;
 
 impl SourceMapped<'_, TsPropertySignature> {
-    pub fn get_member_name(&self) -> String {
-        self.key
-            .as_ident()
-            .expect(&self.unsupported_member_name_error().to_string())
-            .get_name()
-            .to_string()
+    pub fn get_member_name(&self) -> Result<String, Error> {
+        Ok(match self.key.as_ident() {
+            Some(ident) => ident,
+            None => return Err(UnsupportedMemberName::from_ts_property_signature(self).into()),
+        }
+        .get_name()
+        .to_string())
     }
 
     pub fn get_act_data_type(&self) -> Result<CandidType, Vec<Error>> {

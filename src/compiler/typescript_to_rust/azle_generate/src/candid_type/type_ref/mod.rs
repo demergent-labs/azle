@@ -1,5 +1,5 @@
 use cdk_framework::act::node::{
-    candid::{Primitive, TypeArg, TypeRef},
+    candid::{TypeArg, TypeRef},
     CandidType,
 };
 use std::ops::Deref;
@@ -58,31 +58,8 @@ impl SourceMapped<'_, TsTypeRef> {
         })
     }
 
-    pub fn as_primitive(&self) -> Result<Option<Primitive>, Error> {
-        Ok(Some(match self.get_name()? {
-            "blob" => Primitive::Blob,
-            "float32" => Primitive::Float32,
-            "float64" => Primitive::Float64,
-            "int" => Primitive::Int,
-            "int8" => Primitive::Int8,
-            "int16" => Primitive::Int16,
-            "int32" => Primitive::Int32,
-            "int64" => Primitive::Int64,
-            "nat" => Primitive::Nat,
-            "nat8" => Primitive::Nat8,
-            "nat16" => Primitive::Nat16,
-            "nat32" => Primitive::Nat32,
-            "nat64" => Primitive::Nat64,
-            "Principal" => Primitive::Principal,
-            "empty" => Primitive::Empty,
-            "reserved" => Primitive::Reserved,
-            "text" => Primitive::String,
-            _ => return Ok(None),
-        }))
-    }
-
     pub fn to_candid_type(&self) -> Result<CandidType, Vec<Error>> {
-        if let Some(primitive) = self.as_primitive()? {
+        if let Some(primitive) = self.to_primitive()? {
             return Ok(CandidType::Primitive(primitive));
         }
         Ok(match self.get_name()? {

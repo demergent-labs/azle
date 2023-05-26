@@ -104,14 +104,14 @@ impl SourceMapped<'_, ClassProp> {
         let ts_fn_type = self.ts_fn_type()?;
         match &*ts_fn_type.type_ann.type_ann {
             TsType::TsTypeRef(ts_type_ref) => {
-                let name = match &ts_type_ref.type_name {
-                    swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
-                        return Err(NamespaceQualifiedType::from_class_prop(self).into())
+                if "CallResult"
+                    != match &ts_type_ref.type_name {
+                        swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
+                            return Err(NamespaceQualifiedType::from_class_prop(self).into())
+                        }
+                        swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name().to_string(),
                     }
-                    swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name().to_string(),
-                };
-
-                if name != "CallResult" {
+                {
                     return Err(MissingCallResultAnnotation::from_class_prop(self).into());
                 }
 

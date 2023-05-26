@@ -1,4 +1,4 @@
-use swc_ecma_ast::{Param, TsFnParam, TsFnType};
+use swc_ecma_ast::{ObjectPat, TsFnParam, TsFnType};
 
 use crate::{
     canister_method::AnnotatedFnDecl,
@@ -21,10 +21,13 @@ impl ObjectDestructuringNotSupported {
         }
     }
 
-    pub fn from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl, param: &Param) -> Self {
+    pub fn from_annotated_fn_decl(
+        annotated_fn_decl: &AnnotatedFnDecl,
+        object_pat: &ObjectPat,
+    ) -> Self {
         Self {
             message: annotated_fn_decl
-                .build_object_destructure_error_msg(param)
+                .build_object_destructure_error_msg(object_pat)
                 .to_string(),
         }
     }
@@ -51,9 +54,7 @@ impl std::fmt::Display for ObjectDestructuringNotSupported {
 }
 
 impl AnnotatedFnDecl<'_> {
-    fn build_object_destructure_error_msg(&self, param: &Param) -> CompilerOutput {
-        let object_pat = param.pat.as_object().expect("Oops! Looks like we introduced a bug while refactoring. Please open a ticket at https://github.com/demergent-labs/azle/issues/new");
-
+    fn build_object_destructure_error_msg(&self, object_pat: &ObjectPat) -> CompilerOutput {
         let range = object_pat.get_destructure_range(self.source_map);
         let replacement_name = "myParam".to_string(); // TODO: Come up with a better name from the ts_type_ann
 
