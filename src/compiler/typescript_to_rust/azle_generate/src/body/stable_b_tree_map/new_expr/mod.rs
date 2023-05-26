@@ -21,6 +21,7 @@ pub enum ArgName {
     MaxValueSize,
 }
 
+// TODO DOUBLE CHECK
 impl SourceMapped<'_, NewExpr> {
     pub fn to_stable_b_tree_map_node(&self) -> Result<StableBTreeMapNode, Vec<Error>> {
         match &self.type_args {
@@ -44,49 +45,26 @@ impl SourceMapped<'_, NewExpr> {
                         if args.len() == 0 {
                             return Err(vec![MissingArgs::from_new_expr(self).into()]);
                         }
-
-                        for arg in args {
-                            if arg.spread.is_some() {
-                                return Err(vec![ArgSpread::from_new_expr(self).into()]);
-                            }
-                        }
-
                         if args.len() != 3 {
                             return Err(vec![IncorrectNumberOfArgs::from_new_expr(self).into()]);
                         }
-
-                        let memory_id = match &args[0].expr.to_u8() {
-                            Ok(value) => *value,
-                            Err(_) => {
-                                return Err(vec![InvalidArg::from_new_expr(
-                                    self,
-                                    ArgName::MessageId,
-                                )
-                                .into()])
-                            }
-                        };
-
-                        let max_key_size = match &args[1].expr.to_u32() {
-                            Ok(value) => *value,
-                            Err(_) => {
-                                return Err(vec![InvalidArg::from_new_expr(
-                                    self,
-                                    ArgName::MaxKeySize,
-                                )
-                                .into()])
-                            }
-                        };
-
-                        let max_value_size = match &args[2].expr.to_u32() {
-                            Ok(value) => *value,
-                            Err(_) => {
-                                return Err(vec![InvalidArg::from_new_expr(
-                                    self,
-                                    ArgName::MaxValueSize,
-                                )
-                                .into()])
-                            }
-                        };
+                        let (_, memory_id, max_key_size, max_value_size) = (
+                            if args.iter().any(|arg| arg.spread.is_some()) {
+                                return Err(vec![ArgSpread::from_new_expr(self).into()]);
+                            } else {
+                                Ok(())
+                            },
+                            args[0].expr.to_u8().map_err(|_| {
+                                vec![InvalidArg::from_new_expr(self, ArgName::MessageId).into()]
+                            }),
+                            args[1].expr.to_u32().map_err(|_| {
+                                vec![InvalidArg::from_new_expr(self, ArgName::MaxKeySize).into()]
+                            }),
+                            args[2].expr.to_u32().map_err(|_| {
+                                vec![InvalidArg::from_new_expr(self, ArgName::MaxValueSize).into()]
+                            }),
+                        )
+                            .collect_results()?;
 
                         Ok(StableBTreeMapNode {
                             memory_id,

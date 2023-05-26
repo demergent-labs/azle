@@ -53,7 +53,7 @@ pub fn generate(
             std::fs::read_to_string(PathBuf::from(&plugin.path).join("src").join("lib.rs"))
                 .unwrap();
 
-        let token_stream: proc_macro2::TokenStream = syn::parse_str(&plugin_code).unwrap();
+        let token_stream: TokenStream = syn::parse_str(&plugin_code).unwrap();
         token_stream
     });
 
