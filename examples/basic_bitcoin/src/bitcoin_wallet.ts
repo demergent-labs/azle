@@ -16,6 +16,7 @@ import {
     BitcoinAddress,
     BitcoinEcdsaSighashType,
     BitcoinHash,
+    BitcoinOutPoint,
     BitcoinScript,
     BitcoinScriptBuilder,
     BitcoinTransaction,
@@ -155,11 +156,11 @@ async function buildTransaction(
 
         const signedTxBytesLen = BigInt(signedTransaction.serialize!().length);
 
-        if ((signedTxBytesLen * feePerByte) / 1000n == totalFee) {
+        if ((signedTxBytesLen * feePerByte) / 1_000n == totalFee) {
             console.log(`Transaction built with fee ${totalFee}.`);
             return transaction;
         } else {
-            totalFee = (signedTxBytesLen * feePerByte) / 1000n;
+            totalFee = (signedTxBytesLen * feePerByte) / 1_000n;
         }
     }
 }
@@ -178,7 +179,7 @@ function buildTransactionWithFee(
     // even if they were previously spent in a transaction. This isn't a
     // problem as long as at most one transaction is created per block and
     // we're using min_confirmations of 1.
-    let utxosToSpend = [];
+    let utxosToSpend: Vec<Utxo> = [];
     let totalSpent = 0n;
     for (const utxo of ownUtxos.reverse()) {
         totalSpent += utxo.value;
@@ -196,33 +197,27 @@ function buildTransactionWithFee(
     }
 
     const inputs: Vec<BitcoinTxIn> = utxosToSpend.map((utxo) => {
-        return {
-            previous_output: {
-                txid: BitcoinTxid.from_hash(
-                    BitcoinHash.from_slice(utxo.outpoint.txid)
-                ),
-                vout: utxo.outpoint.vout
-            },
-            sequence: 0xffffffff,
-            witness: BitcoinWitness.new(),
-            script_sig: BitcoinScript.new()
-        };
+        const txid = BitcoinTxid.from_hash(
+            BitcoinHash.from_slice(utxo.outpoint.txid)
+        );
+        const previousOutput = BitcoinOutPoint.new(txid, utxo.outpoint.vout);
+        const sequence = 0xffffffff;
+        const witness = BitcoinWitness.new();
+        const scriptSig = BitcoinScript.new();
+
+        return BitcoinTxIn.new(previousOutput, sequence, witness, scriptSig);
     });
 
     let outputs: Vec<BitcoinTxOut> = [
-        {
-            script_pubkey: dstAddress.script_pubkey(),
-            value: amount
-        }
+        BitcoinTxOut.new(dstAddress.script_pubkey(), amount)
     ];
 
     const remainingAmount = totalSpent - amount - fee;
 
     if (remainingAmount >= DUST_THRESHOLD) {
-        outputs.push({
-            script_pubkey: ownAddress.script_pubkey(),
-            value: remainingAmount
-        });
+        outputs.push(
+            BitcoinTxOut.new(ownAddress.script_pubkey(), remainingAmount)
+        );
     }
 
     return Result.Ok(BitcoinTransaction.new(inputs, 0, 1, outputs));
@@ -245,7 +240,7 @@ async function signTransaction(
 ): Promise<BitcoinTransaction> {
     // Verify that our own address is P2PKH.
     // TODO add this back in
-    // TODO see if we can ue https://www.npmjs.com/package/assert
+    // TODO see if we can use https://www.npmjs.com/package/assert
     // assert_eq!(
     //     own_address.address_type(),
     //     Some(AddressType::P2pkh),
@@ -270,10 +265,12 @@ async function signTransaction(
         // Convert signature to DER.
         const derSignature = sec1ToDer(signature);
 
-        let sigWithHashtype = Uint8Array.from([
+        const sigWithHashtype = Uint8Array.from([
             ...derSignature,
             SIG_HASH_TYPE.to_u32!()
         ]);
+
+        // TODO right here I think we'll need to make sure this gets set in Rust
         input.script_sig = BitcoinScriptBuilder.new()
             .push_slice(sigWithHashtype)
             .push_slice(ownPublicKey)
