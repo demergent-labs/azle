@@ -1,28 +1,14 @@
-import { blob, int32, nat32, nat64, Vec } from 'azle';
+import { blob, int32, nat32, nat64, registerPlugin, Vec } from 'azle';
 
 export type BitcoinAddress = {
-    scriptPubkey: () => BitcoinScript;
+    script_pubkey: () => BitcoinScript;
 };
 
 export const BitcoinAddress = {
-    fromStr: (string: string) => {
+    from_str: (string: string) => {
         return (globalThis as any).BitcoinPlugin.BitcoinAddress.from_str(
             string
         ) as BitcoinAddress;
-    }
-};
-
-export type BitcoinBuilder = {
-    intoScript: () => BitcoinScriptBuf;
-    new: () => BitcoinBuilder;
-    pushSlice: (_: blob) => BitcoinBuilder;
-};
-
-export const BitcoinBuilder = {
-    new: () => {
-        return (
-            globalThis as any
-        ).BitcoinPlugin.BitcoinBuilder.new() as BitcoinBuilder;
     }
 };
 
@@ -59,19 +45,19 @@ export const BitcoinEcdsaSighashType = {
 };
 
 export type BitcoinHash = {
-    fromSlice: (_: blob) => BitcoinHash;
+    from_slice: (_: blob) => BitcoinHash;
 };
 
 export const BitcoinHash = {
-    fromSlice: (slice: blob) => {
-        return (globalThis as any).BitcoinPlugin.BitcoinHash.fromSlice(
+    from_slice: (slice: blob) => {
+        return (globalThis as any).BitcoinPlugin.BitcoinHash.from_slice(
             slice
         ) as BitcoinHash;
     }
 };
 
-export type BitcoinLegacySigHash = {
-    toVec: () => blob;
+export type BitcoinSighash = {
+    to_vec: () => blob;
 };
 
 export type BitcoinScript = {
@@ -86,42 +72,70 @@ export const BitcoinScript = {
     }
 };
 
-export type BitcoinScriptBuf = {};
+export type BitcoinScriptBuilder = {
+    into_script: () => BitcoinScript;
+    new: () => BitcoinScriptBuilder;
+    push_slice: (_: blob) => BitcoinScriptBuilder;
+};
+
+export const BitcoinScriptBuilder = {
+    new: () => {
+        return (
+            globalThis as any
+        ).BitcoinPlugin.BitcoinScriptBuilder.new() as BitcoinScriptBuilder;
+    }
+};
+
+export type BitcoinTransaction = {
+    input: Vec<BitcoinTxIn>;
+    lock_time: nat32;
+    version: int32;
+    output: Vec<BitcoinTxOut>;
+    serialize?: () => blob;
+    signature_hash?: (
+        input_index: nat32,
+        script_pubkey: BitcoinScript,
+        sighash_u32: nat32
+    ) => BitcoinSighash;
+    txid?: () => BitcoinTxid;
+};
+
+export const BitcoinTransaction = {
+    new: (
+        input: BitcoinTransaction['input'],
+        lock_time: BitcoinTransaction['lock_time'],
+        version: BitcoinTransaction['version'],
+        output: BitcoinTransaction['output']
+    ) => {
+        return (globalThis as any).BitcoinPlugin.BitcoinTransaction.new(
+            input,
+            lock_time,
+            version,
+            output
+        ) as BitcoinTransaction;
+    }
+};
 
 export type BitcoinTxid = {
-    fromHash: (hash: BitcoinHash) => BitcoinTxid;
+    from_hash: (hash: BitcoinHash) => BitcoinTxid;
 };
 
 export const BitcoinTxid = {
-    fromHash: (hash: BitcoinHash) => {
-        return (globalThis as any).BitcoinPlugin.BitcoinScript.fromHash(
+    from_hash: (hash: BitcoinHash) => {
+        return (globalThis as any).BitcoinPlugin.BitcoinScript.from_hash(
             hash
         ) as BitcoinTxid;
     }
 };
 
 export type BitcoinTxIn = {
-    scriptSig: BitcoinScriptBuf;
+    script_sig: BitcoinScript;
     witness: BitcoinWitness;
 };
 
 export type BitcoinTxOut = {
     value: nat64;
-    scriptPubkey: BitcoinScript;
-};
-
-export type BitcoinTransaction = {
-    input: Vec<BitcoinTxIn>;
-    lockTime: nat32;
-    version: int32;
-    output: Vec<BitcoinTxOut>;
-    serialize?: () => blob;
-    signatureHash?: (
-        inputIndex: nat32,
-        scriptPubkey: BitcoinScript,
-        sighashU32: nat32
-    ) => BitcoinLegacySigHash;
-    txid?: () => BitcoinTxid;
+    script_pubkey: BitcoinScript;
 };
 
 export type BitcoinWitness = {
@@ -136,3 +150,8 @@ export const BitcoinWitness = {
         ).BitcoinPlugin.BitcoinWitness.new() as BitcoinWitness;
     }
 };
+
+registerPlugin({
+    globalObjectName: 'BitcoinPlugin',
+    rustRegisterFunctionName: '_bitcoin_plugin_register'
+});

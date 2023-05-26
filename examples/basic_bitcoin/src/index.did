@@ -17,5 +17,4 @@ service : (BitcoinNetwork) -> {
   getP2PKHAddress : () -> (text);
   getUtxos : (text) -> (ManualReply);
   send : (SendRequest) -> (text);
-  test : () -> (text);
 }

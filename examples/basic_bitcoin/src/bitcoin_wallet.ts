@@ -14,10 +14,10 @@ import RIPEMD160 from 'ripemd160';
 import * as bitcoinApi from './bitcoin_api';
 import {
     BitcoinAddress,
-    BitcoinBuilder,
     BitcoinEcdsaSighashType,
     BitcoinHash,
     BitcoinScript,
+    BitcoinScriptBuilder,
     BitcoinTransaction,
     BitcoinTxid,
     BitcoinTxIn,
@@ -70,8 +70,8 @@ export async function send(
     const ownUtxos = (await bitcoinApi.getUtxos(network, ownAddressString))
         .utxos;
 
-    const ownAddress = BitcoinAddress.fromStr(ownAddressString);
-    const dstAddress = BitcoinAddress.fromStr(dstAddressString);
+    const ownAddress = BitcoinAddress.from_str(ownAddressString);
+    const dstAddress = BitcoinAddress.from_str(dstAddressString);
 
     // Build the transaction that sends `amount` to the destination address.
     const transaction = await buildTransaction(
@@ -198,20 +198,20 @@ function buildTransactionWithFee(
     const inputs: Vec<BitcoinTxIn> = utxosToSpend.map((utxo) => {
         return {
             previous_output: {
-                txid: BitcoinTxid.fromHash(
-                    BitcoinHash.fromSlice(utxo.outpoint.txid)
+                txid: BitcoinTxid.from_hash(
+                    BitcoinHash.from_slice(utxo.outpoint.txid)
                 ),
                 vout: utxo.outpoint.vout
             },
             sequence: 0xffffffff,
             witness: BitcoinWitness.new(),
-            scriptSig: BitcoinScript.new()
+            script_sig: BitcoinScript.new()
         };
     });
 
     let outputs: Vec<BitcoinTxOut> = [
         {
-            scriptPubkey: dstAddress.scriptPubkey(),
+            script_pubkey: dstAddress.script_pubkey(),
             value: amount
         }
     ];
@@ -220,17 +220,12 @@ function buildTransactionWithFee(
 
     if (remainingAmount >= DUST_THRESHOLD) {
         outputs.push({
-            scriptPubkey: ownAddress.scriptPubkey(),
+            script_pubkey: ownAddress.script_pubkey(),
             value: remainingAmount
         });
     }
 
-    return Result.Ok({
-        input: inputs,
-        output: outputs,
-        lockTime: 0,
-        version: 1
-    });
+    return Result.Ok(BitcoinTransaction.new(inputs, 0, 1, outputs));
 }
 
 // Sign a bitcoin transaction.
@@ -260,16 +255,16 @@ async function signTransaction(
     for (let index = 0; index < transaction.input.length; index++) {
         const input = transaction.input[index];
 
-        const sighash = transaction.signatureHash!(
+        const sighash = transaction.signature_hash!(
             index,
-            ownAddress.scriptPubkey(),
+            ownAddress.script_pubkey(),
             SIG_HASH_TYPE.to_u32!()
         );
 
         const signature = await signer(
             keyName,
             derivationPath,
-            sighash.toVec()
+            sighash.to_vec()
         );
 
         // Convert signature to DER.
@@ -279,10 +274,10 @@ async function signTransaction(
             ...derSignature,
             SIG_HASH_TYPE.to_u32!()
         ]);
-        input.scriptSig = BitcoinBuilder.new()
-            .pushSlice(sigWithHashtype)
-            .pushSlice(ownPublicKey)
-            .intoScript();
+        input.script_sig = BitcoinScriptBuilder.new()
+            .push_slice(sigWithHashtype)
+            .push_slice(ownPublicKey)
+            .into_script();
         input.witness.clear();
     }
 
