@@ -68,10 +68,10 @@ export const BitcoinScriptBuilder = {
 };
 
 export type BitcoinTransaction = {
-    input: Vec<BitcoinTxIn>;
+    inputs: Vec<BitcoinTxIn>;
     lock_time: nat32;
     version: int32;
-    output: Vec<BitcoinTxOut>;
+    outputs: Vec<BitcoinTxOut>;
     serialize?: () => blob;
     signature_hash?: (
         input_index: nat32,
@@ -83,34 +83,34 @@ export type BitcoinTransaction = {
 
 export const BitcoinTransaction = {
     new: (
-        input: BitcoinTransaction['input'],
+        inputs: BitcoinTransaction['inputs'],
         lock_time: BitcoinTransaction['lock_time'],
         version: BitcoinTransaction['version'],
-        output: BitcoinTransaction['output']
+        outputs: BitcoinTransaction['outputs']
     ) => {
         return (globalThis as any).BitcoinPlugin.BitcoinTransaction.new(
-            input,
+            inputs,
             lock_time,
             version,
-            output
+            outputs
         ) as BitcoinTransaction;
     }
 };
 
 export type BitcoinTxid = {
     from_hash: (hash: BitcoinHash) => BitcoinTxid;
+    to_string: () => string;
 };
 
 export const BitcoinTxid = {
     from_hash: (hash: BitcoinHash) => {
-        return (globalThis as any).BitcoinPlugin.BitcoinScript.from_hash(
+        return (globalThis as any).BitcoinPlugin.BitcoinTxid.from_hash(
             hash
         ) as BitcoinTxid;
     }
 };
 
 export type BitcoinTxIn = {
-    script_sig: BitcoinScript; // TODO we need these to be setters or accessors or something
     witness: BitcoinWitness; // TODO we need these to be setters or accessors or something
     new: (
         previous_output: BitcoinOutPoint,
@@ -118,33 +118,34 @@ export type BitcoinTxIn = {
         witness: BitcoinWitness,
         script_sig: BitcoinScript
     ) => BitcoinTxIn;
+    set_script_sig: (script_sig: BitcoinScript) => void;
 };
 
 export const BitcoinTxIn = {
     new: (
         previous_output: BitcoinOutPoint,
+        script_sig: BitcoinScript,
         sequence: nat32,
-        witness: BitcoinWitness,
-        script_sig: BitcoinScript
+        witness: BitcoinWitness
     ) => {
         return (globalThis as any).BitcoinPlugin.BitcoinTxIn.new(
             previous_output,
+            script_sig,
             sequence,
-            witness,
-            script_sig
+            witness
         ) as BitcoinTxIn;
     }
 };
 
 export type BitcoinTxOut = {
-    new: (script_pubkey: BitcoinScript, value: nat64) => BitcoinTxOut;
+    new: (value: nat64, script_pubkey: BitcoinScript) => BitcoinTxOut;
 };
 
 export const BitcoinTxOut = {
-    new: (script_pubkey: BitcoinScript, value: nat64) => {
+    new: (value: nat64, script_pubkey: BitcoinScript) => {
         return (globalThis as any).BitcoinPlugin.BitcoinTxOut.new(
-            script_pubkey,
-            value
+            value,
+            script_pubkey
         ) as BitcoinTxOut;
     }
 };

@@ -111,11 +111,7 @@ fn _bitcoin_plugin_register(boa_context: &mut boa_engine::Context) {
             boa_engine::property::Attribute::all(),
         )
         .property("BitcoinTxid", txid, boa_engine::property::Attribute::all())
-        .property(
-            "BitcoinTxInt",
-            tx_in,
-            boa_engine::property::Attribute::all(),
-        )
+        .property("BitcoinTxIn", tx_in, boa_engine::property::Attribute::all())
         .property(
             "BitcoinTxOut",
             tx_out,
@@ -361,6 +357,32 @@ fn _bitcoin_plugin_script_builder_push_slice(
         boa_engine::object::ObjectData::native_object(bitcoin_script_builder),
     );
 
+    bitcoin_script_builder_js_object
+        .set(
+            "into_script",
+            boa_engine::object::FunctionObjectBuilder::new(
+                context,
+                boa_engine::NativeFunction::from_fn_ptr(_bitcoin_plugin_script_builder_into_script),
+            )
+            .build(),
+            false,
+            context,
+        )
+        .unwrap();
+
+    bitcoin_script_builder_js_object
+        .set(
+            "push_slice",
+            boa_engine::object::FunctionObjectBuilder::new(
+                context,
+                boa_engine::NativeFunction::from_fn_ptr(_bitcoin_plugin_script_builder_push_slice),
+            )
+            .build(),
+            false,
+            context,
+        )
+        .unwrap();
+
     Ok(bitcoin_script_builder_js_object.into())
 }
 
@@ -414,6 +436,10 @@ fn _bitcoin_plugin_transaction_new(
         context.intrinsics().constructors().object().prototype(),
         boa_engine::object::ObjectData::native_object(transaction),
     );
+
+    transaction_js_object
+        .set("inputs", aargs[0].clone(), false, context)
+        .unwrap();
 
     transaction_js_object
         .set(
@@ -538,6 +564,30 @@ fn _bitcoin_plugin_transaction_txid(
         context.intrinsics().constructors().object().prototype(),
         boa_engine::object::ObjectData::native_object(txid),
     );
+
+    txid_js_object
+        .set(
+            "to_string",
+            boa_engine::object::FunctionObjectBuilder::new(
+                context,
+                boa_engine::NativeFunction::from_copy_closure(
+                    |this: &boa_engine::JsValue,
+                     aargs: &[boa_engine::JsValue],
+                     context: &mut boa_engine::Context| {
+                        let this_js_object = this.as_object().unwrap();
+                        let tx_id = &this_js_object.downcast_mut::<JsBitcoinTxid>().unwrap().0;
+
+                        let string = tx_id.to_string();
+
+                        Ok(string.into())
+                    },
+                ),
+            )
+            .build(),
+            false,
+            context,
+        )
+        .unwrap();
 
     Ok(txid_js_object.into())
 }
@@ -672,6 +722,41 @@ fn _bitcoin_plugin_tx_in_new(
         context.intrinsics().constructors().object().prototype(),
         boa_engine::object::ObjectData::native_object(tx_in),
     );
+
+    tx_in_js_object
+        .set(
+            "set_script_sig",
+            boa_engine::object::FunctionObjectBuilder::new(
+                context,
+                boa_engine::NativeFunction::from_copy_closure(
+                    |this: &boa_engine::JsValue,
+                     aargs: &[boa_engine::JsValue],
+                     context: &mut boa_engine::Context| {
+                        let this_js_object = this.as_object().unwrap();
+                        let mut tx_in =
+                            &mut this_js_object.downcast_mut::<JsBitcoinTxIn>().unwrap().0;
+
+                        let script_js_object = aargs[0].as_object().unwrap();
+                        let script = &script_js_object
+                            .downcast_ref::<JsBitcoinScript>()
+                            .unwrap()
+                            .0;
+
+                        tx_in.script_sig = script.clone();
+
+                        Ok(boa_engine::JsValue::Undefined)
+                    },
+                ),
+            )
+            .build(),
+            false,
+            context,
+        )
+        .unwrap();
+
+    tx_in_js_object
+        .set("witness", aargs[3].clone(), false, context)
+        .unwrap();
 
     Ok(tx_in_js_object.into())
 }

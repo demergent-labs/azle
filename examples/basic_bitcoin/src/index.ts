@@ -89,5 +89,5 @@ export async function send(request: SendRequest): Promise<string> {
         request.amountInSatoshi
     );
 
-    return txId.toString();
+    return txId.to_string();
 }

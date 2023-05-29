@@ -198,22 +198,22 @@ function buildTransactionWithFee(
             BitcoinHash.from_slice(utxo.outpoint.txid)
         );
         const previousOutput = BitcoinOutPoint.new(txid, utxo.outpoint.vout);
+        const scriptSig = BitcoinScript.new();
         const sequence = 0xffffffff;
         const witness = BitcoinWitness.new();
-        const scriptSig = BitcoinScript.new();
 
-        return BitcoinTxIn.new(previousOutput, sequence, witness, scriptSig);
+        return BitcoinTxIn.new(previousOutput, scriptSig, sequence, witness);
     });
 
     let outputs: Vec<BitcoinTxOut> = [
-        BitcoinTxOut.new(dstAddress.script_pubkey(), amount)
+        BitcoinTxOut.new(amount, dstAddress.script_pubkey())
     ];
 
     const remainingAmount = totalSpent - amount - fee;
 
     if (remainingAmount >= DUST_THRESHOLD) {
         outputs.push(
-            BitcoinTxOut.new(ownAddress.script_pubkey(), remainingAmount)
+            BitcoinTxOut.new(remainingAmount, ownAddress.script_pubkey())
         );
     }
 
@@ -244,8 +244,8 @@ async function signTransaction(
     //     "This example supports signing p2pkh addresses only."
     // );
 
-    for (let index = 0; index < transaction.input.length; index++) {
-        const input = transaction.input[index];
+    for (let index = 0; index < transaction.inputs.length; index++) {
+        const input = transaction.inputs[index];
 
         const sighash = transaction.signature_hash!(
             index,
@@ -265,10 +265,12 @@ async function signTransaction(
         const sigWithHashtype = Uint8Array.from([...derSignature, 1]);
 
         // TODO right here I think we'll need to make sure this gets set in Rust
-        input.script_sig = BitcoinScriptBuilder.new()
-            .push_slice(sigWithHashtype)
-            .push_slice(ownPublicKey)
-            .into_script();
+        input.set_script_sig(
+            BitcoinScriptBuilder.new()
+                .push_slice(sigWithHashtype)
+                .push_slice(ownPublicKey)
+                .into_script()
+        );
         input.witness.clear();
     }
 
