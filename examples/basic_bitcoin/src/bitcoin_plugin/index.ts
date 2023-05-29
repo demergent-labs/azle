@@ -12,38 +12,6 @@ export const BitcoinAddress = {
     }
 };
 
-// TODO it would be nice to use a Variant here...
-export type BitcoinEcdsaSighashType = {
-    All?: null;
-    None?: null;
-    Single?: null;
-    AllPlusAnyoneCanPay?: null;
-    NonePlusAnyoneCanPay?: null;
-    SinglePlusAnyoneCanPay?: null;
-    to_u32?: () => nat32;
-};
-
-export const BitcoinEcdsaSighashType = {
-    All: {
-        All: null
-    },
-    None: {
-        None: null
-    },
-    Single: {
-        Single: null
-    },
-    AllPlusAnyoneCanPay: {
-        AllPlusAnyoneCanPay: null
-    },
-    NonePlusAnyoneCanPay: {
-        NonePlusAnyoneCanPay: null
-    },
-    SinglePlusAnyoneCanPay: {
-        SinglePlusAnyoneCanPay: null
-    }
-};
-
 export type BitcoinHash = {
     from_slice: (_: blob) => BitcoinHash;
 };

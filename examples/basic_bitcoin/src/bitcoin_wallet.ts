@@ -14,7 +14,6 @@ import RIPEMD160 from 'ripemd160';
 import * as bitcoinApi from './bitcoin_api';
 import {
     BitcoinAddress,
-    BitcoinEcdsaSighashType,
     BitcoinHash,
     BitcoinOutPoint,
     BitcoinScript,
@@ -283,14 +282,14 @@ function publicKeyToP2PKHAddress(
 ): string {
     // sha256 + ripmd160
     let hasher = new RIPEMD160();
-    hasher.update(sha256(publicKey));
+    hasher.update(Buffer.from(sha256.digest(publicKey)));
     const result = hasher.digest();
     const prefix = match(network, {
-        Mainnet: () => '0x00',
-        _: () => '0x6f'
+        Mainnet: () => Buffer.from([0x00]),
+        _: () => Buffer.from([0x6f])
     });
-    let dataWithPrefix = Buffer.concat([Buffer.from(prefix), result]);
-    let checksum = sha256(sha256(dataWithPrefix)).slice(0, 4);
+    let dataWithPrefix = Buffer.concat([prefix, result]);
+    let checksum = sha256.digest(sha256.digest(dataWithPrefix)).slice(0, 4);
     let fullAddress = Buffer.concat([dataWithPrefix, Buffer.from(checksum)]);
     return bs58.encode(fullAddress);
 }
