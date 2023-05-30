@@ -1,9 +1,14 @@
 pub mod errors;
 
-use cdk_framework::act::node::candid::{variant::Member, Variant};
+use cdk_framework::{
+    act::node::candid::{variant::Member, Variant},
+    traits::CollectResults,
+};
 use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
-use crate::{errors::CollectResults, traits::GetName, ts_ast::SourceMapped, Error};
+use crate::{
+    errors::CollectResults as OtherCollectResults, traits::GetName, ts_ast::SourceMapped, Error,
+};
 
 use self::errors::VariantPropertySignature;
 
@@ -20,10 +25,13 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
                 name_string
             });
 
+            let (type_params, members) =
+                (self.get_type_params(), type_ref.to_variant()).collect_results()?;
+
             Ok(Variant {
                 name,
-                type_params: self.get_type_params()?.into(),
-                ..type_ref.to_variant()?
+                type_params: type_params.into(),
+                ..members
             })
         })
     }
@@ -71,9 +79,11 @@ impl SourceMapped<'_, TsTypeElement> {
 
 impl SourceMapped<'_, TsPropertySignature> {
     pub(super) fn to_variant_member(&self) -> Result<Member, Vec<Error>> {
-        Ok(Member {
-            name: self.get_member_name()?,
-            candid_type: self.get_act_data_type()?,
-        })
+        let (name, candid_type) = (
+            self.get_member_name().map_err(Error::into),
+            self.get_act_data_type(),
+        )
+            .collect_results()?;
+        Ok(Member { name, candid_type })
     }
 }

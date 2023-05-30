@@ -1,3 +1,4 @@
+use cdk_framework::traits::CollectResults;
 use quote::quote;
 use swc_ecma_ast::{
     TsKeywordTypeKind::{TsNullKeyword, TsVoidKeyword},
@@ -10,10 +11,14 @@ use crate::{
 };
 
 pub fn generate(fn_decl: &AnnotatedFnDecl) -> Result<proc_macro2::TokenStream, Vec<Error>> {
-    let call_to_js_function = rust::generate_call_to_js_function(fn_decl)?;
-    let return_expression = generate_return_expression(fn_decl)?;
+    let (call_to_js_function, return_expression, manual) = (
+        rust::generate_call_to_js_function(fn_decl),
+        generate_return_expression(fn_decl).map_err(Error::into),
+        fn_decl.is_manual().map_err(Error::into),
+    )
+        .collect_results()?;
+
     let function_name = fn_decl.get_function_name();
-    let manual = fn_decl.is_manual()?;
 
     Ok(quote! {
         BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {

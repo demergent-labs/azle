@@ -23,28 +23,23 @@ impl TsAst {
             })
             .collect::<Vec<_>>()
             .check_length_and_map(CanisterMethodType::PreUpgrade, |pre_upgrade_fn_decl| {
-                let errors = match pre_upgrade_fn_decl.is_void() {
-                    true => vec![],
-                    false => {
-                        VoidReturnTypeRequired::error_from_annotated_fn_decl(pre_upgrade_fn_decl)
-                            .into()
-                    }
-                };
+                let (_, _, body) = (
+                    match pre_upgrade_fn_decl.is_void() {
+                        true => Ok(()),
+                        false => Err(vec![VoidReturnTypeRequired::error_from_annotated_fn_decl(
+                            pre_upgrade_fn_decl,
+                        )]),
+                    },
+                    match pre_upgrade_fn_decl.fn_decl.function.is_async {
+                        true => Err(vec![AsyncNotAllowed::error_from_annotated_fn_decl(
+                            pre_upgrade_fn_decl,
+                        )]),
+                        false => Ok(()),
+                    },
+                    rust::generate(pre_upgrade_fn_decl),
+                )
+                    .collect_results()?;
 
-                let errors = match pre_upgrade_fn_decl.fn_decl.function.is_async {
-                    true => vec![
-                        errors,
-                        AsyncNotAllowed::error_from_annotated_fn_decl(pre_upgrade_fn_decl).into(),
-                    ]
-                    .concat(),
-                    false => errors,
-                };
-
-                if !errors.is_empty() {
-                    return Err(errors);
-                }
-
-                let body = rust::generate(pre_upgrade_fn_decl)?;
                 let guard_function_name = pre_upgrade_fn_decl.annotation.guard.clone();
 
                 Ok(PreUpgradeMethod {

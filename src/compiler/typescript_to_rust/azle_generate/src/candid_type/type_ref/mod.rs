@@ -1,13 +1,16 @@
-use cdk_framework::act::node::{
-    candid::{TypeArg, TypeRef},
-    CandidType,
+use cdk_framework::{
+    act::node::{
+        candid::{TypeArg, TypeRef},
+        CandidType,
+    },
+    traits::CollectResults,
 };
 use std::ops::Deref;
 use swc_common::Span;
 use swc_ecma_ast::{TsEntityName, TsType, TsTypeRef};
 
 use crate::{
-    errors::CollectResults,
+    errors::CollectResults as OtherCollectResults,
     traits::{GetName, GetNameWithError, GetSpan},
     ts_ast::SourceMapped,
     Error,
@@ -32,7 +35,7 @@ impl SourceMapped<'_, TsTypeRef> {
     }
 
     pub fn to_type_ref(&self) -> Result<TypeRef, Vec<Error>> {
-        let type_arguments =
+        let (type_arguments, name_string) = (
             self.type_params
                 .iter()
                 .map(|type_params| {
@@ -41,18 +44,22 @@ impl SourceMapped<'_, TsTypeRef> {
                     })
                 })
                 .flatten()
-                .collect_results()?
-                .into_iter()
-                .map(|param| TypeArg(param))
-                .collect::<Vec<_>>();
-
-        let name_string = self.get_name()?.to_string();
+                .collect_results()
+                .map(|param| {
+                    param
+                        .into_iter()
+                        .map(|param| TypeArg(param))
+                        .collect::<Vec<_>>()
+                }),
+            self.get_name().map_err(Error::into),
+        )
+            .collect_results()?;
 
         Ok(TypeRef {
             name: if name_string == "Result" {
                 "_AzleResult".to_string()
             } else {
-                name_string
+                name_string.to_string()
             },
             type_arguments,
         })

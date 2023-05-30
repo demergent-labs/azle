@@ -1,8 +1,12 @@
-use cdk_framework::act::node::candid::{tuple::Elem, Tuple};
+use cdk_framework::{
+    act::node::candid::{tuple::Elem, Tuple},
+    traits::CollectResults,
+};
 use swc_common::Span;
 use swc_ecma_ast::{TsTupleType, TsTypeAliasDecl, TsTypeRef};
 
 use crate::{
+    errors::CollectResults as OtherCollectResults,
     traits::{GetName, GetSpan},
     ts_ast::SourceMapped,
     Error,
@@ -13,10 +17,12 @@ use super::errors::WrongEnclosedType;
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_tuple(&self) -> Result<Option<Tuple>, Vec<Error>> {
         self.process_ts_type_ref("Tuple", |type_ref| {
+            let (type_params, members) =
+                (self.get_type_params(), type_ref.to_tuple()).collect_results()?;
             Ok(Tuple {
                 name: Some(self.id.get_name().to_string()),
-                type_params: self.get_type_params()?.into(),
-                ..type_ref.to_tuple()?
+                type_params: type_params.into(),
+                ..members
             })
         })
     }
@@ -47,7 +53,7 @@ impl SourceMapped<'_, TsTupleType> {
                 let candid_type = SourceMapped::new(&elem.ty, self.source_map).to_candid_type()?;
                 Ok(Elem { candid_type })
             })
-            .collect()
+            .collect_results()
     }
 }
 

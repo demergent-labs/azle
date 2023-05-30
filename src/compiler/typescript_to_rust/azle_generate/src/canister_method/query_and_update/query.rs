@@ -7,13 +7,13 @@ impl TsAst {
         &self,
         annotated_fn_decls: &Vec<AnnotatedFnDecl>,
     ) -> Result<Vec<QueryMethod>, Vec<Error>> {
-        annotated_fn_decls
+        Ok(annotated_fn_decls
             .iter()
             .filter(|fn_decl| fn_decl.is_canister_method_type(CanisterMethodType::Query))
             .map(|query_fn_decl| query_fn_decl.to_definition())
             .collect_results()?
             .into_iter()
-            .map(|definition| Ok(QueryMethod { definition }))
-            .collect_results()
+            .map(|definition| QueryMethod { definition })
+            .collect())
     }
 }

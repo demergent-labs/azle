@@ -27,8 +27,8 @@ impl TsAst {
 
 impl SourceMapped<'_, ClassDecl> {
     pub fn to_service(&self) -> Result<Service, Vec<Error>> {
-        let name = self.ident.get_name().to_string();
         let methods = self.build_service_methods()?;
+        let name = self.ident.get_name().to_string();
 
         Ok(Service {
             name,

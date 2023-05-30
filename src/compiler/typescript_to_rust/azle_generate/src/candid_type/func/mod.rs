@@ -24,6 +24,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
     }
 }
 
+// TODO DOUBLE CHECK
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_func(&self, name: Option<String>) -> Result<Func, Vec<Error>> {
         let request_type_ts_type = self.get_ts_type()?;
@@ -32,14 +33,17 @@ impl SourceMapped<'_, TsTypeRef> {
             _ => return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
         };
 
-        let mode = match request_type_type_ref.get_name()? {
-            "Query" => Mode::Query,
-            "Update" => Mode::Update,
-            "Oneway" => Mode::Oneway,
-            _ => return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
-        };
+        let (mode, ts_type) = (
+            match request_type_type_ref.get_name()? {
+                "Query" => Ok(Mode::Query),
+                "Update" => Ok(Mode::Update),
+                "Oneway" => Ok(Mode::Oneway),
+                _ => Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
+            },
+            request_type_type_ref.get_ts_type().map_err(Error::into),
+        )
+            .collect_results()?;
 
-        let ts_type = request_type_type_ref.get_ts_type()?;
         let ts_fn_type = match ts_type.deref() {
             TsType::TsFnOrConstructorType(TsFnOrConstructorType::TsFnType(ts_fn_type)) => {
                 SourceMapped::new(ts_fn_type, self.source_map)

@@ -25,31 +25,25 @@ impl TsAst {
             })
             .collect::<Vec<_>>()
             .check_length_and_map(CanisterMethodType::PostUpgrade, |post_upgrade_fn_decl| {
-                let errors = match post_upgrade_fn_decl.is_void() {
-                    true => vec![],
-                    false => {
-                        VoidReturnTypeRequired::error_from_annotated_fn_decl(post_upgrade_fn_decl)
-                            .into()
-                    }
-                };
+                let (_, _, params, body) = (
+                    match post_upgrade_fn_decl.is_void() {
+                        true => Ok(()),
+                        false => Err(vec![VoidReturnTypeRequired::error_from_annotated_fn_decl(
+                            post_upgrade_fn_decl,
+                        )]),
+                    },
+                    match post_upgrade_fn_decl.fn_decl.function.is_async {
+                        true => Err(vec![AsyncNotAllowed::error_from_annotated_fn_decl(
+                            post_upgrade_fn_decl,
+                        )
+                        .into()]),
+                        false => Ok(()),
+                    },
+                    post_upgrade_fn_decl.build_params(),
+                    rust::generate(Some(post_upgrade_fn_decl), plugins, environment_variables),
+                )
+                    .collect_results()?;
 
-                let errors = match post_upgrade_fn_decl.fn_decl.function.is_async {
-                    true => vec![
-                        errors,
-                        AsyncNotAllowed::error_from_annotated_fn_decl(post_upgrade_fn_decl).into(),
-                    ]
-                    .concat(),
-                    false => errors,
-                };
-
-                if !errors.is_empty() {
-                    return Err(errors);
-                }
-
-                let params = post_upgrade_fn_decl.build_params()?; // TODO make sure these are collected with the above errors
-
-                let body =
-                    rust::generate(Some(post_upgrade_fn_decl), plugins, environment_variables)?;
                 let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
 
                 Ok(PostUpgradeMethod {

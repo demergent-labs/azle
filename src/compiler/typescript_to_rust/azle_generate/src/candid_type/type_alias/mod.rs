@@ -1,4 +1,4 @@
-use cdk_framework::act::node::candid::TypeAlias;
+use cdk_framework::{act::node::candid::TypeAlias, traits::CollectResults};
 use swc_ecma_ast::{TsType, TsTypeAliasDecl, TsTypeRef};
 
 use crate::{traits::GetName, ts_ast::SourceMapped, Error};
@@ -6,9 +6,11 @@ use crate::{traits::GetName, ts_ast::SourceMapped, Error};
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_type_alias(&self) -> Result<Option<TypeAlias>, Vec<Error>> {
         self.process_ts_type_ref("Alias", |type_ref| {
-            let aliased_type = type_ref.get_ts_type()?.to_candid_type()?;
-
-            let type_params = self.get_type_params()?;
+            let (aliased_type, type_params) = (
+                type_ref.get_ts_type()?.to_candid_type(),
+                self.get_type_params(),
+            )
+                .collect_results()?;
 
             Ok(TypeAlias {
                 name: self.id.get_name().to_string(),

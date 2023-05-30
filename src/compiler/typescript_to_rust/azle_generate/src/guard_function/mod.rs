@@ -2,16 +2,15 @@ use cdk_framework::act::node::GuardFunction;
 use std::ops::Deref;
 use swc_ecma_ast::FnDecl;
 
-use crate::{traits::GetName, ts_ast::SourceMapped, Error, TsAst};
+use crate::{traits::GetName, ts_ast::SourceMapped, TsAst};
 use get_fn_decls::GetProgramFnDecls;
 
 mod get_fn_decls;
 mod rust;
 
 impl TsAst {
-    pub fn build_guard_functions(&self) -> Result<Vec<GuardFunction>, Vec<Error>> {
-        Ok(self
-            .programs
+    pub fn build_guard_functions(&self) -> Vec<GuardFunction> {
+        self.programs
             .get_fn_decls()
             .iter()
             .filter(|fn_decl| fn_decl.has_guard_result_return_type())
@@ -21,7 +20,7 @@ impl TsAst {
 
                 GuardFunction { name, body }
             })
-            .collect())
+            .collect()
     }
 }
 

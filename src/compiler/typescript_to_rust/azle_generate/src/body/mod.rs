@@ -24,6 +24,8 @@ pub fn generate(
     stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
     plugins: &Vec<Plugin>,
 ) -> Result<TokenStream, Vec<Error>> {
+    let register_ic_object_function = ic_object::register_function::generate(ts_ast)?;
+
     let query_and_update_methods = vec![
         query_methods
             .iter()
@@ -44,7 +46,6 @@ pub fn generate(
         services,
         &stable_b_tree_map_nodes,
     );
-    let register_ic_object_function = ic_object::register_function::generate(ts_ast)?;
 
     let stable_b_tree_maps = stable_b_tree_map::rust::generate(&stable_b_tree_map_nodes);
 

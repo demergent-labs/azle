@@ -36,14 +36,14 @@ impl TsAst {
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
     ) -> Result<AbstractCanisterTree, Vec<Error>> {
-        let (candid_types, canister_methods, guard_functions, stable_b_tree_maps) = (
+        let (candid_types, canister_methods, stable_b_tree_maps) = (
             self.build_candid_types(),
             self.build_canister_methods(plugins, environment_variables),
-            self.build_guard_functions(),
             self.build_stable_b_tree_map_nodes(),
         )
             .collect_results()?;
 
+        let guard_functions = self.build_guard_functions();
         let body = body::generate(
             self,
             &canister_methods.query_methods,

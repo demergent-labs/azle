@@ -1,9 +1,14 @@
 pub mod errors;
 
-use cdk_framework::act::node::candid::{record::Member, Record};
+use cdk_framework::{
+    act::node::candid::{record::Member, Record},
+    traits::CollectResults,
+};
 use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
-use crate::{errors::CollectResults, traits::GetName, ts_ast::SourceMapped, Error};
+use crate::{
+    errors::CollectResults as OtherCollectResults, traits::GetName, ts_ast::SourceMapped, Error,
+};
 
 use self::errors::RecordPropertySignature;
 
@@ -12,10 +17,12 @@ use super::errors::WrongEnclosedType;
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_record(&self) -> Result<Option<Record>, Vec<Error>> {
         self.process_ts_type_ref("Record", |type_ref| {
+            let (type_params, members) =
+                (self.get_type_params(), type_ref.to_record()).collect_results()?;
             Ok(Record {
                 name: Some(self.id.get_name().to_string()),
-                type_params: self.get_type_params()?.into(),
-                ..type_ref.to_record()?
+                type_params: type_params.into(),
+                ..members
             })
         })
     }
@@ -49,23 +56,22 @@ impl SourceMapped<'_, TsTypeLit> {
 
 impl SourceMapped<'_, TsTypeElement> {
     pub fn to_record_member(&self) -> Result<Member, Vec<Error>> {
-        let ts_property_signature = match self.as_property_signature() {
-            Some(ts_property_signature) => ts_property_signature,
-            None => {
-                return Err(vec![
-                    RecordPropertySignature::from_ts_type_element(self).into()
-                ])
-            }
-        };
-        ts_property_signature.to_record_member()
+        match self.as_property_signature() {
+            Some(ts_property_signature) => ts_property_signature.to_record_member(),
+            None => Err(vec![
+                RecordPropertySignature::from_ts_type_element(self).into()
+            ]),
+        }
     }
 }
 
 impl SourceMapped<'_, TsPropertySignature> {
     pub fn to_record_member(&self) -> Result<Member, Vec<Error>> {
-        Ok(Member {
-            name: self.get_member_name()?,
-            candid_type: self.get_act_data_type()?,
-        })
+        let (name, candid_type) = (
+            self.get_member_name().map_err(Error::into),
+            self.get_act_data_type(),
+        )
+            .collect_results()?;
+        Ok(Member { name, candid_type })
     }
 }

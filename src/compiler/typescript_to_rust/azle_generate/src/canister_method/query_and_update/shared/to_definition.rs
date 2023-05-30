@@ -1,21 +1,28 @@
-use cdk_framework::act::node::{canister_method::QueryOrUpdateDefinition, CandidType, Param};
+use cdk_framework::{
+    act::node::{canister_method::QueryOrUpdateDefinition, CandidType, Param},
+    traits::CollectResults,
+};
 
 use crate::{
     canister_method::{query_and_update, AnnotatedFnDecl},
-    errors::CollectResults,
+    errors::CollectResults as OtherCollectResults,
     ts_ast::SourceMapped,
     Error,
 };
 
 impl<'a> AnnotatedFnDecl<'a> {
     pub fn to_definition(&self) -> Result<QueryOrUpdateDefinition, Vec<Error>> {
-        let body = query_and_update::generate_body(&self)?;
-        let is_async = self.is_promise()?;
-        let is_manual = self.is_manual()?;
+        let (body, is_async, is_manual, params, return_type) = (
+            query_and_update::generate_body(&self),
+            self.is_promise().map_err(Error::into),
+            self.is_manual().map_err(Error::into),
+            self.build_params(),
+            self.build_return_type(),
+        )
+            .collect_results()?;
+
         let guard_function_name = self.annotation.guard.clone();
         let name = self.get_function_name();
-        let params = self.build_params()?;
-        let return_type = self.build_return_type()?;
 
         Ok(QueryOrUpdateDefinition::new(
             is_async,
@@ -29,8 +36,8 @@ impl<'a> AnnotatedFnDecl<'a> {
     }
 
     pub fn build_params(&self) -> Result<Vec<Param>, Vec<Error>> {
-        let names = self.get_param_name_idents()?;
-        let types = self.build_param_types()?;
+        let (names, types) =
+            (self.get_param_name_idents(), self.build_param_types()).collect_results()?;
         Ok(names
             .iter()
             .enumerate()

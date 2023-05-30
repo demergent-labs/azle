@@ -11,12 +11,12 @@ pub fn generate(
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
 ) -> Result<proc_macro2::TokenStream, Vec<Error>> {
+    let call_to_init_js_function = rust::maybe_generate_call_to_js_function(&init_fn_decl_option)?;
+
     let function_name = match &init_fn_decl_option {
         Some(init_fn_decl) => init_fn_decl.get_function_name(),
         None => "DOES_NOT_EXIST".to_string(),
     };
-
-    let call_to_init_js_function = rust::maybe_generate_call_to_js_function(&init_fn_decl_option)?;
 
     let register_plugins = plugins.iter().map(|plugin| {
         let register_function_ident = plugin.register_function.to_ident();
