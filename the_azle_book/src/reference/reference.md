@@ -1,5 +1,6 @@
 # Reference
 
+-   [Bitcoin](./bitcoin.md)
 -   [Call APIs](./call_apis/call_apis.md)
 -   [Candid](./candid/candid.md)
 -   [Canister APIs](./canister_apis/canister_apis.md)

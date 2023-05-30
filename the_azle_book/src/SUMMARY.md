@@ -20,6 +20,7 @@
 -   [Cycles](./cycles.md)
 -   [Caveats](./caveats.md)
 -   [Reference](./reference/reference.md)
+    -   [Bitcoin](./reference/bitcoin.md)
     -   [Call APIs](./reference/call_apis/call_apis.md)
         -   [accept message](./reference/call_apis/accept_message.md)
         -   [arg data raw](./reference/call_apis/arg_data_raw.md)
