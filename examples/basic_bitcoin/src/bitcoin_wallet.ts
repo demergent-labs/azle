@@ -1,3 +1,12 @@
+//! A demo of a very bare-bones bitcoin "wallet".
+//!
+//! The wallet here showcases how bitcoin addresses can be be computed
+//! and how bitcoin transactions can be signed. It is missing several
+//! pieces that any production-grade wallet would have, including:
+//!
+//! * Support for address types that aren't P2PKH.
+//! * Caching spent UTXOs so that they are not reused in future transactions.
+//! * Option to set the fee.
 import { blob, ic, nat64, match, Result, Vec } from 'azle';
 import {
     BitcoinNetwork,
@@ -57,9 +66,10 @@ export async function send(
             ? // There are no fee percentiles. This case can only happen on a regtest
               // network where there are no non-coinbase transactions. In this case,
               // we use a default of 2000 millisatoshis/byte (i.e. 2 satoshi/byte)
-              2000n
+              2_000n
             : // Choose the 50th percentile for sending fees.
               feePercentiles[49];
+
     // Fetch our public key, P2PKH address, and UTXOs.
     const ownPublicKey = await ecdsaApi.ecdsaPublicKey(keyName, derivationPath);
     const ownAddressString = publicKeyToP2PKHAddress(network, ownPublicKey);
@@ -81,7 +91,7 @@ export async function send(
         feePerByte
     );
 
-    const txBytes = transaction.serialize!();
+    const txBytes = transaction.serialize();
     console.log(`Transaction to sign: ${hexarray.toString(txBytes)}`);
 
     // Sign the transaction.
@@ -94,7 +104,7 @@ export async function send(
         ecdsaApi.signWithECDSA
     );
 
-    const signedTransactionBytes = signedTransaction.serialize!();
+    const signedTransactionBytes = signedTransaction.serialize();
     console.log(`
         "Signed transaction: ${hexarray.toString(signedTransactionBytes)}`);
 
@@ -102,7 +112,7 @@ export async function send(
     await bitcoinApi.sendTransaction(network, signedTransactionBytes);
     console.log('Done');
 
-    return signedTransaction.txid!();
+    return signedTransaction.txid();
 }
 
 // Builds a transaction to send the given `amount` of satoshis to the
@@ -151,9 +161,9 @@ async function buildTransaction(
             mockSigner
         );
 
-        const signedTxBytesLen = BigInt(signedTransaction.serialize!().length);
+        const signedTxBytesLen = BigInt(signedTransaction.serialize().length);
 
-        if ((signedTxBytesLen * feePerByte) / 1_000n == totalFee) {
+        if ((signedTxBytesLen * feePerByte) / 1_000n === totalFee) {
             console.log(`Transaction built with fee ${totalFee}.`);
             return transaction;
         } else {
@@ -235,17 +245,8 @@ async function signTransaction(
     derivationPath: Vec<blob>,
     signer: (_: string, __: Vec<blob>, ___: blob) => Promise<blob>
 ): Promise<BitcoinTransaction> {
-    // Verify that our own address is P2PKH.
-    // TODO add this back in
-    // TODO see if we can use https://www.npmjs.com/package/assert
-    // assert_eq!(
-    //     own_address.address_type(),
-    //     Some(AddressType::P2pkh),
-    //     "This example supports signing p2pkh addresses only."
-    // );
-
     for (let index = 0; index < transaction.inputs.length; index++) {
-        const sighash = transaction.signature_hash!(
+        const sighash = transaction.signature_hash(
             index,
             ownAddress.script_pubkey(),
             1
@@ -287,9 +288,9 @@ function publicKeyToP2PKHAddress(
         Mainnet: () => Buffer.from([0x00]),
         _: () => Buffer.from([0x6f])
     });
-    let dataWithPrefix = Buffer.concat([prefix, result]);
-    let checksum = sha256.digest(sha256.digest(dataWithPrefix)).slice(0, 4);
-    let fullAddress = Buffer.concat([dataWithPrefix, Buffer.from(checksum)]);
+    const dataWithPrefix = Buffer.concat([prefix, result]);
+    const checksum = sha256.digest(sha256.digest(dataWithPrefix)).slice(0, 4);
+    const fullAddress = Buffer.concat([dataWithPrefix, Buffer.from(checksum)]);
     return bs58.encode(fullAddress);
 }
 
@@ -306,9 +307,9 @@ async function mockSigner(
 function sec1ToDer(sec1Signature: blob): blob {
     let r: blob;
 
-    if ((sec1Signature[0] & 0x80) != 0) {
+    if ((sec1Signature[0] & 0x80) !== 0) {
         // r is negative. Prepend a zero byte.
-        let tmp = Uint8Array.from([0x00, ...sec1Signature.slice(0, 32)]);
+        const tmp = Uint8Array.from([0x00, ...sec1Signature.slice(0, 32)]);
         r = tmp;
     } else {
         // r is positive.
@@ -317,9 +318,9 @@ function sec1ToDer(sec1Signature: blob): blob {
 
     let s: blob;
 
-    if ((sec1Signature[32] & 0x80) != 0) {
+    if ((sec1Signature[32] & 0x80) !== 0) {
         // s is negative. Prepend a zero byte.
-        let tmp = Uint8Array.from([0x00, ...sec1Signature.slice(32)]);
+        const tmp = Uint8Array.from([0x00, ...sec1Signature.slice(32)]);
         s = tmp;
     } else {
         // s is positive.

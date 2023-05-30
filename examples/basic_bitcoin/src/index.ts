@@ -1,5 +1,3 @@
-// TODO get the NETWORK in stable memory
-
 import { blob, $init, match, nat64, $postUpgrade, $update, Vec } from 'azle';
 import {
     BitcoinNetwork,

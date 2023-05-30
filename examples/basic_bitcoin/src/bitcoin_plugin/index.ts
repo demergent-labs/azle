@@ -73,13 +73,13 @@ export type BitcoinTransaction = {
     version: int32;
     outputs: Vec<BitcoinTxOut>;
     prepare_script_sig: (index: nat32, script: BitcoinScript) => void;
-    serialize?: () => blob;
-    signature_hash?: (
+    serialize: () => blob;
+    signature_hash: (
         input_index: nat32,
         script_pubkey: BitcoinScript,
         sighash_u32: nat32
     ) => BitcoinSighash;
-    txid?: () => BitcoinTxid;
+    txid: () => BitcoinTxid;
 };
 
 export const BitcoinTransaction = {
