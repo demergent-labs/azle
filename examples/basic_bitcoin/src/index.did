@@ -1,0 +1,20 @@
+type BitcoinNetwork = variant { Mainnet; Regtest; Testnet };
+type ManualReply = record {
+  next_page : opt vec nat8;
+  tip_height : nat32;
+  tip_block_hash : vec nat8;
+  utxos : vec Utxo;
+};
+type Outpoint = record { txid : vec nat8; vout : nat32 };
+type SendRequest = record {
+  amountInSatoshi : nat64;
+  destinationAddress : text;
+};
+type Utxo = record { height : nat32; value : nat64; outpoint : Outpoint };
+service : (BitcoinNetwork) -> {
+  getBalance : (text) -> (nat64);
+  getCurrentFeePercentiles : () -> (vec nat64);
+  getP2PKHAddress : () -> (text);
+  getUtxos : (text) -> (ManualReply);
+  send : (SendRequest) -> (text);
+}

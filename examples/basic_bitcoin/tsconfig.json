@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "target": "ES2020",
+        "experimentalDecorators": true,
+        "strictPropertyInitialization": false,
+        "moduleResolution": "node",
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "outDir": "HACK_BECAUSE_OF_ALLOW_JS"
+    }
+}

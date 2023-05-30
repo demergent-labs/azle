@@ -1,0 +1,22 @@
+{
+    "scripts": {
+        "pretest": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/pretest.ts",
+        "test": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/test.ts"
+    },
+    "dependencies": {
+        "assert": "2.0.0",
+        "azle": "0.16.3",
+        "bs58": "5.0.0",
+        "events": "3.3.0",
+        "hex-array": "1.0.0",
+        "js-sha256": "0.9.0",
+        "ripemd160": "2.0.2"
+    },
+    "devDependencies": {
+        "@dfinity/agent": "0.11.1",
+        "@types/hex-array": "1.0.0",
+        "@types/ripemd160": "2.0.0",
+        "ts-node": "10.7.0",
+        "typescript": "4.6.3"
+    }
+}

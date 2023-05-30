@@ -1,0 +1,3 @@
+[dependencies]
+bitcoin = "0.28.1"
+boa_gc = { git = "https://github.com/boa-dev/boa", rev = "08a72387ba5cd185f657e98d984ff2ce328da69e" }
