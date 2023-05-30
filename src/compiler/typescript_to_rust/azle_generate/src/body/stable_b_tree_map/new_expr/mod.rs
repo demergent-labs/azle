@@ -3,11 +3,13 @@ use std::ops::Deref;
 use cdk_framework::traits::CollectResults;
 use swc_ecma_ast::NewExpr;
 
-use self::errors::{ArgSpread, IncorrectNumberOfArgs, IncorrectTypeArgs, InvalidArg, MissingArgs};
+use self::errors::{
+    ArgSpread, IncorrectNumberOfArgs, IncorrectTypeArgs, InvalidArg, MissingArgs,
+    MissingSbtmTypeArguments,
+};
 
 use super::expr::{ToU32, ToU8};
 use crate::{
-    candid_type::service::method::errors::MissingTypeArguments,
     canister_method::check_length_and_map::CheckLengthAndMapTwo, ts_ast::SourceMapped, Error,
     StableBTreeMapNode,
 };
@@ -15,6 +17,7 @@ use crate::{
 pub mod errors;
 mod get_span;
 
+#[derive(PartialEq, Clone, Debug)]
 pub enum ArgName {
     MessageId,
     MaxKeySize,
@@ -78,7 +81,7 @@ impl SourceMapped<'_, NewExpr> {
                     None => Err(vec![MissingArgs::from_new_expr(self).into()]),
                 }
             }
-            None => Err(vec![MissingTypeArguments::from_new_expr(self).into()]),
+            None => Err(vec![MissingSbtmTypeArguments::from_new_expr(self).into()]),
         }
     }
 }
