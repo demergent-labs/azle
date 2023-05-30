@@ -63,16 +63,12 @@ impl SourceMapped<'_, TsTypeRef> {
         Ok(format!("<{{\n{}\n}}>", enclosed_types))
     }
 
-    pub fn generate_example_canister(&self) -> String {
-        if self.get_enclosed_ts_types().len() == 0 {
-            "Canister<{method(): CallResult<void>}>".to_string()
-        } else {
-            "<{method(): CallResult<void>}>".to_string()
-        }
+    pub fn get_param_count(&self) -> usize {
+        self.get_enclosed_ts_types().len()
     }
 }
 
-pub trait GetEnclosedTsTypes {
+trait GetEnclosedTsTypes {
     fn get_enclosed_ts_types(&self) -> Vec<TsType>;
 }
 
@@ -82,5 +78,13 @@ impl GetEnclosedTsTypes for TsTypeRef {
             Some(params) => params.params.iter().map(|param| *param.clone()).collect(),
             None => vec![],
         }
+    }
+}
+
+pub fn generate_example_canister(param_count: usize) -> String {
+    if param_count == 0 {
+        "Canister<{method(): CallResult<void>}>".to_string()
+    } else {
+        "<{method(): CallResult<void>}>".to_string()
     }
 }
