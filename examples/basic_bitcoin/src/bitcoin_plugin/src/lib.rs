@@ -480,6 +480,45 @@ fn _bitcoin_plugin_transaction_new(
         )
         .unwrap();
 
+    transaction_js_object
+        .set(
+            "prepare_script_sig",
+            boa_engine::object::FunctionObjectBuilder::new(
+                context,
+                boa_engine::NativeFunction::from_copy_closure(
+                    |this: &boa_engine::JsValue,
+                     aargs: &[boa_engine::JsValue],
+                     context: &mut boa_engine::Context| {
+                        let this_js_object = this.as_object().unwrap();
+                        let transaction = &mut this_js_object
+                            .downcast_mut::<JsBitcoinTransaction>()
+                            .unwrap()
+                            .0;
+
+                        let index: u32 = aargs[0].clone().try_from_vm_value(&mut *context).unwrap();
+
+                        let script_js_object = aargs[1].as_object().unwrap();
+                        let script = &script_js_object
+                            .downcast_ref::<JsBitcoinScript>()
+                            .unwrap()
+                            .0;
+
+                        let mut input = &mut transaction.input[index as usize];
+
+                        input.script_sig = script.clone();
+
+                        input.witness.clear();
+
+                        Ok(boa_engine::JsValue::Undefined)
+                    },
+                ),
+            )
+            .build(),
+            false,
+            context,
+        )
+        .unwrap();
+
     Ok(transaction_js_object.into())
 }
 
@@ -722,41 +761,6 @@ fn _bitcoin_plugin_tx_in_new(
         context.intrinsics().constructors().object().prototype(),
         boa_engine::object::ObjectData::native_object(tx_in),
     );
-
-    tx_in_js_object
-        .set(
-            "set_script_sig",
-            boa_engine::object::FunctionObjectBuilder::new(
-                context,
-                boa_engine::NativeFunction::from_copy_closure(
-                    |this: &boa_engine::JsValue,
-                     aargs: &[boa_engine::JsValue],
-                     context: &mut boa_engine::Context| {
-                        let this_js_object = this.as_object().unwrap();
-                        let mut tx_in =
-                            &mut this_js_object.downcast_mut::<JsBitcoinTxIn>().unwrap().0;
-
-                        let script_js_object = aargs[0].as_object().unwrap();
-                        let script = &script_js_object
-                            .downcast_ref::<JsBitcoinScript>()
-                            .unwrap()
-                            .0;
-
-                        tx_in.script_sig = script.clone();
-
-                        Ok(boa_engine::JsValue::Undefined)
-                    },
-                ),
-            )
-            .build(),
-            false,
-            context,
-        )
-        .unwrap();
-
-    tx_in_js_object
-        .set("witness", aargs[3].clone(), false, context)
-        .unwrap();
 
     Ok(tx_in_js_object.into())
 }

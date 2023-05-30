@@ -72,6 +72,7 @@ export type BitcoinTransaction = {
     lock_time: nat32;
     version: int32;
     outputs: Vec<BitcoinTxOut>;
+    prepare_script_sig: (index: nat32, script: BitcoinScript) => void;
     serialize?: () => blob;
     signature_hash?: (
         input_index: nat32,

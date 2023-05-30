@@ -178,7 +178,7 @@ function buildTransactionWithFee(
     // we're using min_confirmations of 1.
     let utxosToSpend: Vec<Utxo> = [];
     let totalSpent = 0n;
-    for (const utxo of ownUtxos.reverse()) {
+    for (const utxo of [...ownUtxos].reverse()) {
         totalSpent += utxo.value;
         utxosToSpend.push(utxo);
         if (totalSpent >= amount + fee) {
@@ -245,8 +245,6 @@ async function signTransaction(
     // );
 
     for (let index = 0; index < transaction.inputs.length; index++) {
-        const input = transaction.inputs[index];
-
         const sighash = transaction.signature_hash!(
             index,
             ownAddress.script_pubkey(),
@@ -264,14 +262,13 @@ async function signTransaction(
 
         const sigWithHashtype = Uint8Array.from([...derSignature, 1]);
 
-        // TODO right here I think we'll need to make sure this gets set in Rust
-        input.set_script_sig(
+        transaction.prepare_script_sig(
+            index,
             BitcoinScriptBuilder.new()
                 .push_slice(sigWithHashtype)
                 .push_slice(ownPublicKey)
                 .into_script()
         );
-        input.witness.clear();
     }
 
     return transaction;
