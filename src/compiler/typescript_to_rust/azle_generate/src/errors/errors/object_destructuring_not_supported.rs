@@ -21,39 +21,27 @@ impl ObjectDestructuringNotSupported {
         sm_ts_fn_param: &SourceMapped<TsFnParam>,
         object_pat: &ObjectPat,
     ) -> Self {
-        let destructure_range = object_pat.get_destructure_range(sm_ts_fn_param.source_map);
-        Self {
-            location: create_location(destructure_range, sm_ts_fn_param.source_map, object_pat),
-            suggestion_modifications: create_suggestion_modification(
-                destructure_range,
-                sm_ts_fn_param.source_map,
-                object_pat,
-            ),
-        }
+        Self::build(sm_ts_fn_param.source_map, object_pat)
     }
 
     pub fn from_annotated_fn_decl(
         annotated_fn_decl: &AnnotatedFnDecl,
         object_pat: &ObjectPat,
     ) -> Self {
-        let destructure_range = object_pat.get_destructure_range(annotated_fn_decl.source_map);
-        Self {
-            location: create_location(destructure_range, annotated_fn_decl.source_map, object_pat),
-            suggestion_modifications: create_suggestion_modification(
-                destructure_range,
-                annotated_fn_decl.source_map,
-                object_pat,
-            ),
-        }
+        Self::build(annotated_fn_decl.source_map, object_pat)
     }
 
     pub fn from_ts_fn_type(sm_ts_fn_type: &SourceMapped<TsFnType>, object_pat: &ObjectPat) -> Self {
-        let destructure_range = object_pat.get_destructure_range(sm_ts_fn_type.source_map);
+        Self::build(sm_ts_fn_type.source_map, object_pat)
+    }
+
+    fn build(source_map: &SourceMap, object_pat: &ObjectPat) -> Self {
+        let destructure_range = object_pat.get_destructure_range(source_map);
         Self {
-            location: create_location(destructure_range, sm_ts_fn_type.source_map, object_pat),
+            location: create_location(destructure_range, source_map, object_pat),
             suggestion_modifications: create_suggestion_modification(
                 destructure_range,
-                sm_ts_fn_type.source_map,
+                source_map,
                 object_pat,
             ),
         }

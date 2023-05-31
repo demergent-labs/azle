@@ -19,39 +19,37 @@ pub struct RestParametersNotSupported {
 
 impl RestParametersNotSupported {
     pub fn from_ts_fn_param(sm_ts_fn_param: &SourceMapped<TsFnParam>, rest_pat: &RestPat) -> Self {
-        let destructure_range = rest_pat.get_destructure_range(sm_ts_fn_param.source_map);
-        Self {
-            message: "Rest parameters are not supported at this time".to_string(),
-            location: create_location(destructure_range, sm_ts_fn_param.source_map, rest_pat),
-            suggestion_modifications: create_suggestion_modification(
-                destructure_range,
-                sm_ts_fn_param.source_map,
-                rest_pat,
-            ),
-        }
+        Self::build(
+            "Rest parameters are not supported at this time",
+            sm_ts_fn_param.source_map,
+            rest_pat,
+        )
     }
 
     pub fn from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl, rest_pat: &RestPat) -> Self {
-        let destructure_range = rest_pat.get_destructure_range(annotated_fn_decl.source_map);
-        Self {
-            message: "Rest parameters are not supported in canister method signatures".to_string(),
-            location: create_location(destructure_range, annotated_fn_decl.source_map, rest_pat),
-            suggestion_modifications: create_suggestion_modification(
-                destructure_range,
-                annotated_fn_decl.source_map,
-                rest_pat,
-            ),
-        }
+        Self::build(
+            "Rest parameters are not supported in canister method signatures",
+            annotated_fn_decl.source_map,
+            rest_pat,
+        )
     }
 
     pub fn from_ts_fn_type(sm_ts_fn_type: &SourceMapped<TsFnType>, rest_pat: &RestPat) -> Self {
-        let destructure_range = rest_pat.get_destructure_range(sm_ts_fn_type.source_map);
+        Self::build(
+            "Rest parameters are not supported at this time",
+            sm_ts_fn_type.source_map,
+            rest_pat,
+        )
+    }
+
+    fn build(message: &str, source_map: &SourceMap, rest_pat: &RestPat) -> Self {
+        let destructure_range = rest_pat.get_destructure_range(source_map);
         Self {
-            message: "Rest parameters are not supported at this time".to_string(),
-            location: create_location(destructure_range, sm_ts_fn_type.source_map, rest_pat),
+            message: message.to_string(),
+            location: create_location(destructure_range, source_map, rest_pat),
             suggestion_modifications: create_suggestion_modification(
                 destructure_range,
-                sm_ts_fn_type.source_map,
+                source_map,
                 rest_pat,
             ),
         }

@@ -177,9 +177,9 @@ impl SourceMapped<'_, TsFnType> {
                     };
                     Ok(Param { name, candid_type })
                 }
-                TsFnParam::Array(_) => {
+                TsFnParam::Array(array_pat) => {
                     return Err(vec![Into::<Error>::into(
-                        ArrayDestructuringInParamsNotSupported::from_ts_fn_type(self),
+                        ArrayDestructuringInParamsNotSupported::from_ts_fn_type(self, array_pat),
                     )])
                 }
                 TsFnParam::Rest(rest_pat) => {
