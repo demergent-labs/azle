@@ -38,5 +38,3 @@ impl std::fmt::Display for IncorrectNumberOfArgs {
         write!(f, "{}", self.build_incorrect_number_of_args_error_message())
     }
 }
-
-impl SourceMapped<'_, NewExpr> {}

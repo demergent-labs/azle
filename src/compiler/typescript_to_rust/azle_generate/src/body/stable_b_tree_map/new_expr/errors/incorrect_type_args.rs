@@ -42,5 +42,3 @@ impl std::fmt::Display for IncorrectTypeArgs {
         write!(f, "{}", self.build_incorrect_type_args_error_message())
     }
 }
-
-impl SourceMapped<'_, NewExpr> {}
