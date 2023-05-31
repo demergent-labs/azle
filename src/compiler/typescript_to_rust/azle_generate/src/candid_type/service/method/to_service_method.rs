@@ -78,7 +78,7 @@ impl SourceMapped<'_, ClassProp> {
 
     fn mode(&self) -> Result<String, Vec<Error>> {
         self.decorators.check_length_is_one_and_map(
-            |decorators| NotExactlyOneDecorator::from_decorator_list(decorators).into(),
+            |decorators| NotExactlyOneDecorator::from_decorator_list(decorators, self).into(),
             |decorator| {
                 let mode = match decorator.expr.as_ident() {
                     Some(ident) => ident,
