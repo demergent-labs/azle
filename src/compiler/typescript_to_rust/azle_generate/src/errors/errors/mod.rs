@@ -10,6 +10,8 @@ mod syntax_error;
 mod type_error;
 mod type_not_found;
 mod unable_to_load_file;
+mod unable_to_load_plugin;
+mod unable_to_parse_plugin;
 
 use swc_common::SourceMap;
 use swc_ecma_ast::{ArrayPat, ObjectPat, RestPat};
@@ -31,6 +33,8 @@ pub use syntax_error::SyntaxError;
 pub use type_error::TypeError;
 pub use type_not_found::TypeNotFound;
 pub use unable_to_load_file::UnableToLoadFile;
+pub use unable_to_load_plugin::UnableToLoadPlugin;
+pub use unable_to_parse_plugin::UnableToParsePlugin;
 
 impl GetDestructureRange for ArrayPat {
     fn get_destructure_range(&self, source_map: &SourceMap) -> Range {

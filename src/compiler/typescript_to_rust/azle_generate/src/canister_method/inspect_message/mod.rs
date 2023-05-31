@@ -4,8 +4,9 @@ use cdk_framework::{
 };
 
 use super::{
-    errors::{AsyncNotAllowed, VoidReturnTypeRequired},
-    AnnotatedFnDecl, CheckLengthAndMap,
+    check_length_and_map::CheckLengthAndMapTwo,
+    errors::{AsyncNotAllowed, DuplicateSystemMethod, VoidReturnTypeRequired},
+    AnnotatedFnDecl,
 };
 use crate::{Error, TsAst};
 
@@ -16,38 +17,43 @@ impl TsAst {
         &self,
         annotated_fn_decls: &Vec<AnnotatedFnDecl>,
     ) -> Result<Option<InspectMessageMethod>, Vec<Error>> {
-        let inspect_message_methods = annotated_fn_decls
+        let inspect_message_fn_decls: Vec<_> = annotated_fn_decls
             .iter()
             .filter(|annotated_fn_decl| {
                 annotated_fn_decl.is_canister_method_type(CanisterMethodType::InspectMessage)
             })
-            .collect::<Vec<_>>()
+            .collect();
+        Ok(inspect_message_fn_decls
             .check_length_and_map(
-                CanisterMethodType::InspectMessage,
+                inspect_message_fn_decls.len() <= 1,
+                |fn_decls| {
+                    DuplicateSystemMethod::from_annotated_fn_decls(
+                        &fn_decls,
+                        CanisterMethodType::InspectMessage,
+                    )
+                    .into()
+                },
                 |inspect_message_fn_decl| {
-                    let errors = match inspect_message_fn_decl.is_void() {
-                        true => vec![],
-                        false => VoidReturnTypeRequired::error_from_annotated_fn_decl(
-                            inspect_message_fn_decl,
-                        )
-                        .into(),
-                    };
+                    let (_, _, body) = (
+                        match inspect_message_fn_decl.is_void() {
+                            true => Ok(()),
+                            false => {
+                                Err(vec![VoidReturnTypeRequired::error_from_annotated_fn_decl(
+                                    inspect_message_fn_decl,
+                                )])
+                            }
+                        },
+                        match inspect_message_fn_decl.fn_decl.function.is_async {
+                            true => Err(vec![AsyncNotAllowed::error_from_annotated_fn_decl(
+                                inspect_message_fn_decl,
+                            )
+                            .into()]),
+                            false => Ok(()),
+                        },
+                        rust::generate(inspect_message_fn_decl),
+                    )
+                        .collect_results()?;
 
-                    let errors = match inspect_message_fn_decl.fn_decl.function.is_async {
-                        true => vec![
-                            errors,
-                            AsyncNotAllowed::error_from_annotated_fn_decl(inspect_message_fn_decl)
-                                .into(),
-                        ]
-                        .concat(),
-                        false => errors,
-                    };
-
-                    if !errors.is_empty() {
-                        return Err(errors);
-                    }
-
-                    let body = rust::generate(inspect_message_fn_decl)?;
                     let guard_function_name = inspect_message_fn_decl.annotation.guard.clone();
 
                     Ok(InspectMessageMethod {
@@ -56,8 +62,7 @@ impl TsAst {
                     })
                 },
             )
-            .collect_results()?;
-
-        Ok(inspect_message_methods.get(0).cloned())
+            .collect_results()?
+            .pop())
     }
 }

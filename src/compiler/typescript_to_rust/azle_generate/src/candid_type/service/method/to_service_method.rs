@@ -1,5 +1,6 @@
-use cdk_framework::act::node::{
-    candid::service::Method, node_parts::mode::Mode, CandidType, Param,
+use cdk_framework::{
+    act::node::{candid::service::Method, node_parts::mode::Mode, CandidType, Param},
+    traits::CollectResults,
 };
 use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnParam, TsFnType, TsType};
 
@@ -10,7 +11,7 @@ use crate::{
             ArrayDestructuringInParamsNotSupported, FunctionParamsMustHaveType,
             ObjectDestructuringNotSupported, RestParametersNotSupported,
         },
-        CollectResults,
+        CollectResults as OtherCollectResults,
     },
     traits::{GetName, GetTsType},
     ts_ast::SourceMapped,
@@ -25,22 +26,27 @@ use super::errors::{
 
 impl SourceMapped<'_, ClassProp> {
     pub fn to_service_method(&self) -> Result<Method, Vec<Error>> {
-        if self.decorators.len() == 0 {
-            return Err(vec![MissingDecorator::from_class_prop(self).into()]);
-        }
-
-        if !self.has_azle_decorator() {
-            return Err(vec![InvalidDecorator::from_class_prop(self).into()]);
-        }
-
-        let name = self.name()?;
-        let mode = match &self.mode()?[..] {
-            "serviceQuery" => Mode::Query,
-            "serviceUpdate" => Mode::Update,
-            _ => return Err(vec![InvalidDecorator::from_class_prop(self).into()]),
-        };
-        let params = self.build_act_fn_params()?;
-        let return_type = self.build_return_type()?;
+        let (_, _, name, mode, params, return_type) = (
+            if self.decorators.len() == 0 {
+                Err(vec![MissingDecorator::from_class_prop(self).into()])
+            } else {
+                Ok(())
+            },
+            if !self.has_azle_decorator() {
+                Err(vec![InvalidDecorator::from_class_prop(self).into()])
+            } else {
+                Ok(())
+            },
+            self.name().map_err(Error::into),
+            match &self.mode()?[..] {
+                "serviceQuery" => Ok(Mode::Query),
+                "serviceUpdate" => Ok(Mode::Update),
+                _ => Err(vec![InvalidDecorator::from_class_prop(self).into()]),
+            },
+            self.build_act_fn_params(),
+            self.build_return_type(),
+        )
+            .collect_results()?;
 
         Ok(Method::new(name, mode, params, return_type))
     }

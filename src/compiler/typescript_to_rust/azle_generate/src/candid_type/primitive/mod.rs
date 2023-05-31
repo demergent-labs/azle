@@ -13,18 +13,14 @@ use crate::{
 use self::errors::UnsupportedType;
 
 impl SourceMapped<'_, TsKeywordType> {
-    pub fn to_primitive(&self) -> Result<Primitive, Vec<Error>> {
+    pub fn to_primitive(&self) -> Result<Primitive, Error> {
         Ok(match self.kind {
             TsKeywordTypeKind::TsBooleanKeyword => Primitive::Bool,
             TsKeywordTypeKind::TsStringKeyword => Primitive::String,
             TsKeywordTypeKind::TsVoidKeyword => Primitive::Void,
             TsKeywordTypeKind::TsNullKeyword => Primitive::Null,
             TsKeywordTypeKind::TsNumberKeyword => Primitive::Float64,
-            _ => {
-                return Err(vec![
-                    UnsupportedType::error_from_ts_keyword_type(self).into()
-                ])
-            }
+            _ => return Err(UnsupportedType::error_from_ts_keyword_type(self).into()),
         })
     }
 }

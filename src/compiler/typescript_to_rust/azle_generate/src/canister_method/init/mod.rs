@@ -3,7 +3,11 @@ use cdk_framework::{
     traits::CollectResults,
 };
 
-use super::{errors::VoidReturnTypeRequired, AnnotatedFnDecl, CheckLengthAndMap};
+use super::{
+    check_length_and_map::CheckLengthAndMapTwo,
+    errors::{DuplicateSystemMethod, VoidReturnTypeRequired},
+    AnnotatedFnDecl,
+};
 use crate::{canister_method::errors::AsyncNotAllowed, plugin::Plugin, Error, TsAst};
 
 mod rust;
@@ -15,48 +19,56 @@ impl TsAst {
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
     ) -> Result<InitMethod, Vec<Error>> {
-        let valid_init_fn_decls = annotated_fn_decls
+        let init_fn_decls: Vec<_> = annotated_fn_decls
             .iter()
             .filter(|annotated_fn_decl| {
                 annotated_fn_decl.is_canister_method_type(CanisterMethodType::Init)
             })
-            .collect::<Vec<_>>()
-            .check_length_and_map(CanisterMethodType::Init, |init_fn_decl| {
-                let errors = match init_fn_decl.is_void() {
-                    true => vec![],
-                    false => {
-                        VoidReturnTypeRequired::error_from_annotated_fn_decl(init_fn_decl).into()
-                    }
-                };
+            .collect();
+        let init_method_option = init_fn_decls
+            .check_length_and_map(
+                init_fn_decls.len() <= 1,
+                |fn_decls| {
+                    DuplicateSystemMethod::from_annotated_fn_decls(
+                        &fn_decls,
+                        CanisterMethodType::Init,
+                    )
+                    .into()
+                },
+                |init_fn_decl| {
+                    let (_, _, params, body) = (
+                        match init_fn_decl.is_void() {
+                            true => Ok(()),
+                            false => {
+                                Err(vec![VoidReturnTypeRequired::error_from_annotated_fn_decl(
+                                    init_fn_decl,
+                                )])
+                            }
+                        },
+                        match init_fn_decl.fn_decl.function.is_async {
+                            true => Err(vec![AsyncNotAllowed::error_from_annotated_fn_decl(
+                                init_fn_decl,
+                            )]),
+                            false => Ok(()),
+                        },
+                        init_fn_decl.build_params(),
+                        rust::generate(Some(init_fn_decl), plugins, environment_variables),
+                    )
+                        .collect_results()?;
 
-                let errors = match init_fn_decl.fn_decl.function.is_async {
-                    true => vec![
-                        errors,
-                        AsyncNotAllowed::error_from_annotated_fn_decl(init_fn_decl).into(),
-                    ]
-                    .concat(),
-                    false => errors,
-                };
+                    let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
 
-                if !errors.is_empty() {
-                    return Err(errors);
-                }
+                    Ok(InitMethod {
+                        params,
+                        body,
+                        guard_function_name,
+                    })
+                },
+            )
+            .collect_results()?
+            .pop();
 
-                let params = init_fn_decl.build_params()?; // TODO collect these with the errors from above
-                let body = rust::generate(Some(init_fn_decl), plugins, environment_variables)?;
-                let guard_function_name = None; // Unsupported. See https://github.com/demergent-labs/azle/issues/954
-
-                Ok(InitMethod {
-                    params,
-                    body,
-                    guard_function_name,
-                })
-            })
-            .collect_results()?;
-
-        let init_fn_decl_option = valid_init_fn_decls.get(0).cloned();
-
-        match init_fn_decl_option {
+        match init_method_option {
             Some(init_fn_decl) => Ok(init_fn_decl),
             None => {
                 Ok(InitMethod {
