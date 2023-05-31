@@ -59,6 +59,8 @@ use crate::{
 
 use crate::canister_method::annotated_fn_decl::errors::InvalidParams;
 
+pub type SuggestionModifications = (String, (usize, usize));
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum Error {
     TypeNotFound(TypeNotFound),
