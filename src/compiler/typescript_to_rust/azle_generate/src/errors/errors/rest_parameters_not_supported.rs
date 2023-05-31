@@ -3,7 +3,7 @@ use swc_ecma_ast::{RestPat, TsFnParam, TsFnType};
 use crate::{
     canister_method::AnnotatedFnDecl,
     errors::{CompilerOutput, Location, Suggestion},
-    traits::GetSourceFileInfo,
+    traits::{GetSourceFileInfo, GetSourceInfo},
     ts_ast::SourceMapped,
 };
 
@@ -12,12 +12,14 @@ use super::GetDestructureRange;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RestParametersNotSupported {
     message: String,
+    location: Location,
 }
 
 impl RestParametersNotSupported {
-    pub fn from_ts_fn_param(_: &TsFnParam) -> Self {
+    pub fn from_ts_fn_param(sm_ts_fn_param: &SourceMapped<TsFnParam>) -> Self {
         Self {
             message: "Rest parameters are not supported at this time".to_string(),
+            location: sm_ts_fn_param.get_location(),
         }
     }
 
@@ -26,12 +28,16 @@ impl RestParametersNotSupported {
             message: annotated_fn_decl
                 .build_rest_param_error_msg(rest_pat)
                 .to_string(),
+            location: annotated_fn_decl
+                .source_map
+                .get_location(annotated_fn_decl.fn_decl.function.span),
         }
     }
 
-    pub fn from_ts_fn_type(_: &SourceMapped<TsFnType>) -> Self {
+    pub fn from_ts_fn_type(sm_ts_fn_type: &SourceMapped<TsFnType>) -> Self {
         Self {
             message: "Rest parameters are not supported at this time".to_string(),
+            location: sm_ts_fn_type.get_location(),
         }
     }
 }

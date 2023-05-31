@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use swc_ecma_ast::{TsFnParam, TsFnType, TsType, TsTypeAnn};
 
 use crate::{
@@ -29,14 +31,18 @@ impl SourceMapped<'_, TsFnType> {
     pub fn get_param_types(&self) -> Result<Vec<TsType>, Vec<Error>> {
         self.get_ts_fn_params()
             .iter()
-            .map(|param| param.get_ts_type().map_err(Into::<Vec<Error>>::into))
+            .map(|param| {
+                SourceMapped::new(param, self.source_map)
+                    .get_ts_type()
+                    .map_err(Into::<Vec<Error>>::into)
+            })
             .collect_results()
     }
 }
 
-impl GetTsTypeWithError for TsFnParam {
+impl GetTsTypeWithError for SourceMapped<'_, TsFnParam> {
     fn get_ts_type(&self) -> Result<TsType, Error> {
-        match self {
+        match self.deref() {
             TsFnParam::Ident(identifier) => match &identifier.type_ann {
                 Some(param_type) => Ok(param_type.get_ts_type()),
                 None => Err(Into::<Error>::into(
