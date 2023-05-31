@@ -1,6 +1,5 @@
 use std::{io::Error, path::PathBuf};
 
-// TODO explore getting rid of the need for clone here so we can have the actual error
 #[derive(Debug, Clone, PartialEq)]
 pub struct UnableToLoadPlugin {
     plugin_file_name: String,
@@ -28,7 +27,7 @@ impl std::fmt::Display for UnableToLoadPlugin {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "Error: Unable to load file {}\n{}",
+            "Error: Unable to load plugin file {}\n{}",
             self.plugin_file_name, self.error
         )
     }

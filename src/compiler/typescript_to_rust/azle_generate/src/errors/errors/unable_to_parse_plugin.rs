@@ -28,7 +28,7 @@ impl std::fmt::Display for UnableToParsePlugin {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "Error: Unable to load file {}\n{}",
+            "Error: Unable to parse plugin file {}\n{}",
             self.plugin_file_name, self.error
         )
     }
