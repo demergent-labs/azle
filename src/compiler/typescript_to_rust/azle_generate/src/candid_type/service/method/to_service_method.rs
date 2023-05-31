@@ -188,10 +188,11 @@ impl SourceMapped<'_, TsFnType> {
                     )
                     .into()])
                 }
-                TsFnParam::Object(_) => {
-                    return Err(vec![
-                        ObjectDestructuringNotSupported::from_ts_fn_type(self).into()
-                    ])
+                TsFnParam::Object(object_pat) => {
+                    return Err(vec![ObjectDestructuringNotSupported::from_ts_fn_type(
+                        self, object_pat,
+                    )
+                    .into()])
                 }
             })
             .collect_results()

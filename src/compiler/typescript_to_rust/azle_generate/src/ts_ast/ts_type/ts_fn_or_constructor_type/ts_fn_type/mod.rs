@@ -55,8 +55,8 @@ impl GetTsTypeWithError for SourceMapped<'_, TsFnParam> {
             TsFnParam::Rest(rest_pat) => {
                 Err(RestParametersNotSupported::from_ts_fn_param(self, rest_pat).into())
             }
-            TsFnParam::Object(_) => {
-                Err(ObjectDestructuringNotSupported::from_ts_fn_param(self).into())
+            TsFnParam::Object(object_pat) => {
+                Err(ObjectDestructuringNotSupported::from_ts_fn_param(self, object_pat).into())
             }
         }
     }
