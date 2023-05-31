@@ -1,11 +1,21 @@
-use crate::canister_method::AnnotatedFnDecl;
+use crate::{
+    canister_method::AnnotatedFnDecl,
+    errors::{CompilerOutput, Location},
+    traits::GetSourceFileInfo,
+};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct InvalidParams {}
+pub struct InvalidParams {
+    location: Location,
+}
 
 impl InvalidParams {
-    pub fn from_annotated_fn_decl(_: &AnnotatedFnDecl) -> Self {
-        Self {}
+    pub fn from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl) -> Self {
+        Self {
+            location: annotated_fn_decl
+                .source_map
+                .get_location(annotated_fn_decl.fn_decl.function.span),
+        }
     }
 }
 
@@ -19,7 +29,12 @@ impl From<InvalidParams> for crate::Error {
 
 impl std::fmt::Display for InvalidParams {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f,
-        "Something is impossibly wrong with your parameters. Please open an issue showing your canister methods and this error.")
+        let compiler_output = CompilerOutput {
+            title: "Something is impossibly wrong with your parameters. Please open an issue showing your canister methods and this error.".to_string(),
+            annotation: "".to_string(),
+            suggestion: None,
+            location: self.location.clone(),
+        };
+        write!(f, "{}", compiler_output)
     }
 }
