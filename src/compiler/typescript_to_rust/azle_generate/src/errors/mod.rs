@@ -24,6 +24,7 @@ pub use self::{
 use crate::{
     body::stable_b_tree_map::new_expr::errors::{
         ArgSpread, IncorrectNumberOfArgs, IncorrectTypeArgs, InvalidArg, MissingArgs,
+        MissingSbtmTypeArguments,
     },
     candid_type::{
         errors::WrongEnclosedType,
@@ -58,6 +59,8 @@ use crate::{
 
 use crate::canister_method::annotated_fn_decl::errors::InvalidParams;
 
+pub type SuggestionModifications = (String, (usize, usize));
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum Error {
     TypeNotFound(TypeNotFound),
@@ -85,6 +88,7 @@ pub enum Error {
     MissingReturnType(MissingReturnType),
     MissingTypeAnnotation(MissingTypeAnnotation),
     MissingTypeArgument(MissingTypeArguments),
+    MissingSbtmTypeArgument(MissingSbtmTypeArguments),
     NamespaceQualifiedType(NamespaceQualifiedType),
     NotEnclosedInFunc(NotEnclosedInFunc),
     NotExactlyOneDecorator(NotExactlyOneDecorator),
@@ -173,6 +177,7 @@ impl Error {
             Self::UnsupportedMemberName(e) => e,
             Self::UnableToParsePlugin(e) => e,
             Self::UnableToLoadPlugin(e) => e,
+            Self::MissingSbtmTypeArgument(e) => e,
         }
     }
 }

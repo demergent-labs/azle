@@ -63,16 +63,24 @@ impl SourceMapped<'_, TsTypeRef> {
         Ok(format!("<{{\n{}\n}}>", enclosed_types))
     }
 
-    pub fn generate_example_canister(&self) -> String {
-        if self.get_enclosed_ts_types().len() == 0 {
-            "Canister<{method(): CallResult<void>}>".to_string()
-        } else {
-            "<{method(): CallResult<void>}>".to_string()
-        }
+    pub fn generate_example_record(&self) -> String {
+        "Record<{prop1: Type2, prop2: Type2, propN: TypeN}>".to_string()
+    }
+
+    pub fn generate_example_tuple(&self) -> String {
+        "Tuple<[Type1, Type2, TypeN]>".to_string()
+    }
+
+    pub fn generate_example_vec(&self) -> String {
+        "Vec<Type>".to_string()
+    }
+
+    pub fn get_param_count(&self) -> usize {
+        self.get_enclosed_ts_types().len()
     }
 }
 
-pub trait GetEnclosedTsTypes {
+trait GetEnclosedTsTypes {
     fn get_enclosed_ts_types(&self) -> Vec<TsType>;
 }
 

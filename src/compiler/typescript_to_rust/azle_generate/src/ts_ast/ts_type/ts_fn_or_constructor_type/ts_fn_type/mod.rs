@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use swc_ecma_ast::{TsFnParam, TsFnType, TsType, TsTypeAnn};
 
 use crate::{
@@ -29,26 +31,32 @@ impl SourceMapped<'_, TsFnType> {
     pub fn get_param_types(&self) -> Result<Vec<TsType>, Vec<Error>> {
         self.get_ts_fn_params()
             .iter()
-            .map(|param| param.get_ts_type().map_err(Into::<Vec<Error>>::into))
+            .map(|param| {
+                SourceMapped::new(param, self.source_map)
+                    .get_ts_type()
+                    .map_err(Into::<Vec<Error>>::into)
+            })
             .collect_results()
     }
 }
 
-impl GetTsTypeWithError for TsFnParam {
+impl GetTsTypeWithError for SourceMapped<'_, TsFnParam> {
     fn get_ts_type(&self) -> Result<TsType, Error> {
-        match self {
+        match self.deref() {
             TsFnParam::Ident(identifier) => match &identifier.type_ann {
                 Some(param_type) => Ok(param_type.get_ts_type()),
                 None => Err(Into::<Error>::into(
                     FunctionParamsMustHaveType::from_ts_fn_param(self),
                 )),
             },
-            TsFnParam::Array(_) => {
-                Err(ArrayDestructuringInParamsNotSupported::from_ts_fn_param(self).into())
+            TsFnParam::Array(array_pat) => Err(
+                ArrayDestructuringInParamsNotSupported::from_ts_fn_param(self, array_pat).into(),
+            ),
+            TsFnParam::Rest(rest_pat) => {
+                Err(RestParametersNotSupported::from_ts_fn_param(self, rest_pat).into())
             }
-            TsFnParam::Rest(_) => Err(RestParametersNotSupported::from_ts_fn_param(self).into()),
-            TsFnParam::Object(_) => {
-                Err(ObjectDestructuringNotSupported::from_ts_fn_param(self).into())
+            TsFnParam::Object(object_pat) => {
+                Err(ObjectDestructuringNotSupported::from_ts_fn_param(self, object_pat).into())
             }
         }
     }

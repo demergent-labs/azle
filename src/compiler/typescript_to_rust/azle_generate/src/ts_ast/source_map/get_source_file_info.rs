@@ -99,7 +99,7 @@ impl GetSourceFileInfo for SourceMap {
         &self,
         span: Span,
         range: Range,
-        replacement: &String,
+        replacement: &str,
     ) -> String {
         let source = self.get_source(span);
         source
@@ -110,7 +110,7 @@ impl GetSourceFileInfo for SourceMap {
             .collect()
     }
 
-    fn generate_modified_source(&self, span: Span, replacement: &String) -> String {
+    fn generate_modified_source(&self, span: Span, replacement: &str) -> String {
         format!(
             "{}{}{}",
             self.get_well_formed_line(span),
@@ -119,7 +119,7 @@ impl GetSourceFileInfo for SourceMap {
         )
     }
 
-    fn generate_modified_range(&self, span: Span, replacement: &String) -> Range {
+    fn generate_modified_range(&self, span: Span, replacement: &str) -> Range {
         (
             self.get_start_col(span),
             self.get_start_col(span) + replacement.len(),

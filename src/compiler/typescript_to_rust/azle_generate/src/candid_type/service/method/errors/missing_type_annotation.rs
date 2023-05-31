@@ -1,11 +1,21 @@
 use swc_ecma_ast::ClassProp;
 
+use crate::{
+    errors::{CompilerOutput, Location},
+    traits::GetSourceInfo,
+    ts_ast::SourceMapped,
+};
+
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct MissingTypeAnnotation {}
+pub struct MissingTypeAnnotation {
+    location: Location,
+}
 
 impl MissingTypeAnnotation {
-    pub fn from_class_prop(_: &ClassProp) -> Self {
-        Self {}
+    pub fn from_class_prop(sm_class_prop: &SourceMapped<ClassProp>) -> Self {
+        Self {
+            location: sm_class_prop.get_location(),
+        }
     }
 }
 
@@ -19,9 +29,13 @@ impl From<MissingTypeAnnotation> for crate::Error {
 
 impl std::fmt::Display for MissingTypeAnnotation {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "Missing type annotation. External canister methods must specify a return type."
-        )
+        let compiler_output = CompilerOutput {
+            title: "Missing type annotation. External canister methods must specify a return type."
+                .to_string(),
+            annotation: "".to_string(),
+            suggestion: None,
+            location: self.location.clone(),
+        };
+        write!(f, "{}", compiler_output)
     }
 }

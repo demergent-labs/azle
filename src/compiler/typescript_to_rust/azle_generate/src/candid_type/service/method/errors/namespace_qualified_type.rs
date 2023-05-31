@@ -1,11 +1,17 @@
 use swc_ecma_ast::ClassProp;
 
+use crate::{errors::Location, traits::GetSourceInfo, ts_ast::SourceMapped};
+
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct NamespaceQualifiedType {}
+pub struct NamespaceQualifiedType {
+    location: Location,
+}
 
 impl NamespaceQualifiedType {
-    pub fn from_class_prop(_: &ClassProp) -> Self {
-        Self {}
+    pub fn from_class_prop(sm_class_prop: &SourceMapped<ClassProp>) -> Self {
+        Self {
+            location: sm_class_prop.get_location(),
+        }
     }
 }
 

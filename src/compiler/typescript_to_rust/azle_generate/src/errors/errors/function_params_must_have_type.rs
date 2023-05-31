@@ -1,17 +1,23 @@
 use swc_ecma_ast::{TsFnParam, TsFnType};
 
-use crate::ts_ast::SourceMapped;
+use crate::{errors::Location, traits::GetSourceInfo, ts_ast::SourceMapped};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct FunctionParamsMustHaveType {}
+pub struct FunctionParamsMustHaveType {
+    location: Location,
+}
 
 impl FunctionParamsMustHaveType {
-    pub fn from_ts_fn_type(_: &SourceMapped<TsFnType>) -> Self {
-        Self {}
+    pub fn from_ts_fn_type(sm_ts_fn_type: &SourceMapped<TsFnType>) -> Self {
+        Self {
+            location: sm_ts_fn_type.get_location(),
+        }
     }
 
-    pub fn from_ts_fn_param(_: &TsFnParam) -> Self {
-        Self {}
+    pub fn from_ts_fn_param(sm_ts_fn_param: &SourceMapped<TsFnParam>) -> Self {
+        Self {
+            location: sm_ts_fn_param.get_location(),
+        }
     }
 }
 

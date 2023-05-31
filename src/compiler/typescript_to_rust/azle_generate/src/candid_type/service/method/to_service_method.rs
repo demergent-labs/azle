@@ -78,7 +78,7 @@ impl SourceMapped<'_, ClassProp> {
 
     fn mode(&self) -> Result<String, Vec<Error>> {
         self.decorators.check_length_is_one_and_map(
-            |decorators| NotExactlyOneDecorator::from_decorator_list(decorators).into(),
+            |decorators| NotExactlyOneDecorator::from_decorator_list(decorators, self).into(),
             |decorator| {
                 let mode = match decorator.expr.as_ident() {
                     Some(ident) => ident,
@@ -177,20 +177,22 @@ impl SourceMapped<'_, TsFnType> {
                     };
                     Ok(Param { name, candid_type })
                 }
-                TsFnParam::Array(_) => {
+                TsFnParam::Array(array_pat) => {
                     return Err(vec![Into::<Error>::into(
-                        ArrayDestructuringInParamsNotSupported::from_ts_fn_type(self),
+                        ArrayDestructuringInParamsNotSupported::from_ts_fn_type(self, array_pat),
                     )])
                 }
-                TsFnParam::Rest(_) => {
-                    return Err(vec![
-                        RestParametersNotSupported::from_ts_fn_type(self).into()
-                    ])
+                TsFnParam::Rest(rest_pat) => {
+                    return Err(vec![RestParametersNotSupported::from_ts_fn_type(
+                        self, rest_pat,
+                    )
+                    .into()])
                 }
-                TsFnParam::Object(_) => {
-                    return Err(vec![
-                        ObjectDestructuringNotSupported::from_ts_fn_type(self).into()
-                    ])
+                TsFnParam::Object(object_pat) => {
+                    return Err(vec![ObjectDestructuringNotSupported::from_ts_fn_type(
+                        self, object_pat,
+                    )
+                    .into()])
                 }
             })
             .collect_results()

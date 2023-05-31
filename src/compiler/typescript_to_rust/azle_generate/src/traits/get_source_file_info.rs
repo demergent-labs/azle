@@ -17,8 +17,8 @@ pub trait GetSourceFileInfo {
         &self,
         span: Span,
         range: Range,
-        replacement: &String,
+        replacement: &str,
     ) -> String;
-    fn generate_modified_source(&self, span: Span, replacement: &String) -> String;
-    fn generate_modified_range(&self, span: Span, replacement: &String) -> Range;
+    fn generate_modified_source(&self, span: Span, replacement: &str) -> String;
+    fn generate_modified_range(&self, span: Span, replacement: &str) -> Range;
 }
