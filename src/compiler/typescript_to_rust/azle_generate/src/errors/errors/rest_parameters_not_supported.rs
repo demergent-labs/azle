@@ -1,9 +1,10 @@
+use swc_common::SourceMap;
 use swc_ecma_ast::{RestPat, TsFnParam, TsFnType};
 
 use crate::{
     canister_method::AnnotatedFnDecl,
-    errors::{CompilerOutput, Location, Suggestion},
-    traits::{GetSourceFileInfo, GetSourceInfo},
+    errors::{CompilerOutput, Location, Suggestion, SuggestionModifications},
+    traits::GetSourceFileInfo,
     ts_ast::SourceMapped,
 };
 
@@ -13,31 +14,90 @@ use super::GetDestructureRange;
 pub struct RestParametersNotSupported {
     message: String,
     location: Location,
+    suggestion_modifications: SuggestionModifications,
 }
 
 impl RestParametersNotSupported {
-    pub fn from_ts_fn_param(sm_ts_fn_param: &SourceMapped<TsFnParam>) -> Self {
+    pub fn from_ts_fn_param(sm_ts_fn_param: &SourceMapped<TsFnParam>, rest_pat: &RestPat) -> Self {
+        let destructure_range = rest_pat.get_destructure_range(sm_ts_fn_param.source_map);
         Self {
             message: "Rest parameters are not supported at this time".to_string(),
-            location: sm_ts_fn_param.get_location(),
+            location: Self::create_location(destructure_range, sm_ts_fn_param.source_map, rest_pat),
+            suggestion_modifications: Self::create_suggestion_modification(
+                destructure_range,
+                sm_ts_fn_param.source_map,
+                rest_pat,
+            ),
         }
     }
 
     pub fn from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl, rest_pat: &RestPat) -> Self {
+        let destructure_range = rest_pat.get_destructure_range(annotated_fn_decl.source_map);
         Self {
-            message: annotated_fn_decl
-                .build_rest_param_error_msg(rest_pat)
-                .to_string(),
-            location: annotated_fn_decl
-                .source_map
-                .get_location(annotated_fn_decl.fn_decl.function.span),
+            message: "Rest parameters are not supported in canister method signatures".to_string(),
+            location: Self::create_location(
+                destructure_range,
+                annotated_fn_decl.source_map,
+                rest_pat,
+            ),
+            suggestion_modifications: Self::create_suggestion_modification(
+                destructure_range,
+                annotated_fn_decl.source_map,
+                rest_pat,
+            ),
         }
     }
 
-    pub fn from_ts_fn_type(sm_ts_fn_type: &SourceMapped<TsFnType>) -> Self {
+    pub fn from_ts_fn_type(sm_ts_fn_type: &SourceMapped<TsFnType>, rest_pat: &RestPat) -> Self {
+        let destructure_range = rest_pat.get_destructure_range(sm_ts_fn_type.source_map);
         Self {
             message: "Rest parameters are not supported at this time".to_string(),
-            location: sm_ts_fn_type.get_location(),
+            location: Self::create_location(destructure_range, sm_ts_fn_type.source_map, rest_pat),
+            suggestion_modifications: Self::create_suggestion_modification(
+                destructure_range,
+                sm_ts_fn_type.source_map,
+                rest_pat,
+            ),
+        }
+    }
+
+    fn create_suggestion_modification(
+        range: (usize, usize),
+        source_map: &SourceMap,
+        rest_pat: &RestPat,
+    ) -> SuggestionModifications {
+        let replacement_name = "myParam"; // TODO: Come up with a better name from the ts_type_ann
+        let source =
+            source_map.generate_source_with_range_replaced(rest_pat.span, range, replacement_name);
+        let range = (range.0, range.0 + replacement_name.len());
+        (source, range)
+    }
+
+    fn create_location(
+        range: (usize, usize),
+        source_map: &SourceMap,
+        rest_pat: &RestPat,
+    ) -> Location {
+        Location {
+            origin: source_map.get_origin(rest_pat.span),
+            line_number: source_map.get_line_number(rest_pat.span),
+            source: source_map.get_source(rest_pat.span),
+            range,
+        }
+    }
+
+    fn build_rest_param_error_msg(&self) -> CompilerOutput {
+        CompilerOutput {
+            title: self.message.clone(),
+            location: self.location.clone(),
+            annotation: "Attempted parameter spread here".to_string(),
+            suggestion: Some(Suggestion {
+                title: "Specify each parameter individually with a concrete type".to_string(),
+                annotation: None,
+                import_suggestion: None,
+                source: self.suggestion_modifications.0.clone(),
+                range: self.suggestion_modifications.1,
+            }),
         }
     }
 }
@@ -52,35 +112,6 @@ impl From<RestParametersNotSupported> for crate::Error {
 
 impl std::fmt::Display for RestParametersNotSupported {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.message)
-    }
-}
-
-impl AnnotatedFnDecl<'_> {
-    pub(super) fn build_rest_param_error_msg(&self, rest_pat: &RestPat) -> CompilerOutput {
-        let range = rest_pat.get_destructure_range(self.source_map);
-        let replacement_name = "myParam".to_string(); // TODO: Come up with a better name from the ts_type_ann
-
-        CompilerOutput {
-            title: "Rest parameters are not supported in canister method signatures".to_string(),
-            location: Location {
-                origin: self.source_map.get_origin(rest_pat.span),
-                line_number: self.source_map.get_line_number(rest_pat.span),
-                source: self.source_map.get_source(rest_pat.span),
-                range,
-            },
-            annotation: "Attempted parameter spread here".to_string(),
-            suggestion: Some(Suggestion {
-                title: "Specify each parameter individually with a concrete type".to_string(),
-                source: self.source_map.generate_source_with_range_replaced(
-                    rest_pat.span,
-                    range,
-                    &replacement_name,
-                ),
-                range: (range.0, range.0 + replacement_name.len()),
-                annotation: None,
-                import_suggestion: None,
-            }),
-        }
+        write!(f, "{}", self.build_rest_param_error_msg())
     }
 }

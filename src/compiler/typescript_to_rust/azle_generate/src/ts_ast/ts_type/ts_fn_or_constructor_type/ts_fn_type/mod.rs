@@ -52,7 +52,9 @@ impl GetTsTypeWithError for SourceMapped<'_, TsFnParam> {
             TsFnParam::Array(_) => {
                 Err(ArrayDestructuringInParamsNotSupported::from_ts_fn_param(self).into())
             }
-            TsFnParam::Rest(_) => Err(RestParametersNotSupported::from_ts_fn_param(self).into()),
+            TsFnParam::Rest(rest_pat) => {
+                Err(RestParametersNotSupported::from_ts_fn_param(self, rest_pat).into())
+            }
             TsFnParam::Object(_) => {
                 Err(ObjectDestructuringNotSupported::from_ts_fn_param(self).into())
             }

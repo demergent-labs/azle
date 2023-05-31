@@ -182,10 +182,11 @@ impl SourceMapped<'_, TsFnType> {
                         ArrayDestructuringInParamsNotSupported::from_ts_fn_type(self),
                     )])
                 }
-                TsFnParam::Rest(_) => {
-                    return Err(vec![
-                        RestParametersNotSupported::from_ts_fn_type(self).into()
-                    ])
+                TsFnParam::Rest(rest_pat) => {
+                    return Err(vec![RestParametersNotSupported::from_ts_fn_type(
+                        self, rest_pat,
+                    )
+                    .into()])
                 }
                 TsFnParam::Object(_) => {
                     return Err(vec![
