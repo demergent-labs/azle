@@ -11,6 +11,7 @@ pub mod errors;
 use self::errors::{
     ArrayDestructuringInParamsNotSupported, FileSyntaxError, FunctionParamsMustHaveType,
     ObjectDestructuringNotSupported, RestParametersNotSupported, UnableToLoadFile,
+    UnableToLoadPlugin, UnableToParsePlugin,
 };
 pub use self::{
     compiler_output::CompilerOutput,
@@ -96,6 +97,8 @@ pub enum Error {
     RestParametersNotSupported(RestParametersNotSupported),
     TooManyReturnTypes(TooManyReturnTypes),
     UnableToLoadFile(UnableToLoadFile),
+    UnableToLoadPlugin(UnableToLoadPlugin),
+    UnableToParsePlugin(UnableToParsePlugin),
     UnexpectedTsTupleType(UnexpectedTsTupleTypes),
     UnexpectedTsType(UnexpectedTsType),
     UnexpectedTsTypeLiteral(UnexpectedTsTypeLiteral),
@@ -168,6 +171,8 @@ impl Error {
             Self::InvalidArg(e) => e,
             Self::MissingArgs(e) => e,
             Self::UnsupportedMemberName(e) => e,
+            Self::UnableToParsePlugin(e) => e,
+            Self::UnableToLoadPlugin(e) => e,
         }
     }
 }

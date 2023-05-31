@@ -21,25 +21,10 @@ pub enum ArgName {
     MaxValueSize,
 }
 
-// TODO DOUBLE CHECK
 impl SourceMapped<'_, NewExpr> {
     pub fn to_stable_b_tree_map_node(&self) -> Result<StableBTreeMapNode, Vec<Error>> {
         match &self.type_args {
             Some(type_args) => {
-                // Get key and value type from type_args
-                let type_arg_candid_types = type_args
-                    .params
-                    .check_length_and_map(
-                        type_args.params.len() == 2,
-                        |_| IncorrectTypeArgs::from_new_expr(self).into(),
-                        |param| SourceMapped::new(param.deref(), self.source_map).to_candid_type(),
-                    )
-                    .collect_results()?;
-
-                let key_type = type_arg_candid_types[0].clone();
-                let value_type = type_arg_candid_types[1].clone();
-
-                // Get memory id and max key and value size from the call arguments
                 match &self.args {
                     Some(args) => {
                         if args.len() == 0 {
@@ -48,7 +33,20 @@ impl SourceMapped<'_, NewExpr> {
                         if args.len() != 3 {
                             return Err(vec![IncorrectNumberOfArgs::from_new_expr(self).into()]);
                         }
-                        let (_, memory_id, max_key_size, max_value_size) = (
+                        let (type_arg_candid_types, _, memory_id, max_key_size, max_value_size) = (
+                            // Get key and value type from type_args
+                            type_args
+                                .params
+                                .check_length_and_map(
+                                    type_args.params.len() == 2,
+                                    |_| IncorrectTypeArgs::from_new_expr(self).into(),
+                                    |param| {
+                                        SourceMapped::new(param.deref(), self.source_map)
+                                            .to_candid_type()
+                                    },
+                                )
+                                .collect_results(),
+                            // Get memory id and max key and value size from the call arguments
                             if args.iter().any(|arg| arg.spread.is_some()) {
                                 return Err(vec![ArgSpread::from_new_expr(self).into()]);
                             } else {
@@ -65,6 +63,9 @@ impl SourceMapped<'_, NewExpr> {
                             }),
                         )
                             .collect_results()?;
+
+                        let key_type = type_arg_candid_types[0].clone();
+                        let value_type = type_arg_candid_types[1].clone();
 
                         Ok(StableBTreeMapNode {
                             memory_id,

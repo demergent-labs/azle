@@ -6,7 +6,15 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use std::path::PathBuf;
 
-use crate::{plugin::Plugin, ts_ast::TsAst, Error};
+use crate::{
+    errors::{
+        errors::{UnableToLoadPlugin, UnableToParsePlugin},
+        CollectResults,
+    },
+    plugin::Plugin,
+    ts_ast::TsAst,
+    Error,
+};
 
 use self::stable_b_tree_map::StableBTreeMapNode;
 
@@ -49,14 +57,29 @@ pub fn generate(
 
     let stable_b_tree_maps = stable_b_tree_map::rust::generate(&stable_b_tree_map_nodes);
 
-    let plugins_code = plugins.iter().map(|plugin| {
-        let plugin_code =
-            std::fs::read_to_string(PathBuf::from(&plugin.path).join("src").join("lib.rs"))
-                .unwrap();
+    let plugins_code = plugins
+        .iter()
+        .map(|plugin| {
+            let plugin_file_name = PathBuf::from(&plugin.path).join("src").join("lib.rs");
+            let plugin_code = match std::fs::read_to_string(plugin_file_name.clone()) {
+                Ok(plugin_code) => plugin_code,
+                Err(err) => {
+                    return Err(vec![
+                        UnableToLoadPlugin::from_error(err, &plugin_file_name).into()
+                    ])
+                }
+            };
 
-        let token_stream: TokenStream = syn::parse_str(&plugin_code).unwrap();
-        token_stream
-    });
+            match syn::parse_str::<TokenStream>(&plugin_code) {
+                Ok(token_stream) => Ok(token_stream),
+                Err(err) => Err(vec![UnableToParsePlugin::from_error(
+                    err,
+                    &plugin_file_name,
+                )
+                .into()]),
+            }
+        })
+        .collect_results()?;
 
     Ok(quote! {
         #async_await_result_handler

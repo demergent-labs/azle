@@ -24,7 +24,6 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
     }
 }
 
-// TODO DOUBLE CHECK
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_func(&self, name: Option<String>) -> Result<Func, Vec<Error>> {
         let request_type_ts_type = self.get_ts_type()?;
