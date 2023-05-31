@@ -3,7 +3,7 @@ use std::fmt::Display;
 use swc_ecma_ast::TsTypeRef;
 
 use crate::{
-    errors::{CompilerOutput, Location, Suggestion, SuggestionModifications},
+    errors::{CompilerOutput, InternalError, Location, Suggestion, SuggestionModifications},
     internal_error,
     traits::{GetNameWithError, GetSourceFileInfo, GetSourceInfo},
     ts_ast::SourceMapped,
@@ -30,15 +30,6 @@ enum TypeRefCandidTypes {
 }
 
 impl WrongNumberOfParams {
-    fn create_annotation(&self) -> String {
-        if self.param_count == 0 {
-            "Needs to have an enclosed type here."
-        } else {
-            "Only one enclosed type allowed here."
-        }
-        .to_string()
-    }
-
     pub fn error_from_ts_type_ref(sm_ts_type_ref: &SourceMapped<TsTypeRef>) -> Error {
         let name = match sm_ts_type_ref.get_candid_type() {
             Ok(name) => name,
@@ -60,116 +51,109 @@ impl WrongNumberOfParams {
         .into()
     }
 
-    fn create_variant_error(&self) -> CompilerOutput {
-        let suggestion_annotation = if self.param_count == 0 {
-            "The simplest Variant is a type literal with a single member with type null"
-        } else {
-            "Try wrapping everything in a type literal"
-        };
-        CompilerOutput {
-            title: "Invalid Variant".to_string(),
+    fn create_compiler_output(&self) -> Result<CompilerOutput, Error> {
+        Ok(CompilerOutput {
+            title: self.create_title(),
             location: self.location.clone(),
-            annotation: self.create_annotation(),
-            suggestion: Some(self.create_suggestion(
-                "Variant must have exactly one enclosed type. If you need multiple variants, put them all in type literal.",
-                suggestion_annotation
-            )),
-        }
+            annotation: self.create_annotation()?,
+            suggestion: Some(self.create_suggestion()?),
+        })
     }
 
-    fn create_func_error(&self) -> CompilerOutput {
-        let suggestion_annotation = if self.param_count == 0 {
-            "If the func has no parameters or return type then you could do this."
-        } else {
-            "Did you mean to have multiple parameters?"
-        };
-        CompilerOutput {
-            title: "Invalid Func".to_string(),
-            location: self.location.clone(),
-            annotation: self.create_annotation(),
-            suggestion: Some(self.create_suggestion(
-                "Funcs must have exactly one enclosed type.",
-                suggestion_annotation,
-            )),
+    fn create_title(&self) -> String {
+        match self.name {
+            TypeRefCandidTypes::Record => "Invalid Record",
+            TypeRefCandidTypes::Variant => "Invalid Variant",
+            TypeRefCandidTypes::Tuple => "Invalid Tuple",
+            TypeRefCandidTypes::Vec => "Invalid Vec",
+            TypeRefCandidTypes::Opt => "Invalid Opt",
+            TypeRefCandidTypes::Func => "Invalid Func",
         }
+        .to_string()
     }
 
-    fn create_option_error(&self) -> CompilerOutput {
-        let suggestion_annotation = if self.param_count == 0 {
-            "For example if you want an optional boolean value, enclose boolean with Opt"
-        } else {
-            ""
-        };
-        CompilerOutput {
-            title: "Invalid Opt".to_string(),
-            location: self.location.clone(),
-            annotation: self.create_annotation(),
-            suggestion: Some(self.create_suggestion(
-                "Opts must have exactly one enclosed type.",
-                suggestion_annotation,
-            )),
+    fn create_annotation(&self) -> Result<String, Error> {
+        if self.param_count == 1 {
+            return Err(InternalError {}.into());
         }
+        Ok(if self.param_count == 0 {
+            "Needs to have an enclosed type here."
+        } else {
+            "Only one enclosed type allowed here."
+        }
+        .to_string())
     }
 
-    fn create_record_error(&self) -> CompilerOutput {
-        let suggestion_annotation = if self.param_count == 0 {
-            "The simplest Record is an empty type literal"
-        } else {
-            "Try wrapping everything in a type literal"
-        };
-        CompilerOutput {
-            title: "Invalid Record".to_string(),
-            location: self.location.clone(),
-            annotation: self.create_annotation(),
-            suggestion: Some(self.create_suggestion(
-                "Opts must have exactly one enclosed type.",
-                suggestion_annotation,
-            )),
-        }
-    }
-
-    fn create_tuple_error(&self) -> CompilerOutput {
-        let suggestion_annotation = if self.param_count == 0 {
-            "Add types to the tuple here"
-        } else {
-            "Try wrapping everything in square braces"
-        };
-        CompilerOutput {
-            title: "Invalid Tuple".to_string(),
-            location: self.location.clone(),
-            annotation: self.create_annotation(),
-            suggestion: Some(self.create_suggestion(
-                "Tuples must have exactly one enclosed type.",
-                suggestion_annotation,
-            )),
-        }
-    }
-
-    fn create_vec_error(&self) -> CompilerOutput {
-        let suggestion_annotation = if self.param_count == 0 {
-            "For example if you want a vec of boolean value, enclose boolean with Vec"
-        } else {
-            ""
-        };
-        CompilerOutput {
-            title: "Invalid Opt".to_string(),
-            location: self.location.clone(),
-            annotation: self.create_annotation(),
-            suggestion: Some(self.create_suggestion(
-                "Opts must have exactly one enclosed type.",
-                suggestion_annotation,
-            )),
-        }
-    }
-
-    fn create_suggestion(&self, title: &str, suggestion_annotation: &str) -> Suggestion {
-        Suggestion {
-            title: title.to_string(),
+    fn create_suggestion(&self) -> Result<Suggestion, Error> {
+        Ok(Suggestion {
+            title: self.create_suggestion_title(),
             range: self.modified_range,
             source: self.modified_source.clone(),
-            annotation: Some(suggestion_annotation.to_string()),
+            annotation: Some(self.create_suggestion_annotation()?),
             import_suggestion: None,
+        })
+    }
+    fn create_suggestion_title(&self) -> String {
+        match self.name {
+            TypeRefCandidTypes::Record => "Record must have example one enclose type.",
+            TypeRefCandidTypes::Variant => "Variant must have exactly one enclosed type. If you need multiple variants, put them all in a type literal.",
+            TypeRefCandidTypes::Tuple => "Tuples must have exactly one enclosed type.",
+            TypeRefCandidTypes::Vec => "Vecs must have example one enclosed type.",
+            TypeRefCandidTypes::Opt => "Opts must have exactly one enclosed type.",
+            TypeRefCandidTypes::Func => "Funcs must have exactly one enclosed type.",
         }
+        .to_string()
+    }
+
+    fn create_suggestion_annotation(&self) -> Result<String, Error> {
+        if self.param_count == 1 {
+            return Err(InternalError {}.into());
+        }
+        Ok(match self.name {
+            TypeRefCandidTypes::Record => {
+                if self.param_count == 0 {
+                    "The simplest Record is an empty type literal"
+                } else {
+                    "Try wrapping everything in a type literal"
+                }
+            }
+            TypeRefCandidTypes::Variant => {
+                if self.param_count == 0 {
+                    "The simplest Variant is a type literal with a single member with type null"
+                } else {
+                    "Try wrapping everything in a type literal"
+                }
+            }
+            TypeRefCandidTypes::Tuple => {
+                if self.param_count == 0 {
+                    "Add types to the tuple here"
+                } else {
+                    "Try wrapping everything in square braces"
+                }
+            }
+            TypeRefCandidTypes::Vec => {
+                if self.param_count == 0 {
+                    "For example if you want a vec of boolean value, enclose boolean with Vec"
+                } else {
+                    ""
+                }
+            }
+            TypeRefCandidTypes::Opt => {
+                if self.param_count == 0 {
+                    "For example if you want an optional boolean value, enclose boolean with Opt"
+                } else {
+                    ""
+                }
+            }
+            TypeRefCandidTypes::Func => {
+                if self.param_count == 0 {
+                    "If the func has no parameters or return type then you could do this."
+                } else {
+                    "Did you mean to have multiple parameters?"
+                }
+            }
+        }
+        .to_string())
     }
 }
 
@@ -183,15 +167,10 @@ impl From<WrongNumberOfParams> for crate::Error {
 
 impl Display for WrongNumberOfParams {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let compiler_output = match self.name {
-            TypeRefCandidTypes::Variant => self.create_variant_error(),
-            TypeRefCandidTypes::Func => self.create_func_error(),
-            TypeRefCandidTypes::Opt => self.create_option_error(),
-            TypeRefCandidTypes::Record => self.create_record_error(),
-            TypeRefCandidTypes::Tuple => self.create_tuple_error(),
-            TypeRefCandidTypes::Vec => self.create_vec_error(),
-        };
-        write!(f, "{}", compiler_output)
+        match self.create_compiler_output() {
+            Ok(compiler_output) => write!(f, "{}", compiler_output),
+            Err(err) => write!(f, "{}", err),
+        }
     }
 }
 
