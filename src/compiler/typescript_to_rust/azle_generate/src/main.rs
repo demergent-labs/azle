@@ -1,12 +1,13 @@
 use serde::{Deserialize, Serialize};
 use std::{
+    collections::HashMap,
     env,
     fs::{self, File},
     io::Write,
     process,
 };
 
-use azle_generate::{generate_canister, plugin::Plugin};
+use azle_generate::{generate_canister, Plugin, SymbolTable};
 
 const USAGE_ERROR: i32 = 1;
 const COMPILER_INFO_READ_ERROR: i32 = 2;
@@ -20,6 +21,7 @@ const LIB_PARSE_ERROR: i32 = 7;
 struct CompilerInfo {
     plugins: Vec<Plugin>,
     file_names: Vec<String>,
+    symbol_tables: HashMap<String, SymbolTable>,
 }
 
 fn main() {
@@ -60,6 +62,7 @@ fn main() {
     let lib_file = match generate_canister(
         &compiler_info.file_names,
         main_js,
+        compiler_info.symbol_tables,
         &compiler_info.plugins,
         &environment_variables,
     ) {

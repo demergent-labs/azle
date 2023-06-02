@@ -1,16 +1,18 @@
-use std::ops::Deref;
 use std::path::Path;
+use std::{collections::HashMap, ops::Deref};
 use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 use crate::{
     errors::errors::{FileSyntaxError, UnableToLoadFile},
-    internal_error, Error,
+    internal_error, Error, SymbolTable,
 };
 
 pub struct Program {
     program: swc_ecma_ast::Program,
     pub source_map: SourceMap,
+    pub filepath: String,
+    pub symbol_table: SymbolTable,
 }
 
 impl Deref for Program {
@@ -22,7 +24,10 @@ impl Deref for Program {
 }
 
 impl Program {
-    pub fn from_file_name(ts_file_name: &str) -> Result<Self, Error> {
+    pub fn from_file_name(
+        ts_file_name: &str,
+        symbol_tables: &HashMap<String, SymbolTable>,
+    ) -> Result<Option<Self>, Error> {
         let filepath = Path::new(ts_file_name).to_path_buf();
 
         let cm: Lrc<SourceMap> = Default::default();
@@ -47,10 +52,17 @@ impl Program {
         match parse_result {
             Ok(program) => {
                 if let Ok(source_map) = std::rc::Rc::try_unwrap(cm) {
-                    return Ok(Program {
-                        program,
-                        source_map,
-                    });
+                    match symbol_tables.get(ts_file_name) {
+                        Some(symbol_table) => {
+                            return Ok(Some(Program {
+                                program,
+                                source_map,
+                                filepath: ts_file_name.to_string(),
+                                symbol_table: symbol_table.clone(),
+                            }));
+                        }
+                        None => return Ok(None), // If there is no symbol table for the program then we don't need to process it for candid types
+                    }
                 };
                 internal_error!()
             }

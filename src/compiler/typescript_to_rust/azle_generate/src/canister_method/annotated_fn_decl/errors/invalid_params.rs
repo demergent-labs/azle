@@ -2,6 +2,7 @@ use crate::{
     canister_method::AnnotatedFnDecl,
     errors::{CompilerOutput, Location},
     traits::GetSourceFileInfo,
+    ts_ast::SourceMapped,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -10,7 +11,7 @@ pub struct InvalidParams {
 }
 
 impl InvalidParams {
-    pub fn from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl) -> Self {
+    pub fn from_annotated_fn_decl(annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>) -> Self {
         Self {
             location: annotated_fn_decl
                 .source_map

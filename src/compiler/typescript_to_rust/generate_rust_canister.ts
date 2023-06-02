@@ -8,7 +8,12 @@ import {
     GLOBAL_AZLE_TARGET_DIR
 } from '../utils';
 import { Result } from '../../lib';
-import { JSCanisterConfig, Plugin, SpawnSyncError } from '../utils/types';
+import {
+    JSCanisterConfig,
+    Plugin,
+    SpawnSyncError,
+    SymbolTables
+} from '../utils/types';
 import { isVerboseMode } from '../utils';
 import { version as azleVersion } from '../../../package.json';
 
@@ -17,12 +22,14 @@ import { version as azleVersion } from '../../../package.json';
 export function generateRustCanister(
     fileNames: string[],
     plugins: Plugin[],
+    symbolTables: SymbolTables,
     canisterPath: string,
     canisterConfig: JSCanisterConfig
 ): Result<null, SpawnSyncError> {
     const compilerInfo = {
         plugins,
-        file_names: fileNames
+        file_names: fileNames,
+        symbol_tables: symbolTables
     };
 
     const compilerInfoPath = join(

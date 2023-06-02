@@ -1,5 +1,4 @@
 use std::ops::Deref;
-use swc_common::SourceMap;
 use swc_ecma_ast::{Decl, FnDecl, Module, ModuleDecl, ModuleItem, Stmt};
 
 use crate::ts_ast::{Program, SourceMapped};
@@ -19,23 +18,29 @@ impl GetProgramFnDecls for Vec<Program> {
 impl Program {
     fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>> {
         match self.deref() {
-            swc_ecma_ast::Program::Module(module) => module.get_fn_decls(&self.source_map),
+            swc_ecma_ast::Program::Module(module) => module.get_fn_decls(&self),
             swc_ecma_ast::Program::Script(_) => vec![],
         }
     }
 }
 
 pub trait GetModuleFnDecls {
-    fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>>;
+    fn get_fn_decls<'a>(&'a self, parent: &'a Program) -> Vec<SourceMapped<'a, FnDecl>>;
 }
 
 impl GetModuleFnDecls for Module {
-    fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>> {
+    fn get_fn_decls<'a>(&'a self, parent: &'a Program) -> Vec<SourceMapped<'a, FnDecl>> {
         self.body
             .iter()
             .filter_map(|module_item| module_item.as_decl())
             .filter_map(|decl| decl.as_fn_decl())
-            .filter_map(|fn_decl| Some(SourceMapped::new(fn_decl, source_map)))
+            .filter_map(|fn_decl| {
+                Some(SourceMapped::new(
+                    fn_decl,
+                    &parent.source_map,
+                    &parent.symbol_table,
+                ))
+            })
             .collect()
     }
 }

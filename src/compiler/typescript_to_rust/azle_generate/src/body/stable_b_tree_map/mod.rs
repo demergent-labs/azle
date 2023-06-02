@@ -68,11 +68,11 @@ impl Program {
                     Expr::New(new_expr)
                         if matches!(
                             &*new_expr.callee,
-                            Expr::Ident(ident) if ident.get_name() == "StableBTreeMap"
+                            Expr::Ident(ident) if self.symbol_table.stable_b_tree_map.contains(&ident.get_name().to_string())
                         ) =>
                     {
                         Some(
-                            SourceMapped::new(new_expr, &self.source_map)
+                            SourceMapped::new(new_expr, &self.source_map, &self.symbol_table)
                                 .to_stable_b_tree_map_node(),
                         )
                     }

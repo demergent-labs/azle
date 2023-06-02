@@ -44,7 +44,7 @@ impl SourceMapped<'_, NewExpr> {
                                     type_args.params.len() == 2,
                                     |_| IncorrectTypeArgs::from_new_expr(self).into(),
                                     |param| {
-                                        SourceMapped::new(param.deref(), self.source_map)
+                                        SourceMapped::new_from_parent(param.deref(), self)
                                             .to_candid_type()
                                     },
                                 )

@@ -1,10 +1,10 @@
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 
-use crate::{canister_method::AnnotatedFnDecl, Error};
+use crate::{canister_method::AnnotatedFnDecl, ts_ast::SourceMapped, Error};
 
 pub fn maybe_generate_call_to_js_function(
-    annotated_fn_decl_option: &Option<&AnnotatedFnDecl>,
+    annotated_fn_decl_option: &Option<&SourceMapped<AnnotatedFnDecl>>,
 ) -> Result<TokenStream, Vec<Error>> {
     if let Some(annotated_fn_decl) = &annotated_fn_decl_option {
         generate_call_to_js_function(annotated_fn_decl)
@@ -14,7 +14,7 @@ pub fn maybe_generate_call_to_js_function(
 }
 
 pub fn generate_call_to_js_function(
-    annotated_fn_decl: &AnnotatedFnDecl,
+    annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>,
 ) -> Result<TokenStream, Vec<Error>> {
     let function_name = annotated_fn_decl.get_function_name();
     let param_name_idents: Vec<Ident> = annotated_fn_decl

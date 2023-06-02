@@ -3,7 +3,6 @@ use swc_ecma_ast::TsTypeRef;
 
 use crate::{
     errors::{CompilerOutput, InternalError, Location, Suggestion, SuggestionModifications},
-    internal_error,
     traits::{GetNameWithError, GetSourceFileInfo, GetSourceInfo},
     ts_ast::SourceMapped,
     Error,
@@ -11,10 +10,16 @@ use crate::{
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct WrongEnclosedType {
-    name: String,
+    name: EnclosingType,
     modified_source: String,
     modified_range: (usize, usize),
     location: Location,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+enum EnclosingType {
+    Variant,
+    Func,
 }
 
 impl WrongEnclosedType {
@@ -24,14 +29,23 @@ impl WrongEnclosedType {
             Ok(name) => name.to_string(),
             Err(err) => return err,
         };
-        let (source, range) = match name.as_str() {
-            "Func" => sm_ts_type_ref.get_func_source_and_range(),
+        let name = match name.as_str() {
+            _ if sm_ts_type_ref.symbol_table.variant.contains(&name) => EnclosingType::Variant,
+            _ if sm_ts_type_ref.symbol_table.func.contains(&name) => EnclosingType::Func,
+            _ => return InternalError {}.into(),
+        };
+        let (source, range) = match name {
+            EnclosingType::Func => sm_ts_type_ref.get_func_source_and_range(),
             _ => (original_location.source, original_location.range),
         };
-        let (modified_source, modified_range) = match sm_ts_type_ref.wrong_enclosed_type_error() {
-            Ok(value) => value,
-            Err(err) => return err,
+        let (modified_source, modified_range) = match name {
+            EnclosingType::Variant => match sm_ts_type_ref.variant_wrong_enclosed_type_error() {
+                Ok(value) => value,
+                Err(err) => return err,
+            },
+            EnclosingType::Func => sm_ts_type_ref.get_func_suggestion_modifications_and_stuff(),
         };
+
         Self {
             modified_source,
             modified_range,
@@ -92,13 +106,12 @@ impl std::error::Error for WrongEnclosedType {}
 
 impl std::fmt::Display for WrongEnclosedType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        let compiler_output = match self.name.as_str() {
-            "Variant" => match self.variant_wrong_enclosed_type_error() {
+        let compiler_output = match self.name {
+            EnclosingType::Variant => match self.variant_wrong_enclosed_type_error() {
                 Ok(value) => value,
                 Err(_) => return write!(f, "{}", Error::InternalError(InternalError {})),
             },
-            "Func" => self.func_wrong_enclosed_type_error(),
-            _ => return write!(f, "{}", Error::InternalError(InternalError {})),
+            EnclosingType::Func => self.func_wrong_enclosed_type_error(),
         };
         write!(f, "{}", compiler_output)
     }
@@ -111,14 +124,6 @@ impl From<WrongEnclosedType> for crate::Error {
 }
 
 impl SourceMapped<'_, TsTypeRef> {
-    pub fn wrong_enclosed_type_error(&self) -> Result<SuggestionModifications, Error> {
-        Ok(match self.get_name()? {
-            "Variant" => self.variant_wrong_enclosed_type_error()?,
-            "Func" => self.get_func_suggestion_modifications_and_stuff(),
-            _ => internal_error!(),
-        })
-    }
-
     fn variant_wrong_enclosed_type_error(&self) -> Result<SuggestionModifications, Error> {
         let example_variant = self.generate_example_variant()?;
         let modified_source = self

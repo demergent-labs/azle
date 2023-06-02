@@ -30,7 +30,8 @@ impl From<InvalidDecorator> for crate::Error {
 impl std::fmt::Display for InvalidDecorator {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let compiler_output = CompilerOutput {
-            title: "Invalid decorator. Only @query and @update are permitted.".to_string(),
+            title: "Invalid decorator. Only @serviceQuery and @serviceUpdate are permitted."
+                .to_string(),
             annotation: "".to_string(),
             suggestion: None,
             location: self.location.clone(),

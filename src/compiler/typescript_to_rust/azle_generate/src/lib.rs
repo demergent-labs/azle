@@ -1,8 +1,10 @@
+use std::collections::HashMap;
+
 use cdk_framework::{traits::CollectResults, AbstractCanisterTree};
 use proc_macro2::TokenStream;
 
 pub use crate::errors::{Error, GuardFunctionNotFound};
-use crate::{body::stable_b_tree_map::StableBTreeMapNode, plugin::Plugin, ts_ast::TsAst};
+use crate::{body::stable_b_tree_map::StableBTreeMapNode, ts_ast::TsAst};
 
 mod body;
 mod candid_type;
@@ -16,15 +18,20 @@ mod vm_value_conversion;
 
 pub mod errors;
 pub mod plugin;
+pub mod symbol_table;
 pub mod traits;
+
+pub use plugin::Plugin;
+pub use symbol_table::SymbolTable;
 
 pub fn generate_canister(
     ts_file_names: &Vec<String>,
     main_js: String,
+    symbol_tables: HashMap<String, SymbolTable>,
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
 ) -> Result<TokenStream, Vec<Error>> {
-    TsAst::new(ts_file_names, main_js)?
+    TsAst::new(ts_file_names, main_js, symbol_tables)?
         .to_act(plugins, environment_variables)?
         .to_token_stream()
         .map_err(|cdkf_errors| cdkf_errors.into_iter().map(Error::from).collect())

@@ -7,7 +7,10 @@ use cdk_framework::{
 use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
 use crate::{
-    errors::CollectResults as OtherCollectResults, traits::GetName, ts_ast::SourceMapped, Error,
+    errors::CollectResults as OtherCollectResults,
+    traits::{GetName, GetNameWithError},
+    ts_ast::SourceMapped,
+    Error,
 };
 
 use self::errors::RecordPropertySignature;
@@ -16,25 +19,41 @@ use super::errors::WrongEnclosedType;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_record(&self) -> Result<Option<Record>, Vec<Error>> {
-        self.process_ts_type_ref("Record", |type_ref| {
+        self.process_ts_type_ref(&self.symbol_table.record, |type_ref| {
             let (type_params, members) =
                 (self.get_type_params(), type_ref.to_record()).collect_results()?;
-            Ok(Record {
-                name: Some(self.id.get_name().to_string()),
-                type_params: type_params.into(),
-                ..members
-            })
+            match members {
+                Some(members) => Ok(Some(Record {
+                    name: Some(self.id.get_name().to_string()),
+                    type_params: type_params.into(),
+                    ..members
+                })),
+                None => Ok(None),
+            }
         })
+        .map(|result| result.flatten())
     }
 }
 
 impl SourceMapped<'_, TsTypeRef> {
-    pub fn to_record(&self) -> Result<Record, Vec<Error>> {
-        match self.get_ts_type()?.as_ts_type_lit() {
-            Some(ts_type_lit) => ts_type_lit,
-            None => return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
+    pub fn to_record(&self) -> Result<Option<Record>, Vec<Error>> {
+        if self
+            .symbol_table
+            .record
+            .contains(&self.get_name()?.to_string())
+        {
+            Ok(Some(
+                match self.get_ts_type()?.as_ts_type_lit() {
+                    Some(ts_type_lit) => ts_type_lit,
+                    None => {
+                        return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()])
+                    }
+                }
+                .to_record()?,
+            ))
+        } else {
+            Ok(None)
         }
-        .to_record()
     }
 }
 
@@ -43,7 +62,7 @@ impl SourceMapped<'_, TsTypeLit> {
         let members: Vec<Member> = self
             .members
             .iter()
-            .map(|member| SourceMapped::new(member, self.source_map).to_record_member())
+            .map(|member| SourceMapped::new_from_parent(member, self).to_record_member())
             .collect_results()?;
 
         Ok(Record {

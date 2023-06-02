@@ -10,7 +10,7 @@ use crate::{
     Error,
 };
 
-impl<'a> AnnotatedFnDecl<'a> {
+impl<'a> SourceMapped<'a, AnnotatedFnDecl> {
     pub fn to_definition(&self) -> Result<QueryOrUpdateDefinition, Vec<Error>> {
         let (body, is_async, is_manual, params, return_type) = (
             query_and_update::generate_body(&self),
@@ -53,11 +53,18 @@ impl<'a> AnnotatedFnDecl<'a> {
     fn build_param_types(&self) -> Result<Vec<CandidType>, Vec<Error>> {
         self.get_param_ts_types()?
             .into_iter()
-            .map(|ts_type| SourceMapped::new(ts_type, self.source_map).to_candid_type())
+            .map(|ts_type| {
+                SourceMapped::new(ts_type, self.source_map, self.symbol_table).to_candid_type()
+            })
             .collect_results()
     }
 
     fn build_return_type(&self) -> Result<CandidType, Vec<Error>> {
-        SourceMapped::new(self.get_return_ts_type()?, self.source_map).to_candid_type()
+        SourceMapped::new(
+            self.get_return_ts_type()?,
+            self.source_map,
+            self.symbol_table,
+        )
+        .to_candid_type()
     }
 }

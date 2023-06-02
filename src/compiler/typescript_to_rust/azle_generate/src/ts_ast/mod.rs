@@ -1,10 +1,10 @@
-use std::ops::Deref;
+use std::{collections::HashMap, ops::Deref};
 use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl};
 
 pub use program::Program;
 pub use source_map::SourceMapped;
 
-use crate::{errors::CollectResults, Error};
+use crate::{errors::CollectResults, Error, SymbolTable};
 
 pub mod expr;
 pub mod program;
@@ -15,20 +15,31 @@ pub mod ts_type_element;
 pub struct TsAst {
     pub programs: Vec<Program>,
     pub main_js: String,
+    pub symbol_tables: HashMap<String, SymbolTable>,
 }
 
 impl TsAst {
-    pub fn new(ts_file_names: &Vec<String>, main_js: String) -> Result<Self, Vec<Error>> {
+    pub fn new(
+        ts_file_names: &Vec<String>,
+        main_js: String,
+        symbol_tables: HashMap<String, SymbolTable>,
+    ) -> Result<Self, Vec<Error>> {
         let programs = ts_file_names
             .iter()
             .map(|ts_file_name| {
-                let things =
-                    Program::from_file_name(ts_file_name).map_err(Into::<Vec<Error>>::into);
-                things
+                Program::from_file_name(ts_file_name, &symbol_tables)
+                    .map_err(Into::<Vec<Error>>::into)
             })
-            .collect_results()?;
+            .collect_results()?
+            .into_iter()
+            .filter_map(|option| option)
+            .collect();
 
-        Ok(Self { programs, main_js })
+        Ok(Self {
+            programs,
+            main_js,
+            symbol_tables,
+        })
     }
 
     // Note: Both module_items and decls seem like useful methods but we're not
@@ -85,10 +96,16 @@ impl TsAst {
                             ModuleDecl::ExportDecl(export_decl) => {
                                 let decl = &export_decl.decl;
                                 if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
-                                    acc.push(SourceMapped::new(
-                                        ts_type_alias_decl,
-                                        &program.source_map,
-                                    ));
+                                    match self.symbol_tables.get(&program.filepath) {
+                                        Some(symbol_table) => {
+                                            acc.push(SourceMapped::new(
+                                                ts_type_alias_decl,
+                                                &program.source_map,
+                                                symbol_table,
+                                            ));
+                                        }
+                                        None => (), // If the program doesn't have a Symbol Table then we can safely ignore it.
+                                    }
                                 }
                             }
                             _ => (),
@@ -107,10 +124,16 @@ impl TsAst {
                                     // ]
                                     // .concat();
 
-                                    acc.push(SourceMapped::new(
-                                        ts_type_alias_decl,
-                                        &program.source_map,
-                                    ));
+                                    match self.symbol_tables.get(&program.filepath) {
+                                        Some(symbol_table) => {
+                                            acc.push(SourceMapped::new(
+                                                ts_type_alias_decl,
+                                                &program.source_map,
+                                                symbol_table,
+                                            ));
+                                        }
+                                        None => (), // If the program doesn't have a Symbol Table then we can safely ignore it.
+                                    }
                                 }
                             }
                             _ => (),
