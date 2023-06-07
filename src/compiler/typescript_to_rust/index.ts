@@ -131,6 +131,7 @@ function createDefaultSymbolTable(): SymbolTable {
     return {
         alias: ['Alias'],
         blob: ['blob'],
+        bool: [''],
         call_result: ['CallResult'],
         empty: ['empty'],
         float32: ['float32'],
@@ -151,6 +152,7 @@ function createDefaultSymbolTable(): SymbolTable {
         nat16: ['nat16'],
         nat32: ['nat32'],
         nat64: ['nat64'],
+        null: [''],
         oneway_mode: ['Oneway'],
         opt: ['Opt'],
         post_upgrade_decorator: ['$postUpgrade'],
@@ -170,7 +172,8 @@ function createDefaultSymbolTable(): SymbolTable {
         update_decorator: ['$update'],
         update_mode: ['Update'],
         variant: ['Variant'],
-        vec: ['Vec']
+        vec: ['Vec'],
+        void: ['']
     };
 }
 

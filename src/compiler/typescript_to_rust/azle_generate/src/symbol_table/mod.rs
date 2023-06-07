@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 pub struct SymbolTable {
     pub alias: Vec<String>,
     pub blob: Vec<String>,
+    pub bool: Vec<String>,
     pub call_result: Vec<String>,
     pub empty: Vec<String>,
     pub float32: Vec<String>,
@@ -24,6 +25,7 @@ pub struct SymbolTable {
     pub nat16: Vec<String>,
     pub nat32: Vec<String>,
     pub nat64: Vec<String>,
+    pub null: Vec<String>,
     pub opt: Vec<String>,
     pub oneway_mode: Vec<String>,
     pub post_upgrade_decorator: Vec<String>,
@@ -44,4 +46,5 @@ pub struct SymbolTable {
     pub update_mode: Vec<String>,
     pub variant: Vec<String>,
     pub vec: Vec<String>,
+    pub void: Vec<String>,
 }

@@ -46,6 +46,9 @@ impl SourceMapped<'_, TsTypeRef> {
             _ if self.symbol_table.empty.contains(&name) => Primitive::Empty,
             _ if self.symbol_table.reserved.contains(&name) => Primitive::Reserved,
             _ if self.symbol_table.text.contains(&name) => Primitive::String,
+            _ if self.symbol_table.null.contains(&name) => Primitive::Null,
+            _ if self.symbol_table.void.contains(&name) => Primitive::Void,
+            _ if self.symbol_table.bool.contains(&name) => Primitive::Bool,
             _ => return Ok(None),
         }))
     }

@@ -38,6 +38,7 @@ export type SymbolTable = {
     alias: string[];
     call_result: string[];
     blob: string[];
+    bool: string[];
     empty: string[];
     float32: string[];
     float64: string[];
@@ -57,6 +58,7 @@ export type SymbolTable = {
     nat16: string[];
     nat32: string[];
     nat64: string[];
+    null: string[];
     oneway_mode: string[];
     opt: string[];
     post_upgrade_decorator: string[];
@@ -77,6 +79,7 @@ export type SymbolTable = {
     update_mode: string[];
     variant: string[];
     vec: string[];
+    void: string[];
 };
 
 export type RunOptions = {
