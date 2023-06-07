@@ -1,4 +1,9 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
+
+pub type Filename = String;
+pub type SymbolTables = HashMap<Filename, SymbolTable>;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SymbolTable {
@@ -34,7 +39,6 @@ pub struct SymbolTable {
     pub query_decorator: Vec<String>,
     pub query_mode: Vec<String>,
     pub record: Vec<String>,
-    pub result: Vec<String>,
     pub reserved: Vec<String>,
     pub service: Vec<String>,
     pub service_query_decorator: Vec<String>,

@@ -27,12 +27,18 @@ export type JSCanisterConfig = Readonly<{
 
 export type OptLevel = '0' | '1' | '2' | '3' | '4';
 
+export type CompilerInfo = {
+    plugins: Plugin[];
+    symbol_tables: SymbolTables;
+    file_names: string[];
+};
+
 export type Plugin = {
     path: string;
     register_function: string;
 };
 
-export type SymbolTables = { [key: string]: SymbolTable };
+export type SymbolTables = { [filename: string]: SymbolTable };
 
 export type SymbolTable = {
     alias: string[];
@@ -68,7 +74,6 @@ export type SymbolTable = {
     query_mode: string[];
     record: string[];
     reserved: string[];
-    result: string[];
     service: string[];
     service_query_decorator: string[];
     service_update_decorator: string[];

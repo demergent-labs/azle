@@ -1,10 +1,10 @@
-use std::{collections::HashMap, ops::Deref};
+use std::ops::Deref;
 use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl};
 
 pub use program::Program;
 pub use source_map::SourceMapped;
 
-use crate::{errors::CollectResults, Error, SymbolTable};
+use crate::{errors::CollectResults, Error, SymbolTables};
 
 pub mod expr;
 pub mod program;
@@ -21,7 +21,7 @@ impl TsAst {
     pub fn new(
         ts_file_names: &Vec<String>,
         main_js: String,
-        symbol_tables: HashMap<String, SymbolTable>,
+        symbol_tables: SymbolTables,
     ) -> Result<Self, Vec<Error>> {
         let programs = ts_file_names
             .iter()
@@ -81,51 +81,60 @@ impl TsAst {
     // }
 
     pub fn ts_type_alias_decls(&self) -> Vec<SourceMapped<TsTypeAliasDecl>> {
-        self.programs.iter().fold(vec![], |mut acc, program| {
-            if let swc_ecma_ast::Program::Module(module) = program.deref() {
-                module
-                    .body
-                    .iter()
-                    .for_each(|module_item| match module_item {
-                        ModuleItem::ModuleDecl(decl) => match decl {
-                            ModuleDecl::ExportDecl(export_decl) => {
-                                let decl = &export_decl.decl;
-                                if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
-                                    acc.push(SourceMapped::new(
-                                        ts_type_alias_decl,
-                                        &program.source_map,
-                                        &program.symbol_table,
-                                    ));
+        self.programs
+            .iter()
+            .flat_map(|program| {
+                if let swc_ecma_ast::Program::Module(module) = program.deref() {
+                    module
+                        .body
+                        .iter()
+                        .filter_map(|module_item| match module_item {
+                            ModuleItem::ModuleDecl(decl) => match decl {
+                                ModuleDecl::ExportDecl(export_decl) => {
+                                    let decl = &export_decl.decl;
+                                    if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
+                                        Some(SourceMapped::new(
+                                            ts_type_alias_decl,
+                                            &program.source_map,
+                                            &program.symbol_table,
+                                        ))
+                                    } else {
+                                        None
+                                    }
                                 }
-                            }
-                            _ => (),
-                        },
-                        ModuleItem::Stmt(stmt) => match stmt {
-                            Stmt::Decl(decl) => {
-                                if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
-                                    // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
-                                    // necessary to do something like:
-                                    // return vec![
-                                    //     acc,
-                                    //     vec![SourceMapped::new(
-                                    //         ts_type_alias_decl,
-                                    //         &program.source_map,
-                                    //     )],
-                                    // ]
-                                    // .concat();
+                                _ => None,
+                            },
+                            ModuleItem::Stmt(stmt) => match stmt {
+                                Stmt::Decl(decl) => {
+                                    if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
+                                        // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
+                                        // necessary to do something like:
+                                        // return vec![
+                                        //     acc,
+                                        //     vec![SourceMapped::new(
+                                        //         ts_type_alias_decl,
+                                        //         &program.source_map,
+                                        //     )],
+                                        // ]
+                                        // .concat();
 
-                                    acc.push(SourceMapped::new(
-                                        ts_type_alias_decl,
-                                        &program.source_map,
-                                        &program.symbol_table,
-                                    ));
+                                        Some(SourceMapped::new(
+                                            ts_type_alias_decl,
+                                            &program.source_map,
+                                            &program.symbol_table,
+                                        ))
+                                    } else {
+                                        None
+                                    }
                                 }
-                            }
-                            _ => (),
-                        },
-                    })
-            }
-            acc
-        })
+                                _ => None,
+                            },
+                        })
+                        .collect()
+                } else {
+                    vec![]
+                }
+            })
+            .collect()
     }
 }

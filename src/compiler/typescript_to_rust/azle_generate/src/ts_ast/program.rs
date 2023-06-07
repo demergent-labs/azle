@@ -1,8 +1,9 @@
+use std::ops::Deref;
 use std::path::Path;
-use std::{collections::HashMap, ops::Deref};
 use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
+use crate::SymbolTables;
 use crate::{
     errors::errors::{FileSyntaxError, UnableToLoadFile},
     internal_error, Error, SymbolTable,
@@ -26,7 +27,7 @@ impl Deref for Program {
 impl Program {
     pub fn from_file_name(
         ts_file_name: &str,
-        symbol_tables: &HashMap<String, SymbolTable>,
+        symbol_tables: &SymbolTables,
     ) -> Result<Option<Self>, Error> {
         let filepath = Path::new(ts_file_name).to_path_buf();
 

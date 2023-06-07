@@ -9,6 +9,7 @@ import {
 } from '../utils';
 import { Result } from '../../lib';
 import {
+    CompilerInfo,
     JSCanisterConfig,
     Plugin,
     SpawnSyncError,
@@ -26,7 +27,7 @@ export function generateRustCanister(
     canisterPath: string,
     canisterConfig: JSCanisterConfig
 ): Result<null, SpawnSyncError> {
-    const compilerInfo = {
+    const compilerInfo: CompilerInfo = {
         plugins,
         file_names: fileNames,
         symbol_tables: symbolTables

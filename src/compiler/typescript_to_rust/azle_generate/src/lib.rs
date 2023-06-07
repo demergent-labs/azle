@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use cdk_framework::{traits::CollectResults, AbstractCanisterTree};
 use proc_macro2::TokenStream;
 
@@ -23,11 +21,12 @@ pub mod traits;
 
 pub use plugin::Plugin;
 pub use symbol_table::SymbolTable;
+pub use symbol_table::SymbolTables;
 
 pub fn generate_canister(
     ts_file_names: &Vec<String>,
     main_js: String,
-    symbol_tables: HashMap<String, SymbolTable>,
+    symbol_tables: SymbolTables,
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
 ) -> Result<TokenStream, Vec<Error>> {

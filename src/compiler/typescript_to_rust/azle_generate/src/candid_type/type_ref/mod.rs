@@ -57,7 +57,7 @@ impl SourceMapped<'_, TsTypeRef> {
             .collect_results()?;
 
         Ok(TypeRef {
-            name: if self.symbol_table.result.contains(&name_string.to_string()) {
+            name: if name_string == "Result" {
                 "_AzleResult".to_string()
             } else {
                 name_string.to_string()

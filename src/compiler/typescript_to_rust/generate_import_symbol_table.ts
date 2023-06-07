@@ -41,7 +41,6 @@ function createDefaultSymbolTable(): SymbolTable {
         query_decorator: ['$query'],
         query_mode: ['Query'],
         record: ['Record'],
-        result: ['Result'],
         reserved: ['reserved'],
         service: ['Service'],
         service_query_decorator: ['serviceQuery'],

@@ -22,13 +22,11 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
         self.process_ts_type_ref(&self.symbol_table.variant, |type_ref| {
             // TODO this should be undone once we put all user-defined types in their own module
             let name_string = self.id.get_name().to_string();
-            let name = Some(
-                if self.symbol_table.result.contains(&name_string.to_string()) {
-                    "_AzleResult".to_string()
-                } else {
-                    name_string
-                },
-            );
+            let name = Some(if name_string == "Result" {
+                "_AzleResult".to_string()
+            } else {
+                name_string
+            });
 
             let (type_params, members) =
                 (self.get_type_params(), type_ref.to_variant()).collect_results()?;
