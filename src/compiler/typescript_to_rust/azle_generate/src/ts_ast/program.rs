@@ -61,7 +61,7 @@ impl Program {
                                 symbol_table: symbol_table.clone(),
                             }));
                         }
-                        None => return Ok(None), // If there is no symbol table for the program then we don't need to process it for candid types
+                        None => internal_error!(), // If there is no symbol table for the program then we don't need to process it for candid types
                     }
                 };
                 internal_error!()

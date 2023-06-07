@@ -15,7 +15,6 @@ pub mod ts_type_element;
 pub struct TsAst {
     pub programs: Vec<Program>,
     pub main_js: String,
-    pub symbol_tables: HashMap<String, SymbolTable>,
 }
 
 impl TsAst {
@@ -35,11 +34,7 @@ impl TsAst {
             .filter_map(|option| option)
             .collect();
 
-        Ok(Self {
-            programs,
-            main_js,
-            symbol_tables,
-        })
+        Ok(Self { programs, main_js })
     }
 
     // Note: Both module_items and decls seem like useful methods but we're not
@@ -96,16 +91,11 @@ impl TsAst {
                             ModuleDecl::ExportDecl(export_decl) => {
                                 let decl = &export_decl.decl;
                                 if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
-                                    match self.symbol_tables.get(&program.filepath) {
-                                        Some(symbol_table) => {
-                                            acc.push(SourceMapped::new(
-                                                ts_type_alias_decl,
-                                                &program.source_map,
-                                                symbol_table,
-                                            ));
-                                        }
-                                        None => (), // If the program doesn't have a Symbol Table then we can safely ignore it.
-                                    }
+                                    acc.push(SourceMapped::new(
+                                        ts_type_alias_decl,
+                                        &program.source_map,
+                                        &program.symbol_table,
+                                    ));
                                 }
                             }
                             _ => (),
@@ -124,16 +114,11 @@ impl TsAst {
                                     // ]
                                     // .concat();
 
-                                    match self.symbol_tables.get(&program.filepath) {
-                                        Some(symbol_table) => {
-                                            acc.push(SourceMapped::new(
-                                                ts_type_alias_decl,
-                                                &program.source_map,
-                                                symbol_table,
-                                            ));
-                                        }
-                                        None => (), // If the program doesn't have a Symbol Table then we can safely ignore it.
-                                    }
+                                    acc.push(SourceMapped::new(
+                                        ts_type_alias_decl,
+                                        &program.source_map,
+                                        &program.symbol_table,
+                                    ));
                                 }
                             }
                             _ => (),
