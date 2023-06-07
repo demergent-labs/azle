@@ -66,7 +66,7 @@ impl SourceMapped<'_, ClassProp> {
 
     fn build_return_type(&self) -> Result<CandidType, Vec<Error>> {
         let return_ts_type = self.return_ts_type()?;
-        let candid_type = SourceMapped::new_from_parent(&return_ts_type, self).to_candid_type()?;
+        let candid_type = self.spawn(&return_ts_type).to_candid_type()?;
         Ok(candid_type)
     }
 
@@ -152,9 +152,7 @@ impl SourceMapped<'_, ClassProp> {
             Some(type_ann) => match &*type_ann.type_ann {
                 TsType::TsFnOrConstructorType(fn_or_constructor_type) => {
                     match fn_or_constructor_type {
-                        TsFnOrConstructorType::TsFnType(ts_fn_type) => {
-                            Ok(SourceMapped::new_from_parent(ts_fn_type, self))
-                        }
+                        TsFnOrConstructorType::TsFnType(ts_fn_type) => Ok(self.spawn(ts_fn_type)),
                         TsFnOrConstructorType::TsConstructorType(_) => {
                             return Err(InvalidReturnType::from_class_prop(self).into())
                         }
@@ -176,8 +174,7 @@ impl SourceMapped<'_, TsFnType> {
                     let name = identifier.get_name().to_string();
                     let candid_type = match &identifier.type_ann {
                         Some(ts_type_ann) => {
-                            SourceMapped::new_from_parent(&ts_type_ann.get_ts_type(), self)
-                                .to_candid_type()?
+                            self.spawn(&ts_type_ann.get_ts_type()).to_candid_type()?
                         }
                         None => {
                             return Err(vec![Into::<Error>::into(

@@ -15,8 +15,7 @@ impl SourceMapped<'_, ClassDecl> {
             .iter()
             .map(|class_member| match class_member {
                 ClassMember::ClassProp(class_prop) => {
-                    let class_prop_with_source_map =
-                        SourceMapped::new_from_parent(class_prop, self);
+                    let class_prop_with_source_map = self.spawn(class_prop);
 
                     class_prop_with_source_map.to_service_method()
                 }

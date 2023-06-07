@@ -24,19 +24,14 @@ where
         }
     }
 
-    pub fn new_special(inner: T, source_map: &'a SourceMap, symbol_table: &'a SymbolTable) -> Self {
-        Self {
+    pub fn spawn<C>(&self, inner: &'a C) -> SourceMapped<C>
+    where
+        C: Clone,
+    {
+        SourceMapped {
             inner: inner.clone(),
-            source_map,
-            symbol_table,
-        }
-    }
-
-    pub fn new_from_parent<P>(inner: &'a T, parent: &'a SourceMapped<P>) -> Self {
-        Self {
-            inner: inner.clone(),
-            source_map: parent.source_map,
-            symbol_table: parent.symbol_table,
+            source_map: self.source_map,
+            symbol_table: self.symbol_table,
         }
     }
 }

@@ -67,22 +67,22 @@ impl ModuleHelperMethods for Module {
                         Ok(annotation) => {
                             match source_mapped_body.get(i + 1) {
                                 Some(next_item) => {
-                                    let next_item = SourceMapped::new_from_parent(next_item, &module_item);
+                                    let next_item = module_item.spawn(next_item);
                                     match next_item.as_exported_fn_decl() {
                                         Some(fn_decl) => {
                                             let annotated_fn_decl = AnnotatedFnDecl {
                                                 annotation,
                                                 fn_decl: fn_decl.clone(),
                                             };
-                                            let annotated_fn_decl = SourceMapped::new_special(annotated_fn_decl, source_map, symbol_table);
+                                            let sm_annotated_fn_decl = SourceMapped::new(&annotated_fn_decl, source_map, symbol_table);
 
                                             match &fn_decl.function.return_type {
                                                 Some(_) => {
-                                                    acc.annotated_fn_decls.push(annotated_fn_decl)
+                                                    acc.annotated_fn_decls.push(sm_annotated_fn_decl)
                                                 }
                                                 None => {
                                                     let missing_return_type_annotation =
-                                                        MissingReturnTypeAnnotation::from_annotated_fn_decl(&annotated_fn_decl);
+                                                        MissingReturnTypeAnnotation::from_annotated_fn_decl(&sm_annotated_fn_decl);
                                                     acc.errors.push(missing_return_type_annotation.into())
                                                 }
                                             }
@@ -90,14 +90,14 @@ impl ModuleHelperMethods for Module {
                                         // There is an annotation not followed by an exported function (but not at end of file)
                                         None => acc.errors.push(
                                             ExtraneousCanisterMethodAnnotation::from_annotation(
-                                                &SourceMapped::new_from_parent(&annotation, &module_item)
+                                                &module_item.spawn(&annotation)
                                             ).into()
                                         )
                                     }
                                 }
                                 // There is a dangling canister method annotation at the end of the file.
                                 None => acc.errors.push(
-                                    ExtraneousCanisterMethodAnnotation::from_annotation(&SourceMapped::new_from_parent(&annotation, &module_item))
+                                    ExtraneousCanisterMethodAnnotation::from_annotation(&module_item.spawn(&annotation))
                                         .into(),
                                 ),
                             };

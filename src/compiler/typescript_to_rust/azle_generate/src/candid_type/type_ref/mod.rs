@@ -28,7 +28,7 @@ impl SourceMapped<'_, TsTypeRef> {
                     return Err(WrongNumberOfParams::error_from_ts_type_ref(self).into());
                 }
                 let inner_type = params.params[0].deref();
-                Ok(SourceMapped::new_from_parent(inner_type, self))
+                Ok(self.spawn(inner_type))
             }
             None => return Err(WrongNumberOfParams::error_from_ts_type_ref(self).into()),
         }
@@ -39,9 +39,10 @@ impl SourceMapped<'_, TsTypeRef> {
             self.type_params
                 .iter()
                 .map(|type_params| {
-                    type_params.params.iter().map(|param| {
-                        SourceMapped::new_from_parent(param.deref(), self).to_candid_type()
-                    })
+                    type_params
+                        .params
+                        .iter()
+                        .map(|param| self.spawn(param.deref()).to_candid_type())
                 })
                 .flatten()
                 .collect_results()

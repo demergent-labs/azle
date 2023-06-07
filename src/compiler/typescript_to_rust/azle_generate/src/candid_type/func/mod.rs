@@ -36,7 +36,7 @@ impl SourceMapped<'_, TsTypeRef> {
         }
         let request_type_ts_type = self.get_ts_type()?;
         let request_type_type_ref = match request_type_ts_type.deref() {
-            TsType::TsTypeRef(ts_type_ref) => SourceMapped::new_from_parent(ts_type_ref, self),
+            TsType::TsTypeRef(ts_type_ref) => self.spawn(ts_type_ref),
             _ => return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
         };
 
@@ -56,7 +56,7 @@ impl SourceMapped<'_, TsTypeRef> {
 
         let ts_fn_type = match ts_type.deref() {
             TsType::TsFnOrConstructorType(TsFnOrConstructorType::TsFnType(ts_fn_type)) => {
-                SourceMapped::new_from_parent(ts_fn_type, self)
+                self.spawn(ts_fn_type)
             }
             _ => return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
         };
@@ -65,9 +65,9 @@ impl SourceMapped<'_, TsTypeRef> {
             ts_fn_type
                 .get_param_types()?
                 .iter()
-                .map(|param| SourceMapped::new_from_parent(param, self).to_candid_type())
+                .map(|param| self.spawn(param).to_candid_type())
                 .collect_results(),
-            SourceMapped::new_from_parent(&ts_fn_type.get_ts_type_ann().get_ts_type(), self)
+            self.spawn(&ts_fn_type.get_ts_type_ann().get_ts_type())
                 .to_candid_type(),
         )
             .collect_results()?;

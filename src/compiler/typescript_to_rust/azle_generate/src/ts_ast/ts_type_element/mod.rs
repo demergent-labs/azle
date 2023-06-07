@@ -11,7 +11,7 @@ impl SourceMapped<'_, TsTypeElement> {
     pub fn as_property_signature(&self) -> Option<SourceMapped<TsPropertySignature>> {
         match self.deref() {
             TsTypeElement::TsPropertySignature(ts_property_signature) => {
-                Some(SourceMapped::new_from_parent(ts_property_signature, self))
+                Some(self.spawn(ts_property_signature))
             }
             _ => None,
         }

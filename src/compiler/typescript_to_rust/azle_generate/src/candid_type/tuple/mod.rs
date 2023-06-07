@@ -62,7 +62,7 @@ impl SourceMapped<'_, TsTupleType> {
         self.elem_types
             .iter()
             .map(|elem| {
-                let candid_type = SourceMapped::new_from_parent(&elem.ty, self).to_candid_type()?;
+                let candid_type = self.spawn(&elem.ty).to_candid_type()?;
                 Ok(Elem { candid_type })
             })
             .collect_results()

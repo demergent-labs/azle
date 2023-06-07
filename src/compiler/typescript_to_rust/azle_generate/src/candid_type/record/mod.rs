@@ -62,7 +62,7 @@ impl SourceMapped<'_, TsTypeLit> {
         let members: Vec<Member> = self
             .members
             .iter()
-            .map(|member| SourceMapped::new_from_parent(member, self).to_record_member())
+            .map(|member| self.spawn(member).to_record_member())
             .collect_results()?;
 
         Ok(Record {

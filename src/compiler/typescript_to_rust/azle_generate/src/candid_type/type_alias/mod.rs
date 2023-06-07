@@ -33,7 +33,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
                 swc_ecma_ast::TsEntityName::TsQualifiedName(_) => Ok(None),
                 swc_ecma_ast::TsEntityName::Ident(ident) => {
                     if type_names.contains(&ident.get_name().to_string()) {
-                        let type_ref = SourceMapped::new_from_parent(ts_type_ref, self);
+                        let type_ref = self.spawn(ts_type_ref);
                         handler(type_ref).map(Some)
                     } else {
                         Ok(None)

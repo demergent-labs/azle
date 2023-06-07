@@ -10,13 +10,11 @@ use super::errors::{UnexpectedTsTupleTypes, UnexpectedTsType, UnexpectedTsTypeLi
 impl SourceMapped<'_, TsType> {
     pub fn to_candid_type(&self) -> Result<CandidType, Vec<Error>> {
         match self.deref() {
-            TsType::TsKeywordType(x) => Ok(CandidType::Primitive(
-                SourceMapped::new_from_parent(x, self).to_primitive()?,
-            )),
+            TsType::TsKeywordType(x) => Ok(CandidType::Primitive(self.spawn(x).to_primitive()?)),
             TsType::TsFnOrConstructorType(TsFnOrConstructorType::TsFnType(x)) => {
-                return Err(SourceMapped::new_from_parent(x, self).to_func().into())
+                return Err(self.spawn(x).to_func().into())
             }
-            TsType::TsTypeRef(x) => SourceMapped::new_from_parent(x, self).to_candid_type(),
+            TsType::TsTypeRef(x) => self.spawn(x).to_candid_type(),
             TsType::TsTypeLit(_) => {
                 return Err(vec![UnexpectedTsTypeLiteral::from_ts_type(self).into()]);
             }
