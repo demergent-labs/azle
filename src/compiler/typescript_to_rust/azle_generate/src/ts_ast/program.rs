@@ -1,6 +1,7 @@
 use std::ops::Deref;
 use std::path::Path;
 use swc_common::{sync::Lrc, SourceMap};
+use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 use crate::SymbolTables;
@@ -8,6 +9,8 @@ use crate::{
     errors::errors::{FileSyntaxError, UnableToLoadFile},
     internal_error, Error, SymbolTable,
 };
+
+use super::SourceMapped;
 
 pub struct Program {
     program: swc_ecma_ast::Program,
@@ -68,6 +71,59 @@ impl Program {
                 internal_error!()
             }
             Err(_error) => return Err(FileSyntaxError::from_file_name(ts_file_name, _error).into()),
+        }
+    }
+
+    pub fn ts_type_alias_decls(&self) -> Vec<SourceMapped<TsTypeAliasDecl>> {
+        if let swc_ecma_ast::Program::Module(module) = self.deref() {
+            module
+                .body
+                .iter()
+                .filter_map(|module_item| match module_item {
+                    ModuleItem::ModuleDecl(decl) => match decl {
+                        ModuleDecl::ExportDecl(export_decl) => {
+                            let decl = &export_decl.decl;
+                            if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
+                                Some(SourceMapped::new(
+                                    ts_type_alias_decl,
+                                    &self.source_map,
+                                    &self.symbol_table,
+                                ))
+                            } else {
+                                None
+                            }
+                        }
+                        _ => None,
+                    },
+                    ModuleItem::Stmt(stmt) => match stmt {
+                        Stmt::Decl(decl) => {
+                            if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
+                                // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
+                                // necessary to do something like:
+                                // return vec![
+                                //     acc,
+                                //     vec![SourceMapped::new(
+                                //         ts_type_alias_decl,
+                                //         &program.source_map,
+                                //     )],
+                                // ]
+                                // .concat();
+
+                                Some(SourceMapped::new(
+                                    ts_type_alias_decl,
+                                    &self.source_map,
+                                    &self.symbol_table,
+                                ))
+                            } else {
+                                None
+                            }
+                        }
+                        _ => None,
+                    },
+                })
+                .collect()
+        } else {
+            vec![]
         }
     }
 }

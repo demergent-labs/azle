@@ -1,5 +1,4 @@
-use std::ops::Deref;
-use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl};
+use swc_ecma_ast::TsTypeAliasDecl;
 
 pub use program::Program;
 pub use source_map::SourceMapped;
@@ -83,58 +82,7 @@ impl TsAst {
     pub fn ts_type_alias_decls(&self) -> Vec<SourceMapped<TsTypeAliasDecl>> {
         self.programs
             .iter()
-            .flat_map(|program| {
-                if let swc_ecma_ast::Program::Module(module) = program.deref() {
-                    module
-                        .body
-                        .iter()
-                        .filter_map(|module_item| match module_item {
-                            ModuleItem::ModuleDecl(decl) => match decl {
-                                ModuleDecl::ExportDecl(export_decl) => {
-                                    let decl = &export_decl.decl;
-                                    if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
-                                        Some(SourceMapped::new(
-                                            ts_type_alias_decl,
-                                            &program.source_map,
-                                            &program.symbol_table,
-                                        ))
-                                    } else {
-                                        None
-                                    }
-                                }
-                                _ => None,
-                            },
-                            ModuleItem::Stmt(stmt) => match stmt {
-                                Stmt::Decl(decl) => {
-                                    if let Decl::TsTypeAlias(ts_type_alias_decl) = decl {
-                                        // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
-                                        // necessary to do something like:
-                                        // return vec![
-                                        //     acc,
-                                        //     vec![SourceMapped::new(
-                                        //         ts_type_alias_decl,
-                                        //         &program.source_map,
-                                        //     )],
-                                        // ]
-                                        // .concat();
-
-                                        Some(SourceMapped::new(
-                                            ts_type_alias_decl,
-                                            &program.source_map,
-                                            &program.symbol_table,
-                                        ))
-                                    } else {
-                                        None
-                                    }
-                                }
-                                _ => None,
-                            },
-                        })
-                        .collect()
-                } else {
-                    vec![]
-                }
-            })
+            .flat_map(|program| program.ts_type_alias_decls())
             .collect()
     }
 }
