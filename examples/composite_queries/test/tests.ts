@@ -80,7 +80,7 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
                     return {
                         Ok:
                             err?.result?.reject_message ===
-                            'IC0517: Loop detected.  MVP inter-canister queries do not support loops.'
+                            'IC0517: Query calls re-entering the same canister are not allowed yet.'
                     };
                 }
                 return {

@@ -3,7 +3,7 @@ use swc_ecma_ast::TsTypeAliasDecl;
 
 use crate::{
     errors::CollectResults as OtherCollectResults,
-    ts_ast::{Program, SourceMapped, TsAst},
+    ts_ast::{SourceMapped, TsAst},
     Error,
 };
 
@@ -23,12 +23,12 @@ pub mod vec;
 impl TsAst {
     pub fn build_candid_types(&self) -> Result<CandidTypes, Vec<Error>> {
         let (type_aliases, funcs, records, services, tuples, variants) = (
-            self.extract_candid_types(|x| x.to_type_alias(), |p| &p.symbol_table.alias),
-            self.extract_candid_types(|x| x.to_func(), |p| &p.symbol_table.func),
-            self.extract_candid_types(|x| x.to_record(), |p| &p.symbol_table.record),
+            self.extract_candid_types(|x| x.to_type_alias()),
+            self.extract_candid_types(|x| x.to_func()),
+            self.extract_candid_types(|x| x.to_record()),
             self.build_services(),
-            self.extract_candid_types(|x| x.to_tuple(), |p| &p.symbol_table.tuple),
-            self.extract_candid_types(|x| x.to_variant(), |p| &p.symbol_table.variant),
+            self.extract_candid_types(|x| x.to_tuple()),
+            self.extract_candid_types(|x| x.to_variant()),
         )
             .collect_results()?;
 
@@ -42,24 +42,12 @@ impl TsAst {
         })
     }
 
-    pub fn extract_candid_types<G, F, T, Symbol>(
-        &self,
-        extractor: F,
-        ask_dan_and_jordan_for_better_namer: G,
-    ) -> Result<Vec<T>, Vec<Error>>
+    pub fn extract_candid_types<F, T>(&self, extractor: F) -> Result<Vec<T>, Vec<Error>>
     where
         F: Fn(&SourceMapped<TsTypeAliasDecl>) -> Result<Option<T>, Vec<Error>>,
-        G: Fn(&Program) -> &Vec<Symbol>,
     {
-        self.programs
+        self.ts_type_alias_decls()
             .iter()
-            .flat_map(|program| {
-                if ask_dan_and_jordan_for_better_namer(program).len() > 0 {
-                    program.ts_type_alias_decls()
-                } else {
-                    vec![]
-                }
-            })
             .map(|ts_type_alias_decl| extractor(&ts_type_alias_decl).transpose())
             .flatten()
             .collect_results()

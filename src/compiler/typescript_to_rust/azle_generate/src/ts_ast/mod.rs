@@ -1,7 +1,6 @@
-use swc_ecma_ast::TsTypeAliasDecl;
-
 pub use program::Program;
 pub use source_map::SourceMapped;
+use swc_ecma_ast::TsTypeAliasDecl;
 
 use crate::{errors::CollectResults, Error, SymbolTables};
 
