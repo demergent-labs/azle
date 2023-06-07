@@ -20,9 +20,9 @@ use super::errors::WrongEnclosedType;
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_record(&self) -> Result<Option<Record>, Vec<Error>> {
         self.process_ts_type_ref(&self.symbol_table.record, |type_ref| {
-            let (type_params, record_right_half) =
+            let (type_params, record_type_ref) =
                 (self.get_type_params(), type_ref.to_record()).collect_results()?;
-            match record_right_half {
+            match record_type_ref {
                 Some(members) => Ok(Some(Record {
                     name: Some(self.id.get_name().to_string()),
                     type_params: type_params.into(),

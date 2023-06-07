@@ -28,10 +28,10 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
                 name_string
             });
 
-            let (type_params, members) =
+            let (type_params, variant_type_ref) =
                 (self.get_type_params(), type_ref.to_variant()).collect_results()?;
 
-            match members {
+            match variant_type_ref {
                 Some(members) => Ok(Some(Variant {
                     name,
                     type_params: type_params.into(),

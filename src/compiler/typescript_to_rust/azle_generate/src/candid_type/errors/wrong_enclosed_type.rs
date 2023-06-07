@@ -43,7 +43,7 @@ impl WrongEnclosedType {
                 Ok(value) => value,
                 Err(err) => return err,
             },
-            EnclosingType::Func => sm_ts_type_ref.get_func_suggestion_modifications_and_stuff(),
+            EnclosingType::Func => sm_ts_type_ref.get_func_suggestion_modifications(),
         };
 
         Self {
@@ -135,7 +135,7 @@ impl SourceMapped<'_, TsTypeRef> {
         Ok((modified_source, modified_range))
     }
 
-    fn get_func_suggestion_modifications_and_stuff(&self) -> SuggestionModifications {
+    fn get_func_suggestion_modifications(&self) -> SuggestionModifications {
         let example_func = "Update<() => void>".to_string();
 
         let (source, (start_pos, end_pos)) = self.get_func_source_and_range();
