@@ -1,14 +1,12 @@
 use std::ops::Deref;
 
+use cdk_framework::traits::CollectResults;
 use swc_ecma_ast::{TsFnParam, TsFnType, TsType, TsTypeAnn};
 
 use crate::{
-    errors::{
-        errors::{
-            ArrayDestructuringInParamsNotSupported, FunctionParamsMustHaveType,
-            ObjectDestructuringNotSupported, RestParametersNotSupported,
-        },
-        CollectResults,
+    errors::errors::{
+        ArrayDestructuringInParamsNotSupported, FunctionParamsMustHaveType,
+        ObjectDestructuringNotSupported, RestParametersNotSupported,
     },
     traits::{GetTsType, GetTsTypeWithError},
     ts_ast::SourceMapped,
@@ -36,6 +34,7 @@ impl SourceMapped<'_, TsFnType> {
                     .get_ts_type()
                     .map_err(Into::<Vec<Error>>::into)
             })
+            .collect::<Vec<_>>()
             .collect_results()
     }
 }

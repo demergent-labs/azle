@@ -6,7 +6,6 @@ use std::ops::Deref;
 use swc_ecma_ast::{TsFnOrConstructorType, TsType, TsTypeAliasDecl, TsTypeAnn, TsTypeRef};
 
 use crate::{
-    errors::CollectResults as OtherCollectResults,
     traits::{GetName, GetNameWithError, GetTsType},
     ts_ast::SourceMapped,
     Error,
@@ -66,6 +65,7 @@ impl SourceMapped<'_, TsTypeRef> {
                 .get_param_types()?
                 .iter()
                 .map(|param| self.spawn(param).to_candid_type())
+                .collect::<Vec<_>>()
                 .collect_results(),
             self.spawn(&ts_fn_type.get_ts_type_ann().get_ts_type())
                 .to_candid_type(),

@@ -1,8 +1,9 @@
-use cdk_framework::act::node::canister_method::{CanisterMethodType, UpdateMethod};
-
-use crate::{
-    canister_method::AnnotatedFnDecl, errors::CollectResults, ts_ast::SourceMapped, Error, TsAst,
+use cdk_framework::{
+    act::node::canister_method::{CanisterMethodType, UpdateMethod},
+    traits::CollectResults,
 };
+
+use crate::{canister_method::AnnotatedFnDecl, ts_ast::SourceMapped, Error, TsAst};
 
 impl TsAst {
     pub fn build_update_methods(
@@ -13,6 +14,7 @@ impl TsAst {
             .iter()
             .filter(|fn_decl| fn_decl.is_canister_method_type(CanisterMethodType::Update))
             .map(|update_fn_decl| update_fn_decl.to_definition())
+            .collect::<Vec<_>>()
             .collect_results()?
             .into_iter()
             .map(|definition| UpdateMethod { definition })

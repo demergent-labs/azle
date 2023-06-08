@@ -1,8 +1,9 @@
+use cdk_framework::traits::CollectResults;
 pub use program::Program;
 pub use source_map::SourceMapped;
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use crate::{errors::CollectResults, Error, SymbolTables};
+use crate::{Error, SymbolTables};
 
 pub mod expr;
 pub mod program;
@@ -27,6 +28,7 @@ impl TsAst {
                 Program::from_file_name(ts_file_name, &symbol_tables)
                     .map_err(Into::<Vec<Error>>::into)
             })
+            .collect::<Vec<_>>()
             .collect_results()?
             .into_iter()
             .filter_map(|option| option)

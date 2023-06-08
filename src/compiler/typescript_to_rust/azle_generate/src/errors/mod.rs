@@ -193,6 +193,9 @@ impl From<CdkfError> for crate::Error {
             CdkfError::GuardFunctionNotFound(name) => {
                 crate::Error::GuardFunctionNotFound(GuardFunctionNotFound { name })
             }
+            CdkfError::MultipleTypeDefinitions(_) => todo!(),
+            CdkfError::MultipleGuardFunctionDefinitions(_) => todo!(),
+            CdkfError::MultipleCanisterMethodDefinitions(_) => todo!(),
         }
     }
 }
@@ -200,30 +203,5 @@ impl From<CdkfError> for crate::Error {
 impl From<Error> for Vec<Error> {
     fn from(value: Error) -> Self {
         vec![value]
-    }
-}
-
-pub trait CollectResults<T> {
-    fn collect_results(self) -> Result<Vec<T>, Vec<Error>>;
-}
-
-impl<I, T> CollectResults<T> for I
-where
-    I: Iterator<Item = Result<T, Vec<Error>>>,
-{
-    fn collect_results(self) -> Result<Vec<T>, Vec<Error>> {
-        let mut errors = Vec::new();
-        let mut ok_values = Vec::new();
-
-        self.for_each(|result| match result {
-            Ok(ok_value) => ok_values.push(ok_value),
-            Err(errs) => errors.extend(errs),
-        });
-
-        if errors.is_empty() {
-            Ok(ok_values)
-        } else {
-            Err(errors)
-        }
     }
 }

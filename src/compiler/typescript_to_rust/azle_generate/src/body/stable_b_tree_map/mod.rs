@@ -1,9 +1,8 @@
-use cdk_framework::act::node::CandidType;
+use cdk_framework::{act::node::CandidType, traits::CollectIterResults};
 use std::ops::Deref;
 use swc_ecma_ast::{Decl, Expr};
 
 use crate::{
-    errors::CollectResults,
     traits::GetName,
     ts_ast::{Program, SourceMapped, TsAst},
     Error,
@@ -30,6 +29,7 @@ impl TsAst {
         self.programs
             .iter()
             .map(|program| program.build_stable_b_tree_map_nodes())
+            // .collect::<Vec<_>>()
             .collect_results()
             .map(|vec_of_vec| vec_of_vec.into_iter().flatten().collect::<Vec<_>>())
     }
@@ -43,6 +43,7 @@ impl Program {
                 .iter()
                 .filter_map(|module_item| module_item.as_decl())
                 .map(|decl| self.process_decl(decl))
+                // .collect::<Vec<_>>()
                 .collect_results()
                 .map(|vec_of_vec| vec_of_vec.into_iter().flatten().collect::<Vec<_>>()),
             swc_ecma_ast::Program::Script(_) => Ok(vec![]),

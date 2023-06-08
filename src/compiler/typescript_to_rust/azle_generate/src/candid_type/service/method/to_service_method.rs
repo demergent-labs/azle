@@ -6,12 +6,9 @@ use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnParam, TsFnType, 
 
 pub use crate::canister_method::check_length_and_map::CheckLengthAndMapTwo;
 use crate::{
-    errors::{
-        errors::{
-            ArrayDestructuringInParamsNotSupported, FunctionParamsMustHaveType,
-            ObjectDestructuringNotSupported, RestParametersNotSupported,
-        },
-        CollectResults as OtherCollectResults,
+    errors::errors::{
+        ArrayDestructuringInParamsNotSupported, FunctionParamsMustHaveType,
+        ObjectDestructuringNotSupported, RestParametersNotSupported,
     },
     traits::{GetName, GetTsType},
     ts_ast::SourceMapped,
@@ -202,6 +199,7 @@ impl SourceMapped<'_, TsFnType> {
                     .into()])
                 }
             })
+            .collect::<Vec<_>>()
             .collect_results()
     }
 }

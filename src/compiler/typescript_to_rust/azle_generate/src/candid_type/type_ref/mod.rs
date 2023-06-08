@@ -10,7 +10,6 @@ use swc_common::Span;
 use swc_ecma_ast::{TsEntityName, TsType, TsTypeRef};
 
 use crate::{
-    errors::CollectResults as OtherCollectResults,
     traits::{GetName, GetNameWithError, GetSpan},
     ts_ast::SourceMapped,
     Error,
@@ -45,6 +44,7 @@ impl SourceMapped<'_, TsTypeRef> {
                         .map(|param| self.spawn(param.deref()).to_candid_type())
                 })
                 .flatten()
+                .collect::<Vec<_>>()
                 .collect_results()
                 .map(|param| {
                     param

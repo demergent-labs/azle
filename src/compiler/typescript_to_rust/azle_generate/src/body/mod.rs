@@ -1,16 +1,16 @@
-use cdk_framework::act::node::{
-    candid::Service,
-    canister_method::{QueryMethod, QueryOrUpdateMethod, UpdateMethod},
+use cdk_framework::{
+    act::node::{
+        candid::Service,
+        canister_method::{QueryMethod, QueryOrUpdateMethod, UpdateMethod},
+    },
+    traits::{CollectIterResults, CollectResults},
 };
 use proc_macro2::TokenStream;
 use quote::quote;
 use std::path::PathBuf;
 
 use crate::{
-    errors::{
-        errors::{UnableToLoadPlugin, UnableToParsePlugin},
-        CollectResults,
-    },
+    errors::errors::{UnableToLoadPlugin, UnableToParsePlugin},
     plugin::Plugin,
     ts_ast::TsAst,
     Error,
@@ -79,6 +79,7 @@ pub fn generate(
                 .into()]),
             }
         })
+        // .collect::<Vec<_>>()
         .collect_results()?;
 
     Ok(quote! {

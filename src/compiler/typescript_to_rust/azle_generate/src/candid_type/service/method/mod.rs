@@ -1,7 +1,7 @@
-use cdk_framework::act::node::candid::service::Method;
+use cdk_framework::{act::node::candid::service::Method, traits::CollectResults};
 use swc_ecma_ast::{ClassDecl, ClassMember};
 
-use crate::{errors::CollectResults, ts_ast::SourceMapped, Error};
+use crate::{ts_ast::SourceMapped, Error};
 
 use self::errors::InvalidClassMember;
 
@@ -25,6 +25,7 @@ impl SourceMapped<'_, ClassDecl> {
                 )
                 .into()]),
             })
+            .collect::<Vec<_>>()
             .collect_results()
     }
 }

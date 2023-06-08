@@ -5,7 +5,6 @@ use cdk_framework::{
 
 use crate::{
     canister_method::{query_and_update, AnnotatedFnDecl},
-    errors::CollectResults as OtherCollectResults,
     ts_ast::SourceMapped,
     Error,
 };
@@ -56,6 +55,7 @@ impl<'a> SourceMapped<'a, AnnotatedFnDecl> {
             .map(|ts_type| {
                 SourceMapped::new(ts_type, self.source_map, self.symbol_table).to_candid_type()
             })
+            .collect::<Vec<_>>()
             .collect_results()
     }
 

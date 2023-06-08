@@ -6,7 +6,6 @@ use swc_common::Span;
 use swc_ecma_ast::{TsTupleType, TsTypeAliasDecl, TsTypeRef};
 
 use crate::{
-    errors::CollectResults as OtherCollectResults,
     traits::{GetName, GetNameWithError, GetSpan},
     ts_ast::SourceMapped,
     Error,
@@ -65,6 +64,7 @@ impl SourceMapped<'_, TsTupleType> {
                 let candid_type = self.spawn(&elem.ty).to_candid_type()?;
                 Ok(Elem { candid_type })
             })
+            .collect::<Vec<_>>()
             .collect_results()
     }
 }

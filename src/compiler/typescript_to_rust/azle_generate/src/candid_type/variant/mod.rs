@@ -7,7 +7,6 @@ use cdk_framework::{
 use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
 use crate::{
-    errors::CollectResults as OtherCollectResults,
     traits::{GetName, GetNameWithError},
     ts_ast::SourceMapped,
     Error,
@@ -72,6 +71,7 @@ impl SourceMapped<'_, TsTypeLit> {
             .members
             .iter()
             .map(|member| self.spawn(member).to_variant_member())
+            .collect::<Vec<_>>()
             .collect_results()?;
 
         Ok(Variant {
