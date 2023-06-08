@@ -15,6 +15,8 @@ const ENV_READ_ERROR: i32 = 4;
 const MAIN_JS_READ_ERROR: i32 = 5;
 const CANISTER_COMPILATION_ERROR: i32 = 6;
 const LIB_PARSE_ERROR: i32 = 7;
+const GENERATED_LIB_GENERATION_ERR: i32 = 8;
+const GENERATED_LIB_WRITE_ERR: i32 = 9;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CompilerInfo {
@@ -84,9 +86,20 @@ fn main() {
     };
     let formatted = prettyplease::unparse(&syntax_tree);
 
-    let mut f = File::create("../src/lib.rs").expect("Unable to create file");
-    f.write_all(formatted.as_bytes())
-        .expect("Unable to write data");
+    let mut f = match File::create("../src/lib.rs") {
+        Ok(f) => f,
+        Err(_) => {
+            println!("Unable to create lib file");
+            process::exit(GENERATED_LIB_GENERATION_ERR)
+        }
+    };
+    match f.write_all(formatted.as_bytes()) {
+        Ok(_) => (),
+        Err(_) => {
+            println!("Unable to write data");
+            process::exit(GENERATED_LIB_WRITE_ERR)
+        }
+    }
 }
 
 // TODO consider writing the environment variables to disk instead of sending them over the command line
