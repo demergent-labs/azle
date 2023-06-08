@@ -3,7 +3,7 @@ use cdk_framework::{
         candid::Service,
         canister_method::{QueryMethod, QueryOrUpdateMethod, UpdateMethod},
     },
-    traits::{CollectIterResults, CollectResults},
+    traits::CollectResults,
 };
 use proc_macro2::TokenStream;
 use quote::quote;
@@ -79,7 +79,7 @@ pub fn generate(
                 .into()]),
             }
         })
-        // .collect::<Vec<_>>()
+        .collect::<Vec<_>>()
         .collect_results()?;
 
     Ok(quote! {
