@@ -46,6 +46,10 @@ export type TimerId = Alias<nat64>; // TODO: Consider modeling this after the co
 type ic = {
     acceptMessage: () => void;
     // argData: () => any[]; // TODO: See https://github.com/demergent-labs/azle/issues/496
+    /**
+     * Returns the argument data as bytes.
+     * @returns the argument data
+     */
     argDataRaw: () => blob;
     argDataRawSize: () => nat32;
     callRaw: (

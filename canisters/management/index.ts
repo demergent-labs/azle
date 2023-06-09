@@ -66,6 +66,13 @@ export type UserId = Alias<Principal>;
 export type WasmModule = Alias<blob>;
 
 export type CanisterSettings = Record<{
+    /**
+     * A list of principals. Must be between 0 and 10 in size. This
+     * value is assigned to the controllers attribute of the canister.
+     *
+     * Default value: A list containing only the caller of the
+     * {@link Management.create_canister} call
+     */
     controllers: Opt<Vec<Principal>>;
     compute_allocation: Opt<nat>;
     memory_allocation: Opt<nat>;
@@ -79,6 +86,10 @@ export type DefiniteCanisterSettings = Record<{
     freezing_threshold: nat;
 }>;
 
+/**
+ * The arguments to provide to the management canister's create_canister
+ * method
+ */
 export type CreateCanisterArgs = Record<{
     settings: Opt<CanisterSettings>;
 }>;
@@ -290,23 +301,44 @@ export class Management extends Service {
     @serviceUpdate
     bitcoin_send_transaction: (args: SendTransactionArgs) => CallResult<void>;
 
+    /**
+     * Creates an empty canister and associates the assigned Canister ID to the
+     * canister name
+     */
     @serviceUpdate
     create_canister: (
         args: CreateCanisterArgs
     ) => CallResult<CreateCanisterResult>;
 
+    /**
+     * Update one or more of a canister's settings (i.e. its controller, compute
+     * allocation, or memory allocation)
+     */
     @serviceUpdate
     update_settings: (args: UpdateSettingsArgs) => CallResult<void>;
 
+    /**
+     * Installs compiled code in a canister
+     */
     @serviceUpdate
     install_code: (args: InstallCodeArgs) => CallResult<void>;
 
+    /**
+     * uninstalls a canister, removing its code and state. Does not
+     * delete the canister
+     */
     @serviceUpdate
     uninstall_code: (args: UninstallCodeArgs) => CallResult<void>;
 
+    /**
+     * Starts a stopped canister
+     */
     @serviceUpdate
     start_canister: (args: StartCanisterArgs) => CallResult<void>;
 
+    /**
+     * Stops a currently running canister
+     */
     @serviceUpdate
     stop_canister: (args: StopCanisterArgs) => CallResult<void>;
 
@@ -348,6 +380,9 @@ export class Management extends Service {
     ) => CallResult<SignWithEcdsaResult>;
 }
 
+/**
+ * A virtual canister with canister and user management functionality
+ */
 export const managementCanister = new Management(
     Principal.fromText('aaaaa-aa')
 );
