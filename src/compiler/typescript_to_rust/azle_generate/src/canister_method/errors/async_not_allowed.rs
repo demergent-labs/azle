@@ -43,7 +43,7 @@ impl AsyncNotAllowed {
             Some(return_type) => return_type.span,
             // Return Types are guaranteed by a check in get_annotated_fn_decls:
             // src/compiler/typescript_to_rust/azle_generate/src/canister_method/module.rs
-            None => return Error::InternalError(InternalError {}),
+            None => return Error::InternalError(InternalError::new()),
         };
         let origin = annotated_fn_decl.source_map.get_origin(span);
         let line_number = annotated_fn_decl.source_map.get_line_number(span);

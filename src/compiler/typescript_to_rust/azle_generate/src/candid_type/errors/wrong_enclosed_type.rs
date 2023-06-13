@@ -20,6 +20,8 @@ pub struct WrongEnclosedType {
 enum EnclosingType {
     Variant,
     Func,
+    Record,
+    Tuple,
 }
 
 impl WrongEnclosedType {
@@ -29,7 +31,9 @@ impl WrongEnclosedType {
         let name = match name.as_str() {
             _ if sm_ts_type_ref.symbol_table.variant.contains(&name) => EnclosingType::Variant,
             _ if sm_ts_type_ref.symbol_table.func.contains(&name) => EnclosingType::Func,
-            _ => return InternalError {}.into(),
+            _ if sm_ts_type_ref.symbol_table.record.contains(&name) => EnclosingType::Record,
+            _ if sm_ts_type_ref.symbol_table.tuple.contains(&name) => EnclosingType::Tuple,
+            _ => return InternalError::new().into(),
         };
         let (source, range) = match name {
             EnclosingType::Func => sm_ts_type_ref.get_func_source_and_range(),
@@ -41,6 +45,7 @@ impl WrongEnclosedType {
                 Err(err) => return err,
             },
             EnclosingType::Func => sm_ts_type_ref.get_func_suggestion_modifications(),
+            _ => ("".to_string(), (0, 0)), // TODO make arms for tuple and record
         };
 
         Self {
@@ -56,7 +61,7 @@ impl WrongEnclosedType {
         .into()
     }
 
-    fn variant_wrong_enclosed_type_error(&self) -> Result<CompilerOutput, Error> {
+    fn variant_wrong_enclosed_type_error(&self) -> CompilerOutput {
         let suggestion = Some(Suggestion {
             title: "Variants must have a type literal as the enclosed type.".to_string(),
             source: self.modified_source.clone(),
@@ -64,12 +69,37 @@ impl WrongEnclosedType {
             annotation: Some("Try wrapping your value in a type literal.".to_string()),
             import_suggestion: None,
         });
-        Ok(CompilerOutput {
+        CompilerOutput {
             title: "Invalid Variant".to_string(),
             location: self.location.clone(),
             annotation: "Must have type literal enclosed here.".to_string(),
             suggestion,
-        })
+        }
+    }
+
+    fn record_wrong_enclosed_type_error(&self) -> CompilerOutput {
+        let suggestion = Some(Suggestion {
+            title: "Records must have a type literal as the enclosed type.".to_string(),
+            source: self.modified_source.clone(),
+            range: self.modified_range,
+            annotation: Some("Try wrapping your value in a type literal.".to_string()),
+            import_suggestion: None,
+        });
+        CompilerOutput {
+            title: "Invalid Record".to_string(),
+            location: self.location.clone(),
+            annotation: "Must have type literal enclosed here.".to_string(),
+            suggestion,
+        }
+    }
+
+    fn tuple_wrong_enclosed_type_error(&self) -> CompilerOutput {
+        CompilerOutput {
+            title: "Invalid Record".to_string(),
+            location: self.location.clone(),
+            annotation: "Must have type literal enclosed here.".to_string(),
+            suggestion: None,
+        }
     }
 
     // TODO: 2 ways to improve this:
@@ -104,11 +134,10 @@ impl std::error::Error for WrongEnclosedType {}
 impl std::fmt::Display for WrongEnclosedType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         let compiler_output = match self.name {
-            EnclosingType::Variant => match self.variant_wrong_enclosed_type_error() {
-                Ok(value) => value,
-                Err(_) => return write!(f, "{}", Error::InternalError(InternalError {})),
-            },
+            EnclosingType::Variant => self.variant_wrong_enclosed_type_error(),
             EnclosingType::Func => self.func_wrong_enclosed_type_error(),
+            EnclosingType::Record => self.record_wrong_enclosed_type_error(),
+            EnclosingType::Tuple => self.tuple_wrong_enclosed_type_error(),
         };
         write!(f, "{}", compiler_output)
     }

@@ -6,7 +6,6 @@ mod missing_call_result_annotation;
 mod missing_decorator;
 mod missing_type_annotation;
 mod missing_type_argument;
-mod namespace_qualified_type;
 mod not_exactly_one_decorator;
 mod too_many_return_types;
 
@@ -18,6 +17,5 @@ pub use missing_call_result_annotation::MissingCallResultAnnotation;
 pub use missing_decorator::MissingDecorator;
 pub use missing_type_annotation::MissingTypeAnnotation;
 pub use missing_type_argument::MissingTypeArguments;
-pub use namespace_qualified_type::NamespaceQualifiedType;
 pub use not_exactly_one_decorator::NotExactlyOneDecorator;
 pub use too_many_return_types::TooManyReturnTypes;

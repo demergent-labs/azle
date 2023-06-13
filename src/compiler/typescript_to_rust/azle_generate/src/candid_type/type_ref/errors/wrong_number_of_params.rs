@@ -74,7 +74,7 @@ impl WrongNumberOfParams {
 
     fn create_annotation(&self) -> Result<String, Error> {
         if self.param_count == 1 {
-            return Err(InternalError {}.into());
+            return Err(InternalError::new().into());
         }
         Ok(if self.param_count == 0 {
             "Needs to have an enclosed type here."
@@ -107,7 +107,7 @@ impl WrongNumberOfParams {
 
     fn create_suggestion_annotation(&self) -> Result<String, Error> {
         if self.param_count == 1 {
-            return Err(InternalError {}.into());
+            return Err(InternalError::new().into());
         }
         Ok(match self.name {
             TypeRefCandidTypes::Record => {

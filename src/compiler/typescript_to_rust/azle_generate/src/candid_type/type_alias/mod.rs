@@ -29,17 +29,15 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
         F: Fn(SourceMapped<TsTypeRef>) -> Result<T, Vec<Error>>,
     {
         match &*self.type_ann {
-            TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-                swc_ecma_ast::TsEntityName::TsQualifiedName(_) => Ok(None),
-                swc_ecma_ast::TsEntityName::Ident(ident) => {
-                    if type_names.contains(&ident.get_name()) {
-                        let type_ref = self.spawn(ts_type_ref);
-                        handler(type_ref).map(Some)
-                    } else {
-                        Ok(None)
-                    }
+            TsType::TsTypeRef(ts_type_ref) => {
+                let name = ts_type_ref.type_name.get_name();
+                if type_names.contains(&name) {
+                    let type_ref = self.spawn(ts_type_ref);
+                    handler(type_ref).map(Some)
+                } else {
+                    Ok(None)
                 }
-            },
+            }
             _ => Ok(None),
         }
     }
