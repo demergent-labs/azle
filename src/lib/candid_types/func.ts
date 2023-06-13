@@ -11,22 +11,49 @@ import { Principal, Service } from './';
  *
  * See https://internetcomputer.org/docs/current/references/candid-ref#type-func---
  *
- * @typeParam T - the signature of the referenced {@link Service} method. Must
- * be one of:
+ * @typeParam Mode - the mode in which to call the referenced {@link Service}
+ * method. Must be one of:
  *
  * - {@link Query}
  * - {@link Update}
  * - {@link Oneway}
  */
-export type Func<T extends Mode> = T;
+export type Func<
+    Mode extends
+        | Query<FuncSignature>
+        | Update<FuncSignature>
+        | Oneway<FuncSignature>
+> = [Principal, string];
 
-export type ServiceMethod = (...args: any[]) => any;
+/**
+ * Indicates that the {@link Func} will be called in query mode
+ *
+ * @typeParam FuncSignature - the signature of the {@link Service} method
+ */
+export type Query<FuncSignature extends (...args: any[]) => any> = [
+    Principal,
+    string
+];
 
-export type Query<T extends ServiceMethod> = [Principal, string];
-export type Update<T extends ServiceMethod> = [Principal, string];
-export type Oneway<T extends ServiceMethod> = [Principal, string];
+/**
+ * Indicates that the {@link Func} will be called in update mode
+ *
+ * @typeParam FuncSignature - the signature of the {@link Service} method
+ */
+export type Update<FuncSignature extends (...args: any[]) => any> = [
+    Principal,
+    string
+];
 
-export type Mode =
-    | Query<ServiceMethod>
-    | Update<ServiceMethod>
-    | Oneway<ServiceMethod>;
+/**
+ * Indicates that the call to the {@link Func} will be oneway
+ *
+ * @typeParam FuncSignature - the signature of the {@link Service} method
+ */
+export type Oneway<FuncSignature extends (...args: any[]) => any> = [
+    Principal,
+    string
+];
+
+/** Describes the parameter types and return value of the {@link Func} */
+export type FuncSignature = (...args: any[]) => any;
