@@ -9,13 +9,9 @@ import { RequireExactlyOne } from './candid_types/variant';
  * @typeParam Err - The type of the error value
  */
 export type Result<Ok, Err> = Variant<{
-    /**
-     * The success value
-     */
+    /** The success value */
     Ok: Ok;
-    /**
-     * The error value
-     */
+    /** The error value */
     Err: Err;
 }>;
 
@@ -96,13 +92,9 @@ export type CallResult<T> = {
  * @typeParam T - The type of the {@link Service} method return value
  */
 export type FinalCallResult<T> = RequireExactlyOne<{
-    /**
-     * The return value of the {@link Service} method call
-     */
+    /** The return value of the {@link Service} method call */
     Ok: T;
-    /**
-     * An error message describing what went wrong
-     */
+    /** An error message describing what went wrong */
     Err: string;
 }>;
 
