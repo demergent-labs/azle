@@ -18,7 +18,7 @@ mod rust;
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_func(&self) -> Result<Option<Func>, Vec<Error>> {
         self.process_ts_type_ref(&self.symbol_table.func, |ts_type_ref| {
-            ts_type_ref.to_func(Some(self.id.get_name().to_string()))
+            ts_type_ref.to_func(Some(self.id.get_name()))
         })
         .map(|result| result.flatten())
     }

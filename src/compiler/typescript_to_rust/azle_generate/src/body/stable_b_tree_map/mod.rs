@@ -72,7 +72,7 @@ impl Program {
                     Expr::New(new_expr)
                         if matches!(
                             &*new_expr.callee,
-                            Expr::Ident(ident) if self.symbol_table.stable_b_tree_map.contains(&ident.get_name().to_string())
+                            Expr::Ident(ident) if self.symbol_table.stable_b_tree_map.contains(&ident.get_name())
                         ) =>
                     {
                         Some(

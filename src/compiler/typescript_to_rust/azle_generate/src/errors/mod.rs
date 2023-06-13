@@ -41,9 +41,7 @@ use crate::{
         variant::errors::VariantPropertySignature,
     },
     canister_method::{
-        annotated_fn_decl::errors::{
-            MissingReturnType, ParamDefaultValue, QualifiedType, UntypedParam,
-        },
+        annotated_fn_decl::errors::{MissingReturnType, ParamDefaultValue, UntypedParam},
         errors::{
             AsyncNotAllowed, DuplicateSystemMethod, ExtraneousCanisterMethodAnnotation,
             MissingReturnTypeAnnotation, VoidReturnTypeRequired,
@@ -95,7 +93,6 @@ pub enum Error {
     NoTypeAnnotation(NoTypeAnnotation),
     ObjectDestructuringNotSupported(ObjectDestructuringNotSupported),
     ParamDefaultValue(ParamDefaultValue),
-    QualifiedType(QualifiedType),
     RecordPropertySignature(RecordPropertySignature),
     RestParametersNotSupported(RestParametersNotSupported),
     TooManyReturnTypes(TooManyReturnTypes),
@@ -156,7 +153,6 @@ impl Error {
             Self::NoTypeAnnotation(e) => e,
             Self::ObjectDestructuringNotSupported(e) => e,
             Self::ParamDefaultValue(e) => e,
-            Self::QualifiedType(e) => e,
             Self::RecordPropertySignature(e) => e,
             Self::RestParametersNotSupported(e) => e,
             Self::TooManyReturnTypes(e) => e,

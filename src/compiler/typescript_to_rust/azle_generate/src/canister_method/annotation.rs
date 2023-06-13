@@ -172,7 +172,7 @@ impl Annotation {
 
                 let (key, key_span) =
                     match &option_property.key {
-                        PropName::Ident(ident) => (ident.get_name().to_string(), ident.span),
+                        PropName::Ident(ident) => (ident.get_name(), ident.span),
                         PropName::Str(str) => (str.value.to_string(), str.span),
                         PropName::Num(num) => {
                             return Err(TypeError::error(

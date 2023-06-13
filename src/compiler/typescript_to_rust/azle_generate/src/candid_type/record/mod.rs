@@ -19,7 +19,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
                 (self.get_type_params(), type_ref.to_record()).collect_results()?;
             match record_type_ref {
                 Some(members) => Ok(Some(Record {
-                    name: Some(self.id.get_name().to_string()),
+                    name: Some(self.id.get_name()),
                     type_params: type_params.into(),
                     ..members
                 })),

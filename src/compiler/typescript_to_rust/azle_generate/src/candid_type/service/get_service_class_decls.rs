@@ -65,7 +65,7 @@ impl GetServiceClassDecls for Module {
                 if let Decl::Class(class_decl) = decl {
                     if let Some(super_class) = &class_decl.class.super_class {
                         if let Expr::Ident(ident) = &**super_class {
-                            if symbol_table.service.contains(&ident.get_name().to_string()) {
+                            if symbol_table.service.contains(&ident.get_name()) {
                                 acc.push(SourceMapped::new(class_decl, source_map, symbol_table))
                             }
                         }

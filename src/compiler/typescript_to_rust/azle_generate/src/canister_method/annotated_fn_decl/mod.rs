@@ -17,9 +17,7 @@ use crate::{
 
 pub use get_annotated_fn_decls::GetAnnotatedFnDecls;
 
-use self::errors::{
-    InvalidParams, MissingReturnType, ParamDefaultValue, QualifiedType, UntypedParam,
-};
+use self::errors::{InvalidParams, MissingReturnType, ParamDefaultValue, UntypedParam};
 
 use super::errors::MissingReturnTypeAnnotation;
 
@@ -83,7 +81,7 @@ impl SourceMapped<'_, AnnotatedFnDecl> {
     }
 
     pub fn get_function_name(&self) -> String {
-        self.fn_decl.ident.get_name().to_string()
+        self.fn_decl.ident.get_name()
     }
 
     pub fn get_param_name_idents(&self) -> Result<Vec<Ident>, Vec<Error>> {
@@ -91,7 +89,7 @@ impl SourceMapped<'_, AnnotatedFnDecl> {
 
         Ok(param_idents
             .iter()
-            .map(|ident| format_ident!("{}", ident.get_name().to_string()))
+            .map(|ident| format_ident!("{}", ident.get_name()))
             .collect())
     }
 
@@ -166,15 +164,11 @@ impl SourceMapped<'_, AnnotatedFnDecl> {
         };
 
         match return_type {
-            TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-                TsEntityName::Ident(ident) => Ok(self
-                    .symbol_table
-                    .manual
-                    .contains(&ident.get_name().to_string())),
-                TsEntityName::TsQualifiedName(_) => {
-                    return Err(QualifiedType::from_annotated_fn_decl(self, ts_type_ref).into())
-                }
-            },
+            TsType::TsTypeRef(ts_type_ref) => Ok(self
+                .symbol_table
+                .manual
+                .contains(&self.spawn(ts_type_ref).get_name())),
+
             _ => Ok(false),
         }
     }
@@ -184,8 +178,8 @@ impl SourceMapped<'_, AnnotatedFnDecl> {
             Some(ts_type_ann) => match &*ts_type_ann.type_ann {
                 TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
                     TsEntityName::Ident(ident) => Ok(ident.get_name() == "Promise"),
-                    TsEntityName::TsQualifiedName(_) => {
-                        return Err(QualifiedType::from_annotated_fn_decl(self, ts_type_ref).into())
+                    TsEntityName::TsQualifiedName(ts_qualified_name) => {
+                        Ok(ts_qualified_name.get_name() == "Promise") // TODO this should be better
                     }
                 },
                 _ => Ok(false),

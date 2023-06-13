@@ -18,7 +18,7 @@ impl InvalidClassMember {
         class_decl: &SourceMapped<ClassDecl>,
         class_member: &ClassMember,
     ) -> Self {
-        let class_name = class_decl.ident.get_name().to_string();
+        let class_name = class_decl.ident.get_name();
 
         let member_type = match class_member {
             ClassMember::Constructor(_) => "constructor",

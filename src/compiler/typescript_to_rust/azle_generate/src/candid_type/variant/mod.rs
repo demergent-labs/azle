@@ -16,7 +16,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_variant(&self) -> Result<Option<Variant>, Vec<Error>> {
         self.process_ts_type_ref(&self.symbol_table.variant, |type_ref| {
             // TODO this should be undone once we put all user-defined types in their own module
-            let name_string = self.id.get_name().to_string();
+            let name_string = self.id.get_name();
             let name = Some(if name_string == "Result" {
                 "_AzleResult".to_string()
             } else {
