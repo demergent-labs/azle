@@ -5,7 +5,7 @@ use swc_common::Span;
 use swc_ecma_ast::{TsKeywordType, TsKeywordTypeKind, TsTypeRef};
 
 use crate::{
-    traits::{GetNameWithError, GetSpan},
+    traits::{GetName, GetSpan},
     ts_ast::SourceMapped,
     Error,
 };
@@ -27,7 +27,7 @@ impl SourceMapped<'_, TsKeywordType> {
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_primitive(&self) -> Result<Option<Primitive>, Error> {
-        let name = self.get_name()?.to_string();
+        let name = self.get_name();
         Ok(Some(match name.as_str() {
             _ if self.symbol_table.blob.contains(&name) => Primitive::Blob,
             _ if self.symbol_table.float32.contains(&name) => Primitive::Float32,

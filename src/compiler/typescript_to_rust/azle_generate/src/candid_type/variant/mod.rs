@@ -7,10 +7,7 @@ use cdk_framework::{
 use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
 use crate::{
-    errors::CollectResults as OtherCollectResults,
-    traits::{GetName, GetNameWithError},
-    ts_ast::SourceMapped,
-    Error,
+    errors::CollectResults as OtherCollectResults, traits::GetName, ts_ast::SourceMapped, Error,
 };
 
 use self::errors::VariantPropertySignature;
@@ -46,11 +43,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_variant(&self) -> Result<Option<Variant>, Vec<Error>> {
-        if self
-            .symbol_table
-            .variant
-            .contains(&self.get_name()?.to_string())
-        {
+        if self.symbol_table.variant.contains(&self.get_name()) {
             Ok(Some(
                 match self.get_ts_type()?.as_ts_type_lit() {
                     Some(ts_type_lit) => ts_type_lit,

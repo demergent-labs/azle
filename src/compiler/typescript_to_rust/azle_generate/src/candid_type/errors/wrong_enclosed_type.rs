@@ -3,7 +3,7 @@ use swc_ecma_ast::TsTypeRef;
 
 use crate::{
     errors::{CompilerOutput, InternalError, Location, Suggestion, SuggestionModifications},
-    traits::{GetNameWithError, GetSourceFileInfo, GetSourceInfo},
+    traits::{GetName, GetSourceFileInfo, GetSourceInfo},
     ts_ast::SourceMapped,
     Error,
 };
@@ -25,10 +25,7 @@ enum EnclosingType {
 impl WrongEnclosedType {
     pub fn error_from_ts_type_ref(sm_ts_type_ref: &SourceMapped<TsTypeRef>) -> Error {
         let original_location = sm_ts_type_ref.get_location();
-        let name = match sm_ts_type_ref.get_name() {
-            Ok(name) => name.to_string(),
-            Err(err) => return err,
-        };
+        let name = sm_ts_type_ref.get_name();
         let name = match name.as_str() {
             _ if sm_ts_type_ref.symbol_table.variant.contains(&name) => EnclosingType::Variant,
             _ if sm_ts_type_ref.symbol_table.func.contains(&name) => EnclosingType::Func,

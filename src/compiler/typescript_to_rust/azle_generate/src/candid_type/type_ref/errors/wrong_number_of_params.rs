@@ -5,7 +5,7 @@ use swc_ecma_ast::TsTypeRef;
 use crate::{
     errors::{CompilerOutput, InternalError, Location, Suggestion, SuggestionModifications},
     internal_error,
-    traits::{GetNameWithError, GetSourceFileInfo, GetSourceInfo},
+    traits::{GetName, GetSourceFileInfo, GetSourceInfo},
     ts_ast::SourceMapped,
     Error,
 };
@@ -176,7 +176,7 @@ impl Display for WrongNumberOfParams {
 
 impl SourceMapped<'_, TsTypeRef> {
     fn get_candid_type(&self) -> Result<TypeRefCandidTypes, Error> {
-        let name = self.get_name()?.to_string();
+        let name = self.get_name();
         Ok(match name.as_str() {
             _ if self.symbol_table.variant.contains(&name) => TypeRefCandidTypes::Variant,
             _ if self.symbol_table.func.contains(&name) => TypeRefCandidTypes::Func,

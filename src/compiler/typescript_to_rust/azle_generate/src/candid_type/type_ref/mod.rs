@@ -7,16 +7,16 @@ use cdk_framework::{
 };
 use std::ops::Deref;
 use swc_common::Span;
-use swc_ecma_ast::{TsEntityName, TsType, TsTypeRef};
+use swc_ecma_ast::{TsEntityName, TsQualifiedName, TsType, TsTypeRef};
 
 use crate::{
     errors::CollectResults as OtherCollectResults,
-    traits::{GetName, GetNameWithError, GetSpan},
+    traits::{GetName, GetSpan},
     ts_ast::SourceMapped,
     Error,
 };
 
-use self::errors::{QualifiedName, WrongNumberOfParams};
+use self::errors::WrongNumberOfParams;
 
 pub mod errors;
 
@@ -35,26 +35,26 @@ impl SourceMapped<'_, TsTypeRef> {
     }
 
     pub fn to_type_ref(&self) -> Result<TypeRef, Vec<Error>> {
-        let (type_arguments, name_string) = (
-            self.type_params
-                .iter()
-                .map(|type_params| {
-                    type_params
-                        .params
-                        .iter()
-                        .map(|param| self.spawn(param.deref()).to_candid_type())
-                })
-                .flatten()
-                .collect_results()
-                .map(|param| {
-                    param
-                        .into_iter()
-                        .map(|param| TypeArg(param))
-                        .collect::<Vec<_>>()
-                }),
-            self.get_name().map_err(Error::into),
-        )
+        let (type_arguments,) = (self
+            .type_params
+            .iter()
+            .map(|type_params| {
+                type_params
+                    .params
+                    .iter()
+                    .map(|param| self.spawn(param.deref()).to_candid_type())
+            })
+            .flatten()
+            .collect_results()
+            .map(|param| {
+                param
+                    .into_iter()
+                    .map(|param| TypeArg(param))
+                    .collect::<Vec<_>>()
+            }),)
             .collect_results()?;
+
+        let name_string = self.get_name();
 
         Ok(TypeRef {
             name: if name_string == "Result" {
@@ -92,17 +92,29 @@ impl SourceMapped<'_, TsTypeRef> {
     }
 }
 
-impl GetNameWithError for SourceMapped<'_, TsTypeRef> {
-    fn get_name(&self) -> Result<&str, Error> {
-        Ok(match &self.type_name {
-            TsEntityName::TsQualifiedName(ts_qualified_name) => {
-                // TODO: This could be improved for Qualified TypeRefs with type params.
-                // Currently we just drop the type params. It would be better if we
-                // included them.
-                return Err(QualifiedName::from_ts_type_ref(self, &**ts_qualified_name).into());
-            }
-            TsEntityName::Ident(identifier) => identifier.get_name(),
-        })
+impl GetName for SourceMapped<'_, TsTypeRef> {
+    fn get_name(&self) -> String {
+        // TODO: This could be improved for Qualified TypeRefs with type params.
+        // Currently we just drop the type params. It would be better if we
+        // included them.
+        return self.type_name.get_name();
+    }
+}
+
+impl GetName for TsQualifiedName {
+    fn get_name(&self) -> String {
+        let right = self.right.get_name();
+        let left = self.left.get_name();
+        return format!("{}.{}", left, right);
+    }
+}
+
+impl GetName for TsEntityName {
+    fn get_name(&self) -> String {
+        match self {
+            TsEntityName::TsQualifiedName(qualified_name) => qualified_name.get_name(),
+            TsEntityName::Ident(ident) => ident.get_name(),
+        }
     }
 }
 
