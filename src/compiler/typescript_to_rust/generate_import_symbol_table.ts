@@ -1,18 +1,8 @@
-import { copySync } from 'fs-extra';
 import { SymbolTable, SymbolTables } from '../utils/types';
 import * as ts from 'typescript';
 
 export function generateImportSymbolTable(files: string[]): SymbolTables {
     return files.reduce((accumulator: SymbolTables, filename: string) => {
-        if (
-            filename ===
-            '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/index.ts'
-        ) {
-            createSymbolTableFromFileName(filename);
-            console.log(``);
-        }
-        // accumulator[filename] = createDefaultSymbolTable();
-        // TODO this is the real one
         accumulator[filename] = createSymbolTableFromFileName(filename);
         return accumulator;
     }, {});
@@ -30,8 +20,6 @@ function createSymbolTableFromFileName(filename: string): SymbolTable {
     let tsSymbolTable = getSymbolTable(filename, program);
     if (tsSymbolTable) {
         let symbolTable = createSymbolTable(tsSymbolTable, program);
-        // console.log('Final Result');
-        // console.log(symbolTable);
         return symbolTable;
     }
 
@@ -399,7 +387,6 @@ function processSymbol(
     if (ts.isNamespaceImport(declaration)) {
         return processNamespaceImport(declaration, program);
     }
-    console.log(`TODO: ${ts.SyntaxKind[declaration.kind]}`);
 }
 
 function getTsTypeForImportDecl(
