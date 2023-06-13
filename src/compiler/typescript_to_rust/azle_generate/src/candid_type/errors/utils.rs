@@ -2,7 +2,7 @@ use swc_common::Span;
 use swc_ecma_ast::{TsType, TsTypeRef};
 
 use crate::{
-    traits::{GetNameWithError, GetSourceFileInfo, GetSpan},
+    traits::{GetName, GetSourceFileInfo, GetSpan},
     ts_ast::SourceMapped,
     Error,
 };
@@ -35,7 +35,7 @@ impl SourceMapped<'_, TsTypeRef> {
 
     pub fn generate_example_variant(&self) -> Result<String, Error> {
         if self.get_enclosed_ts_types().len() == 0 {
-            Ok(format!("{}<{{variant_name: null}}>", self.get_name()?))
+            Ok(format!("{}<{{variant_name: null}}>", self.get_name()))
         } else {
             let enclosed_type = self.get_enclosed_ts_types().iter().enumerate().fold(
                 String::new(),
@@ -51,7 +51,7 @@ impl SourceMapped<'_, TsTypeRef> {
 
     pub fn generate_example_option(&self) -> Result<String, Error> {
         if self.get_enclosed_ts_types().len() == 0 {
-            return Ok(format!("{}<boolean>", self.get_name()?));
+            return Ok(format!("{}<boolean>", self.get_name()));
         }
         let enclosed_types: String = self.get_enclosed_ts_types().iter().enumerate().fold(
             String::new(),

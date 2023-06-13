@@ -6,7 +6,7 @@ use swc_common::Span;
 use swc_ecma_ast::{TsTupleElement, TsTupleType, TsTypeAliasDecl, TsTypeRef};
 
 use crate::{
-    traits::{GetName, GetNameWithError, GetSpan},
+    traits::{GetName, GetSpan},
     ts_ast::SourceMapped,
     Error,
 };
@@ -33,11 +33,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_tuple(&self) -> Result<Option<Tuple>, Vec<Error>> {
-        if self
-            .symbol_table
-            .tuple
-            .contains(&self.get_name()?.to_string())
-        {
+        if self.symbol_table.tuple.contains(&self.get_name()) {
             match self.get_ts_type()?.as_ts_tuple_type() {
                 Some(ts_tuple_type) => Ok(Some(ts_tuple_type.to_tuple()?)),
                 None => return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
