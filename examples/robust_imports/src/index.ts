@@ -24,6 +24,6 @@ export { $update } from 'azle';
 // import { "thing" as Something } from './test';
 
 WayCool;
-export function simpleQuery(): string {
+export function simpleQuery(): azle.text {
     return 'This is a query function';
 }

@@ -25,7 +25,7 @@ impl MissingReturnTypeAnnotation {
     pub fn from_annotated_fn_decl(annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>) -> Self {
         let span = annotated_fn_decl.fn_decl.function.span;
 
-        let function_name = annotated_fn_decl.fn_decl.ident.get_name().to_string();
+        let function_name = annotated_fn_decl.fn_decl.ident.get_name();
 
         let line_number = annotated_fn_decl.source_map.get_line_number(span);
         let origin = annotated_fn_decl.source_map.get_origin(span);

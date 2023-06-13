@@ -73,7 +73,7 @@ impl SourceMapped<'_, ClassProp> {
     fn contains_decorator(&self, names: &Vec<String>) -> bool {
         self.decorators.iter().any(|decorator| {
             if let Expr::Ident(ident) = &*decorator.expr {
-                return names.contains(&ident.get_name().to_string());
+                return names.contains(&ident.get_name());
             }
             false
         })
@@ -92,8 +92,7 @@ impl SourceMapped<'_, ClassProp> {
                     Some(ident) => ident,
                     None => return Err(vec![InvalidDecorator::from_class_prop(self).into()]),
                 }
-                .get_name()
-                .to_string();
+                .get_name();
 
                 Ok(mode)
             },
@@ -102,7 +101,7 @@ impl SourceMapped<'_, ClassProp> {
 
     fn name(&self) -> Result<String, Error> {
         let name = match &self.key {
-            swc_ecma_ast::PropName::Ident(ident) => ident.get_name().to_string(),
+            swc_ecma_ast::PropName::Ident(ident) => ident.get_name(),
             swc_ecma_ast::PropName::Str(str) => str.value.to_string(),
             swc_ecma_ast::PropName::Num(num) => num.value.to_string(),
             swc_ecma_ast::PropName::Computed(_) => {
@@ -125,7 +124,7 @@ impl SourceMapped<'_, ClassProp> {
                         swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
                             return Err(NamespaceQualifiedType::from_class_prop(self).into())
                         }
-                        swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name().to_string(),
+                        swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name(),
                     })
                 {
                     return Err(MissingCallResultAnnotation::from_class_prop(self).into());
@@ -171,7 +170,7 @@ impl SourceMapped<'_, TsFnType> {
             .iter()
             .map(|param| match param {
                 TsFnParam::Ident(identifier) => {
-                    let name = identifier.get_name().to_string();
+                    let name = identifier.get_name();
                     let candid_type = match &identifier.type_ann {
                         Some(ts_type_ann) => {
                             self.spawn(&ts_type_ann.get_ts_type()).to_candid_type()?

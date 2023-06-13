@@ -21,7 +21,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
                 (self.get_type_params(), type_ref.to_tuple()).collect_results()?;
             match tuple_type_ref {
                 Some(members) => Ok(Some(Tuple {
-                    name: Some(self.id.get_name().to_string()),
+                    name: Some(self.id.get_name()),
                     type_params: type_params.into(),
                     ..members
                 })),

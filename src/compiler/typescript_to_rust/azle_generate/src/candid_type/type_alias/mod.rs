@@ -13,7 +13,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
                 .collect_results()?;
 
             Ok(TypeAlias {
-                name: self.id.get_name().to_string(),
+                name: self.id.get_name(),
                 aliased_type: Box::new(aliased_type),
                 type_params: type_params.into(),
             })
@@ -32,7 +32,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
             TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
                 swc_ecma_ast::TsEntityName::TsQualifiedName(_) => Ok(None),
                 swc_ecma_ast::TsEntityName::Ident(ident) => {
-                    if type_names.contains(&ident.get_name().to_string()) {
+                    if type_names.contains(&ident.get_name()) {
                         let type_ref = self.spawn(ts_type_ref);
                         handler(type_ref).map(Some)
                     } else {

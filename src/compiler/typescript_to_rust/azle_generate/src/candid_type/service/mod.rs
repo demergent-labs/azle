@@ -29,7 +29,7 @@ impl TsAst {
 impl SourceMapped<'_, ClassDecl> {
     pub fn to_service(&self) -> Result<Service, Vec<Error>> {
         let methods = self.build_service_methods()?;
-        let name = self.ident.get_name().to_string();
+        let name = self.ident.get_name();
 
         Ok(Service {
             name,
