@@ -7,7 +7,7 @@ use cdk_framework::{
 };
 use std::ops::Deref;
 use swc_common::Span;
-use swc_ecma_ast::{TsEntityName, TsQualifiedName, TsType, TsTypeRef};
+use swc_ecma_ast::{TsType, TsTypeRef};
 
 use crate::{
     errors::CollectResults as OtherCollectResults,
@@ -98,23 +98,6 @@ impl GetName for SourceMapped<'_, TsTypeRef> {
         // Currently we just drop the type params. It would be better if we
         // included them.
         return self.type_name.get_name();
-    }
-}
-
-impl GetName for TsQualifiedName {
-    fn get_name(&self) -> String {
-        let right = self.right.get_name();
-        let left = self.left.get_name();
-        return format!("{}.{}", left, right);
-    }
-}
-
-impl GetName for TsEntityName {
-    fn get_name(&self) -> String {
-        match self {
-            TsEntityName::TsQualifiedName(qualified_name) => qualified_name.get_name(),
-            TsEntityName::Ident(ident) => ident.get_name(),
-        }
     }
 }
 

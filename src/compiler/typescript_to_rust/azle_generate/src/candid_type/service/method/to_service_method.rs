@@ -20,8 +20,8 @@ use crate::{
 
 use super::errors::{
     ComputedPropertyNotAllowed, InvalidDecorator, InvalidReturnType, MissingCallResultAnnotation,
-    MissingDecorator, MissingTypeAnnotation, MissingTypeArguments, NamespaceQualifiedType,
-    NotExactlyOneDecorator, TooManyReturnTypes,
+    MissingDecorator, MissingTypeAnnotation, MissingTypeArguments, NotExactlyOneDecorator,
+    TooManyReturnTypes,
 };
 
 impl SourceMapped<'_, ClassProp> {
@@ -120,12 +120,7 @@ impl SourceMapped<'_, ClassProp> {
                 if !self
                     .symbol_table
                     .call_result
-                    .contains(&match &ts_type_ref.type_name {
-                        swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
-                            return Err(NamespaceQualifiedType::from_class_prop(self).into())
-                        }
-                        swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name(),
-                    })
+                    .contains(&ts_type_ref.type_name.get_name())
                 {
                     return Err(MissingCallResultAnnotation::from_class_prop(self).into());
                 }

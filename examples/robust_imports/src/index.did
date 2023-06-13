@@ -1,1 +1,12 @@
-service : () -> { simpleQuery : () -> (text) }
+type User = record {
+  id : text;
+  age : nat;
+  name : text;
+  something : nat;
+  something_else : int;
+};
+service : () -> {
+  "record" : () -> (User);
+  simpleQuery : () -> (text);
+  thing : () -> (int);
+}

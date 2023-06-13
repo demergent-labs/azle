@@ -369,23 +369,43 @@ function processSymbol(
         return; // TODO I don't know what to do if there are multiple declarations
     }
     const declaration = declarations[0];
-    if (ts.isExportSpecifier(declaration)) {
-        return processExportSpecifier(originalName, declaration, program);
-    }
-    if (ts.isExportAssignment(declaration)) {
-        return processExportAssignment(originalName, declaration, program);
-    }
-    if (ts.isImportClause(declaration)) {
-        return processImportClause(originalName, declaration, program);
-    }
-    if (ts.isImportSpecifier(declaration)) {
-        return processImportSpecifier(originalName, declaration, program);
-    }
-    if (ts.isTypeAliasDeclaration(declaration)) {
-        return processTypeAliasDeclaration(originalName, declaration, program);
-    }
-    if (ts.isNamespaceImport(declaration)) {
-        return processNamespaceImport(declaration, program);
+    switch (declaration.kind) {
+        case ts.SyntaxKind.ExportSpecifier:
+            return processExportSpecifier(
+                originalName,
+                declaration as ts.ExportSpecifier,
+                program
+            );
+        case ts.SyntaxKind.ExportAssignment:
+            return processExportAssignment(
+                originalName,
+                declaration as ts.ExportAssignment,
+                program
+            );
+        case ts.SyntaxKind.ImportClause:
+            return processImportClause(
+                originalName,
+                declaration as ts.ImportClause,
+                program
+            );
+        case ts.SyntaxKind.ImportSpecifier:
+            return processImportSpecifier(
+                originalName,
+                declaration as ts.ImportSpecifier,
+                program
+            );
+        case ts.SyntaxKind.TypeAliasDeclaration:
+            return;
+            return processTypeAliasDeclaration(
+                originalName,
+                declaration as ts.TypeAliasDeclaration,
+                program
+            );
+        case ts.SyntaxKind.NamespaceImport:
+            return processNamespaceImport(
+                declaration as ts.NamespaceImport,
+                program
+            );
     }
 }
 

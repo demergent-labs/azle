@@ -6,7 +6,7 @@ use swc_ecma_ast::{Callee, Expr, ModuleItem, Prop, PropName, PropOrSpread, Stmt}
 use crate::{
     errors::{ArgumentError, SyntaxError, TypeError},
     internal_error,
-    traits::{GetName, GetSourceFileInfo, GetSpan},
+    traits::{GetName, GetOptionalName, GetSourceFileInfo, GetSpan},
     ts_ast::SourceMapped,
     Error, SymbolTable,
 };
@@ -68,10 +68,21 @@ impl Annotation {
                 ident.span,
                 module_item.symbol_table,
             ),
+            Expr::Member(member) => {
+                let name = match member.get_name() {
+                    Some(name) => name,
+                    None => internal_error!(), // If the member name can't be made into a name then it won't be recognized as annotation so it won't possibly get here
+                };
+                Self::new(&name, None, member.span, module_item.symbol_table)
+            }
             Expr::Call(call_expr) => {
                 let method_type = match &call_expr.callee {
                     Callee::Expr(expr) => match &**expr {
                         Expr::Ident(ident) => ident.get_name(),
+                        Expr::Member(member) => match member.get_name() {
+                            Some(name) => name,
+                            None => internal_error!(), // If the member name can't be made into a name then it won't be recognized as annotation so it won't possibly get here
+                        },
                         _ => internal_error!(),
                     },
                     _ => internal_error!(),

@@ -14,13 +14,13 @@ use crate::{
 pub fn generate(
     fn_decl: &SourceMapped<AnnotatedFnDecl>,
 ) -> Result<proc_macro2::TokenStream, Vec<Error>> {
-    let (call_to_js_function, return_expression, manual) = (
+    let (call_to_js_function, return_expression) = (
         rust::generate_call_to_js_function(fn_decl),
         generate_return_expression(fn_decl).map_err(Error::into),
-        fn_decl.is_manual().map_err(Error::into),
     )
         .collect_results()?;
 
+    let manual = fn_decl.is_manual();
     let function_name = fn_decl.get_function_name();
 
     Ok(quote! {
@@ -72,7 +72,7 @@ pub fn generate(
 fn generate_return_expression(
     annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>,
 ) -> Result<proc_macro2::TokenStream, Error> {
-    if annotated_fn_decl.is_manual()? || annotated_fn_decl.is_promise()? {
+    if annotated_fn_decl.is_manual() || annotated_fn_decl.is_promise() {
         return Ok(quote! {
             ic_cdk::api::call::ManualReply::empty()
         });

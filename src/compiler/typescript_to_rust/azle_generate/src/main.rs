@@ -78,7 +78,7 @@ fn main() {
     let syntax_tree = match syn::parse_file(&lib_file) {
         Ok(syntax_tree) => syntax_tree,
         Err(_) => {
-            eprintln!("{}", azle_generate::errors::InternalError {});
+            eprintln!("{}", azle_generate::errors::InternalError::new());
             process::exit(LIB_PARSE_ERROR);
         }
     };

@@ -27,7 +27,7 @@ impl UnsupportedType {
             TsKeywordTypeKind::TsUndefinedKeyword => sm_keyword_type.create_not_supported_tuple(),
             TsKeywordTypeKind::TsUnknownKeyword => sm_keyword_type.create_not_supported_tuple(),
             TsKeywordTypeKind::TsAnyKeyword => sm_keyword_type.create_not_supported_tuple(),
-            _ => return Error::InternalError(InternalError {}),
+            _ => return Error::InternalError(InternalError::new()),
         };
         Self {
             annotation,
