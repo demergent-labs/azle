@@ -93,7 +93,7 @@ fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
     );
     quote!(
         #name => {
-            let reply_value: #return_type = js_value.clone().try_from_vm_value(&mut *boa_context).unwrap();
+            let reply_value: (#return_type) = js_value.clone().try_from_vm_value(&mut *boa_context).unwrap();
             ic_cdk::api::call::reply((reply_value,));
         }
     )
