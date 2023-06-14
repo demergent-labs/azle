@@ -2,6 +2,7 @@ import { getCanisterId, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { _SERVICE } from './dfx_generated/ic_api/ic_api.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
 
 export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
@@ -180,6 +181,20 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 return {
                     Ok: result.toText() === icApiCanisterId
+                };
+            }
+        },
+        {
+            name: 'isController',
+            test: async () => {
+                const principal = Principal.fromText(
+                    execSync(`dfx identity get-principal`).toString().trim()
+                );
+
+                const result = await icApiCanister.isController(principal);
+
+                return {
+                    Ok: result === true
                 };
             }
         },

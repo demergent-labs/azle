@@ -26,6 +26,7 @@ pub fn generate(ts_ast: &TsAst) -> Result<TokenStream, Vec<Error>> {
                 .function(boa_engine::NativeFunction::from_fn_ptr(clear_timer), "clearTimer", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(data_certificate), "dataCertificate", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(id), "id", 0)
+                .function(boa_engine::NativeFunction::from_fn_ptr(is_controller), "isController", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(method_name), "methodName", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(msg_cycles_accept), "msgCyclesAccept", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(msg_cycles_accept128), "msgCyclesAccept128", 0)

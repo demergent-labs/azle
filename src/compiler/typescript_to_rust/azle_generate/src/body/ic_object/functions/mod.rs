@@ -16,6 +16,7 @@ mod canister_balance128;
 mod clear_timer;
 mod data_certificate;
 mod id;
+mod is_controller;
 mod method_name;
 mod msg_cycles_accept;
 mod msg_cycles_accept128;
@@ -66,6 +67,7 @@ pub fn generate(
     let clear_timer = clear_timer::generate();
     let data_certificate = data_certificate::generate();
     let id = id::generate();
+    let is_controller = is_controller::generate();
     let method_name = method_name::generate();
     let msg_cycles_accept = msg_cycles_accept::generate();
     let msg_cycles_accept128 = msg_cycles_accept128::generate();
@@ -112,6 +114,7 @@ pub fn generate(
         #clear_timer
         #data_certificate
         #id
+        #is_controller
         #method_name
         #msg_cycles_accept
         #msg_cycles_accept128

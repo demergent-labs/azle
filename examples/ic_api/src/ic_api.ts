@@ -106,6 +106,12 @@ export function id(): Principal {
     return ic.id();
 }
 
+// determines whether the given principal is a controller of the canister
+$query;
+export function isController(principal: Principal): boolean {
+    return ic.isController(principal);
+}
+
 $query;
 export function performanceCounter(): nat64 {
     return ic.performanceCounter(0);

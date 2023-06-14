@@ -172,6 +172,9 @@ type ic = {
      */
     id: () => Principal;
 
+    /** Determine if a {@link Principal} is a controller of the canister. */
+    isController: (principal: Principal) => boolean;
+
     /**
      * Returns the name of the current canister methods
      * @returns the current canister method
