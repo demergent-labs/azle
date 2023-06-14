@@ -27,9 +27,64 @@ export type JSCanisterConfig = Readonly<{
 
 export type OptLevel = '0' | '1' | '2' | '3' | '4';
 
+export type CompilerInfo = {
+    plugins: Plugin[];
+    symbol_tables: SymbolTables;
+    file_names: string[];
+};
+
 export type Plugin = {
     path: string;
     register_function: string;
+};
+
+export type SymbolTables = { [filename: string]: SymbolTable };
+
+export type SymbolTable = {
+    alias: string[];
+    call_result: string[];
+    blob: string[];
+    bool: string[];
+    empty: string[];
+    float32: string[];
+    float64: string[];
+    func: string[];
+    guard_result: string[];
+    heartbeat_decorator: string[];
+    init_decorator: string[];
+    inspect_message_decorator: string[];
+    int: string[];
+    int8: string[];
+    int16: string[];
+    int32: string[];
+    int64: string[];
+    manual: string[];
+    nat: string[];
+    nat8: string[];
+    nat16: string[];
+    nat32: string[];
+    nat64: string[];
+    null: string[];
+    oneway_mode: string[];
+    opt: string[];
+    post_upgrade_decorator: string[];
+    pre_upgrade_decorator: string[];
+    principal: string[];
+    query_decorator: string[];
+    query_mode: string[];
+    record: string[];
+    reserved: string[];
+    service: string[];
+    service_query_decorator: string[];
+    service_update_decorator: string[];
+    stable_b_tree_map: string[];
+    text: string[];
+    tuple: string[];
+    update_decorator: string[];
+    update_mode: string[];
+    variant: string[];
+    vec: string[];
+    void: string[];
 };
 
 export type RunOptions = {

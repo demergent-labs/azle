@@ -31,7 +31,11 @@ impl SourceMapped<'_, FnDecl> {
             .as_ref()
             .and_then(|ts_type_ann| ts_type_ann.type_ann.deref().as_ts_type_ref())
             .and_then(|ts_type_ref| ts_type_ref.type_name.as_ident())
-            .map(|ident| ident.get_name() == "GuardResult")
+            .map(|ident| {
+                self.symbol_table
+                    .guard_result
+                    .contains(&ident.get_name().to_string())
+            })
             .unwrap_or(false)
     }
 }

@@ -8,14 +8,14 @@ use super::{
     errors::{AsyncNotAllowed, DuplicateSystemMethod, VoidReturnTypeRequired},
     AnnotatedFnDecl,
 };
-use crate::{Error, TsAst};
+use crate::{ts_ast::SourceMapped, Error, TsAst};
 
 mod rust;
 
 impl TsAst {
     pub fn build_inspect_message_method(
         &self,
-        annotated_fn_decls: &Vec<AnnotatedFnDecl>,
+        annotated_fn_decls: &Vec<SourceMapped<AnnotatedFnDecl>>,
     ) -> Result<Option<InspectMessageMethod>, Vec<Error>> {
         let inspect_message_fn_decls: Vec<_> = annotated_fn_decls
             .iter()

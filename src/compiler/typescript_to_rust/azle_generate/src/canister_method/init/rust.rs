@@ -1,13 +1,14 @@
 use crate::{
     canister_method::{rust, AnnotatedFnDecl},
     plugin::Plugin,
+    ts_ast::SourceMapped,
     Error,
 };
 use cdk_framework::traits::ToIdent;
 use quote::quote;
 
 pub fn generate(
-    init_fn_decl_option: Option<&AnnotatedFnDecl>,
+    init_fn_decl_option: Option<&SourceMapped<AnnotatedFnDecl>>,
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
 ) -> Result<proc_macro2::TokenStream, Vec<Error>> {

@@ -4,6 +4,7 @@ use crate::{
     canister_method::AnnotatedFnDecl,
     errors::{CompilerOutput, Location, Suggestion, SuggestionModifications},
     traits::GetSourceFileInfo,
+    ts_ast::SourceMapped,
 };
 
 #[derive(Debug, Clone, PartialEq)]
@@ -15,7 +16,7 @@ pub struct MissingReturnType {
 
 impl MissingReturnType {
     pub fn from_annotated_fn_decl(
-        annotated_fn_decl: &AnnotatedFnDecl,
+        annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>,
         ts_type_ref: &TsTypeRef,
         canister_method_type: &str,
     ) -> Self {

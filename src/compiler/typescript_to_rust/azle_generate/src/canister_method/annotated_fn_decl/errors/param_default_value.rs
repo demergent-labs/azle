@@ -4,6 +4,7 @@ use crate::{
     canister_method::AnnotatedFnDecl,
     errors::{CompilerOutput, Location, Suggestion},
     traits::GetSourceFileInfo,
+    ts_ast::SourceMapped,
 };
 
 #[derive(Debug, Clone, PartialEq)]
@@ -13,7 +14,7 @@ pub struct ParamDefaultValue {
 
 impl ParamDefaultValue {
     pub fn from_annotated_fn_decl(
-        annotated_fn_decl: &AnnotatedFnDecl,
+        annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>,
         assign_pat: &AssignPat,
     ) -> Self {
         Self {
@@ -36,7 +37,7 @@ impl std::fmt::Display for ParamDefaultValue {
     }
 }
 
-impl AnnotatedFnDecl<'_> {
+impl SourceMapped<'_, AnnotatedFnDecl> {
     fn build_param_default_value_error_msg(&self, assign_pat: &AssignPat) -> CompilerOutput {
         let title = "Setting default values for parameters is unsupported at this time".to_string();
         let origin = self.source_map.get_origin(assign_pat.span);

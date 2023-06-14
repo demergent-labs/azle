@@ -7,19 +7,24 @@ use crate::{
         AnnotatedFnDecl,
     },
     ts_ast::SourceMapped,
-    Error,
+    Error, SymbolTable,
 };
 
 pub trait ModuleHelperMethods {
     fn get_annotated_fn_decls<'a>(
         &'a self,
         source_map: &'a SourceMap,
-    ) -> (Vec<AnnotatedFnDecl>, Vec<Error>);
-    fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>>;
+        symbol_table: &'a SymbolTable,
+    ) -> (Vec<SourceMapped<AnnotatedFnDecl>>, Vec<Error>);
+    fn get_fn_decls<'a>(
+        &'a self,
+        source_map: &'a SourceMap,
+        symbol_table: &'a SymbolTable,
+    ) -> Vec<SourceMapped<'a, FnDecl>>;
 }
 
 struct Accumulator<'a> {
-    pub annotated_fn_decls: Vec<AnnotatedFnDecl<'a>>,
+    pub annotated_fn_decls: Vec<SourceMapped<'a, AnnotatedFnDecl>>,
     pub errors: Vec<Error>,
 }
 
@@ -32,7 +37,7 @@ impl Accumulator<'_> {
     }
 }
 
-impl<'a> From<Accumulator<'a>> for (Vec<AnnotatedFnDecl<'a>>, Vec<Error>) {
+impl<'a> From<Accumulator<'a>> for (Vec<SourceMapped<'a, AnnotatedFnDecl>>, Vec<Error>) {
     fn from(acc: Accumulator<'a>) -> Self {
         (acc.annotated_fn_decls, acc.errors)
     }
@@ -45,15 +50,16 @@ impl ModuleHelperMethods for Module {
     fn get_annotated_fn_decls<'a>(
         &'a self,
         source_map: &'a SourceMap,
-    ) -> (Vec<AnnotatedFnDecl>, Vec<Error>) {
+        symbol_table: &'a SymbolTable,
+    ) -> (Vec<SourceMapped<AnnotatedFnDecl>>, Vec<Error>) {
         let source_mapped_body: Vec<_> = self
             .body
             .iter()
-            .map(|module_item| SourceMapped::new(module_item, source_map))
+            .map(|module_item| SourceMapped::new(module_item, source_map, symbol_table))
             .collect();
 
-        source_mapped_body
-            .iter()
+        source_mapped_body.clone()
+            .into_iter()
             .enumerate()
             .fold(Accumulator::new(), |mut acc, (i, module_item)| {
                 if let Some(result) = module_item.as_canister_method_annotation() {
@@ -61,22 +67,22 @@ impl ModuleHelperMethods for Module {
                         Ok(annotation) => {
                             match source_mapped_body.get(i + 1) {
                                 Some(next_item) => {
-                                    let next_item = SourceMapped::new(next_item, source_map);
+                                    let next_item = module_item.spawn(next_item);
                                     match next_item.as_exported_fn_decl() {
                                         Some(fn_decl) => {
                                             let annotated_fn_decl = AnnotatedFnDecl {
                                                 annotation,
                                                 fn_decl: fn_decl.clone(),
-                                                source_map,
                                             };
+                                            let sm_annotated_fn_decl = SourceMapped::new(&annotated_fn_decl, source_map, symbol_table);
 
                                             match &fn_decl.function.return_type {
                                                 Some(_) => {
-                                                    acc.annotated_fn_decls.push(annotated_fn_decl)
+                                                    acc.annotated_fn_decls.push(sm_annotated_fn_decl)
                                                 }
                                                 None => {
                                                     let missing_return_type_annotation =
-                                                        MissingReturnTypeAnnotation::from_annotated_fn_decl(&annotated_fn_decl);
+                                                        MissingReturnTypeAnnotation::from_annotated_fn_decl(&sm_annotated_fn_decl);
                                                     acc.errors.push(missing_return_type_annotation.into())
                                                 }
                                             }
@@ -84,14 +90,14 @@ impl ModuleHelperMethods for Module {
                                         // There is an annotation not followed by an exported function (but not at end of file)
                                         None => acc.errors.push(
                                             ExtraneousCanisterMethodAnnotation::from_annotation(
-                                                &SourceMapped::new(&annotation, module_item.source_map)
+                                                &module_item.spawn(&annotation)
                                             ).into()
                                         )
                                     }
                                 }
                                 // There is a dangling canister method annotation at the end of the file.
                                 None => acc.errors.push(
-                                    ExtraneousCanisterMethodAnnotation::from_annotation(&SourceMapped::new(&annotation, module_item.source_map))
+                                    ExtraneousCanisterMethodAnnotation::from_annotation(&module_item.spawn(&annotation))
                                         .into(),
                                 ),
                             };
@@ -105,13 +111,18 @@ impl ModuleHelperMethods for Module {
             .into()
     }
 
-    fn get_fn_decls<'a>(&'a self, source_map: &'a SourceMap) -> Vec<SourceMapped<'a, FnDecl>> {
+    fn get_fn_decls<'a>(
+        &'a self,
+        source_map: &'a SourceMap,
+        symbol_table: &'a SymbolTable,
+    ) -> Vec<SourceMapped<'a, FnDecl>> {
         self.body
             .iter()
             .filter_map(|module_item| {
                 Some(SourceMapped::new(
                     module_item.as_decl()?.as_fn_decl()?,
                     source_map,
+                    symbol_table,
                 ))
             })
             .collect()

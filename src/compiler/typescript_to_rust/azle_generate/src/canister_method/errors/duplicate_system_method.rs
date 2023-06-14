@@ -5,7 +5,7 @@ use annotate_snippets::{
 use cdk_framework::act::node::canister_method::CanisterMethodType;
 use swc_common::{source_map::Pos, Span};
 
-use crate::{canister_method::AnnotatedFnDecl, traits::GetSourceFileInfo};
+use crate::{canister_method::AnnotatedFnDecl, traits::GetSourceFileInfo, ts_ast::SourceMapped};
 
 /// Returned when Azle detects multiple system canister method annotations
 /// of the same type.
@@ -36,7 +36,7 @@ pub struct DuplicateSystemMethod {
 
 impl DuplicateSystemMethod {
     pub fn from_annotated_fn_decls(
-        annotated_fn_decls: &Vec<&AnnotatedFnDecl>,
+        annotated_fn_decls: &Vec<&SourceMapped<AnnotatedFnDecl>>,
         canister_method_type: CanisterMethodType,
     ) -> Self {
         // TODO: Might this be a problem if the fn_decls come from different

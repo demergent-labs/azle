@@ -18,26 +18,37 @@ mod rust;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_func(&self) -> Result<Option<Func>, Vec<Error>> {
-        self.process_ts_type_ref("Func", |ts_type_ref| {
+        self.process_ts_type_ref(&self.symbol_table.func, |ts_type_ref| {
             ts_type_ref.to_func(Some(self.id.get_name().to_string()))
         })
+        .map(|result| result.flatten())
     }
 }
 
 impl SourceMapped<'_, TsTypeRef> {
-    pub fn to_func(&self, name: Option<String>) -> Result<Func, Vec<Error>> {
+    pub fn to_func(&self, name: Option<String>) -> Result<Option<Func>, Vec<Error>> {
+        if !self
+            .symbol_table
+            .func
+            .contains(&self.get_name()?.to_string())
+        {
+            return Ok(None);
+        }
         let request_type_ts_type = self.get_ts_type()?;
         let request_type_type_ref = match request_type_ts_type.deref() {
-            TsType::TsTypeRef(ts_type_ref) => SourceMapped::new(ts_type_ref, self.source_map),
+            TsType::TsTypeRef(ts_type_ref) => self.spawn(ts_type_ref),
             _ => return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
         };
 
         let (mode, ts_type) = (
-            match request_type_type_ref.get_name()? {
-                "Query" => Ok(Mode::Query),
-                "Update" => Ok(Mode::Update),
-                "Oneway" => Ok(Mode::Oneway),
-                _ => Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
+            {
+                let name = request_type_type_ref.get_name()?.to_string();
+                match name.as_str() {
+                    _ if self.symbol_table.query_mode.contains(&name) => Ok(Mode::Query),
+                    _ if self.symbol_table.update_mode.contains(&name) => Ok(Mode::Update),
+                    _ if self.symbol_table.oneway_mode.contains(&name) => Ok(Mode::Oneway),
+                    _ => Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
+                }
             },
             request_type_type_ref.get_ts_type().map_err(Error::into),
         )
@@ -45,7 +56,7 @@ impl SourceMapped<'_, TsTypeRef> {
 
         let ts_fn_type = match ts_type.deref() {
             TsType::TsFnOrConstructorType(TsFnOrConstructorType::TsFnType(ts_fn_type)) => {
-                SourceMapped::new(ts_fn_type, self.source_map)
+                self.spawn(ts_fn_type)
             }
             _ => return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
         };
@@ -54,9 +65,9 @@ impl SourceMapped<'_, TsTypeRef> {
             ts_fn_type
                 .get_param_types()?
                 .iter()
-                .map(|param| SourceMapped::new(param, self.source_map).to_candid_type())
+                .map(|param| self.spawn(param).to_candid_type())
                 .collect_results(),
-            SourceMapped::new(&ts_fn_type.get_ts_type_ann().get_ts_type(), self.source_map)
+            self.spawn(&ts_fn_type.get_ts_type_ann().get_ts_type())
                 .to_candid_type(),
         )
             .collect_results()?;
@@ -66,7 +77,7 @@ impl SourceMapped<'_, TsTypeRef> {
         let from_vm_value = |name: String| rust::generate_from_vm_value_impl(name);
         let list_from_vm_value = |name: String| rust::generate_list_from_vm_value_impl(name);
 
-        Ok(Func::new(
+        Ok(Some(Func::new(
             name,
             params,
             return_type,
@@ -75,7 +86,7 @@ impl SourceMapped<'_, TsTypeRef> {
             list_to_vm_value,
             from_vm_value,
             list_from_vm_value,
-        ))
+        )))
     }
 }
 

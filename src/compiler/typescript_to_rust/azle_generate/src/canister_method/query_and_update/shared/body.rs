@@ -7,10 +7,13 @@ use swc_ecma_ast::{
 
 use crate::{
     canister_method::{rust, AnnotatedFnDecl},
+    ts_ast::SourceMapped,
     Error,
 };
 
-pub fn generate(fn_decl: &AnnotatedFnDecl) -> Result<proc_macro2::TokenStream, Vec<Error>> {
+pub fn generate(
+    fn_decl: &SourceMapped<AnnotatedFnDecl>,
+) -> Result<proc_macro2::TokenStream, Vec<Error>> {
     let (call_to_js_function, return_expression, manual) = (
         rust::generate_call_to_js_function(fn_decl),
         generate_return_expression(fn_decl).map_err(Error::into),
@@ -67,7 +70,7 @@ pub fn generate(fn_decl: &AnnotatedFnDecl) -> Result<proc_macro2::TokenStream, V
 ///    unless this is a ManualReply method.
 /// * `boa_context: &mut boa_engine::Context` - The current boa context
 fn generate_return_expression(
-    annotated_fn_decl: &AnnotatedFnDecl,
+    annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>,
 ) -> Result<proc_macro2::TokenStream, Error> {
     if annotated_fn_decl.is_manual()? || annotated_fn_decl.is_promise()? {
         return Ok(quote! {

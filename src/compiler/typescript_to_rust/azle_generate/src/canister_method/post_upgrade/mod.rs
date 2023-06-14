@@ -8,14 +8,14 @@ use super::{
     errors::{AsyncNotAllowed, DuplicateSystemMethod, VoidReturnTypeRequired},
     AnnotatedFnDecl,
 };
-use crate::{plugin::Plugin, Error, TsAst};
+use crate::{plugin::Plugin, ts_ast::SourceMapped, Error, TsAst};
 
 mod rust;
 
 impl TsAst {
     pub fn build_post_upgrade_method(
         &self,
-        annotated_fn_decls: &Vec<AnnotatedFnDecl>,
+        annotated_fn_decls: &Vec<SourceMapped<AnnotatedFnDecl>>,
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
     ) -> Result<PostUpgradeMethod, Vec<Error>> {

@@ -2,6 +2,7 @@ use crate::{
     canister_method::AnnotatedFnDecl,
     errors::{CompilerOutput, InternalError, Location, Suggestion},
     traits::GetSourceFileInfo,
+    ts_ast::SourceMapped,
     Error,
 };
 
@@ -24,7 +25,9 @@ pub struct VoidReturnTypeRequired {
 }
 
 impl VoidReturnTypeRequired {
-    pub fn error_from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl) -> Error {
+    pub fn error_from_annotated_fn_decl(
+        annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>,
+    ) -> Error {
         let span = match &annotated_fn_decl.fn_decl.function.return_type {
             Some(return_type) => return_type.span,
             // Return Types are guaranteed by a check in get_annotated_fn_decls:

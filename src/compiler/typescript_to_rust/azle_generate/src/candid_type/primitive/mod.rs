@@ -27,24 +27,28 @@ impl SourceMapped<'_, TsKeywordType> {
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_primitive(&self) -> Result<Option<Primitive>, Error> {
-        Ok(Some(match self.get_name()? {
-            "blob" => Primitive::Blob,
-            "float32" => Primitive::Float32,
-            "float64" => Primitive::Float64,
-            "int" => Primitive::Int,
-            "int8" => Primitive::Int8,
-            "int16" => Primitive::Int16,
-            "int32" => Primitive::Int32,
-            "int64" => Primitive::Int64,
-            "nat" => Primitive::Nat,
-            "nat8" => Primitive::Nat8,
-            "nat16" => Primitive::Nat16,
-            "nat32" => Primitive::Nat32,
-            "nat64" => Primitive::Nat64,
-            "Principal" => Primitive::Principal,
-            "empty" => Primitive::Empty,
-            "reserved" => Primitive::Reserved,
-            "text" => Primitive::String,
+        let name = self.get_name()?.to_string();
+        Ok(Some(match name.as_str() {
+            _ if self.symbol_table.blob.contains(&name) => Primitive::Blob,
+            _ if self.symbol_table.float32.contains(&name) => Primitive::Float32,
+            _ if self.symbol_table.float64.contains(&name) => Primitive::Float64,
+            _ if self.symbol_table.int.contains(&name) => Primitive::Int,
+            _ if self.symbol_table.int8.contains(&name) => Primitive::Int8,
+            _ if self.symbol_table.int16.contains(&name) => Primitive::Int16,
+            _ if self.symbol_table.int32.contains(&name) => Primitive::Int32,
+            _ if self.symbol_table.int64.contains(&name) => Primitive::Int64,
+            _ if self.symbol_table.nat.contains(&name) => Primitive::Nat,
+            _ if self.symbol_table.nat8.contains(&name) => Primitive::Nat8,
+            _ if self.symbol_table.nat16.contains(&name) => Primitive::Nat16,
+            _ if self.symbol_table.nat32.contains(&name) => Primitive::Nat32,
+            _ if self.symbol_table.nat64.contains(&name) => Primitive::Nat64,
+            _ if self.symbol_table.principal.contains(&name) => Primitive::Principal,
+            _ if self.symbol_table.empty.contains(&name) => Primitive::Empty,
+            _ if self.symbol_table.reserved.contains(&name) => Primitive::Reserved,
+            _ if self.symbol_table.text.contains(&name) => Primitive::String,
+            _ if self.symbol_table.null.contains(&name) => Primitive::Null,
+            _ if self.symbol_table.void.contains(&name) => Primitive::Void,
+            _ if self.symbol_table.bool.contains(&name) => Primitive::Bool,
             _ => return Ok(None),
         }))
     }

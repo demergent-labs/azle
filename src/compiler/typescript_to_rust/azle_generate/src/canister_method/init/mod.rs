@@ -8,14 +8,16 @@ use super::{
     errors::{DuplicateSystemMethod, VoidReturnTypeRequired},
     AnnotatedFnDecl,
 };
-use crate::{canister_method::errors::AsyncNotAllowed, plugin::Plugin, Error, TsAst};
+use crate::{
+    canister_method::errors::AsyncNotAllowed, plugin::Plugin, ts_ast::SourceMapped, Error, TsAst,
+};
 
 mod rust;
 
 impl TsAst {
     pub fn build_init_method(
         &self,
-        annotated_fn_decls: &Vec<AnnotatedFnDecl>,
+        annotated_fn_decls: &Vec<SourceMapped<AnnotatedFnDecl>>,
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
     ) -> Result<InitMethod, Vec<Error>> {
