@@ -1,9 +1,9 @@
 use std::ops::Deref;
 use swc_common::SourceMap;
-use swc_ecma_ast::{ClassDecl, Decl, Expr, Module, ModuleDecl, ModuleItem, Stmt};
+use swc_ecma_ast::{ClassDecl, Decl, Module, ModuleDecl, ModuleItem, Stmt};
 
 use crate::{
-    traits::GetName,
+    traits::GetOptionalName,
     ts_ast::{Program, SourceMapped},
     SymbolTable,
 };
@@ -64,8 +64,8 @@ impl GetServiceClassDecls for Module {
             if let Some(decl) = decl_opt {
                 if let Decl::Class(class_decl) = decl {
                     if let Some(super_class) = &class_decl.class.super_class {
-                        if let Expr::Ident(ident) = &**super_class {
-                            if symbol_table.service.contains(&ident.get_name()) {
+                        if let Some(name) = super_class.get_name() {
+                            if symbol_table.service.contains(&name) {
                                 acc.push(SourceMapped::new(class_decl, source_map, symbol_table))
                             }
                         }

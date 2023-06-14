@@ -37,6 +37,8 @@ impl GetOptionalName for Expr {
             Expr::Call(call) => call.callee.as_expr()?.get_name(),
             Expr::Member(member) => member.get_name(),
             Expr::Ident(ident) => Some(ident.get_name()),
+            Expr::Class(class) => Some(class.ident.clone()?.get_name()),
+            Expr::Fn(func) => Some(func.ident.clone()?.get_name()),
             _ => None,
         }
     }
