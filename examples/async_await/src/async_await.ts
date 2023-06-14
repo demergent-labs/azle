@@ -66,3 +66,8 @@ async function getRandomnessLevel2(): Promise<Result<blob, string>> {
 async function getRandomness(): Promise<Result<blob, string>> {
     return await managementCanister.raw_rand().call();
 }
+
+$update;
+export async function returnPromiseVoid(): Promise<void> {
+    await managementCanister.raw_rand().call();
+}

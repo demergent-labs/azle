@@ -38,6 +38,16 @@ export function get_tests(
                     Ok: result.length === 96
                 };
             }
+        },
+        {
+            name: 'return promise void',
+            test: async () => {
+                const result = await async_await_canister.returnPromiseVoid();
+
+                return {
+                    Ok: result === null
+                };
+            }
         }
     ];
 }

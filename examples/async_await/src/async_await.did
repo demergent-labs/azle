@@ -2,4 +2,5 @@ service : () -> {
   getRandomnessDirectly : () -> (vec nat8);
   getRandomnessIndirectly : () -> (vec nat8);
   getRandomnessSuperIndirectly : () -> (vec nat8);
+  returnPromiseVoid : () -> (null);
 }
