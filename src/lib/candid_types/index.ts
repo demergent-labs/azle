@@ -48,6 +48,7 @@ export type float64 = number;
 
 /**
  * Represents all whole numbers
+ *
  * See https://internetcomputer.org/docs/current/references/candid-ref#type-int
  */
 export type int = bigint;
@@ -141,6 +142,16 @@ export const Opt = {
 
 /**
  * An unordered heterogeneous collection of labeled values.
+ *
+ * @example
+ * ```ts
+ * type Address = Record<{
+ *   street: string,
+ *   city: string,
+ *   zipCode: nat,
+ *   country: string
+ * }>
+ * ```
  *
  * See https://internetcomputer.org/docs/current/references/candid-ref#type-record--n--t--
  */

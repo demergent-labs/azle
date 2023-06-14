@@ -45,7 +45,7 @@ export {
     Variant,
     Vec
 } from './candid_types';
-export { Oneway, Query, Update } from './candid_types/func';
+export { Oneway, Query, Update, FuncSignature } from './candid_types/func';
 export { match } from './candid_types/variant';
 export { serviceQuery, serviceUpdate } from './candid_types/service';
 export { CallResult, FinalCallResult, GuardResult, Result } from './results';

@@ -26,6 +26,25 @@ export type RequireExactlyOne<
 }[KeysType] &
     Omit<ObjectType, KeysType>;
 
+/**
+ * Represent a value that is from exactly one of the given cases or tags. If a
+ * tag does not carry data it is idiomatic to use the `null` type.
+ *
+ * @example
+ * ```ts
+ * type Shape = Variant<{
+ *   Dot: null,
+ *   Circle: float64,
+ *   Rectangle: Record<{
+ *     width: float64,
+ *     height: float64
+ *   }>,
+ *   '💬': string
+ * }>
+ * ```
+ *
+ * See https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--
+ */
 export type Variant<T extends object> = RequireExactlyOne<T>;
 
 type UnVariant<T extends object> = UnionToIntersection<
@@ -48,6 +67,22 @@ type Matcher<T extends object, R> =
 
 type PropertyValueType<T> = T[keyof T];
 
+/**
+ * Utility function for handling {@link Variant}s
+ * @param variant the variant to be checked
+ * @param matcher a mapping of variant tags to handler functions
+ * @returns the return value of the matched handler function
+ *
+ * @example
+ * ```ts
+ * const result: Result<string, string> = { Ok: 'okValue' };
+ *
+ * const message: string = match(result, {
+ *   Ok: (ok) => `The ok value was ${ok}`,
+ *   Err: (err) => `The error value was ${err}`
+ * });
+ * ```
+ */
 export function match<U extends Matcher<T, any>, T extends object>(
     variant: T,
     matcher: U
