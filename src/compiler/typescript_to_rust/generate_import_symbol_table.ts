@@ -1,6 +1,17 @@
 import { SymbolTable, SymbolTables } from '../utils/types';
 import * as ts from 'typescript';
 
+const FILES_OF_INTEREST = [
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/import_coverage.ts'
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/azle_wrapper.ts',
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/fruit.ts',
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deep.ts',
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deeper.ts',
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deepest.ts',
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/shallow.ts',
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/index.ts'
+];
+
 export function generateImportSymbolTable(files: string[]): SymbolTables {
     return files.reduce((accumulator: SymbolTables, filename: string) => {
         accumulator[filename] = createSymbolTableFromFileName(filename);
@@ -20,6 +31,11 @@ function createSymbolTableFromFileName(filename: string): SymbolTable {
     let tsSymbolTable = getSymbolTable(filename, program);
     if (tsSymbolTable) {
         let symbolTable = createSymbolTable(tsSymbolTable, program);
+        if (FILES_OF_INTEREST.includes(filename) && false) {
+            console.log('Symbol Table for:');
+            console.log(filename);
+            console.log(symbolTable);
+        }
         return symbolTable;
     }
 
@@ -114,18 +130,34 @@ function getAzleEquivalent(
     return;
 }
 
-function processImportExportSpecifier(
+function getDeclarationFromSpecifier(
+    specifier: ts.ExportSpecifier | ts.ImportSpecifier
+): ts.ImportDeclaration | ts.ExportDeclaration {
+    if (ts.isImportSpecifier(specifier)) {
+        return specifier.parent.parent.parent;
+    } else {
+        return specifier.parent.parent;
+    }
+}
+
+function getDeclarationFromNamespace(
+    namespace: ts.NamespaceImport | ts.NamespaceExport
+): ts.ImportDeclaration | ts.ExportDeclaration {
+    if (ts.isNamespaceImport(namespace)) {
+        return namespace.parent.parent;
+    } else {
+        return namespace.parent;
+    }
+}
+
+function processImportExportSpecifierWithModuleSpecifier(
     original_name: ts.__String,
     specifier: ts.ExportSpecifier | ts.ImportSpecifier,
-    declaration: ts.ExportDeclaration | ts.ImportDeclaration,
     program: ts.Program
 ): SymbolTable | undefined {
-    let name: string;
-    if (!specifier.propertyName) {
-        name = specifier.name.text;
-    } else {
-        name = specifier.propertyName.text;
-    }
+    const name = getNameFromSpecifier(specifier);
+    const declaration = getDeclarationFromSpecifier(specifier);
+
     if (declaration.moduleSpecifier !== undefined) {
         return getAzleEquivalent(
             original_name,
@@ -136,19 +168,41 @@ function processImportExportSpecifier(
     }
 }
 
+function getNameFromSpecifier(
+    specifier: ts.ExportSpecifier | ts.ImportSpecifier
+): string {
+    if (!specifier.propertyName) {
+        return specifier.name.text;
+    } else {
+        return specifier.propertyName.text;
+    }
+}
+
 function processExportSpecifier(
     originalName: ts.__String,
-    declaration: ts.ExportSpecifier,
+    exportSpecifier: ts.ExportSpecifier,
     program: ts.Program
 ): SymbolTable | undefined {
-    const exportSpecifier = declaration as ts.ExportSpecifier;
-    const exportDecl = exportSpecifier.parent.parent;
-    return processImportExportSpecifier(
-        originalName,
-        declaration,
-        exportDecl,
-        program
-    );
+    const exportDecl = getDeclarationFromSpecifier(exportSpecifier);
+    if (exportDecl.moduleSpecifier) {
+        return processImportExportSpecifierWithModuleSpecifier(
+            originalName,
+            exportSpecifier,
+            program
+        );
+    }
+    // Symbol is not from another module so we will find it locally
+    let name = getNameFromSpecifier(exportSpecifier);
+    let sourceFile = getSourceFile(exportSpecifier);
+    if (sourceFile) {
+        let symbolTable = getSymbolTableFromSourceFile(sourceFile, program);
+        if (symbolTable) {
+            let symbol = symbolTable.get(name as ts.__String);
+            if (symbol) {
+                return processSymbol(originalName, symbol, program);
+            }
+        }
+    }
 }
 
 function processExportAssignment(
@@ -177,11 +231,9 @@ function processImportSpecifier(
     declaration: ts.ImportSpecifier,
     program: ts.Program
 ): SymbolTable | undefined {
-    const importDeclaration = declaration.parent.parent.parent;
-    return processImportExportSpecifier(
+    return processImportExportSpecifierWithModuleSpecifier(
         originalName,
         declaration,
-        importDeclaration,
         program
     );
 }
@@ -243,7 +295,7 @@ function processTypeAliasDeclaration(
                 if (!ts.isNamespaceImport(namespace)) {
                     return;
                 }
-                let namespaceSymbolTable = getSymbolTableForNamespaceImport(
+                let namespaceSymbolTable = getSymbolTableForNamespace(
                     namespace,
                     program
                 );
@@ -275,12 +327,24 @@ function processTypeAliasDeclaration(
     // TODO what else could this be??
 }
 
-function getSymbolTableForNamespaceImport(
-    namespaceImport: ts.NamespaceImport,
+function getSymbolTableForNamespace(
+    namespace: ts.NamespaceImport | ts.NamespaceExport,
     program: ts.Program
 ): ts.SymbolTable | undefined {
-    let importDeclaration = namespaceImport.parent.parent;
-    let moduleSpecifier = importDeclaration.moduleSpecifier as ts.StringLiteral;
+    let declaration = getDeclarationFromNamespace(namespace);
+    return getSymbolTableForDeclaration(declaration, program);
+}
+
+function getSymbolTableForDeclaration(
+    declaration: ts.ExportDeclaration | ts.ImportDeclaration,
+    program: ts.Program
+): ts.SymbolTable | undefined {
+    if (!declaration.moduleSpecifier) {
+        // Unreachable: An export declaration with a namespace export will always have a FromClause
+        // https://262.ecma-international.org/13.0/#sec-exports
+        return;
+    }
+    let moduleSpecifier = declaration.moduleSpecifier as ts.StringLiteral;
     const typeChecker = program.getTypeChecker();
     const namespacedSymbol = typeChecker.getSymbolAtLocation(moduleSpecifier);
     if (!namespacedSymbol) {
@@ -289,21 +353,52 @@ function getSymbolTableForNamespaceImport(
     return namespacedSymbol.exports;
 }
 
-function processNamespaceImport(
-    declaration: ts.NamespaceImport,
+function processExportDeclaration(
+    declaration: ts.ExportDeclaration,
     program: ts.Program
 ): SymbolTable | undefined {
-    let importDeclaration = declaration.parent.parent;
+    let moduleSpecifier = declaration.moduleSpecifier;
+    if (!moduleSpecifier || !ts.isStringLiteral(moduleSpecifier)) {
+        console.log("I'm not sure if this is going to be true in this case");
+        // Unreachable: An export declaration with a namespace export will always have a FromClause
+        // https://262.ecma-international.org/13.0/#sec-exports
+        return;
+    }
+    if (declaration.exportClause) {
+        console.log(
+            'I think if we get an export clause then we should be handling this' +
+                "somewhere else. I only want things like export * from 'thing'"
+        );
+        return;
+    }
+    if (moduleSpecifier.text == 'azle') {
+        return createDefaultSymbolTable();
+    }
+    let namespacedSymbolTable = getSymbolTableForDeclaration(
+        declaration,
+        program
+    );
+    if (!namespacedSymbolTable) {
+        return;
+    }
+    return createSymbolTable(namespacedSymbolTable, program);
+}
+
+function processNamespaceImportExport(
+    namespace: ts.NamespaceImport | ts.NamespaceExport,
+    program: ts.Program
+): SymbolTable | undefined {
+    let importDeclaration = getDeclarationFromNamespace(namespace);
     let moduleSpecifier = importDeclaration.moduleSpecifier as ts.StringLiteral;
     if (moduleSpecifier.text == 'azle') {
         let subSymbolTable = createDefaultSymbolTable();
         // TODO process this symbol table the same, then modify it such that every entry has name.whatever
-        return appendStringToSymbolTableEntries(subSymbolTable, 'azle.');
+        return appendStringToSymbolTableEntries(
+            subSymbolTable,
+            `${namespace.name.text}.`
+        );
     }
-    let namespacedSymbolTable = getSymbolTableForNamespaceImport(
-        declaration,
-        program
-    );
+    let namespacedSymbolTable = getSymbolTableForNamespace(namespace, program);
     if (!namespacedSymbolTable) {
         return;
     }
@@ -311,7 +406,7 @@ function processNamespaceImport(
     // process this symbol table the same, then modify it such that every entry has name.whatever
     return appendStringToSymbolTableEntries(
         subSymbolTable,
-        `${declaration.name.text}.`
+        `${namespace.name.text}.`
     );
 }
 
@@ -363,12 +458,22 @@ function processSymbol(
 ): SymbolTable | undefined {
     const declarations = symbol.declarations;
     if (!declarations) {
+        console.log("I guess we don't have declarations");
         return; // We need one declaration. If there isn't one then it can't be an export from azle right?
     }
     if (declarations.length !== 1) {
+        // console.log('Did we finally find a long declaration?');
         return; // TODO I don't know what to do if there are multiple declarations
     }
     const declaration = declarations[0];
+    let sourceFile = getSourceFile(declaration);
+    if (sourceFile) {
+        if (FILES_OF_INTEREST.includes(sourceFile.fileName) && false) {
+            console.log(`Analyzing: ${ts.SyntaxKind[declaration.kind]}`);
+            console.log(sourceFile?.fileName);
+            console.log(declaration.getText(sourceFile));
+        }
+    }
     switch (declaration.kind) {
         case ts.SyntaxKind.ExportSpecifier:
             return processExportSpecifier(
@@ -402,10 +507,29 @@ function processSymbol(
                 program
             );
         case ts.SyntaxKind.NamespaceImport:
-            return processNamespaceImport(
+            return processNamespaceImportExport(
                 declaration as ts.NamespaceImport,
                 program
             );
+        case ts.SyntaxKind.NamespaceExport:
+            return processNamespaceImportExport(
+                declaration as ts.NamespaceExport,
+                program
+            );
+        case ts.SyntaxKind.ExportDeclaration:
+            return processExportDeclaration(
+                declaration as ts.ExportDeclaration,
+                program
+            );
+        default:
+            let sourceFile = getSourceFile(declaration);
+            if (sourceFile) {
+                if (FILES_OF_INTEREST.includes(sourceFile.fileName)) {
+                    console.log(`MISSING: ${ts.SyntaxKind[declaration.kind]}`);
+                    console.log(sourceFile?.fileName);
+                    console.log(declaration.getText(sourceFile));
+                }
+            }
     }
 }
 
