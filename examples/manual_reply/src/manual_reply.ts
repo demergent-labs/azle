@@ -100,6 +100,11 @@ export function updateNull(): Manual<null> {
 }
 
 $update;
+export function updateVoid(): Manual<void> {
+    ic.reply(undefined);
+}
+
+$update;
 export function updateRecord(): Manual<Element> {
     const element: Element = {
         id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
@@ -186,6 +191,11 @@ export function queryNat(): Manual<nat> {
 $query;
 export function queryNull(): Manual<null> {
     ic.reply(null);
+}
+
+$query;
+export function queryVoid(): Manual<void> {
+    ic.reply(undefined);
 }
 
 $query;
