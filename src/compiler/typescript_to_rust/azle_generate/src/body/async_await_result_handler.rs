@@ -91,6 +91,7 @@ fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
         },
         name.clone(),
     );
+
     quote!(
         #name => {
             let reply_value: (#return_type) = js_value.clone().try_from_vm_value(&mut *boa_context).unwrap();

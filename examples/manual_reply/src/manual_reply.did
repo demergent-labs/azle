@@ -23,6 +23,7 @@ service : () -> {
   queryReserved : () -> (reserved) query;
   queryString : () -> (text) query;
   queryVariant : () -> (Gas) query;
+  queryVoid : () -> (null) query;
   replyRaw : () -> (ManualReply_1);
   updateBlob : () -> (vec nat8);
   updateFloat32 : () -> (float32);
@@ -34,4 +35,5 @@ service : () -> {
   updateReserved : () -> (reserved);
   updateString : () -> (text);
   updateVariant : () -> (Gas);
+  updateVoid : () -> (null);
 }
