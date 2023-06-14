@@ -2,11 +2,16 @@ type User = record {
   id : text;
   age : nat;
   name : text;
-  something : nat;
+  something : nat64;
   something_else : int;
 };
 service : () -> {
-  "record" : () -> (User);
+  "record" : () -> (User) query;
+  returnFathomlessService : () -> (
+      service { query1 : () -> (bool) query; update1 : () -> (text) },
+    ) query;
+  returnWeird : () -> (int64) query;
+  returnsVec : () -> (vec vec nat8) query;
   simpleQuery : () -> (text);
-  thing : () -> (int);
+  thing : () -> (int) query;
 }

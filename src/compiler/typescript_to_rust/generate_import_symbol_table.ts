@@ -28,10 +28,10 @@ function createSymbolTableFromFileName(filename: string): SymbolTable {
         return createEmptySymbolTable();
     }
 
-    let tsSymbolTable = getSymbolTable(filename, program);
+    const tsSymbolTable = getSymbolTable(filename, program);
     if (tsSymbolTable) {
-        let symbolTable = createSymbolTable(tsSymbolTable, program);
-        if (FILES_OF_INTEREST.includes(filename)) {
+        const symbolTable = createSymbolTable(tsSymbolTable, program);
+        if (FILES_OF_INTEREST.includes(filename) && false) {
             console.log('Symbol Table for:');
             console.log(filename);
             console.log(symbolTable);
@@ -106,9 +106,9 @@ function getAzleEquivalent(
     program: ts.Program
 ): SymbolTable | undefined {
     if (moduleSpecifier.text === 'azle') {
-        let symbolTable = createEmptySymbolTable();
+        const symbolTable = createEmptySymbolTable();
         try {
-            let key = stringToSymbolTableKey(name);
+            const key = stringToSymbolTableKey(name);
             symbolTable[key].push(originalName as string);
             return symbolTable;
         } catch {
@@ -116,13 +116,13 @@ function getAzleEquivalent(
             return;
         }
     }
-    let tsType = getTsTypeForImportDecl(moduleSpecifier, program);
+    const tsType = getTsTypeForImportDecl(moduleSpecifier, program);
     if (tsType) {
         const exports = tsType.symbol.exports;
         if (!exports) {
             return; // If the source doesn't export anything then what it can't export anything from azle
         }
-        let symbol = exports.get(name as ts.__String);
+        const symbol = exports.get(name as ts.__String);
         if (symbol) {
             return processSymbol(originalName, symbol, program);
         }
@@ -159,18 +159,6 @@ function processImportExportSpecifierWithModuleSpecifier(
     const declaration = getDeclarationFromSpecifier(specifier);
 
     if (declaration.moduleSpecifier !== undefined) {
-        if (debug) {
-            let result = getAzleEquivalent(
-                originalName,
-                name as ts.__String,
-                declaration.moduleSpecifier as ts.StringLiteral,
-                program
-            );
-            console.log(`Azle Eq for ${originalName} is ${result}`);
-            console.log(result);
-            console.log(`End Azle Eq`);
-        }
-
         return getAzleEquivalent(
             originalName,
             name as ts.__String,
@@ -204,14 +192,38 @@ function processExportSpecifier(
         );
     }
     // Symbol is not from another module so we will find it locally
-    let name = getNameFromSpecifier(exportSpecifier);
-    let sourceFile = getSourceFile(exportSpecifier);
+    const name = getNameFromSpecifier(exportSpecifier);
+    const sourceFile = getSourceFile(exportSpecifier);
+    if (debug) {
+        console.log('WE ARE IN FACT GOING THIS ROUTE');
+        console.log(
+            `The name is ${name} and the sourceFile is ${sourceFile?.fileName}`
+        );
+        console.log(exportSpecifier);
+    }
     if (sourceFile) {
-        let symbolTable = getSymbolTableFromSourceFile(sourceFile, program);
+        const symbolTable = getSymbolTableFromSourceFile(sourceFile, program);
         if (symbolTable) {
-            let symbol = symbolTable.get(name as ts.__String);
+            const symbol = symbolTable.get(name as ts.__String);
             if (symbol) {
-                return processSymbol(originalName, symbol, program);
+                const result = processSymbol(originalName, symbol, program);
+                if (result) {
+                    if (exportSpecifier.propertyName) {
+                        if (debug) {
+                            console.log(result);
+                            const debug_result = renameSymbolTable(
+                                result,
+                                exportSpecifier.name.text
+                            );
+                            console.log(debug_result);
+                        }
+                        return renameSymbolTable(
+                            result,
+                            exportSpecifier.name.text
+                        );
+                    }
+                    return result;
+                }
             }
         }
     }
@@ -225,18 +237,15 @@ function processExportAssignment(
     const exportAssignment = declaration as ts.ExportAssignment;
     const exportName = exportAssignment.expression as ts.Identifier;
     // We need to look that up in the locals
-    let sourceFile = exportAssignment.parent;
+    const sourceFile = exportAssignment.parent;
     if (!('locals' in sourceFile)) {
         // TODO what if there is no locals
         return;
     }
-    let symbolTable = sourceFile.locals as ts.SymbolTable;
-    let symbol = symbolTable.get(exportName.text as ts.__String);
+    const symbolTable = sourceFile.locals as ts.SymbolTable;
+    const symbol = symbolTable.get(exportName.text as ts.__String);
     if (!symbol) {
         return; // TODO can't find symbol
-    }
-    if (debug) {
-        console.log(symbol);
     }
     return processSymbol(originalName, symbol, program);
 }
@@ -283,17 +292,17 @@ function processTypeAliasDeclaration(
     declaration: ts.TypeAliasDeclaration,
     program: ts.Program
 ): SymbolTable | undefined {
-    let sourceFile = getSourceFile(declaration);
+    const sourceFile = getSourceFile(declaration);
     if (!sourceFile) {
         // TODO couldn't find the sourceFile
         return;
     }
-    let symbolTable = getSymbolTableFromSourceFile(sourceFile, program);
+    const symbolTable = getSymbolTableFromSourceFile(sourceFile, program);
     if (!symbolTable) {
         // TODO couldn't get a symbol table
         return;
     }
-    let typeReference = declaration.type;
+    const typeReference = declaration.type;
     if (ts.isTypeReferenceNode(typeReference)) {
         const typeName = typeReference.typeName;
         if (ts.isQualifiedName(typeName)) {
@@ -306,11 +315,11 @@ function processTypeAliasDeclaration(
                 if (leftSymbol.declarations?.length != 1) {
                     return;
                 }
-                let namespace = leftSymbol.declarations[0];
+                const namespace = leftSymbol.declarations[0];
                 if (!ts.isNamespaceImport(namespace)) {
                     return;
                 }
-                let namespaceSymbolTable = getSymbolTableForNamespace(
+                const namespaceSymbolTable = getSymbolTableForNamespace(
                     namespace,
                     program
                 );
@@ -318,7 +327,7 @@ function processTypeAliasDeclaration(
                     // TODO there is no namespace symbol table
                     return;
                 }
-                let symbol = namespaceSymbolTable?.get(
+                const symbol = namespaceSymbolTable?.get(
                     typeName.right.text as ts.__String
                 );
                 if (!symbol) {
@@ -346,7 +355,7 @@ function getSymbolTableForNamespace(
     namespace: ts.NamespaceImport | ts.NamespaceExport,
     program: ts.Program
 ): ts.SymbolTable | undefined {
-    let declaration = getDeclarationFromNamespace(namespace);
+    const declaration = getDeclarationFromNamespace(namespace);
     return getSymbolTableForDeclaration(declaration, program);
 }
 
@@ -359,7 +368,7 @@ function getSymbolTableForDeclaration(
         // https://262.ecma-international.org/13.0/#sec-exports
         return;
     }
-    let moduleSpecifier = declaration.moduleSpecifier as ts.StringLiteral;
+    const moduleSpecifier = declaration.moduleSpecifier as ts.StringLiteral;
     const typeChecker = program.getTypeChecker();
     const namespacedSymbol = typeChecker.getSymbolAtLocation(moduleSpecifier);
     if (!namespacedSymbol) {
@@ -372,7 +381,7 @@ function processExportDeclaration(
     declaration: ts.ExportDeclaration,
     program: ts.Program
 ): SymbolTable | undefined {
-    let moduleSpecifier = declaration.moduleSpecifier;
+    const moduleSpecifier = declaration.moduleSpecifier;
     if (!moduleSpecifier || !ts.isStringLiteral(moduleSpecifier)) {
         console.log("I'm not sure if this is going to be true in this case");
         // Unreachable: An export declaration with a namespace export will always have a FromClause
@@ -389,7 +398,7 @@ function processExportDeclaration(
     if (moduleSpecifier.text == 'azle') {
         return createDefaultSymbolTable();
     }
-    let namespacedSymbolTable = getSymbolTableForDeclaration(
+    const namespacedSymbolTable = getSymbolTableForDeclaration(
         declaration,
         program
     );
@@ -403,37 +412,61 @@ function processNamespaceImportExport(
     namespace: ts.NamespaceImport | ts.NamespaceExport,
     program: ts.Program
 ): SymbolTable | undefined {
-    let importDeclaration = getDeclarationFromNamespace(namespace);
-    let moduleSpecifier = importDeclaration.moduleSpecifier as ts.StringLiteral;
+    const importDeclaration = getDeclarationFromNamespace(namespace);
+    const moduleSpecifier =
+        importDeclaration.moduleSpecifier as ts.StringLiteral;
     if (moduleSpecifier.text == 'azle') {
-        let subSymbolTable = createDefaultSymbolTable();
         // TODO process this symbol table the same, then modify it such that every entry has name.whatever
-        return appendStringToSymbolTableEntries(
-            subSymbolTable,
-            `${namespace.name.text}.`
+        return prependNamespaceToSymbolTable(
+            createDefaultSymbolTable(),
+            namespace
         );
     }
-    let namespacedSymbolTable = getSymbolTableForNamespace(namespace, program);
+    const namespacedSymbolTable = getSymbolTableForNamespace(
+        namespace,
+        program
+    );
     if (!namespacedSymbolTable) {
         return;
     }
-    let subSymbolTable = createSymbolTable(namespacedSymbolTable, program);
     // process this symbol table the same, then modify it such that every entry has name.whatever
-    return appendStringToSymbolTableEntries(
-        subSymbolTable,
-        `${namespace.name.text}.`
+    return prependNamespaceToSymbolTable(
+        createSymbolTable(namespacedSymbolTable, program),
+        namespace
     );
 }
 
-function appendStringToSymbolTableEntries(
+function prependNamespaceToSymbolTable(
     symbolTable: SymbolTable,
-    prependString: string
+    namespace: ts.NamespaceImport | ts.NamespaceExport
+): SymbolTable {
+    const prependString = namespace.name.text;
+    for (const propertyName in symbolTable) {
+        const propertyValue = symbolTable[propertyName as keyof SymbolTable];
+        if (Array.isArray(propertyValue)) {
+            for (let i = 0; i < propertyValue.length; i++) {
+                propertyValue[i] = `${prependString}.${propertyValue[i]}`;
+            }
+        }
+    }
+    return symbolTable;
+}
+
+function renameSymbolTable(
+    symbolTable: SymbolTable,
+    newPrefix: string
 ): SymbolTable {
     for (const propertyName in symbolTable) {
         const propertyValue = symbolTable[propertyName as keyof SymbolTable];
         if (Array.isArray(propertyValue)) {
             for (let i = 0; i < propertyValue.length; i++) {
-                propertyValue[i] = prependString + propertyValue[i];
+                const indexOfDotOperator = propertyValue[i].indexOf('.');
+                if (indexOfDotOperator !== -1) {
+                    propertyValue[i] = propertyValue[i].replace(
+                        /^[^.]+/,
+                        newPrefix
+                    );
+                }
             }
         }
     }
@@ -473,9 +506,9 @@ function processSymbol(
     symbol: ts.Symbol,
     program: ts.Program
 ): SymbolTable | undefined {
-    if (debug) {
-        console.log(`we are debugging ${symbol.name}`);
-    }
+    // if (debug) {
+    //     console.log(`we are debugging ${symbol.name}`);
+    // }
     const declarations = symbol.declarations;
     if (!declarations) {
         console.log("I guess we don't have declarations");
@@ -489,7 +522,7 @@ function processSymbol(
     if (debug) {
         console.log(`${symbol.name} is ${ts.SyntaxKind[declaration.kind]}`);
     }
-    let sourceFile = getSourceFile(declaration);
+    const sourceFile = getSourceFile(declaration);
     // if (sourceFile) {
     //     if (FILES_OF_INTEREST.includes(sourceFile.fileName) && false) {
     //         console.log(`Analyzing: ${ts.SyntaxKind[declaration.kind]}`);
@@ -502,18 +535,16 @@ function processSymbol(
             // {thing} or {thing as other}
             // as in `export {thing};` or
             // `export {thing as other};`
-            let thing = declaration.getText(sourceFile);
-            let isSpecifierOfInterest =
-                thing == 'deepStar as fathomlessStar || FALSE' ||
-                thing == 'deepDefault as fathomlessService';
+            const thing = declaration.getText(sourceFile);
+            const isSpecifierOfInterest = thing == 'deepStar as fathomlessStar';
             if (isSpecifierOfInterest) {
                 console.log(`Start debugging for ${thing}`);
                 debug = true;
             }
-            if (debug) {
-                console.log(`This should show for everyone: ${thing}`);
-            }
-            let result = processExportSpecifier(
+            // if (debug) {
+            //     console.log(`This should show for everyone: ${thing}`);
+            // }
+            const result = processExportSpecifier(
                 originalName,
                 declaration as ts.ExportSpecifier,
                 program
@@ -526,11 +557,11 @@ function processSymbol(
             return result;
         case ts.SyntaxKind.ExportAssignment:
             // export default thing
-            if (debug) {
-                console.log(
-                    `Export Assignment: ${declaration.getText(sourceFile)}`
-                );
-            }
+            // if (debug) {
+            //     console.log(
+            //         `Export Assignment: ${declaration.getText(sourceFile)}`
+            //     );
+            // }
             return processExportAssignment(
                 originalName,
                 declaration as ts.ExportAssignment,
@@ -548,11 +579,11 @@ function processSymbol(
             // {thing} or {thing as other}
             // as in `import {thing} from 'place'` or
             // `import {thing as other} from 'place'`
-            if (debug) {
-                console.log(
-                    `Import Specifier: ${declaration.getText(sourceFile)}`
-                );
-            }
+            // if (debug) {
+            //     console.log(
+            //         `Import Specifier: ${declaration.getText(sourceFile)}`
+            //     );
+            // }
             return processImportSpecifier(
                 originalName,
                 declaration as ts.ImportSpecifier,
@@ -589,7 +620,7 @@ function processSymbol(
             );
         default:
             if (sourceFile) {
-                if (FILES_OF_INTEREST.includes(sourceFile.fileName)) {
+                if (FILES_OF_INTEREST.includes(sourceFile.fileName) && false) {
                     console.log(`MISSING: ${ts.SyntaxKind[declaration.kind]}`);
                     console.log(sourceFile?.fileName);
                     console.log(declaration.getText(sourceFile));
