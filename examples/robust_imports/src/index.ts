@@ -18,7 +18,6 @@ import $icQuery, * as ic from './import_coverage';
 import * as starFruit from './fruit';
 import * as wrapper from './azle_wrapper';
 
-ic.fathomlessService;
 export type MyCoveredRecord = ic.CoveredRecord<{
     count: ic.fathomlessStar.DeepInt8;
     name: ic.text;
@@ -60,6 +59,8 @@ export function returnWeird(): ic.nat8 {
     return -10000n;
 }
 
+import { Service } from 'azle';
+
 class SomeService extends ic.fathomlessService {
     @ic.serviceQuery
     query1: () => ic.azle.CallResult<boolean>;
@@ -69,7 +70,7 @@ class SomeService extends ic.fathomlessService {
 }
 
 ic.azle.$query;
-export function returnFathomlessService(): ic.fathomlessService {
+export function returnFathomlessService(): SomeService {
     return new SomeService(
         ic.Principal.fromText(
             process.env.SOME_SERVICE_PRINCIPAL ??

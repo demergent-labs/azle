@@ -2,14 +2,14 @@ import { SymbolTable, SymbolTables } from '../utils/types';
 import * as ts from 'typescript';
 
 const FILES_OF_INTEREST = [
-    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/import_coverage.ts'
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/import_coverage.ts',
     // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/azle_wrapper.ts',
     // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/fruit.ts',
     // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deep.ts',
     // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deeper.ts',
     // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deepest.ts',
-    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/shallow.ts',
-    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/index.ts'
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/shallow.ts',
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/index.ts'
 ];
 
 export function generateImportSymbolTable(files: string[]): SymbolTables {
@@ -31,7 +31,7 @@ function createSymbolTableFromFileName(filename: string): SymbolTable {
     let tsSymbolTable = getSymbolTable(filename, program);
     if (tsSymbolTable) {
         let symbolTable = createSymbolTable(tsSymbolTable, program);
-        if (FILES_OF_INTEREST.includes(filename) && false) {
+        if (FILES_OF_INTEREST.includes(filename)) {
             console.log('Symbol Table for:');
             console.log(filename);
             console.log(symbolTable);
@@ -151,7 +151,7 @@ function getDeclarationFromNamespace(
 }
 
 function processImportExportSpecifierWithModuleSpecifier(
-    original_name: ts.__String,
+    originalName: ts.__String,
     specifier: ts.ExportSpecifier | ts.ImportSpecifier,
     program: ts.Program
 ): SymbolTable | undefined {
@@ -159,8 +159,20 @@ function processImportExportSpecifierWithModuleSpecifier(
     const declaration = getDeclarationFromSpecifier(specifier);
 
     if (declaration.moduleSpecifier !== undefined) {
+        if (debug) {
+            let result = getAzleEquivalent(
+                originalName,
+                name as ts.__String,
+                declaration.moduleSpecifier as ts.StringLiteral,
+                program
+            );
+            console.log(`Azle Eq for ${originalName} is ${result}`);
+            console.log(result);
+            console.log(`End Azle Eq`);
+        }
+
         return getAzleEquivalent(
-            original_name,
+            originalName,
             name as ts.__String,
             declaration.moduleSpecifier as ts.StringLiteral,
             program
@@ -222,6 +234,9 @@ function processExportAssignment(
     let symbol = symbolTable.get(exportName.text as ts.__String);
     if (!symbol) {
         return; // TODO can't find symbol
+    }
+    if (debug) {
+        console.log(symbol);
     }
     return processSymbol(originalName, symbol, program);
 }
@@ -451,11 +466,16 @@ function mergeSymbolTables(
     return mergedSymbolTable;
 }
 
+let debug = false;
+
 function processSymbol(
     originalName: ts.__String,
     symbol: ts.Symbol,
     program: ts.Program
 ): SymbolTable | undefined {
+    if (debug) {
+        console.log(`we are debugging ${symbol.name}`);
+    }
     const declarations = symbol.declarations;
     if (!declarations) {
         console.log("I guess we don't have declarations");
@@ -466,40 +486,81 @@ function processSymbol(
         return; // TODO I don't know what to do if there are multiple declarations
     }
     const declaration = declarations[0];
-    let sourceFile = getSourceFile(declaration);
-    if (sourceFile) {
-        if (FILES_OF_INTEREST.includes(sourceFile.fileName) && false) {
-            console.log(`Analyzing: ${ts.SyntaxKind[declaration.kind]}`);
-            console.log(sourceFile?.fileName);
-            console.log(declaration.getText(sourceFile));
-        }
+    if (debug) {
+        console.log(`${symbol.name} is ${ts.SyntaxKind[declaration.kind]}`);
     }
+    let sourceFile = getSourceFile(declaration);
+    // if (sourceFile) {
+    //     if (FILES_OF_INTEREST.includes(sourceFile.fileName) && false) {
+    //         console.log(`Analyzing: ${ts.SyntaxKind[declaration.kind]}`);
+    //         console.log(sourceFile?.fileName);
+    //         console.log(declaration.getText(sourceFile));
+    //     }
+    // }
     switch (declaration.kind) {
         case ts.SyntaxKind.ExportSpecifier:
-            return processExportSpecifier(
+            // {thing} or {thing as other}
+            // as in `export {thing};` or
+            // `export {thing as other};`
+            let thing = declaration.getText(sourceFile);
+            let isSpecifierOfInterest =
+                thing == 'deepStar as fathomlessStar || FALSE' ||
+                thing == 'deepDefault as fathomlessService';
+            if (isSpecifierOfInterest) {
+                console.log(`Start debugging for ${thing}`);
+                debug = true;
+            }
+            if (debug) {
+                console.log(`This should show for everyone: ${thing}`);
+            }
+            let result = processExportSpecifier(
                 originalName,
                 declaration as ts.ExportSpecifier,
                 program
             );
+            if (isSpecifierOfInterest) {
+                console.log(`End debugging for ${thing}`);
+                console.log('');
+                debug = false;
+            }
+            return result;
         case ts.SyntaxKind.ExportAssignment:
+            // export default thing
+            if (debug) {
+                console.log(
+                    `Export Assignment: ${declaration.getText(sourceFile)}`
+                );
+            }
             return processExportAssignment(
                 originalName,
                 declaration as ts.ExportAssignment,
                 program
             );
         case ts.SyntaxKind.ImportClause:
+            // thing
+            // as in `import thing from 'place'`
             return processImportClause(
                 originalName,
                 declaration as ts.ImportClause,
                 program
             );
         case ts.SyntaxKind.ImportSpecifier:
+            // {thing} or {thing as other}
+            // as in `import {thing} from 'place'` or
+            // `import {thing as other} from 'place'`
+            if (debug) {
+                console.log(
+                    `Import Specifier: ${declaration.getText(sourceFile)}`
+                );
+            }
             return processImportSpecifier(
                 originalName,
                 declaration as ts.ImportSpecifier,
                 program
             );
         case ts.SyntaxKind.TypeAliasDeclaration:
+            // export type AliasName = TypeName;
+            // type AliasName = TypeName;
             return;
             return processTypeAliasDeclaration(
                 originalName,
@@ -507,22 +568,26 @@ function processSymbol(
                 program
             );
         case ts.SyntaxKind.NamespaceImport:
+            // import * as thing from 'place'
             return processNamespaceImportExport(
                 declaration as ts.NamespaceImport,
                 program
             );
         case ts.SyntaxKind.NamespaceExport:
+            // export * as thing from 'place';
             return processNamespaceImportExport(
                 declaration as ts.NamespaceExport,
                 program
             );
         case ts.SyntaxKind.ExportDeclaration:
+            // Should look like export * from 'place';
+            // There are other export declarations, but the only ones that will
+            // be a symbol are these unnamed export from clauses
             return processExportDeclaration(
                 declaration as ts.ExportDeclaration,
                 program
             );
         default:
-            let sourceFile = getSourceFile(declaration);
             if (sourceFile) {
                 if (FILES_OF_INTEREST.includes(sourceFile.fileName)) {
                     console.log(`MISSING: ${ts.SyntaxKind[declaration.kind]}`);

@@ -2,7 +2,7 @@ use cdk_framework::{
     act::node::{candid::service::Method, node_parts::mode::Mode, CandidType, Param},
     traits::{CollectIterResults, CollectResults},
 };
-use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnParam, TsFnType, TsType};
+use swc_ecma_ast::{ClassProp, TsFnOrConstructorType, TsFnParam, TsFnType, TsType};
 
 pub use crate::canister_method::check_length_and_map::CheckLengthAndMapTwo;
 use crate::{
@@ -10,7 +10,7 @@ use crate::{
         ArrayDestructuringInParamsNotSupported, FunctionParamsMustHaveType,
         ObjectDestructuringNotSupported, RestParametersNotSupported,
     },
-    traits::{GetName, GetTsType},
+    traits::{GetName, GetOptionalName, GetTsType},
     ts_ast::SourceMapped,
     Error,
 };
@@ -36,12 +36,20 @@ impl SourceMapped<'_, ClassProp> {
             },
             self.name().map_err(Error::into),
             {
-                let mode = self.mode()?[..].to_string();
-                match mode.as_str() {
-                    _ if self.symbol_table.service_query_decorator.contains(&mode) => {
+                let decorator_name = self.get_decorator_name()?[..].to_string();
+                match decorator_name.as_str() {
+                    _ if self
+                        .symbol_table
+                        .service_query_decorator
+                        .contains(&decorator_name) =>
+                    {
                         Ok(Mode::Query)
                     }
-                    _ if self.symbol_table.service_update_decorator.contains(&mode) => {
+                    _ if self
+                        .symbol_table
+                        .service_update_decorator
+                        .contains(&decorator_name) =>
+                    {
                         Ok(Mode::Update)
                     }
                     _ => Err(vec![InvalidDecorator::from_class_prop(self).into()]),
@@ -69,8 +77,8 @@ impl SourceMapped<'_, ClassProp> {
 
     fn contains_decorator(&self, names: &Vec<String>) -> bool {
         self.decorators.iter().any(|decorator| {
-            if let Expr::Ident(ident) = &*decorator.expr {
-                return names.contains(&ident.get_name());
+            if let Some(name) = decorator.expr.get_name() {
+                return names.contains(&name);
             }
             false
         })
@@ -81,17 +89,15 @@ impl SourceMapped<'_, ClassProp> {
             || self.contains_decorator(&self.symbol_table.service_update_decorator)
     }
 
-    fn mode(&self) -> Result<String, Vec<Error>> {
+    fn get_decorator_name(&self) -> Result<String, Vec<Error>> {
         self.decorators.check_length_is_one_and_map(
             |decorators| NotExactlyOneDecorator::from_decorator_list(decorators, self).into(),
             |decorator| {
-                let mode = match decorator.expr.as_ident() {
-                    Some(ident) => ident,
-                    None => return Err(vec![InvalidDecorator::from_class_prop(self).into()]),
+                if let Some(decorator_name) = decorator.expr.get_name() {
+                    Ok(decorator_name)
+                } else {
+                    Err(vec![InvalidDecorator::from_class_prop(self).into()])
                 }
-                .get_name();
-
-                Ok(mode)
             },
         )
     }
