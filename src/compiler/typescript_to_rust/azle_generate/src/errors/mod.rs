@@ -193,6 +193,7 @@ impl From<CdkfError> for crate::Error {
             CdkfError::GuardFunctionNotFound(name) => {
                 crate::Error::GuardFunctionNotFound(GuardFunctionNotFound { name })
             }
+            _ => panic!("temp"),
         }
     }
 }
