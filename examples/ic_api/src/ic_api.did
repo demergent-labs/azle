@@ -8,6 +8,7 @@ service : () -> {
   dataCertificate : () -> (opt vec nat8) query;
   dataCertificateNull : () -> (opt vec nat8);
   id : () -> (principal) query;
+  instructionCounter : () -> (nat64) query;
   isController : (principal) -> (bool) query;
   performanceCounter : () -> (nat64) query;
   print : (text) -> (bool) query;

@@ -195,6 +195,16 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
+            name: 'instructionCounter',
+            test: async () => {
+                const result = await icApiCanister.instructionCounter();
+
+                return {
+                    Ok: result > 0n
+                };
+            }
+        },
+        {
             name: 'isController',
             test: async () => {
                 const principal = Principal.fromText(

@@ -178,6 +178,16 @@ type ic = {
      */
     id: () => Principal;
 
+    /**
+     * Returns the number of instructions that the canister executed since the
+     * last [entry point](
+     *   https://internetcomputer.org/docs/current/references/ic-interface-spec/#entry-points
+     * )
+     *
+     * @returns the number of instructions
+     */
+    instructionCounter: () => nat64;
+
     /** Determine if a {@link Principal} is a controller of the canister. */
     isController: (principal: Principal) => boolean;
 

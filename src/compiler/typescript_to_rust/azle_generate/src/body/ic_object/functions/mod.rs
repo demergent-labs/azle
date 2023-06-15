@@ -17,6 +17,7 @@ mod canister_version;
 mod clear_timer;
 mod data_certificate;
 mod id;
+mod instruction_counter;
 mod is_controller;
 mod method_name;
 mod msg_cycles_accept;
@@ -69,6 +70,7 @@ pub fn generate(
     let clear_timer = clear_timer::generate();
     let data_certificate = data_certificate::generate();
     let id = id::generate();
+    let instruction_counter = instruction_counter::generate();
     let is_controller = is_controller::generate();
     let method_name = method_name::generate();
     let msg_cycles_accept = msg_cycles_accept::generate();
@@ -117,6 +119,7 @@ pub fn generate(
         #clear_timer
         #data_certificate
         #id
+        #instruction_counter
         #is_controller
         #method_name
         #msg_cycles_accept

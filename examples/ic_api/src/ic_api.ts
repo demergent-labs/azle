@@ -112,6 +112,13 @@ export function id(): Principal {
     return ic.id();
 }
 
+// Returns the number of instructions executed just getting into JS and back to
+// make the call to the counter.
+$query;
+export function instructionCounter(): nat64 {
+    return ic.instructionCounter();
+}
+
 // determines whether the given principal is a controller of the canister
 $query;
 export function isController(principal: Principal): boolean {
