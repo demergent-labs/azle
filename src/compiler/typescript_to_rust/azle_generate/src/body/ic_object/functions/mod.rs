@@ -13,6 +13,7 @@ mod candid_decode;
 mod candid_encode;
 mod canister_balance;
 mod canister_balance128;
+mod canister_version;
 mod clear_timer;
 mod data_certificate;
 mod id;
@@ -64,6 +65,7 @@ pub fn generate(
     let candid_encode = candid_encode::generate();
     let canister_balance = canister_balance::generate();
     let canister_balance128 = canister_balance128::generate();
+    let canister_version = canister_version::generate();
     let clear_timer = clear_timer::generate();
     let data_certificate = data_certificate::generate();
     let id = id::generate();
@@ -111,6 +113,7 @@ pub fn generate(
         #candid_encode
         #canister_balance
         #canister_balance128
+        #canister_version
         #clear_timer
         #data_certificate
         #id

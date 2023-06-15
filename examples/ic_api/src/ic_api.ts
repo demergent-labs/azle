@@ -88,6 +88,12 @@ export function canisterBalance128(): nat {
     return ic.canisterBalance128();
 }
 
+// returns the canister's version number
+$query;
+export function canisterVersion(): nat {
+    return ic.canisterVersion();
+}
+
 // When called from a query call, returns the data certificate authenticating certified data set by this canister. Returns None if not called from a query call.
 $query;
 export function dataCertificate(): Opt<blob> {

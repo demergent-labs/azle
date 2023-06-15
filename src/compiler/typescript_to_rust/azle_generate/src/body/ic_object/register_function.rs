@@ -23,6 +23,7 @@ pub fn generate(ts_ast: &TsAst) -> Result<TokenStream, Vec<Error>> {
                 .function(boa_engine::NativeFunction::from_fn_ptr(candid_encode), "candidEncode", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(canister_balance), "canisterBalance", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(canister_balance128), "canisterBalance128", 0)
+                .function(boa_engine::NativeFunction::from_fn_ptr(canister_version), "canisterVersion", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(clear_timer), "clearTimer", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(data_certificate), "dataCertificate", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(id), "id", 0)

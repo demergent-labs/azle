@@ -4,6 +4,7 @@ service : () -> {
   caller : () -> (principal) query;
   canisterBalance : () -> (nat64) query;
   canisterBalance128 : () -> (nat) query;
+  canisterVersion : () -> (nat) query;
   dataCertificate : () -> (opt vec nat8) query;
   dataCertificateNull : () -> (opt vec nat8);
   id : () -> (principal) query;

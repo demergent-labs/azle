@@ -153,6 +153,12 @@ type ic = {
     canisterBalance128: () => nat;
 
     /**
+     * Returns the canister version number
+     *
+     * @returns the version number
+     */
+    canisterVersion: () => nat64;
+    /**
      * Cancels an existing timer. Does nothing if the timer has already been canceled.
      * @param id The ID of the timer to be cancelled.
      */

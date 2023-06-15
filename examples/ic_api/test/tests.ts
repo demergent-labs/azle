@@ -151,6 +151,16 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
+            name: 'canisterVersion',
+            test: async () => {
+                const result = await icApiCanister.canisterVersion();
+
+                return {
+                    Ok: result > 0n
+                };
+            }
+        },
+        {
             name: 'dataCertificate from a query call',
             test: async () => {
                 const result = await icApiCanister.dataCertificate();
