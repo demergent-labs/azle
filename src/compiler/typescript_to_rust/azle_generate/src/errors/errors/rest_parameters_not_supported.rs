@@ -26,7 +26,10 @@ impl RestParametersNotSupported {
         )
     }
 
-    pub fn from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl, rest_pat: &RestPat) -> Self {
+    pub fn from_annotated_fn_decl(
+        annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>,
+        rest_pat: &RestPat,
+    ) -> Self {
         Self::build(
             "Rest parameters are not supported in canister method signatures",
             annotated_fn_decl.source_map,

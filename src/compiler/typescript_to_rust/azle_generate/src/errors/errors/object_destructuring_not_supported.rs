@@ -25,7 +25,7 @@ impl ObjectDestructuringNotSupported {
     }
 
     pub fn from_annotated_fn_decl(
-        annotated_fn_decl: &AnnotatedFnDecl,
+        annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>,
         object_pat: &ObjectPat,
     ) -> Self {
         Self::build(annotated_fn_decl.source_map, object_pat)
@@ -76,8 +76,6 @@ impl std::fmt::Display for ObjectDestructuringNotSupported {
         write!(f, "{}", self.build_object_destructure_error_msg())
     }
 }
-
-impl AnnotatedFnDecl<'_> {}
 
 fn create_suggestion_modification(
     range: (usize, usize),

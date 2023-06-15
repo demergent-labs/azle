@@ -43,10 +43,7 @@ impl SourceMapped<'_, NewExpr> {
                                 .check_length_and_map(
                                     type_args.params.len() == 2,
                                     |_| IncorrectTypeArgs::from_new_expr(self).into(),
-                                    |param| {
-                                        SourceMapped::new(param.deref(), self.source_map)
-                                            .to_candid_type()
-                                    },
+                                    |param| self.spawn(param.deref()).to_candid_type(),
                                 )
                                 .collect_results(),
                             // Get memory id and max key and value size from the call arguments

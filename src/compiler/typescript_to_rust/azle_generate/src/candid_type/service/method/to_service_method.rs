@@ -38,10 +38,17 @@ impl SourceMapped<'_, ClassProp> {
                 Ok(())
             },
             self.name().map_err(Error::into),
-            match &self.mode()?[..] {
-                "serviceQuery" => Ok(Mode::Query),
-                "serviceUpdate" => Ok(Mode::Update),
-                _ => Err(vec![InvalidDecorator::from_class_prop(self).into()]),
+            {
+                let mode = self.mode()?[..].to_string();
+                match mode.as_str() {
+                    _ if self.symbol_table.service_query_decorator.contains(&mode) => {
+                        Ok(Mode::Query)
+                    }
+                    _ if self.symbol_table.service_update_decorator.contains(&mode) => {
+                        Ok(Mode::Update)
+                    }
+                    _ => Err(vec![InvalidDecorator::from_class_prop(self).into()]),
+                }
             },
             self.build_act_fn_params(),
             self.build_return_type(),
@@ -59,21 +66,22 @@ impl SourceMapped<'_, ClassProp> {
 
     fn build_return_type(&self) -> Result<CandidType, Vec<Error>> {
         let return_ts_type = self.return_ts_type()?;
-        let candid_type = SourceMapped::new(&return_ts_type, self.source_map).to_candid_type()?;
+        let candid_type = self.spawn(&return_ts_type).to_candid_type()?;
         Ok(candid_type)
     }
 
-    fn contains_decorator(&self, name: &str) -> bool {
+    fn contains_decorator(&self, names: &Vec<String>) -> bool {
         self.decorators.iter().any(|decorator| {
             if let Expr::Ident(ident) = &*decorator.expr {
-                return ident.get_name() == name;
+                return names.contains(&ident.get_name().to_string());
             }
             false
         })
     }
 
     fn has_azle_decorator(&self) -> bool {
-        self.contains_decorator("serviceQuery") || self.contains_decorator("serviceUpdate")
+        self.contains_decorator(&self.symbol_table.service_query_decorator)
+            || self.contains_decorator(&self.symbol_table.service_update_decorator)
     }
 
     fn mode(&self) -> Result<String, Vec<Error>> {
@@ -110,13 +118,15 @@ impl SourceMapped<'_, ClassProp> {
         let ts_fn_type = self.ts_fn_type()?;
         match &*ts_fn_type.type_ann.type_ann {
             TsType::TsTypeRef(ts_type_ref) => {
-                if "CallResult"
-                    != match &ts_type_ref.type_name {
+                if !self
+                    .symbol_table
+                    .call_result
+                    .contains(&match &ts_type_ref.type_name {
                         swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
                             return Err(NamespaceQualifiedType::from_class_prop(self).into())
                         }
                         swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name().to_string(),
-                    }
+                    })
                 {
                     return Err(MissingCallResultAnnotation::from_class_prop(self).into());
                 }
@@ -142,9 +152,7 @@ impl SourceMapped<'_, ClassProp> {
             Some(type_ann) => match &*type_ann.type_ann {
                 TsType::TsFnOrConstructorType(fn_or_constructor_type) => {
                     match fn_or_constructor_type {
-                        TsFnOrConstructorType::TsFnType(ts_fn_type) => {
-                            Ok(SourceMapped::new(ts_fn_type, self.source_map))
-                        }
+                        TsFnOrConstructorType::TsFnType(ts_fn_type) => Ok(self.spawn(ts_fn_type)),
                         TsFnOrConstructorType::TsConstructorType(_) => {
                             return Err(InvalidReturnType::from_class_prop(self).into())
                         }
@@ -166,8 +174,7 @@ impl SourceMapped<'_, TsFnType> {
                     let name = identifier.get_name().to_string();
                     let candid_type = match &identifier.type_ann {
                         Some(ts_type_ann) => {
-                            SourceMapped::new(&ts_type_ann.get_ts_type(), self.source_map)
-                                .to_candid_type()?
+                            self.spawn(&ts_type_ann.get_ts_type()).to_candid_type()?
                         }
                         None => {
                             return Err(vec![Into::<Error>::into(

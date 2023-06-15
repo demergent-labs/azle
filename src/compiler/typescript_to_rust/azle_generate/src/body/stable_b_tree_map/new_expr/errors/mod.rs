@@ -20,12 +20,13 @@ pub fn build_type_arg_error_message(
     source: &str,
     location: &Location,
 ) -> CompilerOutput {
-    let range = (
-        // UNWRAP HERE
-        source.find("StableBTreeMap").unwrap() + "StableBTreeMap".len(),
-        // UNWRAP HERE
-        source.find("(").unwrap(),
-    );
+    // let range = (
+    //     // UNWRAP HERE // TODO this will be made more complicated by robust imports
+    //     source.find("StableBTreeMap").unwrap() + "StableBTreeMap".len(),
+    //     // UNWRAP HERE
+    //     source.find("(").unwrap(),
+    // );
+    let range = (0, 0); // TODO figure out a dynamic way to get the range with the symbol table instead of the string literal "StableBTreeMap"
     let annotation = "expected exactly 2 type arguments here".to_string();
     let help = "specify a key and value type. E.g.:".to_string();
     let suggestion = "<KeyType, ValueType>".to_string();

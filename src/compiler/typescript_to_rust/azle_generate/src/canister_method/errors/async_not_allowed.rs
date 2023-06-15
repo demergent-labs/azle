@@ -4,6 +4,7 @@ use crate::{
     canister_method::AnnotatedFnDecl,
     errors::{CompilerOutput, InternalError, Location, Suggestion},
     traits::GetSourceFileInfo,
+    ts_ast::SourceMapped,
     Error,
 };
 
@@ -24,7 +25,9 @@ pub struct AsyncNotAllowed {
 }
 
 impl AsyncNotAllowed {
-    pub fn error_from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl) -> Error {
+    pub fn error_from_annotated_fn_decl(
+        annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>,
+    ) -> Error {
         let annotation = match annotated_fn_decl.annotation.method_type {
             CanisterMethodType::Heartbeat => "$heartbeat",
             CanisterMethodType::Init => "$init",

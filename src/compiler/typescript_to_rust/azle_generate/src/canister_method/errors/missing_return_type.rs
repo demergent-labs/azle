@@ -2,6 +2,7 @@ use crate::{
     canister_method::AnnotatedFnDecl,
     errors::{CompilerOutput, Location, Suggestion},
     traits::{GetName, GetSourceFileInfo},
+    ts_ast::SourceMapped,
 };
 
 /// Returned when Azle detects a canister method that doesn't specify a return type.
@@ -21,7 +22,7 @@ pub struct MissingReturnTypeAnnotation {
 }
 
 impl MissingReturnTypeAnnotation {
-    pub fn from_annotated_fn_decl(annotated_fn_decl: &AnnotatedFnDecl) -> Self {
+    pub fn from_annotated_fn_decl(annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>) -> Self {
         let span = annotated_fn_decl.fn_decl.function.span;
 
         let function_name = annotated_fn_decl.fn_decl.ident.get_name().to_string();

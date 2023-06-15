@@ -32,6 +32,6 @@ impl SourceMapped<'_, TsPropertySignature> {
             }
         };
 
-        SourceMapped::new(&ts_type, self.source_map).to_candid_type()
+        self.spawn(&ts_type).to_candid_type()
     }
 }

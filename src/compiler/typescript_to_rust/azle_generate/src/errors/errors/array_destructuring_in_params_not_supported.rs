@@ -25,7 +25,7 @@ impl ArrayDestructuringInParamsNotSupported {
     }
 
     pub fn from_annotated_fn_decl(
-        annotated_fn_decl: &AnnotatedFnDecl,
+        annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>,
         array_pat: &ArrayPat,
     ) -> Self {
         Self::build(annotated_fn_decl.source_map, array_pat)

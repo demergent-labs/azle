@@ -1,10 +1,11 @@
 use crate::{
     canister_method::{rust, AnnotatedFnDecl},
+    ts_ast::SourceMapped,
     Error,
 };
 
 pub fn generate(
-    heartbeat_fn_decl: &AnnotatedFnDecl,
+    heartbeat_fn_decl: &SourceMapped<AnnotatedFnDecl>,
 ) -> Result<proc_macro2::TokenStream, Vec<Error>> {
     let call_to_heartbeat_js_function = rust::generate_call_to_js_function(heartbeat_fn_decl)?;
 

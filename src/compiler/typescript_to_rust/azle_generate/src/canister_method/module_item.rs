@@ -2,12 +2,9 @@ use std::ops::Deref;
 
 use swc_ecma_ast::{ExprStmt, FnDecl, ModuleItem};
 
-use crate::{
-    canister_method::annotation::CANISTER_METHOD_ANNOTATIONS, traits::GetName,
-    ts_ast::SourceMapped, Error,
-};
+use crate::{traits::GetName, ts_ast::SourceMapped, Error};
 
-use super::Annotation;
+use super::{annotation::is_canister_method_annotation, Annotation};
 
 impl SourceMapped<'_, ModuleItem> {
     pub fn as_canister_method_annotation(&self) -> Option<Result<Annotation, Error>> {
@@ -22,7 +19,7 @@ impl SourceMapped<'_, ModuleItem> {
                     .and_then(|ident| Some(ident))
                     .or(expr_stmt.expr.as_ident())
                     .and_then(|ident| {
-                        if CANISTER_METHOD_ANNOTATIONS.contains(&ident.get_name()) {
+                        if is_canister_method_annotation(&ident.get_name(), self.symbol_table) {
                             Some(Annotation::from_module_item(self))
                         } else {
                             None

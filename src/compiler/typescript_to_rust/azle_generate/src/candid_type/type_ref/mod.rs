@@ -28,7 +28,7 @@ impl SourceMapped<'_, TsTypeRef> {
                     return Err(WrongNumberOfParams::error_from_ts_type_ref(self).into());
                 }
                 let inner_type = params.params[0].deref();
-                Ok(SourceMapped::new(inner_type, self.source_map))
+                Ok(self.spawn(inner_type))
             }
             None => return Err(WrongNumberOfParams::error_from_ts_type_ref(self).into()),
         }
@@ -39,9 +39,10 @@ impl SourceMapped<'_, TsTypeRef> {
             self.type_params
                 .iter()
                 .map(|type_params| {
-                    type_params.params.iter().map(|param| {
-                        SourceMapped::new(param.deref(), self.source_map).to_candid_type()
-                    })
+                    type_params
+                        .params
+                        .iter()
+                        .map(|param| self.spawn(param.deref()).to_candid_type())
                 })
                 .flatten()
                 .collect_results()
@@ -69,15 +70,25 @@ impl SourceMapped<'_, TsTypeRef> {
         if let Some(primitive) = self.to_primitive()? {
             return Ok(CandidType::Primitive(primitive));
         }
-        Ok(match self.get_name()? {
-            "Opt" => CandidType::Opt(self.to_option()?),
-            "Func" => CandidType::Func(self.to_func(None)?),
-            "Record" => CandidType::Record(self.to_record()?),
-            "Tuple" => CandidType::Tuple(self.to_tuple()?),
-            "Vec" => CandidType::Array(self.to_vec()?),
-            "Variant" => CandidType::Variant(self.to_variant()?),
-            _ => CandidType::TypeRef(self.to_type_ref()?),
-        })
+        if let Some(opt) = self.to_option()? {
+            return Ok(CandidType::Opt(opt));
+        }
+        if let Some(func) = self.to_func(None)? {
+            return Ok(CandidType::Func(func));
+        }
+        if let Some(record) = self.to_record()? {
+            return Ok(CandidType::Record(record));
+        }
+        if let Some(tuple) = self.to_tuple()? {
+            return Ok(CandidType::Tuple(tuple));
+        }
+        if let Some(variant) = self.to_variant()? {
+            return Ok(CandidType::Variant(variant));
+        }
+        if let Some(vec) = self.to_vec()? {
+            return Ok(CandidType::Array(vec));
+        }
+        Ok(CandidType::TypeRef(self.to_type_ref()?))
     }
 }
 

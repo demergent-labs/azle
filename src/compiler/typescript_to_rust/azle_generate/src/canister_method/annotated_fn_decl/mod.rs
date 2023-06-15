@@ -1,7 +1,6 @@
 use cdk_framework::act::node::canister_method::CanisterMethodType;
 use proc_macro2::Ident;
 use quote::format_ident;
-use swc_common::SourceMap;
 use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};
 
 use crate::{
@@ -15,6 +14,7 @@ use crate::{
     },
     internal_error,
     traits::GetName,
+    ts_ast::SourceMapped,
     Error,
 };
 
@@ -31,13 +31,12 @@ mod get_annotated_fn_decls;
 pub mod errors;
 
 #[derive(Clone)]
-pub struct AnnotatedFnDecl<'a> {
+pub struct AnnotatedFnDecl {
     pub annotation: Annotation,
     pub fn_decl: FnDecl,
-    pub source_map: &'a SourceMap,
 }
 
-impl AnnotatedFnDecl<'_> {
+impl SourceMapped<'_, AnnotatedFnDecl> {
     pub fn get_return_ts_type(&self) -> Result<&TsType, Error> {
         match &self.fn_decl.function.return_type {
             Some(ts_type_ann) => {
@@ -171,7 +170,10 @@ impl AnnotatedFnDecl<'_> {
 
         match return_type {
             TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-                TsEntityName::Ident(ident) => Ok(ident.get_name() == "Manual"),
+                TsEntityName::Ident(ident) => Ok(self
+                    .symbol_table
+                    .manual
+                    .contains(&ident.get_name().to_string())),
                 TsEntityName::TsQualifiedName(_) => {
                     return Err(QualifiedType::from_annotated_fn_decl(self, ts_type_ref).into())
                 }

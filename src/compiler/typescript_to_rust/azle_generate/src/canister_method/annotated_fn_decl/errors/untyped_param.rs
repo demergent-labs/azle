@@ -4,6 +4,7 @@ use crate::{
     canister_method::AnnotatedFnDecl,
     errors::{CompilerOutput, Location, Suggestion, SuggestionModifications},
     traits::GetSourceFileInfo,
+    ts_ast::SourceMapped,
 };
 
 #[derive(Debug, Clone, PartialEq)]
@@ -14,7 +15,7 @@ pub struct UntypedParam {
 
 impl UntypedParam {
     pub fn from_annotated_fn_decl(
-        annotated_fn_decl: &AnnotatedFnDecl,
+        annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>,
         binding_ident: &BindingIdent,
     ) -> Self {
         let range = annotated_fn_decl.source_map.get_range(binding_ident.span);

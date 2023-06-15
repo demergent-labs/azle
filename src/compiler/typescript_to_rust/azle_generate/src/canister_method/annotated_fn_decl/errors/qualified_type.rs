@@ -4,6 +4,7 @@ use crate::{
     canister_method::AnnotatedFnDecl,
     errors::{CompilerOutput, Location},
     traits::GetSourceFileInfo,
+    ts_ast::SourceMapped,
 };
 
 #[derive(Debug, Clone, PartialEq)]
@@ -13,7 +14,7 @@ pub struct QualifiedType {
 
 impl QualifiedType {
     pub fn from_annotated_fn_decl(
-        annotated_fn_decl: &AnnotatedFnDecl,
+        annotated_fn_decl: &SourceMapped<AnnotatedFnDecl>,
         ts_type_ref: &TsTypeRef,
     ) -> Self {
         Self {
@@ -44,5 +45,3 @@ impl std::fmt::Display for QualifiedType {
         write!(f, "{}", self.build_qualified_type_error_msg())
     }
 }
-
-impl AnnotatedFnDecl<'_> {}

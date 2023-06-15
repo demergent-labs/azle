@@ -32,7 +32,7 @@ impl SourceMapped<'_, TsFnType> {
         self.get_ts_fn_params()
             .iter()
             .map(|param| {
-                SourceMapped::new(param, self.source_map)
+                self.spawn(param)
                     .get_ts_type()
                     .map_err(Into::<Vec<Error>>::into)
             })

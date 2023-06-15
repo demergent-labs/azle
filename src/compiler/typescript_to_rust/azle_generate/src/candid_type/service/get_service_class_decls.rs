@@ -5,6 +5,7 @@ use swc_ecma_ast::{ClassDecl, Decl, Expr, Module, ModuleDecl, ModuleItem, Stmt};
 use crate::{
     traits::GetName,
     ts_ast::{Program, SourceMapped},
+    SymbolTable,
 };
 
 pub trait GetFlattenedServiceClassDecls {
@@ -23,7 +24,7 @@ impl Program {
     fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
         match self.deref() {
             swc_ecma_ast::Program::Module(module) => {
-                module.get_service_class_declarations(&self.source_map)
+                module.get_service_class_declarations(&self.source_map, &self.symbol_table)
             }
             swc_ecma_ast::Program::Script(_) => vec![],
         }
@@ -34,6 +35,7 @@ trait GetServiceClassDecls {
     fn get_service_class_declarations<'a>(
         &'a self,
         source_map: &'a SourceMap,
+        symbol_table: &'a SymbolTable,
     ) -> Vec<SourceMapped<ClassDecl>>;
 }
 
@@ -41,6 +43,7 @@ impl GetServiceClassDecls for Module {
     fn get_service_class_declarations<'a>(
         &'a self,
         source_map: &'a SourceMap,
+        symbol_table: &'a SymbolTable,
     ) -> Vec<SourceMapped<ClassDecl>> {
         self.body.iter().fold(vec![], |mut acc, module_item| {
             // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
@@ -62,8 +65,8 @@ impl GetServiceClassDecls for Module {
                 if let Decl::Class(class_decl) = decl {
                     if let Some(super_class) = &class_decl.class.super_class {
                         if let Expr::Ident(ident) = &**super_class {
-                            if ident.get_name() == "Service" {
-                                acc.push(SourceMapped::new(class_decl, source_map))
+                            if symbol_table.service.contains(&ident.get_name().to_string()) {
+                                acc.push(SourceMapped::new(class_decl, source_map, symbol_table))
                             }
                         }
                     }

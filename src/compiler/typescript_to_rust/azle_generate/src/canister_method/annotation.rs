@@ -8,18 +8,8 @@ use crate::{
     internal_error,
     traits::{GetName, GetSourceFileInfo, GetSpan},
     ts_ast::SourceMapped,
-    Error,
+    Error, SymbolTable,
 };
-
-pub const CANISTER_METHOD_ANNOTATIONS: [&str; 7] = [
-    "$heartbeat",
-    "$init",
-    "$inspectMessage",
-    "$postUpgrade",
-    "$preUpgrade",
-    "$query",
-    "$update",
-];
 
 #[derive(Clone)]
 pub struct Annotation {
@@ -29,15 +19,27 @@ pub struct Annotation {
 }
 
 impl Annotation {
-    pub fn new(name: &str, guard: Option<&str>, span: Span) -> Result<Self, Error> {
-        let method_type = match name {
-            "$heartbeat" => CanisterMethodType::Heartbeat,
-            "$init" => CanisterMethodType::Init,
-            "$inspectMessage" => CanisterMethodType::InspectMessage,
-            "$postUpgrade" => CanisterMethodType::PostUpgrade,
-            "$preUpgrade" => CanisterMethodType::PreUpgrade,
-            "$query" => CanisterMethodType::Query,
-            "$update" => CanisterMethodType::Update,
+    pub fn new(
+        name: &str,
+        guard: Option<&str>,
+        span: Span,
+        symbol_table: &SymbolTable,
+    ) -> Result<Self, Error> {
+        let name = name.to_string();
+        let method_type = match name.as_str() {
+            _ if symbol_table.heartbeat_decorator.contains(&name) => CanisterMethodType::Heartbeat,
+            _ if symbol_table.init_decorator.contains(&name) => CanisterMethodType::Init,
+            _ if symbol_table.inspect_message_decorator.contains(&name) => {
+                CanisterMethodType::InspectMessage
+            }
+            _ if symbol_table.post_upgrade_decorator.contains(&name) => {
+                CanisterMethodType::PostUpgrade
+            }
+            _ if symbol_table.pre_upgrade_decorator.contains(&name) => {
+                CanisterMethodType::PreUpgrade
+            }
+            _ if symbol_table.query_decorator.contains(&name) => CanisterMethodType::Query,
+            _ if symbol_table.update_decorator.contains(&name) => CanisterMethodType::Update,
             _ => internal_error!(),
         };
 
@@ -60,7 +62,9 @@ impl Annotation {
         };
 
         match expr {
-            Expr::Ident(ident) => Self::new(ident.get_name(), None, ident.span),
+            Expr::Ident(ident) => {
+                Self::new(ident.get_name(), None, ident.span, module_item.symbol_table)
+            }
             Expr::Call(call_expr) => {
                 let method_type = match &call_expr.callee {
                     Callee::Expr(expr) => match &**expr {
@@ -79,7 +83,7 @@ impl Annotation {
                 }
 
                 if call_expr.args.len() == 0 {
-                    return Self::new(method_type, None, call_expr.span);
+                    return Self::new(method_type, None, call_expr.span, module_item.symbol_table);
                 }
 
                 let options_object = {
@@ -118,7 +122,7 @@ impl Annotation {
                     // TODO: Consider making this an error. If options object has no
                     // properties it should be removed and the annotation not invoked
 
-                    return Self::new(method_type, None, call_expr.span);
+                    return Self::new(method_type, None, call_expr.span, module_item.symbol_table);
                 }
 
                 let option_property = match &options_object.props[0] {
@@ -213,9 +217,25 @@ impl Annotation {
                     )),
                 };
 
-                Self::new(method_type, guard_fn_name, call_expr.span)
+                Self::new(
+                    method_type,
+                    guard_fn_name,
+                    call_expr.span,
+                    module_item.symbol_table,
+                )
             }
             _ => internal_error!(),
         }
     }
+}
+
+pub fn is_canister_method_annotation(name: &str, symbol_table: &SymbolTable) -> bool {
+    let name = name.to_string();
+    symbol_table.heartbeat_decorator.contains(&name)
+        || symbol_table.init_decorator.contains(&name)
+        || symbol_table.inspect_message_decorator.contains(&name)
+        || symbol_table.post_upgrade_decorator.contains(&name)
+        || symbol_table.pre_upgrade_decorator.contains(&name)
+        || symbol_table.query_decorator.contains(&name)
+        || symbol_table.update_decorator.contains(&name)
 }

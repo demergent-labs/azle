@@ -9,6 +9,7 @@ import {
 } from './typescript_to_javascript/cargo_toml_files';
 import { writeCodeToFileSystem } from './write_code_to_file_system';
 import { generateRustCanister } from './generate_rust_canister';
+import { generateImportSymbolTable } from './generate_import_symbol_table';
 import { Err, ok, unwrap } from '../utils/result';
 import {
     AzleError,
@@ -51,6 +52,8 @@ export function compileTypeScriptToRust(
             canisterConfig.ts
         );
 
+        const importSymbolTables = generateImportSymbolTable(fileNames);
+
         const pluginsDependencies = plugins
             .map((plugin) => {
                 const cargoTomlPath = join(plugin.path, 'Cargo.toml');
@@ -81,6 +84,7 @@ export function compileTypeScriptToRust(
         const generateRustCanisterResult = generateRustCanister(
             fileNames,
             plugins,
+            importSymbolTables,
             canisterPath,
             canisterConfig
         );

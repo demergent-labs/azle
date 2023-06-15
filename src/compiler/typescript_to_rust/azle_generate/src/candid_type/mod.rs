@@ -48,7 +48,7 @@ impl TsAst {
     {
         self.ts_type_alias_decls()
             .iter()
-            .map(|ts_type_alias_decl| extractor(ts_type_alias_decl).transpose())
+            .map(|ts_type_alias_decl| extractor(&ts_type_alias_decl).transpose())
             .flatten()
             .collect_results()
     }

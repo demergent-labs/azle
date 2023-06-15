@@ -3,7 +3,7 @@ use swc_ecma_ast::{ClassDecl, ClassMember};
 
 use crate::{errors::CollectResults, ts_ast::SourceMapped, Error};
 
-use self::errors::{InvalidClassMember, InvalidClassProp};
+use self::errors::InvalidClassMember;
 
 pub mod errors;
 mod to_service_method;
@@ -15,16 +15,9 @@ impl SourceMapped<'_, ClassDecl> {
             .iter()
             .map(|class_member| match class_member {
                 ClassMember::ClassProp(class_prop) => {
-                    let class_prop_with_source_map = SourceMapped::new(class_prop, self.source_map);
+                    let class_prop_with_source_map = self.spawn(class_prop);
 
-                    let service_method_result = class_prop_with_source_map.to_service_method();
-
-                    match service_method_result {
-                        Ok(service_method) => Ok(service_method),
-                        Err(_) => Err(vec![
-                            InvalidClassProp::from_class_decl(self, class_prop).into()
-                        ]),
-                    }
+                    class_prop_with_source_map.to_service_method()
                 }
                 _ => Err(vec![InvalidClassMember::from_class_decl(
                     self,

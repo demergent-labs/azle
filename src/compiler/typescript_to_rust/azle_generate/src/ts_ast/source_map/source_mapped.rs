@@ -3,24 +3,48 @@ use swc_common::SourceMap;
 use crate::{
     errors::Location,
     traits::{GetSourceFileInfo, GetSourceInfo, GetSourceText, GetSpan},
+    SymbolTable,
 };
 
 pub struct SourceMapped<'a, T> {
-    inner: &'a T,
+    inner: T,
     pub source_map: &'a SourceMap,
+    pub symbol_table: &'a SymbolTable,
 }
 
-impl<'a, T> SourceMapped<'a, T> {
-    pub fn new(inner: &'a T, source_map: &'a SourceMap) -> Self {
-        Self { inner, source_map }
+impl<'a, T> SourceMapped<'a, T>
+where
+    T: Clone,
+{
+    pub fn new(inner: &T, source_map: &'a SourceMap, symbol_table: &'a SymbolTable) -> Self {
+        Self {
+            inner: inner.clone(),
+            source_map,
+            symbol_table,
+        }
+    }
+
+    pub fn spawn<C>(&self, inner: &'a C) -> SourceMapped<C>
+    where
+        C: Clone,
+    {
+        SourceMapped {
+            inner: inner.clone(),
+            source_map: self.source_map,
+            symbol_table: self.symbol_table,
+        }
     }
 }
 
-impl<'a, T> Clone for SourceMapped<'a, T> {
+impl<'a, T> Clone for SourceMapped<'a, T>
+where
+    T: Clone,
+{
     fn clone(&self) -> Self {
         Self {
-            inner: self.inner,
+            inner: self.inner.clone(),
             source_map: self.source_map,
+            symbol_table: self.symbol_table,
         }
     }
 }

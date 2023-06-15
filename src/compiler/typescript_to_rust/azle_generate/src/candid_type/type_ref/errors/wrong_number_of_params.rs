@@ -176,13 +176,14 @@ impl Display for WrongNumberOfParams {
 
 impl SourceMapped<'_, TsTypeRef> {
     fn get_candid_type(&self) -> Result<TypeRefCandidTypes, Error> {
-        Ok(match self.get_name()? {
-            "Variant" => TypeRefCandidTypes::Variant,
-            "Func" => TypeRefCandidTypes::Func,
-            "Opt" => TypeRefCandidTypes::Opt,
-            "Record" => TypeRefCandidTypes::Record,
-            "Tuple" => TypeRefCandidTypes::Tuple,
-            "Vec" => TypeRefCandidTypes::Vec,
+        let name = self.get_name()?.to_string();
+        Ok(match name.as_str() {
+            _ if self.symbol_table.variant.contains(&name) => TypeRefCandidTypes::Variant,
+            _ if self.symbol_table.func.contains(&name) => TypeRefCandidTypes::Func,
+            _ if self.symbol_table.opt.contains(&name) => TypeRefCandidTypes::Opt,
+            _ if self.symbol_table.record.contains(&name) => TypeRefCandidTypes::Record,
+            _ if self.symbol_table.tuple.contains(&name) => TypeRefCandidTypes::Tuple,
+            _ if self.symbol_table.vec.contains(&name) => TypeRefCandidTypes::Vec,
             _ => internal_error!(),
         })
     }

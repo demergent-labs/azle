@@ -5,11 +5,12 @@ use quote::quote;
 use crate::{
     canister_method::{rust, AnnotatedFnDecl},
     plugin::Plugin,
+    ts_ast::SourceMapped,
     Error,
 };
 
 pub fn generate(
-    post_upgrade_fn_decl_option: Option<&AnnotatedFnDecl>,
+    post_upgrade_fn_decl_option: Option<&SourceMapped<AnnotatedFnDecl>>,
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
 ) -> Result<TokenStream, Vec<Error>> {
