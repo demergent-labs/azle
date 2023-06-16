@@ -2,21 +2,95 @@ import { SymbolTable, SymbolTables } from '../utils/types';
 import * as ts from 'typescript';
 
 const FILES_OF_INTEREST = [
-    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/import_coverage.ts',
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/canister_methods/import_coverage.ts'
     // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/azle_wrapper.ts',
     // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/fruit.ts',
     // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deep.ts',
     // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deeper.ts',
     // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deepest.ts',
-    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/shallow.ts',
-    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/index.ts'
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/shallow.ts',
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/index.ts'
 ];
 
+const timing = true;
+const verbose = false;
+let debug = false;
+
 export function generateImportSymbolTable(files: string[]): SymbolTables {
+    if (timing) {
+        return generateImportSymbolTableTimed(files);
+    }
     return files.reduce((accumulator: SymbolTables, filename: string) => {
         accumulator[filename] = createSymbolTableFromFileName(filename);
         return accumulator;
     }, {});
+}
+
+export function generateImportSymbolTableTimed(files: string[]): SymbolTables {
+    const processingTimes: number[] = []; // Array to store processing times
+
+    const symbolTables = files.reduce(
+        (accumulator: SymbolTables, filename: string) => {
+            const startTime = Date.now(); // Start timing for each file
+            accumulator[filename] = createSymbolTableFromFileName(filename);
+            const endTime = Date.now(); // End timing for each file
+            const processingTime = endTime - startTime; // Calculate processing time in milliseconds
+            processingTimes.push(processingTime); // Store processing time
+
+            return accumulator;
+        },
+        {}
+    );
+
+    // Print individual file processing times
+    if (verbose) {
+        console.log('File processing times:');
+        files.forEach((filename, index) => {
+            console.log(`${filename}: ${processingTimes[index]}ms`);
+        });
+    }
+
+    // Calculate mean, median, and mode of processing times
+    const totalProcessingTime = processingTimes.reduce(
+        (total, time) => total + time,
+        0
+    );
+    const meanProcessingTime = totalProcessingTime / files.length;
+    const sortedProcessingTimes = [...processingTimes].sort((a, b) => a - b);
+    const medianProcessingTime =
+        sortedProcessingTimes[Math.floor(files.length / 2)];
+    const modeProcessingTime = getMode(sortedProcessingTimes);
+
+    // Print summary report
+    console.log('--- Summary ---');
+    console.log(
+        `Processing ${files.length} files took ${totalProcessingTime / 1000}s`
+    );
+    console.log(`Min time: ${Math.min(...processingTimes)}`);
+    console.log(`Max time: ${Math.max(...processingTimes)}`);
+    console.log(`Mean processing time: ${meanProcessingTime.toFixed(2)}ms`);
+    console.log(`Median processing time: ${medianProcessingTime}ms`);
+    console.log(`Mode processing time: ${modeProcessingTime}ms`);
+
+    return symbolTables;
+}
+
+// Helper function to calculate mode of an array
+function getMode(arr: number[]): number {
+    const counts = new Map<number, number>();
+    let maxCount = 0;
+    let mode = 0;
+
+    for (const num of arr) {
+        counts.set(num, (counts.get(num) || 0) + 1);
+        const thing = counts.get(num);
+        if (thing && thing > maxCount) {
+            maxCount = thing;
+            mode = num;
+        }
+    }
+
+    return mode;
 }
 
 function createSymbolTableFromFileName(filename: string): SymbolTable {
@@ -99,6 +173,21 @@ function getSymbolTable(
     return getSymbolTableFromSourceFile(sourceFile, program);
 }
 
+function createSingleEntrySymbolTable(
+    originalName: ts.__String,
+    name: ts.__String
+): SymbolTable | undefined {
+    const symbolTable = createEmptySymbolTable();
+    try {
+        const key = stringToSymbolTableKey(name);
+        symbolTable[key].push(originalName as string);
+        return symbolTable;
+    } catch {
+        // TODO the key isn't part of the azle symbol table
+        return;
+    }
+}
+
 function getAzleEquivalent(
     originalName: ts.__String,
     name: ts.__String, // TODO should this be a ts.__String?
@@ -106,15 +195,7 @@ function getAzleEquivalent(
     program: ts.Program
 ): SymbolTable | undefined {
     if (moduleSpecifier.text === 'azle') {
-        const symbolTable = createEmptySymbolTable();
-        try {
-            const key = stringToSymbolTableKey(name);
-            symbolTable[key].push(originalName as string);
-            return symbolTable;
-        } catch {
-            // TODO the key isn't part of the azle symbol table
-            return;
-        }
+        return createSingleEntrySymbolTable(originalName, name);
     }
     const tsType = getTsTypeForImportDecl(moduleSpecifier, program);
     if (tsType) {
@@ -125,8 +206,62 @@ function getAzleEquivalent(
         const symbol = exports.get(name as ts.__String);
         if (symbol) {
             return processSymbol(originalName, symbol, program);
+        } else {
+            // TODO we couldn't find the symbol in the symbol table for this file
+            // What might have happened is that it came from a export * from 'thing'
+            // Get all of the * exports
+            // get the symbol tables for all of those and check which one has the name we are looking for
+            // The order of operations is
+            // 1) if there is something in the symbol table it will override anything from a * import
+            // 2) if there are two things from two different * exports then that will cause a compiler error
+            return findSymbolInStarExportsFromModule(
+                originalName,
+                name,
+                moduleSpecifier,
+                program
+            );
         }
     }
+    return;
+}
+
+function findSymbolInStarExportsFromModule(
+    originalName: ts.__String,
+    name: ts.__String,
+    moduleSpecifier: ts.StringLiteral,
+    program: ts.Program
+): SymbolTable | undefined {
+    // TODO WORK HERE
+    // Get sourcefile from module specifier
+    const typeChecker = program.getTypeChecker();
+    const namespacedSymbol = typeChecker.getSymbolAtLocation(moduleSpecifier);
+    for (const exportDeclaration of namespacedSymbol?.exports?.get(
+        '__export' as ts.__String
+    )?.declarations ?? []) {
+        if (ts.isExportDeclaration(exportDeclaration)) {
+            // Get the module specifiers from export
+            const exportModSpecifier = exportDeclaration.moduleSpecifier;
+            if (exportModSpecifier && ts.isStringLiteral(exportModSpecifier)) {
+                if (exportModSpecifier.text === 'azle') {
+                    return createSingleEntrySymbolTable(originalName, name);
+                }
+                // Get each symbol table from each module specifier
+                const symbolTable = getSymbolTableForModuleSpecifier(
+                    exportModSpecifier,
+                    program
+                );
+                if (symbolTable) {
+                    // Check to see if the symbol is in that symbol table
+                    let symbol = symbolTable.get(name);
+                    if (symbol) {
+                        // Process the symbol
+                        return processSymbol(originalName, symbol, program);
+                    }
+                }
+            }
+        }
+    }
+    // return undefined (Couldn't find it)
     return;
 }
 
@@ -194,13 +329,6 @@ function processExportSpecifier(
     // Symbol is not from another module so we will find it locally
     const name = getNameFromSpecifier(exportSpecifier);
     const sourceFile = getSourceFile(exportSpecifier);
-    if (debug) {
-        console.log('WE ARE IN FACT GOING THIS ROUTE');
-        console.log(
-            `The name is ${name} and the sourceFile is ${sourceFile?.fileName}`
-        );
-        console.log(exportSpecifier);
-    }
     if (sourceFile) {
         const symbolTable = getSymbolTableFromSourceFile(sourceFile, program);
         if (symbolTable) {
@@ -209,14 +337,6 @@ function processExportSpecifier(
                 const result = processSymbol(originalName, symbol, program);
                 if (result) {
                     if (exportSpecifier.propertyName) {
-                        if (debug) {
-                            console.log(result);
-                            const debug_result = renameSymbolTable(
-                                result,
-                                exportSpecifier.name.text
-                            );
-                            console.log(debug_result);
-                        }
                         return renameSymbolTable(
                             result,
                             exportSpecifier.name.text
@@ -285,6 +405,15 @@ function getSourceFile(node: ts.Node): ts.SourceFile | undefined {
         return node.parent;
     }
     return getSourceFile(node.parent);
+}
+
+function getProgram(node: ts.Node): ts.Program | undefined {
+    let sourceFile = getSourceFile(node);
+    if (sourceFile) {
+        if ('program' in sourceFile) {
+            return sourceFile.program as ts.Program;
+        }
+    }
 }
 
 function processTypeAliasDeclaration(
@@ -359,6 +488,7 @@ function getSymbolTableForNamespace(
     return getSymbolTableForDeclaration(declaration, program);
 }
 
+// For Import/Export Declarations of namespace exports
 function getSymbolTableForDeclaration(
     declaration: ts.ExportDeclaration | ts.ImportDeclaration,
     program: ts.Program
@@ -368,7 +498,16 @@ function getSymbolTableForDeclaration(
         // https://262.ecma-international.org/13.0/#sec-exports
         return;
     }
-    const moduleSpecifier = declaration.moduleSpecifier as ts.StringLiteral;
+    return getSymbolTableForModuleSpecifier(
+        declaration.moduleSpecifier as ts.StringLiteral,
+        program
+    );
+}
+
+function getSymbolTableForModuleSpecifier(
+    moduleSpecifier: ts.StringLiteral,
+    program: ts.Program
+): ts.SymbolTable | undefined {
     const typeChecker = program.getTypeChecker();
     const namespacedSymbol = typeChecker.getSymbolAtLocation(moduleSpecifier);
     if (!namespacedSymbol) {
@@ -499,8 +638,6 @@ function mergeSymbolTables(
     return mergedSymbolTable;
 }
 
-let debug = false;
-
 function processSymbol(
     originalName: ts.__String,
     symbol: ts.Symbol,
@@ -523,6 +660,16 @@ function processSymbol(
         console.log(`${symbol.name} is ${ts.SyntaxKind[declaration.kind]}`);
     }
     const sourceFile = getSourceFile(declaration);
+    const thing = declaration.getText(sourceFile);
+    const isSpecifierOfInterest = thing == 'text';
+    if (isSpecifierOfInterest) {
+        console.log('================================================');
+        console.log(`Start debugging for ${thing}`);
+        debug = true;
+    }
+    // if (debug) {
+    //     console.log(`This should show for everyone: ${thing}`);
+    // }
     // if (sourceFile) {
     //     if (FILES_OF_INTEREST.includes(sourceFile.fileName) && false) {
     //         console.log(`Analyzing: ${ts.SyntaxKind[declaration.kind]}`);
@@ -535,25 +682,11 @@ function processSymbol(
             // {thing} or {thing as other}
             // as in `export {thing};` or
             // `export {thing as other};`
-            const thing = declaration.getText(sourceFile);
-            const isSpecifierOfInterest = thing == 'deepStar as fathomlessStar';
-            if (isSpecifierOfInterest) {
-                console.log(`Start debugging for ${thing}`);
-                debug = true;
-            }
-            // if (debug) {
-            //     console.log(`This should show for everyone: ${thing}`);
-            // }
             const result = processExportSpecifier(
                 originalName,
                 declaration as ts.ExportSpecifier,
                 program
             );
-            if (isSpecifierOfInterest) {
-                console.log(`End debugging for ${thing}`);
-                console.log('');
-                debug = false;
-            }
             return result;
         case ts.SyntaxKind.ExportAssignment:
             // export default thing
