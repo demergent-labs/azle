@@ -2,17 +2,17 @@ import { SymbolTable, SymbolTables } from '../utils/types';
 import * as ts from 'typescript';
 
 const FILES_OF_INTEREST = [
-    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/canister_methods/import_coverage.ts'
-    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/azle_wrapper.ts',
-    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/fruit.ts',
-    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deep.ts',
-    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deeper.ts',
-    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deepest.ts',
-    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/shallow.ts',
-    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/index.ts'
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/canister_methods/import_coverage.ts',
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/azle_wrapper.ts',
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/fruit.ts',
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deep.ts',
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deeper.ts',
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deepest.ts',
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/shallow.ts',
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/index.ts'
 ];
 
-const timing = true;
+const timing = false;
 const verbose = false;
 let debug = false;
 
@@ -643,58 +643,32 @@ function processSymbol(
     symbol: ts.Symbol,
     program: ts.Program
 ): SymbolTable | undefined {
-    // if (debug) {
-    //     console.log(`we are debugging ${symbol.name}`);
-    // }
     const declarations = symbol.declarations;
     if (!declarations) {
         console.log("I guess we don't have declarations");
         return; // We need one declaration. If there isn't one then it can't be an export from azle right?
     }
     if (declarations.length !== 1) {
-        // console.log('Did we finally find a long declaration?');
+        console.log('================ START =========================');
+        console.log('Did we finally find a long declaration?');
+        console.log(symbol);
+        console.log('================  END  =========================');
         return; // TODO I don't know what to do if there are multiple declarations
     }
     const declaration = declarations[0];
-    if (debug) {
-        console.log(`${symbol.name} is ${ts.SyntaxKind[declaration.kind]}`);
-    }
     const sourceFile = getSourceFile(declaration);
-    const thing = declaration.getText(sourceFile);
-    const isSpecifierOfInterest = thing == 'text';
-    if (isSpecifierOfInterest) {
-        console.log('================================================');
-        console.log(`Start debugging for ${thing}`);
-        debug = true;
-    }
-    // if (debug) {
-    //     console.log(`This should show for everyone: ${thing}`);
-    // }
-    // if (sourceFile) {
-    //     if (FILES_OF_INTEREST.includes(sourceFile.fileName) && false) {
-    //         console.log(`Analyzing: ${ts.SyntaxKind[declaration.kind]}`);
-    //         console.log(sourceFile?.fileName);
-    //         console.log(declaration.getText(sourceFile));
-    //     }
-    // }
     switch (declaration.kind) {
         case ts.SyntaxKind.ExportSpecifier:
             // {thing} or {thing as other}
             // as in `export {thing};` or
             // `export {thing as other};`
-            const result = processExportSpecifier(
+            return processExportSpecifier(
                 originalName,
                 declaration as ts.ExportSpecifier,
                 program
             );
-            return result;
         case ts.SyntaxKind.ExportAssignment:
             // export default thing
-            // if (debug) {
-            //     console.log(
-            //         `Export Assignment: ${declaration.getText(sourceFile)}`
-            //     );
-            // }
             return processExportAssignment(
                 originalName,
                 declaration as ts.ExportAssignment,
@@ -712,11 +686,6 @@ function processSymbol(
             // {thing} or {thing as other}
             // as in `import {thing} from 'place'` or
             // `import {thing as other} from 'place'`
-            // if (debug) {
-            //     console.log(
-            //         `Import Specifier: ${declaration.getText(sourceFile)}`
-            //     );
-            // }
             return processImportSpecifier(
                 originalName,
                 declaration as ts.ImportSpecifier,
@@ -725,7 +694,7 @@ function processSymbol(
         case ts.SyntaxKind.TypeAliasDeclaration:
             // export type AliasName = TypeName;
             // type AliasName = TypeName;
-            return;
+            return; // TODO Add support for type alias declarations
             return processTypeAliasDeclaration(
                 originalName,
                 declaration as ts.TypeAliasDeclaration,
@@ -751,9 +720,12 @@ function processSymbol(
                 declaration as ts.ExportDeclaration,
                 program
             );
+        case ts.SyntaxKind.FunctionDeclaration:
+        case ts.SyntaxKind.ClassDeclaration:
+            break;
         default:
             if (sourceFile) {
-                if (FILES_OF_INTEREST.includes(sourceFile.fileName) && false) {
+                if (FILES_OF_INTEREST.includes(sourceFile.fileName)) {
                     console.log(`MISSING: ${ts.SyntaxKind[declaration.kind]}`);
                     console.log(sourceFile?.fileName);
                     console.log(declaration.getText(sourceFile));
