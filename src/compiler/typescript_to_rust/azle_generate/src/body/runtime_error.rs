@@ -5,6 +5,7 @@ pub fn generate() -> TokenStream {
     quote! {
         enum RuntimeError {
             FromVmValueError(String), // TODO: Consider this might be the same as TypeError
+            IntoVmValueError(String), // TODO: Consider this might be the same as TypeError
             JsError(boa_engine::JsError),
             ReferenceError(String),
             TypeError(String),
@@ -14,6 +15,7 @@ pub fn generate() -> TokenStream {
             pub fn to_string(&self) -> String {
                 match self {
                     Self::FromVmValueError(msg) => msg.to_string(),
+                    Self::IntoVmValueError(msg) => msg.to_string(),
                     Self::JsError(js_error_value) => {
                         BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
                             let mut boa_context = box_context_ref_cell.borrow_mut();
@@ -36,6 +38,12 @@ pub fn generate() -> TokenStream {
         impl From<CdkActTryFromVmValueError> for RuntimeError {
             fn from(value: CdkActTryFromVmValueError) -> Self {
                 Self::FromVmValueError(value.0)
+            }
+        }
+
+        impl From<CdkActTryIntoVmValueError> for RuntimeError {
+            fn from(value: CdkActTryIntoVmValueError) -> Self {
+                Self::IntoVmValueError(value.0)
             }
         }
     }
