@@ -6,7 +6,7 @@ type PerfResult = Record<{
     wasmIncludingPrelude: nat64;
 }>;
 
-let perfResult: Opt<PerfResult> = null;
+let perfResult: Opt<PerfResult> = Opt.None;
 
 $query;
 export function getPerfResult(): Opt<PerfResult> {
@@ -14,10 +14,10 @@ export function getPerfResult(): Opt<PerfResult> {
 }
 
 function recordPerformance(start: nat64, end: nat64): void {
-    perfResult = {
+    perfResult = Opt.Some({
         wasmBodyOnly: end - start,
         wasmIncludingPrelude: ic.performanceCounter(0)
-    };
+    });
 }
 //#endregion
 
