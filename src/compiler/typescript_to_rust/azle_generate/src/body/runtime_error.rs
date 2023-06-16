@@ -38,14 +38,5 @@ pub fn generate() -> TokenStream {
                 Self::FromVmValueError(value.0)
             }
         }
-
-
-        fn unwrap_or_trap<SuccessValue, Callback>(callback: Callback) -> SuccessValue
-        where
-            Callback: FnOnce() -> Result<SuccessValue, RuntimeError>,
-        {
-            callback()
-                .unwrap_or_else(|err| ic_cdk::api::trap(&format!("Uncaught {}", err.to_string())))
-        }
     }
 }
