@@ -102,7 +102,7 @@ fn generate_return_expression(
     Ok(quote! {
         #null_and_void_handler
 
-        final_return_value
-            .try_from_vm_value(&mut *boa_context)
+        Ok(final_return_value
+            .try_from_vm_value(&mut *boa_context)?)
     })
 }
