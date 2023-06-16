@@ -24,22 +24,21 @@ pub fn generate_call_to_js_function(
         .collect();
 
     Ok(quote! {
-        let exports_js_value = unwrap_boa_result(boa_context.eval_script(boa_engine::Source::from_bytes("exports")), &mut boa_context);
+        let exports_js_value = boa_context
+            .eval_script(boa_engine::Source::from_bytes("exports"))
+            .unwrap_or_trap(&mut boa_context);
         let exports_js_object = exports_js_value.as_object().unwrap();
 
         let function_js_value = exports_js_object.get(#function_name, &mut boa_context).unwrap();
         let function_js_object = function_js_value.as_object().unwrap();
 
-        let boa_return_value = unwrap_boa_result(
-            function_js_object.call(
+        let boa_return_value = function_js_object
+            .call(
                 &boa_engine::JsValue::Null,
-                &[
-                    #(#param_name_idents.try_into_vm_value(&mut boa_context).unwrap()),*
-                ],
+                &[#(#param_name_idents.try_into_vm_value(&mut boa_context).unwrap()),*],
                 &mut boa_context
-            ),
-            &mut boa_context
-        );
+            )
+            .unwrap_or_trap(&mut boa_context);
     })
 }
 

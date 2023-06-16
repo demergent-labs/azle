@@ -46,13 +46,14 @@ pub fn generate(
 
             #(#register_plugins)*
 
-            unwrap_boa_result(boa_context.eval_script(boa_engine::Source::from_bytes(
+            boa_context.eval_script(
+                boa_engine::Source::from_bytes(
                     &format!(
                         "let exports = {{}}; {compiled_js}",
                         compiled_js = MAIN_JS
                     )
                 )
-            ), &mut boa_context);
+            ).unwrap_or_trap(&mut boa_context);
 
             #call_to_post_upgrade_js_function
 

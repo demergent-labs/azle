@@ -3,7 +3,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         fn set_timer_interval(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
-            context: &mut boa_engine::Context
+            context: &mut boa_engine::Context,
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             let interval_js_value = aargs.get(0).unwrap().clone();
             let interval_as_u64: u64 = interval_js_value.try_from_vm_value(&mut *context).unwrap();
@@ -36,21 +36,16 @@ pub fn generate() -> proc_macro2::TokenStream {
                         *manual_mut = false;
                     });
 
-                    let boa_return_value = unwrap_boa_result(
-                        func_js_object.call(
-                            &boa_engine::JsValue::Null,
-                            &[],
-                            &mut *boa_context
-                        ),
-                        &mut *boa_context
-                    );
+                    let boa_return_value = func_js_object
+                        .call(&boa_engine::JsValue::Null, &[], &mut *boa_context)
+                        .unwrap_or_trap(&mut *boa_context);
 
                     async_await_result_handler(
                         &mut boa_context,
                         &boa_return_value,
                         &uuid,
                         "_AZLE_TIMER",
-                        false
+                        false,
                     );
                 });
             };
