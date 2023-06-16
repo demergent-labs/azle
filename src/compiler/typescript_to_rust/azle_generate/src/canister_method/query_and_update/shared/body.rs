@@ -86,12 +86,12 @@ fn generate_return_expression(
         TsType::TsKeywordType(keyword) => match keyword.kind {
             TsNullKeyword => quote! {
                 if !final_return_value.is_null() {
-                    Err("TypeError: value is not of type 'null'")
+                    Err(RuntimeError::TypeError("value is not of type 'null'"))
                 }
             },
             TsVoidKeyword => quote! {
                 if !final_return_value.is_undefined() {
-                    Err("TypeError: value is not of type 'void'")
+                    Err(RuntimeError::TypeError("value is not of type 'void'"))
                 }
             },
             _ => quote! {},
@@ -104,6 +104,5 @@ fn generate_return_expression(
 
         final_return_value
             .try_from_vm_value(&mut *boa_context)
-            .map_err(|e| format!("TypeError: {}", &e.0))
     })
 }
