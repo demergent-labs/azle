@@ -3,6 +3,24 @@ use quote::quote;
 
 pub fn generate() -> TokenStream {
     quote! {
+        pub trait UnwrapJsResultOrTrap {
+            fn unwrap_or_trap(self, context: &mut boa_engine::Context) -> boa_engine::JsValue;
+        }
+
+        impl UnwrapJsResultOrTrap for boa_engine::JsResult<boa_engine::JsValue> {
+            fn unwrap_or_trap(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
+                match self {
+                    Ok(js_value) => js_value,
+                    Err(boa_error) => {
+                        let error_message = js_value_to_string(boa_error.to_opaque(context), context);
+
+                        ic_cdk::api::trap(&format!("Uncaught {}", error_message));
+                    }
+                }
+            }
+        }
+
+        // TODO: Replace with unwrap_or_trap
         pub fn unwrap_boa_result(
             boa_result: boa_engine::JsResult<boa_engine::JsValue>,
             context: &mut boa_engine::Context
