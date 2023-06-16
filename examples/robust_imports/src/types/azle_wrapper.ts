@@ -1,6 +1,10 @@
 export * as wrappedAzle from 'azle';
 import * as azle from 'azle';
 import * as deep from './deep/deep';
+export * from 'azle';
+// export * from './confusion';
+
+export type text = number;
 
 export { Record as WrappedRecord } from 'azle';
 

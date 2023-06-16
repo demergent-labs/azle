@@ -89,6 +89,7 @@ From https://262.ecma-international.org/13.0/#sec-exports 16.2.3
 //1) export ExportFromClause FromClause ;
 //a) *
 export * from 'azle';
+// export * from './deep/deep'; // TODO support having multiple export * from declarations
 //b) * as ModuleExportName
 export * as azle from 'azle';
 //c) NamedExports
