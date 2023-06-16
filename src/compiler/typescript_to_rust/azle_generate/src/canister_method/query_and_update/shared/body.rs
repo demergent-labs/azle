@@ -86,12 +86,12 @@ fn generate_return_expression(
         TsType::TsKeywordType(keyword) => match keyword.kind {
             TsNullKeyword => quote! {
                 if !final_return_value.is_null() {
-                    Err(RuntimeError::TypeError("value is not of type 'null'"))
+                    return Err(RuntimeError::TypeError("value is not of type 'null'".to_string()));
                 }
             },
             TsVoidKeyword => quote! {
                 if !final_return_value.is_undefined() {
-                    Err(RuntimeError::TypeError("value is not of type 'void'"))
+                    return Err(RuntimeError::TypeError("value is not of type 'void'".to_string()));
                 }
             },
             _ => quote! {},
