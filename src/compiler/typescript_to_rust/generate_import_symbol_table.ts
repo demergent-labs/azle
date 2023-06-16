@@ -2,18 +2,19 @@ import { SymbolTable, SymbolTables } from '../utils/types';
 import * as ts from 'typescript';
 
 const FILES_OF_INTEREST = [
-    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/canister_methods/import_coverage.ts',
-    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/azle_wrapper.ts',
-    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/fruit.ts',
-    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deep.ts',
-    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deeper.ts',
-    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deepest.ts',
-    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/shallow.ts',
-    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/index.ts'
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/canister_methods/import_coverage.ts'
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/azle_wrapper.ts',
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/fruit.ts',
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deep.ts',
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deeper.ts',
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deepest.ts',
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/shallow.ts',
+    // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/index.ts'
 ];
 
 const timing = false;
 const verbose = false;
+const typeAliasesAreStillUnimplemented = true;
 let debug = false;
 
 export function generateImportSymbolTable(files: string[]): SymbolTables {
@@ -105,11 +106,6 @@ function createSymbolTableFromFileName(filename: string): SymbolTable {
     const tsSymbolTable = getSymbolTable(filename, program);
     if (tsSymbolTable) {
         const symbolTable = createSymbolTable(tsSymbolTable, program);
-        if (FILES_OF_INTEREST.includes(filename) && false) {
-            console.log('Symbol Table for:');
-            console.log(filename);
-            console.log(symbolTable);
-        }
         return symbolTable;
     }
 
@@ -252,7 +248,7 @@ function findSymbolInStarExportsFromModule(
                 );
                 if (symbolTable) {
                     // Check to see if the symbol is in that symbol table
-                    let symbol = symbolTable.get(name);
+                    const symbol = symbolTable.get(name);
                     if (symbol) {
                         // Process the symbol
                         return processSymbol(originalName, symbol, program);
@@ -348,26 +344,25 @@ function processExportSpecifier(
         }
     }
 }
+/* stuff to try out
+    // TODO play around with this (and I think I saw one more thing, but this is likely the one I thought I saw) for type aliases
+    // const symbol = typeChecker.getAliasedSymbol()
+    // TODO play around with this where we are trying to create our own fully qualified names
+    // const name = typeChecker.getFullyQualifiedName(symbol)
+    // TODO play around with this and related functions in processSymbol
+    // const thing2 = typeChecker.getExportSymbolOfSymbol(symbol)
+*/
 
 function processExportAssignment(
     originalName: ts.__String,
-    declaration: ts.ExportAssignment,
+    exportAssignment: ts.ExportAssignment,
     program: ts.Program
 ): SymbolTable | undefined {
-    const exportAssignment = declaration as ts.ExportAssignment;
-    const exportName = exportAssignment.expression as ts.Identifier;
-    // We need to look that up in the locals
-    const sourceFile = exportAssignment.parent;
-    if (!('locals' in sourceFile)) {
-        // TODO what if there is no locals
-        return;
+    const typeChecker = program.getTypeChecker();
+    const symbol = typeChecker.getSymbolAtLocation(exportAssignment.expression);
+    if (symbol) {
+        return processSymbol(originalName, symbol, program);
     }
-    const symbolTable = sourceFile.locals as ts.SymbolTable;
-    const symbol = symbolTable.get(exportName.text as ts.__String);
-    if (!symbol) {
-        return; // TODO can't find symbol
-    }
-    return processSymbol(originalName, symbol, program);
 }
 
 function processImportSpecifier(
@@ -407,20 +402,17 @@ function getSourceFile(node: ts.Node): ts.SourceFile | undefined {
     return getSourceFile(node.parent);
 }
 
-function getProgram(node: ts.Node): ts.Program | undefined {
-    let sourceFile = getSourceFile(node);
-    if (sourceFile) {
-        if ('program' in sourceFile) {
-            return sourceFile.program as ts.Program;
-        }
-    }
-}
-
 function processTypeAliasDeclaration(
     originalName: ts.__String,
     declaration: ts.TypeAliasDeclaration,
     program: ts.Program
 ): SymbolTable | undefined {
+    if (typeAliasesAreStillUnimplemented) {
+        return; // TODO Add support for type alias declarations
+    }
+    if (declaration.typeParameters?.length ?? 0 > 0) {
+        return; // This looks like a candid definition not a possible azle alias
+    }
     const sourceFile = getSourceFile(declaration);
     if (!sourceFile) {
         // TODO couldn't find the sourceFile
@@ -638,21 +630,36 @@ function mergeSymbolTables(
     return mergedSymbolTable;
 }
 
+// TODO this feels very janky to me
+function isAzleSymbol(symbol: ts.Symbol): boolean {
+    if ('parent' in symbol) {
+        const parent = symbol.parent as ts.Symbol;
+        if (parent) {
+            if ((parent.name as string).includes('azle/src/lib/index')) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 function processSymbol(
     originalName: ts.__String,
     symbol: ts.Symbol,
     program: ts.Program
 ): SymbolTable | undefined {
+    if (isAzleSymbol(symbol)) {
+        return createSingleEntrySymbolTable(
+            originalName,
+            symbol.name as ts.__String
+        );
+    }
     const declarations = symbol.declarations;
     if (!declarations) {
         console.log("I guess we don't have declarations");
         return; // We need one declaration. If there isn't one then it can't be an export from azle right?
     }
     if (declarations.length !== 1) {
-        console.log('================ START =========================');
-        console.log('Did we finally find a long declaration?');
-        console.log(symbol);
-        console.log('================  END  =========================');
         return; // TODO I don't know what to do if there are multiple declarations
     }
     const declaration = declarations[0];
@@ -694,7 +701,6 @@ function processSymbol(
         case ts.SyntaxKind.TypeAliasDeclaration:
             // export type AliasName = TypeName;
             // type AliasName = TypeName;
-            return; // TODO Add support for type alias declarations
             return processTypeAliasDeclaration(
                 originalName,
                 declaration as ts.TypeAliasDeclaration,

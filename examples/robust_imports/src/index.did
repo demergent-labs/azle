@@ -1,3 +1,33 @@
+type MyCavernousRecord = record {
+  myRecord : MyRecord;
+  myDeepTuple : record { text };
+  myCavernousTuple : record { text };
+  fathomlessRecord : MyFathomlessRecord;
+  coveredRecord : MyCoveredRecord;
+  myTuple : record { text };
+};
+type MyCavernousVariant = variant { sixteen; eight };
+type MyCoveredRecord = record {
+  name : text;
+  count : int8;
+  "type" : text;
+  greeting : opt text;
+};
+type MyDeepVariant = variant { Thing : int8 };
+type MyFathomlessRecord = record { mytext : text };
+type MyFathomlessVariant = variant { MyInt16 : int16; MyInt8 : int8 };
+type MyRecord = record {
+  int1 : int16;
+  int2 : int16;
+  int3 : int16;
+  int4 : int8;
+  int5 : int8;
+  int6 : int8;
+  int7 : int8;
+  "int8" : int8;
+  int9 : int16;
+};
+type MyVariant = variant { String : text; Thing : int8 };
 type User = record {
   id : text;
   age : nat;
@@ -6,11 +36,17 @@ type User = record {
   something_else : int;
 };
 service : () -> {
+  makeCavernousRecord : () -> (MyCavernousRecord) query;
+  myFathomlessVariantToMyCavernousVariant : (MyFathomlessVariant) -> (
+      MyCavernousVariant,
+    ) query;
+  myVariantToMyDeepVariant : (MyVariant) -> (MyDeepVariant) query;
   "record" : () -> (User) query;
   returnFathomlessService : () -> (
       service { query1 : () -> (bool) query; update1 : () -> (text) },
     ) query;
   returnWeird : () -> (int64) query;
+  returnsFathomlessVec : () -> (vec int16) query;
   returnsVec : () -> (vec vec nat8) query;
   simpleQuery : () -> (text);
   thing : () -> (int) query;
