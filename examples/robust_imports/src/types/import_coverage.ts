@@ -132,4 +132,4 @@ export { DeepInt8 as FathomlessInt } from './deep/deep';
 // export type ProfoundInt = profoundStar.DeepInt8;
 export { DeepInt8 as ProfoundInt } from './deep/deep';
 //5) export default
-export default azle.$query;
+export default deepStar.deepAzle.$query;

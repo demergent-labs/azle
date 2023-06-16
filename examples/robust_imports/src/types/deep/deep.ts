@@ -6,3 +6,4 @@ export { Variant as DeepVariant } from 'azle';
 export { Vec as DeepVec } from 'azle';
 export { DeeperInt8 as DeepInt8 } from './deeper';
 import DeepInt16 from './deeper';
+export * as deepAzle from 'azle';
