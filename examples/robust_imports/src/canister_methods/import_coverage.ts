@@ -7,7 +7,6 @@ import {
 } from '../types/import_coverage';
 import dollarSignQuery from '../types/import_coverage';
 import query, { int8, int8 as variInt, match } from '../types/import_coverage';
-import { Record } from 'azle';
 
 export type MyCavernousRecord = ic.CavernousRecord<{
     coveredRecord: MyCoveredRecord;
