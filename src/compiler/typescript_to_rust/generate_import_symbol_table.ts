@@ -22,7 +22,7 @@ export function generateImportSymbolTable(files: string[]): SymbolTables {
         return generateImportSymbolTableTimed(files);
     }
     return files.reduce((accumulator: SymbolTables, filename: string) => {
-        accumulator[filename] = createSymbolTableFromFileName(filename);
+        accumulator[filename] = createAzleSymbolTable(filename);
         return accumulator;
     }, {});
 }
@@ -33,7 +33,7 @@ export function generateImportSymbolTableTimed(files: string[]): SymbolTables {
     const symbolTables = files.reduce(
         (accumulator: SymbolTables, filename: string) => {
             const startTime = Date.now(); // Start timing for each file
-            accumulator[filename] = createSymbolTableFromFileName(filename);
+            accumulator[filename] = createAzleSymbolTable(filename);
             const endTime = Date.now(); // End timing for each file
             const processingTime = endTime - startTime; // Calculate processing time in milliseconds
             processingTimes.push(processingTime); // Store processing time
@@ -94,30 +94,29 @@ function getMode(arr: number[]): number {
     return mode;
 }
 
-function createSymbolTableFromFileName(filename: string): SymbolTable {
+function createAzleSymbolTable(filename: string): SymbolTable {
     const sourceFilePath = filename;
     const program = ts.createProgram([sourceFilePath], {});
     const sourceFile = program.getSourceFile(sourceFilePath);
 
     if (!sourceFile) {
-        return createEmptySymbolTable();
+        return createEmptyAzleSymbolTable();
     }
 
     const tsSymbolTable = getSymbolTable(filename, program);
     if (tsSymbolTable) {
-        const symbolTable = createSymbolTable(tsSymbolTable, program);
+        const symbolTable = toAzleSymbolTable(tsSymbolTable, program);
         return symbolTable;
     }
 
-    return createEmptySymbolTable();
+    return createEmptyAzleSymbolTable();
 }
 
-function createSymbolTable(
+function toAzleSymbolTable(
     tsSymbolTable: ts.SymbolTable,
     program: ts.Program
 ): SymbolTable {
-    const keys = tsSymbolTable.keys();
-    let symbolTable = createEmptySymbolTable();
+    let symbolTable = createEmptyAzleSymbolTable();
     tsSymbolTable.forEach((symbol, name) => {
         const subSymbolTable = processSymbol(name, symbol, program);
         if (subSymbolTable) {
@@ -173,7 +172,7 @@ function createSingleEntrySymbolTable(
     originalName: ts.__String,
     name: ts.__String
 ): SymbolTable | undefined {
-    const symbolTable = createEmptySymbolTable();
+    const symbolTable = createEmptyAzleSymbolTable();
     try {
         const key = stringToSymbolTableKey(name);
         symbolTable[key].push(originalName as string);
@@ -286,29 +285,37 @@ function processImportExportSpecifierWithModuleSpecifier(
     specifier: ts.ExportSpecifier | ts.ImportSpecifier,
     program: ts.Program
 ): SymbolTable | undefined {
-    const name = getNameFromSpecifier(specifier);
+    const identifier = getUnderlyingIdentifierFromSpecifier(specifier);
     const declaration = getDeclarationFromSpecifier(specifier);
 
     if (declaration.moduleSpecifier !== undefined) {
         return getAzleEquivalent(
             originalName,
-            name as ts.__String,
+            identifier.text as ts.__String,
             declaration.moduleSpecifier as ts.StringLiteral,
             program
         );
     }
 }
 
-function getNameFromSpecifier(
+function getUnderlyingIdentifierFromSpecifier(
     specifier: ts.ExportSpecifier | ts.ImportSpecifier
-): string {
+): ts.Identifier {
+    // e.g. 'thing' in '{thing}' or '{thing as other}'. 'thing' is the symbol we
+    // care about. At this point we don't care what it got renamed to, only what
+    // it resolves back to.
     if (!specifier.propertyName) {
-        return specifier.name.text;
+        // If there is no property name then it was NOT renamed
+        return specifier.name;
     } else {
-        return specifier.propertyName.text;
+        // If there is a propertyName then it WAS renamed and the property name is the original name before it was renamed
+        return specifier.propertyName;
     }
 }
 
+// {thing} or {thing as other}
+// as in `export {thing};` or
+// `export {thing as other};`
 function processExportSpecifier(
     originalName: ts.__String,
     exportSpecifier: ts.ExportSpecifier,
@@ -323,12 +330,21 @@ function processExportSpecifier(
         );
     }
     // Symbol is not from another module so we will find it locally
-    const name = getNameFromSpecifier(exportSpecifier);
+    const identifier = getUnderlyingIdentifierFromSpecifier(exportSpecifier);
+    // TODO investigate trying to get the original symbol from the above identifier.
+    // The commented out code bellow just gets the current symbol instead of the
+    // symbol that it comes from. So it literally just goes in circles until we
+    // run out of heap
+    // const symbol = program.getTypeChecker().getSymbolAtLocation(identifier);
+    // if (symbol) {
+    //     return processSymbol(originalName, symbol, program);
+    // }
+    // console.log("========> The new way didn't work");
     const sourceFile = getSourceFile(exportSpecifier);
     if (sourceFile) {
         const symbolTable = getSymbolTableFromSourceFile(sourceFile, program);
         if (symbolTable) {
-            const symbol = symbolTable.get(name as ts.__String);
+            const symbol = symbolTable.get(identifier.text as ts.__String);
             if (symbol) {
                 const result = processSymbol(originalName, symbol, program);
                 if (result) {
@@ -536,7 +552,7 @@ function processExportDeclaration(
     if (!namespacedSymbolTable) {
         return;
     }
-    return createSymbolTable(namespacedSymbolTable, program);
+    return toAzleSymbolTable(namespacedSymbolTable, program);
 }
 
 function processNamespaceImportExport(
@@ -562,7 +578,7 @@ function processNamespaceImportExport(
     }
     // process this symbol table the same, then modify it such that every entry has name.whatever
     return prependNamespaceToSymbolTable(
-        createSymbolTable(namespacedSymbolTable, program),
+        toAzleSymbolTable(namespacedSymbolTable, program),
         namespace
     );
 }
@@ -572,36 +588,36 @@ function prependNamespaceToSymbolTable(
     namespace: ts.NamespaceImport | ts.NamespaceExport
 ): SymbolTable {
     const prependString = namespace.name.text;
-    for (const propertyName in symbolTable) {
-        const propertyValue = symbolTable[propertyName as keyof SymbolTable];
-        if (Array.isArray(propertyValue)) {
-            for (let i = 0; i < propertyValue.length; i++) {
-                propertyValue[i] = `${prependString}.${propertyValue[i]}`;
-            }
-        }
-    }
-    return symbolTable;
+    return Object.entries(symbolTable).reduce(
+        (acc, [propertyName, propertyValue]) => {
+            acc[propertyName as keyof SymbolTable] = propertyValue.map(
+                (value) => `${prependString}.${value}`
+            );
+            return acc;
+        },
+        {} as SymbolTable
+    );
 }
 
 function renameSymbolTable(
     symbolTable: SymbolTable,
     newPrefix: string
 ): SymbolTable {
-    for (const propertyName in symbolTable) {
-        const propertyValue = symbolTable[propertyName as keyof SymbolTable];
-        if (Array.isArray(propertyValue)) {
-            for (let i = 0; i < propertyValue.length; i++) {
-                const indexOfDotOperator = propertyValue[i].indexOf('.');
-                if (indexOfDotOperator !== -1) {
-                    propertyValue[i] = propertyValue[i].replace(
-                        /^[^.]+/,
-                        newPrefix
-                    );
+    return Object.entries(symbolTable).reduce(
+        (acc, [propertyName, propertyValue]) => {
+            acc[propertyName as keyof SymbolTable] = propertyValue.map(
+                (value) => {
+                    const indexOfDotOperator = value.indexOf('.');
+                    if (indexOfDotOperator !== -1) {
+                        return value.replace(/^[^.]+/, newPrefix);
+                    }
+                    return value;
                 }
-            }
-        }
-    }
-    return symbolTable;
+            );
+            return acc;
+        },
+        {} as SymbolTable
+    );
 }
 
 function mergeSymbolTables(
@@ -759,7 +775,7 @@ function getTsTypeForImportDecl(
     return;
 }
 
-function createEmptySymbolTable(): SymbolTable {
+function createEmptyAzleSymbolTable(): SymbolTable {
     return {
         alias: [],
         call_result: [],
