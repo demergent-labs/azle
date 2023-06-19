@@ -2,28 +2,37 @@ pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
         impl<T> CdkActTryFromVmValue<(T,), &mut boa_engine::Context<'_>> for boa_engine::JsValue
         where
-            boa_engine::JsValue: for<'a, 'b> CdkActTryFromVmValue<T, &'a mut boa_engine::Context<'b>>
+            boa_engine::JsValue:
+                for<'a, 'b> CdkActTryFromVmValue<T, &'a mut boa_engine::Context<'b>>,
         {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<(T,), CdkActTryFromVmValueError> {
+            fn try_from_vm_value(
+                self,
+                context: &mut boa_engine::Context,
+            ) -> Result<(T,), CdkActTryFromVmValueError> {
                 Ok((self.try_from_vm_value(context).unwrap(),))
             }
         }
 
         impl<T> CdkActTryFromVmValue<Box<T>, &mut boa_engine::Context<'_>> for boa_engine::JsValue
         where
-            boa_engine::JsValue: for<'a, 'b> CdkActTryFromVmValue<T, &'a mut boa_engine::Context<'b>>
+            boa_engine::JsValue:
+                for<'a, 'b> CdkActTryFromVmValue<T, &'a mut boa_engine::Context<'b>>,
         {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Box<T>, CdkActTryFromVmValueError> {
+            fn try_from_vm_value(
+                self,
+                context: &mut boa_engine::Context,
+            ) -> Result<Box<T>, CdkActTryFromVmValueError> {
                 match self.try_from_vm_value(context) {
                     Ok(value) => Ok(Box::new(value)),
-                    Err(err) => Err(err)
+                    Err(err) => Err(err),
                 }
             }
         }
 
         impl<T> CdkActTryFromVmValue<Option<T>, &mut boa_engine::Context<'_>> for boa_engine::JsValue
         where
-            boa_engine::JsValue: for<'a, 'b> CdkActTryFromVmValue<T, &'a mut boa_engine::Context<'b>>,
+            boa_engine::JsValue:
+                for<'a, 'b> CdkActTryFromVmValue<T, &'a mut boa_engine::Context<'b>>,
         {
             fn try_from_vm_value(
                 self,
