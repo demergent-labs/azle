@@ -123,7 +123,6 @@ function toAzleSymbolTable(
             symbolTable = mergeSymbolTables(symbolTable, subSymbolTable);
         }
     });
-
     return symbolTable;
 }
 
@@ -226,7 +225,6 @@ function findSymbolInStarExportsFromModule(
     moduleSpecifier: ts.StringLiteral,
     program: ts.Program
 ): SymbolTable | undefined {
-    // TODO WORK HERE
     // Get sourcefile from module specifier
     const typeChecker = program.getTypeChecker();
     const namespacedSymbol = typeChecker.getSymbolAtLocation(moduleSpecifier);
@@ -524,35 +522,46 @@ function getSymbolTableForModuleSpecifier(
     return namespacedSymbol.exports;
 }
 
-function processExportDeclaration(
-    declaration: ts.ExportDeclaration,
+function processExportDeclarations(
+    declarations: ts.ExportDeclaration[],
     program: ts.Program
 ): SymbolTable | undefined {
-    const moduleSpecifier = declaration.moduleSpecifier;
-    if (!moduleSpecifier || !ts.isStringLiteral(moduleSpecifier)) {
-        console.log("I'm not sure if this is going to be true in this case");
-        // Unreachable: An export declaration with a namespace export will always have a FromClause
-        // https://262.ecma-international.org/13.0/#sec-exports
-        return;
-    }
-    if (declaration.exportClause) {
-        console.log(
-            'I think if we get an export clause then we should be handling this' +
-                "somewhere else. I only want things like export * from 'thing'"
+    const symbolTables = declarations.map((declaration) => {
+        const moduleSpecifier = declaration.moduleSpecifier;
+        if (!moduleSpecifier || !ts.isStringLiteral(moduleSpecifier)) {
+            console.log(
+                "I'm not sure if this is going to be true in this case"
+            );
+            // Unreachable: An export declaration with a namespace export will always have a FromClause
+            // https://262.ecma-international.org/13.0/#sec-exports
+            return;
+        }
+        if (declaration.exportClause) {
+            console.log(
+                'I think if we get an export clause then we should be handling this' +
+                    "somewhere else. I only want things like export * from 'thing'"
+            );
+            return;
+        }
+        if (moduleSpecifier.text == 'azle') {
+            return createDefaultSymbolTable();
+        }
+        const namespacedSymbolTable = getSymbolTableForDeclaration(
+            declaration,
+            program
         );
-        return;
-    }
-    if (moduleSpecifier.text == 'azle') {
-        return createDefaultSymbolTable();
-    }
-    const namespacedSymbolTable = getSymbolTableForDeclaration(
-        declaration,
-        program
-    );
-    if (!namespacedSymbolTable) {
-        return;
-    }
-    return toAzleSymbolTable(namespacedSymbolTable, program);
+        if (!namespacedSymbolTable) {
+            return;
+        }
+        return toAzleSymbolTable(namespacedSymbolTable, program);
+    });
+    let symbolTable = createEmptyAzleSymbolTable();
+    symbolTables.forEach((subSymbolTable) => {
+        if (subSymbolTable) {
+            symbolTable = mergeSymbolTables(symbolTable, subSymbolTable);
+        }
+    });
+    return symbolTable;
 }
 
 function processNamespaceImportExport(
@@ -671,12 +680,22 @@ function processSymbol(
         );
     }
     const declarations = symbol.declarations;
-    if (!declarations) {
-        console.log("I guess we don't have declarations");
+    if (!declarations || declarations.length === 0) {
         return; // We need one declaration. If there isn't one then it can't be an export from azle right?
     }
-    if (declarations.length !== 1) {
-        return; // TODO I don't know what to do if there are multiple declarations
+    if (symbol.name === '__export') {
+        // Should look like export * from 'place';
+        // There are other export declarations, but the only ones that will
+        // be a symbol are these unnamed export from clauses
+        return processExportDeclarations(
+            declarations as ts.ExportDeclaration[],
+            program
+        );
+    }
+    if (declarations.length > 1) {
+        // TODO what kind of symbol has multiple declarations?
+        // TODO is it possible for those declarations to be conflicting?
+        return;
     }
     const declaration = declarations[0];
     const sourceFile = getSourceFile(declaration);
@@ -735,13 +754,7 @@ function processSymbol(
                 program
             );
         case ts.SyntaxKind.ExportDeclaration:
-            // Should look like export * from 'place';
-            // There are other export declarations, but the only ones that will
-            // be a symbol are these unnamed export from clauses
-            return processExportDeclaration(
-                declaration as ts.ExportDeclaration,
-                program
-            );
+        // These should be handled above
         case ts.SyntaxKind.FunctionDeclaration:
         case ts.SyntaxKind.ClassDeclaration:
             break;
