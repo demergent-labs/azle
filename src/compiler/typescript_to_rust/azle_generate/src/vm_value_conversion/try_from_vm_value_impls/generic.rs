@@ -9,7 +9,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<(T,), CdkActTryFromVmValueError> {
-                Ok((self.try_from_vm_value(context).unwrap(),))
+                Ok((self.try_from_vm_value(context)?,))
             }
         }
 
