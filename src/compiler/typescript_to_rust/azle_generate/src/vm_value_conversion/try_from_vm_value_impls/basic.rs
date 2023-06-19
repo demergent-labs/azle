@@ -86,8 +86,13 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl CdkActTryFromVmValue<ic_cdk::export::Principal, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::export::Principal, CdkActTryFromVmValueError> {
+        impl CdkActTryFromVmValue<ic_cdk::export::Principal, &mut boa_engine::Context<'_>>
+            for boa_engine::JsValue
+        {
+            fn try_from_vm_value(
+                self,
+                context: &mut boa_engine::Context,
+            ) -> Result<ic_cdk::export::Principal, CdkActTryFromVmValueError> {
                 let principal_js_object = self
                     .as_object()
                     .ok_or_else(|| "TypeError: value is not an object")?;
@@ -108,21 +113,34 @@ pub fn generate() -> proc_macro2::TokenStream {
                     .to_std_string()
                     .map_err(|err| CdkActTryFromVmValueError(format!("SystemError: {err}")))?;
 
-                let principal = ic_cdk::export::Principal::from_text(principal_text)
-                    .map_err(|principal_error| {
+                let principal = ic_cdk::export::Principal::from_text(principal_text).map_err(
+                    |principal_error| {
                         let name = match principal_error {
-                            candid::types::principal::PrincipalError::BytesTooLong() => "BytesTooLongError",
-                            candid::types::principal::PrincipalError::InvalidBase32() => "InvalidBase32Error",
-                            candid::types::principal::PrincipalError::TextTooShort() => "TextTooShortError",
-                            candid::types::principal::PrincipalError::TextTooLong() => "TextTooLongError",
-                            candid::types::principal::PrincipalError::CheckSequenceNotMatch() => "CheckSequenceNotMatchError",
-                            candid::types::principal::PrincipalError::AbnormalGrouped(_) => "AbnormalGroupedError",
+                            candid::types::principal::PrincipalError::BytesTooLong() => {
+                                "BytesTooLongError"
+                            }
+                            candid::types::principal::PrincipalError::InvalidBase32() => {
+                                "InvalidBase32Error"
+                            }
+                            candid::types::principal::PrincipalError::TextTooShort() => {
+                                "TextTooShortError"
+                            }
+                            candid::types::principal::PrincipalError::TextTooLong() => {
+                                "TextTooLongError"
+                            }
+                            candid::types::principal::PrincipalError::CheckSequenceNotMatch() => {
+                                "CheckSequenceNotMatchError"
+                            }
+                            candid::types::principal::PrincipalError::AbnormalGrouped(_) => {
+                                "AbnormalGroupedError"
+                            }
                         };
 
                         let message = principal_error.to_string();
 
                         CdkActTryFromVmValueError(format!("{name}: {message}"))
-                    })?;
+                    },
+                )?;
 
                 Ok(principal)
             }
