@@ -1,69 +1,88 @@
 pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
-        // TODO This was changed to allow null or undefined JsValues, this should be thought through and tested
+        // TODO This was changed to allow null or undefined JsValues,
+        // this should be thought through and tested
         impl CdkActTryFromVmValue<(), &mut boa_engine::Context<'_>> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<(), CdkActTryFromVmValueError> {
-                if self.is_null() == true || self.is_undefined() == true {
-                    Ok(())
+            fn try_from_vm_value(
+                self,
+                context: &mut boa_engine::Context,
+            ) -> Result<(), CdkActTryFromVmValueError> {
+                if self.is_null() || self.is_undefined() {
+                    return Ok(());
                 }
-                else {
-                    Err(CdkActTryFromVmValueError("JsValue is not null or undefined".to_string()))
-                }
+
+                Err("TypeError: value is not null or undefined")?
             }
         }
 
         impl CdkActTryFromVmValue<bool, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<bool, CdkActTryFromVmValueError> {
-                match self.as_boolean() {
-                    Some(value) => Ok(value),
-                    None => Err(CdkActTryFromVmValueError("JsValue is not a boolean".to_string()))
-                }
+            fn try_from_vm_value(
+                self,
+                context: &mut boa_engine::Context,
+            ) -> Result<bool, CdkActTryFromVmValueError> {
+                Ok(self
+                    .as_boolean()
+                    .ok_or_else(|| "TypeError: value is not a boolean")?)
             }
         }
 
         impl CdkActTryFromVmValue<String, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<String, CdkActTryFromVmValueError> {
-                match self.as_string() {
-                    Some(value) => Ok(value.to_std_string().unwrap()),
-                    None => Err(CdkActTryFromVmValueError("JsValue is not a string".to_string()))
-                }
+            fn try_from_vm_value(
+                self,
+                context: &mut boa_engine::Context,
+            ) -> Result<String, CdkActTryFromVmValueError> {
+                Ok(self
+                    .as_string()
+                    .ok_or_else(|| "TypeError: value is not a string")?
+                    .to_std_string()
+                    .map_err(|err| "SystemError: {err}")?)
             }
         }
 
-        impl CdkActTryFromVmValue<ic_cdk::export::candid::Empty, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::export::candid::Empty, CdkActTryFromVmValueError> {
-                Err(CdkActTryFromVmValueError("JsValue cannot be converted into type 'empty'".to_string()))
+        impl CdkActTryFromVmValue<ic_cdk::export::candid::Empty, &mut boa_engine::Context<'_>>
+            for boa_engine::JsValue
+        {
+            fn try_from_vm_value(
+                self,
+                context: &mut boa_engine::Context,
+            ) -> Result<ic_cdk::export::candid::Empty, CdkActTryFromVmValueError> {
+                Err("TypeError: value cannot be converted into type 'empty'")?
             }
         }
 
-        impl CdkActTryFromVmValue<ic_cdk::export::candid::Reserved, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::export::candid::Reserved, CdkActTryFromVmValueError> {
+        impl CdkActTryFromVmValue<ic_cdk::export::candid::Reserved, &mut boa_engine::Context<'_>>
+            for boa_engine::JsValue
+        {
+            fn try_from_vm_value(
+                self,
+                context: &mut boa_engine::Context,
+            ) -> Result<ic_cdk::export::candid::Reserved, CdkActTryFromVmValueError> {
                 Ok(ic_cdk::export::candid::Reserved)
             }
         }
 
-        impl CdkActTryFromVmValue<ic_cdk::export::candid::Func, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::export::candid::Func, CdkActTryFromVmValueError> {
-                match self.as_object() {
-                    Some(js_object) => {
-                        match (js_object.get("0", context), js_object.get("1", context)) {
-                            (Ok(principal_js_value), Ok(canister_method_text)) => {
-                                match (principal_js_value.try_from_vm_value(&mut *context), canister_method_text.try_from_vm_value(&mut *context)) {
-                                    (Ok(principal), Ok(canister_method_string)) => {
-                                        Ok(ic_cdk::export::candid::Func {
-                                            principal,
-                                            method: canister_method_string
-                                        })
-                                    },
-                                    _ => Err(CdkActTryFromVmValueError("principal could not be created or canister method not a string".to_string()))
-                                }
-                            },
-                            _ => Err(CdkActTryFromVmValueError("Could not retrieve index 0 or 1".to_string()))
-                        }
+        impl CdkActTryFromVmValue<ic_cdk::export::candid::Func, &mut boa_engine::Context<'_>>
+            for boa_engine::JsValue
+        {
+            fn try_from_vm_value(
+                self,
+                context: &mut boa_engine::Context,
+            ) -> Result<ic_cdk::export::candid::Func, CdkActTryFromVmValueError> {
+                let js_object = self
+                    .as_object()
+                    .ok_or_else(|| "TypeError: value is not an object")?;
 
-                    },
-                    None => Err(CdkActTryFromVmValueError("JsValue is not an object".to_string()))
-                }
+                let principal = js_object
+                    .get("0", context)
+                    .map_err(|err| "TypeError: undefined is not a Principal")?
+                    .try_from_vm_value(&mut *context)?;
+
+                let method = js_object
+                    .get("1", context)
+                    .map_err(|err| "TypeError: undefined is not a string")?
+                    .try_from_vm_value(&mut *context)?;
+
+                Ok(ic_cdk::export::candid::Func { principal, method })
             }
         }
 
@@ -102,21 +121,27 @@ pub fn generate() -> proc_macro2::TokenStream {
                                             }
                                         }
                                     },
-                                    None => Err(CdkActTryFromVmValueError("JsValue is not an object".to_string()))
+                                    None => Err(CdkActTryFromVmValueError("property 'toText' of object is not a function".to_string()))
                                 }
                             },
-                            Err(err) => Err(CdkActTryFromVmValueError("principal_js_object.get(\"toText\", context) failed".to_string()))
+                            Err(err) => Err(CdkActTryFromVmValueError("property 'toText' of object is not a function".to_string()))
                         }
                     },
-                    None => Err(CdkActTryFromVmValueError("JsValue is not an object".to_string()))
+                    None => Err(CdkActTryFromVmValueError("value is not an object".to_string()))
                 }
             }
         }
 
-        impl CdkActTryFromVmValue<ic_cdk_timers::TimerId, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk_timers::TimerId, CdkActTryFromVmValueError> {
-                let js_value_as_u64: u64 = self.try_from_vm_value(context).unwrap();
-                Ok(ic_cdk_timers::TimerId::from(slotmap::KeyData::from_ffi(js_value_as_u64)))
+        impl CdkActTryFromVmValue<ic_cdk_timers::TimerId, &mut boa_engine::Context<'_>>
+            for boa_engine::JsValue
+        {
+            fn try_from_vm_value(
+                self,
+                context: &mut boa_engine::Context,
+            ) -> Result<ic_cdk_timers::TimerId, CdkActTryFromVmValueError> {
+                Ok(ic_cdk_timers::TimerId::from(slotmap::KeyData::from_ffi(
+                    self.try_from_vm_value(context)?,
+                )))
             }
         }
     }

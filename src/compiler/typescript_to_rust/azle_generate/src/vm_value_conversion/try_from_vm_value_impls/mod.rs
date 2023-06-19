@@ -12,6 +12,18 @@ pub fn generate() -> proc_macro2::TokenStream {
     let vec_impls = vec::generate();
 
     quote::quote! {
+        impl From<&str> for CdkActTryFromVmValueError {
+            fn from(value: &str) -> Self {
+                Self(value.to_string())
+            }
+        }
+
+        impl From<&str> for CdkActTryIntoVmValueError {
+            fn from(value: &str) -> Self {
+                Self(value.to_string())
+            }
+        }
+
         #basic_impls
         #generic_impls
         #numeric_impls
