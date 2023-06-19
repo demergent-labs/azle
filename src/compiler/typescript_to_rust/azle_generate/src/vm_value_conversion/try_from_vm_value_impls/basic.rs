@@ -35,7 +35,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                     .as_string()
                     .ok_or_else(|| "TypeError: value is not a string")?
                     .to_std_string()
-                    .map_err(|err| "SystemError: {err}")?)
+                    .map_err(|err| CdkActTryFromVmValueError(format!("SystemError: {err}")))?)
             }
         }
 
@@ -74,12 +74,12 @@ pub fn generate() -> proc_macro2::TokenStream {
 
                 let principal = js_object
                     .get("0", context)
-                    .map_err(|err| "TypeError: undefined is not a Principal")?
+                    .map_err(|err| CdkActTryFromVmValueError(format!("SystemError: {err}")))?
                     .try_from_vm_value(&mut *context)?;
 
                 let method = js_object
                     .get("1", context)
-                    .map_err(|err| "TypeError: undefined is not a string")?
+                    .map_err(|err| CdkActTryFromVmValueError(format!("SystemError: {err}")))?
                     .try_from_vm_value(&mut *context)?;
 
                 Ok(ic_cdk::export::candid::Func { principal, method })
@@ -88,47 +88,43 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         impl CdkActTryFromVmValue<ic_cdk::export::Principal, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<ic_cdk::export::Principal, CdkActTryFromVmValueError> {
-                match self.as_object() {
-                    Some(principal_js_object) => {
-                        match principal_js_object.get("toText", context) {
-                            Ok(principal_to_text_function_js_value) => {
-                                match principal_to_text_function_js_value.as_object() {
-                                    Some(principal_to_text_function_js_object) => {
-                                        match principal_to_text_function_js_object.call(&self, &[], context) {
-                                            Ok(principal_string_js_value) => {
-                                                match principal_string_js_value.as_string() {
-                                                    Some(principal_js_string) => {
-                                                        match ic_cdk::export::Principal::from_text(principal_js_string.to_std_string().unwrap()) {
-                                                            Ok(principal) => Ok(principal),
-                                                            Err(err) => Err(CdkActTryFromVmValueError(err.to_string()))
-                                                        }
-                                                    },
-                                                    None => Err(CdkActTryFromVmValueError("JsValue is not a string".to_string()))
-                                                }
-                                            },
-                                            Err(err_js_error) => {
-                                                let err_js_value = err_js_error.to_opaque(context);
-                                                let err_js_object = err_js_value.as_object().unwrap();
+                let principal_js_object = self
+                    .as_object()
+                    .ok_or_else(|| "TypeError: value is not an object")?;
 
-                                                let err_name: String = err_js_object.get("name", &mut *context).unwrap().try_from_vm_value(&mut * context).unwrap();
-                                                let err_message: String = err_js_object.get("message", &mut *context).unwrap().try_from_vm_value(&mut *context).unwrap();
+                let principal_to_text_function_js_value = principal_js_object
+                    .get("toText", context)
+                    .map_err(|err| "TypeError: property 'toText' of object is not a function")?;
 
-                                                Err(CdkActTryFromVmValueError(format!(
-                                                    "{name}: {message}",
-                                                    name = err_name,
-                                                    message = err_message
-                                                )))
-                                            }
-                                        }
-                                    },
-                                    None => Err(CdkActTryFromVmValueError("property 'toText' of object is not a function".to_string()))
-                                }
-                            },
-                            Err(err) => Err(CdkActTryFromVmValueError("property 'toText' of object is not a function".to_string()))
-                        }
-                    },
-                    None => Err(CdkActTryFromVmValueError("value is not an object".to_string()))
-                }
+                let principal_to_text_function_js_object = principal_to_text_function_js_value
+                    .as_object()
+                    .ok_or_else(|| "TypeError: property 'toText' of object is not a function")?;
+
+                let principal_text = principal_to_text_function_js_object
+                    .call(&self, &[], context)
+                    .map_err(|js_err| CdkActTryFromVmValueError(js_err.to_string()))?
+                    .as_string()
+                    .ok_or_else(|| "TypeError: value is not a string")?
+                    .to_std_string()
+                    .map_err(|err| CdkActTryFromVmValueError(format!("SystemError: {err}")))?;
+
+                let principal = ic_cdk::export::Principal::from_text(principal_text)
+                    .map_err(|principal_error| {
+                        let name = match principal_error {
+                            candid::types::principal::PrincipalError::BytesTooLong() => "BytesTooLongError",
+                            candid::types::principal::PrincipalError::InvalidBase32() => "InvalidBase32Error",
+                            candid::types::principal::PrincipalError::TextTooShort() => "TextTooShortError",
+                            candid::types::principal::PrincipalError::TextTooLong() => "TextTooLongError",
+                            candid::types::principal::PrincipalError::CheckSequenceNotMatch() => "CheckSequenceNotMatchError",
+                            candid::types::principal::PrincipalError::AbnormalGrouped(_) => "AbnormalGroupedError",
+                        };
+
+                        let message = principal_error.to_string();
+
+                        CdkActTryFromVmValueError(format!("{name}: {message}"))
+                    })?;
+
+                Ok(principal)
             }
         }
 
