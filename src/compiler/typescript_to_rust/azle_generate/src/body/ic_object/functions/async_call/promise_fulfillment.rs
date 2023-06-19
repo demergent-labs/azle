@@ -1,7 +1,7 @@
 pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
-        BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
-            let mut boa_context = box_context_ref_cell.borrow_mut();
+        BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
+            let mut boa_context = boa_context_ref_cell.borrow_mut();
 
             let call_result_js_value = match call_result {
                 Ok(value) => {

@@ -17,8 +17,8 @@ pub fn generate() -> TokenStream {
                     Self::FromVmValueError(msg) => msg.to_string(),
                     Self::IntoVmValueError(msg) => msg.to_string(),
                     Self::JsError(js_error_value) => {
-                        BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
-                            let mut boa_context = box_context_ref_cell.borrow_mut();
+                        BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
+                            let mut boa_context = boa_context_ref_cell.borrow_mut();
 
                             js_value_to_string(js_error_value.to_opaque(&mut boa_context), &mut boa_context)
                         })

@@ -25,8 +25,8 @@ pub fn generate(
 
     Ok(quote! {
         unwrap_or_trap(|| {
-            BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
-                let mut boa_context = box_context_ref_cell.borrow_mut();
+            BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
+                let mut boa_context = boa_context_ref_cell.borrow_mut();
 
                 let uuid = uuid::Uuid::new_v4().to_string();
 

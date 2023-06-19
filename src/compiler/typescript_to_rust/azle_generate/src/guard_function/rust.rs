@@ -4,8 +4,8 @@ use quote::quote;
 pub fn generate(function_name: &String) -> TokenStream {
     let function_call = format!("{function_name}()");
     quote! {
-        BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
-            let mut boa_context = box_context_ref_cell.borrow_mut();
+        BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
+            let mut boa_context = boa_context_ref_cell.borrow_mut();
 
             let js_guard_fn_return_value = boa_context
                 .eval_script(boa_engine::Source::from_bytes(#function_call))
