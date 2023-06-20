@@ -1,3 +1,10 @@
+type IceAppleBasket = record {
+  "int" : int;
+  "int8" : int8;
+  "int16" : int16;
+  "int32" : int32;
+  "int64" : int64;
+};
 type MyCavernousRecord = record {
   myRecord : MyRecord;
   myDeepTuple : record { text };
@@ -28,6 +35,13 @@ type MyRecord = record {
   int9 : int16;
 };
 type MyVariant = variant { String : text; Thing : int8 };
+type NectarineBasket = record {
+  "nat" : nat;
+  "nat8" : nat8;
+  "nat16" : nat16;
+  "nat32" : nat32;
+  "nat64" : nat64;
+};
 type User = record {
   id : text;
   age : nat;
@@ -35,13 +49,30 @@ type User = record {
   something : nat64;
   something_else : int;
 };
+type Watermelon = variant { Seeds; Seedless };
 service : () -> {
+  addSigFigs : (float32) -> (float64) query;
+  checkService : (
+      service { is_delivered : () -> (bool) query; deliver : () -> (text) },
+    ) -> (
+      service { is_delivered : () -> (bool) query; deliver : () -> (text) },
+    ) query;
+  checkWatermelonForSeeds : (bool, Watermelon) -> () query;
+  compareApplesToOranges : (IceAppleBasket, NectarineBasket) -> (bool) query;
+  dirtyIlama : () -> ();
+  getManagementPeach : () -> (principal) query;
+  getOlives : (opt bool) -> (bool) query;
+  isFruitPrepared : () -> (bool) query;
   makeCavernousRecord : () -> (MyCavernousRecord) query;
   myFathomlessVariantToMyCavernousVariant : (MyFathomlessVariant) -> (
       MyCavernousVariant,
     ) query;
   myVariantToMyDeepVariant : (MyVariant) -> (MyDeepVariant) query;
+  peelBanana : (vec nat8) -> (nat8);
+  pickElderberry : () -> (empty);
   "record" : () -> (User) query;
+  removeRambutanSkins : () -> (reserved);
+  replyMangoly : () -> (bool);
   returnFathomlessService : () -> (
       service { query1 : () -> (bool) query; update1 : () -> (text) },
     ) query;
