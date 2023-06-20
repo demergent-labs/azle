@@ -1,5 +1,6 @@
 // Named Imports
-import * as ic_methods from './canister_methods/import_coverage';
+export * from './canister_methods/import_coverage';
+export * from './canister_methods/azle_coverage';
 import { $query, int } from 'azle';
 import { Record as Sweet, Variant, Tuple as AzleTuple } from 'azle';
 import { Oneway as Cool, Query as Boy, Update as Town } from 'azle';
