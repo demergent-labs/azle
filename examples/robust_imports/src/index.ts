@@ -1,14 +1,14 @@
 // Named Imports
-export * from './canister_methods/import_coverage';
-export * from './canister_methods/azle_coverage';
+export * from './import_coverage/import_coverage';
+export * from './azle_coverage/azle_coverage';
 import { $query, int } from 'azle';
 import { Record as Sweet, Variant, Tuple as AzleTuple } from 'azle';
 import { Oneway as Cool, Query as Boy, Update as Town } from 'azle';
-import WayCool, { Apple as Fuji } from './types/fruit';
-import { default as Nice } from './types/fruit';
+import WayCool, { Apple as Fuji } from './azle_coverage/fruit';
+import { default as Nice } from './azle_coverage/fruit';
 import type { Vec } from 'azle';
 // import { thing as NotAzleThingEither } from './fruit';
-import { Apple as GrannySmith } from './types/fruit';
+import { Apple as GrannySmith } from './azle_coverage/fruit';
 // import { Banana } from './fruit';
 // import { Apple as RedHandFruit, Banana as YellowHandFruit } from './fruit';
 // import { Record } from './deep_test';
@@ -19,7 +19,7 @@ import NotAzle, {
     Tuple
 } from './types/azle_wrapper';
 
-import * as starFruit from './types/fruit';
+import * as starFruit from './azle_coverage/fruit';
 import * as wrapper from './types/azle_wrapper';
 
 type coolString = string;
@@ -29,8 +29,8 @@ type coolString = string;
 
 // Not Named Imports
 import * as azle from 'azle';
-import Coolboy from './types/fruit';
-import './types/fruit';
+import Coolboy from './azle_coverage/fruit';
+import './azle_coverage/fruit';
 export { $update } from 'azle';
 // import('./test').then((myModule) => {});
 // import { "thing" as Something } from './test';
