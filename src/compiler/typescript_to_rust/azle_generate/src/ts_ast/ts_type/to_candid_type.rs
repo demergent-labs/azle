@@ -21,6 +21,15 @@ impl SourceMapped<'_, TsType> {
             TsType::TsTupleType(_) => {
                 return Err(vec![UnexpectedTsTupleTypes::from_ts_type(self).into()]);
             }
+            TsType::TsArrayType(_) => {
+                // TODO: Because this isn't handled types like this currently break:
+                // ```ts
+                // type InlineArrayAlias = Alias<Record<{ inline_bool: boolean }>[]>;
+                // ```
+                //
+                // We need to fix this!
+                return Err(vec![UnexpectedTsType::from_ts_type(self).into()]);
+            }
             _ => {
                 return Err(vec![UnexpectedTsType::from_ts_type(self).into()]);
             }
