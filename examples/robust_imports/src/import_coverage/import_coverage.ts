@@ -1,12 +1,7 @@
-import $icQuery, * as ic from '../types/import_coverage';
-import {
-    text,
-    text as mT,
-    text as mDT,
-    text as mCT
-} from '../types/import_coverage';
-import dollarSignQuery from '../types/import_coverage';
-import query, { int8, int8 as variInt, match } from '../types/import_coverage';
+import $icQuery, * as ic from './types';
+import { text, text as mT, text as mDT, text as mCT } from './types';
+import dollarSignQuery from './types';
+import query, { int8, int8 as variInt, match } from './types';
 
 export type MyCavernousRecord = ic.CavernousRecord<{
     coveredRecord: MyCoveredRecord;

@@ -42,7 +42,7 @@ import $kiwi, {
     Ugni,
     Voavanga
     // vanilla
-} from '../types/fruit';
+} from './fruit';
 
 // TODO get rid of these
 // type vanilla = Apple<void>;

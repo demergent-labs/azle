@@ -25,41 +25,43 @@ Import Clause breakdown
 
 */
 //1) ImportedDefaultBinding (thing) (import thing from 'thing')
-import deepDefault from './deep/shallow';
+import deepDefault from '../types/deep/shallow';
 //2) NameSpaceImport (* as thing) (import * as thing from 'thing')
-import * as deepStar from './deep/deep';
+import * as deepStar from '../types/deep/deep';
 import * as azle from 'azle';
 //3) NamedImports
 //a) ({}) (import {} from 'thing')
-import {} from './deep/deep';
+import {} from '../types/deep/deep';
 //b) {ImportsList}
 //i) ({thing}) (import {thing} from 'thing')
-import { DeepRecord } from './deep/deep';
+import { DeepRecord } from '../types/deep/deep';
 //ii) ({thing as other}) (import {thing as other} from 'thing')
-import { DeepRecord as CavernousRecord } from './deep/deep';
+import { DeepRecord as CavernousRecord } from '../types/deep/deep';
 //b) {ImportsList,}
 //i) ({thing, }) (import {thing, } from 'thing')
-import { DeepInt8, DeepTuple } from './deep/deep';
+import { DeepInt8, DeepTuple } from '../types/deep/deep';
 //ii) ({thing1 as other1, }) (import {thing1 as other1, thing2 as other2} from 'thing')
 import {
     DeepInt8 as BottomlessInt8,
     DeepVariant as BottomlessVariant
-} from './deep/deep';
+} from '../types/deep/deep';
 //c) Combos
 //i) ({thing1, thing2 as other2}) ({thing1, thing2 as other2})
-import { DeepVariant, DeepInt8 as ProfoundInt8 } from './deep/deep';
+import { DeepVariant, DeepInt8 as ProfoundInt8 } from '../types/deep/deep';
 //ii) ({thing1 as other1, thing2}) ({thing1, thing2 as other2})
-import { DeepRecord as FathomlessRecord, DeepVec } from './deep/deep';
+import { DeepRecord as FathomlessRecord, DeepVec } from '../types/deep/deep';
 //4) ImportedDefaultBinding, NameSpaceImport (thing, * as other from 'thing')
-import profoundDefault, * as profoundStar from './deep/deep';
+import profoundDefault, * as profoundStar from '../types/deep/deep';
 //5) ImportedDefaultBinding, NamedImports (thing, {thing as other} from 'thing')
-import bottomlessDefault, { DeepTuple as BottomlessTuple } from './deep/deep';
+import bottomlessDefault, {
+    DeepTuple as BottomlessTuple
+} from '../types/deep/deep';
 //a) there could be all sorts of combos in here
 import cavernousDefault, {
     DeepTuple as CavernousTuple,
     DeepOpt,
     DeepVariant as CavernousVariant
-} from './deep/deep';
+} from '../types/deep/deep';
 
 /*
 From https://262.ecma-international.org/13.0/#sec-exports 16.2.3
@@ -89,7 +91,7 @@ From https://262.ecma-international.org/13.0/#sec-exports 16.2.3
 //1) export ExportFromClause FromClause ;
 //a) *
 export * from 'azle';
-export * from './deep/deep'; // TODO support having multiple export * from declarations
+export * from '../types/deep/deep'; // TODO support having multiple export * from declarations
 //b) * as ModuleExportName
 export * as azle from 'azle';
 //c) NamedExports
@@ -130,8 +132,8 @@ export type CoveredText = azle.text;
 //4) export Declaration (Type Alias Declaration)
 // TODO get type alias declarations to work
 // export type FathomlessInt = DeepInt8;
-export { DeepInt8 as FathomlessInt } from './deep/deep';
+export { DeepInt8 as FathomlessInt } from '../types/deep/deep';
 // export type ProfoundInt = profoundStar.DeepInt8;
-export { DeepInt8 as ProfoundInt } from './deep/deep';
+export { DeepInt8 as ProfoundInt } from '../types/deep/deep';
 //5) export default
 export default deepStar.deepAzle.$query;
