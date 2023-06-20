@@ -338,7 +338,7 @@ export function hash_duplication_test(
     variant2: Variant<{ one: boolean; two: boolean; three: boolean }>
 ): void {}
 
-type VoidAlias = void;
+type VoidAlias = Alias<void>;
 
 $query;
-export function method(): VoidAlias {}
+export function voidAliasTest(): VoidAlias {}
