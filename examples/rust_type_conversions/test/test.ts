@@ -1,5 +1,5 @@
 import { getCanisterId, runTests } from 'azle/test';
-import { createActor } from '../dfx_generated/rust_type_conversions';
+import { createActor } from './dfx_generated/rust_type_conversions';
 import { getTests } from './tests';
 
 const rustTypeConversionsCanister = createActor(

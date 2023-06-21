@@ -8,7 +8,8 @@
             "candid": "src/index.did",
             "wasm": ".azle/rust_type_conversions/rust_type_conversions.wasm.gz",
             "declarations": {
-                "output": "dfx_generated"
+                "output": "test/dfx_generated/rust_type_conversions",
+                "node_compatibility": true
             }
         }
     }

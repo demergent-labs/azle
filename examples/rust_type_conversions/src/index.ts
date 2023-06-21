@@ -131,10 +131,7 @@ type Fun = Variant<{
 }>;
 
 $query;
-export function oneVariant(thing: Fun): void {
-    // oneVariant({ cool: null, id: null });
-    oneVariant({ cool: null });
-}
+export function oneVariant(thing: Fun): void {}
 
 $query;
 export function variousVariants(thing: Yes, thing2: Reaction): string {
@@ -148,19 +145,20 @@ type Yes = Variant<{
 }>;
 
 type SelfReferencingVariant = Variant<{
-    // One: SelfReferencingVariant; //TODO: We should fix this in the CDK Framework
+    One: SelfReferencingVariant;
     Two: null;
 }>;
 
-// TODO start boxing things in funcs
-// type SelfReferencingFunc = Func<
-//     (first_param: boolean, second_param: SelfReferencingFunc) => Query<string>
-// >;
+type SelfReferencingFunc = Func<
+    Query<
+        (first_param: boolean, second_param: Opt<SelfReferencingFunc>) => string
+    >
+>;
 
-type SelfReferencingTuple = Tuple<[string, SelfReferencingTuple]>;
+type SelfReferencingTuple = Tuple<[string, Opt<SelfReferencingTuple>]>;
 
 type SelfReferencingRecord = Record<{
-    one: SelfReferencingRecord;
+    one: Opt<SelfReferencingRecord>;
     two: string;
 }>;
 
@@ -168,8 +166,8 @@ $query;
 export function selfReference(
     variant: SelfReferencingVariant,
     record: SelfReferencingRecord,
-    tuple: SelfReferencingTuple
-    // func: SelfReferencingFunc
+    tuple: SelfReferencingTuple,
+    func: SelfReferencingFunc
 ): void {}
 
 type Reaction = Variant<{
@@ -222,9 +220,12 @@ export function notSoSimple(
     fourteen: Record<{ thing: string }>
 ): void {}
 
-// TODO Why can't we do 2d arrays of principals??
-// $update;
-// export function getPrincipals(principal_lists: Vec<Vec<Principal>>): void {}
+$update;
+export function getPrincipals(
+    principal_lists: Vec<Vec<Principal>>
+): Vec<Vec<Principal>> {
+    return principal_lists;
+}
 
 type RecordWithInline = Record<{
     inline_record: Record<{ one: boolean; two: boolean; three: boolean }>;
@@ -239,25 +240,27 @@ type VariantWithInline = Variant<{
     inline_func: Func<Query<(param1: string) => string>>;
 }>;
 
-type FuncWithInline = Func<
-    Query<
-        (
-            inline_record: Record<{
-                one: boolean;
-                two: boolean;
-                three: boolean;
-            }>,
-            inline_variant: Variant<{ one: string; two: null; three: boolean }>,
-            inline_func: Func<Query<(param1: string) => string>>
-        ) => string
-    >
->;
+// TODO: Funcs with inline types don't currently work
+
+// type FuncWithInline = Func<
+//     Query<
+//         (
+//             inline_record: Record<{
+//                 one: boolean;
+//                 two: boolean;
+//                 three: boolean;
+//             }>,
+//             inline_variant: Variant<{ one: string; two: null; three: boolean }>,
+//             inline_func: Func<Query<(param1: string) => string>>
+//         ) => string
+//     >
+// >;
 
 $update;
 export function everythingInline(
     record: RecordWithInline,
-    variant: VariantWithInline,
-    func: FuncWithInline
+    variant: VariantWithInline
+    // func: FuncWithInline
 ): void {}
 
 type StructWithInlineArray = Record<{
@@ -328,7 +331,7 @@ type PenultimateSelfRef = Record<{
 }>;
 
 type AntepenultimateSelfRef = Record<{
-    ultimate: UltimateSelfRef;
+    ultimate: Opt<UltimateSelfRef>;
 }>;
 
 $update;
