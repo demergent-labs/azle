@@ -263,12 +263,12 @@ export function everythingInline(
 type StructWithInlineArray = Record<{
     name: string;
     not_array: Record<{ thing: boolean; thing2: boolean }>;
-    array: Record<{ thing: boolean; thing2: boolean }>[];
+    array: Vec<Record<{ thing: boolean; thing2: boolean }>>;
 }>;
 
 $query;
 export function inlineVec(
-    array: Record<{ thing: string; thing2: boolean }>[],
+    array: Vec<Record<{ thing: string; thing2: boolean }>>,
     struct_thing: StructWithInlineArray
 ): void {}
 type CanisterOnly = Alias<boolean>;
@@ -303,19 +303,19 @@ export function optionTest(
 ): void {}
 
 type ArrayAlias = Alias<Vec<Boolean>>;
-type InlineArrayAlias = Alias<Record<{ inline_bool: boolean }>[]>;
+type InlineArrayAlias = Alias<Vec<Record<{ inline_bool: boolean }>>>;
 type InlineArrayStruct = Record<{
-    arr: Record<{ inline_string: string }>[];
+    arr: Vec<Record<{ inline_string: string }>>;
 }>;
 
 $update;
 export function arrayTest(
     opt: ArrayAlias,
-    inline_array: Record<{ thing: string }>[],
+    inline_array: Vec<Record<{ thing: string }>>,
     inline_alias: InlineArrayAlias,
     struct_with_array: InlineArrayStruct,
     inline_struct_with_array: Record<{
-        arr: Record<{ inline_number: nat16 }>[];
+        arr: Vec<Record<{ inline_number: nat16 }>>;
     }>
 ): void {}
 
