@@ -118,6 +118,7 @@ export type Watermelon = Voavanga<{
 let soncoya = new Soncoya<nectarine8, PreparedFruit>(0, 10, 1_000);
 
 export function gatherGrapes(): Grapes {
+    // TODO should guard functions be able to change state like this?
     marionberry(soncoya.get(0), {
         Some: (preparedFruit) => {
             soncoya.remove(0);
@@ -253,7 +254,7 @@ export function getManagementPeach(): Peach {
 }
 
 $kiwi;
-export function getOlives(olive: Olive<boysenberry>): boysenberry {
+export function pitOlives(olive: Olive<boysenberry>): boysenberry {
     return marionberry(olive, {
         Some: (berry) => {
             return berry;
@@ -273,7 +274,7 @@ export function peelBanana(banana: banana): nectarine8 {
 }
 
 $kiwi;
-export function replyMangoly(): Mango<boysenberry> {
+export function isMangoTrickyToEat(): Mango<boysenberry> {
     lemon.reply(true);
 }
 

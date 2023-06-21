@@ -61,18 +61,18 @@ service : () -> {
   compareApplesToOranges : (IceAppleBasket, NectarineBasket) -> (bool) query;
   dirtyIlama : () -> ();
   getManagementPeach : () -> (principal) query;
-  getOlives : (opt bool) -> (bool) query;
   isFruitPrepared : () -> (bool) query;
+  isMangoTrickyToEat : () -> (bool) query;
   makeCavernousRecord : () -> (MyCavernousRecord) query;
   myFathomlessVariantToMyCavernousVariant : (MyFathomlessVariant) -> (
       MyCavernousVariant,
     ) query;
   myVariantToMyDeepVariant : (MyVariant) -> (MyDeepVariant) query;
-  peelBanana : (vec nat8) -> (nat8);
+  peelBanana : (vec nat8) -> (nat8) query;
   pickElderberry : () -> (empty);
+  pitOlives : (opt bool) -> (bool) query;
   "record" : () -> (User) query;
   removeRambutanSkins : () -> (reserved);
-  replyMangoly : () -> (bool);
   returnFathomlessService : () -> (
       service { query1 : () -> (bool) query; update1 : () -> (text) },
     ) query;

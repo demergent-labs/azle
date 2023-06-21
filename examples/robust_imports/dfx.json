@@ -11,6 +11,18 @@
                 "output": "dfx_generated/robust_imports",
                 "node_compatibility": true
             }
+        },
+        "fruit_delivery": {
+            "type": "custom",
+            "build": "npx azle fruit_delivery --verbose",
+            "root": "src",
+            "ts": "src/azle_coverage/fruit_delivery.ts",
+            "candid": "src/azle_coverage/fruit_delivery.did",
+            "wasm": ".azle/fruit_delivery/fruit_delivery.wasm.gz",
+            "declarations": {
+                "output": "dfx_generated/fruit_delivery",
+                "node_compatibility": true
+            }
         }
     }
 }
