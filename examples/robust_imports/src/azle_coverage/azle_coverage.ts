@@ -54,11 +54,11 @@ type blackberry = Apple<boolean>;
 type nutmeg = Apple<null>;
 
 class FruitDeliveryService extends Strawberry {
-    @santol
-    is_delivered: () => Cherry<boolean>;
-
     @sapodilla
     deliver: () => Cherry<string>;
+
+    @santol
+    is_delivered: () => Cherry<boolean>;
 }
 
 export type PreparedFruit = Raspberry<{

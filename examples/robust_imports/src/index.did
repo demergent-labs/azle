@@ -53,9 +53,9 @@ type Watermelon = variant { Seeds; Seedless };
 service : () -> {
   addSigFigs : (float32) -> (float64) query;
   checkService : (
-      service { is_delivered : () -> (bool) query; deliver : () -> (text) },
+      service { deliver : () -> (text); is_delivered : () -> (bool) query },
     ) -> (
-      service { is_delivered : () -> (bool) query; deliver : () -> (text) },
+      service { deliver : () -> (text); is_delivered : () -> (bool) query },
     ) query;
   checkWatermelonForSeeds : (bool, Watermelon) -> () query;
   compareApplesToOranges : (IceAppleBasket, NectarineBasket) -> (bool) query;

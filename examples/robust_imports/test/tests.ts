@@ -44,9 +44,6 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'check service',
             test: async () => {
-                return {
-                    Ok: true // TODO fix this
-                };
                 const result = execSync(
                     `dfx canister call robust_imports checkService '(service "aaaaa-aa")'`
                 )
