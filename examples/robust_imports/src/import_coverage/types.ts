@@ -62,6 +62,10 @@ import cavernousDefault, {
     DeepOpt,
     DeepVariant as CavernousVariant
 } from '../types/deep/deep';
+//6 Type import
+import type { Opt, Vec as CoveredVec } from 'azle';
+//7 Default import as
+import { default as defaultInt16 } from '../types/deep/deep';
 
 /*
 From https://262.ecma-international.org/13.0/#sec-exports 16.2.3
@@ -125,7 +129,10 @@ export {
     cavernousDefault,
     CavernousTuple,
     DeepOpt as FathomlessOpt,
-    CavernousVariant
+    CavernousVariant,
+    Opt as CoveredOpt,
+    CoveredVec,
+    defaultInt16 as coveredInt16
 };
 export { DeepInt8 as CoverInt8 };
 export type CoveredText = azle.text;

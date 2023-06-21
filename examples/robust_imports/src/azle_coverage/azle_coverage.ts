@@ -46,7 +46,7 @@ import $kiwi, {
 } from './fruit';
 
 import { match as marionberry, ic as lemon, int16 as coconut } from 'azle';
-import * as azle from 'azle';
+import * as starFruit from './fruit';
 
 // TODO get rid of these
 // type vanilla = Apple<void>;
@@ -88,6 +88,7 @@ export type NectarineBasket = Raspberry<{
     nat16: nectarine16;
     nat32: nectarine32;
     nat64: nectarine64;
+    starNat: starFruit.nectarine;
 }>;
 
 export type IceAppleBasket = Raspberry<{
@@ -96,6 +97,7 @@ export type IceAppleBasket = Raspberry<{
     int16: iceApple16;
     int32: iceApple32;
     int64: iceApple64;
+    starInt: starFruit.iceApple;
 }>;
 
 export type boysenberry = Apple<boolean>;
@@ -108,7 +110,6 @@ export type Watermelon = Voavanga<{
 let soncoya = new Soncoya<nectarine8, PreparedFruit>(0, 10, 1_000);
 
 function gatherGrapes(): Grapes {
-    // TODO should guard functions be able to change state like this?
     marionberry(soncoya.get(0), {
         Some: (preparedFruit) => {
             soncoya.remove(0);
@@ -234,7 +235,8 @@ export function compareApplesToOranges(
         apples.int8 === oranges.nat8 &&
         apples.int16 === oranges.nat16 &&
         apples.int32 === oranges.nat32 &&
-        apples.int64 === oranges.nat64
+        apples.int64 === oranges.nat64 &&
+        apples.starInt === oranges.starNat
     );
 }
 
