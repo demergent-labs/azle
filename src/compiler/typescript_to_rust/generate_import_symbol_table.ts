@@ -2,7 +2,8 @@ import { SymbolTable, SymbolTables } from '../utils/types';
 import * as ts from 'typescript';
 
 const FILES_OF_INTEREST = [
-    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/canister_methods/import_coverage.ts'
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/canister_methods/azle_coverage.ts',
+    '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/azle_coverage/azle_coverage.ts'
     // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/azle_wrapper.ts',
     // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/fruit.ts',
     // '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/deep/deep.ts',
@@ -757,6 +758,7 @@ function processSymbol(
         // These should be handled above
         case ts.SyntaxKind.FunctionDeclaration:
         case ts.SyntaxKind.ClassDeclaration:
+        case ts.SyntaxKind.VariableDeclaration:
             break;
         default:
             if (sourceFile) {
@@ -902,7 +904,7 @@ function stringToSymbolTableKey(name: ts.__String): keyof SymbolTable {
             return 'float32';
         case 'float64':
             return 'float64';
-        case 'func':
+        case 'Func':
             return 'func';
         case 'GuardResult':
             return 'guard_result';

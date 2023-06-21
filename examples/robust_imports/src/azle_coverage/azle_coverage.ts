@@ -40,11 +40,12 @@ import $kiwi, {
     Tamarind,
     $ugni,
     Ugni,
-    Voavanga
+    Voavanga,
+    Lime
     // vanilla
 } from './fruit';
 
-import { match as marionberry, ic as lemon } from 'azle';
+import { match as marionberry, ic as lemon, int16 as coconut } from 'azle';
 import * as azle from 'azle';
 
 // TODO get rid of these
@@ -72,25 +73,15 @@ export type PreparedFruit = Raspberry<{
     haveElderberriesBeenPicked: boysenberry;
 }>;
 
-type OrangeAndFarkleberry = Farkleberry<
-    Orange<(param1: tangerine) => tangerine>
->;
+type OrangeAndFarkleberry = Farkleberry<Orange<(param1: tangerine) => void>>;
 type QuinceAndFarkleberry = Farkleberry<
     Quince<(param1: tangerine) => tangerine>
 >;
 type UgniAndFarkleberry = Farkleberry<Ugni<(param1: tangerine) => tangerine>>;
 
-// TODO fix this
-// type TamarindAndFarkleberry = Tamarind<
-//     [UgniAndFarkleberry, OrangeAndFarkleberry, QuinceAndFarkleberry]
-// >;
-// export function handleFarkleberries(
-//     orange: OrangeAndFarkleberry,
-//     quince: QuinceAndFarkleberry,
-//     ugni: UgniAndFarkleberry
-// ): TamarindAndFarkleberry {
-//     return [ugni, orange, quince];
-// }
+type TamarindAndFarkleberry = Tamarind<
+    [UgniAndFarkleberry, OrangeAndFarkleberry, QuinceAndFarkleberry]
+>;
 
 export type NectarineBasket = Raspberry<{
     nat: nectarine;
@@ -249,6 +240,15 @@ export function compareApplesToOranges(
 }
 
 $kiwi;
+export function handleFarkleberries(
+    orange: OrangeAndFarkleberry,
+    quince: QuinceAndFarkleberry,
+    ugni: UgniAndFarkleberry
+): TamarindAndFarkleberry {
+    return [ugni, orange, quince];
+}
+
+$kiwi;
 export function getManagementPeach(): Peach {
     return Peach.fromText('aaaaa-aa');
 }
@@ -271,6 +271,11 @@ export function peelBanana(banana: banana): nectarine8 {
         return 0;
     }
     return banana[0];
+}
+
+$kiwi;
+export function putTheCoconutInTheLime(coconut: coconut): Lime<coconut> {
+    return [coconut];
 }
 
 $kiwi;

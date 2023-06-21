@@ -61,6 +61,17 @@ service : () -> {
   compareApplesToOranges : (IceAppleBasket, NectarineBasket) -> (bool) query;
   dirtyIlama : () -> ();
   getManagementPeach : () -> (principal) query;
+  handleFarkleberries : (
+      func (text) -> () oneway,
+      func (text) -> (text) query,
+      func (text) -> (text),
+    ) -> (
+      record {
+        func (text) -> (text);
+        func (text) -> () oneway;
+        func (text) -> (text) query;
+      },
+    ) query;
   isFruitPrepared : () -> (bool) query;
   isMangoTrickyToEat : () -> (bool) query;
   makeCavernousRecord : () -> (MyCavernousRecord) query;
@@ -71,6 +82,7 @@ service : () -> {
   peelBanana : (vec nat8) -> (nat8) query;
   pickElderberry : () -> (empty);
   pitOlives : (opt bool) -> (bool) query;
+  putTheCoconutInTheLime : (int16) -> (vec int16) query;
   "record" : () -> (User) query;
   removeRambutanSkins : () -> (reserved);
   returnFathomlessService : () -> (
