@@ -958,7 +958,7 @@ function stringToSymbolTableKey(name: ts.__String): keyof SymbolTable {
             return 'reserved';
         case 'Service':
             return 'service';
-        case '$serviceQuery':
+        case 'serviceQuery':
             return 'service_query_decorator';
         case 'serviceUpdate':
             return 'service_update_decorator';

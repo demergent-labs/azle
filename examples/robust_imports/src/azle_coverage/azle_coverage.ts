@@ -54,8 +54,7 @@ type blackberry = Apple<boolean>;
 type nutmeg = Apple<null>;
 
 class FruitDeliveryService extends Strawberry {
-    // @santol // TODO fix this
-    @azle.serviceQuery
+    @santol
     is_delivered: () => Cherry<boolean>;
 
     @sapodilla
@@ -108,7 +107,7 @@ export type Watermelon = Voavanga<{
 
 let soncoya = new Soncoya<nectarine8, PreparedFruit>(0, 10, 1_000);
 
-export function gatherGrapes(): Grapes {
+function gatherGrapes(): Grapes {
     // TODO should guard functions be able to change state like this?
     marionberry(soncoya.get(0), {
         Some: (preparedFruit) => {
