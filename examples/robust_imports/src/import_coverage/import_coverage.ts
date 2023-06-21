@@ -2,6 +2,7 @@ import $icQuery, * as ic from './types';
 import { text, text as mT, text as mDT, text as mCT } from './types';
 import dollarSignQuery from './types';
 import query, { int8, int8 as variInt, match } from './types';
+import type { CoveredOpt, CoveredVec, coveredInt16 } from './types';
 
 export type MyCavernousRecord = ic.CavernousRecord<{
     coveredRecord: MyCoveredRecord;
@@ -14,7 +15,7 @@ export type MyCavernousRecord = ic.CavernousRecord<{
 export type MyCoveredRecord = ic.CoveredRecord<{
     count: ic.fathomlessStar.DeepInt8;
     name: ic.text;
-    type: ic.azle.text;
+    type_name: ic.azle.text;
     greeting: ic.FathomlessOpt<ic.text>;
 }>;
 export type MyRecord = ic.Record<{
@@ -87,30 +88,23 @@ export function myFathomlessVariantToMyCavernousVariant(
 }
 
 ic.$query;
-export function returnsVec(): ic.Vec<ic.azle.blob> {
+export function returnVec(): ic.Vec<ic.azle.blob> {
     return [new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6, 7])];
 }
 
 $icQuery;
-export function returnsFathomlessVec(): ic.FathomlessVec<ic.azle.int16> {
+export function returnFathomlessVec(): ic.FathomlessVec<ic.azle.int16> {
     return [1, 2, 3, 4, 5, 6, 7];
 }
 
 ic.azle.$query;
 export function returnWeird(): ic.nat8 {
-    return -10000n;
+    return -10_000n;
 }
 
 ic.azle.$query;
-export function returnFathomlessService(): SomeService {
-    return new SomeService(
-        ic.Principal.fromText(
-            process.env.SOME_SERVICE_PRINCIPAL ??
-                ic.azle.ic.trap(
-                    'process.env.SOME_SERVICE_PRINCIPAL is undefined'
-                )
-        )
-    );
+export function returnFathomlessService(service: SomeService): SomeService {
+    return service;
 }
 
 dollarSignQuery;
@@ -119,7 +113,7 @@ export function makeCavernousRecord(): MyCavernousRecord {
         coveredRecord: {
             count: 10,
             name: 'Bob',
-            type: 'Imported Record',
+            type_name: 'Imported Record',
             greeting: ic.Opt.Some('Hello there')
         },
         myRecord: {
@@ -140,4 +134,19 @@ export function makeCavernousRecord(): MyCavernousRecord {
         myDeepTuple: ['my deep tuple'],
         myCavernousTuple: ['my cavernous tuple']
     };
+}
+
+dollarSignQuery;
+export function typeCheck(vec: CoveredVec<CoveredOpt<ic.nat16>>): coveredInt16 {
+    if (vec.length === 1) {
+        return match(vec[0], {
+            Some: (nat16) => {
+                return nat16;
+            },
+            None: () => {
+                return -1;
+            }
+        });
+    }
+    return -2;
 }

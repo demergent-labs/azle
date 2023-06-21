@@ -1,5 +1,6 @@
 type IceAppleBasket = record {
   "int" : int;
+  starInt : int;
   "int8" : int8;
   "int16" : int16;
   "int32" : int32;
@@ -15,9 +16,9 @@ type MyCavernousRecord = record {
 };
 type MyCavernousVariant = variant { sixteen; eight };
 type MyCoveredRecord = record {
+  type_name : text;
   name : text;
   count : int8;
-  "type" : text;
   greeting : opt text;
 };
 type MyDeepVariant = variant { Thing : int8 };
@@ -37,17 +38,11 @@ type MyRecord = record {
 type MyVariant = variant { String : text; Thing : int8 };
 type NectarineBasket = record {
   "nat" : nat;
+  starNat : nat;
   "nat8" : nat8;
   "nat16" : nat16;
   "nat32" : nat32;
   "nat64" : nat64;
-};
-type User = record {
-  id : text;
-  age : nat;
-  name : text;
-  something : nat64;
-  something_else : int;
 };
 type Watermelon = variant { Seeds; Seedless };
 service : () -> {
@@ -83,14 +78,14 @@ service : () -> {
   pickElderberry : () -> (empty);
   pitOlives : (opt bool) -> (bool) query;
   putTheCoconutInTheLime : (int16) -> (vec int16) query;
-  "record" : () -> (User) query;
   removeRambutanSkins : () -> (reserved);
-  returnFathomlessService : () -> (
+  returnFathomlessService : (
+      service { query1 : () -> (bool) query; update1 : () -> (text) },
+    ) -> (
       service { query1 : () -> (bool) query; update1 : () -> (text) },
     ) query;
+  returnFathomlessVec : () -> (vec int16) query;
+  returnVec : () -> (vec vec nat8) query;
   returnWeird : () -> (int64) query;
-  returnsFathomlessVec : () -> (vec int16) query;
-  returnsVec : () -> (vec vec nat8) query;
-  simpleQuery : () -> (text);
-  thing : () -> (int) query;
+  typeCheck : (vec opt nat16) -> (int16) query;
 }

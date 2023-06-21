@@ -13,17 +13,101 @@ export function getTests(
     ];
 }
 
-function getImportCoverageTests(
-    robustImportsCanister: ActorSubclass<_SERVICE>
-): Test[] {
+function getImportCoverageTests(ic: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
-            name: 'query',
+            name: 'myVariantToMyDeepVariant',
             test: async () => {
-                const result = await robustImportsCanister.simpleQuery();
+                const result = await ic.myVariantToMyDeepVariant({ Thing: 7 });
+                return {
+                    Ok: result.Thing === 7
+                };
+            }
+        },
+        {
+            name: 'myFathomlessVariantToMyCavernousVariant',
+            test: async () => {
+                const result = await ic.myFathomlessVariantToMyCavernousVariant(
+                    {
+                        MyInt8: 7
+                    }
+                );
+                return {
+                    Ok: 'eight' in result
+                };
+            }
+        },
+        {
+            name: 'returnsVec',
+            test: async () => {
+                return {
+                    Ok: 7 === (await ic.returnVec())[1][3]
+                };
+            }
+        },
+        {
+            name: 'returnsFathomlessVec',
+            test: async () => {
+                return {
+                    Ok: 7 === (await ic.returnFathomlessVec())[6]
+                };
+            }
+        },
+        {
+            name: 'returnWeird',
+            test: async () => {
+                return {
+                    Ok: -10_000n === (await ic.returnWeird())
+                };
+            }
+        },
+        {
+            name: 'returnFathomlessService',
+            test: async () => {
+                const result = execSync(
+                    `dfx canister call robust_imports returnFathomlessService '(service "aaaaa-aa")'`
+                )
+                    .toString()
+                    .trim();
 
                 return {
-                    Ok: result === 'This is a query function'
+                    Ok: result === '(service "aaaaa-aa")'
+                };
+            }
+        },
+        {
+            name: 'makeCavernousRecord',
+            test: async () => {
+                const result = await ic.makeCavernousRecord();
+                return {
+                    Ok:
+                        result.coveredRecord.count === 10 &&
+                        result.coveredRecord.name === 'Bob' &&
+                        result.coveredRecord.type_name === 'Imported Record' &&
+                        result.coveredRecord.greeting[0] === 'Hello there' &&
+                        result.myRecord.int1 === 20 &&
+                        result.myRecord.int2 === 30 &&
+                        result.myRecord.int3 === 40 &&
+                        result.myRecord.int4 === 50 &&
+                        result.myRecord.int5 === 60 &&
+                        result.myRecord.int6 === 70 &&
+                        result.myRecord.int7 === 80 &&
+                        result.myRecord.int8 === 90 &&
+                        result.myRecord.int9 === 100 &&
+                        result.fathomlessRecord.mytext ===
+                            'my text in a fathomless record' &&
+                        result.myTuple[0] === 'my tuple' &&
+                        result.myDeepTuple[0] === 'my deep tuple' &&
+                        result.myCavernousTuple[0] === 'my cavernous tuple'
+                };
+            }
+        },
+        {
+            name: 'typeCheck',
+            test: async () => {
+                const result = await ic.typeCheck([[7]]);
+                return {
+                    Ok: result === 7
                 };
             }
         }
@@ -49,8 +133,6 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                 )
                     .toString()
                     .trim();
-
-                console.log(result);
 
                 return {
                     Ok: result === '(service "aaaaa-aa")'
@@ -97,21 +179,24 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                     int8: 2,
                     int16: 3,
                     int32: 4,
-                    int64: 5n
+                    int64: 5n,
+                    starInt: 6n
                 };
                 const poisonApples = {
                     int: -1n,
                     int8: -2,
                     int16: -3,
                     int32: -4,
-                    int64: -5n
+                    int64: -5n,
+                    starInt: 6n
                 };
                 const oranges = {
                     nat: 1n,
                     nat8: 2,
                     nat16: 3,
                     nat32: 4,
-                    nat64: 5n
+                    nat64: 5n,
+                    starNat: 6n
                 };
                 const result1 = await fruit.compareApplesToOranges(
                     apples,
