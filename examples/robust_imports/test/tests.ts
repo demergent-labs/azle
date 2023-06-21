@@ -1,4 +1,5 @@
 import { Test } from 'azle/test';
+import { Principal } from '@dfinity/principal';
 import { execSync } from 'child_process';
 import { _SERVICE } from '../dfx_generated/robust_imports/robust_imports.did';
 import { ActorSubclass } from '@dfinity/agent';
@@ -127,6 +128,30 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
+            name: 'Handle Farkleberries',
+            test: async () => {
+                let func: [Principal, string] = [
+                    Principal.fromText('aaaaa-aa'),
+                    'create_canister'
+                ];
+                const result = await fruit.handleFarkleberries(
+                    func,
+                    func,
+                    func
+                );
+
+                return {
+                    Ok:
+                        result[0][0].toText() === 'aaaaa-aa' &&
+                        result[0][1] === 'create_canister' &&
+                        result[1][0].toText() === 'aaaaa-aa' &&
+                        result[1][1] === 'create_canister' &&
+                        result[2][0].toText() === 'aaaaa-aa' &&
+                        result[2][1] === 'create_canister'
+                };
+            }
+        },
+        {
             name: 'Get Management Peach',
             test: async () => {
                 const result = await fruit.getManagementPeach();
@@ -152,6 +177,13 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                 const banana = [1];
                 const peeledBanana = await fruit.peelBanana(banana);
                 return { Ok: peeledBanana === 1 };
+            }
+        },
+        {
+            name: 'Put the Coconut in the Lime',
+            test: async () => {
+                const lime = await fruit.putTheCoconutInTheLime(8);
+                return { Ok: lime.length === 1 && lime[0] === 8 };
             }
         },
         {

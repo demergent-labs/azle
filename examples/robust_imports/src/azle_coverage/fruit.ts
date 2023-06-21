@@ -41,7 +41,8 @@ export {
     Tuple as Tamarind,
     $update as $ugni,
     Update as Ugni,
-    Variant as Voavanga
+    Variant as Voavanga,
+    Vec as Lime
 } from 'azle';
 export type blackberry = boolean;
 export type nutmeg = null;
