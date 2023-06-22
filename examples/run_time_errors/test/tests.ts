@@ -6,7 +6,8 @@ export function getTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         ...getThrownErrorTests(errorCanister),
         ...getInvalidOptTests(errorCanister),
-        ...getInvalidPrimitiveTests(errorCanister)
+        ...getInvalidPrimitiveTests(errorCanister),
+        ...getInvalidNumberTests(errorCanister)
     ];
 }
 
@@ -116,6 +117,77 @@ function getInvalidPrimitiveTests(
             'return invalid void value',
             errorCanister.returnInvalidVoidValue,
             "TypeError: value is not of type 'void'"
+        )
+    ];
+}
+
+function getInvalidNumberTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
+    return [
+        expectError(
+            'return invalid number',
+            errorCanister.returnInvalidNumber,
+            // TODO: change this to "TypeError: value is not of type 'number'"
+            "TypeError: value is not of type 'float64'"
+        ),
+        expectError(
+            'return invalid int',
+            errorCanister.returnInvalidInt,
+            "TypeError: value is not of type 'int'"
+        ),
+        expectError(
+            'return invalid int8',
+            errorCanister.returnInvalidInt8,
+            "TypeError: value is not of type 'int8'"
+        ),
+        expectError(
+            'return invalid int16',
+            errorCanister.returnInvalidInt16,
+            "TypeError: value is not of type 'int16'"
+        ),
+        expectError(
+            'return invalid int32',
+            errorCanister.returnInvalidInt32,
+            "TypeError: value is not of type 'int32'"
+        ),
+        expectError(
+            'return invalid int64',
+            errorCanister.returnInvalidInt64,
+            "TypeError: value is not of type 'int64'"
+        ),
+        expectError(
+            'return invalid nat',
+            errorCanister.returnInvalidNat,
+            "TypeError: value is not of type 'nat'"
+        ),
+        expectError(
+            'return invalid nat8',
+            errorCanister.returnInvalidNat8,
+            "TypeError: value is not of type 'nat8'"
+        ),
+        expectError(
+            'return invalid nat16',
+            errorCanister.returnInvalidNat16,
+            "TypeError: value is not of type 'nat16'"
+        ),
+        expectError(
+            'return invalid nat32',
+            errorCanister.returnInvalidNat32,
+            "TypeError: value is not of type 'nat32'"
+        ),
+        expectError(
+            'return invalid nat64',
+            errorCanister.returnInvalidNat64,
+            "TypeError: value is not of type 'nat64'"
+        ),
+        expectError(
+            'return invalid float32',
+            errorCanister.returnInvalidFloat32,
+            "TypeError: value is not of type 'float32'"
+        ),
+        expectError(
+            'return invalid float64',
+            errorCanister.returnInvalidFloat64,
+            "TypeError: value is not of type 'float64'"
         )
     ];
 }

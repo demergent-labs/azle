@@ -37,6 +37,22 @@ export {
     returnInvalidVoidValue
 } from './primitives';
 
+export {
+    returnInvalidNumber,
+    returnInvalidInt,
+    returnInvalidInt8,
+    returnInvalidInt16,
+    returnInvalidInt32,
+    returnInvalidInt64,
+    returnInvalidNat,
+    returnInvalidNat8,
+    returnInvalidNat16,
+    returnInvalidNat32,
+    returnInvalidNat64,
+    returnInvalidFloat32,
+    returnInvalidFloat64
+} from './numbers';
+
 // $query;
 // export function returnInvalidFuncValue(): Func<Query<() => string>> {
 //     // @ts-expect-error
