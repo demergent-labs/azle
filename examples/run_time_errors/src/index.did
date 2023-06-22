@@ -3,6 +3,13 @@ service : () -> {
   alsoInaccessible : () -> (bool);
   getInitialized : () -> (bool) query;
   inaccessible : () -> (bool);
+  invalidBlobReturnValue : () -> (vec nat8) query;
+  invalidBooleanReturnValue : () -> (bool) query;
+  invalidEmptyReturnValue : () -> (empty) query;
+  invalidNullReturnValue : () -> (null) query;
+  invalidStringReturnValue : () -> (text) query;
+  invalidTextReturnValue : () -> (text) query;
+  invalidVoidReturnValue : () -> () query;
   returnBothSomeAndNone : () -> (opt text) query;
   returnInvalidSomeValue : () -> (opt text) query;
   returnNonNullNone : () -> (opt text) query;

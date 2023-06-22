@@ -26,3 +26,13 @@ export {
     returnNonNullNone,
     returnInvalidSomeValue
 } from './opt';
+
+export {
+    invalidBlobReturnValue,
+    invalidBooleanReturnValue,
+    invalidEmptyReturnValue,
+    invalidNullReturnValue,
+    invalidStringReturnValue,
+    invalidTextReturnValue,
+    invalidVoidReturnValue
+} from './primitives';

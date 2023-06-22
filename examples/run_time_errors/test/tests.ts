@@ -5,7 +5,8 @@ import { _SERVICE } from './dfx_generated/run_time_errors/run_time_errors.did';
 export function getTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         ...getThrownErrorTests(errorCanister),
-        ...getInvalidOptTests(errorCanister)
+        ...getInvalidOptTests(errorCanister),
+        ...getInvalidPrimitiveTests(errorCanister)
     ];
 }
 
@@ -51,27 +52,70 @@ function getInvalidOptTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
         expectError(
             'return non object',
             errorCanister.returnNonObject,
-            'TypeError: value is not an Opt'
+            "TypeError: value is not of type 'Opt'"
         ),
         expectError(
             'return object with both Some and None',
             errorCanister.returnBothSomeAndNone,
-            'TypeError: value is not an Opt'
+            "TypeError: value is not of type 'Opt'"
         ),
         expectError(
             'return object with neither Some nor None',
             errorCanister.returnObjectWithNeitherSomeNorNone,
-            'TypeError: value is not an Opt'
+            "TypeError: value is not of type 'Opt'"
         ),
         expectError(
             'return object with non null None value',
             errorCanister.returnNonNullNone,
-            'TypeError: value is not null'
+            "TypeError: value is not of type 'null'"
         ),
         expectError(
             'return object with invalid Some value',
             errorCanister.returnInvalidSomeValue,
-            'TypeError: value is not a string'
+            "TypeError: value is not of type 'string'"
+        )
+    ];
+}
+
+function getInvalidPrimitiveTests(
+    errorCanister: ActorSubclass<_SERVICE>
+): Test[] {
+    return [
+        // expectError(
+        //     'return invalid blob value',
+        //     errorCanister.invalidBlobReturnValue,
+        //     "TypeError: value is not of type 'blob'"
+        // ),
+        expectError(
+            'return invalid boolean value',
+            errorCanister.invalidBooleanReturnValue,
+            "TypeError: value is not of type 'boolean'"
+        ),
+        expectError(
+            'return invalid empty value',
+            errorCanister.invalidEmptyReturnValue,
+            "TypeError: value cannot be converted into type 'empty'"
+        ),
+        expectError(
+            'return invalid null value',
+            errorCanister.invalidNullReturnValue,
+            "TypeError: value is not of type 'null'"
+        ),
+        expectError(
+            'return invalid string value',
+            errorCanister.invalidStringReturnValue,
+            "TypeError: value is not of type 'string'"
+        ),
+        expectError(
+            'return invalid text value',
+            errorCanister.invalidTextReturnValue,
+            // TODO: Consider saying "value is not of type 'text'"
+            "TypeError: value is not of type 'string'"
+        ),
+        expectError(
+            'return invalid void value',
+            errorCanister.invalidVoidReturnValue,
+            "TypeError: value is not of type 'void'"
         )
     ];
 }

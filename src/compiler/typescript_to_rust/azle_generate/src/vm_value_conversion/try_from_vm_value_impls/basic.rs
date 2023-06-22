@@ -11,7 +11,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                     return Ok(());
                 }
 
-                Err("TypeError: value is not null or undefined")?
+                Err("TypeError: value is not of type 'null' or 'undefined'")?
             }
         }
 
@@ -22,7 +22,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             ) -> Result<bool, CdkActTryFromVmValueError> {
                 Ok(self
                     .as_boolean()
-                    .ok_or_else(|| "TypeError: value is not a boolean")?)
+                    .ok_or_else(|| "TypeError: value is not of type 'boolean'")?)
             }
         }
 
@@ -33,7 +33,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             ) -> Result<String, CdkActTryFromVmValueError> {
                 Ok(self
                     .as_string()
-                    .ok_or_else(|| "TypeError: value is not a string")?
+                    .ok_or_else(|| "TypeError: value is not of type 'string'")?
                     .to_std_string()
                     .map_err(|err| format!("SystemError: {err}"))?)
             }
