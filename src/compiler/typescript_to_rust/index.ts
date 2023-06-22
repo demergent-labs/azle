@@ -9,7 +9,7 @@ import {
 } from './typescript_to_javascript/cargo_toml_files';
 import { writeCodeToFileSystem } from './write_code_to_file_system';
 import { generateRustCanister } from './generate_rust_canister';
-import { generateImportSymbolTable } from './generate_import_symbol_table';
+import { generateImportSymbolTable } from './generate_import_symbol_table/generate_import_symbol_table';
 import { Err, ok, unwrap } from '../utils/result';
 import {
     AzleError,

@@ -1,4 +1,4 @@
-import { SymbolTable, SymbolTables } from '../utils/types';
+import { SymbolTable, SymbolTables } from '../../utils/types';
 import * as ts from 'typescript';
 
 const FILES_OF_INTEREST = [
