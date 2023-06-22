@@ -112,6 +112,7 @@ jobs:
                     "examples/query",
                     "examples/randomness",
                     "examples/rejections",
+                    "examples/robust_imports",
                     "examples/run_time_errors",
                     "examples/rust_type_conversions",
                     "examples/service",
