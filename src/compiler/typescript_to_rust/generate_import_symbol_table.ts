@@ -142,18 +142,18 @@ function getSymbolTableFromSourceFile(
     const valueDeclaration = sourceFileSymbol.valueDeclaration;
 
     if (!valueDeclaration) {
-        //  TODO there was no value declaration on the source file symbol. I
+        //  There was no value declaration on the source file symbol. I
         //  don't understand what the value declaration is or under what
         //  circumstances we wouldn't have it
         return;
     }
 
     if (!('locals' in valueDeclaration)) {
-        // TODO there was no symbol table in the source file symbol
+        // There was no symbol table in the source file symbol
         return;
     }
 
-    return valueDeclaration.locals as ts.SymbolTable; // TODO I am not 100% sure that this is a valid cast
+    return valueDeclaration.locals as ts.SymbolTable;
 }
 
 function getSymbolTable(
@@ -162,7 +162,7 @@ function getSymbolTable(
 ): ts.SymbolTable | undefined {
     const sourceFile = program.getSourceFile(filename);
     if (!sourceFile) {
-        // TODO could not get source file from filename
+        // Could not get source file from filename
         return;
     }
     return getSymbolTableFromSourceFile(sourceFile, program);
@@ -178,80 +178,77 @@ function createSingleEntrySymbolTable(
         symbolTable[key].push(originalName as string);
         return symbolTable;
     } catch {
-        // TODO the key isn't part of the azle symbol table
+        // The key isn't part of the azle symbol table
         return;
     }
 }
 
+// TODO make a better name for this
+// What is this doing? Where all are we calling it?
+// It's called from import/export specifier and from import clause
+// The process symbol does a similar thing
+// Here we are getting a module. And finding the name in the module so we can get it's symbol
 function getAzleEquivalent(
     originalName: ts.__String,
-    name: ts.__String, // TODO should this be a ts.__String?
+    name: ts.__String, // TODO should this be a ts.__String or a string?
     moduleSpecifier: ts.StringLiteral,
     program: ts.Program
 ): SymbolTable | undefined {
     if (moduleSpecifier.text === 'azle') {
         return createSingleEntrySymbolTable(originalName, name);
     }
-    const tsType = getTsTypeForImportDecl(moduleSpecifier, program);
-    if (tsType) {
-        const exports = tsType.symbol.exports;
-        if (!exports) {
-            return; // If the source doesn't export anything then what it can't export anything from azle
-        }
-        const symbol = exports.get(name as ts.__String);
-        if (symbol) {
-            return processSymbol(originalName, symbol, program);
-        } else {
-            // TODO we couldn't find the symbol in the symbol table for this file
-            // What might have happened is that it came from a export * from 'thing'
-            // Get all of the * exports
-            // get the symbol tables for all of those and check which one has the name we are looking for
-            // The order of operations is
-            // 1) if there is something in the symbol table it will override anything from a * import
-            // 2) if there are two things from two different * exports then that will cause a compiler error
-            return findSymbolInStarExportsFromModule(
-                originalName,
-                name,
-                moduleSpecifier,
-                program
-            );
-        }
+    const symbolTable = getSymbolTableForModuleSpecifier(
+        moduleSpecifier,
+        program
+    );
+    if (!symbolTable) {
+        return;
     }
-    return;
+    // For any symbol it will be resolved as follows:
+    // 1) if there is something in the symbol table it will override anything from a * import
+    // 2) if not then the symbol will be in the list of start exports
+    //      a) if there are two things from two different * exports then that will cause a compiler error
+
+    // So 1) Start by seeing if the symbol is in the list of exports. If so use that symbol
+    const symbol = symbolTable.get(name as ts.__String);
+    if (symbol) {
+        return processSymbol(originalName, symbol, program);
+    } else {
+        // We couldn't find the symbol in the symbol table for this file
+        // So 2) Check if it came from an `export * from 'thing'` declaration
+        return findSymbolInStarExportsFromModule(
+            originalName,
+            name,
+            moduleSpecifier,
+            program
+        );
+    }
 }
 
+// Get all of the * exports
+// get the symbol tables for all of those and check which one has the name we are looking for
 function findSymbolInStarExportsFromModule(
     originalName: ts.__String,
     name: ts.__String,
     moduleSpecifier: ts.StringLiteral,
     program: ts.Program
 ): SymbolTable | undefined {
-    // Get sourcefile from module specifier
-    const typeChecker = program.getTypeChecker();
-    const namespacedSymbol = typeChecker.getSymbolAtLocation(moduleSpecifier);
-    for (const exportDeclaration of namespacedSymbol?.exports?.get(
-        '__export' as ts.__String
-    )?.declarations ?? []) {
+    const symbolTable = getSymbolTableForModuleSpecifier(
+        moduleSpecifier,
+        program
+    );
+    for (const exportDeclaration of symbolTable?.get('__export' as ts.__String)
+        ?.declarations ?? []) {
         if (ts.isExportDeclaration(exportDeclaration)) {
             // Get the module specifiers from export
             const exportModSpecifier = exportDeclaration.moduleSpecifier;
             if (exportModSpecifier && ts.isStringLiteral(exportModSpecifier)) {
-                if (exportModSpecifier.text === 'azle') {
-                    return createSingleEntrySymbolTable(originalName, name);
-                }
-                // Get each symbol table from each module specifier
-                const symbolTable = getSymbolTableForModuleSpecifier(
+                return getAzleEquivalent(
+                    originalName,
+                    name,
                     exportModSpecifier,
                     program
                 );
-                if (symbolTable) {
-                    // Check to see if the symbol is in that symbol table
-                    const symbol = symbolTable.get(name);
-                    if (symbol) {
-                        // Process the symbol
-                        return processSymbol(originalName, symbol, program);
-                    }
-                }
             }
         }
     }
@@ -340,24 +337,26 @@ function processExportSpecifier(
     // }
     // console.log("========> The new way didn't work");
     const sourceFile = getSourceFile(exportSpecifier);
-    if (sourceFile) {
-        const symbolTable = getSymbolTableFromSourceFile(sourceFile, program);
-        if (symbolTable) {
-            const symbol = symbolTable.get(identifier.text as ts.__String);
-            if (symbol) {
-                const result = processSymbol(originalName, symbol, program);
-                if (result) {
-                    if (exportSpecifier.propertyName) {
-                        return renameSymbolTable(
-                            result,
-                            exportSpecifier.name.text
-                        );
-                    }
-                    return result;
-                }
-            }
-        }
+    if (!sourceFile) {
+        return;
     }
+    const symbolTable = getSymbolTableFromSourceFile(sourceFile, program);
+    if (!symbolTable) {
+        return;
+    }
+    const symbol = symbolTable.get(identifier.text as ts.__String);
+    if (!symbol) {
+        return;
+    }
+    const result = processSymbol(originalName, symbol, program);
+    if (!result) {
+        return;
+    }
+
+    if (exportSpecifier.propertyName) {
+        return renameSymbolTable(result, exportSpecifier.name.text);
+    }
+    return result;
 }
 /* stuff to try out
     // TODO play around with this (and I think I saw one more thing, but this is likely the one I thought I saw) for type aliases
@@ -397,14 +396,12 @@ function processImportClause(
     declaration: ts.ImportClause,
     program: ts.Program
 ): SymbolTable | undefined {
-    const importDeclaration = declaration.parent;
-    const thing = getAzleEquivalent(
+    return getAzleEquivalent(
         originalName,
         'default' as ts.__String,
-        importDeclaration.moduleSpecifier as ts.StringLiteral,
+        declaration.parent.moduleSpecifier as ts.StringLiteral,
         program
     );
-    return thing;
 }
 
 function getSourceFile(node: ts.Node): ts.SourceFile | undefined {
@@ -415,76 +412,6 @@ function getSourceFile(node: ts.Node): ts.SourceFile | undefined {
         return node.parent;
     }
     return getSourceFile(node.parent);
-}
-
-function processTypeAliasDeclaration(
-    originalName: ts.__String,
-    declaration: ts.TypeAliasDeclaration,
-    program: ts.Program
-): SymbolTable | undefined {
-    if (typeAliasesAreStillUnimplemented) {
-        return; // TODO Add support for type alias declarations
-    }
-    if (declaration.typeParameters?.length ?? 0 > 0) {
-        return; // This looks like a candid definition not a possible azle alias
-    }
-    const sourceFile = getSourceFile(declaration);
-    if (!sourceFile) {
-        // TODO couldn't find the sourceFile
-        return;
-    }
-    const symbolTable = getSymbolTableFromSourceFile(sourceFile, program);
-    if (!symbolTable) {
-        // TODO couldn't get a symbol table
-        return;
-    }
-    const typeReference = declaration.type;
-    if (ts.isTypeReferenceNode(typeReference)) {
-        const typeName = typeReference.typeName;
-        if (ts.isQualifiedName(typeName)) {
-            const left = typeName.left;
-            if (ts.isIdentifier(left)) {
-                const leftSymbol = symbolTable.get(left.text as ts.__String);
-                if (!leftSymbol) {
-                    return;
-                }
-                if (leftSymbol.declarations?.length != 1) {
-                    return;
-                }
-                const namespace = leftSymbol.declarations[0];
-                if (!ts.isNamespaceImport(namespace)) {
-                    return;
-                }
-                const namespaceSymbolTable = getSymbolTableForNamespace(
-                    namespace,
-                    program
-                );
-                if (!namespaceSymbolTable) {
-                    // TODO there is no namespace symbol table
-                    return;
-                }
-                const symbol = namespaceSymbolTable?.get(
-                    typeName.right.text as ts.__String
-                );
-                if (!symbol) {
-                    // TODO there is no symbol
-                    return;
-                }
-                return processSymbol(originalName, symbol, program);
-            }
-            // TODO what to do if the left isn't an identifier
-            return;
-        }
-        if (ts.isIdentifier(typeName)) {
-            const symbol = symbolTable.get(typeName.text as ts.__String);
-            if (!symbol) {
-                // TODO Couldn't find symbol
-                return;
-            }
-            return processSymbol(originalName, symbol, program);
-        }
-    }
-    // TODO what else could this be??
 }
 
 function getSymbolTableForNamespace(
@@ -516,13 +443,18 @@ function getSymbolTableForModuleSpecifier(
     program: ts.Program
 ): ts.SymbolTable | undefined {
     const typeChecker = program.getTypeChecker();
-    const namespacedSymbol = typeChecker.getSymbolAtLocation(moduleSpecifier);
-    if (!namespacedSymbol) {
+    const symbol = typeChecker.getSymbolAtLocation(moduleSpecifier);
+    if (!symbol) {
         return;
     }
-    return namespacedSymbol.exports;
+    return symbol.exports;
 }
 
+// My expectation is that this will only be called for export declarations in the form:
+// `export * from 'thing'`
+// My understanding is all other export declarations will be processed in other
+// functions because they will fall into the more specific export clause or
+// export specifier cases
 function processExportDeclarations(
     declarations: ts.ExportDeclaration[],
     program: ts.Program
@@ -530,31 +462,23 @@ function processExportDeclarations(
     const symbolTables = declarations.map((declaration) => {
         const moduleSpecifier = declaration.moduleSpecifier;
         if (!moduleSpecifier || !ts.isStringLiteral(moduleSpecifier)) {
-            console.log(
-                "I'm not sure if this is going to be true in this case"
-            );
             // Unreachable: An export declaration with a namespace export will always have a FromClause
             // https://262.ecma-international.org/13.0/#sec-exports
             return;
         }
         if (declaration.exportClause) {
-            console.log(
-                'I think if we get an export clause then we should be handling this' +
-                    "somewhere else. I only want things like export * from 'thing'"
-            );
+            // Unreachable: An export declaration with a namespace export will always have an ExportClause
+            // https://262.ecma-international.org/13.0/#sec-exports
             return;
         }
         if (moduleSpecifier.text == 'azle') {
             return createDefaultSymbolTable();
         }
-        const namespacedSymbolTable = getSymbolTableForDeclaration(
-            declaration,
-            program
-        );
-        if (!namespacedSymbolTable) {
+        const symbolTable = getSymbolTableForDeclaration(declaration, program);
+        if (!symbolTable) {
             return;
         }
-        return toAzleSymbolTable(namespacedSymbolTable, program);
+        return toAzleSymbolTable(symbolTable, program);
     });
     let symbolTable = createEmptyAzleSymbolTable();
     symbolTables.forEach((subSymbolTable) => {
@@ -656,7 +580,7 @@ function mergeSymbolTables(
     return mergedSymbolTable;
 }
 
-// TODO this feels very janky to me
+// TODO this feels very janky to me. Is there a better way of determining this?
 function isAzleSymbol(symbol: ts.Symbol): boolean {
     if ('parent' in symbol) {
         const parent = symbol.parent as ts.Symbol;
@@ -769,25 +693,6 @@ function processSymbol(
                 }
             }
     }
-}
-
-function getTsTypeForImportDecl(
-    moduleSpecifier: ts.StringLiteral,
-    program: ts.Program
-): ts.Type | undefined {
-    const importSymbol = program
-        .getTypeChecker()
-        .getSymbolAtLocation(moduleSpecifier);
-    if (importSymbol) {
-        const importType = program
-            .getTypeChecker()
-            .getTypeOfSymbolAtLocation(
-                importSymbol,
-                importSymbol.valueDeclaration as ts.Node
-            );
-        return importType.getNonNullableType(); // TODO why are we doing this instead of just returning importType?
-    }
-    return;
 }
 
 function createEmptyAzleSymbolTable(): SymbolTable {
@@ -981,4 +886,75 @@ function stringToSymbolTableKey(name: ts.__String): keyof SymbolTable {
         default:
             throw `IMPORTANT: We couldn't find ${name}`;
     }
+}
+
+function processTypeAliasDeclaration(
+    originalName: ts.__String,
+    declaration: ts.TypeAliasDeclaration,
+    program: ts.Program
+): SymbolTable | undefined {
+    if (typeAliasesAreStillUnimplemented) {
+        return; // TODO Add support for type alias declarations
+        // The below code doesn't work, but it's hopefully a good starting point
+    }
+    if (declaration.typeParameters?.length ?? 0 > 0) {
+        return; // This looks like a candid definition not a possible azle alias
+    }
+    const sourceFile = getSourceFile(declaration);
+    if (!sourceFile) {
+        // TODO couldn't find the sourceFile
+        return;
+    }
+    const symbolTable = getSymbolTableFromSourceFile(sourceFile, program);
+    if (!symbolTable) {
+        // TODO couldn't get a symbol table
+        return;
+    }
+    const typeReference = declaration.type;
+    if (ts.isTypeReferenceNode(typeReference)) {
+        const typeName = typeReference.typeName;
+        if (ts.isQualifiedName(typeName)) {
+            const left = typeName.left;
+            if (ts.isIdentifier(left)) {
+                const leftSymbol = symbolTable.get(left.text as ts.__String);
+                if (!leftSymbol) {
+                    return;
+                }
+                if (leftSymbol.declarations?.length != 1) {
+                    return;
+                }
+                const namespace = leftSymbol.declarations[0];
+                if (!ts.isNamespaceImport(namespace)) {
+                    return;
+                }
+                const namespaceSymbolTable = getSymbolTableForNamespace(
+                    namespace,
+                    program
+                );
+                if (!namespaceSymbolTable) {
+                    // TODO there is no namespace symbol table
+                    return;
+                }
+                const symbol = namespaceSymbolTable?.get(
+                    typeName.right.text as ts.__String
+                );
+                if (!symbol) {
+                    // TODO there is no symbol
+                    return;
+                }
+                return processSymbol(originalName, symbol, program);
+            }
+            // TODO what to do if the left isn't an identifier
+            return;
+        }
+        if (ts.isIdentifier(typeName)) {
+            const symbol = symbolTable.get(typeName.text as ts.__String);
+            if (!symbol) {
+                // TODO Couldn't find symbol
+                return;
+            }
+            return processSymbol(originalName, symbol, program);
+        }
+    }
+    // TODO what else could this be??
 }
