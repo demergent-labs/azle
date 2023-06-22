@@ -35,7 +35,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                     .as_string()
                     .ok_or_else(|| "TypeError: value is not a string")?
                     .to_std_string()
-                    .map_err(|err| CdkActTryFromVmValueError(format!("SystemError: {err}")))?)
+                    .map_err(|err| format!("SystemError: {err}"))?)
             }
         }
 
@@ -74,12 +74,12 @@ pub fn generate() -> proc_macro2::TokenStream {
 
                 let principal = js_object
                     .get("0", context)
-                    .map_err(|err| CdkActTryFromVmValueError(format!("SystemError: {err}")))?
+                    .map_err(|err| format!("SystemError: {err}"))?
                     .try_from_vm_value(&mut *context)?;
 
                 let method = js_object
                     .get("1", context)
-                    .map_err(|err| CdkActTryFromVmValueError(format!("SystemError: {err}")))?
+                    .map_err(|err| format!("SystemError: {err}"))?
                     .try_from_vm_value(&mut *context)?;
 
                 Ok(ic_cdk::export::candid::Func { principal, method })
@@ -107,11 +107,11 @@ pub fn generate() -> proc_macro2::TokenStream {
 
                 let principal_text = principal_to_text_function_js_object
                     .call(&self, &[], context)
-                    .map_err(|js_err| CdkActTryFromVmValueError(js_err.to_string()))?
+                    .map_err(|js_err| js_err.to_string())?
                     .as_string()
                     .ok_or_else(|| "TypeError: value is not a string")?
                     .to_std_string()
-                    .map_err(|err| CdkActTryFromVmValueError(format!("SystemError: {err}")))?;
+                    .map_err(|err| format!("SystemError: {err}"))?;
 
                 let principal = ic_cdk::export::Principal::from_text(principal_text).map_err(
                     |principal_error| {
@@ -138,7 +138,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
                         let message = principal_error.to_string();
 
-                        CdkActTryFromVmValueError(format!("{name}: {message}"))
+                        format!("{name}: {message}")
                     },
                 )?;
 
