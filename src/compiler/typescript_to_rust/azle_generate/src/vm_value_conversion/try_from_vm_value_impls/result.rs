@@ -10,7 +10,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             ) -> Result<Result<(), String>, CdkActTryFromVmValueError> {
                 let js_object = self
                     .as_object()
-                    .ok_or_else(|| "value is not a GuardResult")?;
+                    .ok_or_else(|| "TypeError: value is not a GuardResult")?;
 
                 let has_ok_property = js_object
                     .has_own_property("Ok", context)
@@ -21,7 +21,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                     .map_err(|err| err.to_string())?;
 
                 if has_ok_property && has_err_property {
-                    return Err("value is not a GuardResult")?;
+                    return Err("TypeError: value is not a GuardResult")?;
                 }
 
                 if has_ok_property {
@@ -32,7 +32,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                     return if ok_value.is_null() {
                         Ok(Ok(()))
                     } else {
-                        Err("value is not null")?
+                        Err("TypeError: value is not null")?
                     };
                 }
 
@@ -43,7 +43,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                         .try_from_vm_value(context)?));
                 }
 
-                Err("Value is not a GuardResult")?
+                Err("TypeError: value is not a GuardResult")?
             }
         }
     }
