@@ -5,10 +5,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<f64, CdkActTryFromVmValueError> {
-                match self.as_number() {
-                    Some(value) => Ok(value),
-                    None => Err(CdkActTryFromVmValueError("JsValue is not a number".to_string()))
-                }
+                Ok(self.as_number().ok_or_else(|| "value is not a number")?)
             }
         }
 
@@ -17,12 +14,9 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<_CdkFloat64, CdkActTryFromVmValueError> {
-                match self.as_number() {
-                    Some(value) => Ok(_CdkFloat64(value)),
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a number".to_string(),
-                    )),
-                }
+                Ok(_CdkFloat64(
+                    self.as_number().ok_or_else(|| "value is not a number")?,
+                ))
             }
         }
 
@@ -31,12 +25,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<f32, CdkActTryFromVmValueError> {
-                match self.as_number() {
-                    Some(value) => Ok(value as f32),
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a number".to_string(),
-                    )),
-                }
+                Ok(self.as_number().ok_or_else(|| "value is not a number")? as f32)
             }
         }
 
@@ -45,12 +34,9 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<_CdkFloat32, CdkActTryFromVmValueError> {
-                match self.as_number() {
-                    Some(value) => Ok(_CdkFloat32(value as f32)),
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a number".to_string(),
-                    )),
-                }
+                Ok(_CdkFloat32(
+                    self.as_number().ok_or_else(|| "value is not a number")? as f32,
+                ))
             }
         }
 
@@ -64,14 +50,14 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<ic_cdk::export::candid::Int, CdkActTryFromVmValueError> {
-                match self.as_bigint() {
-                    Some(value) => {
-                        Ok(ic_cdk::export::candid::Int::from_str(&value.to_string()).unwrap())
-                    } // TODO probably not the best conversion
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a bigint".to_string(),
-                    )),
-                }
+                let int_string = self
+                    .as_bigint()
+                    .ok_or_else(|| "value is not a bigint")?
+                    .to_string();
+
+                // TODO probably not the best conversion
+                Ok(ic_cdk::export::candid::Int::from_str(&int_string)
+                    .map_err(|err| err.to_string())?)
             }
         }
 
@@ -80,21 +66,12 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<i128, CdkActTryFromVmValueError> {
-                match self.as_bigint() {
-                    Some(value) => {
-                        let value_i128_result = value.to_string().parse::<i128>();
-
-                        match value_i128_result {
-                            Ok(value_i128) => Ok(value_i128),
-                            Err(_) => Err(CdkActTryFromVmValueError(
-                                "Could not parse bigint to i128".to_string(),
-                            )),
-                        }
-                    }
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a bigint".to_string(),
-                    )),
-                }
+                Ok(self
+                    .as_bigint()
+                    .ok_or_else(|| "value is not a bigint")?
+                    .to_string()
+                    .parse::<i128>()
+                    .map_err(|err| err.to_string())?)
             }
         }
 
@@ -105,21 +82,12 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<i64, CdkActTryFromVmValueError> {
-                match self.as_bigint() {
-                    Some(value) => {
-                        let value_i64_result = value.to_string().parse::<i64>();
-
-                        match value_i64_result {
-                            Ok(value_i64) => Ok(value_i64),
-                            Err(_) => Err(CdkActTryFromVmValueError(
-                                "Could not parse bigint to i64".to_string(),
-                            )),
-                        }
-                    }
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a bigint".to_string(),
-                    )),
-                }
+                Ok(self
+                    .as_bigint()
+                    .ok_or_else(|| "value is not a bigint")?
+                    .to_string()
+                    .parse::<i64>()
+                    .map_err(|err| err.to_string())?)
             }
         }
 
@@ -128,12 +96,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<i32, CdkActTryFromVmValueError> {
-                match self.as_number() {
-                    Some(value) => Ok(value as i32),
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a number".to_string(),
-                    )),
-                }
+                Ok(self.as_number().ok_or_else(|| "value is not a number")? as i32)
             }
         }
 
@@ -142,12 +105,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<i16, CdkActTryFromVmValueError> {
-                match self.as_number() {
-                    Some(value) => Ok(value as i16),
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a number".to_string(),
-                    )),
-                }
+                Ok(self.as_number().ok_or_else(|| "value is not a number")? as i16)
             }
         }
 
@@ -156,12 +114,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<i8, CdkActTryFromVmValueError> {
-                match self.as_number() {
-                    Some(value) => Ok(value as i8),
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a number".to_string(),
-                    )),
-                }
+                Ok(self.as_number().ok_or_else(|| "value is not a number")? as i8)
             }
         }
 
@@ -172,14 +125,14 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<ic_cdk::export::candid::Nat, CdkActTryFromVmValueError> {
-                match self.as_bigint() {
-                    Some(value) => {
-                        Ok(ic_cdk::export::candid::Nat::from_str(&value.to_string()).unwrap())
-                    } // TODO probably not the best conversion
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a bigint".to_string(),
-                    )),
-                }
+                let bigint_string = self
+                    .as_bigint()
+                    .ok_or_else(|| "value is not a bigint")?
+                    .to_string();
+
+                // TODO probably not the best conversion
+                Ok(ic_cdk::export::candid::Nat::from_str(&bigint_string)
+                    .map_err(|err| err.to_string())?)
             }
         }
 
@@ -188,21 +141,12 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<u128, CdkActTryFromVmValueError> {
-                match self.as_bigint() {
-                    Some(value) => {
-                        let value_u128_result = value.to_string().parse::<u128>();
-
-                        match value_u128_result {
-                            Ok(value_u128) => Ok(value_u128),
-                            Err(_) => Err(CdkActTryFromVmValueError(
-                                "Could not parse bigint to u128".to_string(),
-                            )),
-                        }
-                    }
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a bigint".to_string(),
-                    )),
-                }
+                Ok(self
+                    .as_bigint()
+                    .ok_or_else(|| "value is not a bigint")?
+                    .to_string()
+                    .parse::<u128>()
+                    .map_err(|err| err.to_string())?)
             }
         }
 
@@ -213,21 +157,12 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<u64, CdkActTryFromVmValueError> {
-                match self.as_bigint() {
-                    Some(value) => {
-                        let value_u64_result = value.to_string().parse::<u64>();
-
-                        match value_u64_result {
-                            Ok(value_u64) => Ok(value_u64),
-                            Err(_) => Err(CdkActTryFromVmValueError(
-                                "Could not parse bigint to u64".to_string(),
-                            )),
-                        }
-                    }
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a bigint".to_string(),
-                    )),
-                }
+                Ok(self
+                    .as_bigint()
+                    .ok_or_else(|| "value is not a bigint")?
+                    .to_string()
+                    .parse::<u64>()
+                    .map_err(|err| err.to_string())?)
             }
         }
 
@@ -236,12 +171,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<u32, CdkActTryFromVmValueError> {
-                match self.as_number() {
-                    Some(value) => Ok(value as u32),
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a number".to_string(),
-                    )),
-                }
+                Ok(self.as_number().ok_or_else(|| "value is not a number")? as u32)
             }
         }
 
@@ -250,12 +180,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<u16, CdkActTryFromVmValueError> {
-                match self.as_number() {
-                    Some(value) => Ok(value as u16),
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a number".to_string(),
-                    )),
-                }
+                Ok(self.as_number().ok_or_else(|| "value is not a number")? as u16)
             }
         }
 
@@ -264,12 +189,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<u8, CdkActTryFromVmValueError> {
-                match self.as_number() {
-                    Some(value) => Ok(value as u8),
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not a number".to_string(),
-                    )),
-                }
+                Ok(self.as_number().ok_or_else(|| "value is not a number")? as u8)
             }
         }
     }

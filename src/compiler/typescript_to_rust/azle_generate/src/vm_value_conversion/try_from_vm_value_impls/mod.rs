@@ -24,6 +24,18 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
+        impl From<String> for CdkActTryFromVmValueError {
+            fn from(value: String) -> Self {
+                Self(value)
+            }
+        }
+
+        impl From<String> for CdkActTryIntoVmValueError {
+            fn from(value: String) -> Self {
+                Self(value)
+            }
+        }
+
         #basic_impls
         #generic_impls
         #numeric_impls
