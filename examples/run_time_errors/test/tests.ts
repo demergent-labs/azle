@@ -4,6 +4,13 @@ import { _SERVICE } from './dfx_generated/run_time_errors/run_time_errors.did';
 
 export function getTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
+        ...getThrownErrorTests(errorCanister),
+        ...getInvalidOptTests(errorCanister)
+    ];
+}
+
+function getThrownErrorTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
+    return [
         expectError('throw big int', errorCanister.throwBigint, '3'),
         expectError('throw boolean', errorCanister.throwBoolean, 'false'),
         expectError(
@@ -35,7 +42,12 @@ export function getTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
             'throw undefined',
             errorCanister.throwUndefined,
             'undefined'
-        ),
+        )
+    ];
+}
+
+function getInvalidOptTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
+    return [
         expectError(
             'return non object',
             errorCanister.returnNonObject,
@@ -59,7 +71,7 @@ export function getTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
         expectError(
             'return object with invalid Some value',
             errorCanister.returnInvalidSomeValue,
-            'TypeError: JsValue is not a string'
+            'TypeError: value is not a string'
         )
     ];
 }
@@ -74,7 +86,7 @@ function expectError(
     expectedValue: any
 ): Test {
     return {
-        name: `throw ${name}`,
+        name,
         test: async () => {
             return {
                 Ok: await testThrow(canisterMethod, expectedValue)
