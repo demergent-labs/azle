@@ -1,10 +1,13 @@
 mod basic;
+mod error_conversions;
 mod generic;
 mod numeric;
 mod result;
 mod vec;
 
 pub fn generate() -> proc_macro2::TokenStream {
+    let error_conversions = error_conversions::generate();
+
     let basic_impls = basic::generate();
     let generic_impls = generic::generate();
     let numeric_impls = numeric::generate();
@@ -12,29 +15,7 @@ pub fn generate() -> proc_macro2::TokenStream {
     let vec_impls = vec::generate();
 
     quote::quote! {
-        impl From<&str> for CdkActTryFromVmValueError {
-            fn from(value: &str) -> Self {
-                Self(value.to_string())
-            }
-        }
-
-        impl From<&str> for CdkActTryIntoVmValueError {
-            fn from(value: &str) -> Self {
-                Self(value.to_string())
-            }
-        }
-
-        impl From<String> for CdkActTryFromVmValueError {
-            fn from(value: String) -> Self {
-                Self(value)
-            }
-        }
-
-        impl From<String> for CdkActTryIntoVmValueError {
-            fn from(value: String) -> Self {
-                Self(value)
-            }
-        }
+        #error_conversions
 
         #basic_impls
         #generic_impls
