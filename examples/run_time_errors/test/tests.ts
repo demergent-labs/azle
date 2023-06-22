@@ -83,38 +83,38 @@ function getInvalidPrimitiveTests(
     return [
         // expectError(
         //     'return invalid blob value',
-        //     errorCanister.invalidBlobReturnValue,
+        //     errorCanister.returnInvalidBlobValue,
         //     "TypeError: value is not of type 'blob'"
         // ),
         expectError(
             'return invalid boolean value',
-            errorCanister.invalidBooleanReturnValue,
+            errorCanister.returnInvalidBooleanValue,
             "TypeError: value is not of type 'boolean'"
         ),
         expectError(
             'return invalid empty value',
-            errorCanister.invalidEmptyReturnValue,
+            errorCanister.returnInvalidEmptyValue,
             "TypeError: value cannot be converted into type 'empty'"
         ),
         expectError(
             'return invalid null value',
-            errorCanister.invalidNullReturnValue,
+            errorCanister.returnInvalidNullValue,
             "TypeError: value is not of type 'null'"
         ),
         expectError(
             'return invalid string value',
-            errorCanister.invalidStringReturnValue,
+            errorCanister.returnInvalidStringValue,
             "TypeError: value is not of type 'string'"
         ),
         expectError(
             'return invalid text value',
-            errorCanister.invalidTextReturnValue,
+            errorCanister.returnInvalidTextValue,
             // TODO: Consider saying "value is not of type 'text'"
             "TypeError: value is not of type 'string'"
         ),
         expectError(
             'return invalid void value',
-            errorCanister.invalidVoidReturnValue,
+            errorCanister.returnInvalidVoidValue,
             "TypeError: value is not of type 'void'"
         )
     ];

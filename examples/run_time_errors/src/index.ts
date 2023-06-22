@@ -28,11 +28,29 @@ export {
 } from './opt';
 
 export {
-    invalidBlobReturnValue,
-    invalidBooleanReturnValue,
-    invalidEmptyReturnValue,
-    invalidNullReturnValue,
-    invalidStringReturnValue,
-    invalidTextReturnValue,
-    invalidVoidReturnValue
+    returnInvalidBlobValue,
+    returnInvalidBooleanValue,
+    returnInvalidEmptyValue,
+    returnInvalidNullValue,
+    returnInvalidStringValue,
+    returnInvalidTextValue,
+    returnInvalidVoidValue
 } from './primitives';
+
+// $query;
+// export function returnInvalidFuncValue(): Func<Query<() => string>> {
+//     // @ts-expect-error
+//     return 'invalid type';
+// }
+
+// $query;
+// export function returnInvalidPrincipalValue(): Principal {
+//     // @ts-expect-error
+//     return 'invalid type';
+// }
+
+// $query;
+// export function returnInvalidValue(): TimerId {
+//     // @ts-expect-error
+//     return 'invalid type';
+// }

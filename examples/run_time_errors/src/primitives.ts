@@ -1,31 +1,31 @@
 import { $query, blob, empty, text } from 'azle';
 
 $query;
-export function invalidBlobReturnValue(): blob {
+export function returnInvalidBlobValue(): blob {
     // @ts-expect-error
     return 'invalid type';
 }
 
 $query;
-export function invalidBooleanReturnValue(): boolean {
+export function returnInvalidBooleanValue(): boolean {
     // @ts-expect-error
     return 'invalid type';
 }
 
 $query;
-export function invalidEmptyReturnValue(): empty {
+export function returnInvalidEmptyValue(): empty {
     // @ts-expect-error
     return 'invalid type';
 }
 
 $query;
-export function invalidNullReturnValue(): null {
+export function returnInvalidNullValue(): null {
     // @ts-expect-error
     return 'invalid type';
 }
 
 // $query;
-// export function invalidReservedReturnValue(): reserved {
+// export function returnInvalidReservedValue(): reserved {
 //     return `
 //         note: anything/everything can be reserved so there isn't any
 //         way to return an invalid reserved type
@@ -33,19 +33,19 @@ export function invalidNullReturnValue(): null {
 // }
 
 $query;
-export function invalidStringReturnValue(): string {
+export function returnInvalidStringValue(): string {
     // @ts-expect-error
     return false;
 }
 
 $query;
-export function invalidTextReturnValue(): text {
+export function returnInvalidTextValue(): text {
     // @ts-expect-error
     return false;
 }
 
 $query;
-export function invalidVoidReturnValue(): void {
+export function returnInvalidVoidValue(): void {
     // @ts-expect-error
     return 'invalid type';
 }
