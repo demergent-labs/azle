@@ -46,7 +46,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                     .map_err(|err| err.to_string())?;
 
                 if has_none_property && has_some_property {
-                    Err("value is not an Opt")?
+                    return Err("value is not an Opt")?;
                 }
 
                 if has_none_property {
@@ -54,20 +54,22 @@ pub fn generate() -> proc_macro2::TokenStream {
                         .get("None", context)
                         .map_err(|err| err.to_string())?;
 
-                    if none_value.is_null() {
+                    return if none_value.is_null() {
                         Ok(None)
                     } else {
                         Err("value is not null")?
-                    }
-                } else if has_some_property {
-                    let some_value = js_object
-                        .get("Some", context)
-                        .map_err(|err| err.to_string())?;
-
-                    some_value.try_from_vm_value(context).map(Some)
-                } else {
-                    Err("value is not an Opt")?
+                    };
                 }
+
+                if has_some_property {
+                    return js_object
+                        .get("Some", context)
+                        .map_err(|err| err.to_string())?
+                        .try_from_vm_value(context)
+                        .map(Some);
+                }
+
+                Err("value is not an Opt")?
             }
         }
     }
