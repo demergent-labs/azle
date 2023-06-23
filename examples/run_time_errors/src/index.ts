@@ -53,6 +53,16 @@ export {
     returnInvalidFloat64
 } from './numbers';
 
+export {
+    returnNonArrayValueAsInvalidFunc,
+    returnEmptyObjectAsInvalidFunc,
+    returnEmptyArrayAsInvalidFunc,
+    returnNonPrincipalValueAsInvalidFunc,
+    returnEmptyObjectPrincipalAsInvalidFunc,
+    returnArrayWithOnlyPrincipalAsInvalidFunc,
+    returnNonStringCanisterMethodNameAsInvalidFunc
+} from './func';
+
 // $query;
 // export function returnInvalidFuncValue(): Func<Query<() => string>> {
 //     // @ts-expect-error

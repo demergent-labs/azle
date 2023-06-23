@@ -70,17 +70,45 @@ pub fn generate() -> proc_macro2::TokenStream {
             ) -> Result<ic_cdk::export::candid::Func, CdkActTryFromVmValueError> {
                 let js_object = self
                     .as_object()
-                    .ok_or_else(|| "TypeError: value is not an object")?;
+                    .ok_or_else(|| "TypeError: value is not of type 'Func'")?;
 
-                let principal = js_object
+                if !js_object.is_array() {
+                    return Err("[TypeError: value is not of type 'Func'] {\n  [cause]: TypeError: expected 'Array', given 'Object'\n}")?;
+                }
+
+                let index0 = js_object
                     .get("0", context)
-                    .map_err(|err| format!("SystemError: {err}"))?
-                    .try_from_vm_value(&mut *context)?;
+                    .map_err(|err| format!("InternalError: {err}"))?;
 
-                let method = js_object
+                if index0.is_undefined() {
+                    return Err("[TypeError: value is not of type 'Func'] {\n  [cause]: TypeError: index '0' is undefined\n}")?;
+                }
+
+                let principal = index0
+                    .try_from_vm_value(&mut *context)
+                    .map_err(|principal_err| {
+                        format!(
+                            "[TypeError: value is not of type 'Func'] {{\n  [cause]: TypeError: index '0' is not of type 'Principal' {{\n    [cause]: {}\n  }}\n}}",
+                            principal_err.0
+                        )
+                    })?;
+
+                let index1 = js_object
                     .get("1", context)
-                    .map_err(|err| format!("SystemError: {err}"))?
-                    .try_from_vm_value(&mut *context)?;
+                    .map_err(|err| format!("InternalError: {err}"))?;
+
+                if index1.is_undefined() {
+                    return Err("[TypeError: value is not of type 'Func'] {\n  [cause]: TypeError: index '1' is undefined\n}")?;
+                }
+
+                let method = index1
+                    .try_from_vm_value(&mut *context)
+                    .map_err(|str_err| {
+                        format!(
+                            "[TypeError: value is not of type 'Func'] {{\n  [cause]: TypeError: index '1' is not of type 'string' {{\n    [cause]: {}\n  }}\n}}",
+                            str_err.0
+                        )
+                    })?;
 
                 Ok(ic_cdk::export::candid::Func { principal, method })
             }
@@ -95,7 +123,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             ) -> Result<ic_cdk::export::Principal, CdkActTryFromVmValueError> {
                 let principal_js_object = self
                     .as_object()
-                    .ok_or_else(|| "TypeError: value is not an object")?;
+                    .ok_or_else(|| "TypeError: value is not of type 'Principal'")?;
 
                 let principal_to_text_function_js_value = principal_js_object
                     .get("toText", context)
