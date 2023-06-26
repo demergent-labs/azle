@@ -1,3 +1,6 @@
+// Some JS docs licensed under https://github.com/dfinity/stable-structures/blob/main/LICENSE
+// Some documentation changed from original work.
+
 import { ic, nat8, nat32, nat64, Opt } from './index';
 
 /**

@@ -2,12 +2,12 @@ import { nat, nat64, Principal } from './';
 import { ic } from '../ic';
 
 /**
- * Parent class for creating Service definitions. To create an service
- * extend this class.
+ * Parent class for creating Service definitions. To create a service extend
+ * this class.
  * @example
  * ```ts
  * export class SomeOtherCanister extends Service {
- *   @query
+ *   @serviceQuery
  *   someCanisterMethod: (someParam: SomeParamType) => CallResult<SomeReturnType>;
  * }
  * ```
@@ -38,7 +38,7 @@ export class Service {
  * @example
  * ```ts
  * export class SomeOtherCanister extends Service {
- *   @query
+ *   @serviceQuery
  *   someCanisterMethod: (someParam: SomeParamType) => CallResult<SomeReturnType>;
  * }
  * ```
@@ -55,7 +55,7 @@ export function serviceQuery(target: any, name: string) {
  * @example
  * ```ts
  * export class SomeOtherCanister extends Service {
- *   @update
+ *   @serviceUpdate
  *   someCanisterMethod: (someParam: SomeParamType) => CallResult<SomeReturnType>;
  * }
  * ```

@@ -1,3 +1,12 @@
+// Some JS docs licensed under:
+//
+// - https://github.com/dfinity/cdk-rs/blob/main/LICENSE
+// - https://github.com/dfinity/interface-spec/blob/master/LICENSE
+// - https://github.com/dfinity/portal/blob/master/LICENSE
+// - https://github.com/rust-lang/rust/blob/master/LICENSE-MIT
+//
+// Some documentation changed from original work.
+
 import { Variant } from './variant';
 
 export { Principal } from '@dfinity/principal';
@@ -9,7 +18,7 @@ export { Variant } from './variant';
 export type Alias<T> = T;
 
 /**
- * Represents a sequence of bytes. Synonymous with `Vec<nat8>`.
+ * Represents a sequence of bytes`.
  *
  * See https://internetcomputer.org/docs/current/references/candid-ref#type-blob
  */
@@ -33,86 +42,95 @@ export type blob = Uint8Array;
 export type empty = never;
 
 /**
- * Represents single precision IEEE 754 floating point numbers
+ * Represents a single precision (32 bit) IEEE 754 floating point number. A JavaScript `number` at runtime.
  *
- * See https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64
+ * See https://demergent-labs.github.io/azle/reference/candid/float32.html
  */
 export type float32 = number;
 
 /**
- * Represents double precision IEEE 754 floating point numbers
+ * Represents a double precision (64 bit) IEEE 754 floating point number. A JavaScript `number` at runtime.
  *
- * See https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64
+ * See https://demergent-labs.github.io/azle/reference/candid/float64.html
  */
 export type float64 = number;
 
 /**
- * Represents all whole numbers
+ * Represents all whole numbers. A JavaScript `bigint` at runtime.
  *
- * See https://internetcomputer.org/docs/current/references/candid-ref#type-int
+ * See https://demergent-labs.github.io/azle/reference/candid/int.html
  */
 export type int = bigint;
 
 /**
- * Represents whole numbers in the range -2^63 …​ (2^63)-1
+ * Represents whole/natural numbers in the range -2^63 …​ (2^63)-1. A JavaScript
+ * `bigint` at runtime.
  *
- * See https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn
+ * See https://demergent-labs.github.io/azle/reference/candid/int64.html
  */
 export type int64 = bigint;
 
 /**
- * Represents whole/natural numbers in the range -2^31 …​ (2^31)-1
+ * Represents whole/natural numbers in the range -2^31 …​ (2^31)-1. A JavaScript
+ * `number` at runtime.
  *
- * See https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn
+ * See https://demergent-labs.github.io/azle/reference/candid/int32.html
  */
 export type int32 = number;
 
 /**
- * Represents whole numbers in the range -2^15 …​ (2^15)-1
+ * Represents a whole number in the range -2^15 …​ (2^15)-1. A JavaScript
+ * `number` at runtime.
  *
- * See https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn
+ * See https://demergent-labs.github.io/azle/reference/candid/int16.html
  */
 export type int16 = number;
 
 /**
- * Represents whole numbers in the range -2^7 …​ (2^7)-1
+ * Represents whole numbers in the range -2^7 …​ (2^7)-1. A JavaScript `number`
+ * at runtime.
  *
- * See https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn
+ * See https://demergent-labs.github.io/azle/reference/candid/int8.html
  */
 export type int8 = number;
 
 /**
- * Represents all non-negative whole/natural numbers
+ * Represents all non-negative whole/natural numbers. A JavaScript `bigint` at
+ * runtime.
  *
- * See https://internetcomputer.org/docs/current/references/candid-ref#type-nat
+ * See https://demergent-labs.github.io/azle/reference/candid/nat.html
  */
 export type nat = bigint;
 
 /**
- * Represents whole numbers in the range {0 …​ 2^64-1}
+ * Represents whole numbers in the range {0 …​ 2^64-1}. A JavaScript `bigint` at
+ * runtime.
  *
- * See https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn
+ * See https://demergent-labs.github.io/azle/reference/candid/nat64.html
  */
 export type nat64 = bigint;
 
 /**
- * Represents whole numbers in the range {0 …​ 2^32-1}
+ * Represents whole numbers in the range {0 …​ 2^32-1}. A JavaScript `number` at
+ * runtime.
  *
- * See https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn
+ * See https://demergent-labs.github.io/azle/reference/candid/nat32.html
  */
 export type nat32 = number;
 
 /**
- * Represents whole numbers in the range {0 …​ 2^16-1}
+ * Represents whole numbers in the range {0 …​ 2^16-1}. A JavaScript `number` at
+ * runtime.
  *
- * See https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn
+ * See https://demergent-labs.github.io/azle/reference/candid/nat16.html
  */
 export type nat16 = number;
 
 /**
- * Represents whole numbers in the range {0 …​ 2^8-1}
+ * Represents whole numbers in the range {0 …​ 2^8-1}. A JavaScript `number` at
+ * runtime.
  *
- * See https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn
+ * See https://demergent-labs.github.io/azle/reference/candid/nat8.html
  */
 export type nat8 = number;
 
@@ -150,7 +168,7 @@ export const Opt = {
  *   city: string,
  *   zipCode: nat,
  *   country: string
- * }>
+ * }>;
  * ```
  *
  * See https://internetcomputer.org/docs/current/references/candid-ref#type-record--n--t--
@@ -169,7 +187,8 @@ export type Record<T extends object> = T;
 export type reserved = any;
 
 /**
- * Represents human readable text. Synonymous with the standard string type in JS.
+ * Represents human readable text. Synonymous with the standard `string` type in
+ * JavaScript.
  *
  * See https://internetcomputer.org/docs/current/references/candid-ref#type-text
  */

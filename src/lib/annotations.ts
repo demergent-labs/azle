@@ -1,3 +1,10 @@
+// Some JS docs licensed under:
+//
+// - https://github.com/dfinity/cdk-rs/blob/main/LICENSE
+// - https://github.com/dfinity/interface-spec/blob/master/LICENSE
+//
+// Some documentation changed from original work.
+
 import { GuardResult } from './results';
 import { ic } from './ic';
 
@@ -11,7 +18,7 @@ import { ic } from './ic';
 export type CanisterMethodOptions = { guard?: () => GuardResult };
 
 /**
- * Marks the subsequent exported function as a "hearbeat" system canister method.
+ * Marks the subsequent exported function as a "heartbeat" system canister method.
  * {@link $heartbeat} is called with every "tick" of the internet computer and
  * can be use for periodic or time-based execution.
  *
@@ -123,7 +130,7 @@ export const $postUpgrade = () => {}; // TODO: See https://github.com/demergent-
  * deploy) and is used to perform cleanup tasks and move data to stable memory before
  * it gets wiped during the upgrade.
  *
- * The annotated function should zero or more parameters (must match
+ * The annotated function should have zero or more parameters (must match
  * {@link $init} if present) and should have a return type of `void`.
  *
  * @example

@@ -1,6 +1,13 @@
+// Some JS docs licensed under:
+//
+// - https://github.com/dfinity/cdk-rs/blob/main/LICENSE
+// - https://github.com/dfinity/interface-spec/blob/master/LICENSE
+// - https://github.com/dfinity/portal/blob/master/LICENSE
+//
+// Some documentation changed from original work.
+
 import { NotifyResult } from './ic';
 import { Alias, Variant, nat64, nat, Service } from './candid_types';
-import { RequireExactlyOne } from './candid_types/variant';
 
 /**
  * Represents either success (`Ok`) or failure (`Err`)
@@ -45,20 +52,20 @@ export const Result = {
  */
 export type CallResult<T> = {
     /**
-     * Dispatches the asynchronous {@link Service} method call and awaits a
+     * Dispatches an asynchronous {@link Service} method call and returns a
      * response. If sending cycles, make sure to call {@link CallResult.cycles}
      * or {@link CallResult.cycles128} first.
      *
      * @returns A promise with a result containing the service method return
      * value or an error message
      */
-    call: () => Promise<FinalCallResult<T>>;
+    call: () => Promise<Result<T, string>>;
     /**
-     * Dispatches the {@link Service} method call without awaiting a response.
-     * If sending cycles, make sure to call {@link CallResult.cycles} or
-     * {@link CallResult.cycles128} first.
+     * Dispatches an asynchronous {@link Service} method call without returning
+     * a response. If sending cycles, make sure to call
+     * {@link CallResult.cycles} or {@link CallResult.cycles128} first.
      *
-     * @returns a result indicating whether the call was successful enqueued,
+     * @returns a result indicating whether the call was successfully enqueued,
      * otherwise a reject code
      */
     notify: () => NotifyResult;
@@ -84,19 +91,6 @@ export type CallResult<T> = {
      */
     cycles128: (cycles: nat) => CallResult<T>;
 };
-
-/**
- * A result containing the return value of the {@link Service} method call or
- * an error message. Functionally equivalent to `Result<T, string>`.
- *
- * @typeParam T - The type of the {@link Service} method return value
- */
-export type FinalCallResult<T> = RequireExactlyOne<{
-    /** The return value of the {@link Service} method call */
-    Ok: T;
-    /** An error message describing what went wrong */
-    Err: string;
-}>;
 
 /**
  * The required return type of guard functions. Indicates whether the guarded

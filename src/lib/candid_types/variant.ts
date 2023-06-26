@@ -1,3 +1,6 @@
+// Some JS docs licensed under https://github.com/dfinity/portal/blob/master/LICENSE
+// Some documentation changed from original work.
+
 // from type-fest
 type UnionToIntersection<Union> =
     // `extends unknown` is always going to be the case and is used to convert the
@@ -27,7 +30,7 @@ export type RequireExactlyOne<
     Omit<ObjectType, KeysType>;
 
 /**
- * Represent a value that is from exactly one of the given cases or tags. If a
+ * Represents a value that is from exactly one of the given cases or tags. If a
  * tag does not carry data it is idiomatic to use the `null` type.
  *
  * @example
@@ -40,7 +43,7 @@ export type RequireExactlyOne<
  *     height: float64
  *   }>,
  *   '💬': string
- * }>
+ * }>;
  * ```
  *
  * See https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--
