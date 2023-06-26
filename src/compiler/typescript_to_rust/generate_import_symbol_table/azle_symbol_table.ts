@@ -1,6 +1,7 @@
 import * as ts from 'typescript';
 import { SymbolTable } from '../../utils/types';
 import { processSymbol } from './process_symbol';
+import { Result, match } from '../../../lib';
 
 export function toAzleSymbolTable(
     tsSymbolTable: ts.SymbolTable,
@@ -8,27 +9,30 @@ export function toAzleSymbolTable(
 ): SymbolTable {
     let symbolTable = createEmptyAzleSymbolTable();
     tsSymbolTable.forEach((symbol, name) => {
-        const subSymbolTable = processSymbol(name, symbol, program);
+        const subSymbolTable = processSymbol(name as string, symbol, program);
         if (subSymbolTable) {
             symbolTable = mergeSymbolTables(symbolTable, subSymbolTable);
         }
     });
+
     return symbolTable;
 }
 
 export function createSingleEntrySymbolTable(
-    originalName: ts.__String,
-    name: ts.__String
-): SymbolTable | undefined {
+    originalName: string,
+    name: string
+): Result<SymbolTable, string> {
     const symbolTable = createEmptyAzleSymbolTable();
-    try {
-        const key = stringToSymbolTableKey(name);
-        symbolTable[key].push(originalName as string);
-        return symbolTable;
-    } catch {
-        // The key isn't part of the azle symbol table
-        return;
-    }
+    const keyResult = stringToSymbolTableKey(name);
+    return match(keyResult, {
+        Ok: (key) => {
+            return Result.Ok<SymbolTable, string>({
+                ...symbolTable,
+                [key]: [...symbolTable[key], originalName]
+            });
+        },
+        Err: (err) => Result.Err<SymbolTable, string>(err)
+    });
 }
 
 export function prependNamespaceToSymbolTable(
@@ -38,10 +42,12 @@ export function prependNamespaceToSymbolTable(
     const prependString = namespace.name.text;
     return Object.entries(symbolTable).reduce(
         (acc, [propertyName, propertyValue]) => {
-            acc[propertyName as keyof SymbolTable] = propertyValue.map(
-                (value) => `${prependString}.${value}`
-            );
-            return acc;
+            return {
+                ...acc,
+                [propertyName as keyof SymbolTable]: propertyValue.map(
+                    (value) => `${prependString}.${value}`
+                )
+            };
         },
         {} as SymbolTable
     );
@@ -191,98 +197,61 @@ export function createDefaultSymbolTable(): SymbolTable {
         void: []
     };
 }
+const SYMBOL_TABLE_KEYS: {
+    [key: string]: keyof SymbolTable;
+} = {
+    Alias: 'alias',
+    CallResult: 'call_result',
+    blob: 'blob',
+    bool: 'bool',
+    empty: 'empty',
+    float32: 'float32',
+    float64: 'float64',
+    Func: 'func',
+    GuardResult: 'guard_result',
+    $heartbeat: 'heartbeat_decorator',
+    $init: 'init_decorator',
+    $inspectMessage: 'inspect_message_decorator',
+    int: 'int',
+    int8: 'int8',
+    int16: 'int16',
+    int32: 'int32',
+    int64: 'int64',
+    Manual: 'manual',
+    nat: 'nat',
+    nat8: 'nat8',
+    nat16: 'nat16',
+    nat32: 'nat32',
+    nat64: 'nat64',
+    null: 'null',
+    Oneway: 'oneway_mode',
+    Opt: 'opt',
+    $postUpgrade: 'post_upgrade_decorator',
+    $preUpgrade: 'pre_upgrade_decorator',
+    Principal: 'principal',
+    $query: 'query_decorator',
+    Query: 'query_mode',
+    Record: 'record',
+    reserved: 'reserved',
+    Service: 'service',
+    serviceQuery: 'service_query_decorator',
+    serviceUpdate: 'service_update_decorator',
+    StableBTreeMap: 'stable_b_tree_map',
+    text: 'text',
+    Tuple: 'tuple',
+    $update: 'update_decorator',
+    Update: 'update_mode',
+    Variant: 'variant',
+    Vec: 'vec',
+    void: 'void'
+};
 
-function stringToSymbolTableKey(name: ts.__String): keyof SymbolTable {
-    switch (name) {
-        case 'Alias':
-            return 'alias';
-        case 'CallResult':
-            return 'call_result';
-        case 'blob':
-            return 'blob';
-        case 'bool':
-            return 'bool';
-        case 'empty':
-            return 'empty';
-        case 'float32':
-            return 'float32';
-        case 'float64':
-            return 'float64';
-        case 'Func':
-            return 'func';
-        case 'GuardResult':
-            return 'guard_result';
-        case '$heartbeat':
-            return 'heartbeat_decorator';
-        case '$init':
-            return 'init_decorator';
-        case '$inspectMessage':
-            return 'inspect_message_decorator';
-        case 'int':
-            return 'int';
-        case 'int8':
-            return 'int8';
-        case 'int16':
-            return 'int16';
-        case 'int32':
-            return 'int32';
-        case 'int64':
-            return 'int64';
-        case 'Manual':
-            return 'manual';
-        case 'nat':
-            return 'nat';
-        case 'nat8':
-            return 'nat8';
-        case 'nat16':
-            return 'nat16';
-        case 'nat32':
-            return 'nat32';
-        case 'nat64':
-            return 'nat64';
-        case 'null':
-            return 'null';
-        case 'Oneway':
-            return 'oneway_mode';
-        case 'Opt':
-            return 'opt';
-        case '$postUpgrade':
-            return 'post_upgrade_decorator';
-        case '$preUpgrade':
-            return 'pre_upgrade_decorator';
-        case 'Principal':
-            return 'principal';
-        case '$query':
-            return 'query_decorator';
-        case 'Query':
-            return 'query_mode';
-        case 'Record':
-            return 'record';
-        case 'reserved':
-            return 'reserved';
-        case 'Service':
-            return 'service';
-        case 'serviceQuery':
-            return 'service_query_decorator';
-        case 'serviceUpdate':
-            return 'service_update_decorator';
-        case 'StableBTreeMap':
-            return 'stable_b_tree_map';
-        case 'text':
-            return 'text';
-        case 'Tuple':
-            return 'tuple';
-        case '$update':
-            return 'update_decorator';
-        case 'Update':
-            return 'update_mode';
-        case 'Variant':
-            return 'variant';
-        case 'Vec':
-            return 'vec';
-        case 'void':
-            return 'void';
-        default:
-            throw `IMPORTANT: We couldn't find ${name}`;
+function stringToSymbolTableKey(
+    name: string
+): Result<keyof SymbolTable, string> {
+    // Make sure that it's a name we can convert
+    if (!(name in SYMBOL_TABLE_KEYS)) {
+        return Result.Err(`${name} is not a valid Azle Symbol`);
     }
+    return Result.Ok(SYMBOL_TABLE_KEYS[name]);
 }

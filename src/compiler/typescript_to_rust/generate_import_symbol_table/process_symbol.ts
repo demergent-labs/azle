@@ -22,19 +22,22 @@ import {
     getDeclarationFromSpecifier,
     getUnderlyingIdentifierFromSpecifier
 } from './import_export_utils';
+import { Result, match, Opt } from '../../../lib';
 
 const typeAliasesAreStillUnimplemented = true;
 
 export function processSymbol(
-    originalName: ts.__String,
+    originalName: string,
     symbol: ts.Symbol,
     program: ts.Program
 ): SymbolTable | undefined {
     if (isAzleSymbol(symbol)) {
-        return createSingleEntrySymbolTable(
-            originalName,
-            symbol.name as ts.__String
-        );
+        return match(createSingleEntrySymbolTable(originalName, symbol.name), {
+            Ok: (symbolTable) => symbolTable,
+            Err: () => {
+                return undefined;
+            }
+        });
     }
     const declarations = symbol.declarations;
     if (!declarations || declarations.length === 0) {
@@ -128,7 +131,7 @@ export function processSymbol(
 }
 
 function processImportExportSpecifierWithModuleSpecifier(
-    originalName: ts.__String,
+    originalName: string,
     specifier: ts.ExportSpecifier | ts.ImportSpecifier,
     program: ts.Program
 ): SymbolTable | undefined {
@@ -138,7 +141,7 @@ function processImportExportSpecifierWithModuleSpecifier(
     if (declaration.moduleSpecifier !== undefined) {
         return getAzleEquivalent(
             originalName,
-            identifier.text as ts.__String,
+            identifier.text,
             declaration.moduleSpecifier as ts.StringLiteral,
             program
         );
@@ -149,7 +152,7 @@ function processImportExportSpecifierWithModuleSpecifier(
 // as in `export {thing};` or
 // `export {thing as other};`
 function processExportSpecifier(
-    originalName: ts.__String,
+    originalName: string,
     exportSpecifier: ts.ExportSpecifier,
     program: ts.Program
 ): SymbolTable | undefined {
@@ -205,7 +208,7 @@ function processExportSpecifier(
 */
 
 function processExportAssignment(
-    originalName: ts.__String,
+    originalName: string,
     exportAssignment: ts.ExportAssignment,
     program: ts.Program
 ): SymbolTable | undefined {
@@ -217,7 +220,7 @@ function processExportAssignment(
 }
 
 function processImportSpecifier(
-    originalName: ts.__String,
+    originalName: string,
     declaration: ts.ImportSpecifier,
     program: ts.Program
 ): SymbolTable | undefined {
@@ -229,13 +232,13 @@ function processImportSpecifier(
 }
 
 function processImportClause(
-    originalName: ts.__String,
+    originalName: string,
     declaration: ts.ImportClause,
     program: ts.Program
 ): SymbolTable | undefined {
     return getAzleEquivalent(
         originalName,
-        'default' as ts.__String,
+        'default',
         declaration.parent.moduleSpecifier as ts.StringLiteral,
         program
     );
@@ -309,7 +312,7 @@ function processNamespaceImportExport(
 }
 
 function processTypeAliasDeclaration(
-    originalName: ts.__String,
+    originalName: string,
     declaration: ts.TypeAliasDeclaration,
     program: ts.Program
 ): SymbolTable | undefined {
@@ -384,7 +387,7 @@ function isAzleSymbol(symbol: ts.Symbol): boolean {
     if ('parent' in symbol) {
         const parent = symbol.parent as ts.Symbol;
         if (parent) {
-            if ((parent.name as string).includes('azle/src/lib/index')) {
+            if (parent.name.includes('azle/src/lib/index')) {
                 return true;
             }
         }
@@ -398,13 +401,18 @@ function isAzleSymbol(symbol: ts.Symbol): boolean {
 // The process symbol does a similar thing
 // Here we are getting a module. And finding the name in the module so we can get it's symbol
 function getAzleEquivalent(
-    originalName: ts.__String,
-    name: ts.__String, // TODO should this be a ts.__String or a string?
+    originalName: string,
+    name: string, // TODO should this be a ts.__String or a string?
     moduleSpecifier: ts.StringLiteral,
     program: ts.Program
 ): SymbolTable | undefined {
     if (moduleSpecifier.text === 'azle') {
-        return createSingleEntrySymbolTable(originalName, name);
+        return match(createSingleEntrySymbolTable(originalName, name), {
+            Ok: (symbolTable) => symbolTable,
+            Err: () => {
+                return undefined;
+            }
+        });
     }
     const symbolTable = getSymbolTableForModuleSpecifier(
         moduleSpecifier,
@@ -437,8 +445,8 @@ function getAzleEquivalent(
 // Get all of the * exports
 // get the symbol tables for all of those and check which one has the name we are looking for
 function findSymbolInStarExportsFromModule(
-    originalName: ts.__String,
-    name: ts.__String,
+    originalName: string,
+    name: string,
     moduleSpecifier: ts.StringLiteral,
     program: ts.Program
 ): SymbolTable | undefined {
