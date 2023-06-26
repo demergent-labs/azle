@@ -10,9 +10,8 @@ import {
     mergeSymbolTables
 } from './azle_symbol_table';
 import {
-    getSymbolTableFromSourceFile,
+    getSymbolTable,
     getSymbolTableForDeclaration,
-    getSymbolTableForNamespace,
     getSymbolTableForModuleSpecifier
 } from './get_symbol_table';
 import { getSourceFile } from './utils';
@@ -182,7 +181,7 @@ function processExportSpecifier(
     if (!sourceFile) {
         return;
     }
-    const symbolTable = getSymbolTableFromSourceFile(sourceFile, program);
+    const symbolTable = getSymbolTable(sourceFile, program);
     if (!symbolTable) {
         return;
     }
@@ -300,8 +299,8 @@ function processNamespaceImportExport(
             namespace
         );
     }
-    const namespacedSymbolTable = getSymbolTableForNamespace(
-        namespace,
+    const namespacedSymbolTable = getSymbolTableForDeclaration(
+        importDeclaration,
         program
     );
     if (!namespacedSymbolTable) {
@@ -331,7 +330,7 @@ function processTypeAliasDeclaration(
         // TODO couldn't find the sourceFile
         return;
     }
-    const symbolTable = getSymbolTableFromSourceFile(sourceFile, program);
+    const symbolTable = getSymbolTable(sourceFile, program);
     if (!symbolTable) {
         // TODO couldn't get a symbol table
         return;
@@ -353,8 +352,9 @@ function processTypeAliasDeclaration(
                 if (!ts.isNamespaceImport(namespace)) {
                     return;
                 }
-                const namespaceSymbolTable = getSymbolTableForNamespace(
-                    namespace,
+                const declaration = getDeclarationFromNamespace(namespace);
+                const namespaceSymbolTable = getSymbolTableForDeclaration(
+                    declaration,
                     program
                 );
                 if (!namespaceSymbolTable) {
