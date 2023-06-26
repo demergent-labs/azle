@@ -3,6 +3,7 @@ import {
     blob,
     float32,
     float64,
+    Func,
     int16,
     int32,
     int64,
@@ -14,12 +15,12 @@ import {
     nat8,
     Opt,
     Principal,
-    Query,
-    Variant,
-    Func,
     $query,
+    Query,
     Record,
+    Tuple,
     $update,
+    Variant,
     Vec
 } from 'azle';
 
@@ -30,13 +31,13 @@ type InlineExample = Record<{
 }>;
 
 $query;
-export function inline_query(param: InlineExample): void {}
+export function inlineQuery(param: InlineExample): void {}
 
 $query;
-export function simple_query(
+export function simpleQuery(
     number: Opt<nat64>,
     string: string,
-    otherthing: nat,
+    otherThing: nat,
     boolThing: boolean
 ): string {
     return 'This is a query function';
@@ -89,7 +90,7 @@ type ComplexRecord = Record<{
 }>;
 
 $query;
-export function complex_record_test(
+export function complexRecordTest(
     param: ComplexRecord,
     simple: SimpleRecord,
     other: UsedType,
@@ -130,12 +131,10 @@ type Fun = Variant<{
 }>;
 
 $query;
-export function one_variant(thing: Fun): void {
-    one_variant({ cool: null, id: null });
-}
+export function oneVariant(thing: Fun): void {}
 
 $query;
-export function various_variants(thing: Yes, thing2: Reaction): string {
+export function variousVariants(thing: Yes, thing2: Reaction): string {
     return 'hello';
 }
 
@@ -146,28 +145,29 @@ type Yes = Variant<{
 }>;
 
 type SelfReferencingVariant = Variant<{
-    // One: SelfReferencingVariant; //TODO: We should fix this in the CDK Framework
+    One: SelfReferencingVariant;
     Two: null;
 }>;
 
-// TODO start boxing things in funcs
-// type SelfReferencingFunc = Func<
-//     (first_param: boolean, second_param: SelfReferencingFunc) => Query<string>
-// >;
+type SelfReferencingFunc = Func<
+    Query<
+        (first_param: boolean, second_param: Opt<SelfReferencingFunc>) => string
+    >
+>;
 
-type SelfReferencingTuple = [string, SelfReferencingTuple];
+type SelfReferencingTuple = Tuple<[string, Opt<SelfReferencingTuple>]>;
 
 type SelfReferencingRecord = Record<{
-    one: SelfReferencingRecord;
+    one: Opt<SelfReferencingRecord>;
     two: string;
 }>;
 
 $query;
-export function self_reference(
+export function selfReference(
     variant: SelfReferencingVariant,
     record: SelfReferencingRecord,
-    tuple: SelfReferencingTuple
-    // func: SelfReferencingFunc
+    tuple: SelfReferencingTuple,
+    func: SelfReferencingFunc
 ): void {}
 
 type Reaction = Variant<{
@@ -182,7 +182,7 @@ type Good = Record<{
 }>;
 
 $query;
-export function in_line(param: Record<{ one: nat16; two: nat16 }>): Record<{
+export function inline(param: Record<{ one: nat16; two: nat16 }>): Record<{
     one: string;
     two: Record<{
         two_a: Record<{
@@ -203,7 +203,7 @@ export function in_line(param: Record<{ one: nat16; two: nat16 }>): Record<{
 }
 
 $update;
-export function not_so_simple(
+export function notSoSimple(
     one: Vec<int8>,
     two: int16,
     three: int32,
@@ -220,9 +220,12 @@ export function not_so_simple(
     fourteen: Record<{ thing: string }>
 ): void {}
 
-// TODO Why can't we do 2d arrays of principals??
-// $update;
-// export function getPrincipals(principal_lists: Vec<Vec<Principal>>): void {}
+$update;
+export function getPrincipals(
+    principal_lists: Vec<Vec<Principal>>
+): Vec<Vec<Principal>> {
+    return principal_lists;
+}
 
 type RecordWithInline = Record<{
     inline_record: Record<{ one: boolean; two: boolean; three: boolean }>;
@@ -237,60 +240,65 @@ type VariantWithInline = Variant<{
     inline_func: Func<Query<(param1: string) => string>>;
 }>;
 
-type FuncWithInline = Func<
-    Query<
-        (
-            inline_record: Record<{
-                one: boolean;
-                two: boolean;
-                three: boolean;
-            }>,
-            inline_variant: Variant<{ one: string; two: null; three: boolean }>,
-            inline_func: Func<Query<(param1: string) => string>>
-        ) => string
-    >
->;
+// TODO: Funcs with inline types don't currently work
+// See https://github.com/demergent-labs/azle/issues/1087
+//
+// type FuncWithInline = Func<
+//     Query<
+//         (
+//             inline_record: Record<{
+//                 one: boolean;
+//                 two: boolean;
+//                 three: boolean;
+//             }>,
+//             inline_variant: Variant<{ one: string; two: null; three: boolean }>,
+//             inline_func: Func<Query<(param1: string) => string>>
+//         ) => string
+//     >
+// >;
 
 $update;
-export function everything_inline(
+export function everythingInline(
     record: RecordWithInline,
-    variant: VariantWithInline,
-    func: FuncWithInline
+    variant: VariantWithInline
+    // func: FuncWithInline
 ): void {}
 
 type StructWithInlineArray = Record<{
     name: string;
     not_array: Record<{ thing: boolean; thing2: boolean }>;
-    array: Record<{ thing: boolean; thing2: boolean }>[];
+    array: Vec<Record<{ thing: boolean; thing2: boolean }>>;
 }>;
 
 $query;
-export function inline_vec(
-    array: Record<{ thing: string; thing2: boolean }>[],
+export function inlineVec(
+    array: Vec<Record<{ thing: string; thing2: boolean }>>,
     struct_thing: StructWithInlineArray
 ): void {}
 type CanisterOnly = Alias<boolean>;
 
-type CanisterTuple1 = [
-    string,
-    nat64,
-    Record<{ tuple_inline: boolean; tuple_inline2: string }>,
-    CanisterOnly
-];
+type CanisterTuple1 = Tuple<
+    [
+        string,
+        nat64,
+        Record<{ tuple_inline: boolean; tuple_inline2: string }>,
+        CanisterOnly
+    ]
+>;
 
 $query;
-export function tuple_test(tup: CanisterTuple1): void {}
+export function tupleTest(tup: CanisterTuple1): void {}
 
 type OptionAlias = Alias<Opt<Boolean>>;
 type InlineOptionAlias = Alias<Opt<Record<{ inline_bool: boolean }>>>;
 type InlineOptionStruct = Record<{
-    opt: Opt<Record<{ inline_string: String }>>;
+    opt: Opt<Record<{ inline_string: string }>>;
 }>;
 
 $update;
-export function option_test(
+export function optionTest(
     opt: OptionAlias,
-    inline_opt: Opt<Record<{ thing: String }>>,
+    inline_opt: Opt<Record<{ thing: string }>>,
     inline_alias: InlineOptionAlias,
     struct_with_option: InlineOptionStruct,
     inline_struct_with_array: Record<{
@@ -299,19 +307,19 @@ export function option_test(
 ): void {}
 
 type ArrayAlias = Alias<Vec<Boolean>>;
-type InlineArrayAlias = Alias<Record<{ inline_bool: boolean }>[]>;
+type InlineArrayAlias = Alias<Vec<Record<{ inline_bool: boolean }>>>;
 type InlineArrayStruct = Record<{
-    arr: Record<{ inline_string: String }>[];
+    arr: Vec<Record<{ inline_string: string }>>;
 }>;
 
 $update;
-export function array_test(
+export function arrayTest(
     opt: ArrayAlias,
-    inline_array: Record<{ thing: String }>[],
+    inline_array: Vec<Record<{ thing: string }>>,
     inline_alias: InlineArrayAlias,
     struct_with_array: InlineArrayStruct,
     inline_struct_with_array: Record<{
-        arr: Record<{ inline_number: nat16 }>[];
+        arr: Vec<Record<{ inline_number: nat16 }>>;
     }>
 ): void {}
 
@@ -324,14 +332,14 @@ type PenultimateSelfRef = Record<{
 }>;
 
 type AntepenultimateSelfRef = Record<{
-    ultimate: UltimateSelfRef;
+    ultimate: Opt<UltimateSelfRef>;
 }>;
 
 $update;
-export function ultimate_self_reference_test(self_ref: UltimateSelfRef): void {}
+export function ultimateSelfReferenceTest(self_ref: UltimateSelfRef): void {}
 
 $update;
-export function hash_duplication_test(
+export function hashDuplicationTest(
     record: Record<{ one: boolean; two: boolean; three: boolean }>,
     variant: Variant<{ one: boolean; two: boolean; three: boolean }>,
     record2: Record<{ one: boolean; two: boolean; three: boolean }>,

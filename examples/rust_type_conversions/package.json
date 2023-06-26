@@ -1,5 +1,6 @@
 {
     "scripts": {
+        "pretest": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/pretest.ts",
         "test": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {

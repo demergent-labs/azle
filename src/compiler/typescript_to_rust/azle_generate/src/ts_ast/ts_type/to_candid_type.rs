@@ -21,6 +21,9 @@ impl SourceMapped<'_, TsType> {
             TsType::TsTupleType(_) => {
                 return Err(vec![UnexpectedTsTupleTypes::from_ts_type(self).into()]);
             }
+            TsType::TsArrayType(_) => {
+                return Err(vec![UnexpectedTsType::from_ts_type(self).into()]);
+            }
             _ => {
                 return Err(vec![UnexpectedTsType::from_ts_type(self).into()]);
             }

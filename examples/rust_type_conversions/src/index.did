@@ -1,4 +1,4 @@
-type AntepenultimateSelfRef = record { ultimate : UltimateSelfRef };
+type AntepenultimateSelfRef = record { ultimate : opt UltimateSelfRef };
 type ComplexRecord = record {
   one : nat16;
   six : _InlineComplexRecordSix;
@@ -29,9 +29,13 @@ type RecordWithInline = record {
   inline_record : _InlineRecordWithInlineInlineRecord;
 };
 type RecordWithoutDirectInlineRecords = record { one : DeepInlineRecords };
-type SelfReferencingRecord = record { one : SelfReferencingRecord; two : text };
-type SelfReferencingTuple = record { text; SelfReferencingTuple };
-type SelfReferencingVariant = variant { Two };
+type SelfReferencingFunc = func (bool, opt SelfReferencingFunc) -> (text) query;
+type SelfReferencingRecord = record {
+  one : opt SelfReferencingRecord;
+  two : text;
+};
+type SelfReferencingTuple = record { text; opt SelfReferencingTuple };
+type SelfReferencingVariant = variant { One : SelfReferencingVariant; Two };
 type SimpleRecord = record { one : bool; other : vec bool };
 type StructWithInlineArray = record {
   array : vec _InlineStructWithInlineArrayArray;
@@ -108,16 +112,6 @@ type _InlineHashDuplicationTestVariant = variant {
   two : bool;
   three : bool;
 };
-type _InlineInLineParam = record { one : nat16; two : nat16 };
-type _InlineInLineReturnType = record {
-  one : text;
-  two : _InlineInLineReturnTypeTwo;
-};
-type _InlineInLineReturnTypeTwo = record {
-  two_a : _InlineInLineReturnTypeTwoTwoA;
-  two_b : bool;
-};
-type _InlineInLineReturnTypeTwoTwoA = record { two_a_i : nat16 };
 type _InlineInlineArrayAlias = record { inline_bool : bool };
 type _InlineInlineArrayStructArr = record { inline_string : text };
 type _InlineInlineExampleFirstField = record { one : bool; two : text };
@@ -125,6 +119,16 @@ type _InlineInlineExampleSecondField = record {
   one : bool;
   two : _InlineArrayTestInlineArray;
 };
+type _InlineInlineParam = record { one : nat16; two : nat16 };
+type _InlineInlineReturnType = record {
+  one : text;
+  two : _InlineInlineReturnTypeTwo;
+};
+type _InlineInlineReturnTypeTwo = record {
+  two_a : _InlineInlineReturnTypeTwoTwoA;
+  two_b : bool;
+};
+type _InlineInlineReturnTypeTwoTwoA = record { two_a_i : nat16 };
 type _InlineInlineVecArray = record { thing : text; thing2 : bool };
 type _InlineNotSoSimpleFourteen = record { thing : text };
 type _InlineOptionTestInlineStructWithArray = record {
@@ -142,14 +146,14 @@ type _InlineRecordWithInlineInlineVariant = variant {
 };
 type _InlineStructWithInlineArrayArray = record { thing : bool; thing2 : bool };
 service : () -> {
-  array_test : (
+  arrayTest : (
       vec bool,
       vec _InlineArrayTestInlineArray,
       vec _InlineInlineArrayAlias,
       InlineArrayStruct,
       _InlineArrayTestInlineStructWithArray,
     ) -> ();
-  complex_record_test : (
+  complexRecordTest : (
       ComplexRecord,
       SimpleRecord,
       bool,
@@ -159,25 +163,18 @@ service : () -> {
       _InlineComplexRecordTestOtherInlineTest,
       _InlineComplexRecordTestInlineWithTypeAliasDependency,
     ) -> (nat8) query;
-  everything_inline : (
-      RecordWithInline,
-      VariantWithInline,
-      func (
-          _InlineRecordWithInlineInlineRecord,
-          _InlineRecordWithInlineInlineVariant,
-          func (text) -> (text) query,
-        ) -> (text) query,
-    ) -> ();
-  hash_duplication_test : (
+  everythingInline : (RecordWithInline, VariantWithInline) -> ();
+  getPrincipals : (vec vec principal) -> (vec vec principal);
+  hashDuplicationTest : (
       _InlineHashDuplicationTestRecord,
       _InlineHashDuplicationTestVariant,
       _InlineHashDuplicationTestRecord,
       _InlineHashDuplicationTestVariant,
     ) -> ();
-  in_line : (_InlineInLineParam) -> (_InlineInLineReturnType) query;
-  inline_query : (InlineExample) -> () query;
-  inline_vec : (vec _InlineInlineVecArray, StructWithInlineArray) -> () query;
-  not_so_simple : (
+  inline : (_InlineInlineParam) -> (_InlineInlineReturnType) query;
+  inlineQuery : (InlineExample) -> () query;
+  inlineVec : (vec _InlineInlineVecArray, StructWithInlineArray) -> () query;
+  notSoSimple : (
       vec int8,
       int16,
       int32,
@@ -193,23 +190,25 @@ service : () -> {
       null,
       _InlineNotSoSimpleFourteen,
     ) -> ();
-  one_variant : (Fun) -> () query;
-  option_test : (
+  oneVariant : (Fun) -> () query;
+  optionTest : (
       opt bool,
       opt _InlineNotSoSimpleFourteen,
       opt _InlineInlineArrayAlias,
       InlineOptionStruct,
       _InlineOptionTestInlineStructWithArray,
     ) -> ();
-  self_reference : (
+  selfReference : (
       SelfReferencingVariant,
       SelfReferencingRecord,
-      record { text; SelfReferencingTuple },
+      record { text; opt SelfReferencingTuple },
+      func (bool, opt SelfReferencingFunc) -> (text) query,
     ) -> () query;
-  simple_query : (opt nat64, text, nat, bool) -> (text) query;
-  tuple_test : (
+  simpleQuery : (opt nat64, text, nat, bool) -> (text) query;
+  tupleTest : (
       record { text; nat64; _InlineCanisterTuple12; bool },
     ) -> () query;
-  ultimate_self_reference_test : (UltimateSelfRef) -> ();
-  various_variants : (Yes, Reaction) -> (text) query;
+  ultimateSelfReferenceTest : (UltimateSelfRef) -> ();
+  variousVariants : (Yes, Reaction) -> (text) query;
+  voidAliasTest : () -> (null) query;
 }
