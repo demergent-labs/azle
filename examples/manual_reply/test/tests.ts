@@ -104,6 +104,18 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
+            name: 'update reply with void',
+            test: async () => {
+                const result = await manualReplyCanister.updateVoid();
+
+                return {
+                    // The candid return type is generated incorrectly so the
+                    // agent converts the returned `undefined` value to `null`
+                    Ok: result === null
+                };
+            }
+        },
+        {
             name: 'update reply with record',
             test: async () => {
                 const result = await manualReplyCanister.updateRecord();
@@ -239,6 +251,18 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await manualReplyCanister.queryNull();
 
                 return {
+                    Ok: result === null
+                };
+            }
+        },
+        {
+            name: 'query reply with void',
+            test: async () => {
+                const result = await manualReplyCanister.queryVoid();
+
+                return {
+                    // The candid return type is generated incorrectly so the
+                    // agent converts the returned `undefined` value to `null`
                     Ok: result === null
                 };
             }

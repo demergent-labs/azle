@@ -38,6 +38,18 @@ export function get_tests(
                     Ok: result.length === 96
                 };
             }
+        },
+        {
+            name: 'return promise void',
+            test: async () => {
+                const result = await async_await_canister.returnPromiseVoid();
+
+                return {
+                    // The candid return type is generated incorrectly so the
+                    // agent converts the returned `undefined` value to `null`
+                    Ok: result === null
+                };
+            }
         }
     ];
 }

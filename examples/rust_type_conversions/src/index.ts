@@ -337,3 +337,8 @@ export function hash_duplication_test(
     record2: Record<{ one: boolean; two: boolean; three: boolean }>,
     variant2: Variant<{ one: boolean; two: boolean; three: boolean }>
 ): void {}
+
+type VoidAlias = Alias<void>;
+
+$query;
+export function voidAliasTest(): VoidAlias {}
