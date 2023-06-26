@@ -241,7 +241,8 @@ type VariantWithInline = Variant<{
 }>;
 
 // TODO: Funcs with inline types don't currently work
-
+// See https://github.com/demergent-labs/azle/issues/1087
+//
 // type FuncWithInline = Func<
 //     Query<
 //         (
