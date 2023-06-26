@@ -1,15 +1,15 @@
 import { SymbolTable, SymbolTables } from '../../utils/types';
 import * as ts from 'typescript';
 import {
-    createEmptyAzleSymbolTable,
+    generateEmptyAzleSymbolTable as generateEmptyAzleSymbolTable,
     toAzleSymbolTable
 } from './azle_symbol_table';
 import { getSymbolTable } from './get_symbol_table';
-import { timing, generateImportSymbolTableTimed } from './debug';
+import { timing, generateTimedResults } from './debug';
 
 export function generateAzleSymbolTables(files: string[]): SymbolTables {
     if (timing) {
-        return generateImportSymbolTableTimed(files, generateAzleSymbolTable);
+        return generateTimedResults(files, generateAzleSymbolTable);
     }
     return files.reduce((accumulator: SymbolTables, filename: string) => {
         return {
@@ -25,7 +25,7 @@ function generateAzleSymbolTable(filename: string): SymbolTable {
     const sourceFile = program.getSourceFile(sourceFilePath);
 
     if (!sourceFile) {
-        return createEmptyAzleSymbolTable();
+        return generateEmptyAzleSymbolTable();
     }
 
     const tsSymbolTable = getSymbolTable(filename, program);
@@ -34,5 +34,5 @@ function generateAzleSymbolTable(filename: string): SymbolTable {
         return symbolTable;
     }
 
-    return createEmptyAzleSymbolTable();
+    return generateEmptyAzleSymbolTable();
 }

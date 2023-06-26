@@ -18,7 +18,7 @@ export const timing = false;
 const verbose = false;
 export let debug = false;
 
-export function generateImportSymbolTableTimed(
+export function generateTimedResults(
     files: string[],
     funcToTime: (filename: string) => SymbolTable
 ): SymbolTables {
