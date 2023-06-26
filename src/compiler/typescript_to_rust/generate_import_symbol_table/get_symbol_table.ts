@@ -2,18 +2,6 @@ import * as ts from 'typescript';
 import { getDeclarationFromNamespace } from './import_export_utils';
 
 export function getSymbolTable(
-    filename: string,
-    program: ts.Program
-): ts.SymbolTable | undefined {
-    const sourceFile = program.getSourceFile(filename);
-    if (!sourceFile) {
-        // Could not get source file from filename
-        return;
-    }
-    return getSymbolTableFromSourceFile(sourceFile, program);
-}
-
-export function getSymbolTableFromSourceFile(
     sourceFile: ts.SourceFile,
     program: ts.Program
 ): ts.SymbolTable | undefined {
@@ -40,14 +28,6 @@ export function getSymbolTableFromSourceFile(
     }
 
     return valueDeclaration.locals as ts.SymbolTable;
-}
-
-export function getSymbolTableForNamespace(
-    namespace: ts.NamespaceImport | ts.NamespaceExport,
-    program: ts.Program
-): ts.SymbolTable | undefined {
-    const declaration = getDeclarationFromNamespace(namespace);
-    return getSymbolTableForDeclaration(declaration, program);
 }
 
 // For Import/Export Declarations of namespace exports

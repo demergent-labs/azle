@@ -28,7 +28,7 @@ function generateAzleSymbolTable(filename: string): SymbolTable {
         return generateEmptyAzleSymbolTable();
     }
 
-    const tsSymbolTable = getSymbolTable(filename, program);
+    const tsSymbolTable = getSymbolTable(sourceFile, program);
     if (tsSymbolTable) {
         const symbolTable = toAzleSymbolTable(tsSymbolTable, program);
         return symbolTable;
