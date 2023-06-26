@@ -18,7 +18,7 @@ impl GetName for TsQualifiedName {
     fn get_name(&self) -> String {
         let right = self.right.get_name();
         let left = self.left.get_name();
-        return format!("{}.{}", left, right);
+        return format!("{left}.{right}");
     }
 }
 
@@ -52,6 +52,6 @@ impl GetOptionalName for MemberExpr {
             MemberProp::PrivateName(private_name) => private_name.id.get_name(),
             MemberProp::Computed(computed) => computed.expr.get_name()?,
         };
-        Some(format!("{}.{}", obj, prop))
+        Some(format!("{obj}.{prop}"))
     }
 }

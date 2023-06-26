@@ -1,4 +1,4 @@
-import { $query as $kiwi } from 'azle';
+import { $query as $kiwi, Alias } from 'azle';
 export default $kiwi;
 
 export {
@@ -44,53 +44,13 @@ export {
     Variant as Voavanga,
     Vec as Lime
 } from 'azle';
-export type blackberry = boolean;
-export type nutmeg = null;
-export type vanilla = void;
-
-/*
-['Alias']
-['blob']
-['bool']
-['CallResult']
-['empty']
-['float32']
-['float64']
-['Func']
-['GuardResult']
-['$heartbeat']
-['$init']
-['$inspectMessage']
-['int']
-['int8']
-['int16']
-['int32']
-['int64']
-['Manual']
-['nat']
-['nat8']
-['nat16']
-['nat32']
-['nat64']
-['null']
-['Oneway']
-['Opt']
-['$postUpgrade']
-['$preUpgrade']
-['Principal']
-['$query']
-['Query']
-['Record']
-['reserved']
-['Service']
-['serviceQuery']
-['serviceUpdate']
-['StableBTreeMap']
-['text']
-['Tuple']
-['$update']
-['Update']
-['Variant']
-['Vec']
-['void']
-*/
+// export type blackberry = boolean;
+// export type nutmeg = null;
+// export type vanilla = void;
+// export type numberAlias = number;
+// export type stringAlias = string;
+// export type Pear<T> = Promise<T>;
+// TODO switch these out for the exports above once type alias decls are supported
+export type blackberry = Alias<boolean>;
+export type nutmeg = Alias<null>;
+// export type vanilla = Alias<null>; // TODO bring this in when the Alias<null> fix is in
