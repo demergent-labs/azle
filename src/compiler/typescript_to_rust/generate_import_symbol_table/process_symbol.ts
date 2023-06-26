@@ -2,11 +2,11 @@ import * as ts from 'typescript';
 import { SymbolTable } from '../../utils/types';
 import {
     toAzleSymbolTable,
-    createSingleEntrySymbolTable,
-    createEmptyAzleSymbolTable,
+    generateSingleEntryAzleSymbolTable,
+    generateEmptyAzleSymbolTable,
     renameSymbolTable,
     prependNamespaceToSymbolTable,
-    createDefaultSymbolTable,
+    generateDefaultAzleSymbolTable,
     mergeSymbolTables
 } from './azle_symbol_table';
 import {
@@ -32,12 +32,15 @@ export function processSymbol(
     program: ts.Program
 ): SymbolTable | undefined {
     if (isAzleSymbol(symbol)) {
-        return match(createSingleEntrySymbolTable(originalName, symbol.name), {
-            Ok: (symbolTable) => symbolTable,
-            Err: () => {
-                return undefined;
+        return match(
+            generateSingleEntryAzleSymbolTable(originalName, symbol.name),
+            {
+                Ok: (symbolTable) => symbolTable,
+                Err: () => {
+                    return undefined;
+                }
             }
-        });
+        );
     }
     const declarations = symbol.declarations;
     if (!declarations || declarations.length === 0) {
@@ -266,7 +269,7 @@ function processExportDeclarations(
             return;
         }
         if (moduleSpecifier.text == 'azle') {
-            return createDefaultSymbolTable();
+            return generateDefaultAzleSymbolTable();
         }
         const symbolTable = getSymbolTableForDeclaration(declaration, program);
         if (!symbolTable) {
@@ -274,7 +277,7 @@ function processExportDeclarations(
         }
         return toAzleSymbolTable(symbolTable, program);
     });
-    let symbolTable = createEmptyAzleSymbolTable();
+    let symbolTable = generateEmptyAzleSymbolTable();
     symbolTables.forEach((subSymbolTable) => {
         if (subSymbolTable) {
             symbolTable = mergeSymbolTables(symbolTable, subSymbolTable);
@@ -293,7 +296,7 @@ function processNamespaceImportExport(
     if (moduleSpecifier.text == 'azle') {
         // TODO process this symbol table the same, then modify it such that every entry has name.whatever
         return prependNamespaceToSymbolTable(
-            createDefaultSymbolTable(),
+            generateDefaultAzleSymbolTable(),
             namespace
         );
     }
@@ -407,7 +410,7 @@ function getAzleEquivalent(
     program: ts.Program
 ): SymbolTable | undefined {
     if (moduleSpecifier.text === 'azle') {
-        return match(createSingleEntrySymbolTable(originalName, name), {
+        return match(generateSingleEntryAzleSymbolTable(originalName, name), {
             Ok: (symbolTable) => symbolTable,
             Err: () => {
                 return undefined;

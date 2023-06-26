@@ -7,7 +7,7 @@ export function toAzleSymbolTable(
     tsSymbolTable: ts.SymbolTable,
     program: ts.Program
 ): SymbolTable {
-    let symbolTable = createEmptyAzleSymbolTable();
+    let symbolTable = generateEmptyAzleSymbolTable();
     tsSymbolTable.forEach((symbol, name) => {
         const subSymbolTable = processSymbol(name as string, symbol, program);
         if (subSymbolTable) {
@@ -18,11 +18,11 @@ export function toAzleSymbolTable(
     return symbolTable;
 }
 
-export function createSingleEntrySymbolTable(
+export function generateSingleEntryAzleSymbolTable(
     originalName: string,
     name: string
 ): Result<SymbolTable, string> {
-    const symbolTable = createEmptyAzleSymbolTable();
+    const symbolTable = generateEmptyAzleSymbolTable();
     const keyResult = stringToSymbolTableKey(name);
     return match(keyResult, {
         Ok: (key) => {
@@ -100,7 +100,7 @@ export function mergeSymbolTables(
     return mergedSymbolTable;
 }
 
-export function createEmptyAzleSymbolTable(): SymbolTable {
+export function generateEmptyAzleSymbolTable(): SymbolTable {
     return {
         alias: [],
         call_result: [],
@@ -149,7 +149,7 @@ export function createEmptyAzleSymbolTable(): SymbolTable {
     };
 }
 
-export function createDefaultSymbolTable(): SymbolTable {
+export function generateDefaultAzleSymbolTable(): SymbolTable {
     return {
         alias: ['Alias'],
         blob: ['blob'],
