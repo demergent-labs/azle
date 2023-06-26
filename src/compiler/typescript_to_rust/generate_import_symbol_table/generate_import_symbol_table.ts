@@ -12,8 +12,10 @@ export function generateImportSymbolTable(files: string[]): SymbolTables {
         return generateImportSymbolTableTimed(files, createAzleSymbolTable);
     }
     return files.reduce((accumulator: SymbolTables, filename: string) => {
-        accumulator[filename] = createAzleSymbolTable(filename);
-        return accumulator;
+        return {
+            ...accumulator,
+            [filename]: createAzleSymbolTable(filename)
+        };
     }, {});
 }
 
