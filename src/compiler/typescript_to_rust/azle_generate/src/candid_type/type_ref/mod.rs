@@ -3,7 +3,7 @@ use cdk_framework::{
         candid::{TypeArg, TypeRef},
         CandidType,
     },
-    traits::{CollectIterResults, CollectResults},
+    traits::CollectIterResults,
 };
 use std::ops::Deref;
 use swc_common::Span;
@@ -34,7 +34,7 @@ impl SourceMapped<'_, TsTypeRef> {
     }
 
     pub fn to_type_ref(&self) -> Result<TypeRef, Vec<Error>> {
-        let (type_arguments,) = (self
+        let type_arguments = self
             .type_params
             .iter()
             .map(|type_params| {
@@ -50,8 +50,7 @@ impl SourceMapped<'_, TsTypeRef> {
                     .into_iter()
                     .map(|param| TypeArg(param))
                     .collect::<Vec<_>>()
-            }),)
-            .collect_results()?;
+            })?;
 
         let name_string = self.get_name();
 
@@ -93,9 +92,6 @@ impl SourceMapped<'_, TsTypeRef> {
 
 impl GetName for SourceMapped<'_, TsTypeRef> {
     fn get_name(&self) -> String {
-        // TODO: This could be improved for Qualified TypeRefs with type params.
-        // Currently we just drop the type params. It would be better if we
-        // included them.
         return self.type_name.get_name();
     }
 }

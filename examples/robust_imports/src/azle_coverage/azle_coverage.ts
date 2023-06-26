@@ -1,7 +1,7 @@
 import $kiwi, {
     Apple,
     banana,
-    // blackberry,
+    blackberry,
     Cherry,
     elderberry,
     fig32,
@@ -22,7 +22,7 @@ import $kiwi, {
     nectarine16,
     nectarine32,
     nectarine64,
-    // nutmeg,
+    nutmeg,
     Orange,
     Olive,
     $pomegranate,
@@ -47,11 +47,6 @@ import $kiwi, {
 
 import { match as marionberry, ic as lemon, int16 as coconut } from 'azle';
 import * as starFruit from './fruit';
-
-// TODO get rid of these
-// type vanilla = Apple<void>;
-type blackberry = Apple<boolean>;
-type nutmeg = Apple<null>;
 
 class FruitDeliveryService extends Strawberry {
     @sapodilla

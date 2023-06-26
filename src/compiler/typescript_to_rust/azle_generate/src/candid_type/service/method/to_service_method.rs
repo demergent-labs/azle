@@ -93,11 +93,10 @@ impl SourceMapped<'_, ClassProp> {
         self.decorators.check_length_is_one_and_map(
             |decorators| NotExactlyOneDecorator::from_decorator_list(decorators, self).into(),
             |decorator| {
-                if let Some(decorator_name) = decorator.expr.get_name() {
-                    Ok(decorator_name)
-                } else {
-                    Err(vec![InvalidDecorator::from_class_prop(self).into()])
-                }
+                decorator
+                    .expr
+                    .get_name()
+                    .ok_or_else(|| vec![InvalidDecorator::from_class_prop(self).into()])
             },
         )
     }
