@@ -7,19 +7,19 @@ import {
 import { getSymbolTable } from './get_symbol_table';
 import { timing, generateImportSymbolTableTimed } from './debug';
 
-export function generateImportSymbolTable(files: string[]): SymbolTables {
+export function generateAzleSymbolTables(files: string[]): SymbolTables {
     if (timing) {
-        return generateImportSymbolTableTimed(files, createAzleSymbolTable);
+        return generateImportSymbolTableTimed(files, generateAzleSymbolTable);
     }
     return files.reduce((accumulator: SymbolTables, filename: string) => {
         return {
             ...accumulator,
-            [filename]: createAzleSymbolTable(filename)
+            [filename]: generateAzleSymbolTable(filename)
         };
     }, {});
 }
 
-function createAzleSymbolTable(filename: string): SymbolTable {
+function generateAzleSymbolTable(filename: string): SymbolTable {
     const sourceFilePath = filename;
     const program = ts.createProgram([sourceFilePath], {});
     const sourceFile = program.getSourceFile(sourceFilePath);

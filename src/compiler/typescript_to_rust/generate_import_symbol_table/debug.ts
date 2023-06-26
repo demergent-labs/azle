@@ -1,3 +1,4 @@
+// TODO this file should be removed as soon as the robust imports epic is completed
 import { SymbolTables, SymbolTable } from '../../utils/types';
 import {} from './get_symbol_table';
 
