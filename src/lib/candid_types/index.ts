@@ -36,6 +36,13 @@ export const Opt = {
     None: { None: null } as Opt<never>,
     is_some<Value>(opt: Opt<Value>): boolean {
         return match(opt, { Some: () => true, None: () => false });
+    },
+    questionMark<Value>(opt: Opt<Value>): Value {
+        if ('None' in opt) {
+            throw opt;
+        }
+
+        return opt.Some;
     }
 };
 

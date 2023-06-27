@@ -14,7 +14,7 @@ import {
     getSymbolTableForDeclaration,
     getSymbolTableForModuleSpecifier
 } from './get_symbol_table';
-import { getSourceFile } from './utils';
+import { getSourceFile, optify } from './utils';
 import { FILES_OF_INTEREST } from './debug';
 import {
     getDeclarationFromNamespace,
@@ -160,7 +160,7 @@ function processImportExportSpecifierWithModuleSpecifier(
 // {thing} or {thing as other}
 // as in `export {thing};` or
 // `export {thing as other};`
-function processExportSpecifier(
+const processExportSpecifier = optify(function processExportSpecifier(
     originalName: string,
     exportSpecifier: ts.ExportSpecifier,
     program: ts.Program
@@ -183,43 +183,22 @@ function processExportSpecifier(
     //     return processSymbol(originalName, symbol, program);
     // }
     // console.log("========> The new way didn't work");
-    return match(getSourceFile(exportSpecifier), {
-        Some: (sourcefile) =>
-            do_thing(originalName, exportSpecifier, sourcefile, program),
-        None: () => Opt.None
-    });
-}
 
-function do_thing(
-    originalName: string,
-    exportSpecifier: ts.ExportSpecifier,
-    sourceFile: ts.SourceFile,
-    program: ts.Program
-): Opt<SymbolTable> {
+    const sourceFile = Opt.questionMark(getSourceFile(exportSpecifier));
+    const symbolTable = Opt.questionMark(getSymbolTable(sourceFile, program));
     const identifier = getUnderlyingIdentifierFromSpecifier(exportSpecifier);
-    const symbolTable = match(getSymbolTable(sourceFile, program), {
-        Some: (symboltable) => symboltable,
-        None: () => undefined
-    });
-    if (!symbolTable) {
-        return Opt.None;
-    }
     const symbol = symbolTable.get(identifier.text as ts.__String);
     if (!symbol) {
         return Opt.None;
     }
-    return match(processSymbol(originalName, symbol, program), {
-        Some: (result) => {
-            if (exportSpecifier.propertyName) {
-                return Opt.Some(
-                    renameSymbolTable(result, exportSpecifier.name.text)
-                );
-            }
-            return Opt.Some(result);
-        },
-        None: () => Opt.None
-    });
-}
+    const result = Opt.questionMark(
+        processSymbol(originalName, symbol, program)
+    );
+    if (exportSpecifier.propertyName) {
+        return Opt.Some(renameSymbolTable(result, exportSpecifier.name.text));
+    }
+    return Opt.Some(result);
+});
 
 /* stuff to try out
     // TODO play around with this (and I think I saw one more thing, but this is likely the one I thought I saw) for type aliases
@@ -313,40 +292,37 @@ function processExportDeclarations(
     return Opt.Some(symbolTable);
 }
 
-function processNamespaceImportExport(
-    namespace: ts.NamespaceImport | ts.NamespaceExport,
-    program: ts.Program
-): Opt<SymbolTable> {
-    const importDeclaration = getDeclarationFromNamespace(namespace);
-    const moduleSpecifier =
-        importDeclaration.moduleSpecifier as ts.StringLiteral;
-    if (moduleSpecifier.text == 'azle') {
-        // TODO process this symbol table the same, then modify it such that every entry has name.whatever
+const processNamespaceImportExport = optify(
+    function processNamespaceImportExport(
+        namespace: ts.NamespaceImport | ts.NamespaceExport,
+        program: ts.Program
+    ): Opt<SymbolTable> {
+        const importDeclaration = getDeclarationFromNamespace(namespace);
+        const moduleSpecifier =
+            importDeclaration.moduleSpecifier as ts.StringLiteral;
+        if (moduleSpecifier.text == 'azle') {
+            // TODO process this symbol table the same, then modify it such that every entry has name.whatever
+            return Opt.Some(
+                prependNamespaceToSymbolTable(
+                    generateDefaultAzleSymbolTable(),
+                    namespace
+                )
+            );
+        }
+
+        const symbolTable = Opt.questionMark(
+            getSymbolTableForDeclaration(importDeclaration, program)
+        );
+
+        // process this symbol table the same, then modify it such that every entry has name.whatever
         return Opt.Some(
             prependNamespaceToSymbolTable(
-                generateDefaultAzleSymbolTable(),
+                toAzleSymbolTable(symbolTable, program),
                 namespace
             )
         );
     }
-    const symbolTable = match(
-        getSymbolTableForDeclaration(importDeclaration, program),
-        {
-            Some: (symboltable) => symboltable,
-            None: () => undefined
-        }
-    );
-    if (!symbolTable) {
-        return Opt.None;
-    }
-    // process this symbol table the same, then modify it such that every entry has name.whatever
-    return Opt.Some(
-        prependNamespaceToSymbolTable(
-            toAzleSymbolTable(symbolTable, program),
-            namespace
-        )
-    );
-}
+);
 
 function processTypeAliasDeclaration(
     originalName: string,
