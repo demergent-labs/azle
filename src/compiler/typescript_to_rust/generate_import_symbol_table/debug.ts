@@ -20,14 +20,15 @@ export let debug = false;
 
 export function generateTimedResults(
     files: string[],
-    funcToTime: (filename: string) => SymbolTable
+    funcToTime: (filename: string) => SymbolTable | undefined
 ): SymbolTables {
     const processingTimes: number[] = []; // Array to store processing times
 
     const symbolTables = files.reduce(
         (accumulator: SymbolTables, filename: string) => {
             const startTime = Date.now(); // Start timing for each file
-            accumulator[filename] = funcToTime(filename);
+            const result = funcToTime(filename);
+            if (result) accumulator[filename] = result;
             const endTime = Date.now(); // End timing for each file
             const processingTime = endTime - startTime; // Calculate processing time in milliseconds
             processingTimes.push(processingTime); // Store processing time

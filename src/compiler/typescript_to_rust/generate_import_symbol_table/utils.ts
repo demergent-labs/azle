@@ -1,11 +1,11 @@
 import * as ts from 'typescript';
 
 export function getSourceFile(node: ts.Node): ts.SourceFile | undefined {
+    if (ts.isSourceFile(node)) {
+        return node;
+    }
     if (!node.parent) {
         return;
-    }
-    if (ts.isSourceFile(node.parent)) {
-        return node.parent;
     }
     return getSourceFile(node.parent);
 }

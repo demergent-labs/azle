@@ -3,7 +3,7 @@ import { SymbolTable } from '../../utils/types';
 import { processSymbol } from './process_symbol';
 import { Result, match } from '../../../lib';
 
-export function toAzleSymbolTable(
+export function generateAzleSymbolTableFromTsSymbolTable(
     tsSymbolTable: ts.SymbolTable,
     program: ts.Program
 ): SymbolTable {
@@ -59,16 +59,18 @@ export function renameSymbolTable(
 ): SymbolTable {
     return Object.entries(symbolTable).reduce(
         (acc, [propertyName, propertyValue]) => {
-            acc[propertyName as keyof SymbolTable] = propertyValue.map(
-                (value) => {
-                    const indexOfDotOperator = value.indexOf('.');
-                    if (indexOfDotOperator !== -1) {
-                        return value.replace(/^[^.]+/, newPrefix);
+            return {
+                ...acc,
+                [propertyName as keyof SymbolTable]: propertyValue.map(
+                    (value) => {
+                        const indexOfDotOperator = value.indexOf('.');
+                        if (indexOfDotOperator !== -1) {
+                            return value.replace(/^[^.]+/, newPrefix);
+                        }
+                        return value;
                     }
-                    return value;
-                }
-            );
-            return acc;
+                )
+            };
         },
         {} as SymbolTable
     );
@@ -79,6 +81,16 @@ export function mergeSymbolTables(
     symbolTable2: SymbolTable
 ): SymbolTable {
     const mergedSymbolTable: SymbolTable = { ...symbolTable1 };
+
+    // return Object.keys(symbolTable1).reduce((acc, [key]) => {
+    //     let arr1 = symbolTable1[key as keyof SymbolTable];
+    //     console.log(arr1);
+    //     let arr2 = symbolTable2[key as keyof SymbolTable];
+    //     return {
+    //         ...acc,
+    //         [key]: [...arr1, ...arr2]
+    //     };
+    // }, {} as SymbolTable);
 
     for (const propertyName in symbolTable2) {
         const propertyValue2 = symbolTable2[propertyName as keyof SymbolTable];

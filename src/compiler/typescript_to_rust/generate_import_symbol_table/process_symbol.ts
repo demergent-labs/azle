@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { SymbolTable } from '../../utils/types';
 import {
-    toAzleSymbolTable,
+    generateAzleSymbolTableFromTsSymbolTable,
     generateSingleEntryAzleSymbolTable,
     generateEmptyAzleSymbolTable,
     renameSymbolTable,
@@ -274,7 +274,7 @@ function processExportDeclarations(
         if (!symbolTable) {
             return;
         }
-        return toAzleSymbolTable(symbolTable, program);
+        return generateAzleSymbolTableFromTsSymbolTable(symbolTable, program);
     });
     let symbolTable = generateEmptyAzleSymbolTable();
     symbolTables.forEach((subSymbolTable) => {
@@ -308,7 +308,10 @@ function processNamespaceImportExport(
     }
     // process this symbol table the same, then modify it such that every entry has name.whatever
     return prependNamespaceToSymbolTable(
-        toAzleSymbolTable(namespacedSymbolTable, program),
+        generateAzleSymbolTableFromTsSymbolTable(
+            namespacedSymbolTable,
+            program
+        ),
         namespace
     );
 }
