@@ -1,3 +1,11 @@
+// Some JS docs licensed under:
+//
+// - https://github.com/dfinity/cdk-rs/blob/main/LICENSE
+// - https://github.com/dfinity/interface-spec/blob/master/LICENSE
+// - https://github.com/dfinity/portal/blob/master/LICENSE
+//
+// Some documentation changed from original work.
+
 import {
     Alias,
     blob,
