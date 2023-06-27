@@ -7,6 +7,7 @@ import { getInvalidOptTests } from './invalid_opts';
 import { getInvalidPrimitiveTests } from './invalid_primitives';
 import { getInvalidNumberTests } from './invalid_numbers';
 import { getInvalidFuncTests } from './invalid_funcs';
+import { getInvalidPrincipalTests } from './invalid_principals';
 
 export function getTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
@@ -14,7 +15,8 @@ export function getTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
         ...getInvalidOptTests(errorCanister),
         ...getInvalidPrimitiveTests(errorCanister),
         ...getInvalidNumberTests(errorCanister),
-        ...getInvalidFuncTests(errorCanister)
+        ...getInvalidFuncTests(errorCanister),
+        ...getInvalidPrincipalTests(errorCanister)
     ];
 }
 

@@ -7,6 +7,7 @@ service : () -> {
   returnBothSomeAndNone : () -> (opt text) query;
   returnEmptyArrayAsInvalidFunc : () -> (func () -> () query) query;
   returnEmptyObjectAsInvalidFunc : () -> (func () -> () query) query;
+  returnEmptyObjectAsInvalidPrincipal : () -> (principal) query;
   returnEmptyObjectPrincipalAsInvalidFunc : () -> (func () -> () query) query;
   returnInvalidBlobValue : () -> (vec nat8) query;
   returnInvalidBooleanValue : () -> (bool) query;
@@ -25,9 +26,12 @@ service : () -> {
   returnInvalidNat8 : () -> (nat8) query;
   returnInvalidNullValue : () -> (null) query;
   returnInvalidNumber : () -> (float64) query;
+  returnInvalidPrincipalFromTooShortOfText : () -> (principal) query;
   returnInvalidSomeValue : () -> (opt text) query;
   returnInvalidStringValue : () -> (text) query;
   returnInvalidTextValue : () -> (text) query;
+  returnInvalidToTextPropertyAsInvalidPrincipal : () -> (principal) query;
+  returnInvalidToTextReturnValueAsInvalidPrincipal : () -> (principal) query;
   returnInvalidVoidValue : () -> () query;
   returnNonArrayValueAsInvalidFunc : () -> (func () -> () query) query;
   returnNonNullNone : () -> (opt text) query;
@@ -37,10 +41,12 @@ service : () -> {
       func () -> () query,
     ) query;
   returnObjectWithNeitherSomeNorNone : () -> (opt text) query;
+  returnStringAsInvalidPrincipal : () -> (principal) query;
   throwBigint : () -> () query;
   throwBoolean : () -> () query;
   throwClass : () -> () query;
   throwCustomError : () -> () query;
+  throwInPrincipalToTextMethodAsInvalidPrincipal : () -> (principal) query;
   throwInt : () -> () query;
   throwNull : () -> () query;
   throwNullReference : () -> () query;
@@ -49,4 +55,5 @@ service : () -> {
   throwString : () -> () query;
   throwSymbol : () -> () query;
   throwUndefined : () -> () query;
+  throwWhenCallingPrincipalFromText : () -> (principal) query;
 }

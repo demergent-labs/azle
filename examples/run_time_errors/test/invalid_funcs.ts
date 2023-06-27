@@ -19,10 +19,13 @@ const valueIsNotOfTypePrincipalErrorMessage = `[TypeError: value is not of type 
   }
 }`;
 
+// TODO: We need a more robust error nesting. Notice how "[TypeError: value is
+// not of type 'Principal']" has square brackets and its inner error's
+// indentation is not correct.
 const propertyToTextIsNotAFunctionErrorMessage = `[TypeError: value is not of type 'Func'] {
   [cause]: TypeError: index '0' is not of type 'Principal' {
-    [cause]: TypeError: property 'toText' of object is not a function
-  }
+    [cause]: [TypeError: value is not of type 'Principal'] {
+  [cause]: TypeError: property 'toText' of object is not a function
 }`;
 
 const index1IsUndefinedErrorMessage = `[TypeError: value is not of type 'Func'] {

@@ -63,17 +63,15 @@ export {
     returnNonStringCanisterMethodNameAsInvalidFunc
 } from './func';
 
-// $query;
-// export function returnInvalidFuncValue(): Func<Query<() => string>> {
-//     // @ts-expect-error
-//     return 'invalid type';
-// }
-
-// $query;
-// export function returnInvalidPrincipalValue(): Principal {
-//     // @ts-expect-error
-//     return 'invalid type';
-// }
+export {
+    returnStringAsInvalidPrincipal,
+    returnEmptyObjectAsInvalidPrincipal,
+    returnInvalidToTextPropertyAsInvalidPrincipal,
+    throwInPrincipalToTextMethodAsInvalidPrincipal,
+    returnInvalidToTextReturnValueAsInvalidPrincipal,
+    throwWhenCallingPrincipalFromText,
+    returnInvalidPrincipalFromTooShortOfText
+} from './principals';
 
 // $query;
 // export function returnInvalidValue(): TimerId {
