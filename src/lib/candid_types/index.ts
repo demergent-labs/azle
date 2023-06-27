@@ -42,14 +42,16 @@ export type blob = Uint8Array;
 export type empty = never;
 
 /**
- * Represents a single precision (32 bit) IEEE 754 floating point number. A JavaScript `number` at runtime.
+ * Represents a single precision (32 bit) IEEE 754 floating point number. A
+ * JavaScript `number` at runtime.
  *
  * See https://demergent-labs.github.io/azle/reference/candid/float32.html
  */
 export type float32 = number;
 
 /**
- * Represents a double precision (64 bit) IEEE 754 floating point number. A JavaScript `number` at runtime.
+ * Represents a double precision (64 bit) IEEE 754 floating point number. A
+ * JavaScript `number` at runtime.
  *
  * See https://demergent-labs.github.io/azle/reference/candid/float64.html
  */
@@ -63,7 +65,7 @@ export type float64 = number;
 export type int = bigint;
 
 /**
- * Represents a whole number in the range -2^63 …​ (2^63)-1. A JavaScript
+ * Represents a whole number in the range {-2^63 …​ (2^63)-1}. A JavaScript
  * `bigint` at runtime.
  *
  * See https://demergent-labs.github.io/azle/reference/candid/int64.html
@@ -71,7 +73,7 @@ export type int = bigint;
 export type int64 = bigint;
 
 /**
- * Represents a whole number in the range -2^31 …​ (2^31)-1. A JavaScript
+ * Represents a whole number in the range {-2^31 …​ (2^31)-1}. A JavaScript
  * `number` at runtime.
  *
  * See https://demergent-labs.github.io/azle/reference/candid/int32.html
@@ -79,7 +81,7 @@ export type int64 = bigint;
 export type int32 = number;
 
 /**
- * Represents a whole number in the range -2^15 …​ (2^15)-1. A JavaScript
+ * Represents a whole number in the range {-2^15 …​ (2^15)-1}. A JavaScript
  * `number` at runtime.
  *
  * See https://demergent-labs.github.io/azle/reference/candid/int16.html
@@ -87,8 +89,8 @@ export type int32 = number;
 export type int16 = number;
 
 /**
- * Represents a whole number in the range -2^7 …​ (2^7)-1. A JavaScript `number`
- * at runtime.
+ * Represents a whole number in the range {-2^7 …​ (2^7)-1}. A JavaScript
+ * `number` at runtime.
  *
  * See https://demergent-labs.github.io/azle/reference/candid/int8.html
  */
@@ -103,32 +105,32 @@ export type int8 = number;
 export type nat = bigint;
 
 /**
- * Represents a natural (non-negative) number in the range {0 …​ 2^64-1}. A JavaScript `bigint` at
- * runtime.
+ * Represents a natural (non-negative) number in the range {0 …​ 2^64-1}. A
+ * JavaScript `bigint` at runtime.
  *
  * See https://demergent-labs.github.io/azle/reference/candid/nat64.html
  */
 export type nat64 = bigint;
 
 /**
- * Represents a natural (non-negative) number in the range {0 …​ 2^32-1}. A JavaScript `number` at
- * runtime.
+ * Represents a natural (non-negative) number in the range {0 …​ 2^32-1}. A
+ * JavaScript `number` at runtime.
  *
  * See https://demergent-labs.github.io/azle/reference/candid/nat32.html
  */
 export type nat32 = number;
 
 /**
- * Represents a natural (non-negative) number in the range {0 …​ 2^16-1}. A JavaScript `number` at
- * runtime.
+ * Represents a natural (non-negative) number in the range {0 …​ 2^16-1}. A
+ * JavaScript `number` at runtime.
  *
  * See https://demergent-labs.github.io/azle/reference/candid/nat16.html
  */
 export type nat16 = number;
 
 /**
- * Represents a natural (non-negative) number in the range {0 …​ 2^8-1}. A JavaScript `number` at
- * runtime.
+ * Represents a natural (non-negative) number in the range {0 …​ 2^8-1}. A
+ * JavaScript `number` at runtime.
  *
  * See https://demergent-labs.github.io/azle/reference/candid/nat8.html
  */
