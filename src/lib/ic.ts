@@ -1,3 +1,6 @@
+// Some JS docs licensed under https://github.com/dfinity/cdk-rs/blob/main/LICENSE
+// Some documentation changed from original work.
+
 import {
     Alias,
     blob,
@@ -8,7 +11,7 @@ import {
     Principal,
     Variant
 } from './candid_types';
-import { FinalCallResult, Result } from './results';
+import { Result } from './results';
 
 declare var globalThis: any;
 
@@ -46,6 +49,10 @@ export type TimerId = Alias<nat64>; // TODO: Consider modeling this after the co
 type ic = {
     acceptMessage: () => void;
     // argData: () => any[]; // TODO: See https://github.com/demergent-labs/azle/issues/496
+    /**
+     * Returns the argument data as bytes.
+     * @returns the argument data
+     */
     argDataRaw: () => blob;
     argDataRawSize: () => nat32;
     callRaw: (
@@ -53,13 +60,13 @@ type ic = {
         method: string,
         argsRaw: blob,
         payment: nat64
-    ) => Promise<FinalCallResult<blob>>;
+    ) => Promise<Result<blob, string>>;
     callRaw128: (
         canisterId: Principal,
         method: string,
         argsRaw: blob,
         payment: nat
-    ) => Promise<FinalCallResult<blob>>;
+    ) => Promise<Result<blob, string>>;
     caller: () => Principal;
     candidDecode: (candidEncoded: blob) => string;
     candidEncode: (candidString: string) => blob;
