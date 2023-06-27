@@ -1,4 +1,4 @@
-import { Variant } from './variant';
+import { Variant, match } from './variant';
 
 export { Principal } from '@dfinity/principal';
 export { Func } from './func';
@@ -33,7 +33,10 @@ export const Opt = {
     Some: <Value>(value: Value): Opt<Value> => ({
         Some: value
     }),
-    None: { None: null } as Opt<never>
+    None: { None: null } as Opt<never>,
+    is_some<Value>(opt: Opt<Value>): boolean {
+        return match(opt, { Some: () => true, None: () => false });
+    }
 };
 
 /**

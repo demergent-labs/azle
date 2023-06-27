@@ -1,6 +1,7 @@
 // TODO this file should be removed as soon as the robust imports epic is completed
 import { SymbolTables, SymbolTable } from '../../utils/types';
 import {} from './get_symbol_table';
+import { Opt, match } from '../../../lib';
 
 export const FILES_OF_INTEREST = [
     '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/canister_methods/azle_coverage.ts',
@@ -20,14 +21,19 @@ export let debug = false;
 
 export function generateTimedResults(
     files: string[],
-    funcToTime: (filename: string) => SymbolTable
+    funcToTime: (filename: string) => Opt<SymbolTable>
 ): SymbolTables {
     const processingTimes: number[] = []; // Array to store processing times
 
     const symbolTables = files.reduce(
         (accumulator: SymbolTables, filename: string) => {
             const startTime = Date.now(); // Start timing for each file
-            accumulator[filename] = funcToTime(filename);
+            match(funcToTime(filename), {
+                Some: (symbolTable) => {
+                    accumulator[filename] = symbolTable;
+                },
+                None: () => {}
+            });
             const endTime = Date.now(); // End timing for each file
             const processingTime = endTime - startTime; // Calculate processing time in milliseconds
             processingTimes.push(processingTime); // Store processing time

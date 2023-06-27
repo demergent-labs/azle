@@ -1,11 +1,12 @@
 import * as ts from 'typescript';
+import { Opt } from '../../../lib';
 
-export function getSourceFile(node: ts.Node): ts.SourceFile | undefined {
+export function getSourceFile(node: ts.Node): Opt<ts.SourceFile> {
     if (!node.parent) {
-        return;
+        return Opt.None;
     }
     if (ts.isSourceFile(node.parent)) {
-        return node.parent;
+        return Opt.Some(node.parent);
     }
     return getSourceFile(node.parent);
 }

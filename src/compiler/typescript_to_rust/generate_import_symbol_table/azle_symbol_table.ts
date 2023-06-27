@@ -9,10 +9,11 @@ export function toAzleSymbolTable(
 ): SymbolTable {
     let symbolTable = generateEmptyAzleSymbolTable();
     tsSymbolTable.forEach((symbol, name) => {
-        const subSymbolTable = processSymbol(name as string, symbol, program);
-        if (subSymbolTable) {
-            symbolTable = mergeSymbolTables(symbolTable, subSymbolTable);
-        }
+        match(processSymbol(name as string, symbol, program), {
+            Some: (subSymbolTable) =>
+                (symbolTable = mergeSymbolTables(symbolTable, subSymbolTable)),
+            None: () => {}
+        });
     });
 
     return symbolTable;
