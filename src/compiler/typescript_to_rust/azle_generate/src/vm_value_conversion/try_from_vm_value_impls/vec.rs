@@ -42,21 +42,21 @@ pub fn generate() -> proc_macro2::TokenStream {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<u8>, CdkActTryFromVmValueError> {
                 // TODO maybe a better way to do this, I had some issues: https://github.com/boa-dev/boa/blob/main/boa_examples/src/bin/jsarraybuffer.rs#L24-L35
                 // Ok(boa_engine::object::builtins::JsArrayBuffer::from_object(self.as_object().unwrap().clone()).unwrap().take().unwrap())
-                Ok(
-                    self
+
+                Ok(self
                         .as_object()
-                        .unwrap()
+                        .ok_or_else(|| "TypeError: value is not of type 'blob'")?
                         .borrow()
                         .as_typed_array()
-                        .unwrap()
+                        .ok_or_else(|| "[TypeError: value is not of type 'blob'] {\n  [cause]: TypeError: value is not an instance of 'TypedArray'\n}")?
                         .viewed_array_buffer()
-                        .unwrap()
+                        .ok_or_else(|| "[TypeError: value is not of type 'blob'] {\n  [cause]: InternalError: TypedArray does not have an associated DataView\n}")?
                         .borrow()
                         .as_array_buffer()
-                        .unwrap()
+                        .ok_or_else(|| "[TypeError: value is not of type 'blob'] {\n  [cause]: InternalError: TypedArray does not have an associated ArrayBuffer\n}")?
                         .array_buffer_data
                         .clone()
-                        .unwrap()
+                        .ok_or_else(|| "[TypeError: value is not of type 'blob'] {\n  [cause]: InternalError: no data in ArrayBuffer\n}")?
                 )
             }
         }

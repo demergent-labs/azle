@@ -6,10 +6,10 @@ service : () -> {
   returnArrayWithOnlyPrincipalAsInvalidFunc : () -> (func () -> () query) query;
   returnBothSomeAndNone : () -> (opt text) query;
   returnEmptyArrayAsInvalidFunc : () -> (func () -> () query) query;
+  returnEmptyObjectAsInvalidBlob : () -> (vec nat8) query;
   returnEmptyObjectAsInvalidFunc : () -> (func () -> () query) query;
   returnEmptyObjectAsInvalidPrincipal : () -> (principal) query;
   returnEmptyObjectPrincipalAsInvalidFunc : () -> (func () -> () query) query;
-  returnInvalidBlobValue : () -> (vec nat8) query;
   returnInvalidBooleanValue : () -> (bool) query;
   returnInvalidEmptyValue : () -> (empty) query;
   returnInvalidFloat32 : () -> (float32) query;
@@ -36,6 +36,7 @@ service : () -> {
   returnNonArrayValueAsInvalidFunc : () -> (func () -> () query) query;
   returnNonNullNone : () -> (opt text) query;
   returnNonObject : () -> (opt text) query;
+  returnNonObjectAsInvalidBlob : () -> (vec nat8) query;
   returnNonPrincipalValueAsInvalidFunc : () -> (func () -> () query) query;
   returnNonStringCanisterMethodNameAsInvalidFunc : () -> (
       func () -> () query,

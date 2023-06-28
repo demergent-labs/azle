@@ -28,7 +28,6 @@ export {
 } from './opt';
 
 export {
-    returnInvalidBlobValue,
     returnInvalidBooleanValue,
     returnInvalidEmptyValue,
     returnInvalidNullValue,
@@ -72,6 +71,11 @@ export {
     throwWhenCallingPrincipalFromText,
     returnInvalidPrincipalFromTooShortOfText
 } from './principals';
+
+export {
+    returnNonObjectAsInvalidBlob,
+    returnEmptyObjectAsInvalidBlob
+} from './blob';
 
 // $query;
 // export function returnInvalidValue(): TimerId {

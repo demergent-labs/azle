@@ -7,11 +7,6 @@ export function getInvalidPrimitiveTests(
     errorCanister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
-        // expectError(
-        //     'return invalid blob value',
-        //     errorCanister.returnInvalidBlobValue,
-        //     "TypeError: value is not of type 'blob'"
-        // ),
         expectError(
             'return invalid boolean value',
             errorCanister.returnInvalidBooleanValue,

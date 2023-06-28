@@ -1,12 +1,6 @@
 import { $query, blob, empty, text } from 'azle';
 
 $query;
-export function returnInvalidBlobValue(): blob {
-    // @ts-expect-error
-    return 'invalid type';
-}
-
-$query;
 export function returnInvalidBooleanValue(): boolean {
     // @ts-expect-error
     return 'invalid type';
