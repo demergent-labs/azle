@@ -1,6 +1,6 @@
 import { AliasTable, AliasTables } from '../../utils/types';
 import * as ts from 'typescript';
-import { generateAliasTableFromSymbolTable } from './azle_symbol_table';
+import { generateAliasTableFromSymbolTable } from './alias_table';
 import { getSymbolTable } from './get_symbol_table';
 import { timing, generateTimedResults } from './debug';
 

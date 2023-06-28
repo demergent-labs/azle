@@ -14,14 +14,14 @@ mod ts_ast;
 mod ts_keywords;
 mod vm_value_conversion;
 
+pub mod alias_table;
 pub mod errors;
 pub mod plugin;
-pub mod symbol_table;
 pub mod traits;
 
+pub use alias_table::AliasTable;
+pub use alias_table::AliasTables;
 pub use plugin::Plugin;
-pub use symbol_table::AliasTable;
-pub use symbol_table::AliasTables;
 
 pub fn generate_canister(
     ts_file_names: &Vec<String>,

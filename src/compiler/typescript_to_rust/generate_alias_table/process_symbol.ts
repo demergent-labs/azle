@@ -8,7 +8,7 @@ import {
     prependNamespaceToAliasTable,
     generateDefaultAliasTable,
     mergeAliasTables
-} from './azle_symbol_table';
+} from './alias_table';
 import {
     getSymbolTable,
     getSymbolTableForDeclaration,
