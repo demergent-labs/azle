@@ -14,14 +14,13 @@ import {
     getSymbolTableForDeclaration,
     getSymbolTableForModuleSpecifier
 } from './get_symbol_table';
-import { getSourceFile } from './utils';
 import { FILES_OF_INTEREST } from './debug';
 import {
+    getSourceFile,
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
     getUnderlyingIdentifierFromSpecifier
-} from './import_export_utils';
-import { Result, match, Opt } from '../../../lib';
+} from './utils';
 
 const typeAliasesAreStillUnimplemented = true;
 
@@ -31,15 +30,7 @@ export function processSymbol(
     program: ts.Program
 ): SymbolTable | undefined {
     if (isAzleSymbol(symbol)) {
-        return match(
-            generateSingleEntryAzleSymbolTable(originalName, symbol.name),
-            {
-                Ok: (symbolTable) => symbolTable,
-                Err: () => {
-                    return undefined;
-                }
-            }
-        );
+        return generateSingleEntryAzleSymbolTable(originalName, symbol.name);
     }
     const declarations = symbol.declarations;
     if (!declarations || declarations.length === 0) {
@@ -413,12 +404,7 @@ function getAzleEquivalent(
     program: ts.Program
 ): SymbolTable | undefined {
     if (moduleSpecifier.text === 'azle') {
-        return match(generateSingleEntryAzleSymbolTable(originalName, name), {
-            Ok: (symbolTable) => symbolTable,
-            Err: () => {
-                return undefined;
-            }
-        });
+        return generateSingleEntryAzleSymbolTable(originalName, name);
     }
     const symbolTable = getSymbolTableForModuleSpecifier(
         moduleSpecifier,

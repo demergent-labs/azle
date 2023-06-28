@@ -1,5 +1,4 @@
 import * as ts from 'typescript';
-import { getDeclarationFromNamespace } from './import_export_utils';
 
 export function getSymbolTable(
     sourceFile: ts.SourceFile,

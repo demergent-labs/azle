@@ -1,7 +1,6 @@
 import * as ts from 'typescript';
 import { SymbolTable } from '../../utils/types';
 import { processSymbol } from './process_symbol';
-import { Result, match } from '../../../lib';
 
 export function generateAzleSymbolTableFromTsSymbolTable(
     tsSymbolTable: ts.SymbolTable,
@@ -21,18 +20,15 @@ export function generateAzleSymbolTableFromTsSymbolTable(
 export function generateSingleEntryAzleSymbolTable(
     originalName: string,
     name: string
-): Result<SymbolTable, string> {
+): SymbolTable | undefined {
     const symbolTable = generateEmptyAzleSymbolTable();
     const keyResult = stringToSymbolTableKey(name);
-    return match(keyResult, {
-        Ok: (key) => {
-            return Result.Ok<SymbolTable, string>({
-                ...symbolTable,
-                [key]: [...symbolTable[key], originalName]
-            });
-        },
-        Err: (err) => Result.Err<SymbolTable, string>(err)
-    });
+    if (keyResult) {
+        return {
+            ...symbolTable,
+            [keyResult]: [...symbolTable[keyResult], originalName]
+        };
+    }
 }
 
 export function prependNamespaceToSymbolTable(
@@ -82,34 +78,15 @@ export function mergeSymbolTables(
 ): SymbolTable {
     const mergedSymbolTable: SymbolTable = { ...symbolTable1 };
 
-    // return Object.keys(symbolTable1).reduce((acc, [key]) => {
-    //     let arr1 = symbolTable1[key as keyof SymbolTable];
-    //     console.log(arr1);
-    //     let arr2 = symbolTable2[key as keyof SymbolTable];
-    //     return {
-    //         ...acc,
-    //         [key]: [...arr1, ...arr2]
-    //     };
-    // }, {} as SymbolTable);
-
-    for (const propertyName in symbolTable2) {
-        const propertyValue2 = symbolTable2[propertyName as keyof SymbolTable];
-        const existingPropertyValue =
-            mergedSymbolTable[propertyName as keyof SymbolTable];
-
-        if (
-            Array.isArray(existingPropertyValue) &&
-            Array.isArray(propertyValue2)
-        ) {
-            mergedSymbolTable[propertyName as keyof SymbolTable] =
-                existingPropertyValue.concat(propertyValue2);
-        } else {
-            mergedSymbolTable[propertyName as keyof SymbolTable] =
-                propertyValue2;
-        }
-    }
-
-    return mergedSymbolTable;
+    return Object.keys(symbolTable1).reduce((acc, key) => {
+        return {
+            ...acc,
+            [key]: [
+                ...symbolTable1[key as keyof SymbolTable],
+                ...symbolTable2[key as keyof SymbolTable]
+            ]
+        };
+    }, {} as SymbolTable);
 }
 
 export function generateEmptyAzleSymbolTable(): SymbolTable {
@@ -258,12 +235,10 @@ const SYMBOL_TABLE_KEYS: {
     void: 'void'
 };
 
-function stringToSymbolTableKey(
-    name: string
-): Result<keyof SymbolTable, string> {
+function stringToSymbolTableKey(name: string): keyof SymbolTable | undefined {
     // Make sure that it's a name we can convert
     if (!(name in SYMBOL_TABLE_KEYS)) {
-        return Result.Err(`${name} is not a valid Azle Symbol`);
+        return;
     }
-    return Result.Ok(SYMBOL_TABLE_KEYS[name]);
+    return SYMBOL_TABLE_KEYS[name];
 }
