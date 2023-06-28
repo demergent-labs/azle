@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { AliasTable } from '../../utils/types';
+import { AliasTable } from '../../../utils/types';
 import {
     generateAliasTableFromSymbolTable,
     generateSingleEntryAliasTable,
@@ -8,18 +8,18 @@ import {
     prependNamespaceToAliasTable,
     generateDefaultAliasTable,
     mergeAliasTables
-} from './alias_table';
+} from '../alias_table';
 import {
     getSymbolTable,
     getSymbolTableForDeclaration,
     getSymbolTableForModuleSpecifier
-} from './get_symbol_table';
+} from '../get_symbol_table';
 import {
     getSourceFile,
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
     getUnderlyingIdentifierFromSpecifier
-} from './utils';
+} from '../utils';
 
 const TYPE_ALIASES_ARE_STILL_UNIMPLEMENTED = true;
 
