@@ -22,7 +22,7 @@ import {
     getUnderlyingIdentifierFromSpecifier
 } from './utils';
 
-const typeAliasesAreStillUnimplemented = true;
+const TYPE_ALIASES_ARE_STILL_UNIMPLEMENTED = true;
 
 export function processSymbol(
     originalName: string,
@@ -312,7 +312,7 @@ function processTypeAliasDeclaration(
     declaration: ts.TypeAliasDeclaration,
     program: ts.Program
 ): SymbolTable | undefined {
-    if (typeAliasesAreStillUnimplemented) {
+    if (TYPE_ALIASES_ARE_STILL_UNIMPLEMENTED) {
         return; // TODO Add support for type alias declarations
         // The below code doesn't work, but it's hopefully a good starting point
     }
