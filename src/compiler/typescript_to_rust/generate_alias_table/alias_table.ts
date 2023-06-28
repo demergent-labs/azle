@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { AliasTable } from '../../utils/types';
-import { processSymbol } from './process_symbol';
+import { generateAliasTableForSymbol } from './process_symbol';
 
 export function generateAliasTableFromSymbolTable(
     symbolTable: ts.SymbolTable,
@@ -8,7 +8,11 @@ export function generateAliasTableFromSymbolTable(
 ): AliasTable {
     let aliasTable = generateEmptyAliasTable();
     symbolTable.forEach((symbol, name) => {
-        const subAliasTable = processSymbol(name as string, symbol, program);
+        const subAliasTable = generateAliasTableForSymbol(
+            symbol,
+            name as string,
+            program
+        );
         if (subAliasTable) {
             aliasTable = mergeAliasTables(aliasTable, subAliasTable);
         }
@@ -18,7 +22,7 @@ export function generateAliasTableFromSymbolTable(
 }
 
 export function generateSingleEntryAliasTable(
-    originalName: string,
+    alias: string,
     name: string
 ): AliasTable | undefined {
     const aliasTable = generateEmptyAliasTable();
@@ -26,7 +30,7 @@ export function generateSingleEntryAliasTable(
     if (key) {
         return {
             ...aliasTable,
-            [key]: [...aliasTable[key], originalName]
+            [key]: [...aliasTable[key], alias]
         };
     }
 }

@@ -149,25 +149,27 @@ impl SourceMapped<'_, AnnotatedFnDecl> {
     }
 
     pub fn is_manual(&self) -> bool {
-        let return_type = match &self.fn_decl.function.return_type {
-            Some(ts_type_ann) => match self.is_promise() {
-                true => match &ts_type_ann.type_ann.as_ts_type_ref() {
-                    Some(ts_type_ref) => match &ts_type_ref.type_params {
-                        Some(type_param_instantiation) => &type_param_instantiation.params[0],
-                        None => return false,
-                    },
-                    None => return false,
-                },
-                false => &*ts_type_ann.type_ann,
-            },
-            None => return false,
-        };
+        let return_type = self
+            .fn_decl
+            .function
+            .return_type
+            .as_ref()
+            .and_then(|ts_type_ann| match self.is_promise() {
+                true => ts_type_ann
+                    .type_ann
+                    .as_ts_type_ref()
+                    .and_then(|ts_type_ref| ts_type_ref.type_params.clone())
+                    .and_then(|type_param_instantiation| {
+                        Some(*type_param_instantiation.params[0].clone())
+                    }),
+                false => Some(*ts_type_ann.type_ann.clone()),
+            });
 
         match return_type {
-            TsType::TsTypeRef(ts_type_ref) => self
+            Some(TsType::TsTypeRef(ts_type_ref)) => self
                 .alias_table
                 .manual
-                .contains(&self.spawn(ts_type_ref).get_name()),
+                .contains(&self.spawn(&ts_type_ref).get_name()),
 
             _ => false,
         }

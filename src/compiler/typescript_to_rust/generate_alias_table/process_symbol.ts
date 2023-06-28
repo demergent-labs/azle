@@ -14,7 +14,6 @@ import {
     getSymbolTableForDeclaration,
     getSymbolTableForModuleSpecifier
 } from './get_symbol_table';
-import { FILES_OF_INTEREST } from './debug';
 import {
     getSourceFile,
     getDeclarationFromNamespace,
@@ -24,13 +23,13 @@ import {
 
 const TYPE_ALIASES_ARE_STILL_UNIMPLEMENTED = true;
 
-export function processSymbol(
-    originalName: string,
+export function generateAliasTableForSymbol(
     symbol: ts.Symbol,
+    alias: string,
     program: ts.Program
 ): AliasTable | undefined {
     if (isAzleSymbol(symbol)) {
-        return generateSingleEntryAliasTable(originalName, symbol.name);
+        return generateSingleEntryAliasTable(alias, symbol.name);
     }
     const declarations = symbol.declarations;
     if (!declarations || declarations.length === 0) {
@@ -40,7 +39,7 @@ export function processSymbol(
         // Should look like export * from 'place';
         // There are other export declarations, but the only ones that will
         // be a symbol are these unnamed export from clauses
-        return processExportDeclarations(
+        return generateAliasTableForExportDeclarations(
             declarations as ts.ExportDeclaration[],
             program
         );
@@ -50,82 +49,85 @@ export function processSymbol(
         // TODO is it possible for those declarations to be conflicting?
         return;
     }
-    const declaration = declarations[0];
-    const sourceFile = getSourceFile(declaration);
-    switch (declaration.kind) {
-        case ts.SyntaxKind.ExportSpecifier:
-            // {thing} or {thing as other}
-            // as in `export {thing};` or
-            // `export {thing as other};`
-            return processExportSpecifier(
-                originalName,
-                declaration as ts.ExportSpecifier,
-                program
-            );
-        case ts.SyntaxKind.ExportAssignment:
-            // export default thing
-            return processExportAssignment(
-                originalName,
-                declaration as ts.ExportAssignment,
-                program
-            );
-        case ts.SyntaxKind.ImportClause:
-            // thing
-            // as in `import thing from 'place'`
-            return processImportClause(
-                originalName,
-                declaration as ts.ImportClause,
-                program
-            );
-        case ts.SyntaxKind.ImportSpecifier:
-            // {thing} or {thing as other}
-            // as in `import {thing} from 'place'` or
-            // `import {thing as other} from 'place'`
-            return processImportSpecifier(
-                originalName,
-                declaration as ts.ImportSpecifier,
-                program
-            );
-        case ts.SyntaxKind.TypeAliasDeclaration:
-            // export type AliasName = TypeName;
-            // type AliasName = TypeName;
-            return processTypeAliasDeclaration(
-                originalName,
-                declaration as ts.TypeAliasDeclaration,
-                program
-            );
-        case ts.SyntaxKind.NamespaceImport:
-            // import * as thing from 'place'
-            return processNamespaceImportExport(
-                declaration as ts.NamespaceImport,
-                program
-            );
-        case ts.SyntaxKind.NamespaceExport:
-            // export * as thing from 'place';
-            return processNamespaceImportExport(
-                declaration as ts.NamespaceExport,
-                program
-            );
-        case ts.SyntaxKind.ExportDeclaration:
-        // These should be handled above
-        case ts.SyntaxKind.FunctionDeclaration:
-        case ts.SyntaxKind.ClassDeclaration:
-        case ts.SyntaxKind.VariableDeclaration:
-            break;
-        default:
-            if (sourceFile) {
-                if (FILES_OF_INTEREST.includes(sourceFile.fileName)) {
-                    console.log(`MISSING: ${ts.SyntaxKind[declaration.kind]}`);
-                    console.log(sourceFile?.fileName);
-                    console.log(declaration.getText(sourceFile));
-                }
-            }
+    return generateAliasTableForDeclaration(declarations[0], alias, program);
+}
+function generateAliasTableForDeclaration(
+    declaration: ts.Declaration,
+    alias: string,
+    program: ts.Program
+): AliasTable | undefined {
+    if (ts.isExportSpecifier(declaration)) {
+        // {thing} or {thing as other}
+        // as in `export {thing};` or
+        // `export {thing as other};`
+        return generateAliasTableForExportSpecifier(
+            declaration,
+            alias,
+            program
+        );
+    }
+    if (ts.isExportAssignment(declaration)) {
+        // export default thing
+        return generateAliasTableForExportAssignment(
+            declaration,
+            alias,
+            program
+        );
+    }
+    if (ts.isImportClause(declaration)) {
+        // thing
+        // as in `import thing from 'place'`
+        return generateAliasTableForImportClause(declaration, alias, program);
+    }
+    if (ts.isImportSpecifier(declaration)) {
+        // {thing} or {thing as other}
+        // as in `import {thing} from 'place'` or
+        // `import {thing as other} from 'place'`
+        return generateAliasTableForImportSpecifier(
+            declaration,
+            alias,
+            program
+        );
+    }
+    if (ts.isTypeAliasDeclaration(declaration)) {
+        // export type AliasName = TypeName;
+        // type AliasName = TypeName;
+        return generateAliasTableForTypeAliasDeclaration(
+            declaration,
+            alias,
+            program
+        );
+    }
+    if (ts.isNamespaceImport(declaration)) {
+        // import * as thing from 'place'
+        return generateAliasTableForNamespaceImportExport(declaration, program);
+    }
+    if (ts.isNamespaceExport(declaration)) {
+        // export * as thing from 'place';
+        return generateAliasTableForNamespaceImportExport(declaration, program);
+    }
+    if (ts.isExportDeclaration(declaration)) {
+        // export * from 'place'
+        // CAUTION: Export Declarations often come in groups (eg export * from
+        // 'place' and export * from 'otherPlace' would both be in the list of
+        // declarations) and this function is only meant to process one at a
+        // time.
+        return generateAliasTableForExportDeclaration(declaration, program);
+    }
+    if (
+        ts.isFunctionDeclaration(declaration) ||
+        ts.isClassDeclaration(declaration) ||
+        ts.isVariableDeclaration(declaration)
+    ) {
+        // All of the cases here are known to not need handling and return
+        // undefined intentionally
+        return;
     }
 }
 
-function processImportExportSpecifierWithModuleSpecifier(
-    originalName: string,
+function generateAliasTableForImportExportSpecifierWithModuleSpecifier(
     specifier: ts.ExportSpecifier | ts.ImportSpecifier,
+    alias: string,
     program: ts.Program
 ): AliasTable | undefined {
     const identifier = getUnderlyingIdentifierFromSpecifier(specifier);
@@ -133,7 +135,7 @@ function processImportExportSpecifierWithModuleSpecifier(
 
     if (declaration.moduleSpecifier !== undefined) {
         return getAzleEquivalent(
-            originalName,
+            alias,
             identifier.text,
             declaration.moduleSpecifier as ts.StringLiteral,
             program
@@ -144,16 +146,16 @@ function processImportExportSpecifierWithModuleSpecifier(
 // {thing} or {thing as other}
 // as in `export {thing};` or
 // `export {thing as other};`
-function processExportSpecifier(
-    originalName: string,
+function generateAliasTableForExportSpecifier(
     exportSpecifier: ts.ExportSpecifier,
+    alias: string,
     program: ts.Program
 ): AliasTable | undefined {
     const exportDecl = getDeclarationFromSpecifier(exportSpecifier);
     if (exportDecl.moduleSpecifier) {
-        return processImportExportSpecifierWithModuleSpecifier(
-            originalName,
+        return generateAliasTableForImportExportSpecifierWithModuleSpecifier(
             exportSpecifier,
+            alias,
             program
         );
     }
@@ -180,7 +182,7 @@ function processExportSpecifier(
     if (!symbol) {
         return;
     }
-    const result = processSymbol(originalName, symbol, program);
+    const result = generateAliasTableForSymbol(symbol, alias, program);
     if (!result) {
         return;
     }
@@ -200,41 +202,69 @@ function processExportSpecifier(
     // const thing2 = typeChecker.getExportSymbolOfSymbol(symbol)
 */
 
-function processExportAssignment(
-    originalName: string,
+function generateAliasTableForExportAssignment(
     exportAssignment: ts.ExportAssignment,
+    alias: string,
     program: ts.Program
 ): AliasTable | undefined {
     const typeChecker = program.getTypeChecker();
     const symbol = typeChecker.getSymbolAtLocation(exportAssignment.expression);
     if (symbol) {
-        return processSymbol(originalName, symbol, program);
+        return generateAliasTableForSymbol(symbol, alias, program);
     }
 }
 
-function processImportSpecifier(
-    originalName: string,
-    declaration: ts.ImportSpecifier,
+function generateAliasTableForImportSpecifier(
+    importSpecifier: ts.ImportSpecifier,
+    alias: string,
     program: ts.Program
 ): AliasTable | undefined {
-    return processImportExportSpecifierWithModuleSpecifier(
-        originalName,
-        declaration,
+    return generateAliasTableForImportExportSpecifierWithModuleSpecifier(
+        importSpecifier,
+        alias,
         program
     );
 }
 
-function processImportClause(
-    originalName: string,
-    declaration: ts.ImportClause,
+function generateAliasTableForImportClause(
+    importClause: ts.ImportClause,
+    alias: string,
     program: ts.Program
 ): AliasTable | undefined {
     return getAzleEquivalent(
-        originalName,
+        alias,
         'default',
-        declaration.parent.moduleSpecifier as ts.StringLiteral,
+        importClause.parent.moduleSpecifier as ts.StringLiteral,
         program
     );
+}
+
+function generateAliasTableForExportDeclaration(
+    exportDeclaration: ts.ExportDeclaration,
+    program: ts.Program
+): AliasTable | undefined {
+    const moduleSpecifier = exportDeclaration.moduleSpecifier;
+    if (!moduleSpecifier || !ts.isStringLiteral(moduleSpecifier)) {
+        // Unreachable: An export declaration with a namespace export will always have a FromClause
+        // https://262.ecma-international.org/13.0/#sec-exports
+        return;
+    }
+    if (exportDeclaration.exportClause) {
+        // Unreachable: An export declaration with a namespace export will always have an ExportClause
+        // https://262.ecma-international.org/13.0/#sec-exports
+        return;
+    }
+    if (moduleSpecifier.text == 'azle') {
+        return generateDefaultAliasTable();
+    }
+    const symbolTable = getSymbolTableForDeclaration(
+        exportDeclaration,
+        program
+    );
+    if (!symbolTable) {
+        return;
+    }
+    return generateAliasTableFromSymbolTable(symbolTable, program);
 }
 
 // My expectation is that this will only be called for export declarations in the form:
@@ -242,31 +272,13 @@ function processImportClause(
 // My understanding is all other export declarations will be processed in other
 // functions because they will fall into the more specific export clause or
 // export specifier cases
-function processExportDeclarations(
-    declarations: ts.ExportDeclaration[],
+function generateAliasTableForExportDeclarations(
+    exportDeclarations: ts.ExportDeclaration[],
     program: ts.Program
 ): AliasTable | undefined {
-    const aliasTables = declarations.map((declaration) => {
-        const moduleSpecifier = declaration.moduleSpecifier;
-        if (!moduleSpecifier || !ts.isStringLiteral(moduleSpecifier)) {
-            // Unreachable: An export declaration with a namespace export will always have a FromClause
-            // https://262.ecma-international.org/13.0/#sec-exports
-            return;
-        }
-        if (declaration.exportClause) {
-            // Unreachable: An export declaration with a namespace export will always have an ExportClause
-            // https://262.ecma-international.org/13.0/#sec-exports
-            return;
-        }
-        if (moduleSpecifier.text == 'azle') {
-            return generateDefaultAliasTable();
-        }
-        const symbolTable = getSymbolTableForDeclaration(declaration, program);
-        if (!symbolTable) {
-            return;
-        }
-        return generateAliasTableFromSymbolTable(symbolTable, program);
-    });
+    const aliasTables = exportDeclarations.map((declaration) =>
+        generateAliasTableForExportDeclaration(declaration, program)
+    );
     let aliasTable = generateEmptyAliasTable();
     aliasTables.forEach((subAliasTable) => {
         if (subAliasTable) {
@@ -276,7 +288,7 @@ function processExportDeclarations(
     return aliasTable;
 }
 
-function processNamespaceImportExport(
+function generateAliasTableForNamespaceImportExport(
     namespace: ts.NamespaceImport | ts.NamespaceExport,
     program: ts.Program
 ): AliasTable | undefined {
@@ -304,19 +316,19 @@ function processNamespaceImportExport(
     );
 }
 
-function processTypeAliasDeclaration(
-    originalName: string,
-    declaration: ts.TypeAliasDeclaration,
+function generateAliasTableForTypeAliasDeclaration(
+    typeAliasDeclaration: ts.TypeAliasDeclaration,
+    alias: string,
     program: ts.Program
 ): AliasTable | undefined {
     if (TYPE_ALIASES_ARE_STILL_UNIMPLEMENTED) {
         return; // TODO Add support for type alias declarations
         // The below code doesn't work, but it's hopefully a good starting point
     }
-    if (declaration.typeParameters?.length ?? 0 > 0) {
+    if (typeAliasDeclaration.typeParameters?.length ?? 0 > 0) {
         return; // This looks like a candid definition not a possible azle alias
     }
-    const sourceFile = getSourceFile(declaration);
+    const sourceFile = getSourceFile(typeAliasDeclaration);
     if (!sourceFile) {
         // TODO couldn't find the sourceFile
         return;
@@ -326,7 +338,7 @@ function processTypeAliasDeclaration(
         // TODO couldn't get a symbol table
         return;
     }
-    const typeReference = declaration.type;
+    const typeReference = typeAliasDeclaration.type;
     if (ts.isTypeReferenceNode(typeReference)) {
         const typeName = typeReference.typeName;
         if (ts.isQualifiedName(typeName)) {
@@ -359,7 +371,7 @@ function processTypeAliasDeclaration(
                     // TODO there is no symbol
                     return;
                 }
-                return processSymbol(originalName, symbol, program);
+                return generateAliasTableForSymbol(symbol, alias, program);
             }
             // TODO what to do if the left isn't an identifier
             return;
@@ -370,7 +382,7 @@ function processTypeAliasDeclaration(
                 // TODO Couldn't find symbol
                 return;
             }
-            return processSymbol(originalName, symbol, program);
+            return generateAliasTableForSymbol(symbol, alias, program);
         }
     }
     // TODO what else could this be??
@@ -395,13 +407,13 @@ function isAzleSymbol(symbol: ts.Symbol): boolean {
 // The process symbol does a similar thing
 // Here we are getting a module. And finding the name in the module so we can get it's symbol
 function getAzleEquivalent(
-    originalName: string,
-    name: string, // TODO should this be a ts.__String or a string?
+    alias: string,
+    name: string,
     moduleSpecifier: ts.StringLiteral,
     program: ts.Program
 ): AliasTable | undefined {
     if (moduleSpecifier.text === 'azle') {
-        return generateSingleEntryAliasTable(originalName, name);
+        return generateSingleEntryAliasTable(alias, name);
     }
     const symbolTable = getSymbolTableForModuleSpecifier(
         moduleSpecifier,
@@ -418,12 +430,12 @@ function getAzleEquivalent(
     // So 1) Start by seeing if the symbol is in the list of exports. If so use that symbol
     const symbol = symbolTable.get(name as ts.__String);
     if (symbol) {
-        return processSymbol(originalName, symbol, program);
+        return generateAliasTableForSymbol(symbol, alias, program);
     } else {
         // We couldn't find the symbol in the symbol table for this file
         // So 2) Check if it came from an `export * from 'thing'` declaration
         return findSymbolInStarExportsFromModule(
-            originalName,
+            alias,
             name,
             moduleSpecifier,
             program
@@ -434,7 +446,7 @@ function getAzleEquivalent(
 // Get all of the * exports
 // get the symbol tables for all of those and check which one has the name we are looking for
 function findSymbolInStarExportsFromModule(
-    originalName: string,
+    alias: string,
     name: string,
     moduleSpecifier: ts.StringLiteral,
     program: ts.Program
@@ -450,7 +462,7 @@ function findSymbolInStarExportsFromModule(
             const exportModSpecifier = exportDeclaration.moduleSpecifier;
             if (exportModSpecifier && ts.isStringLiteral(exportModSpecifier)) {
                 return getAzleEquivalent(
-                    originalName,
+                    alias,
                     name,
                     exportModSpecifier,
                     program

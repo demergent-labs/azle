@@ -44,13 +44,7 @@ export {
     Variant as Voavanga,
     Vec as Lime
 } from 'azle';
-// export type blackberry = boolean;
-// export type nutmeg = null;
-// export type vanilla = void;
-// export type numberAlias = number;
-// export type stringAlias = string;
-// export type Pear<T> = Promise<T>;
-// TODO switch these out for the exports above once type alias decls are supported
+// TODO switch these out for the exports above once type alias decls are supported (https://github.com/demergent-labs/azle/issues/1092)
 export type blackberry = Alias<boolean>;
 export type nutmeg = Alias<null>;
-// export type vanilla = Alias<null>; // TODO bring this in when the Alias<null> fix is in
+// export type vanilla = Alias<null>; // TODO bring this in when the Alias<null> fix is in (https://github.com/demergent-labs/azle/issues/1084)
